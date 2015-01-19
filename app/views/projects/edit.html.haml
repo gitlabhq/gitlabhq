@@ -87,7 +87,10 @@
             .form-group
               .col-sm-2
               .col-sm-10
-                = project_icon(@project.to_param, alt: '', class: 'avatar s160', only_uploaded: true)
+                - if @project.avatar?
+                  = project_icon(@project.to_param, alt: '', class: 'avatar s160')
+                - else
+                  = project_icon(@project.to_param, alt: '', class: 'avatar s160', only_uploaded: true)
                 %p.light
                   - if @project.avatar_in_git
                     Project avatar in repository: #{ @project.avatar_in_git }
@@ -102,7 +105,7 @@
                 &nbsp;
                 %span.file_name.js-avatar-filename File name...
                 = f.file_field :avatar, class: "js-project-avatar-input hidden"
-                .light The maximum file size allowed is 100KB.
+                .light The maximum file size allowed is 200KB.
                 - if @project.avatar?
                   %hr
                   = link_to 'Remove avatar', project_avatar_path(@project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-small remove-avatar"

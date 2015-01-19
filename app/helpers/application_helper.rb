@@ -54,10 +54,10 @@ module ApplicationHelper
     project = Project.find_with_namespace(project_id)
     if project.avatar.present?
       image_tag project.avatar.url, options
-    elsif options[:only_uploaded]
-      image_tag '/assets/no_project_icon.png', options
     elsif project.avatar_in_git
       image_tag project_avatar_path(project), options
+    elsif options[:only_uploaded]
+      image_tag '/assets/no_project_icon.png', options
     else # generated icon
       project_identicon(project, options)
     end
@@ -107,24 +107,24 @@ module ApplicationHelper
     if project.repo_exists?
       time_ago_with_tooltip(project.repository.commit.committed_date)
     else
-      "Never"
+      'Never'
     end
   rescue
-    "Never"
+    'Never'
   end
 
   def grouped_options_refs
     repository = @project.repository
 
     options = [
-      ["Branches", repository.branch_names],
-      ["Tags", VersionSorter.rsort(repository.tag_names)]
+      ['Branches', repository.branch_names],
+      ['Tags', VersionSorter.rsort(repository.tag_names)]
     ]
 
     # If reference is commit id - we should add it to branch/tag selectbox
     if(@ref && !options.flatten.include?(@ref) &&
        @ref =~ /^[0-9a-zA-Z]{6,52}$/)
-      options << ["Commit", [@ref]]
+      options << ['Commit', [@ref]]
     end
 
     grouped_options_for_select(options, @ref || @project.default_branch)
@@ -186,7 +186,7 @@ module ApplicationHelper
     path = controller.controller_path.split('/')
     namespace = path.first if path.second
 
-    [namespace, controller.controller_name, controller.action_name].compact.join(":")
+    [namespace, controller.controller_name, controller.action_name].compact.join(':')
   end
 
   # shortcut for gitlab config
@@ -201,13 +201,13 @@ module ApplicationHelper
 
   def search_placeholder
     if @project && @project.persisted?
-      "Search in this project"
+      'Search in this project'
     elsif @snippet || @snippets || @show_snippets
       'Search snippets'
     elsif @group && @group.persisted?
-      "Search in this group"
+      'Search in this group'
     else
-      "Search"
+      'Search'
     end
   end
 
@@ -218,7 +218,7 @@ module ApplicationHelper
   def time_ago_with_tooltip(date, placement = 'top', html_class = 'time_ago')
     capture_haml do
       haml_tag :time, date.to_s,
-        class: html_class, datetime: date.getutc.iso8601, title: date.stamp("Aug 21, 2011 9:23pm"),
+        class: html_class, datetime: date.getutc.iso8601, title: date.stamp('Aug 21, 2011 9:23pm'),
         data: { toggle: 'tooltip', placement: placement }
 
       haml_tag :script, "$('." + html_class + "').timeago().tooltip()"
@@ -241,8 +241,8 @@ module ApplicationHelper
   end
 
   def spinner(text = nil, visible = false)
-    css_class = "loading"
-    css_class << " hide" unless visible
+    css_class = 'loading'
+    css_class << ' hide' unless visible
 
     content_tag :div, class: css_class do
       content_tag(:i, nil, class: 'fa fa-spinner fa-spin') + text
@@ -259,17 +259,17 @@ module ApplicationHelper
       absolute_uri = nil
     end
 
-    # Add "nofollow" only to external links
+    # Add 'nofollow' only to external links
     if host && host != Gitlab.config.gitlab.host && absolute_uri
       if html_options
         if html_options[:rel]
-          html_options[:rel] << " nofollow"
+          html_options[:rel] << ' nofollow'
         else
-          html_options.merge!(rel: "nofollow")
+          html_options.merge!(rel: 'nofollow')
         end
       else
         html_options = Hash.new
-        html_options[:rel] = "nofollow"
+        html_options[:rel] = 'nofollow'
       end
     end
 

@@ -68,7 +68,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
 
   step 'I should see project "Shop" version' do
     within '.project-side' do
-      page.should have_content "Version: 6.7.0.pre"
+      page.should have_content 'Version: 6.7.0.pre'
     end
   end
 
@@ -86,12 +86,12 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should see project "Forum" README' do
-    page.should have_link "README.md"
-    page.should have_content "Sample repo for testing gitlab features"
+    page.should have_link 'README.md'
+    page.should have_content 'Sample repo for testing gitlab features'
   end
 
   step 'I should see project "Shop" README' do
-    page.should have_link "README.md"
-    page.should have_content "testme"
+    page.should have_link 'README.md'
+    page.should have_content 'testme'
   end
 end
