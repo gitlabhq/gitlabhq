@@ -159,8 +159,12 @@ describe WikiPage do
   end
 
   def create_page(name, content)
-    wiki.wiki.write_page(URI.encode(name).gsub('%20', ' '), :markdown, content,
-      commit_details)
+    wiki.wiki.write_page(
+      URI.encode(name).gsub('%20', ' '),
+      :markdown,
+      content,
+      commit_details
+    )
   end
 
   def destroy_page(title)
