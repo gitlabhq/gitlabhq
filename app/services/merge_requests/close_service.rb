@@ -9,7 +9,7 @@ module MergeRequests
         event_service.close_mr(merge_request, current_user)
         notification_service.close_mr(merge_request, current_user)
         create_note(merge_request)
-        execute_hooks(merge_request)
+        execute_hooks(merge_request, 'close')
       end
 
       merge_request
