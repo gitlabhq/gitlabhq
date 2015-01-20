@@ -31,6 +31,8 @@ module Gitlab
             @project.import_start
           end
         end
+
+        @project
       end
     end
   end
