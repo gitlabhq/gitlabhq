@@ -57,6 +57,7 @@ Gitlab::Application.routes.draw do
   resource :github_import, only: [:create, :new] do
     get :status
     get :callback
+    get :jobs
   end
 
   #
