@@ -102,7 +102,7 @@ class ProjectWiki
   end
 
   def page_title_and_dir(title)
-    title_array = title.split("/")
+    title_array = title.split('/')
     title = URI.encode(title_array.pop).gsub('%20', ' ')
     [title.gsub(/\.[^.]*$/, ""), title_array.join("/")]
   end
