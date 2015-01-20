@@ -3,11 +3,7 @@ require_relative "base_service"
 module Files
   class UpdateService < BaseService
     def execute
-      allowed = if project.protected_branch?(ref)
-                  can?(current_user, :push_code_to_protected_branches, project)
-                else
-                  can?(current_user, :push_code, project)
-                end
+      allowed = project.can_push_to?(current_user, ref)
 
       unless allowed
         return error("You are not allowed to push into this branch")

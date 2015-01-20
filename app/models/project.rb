@@ -607,4 +607,13 @@ class Project < ActiveRecord::Base
     errors.add(:base, "Failed create wiki")
     false
   end
+
+  def can_push_to?(user, ref)
+    abilities = Ability.abilities
+    if protected_branch?(ref)
+      abilities.allowed?(user, :push_code_to_protected_branches, self)
+    else
+      abilities.allowed?(user, :push_code, self)
+    end
+  end
 end
