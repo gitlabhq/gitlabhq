@@ -167,13 +167,9 @@ module API
       put ":id/merge_request/:merge_request_id/merge" do
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
 
-        action = if user_project.protected_branch?(merge_request.target_branch)
-                   :push_code_to_protected_branches
-                 else
-                   :push_code
-                 end
+        allowed = ::Gitlab::GitAccess.can_push_to_branch?(current_user, user_project, merge_request.target_branch)
 
-        if can?(current_user, action, user_project)
+        if allowed
           if merge_request.unchecked?
             merge_request.check_if_can_be_merged
           end
