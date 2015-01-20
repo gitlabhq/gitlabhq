@@ -229,7 +229,7 @@ describe ProjectWiki do
   end
 
   def create_page(name, content)
-    subject.wiki.write_page(name, :markdown, content, commit_details)
+    subject.wiki.write_page(URI.encode(name).gsub('%20', ' '), :markdown, content, commit_details)
   end
 
   def destroy_page(page)
