@@ -66,6 +66,7 @@ namespace :gitlab do
             puts " * Created #{project.name} (#{repo_path})".green
           else
             puts " * Failed trying to create #{project.name} (#{repo_path})".red
+            puts "   Validation Errors: #{project.errors.messages}".red
           end
         end
       end
