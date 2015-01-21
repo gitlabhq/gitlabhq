@@ -1,0 +1,18 @@
+= link_to project_merge_request_path(mention.target_project, mention), class: dom_class(mention) do
+  .dash-project-access-icon
+    = visibility_level_icon(mention.project.visibility_level)
+  %span.str-truncated
+    %span.namespace-name
+      - if mention.project.namespace
+        = mention.project.namespace.human_name
+        \/
+    %span.project-name.filter-title
+      = mention.project.name
+      \/
+    %span.merge_request-id
+      \ #
+      = mention.id
+  %span.arrow
+    - if not mention.responded
+      %i.fa.fa-comment
+    %i.fa.fa-angle-right

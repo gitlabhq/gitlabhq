@@ -22,6 +22,30 @@ class DashboardController < ApplicationController
 
     @publicish_project_count = Project.publicish(current_user).count
 
+    @mentioned_in = Array.new
+    MergeRequest.where(state: :opened).each do |merge_request|
+      if merge_request.participants.include?(current_user)
+        class << merge_request
+          attr_accessor :responded
+        end
+        merge_request.responded = false
+        merge_request.notes.order(id: :desc).each do |note|
+          if note.mentioned_users.include?(current_user)
+            merge_request.responded = false
+            break
+          elsif note.author == current_user
+            merge_request.responded = true
+            break
+          end
+        end
+        @mentioned_in.push merge_request
+      end
+    end
+    @mentioned_in.sort_by! { |m| m.responded ? 1 : 0 }
+
+    @mentions_limit = 30
+    @mentions_count = @mentioned_in.length
+
     respond_to do |format|
       format.html
       format.json { pager_json("events/_events", @events.count) }
