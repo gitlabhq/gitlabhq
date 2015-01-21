@@ -16,8 +16,6 @@ class RedmineService < IssueTrackerService
 
   def fields
     [
-      { type: 'text', name: 'title', placeholder: title },
-      { type: 'text', name: 'description', placeholder: description },
       { type: 'text', name: 'project_url', placeholder: 'Project url' },
       { type: 'text', name: 'issues_url', placeholder: 'Issue url'},
       { type: 'text', name: 'new_issue_url', placeholder: 'New Issue url'}
