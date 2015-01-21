@@ -55,8 +55,8 @@ class Projects::NewTreeController < Projects::BaseTreeController
 	end 
 	
 	if flag == 0
-		file_path = File.join(@path, File.basename(params[:file_name]))
-		result = Files::CreateService.new(@project, current_user, params, @ref, file_path).execute
+			file_path = File.join(@path, File.basename(params[:file_name]))
+			result = Files::CreateService.new(@project, current_user, params, @ref, file_path).execute
 	end
 	
     	if result[:status] == :success
