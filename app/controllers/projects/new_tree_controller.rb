@@ -17,27 +17,28 @@ class Projects::NewTreeController < Projects::BaseTreeController
         file_list = tree.entries.select(&:file?)	 
         dir_list = tree.entries.select(&:dir?)
 
-	dir_list.each do |dir|		# check whether current path is sub-repository
+        # check whether current path is sub-repository
+	dir_list.each do |dir|		
 	  if dir.name != nil
             flag = 1
 	  end
 	end
-			
-	file_list.each do |file|	# check whether current path is sub-repository
+	# check whether current path is sub-repository		
+	file_list.each do |file|	
 	  if file.name != nil
 	    flag = 1
 	  end
 	end
-			
-	if @path.match(/(.*\/)*(.+)\z/) != nil && flag == 0	# replace existing file
+	# replace existing file		
+	if @path.match(/(.*\/)*(.+)\z/) != nil && flag == 0	
 	  flag = 2
 	  params[:content] = params[:file_upload].read
 	  params[:file_name] = @path	
 	  file_path = @path
 	  result = Files::UpdateService.new(@project, current_user, params, @ref, @path).execute
 	end
-				
-	if flag == 1 || flag == 0	# upload new file	
+	# upload new file			
+	if flag == 1 || flag == 0		
 	  flag = 3
 	  file_list.each do |file|				
 	    if file.name == file_na
