@@ -59,7 +59,7 @@ class Projects::NewTreeController < Projects::BaseTreeController
 		result = Files::CreateService.new(@project, current_user, params, @ref, file_path).execute
 	end
 	
-    if result[:status] == :success
+    	if result[:status] == :success
 		flash[:notice] = "Your changes have been successfully commited."		
 		redirect_to project_blob_path(@project, File.join(@ref, file_path))
 	else
