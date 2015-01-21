@@ -331,6 +331,22 @@ Parameters:
 }
 ```
 
+Will return created key with status `201 Created` on success. If an
+error occurs a `400 Bad Request` is returned with a message explaining the error:
+
+```json
+{
+  "message": {
+    "fingerprint": [
+      "has already been taken"
+    ],
+    "key": [
+      "has already been taken"
+    ]
+  }
+}
+```
+
 ## Add SSH key for user
 
 Create new key owned by specified user. Available only for admin
