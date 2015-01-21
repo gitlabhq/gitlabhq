@@ -70,6 +70,7 @@ class Project < ActiveRecord::Base
   has_one :pushover_service, dependent: :destroy
   has_one :jira_service, dependent: :destroy
   has_one :redmine_service, dependent: :destroy
+  has_one :custom_issue_tracker_service, dependent: :destroy
 
   has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one :forked_from_project, through: :forked_project_link
@@ -324,7 +325,7 @@ class Project < ActiveRecord::Base
 
   def available_services_names
     %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla
-       emails_on_push gemnasium slack pushover buildbox bamboo teamcity jira redmine)
+       emails_on_push gemnasium slack pushover buildbox bamboo teamcity jira redmine custom_issue_tracker)
   end
 
   def gitlab_ci?
