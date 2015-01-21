@@ -16,13 +16,15 @@ class Projects::NewTreeController < Projects::BaseTreeController
         file_list = tree.entries.select(&:file?)	 
         dir_list = tree.entries.select(&:dir?)
         
-	dir_list.each do |dir|  # check whether current path is sub-repository	
+	dir_list.each do |dir|  # check whether current path is sub-repository
+	
 	  if dir.name != nil
             flag = 1
 	  end
 	end
 	
 	file_list.each do |file|  # check whether current path is sub-repository
+	
 	  if file.name != nil
 	    flag = 1
 	  end
