@@ -7,8 +7,10 @@ class Projects::NewTreeController < Projects::BaseTreeController
   
   def update
     flag = 0
+    
     # replace & upload 
     if params[:file_upload] != nil
+    
     # get the name of the upload file
       file_na = params[:file_upload].original_filename
       file_path = nil
