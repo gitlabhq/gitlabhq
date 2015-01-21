@@ -65,6 +65,12 @@ module CommitsHelper
     branches.sort.map { |branch| link_to(branch, project_tree_path(project, branch)) }.join(", ").html_safe
   end
 
+  # Returns the sorted links to tags, separated by a comma
+  def commit_tags_links(project, tags)
+    sorted = VersionSorter.rsort(tags)
+    sorted.map { |tag| link_to(tag, project_commits_path(project, project.repository.find_tag(tag).name)) }.join(", ").html_safe
+  end
+
   def link_to_browse_code(project, commit)
     if current_controller?(:projects, :commits)
       if @repo.blob_at(commit.id, @path)
