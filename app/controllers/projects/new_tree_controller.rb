@@ -6,12 +6,12 @@ class Projects::NewTreeController < Projects::BaseTreeController
   end
 
   def update
-	flag=0
+	flag = 0
 	#replace & upload 
 	if params[:file_upload] != nil
 		#get the name of the upload file
-		file_na=params[:file_upload].original_filename
-		file_path=nil
+		file_na = params[:file_upload].original_filename
+		file_path = nil
 		
 	    if file_na != nil
 			file_list = tree.entries.select(&:file?)
@@ -19,26 +19,26 @@ class Projects::NewTreeController < Projects::BaseTreeController
 			
 			dir_list.each do |dir|		#check whether current path is sub-repository
 				if dir.name != nil
-					flag=1
+					flag = 1
 				end
 			end
 			
 			file_list.each do |file|	#check whether current path is sub-repository
 				if file.name != nil
-					flag=1
+					flag = 1
 				end
 			end
 			
-			if @path.match(/(.*\/)*(.+)\z/) != nil && flag==0	#replace existing file
-				flag=2
-				params[:content]=params[:file_upload].read
-				params[:file_name]=@path	
-				file_path=@path
-				result=Files::UpdateService.new(@project, current_user, params, @ref, @path).execute
+			if @path.match(/(.*\/)*(.+)\z/) != nil && flag == 0	#replace existing file
+				flag = 2
+				params[:content] = params[:file_upload].read
+				params[:file_name] = @path	
+				file_path = @path
+				result = Files::UpdateService.new(@project, current_user, params, @ref, @path).execute
 			end
 				
-			if flag==1 || flag==0	#upload new file	
-				flag=3
+			if flag == 1 || flag == 0	#upload new file	
+				flag = 3
 				file_list.each do |file|				
 					if file.name == file_na
 						flash[:alert] = file.name + " already exists!"
@@ -54,7 +54,7 @@ class Projects::NewTreeController < Projects::BaseTreeController
 		end
 	end 
 	
-	if flag==0
+	if flag == 0
 		file_path = File.join(@path, File.basename(params[:file_name]))
 		result = Files::CreateService.new(@project, current_user, params, @ref, file_path).execute
 	end
