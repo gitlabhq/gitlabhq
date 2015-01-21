@@ -104,6 +104,69 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'PUT /groups/:id/members/:user_id' do
+    context 'when not a member of the group' do
+      it 'should return a 409 error if the user is not a group member' do
+        put(
+          api("/groups/#{group_no_members.id}/members/#{developer.id}",
+              owner), access_level: GroupMember::MASTER
+        )
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'when a member of the group' do
+      it 'should return ok and update member access level' do
+        put(
+          api("/groups/#{group_with_members.id}/members/#{reporter.id}",
+              owner),
+          access_level: GroupMember::MASTER
+        )
+
+        expect(response.status).to eq(200)
+
+        get api("/groups/#{group_with_members.id}/members", owner)
+        json_reporter = json_response.find do |e|
+          e['id'] == reporter.id
+        end
+
+        expect(json_reporter['access_level']).to eq(GroupMember::MASTER)
+      end
+
+      it 'should not allow guest to modify group members' do
+        put(
+          api("/groups/#{group_with_members.id}/members/#{developer.id}",
+              guest),
+          access_level: GroupMember::MASTER
+        )
+
+        expect(response.status).to eq(403)
+
+        get api("/groups/#{group_with_members.id}/members", owner)
+        json_developer = json_response.find do |e|
+          e['id'] == developer.id
+        end
+
+        expect(json_developer['access_level']).to eq(GroupMember::DEVELOPER)
+      end
+
+      it 'should return a 400 error when access level is not given' do
+        put(
+          api("/groups/#{group_with_members.id}/members/#{master.id}", owner)
+        )
+        expect(response.status).to eq(400)
+      end
+
+      it 'should return a 422 error when access level is not known' do
+        put(
+          api("/groups/#{group_with_members.id}/members/#{master.id}", owner),
+          access_level: 1234
+        )
+        expect(response.status).to eq(422)
+      end
+    end
+  end
+
   describe "DELETE /groups/:id/members/:user_id" do
     context "when not a member of the group" do
       it "should not delete guest's membership of group_with_members" do
