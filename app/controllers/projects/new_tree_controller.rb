@@ -60,11 +60,11 @@ class Projects::NewTreeController < Projects::BaseTreeController
 	end
 	
     	if result[:status] == :success
-		flash[:notice] = "Your changes have been successfully commited."		
-		redirect_to project_blob_path(@project, File.join(@ref, file_path))
+			flash[:notice] = "Your changes have been successfully commited."		
+			redirect_to project_blob_path(@project, File.join(@ref, file_path))
 	else
-		flash[:alert] = result[:message]
-		render :show
+			flash[:alert] = result[:message]
+			render :show
     end
   end
 end
