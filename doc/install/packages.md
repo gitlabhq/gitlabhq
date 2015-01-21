@@ -22,6 +22,23 @@ You can override this version check with the `--oldpackage` option:
 rpm -Uvh --oldpackage gitlab-7.5.3_ee.omnibus.5.2.1.ci-1.el7.x86_64.rpm
 ```
 
+### GitLab 7.7.0 Enterprise Edition
+
+- 7.7.0-ee/CI 5.4.0 - Ubuntu 14.04 64-bit [gitlab_7.7.0-ee.omnibus.5.4.0.ci-1_amd64.deb](https://downloads-packages.s3.amazonaws.com/413ccbedb48feea5c6f69d900c2d48053b5ad15f/ubuntu-14.04/gitlab_7.7.0-ee.omnibus.5.4.0.ci-1_amd64.deb)
++ SHA256: 86dbf7292a0a0b463e8becf9e31699d3ef9f9d410a6a0d7d56eb4b65d79b5f8f
+
+- 7.7.0-ee/CI 5.4.0 - Ubuntu 12.04 64-bit [gitlab_7.7.0-ee.omnibus.5.4.0.ci-1_amd64.deb](https://downloads-packages.s3.amazonaws.com/3e584bca1f7a8ee71f0ba643a05572d82868479a/ubuntu-12.04/gitlab_7.7.0-ee.omnibus.5.4.0.ci-1_amd64.deb)
++ SHA256: 68789e73259d2d611ad3e992bfe69764d5b2828c9269dcc562b3e73b52812b9d
+
+- 7.7.0-ee/CI 5.4.0 - Debian 7 64-bit [gitlab_7.7.0-ee.omnibus.5.4.0.ci-1_amd64.deb](https://downloads-packages.s3.amazonaws.com/80301e4c8d660671fbd299cd6570f5c218ee8d3c/debian-7.6/gitlab_7.7.0-ee.omnibus.5.4.0.ci-1_amd64.deb)
++ SHA256: 9bc9594f34214e00c59da170965a9b6fb5ff13872dcb3bb1828adadcc07150dc
+
+- 7.7.0-ee/CI 5.4.0 - CentOS 6 64-bit [gitlab-7.7.0_ee.omnibus.5.4.0.ci-1.el6.x86_64.rpm](https://downloads-packages.s3.amazonaws.com/5f167cfd206dfd2531d05596bb16182d440f9dac/centos-6.6/gitlab-7.7.0_ee.omnibus.5.4.0.ci-1.el6.x86_64.rpm)
++ SHA256: 781c81a8cdd73964d10d2a6bb4f16718f30b438937dfefa9b698ec4694a8acf5
+
+- 7.7.0-ee/CI 5.4.0 - CentOS 7 64-bit [gitlab-7.7.0_ee.omnibus.5.4.0.ci-1.el7.x86_64.rpm](https://downloads-packages.s3.amazonaws.com/7e0451d53bdfc075cb9cb5b528bf1af27e65a684/centos-7.0.1406/gitlab-7.7.0_ee.omnibus.5.4.0.ci-1.el7.x86_64.rpm)
++ SHA256: d305e44874067f88e91d1ca87cef572196ed540d2fe0aecbbb68d15051f045bd
+
 ### GitLab 7.6.3 Enterprise Edition
 
 - Ubuntu 14.04 64-bit - 7.6.3-ee/CI 5.3.0 [gitlab_7.6.3-ee.omnibus.5.3.0.ci.1-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/c6a3515ca1bafff7fbb28f4f0eb4923fea45c230/ubuntu-14.04/gitlab_7.6.3-ee.omnibus.5.3.0.ci.1-1_amd64.deb)
