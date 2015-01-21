@@ -17,7 +17,8 @@ class Projects::ServicesController < Projects::ApplicationController
 
   def update
     if @service.update_attributes(service_params)
-      redirect_to edit_project_service_path(@project, @service.to_param)
+      redirect_to edit_project_service_path(@project, @service.to_param),
+       notice: 'Successfully updated.'
     else
       render 'edit'
     end
@@ -41,7 +42,8 @@ class Projects::ServicesController < Projects::ApplicationController
       :title, :token, :type, :active, :api_key, :subdomain,
       :room, :recipients, :project_url, :webhook,
       :user_key, :device, :priority, :sound, :bamboo_url, :username, :password,
-      :build_key, :server, :teamcity_url, :build_type
+      :build_key, :server, :teamcity_url, :build_type,
+      :description, :issues_url, :new_issue_url
     )
   end
 end
