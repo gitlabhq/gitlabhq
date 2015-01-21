@@ -76,7 +76,7 @@ module API
         end
       end
 
-      # Get all issues for single project milestone
+      # Get all issues for a single project milestone
       #
       # Parameters:
       #   id (required) - The ID of a project
