@@ -8,3 +8,8 @@
     %strong{ dir: :auto } #{issuable.assignee_name}
   - else
     %strong Unassigned
+:css
+  *[dir='auto'] {
+  	font-family: 'Tahoma' !important;
+    text-align: start !important;
+  }

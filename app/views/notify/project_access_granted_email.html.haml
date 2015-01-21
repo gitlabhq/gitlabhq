@@ -3,3 +3,8 @@
 %p
   = link_to project_url(@project) do
     %span{ dir: :auto }= @project.name_with_namespace
+:css
+  *[dir='auto'] {
+  	font-family: 'Tahoma' !important;
+    text-align: start !important;
+  }

@@ -1,3 +1,8 @@
 %p
   = "Merge Request ##{@merge_request.iid} was #{@mr_status} by "
   %span{ dir: :auto }= @updated_by.name
+:css
+  *[dir='auto'] {
+  	font-family: 'Tahoma' !important;
+    text-align: start !important;
+  }

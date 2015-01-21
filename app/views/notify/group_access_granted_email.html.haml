@@ -2,3 +2,8 @@
   = "You have been granted #{@membership.human_access} access to group"
   = link_to group_url(@group) do
     %span{ dir: :auto }= @group.name
+:css
+  *[dir='auto'] {
+  	font-family: 'Tahoma' !important;
+    text-align: start !important;
+  }

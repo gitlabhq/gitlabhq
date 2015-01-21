@@ -14,3 +14,8 @@
 - if @user.created_by_id
   %p
     = link_to "Click here to set your password", edit_password_url(@user, :reset_password_token => @token)
+:css
+  *[dir='auto'] {
+  	font-family: 'Tahoma' !important;
+    text-align: start !important;
+  }
