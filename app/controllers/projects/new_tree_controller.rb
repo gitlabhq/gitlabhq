@@ -8,33 +8,27 @@ class Projects::NewTreeController < Projects::BaseTreeController
   def update
     flag = 0
     
-    # replace & upload 
-    if params[:file_upload] != nil
-    
-    # get the name of the upload file
-      file_na = params[:file_upload].original_filename
+    if params[:file_upload] != nil  # replace & upload
+      file_na = params[:file_upload].original_filename   # get the name of the upload file
       file_path = nil
       
       if file_na != nil
         file_list = tree.entries.select(&:file?)	 
         dir_list = tree.entries.select(&:dir?)
         
-        # check whether current path is sub-repository
-	dir_list.each do |dir|		
+	dir_list.each do |dir|  # check whether current path is sub-repository	
 	  if dir.name != nil
             flag = 1
 	  end
 	end
 	
-	# check whether current path is sub-repository		
-	file_list.each do |file|	
+	file_list.each do |file|  # check whether current path is sub-repository
 	  if file.name != nil
 	    flag = 1
 	  end
 	end
 	
-	# replace existing file		
-	if @path.match(/(.*\/)*(.+)\z/) != nil && flag == 0	
+	if @path.match(/(.*\/)*(.+)\z/) != nil && flag == 0  # replace existing file	
 	  flag = 2
 	  params[:content] = params[:file_upload].read
 	  params[:file_name] = @path	
@@ -42,8 +36,7 @@ class Projects::NewTreeController < Projects::BaseTreeController
 	  result = Files::UpdateService.new(@project, current_user, params, @ref, @path).execute
 	end
 	
-	# upload new file			
-	if flag == 1 || flag == 0		
+	if flag == 1 || flag == 0  # upload new file		
 	  flag = 3
 	  file_list.each do |file|
 	  	
