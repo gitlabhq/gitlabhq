@@ -108,7 +108,7 @@ In other repositories, such as gitlab-shell you can also use `IO.popen`.
 
 ```ruby
 # Safe IO.popen example
-logs = IO.popen(%W(git log), chdir: repo_dir).read
+logs = IO.popen(%W(git log), chdir: repo_dir) { |p| p.read }
 ```
 
 Note that unlike `Gitlab::Popen.popen`, `IO.popen` does not capture standard error.
