@@ -18,6 +18,7 @@
 #  iid               :integer
 #  description       :text
 #  position          :integer          default(0)
+#  locked_at         :datetime
 #
 
 FactoryGirl.define do
