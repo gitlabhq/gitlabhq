@@ -88,7 +88,7 @@ module Issuable
 
   # Return the number of -1 comments (downvotes)
   def downvotes
-    notes.select(&:downvote?).size
+    filter_superceded_votes(notes.select(&:downvote?), notes).size
   end
 
   def downvotes_in_percent
@@ -101,7 +101,7 @@ module Issuable
 
   # Return the number of +1 comments (upvotes)
   def upvotes
-    notes.select(&:upvote?).size
+    filter_superceded_votes(notes.select(&:upvote?), notes).size
   end
 
   def upvotes_in_percent
@@ -153,5 +153,17 @@ module Issuable
         color: Label::DEFAULT_COLOR).find_or_create_by(title: label_name.strip)
       self.labels << label
     end
+  end
+
+  private
+
+  def filter_superceded_votes(votes, notes)
+    filteredvotes = [] + votes
+    votes.each do |vote|
+      if vote.superceded?(notes)
+        filteredvotes.delete(vote)
+      end
+    end
+    filteredvotes
   end
 end

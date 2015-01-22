@@ -15,6 +15,7 @@ v 7.8.0
   - 
   - 
   - Show tags in commit view (Hannes Rosenögger)
+  - Only count a user's vote once on a merge request or issue (Michael Clarke)
   - 
   - 
   - 
