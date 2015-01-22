@@ -44,7 +44,7 @@ module CommitsHelper
       parts = @path.split('/')
 
       parts.each_with_index do |part, i|
-        crumbs += content_tag(:li) do
+        crumbs << content_tag(:li) do
           # The text is just the individual part, but the link needs all the parts before it
           link_to part, project_commits_path(@project, tree_join(@ref, parts[0..i].join('/')))
         end

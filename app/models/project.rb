@@ -170,7 +170,7 @@ class Project < ActiveRecord::Base
 
     def publicish(user)
       visibility_levels = [Project::PUBLIC]
-      visibility_levels += [Project::INTERNAL] if user
+      visibility_levels << Project::INTERNAL if user
       where(visibility_level: visibility_levels)
     end
 

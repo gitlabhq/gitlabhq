@@ -73,28 +73,28 @@ class Ability
 
         # Rules based on role in project
         if team.master?(user)
-          rules += project_master_rules
+          rules.push(*project_master_rules)
 
         elsif team.developer?(user)
-          rules += project_dev_rules
+          rules.push(*project_dev_rules)
 
         elsif team.reporter?(user)
-          rules += project_report_rules
+          rules.push(*project_report_rules)
 
         elsif team.guest?(user)
-          rules += project_guest_rules
+          rules.push(*project_guest_rules)
         end
 
         if project.public? || project.internal?
-          rules += public_project_rules
+          rules.push(*public_project_rules)
         end
 
         if project.owner == user || user.admin?
-          rules += project_admin_rules
+          rules.push(*project_admin_rules)
         end
 
         if project.group && project.group.has_owner?(user)
-          rules += project_admin_rules
+          rules.push(*project_admin_rules)
         end
 
         if project.archived?
@@ -193,17 +193,17 @@ class Ability
 
       # Only group masters and group owners can create new projects in group
       if group.has_master?(user) || group.has_owner?(user) || user.admin?
-        rules += [
+        rules.push(*[
           :create_projects,
-        ]
+        ])
       end
 
       # Only group owner and administrators can manage group
       if group.has_owner?(user) || user.admin?
-        rules += [
+        rules.push(*[
           :manage_group,
           :manage_namespace
-        ]
+        ])
       end
 
       rules.flatten
@@ -214,10 +214,10 @@ class Ability
 
       # Only namespace owner and administrators can manage it
       if namespace.owner == user || user.admin?
-        rules += [
+        rules.push(*[
           :create_projects,
           :manage_namespace
-        ]
+        ])
       end
 
       rules.flatten
