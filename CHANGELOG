@@ -20,7 +20,7 @@ v 7.8.0
   - 
   - 
   - 
-  - 
+  - Upgrade Sidekiq gem to version 3.3.0
   - 
   - 
   - 
