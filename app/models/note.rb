@@ -461,14 +461,17 @@ class Note < ActiveRecord::Base
 
   def superceded?(notes)
     return false unless vote?
+
     notes.each do |note|
       next if note == self
+
       if note.vote? &&
-          self[:author_id] == note[:author_id] &&
-          self[:created_at] <= note[:created_at]
+        self[:author_id] == note[:author_id] &&
+        self[:created_at] <= note[:created_at]
         return true
       end
     end
+
     false
   end
 
