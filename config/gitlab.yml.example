@@ -60,7 +60,7 @@ production: &base
 
     ## Users can create accounts
     # This also allows normal users to sign up for accounts themselves
-    # default: false - By default GitLab administrators must create all new accounts
+    # default: true - By default users can sign up themselves
     # signup_enabled: true
 
     ## Standard login settings
