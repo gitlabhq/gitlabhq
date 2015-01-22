@@ -11,7 +11,6 @@ admin = User.create(
   name: "Administrator",
   username: 'root',
   password: password,
-  password_confirmation: password,
   password_expires_at: expire_time,
   theme_id: Gitlab::Theme::MARS
 

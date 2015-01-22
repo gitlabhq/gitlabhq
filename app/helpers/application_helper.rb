@@ -5,8 +5,9 @@ module ApplicationHelper
   COLOR_SCHEMES = {
     1 => 'white',
     2 => 'dark',
-    3 => 'solarized-dark',
-    4 => 'monokai',
+    3 => 'solarized-light',
+    4 => 'solarized-dark',
+    5 => 'monokai',
   }
   COLOR_SCHEMES.default = 'white'
 
@@ -189,20 +190,6 @@ module ApplicationHelper
     BroadcastMessage.current
   end
 
-  def highlight_js(&block)
-    string = capture(&block)
-
-    content_tag :div, class: "highlighted-data #{user_color_scheme_class}" do
-      content_tag :div, class: 'highlight' do
-        content_tag :pre do
-          content_tag :code do
-            string.html_safe
-          end
-        end
-      end
-    end
-  end
-
   def time_ago_with_tooltip(date, placement = 'top', html_class = 'time_ago')
     capture_haml do
       haml_tag :time, date.to_s,
@@ -304,10 +291,5 @@ module ApplicationHelper
     else
       profile_key_path(key)
     end
-  end
-
-  def redirect_from_root?
-    request.env['rack.session']['user_return_to'] ==
-      '/'
   end
 end

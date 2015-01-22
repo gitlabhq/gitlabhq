@@ -48,6 +48,17 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def authenticate_user!(*args)
+    # If user is not signe-in and tries to access root_path - redirect him to landing page
+    if current_application_settings.home_page_url.present?
+      if current_user.nil? && controller_name == 'dashboard' && action_name == 'show'
+        redirect_to current_application_settings.home_page_url and return
+      end
+    end
+
+    super(*args)
+  end
+
   def log_exception(exception)
     application_trace = ActionDispatch::ExceptionWrapper.new(env, exception).application_trace
     application_trace.map!{ |t| "  #{t}\n" }

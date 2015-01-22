@@ -44,7 +44,7 @@ production: &base
     # Email address used in the "From" field in mails sent by GitLab
     email_from: example@example.com
 
-    # Email server smtp settings are in [a separate file](initializers/smtp_settings.rb.sample).
+    # Email server smtp settings are in config/initializers/smtp_settings.rb.sample
 
     ## User settings
     default_projects_limit: 10
@@ -77,7 +77,7 @@ production: &base
     # This happens when the commit is pushed or merged into the default branch of a project.
     # When not specified the default issue_closing_pattern as specified below will be used.
     # Tip: you can test your closing pattern at http://rubular.com
-    # issue_closing_pattern: '([Cc]lose[sd]|[Ff]ixe[sd]) (#\d+|([A-Z\-]+-)\d+)'
+    # issue_closing_pattern: '((?:[Cc]los(?:e[sd]|ing)|[Ff]ix(?:e[sd]|ing)?) +(?:(?:issues? +)?#\d+(?:(?:, *| +and +)?))+)'
 
     ## Default project features settings
     default_projects_features:

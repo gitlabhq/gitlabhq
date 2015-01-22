@@ -3,9 +3,7 @@
   Import repositories from GitHub.com
 
 %p.light
-  Select projects you want to import.
-  %span.pull-right
-    Reload to see the progress.
+  Select projects you want to import.  
 
 %hr
 %table.table.import-jobs
@@ -16,11 +14,11 @@
       %th Status
   %tbody
     - @already_added_projects.each do |project|
-      %tr{id: "repo_#{project.id}", class: "#{project_status_css_class(project.import_status)}"}
+      %tr{id: "project_#{project.id}", class: "#{project_status_css_class(project.import_status)}"}
         %td= project.import_source
         %td
           %strong= link_to project.name_with_namespace, project
-        %td
+        %td.job-status
           - if project.import_status == 'finished'
             %span.cgreen
               %i.fa.fa-check
@@ -33,7 +31,7 @@
         %td= repo.full_name
         %td.import-target
           = repo.full_name
-        %td.import-actions
+        %td.import-actions.job-status
           = button_tag "Add", class: "btn btn-add-to-import"
 
 
@@ -46,3 +44,20 @@
       new_namespace = tr.find(".import-target input").prop("value")
       tr.find(".import-target").empty().append(new_namespace + "/" + tr.find(".import-target").data("project_name"))
     $.post "#{github_import_url}", {repo_id: id, new_namespace: new_namespace}, dataType: 'script'
+  
+
+  setInterval (->
+    $.get "#{jobs_github_import_path}", (data)->
+      $.each data, (i, job) ->
+        job_item = $("#project_" + job.id)
+        status_field = job_item.find(".job-status")
+        
+        if job.import_status == 'finished'
+          job_item.removeClass("active").addClass("success")
+          status_field.html('<span class="cgreen"><i class="fa fa-check"></i> done</span>')
+        else if job.import_status == 'started'
+          status_field.html("<i class='fa fa-spinner fa-spin'></i> started")
+        else
+          status_field.html(job.import_status)
+        
+  ), 4000

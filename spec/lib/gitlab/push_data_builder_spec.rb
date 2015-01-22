@@ -21,13 +21,14 @@ describe 'Gitlab::PushDataBuilder' do
       Gitlab::PushDataBuilder.build(project,
                                     user,
                                     Gitlab::Git::BLANK_SHA,
-                                    '5937ac0a7beb003549fc5fd26fc247adbce4a52e',
+                                    '8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b',
                                     'refs/tags/v1.1.0')
     end
 
     it { data.should be_a(Hash) }
     it { data[:before].should == Gitlab::Git::BLANK_SHA }
-    it { data[:after].should == '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
+    it { data[:checkout_sha].should == '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
+    it { data[:after].should == '8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b' }
     it { data[:ref].should == 'refs/tags/v1.1.0' }
     it { data[:commits].should be_empty }
     it { data[:total_commits_count].should be_zero }

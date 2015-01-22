@@ -14,7 +14,8 @@ GET /groups
     "id": 1,
     "name": "Foobar Group",
     "path": "foo-bar",
-    "owner_id": 18
+    "owner_id": 18,
+    "description": "An interesting group"
   }
 ]
 ```
@@ -45,6 +46,7 @@ Parameters:
 
 - `name` (required) - The name of the group
 - `path` (required) - The path of the group
+- `description` (optional) - The group's description
 
 ## Transfer project to group
 

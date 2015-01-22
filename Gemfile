@@ -47,7 +47,7 @@ gem 'gitlab_omniauth-ldap', '1.2.0', require: "omniauth-ldap"
 gem 'net-ldap'
 
 # Git Wiki
-gem 'gollum-lib', '~> 3.0.0'
+gem 'gollum-lib', '~> 4.0.0'
 
 # Language detection
 gem "gitlab-linguist", "~> 3.0.0", require: "linguist"
@@ -267,3 +267,4 @@ end
 gem "newrelic_rpm"
 
 gem 'octokit', '3.7.0'
+gem "rugments"

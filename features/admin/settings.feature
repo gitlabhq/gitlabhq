@@ -5,5 +5,5 @@ Feature: Admin Settings
     And I visit admin settings page
 
   Scenario: Change application settings
-    When I disable gravatars and save form
-    Then I should be see gravatar disabled
+    When I modify settings and save form
+    Then I should see application settings saved

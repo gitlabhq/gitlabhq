@@ -12,22 +12,32 @@ describe MergeRequests::UpdateService do
   end
 
   describe :execute do
-    context "valid params" do
-      before do
-        opts = {
+    context 'valid params' do
+      let(:opts) do
+        {
           title: 'New title',
           description: 'Also please fix',
           assignee_id: user2.id,
           state_event: 'close'
         }
+      end
+      let(:service) { MergeRequests::UpdateService.new(project, user, opts) }
 
-        @merge_request = MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+      before do
+        service.stub(:execute_hooks)
+
+        @merge_request = service.execute(merge_request)
       end
 
       it { @merge_request.should be_valid }
       it { @merge_request.title.should == 'New title' }
       it { @merge_request.assignee.should == user2 }
       it { @merge_request.should be_closed }
+
+      it 'should execute hooks with update action' do
+        expect(service).to have_received(:execute_hooks).
+                               with(@merge_request, 'update')
+      end
 
       it 'should send email to user2 about assign of new merge_request' do
         email = ActionMailer::Base.deliveries.last

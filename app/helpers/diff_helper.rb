@@ -135,4 +135,19 @@ module DiffHelper
       'Side-by-side'
     end
   end
+
+  def submodule_link(blob, ref)
+    tree, commit = submodule_links(blob, ref)
+    commit_id = if commit.nil?
+                  blob.id[0..10]
+                else
+                  link_to "#{blob.id[0..10]}", commit
+                end
+
+    [
+      content_tag(:span, link_to(truncate(blob.name, length: 40), tree)),
+      '@',
+      content_tag(:span, commit_id, class: 'monospace'),
+    ].join(' ').html_safe
+  end
 end

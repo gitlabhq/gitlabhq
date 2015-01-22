@@ -4,7 +4,6 @@ $ ->
 class Dispatcher
   constructor: () ->
     @initSearch()
-    @initHighlight()
     @initPageScripts()
 
   initPageScripts: ->
@@ -33,17 +32,20 @@ class Dispatcher
         GitLab.GfmAutoComplete.setup()
         shortcut_handler = new ShortcutsNavigation()
         new ZenMode()
+        new DropzoneInput($('.issue-form'))
       when 'projects:merge_requests:new', 'projects:merge_requests:edit'
         GitLab.GfmAutoComplete.setup()
         new Diff()
         shortcut_handler = new ShortcutsNavigation()
         new ZenMode()
+        new DropzoneInput($('.merge-request-form'))
       when 'projects:merge_requests:show'
         new Diff()
         shortcut_handler = new ShortcutsIssueable()
         new ZenMode()
       when "projects:merge_requests:diffs"
         new Diff()
+        new ZenMode()
       when 'projects:merge_requests:index'
         shortcut_handler = new ShortcutsNavigation()
       when 'dashboard:show'
@@ -112,6 +114,7 @@ class Dispatcher
             new Wikis()
             shortcut_handler = new ShortcutsNavigation()
             new ZenMode()
+            new DropzoneInput($('.wiki-form'))
           when 'snippets', 'labels', 'graphs'
             shortcut_handler = new ShortcutsNavigation()
           when 'team_members', 'deploy_keys', 'hooks', 'services', 'protected_branches'
@@ -130,10 +133,3 @@ class Dispatcher
     project_ref = opts.data('autocomplete-project-ref')
 
     new SearchAutocomplete(path, project_id, project_ref)
-
-  initHighlight: ->
-    $('.highlight pre code').each (i, e) ->
-      $(e).html($.map($(e).html().split("\n"), (line, i) ->
-        "<span class='line' id='LC" + (i + 1) + "'>" + line + "</span>"
-      ).join("\n"))
-      hljs.highlightBlock(e)

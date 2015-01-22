@@ -47,8 +47,8 @@ module API
         authenticated_as_admin!
         required_attributes! [:name, :path]
 
-        group_attrs = attributes_for_keys [:name, :path]
-        @group = Group.new(group_attrs)
+        attrs = attributes_for_keys [:name, :path, :description]
+        @group = Group.new(attrs)
         @group.owner = current_user
 
         if @group.save

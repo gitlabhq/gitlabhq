@@ -58,11 +58,7 @@ module TreeHelper
     ref ||= @ref
     return false unless project.repository.branch_names.include?(ref)
 
-    if project.protected_branch? ref
-      can?(current_user, :push_code_to_protected_branches, project)
-    else
-      can?(current_user, :push_code, project)
-    end
+    ::Gitlab::GitAccess.can_push_to_branch?(current_user, project, ref)
   end
 
   def edit_blob_link(project, ref, path, options = {})
@@ -108,7 +104,7 @@ module TreeHelper
     end
   end
 
-  def up_dir_path(tree)
+  def up_dir_path
     file = File.join(@path, "..")
     tree_join(@ref, file)
   end

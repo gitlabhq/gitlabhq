@@ -1,7 +1,10 @@
 .zennable
-  %input#zen-toggle-comment{ tabindex: '-1', type: 'checkbox' }
+  %input#zen-toggle-comment.zen-toggle-comment{ tabindex: '-1', type: 'checkbox' }
   .zen-backdrop
     - classes << ' js-gfm-input markdown-area'
     = f.text_area attr, class: classes, placeholder: 'Leave a comment'
-    %label{ for: 'zen-toggle-comment', class: 'expand' } Edit in fullscreen
-    %label{ for: 'zen-toggle-comment', class: 'collapse' }
+    = link_to nil, class: 'zen-enter-link', tabindex: '-1' do
+      %i.fa.fa-expand
+      Edit in fullscreen
+    = link_to nil, class: 'zen-leave-link' do
+      %i.fa.fa-compress

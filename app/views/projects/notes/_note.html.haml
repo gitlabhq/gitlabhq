@@ -1,4 +1,4 @@
-%li.timeline-entry{ id: dom_id(note), class: [dom_class(note), ('system-note' if note.system)], data: { discussion: note.discussion_id } }
+%li.timeline-entry{ id: dom_id(note), class: [dom_class(note), "note-row-#{note.id}", ('system-note' if note.system)], data: { discussion: note.discussion_id } }
   .timeline-entry-inner
     .timeline-icon
       - if note.system
@@ -42,25 +42,7 @@
         .note-text
           = preserve do
             = markdown(note.note, {no_header_anchors: true})
-
-        .note-edit-form
-          = form_for note, url: project_note_path(@project, note), method: :put, remote: true, authenticity_token: true do |f|
-            = render layout: 'projects/md_preview' do
-              = f.text_area :note, class: 'note_text js-note-text js-gfm-input turn-on'
-
-            .form-actions.clearfix
-              = f.submit 'Save changes', class: "btn btn-primary btn-save js-comment-button"
-
-              .note-form-option
-                %a.choose-btn.btn.js-choose-note-attachment-button
-                  %i.fa.fa-paperclip
-                  %span Choose File ...
-                &nbsp;
-                %span.file_name.js-attachment-filename File name...
-                = f.file_field :attachment, class: "js-note-attachment-input hidden"
-
-              = link_to  'Cancel', "#", class: "btn btn-cancel note-edit-cancel"
-
+        = render 'projects/notes/edit_form', note: note
 
       - if note.attachment.url
         .note-attachment

@@ -38,7 +38,7 @@ module MergeRequests
         end
 
         merge_request.notice_added_references(merge_request.project, current_user)
-        execute_hooks(merge_request)
+        execute_hooks(merge_request, 'update')
       end
 
       merge_request

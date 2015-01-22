@@ -1,10 +1,19 @@
 module BlobHelper
-  def highlightjs_class(blob_name)
-    if no_highlight_files.include?(blob_name.downcase)
-      'no-highlight'
-    else
-      blob_name.downcase
+  def highlight(blob_name, blob_content, nowrap = false)
+    formatter = Rugments::Formatters::HTML.new(
+      nowrap: nowrap,
+      cssclass: 'code highlight',
+      lineanchors: true,
+      lineanchorsid: 'LC'
+    )
+
+    begin
+      lexer = Rugments::Lexer.guess(filename: blob_name, source: blob_content)
+    rescue Rugments::Lexer::AmbiguousGuess
+      lexer = Rugments::Lexers::PlainText
     end
+
+    formatter.format(lexer.lex(blob_content)).html_safe
   end
 
   def no_highlight_files

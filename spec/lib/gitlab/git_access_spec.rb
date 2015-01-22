@@ -5,6 +5,68 @@ describe Gitlab::GitAccess do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
+  describe 'can_push_to_branch?' do
+    describe 'push to none protected branch' do
+      it "returns true if user is a master" do
+        project.team << [user, :master]
+        Gitlab::GitAccess.can_push_to_branch?(user, project, "random_branch").should be_true
+      end
+
+      it "returns true if user is a developer" do
+        project.team << [user, :developer]
+        Gitlab::GitAccess.can_push_to_branch?(user, project, "random_branch").should be_true
+      end
+
+      it "returns false if user is a reporter" do
+        project.team << [user, :reporter]
+        Gitlab::GitAccess.can_push_to_branch?(user, project, "random_branch").should be_false
+      end
+    end
+
+    describe 'push to protected branch' do
+      before do
+        @branch = create :protected_branch, project: project
+      end
+      
+      it "returns true if user is a master" do
+        project.team << [user, :master]
+        Gitlab::GitAccess.can_push_to_branch?(user, project, @branch.name).should be_true
+      end
+
+      it "returns false if user is a developer" do
+        project.team << [user, :developer]
+        Gitlab::GitAccess.can_push_to_branch?(user, project, @branch.name).should be_false
+      end
+
+      it "returns false if user is a reporter" do
+        project.team << [user, :reporter]
+        Gitlab::GitAccess.can_push_to_branch?(user, project, @branch.name).should be_false
+      end
+    end
+
+    describe 'push to protected branch if allowed for developers' do
+      before do
+        @branch = create :protected_branch, project: project, developers_can_push: true
+      end
+      
+      it "returns true if user is a master" do
+        project.team << [user, :master]
+        Gitlab::GitAccess.can_push_to_branch?(user, project, @branch.name).should be_true
+      end
+
+      it "returns true if user is a developer" do
+        project.team << [user, :developer]
+        Gitlab::GitAccess.can_push_to_branch?(user, project, @branch.name).should be_true
+      end
+
+      it "returns false if user is a reporter" do
+        project.team << [user, :reporter]
+        Gitlab::GitAccess.can_push_to_branch?(user, project, @branch.name).should be_false
+      end
+    end
+
+  end
+
   describe 'download_access_check' do
     describe 'master permissions' do
       before { project.team << [user, :master] }

@@ -1,4 +1,4 @@
-/** Common mobile (screen XS) styles **/
+/** Common mobile (screen XS, SM) styles **/
 @media (max-width: $screen-xs-max) {
   .container .content {
     margin-top: 20px;
@@ -13,5 +13,41 @@
       display: none;
     }
   }
+
+  .issues-filters,
+  .dash-projects-filters,
+  .check-all-holder {
+    display: none;
+  }
+
+  .rss-btn {
+    display: none !important;
+  }
+
+  .project-home-panel {
+    .star-fork-buttons {
+      padding-top: 10px;
+      padding-right: 15px;
+    }
+  }
+
+  .project-home-links {
+    display: none;
+  }
 }
 
+@media (max-width: $screen-sm-max) {
+  .issues-filters {
+    .milestone-filter, .labels-filter {
+      display: none;
+    }
+  }
+
+  .page-title .new-issue-link {
+    display: none;
+  }
+
+  .issue_edited_ago, .note_edited_ago {
+    display: none;
+  }
+}

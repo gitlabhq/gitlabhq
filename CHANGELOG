@@ -1,5 +1,63 @@
 Note: The upcoming release contains empty lines to reduce the number of merge conflicts, scroll down to see past releases.
 
+v 7.8.0
+  - Replace highlight.js with rouge-fork rugments (Stefan Tatschner)
+  - Make project search case insensitive (Hannes Rosenögger)
+  - 
+  - Expose description in groups API
+  - 
+  - 
+  - Add diff syntax highlighting in email-on-push service notifications (Hannes Rosenögger)
+  - 
+  - 
+  - 
+  - Allow more variations for commit messages closing issues (Julien Bianchi and Hannes Rosenögger)
+  - 
+  - 
+  - Show tags in commit view (Hannes Rosenögger)
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - Fix commits pagination
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - Add action property to merge request hook (Julien Bianchi)
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+
 v 7.7.0
   - Import from GitHub.com feature
   - Add Jetbrains Teamcity CI service (Jason Lippert)
@@ -24,6 +82,10 @@ v 7.7.0
   - Trigger GitLab CI when push tags
   - When accept merge request - do merge using sidaekiq job
   - Enable web signups by default
+  - Fixes for diff comments: drag-n-drop images, selecting images
+  - Fixes for edit comments: drag-n-drop images, preview mode, selecting images, save & update 
+  - Remove password strength indicator
+  
 
 
 v 7.6.0
