@@ -10,7 +10,15 @@ class @ZenMode
       if not @active_checkbox
         @scroll_position = window.pageYOffset
 
-    $('body').on 'change', '.zennable input[type=checkbox]', (e) =>
+    $('body').on 'click', '.zen-enter-link', (e) =>
+      e.preventDefault()
+      $(e.currentTarget).closest('.zennable').find('.zen-toggle-comment').prop('checked', true)
+
+    $('body').on 'click', '.zen-leave-link', (e) =>
+      e.preventDefault()
+      $(e.currentTarget).closest('.zennable').find('.zen-toggle-comment').prop('checked', false)
+
+    $('body').on 'change', '.zen-toggle-comment', (e) =>
       checkbox = e.currentTarget
       if checkbox.checked
         # Disable other keyboard shortcuts in ZEN mode
@@ -32,8 +40,6 @@ class @ZenMode
     @active_zen_area = @active_checkbox.parent().find('textarea')
     @active_zen_area.focus()
     window.location.hash = ZenMode.fullscreen_prefix + @active_checkbox.prop('id')
-    # Disable dropzone in ZEN mode
-    Dropzone.forElement('.div-dropzone').disable()
 
   exitZenMode: =>
     if @active_zen_area isnt null

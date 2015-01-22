@@ -22,6 +22,11 @@ class GithubImportsController < ApplicationController
     @repos.reject!{|repo| already_added_projects_names.include? repo.full_name}
   end
 
+  def jobs
+    jobs = current_user.created_projects.where(import_type: "github").to_json(:only => [:id, :import_status])
+    render json: jobs
+  end
+
   def create
     @repo_id = params[:repo_id].to_i
     repo = octo_client.repo(@repo_id)
@@ -42,7 +47,7 @@ class GithubImportsController < ApplicationController
       namespace.add_owner(current_user)
     end
 
-    Gitlab::Github::ProjectCreator.new(repo, namespace, current_user).execute
+    @project = Gitlab::Github::ProjectCreator.new(repo, namespace, current_user).execute
   end
 
   private

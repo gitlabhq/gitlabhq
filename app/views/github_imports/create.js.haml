@@ -12,5 +12,7 @@
     target_field.find('input').prop("value", origin_namespace)
 - else
   :plain
-    $("table.import-jobs tbody").prepend($("tr#repo_#{@repo_id}"))
-    $("tr#repo_#{@repo_id}").addClass("active").find(".import-actions").html("<i class='fa fa-spinner fa-spin'></i> started")
+    job = $("tr#repo_#{@repo_id}")
+    job.attr("id", "project_#{@project.id}")
+    $("table.import-jobs tbody").prepend(job)
+    job.addClass("active").find(".import-actions").html("<i class='fa fa-spinner fa-spin'></i> started")

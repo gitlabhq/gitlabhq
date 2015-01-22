@@ -20,8 +20,10 @@ module NotesHelper
     ts = "#{time_ago_with_tooltip(note.created_at, 'bottom', 'note_created_ago')}"
     if note.updated_at != note.created_at
       ts << capture_haml do
-        haml_tag :small do
-          haml_concat " (Edited #{time_ago_with_tooltip(note.updated_at, 'bottom', 'note_edited_ago')})"
+        haml_tag :span do
+          haml_concat '&middot;'
+          haml_concat '<i class="fa fa-edit" title="edited"></i> '
+          haml_concat time_ago_with_tooltip(note.updated_at, 'bottom', 'note_edited_ago')
         end
       end
     end

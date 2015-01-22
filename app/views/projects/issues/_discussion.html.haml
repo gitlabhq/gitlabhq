@@ -19,14 +19,14 @@
       %span.slead.has_tooltip{:"data-original-title" => 'Cross-project reference'}
         = cross_project_reference(@project, @issue)
     %hr
+    .context
+      %cite.cgray
+        = render partial: 'issue_context', locals: { issue: @issue }
+    %hr
     .clearfix
       .votes-holder
         %h6 Votes
         #votes= render 'votes/votes_block', votable: @issue
-    %hr
-    .context
-      %cite.cgray
-        = render partial: 'issue_context', locals: { issue: @issue }
 
     - if @issue.labels.any?
       %hr

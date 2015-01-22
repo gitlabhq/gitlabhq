@@ -80,7 +80,7 @@ module SharedDiffNote
 
   step 'I should not see the diff comment text field' do
     within(diff_file_selector) do
-      page.should have_css(".js-note-text", visible: false)
+      expect(find('.js-note-text')).not_to be_visible
     end
   end
 
@@ -115,7 +115,7 @@ module SharedDiffNote
   end
 
   step 'I should see add a diff comment button' do
-    page.should have_css(".js-add-diff-note-button", visible: false)
+    page.should have_css('.js-add-diff-note-button', visible: true)
   end
 
   step 'I should see an empty diff comment form' do

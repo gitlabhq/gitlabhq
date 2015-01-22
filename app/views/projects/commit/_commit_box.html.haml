@@ -50,6 +50,13 @@
         %span.js-details-content.hide
           = commit_branches_links(@project, @branches)
 
+- if @tags.any?
+  .commit-info-row
+    %span.cgray
+      Tags: 
+    %span
+      = commit_tags_links(@project, @tags)
+
 .commit-box
   %h3.commit-title
     = gfm escape_once(@commit.title)

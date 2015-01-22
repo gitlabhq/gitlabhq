@@ -57,16 +57,12 @@ eos
     let(:other_issue) { create :issue, project: other_project }
 
     it 'detects issues that this commit is marked as closing' do
-      stub_const('Gitlab::ClosingIssueExtractor::ISSUE_CLOSING_REGEX',
-                 /Fixes #\d+/)
       commit.stub(safe_message: "Fixes ##{issue.iid}")
       commit.closes_issues(project).should == [issue]
     end
 
     it 'does not detect issues from other projects' do
       ext_ref = "#{other_project.path_with_namespace}##{other_issue.iid}"
-      stub_const('Gitlab::ClosingIssueExtractor::ISSUE_CLOSING_REGEX',
-                 /^([Cc]loses|[Ff]ixes)/)
       commit.stub(safe_message: "Fixes #{ext_ref}")
       commit.closes_issues(project).should be_empty
     end

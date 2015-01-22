@@ -73,7 +73,7 @@ describe ApplicationHelper do
       user = create(:user)
       user.avatar = File.open(avatar_file_path)
       user.save!
-      avatar_icon(user.email).to_s.should match("/gitlab//uploads/user/avatar/#{ user.id }/gitlab_logo.png")
+      avatar_icon(user.email).to_s.should match("/gitlab/uploads/user/avatar/#{ user.id }/gitlab_logo.png")
     end
 
     it "should call gravatar_icon when no avatar is present" do

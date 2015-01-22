@@ -73,7 +73,7 @@ On [about.gitlab.com](https://about.gitlab.com/) you can find more information a
 ## Requirements
 
 - Ubuntu/Debian/CentOS/RHEL**
-- ruby 2.0+
+- Ruby (MRI) 2.0 or 2.1
 - git 1.7.10+
 - redis 2.0+
 - MySQL or PostgreSQL

@@ -58,6 +58,7 @@ Gitlab::Application.routes.draw do
   resource :github_import, only: [:create, :new] do
     get :status
     get :callback
+    get :jobs
   end
 
   #
@@ -97,6 +98,8 @@ Gitlab::Application.routes.draw do
         delete 'remove/:email_id', action: 'remove_email', as: 'remove_email'
       end
     end
+
+    resources :applications
 
     resources :groups, constraints: { id: /[^\/]+/ } do
       member do
@@ -163,8 +166,8 @@ Gitlab::Application.routes.draw do
     end
   end
 
-  match "/u/:username" => "users#show", as: :user,
-    constraints: {username: /(?:[^.]|\.(?!atom$))+/, format: /atom/}, via: :get
+  get '/u/:username' => 'users#show', as: :user,
+      constraints: { username: /(?:[^.]|\.(?!atom$))+/, format: /atom/ }
 
   #
   # Dashboard Area

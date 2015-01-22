@@ -54,6 +54,11 @@ pre {
   text-shadow: none;
 }
 
+.dropdown-menu-align-right {
+  left: auto;
+  right: 0px;
+}
+
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus {
   background: $bg_primary;
@@ -271,10 +276,6 @@ img.emoji {
 .chart {
   overflow: hidden;
   height: 220px;
-}
-
-.navless-container {
-  margin-top: 68px;
 }
 
 .description-block {

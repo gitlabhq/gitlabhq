@@ -25,7 +25,7 @@ namespace :gitlab do
 
         puts "Processing #{repo_path}".yellow
 
-        if path =~ /\.wiki\Z/
+        if path.end_with?('.wiki')
           puts " * Skipping wiki repo"
           next
         end
@@ -66,6 +66,7 @@ namespace :gitlab do
             puts " * Created #{project.name} (#{repo_path})".green
           else
             puts " * Failed trying to create #{project.name} (#{repo_path})".red
+            puts "   Validation Errors: #{project.errors.messages}".red
           end
         end
       end

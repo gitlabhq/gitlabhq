@@ -12,7 +12,7 @@ module MergeRequests
       notification_service.merge_mr(merge_request, current_user)
       create_merge_event(merge_request, current_user)
       create_note(merge_request)
-      execute_hooks(merge_request)
+      execute_hooks(merge_request, 'merge')
 
       true
     rescue

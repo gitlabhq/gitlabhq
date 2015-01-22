@@ -60,9 +60,9 @@ class CampfireService < Service
     message << "[#{project.name_with_namespace}] "
     message << "#{push[:user_name]} "
 
-    if before =~ /000000/
+    if before.include?('000000')
       message << "pushed new branch #{ref} \n"
-    elsif after =~ /000000/
+    elsif after.include?('000000')
       message << "removed branch #{ref} \n"
     else
       message << "pushed #{push[:total_commits_count]} commits to #{ref}. "
