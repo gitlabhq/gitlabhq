@@ -330,7 +330,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   # Return array of possible target branches
-  # dependes on target project of MR
+  # depends on target project of MR
   def target_branches
     if target_project.nil?
       []
@@ -340,7 +340,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   # Return array of possible source branches
-  # dependes on source project of MR
+  # depends on source project of MR
   def source_branches
     if source_project.nil?
       []

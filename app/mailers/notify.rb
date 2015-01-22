@@ -26,8 +26,8 @@ class Notify < ActionMailer::Base
     delay_for(2.seconds)
   end
 
-  def test_email(recepient_email, subject, body)
-    mail(to: recepient_email,
+  def test_email(recipient_email, subject, body)
+    mail(to: recipient_email,
          subject: subject,
          body: body.html_safe,
          content_type: 'text/html'

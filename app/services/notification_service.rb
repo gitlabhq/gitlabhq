@@ -242,7 +242,7 @@ class NotificationService
     users
   end
 
-  # Build a list of users based on group notifcation settings
+  # Build a list of users based on group notification settings
   def select_users_group_setting(project, project_members, global_setting, users_global_level_watch)
     uids = users_group_notification(project, Notification::N_WATCH)
 
