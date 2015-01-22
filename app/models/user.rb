@@ -300,7 +300,7 @@ class User < ActiveRecord::Base
                                project_ids = personal_projects.pluck(:id)
                                project_ids += groups_projects.pluck(:id)
                                project_ids += projects.pluck(:id).uniq
-                               Project.where(id: project_ids).joins(:namespace).order('namespaces.name ASC')
+                               Project.where(id: project_ids).joins(:namespace).order('namespaces.name, projects.id ASC')
                              end
   end
 
