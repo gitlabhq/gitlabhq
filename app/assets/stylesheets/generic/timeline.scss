@@ -58,6 +58,10 @@
         padding: 10px 15px;
         margin-left: 60px;
 
+        img {
+          max-width: 100%;
+        }
+
         &:after {
           content: '';
           display: block;
