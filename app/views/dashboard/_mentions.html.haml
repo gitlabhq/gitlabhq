@@ -1,0 +1,18 @@
+.panel.panel-default
+
+  %ul.well-list.dash-list
+    - @mentioned_in.each do |mention|
+      %li.project-row
+        = render "mention", mention: mention
+
+    - if @mentioned_in.blank?
+      %li
+        .nothing-here-block You are not mentioned in merge requests.
+    - if @mentions_count > @mentions_limit
+      %li.bottom
+        %span.light
+          #{@mentions_limit} of #{pluralize(@mentions_count, 'mention')} displayed.
+        .pull-right
+          = link_to mentions_dashboard_path do
+            Show all
+            %i.fa.fa-angle-right
