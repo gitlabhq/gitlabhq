@@ -19,9 +19,7 @@ module IssuesHelper
     if project.using_issue_tracker?
       project_issues_path(project)
     else
-      url = Gitlab.config.issues_tracker[project.issues_tracker]['project_url']
-      url.gsub(':project_id', project.id.to_s).
-          gsub(':issues_tracker_id', project.issues_tracker_id.to_s)
+      project.external_issue_tracker.project_url
     end
   end
 
@@ -31,10 +29,7 @@ module IssuesHelper
     if project.using_issue_tracker?
       url = new_project_issue_path project_id: project
     else
-      issues_tracker = Gitlab.config.issues_tracker[project.issues_tracker]
-      url = issues_tracker['new_issue_url']
-      url.gsub(':project_id', project.id.to_s).
-          gsub(':issues_tracker_id', project.issues_tracker_id.to_s)
+      project.external_issue_tracker.new_issue_url
     end
   end
 
@@ -44,10 +39,8 @@ module IssuesHelper
     if project.using_issue_tracker?
       url = project_issue_url project_id: project, id: issue_iid
     else
-      url = Gitlab.config.issues_tracker[project.issues_tracker]['issues_url']
-      url.gsub(':id', issue_iid.to_s).
-          gsub(':project_id', project.id.to_s).
-          gsub(':issues_tracker_id', project.issues_tracker_id.to_s)
+      url = project.external_issue_tracker.issues_url
+      url.gsub(':id', issue_iid.to_s)
     end
   end
 
