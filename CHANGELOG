@@ -60,6 +60,11 @@ v 7.8.0
   - 
   - 
 
+v 7.7.1
+  - Improve mention autocomplete performance
+  - Show setup instructions for GitHub import if disabled
+  - Allow use http for OAuth applications
+
 v 7.7.0
   - Import from GitHub.com feature
   - Add Jetbrains Teamcity CI service (Jason Lippert)
