@@ -48,9 +48,9 @@ class RedmineService < IssueTrackerService
   end
 
   def set_project_url
-    id = self.project.issue_tracker_id
+    id = self.project.issues_tracker_id
     if id
-      issues_tracker['project_url'].gsub(":issue_tracker_id", id)
+      issues_tracker['project_url'].gsub(":issues_tracker_id", id)
     else
       issues_tracker['project_url']
     end

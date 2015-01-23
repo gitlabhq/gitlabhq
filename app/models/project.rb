@@ -309,6 +309,18 @@ class Project < ActiveRecord::Base
     self.issues_tracker == Project.issues_tracker.default_value
   end
 
+  def external_issues_tracker_enabled?
+    external_issues_trackers.any?
+  end
+
+  def external_issues_trackers
+    services.select { |service| service.category == :issue_tracker }
+  end
+
+  def external_issue_tracker
+    @external_issues_tracker ||= external_issues_trackers.select(&:activated?).first
+  end
+
   def can_have_issues_tracker_id?
     self.issues_enabled && !self.used_default_issues_tracker?
   end

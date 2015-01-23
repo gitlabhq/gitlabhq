@@ -1,5 +1,9 @@
 class IssueTrackerService < Service
 
+  def category
+    :issue_tracker
+  end
+
   def project_url
     # implement inside child
   end

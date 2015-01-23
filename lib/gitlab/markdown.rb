@@ -208,7 +208,7 @@ module Gitlab
     end
 
     def reference_issue(identifier, project = @project, prefix_text = nil)
-      if project.used_default_issues_tracker? || !external_issues_tracker_enabled?
+      if project.used_default_issues_tracker? || !project.external_issues_tracker_enabled?
         if project.issue_exists? identifier
           url = url_for_issue(identifier, project)
           title = title_for_issue(identifier, project)
@@ -220,8 +220,7 @@ module Gitlab
           link_to("#{prefix_text}##{identifier}", url, options)
         end
       else
-        config = Gitlab.config
-        external_issue_tracker = config.issues_tracker[project.issues_tracker]
+        external_issue_tracker = project.external_issue_tracker
         if external_issue_tracker.present?
           reference_external_issue(identifier, external_issue_tracker, project,
                                    prefix_text)
@@ -270,7 +269,7 @@ module Gitlab
     def reference_external_issue(identifier, issue_tracker, project = @project,
                                  prefix_text = nil)
       url = url_for_issue(identifier, project)
-      title = issue_tracker['title']
+      title = issue_tracker.title
 
       options = html_options.merge(
         title: "Issue in #{title}",
