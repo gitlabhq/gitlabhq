@@ -19,7 +19,7 @@ class CustomIssueTrackerService < IssueTrackerService
   end
 
   def to_param
-    title.parameterize
+    'custom_issue_tracker'
   end
 
   def fields

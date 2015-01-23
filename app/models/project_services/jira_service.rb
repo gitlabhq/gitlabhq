@@ -37,7 +37,7 @@ class JiraService < IssueTrackerService
       if enabled_in_gitlab_config
         self.properties = {
           title: issues_tracker['title'],
-          project_url: issues_tracker['project_url'],
+          project_url: set_project_url,
           issues_url: issues_tracker['issues_url'],
           new_issue_url: issues_tracker['new_issue_url']
         }
@@ -55,5 +55,15 @@ class JiraService < IssueTrackerService
 
   def issues_tracker
     Gitlab.config.issues_tracker['jira']
+  end
+
+  def set_project_url
+    id = self.project.issues_tracker_id
+
+    if id
+      issues_tracker['project_url'].gsub(":issues_tracker_id", id)
+    else
+      issues_tracker['project_url']
+    end
   end
 end
