@@ -101,11 +101,20 @@ class ProjectsController < ApplicationController
   def autocomplete_sources
     note_type = params['type']
     note_id = params['type_id']
+    autocomplete = ::Projects::AutocompleteService.new(@project)
     participants = ::Projects::ParticipantsService.new(@project).execute(note_type, note_id)
+
+    emojis = Emoji.names.map do |e|
+      {
+        name: e,
+        path: view_context.image_url("emoji/#{e}.png")
+      }
+    end
+
     @suggestions = {
-      emojis: Emoji.names.map { |e| { name: e, path: view_context.image_url("emoji/#{e}.png") } },
-      issues: @project.issues.select([:iid, :title, :description]),
-      mergerequests: @project.merge_requests.select([:iid, :title, :description]),
+      emojis: emojis,
+      issues: autocomplete.issues,
+      mergerequests: autocomplete.merge_requests,
       members: participants
     }
 
