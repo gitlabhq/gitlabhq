@@ -40,13 +40,18 @@
                 The import will time out after 4 minutes. For big repositories, use a clone/push combination.
                 For SVN repositories, check #{link_to "this migrating from SVN doc.", "http://doc.gitlab.com/ce/workflow/migrating_from_svn.html"}
 
-      - if github_import_enabled?
-        .project-import.form-group
-          .col-sm-2
-          .col-sm-10
+      .project-import.form-group
+        .col-sm-2
+        .col-sm-10
+          - if github_import_enabled?
             = link_to status_github_import_path do
               %i.fa.fa-github
               Import projects from GitHub
+          - else
+            = link_to '#', class: 'how_to_import_link light' do
+              %i.fa.fa-github
+              Import projects from GitHub
+            = render 'github_import_modal'
 
       %hr.prepend-botton-10
 

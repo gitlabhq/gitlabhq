@@ -24,6 +24,8 @@
 #  import_status          :string(255)
 #  repository_size        :float            default(0.0)
 #  star_count             :integer          default(0), not null
+#  import_type            :string(255)
+#  import_source          :string(255)
 #
 
 FactoryGirl.define do

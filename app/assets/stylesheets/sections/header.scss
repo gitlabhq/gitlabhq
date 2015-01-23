@@ -140,7 +140,7 @@ header {
     img {
       width: 26px;
       height: 26px;
-      @include border-radius(4px);
+      @include border-radius($avatar_radius);
     }
   }
 

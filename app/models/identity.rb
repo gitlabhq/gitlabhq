@@ -1,3 +1,13 @@
+# == Schema Information
+#
+# Table name: identities
+#
+#  id         :integer          not null, primary key
+#  extern_uid :string(255)
+#  provider   :string(255)
+#  user_id    :integer
+#
+
 class Identity < ActiveRecord::Base
   belongs_to :user
 

@@ -24,6 +24,8 @@
 #  import_status          :string(255)
 #  repository_size        :float            default(0.0)
 #  star_count             :integer          default(0), not null
+#  import_type            :string(255)
+#  import_source          :string(255)
 #
 
 class Project < ActiveRecord::Base
@@ -174,7 +176,7 @@ class Project < ActiveRecord::Base
 
     def publicish(user)
       visibility_levels = [Project::PUBLIC]
-      visibility_levels += [Project::INTERNAL] if user
+      visibility_levels << Project::INTERNAL if user
       where(visibility_level: visibility_levels)
     end
 

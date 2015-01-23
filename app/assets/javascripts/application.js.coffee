@@ -74,24 +74,18 @@ window.disableButtonIfEmptyField = (field_selector, button_selector) ->
 # Disable button if any input field with given selector is empty
 window.disableButtonIfAnyEmptyField = (form, form_selector, button_selector) ->
   closest_submit = form.find(button_selector)
-  empty = false
-  form.find('input').filter(form_selector).each ->
-    empty = true if rstrip($(this).val()) is ""
-
-  if empty
-    closest_submit.disable()
-  else
-    closest_submit.enable()
-
-  form.keyup ->
-    empty = false
+  updateButtons = ->
+    filled = true
     form.find('input').filter(form_selector).each ->
-      empty = true if rstrip($(this).val()) is ""
+      filled = rstrip($(this).val()) != "" || !$(this).attr('required')
 
-    if empty
-      closest_submit.disable()
-    else
+    if filled
       closest_submit.enable()
+    else
+      closest_submit.disable()
+
+  updateButtons()
+  form.keyup(updateButtons)
 
 window.sanitize = (str) ->
   return str.replace(/<(?:.|\n)*?>/gm, '')

@@ -11,12 +11,7 @@ module BranchesHelper
 
   def can_push_branch?(project, branch_name)
     return false unless project.repository.branch_names.include?(branch_name)
-    action = if project.protected_branch?(branch_name)
-               :push_code_to_protected_branches
-             else
-               :push_code
-             end
-
-    current_user.can?(action, project)
+    
+    ::Gitlab::GitAccess.can_push_to_branch?(current_user, project, branch_name)
   end
 end

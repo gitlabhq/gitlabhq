@@ -41,9 +41,9 @@ class Projects::RefsController < Projects::ApplicationController
     @path = params[:path]
 
     contents = []
-    contents += tree.trees
-    contents += tree.blobs
-    contents += tree.submodules
+    contents.push(*tree.trees)
+    contents.push(*tree.blobs)
+    contents.push(*tree.submodules)
 
     @logs = contents[@offset, @limit].to_a.map do |content|
       file = @path ? File.join(@path, content.name) : content.name

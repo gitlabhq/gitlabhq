@@ -233,13 +233,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def allowed_to_push_code?(project, branch)
-    action = if project.protected_branch?(branch)
-               :push_code_to_protected_branches
-             else
-               :push_code
-             end
-
-    can?(current_user, action, project)
+    ::Gitlab::GitAccess.can_push_to_branch?(current_user, project, branch)
   end
 
   def merge_request_params

@@ -84,7 +84,7 @@ module Network
             skip += self.class.max_count
           end
         else
-          # Cant't find the target commit in the repo.
+          # Can't find the target commit in the repo.
           offset = 0
         end
       end
@@ -226,7 +226,7 @@ module Network
 
       reserved = []
       for day in time_range
-        reserved += @reserved[day]
+        reserved.push(*@reserved[day])
       end
       reserved.uniq!
 

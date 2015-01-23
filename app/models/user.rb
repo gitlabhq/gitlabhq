@@ -26,8 +26,6 @@
 #  bio                      :string(255)
 #  failed_attempts          :integer          default(0)
 #  locked_at                :datetime
-#  extern_uid               :string(255)
-#  provider                 :string(255)
 #  username                 :string(255)
 #  can_create_group         :boolean          default(TRUE), not null
 #  can_create_team          :boolean          default(TRUE), not null
@@ -36,7 +34,6 @@
 #  notification_level       :integer          default(1), not null
 #  password_expires_at      :datetime
 #  created_by_id            :integer
-#  last_credential_check_at :datetime
 #  avatar                   :string(255)
 #  confirmation_token       :string(255)
 #  confirmed_at             :datetime
@@ -44,6 +41,8 @@
 #  unconfirmed_email        :string(255)
 #  hide_no_ssh_key          :boolean          default(FALSE)
 #  website_url              :string(255)      default(""), not null
+#  last_credential_check_at :datetime
+#  github_access_token      :string(255)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -298,8 +297,8 @@ class User < ActiveRecord::Base
   def authorized_projects
     @authorized_projects ||= begin
                                project_ids = personal_projects.pluck(:id)
-                               project_ids += groups_projects.pluck(:id)
-                               project_ids += projects.pluck(:id).uniq
+                               project_ids.push(*groups_projects.pluck(:id))
+                               project_ids.push(*projects.pluck(:id).uniq)
                                Project.where(id: project_ids).joins(:namespace).order('namespaces.name ASC')
                              end
   end
@@ -497,7 +496,7 @@ class User < ActiveRecord::Base
 
   def avatar_url(size = nil)
     if avatar.present?
-      [gitlab_config.url, avatar.url].join("/")
+      [gitlab_config.url, avatar.url].join
     else
       GravatarService.new.execute(email, size)
     end

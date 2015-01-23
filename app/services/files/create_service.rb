@@ -3,11 +3,7 @@ require_relative "base_service"
 module Files
   class CreateService < BaseService
     def execute
-      allowed = if project.protected_branch?(ref)
-                  can?(current_user, :push_code_to_protected_branches, project)
-                else
-                  can?(current_user, :push_code, project)
-                end
+      allowed = Gitlab::GitAccess.can_push_to_branch?(current_user, project, ref)
 
       unless allowed
         return error("You are not allowed to create file in this branch")

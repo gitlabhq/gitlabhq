@@ -2,8 +2,9 @@
   float: left;
   margin-right: 12px;
   width: 40px;
-  padding: 1px;
-  @include border-radius(4px);
+  height: 40px;
+  padding: 0;
+  @include border-radius($avatar_radius);
 
   &.avatar-inline {
     float: none;

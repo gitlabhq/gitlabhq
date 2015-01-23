@@ -11,16 +11,17 @@ v 7.8.0
   - 
   - 
   - 
+  - Allow more variations for commit messages closing issues (Julien Bianchi and Hannes Rosenögger)
+  - 
+  - 
+  - Show tags in commit view (Hannes Rosenögger)
+  - Only count a user's vote once on a merge request or issue (Michael Clarke)
   - 
   - 
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Upgrade Sidekiq gem to version 3.3.0
+  - Stop git zombie creation during force push check
   - 
   - 
   - Fix commits pagination
@@ -47,16 +48,22 @@ v 7.8.0
   - 
   - 
   - 
+  - Add a new API function that retrieves all issues assigned to a single milestone (Justin Whear and Hannes Rosenögger)
   - 
   - 
   - 
   - 
   - 
   - 
+  - API: Add support for editing an existing project (Mika Mäenpää and Hannes Rosenögger) 
   - 
   - 
   - 
-  - 
+
+v 7.7.1
+  - Improve mention autocomplete performance
+  - Show setup instructions for GitHub import if disabled
+  - Allow use http for OAuth applications
 
 v 7.7.0
   - Import from GitHub.com feature

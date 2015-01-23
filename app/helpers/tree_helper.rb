@@ -10,13 +10,16 @@ module TreeHelper
     tree = ""
 
     # Render folders if we have any
-    tree += render partial: 'projects/tree/tree_item', collection: folders, locals: {type: 'folder'} if folders.present?
+    tree << render(partial: 'projects/tree/tree_item', collection: folders,
+                   locals: { type: 'folder' }) if folders.present?
 
     # Render files if we have any
-    tree += render partial: 'projects/tree/blob_item', collection: files, locals: {type: 'file'} if files.present?
+    tree << render(partial: 'projects/tree/blob_item', collection: files,
+                   locals: { type: 'file' }) if files.present?
 
     # Render submodules if we have any
-    tree += render partial: 'projects/tree/submodule_item', collection: submodules if submodules.present?
+    tree << render(partial: 'projects/tree/submodule_item',
+                   collection: submodules) if submodules.present?
 
     tree.html_safe
   end
@@ -58,11 +61,7 @@ module TreeHelper
     ref ||= @ref
     return false unless project.repository.branch_names.include?(ref)
 
-    if project.protected_branch? ref
-      can?(current_user, :push_code_to_protected_branches, project)
-    else
-      can?(current_user, :push_code, project)
-    end
+    ::Gitlab::GitAccess.can_push_to_branch?(current_user, project, ref)
   end
 
   def edit_blob_link(project, ref, path, options = {})
@@ -113,7 +112,7 @@ module TreeHelper
     tree_join(@ref, file)
   end
 
-  # returns the relative path of the first subdir that doesn't have only one directory descendand
+  # returns the relative path of the first subdir that doesn't have only one directory descendant
   def flatten_tree(tree)
     subtree = Gitlab::Git::Tree.where(@repository, @commit.id, tree.path)
     if subtree.count == 1 && subtree.first.dir?
