@@ -137,7 +137,7 @@ class Project < ActiveRecord::Base
   scope :public_and_internal_only, -> { where(visibility_level: Project.public_and_internal_levels) }
   scope :non_archived, -> { where(archived: false) }
 
-  enumerize :issues_tracker, in: (Gitlab.config.issues_tracker.keys).append(:gitlab), default: :gitlab
+  enumerize :issues_tracker, in: (Service.issue_tracker_service_list).append(:gitlab), default: :gitlab
 
   state_machine :import_status, initial: :none do
     event :import_start do

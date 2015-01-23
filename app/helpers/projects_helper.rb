@@ -72,18 +72,6 @@ module ProjectsHelper
     @project.milestones.active.order("due_date, title ASC")
   end
 
-  def project_issues_trackers(current_tracker = nil)
-    values = Project.issues_tracker.values.map do |tracker_key|
-      if tracker_key.to_sym == :gitlab
-        ['GitLab', tracker_key]
-      else
-        [Gitlab.config.issues_tracker[tracker_key]['title'] || tracker_key, tracker_key]
-      end
-    end
-
-    options_for_select(values, current_tracker)
-  end
-
   def link_to_toggle_star(title, starred, signed_in)
     cls = 'star-btn'
     cls += ' disabled' unless signed_in
