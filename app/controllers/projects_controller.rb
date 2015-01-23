@@ -119,7 +119,7 @@ class ProjectsController < ApplicationController
     }
 
     respond_to do |format|
-      format.json { render :json => @suggestions }
+      format.json { render json: @suggestions }
     end
   end
 
