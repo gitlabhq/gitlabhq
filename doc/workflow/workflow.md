@@ -1,4 +1,4 @@
-# Workflow
+# Feature branch workflow
 
 1.  Clone project:
 
