@@ -70,7 +70,10 @@ module Gitlab
     config.middleware.use Rack::Cors do
       allow do
         origins '*'
-        resource '/api/*', headers: :any, methods: [:get, :post, :options, :put, :delete], expose: ["Link"]
+        resource '/api/*', 
+          :headers => :any,
+          :methods => [:get, :post, :options, :put, :delete],
+          :expose => ['Link']
       end
     end
 
