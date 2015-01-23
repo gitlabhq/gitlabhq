@@ -298,14 +298,14 @@ class Project < ActiveRecord::Base
   end
 
   def issue_exists?(issue_id)
-    if used_default_issues_tracker?
+    if default_issues_tracker?
       self.issues.where(iid: issue_id).first.present?
     else
       true
     end
   end
 
-  def used_default_issues_tracker?
+  def default_issues_tracker?
     self.issues_tracker == Project.issues_tracker.default_value
   end
 
@@ -321,8 +321,12 @@ class Project < ActiveRecord::Base
     @external_issues_tracker ||= external_issues_trackers.select(&:activated?).first
   end
 
+  def using_issue_tracker?
+    default_issues_tracker? || !external_issues_tracker_enabled?
+  end
+
   def can_have_issues_tracker_id?
-    self.issues_enabled && !self.used_default_issues_tracker?
+    self.issues_enabled && !self.default_issues_tracker?
   end
 
   def build_missing_services

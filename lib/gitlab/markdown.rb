@@ -208,7 +208,7 @@ module Gitlab
     end
 
     def reference_issue(identifier, project = @project, prefix_text = nil)
-      if project.used_default_issues_tracker? || !project.external_issues_tracker_enabled?
+      if project.using_issue_tracker?
         if project.issue_exists? identifier
           url = url_for_issue(identifier, project)
           title = title_for_issue(identifier, project)
