@@ -36,6 +36,12 @@ Doorkeeper.configure do
   # Issue access tokens with refresh token (disabled by default)
   use_refresh_token
 
+  # Forces the usage of the HTTPS protocol in non-native redirect uris (enabled
+  # by default in non-development environments). OAuth2 delegates security in
+  # communication to the HTTPS protocol so it is wise to keep this enabled.
+  #
+  force_ssl_in_redirect_uri false
+
   # Provide support for an owner to be assigned to each registered application (disabled by default)
   # Optional parameter :confirmation => true (default false) if you want to enforce ownership of
   # a registered application
