@@ -13,7 +13,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I should see files from repository in markdown' do
-    current_path.should == project_tree_path(@project, "markdown")
+    current_path.should == namespace_project_tree_path(@project.namespace, @project, "markdown")
     page.should have_content "README.md"
     page.should have_content "CHANGELOG"
   end
@@ -33,7 +33,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I should see correct document rendered' do
-    current_path.should == project_blob_path(@project, "markdown/doc/api/README.md")
+    current_path.should == namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/README.md")
     page.should have_content "All API requests require authentication"
   end
 
@@ -42,7 +42,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I should see correct directory rendered' do
-    current_path.should == project_tree_path(@project, "markdown/doc/raketasks")
+    current_path.should == namespace_project_tree_path(@project.namespace, @project, "markdown/doc/raketasks")
     page.should have_content "backup_restore.md"
     page.should have_content "maintenance.md"
   end
@@ -52,7 +52,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I should see correct doc/api directory rendered' do
-    current_path.should == project_tree_path(@project, "markdown/doc/api")
+    current_path.should == namespace_project_tree_path(@project.namespace, @project, "markdown/doc/api")
     page.should have_content "README.md"
     page.should have_content "users.md"
   end
@@ -62,7 +62,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I should see correct maintenance file rendered' do
-    current_path.should == project_blob_path(@project, "markdown/doc/raketasks/maintenance.md")
+    current_path.should == namespace_project_blob_path(@project.namespace, @project, "markdown/doc/raketasks/maintenance.md")
     page.should have_content "bundle exec rake gitlab:env:info RAILS_ENV=production"
   end
 
@@ -93,7 +93,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I see correct file rendered' do
-    current_path.should == project_blob_path(@project, "markdown/doc/api/README.md")
+    current_path.should == namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/README.md")
     page.should have_content "Contents"
     page.should have_link "Users"
     page.should have_link "Rake tasks"
@@ -104,7 +104,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I should see the correct document file' do
-    current_path.should == project_blob_path(@project, "markdown/doc/api/users.md")
+    current_path.should == namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/users.md")
     page.should have_content "Get a list of users."
   end
 
@@ -115,100 +115,100 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   # Markdown branch
 
   When 'I visit markdown branch' do
-    visit project_tree_path(@project, "markdown")
+    visit namespace_project_tree_path(@project.namespace, @project, "markdown")
   end
 
   When 'I visit markdown branch "README.md" blob' do
-    visit project_blob_path(@project, "markdown/README.md")
+    visit namespace_project_blob_path(@project.namespace, @project, "markdown/README.md")
   end
 
   When 'I visit markdown branch "d" tree' do
-    visit project_tree_path(@project, "markdown/d")
+    visit namespace_project_tree_path(@project.namespace, @project, "markdown/d")
   end
 
   When 'I visit markdown branch "d/README.md" blob' do
-    visit project_blob_path(@project, "markdown/d/README.md")
+    visit namespace_project_blob_path(@project.namespace, @project, "markdown/d/README.md")
   end
 
   step 'I should see files from repository in markdown branch' do
-    current_path.should == project_tree_path(@project, "markdown")
+    current_path.should == namespace_project_tree_path(@project.namespace, @project, "markdown")
     page.should have_content "README.md"
     page.should have_content "CHANGELOG"
   end
 
   step 'I see correct file rendered in markdown branch' do
-    current_path.should == project_blob_path(@project, "markdown/doc/api/README.md")
+    current_path.should == namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/README.md")
     page.should have_content "Contents"
     page.should have_link "Users"
     page.should have_link "Rake tasks"
   end
 
   step 'I should see correct document rendered for markdown branch' do
-    current_path.should == project_blob_path(@project, "markdown/doc/api/README.md")
+    current_path.should == namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/README.md")
     page.should have_content "All API requests require authentication"
   end
 
   step 'I should see correct directory rendered for markdown branch' do
-    current_path.should == project_tree_path(@project, "markdown/doc/raketasks")
+    current_path.should == namespace_project_tree_path(@project.namespace, @project, "markdown/doc/raketasks")
     page.should have_content "backup_restore.md"
     page.should have_content "maintenance.md"
   end
 
   step 'I should see the users document file in markdown branch' do
-    current_path.should == project_blob_path(@project, "markdown/doc/api/users.md")
+    current_path.should == namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/users.md")
     page.should have_content "Get a list of users."
   end
 
   # Expected link contents
 
   step 'The link with text "empty" should have url "tree/markdown"' do
-    find('a', text: /^empty$/)['href'] == current_host + project_tree_path(@project, "markdown")
+    find('a', text: /^empty$/)['href'] == current_host + namespace_project_tree_path(@project.namespace, @project, "markdown")
   end
 
   step 'The link with text "empty" should have url "blob/markdown/README.md"' do
-    find('a', text: /^empty$/)['href'] == current_host + project_blob_path(@project, "markdown/README.md")
+    find('a', text: /^empty$/)['href'] == current_host + namespace_project_blob_path(@project.namespace, @project, "markdown/README.md")
   end
 
   step 'The link with text "empty" should have url "tree/markdown/d"' do
-    find('a', text: /^empty$/)['href'] == current_host + project_tree_path(@project, "markdown/d")
+    find('a', text: /^empty$/)['href'] == current_host + namespace_project_tree_path(@project.namespace, @project, "markdown/d")
   end
 
   step 'The link with text "empty" should have '\
        'url "blob/markdown/d/README.md"' do
-    find('a', text: /^empty$/)['href'] == current_host + project_blob_path(@project, "markdown/d/README.md")
+    find('a', text: /^empty$/)['href'] == current_host + namespace_project_blob_path(@project.namespace, @project, "markdown/d/README.md")
   end
 
   step 'The link with text "ID" should have url "tree/markdownID"' do
-    find('a', text: /^#id$/)['href'] == current_host + project_tree_path(@project, "markdown") + '#id'
+    find('a', text: /^#id$/)['href'] == current_host + namespace_project_tree_path(@project.namespace, @project, "markdown") + '#id'
   end
 
   step 'The link with text "/ID" should have url "tree/markdownID"' do
-    find('a', text: /^\/#id$/)['href'] == current_host + project_tree_path(@project, "markdown") + '#id'
+    find('a', text: /^\/#id$/)['href'] == current_host + namespace_project_tree_path(@project.namespace, @project, "markdown") + '#id'
   end
 
   step 'The link with text "README.mdID" '\
        'should have url "blob/markdown/README.mdID"' do
-    find('a', text: /^README.md#id$/)['href'] == current_host + project_blob_path(@project, "markdown/README.md") + '#id'
+    find('a', text: /^README.md#id$/)['href'] == current_host + namespace_project_blob_path(@project.namespace, @project, "markdown/README.md") + '#id'
   end
 
   step 'The link with text "d/README.mdID" should have '\
        'url "blob/markdown/d/README.mdID"' do
-    find('a', text: /^d\/README.md#id$/)['href'] == current_host + project_blob_path(@project, "d/markdown/README.md") + '#id'
+    find('a', text: /^d\/README.md#id$/)['href'] == current_host + namespace_project_blob_path(@project.namespace, @project, "d/markdown/README.md") + '#id'
   end
 
   step 'The link with text "ID" should have url "blob/markdown/README.mdID"' do
-    find('a', text: /^#id$/)['href'] == current_host + project_blob_path(@project, "markdown/README.md") + '#id'
+    find('a', text: /^#id$/)['href'] == current_host + namespace_project_blob_path(@project.namespace, @project, "markdown/README.md") + '#id'
   end
 
   step 'The link with text "/ID" should have url "blob/markdown/README.mdID"' do
-    find('a', text: /^\/#id$/)['href'] == current_host + project_blob_path(@project, "markdown/README.md") + '#id'
+    find('a', text: /^\/#id$/)['href'] == current_host + namespace_project_blob_path(@project.namespace, @project, "markdown/README.md") + '#id'
   end
 
   # Wiki
 
   step 'I go to wiki page' do
     click_link "Wiki"
-    current_path.should == project_wiki_path(@project, "home")
+    current_path.should == namespace_project_wiki_path(@project.namespace, @project, "home")
   end
 
   step 'I add various links to the wiki page' do
@@ -218,7 +218,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'Wiki page should have added links' do
-    current_path.should == project_wiki_path(@project, "home")
+    current_path.should == namespace_project_wiki_path(@project.namespace, @project, "home")
     page.should have_content "test GitLab API doc Rake tasks"
   end
 
@@ -237,13 +237,13 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I see new wiki page named test' do
-    current_path.should ==  project_wiki_path(@project, "test")
+    current_path.should ==  namespace_project_wiki_path(@project.namespace, @project, "test")
     page.should have_content "Editing"
   end
 
   When 'I go back to wiki page home' do
-    visit project_wiki_path(@project, "home")
-    current_path.should == project_wiki_path(@project, "home")
+    visit namespace_project_wiki_path(@project.namespace, @project, "home")
+    current_path.should == namespace_project_wiki_path(@project.namespace, @project, "home")
   end
 
   step 'I click on GitLab API doc link' do
@@ -251,7 +251,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I see Gitlab API document' do
-    current_path.should == project_wiki_path(@project, "api")
+    current_path.should == namespace_project_wiki_path(@project.namespace, @project, "api")
     page.should have_content "Editing"
   end
 
@@ -260,13 +260,13 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I see Rake tasks directory' do
-    current_path.should == project_wiki_path(@project, "raketasks")
+    current_path.should == namespace_project_wiki_path(@project.namespace, @project, "raketasks")
     page.should have_content "Editing"
   end
 
   step 'I go directory which contains README file' do
-    visit project_tree_path(@project, "markdown/doc/api")
-    current_path.should == project_tree_path(@project, "markdown/doc/api")
+    visit namespace_project_tree_path(@project.namespace, @project, "markdown/doc/api")
+    current_path.should == namespace_project_tree_path(@project.namespace, @project, "markdown/doc/api")
   end
 
   step 'I click on a relative link in README' do
@@ -274,7 +274,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I should see the correct markdown' do
-    current_path.should == project_blob_path(@project, "markdown/doc/api/users.md")
+    current_path.should == namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/users.md")
     page.should have_content "List users"
   end
 

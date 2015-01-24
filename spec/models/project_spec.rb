@@ -168,7 +168,7 @@ describe Project do
         @project = create(:project, name: 'gitlabhq', namespace: @group)
       end
 
-      it { expect(@project.to_param).to eq('gitlab/gitlabhq') }
+      it { expect(@project.to_param).to eq('gitlabhq') }
     end
   end
 

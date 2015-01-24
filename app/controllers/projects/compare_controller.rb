@@ -25,6 +25,7 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def create
-    redirect_to project_compare_path(@project, params[:from], params[:to])
+    redirect_to namespace_project_compare_path(@project.namespace, @project,
+                                               params[:from], params[:to])
   end
 end

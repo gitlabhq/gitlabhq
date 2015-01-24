@@ -1,7 +1,7 @@
 = render 'nav'
 %h3.page-title
   %span.light History for
-  = link_to @page.title, project_wiki_path(@project, @page)
+  = link_to @page.title, namespace_project_wiki_path(@project.namespace, @project, @page)
 
 %table.table
   %thead

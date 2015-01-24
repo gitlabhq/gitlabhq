@@ -7,9 +7,9 @@
   %strong.label-branch #{@merge_request.target_project_namespace}:#{@merge_request.target_branch}
 
   %span.pull-right
-    = link_to 'Change branches', new_project_merge_request_path(@project)
+    = link_to 'Change branches', new_namespace_project_merge_request_path(@project.namespace, @project)
 
-= form_for [@project, @merge_request], html: { class: "merge-request-form form-horizontal gfm-form" } do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @merge_request], html: { class: "merge-request-form form-horizontal gfm-form" } do |f|
   .merge-request-form-info
     .form-group
       = f.label :title, class: 'control-label' do
@@ -54,7 +54,7 @@
             %span.light No open milestones available.
           &nbsp;
           - if can? current_user, :admin_milestone, @merge_request.target_project
-            = link_to 'Create new milestone', new_project_milestone_path(@merge_request.target_project), target: :blank
+            = link_to 'Create new milestone', new_namespace_project_milestone_path(@merge_request.target_project.namespace, @merge_request.target_project), target: :blank
     .form-group
       = f.label :label_ids, class: 'control-label' do
         %i.fa.fa-tag
@@ -66,7 +66,7 @@
           %span.light No labels yet.
         &nbsp;
         - if can? current_user, :admin_label, @merge_request.target_project
-          = link_to 'Create new label', new_project_label_path(@merge_request.target_project), target: :blank
+          = link_to 'Create new label', new_namespace_project_label_path(@merge_request.target_project.namespace, @merge_request.target_project), target: :blank
 
     .form-actions
       - if contribution_guide_url(@target_project)
@@ -113,7 +113,7 @@
     e.preventDefault();
   });
 
-  window.project_image_path_upload = "#{upload_image_project_path @project}";
+  window.project_image_path_upload = "#{upload_image_namespace_project_path @project.namespace, @project}";
 
 :javascript
   var merge_request

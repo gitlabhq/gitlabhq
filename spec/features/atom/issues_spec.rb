@@ -11,7 +11,7 @@ describe 'Issues Feed', feature: true  do
     context 'when authenticated' do
       it 'should render atom feed' do
         login_with user
-        visit project_issues_path(project, :atom)
+        visit namespace_project_issues_path(project.namespace, project, :atom)
 
         expect(response_headers['Content-Type']).
           to have_content('application/atom+xml')
@@ -23,8 +23,8 @@ describe 'Issues Feed', feature: true  do
 
     context 'when authenticated via private token' do
       it 'should render atom feed' do
-        visit project_issues_path(project, :atom,
-                                  private_token: user.private_token)
+        visit namespace_project_issues_path(project.namespace, project, :atom,
+                                            private_token: user.private_token)
 
         expect(response_headers['Content-Type']).
           to have_content('application/atom+xml')

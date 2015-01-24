@@ -5,7 +5,7 @@
 
 - if current_user && current_user.private_token
   .commits-feed-holder.hidden-xs.hidden-sm
-    = link_to project_commits_path(@project, @ref, {format: :atom, private_token: current_user.private_token}), title: "Feed", class: 'btn' do
+    = link_to namespace_project_commits_path(@project.namespace, @project, @ref, {format: :atom, private_token: current_user.private_token}), title: "Feed", class: 'btn' do
       %i.fa.fa-rss
       Commits feed
 

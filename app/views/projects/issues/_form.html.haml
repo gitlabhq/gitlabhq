@@ -2,7 +2,7 @@
   %h3.page-title= @issue.new_record? ? "New Issue" : "Edit Issue ##{@issue.iid}"
   %hr
 
-  = form_for [@project, @issue], html: { class: 'form-horizontal issue-form gfm-form' } do |f|
+  = form_for [@project.namespace.becomes(Namespace), @project, @issue], html: { class: 'form-horizontal issue-form gfm-form' } do |f|
     = render 'projects/issuable_form', f: f, issuable: @issue
 
 :javascript
@@ -11,4 +11,4 @@
     e.preventDefault();
   });
 
-  window.project_image_path_upload = "#{upload_image_project_path @project}";
+  window.project_image_path_upload = "#{upload_image_namespace_project_path @project.namespace, @project}";

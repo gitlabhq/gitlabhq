@@ -9,13 +9,15 @@ class Projects::RefsController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         new_path = if params[:destination] == "tree"
-                     project_tree_path(@project, (@id))
+                     namespace_project_tree_path(@project.namespace, @project,
+                                                 (@id))
                    elsif params[:destination] == "blob"
-                     project_blob_path(@project, (@id))
+                     namespace_project_blob_path(@project.namespace, @project,
+                                                 (@id))
                    elsif params[:destination] == "graph"
-                     project_network_path(@project, @id, @options)
+                     namespace_project_network_path(@project.namespace, @project, @id, @options)
                    else
-                     project_commits_path(@project, @id)
+                     namespace_project_commits_path(@project.namespace, @project, @id)
                    end
 
         redirect_to new_path

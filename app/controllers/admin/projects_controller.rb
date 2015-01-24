@@ -25,13 +25,16 @@ class Admin::ProjectsController < Admin::ApplicationController
   def transfer
     ::Projects::TransferService.new(@project, current_user, params.dup).execute
 
-    redirect_to [:admin, @project.reload]
+    @project.reload
+    redirect_to admin_namespace_project_path(@project.namespace, @project)
   end
 
   protected
 
   def project
-    @project = Project.find_with_namespace(params[:id])
+    @project = Project.find_with_namespace(
+      [params[:namespace_id], '/', params[:id]].join('')
+    )
     @project || render_404
   end
 

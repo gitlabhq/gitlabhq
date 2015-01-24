@@ -65,7 +65,7 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
        title: "New feature",
        project: public_project
       )
-    visit project_issues_path(public_project)
+    visit namespace_project_issues_path(public_project.namespace, public_project)
   end
 
 
@@ -84,7 +84,7 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
        title: "New internal feature",
        project: internal_project
       )
-    visit project_issues_path(internal_project)
+    visit namespace_project_issues_path(internal_project.namespace, internal_project)
   end
 
 
@@ -95,7 +95,7 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
   end
 
   step 'I visit "Community" merge requests page' do
-    visit project_merge_requests_path(public_project)
+    visit namespace_project_merge_requests_path(public_project.namespace, public_project)
   end
 
   step 'project "Community" has "Bug fix" open merge request' do
@@ -112,7 +112,7 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
   end
 
   step 'I visit "Internal" merge requests page' do
-    visit project_merge_requests_path(internal_project)
+    visit namespace_project_merge_requests_path(internal_project.namespace, internal_project)
   end
 
   step 'project "Internal" has "Feature implemented" open merge request' do

@@ -15,17 +15,17 @@ class Spinach::Features::AdminProjects < Spinach::FeatureSteps
 
   step 'I should see project details' do
     project = Project.first
-    current_path.should == admin_project_path(project)
+    current_path.should == admin_namespace_project_path(project.namespace, project)
     page.should have_content(project.name_with_namespace)
     page.should have_content(project.creator.name)
   end
 
   step 'I visit admin project page' do
-    visit admin_project_path(project)
+    visit admin_namespace_project_path(project.namespace, project)
   end
 
   step 'I transfer project to group \'Web\'' do
-    find(:xpath, "//input[@id='namespace_id']").set group.id
+    find(:xpath, "//input[@id='new_namespace_id']").set group.id
     click_button 'Transfer'
   end
 

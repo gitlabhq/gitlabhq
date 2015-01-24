@@ -1,4 +1,4 @@
-= form_for [@project, @issue], remote: true, html: {class: 'edit-issue inline-update'} do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @issue], remote: true, html: {class: 'edit-issue inline-update'} do |f|
   %div.prepend-top-20
     %p
       Assignee:
@@ -13,7 +13,7 @@
     %p
       Milestone:
       - if issue.milestone
-        #{link_to @issue.milestone.title, project_milestone_path(@project, @issue.milestone)}
+        #{link_to @issue.milestone.title, namespace_project_milestone_path(@project.namespace, @project, @issue.milestone)}
       - else
         none
     - if can?(current_user, :modify_issue, @issue)

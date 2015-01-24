@@ -194,8 +194,8 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   step 'I should see group milestone with all issues and MRs assigned to that milestone' do
     page.should have_content('Milestone GL-113')
     page.should have_content('Progress: 0 closed – 4 open')
-    page.should have_link(@issue1.title, href: project_issue_path(@project1, @issue1))
-    page.should have_link(@mr3.title, href: project_merge_request_path(@project3, @mr3))
+    page.should have_link(@issue1.title, href: namespace_project_issue_path(@project1.namespace, @project1, @issue1))
+    page.should have_link(@mr3.title, href: namespace_project_merge_request_path(@project3.namespace, @project3, @mr3))
   end
 
   protected

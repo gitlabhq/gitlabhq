@@ -15,14 +15,16 @@ describe ProjectsController do
 
     context "without params['markdown_img']" do
       it "returns an error" do
-        post :upload_image, id: project.to_param, format: :json
+        post(:upload_image, namespace_id: project.namespace.to_param,
+             id: project.to_param, format: :json)
         expect(response.status).to eq(422)
       end
     end
 
     context "with invalid file" do
       before do
-        post :upload_image, id: project.to_param, markdown_img: txt, format: :json
+        post(:upload_image, namespace_id: project.namespace.to_param,
+             id: project.to_param, markdown_img: txt, format: :json)
       end
 
       it "returns an error" do
@@ -32,7 +34,8 @@ describe ProjectsController do
 
     context "with valid file" do
       before do
-        post :upload_image, id: project.to_param, markdown_img: jpg, format: :json
+        post(:upload_image, namespace_id: project.namespace.to_param,
+             id: project.to_param, markdown_img: jpg, format: :json)
       end
 
       it "returns a content with original filename and new link." do
@@ -46,16 +49,20 @@ describe ProjectsController do
     it "toggles star if user is signed in" do
       sign_in(user)
       expect(user.starred?(public_project)).to be_falsey
-      post :toggle_star, id: public_project.to_param
+      post(:toggle_star, namespace_id: public_project.namespace.to_param,
+           id: public_project.to_param)
       expect(user.starred?(public_project)).to be_truthy
-      post :toggle_star, id: public_project.to_param
+      post(:toggle_star, namespace_id: public_project.namespace.to_param,
+           id: public_project.to_param)
       expect(user.starred?(public_project)).to be_falsey
     end
 
     it "does nothing if user is not signed in" do
-      post :toggle_star, id: public_project.to_param
+      post(:toggle_star, namespace_id: project.namespace.to_param,
+           id: public_project.to_param)
       expect(user.starred?(public_project)).to be_falsey
-      post :toggle_star, id: public_project.to_param
+      post(:toggle_star, namespace_id: project.namespace.to_param,
+           id: public_project.to_param)
       expect(user.starred?(public_project)).to be_falsey
     end
   end

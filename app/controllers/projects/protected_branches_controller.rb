@@ -12,7 +12,8 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
 
   def create
     @project.protected_branches.create(protected_branch_params)
-    redirect_to project_protected_branches_path(@project)
+    redirect_to namespace_project_protected_branches_path(@project.namespace,
+                                                          @project)
   end
 
   def update
@@ -37,7 +38,7 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
     @project.protected_branches.find(params[:id]).destroy
 
     respond_to do |format|
-      format.html { redirect_to project_protected_branches_path }
+      format.html { redirect_to namespace_project_protected_branches_path }
       format.js { render nothing: true }
     end
   end

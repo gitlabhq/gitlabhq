@@ -8,7 +8,7 @@
     %div
       = link_to_member(@project, note.author, avatar: false)
       started a discussion
-      = link_to diffs_project_merge_request_path(note.project, note.noteable, anchor: note.line_code) do
+      = link_to diffs_namespace_project_merge_request_path(note.project.namespace, note.project, note.noteable, anchor: note.line_code) do
         %strong on the diff
     .last-update.hide.js-toggle-content
       - last_note = discussion_notes.last

@@ -1,8 +1,8 @@
 %span.pull-right
   - if (@page && @page.persisted?)
-    = link_to history_project_wiki_path(@project, @page), class: "btn btn-grouped" do
+    = link_to history_namespace_project_wiki_path(@project.namespace, @project, @page), class: "btn btn-grouped" do
       Page History
     - if can?(current_user, :write_wiki, @project)
-      = link_to edit_project_wiki_path(@project, @page), class: "btn btn-grouped" do
+      = link_to edit_namespace_project_wiki_path(@project.namespace, @project, @page), class: "btn btn-grouped" do
         %i.fa.fa-pencil-square-o
         Edit

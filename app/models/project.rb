@@ -285,7 +285,7 @@ class Project < ActiveRecord::Base
   end
 
   def to_param
-    namespace.path + '/' + path
+    path
   end
 
   def web_url

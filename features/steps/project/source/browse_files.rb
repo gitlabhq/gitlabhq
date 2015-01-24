@@ -11,7 +11,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I should see files from repository for "6d39438"' do
-    current_path.should == project_tree_path(@project, "6d39438")
+    current_path.should == namespace_project_tree_path(@project.namespace, @project, "6d39438")
     page.should have_content ".gitignore"
     page.should have_content "LICENSE"
   end
@@ -141,21 +141,24 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I am redirected to the files URL' do
-    current_path.should == project_tree_path(@project, 'master')
+    current_path.should == namespace_project_tree_path(@project.namespace, @project, 'master')
   end
 
   step 'I am redirected to the ".gitignore"' do
-    expect(current_path).to eq(project_blob_path(@project, 'master/.gitignore'))
+    expect(current_path).to eq(namespace_project_blob_path(@project.namespace, @project, 'master/.gitignore'))
   end
 
   step 'I am redirected to the permalink URL' do
-    expect(current_path).to eq(project_blob_path(
-      @project, @project.repository.commit.sha + '/.gitignore'))
+    expect(current_path).to(
+      eq(namespace_project_blob_path(@project.namespace, @project,
+                                     @project.repository.commit.sha +
+                                     '/.gitignore'))
+    )
   end
 
   step 'I am redirected to the new file' do
-    expect(current_path).to eq(project_blob_path(
-      @project, 'master/' + new_file_name))
+    expect(current_path).to eq(namespace_project_blob_path(
+      @project.namespace, @project, 'master/' + new_file_name))
   end
 
   step "I don't see the permalink link" do

@@ -16,7 +16,7 @@ class Projects::TagsController < Projects::ApplicationController
 
     if result[:status] == :success
       @tag = result[:tag]
-      redirect_to project_tags_path(@project)
+      redirect_to namespace_project_tags_path(@project.namespace, @project)
     else
       @error = result[:message]
       render action: 'new'
@@ -31,7 +31,7 @@ class Projects::TagsController < Projects::ApplicationController
     end
 
     respond_to do |format|
-      format.html { redirect_to project_tags_path }
+      format.html { redirect_to namespace_project_tags_path }
       format.js
     end
   end

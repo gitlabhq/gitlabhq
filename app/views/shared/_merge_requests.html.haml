@@ -4,7 +4,7 @@
       - project = group[0]
       .panel-heading
         = link_to_project project
-        = link_to 'show all', project_merge_requests_path(project), class: 'pull-right'
+        = link_to 'show all', namespace_project_merge_requests_path(project.namespace, project), class: 'pull-right'
       %ul.well-list.mr-list
         - group[1].each do |merge_request|
           = render 'projects/merge_requests/merge_request', merge_request: merge_request

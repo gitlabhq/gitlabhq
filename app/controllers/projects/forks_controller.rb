@@ -9,11 +9,14 @@ class Projects::ForksController < Projects::ApplicationController
   end
 
   def create
-    namespace = Namespace.find(params[:namespace_id])
+    namespace = Namespace.find(params[:namespace_key])
     @forked_project = ::Projects::ForkService.new(project, current_user, namespace: namespace).execute
 
     if @forked_project.saved? && @forked_project.forked?
-      redirect_to(@forked_project, notice: 'Project was successfully forked.')
+      redirect_to(
+        namespace_project_path(@forked_project.namespace, @forked_project),
+        notice: 'Project was successfully forked.'
+      )
     else
       @title = 'Fork project'
       render :error

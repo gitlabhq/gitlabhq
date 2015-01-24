@@ -2,9 +2,9 @@
   %span.milestone-row
     - project = issue.project
     %strong #{project.name} &middot;
-    = link_to [project, issue] do
+    = link_to [project.namespace.becomes(Namespace), project, issue] do
       %span.cgray ##{issue.iid}
-    = link_to_gfm issue.title, [project, issue], title: issue.title
+    = link_to_gfm issue.title, [project.namespace.becomes(Namespace), project, issue], title: issue.title
   .pull-right.assignee-icon
     - if issue.assignee
       = image_tag avatar_icon(issue.assignee.email, 16), class: "avatar s16"
