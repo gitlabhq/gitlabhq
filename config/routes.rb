@@ -61,7 +61,7 @@ Gitlab::Application.routes.draw do
   end
 
   #
-  # Explroe area
+  # Explore area
   #
   namespace :explore do
     resources :projects, only: [:index] do
