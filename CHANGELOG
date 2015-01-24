@@ -22,7 +22,7 @@ v 7.8.0
   - 
   - Upgrade Sidekiq gem to version 3.3.0
   - Stop git zombie creation during force push check
-  - 
+  - Show success/error messages for test setting button in services
   - 
   - Fix commits pagination
   - 
