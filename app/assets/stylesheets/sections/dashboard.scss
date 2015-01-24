@@ -97,3 +97,12 @@
   margin-right: 3px;
   width: 16px;
 }
+
+.dash-new-project {
+  background: $bg_success;
+  border: 1px solid $border_success;
+
+  a {
+    color: #FFF;
+  }
+}
