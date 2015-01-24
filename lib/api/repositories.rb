@@ -133,7 +133,7 @@ module API
           env['api.format'] = :binary
           present data
         else
-          not_found!
+          not_found!('File')
         end
       end
 

@@ -11,8 +11,6 @@ class GroupsController < ApplicationController
   # Load group projects
   before_filter :load_projects, except: [:new, :create, :projects, :edit, :update]
 
-  before_filter :default_filter, only: [:issues, :merge_requests]
-
   layout :determine_layout
 
   before_filter :set_title, only: [:new, :create]
@@ -23,7 +21,7 @@ class GroupsController < ApplicationController
 
   def create
     @group = Group.new(group_params)
-    @group.path = @group.name.dup.parameterize if @group.name
+    @group.name = @group.path.dup unless @group.name
 
     if @group.save
       @group.add_owner(current_user)
@@ -47,13 +45,13 @@ class GroupsController < ApplicationController
   end
 
   def merge_requests
-    @merge_requests = MergeRequestsFinder.new.execute(current_user, params)
+    @merge_requests = get_merge_requests_collection
     @merge_requests = @merge_requests.page(params[:page]).per(20)
     @merge_requests = @merge_requests.preload(:author, :target_project)
   end
 
   def issues
-    @issues = IssuesFinder.new.execute(current_user, params)
+    @issues = get_issues_collection
     @issues = @issues.page(params[:page]).per(20)
     @issues = @issues.preload(:author, :project)
 
@@ -146,18 +144,6 @@ class GroupsController < ApplicationController
     else
       'public_group'
     end
-  end
-
-  def default_filter
-    if params[:scope].blank?
-      if current_user
-        params[:scope] = 'assigned-to-me'
-      else
-        params[:scope] = 'all'
-      end
-    end
-    params[:state] = 'opened' if params[:state].blank?
-    params[:group_id] = @group.id
   end
 
   def group_params

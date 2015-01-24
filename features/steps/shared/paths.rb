@@ -1,6 +1,7 @@
 module SharedPaths
   include Spinach::DSL
   include RepoHelpers
+  include DashboardHelper
 
   step 'I visit new project page' do
     visit new_project_path
@@ -71,11 +72,11 @@ module SharedPaths
   end
 
   step 'I visit dashboard issues page' do
-    visit issues_dashboard_path
+    visit assigned_issues_dashboard_path
   end
 
   step 'I visit dashboard merge requests page' do
-    visit merge_requests_dashboard_path
+    visit assigned_mrs_dashboard_path
   end
 
   step 'I visit dashboard search page' do
@@ -92,6 +93,10 @@ module SharedPaths
 
   step 'I visit profile page' do
     visit profile_path
+  end
+
+  step 'I visit profile applications page' do
+    visit applications_profile_path
   end
 
   step 'I visit profile password page' do
@@ -162,6 +167,10 @@ module SharedPaths
     visit admin_teams_path
   end
 
+  step 'I visit admin settings page' do
+    visit admin_application_settings_path
+  end
+
   # ----------------------------------------
   # Generic Project
   # ----------------------------------------
@@ -176,6 +185,11 @@ module SharedPaths
 
   step "I visit my project's files page" do
     visit project_tree_path(@project, root_ref)
+  end
+
+  step 'I visit a binary file in the repo' do
+    visit project_blob_path(@project, File.join(
+      root_ref, 'files/images/logo-black.png'))
   end
 
   step "I visit my project's commits page" do
@@ -378,6 +392,11 @@ module SharedPaths
   step 'I visit project "Community" page' do
     project = Project.find_by(name: "Community")
     visit project_path(project)
+  end
+
+  step 'I visit project "Community" source page' do
+    project = Project.find_by(name: 'Community')
+    visit project_tree_path(project, root_ref)
   end
 
   step 'I visit project "Internal" page' do

@@ -1,35 +1,32 @@
 !!! 5
 %html{ lang: "en"}
   = render "layouts/head"
-  %body.ui_basic.login-page
-    .container
-      .content
-        .login-title
-          %h1= brand_title
-    %hr
-    .container
+  %body.ui_mars.login-page.application
+    = render "layouts/broadcast"
+    = render "layouts/public_head_panel", title: ''
+    .container.navless-container
       .content
         = render "layouts/flash"
-        .row
-          .col-md-7.brand-holder
-            - if brand_item
-              .brand-image
-                = brand_image
-              .brand_text
-                = brand_text
-            - else
-              .brand-image.default-brand-image.hidden-sm.hidden-xs
-                = image_tag 'brand_logo.png'
-              .brand_text.hidden-xs
-                %h2 Open source software to collaborate on code
-
-                %p.lead
-                  Manage git repositories with fine grained access controls that keep your code secure.
-                  Perform code reviews and enhance collaboration with merge requests.
-                  Each project can also have an issue tracker and a wiki.
-
-          .col-md-5
+        .row.prepend-top-20
+          .col-sm-5.pull-right
             = yield
+          .col-sm-7.brand-holder.pull-left
+            %h1
+              = brand_title
+            - if brand_item
+              = brand_image
+              = brand_text
+            - else
+              %h3 Open source software to collaborate on code
+
+              %p
+                Manage git repositories with fine grained access controls that keep your code secure.
+                Perform code reviews and enhance collaboration with merge requests.
+                Each project can also have an issue tracker and a wiki.
+
+            - if extra_sign_in_text.present?
+              = markdown(extra_sign_in_text)
+
     %hr
     .container
       .footer-links

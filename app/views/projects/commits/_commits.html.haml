@@ -1,3 +1,6 @@
+- unless defined?(project)
+  - project = @project
+
 - @commits.group_by { |c| c.committed_date.to_date }.sort.reverse.each do |day, commits|
   .row.commits-row
     .col-md-2
@@ -7,5 +10,5 @@
       %p= pluralize(commits.count, 'commit')
     .col-md-10
       %ul.bordered-list
-        = render commits, project: @project
+        = render commits, project: project
   %hr.lists-separator

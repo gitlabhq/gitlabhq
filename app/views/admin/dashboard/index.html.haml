@@ -104,7 +104,7 @@
       %p
         Sign up
         %span.light.pull-right
-          = boolean_to_icon gitlab_config.signup_enabled
+          = boolean_to_icon signup_enabled?
       %p
         LDAP
         %span.light.pull-right
@@ -112,7 +112,7 @@
       %p
         Gravatar
         %span.light.pull-right
-          = boolean_to_icon Gitlab.config.gravatar.enabled
+          = boolean_to_icon gravatar_enabled?
       %p
         OmniAuth
         %span.light.pull-right

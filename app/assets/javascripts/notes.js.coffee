@@ -219,6 +219,7 @@ class @Notes
   setupNoteForm: (form) ->
     disableButtonIfEmptyField form.find(".js-note-text"), form.find(".js-comment-button")
     form.removeClass "js-new-note-form"
+    form.find('.div-dropzone').remove()
 
     # setup preview buttons
     form.find(".js-md-write-button, .js-md-preview-button").tooltip placement: "left"
@@ -233,6 +234,7 @@ class @Notes
     # remove notify commit author checkbox for non-commit notes
     form.find(".js-notify-commit-author").remove()  if form.find("#note_noteable_type").val() isnt "Commit"
     GitLab.GfmAutoComplete.setup()
+    new DropzoneInput(form)
     form.show()
 
 
@@ -259,8 +261,10 @@ class @Notes
   Updates the current note field.
   ###
   updateNote: (xhr, note, status) =>
-    note_li = $("#note_" + note.id)
+    note_li = $(".note-row-" + note.id)
     note_li.replaceWith(note.html)
+    note_li.find('.note-edit-form').hide()
+    note_li.find('.note-text').show()
     code = "#note_" + note.id + " .highlight pre code"
     $(code).each (i, e) ->
       hljs.highlightBlock(e)
@@ -276,11 +280,19 @@ class @Notes
     e.preventDefault()
     note = $(this).closest(".note")
     note.find(".note-text").hide()
+    note.find(".note-header").hide()
+    base_form = note.find(".note-edit-form")
+    form = base_form.clone().insertAfter(base_form)
+    form.addClass('current-note-edit-form')
+    form.find('.div-dropzone').remove()
 
     # Show the attachment delete link
     note.find(".js-note-attachment-delete").show()
+
+    # Setup markdown form
     GitLab.GfmAutoComplete.setup()
-    form = note.find(".note-edit-form")
+    new DropzoneInput(form)
+
     form.show()
     textarea = form.find("textarea")
     textarea.focus()
@@ -295,8 +307,8 @@ class @Notes
     e.preventDefault()
     note = $(this).closest(".note")
     note.find(".note-text").show()
-    note.find(".js-note-attachment-delete").hide()
-    note.find(".note-edit-form").hide()
+    note.find(".note-header").show()
+    note.find(".current-note-edit-form").remove()
 
   ###
   Called in response to deleting a note of any kind.
@@ -375,7 +387,7 @@ class @Notes
   ###
   addDiffNote: (e) =>
     e.preventDefault()
-    link = e.target
+    link = e.currentTarget
     form = $(".js-new-note-form")
     row = $(link).closest("tr")
     nextRow = row.next()

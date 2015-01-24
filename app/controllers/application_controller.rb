@@ -1,6 +1,8 @@
 require 'gon'
 
 class ApplicationController < ActionController::Base
+  include Gitlab::CurrentSettings
+
   before_filter :authenticate_user_from_token!
   before_filter :authenticate_user!
   before_filter :reject_blocked!
@@ -13,7 +15,7 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery with: :exception
 
-  helper_method :abilities, :can?
+  helper_method :abilities, :can?, :current_application_settings
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -44,6 +46,17 @@ class ApplicationController < ActionController::Base
       # sign in token, you can simply remove store: false.
       sign_in user, store: false
     end
+  end
+
+  def authenticate_user!(*args)
+    # If user is not signe-in and tries to access root_path - redirect him to landing page
+    if current_application_settings.home_page_url.present?
+      if current_user.nil? && controller_name == 'dashboard' && action_name == 'show'
+        redirect_to current_application_settings.home_page_url and return
+      end
+    end
+
+    super(*args)
   end
 
   def log_exception(exception)
@@ -238,5 +251,64 @@ class ApplicationController < ActionController::Base
     if current_user && current_user.temp_oauth_email?
       redirect_to profile_path, notice: 'Please complete your profile with email address' and return
     end
+  end
+
+  def set_filters_params
+    params[:sort] ||= 'newest'
+    params[:scope] = 'all' if params[:scope].blank?
+    params[:state] = 'opened' if params[:state].blank?
+
+    @filter_params = params.dup
+
+    if @project
+      @filter_params[:project_id] = @project.id
+    elsif @group
+      @filter_params[:group_id] = @group.id
+    else
+      # TODO: this filter ignore issues/mr created in public or
+      # internal repos where you are not a member. Enable this filter
+      # or improve current implementation to filter only issues you
+      # created or assigned or mentioned
+      #@filter_params[:authorized_only] = true
+    end
+
+    @filter_params
+  end
+
+  def set_filter_values(collection)
+    assignee_id = @filter_params[:assignee_id]
+    author_id = @filter_params[:author_id]
+    milestone_id = @filter_params[:milestone_id]
+
+    @sort = @filter_params[:sort].try(:humanize)
+    @assignees = User.where(id: collection.pluck(:assignee_id))
+    @authors = User.where(id: collection.pluck(:author_id))
+    @milestones = Milestone.where(id: collection.pluck(:milestone_id))
+
+    if assignee_id.present? && !assignee_id.to_i.zero?
+      @assignee = @assignees.find_by(id: assignee_id)
+    end
+
+    if author_id.present? && !author_id.to_i.zero?
+      @author = @authors.find_by(id: author_id)
+    end
+
+    if milestone_id.present? && !milestone_id.to_i.zero?
+      @milestone = @milestones.find_by(id: milestone_id)
+    end
+  end
+
+  def get_issues_collection
+    set_filters_params
+    issues = IssuesFinder.new.execute(current_user, @filter_params)
+    set_filter_values(issues)
+    issues
+  end
+
+  def get_merge_requests_collection
+    set_filters_params
+    merge_requests = MergeRequestsFinder.new.execute(current_user, @filter_params)
+    set_filter_values(merge_requests)
+    merge_requests
   end
 end

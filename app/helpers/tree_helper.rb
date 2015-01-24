@@ -53,13 +53,41 @@ module TreeHelper
     File.join(*args)
   end
 
-  def allowed_tree_edit?
-    return false unless @repository.branch_names.include?(@ref)
+  def allowed_tree_edit?(project = nil, ref = nil)
+    project ||= @project
+    ref ||= @ref
+    return false unless project.repository.branch_names.include?(ref)
 
-    if @project.protected_branch? @ref
-      can?(current_user, :push_code_to_protected_branches, @project)
+    if project.protected_branch? ref
+      can?(current_user, :push_code_to_protected_branches, project)
     else
-      can?(current_user, :push_code, @project)
+      can?(current_user, :push_code, project)
+    end
+  end
+
+  def edit_blob_link(project, ref, path, options = {})
+    blob =
+      begin
+        project.repository.blob_at(ref, path)
+      rescue
+        nil
+      end
+
+    if blob && blob.text?
+      text = 'Edit'
+      after = options[:after] || ''
+      from_mr = options[:from_merge_request_id]
+      link_opts = {}
+      link_opts[:from_merge_request_id] = from_mr if from_mr
+      cls = 'btn btn-small'
+      if allowed_tree_edit?(project, ref)
+        link_to text, project_edit_tree_path(project, tree_join(ref, path),
+                                             link_opts), class: cls
+      else
+        content_tag :span, text, class: cls + ' disabled'
+      end + after.html_safe
+    else
+      ''
     end
   end
 
@@ -83,6 +111,16 @@ module TreeHelper
   def up_dir_path(tree)
     file = File.join(@path, "..")
     tree_join(@ref, file)
+  end
+
+  # returns the relative path of the first subdir that doesn't have only one directory descendand
+  def flatten_tree(tree)
+    subtree = Gitlab::Git::Tree.where(@repository, @commit.id, tree.path)
+    if subtree.count == 1 && subtree.first.dir?
+      return tree_join(tree.name, flatten_tree(subtree.first))
+    else
+      return tree.name
+    end
   end
 
   def leave_edit_message

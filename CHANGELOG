@@ -1,3 +1,36 @@
+Note: The upcoming release contains empty lines to reduce the number of merge conflicts, scroll down to see past releases.
+
+v 7.7.0
+  - Import from GitHub.com feature
+  - Add Jetbrains Teamcity CI service (Jason Lippert)
+  - Mention notification level
+  - Markdown preview in wiki (Yuriy Glukhov)
+  - Raise group avatar filesize limit to 200kb
+  - OAuth applications feature
+  - Show user SSH keys in admin area
+  - Developer can push to protected branches option
+  - Set project path instead of project name in create form
+  - Block Git HTTP access after 10 failed authentication attempts
+  - Updates to the messages returned by API (sponsored by O'Reilly Media)
+  - New UI layout with side navigation
+  - Add alert message in case of outdated browser (IE < 10)
+  - Added API support for sorting projects
+  - Update gitlab_git to version 7.0.0.rc14
+  - Add API project search filter option for authorized projects
+  - Fix File blame not respecting branch selection
+  - Change some of application settings on fly in admin area UI
+  - Redesign signin/signup pages
+  - Close standard input in Gitlab::Popen.popen
+  - Trigger GitLab CI when push tags
+  - When accept merge request - do merge using sidaekiq job
+  - Enable web signups by default
+  - Fixes for diff comments: drag-n-drop images, selecting images
+  - Fixes for edit comments: drag-n-drop images, preview mode, selecting images, save & update 
+  - Remove password strength indicator
+  - Fix commit pagination
+  
+
+
 v 7.6.0
   - Fork repository to groups
   - New rugged version
@@ -22,8 +55,15 @@ v 7.6.0
   - Possibility to create Milestones or Labels when Issues are disabled
   - Fix bug with showing gpg signature in tag
 
+v 7.5.3
+  - Bump gitlab_git to 7.0.0.rc12 (includes Rugged 0.21.2)
+
 v 7.5.2
   - Don't log Sidekiq arguments by default
+  - Fix restore of wiki repositories from backups
+
+v 7.5.1
+  - Add missing timestamps to 'members' table
 
 v 7.5.0
   - API: Add support for Hipchat (Kevin Houdebert)
@@ -43,7 +83,7 @@ v 7.5.0
   - Performance improvements
   - Fix post-receive issue for projects with deleted forks
   - New gitlab-shell version with custom hooks support
-  - Improve code 
+  - Improve code
   - GitLab CI 5.2+ support (does not support older versions)
   - Fixed bug when you can not push commits starting with 000000 to protected branches
   - Added a password strength indicator

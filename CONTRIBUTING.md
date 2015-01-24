@@ -101,6 +101,16 @@ Please ensure you support the feature you contribute through all of these steps.
 1. Community questions answered
 1. Answers to questions radiated (in docs/wiki/etc.)
 
+If you add a dependency in GitLab (such as an operating system package) please consider updating the following and note the applicability of each in your merge request:
+
+1. Note the addition in the release blog post (create one if it doesn't exist yet) https://gitlab.com/gitlab-com/www-gitlab-com/merge_requests/
+1. Upgrade guide, for example https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/7.5-to-7.6.md
+1. Upgrader https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/upgrader.md#2-run-gitlab-upgrade-tool
+1. Installation guide https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md#1-packages-dependencies
+1. GitLab Development Kit https://gitlab.com/gitlab-org/gitlab-development-kit
+1. Test suite https://gitlab.com/gitlab-org/gitlab-ci/blob/master/doc/examples/configure_a_runner_to_run_the_gitlab_ce_test_suite.md
+1. Omnibus package creator https://gitlab.com/gitlab-org/omnibus-gitlab
+
 ## Merge request description format
 
 1. What does this MR do?
@@ -118,6 +128,7 @@ Please ensure you support the feature you contribute through all of these steps.
 1. Can merge without problems (if not please merge `master`, never rebase commits pushed to the remote server)
 1. Does not break any existing functionality
 1. Fixes one specific issue or implements one specific feature (do not combine things, send separate merge requests if needed)
+1. Migrations should do only one thing (eg: either create a table, move data to a new table or remove an old table) to aid retrying on failure
 1. Keeps the GitLab code base clean and well structured
 1. Contains functionality we think other users will benefit from too
 1. Doesn't add configuration options since they complicate future changes
@@ -140,6 +151,7 @@ Please ensure you support the feature you contribute through all of these steps.
 1.  [CoffeeScript](https://github.com/thoughtbot/guides/tree/master/style#coffeescript)
 1.  [Shell commands](doc/development/shell_commands.md) created by GitLab contributors to enhance security
 1.  [Markdown](http://www.cirosantilli.com/markdown-styleguide)
+1.  Interface text should be written subjectively instead of objectively. It should be the gitlab core team addressing a person. It should be written in present time and never use past tense (has been/was). For example instead of "prohibited this user from being saved due to the following errors:" the text should be "sorry, we could not create your account because:". Also these [excellent writing guidelines](https://github.com/NARKOZ/guides#writing).
 
 This is also the style used by linting tools such as [RuboCop](https://github.com/bbatsov/rubocop), [PullReview](https://www.pullreview.com/) and [Hound CI](https://houndci.com).
 

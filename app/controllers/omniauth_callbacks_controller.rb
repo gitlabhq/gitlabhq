@@ -65,7 +65,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         redirect_to omniauth_error_path(oauth['provider'], error: error_message) and return
       end
     end
-  rescue ForbiddenAction => e
+  rescue Gitlab::OAuth::ForbiddenAction => e
     flash[:notice] = e.message
     redirect_to new_user_session_path
   end

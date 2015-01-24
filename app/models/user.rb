@@ -51,14 +51,15 @@ require 'file_size_validator'
 
 class User < ActiveRecord::Base
   include Gitlab::ConfigHelper
-  extend Gitlab::ConfigHelper
   include TokenAuthenticatable
+  extend Gitlab::ConfigHelper
+  extend Gitlab::CurrentSettings
 
   default_value_for :admin, false
   default_value_for :can_create_group, gitlab_config.default_can_create_group
   default_value_for :can_create_team, false
   default_value_for :hide_no_ssh_key, false
-  default_value_for :projects_limit, gitlab_config.default_projects_limit
+  default_value_for :projects_limit, current_application_settings.default_projects_limit
   default_value_for :theme_id, gitlab_config.default_theme
 
   devise :database_authenticatable, :lockable, :async,
@@ -106,6 +107,7 @@ class User < ActiveRecord::Base
   has_many :recent_events, -> { order "id DESC" }, foreign_key: :author_id,   class_name: "Event"
   has_many :assigned_issues,          dependent: :destroy, foreign_key: :assignee_id, class_name: "Issue"
   has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
+  has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
 
 
   #
@@ -563,5 +565,9 @@ class User < ActiveRecord::Base
         namespaces += owned_groups
         namespaces += masters_groups
       end
+  end
+
+  def oauth_authorized_tokens
+    Doorkeeper::AccessToken.where(resource_owner_id: self.id, revoked_at: nil)
   end
 end

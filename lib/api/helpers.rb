@@ -11,7 +11,7 @@ module API
 
     def current_user
       private_token = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
-      @current_user ||= User.find_by(authentication_token: private_token)
+      @current_user ||= (User.find_by(authentication_token: private_token) || doorkeeper_guard)
 
       unless @current_user && Gitlab::UserAccess.allowed?(@current_user)
         return nil
@@ -42,7 +42,7 @@ module API
 
     def user_project
       @project ||= find_project(params[:id])
-      @project || not_found!
+      @project || not_found!("Project")
     end
 
     def find_project(id)

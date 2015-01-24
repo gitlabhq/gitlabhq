@@ -116,6 +116,18 @@ select {
   }
 }
 
+.group-result {
+  .group-image {
+    float: left;
+  }
+  .group-name {
+    font-weight: bold;
+  }
+  .group-path {
+    color: #999;
+  }
+}
+
 .user-result {
   .user-image {
     float: left;

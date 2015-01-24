@@ -15,17 +15,27 @@ module API
 
       # Get a projects list for authenticated user
       #
-      # Parameters:
-      #   archived (optional) - if passed, limit by archived status
-      #
       # Example Request:
       #   GET /projects
       get do
         @projects = current_user.authorized_projects
+        sort = params[:sort] == 'desc' ? 'desc' : 'asc'
+
+        @projects = case params["order_by"]
+                    when 'id' then @projects.reorder("id #{sort}")
+                    when 'name' then @projects.reorder("name #{sort}")
+                    when 'created_at' then @projects.reorder("created_at #{sort}")
+                    when 'last_activity_at' then @projects.reorder("last_activity_at #{sort}")
+                    else @projects
+                    end
 
         # If the archived parameter is passed, limit results accordingly
         if params[:archived].present?
           @projects = @projects.where(archived: parse_boolean(params[:archived]))
+        end
+
+        if params[:search].present?
+          @projects = @projects.search(params[:search])
         end
 
         @projects = paginate @projects
@@ -37,7 +47,17 @@ module API
       # Example Request:
       #   GET /projects/owned
       get '/owned' do
-        @projects = paginate current_user.owned_projects
+        sort = params[:sort] == 'desc' ? 'desc' : 'asc'
+        @projects = current_user.owned_projects
+        @projects = case params["order_by"]
+                    when 'id' then @projects.reorder("id #{sort}")
+                    when 'name' then @projects.reorder("name #{sort}")
+                    when 'created_at' then @projects.reorder("created_at #{sort}")
+                    when 'last_activity_at' then @projects.reorder("last_activity_at #{sort}")
+                    else @projects
+                    end
+
+        @projects = paginate @projects
         present @projects, with: Entities::Project
       end
 
@@ -47,7 +67,17 @@ module API
       #   GET /projects/all
       get '/all' do
         authenticated_as_admin!
-        @projects = paginate Project
+        sort = params[:sort] == 'desc' ? 'desc' : 'asc'
+
+        @projects = case params["order_by"]
+                    when 'id' then Project.order("id #{sort}")
+                    when 'name' then Project.order("name #{sort}")
+                    when 'created_at' then Project.order("created_at #{sort}")
+                    when 'last_activity_at' then Project.order("last_activity_at #{sort}")
+                    else Project
+                    end
+
+        @projects = paginate @projects
         present @projects, with: Entities::Project
       end
 
@@ -198,7 +228,7 @@ module API
             render_api_error!("Project already forked", 409)
           end
         else
-          not_found!
+          not_found!("Source Project")
         end
 
       end
@@ -227,6 +257,16 @@ module API
         ids = current_user.authorized_projects.map(&:id)
         visibility_levels = [ Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PUBLIC ]
         projects = Project.where("(id in (?) OR visibility_level in (?)) AND (name LIKE (?))", ids, visibility_levels, "%#{params[:query]}%")
+        sort = params[:sort] == 'desc' ? 'desc' : 'asc'
+
+        projects = case params["order_by"]
+                   when 'id' then projects.order("id #{sort}")
+                   when 'name' then projects.order("name #{sort}")
+                   when 'created_at' then projects.order("created_at #{sort}")
+                   when 'last_activity_at' then projects.order("last_activity_at #{sort}")
+                   else projects
+                   end
+
         present paginate(projects), with: Entities::Project
       end
 

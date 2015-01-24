@@ -1,0 +1,16 @@
+- if defined?(sidebar)
+  .page-with-sidebar
+    .sidebar-wrapper
+      = render(sidebar)
+    .content-wrapper
+      .container-fluid
+        .content
+          = render "layouts/flash"
+          .clearfix
+            = yield
+- else
+  .container.navless-container
+    .content
+      = yield
+
+= yield :embedded_scripts

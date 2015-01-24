@@ -11,8 +11,8 @@
         = f.text_field :username, class: "form-control middle", placeholder: "Username", required: true, dir: :auto
       %div
         = f.email_field :email, class: "form-control middle", placeholder: "Email", required: true
-      .form-group#password-strength
-        = f.password_field :password, class: "form-control middle", id: "user_password_sign_up", placeholder: "Password", required: true
+      %div
+        = f.password_field :password, class: "form-control middle", placeholder: "Password", required: true
       %div
         = f.password_field :password_confirmation, class: "form-control bottom", placeholder: "Confirm password", required: true
       %div

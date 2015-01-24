@@ -53,7 +53,7 @@ module API
           if @hook.errors[:url].present?
             error!("Invalid url given", 422)
           end
-          not_found!
+          not_found!("Project hook #{@hook.errors.messages}")
         end
       end
 
@@ -82,7 +82,7 @@ module API
           if @hook.errors[:url].present?
             error!("Invalid url given", 422)
           end
-          not_found!
+          not_found!("Project hook #{@hook.errors.messages}")
         end
       end
 

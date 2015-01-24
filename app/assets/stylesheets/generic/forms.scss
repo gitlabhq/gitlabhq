@@ -31,7 +31,12 @@ fieldset legend {
   margin-bottom: 18px;
   background-color: whitesmoke;
   border-top: 1px solid #e5e5e5;
-  padding-left: 17%;
+}
+
+@media (min-width: $screen-sm-min) {
+  .form-actions {
+    padding-left: 17%;
+  }
 }
 
 label {
@@ -88,139 +93,7 @@ label {
   @include box-shadow(none);
 }
 
-.issuable-description {
+.issuable-description,
+.wiki-content {
   margin-top: 35px;
-}
-
-.zennable {
-  position: relative;
-
-  input {
-    display: none;
-  }
-
-  .collapse {
-    display: none;
-    opacity: 0.5;
-
-    &:before {
-      content: '\f066';
-      font-family: FontAwesome;
-      color: #000;
-      font-size: 28px;
-      position: relative;
-      padding: 30px 40px 0 0;
-    }
-
-    &:hover {
-      opacity: 0.8;
-    }
-  }
-
-  .expand {
-    opacity: 0.5;
-
-    &:before {
-      content: '\f065';
-      font-family: FontAwesome;
-      color: #000;
-      font-size: 14px;
-      line-height: 14px;
-      padding-right: 20px;
-      position: relative;
-      vertical-align: middle;
-    }
-
-    &:hover {
-      opacity: 0.8;
-    }
-  }
-
-  input:checked ~ .zen-backdrop .expand {
-    display: none;
-  }
-
-  input:checked ~ .zen-backdrop .collapse {
-    display: block;
-    position: absolute;
-    top: 0;
-  }
-
-  label {
-    position: absolute;
-    top: -26px;
-    right: 0;
-    font-variant: small-caps;
-    text-transform: uppercase;
-    font-size: 10px;
-    padding: 4px;
-    font-weight: 500;
-    letter-spacing: 1px;
-
-    &:before {
-      display: inline-block;
-      width: 10px;
-      height: 14px;
-    }
-  }
-
-  input:checked ~ .zen-backdrop {
-    background-color: white;
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1031;
-
-    textarea {
-      border: none;
-      box-shadow: none;
-      border-radius: 0;
-      color: #000;
-      font-size: 20px;
-      line-height: 26px;
-      padding: 30px;
-      display: block;
-      outline: none;
-      resize: none;
-      height: 100vh;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-  }
-
-  .zen-backdrop textarea::-webkit-input-placeholder {
-    color: white;
-  }
-
-  .zen-backdrop textarea:-moz-placeholder {
-    color: white;
-  }
-
-  .zen-backdrop textarea::-moz-placeholder {
-    color: white;
-  }
-
-  .zen-backdrop textarea:-ms-input-placeholder {
-    color: white;
-  }
-
-  input:checked ~ .zen-backdrop textarea::-webkit-input-placeholder {
-    color: #999;
-  }
-
-  input:checked ~ .zen-backdrop textarea:-moz-placeholder {
-    color: #999;
-    opacity: 1;
-  }
-
-  input:checked ~ .zen-backdrop textarea::-moz-placeholder {
-    color: #999;
-    opacity: 1;
-  }
-
-  input:checked ~ .zen-backdrop textarea:-ms-input-placeholder {
-    color: #999;
-  }
 }

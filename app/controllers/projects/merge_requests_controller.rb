@@ -17,9 +17,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_filter :authorize_modify_merge_request!, only: [:close, :edit, :update, :sort]
 
   def index
-    set_filter_variables(@project.merge_requests)
-
-    @merge_requests = MergeRequestsFinder.new.execute(current_user, params.merge(project_id: @project.id))
+    @merge_requests = get_merge_requests_collection
     @merge_requests = @merge_requests.page(params[:page]).per(20)
   end
 
@@ -29,6 +27,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html
+      format.json { render json: @merge_request }
       format.diff { render text: @merge_request.to_diff(current_user) }
       format.patch { render text: @merge_request.to_patch(current_user) }
     end
@@ -106,15 +105,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     if @merge_request.unchecked?
       @merge_request.check_if_can_be_merged
     end
-    render json: {merge_status: @merge_request.merge_status_name}
+
+    render json: { merge_status: @merge_request.merge_status_name }
   end
 
   def automerge
     return access_denied! unless allowed_to_merge?
 
     if @merge_request.open? && @merge_request.can_be_merged?
-      @merge_request.should_remove_source_branch = params[:should_remove_source_branch]
-      @merge_request.automerge!(current_user, params[:commit_message])
+      AutoMergeWorker.perform_async(@merge_request.id, current_user.id, params)
       @status = true
     else
       @status = false

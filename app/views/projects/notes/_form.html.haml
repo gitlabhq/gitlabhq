@@ -7,8 +7,9 @@
 
   = render layout: 'projects/md_preview' do
     = render 'projects/zen', f: f, attr: :note,
-                             classes: 'note_text js-note-text', dir: :auto
-    .light.clearfix
+      classes: 'note_text js-note-text', dir: :auto
+
+    .comment-hints.clearfix
       .pull-left Comments are parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"),{ target: '_blank', tabindex: -1 }}
       .pull-right Attach images (JPG, PNG, GIF) by dragging &amp; dropping or #{link_to "selecting them", '#', class: 'markdown-selector', tabindex: -1 }.
 
@@ -24,7 +25,7 @@
         %i.fa.fa-paperclip
         %span Choose File ...
       &nbsp;
-      %span.file_name.js-attachment-filename File name...
+      %span.file_name.js-attachment-filename
       = f.file_field :attachment, class: "js-note-attachment-input hidden"
 
 :javascript

@@ -11,7 +11,7 @@ module Gitlab
     end
 
     def project_name_regex
-      /\A[a-zA-Z0-9_][a-zA-Z0-9_\-\. ]*\z/
+      /\A[a-zA-Z0-9_.][a-zA-Z0-9_\-\. ]*\z/
     end
 
     def project_regex_message

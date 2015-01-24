@@ -1,6 +1,8 @@
 class GravatarService
+  include Gitlab::CurrentSettings
+
   def execute(email, size = nil)
-    if gravatar_config.enabled && email.present?
+    if current_application_settings.gravatar_enabled? && email.present?
       size = 40 if size.nil? || size <= 0
 
       sprintf gravatar_url,

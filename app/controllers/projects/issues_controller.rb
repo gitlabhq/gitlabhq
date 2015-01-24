@@ -18,9 +18,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def index
     terms = params['issue_search']
-    set_filter_variables(@project.issues)
-
-    @issues = IssuesFinder.new.execute(current_user, params.merge(project_id: @project.id))
+    @issues = get_issues_collection
     @issues = @issues.full_search(terms) if terms.present?
     @issues = @issues.page(params[:page]).per(20)
 

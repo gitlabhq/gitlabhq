@@ -11,6 +11,9 @@ GET /projects
 Parameters:
 
 - `archived` (optional) - if passed, limit by archived status
+- `order_by` (optional) - Return requests ordered by `id`, `name`, `created_at` or `last_activity_at` fields
+- `sort` (optional) - Return requests sorted in `asc` or `desc` order
+- `search` (optional) - Return list of authorized projects according to a search criteria
 
 ```json
 [
@@ -628,6 +631,8 @@ GET /projects/search/:query
 
 Parameters:
 
--   query (required) - A string contained in the project name
--   per_page (optional) - number of projects to return per page
--   page (optional) - the page to retrieve
+- `query` (required) - A string contained in the project name
+- `per_page` (optional) - number of projects to return per page
+- `page` (optional) - the page to retrieve
+- `order_by` (optional) - Return requests ordered by `id`, `name`, `created_at` or `last_activity_at` fields
+- `sort` (optional) - Return requests sorted in `asc` or `desc` order

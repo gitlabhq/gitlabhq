@@ -11,10 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141205134006) do
+ActiveRecord::Schema.define(version: 20150116234544) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "application_settings", force: true do |t|
+    t.integer  "default_projects_limit"
+    t.boolean  "signup_enabled"
+    t.boolean  "signin_enabled"
+    t.boolean  "gravatar_enabled"
+    t.text     "sign_in_text"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "home_page_url"
+  end
 
   create_table "broadcast_messages", force: true do |t|
     t.text     "message",    null: false
@@ -249,6 +260,49 @@ ActiveRecord::Schema.define(version: 20141205134006) do
   add_index "notes", ["project_id"], name: "index_notes_on_project_id", using: :btree
   add_index "notes", ["updated_at"], name: "index_notes_on_updated_at", using: :btree
 
+  create_table "oauth_access_grants", force: true do |t|
+    t.integer  "resource_owner_id", null: false
+    t.integer  "application_id",    null: false
+    t.string   "token",             null: false
+    t.integer  "expires_in",        null: false
+    t.text     "redirect_uri",      null: false
+    t.datetime "created_at",        null: false
+    t.datetime "revoked_at"
+    t.string   "scopes"
+  end
+
+  add_index "oauth_access_grants", ["token"], name: "index_oauth_access_grants_on_token", unique: true, using: :btree
+
+  create_table "oauth_access_tokens", force: true do |t|
+    t.integer  "resource_owner_id"
+    t.integer  "application_id"
+    t.string   "token",             null: false
+    t.string   "refresh_token"
+    t.integer  "expires_in"
+    t.datetime "revoked_at"
+    t.datetime "created_at",        null: false
+    t.string   "scopes"
+  end
+
+  add_index "oauth_access_tokens", ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true, using: :btree
+  add_index "oauth_access_tokens", ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id", using: :btree
+  add_index "oauth_access_tokens", ["token"], name: "index_oauth_access_tokens_on_token", unique: true, using: :btree
+
+  create_table "oauth_applications", force: true do |t|
+    t.string   "name",                      null: false
+    t.string   "uid",                       null: false
+    t.string   "secret",                    null: false
+    t.text     "redirect_uri",              null: false
+    t.string   "scopes",       default: "", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "owner_id"
+    t.string   "owner_type"
+  end
+
+  add_index "oauth_applications", ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type", using: :btree
+  add_index "oauth_applications", ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
+
   create_table "projects", force: true do |t|
     t.string   "name"
     t.string   "path"
@@ -271,6 +325,8 @@ ActiveRecord::Schema.define(version: 20141205134006) do
     t.string   "import_status"
     t.float    "repository_size",        default: 0.0
     t.integer  "star_count",             default: 0,        null: false
+    t.string   "import_type"
+    t.string   "import_source"
   end
 
   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree
@@ -279,10 +335,11 @@ ActiveRecord::Schema.define(version: 20141205134006) do
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
 
   create_table "protected_branches", force: true do |t|
-    t.integer  "project_id", null: false
-    t.string   "name",       null: false
+    t.integer  "project_id",                          null: false
+    t.string   "name",                                null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "developers_can_push", default: false, null: false
   end
 
   add_index "protected_branches", ["project_id"], name: "index_protected_branches_on_project_id", using: :btree
@@ -375,6 +432,7 @@ ActiveRecord::Schema.define(version: 20141205134006) do
     t.boolean  "hide_no_ssh_key",          default: false
     t.string   "website_url",              default: "",    null: false
     t.datetime "last_credential_check_at"
+    t.string   "github_access_token"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

@@ -26,9 +26,9 @@ class @MergeRequest
 
   initContextWidget: ->
     $('.edit-merge_request.inline-update input[type="submit"]').hide()
-    $(".issue-box .inline-update").on "change", "select", ->
+    $(".context .inline-update").on "change", "select", ->
       $(this).submit()
-    $(".issue-box .inline-update").on "change", "#merge_request_assignee_id", ->
+    $(".context .inline-update").on "change", "#merge_request_assignee_id", ->
       $(this).submit()
 
   initMergeWidget: ->
@@ -89,6 +89,9 @@ class @MergeRequest
         this.$('.merge-request-tabs .diffs-tab').addClass 'active'
         this.loadDiff() unless @diffs_loaded
         this.$('.diffs').show()
+      when 'commits'
+        this.$('.merge-request-tabs .commits-tab').addClass 'active'
+        this.$('.commits').show()
       else
         this.$('.merge-request-tabs .notes-tab').addClass 'active'
         this.$('.notes').show()
@@ -132,3 +135,16 @@ class @MergeRequest
     this.$('.automerge_widget').hide()
     this.$('.merge-in-progress').hide()
     this.$('.automerge_widget.already_cannot_be_merged').show()
+
+  mergeInProgress: ->
+    $.ajax
+      type: 'GET'
+      url: $('.merge-request').data('url')
+      success: (data) =>
+        switch data.state
+          when 'merged'
+            location.reload()
+          else
+            setTimeout(merge_request.mergeInProgress, 3000)
+      dataType: 'json'
+

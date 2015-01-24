@@ -2,15 +2,22 @@
   - if project_nav_tab? :issues
     = nav_link(controller: :issues) do
       = link_to project_issues_path(@project), class: "tab" do
+        %i.fa.fa-exclamation-circle
         Issues
   - if project_nav_tab? :merge_requests
     = nav_link(controller: :merge_requests) do
       = link_to project_merge_requests_path(@project), class: "tab" do
+        %i.fa.fa-tasks
         Merge Requests
   = nav_link(controller: :milestones) do
-    = link_to 'Milestones', project_milestones_path(@project), class: "tab"
+    = link_to project_milestones_path(@project), class: "tab" do
+      %i.fa.fa-clock-o
+      Milestones
   = nav_link(controller: :labels) do
-    = link_to 'Labels', project_labels_path(@project), class: "tab"
+    = link_to project_labels_path(@project), class: "tab" do
+      %i.fa.fa-tags
+      Labels
+
 
   - if current_controller?(:milestones)
     %li.pull-right

@@ -105,7 +105,7 @@ rescue ArgumentError # no user configured
   '/home/' + Settings.gitlab['user']
 end
 Settings.gitlab['time_zone']  ||= nil
-Settings.gitlab['signup_enabled'] ||= false
+Settings.gitlab['signup_enabled'] ||= true if Settings.gitlab['signup_enabled'].nil?
 Settings.gitlab['signin_enabled'] ||= true if Settings.gitlab['signin_enabled'].nil?
 Settings.gitlab['restricted_visibility_levels'] = Settings.send(:verify_constant_array, Gitlab::VisibilityLevel, Settings.gitlab['restricted_visibility_levels'], [])
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
@@ -170,6 +170,16 @@ Settings.satellites['timeout'] ||= 30
 # Extra customization
 #
 Settings['extra'] ||= Settingslogic.new({})
+
+#
+# Rack::Attack settings
+#
+Settings['rack_attack'] ||= Settingslogic.new({})
+Settings.rack_attack['git_basic_auth'] ||= Settingslogic.new({})
+Settings.rack_attack.git_basic_auth['ip_whitelist'] ||= %w{127.0.0.1}
+Settings.rack_attack.git_basic_auth['maxretry'] ||= 10
+Settings.rack_attack.git_basic_auth['findtime'] ||= 1.minute
+Settings.rack_attack.git_basic_auth['bantime'] ||= 1.hour
 
 #
 # Testing settings

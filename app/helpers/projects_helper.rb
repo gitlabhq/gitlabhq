@@ -68,48 +68,6 @@ module ProjectsHelper
     project_nav_tabs.include? name
   end
 
-  def selected_label?(label_name)
-    params[:label_name].to_s.split(',').include?(label_name)
-  end
-
-  def labels_filter_path(label_name)
-    label_name =
-      if selected_label?(label_name)
-        params[:label_name].split(',').reject { |l| l == label_name }.join(',')
-      elsif params[:label_name].present?
-        "#{params[:label_name]},#{label_name}"
-      else
-        label_name
-      end
-
-    project_filter_path(label_name: label_name)
-  end
-
-  def label_filter_class(label_name)
-    if selected_label?(label_name)
-      'label-filter-item active'
-    else
-      'label-filter-item light'
-    end
-  end
-
-  def project_filter_path(options={})
-    exist_opts = {
-      state: params[:state],
-      scope: params[:scope],
-      label_name: params[:label_name],
-      milestone_id: params[:milestone_id],
-      assignee_id: params[:assignee_id],
-      sort: params[:sort],
-    }
-
-    options = exist_opts.merge(options)
-
-    path = request.path
-    path << "?#{options.to_param}"
-    path
-  end
-
   def project_active_milestones
     @project.milestones.active.order("due_date, title ASC")
   end
@@ -279,4 +237,25 @@ module ProjectsHelper
     result.password = '*****' if result.password.present?
     result
   end
+
+  def project_wiki_path_with_version(proj, page, version, is_newest)
+    url_params = is_newest ? {} : { version_id: version }
+    project_wiki_path(proj, page, url_params)
+  end
+
+  def project_status_css_class(status)
+    case status
+    when "started"
+      "active"
+    when "failed"
+      "danger"
+    when "finished"
+      "success"
+    end
+  end
+
+  def github_import_enabled?
+    Gitlab.config.omniauth.enabled && enabled_oauth_providers.include?(:github)
+  end
 end
+
