@@ -8,10 +8,11 @@
 
   &.avatar-inline {
     float: none;
-    margin-left: 3px;
+    margin-left: 4px;
+    margin-bottom: 2px;
 
-    &.s16 { margin-right: 2px; }
-    &.s24 { margin-right: 2px; }
+    &.s16 { margin-right: 4px; }
+    &.s24 { margin-right: 4px; }
   }
 
   &.s16 { width: 16px; height: 16px; margin-right: 6px; }
