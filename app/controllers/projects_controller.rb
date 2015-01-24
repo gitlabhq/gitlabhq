@@ -104,15 +104,8 @@ class ProjectsController < ApplicationController
     autocomplete = ::Projects::AutocompleteService.new(@project)
     participants = ::Projects::ParticipantsService.new(@project).execute(note_type, note_id)
 
-    emojis = Emoji.names.map do |e|
-      {
-        name: e,
-        path: view_context.image_url("emoji/#{e}.png")
-      }
-    end
-
     @suggestions = {
-      emojis: emojis,
+      emojis: autocomplete_emojis,
       issues: autocomplete.issues,
       mergerequests: autocomplete.merge_requests,
       members: participants
@@ -188,5 +181,16 @@ class ProjectsController < ApplicationController
       :issues_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id, :default_branch,
       :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id
     )
+  end
+
+  def autocomplete_emojis
+    Rails.cache.fetch("autocomplete-emoji-#{Emoji::VERSION}") do
+      Emoji.names.map do |e|
+        {
+          name: e,
+          path: view_context.image_url("emoji/#{e}.png")
+        }
+      end
+    end
   end
 end
