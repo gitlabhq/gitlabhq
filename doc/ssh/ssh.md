@@ -18,4 +18,21 @@ Use the code below to show your public key.
 cat ~/.ssh/id_rsa.pub
 ```
 
-Copy-paste the key to the 'My SSH Keys' section under the 'SSH' tab in your user profile. Please copy the complete key starting with `ssh-` and ending with your username and host.
+Copy-paste the key to the 'My SSH Keys' section under the 'SSH' tab in your user profile. Please copy the complete key starting with `ssh-` and ending with your username and host.  
+
+Use code below to copy your public key to the clipboard. Depending on your OS you'll need to use a different command:
+
+**Windows:**
+```bash
+clip < ~/.ssh/id_rsa.pub
+```
+
+**Mac:**
+```bash
+pbcopy < ~/.ssh/id_rsa.pub
+```
+
+**Linux (requires xclip):**
+```bash
+xclip -sel clip < ~/.ssh/id_rsa.pub
+```
