@@ -37,7 +37,7 @@ v 7.8.0
   - 
   - 
   - 
-  - 
+  - Password reset token validity increased from 2 hours to 2 days since it is also send on account creation.
   - 
   - 
   - 
