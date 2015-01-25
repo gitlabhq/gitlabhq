@@ -106,7 +106,7 @@ describe GitPushService do
       it "when pushing a branch for the first time" do
         project.should_receive(:execute_hooks)
         project.default_branch.should == "master"
-        project.protected_branches.should_receive(:create).with({ name: "master" })
+        project.protected_branches.should_receive(:create).with({ name: "master", developers_can_push: false })
         service.execute(project, user, @blankrev, 'newrev', 'refs/heads/master')
       end
 

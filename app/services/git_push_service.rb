@@ -1,5 +1,7 @@
 class GitPushService
   attr_accessor :project, :user, :push_data, :push_commits
+  include Gitlab::CurrentSettings
+  include Gitlab::Access
 
   # This method will be called after each git update
   # and only if the provided user and project is present in GitLab.
@@ -29,8 +31,12 @@ class GitPushService
         if is_default_branch?(ref)
           # Initial push to the default branch. Take the full history of that branch as "newly pushed".
           @push_commits = project.repository.commits(newrev)
-          # Default branch is protected by default
-          project.protected_branches.create({ name: project.default_branch })
+
+          # Set protection on the default branch if configured
+          if (current_application_settings.default_branch_protection != PROTECTION_NONE)
+	          developers_can_push = current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_PUSH ? true : false
+            project.protected_branches.create({ name: project.default_branch, developers_can_push: developers_can_push })
+          end
         else
           # Use the pushed commits that aren't reachable by the default branch
           # as a heuristic. This may include more commits than are actually pushed, but

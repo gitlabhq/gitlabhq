@@ -11,13 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150116234544) do
+ActiveRecord::Schema.define(version: 20150125163100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "application_settings", force: true do |t|
     t.integer  "default_projects_limit"
+    t.integer  "default_branch_protection"
     t.boolean  "signup_enabled"
     t.boolean  "signin_enabled"
     t.boolean  "gravatar_enabled"

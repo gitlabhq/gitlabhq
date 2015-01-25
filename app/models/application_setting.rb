@@ -4,6 +4,7 @@
 #
 #  id                     :integer          not null, primary key
 #  default_projects_limit :integer
+#  default_branch_protection :integer
 #  signup_enabled         :boolean
 #  signin_enabled         :boolean
 #  gravatar_enabled       :boolean
@@ -25,6 +26,7 @@ class ApplicationSetting < ActiveRecord::Base
   def self.create_from_defaults
     create(
       default_projects_limit: Settings.gitlab['default_projects_limit'],
+      default_branch_protection: Settings.gitlab['default_branch_protection'],
       signup_enabled: Settings.gitlab['signup_enabled'],
       signin_enabled: Settings.gitlab['signin_enabled'],
       gravatar_enabled: Settings.gravatar['enabled'],

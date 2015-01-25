@@ -22,6 +22,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   def application_setting_params
     params.require(:application_setting).permit(
       :default_projects_limit,
+      :default_branch_protection,
       :signup_enabled,
       :signin_enabled,
       :gravatar_enabled,

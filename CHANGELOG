@@ -28,7 +28,7 @@ v 7.8.0
   - 
   - 
   - 
-  - 
+  - Allow configuring protection of the default branch upon first push (Marco Wessel)
   - 
   - 
   - 
