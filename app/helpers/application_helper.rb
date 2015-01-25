@@ -64,13 +64,22 @@ module ApplicationHelper
   end
 
   def project_identicon(project, options = {})
+    allowed_colors = {
+      red: 'FFEBEE',
+      purple: 'F3E5F5',
+      indigo: 'E8EAF6',
+      blue: 'E3F2FD',
+      teal: 'E0F2F1',
+      orange: 'FBE9E7',
+      gray: 'EEEEEE'
+    }
+
     options[:class] ||= ''
     options[:class] << ' identicon'
-    bg_color = Digest::MD5.hexdigest(project.name)[0, 6]
-    brightness = bg_color[0, 2].hex + bg_color[2, 2].hex + bg_color[4, 2].hex
-    text_color = (brightness > 375) ? '#000' : '#fff'
+    bg_key = project.id % 7
+
     content_tag(:div, class: options[:class],
-      style: "background-color: ##{ bg_color }; color: #{ text_color }") do
+      style: "background-color: ##{ allowed_colors.values[bg_key] }; color: #555") do
         project.name[0, 1].upcase
     end
   end
