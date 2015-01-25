@@ -12,7 +12,7 @@ module Gitlab
     def fake_application_settings
       OpenStruct.new(
         default_projects_limit: Settings.gitlab['default_projects_limit'],
-	      default_branch_protection: Settings.gitlab['default_branch_protection'],
+        default_branch_protection: Settings.gitlab['default_branch_protection'],
         signup_enabled: Settings.gitlab['signup_enabled'],
         signin_enabled: Settings.gitlab['signin_enabled'],
         gravatar_enabled: Settings.gravatar['enabled'],
