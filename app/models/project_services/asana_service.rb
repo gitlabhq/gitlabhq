@@ -27,13 +27,16 @@ class AsanaService < Service
   end
 
   def help
-    'This service adds commit messages as comments to Asana tasks. Once enabled, commit messages
-are checked for Asana task URLs (for example, `https://app.asana.com/0/123456/987654`) or task IDs
-starting with # (for example, `#987654`). Every task ID found will get the commit comment added to it.
+    'This service adds commit messages as comments to Asana tasks.
+Once enabled, commit messages are checked for Asana task URLs
+(for example, `https://app.asana.com/0/123456/987654`) or task IDs
+starting with # (for example, `#987654`). Every task ID found will
+get the commit comment added to it.
 
 You can also close a task with a message containing: `fix #123456`.
 
-You can find your Api Keys here: http://developer.asana.com/documentation/#api_keys'
+You can find your Api Keys here:
+http://developer.asana.com/documentation/#api_keys'
   end
 
   def to_param
@@ -42,8 +45,18 @@ You can find your Api Keys here: http://developer.asana.com/documentation/#api_k
 
   def fields
     [
-      { type: 'text', name: 'api_key', placeholder: 'User API token. User must have access to task, all comments will be attributed to this user.' },
-      { type: 'text', name: 'restrict_to_branch', placeholder: 'Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches.' }
+      {
+        type: 'text',
+        name: 'api_key',
+        placeholder: 'User API token. User must have access to task,
+all comments will be attributed to this user.'
+      },
+      {
+        type: 'text',
+        name: 'restrict_to_branch',
+        placeholder: 'Comma-separated list of branches which will be
+automatically inspected. Leave blank to include all branches.'
+      }
     ]
   end
 

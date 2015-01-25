@@ -48,15 +48,12 @@ describe AsanaService, models: true do
 
     it 'should call Asana service to created a story' do
       Asana::Task.should_receive(:find).with('123456').once
-      # Asana::Task.should_receive(:create_story).with('pushed related to #123456').once
 
       @asana.check_commit('related to #123456', 'pushed')
     end
 
     it 'should call Asana service to created a story and close a task' do
       Asana::Task.should_receive(:find).with('456789').twice
-      # Asana::Task.should_receive(:create_story).with('pushed related to #456789').once
-      # Asana::Task.should_receive(:modify).with(completed: true).once
 
       @asana.check_commit('fix #456789', 'pushed')
     end
