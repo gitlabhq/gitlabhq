@@ -44,7 +44,7 @@ module Projects
             project.ensure_satellite_exists
           end
         rescue => ex
-          project.errors.add(:base, "Fork transaction failed.")
+          project.errors.add(:base, "Fork transaction failed: #{ex.message}")
           project.destroy
         end
       else
