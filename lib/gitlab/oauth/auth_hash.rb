@@ -9,11 +9,11 @@ module Gitlab
       end
 
       def uid
-        auth_hash.uid.to_s
+        Gitlab::Utils.encode_utf8(auth_hash.uid.to_s)
       end
 
       def provider
-        auth_hash.provider
+        Gitlab::Utils.encode_utf8(auth_hash.provider.to_s)
       end
 
       def info
@@ -21,23 +21,23 @@ module Gitlab
       end
 
       def name
-        (info.try(:name) || full_name).to_s.force_encoding('utf-8')
+        Gitlab::Utils.encode_utf8((info.try(:name) || full_name).to_s)
       end
 
       def full_name
-        "#{info.first_name} #{info.last_name}"
+        Gitlab::Utils.encode_utf8("#{info.first_name} #{info.last_name}")
       end
 
       def username
-        (info.try(:nickname) || generate_username).to_s.force_encoding('utf-8')
+        Gitlab::Utils.encode_utf8((info.try(:nickname) || generate_username).to_s)
       end
 
       def email
-        (info.try(:email) || generate_temporarily_email).downcase
+        Gitlab::Utils.encode_utf8((info.try(:email) || generate_temporarily_email).downcase)
       end
 
       def password
-        @password ||= Devise.friendly_token[0, 8].downcase
+        @password ||= Gitlab::Utils.encode_utf8(Devise.friendly_token[0, 8].downcase)
       end
 
       # Get the first part of the email address (before @)
