@@ -34,7 +34,7 @@ class GitPushService
 
           # Set protection on the default branch if configured
           if (current_application_settings.default_branch_protection != PROTECTION_NONE)
-	          developers_can_push = current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_PUSH ? true : false
+            developers_can_push = current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_PUSH ? true : false
             project.protected_branches.create({ name: project.default_branch, developers_can_push: developers_can_push })
           end
         else
