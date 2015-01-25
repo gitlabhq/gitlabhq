@@ -82,6 +82,11 @@ describe ProjectsController, "routing" do
     get("/gitlab/gitlabhq").should route_to('projects#show', id: 'gitlab/gitlabhq')
   end
 
+  it 'to #show blacklisted project path' do
+    get("/gitlab/#{Gitlab::Blacklist.path.first}").should(
+      route_to('projects#show', id: "gitlab/#{Gitlab::Blacklist.path.first}"))
+  end
+
   it "to #update" do
     put("/gitlab/gitlabhq").should route_to('projects#update', id: 'gitlab/gitlabhq')
   end
