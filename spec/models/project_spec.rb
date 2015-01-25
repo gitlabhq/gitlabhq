@@ -14,7 +14,7 @@
 #  merge_requests_enabled :boolean          default(TRUE), not null
 #  wiki_enabled           :boolean          default(TRUE), not null
 #  namespace_id           :integer
-#  issues_tracker         :string(255)      default("gitlab"), not null
+#  issues_tracker         :string(255)      default('gitlab'), not null
 #  issues_tracker_id      :string(255)
 #  snippets_enabled       :boolean          default(TRUE), not null
 #  last_activity_at       :datetime
@@ -26,12 +26,13 @@
 #  star_count             :integer          default(0), not null
 #  import_type            :string(255)
 #  import_source          :string(255)
+#  avatar                 :string(255)
 #
 
 require 'spec_helper'
 
 describe Project do
-  describe "Associations" do
+  describe 'Associations' do
     it { should belong_to(:group) }
     it { should belong_to(:namespace) }
     it { should belong_to(:creator).class_name('User') }
@@ -52,10 +53,10 @@ describe Project do
     it { should have_one(:pushover_service).dependent(:destroy) }
   end
 
-  describe "Mass assignment" do
+  describe 'Mass assignment' do
   end
 
-  describe "Validation" do
+  describe 'Validation' do
     let!(:project) { create(:project) }
 
     it { should validate_presence_of(:name) }
@@ -70,7 +71,7 @@ describe Project do
     it { should ensure_length_of(:issues_tracker_id).is_within(0..255) }
     it { should validate_presence_of(:namespace) }
 
-    it "should not allow new projects beyond user limits" do
+    it 'should not allow new projects beyond user limits' do
       project2 = build(:project)
       project2.stub(:creator).and_return(double(can_create_project?: false, projects_limit: 0).as_null_object)
       project2.should_not be_valid
@@ -78,7 +79,7 @@ describe Project do
     end
   end
 
-  describe "Respond to" do
+  describe 'Respond to' do
     it { should respond_to(:url_to_repo) }
     it { should respond_to(:repo_exists?) }
     it { should respond_to(:satellite) }
@@ -89,27 +90,27 @@ describe Project do
     it { should respond_to(:path_with_namespace) }
   end
 
-  it "should return valid url to repo" do
-    project = Project.new(path: "somewhere")
-    project.url_to_repo.should == Gitlab.config.gitlab_shell.ssh_path_prefix + "somewhere.git"
+  it 'should return valid url to repo' do
+    project = Project.new(path: 'somewhere')
+    project.url_to_repo.should == Gitlab.config.gitlab_shell.ssh_path_prefix + 'somewhere.git'
   end
 
-  it "returns the full web URL for this repo" do
-    project = Project.new(path: "somewhere")
+  it 'returns the full web URL for this repo' do
+    project = Project.new(path: 'somewhere')
     project.web_url.should == "#{Gitlab.config.gitlab.url}/somewhere"
   end
 
-  it "returns the web URL without the protocol for this repo" do
-    project = Project.new(path: "somewhere")
-    project.web_url_without_protocol.should == "#{Gitlab.config.gitlab.url.split("://")[1]}/somewhere"
+  it 'returns the web URL without the protocol for this repo' do
+    project = Project.new(path: 'somewhere')
+    project.web_url_without_protocol.should == "#{Gitlab.config.gitlab.url.split('://')[1]}/somewhere"
   end
 
-  describe "last_activity methods" do
+  describe 'last_activity methods' do
     let(:project) { create(:project) }
     let(:last_event) { double(created_at: Time.now) }
 
-    describe "last_activity" do
-      it "should alias last_activity to last_event" do
+    describe 'last_activity' do
+      it 'should alias last_activity to last_event' do
         project.stub(last_event: last_event)
         project.last_activity.should == last_event
       end
@@ -134,13 +135,13 @@ describe Project do
     let(:prev_commit_id) { merge_request.commits.last.id }
     let(:commit_id) { merge_request.commits.first.id }
 
-    it "should close merge request if last commit from source branch was pushed to target branch" do
+    it 'should close merge request if last commit from source branch was pushed to target branch' do
       project.update_merge_requests(prev_commit_id, commit_id, "refs/heads/#{merge_request.target_branch}", key.user)
       merge_request.reload
       merge_request.merged?.should be_true
     end
 
-    it "should update merge request commits with new one if pushed to source branch" do
+    it 'should update merge request commits with new one if pushed to source branch' do
       project.update_merge_requests(prev_commit_id, commit_id, "refs/heads/#{merge_request.source_branch}", key.user)
       merge_request.reload
       merge_request.last_commit.id.should == commit_id
@@ -166,14 +167,14 @@ describe Project do
         @project = create(:project, name: 'gitlabhq', namespace: @group)
       end
 
-      it { @project.to_param.should == "gitlab/gitlabhq" }
+      it { @project.to_param.should == 'gitlab/gitlabhq' }
     end
   end
 
   describe :repository do
     let(:project) { create(:project) }
 
-    it "should return valid repo" do
+    it 'should return valid repo' do
       project.repository.should be_kind_of(Repository)
     end
   end
@@ -184,15 +185,15 @@ describe Project do
     let(:not_existed_issue) { create(:issue) }
     let(:ext_project) { create(:redmine_project) }
 
-    it "should be true or if used internal tracker and issue exists" do
+    it 'should be true or if used internal tracker and issue exists' do
       project.issue_exists?(existed_issue.iid).should be_true
     end
 
-    it "should be false or if used internal tracker and issue not exists" do
+    it 'should be false or if used internal tracker and issue not exists' do
       project.issue_exists?(not_existed_issue.iid).should be_false
     end
 
-    it "should always be true if used other tracker" do
+    it 'should always be true if used other tracker' do
       ext_project.issue_exists?(rand(100)).should be_true
     end
   end
@@ -201,11 +202,11 @@ describe Project do
     let(:project) { create(:project) }
     let(:ext_project) { create(:redmine_project) }
 
-    it "should be true if used internal tracker" do
+    it 'should be true if used internal tracker' do
       project.used_default_issues_tracker?.should be_true
     end
 
-    it "should be false if used other tracker" do
+    it 'should be false if used other tracker' do
       ext_project.used_default_issues_tracker?.should be_false
     end
   end
@@ -214,15 +215,15 @@ describe Project do
     let(:project) { create(:project) }
     let(:ext_project) { create(:redmine_project) }
 
-    it "should be true for projects with external issues tracker if issues enabled" do
+    it 'should be true for projects with external issues tracker if issues enabled' do
       ext_project.can_have_issues_tracker_id?.should be_true
     end
 
-    it "should be false for projects with internal issue tracker if issues enabled" do
+    it 'should be false for projects with internal issue tracker if issues enabled' do
       project.can_have_issues_tracker_id?.should be_false
     end
 
-    it "should be always false if issues disabled" do
+    it 'should be always false if issues disabled' do
       project.issues_enabled = false
       ext_project.issues_enabled = false
 
@@ -308,6 +309,20 @@ describe Project do
       user.destroy
       project.reload
       expect(project.star_count).to eq(0)
+    end
+  end
+
+  describe :avatar_type do
+    let(:project) { create(:project) }
+
+    it 'should be true if avatar is image' do
+      project.update_attribute(:avatar, 'uploads/avatar.png')
+      project.avatar_type.should be_true
+    end
+
+    it 'should be false if avatar is html page' do
+      project.update_attribute(:avatar, 'uploads/avatar.html')
+      project.avatar_type.should == ['only images allowed']
     end
   end
 end

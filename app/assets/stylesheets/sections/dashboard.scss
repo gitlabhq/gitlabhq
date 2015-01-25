@@ -75,6 +75,9 @@
     }
   }
 }
+.project-avatar {
+  float: left;
+}
 
 .project-description {
   overflow: hidden;
@@ -92,9 +95,12 @@
   }
 }
 
+.dash-project-avatar {
+  float: left;
+}
 .dash-project-access-icon {
   float: left;
-  margin-right: 3px;
+  margin-right: 5px;
   width: 16px;
 }
 
