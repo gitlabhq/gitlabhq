@@ -370,21 +370,11 @@ class Project < ActiveRecord::Base
   end
 
   def name_with_namespace
-    @name_with_namespace ||= begin
-                               if namespace
-                                 namespace.human_name + " / " + name
-                               else
-                                 name
-                               end
-                             end
+    @name_with_namespace ||= namespace.human_name + ' / ' + name
   end
 
   def path_with_namespace
-    if namespace
-      namespace.path + '/' + path
-    else
-      path
-    end
+    to_param
   end
 
   def execute_hooks(data, hooks_scope = :push_hooks)
