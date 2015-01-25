@@ -89,8 +89,6 @@
               .col-sm-10
                 - if @project.avatar?
                   = project_icon(@project.to_param, alt: '', class: 'avatar s160')
-                - else
-                  = project_icon(@project.to_param, alt: '', class: 'avatar s160', only_uploaded: true)
                 %p.light
                   - if @project.avatar_in_git
                     Project avatar in repository: #{ @project.avatar_in_git }

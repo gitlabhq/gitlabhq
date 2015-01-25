@@ -56,8 +56,6 @@ module ApplicationHelper
       image_tag project.avatar.url, options
     elsif project.avatar_in_git
       image_tag project_avatar_path(project), options
-    elsif options[:only_uploaded]
-      image_tag '/assets/no_project_icon.png', options
     else # generated icon
       project_identicon(project, options)
     end
