@@ -1,11 +1,6 @@
 require 'spec_helper'
 
 describe SearchHelper do
-  # Override simple_sanitize for our testing purposes
-  def simple_sanitize(str)
-    str
-  end
-
   describe 'search_autocomplete_source' do
     context "with no current user" do
       before do
