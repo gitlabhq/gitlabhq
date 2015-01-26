@@ -16,11 +16,29 @@
 
 .project-home-panel {
   margin-bottom: 15px;
+  position: relative;
+  padding-left: 85px;
 
   &.empty-project {
     border-bottom: 0px;
     padding-bottom: 15px;
     margin-bottom: 0px;
+  }
+
+  .project-identicon-holder {
+    position: absolute;
+    left: 0;
+
+    .avatar {
+      width: 70px;
+      height: 70px;
+      @include border-radius(0px);
+    }
+
+    .identicon {
+      font-size: 45px;
+      line-height: 1.6;
+    }
   }
 
   .project-home-dropdown {
@@ -36,10 +54,6 @@
       float: left;
       color: #666;
       font-size: 16px;
-
-      .avatar {
-        margin-top: -5px;
-      }
     }
 
     .star-fork-buttons {
