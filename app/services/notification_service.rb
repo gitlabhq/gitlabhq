@@ -331,7 +331,14 @@ class NotificationService
   end
 
   def close_resource_email(target, project, current_user, method)
-    recipients = reject_muted_users([target.author, target.assignee], project)
+    participants =
+      if target.respond_to?(:participants)
+        target.participants
+      else
+        [target.author, target.assignee]
+      end
+
+    recipients = reject_muted_users(participants, project)
     recipients = reject_mention_users(recipients, project)
     recipients = recipients.concat(project_watchers(project)).uniq
     recipients.delete(current_user)
@@ -362,7 +369,14 @@ class NotificationService
   end
 
   def reopen_resource_email(target, project, current_user, method, status)
-    recipients = reject_muted_users([target.author, target.assignee], project)
+    participants =
+      if target.respond_to?(:participants)
+        target.participants
+      else
+        [target.author, target.assignee]
+      end
+
+    recipients = reject_muted_users(participants, project)
     recipients = reject_mention_users(recipients, project)
     recipients = recipients.concat(project_watchers(project)).uniq
     recipients.delete(current_user)
