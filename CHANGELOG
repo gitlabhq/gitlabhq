@@ -33,7 +33,7 @@ v 7.8.0
   - 
   - 
   - 
-  - 
+  - Fix long broadcast message cut-off on left sidebar (Visay Keo)
   - Add Project Avatars (Steven Thonus and Hannes Rosenögger)
   - 
   - 
