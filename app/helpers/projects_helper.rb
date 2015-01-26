@@ -257,7 +257,7 @@ module ProjectsHelper
   end
 
   def github_import_enabled?
-    Gitlab.config.omniauth.enabled && enabled_oauth_providers.include?(:github)
+    enabled_oauth_providers.include?(:github)
   end
 end
 
