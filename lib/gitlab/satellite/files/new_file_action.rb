@@ -14,7 +14,14 @@ module Gitlab
           prepare_satellite!(repo)
 
           # create target branch in satellite at the corresponding commit from bare repo
-          repo.git.checkout({raise: true, timeout: true, b: true}, ref, "origin/#{ref}")
+          current_ref =
+            if repo.commits.any?
+              repo.git.checkout({raise: true, timeout: true, b: true}, ref, "origin/#{ref}")
+              ref
+            else
+              # skip this step if we want to add first file to empty repo
+              Satellite::PARKING_BRANCH
+            end
 
           file_path_in_satellite = File.join(repo.working_dir, file_path)
           dir_name_in_satellite = File.dirname(file_path_in_satellite)
@@ -38,10 +45,9 @@ module Gitlab
           # will raise CommandFailed when commit fails
           repo.git.commit(raise: true, timeout: true, a: true, m: commit_message)
 
-
           # push commit back to bare repo
           # will raise CommandFailed when push fails
-          repo.git.push({raise: true, timeout: true}, :origin, ref)
+          repo.git.push({raise: true, timeout: true}, :origin, "#{current_ref}:#{ref}")
 
           # everything worked
           true
