@@ -2,9 +2,9 @@ module Issues
   class CloseService < Issues::BaseService
     def execute(issue, commit = nil)
       if issue.close
-        notification_service.close_issue(issue, current_user)
         event_service.close_issue(issue, current_user)
         create_note(issue, commit)
+        notification_service.close_issue(issue, current_user)
         execute_hooks(issue, 'close')
       end
 

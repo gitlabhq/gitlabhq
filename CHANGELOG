@@ -3,7 +3,7 @@ Note: The upcoming release contains empty lines to reduce the number of merge co
 v 7.8.0
   - Replace highlight.js with rouge-fork rugments (Stefan Tatschner)
   - Make project search case insensitive (Hannes Rosenögger)
-  - 
+  - Include issue/mr participants in list of recipients for reassign/close/reopen emails
   - Expose description in groups API
   - 
   - 
