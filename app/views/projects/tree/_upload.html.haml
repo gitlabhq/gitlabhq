@@ -1,0 +1,32 @@
+#modal-upload-tree.modal.hide
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %a.close{href: "#", "data-dismiss" => "modal"} ×
+        %h3.page-title Upload 
+        %p.light
+          From branch
+          %strong= @ref
+      .modal-body
+        = form_tag project_new_tree_path(@project, @id), method: :put, class: 'form-horizontal', :multipart => true , :onChange => 'checkFile()' do
+          %br
+          .form-group
+            .col-sm-2
+            .col-sm-10
+              = file_field_tag :file_upload, :id => "file", :class => "file_up"
+          %br
+          = render 'shared/commit_message_container', params: params,
+                  placeholder: 'Upload this file because...'
+          .form-group
+            .col-sm-2
+            .col-sm-10
+              = button_tag 'Upload', class: 'btn btn-small btn-primary'
+              = link_to "Cancel", '#', class: "btn btn-cancel", "data-dismiss" => "modal"
+:javascript 
+  function checkFile(){
+    str=document.getElementById('file').value; 
+    if(str.length < 1){
+      alert('Please select file!');
+    }
+  }
+  disableButtonIfAnyEmptyField( '#commit_message')
