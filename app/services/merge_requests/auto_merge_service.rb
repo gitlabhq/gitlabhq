@@ -11,9 +11,9 @@ module MergeRequests
       if Gitlab::Satellite::MergeAction.new(current_user, merge_request).merge!(commit_message)
         merge_request.merge
 
-        notification_service.merge_mr(merge_request, current_user)
         create_merge_event(merge_request, current_user)
         create_note(merge_request)
+        notification_service.merge_mr(merge_request, current_user)
         execute_hooks(merge_request)
 
         true

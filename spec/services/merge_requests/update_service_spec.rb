@@ -21,12 +21,14 @@ describe MergeRequests::UpdateService do
           state_event: 'close'
         }
       end
+
       let(:service) { MergeRequests::UpdateService.new(project, user, opts) }
 
       before do
         service.stub(:execute_hooks)
 
         @merge_request = service.execute(merge_request)
+        @merge_request.reload
       end
 
       it { @merge_request.should be_valid }
@@ -46,7 +48,7 @@ describe MergeRequests::UpdateService do
       end
 
       it 'should create system note about merge_request reassign' do
-        note = @merge_request.notes.last
+        note = @merge_request.notes.reload.last
         note.note.should include "Reassigned to \@#{user2.username}"
       end
     end

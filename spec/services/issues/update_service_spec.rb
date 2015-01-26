@@ -22,6 +22,7 @@ describe Issues::UpdateService do
         }
 
         @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
+        @issue.reload
       end
 
       it { @issue.should be_valid }
