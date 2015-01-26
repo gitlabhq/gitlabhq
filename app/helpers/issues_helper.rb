@@ -16,7 +16,7 @@ module IssuesHelper
   def url_for_project_issues(project = @project)
     return '' if project.nil?
 
-    if project.using_issue_tracker?
+    if project.default_issues_tracker?
       project_issues_path(project)
     else
       project.external_issue_tracker.project_url
@@ -26,7 +26,7 @@ module IssuesHelper
   def url_for_new_issue(project = @project)
     return '' if project.nil?
 
-    if project.using_issue_tracker?
+    if project.default_issues_tracker?
       url = new_project_issue_path project_id: project
     else
       project.external_issue_tracker.new_issue_url
@@ -36,7 +36,7 @@ module IssuesHelper
   def url_for_issue(issue_iid, project = @project)
     return '' if project.nil?
 
-    if project.using_issue_tracker?
+    if project.default_issues_tracker?
       url = project_issue_url project_id: project, id: issue_iid
     else
       url = project.external_issue_tracker.issues_url

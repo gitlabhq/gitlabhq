@@ -308,11 +308,14 @@ class Project < ActiveRecord::Base
   end
 
   def default_issues_tracker?
-    self.issues_tracker == Project.issues_tracker.default_value
-  end
-
-  def external_issues_tracker_enabled?
-    external_issues_trackers.any?
+    if external_issue_tracker
+      false
+    else
+      unless self.issues_tracker == Project.issues_tracker.default_value
+        self.update_attributes(issues_tracker: Project.issues_tracker.default_value)
+      end
+      true
+    end
   end
 
   def external_issues_trackers
@@ -321,10 +324,6 @@ class Project < ActiveRecord::Base
 
   def external_issue_tracker
     @external_issues_tracker ||= external_issues_trackers.select(&:activated?).first
-  end
-
-  def using_issue_tracker?
-    default_issues_tracker? || !external_issues_tracker_enabled?
   end
 
   def can_have_issues_tracker_id?

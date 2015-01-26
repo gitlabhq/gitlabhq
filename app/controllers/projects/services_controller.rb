@@ -17,6 +17,9 @@ class Projects::ServicesController < Projects::ApplicationController
 
   def update
     if @service.update_attributes(service_params)
+      if @service.activated? && @service.category == :issue_tracker
+        @project.update_attributes(issues_tracker: @service.to_param)
+      end
       redirect_to edit_project_service_path(@project, @service.to_param),
        notice: 'Successfully updated.'
     else
