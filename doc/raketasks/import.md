@@ -19,16 +19,15 @@ your repositories are located by looking at `config/gitlab.yml` under the `gitla
 New folder needs to have git user ownership and read/write/execute access for git user and its group:
 
 ```
-# Replace /var/opt/gitlab/git-data with /home/git if you are using an
-# installation from source.
 sudo -u git mkdir /var/opt/gitlab/git-data/repositories/new_group
 ```
+
+If you are using an installation from source, replace `/var/opt/gitlab/git-data`
+with `/home/git`.
 
 ### Copy your bare repositories inside this newly created folder:
 
 ```
-# Replace /var/opt/gitlab/git-data with /home/git if you are using an
-# installation from source.
 sudo cp -r /old/git/foo.git /var/opt/gitlab/git-data/repositories/new_group/
 
 # Do this once when you are done copying git repositories
@@ -36,6 +35,9 @@ sudo chown -R git:git /var/opt/gitlab/git-data/repositories/new_group/
 ```
 
 `foo.git` needs to be owned by the git user and git users group.
+
+If you are using an installation from source, replace `/var/opt/gitlab/git-data`
+with `/home/git`.
 
 ### Run the command below depending on your type of installation:
 
