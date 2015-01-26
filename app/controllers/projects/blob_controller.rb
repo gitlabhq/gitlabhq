@@ -28,7 +28,7 @@ class Projects::BlobController < Projects::ApplicationController
       redirect_to project_blob_path(@project, File.join(@ref, file_path))
     else
       flash[:alert] = result[:message]
-      render :show
+      render :new
     end
   end
 
@@ -53,7 +53,7 @@ class Projects::BlobController < Projects::ApplicationController
       redirect_to after_edit_path
     else
       flash[:alert] = result[:message]
-      render :show
+      render :edit
     end
   end
 
