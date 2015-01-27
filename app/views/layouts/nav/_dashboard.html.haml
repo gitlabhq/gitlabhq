@@ -5,24 +5,24 @@
       %span
         Activity
   = nav_link(path: 'dashboard#projects') do
-    = link_to projects_dashboard_path, class: 'shortcuts-projects' do
+    = link_to projects_dashboard_path, title: 'Projects', class: 'shortcuts-projects' do
       %i.fa.fa-cube
       %span
         Projects
   = nav_link(path: 'dashboard#issues') do
-    = link_to assigned_issues_dashboard_path, class: 'shortcuts-issues' do
+    = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'shortcuts-issues' do
       %i.fa.fa-exclamation-circle
       %span
         Issues
         %span.count= current_user.assigned_issues.opened.count
   = nav_link(path: 'dashboard#merge_requests') do
-    = link_to assigned_mrs_dashboard_path, class: 'shortcuts-merge_requests' do
+    = link_to assigned_mrs_dashboard_path, title: 'Merge Requests', class: 'shortcuts-merge_requests' do
       %i.fa.fa-tasks
       %span
         Merge Requests
         %span.count= current_user.assigned_merge_requests.opened.count
   = nav_link(controller: :help) do
-    = link_to help_path do
+    = link_to help_path, title: 'Help' do
       %i.fa.fa-question-circle
       %span
         Help
