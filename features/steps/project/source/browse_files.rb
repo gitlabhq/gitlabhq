@@ -166,6 +166,17 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     expect(page).to have_content('Your changes could not be committed')
   end
 
+  step 'I create bare repo' do
+    click_link 'Create empty bare repository'
+  end
+
+  step 'I click on "add a file" link' do
+    click_link 'add a file'
+
+    # Remove pre-receive hook so we can push without auth
+    FileUtils.rm(File.join(Project.last.repository.path, 'hooks', 'pre-receive'))
+  end
+
   private
 
   def set_new_content
