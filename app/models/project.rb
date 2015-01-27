@@ -74,7 +74,12 @@ class Project < ActiveRecord::Base
   has_one :bamboo_service, dependent: :destroy
   has_one :teamcity_service, dependent: :destroy
   has_one :pushover_service, dependent: :destroy
-  has_one :forked_project_link, dependent: :destroy, foreign_key: 'forked_to_project_id'
+  has_one :jira_service, dependent: :destroy
+  has_one :redmine_service, dependent: :destroy
+  has_one :custom_issue_tracker_service, dependent: :destroy
+
+  has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
+
   has_one :forked_from_project, through: :forked_project_link
   # Merge Requests for target project should be removed with it
   has_many :merge_requests,     dependent: :destroy, foreign_key: 'target_project_id'
@@ -144,7 +149,7 @@ class Project < ActiveRecord::Base
   scope :public_and_internal_only, -> { where(visibility_level: Project.public_and_internal_levels) }
   scope :non_archived, -> { where(archived: false) }
 
-  enumerize :issues_tracker, in: (Gitlab.config.issues_tracker.keys).append(:gitlab), default: :gitlab
+  enumerize :issues_tracker, in: (Service.issue_tracker_service_list).append(:gitlab), default: :gitlab
 
   state_machine :import_status, initial: :none do
     event :import_start do
@@ -305,19 +310,34 @@ class Project < ActiveRecord::Base
   end
 
   def issue_exists?(issue_id)
-    if used_default_issues_tracker?
+    if default_issues_tracker?
       self.issues.where(iid: issue_id).first.present?
     else
       true
     end
   end
 
-  def used_default_issues_tracker?
-    self.issues_tracker == Project.issues_tracker.default_value
+  def default_issues_tracker?
+    if external_issue_tracker
+      false
+    else
+      unless self.issues_tracker == Project.issues_tracker.default_value
+        self.update_attributes(issues_tracker: Project.issues_tracker.default_value)
+      end
+      true
+    end
+  end
+
+  def external_issues_trackers
+    services.select { |service| service.issue_tracker? }
+  end
+
+  def external_issue_tracker
+    @external_issues_tracker ||= external_issues_trackers.select(&:activated?).first
   end
 
   def can_have_issues_tracker_id?
-    self.issues_enabled && !self.used_default_issues_tracker?
+    self.issues_enabled && !self.default_issues_tracker?
   end
 
   def build_missing_services
@@ -332,7 +352,7 @@ class Project < ActiveRecord::Base
 
   def available_services_names
     %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla
-       emails_on_push gemnasium slack pushover buildbox bamboo teamcity)
+       emails_on_push gemnasium slack pushover buildbox bamboo teamcity jira redmine custom_issue_tracker)
   end
 
   def gitlab_ci?

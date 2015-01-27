@@ -16,45 +16,38 @@ module IssuesHelper
   def url_for_project_issues(project = @project)
     return '' if project.nil?
 
-    if project.used_default_issues_tracker? || !external_issues_tracker_enabled?
+    if project.default_issues_tracker?
       project_issues_path(project)
     else
-      url = Gitlab.config.issues_tracker[project.issues_tracker]['project_url']
-      url.gsub(':project_id', project.id.to_s).
-          gsub(':issues_tracker_id', project.issues_tracker_id.to_s)
+      project.external_issue_tracker.project_url
     end
   end
 
   def url_for_new_issue(project = @project)
     return '' if project.nil?
 
-    if project.used_default_issues_tracker? || !external_issues_tracker_enabled?
+    if project.default_issues_tracker?
       url = new_project_issue_path project_id: project
     else
-      issues_tracker = Gitlab.config.issues_tracker[project.issues_tracker]
-      url = issues_tracker['new_issue_url']
-      url.gsub(':project_id', project.id.to_s).
-          gsub(':issues_tracker_id', project.issues_tracker_id.to_s)
+      project.external_issue_tracker.new_issue_url
     end
   end
 
   def url_for_issue(issue_iid, project = @project)
     return '' if project.nil?
 
-    if project.used_default_issues_tracker? || !external_issues_tracker_enabled?
+    if project.default_issues_tracker?
       url = project_issue_url project_id: project, id: issue_iid
     else
-      url = Gitlab.config.issues_tracker[project.issues_tracker]['issues_url']
-      url.gsub(':id', issue_iid.to_s).
-          gsub(':project_id', project.id.to_s).
-          gsub(':issues_tracker_id', project.issues_tracker_id.to_s)
+      url = project.external_issue_tracker.issues_url
+      url.gsub(':id', issue_iid.to_s)
     end
   end
 
   def title_for_issue(issue_iid, project = @project)
     return '' if project.nil?
 
-    if project.used_default_issues_tracker?
+    if project.default_issues_tracker?
       issue = project.issues.where(iid: issue_iid).first
       return issue.title if issue
     end
@@ -75,11 +68,6 @@ module IssuesHelper
       end
     end
     ts.html_safe
-  end
-
-  # Checks if issues_tracker setting exists in gitlab.yml
-  def external_issues_tracker_enabled?
-    Gitlab.config.issues_tracker && Gitlab.config.issues_tracker.values.any?
   end
 
   def bulk_update_milestone_options

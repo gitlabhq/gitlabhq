@@ -198,16 +198,16 @@ describe Project do
     end
   end
 
-  describe :used_default_issues_tracker? do
+  describe :default_issues_tracker? do
     let(:project) { create(:project) }
     let(:ext_project) { create(:redmine_project) }
 
-    it 'should be true if used internal tracker' do
-      project.used_default_issues_tracker?.should be_true
+    it "should be true if used internal tracker" do
+      project.default_issues_tracker?.should be_true
     end
 
-    it 'should be false if used other tracker' do
-      ext_project.used_default_issues_tracker?.should be_false
+    it "should be false if used other tracker" do
+      ext_project.default_issues_tracker?.should be_false
     end
   end
 

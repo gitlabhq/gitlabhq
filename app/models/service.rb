@@ -86,4 +86,12 @@ class Service < ActiveRecord::Base
   def async_execute(data)
     Sidekiq::Client.enqueue(ProjectServiceWorker, id, data)
   end
+
+  def issue_tracker?
+    self.category == :issue_tracker
+  end
+
+  def self.issue_tracker_service_list
+    Service.select(&:issue_tracker?).map{ |s| s.to_param }
+  end
 end

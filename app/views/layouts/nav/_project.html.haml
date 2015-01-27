@@ -38,7 +38,7 @@
         %i.fa.fa-exclamation-circle
         %span
           Issues
-          - if @project.used_default_issues_tracker?
+          - if @project.default_issues_tracker?
             %span.count.issue_counter= @project.issues.opened.count
 
   - if project_nav_tab? :merge_requests
