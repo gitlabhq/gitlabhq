@@ -58,11 +58,13 @@ module API
       #   ref_name (optional) - The name of a repository branch or tag, if not given the default branch is used
       # Example Request:
       #   GET /projects/:id/repository/tree
-      get ":id/repository/tree" do
+      get ':id/repository/tree' do
         ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
         path = params[:path] || nil
 
         commit = user_project.repository.commit(ref)
+        not_found!('Tree') unless commit
+
         tree = user_project.repository.tree(commit.id, path)
 
         present tree.sorted_entries, with: Entities::RepoTreeObject
@@ -100,14 +102,18 @@ module API
       #   sha (required) - The blob's sha
       # Example Request:
       #   GET /projects/:id/repository/raw_blobs/:sha
-      get ":id/repository/raw_blobs/:sha" do
+      get ':id/repository/raw_blobs/:sha' do
         ref = params[:sha]
 
         repo = user_project.repository
 
-        blob = Gitlab::Git::Blob.raw(repo, ref)
+        begin
+          blob = Gitlab::Git::Blob.raw(repo, ref)
+        rescue
+          not_found! 'Blob'
+        end
 
-        not_found! "Blob" unless blob
+        not_found! 'Blob' unless blob
 
         env['api.format'] = :txt
 
@@ -122,13 +128,23 @@ module API
       #   sha (optional) - the commit sha to download defaults to the tip of the default branch
       # Example Request:
       #   GET /projects/:id/repository/archive
-      get ":id/repository/archive", requirements: { format: Gitlab::Regex.archive_formats_regex } do
+      get ':id/repository/archive',
+          requirements: { format: Gitlab::Regex.archive_formats_regex } do
         authorize! :download_code, user_project
-        file_path = ArchiveRepositoryService.new.execute(user_project, params[:sha], params[:format])
+
+        begin
+          file_path = ArchiveRepositoryService.new.execute(
+              user_project,
+              params[:sha],
+              params[:format])
+        rescue
+          not_found!('File')
+        end
 
         if file_path && File.exists?(file_path)
           data = File.open(file_path, 'rb').read
-          header["Content-Disposition"] = "attachment; filename=\"#{File.basename(file_path)}\""
+          basename = File.basename(file_path)
+          header['Content-Disposition'] = "attachment; filename=\"#{basename}\""
           content_type MIME::Types.type_for(file_path).first.content_type
           env['api.format'] = :binary
           present data
@@ -161,7 +177,12 @@ module API
       get ':id/repository/contributors' do
         authorize! :download_code, user_project
 
-        present user_project.repository.contributors, with: Entities::Contributor
+        begin
+          present user_project.repository.contributors,
+                  with: Entities::Contributor
+        rescue
+          not_found!
+        end
       end
     end
   end
