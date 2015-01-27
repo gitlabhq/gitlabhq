@@ -59,6 +59,7 @@ v 7.8.0
   - 
   - 
   - 
+  - Added support for firing system hooks on group create/destroy and adding/removing users to group (Boyan Tabakov)
 
 v 7.7.1
   - Improve mention autocomplete performance
