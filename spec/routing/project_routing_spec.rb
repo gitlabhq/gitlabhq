@@ -430,21 +430,17 @@ describe Projects::TreeController, 'routing' do
   end
 end
 
-describe Projects::EditTreeController, 'routing' do
-  it 'to #show' do
+describe Projects::BlobController, 'routing' do
+  it 'to #edit' do
     get('/gitlab/gitlabhq/edit/master/app/models/project.rb').should(
-      route_to('projects/edit_tree#show',
+      route_to('projects/blob#edit',
                project_id: 'gitlab/gitlabhq',
                id: 'master/app/models/project.rb'))
-    get('/gitlab/gitlabhq/edit/master/app/models/project.rb/preview').should(
-      route_to('projects/edit_tree#show',
-               project_id: 'gitlab/gitlabhq',
-               id: 'master/app/models/project.rb/preview'))
   end
 
   it 'to #preview' do
-    post('/gitlab/gitlabhq/edit/master/app/models/project.rb/preview').should(
-      route_to('projects/edit_tree#preview',
+    post('/gitlab/gitlabhq/preview/master/app/models/project.rb').should(
+      route_to('projects/blob#preview',
                project_id: 'gitlab/gitlabhq',
                id: 'master/app/models/project.rb'))
   end
