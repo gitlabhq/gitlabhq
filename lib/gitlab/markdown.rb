@@ -220,9 +220,8 @@ module Gitlab
           link_to("#{prefix_text}##{identifier}", url, options)
         end
       else
-        external_issue_tracker = project.external_issue_tracker
-        if external_issue_tracker.present?
-          reference_external_issue(identifier, external_issue_tracker, project,
+        if project.external_issue_tracker.present?
+          reference_external_issue(identifier, project,
                                    prefix_text)
         end
       end
@@ -266,10 +265,10 @@ module Gitlab
       end
     end
 
-    def reference_external_issue(identifier, issue_tracker, project = @project,
+    def reference_external_issue(identifier, project = @project,
                                  prefix_text = nil)
       url = url_for_issue(identifier, project)
-      title = issue_tracker.title
+      title = project.external_issue_tracker.title
 
       options = html_options.merge(
         title: "Issue in #{title}",
