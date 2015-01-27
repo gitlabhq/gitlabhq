@@ -27,7 +27,6 @@ describe AsanaService, models: true do
       end
 
       it { should validate_presence_of :api_key }
-      it { should validate_presence_of :restrict_to_branch }
     end
   end
 
