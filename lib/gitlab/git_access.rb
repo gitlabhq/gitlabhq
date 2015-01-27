@@ -128,6 +128,10 @@ module Gitlab
 
       # Check commit messages unless its branch removal
       if git_hook.commit_validation? && newrev !~ /00000000/
+        if oldrev == Gitlab::Git::BLANK_SHA
+          oldrev = project.default_branch
+        end
+
         commits = project.repository.commits_between(oldrev, newrev)
         commits.each do |commit|
           if git_hook.commit_message_regex.present?
