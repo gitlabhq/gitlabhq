@@ -187,7 +187,7 @@ describe NotificationService do
   end
 
   describe 'Issues' do
-    let(:issue) { create :issue, assignee: create(:user) }
+    let(:issue) { create :issue, assignee: create(:user), description: 'cc @participant' }
 
     before do
       build_team(issue.project)
@@ -197,6 +197,7 @@ describe NotificationService do
       it do
         should_email(issue.assignee_id)
         should_email(@u_watcher.id)
+        should_email(@u_participant_mentioned.id)
         should_not_email(@u_mentioned.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
@@ -222,6 +223,7 @@ describe NotificationService do
       it 'should email new assignee' do
         should_email(issue.assignee_id)
         should_email(@u_watcher.id)
+        should_email(@u_participant_mentioned.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
 
@@ -242,6 +244,7 @@ describe NotificationService do
         should_email(issue.assignee_id)
         should_email(issue.author_id)
         should_email(@u_watcher.id)
+        should_email(@u_participant_mentioned.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
 
@@ -262,6 +265,7 @@ describe NotificationService do
         should_email(issue.assignee_id)
         should_email(issue.author_id)
         should_email(@u_watcher.id)
+        should_email(@u_participant_mentioned.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
 
@@ -404,6 +408,7 @@ describe NotificationService do
   def build_team(project)
     @u_watcher = create(:user, notification_level: Notification::N_WATCH)
     @u_participating = create(:user, notification_level: Notification::N_PARTICIPATING)
+    @u_participant_mentioned = create(:user, username: 'participant', notification_level: Notification::N_PARTICIPATING)
     @u_disabled = create(:user, notification_level: Notification::N_DISABLED)
     @u_mentioned = create(:user, username: 'mention', notification_level: Notification::N_MENTION)
     @u_committer = create(:user, username: 'committer')

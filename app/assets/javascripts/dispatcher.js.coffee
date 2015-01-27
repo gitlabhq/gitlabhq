@@ -96,6 +96,7 @@ class Dispatcher
         new Profile()
       when 'projects'
         new Project()
+        new ProjectAvatar()
         switch path[1]
           when 'edit'
             shortcut_handler = new ShortcutsNavigation()

@@ -1,5 +1,7 @@
 - empty_repo = @project.empty_repo?
 .project-home-panel{:class => ("empty-project" if empty_repo)}
+  .project-identicon-holder
+    = project_icon(@project.to_param, alt: '', class: 'avatar')
   .project-home-row
     .project-home-desc
       - if @project.description.present?

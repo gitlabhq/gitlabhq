@@ -175,7 +175,11 @@ module ProjectsHelper
                 "Issues - " + title
               end
             elsif current_controller?(:blob)
-              "#{@project.path}\/#{@blob.path} at #{@ref} - " + title
+              if current_action?(:new) || current_action?(:create)
+                "New file at #{@ref}"
+              elsif @blob
+                "Edit file #{@blob.path} at #{@ref}"
+              end
             elsif current_controller?(:commits)
               "Commits at #{@ref} - " + title
             elsif current_controller?(:merge_requests)

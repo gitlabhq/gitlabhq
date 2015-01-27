@@ -3,8 +3,8 @@
     .input-group
       = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'dash-filter form-control'
       - if current_user.can_create_project?
-        .input-group-addon
-          = link_to new_project_path, class: "" do
+        .input-group-addon.dash-new-project
+          = link_to new_project_path do
             %strong New project
 
   %ul.well-list.dash-list

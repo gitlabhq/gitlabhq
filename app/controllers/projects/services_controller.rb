@@ -29,9 +29,13 @@ class Projects::ServicesController < Projects::ApplicationController
 
   def test
     data = Gitlab::PushDataBuilder.build_sample(project, current_user)
-    @service.execute(data)
+    if @service.execute(data)
+      message = { notice: 'We sent a request to the provided URL' }
+    else
+      message = { alert: 'We tried to send a request to the provided URL but error occured' }
+    end
 
-    redirect_to :back
+    redirect_to :back, message
   end
 
   private

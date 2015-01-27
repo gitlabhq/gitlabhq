@@ -78,7 +78,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click link "Diff"' do
-    click_link 'Diff'
+    click_link 'Preview changes'
   end
 
   step 'I click on "Commit Changes"' do

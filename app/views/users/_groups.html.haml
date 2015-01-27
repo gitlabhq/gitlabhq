@@ -1,4 +1,4 @@
 .clearfix
   - groups.each do |group|
     = link_to group, class: 'profile-groups-avatars', title: group.name do
-      = image_tag group_icon(group.path), class: 'avatar s40'
+      = image_tag group_icon(group.path), class: 'avatar avatar-inline s40'
