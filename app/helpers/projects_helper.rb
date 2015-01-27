@@ -189,6 +189,8 @@ module ProjectsHelper
             elsif current_controller?(:blob)
               if current_action?(:new) || current_action?(:create)
                 "New file at #{@ref}"
+              elsif current_action?(:show)
+                "#{@blob.path} at #{@ref}"
               elsif @blob
                 "Edit file #{@blob.path} at #{@ref}"
               end
