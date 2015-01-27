@@ -11,7 +11,7 @@
         = editing_preview_title(@blob.name)
 
   = form_tag(project_update_blob_path(@project, @id), method: :put, class: "form-horizontal") do
-    = render 'projects/blob_editor', ref: @ref, path: @path, blob_data: @blob.data
+    = render 'projects/blob/editor', ref: @ref, path: @path, blob_data: @blob.data
     = render 'shared/commit_message_container', params: params,
              placeholder: "Update #{@blob.name}"
     = hidden_field_tag 'last_commit', @last_commit
@@ -21,42 +21,4 @@
               cancel_path: @after_edit_path
 
 :javascript
-  ace.config.set("modePath", gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}/ace")
-  ace.config.loadModule("ace/ext/searchbox");
-  var ace_mode = "#{@blob.language.try(:ace_mode)}";
-  var editor = ace.edit("editor");
-  if (ace_mode) {
-    editor.getSession().setMode('ace/mode/' + ace_mode);
-  }
-
-  disableButtonIfEmptyField("#commit_message", ".js-commit-button");
-
-  $(".js-commit-button").click(function(){
-    $("#file-content").val(editor.getValue());
-    $(".file-editor form").submit();
-  });
-
-  var editModePanes = $('.js-edit-mode-pane'),
-      editModeLinks = $('.js-edit-mode a');
-
-  editModeLinks.click(function(event) {
-    event.preventDefault();
-
-    var currentLink = $(this),
-        paneId = currentLink.attr('href'),
-        currentPane = editModePanes.filter(paneId);
-
-    editModeLinks.parent().removeClass('active hover');
-    currentLink.parent().addClass('active hover');
-    editModePanes.hide();
-
-    if (paneId == '#preview') {
-      currentPane.fadeIn(200);
-      $.post(currentLink.data('preview-url'), { content: editor.getValue() }, function(response) {
-        currentPane.empty().append(response);
-      })
-    } else {
-      currentPane.fadeIn(200);
-      editor.focus()
-    }
-  })
+  new EditBlob(gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}", "#{@blob.language.try(:ace_mode)}")

@@ -31,4 +31,26 @@
       margin: 5px 8px 0 8px;
     }
   }
+
+  .file-title {
+    @extend .monospace;
+    font-size: 14px;
+  }
+
+  .editor-ref {
+    background: #fafafa;
+    padding: 18px 15px;
+    padding-left: 25px;
+    border-right: 1px solid #CCC;
+    display: inline-block;
+    margin: -10px -15px;
+    margin-right: 10px;
+  }
+
+  .editor-file-name {
+    .new-file-name {
+      display: inline-block;
+      width: 200px;
+    }
+  }
 }
