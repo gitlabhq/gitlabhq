@@ -1,5 +1,7 @@
 class IssueTrackerService < Service
 
+  validates :project_url, :issues_url, :new_issue_url, presence: true, if: :activated?
+
   def category
     :issue_tracker
   end
@@ -34,6 +36,8 @@ class IssueTrackerService < Service
           issues_url: issues_tracker['issues_url'],
           new_issue_url: issues_tracker['new_issue_url']
         }
+      else
+        self.properties = {}
       end
     end
   end

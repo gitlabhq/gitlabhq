@@ -319,7 +319,7 @@ class Project < ActiveRecord::Base
   end
 
   def external_issues_trackers
-    services.select { |service| service.category == :issue_tracker }
+    services.select { |service| service.issue_tracker? }
   end
 
   def external_issue_tracker
