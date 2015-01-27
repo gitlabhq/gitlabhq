@@ -10,8 +10,8 @@
     border: none;
     border-radius: 0;
     font-family: $monospace_font;
-    font-size: 12px !important;
-    line-height: 16px !important;
+    font-size: $code_font_size !important;
+    line-height: 1.4 !important;
     margin: 0;
     overflow: auto;
     overflow-y: hidden;
@@ -38,8 +38,8 @@
     a {
       font-family: $monospace_font;
       display: block;
-      font-size: 12px !important;
-      line-height: 16px !important;
+      font-size: $code_font_size !important;
+      line-height: 1.4 !important;
       white-space: nowrap;
 
       i {
