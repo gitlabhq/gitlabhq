@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GithubImportsController do
+describe Importers::GithubsController do
   let(:user) { create(:user, github_access_token: 'asd123') }
 
   before do
@@ -16,7 +16,7 @@ describe GithubImportsController do
       get :callback
       
       user.reload.github_access_token.should == token
-      controller.should redirect_to(status_github_import_url)
+      controller.should redirect_to(status_importers_github_url)
     end
   end
 

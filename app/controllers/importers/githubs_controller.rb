@@ -1,4 +1,4 @@
-class GithubImportsController < ApplicationController
+class Importers::GithubsController < ApplicationController
   before_filter :github_auth, except: :callback
 
   rescue_from Octokit::Unauthorized, with: :github_unauthorized
@@ -7,7 +7,7 @@ class GithubImportsController < ApplicationController
     token = client.auth_code.get_token(params[:code]).token
     current_user.github_access_token = token
     current_user.save
-    redirect_to status_github_import_url
+    redirect_to status_importers_github_url
   end
 
   def status
@@ -69,7 +69,7 @@ class GithubImportsController < ApplicationController
 
   def go_to_github_for_permissions
     redirect_to client.auth_code.authorize_url({
-      redirect_uri: callback_github_import_url,
+      redirect_uri: callback_importers_github_url,
       scope: "repo, user, user:email"
     })
   end
