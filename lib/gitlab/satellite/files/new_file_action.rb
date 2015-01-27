@@ -15,12 +15,12 @@ module Gitlab
 
           # create target branch in satellite at the corresponding commit from bare repo
           current_ref =
-            if repo.commits.any?
-              repo.git.checkout({raise: true, timeout: true, b: true}, ref, "origin/#{ref}")
-              ref
-            else
+            if @project.empty_repo?
               # skip this step if we want to add first file to empty repo
               Satellite::PARKING_BRANCH
+            else
+              repo.git.checkout({raise: true, timeout: true, b: true}, ref, "origin/#{ref}")
+              ref
             end
 
           file_path_in_satellite = File.join(repo.working_dir, file_path)
