@@ -48,7 +48,7 @@ describe MergeRequests::UpdateService do
       end
 
       it 'should create system note about merge_request reassign' do
-        note = @merge_request.notes.reload.last
+        note = @merge_request.notes.last
         note.note.should include "Reassigned to \@#{user2.username}"
       end
     end
