@@ -5,8 +5,8 @@ v 7.8.0
   - Make project search case insensitive (Hannes Rosenögger)
   - Include issue/mr participants in list of recipients for reassign/close/reopen emails
   - Expose description in groups API
-  - 
-  - 
+  - Better UI for project services page
+  - Cleaner UI for web editor
   - Add diff syntax highlighting in email-on-push service notifications (Hannes Rosenögger)
   - 
   - 
