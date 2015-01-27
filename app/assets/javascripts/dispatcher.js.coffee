@@ -100,6 +100,7 @@ class Dispatcher
         switch path[1]
           when 'edit'
             shortcut_handler = new ShortcutsNavigation()
+            new ProjectNew()
           when 'new'
             new ProjectNew()
           when 'show'
