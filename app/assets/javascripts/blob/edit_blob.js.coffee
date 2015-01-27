@@ -6,6 +6,7 @@ class @EditBlob
       ace_mode = mode
     editor = ace.edit("editor")
     editor.focus()
+    @editor = editor
 
     if ace_mode
       editor.getSession().setMode "ace/mode/" + ace_mode
@@ -38,3 +39,6 @@ class @EditBlob
         currentPane.fadeIn 200
         editor.focus()
       return
+
+  editor: ->
+    return @editor

@@ -9,4 +9,4 @@
               cancel_path: project_tree_path(@project, @id)
 
 :javascript
-  new NewBlob(gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}", null)
+  blob = new NewBlob(gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}", null)

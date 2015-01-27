@@ -35,15 +35,15 @@
   .file-title {
     @extend .monospace;
     font-size: 14px;
+    padding: 5px;
   }
 
   .editor-ref {
-    background: #fafafa;
-    padding: 18px 15px;
-    padding-left: 25px;
+    background: #f5f5f5;
+    padding: 11px 15px;
     border-right: 1px solid #CCC;
     display: inline-block;
-    margin: -10px -15px;
+    margin: -5px -5px;
     margin-right: 10px;
   }
 

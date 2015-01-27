@@ -6,6 +6,7 @@ class @NewBlob
       ace_mode = mode
     editor = ace.edit("editor")
     editor.focus()
+    @editor = editor
 
     if ace_mode
       editor.getSession().setMode "ace/mode/" + ace_mode
@@ -15,3 +16,6 @@ class @NewBlob
       $("#file-content").val editor.getValue()
       $(".file-editor form").submit()
       return
+
+  editor: ->
+    return @editor

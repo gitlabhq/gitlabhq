@@ -21,4 +21,4 @@
               cancel_path: @after_edit_path
 
 :javascript
-  new EditBlob(gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}", "#{@blob.language.try(:ace_mode)}")
+  blob = new EditBlob(gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}", "#{@blob.language.try(:ace_mode)}")
