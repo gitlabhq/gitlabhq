@@ -76,6 +76,9 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
 EOS
 ```
 
+If you are getting 'Connection Refused' errors when trying to connect to the LDAP server please double-check the LDAP `port` and `method` settings used by GitLab.
+Common combinations are `method: 'plain'` and `port: 389`, OR `method: 'ssl'` and `port: 636`.
+
 If you are using a GitLab installation from source you can find the LDAP settings in `/home/git/gitlab/config/gitlab.yml`:
 
 ```
