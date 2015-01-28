@@ -40,14 +40,15 @@
       %span
         Background Jobs
 
-  = nav_link(controller: :application_settings) do
-    = link_to admin_application_settings_path, title: 'Settings' do
-      %i.fa.fa-cogs
-      %span
-        Settings
-
   = nav_link(controller: :applications) do
     = link_to admin_applications_path, title: 'Applications' do
       %i.fa.fa-cloud
       %span
         Applications
+
+  = nav_link(controller: :application_settings, html_options: { class: 'separate-item'}) do
+    = link_to admin_application_settings_path, title: 'Settings' do
+      %i.fa.fa-cogs
+      %span
+        Settings
+
