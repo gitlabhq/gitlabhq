@@ -9,7 +9,7 @@ class Projects::ServicesController < Projects::ApplicationController
 
   def index
     @project.build_missing_services
-    @services = @project.services.reload
+    @services = @project.services.where.not(type: 'GitlabIssueTrackerService').reload
   end
 
   def edit
@@ -17,9 +17,6 @@ class Projects::ServicesController < Projects::ApplicationController
 
   def update
     if @service.update_attributes(service_params)
-      if @service.activated? && @service.issue_tracker?
-        @project.update_attributes(issues_tracker: @service.to_param)
-      end
       redirect_to edit_project_service_path(@project, @service.to_param),
        notice: 'Successfully updated.'
     else

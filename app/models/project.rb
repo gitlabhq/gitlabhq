@@ -77,6 +77,7 @@ class Project < ActiveRecord::Base
   has_one :jira_service, dependent: :destroy
   has_one :redmine_service, dependent: :destroy
   has_one :custom_issue_tracker_service, dependent: :destroy
+  has_one :gitlab_issue_tracker_service, dependent: :destroy
 
   has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
 
@@ -148,8 +149,6 @@ class Project < ActiveRecord::Base
   scope :public_only, -> { where(visibility_level: Project::PUBLIC) }
   scope :public_and_internal_only, -> { where(visibility_level: Project.public_and_internal_levels) }
   scope :non_archived, -> { where(archived: false) }
-
-  enumerize :issues_tracker, in: (Service.issue_tracker_service_list).append(:gitlab), default: :gitlab
 
   state_machine :import_status, initial: :none do
     event :import_start do
@@ -317,19 +316,32 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def default_issue_tracker
+    unless gitlab_issue_tracker_service
+      create_gitlab_issue_tracker_service
+    end
+
+    gitlab_issue_tracker_service
+  end
+
+  def issues_tracker
+    if external_issue_tracker
+      external_issue_tracker
+    else
+      default_issue_tracker
+    end
+  end
+
   def default_issues_tracker?
     if external_issue_tracker
       false
     else
-      unless self.issues_tracker == Project.issues_tracker.default_value
-        self.update_attributes(issues_tracker: Project.issues_tracker.default_value)
-      end
       true
     end
   end
 
   def external_issues_trackers
-    services.select { |service| service.issue_tracker? }
+    services.select(&:issue_tracker?).reject(&:default?)
   end
 
   def external_issue_tracker

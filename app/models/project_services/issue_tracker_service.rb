@@ -6,6 +6,10 @@ class IssueTrackerService < Service
     :issue_tracker
   end
 
+  def default?
+    false
+  end
+
   def project_url
     # implement inside child
   end
