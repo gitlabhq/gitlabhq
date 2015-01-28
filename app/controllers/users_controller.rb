@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  skip_before_filter :authenticate_user!, only: [:show]
+  skip_before_filter :authenticate_user!, only: [:show, :activities]
   layout :determine_layout
 
   def show
@@ -10,7 +10,8 @@ class UsersController < ApplicationController
     end
 
     # Projects user can view
-    authorized_projects_ids = ProjectsFinder.new.execute(current_user).pluck(:id)
+    visible_projects = ProjectsFinder.new.execute(current_user)
+    authorized_projects_ids = visible_projects.pluck(:id)
 
     @projects = @user.personal_projects.
       where(id: authorized_projects_ids)
@@ -24,10 +25,30 @@ class UsersController < ApplicationController
 
     @title = @user.name
 
+    user_repositories = visible_projects.map(&:repository)
+    @timestamps = Gitlab::CommitsCalendar.create_timestamp(user_repositories,
+                                                           @user, false)
+    @starting_year = Gitlab::CommitsCalendar.starting_year(@timestamps)
+    @starting_month = Gitlab::CommitsCalendar.starting_month(@timestamps)
+    @last_commit_date = Gitlab::CommitsCalendar.last_commit_date(@timestamps)
+
     respond_to do |format|
       format.html
       format.atom { render layout: false }
     end
+  end
+
+  def activities
+    user = User.find_by_username!(params[:username])
+    # Projects user can view
+    visible_projects = ProjectsFinder.new.execute(current_user)
+
+    user_repositories = visible_projects.map(&:repository)
+    user_activities = Gitlab::CommitsCalendar.create_timestamp(user_repositories,
+                                                               user, true)
+    user_activities = Gitlab::CommitsCalendar.commit_activity_match(
+                                              user_activities, params[:date])
+    render json: user_activities.to_json
   end
 
   def determine_layout
