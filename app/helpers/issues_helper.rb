@@ -16,32 +16,19 @@ module IssuesHelper
   def url_for_project_issues(project = @project)
     return '' if project.nil?
 
-    if project.default_issues_tracker?
-      project_issues_path(project)
-    else
-      project.external_issue_tracker.project_url
-    end
+    project.issues_tracker.project_url
   end
 
   def url_for_new_issue(project = @project)
     return '' if project.nil?
 
-    if project.default_issues_tracker?
-      url = new_project_issue_path project_id: project
-    else
-      project.external_issue_tracker.new_issue_url
-    end
+    project.issues_tracker.new_issue_url
   end
 
   def url_for_issue(issue_iid, project = @project)
     return '' if project.nil?
 
-    if project.default_issues_tracker?
-      url = project_issue_url project_id: project, id: issue_iid
-    else
-      url = project.external_issue_tracker.issues_url
-      url.gsub(':id', issue_iid.to_s)
-    end
+    project.issues_tracker.issue_url(issue_iid)
   end
 
   def title_for_issue(issue_iid, project = @project)

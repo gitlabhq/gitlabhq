@@ -23,6 +23,7 @@ describe GitlabMarkdownHelper do
     @project = project
     @ref = 'markdown'
     @repository = project.repository
+    @request.host = Gitlab.config.gitlab.host
   end
 
   describe "#gfm" do

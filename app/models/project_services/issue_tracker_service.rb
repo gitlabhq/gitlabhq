@@ -6,6 +6,10 @@ class IssueTrackerService < Service
     :issue_tracker
   end
 
+  def default?
+    false
+  end
+
   def project_url
     # implement inside child
   end
@@ -16,6 +20,10 @@ class IssueTrackerService < Service
 
   def new_issue_url
     # implement inside child
+  end
+
+  def issue_url(iid)
+    self.issues_url.gsub(':id', iid.to_s)
   end
 
   def fields
