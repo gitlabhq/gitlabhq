@@ -22,6 +22,10 @@ class IssueTrackerService < Service
     # implement inside child
   end
 
+  def issue_url(iid)
+    self.issues_url.gsub(':id', iid.to_s)
+  end
+
   def fields
     [
       { type: 'text', name: 'description', placeholder: description },
