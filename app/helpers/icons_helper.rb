@@ -1,21 +1,30 @@
 module IconsHelper
+  # Creates an icon tag given icon name(s) and possible icon modifiers.
+  #
+  # Right now this method simply delegates directly to `fa_icon` from the
+  # font-awesome-rails gem, but should we ever use a different icon pack in the
+  # future we won't have to change hundreds of method calls.
+  def icon(names, options = {})
+    fa_icon(names, options)
+  end
+
   def boolean_to_icon(value)
     if value.to_s == "true"
-      content_tag :i, nil, class: 'fa fa-circle cgreen'
+      icon('circle', class: 'cgreen')
     else
-      content_tag :i, nil, class: 'fa fa-power-off clgray'
+      icon('power-off', class: 'clgray')
     end
   end
 
   def public_icon
-    content_tag :i, nil, class: 'fa fa-globe'
+    icon('globe')
   end
 
   def internal_icon
-    content_tag :i, nil, class: 'fa fa-shield'
+    icon('shield')
   end
 
   def private_icon
-    content_tag :i, nil, class: 'fa fa-lock'
+    icon('lock')
   end
 end
