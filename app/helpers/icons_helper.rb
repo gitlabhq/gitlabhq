@@ -8,6 +8,15 @@ module IconsHelper
     fa_icon(names, options)
   end
 
+  def spinner(text = nil, visible = false)
+    css_class = 'loading'
+    css_class << ' hide' unless visible
+
+    content_tag :div, class: css_class do
+      icon('spinner spin') + text
+    end
+  end
+
   def boolean_to_icon(value)
     if value.to_s == "true"
       icon('circle', class: 'cgreen')
