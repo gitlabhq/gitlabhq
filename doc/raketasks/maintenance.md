@@ -8,7 +8,7 @@ This command gathers information about your GitLab installation and the System i
 # omnibus-gitlab
 sudo gitlab-rake gitlab:env:info
 
-# installation from source or cookbook
+# installation from source
 bundle exec rake gitlab:env:info RAILS_ENV=production
 ```
 
@@ -59,7 +59,7 @@ You may also have a look at our [Trouble Shooting Guide](https://github.com/gitl
 # omnibus-gitlab
 sudo gitlab-rake gitlab:check
 
-# installation from source or cookbook
+# installation from source
 bundle exec rake gitlab:check RAILS_ENV=production
 ```
 

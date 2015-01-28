@@ -13,7 +13,7 @@ You can only restore a backup to exactly the same version of GitLab that you cre
 # use this command if you've installed GitLab with the Omnibus package
 sudo gitlab-rake gitlab:backup:create
 
-# if you've installed GitLab from source or using the cookbook
+# if you've installed GitLab from source
 sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
 
@@ -147,7 +147,7 @@ You can only restore a backup to exactly the same version of GitLab that you cre
 # Omnibus package installation
 sudo gitlab-rake gitlab:backup:restore
 
-# installation from source or cookbook
+# installation from source
 bundle exec rake gitlab:backup:restore RAILS_ENV=production
 ```
 
@@ -192,7 +192,7 @@ Deleting tmp directories...[DONE]
 
 For Omnibus package installations, see https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#scheduling-a-backup .
 
-For installation from source or cookbook:
+For installation from source:
 ```
 cd /home/git/gitlab
 sudo -u git -H editor config/gitlab.yml # Enable keep_time in the backup section to automatically delete old backups
