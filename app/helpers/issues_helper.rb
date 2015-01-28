@@ -62,7 +62,7 @@ module IssuesHelper
       ts << capture_haml do
         haml_tag :span do
           haml_concat '&middot;'
-          haml_concat '<i class="fa fa-edit" title="edited"></i> '
+          haml_concat icon('edit', title: 'edited')
           haml_concat time_ago_with_tooltip(issue.updated_at, 'bottom', 'issue_edited_ago')
         end
       end

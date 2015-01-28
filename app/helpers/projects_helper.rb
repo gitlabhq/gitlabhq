@@ -83,7 +83,7 @@ module ProjectsHelper
                       ' Star'
                     end
 
-      content_tag('i', ' ', class: 'fa fa-star') + toggle_text
+      icon('star') + toggle_text
     end
 
     count_html = content_tag('span', class: 'count') do
@@ -107,7 +107,7 @@ module ProjectsHelper
   end
 
   def link_to_toggle_fork
-    out = content_tag(:i, '', class: 'fa fa-code-fork')
+    out = icon('code-fork')
     out << ' Fork'
     out << content_tag(:span, class: 'count') do
       @project.forks_count.to_s
