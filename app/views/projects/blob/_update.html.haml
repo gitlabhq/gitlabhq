@@ -15,7 +15,7 @@
             .col-sm-10
               = file_field_tag :file_upload, :id => "file", :class => "file_up"
           %br
-          = render 'shared/commit_message_container', params: params,
+          = render 'shared/commit_message_container_replace', params: params,
                   placeholder: 'Replace this file because...'
           .form-group
             .col-sm-2
