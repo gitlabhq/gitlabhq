@@ -9,7 +9,7 @@ class Projects::ServicesController < Projects::ApplicationController
 
   def index
     @project.build_missing_services
-    @services = @project.services.where.not(type: 'GitlabIssueTrackerService').reload
+    @services = @project.services.visible.reload
   end
 
   def edit

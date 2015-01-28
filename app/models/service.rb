@@ -26,6 +26,8 @@ class Service < ActiveRecord::Base
 
   validates :project_id, presence: true
 
+  scope :visible, -> { where.not(type: 'GitlabIssueTrackerService') }
+
   def activated?
     active
   end

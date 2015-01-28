@@ -317,11 +317,7 @@ class Project < ActiveRecord::Base
   end
 
   def default_issue_tracker
-    unless gitlab_issue_tracker_service
-      create_gitlab_issue_tracker_service
-    end
-
-    gitlab_issue_tracker_service
+    gitlab_issue_tracker_service ||= create_gitlab_issue_tracker_service
   end
 
   def issues_tracker

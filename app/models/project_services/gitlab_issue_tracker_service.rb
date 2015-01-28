@@ -20,6 +20,6 @@ class GitlabIssueTrackerService < IssueTrackerService
   end
 
   def issue_url(iid)
-    "#{Gitlab.config.gitlab.url}#{project_issue_path project_id: project, id: iid}"
+    "#{Gitlab.config.gitlab.url}#{project_issue_path(project_id: project, id: iid)}"
   end
 end
