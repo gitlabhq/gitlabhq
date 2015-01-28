@@ -29,9 +29,9 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   label: 'LDAP'
 
   host: '_your_ldap_server'
-  port: 636
+  port: 389
   uid: 'sAMAccountName'
-  method: 'ssl' # "tls" or "ssl" or "plain"
+  method: 'plain' # "tls" or "ssl" or "plain"
   bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
   password: '_the_password_of_the_bind_user'
 
