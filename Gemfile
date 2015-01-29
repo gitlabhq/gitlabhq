@@ -173,7 +173,7 @@ gem 'ace-rails-ap'
 gem 'mousetrap-rails'
 
 # Semantic UI Sass for Sidebar
-gem 'semantic-ui-sass', '~> 0.16.1.0'
+gem 'semantic-ui-sass', '~> 1.8.0'
 
 gem "sass-rails", '~> 4.0.2'
 gem "coffee-rails"
