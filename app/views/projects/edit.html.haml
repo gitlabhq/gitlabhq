@@ -3,8 +3,7 @@
   .project-edit-content
     %div
       %h3.page-title
-        Project settings:
-      %p.light Some settings, such as "Transfer Project", are hidden inside the danger area below.
+        Project settings
       %hr
       .panel-body
         = form_for @project, remote: true, html: { multipart: true, class: "edit_project form-horizontal" }, authenticity_token: true do |f|
