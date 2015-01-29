@@ -60,14 +60,6 @@ module Gitlab
       end
     end
 
-    def self.starting_year(timestamps)
-       DateTime.now.to_date - 1
-    end
-
-    def self.starting_month(timestamps)
-       Date.today.strftime("%m").to_i
-    end
-
     def self.last_commit_date(timestamps)
       latest_commit_date(timestamps).to_formatted_s(:long).to_s
     end

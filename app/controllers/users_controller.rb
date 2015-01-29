@@ -28,8 +28,8 @@ class UsersController < ApplicationController
     user_repositories = visible_projects.map(&:repository)
     @timestamps = Gitlab::CommitsCalendar.create_timestamp(user_repositories,
                                                            @user, false)
-    @starting_year = Gitlab::CommitsCalendar.starting_year(@timestamps)
-    @starting_month = Gitlab::CommitsCalendar.starting_month(@timestamps)
+    @starting_year = (Time.now - 1.year).strftime("%Y")
+    @starting_month = Date.today.strftime("%m").to_i
     @last_commit_date = Gitlab::CommitsCalendar.last_commit_date(@timestamps)
 
     respond_to do |format|
