@@ -139,39 +139,36 @@ class Repository
 
   def graph_log
     Rails.cache.fetch(cache_key(:graph_log)) do
-
-      # handle empty repos that don't have a root_ref set yet
-      unless raw_repository.root_ref.present?
-        raw_repository.root_ref = 'refs/heads/master'
-      end
-
-      commits = raw_repository.log(limit: 6000, skip_merges: true,
-                                   ref: raw_repository.root_ref)
+      commits = raw_repository.log(limit: 6000,
+                                   skip_merges: true,
+                                   ref: root_ref)
 
       commits.map do |rugged_commit|
-
         commit = Gitlab::Git::Commit.new(rugged_commit)
+
         {
           author_name: commit.author_name.force_encoding('UTF-8'),
           author_email: commit.author_email.force_encoding('UTF-8'),
           additions: commit.stats.additions,
           deletions: commit.stats.deletions,
-          date: commit.committed_date
         }
       end
     end
   end
 
-  def graph_logs_by_user_email(user)
-    graph_log.select { |u_email| u_email[:author_email] == user.email }
+  def timestamps_by_user_log(user)
+    args = %W(git log --author=#{user.email} --since=#{(Date.today - 1.year).to_s} --pretty=format:%cd --date=short)
+    dates = Gitlab::Popen.popen(args, path_to_repo).first.split("\n")
+
+    if dates.present?
+      dates
+    else
+      []
+    end
   end
 
-  def timestamps_by_user_from_graph_log(user)
-    graph_logs_by_user_email(user).map { |graph_log| graph_log[:date].to_time.to_i }
-  end
-
-  def commits_log_of_user_by_date(user)
-    timestamps_by_user_from_graph_log(user).
+  def commits_per_day_for_user(user)
+    timestamps_by_user_log(user).
       group_by { |commit_date| commit_date }.
       inject({}) do |hash, (timestamp_date, commits)|
         hash[timestamp_date] = commits.count

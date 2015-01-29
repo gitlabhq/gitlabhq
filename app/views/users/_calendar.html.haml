@@ -1,9 +1,7 @@
 #cal-heatmap.calendar
-  :javascript 
+  :javascript
     new calendar(
       #{@timestamps.to_json},
       #{@starting_year},
-      #{@starting_month},
-      '#{user_activities_path}'
+      #{@starting_month}
     );
-= render "calendar_onclick"

@@ -2,12 +2,12 @@ require 'spec_helper'
 
 describe UsersController do
   let(:user)    { create(:user, username: "user1", name: "User 1", email: "user1@gitlab.com") }
-  
+
   before do
     sign_in(user)
   end
 
-  describe "GET #show" do 
+  describe "GET #show" do
     render_views
     before do
       get :show, username: user.username

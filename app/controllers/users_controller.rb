@@ -25,30 +25,17 @@ class UsersController < ApplicationController
 
     @title = @user.name
 
+    # Get user repositories and collect timestamps for commits
     user_repositories = visible_projects.map(&:repository)
-    @timestamps = Gitlab::CommitsCalendar.create_timestamp(user_repositories,
-                                                           @user, false)
+    calendar = Gitlab::CommitsCalendar.new(user_repositories, @user)
+    @timestamps = calendar.timestamps
     @starting_year = (Time.now - 1.year).strftime("%Y")
     @starting_month = Date.today.strftime("%m").to_i
-    @last_commit_date = Gitlab::CommitsCalendar.last_commit_date(@timestamps)
 
     respond_to do |format|
       format.html
       format.atom { render layout: false }
     end
-  end
-
-  def activities
-    user = User.find_by_username!(params[:username])
-    # Projects user can view
-    visible_projects = ProjectsFinder.new.execute(current_user)
-
-    user_repositories = visible_projects.map(&:repository)
-    user_activities = Gitlab::CommitsCalendar.create_timestamp(user_repositories,
-                                                               user, true)
-    user_activities = Gitlab::CommitsCalendar.commit_activity_match(
-                                              user_activities, params[:date])
-    render json: user_activities.to_json
   end
 
   def determine_layout
