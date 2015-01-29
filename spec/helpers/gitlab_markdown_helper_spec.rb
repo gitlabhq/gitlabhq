@@ -298,7 +298,7 @@ describe GitlabMarkdownHelper do
 
       before do
         jira = @project.create_jira_service if @project.jira_service.nil?
-        properties = {"title"=>"JIRA tracker", "project_url"=>"http://jira.example/issues/?jql=project=A", "issues_url"=>"http://jira.example/browse/:id", "new_issue_url"=>"http://jira.example/secure/CreateIssue.jspa"}
+        properties = {"title"=>"JIRA tracker", "project_url"=>"http://jira.example/issues/?jql=project=A", "issues_url"=>"http://jira.example/browse/JIRA-1", "new_issue_url"=>"http://jira.example/secure/CreateIssue.jspa"}
         jira.update_attributes(properties: properties, active: true)
       end
 
@@ -346,10 +346,13 @@ describe GitlabMarkdownHelper do
       let(:reference) { "##{issue.iid}" }
 
       before do
-        issue_tracker_config = { "redmine" => { "title" => "Redmine tracker", "issues_url" => "http://redmine.example/issues/:id" } }
-        Gitlab.config.stub(:issues_tracker).and_return(issue_tracker_config)
-        @project.stub(:issues_tracker).and_return("redmine")
-        @project.stub(:issues_tracker_id).and_return("REDMINE")
+        redmine = @project.create_redmine_service if @project.redmine_service.nil?
+        properties = {"title"=>"Redmine", "project_url"=>"http://redmine.example/projects/A", "issues_url"=>"http://redmine.example/issues/:id", "new_issue_url"=>"http://redmine.example/projects/A/issues/new"}
+        redmine.update_attributes(properties: properties, active: true)
+      end
+
+      after do
+        @project.redmine_service.destroy! unless @project.redmine_service.nil?
       end
 
       it "should link using a valid id" do
@@ -377,7 +380,7 @@ describe GitlabMarkdownHelper do
       end
 
       it "should include a title attribute" do
-        title = "Issue in Redmine tracker"
+        title = "Issue in Redmine"
         gfm(actual).should match(/title="#{title}"/)
       end
 

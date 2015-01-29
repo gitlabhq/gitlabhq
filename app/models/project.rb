@@ -383,6 +383,14 @@ class Project < ActiveRecord::Base
     @ci_service ||= ci_services.select(&:activated?).first
   end
 
+   def jira_tracker?
+    issues_tracker.to_param == 'jira'
+  end
+
+  def redmine_tracker?
+    issues_tracker.to_param == 'redmine'
+  end
+
   def avatar_type
     unless self.avatar.image?
       self.errors.add :avatar, 'only images allowed'

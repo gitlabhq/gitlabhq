@@ -95,6 +95,7 @@ class Group < Namespace
 
   def ldap_synced?
     ldap_cn.present?
+  end
 
   def post_create_hook
     system_hook_service.execute_hooks_for(self, :create)

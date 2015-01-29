@@ -41,6 +41,8 @@ describe JiraService do
       WebMock.should have_requested(:post, @api_url).with(
         body: /this-is-a-custom-id/
       ).once
+    end
+  end
 
   describe "Validations" do
     context "active" do

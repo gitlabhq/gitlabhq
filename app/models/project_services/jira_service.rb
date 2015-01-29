@@ -1,10 +1,8 @@
 class JiraService < IssueTrackerService
   include HTTParty
 
-  prop_accessor :username, :password, :api_version, :jira_issue_transition_id
+  prop_accessor :username, :password, :api_version, :jira_issue_transition_id,
                 :title, :description, :project_url, :issues_url, :new_issue_url
-
-  validates :username, :password, presence: true, if: :activated?
 
   before_validation :set_api_version
 
@@ -29,12 +27,12 @@ class JiraService < IssueTrackerService
   end
 
   def fields
-    [
+    super.push(
       { type: 'text', name: 'username', placeholder: '' },
       { type: 'password', name: 'password', placeholder: '' },
       { type: 'text', name: 'api_version', placeholder: '2' },
       { type: 'text', name: 'jira_issue_transition_id', placeholder: '2' }
-    ]
+    )
   end
 
   def set_api_version
