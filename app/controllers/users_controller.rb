@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  skip_before_filter :authenticate_user!
+  before_filter :set_user
   layout :determine_layout
 
   def show
@@ -47,7 +49,7 @@ class UsersController < ApplicationController
 
   private
 
-  def authenticate_user!
+  def set_user
     @user = User.find_by_username!(params[:username])
 
     unless current_user || @user.public_profile?
