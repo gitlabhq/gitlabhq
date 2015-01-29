@@ -254,7 +254,7 @@ end
 
 group :test do
   gem "simplecov", require: false
-  gem "shoulda-matchers", "~> 2.1.0"
+  gem "shoulda-matchers", "~> 2.7.0"
   gem 'email_spec'
   gem "webmock"
   gem 'test_after_commit'
