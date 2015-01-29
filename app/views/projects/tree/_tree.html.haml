@@ -10,7 +10,7 @@
         = link_to title, '#'
   - if current_user && can_push_branch?(@project, @ref)
     %li
-      = link_to project_new_tree_path(@project, @id), title: 'New file', id: 'new-file-link' do
+      = link_to project_new_blob_path(@project, @id), title: 'New file', id: 'new-file-link' do
         %small
           %i.fa.fa-plus
 

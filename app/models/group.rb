@@ -25,6 +25,9 @@ class Group < Namespace
 
   mount_uploader :avatar, AttachmentUploader
 
+  after_create :post_create_hook
+  after_destroy :post_destroy_hook
+
   def human_name
     name
   end
@@ -72,6 +75,18 @@ class Group < Namespace
 
   def public_profile?
     projects.public_only.any?
+  end
+
+  def post_create_hook
+    system_hook_service.execute_hooks_for(self, :create)
+  end
+
+  def post_destroy_hook
+    system_hook_service.execute_hooks_for(self, :destroy)
+  end
+
+  def system_hook_service
+    SystemHooksService.new
   end
 
   class << self

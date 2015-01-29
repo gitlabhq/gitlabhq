@@ -21,12 +21,14 @@ describe MergeRequests::UpdateService do
           state_event: 'close'
         }
       end
+
       let(:service) { MergeRequests::UpdateService.new(project, user, opts) }
 
       before do
         service.stub(:execute_hooks)
 
         @merge_request = service.execute(merge_request)
+        @merge_request.reload
       end
 
       it { @merge_request.should be_valid }

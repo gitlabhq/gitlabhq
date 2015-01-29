@@ -157,6 +157,9 @@ Gitlab::Application.routes.draw do
     end
   end
 
+  get 'u/:username/calendar' => 'users#calendar', as: :user_calendar,
+      constraints: { username: /(?:[^.]|\.(?!atom$))+/, format: /atom/ }
+
   get '/u/:username' => 'users#show', as: :user,
       constraints: { username: /(?:[^.]|\.(?!atom$))+/, format: /atom/ }
 
@@ -211,17 +214,20 @@ Gitlab::Application.routes.draw do
     end
 
     scope module: :projects do
+      # Blob routes:
+      get '/new/:id', to: 'blob#new', constraints: {id: /.+/}, as: 'new_blob'
+      post '/create/:id', to: 'blob#create', constraints: {id: /.+/}, as: 'create_blob'
+      get '/edit/:id', to: 'blob#edit', constraints: {id: /.+/}, as: 'edit_blob'
+      put '/update/:id', to: 'blob#update', constraints: {id: /.+/}, as: 'update_blob'
+      post '/preview/:id', to: 'blob#preview', constraints: {id: /.+/}, as: 'preview_blob'
+
       resources :blob, only: [:show, :destroy], constraints: { id: /.+/, format: false } do
         get :diff, on: :member
       end
+
       resources :raw,       only: [:show], constraints: {id: /.+/}
       resources :tree,      only: [:show], constraints: {id: /.+/, format: /(html|js)/ }
-      resources :edit_tree, only: [:show, :update], constraints: { id: /.+/ }, path: 'edit' do
-        # Cannot be GET to differentiate from GET paths that end in preview.
-        post :preview, on: :member
-      end
       resource  :avatar,    only: [:show, :destroy]
-      resources :new_tree,  only: [:show, :update], constraints: {id: /.+/}, path: 'new'
       resources :commit,    only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
       resources :commits,   only: [:show], constraints: {id: /(?:[^.]|\.(?!atom$))+/, format: /atom/}
       resources :compare,   only: [:index, :create]

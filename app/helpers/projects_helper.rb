@@ -72,18 +72,6 @@ module ProjectsHelper
     @project.milestones.active.order("due_date, title ASC")
   end
 
-  def project_issues_trackers(current_tracker = nil)
-    values = Project.issues_tracker.values.map do |tracker_key|
-      if tracker_key.to_sym == :gitlab
-        ['GitLab', tracker_key]
-      else
-        [Gitlab.config.issues_tracker[tracker_key]['title'] || tracker_key, tracker_key]
-      end
-    end
-
-    options_for_select(values, current_tracker)
-  end
-
   def link_to_toggle_star(title, starred, signed_in)
     cls = 'star-btn'
     cls << ' disabled' unless signed_in
@@ -187,7 +175,13 @@ module ProjectsHelper
                 "Issues - " + title
               end
             elsif current_controller?(:blob)
-              "#{@project.path}\/#{@blob.path} at #{@ref} - " + title
+              if current_action?(:new) || current_action?(:create)
+                "New file at #{@ref}"
+              elsif current_action?(:show)
+                "#{@blob.path} at #{@ref}"
+              elsif @blob
+                "Edit file #{@blob.path} at #{@ref}"
+              end
             elsif current_controller?(:commits)
               "Commits at #{@ref} - " + title
             elsif current_controller?(:merge_requests)
@@ -257,7 +251,7 @@ module ProjectsHelper
   end
 
   def github_import_enabled?
-    Gitlab.config.omniauth.enabled && enabled_oauth_providers.include?(:github)
+    enabled_oauth_providers.include?(:github)
   end
 end
 

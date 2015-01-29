@@ -314,15 +314,7 @@ class NotificationService
   end
 
   def new_resource_email(target, project, method)
-    if target.respond_to?(:participants)
-      recipients = target.participants
-    else
-      recipients = []
-    end
-
-    recipients = reject_muted_users(recipients, project)
-    recipients = reject_mention_users(recipients, project)
-    recipients = recipients.concat(project_watchers(project)).uniq
+    recipients = build_recipients(target, project)
     recipients.delete(target.author)
 
     recipients.each do |recipient|
@@ -331,9 +323,7 @@ class NotificationService
   end
 
   def close_resource_email(target, project, current_user, method)
-    recipients = reject_muted_users([target.author, target.assignee], project)
-    recipients = reject_mention_users(recipients, project)
-    recipients = recipients.concat(project_watchers(project)).uniq
+    recipients = build_recipients(target, project)
     recipients.delete(current_user)
 
     recipients.each do |recipient|
@@ -343,17 +333,7 @@ class NotificationService
 
   def reassign_resource_email(target, project, current_user, method)
     assignee_id_was = previous_record(target, "assignee_id")
-
-    recipients = User.where(id: [target.assignee_id, assignee_id_was])
-
-    # Add watchers to email list
-    recipients = recipients.concat(project_watchers(project))
-
-    # reject users with disabled notifications
-    recipients = reject_muted_users(recipients, project)
-    recipients = reject_mention_users(recipients, project)
-
-    # Reject me from recipients if I reassign an item
+    recipients = build_recipients(target, project)
     recipients.delete(current_user)
 
     recipients.each do |recipient|
@@ -362,14 +342,26 @@ class NotificationService
   end
 
   def reopen_resource_email(target, project, current_user, method, status)
-    recipients = reject_muted_users([target.author, target.assignee], project)
-    recipients = reject_mention_users(recipients, project)
-    recipients = recipients.concat(project_watchers(project)).uniq
+    recipients = build_recipients(target, project)
     recipients.delete(current_user)
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id, status, current_user.id)
     end
+  end
+
+  def build_recipients(target, project)
+    recipients =
+      if target.respond_to?(:participants)
+        target.participants
+      else
+        [target.author, target.assignee]
+      end
+
+    recipients = reject_muted_users(recipients, project)
+    recipients = reject_mention_users(recipients, project)
+    recipients = recipients.concat(project_watchers(project)).uniq
+    recipients
   end
 
   def mailer

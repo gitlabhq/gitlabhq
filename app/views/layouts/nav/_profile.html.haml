@@ -5,52 +5,51 @@
       %span
         Profile
   = nav_link(controller: :accounts) do
-    = link_to profile_account_path do
+    = link_to profile_account_path, title: 'Account' do
       %i.fa.fa-gear
       %span
         Account
   = nav_link(path: ['profiles#applications', 'applications#edit', 'applications#show', 'applications#new']) do
-    = link_to applications_profile_path do
+    = link_to applications_profile_path, title: 'Applications' do
       %i.fa.fa-cloud
       %span
         Applications
   = nav_link(controller: :emails) do
-    = link_to profile_emails_path do
+    = link_to profile_emails_path, title: 'Emails' do
       %i.fa.fa-envelope-o
       %span
         Emails
         %span.count= current_user.emails.count + 1
   - unless current_user.ldap_user?
     = nav_link(controller: :passwords) do
-      = link_to edit_profile_password_path do
+      = link_to edit_profile_password_path, title: 'Password' do
         %i.fa.fa-lock
         %span
           Password
   = nav_link(controller: :notifications) do
-    = link_to profile_notifications_path do
+    = link_to profile_notifications_path, title: 'Notifications' do
       %i.fa.fa-inbox
       %span
         Notifications
 
   = nav_link(controller: :keys) do
-    = link_to profile_keys_path do
+    = link_to profile_keys_path, title: 'SSH Keys' do
       %i.fa.fa-key
       %span
         SSH Keys
         %span.count= current_user.keys.count
   = nav_link(path: 'profiles#design') do
-    = link_to design_profile_path do
+    = link_to design_profile_path, title: 'Design' do
       %i.fa.fa-image
       %span
         Design
   = nav_link(controller: :groups) do
-    = link_to profile_groups_path do
+    = link_to profile_groups_path, title: 'Groups' do
       %i.fa.fa-group
       %span
         Groups
   = nav_link(path: 'profiles#history') do
-    = link_to history_profile_path do
+    = link_to history_profile_path, title: 'History' do
       %i.fa.fa-history
       %span
         History
-

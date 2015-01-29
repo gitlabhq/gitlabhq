@@ -34,7 +34,7 @@ module Grack
     def auth!
       if @auth.provided?
         return bad_request unless @auth.basic?
-
+        
         # Authentication with username and password
         login, password = @auth.credentials
 
@@ -71,8 +71,20 @@ module Grack
       false
     end
 
+    def oauth_access_token_check(login, password)
+      if login == "oauth2" && git_cmd == 'git-upload-pack' && password.present?
+        token = Doorkeeper::AccessToken.by_token(password)
+        token && token.accessible? && User.find_by(id: token.resource_owner_id)
+      end
+    end
+
     def authenticate_user(login, password)
       user = Gitlab::Auth.new.find(login, password)
+      
+      unless user
+        user = oauth_access_token_check(login, password)
+      end
+      
       return user if user.present?
 
       # At this point, we know the credentials were wrong. We let Rack::Attack

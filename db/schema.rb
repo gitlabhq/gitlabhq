@@ -435,6 +435,7 @@ ActiveRecord::Schema.define(version: 20150125163100) do
     t.boolean  "hide_no_ssh_key",          default: false
     t.string   "website_url",              default: "",    null: false
     t.string   "github_access_token"
+    t.string   "gitlab_access_token"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

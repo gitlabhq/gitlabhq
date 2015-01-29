@@ -39,6 +39,7 @@
 #= require shortcuts_dashboard_navigation
 #= require shortcuts_issueable
 #= require shortcuts_network
+#= require cal-heatmap
 #= require_tree .
 
 window.slugify = (text) ->

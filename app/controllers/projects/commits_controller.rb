@@ -3,7 +3,7 @@ require "base64"
 class Projects::CommitsController < Projects::ApplicationController
   include ExtractsPath
 
-  # Authorize
+  before_filter :assign_ref_vars
   before_filter :authorize_download_code!
   before_filter :require_non_empty_project
 

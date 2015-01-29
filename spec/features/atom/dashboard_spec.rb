@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "Dashboard Feed", feature: true  do
   describe "GET /" do
-    let!(:user) { create(:user) }
+    let!(:user) { create(:user, name: "Jonh") }
 
     context "projects atom feed via private token" do
       it "should render projects atom feed" do

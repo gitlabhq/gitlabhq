@@ -76,7 +76,19 @@ FactoryGirl.define do
   end
 
   factory :redmine_project, parent: :project do
-    issues_tracker { "redmine" }
-    issues_tracker_id { "project_name_in_redmine" }
+    after :create do |project|
+      project.create_redmine_service(
+        active: true,
+        properties: {
+          'project_url' => 'http://redmine/projects/project_name_in_redmine',
+          'issues_url' => "http://redmine/#{project.id}/project_name_in_redmine/:id",
+          'new_issue_url' => 'http://redmine/projects/project_name_in_redmine/issues/new'
+        }
+      )
+    end
+    after :create do |project|
+      project.issues_tracker = 'redmine'
+      project.issues_tracker_id = 'project_name_in_redmine'
+    end
   end
 end
