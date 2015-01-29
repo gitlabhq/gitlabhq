@@ -17,8 +17,8 @@ module Gitlab
 
       date_timestamps ||= []
       date_timestamps.each do |date, commits|
-        timestamp = Date.parse(date).to_time.to_i.to_s
-        @timestamps[timestamp] = commits
+        timestamp = Date.parse(date).to_time.to_i.to_s rescue nil
+        @timestamps[timestamp] = commits if timestamp
       end
     end
   end
