@@ -73,7 +73,7 @@ module Gitlab
       changes = changes.lines if changes.kind_of?(String)
 
       # Iterate over all changes to find if user allowed all of them to be applied
-      changes.each do |change|
+      changes.map(&:strip).reject(&:blank?).each do |change|
         status = change_access_check(user, project, change)
         unless status.allowed?
           # If user does not have access to make at least one change - cancel all push
