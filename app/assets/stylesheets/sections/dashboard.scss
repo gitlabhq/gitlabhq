@@ -75,6 +75,9 @@
     }
   }
 }
+.project-avatar {
+  float: left;
+}
 
 .project-description {
   overflow: hidden;
@@ -92,8 +95,24 @@
   }
 }
 
+.dash-project-avatar {
+  float: left;
+}
 .dash-project-access-icon {
   float: left;
-  margin-right: 3px;
+  margin-right: 5px;
   width: 16px;
+}
+
+.dash-new-project {
+  background: $bg_success;
+  border: 1px solid $border_success;
+
+  a {
+    color: #FFF;
+  }
+}
+
+.dash-list .str-truncated {
+  max-width: 72%;
 }

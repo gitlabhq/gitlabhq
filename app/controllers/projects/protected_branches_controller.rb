@@ -24,7 +24,7 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
        )
 
       respond_to do |format|
-        format.json { render :json => protected_branch, status: :ok }
+        format.json { render json: protected_branch, status: :ok }
       end
     else
       respond_to do |format|

@@ -2,14 +2,68 @@
 class Projects::BlobController < Projects::ApplicationController
   include ExtractsPath
 
-  # Authorize
-  before_filter :authorize_download_code!
-  before_filter :require_non_empty_project
-  before_filter :authorize_push_code!, only: [:destroy]
+  # Raised when given an invalid file path
+  class InvalidPathError < StandardError; end
 
-  before_filter :blob
+  before_filter :authorize_download_code!
+  before_filter :require_non_empty_project, except: [:new, :create]
+  before_filter :authorize_push_code!, only: [:destroy]
+  before_filter :assign_blob_vars
+  before_filter :commit, except: [:new, :create]
+  before_filter :blob, except: [:new, :create]
+  before_filter :from_merge_request, only: [:edit, :update]
+  before_filter :after_edit_path, only: [:edit, :update]
+  before_filter :require_branch_head, only: [:edit, :update]
+
+  def new
+    commit unless @repository.empty?
+  end
+
+  def create
+    file_path = File.join(@path, File.basename(params[:file_name]))
+    result = Files::CreateService.new(@project, current_user, params, @ref, file_path).execute
+
+    if result[:status] == :success
+      flash[:notice] = "Your changes have been successfully committed"
+      redirect_to project_blob_path(@project, File.join(@ref, file_path))
+    else
+      flash[:alert] = result[:message]
+      render :new
+    end
+  end
 
   def show
+  end
+
+  def edit
+    @last_commit = Gitlab::Git::Commit.last_for_path(@repository, @ref, @path).sha
+  end
+
+  def update
+    result = Files::UpdateService.
+      new(@project, current_user, params, @ref, @path).execute
+
+    if result[:status] == :success
+      flash[:notice] = "Your changes have been successfully committed"
+
+      if from_merge_request
+        from_merge_request.reload_code
+      end
+
+      redirect_to after_edit_path
+    else
+      flash[:alert] = result[:message]
+      render :edit
+    end
+  end
+
+  def preview
+    @content = params[:content]
+    diffy = Diffy::Diff.new(@blob.data, @content, diff: '-U 3',
+                            include_diff_info: true)
+    @diff_lines = Gitlab::Diff::Parser.new.parse(diffy.diff.scan(/.*\n/))
+
+    render layout: false
   end
 
   def destroy
@@ -46,10 +100,44 @@ class Projects::BlobController < Projects::ApplicationController
 
     if @blob
       @blob
-    elsif tree.entries.any?
-      redirect_to project_tree_path(@project, File.join(@ref, @path)) and return
     else
+      if tree = @repository.tree(@commit.id, @path)
+        if tree.entries.any?
+          redirect_to project_tree_path(@project, File.join(@ref, @path)) and return
+        end
+      end
+
       return not_found!
     end
+  end
+
+  def commit
+    @commit = @repository.commit(@ref)
+
+    return not_found! unless @commit
+  end
+
+  def assign_blob_vars
+    @id = params[:id]
+    @ref, @path = extract_ref(@id)
+
+
+  rescue InvalidPathError
+    not_found!
+  end
+
+  def after_edit_path
+    @after_edit_path ||=
+      if from_merge_request
+        diffs_project_merge_request_path(from_merge_request.target_project, from_merge_request) +
+          "#file-path-#{hexdigest(@path)}"
+      else
+        project_blob_path(@project, @id)
+      end
+  end
+
+  def from_merge_request
+    # If blob edit was initiated from merge request page
+    @from_merge_request ||= MergeRequest.find_by(id: params[:from_merge_request_id])
   end
 end

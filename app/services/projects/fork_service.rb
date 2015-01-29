@@ -14,6 +14,9 @@ module Projects
       project.name = @from_project.name
       project.path = @from_project.path
       project.creator = @current_user
+      if @from_project.avatar.present? && @from_project.avatar.image?
+        project.avatar = @from_project.avatar
+      end
 
       if namespace = @params[:namespace]
         project.namespace = namespace
@@ -39,16 +42,16 @@ module Projects
             end
             #Now fork the repo
             unless gitlab_shell.fork_repository(@from_project.path_with_namespace, project.namespace.path)
-              raise "forking failed in gitlab-shell"
+              raise 'forking failed in gitlab-shell'
             end
             project.ensure_satellite_exists
           end
         rescue => ex
-          project.errors.add(:base, "Fork transaction failed.")
+          project.errors.add(:base, 'Fork transaction failed.')
           project.destroy
         end
       else
-        project.errors.add(:base, "Invalid fork destination")
+        project.errors.add(:base, 'Invalid fork destination')
       end
 
       project

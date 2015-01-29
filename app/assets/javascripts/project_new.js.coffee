@@ -10,20 +10,6 @@ class @ProjectNew
   initEvents: ->
     disableButtonIfEmptyField '#project_name', '.project-submit'
 
-    $('#project_issues_enabled').change ->
-      if ($(this).is(':checked') == true)
-        $('#project_issues_tracker').removeAttr('disabled')
-      else
-        $('#project_issues_tracker').attr('disabled', 'disabled')
-
-      $('#project_issues_tracker').change()
-
-    $('#project_issues_tracker').change ->
-      if ($(this).val() == gon.default_issues_tracker || $(this).is(':disabled'))
-        $('#project_issues_tracker_id').attr('disabled', 'disabled')
-      else
-        $('#project_issues_tracker_id').removeAttr('disabled')
-
     $("#project_merge_requests_enabled").change ->
       checked = $(this).prop("checked")
       $("#project_merge_requests_template").prop "disabled", not checked

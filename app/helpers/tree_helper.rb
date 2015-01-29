@@ -10,13 +10,16 @@ module TreeHelper
     tree = ""
 
     # Render folders if we have any
-    tree += render partial: 'projects/tree/tree_item', collection: folders, locals: {type: 'folder'} if folders.present?
+    tree << render(partial: 'projects/tree/tree_item', collection: folders,
+                   locals: { type: 'folder' }) if folders.present?
 
     # Render files if we have any
-    tree += render partial: 'projects/tree/blob_item', collection: files, locals: {type: 'file'} if files.present?
+    tree << render(partial: 'projects/tree/blob_item', collection: files,
+                   locals: { type: 'file' }) if files.present?
 
     # Render submodules if we have any
-    tree += render partial: 'projects/tree/submodule_item', collection: submodules if submodules.present?
+    tree << render(partial: 'projects/tree/submodule_item',
+                   collection: submodules) if submodules.present?
 
     tree.html_safe
   end
@@ -61,32 +64,6 @@ module TreeHelper
     ::Gitlab::GitAccess.can_push_to_branch?(current_user, project, ref)
   end
 
-  def edit_blob_link(project, ref, path, options = {})
-    blob =
-      begin
-        project.repository.blob_at(ref, path)
-      rescue
-        nil
-      end
-
-    if blob && blob.text?
-      text = 'Edit'
-      after = options[:after] || ''
-      from_mr = options[:from_merge_request_id]
-      link_opts = {}
-      link_opts[:from_merge_request_id] = from_mr if from_mr
-      cls = 'btn btn-small'
-      if allowed_tree_edit?(project, ref)
-        link_to text, project_edit_tree_path(project, tree_join(ref, path),
-                                             link_opts), class: cls
-      else
-        content_tag :span, text, class: cls + ' disabled'
-      end + after.html_safe
-    else
-      ''
-    end
-  end
-
   def tree_breadcrumbs(tree, max_links = 2)
     if @path.present?
       part_path = ""
@@ -109,25 +86,13 @@ module TreeHelper
     tree_join(@ref, file)
   end
 
-  # returns the relative path of the first subdir that doesn't have only one directory descendand
+  # returns the relative path of the first subdir that doesn't have only one directory descendant
   def flatten_tree(tree)
     subtree = Gitlab::Git::Tree.where(@repository, @commit.id, tree.path)
     if subtree.count == 1 && subtree.first.dir?
       return tree_join(tree.name, flatten_tree(subtree.first))
     else
       return tree.name
-    end
-  end
-
-  def leave_edit_message
-    "Leave edit mode?\nAll unsaved changes will be lost."
-  end
-
-  def editing_preview_title(filename)
-    if Gitlab::MarkdownHelper.previewable?(filename)
-      'Preview'
-    else
-      'Diff'
     end
   end
 end

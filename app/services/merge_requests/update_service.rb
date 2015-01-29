@@ -33,8 +33,8 @@ module MergeRequests
         end
 
         if merge_request.previous_changes.include?('assignee_id')
-          notification_service.reassigned_merge_request(merge_request, current_user)
           create_assignee_note(merge_request)
+          notification_service.reassigned_merge_request(merge_request, current_user)
         end
 
         merge_request.notice_added_references(merge_request.project, current_user)

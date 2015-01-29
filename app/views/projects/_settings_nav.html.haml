@@ -1,11 +1,11 @@
 %ul.project-settings-nav.sidebar-subnav
   = nav_link(path: 'projects#edit') do
-    = link_to edit_project_path(@project), class: "stat-tab tab " do
+    = link_to edit_project_path(@project), title: 'Project', class: "stat-tab tab " do
       %i.fa.fa-pencil-square-o
       %span
         Project
   = nav_link(controller: [:team_members, :teams]) do
-    = link_to project_team_index_path(@project), class: "team-tab tab" do
+    = link_to project_team_index_path(@project), title: 'Members', class: "team-tab tab" do
       %i.fa.fa-users
       %span
         Members
@@ -15,12 +15,12 @@
       %span
         Groups
   = nav_link(controller: :deploy_keys) do
-    = link_to project_deploy_keys_path(@project) do
+    = link_to project_deploy_keys_path(@project), title: 'Deploy Keys' do
       %i.fa.fa-key
       %span
         Deploy Keys
   = nav_link(controller: :hooks) do
-    = link_to project_hooks_path(@project) do
+    = link_to project_hooks_path(@project), title: 'Web Hooks' do
       %i.fa.fa-link
       %span
         Web Hooks
@@ -30,12 +30,12 @@
       %span
         Git Hooks
   = nav_link(controller: :services) do
-    = link_to project_services_path(@project) do
+    = link_to project_services_path(@project), title: 'Services' do
       %i.fa.fa-cogs
       %span
         Services
   = nav_link(controller: :protected_branches) do
-    = link_to project_protected_branches_path(@project) do
+    = link_to project_protected_branches_path(@project), title: 'Protected Branches' do
       %i.fa.fa-lock
       %span
         Protected branches

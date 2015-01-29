@@ -50,10 +50,17 @@
   .automerge_widget.cannot_be_merged.hide
     %h4
       This request can't be merged with GitLab.
-    %p
       You should do it manually with
       %strong
-        = link_to "command line", "#modal_merge_info", class: "how_to_merge_link", title: "How To Merge", "data-toggle" => "modal"
+        = link_to "#modal_merge_info", class: "underlined-link how_to_merge_link", title: "How To Merge", "data-toggle" => "modal" do
+          command line
+
+    %p
+      %button.btn.disabled
+        %i.fa.fa-warning
+        Accept Merge Request
+      &nbsp;
+      This usually happens when git can not resolve conflicts between branches automatically.
 
   .automerge_widget.unchecked
     %p

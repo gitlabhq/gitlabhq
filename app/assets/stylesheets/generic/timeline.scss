@@ -42,7 +42,7 @@
         background: #fff;
         color: #737881;
         float: left;
-        @include border-radius(40px);
+        @include border-radius($avatar_radius);
         @include box-shadow(0 0 0 3px #EEE);
         overflow: hidden;
 
@@ -57,6 +57,10 @@
         background: #f5f5f6;
         padding: 10px 15px;
         margin-left: 60px;
+
+        img {
+          max-width: 100%;
+        }
 
         &:after {
           content: '';

@@ -12,7 +12,6 @@ describe Gitlab::ReferenceExtractor do
   end
 
   it 'extracts JIRA issue references' do
-    Gitlab.config.gitlab.stub(:issues_tracker).and_return('jira')
     subject.analyze('this one talks about issue JIRA-1234', nil)
     subject.issues.should == [{ project: nil, id: 'JIRA-1234' }]
   end

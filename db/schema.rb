@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150116234544) do
+ActiveRecord::Schema.define(version: 20150116234545) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -385,6 +385,7 @@ ActiveRecord::Schema.define(version: 20150116234544) do
     t.integer  "star_count",                    default: 0,        null: false
     t.text     "merge_requests_template"
     t.boolean  "merge_requests_rebase_enabled", default: false
+    t.string   "avatar"
   end
 
   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree
@@ -492,6 +493,7 @@ ActiveRecord::Schema.define(version: 20150116234544) do
     t.datetime "last_credential_check_at"
     t.string   "github_access_token"
     t.datetime "admin_email_unsubscribed_at"
+    t.string   "gitlab_access_token"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

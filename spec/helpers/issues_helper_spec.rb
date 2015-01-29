@@ -24,7 +24,7 @@ describe IssuesHelper do
   end
 
   describe :url_for_project_issues do
-    let(:project_url) { Gitlab.config.issues_tracker.redmine.project_url}
+    let(:project_url) { ext_project.external_issue_tracker.project_url }
     let(:ext_expected) do
       project_url.gsub(':project_id', ext_project.id.to_s)
                  .gsub(':issues_tracker_id', ext_project.issues_tracker_id.to_s)
@@ -54,17 +54,16 @@ describe IssuesHelper do
         Gitlab.config.stub(:issues_tracker).and_return(nil)
       end
 
-      it "should return path to internal tracker" do
-        url_for_project_issues.should match(polymorphic_path([@project]))
+      it "should return path to external tracker" do
+        url_for_project_issues.should match(ext_expected)
       end
     end
   end
 
   describe :url_for_issue do
-    let(:issue_id) { 3 }
-    let(:issues_url) { Gitlab.config.issues_tracker.redmine.issues_url}
+    let(:issues_url) { ext_project.external_issue_tracker.issues_url}
     let(:ext_expected) do
-      issues_url.gsub(':id', issue_id.to_s)
+      issues_url.gsub(':id', issue.iid.to_s)
         .gsub(':project_id', ext_project.id.to_s)
         .gsub(':issues_tracker_id', ext_project.issues_tracker_id.to_s)
     end
@@ -78,7 +77,7 @@ describe IssuesHelper do
     it "should return path to external tracker" do
       @project = ext_project
 
-      url_for_issue(issue_id).should match(ext_expected)
+      url_for_issue(issue.iid).should match(ext_expected)
     end
 
     it "should return empty string if project nil" do
@@ -93,14 +92,14 @@ describe IssuesHelper do
         Gitlab.config.stub(:issues_tracker).and_return(nil)
       end
 
-      it "should return internal path" do
-        url_for_issue(issue.iid).should match(polymorphic_path([@project, issue]))
+      it "should return external path" do
+        url_for_issue(issue.iid).should match(ext_expected)
       end
     end
   end
 
   describe :url_for_new_issue do
-    let(:issues_url) { Gitlab.config.issues_tracker.redmine.new_issue_url}
+    let(:issues_url) { ext_project.external_issue_tracker.new_issue_url }
     let(:ext_expected) do
       issues_url.gsub(':project_id', ext_project.id.to_s)
         .gsub(':issues_tracker_id', ext_project.issues_tracker_id.to_s)
@@ -131,7 +130,7 @@ describe IssuesHelper do
       end
 
       it "should return internal path" do
-        url_for_new_issue.should match(new_project_issue_path(@project))
+        url_for_new_issue.should match(ext_expected)
       end
     end
   end

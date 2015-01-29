@@ -101,6 +101,14 @@ describe API::API, api: true  do
         json_response.first['type'].should == 'tree'
         json_response.first['mode'].should == '040000'
       end
+
+      it 'should return a 404 for unknown ref' do
+        get api("/projects/#{project.id}/repository/tree?ref_name=foo", user)
+        response.status.should == 404
+
+        json_response.should be_an Object
+        json_response['message'] == '404 Tree Not Found'
+      end
     end
 
     context "unauthorized user" do
@@ -144,6 +152,14 @@ describe API::API, api: true  do
     it "should get the raw file contents" do
       get api("/projects/#{project.id}/repository/raw_blobs/#{sample_blob.oid}", user)
       response.status.should == 200
+    end
+
+    it 'should return a 404 for unknown blob' do
+      get api("/projects/#{project.id}/repository/raw_blobs/123456", user)
+      response.status.should == 404
+
+      json_response.should be_an Object
+      json_response['message'] == '404 Blob Not Found'
     end
   end
 

@@ -49,7 +49,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_user!(*args)
-    # If user is not signe-in and tries to access root_path - redirect him to landing page
+    # If user is not signed-in and tries to access root_path - redirect him to landing page
     if current_application_settings.home_page_url.present?
       if current_user.nil? && controller_name == 'dashboard' && action_name == 'show'
         redirect_to current_application_settings.home_page_url and return
@@ -181,7 +181,7 @@ class ApplicationController < ActionController::Base
   end
 
   def add_gon_variables
-    gon.default_issues_tracker = Project.issues_tracker.default_value
+    gon.default_issues_tracker = Project.new.default_issue_tracker.to_param
     gon.api_version = API::API.version
     gon.relative_url_root = Gitlab.config.gitlab.relative_url_root
     gon.default_avatar_url = URI::join(Gitlab.config.gitlab.url, ActionController::Base.helpers.image_path('no_avatar.png')).to_s

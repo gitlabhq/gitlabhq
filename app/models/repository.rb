@@ -139,8 +139,10 @@ class Repository
 
   def graph_log
     Rails.cache.fetch(cache_key(:graph_log)) do
-      commits = raw_repository.log(limit: 6000, skip_merges: true,
+      commits = raw_repository.log(limit: 6000,
+                                   skip_merges: true,
                                    ref: root_ref)
+
       commits.map do |rugged_commit|
         commit = Gitlab::Git::Commit.new(rugged_commit)
 
@@ -148,10 +150,30 @@ class Repository
           author_name: commit.author_name.force_encoding('UTF-8'),
           author_email: commit.author_email.force_encoding('UTF-8'),
           additions: commit.stats.additions,
-          deletions: commit.stats.deletions
+          deletions: commit.stats.deletions,
         }
       end
     end
+  end
+
+  def timestamps_by_user_log(user)
+    args = %W(git log --author=#{user.email} --since=#{(Date.today - 1.year).to_s} --pretty=format:%cd --date=short)
+    dates = Gitlab::Popen.popen(args, path_to_repo).first.split("\n")
+
+    if dates.present?
+      dates
+    else
+      []
+    end
+  end
+
+  def commits_per_day_for_user(user)
+    timestamps_by_user_log(user).
+      group_by { |commit_date| commit_date }.
+      inject({}) do |hash, (timestamp_date, commits)|
+        hash[timestamp_date] = commits.count
+        hash
+      end
   end
 
   def cache_key(type)
