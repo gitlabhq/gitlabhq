@@ -23,6 +23,10 @@
         tree_join(@commit.sha, @path)), class: 'btn btn-small'
 
 - if allowed_tree_edit?
+  = button_tag class: 'btn btn-small btn-primary btn-xs',
+      'data-toggle' => 'modal', 'data-target' => '#modal-update-blob' do
+    Replace	 
+  = |
   = button_tag class: 'remove-blob btn btn-small btn-remove',
       'data-toggle' => 'modal', 'data-target' => '#modal-remove-blob' do
     Remove

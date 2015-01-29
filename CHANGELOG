@@ -8,6 +8,11 @@ v 7.5.2
 v 7.5.1
   - Add missing timestamps to 'members' table
 
+1. add "upload" functionality, which allows user upload file into current repository.
+2. add "replace" functionality, which allows user replace file in the current repository.
+
+
+
 v 7.5.0
   - API: Add support for Hipchat (Kevin Houdebert)
   - Add time zone configuration on gitlab.yml (Sullivan Senechal)
