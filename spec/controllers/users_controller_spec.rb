@@ -9,18 +9,18 @@ describe UsersController do
 
   describe "GET #show" do
     render_views
-    before do
-      get :show, username: user.username
-    end
 
     it "renders the show template" do
+      get :show, username: user.username
       expect(response.status).to eq(200)
       expect(response).to render_template("show")
     end
+  end
 
+  describe "GET #calendar" do
     it "renders calendar" do
-      controller.prepend_view_path 'app/views/users'
-      expect(response).to render_template("_calendar")
+      get :calendar, username: user.username
+      expect(response).to render_template("calendar")
     end
   end
 end

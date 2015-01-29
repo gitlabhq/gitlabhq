@@ -19,8 +19,9 @@
       = render 'groups', groups: @groups
       %hr
 
-    %h4 Calendar:
-    %div= render 'calendar'
+    .user-calendar
+      %h4.center.light
+        %i.fa.fa-spinner.fa-spin
     %hr
     %h4
       User Activity:
@@ -36,3 +37,8 @@
     = render 'profile', user: @user
     - if @projects.present?
       = render 'projects', projects: @projects
+
+
+:coffeescript
+  $ ->
+    $(".user-calendar").load("#{user_calendar_path}")
