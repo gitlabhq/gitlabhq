@@ -1,0 +1,25 @@
+#calendar_commit_activity.calendar_commit_activity
+  %h4.activity_title Commit Activity:
+
+  #loading_commits
+    %section.text-center
+      %h3
+        %i.icon-spinner.icon-spin
+
+  #calendar_onclick_placeholder.calendar_onclick_placeholder
+    %span.calendar_onclick_second.calendar_onclick_second
+    - if @timestamps.empty?
+      %span.calendar_activity_summary
+        %strong> #{@user.username}
+        &nbsp; has no activity
+    - else
+      %span.calendar_activity_summary
+        %strong> #{@user.username}
+        's last commit was on
+        %span.commit_date #{@last_commit_date}
+
+    %hr.calendar_onclick_hr
+
+:javascript
+  $("#loading_commits").hide();
+  
