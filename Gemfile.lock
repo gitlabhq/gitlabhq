@@ -261,7 +261,7 @@ GEM
     httpauth (0.2.1)
     httpclient (2.5.3.3)
     i18n (0.6.11)
-    ice_cube (0.12.1)
+    ice_cube (0.11.1)
     ice_nine (0.10.0)
     jasmine (2.0.2)
       jasmine-core (~> 2.0.0)
@@ -504,10 +504,10 @@ GEM
       json
       redis (>= 3.0.6)
       redis-namespace (>= 1.3.1)
-    sidetiq (0.6.1)
+    sidetiq (0.6.3)
       celluloid (>= 0.14.1)
-      ice_cube (~> 0.12.0)
-      sidekiq (>= 2.16.0)
+      ice_cube (= 0.11.1)
+      sidekiq (>= 3.0.0)
     simple_oauth (0.1.9)
     simplecov (0.9.0)
       docile (~> 1.1.0)
@@ -727,7 +727,7 @@ DEPENDENCIES
   settingslogic
   shoulda-matchers (~> 2.1.0)
   sidekiq (~> 3.3)
-  sidetiq (= 0.6.1)
+  sidetiq (= 0.6.3)
   simplecov
   sinatra
   six

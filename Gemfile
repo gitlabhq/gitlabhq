@@ -119,7 +119,7 @@ gem "acts-as-taggable-on"
 # Background jobs
 gem 'slim'
 gem 'sinatra', require: nil
-gem 'sidetiq', '0.6.1'
+gem 'sidetiq', '0.6.3'
 gem 'sidekiq', '~> 3.3'
 
 # HTTP requests
