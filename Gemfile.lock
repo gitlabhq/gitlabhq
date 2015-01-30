@@ -260,7 +260,7 @@ GEM
       multi_xml (>= 0.5.2)
     httpauth (0.2.1)
     httpclient (2.5.3.3)
-    i18n (0.6.11)
+    i18n (0.7.0)
     ice_nine (0.10.0)
     jasmine (2.0.2)
       jasmine-core (~> 2.0.0)
@@ -279,7 +279,7 @@ GEM
       turbolinks
     jquery-ui-rails (4.2.1)
       railties (>= 3.2.16)
-    json (1.8.1)
+    json (1.8.2)
     jwt (0.1.13)
       multi_json (>= 1.5)
     kaminari (0.15.1)
@@ -366,6 +366,8 @@ GEM
       coderay (~> 1.0)
       method_source (~> 0.8)
       slop (~> 3.4)
+    pry-rails (0.3.2)
+      pry (>= 0.9.10)
     pyu-ruby-sasl (0.0.3.3)
     quiet_assets (1.0.2)
       railties (>= 3.1, < 5.0)
@@ -495,7 +497,7 @@ GEM
       sass (~> 3.2)
     settingslogic (2.0.9)
     sexp_processor (4.4.0)
-    shoulda-matchers (2.1.0)
+    shoulda-matchers (2.7.0)
       activesupport (>= 3.0.0)
     sidekiq (3.3.0)
       celluloid (>= 0.16.0)
@@ -694,7 +696,7 @@ DEPENDENCIES
   org-ruby (= 0.9.12)
   pg
   poltergeist (~> 1.5.1)
-  pry
+  pry-rails
   quiet_assets (~> 1.0.1)
   rack-attack
   rack-cors
@@ -719,7 +721,7 @@ DEPENDENCIES
   select2-rails
   semantic-ui-sass (~> 1.8.0)
   settingslogic
-  shoulda-matchers (~> 2.1.0)
+  shoulda-matchers (~> 2.7.0)
   sidekiq (~> 3.3)
   simplecov
   sinatra

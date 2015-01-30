@@ -247,15 +247,6 @@ module ApplicationHelper
     Gitlab::MarkdownHelper.gitlab_markdown?(filename)
   end
 
-  def spinner(text = nil, visible = false)
-    css_class = 'loading'
-    css_class << ' hide' unless visible
-
-    content_tag :div, class: css_class do
-      content_tag(:i, nil, class: 'fa fa-spinner fa-spin') + text
-    end
-  end
-
   def link_to(name = nil, options = nil, html_options = nil, &block)
     begin
       uri = URI(options)

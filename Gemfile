@@ -221,7 +221,7 @@ group :development, :test do
   gem 'spinach-rails'
   gem "rspec-rails"
   gem "capybara", '~> 2.2.1'
-  gem "pry"
+  gem "pry-rails"
   gem "awesome_print"
   gem "database_cleaner"
   gem "launchy"
@@ -254,7 +254,7 @@ end
 
 group :test do
   gem "simplecov", require: false
-  gem "shoulda-matchers", "~> 2.1.0"
+  gem "shoulda-matchers", "~> 2.7.0"
   gem 'email_spec'
   gem "webmock"
   gem 'test_after_commit'
