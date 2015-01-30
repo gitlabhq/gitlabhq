@@ -28,14 +28,24 @@
         %span.note-last-update
           = note_timestamp(note)
 
-        - if note.upvote?
-          %span.vote.upvote.label.label-success
-            %i.fa.fa-thumbs-up
-            \+1
-        - if note.downvote?
-          %span.vote.downvote.label.label-danger
-            %i.fa.fa-thumbs-down
-            \-1
+        - if note.superceded?(@notes)
+          - if note.upvote?
+            %span.vote.upvote.label.label-gray.strikethrough
+              %i.fa.fa-thumbs-up
+              \+1
+          - if note.downvote?
+            %span.vote.downvote.label.label-gray.strikethrough
+              %i.fa.fa-thumbs-down
+              \-1
+        - else
+          - if note.upvote?
+            %span.vote.upvote.label.label-success
+              %i.fa.fa-thumbs-up
+              \+1
+          - if note.downvote?
+            %span.vote.downvote.label.label-danger
+              %i.fa.fa-thumbs-down
+              \-1
 
 
       .note-body

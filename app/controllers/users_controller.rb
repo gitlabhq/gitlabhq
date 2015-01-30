@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  skip_before_filter :authenticate_user!, only: [:show]
+  skip_before_filter :authenticate_user!, only: [:show, :activities]
   layout :determine_layout
 
   def show
@@ -10,7 +10,8 @@ class UsersController < ApplicationController
     end
 
     # Projects user can view
-    authorized_projects_ids = ProjectsFinder.new.execute(current_user).pluck(:id)
+    visible_projects = ProjectsFinder.new.execute(current_user)
+    authorized_projects_ids = visible_projects.pluck(:id)
 
     @projects = @user.personal_projects.
       where(id: authorized_projects_ids)
@@ -23,6 +24,13 @@ class UsersController < ApplicationController
       where(project_id: authorized_projects_ids).limit(30)
 
     @title = @user.name
+
+    # Get user repositories and collect timestamps for commits
+    user_repositories = visible_projects.map(&:repository)
+    calendar = Gitlab::CommitsCalendar.new(user_repositories, @user)
+    @timestamps = calendar.timestamps
+    @starting_year = (Time.now - 1.year).strftime("%Y")
+    @starting_month = Date.today.strftime("%m").to_i
 
     respond_to do |format|
       format.html

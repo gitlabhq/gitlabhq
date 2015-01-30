@@ -60,7 +60,7 @@ production: &base
 
     ## Users can create accounts
     # This also allows normal users to sign up for accounts themselves
-    # default: false - By default GitLab administrators must create all new accounts
+    # default: true - By default users can sign up themselves
     # signup_enabled: true
 
     ## Standard login settings
@@ -161,9 +161,9 @@ production: &base
         label: 'LDAP'
 
         host: '_your_ldap_server'
-        port: 636
+        port: 389
         uid: 'sAMAccountName'
-        method: 'ssl' # "tls" or "ssl" or "plain"
+        method: 'plain' # "tls" or "ssl" or "plain"
         bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
         password: '_the_password_of_the_bind_user'
 

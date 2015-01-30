@@ -119,8 +119,8 @@ gem "acts-as-taggable-on"
 # Background jobs
 gem 'slim'
 gem 'sinatra', require: nil
-gem 'sidekiq', '2.17.8'
-gem 'sidetiq', '0.6.1'
+gem 'sidetiq', '0.6.3'
+gem 'sidekiq', '~> 3.3'
 
 # HTTP requests
 gem "httparty"
@@ -156,6 +156,9 @@ gem "slack-notifier", "~> 1.0.0"
 # d3
 gem "d3_rails", "~> 3.1.4"
 
+#cal-heatmap
+gem "cal-heatmap-rails", "~> 0.0.1"
+
 # underscore-rails
 gem "underscore-rails", "~> 1.4.4"
 
@@ -172,7 +175,7 @@ gem 'ace-rails-ap'
 gem 'mousetrap-rails'
 
 # Semantic UI Sass for Sidebar
-gem 'semantic-ui-sass', '~> 0.16.1.0'
+gem 'semantic-ui-sass', '~> 1.8.0'
 
 gem "sass-rails", '~> 4.0.2'
 gem "coffee-rails"

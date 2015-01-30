@@ -19,7 +19,7 @@ class Key < ActiveRecord::Base
 
   belongs_to :user
 
-  before_validation :strip_white_space, :generate_fingerpint
+  before_validation :strip_white_space, :generate_fingerprint
 
   validates :title, presence: true, length: { within: 0..255 }
   validates :key, presence: true, length: { within: 0..5000 }, format: { with: /\A(ssh|ecdsa)-.*\Z/ }, uniqueness: true
@@ -78,7 +78,7 @@ class Key < ActiveRecord::Base
 
   private
 
-  def generate_fingerpint
+  def generate_fingerprint
     self.fingerprint = nil
     return unless key.present?
 

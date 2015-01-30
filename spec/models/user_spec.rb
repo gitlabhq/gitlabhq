@@ -26,8 +26,6 @@
 #  bio                      :string(255)
 #  failed_attempts          :integer          default(0)
 #  locked_at                :datetime
-#  extern_uid               :string(255)
-#  provider                 :string(255)
 #  username                 :string(255)
 #  can_create_group         :boolean          default(TRUE), not null
 #  can_create_team          :boolean          default(TRUE), not null
@@ -36,7 +34,6 @@
 #  notification_level       :integer          default(1), not null
 #  password_expires_at      :datetime
 #  created_by_id            :integer
-#  last_credential_check_at :datetime
 #  avatar                   :string(255)
 #  confirmation_token       :string(255)
 #  confirmed_at             :datetime
@@ -44,6 +41,8 @@
 #  unconfirmed_email        :string(255)
 #  hide_no_ssh_key          :boolean          default(FALSE)
 #  website_url              :string(255)      default(""), not null
+#  last_credential_check_at :datetime
+#  github_access_token      :string(255)
 #
 
 require 'spec_helper'

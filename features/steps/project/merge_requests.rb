@@ -173,7 +173,9 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       merge!: true,
     )
 
-    click_button "Accept Merge Request"
+    within '.can_be_merged' do
+      click_button "Accept Merge Request"
+    end
   end
 
   step 'I should see merged request' do

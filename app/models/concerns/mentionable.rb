@@ -50,7 +50,7 @@ module Mentionable
     matches.each do |match|
       identifier = match.delete "@"
       if identifier == "all"
-        users += project.team.members.flatten
+        users.push(*project.team.members.flatten)
       else
         id = User.find_by(username: identifier).try(:id)
         users << User.find(id) unless id.blank?

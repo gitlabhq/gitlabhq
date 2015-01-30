@@ -1,10 +1,10 @@
 module GraphHelper
   def get_refs(repo, commit)
     refs = ""
-    refs += commit.ref_names(repo).join(" ")
+    refs << commit.ref_names(repo).join(' ')
 
     # append note count
-    refs += "[#{@graph.notes[commit.id]}]" if @graph.notes[commit.id] > 0
+    refs << "[#{@graph.notes[commit.id]}]" if @graph.notes[commit.id] > 0
 
     refs
   end

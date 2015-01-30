@@ -32,7 +32,7 @@
         %span.light.pull-right
           = Milestone.count
       %p
-        Active users last 30 days
+        Users who signed in during last 30 days
         %span.light.pull-right
           = User.where("current_sign_in_at > ?", 30.days.ago).count
     .col-md-4

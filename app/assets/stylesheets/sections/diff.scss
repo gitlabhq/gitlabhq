@@ -37,7 +37,7 @@
     overflow-y: hidden;
     background: #FFF;
     color: #333;
-    font-size: 12px;
+    font-size: $code_font_size;
     .old {
       span.idiff {
         background-color: #F99;
@@ -64,8 +64,8 @@
       margin: 0px;
       padding: 0px;
       td {
-        line-height: 18px;
-        font-size: 12px;
+        line-height: $code_line_height;
+        font-size: $code_font_size;
       }
     }
 

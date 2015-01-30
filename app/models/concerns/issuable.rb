@@ -88,7 +88,7 @@ module Issuable
 
   # Return the number of -1 comments (downvotes)
   def downvotes
-    notes.select(&:downvote?).size
+    filter_superceded_votes(notes.select(&:downvote?), notes).size
   end
 
   def downvotes_in_percent
@@ -101,7 +101,7 @@ module Issuable
 
   # Return the number of +1 comments (upvotes)
   def upvotes
-    notes.select(&:upvote?).size
+    filter_superceded_votes(notes.select(&:upvote?), notes).size
   end
 
   def upvotes_in_percent
@@ -124,10 +124,12 @@ module Issuable
     users << assignee if is_assigned?
     mentions = []
     mentions << self.mentioned_users
+
     notes.each do |note|
       users << note.author
       mentions << note.mentioned_users
     end
+
     users.concat(mentions.reduce([], :|)).uniq
   end
 
@@ -149,9 +151,23 @@ module Issuable
 
   def add_labels_by_names(label_names)
     label_names.each do |label_name|
-      label = project.labels.create_with(
-        color: Label::DEFAULT_COLOR).find_or_create_by(title: label_name.strip)
+      label = project.labels.create_with(color: Label::DEFAULT_COLOR).
+        find_or_create_by(title: label_name.strip)
       self.labels << label
     end
+  end
+
+  private
+
+  def filter_superceded_votes(votes, notes)
+    filteredvotes = [] + votes
+
+    votes.each do |vote|
+      if vote.superceded?(notes)
+        filteredvotes.delete(vote)
+      end
+    end
+
+    filteredvotes
   end
 end

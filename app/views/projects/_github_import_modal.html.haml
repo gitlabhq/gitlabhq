@@ -1,0 +1,22 @@
+%div#github_import_modal.modal.hide
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %a.close{href: "#", "data-dismiss" => "modal"} ×
+        %h3 GitHub OAuth import
+      .modal-body
+        You need to setup integration with GitHub first.
+        = link_to 'How to setup integration with GitHub', 'https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/integration/github.md'
+
+
+:javascript
+  $(function(){
+    var import_modal = $('#github_import_modal').modal({modal: true, show:false});
+    $('.how_to_import_link').bind("click", function(e){
+      e.preventDefault();
+      import_modal.show();
+    });
+    $('.modal-header .close').bind("click", function(){
+      import_modal.hide();
+    })
+  })

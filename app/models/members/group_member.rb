@@ -28,8 +28,9 @@ class GroupMember < Member
   scope :with_user, ->(user) { where(user_id: user.id) }
   scope :with_ldap_dn, -> { joins(user: :identities).where("identities.provider LIKE ?", 'ldap%') }
 
-  after_create :notify_create
+  after_create :post_create_hook
   after_update :notify_update
+  after_destroy :post_destroy_hook
 
   def self.access_level_roles
     Gitlab::Access.options_with_owner
@@ -43,14 +44,23 @@ class GroupMember < Member
     access_level
   end
 
-  def notify_create
+  def post_create_hook
     notification_service.new_group_member(self)
+    system_hook_service.execute_hooks_for(self, :create)
   end
 
   def notify_update
     if access_level_changed?
       notification_service.update_group_member(self)
     end
+  end
+
+  def post_destroy_hook
+    system_hook_service.execute_hooks_for(self, :destroy)
+  end
+
+  def system_hook_service
+    SystemHooksService.new
   end
 
   def notification_service

@@ -1,5 +1,19 @@
+- if current_user && can?(current_user, :download_code, @project)
+  = render 'shared/no_ssh'
+
 = render "home_panel"
 
+.center.well
+  %h3
+    The repository for this project is empty
+  %h4
+    You can
+    = link_to project_new_blob_path(@project, 'master'), class: 'btn btn-new btn-lg' do
+      add a file
+    &nbsp;or push it via command line.
+
+%h4
+  %strong Command line instructions
 %div.git-empty
   %fieldset
     %legend Git global setup
