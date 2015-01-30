@@ -1,6 +1,6 @@
 # Interface to the Redis-backed cache store used by the Repository model
 class RepositoryCache
-  attr_reader :namespace
+  attr_reader :namespace, :backend
 
   def initialize(namespace, backend = Rails.cache)
     @namespace = namespace
@@ -18,8 +18,4 @@ class RepositoryCache
   def fetch(key, &block)
     backend.fetch(cache_key(key), &block)
   end
-
-  private
-
-  attr_reader :backend
 end
