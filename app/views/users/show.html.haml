@@ -15,7 +15,7 @@
     .clearfix
 
     - if @groups.any?
-      %h4 Groups:
+      %h4 Groups
       = render 'groups', groups: @groups
       %hr
 
@@ -24,7 +24,7 @@
         %i.fa.fa-spinner.fa-spin
     %hr
     %h4
-      User Activity:
+      User Activity
 
       - if current_user
         %span.rss-icon.pull-right
