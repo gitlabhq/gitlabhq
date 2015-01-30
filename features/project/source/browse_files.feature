@@ -24,7 +24,7 @@ Feature: Project Source Browse Files
     Given I click on "new file" link in repo
     Then I can see new file page
 
-  @javascript
+  @javascript @tricky
   Scenario: I can create and commit file
     Given I click on "new file" link in repo
     And I edit code
