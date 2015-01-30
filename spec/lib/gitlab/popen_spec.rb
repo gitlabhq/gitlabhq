@@ -5,7 +5,7 @@ describe 'Gitlab::Popen', no_db: true do
 
   before do
     @klass = Class.new(Object)
-    @klass.send(:include, Gitlab::Popen)
+    @klass.include(Gitlab::Popen)
   end
 
   context 'zero status' do

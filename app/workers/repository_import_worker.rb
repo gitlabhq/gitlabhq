@@ -6,9 +6,8 @@ class RepositoryImportWorker
 
   def perform(project_id)
     project = Project.find(project_id)
-    result = gitlab_shell.send(:import_repository,
-                               project.path_with_namespace,
-                               project.import_url)
+    result = gitlab_shell.import_repository(project.path_with_namespace,
+                                            project.import_url)
 
     if project.import_type == 'github'
       result_of_data_import = Gitlab::Github::Importer.new(project).execute

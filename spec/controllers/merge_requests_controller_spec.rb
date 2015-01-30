@@ -27,7 +27,7 @@ describe Projects::MergeRequestsController do
       it "should render it" do
         get :show, project_id: project.to_param, id: merge_request.iid, format: format
 
-        expect(response.body).to eq((merge_request.send(:"to_#{format}",user)).to_s)
+        expect(response.body).to eq((merge_request.public_send(:"to_#{format}",user)).to_s)
       end
 
       it "should not escape Html" do

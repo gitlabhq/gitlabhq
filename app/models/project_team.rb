@@ -155,8 +155,8 @@ class ProjectTeam
     group_members = group ? group.group_members : []
 
     if level
-      project_members = project_members.send(level)
-      group_members = group_members.send(level) if group
+      project_members = project_members.public_send(level)
+      group_members = group_members.public_send(level) if group
     end
 
     user_ids = project_members.pluck(:user_id)

@@ -158,7 +158,7 @@ class NotificationService
     notify_method = "note_#{note.noteable_type.underscore}_email".to_sym
 
     recipients.each do |recipient|
-      mailer.send(notify_method, recipient.id, note.id)
+      mailer.public_send(notify_method, recipient.id, note.id)
     end
   end
 
@@ -318,7 +318,7 @@ class NotificationService
     recipients.delete(target.author)
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id)
+      mailer.public_send(method, recipient.id, target.id)
     end
   end
 
@@ -327,7 +327,7 @@ class NotificationService
     recipients.delete(current_user)
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id, current_user.id)
+      mailer.public_send(method, recipient.id, target.id, current_user.id)
     end
   end
 
@@ -337,7 +337,8 @@ class NotificationService
     recipients.delete(current_user)
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id, assignee_id_was, current_user.id)
+      mailer.public_send(method, recipient.id, target.id,
+                         assignee_id_was, current_user.id)
     end
   end
 
@@ -346,7 +347,8 @@ class NotificationService
     recipients.delete(current_user)
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id, status, current_user.id)
+      mailer.public_send(method, recipient.id, target.id,
+                         status, current_user.id)
     end
   end
 

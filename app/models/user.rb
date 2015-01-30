@@ -424,8 +424,8 @@ class User < ActiveRecord::Base
 
   def sanitize_attrs
     %w(name username skype linkedin twitter bio).each do |attr|
-      value = self.send(attr)
-      self.send("#{attr}=", Sanitize.clean(value)) if value.present?
+      value = send(attr)
+      send("#{attr}=", Sanitize.clean(value)) if value.present?
     end
   end
 
@@ -447,7 +447,7 @@ class User < ActiveRecord::Base
 
   def with_defaults
     User.defaults.each do |k, v|
-      self.send("#{k}=", v)
+      send("#{k}=", v)
     end
 
     self

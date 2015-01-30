@@ -5,6 +5,6 @@ class GitlabShellWorker
   sidekiq_options queue: :gitlab_shell
 
   def perform(action, *arg)
-    gitlab_shell.send(action, *arg)
+    gitlab_shell.public_send(action, *arg)
   end
 end

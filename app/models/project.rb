@@ -354,7 +354,7 @@ class Project < ActiveRecord::Base
 
       # If service is available but missing in db
       # we should create an instance. Ex `create_gitlab_ci_service`
-      service = self.send :"create_#{service_name}_service" if service.nil?
+      send :"create_#{service_name}_service" if service.nil?
     end
   end
 
@@ -443,7 +443,7 @@ class Project < ActiveRecord::Base
   end
 
   def execute_hooks(data, hooks_scope = :push_hooks)
-    hooks.send(hooks_scope).each do |hook|
+    hooks.public_send(hooks_scope).each do |hook|
       hook.async_execute(data)
     end
   end

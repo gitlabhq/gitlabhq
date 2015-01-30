@@ -12,7 +12,7 @@ module Network
     end
 
     def method_missing(m, *args, &block)
-      @commit.send(m, *args, &block)
+      @commit.public_send(m, *args, &block)
     end
 
     def space

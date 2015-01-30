@@ -27,7 +27,7 @@ describe Projects::CommitController do
       it "should render it" do
         get :show, project_id: project.to_param, id: commit.id, format: format
 
-        expect(response.body).to eq(commit.send(:"to_#{format}"))
+        expect(response.body).to eq(commit.public_send(:"to_#{format}"))
       end
 
       it "should not escape Html" do

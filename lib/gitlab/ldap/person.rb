@@ -31,7 +31,7 @@ module Gitlab
       end
 
       def uid
-        entry.send(config.uid).first
+        entry.public_send(config.uid).first
       end
 
       def username
