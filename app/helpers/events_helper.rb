@@ -27,18 +27,17 @@ module EventsHelper
 
     content_tag :li, class: "filter_icon #{active}" do
       link_to request.path, class: 'has_tooltip event_filter_link', id: "#{key}_event_filter", 'data-original-title' => tooltip do
-        content_tag(:i, nil, class: icon_for_event[key]) +
-          content_tag(:span, ' ' + tooltip)
+        icon(icon_for_event[key]) + content_tag(:span, ' ' + tooltip)
       end
     end
   end
 
   def icon_for_event
     {
-      EventFilter.push     => 'fa fa-upload',
-      EventFilter.merged   => 'fa fa-check-square-o',
-      EventFilter.comments => 'fa fa-comments',
-      EventFilter.team     => 'fa fa-user',
+      EventFilter.push     => 'upload',
+      EventFilter.merged   => 'check-square-o',
+      EventFilter.comments => 'comments',
+      EventFilter.team     => 'user',
     }
   end
 

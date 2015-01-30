@@ -65,8 +65,7 @@ module CommitsHelper
     branches.sort.map do |branch|
       link_to(project_tree_path(project, branch)) do
         content_tag :span, class: 'label label-gray' do
-          content_tag(:i, nil, class: 'fa fa-code-fork') + ' ' +
-            branch
+          icon('code-fork') + ' ' + branch
         end
       end
     end.join(" ").html_safe
@@ -78,8 +77,7 @@ module CommitsHelper
     sorted.map do |tag|
       link_to(project_commits_path(project, project.repository.find_tag(tag).name)) do
         content_tag :span, class: 'label label-gray' do
-          content_tag(:i, nil, class: 'fa fa-tag') + ' ' +
-            tag
+          icon('tag') + ' ' + tag
         end
       end
     end.join(" ").html_safe
