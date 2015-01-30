@@ -101,6 +101,10 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     click_link 'Replace'
   end
   
+  step 'I click on "Replace file"' do
+    click_button 'Replace file'
+  end
+  
   step 'I see diff' do
     page.should have_css '.line_holder.new'
   end
