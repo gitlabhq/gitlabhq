@@ -14,7 +14,7 @@ Check https://wiki.shibboleth.net/ for more info.
 
 Following changes are needed to enable shibboleth:
 
-protect omniauth-shibboleth callback url:
+protect omniauth-shibboleth callback URL:
 ```
   <Location /users/auth/shibboleth/callback>
     AuthType shibboleth
@@ -32,7 +32,7 @@ protect omniauth-shibboleth callback url:
     SetHandler shib
   </Location>
 ```
-exclude shibboleth urls from rewriting, add "RewriteCond %{REQUEST_URI} !/Shibboleth.sso" and "RewriteCond %{REQUEST_URI} !/shibboleth-sp", config should look like this:
+exclude shibboleth URLs from rewriting, add "RewriteCond %{REQUEST_URI} !/Shibboleth.sso" and "RewriteCond %{REQUEST_URI} !/shibboleth-sp", config should look like this:
 ```
   #apache equivalent of nginx try files
   RewriteEngine on

@@ -35,7 +35,7 @@ After Slack is ready we need to setup GitLab. Here are the steps to achieve this
 1.  Fill in your Slack details
 
     - Mark it as active
-    - Paste in the webhook url you got from Slack
+    - Paste in the webhook URL you got from Slack
 
 Have fun :)
 
