@@ -9,8 +9,6 @@ class @calendar
     cal.init
       itemName: ["commit"]
       data: timestamps
-      domain: "year"
-      subDomain: "month"
       start: new Date(starting_year, starting_month)
       domainLabelFormat: "%b"
       id: "cal-heatmap"
