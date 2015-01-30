@@ -84,7 +84,23 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   step 'I click on "Remove file"' do
     click_button 'Remove file'
   end
+  
+  step 'I click on "Remove file"' do
+    click_button 'Remove file'
+  end
 
+  step 'I click on "Upload"' do
+    click_link 'Upload'
+  end
+
+  step 'I click on "Upload file"' do
+    click_button 'Upload file'
+  end
+
+  step 'I click on "Replace"' do
+    click_link 'Replace'
+  end
+  
   step 'I see diff' do
     page.should have_css '.line_holder.new'
   end
