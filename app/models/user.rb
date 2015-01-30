@@ -270,7 +270,7 @@ class User < ActiveRecord::Base
   def namespace_uniq
     namespace_name = self.username
     if Namespace.find_by(path: namespace_name)
-      self.errors.add :username, "already exists"
+      self.errors.add(:username, "already exists") unless errors.get(:username)
     end
   end
 
