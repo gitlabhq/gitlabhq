@@ -24,7 +24,7 @@ Feature: Project Source Browse Files
     Given I click on "new file" link in repo
     Then I can see new file page
 
-  @javascript @tricky
+  @javascript
   Scenario: I can create and commit file
     Given I click on "new file" link in repo
     And I edit code
@@ -34,7 +34,7 @@ Feature: Project Source Browse Files
     Then I am redirected to the new file
     And I should see its new content
 
-  @javascript
+  @javascript @tricky
   Scenario: I can create file in empty repo
     Given I own an empty project
     And I visit my empty project page
