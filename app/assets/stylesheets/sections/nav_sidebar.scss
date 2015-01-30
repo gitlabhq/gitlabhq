@@ -110,7 +110,7 @@
 
     .nav-sidebar {
       margin-top: 20px;
-      position: fixed;
+      position: relative;
       top: 45px;
       width: $sidebar_width;
     }
@@ -150,10 +150,47 @@
   }
 }
 
+.collapse-nav {
+  position: relative;
+  top: 50px;
+  width: 230px;
+  text-align: right;
+  padding-right: 21px;
+}
+
+.page-with-sidebar.collapsed {
+
+  .collapse-nav {
+    width: 53px;
+  }
+
+  padding-left: 50px;
+
+  .sidebar-wrapper {
+    width: 52px;
+    overflow-x: hidden;
+
+    .nav-sidebar {
+      width: 52px;
+    }
+    
+    .nav-sidebar li a > span {
+      display: none;
+    }
+  }
+}
+
+
 @media (max-width: $screen-md-max) {
   @include folded-sidebar;
 }
 
 @media(min-width: $screen-md-max) {
   @include expanded-sidebar;
+}
+
+@media (max-width: $screen-md-max) {
+  .collapse-nav {
+    display: none;
+  }
 }
