@@ -249,6 +249,7 @@ describe "Issues", feature: true do
         click_button 'Update Issue'
 
         page.should have_content "Milestone changed to #{milestone.title}"
+        page.should have_content "Back to #{milestone.title}"
         has_select?('issue_assignee_id', :selected => milestone.title)
       end
     end

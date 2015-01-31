@@ -17,8 +17,11 @@
       = f.select(:milestone_id, milestone_options(@issue), { include_blank: "Select milestone" }, {class: 'select2 select2-compact js-select2 js-milestone'})
       = hidden_field_tag :issue_context
       = f.submit class: 'btn'
+      - if issue.milestone
+        .back-to-milestone
+          = icon 'arrow-left'
+          Back to #{link_to @issue.milestone.title, project_milestone_path(@project, @issue.milestone)}
     - elsif issue.milestone
-      = link_to project_milestone_path(@project, @issue.milestone) do
-        = @issue.milestone.title
+      = link_to @issue.milestone.title, project_milestone_path(@project, @issue.milestone)
     - else
       None

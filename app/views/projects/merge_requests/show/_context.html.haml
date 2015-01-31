@@ -17,6 +17,10 @@
       = f.select(:milestone_id, milestone_options(@merge_request), { include_blank: "Select milestone" }, {class: 'select2 select2-compact js-select2 js-milestone'})
       = hidden_field_tag :merge_request_context
       = f.submit class: 'btn'
+      - if @merge_request.milestone
+        .back-to-milestone
+          = icon 'arrow-left'
+          Back to #{link_to @merge_request.milestone.title, project_milestone_path(@project, @merge_request.milestone)}
     - elsif merge_request.milestone
       = link_to merge_request.milestone.title, project_milestone_path
     - else
