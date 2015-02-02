@@ -17,7 +17,7 @@
       %tr{id: "project_#{project.id}", class: "#{project_status_css_class(project.import_status)}"}
         %td= project.import_source
         %td
-          %strong= link_to project.name_with_namespace, project
+          %strong= link_to project.path_with_namespace, project
         %td.job-status
           - if project.import_status == 'finished'
             %span.cgreen
