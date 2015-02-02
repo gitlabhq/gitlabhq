@@ -71,7 +71,7 @@ module Gitlab
       if entry_project.nil?
         false
       else
-        project.nil? || project.id == entry_project.id
+        project.nil? || entry_project.default_issues_tracker?
       end
     end
   end
