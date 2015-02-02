@@ -14,7 +14,7 @@
 #  merge_requests_enabled :boolean          default(TRUE), not null
 #  wiki_enabled           :boolean          default(TRUE), not null
 #  namespace_id           :integer
-#  issues_tracker         :string(255)      default('gitlab'), not null
+#  issues_tracker         :string(255)      default("gitlab"), not null
 #  issues_tracker_id      :string(255)
 #  snippets_enabled       :boolean          default(TRUE), not null
 #  last_activity_at       :datetime

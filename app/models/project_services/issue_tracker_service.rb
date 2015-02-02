@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: services
+#
+#  id         :integer          not null, primary key
+#  type       :string(255)
+#  title      :string(255)
+#  project_id :integer          not null
+#  created_at :datetime
+#  updated_at :datetime
+#  active     :boolean          default(FALSE), not null
+#  properties :text
+#
+
 class IssueTrackerService < Service
 
   validates :project_url, :issues_url, :new_issue_url, presence: true, if: :activated?
