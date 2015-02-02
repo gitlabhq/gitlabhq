@@ -20,7 +20,7 @@ GET /groups
 ]
 ```
 
-You can search for groups by name or path with: `/groups?search=Rails`
+You can search for groups by name or path, see below.
 
 ## Details of a group
 
@@ -72,6 +72,26 @@ DELETE /groups/:id
 Parameters:
 
 - `id` (required) - The ID of a user group
+
+## Search for group
+
+Get all groups that match your string in their name or path.
+
+```
+GET /groups?search=foobar
+```
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Foobar Group",
+    "path": "foo-bar",
+    "owner_id": 18,
+    "description": "An interesting group"
+  }
+]
+```
 
 ## Group members
 
