@@ -24,7 +24,7 @@ rpm -Uvh --oldpackage gitlab-7.5.3_ee.omnibus.5.2.1.ci-1.el7.x86_64.rpm
 
 ### GitLab 7.7.2 Enterprise Edition
 
-- 7.7.2-ee/CI 5.4.2 - Ubuntu 14.04 64-bit [gitlab_7.7.2-ee.omnibus.5.4.2.ci-1_amd64.deb](https://downloads-packages.s3.amazonaws.com/30b232210a9b8a1ecaeec5452bb6f62e294e1f12/ubuntu-12.04/gitlab_7.7.2-ee.omnibus.5.4.2.ci-1_amd64.deb)
+- 7.7.2-ee/CI 5.4.2 - Ubuntu 14.04 64-bit [gitlab_7.7.2-ee.omnibus.5.4.2.ci-1_amd64.deb](https://downloads-packages.s3.amazonaws.com/92a6fc5791e0b57e85262026f40e35bc301b7589/ubuntu-14.04/gitlab_7.7.2-ee.omnibus.5.4.2.ci-1_amd64.deb)
 + SHA256: e6dc36302ca76ffa71db35286f6609331f15317a076397f34b2db9a40781a74f
 
 - 7.7.2-ee/CI 5.4.2 - Ubuntu 12.04 64-bit [gitlab_7.7.2-ee.omnibus.5.4.2.ci-1_amd64.deb](https://downloads-packages.s3.amazonaws.com/30b232210a9b8a1ecaeec5452bb6f62e294e1f12/ubuntu-12.04/gitlab_7.7.2-ee.omnibus.5.4.2.ci-1_amd64.deb)
