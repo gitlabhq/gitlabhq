@@ -19,7 +19,7 @@ module Gitlab
           visibility_level: repo["visibility_level"],
           import_type: "gitlab",
           import_source: repo["path_with_namespace"],
-          import_url: repo["http_url_to_repo"]#.sub("://", "://oauth2@#{current_user.gitlab_access_token}")
+          import_url: repo["http_url_to_repo"].sub("://", "://oauth2:#{current_user.gitlab_access_token}@")
         )
 
         if @project.save!
