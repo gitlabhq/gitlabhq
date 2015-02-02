@@ -90,12 +90,19 @@ class JiraService < IssueTrackerService
   end
 
   def close_issue_url(issue_name)
-    "#{self.project_url.chomp("/")}/rest/api/#{self.api_version}/issue/#{issue_name}/transitions"
+    "#{server_url}/rest/api/#{self.api_version}/issue/#{issue_name}/transitions"
   end
-
 
   def auth
     require 'base64'
     Base64.urlsafe_encode64("#{self.username}:#{self.password}")
+  end
+
+  def server_url
+    server = URI(project_url)
+    default_ports = [80, 443].include?(server.port)
+    server_url = "#{server.scheme}://#{server.host}"
+    server_url.concat(":#{server.port}") unless default_ports
+    return server_url
   end
 end
