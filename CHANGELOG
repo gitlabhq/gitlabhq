@@ -42,7 +42,7 @@ v 7.8.0
   - Password reset token validity increased from 2 hours to 2 days since it is also send on account creation.
   - 
   - 
-  - 
+  - Enable raw image paste from clipboard, currently Chrome only (Marco Cyriacks)
   - 
   - 
   - Add action property to merge request hook (Julien Bianchi)
