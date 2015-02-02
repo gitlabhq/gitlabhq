@@ -1,5 +1,5 @@
 module Gitlab
-  module Github
+  module GithubImport
     class ProjectCreator
       attr_reader :repo, :namespace, :current_user
 

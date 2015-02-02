@@ -47,13 +47,13 @@ class Importers::GithubsController < ApplicationController
       namespace.add_owner(current_user)
     end
 
-    @project = Gitlab::Github::ProjectCreator.new(repo, namespace, current_user).execute
+    @project = Gitlab::GithubImport::ProjectCreator.new(repo, namespace, current_user).execute
   end
 
   private
 
   def client
-    @client ||= Gitlab::Github::Client.new.client
+    @client ||= Gitlab::GithubImport::Client.new.client
   end
 
   def octo_client

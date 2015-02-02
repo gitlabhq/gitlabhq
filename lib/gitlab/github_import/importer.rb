@@ -1,5 +1,5 @@
 module Gitlab
-  module Github
+  module GithubImport
     class Importer
       attr_reader :project
 
