@@ -39,34 +39,14 @@ class IrkerWorker
     end
 
     # Firsts messages are for branch creation/deletion
-    if push_data["before"] =~ /^000000/
+    if push_data['before'] =~ /^000000/
       send_new_branch project.path_with_namespace, repo_name, committer, branch
-    elsif push_data["after"] =~ /^000000/
+    elsif push_data['after'] =~ /^000000/
       send_del_branch repo_name, committer, branch
     end
 
-    # Next message is for number of commit pushed, if any
-    if push_data['total_commits_count'] == 0
-      return true
-    end
-
-    if push_data["before"] =~ /^000000/
-      # Tweak on push_data["before"] in order to have a nice compare URL
-      commit_id = push_data['commits'][0]['id']
-      commit = Gitlab::Git::Commit.find(project.repository, commit_id)
-      commit = Commit.new(commit)
-      parents = commit.parents
-      push_data['before'] = parents[0].id unless parents.empty?
-    end
-
-    send_commits_count(push_data, project, repo_name, committer,
-                       branch, colors)
-
-    # Finally, one message per commit, limited by 3 messages (same limit as the
-    # github irc hook)
-    commits = push_data['commits'].first(3)
-    commits.each do |hook_attrs|
-      send_commit project, hook_attrs, repo_name, branch, colors
+    if push_data['total_commits_count'] != 0
+      send_commits push_data, project, repo_name, committer, branch, colors
     end
 
     @socket.close
@@ -107,6 +87,28 @@ class IrkerWorker
     sendtoirker privmsg
   end
 
+  def send_commits(push_data, project, repo_name, committer, branch, colors)
+    # Next message is for number of commit pushed, if any
+    if push_data['before'] =~ /^000000/
+      # Tweak on push_data["before"] in order to have a nice compare URL
+      commit_id = push_data['commits'][0]['id']
+      commit = Gitlab::Git::Commit.find(project.repository, commit_id)
+      commit = Commit.new(commit)
+      parents = commit.parents
+      push_data['before'] = parents[0].id unless parents.empty?
+    end
+
+    send_commits_count(push_data, project, repo_name, committer,
+                       branch, colors)
+
+    # Finally, one message per commit, limited by 3 messages (same limit as the
+    # github irc hook)
+    commits = push_data['commits'].first(3)
+    commits.each do |hook_attrs|
+      send_one_commit project, hook_attrs, repo_name, branch, colors
+    end
+  end
+
   def send_commits_count(data, project, repo_name, committer, branch, colors)
     repo_path     = project.path_with_namespace
     sha1          = Commit::truncate_sha(data['before'])
@@ -125,7 +127,7 @@ class IrkerWorker
     sendtoirker privmsg
   end
 
-  def send_commit(project, hook_attrs, repo_name, branch, colors)
+  def send_one_commit(project, hook_attrs, repo_name, branch, colors)
     commit = Gitlab::Git::Commit.find(project.repository, hook_attrs['id'])
     commit = Commit.new(commit)
     sha    = Commit::truncate_sha(hook_attrs['id'])

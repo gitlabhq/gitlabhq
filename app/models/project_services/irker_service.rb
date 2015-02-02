@@ -39,14 +39,14 @@ class IrkerService < Service
     'irc[s]://irc.network.net[:port]/#channel. Special cases: if you want '\
     'the channel to be a nickname instead, append ",isnick" to the channel '\
     'name; if the channel is protected by a secret password, append '\
-    '"?key=secretpassword" to the URI. '
+    '"?key=secretpassword" to the URI.'
     
-    begin 
+    begin
       default_irc = Gitlab.config.irker.default_irc_uri
     rescue Settingslogic::MissingSetting
       # Display nothing more
     else
-      msg += 'Note that a default IRC URI is provided by this service\'s '\
+      msg += ' Note that a default IRC URI is provided by this service\'s '\
       "administrator: #{default_irc}. You can thus just give a channel name."
     end
     msg
@@ -103,6 +103,7 @@ class IrkerService < Service
 
   def get_channels
     return true unless :activated?
+	return false if recipients.nil? || recipients.empty?
 
     begin
       default_irc = Gitlab.config.irker.default_irc_uri
@@ -115,7 +116,7 @@ class IrkerService < Service
     self.channels = recipients.split(/\s+/).map do |recipient|
       format_channel default_irc, recipient
     end
-    self.channels.reject! { |c| c.nil? }
+    channels.reject! { |c| c.nil? }
 
     errors.add(:recipients, 'are all invalid') if channels.empty?
     logger.debug "IrkerService: rcpts = #{recipients}; chans = #{channels}"
@@ -137,19 +138,25 @@ class IrkerService < Service
         retry if cnt == 1
       end
     else
-      # Authorize both irc://domain.com/#chan and irc://domain.com/chan
-      if uri.is_a?(URI) && uri.scheme[/^ircs?$/] && !uri.path.nil?
-        if uri.fragment.nil?
-          # Do not authorize irc://domain.com/
-          url = uri.to_s if uri.path.length > 1
-        else
-          # Authorize irc://domain.com/smthg#chan
-          # The irker daemon will deal with it by concatenating smthg and
-          # chan, thus sending messages on #smthgchan
-          url = uri.to_s
-        end
-      end
+	  url = consider_uri uri
     end
     url
+  end
+
+  def consider_uri(uri)
+	url = nil
+    # Authorize both irc://domain.com/#chan and irc://domain.com/chan
+    if uri.is_a?(URI) && uri.scheme[/^ircs?$/] && !uri.path.nil?
+      # Do not authorize irc://domain.com/
+      if uri.fragment.nil? && uri.path.length > 1
+        url = uri.to_s
+      else
+        # Authorize irc://domain.com/smthg#chan
+        # The irker daemon will deal with it by concatenating smthg and
+        # chan, thus sending messages on #smthgchan
+        url = uri.to_s
+      end
+    end
+	url
   end
 end
