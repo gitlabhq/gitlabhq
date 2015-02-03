@@ -14,7 +14,7 @@ module Gitlab
       private
 
       def config
-        Gitlab.config.omniauth.providers.select{|provider| provider.name == "github"}.first
+        Gitlab.config.omniauth.providers.find{|provider| provider.name == "github"}
       end
 
       def github_options

@@ -13,7 +13,7 @@ module Gitlab
         )
 
         if access_token
-          @api = OAuth2::AccessToken.from_hash(@client, :access_token => access_token)
+          @api = OAuth2::AccessToken.from_hash(@client, access_token: access_token)
         end
       end
 
@@ -67,7 +67,7 @@ module Gitlab
       end
 
       def config
-        Gitlab.config.omniauth.providers.select{|provider| provider.name == "gitlab"}.first
+        Gitlab.config.omniauth.providers.find{|provider| provider.name == "gitlab"}
       end
 
       def github_options

@@ -15,7 +15,7 @@ To enable the GitLab OmniAuth provider you must register your application with G
     - Redirect URI: 
     
     ```
-    http://gitlab.example.com/importers/gitlab/callback
+    http://gitlab.example.com/import/gitlab/callback
     http://gitlab.example.com/users/auth/gitlab/callback
     ```
 

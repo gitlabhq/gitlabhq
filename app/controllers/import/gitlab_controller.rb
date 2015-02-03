@@ -1,13 +1,13 @@
-class Importers::GitlabsController < ApplicationController
+class Import::GitlabController < ApplicationController
   before_filter :gitlab_auth, except: :callback
 
   rescue_from OAuth2::Error, with: :gitlab_unauthorized
 
   def callback
-    token = client.get_token(params[:code], callback_importers_gitlab_url)
+    token = client.get_token(params[:code], callback_import_gitlab_url)
     current_user.gitlab_access_token = token
     current_user.save
-    redirect_to status_importers_gitlab_url
+    redirect_to status_import_gitlab_url
   end
 
   def status
@@ -60,7 +60,7 @@ class Importers::GitlabsController < ApplicationController
   end
 
   def go_to_gitlab_for_permissions
-    redirect_to client.authorize_url(callback_importers_gitlab_url)
+    redirect_to client.authorize_url(callback_import_gitlab_url)
   end
 
   def gitlab_unauthorized

@@ -44,7 +44,7 @@
         .col-sm-2
         .col-sm-10
           - if github_import_enabled?
-            = link_to status_importers_github_path do
+            = link_to status_import_github_path do
               %i.fa.fa-github
               Import projects from GitHub
           - else
@@ -57,7 +57,7 @@
         .col-sm-2
         .col-sm-10
           - if gitlab_import_enabled?
-            = link_to status_importers_gitlab_path do
+            = link_to status_import_gitlab_path do
               %i.fa.fa-heart
               Import projects from GitLab.com
           - else

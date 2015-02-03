@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Importers::GitlabsController do
+describe Import::GitlabController do
   let(:user) { create(:user, gitlab_access_token: 'asd123') }
 
   before do
@@ -16,7 +16,7 @@ describe Importers::GitlabsController do
       get :callback
       
       user.reload.gitlab_access_token.should == token
-      controller.should redirect_to(status_importers_gitlab_url)
+      controller.should redirect_to(status_import_gitlab_url)
     end
   end
 

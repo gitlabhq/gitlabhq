@@ -5,6 +5,7 @@ module Gitlab
 
       def initialize(project)
         @project = project
+        @formatter = Gitlab::ImportFormatter.new
       end
 
       def execute
@@ -13,12 +14,14 @@ module Gitlab
         #Issues && Comments
         client.list_issues(project.import_source, state: :all).each do |issue|
           if issue.pull_request.nil?
-            body = "*Created by: #{issue.user.login}*\n\n#{issue.body}"
+
+            body = @formatter.author_line(issue.user.login, issue.body)
 
             if issue.comments > 0
-              body += "\n\n\n**Imported comments:**\n"
+              body += @formatter.comments_header
+
               client.issue_comments(project.import_source, issue.number).each do |c|
-                body += "\n\n*By #{c.user.login} on #{c.created_at}*\n\n#{c.body}"
+                body += @formatter.comment_to_md(c.user.login, c.created_at, c.body)
               end
             end
 

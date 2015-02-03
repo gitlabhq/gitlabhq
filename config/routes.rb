@@ -53,16 +53,16 @@ Gitlab::Application.routes.draw do
 
   
   #
-  # Importers
+  # Import
   #
-  namespace :importers do
-    resource :github, only: [:create, :new] do
+  namespace :import do
+    resource :github, only: [:create, :new], controller: :github do
       get :status
       get :callback
       get :jobs
     end
 
-    resource :gitlab, only: [:create, :new] do
+    resource :gitlab, only: [:create, :new], controller: :gitlab do
       get :status
       get :callback
       get :jobs
