@@ -70,4 +70,13 @@ describe Projects::CommitController do
       end
     end
   end
+
+  describe "#branches" do
+    it "contains branch and tags information" do
+      get :branches, project_id: project.to_param, id: commit.id
+
+      expect(assigns(:branches)).to include("master", "feature_conflict")
+      expect(assigns(:tags)).to include("v1.1.0")
+    end
+  end
 end
