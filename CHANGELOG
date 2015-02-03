@@ -32,6 +32,8 @@ v 7.8.0
   - Disable blacklist validation for project names
   - Allow configuring protection of the default branch upon first push (Marco Wessel)
   -
+  - Add gitlab.com importer
+  - Add an ability to login with gitlab.com
   - 
   - Add a commit calendar to the user profile (Hannes Rosenögger)  
   - 
