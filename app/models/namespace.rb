@@ -20,15 +20,20 @@ class Namespace < ActiveRecord::Base
   belongs_to :owner, class_name: "User"
 
   validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
-  validates :name, presence: true, uniqueness: true,
-            length: { within: 0..255 },
-            format: { with: Gitlab::Regex.name_regex,
-                      message: Gitlab::Regex.name_regex_message }
+  validates :name,
+    presence: true, uniqueness: true,
+    length: { within: 0..255 },
+    format: { with: Gitlab::Regex.name_regex,
+              message: Gitlab::Regex.name_regex_message }
+
   validates :description, length: { within: 0..255 }
-  validates :path, uniqueness: { case_sensitive: false }, presence: true, length: { within: 1..255 },
-            exclusion: { in: Gitlab::Blacklist.path },
-            format: { with: Gitlab::Regex.path_regex,
-                      message: Gitlab::Regex.path_regex_message }
+  validates :path,
+    uniqueness: { case_sensitive: false },
+    presence: true,
+    length: { within: 1..255 },
+    exclusion: { in: Gitlab::Blacklist.path },
+    format: { with: Gitlab::Regex.path_regex,
+              message: Gitlab::Regex.path_regex_message }
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
