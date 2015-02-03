@@ -254,4 +254,3 @@ module ProjectsHelper
     enabled_oauth_providers.include?(:github)
   end
 end
-

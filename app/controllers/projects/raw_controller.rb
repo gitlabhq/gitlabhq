@@ -35,4 +35,3 @@ class Projects::RawController < Projects::ApplicationController
     end
   end
 end
-

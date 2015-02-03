@@ -657,7 +657,7 @@ Style/Tab:
 Style/TrailingBlankLines:
   Description: 'Checks trailing blank lines and final newline.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#newline-eof'
-  Enabled: false
+  Enabled: true
 
 Style/TrailingComma:
   Description: 'Checks for trailing comma in parameter lists and literals.'
@@ -909,7 +909,7 @@ Lint/StringConversionInInterpolation:
 
 Lint/UnderscorePrefixedVariableName:
   Description: 'Do not use prefix `_` for a variable that is used.'
-  Enabled: false
+  Enabled: true
 
 Lint/UnusedBlockArgument:
   Description: 'Checks for unused block arguments.'
@@ -966,7 +966,7 @@ Rails/Delegate:
 
 Rails/HasAndBelongsToMany:
   Description: 'Prefer has_many :through to has_and_belongs_to_many.'
-  Enabled: false
+  Enabled: true
 
 Rails/Output:
   Description: 'Checks for calls to puts, print, etc.'
