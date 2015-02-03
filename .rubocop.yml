@@ -45,12 +45,12 @@ Style/ArrayJoin:
 Style/AsciiComments:
   Description: 'Use only ascii symbols in comments.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#english-comments'
-  Enabled: false
+  Enabled: true
 
 Style/AsciiIdentifiers:
   Description: 'Use only ascii symbols in identifiers.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#english-identifiers'
-  Enabled: false
+  Enabled: true
 
 Style/Attr:
   Description: 'Checks for uses of Module#attr.'
