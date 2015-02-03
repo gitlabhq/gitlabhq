@@ -18,7 +18,7 @@ class JiraService < IssueTrackerService
   prop_accessor :username, :password, :api_version, :jira_issue_transition_id,
                 :title, :description, :project_url, :issues_url, :new_issue_url
 
-  before_validation :set_api_version
+  before_validation :set_api_version, :set_jira_issue_transition_id
 
   def title
     if self.properties && self.properties['title'].present?
@@ -49,15 +49,25 @@ class JiraService < IssueTrackerService
     )
   end
 
-  def set_api_version
-    self.api_version ||= "2"
-  end
 
   def execute(push, issue = nil)
     close_issue(push, issue) if issue
   end
 
+  def create_cross_reference_note
+    # TODO implement
+  end
+
   private
+
+
+  def set_api_version
+    self.api_version ||= "2"
+  end
+
+  def set_jira_issue_transition_id
+    self.jira_issue_transition_id ||= "2"
+  end
 
   def close_issue(push_data, issue_name)
     url = close_issue_url(issue_name)
