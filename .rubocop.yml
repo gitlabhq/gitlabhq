@@ -1,0 +1,26 @@
+StringLiterals:
+  Enabled: false
+LineLength:
+  Enabled: false
+Documentation:
+  Enabled: false
+UnusedMethodArgument: 
+  Enabled: false
+UnusedBlockArgument: 
+  Enabled: false
+TrailingWhitespace:
+  Enabled: false
+MethodLength:
+  Enabled: false
+ClassLength:
+  Enabled: false
+AllCops:
+  Exclude:
+    - 'spec/**/*'
+    - 'features/**/*'
+    - 'vendor/**/*'
+    - 'db/**/*'
+    - 'tmp/**/*'
+    - 'bin/**/*'
+    - 'lib/backup/**/*'
+    - 'lib/tasks/**/*'
