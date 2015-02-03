@@ -34,7 +34,7 @@ module Grack
     def auth!
       if @auth.provided?
         return bad_request unless @auth.basic?
-        
+
         # Authentication with username and password
         login, password = @auth.credentials
 
@@ -80,11 +80,11 @@ module Grack
 
     def authenticate_user(login, password)
       user = Gitlab::Auth.new.find(login, password)
-      
+
       unless user
         user = oauth_access_token_check(login, password)
       end
-      
+
       return user if user.present?
 
       # At this point, we know the credentials were wrong. We let Rack::Attack
@@ -154,7 +154,7 @@ module Grack
     end
 
     def render_not_found
-      [404, {"Content-Type" => "text/plain"}, ["Not Found"]]
+      [404, { "Content-Type" => "text/plain" }, ["Not Found"]]
     end
   end
 end

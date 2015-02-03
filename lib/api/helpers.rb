@@ -173,7 +173,7 @@ module API
     end
 
     def render_api_error!(message, status)
-      error!({'message' => message}, status)
+      error!({ 'message' => message }, status)
     end
 
     private

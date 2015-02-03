@@ -95,7 +95,7 @@ module ProjectsHelper
       class: cls,
       method: :post,
       remote: true,
-      data: {type: 'json'}
+      data: { type: 'json' }
     }
 
 

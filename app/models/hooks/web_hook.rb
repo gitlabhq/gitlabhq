@@ -44,7 +44,7 @@ class WebHook < ActiveRecord::Base
       }
       WebHook.post(post_url,
                    body: data.to_json,
-                   headers: {"Content-Type" => "application/json"},
+                   headers: { "Content-Type" => "application/json" },
                    verify: false,
                    basic_auth: auth)
     end

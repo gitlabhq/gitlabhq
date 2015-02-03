@@ -146,7 +146,7 @@ module APIGuard
             Rack::OAuth2::Server::Resource::Bearer::Forbidden.new(
               :insufficient_scope,
               Rack::OAuth2::Server::Resource::ErrorMethods::DEFAULT_DESCRIPTION[:insufficient_scope],
-              { scope: e.scopes})
+              { scope: e.scopes })
           end
 
         response.finish
