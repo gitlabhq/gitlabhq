@@ -23,7 +23,7 @@ Style/AlignHash:
   Description: >-
                  Align the elements of a hash literal if they span more than
                  one line.
-  Enabled: false
+  Enabled: true
 
 Style/AlignParameters:
   Description: >-
