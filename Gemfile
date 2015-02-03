@@ -206,8 +206,6 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
 
-  gem 'rails_best_practices'
-
   # Docs generator
   gem "sdoc"
 
@@ -217,6 +215,7 @@ end
 
 group :development, :test do
   gem 'coveralls', require: false
+  gem 'rubocop', '0.28.0', require: false
   # gem 'rails-dev-tweaks'
   gem 'spinach-rails'
   gem "rspec-rails"

@@ -37,6 +37,9 @@ GEM
       rake (>= 0.8.7)
     arel (5.0.1.20140414130214)
     asciidoctor (0.1.4)
+    ast (2.0.0)
+    astrolabe (1.3.0)
+      parser (>= 2.2.0.pre.3, < 3.0)
     attr_required (1.0.0)
     awesome_print (1.2.0)
     axiom-types (0.0.5)
@@ -67,8 +70,6 @@ GEM
       timers (~> 4.0.0)
     charlock_holmes (0.6.9.4)
     cliver (0.3.2)
-    code_analyzer (0.4.3)
-      sexp_processor
     coderay (1.1.0)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
@@ -353,6 +354,8 @@ GEM
     org-ruby (0.9.12)
       rubypants (~> 0.2)
     orm_adapter (0.5.0)
+    parser (2.2.0.2)
+      ast (>= 1.1, < 3.0)
     pg (0.15.1)
     phantomjs (1.9.2.0)
     poltergeist (1.5.1)
@@ -362,6 +365,7 @@ GEM
       websocket-driver (>= 0.2.0)
     polyglot (0.3.4)
     posix-spawn (0.3.9)
+    powerpack (0.0.9)
     pry (0.9.12.4)
       coderay (~> 1.0)
       method_source (~> 0.8)
@@ -404,20 +408,12 @@ GEM
       sprockets-rails (~> 2.0)
     rails_autolink (1.1.6)
       rails (> 3.1)
-    rails_best_practices (1.14.4)
-      activesupport
-      awesome_print
-      code_analyzer (>= 0.4.3)
-      colored
-      erubis
-      i18n
-      require_all
-      ruby-progressbar
     railties (4.1.1)
       actionpack (= 4.1.1)
       activesupport (= 4.1.1)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
+    rainbow (2.0.0)
     raindrops (0.13.0)
     rake (10.3.2)
     raphael-rails (2.1.2)
@@ -448,7 +444,6 @@ GEM
       redis (>= 2.2)
     ref (1.0.5)
     request_store (1.0.5)
-    require_all (1.3.2)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     rinku (1.7.3)
@@ -468,7 +463,13 @@ GEM
       rspec-core (~> 2.14.0)
       rspec-expectations (~> 2.14.0)
       rspec-mocks (~> 2.14.0)
-    ruby-progressbar (1.2.0)
+    rubocop (0.28.0)
+      astrolabe (~> 1.3)
+      parser (>= 2.2.0.pre.7, < 3.0)
+      powerpack (~> 0.0.6)
+      rainbow (>= 1.99.1, < 3.0)
+      ruby-progressbar (~> 1.4)
+    ruby-progressbar (1.7.1)
     rubyntlm (0.4.0)
     rubypants (0.2.0)
     rugged (0.21.2)
@@ -496,7 +497,6 @@ GEM
     semantic-ui-sass (1.8.0.0)
       sass (~> 3.2)
     settingslogic (2.0.9)
-    sexp_processor (4.4.0)
     shoulda-matchers (2.7.0)
       activesupport (>= 3.0.0)
     sidekiq (3.3.0)
@@ -520,7 +520,7 @@ GEM
     slim (2.0.2)
       temple (~> 0.6.6)
       tilt (>= 1.3.3, < 2.1)
-    slop (3.4.7)
+    slop (3.6.0)
     spinach (0.8.7)
       colorize (= 0.5.8)
       gherkin-ruby (>= 0.3.1)
@@ -704,7 +704,6 @@ DEPENDENCIES
   rack-oauth2 (~> 1.0.5)
   rails (~> 4.1.0)
   rails_autolink (~> 1.1)
-  rails_best_practices
   raphael-rails (~> 2.1.2)
   rb-fsevent
   rb-inotify
@@ -713,6 +712,7 @@ DEPENDENCIES
   redis-rails
   request_store
   rspec-rails
+  rubocop (= 0.28.0)
   rugments
   sanitize (~> 2.0)
   sass-rails (~> 4.0.2)
