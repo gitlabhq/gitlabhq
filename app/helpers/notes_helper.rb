@@ -1,5 +1,5 @@
 module NotesHelper
-   # Helps to distinguish e.g. commit notes in mr notes list
+  # Helps to distinguish e.g. commit notes in mr notes list
   def note_for_main_target?(note)
     (@noteable.class.name == note.noteable_type && !note.for_diff_line?)
   end

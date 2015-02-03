@@ -113,8 +113,8 @@ module Gitlab
       # we dont allow force push to protected branch
       if forced_push?(project, oldrev, newrev)
        :force_push_code_to_protected_branches
-       # and we dont allow remove of protected branch
       elsif newrev == Gitlab::Git::BLANK_SHA
+       # and we dont allow remove of protected branch
        :remove_protected_branches
       elsif project.developers_can_push_to_protected_branch?(branch_name)
        :push_code
