@@ -1,8 +1,10 @@
 - if defined?(sidebar)
-  .page-with-sidebar
+  .page-with-sidebar{:class => ("collapsed" if nav_menu_collapsed?)}
     = render "layouts/broadcast"
     .sidebar-wrapper
       = render(sidebar)
+      .collapse-nav
+        = render :partial => 'layouts/collapse_button'
     .content-wrapper
       .container-fluid
         .content

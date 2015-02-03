@@ -62,6 +62,7 @@ v 7.8.0
   - 
   - 
   - Added support for firing system hooks on group create/destroy and adding/removing users to group (Boyan Tabakov)
+  - Added persistent collapse button for left side nav bar (Jason Blanchard)
 
 v 7.7.2
   - Update GitLab Shell to version 2.4.2 that fixes a bug when developers can push to protected branch

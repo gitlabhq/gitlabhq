@@ -24,3 +24,13 @@ $ ->
 $(window).resize ->
   responsive_resize()
   return
+
+$(document).on("click", '.toggle-nav-collapse', (e) ->
+  e.preventDefault()
+  if $('.page-with-sidebar').hasClass('collapsed')
+    $('.page-with-sidebar').removeClass('collapsed')
+    $.cookie("collapsed_nav", "false", { path: '/' })
+  else
+    $('.page-with-sidebar').addClass('collapsed')
+    $.cookie("collapsed_nav", "true", { path: '/' })
+)
