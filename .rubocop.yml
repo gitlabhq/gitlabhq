@@ -617,7 +617,7 @@ Style/SpaceInsideBrackets:
 Style/SpaceInsideHashLiteralBraces:
   Description: "Use spaces inside hash literal braces - or don't."
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#spaces-operators'
-  Enabled: false
+  Enabled: true
 
 Style/SpaceInsideParens:
   Description: 'No spaces after ( or before ).'
