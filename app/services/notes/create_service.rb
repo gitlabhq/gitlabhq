@@ -15,7 +15,11 @@ module Notes
           # Create a cross-reference note if this Note contains GFM that names an
           # issue, merge request, or commit.
           note.references.each do |mentioned|
-            Note.create_cross_reference_note(mentioned, note.noteable, note.author, note.project)
+            if mentioned.is_a?(ExternalIssue)
+              note.project.issues_tracker.create_cross_reference_note
+            else
+              Note.create_cross_reference_note(mentioned, note.noteable, note.author, note.project)
+            end
           end
         end
       end
