@@ -10,7 +10,7 @@ describe Import::GithubController do
   describe "GET callback" do
     it "updates access token" do
       token = "asdasd12345"
-      Gitlab::Github::Client.any_instance.stub_chain(:client, :auth_code, :get_token, :token).and_return(token)
+      Gitlab::GithubImport::Client.any_instance.stub_chain(:client, :auth_code, :get_token, :token).and_return(token)
       Gitlab.config.omniauth.providers << OpenStruct.new(app_id: "asd123", app_secret: "asd123", name: "github")
 
       get :callback
@@ -55,7 +55,7 @@ describe Import::GithubController do
 
     it "takes already existing namespace" do
       namespace = create(:namespace, name: "john", owner: user)
-      Gitlab::Github::ProjectCreator.should_receive(:new).with(@repo, namespace, user).
+      Gitlab::GithubImport::ProjectCreator.should_receive(:new).with(@repo, namespace, user).
         and_return(double(execute: true))
       controller.stub_chain(:octo_client, :repo).and_return(@repo)
 
