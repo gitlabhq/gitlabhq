@@ -78,7 +78,7 @@ module ApplicationHelper
     style = "background-color: ##{ allowed_colors.values[bg_key] }; color: #555"
 
     content_tag(:div, class: options[:class], style: style) do
-        project.name[0, 1].upcase
+      project.name[0, 1].upcase
     end
   end
 

@@ -69,12 +69,12 @@ module ActsAsTaggableOn::Taggable
           select_clause = "DISTINCT #{table_name}.*" unless context and tag_types.one?
 
           if owned_by
-              tagging_join << " AND " +
-                  sanitize_sql([
-                      "#{taggings_alias}.tagger_id = ? AND #{taggings_alias}.tagger_type = ?",
-                      owned_by.id,
-                      owned_by.class.base_class.to_s
-                  ])
+            tagging_join << " AND " +
+              sanitize_sql([
+                  "#{taggings_alias}.tagger_id = ? AND #{taggings_alias}.tagger_type = ?",
+                  owned_by.id,
+                  owned_by.class.base_class.to_s
+              ])
           end
 
           joins << tagging_join
@@ -93,12 +93,12 @@ module ActsAsTaggableOn::Taggable
             tagging_join << " AND " + sanitize_sql(["#{taggings_alias}.context = ?", context.to_s]) if context
 
             if owned_by
-                tagging_join << " AND " +
-                  sanitize_sql([
-                    "#{taggings_alias}.tagger_id = ? AND #{taggings_alias}.tagger_type = ?",
-                    owned_by.id,
-                    owned_by.class.base_class.to_s
-                  ])
+              tagging_join << " AND " +
+                sanitize_sql([
+                  "#{taggings_alias}.tagger_id = ? AND #{taggings_alias}.tagger_type = ?",
+                  owned_by.id,
+                  owned_by.class.base_class.to_s
+                ])
             end
 
             joins << tagging_join

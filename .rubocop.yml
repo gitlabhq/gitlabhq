@@ -283,12 +283,12 @@ Style/IfWithSemicolon:
 
 Style/IndentationConsistency:
   Description: 'Keep indentation straight.'
-  Enabled: false
+  Enabled: true
 
 Style/IndentationWidth:
   Description: 'Use 2 spaces for indentation.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#spaces-indentation'
-  Enabled: false
+  Enabled: true
 
 Style/IndentArray:
   Description: >-
