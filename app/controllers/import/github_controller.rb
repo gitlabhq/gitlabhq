@@ -19,7 +19,7 @@ class Import::GithubController < ApplicationController
     @already_added_projects = current_user.created_projects.where(import_type: "github")
     already_added_projects_names = @already_added_projects.pluck(:import_source)
 
-    @repos.reject!{|repo| already_added_projects_names.include? repo.full_name}
+    @repos.reject!{ |repo| already_added_projects_names.include? repo.full_name }
   end
 
   def jobs
