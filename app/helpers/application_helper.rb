@@ -315,4 +315,12 @@ module ApplicationHelper
       profile_key_path(key)
     end
   end
+
+  def nav_sidebar_class
+    if nav_menu_collapsed?
+      "page-sidebar-collapsed"
+    else
+      "page-sidebar-expanded"
+    end
+  end
 end
