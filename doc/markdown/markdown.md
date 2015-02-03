@@ -6,7 +6,7 @@
 
 * [Newlines](#newlines)
 * [Multiple underscores in words](#multiple-underscores-in-words)
-* [URL autolinking](#url-autolinking)
+* [URL auto-linking](#url-autolinking)
 * [Code and Syntax Highlighting](#code-and-syntax-highlighting)
 * [Emoji](#emoji)
 * [Special GitLab references](#special-gitlab-references)
@@ -40,7 +40,7 @@ You can use GFM in
 - milestones
 - wiki pages
 
-You can also use other rich text files in GitLab. You might have to install a depency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
+You can also use other rich text files in GitLab. You might have to install a dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
 
 ## Newlines
 
@@ -68,7 +68,7 @@ It is not reasonable to italicize just _part_ of a word, especially when you're 
 perform_complicated_task
 do_this_and_do_that_and_another_thing
 
-## URL autolinking
+## URL auto-linking
 
 GFM will autolink standard URLs you copy and paste into your text. So if you want to link to a URL (instead of a textural link), you can simply put the URL in verbatim and it will be turned into a link to that URL.
 

@@ -4,7 +4,7 @@ OAuth2 is a protocol that enables us to get access to private details of user's 
 
 Before using the OAuth2 you should create an application in user's account. Each application getting unique App ID and App Secret parameters. You should not share them.
 
-This functianolity is based on [doorkeeper gem](https://github.com/doorkeeper-gem/doorkeeper)
+This functionality is based on [doorkeeper gem](https://github.com/doorkeeper-gem/doorkeeper)
 
 ## Web Application Flow
 
@@ -15,7 +15,7 @@ This flow consists from 3 steps.
 
 ### 1. Registering the client
 
-Creat an application in user's account profile.
+Create an application in user's account profile.
 
 ### 2. Requesting authorization
 

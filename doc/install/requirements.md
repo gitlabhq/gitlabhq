@@ -7,7 +7,7 @@
 - Ubuntu
 - Debian
 - CentOS
-- RedHat Enterprise Linux (please use the CentOS packages and instructions)
+- Red Hat Enterprise Linux (please use the CentOS packages and instructions)
 - Scientific Linux (please use the CentOS packages and instructions)
 - Oracle Linux (please use the CentOS packages and instructions)
 
