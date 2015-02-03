@@ -145,7 +145,7 @@ Style/CommentIndentation:
 Style/ConstantName:
   Description: 'Constants should use SCREAMING_SNAKE_CASE.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#screaming-snake-case'
-  Enabled: false
+  Enabled: true
 
 Style/DefWithParentheses:
   Description: 'Use def with parentheses when there are arguments.'
@@ -177,7 +177,7 @@ Style/EachWithObject:
 
 Style/ElseAlignment:
   Description: 'Align elses and elsifs correctly.'
-  Enabled: false
+  Enabled: true
 
 Style/EmptyElse:
   Description: 'Avoid empty else-clauses.'

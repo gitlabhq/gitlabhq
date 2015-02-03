@@ -112,12 +112,13 @@ module CommitsHelper
     person_name = user.nil? ? source_name : user.name
     person_email = user.nil? ? source_email : user.email
 
-    text = if options[:avatar]
-            avatar = image_tag(avatar_icon(person_email, options[:size]), class: "avatar #{"s#{options[:size]}" if options[:size]}", width: options[:size], alt: "")
-            %Q{#{avatar} <span class="commit-#{options[:source]}-name">#{person_name}</span>}
-          else
-            person_name
-          end
+    text =
+      if options[:avatar]
+        avatar = image_tag(avatar_icon(person_email, options[:size]), class: "avatar #{"s#{options[:size]}" if options[:size]}", width: options[:size], alt: "")
+        %Q{#{avatar} <span class="commit-#{options[:source]}-name">#{person_name}</span>}
+      else
+        person_name
+      end
 
     options = {
       class: "commit-#{options[:source]}-link has_tooltip",

@@ -42,11 +42,12 @@ module ActsAsTaggableOn::Taggable
 
         elsif options.delete(:any)
           # get tags, drop out if nothing returned (we need at least one)
-          tags = if options.delete(:wild)
-            ActsAsTaggableOn::Tag.named_like_any(tag_list)
-          else
-            ActsAsTaggableOn::Tag.named_any(tag_list)
-          end
+          tags =
+            if options.delete(:wild)
+              ActsAsTaggableOn::Tag.named_like_any(tag_list)
+            else
+              ActsAsTaggableOn::Tag.named_any(tag_list)
+            end
 
           return empty_result unless tags.length > 0
 
