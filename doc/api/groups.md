@@ -32,7 +32,7 @@ GET /groups/:id
 
 Parameters:
 
-- `id` (required) - The ID of a group
+- `id` (required) - The ID or path of a group
 
 ## New group
 
@@ -58,7 +58,7 @@ POST  /groups/:id/projects/:project_id
 
 Parameters:
 
-- `id` (required) - The ID of a group
+- `id` (required) - The ID or path of a group
 - `project_id` (required) - The ID of a project
 
 ## Remove group
@@ -71,7 +71,7 @@ DELETE /groups/:id
 
 Parameters:
 
-- `id` (required) - The ID of a user group
+- `id` (required) - The ID or path of a user group
 
 ## Search for group
 
@@ -148,7 +148,7 @@ POST /groups/:id/members
 
 Parameters:
 
-- `id` (required) - The ID of a group
+- `id` (required) - The ID or path of a group
 - `user_id` (required) - The ID of a user to add
 - `access_level` (required) - Project access level
 
@@ -162,5 +162,5 @@ DELETE /groups/:id/members/:user_id
 
 Parameters:
 
-- `id` (required) - The ID of a user group
+- `id` (required) - The ID or path of a user group
 - `user_id` (required) - The ID of a group member
