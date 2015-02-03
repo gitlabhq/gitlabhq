@@ -13,7 +13,7 @@ PUT /projects/:id/services/gitlab-ci
 Parameters:
 
 - `token` (required) - CI project token
-- `project_url` (required) - CI project url
+- `project_url` (required) - CI project URL
 
 ### Delete GitLab CI service
 
