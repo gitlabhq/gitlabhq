@@ -970,7 +970,7 @@ Rails/HasAndBelongsToMany:
 
 Rails/Output:
   Description: 'Checks for calls to puts, print, etc.'
-  Enabled: false
+  Enabled: true
 
 Rails/ReadWriteAttribute:
   Description: >-
@@ -991,6 +991,7 @@ Rails/Validation:
 #
 #
 AllCops:
+  RunRailsCops: true
   Exclude:
     - 'spec/**/*'
     - 'features/**/*'
@@ -1001,3 +1002,5 @@ AllCops:
     - 'lib/backup/**/*'
     - 'lib/tasks/**/*'
     - 'lib/email_validator.rb'
+    - 'lib/gitlab/upgrader.rb'
+    - 'lib/gitlab/seeder.rb'
