@@ -96,7 +96,7 @@ Style/CaseEquality:
 Style/CaseIndentation:
   Description: 'Indentation of when in a case/when/[else/]end.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#indent-when-to-case'
-  Enabled: false
+  Enabled: true
 
 Style/CharacterLiteral:
   Description: 'Checks for uses of character literals.'
