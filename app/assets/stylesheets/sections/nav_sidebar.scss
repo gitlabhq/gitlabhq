@@ -1,5 +1,3 @@
-
-
 .page-with-sidebar {
   background: #F5F5F5;
 
@@ -101,16 +99,14 @@
 }
 
 @mixin expanded-sidebar {
-  .page-with-sidebar {
-    padding-left: $sidebar_width;
-  }
+  padding-left: $sidebar_width;
 
   .sidebar-wrapper {
     width: $sidebar_width;
 
     .nav-sidebar {
       margin-top: 20px;
-      position: relative;
+      position: fixed;
       top: 45px;
       width: $sidebar_width;
     }
@@ -122,9 +118,7 @@
 }
 
 @mixin folded-sidebar {
-  .page-with-sidebar {
-    padding-left: 50px;
-  }
+  padding-left: 50px;
 
   .sidebar-wrapper {
     width: 52px;
@@ -150,47 +144,33 @@
   }
 }
 
-.collapse-nav {
-  position: relative;
-  top: 50px;
-  width: 230px;
-  text-align: right;
-  padding-right: 21px;
+.collapse-nav a {
+  position: fixed;
+  bottom: 15px;
+  padding: 10px;
+  background: #DDD;
 }
-
-.page-with-sidebar.collapsed {
-
-  .collapse-nav {
-    width: 53px;
-  }
-
-  padding-left: 50px;
-
-  .sidebar-wrapper {
-    width: 52px;
-    overflow-x: hidden;
-
-    .nav-sidebar {
-      width: 52px;
-    }
-    
-    .nav-sidebar li a > span {
-      display: none;
-    }
-  }
-}
-
 
 @media (max-width: $screen-md-max) {
-  @include folded-sidebar;
+  .page-sidebar-collapsed {
+    @include folded-sidebar;
+  }
+
+  .page-sidebar-expanded {
+    @include folded-sidebar;
+  }
+
+  .collapse-nav {
+    display: none;
+  }
 }
 
 @media(min-width: $screen-md-max) {
-  @include expanded-sidebar;
-}
+  .page-sidebar-collapsed {
+    @include folded-sidebar;
+  }
 
-@media (max-width: $screen-md-max) {
-  .collapse-nav {
-    display: none;
+  .page-sidebar-expanded {
+    @include expanded-sidebar;
   }
 }
