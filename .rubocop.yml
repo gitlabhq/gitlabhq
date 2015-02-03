@@ -10,7 +10,7 @@ Style/AccessorMethodName:
 Style/Alias:
   Description: 'Use alias_method instead of alias.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#alias-method'
-  Enabled: false
+  Enabled: true
 
 Style/AlignArray:
   Description: >-
