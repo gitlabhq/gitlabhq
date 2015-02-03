@@ -17,7 +17,7 @@ Style/AlignArray:
                  Align the elements of an array literal if they span more than
                  one line.
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#align-multiline-arrays'
-  Enabled: false
+  Enabled: true
 
 Style/AlignHash:
   Description: >-

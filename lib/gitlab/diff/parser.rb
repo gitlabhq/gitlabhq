@@ -4,7 +4,7 @@ module Gitlab
       include Enumerable
 
       def parse(lines)
-        @lines = lines,
+        @lines = lines
         lines_obj = []
         line_obj_index = 0
         line_old = 1
