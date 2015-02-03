@@ -120,7 +120,7 @@ module APIGuard
     end
 
     def oauth2_bearer_token_error_handler
-      Proc.new {|e|
+      Proc.new do |e|
         response = case e
           when MissingTokenError
             Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new
@@ -150,7 +150,7 @@ module APIGuard
           end
 
         response.finish
-      }
+      end
     end
   end
 

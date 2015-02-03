@@ -74,7 +74,7 @@ Style/BlockComments:
 
 Style/BlockEndNewline:
   Description: 'Put end statement of multiline block on its own line.'
-  Enabled: false
+  Enabled: true
 
 Style/Blocks:
   Description: >-
@@ -82,7 +82,7 @@ Style/Blocks:
                 always ugly).
                 Prefer {...} over do...end for single-line blocks.
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#single-line-blocks'
-  Enabled: false
+  Enabled: true
 
 Style/BracesAroundHashParameters:
   Description: 'Enforce braces style around hash parameters.'
