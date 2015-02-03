@@ -169,8 +169,8 @@ class WikiPage
   private
 
   def set_attributes
-    attributes[:slug] = @page.escaped_url_path
-    attributes[:title] = @page.title
+    attributes[:slug] = URI.decode @page.escaped_url_path
+    attributes[:title] = URI.decode @page.title
     attributes[:format] = @page.format
   end
 
@@ -179,7 +179,7 @@ class WikiPage
     if valid? && project_wiki.send(method, *args)
 
       page_details = if method == :update_page
-                       @page.path
+                       URI.decode @page.path
                      else
                        title
                      end
