@@ -156,22 +156,22 @@ class Project < ActiveRecord::Base
     end
 
     event :import_finish do
-      transition :started => :finished
+      transition started: :finished
     end
 
     event :import_fail do
-      transition :started => :failed
+      transition started: :failed
     end
 
     event :import_retry do
-      transition :failed => :started
+      transition failed: :started
     end
 
     state :started
     state :finished
     state :failed
 
-    after_transition any => :started, :do => :add_import_job
+    after_transition any => :started, do: :add_import_job
   end
 
   class << self

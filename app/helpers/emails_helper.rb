@@ -31,7 +31,7 @@ module EmailsHelper
   end
 
   def add_email_highlight_css
-    Rugments::Themes::Github.render(:scope => '.highlight')
+    Rugments::Themes::Github.render(scope: '.highlight')
   end
 
   def color_email_diff(diffcontent)
