@@ -267,7 +267,7 @@ Style/HashSyntax:
                  Prefer Ruby 1.9 hash syntax { a: 1, b: 2 } over 1.8 syntax
                  { :a => 1, :b => 2 }.
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#hash-literals'
-  Enabled: false
+  Enabled: true
 
 Style/IfUnlessModifier:
   Description: >-
@@ -815,10 +815,6 @@ Lint/DefEndAlignment:
 
 Lint/DeprecatedClassMethods:
   Description: 'Check for deprecated class method calls.'
-  Enabled: false
-
-Lint/DuplicateMethods:
-  Description: 'Check for duplicate methods calls.'
   Enabled: false
 
 Lint/ElseLayout:

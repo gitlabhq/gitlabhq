@@ -55,7 +55,7 @@ module API
       expose :path, :path_with_namespace
       expose :issues_enabled, :merge_requests_enabled, :wiki_enabled, :snippets_enabled, :created_at, :last_activity_at
       expose :namespace
-      expose :forked_from_project, using: Entities::ForkedFromProject, :if => lambda{ | project, options | project.forked? }
+      expose :forked_from_project, using: Entities::ForkedFromProject, if: lambda{ | project, options | project.forked? }
     end
 
     class ProjectMember < UserBasic
