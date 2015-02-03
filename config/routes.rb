@@ -229,11 +229,11 @@ Gitlab::Application.routes.draw do
       resources :tree,      only: [:show], constraints: { id: /.+/, format: /(html|js)/ }
       resource  :avatar,    only: [:show, :destroy]
 
-      resources :commit,    only: [:show], constraints: {id: /[[:alnum:]]{6,40}/} do
+      resources :commit,    only: [:show], constraints: { id: /[[:alnum:]]{6,40}/ } do
         get :branches, on: :member
       end
 
-      resources :commits,   only: [:show], constraints: {id: /(?:[^.]|\.(?!atom$))+/, format: /atom/}
+      resources :commits,   only: [:show], constraints: { id: /(?:[^.]|\.(?!atom$))+/, format: /atom/ }
       resources :compare,   only: [:index, :create]
       resources :blame,     only: [:show], constraints: { id: /.+/ }
       resources :network,   only: [:show], constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ }
