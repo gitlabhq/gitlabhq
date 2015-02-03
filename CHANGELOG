@@ -54,7 +54,7 @@ v 7.8.0
   - 
   - 
   - API: Access groups with their path (Julien Bianchi)
-  - 
+  - Added link to milestone and keeping resource context on smaller viewports for issues and merge requests (Jason Blanchard)
   - 
   - 
   - API: Add support for editing an existing project (Mika Mäenpää and Hannes Rosenögger) 
