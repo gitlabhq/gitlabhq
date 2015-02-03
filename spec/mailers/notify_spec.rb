@@ -6,6 +6,7 @@ describe Notify do
   include RepoHelpers
 
   let(:gitlab_sender) { Gitlab.config.gitlab.email_from }
+  let(:host) { Gitlab.config.gitlab.host }
   let(:recipient) { create(:user, email: 'recipient@example.com') }
   let(:project) { create(:project) }
 
@@ -25,7 +26,8 @@ describe Notify do
 
   shared_examples 'an email starting a new thread' do |message_id_prefix|
     it 'has a discussion identifier' do
-      should have_header 'Message-ID',  /<#{message_id_prefix}(.*)@#{Gitlab.config.gitlab.host}>/
+      content = /<#{message_id_prefix}(.*)@#{host}>/
+      should have_header 'Message-ID',  content
     end
   end
 
@@ -35,14 +37,17 @@ describe Notify do
     end
 
     it 'has headers that reference an existing thread' do
-      should have_header 'References',  /<#{thread_id_prefix}(.*)@#{Gitlab.config.gitlab.host}>/
-      should have_header 'In-Reply-To', /<#{thread_id_prefix}(.*)@#{Gitlab.config.gitlab.host}>/
+      should have_header 'References',  /<#{thread_id_prefix}(.*)@#{host}>/
+      should have_header 'In-Reply-To', /<#{thread_id_prefix}(.*)@#{host}>/
     end
   end
 
   describe 'for new users, the email' do
     let(:example_site_path) { root_path }
-    let(:new_user) { create(:user, email: 'newguy@example.com', created_by_id: 1) }
+
+    let(:new_user) do
+      create(:user, email: 'newguy@example.com', created_by_id: 1)
+    end
 
     token = 'kETLwRaayvigPq_x3SNM'
 
@@ -81,7 +86,10 @@ describe Notify do
 
   describe 'for users that signed up, the email' do
     let(:example_site_path) { root_path }
-    let(:new_user) { create(:user, email: 'newguy@example.com', password: "securePassword") }
+
+    let(:new_user) do
+      create(:user, email: 'newguy@example.com', password: 'securePassword')
+    end
 
     subject { Notify.new_user_email(new_user.id) }
 
@@ -156,7 +164,7 @@ describe Notify do
 
   context 'for a project' do
     describe 'items that are assignable, the email' do
-      let(:current_user) { create(:user, email: "current@email.com") }
+      let(:current_user) { create(:user, email: 'current@email.com') }
       let(:assignee) { create(:user, email: 'assignee@example.com') }
       let(:previous_assignee) { create(:user, name: 'Previous Assignee') }
 
@@ -173,8 +181,24 @@ describe Notify do
       end
 
       context 'for issues' do
-        let(:issue) { create(:issue, author: current_user, assignee: assignee, project: project) }
-        let(:issue_with_description) { create(:issue, author: current_user, assignee: assignee, project: project, description: Faker::Lorem.sentence) }
+        let(:issue) do
+          create(
+            :issue,
+            author: current_user,
+            assignee: assignee,
+            project: project
+          )
+        end
+
+        let(:issue_with_description) do
+          create(
+            :issue,
+            author: current_user,
+            assignee: assignee,
+            project: project,
+            description: Faker::Lorem.sentence
+          )
+        end
 
         describe 'that are new' do
           subject { Notify.new_issue_email(issue.assignee_id, issue.id) }
@@ -183,7 +207,8 @@ describe Notify do
           it_behaves_like 'an email starting a new thread', 'issue'
 
           it 'has the correct subject' do
-            should have_subject /#{project.name} \| #{issue.title} \(##{issue.iid}\)/
+            text = /#{project.name} \| #{issue.title} \(##{issue.iid}\)/
+            should have_subject text
           end
 
           it 'contains a link to the new issue' do
@@ -192,7 +217,12 @@ describe Notify do
         end
 
         describe 'that are new with a description' do
-          subject { Notify.new_issue_email(issue_with_description.assignee_id, issue_with_description.id) }
+          subject do
+            Notify.new_issue_email(
+              issue_with_description.assignee_id,
+              issue_with_description.id
+            )
+          end
 
           it 'contains the description' do
             should have_body_text /#{issue_with_description.description}/
@@ -200,7 +230,13 @@ describe Notify do
         end
 
         describe 'that have been reassigned' do
-          subject { Notify.reassigned_issue_email(recipient.id, issue.id, previous_assignee.id, current_user) }
+          subject do
+            Notify.reassigned_issue_email(
+              recipient.id, issue.id,
+              previous_assignee.id,
+              current_user
+            )
+          end
 
           it_behaves_like 'a multiple recipients email'
           it_behaves_like 'an answer to an existing thread', 'issue'
@@ -230,7 +266,15 @@ describe Notify do
 
         describe 'status changed' do
           let(:status) { 'closed' }
-          subject { Notify.issue_status_changed_email(recipient.id, issue.id, status, current_user) }
+
+          subject do
+            Notify.issue_status_changed_email(
+              recipient.id,
+              issue.id,
+              status,
+              current_user
+            )
+          end
 
           it_behaves_like 'an answer to an existing thread', 'issue'
 
@@ -261,21 +305,55 @@ describe Notify do
 
       context 'for merge requests' do
         let(:merge_author) { create(:user) }
-        let(:merge_request) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project) }
-        let(:merge_request_with_description) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project, description: Faker::Lorem.sentence) }
+
+        let(:merge_request) do
+          create(
+            :merge_request,
+            author: current_user,
+            assignee: assignee,
+            source_project: project,
+            target_project: project
+          )
+        end
+
+        let(:merge_request_with_description) do
+          create(
+            :merge_request,
+            author: current_user,
+            assignee: assignee,
+            source_project: project,
+            target_project: project,
+            description: Faker::Lorem.sentence
+          )
+        end
 
         describe 'that are new' do
-          subject { Notify.new_merge_request_email(merge_request.assignee_id, merge_request.id) }
+          subject do
+            Notify.new_merge_request_email(
+              merge_request.assignee_id,
+              merge_request.id
+            )
+          end
 
           it_behaves_like 'an assignee email'
           it_behaves_like 'an email starting a new thread', 'merge_request'
 
-          it 'has the correct subject' do
-            should have_subject /#{merge_request.title} \(##{merge_request.iid}\)/
+          it "contains the project's owner info in its subject" do
+            should have_subject /\[#{project.owner.name}\]/
+          end
+
+          it 'contains project info in its subject' do
+            should have_subject /#{project.name} \|/
+          end
+
+          it 'contains merge request info in its subject' do
+            text = /#{merge_request.title} \(##{merge_request.iid}\)/
+            should have_subject text
           end
 
           it 'contains a link to the new merge request' do
-            should have_body_text /#{project_merge_request_path(project, merge_request)}/
+            text = /#{project_merge_request_path(project, merge_request)}/
+            should have_body_text text
           end
 
           it 'contains the source branch for the merge request' do
@@ -287,20 +365,34 @@ describe Notify do
           end
 
           it 'has the correct message-id set' do
-            should have_header 'Message-ID', "<merge_request_#{merge_request.id}@#{Gitlab.config.gitlab.host}>"
+            content = "<merge_request_#{merge_request.id}@#{host}>"
+            should have_header 'Message-ID', content
           end
         end
 
         describe 'that are new with a description' do
-          subject { Notify.new_merge_request_email(merge_request_with_description.assignee_id, merge_request_with_description.id) }
+          subject do
+            Notify.new_merge_request_email(
+              merge_request_with_description.assignee_id,
+              merge_request_with_description.id
+            )
+          end
 
           it 'contains the description' do
-            should have_body_text /#{merge_request_with_description.description}/
+            text = /#{merge_request_with_description.description}/
+            should have_body_text text
           end
         end
 
         describe 'that are reassigned' do
-          subject { Notify.reassigned_merge_request_email(recipient.id, merge_request.id, previous_assignee.id, current_user.id) }
+          subject do
+            Notify.reassigned_merge_request_email(
+              recipient.id,
+              merge_request.id,
+              previous_assignee.id,
+              current_user.id
+            )
+          end
 
           it_behaves_like 'a multiple recipients email'
           it_behaves_like 'an answer to an existing thread', 'merge_request'
@@ -311,8 +403,17 @@ describe Notify do
             sender.address.should eq(gitlab_sender)
           end
 
-          it 'has the correct subject' do
-            should have_subject /#{merge_request.title} \(##{merge_request.iid}\)/
+          it "contains the project's owner info in its subject" do
+            should have_subject /\[#{project.owner.name}\]/
+          end
+
+          it 'contains project info in its subject' do
+            should have_subject /#{project.name} \|/
+          end
+
+          it 'contains merge request info in its subject' do
+            text = /#{merge_request.title} \(##{merge_request.iid}\)/
+            should have_subject text
           end
 
           it 'contains the name of the previous assignee' do
@@ -324,13 +425,22 @@ describe Notify do
           end
 
           it 'contains a link to the merge request' do
-            should have_body_text /#{project_merge_request_path project, merge_request}/
+            text = /#{project_merge_request_path project, merge_request}/
+            should have_body_text text
           end
         end
 
         describe 'status changed' do
           let(:status) { 'reopened' }
-          subject { Notify.merge_request_status_email(recipient.id, merge_request.id, status, current_user) }
+
+          subject do
+            Notify.merge_request_status_email(
+              recipient.id,
+              merge_request.id,
+              status,
+              current_user
+            )
+          end
 
           it_behaves_like 'an answer to an existing thread', 'merge_request'
 
@@ -340,8 +450,17 @@ describe Notify do
             sender.address.should eq(gitlab_sender)
           end
 
-          it 'has the correct subject' do
-            should have_subject /#{merge_request.title} \(##{merge_request.iid}\)/i
+          it "contains the project's owner info in its subject" do
+            should have_subject /\[#{project.owner.name}\]/
+          end
+
+          it 'contains project info in its subject' do
+            should have_subject /#{project.name} \|/
+          end
+
+          it 'contains merge request info in its subject' do
+            text = /#{merge_request.title} \(##{merge_request.iid}\)/
+            should have_subject text
           end
 
           it 'contains the new status' do
@@ -353,12 +472,19 @@ describe Notify do
           end
 
           it 'contains a link to the merge request' do
-            should have_body_text /#{project_merge_request_path project, merge_request}/
+            text = /#{project_merge_request_path project, merge_request}/
+            should have_body_text text
           end
         end
 
         describe 'that are merged' do
-          subject { Notify.merged_merge_request_email(recipient.id, merge_request.id, merge_author.id) }
+          subject do
+            Notify.merged_merge_request_email(
+              recipient.id,
+              merge_request.id,
+              merge_author.id
+            )
+          end
 
           it_behaves_like 'a multiple recipients email'
           it_behaves_like 'an answer to an existing thread', 'merge_request'
@@ -369,8 +495,17 @@ describe Notify do
             sender.address.should eq(gitlab_sender)
           end
 
-          it 'has the correct subject' do
-            should have_subject /#{merge_request.title} \(##{merge_request.iid}\)/
+          it "contains the project's owner info in its subject" do
+            should have_subject /\[#{project.owner.name}\]/
+          end
+
+          it 'contains project info in its subject' do
+            should have_subject /#{project.name} \| /
+          end
+
+          it 'contains merge request info in its subject' do
+            text = /#{merge_request.title} \(##{merge_request.iid}\)/
+            should have_subject text
           end
 
           it 'contains the new status' do
@@ -378,7 +513,8 @@ describe Notify do
           end
 
           it 'contains a link to the merge request' do
-            should have_body_text /#{project_merge_request_path project, merge_request}/
+            text = /#{project_merge_request_path project, merge_request}/
+            should have_body_text text
           end
         end
       end
@@ -469,8 +605,22 @@ describe Notify do
       end
 
       describe 'on a merge request' do
-        let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-        let(:note_on_merge_request_path) { project_merge_request_path(project, merge_request, anchor: "note_#{note.id}") }
+        let(:merge_request) do
+          create(
+            :merge_request,
+            source_project: project,
+            target_project: project
+          )
+        end
+
+        let(:note_on_merge_request_path) do
+          project_merge_request_path(
+            project,
+            merge_request,
+            anchor: "note_#{note.id}"
+          )
+        end
+
         before(:each) { note.stub(:noteable).and_return(merge_request) }
 
         subject { Notify.note_merge_request_email(recipient.id, note.id) }
@@ -489,7 +639,15 @@ describe Notify do
 
       describe 'on an issue' do
         let(:issue) { create(:issue, project: project) }
-        let(:note_on_issue_path) { project_issue_path(project, issue, anchor: "note_#{note.id}") }
+
+        let(:note_on_issue_path) do
+          project_issue_path(
+            project,
+            issue,
+            anchor: "note_#{note.id}"
+          )
+        end
+
         before(:each) { note.stub(:noteable).and_return(issue) }
 
         subject { Notify.note_issue_email(recipient.id, note.id) }
@@ -559,11 +717,34 @@ describe Notify do
   describe 'email on push with multiple commits' do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
-    let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_image_commit.id, sample_commit.id) }
-    let(:commits) { Commit.decorate(compare.commits) }
-    let(:diff_path) { project_compare_path(project, from: commits.first, to: commits.last) }
 
-    subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'master', compare) }
+    let(:compare) do
+      Gitlab::Git::Compare.new(
+        project.repository.raw_repository,
+        sample_image_commit.id,
+        sample_commit.id
+      )
+    end
+
+    let(:commits) { Commit.decorate(compare.commits) }
+
+    let(:diff_path) do
+      project_compare_path(
+        project,
+        from: commits.first,
+        to: commits.last
+      )
+    end
+
+    subject do
+      Notify.repository_push_email(
+        project.id,
+        'devs@company.name',
+        user.id,
+        'master',
+        compare
+      )
+    end
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
@@ -595,11 +776,27 @@ describe Notify do
   describe 'email on push with a single commit' do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
-    let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_commit.parent_id, sample_commit.id) }
+
+    let(:compare) do
+      Gitlab::Git::Compare.new(
+        project.repository.raw_repository,
+        sample_commit.parent_id,
+        sample_commit.id
+      )
+    end
+
     let(:commits) { Commit.decorate(compare.commits) }
     let(:diff_path) { project_commit_path(project, commits.first) }
 
-    subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'master', compare) }
+    subject do
+      Notify.repository_push_email(
+        project.id,
+        'devs@company.name',
+        user.id,
+        'master',
+        compare
+      )
+    end
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]

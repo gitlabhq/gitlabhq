@@ -81,7 +81,8 @@ class Notify < ActionMailer::Base
   #   >> subject('Lorem ipsum')
   #   => "Lorem ipsum"
   #
-  #   # Automatically inserts Project name when @project is set
+  #   # Automatically inserts Project name and Project owner name when
+  #   # @project is set
   #   >> @project = Project.last
   #   => #<Project id: 1, name: "Ruby on Rails", path: "ruby_on_rails", ...>
   #   >> subject('Lorem ipsum')
@@ -92,7 +93,7 @@ class Notify < ActionMailer::Base
   #   => "Lorem ipsum | Dolor sit amet"
   def subject(*extra)
     subject = ""
-    subject << "#{@project.name} | " if @project
+    subject << "[#{@project.owner.name}] #{@project.name} | " if @project
     subject << extra.join(' | ') if extra.present?
     subject
   end

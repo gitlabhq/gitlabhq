@@ -27,7 +27,7 @@ v 7.8.0
   - Show success/error messages for test setting button in services
   - Added Rubocop for code style checks
   - Fix commits pagination
-  - 
+  - Add project owner name to mailing subject
   - 
   - 
   - 
