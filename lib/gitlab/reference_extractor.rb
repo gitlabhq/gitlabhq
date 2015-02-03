@@ -23,17 +23,13 @@ module Gitlab
     end
 
     def issues_for(project = nil)
-      if project && project.jira_tracker?
-        issues.uniq.map do |jira_identifier|
-          JiraIssue.new(jira_identifier[:id])
+      issues.uniq.map do |entry|
+        if should_lookup?(project, entry[:project])
+          entry[:project].issues.where(iid: entry[:id]).first
+        elsif external_jira_reference?(project, entry[:project])
+          JiraIssue.new(entry[:id], entry[:project])
         end
-      else
-        issues.map do |entry|
-          if should_lookup?(project, entry[:project])
-            entry[:project].issues.where(iid: entry[:id]).first
-          end
-        end.reject(&:nil?)
-      end
+      end.reject(&:nil?)
     end
 
     def merge_requests_for(project = nil)
@@ -70,7 +66,15 @@ module Gitlab
       if entry_project.nil?
         false
       else
-        project.nil? || project.id == entry_project.id
+        project.nil? || entry_project.default_issues_tracker?
+      end
+    end
+
+    def external_jira_reference?(project, entry_project)
+      if project.id == entry_project.id
+        project && project.jira_tracker?
+      else
+        entry_project && entry_project.jira_tracker?
       end
     end
   end
