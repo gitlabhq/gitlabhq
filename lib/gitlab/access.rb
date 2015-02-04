@@ -50,12 +50,13 @@ module Gitlab
       end
 
       def protection_options
-       {
-          "None"                          => PROTECTION_NONE,
-          "Protect, developers can push"  => PROTECTION_DEV_CAN_PUSH,
-          "Full protection"               => PROTECTION_FULL,
-       }
+        {
+          "Not protected, developers and masters can (force) push and delete the branch" => PROTECTION_NONE,
+          "Partially protected, developers can also push but prevent all force pushes and deletion" => PROTECTION_DEV_CAN_PUSH,
+          "Fully protected, only masters can push and prevent all force pushes and deletion" => PROTECTION_FULL,
+        }
       end
+
       def protection_values
         protection_options.values
       end
