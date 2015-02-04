@@ -45,6 +45,15 @@ Feature: Project Source Browse Files
     And I see a commit error message
 
   @javascript
+  Scenario: I can upload file and commit
+    Given I click on "Upload" button in repo
+    And I choose a file
+    And I fill the commit message
+    And I click on "Upload file"
+    Then I am redirected to the new file
+    And I should see its new content
+
+  @javascript
   Scenario: I can edit file
     Given I click on ".gitignore" file in repo
     And I click button "Edit"
@@ -97,17 +106,6 @@ Feature: Project Source Browse Files
     And I fill the commit message
     And I click on "Replace file"
     Then I am redirected to the ".gitignore"
-    And I should see its new content
-
-  @javascript
-  Scenario: I can upload file and commit
-    Given I click on ".gitignore" file in repo
-    And I see the ".gitignore"
-    And I click on "Upload"
-    And I choose a file
-    And I fill the commit message
-    And I click on "Upload file"
-    Then I am redirected to the new file
     And I should see its new content
 
   Scenario: I can browse directory with Browse Dir
