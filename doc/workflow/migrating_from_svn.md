@@ -3,7 +3,7 @@
 SVN stands for Subversion and is a version control system (VCS).
 Git is a distributed version control system.
 
-There are some major differences between the two, for more information consult your favourite search engine.
+There are some major differences between the two, for more information consult your favorite search engine.
 
 Git has tools for migrating SVN repositories to git, namely `git svn`. You can read more about this at
 [git documentation pages](http://git-scm.com/book/en/Git-and-Other-Systems-Git-and-Subversion).
