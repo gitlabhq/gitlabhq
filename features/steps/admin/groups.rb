@@ -41,7 +41,7 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
     within "#new_team_member" do
       select "Reporter", from: "access_level"
     end
-    click_button "Add users into group"
+    click_button "Add users to group"
   end
 
   step 'I should see "John Doe" in team list in every project as "Reporter"' do

@@ -34,7 +34,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
       select2(user.id, from: "#user_ids", multiple: true)
       select "Reporter", from: "access_level"
     end
-    click_button "Add users into group"
+    click_button "Add users to group"
   end
 
   step 'I should see user "John Doe" in team list' do
