@@ -561,7 +561,7 @@ GEM
     tilt (1.4.1)
     timers (4.0.1)
       hitimes
-    timfel-krb5-auth (0.8)
+    timfel-krb5-auth (0.8.3)
     tinder (1.9.3)
       eventmachine (~> 1.0)
       faraday (~> 0.8)
