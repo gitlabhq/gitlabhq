@@ -85,14 +85,6 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     click_button 'Remove file'
   end
 
-  step 'I click on "Upload"' do
-    click_button 'Upload'
-  end
-
-  step 'I click on "Upload file"' do
-    click_button 'Upload file'
-  end
-
   step 'I click on "Replace"' do
     click_button 'Replace'
   end
@@ -114,6 +106,15 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     page.should have_content "File name"
     page.should have_content "Commit message"
   end
+
+  step 'I click on "Upload" link in repo' do
+    click_button 'Upload'
+  end
+
+  step 'I click on "Upload file"' do
+    click_button 'Upload file'
+  end
+
 
   step 'I click on files directory' do
     click_link 'files'
