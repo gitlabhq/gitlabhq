@@ -84,13 +84,9 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   step 'I click on "Remove file"' do
     click_button 'Remove file'
   end
-  
-  step 'I click on "Remove file"' do
-    click_button 'Remove file'
-  end
 
   step 'I click on "Upload"' do
-    click_link 'Upload'
+    click_button 'Upload'
   end
 
   step 'I click on "Upload file"' do
@@ -98,7 +94,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click on "Replace"' do
-    click_link 'Replace'
+    click_button 'Replace'
   end
   
   step 'I click on "Replace file"' do
