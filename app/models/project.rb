@@ -116,7 +116,6 @@ class Project < ActiveRecord::Base
   validates :path,
     presence: true,
     length: { within: 0..255 },
-    exclusion: { in: Gitlab::Blacklist.path },
     format: { with: Gitlab::Regex.path_regex,
               message: Gitlab::Regex.path_regex_message }
   validates :issues_enabled, :merge_requests_enabled,
