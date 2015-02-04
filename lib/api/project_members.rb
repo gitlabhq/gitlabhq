@@ -106,7 +106,7 @@ module API
         unless team_member.nil?
           team_member.destroy
         else
-          {message: "Access revoked", id: params[:user_id].to_i}
+          { message: "Access revoked", id: params[:user_id].to_i }
         end
       end
     end

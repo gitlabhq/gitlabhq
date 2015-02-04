@@ -97,7 +97,17 @@
 
 .dash-project-avatar {
   float: left;
+
+  .avatar {
+    margin-top: -8px;
+    margin-left: -15px;
+    @include border-radius(0px);
+  }
+  .identicon {
+    line-height: 40px;
+  }
 }
+
 .dash-project-access-icon {
   float: left;
   margin-right: 5px;

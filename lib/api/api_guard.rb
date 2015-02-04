@@ -47,16 +47,12 @@ module APIGuard
         case validate_access_token(access_token, scopes)
         when Oauth2::AccessTokenValidationService::INSUFFICIENT_SCOPE
           raise InsufficientScopeError.new(scopes)
-
         when Oauth2::AccessTokenValidationService::EXPIRED
           raise ExpiredError
-
         when Oauth2::AccessTokenValidationService::REVOKED
           raise RevokedError
-
         when Oauth2::AccessTokenValidationService::VALID
           @current_user = User.find(access_token.resource_owner_id)
-
         end
       end
     end
@@ -120,8 +116,9 @@ module APIGuard
     end
 
     def oauth2_bearer_token_error_handler
-      Proc.new {|e|
-        response = case e
+      Proc.new do |e|
+        response =
+          case e
           when MissingTokenError
             Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new
 
@@ -146,11 +143,11 @@ module APIGuard
             Rack::OAuth2::Server::Resource::Bearer::Forbidden.new(
               :insufficient_scope,
               Rack::OAuth2::Server::Resource::ErrorMethods::DEFAULT_DESCRIPTION[:insufficient_scope],
-              { :scope => e.scopes})
+              { scope: e.scopes })
           end
 
         response.finish
-      }
+      end
     end
   end
 

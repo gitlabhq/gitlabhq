@@ -15,4 +15,3 @@ class NamespacesController < ApplicationController
     end
   end
 end
-

@@ -1,10 +1,10 @@
 module API
   # namespaces API
   class Namespaces < Grape::API
-    before {
+    before do
       authenticate!
       authenticated_as_admin!
-    }
+    end
 
     resource :namespaces do
       # Get a namespaces list

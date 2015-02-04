@@ -25,10 +25,10 @@ v 7.8.0
   - Upgrade Sidekiq gem to version 3.3.0
   - Stop git zombie creation during force push check
   - Show success/error messages for test setting button in services
-  - 
+  - Added Rubocop for code style checks
   - Fix commits pagination
   - 
-  - 
+  - Async load a branch information at the commit page
   - 
   - Allow configuring protection of the default branch upon first push (Marco Wessel)
   -
@@ -55,15 +55,20 @@ v 7.8.0
   - Add a new API function that retrieves all issues assigned to a single milestone (Justin Whear and Hannes Rosenögger)
   - 
   - 
-  - 
-  - 
+  - API: Access groups with their path (Julien Bianchi)
+  - Added link to milestone and keeping resource context on smaller viewports for issues and merge requests (Jason Blanchard)
   - 
   - 
   - API: Add support for editing an existing project (Mika Mäenpää and Hannes Rosenögger) 
   - 
   - 
-  - 
+  - When test web hook - show error message instead of 500 error page if connection to hook url was reset
   - Added support for firing system hooks on group create/destroy and adding/removing users to group (Boyan Tabakov)
+  - Added persistent collapse button for left side nav bar (Jason Blanchard)
+
+v 7.7.2
+  - Update GitLab Shell to version 2.4.2 that fixes a bug when developers can push to protected branch
+  - Fix issue when LDAP user can't login with existing GitLab account
 
 v 7.7.1
   - Improve mention autocomplete performance

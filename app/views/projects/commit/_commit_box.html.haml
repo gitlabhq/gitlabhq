@@ -37,23 +37,8 @@
   - @commit.parents.each do |parent|
     = link_to parent.short_id, project_commit_path(@project, parent)
 
-.commit-info-row
-  - if @branches.any?
-    %span
-      - branch = commit_default_branch(@project, @branches)
-      = link_to(project_tree_path(@project, branch)) do
-        %span.label.label-gray
-          %i.fa.fa-code-fork
-          = branch
-      - if @branches.any? || @tags.any?
-        = link_to("#", class: "js-details-expand") do
-          %span.label.label-gray
-            \...
-        %span.js-details-content.hide
-          - if @branches.any?
-            = commit_branches_links(@project, @branches)
-          - if @tags.any?
-            = commit_tags_links(@project, @tags)
+.commit-info-row.branches
+  %i.fa.fa-spinner.fa-spin
 
 .commit-box
   %h3.commit-title
@@ -61,3 +46,7 @@
   - if @commit.description.present?
     %pre.commit-description
       = preserve(gfm(escape_once(@commit.description)))
+
+:coffeescript
+  $ ->
+    $(".commit-info-row.branches").load("#{branches_project_commit_path(@project, @commit.id)}")

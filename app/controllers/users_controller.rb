@@ -28,13 +28,10 @@ class UsersController < ApplicationController
 
   def calendar
     visible_projects = ProjectsFinder.new.execute(current_user)
-
-    # Get user repositories and collect timestamps for commits
-    user_repositories = visible_projects.map(&:repository)
-    calendar = Gitlab::CommitsCalendar.new(user_repositories, @user)
+    calendar = Gitlab::CommitsCalendar.new(visible_projects, @user)
     @timestamps = calendar.timestamps
-    @starting_year = (Time.now - 1.year).strftime("%Y")
-    @starting_month = Date.today.strftime("%m").to_i
+    @starting_year = calendar.starting_year
+    @starting_month = calendar.starting_month
 
     render 'calendar', layout: false
   end

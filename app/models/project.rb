@@ -14,7 +14,7 @@
 #  merge_requests_enabled :boolean          default(TRUE), not null
 #  wiki_enabled           :boolean          default(TRUE), not null
 #  namespace_id           :integer
-#  issues_tracker         :string(255)      default('gitlab'), not null
+#  issues_tracker         :string(255)      default("gitlab"), not null
 #  issues_tracker_id      :string(255)
 #  snippets_enabled       :boolean          default(TRUE), not null
 #  last_activity_at       :datetime
@@ -108,13 +108,17 @@ class Project < ActiveRecord::Base
   # Validations
   validates :creator, presence: true, on: :create
   validates :description, length: { maximum: 2000 }, allow_blank: true
-  validates :name, presence: true, length: { within: 0..255 },
-            format: { with: Gitlab::Regex.project_name_regex,
-                      message: Gitlab::Regex.project_regex_message }
-  validates :path, presence: true, length: { within: 0..255 },
-            exclusion: { in: Gitlab::Blacklist.path },
-            format: { with: Gitlab::Regex.path_regex,
-                      message: Gitlab::Regex.path_regex_message }
+  validates :name,
+    presence: true,
+    length: { within: 0..255 },
+    format: { with: Gitlab::Regex.project_name_regex,
+              message: Gitlab::Regex.project_regex_message }
+  validates :path,
+    presence: true,
+    length: { within: 0..255 },
+    exclusion: { in: Gitlab::Blacklist.path },
+    format: { with: Gitlab::Regex.path_regex,
+              message: Gitlab::Regex.path_regex_message }
   validates :issues_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }
   validates :visibility_level,
@@ -156,22 +160,22 @@ class Project < ActiveRecord::Base
     end
 
     event :import_finish do
-      transition :started => :finished
+      transition started: :finished
     end
 
     event :import_fail do
-      transition :started => :failed
+      transition started: :failed
     end
 
     event :import_retry do
-      transition :failed => :started
+      transition failed: :started
     end
 
     state :started
     state :finished
     state :failed
 
-    after_transition any => :started, :do => :add_import_job
+    after_transition any => :started, do: :add_import_job
   end
 
   class << self

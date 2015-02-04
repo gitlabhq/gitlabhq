@@ -23,7 +23,7 @@ class GithubImportsController < ApplicationController
   end
 
   def jobs
-    jobs = current_user.created_projects.where(import_type: "github").to_json(:only => [:id, :import_status])
+    jobs = current_user.created_projects.where(import_type: "github").to_json(only: [:id, :import_status])
     render json: jobs
   end
 
@@ -58,7 +58,7 @@ class GithubImportsController < ApplicationController
 
   def octo_client
     Octokit.auto_paginate = true
-    @octo_client ||= Octokit::Client.new(:access_token => current_user.github_access_token)
+    @octo_client ||= Octokit::Client.new(access_token: current_user.github_access_token)
   end
 
   def github_auth

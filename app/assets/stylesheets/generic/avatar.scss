@@ -15,6 +15,10 @@
     &.s24 { margin-right: 4px; }
   }
 
+  &.avatar-tile {
+    @include border-radius(0px);
+  }
+
   &.s16 { width: 16px; height: 16px; margin-right: 6px; }
   &.s24 { width: 24px; height: 24px; margin-right: 8px; }
   &.s26 { width: 26px; height: 26px; margin-right: 8px; }

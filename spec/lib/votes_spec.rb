@@ -161,8 +161,8 @@ describe Issue, 'Votes' do
       add_note '+1 I still like this'
       add_note '+1 I really like this'
       add_note '+1 Give me this now!!!!'
-      p issue.downvotes.should == 0
-      p issue.upvotes.should == 1
+      issue.downvotes.should == 0
+      issue.upvotes.should == 1
     end
 
     it 'should count a users vote only once without caring about comments' do
@@ -171,8 +171,8 @@ describe Issue, 'Votes' do
       add_note 'Another comment'
       add_note '+1 vote'
       add_note 'final comment'
-      p issue.downvotes.should == 0
-      p issue.upvotes.should == 1
+      issue.downvotes.should == 0
+      issue.upvotes.should == 1
     end
 
   end

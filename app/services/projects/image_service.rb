@@ -14,14 +14,14 @@ module Projects
         uploader.store!(image)
         link = {
                  'alt' => File.basename(alt, '.*'),
-                 'url' => File.join(@root_url, uploader.url) 
+                 'url' => File.join(@root_url, uploader.url)
                }
       else
         link = nil
       end
     end
 
-  protected
+    protected
 
     def upload_path
       base_dir = FileUploader.generate_dir

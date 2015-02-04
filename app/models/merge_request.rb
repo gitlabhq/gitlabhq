@@ -76,7 +76,7 @@ class MergeRequest < ActiveRecord::Base
       merge_request.save
     end
 
-    after_transition :locked => (any - :locked) do |merge_request, transition|
+    after_transition locked: (any - :locked) do |merge_request, transition|
       merge_request.locked_at = nil
       merge_request.save
     end

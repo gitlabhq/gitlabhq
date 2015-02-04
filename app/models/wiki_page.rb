@@ -43,7 +43,7 @@ class WikiPage
     @attributes[:slug]
   end
 
-  alias :to_param :slug
+  alias_method :to_param, :slug
 
   # The formatted title of this page.
   def title

@@ -81,7 +81,7 @@ class GitlabCiService < CiService
   def fields
     [
       { type: 'text', name: 'token', placeholder: 'GitLab CI project specific token' },
-      { type: 'text', name: 'project_url', placeholder: 'http://ci.gitlabhq.com/projects/3'}
+      { type: 'text', name: 'project_url', placeholder: 'http://ci.gitlabhq.com/projects/3' }
     ]
   end
 end
