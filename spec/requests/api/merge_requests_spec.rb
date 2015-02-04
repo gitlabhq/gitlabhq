@@ -114,6 +114,19 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'GET /projects/:id/merge_request/:merge_request_id/changes' do
+    it 'should return the change information of the merge_request' do
+      get api("/projects/#{project.id}/merge_request/#{merge_request.id}/changes", user)
+      expect(response.status).to eq 200
+      expect(json_response['changes'].size).to eq(merge_request.diffs.size)
+    end
+
+    it 'returns a 404 when merge_request_id not found' do
+      get api("/projects/#{project.id}/merge_request/999/changes", user)
+      expect(response.status).to eq(404)
+    end
+  end
+
   describe "POST /projects/:id/merge_requests" do
     context 'between branches projects' do
       it "should return merge_request" do
