@@ -15,8 +15,8 @@ System hooks can be used, e.g. for logging or changing information in a LDAP ser
                 "name": "StoreCloud",
          "owner_email": "johnsmith@gmail.com",
           "owner_name": "John Smith",
-                "path": "stormcloud",
- "path_with_namespace": "jsmith/stormcloud",
+                "path": "storecloud",
+ "path_with_namespace": "jsmith/storecloud",
           "project_id": 74,
   "project_visibility": "private",
 }
@@ -126,10 +126,10 @@ System hooks can be used, e.g. for logging or changing information in a LDAP ser
 {
    "created_at": "2012-07-21T07:30:54Z",
    "event_name": "group_create",
-         "name": "StormCloud",
+         "name": "StoreCloud",
   "owner_email": "johnsmith@gmail.com",
    "owner_name": "John Smith",
-         "path": "stormcloud",
+         "path": "storecloud",
      "group_id": 78
 }
 ```

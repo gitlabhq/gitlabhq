@@ -13,4 +13,4 @@ Depending on the installation method and your GitLab version, there are multiple
 
 ## Miscellaneous
 
-- [MySQL to PostgreSQL](mysql_to_postgresql.md) guides you through migrating your database from MySQL to PostrgreSQL.
+- [MySQL to PostgreSQL](mysql_to_postgresql.md) guides you through migrating your database from MySQL to PostgreSQL.

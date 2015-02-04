@@ -1,4 +1,4 @@
-# GitLab buttons in gmail
+# GitLab buttons in Gmail
 
 GitLab supports [Google actions in email](https://developers.google.com/gmail/markup/actions/actions-overview).
 
@@ -25,4 +25,4 @@ If you receive "No errors detected" message from the tester you can send the ema
 
 ```bash
 bundle exec rake gitlab:mail_google_schema_whitelisting RAILS_ENV=production SEND=true
-``
+```
