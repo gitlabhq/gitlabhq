@@ -61,6 +61,12 @@ Feature: Project Services
     And I fill email on push settings
     Then I should see email on push service settings saved
 
+  Scenario: Activate Irker (IRC Gateway) service
+    When I visit project "Shop" services page
+    And I click Irker service link
+    And I fill Irker settings
+    Then I should see Irker service settings saved
+
   Scenario: Activate Atlassian Bamboo CI service
     When I visit project "Shop" services page
     And I click Atlassian Bamboo CI service link

@@ -100,7 +100,8 @@ class Service < ActiveRecord::Base
 
   def self.available_services_names
     %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla asana
-       emails_on_push gemnasium slack pushover buildbox bamboo teamcity jira redmine custom_issue_tracker)
+       emails_on_push gemnasium slack pushover buildbox bamboo teamcity jira
+       redmine custom_issue_tracker irker)
   end
 
   def self.create_from_template(project_id, template)
