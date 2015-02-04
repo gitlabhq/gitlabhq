@@ -102,7 +102,7 @@ class ProjectsController < ApplicationController
     note_type = params['type']
     note_id = params['type_id']
     autocomplete = ::Projects::AutocompleteService.new(@project)
-    participants = ::Projects::ParticipantsService.new(@project).execute(note_type, note_id)
+    participants = ::Projects::ParticipantsService.new(@project, current_user).execute(note_type, note_id)
 
     @suggestions = {
       emojis: autocomplete_emojis,
