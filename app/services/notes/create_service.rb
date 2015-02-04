@@ -16,7 +16,7 @@ module Notes
           # issue, merge request, or commit.
           note.references.each do |mentioned|
             if mentioned.is_a?(ExternalIssue)
-              note.project.issues_tracker.create_cross_reference_note
+              note.project.issues_tracker.create_cross_reference_note(mentioned, note.noteable, note.author, note.project)
             else
               Note.create_cross_reference_note(mentioned, note.noteable, note.author, note.project)
             end

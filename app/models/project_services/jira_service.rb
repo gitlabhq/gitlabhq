@@ -14,6 +14,7 @@
 
 class JiraService < IssueTrackerService
   include HTTParty
+  include Rails.application.routes.url_helpers
 
   prop_accessor :username, :password, :api_version, :jira_issue_transition_id,
                 :title, :description, :project_url, :issues_url, :new_issue_url
@@ -49,13 +50,29 @@ class JiraService < IssueTrackerService
     )
   end
 
-
   def execute(push, issue = nil)
     close_issue(push, issue) if issue
   end
 
-  def create_cross_reference_note
-    # TODO implement
+  def create_cross_reference_note(mentioned, noteable, author, project)
+    issue_name = mentioned.id
+
+    data = {
+      user: {
+        name: author.name,
+        url: resource_url(user_path(author)),
+      },
+      project: {
+        name: project.path_with_namespace,
+        url: resource_url(project_path(project))
+      },
+      entity: {
+        name: noteable.class.name.underscore.humanize.downcase,
+        url: resource_url(polymorphic_url([project, noteable], routing_type: :path))
+      }
+    }
+
+    add_comment(data, issue_name)
   end
 
   private
@@ -84,28 +101,70 @@ class JiraService < IssueTrackerService
       'transition' => {
         'id' => jira_issue_transition_id
       }
-    }
+    }.to_json
 
-    json_body = message.to_json
-    Rails.logger.info("#{self.class.name}: sending POST with body #{json_body} to #{url}")
+    send_message(url, message)
+  end
 
-    JiraService.post(
-      url,
-      body: json_body,
-      headers: {
-        'Content-Type' => 'application/json',
-        'Authorization' => "Basic #{auth}"
-      }
-    )
+  def add_comment(data, issue_name)
+    url = add_comment_url(issue_name)
+    user_name = data[:user][:name]
+    user_url = data[:user][:url]
+    entity_name = data[:entity][:name]
+    entity_url = data[:entity][:url]
+    entity_iid = data[:entity][:iid]
+    project_name = data[:project][:name]
+    project_url = data[:project][:url]
+
+    message = {
+      body: "[#{user_name}|#{user_url}] mentioned #{issue_name} in #{entity_name} of [#{project_name}|#{entity_url}]."
+    }.to_json
+
+    send_message(url, message)
   end
 
   def close_issue_url(issue_name)
     "#{server_url}/rest/api/#{self.api_version}/issue/#{issue_name}/transitions"
   end
 
+  def add_comment_url(issue_name)
+    "#{server_url}/rest/api/#{self.api_version}/issue/#{issue_name}/comment"
+  end
+
   def auth
     require 'base64'
     Base64.urlsafe_encode64("#{self.username}:#{self.password}")
+  end
+
+  def send_message(url, message)
+    begin
+      result = JiraService.post(
+        url,
+        body: message,
+        headers: {
+          'Content-Type' => 'application/json',
+          'Authorization' => "Basic #{auth}"
+        }
+      )
+    rescue URI::InvalidURIError => e
+      result = e.message
+    end
+
+    message = if result.is_a?(String)
+                "#{self.class.name} ERROR: #{result}. Hostname: #{url}."
+              else
+                case result.code
+                when 201
+                  "#{self.class.name} SUCCESS 201: Sucessfully posted to #{url}."
+                when 401
+                  "#{self.class.name} ERROR 401: Unauthorized. Check the #{self.username} credentials and JIRA access permissions and try again."
+                else
+                  "#{self.class.name} ERROR #{result.code}: #{result.parsed_response}"
+                end
+              end
+
+     Rails.logger.info(message)
+     message
   end
 
   def server_url
@@ -114,5 +173,9 @@ class JiraService < IssueTrackerService
     server_url = "#{server.scheme}://#{server.host}"
     server_url.concat(":#{server.port}") unless default_ports
     return server_url
+  end
+
+  def resource_url(resource)
+    "#{Settings.gitlab['url'].chomp("/")}#{resource}"
   end
 end

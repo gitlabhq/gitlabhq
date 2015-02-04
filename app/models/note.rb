@@ -169,7 +169,9 @@ class Note < ActiveRecord::Base
     # eg. mentioning a commit in MR comments which exists inside a MR
     # should not create "mentioned in" note.
     def cross_reference_disallowed?(noteable, mentioner)
-      if mentioner.kind_of?(MergeRequest)
+      if noteable.is_a?(ExternalIssue)
+        true
+      elsif mentioner.kind_of?(MergeRequest)
         mentioner.commits.map(&:id).include? noteable.id
       end
     end
