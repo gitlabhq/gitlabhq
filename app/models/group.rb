@@ -91,7 +91,7 @@ class Group < Namespace
 
   class << self
     def search(query)
-      where("LOWER(namespaces.name) LIKE :query", query: "%#{query.downcase}%")
+      where("LOWER(namespaces.name) LIKE :query or LOWER(namespaces.path) LIKE :query", query: "%#{query.downcase}%")
     end
 
     def sort(method)
