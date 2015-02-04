@@ -6,7 +6,7 @@ describe 'Help Pages', feature: true do
       login_as :user
     end
     it 'replace the variable $your_email with the email of the user' do
-      visit help_page_path(category: 'ssh', file: 'ssh.md')
+      visit help_page_path(category: 'ssh', file: 'README.md')
       page.should have_content("ssh-keygen -t rsa -C \"#{@user.email}\"")
     end
   end
