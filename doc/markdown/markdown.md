@@ -250,17 +250,17 @@ The IDs are generated from the content of the header according to the following 
 For example:
 
 ```
-###### ..Ab_c-d. e [anchor](url) ![alt text](url)..
+###### ..Ab_c-d. e [anchor](URL) ![alt text](URL)..
 ```
 
 which renders as:
 
-###### ..Ab_c-d. e [anchor](url) ![alt text](url)..
+###### ..Ab_c-d. e [anchor](URL) ![alt text](URL)..
 
 will first be converted by step 1) into a string like:
 
 ```
-..Ab_c-d. e &lt;a href="url">anchor&lt;/a> &lt;img src="url" alt="alt text"/>..
+..Ab_c-d. e &lt;a href="URL">anchor&lt;/a> &lt;img src="URL" alt="alt text"/>..
 ```
 
 After removing the tags in step 2) we get:
@@ -277,8 +277,8 @@ ab_c-d-e-anchor
 
 Note in particular how:
 
-- for markdown anchors `[text](url)`, only the `text` is used
-- markdown images `![alt](url)` are completely ignored
+- for markdown anchors `[text](URL)`, only the `text` is used
+- markdown images `![alt](URL)` are completely ignored
 
 ## Emphasis
 
