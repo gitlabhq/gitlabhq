@@ -19,8 +19,10 @@
               %td.new_line= "..."
               %td.line_content.matched= line.text
             - else
-              %td.old_line= raw(line.type == "new" ? "&nbsp;" : line.old_pos)
-              %td.new_line= raw(line.type == "old" ? "&nbsp;" : line.new_pos)
+              %td.old_line{class: line.type == "new" ? "new" : "old"}
+                = raw(line.type == "new" ? "&nbsp;" : line.old_pos)
+              %td.new_line{class: line.type == "new" ? "new" : "old"}
+                = raw(line.type == "old" ? "&nbsp;" : line.new_pos)
               %td.line_content{class: "noteable_line #{line.type} #{line_code}", "line_code" => line_code}= raw diff_line_content(line.text)
 
               - if line_code == note.line_code
