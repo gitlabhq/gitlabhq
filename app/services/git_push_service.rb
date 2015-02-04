@@ -43,16 +43,17 @@ class GitPushService
           # that shouldn't matter because we check for existing cross-references later.
           @push_commits = project.repository.commits_between(project.default_branch, newrev)
         end
-        process_commit_messages(ref)
       elsif push_to_existing_branch?(ref, oldrev)
         # Collect data for this git push
         @push_commits = project.repository.commits_between(oldrev, newrev)
         project.update_merge_requests(oldrev, newrev, ref, @user)
-        process_commit_messages(ref)
       end
 
       @push_data = post_receive_data(oldrev, newrev, ref)
       create_push_event(@push_data)
+
+      process_commit_messages(ref)
+
       project.execute_hooks(@push_data.dup, :push_hooks)
       project.execute_services(@push_data.dup)
     end

@@ -51,7 +51,7 @@ class JiraService < IssueTrackerService
   end
 
   def execute(push, issue = nil)
-    close_issue(push, issue) if issue
+    close_issue(push, issue.id) if issue
   end
 
   def create_cross_reference_note(mentioned, noteable, author, project)
