@@ -39,7 +39,7 @@ upstream gitlab {
 ## Redirects all HTTP traffic to the HTTPS host
 server {
   listen 0.0.0.0:80;
-  listen [::]:80 default_server;
+  listen [::]:80 ipv6only=on default_server;
   server_name YOUR_SERVER_FQDN; ## Replace this with something like gitlab.example.com
   server_tokens off; ## Don't show the nginx version number, a security best practice
   return 301 https://$server_name$request_uri;
@@ -51,7 +51,7 @@ server {
 ## HTTPS host
 server {
   listen 0.0.0.0:443 ssl;
-  listen [::]:443 ssl default_server;
+  listen [::]:443 ipv6only=on ssl default_server;
   server_name YOUR_SERVER_FQDN; ## Replace this with something like gitlab.example.com
   server_tokens off; ## Don't show the nginx version number, a security best practice
   root /home/git/gitlab/public;
