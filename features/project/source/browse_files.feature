@@ -93,7 +93,6 @@ Feature: Project Source Browse Files
     Given I click on ".gitignore" file in repo
     And I see the ".gitignore"
     And I click on "Replace"
-    And I choose a new file
     And I fill the commit message
     And I click on "Replace file"
     Then I am redirected to the ".gitignore"
@@ -104,7 +103,6 @@ Feature: Project Source Browse Files
     Given I click on ".gitignore" file in repo
     And I see the ".gitignore"
     And I click on "Upload"
-    And I choose a new file
     And I fill the commit message
     And I click on "Upload file"
     Then I am redirected to the new file
