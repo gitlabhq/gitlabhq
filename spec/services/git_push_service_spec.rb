@@ -201,38 +201,91 @@ describe GitPushService do
     let(:commit_author) { create :user }
     let(:closing_commit) { project.repository.commit }
 
-    before do
-      closing_commit.stub({
-        issue_closing_regex: /^([Cc]loses|[Ff]ixes) #\d+/,
-        safe_message: "this is some work.\n\ncloses ##{issue.iid}",
-        author_name: commit_author.name,
-        author_email: commit_author.email
-      })
+    context "for default gitlab issue tracker" do
+      before do
+        closing_commit.stub({
+          issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
+          safe_message: "this is some work.\n\ncloses ##{issue.iid}",
+          author_name: commit_author.name,
+          author_email: commit_author.email
+        })
 
-      project.repository.stub(commits_between: [closing_commit])
-    end
+        project.repository.stub(commits_between: [closing_commit])
+      end
 
-    it "closes issues with commit messages" do
-      service.execute(project, user, @oldrev, @newrev, @ref)
-
-      Issue.find(issue.id).should be_closed
-    end
-
-    it "doesn't create cross-reference notes for a closing reference" do
-      expect {
+      it "closes issues with commit messages" do
         service.execute(project, user, @oldrev, @newrev, @ref)
-      }.not_to change { Note.where(project_id: project.id, system: true, commit_id: closing_commit.id).count }
+
+        Issue.find(issue.id).should be_closed
+      end
+
+      it "doesn't create cross-reference notes for a closing reference" do
+        expect {
+          service.execute(project, user, @oldrev, @newrev, @ref)
+        }.not_to change { Note.where(project_id: project.id, system: true, commit_id: closing_commit.id).count }
+      end
+
+      it "doesn't close issues when pushed to non-default branches" do
+        project.stub(default_branch: 'durf')
+
+        # The push still shouldn't create cross-reference notes.
+        expect {
+          service.execute(project, user, @oldrev, @newrev, 'refs/heads/hurf')
+        }.not_to change { Note.where(project_id: project.id, system: true).count }
+
+        Issue.find(issue.id).should be_opened
+      end
     end
 
-    it "doesn't close issues when pushed to non-default branches" do
-      project.stub(default_branch: 'durf')
+    context "for jira issue tracker" do
+      let(:api_url) { 'http://jira.example/rest/api/2/issue/JIRA-1/transitions' }
+      let(:jira_tracker) { project.create_jira_service if project.jira_service.nil? }
 
-      # The push still shouldn't create cross-reference notes.
-      expect {
-        service.execute(project, user, @oldrev, @newrev, 'refs/heads/hurf')
-      }.not_to change { Note.where(project_id: project.id, system: true).count }
+      before do
+        properties = {
+          "title"=>"JIRA tracker",
+          "project_url"=>"http://jira.example/issues/?jql=project=A",
+          "issues_url"=>"http://jira.example/browse/JIRA-1",
+          "new_issue_url"=>"http://jira.example/secure/CreateIssue.jspa"
+        }
+        jira_tracker.update_attributes(properties: properties, active: true)
 
-      Issue.find(issue.id).should be_opened
+        WebMock.stub_request(:post, api_url)
+
+        closing_commit.stub({
+          issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
+          safe_message: "this is some work.\n\ncloses JIRA-1",
+          author_name: commit_author.name,
+          author_email: commit_author.email
+        })
+
+        project.repository.stub(commits_between: [closing_commit])
+      end
+
+      after do
+        jira_tracker.destroy!
+      end
+
+      it "should initiate one api call to jira server" do
+         message = {
+          'update' => {
+            'comment' => [{
+              'add' => {
+                'body' => "Issue solved with http://localhost/#{project.path_with_namespace}/commit/#{closing_commit.id}"
+              }
+            }]
+          },
+          'transition' => {
+            'id' => '2'
+          }
+        }.to_json
+
+        service.execute(project, user, @oldrev, @newrev, @ref)
+        WebMock.should have_requested(:post, api_url).with(
+          body: message
+        ).once
+      end
+
     end
   end
 end
