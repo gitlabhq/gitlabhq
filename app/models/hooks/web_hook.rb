@@ -44,11 +44,11 @@ class WebHook < ActiveRecord::Base
       }
       WebHook.post(post_url,
                    body: data.to_json,
-                   headers: {"Content-Type" => "application/json"},
+                   headers: { "Content-Type" => "application/json" },
                    verify: false,
                    basic_auth: auth)
     end
-  rescue SocketError, Errno::ECONNREFUSED, Net::OpenTimeout => e
+  rescue SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED, Net::OpenTimeout => e
     logger.error("WebHook Error => #{e}")
     false
   end

@@ -16,7 +16,7 @@ the configuration options as follows:
 ```yml
   gravatar:
     enabled: true
-    # gravatar urls: possible placeholders: %{hash} %{size} %{email}
+    # gravatar URLs: possible placeholders: %{hash} %{size} %{email}
     plain_url: "http://cdn.libravatar.org/avatar/%{hash}?s=%{size}&d=identicon"
 ```
 
@@ -25,14 +25,14 @@ the configuration options as follows:
 ```yml
   gravatar:
     enabled: true
-    # gravatar urls: possible placeholders: %{hash} %{size} %{email}
+    # gravatar URLs: possible placeholders: %{hash} %{size} %{email}
     ssl_url: "https://seccdn.libravatar.org/avatar/%{hash}?s=%{size}&d=identicon"
 ```
 
 ## Self-hosted
 
-If you are [running your own libravatar service](http://wiki.libravatar.org/running_your_own/) the url will be different in the configuration
-but the important part is to provide the same placeholders so GitLab can parse the url correctly.
+If you are [running your own libravatar service](http://wiki.libravatar.org/running_your_own/) the URL will be different in the configuration
+but the important part is to provide the same placeholders so GitLab can parse the URL correctly.
 
 For example, you host a service on `http://libravatar.example.com` the `plain_url` you need to supply in `gitlab.yml` is
 
@@ -65,5 +65,5 @@ Run `sudo gitlab-ctl reconfigure` for changes to take effect.
 
 [Libravatar supports different sets](http://wiki.libravatar.org/api/) of `missing images` for emails not found on the Libravatar service.
 
-In order to use a different set other than `identicon`, replace `&d=identicon` portion of the url with another supported set.
-For example, you can use `retro` set in which case url would look like: `plain_url: "http://cdn.libravatar.org/avatar/%{hash}?s=%{size}&d=retro"`
+In order to use a different set other than `identicon`, replace `&d=identicon` portion of the URL with another supported set.
+For example, you can use `retro` set in which case the URL would look like: `plain_url: "http://cdn.libravatar.org/avatar/%{hash}?s=%{size}&d=retro"`

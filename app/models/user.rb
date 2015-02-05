@@ -113,13 +113,15 @@ class User < ActiveRecord::Base
   # Validations
   #
   validates :name, presence: true
-  validates :email, presence: true, email: {strict_mode: true}, uniqueness: true
+  validates :email, presence: true, email: { strict_mode: true }, uniqueness: true
   validates :bio, length: { maximum: 255 }, allow_blank: true
-  validates :projects_limit, presence: true, numericality: {greater_than_or_equal_to: 0}
-  validates :username, presence: true, uniqueness: { case_sensitive: false },
-            exclusion: { in: Gitlab::Blacklist.path },
-            format: { with: Gitlab::Regex.username_regex,
-                      message: Gitlab::Regex.username_regex_message }
+  validates :projects_limit, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :username,
+    presence: true,
+    uniqueness: { case_sensitive: false },
+    exclusion: { in: Gitlab::Blacklist.path },
+    format: { with: Gitlab::Regex.username_regex,
+              message: Gitlab::Regex.username_regex_message }
 
   validates :notification_level, inclusion: { in: Notification.notification_levels }, presence: true
   validate :namespace_uniq, if: ->(user) { user.username_changed? }

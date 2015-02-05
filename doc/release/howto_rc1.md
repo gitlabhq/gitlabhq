@@ -104,7 +104,7 @@ bundle exec rake release["x.x.0.rc1"]
 ```
 
 Now developers can use master for merging new features.
-So you should use stable branch for future code chages related to release.
+So you should use stable branch for future code changes related to release.
 
 
 ### 5. Release GitLab CI RC1

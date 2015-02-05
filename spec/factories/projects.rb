@@ -26,6 +26,7 @@
 #  star_count             :integer          default(0), not null
 #  import_type            :string(255)
 #  import_source          :string(255)
+#  avatar                 :string(255)
 #
 
 FactoryGirl.define do

@@ -207,7 +207,7 @@ __3. Tweet to blog__
 Send out a tweet to share the good news with the world.
 List the most important features and link to the blog post.
 
-Proposed tweet "Release of GitLab X.X & CI Y.Y! FEATURE, FEATURE and FEATURE <link-to-blogpost> #gitlab"
+Proposed tweet "Release of GitLab X.X & CI Y.Y! FEATURE, FEATURE and FEATURE &lt;link-to-blog-post&gt; #gitlab"
 
 Consider creating a post on Hacker News.
 

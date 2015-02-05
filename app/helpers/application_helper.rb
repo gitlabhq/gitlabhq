@@ -75,10 +75,10 @@ module ApplicationHelper
     options[:class] ||= ''
     options[:class] << ' identicon'
     bg_key = project.id % 7
+    style = "background-color: ##{ allowed_colors.values[bg_key] }; color: #555"
 
-    content_tag(:div, class: options[:class],
-      style: "background-color: ##{ allowed_colors.values[bg_key] }; color: #555") do
-        project.name[0, 1].upcase
+    content_tag(:div, class: options[:class], style: style) do
+      project.name[0, 1].upcase
     end
   end
 
@@ -247,15 +247,6 @@ module ApplicationHelper
     Gitlab::MarkdownHelper.gitlab_markdown?(filename)
   end
 
-  def spinner(text = nil, visible = false)
-    css_class = 'loading'
-    css_class << ' hide' unless visible
-
-    content_tag :div, class: css_class do
-      content_tag(:i, nil, class: 'fa fa-spinner fa-spin') + text
-    end
-  end
-
   def link_to(name = nil, options = nil, html_options = nil, &block)
     begin
       uri = URI(options)
@@ -322,6 +313,14 @@ module ApplicationHelper
       admin_user_key_path(@user, key)
     else
       profile_key_path(key)
+    end
+  end
+
+  def nav_sidebar_class
+    if nav_menu_collapsed?
+      "page-sidebar-collapsed"
+    else
+      "page-sidebar-expanded"
     end
   end
 end

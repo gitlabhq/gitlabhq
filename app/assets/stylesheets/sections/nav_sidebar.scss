@@ -1,5 +1,3 @@
-
-
 .page-with-sidebar {
   background: #F5F5F5;
 
@@ -101,9 +99,7 @@
 }
 
 @mixin expanded-sidebar {
-  .page-with-sidebar {
-    padding-left: $sidebar_width;
-  }
+  padding-left: $sidebar_width;
 
   .sidebar-wrapper {
     width: $sidebar_width;
@@ -122,9 +118,7 @@
 }
 
 @mixin folded-sidebar {
-  .page-with-sidebar {
-    padding-left: 50px;
-  }
+  padding-left: 50px;
 
   .sidebar-wrapper {
     width: 52px;
@@ -150,10 +144,33 @@
   }
 }
 
+.collapse-nav a {
+  position: fixed;
+  bottom: 15px;
+  padding: 10px;
+  background: #DDD;
+}
+
 @media (max-width: $screen-md-max) {
-  @include folded-sidebar;
+  .page-sidebar-collapsed {
+    @include folded-sidebar;
+  }
+
+  .page-sidebar-expanded {
+    @include folded-sidebar;
+  }
+
+  .collapse-nav {
+    display: none;
+  }
 }
 
 @media(min-width: $screen-md-max) {
-  @include expanded-sidebar;
+  .page-sidebar-collapsed {
+    @include folded-sidebar;
+  }
+
+  .page-sidebar-expanded {
+    @include expanded-sidebar;
+  }
 }

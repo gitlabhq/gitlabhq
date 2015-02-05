@@ -94,6 +94,76 @@ Parameters:
 }
 ```
 
+## Get single MR changes
+
+Shows information about the merge request including its files and changes
+
+```
+GET /projects/:id/merge_request/:merge_request_id/changes
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `merge_request_id` (required) - The ID of MR
+
+```json
+{
+  "id": 21,
+  "iid": 1,
+  "project_id": 4,
+  "title": "Blanditiis beatae suscipit hic assumenda et molestias nisi asperiores repellat et.",
+  "description": "Qui voluptatibus placeat ipsa alias quasi. Deleniti rem ut sint. Optio velit qui distinctio.",
+  "state": "reopened",
+  "created_at": "2015-02-02T19:49:39.159Z",
+  "updated_at": "2015-02-02T20:08:49.959Z",
+  "target_branch": "secret_token",
+  "source_branch": "version-1-9",
+  "upvotes": 0,
+  "downvotes": 0,
+  "author": {
+    "name": "Chad Hamill",
+    "username": "jarrett",
+    "id": 5,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/b95567800f828948baf5f4160ebb2473?s=40&d=identicon"
+  },
+  "assignee": {
+    "name": "Administrator",
+    "username": "root",
+    "id": 1,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40&d=identicon"
+  },
+  "source_project_id": 4,
+  "target_project_id": 4,
+  "labels": [ ],
+  "milestone": {
+    "id": 5,
+    "iid": 1,
+    "project_id": 4,
+    "title": "v2.0",
+    "description": "Assumenda aut placeat expedita exercitationem labore sunt enim earum.",
+    "state": "closed",
+    "created_at": "2015-02-02T19:49:26.013Z",
+    "updated_at": "2015-02-02T19:49:26.013Z",
+    "due_date": null
+  },
+  "files": [
+    {
+    "old_path": "VERSION",
+    "new_path": "VERSION",
+    "a_mode": "100644",
+    "b_mode": "100644",
+    "diff": "--- a/VERSION\ +++ b/VERSION\ @@ -1 +1 @@\ -1.9.7\ +1.9.8",
+    "new_file": false,
+    "renamed_file": false,
+    "deleted_file": false
+    }
+  ]
+}
+```
+
 ## Create MR
 
 Creates a new merge request.

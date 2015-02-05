@@ -96,7 +96,7 @@ module Gitlab
         in_locked_and_timed_satellite do |merge_repo|
           prepare_satellite!(merge_repo)
           update_satellite_source_and_target!(merge_repo)
-          patch = merge_repo.git.format_patch(default_options({stdout: true}), "origin/#{merge_request.target_branch}..source/#{merge_request.source_branch}")
+          patch = merge_repo.git.format_patch(default_options({ stdout: true }), "origin/#{merge_request.target_branch}..source/#{merge_request.source_branch}")
         end
       rescue Grit::Git::CommandFailed => ex
         handle_exception(ex)
@@ -138,7 +138,7 @@ module Gitlab
 
         # merge the source branch into the satellite
         # will raise CommandFailed when merge fails
-        repo.git.merge(default_options({no_ff: true}), "-m#{message}", "source/#{merge_request.source_branch}")
+        repo.git.merge(default_options({ no_ff: true }), "-m#{message}", "source/#{merge_request.source_branch}")
       rescue Grit::Git::CommandFailed => ex
         handle_exception(ex)
       end
@@ -159,7 +159,7 @@ module Gitlab
       # git push remote master
       def rebase_in_satellite!(repo)
         update_satellite_source_and_target!(repo)
-        repo.git.checkout(default_options({b: true}), merge_request.source_branch, "source/#{merge_request.source_branch}")
+        repo.git.checkout(default_options({ b: true }), merge_request.source_branch, "source/#{merge_request.source_branch}")
 
         output, status = popen(%W(git pull --rebase origin #{merge_request.target_branch}), repo.working_dir)
         if status == 0
@@ -181,7 +181,7 @@ module Gitlab
       def update_satellite_source_and_target!(repo)
         repo.remote_add('source', merge_request.source_project.repository.path_to_repo)
         repo.remote_fetch('source')
-        repo.git.checkout(default_options({b: true}), merge_request.target_branch, "origin/#{merge_request.target_branch}")
+        repo.git.checkout(default_options({ b: true }), merge_request.target_branch, "origin/#{merge_request.target_branch}")
       rescue Grit::Git::CommandFailed => ex
         handle_exception(ex)
       end

@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe NotificationsHelper do
+  include FontAwesome::Rails::IconHelper
+  include IconsHelper
+
   describe 'notification_icon' do
     let(:notification) { double(disabled?: false, participating?: false, watch?: false) }
 

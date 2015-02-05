@@ -65,7 +65,7 @@ describe "Issues", feature: true do
 
       click_button "Save changes"
 
-      page.should have_content "Assignee: Select assignee"
+      page.should have_content 'Assignee: none'
       issue.reload.assignee.should be_nil
     end
   end
@@ -249,6 +249,7 @@ describe "Issues", feature: true do
         click_button 'Update Issue'
 
         page.should have_content "Milestone changed to #{milestone.title}"
+        page.should have_content "Milestone: #{milestone.title}"
         has_select?('issue_assignee_id', :selected => milestone.title)
       end
     end
@@ -287,7 +288,7 @@ describe "Issues", feature: true do
         sleep 2 # wait for ajax stuff to complete
         first('.user-result').click
 
-        page.should have_content "Assignee: Unassigned"
+        page.should have_content 'Assignee: none'
         sleep 2 # wait for ajax stuff to complete
         issue.reload.assignee.should be_nil
       end

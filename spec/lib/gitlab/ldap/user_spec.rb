@@ -13,6 +13,23 @@ describe Gitlab::LDAP::User do
     double(uid: 'my-uid', provider: 'ldapmain', info: double(info))
   end
 
+  describe :changed? do
+    it "marks existing ldap user as changed" do
+      existing_user = create(:omniauth_user, extern_uid: 'my-uid', provider: 'ldapmain')
+      expect(gl_user.changed?).to be_true
+    end
+
+    it "marks existing non-ldap user if the email matches as changed" do
+      existing_user = create(:user, email: 'john@example.com')
+      expect(gl_user.changed?).to be_true
+    end
+
+    it "dont marks existing ldap user as changed" do
+      existing_user = create(:omniauth_user, email: 'john@example.com', extern_uid: 'my-uid', provider: 'ldapmain')
+      expect(gl_user.changed?).to be_false
+    end
+  end
+
   describe :find_or_create do
     it "finds the user if already existing" do
       existing_user = create(:omniauth_user, extern_uid: 'my-uid', provider: 'ldapmain')

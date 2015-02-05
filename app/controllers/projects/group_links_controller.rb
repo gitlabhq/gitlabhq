@@ -21,4 +21,3 @@ class Projects::GroupLinksController < Projects::ApplicationController
     redirect_to project_group_links_path(project)
   end
 end
-

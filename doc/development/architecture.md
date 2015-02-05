@@ -16,8 +16,8 @@ You can imagine GitLab as a physical office.
 They can be stored in a warehouse.
 This can be either a hard disk, or something more complex, such as a NFS filesystem;
 
-**NginX** acts like the front-desk.
-Users come to NginX and request actions to be done by workers in the office;
+**Nginx** acts like the front-desk.
+Users come to Nginx and request actions to be done by workers in the office;
 
 **The database** is a series of metal file cabinets with information on:
  - The goods in the warehouse (metadata, issues, merge requests etc);
@@ -70,7 +70,7 @@ To summarize here's the [directory structure of the `git` user home directory](.
 
     ps aux | grep '^git'
 
-GitLab has several components to operate. As a system user (i.e. any user that is not the `git` user) it requires a persistent database (MySQL/PostreSQL) and redis database. It also uses Apache httpd or nginx to proxypass Unicorn. As the `git` user it starts Sidekiq and Unicorn (a simple ruby HTTP server running on port `8080` by default). Under the GitLab user there are normally 4 processes: `unicorn_rails master` (1 process), `unicorn_rails worker` (2 processes), `sidekiq` (1 process).
+GitLab has several components to operate. As a system user (i.e. any user that is not the `git` user) it requires a persistent database (MySQL/PostreSQL) and redis database. It also uses Apache httpd or Nginx to proxypass Unicorn. As the `git` user it starts Sidekiq and Unicorn (a simple ruby HTTP server running on port `8080` by default). Under the GitLab user there are normally 4 processes: `unicorn_rails master` (1 process), `unicorn_rails worker` (2 processes), `sidekiq` (1 process).
 
 ### Repository access
 
@@ -146,13 +146,13 @@ nginx
 
 Apache httpd
 
-- [Explanation of apache logs](http://httpd.apache.org/docs/2.2/logs.html).
+- [Explanation of Apache logs](http://httpd.apache.org/docs/2.2/logs.html).
 - `/var/log/apache2/` contains error and output logs (on Ubuntu).
 - `/var/log/httpd/` contains error and output logs (on RHEL).
 
 redis
 
-- `/var/log/redis/redis.log` there are also logrotated logs there.
+- `/var/log/redis/redis.log` there are also log-rotated logs there.
 
 PostgreSQL
 
