@@ -14,6 +14,7 @@
 #
 
 class Member < ActiveRecord::Base
+  include Sortable
   include Notifiable
   include Gitlab::Access
 

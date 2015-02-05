@@ -23,6 +23,7 @@ require 'file_size_validator'
 class Note < ActiveRecord::Base
   include Mentionable
 
+  default_scope { order(created_at: :asc, id: :asc) }
   default_value_for :system, false
 
   attr_mentionable :note

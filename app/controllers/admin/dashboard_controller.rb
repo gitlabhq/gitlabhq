@@ -1,7 +1,7 @@
 class Admin::DashboardController < Admin::ApplicationController
   def index
-    @projects = Project.order("created_at DESC").limit(10)
-    @users = User.order("created_at DESC").limit(10)
-    @groups = Group.order("created_at DESC").limit(10)
+    @projects = Project.limit(10)
+    @users = User.limit(10)
+    @groups = Group.limit(10)
   end
 end

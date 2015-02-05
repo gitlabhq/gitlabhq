@@ -15,6 +15,7 @@
 require 'digest/md5'
 
 class Key < ActiveRecord::Base
+  include Sortable
   include Gitlab::Popen
 
   belongs_to :user

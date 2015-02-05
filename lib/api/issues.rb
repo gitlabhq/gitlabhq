@@ -39,7 +39,6 @@ module API
         issues = current_user.issues
         issues = filter_issues_state(issues, params[:state]) unless params[:state].nil?
         issues = filter_issues_labels(issues, params[:labels]) unless params[:labels].nil?
-        issues = issues.order('issues.id DESC')
 
         present paginate(issues), with: Entities::Issue
       end
@@ -70,7 +69,6 @@ module API
         unless params[:milestone].nil?
           issues = filter_issues_milestone(issues, params[:milestone])
         end
-        issues = issues.order('issues.id DESC')
 
         present paginate(issues), with: Entities::Issue
       end

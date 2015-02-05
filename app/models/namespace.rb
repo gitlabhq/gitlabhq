@@ -14,6 +14,7 @@
 #
 
 class Namespace < ActiveRecord::Base
+  include Sortable
   include Gitlab::ShellAdapter
 
   has_many :projects, dependent: :destroy

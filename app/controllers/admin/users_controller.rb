@@ -5,13 +5,13 @@ class Admin::UsersController < Admin::ApplicationController
     @users = User.filter(params[:filter])
     @users = @users.search(params[:name]) if params[:name].present?
     @users = @users.sort(@sort = params[:sort])
-    @users = @users.alphabetically.page(params[:page])
+    @users = @users.order_name.page(params[:page])
   end
 
   def show
     @personal_projects = user.personal_projects
     @joined_projects = user.projects.joined(@user)
-    @keys = user.keys.order('id DESC')
+    @keys = user.keys
   end
 
   def new

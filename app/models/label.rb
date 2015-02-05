@@ -11,6 +11,8 @@
 #
 
 class Label < ActiveRecord::Base
+  include Sortable
+
   DEFAULT_COLOR = '#428BCA'
 
   belongs_to :project
