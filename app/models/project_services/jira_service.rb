@@ -57,7 +57,7 @@ class JiraService < IssueTrackerService
   def create_cross_reference_note(mentioned, noteable, author)
     issue_name = mentioned.id
     project = self.project
-    noteable_name = noteable.class.name.downcase.to_sym
+    noteable_name = noteable.class.name.underscore.downcase.to_sym
     noteable_id = if noteable.is_a?(Commit)
                     noteable.id
                   else
@@ -161,7 +161,7 @@ class JiraService < IssueTrackerService
                 "#{self.class.name} ERROR: #{result}. Hostname: #{url}."
               else
                 case result.code
-                when 201
+                when 201, 200
                   "#{self.class.name} SUCCESS 201: Sucessfully posted to #{url}."
                 when 401
                   "#{self.class.name} ERROR 401: Unauthorized. Check the #{self.username} credentials and JIRA access permissions and try again."
@@ -170,8 +170,8 @@ class JiraService < IssueTrackerService
                 end
               end
 
-     Rails.logger.info(message)
-     message
+    Rails.logger.info(message)
+    message
   end
 
   def server_url

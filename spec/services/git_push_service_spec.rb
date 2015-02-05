@@ -270,15 +270,15 @@ describe GitPushService do
 
       it "should initiate one api call to jira server to close the issue" do
          message = {
-          'update' => {
-            'comment' => [{
-              'add' => {
-                'body' => "Issue solved with http://localhost/#{project.path_with_namespace}/commit/#{closing_commit.id}"
+          update: {
+            comment: [{
+              add: {
+                body: "Issue solved with http://localhost/#{project.path_with_namespace}/commit/#{closing_commit.id}"
               }
             }]
           },
-          'transition' => {
-            'id' => '2'
+          transition: {
+            id: '2'
           }
         }.to_json
 
