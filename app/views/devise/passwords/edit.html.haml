@@ -10,9 +10,10 @@
         = f.password_field :password, class: "form-control top", placeholder: "New password", required: true
       %div
         = f.password_field :password_confirmation, class: "form-control bottom", placeholder: "Confirm new password", required: true
-      .clearfix.append-bottom-10
+      .clearfix
         = f.submit "Change my password", class: "btn btn-primary"
-  .login-footer
-    %p
-      = link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name)
-    = render 'devise/shared/sign_in_link'
+
+.clearfix.prepend-top-20
+  %p
+    = link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name)
+  = render 'devise/shared/sign_in_link'
