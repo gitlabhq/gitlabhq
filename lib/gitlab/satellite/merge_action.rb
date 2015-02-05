@@ -159,7 +159,7 @@ module Gitlab
       # git push remote master
       def rebase_in_satellite!(repo)
         update_satellite_source_and_target!(repo)
-        repo.git.checkout(default_options({b: true}), merge_request.source_branch, "source/#{merge_request.source_branch}")
+        repo.git.checkout(default_options({ b: true }), merge_request.source_branch, "source/#{merge_request.source_branch}")
 
         output, status = popen(%W(git pull --rebase origin #{merge_request.target_branch}), repo.working_dir)
         if status == 0

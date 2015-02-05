@@ -386,7 +386,7 @@ class Project < ActiveRecord::Base
     @ci_service ||= ci_services.select(&:activated?).first
   end
 
-   def jira_tracker?
+  def jira_tracker?
     issues_tracker.to_param == 'jira'
   end
 
