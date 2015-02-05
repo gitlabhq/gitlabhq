@@ -1,6 +1,10 @@
 class RegistrationsController < Devise::RegistrationsController
   before_filter :signup_enabled?
 
+  def new
+    redirect_to(new_user_session_path)
+  end
+
   def destroy
     current_user.destroy
 
