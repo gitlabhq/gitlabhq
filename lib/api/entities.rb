@@ -46,7 +46,7 @@ module API
     end
 
     class Project < Grape::Entity
-      expose :id, :description, :default_branch
+      expose :id, :description, :default_branch, :tag_list
       expose :public?, as: :public
       expose :archived?, as: :archived
       expose :visibility_level, :ssh_url_to_repo, :http_url_to_repo, :web_url

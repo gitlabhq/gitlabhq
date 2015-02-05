@@ -57,7 +57,14 @@ describe API::API, api: true  do
         expect(json_response.first['name']).to eq(project.name)
         expect(json_response.first['owner']['username']).to eq(user.username)
       end
-
+      
+      it 'should include the project labels as the tag_list' do
+        get api('/projects', user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.first.keys.should include('tag_list')
+      end
+      
       context 'and using search' do
         it 'should return searched project' do
           get api('/projects', user), { search: project.name }

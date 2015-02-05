@@ -56,6 +56,7 @@ v 7.10.0 (unreleased)
   - Fix "Hello @username." references not working by no longer allowing usernames to end in period.
   - Archive repositories in background worker.
   - Import GitHub, Bitbucket or GitLab.com projects owned by authenticated user into current namespace.
+  - Project labels are now available over the API under the "tag_list" field (Cristian Medina) 
 
 
 v 7.9.2
