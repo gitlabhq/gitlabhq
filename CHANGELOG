@@ -29,7 +29,7 @@ v 7.8.0
   - Fix commits pagination
   - 
   - Async load a branch information at the commit page
-  - 
+  - Disable blacklist validation for project names
   - Allow configuring protection of the default branch upon first push (Marco Wessel)
   -
   - 
