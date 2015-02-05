@@ -40,12 +40,16 @@ module Gitlab
 
       def update_user_attributes
         gl_user.email = auth_hash.email
-        gl_user.identities.build(provider: auth_hash.provider, extern_uid: auth_hash.uid)
+
+        # Build new identity only if we dont have have same one
+        gl_user.identities.find_or_initialize_by(provider: auth_hash.provider,
+                                                 extern_uid: auth_hash.uid)
+
         gl_user
       end
 
       def changed?
-        gl_user.changed?
+        gl_user.changed? || gl_user.identities.any?(&:changed?)
       end
 
       def needs_blocking?

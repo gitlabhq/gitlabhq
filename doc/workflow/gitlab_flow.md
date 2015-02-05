@@ -43,7 +43,7 @@ Since most tools automatically make the master branch the default one and displa
 The second problem of git flow is the complexity introduced by the hotfix and release branches.
 These branches can be a good idea for some organizations but are overkill for the vast majority of them.
 Nowadays most organizations practice continuous delivery which means that your default branch can be deployed.
-This means that hotfixed and release branches can be prevented including all the ceremony they introduce.
+This means that hotfix and release branches can be prevented including all the ceremony they introduce.
 An example of this ceremony is the merging back of release branches.
 Though specialized tools do exist to solve this, they require documentation and add complexity.
 Frequently developers make a mistake and for example changes are only merged into master and not into the develop branch.
@@ -95,12 +95,12 @@ An 'extreme' version of environment branches are setting up an environment for e
 
 ## Release branches with GitLab flow
 
-![Master and multiple release branches that vary in length with cherrypicks from master](release_branches.png)
+![Master and multiple release branches that vary in length with cherry-picks from master](release_branches.png)
 
 Only in case you need to release software to the outside world you need to work with release branches.
 In this case, each branch contains a minor version (2-3-stable, 2-4-stable, etc.).
 The stable branch uses master as a starting point and is created as late as possible.
-By branching as late as possible you minimize the time you have to apply bugfixes to multiple branches.
+By branching as late as possible you minimize the time you have to apply bug fixes to multiple branches.
 After a release branch is announced, only serious bug fixes are included in the release branch.
 If possible these bug fixes are first merged into master and then cherry-picked into the release branch.
 This way you can't forget to cherry-pick them into master and encounter the same bug on subsequent releases.
@@ -177,7 +177,7 @@ In GitLab this creates a comment in the issue that the merge requests mentions t
 And the merge request shows the linked issues.
 These issues are closed once code is merged into the default branch.
 
-If you only want to make the reference without closing the issue you can also just mention it: "Ducktyping is preferred. #12".
+If you only want to make the reference without closing the issue you can also just mention it: "Duck typing is preferred. #12".
 
 If you have an issue that spans across multiple repositories, the best thing is to create an issue for each repository and link all issues to a parent issue.
 

@@ -4,22 +4,6 @@ module API
     before { authenticate! }
 
     resource :groups do
-      helpers do
-        def find_group(id)
-          group = Group.find(id)
-
-          if can?(current_user, :read_group, group)
-            group
-          else
-            render_api_error!("403 Forbidden - #{current_user.username} lacks sufficient access to #{group.name}", 403)
-          end
-        end
-
-        def validate_access_level?(level)
-          Gitlab::Access.options_with_owner.values.include? level.to_i
-        end
-      end
-
       # Get a groups list
       #
       # Example Request:

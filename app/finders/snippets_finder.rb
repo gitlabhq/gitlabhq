@@ -40,7 +40,7 @@ class SnippetsFinder
       when 'are_public' then
         snippets.are_public
       else
-       snippets
+        snippets
       end
     else
       snippets.public_and_internal

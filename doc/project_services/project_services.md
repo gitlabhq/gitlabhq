@@ -4,16 +4,16 @@ __Project integrations with external services for continuous integration and mor
 
 ## Services
 
-- Assemblia
-- [Atlassian Bamboo CI](bamboo.md) An Atlassian product for continous integration.
+- Assembla
+- [Atlassian Bamboo CI](bamboo.md) An Atlassian product for continuous integration.
 - Build box
 - Campfire
 - Emails on push
 - Flowdock
 - Gemnasium
 - GitLab CI
-- Hipchat
-- PivotalTracker
+- HipChat
+- Pivotal Tracker
 - Pushover
 - Slack
 - TeamCity

@@ -31,10 +31,10 @@ class Projects::RefsController < Projects::ApplicationController
 
   def logs_tree
     @offset = if params[:offset].present?
-             params[:offset].to_i
-           else
-             0
-           end
+                params[:offset].to_i
+              else
+                0
+              end
 
     @limit = 25
 

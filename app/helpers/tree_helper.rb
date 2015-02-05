@@ -38,13 +38,8 @@ module TreeHelper
   #
   # type - String type of the tree item; either 'folder' or 'file'
   def tree_icon(type)
-    icon_class = if type == 'folder'
-                   'fa fa-folder'
-                 else
-                   'fa fa-file-o'
-                 end
-
-    content_tag :i, nil, class: icon_class
+    icon_class = type == 'folder' ? 'folder' : 'file-o'
+    icon(icon_class)
   end
 
   def tree_hex_class(content)

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150116234545) do
+ActiveRecord::Schema.define(version: 20150125163100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,18 @@ ActiveRecord::Schema.define(version: 20150116234545) do
     t.string   "light_logo"
   end
 
+  create_table "application_settings", force: true do |t|
+    t.integer  "default_projects_limit"
+    t.boolean  "signup_enabled"
+    t.boolean  "signin_enabled"
+    t.boolean  "gravatar_enabled"
+    t.text     "sign_in_text"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "home_page_url"
+    t.integer  "default_branch_protection", default: 2
+  end
+
   create_table "audit_events", force: true do |t|
     t.integer  "author_id",   null: false
     t.string   "type",        null: false
@@ -40,17 +52,6 @@ ActiveRecord::Schema.define(version: 20150116234545) do
   add_index "audit_events", ["author_id"], name: "index_audit_events_on_author_id", using: :btree
   add_index "audit_events", ["entity_id", "entity_type"], name: "index_audit_events_on_entity_id_and_entity_type", using: :btree
   add_index "audit_events", ["type"], name: "index_audit_events_on_type", using: :btree
-
-  create_table "application_settings", force: true do |t|
-    t.integer  "default_projects_limit"
-    t.boolean  "signup_enabled"
-    t.boolean  "signin_enabled"
-    t.boolean  "gravatar_enabled"
-    t.text     "sign_in_text"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "home_page_url"
-  end
 
   create_table "broadcast_messages", force: true do |t|
     t.text     "message",    null: false
@@ -378,14 +379,14 @@ ActiveRecord::Schema.define(version: 20150116234545) do
     t.string   "import_url"
     t.integer  "visibility_level",              default: 0,        null: false
     t.boolean  "archived",                      default: false,    null: false
+    t.string   "avatar"
     t.string   "import_status"
+    t.float    "repository_size",               default: 0.0
+    t.text     "merge_requests_template"
+    t.integer  "star_count",                    default: 0,        null: false
+    t.boolean  "merge_requests_rebase_enabled", default: false
     t.string   "import_type"
     t.string   "import_source"
-    t.float    "repository_size",               default: 0.0
-    t.integer  "star_count",                    default: 0,        null: false
-    t.text     "merge_requests_template"
-    t.boolean  "merge_requests_rebase_enabled", default: false
-    t.string   "avatar"
   end
 
   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree
@@ -483,6 +484,7 @@ ActiveRecord::Schema.define(version: 20150116234545) do
     t.integer  "notification_level",          default: 1,     null: false
     t.datetime "password_expires_at"
     t.integer  "created_by_id"
+    t.datetime "last_credential_check_at"
     t.string   "avatar"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
@@ -490,9 +492,8 @@ ActiveRecord::Schema.define(version: 20150116234545) do
     t.string   "unconfirmed_email"
     t.boolean  "hide_no_ssh_key",             default: false
     t.string   "website_url",                 default: "",    null: false
-    t.datetime "last_credential_check_at"
-    t.string   "github_access_token"
     t.datetime "admin_email_unsubscribed_at"
+    t.string   "github_access_token"
     t.string   "gitlab_access_token"
   end
 

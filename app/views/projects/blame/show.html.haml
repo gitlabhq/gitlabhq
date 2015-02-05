@@ -30,5 +30,5 @@
                 %code
                   :erb
                     <% lines.each do |line| %>
-                      <%= highlight(@blob.name, line, true).html_safe %>
+                      <%= highlight(@blob.name, line.force_encoding("utf-8"), true).html_safe %>
                     <% end %>

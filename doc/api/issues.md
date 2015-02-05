@@ -56,7 +56,7 @@ Parameters:
       "title": "v1.0",
       "description": "",
       "due_date": "2012-07-20",
-      "state": "reopenend",
+      "state": "reopened",
       "updated_at": "2012-07-04T13:42:48Z",
       "created_at": "2012-07-04T13:42:48Z"
     },

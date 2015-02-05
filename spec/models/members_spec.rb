@@ -10,7 +10,7 @@ describe Member do
 
     it { should validate_presence_of(:user) }
     it { should validate_presence_of(:source) }
-    it { should ensure_inclusion_of(:access_level).in_array(Gitlab::Access.values) }
+    it { should validate_inclusion_of(:access_level).in_array(Gitlab::Access.values) }
   end
 
   describe "Delegate methods" do

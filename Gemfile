@@ -208,8 +208,6 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
 
-  gem 'rails_best_practices'
-
   # Docs generator
   gem "sdoc"
 
@@ -219,11 +217,12 @@ end
 
 group :development, :test do
   gem 'coveralls', require: false
+  gem 'rubocop', '0.28.0', require: false
   # gem 'rails-dev-tweaks'
   gem 'spinach-rails'
   gem "rspec-rails"
   gem "capybara", '~> 2.2.1'
-  gem "pry"
+  gem "pry-rails"
   gem "awesome_print"
   gem "database_cleaner"
   gem "launchy"
@@ -256,7 +255,7 @@ end
 
 group :test do
   gem "simplecov", require: false
-  gem "shoulda-matchers", "~> 2.1.0"
+  gem "shoulda-matchers", "~> 2.7.0"
   gem 'email_spec'
   gem "webmock"
   gem 'test_after_commit'

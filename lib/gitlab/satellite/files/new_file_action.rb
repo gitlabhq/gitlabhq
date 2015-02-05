@@ -19,7 +19,7 @@ module Gitlab
               # skip this step if we want to add first file to empty repo
               Satellite::PARKING_BRANCH
             else
-              repo.git.checkout({raise: true, timeout: true, b: true}, ref, "origin/#{ref}")
+              repo.git.checkout({ raise: true, timeout: true, b: true }, ref, "origin/#{ref}")
               ref
             end
 
@@ -47,7 +47,7 @@ module Gitlab
 
           # push commit back to bare repo
           # will raise CommandFailed when push fails
-          repo.git.push({raise: true, timeout: true}, :origin, "#{current_ref}:#{ref}")
+          repo.git.push({ raise: true, timeout: true }, :origin, "#{current_ref}:#{ref}")
 
           # everything worked
           true

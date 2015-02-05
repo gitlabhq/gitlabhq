@@ -30,7 +30,7 @@ class Repository
     commit = Gitlab::Git::Commit.find(raw_repository, id)
     commit = Commit.new(commit) if commit
     commit
-  rescue Rugged::OdbError => ex
+  rescue Rugged::OdbError
     nil
   end
 
@@ -61,25 +61,25 @@ class Repository
   end
 
   def add_branch(branch_name, ref)
-    Rails.cache.delete(cache_key(:branch_names))
+    cache.expire(:branch_names)
 
     gitlab_shell.add_branch(path_with_namespace, branch_name, ref)
   end
 
   def add_tag(tag_name, ref, message = nil)
-    Rails.cache.delete(cache_key(:tag_names))
+    cache.expire(:tag_names)
 
     gitlab_shell.add_tag(path_with_namespace, tag_name, ref, message)
   end
 
   def rm_branch(branch_name)
-    Rails.cache.delete(cache_key(:branch_names))
+    cache.expire(:branch_names)
 
     gitlab_shell.rm_branch(path_with_namespace, branch_name)
   end
 
   def rm_tag(tag_name)
-    Rails.cache.delete(cache_key(:tag_names))
+    cache.expire(:tag_names)
 
     gitlab_shell.rm_tag(path_with_namespace, tag_name)
   end
@@ -97,19 +97,15 @@ class Repository
   end
 
   def branch_names
-    Rails.cache.fetch(cache_key(:branch_names)) do
-      raw_repository.branch_names
-    end
+    cache.fetch(:branch_names) { raw_repository.branch_names }
   end
 
   def tag_names
-    Rails.cache.fetch(cache_key(:tag_names)) do
-      raw_repository.tag_names
-    end
+    cache.fetch(:tag_names) { raw_repository.tag_names }
   end
 
   def commit_count
-    Rails.cache.fetch(cache_key(:commit_count)) do
+    cache.fetch(:commit_count) do
       begin
         raw_repository.commit_count(self.root_ref)
       rescue
@@ -121,26 +117,19 @@ class Repository
   # Return repo size in megabytes
   # Cached in redis
   def size
-    Rails.cache.fetch(cache_key(:size)) do
-      raw_repository.size
-    end
+    cache.fetch(:size) { raw_repository.size }
   end
 
   def expire_cache
-    Rails.cache.delete(cache_key(:size))
-    Rails.cache.delete(cache_key(:branch_names))
-    Rails.cache.delete(cache_key(:tag_names))
-    Rails.cache.delete(cache_key(:commit_count))
-    Rails.cache.delete(cache_key(:graph_log))
-    Rails.cache.delete(cache_key(:readme))
-    Rails.cache.delete(cache_key(:version))
-    Rails.cache.delete(cache_key(:contribution_guide))
+    %i(size branch_names tag_names commit_count graph_log
+       readme version contribution_guide).each do |key|
+      cache.expire(key)
+    end
   end
 
   def graph_log
-    Rails.cache.fetch(cache_key(:graph_log)) do
-      commits = raw_repository.log(limit: 6000,
-                                   skip_merges: true,
+    cache.fetch(:graph_log) do
+      commits = raw_repository.log(limit: 6000, skip_merges: true,
                                    ref: root_ref)
 
       commits.map do |rugged_commit|
@@ -176,10 +165,6 @@ class Repository
       end
   end
 
-  def cache_key(type)
-    "#{type}:#{path_with_namespace}"
-  end
-
   def method_missing(m, *args, &block)
     raw_repository.send(m, *args, &block)
   end
@@ -199,13 +184,11 @@ class Repository
   end
 
   def readme
-    Rails.cache.fetch(cache_key(:readme)) do
-      tree(:head).readme
-    end
+    cache.fetch(:readme) { tree(:head).readme }
   end
 
   def version
-    Rails.cache.fetch(cache_key(:version)) do
+    cache.fetch(:version) do
       tree(:head).blobs.find do |file|
         file.name.downcase == 'version'
       end
@@ -213,9 +196,7 @@ class Repository
   end
 
   def contribution_guide
-    Rails.cache.fetch(cache_key(:contribution_guide)) do
-      tree(:head).contribution_guide
-    end
+    cache.fetch(:contribution_guide) { tree(:head).contribution_guide }
   end
 
   def head_commit
@@ -350,5 +331,11 @@ class Repository
     else
       []
     end
+  end
+
+  private
+
+  def cache
+    @cache ||= RepositoryCache.new(path_with_namespace)
   end
 end
