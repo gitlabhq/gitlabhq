@@ -222,7 +222,8 @@ Gitlab::Application.routes.draw do
       post '/preview/:id', to: 'blob#preview', constraints: { id: /.+/ }, as: 'preview_blob'
 
       resources :blob, only: [:show, :destroy], constraints: { id: /.+/, format: false } do
-        get :diff, on: :member
+        # Cannot be GET to differentiate from GET paths that end in diff.
+        post :diff, on: :member
       end
 
       resources :raw,       only: [:show], constraints: { id: /.+/ }
