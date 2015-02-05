@@ -1,4 +1,4 @@
-class Import::GitlabController < ApplicationController
+class Import::GitlabController < Import::BaseController
   before_filter :gitlab_auth, except: :callback
 
   rescue_from OAuth2::Error, with: :gitlab_unauthorized
@@ -27,22 +27,10 @@ class Import::GitlabController < ApplicationController
   def create
     @repo_id = params[:repo_id].to_i
     repo = client.project(@repo_id)
-    target_namespace = params[:new_namespace].presence || repo["namespace"]["path"]
-    existing_namespace = Namespace.find_by("path = ? OR name = ?", target_namespace, target_namespace)
+    @target_namespace = params[:new_namespace].presence || repo["namespace"]["path"]
+    @project_name = repo["name"]
     
-    if existing_namespace
-      if existing_namespace.owner == current_user
-        namespace = existing_namespace
-      else
-        @already_been_taken = true
-        @target_namespace = target_namespace
-        @project_name = repo["path"]
-        render and return
-      end
-    else
-      namespace = Group.create(name: target_namespace, path: target_namespace, owner: current_user)
-      namespace.add_owner(current_user)
-    end
+    namespace = get_or_create_namespace || (render and return)
 
     @project = Gitlab::GitlabImport::ProjectCreator.new(repo, namespace, current_user).execute
   end

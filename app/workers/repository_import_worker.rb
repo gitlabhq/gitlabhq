@@ -10,13 +10,13 @@ class RepositoryImportWorker
                                project.path_with_namespace,
                                project.import_url)
 
-    if project.import_type == 'github'
-      result_of_data_import = Gitlab::GithubImport::Importer.new(project).execute
-    elsif project.import_type == 'gitlab'
-      result_of_data_import = Gitlab::GitlabImport::Importer.new(project).execute
-    else
-      result_of_data_import = true
-    end
+    result_of_data_import = if project.import_type == 'github'
+                              Gitlab::GithubImport::Importer.new(project).execute
+                            elsif project.import_type == 'gitlab'
+                              Gitlab::GitlabImport::Importer.new(project).execute
+                            else
+                              true
+                            end
 
     if result && result_of_data_import
       project.import_finish

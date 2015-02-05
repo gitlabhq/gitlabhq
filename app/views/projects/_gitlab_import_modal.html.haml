@@ -7,16 +7,3 @@
       .modal-body
         You need to setup integration with GitLab first.
         = link_to 'How to setup integration with GitLab', 'https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/integration/gitlab.md'
-
-
-:javascript
-  $(function(){
-    var import_modal = $('#gitlab_import_modal').modal({modal: true, show:false});
-    $('.how_to_import_link').bind("click", function(e){
-      e.preventDefault();
-      import_modal.show();
-    });
-    $('.modal-header .close').bind("click", function(){
-      import_modal.hide();
-    })
-  })

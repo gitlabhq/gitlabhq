@@ -43,7 +43,8 @@ module Gitlab
       end
 
       def gl_user_id(project, github_id)
-        user = User.joins(:identities).find_by("identities.extern_uid = ?", github_id.to_s)
+        user = User.joins(:identities).
+          find_by("identities.extern_uid = ? AND identities.provider = 'github'", github_id.to_s)
         (user && user.id) || project.creator_id
       end
     end

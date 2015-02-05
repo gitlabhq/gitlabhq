@@ -1,4 +1,4 @@
-class Import::GithubController < ApplicationController
+class Import::GithubController < Import::BaseController
   before_filter :github_auth, except: :callback
 
   rescue_from Octokit::Unauthorized, with: :github_unauthorized
@@ -30,22 +30,10 @@ class Import::GithubController < ApplicationController
   def create
     @repo_id = params[:repo_id].to_i
     repo = octo_client.repo(@repo_id)
-    target_namespace = params[:new_namespace].presence || repo.owner.login
-    existing_namespace = Namespace.find_by("path = ? OR name = ?", target_namespace, target_namespace)
-
-    if existing_namespace
-      if existing_namespace.owner == current_user
-        namespace = existing_namespace
-      else
-        @already_been_taken = true
-        @target_namespace = target_namespace
-        @project_name = repo.name
-        render and return
-      end
-    else
-      namespace = Group.create(name: target_namespace, path: target_namespace, owner: current_user)
-      namespace.add_owner(current_user)
-    end
+    @target_namespace = params[:new_namespace].presence || repo.owner.login
+    @project_name = repo.name
+    
+    namespace = get_or_create_namespace || (render and return)
 
     @project = Gitlab::GithubImport::ProjectCreator.new(repo, namespace, current_user).execute
   end
