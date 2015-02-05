@@ -54,8 +54,15 @@ class JiraService < IssueTrackerService
     close_issue(push, issue.id) if issue
   end
 
-  def create_cross_reference_note(mentioned, noteable, author, project)
+  def create_cross_reference_note(mentioned, noteable, author)
     issue_name = mentioned.id
+    project = self.project
+    noteable_name = noteable.class.name.downcase.to_sym
+    noteable_id = if noteable.is_a?(Commit)
+                    noteable.id
+                  else
+                    noteable.iid
+                  end
 
     data = {
       user: {
@@ -68,7 +75,7 @@ class JiraService < IssueTrackerService
       },
       entity: {
         name: noteable.class.name.underscore.humanize.downcase,
-        url: resource_url(polymorphic_url([project, noteable], routing_type: :path))
+        url: resource_url(polymorphic_url([project, noteable_name], id: noteable_id, routing_type: :path))
       }
     }
 

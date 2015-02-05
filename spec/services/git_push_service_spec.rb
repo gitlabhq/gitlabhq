@@ -238,7 +238,8 @@ describe GitPushService do
     end
 
     context "for jira issue tracker" do
-      let(:api_url) { 'http://jira.example/rest/api/2/issue/JIRA-1/transitions' }
+      let(:api_transition_url) { 'http://jira.example/rest/api/2/issue/JIRA-1/transitions' }
+      let(:api_mention_url) { 'http://jira.example/rest/api/2/issue/JIRA-1/comment' }
       let(:jira_tracker) { project.create_jira_service if project.jira_service.nil? }
 
       before do
@@ -250,7 +251,8 @@ describe GitPushService do
         }
         jira_tracker.update_attributes(properties: properties, active: true)
 
-        WebMock.stub_request(:post, api_url)
+        WebMock.stub_request(:post, api_transition_url)
+        WebMock.stub_request(:post, api_mention_url)
 
         closing_commit.stub({
           issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
@@ -266,7 +268,7 @@ describe GitPushService do
         jira_tracker.destroy!
       end
 
-      it "should initiate one api call to jira server" do
+      it "should initiate one api call to jira server to close the issue" do
          message = {
           'update' => {
             'comment' => [{
@@ -281,8 +283,16 @@ describe GitPushService do
         }.to_json
 
         service.execute(project, user, @oldrev, @newrev, @ref)
-        WebMock.should have_requested(:post, api_url).with(
+        WebMock.should have_requested(:post, api_transition_url).with(
           body: message
+        ).once
+      end
+
+      it "should initiate one api call to jira server to mention the issue" do
+        service.execute(project, user, @oldrev, @newrev, @ref)
+
+        WebMock.should have_requested(:post, api_mention_url).with(
+          body: /mentioned JIRA-1 in/
         ).once
       end
 
