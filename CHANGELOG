@@ -49,7 +49,7 @@ v 7.8.0
   - 
   - Add action property to merge request hook (Julien Bianchi)
   - 
-  - 
+  - Remove duplicates from group milestone participants list.
   - 
   - 
   - Add a new API function that retrieves all issues assigned to a single milestone (Justin Whear and Hannes Rosenögger)
