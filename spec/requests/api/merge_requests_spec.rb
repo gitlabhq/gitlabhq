@@ -26,7 +26,7 @@ describe API::API, api: true  do
         response.status.should == 200
         json_response.should be_an Array
         json_response.length.should == 3
-        json_response.first['title'].should == merge_request.title
+        json_response.last['title'].should == merge_request.title
       end
 
       it "should return an array of all merge_requests" do
@@ -34,7 +34,7 @@ describe API::API, api: true  do
         response.status.should == 200
         json_response.should be_an Array
         json_response.length.should == 3
-        json_response.first['title'].should == merge_request.title
+        json_response.last['title'].should == merge_request.title
       end
 
       it "should return an array of open merge_requests" do
@@ -42,7 +42,7 @@ describe API::API, api: true  do
         response.status.should == 200
         json_response.should be_an Array
         json_response.length.should == 1
-        json_response.first['title'].should == merge_request.title
+        json_response.last['title'].should == merge_request.title
       end
 
       it "should return an array of closed merge_requests" do
@@ -50,8 +50,8 @@ describe API::API, api: true  do
         response.status.should == 200
         json_response.should be_an Array
         json_response.length.should == 2
-        json_response.first['title'].should == merge_request_closed.title
-        json_response.second['title'].should == merge_request_merged.title
+        json_response.second['title'].should == merge_request_closed.title
+        json_response.first['title'].should == merge_request_merged.title
       end
 
       it "should return an array of merged merge_requests" do
@@ -73,9 +73,10 @@ describe API::API, api: true  do
           response.status.should == 200
           json_response.should be_an Array
           json_response.length.should == 3
-          json_response.first['id'].should == @mr_earlier.id
-          json_response.last['id'].should == @mr_later.id
+          json_response.last['id'].should == @mr_earlier.id
+          json_response.first['id'].should == @mr_later.id
         end
+
         it "should return an array of merge_requests in descending order" do
           get api("/projects/#{project.id}/merge_requests?sort=desc", user)
           response.status.should == 200
@@ -84,21 +85,23 @@ describe API::API, api: true  do
           json_response.first['id'].should == @mr_later.id
           json_response.last['id'].should == @mr_earlier.id
         end
+
         it "should return an array of merge_requests ordered by updated_at" do
           get api("/projects/#{project.id}/merge_requests?order_by=updated_at", user)
           response.status.should == 200
           json_response.should be_an Array
           json_response.length.should == 3
-          json_response.first['id'].should == @mr_earlier.id
-          json_response.last['id'].should == @mr_later.id
+          json_response.last['id'].should == @mr_earlier.id
+          json_response.first['id'].should == @mr_later.id
         end
+
         it "should return an array of merge_requests ordered by created_at" do
           get api("/projects/#{project.id}/merge_requests?sort=created_at", user)
           response.status.should == 200
           json_response.should be_an Array
           json_response.length.should == 3
-          json_response.first['id'].should == @mr_earlier.id
-          json_response.last['id'].should == @mr_later.id
+          json_response.last['id'].should == @mr_earlier.id
+          json_response.first['id'].should == @mr_later.id
         end
       end
     end

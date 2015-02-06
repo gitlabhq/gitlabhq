@@ -32,14 +32,14 @@ describe "Admin::Users", feature: true  do
 
     it "should apply defaults to user" do
       click_button "Create user"
-      user = User.last
+      user = User.find_by(username: 'bang')
       user.projects_limit.should == Gitlab.config.gitlab.default_projects_limit
       user.can_create_group.should == Gitlab.config.gitlab.default_can_create_group
     end
 
     it "should create user with valid data" do
       click_button "Create user"
-      user = User.last
+      user = User.find_by(username: 'bang')
       user.name.should ==  "Big Bang"
       user.email.should == "bigbang@mail.com"
     end
@@ -52,7 +52,7 @@ describe "Admin::Users", feature: true  do
 
     it "should send valid email to user with email & password" do
       click_button "Create user"
-      user = User.last
+      user = User.find_by(username: 'bang')
       email = ActionMailer::Base.deliveries.last
       email.subject.should have_content("Account was created")
       email.text_part.body.should have_content(user.email)
