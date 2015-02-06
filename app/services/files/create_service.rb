@@ -9,6 +9,10 @@ module Files
         return error("You are not allowed to create file in this branch")
       end
 
+      if git_hook && !git_hook.commit_message_allowed?(params[:commit_message])
+        return error("Commit message must match next format: #{git_hook.commit_message_regex}")
+      end
+
       file_name = File.basename(path)
       file_path = path
 

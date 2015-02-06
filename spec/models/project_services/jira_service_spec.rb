@@ -20,6 +20,44 @@ describe JiraService do
     it { should have_one :service_hook }
   end
 
+  describe "Execute" do
+    let(:user)    { create(:user) }
+    let(:project) { create(:project) }
+
+    before do
+      @jira_service = JiraService.new
+      @jira_service.stub(
+        project_id: project.id,
+        project: project,
+        service_hook: true,
+        project_url: 'http://jira.example.com',
+        username: 'gitlab_jira_username',
+        password: 'gitlab_jira_password',
+        api_version: '2'
+      )
+      @sample_data = Gitlab::PushDataBuilder.build_sample(project, user)
+      # https://github.com/bblimke/webmock#request-with-basic-authentication
+      @api_url = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123/transitions'
+
+      WebMock.stub_request(:post, @api_url)
+    end
+
+    it "should call JIRA API" do
+      @jira_service.execute(@sample_data, JiraIssue.new("JIRA-123"))
+      WebMock.should have_requested(:post, @api_url).with(
+        body: /Issue solved with/
+      ).once
+    end
+
+    it "calls the api with jira_issue_transition_id" do
+      @jira_service.jira_issue_transition_id = 'this-is-a-custom-id'
+      @jira_service.execute(@sample_data, JiraIssue.new("JIRA-123"))
+      WebMock.should have_requested(:post, @api_url).with(
+        body: /this-is-a-custom-id/
+      ).once
+    end
+  end
+
   describe "Validations" do
     context "active" do
       before do

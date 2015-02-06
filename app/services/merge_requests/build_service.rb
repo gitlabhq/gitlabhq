@@ -19,6 +19,9 @@ module MergeRequests
       # Generate suggested MR title based on source branch name
       merge_request.title = merge_request.source_branch.titleize.humanize
 
+      # Set MR description based on project template
+      merge_request.description = merge_request.target_project.merge_requests_template
+
       compare_result = CompareService.new.execute(
         current_user,
         merge_request.source_project,

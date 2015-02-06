@@ -67,3 +67,10 @@ Feature: User
     And I should see project "Enterprise"
     And I should not see project "Internal"
     And I should not see project "Community"
+
+  Scenario: I unsubscribe from admin notifications
+    Given I sign in as "John Doe"
+    When I visit unsubscribe link
+    Then I should see unsubscribe text and button
+    And I press the unsubscribe button
+    Then I should be unsubscribed

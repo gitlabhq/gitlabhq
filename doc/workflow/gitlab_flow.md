@@ -238,6 +238,16 @@ In a CI strategy you can merge in master at the start of the day to prevent pain
 In a synchronization point strategy you only merge in from well defined points in time, for example a tagged release.
 This strategy is [advocated by Linus Torvalds](https://www.mail-archive.com/dri-devel@lists.sourceforge.net/msg39091.html) because the state of the code at these points is better known.
 
+GitLab Enterprise Edition offers a way to rebase before merging a merge request. You can configure this per project bassis by navigating to the project settings page and selecting `Merge Requests Rebase` checkbox.
+
+![Merge request settings](merge_request_settings.png)
+
+Before accepting a merge request, select `rebase before merge`.
+![Merge request widget](merge_request_widget.png)
+
+GitLab will attempt to cleanly rebase before merging branches. If clean rebase is not possible, regular merge will be performed.
+If clean rebase is possible and history of the traget branch will be altered with the the merge.
+
 In conclusion, we can say that you should try to prevent merge commits, but not eliminate them.
 Your codebase should be clean but your history should represent what actually happened.
 Developing software happen in small messy steps and it is OK to have your history reflect this.

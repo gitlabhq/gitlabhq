@@ -36,6 +36,14 @@ module API
         @group.owner = current_user
 
         if @group.save
+          # NOTE: add backwards compatibility for single ldap link
+          ldap_attrs  = attributes_for_keys [:ldap_cn, :ldap_access]
+          if ldap_attrs.present?
+            @group.ldap_group_links.create({
+              cn: ldap_attrs[:ldap_cn],
+              group_access: ldap_attrs[:ldap_access]
+            })
+          end
           present @group, with: Entities::Group
         else
           render_api_error!("Failed to save group #{@group.errors.messages}", 400)

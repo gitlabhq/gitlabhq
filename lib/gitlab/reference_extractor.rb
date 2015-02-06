@@ -23,11 +23,17 @@ module Gitlab
     end
 
     def issues_for(project = nil)
-      issues.map do |entry|
-        if should_lookup?(project, entry[:project])
-          entry[:project].issues.where(iid: entry[:id]).first
+      if project && project.jira_tracker?
+        issues.uniq.map do |jira_identifier|
+          JiraIssue.new(jira_identifier[:id])
         end
-      end.reject(&:nil?)
+      else
+        issues.map do |entry|
+          if should_lookup?(project, entry[:project])
+            entry[:project].issues.where(iid: entry[:id]).first
+          end
+        end.reject(&:nil?)
+      end
     end
 
     def merge_requests_for(project = nil)

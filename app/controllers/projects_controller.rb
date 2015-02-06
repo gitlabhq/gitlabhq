@@ -179,7 +179,8 @@ class ProjectsController < ApplicationController
     params.require(:project).permit(
       :name, :path, :description, :issues_tracker, :tag_list,
       :issues_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id, :default_branch,
-      :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id, :avatar
+      :wiki_enabled, :merge_requests_template, :visibility_level, :merge_requests_rebase_enabled,
+      :import_url, :last_activity_at, :namespace_id, :avatar
     )
   end
 

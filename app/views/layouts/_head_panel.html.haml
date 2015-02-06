@@ -2,6 +2,7 @@
   .navbar-inner
     .container
       %div.app_logo
+        - brand_header_logo if brand_item
         = link_to root_path, class: "home has_bottom_tooltip", title: "Dashboard" do
           %h1 GITLAB
       %h1.title= title

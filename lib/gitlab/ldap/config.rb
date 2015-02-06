@@ -4,12 +4,16 @@ module Gitlab
     class Config
       attr_accessor :provider, :options
 
+      class InvalidProvider < StandardError; end
+
       def self.enabled?
         Gitlab.config.ldap.enabled
       end
 
       def self.servers
         Gitlab.config.ldap.servers.values
+      rescue Settingslogic::MissingSetting
+        []
       end
 
       def self.providers
@@ -21,7 +25,7 @@ module Gitlab
       end
 
       def self.invalid_provider(provider)
-        raise "Unknown provider (#{provider}). Available providers: #{providers}"
+        raise InvalidProvider.new("Unknown provider (#{provider}). Available providers: #{providers}")
       end
 
       def initialize(provider)
@@ -32,6 +36,7 @@ module Gitlab
         else
           self.class.invalid_provider(provider)
         end
+
         @options = config_for(@provider) # Use @provider, not provider
       end
 
@@ -55,6 +60,10 @@ module Gitlab
 
       def uid
         options['uid']
+      end
+
+      def label
+        options['label']
       end
 
       def sync_ssh_keys?
@@ -83,6 +92,7 @@ module Gitlab
       end
 
       protected
+
       def base_config
         Gitlab.config.ldap
       end

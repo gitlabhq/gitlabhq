@@ -2,6 +2,11 @@ module Gitlab
   class Auth
     def find(login, password)
       user = User.by_login(login)
+  
+      if Devise.omniauth_providers.include?(:kerberos)
+        kerberos_user = Gitlab::Kerberos::Authentication.login(login, password)
+        return kerberos_user if kerberos_user
+      end
 
       # If no user is found, or it's an LDAP server, try LDAP.
       #   LDAP users are only authenticated via LDAP

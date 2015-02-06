@@ -81,6 +81,10 @@ class Dispatcher
         new ProjectFork()
       when 'users:show'
         new User()
+      when 'projects:group_links:index'
+        new GroupsSelect()
+      when 'admin:emails:show'
+        new AdminEmailSelect()
 
     switch path.first()
       when 'admin'

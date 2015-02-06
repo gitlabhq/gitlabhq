@@ -298,7 +298,7 @@ describe GitlabMarkdownHelper do
 
       before do
         jira = @project.create_jira_service if @project.jira_service.nil?
-        properties = {"title"=>"JIRA tracker", "project_url"=>"http://jira.example/issues/?jql=project=A", "issues_url"=>"http://jira.example/browse/:id", "new_issue_url"=>"http://jira.example/secure/CreateIssue.jspa"}
+        properties = {"title"=>"JIRA tracker", "project_url"=>"http://jira.example/issues/?jql=project=A", "issues_url"=>"http://jira.example/browse/JIRA-1", "new_issue_url"=>"http://jira.example/secure/CreateIssue.jspa"}
         jira.update_attributes(properties: properties, active: true)
       end
 
@@ -332,6 +332,55 @@ describe GitlabMarkdownHelper do
 
       it "should include a title attribute" do
         title = "Issue in JIRA tracker"
+        gfm(actual).should match(/title="#{title}"/)
+      end
+
+      it "should include standard gfm classes" do
+        gfm(actual).should match(/class="\s?gfm gfm-issue\s?"/)
+      end
+    end
+
+    describe "referencing a Redmine issue" do
+      let(:actual)   { "Reference to Redmine ##{issue.iid}" }
+      let(:expected) { "http://redmine.example/issues/#{issue.iid}" }
+      let(:reference) { "##{issue.iid}" }
+
+      before do
+        redmine = @project.create_redmine_service if @project.redmine_service.nil?
+        properties = {"title"=>"Redmine", "project_url"=>"http://redmine.example/projects/A", "issues_url"=>"http://redmine.example/issues/:id", "new_issue_url"=>"http://redmine.example/projects/A/issues/new"}
+        redmine.update_attributes(properties: properties, active: true)
+      end
+
+      after do
+        @project.redmine_service.destroy! unless @project.redmine_service.nil?
+      end
+
+      it "should link using a valid id" do
+        gfm(actual).should match(expected)
+      end
+
+      it "should link with adjacent text" do
+        # Wrap the reference in parenthesis
+        gfm(actual.gsub(reference, "(#{reference})")).should match(expected)
+
+        # Append some text to the end of the reference
+        gfm(actual.gsub(reference, "#{reference}, right?")).should match(expected)
+      end
+
+      it "should keep whitespace intact" do
+        actual   = "Referenced #{reference} already."
+        expected = /Referenced <a.+>[^\s]+<\/a> already/
+        gfm(actual).should match(expected)
+      end
+
+      it "should not link with an invalid id" do
+        # Modify the reference string so it's still parsed, but is invalid
+        invalid_reference = actual.gsub(/(\d+)$/, "r45")
+        gfm(invalid_reference).should == invalid_reference
+      end
+
+      it "should include a title attribute" do
+        title = "Issue in Redmine"
         gfm(actual).should match(/title="#{title}"/)
       end
 

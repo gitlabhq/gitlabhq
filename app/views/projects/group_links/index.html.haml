@@ -1,0 +1,39 @@
+%h3.page_title Share project with other groups
+%p.light
+  Projects can be stored in only one group at once. However you can share a project with other groups here.
+%hr
+- if @group_links.present?
+  .enabled-groups.append-bottom-20
+    %h4
+      Already shared with
+    %ul.bordered-list
+      - @group_links.each do |group_link|
+        - group = group_link.group
+        %li
+          %h4
+            = link_to group do
+              %i.icon-folder-open
+              = group.name
+            %small.light up to #{group_link.human_access}
+            .pull-right
+              = link_to project_group_link_path(@project, group_link), method: :delete, class: 'btn btn-small append-right-10' do
+                %i.icon-remove
+                disable sharing
+
+
+.available-groups
+  %h4
+    Can be shared with
+  %div
+    = form_tag project_group_links_path(@project), method: :post, class: 'form-horizontal' do
+      .form-group
+        = label_tag :link_group_id, 'Group', class: 'control-label'
+        .col-sm-10
+          = groups_select_tag(:link_group_id)
+      .form-group
+        = label_tag :link_group_access, 'Max access level', class: 'control-label'
+        .col-sm-10
+          = select_tag :link_group_access, options_for_select(ProjectGroupLink.access_options, ProjectGroupLink.default_access), class: "form-control"
+      .form-actions
+        = submit_tag "Share", class: "btn btn-create"
+

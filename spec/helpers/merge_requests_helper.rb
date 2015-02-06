@@ -8,5 +8,13 @@ describe MergeRequestsHelper do
     end
 
     it { should eq('#1, #2, and #3') }
+
+    context 'for JIRA issues' do
+      let(:issues) do
+        [JiraIssue.new('JIRA-123'), JiraIssue.new('JIRA-456'), JiraIssue.new('FOOBAR-7890')]
+      end
+
+      it { should eq('#JIRA-123, #JIRA-456, and #FOOBAR-7890') }
+    end
   end
 end

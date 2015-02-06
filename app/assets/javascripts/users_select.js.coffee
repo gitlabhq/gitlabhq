@@ -1,12 +1,14 @@
 class @UsersSelect
   constructor: ->
     $('.ajax-users-select').each (i, select) =>
+      skip_ldap = $(select).hasClass('skip_ldap')
+
       $(select).select2
         placeholder: "Search for a user"
         multiple: $(select).hasClass('multiselect')
         minimumInputLength: 0
         query: (query) ->
-          Api.users query.term, (users) ->
+          Api.users query.term, skip_ldap, (users) ->
             data = { results: users }
             query.callback(data)
 

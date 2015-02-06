@@ -1,5 +1,9 @@
 Depending on the installation method and your GitLab version, there are multiple update guides. Choose one that fits your needs.
 
+## CE to EE
+
+- [The CE to EE update guides (subscribers only)](https://gitlab.com/subscribers/gitlab-ee/tree/master/doc/update) the steps are very similar to a version upgrade: stop the server, get the code, update config files for the new functionality, install libs and do migrations, update the init script, start the application and check the application status.
+
 ## Omnibus Packages
 
 - [Omnibus update guide](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/update.md) contains the steps needed to update a GitLab [package](https://about.gitlab.com/downloads/).

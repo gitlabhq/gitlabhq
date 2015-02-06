@@ -57,6 +57,33 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     projects_with_access.should_not have_content("Mary Jane")
   end
 
+  step 'I change the role to "Developer"' do
+    user = User.find_by(name: "Mary Jane")
+    member = Group.find_by(name: "Owned").members.where(user_id: user.id).first
+
+    within "#group_member_#{member.id}" do
+      find(".btn-tiny.btn.js-toggle-button").click
+      within "#edit_group_member_#{member.id}" do
+        select 'Developer', from: 'group_member_access_level'
+        click_on 'Save'
+      end
+    end
+  end
+
+  step 'I go to "Audit Events"' do
+    click_link 'Audit Events'
+  end
+
+  step 'I should see the audit event listed' do
+    within ('table#audits') do
+      page.should have_content 'Add user access as reporter'
+      page.should have_content 'Change access level from reporter to developer'
+      page.should have_content 'Remove user access'
+      page.should have_content('John Doe', count: 3)
+      page.should have_content('Mary Jane', count: 3)
+    end
+  end
+
   step 'project from group "Owned" has issues assigned to me' do
     create :issue,
       project: project,
@@ -89,6 +116,17 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   step 'I should see newly created group "Samurai"' do
     page.should have_content "Samurai"
     page.should have_content "Tokugawa Shogunate"
+  end
+
+  Then 'I should be redirected to group page' do
+    current_path.should == group_path(Group.last)
+  end
+
+  And 'I change group name' do
+    within '#tab-edit' do
+      fill_in 'group_name', with: 'new-name'
+      click_button "Save group"
+    end
   end
 
   step 'I change group "Owned" name to "new-name"' do
@@ -272,5 +310,27 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
             assignee: current_user,
             author: current_user,
             milestone: milestone2_project3
+  end
+
+  step 'LDAP enabled' do
+    Gitlab.config.ldap.stub(:enabled).and_return(true)
+  end
+
+  step 'LDAP disabled' do
+    Gitlab.config.ldap.stub(:enabled).and_return(false)
+  end
+
+  step 'I add a new LDAP synchronization' do
+    within('form#new_ldap_group_link') do
+      find('#ldap_group_link_cn', visible: false).set('my-group-cn')
+      # fill_in('LDAP Group cn', with: 'my-group-cn', visible: false)
+      select 'Developer', from: "ldap_group_link_group_access"
+      click_button 'Add synchronization'
+    end
+  end
+
+  step 'I see a new LDAP synchronization listed' do
+    expect(page).not_to have_content('No synchronizations yet')
+    expect(page).to have_content('As Developer on ldap server')
   end
 end

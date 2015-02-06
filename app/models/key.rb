@@ -25,6 +25,8 @@ class Key < ActiveRecord::Base
   validates :key, presence: true, length: { within: 0..5000 }, format: { with: /\A(ssh|ecdsa)-.*\Z/ }, uniqueness: true
   validates :fingerprint, uniqueness: true, presence: { message: 'cannot be generated' }
 
+  scope :ldap, -> { where(type: 'LDAPKey') }
+
   delegate :name, :email, to: :user, prefix: true
 
   after_create :add_to_shell

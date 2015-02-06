@@ -101,4 +101,36 @@ describe 'Gitlab::Satellite::MergeAction' do
         merge_request_with_conflict).can_be_merged?.should be_false }
     end
   end
+
+
+  describe '#can_be_rebased?' do
+    context 'on fork' do
+      before(:each) do
+        merge_request.stub(:should_rebase).and_return(true)
+      end
+
+      it { Gitlab::Satellite::MergeAction.new(
+        merge_request_fork.author,
+        merge_request_fork).merge!.should be_true }
+
+      it { Gitlab::Satellite::MergeAction.new(
+        merge_request_fork_with_conflict.author,
+        merge_request_fork_with_conflict).merge!.should be_false }
+    end
+
+    context 'between branches' do
+      before(:each) do
+        merge_request.stub(:should_rebase).and_return(true)
+      end
+
+      it { Gitlab::Satellite::MergeAction.new(
+        merge_request.author,
+        merge_request).merge!.should be_true }
+
+      it { Gitlab::Satellite::MergeAction.new(
+        merge_request_with_conflict.author,
+        merge_request_with_conflict).merge!.should be_false }
+    end
+  end
 end
+

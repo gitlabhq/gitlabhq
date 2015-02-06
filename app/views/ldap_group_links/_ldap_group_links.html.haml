@@ -1,0 +1,12 @@
+.panel.panel-default
+  .panel-heading
+    %h4.panel-title
+      Linked LDAP groups
+      == (#{group.ldap_group_links.count})
+
+  - if group.ldap_group_links.any?
+    %ul.well-list
+      = render collection: group.ldap_group_links, partial: 'ldap_group_links/ldap_group_link', locals: { group: group }
+  - else
+    .panel-body
+      No linked LDAP groups

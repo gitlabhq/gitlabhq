@@ -23,6 +23,15 @@
             %hr
             = link_to 'Remove avatar', group_avatar_path(@group.to_param), data: { confirm: "Group avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-small remove-avatar"
 
+      .form-group
+        %hr
+        = f.label :name, class: 'control-label' do
+          Member lock
+        .col-sm-10
+          .checkbox
+            = f.check_box :membership_lock
+            %span.descr Prevent adding new members to project membership within this group
+
       .form-actions
         = f.submit 'Save group', class: "btn btn-save"
 
@@ -33,5 +42,4 @@
       Removing group will cause all child projects and resources to be removed.
       %br
       %strong Removed group can not be restored!
-
     = link_to 'Remove Group', @group, data: {confirm: 'Removed group can not be restored! Are you sure?'}, method: :delete, class: "btn btn-remove"

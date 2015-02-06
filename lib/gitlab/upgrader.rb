@@ -43,17 +43,17 @@ module Gitlab
     end
 
     def latest_version_raw
-      remote_tags, _ = Gitlab::Popen.popen(%W(git ls-remote --tags https://gitlab.com/gitlab-org/gitlab-ce.git))
+      remote_tags, _ = Gitlab::Popen.popen(%W(git ls-remote --tags origin))
       git_tags = remote_tags.split("\n").grep(/tags\/v#{current_version.major}/)
-      git_tags = git_tags.select { |version| version =~ /v\d\.\d\.\d\Z/ }
-      last_tag = git_tags.last.match(/v\d\.\d\.\d/).to_s
+      git_tags = git_tags.select { |version| version =~ /v\d\.\d\.\d-ee\Z/ }
+      last_tag = git_tags.last.match(/v\d\.\d\.\d-ee/).to_s
     end
 
     def update_commands
       {
         "Stash changed files" => %W(git stash),
         "Get latest code" => %W(git fetch),
-        "Switch to new version" => %W(git checkout v#{latest_version}),
+        "Switch to new version" => %W(git checkout v#{latest_version}-ee),
         "Install gems" => %W(bundle),
         "Migrate DB" => %W(bundle exec rake db:migrate),
         "Recompile assets" => %W(bundle exec rake assets:clean assets:precompile),
