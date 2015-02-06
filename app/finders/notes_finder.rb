@@ -22,6 +22,7 @@ class NotesFinder
       end
 
     # Use overlapping intervals to avoid worrying about race conditions
-    notes.where('updated_at > ?', last_fetched_at - FETCH_OVERLAP)
+    notes.where('updated_at > ?', last_fetched_at - FETCH_OVERLAP).
+      order(created_at: :asc, id: :asc)
   end
 end
