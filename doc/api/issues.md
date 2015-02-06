@@ -18,6 +18,8 @@ Parameters:
 
 - `state` (optional) - Return `all` issues or just those that are `opened` or `closed`
 - `labels` (optional) - Comma-separated list of label names
+- `order_by` (optional) - Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`
+- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
 
 ```json
 [
@@ -105,6 +107,8 @@ Parameters:
 - `state` (optional) - Return `all` issues or just those that are `opened` or `closed`
 - `labels` (optional) - Comma-separated list of label names
 - `milestone` (optional) - Milestone title
+- `order_by` (optional) - Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`
+- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
 
 ## Single issue
 

@@ -11,6 +11,37 @@ module API
           attrs[:visibility_level] = Gitlab::VisibilityLevel::PUBLIC if !attrs[:visibility_level].present? && publik == true
           attrs
         end
+
+        def filter_projects(projects)
+          # If the archived parameter is passed, limit results accordingly
+          if params[:archived].present?
+            projects = projects.where(archived: parse_boolean(params[:archived]))
+          end
+
+          if params[:search].present?
+            projects = projects.search(params[:search])
+          end
+
+          projects.reorder(project_order_by => project_sort)
+        end
+
+        def project_order_by
+          order_fields = %w(id name path created_at updated_at last_activity_at)
+
+          if order_fields.include?(params['order_by'])
+            params['order_by']
+          else
+            'created_at'
+          end
+        end
+
+        def project_sort
+          if params["sort"] == 'asc'
+            :asc
+          else
+            :desc
+          end
+        end
       end
 
       # Get a projects list for authenticated user
@@ -19,25 +50,7 @@ module API
       #   GET /projects
       get do
         @projects = current_user.authorized_projects
-        sort = params[:sort] == 'desc' ? 'desc' : 'asc'
-
-        @projects = case params["order_by"]
-                    when 'id' then @projects.reorder("id #{sort}")
-                    when 'name' then @projects.reorder("name #{sort}")
-                    when 'created_at' then @projects.reorder("created_at #{sort}")
-                    when 'last_activity_at' then @projects.reorder("last_activity_at #{sort}")
-                    else @projects
-                    end
-
-        # If the archived parameter is passed, limit results accordingly
-        if params[:archived].present?
-          @projects = @projects.where(archived: parse_boolean(params[:archived]))
-        end
-
-        if params[:search].present?
-          @projects = @projects.search(params[:search])
-        end
-
+        @projects = filter_projects(@projects)
         @projects = paginate @projects
         present @projects, with: Entities::Project
       end
@@ -47,16 +60,8 @@ module API
       # Example Request:
       #   GET /projects/owned
       get '/owned' do
-        sort = params[:sort] == 'desc' ? 'desc' : 'asc'
         @projects = current_user.owned_projects
-        @projects = case params["order_by"]
-                    when 'id' then @projects.reorder("id #{sort}")
-                    when 'name' then @projects.reorder("name #{sort}")
-                    when 'created_at' then @projects.reorder("created_at #{sort}")
-                    when 'last_activity_at' then @projects.reorder("last_activity_at #{sort}")
-                    else @projects
-                    end
-
+        @projects = filter_projects(@projects)
         @projects = paginate @projects
         present @projects, with: Entities::Project
       end
@@ -67,16 +72,8 @@ module API
       #   GET /projects/all
       get '/all' do
         authenticated_as_admin!
-        sort = params[:sort] == 'desc' ? 'desc' : 'asc'
-
-        @projects = case params["order_by"]
-                    when 'id' then Project.order("id #{sort}")
-                    when 'name' then Project.order("name #{sort}")
-                    when 'created_at' then Project.order("created_at #{sort}")
-                    when 'last_activity_at' then Project.order("last_activity_at #{sort}")
-                    else Project
-                    end
-
+        @projects = Project.all
+        @projects = filter_projects(@projects)
         @projects = paginate @projects
         present @projects, with: Entities::Project
       end

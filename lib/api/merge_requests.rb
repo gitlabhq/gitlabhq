@@ -25,6 +25,8 @@ module API
       # Parameters:
       #   id (required) - The ID of a project
       #   state (optional) - Return requests "merged", "opened" or "closed"
+      #   order_by (optional) - Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`
+      #   sort (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
       #
       # Example:
       #   GET /projects/:id/merge_requests
@@ -37,25 +39,18 @@ module API
       #
       get ":id/merge_requests" do
         authorize! :read_merge_request, user_project
+        merge_requests = user_project.merge_requests
 
-        mrs = case params["state"]
-              when "opened" then user_project.merge_requests.opened
-              when "closed" then user_project.merge_requests.closed
-              when "merged" then user_project.merge_requests.merged
-              else user_project.merge_requests
-              end
+        merge_requests =
+          case params["state"]
+          when "opened" then merge_requests.opened
+          when "closed" then merge_requests.closed
+          when "merged" then merge_requests.merged
+          else merge_requests
+          end
 
-        sort = case params["sort"]
-               when 'desc' then 'DESC'
-               else 'ASC'
-               end
-
-        mrs = case params["order_by"]
-              when 'updated_at' then mrs.order("updated_at #{sort}")
-              else  mrs.order("created_at #{sort}")
-              end
-
-        present paginate(mrs), with: Entities::MergeRequest
+        merge_requests.reorder(issuable_order_by => issuable_sort)
+        present paginate(merge_requests), with: Entities::MergeRequest
       end
 
       # Show MR

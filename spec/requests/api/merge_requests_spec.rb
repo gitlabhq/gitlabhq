@@ -28,6 +28,7 @@ describe API::API, api: true  do
         json_response.length.should == 3
         json_response.first['title'].should == merge_request.title
       end
+
       it "should return an array of all merge_requests" do
         get api("/projects/#{project.id}/merge_requests?state", user)
         response.status.should == 200
@@ -35,6 +36,7 @@ describe API::API, api: true  do
         json_response.length.should == 3
         json_response.first['title'].should == merge_request.title
       end
+
       it "should return an array of open merge_requests" do
         get api("/projects/#{project.id}/merge_requests?state=opened", user)
         response.status.should == 200
@@ -42,6 +44,7 @@ describe API::API, api: true  do
         json_response.length.should == 1
         json_response.first['title'].should == merge_request.title
       end
+
       it "should return an array of closed merge_requests" do
         get api("/projects/#{project.id}/merge_requests?state=closed", user)
         response.status.should == 200
@@ -50,6 +53,7 @@ describe API::API, api: true  do
         json_response.first['title'].should == merge_request_closed.title
         json_response.second['title'].should == merge_request_merged.title
       end
+
       it "should return an array of merged merge_requests" do
         get api("/projects/#{project.id}/merge_requests?state=merged", user)
         response.status.should == 200
