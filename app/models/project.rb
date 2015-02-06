@@ -33,6 +33,7 @@ require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class Project < ActiveRecord::Base
+  include Sortable
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
   include Gitlab::ConfigHelper
@@ -53,7 +54,7 @@ class Project < ActiveRecord::Base
   attr_accessor :new_default_branch
 
   # Relations
-  belongs_to :creator,      foreign_key: 'creator_id', class_name: 'User'
+  belongs_to :creator, foreign_key: 'creator_id', class_name: 'User'
   belongs_to :group, -> { where(type: Group) }, foreign_key: 'namespace_id'
   belongs_to :namespace
 
@@ -86,7 +87,7 @@ class Project < ActiveRecord::Base
   has_many :merge_requests,     dependent: :destroy, foreign_key: 'target_project_id'
   # Merge requests from source project should be kept when source project was removed
   has_many :fork_merge_requests, foreign_key: 'source_project_id', class_name: MergeRequest
-  has_many :issues, -> { order 'issues.state DESC, issues.created_at DESC' }, dependent: :destroy
+  has_many :issues,             dependent: :destroy
   has_many :labels,             dependent: :destroy
   has_many :services,           dependent: :destroy
   has_many :events,             dependent: :destroy
@@ -139,14 +140,16 @@ class Project < ActiveRecord::Base
   mount_uploader :avatar, AttachmentUploader
 
   # Scopes
+  scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
+  scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
+  scope :sorted_by_names, -> { joins(:namespace).reorder('namespaces.name ASC, projects.name ASC') }
+
   scope :without_user, ->(user)  { where('projects.id NOT IN (:ids)', ids: user.authorized_projects.map(&:id) ) }
   scope :without_team, ->(team) { team.projects.present? ? where('projects.id NOT IN (:ids)', ids: team.projects.map(&:id)) : scoped  }
   scope :not_in_group, ->(group) { where('projects.id NOT IN (:ids)', ids: group.project_ids ) }
   scope :in_team, ->(team) { where('projects.id IN (:ids)', ids: team.projects.map(&:id)) }
   scope :in_namespace, ->(namespace) { where(namespace_id: namespace.id) }
   scope :in_group_namespace, -> { joins(:group) }
-  scope :sorted_by_activity, -> { reorder('projects.last_activity_at DESC') }
-  scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where('namespace_id != ?', user.namespace_id) }
   scope :public_only, -> { where(visibility_level: Project::PUBLIC) }
@@ -228,13 +231,10 @@ class Project < ActiveRecord::Base
     end
 
     def sort(method)
-      case method.to_s
-      when 'newest' then reorder('projects.created_at DESC')
-      when 'oldest' then reorder('projects.created_at ASC')
-      when 'recently_updated' then reorder('projects.updated_at DESC')
-      when 'last_updated' then reorder('projects.updated_at ASC')
-      when 'largest_repository' then reorder('projects.repository_size DESC')
-      else reorder('namespaces.path, projects.name ASC')
+      if method == 'repository_size_desc'
+        reorder(repository_size: :desc, id: :desc)
+      else
+        order_by(method)
       end
     end
   end

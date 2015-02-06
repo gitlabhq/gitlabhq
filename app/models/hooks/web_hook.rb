@@ -16,6 +16,7 @@
 #
 
 class WebHook < ActiveRecord::Base
+  include Sortable
   include HTTParty
 
   default_value_for :push_events, true

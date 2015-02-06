@@ -28,6 +28,16 @@ class Group < Namespace
   after_create :post_create_hook
   after_destroy :post_destroy_hook
 
+  class << self
+    def search(query)
+      where("LOWER(namespaces.name) LIKE :query or LOWER(namespaces.path) LIKE :query", query: "%#{query.downcase}%")
+    end
+
+    def sort(method)
+      order_by(method)
+    end
+  end
+
   def human_name
     name
   end
@@ -87,21 +97,5 @@ class Group < Namespace
 
   def system_hook_service
     SystemHooksService.new
-  end
-
-  class << self
-    def search(query)
-      where("LOWER(namespaces.name) LIKE :query or LOWER(namespaces.path) LIKE :query", query: "%#{query.downcase}%")
-    end
-
-    def sort(method)
-      case method.to_s
-      when "newest" then reorder("namespaces.created_at DESC")
-      when "oldest" then reorder("namespaces.created_at ASC")
-      when "recently_updated" then reorder("namespaces.updated_at DESC")
-      when "last_updated" then reorder("namespaces.updated_at ASC")
-      else reorder("namespaces.path, namespaces.name ASC")
-      end
-    end
   end
 end

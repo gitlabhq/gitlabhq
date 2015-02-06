@@ -16,6 +16,7 @@
 #
 
 class Snippet < ActiveRecord::Base
+  include Sortable
   include Linguist::BlobHelper
   include Gitlab::VisibilityLevel
 

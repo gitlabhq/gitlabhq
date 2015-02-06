@@ -49,6 +49,7 @@ require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class User < ActiveRecord::Base
+  include Sortable
   include Gitlab::ConfigHelper
   include TokenAuthenticatable
   extend Gitlab::ConfigHelper
@@ -176,7 +177,6 @@ class User < ActiveRecord::Base
   scope :admins, -> { where(admin:  true) }
   scope :blocked, -> { with_state(:blocked) }
   scope :active, -> { with_state(:active) }
-  scope :alphabetically, -> { order('name ASC') }
   scope :in_team, ->(team){ where(id: team.member_ids) }
   scope :not_in_team, ->(team){ where('users.id NOT IN (:ids)', ids: team.member_ids) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
@@ -199,11 +199,10 @@ class User < ActiveRecord::Base
 
     def sort(method)
       case method.to_s
-      when 'recent_sign_in' then reorder('users.last_sign_in_at DESC')
-      when 'oldest_sign_in' then reorder('users.last_sign_in_at ASC')
-      when 'recently_created' then reorder('users.created_at DESC')
-      when 'late_created' then reorder('users.created_at ASC')
-      else reorder("users.name ASC")
+      when 'recent_sign_in' then reorder(last_sign_in_at: :desc)
+      when 'oldest_sign_in' then reorder(last_sign_in_at: :asc)
+      else
+        order_by(method)
       end
     end
 
@@ -290,7 +289,7 @@ class User < ActiveRecord::Base
   def authorized_groups
     @authorized_groups ||= begin
                              group_ids = (groups.pluck(:id) + authorized_projects.pluck(:namespace_id))
-                             Group.where(id: group_ids).order('namespaces.name ASC')
+                             Group.where(id: group_ids)
                            end
   end
 
@@ -301,7 +300,7 @@ class User < ActiveRecord::Base
                                project_ids = personal_projects.pluck(:id)
                                project_ids.push(*groups_projects.pluck(:id))
                                project_ids.push(*projects.pluck(:id).uniq)
-                               Project.where(id: project_ids).joins(:namespace).order('namespaces.name ASC')
+                               Project.where(id: project_ids)
                              end
   end
 

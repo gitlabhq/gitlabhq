@@ -2,7 +2,8 @@ class Admin::GroupsController < Admin::ApplicationController
   before_filter :group, only: [:edit, :show, :update, :destroy, :project_update, :project_teams_update]
 
   def index
-    @groups = Group.order('name ASC')
+    @groups = Group.all
+    @groups = @groups.sort(@sort = params[:sort])
     @groups = @groups.search(params[:name]) if params[:name].present?
     @groups = @groups.page(params[:page]).per(20)
   end

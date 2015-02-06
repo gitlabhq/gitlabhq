@@ -2,16 +2,16 @@ class Admin::UsersController < Admin::ApplicationController
   before_filter :user, only: [:show, :edit, :update, :destroy]
 
   def index
-    @users = User.filter(params[:filter])
+    @users = User.order_name_asc.filter(params[:filter])
     @users = @users.search(params[:name]) if params[:name].present?
     @users = @users.sort(@sort = params[:sort])
-    @users = @users.alphabetically.page(params[:page])
+    @users = @users.page(params[:page])
   end
 
   def show
     @personal_projects = user.personal_projects
     @joined_projects = user.projects.joined(@user)
-    @keys = user.keys.order('id DESC')
+    @keys = user.keys
   end
 
   def new

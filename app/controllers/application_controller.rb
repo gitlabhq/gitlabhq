@@ -254,7 +254,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_filters_params
-    params[:sort] ||= 'newest'
+    params[:sort] ||= 'created_desc'
     params[:scope] = 'all' if params[:scope].blank?
     params[:state] = 'opened' if params[:state].blank?
 
@@ -280,7 +280,7 @@ class ApplicationController < ActionController::Base
     author_id = @filter_params[:author_id]
     milestone_id = @filter_params[:milestone_id]
 
-    @sort = @filter_params[:sort].try(:humanize)
+    @sort = @filter_params[:sort]
     @assignees = User.where(id: collection.pluck(:assignee_id))
     @authors = User.where(id: collection.pluck(:author_id))
     @milestones = Milestone.where(id: collection.pluck(:milestone_id))

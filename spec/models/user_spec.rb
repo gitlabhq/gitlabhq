@@ -474,7 +474,7 @@ describe User do
       @user = create :user, created_at: Date.today, last_sign_in_at: Date.today, name: 'Alpha'
       @user1 = create :user, created_at: Date.today - 1, last_sign_in_at: Date.today - 1, name: 'Omega'
     end
-    
+
     it "sorts users as recently_signed_in" do
       User.sort('recent_sign_in').first.should == @user
     end
@@ -484,11 +484,11 @@ describe User do
     end
 
     it "sorts users as recently_created" do
-      User.sort('recently_created').first.should == @user
+      User.sort('created_desc').first.should == @user
     end
 
     it "sorts users as late_created" do
-      User.sort('late_created').first.should == @user1
+      User.sort('created_asc').first.should == @user1
     end
 
     it "sorts users by name when nil is passed" do

@@ -10,6 +10,8 @@
 #
 
 class Email < ActiveRecord::Base
+  include Sortable
+
   belongs_to :user
 
   validates :user_id, presence: true

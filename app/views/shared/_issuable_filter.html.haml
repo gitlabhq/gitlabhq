@@ -98,7 +98,7 @@
           = link_to page_filter_path(label_name: nil) do
             Any
         - if @project.labels.any?
-          - @project.labels.order_by_name.each do |label|
+          - @project.labels.each do |label|
             %li
               = link_to page_filter_path(label_name: label.name) do
                 = render_colored_label(label)
