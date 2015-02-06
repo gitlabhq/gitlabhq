@@ -49,7 +49,7 @@ class Note < ActiveRecord::Base
   scope :not_inline, ->{ where(line_code: [nil, '']) }
   scope :system, ->{ where(system: true) }
   scope :common, ->{ where(noteable_type: ["", nil]) }
-  scope :fresh, ->{ order("created_at ASC, id ASC") }
+  scope :fresh, ->{ order(created_at: :asc, id: :asc) }
   scope :inc_author_project, ->{ includes(:project, :author) }
   scope :inc_author, ->{ includes(:author) }
 
