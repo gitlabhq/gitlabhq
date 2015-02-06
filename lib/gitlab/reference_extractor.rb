@@ -26,7 +26,7 @@ module Gitlab
       issues.uniq.map do |entry|
         if should_lookup?(project, entry[:project])
           entry[:project].issues.where(iid: entry[:id]).first
-        elsif external_jira_reference?(project, entry[:project])
+        elsif entry[:project] && entry[:project].jira_tracker?
           JiraIssue.new(entry[:id], entry[:project])
         end
       end.reject(&:nil?)
@@ -67,14 +67,6 @@ module Gitlab
         false
       else
         project.nil? || entry_project.default_issues_tracker?
-      end
-    end
-
-    def external_jira_reference?(project, entry_project)
-      if project.id == entry_project.id
-        project && project.jira_tracker?
-      else
-        entry_project && entry_project.jira_tracker?
       end
     end
   end

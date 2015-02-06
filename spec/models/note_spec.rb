@@ -453,6 +453,6 @@ describe Note do
   end
 
   def jira_status_message
-    "JiraService SUCCESS 201: Sucessfully posted to #{api_mention_url}."
+    "JiraService SUCCESS 200: Sucessfully posted to #{api_mention_url}."
   end
 end

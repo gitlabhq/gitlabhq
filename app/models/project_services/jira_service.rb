@@ -51,18 +51,20 @@ class JiraService < IssueTrackerService
   end
 
   def execute(push, issue = nil)
-    close_issue(push, issue.id) if issue
+    close_issue(push, issue) if issue
   end
 
   def create_cross_reference_note(mentioned, noteable, author)
     issue_name = mentioned.id
     project = self.project
-    noteable_name = noteable.class.name.underscore.downcase.to_sym
+    noteable_name = noteable.class.name.underscore.downcase
     noteable_id = if noteable.is_a?(Commit)
                     noteable.id
                   else
                     noteable.iid
                   end
+
+    entity_url = build_entity_url(noteable_name.to_sym, noteable_id)
 
     data = {
       user: {
@@ -74,8 +76,8 @@ class JiraService < IssueTrackerService
         url: resource_url(project_path(project))
       },
       entity: {
-        name: noteable.class.name.underscore.humanize.downcase,
-        url: resource_url(polymorphic_url([project, noteable_name], id: noteable_id, routing_type: :path))
+        name: noteable_name.humanize,
+        url: entity_url
       }
     }
 
@@ -93,15 +95,16 @@ class JiraService < IssueTrackerService
     self.jira_issue_transition_id ||= "2"
   end
 
-  def close_issue(push_data, issue_name)
-    url = close_issue_url(issue_name)
-    commit = push_data[:commits].first
+  def close_issue(commit, issue)
+    url = close_issue_url(issue.iid)
+
+    commit_url = build_entity_url(:commit, commit.id)
 
     message = {
       update: {
         comment: [{
           add: {
-            body: "Issue solved with [#{commit[:id]}|#{commit[:url]}]."
+            body: "Issue solved with [#{commit.id}|#{commit_url}]."
           }
         }]
       },
@@ -137,34 +140,28 @@ class JiraService < IssueTrackerService
   end
 
   def send_message(url, message)
-    begin
-      result = JiraService.post(
-        url,
-        body: message,
-        headers: {
-          'Content-Type' => 'application/json',
-          'Authorization' => "Basic #{auth}"
-        }
-      )
-    rescue URI::InvalidURIError => e
-      result = e.message
-    end
+    result = JiraService.post(
+      url,
+      body: message,
+      headers: {
+        'Content-Type' => 'application/json',
+        'Authorization' => "Basic #{auth}"
+      }
+    )
 
-    message = if result.is_a?(String)
-                "#{self.class.name} ERROR: #{result}. Hostname: #{url}."
+    message = case result.code
+              when 201, 200
+                "#{self.class.name} SUCCESS #{result.code}: Sucessfully posted to #{url}."
+              when 401
+                "#{self.class.name} ERROR 401: Unauthorized. Check the #{self.username} credentials and JIRA access permissions and try again."
               else
-                case result.code
-                when 201, 200
-                  "#{self.class.name} SUCCESS 201: Sucessfully posted to #{url}."
-                when 401
-                  "#{self.class.name} ERROR 401: Unauthorized. Check the #{self.username} credentials and JIRA access permissions and try again."
-                else
-                  "#{self.class.name} ERROR #{result.code}: #{result.parsed_response}"
-                end
+                "#{self.class.name} ERROR #{result.code}: #{result.parsed_response}"
               end
 
     Rails.logger.info(message)
     message
+  rescue URI::InvalidURIError => e
+    Rails.logger.info "#{self.class.name} ERROR: #{e.message}. Hostname: #{url}."
   end
 
   def server_url
@@ -179,6 +176,15 @@ class JiraService < IssueTrackerService
     "#{Settings.gitlab['url'].chomp("/")}#{resource}"
   end
 
+  def build_entity_url(entity_name, entity_id)
+    resource_url(
+      polymorphic_url(
+        [self.project, entity_name],
+        id: entity_id,
+        routing_type: :path
+      )
+    )
+  end
 
   def close_issue_url(issue_name)
     "#{server_url}/rest/api/#{self.api_version}/issue/#{issue_name}/transitions"
