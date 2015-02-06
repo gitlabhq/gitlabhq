@@ -231,13 +231,10 @@ class Project < ActiveRecord::Base
     end
 
     def sort(method)
-      case method.to_s
-      when 'newest' then reorder('projects.created_at DESC')
-      when 'oldest' then reorder('projects.created_at ASC')
-      when 'recently_updated' then reorder('projects.updated_at DESC')
-      when 'last_updated' then reorder('projects.updated_at ASC')
-      when 'largest_repository' then reorder('projects.repository_size DESC')
-      else reorder('namespaces.path, projects.name ASC')
+      if method == 'repository_size_desc'
+        reorder(repository_size: :desc, id: :desc)
+      else
+        order_by(method)
       end
     end
   end

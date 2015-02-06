@@ -199,11 +199,10 @@ class User < ActiveRecord::Base
 
     def sort(method)
       case method.to_s
-      when 'recent_sign_in' then reorder('users.last_sign_in_at DESC')
-      when 'oldest_sign_in' then reorder('users.last_sign_in_at ASC')
-      when 'recently_created' then reorder('users.created_at DESC')
-      when 'late_created' then reorder('users.created_at ASC')
-      else reorder("users.name ASC")
+      when 'recent_sign_in' then reorder(last_sign_in_at: :desc)
+      when 'oldest_sign_in' then reorder(last_sign_in_at: :asc)
+      else
+        order_by(method)
       end
     end
 
