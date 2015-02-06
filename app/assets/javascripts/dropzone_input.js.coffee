@@ -50,7 +50,7 @@ class @DropzoneInput
         preview.text "Nothing to preview."
       else
         preview.text "Loading..."
-        $.get($(this).data("url"),
+        $.post($(this).data("url"),
           md_text: mdText
         ).success (previewData) ->
           preview.html previewData

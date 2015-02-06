@@ -220,7 +220,7 @@ Gitlab::Application.routes.draw do
       post :unarchive
       post :upload_image
       post :toggle_star
-      get :markdown_preview
+      post :markdown_preview
       get :autocomplete_sources
     end
 

@@ -63,6 +63,7 @@ v 7.8.0
   - 
   - API: Add support for editing an existing project (Mika Mäenpää and Hannes Rosenögger) 
   - 
+  - Don't have Markdown preview fail for long comments/wiki pages.
   - 
   - When test web hook - show error message instead of 500 error page if connection to hook url was reset
   - Added support for firing system hooks on group create/destroy and adding/removing users to group (Boyan Tabakov)
