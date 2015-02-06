@@ -14,6 +14,12 @@ module Gitlab
       end
     end
 
+    def self.can_merge?(user, project, ref, author_id)
+      can_push_to_branch?(user, project, ref) ||
+        (project.developers_can_merge_to_protected_branch?(ref) && project.team.developer?(user) && user.id != author_id) ||
+        (project.authors_can_merge_to_protected_branch?(ref) && project.team.developer?(user) && user.id == author_id)
+    end
+
     def check(actor, cmd, project, changes = nil)
       case cmd
       when *DOWNLOAD_COMMANDS

@@ -20,7 +20,9 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
 
     if protected_branch &&
        protected_branch.update_attributes(
-        developers_can_push: params[:developers_can_push]
+        developers_can_push: params[:developers_can_push],
+	developers_can_merge: params[:developers_can_merge],
+        authors_can_merge: params[:authors_can_merge]
        )
 
       respond_to do |format|
@@ -45,6 +47,6 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
   private
 
   def protected_branch_params
-    params.require(:protected_branch).permit(:name, :developers_can_push)
+    params.require(:protected_branch).permit(:name, :developers_can_push, :developers_can_merge, :authors_can_merge)
   end
 end

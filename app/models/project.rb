@@ -536,6 +536,14 @@ class Project < ActiveRecord::Base
     protected_branches.any? { |pb| pb.name == branch_name && pb.developers_can_push }
   end
 
+  def developers_can_merge_to_protected_branch?(branch_name)
+    protected_branches.any? { |pb| pb.name == branch_name && pb.developers_can_merge }
+  end
+
+  def authors_can_merge_to_protected_branch?(branch_name)
+    protected_branches.any? { |pb| pb.name == branch_name && pb.authors_can_merge }
+  end
+
   def forked?
     !(forked_project_link.nil? || forked_project_link.forked_from_project.nil?)
   end

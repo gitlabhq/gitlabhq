@@ -1,9 +1,11 @@
 $ ->
   $(":checkbox").change ->
     name = $(this).attr("name")
-    if name == "developers_can_push"
+    if name == "developers_can_push" or name == "developers_can_merge" or name == "authors_can_merge"
       id = $(this).val()
-      checked = $(this).is(":checked")
+      checkedpush = $("[value=#{id}][name=developers_can_push]").is(":checked")
+      checkedmerge = $("[value=#{id}][name=developers_can_merge]").is(":checked")
+      checkedauthors = $("[value=#{id}][name=authors_can_merge]").is(":checked")
       url = $(this).data("url")
       $.ajax
         type: "PUT"
@@ -11,7 +13,9 @@ $ ->
         dataType: "json"
         data:
           id: id
-          developers_can_push: checked
+          developers_can_push: checkedpush
+          developers_can_merge: checkedmerge
+          authors_can_merge: checkedauthors
 
         success: ->
           new Flash("Branch updated.", "notice")

@@ -224,7 +224,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def allowed_to_merge?
-    allowed_to_push_code?(project, @merge_request.target_branch)
+    ::Gitlab::GitAccess.can_merge?(current_user, project, @merge_request.target_branch, @merge_request.author_id)
   end
 
   def invalid_mr
