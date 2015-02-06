@@ -9,7 +9,7 @@ v 7.8.0
   - Cleaner UI for web editor
   - Add diff syntax highlighting in email-on-push service notifications (Hannes Rosenögger)
   - Add API endpoint to fetch all changes on a MergeRequest (Jeroen van Baarsen)
-  - 
+  - View note image attachments in new tab when clicked instead of downloading them
   - 
   - Allow more variations for commit messages closing issues (Julien Bianchi and Hannes Rosenögger)
   - 
@@ -32,10 +32,12 @@ v 7.8.0
   - Disable blacklist validation for project names
   - Allow configuring protection of the default branch upon first push (Marco Wessel)
   -
+  - Add gitlab.com importer
+  - Add an ability to login with gitlab.com
   - 
   - Add a commit calendar to the user profile (Hannes Rosenögger)  
   - 
-  - 
+  - Submit comment on command-enter
   - 
   - Fix long broadcast message cut-off on left sidebar (Visay Keo)
   - Add Project Avatars (Steven Thonus and Hannes Rosenögger)
@@ -49,7 +51,7 @@ v 7.8.0
   - 
   - Add action property to merge request hook (Julien Bianchi)
   - 
-  - 
+  - Remove duplicates from group milestone participants list.
   - 
   - 
   - Add a new API function that retrieves all issues assigned to a single milestone (Justin Whear and Hannes Rosenögger)
