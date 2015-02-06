@@ -17,7 +17,7 @@ module Sortable
   end
 
   module ClassMethods
-    def sort(method)
+    def order_by(method)
       case method.to_s
       when 'name' then order_name_asc
       when 'recent' then order_recent
@@ -25,7 +25,7 @@ module Sortable
       when 'recent_updated' then order_recent_updated
       when 'oldest_updated' then order_oldest_updated
       else
-        self
+        all
       end
     end
   end

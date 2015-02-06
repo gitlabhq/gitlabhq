@@ -1,6 +1,5 @@
 module InternalId
   extend ActiveSupport::Concern
-  include Sortable
 
   included do
     validate :set_iid, on: :create

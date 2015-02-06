@@ -28,6 +28,7 @@ class MergeRequest < ActiveRecord::Base
   include Issuable
   include Taskable
   include InternalId
+  include Sortable
 
   belongs_to :target_project, foreign_key: :target_project_id, class_name: "Project"
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
