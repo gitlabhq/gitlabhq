@@ -140,7 +140,7 @@ class Project < ActiveRecord::Base
   mount_uploader :avatar, AttachmentUploader
 
   # Scopes
-  scope :sorted_by_activity, -> { reorder('projects.last_activity_at DESC') }
+  scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
   scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
   scope :sorted_by_names, -> { joins(:namespace).reorder('namespaces.name ASC, projects.name ASC') }
 
