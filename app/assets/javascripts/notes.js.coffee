@@ -170,6 +170,8 @@ class @Notes
     form.find(".js-md-write-button").click()
     form.find(".js-note-text").val("").trigger "input"
 
+    form.find(".js-note-text").data("autosave").reset()
+
   ###
   Called when clicking the "Choose File" button.
 
@@ -220,19 +222,28 @@ class @Notes
     # setup preview buttons
     form.find(".js-md-write-button, .js-md-preview-button").tooltip placement: "left"
     previewButton = form.find(".js-md-preview-button")
-    form.find(".js-note-text").on "input", ->
+
+    textarea = form.find(".js-note-text")
+
+    textarea.on "input", ->
       if $(this).val().trim() isnt ""
         previewButton.removeClass("turn-off").addClass "turn-on"
       else
         previewButton.removeClass("turn-on").addClass "turn-off"
 
+    new Autosave textarea, [
+      "Note"
+      form.find("#note_commit_id").val()
+      form.find("#note_line_code").val()
+      form.find("#note_noteable_type").val()
+      form.find("#note_noteable_id").val()
+    ]
 
     # remove notify commit author checkbox for non-commit notes
     form.find(".js-notify-commit-author").remove()  if form.find("#note_noteable_type").val() isnt "Commit"
     GitLab.GfmAutoComplete.setup()
     new DropzoneInput(form)
     form.show()
-
 
   ###
   Called in response to the new note form being submitted
@@ -406,6 +417,8 @@ class @Notes
   ###
   removeDiscussionNoteForm: (form)->
     row = form.closest("tr")
+
+    form.find(".js-note-text").data("autosave").reset()
 
     # show the reply button (will only work for replies)
     form.prev(".js-discussion-reply-button").show()
