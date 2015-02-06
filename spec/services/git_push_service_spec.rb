@@ -273,7 +273,7 @@ describe GitPushService do
           update: {
             comment: [{
               add: {
-                body: "Issue solved with http://localhost/#{project.path_with_namespace}/commit/#{closing_commit.id}"
+                body: "Issue solved with [#{closing_commit.id}|http://localhost/#{project.path_with_namespace}/commit/#{closing_commit.id}]."
               }
             }]
           },

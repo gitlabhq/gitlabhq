@@ -95,18 +95,18 @@ class JiraService < IssueTrackerService
 
   def close_issue(push_data, issue_name)
     url = close_issue_url(issue_name)
-    commit_url = push_data[:commits].first[:url]
+    commit = push_data[:commits].first
 
     message = {
-      'update' => {
-        'comment' => [{
-          'add' => {
-            'body' => "Issue solved with #{commit_url}"
+      update: {
+        comment: [{
+          add: {
+            body: "Issue solved with [#{commit[:id]}|#{commit[:url]}]."
           }
         }]
       },
-      'transition' => {
-        'id' => jira_issue_transition_id
+      transition: {
+        id: jira_issue_transition_id
       }
     }.to_json
 
@@ -130,13 +130,6 @@ class JiraService < IssueTrackerService
     send_message(url, message)
   end
 
-  def close_issue_url(issue_name)
-    "#{server_url}/rest/api/#{self.api_version}/issue/#{issue_name}/transitions"
-  end
-
-  def add_comment_url(issue_name)
-    "#{server_url}/rest/api/#{self.api_version}/issue/#{issue_name}/comment"
-  end
 
   def auth
     require 'base64'
@@ -184,5 +177,14 @@ class JiraService < IssueTrackerService
 
   def resource_url(resource)
     "#{Settings.gitlab['url'].chomp("/")}#{resource}"
+  end
+
+
+  def close_issue_url(issue_name)
+    "#{server_url}/rest/api/#{self.api_version}/issue/#{issue_name}/transitions"
+  end
+
+  def add_comment_url(issue_name)
+    "#{server_url}/rest/api/#{self.api_version}/issue/#{issue_name}/comment"
   end
 end
