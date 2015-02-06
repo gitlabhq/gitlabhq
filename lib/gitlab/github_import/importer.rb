@@ -1,16 +1,15 @@
 module Gitlab
   module GithubImport
     class Importer
-      attr_reader :project
+      attr_reader :project, :client
 
       def initialize(project)
         @project = project
+        @client = Client.new(project.creator.github_access_token)
         @formatter = Gitlab::ImportFormatter.new
       end
 
       def execute
-        client = octo_client(project.creator.github_access_token)
-
         #Issues && Comments
         client.list_issues(project.import_source, state: :all).each do |issue|
           if issue.pull_request.nil?
@@ -36,11 +35,6 @@ module Gitlab
       end
 
       private
-
-      def octo_client(access_token)
-        ::Octokit.auto_paginate = true
-        ::Octokit::Client.new(access_token: access_token)
-      end
 
       def gl_user_id(project, github_id)
         user = User.joins(:identities).
