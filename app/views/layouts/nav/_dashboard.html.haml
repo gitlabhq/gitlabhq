@@ -1,28 +1,28 @@
 %ul.nav.nav-sidebar
   = nav_link(path: 'dashboard#show', html_options: {class: 'home'}) do
-    = link_to root_path, title: 'Home', class: 'shortcuts-activity' do
+    = link_to root_path, title: 'Home', class: 'shortcuts-activity has_right_tooltip', 'data-original-title' => 'Home' do
       %i.fa.fa-dashboard
       %span
         Activity
   = nav_link(path: 'dashboard#projects') do
-    = link_to projects_dashboard_path, title: 'Projects', class: 'shortcuts-projects' do
+    = link_to projects_dashboard_path, title: 'Projects', class: 'shortcuts-projects has_right_tooltip', 'data-original-title' => 'Projects' do
       %i.fa.fa-cube
       %span
         Projects
   = nav_link(path: 'dashboard#issues') do
-    = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'shortcuts-issues' do
+    = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'shortcuts-issues has_right_tooltip', 'data-original-title' => 'Issues' do
       %i.fa.fa-exclamation-circle
       %span
         Issues
         %span.count= current_user.assigned_issues.opened.count
   = nav_link(path: 'dashboard#merge_requests') do
-    = link_to assigned_mrs_dashboard_path, title: 'Merge Requests', class: 'shortcuts-merge_requests' do
+    = link_to assigned_mrs_dashboard_path, title: 'Merge Requests', class: 'shortcuts-merge_requests has_right_tooltip', 'data-original-title' => 'Merge Requests' do
       %i.fa.fa-tasks
       %span
         Merge Requests
         %span.count= current_user.assigned_merge_requests.opened.count
   = nav_link(controller: :help) do
-    = link_to help_path, title: 'Help' do
+    = link_to help_path, title: 'Help', class: 'has_right_tooltip', 'data-original-title' => 'Help' do
       %i.fa.fa-question-circle
       %span
         Help

@@ -9,6 +9,7 @@ v 7.8.0 (unreleased)
   - Add API endpoint to fetch all changes on a MergeRequest (Jeroen van Baarsen)
   - View note image attachments in new tab when clicked instead of downloading them
   - Improve sorting logic in UI and API. Explicitly define what sorting method is used by default
+  - Add tooltip to the sidebar
   - Allow more variations for commit messages closing issues (Julien Bianchi and Hannes Rosenögger)
   - Fix overflow at sidebar when have several itens
   - Add notes for label changes in issue and merge requests
