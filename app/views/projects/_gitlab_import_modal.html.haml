@@ -1,0 +1,9 @@
+%div#gitlab_import_modal.modal.hide
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %a.close{href: "#", "data-dismiss" => "modal"} ×
+        %h3 GitLab OAuth import
+      .modal-body
+        You need to setup integration with GitLab first.
+        = link_to 'How to setup integration with GitLab', 'https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/integration/gitlab.md'

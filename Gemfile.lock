@@ -332,6 +332,9 @@ GEM
     omniauth-github (1.1.1)
       omniauth (~> 1.0)
       omniauth-oauth2 (~> 1.1)
+    omniauth-gitlab (1.0.0)
+      omniauth (~> 1.0)
+      omniauth-oauth2 (~> 1.0)
     omniauth-google-oauth2 (0.2.5)
       omniauth (> 1.0)
       omniauth-oauth2 (~> 1.1)
@@ -689,6 +692,7 @@ DEPENDENCIES
   octokit (= 3.7.0)
   omniauth (~> 1.1.3)
   omniauth-github
+  omniauth-gitlab
   omniauth-google-oauth2
   omniauth-kerberos
   omniauth-shibboleth

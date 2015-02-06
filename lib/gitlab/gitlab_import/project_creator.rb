@@ -1,5 +1,5 @@
 module Gitlab
-  module Github
+  module GitlabImport
     class ProjectCreator
       attr_reader :repo, :namespace, :current_user
 
@@ -11,15 +11,15 @@ module Gitlab
 
       def execute
         @project = Project.new(
-          name: repo.name,
-          path: repo.name,
-          description: repo.description,
+          name: repo["name"],
+          path: repo["path"],
+          description: repo["description"],
           namespace: namespace,
           creator: current_user,
-          visibility_level: repo.private ? Gitlab::VisibilityLevel::PRIVATE : Gitlab::VisibilityLevel::PUBLIC,
-          import_type: "github",
-          import_source: repo.full_name,
-          import_url: repo.clone_url.sub("https://", "https://#{current_user.github_access_token}@")
+          visibility_level: repo["visibility_level"],
+          import_type: "gitlab",
+          import_source: repo["path_with_namespace"],
+          import_url: repo["http_url_to_repo"].sub("://", "://oauth2:#{current_user.gitlab_access_token}@")
         )
 
         if @project.save!
