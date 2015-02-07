@@ -111,6 +111,7 @@ v 7.7.0
 
 v 7.6.0
   - Fork repository to groups
+  - Show complete file history even when file renamed
   - New rugged version
   - Add CRON=1 backup setting for quiet backups
   - Fix failing wiki restore
