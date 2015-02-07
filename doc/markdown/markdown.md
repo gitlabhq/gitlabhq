@@ -170,7 +170,7 @@ GFM will turn that reference into a link so you can navigate between them easily
 
 GFM will recognize the following:
 
-- @foo : for team members
+- @foo : for specific team members or groups
 - @all : for the whole team
 - #123 : for issues
 - !123 : for merge requests

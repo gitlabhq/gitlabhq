@@ -38,6 +38,7 @@ v 7.8.0
   - Add a commit calendar to the user profile (Hannes Rosenögger)  
   - 
   - Submit comment on command-enter
+  - Notify all members of a group when that group is mentioned in a comment, for example: `@gitlab-org` or `@sales`.
   - 
   - Fix long broadcast message cut-off on left sidebar (Visay Keo)
   - Add Project Avatars (Steven Thonus and Hannes Rosenögger)
