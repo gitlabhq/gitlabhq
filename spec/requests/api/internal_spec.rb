@@ -16,6 +16,27 @@ describe API::API, api: true  do
     end
   end
 
+  describe "GET /internal/broadcast_message" do
+    context "broadcast message exists" do
+      let!(:broadcast_message) { create(:broadcast_message, starts_at: Time.now.yesterday, ends_at: Time.now.tomorrow ) }
+
+      it do
+        get api("/internal/broadcast_message"), secret_token: secret_token
+
+        response.status.should == 200
+        json_response["message"].should == broadcast_message.message
+      end
+    end
+
+    context "broadcast message doesn't exist" do
+      it do
+        get api("/internal/broadcast_message"), secret_token: secret_token
+
+        response.status.should == 404
+      end
+    end
+  end
+
   describe "GET /internal/discover" do
     it do
       get(api("/internal/discover"), key_id: key.id, secret_token: secret_token)
@@ -37,7 +58,7 @@ describe API::API, api: true  do
           pull(key, project)
 
           response.status.should == 200
-          JSON.parse(response.body)["status"].should be_true
+          json_response["status"].should be_true
         end
       end
 
@@ -46,7 +67,7 @@ describe API::API, api: true  do
           push(key, project)
 
           response.status.should == 200
-          JSON.parse(response.body)["status"].should be_true
+          json_response["status"].should be_true
         end
       end
     end
@@ -61,7 +82,7 @@ describe API::API, api: true  do
           pull(key, project)
 
           response.status.should == 200
-          JSON.parse(response.body)["status"].should be_false
+          json_response["status"].should be_false
         end
       end
 
@@ -70,7 +91,7 @@ describe API::API, api: true  do
           push(key, project)
 
           response.status.should == 200
-          JSON.parse(response.body)["status"].should be_false
+          json_response["status"].should be_false
         end
       end
     end
@@ -87,7 +108,7 @@ describe API::API, api: true  do
           pull(key, personal_project)
 
           response.status.should == 200
-          JSON.parse(response.body)["status"].should be_false
+          json_response["status"].should be_false
         end
       end
 
@@ -96,7 +117,7 @@ describe API::API, api: true  do
           push(key, personal_project)
 
           response.status.should == 200
-          JSON.parse(response.body)["status"].should be_false
+          json_response["status"].should be_false
         end
       end
     end
@@ -114,7 +135,7 @@ describe API::API, api: true  do
           pull(key, project)
 
           response.status.should == 200
-          JSON.parse(response.body)["status"].should be_true
+          json_response["status"].should be_true
         end
       end
 
@@ -123,7 +144,7 @@ describe API::API, api: true  do
           push(key, project)
 
           response.status.should == 200
-          JSON.parse(response.body)["status"].should be_false
+          json_response["status"].should be_false
         end
       end
     end
@@ -140,7 +161,7 @@ describe API::API, api: true  do
           archive(key, project)
 
           response.status.should == 200
-          JSON.parse(response.body)["status"].should be_true
+          json_response["status"].should be_true
         end
       end
 
@@ -149,7 +170,7 @@ describe API::API, api: true  do
           archive(key, project)
 
           response.status.should == 200
-          JSON.parse(response.body)["status"].should be_false
+          json_response["status"].should be_false
         end
       end
     end
@@ -159,7 +180,7 @@ describe API::API, api: true  do
         pull(key, OpenStruct.new(path_with_namespace: 'gitlab/notexists'))
 
         response.status.should == 200
-        JSON.parse(response.body)["status"].should be_false
+        json_response["status"].should be_false
       end
     end
 
@@ -168,7 +189,7 @@ describe API::API, api: true  do
         pull(OpenStruct.new(id: 0), project)
 
         response.status.should == 200
-        JSON.parse(response.body)["status"].should be_false
+        json_response["status"].should be_false
       end
     end
   end
