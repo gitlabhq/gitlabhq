@@ -14,11 +14,8 @@ module Sortable
     scope :order_created_asc, -> { reorder(created_at: :asc, id: :asc) }
     scope :order_updated_desc, -> { reorder(updated_at: :desc, id: :desc) }
     scope :order_updated_asc, -> { reorder(updated_at: :asc, id: :asc) }
-
-    if column_names.include?('name')
-      scope :order_name_asc, -> { reorder(name: :asc) }
-      scope :order_name_desc, -> { reorder(name: :desc) }
-    end
+    scope :order_name_asc, -> { reorder(name: :asc) }
+    scope :order_name_desc, -> { reorder(name: :desc) }
   end
 
   module ClassMethods
