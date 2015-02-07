@@ -37,6 +37,17 @@ describe API::API, api: true  do
         json_response.first.keys.should include 'can_create_project'
       end
     end
+
+    context "when authenticated and ldap is enabled" do
+      it "should return non-ldap user" do
+        create :omniauth_user, provider: "ldapserver1"
+        get api("/users", user), skip_ldap: "true"
+        response.status.should == 200
+        json_response.should be_an Array
+        username = user.username
+        json_response.first["username"].should == username
+      end
+    end
   end
 
   describe "GET /users/:id" do
