@@ -60,7 +60,7 @@ class Notify < ActionMailer::Base
   # Returns a String containing the User's email address.
   def recipient(recipient_id)
     if recipient = User.find(recipient_id)
-      recipient.email
+      recipient.notification_email
     end
   end
 

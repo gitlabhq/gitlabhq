@@ -43,6 +43,7 @@
 #  website_url              :string(255)      default(""), not null
 #  last_credential_check_at :datetime
 #  github_access_token      :string(255)
+#  notification_email       :string(255)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -115,6 +116,7 @@ class User < ActiveRecord::Base
   #
   validates :name, presence: true
   validates :email, presence: true, email: { strict_mode: true }, uniqueness: true
+  validates :notification_email, presence: true, email: { strict_mode: true }
   validates :bio, length: { maximum: 255 }, allow_blank: true
   validates :projects_limit, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :username,
@@ -128,10 +130,12 @@ class User < ActiveRecord::Base
   validate :namespace_uniq, if: ->(user) { user.username_changed? }
   validate :avatar_type, if: ->(user) { user.avatar_changed? }
   validate :unique_email, if: ->(user) { user.email_changed? }
+  validate :owns_notification_email, if: ->(user) { user.notification_email_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :generate_password, on: :create
   before_validation :sanitize_attrs
+  before_validation :set_notification_email, if: ->(user) { user.email_changed? }
 
   before_save :ensure_authentication_token
   after_save :ensure_namespace_correct
@@ -285,6 +289,10 @@ class User < ActiveRecord::Base
     self.errors.add(:email, 'has already been taken') if Email.exists?(email: self.email)
   end
 
+  def owns_notification_email
+    self.errors.add(:notification_email, "is not an email you own") unless self.all_emails.include?(self.notification_email)
+  end
+
   # Groups user has access to
   def authorized_groups
     @authorized_groups ||= begin
@@ -430,6 +438,12 @@ class User < ActiveRecord::Base
     end
   end
 
+  def set_notification_email
+    if self.notification_email.blank? || !self.all_emails.include?(self.notification_email)
+      self.notification_email = self.email 
+    end
+  end
+
   def requires_ldap_check?
     if !Gitlab.config.ldap.enabled
       false
@@ -501,6 +515,10 @@ class User < ActiveRecord::Base
     else
       GravatarService.new.execute(email, size)
     end
+  end
+
+  def all_emails
+    [self.email, *self.emails.map(&:email)]
   end
 
   def hook_attrs

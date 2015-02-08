@@ -9,9 +9,14 @@ describe Notify do
   let(:recipient) { create(:user, email: 'recipient@example.com') }
   let(:project) { create(:project) }
 
+  before(:each) do
+    email = recipient.emails.create(email: "notifications@example.com")
+    recipient.update_attribute(:notification_email, email.email)
+  end
+
   shared_examples 'a multiple recipients email' do
     it 'is sent to the given recipient' do
-      should deliver_to recipient.email
+      should deliver_to recipient.notification_email
     end
   end
 
@@ -441,7 +446,7 @@ describe Notify do
         end
 
         it 'is sent to the given recipient' do
-          should deliver_to recipient.email
+          should deliver_to recipient.notification_email
         end
 
         it 'contains the message from the note' do
