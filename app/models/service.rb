@@ -32,6 +32,10 @@ class Service < ActiveRecord::Base
     active
   end
 
+  def activated_was?
+    active_was
+  end
+
   def category
     :common
   end
