@@ -72,4 +72,9 @@ Feature: Project Services
     And I click jetBrains TeamCity CI service link
     And I fill jetBrains TeamCity CI settings
     Then I should see jetBrains TeamCity CI service settings saved
-	
+
+  Scenario: Activate Asana service
+    When I visit project "Shop" services page
+    And I click Asana service link
+    And I fill Asana settings
+    Then I should see Asana service settings saved

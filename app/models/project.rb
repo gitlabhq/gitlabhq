@@ -69,6 +69,7 @@ class Project < ActiveRecord::Base
   has_one :hipchat_service, dependent: :destroy
   has_one :flowdock_service, dependent: :destroy
   has_one :assembla_service, dependent: :destroy
+  has_one :asana_service, dependent: :destroy
   has_one :gemnasium_service, dependent: :destroy
   has_one :slack_service, dependent: :destroy
   has_one :buildbox_service, dependent: :destroy
@@ -362,7 +363,7 @@ class Project < ActiveRecord::Base
   end
 
   def available_services_names
-    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla
+    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla asana
        emails_on_push gemnasium slack pushover buildbox bamboo teamcity jira redmine custom_issue_tracker)
   end
 
