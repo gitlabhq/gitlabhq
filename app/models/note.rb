@@ -90,7 +90,12 @@ class Note < ActiveRecord::Base
         note_options.merge!(noteable: noteable)
       end
 
-      create(note_options) unless cross_reference_disallowed?(noteable, mentioner)
+
+      if noteable.is_a?(ExternalIssue)
+        project.issues_tracker.create_cross_reference_note(noteable, mentioner, author)
+      else
+        create(note_options) unless cross_reference_disallowed?(noteable, mentioner)
+      end
     end
 
     def create_milestone_change_note(noteable, project, author, milestone)

@@ -53,6 +53,7 @@ class GitPushService
 
       @push_data = post_receive_data(oldrev, newrev, ref)
       create_push_event(@push_data)
+
       project.execute_hooks(@push_data.dup, :push_hooks)
       project.execute_services(@push_data.dup)
     end
@@ -89,7 +90,7 @@ class GitPushService
 
         issues_to_close.each do |issue|
           if project.jira_tracker? && project.jira_service.active
-            project.jira_service.execute(push_data, issue)
+            project.jira_service.execute(commit, issue)
           else
             Issues::CloseService.new(project, author, {}).execute(issue, commit)
           end

@@ -209,26 +209,80 @@ describe Note do
     let(:issue)      { create(:issue, project: project) }
     let(:mergereq)   { create(:merge_request, :simple, target_project: project, source_project: project) }
     let(:commit)     { project.repository.commit }
+    let(:jira_issue) { JiraIssue.new("JIRA-1", project)}
+    let(:jira_tracker) { project.create_jira_service if project.jira_service.nil? }
+    let(:api_mention_url) { 'http://jira.example/rest/api/2/issue/JIRA-1/comment' }
 
     # Test all of {issue, merge request, commit} in both the referenced and referencing
     # roles, to ensure that the correct information can be inferred from any argument.
 
     context 'issue from a merge request' do
-      subject { Note.create_cross_reference_note(issue, mergereq, author, project) }
+      context 'in default issue tracker' do
+        subject { Note.create_cross_reference_note(issue, mergereq, author, project) }
 
-      it { should be_valid }
-      its(:noteable) { should == issue }
-      its(:project)  { should == issue.project }
-      its(:author)   { should == author }
-      its(:note) { should == "_mentioned in merge request !#{mergereq.iid}_" }
+        it { should be_valid }
+        its(:noteable) { should == issue }
+        its(:project)  { should == issue.project }
+        its(:author)   { should == author }
+        its(:note) { should == "_mentioned in merge request !#{mergereq.iid}_" }
+      end
+
+      context 'in JIRA issue tracker' do
+        before do
+          jira_service_settings
+          WebMock.stub_request(:post, api_mention_url)
+        end
+
+        after do
+          jira_tracker.destroy!
+        end
+
+        subject { Note.create_cross_reference_note(jira_issue, mergereq, author, project) }
+
+        it { should == jira_status_message }
+      end
     end
 
     context 'issue from a commit' do
-      subject { Note.create_cross_reference_note(issue, commit, author, project) }
+      context 'in default issue tracker' do
+        subject { Note.create_cross_reference_note(issue, commit, author, project) }
 
-      it { should be_valid }
-      its(:noteable) { should == issue }
-      its(:note) { should == "_mentioned in commit #{commit.sha}_" }
+        it { should be_valid }
+        its(:noteable) { should == issue }
+        its(:note) { should == "_mentioned in commit #{commit.sha}_" }
+      end
+
+      context 'in JIRA issue tracker' do
+        before do
+          jira_service_settings
+          WebMock.stub_request(:post, api_mention_url)
+        end
+
+        after do
+          jira_tracker.destroy!
+        end
+
+        subject { Note.create_cross_reference_note(jira_issue, commit, author, project) }
+
+        it { should == jira_status_message }
+      end
+    end
+
+    context 'issue from an isue' do
+      context 'in JIRA issue tracker' do
+        before do
+          jira_service_settings
+          WebMock.stub_request(:post, api_mention_url)
+        end
+
+        after do
+          jira_tracker.destroy!
+        end
+
+        subject { Note.create_cross_reference_note(jira_issue, issue, author, project) }
+
+        it { should == jira_status_message }
+      end
     end
 
     context 'merge request from an issue' do
@@ -385,5 +439,20 @@ describe Note do
     let(:subject) { create :note, noteable: issue, project: project }
     let(:backref_text) { issue.gfm_reference }
     let(:set_mentionable_text) { ->(txt) { subject.note = txt } }
+  end
+
+  def jira_service_settings
+    properties = {
+      "title"=>"JIRA tracker",
+      "project_url"=>"http://jira.example/issues/?jql=project=A",
+      "issues_url"=>"http://jira.example/browse/JIRA-1",
+      "new_issue_url"=>"http://jira.example/secure/CreateIssue.jspa"
+    }
+
+    jira_tracker.update_attributes(properties: properties, active: true)
+  end
+
+  def jira_status_message
+    "JiraService SUCCESS 200: Sucessfully posted to #{api_mention_url}."
   end
 end

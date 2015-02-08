@@ -115,8 +115,8 @@ describe MergeRequest do
     end
 
     context 'for a project with JIRA integration' do
-      let(:issue0) { JiraIssue.new('JIRA-123') }
-      let(:issue1) { JiraIssue.new('FOOBAR-4567') }
+      let(:issue0) { JiraIssue.new('JIRA-123', subject.project) }
+      let(:issue1) { JiraIssue.new('FOOBAR-4567', subject.project) }
 
       it 'returns sorted JiraIssues' do
         subject.project.stub(default_branch: subject.target_branch)

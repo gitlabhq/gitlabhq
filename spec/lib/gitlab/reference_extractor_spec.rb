@@ -75,10 +75,11 @@ describe Gitlab::ReferenceExtractor do
 
     it 'returns JIRA issues for a JIRA-integrated project' do
       project.stub(jira_tracker?: true)
+      project.stub(default_issues_tracker?: false)
 
       subject.analyze('JIRA-123 and FOOBAR-4567', project)
       subject.issues_for(project).should eq(
-        [JiraIssue.new('JIRA-123'), JiraIssue.new('FOOBAR-4567')]
+        [JiraIssue.new('JIRA-123', project), JiraIssue.new('FOOBAR-4567', project)]
       )
     end
 

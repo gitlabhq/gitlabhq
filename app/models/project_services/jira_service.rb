@@ -14,11 +14,12 @@
 
 class JiraService < IssueTrackerService
   include HTTParty
+  include Rails.application.routes.url_helpers
 
   prop_accessor :username, :password, :api_version, :jira_issue_transition_id,
                 :title, :description, :project_url, :issues_url, :new_issue_url
 
-  before_validation :set_api_version
+  before_validation :set_api_version, :set_jira_issue_transition_id
 
   def title
     if self.properties && self.properties['title'].present?
@@ -49,53 +50,147 @@ class JiraService < IssueTrackerService
     )
   end
 
-  def set_api_version
-    self.api_version ||= "2"
-  end
-
   def execute(push, issue = nil)
     close_issue(push, issue) if issue
   end
 
-  private
+  def create_cross_reference_note(mentioned, noteable, author)
+    issue_name = mentioned.id
+    project = self.project
+    noteable_name = noteable.class.name.underscore.downcase
+    noteable_id = if noteable.is_a?(Commit)
+                    noteable.id
+                  else
+                    noteable.iid
+                  end
 
-  def close_issue(push_data, issue_name)
-    url = close_issue_url(issue_name)
-    commit_url = push_data[:commits].first[:url]
+    entity_url = build_entity_url(noteable_name.to_sym, noteable_id)
 
-    message = {
-      'update' => {
-        'comment' => [{
-          'add' => {
-            'body' => "Issue solved with #{commit_url}"
-          }
-        }]
+    data = {
+      user: {
+        name: author.name,
+        url: resource_url(user_path(author)),
       },
-      'transition' => {
-        'id' => jira_issue_transition_id
+      project: {
+        name: project.path_with_namespace,
+        url: resource_url(project_path(project))
+      },
+      entity: {
+        name: noteable_name.humanize,
+        url: entity_url
       }
     }
 
-    json_body = message.to_json
-    Rails.logger.info("#{self.class.name}: sending POST with body #{json_body} to #{url}")
-
-    JiraService.post(
-      url,
-      body: json_body,
-      headers: {
-        'Content-Type' => 'application/json',
-        'Authorization' => "Basic #{auth}"
-      }
-    )
+    add_comment(data, issue_name)
   end
 
-  def close_issue_url(issue_name)
-    "#{self.project_url.chomp("/")}/rest/api/#{self.api_version}/issue/#{issue_name}/transitions"
+  private
+
+
+  def set_api_version
+    self.api_version ||= "2"
+  end
+
+  def set_jira_issue_transition_id
+    self.jira_issue_transition_id ||= "2"
+  end
+
+  def close_issue(commit, issue)
+    url = close_issue_url(issue.iid)
+
+    commit_url = build_entity_url(:commit, commit.id)
+
+    message = {
+      update: {
+        comment: [{
+          add: {
+            body: "Issue solved with [#{commit.id}|#{commit_url}]."
+          }
+        }]
+      },
+      transition: {
+        id: jira_issue_transition_id
+      }
+    }.to_json
+
+    send_message(url, message)
+  end
+
+  def add_comment(data, issue_name)
+    url = add_comment_url(issue_name)
+    user_name = data[:user][:name]
+    user_url = data[:user][:url]
+    entity_name = data[:entity][:name]
+    entity_url = data[:entity][:url]
+    entity_iid = data[:entity][:iid]
+    project_name = data[:project][:name]
+    project_url = data[:project][:url]
+
+    message = {
+      body: "[#{user_name}|#{user_url}] mentioned #{issue_name} in #{entity_name} of [#{project_name}|#{entity_url}]."
+    }.to_json
+
+    send_message(url, message)
   end
 
 
   def auth
     require 'base64'
     Base64.urlsafe_encode64("#{self.username}:#{self.password}")
+  end
+
+  def send_message(url, message)
+    result = JiraService.post(
+      url,
+      body: message,
+      headers: {
+        'Content-Type' => 'application/json',
+        'Authorization' => "Basic #{auth}"
+      }
+    )
+
+    message = case result.code
+              when 201, 200
+                "#{self.class.name} SUCCESS #{result.code}: Sucessfully posted to #{url}."
+              when 401
+                "#{self.class.name} ERROR 401: Unauthorized. Check the #{self.username} credentials and JIRA access permissions and try again."
+              else
+                "#{self.class.name} ERROR #{result.code}: #{result.parsed_response}"
+              end
+
+    Rails.logger.info(message)
+    message
+  rescue URI::InvalidURIError => e
+    Rails.logger.info "#{self.class.name} ERROR: #{e.message}. Hostname: #{url}."
+  end
+
+  def server_url
+    server = URI(project_url)
+    default_ports = [80, 443].include?(server.port)
+    server_url = "#{server.scheme}://#{server.host}"
+    server_url.concat(":#{server.port}") unless default_ports
+    return server_url
+  end
+
+  def resource_url(resource)
+    "#{Settings.gitlab['url'].chomp("/")}#{resource}"
+  end
+
+  def build_entity_url(entity_name, entity_id)
+    resource_url(
+      polymorphic_url(
+        [self.project, entity_name],
+        id: entity_id,
+        routing_type: :path
+      )
+    )
+  end
+
+  def close_issue_url(issue_name)
+    "#{server_url}/rest/api/#{self.api_version}/issue/#{issue_name}/transitions"
+  end
+
+  def add_comment_url(issue_name)
+    "#{server_url}/rest/api/#{self.api_version}/issue/#{issue_name}/comment"
   end
 end
