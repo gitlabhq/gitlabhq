@@ -57,7 +57,7 @@ v 7.8.0
   - 
   - Add a new API function that retrieves all issues assigned to a single milestone (Justin Whear and Hannes Rosenögger)
   - 
-  - 
+  - API: allow recursive tree
   - API: Access groups with their path (Julien Bianchi)
   - Added link to milestone and keeping resource context on smaller viewports for issues and merge requests (Jason Blanchard)
   - 
