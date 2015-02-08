@@ -10,7 +10,7 @@
 
 %hr
 
-= form_for(@service, as: :service, url: project_service_path(@project, @service.to_param), method: :put, html: { class: 'form-horizontal' }) do |f|
+= form_for(@service, as: :service, url: project_service_path(@project, @service.to_param), method: :put, html: { class: 'form-horizontal' }) do |form|
   - if @service.errors.any?
     .alert.alert-danger
       %ul
@@ -22,34 +22,28 @@
       = @service.help
 
   .form-group
-    = f.label :active, "Active", class: "control-label"
+    = form.label :active, "Active", class: "control-label"
     .col-sm-10
-      = f.check_box :active
+      = form.check_box :active
 
   - @service.fields.each do |field|
-    - name = field[:name]
-    - value = @service.send(name) unless field[:type] == 'password'
     - type = field[:type]
-    - placeholder = field[:placeholder]
-    - choices = field[:choices]
-    - default_choice = field[:default_choice]
 
-    .form-group
-      = f.label name, class: "control-label"
-      .col-sm-10
-        - if type == 'text'
-          = f.text_field name, class: "form-control", placeholder: placeholder
-        - elsif type == 'textarea'
-          = f.text_area name, rows: 5, class: "form-control", placeholder: placeholder
-        - elsif type == 'checkbox'
-          = f.check_box name
-        - elsif type == 'select'
-          = f.select name, options_for_select(choices, value ? value : default_choice), {}, { class: "form-control" }
-        - elsif type == 'password'
-          = f.password_field name, class: 'form-control'
+    - if type == 'fieldset'
+      - fields = field[:fields]
+      - legend = field[:legend]
+
+      %fieldset
+        %legend= legend
+        - fields.each do |subfield|
+          = render 'field', :form => form, :field => subfield
+
+    - else
+      = render 'field', :form => form, :field => field
+
 
   .form-actions
-    = f.submit 'Save', class: 'btn btn-save'
+    = form.submit 'Save', class: 'btn btn-save'
     &nbsp;
     - if @service.valid? && @service.activated? && @service.can_test?
       = link_to 'Test settings', test_project_service_path(@project, @service.to_param), class: 'btn'
