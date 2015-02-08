@@ -3,15 +3,11 @@ class Tree
 
   attr_accessor :entries, :readme, :contribution_guide
 
-  def initialize(repository, sha, path = '/', recursive)
+  def initialize(repository, sha, path = '/', recursive = '0')
     path = '/' if path.blank?
     git_repo = repository.raw_repository
 
-    if recursive == '1'
-      @entries = get_recursive_entries(git_repo, sha, path)
-    else
-      @entries = Gitlab::Git::Tree.where(git_repo, sha, path)
-    end
+    @entries = get_entries(git_repo, sha, path, recursive)
 
     available_readmes = @entries.select(&:readme?)
 
@@ -40,11 +36,13 @@ class Tree
     end
   end
 
-  def get_recursive_entries(git_repo, sha, path)
+  def get_entries(git_repo, sha, path, recursive = '0')
     entries =  Gitlab::Git::Tree.where(git_repo, sha, path)
 
-    entries.select(&:dir?).each do |t|
-      entries += get_recursive_entries(git_repo, sha, t.path)
+    if recursive == '1'
+      entries.select(&:dir?).each do |t|
+        entries += get_recursive_entries(git_repo, sha, t.path)
+      end
     end
     entries
   end

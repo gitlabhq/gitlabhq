@@ -1,25 +1,115 @@
+Note: The upcoming release contains empty lines to reduce the number of merge conflicts, scroll down to see past releases.
+
+v 7.8.0
+  - Replace highlight.js with rouge-fork rugments (Stefan Tatschner)
+  - Make project search case insensitive (Hannes Rosenögger)
+  - Include issue/mr participants in list of recipients for reassign/close/reopen emails
+  - Expose description in groups API
+  - Better UI for project services page
+  - Cleaner UI for web editor
+  - Add diff syntax highlighting in email-on-push service notifications (Hannes Rosenögger)
+  - Add API endpoint to fetch all changes on a MergeRequest (Jeroen van Baarsen)
+  - View note image attachments in new tab when clicked instead of downloading them
+  - Improve sorting logic in UI and API. Explicitly define what sorting method is used by default
+  - Allow more variations for commit messages closing issues (Julien Bianchi and Hannes Rosenögger)
+  - Fix overflow at sidebar when have several itens
+  - 
+  - Show tags in commit view (Hannes Rosenögger)
+  - Only count a user's vote once on a merge request or issue (Michael Clarke)
+  - 
+  - Increate font size when browse source files and diffs
+  - Create new file in empty repository using GitLab UI
+  - 
+  - Ability to clone project using oauth2 token
+  - 
+  - Upgrade Sidekiq gem to version 3.3.0
+  - Stop git zombie creation during force push check
+  - Show success/error messages for test setting button in services
+  - Added Rubocop for code style checks
+  - Fix commits pagination
+  - 
+  - Async load a branch information at the commit page
+  - Disable blacklist validation for project names
+  - Allow configuring protection of the default branch upon first push (Marco Wessel)
+  -
+  - Add gitlab.com importer
+  - Add an ability to login with gitlab.com
+  - 
+  - Add a commit calendar to the user profile (Hannes Rosenögger)  
+  - 
+  - Submit comment on command-enter
+  - Notify all members of a group when that group is mentioned in a comment, for example: `@gitlab-org` or `@sales`.
+  - 
+  - Fix long broadcast message cut-off on left sidebar (Visay Keo)
+  - Add Project Avatars (Steven Thonus and Hannes Rosenögger)
+  - 
+  - 
+  - Password reset token validity increased from 2 hours to 2 days since it is also send on account creation.
+  - 
+  - 
+  - Enable raw image paste from clipboard, currently Chrome only (Marco Cyriacks)
+  - 
+  - 
+  - Add action property to merge request hook (Julien Bianchi)
+  - 
+  - Remove duplicates from group milestone participants list.
+  - 
+  - 
+  - Add a new API function that retrieves all issues assigned to a single milestone (Justin Whear and Hannes Rosenögger)
+  - 
+  - 
+  - API: Access groups with their path (Julien Bianchi)
+  - Added link to milestone and keeping resource context on smaller viewports for issues and merge requests (Jason Blanchard)
+  - 
+  - Allow notification email to be set separately from primary email.
+  - 
+  - API: Add support for editing an existing project (Mika Mäenpää and Hannes Rosenögger) 
+  - 
+  - Don't have Markdown preview fail for long comments/wiki pages.
+  - 
+  - When test web hook - show error message instead of 500 error page if connection to hook url was reset
+  - Added support for firing system hooks on group create/destroy and adding/removing users to group (Boyan Tabakov)
+  - Added persistent collapse button for left side nav bar (Jason Blanchard)
+  - Prevent losing unsaved comments by automatically restoring them when comment page is loaded again.
+
+v 7.7.2
+  - Update GitLab Shell to version 2.4.2 that fixes a bug when developers can push to protected branch
+  - Fix issue when LDAP user can't login with existing GitLab account
+
+v 7.7.1
+  - Improve mention autocomplete performance
+  - Show setup instructions for GitHub import if disabled
+  - Allow use http for OAuth applications
+
 v 7.7.0
-  -
-  -
+  - Import from GitHub.com feature
   - Add Jetbrains Teamcity CI service (Jason Lippert)
-  -
-  -
   - Mention notification level
-  -
-  -
+  - Markdown preview in wiki (Yuriy Glukhov)
+  - Raise group avatar filesize limit to 200kb
   - OAuth applications feature
-  -
-  -
+  - Show user SSH keys in admin area
+  - Developer can push to protected branches option
   - Set project path instead of project name in create form
-  -
-  -
-  - New side navigation
-  -
-  -
-  -
+  - Block Git HTTP access after 10 failed authentication attempts
+  - Updates to the messages returned by API (sponsored by O'Reilly Media)
+  - New UI layout with side navigation
   - Add alert message in case of outdated browser (IE < 10)
-  -
   - Added API support for sorting projects
+  - Update gitlab_git to version 7.0.0.rc14
+  - Add API project search filter option for authorized projects
+  - Fix File blame not respecting branch selection
+  - Change some of application settings on fly in admin area UI
+  - Redesign signin/signup pages
+  - Close standard input in Gitlab::Popen.popen
+  - Trigger GitLab CI when push tags
+  - When accept merge request - do merge using sidaekiq job
+  - Enable web signups by default
+  - Fixes for diff comments: drag-n-drop images, selecting images
+  - Fixes for edit comments: drag-n-drop images, preview mode, selecting images, save & update 
+  - Remove password strength indicator
+  
+
 
 v 7.6.0
   - Fork repository to groups
@@ -45,8 +135,15 @@ v 7.6.0
   - Possibility to create Milestones or Labels when Issues are disabled
   - Fix bug with showing gpg signature in tag
 
+v 7.5.3
+  - Bump gitlab_git to 7.0.0.rc12 (includes Rugged 0.21.2)
+
 v 7.5.2
   - Don't log Sidekiq arguments by default
+  - Fix restore of wiki repositories from backups
+
+v 7.5.1
+  - Add missing timestamps to 'members' table
 
 v 7.5.0
   - API: Add support for Hipchat (Kevin Houdebert)
