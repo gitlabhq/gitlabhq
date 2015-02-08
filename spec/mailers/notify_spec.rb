@@ -9,9 +9,14 @@ describe Notify do
   let(:recipient) { create(:user, email: 'recipient@example.com') }
   let(:project) { create(:project) }
 
+  before(:each) do
+    email = recipient.emails.create(email: "notifications@example.com")
+    recipient.update_attribute(:notification_email, email.email)
+  end
+
   shared_examples 'a multiple recipients email' do
     it 'is sent to the given recipient' do
-      should deliver_to recipient.email
+      should deliver_to recipient.notification_email
     end
   end
 
@@ -26,6 +31,7 @@ describe Notify do
   shared_examples 'an email starting a new thread' do |message_id_prefix|
     it 'has a discussion identifier' do
       should have_header 'Message-ID',  /<#{message_id_prefix}(.*)@#{Gitlab.config.gitlab.host}>/
+      should have_header 'X-GitLab-Project', /#{project.name}/
     end
   end
 
@@ -37,6 +43,7 @@ describe Notify do
     it 'has headers that reference an existing thread' do
       should have_header 'References',  /<#{thread_id_prefix}(.*)@#{Gitlab.config.gitlab.host}>/
       should have_header 'In-Reply-To', /<#{thread_id_prefix}(.*)@#{Gitlab.config.gitlab.host}>/
+      should have_header 'X-GitLab-Project', /#{project.name}/
     end
   end
 
@@ -441,7 +448,7 @@ describe Notify do
         end
 
         it 'is sent to the given recipient' do
-          should deliver_to recipient.email
+          should deliver_to recipient.notification_email
         end
 
         it 'contains the message from the note' do

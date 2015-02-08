@@ -1,9 +1,7 @@
 module API
   # Internal access API
   class Internal < Grape::API
-    before {
-      authenticate_by_gitlab_shell_token!
-    }
+    before { authenticate_by_gitlab_shell_token! }
 
     namespace 'internal' do
       # Check if git command is allowed to project
@@ -25,8 +23,8 @@ module API
         # project. This applies the correct project permissions to
         # the wiki repository as well.
         access =
-          if project_path =~ /\.wiki\Z/
-            project_path.sub!(/\.wiki\Z/, '')
+          if project_path.end_with?('.wiki')
+            project_path.chomp!('.wiki')
             Gitlab::GitAccessWiki.new
           else
             Gitlab::GitAccess.new

@@ -72,21 +72,9 @@ module ProjectsHelper
     @project.milestones.active.order("due_date, title ASC")
   end
 
-  def project_issues_trackers(current_tracker = nil)
-    values = Project.issues_tracker.values.map do |tracker_key|
-      if tracker_key.to_sym == :gitlab
-        ['GitLab', tracker_key]
-      else
-        [Gitlab.config.issues_tracker[tracker_key]['title'] || tracker_key, tracker_key]
-      end
-    end
-
-    options_for_select(values, current_tracker)
-  end
-
   def link_to_toggle_star(title, starred, signed_in)
     cls = 'star-btn'
-    cls += ' disabled' unless signed_in
+    cls << ' disabled' unless signed_in
 
     toggle_html = content_tag('span', class: 'toggle') do
       toggle_text = if starred
@@ -95,7 +83,7 @@ module ProjectsHelper
                       ' Star'
                     end
 
-      content_tag('i', ' ', class: 'fa fa-star') + toggle_text
+      icon('star') + toggle_text
     end
 
     count_html = content_tag('span', class: 'count') do
@@ -107,7 +95,7 @@ module ProjectsHelper
       class: cls,
       method: :post,
       remote: true,
-      data: {type: 'json'}
+      data: { type: 'json' }
     }
 
 
@@ -119,7 +107,7 @@ module ProjectsHelper
   end
 
   def link_to_toggle_fork
-    out = content_tag(:i, '', class: 'fa fa-code-fork')
+    out = icon('code-fork')
     out << ' Fork'
     out << content_tag(:span, class: 'count') do
       @project.forks_count.to_s
@@ -187,7 +175,13 @@ module ProjectsHelper
                 "Issues - " + title
               end
             elsif current_controller?(:blob)
-              "#{@project.path}\/#{@blob.path} at #{@ref} - " + title
+              if current_action?(:new) || current_action?(:create)
+                "New file at #{@ref}"
+              elsif current_action?(:show)
+                "#{@blob.path} at #{@ref}"
+              elsif @blob
+                "Edit file #{@blob.path} at #{@ref}"
+              end
             elsif current_controller?(:commits)
               "Commits at #{@ref} - " + title
             elsif current_controller?(:merge_requests)
@@ -234,7 +228,33 @@ module ProjectsHelper
 
   def hidden_pass_url(original_url)
     result = URI(original_url)
-    result.password = '*****' if result.password.present?
+    result.password = '*****' unless result.password.nil?
     result
+  rescue
+    original_url
+  end
+
+  def project_wiki_path_with_version(proj, page, version, is_newest)
+    url_params = is_newest ? {} : { version_id: version }
+    project_wiki_path(proj, page, url_params)
+  end
+
+  def project_status_css_class(status)
+    case status
+    when "started"
+      "active"
+    when "failed"
+      "danger"
+    when "finished"
+      "success"
+    end
+  end
+
+  def github_import_enabled?
+    enabled_oauth_providers.include?(:github)
+  end
+
+  def gitlab_import_enabled?
+    enabled_oauth_providers.include?(:gitlab)
   end
 end

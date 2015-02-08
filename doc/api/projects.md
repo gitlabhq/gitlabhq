@@ -11,8 +11,9 @@ GET /projects
 Parameters:
 
 - `archived` (optional) - if passed, limit by archived status
-- `order_by` (optional) - Return requests ordered by `id`, `name`, `created_at` or `last_activity_at` fields
-- `sort` (optional) - Return requests sorted in `asc` or `desc` order
+- `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
+- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
+- `search` (optional) - Return list of authorized projects according to a search criteria
 
 ```json
 [
@@ -97,6 +98,13 @@ Get a list of projects which are owned by the authenticated user.
 GET /projects/owned
 ```
 
+Parameters:
+
+- `archived` (optional) - if passed, limit by archived status
+- `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
+- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
+- `search` (optional) - Return list of authorized projects according to a search criteria
+
 ### List ALL projects
 
 Get a list of all GitLab projects (admin only).
@@ -104,6 +112,13 @@ Get a list of all GitLab projects (admin only).
 ```
 GET /projects/all
 ```
+
+Parameters:
+
+- `archived` (optional) - if passed, limit by archived status
+- `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
+- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
+- `search` (optional) - Return list of authorized projects according to a search criteria
 
 ### Get single project
 
@@ -285,6 +300,31 @@ Parameters:
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
 - `import_url` (optional)
+
+### Edit project
+
+Updates an existing project
+
+```
+PUT /projects/:id
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `name` (optional) - project name
+- `path` (optional) - repository name for project
+- `description` (optional) - short project description
+- `default_branch` (optional)
+- `issues_enabled` (optional)
+- `merge_requests_enabled` (optional)
+- `wiki_enabled` (optional)
+- `snippets_enabled` (optional)
+- `public` (optional) - if `true` same as setting visibility_level = 20
+- `visibility_level` (optional)
+
+On success, method returns 200 with the updated project. If parameters are 
+invalid, 400 is returned.
 
 ### Fork project
 
@@ -515,7 +555,7 @@ Parameters:
         }
       ],
       "tree": "c68537c6534a02cc2b176ca1549f4ffa190b58ee",
-      "message": "give caolan credit where it's due (up top)",
+      "message": "give Caolan credit where it's due (up top)",
       "author": {
         "name": "Jeremy Ashkenas",
         "email": "jashkenas@example.com"

@@ -48,9 +48,17 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     click_link 'Edit'
   end
 
+  step 'I cannot see the edit button' do
+    page.should_not have_link 'edit'
+  end
+
+  step 'The edit button is disabled' do
+    page.should have_css '.disabled', text: 'Edit'
+  end
+
   step 'I can edit code' do
     set_new_content
-    evaluate_script('editor.getValue()').should == new_gitignore_content
+    evaluate_script('blob.editor.getValue()').should == new_gitignore_content
   end
 
   step 'I edit code' do
@@ -70,7 +78,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click link "Diff"' do
-    click_link 'Diff'
+    click_link 'Preview changes'
   end
 
   step 'I click on "Commit Changes"' do
@@ -95,7 +103,6 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I can see new file page' do
     page.should have_content "New file"
-    page.should have_content "File name"
     page.should have_content "Commit message"
   end
 
@@ -159,10 +166,21 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     expect(page).to have_content('Your changes could not be committed')
   end
 
+  step 'I create bare repo' do
+    click_link 'Create empty bare repository'
+  end
+
+  step 'I click on "add a file" link' do
+    click_link 'add a file'
+
+    # Remove pre-receive hook so we can push without auth
+    FileUtils.rm(File.join(@project.repository.path, 'hooks', 'pre-receive'))
+  end
+
   private
 
   def set_new_content
-    execute_script("editor.setValue('#{new_gitignore_content}')")
+    execute_script("blob.editor.setValue('#{new_gitignore_content}')")
   end
 
   # Content of the gitignore file on the seed repository.

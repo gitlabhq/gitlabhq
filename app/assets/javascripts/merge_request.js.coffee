@@ -135,3 +135,16 @@ class @MergeRequest
     this.$('.automerge_widget').hide()
     this.$('.merge-in-progress').hide()
     this.$('.automerge_widget.already_cannot_be_merged').show()
+
+  mergeInProgress: ->
+    $.ajax
+      type: 'GET'
+      url: $('.merge-request').data('url')
+      success: (data) =>
+        switch data.state
+          when 'merged'
+            location.reload()
+          else
+            setTimeout(merge_request.mergeInProgress, 3000)
+      dataType: 'json'
+

@@ -44,7 +44,7 @@ module Gitlab
       end
 
       def default_options(options = {})
-        {raise: true, timeout: true}.merge(options)
+        { raise: true, timeout: true }.merge(options)
       end
 
       def handle_exception(exception)

@@ -5,6 +5,15 @@ module Gitlab
 
     attr_reader :params, :project, :git_cmd, :user
 
+    def self.can_push_to_branch?(user, project, ref)
+      if project.protected_branch?(ref)  &&
+          !(project.developers_can_push_to_protected_branch?(ref) && project.team.developer?(user))
+        user.can?(:push_code_to_protected_branches, project)
+      else
+        user.can?(:push_code, project)
+      end
+    end
+
     def check(actor, cmd, project, changes = nil)
       case cmd
       when *DOWNLOAD_COMMANDS
@@ -64,7 +73,7 @@ module Gitlab
       changes = changes.lines if changes.kind_of?(String)
 
       # Iterate over all changes to find if user allowed all of them to be applied
-      changes.each do |change|
+      changes.map(&:strip).reject(&:blank?).each do |change|
         status = change_access_check(user, project, change)
         unless status.allowed?
           # If user does not have access to make at least one change - cancel all push
@@ -103,14 +112,14 @@ module Gitlab
     def protected_branch_action(project, oldrev, newrev, branch_name)
       # we dont allow force push to protected branch
       if forced_push?(project, oldrev, newrev)
-       :force_push_code_to_protected_branches
-       # and we dont allow remove of protected branch
+        :force_push_code_to_protected_branches
       elsif newrev == Gitlab::Git::BLANK_SHA
-       :remove_protected_branches
+        # and we dont allow remove of protected branch
+        :remove_protected_branches
       elsif project.developers_can_push_to_protected_branch?(branch_name)
-       :push_code
+        :push_code
       else
-       :push_code_to_protected_branches
+        :push_code_to_protected_branches
       end
     end
 

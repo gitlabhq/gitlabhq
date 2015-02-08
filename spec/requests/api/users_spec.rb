@@ -184,27 +184,11 @@ describe API::API, api: true  do
   end
 
   describe "GET /users/sign_up" do
-    context 'enabled' do
-      before do
-        Gitlab.config.gitlab.stub(:signup_enabled).and_return(true)
-      end
 
-      it "should return sign up page if signup is enabled" do
-        get "/users/sign_up"
-        response.status.should == 200
-      end
-    end
-
-    context 'disabled' do
-      before do
-        Gitlab.config.gitlab.stub(:signup_enabled).and_return(false)
-      end
-
-      it "should redirect to sign in page if signup is disabled" do
-        get "/users/sign_up"
-        response.status.should == 302
-        response.should redirect_to(new_user_session_path)
-      end
+    it "should redirect to sign in page" do
+      get "/users/sign_up"
+      response.status.should == 302
+      response.should redirect_to(new_user_session_path)
     end
   end
 

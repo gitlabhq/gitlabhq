@@ -1,4 +1,4 @@
-# To enable smtp email delivery for your GitLab instance do next: 
+# To enable smtp email delivery for your GitLab instance do the following:
 # 1. Rename this file to smtp_settings.rb
 # 2. Edit settings inside this file
 # 3. Restart GitLab instance
@@ -13,6 +13,7 @@ if Rails.env.production?
     password: "123456",
     domain: "gitlab.company.com",
     authentication: :login,
-    enable_starttls_auto: true
+    enable_starttls_auto: true,
+    openssl_verify_mode: 'none'
   }
 end

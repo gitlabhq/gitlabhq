@@ -44,7 +44,7 @@ module CommitsHelper
       parts = @path.split('/')
 
       parts.each_with_index do |part, i|
-        crumbs += content_tag(:li) do
+        crumbs << content_tag(:li) do
           # The text is just the individual part, but the link needs all the parts before it
           link_to part, project_commits_path(@project, tree_join(@ref, parts[0..i].join('/')))
         end
@@ -62,7 +62,25 @@ module CommitsHelper
 
   # Returns the sorted alphabetically links to branches, separated by a comma
   def commit_branches_links(project, branches)
-    branches.sort.map { |branch| link_to(branch, project_tree_path(project, branch)) }.join(", ").html_safe
+    branches.sort.map do |branch|
+      link_to(project_tree_path(project, branch)) do
+        content_tag :span, class: 'label label-gray' do
+          icon('code-fork') + ' ' + branch
+        end
+      end
+    end.join(" ").html_safe
+  end
+
+  # Returns the sorted links to tags, separated by a comma
+  def commit_tags_links(project, tags)
+    sorted = VersionSorter.rsort(tags)
+    sorted.map do |tag|
+      link_to(project_commits_path(project, project.repository.find_tag(tag).name)) do
+        content_tag :span, class: 'label label-gray' do
+          icon('tag') + ' ' + tag
+        end
+      end
+    end.join(" ").html_safe
   end
 
   def link_to_browse_code(project, commit)
@@ -94,12 +112,13 @@ module CommitsHelper
     person_name = user.nil? ? source_name : user.name
     person_email = user.nil? ? source_email : user.email
 
-    text = if options[:avatar]
-            avatar = image_tag(avatar_icon(person_email, options[:size]), class: "avatar #{"s#{options[:size]}" if options[:size]}", width: options[:size], alt: "")
-            %Q{#{avatar} <span class="commit-#{options[:source]}-name">#{person_name}</span>}
-          else
-            person_name
-          end
+    text =
+      if options[:avatar]
+        avatar = image_tag(avatar_icon(person_email, options[:size]), class: "avatar #{"s#{options[:size]}" if options[:size]}", width: options[:size], alt: "")
+        %Q{#{avatar} <span class="commit-#{options[:source]}-name">#{person_name}</span>}
+      else
+        person_name
+      end
 
     options = {
       class: "commit-#{options[:source]}-link has_tooltip",

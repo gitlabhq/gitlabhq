@@ -17,15 +17,14 @@
 #= require jquery.blockUI
 #= require jquery.turbolinks
 #= require turbolinks
+#= require autosave
 #= require bootstrap
-#= require password_strength
 #= require select2
 #= require raphael
 #= require g.raphael-min
 #= require g.bar-min
 #= require chart-lib.min
 #= require branch-graph
-#= require highlight.pack
 #= require ace/ace
 #= require ace/ext-searchbox
 #= require d3
@@ -41,6 +40,7 @@
 #= require shortcuts_dashboard_navigation
 #= require shortcuts_issueable
 #= require shortcuts_network
+#= require cal-heatmap
 #= require_tree .
 
 window.slugify = (text) ->
@@ -76,24 +76,18 @@ window.disableButtonIfEmptyField = (field_selector, button_selector) ->
 # Disable button if any input field with given selector is empty
 window.disableButtonIfAnyEmptyField = (form, form_selector, button_selector) ->
   closest_submit = form.find(button_selector)
-  empty = false
-  form.find('input').filter(form_selector).each ->
-    empty = true if rstrip($(this).val()) is ""
-
-  if empty
-    closest_submit.disable()
-  else
-    closest_submit.enable()
-
-  form.keyup ->
-    empty = false
+  updateButtons = ->
+    filled = true
     form.find('input').filter(form_selector).each ->
-      empty = true if rstrip($(this).val()) is ""
+      filled = rstrip($(this).val()) != "" || !$(this).attr('required')
 
-    if empty
-      closest_submit.disable()
-    else
+    if filled
       closest_submit.enable()
+    else
+      closest_submit.disable()
+
+  updateButtons()
+  form.keyup(updateButtons)
 
 window.sanitize = (str) ->
   return str.replace(/<(?:.|\n)*?>/gm, '')
@@ -109,9 +103,19 @@ window.unbindEvents = ->
   $(document).unbind('scroll')
   $(document).off('scroll')
 
+window.shiftWindow = ->
+  scrollBy 0, -50
+
 document.addEventListener("page:fetch", unbindEvents)
 
+# Scroll the window to avoid the topnav bar
+# https://github.com/twitter/bootstrap/issues/1768
+if location.hash
+  setTimeout shiftWindow, 1
+window.addEventListener "hashchange", shiftWindow
+
 $ ->
+
   # Click a .one_click_select field, select the contents
   $(".one_click_select").on 'click', -> $(@).select()
 

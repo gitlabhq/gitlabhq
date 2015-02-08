@@ -16,6 +16,7 @@
 #
 
 class WebHook < ActiveRecord::Base
+  include Sortable
   include HTTParty
 
   default_value_for :push_events, true
@@ -44,11 +45,11 @@ class WebHook < ActiveRecord::Base
       }
       WebHook.post(post_url,
                    body: data.to_json,
-                   headers: {"Content-Type" => "application/json"},
+                   headers: { "Content-Type" => "application/json" },
                    verify: false,
                    basic_auth: auth)
     end
-  rescue SocketError, Errno::ECONNREFUSED, Net::OpenTimeout => e
+  rescue SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED, Net::OpenTimeout => e
     logger.error("WebHook Error => #{e}")
     false
   end

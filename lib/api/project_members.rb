@@ -9,7 +9,7 @@ module API
           if errors[:access_level].any?
             error!(errors[:access_level], 422)
           end
-          not_found!
+          not_found!(errors)
         end
       end
 
@@ -106,7 +106,7 @@ module API
         unless team_member.nil?
           team_member.destroy
         else
-          {message: "Access revoked", id: params[:user_id].to_i}
+          { message: "Access revoked", id: params[:user_id].to_i }
         end
       end
     end

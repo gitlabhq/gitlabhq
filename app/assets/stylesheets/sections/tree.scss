@@ -98,6 +98,11 @@
       background: #f1f1f1;
       border-left: 1px solid #DDD;
     }
+    td.lines {
+      code {
+        font-family: $monospace_font;
+      }
+    }
   }
 }
 

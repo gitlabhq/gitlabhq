@@ -5,7 +5,7 @@
 %h3.page-title
   %i.fa.fa-code-fork
   New tag
-= form_tag project_tags_path, method: :post, class: "form-horizontal" do
+= form_tag project_tags_path, method: :post, id: "new-tag-form", class: "form-horizontal" do
   .form-group
     = label_tag :tag_name, 'Name for new tag', class: 'control-label'
     .col-sm-10
@@ -25,6 +25,7 @@
     = link_to 'Cancel', project_tags_path(@project), class: 'btn btn-cancel'
 
 :javascript
+  disableButtonIfAnyEmptyField($("#new-tag-form"), ".form-control", ".btn-create");
   var availableTags = #{@project.repository.ref_names.to_json};
 
   $("#ref").autocomplete({

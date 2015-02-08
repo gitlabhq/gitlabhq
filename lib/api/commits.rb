@@ -108,7 +108,7 @@ module API
         if note.save
           present note, with: Entities::CommitNote
         else
-          not_found!
+          render_api_error!("Failed to save note #{note.errors.messages}", 400)
         end
       end
     end

@@ -16,16 +16,16 @@ class Projects::WikisController < Projects::ApplicationController
     if @page
       render 'show'
     elsif file = @project_wiki.find_file(params[:id], params[:version_id])
-       if file.on_disk?
-         send_file file.on_disk_path, disposition: 'inline'
-       else
-         send_data(
-           file.raw_data,
-           type: file.mime_type,
-           disposition: 'inline',
-           filename: file.name
-         )
-       end
+      if file.on_disk?
+        send_file file.on_disk_path, disposition: 'inline'
+      else
+        send_data(
+          file.raw_data,
+          type: file.mime_type,
+          disposition: 'inline',
+          filename: file.name
+        )
+      end
     else
       return render('empty') unless can?(current_user, :write_wiki, @project)
       @page = WikiPage.new(@project_wiki)

@@ -7,27 +7,15 @@
         %i.fa.fa-plus
         New Milestone
 
-  .row
-    .fixed.sidebar-expand-button.hidden-lg.hidden-md.hidden-xs
-      %i.fa.fa-list.fa-2x
-    .col-md-3.responsive-side
-      %ul.nav.nav-pills.nav-stacked
-        %li{class: ("active" if (params[:f] == "active" || !params[:f]))}
-          = link_to project_milestones_path(@project, f: "active") do
-            Active
-        %li{class: ("active" if params[:f] == "closed")}
-          = link_to project_milestones_path(@project, f: "closed") do
-            Closed
-        %li{class: ("active" if params[:f] == "all")}
-          = link_to project_milestones_path(@project, f: "all") do
-            All
-    .col-md-9
-      .panel.panel-default
-        %ul.well-list
-          = render @milestones
+= render 'shared/milestones_filter'
 
-          - if @milestones.blank?
-            %li
-              .nothing-here-block No milestones to show
+.milestones
+  .panel.panel-default
+    %ul.well-list
+      = render @milestones
 
-      = paginate @milestones, theme: "gitlab"
+      - if @milestones.blank?
+        %li
+          .nothing-here-block No milestones to show
+
+  = paginate @milestones, theme: "gitlab"

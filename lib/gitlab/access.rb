@@ -11,6 +11,11 @@ module Gitlab
     MASTER    = 40
     OWNER     = 50
 
+    # Branch protection settings
+    PROTECTION_NONE         = 0
+    PROTECTION_DEV_CAN_PUSH = 1
+    PROTECTION_FULL         = 2
+
     class << self
       def values
         options.values
@@ -42,6 +47,18 @@ module Gitlab
           developer: DEVELOPER,
           master:    MASTER,
         }
+      end
+
+      def protection_options
+        {
+          "Not protected, developers and masters can (force) push and delete the branch" => PROTECTION_NONE,
+          "Partially protected, developers can also push but prevent all force pushes and deletion" => PROTECTION_DEV_CAN_PUSH,
+          "Fully protected, only masters can push and prevent all force pushes and deletion" => PROTECTION_FULL,
+        }
+      end
+
+      def protection_values
+        protection_options.values
       end
     end
 

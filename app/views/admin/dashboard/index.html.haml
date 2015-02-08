@@ -1,9 +1,85 @@
-%h3.page-title
-  Admin area
-%p.light
-  You can manage projects, users and other GitLab data from here.
-%hr
 .admin-dashboard
+  .row
+    .col-md-4
+      %h4 Statistics
+      %hr
+      %p
+        Forks
+        %span.light.pull-right
+          = ForkedProjectLink.count
+      %p
+        Issues
+        %span.light.pull-right
+          = Issue.count
+      %p
+        Merge Requests
+        %span.light.pull-right
+          = MergeRequest.count
+      %p
+        Notes
+        %span.light.pull-right
+          = Note.count
+      %p
+        Snippets
+        %span.light.pull-right
+          = Snippet.count
+      %p
+        SSH Keys
+        %span.light.pull-right
+          = Key.count
+      %p
+        Milestones
+        %span.light.pull-right
+          = Milestone.count
+      %p
+        Users who signed in during last 30 days
+        %span.light.pull-right
+          = User.where("current_sign_in_at > ?", 30.days.ago).count
+    .col-md-4
+      %h4
+        Features
+      %hr
+      %p
+        Sign up
+        %span.light.pull-right
+          = boolean_to_icon signup_enabled?
+      %p
+        LDAP
+        %span.light.pull-right
+          = boolean_to_icon Gitlab.config.ldap.enabled
+      %p
+        Gravatar
+        %span.light.pull-right
+          = boolean_to_icon gravatar_enabled?
+      %p
+        OmniAuth
+        %span.light.pull-right
+          = boolean_to_icon Gitlab.config.omniauth.enabled
+    .col-md-4
+      %h4 Components
+      %hr
+      %p
+        GitLab
+        %span.pull-right
+          = Gitlab::VERSION
+      %p
+        GitLab Shell
+        %span.pull-right
+          = Gitlab::Shell.new.version
+      %p
+        GitLab API
+        %span.pull-right
+          = API::API::version
+      %p
+        Ruby
+        %span.pull-right
+          #{RUBY_VERSION}p#{RUBY_PATCHLEVEL}
+
+      %p
+        Rails
+        %span.pull-right
+          #{Rails::VERSION::STRING}
+  %hr
   .row
     .col-sm-4
       .light-well
@@ -59,85 +135,3 @@
             = group.name
           %span.light.pull-right
             #{time_ago_with_tooltip(group.created_at)}
-
-  %br
-  .row
-    .col-md-4
-      %h4 Stats
-      %hr
-      %p
-        Forks
-        %span.light.pull-right
-          = ForkedProjectLink.count
-      %p
-        Issues
-        %span.light.pull-right
-          = Issue.count
-      %p
-        Merge Requests
-        %span.light.pull-right
-          = MergeRequest.count
-      %p
-        Notes
-        %span.light.pull-right
-          = Note.count
-      %p
-        Snippets
-        %span.light.pull-right
-          = Snippet.count
-      %p
-        SSH Keys
-        %span.light.pull-right
-          = Key.count
-      %p
-        Milestones
-        %span.light.pull-right
-          = Milestone.count
-      %p
-        Active users last 30 days
-        %span.light.pull-right
-          = User.where("current_sign_in_at > ?", 30.days.ago).count
-    .col-md-4
-      %h4
-        Features
-      %hr
-      %p
-        Sign up
-        %span.light.pull-right
-          = boolean_to_icon gitlab_config.signup_enabled
-      %p
-        LDAP
-        %span.light.pull-right
-          = boolean_to_icon Gitlab.config.ldap.enabled
-      %p
-        Gravatar
-        %span.light.pull-right
-          = boolean_to_icon Gitlab.config.gravatar.enabled
-      %p
-        OmniAuth
-        %span.light.pull-right
-          = boolean_to_icon Gitlab.config.omniauth.enabled
-    .col-md-4
-      %h4 Components
-      %hr
-      %p
-        GitLab
-        %span.pull-right
-          = Gitlab::VERSION
-      %p
-        GitLab Shell
-        %span.pull-right
-          = Gitlab::Shell.new.version
-      %p
-        GitLab API
-        %span.pull-right
-          = API::API::version
-      %p
-        Ruby
-        %span.pull-right
-          #{RUBY_VERSION}p#{RUBY_PATCHLEVEL}
-
-      %p
-        Rails
-        %span.pull-right
-          #{Rails::VERSION::STRING}

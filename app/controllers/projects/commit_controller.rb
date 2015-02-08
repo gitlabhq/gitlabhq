@@ -11,7 +11,6 @@ class Projects::CommitController < Projects::ApplicationController
     return git_not_found! unless @commit
 
     @line_notes = @project.notes.for_commit_id(commit.id).inline
-    @branches = @project.repository.branch_names_contains(commit.id)
     @diffs = @commit.diffs
     @note = @project.build_commit_note(commit)
     @notes_count = @project.notes.for_commit_id(commit.id).count
@@ -28,6 +27,12 @@ class Projects::CommitController < Projects::ApplicationController
       format.diff  { render text: @commit.to_diff }
       format.patch { render text: @commit.to_patch }
     end
+  end
+
+  def branches
+    @branches = @project.repository.branch_names_contains(commit.id)
+    @tags = @project.repository.tag_names_contains(commit.id)
+    render layout: false
   end
 
   def commit

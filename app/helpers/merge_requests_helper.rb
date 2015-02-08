@@ -15,11 +15,13 @@ module MergeRequestsHelper
   end
 
   def new_mr_from_push_event(event, target_project)
-    return :merge_request => {
-      source_project_id: event.project.id,
-      target_project_id: target_project.id,
-      source_branch: event.branch_name,
-      target_branch: target_project.repository.root_ref
+    return {
+      merge_request: {
+        source_project_id: event.project.id,
+        target_project_id: target_project.id,
+        source_branch: event.branch_name,
+        target_branch: target_project.repository.root_ref
+      }
     }
   end
 

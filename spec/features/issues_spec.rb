@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe "Issues", feature: true do
+  include SortingHelper
+
   let(:project) { create(:project) }
 
   before do
@@ -65,7 +67,7 @@ describe "Issues", feature: true do
 
       click_button "Save changes"
 
-      page.should have_content "Assignee: Select assignee"
+      page.should have_content 'Assignee: none'
       issue.reload.assignee.should be_nil
     end
   end
@@ -80,7 +82,7 @@ describe "Issues", feature: true do
                title: title)
       end
 
-      @issue = Issue.first # with title 'foobar'
+      @issue = Issue.find_by(title: 'foobar')
       @issue.milestone = create(:milestone, project: project)
       @issue.assignee = nil
       @issue.save
@@ -130,14 +132,14 @@ describe "Issues", feature: true do
     let(:later_due_milestone) { create(:milestone, due_date: '2013-12-12') }
 
     it 'sorts by newest' do
-      visit project_issues_path(project, sort: 'newest')
+      visit project_issues_path(project, sort: sort_value_recently_created)
 
       first_issue.should include("foo")
       last_issue.should include("baz")
     end
 
     it 'sorts by oldest' do
-      visit project_issues_path(project, sort: 'oldest')
+      visit project_issues_path(project, sort: sort_value_oldest_created)
 
       first_issue.should include("baz")
       last_issue.should include("foo")
@@ -146,7 +148,7 @@ describe "Issues", feature: true do
     it 'sorts by most recently updated' do
       baz.updated_at = Time.now + 100
       baz.save
-      visit project_issues_path(project, sort: 'recently_updated')
+      visit project_issues_path(project, sort: sort_value_recently_updated)
 
       first_issue.should include("baz")
     end
@@ -154,7 +156,7 @@ describe "Issues", feature: true do
     it 'sorts by least recently updated' do
       baz.updated_at = Time.now - 100
       baz.save
-      visit project_issues_path(project, sort: 'last_updated')
+      visit project_issues_path(project, sort: sort_value_oldest_updated)
 
       first_issue.should include("baz")
     end
@@ -168,13 +170,13 @@ describe "Issues", feature: true do
       end
 
       it 'sorts by recently due milestone' do
-        visit project_issues_path(project, sort: 'milestone_due_soon')
+        visit project_issues_path(project, sort: sort_value_milestone_soon)
 
         first_issue.should include("foo")
       end
 
       it 'sorts by least recently due milestone' do
-        visit project_issues_path(project, sort: 'milestone_due_later')
+        visit project_issues_path(project, sort: sort_value_milestone_later)
 
         first_issue.should include("bar")
       end
@@ -191,7 +193,7 @@ describe "Issues", feature: true do
       end
 
       it 'sorts with a filter applied' do
-        visit project_issues_path(project, sort: 'oldest', assignee_id: user2.id)
+        visit project_issues_path(project, sort: sort_value_oldest_created, assignee_id: user2.id)
 
         first_issue.should include("bar")
         last_issue.should include("foo")
@@ -249,6 +251,7 @@ describe "Issues", feature: true do
         click_button 'Update Issue'
 
         page.should have_content "Milestone changed to #{milestone.title}"
+        page.should have_content "Milestone: #{milestone.title}"
         has_select?('issue_assignee_id', :selected => milestone.title)
       end
     end
@@ -287,7 +290,7 @@ describe "Issues", feature: true do
         sleep 2 # wait for ajax stuff to complete
         first('.user-result').click
 
-        page.should have_content "Assignee: Unassigned"
+        page.should have_content 'Assignee: none'
         sleep 2 # wait for ajax stuff to complete
         issue.reload.assignee.should be_nil
       end

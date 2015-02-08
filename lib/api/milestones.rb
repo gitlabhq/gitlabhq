@@ -48,7 +48,7 @@ module API
         if milestone.valid?
           present milestone, with: Entities::Milestone
         else
-          not_found!
+          render_api_error!("Failed to create milestone #{milestone.errors.messages}", 400)
         end
       end
 
@@ -72,9 +72,24 @@ module API
         if milestone.valid?
           present milestone, with: Entities::Milestone
         else
-          not_found!
+          render_api_error!("Failed to update milestone #{milestone.errors.messages}", 400)
         end
       end
+
+      # Get all issues for a single project milestone
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   milestone_id (required) - The ID of a project milestone
+      # Example Request:
+      #   GET /projects/:id/milestones/:milestone_id/issues
+      get ":id/milestones/:milestone_id/issues" do
+        authorize! :read_milestone, user_project
+
+        @milestone = user_project.milestones.find(params[:milestone_id])
+        present paginate(@milestone.issues), with: Entities::Issue
+      end
+
     end
   end
 end

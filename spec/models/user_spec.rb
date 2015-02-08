@@ -26,8 +26,6 @@
 #  bio                      :string(255)
 #  failed_attempts          :integer          default(0)
 #  locked_at                :datetime
-#  extern_uid               :string(255)
-#  provider                 :string(255)
 #  username                 :string(255)
 #  can_create_group         :boolean          default(TRUE), not null
 #  can_create_team          :boolean          default(TRUE), not null
@@ -36,7 +34,6 @@
 #  notification_level       :integer          default(1), not null
 #  password_expires_at      :datetime
 #  created_by_id            :integer
-#  last_credential_check_at :datetime
 #  avatar                   :string(255)
 #  confirmation_token       :string(255)
 #  confirmed_at             :datetime
@@ -44,6 +41,8 @@
 #  unconfirmed_email        :string(255)
 #  hide_no_ssh_key          :boolean          default(FALSE)
 #  website_url              :string(255)      default(""), not null
+#  last_credential_check_at :datetime
+#  github_access_token      :string(255)
 #
 
 require 'spec_helper'
@@ -475,7 +474,7 @@ describe User do
       @user = create :user, created_at: Date.today, last_sign_in_at: Date.today, name: 'Alpha'
       @user1 = create :user, created_at: Date.today - 1, last_sign_in_at: Date.today - 1, name: 'Omega'
     end
-    
+
     it "sorts users as recently_signed_in" do
       User.sort('recent_sign_in').first.should == @user
     end
@@ -485,11 +484,11 @@ describe User do
     end
 
     it "sorts users as recently_created" do
-      User.sort('recently_created').first.should == @user
+      User.sort('created_desc').first.should == @user
     end
 
     it "sorts users as late_created" do
-      User.sort('late_created').first.should == @user1
+      User.sort('created_asc').first.should == @user1
     end
 
     it "sorts users by name when nil is passed" do

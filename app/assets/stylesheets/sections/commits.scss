@@ -101,7 +101,6 @@
 
   .commit-title {
     margin: 0;
-    font-size: 20px;
   }
 
   .commit-description {
@@ -139,7 +138,7 @@
  */
 li.commit {
   .commit-row-title {
-    font-size: 14px;
+    font-size: $list-font-size;
     margin-bottom: 2px;
 
     .notes_count {
@@ -158,7 +157,6 @@ li.commit {
 
     .commit-row-message {
       color: #333;
-      font-weight: 500;
       &:hover {
         color: #444;
         text-decoration: underline;

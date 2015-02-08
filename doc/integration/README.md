@@ -13,7 +13,7 @@ Jenkins support is [available in GitLab EE](http://doc.gitlab.com/ee/integration
 
 ## Project services
 
-Integration with services such as Campfire, Flowdock, Gemnasium, HipChat, PivotalTracker and Slack are available in the from of a Project Service.
+Integration with services such as Campfire, Flowdock, Gemnasium, HipChat, Pivotal Tracker, and Slack are available in the form of a Project Service.
 You can find these within GitLab in the Services page under Project Settings if you are at least a master on the project.
 Project Services are a bit like plugins in that they allow a lot of freedom in adding functionality to GitLab, for example there is also a service that can send an email every time someone pushes new commits.
 Because GitLab is open source we can ship with the code and tests for all plugins.

@@ -166,7 +166,9 @@ Triggered when a new merge request is created or an existing merge request was u
         "name": "GitLab dev user",
         "email": "gitlabdev@dv6700.(none)"
       }
-    }
+    },
+    "url": "http://example.com/diaspora/merge_requests/1",
+    "action": "open"
   }
 }
 ```

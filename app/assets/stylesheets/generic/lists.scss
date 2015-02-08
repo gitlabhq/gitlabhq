@@ -69,12 +69,11 @@
     }
 
     .well-title {
-      font-size: 14px;
+      font-size: $list-font-size;
       line-height: 18px;
     }
 
     .row_title {
-      font-weight: 500;
       color: #444;
       &:hover {
         color: #444;

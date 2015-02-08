@@ -21,23 +21,22 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
     text.gsub("'", "&rsquo;")
   end
 
+  # Stolen from Rugments::Plugins::Redcarpet as this module is not required
+  # from Rugments's gem root.
   def block_code(code, language)
-    # New lines are placed to fix an rendering issue
-    # with code wrapped inside <h1> tag for next case:
-    #
-    # # Title kinda h1
-    #
-    #     ruby code here
-    #
-    <<-HTML
+    lexer = Rugments::Lexer.find_fancy(language, code) || Rugments::Lexers::PlainText
 
-<div class="highlighted-data #{h.user_color_scheme_class}">
-  <div class="highlight">
-    <pre><code class="#{language}">#{h.send(:html_escape, code)}</code></pre>
-  </div>
-</div>
+    # XXX HACK: Redcarpet strips hard tabs out of code blocks,
+    # so we assume you're not using leading spaces that aren't tabs,
+    # and just replace them here.
+    if lexer.tag == 'make'
+      code.gsub! /^    /, "\t"
+    end
 
-    HTML
+    formatter = Rugments::Formatters::HTML.new(
+      cssclass: "code highlight white #{lexer.tag}"
+    )
+    formatter.format(lexer.lex(code))
   end
 
   def link(link, title, content)

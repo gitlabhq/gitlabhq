@@ -49,4 +49,4 @@ If a user is a GitLab administrator they receive all permissions.
 | Manage group members    |       |          |           |        | ✓     |
 | Remove group            |       |          |           |        | ✓     |
 
-Any user can remove himself from a group, unless he is the last Owner of the group.
+Any user can remove themselves from a group, unless they are the last Owner of the group.

@@ -26,7 +26,8 @@ describe EventsHelper do
 
   it 'should display the first line of a code block' do
     input = "```\nCode block\nwith two lines\n```"
-    expected = '<pre><code class="">Code block...</code></pre>'
+    expected = '<pre class="code highlight white plaintext"><code>' \
+               'Code block...</code></pre>'
 
     expect(event_note(input)).to match(expected)
   end

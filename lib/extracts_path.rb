@@ -1,16 +1,8 @@
 # Module providing methods for dealing with separating a tree-ish string and a
 # file path string when combined in a request parameter
 module ExtractsPath
-  extend ActiveSupport::Concern
-
   # Raised when given an invalid file path
   class InvalidPathError < StandardError; end
-
-  included do
-    if respond_to?(:before_filter)
-      before_filter :assign_ref_vars
-    end
-  end
 
   # Given a string containing both a Git tree-ish, such as a branch or tag, and
   # a filesystem path joined by forward slashes, attempts to separate the two.

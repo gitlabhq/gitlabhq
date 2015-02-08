@@ -37,18 +37,8 @@
   - @commit.parents.each do |parent|
     = link_to parent.short_id, project_commit_path(@project, parent)
 
-- if @branches.any?
-  .commit-info-row
-    %span.cgray
-      Exists in
-    %span
-      - branch = commit_default_branch(@project, @branches)
-      = link_to(branch, project_tree_path(@project, branch))
-      - if @branches.any?
-        and in
-        = link_to("#{pluralize(@branches.count, "other branch")}", "#", class: "js-details-expand")
-        %span.js-details-content.hide
-          = commit_branches_links(@project, @branches)
+.commit-info-row.branches
+  %i.fa.fa-spinner.fa-spin
 
 .commit-box
   %h3.commit-title
@@ -56,3 +46,7 @@
   - if @commit.description.present?
     %pre.commit-description
       = preserve(gfm(escape_once(@commit.description)))
+
+:coffeescript
+  $ ->
+    $(".commit-info-row.branches").load("#{branches_project_commit_path(@project, @commit.id)}")

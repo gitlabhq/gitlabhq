@@ -23,6 +23,7 @@ describe GitlabMarkdownHelper do
     @project = project
     @ref = 'markdown'
     @repository = project.repository
+    @request.host = Gitlab.config.gitlab.host
   end
 
   describe "#gfm" do
@@ -296,10 +297,13 @@ describe GitlabMarkdownHelper do
       let(:reference) { "JIRA-#{issue.iid}" }
 
       before do
-        issue_tracker_config = { "jira" => { "title" => "JIRA tracker", "issues_url" => "http://jira.example/browse/:id" } }
-        Gitlab.config.stub(:issues_tracker).and_return(issue_tracker_config)
-        @project.stub(:issues_tracker).and_return("jira")
-        @project.stub(:issues_tracker_id).and_return("JIRA")
+        jira = @project.create_jira_service if @project.jira_service.nil?
+        properties = {"title"=>"JIRA tracker", "project_url"=>"http://jira.example/issues/?jql=project=A", "issues_url"=>"http://jira.example/browse/:id", "new_issue_url"=>"http://jira.example/secure/CreateIssue.jspa"}
+        jira.update_attributes(properties: properties, active: true)
+      end
+
+      after do
+        @project.jira_service.destroy! unless @project.jira_service.nil?
       end
 
       it "should link using a valid id" do
@@ -566,7 +570,7 @@ describe GitlabMarkdownHelper do
     it "should leave code blocks untouched" do
       helper.stub(:user_color_scheme_class).and_return(:white)
 
-      target_html = "\n<div class=\"highlighted-data white\">\n  <div class=\"highlight\">\n    <pre><code class=\"\">some code from $#{snippet.id}\nhere too\n</code></pre>\n  </div>\n</div>\n\n"
+      target_html = "<pre class=\"code highlight white plaintext\"><code>some code from $40\nhere too\n</code></pre>\n"
 
       helper.markdown("\n    some code from $#{snippet.id}\n    here too\n").should == target_html
       helper.markdown("\n```\nsome code from $#{snippet.id}\nhere too\n```\n").should == target_html

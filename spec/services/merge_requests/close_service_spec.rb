@@ -12,13 +12,22 @@ describe MergeRequests::CloseService do
   end
 
   describe :execute do
-    context "valid params" do
+    context 'valid params' do
+      let(:service) { MergeRequests::CloseService.new(project, user, {}) }
+
       before do
-        @merge_request = MergeRequests::CloseService.new(project, user, {}).execute(merge_request)
+        service.stub(:execute_hooks)
+
+        @merge_request = service.execute(merge_request)
       end
 
       it { @merge_request.should be_valid }
       it { @merge_request.should be_closed }
+
+      it 'should execute hooks with close action' do
+        expect(service).to have_received(:execute_hooks).
+                               with(@merge_request, 'close')
+      end
 
       it 'should send email to user2 about assign of new merge_request' do
         email = ActionMailer::Base.deliveries.last
@@ -28,7 +37,7 @@ describe MergeRequests::CloseService do
 
       it 'should create system note about merge_request reassign' do
         note = @merge_request.notes.last
-        note.note.should include "Status changed to closed"
+        note.note.should include 'Status changed to closed'
       end
     end
   end

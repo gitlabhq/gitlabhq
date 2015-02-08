@@ -10,6 +10,11 @@ Doorkeeper.configure do
     current_user || redirect_to(new_user_session_url)
   end
 
+  resource_owner_from_credentials do |routes|
+    u = User.find_by(email: params[:username])
+    u if u && u.valid_password?(params[:password])
+  end
+
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.
   # admin_authenticator do
   #   # Put your admin authentication logic here.
@@ -22,7 +27,7 @@ Doorkeeper.configure do
 
   # Access token expiration time (default 2 hours).
   # If you want to disable expiration, set this to nil.
-  # access_token_expires_in 2.hours
+  access_token_expires_in nil
 
   # Reuse access token for the same resource owner within an application (disabled by default)
   # Rationale: https://github.com/doorkeeper-gem/doorkeeper/issues/383
@@ -31,11 +36,17 @@ Doorkeeper.configure do
   # Issue access tokens with refresh token (disabled by default)
   use_refresh_token
 
+  # Forces the usage of the HTTPS protocol in non-native redirect uris (enabled
+  # by default in non-development environments). OAuth2 delegates security in
+  # communication to the HTTPS protocol so it is wise to keep this enabled.
+  #
+  force_ssl_in_redirect_uri false
+
   # Provide support for an owner to be assigned to each registered application (disabled by default)
-  # Optional parameter :confirmation => true (default false) if you want to enforce ownership of
+  # Optional parameter confirmation: true (default false) if you want to enforce ownership of
   # a registered application
   # Note: you must also run the rails g doorkeeper:application_owner generator to provide the necessary support
-  enable_application_owner :confirmation => true
+  enable_application_owner confirmation: false
 
   # Define access token scopes for your provider
   # For more information go to

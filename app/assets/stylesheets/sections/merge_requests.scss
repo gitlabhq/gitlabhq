@@ -11,10 +11,27 @@
     }
   }
 
-  .accept-group {
-    label {
-      margin: 5px;
+  .accept-merge-holder {
+    margin-top: 5px;
+
+    .accept-action {
+      display: inline-block;
+
+      .accept_merge_request {
+        padding: 10px 20px;
+      }
+    }
+
+    .accept-control {
+      display: inline-block;
       margin-left: 20px;
+      padding: 10px 0;
+      line-height: 20px;
+      font-weight: bold;
+
+      .remove_source_checkbox {
+        margin: 0;
+      }
     }
   }
 }
@@ -71,7 +88,7 @@
 
     .merge-request-title {
       margin-bottom: 5px;
-      font-size: 14px;
+      font-size: $list-font-size;
     }
 
     .merge-request-info {
@@ -105,6 +122,7 @@
   background: $box_bg;
   margin-bottom: 20px;
   color: #666;
+  border: 1px solid #EEE;
   @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.09));
 
   .ci_widget {

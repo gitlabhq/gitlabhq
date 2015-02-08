@@ -50,10 +50,13 @@ module Mentionable
     matches.each do |match|
       identifier = match.delete "@"
       if identifier == "all"
-        users += project.team.members.flatten
-      else
-        id = User.find_by(username: identifier).try(:id)
-        users << User.find(id) unless id.blank?
+        users.push(*project.team.members.flatten)
+      elsif namespace = Namespace.find_by(path: identifier)
+        if namespace.type == "Group"
+          users.push(*namespace.users)
+        else
+          users << namespace.owner
+        end
       end
     end
     users.uniq

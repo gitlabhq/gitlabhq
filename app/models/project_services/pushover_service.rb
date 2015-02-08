@@ -80,9 +80,9 @@ class PushoverService < Service
     before = push_data[:before]
     after = push_data[:after]
 
-    if before =~ /000000/
+    if before.include?('000000')
       message = "#{push_data[:user_name]} pushed new branch \"#{ref}\"."
-    elsif after =~ /000000/
+    elsif after.include?('000000')
       message = "#{push_data[:user_name]} deleted branch \"#{ref}\"."
     else
       message = "#{push_data[:user_name]} push to branch \"#{ref}\"."

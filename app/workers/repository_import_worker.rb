@@ -10,7 +10,15 @@ class RepositoryImportWorker
                                project.path_with_namespace,
                                project.import_url)
 
-    if result
+    result_of_data_import = if project.import_type == 'github'
+                              Gitlab::GithubImport::Importer.new(project).execute
+                            elsif project.import_type == 'gitlab'
+                              Gitlab::GitlabImport::Importer.new(project).execute
+                            else
+                              true
+                            end
+
+    if result && result_of_data_import
       project.import_finish
       project.save
       project.satellite.create unless project.satellite.exists?

@@ -23,8 +23,8 @@ module Issues
         end
 
         if issue.previous_changes.include?('assignee_id')
-          notification_service.reassigned_issue(issue, current_user)
           create_assignee_note(issue)
+          notification_service.reassigned_issue(issue, current_user)
         end
 
         issue.notice_added_references(issue.project, current_user)

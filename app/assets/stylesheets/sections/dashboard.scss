@@ -92,8 +92,34 @@
   }
 }
 
+.dash-project-avatar {
+  float: left;
+
+  .avatar {
+    margin-top: -8px;
+    margin-left: -15px;
+    @include border-radius(0px);
+  }
+  .identicon {
+    line-height: 40px;
+  }
+}
+
 .dash-project-access-icon {
   float: left;
-  margin-right: 3px;
+  margin-right: 5px;
   width: 16px;
+}
+
+.dash-new-project {
+  background: $bg_success;
+  border: 1px solid $border_success;
+
+  a {
+    color: #FFF;
+  }
+}
+
+.dash-list .str-truncated {
+  max-width: 72%;
 }

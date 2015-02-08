@@ -49,7 +49,7 @@ class Note < ActiveRecord::Base
   scope :not_inline, ->{ where(line_code: [nil, '']) }
   scope :system, ->{ where(system: true) }
   scope :common, ->{ where(noteable_type: ["", nil]) }
-  scope :fresh, ->{ order("created_at ASC, id ASC") }
+  scope :fresh, ->{ order(created_at: :asc, id: :asc) }
   scope :inc_author_project, ->{ includes(:project, :author) }
   scope :inc_author, ->{ includes(:author) }
 
@@ -296,6 +296,7 @@ class Note < ActiveRecord::Base
   # If not - its outdated diff
   def active?
     return true unless self.diff
+    return false unless noteable
 
     noteable.diffs.each do |mr_diff|
       next unless mr_diff.new_path == self.diff.new_path
@@ -458,6 +459,26 @@ class Note < ActiveRecord::Base
                 )
   end
 
+  def superceded?(notes)
+    return false unless vote?
+
+    notes.each do |note|
+      next if note == self
+
+      if note.vote? &&
+        self[:author_id] == note[:author_id] &&
+        self[:created_at] <= note[:created_at]
+        return true
+      end
+    end
+
+    false
+  end
+
+  def vote?
+    upvote? || downvote?
+  end
+
   def votable?
     for_issue? || (for_merge_request? && !for_diff_line?)
   end
@@ -479,7 +500,7 @@ class Note < ActiveRecord::Base
   end
 
   # FIXME: Hack for polymorphic associations with STI
-  #        For more information wisit http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#label-Polymorphic+Associations
+  #        For more information visit http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#label-Polymorphic+Associations
   def noteable_type=(sType)
     super(sType.to_s.classify.constantize.base_class.to_s)
   end

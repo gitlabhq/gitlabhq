@@ -13,7 +13,7 @@ module Oauth2::AccessTokenValidationService
       elsif token.revoked?
         return REVOKED
 
-      elsif !self.sufficent_scope?(token, scopes)
+      elsif !self.sufficient_scope?(token, scopes)
         return INSUFFICIENT_SCOPE
 
       else
@@ -24,7 +24,7 @@ module Oauth2::AccessTokenValidationService
     protected
     # True if the token's scope is a superset of required scopes,
     # or the required scopes is empty.
-    def sufficent_scope?(token, scopes)
+    def sufficient_scope?(token, scopes)
       if scopes.blank?
         # if no any scopes required, the scopes of token is sufficient.
         return true

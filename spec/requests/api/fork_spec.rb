@@ -44,7 +44,7 @@ describe API::API, api: true  do
       it 'should fail on missing project access for the project to fork' do
         post api("/projects/fork/#{project.id}", user3)
         response.status.should == 404
-        json_response['message'].should == '404 Not Found'
+        json_response['message'].should == '404 Project Not Found'
       end
 
       it 'should fail if forked project exists in the user namespace' do
@@ -58,7 +58,7 @@ describe API::API, api: true  do
       it 'should fail if project to fork from does not exist' do
         post api('/projects/fork/424242', user)
         response.status.should == 404
-        json_response['message'].should == '404 Not Found'
+        json_response['message'].should == '404 Project Not Found'
       end
     end
 

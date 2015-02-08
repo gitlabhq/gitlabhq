@@ -11,7 +11,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   respond_to :html
 
   def index
-    @milestones = case params[:f]
+    @milestones = case params[:state]
                   when 'all'; @project.milestones.order("state, due_date DESC")
                   when 'closed'; @project.milestones.closed.order("due_date DESC")
                   else @project.milestones.active.order("due_date ASC")

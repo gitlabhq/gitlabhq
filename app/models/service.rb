@@ -15,6 +15,7 @@
 # To add new service you should build a class inherited from Service
 # and implement a set of methods
 class Service < ActiveRecord::Base
+  include Sortable
   serialize :properties, JSON
 
   default_value_for :active, false
@@ -25,6 +26,8 @@ class Service < ActiveRecord::Base
   has_one :service_hook
 
   validates :project_id, presence: true
+
+  scope :visible, -> { where.not(type: 'GitlabIssueTrackerService') }
 
   def activated?
     active
@@ -85,5 +88,13 @@ class Service < ActiveRecord::Base
 
   def async_execute(data)
     Sidekiq::Client.enqueue(ProjectServiceWorker, id, data)
+  end
+
+  def issue_tracker?
+    self.category == :issue_tracker
+  end
+
+  def self.issue_tracker_service_list
+    Service.select(&:issue_tracker?).map{ |s| s.to_param }
   end
 end

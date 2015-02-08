@@ -16,6 +16,7 @@
 #
 
 class Snippet < ActiveRecord::Base
+  include Sortable
   include Linguist::BlobHelper
   include Gitlab::VisibilityLevel
 
@@ -29,9 +30,11 @@ class Snippet < ActiveRecord::Base
 
   validates :author, presence: true
   validates :title, presence: true, length: { within: 0..255 }
-  validates :file_name, presence: true, length: { within: 0..255 },
-            format: { with: Gitlab::Regex.path_regex,
-                      message: Gitlab::Regex.path_regex_message }
+  validates :file_name,
+    presence: true,
+    length: { within: 0..255 },
+    format: { with: Gitlab::Regex.path_regex,
+              message: Gitlab::Regex.path_regex_message }
   validates :content, presence: true
   validates :visibility_level, inclusion: { in: Gitlab::VisibilityLevel.values }
 

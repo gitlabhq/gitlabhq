@@ -55,11 +55,12 @@
   }
   .event-body {
     margin-left: 35px;
-    margin-right: 100px;
+    margin-right: 80px;
     color: #777;
 
     .event-note {
       margin-top: 5px;
+      word-wrap: break-word;
 
       .md {
         font-size: 13px;
@@ -71,6 +72,7 @@
         border-radius: 0;
         color: #777;
         margin: 0 20px;
+        overflow: hidden;
       }
 
       .note-image-attach {
@@ -145,8 +147,12 @@
  * Last push widget
  */
 .event-last-push {
+  overflow: auto;
   .event-last-push-text {
-    @include str-truncated(75%);
+    @include str-truncated(100%);
+    float:left;
+    margin-right: -150px;
+    padding-right: 150px;
     line-height: 24px;
   }
 }

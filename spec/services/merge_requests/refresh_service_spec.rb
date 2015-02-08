@@ -47,10 +47,10 @@ describe MergeRequests::RefreshService do
         reload_mrs
       end
 
-      it { @merge_request.notes.should be_empty }
+      it { @merge_request.notes.last.note.should include('changed to merged') }
       it { @merge_request.should be_merged }
       it { @fork_merge_request.should be_merged }
-      it { @fork_merge_request.notes.should be_empty }
+      it { @fork_merge_request.notes.last.note.should include('changed to merged') }
     end
 
     context 'push to fork repo source branch' do
@@ -61,7 +61,7 @@ describe MergeRequests::RefreshService do
 
       it { @merge_request.notes.should be_empty }
       it { @merge_request.should be_open }
-      it { @fork_merge_request.notes.should_not be_empty }
+      it { @fork_merge_request.notes.last.note.should include('new commit') }
       it { @fork_merge_request.should be_open }
     end
 
@@ -84,7 +84,7 @@ describe MergeRequests::RefreshService do
         reload_mrs
       end
 
-      it { @merge_request.notes.should be_empty }
+      it { @merge_request.notes.last.note.should include('changed to merged') }
       it { @merge_request.should be_merged }
       it { @fork_merge_request.should be_open }
       it { @fork_merge_request.notes.should be_empty }

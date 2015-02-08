@@ -1,15 +1,35 @@
+# == Schema Information
+#
+# Table name: services
+#
+#  id         :integer          not null, primary key
+#  type       :string(255)
+#  title      :string(255)
+#  project_id :integer          not null
+#  created_at :datetime
+#  updated_at :datetime
+#  active     :boolean          default(FALSE), not null
+#  properties :text
+#
+
 class BambooService < CiService
   include HTTParty
 
   prop_accessor :bamboo_url, :build_key, :username, :password
 
-  validates :bamboo_url, presence: true,
-            format: { with: URI::regexp }, if: :activated?
+  validates :bamboo_url,
+    presence: true,
+    format: { with: URI::regexp },
+    if: :activated?
   validates :build_key, presence: true, if: :activated?
-  validates :username, presence: true,
-            if: ->(service) { service.password? }, if: :activated?
-  validates :password, presence: true,
-            if: ->(service) { service.username? }, if: :activated?
+  validates :username,
+    presence: true,
+    if: ->(service) { service.password? },
+    if: :activated?
+  validates :password,
+    presence: true,
+    if: ->(service) { service.username? },
+    if: :activated?
 
   attr_accessor :response
 

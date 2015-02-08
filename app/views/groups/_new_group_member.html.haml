@@ -5,7 +5,11 @@
 
   .form-group
     = f.label :access_level, "Group Access", class: 'control-label'
-    .col-sm-10= select_tag :access_level, options_for_select(GroupMember.access_level_roles, @users_group.access_level), class: "project-access-select select2"
+    .col-sm-10
+      = select_tag :access_level, options_for_select(GroupMember.access_level_roles, @users_group.access_level), class: "project-access-select select2"
+      .help-block
+        Read more about role permissions
+        %strong= link_to "here", help_page_path("permissions", "permissions"), class: "vlink"
 
   .form-actions
-    = f.submit 'Add users into group', class: "btn btn-create"
+    = f.submit 'Add users to group', class: "btn btn-create"

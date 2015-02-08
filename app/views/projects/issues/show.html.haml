@@ -10,7 +10,7 @@
 
   .pull-right
     - if can?(current_user, :write_issue, @project)
-      = link_to new_project_issue_path(@project), class: "btn btn-grouped", title: "New Issue", id: "new_issue_link" do
+      = link_to new_project_issue_path(@project), class: "btn btn-grouped new-issue-link", title: "New Issue", id: "new_issue_link" do
         %i.fa.fa-plus
         New Issue
     - if can?(current_user, :modify_issue, @issue)

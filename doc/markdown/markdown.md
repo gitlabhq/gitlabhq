@@ -6,7 +6,7 @@
 
 * [Newlines](#newlines)
 * [Multiple underscores in words](#multiple-underscores-in-words)
-* [URL autolinking](#url-autolinking)
+* [URL auto-linking](#url-autolinking)
 * [Code and Syntax Highlighting](#code-and-syntax-highlighting)
 * [Emoji](#emoji)
 * [Special GitLab references](#special-gitlab-references)
@@ -40,7 +40,7 @@ You can use GFM in
 - milestones
 - wiki pages
 
-You can also use other rich text files in GitLab. You might have to install a depency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
+You can also use other rich text files in GitLab. You might have to install a dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
 
 ## Newlines
 
@@ -68,7 +68,7 @@ It is not reasonable to italicize just _part_ of a word, especially when you're 
 perform_complicated_task
 do_this_and_do_that_and_another_thing
 
-## URL autolinking
+## URL auto-linking
 
 GFM will autolink standard URLs you copy and paste into your text. So if you want to link to a URL (instead of a textural link), you can simply put the URL in verbatim and it will be turned into a link to that URL.
 
@@ -170,7 +170,7 @@ GFM will turn that reference into a link so you can navigate between them easily
 
 GFM will recognize the following:
 
-- @foo : for team members
+- @foo : for specific team members or groups
 - @all : for the whole team
 - #123 : for issues
 - !123 : for merge requests
@@ -250,17 +250,17 @@ The IDs are generated from the content of the header according to the following 
 For example:
 
 ```
-###### ..Ab_c-d. e [anchor](url) ![alt text](url)..
+###### ..Ab_c-d. e [anchor](URL) ![alt text](URL)..
 ```
 
 which renders as:
 
-###### ..Ab_c-d. e [anchor](url) ![alt text](url)..
+###### ..Ab_c-d. e [anchor](URL) ![alt text](URL)..
 
 will first be converted by step 1) into a string like:
 
 ```
-..Ab_c-d. e &lt;a href="url">anchor&lt;/a> &lt;img src="url" alt="alt text"/>..
+..Ab_c-d. e &lt;a href="URL">anchor&lt;/a> &lt;img src="URL" alt="alt text"/>..
 ```
 
 After removing the tags in step 2) we get:
@@ -277,8 +277,8 @@ ab_c-d-e-anchor
 
 Note in particular how:
 
-- for markdown anchors `[text](url)`, only the `text` is used
-- markdown images `![alt](url)` are completely ignored
+- for markdown anchors `[text](URL)`, only the `text` is used
+- markdown images `![alt](URL)` are completely ignored
 
 ## Emphasis
 

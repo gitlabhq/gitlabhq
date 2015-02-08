@@ -202,13 +202,20 @@ module Gitlab
 
       if identifier == "all"
         link_to("@all", project_url(project), options)
-      elsif User.find_by(username: identifier)
-        link_to("@#{identifier}", user_url(identifier), options)
+      elsif namespace = Namespace.find_by(path: identifier)
+        url =
+          if namespace.type == "Group"
+            group_url(identifier)
+          else 
+            user_url(identifier)
+          end
+          
+        link_to("@#{identifier}", url, options)
       end
     end
 
     def reference_issue(identifier, project = @project, prefix_text = nil)
-      if project.used_default_issues_tracker? || !external_issues_tracker_enabled?
+      if project.default_issues_tracker?
         if project.issue_exists? identifier
           url = url_for_issue(identifier, project)
           title = title_for_issue(identifier, project)
@@ -220,10 +227,8 @@ module Gitlab
           link_to("#{prefix_text}##{identifier}", url, options)
         end
       else
-        config = Gitlab.config
-        external_issue_tracker = config.issues_tracker[project.issues_tracker]
-        if external_issue_tracker.present?
-          reference_external_issue(identifier, external_issue_tracker, project,
+        if project.external_issue_tracker.present?
+          reference_external_issue(identifier, project,
                                    prefix_text)
         end
       end
@@ -267,10 +272,10 @@ module Gitlab
       end
     end
 
-    def reference_external_issue(identifier, issue_tracker, project = @project,
+    def reference_external_issue(identifier, project = @project,
                                  prefix_text = nil)
       url = url_for_issue(identifier, project)
-      title = issue_tracker['title']
+      title = project.external_issue_tracker.title
 
       options = html_options.merge(
         title: "Issue in #{title}",

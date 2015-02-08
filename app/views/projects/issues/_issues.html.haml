@@ -1,6 +1,6 @@
 .append-bottom-10
   .check-all-holder
-    = check_box_tag "check_all_issues", nil, false, class: "check_all_issues left"
+    = check_box_tag "check_all_issues", nil, false, class: "check_all_issues left", disabled: !can?(current_user, :modify_issue, @project)
   = render 'shared/issuable_filter'
 
   .clearfix

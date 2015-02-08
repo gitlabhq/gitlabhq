@@ -28,6 +28,10 @@ module SharedProject
     @project.team << [@user, :master]
   end
 
+  step 'I visit my empty project page' do
+    visit project_path(Project.find_by(name: 'Empty Project'))
+  end
+
   step 'project "Shop" has push event' do
     @project = Project.find_by(name: "Shop")
 

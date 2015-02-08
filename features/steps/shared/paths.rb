@@ -167,6 +167,14 @@ module SharedPaths
     visit admin_teams_path
   end
 
+  step 'I visit admin settings page' do
+    visit admin_application_settings_path
+  end
+
+  step 'I visit applications page' do
+    visit admin_applications_path
+  end
+
   # ----------------------------------------
   # Generic Project
   # ----------------------------------------
@@ -181,6 +189,11 @@ module SharedPaths
 
   step "I visit my project's files page" do
     visit project_tree_path(@project, root_ref)
+  end
+
+  step 'I visit a binary file in the repo' do
+    visit project_blob_path(@project, File.join(
+      root_ref, 'files/images/logo-black.png'))
   end
 
   step "I visit my project's commits page" do
@@ -271,11 +284,11 @@ module SharedPaths
   end
 
   step 'I am on the new file page' do
-    current_path.should eq(project_new_tree_path(@project, root_ref))
+    current_path.should eq(project_create_blob_path(@project, root_ref))
   end
 
   step 'I am on the ".gitignore" edit file page' do
-    current_path.should eq(project_edit_tree_path(
+    current_path.should eq(project_edit_blob_path(
       @project, File.join(root_ref, '.gitignore')))
   end
 
@@ -383,6 +396,11 @@ module SharedPaths
   step 'I visit project "Community" page' do
     project = Project.find_by(name: "Community")
     visit project_path(project)
+  end
+
+  step 'I visit project "Community" source page' do
+    project = Project.find_by(name: 'Community')
+    visit project_tree_path(project, root_ref)
   end
 
   step 'I visit project "Internal" page' do

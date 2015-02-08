@@ -7,7 +7,7 @@ module Projects
     def execute
       @project = Project.new(params)
 
-      # Reset visibility levet if is not allowed to set it
+      # Reset visibility level if is not allowed to set it
       unless Gitlab::VisibilityLevel.allowed_for?(current_user, params[:visibility_level])
         @project.visibility_level = default_features.visibility_level
       end

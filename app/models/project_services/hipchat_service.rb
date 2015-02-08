@@ -32,8 +32,8 @@ class HipchatService < Service
 
   def fields
     [
-      { type: 'text', name: 'token',     placeholder: '' },
-      { type: 'text', name: 'room',      placeholder: '' },
+      { type: 'text', name: 'token',     placeholder: 'Room token' },
+      { type: 'text', name: 'room',      placeholder: 'Room name or ID' },
       { type: 'text', name: 'server',
         placeholder: 'Leave blank for default. https://hipchat.example.com' }
     ]
@@ -58,12 +58,12 @@ class HipchatService < Service
 
     message = ""
     message << "#{push[:user_name]} "
-    if before =~ /000000/
+    if before.include?('000000')
       message << "pushed new branch <a href=\""\
                  "#{project.web_url}/commits/#{URI.escape(ref)}\">#{ref}</a>"\
                  " to <a href=\"#{project.web_url}\">"\
                  "#{project.name_with_namespace.gsub!(/\s/, "")}</a>\n"
-    elsif after =~ /000000/
+    elsif after.include?('000000')
       message << "removed branch #{ref} from <a href=\"#{project.web_url}\">#{project.name_with_namespace.gsub!(/\s/,'')}</a> \n"
     else
       message << "pushed to branch <a href=\""\

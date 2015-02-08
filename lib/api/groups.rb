@@ -4,22 +4,6 @@ module API
     before { authenticate! }
 
     resource :groups do
-      helpers do
-        def find_group(id)
-          group = Group.find(id)
-
-          if can?(current_user, :read_group, group)
-            group
-          else
-            render_api_error!("403 Forbidden - #{current_user.username} lacks sufficient access to #{group.name}", 403)
-          end
-        end
-
-        def validate_access_level?(level)
-          Gitlab::Access.options_with_owner.values.include? level.to_i
-        end
-      end
-
       # Get a groups list
       #
       # Example Request:
@@ -47,14 +31,14 @@ module API
         authenticated_as_admin!
         required_attributes! [:name, :path]
 
-        attrs = attributes_for_keys [:name, :path]
+        attrs = attributes_for_keys [:name, :path, :description]
         @group = Group.new(attrs)
         @group.owner = current_user
 
         if @group.save
           present @group, with: Entities::Group
         else
-          not_found!
+          render_api_error!("Failed to save group #{@group.errors.messages}", 400)
         end
       end
 
@@ -97,7 +81,7 @@ module API
         if result
           present group
         else
-          not_found!
+          render_api_error!("Failed to transfer project #{project.errors.messages}", 400)
         end
       end
     end

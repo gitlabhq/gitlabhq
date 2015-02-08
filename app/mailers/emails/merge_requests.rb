@@ -56,7 +56,7 @@ module Emails
     end
   end
 
-  # Over rides default behavour to show source/target
+  # Over rides default behaviour to show source/target
   # Formats arguments into a String suitable for use as an email subject
   #
   # extra - Extra Strings to be inserted into the subject

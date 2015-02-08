@@ -16,11 +16,28 @@
 
 .project-home-panel {
   margin-bottom: 15px;
+  position: relative;
+  padding-left: 85px;
 
   &.empty-project {
     border-bottom: 0px;
     padding-bottom: 15px;
     margin-bottom: 0px;
+  }
+
+  .project-identicon-holder {
+    position: absolute;
+    left: 0;
+
+    .avatar {
+      width: 70px;
+      height: 70px;
+    }
+
+    .identicon {
+      font-size: 45px;
+      line-height: 1.6;
+    }
   }
 
   .project-home-dropdown {
@@ -295,20 +312,6 @@ ul.nav.nav-projects-tabs {
     }
   }
 }
-
-@media (max-width: $screen-xs-max) {
-  .project-home-panel {
-    .star-fork-buttons {
-      padding-top: 10px;
-      padding-right: 15px;
-    }
-  }
-
-  .project-home-links {
-    display: none;
-  }
-}
-
 
 table.table.protected-branches-list tr.no-border {
   th, td {

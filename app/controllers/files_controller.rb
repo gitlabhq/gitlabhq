@@ -5,7 +5,8 @@ class FilesController < ApplicationController
 
     if uploader.file_storage?
       if can?(current_user, :read_project, note.project)
-        send_file uploader.file.path, disposition: 'attachment'
+        disposition = uploader.image? ? 'inline' : 'attachment'
+        send_file uploader.file.path, disposition: disposition
       else
         not_found!
       end

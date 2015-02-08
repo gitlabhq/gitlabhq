@@ -73,6 +73,24 @@ describe API::API, api: true  do
         response.status.should == 404
       end
     end
+
+    context 'when using group path in URL' do
+      it 'should return any existing group' do
+        get api("/groups/#{group1.path}", admin)
+        response.status.should == 200
+        json_response['name'] == group2.name
+      end
+
+      it 'should not return a non existing group' do
+        get api('/groups/unknown', admin)
+        response.status.should == 404
+      end
+
+      it 'should not return a group not attached to user1' do
+        get api("/groups/#{group2.path}", user1)
+        response.status.should == 403
+      end
+    end
   end
 
   describe "POST /groups" do
@@ -91,7 +109,8 @@ describe API::API, api: true  do
 
       it "should not create group, duplicate" do
         post api("/groups", admin), {name: "Duplicate Test", path: group2.path}
-        response.status.should == 404
+        response.status.should == 400
+        response.message.should == "Bad Request"
       end
 
       it "should return 400 bad request error if name not given" do
