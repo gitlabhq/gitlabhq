@@ -69,6 +69,16 @@ class Service < ActiveRecord::Base
     !project.empty_repo?
   end
 
+  # Provide a way to track property changes
+  def update_attributes(attributes)
+    @changed_properties = properties.dup
+    super
+  end
+
+  def changed_properties
+    @changed_properties ||= ActiveSupport::HashWithIndifferentAccess.new
+  end
+
   # Provide convenient accessor methods
   # for each serialized property.
   def self.prop_accessor(*args)
@@ -80,6 +90,14 @@ class Service < ActiveRecord::Base
 
         def #{arg}=(value)
           self.properties['#{arg}'] = value
+        end
+
+        def #{arg}_was
+          #{arg}_changed? ? changed_properties['#{arg}'] : __send__(#{arg})
+        end
+
+        def #{arg}_changed?
+          changed_properties.present? && changed_properties['#{arg}'] != #{arg}
         end
       }
     end
