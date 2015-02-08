@@ -17,6 +17,7 @@
 #= require jquery.blockUI
 #= require jquery.turbolinks
 #= require turbolinks
+#= require autosave
 #= require bootstrap
 #= require select2
 #= require raphael
