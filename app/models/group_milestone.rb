@@ -20,7 +20,7 @@ class GroupMilestone
   def projects
     milestones.map { |milestone| milestone.project }
   end
-  
+
   def expires_at
     due_date = milestones.map { |milestone| milestone.due_date }.max
     if due_date
