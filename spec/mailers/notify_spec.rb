@@ -31,6 +31,7 @@ describe Notify do
   shared_examples 'an email starting a new thread' do |message_id_prefix|
     it 'has a discussion identifier' do
       should have_header 'Message-ID',  /<#{message_id_prefix}(.*)@#{Gitlab.config.gitlab.host}>/
+      should have_header 'X-GitLab-Project', /#{project.name}/
     end
   end
 
@@ -42,6 +43,7 @@ describe Notify do
     it 'has headers that reference an existing thread' do
       should have_header 'References',  /<#{thread_id_prefix}(.*)@#{Gitlab.config.gitlab.host}>/
       should have_header 'In-Reply-To', /<#{thread_id_prefix}(.*)@#{Gitlab.config.gitlab.host}>/
+      should have_header 'X-GitLab-Project', /#{project.name}/
     end
   end
 
