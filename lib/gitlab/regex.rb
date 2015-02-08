@@ -15,20 +15,20 @@ module Gitlab
 
 
     def namespace_name_regex
-      @namespace_name_regex ||= /\A[a-zA-Z0-9_\-\. ]*\z/.freeze
+      @namespace_name_regex ||= /\A[\p{Alnum}\p{Pd}_\. ]*\z/.freeze
     end
 
     def namespace_name_regex_message
-      "can contain only letters, digits, '_', '-', '.' and space."
+      "can contain only letters, digits, '_', '.', dash and space."
     end
 
 
     def project_name_regex
-      @project_name_regex ||= /\A[a-zA-Z0-9_.][a-zA-Z0-9_\-\. ]*\z/.freeze
+      @project_name_regex ||= /\A[\p{Alnum}_][\p{Alnum}\p{Pd}_\. ]*\z/.freeze
     end
 
     def project_name_regex_message
-      "can contain only letters, digits, '_', '-', '.' and space. " \
+      "can contain only letters, digits, '_', '.', dash and space. " \
       "It must start with letter, digit or '_'."
     end
 
