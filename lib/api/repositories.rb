@@ -59,7 +59,7 @@ module API
       #   recursive=1 (optional) - Used to get a recursive tree
       # Example Request:
       #   GET /projects/:id/repository/tree
-      get ":id/repository/tree" do
+      get ':id/repository/tree' do
         ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
         path = params[:path] || nil
 
