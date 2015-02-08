@@ -20,6 +20,17 @@ class GroupMilestone
   def projects
     milestones.map { |milestone| milestone.project }
   end
+  
+  def expires_at
+    due_date = milestones.map { |milestone| milestone.due_date }.max
+    if due_date
+      if due_date.past?
+        "expired at #{due_date.stamp("Aug 21, 2011")}"
+      else
+        "expires at #{due_date.stamp("Aug 21, 2011")}"
+      end
+    end
+  end
 
   def issue_count
     milestones.map { |milestone| milestone.issues.count }.sum
