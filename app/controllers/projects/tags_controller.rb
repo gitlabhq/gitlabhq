@@ -24,11 +24,8 @@ class Projects::TagsController < Projects::ApplicationController
   end
 
   def destroy
-    tag = @repository.find_tag(params[:id])
-
-    if tag && @repository.rm_tag(tag.name)
-      Event.create_ref_event(@project, current_user, tag, 'rm', 'refs/tags')
-    end
+    DeleteTagService.new(project, current_user).execute(params[:id])
+    @tag_name = params[:id]
 
     respond_to do |format|
       format.html { redirect_to project_tags_path }
