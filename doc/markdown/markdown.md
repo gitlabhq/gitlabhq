@@ -420,6 +420,8 @@ Quote break.
 
 You can also use raw HTML in your Markdown, and it'll mostly work pretty well.
 
+Note that inline HTML is disabled in the default Gitlab configuration, although it is [possible](https://github.com/gitlabhq/gitlabhq/pull/8007/commits) for the system administrator to enable it.
+
 ```no-highlight
 <dl>
   <dt>Definition list</dt>
