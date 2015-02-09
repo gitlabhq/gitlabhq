@@ -41,7 +41,7 @@ class Tree
 
     if recursive == '1'
       entries.select(&:dir?).each do |t|
-        entries += get_recursive_entries(git_repo, sha, t.path)
+        entries += get_entries(git_repo, sha, t.path)
       end
     end
     entries
