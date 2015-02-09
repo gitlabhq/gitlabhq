@@ -88,7 +88,7 @@ describe API::API, api: true  do
     end
   end
 
-  describe "GET /projects/:id/repository/tree" do
+  describe 'GET /projects/:id/repository/tree' do
     context "authorized user" do
       before { project.team << [user2, :reporter] }
 
