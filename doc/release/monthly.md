@@ -66,14 +66,11 @@ Xth: (1 working day before the 22nd)
 
 - [ ] Create CE, EE, CI stable versions (#LINK)
 - [ ] Create Omnibus tags and build packages
+- [ ] Update GitLab.com with the stable version (#LINK)
 
 22nd:
 
 - [ ] Release CE, EE and CI (#LINK)
-
-Xth: (1 working day after the 22nd)
-
-- [ ] Update GitLab.com with the stable version (#LINK)
 
 ```
 
