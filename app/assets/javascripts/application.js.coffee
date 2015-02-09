@@ -16,6 +16,7 @@
 #= require jquery.scrollTo
 #= require jquery.blockUI
 #= require jquery.turbolinks
+#= require jquery.sticky-kit.min
 #= require turbolinks
 #= require autosave
 #= require bootstrap
