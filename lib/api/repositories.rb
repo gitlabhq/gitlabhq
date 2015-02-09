@@ -62,6 +62,7 @@ module API
       get ':id/repository/tree' do
         ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
         path = params[:path] || nil
+        recursive = params[:recursive] || '0'
 
         commit = user_project.repository.commit(ref)
         tree = user_project.repository.tree(commit.id, path, recursive)
