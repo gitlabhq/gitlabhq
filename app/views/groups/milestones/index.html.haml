@@ -36,6 +36,8 @@
                   = pluralize milestone.merge_requests_count, 'Merge Request'
                 &nbsp;
                 %span.light #{milestone.percent_complete}% complete
+                &nbsp;
+                %span.light #{milestone.expires_at}
               .progress.progress-info
                 .progress-bar{style: "width: #{milestone.percent_complete}%;"}
               %div
