@@ -183,8 +183,6 @@ class User < ActiveRecord::Base
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members)') }
   scope :subscribed_for_admin_email, -> { where(admin_email_unsubscribed_at: nil) }
   scope :ldap, -> { joins(:identities).where('identities.provider LIKE ?', 'ldap%') }
-  scope :non_ldap, -> { joins('LEFT JOIN identities ON identities.user_id = users.id').
-                        where('identities.provider IS NULL OR identities.provider NOT LIKE ?', 'ldap%') }
   scope :potential_team_members, ->(team) { team.members.any? ? active.not_in_team(team) : active  }
 
   #
@@ -247,6 +245,11 @@ class User < ActiveRecord::Base
 
     def build_user(attrs = {})
       User.new(attrs)
+    end
+
+    def non_ldap
+      joins('LEFT JOIN identities ON identities.user_id = users.id').
+      where('identities.provider IS NULL OR identities.provider NOT LIKE ?', 'ldap%')
     end
   end
 

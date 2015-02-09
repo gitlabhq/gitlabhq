@@ -40,6 +40,7 @@ describe API::API, api: true  do
 
     context "when authenticated and ldap is enabled" do
       it "should return non-ldap user" do
+        User.delete_all
         create :omniauth_user, provider: "ldapserver1"
         get api("/users", user), skip_ldap: "true"
         response.status.should == 200
