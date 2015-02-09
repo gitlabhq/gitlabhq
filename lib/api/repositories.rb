@@ -65,6 +65,8 @@ module API
         recursive = params[:recursive] || '0'
 
         commit = user_project.repository.commit(ref)
+        not_found!('Tree') unless commit
+
         tree = user_project.repository.tree(commit.id, path, recursive)
 
         present tree.sorted_entries, with: Entities::RepoTreeObject
