@@ -35,7 +35,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should see new project avatar' do
-    @project.avatar.should be_instance_of AttachmentUploader
+    @project.avatar.should be_instance_of AvatarUploader
     url = @project.avatar.url
     url.should == "/uploads/project/avatar/#{ @project.id }/gitlab_logo.png"
   end
