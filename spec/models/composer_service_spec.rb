@@ -15,6 +15,7 @@
 require 'spec_helper'
 
 describe ComposerService do
+
   describe "Associations" do
     it { should belong_to :project }
     it { should have_one :service_hook }
@@ -26,19 +27,45 @@ describe ComposerService do
         subject.active = true
       end
 
-      it { should validate_presence_of :package_parser }
+      it { should validate_presence_of :package_mode }
       it { should validate_presence_of :package_type }
     end
   end
 
-  describe 'Execute' do
-    let(:package_parser) { 0 }
-    let(:package_type) { 'library' }
-    let(:package_homepage) { '' }
-  end
+  describe "Test Button not available" do
+    before do
+      @service = Service.new
+    end
 
-  describe "Mass assignment" do
-    it { should_not allow_mass_assignment_of(:project_id) }
+    describe "Testable" do
+      let (:project) { create :project }
+
+      before do
+        @service.stub(
+          project: project
+        )
+        @testable = @service.can_test?
+      end
+
+      describe :can_test do
+        it { @testable.should == false }
+      end
+    end
+
+    describe "With commits" do
+      let (:project) { create :project }
+
+      before do
+        @service.stub(
+          project: project
+        )
+        @testable = @service.can_test?
+      end
+
+      describe :can_test do
+        it { @testable.should == false }
+      end
+    end
   end
 
 end
