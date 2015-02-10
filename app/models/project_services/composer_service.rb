@@ -29,24 +29,27 @@ class ComposerService < Service
       begin
 
         name_re = /([A-Za-z0-9&_-]+\/[A-Za-z0-9&_-]+)/
+        error = nil
 
         if value.empty?
-          record.errors.add(attr, 'must be specified')
+          error = 'must be specified'
         elsif (cjson = ActiveSupport::JSON.decode(value))
           if cjson.empty?
-            record.errors.add(attr, 'must not be empty')
+            error = 'must not be empty'
           elsif not cjson['name']
-            record.errors.add(attr, 'must have a name key specified')
+            error = 'must have a name key specified'
           elsif cjson['name'].empty?
-            record.errors.add(attr, 'name key must not be empty')
+            error = 'name key must not be empty'
           elsif cjson['name'] != (name_re.match(cjson['name']) || [])[0]
-            record.errors.add(attr, 'name key format must be "namespace/project"')
+            error = 'name key must be formatted as "namespace/project"'
           elsif not cjson['description']
-            record.errors.add(attr, 'must have a description key specified')
+            error = 'must have a description key specified'
           elsif cjson['description'].empty?
-            record.errors.add(attr, 'description key must not be empty')
+            error = 'description key must not be empty'
           end
         end
+
+        record.errors.add(attr, error) unless error.empty?
 
       rescue
         record.errors.add(attr, 'must be a valid JSON string')
@@ -301,14 +304,14 @@ class ComposerService < Service
     ]
   end
 
-  #disable test button
+  # disable test button
   def can_test?
     false
   end
 
   def process_packages_on_save
 
-    #process packages for all tags
+    # process packages for all tags
     project.repository.tags.each do |tag|
       process_commit(tag)
     end
@@ -338,7 +341,7 @@ class ComposerService < Service
 
       end
     rescue
-      # Skip on error
+      # skip on error
     end
 
     begin
@@ -358,7 +361,7 @@ class ComposerService < Service
       end
 
     rescue
-      # Skip on error
+      # skip on error
     end
   end
 
@@ -373,7 +376,7 @@ class ComposerService < Service
       # to the original push
       manager.clear_packages
 
-      #process packages for all tags
+      # process packages for all tags
       project.repository.tags.each do |t|
         process_commit(t)
       end
@@ -399,7 +402,7 @@ class ComposerService < Service
     end
 
   rescue
-    #Skip on error
+    # skip on error
   end
 
   private
