@@ -15,7 +15,6 @@
 require 'digest/crc32'
 
 class ComposerService < Service
-
   prop_accessor :package_mode, :package_type, :export_branches, :branch_filters,
                 :export_tags, :tag_filters, :custom_json
 
@@ -31,13 +30,13 @@ class ComposerService < Service
         elsif (cjson = ActiveSupport::JSON.decode(value))
           if cjson.empty?
             error = 'must not be empty'
-          elsif not cjson['name']
+          elsif !cjson['name']
             error = 'must have a name key specified'
           elsif cjson['name'].empty?
             error = 'name key must not be empty'
           elsif cjson['name'] != (name_re.match(cjson['name']) || [])[0]
             error = 'name key must be formatted as "namespace/project"'
-          elsif not cjson['description']
+          elsif !cjson['description']
             error = 'must have a description key specified'
           elsif cjson['description'].empty?
             error = 'description key must not be empty'
@@ -307,7 +306,6 @@ class ComposerService < Service
   end
 
   def process_packages_on_save
-
     # process packages for all tags
     project.repository.tags.each do |tag|
       process_commit(tag)
@@ -320,46 +318,49 @@ class ComposerService < Service
   end
 
   def process_commit(ref)
-    previous_package_removed = false
+    removed = remove_previous_package(ref)
     begin
-      if commit_was_activated? && commit_was_exported?(ref)
 
-        if package_mode_was == 'advanced'
-          defaults = ActiveSupport::JSON.decode(custom_json_was)
-        else
-          defaults = { 'type'=>package_type_was }
-        end
-
-        package = Composer::Package.
-                    new(project, ref, package_mode_was, defaults)
-
-        manager.rm_package(package)
-        previous_package_removed = true
-
-      end
-    rescue
-      # skip on error
-    end
-
-    begin
-      if package_mode == 'advanced'
-        defaults = ActiveSupport::JSON.decode(custom_json)
-      else
-        defaults = { 'type'=>package_type }
-      end
-
-      package = Composer::Package.
-                  new(project, ref, package_mode, defaults)
+      package = Composer::Package.new(
+        project,
+        ref,
+        package_mode,
+        package_defauts
+      )
 
       if activated? && commit_is_exported?(ref)
         manager.add_package(package)
-      elsif not previous_package_removed
+      elsif !removed
         manager.rm_package(package)
       end
 
     rescue
       # skip on error
     end
+  end
+
+  def remove_previous_package(ref)
+    removed = false
+    begin
+
+      if commit_was_activated? && commit_was_exported?(ref)
+
+        package = Composer::Package.new(
+          project,
+          ref,
+          package_mode_was,
+          package_defaults_was
+        )
+
+        manager.rm_package(package)
+        removed = true
+
+      end
+
+    rescue
+      # skip on error
+    end
+    removed
   end
 
   def execute(push_data)
@@ -393,9 +394,7 @@ class ComposerService < Service
           t.name == tag_name(ref) && t.target == newrev
         end
       end
-      if match
-        process_commit(match)
-      end
+      process_commit(match) unless !match
     end
 
   rescue
@@ -406,6 +405,22 @@ class ComposerService < Service
 
   def manager
     @manager ||= Composer::Manager.new(project)
+  end
+
+  def package_defauts
+    if package_mode == 'advanced'
+      ActiveSupport::JSON.decode(custom_json)
+    else
+      { 'type' => package_type }
+    end
+  end
+
+  def package_defaults_was
+    if package_mode_was == 'advanced'
+      ActiveSupport::JSON.decode(custom_json_was)
+    else
+      { 'type' => package_type_was }
+    end
   end
 
   def commit_is_exported?(ref)
@@ -420,8 +435,8 @@ class ComposerService < Service
 
   def branch_is_exported?(branch)
     if branche_filters
-      filters = (branch_filters.strip! || branch_filters).
-                  gsub(" ", "").split(',')
+      filters = branch_filters.strip! || branch_filters
+      filters = filters.gsub(' ', '').split(',')
     else
       filters = []
     end
@@ -435,8 +450,8 @@ class ComposerService < Service
 
   def tag_is_exported?(tag)
     if tag_filters
-      filters = (tag_filters.strip! || tag_filters).
-                  gsub(" ", "").split(',')
+      filters = tag_filters.strip! || tag_filters
+      filters = filters.gsub(' ', '').split(',')
     else
       filters = []
     end
@@ -449,30 +464,31 @@ class ComposerService < Service
   end
 
   def commit_was_activated?
+    was_activated = false
     if active_was == true
       if !activated?
-        return true
+        was_activated = true
       elsif package_mode_changed?
-        return true
+        was_activated = true
       end
     end
-    return false
+    was_activated
   end
 
   def commit_was_exported?(ref)
+    was_exported = false
     if ref.instance_of?(Gitlab::Git::Branch)
-      branch_was_exported?(ref)
+      was_exported = branch_was_exported?(ref)
     elsif ref.instance_of?(Gitlab::Git::Tag)
-      tag_was_exported?(ref)
-    else
-      false
+      was_exported = tag_was_exported?(ref)
     end
+    was_exported
   end
 
   def branch_was_exported?(branch)
     if branch_filters_was
-      filters = (branch_filters_was.strip! || branch_filters_was).
-                  gsub(" ", "").split(',')
+      filters = branch_filters_was.strip! || branch_filters_was
+      filters = filters.gsub(' ', '').split(',')
     else
       filters = []
     end
@@ -486,8 +502,8 @@ class ComposerService < Service
 
   def tag_was_exported?(tag)
     if tag_filters_was
-      filters = (tag_filters_was.strip! || tag_filters_was).
-                  gsub(" ", "").split(',')
+      filters = tag_filters_was.strip! || tag_filters_was
+      filters = filters.gsub(' ', '').split(',')
     else
       filters = []
     end
