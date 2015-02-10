@@ -20,16 +20,11 @@ class ComposerService < Service
                 :export_tags, :tag_filters, :custom_json
 
   validates :package_mode, :package_type, presence: true, if: :activated?
-  validates :custom_json,
-    presence: true,
-    if: ->(service) { service.activated? && service.package_mode == 'advanced' }
 
   validates_each :custom_json,
     if: :allow_custom_json_validation? do |record, attr, value|
       begin
-
         name_re = /([A-Za-z0-9&_-]+\/[A-Za-z0-9&_-]+)/
-        error = nil
 
         if value.empty?
           error = 'must be specified'
@@ -49,7 +44,9 @@ class ComposerService < Service
           end
         end
 
-        record.errors.add(attr, error) unless error.empty?
+        if error
+          record.errors.add(attr, error)
+        end
 
       rescue
         record.errors.add(attr, 'must be a valid JSON string')
