@@ -46,8 +46,6 @@ production: &base
 
     # Email server smtp settings are in config/initializers/smtp_settings.rb.sample
 
-    ## User settings
-    default_projects_limit: 10
     # default_can_create_group: false  # default: true
     # username_changing_enabled: false # default: true - User can change her username/namespace
     ## Default theme
@@ -57,16 +55,6 @@ production: &base
     ##   GRAY   = 4
     ##   COLOR  = 5
     # default_theme: 2 # default: 2
-
-    ## Users can create accounts
-    # This also allows normal users to sign up for accounts themselves
-    # default: true - By default users can sign up themselves
-    # signup_enabled: true
-
-    ## Standard login settings
-    # The standard login can be disabled to force login via LDAP
-    # default: true - If set to false the standard login form won't be shown on the sign-in page
-    # signin_enabled: false
 
     # Restrict setting visibility levels for non-admin users.
     # The default is to allow all levels.
@@ -295,11 +283,6 @@ production: &base
     ## Piwik analytics.
     # piwik_url: '_your_piwik_url'
     # piwik_site_id: '_your_piwik_site_id'
-
-    ## Text under sign-in page (Markdown enabled)
-    # sign_in_text: |
-    #   ![Company Logo](http://www.companydomain.com/logo.png)
-    #   [Learn more about CompanyName](http://www.companydomain.com/)
 
   rack_attack:
     git_basic_auth:
