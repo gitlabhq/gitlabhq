@@ -65,7 +65,8 @@ class ComposerService < Service
 
   def description
     'This project will be publicly listed as a composer package, '\
-    'but private and internal repositories will still require authentication to use.'
+    'but usage of private and internal repositories will still '\
+    'require authentication.'
   end
 
   def help
@@ -316,11 +317,9 @@ class ComposerService < Service
     project.repository.branches.each do |branch|
       process_commit(branch)
     end
-
   end
 
   def process_commit(ref)
-
     previous_package_removed = false
     begin
       if commit_was_activated? && commit_was_exported?(ref)
@@ -343,7 +342,6 @@ class ComposerService < Service
     end
 
     begin
-
       if package_mode == 'advanced'
         defaults = ActiveSupport::JSON.decode(custom_json)
       else
@@ -362,11 +360,9 @@ class ComposerService < Service
     rescue
       # Skip on error
     end
-
   end
 
   def execute(push_data)
-
     newrev = push_data[:after]
     ref = push_data[:ref]
 
@@ -423,7 +419,6 @@ class ComposerService < Service
   end
 
   def branch_is_exported?(branch)
-
     if branche_filters
       filters = (branch_filters.strip! || branch_filters).
                   gsub(" ", "").split(',')
@@ -436,11 +431,9 @@ class ComposerService < Service
     else
       export_branches == '1' && filters.include?(branch.name)
     end
-
   end
 
   def tag_is_exported?(tag)
-
     if tag_filters
       filters = (tag_filters.strip! || tag_filters).
                   gsub(" ", "").split(',')
@@ -453,7 +446,6 @@ class ComposerService < Service
     else
       export_tags == '1' && filters.include?(tag.name)
     end
-
   end
 
   def commit_was_activated?
@@ -478,7 +470,6 @@ class ComposerService < Service
   end
 
   def branch_was_exported?(branch)
-
     if branch_filters_was
       filters = (branch_filters_was.strip! || branch_filters_was).
                   gsub(" ", "").split(',')
@@ -491,11 +482,9 @@ class ComposerService < Service
     else
       export_branches_was == '1' && filters.include?(branch.name)
     end
-
   end
 
   def tag_was_exported?(tag)
-
     if tag_filters_was
       filters = (tag_filters_was.strip! || tag_filters_was).
                   gsub(" ", "").split(',')
@@ -508,7 +497,6 @@ class ComposerService < Service
     else
       export_tags_was == '1' && filters.include?(tag.name)
     end
-
   end
 
   def push_to_branch?(ref)
