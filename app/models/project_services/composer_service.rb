@@ -324,25 +324,23 @@ class ComposerService < Service
       manager.clear_packages
 
       #process packages for all tags
-      project.repository.tags.each do |tag|
-        process_commit(tag)
+      project.repository.tags.each do |t|
+        process_commit(t)
       end
 
       # process packages for all branches
-      project.repository.branches.each do |branch|
-        process_commit(branch)
+      project.repository.branches.each do |b|
+        process_commit(b)
       end
 
     else # push create / modify
 
       if push_to_branch?(ref)
-        if (branch = project.repository.branches.find { |branch| branch.name == branch_name(ref) && branch.target == newrev })
-          process_commit(branch)
-        end
+        branch = project.repository.branches.detect { |b| b.name == branch_name(ref) && b.target == newrev }
+        process_commit(branch) if branch
       elsif push_to_tag?(ref)
-        if (tag = project.repository.tags.find { |tag| tag.name == tag_name(ref) && tag.target == newrev })
-          process_commit(tag)
-        end
+        tag = project.repository.tags.detect { |t| t.name == tag_name(ref) && t.target == newrev })
+        process_commit(tag) if tag
       end
 
     end
