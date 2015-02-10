@@ -368,7 +368,7 @@ class Project < ActiveRecord::Base
       gitlab_ci composer campfire hipchat pivotaltracker flowdock assembla
       asana emails_on_push gemnasium slack pushover buildbox bamboo teamcity
       jira redmine custom_issue_tracker
-      )
+    )
   end
 
   def gitlab_ci?

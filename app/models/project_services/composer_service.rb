@@ -26,6 +26,9 @@ class ComposerService < Service
   validates_each :custom_json,
     if: :allow_custom_json_validation? do |record, attr, value|
       begin
+
+        name_re = /([A-Za-z0-9&_-]+\/[A-Za-z0-9&_-]+)/
+
         if value.empty?
           record.errors.add(attr, 'must be specified')
         elsif (cjson = ActiveSupport::JSON.decode(value))
@@ -35,14 +38,15 @@ class ComposerService < Service
             record.errors.add(attr, 'must have a name key specified')
           elsif cjson['name'].empty?
             record.errors.add(attr, 'name key must not be empty')
-          elsif cjson['name'] != (/([A-Za-z0-9&_-]+\/[A-Za-z0-9&_-]+)/.match(cjson['name']) || [])[0]
-            record.errors.add(attr, 'name key must be in the format of "namespace/project"')
+          elsif cjson['name'] != (name_re.match(cjson['name']) || [])[0]
+            record.errors.add(attr, 'name key format must be "namespace/project"')
           elsif not cjson['description']
             record.errors.add(attr, 'must have a description key specified')
           elsif cjson['description'].empty?
             record.errors.add(attr, 'description key must not be empty')
           end
         end
+
       rescue
         record.errors.add(attr, 'must be a valid JSON string')
       end
@@ -59,7 +63,8 @@ class ComposerService < Service
   end
 
   def description
-    'This project will be publicly listed as a composer package, but private and internal repositories will still require authentication to use.'
+    'This project will be publicly listed as a composer package, '\
+    'but private and internal repositories will still require authentication to use.'
   end
 
   def help
@@ -322,7 +327,9 @@ class ComposerService < Service
           defaults = { 'type'=>package_type_was }
         end
 
-        package = Composer::Package.new(project, ref, package_mode_was, defaults)
+        package = Composer::Package.
+                    new(project, ref, package_mode_was, defaults)
+
         manager.rm_package(package)
         previous_package_removed = true
 
@@ -339,7 +346,9 @@ class ComposerService < Service
         defaults = { 'type'=>package_type }
       end
 
-      package = Composer::Package.new(project, ref, package_mode, defaults)
+      package = Composer::Package.
+                  new(project, ref, package_mode, defaults)
+
       if activated? && commit_is_exported?(ref)
         manager.add_package(package)
       elsif not previous_package_removed
@@ -360,7 +369,8 @@ class ComposerService < Service
     # sync our changes
     if newrev == Gitlab::Git::BLANK_SHA # push delete
 
-      # recreate exported packages since we dont have access to the original push
+      # recreate exported packages since we dont have access
+      # to the original push
       manager.clear_packages
 
       #process packages for all tags
@@ -375,9 +385,13 @@ class ComposerService < Service
 
     else # push create / modify
       if push_to_branch?(ref)
-        match = project.repository.branches.detect { |b| b.name == branch_name(ref) && b.target == newrev }
+        match = project.repository.branches.detect do |b|
+          b.name == branch_name(ref) && b.target == newrev
+        end
       elsif push_to_tag?(ref)
-        match = project.repository.tags.detect { |t| t.name == tag_name(ref) && t.target == newrev }
+        match = project.repository.tags.detect do |t|
+          t.name == tag_name(ref) && t.target == newrev
+        end
       end
       if match
         process_commit(match)
@@ -405,21 +419,37 @@ class ComposerService < Service
   end
 
   def branch_is_exported?(branch)
-    filters = branch_filters ? (branch_filters.strip! || branch_filters).gsub(" ", "").split(',') : []
+
+    if branche_filters
+      filters = (branch_filters.strip! || branch_filters).
+                  gsub(" ", "").split(',')
+    else
+      filters = []
+    end
+
     if filters.empty?
       export_branches == '1'
     else
       export_branches == '1' && filters.include?(branch.name)
     end
+
   end
 
   def tag_is_exported?(tag)
-    filters = tag_filters ? (tag_filters.strip! || tag_filters).gsub(" ", "").split(',') : []
+
+    if tag_filters
+      filters = (tag_filters.strip! || tag_filters).
+                  gsub(" ", "").split(',')
+    else
+      filters = []
+    end
+
     if filters.empty?
       export_tags == '1'
     else
       export_tags == '1' && filters.include?(tag.name)
     end
+
   end
 
   def commit_was_activated?
@@ -444,21 +474,37 @@ class ComposerService < Service
   end
 
   def branch_was_exported?(branch)
-    filters = branch_filters_was ? (branch_filters_was.strip! || branch_filters_was).gsub(" ", "").split(',') : []
+
+    if branch_filters_was
+      filters = (branch_filters_was.strip! || branch_filters_was).
+                  gsub(" ", "").split(',')
+    else
+      filters = []
+    end
+
     if filters.empty?
       export_branches_was == '1'
     else
       export_branches_was == '1' && filters.include?(branch.name)
     end
+
   end
 
   def tag_was_exported?(tag)
-    filters = tag_filters_was ? (tag_filters_was.strip! || tag_filters_was).gsub(" ", "").split(',') : []
+
+    if tag_filters_was
+      filters = (tag_filters_was.strip! || tag_filters_was).
+                  gsub(" ", "").split(',')
+    else
+      filters = []
+    end
+
     if filters.empty?
       export_tags_was == '1'
     else
       export_tags_was == '1' && filters.include?(tag.name)
     end
+
   end
 
   def push_to_branch?(ref)

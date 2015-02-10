@@ -42,8 +42,12 @@ class DeleteBranchService < BaseService
   end
 
   def create_push_data(project, user, branch)
+    oldrev = branch.target
+    newrev = Gitlab::Git::BLANK_SHA
+    ref = 'refs/heads/' + branch.name
+
     Gitlab::PushDataBuilder.
-      build(project, user, branch.target, Gitlab::Git::BLANK_SHA, 'refs/heads/' + branch.name, [])
+      build(project, user, oldrev, newrev, ref, [])
   end
 
   def error(message, return_code = 400)
