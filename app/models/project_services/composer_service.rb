@@ -31,15 +31,15 @@ class ComposerService < Service
         elsif (cjson = ActiveSupport::JSON.decode(value))
           if cjson.empty?
             record.errors.add(attr, 'must not be empty')
-          elsif not cjson["name"]
+          elsif not cjson['name']
             record.errors.add(attr, 'must have a name key specified')
-          elsif cjson["name"].empty?
+          elsif cjson['name'].empty?
             record.errors.add(attr, 'name key must not be empty')
-          elsif cjson["name"] != (/([A-Za-z0-9&_-]+\/[A-Za-z0-9&_-]+)/.match(cjson["name"]) || [])[0]
+          elsif cjson['name'] != (/([A-Za-z0-9&_-]+\/[A-Za-z0-9&_-]+)/.match(cjson['name']) || [])[0]
             record.errors.add(attr, 'name key must be in the format of "namespace/project"')
-          elsif not cjson["description"]
+          elsif not cjson['description']
             record.errors.add(attr, 'must have a description key specified')
-          elsif cjson["description"].empty?
+          elsif cjson['description'].empty?
             record.errors.add(attr, 'description key must not be empty')
           end
         end
@@ -288,28 +288,25 @@ class ComposerService < Service
     previous_package_removed = false
     begin
       if commit_was_activated? && commit_was_exported?(ref)
-        defaults = package_mode_was == 'advanced' ? ActiveSupport::JSON.decode(custom_json_was) : {"type"=>package_type_was}
+        defaults = package_mode_was == 'advanced' ? ActiveSupport::JSON.decode(custom_json_was) : {'type'=>package_type_was}
         package = Composer::Package.new(project, ref, package_mode_was, defaults)
         manager.rm_package(package)
         previous_package_removed = true
       end
-    rescue Exception => e
+    rescue
       # Skip on error
-      log("remove previous ref exception #{e}")
     end
 
     begin
-      defaults = package_mode == 'advanced' ? ActiveSupport::JSON.decode(custom_json) : {"type"=>package_type}
+      defaults = package_mode == 'advanced' ? ActiveSupport::JSON.decode(custom_json) : {'type'=>package_type}
       package = Composer::Package.new(project, ref, package_mode, defaults)
       if activated? && commit_is_exported?(ref)
         manager.add_package(package)
       elsif not previous_package_removed
         manager.rm_package(package)
       end
-    rescue Exception => e
+    rescue
       # Skip on error
-      action = (activated? && commit_is_exported?(ref)) ? "add" : "remove"
-      log("#{action} ref exception #{e}")
     end
 
   end
@@ -441,19 +438,15 @@ class ComposerService < Service
     elsif push_to_tag?(ref)
       tag_name(ref)
     else
-      raise "invalid ref"
+      raise 'invalid ref'
     end
   end
 
   def branch_name(ref)
-    ref.gsub("refs/heads/", "")
+    ref.gsub('refs/heads/', '')
   end
 
   def tag_name(ref)
-    ref.gsub("refs/tags/", "")
-  end
-
-  def log(message)
-    Gitlab::AppLogger.error("COMPOSER-SERVICE: #{message}")
+    ref.gsub('refs/tags/', '')
   end
 end
