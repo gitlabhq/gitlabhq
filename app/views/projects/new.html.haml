@@ -44,7 +44,7 @@
         .col-sm-2
         .col-sm-10
           - if github_import_enabled?
-            = link_to status_github_import_path do
+            = link_to status_import_github_path do
               %i.fa.fa-github
               Import projects from GitHub
           - else
@@ -52,6 +52,19 @@
               %i.fa.fa-github
               Import projects from GitHub
             = render 'github_import_modal'
+      
+      .project-import.form-group
+        .col-sm-2
+        .col-sm-10
+          - if gitlab_import_enabled?
+            = link_to status_import_gitlab_path do
+              %i.fa.fa-heart
+              Import projects from GitLab.com
+          - else
+            = link_to '#', class: 'how_to_import_link light' do
+              %i.fa.fa-heart
+              Import projects from GitLab.com
+            = render 'gitlab_import_modal'
 
       %hr.prepend-botton-10
 
@@ -79,3 +92,11 @@
       %i.fa.fa-spinner.fa-spin
       Creating project &amp; repository.
     %p Please wait a moment, this page will automatically refresh when ready.
+
+:coffeescript
+  $ ->
+    $('.how_to_import_link').bind 'click', (e) ->
+      e.preventDefault()
+      import_modal = $(this).parent().find(".modal").show()
+    $('.modal-header .close').bind 'click', ->
+      $(".modal").hide()

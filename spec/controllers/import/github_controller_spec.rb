@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GithubImportsController do
+describe Import::GithubController do
   let(:user) { create(:user, github_access_token: 'asd123') }
 
   before do
@@ -10,13 +10,13 @@ describe GithubImportsController do
   describe "GET callback" do
     it "updates access token" do
       token = "asdasd12345"
-      Gitlab::Github::Client.any_instance.stub_chain(:client, :auth_code, :get_token, :token).and_return(token)
+      Gitlab::GithubImport::Client.any_instance.stub(:get_token).and_return(token)
       Gitlab.config.omniauth.providers << OpenStruct.new(app_id: "asd123", app_secret: "asd123", name: "github")
 
       get :callback
       
       user.reload.github_access_token.should == token
-      controller.should redirect_to(status_github_import_url)
+      controller.should redirect_to(status_import_github_url)
     end
   end
 
@@ -27,8 +27,8 @@ describe GithubImportsController do
 
     it "assigns variables" do
       @project = create(:project, import_type: 'github', creator_id: user.id)
-      controller.stub_chain(:octo_client, :repos).and_return([@repo])
-      controller.stub_chain(:octo_client, :orgs).and_return([])
+      controller.stub_chain(:client, :repos).and_return([@repo])
+      controller.stub_chain(:client, :orgs).and_return([])
 
       get :status
 
@@ -38,8 +38,8 @@ describe GithubImportsController do
 
     it "does not show already added project" do
       @project = create(:project, import_type: 'github', creator_id: user.id, import_source: 'asd/vim')
-      controller.stub_chain(:octo_client, :repos).and_return([@repo])
-      controller.stub_chain(:octo_client, :orgs).and_return([])
+      controller.stub_chain(:client, :repos).and_return([@repo])
+      controller.stub_chain(:client, :orgs).and_return([])
 
       get :status
 
@@ -55,9 +55,9 @@ describe GithubImportsController do
 
     it "takes already existing namespace" do
       namespace = create(:namespace, name: "john", owner: user)
-      Gitlab::Github::ProjectCreator.should_receive(:new).with(@repo, namespace, user).
+      Gitlab::GithubImport::ProjectCreator.should_receive(:new).with(@repo, namespace, user).
         and_return(double(execute: true))
-      controller.stub_chain(:octo_client, :repo).and_return(@repo)
+      controller.stub_chain(:client, :repo).and_return(@repo)
 
       post :create, format: :js
     end

@@ -15,7 +15,7 @@
     &.s24 { margin-right: 4px; }
   }
 
-  &.avatar-tile {
+  &.group-avatar, &.project-avatar, &.avatar-tile {
     @include border-radius(0px);
   }
 

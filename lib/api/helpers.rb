@@ -154,6 +154,22 @@ module API
       Gitlab::Access.options_with_owner.values.include? level.to_i
     end
 
+    def issuable_order_by
+      if params["order_by"] == 'updated_at'
+        'updated_at'
+      else
+        'created_at'
+      end
+    end
+
+    def issuable_sort
+      if params["sort"] == 'asc'
+        :asc
+      else
+        :desc
+      end
+    end
+
     # error helpers
 
     def forbidden!(reason = nil)

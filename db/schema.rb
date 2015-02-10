@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150116234545) do
+ActiveRecord::Schema.define(version: 20150209222013) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 20150116234545) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "home_page_url"
+    t.integer  "default_branch_protection", default: 2
   end
 
   create_table "broadcast_messages", force: true do |t|
@@ -86,11 +87,14 @@ ActiveRecord::Schema.define(version: 20150116234545) do
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
 
   create_table "identities", force: true do |t|
-    t.string  "extern_uid"
-    t.string  "provider"
-    t.integer "user_id"
+    t.string   "extern_uid"
+    t.string   "provider"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
+  add_index "identities", ["created_at", "id"], name: "index_identities_on_created_at_and_id", using: :btree
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
 
   create_table "issues", force: true do |t|
@@ -110,6 +114,7 @@ ActiveRecord::Schema.define(version: 20150116234545) do
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
   add_index "issues", ["author_id"], name: "index_issues_on_author_id", using: :btree
+  add_index "issues", ["created_at", "id"], name: "index_issues_on_created_at_and_id", using: :btree
   add_index "issues", ["created_at"], name: "index_issues_on_created_at", using: :btree
   add_index "issues", ["milestone_id"], name: "index_issues_on_milestone_id", using: :btree
   add_index "issues", ["project_id", "iid"], name: "index_issues_on_project_id_and_iid", unique: true, using: :btree
@@ -126,6 +131,7 @@ ActiveRecord::Schema.define(version: 20150116234545) do
     t.string   "fingerprint"
   end
 
+  add_index "keys", ["created_at", "id"], name: "index_keys_on_created_at_and_id", using: :btree
   add_index "keys", ["user_id"], name: "index_keys_on_user_id", using: :btree
 
   create_table "label_links", force: true do |t|
@@ -161,6 +167,7 @@ ActiveRecord::Schema.define(version: 20150116234545) do
   end
 
   add_index "members", ["access_level"], name: "index_members_on_access_level", using: :btree
+  add_index "members", ["created_at", "id"], name: "index_members_on_created_at_and_id", using: :btree
   add_index "members", ["source_id", "source_type"], name: "index_members_on_source_id_and_source_type", using: :btree
   add_index "members", ["type"], name: "index_members_on_type", using: :btree
   add_index "members", ["user_id"], name: "index_members_on_user_id", using: :btree
@@ -197,6 +204,7 @@ ActiveRecord::Schema.define(version: 20150116234545) do
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
   add_index "merge_requests", ["author_id"], name: "index_merge_requests_on_author_id", using: :btree
+  add_index "merge_requests", ["created_at", "id"], name: "index_merge_requests_on_created_at_and_id", using: :btree
   add_index "merge_requests", ["created_at"], name: "index_merge_requests_on_created_at", using: :btree
   add_index "merge_requests", ["milestone_id"], name: "index_merge_requests_on_milestone_id", using: :btree
   add_index "merge_requests", ["source_branch"], name: "index_merge_requests_on_source_branch", using: :btree
@@ -216,6 +224,7 @@ ActiveRecord::Schema.define(version: 20150116234545) do
     t.integer  "iid"
   end
 
+  add_index "milestones", ["created_at", "id"], name: "index_milestones_on_created_at_and_id", using: :btree
   add_index "milestones", ["due_date"], name: "index_milestones_on_due_date", using: :btree
   add_index "milestones", ["project_id", "iid"], name: "index_milestones_on_project_id_and_iid", unique: true, using: :btree
   add_index "milestones", ["project_id"], name: "index_milestones_on_project_id", using: :btree
@@ -231,6 +240,7 @@ ActiveRecord::Schema.define(version: 20150116234545) do
     t.string   "avatar"
   end
 
+  add_index "namespaces", ["created_at", "id"], name: "index_namespaces_on_created_at_and_id", using: :btree
   add_index "namespaces", ["name"], name: "index_namespaces_on_name", using: :btree
   add_index "namespaces", ["owner_id"], name: "index_namespaces_on_owner_id", using: :btree
   add_index "namespaces", ["path"], name: "index_namespaces_on_path", using: :btree
@@ -253,6 +263,7 @@ ActiveRecord::Schema.define(version: 20150116234545) do
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
   add_index "notes", ["commit_id"], name: "index_notes_on_commit_id", using: :btree
+  add_index "notes", ["created_at", "id"], name: "index_notes_on_created_at_and_id", using: :btree
   add_index "notes", ["created_at"], name: "index_notes_on_created_at", using: :btree
   add_index "notes", ["noteable_id", "noteable_type"], name: "index_notes_on_noteable_id_and_noteable_type", using: :btree
   add_index "notes", ["noteable_type"], name: "index_notes_on_noteable_type", using: :btree
@@ -330,6 +341,7 @@ ActiveRecord::Schema.define(version: 20150116234545) do
     t.string   "avatar"
   end
 
+  add_index "projects", ["created_at", "id"], name: "index_projects_on_created_at_and_id", using: :btree
   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree
   add_index "projects", ["last_activity_at"], name: "index_projects_on_last_activity_at", using: :btree
   add_index "projects", ["namespace_id"], name: "index_projects_on_namespace_id", using: :btree
@@ -355,6 +367,7 @@ ActiveRecord::Schema.define(version: 20150116234545) do
     t.text     "properties"
   end
 
+  add_index "services", ["created_at", "id"], name: "index_services_on_created_at_and_id", using: :btree
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
 
   create_table "snippets", force: true do |t|
@@ -371,6 +384,7 @@ ActiveRecord::Schema.define(version: 20150116234545) do
   end
 
   add_index "snippets", ["author_id"], name: "index_snippets_on_author_id", using: :btree
+  add_index "snippets", ["created_at", "id"], name: "index_snippets_on_created_at_and_id", using: :btree
   add_index "snippets", ["created_at"], name: "index_snippets_on_created_at", using: :btree
   add_index "snippets", ["expires_at"], name: "index_snippets_on_expires_at", using: :btree
   add_index "snippets", ["project_id"], name: "index_snippets_on_project_id", using: :btree
@@ -435,11 +449,13 @@ ActiveRecord::Schema.define(version: 20150116234545) do
     t.datetime "last_credential_check_at"
     t.string   "github_access_token"
     t.string   "gitlab_access_token"
+    t.string   "notification_email"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
   add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true, using: :btree
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
+  add_index "users", ["created_at", "id"], name: "index_users_on_created_at_and_id", using: :btree
   add_index "users", ["current_sign_in_at"], name: "index_users_on_current_sign_in_at", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["name"], name: "index_users_on_name", using: :btree
@@ -470,6 +486,7 @@ ActiveRecord::Schema.define(version: 20150116234545) do
     t.boolean  "tag_push_events",       default: false
   end
 
+  add_index "web_hooks", ["created_at", "id"], name: "index_web_hooks_on_created_at_and_id", using: :btree
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
 end

@@ -43,12 +43,14 @@
 #  website_url              :string(255)      default(""), not null
 #  last_credential_check_at :datetime
 #  github_access_token      :string(255)
+#  notification_email       :string(255)
 #
 
 require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class User < ActiveRecord::Base
+  include Sortable
   include Gitlab::ConfigHelper
   include TokenAuthenticatable
   extend Gitlab::ConfigHelper
@@ -114,6 +116,7 @@ class User < ActiveRecord::Base
   #
   validates :name, presence: true
   validates :email, presence: true, email: { strict_mode: true }, uniqueness: true
+  validates :notification_email, presence: true, email: { strict_mode: true }
   validates :bio, length: { maximum: 255 }, allow_blank: true
   validates :projects_limit, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :username,
@@ -127,10 +130,12 @@ class User < ActiveRecord::Base
   validate :namespace_uniq, if: ->(user) { user.username_changed? }
   validate :avatar_type, if: ->(user) { user.avatar_changed? }
   validate :unique_email, if: ->(user) { user.email_changed? }
+  validate :owns_notification_email, if: ->(user) { user.notification_email_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :generate_password, on: :create
   before_validation :sanitize_attrs
+  before_validation :set_notification_email, if: ->(user) { user.email_changed? }
 
   before_save :ensure_authentication_token
   after_save :ensure_namespace_correct
@@ -176,7 +181,6 @@ class User < ActiveRecord::Base
   scope :admins, -> { where(admin:  true) }
   scope :blocked, -> { with_state(:blocked) }
   scope :active, -> { with_state(:active) }
-  scope :alphabetically, -> { order('name ASC') }
   scope :in_team, ->(team){ where(id: team.member_ids) }
   scope :not_in_team, ->(team){ where('users.id NOT IN (:ids)', ids: team.member_ids) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
@@ -199,11 +203,10 @@ class User < ActiveRecord::Base
 
     def sort(method)
       case method.to_s
-      when 'recent_sign_in' then reorder('users.last_sign_in_at DESC')
-      when 'oldest_sign_in' then reorder('users.last_sign_in_at ASC')
-      when 'recently_created' then reorder('users.created_at DESC')
-      when 'late_created' then reorder('users.created_at ASC')
-      else reorder("users.name ASC")
+      when 'recent_sign_in' then reorder(last_sign_in_at: :desc)
+      when 'oldest_sign_in' then reorder(last_sign_in_at: :asc)
+      else
+        order_by(method)
       end
     end
 
@@ -286,11 +289,15 @@ class User < ActiveRecord::Base
     self.errors.add(:email, 'has already been taken') if Email.exists?(email: self.email)
   end
 
+  def owns_notification_email
+    self.errors.add(:notification_email, "is not an email you own") unless self.all_emails.include?(self.notification_email)
+  end
+
   # Groups user has access to
   def authorized_groups
     @authorized_groups ||= begin
                              group_ids = (groups.pluck(:id) + authorized_projects.pluck(:namespace_id))
-                             Group.where(id: group_ids).order('namespaces.name ASC')
+                             Group.where(id: group_ids)
                            end
   end
 
@@ -301,7 +308,7 @@ class User < ActiveRecord::Base
                                project_ids = personal_projects.pluck(:id)
                                project_ids.push(*groups_projects.pluck(:id))
                                project_ids.push(*projects.pluck(:id).uniq)
-                               Project.where(id: project_ids).joins(:namespace).order('namespaces.name ASC')
+                               Project.where(id: project_ids)
                              end
   end
 
@@ -431,6 +438,12 @@ class User < ActiveRecord::Base
     end
   end
 
+  def set_notification_email
+    if self.notification_email.blank? || !self.all_emails.include?(self.notification_email)
+      self.notification_email = self.email 
+    end
+  end
+
   def requires_ldap_check?
     if !Gitlab.config.ldap.enabled
       false
@@ -502,6 +515,10 @@ class User < ActiveRecord::Base
     else
       GravatarService.new.execute(email, size)
     end
+  end
+
+  def all_emails
+    [self.email, *self.emails.map(&:email)]
   end
 
   def hook_attrs

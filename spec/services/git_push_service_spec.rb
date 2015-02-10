@@ -106,7 +106,25 @@ describe GitPushService do
       it "when pushing a branch for the first time" do
         project.should_receive(:execute_hooks)
         project.default_branch.should == "master"
-        project.protected_branches.should_receive(:create).with({ name: "master" })
+        project.protected_branches.should_receive(:create).with({ name: "master", developers_can_push: false })
+        service.execute(project, user, @blankrev, 'newrev', 'refs/heads/master')
+      end
+
+      it "when pushing a branch for the first time with default branch protection disabled" do
+        ApplicationSetting.any_instance.stub(default_branch_protection: 0)
+
+        project.should_receive(:execute_hooks)
+        project.default_branch.should == "master"
+        project.protected_branches.should_not_receive(:create)
+        service.execute(project, user, @blankrev, 'newrev', 'refs/heads/master')
+      end
+
+      it "when pushing a branch for the first time with default branch protection set to 'developers can push'" do
+        ApplicationSetting.any_instance.stub(default_branch_protection: 1)
+
+        project.should_receive(:execute_hooks)
+        project.default_branch.should == "master"
+        project.protected_branches.should_receive(:create).with({ name: "master", developers_can_push: true })
         service.execute(project, user, @blankrev, 'newrev', 'refs/heads/master')
       end
 

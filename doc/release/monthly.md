@@ -66,14 +66,11 @@ Xth: (1 working day before the 22nd)
 
 - [ ] Create CE, EE, CI stable versions (#LINK)
 - [ ] Create Omnibus tags and build packages
+- [ ] Update GitLab.com with the stable version (#LINK)
 
 22nd:
 
 - [ ] Release CE, EE and CI (#LINK)
-
-Xth: (1 working day after the 22nd)
-
-- [ ] Update GitLab.com with the stable version (#LINK)
 
 ```
 
@@ -207,7 +204,7 @@ __3. Tweet to blog__
 Send out a tweet to share the good news with the world.
 List the most important features and link to the blog post.
 
-Proposed tweet "Release of GitLab X.X & CI Y.Y! FEATURE, FEATURE and FEATURE <link-to-blogpost> #gitlab"
+Proposed tweet "Release of GitLab X.X & CI Y.Y! FEATURE, FEATURE and FEATURE &lt;link-to-blog-post&gt; #gitlab"
 
 Consider creating a post on Hacker News.
 

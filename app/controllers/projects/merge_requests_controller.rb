@@ -23,7 +23,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def show
     @note_counts = Note.where(commit_id: @merge_request.commits.map(&:id)).
-        group(:commit_id).count
+      group(:commit_id).count
 
     respond_to do |format|
       format.html

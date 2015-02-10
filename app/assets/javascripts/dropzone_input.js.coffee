@@ -13,6 +13,8 @@ class @DropzoneInput
 
     form_textarea = $(form).find("textarea.markdown-area")
     form_textarea.wrap "<div class=\"div-dropzone\"></div>"
+    form_textarea.bind 'paste', (event) =>
+      handlePaste(event)
 
     form_dropzone = $(form).find('.div-dropzone')
     form_dropzone.parent().addClass "div-dropzone-wrapper"
@@ -48,7 +50,7 @@ class @DropzoneInput
         preview.text "Nothing to preview."
       else
         preview.text "Loading..."
-        $.get($(this).data("url"),
+        $.post($(this).data("url"),
           md_text: mdText
         ).success (previewData) ->
           preview.html previewData
@@ -133,24 +135,17 @@ class @DropzoneInput
     formatLink = (str) ->
       "![" + str.alt + "](" + str.url + ")"
 
-    handlePaste = (e) ->
-      e.preventDefault()
-      my_event = e.originalEvent
+    handlePaste = (event) ->
+      pasteEvent = event.originalEvent
+      if pasteEvent.clipboardData and pasteEvent.clipboardData.items
+        image = isImage(pasteEvent)
+        if image
+          event.preventDefault()
 
-      if my_event.clipboardData and my_event.clipboardData.items
-        processItem(my_event)
-
-    processItem = (e) ->
-      image = isImage(e)
-      if image
-        filename = getFilename(e) or "image.png"
-        text = "{{" + filename + "}}"
-        pasteText(text)
-        uploadFile image.getAsFile(), filename
-
-      else
-        text = e.clipboardData.getData("text/plain")
-        pasteText(text)
+          filename = getFilename(pasteEvent) or "image.png"
+          text = "{{" + filename + "}}"
+          pasteText(text)
+          uploadFile image.getAsFile(), filename
 
     isImage = (data) ->
       i = 0

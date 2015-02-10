@@ -18,6 +18,9 @@ class Profiles::EmailsController < ApplicationController
     @email = current_user.emails.find(params[:id])
     @email.destroy
 
+    current_user.set_notification_email
+    current_user.save if current_user.notification_email_changed?
+
     respond_to do |format|
       format.html { redirect_to profile_emails_url }
       format.js { render nothing: true }

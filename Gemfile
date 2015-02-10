@@ -29,6 +29,7 @@ gem 'omniauth-twitter'
 gem 'omniauth-github'
 gem 'omniauth-shibboleth'
 gem 'omniauth-kerberos'
+gem 'omniauth-gitlab'
 gem 'doorkeeper', '2.1.0'
 gem "rack-oauth2", "~> 1.0.5"
 
@@ -150,6 +151,9 @@ gem "gemnasium-gitlab-service", "~> 0.2"
 
 # Slack integration
 gem "slack-notifier", "~> 1.0.0"
+
+# Asana integration
+gem 'asana', '~> 0.0.6'
 
 # d3
 gem "d3_rails", "~> 3.1.4"

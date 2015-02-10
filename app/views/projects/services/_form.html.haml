@@ -19,7 +19,8 @@
 
   - if @service.help.present?
     .bs-callout
-      = @service.help
+      = preserve do
+        = markdown @service.help
 
   .form-group
     = form.label :active, "Active", class: "control-label"

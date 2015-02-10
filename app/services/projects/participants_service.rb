@@ -1,7 +1,8 @@
 module Projects
   class ParticipantsService < BaseService
-    def initialize(project)
-      @project = project
+    def initialize(project, user)
+      @project  = project
+      @user     = user
     end
 
     def execute(note_type, note_id)
@@ -12,7 +13,7 @@ module Projects
           []
         end
       team_members = sorted(@project.team.members)
-      participants = all_members + team_members + participating
+      participants = all_members + groups + team_members + participating
       participants.uniq
     end
 
@@ -35,6 +36,10 @@ module Projects
 
     def sorted(users)
       users.uniq.to_a.compact.sort_by(&:username).map { |user| { username: user.username, name: user.name } }
+    end
+
+    def groups
+      @user.authorized_groups.sort_by(&:path).map { |group| { username: group.path, name: group.name } }
     end
 
     def all_members

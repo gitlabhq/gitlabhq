@@ -13,7 +13,11 @@ class Settings < Settingslogic
       if gitlab_shell.ssh_port != 22
         "ssh://#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}:#{gitlab_shell.ssh_port}/"
       else
-        "#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}:"
+        if gitlab_shell.ssh_host.include? ':'
+          "[#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}]:"
+        else
+          "#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}:"
+        end
       end
     end
 
@@ -87,6 +91,7 @@ Settings['issues_tracker']  ||= {}
 #
 Settings['gitlab'] ||= Settingslogic.new({})
 Settings.gitlab['default_projects_limit'] ||= 10
+Settings.gitlab['default_branch_protection'] ||= 2
 Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_can_create_group'].nil?
 Settings.gitlab['default_theme'] = Gitlab::Theme::MARS if Settings.gitlab['default_theme'].nil?
 Settings.gitlab['host']       ||= 'localhost'

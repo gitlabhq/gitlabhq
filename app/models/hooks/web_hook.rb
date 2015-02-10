@@ -16,6 +16,7 @@
 #
 
 class WebHook < ActiveRecord::Base
+  include Sortable
   include HTTParty
 
   default_value_for :push_events, true
@@ -48,7 +49,7 @@ class WebHook < ActiveRecord::Base
                    verify: false,
                    basic_auth: auth)
     end
-  rescue SocketError, Errno::ECONNREFUSED, Net::OpenTimeout => e
+  rescue SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED, Net::OpenTimeout => e
     logger.error("WebHook Error => #{e}")
     false
   end

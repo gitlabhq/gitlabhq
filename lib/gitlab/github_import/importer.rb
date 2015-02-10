@@ -1,24 +1,26 @@
 module Gitlab
-  module Github
+  module GithubImport
     class Importer
-      attr_reader :project
+      attr_reader :project, :client
 
       def initialize(project)
         @project = project
+        @client = Client.new(project.creator.github_access_token)
+        @formatter = Gitlab::ImportFormatter.new
       end
 
       def execute
-        client = octo_client(project.creator.github_access_token)
-
         #Issues && Comments
         client.list_issues(project.import_source, state: :all).each do |issue|
           if issue.pull_request.nil?
-            body = "*Created by: #{issue.user.login}*\n\n#{issue.body}"
+
+            body = @formatter.author_line(issue.user.login, issue.body)
 
             if issue.comments > 0
-              body += "\n\n\n**Imported comments:**\n"
+              body += @formatter.comments_header
+
               client.issue_comments(project.import_source, issue.number).each do |c|
-                body += "\n\n*By #{c.user.login} on #{c.created_at}*\n\n#{c.body}"
+                body += @formatter.comment_to_md(c.user.login, c.created_at, c.body)
               end
             end
 
@@ -34,13 +36,9 @@ module Gitlab
 
       private
 
-      def octo_client(access_token)
-        ::Octokit.auto_paginate = true
-        ::Octokit::Client.new(access_token: access_token)
-      end
-
       def gl_user_id(project, github_id)
-        user = User.joins(:identities).find_by("identities.extern_uid = ?", github_id.to_s)
+        user = User.joins(:identities).
+          find_by("identities.extern_uid = ? AND identities.provider = 'github'", github_id.to_s)
         (user && user.id) || project.creator_id
       end
     end

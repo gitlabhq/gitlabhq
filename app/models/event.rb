@@ -15,6 +15,7 @@
 #
 
 class Event < ActiveRecord::Base
+  include Sortable
   default_scope { where.not(author_id: nil) }
 
   CREATED   = 1

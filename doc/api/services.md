@@ -13,7 +13,7 @@ PUT /projects/:id/services/gitlab-ci
 Parameters:
 
 - `token` (required) - CI project token
-- `project_url` (required) - CI project url
+- `project_url` (required) - CI project URL
 
 ### Delete GitLab CI service
 
@@ -23,23 +23,23 @@ Delete GitLab CI service settings for a project.
 DELETE /projects/:id/services/gitlab-ci
 ```
 
-## Hipchat
+## HipChat
 
-### Edit Hipchat service
+### Edit HipChat service
 
-Set Hipchat service for project.
+Set HipChat service for project.
 
 ```
 PUT /projects/:id/services/hipchat
 ```
 Parameters:
 
-- `token` (required) - Hipchat token
-- `room` (required) - Hipchat room name
+- `token` (required) - HipChat token
+- `room` (required) - HipChat room name
 
-### Delete Hipchat service
+### Delete HipChat service
 
-Delete Hipchat service for a project.
+Delete HipChat service for a project.
 
 ```
 DELETE /projects/:id/services/hipchat

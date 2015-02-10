@@ -29,6 +29,8 @@ module Issuable
     scope :only_opened, -> { with_state(:opened) }
     scope :only_reopened, -> { with_state(:reopened) }
     scope :closed, -> { with_state(:closed) }
+    scope :order_milestone_due_desc, -> { joins(:milestone).reorder('milestones.due_date DESC, milestones.id DESC') }
+    scope :order_milestone_due_asc, -> { joins(:milestone).reorder('milestones.due_date ASC, milestones.id ASC') }
 
     delegate :name,
              :email,
@@ -55,13 +57,10 @@ module Issuable
 
     def sort(method)
       case method.to_s
-      when 'newest' then reorder("#{table_name}.created_at DESC")
-      when 'oldest' then reorder("#{table_name}.created_at ASC")
-      when 'recently_updated' then reorder("#{table_name}.updated_at DESC")
-      when 'last_updated' then reorder("#{table_name}.updated_at ASC")
-      when 'milestone_due_soon' then joins(:milestone).reorder("milestones.due_date ASC")
-      when 'milestone_due_later' then joins(:milestone).reorder("milestones.due_date DESC")
-      else reorder("#{table_name}.created_at DESC")
+      when 'milestone_due_asc' then order_milestone_due_asc
+      when 'milestone_due_desc' then order_milestone_due_desc
+      else
+        order_by(method)
       end
     end
   end
