@@ -22,6 +22,7 @@ namespace :gitlab do
       check_gitlab_config_not_outdated
       check_log_writable
       check_tmp_writable
+      check_upload_perms
       check_init_script_exists
       check_init_script_up_to_date
       check_projects_have_namespace
@@ -270,6 +271,29 @@ namespace :gitlab do
         try_fixing_it(
           "sudo chown -R gitlab #{tmp_path}",
           "sudo chmod -R u+rwX #{tmp_path}"
+        )
+        for_more_information(
+          see_installation_guide_section "GitLab"
+        )
+        fix_and_rerun
+      end
+    end
+
+    def check_upload_perms
+      print "Upload directory permissions correct? ... "
+
+      upload_path = Rails.root.join(Gitlab.config.gitlab.user_home,"gitlab-rails","uploads")
+      upload_path_tmp = Rails.root.join(upload_path,"tmp")
+
+      # if tmp upload dir has incorrect permissions, assume others do as well
+      if File.stat(upload_path_tmp).mode == 16877 && File.owned?(upload_path_tmp) # verify drwxr-xr-x permissions
+        puts "yes".green
+      else
+        puts "no".red
+        try_fixing_it(
+          "sudo chown -R #{gitlab_user} #{upload_path}",
+          "sudo find #{upload_path} -type f -exec chmod g+r,o+r {} \\;",
+          "sudo find #{upload_path} -type d -not -path #{upload_path} -exec chmod g+rx,o+rx {} \\;"
         )
         for_more_information(
           see_installation_guide_section "GitLab"
