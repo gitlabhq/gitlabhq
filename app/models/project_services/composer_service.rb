@@ -80,7 +80,10 @@ class ComposerService < Service
 
   def fields
     [
-      { type: 'select', name: 'package_mode', label: 'Package Mode', choices:
+      { type: 'select',
+        name: 'package_mode',
+        label: 'Package Mode',
+        choices:
         [
           ['Built-in: parse composer.json (default)', 'default'],
           ['Project: generate from project attributes', 'project'],
@@ -88,7 +91,11 @@ class ComposerService < Service
         ],
         default_choice: 'default'
       },
-      { type: 'select', name: 'package_type', label: 'Package Type', hint: 'Applicable only on project package mode.', choices:
+      { type: 'select',
+        name: 'package_type',
+        label: 'Package Type',
+        hint: 'Applicable only on project package mode.',
+        choices:
         [
           ['AGL Module', 'agl-module'],
           ['AnnotateCms Component', 'annotatecms-component'],
@@ -246,19 +253,39 @@ class ComposerService < Service
       },
       { type: 'fieldset', legend: 'Branches:', fields:
         [
-          { type: 'checkbox', name: 'export_branches', label: 'Branch Listing' },
-          { type: 'text', name: 'branch_filters', label: 'Branch Filters', placeholder: 'branches you wish to export comma seperated.', hint: 'Separate branches with commas. Leave blank to export all branches.' }
+          { type: 'checkbox',
+            name: 'export_branches',
+            label: 'Branch Listing'
+          },
+          { type: 'text',
+            name: 'branch_filters',
+            label: 'Branch Filters',
+            placeholder: 'branches you wish to export comma seperated.',
+            hint: 'Separate branches with commas. Leave blank to export all branches.'
+          }
         ]
       },
       { type: 'fieldset', legend: 'Tags:', fields:
         [
-          { type: 'checkbox', name: 'export_tags', label: 'Tag Listing' },
-          { type: 'text', name: 'tag_filters', label: 'Tag Filters', placeholder: 'tags you wish to export comma seperated.', hint: 'Separate tags with commas. Leave blank to export all tags.' }
+          { type: 'checkbox',
+            name: 'export_tags',
+            label: 'Tag Listing'
+          },
+          { type: 'text',
+            name: 'tag_filters',
+            label: 'Tag Filters',
+            placeholder: 'tags you wish to export comma seperated.',
+            hint: 'Separate tags with commas. Leave blank to export all tags.'
+          }
         ]
       },
       { type: 'fieldset', legend: 'Advanced:', fields:
         [
-          { type: 'textarea', name: 'custom_json', label: 'Custom JSON', placeholder: 'custom composer.json to use for exporting this package.'},
+          { type: 'textarea',
+            name: 'custom_json',
+            label: 'Custom JSON',
+            placeholder: 'custom composer.json to use for exporting this package.'
+          }
         ]
       }
     ]
