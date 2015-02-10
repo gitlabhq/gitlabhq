@@ -258,14 +258,20 @@ production: &base
       #     args: { access_type: 'offline', approval_prompt: '' } }
       # - { name: 'twitter', app_id: 'YOUR APP ID',
       #     app_secret: 'YOUR APP SECRET'}
-      # - { name: 'github', app_id: 'YOUR APP ID',
+      # - { name: 'gitlab', app_id: 'YOUR APP ID',
       #     app_secret: 'YOUR APP SECRET',
-      #     args: { scope: 'user:email' } }
-
-      # Github Enterprise
-      #- { name: 'github', app_id: 'YOUR APP ID',
-      #    app_secret: 'YOUR APP SECRET',
-      #    url: "https://github.example.com/", args: { scope: 'user:email' } }
+      #     args: { scope: 'api' } }
+      # - { name: 'github', app_id: '01723ee0027dd2b496d9',
+      #     app_secret: '7f4b9298d181375e51cd60e25e9f26603a4dd3cc',
+      #     args: {
+      #       scope: 'user:email',
+      #       client_options: {
+      #         site:          'https://api.github.com/',
+      #         authorize_url: 'https://github.com/login/oauth/authorize',
+      #         token_url:     'https://github.com/login/oauth/access_token'
+      #       }
+      #     }
+      #   }
 
 
 

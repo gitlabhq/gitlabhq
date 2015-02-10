@@ -32,10 +32,37 @@ To enable the GitHub OmniAuth provider you must register your application with G
 1.  Under `providers:` uncomment (or add) lines that look like the following:
 
     ```
-        - { name: 'github', app_id: 'YOUR APP ID',
-          app_secret: 'YOUR APP SECRET',
-          args: { scope: 'user:email' } }
+        - { name: 'github', app_id: '01723ee0027dd2b496d9',
+          app_secret: '7f4b9298d181375e51cd60e25e9f26603a4dd3cc',
+          args: {
+            scope: 'user:email',
+            client_options: {
+              site:          'https://api.github.com/',
+              authorize_url: 'https://github.com/login/oauth/authorize',
+              token_url:     'https://github.com/login/oauth/access_token'
+            }
+          }
+        }
     ```
+
+    
+
+1. If you want to use GitHub Enterprise then your configuration should look like the following:
+
+    ```
+        - { name: 'github', app_id: 'a4eaa26df2ff35879923',
+          app_secret: '2f9236c341cf8b3dc86a93652554fccd4ef84c55',
+          args: {
+            scope: 'user:email',
+            client_options: {
+              site:          'https://github.example.com/api/v3',
+              authorize_url: 'https://github.example.com/login/oauth/authorize',
+              token_url:     'https://github.example.com/login/oauth/access_token'
+            }
+          }
+        }
+    ```
+
 
 1.  Change 'YOUR APP ID' to the client ID from the GitHub application page from step 7.
 
