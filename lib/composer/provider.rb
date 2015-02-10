@@ -1,7 +1,7 @@
 module Composer
   class Provider
 
-    BLANK_PROVIDER = {"packages"=>{}}
+    BLANK_PROVIDER = { "packages"=>{} }
 
     def initialize(project)
       @project = project
@@ -82,11 +82,11 @@ module Composer
     end
 
     def content
-      {'packages' => packages}.to_json
+      { 'packages' => packages }.to_json
     end
 
     def filepath
-       File.join(File.realpath(Rails.root.join('public', 'p')), filename)
+      File.join(File.realpath(Rails.root.join('public', 'p')), filename)
     end
 
   end

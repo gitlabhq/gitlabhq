@@ -364,9 +364,11 @@ class Project < ActiveRecord::Base
   end
 
   def available_services_names
-    %w(gitlab_ci composer campfire hipchat pivotaltracker flowdock assembla
+    %w(
+      gitlab_ci composer campfire hipchat pivotaltracker flowdock assembla
       asana emails_on_push gemnasium slack pushover buildbox bamboo teamcity
-      jira redmine custom_issue_tracker)
+      jira redmine custom_issue_tracker
+      )
   end
 
   def gitlab_ci?

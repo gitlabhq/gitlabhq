@@ -3,7 +3,7 @@ require 'digest'
 module Composer
   class Manager
 
-    BLANK_REPOSITORY = {"packages"=>[],"includes"=>{}}
+    BLANK_REPOSITORY = { "packages"=>[],"includes"=>{} }
 
     def initialize(project)
       @project = project
@@ -61,7 +61,7 @@ module Composer
       end
 
       # update packages.json
-      content = {"packages"=>[],"includes"=>includes}.to_json
+      content = { "packages"=>[],"includes"=>includes }.to_json
       File.open(packages_json_file, "w") { |f| f.write(content) }
 
     end

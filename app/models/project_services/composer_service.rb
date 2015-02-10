@@ -298,15 +298,15 @@ class ComposerService < Service
 
   def process_packages_on_save
 
-      #process packages for all tags
-      project.repository.tags.each do |tag|
-        process_commit(tag)
-      end
+    #process packages for all tags
+    project.repository.tags.each do |tag|
+      process_commit(tag)
+    end
 
-      # process packages for all branches
-      project.repository.branches.each do |branch|
-        process_commit(branch)
-      end
+    # process packages for all branches
+    project.repository.branches.each do |branch|
+      process_commit(branch)
+    end
 
   end
 
@@ -315,23 +315,37 @@ class ComposerService < Service
     previous_package_removed = false
     begin
       if commit_was_activated? && commit_was_exported?(ref)
-        defaults = package_mode_was == 'advanced' ? ActiveSupport::JSON.decode(custom_json_was) : {'type'=>package_type_was}
+
+        if package_mode_was == 'advanced'
+          defaults = ActiveSupport::JSON.decode(custom_json_was)
+        else
+          defaults = { 'type'=>package_type_was }
+        end
+
         package = Composer::Package.new(project, ref, package_mode_was, defaults)
         manager.rm_package(package)
         previous_package_removed = true
+
       end
     rescue
       # Skip on error
     end
 
     begin
-      defaults = package_mode == 'advanced' ? ActiveSupport::JSON.decode(custom_json) : {'type'=>package_type}
+
+      if package_mode == 'advanced'
+        defaults = ActiveSupport::JSON.decode(custom_json)
+      else
+        defaults = { 'type'=>package_type }
+      end
+
       package = Composer::Package.new(project, ref, package_mode, defaults)
       if activated? && commit_is_exported?(ref)
         manager.add_package(package)
       elsif not previous_package_removed
         manager.rm_package(package)
       end
+
     rescue
       # Skip on error
     end
