@@ -268,7 +268,8 @@ class ComposerService < Service
             name: 'branch_filters',
             label: 'Branch Filters',
             placeholder: 'branches you wish to export comma seperated.',
-            hint: 'Separate branches with commas. Leave blank to export all branches.'
+            hint: 'Separate branches with commas. '\
+                  'Leave blank to export all branches.'
           }
         ]
       },
@@ -282,7 +283,8 @@ class ComposerService < Service
             name: 'tag_filters',
             label: 'Tag Filters',
             placeholder: 'tags you wish to export comma seperated.',
-            hint: 'Separate tags with commas. Leave blank to export all tags.'
+            hint: 'Separate tags with commas. '\
+                  'Leave blank to export all tags.'
           }
         ]
       },
@@ -291,7 +293,7 @@ class ComposerService < Service
           { type: 'textarea',
             name: 'custom_json',
             label: 'Custom JSON',
-            placeholder: 'custom composer.json to use for exporting this package.'
+            placeholder: 'custom json to use for exporting this package.'
           }
         ]
       }

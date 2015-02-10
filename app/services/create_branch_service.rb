@@ -34,8 +34,12 @@ class CreateBranchService < BaseService
   end
 
   def create_push_data(project, user, branch)
+    oldrev = Gitlab::Git::BLANK_SHA
+    newrev = branch.target
+    ref = 'refs/heads/' + branch.name
+
     Gitlab::PushDataBuilder.
-      build(project, user, Gitlab::Git::BLANK_SHA, branch.target, 'refs/heads/' + branch.name, [])
+      build(project, user, oldrev, newrev, ref, [])
   end
 
   def success(branch)

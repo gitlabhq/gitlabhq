@@ -48,7 +48,12 @@ module Composer
     def update_repository
 
       # load packages.json
-      File.open(packages_json_file, "w") { |f| f.write(BLANK_REPOSITORY.to_json) } unless File.exist?(packages_json_file)
+      if File.exist?(packages_json_file)
+        File.open(packages_json_file, "w") do |file|
+          file.write(BLANK_REPOSITORY.to_json)
+        end
+      end
+
       includes = File.open(packages_json_file, "r") { |f| ActiveSupport::JSON.decode(f.read)["includes"] rescue {} }
 
       # process provider
