@@ -270,5 +270,9 @@ module API
     class Contributor < Grape::Entity
       expose :name, :email, :commits, :additions, :deletions
     end
+
+    class BroadcastMessage < Grape::Entity
+      expose :message, :starts_at, :ends_at, :color, :font
+    end
   end
 end
