@@ -48,5 +48,4 @@ class DeleteTagService < BaseService
     Gitlab::PushDataBuilder.
       build(project, user, tag.target, Gitlab::Git::BLANK_SHA, 'refs/tags/' + tag.name, [])
   end
-
 end
