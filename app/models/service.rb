@@ -33,10 +33,6 @@ class Service < ActiveRecord::Base
     active
   end
 
-  def activated_was?
-    active_was
-  end
-
   def category
     :common
   end
@@ -98,11 +94,11 @@ class Service < ActiveRecord::Base
         end
 
         def #{arg}_was
-          #{arg}_changed? ? changed_properties['#{arg}'] : __send__(#{arg})
+          #{arg}_changed? ? changed_properties['#{arg}'] : properties['#{arg}']
         end
 
         def #{arg}_changed?
-          changed_properties.present? && changed_properties['#{arg}'] != #{arg}
+          changed_properties.present? && changed_properties['#{arg}'] != properties['#{arg}']
         end
       }
     end
