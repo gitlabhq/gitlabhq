@@ -9,14 +9,6 @@ module Composer
     def initialize(project, ref, mode="default", defaults={})
       @project, @ref, @mode, @defaults = project, ref, mode, defaults
 
-      # begin
-      #   cjson = @project.repository.blob_at(ref.target, "composer.json")
-      #   @properties = ActiveSupport::JSON.decode(cjson.data)
-      #   raise "parse error" unless @raw
-      # rescue
-      #   @properties = @defaults
-      # end
-
       if mode == "default"
 
         cjson = project.repository.blob_at(ref.target, "composer.json")
@@ -29,12 +21,6 @@ module Composer
         if defaults.key?("type")
           @properties["type"] = defaults["type"]
         end
-        # package = {}
-        # package["name"] = project.path_with_namespace.gsub(/\s/, '').downcase
-        # package["description"] = project.description
-        # package["type"] = package_type
-        # package["keywords"] = project.tags.collect { |t| t["name"] }
-        # package["homepage"] = project.web_url
 
       elsif mode == "advanced"
 
