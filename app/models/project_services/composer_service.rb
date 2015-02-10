@@ -313,7 +313,6 @@ class ComposerService < Service
 
   def execute(push_data)
 
-    oldrev = push_data[:before]
     newrev = push_data[:after]
     ref = push_data[:ref]
 
@@ -334,15 +333,14 @@ class ComposerService < Service
       end
 
     else # push create / modify
-
       if push_to_branch?(ref)
-        branch = project.repository.branches.detect { |b| b.name == branch_name(ref) && b.target == newrev }
-        process_commit(branch) if branch
+        match = project.repository.branches.detect { |b| b.name == branch_name(ref) && b.target == newrev }
       elsif push_to_tag?(ref)
-        tag = project.repository.tags.detect { |t| t.name == tag_name(ref) && t.target == newrev })
-        process_commit(tag) if tag
+        match = project.repository.tags.detect { |t| t.name == tag_name(ref) && t.target == newrev }
       end
-
+      if match
+        process_commit(match)
+      end
     end
 
   rescue
