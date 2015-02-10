@@ -656,6 +656,7 @@ DEPENDENCIES
   devise (= 3.2.4)
   devise-async (= 0.9.0)
   diffy (~> 3.0.3)
+  digest-crc (~> 0.4.1)
   doorkeeper (= 2.1.0)
   dropzonejs-rails
   email_spec
