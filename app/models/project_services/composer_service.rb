@@ -16,7 +16,8 @@ require 'digest/crc32'
 
 class ComposerService < Service
 
-  prop_accessor :package_mode, :package_type, :export_branches, :branch_filters, :export_tags, :tag_filters, :custom_json
+  prop_accessor :package_mode, :package_type, :export_branches, :branch_filters,
+                :export_tags, :tag_filters, :custom_json
 
   validates :package_mode, :package_type, presence: true, if: :activated?
   validates :custom_json,
@@ -75,7 +76,8 @@ class ComposerService < Service
       'The package is exported using the project\'s attributes '\
       'The following settings are applied.'
     elsif package_mode == 'advanced'
-      'The package is exported using the custom json specified in the configuration.'
+      'The package is exported using the custom json specified '\
+      'in the configuration.'
     end
   end
 

@@ -35,5 +35,4 @@ class GitTagPushService
       author_id: push_data[:user_id]
     )
   end
-
 end
