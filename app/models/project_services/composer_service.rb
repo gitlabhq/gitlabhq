@@ -323,18 +323,18 @@ class ComposerService < Service
     # sync our changes
     if newrev == Gitlab::Git::BLANK_SHA # push delete
 
-      package_uid = Digest::CRC32.checksum(ref_name(ref) + oldrev)
+      # recreate exported packages since we dont have access to the original push
+      manager.clear_packages
 
-      # if push_to_branch?(ref)
-      #   if (branch = project.repository.branches.find { |branch| branch.name == tag_name(ref) && branch.target == oldrev })
-      #     process_commit(branch)
-      #   end
+      #process packages for all tags
+      project.repository.tags.each do |tag|
+        process_commit(tag)
+      end
 
-      # elsif push_to_tag?(ref)
-      #   if (tag = project.repository.tags.find { |tag| tag.name == tag_name(ref) && tag.target == oldrev })
-      #     process_commit(branch)
-      #   end
-      # end
+      # process packages for all branches
+      project.repository.branches.each do |branch|
+        process_commit(branch)
+      end
 
     else # push create / modify
 

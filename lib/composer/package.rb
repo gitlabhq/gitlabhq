@@ -138,10 +138,6 @@ module Composer
       @ref
     end
 
-    def data
-      @raw
-    end
-
     # based on https://github.com/composer/composer/blob/master/src/Composer/Package/Version/VersionParser.php
     def normalize(ver)
       modifier_regex = '[._-]?(?:(stable|beta|b|RC|alpha|a|patch|pl|p)(?:[.-]?(\d+))?)?([.-]?dev)?'

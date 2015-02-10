@@ -34,6 +34,15 @@ module Composer
 
     end
 
+    def clear_packages
+
+      @provider.clear_packages
+      @provider.save_or_delete
+
+      update_repository
+
+    end
+
     private
 
     def update_repository

@@ -43,6 +43,10 @@ module Composer
 
     end
 
+    def clear_packages
+      @packages = {}
+    end
+
     def has_package?(name, version=nil)
       if version
         packages.key?(name) ? packages[name].key?(version) : false
