@@ -116,6 +116,7 @@ GEM
       devise (~> 3.2)
     diff-lcs (1.2.5)
     diffy (3.0.3)
+    digest-crc (0.4.1)
     docile (1.1.5)
     doorkeeper (2.1.0)
       railties (>= 3.1)
