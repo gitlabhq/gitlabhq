@@ -16,6 +16,15 @@ class DeleteTagService < BaseService
     end
 
     if repository.rm_tag(tag_name)
+
+      # generate push data
+      @push_data = create_push_data(project, current_user, tag)
+
+      # notify composer service
+      if project.composer_service && project.composer_service.active
+        project.composer_service.async_execute(@push_data.dup)
+      end
+
       Event.create_ref_event(project, current_user, tag, 'rm', 'refs/tags')
       success('Branch was removed')
     else
@@ -33,6 +42,11 @@ class DeleteTagService < BaseService
     out = super()
     out[:message] = message
     out
+  end
+
+  def create_push_data(project, user, tag)
+    Gitlab::PushDataBuilder.
+      build(project, user, tag.target, Gitlab::Git::BLANK_SHA, 'refs/tags/' + tag.name, [])
   end
 
 end

@@ -47,7 +47,8 @@ class Projects::ServicesController < Projects::ApplicationController
       :room, :recipients, :project_url, :webhook,
       :user_key, :device, :priority, :sound, :bamboo_url, :username, :password,
       :build_key, :server, :teamcity_url, :build_type,
-      :description, :issues_url, :new_issue_url, :restrict_to_branch
+      :description, :issues_url, :new_issue_url, :restrict_to_branch,
+      :package_mode, :package_type, :export_branches, :branch_filters, :export_tags, :tag_filters, :custom_json
     )
   end
 end

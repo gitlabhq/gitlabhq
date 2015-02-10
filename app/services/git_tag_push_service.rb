@@ -9,6 +9,10 @@ class GitTagPushService
     project.repository.expire_cache
     project.execute_hooks(@push_data.dup, :tag_push_hooks)
 
+    if project.composer_service && project.composer_service.active
+      project.composer_service.async_execute(@push_data.dup)
+    end
+
     if project.gitlab_ci?
       project.gitlab_ci_service.async_execute(@push_data)
     end
@@ -31,4 +35,5 @@ class GitTagPushService
       author_id: push_data[:user_id]
     )
   end
+
 end

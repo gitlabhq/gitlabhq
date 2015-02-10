@@ -25,11 +25,25 @@ class DeleteBranchService < BaseService
     end
 
     if repository.rm_branch(branch_name)
+
+      # generate push data
+      push_data = create_push_data(project, current_user, branch)
+
+      # notify composer service
+      if project.composer_service && project.composer_service.active
+        project.composer_service.async_execute(push_data.dup)
+      end
+
       Event.create_ref_event(project, current_user, branch, 'rm')
       success('Branch was removed')
     else
       return error('Failed to remove branch')
     end
+  end
+
+  def create_push_data(project, user, branch)
+    Gitlab::PushDataBuilder.
+      build(project, user, branch.target, Gitlab::Git::BLANK_SHA, 'refs/heads/' + branch.name, [])
   end
 
   def error(message, return_code = 400)
