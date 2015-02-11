@@ -5,12 +5,12 @@
 #  id         :integer          not null, primary key
 #  type       :string(255)
 #  title      :string(255)
-#  project_id :integer          not null
+#  project_id :integer
 #  created_at :datetime
 #  updated_at :datetime
 #  active     :boolean          default(FALSE), not null
 #  properties :text
-#  tempalate  :boolean          default(FALSE)
+#  template   :boolean          default(FALSE)
 
 # To add new service you should build a class inherited from Service
 # and implement a set of methods
