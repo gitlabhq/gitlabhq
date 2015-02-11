@@ -14,9 +14,13 @@ module Issues
         issue.update_nth_task(params[:task_num].to_i, false)
       end
 
+      old_labels = issue.labels.map{ |label| label }
       if params.present? && issue.update_attributes(params.except(:state_event,
                                                                   :task_num))
         issue.reset_events_cache
+
+        create_labels_note(issue, old_labels, issue.labels, true)
+        create_labels_note(issue, issue.labels, old_labels, false)
 
         if issue.previous_changes.include?('milestone_id')
           create_milestone_note(issue)
