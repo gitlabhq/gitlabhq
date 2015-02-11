@@ -10,7 +10,7 @@
 #  updated_at :datetime
 #  active     :boolean          default(FALSE), not null
 #  properties :text
-#
+#  tempalate  :boolean          default(FALSE)
 
 # To add new service you should build a class inherited from Service
 # and implement a set of methods
