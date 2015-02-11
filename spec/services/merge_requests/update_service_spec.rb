@@ -5,6 +5,7 @@ describe MergeRequests::UpdateService do
   let(:user2) { create(:user) }
   let(:merge_request) { create(:merge_request, :simple) }
   let(:project) { merge_request.project }
+  let(:label) { create(:label) }
 
   before do
     project.team << [user, :master]
@@ -18,7 +19,8 @@ describe MergeRequests::UpdateService do
           title: 'New title',
           description: 'Also please fix',
           assignee_id: user2.id,
-          state_event: 'close'
+          state_event: 'close',
+          label_ids: [label.id]
         }
       end
 
@@ -35,6 +37,8 @@ describe MergeRequests::UpdateService do
       it { @merge_request.title.should == 'New title' }
       it { @merge_request.assignee.should == user2 }
       it { @merge_request.should be_closed }
+      it { @merge_request.labels.count.should == 1 }
+      it { @merge_request.labels.first.title.should == 'Bug' }
 
       it 'should execute hooks with update action' do
         expect(service).to have_received(:execute_hooks).
@@ -50,6 +54,11 @@ describe MergeRequests::UpdateService do
       it 'should create system note about merge_request reassign' do
         note = @merge_request.notes.last
         note.note.should include "Reassigned to \@#{user2.username}"
+      end
+
+      it 'should create system note about merge_request label edit' do
+        note = @merge_request.notes[1]
+        note.note.should include "Added ~#{label.id} label"
       end
     end
   end

@@ -7,7 +7,7 @@ module LabelsHelper
     label_color = label.color || Label::DEFAULT_COLOR
     text_color = text_color_for_bg(label_color)
 
-    content_tag :span, class: 'label color-label', style: "background:#{label_color};color:#{text_color}" do
+    content_tag :span, class: 'label color-label', style: "background-color:#{label_color};color:#{text_color}" do
       label.name
     end
   end

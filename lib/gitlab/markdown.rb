@@ -92,7 +92,7 @@ module Gitlab
       allowed_tags = ActionView::Base.sanitized_allowed_tags
 
       sanitize text.html_safe,
-               attributes: allowed_attributes + %w(id class),
+               attributes: allowed_attributes + %w(id class style),
                tags: allowed_tags + %w(table tr td th)
     end
 
@@ -128,6 +128,7 @@ module Gitlab
       (?<prefix>\W)?                         # Prefix
       (                                      # Reference
          @(?<user>#{NAME_STR})               # User name
+        |~(?<label>\d+)                      # Label ID
         |(?<issue>([A-Z\-]+-)\d+)            # JIRA Issue ID
         |#{PROJ_STR}?\#(?<issue>([a-zA-Z\-]+-)?\d+) # Issue ID
         |#{PROJ_STR}?!(?<merge_request>\d+)  # MR ID
@@ -138,7 +139,7 @@ module Gitlab
       (?<suffix>\W)?                         # Suffix
     }x.freeze
 
-    TYPES = [:user, :issue, :merge_request, :snippet, :commit].freeze
+    TYPES = [:user, :issue, :label, :merge_request, :snippet, :commit].freeze
 
     def parse_references(text, project = @project)
       # parse reference links
@@ -211,6 +212,19 @@ module Gitlab
           end
           
         link_to("@#{identifier}", url, options)
+      end
+    end
+
+    def reference_label(identifier, project = @project, _ = nil)
+      if label = project.labels.find_by(id: identifier)
+        options = html_options.merge(
+          class: "gfm gfm-label #{html_options[:class]}"
+        )
+        link_to(
+          render_colored_label(label),
+          project_issues_path(project, label_name: label.name),
+          options
+        )
       end
     end
 
