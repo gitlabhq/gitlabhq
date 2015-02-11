@@ -22,7 +22,9 @@ This is the official installation guide to set up a production server. To set up
 
 The following steps have been known to work. Please **use caution when you deviate** from this guide. Make sure you don't violate any assumptions GitLab makes about its environment. For example many people run into permission problems because they changed the location of directories or run services as the wrong user.
 
-If you find a bug/error in this guide please **submit a merge request** following the [contributing guide](../../CONTRIBUTING.md).
+If you find a bug/error in this guide please **submit a merge request**
+following the
+[contributing guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md).
 
 ## Overview
 
@@ -457,4 +459,4 @@ You can configure LDAP authentication in `config/gitlab.yml`. Please restart Git
 
 ### Using Custom Omniauth Providers
 
-See the [omniauth integration document](doc/integration/omniauth.md)
+See the [omniauth integration document](../integration/omniauth.md)
