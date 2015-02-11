@@ -28,12 +28,102 @@ describe Gitlab::ClosingIssueExtractor do
       end
 
       it do
+        message = "Closing ##{iid1}"
+        subject.closed_by_message_in_project(message, project).should == [issue]
+      end
+
+      it do
+        message = "closing ##{iid1}"
+        subject.closed_by_message_in_project(message, project).should == [issue]
+      end
+
+      it do
+        message = "Close ##{iid1}"
+        subject.closed_by_message_in_project(message, project).should == [issue]
+      end
+
+      it do
+        message = "close ##{iid1}"
+        subject.closed_by_message_in_project(message, project).should == [issue]
+      end
+
+      it do
+        message = "Awesome commit (Fixes ##{iid1})"
+        subject.closed_by_message_in_project(message, project).should == [issue]
+      end
+
+      it do
         message = "Awesome commit (fixes ##{iid1})"
         subject.closed_by_message_in_project(message, project).should == [issue]
       end
 
       it do
-        message = "Awesome commit (fix ##{iid1})"
+        message = "Fixed ##{iid1}"
+        subject.closed_by_message_in_project(message, project).should == [issue]
+      end
+
+      it do
+        message = "fixed ##{iid1}"
+        subject.closed_by_message_in_project(message, project).should == [issue]
+      end
+
+      it do
+        message = "Fixing ##{iid1}"
+        subject.closed_by_message_in_project(message, project).should == [issue]
+      end
+
+      it do
+        message = "fixing ##{iid1}"
+        subject.closed_by_message_in_project(message, project).should == [issue]
+      end
+
+      it do
+        message = "Fix ##{iid1}"
+        subject.closed_by_message_in_project(message, project).should == [issue]
+      end
+
+      it do
+        message = "fix ##{iid1}"
+        subject.closed_by_message_in_project(message, project).should == [issue]
+      end
+
+      it do
+        message = "Awesome commit (Resolves ##{iid1})"
+        subject.closed_by_message_in_project(message, project).should == [issue]
+      end
+
+      it do
+        message = "Awesome commit (resolves ##{iid1})"
+        subject.closed_by_message_in_project(message, project).should == [issue]
+      end
+
+      it do
+        message = "Resolved ##{iid1}"
+        subject.closed_by_message_in_project(message, project).should == [issue]
+      end
+
+      it do
+        message = "resolved ##{iid1}"
+        subject.closed_by_message_in_project(message, project).should == [issue]
+      end
+
+      it do
+        message = "Resolving ##{iid1}"
+        subject.closed_by_message_in_project(message, project).should == [issue]
+      end
+
+      it do
+        message = "resolving ##{iid1}"
+        subject.closed_by_message_in_project(message, project).should == [issue]
+      end
+
+      it do
+        message = "Resolve ##{iid1}"
+        subject.closed_by_message_in_project(message, project).should == [issue]
+      end
+
+      it do
+        message = "resolve ##{iid1}"
         subject.closed_by_message_in_project(message, project).should == [issue]
       end
     end
