@@ -58,7 +58,8 @@ class @Notes
     $(document).on "visibilitychange", @visibilityChange
 
     @notes_forms = '.js-main-target-form textarea, .js-discussion-note-form textarea'
-    $(document).on('keypress', @notes_forms, (e)->
+    # Chrome doesn't fire keypress or keyup for Command+Enter, so we need keydown.
+    $(document).on('keydown', @notes_forms, (e) ->
       if e.keyCode == 10 || ((e.metaKey || e.ctrlKey) && e.keyCode == 13)
         $(@).parents('form').submit()
     )
