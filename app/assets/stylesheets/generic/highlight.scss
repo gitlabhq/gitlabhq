@@ -59,6 +59,7 @@
   box-shadow: none;
   background: $box_bg;
   padding: 1em;
+  overflow-x: auto;
 
   code {
     font-family: $monospace_font;
