@@ -243,6 +243,22 @@ class User < ActiveRecord::Base
     def build_user(attrs = {})
       User.new(attrs)
     end
+
+    def clean_username(username)
+      username.gsub!(/@.*\z/,             "")
+      username.gsub!(/\.git\z/,           "")
+      username.gsub!(/\A-/,               "")
+      username.gsub!(/[^a-zA-Z0-9_\-\.]/, "")
+
+      counter = 0
+      base = username
+      while by_login(username).present?
+        counter += 1 
+        username = "#{base}#{counter}"
+      end
+
+      username
+    end
   end
 
   #

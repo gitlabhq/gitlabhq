@@ -8,7 +8,7 @@ describe Gitlab::OAuth::User do
   let(:auth_hash) { double(uid: uid, provider: provider, info: double(info_hash)) }
   let(:info_hash) do
     {
-      nickname: 'john',
+      nickname: '-john+gitlab-ETC%.git@gmail.com',
       name: 'John',
       email: 'john@mail.com'
     }
