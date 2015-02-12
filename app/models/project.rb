@@ -355,7 +355,7 @@ class Project < ActiveRecord::Base
   def build_missing_services
     services_templates = Service.where(template: true)
 
-    available_services_names.each do |service_name|
+    Service.available_services_names.each do |service_name|
       service = find_service(services, service_name)
 
       # If service is available but missing in db
@@ -375,11 +375,6 @@ class Project < ActiveRecord::Base
 
   def find_service(list, name)
     list.find { |service| service.to_param == name }
-  end
-
-  def available_services_names
-    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla asana
-       emails_on_push gemnasium slack pushover buildbox bamboo teamcity jira redmine custom_issue_tracker)
   end
 
   def gitlab_ci?

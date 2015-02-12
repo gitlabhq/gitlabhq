@@ -98,6 +98,11 @@ class Service < ActiveRecord::Base
     self.category == :issue_tracker
   end
 
+  def self.available_services_names
+    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla asana
+       emails_on_push gemnasium slack pushover buildbox bamboo teamcity jira redmine custom_issue_tracker)
+  end
+
   def self.create_from_template(project_id, template)
     service = template.dup
     service.template = false
