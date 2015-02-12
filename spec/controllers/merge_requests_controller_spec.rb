@@ -31,7 +31,8 @@ describe Projects::MergeRequestsController do
       end
 
       it "should not escape Html" do
-        allow_any_instance_of(MergeRequest).to receive(:"to_#{format}").and_return('HTML entities &<>" ')
+        allow_any_instance_of(MergeRequest).to receive(:"to_#{format}").
+          and_return('HTML entities &<>" ')
 
         get :show, project_id: project.to_param, id: merge_request.iid, format: format
 

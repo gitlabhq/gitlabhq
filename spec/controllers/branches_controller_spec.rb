@@ -27,25 +27,31 @@ describe Projects::BranchesController do
     context "valid branch name, valid source" do
       let(:branch) { "merge_branch" }
       let(:ref) { "master" }
-      it { is_expected.to redirect_to("/#{project.path_with_namespace}/tree/merge_branch") }
+      it 'redirects' do
+        expect(subject).
+          to redirect_to("/#{project.path_with_namespace}/tree/merge_branch")
+      end
     end
 
     context "invalid branch name, valid ref" do
       let(:branch) { "<script>alert('merge');</script>" }
       let(:ref) { "master" }
-      it { is_expected.to redirect_to("/#{project.path_with_namespace}/tree/alert('merge');") }
+      it 'redirects' do
+        expect(subject).
+          to redirect_to("/#{project.path_with_namespace}/tree/alert('merge');")
+      end
     end
 
     context "valid branch name, invalid ref" do
       let(:branch) { "merge_branch" }
       let(:ref) { "<script>alert('ref');</script>" }
-      it { is_expected.to render_template("new") }
+      it { is_expected.to render_template('new') }
     end
 
     context "invalid branch name, invalid ref" do
       let(:branch) { "<script>alert('merge');</script>" }
       let(:ref) { "<script>alert('ref');</script>" }
-      it { is_expected.to render_template("new") }
+      it { is_expected.to render_template('new') }
     end
   end
 end

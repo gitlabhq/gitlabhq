@@ -31,7 +31,8 @@ describe Projects::CommitController do
       end
 
       it "should not escape Html" do
-        allow_any_instance_of(Commit).to receive(:"to_#{format}").and_return('HTML entities &<>" ')
+        allow_any_instance_of(Commit).to receive(:"to_#{format}")
+          .and_return('HTML entities &<>" ')
 
         get :show, project_id: project.to_param, id: commit.id, format: format
 
