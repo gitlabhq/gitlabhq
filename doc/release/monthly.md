@@ -87,20 +87,13 @@ asked if there is anything missing.
 
 There are three changelogs that need to be updated: CE, EE and CI.
 
-Remove the Note text in the stable branches.
-
 ## Create RC1 (CE, EE, CI)
 
 [Follow this How-to guide](howto_rc1.md) to create RC1.
 
 ## Prepare CHANGELOG for next release
 
-Once the stable branches have been created, update the CHANGELOG in `master` with the upcoming version and add 70 empty
-lines to it. We do this in order to avoid merge conflicts when merging the CHANGELOG.
-
-Make sure that the CHANGELOG im master contains the following disclaimer message:
-
-> Note: The upcoming release contains empty lines to reduce the number of merge conflicts, scroll down to see past releases.
+Once the stable branches have been created, update the CHANGELOG in `master` with the upcoming version.
 
 ## QA
 
