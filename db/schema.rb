@@ -387,6 +387,7 @@ ActiveRecord::Schema.define(version: 20150125163100) do
     t.boolean  "merge_requests_rebase_enabled", default: false
     t.string   "import_type"
     t.string   "import_source"
+    t.boolean  "merge_requests_rebase_default", default: true
   end
 
   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree
