@@ -7,7 +7,7 @@ describe "User Feed", feature: true  do
     context "user atom feed via private token" do
       it "should render user atom feed" do
         visit user_path(user, :atom, private_token: user.private_token)
-        body.should have_selector("feed title")
+        expect(body).to have_selector("feed title")
       end
     end
 

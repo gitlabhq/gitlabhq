@@ -1,20 +1,20 @@
 require 'spec_helper'
 
 describe Gitlab::GitRefValidator do
-  it { Gitlab::GitRefValidator.validate('feature/new').should be_true }
-  it { Gitlab::GitRefValidator.validate('implement_@all').should be_true }
-  it { Gitlab::GitRefValidator.validate('my_new_feature').should be_true }
-  it { Gitlab::GitRefValidator.validate('#1').should be_true }
-  it { Gitlab::GitRefValidator.validate('feature/~new/').should be_false }
-  it { Gitlab::GitRefValidator.validate('feature/^new/').should be_false }
-  it { Gitlab::GitRefValidator.validate('feature/:new/').should be_false }
-  it { Gitlab::GitRefValidator.validate('feature/?new/').should be_false }
-  it { Gitlab::GitRefValidator.validate('feature/*new/').should be_false }
-  it { Gitlab::GitRefValidator.validate('feature/[new/').should be_false }
-  it { Gitlab::GitRefValidator.validate('feature/new/').should be_false }
-  it { Gitlab::GitRefValidator.validate('feature/new.').should be_false }
-  it { Gitlab::GitRefValidator.validate('feature\@{').should be_false }
-  it { Gitlab::GitRefValidator.validate('feature\new').should be_false }
-  it { Gitlab::GitRefValidator.validate('feature//new').should be_false }
-  it { Gitlab::GitRefValidator.validate('feature new').should be_false }
+  it { expect(Gitlab::GitRefValidator.validate('feature/new')).to be_truthy }
+  it { expect(Gitlab::GitRefValidator.validate('implement_@all')).to be_truthy }
+  it { expect(Gitlab::GitRefValidator.validate('my_new_feature')).to be_truthy }
+  it { expect(Gitlab::GitRefValidator.validate('#1')).to be_truthy }
+  it { expect(Gitlab::GitRefValidator.validate('feature/~new/')).to be_falsey }
+  it { expect(Gitlab::GitRefValidator.validate('feature/^new/')).to be_falsey }
+  it { expect(Gitlab::GitRefValidator.validate('feature/:new/')).to be_falsey }
+  it { expect(Gitlab::GitRefValidator.validate('feature/?new/')).to be_falsey }
+  it { expect(Gitlab::GitRefValidator.validate('feature/*new/')).to be_falsey }
+  it { expect(Gitlab::GitRefValidator.validate('feature/[new/')).to be_falsey }
+  it { expect(Gitlab::GitRefValidator.validate('feature/new/')).to be_falsey }
+  it { expect(Gitlab::GitRefValidator.validate('feature/new.')).to be_falsey }
+  it { expect(Gitlab::GitRefValidator.validate('feature\@{')).to be_falsey }
+  it { expect(Gitlab::GitRefValidator.validate('feature\new')).to be_falsey }
+  it { expect(Gitlab::GitRefValidator.validate('feature//new')).to be_falsey }
+  it { expect(Gitlab::GitRefValidator.validate('feature new')).to be_falsey }
 end

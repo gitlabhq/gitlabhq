@@ -17,8 +17,8 @@ describe Projects::UpdateService do
         update_project(@project, @user, @opts)
       end
 
-      it { @created_private.should be_true }
-      it { @project.private?.should be_true }
+      it { expect(@created_private).to be_truthy }
+      it { expect(@project.private?).to be_truthy }
     end
 
     context 'should be internal when updated to internal' do
@@ -29,8 +29,8 @@ describe Projects::UpdateService do
         update_project(@project, @user, @opts)
       end
 
-      it { @created_private.should be_true }
-      it { @project.internal?.should be_true }
+      it { expect(@created_private).to be_truthy }
+      it { expect(@project.internal?).to be_truthy }
     end
 
     context 'should be public when updated to public' do
@@ -41,14 +41,14 @@ describe Projects::UpdateService do
         update_project(@project, @user, @opts)
       end
 
-      it { @created_private.should be_true }
-      it { @project.public?.should be_true }
+      it { expect(@created_private).to be_truthy }
+      it { expect(@project.public?).to be_truthy }
     end
 
     context 'respect configured visibility restrictions setting' do
       before(:each) do
         @restrictions = double("restrictions")
-        @restrictions.stub(:restricted_visibility_levels) { [ "public" ] }
+        allow(@restrictions).to receive(:restricted_visibility_levels) { [ "public" ] }
         Settings.stub_chain(:gitlab).and_return(@restrictions)
       end
 
@@ -60,8 +60,8 @@ describe Projects::UpdateService do
           update_project(@project, @user, @opts)
         end
 
-        it { @created_private.should be_true }
-        it { @project.private?.should be_true }
+        it { expect(@created_private).to be_truthy }
+        it { expect(@project.private?).to be_truthy }
       end
 
       context 'should be internal when updated to internal' do
@@ -72,8 +72,8 @@ describe Projects::UpdateService do
           update_project(@project, @user, @opts)
         end
 
-        it { @created_private.should be_true }
-        it { @project.internal?.should be_true }
+        it { expect(@created_private).to be_truthy }
+        it { expect(@project.internal?).to be_truthy }
       end
 
       context 'should be private when updated to public' do
@@ -84,8 +84,8 @@ describe Projects::UpdateService do
           update_project(@project, @user, @opts)
         end
 
-        it { @created_private.should be_true }
-        it { @project.private?.should be_true }
+        it { expect(@created_private).to be_truthy }
+        it { expect(@project.private?).to be_truthy }
       end
 
       context 'should be public when updated to public by admin' do
@@ -96,8 +96,8 @@ describe Projects::UpdateService do
           update_project(@project, @admin, @opts)
         end
 
-        it { @created_private.should be_true }
-        it { @project.public?.should be_true }
+        it { expect(@created_private).to be_truthy }
+        it { expect(@project.public?).to be_truthy }
       end
     end
   end

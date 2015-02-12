@@ -15,8 +15,8 @@ describe Import::GitlabController do
 
       get :callback
       
-      user.reload.gitlab_access_token.should == token
-      controller.should redirect_to(status_import_gitlab_url)
+      expect(user.reload.gitlab_access_token).to eq(token)
+      expect(controller).to redirect_to(status_import_gitlab_url)
     end
   end
 
@@ -58,7 +58,7 @@ describe Import::GitlabController do
 
     it "takes already existing namespace" do
       namespace = create(:namespace, name: "john", owner: user)
-      Gitlab::GitlabImport::ProjectCreator.should_receive(:new).with(@repo, namespace, user).
+      expect(Gitlab::GitlabImport::ProjectCreator).to receive(:new).with(@repo, namespace, user).
         and_return(double(execute: true))
       controller.stub_chain(:client, :project).and_return(@repo)
 

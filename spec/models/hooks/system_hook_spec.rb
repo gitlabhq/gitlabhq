@@ -26,32 +26,32 @@ describe SystemHook do
 
     it "project_create hook" do
       Projects::CreateService.new(create(:user), name: 'empty').execute
-      WebMock.should have_requested(:post, @system_hook.url).with(body: /project_create/).once
+      expect(WebMock).to have_requested(:post, @system_hook.url).with(body: /project_create/).once
     end
 
     it "project_destroy hook" do
       user = create(:user)
       project = create(:empty_project, namespace: user.namespace)
       Projects::DestroyService.new(project, user, {}).execute
-      WebMock.should have_requested(:post, @system_hook.url).with(body: /project_destroy/).once
+      expect(WebMock).to have_requested(:post, @system_hook.url).with(body: /project_destroy/).once
     end
 
     it "user_create hook" do
       create(:user)
-      WebMock.should have_requested(:post, @system_hook.url).with(body: /user_create/).once
+      expect(WebMock).to have_requested(:post, @system_hook.url).with(body: /user_create/).once
     end
 
     it "user_destroy hook" do
       user = create(:user)
       user.destroy
-      WebMock.should have_requested(:post, @system_hook.url).with(body: /user_destroy/).once
+      expect(WebMock).to have_requested(:post, @system_hook.url).with(body: /user_destroy/).once
     end
 
     it "project_create hook" do
       user = create(:user)
       project = create(:project)
       project.team << [user, :master]
-      WebMock.should have_requested(:post, @system_hook.url).with(body: /user_add_to_team/).once
+      expect(WebMock).to have_requested(:post, @system_hook.url).with(body: /user_add_to_team/).once
     end
 
     it "project_destroy hook" do
@@ -59,12 +59,12 @@ describe SystemHook do
       project = create(:project)
       project.team << [user, :master]
       project.project_members.destroy_all
-      WebMock.should have_requested(:post, @system_hook.url).with(body: /user_remove_from_team/).once
+      expect(WebMock).to have_requested(:post, @system_hook.url).with(body: /user_remove_from_team/).once
     end
 
     it 'group create hook' do
       create(:group)
-      WebMock.should have_requested(:post, @system_hook.url).with(
+      expect(WebMock).to have_requested(:post, @system_hook.url).with(
         body: /group_create/
       ).once
     end
@@ -72,7 +72,7 @@ describe SystemHook do
     it 'group destroy hook' do
       group = create(:group)
       group.destroy
-      WebMock.should have_requested(:post, @system_hook.url).with(
+      expect(WebMock).to have_requested(:post, @system_hook.url).with(
         body: /group_destroy/
       ).once
     end
@@ -81,7 +81,7 @@ describe SystemHook do
       group = create(:group)
       user = create(:user)
       group.add_user(user, Gitlab::Access::MASTER)
-      WebMock.should have_requested(:post, @system_hook.url).with(
+      expect(WebMock).to have_requested(:post, @system_hook.url).with(
         body: /user_add_to_group/
       ).once
     end
@@ -91,7 +91,7 @@ describe SystemHook do
       user = create(:user)
       group.add_user(user, Gitlab::Access::MASTER)
       group.group_members.destroy_all
-      WebMock.should have_requested(:post, @system_hook.url).with(
+      expect(WebMock).to have_requested(:post, @system_hook.url).with(
         body: /user_remove_from_group/
       ).once
     end

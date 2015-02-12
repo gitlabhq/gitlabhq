@@ -13,9 +13,9 @@ describe 'Gitlab::Satellite::MergeAction' do
 
   describe '#commits_between' do
     def verify_commits(commits, first_commit_sha, last_commit_sha)
-      commits.each { |commit| commit.class.should == Gitlab::Git::Commit }
-      commits.first.id.should == first_commit_sha
-      commits.last.id.should == last_commit_sha
+      commits.each { |commit| expect(commit.class).to eq(Gitlab::Git::Commit) }
+      expect(commits.first.id).to eq(first_commit_sha)
+      expect(commits.last.id).to eq(last_commit_sha)
     end
 
     context 'on fork' do
@@ -35,7 +35,7 @@ describe 'Gitlab::Satellite::MergeAction' do
   describe '#format_patch' do
     def verify_content(patch)
       sample_compare.commits.each do |commit|
-        patch.include?(commit).should be_true
+        expect(patch.include?(commit)).to be_truthy
       end
     end
 
@@ -57,11 +57,11 @@ describe 'Gitlab::Satellite::MergeAction' do
   describe '#diffs_between_satellite tested against diff_in_satellite' do
     def is_a_matching_diff(diff, diffs)
       diff_count = diff.scan('diff --git').size
-      diff_count.should >= 1
-      diffs.size.should == diff_count
+      expect(diff_count).to be >= 1
+      expect(diffs.size).to eq(diff_count)
       diffs.each do |a_diff|
-        a_diff.class.should == Gitlab::Git::Diff
-        (diff.include? a_diff.diff).should be_true
+        expect(a_diff.class).to eq(Gitlab::Git::Diff)
+        expect(diff.include? a_diff.diff).to be_truthy
       end
     end
 
@@ -82,23 +82,23 @@ describe 'Gitlab::Satellite::MergeAction' do
 
   describe '#can_be_merged?' do
     context 'on fork' do
-      it { Gitlab::Satellite::MergeAction.new(
+      it { expect(Gitlab::Satellite::MergeAction.new(
         merge_request_fork.author,
-        merge_request_fork).can_be_merged?.should be_true }
+        merge_request_fork).can_be_merged?).to be_truthy }
 
-      it { Gitlab::Satellite::MergeAction.new(
+      it { expect(Gitlab::Satellite::MergeAction.new(
         merge_request_fork_with_conflict.author,
-        merge_request_fork_with_conflict).can_be_merged?.should be_false }
+        merge_request_fork_with_conflict).can_be_merged?).to be_falsey }
     end
 
     context 'between branches' do
-      it { Gitlab::Satellite::MergeAction.new(
+      it { expect(Gitlab::Satellite::MergeAction.new(
         merge_request.author,
-        merge_request).can_be_merged?.should be_true }
+        merge_request).can_be_merged?).to be_truthy }
 
-      it { Gitlab::Satellite::MergeAction.new(
+      it { expect(Gitlab::Satellite::MergeAction.new(
         merge_request_with_conflict.author,
-        merge_request_with_conflict).can_be_merged?.should be_false }
+        merge_request_with_conflict).can_be_merged?).to be_falsey }
     end
   end
 end

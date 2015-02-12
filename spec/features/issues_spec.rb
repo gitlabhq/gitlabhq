@@ -26,7 +26,7 @@ describe "Issues", feature: true do
     end
 
     it "should open new issue popup" do
-      page.should have_content("Issue ##{issue.iid}")
+      expect(page).to have_content("Issue ##{issue.iid}")
     end
 
     describe "fill in" do
@@ -40,9 +40,9 @@ describe "Issues", feature: true do
       it "should update issue fields" do
         click_button "Save changes"
 
-        page.should have_content @user.name
-        page.should have_content "bug 345"
-        page.should have_content project.name
+        expect(page).to have_content @user.name
+        expect(page).to have_content "bug 345"
+        expect(page).to have_content project.name
       end
     end
 
@@ -59,7 +59,7 @@ describe "Issues", feature: true do
     it 'allows user to select unasigned', :js => true do
       visit edit_project_issue_path(project, issue)
 
-      page.should have_content "Assign to #{@user.name}"
+      expect(page).to have_content "Assign to #{@user.name}"
 
       first('#s2id_issue_assignee_id').click
       sleep 2 # wait for ajax stuff to complete
@@ -67,8 +67,8 @@ describe "Issues", feature: true do
 
       click_button "Save changes"
 
-      page.should have_content 'Assignee: none'
-      issue.reload.assignee.should be_nil
+      expect(page).to have_content 'Assignee: none'
+      expect(issue.reload.assignee).to be_nil
     end
   end
 
@@ -93,33 +93,33 @@ describe "Issues", feature: true do
     it "should allow filtering by issues with no specified milestone" do
       visit project_issues_path(project, milestone_id: '0')
 
-      page.should_not have_content 'foobar'
-      page.should have_content 'barbaz'
-      page.should have_content 'gitlab'
+      expect(page).not_to have_content 'foobar'
+      expect(page).to have_content 'barbaz'
+      expect(page).to have_content 'gitlab'
     end
 
     it "should allow filtering by a specified milestone" do
       visit project_issues_path(project, milestone_id: issue.milestone.id)
 
-      page.should have_content 'foobar'
-      page.should_not have_content 'barbaz'
-      page.should_not have_content 'gitlab'
+      expect(page).to have_content 'foobar'
+      expect(page).not_to have_content 'barbaz'
+      expect(page).not_to have_content 'gitlab'
     end
 
     it "should allow filtering by issues with no specified assignee" do
       visit project_issues_path(project, assignee_id: '0')
 
-      page.should have_content 'foobar'
-      page.should_not have_content 'barbaz'
-      page.should_not have_content 'gitlab'
+      expect(page).to have_content 'foobar'
+      expect(page).not_to have_content 'barbaz'
+      expect(page).not_to have_content 'gitlab'
     end
 
     it "should allow filtering by a specified assignee" do
       visit project_issues_path(project, assignee_id: @user.id)
 
-      page.should_not have_content 'foobar'
-      page.should have_content 'barbaz'
-      page.should have_content 'gitlab'
+      expect(page).not_to have_content 'foobar'
+      expect(page).to have_content 'barbaz'
+      expect(page).to have_content 'gitlab'
     end
   end
 
@@ -134,15 +134,15 @@ describe "Issues", feature: true do
     it 'sorts by newest' do
       visit project_issues_path(project, sort: sort_value_recently_created)
 
-      first_issue.should include("foo")
-      last_issue.should include("baz")
+      expect(first_issue).to include("foo")
+      expect(last_issue).to include("baz")
     end
 
     it 'sorts by oldest' do
       visit project_issues_path(project, sort: sort_value_oldest_created)
 
-      first_issue.should include("baz")
-      last_issue.should include("foo")
+      expect(first_issue).to include("baz")
+      expect(last_issue).to include("foo")
     end
 
     it 'sorts by most recently updated' do
@@ -150,7 +150,7 @@ describe "Issues", feature: true do
       baz.save
       visit project_issues_path(project, sort: sort_value_recently_updated)
 
-      first_issue.should include("baz")
+      expect(first_issue).to include("baz")
     end
 
     it 'sorts by least recently updated' do
@@ -158,7 +158,7 @@ describe "Issues", feature: true do
       baz.save
       visit project_issues_path(project, sort: sort_value_oldest_updated)
 
-      first_issue.should include("baz")
+      expect(first_issue).to include("baz")
     end
 
     describe 'sorting by milestone' do
@@ -172,13 +172,13 @@ describe "Issues", feature: true do
       it 'sorts by recently due milestone' do
         visit project_issues_path(project, sort: sort_value_milestone_soon)
 
-        first_issue.should include("foo")
+        expect(first_issue).to include("foo")
       end
 
       it 'sorts by least recently due milestone' do
         visit project_issues_path(project, sort: sort_value_milestone_later)
 
-        first_issue.should include("bar")
+        expect(first_issue).to include("bar")
       end
     end
 
@@ -195,9 +195,9 @@ describe "Issues", feature: true do
       it 'sorts with a filter applied' do
         visit project_issues_path(project, sort: sort_value_oldest_created, assignee_id: user2.id)
 
-        first_issue.should include("bar")
-        last_issue.should include("foo")
-        page.should_not have_content 'baz'
+        expect(first_issue).to include("bar")
+        expect(last_issue).to include("foo")
+        expect(page).not_to have_content 'baz'
       end
     end
   end
@@ -213,7 +213,7 @@ describe "Issues", feature: true do
         find('.edit-issue.inline-update #issue_assignee_id').set project.team.members.first.id
         click_button 'Update Issue'
 
-        page.should have_content "Assignee:"
+        expect(page).to have_content "Assignee:"
         has_select?('issue_assignee_id', :selected => project.team.members.first.name)
       end
     end
@@ -233,7 +233,7 @@ describe "Issues", feature: true do
         login_with guest
 
         visit project_issue_path(project, issue)
-        page.should have_content issue.assignee.name
+        expect(page).to have_content issue.assignee.name
       end
     end
   end
@@ -250,8 +250,8 @@ describe "Issues", feature: true do
         find('.edit-issue.inline-update').select(milestone.title, from: 'issue_milestone_id')
         click_button 'Update Issue'
 
-        page.should have_content "Milestone changed to #{milestone.title}"
-        page.should have_content "Milestone: #{milestone.title}"
+        expect(page).to have_content "Milestone changed to #{milestone.title}"
+        expect(page).to have_content "Milestone: #{milestone.title}"
         has_select?('issue_assignee_id', :selected => milestone.title)
       end
     end
@@ -270,7 +270,7 @@ describe "Issues", feature: true do
         login_with guest
 
         visit project_issue_path(project, issue)
-        page.should have_content milestone.title
+        expect(page).to have_content milestone.title
       end
     end
 
@@ -284,15 +284,15 @@ describe "Issues", feature: true do
 
       it 'allows user to remove assignee', :js => true do
         visit project_issue_path(project, issue)
-        page.should have_content "Assignee: #{user2.name}"
+        expect(page).to have_content "Assignee: #{user2.name}"
 
         first('#s2id_issue_assignee_id').click
         sleep 2 # wait for ajax stuff to complete
         first('.user-result').click
 
-        page.should have_content 'Assignee: none'
+        expect(page).to have_content 'Assignee: none'
         sleep 2 # wait for ajax stuff to complete
-        issue.reload.assignee.should be_nil
+        expect(issue.reload.assignee).to be_nil
       end
     end
   end

@@ -17,8 +17,8 @@ describe 'Comments' do
 
     describe "the note form" do
       it 'should be valid' do
-        should have_css(".js-main-target-form", visible: true, count: 1)
-        find(".js-main-target-form input[type=submit]").value.should == "Add Comment"
+        is_expected.to have_css(".js-main-target-form", visible: true, count: 1)
+        expect(find(".js-main-target-form input[type=submit]").value).to eq("Add Comment")
         within('.js-main-target-form') do
           expect(page).not_to have_link('Cancel')
         end
@@ -50,18 +50,18 @@ describe 'Comments' do
       end
 
       it 'should be added and form reset' do
-        should have_content("This is awsome!")
+        is_expected.to have_content("This is awsome!")
         within('.js-main-target-form') do
           expect(page).to have_no_field('note[note]', with: 'This is awesome!')
           expect(page).to have_css('.js-md-preview', visible: :hidden)
         end
-        within(".js-main-target-form") { should have_css(".js-note-text", visible: true) }
+        within(".js-main-target-form") { is_expected.to have_css(".js-note-text", visible: true) }
       end
     end
 
     describe "when editing a note", js: true do
       it "should contain the hidden edit form" do
-        within("#note_#{note.id}") { should have_css(".note-edit-form", visible: false) }
+        within("#note_#{note.id}") { is_expected.to have_css(".note-edit-form", visible: false) }
       end
 
       describe "editing the note" do
@@ -72,9 +72,9 @@ describe 'Comments' do
 
         it "should show the note edit form and hide the note body" do
           within("#note_#{note.id}") do
-            find(".current-note-edit-form", visible: true).should be_visible
-            find(".note-edit-form", visible: true).should be_visible
-            find(:css, ".note-text", visible: false).should_not be_visible
+            expect(find(".current-note-edit-form", visible: true)).to be_visible
+            expect(find(".note-edit-form", visible: true)).to be_visible
+            expect(find(:css, ".note-text", visible: false)).not_to be_visible
           end
         end
 
@@ -94,8 +94,8 @@ describe 'Comments' do
           end
 
           within("#note_#{note.id}") do
-            should have_css(".note_edited_ago")
-            find(".note_edited_ago").text.should match(/less than a minute ago/)
+            is_expected.to have_css(".note_edited_ago")
+            expect(find(".note_edited_ago").text).to match(/less than a minute ago/)
           end
         end
       end
@@ -108,14 +108,14 @@ describe 'Comments' do
 
         it "shows the delete link" do
           within(".note-attachment") do
-            should have_css(".js-note-attachment-delete")
+            is_expected.to have_css(".js-note-attachment-delete")
           end
         end
 
         it "removes the attachment div and resets the edit form" do
           find(".js-note-attachment-delete").click
-          should_not have_css(".note-attachment")
-          find(".current-note-edit-form", visible: false).should_not be_visible
+          is_expected.not_to have_css(".note-attachment")
+          expect(find(".current-note-edit-form", visible: false)).not_to be_visible
         end
       end
     end
@@ -138,16 +138,16 @@ describe 'Comments' do
       end
 
       describe "the notes holder" do
-        it { should have_css(".js-temp-notes-holder") }
+        it { is_expected.to have_css(".js-temp-notes-holder") }
 
-        it { within(".js-temp-notes-holder") { should have_css(".new_note") } }
+        it { within(".js-temp-notes-holder") { is_expected.to have_css(".new_note") } }
       end
 
       describe "the note form" do
         it "shouldn't add a second form for same row" do
           click_diff_line
 
-          should have_css("tr[id='#{line_code}'] + .js-temp-notes-holder form", count: 1)
+          is_expected.to have_css("tr[id='#{line_code}'] + .js-temp-notes-holder form", count: 1)
         end
 
         it "should be removed when canceled" do
@@ -155,7 +155,7 @@ describe 'Comments' do
             find(".js-close-discussion-note-form").trigger("click")
           end
 
-          should have_no_css(".js-temp-notes-holder")
+          is_expected.to have_no_css(".js-temp-notes-holder")
         end
       end
     end
@@ -166,7 +166,7 @@ describe 'Comments' do
         click_diff_line(line_code_2)
       end
 
-      it { should have_css(".js-temp-notes-holder", count: 2) }
+      it { is_expected.to have_css(".js-temp-notes-holder", count: 2) }
 
       describe "previewing them separately" do
         before do
@@ -191,10 +191,10 @@ describe 'Comments' do
         end
 
         it 'should be added as discussion' do
-          should have_content("Another comment on line 10")
-          should have_css(".notes_holder")
-          should have_css(".notes_holder .note", count: 1)
-          should have_button('Reply')
+          is_expected.to have_content("Another comment on line 10")
+          is_expected.to have_css(".notes_holder")
+          is_expected.to have_css(".notes_holder .note", count: 1)
+          is_expected.to have_button('Reply')
         end
       end
     end

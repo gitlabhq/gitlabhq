@@ -12,19 +12,19 @@ describe ProjectsFinder do
   context 'non authenticated' do
     subject { ProjectsFinder.new.execute(nil, group: group) }
 
-    it { should include(project1) }
-    it { should_not include(project2) }
-    it { should_not include(project3) }
-    it { should_not include(project4) }
+    it { is_expected.to include(project1) }
+    it { is_expected.not_to include(project2) }
+    it { is_expected.not_to include(project3) }
+    it { is_expected.not_to include(project4) }
   end
 
   context 'authenticated' do
     subject { ProjectsFinder.new.execute(user, group: group) }
 
-    it { should include(project1) }
-    it { should include(project2) }
-    it { should_not include(project3) }
-    it { should_not include(project4) }
+    it { is_expected.to include(project1) }
+    it { is_expected.to include(project2) }
+    it { is_expected.not_to include(project3) }
+    it { is_expected.not_to include(project4) }
   end
 
   context 'authenticated, project member' do
@@ -32,10 +32,10 @@ describe ProjectsFinder do
 
     subject { ProjectsFinder.new.execute(user, group: group) }
 
-    it { should include(project1) }
-    it { should include(project2) }
-    it { should include(project3) }
-    it { should_not include(project4) }
+    it { is_expected.to include(project1) }
+    it { is_expected.to include(project2) }
+    it { is_expected.to include(project3) }
+    it { is_expected.not_to include(project4) }
   end
 
   context 'authenticated, group member' do
@@ -43,9 +43,9 @@ describe ProjectsFinder do
 
     subject { ProjectsFinder.new.execute(user, group: group) }
 
-    it { should include(project1) }
-    it { should include(project2) }
-    it { should include(project3) }
-    it { should include(project4) }
+    it { is_expected.to include(project1) }
+    it { is_expected.to include(project2) }
+    it { is_expected.to include(project3) }
+    it { is_expected.to include(project4) }
   end
 end

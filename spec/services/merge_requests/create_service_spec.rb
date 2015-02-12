@@ -18,13 +18,13 @@ describe MergeRequests::CreateService do
 
       before do
         project.team << [user, :master]
-        service.stub(:execute_hooks)
+        allow(service).to receive(:execute_hooks)
 
         @merge_request = service.execute
       end
 
-      it { @merge_request.should be_valid }
-      it { @merge_request.title.should == 'Awesome merge_request' }
+      it { expect(@merge_request).to be_valid }
+      it { expect(@merge_request.title).to eq('Awesome merge_request') }
 
       it 'should execute hooks with default action' do
         expect(service).to have_received(:execute_hooks).with(@merge_request)

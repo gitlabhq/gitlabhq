@@ -16,8 +16,8 @@ require 'spec_helper'
 
 describe AsanaService, models: true do
   describe 'Associations' do
-    it { should belong_to :project }
-    it { should have_one :service_hook }
+    it { is_expected.to belong_to :project }
+    it { is_expected.to have_one :service_hook }
   end
 
   describe 'Validations' do
@@ -26,7 +26,7 @@ describe AsanaService, models: true do
         subject.active = true
       end
 
-      it { should validate_presence_of :api_key }
+      it { is_expected.to validate_presence_of :api_key }
     end
   end
 
@@ -46,13 +46,13 @@ describe AsanaService, models: true do
     end
 
     it 'should call Asana service to created a story' do
-      Asana::Task.should_receive(:find).with('123456').once
+      expect(Asana::Task).to receive(:find).with('123456').once
 
       @asana.check_commit('related to #123456', 'pushed')
     end
 
     it 'should call Asana service to created a story and close a task' do
-      Asana::Task.should_receive(:find).with('456789').twice
+      expect(Asana::Task).to receive(:find).with('456789').twice
 
       @asana.check_commit('fix #456789', 'pushed')
     end
