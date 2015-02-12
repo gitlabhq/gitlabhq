@@ -238,5 +238,10 @@ module API
     def secret_token
       File.read(Rails.root.join('.gitlab_shell_secret'))
     end
+
+    def handle_member_errors(errors)
+      error!(errors[:access_level], 422) if errors[:access_level].any?
+      not_found!(errors)
+    end
   end
 end

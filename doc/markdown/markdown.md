@@ -148,7 +148,7 @@ But let's throw in a <b>tag</b>.
 
 	If you are new to this, don't be :fearful_face:. You can easily join the emoji :family:. All you need to do is to look up on the supported codes.
 
-	Consult the [Emoji Cheat Sheet](https://www.dropbox.com/s/b9xaqb977s6d8w1/cheat_sheet.pdf) for a list of all supported emoji codes. :thumbsup:
+	Consult the [Emoji Cheat Sheet](https://s3.amazonaws.com/emoji-cheatsheet/cheat_sheet.pdf) for a list of all supported emoji codes. :thumbsup:
 
 Sometimes you want to be a :ninja: and add some :glowing_star: to your :speech_balloon:. Well we have a gift for you:
 
@@ -158,7 +158,7 @@ You can use it to point out a :bug: or warn about :speak_no_evil_monkey: patches
 
 If you are new to this, don't be :fearful_face:. You can easily join the emoji :family:. All you need to do is to look up on the supported codes.
 
-Consult the [Emoji Cheat Sheet](https://www.dropbox.com/s/b9xaqb977s6d8w1/cheat_sheet.pdf) for a list of all supported emoji codes. :thumbsup:
+Consult the [Emoji Cheat Sheet](https://s3.amazonaws.com/emoji-cheatsheet/cheat_sheet.pdf) for a list of all supported emoji codes. :thumbsup:
 
 ## Special GitLab References
 

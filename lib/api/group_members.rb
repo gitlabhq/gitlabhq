@@ -40,6 +40,30 @@ module API
         present member.user, with: Entities::GroupMember, group: group
       end
 
+      # Update group member
+      #
+      # Parameters:
+      #   id (required) - The ID of a group
+      #   user_id (required) - The ID of a group member
+      #   access_level (required) - Project access level
+      # Example Request:
+      #   PUT /groups/:id/members/:user_id
+      put ':id/members/:user_id' do
+        group = find_group(params[:id])
+        authorize! :manage_group, group
+        required_attributes! [:access_level]
+
+        team_member = group.group_members.find_by(user_id: params[:user_id])
+        not_found!('User can not be found') if team_member.nil?
+
+        if team_member.update_attributes(access_level: params[:access_level])
+          @member = team_member.user
+          present @member, with: Entities::GroupMember, group: group
+        else
+          handle_member_errors team_member.errors
+        end
+      end
+
       # Remove member.
       #
       # Parameters:
