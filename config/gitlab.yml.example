@@ -258,8 +258,12 @@ production: &base
       #     args: { access_type: 'offline', approval_prompt: '' } }
       # - { name: 'twitter', app_id: 'YOUR APP ID',
       #     app_secret: 'YOUR APP SECRET'}
+      # - { name: 'gitlab', app_id: 'YOUR APP ID',
+      #     app_secret: 'YOUR APP SECRET',
+      #     args: { scope: 'api' } }
       # - { name: 'github', app_id: 'YOUR APP ID',
       #     app_secret: 'YOUR APP SECRET',
+      #     url: "https://github.com/",
       #     args: { scope: 'user:email' } }
 
 

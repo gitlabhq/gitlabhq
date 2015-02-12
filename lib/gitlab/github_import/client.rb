@@ -12,7 +12,7 @@ module Gitlab
 
         if access_token
           ::Octokit.auto_paginate = true
-          @api = ::Octokit::Client.new(access_token: access_token)
+          @api = ::Octokit::Client.new(access_token: access_token, api_endpoint: github_options[:site])
         end
       end
 
@@ -46,11 +46,7 @@ module Gitlab
       end
 
       def github_options
-        {
-          site: 'https://api.github.com',
-          authorize_url: 'https://github.com/login/oauth/authorize',
-          token_url: 'https://github.com/login/oauth/access_token'
-        }
+        config["args"]["client_options"].deep_symbolize_keys
       end
     end
   end
