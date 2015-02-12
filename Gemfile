@@ -250,8 +250,8 @@ group :development, :test do
 
   gem 'jasmine', '2.0.2'
 
-  gem "spring", '1.1.3'
-  gem "spring-commands-rspec", '1.0.1'
+  gem "spring", '1.3.1'
+  gem "spring-commands-rspec", '1.0.4'
   gem "spring-commands-spinach", '1.0.0'
 end
 
