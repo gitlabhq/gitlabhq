@@ -137,6 +137,9 @@ gem 'version_sorter'
 # Cache
 gem "redis-rails"
 
+# Composer integration
+gem 'digest-crc', '~> 0.4.1'
+
 # Campfire integration
 gem 'tinder', '~> 1.9.2'
 

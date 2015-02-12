@@ -1,0 +1,39 @@
+- name = field[:name]
+- label = field[:label]
+- value = @service.send(name) unless field[:type] == 'password'
+- type = field[:type]
+- placeholder = field[:placeholder]
+- choices = field[:choices]
+- default_choice = field[:default_choice]
+- hint = field[:hint]
+
+.form-group
+  = form.label name, label, class: "control-label"
+  .col-sm-10
+    - if type == 'text'
+      = form.text_field name, class: "form-control", placeholder: placeholder
+      - if hint
+        %p.hint= hint
+    - elsif type == 'textarea'
+      = form.text_area name, rows: 5, class: "form-control", placeholder: placeholder
+      - if hint
+        %p.hint= hint
+    - elsif type == 'checkbox'
+      = form.check_box name
+    - elsif type == 'select'
+      = form.select name, options_for_select(choices, value ? value : default_choice), {}, { class: "form-control" }
+      - if hint
+        %p.hint= hint
+    - elsif type == 'password'
+      = form.password_field name, class: 'form-control'
+    - elsif type == 'radio'
+      - choices.each do |choice|
+        .radio
+          = form.radio_button name, choice[:value], checked: choice[:value] == (value ? value : default_choice)
+          = label "service_#{name}", choice[:value] do
+            - if choice[:title]
+              .option-title
+                = choice[:title]
+            - if choice[:description]
+              .option-descr
+                = choice[:description]

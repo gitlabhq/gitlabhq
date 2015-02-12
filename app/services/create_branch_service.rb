@@ -17,11 +17,29 @@ class CreateBranchService < BaseService
     new_branch = repository.find_branch(branch_name)
 
     if new_branch
+
+      # generate push data
+      push_data = create_push_data(project, current_user, new_branch)
+
+      # notify composer service
+      if project.composer_service && project.composer_service.active
+        project.composer_service.async_execute(push_data.dup)
+      end
+
       Event.create_ref_event(project, current_user, new_branch, 'add')
       return success(new_branch)
     else
       return error('Invalid reference name')
     end
+  end
+
+  def create_push_data(project, user, branch)
+    oldrev = Gitlab::Git::BLANK_SHA
+    newrev = branch.target
+    ref = 'refs/heads/' + branch.name
+
+    Gitlab::PushDataBuilder.
+      build(project, user, oldrev, newrev, ref, [])
   end
 
   def success(branch)

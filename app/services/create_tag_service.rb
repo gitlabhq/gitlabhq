@@ -21,8 +21,16 @@ class CreateTagService < BaseService
     new_tag = repository.find_tag(tag_name)
 
     if new_tag
+
+      # generate push data
+      push_data = create_push_data(project, current_user, new_tag)
+
+      # notify composer service
+      if project.composer_service && project.composer_service.active
+        project.composer_service.async_execute(push_data.dup)
+      end
+
       if project.gitlab_ci?
-        push_data = create_push_data(project, current_user, new_tag)
         project.gitlab_ci_service.async_execute(push_data)
       end
 
