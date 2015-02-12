@@ -13,7 +13,7 @@ module API
 
         @users = User.all
         @users = @users.active if params[:active].present?
-        @users = @users.where('provider != ? OR provider IS NULL', 'ldap') if skip_ldap
+        @users = @users.non_ldap if skip_ldap
         @users = @users.search(params[:search]) if params[:search].present?
         @users = paginate @users
 

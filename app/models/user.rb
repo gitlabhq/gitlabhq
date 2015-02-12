@@ -246,6 +246,11 @@ class User < ActiveRecord::Base
     def build_user(attrs = {})
       User.new(attrs)
     end
+
+    def non_ldap
+      joins('LEFT JOIN identities ON identities.user_id = users.id').
+      where('identities.provider IS NULL OR identities.provider NOT LIKE ?', 'ldap%')
+    end
   end
 
   #

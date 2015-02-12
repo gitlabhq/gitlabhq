@@ -108,6 +108,19 @@ describe User do
       end
     end
   end
+  
+  describe "non_ldap" do
+    it "retuns non-ldap user" do
+      User.delete_all
+      create :user
+      ldap_user = create :omniauth_user, provider: "ldapmain"
+      create :omniauth_user, provider: "gitlub"
+
+      users = User.non_ldap
+      users.count.should == 2
+      users.detect{ |user| user.username == ldap_user.username }.should be_nil
+    end
+  end
 
   describe "Respond to" do
     it { should respond_to(:is_admin?) }
