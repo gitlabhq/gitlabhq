@@ -26,8 +26,8 @@ class Admin::ServicesController < Admin::ApplicationController
   def services_templates
     templates = []
 
-    Service.available_services_names.each do |service|
-      service_template = service.concat("_service").camelize.constantize
+    Service.available_services_names.each do |service_name|
+      service_template = service_name.concat("_service").camelize.constantize
       templates << service_template.where(template: true).first_or_create
     end
 
