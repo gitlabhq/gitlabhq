@@ -5,7 +5,7 @@ describe IssuesHelper do
   let(:issue) { create :issue, project: project }
   let(:ext_project) { create :redmine_project }
 
-  describe :title_for_issue do
+  describe "title_for_issue" do
     it "should return issue title if used internal tracker" do
       @project = project
       title_for_issue(issue.iid).should eq issue.title
@@ -23,7 +23,7 @@ describe IssuesHelper do
     end
   end
 
-  describe :url_for_project_issues do
+  describe "url_for_project_issues" do
     let(:project_url) { ext_project.external_issue_tracker.project_url }
     let(:ext_expected) do
       project_url.gsub(':project_id', ext_project.id.to_s)
@@ -60,7 +60,7 @@ describe IssuesHelper do
     end
   end
 
-  describe :url_for_issue do
+  describe "url_for_issue" do
     let(:issues_url) { ext_project.external_issue_tracker.issues_url}
     let(:ext_expected) do
       issues_url.gsub(':id', issue.iid.to_s)
