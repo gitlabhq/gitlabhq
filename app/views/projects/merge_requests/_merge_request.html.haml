@@ -17,6 +17,8 @@
     %span.light= "##{merge_request.iid}"
     - if merge_request.assignee
       assigned to #{link_to_member(merge_request.source_project, merge_request.assignee)}
+    - else
+      Work In Progress
     - if merge_request.votes_count > 0
       = render 'votes/votes_inline', votable: merge_request
     - if merge_request.notes.any?
