@@ -77,12 +77,14 @@ class IssueTrackerService < Service
   end
 
   def set_project_url
-    id = self.project.issues_tracker_id
+    if self.project
+      id = self.project.issues_tracker_id
 
-    if id
-      issues_tracker['project_url'].gsub(":issues_tracker_id", id)
-    else
-      issues_tracker['project_url']
+      if id
+        issues_tracker['project_url'].gsub(":issues_tracker_id", id)
+      end
     end
+
+    issues_tracker['project_url']
   end
 end

@@ -25,12 +25,16 @@ class Service < ActiveRecord::Base
   belongs_to :project
   has_one :service_hook
 
-  validates :project_id, presence: true
+  validates :project_id, presence: true, unless: Proc.new { |service| service.template? }
 
   scope :visible, -> { where.not(type: 'GitlabIssueTrackerService') }
 
   def activated?
     active
+  end
+
+  def template?
+    template
   end
 
   def category
@@ -94,7 +98,10 @@ class Service < ActiveRecord::Base
     self.category == :issue_tracker
   end
 
-  def self.issue_tracker_service_list
-    Service.select(&:issue_tracker?).map{ |s| s.to_param }
+  def self.create_from_template(project_id, template)
+    service = template.dup
+    service.template = false
+    service.project_id = project_id
+    service if service.save
   end
 end

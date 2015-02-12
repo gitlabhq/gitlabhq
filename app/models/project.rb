@@ -353,13 +353,28 @@ class Project < ActiveRecord::Base
   end
 
   def build_missing_services
+    services_templates = Service.where(template: true)
+
     available_services_names.each do |service_name|
-      service = services.find { |service| service.to_param == service_name }
+      service = find_service(services, service_name)
 
       # If service is available but missing in db
-      # we should create an instance. Ex `create_gitlab_ci_service`
-      service = self.send :"create_#{service_name}_service" if service.nil?
+      if service.nil?
+        # We should check if template for the service exists
+        template = find_service(services_templates, service_name)
+
+        if template.nil?
+          # If no template, we should create an instance. Ex `create_gitlab_ci_service`
+          service = self.send :"create_#{service_name}_service"
+        else
+          Service.create_from_template(self.id, template)
+        end
+      end
     end
+  end
+
+  def find_service(list, name)
+    list.find { |service| service.to_param == name }
   end
 
   def available_services_names
