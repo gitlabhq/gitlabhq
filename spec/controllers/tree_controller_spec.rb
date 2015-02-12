@@ -50,7 +50,11 @@ describe Projects::TreeController do
 
     context 'redirect to blob' do
       let(:id) { 'master/README.md' }
-      it { is_expected.to redirect_to("/#{project.path_with_namespace}/blob/master/README.md") }
+      it 'redirects' do
+        redirect_url = "/#{project.path_with_namespace}/blob/master/README.md"
+        expect(subject).
+          to redirect_to(redirect_url)
+      end
     end
   end
 end

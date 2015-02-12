@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe GitlabMarkdownHelper do
   include ApplicationHelper
@@ -42,7 +42,8 @@ describe GitlabMarkdownHelper do
     end
 
     it "should not touch HTML entities" do
-      allow(@project.issues).to receive(:where).with(id: '39').and_return([issue])
+      allow(@project.issues).to receive(:where).
+        with(id: '39').and_return([issue])
       actual = 'We&#39;ll accept good pull requests.'
       expect(gfm(actual)).to eq("We'll accept good pull requests.")
     end
@@ -156,7 +157,8 @@ describe GitlabMarkdownHelper do
         expect(gfm(actual.gsub(reference, "(#{reference})"))).to match(expected)
 
         # Append some text to the end of the reference
-        expect(gfm(actual.gsub(reference, "#{reference}, right?"))).to match(expected)
+        expect(gfm(actual.gsub(reference, "#{reference}, right?"))).
+          to match(expected)
       end
 
       it "should keep whitespace intact" do
@@ -216,9 +218,8 @@ describe GitlabMarkdownHelper do
         )
 
         # Append some text to the end of the reference
-        expect(gfm(actual.gsub(full_reference, "#{full_reference}, right?"))).to(
-          match(expected)
-        )
+        expect(gfm(actual.gsub(full_reference, "#{full_reference}, right?"))).
+          to(match(expected))
       end
 
       it 'should keep whitespace intact' do
@@ -315,7 +316,8 @@ describe GitlabMarkdownHelper do
         expect(gfm(actual.gsub(reference, "(#{reference})"))).to match(expected)
 
         # Append some text to the end of the reference
-        expect(gfm(actual.gsub(reference, "#{reference}, right?"))).to match(expected)
+        expect(gfm(actual.gsub(reference, "#{reference}, right?"))).
+          to match(expected)
       end
 
       it "should keep whitespace intact" do
@@ -471,7 +473,8 @@ describe GitlabMarkdownHelper do
       expect(groups[0]).to match(/This should finally fix $/)
 
       # First issue link
-      expect(groups[1]).to match(/href="#{project_issue_url(project, issues[0])}"/)
+      expect(groups[1]).
+        to match(/href="#{project_issue_url(project, issues[0])}"/)
       expect(groups[1]).to match(/##{issues[0].iid}$/)
 
       # Internal commit link
@@ -479,7 +482,8 @@ describe GitlabMarkdownHelper do
       expect(groups[2]).to match(/ and /)
 
       # Second issue link
-      expect(groups[3]).to match(/href="#{project_issue_url(project, issues[1])}"/)
+      expect(groups[3]).
+        to match(/href="#{project_issue_url(project, issues[1])}"/)
       expect(groups[3]).to match(/##{issues[1].iid}$/)
 
       # Trailing commit link
@@ -494,7 +498,8 @@ describe GitlabMarkdownHelper do
 
     it "escapes HTML passed in as the body" do
       actual = "This is a <h1>test</h1> - see ##{issues[0].iid}"
-      expect(link_to_gfm(actual, commit_path)).to match('&lt;h1&gt;test&lt;/h1&gt;')
+      expect(link_to_gfm(actual, commit_path)).
+        to match('&lt;h1&gt;test&lt;/h1&gt;')
     end
   end
 
@@ -508,16 +513,20 @@ describe GitlabMarkdownHelper do
     it "should handle references in headers" do
       actual = "\n# Working around ##{issue.iid}\n## Apply !#{merge_request.iid}"
 
-      expect(markdown(actual, {no_header_anchors:true})).to match(%r{<h1[^<]*>Working around <a.+>##{issue.iid}</a></h1>})
-      expect(markdown(actual, {no_header_anchors:true})).to match(%r{<h2[^<]*>Apply <a.+>!#{merge_request.iid}</a></h2>})
+      expect(markdown(actual, no_header_anchors: true)).
+        to match(%r{<h1[^<]*>Working around <a.+>##{issue.iid}</a></h1>})
+      expect(markdown(actual, no_header_anchors: true)).
+        to match(%r{<h2[^<]*>Apply <a.+>!#{merge_request.iid}</a></h2>})
     end
 
     it "should add ids and links to headers" do
       # Test every rule except nested tags.
       text = '..Ab_c-d. e..'
       id = 'ab_c-d-e'
-      expect(markdown("# #{text}")).to match(%r{<h1 id="#{id}">#{text}<a href="[^"]*##{id}"></a></h1>})
-      expect(markdown("# #{text}", {no_header_anchors:true})).to eq("<h1>#{text}</h1>")
+      expect(markdown("# #{text}")).
+        to match(%r{<h1 id="#{id}">#{text}<a href="[^"]*##{id}"></a></h1>})
+      expect(markdown("# #{text}", {no_header_anchors:true})).
+      to eq("<h1>#{text}</h1>")
 
       id = 'link-text'
       expect(markdown("# [link text](url) ![img alt](url)")).to match(
@@ -530,13 +539,16 @@ describe GitlabMarkdownHelper do
 
       actual = "\n* dark: ##{issue.iid}\n* light by @#{member.user.username}"
 
-      expect(markdown(actual)).to match(%r{<li>dark: <a.+>##{issue.iid}</a></li>})
-      expect(markdown(actual)).to match(%r{<li>light by <a.+>@#{member.user.username}</a></li>})
+      expect(markdown(actual)).
+        to match(%r{<li>dark: <a.+>##{issue.iid}</a></li>})
+      expect(markdown(actual)).
+        to match(%r{<li>light by <a.+>@#{member.user.username}</a></li>})
     end
 
     it "should not link the apostrophe to issue 39" do
       project.team << [user, :master]
-      allow(project.issues).to receive(:where).with(iid: '39').and_return([issue])
+      allow(project.issues).
+        to receive(:where).with(iid: '39').and_return([issue])
 
       actual   = "Yes, it is @#{member.user.username}'s task."
       expected = /Yes, it is <a.+>@#{member.user.username}<\/a>'s task/
@@ -545,7 +557,8 @@ describe GitlabMarkdownHelper do
 
     it "should not link the apostrophe to issue 39 in code blocks" do
       project.team << [user, :master]
-      allow(project.issues).to receive(:where).with(iid: '39').and_return([issue])
+      allow(project.issues).
+        to receive(:where).with(iid: '39').and_return([issue])
 
       actual   = "Yes, `it is @#{member.user.username}'s task.`"
       expected = /Yes, <code>it is @gfm\'s task.<\/code>/
@@ -555,7 +568,8 @@ describe GitlabMarkdownHelper do
     it "should handle references in <em>" do
       actual = "Apply _!#{merge_request.iid}_ ASAP"
 
-      expect(markdown(actual)).to match(%r{Apply <em><a.+>!#{merge_request.iid}</a></em>})
+      expect(markdown(actual)).
+        to match(%r{Apply <em><a.+>!#{merge_request.iid}</a></em>})
     end
 
     it "should handle tables" do
@@ -572,8 +586,10 @@ describe GitlabMarkdownHelper do
 
       target_html = "<pre class=\"code highlight white plaintext\"><code>some code from $40\nhere too\n</code></pre>\n"
 
-      expect(helper.markdown("\n    some code from $#{snippet.id}\n    here too\n")).to eq(target_html)
-      expect(helper.markdown("\n```\nsome code from $#{snippet.id}\nhere too\n```\n")).to eq(target_html)
+      expect(helper.markdown("\n    some code from $#{snippet.id}\n    here too\n")).
+        to eq(target_html)
+      expect(helper.markdown("\n```\nsome code from $#{snippet.id}\nhere too\n```\n")).
+        to eq(target_html)
     end
 
     it "should leave inline code untouched" do

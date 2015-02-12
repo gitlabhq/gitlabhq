@@ -46,7 +46,8 @@ describe ApplicationHelper do
       group = create(:group)
       group.avatar = File.open(avatar_file_path)
       group.save!
-      expect(group_icon(group.path).to_s).to match("/uploads/group/avatar/#{ group.id }/gitlab_logo.png")
+      expect(group_icon(group.path).to_s).
+        to match("/uploads/group/avatar/#{ group.id }/gitlab_logo.png")
     end
 
     it 'should give default avatar_icon when no avatar is present' do
@@ -86,7 +87,8 @@ describe ApplicationHelper do
       user = create(:user)
       user.avatar = File.open(avatar_file_path)
       user.save!
-      expect(avatar_icon(user.email).to_s).to match("/uploads/user/avatar/#{ user.id }/gitlab_logo.png")
+      expect(avatar_icon(user.email).to_s).
+        to match("/uploads/user/avatar/#{ user.id }/gitlab_logo.png")
     end
 
     it 'should return an url for the avatar with relative url' do
@@ -96,7 +98,8 @@ describe ApplicationHelper do
       user = create(:user)
       user.avatar = File.open(avatar_file_path)
       user.save!
-      expect(avatar_icon(user.email).to_s).to match("/gitlab/uploads/user/avatar/#{ user.id }/gitlab_logo.png")
+      expect(avatar_icon(user.email).to_s).
+        to match("/gitlab/uploads/user/avatar/#{ user.id }/gitlab_logo.png")
     end
 
     it 'should call gravatar_icon when no avatar is present' do
@@ -120,7 +123,8 @@ describe ApplicationHelper do
 
     it 'should return default gravatar url' do
       Gitlab.config.gitlab.stub(https: false)
-      expect(gravatar_icon(user_email)).to match('http://www.gravatar.com/avatar/b58c6f14d292556214bd64909bcdb118')
+      url = 'http://www.gravatar.com/avatar/b58c6f14d292556214bd64909bcdb118'
+      expect(gravatar_icon(user_email)).to match(url)
     end
 
     it 'should use SSL when appropriate' do
@@ -130,8 +134,11 @@ describe ApplicationHelper do
 
     it 'should return custom gravatar path when gravatar_url is set' do
       allow(self).to receive(:request).and_return(double(:ssl? => false))
-      allow(Gitlab.config.gravatar).to receive(:plain_url).and_return('http://example.local/?s=%{size}&hash=%{hash}')
-      expect(gravatar_icon(user_email, 20)).to eq('http://example.local/?s=20&hash=b58c6f14d292556214bd64909bcdb118')
+      allow(Gitlab.config.gravatar).
+        to receive(:plain_url).
+        and_return('http://example.local/?s=%{size}&hash=%{hash}')
+      url = 'http://example.local/?s=20&hash=b58c6f14d292556214bd64909bcdb118'
+      expect(gravatar_icon(user_email, 20)).to eq(url)
     end
 
     it 'should accept a custom size' do
@@ -146,7 +153,8 @@ describe ApplicationHelper do
 
     it 'should be case insensitive' do
       allow(self).to receive(:request).and_return(double(:ssl? => false))
-      expect(gravatar_icon(user_email)).to eq(gravatar_icon(user_email.upcase + ' '))
+      expect(gravatar_icon(user_email)).
+        to eq(gravatar_icon(user_email.upcase + ' '))
     end
   end
 
@@ -170,7 +178,7 @@ describe ApplicationHelper do
 
     it 'includes a list of tag names' do
       expect(options[1][0]).to eq('Tags')
-      expect(options[1][1]).to include('v1.0.0','v1.1.0')
+      expect(options[1][1]).to include('v1.0.0', 'v1.1.0')
     end
 
     it 'includes a specific commit ref if defined' do
@@ -183,9 +191,11 @@ describe ApplicationHelper do
 
     it 'sorts tags in a natural order' do
       # Stub repository.tag_names to make sure we get some valid testing data
-      expect(@project.repository).to receive(:tag_names).and_return(['v1.0.9', 'v1.0.10', 'v2.0', 'v3.1.4.2', 'v1.0.9a'])
+      expect(@project.repository).to receive(:tag_names).
+        and_return(['v1.0.9', 'v1.0.10', 'v2.0', 'v3.1.4.2', 'v1.0.9a'])
 
-      expect(options[1][1]).to eq(['v3.1.4.2', 'v2.0', 'v1.0.10', 'v1.0.9a', 'v1.0.9'])
+      expect(options[1][1]).
+        to eq(['v3.1.4.2', 'v2.0', 'v1.0.10', 'v1.0.9a', 'v1.0.9'])
     end
   end
 

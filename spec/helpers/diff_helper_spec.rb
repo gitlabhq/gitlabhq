@@ -10,7 +10,7 @@ describe DiffHelper do
 
   describe 'diff_hard_limit_enabled?' do
     it 'should return true if param is provided' do
-      allow(controller).to receive(:params) { { :force_show_diff => true } }
+      allow(controller).to receive(:params) { { force_show_diff: true } }
       expect(diff_hard_limit_enabled?).to be_truthy
     end
 
@@ -21,7 +21,7 @@ describe DiffHelper do
 
   describe 'allowed_diff_size' do
     it 'should return hard limit for a diff if force diff is true' do
-      allow(controller).to receive(:params) { { :force_show_diff => true } }
+      allow(controller).to receive(:params) { { force_show_diff: true } }
       expect(allowed_diff_size).to eq(1000)
     end
 
@@ -32,13 +32,15 @@ describe DiffHelper do
 
   describe 'parallel_diff' do
     it 'should return an array of arrays containing the parsed diff' do
-      expect(parallel_diff(diff_file, 0)).to match_array(parallel_diff_result_array)
+      expect(parallel_diff(diff_file, 0)).
+        to match_array(parallel_diff_result_array)
     end
   end
 
   describe 'generate_line_code' do
     it 'should generate correct line code' do
-      expect(generate_line_code(diff_file.file_path, diff_file.diff_lines.first)).to eq('2f6fcd96b88b36ce98c38da085c795a27d92a3dd_6_6')
+      expect(generate_line_code(diff_file.file_path, diff_file.diff_lines.first)).
+        to eq('2f6fcd96b88b36ce98c38da085c795a27d92a3dd_6_6')
     end
   end
 
@@ -55,12 +57,13 @@ describe DiffHelper do
   describe 'diff_line_content' do
 
     it 'should return non breaking space when line is empty' do
-      expect(diff_line_content(nil)).to eq(" &nbsp;")
+      expect(diff_line_content(nil)).to eq(' &nbsp;')
     end
 
     it 'should return the line itself' do
-      expect(diff_line_content(diff_file.diff_lines.first.text)).to eq("@@ -6,12 +6,18 @@ module Popen")
-      expect(diff_line_content(diff_file.diff_lines.first.type)).to eq("match")
+      expect(diff_line_content(diff_file.diff_lines.first.text)).
+        to eq('@@ -6,12 +6,18 @@ module Popen')
+      expect(diff_line_content(diff_file.diff_lines.first.type)).to eq('match')
       expect(diff_line_content(diff_file.diff_lines.first.new_pos)).to eq(6)
     end
   end

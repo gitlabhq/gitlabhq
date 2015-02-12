@@ -7,7 +7,7 @@ describe "Dashboard Feed", feature: true  do
     context "projects atom feed via private token" do
       it "should render projects atom feed" do
         visit dashboard_path(:atom, private_token: user.private_token)
-        expect(body).to have_selector("feed title")
+        expect(body).to have_selector('feed title')
       end
     end
 
@@ -28,7 +28,8 @@ describe "Dashboard Feed", feature: true  do
       end
 
       it "should have issue comment event" do
-        expect(body).to have_content("#{user.name} commented on issue ##{issue.iid}")
+        expect(body).
+          to have_content("#{user.name} commented on issue ##{issue.iid}")
       end
     end
   end

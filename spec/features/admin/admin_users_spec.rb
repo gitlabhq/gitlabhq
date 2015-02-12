@@ -33,15 +33,17 @@ describe "Admin::Users", feature: true  do
     it "should apply defaults to user" do
       click_button "Create user"
       user = User.find_by(username: 'bang')
-      expect(user.projects_limit).to eq(Gitlab.config.gitlab.default_projects_limit)
-      expect(user.can_create_group).to eq(Gitlab.config.gitlab.default_can_create_group)
+      expect(user.projects_limit).
+        to eq(Gitlab.config.gitlab.default_projects_limit)
+      expect(user.can_create_group).
+        to eq(Gitlab.config.gitlab.default_can_create_group)
     end
 
     it "should create user with valid data" do
       click_button "Create user"
       user = User.find_by(username: 'bang')
-      expect(user.name).to eq("Big Bang")
-      expect(user.email).to eq("bigbang@mail.com")
+      expect(user.name).to eq('Big Bang')
+      expect(user.email).to eq('bigbang@mail.com')
     end
 
     it "should call send mail" do
@@ -54,7 +56,7 @@ describe "Admin::Users", feature: true  do
       click_button "Create user"
       user = User.find_by(username: 'bang')
       email = ActionMailer::Base.deliveries.last
-      expect(email.subject).to have_content("Account was created")
+      expect(email.subject).to have_content('Account was created')
       expect(email.text_part.body).to have_content(user.email)
       expect(email.text_part.body).to have_content('password')
     end
@@ -80,8 +82,8 @@ describe "Admin::Users", feature: true  do
     end
 
     it "should have user edit page" do
-      expect(page).to have_content("Name")
-      expect(page).to have_content("Password")
+      expect(page).to have_content('Name')
+      expect(page).to have_content('Password')
     end
 
     describe "Update user" do
@@ -93,13 +95,13 @@ describe "Admin::Users", feature: true  do
       end
 
       it "should show page with  new data" do
-        expect(page).to have_content("bigbang@mail.com")
-        expect(page).to have_content("Big Bang")
+        expect(page).to have_content('bigbang@mail.com')
+        expect(page).to have_content('Big Bang')
       end
 
       it "should change user entry" do
         @simple_user.reload
-        expect(@simple_user.name).to eq("Big Bang")
+        expect(@simple_user.name).to eq('Big Bang')
         expect(@simple_user.is_admin?).to be_truthy
       end
     end

@@ -12,9 +12,9 @@ describe Import::GithubController do
       token = "asdasd12345"
       allow_any_instance_of(Gitlab::GithubImport::Client).
         to receive(:get_token).and_return(token)
-      Gitlab.config.omniauth.providers << OpenStruct.new(app_id: "asd123",
-                                                         app_secret: "asd123",
-                                                         name: "github")
+      Gitlab.config.omniauth.providers << OpenStruct.new(app_id: 'asd123',
+                                                         app_secret: 'asd123',
+                                                         name: 'github')
 
       get :callback
 

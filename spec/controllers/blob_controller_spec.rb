@@ -45,7 +45,7 @@ describe Projects::BlobController do
 
     context 'redirect to tree' do
       let(:id) { 'markdown/doc' }
-      it "redirects" do
+      it 'redirects' do
         expect(subject).
           to redirect_to("/#{project.path_with_namespace}/tree/markdown/doc")
       end
