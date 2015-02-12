@@ -119,57 +119,33 @@ describe API::API, api: true  do
 
   describe 'POST /projects' do
     context 'maximum number of projects reached' do
-      before do
-        (1..user2.projects_limit).each do |project|
-          post api('/projects', user2), name: "foo#{project}"
-        end
-      end
-
-      it 'should not create new project' do
+      it 'should not create new project and respond with 403' do
+        User.any_instance.stub(:projects_limit_left).and_return(0)
         expect {
           post api('/projects', user2), name: 'foo'
         }.to change {Project.count}.by(0)
+        response.status.should == 403
       end
     end
 
-    it 'should create new project without path' do
-      expect { post api('/projects', user), name: 'foo' }.to change {Project.count}.by(1)
-    end
-
-    it 'should not create new project without name' do
-      expect { post api('/projects', user) }.to_not change {Project.count}
-    end
-
-    it 'should return a 400 error if name not given' do
-      post api('/projects', user)
-      response.status.should == 400
+    it 'should create new project without path and return 201' do
+      expect { post api('/projects', user), name: 'foo' }.
+        to change { Project.count }.by(1)
+      response.status.should == 201
     end
 
     it 'should create last project before reaching project limit' do
-      (1..user2.projects_limit-1).each { |p| post api('/projects', user2), name: "foo#{p}" }
+      User.any_instance.stub(:projects_limit_left).and_return(1)
       post api('/projects', user2), name: 'foo'
       response.status.should == 201
     end
 
-    it 'should respond with 201 on success' do
-      post api('/projects', user), name: 'foo'
-      response.status.should == 201
-    end
-
-    it 'should respond with 400 if name is not given' do
-      post api('/projects', user)
+    it 'should not create new project without name and return 400' do
+      expect { post api('/projects', user) }.to_not change { Project.count }
       response.status.should == 400
     end
 
-    it 'should return a 403 error if project limit reached' do
-      (1..user.projects_limit).each do |p|
-        post api('/projects', user), name: "foo#{p}"
-      end
-      post api('/projects', user), name: 'bar'
-      response.status.should == 403
-    end
-
-    it 'should assign attributes to project' do
+    it "should assign attributes to project" do
       project = attributes_for(:project, {
         path: 'camelCasePath',
         description: Faker::Lorem.sentence,
@@ -232,21 +208,15 @@ describe API::API, api: true  do
     before { project }
     before { admin }
 
-    it 'should create new project without path' do
+    it 'should create new project without path and return 201' do
       expect { post api("/projects/user/#{user.id}", admin), name: 'foo' }.to change {Project.count}.by(1)
-    end
-
-    it 'should not create new project without name' do
-      expect { post api("/projects/user/#{user.id}", admin) }.to_not change {Project.count}
-    end
-
-    it 'should respond with 201 on success' do
-      post api("/projects/user/#{user.id}", admin), name: 'foo'
       response.status.should == 201
     end
 
-    it 'should respond with 400 on failure' do
-      post api("/projects/user/#{user.id}", admin)
+    it 'should respond with 400 on failure and not project' do
+      expect { post api("/projects/user/#{user.id}", admin) }.
+        to_not change { Project.count }
+
       response.status.should == 400
       json_response['message']['name'].should == [
         'can\'t be blank',
@@ -350,26 +320,28 @@ describe API::API, api: true  do
 
     describe 'permissions' do
       context 'personal project' do
-        before do
+        it 'Sets project access and returns 200' do
           project.team << [user, :master]
           get api("/projects/#{project.id}", user)
-        end
 
-        it { response.status.should == 200 }
-        it { json_response['permissions']['project_access']['access_level'].should == Gitlab::Access::MASTER }
-        it { json_response['permissions']['group_access'].should be_nil }
+          expect(response.status).to eq(200)
+          expect(json_response['permissions']['project_access']['access_level']).
+            to eq(Gitlab::Access::MASTER)
+          expect(json_response['permissions']['group_access']).to be_nil
+        end
       end
 
       context 'group project' do
-        before do
+        it 'should set the owner and return 200' do
           project2 = create(:project, group: create(:group))
           project2.group.add_owner(user)
           get api("/projects/#{project2.id}", user)
-        end
 
-        it { response.status.should == 200 }
-        it { json_response['permissions']['project_access'].should be_nil }
-        it { json_response['permissions']['group_access']['access_level'].should == Gitlab::Access::OWNER }
+          expect(response.status).to eq(200)
+          expect(json_response['permissions']['project_access']).to be_nil
+          expect(json_response['permissions']['group_access']['access_level']).
+            to eq(Gitlab::Access::OWNER)
+        end
       end
     end
   end
@@ -432,22 +404,9 @@ describe API::API, api: true  do
       json_response['title'].should == 'api test'
     end
 
-    it 'should return a 400 error if title is not given' do
-      post api("/projects/#{project.id}/snippets", user),
-        file_name: 'sample.rb', code: 'test'
-      response.status.should == 400
-    end
-
-    it 'should return a 400 error if file_name not given' do
-      post api("/projects/#{project.id}/snippets", user),
-        title: 'api test', code: 'test'
-      response.status.should == 400
-    end
-
-    it 'should return a 400 error if code not given' do
-      post api("/projects/#{project.id}/snippets", user),
-        title: 'api test', file_name: 'sample.rb'
-      response.status.should == 400
+    it 'should return a 400 error if invalid snippet is given' do
+      post api("/projects/#{project.id}/snippets", user)
+      expect(status).to eq(400)
     end
   end
 
