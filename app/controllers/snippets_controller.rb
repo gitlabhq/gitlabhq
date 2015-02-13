@@ -106,6 +106,7 @@ class SnippetsController < ApplicationController
 
   def set_title
     @title = 'Snippets'
+    @title_url = snippets_path
   end
 
   def snippet_params
