@@ -10,10 +10,11 @@
       %ul
         - @user.errors.full_messages.each do |msg|
           %li= msg
-
-  .form-group
-    = f.label :current_password, class: 'control-label'
-    .col-sm-10= f.password_field :current_password, required: true, class: 'form-control'
+  
+  - unless @user.password_automatically_set?
+    .form-group
+      = f.label :current_password, class: 'control-label'
+      .col-sm-10= f.password_field :current_password, required: true, class: 'form-control'
   .form-group
     = f.label :password, class: 'control-label'
     .col-sm-10= f.password_field :password, required: true, class: 'form-control'

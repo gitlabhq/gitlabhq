@@ -40,6 +40,7 @@
 #  confirmation_sent_at     :datetime
 #  unconfirmed_email        :string(255)
 #  hide_no_ssh_key          :boolean          default(FALSE)
+#  hide_no_password         :boolean          default(FALSE)
 #  website_url              :string(255)      default(""), not null
 #  last_credential_check_at :datetime
 #  github_access_token      :string(255)
@@ -60,6 +61,7 @@ class User < ActiveRecord::Base
   default_value_for :can_create_group, gitlab_config.default_can_create_group
   default_value_for :can_create_team, false
   default_value_for :hide_no_ssh_key, false
+  default_value_for :hide_no_password, false
   default_value_for :projects_limit, current_application_settings.default_projects_limit
   default_value_for :theme_id, gitlab_config.default_theme
 
