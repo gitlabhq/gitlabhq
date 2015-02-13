@@ -11,8 +11,8 @@ describe API::API, api: true  do
     it do
       get api("/internal/check"), secret_token: secret_token
 
-      response.status.should == 200
-      json_response['api_version'].should == API::API.version
+      expect(response.status).to eq(200)
+      expect(json_response['api_version']).to eq(API::API.version)
     end
   end
 
@@ -23,8 +23,8 @@ describe API::API, api: true  do
       it do
         get api("/internal/broadcast_message"), secret_token: secret_token
 
-        response.status.should == 200
-        json_response["message"].should == broadcast_message.message
+        expect(response.status).to eq(200)
+        expect(json_response["message"]).to eq(broadcast_message.message)
       end
     end
 
@@ -32,7 +32,7 @@ describe API::API, api: true  do
       it do
         get api("/internal/broadcast_message"), secret_token: secret_token
 
-        response.status.should == 404
+        expect(response.status).to eq(404)
       end
     end
   end
@@ -41,9 +41,9 @@ describe API::API, api: true  do
     it do
       get(api("/internal/discover"), key_id: key.id, secret_token: secret_token)
 
-      response.status.should == 200
+      expect(response.status).to eq(200)
 
-      json_response['name'].should == user.name
+      expect(json_response['name']).to eq(user.name)
     end
   end
 
@@ -57,8 +57,8 @@ describe API::API, api: true  do
         it do
           pull(key, project)
 
-          response.status.should == 200
-          json_response["status"].should be_true
+          expect(response.status).to eq(200)
+          expect(json_response["status"]).to be_truthy
         end
       end
 
@@ -66,8 +66,8 @@ describe API::API, api: true  do
         it do
           push(key, project)
 
-          response.status.should == 200
-          json_response["status"].should be_true
+          expect(response.status).to eq(200)
+          expect(json_response["status"]).to be_truthy
         end
       end
     end
@@ -81,8 +81,8 @@ describe API::API, api: true  do
         it do
           pull(key, project)
 
-          response.status.should == 200
-          json_response["status"].should be_false
+          expect(response.status).to eq(200)
+          expect(json_response["status"]).to be_falsey
         end
       end
 
@@ -90,8 +90,8 @@ describe API::API, api: true  do
         it do
           push(key, project)
 
-          response.status.should == 200
-          json_response["status"].should be_false
+          expect(response.status).to eq(200)
+          expect(json_response["status"]).to be_falsey
         end
       end
     end
@@ -107,8 +107,8 @@ describe API::API, api: true  do
         it do
           pull(key, personal_project)
 
-          response.status.should == 200
-          json_response["status"].should be_false
+          expect(response.status).to eq(200)
+          expect(json_response["status"]).to be_falsey
         end
       end
 
@@ -116,8 +116,8 @@ describe API::API, api: true  do
         it do
           push(key, personal_project)
 
-          response.status.should == 200
-          json_response["status"].should be_false
+          expect(response.status).to eq(200)
+          expect(json_response["status"]).to be_falsey
         end
       end
     end
@@ -134,8 +134,8 @@ describe API::API, api: true  do
         it do
           pull(key, project)
 
-          response.status.should == 200
-          json_response["status"].should be_true
+          expect(response.status).to eq(200)
+          expect(json_response["status"]).to be_truthy
         end
       end
 
@@ -143,8 +143,8 @@ describe API::API, api: true  do
         it do
           push(key, project)
 
-          response.status.should == 200
-          json_response["status"].should be_false
+          expect(response.status).to eq(200)
+          expect(json_response["status"]).to be_falsey
         end
       end
     end
@@ -160,8 +160,8 @@ describe API::API, api: true  do
         it do
           archive(key, project)
 
-          response.status.should == 200
-          json_response["status"].should be_true
+          expect(response.status).to eq(200)
+          expect(json_response["status"]).to be_truthy
         end
       end
 
@@ -169,8 +169,8 @@ describe API::API, api: true  do
         it do
           archive(key, project)
 
-          response.status.should == 200
-          json_response["status"].should be_false
+          expect(response.status).to eq(200)
+          expect(json_response["status"]).to be_falsey
         end
       end
     end
@@ -179,8 +179,8 @@ describe API::API, api: true  do
       it do
         pull(key, OpenStruct.new(path_with_namespace: 'gitlab/notexists'))
 
-        response.status.should == 200
-        json_response["status"].should be_false
+        expect(response.status).to eq(200)
+        expect(json_response["status"]).to be_falsey
       end
     end
 
@@ -188,8 +188,8 @@ describe API::API, api: true  do
       it do
         pull(OpenStruct.new(id: 0), project)
 
-        response.status.should == 200
-        json_response["status"].should be_false
+        expect(response.status).to eq(200)
+        expect(json_response["status"]).to be_falsey
       end
     end
   end

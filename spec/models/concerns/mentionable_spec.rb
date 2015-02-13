@@ -8,7 +8,7 @@ describe Issue, "Mentionable" do
 
     subject { issue.mentioned_users }
 
-    it { should include(user) }
-    it { should_not include(user2) }
+    it { is_expected.to include(user) }
+    it { is_expected.not_to include(user2) }
   end
 end

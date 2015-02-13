@@ -19,6 +19,6 @@ require "spec_helper"
 
 describe ServiceHook do
   describe "Associations" do
-    it { should belong_to :service }
+    it { is_expected.to belong_to :service }
   end
 end

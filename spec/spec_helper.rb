@@ -37,6 +37,8 @@ RSpec.configure do |config|
   config.include Devise::TestHelpers, type: :controller
 
   config.include TestEnv
+  config.infer_spec_type_from_file_location!
+  config.raise_errors_for_deprecations!
 
   config.before(:suite) do
     TestEnv.init

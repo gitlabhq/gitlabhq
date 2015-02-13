@@ -222,7 +222,7 @@ group :development, :test do
   gem 'rubocop', '0.28.0', require: false
   # gem 'rails-dev-tweaks'
   gem 'spinach-rails'
-  gem "rspec-rails"
+  gem "rspec-rails", '2.99'
   gem "capybara", '~> 2.2.1'
   gem "pry-rails"
   gem "awesome_print"

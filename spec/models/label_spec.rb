@@ -14,30 +14,30 @@ require 'spec_helper'
 
 describe Label do
   let(:label) { create(:label) }
-  it { label.should be_valid }
+  it { expect(label).to be_valid }
 
-  it { should belong_to(:project) }
+  it { is_expected.to belong_to(:project) }
 
   describe 'Validation' do
     it 'should validate color code' do
-      build(:label, color: 'G-ITLAB').should_not be_valid
-      build(:label, color: 'AABBCC').should_not be_valid
-      build(:label, color: '#AABBCCEE').should_not be_valid
-      build(:label, color: '#GGHHII').should_not be_valid
-      build(:label, color: '#').should_not be_valid
-      build(:label, color: '').should_not be_valid
+      expect(build(:label, color: 'G-ITLAB')).not_to be_valid
+      expect(build(:label, color: 'AABBCC')).not_to be_valid
+      expect(build(:label, color: '#AABBCCEE')).not_to be_valid
+      expect(build(:label, color: '#GGHHII')).not_to be_valid
+      expect(build(:label, color: '#')).not_to be_valid
+      expect(build(:label, color: '')).not_to be_valid
 
-      build(:label, color: '#AABBCC').should be_valid
+      expect(build(:label, color: '#AABBCC')).to be_valid
     end
 
     it 'should validate title' do
-      build(:label, title: 'G,ITLAB').should_not be_valid
-      build(:label, title: 'G?ITLAB').should_not be_valid
-      build(:label, title: 'G&ITLAB').should_not be_valid
-      build(:label, title: '').should_not be_valid
+      expect(build(:label, title: 'G,ITLAB')).not_to be_valid
+      expect(build(:label, title: 'G?ITLAB')).not_to be_valid
+      expect(build(:label, title: 'G&ITLAB')).not_to be_valid
+      expect(build(:label, title: '')).not_to be_valid
 
-      build(:label, title: 'GITLAB').should be_valid
-      build(:label, title: 'gitlab').should be_valid
+      expect(build(:label, title: 'GITLAB')).to be_valid
+      expect(build(:label, title: 'gitlab')).to be_valid
     end
   end
 end

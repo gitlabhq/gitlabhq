@@ -18,16 +18,16 @@ require 'spec_helper'
 
 describe Event do
   describe "Associations" do
-    it { should belong_to(:project) }
-    it { should belong_to(:target) }
+    it { is_expected.to belong_to(:project) }
+    it { is_expected.to belong_to(:target) }
   end
 
   describe "Respond to" do
-    it { should respond_to(:author_name) }
-    it { should respond_to(:author_email) }
-    it { should respond_to(:issue_title) }
-    it { should respond_to(:merge_request_title) }
-    it { should respond_to(:commits) }
+    it { is_expected.to respond_to(:author_name) }
+    it { is_expected.to respond_to(:author_email) }
+    it { is_expected.to respond_to(:issue_title) }
+    it { is_expected.to respond_to(:merge_request_title) }
+    it { is_expected.to respond_to(:commits) }
   end
 
   describe "Push event" do
@@ -58,10 +58,10 @@ describe Event do
       )
     end
 
-    it { @event.push?.should be_true }
-    it { @event.proper?.should be_true }
-    it { @event.tag?.should be_false }
-    it { @event.branch_name.should == "master" }
-    it { @event.author.should == @user }
+    it { expect(@event.push?).to be_truthy }
+    it { expect(@event.proper?).to be_truthy }
+    it { expect(@event.tag?).to be_falsey }
+    it { expect(@event.branch_name).to eq("master") }
+    it { expect(@event.author).to eq(@user) }
   end
 end

@@ -16,9 +16,9 @@ describe Projects::CreateService do
         @project = create_project(@user, @opts)
       end
 
-      it { @project.should be_valid }
-      it { @project.owner.should == @user }
-      it { @project.namespace.should == @user.namespace }
+      it { expect(@project).to be_valid }
+      it { expect(@project.owner).to eq(@user) }
+      it { expect(@project.namespace).to eq(@user.namespace) }
     end
 
     context 'group namespace' do
@@ -30,9 +30,9 @@ describe Projects::CreateService do
         @project = create_project(@user, @opts)
       end
 
-      it { @project.should be_valid }
-      it { @project.owner.should == @group }
-      it { @project.namespace.should == @group }
+      it { expect(@project).to be_valid }
+      it { expect(@project.owner).to eq(@group) }
+      it { expect(@project.namespace).to eq(@group) }
     end
 
     context 'wiki_enabled creates repository directory' do
@@ -42,7 +42,7 @@ describe Projects::CreateService do
           @path = ProjectWiki.new(@project, @user).send(:path_to_repo)
         end
 
-        it { File.exists?(@path).should be_true }
+        it { expect(File.exists?(@path)).to be_truthy }
       end
 
       context 'wiki_enabled false does not create wiki repository directory' do
@@ -52,7 +52,7 @@ describe Projects::CreateService do
           @path = ProjectWiki.new(@project, @user).send(:path_to_repo)
         end
 
-        it { File.exists?(@path).should be_false }
+        it { expect(File.exists?(@path)).to be_falsey }
       end
     end
   end

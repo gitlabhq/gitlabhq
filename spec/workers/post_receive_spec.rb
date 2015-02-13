@@ -3,7 +3,7 @@ require 'spec_helper'
 describe PostReceive do
   context "as a resque worker" do
     it "reponds to #perform" do
-      PostReceive.new.should respond_to(:perform)
+      expect(PostReceive.new).to respond_to(:perform)
     end
   end
 
@@ -13,23 +13,23 @@ describe PostReceive do
     let(:key_id) { key.shell_id }
 
     it "fetches the correct project" do
-      Project.should_receive(:find_with_namespace).with(project.path_with_namespace).and_return(project)
+      expect(Project).to receive(:find_with_namespace).with(project.path_with_namespace).and_return(project)
       PostReceive.new.perform(pwd(project), key_id, changes)
     end
 
     it "does not run if the author is not in the project" do
-      Key.stub(:find_by).with(hash_including(id: anything())) { nil }
+      allow(Key).to receive(:find_by).with(hash_including(id: anything())) { nil }
 
-      project.should_not_receive(:execute_hooks)
+      expect(project).not_to receive(:execute_hooks)
 
-      PostReceive.new.perform(pwd(project), key_id, changes).should be_false
+      expect(PostReceive.new.perform(pwd(project), key_id, changes)).to be_falsey
     end
 
     it "asks the project to trigger all hooks" do
       Project.stub(find_with_namespace: project)
-      project.should_receive(:execute_hooks)
-      project.should_receive(:execute_services)
-      project.should_receive(:update_merge_requests)
+      expect(project).to receive(:execute_hooks)
+      expect(project).to receive(:execute_services)
+      expect(project).to receive(:update_merge_requests)
 
       PostReceive.new.perform(pwd(project), key_id, changes)
     end

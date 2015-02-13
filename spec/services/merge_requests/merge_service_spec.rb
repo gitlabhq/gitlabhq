@@ -16,13 +16,13 @@ describe MergeRequests::MergeService do
       let(:service) { MergeRequests::MergeService.new(project, user, {}) }
 
       before do
-        service.stub(:execute_hooks)
+        allow(service).to receive(:execute_hooks)
 
         service.execute(merge_request, 'Awesome message')
       end
 
-      it { merge_request.should be_valid }
-      it { merge_request.should be_merged }
+      it { expect(merge_request).to be_valid }
+      it { expect(merge_request).to be_merged }
 
       it 'should execute hooks with merge action' do
         expect(service).to have_received(:execute_hooks).
@@ -31,13 +31,13 @@ describe MergeRequests::MergeService do
 
       it 'should send email to user2 about merge of new merge_request' do
         email = ActionMailer::Base.deliveries.last
-        email.to.first.should == user2.email
-        email.subject.should include(merge_request.title)
+        expect(email.to.first).to eq(user2.email)
+        expect(email.subject).to include(merge_request.title)
       end
 
       it 'should create system note about merge_request merge' do
         note = merge_request.notes.last
-        note.note.should include 'Status changed to merged'
+        expect(note.note).to include 'Status changed to merged'
       end
     end
   end
