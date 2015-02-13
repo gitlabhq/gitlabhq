@@ -292,7 +292,7 @@ describe GitPushService do
         service.execute(project, user, @oldrev, @newrev, @ref)
 
         WebMock.should have_requested(:post, api_mention_url).with(
-          body: /mentioned JIRA-1 in/
+          body: /mentioned this issue in/
         ).once
       end
 
