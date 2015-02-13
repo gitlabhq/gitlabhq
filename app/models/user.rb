@@ -252,7 +252,7 @@ class User < ActiveRecord::Base
 
       counter = 0
       base = username
-      while by_login(username).present?
+      while User.by_login(username).present? || Namespace.by_path(username).present?
         counter += 1 
         username = "#{base}#{counter}"
       end
@@ -290,7 +290,8 @@ class User < ActiveRecord::Base
 
   def namespace_uniq
     namespace_name = self.username
-    if Namespace.find_by(path: namespace_name)
+    existing_namespace = Namespace.by_path(namespace_name)
+    if existing_namespace && existing_namespace != self.namespace
       self.errors.add :username, "already exists"
     end
   end
