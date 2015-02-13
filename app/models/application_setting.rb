@@ -8,6 +8,7 @@
 #  signup_enabled         :boolean
 #  signin_enabled         :boolean
 #  gravatar_enabled       :boolean
+#  twitter_sharing_enabled  :boolean
 #  sign_in_text           :text
 #  created_at             :datetime
 #  updated_at             :datetime
@@ -30,6 +31,7 @@ class ApplicationSetting < ActiveRecord::Base
       default_branch_protection: Settings.gitlab['default_branch_protection'],
       signup_enabled: Settings.gitlab['signup_enabled'],
       signin_enabled: Settings.gitlab['signin_enabled'],
+      twitter_sharing_enabled: Settings.gitlab['twitter_sharing_enabled'],
       gravatar_enabled: Settings.gravatar['enabled'],
       sign_in_text: Settings.extra['sign_in_text'],
     )

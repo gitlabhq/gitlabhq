@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150211174341) do
+ActiveRecord::Schema.define(version: 20150213104043) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 20150211174341) do
     t.datetime "updated_at"
     t.string   "home_page_url"
     t.integer  "default_branch_protection", default: 2
+    t.boolean  "twitter_sharing_enabled",   default: true
   end
 
   create_table "broadcast_messages", force: true do |t|
@@ -333,10 +334,10 @@ ActiveRecord::Schema.define(version: 20150211174341) do
     t.string   "import_url"
     t.integer  "visibility_level",       default: 0,        null: false
     t.boolean  "archived",               default: false,    null: false
+    t.string   "avatar"
     t.string   "import_status"
     t.float    "repository_size",        default: 0.0
     t.integer  "star_count",             default: 0,        null: false
-    t.string   "avatar"
     t.string   "import_type"
     t.string   "import_source"
   end
@@ -440,6 +441,7 @@ ActiveRecord::Schema.define(version: 20150211174341) do
     t.integer  "notification_level",       default: 1,     null: false
     t.datetime "password_expires_at"
     t.integer  "created_by_id"
+    t.datetime "last_credential_check_at"
     t.string   "avatar"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
@@ -447,7 +449,6 @@ ActiveRecord::Schema.define(version: 20150211174341) do
     t.string   "unconfirmed_email"
     t.boolean  "hide_no_ssh_key",          default: false
     t.string   "website_url",              default: "",    null: false
-    t.datetime "last_credential_check_at"
     t.string   "github_access_token"
     t.string   "gitlab_access_token"
     t.string   "notification_email"
