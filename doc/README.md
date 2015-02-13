@@ -24,6 +24,7 @@
 - [Issue closing](customization/issue_closing.md) Customize how to close an issue from commit messages.
 - [Libravatar](customization/libravatar.md) Use Libravatar for user avatars.
 - [Operations](operations/README.md) Keeping GitLab up and running
+- [Log system](logs/logs.md) Log system
 
 ## Contributor documentation
 
