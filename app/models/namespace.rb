@@ -44,6 +44,10 @@ class Namespace < ActiveRecord::Base
 
   scope :root, -> { where('type IS NULL') }
 
+  def self.by_path(path)
+    where('lower(path) = :value', value: path.downcase).first
+  end
+
   def self.search(query)
     where("name LIKE :query OR path LIKE :query", query: "%#{query}%")
   end
