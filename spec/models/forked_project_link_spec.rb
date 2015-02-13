@@ -21,11 +21,11 @@ describe ForkedProjectLink, "add link on fork" do
   end
 
   it "project_to should know it is forked" do
-    @project_to.forked?.should be_true
+    expect(@project_to.forked?).to be_truthy
   end
 
   it "project should know who it is forked from" do
-    @project_to.forked_from_project.should == project_from
+    expect(@project_to.forked_from_project).to eq(project_from)
   end
 end
 
@@ -43,15 +43,15 @@ describe :forked_from_project do
 
 
   it "project_to should know it is forked" do
-    project_to.forked?.should be_true
+    expect(project_to.forked?).to be_truthy
   end
 
   it "project_from should not be forked" do
-    project_from.forked?.should be_false
+    expect(project_from.forked?).to be_falsey
   end
 
   it "project_to.destroy should destroy fork_link" do
-    forked_project_link.should_receive(:destroy)
+    expect(forked_project_link).to receive(:destroy)
     project_to.destroy
   end
 

@@ -14,9 +14,9 @@ describe Import::GitlabController do
       Gitlab.config.omniauth.providers << OpenStruct.new(app_id: "asd123", app_secret: "asd123", name: "gitlab")
 
       get :callback
-      
-      user.reload.gitlab_access_token.should == token
-      controller.should redirect_to(status_import_gitlab_url)
+
+      expect(user.reload.gitlab_access_token).to eq(token)
+      expect(controller).to redirect_to(status_import_gitlab_url)
     end
   end
 
@@ -28,7 +28,7 @@ describe Import::GitlabController do
     it "assigns variables" do
       @project = create(:project, import_type: 'gitlab', creator_id: user.id)
       controller.stub_chain(:client, :projects).and_return([@repo])
-      
+
       get :status
 
       expect(assigns(:already_added_projects)).to eq([@project])
@@ -38,7 +38,7 @@ describe Import::GitlabController do
     it "does not show already added project" do
       @project = create(:project, import_type: 'gitlab', creator_id: user.id, import_source: 'asd/vim')
       controller.stub_chain(:client, :projects).and_return([@repo])
-      
+
       get :status
 
       expect(assigns(:already_added_projects)).to eq([@project])
@@ -58,7 +58,8 @@ describe Import::GitlabController do
 
     it "takes already existing namespace" do
       namespace = create(:namespace, name: "john", owner: user)
-      Gitlab::GitlabImport::ProjectCreator.should_receive(:new).with(@repo, namespace, user).
+      expect(Gitlab::GitlabImport::ProjectCreator).
+        to receive(:new).with(@repo, namespace, user).
         and_return(double(execute: true))
       controller.stub_chain(:client, :project).and_return(@repo)
 

@@ -4,7 +4,7 @@ describe Gitlab::LDAP::Config do
   let(:config) { Gitlab::LDAP::Config.new provider }
   let(:provider) { 'ldapmain' }
 
-  describe :initalize do
+  describe '#initalize' do
     it 'requires a provider' do
       expect{ Gitlab::LDAP::Config.new }.to raise_error ArgumentError
     end

@@ -16,8 +16,8 @@ require 'spec_helper'
 
 describe GemnasiumService do
   describe "Associations" do
-    it { should belong_to :project }
-    it { should have_one :service_hook }
+    it { is_expected.to belong_to :project }
+    it { is_expected.to have_one :service_hook }
   end
 
   describe "Execute" do
@@ -36,7 +36,7 @@ describe GemnasiumService do
       @sample_data = Gitlab::PushDataBuilder.build_sample(project, user)
     end
     it "should call Gemnasium service" do
-      Gemnasium::GitlabService.should_receive(:execute).with(an_instance_of(Hash)).once
+      expect(Gemnasium::GitlabService).to receive(:execute).with(an_instance_of(Hash)).once
       @gemnasium_service.execute(@sample_data)
     end
   end

@@ -18,8 +18,8 @@ require 'spec_helper'
 describe Service do
 
   describe "Associations" do
-    it { should belong_to :project }
-    it { should have_one :service_hook }
+    it { is_expected.to belong_to :project }
+    it { is_expected.to have_one :service_hook }
   end
 
   describe "Mass assignment" do
@@ -41,7 +41,7 @@ describe Service do
       end
 
       describe :can_test do
-        it { @testable.should == true }
+        it { expect(@testable).to eq(true) }
       end
     end
 
@@ -56,7 +56,7 @@ describe Service do
       end
 
       describe :can_test do
-        it { @testable.should == true }
+        it { expect(@testable).to eq(true) }
       end
     end
   end

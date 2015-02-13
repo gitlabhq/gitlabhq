@@ -17,5 +17,5 @@
 require 'spec_helper'
 
 describe ApplicationSetting, models: true do
-  it { ApplicationSetting.create_from_defaults.should be_valid }
+  it { expect(ApplicationSetting.create_from_defaults).to be_valid }
 end

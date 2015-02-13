@@ -15,10 +15,10 @@ describe API::API, api: true  do
   describe 'GET /projects/:id/labels' do
     it 'should return project labels' do
       get api("/projects/#{project.id}/labels", user)
-      response.status.should == 200
-      json_response.should be_an Array
-      json_response.size.should == 1
-      json_response.first['name'].should == label1.name
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.size).to eq(1)
+      expect(json_response.first['name']).to eq(label1.name)
     end
   end
 
@@ -27,69 +27,69 @@ describe API::API, api: true  do
       post api("/projects/#{project.id}/labels", user),
            name: 'Foo',
            color: '#FFAABB'
-      response.status.should == 201
-      json_response['name'].should == 'Foo'
-      json_response['color'].should == '#FFAABB'
+      expect(response.status).to eq(201)
+      expect(json_response['name']).to eq('Foo')
+      expect(json_response['color']).to eq('#FFAABB')
     end
 
     it 'should return a 400 bad request if name not given' do
       post api("/projects/#{project.id}/labels", user), color: '#FFAABB'
-      response.status.should == 400
+      expect(response.status).to eq(400)
     end
 
     it 'should return a 400 bad request if color not given' do
       post api("/projects/#{project.id}/labels", user), name: 'Foobar'
-      response.status.should == 400
+      expect(response.status).to eq(400)
     end
 
     it 'should return 400 for invalid color' do
       post api("/projects/#{project.id}/labels", user),
            name: 'Foo',
            color: '#FFAA'
-      response.status.should == 400
-      json_response['message']['color'].should == ['is invalid']
+      expect(response.status).to eq(400)
+      expect(json_response['message']['color']).to eq(['is invalid'])
     end
 
     it 'should return 400 for too long color code' do
       post api("/projects/#{project.id}/labels", user),
            name: 'Foo',
            color: '#FFAAFFFF'
-      response.status.should == 400
-      json_response['message']['color'].should == ['is invalid']
+      expect(response.status).to eq(400)
+      expect(json_response['message']['color']).to eq(['is invalid'])
     end
 
     it 'should return 400 for invalid name' do
       post api("/projects/#{project.id}/labels", user),
            name: '?',
            color: '#FFAABB'
-      response.status.should == 400
-      json_response['message']['title'].should == ['is invalid']
+      expect(response.status).to eq(400)
+      expect(json_response['message']['title']).to eq(['is invalid'])
     end
 
     it 'should return 409 if label already exists' do
       post api("/projects/#{project.id}/labels", user),
            name: 'label1',
            color: '#FFAABB'
-      response.status.should == 409
-      json_response['message'].should == 'Label already exists'
+      expect(response.status).to eq(409)
+      expect(json_response['message']).to eq('Label already exists')
     end
   end
 
   describe 'DELETE /projects/:id/labels' do
     it 'should return 200 for existing label' do
       delete api("/projects/#{project.id}/labels", user), name: 'label1'
-      response.status.should == 200
+      expect(response.status).to eq(200)
     end
 
     it 'should return 404 for non existing label' do
       delete api("/projects/#{project.id}/labels", user), name: 'label2'
-      response.status.should == 404
-      json_response['message'].should == '404 Label Not Found'
+      expect(response.status).to eq(404)
+      expect(json_response['message']).to eq('404 Label Not Found')
     end
 
     it 'should return 400 for wrong parameters' do
       delete api("/projects/#{project.id}/labels", user)
-      response.status.should == 400
+      expect(response.status).to eq(400)
     end
   end
 
@@ -99,47 +99,47 @@ describe API::API, api: true  do
           name: 'label1',
           new_name: 'New Label',
           color: '#FFFFFF'
-      response.status.should == 200
-      json_response['name'].should == 'New Label'
-      json_response['color'].should == '#FFFFFF'
+      expect(response.status).to eq(200)
+      expect(json_response['name']).to eq('New Label')
+      expect(json_response['color']).to eq('#FFFFFF')
     end
 
     it 'should return 200 if name is changed' do
       put api("/projects/#{project.id}/labels", user),
           name: 'label1',
           new_name: 'New Label'
-      response.status.should == 200
-      json_response['name'].should == 'New Label'
-      json_response['color'].should == label1.color
+      expect(response.status).to eq(200)
+      expect(json_response['name']).to eq('New Label')
+      expect(json_response['color']).to eq(label1.color)
     end
 
     it 'should return 200 if colors is changed' do
       put api("/projects/#{project.id}/labels", user),
           name: 'label1',
           color: '#FFFFFF'
-      response.status.should == 200
-      json_response['name'].should == label1.name
-      json_response['color'].should == '#FFFFFF'
+      expect(response.status).to eq(200)
+      expect(json_response['name']).to eq(label1.name)
+      expect(json_response['color']).to eq('#FFFFFF')
     end
 
     it 'should return 404 if label does not exist' do
       put api("/projects/#{project.id}/labels", user),
           name: 'label2',
           new_name: 'label3'
-      response.status.should == 404
+      expect(response.status).to eq(404)
     end
 
     it 'should return 400 if no label name given' do
       put api("/projects/#{project.id}/labels", user), new_name: 'label2'
-      response.status.should == 400
-      json_response['message'].should == '400 (Bad request) "name" not given'
+      expect(response.status).to eq(400)
+      expect(json_response['message']).to eq('400 (Bad request) "name" not given')
     end
 
     it 'should return 400 if no new parameters given' do
       put api("/projects/#{project.id}/labels", user), name: 'label1'
-      response.status.should == 400
-      json_response['message'].should == 'Required parameters '\
-                                         '"new_name" or "color" missing'
+      expect(response.status).to eq(400)
+      expect(json_response['message']).to eq('Required parameters '\
+                                         '"new_name" or "color" missing')
     end
 
     it 'should return 400 for invalid name' do
@@ -147,24 +147,24 @@ describe API::API, api: true  do
           name: 'label1',
           new_name: '?',
           color: '#FFFFFF'
-      response.status.should == 400
-      json_response['message']['title'].should == ['is invalid']
+      expect(response.status).to eq(400)
+      expect(json_response['message']['title']).to eq(['is invalid'])
     end
 
     it 'should return 400 for invalid name' do
       put api("/projects/#{project.id}/labels", user),
           name: 'label1',
           color: '#FF'
-      response.status.should == 400
-      json_response['message']['color'].should == ['is invalid']
+      expect(response.status).to eq(400)
+      expect(json_response['message']['color']).to eq(['is invalid'])
     end
 
     it 'should return 400 for too long color code' do
       post api("/projects/#{project.id}/labels", user),
            name: 'Foo',
            color: '#FFAAFFFF'
-      response.status.should == 400
-      json_response['message']['color'].should == ['is invalid']
+      expect(response.status).to eq(400)
+      expect(json_response['message']['color']).to eq(['is invalid'])
     end
   end
 end

@@ -6,7 +6,7 @@ describe BroadcastMessagesHelper do
 
     context "default style" do
       it "should have no style" do
-        broadcast_styling(broadcast_message).should match('')
+        expect(broadcast_styling(broadcast_message)).to match('')
       end
     end
 
@@ -14,7 +14,8 @@ describe BroadcastMessagesHelper do
       before { broadcast_message.stub(color: "#f2dede", font: "#b94a48") }
 
       it "should have a customized style" do
-        broadcast_styling(broadcast_message).should match('background-color:#f2dede;color:#b94a48')
+        expect(broadcast_styling(broadcast_message)).
+          to match('background-color:#f2dede;color:#b94a48')
       end
     end
   end

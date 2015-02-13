@@ -27,27 +27,27 @@ describe Issues::UpdateService do
         @issue.reload
       end
 
-      it { @issue.should be_valid }
-      it { @issue.title.should == 'New title' }
-      it { @issue.assignee.should == user2 }
-      it { @issue.should be_closed }
-      it { @issue.labels.count.should == 1 }
-      it { @issue.labels.first.title.should == 'Bug' }
+      it { expect(@issue).to be_valid }
+      it { expect(@issue.title).to eq('New title') }
+      it { expect(@issue.assignee).to eq(user2) }
+      it { expect(@issue).to be_closed }
+      it { expect(@issue.labels.count).to eq(1) }
+      it { expect(@issue.labels.first.title).to eq('Bug') }
 
       it 'should send email to user2 about assign of new issue' do
         email = ActionMailer::Base.deliveries.last
-        email.to.first.should == user2.email
-        email.subject.should include(issue.title)
+        expect(email.to.first).to eq(user2.email)
+        expect(email.subject).to include(issue.title)
       end
 
       it 'should create system note about issue reassign' do
         note = @issue.notes.last
-        note.note.should include "Reassigned to \@#{user2.username}"
+        expect(note.note).to include "Reassigned to \@#{user2.username}"
       end
 
       it 'should create system note about issue label edit' do
         note = @issue.notes[1]
-        note.note.should include "Added ~#{label.id} label"
+        expect(note.note).to include "Added ~#{label.id} label"
       end
     end
   end

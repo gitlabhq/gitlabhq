@@ -8,11 +8,11 @@ describe Gitlab::Shell do
     Project.stub(find: project)
   end
 
-  it { should respond_to :add_key }
-  it { should respond_to :remove_key }
-  it { should respond_to :add_repository }
-  it { should respond_to :remove_repository }
-  it { should respond_to :fork_repository }
+  it { is_expected.to respond_to :add_key }
+  it { is_expected.to respond_to :remove_key }
+  it { is_expected.to respond_to :add_repository }
+  it { is_expected.to respond_to :remove_repository }
+  it { is_expected.to respond_to :fork_repository }
 
-  it { gitlab_shell.url_to_repo('diaspora').should == Gitlab.config.gitlab_shell.ssh_path_prefix + "diaspora.git" }
+  it { expect(gitlab_shell.url_to_repo('diaspora')).to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + "diaspora.git") }
 end

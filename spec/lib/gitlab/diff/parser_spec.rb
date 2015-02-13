@@ -50,43 +50,43 @@ eos
       @lines = parser.parse(diff.lines)
     end
 
-    it { @lines.size.should == 30 }
+    it { expect(@lines.size).to eq(30) }
 
     describe 'lines' do
       describe 'first line' do
         let(:line) { @lines.first }
 
-        it { line.type.should == 'match' }
-        it { line.old_pos.should == 6 }
-        it { line.new_pos.should == 6 }
-        it { line.text.should == '@@ -6,12 +6,18 @@ module Popen' }
+        it { expect(line.type).to eq('match') }
+        it { expect(line.old_pos).to eq(6) }
+        it { expect(line.new_pos).to eq(6) }
+        it { expect(line.text).to eq('@@ -6,12 +6,18 @@ module Popen') }
       end
 
       describe 'removal line' do
         let(:line) { @lines[10] }
 
-        it { line.type.should == 'old' }
-        it { line.old_pos.should == 14 }
-        it { line.new_pos.should == 13 }
-        it { line.text.should == '-    options = { chdir: path }' }
+        it { expect(line.type).to eq('old') }
+        it { expect(line.old_pos).to eq(14) }
+        it { expect(line.new_pos).to eq(13) }
+        it { expect(line.text).to eq('-    options = { chdir: path }') }
       end
 
       describe 'addition line' do
         let(:line) { @lines[16] }
 
-        it { line.type.should == 'new' }
-        it { line.old_pos.should == 15 }
-        it { line.new_pos.should == 18 }
-        it { line.text.should == '+    options = {' }
+        it { expect(line.type).to eq('new') }
+        it { expect(line.old_pos).to eq(15) }
+        it { expect(line.new_pos).to eq(18) }
+        it { expect(line.text).to eq('+    options = {') }
       end
 
       describe 'unchanged line' do
         let(:line) { @lines.last }
 
-        it { line.type.should == nil }
-        it { line.old_pos.should == 24 }
-        it { line.new_pos.should == 31 }
-        it { line.text.should == '       @cmd_output &lt;&lt; stderr.read' }
+        it { expect(line.type).to eq(nil) }
+        it { expect(line.old_pos).to eq(24) }
+        it { expect(line.new_pos).to eq(31) }
+        it { expect(line.text).to eq('       @cmd_output &lt;&lt; stderr.read') }
       end
     end
   end

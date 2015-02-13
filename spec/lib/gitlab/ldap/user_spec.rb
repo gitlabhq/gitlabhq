@@ -16,17 +16,17 @@ describe Gitlab::LDAP::User do
   describe :changed? do
     it "marks existing ldap user as changed" do
       existing_user = create(:omniauth_user, extern_uid: 'my-uid', provider: 'ldapmain')
-      expect(gl_user.changed?).to be_true
+      expect(gl_user.changed?).to be_truthy
     end
 
     it "marks existing non-ldap user if the email matches as changed" do
       existing_user = create(:user, email: 'john@example.com')
-      expect(gl_user.changed?).to be_true
+      expect(gl_user.changed?).to be_truthy
     end
 
     it "dont marks existing ldap user as changed" do
       existing_user = create(:omniauth_user, email: 'john@example.com', extern_uid: 'my-uid', provider: 'ldapmain')
-      expect(gl_user.changed?).to be_false
+      expect(gl_user.changed?).to be_falsey
     end
   end
 
