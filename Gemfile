@@ -200,6 +200,7 @@ gem 'nprogress-rails'
 gem 'request_store'
 gem "virtus"
 gem 'addressable'
+gem 'simple_encrypt'
 
 group :development do
   gem 'brakeman', require: false
