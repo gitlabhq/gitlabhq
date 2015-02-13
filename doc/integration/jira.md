@@ -1,8 +1,7 @@
 # GitLab Jira integration
 
 GitLab can be configured to interact with Jira.
-This integration allows you to connect multiple Jira instances to the GitLab instance by allowing
-every project to setup it's own connection to Jira.
+You can set a default Jira server for all GitLab projects ([see external issue tracker document](external-issue-tracker.md#service-template)) but you can also configure a project to connect to another Jira server than the default one.
 Once the project is connected to Jira, you can reference and close the issues in Jira directly from GitLab.
 
 
@@ -14,18 +13,16 @@ Once the project is connected to Jira, you can reference and close the issues in
 
 ### Referencing Jira Issues
 
-When GitLab project has Jira issue tracker configured and enabled, users will be able to mention Jira issues and GitLab will automatically add a link to the mention. This means that in comments in merge requests and commits referencing an issue, eg. `PROJECT-5`, will add a comment in Jira issue in the format:
+When GitLab project has Jira issue tracker configured and enabled, mentioning Jira issue in GitLab will automatically add a comment in Jira issue with the link back to GitLab. This means that in comments in merge requests and commits referencing an issue, eg. `PROJECT-7`, will add a comment in Jira issue in the format:
 
 
 ```
- USER mentioned PROJECT-5 in PLACE_OF_MENTION LINK_TO_THE_MENTION
+ USER mentioned this issue in LINK_TO_THE_MENTION
 ```
-
 
 * `USER` A user that mentioned the issue. This is the link to the user profile in GitLab.
-* `PROJECT-5` Jira issue that is mentioned.
-* `PLACE_OF_MENTION` Name of the entity where Jira issue was mentioned. Can be commit or merge request.
-* `LINK_TO_THE_MENTION` Link to the origin of mention.
+* `LINK_TO_THE_MENTION` Link to the origin of mention with a name of the entity where Jira issue was mentioned.
+Can be commit or merge request.
 
 
 ![example of mentioning or closing the Jira issue](jira_issue_reference.png)

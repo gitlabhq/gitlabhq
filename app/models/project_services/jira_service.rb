@@ -76,7 +76,7 @@ class JiraService < IssueTrackerService
         url: resource_url(project_path(project))
       },
       entity: {
-        name: noteable_name.humanize,
+        name: noteable_name.humanize.downcase,
         url: entity_url
       }
     }
@@ -127,7 +127,7 @@ class JiraService < IssueTrackerService
     project_url = data[:project][:url]
 
     message = {
-      body: "[#{user_name}|#{user_url}] mentioned #{issue_name} in #{entity_name} of [#{project_name}|#{entity_url}]."
+      body: "[#{user_name}|#{user_url}] mentioned this issue in [a #{entity_name} of #{project_name}|#{entity_url}]."
     }.to_json
 
     send_message(url, message)
