@@ -225,8 +225,8 @@ group :development, :test do
   gem 'coveralls', require: false
   gem 'rubocop', '0.28.0', require: false
   gem 'spinach-rails'
-  gem "rspec-rails", '2.99'
-  gem 'capybara', '~> 2.2.1'
+  gem "rspec-rails", '3.0.0'
+  gem "capybara", '~> 2.2.1'
   gem 'capybara-screenshot', '~> 1.0.0'
   gem "pry-rails"
   gem "awesome_print"
