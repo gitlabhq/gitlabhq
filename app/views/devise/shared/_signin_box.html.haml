@@ -1,6 +1,10 @@
 .login-box
-  .login-heading
-    %h3 Sign in
+  - if signup_enabled?
+    .login-heading
+      %h3 Existing user? Sign in
+  - else
+    .login-heading
+      %h3 Sign in
   .login-body
     - if ldap_enabled?
       %ul.nav.nav-tabs

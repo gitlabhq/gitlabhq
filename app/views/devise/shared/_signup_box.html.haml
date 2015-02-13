@@ -1,6 +1,10 @@
 .login-box
-  .login-heading
-    %h3 Sign up
+  - if signin_enabled?
+    .login-heading
+      %h3 New user? Create an account
+  - else
+    .login-heading
+      %h3 Create an account
   .login-body
     = form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
       .devise-errors
