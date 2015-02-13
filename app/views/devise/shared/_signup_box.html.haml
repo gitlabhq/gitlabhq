@@ -19,3 +19,8 @@
         = f.password_field :password, class: "form-control bottom", id: "user_password_sign_up", placeholder: "Password", required: true
       %div
         = f.submit "Sign up", class: "btn-create btn"
+
+.clearfix.prepend-top-20
+  %p
+    %span.light Did not receive confirmation email?
+    = link_to "Send again", new_confirmation_path(resource_name)

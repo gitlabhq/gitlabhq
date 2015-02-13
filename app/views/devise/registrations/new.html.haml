@@ -1,7 +1,3 @@
 = render 'devise/shared/signup_box'
 
-.clearfix.prepend-top-20
-  = render 'devise/shared/sign_in_link'
-  %p
-    %span.light Did not receive confirmation email?
-    = link_to "Send again", new_confirmation_path(resource_name)
+= render 'devise/shared/sign_in_link'
