@@ -138,6 +138,9 @@ $ ->
   # Bottom tooltip
   $('.has_bottom_tooltip').tooltip(placement: 'bottom')
 
+  # Right tooltip
+  $('.has_right_tooltip').tooltip(placement: 'right', container: 'body')
+
   # Form submitter
   $('.trigger-submit').on 'change', ->
     $(@).parents('form').submit()
