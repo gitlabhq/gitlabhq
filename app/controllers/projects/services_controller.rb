@@ -29,7 +29,7 @@ class Projects::ServicesController < Projects::ApplicationController
     if @service.execute(data)
       message = { notice: 'We sent a request to the provided URL' }
     else
-      message = { alert: 'We tried to send a request to the provided URL but error occured' }
+      message = { alert: 'We tried to send a request to the provided URL but an error occured' }
     end
 
     redirect_to :back, message
