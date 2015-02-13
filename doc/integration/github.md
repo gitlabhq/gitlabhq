@@ -21,20 +21,44 @@ To enable the GitHub OmniAuth provider you must register your application with G
 
 1.  On your GitLab server, open the configuration file.
 
+    For omnibus package:
+
     ```sh
-    cd /home/git/gitlab
-
-    sudo -u git -H editor config/gitlab.yml
+      sudo editor /etc/gitlab/gitlab.rb
     ```
 
-1.  Find the section dealing with OmniAuth. See [Initial OmniAuth Configuration](README.md#initial-omniauth-configuration) for more details.
+    For instalations from source:
 
-1.  Under `providers:` uncomment (or add) lines that look like the following:
+    ```sh
+      cd /home/git/gitlab
+
+      sudo -u git -H editor config/gitlab.yml
+    ```
+
+1.  See [Initial OmniAuth Configuration](README.md#initial-omniauth-configuration) for inital settings.
+
+1.  Add the provider configuration:
+
+    For omnibus package:
+
+    ```ruby
+      gitlab_rails['omniauth_providers'] = [
+        {
+          "name" => "github",
+          "app_id" => "YOUR APP ID",
+          "app_secret" => "YOUR APP SECRET",
+          "url" => "https://github.com/",
+          "args" => { "scope" => "user:email" } }
+        }
+      ]
+    ```
+
+    For installation from source:
 
     ```
-        - { name: 'github', app_id: 'YOUR APP ID',
-          app_secret: 'YOUR APP SECRET',
-          args: { scope: 'user:email' } }
+      - { name: 'github', app_id: 'YOUR APP ID',
+        app_secret: 'YOUR APP SECRET',
+        args: { scope: 'user:email' } }
     ```
 
 1.  Change 'YOUR APP ID' to the client ID from the GitHub application page from step 7.
