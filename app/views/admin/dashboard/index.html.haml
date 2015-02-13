@@ -56,7 +56,11 @@
         %span.light.pull-right
           = boolean_to_icon Gitlab.config.omniauth.enabled
     .col-md-4
-      %h4 Components
+      %h4
+        Components
+        .pull-right
+          = version_status_badge
+
       %hr
       %p
         GitLab
