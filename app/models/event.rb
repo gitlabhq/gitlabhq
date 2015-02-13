@@ -49,29 +49,6 @@ class Event < ActiveRecord::Base
   scope :in_projects, ->(project_ids) { where(project_id: project_ids).recent }
 
   class << self
-    def create_ref_event(project, user, ref, action = 'add', prefix = 'refs/heads')
-      commit = project.repository.commit(ref.target)
-
-      if action.to_s == 'add'
-        before = '00000000'
-        after = commit.id
-      else
-        before = commit.id
-        after = '00000000'
-      end
-
-      Event.create(
-        project: project,
-        action: Event::PUSHED,
-        data: {
-          ref: "#{prefix}/#{ref.name}",
-          before: before,
-          after: after
-        },
-        author_id: user.id
-      )
-    end
-
     def reset_event_cache_for(target)
       Event.where(target_id: target.id, target_type: target.class.to_s).
         order('id DESC').limit(100).
