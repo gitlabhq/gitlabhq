@@ -9,6 +9,10 @@
       .alert.alert-danger
         - @service.errors.full_messages.each do |msg|
           %p= msg
+  - if @service.help.present?
+    .bs-callout
+      = preserve do
+        = markdown @service.help
 
   - @service.fields.each do |field|
     - name = field[:name]
