@@ -116,7 +116,7 @@ module SharedNote
   end
 
   step 'The comment with the header should not have an ID' do
-    within(".note-text") do
+    within(".note-body > .note-text") do
       page.should     have_content("Comment with a header")
       page.should_not have_css("#comment-with-a-header")
     end
