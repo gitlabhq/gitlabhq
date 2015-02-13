@@ -50,6 +50,7 @@ v 7.8.0 (unreleased)
   - Prevent losing unsaved comments by automatically restoring them when comment page is loaded again.
   - Don't allow page to be scaled on mobile.
   - Clean the username acquired from OAuth/LDAP so it doesn't fail username validation and block signing up.
+  - Show assignees in merge request index page (Kelvin Mutuma)
 
 v 7.7.2
   - Update GitLab Shell to version 2.4.2 that fixes a bug when developers can push to protected branch
@@ -85,9 +86,9 @@ v 7.7.0
   - When accept merge request - do merge using sidaekiq job
   - Enable web signups by default
   - Fixes for diff comments: drag-n-drop images, selecting images
-  - Fixes for edit comments: drag-n-drop images, preview mode, selecting images, save & update 
+  - Fixes for edit comments: drag-n-drop images, preview mode, selecting images, save & update
   - Remove password strength indicator
-  
+
 
 
 v 7.6.0
