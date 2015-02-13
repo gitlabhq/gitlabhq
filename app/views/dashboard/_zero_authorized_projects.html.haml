@@ -17,7 +17,8 @@
     - if current_user.can_create_project?
       .link_holder
         = link_to new_project_path, class: "btn btn-new" do
-          New project »
+          %i.fa.fa-plus
+          New Project
 
 - if current_user.can_create_group?
   %hr
@@ -31,7 +32,8 @@
         Groups are the best way to manage projects and members.
       .link_holder
         = link_to new_group_path, class: "btn btn-new" do
-          New group »
+          %i.fa.fa-plus
+          New Group
 
 -if @publicish_project_count > 0
   %hr
@@ -47,4 +49,4 @@
         Public projects are an easy way to allow everyone to have read-only access.
       .link_holder
         = link_to trending_explore_projects_path, class: "btn btn-new" do
-          Browse public projects »
+          Browse public projects
