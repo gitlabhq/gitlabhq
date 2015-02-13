@@ -76,6 +76,7 @@ Before configuring individual OmniAuth providers there are a few global settings
 ## Supported Providers
 
 - [GitHub](github.md)
+- [GitLab](gitlab.md)
 - [Google](google.md)
 - [Shibboleth](shibboleth.md)
 - [Twitter](twitter.md)
