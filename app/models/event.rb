@@ -61,6 +61,8 @@ class Event < ActiveRecord::Base
       true
     elsif membership_changed?
       true
+    elsif created_project?
+      true
     else
       (issue? || merge_request? || note? || milestone?) && target
     end
@@ -114,6 +116,14 @@ class Event < ActiveRecord::Base
     joined? || left?
   end
 
+  def created_project?
+    created? && !target
+  end
+
+  def created_target?
+    created? && target
+  end
+
   def milestone?
     target_type == "Milestone"
   end
@@ -165,6 +175,8 @@ class Event < ActiveRecord::Base
       'left'
     elsif commented?
       "commented on"
+    elsif created_project?
+      "created"
     else
       "opened"
     end

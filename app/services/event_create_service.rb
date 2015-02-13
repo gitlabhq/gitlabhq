@@ -58,6 +58,10 @@ class EventCreateService
     create_event(project, current_user, Event::LEFT)
   end
 
+  def create_project(project, current_user)
+    create_event(project, current_user, Event::CREATED)
+  end
+
   def push_ref(project, current_user, ref, action = 'add', prefix = 'refs/heads')
     commit = project.repository.commit(ref.target)
 
