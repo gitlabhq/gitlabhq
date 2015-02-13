@@ -64,6 +64,12 @@
                   = f.check_box :merge_requests_rebase_enabled
                   %span.descr Allows rebasing of merge requests before merging.
 
+              .rebase-default
+                .col-sm-10.col-sm-offset-3
+                  .checkbox
+                    = f.check_box :merge_requests_rebase_default
+                    %span.descr Enabled by default
+
             .form-group
               = f.label :merge_requests_template, class: 'control-label' do
                 Merge request template
@@ -221,3 +227,16 @@
 
 
 = render 'shared/confirm_modal', phrase: @project.path
+
+:coffeescript
+  $ ->
+    mergeRequestsRebaseVisibilityCheck = ->
+      is_rebase_enabled = $("input#project_merge_requests_rebase_enabled").prop("checked")
+      $(".rebase-default").toggle(is_rebase_enabled)
+
+    mergeRequestsRebaseVisibilityCheck()
+
+    $("input#project_merge_requests_rebase_enabled").change ->
+      mergeRequestsRebaseVisibilityCheck()
+
+

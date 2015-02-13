@@ -24,7 +24,7 @@
           - if @merge_request.target_project.merge_requests_rebase_enabled && can_rebase?(@merge_request.target_project, @merge_request.target_branch)
             .accept-control.remove_branch_holder
               = label_tag :should_rebase, class: "checkbox" do
-                = check_box_tag :should_rebase
+                = check_box_tag :should_rebase, "1", @project.merge_requests_rebase_default
                 Rebase before merge
           .accept-control
             = link_to "#", class: "modify-merge-commit-link js-toggle-button", title: "Modify merge commit message" do
