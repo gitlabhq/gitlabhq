@@ -9,7 +9,7 @@ end
 
 ENV['RAILS_ENV'] = 'test'
 require './config/environment'
-require 'rspec'
+require 'rspec/rails'
 require 'rspec/expectations'
 require 'sidekiq/testing/inline'
 
@@ -26,6 +26,7 @@ WebMock.allow_net_connect!
 
 Spinach.hooks.before_run do
   include RSpec::Mocks::ExampleMethods
+  RSpec::Mocks.setup
   TestEnv.init(mailer: false)
 
   include FactoryGirl::Syntax::Methods
