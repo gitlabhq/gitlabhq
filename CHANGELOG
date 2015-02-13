@@ -49,6 +49,7 @@ v 7.8.0 (unreleased)
   - Added persistent collapse button for left side nav bar (Jason Blanchard)
   - Prevent losing unsaved comments by automatically restoring them when comment page is loaded again.
   - Don't allow page to be scaled on mobile.
+  - Clean the username acquired from OAuth/LDAP so it doesn't fail username validation and block signing up.
 
 v 7.7.2
   - Update GitLab Shell to version 2.4.2 that fixes a bug when developers can push to protected branch
