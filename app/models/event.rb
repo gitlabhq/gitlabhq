@@ -75,25 +75,43 @@ class Event < ActiveRecord::Base
   end
 
   def target_title
-    if target && target.respond_to?(:title)
-      target.title
-    end
+    target.title if target && target.respond_to?(:title)
+  end
+
+  def created?
+    action == CREATED
   end
 
   def push?
-    action == self.class::PUSHED && valid_push?
+    action == PUSHED && valid_push?
   end
 
   def merged?
-    action == self.class::MERGED
+    action == MERGED
   end
 
   def closed?
-    action == self.class::CLOSED
+    action == CLOSED
   end
 
   def reopened?
-    action == self.class::REOPENED
+    action == REOPENED
+  end
+
+  def joined?
+    action == JOINED
+  end
+
+  def left?
+    action == LEFT
+  end
+
+  def commented?
+    action == COMMENTED
+  end
+
+  def membership_changed?
+    joined? || left?
   end
 
   def milestone?
@@ -112,32 +130,32 @@ class Event < ActiveRecord::Base
     target_type == "MergeRequest"
   end
 
-  def joined?
-    action == JOINED
-  end
-
-  def left?
-    action == LEFT
-  end
-
-  def membership_changed?
-    joined? || left?
+  def milestone
+    target if milestone?
   end
 
   def issue
-    target if target_type == "Issue"
+    target if issue?
   end
 
   def merge_request
-    target if target_type == "MergeRequest"
+    target if merge_request?
   end
 
   def note
-    target if target_type == "Note"
+    target if note?
   end
 
   def action_name
-    if closed?
+    if push?
+      if new_ref?
+        "pushed new"
+      elsif rm_ref?
+        "deleted"
+      else
+        "pushed to"
+      end
+    elsif closed?
       "closed"
     elsif merged?
       "accepted"
@@ -145,6 +163,8 @@ class Event < ActiveRecord::Base
       'joined'
     elsif left?
       'left'
+    elsif commented?
+      "commented on"
     else
       "opened"
     end
@@ -211,16 +231,6 @@ class Event < ActiveRecord::Base
 
   def ref_type
     tag? ? "tag" : "branch"
-  end
-
-  def push_action_name
-    if new_ref?
-      "pushed new"
-    elsif rm_ref?
-      "deleted"
-    else
-      "pushed to"
-    end
   end
 
   def push_with_commits?
