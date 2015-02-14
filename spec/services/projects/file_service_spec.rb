@@ -20,7 +20,7 @@ describe Projects::FileService do
       it { expect(@link_to_file).to have_key('is_image') }
       it { expect(@link_to_file).to have_value('banana_sample') }
       it { expect(@link_to_file['is_image']).to equal(true) }
-      it { expect(@link_to_file['url']).to match("http://test.example/uploads/#{@project.path_with_namespace}") }
+      it { expect(@link_to_file['url']).to match("/files/#{@project.path_with_namespace}") }
       it { expect(@link_to_file['url']).to match('banana_sample.gif') }
     end
 
@@ -38,7 +38,7 @@ describe Projects::FileService do
       it { expect(@link_to_file).to have_value('dk') }
       it { expect(@link_to_file).to have_key('is_image') }
       it { expect(@link_to_file['is_image']).to equal(true) }
-      it { expect(@link_to_file['url']).to match("http://test.example/uploads/#{@project.path_with_namespace}") }
+      it { expect(@link_to_file['url']).to match("/files/#{@project.path_with_namespace}") }
       it { expect(@link_to_file['url']).to match('dk.png') }
     end
 
@@ -53,7 +53,7 @@ describe Projects::FileService do
       it { expect(@link_to_file).to have_key('is_image') }
       it { expect(@link_to_file).to have_value('rails_sample') }
       it { expect(@link_to_file['is_image']).to equal(true) }
-      it { expect(@link_to_file['url']).to match("http://test.example/uploads/#{@project.path_with_namespace}") }
+      it { expect(@link_to_file['url']).to match("/files/#{@project.path_with_namespace}") }
       it { expect(@link_to_file['url']).to match('rails_sample.jpg') }
     end
 
@@ -70,7 +70,7 @@ describe Projects::FileService do
       it { expect(@link_to_file).to have_key('is_image') }
       it { expect(@link_to_file).to have_value('doc_sample.txt') }
       it { expect(@link_to_file['is_image']).to equal(false) }
-      it { expect(@link_to_file['url']).to match("http://test.example/uploads/#{@project.path_with_namespace}") }
+      it { expect(@link_to_file['url']).to match("/files/#{@project.path_with_namespace}") }
       it { expect(@link_to_file['url']).to match('doc_sample.txt') }
     end
   end
