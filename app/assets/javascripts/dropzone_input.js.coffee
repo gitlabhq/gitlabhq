@@ -9,7 +9,7 @@ class @DropzoneInput
     iconPicture = "<i class=\"fa fa-picture-o div-dropzone-icon\"></i>"
     iconSpinner = "<i class=\"fa fa-spinner fa-spin div-dropzone-icon\"></i>"
     btnAlert = "<button type=\"button\"" + alertAttr + ">&times;</button>"
-    project_image_path_upload = window.project_image_path_upload or null
+    project_file_path_upload = window.project_file_path_upload or null
 
     form_textarea = $(form).find("textarea.markdown-area")
     form_textarea.wrap "<div class=\"div-dropzone\"></div>"
@@ -72,13 +72,12 @@ class @DropzoneInput
       form.find(".md-preview-holder").hide()
 
     dropzone = form_dropzone.dropzone(
-      url: project_image_path_upload
+      url: project_file_path_upload
       dictDefaultMessage: ""
       clickable: true
-      paramName: "markdown_img"
+      paramName: "markdown_file"
       maxFilesize: 10
       uploadMultiple: false
-      acceptedFiles: "image/jpg,image/jpeg,image/gif,image/png"
       headers:
         "X-CSRF-Token": $("meta[name=\"csrf-token\"]").attr("content")
 
@@ -133,7 +132,10 @@ class @DropzoneInput
     child = $(dropzone[0]).children("textarea")
 
     formatLink = (str) ->
-      "![" + str.alt + "](" + str.url + ")"
+      text = "[" + str.alt + "](" + str.url + ")"
+      if str.is_image is true
+        text = "!" + text
+      text
 
     handlePaste = (event) ->
       pasteEvent = event.originalEvent
@@ -177,9 +179,9 @@ class @DropzoneInput
 
     uploadFile = (item, filename) ->
       formData = new FormData()
-      formData.append "markdown_img", item, filename
+      formData.append "markdown_file", item, filename
       $.ajax
-        url: project_image_path_upload
+        url: project_file_path_upload
         type: "POST"
         data: formData
         dataType: "json"
@@ -234,4 +236,7 @@ class @DropzoneInput
       return
 
   formatLink: (str) ->
-    "![" + str.alt + "](" + str.url + ")"
+    text = "[" + str.alt + "](" + str.url + ")"
+    if str.is_image is true
+      text = "!" + text
+    text

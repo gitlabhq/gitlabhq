@@ -93,7 +93,8 @@ Gitlab::Application.routes.draw do
   #
   # Attachments serving
   #
-  get 'files/:type/:id/:filename' => 'files#download', constraints: { id: /\d+/, type: /[a-z]+/, filename:  /.+/ }
+  get 'files/:type/:id/:filename' => 'files#download_notes', constraints: { id: /\d+/, type: /[a-z]+/, filename:  /.+/ }
+  get 'files/:namespace/:project/:folder_id/:filename' => 'files#download_files', constraints: { namespace: /[^\/]+/, project: /[a-zA-Z.\/0-9_\-]+/, filename:  /.+/ }
 
   #
   # Admin Area
@@ -220,7 +221,7 @@ Gitlab::Application.routes.draw do
       put :transfer
       post :archive
       post :unarchive
-      post :upload_image
+      post :upload_file
       post :toggle_star
       post :markdown_preview
       get :autocomplete_sources

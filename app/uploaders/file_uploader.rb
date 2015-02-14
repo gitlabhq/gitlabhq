@@ -21,7 +21,7 @@ class FileUploader < CarrierWave::Uploader::Base
   end
 
   def extension_white_list
-    @allowed_extensions
+    @allowed_extensions || super
   end
 
   def store!(file)
@@ -37,5 +37,22 @@ class FileUploader < CarrierWave::Uploader::Base
 
   def self.generate_dir
     SecureRandom.hex(5)
+  end
+
+  def secure_url
+    Gitlab.config.gitlab.relative_url_root + "/files/#{@path}/#{@filename}"
+  end
+
+  def image?
+    img_ext = %w(png jpg jpeg gif bmp tiff)
+    if file.respond_to?(:extension)
+      img_ext.include?(file.extension.downcase)
+    else
+      # Not all CarrierWave storages respond to :extension
+      ext = file.path.split('.').last.downcase
+      img_ext.include?(ext)
+    end
+  rescue
+    false
   end
 end
