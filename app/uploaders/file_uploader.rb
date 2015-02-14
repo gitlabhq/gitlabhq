@@ -40,7 +40,9 @@ class FileUploader < CarrierWave::Uploader::Base
   end
 
   def secure_url
-    Gitlab.config.gitlab.relative_url_root + "/files/#{@path}/#{@filename}"
+    path_array = @path.split('/')
+    path = File.join(path_array[0],path_array[1],'uploads',path_array[2])
+    Gitlab.config.gitlab.relative_url_root + "/#{path}/#{@filename}"
   end
 
   def image?

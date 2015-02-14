@@ -93,8 +93,7 @@ Gitlab::Application.routes.draw do
   #
   # Attachments serving
   #
-  get 'files/:type/:id/:filename' => 'files#download_notes', constraints: { id: /\d+/, type: /[a-z]+/, filename:  /.+/ }
-  get 'files/:namespace/:project/:folder_id/:filename' => 'files#download_files', constraints: { namespace: /[^\/]+/, project: /[a-zA-Z.\/0-9_\-]+/, filename:  /.+/ }
+  get 'files/:type/:id/:filename' => 'files#download', constraints: { id: /\d+/, type: /[a-z]+/, filename:  /.+/ }
 
   #
   # Admin Area
@@ -256,6 +255,8 @@ Gitlab::Application.routes.draw do
           get :commits
         end
       end
+
+      get '/uploads/:folder_id/:filename' => 'uploads#show', constraints: { filename:  /.+/ }
 
       get '/compare/:from...:to' => 'compare#show', :as => 'compare',
           :constraints => { from: /.+/, to: /.+/ }
