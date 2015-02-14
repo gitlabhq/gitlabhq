@@ -28,7 +28,7 @@ gem 'omniauth-google-oauth2'
 gem 'omniauth-twitter'
 gem 'omniauth-github'
 gem 'omniauth-shibboleth'
-gem 'omniauth-kerberos'
+gem 'omniauth-kerberos', group: :kerberos
 gem 'omniauth-gitlab'
 gem 'omniauth-bitbucket'
 gem 'doorkeeper', '2.1.3'
