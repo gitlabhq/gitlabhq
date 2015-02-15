@@ -53,6 +53,7 @@ v 7.8.0 (unreleased)
   - Show assignees in merge request index page (Kelvin Mutuma)
   - Link head panel titles to relevant root page.
   - Allow users that signed up via OAuth to set their password in order to use Git over HTTP(S).
+  - Add quick help links to the GitLab pricing and feature comparison pages.
 
 v 7.7.2
   - Update GitLab Shell to version 2.4.2 that fixes a bug when developers can push to protected branch
