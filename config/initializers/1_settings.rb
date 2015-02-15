@@ -105,10 +105,6 @@ Settings.gitlab['https']        = false if Settings.gitlab['https'].nil?
 Settings.gitlab['port']       ||= Settings.gitlab.https ? 443 : 80
 Settings.gitlab['relative_url_root'] ||= ENV['RAILS_RELATIVE_URL_ROOT'] || ''
 Settings.gitlab['protocol']   ||= Settings.gitlab.https ? "https" : "http"
-Settings.gitlab['email_enabled'] ||= true if Settings.gitlab['email_enabled'].nil?
-Settings.gitlab['email_from'] ||= "gitlab@#{Settings.gitlab.host}"
-Settings.gitlab['email_display_name'] ||= "GitLab"
-Settings.gitlab['email_reply_to'] ||= "noreply@#{Settings.gitlab.host}"
 Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
 Settings.gitlab['user']       ||= 'git'
 Settings.gitlab['user_home']  ||= begin
@@ -133,6 +129,26 @@ Settings.gitlab.default_projects_features['snippets']       = false if Settings.
 Settings.gitlab.default_projects_features['visibility_level']    = Settings.send(:verify_constant, Gitlab::VisibilityLevel, Settings.gitlab.default_projects_features['visibility_level'], Gitlab::VisibilityLevel::PRIVATE)
 Settings.gitlab['repository_downloads_path'] = File.absolute_path(Settings.gitlab['repository_downloads_path'] || 'tmp/repositories', Rails.root)
 Settings.gitlab['restricted_signup_domains'] ||= []
+
+#
+# Outgoing emails
+#
+Settings['outgoing_emails'] ||= Settingslogic.new({})
+Settings['outgoing_emails'].tap do |opts|
+  # For backward compatibility. TODO remove in next major release.
+  opts['enabled'] ||= Settings.gitlab['email_enabled']
+  opts['from'] ||= Settings.gitlab['email_from']
+  opts['display_name'] ||= Settings.gitlab['display_name']
+  opts['reply_to'] ||= Settings.gitlab['email_reply_to']
+
+  opts['enabled'] ||= opts['enabled'].nil?
+  opts['display_name'] ||= "GitLab"
+  opts['from'] ||= "gitlab@#{Settings.gitlab.host}"
+  opts['reply_to'] ||= "noreply@#{Settings.gitlab.host}"
+  opts['delivery_method'] ||= :sendmail
+  opts['sendmail_settings'] ||= {}
+  opts['smtp_settings'] ||= {}
+end
 
 #
 # Gravatar
