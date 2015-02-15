@@ -45,9 +45,9 @@ To enable the Google OAuth2 OmniAuth provider you must register your application
              args: { access_type: 'offline', approval_prompt: '' } }
     ```
 
-1.  Change 'YOUR APP ID' to the client ID from the GitHub application page from step 7.
+1.  Change 'YOUR APP ID' to the client ID from the Google Developer page from step 10.
 
-1.  Change 'YOUR APP SECRET' to the client secret from the GitHub application page  from step 7.
+1.  Change 'YOUR APP SECRET' to the client secret from the Google Developer page from step 10.
 
 1.  Save the configuration file.
 
