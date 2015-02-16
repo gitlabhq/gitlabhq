@@ -243,7 +243,7 @@ module API
     end
 
     def secret_token
-      File.read(Rails.root.join('.gitlab_shell_secret')).chomp
+      File.read(Gitlab.config.gitlab_shell.secret_file).chomp
     end
 
     def handle_member_errors(errors)
