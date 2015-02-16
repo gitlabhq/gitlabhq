@@ -27,7 +27,7 @@ describe Gitlab::GitAccess do
       before do
         @branch = create :protected_branch, project: project
       end
-      
+
       it "returns true if user is a master" do
         project.team << [user, :master]
         expect(Gitlab::GitAccess.can_push_to_branch?(user, project, @branch.name)).to be_truthy
@@ -48,7 +48,7 @@ describe Gitlab::GitAccess do
       before do
         @branch = create :protected_branch, project: project, developers_can_push: true
       end
-      
+
       it "returns true if user is a master" do
         project.team << [user, :master]
         expect(Gitlab::GitAccess.can_push_to_branch?(user, project, @branch.name)).to be_truthy
@@ -234,13 +234,13 @@ describe Gitlab::GitAccess do
   describe "pass_git_hooks?" do
     describe "author email check" do
       it 'returns true' do
-        access.pass_git_hooks?(user, project, 'refs/heads/master', '6f6d7e7ed', '570e7b2ab').should be_true
+        access.pass_git_hooks?(user, project, 'refs/heads/master', '6f6d7e7ed', '570e7b2ab').should be_truthy
       end
 
       it 'returns false' do
         project.create_git_hook
         project.git_hook.update(commit_message_regex: "@only.com")
-        access.pass_git_hooks?(user, project, 'refs/heads/master', '6f6d7e7ed', '570e7b2ab').allowed?.should be_false
+        access.pass_git_hooks?(user, project, 'refs/heads/master', '6f6d7e7ed', '570e7b2ab').allowed?.should be_falsey
       end
     end
 
@@ -251,12 +251,12 @@ describe Gitlab::GitAccess do
       end
 
       it 'returns false for non-member user' do
-        access.pass_git_hooks?(user, project, 'refs/heads/master', '6f6d7e7ed', '570e7b2ab').allowed?.should be_false
+        access.pass_git_hooks?(user, project, 'refs/heads/master', '6f6d7e7ed', '570e7b2ab').allowed?.should be_falsey
       end
 
       it 'returns true if committer is a gitlab member' do
         create(:user, email: 'dmitriy.zaporozhets@gmail.com')
-        access.pass_git_hooks?(user, project, 'refs/heads/master', '6f6d7e7ed', '570e7b2ab').allowed?.should be_true
+        access.pass_git_hooks?(user, project, 'refs/heads/master', '6f6d7e7ed', '570e7b2ab').allowed?.should be_truthy
       end
     end
 
@@ -264,13 +264,13 @@ describe Gitlab::GitAccess do
       it 'returns false when filename is prohibited' do
         project.create_git_hook
         project.git_hook.update(file_name_regex: "jpg$")
-        access.pass_git_hooks?(user, project, 'refs/heads/master', '913c66a37', '33f3729a4').allowed?.should be_false
+        access.pass_git_hooks?(user, project, 'refs/heads/master', '913c66a37', '33f3729a4').allowed?.should be_falsey
       end
 
       it 'returns true if file name is allowed' do
         project.create_git_hook
         project.git_hook.update(file_name_regex: "exe$")
-        access.pass_git_hooks?(user, project, 'refs/heads/master', '913c66a37', '33f3729a4').allowed?.should be_true
+        access.pass_git_hooks?(user, project, 'refs/heads/master', '913c66a37', '33f3729a4').allowed?.should be_truthy
       end
     end
   end

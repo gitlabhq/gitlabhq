@@ -21,12 +21,12 @@ describe OauthHelper do
   describe "kerberos_enabled?" do
     it 'returns true' do
       allow(helper).to receive(:enabled_oauth_providers) { [:twitter, :github, :kerberos] }
-      helper.kerberos_enabled?.should be_true
+      helper.kerberos_enabled?.should be_truthy
     end
 
     it 'returns false' do
       allow(helper).to receive(:enabled_oauth_providers) { [:twitter, :ldapmain] }
-      helper.kerberos_enabled?.should be_false
+      helper.kerberos_enabled?.should be_falsey
     end
   end
 end

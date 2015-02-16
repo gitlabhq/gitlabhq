@@ -111,11 +111,11 @@ describe 'Gitlab::Satellite::MergeAction' do
 
       it { Gitlab::Satellite::MergeAction.new(
         merge_request_fork.author,
-        merge_request_fork).merge!.should be_true }
+        merge_request_fork).merge!.should be_truthy }
 
       it { Gitlab::Satellite::MergeAction.new(
         merge_request_fork_with_conflict.author,
-        merge_request_fork_with_conflict).merge!.should be_false }
+        merge_request_fork_with_conflict).merge!.should be_falsey }
     end
 
     context 'between branches' do
@@ -125,11 +125,11 @@ describe 'Gitlab::Satellite::MergeAction' do
 
       it { Gitlab::Satellite::MergeAction.new(
         merge_request.author,
-        merge_request).merge!.should be_true }
+        merge_request).merge!.should be_truthy }
 
       it { Gitlab::Satellite::MergeAction.new(
         merge_request_with_conflict.author,
-        merge_request_with_conflict).merge!.should be_false }
+        merge_request_with_conflict).merge!.should be_falsey }
     end
   end
 end

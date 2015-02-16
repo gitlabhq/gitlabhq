@@ -13,7 +13,7 @@ describe MergeRequestsHelper do
     last_commit.stub(:sha) { '12d65c' }
   end
 
-  describe :ci_build_details_path do
+  describe 'ci_build_details_path' do
     it 'does not include api credentials in a link' do
       ci_service.stub(:build_page) { "http://secretuser:secretpass@jenkins.example.com:8888/job/test1/scm/bySHA1/12d65c" }
       expect(ci_build_details_path(merge_request)).to_not match("secret")

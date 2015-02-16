@@ -213,7 +213,7 @@ objectclass: posixGroup
 
       it "gives the user master access for group 1" do
         access.update_ldap_group_links
-        expect( gitlab_group_1.has_master?(user) ).to be_true
+        expect( gitlab_group_1.has_master?(user) ).to be_truthy
       end
     end
 

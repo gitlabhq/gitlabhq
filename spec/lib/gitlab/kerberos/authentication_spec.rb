@@ -16,7 +16,7 @@ describe Gitlab::Kerberos::Authentication do
       ::Krb5Auth::Krb5.any_instance.stub(get_init_creds_password: true)
       ::Krb5Auth::Krb5.any_instance.stub(get_default_realm: kerberos_realm)
 
-      expect(klass.login('gitlab', password)).to be_true
+      expect(klass.login('gitlab', password)).to be_truthy
     end
 
     it "returns false if there is no such user in kerberos" do
@@ -25,7 +25,7 @@ describe Gitlab::Kerberos::Authentication do
       ::Krb5Auth::Krb5.any_instance.stub(get_init_creds_password: true)
       ::Krb5Auth::Krb5.any_instance.stub(get_default_realm: kerberos_realm)
 
-      expect(klass.login(kerberos_login, password)).to be_false
+      expect(klass.login(kerberos_login, password)).to be_falsy
     end
   end
 end

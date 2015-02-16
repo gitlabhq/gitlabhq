@@ -108,7 +108,7 @@ describe User do
       end
     end
   end
-  
+
   describe "non_ldap" do
     it "retuns non-ldap user" do
       User.delete_all
@@ -495,20 +495,20 @@ describe User do
     it "returns true for exisitng user" do
       create :user, email: "bruno@example.com"
 
-      expect(User.existing_member?("bruno@example.com")).to be_true
+      expect(User.existing_member?("bruno@example.com")).to be_truthy
     end
 
     it "returns false for unknown exisitng user" do
       create :user, email: "bruno@example.com"
 
-      expect(User.existing_member?("rendom@example.com")).to be_false
+      expect(User.existing_member?("rendom@example.com")).to be_falsey
     end
 
     it "returns true if additional email exists" do
       user = create :user
       user.emails.create(email: "bruno@example.com")
 
-      expect(User.existing_member?("bruno@example.com")).to be_true
+      expect(User.existing_member?("bruno@example.com")).to be_truthy
     end
   end
 
