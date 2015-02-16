@@ -6,7 +6,7 @@ class @DropzoneInput
     divHover = "<div class=\"div-dropzone-hover\"></div>"
     divSpinner = "<div class=\"div-dropzone-spinner\"></div>"
     divAlert = "<div class=\"" + alertClass + "\"></div>"
-    iconPicture = "<i class=\"fa fa-picture-o div-dropzone-icon\"></i>"
+    iconPaperclip = "<i class=\"fa fa-paperclip div-dropzone-icon\"></i>"
     iconSpinner = "<i class=\"fa fa-spinner fa-spin div-dropzone-icon\"></i>"
     btnAlert = "<button type=\"button\"" + alertAttr + ">&times;</button>"
     project_uploads_path = window.project_uploads_path or null
@@ -19,7 +19,7 @@ class @DropzoneInput
     form_dropzone = $(form).find('.div-dropzone')
     form_dropzone.parent().addClass "div-dropzone-wrapper"
     form_dropzone.append divHover
-    $(".div-dropzone-hover").append iconPicture
+    $(".div-dropzone-hover").append iconPaperclip
     form_dropzone.append divSpinner
     $(".div-dropzone-spinner").append iconSpinner
     $(".div-dropzone-spinner").css
