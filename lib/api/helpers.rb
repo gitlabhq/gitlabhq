@@ -154,6 +154,22 @@ module API
       Gitlab::Access.options_with_owner.values.include? level.to_i
     end
 
+    def issuable_order_by
+      if params["order_by"] == 'updated_at'
+        'updated_at'
+      else
+        'created_at'
+      end
+    end
+
+    def issuable_sort
+      if params["sort"] == 'asc'
+        :asc
+      else
+        :desc
+      end
+    end
+
     # error helpers
 
     def forbidden!(reason = nil)
@@ -221,6 +237,11 @@ module API
 
     def secret_token
       File.read(Rails.root.join('.gitlab_shell_secret'))
+    end
+
+    def handle_member_errors(errors)
+      error!(errors[:access_level], 422) if errors[:access_level].any?
+      not_found!(errors)
     end
   end
 end

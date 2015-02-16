@@ -11,8 +11,8 @@ GET /projects
 Parameters:
 
 - `archived` (optional) - if passed, limit by archived status
-- `order_by` (optional) - Return requests ordered by `id`, `name`, `created_at` or `last_activity_at` fields
-- `sort` (optional) - Return requests sorted in `asc` or `desc` order
+- `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
+- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
 - `search` (optional) - Return list of authorized projects according to a search criteria
 
 ```json
@@ -98,6 +98,13 @@ Get a list of projects which are owned by the authenticated user.
 GET /projects/owned
 ```
 
+Parameters:
+
+- `archived` (optional) - if passed, limit by archived status
+- `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
+- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
+- `search` (optional) - Return list of authorized projects according to a search criteria
+
 ### List ALL projects
 
 Get a list of all GitLab projects (admin only).
@@ -105,6 +112,13 @@ Get a list of all GitLab projects (admin only).
 ```
 GET /projects/all
 ```
+
+Parameters:
+
+- `archived` (optional) - if passed, limit by archived status
+- `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
+- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
+- `search` (optional) - Return list of authorized projects according to a search criteria
 
 ### Get single project
 

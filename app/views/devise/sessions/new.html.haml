@@ -1,15 +1,6 @@
 %div
   = render 'devise/shared/signin_box'
 
-  - if Gitlab.config.omniauth.enabled && devise_mapping.omniauthable?
-    .prepend-top-20
-      = render 'devise/shared/oauth_box'
-
   - if signup_enabled?
     .prepend-top-20
       = render 'devise/shared/signup_box'
-
-.clearfix.prepend-top-20
-  %p
-    %span.light Did not receive confirmation email?
-    = link_to "Send again", new_confirmation_path(resource_name)

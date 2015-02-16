@@ -13,13 +13,13 @@ describe Gitlab::GitlabImport::ProjectCreator do
   let(:namespace){ create(:namespace) }
 
   it 'creates project' do
-    Project.any_instance.stub(:add_import_job)
+    allow_any_instance_of(Project).to receive(:add_import_job)
     
     project_creator = Gitlab::GitlabImport::ProjectCreator.new(repo, namespace, user)
     project_creator.execute
     project = Project.last
     
-    project.import_url.should ==  "https://oauth2:asdffg@gitlab.com/asd/vim.git"
-    project.visibility_level.should == Gitlab::VisibilityLevel::PRIVATE
+    expect(project.import_url).to eq("https://oauth2:asdffg@gitlab.com/asd/vim.git")
+    expect(project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
   end
 end

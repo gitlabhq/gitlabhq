@@ -26,6 +26,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :signup_enabled,
       :signin_enabled,
       :gravatar_enabled,
+      :twitter_sharing_enabled,
       :sign_in_text,
       :home_page_url
     )

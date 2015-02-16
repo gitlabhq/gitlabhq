@@ -51,9 +51,12 @@ module Mentionable
       identifier = match.delete "@"
       if identifier == "all"
         users.push(*project.team.members.flatten)
-      else
-        id = User.find_by(username: identifier).try(:id)
-        users << User.find(id) unless id.blank?
+      elsif namespace = Namespace.find_by(path: identifier)
+        if namespace.type == "Group"
+          users.push(*namespace.users)
+        else
+          users << namespace.owner
+        end
       end
     end
     users.uniq
@@ -64,6 +67,7 @@ module Mentionable
     return [] if text.blank?
     ext = Gitlab::ReferenceExtractor.new
     ext.analyze(text, p)
+
     (ext.issues_for(p) +
      ext.merge_requests_for(p) +
      ext.commits_for(p)

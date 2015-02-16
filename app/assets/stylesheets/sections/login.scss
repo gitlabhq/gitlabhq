@@ -40,12 +40,15 @@
     .login-heading h3 {
       font-weight: 300;
       line-height: 1.5;
-      margin: 0;
-      display: none;
+      margin: 0 0 10px 0;
     }
 
     .login-footer {
       margin-top: 10px;
+
+      p:last-child {
+        margin-bottom: 0;
+      }
     }
 
     a.forgot {
@@ -88,6 +91,7 @@
 
   .devise-errors {
     h2 {
+      margin-top: 0;
       font-size: 14px;
       color: #a00;
     }

@@ -2,5 +2,5 @@
 %html{ lang: "en"}
   = render "layouts/head", title: "Profile"
   %body{class: "#{app_theme} #{theme_type} profile", :'data-page' => body_data_page}
-    = render "layouts/head_panel", title: "Profile"
+    = render "layouts/head_panel", title: link_to("Profile", profile_path)
     = render 'layouts/page', sidebar: 'layouts/nav/profile'

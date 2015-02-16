@@ -152,6 +152,20 @@ Parameters:
 - `user_id` (required) - The ID of a user to add
 - `access_level` (required) - Project access level
 
+### Edit group team member
+
+Updates a group team member to a specified access level.
+
+```
+PUT /groups/:id/members/:user_id
+```
+
+Parameters:
+
+- `id` (required) - The ID of a group
+- `user_id` (required) - The ID of a group member
+- `access_level` (required) - Project access level
+
 ### Remove user team member
 
 Removes user from user team.

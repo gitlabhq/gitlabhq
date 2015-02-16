@@ -16,6 +16,7 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
     page.should have_content 'Pushover'
     page.should have_content 'Atlassian Bamboo'
     page.should have_content 'JetBrains TeamCity'
+    page.should have_content 'Asana'
   end
 
   step 'I click gitlab-ci service link' do
@@ -100,6 +101,22 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
 
   step 'I should see Assembla service settings saved' do
     find_field('Token').value.should == 'verySecret'
+  end
+
+  step 'I click Asana service link' do
+    click_link 'Asana'
+  end
+
+  step 'I fill Asana settings' do
+    check 'Active'
+    fill_in 'Api key', with: 'verySecret'
+    fill_in 'Restrict to branch', with: 'master'
+    click_button 'Save'
+  end
+
+  step 'I should see Asana service settings saved' do
+    find_field('Api key').value.should == 'verySecret'
+    find_field('Restrict to branch').value.should == 'master'
   end
 
   step 'I click email on push service link' do

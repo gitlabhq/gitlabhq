@@ -19,6 +19,7 @@ class UsersController < ApplicationController
       where(project_id: authorized_projects_ids).limit(30)
 
     @title = @user.name
+    @title_url = user_path(@user)
 
     respond_to do |format|
       format.html

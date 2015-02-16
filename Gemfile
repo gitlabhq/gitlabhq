@@ -154,6 +154,9 @@ gem "gemnasium-gitlab-service", "~> 0.2"
 # Slack integration
 gem "slack-notifier", "~> 1.0.0"
 
+# Asana integration
+gem 'asana', '~> 0.0.6'
+
 # d3
 gem "d3_rails", "~> 3.1.4"
 
@@ -221,7 +224,7 @@ group :development, :test do
   gem 'rubocop', '0.28.0', require: false
   # gem 'rails-dev-tweaks'
   gem 'spinach-rails'
-  gem "rspec-rails"
+  gem "rspec-rails", '2.99'
   gem "capybara", '~> 2.2.1'
   gem "pry-rails"
   gem "awesome_print"

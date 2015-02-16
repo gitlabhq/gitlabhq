@@ -13,7 +13,7 @@ describe TreeHelper do
       let(:tree_item) { double(name: "files", path: "files") }
 
       it "should return the directory name" do
-        flatten_tree(tree_item).should match('files')
+        expect(flatten_tree(tree_item)).to match('files')
       end
     end
 
@@ -21,7 +21,7 @@ describe TreeHelper do
       let(:tree_item) { double(name: "foo", path: "foo") }
 
       it "should return the flattened path" do
-        flatten_tree(tree_item).should match('foo/bar')
+        expect(flatten_tree(tree_item)).to match('foo/bar')
       end
     end
   end

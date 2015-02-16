@@ -34,9 +34,9 @@ EOT
   end
 
   it 'knows if it has tasks' do
-    expect(subject.tasks?).to be_true
+    expect(subject.tasks?).to be_truthy
 
     subject.description = 'Now I have no tasks'
-    expect(subject.tasks?).to be_false
+    expect(subject.tasks?).to be_falsey
   end
 end

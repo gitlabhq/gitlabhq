@@ -3,9 +3,11 @@
   Import repositories from GitLab.com
 
 %p.light
-  Select projects you want to import.  
-
+  Select projects you want to import.
 %hr
+%p
+  = button_tag 'Import all projects', class: "btn btn-success js-import-all"
+
 %table.table.import-jobs
   %thead
     %tr
@@ -32,8 +34,8 @@
         %td.import-target
           = repo["path_with_namespace"]
         %td.import-actions.job-status
-          = button_tag "Add", class: "btn btn-add-to-import"
+          = button_tag "Import", class: "btn js-add-to-import"
 
 :coffeescript
-  $ -> 
-    new ImporterStatus("#{jobs_import_gitlab_path}", "#{import_gitlab_url}")
+  $ ->
+    new ImporterStatus("#{jobs_import_gitlab_path}", "#{import_gitlab_path}")

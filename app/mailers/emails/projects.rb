@@ -12,7 +12,7 @@ module Emails
       @user = User.find user_id
       @project = Project.find project_id
       @target_url = project_url(@project)
-      mail(to: @user.email,
+      mail(to: @user.notification_email,
            subject: subject("Project was moved"))
     end
 

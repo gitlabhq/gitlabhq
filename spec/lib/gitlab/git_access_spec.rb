@@ -9,17 +9,17 @@ describe Gitlab::GitAccess do
     describe 'push to none protected branch' do
       it "returns true if user is a master" do
         project.team << [user, :master]
-        Gitlab::GitAccess.can_push_to_branch?(user, project, "random_branch").should be_true
+        expect(Gitlab::GitAccess.can_push_to_branch?(user, project, "random_branch")).to be_truthy
       end
 
       it "returns true if user is a developer" do
         project.team << [user, :developer]
-        Gitlab::GitAccess.can_push_to_branch?(user, project, "random_branch").should be_true
+        expect(Gitlab::GitAccess.can_push_to_branch?(user, project, "random_branch")).to be_truthy
       end
 
       it "returns false if user is a reporter" do
         project.team << [user, :reporter]
-        Gitlab::GitAccess.can_push_to_branch?(user, project, "random_branch").should be_false
+        expect(Gitlab::GitAccess.can_push_to_branch?(user, project, "random_branch")).to be_falsey
       end
     end
 
@@ -30,17 +30,17 @@ describe Gitlab::GitAccess do
       
       it "returns true if user is a master" do
         project.team << [user, :master]
-        Gitlab::GitAccess.can_push_to_branch?(user, project, @branch.name).should be_true
+        expect(Gitlab::GitAccess.can_push_to_branch?(user, project, @branch.name)).to be_truthy
       end
 
       it "returns false if user is a developer" do
         project.team << [user, :developer]
-        Gitlab::GitAccess.can_push_to_branch?(user, project, @branch.name).should be_false
+        expect(Gitlab::GitAccess.can_push_to_branch?(user, project, @branch.name)).to be_falsey
       end
 
       it "returns false if user is a reporter" do
         project.team << [user, :reporter]
-        Gitlab::GitAccess.can_push_to_branch?(user, project, @branch.name).should be_false
+        expect(Gitlab::GitAccess.can_push_to_branch?(user, project, @branch.name)).to be_falsey
       end
     end
 
@@ -51,17 +51,17 @@ describe Gitlab::GitAccess do
       
       it "returns true if user is a master" do
         project.team << [user, :master]
-        Gitlab::GitAccess.can_push_to_branch?(user, project, @branch.name).should be_true
+        expect(Gitlab::GitAccess.can_push_to_branch?(user, project, @branch.name)).to be_truthy
       end
 
       it "returns true if user is a developer" do
         project.team << [user, :developer]
-        Gitlab::GitAccess.can_push_to_branch?(user, project, @branch.name).should be_true
+        expect(Gitlab::GitAccess.can_push_to_branch?(user, project, @branch.name)).to be_truthy
       end
 
       it "returns false if user is a reporter" do
         project.team << [user, :reporter]
-        Gitlab::GitAccess.can_push_to_branch?(user, project, @branch.name).should be_false
+        expect(Gitlab::GitAccess.can_push_to_branch?(user, project, @branch.name)).to be_falsey
       end
     end
 
@@ -74,7 +74,7 @@ describe Gitlab::GitAccess do
       context 'pull code' do
         subject { access.download_access_check(user, project) }
 
-        it { subject.allowed?.should be_true }
+        it { expect(subject.allowed?).to be_truthy }
       end
     end
 
@@ -84,7 +84,7 @@ describe Gitlab::GitAccess do
       context 'pull code' do
         subject { access.download_access_check(user, project) }
 
-        it { subject.allowed?.should be_false }
+        it { expect(subject.allowed?).to be_falsey }
       end
     end
 
@@ -97,7 +97,7 @@ describe Gitlab::GitAccess do
       context 'pull code' do
         subject { access.download_access_check(user, project) }
 
-        it { subject.allowed?.should be_false }
+        it { expect(subject.allowed?).to be_falsey }
       end
     end
 
@@ -105,7 +105,7 @@ describe Gitlab::GitAccess do
       context 'pull code' do
         subject { access.download_access_check(user, project) }
 
-        it { subject.allowed?.should be_false }
+        it { expect(subject.allowed?).to be_falsey }
       end
     end
 
@@ -117,13 +117,13 @@ describe Gitlab::GitAccess do
           before { key.projects << project }
           subject { access.download_access_check(key, project) }
 
-          it { subject.allowed?.should be_true }
+          it { expect(subject.allowed?).to be_truthy }
         end
 
         context 'denied' do
           subject { access.download_access_check(key, project) }
 
-          it { subject.allowed?.should be_false }
+          it { expect(subject.allowed?).to be_falsey }
         end
       end
     end
@@ -207,7 +207,7 @@ describe Gitlab::GitAccess do
           context action do
             subject { access.push_access_check(user, project, changes[action]) }
 
-            it { subject.allowed?.should allowed ? be_true : be_false }
+            it { expect(subject.allowed?).to allowed ? be_truthy : be_falsey }
           end
         end
       end
@@ -223,7 +223,7 @@ describe Gitlab::GitAccess do
             context action do
               subject { access.push_access_check(user, project, changes[action]) }
 
-              it { subject.allowed?.should allowed ? be_true : be_false }
+              it { expect(subject.allowed?).to allowed ? be_truthy : be_falsey }
             end
           end
         end

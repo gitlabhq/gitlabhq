@@ -12,20 +12,20 @@ describe Gitlab::LDAP::Adapter do
       context "and the result is non-empty" do
         before { ldap.stub(search: [:foo]) }
 
-        it { should be_true }
+        it { is_expected.to be_truthy }
       end
 
       context "and the result is empty" do
         before { ldap.stub(search: []) }
 
-        it { should be_false }
+        it { is_expected.to be_falsey }
       end
     end
 
     context "when the search encounters an error" do
       before { ldap.stub(search: nil, get_operation_result: double(code: 1, message: 'some error')) }
 
-      it { should be_false }
+      it { is_expected.to be_falsey }
     end
   end
 end

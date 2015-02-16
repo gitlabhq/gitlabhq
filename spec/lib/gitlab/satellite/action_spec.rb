@@ -6,7 +6,7 @@ describe 'Gitlab::Satellite::Action' do
 
   describe '#prepare_satellite!' do
     it 'should be able to fetch timeout from conf' do
-      Gitlab::Satellite::Action::DEFAULT_OPTIONS[:git_timeout].should == 30.seconds
+      expect(Gitlab::Satellite::Action::DEFAULT_OPTIONS[:git_timeout]).to eq(30.seconds)
     end
 
     it 'create a repository with a parking branch and one remote: origin' do
@@ -15,22 +15,22 @@ describe 'Gitlab::Satellite::Action' do
       #now lets dirty it up
 
       starting_remote_count = repo.git.list_remotes.size
-      starting_remote_count.should >= 1
+      expect(starting_remote_count).to be >= 1
       #kind of hookey way to add a second remote
       origin_uri = repo.git.remote({v: true}).split(" ")[1]
     begin
       repo.git.remote({raise: true}, 'add', 'another-remote', origin_uri)
       repo.git.branch({raise: true}, 'a-new-branch')
 
-      repo.heads.size.should > (starting_remote_count)
-      repo.git.remote().split(" ").size.should > (starting_remote_count)
+      expect(repo.heads.size).to be > (starting_remote_count)
+      expect(repo.git.remote().split(" ").size).to be > (starting_remote_count)
     rescue
     end
 
       repo.git.config({}, "user.name", "#{user.name} -- foo")
       repo.git.config({}, "user.email", "#{user.email} -- foo")
-      repo.config['user.name'].should =="#{user.name} -- foo"
-      repo.config['user.email'].should =="#{user.email} -- foo"
+      expect(repo.config['user.name']).to eq("#{user.name} -- foo")
+      expect(repo.config['user.email']).to eq("#{user.email} -- foo")
 
 
       #These must happen in the context of the satellite directory...
@@ -42,13 +42,13 @@ describe 'Gitlab::Satellite::Action' do
 
       #verify it's clean
       heads = repo.heads.map(&:name)
-      heads.size.should == 1
-      heads.include?(Gitlab::Satellite::Satellite::PARKING_BRANCH).should == true
+      expect(heads.size).to eq(1)
+      expect(heads.include?(Gitlab::Satellite::Satellite::PARKING_BRANCH)).to eq(true)
       remotes = repo.git.remote().split(' ')
-      remotes.size.should == 1
-      remotes.include?('origin').should == true
-      repo.config['user.name'].should ==user.name
-      repo.config['user.email'].should ==user.email
+      expect(remotes.size).to eq(1)
+      expect(remotes.include?('origin')).to eq(true)
+      expect(repo.config['user.name']).to eq(user.name)
+      expect(repo.config['user.email']).to eq(user.email)
     end
   end
 
@@ -61,16 +61,16 @@ describe 'Gitlab::Satellite::Action' do
       #set assumptions
       FileUtils.rm_f(project.satellite.lock_file)
 
-      File.exists?(project.satellite.lock_file).should be_false
+      expect(File.exists?(project.satellite.lock_file)).to be_falsey
 
       satellite_action = Gitlab::Satellite::Action.new(user, project)
       satellite_action.send(:in_locked_and_timed_satellite) do |sat_repo|
-        repo.should == sat_repo
-        (File.exists? project.satellite.lock_file).should be_true
+        expect(repo).to eq(sat_repo)
+        expect(File.exists? project.satellite.lock_file).to be_truthy
         called = true
       end
 
-      called.should be_true
+      expect(called).to be_truthy
 
     end
 
@@ -80,19 +80,19 @@ describe 'Gitlab::Satellite::Action' do
 
       # Set base assumptions
       if File.exists? project.satellite.lock_file
-        FileLockStatusChecker.new(project.satellite.lock_file).flocked?.should be_false
+        expect(FileLockStatusChecker.new(project.satellite.lock_file).flocked?).to be_falsey
       end
 
       satellite_action = Gitlab::Satellite::Action.new(user, project)
       satellite_action.send(:in_locked_and_timed_satellite) do |sat_repo|
         called = true
-        repo.should == sat_repo
-        (File.exists? project.satellite.lock_file).should be_true
-        FileLockStatusChecker.new(project.satellite.lock_file).flocked?.should be_true
+        expect(repo).to eq(sat_repo)
+        expect(File.exists? project.satellite.lock_file).to be_truthy
+        expect(FileLockStatusChecker.new(project.satellite.lock_file).flocked?).to be_truthy
       end
 
-      called.should be_true
-      FileLockStatusChecker.new(project.satellite.lock_file).flocked?.should be_false
+      expect(called).to be_truthy
+      expect(FileLockStatusChecker.new(project.satellite.lock_file).flocked?).to be_falsey
 
     end
 
