@@ -12,11 +12,3 @@
       .buttons
         = f.submit 'Save Comment', class: "btn btn-primary btn-save btn-grouped js-comment-button"
         = link_to  'Cancel', "#", class: "btn btn-cancel note-edit-cancel"
-
-      .note-form-option.hidden-xs
-        %a.choose-btn.btn.js-choose-note-attachment-button
-          %i.fa.fa-paperclip
-          %span Choose File ...
-        &nbsp;
-        %span.file_name.js-attachment-filename
-        = f.file_field :attachment, class: "js-note-attachment-input hidden"

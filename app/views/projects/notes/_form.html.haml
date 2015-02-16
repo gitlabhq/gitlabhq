@@ -20,13 +20,5 @@
       = yield(:note_actions)
       %a.btn.grouped.js-close-discussion-note-form Cancel
 
-    .note-form-option.hidden-xs
-      %a.choose-btn.btn.js-choose-note-attachment-button
-        %i.fa.fa-paperclip
-        %span Choose File ...
-      &nbsp;
-      %span.file_name.js-attachment-filename
-      = f.file_field :attachment, class: "js-note-attachment-input hidden"
-
 :javascript
   window.project_uploads_path = "#{project_uploads_path @project}";
