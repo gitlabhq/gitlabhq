@@ -2,6 +2,7 @@ module Gitlab
   class GitAccess
     DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }
     PUSH_COMMANDS = %w{ git-receive-pack }
+    GIT_ANNEX_COMMANDS = %w{ git-annex-shell }
 
     attr_reader :params, :project, :git_cmd, :user
 
@@ -27,6 +28,10 @@ module Gitlab
           push_access_check(actor.user, project, changes)
         else
           raise 'Wrong actor'
+        end
+      when *GIT_ANNEX_COMMANDS
+        if actor.is_a? Key
+          git_annex_access_check(actor.user, project, changes)
         end
       else
         return build_status_object(false, "Wrong command")
@@ -220,6 +225,22 @@ module Gitlab
 
     def build_status_object(status, message = '')
       GitAccessStatus.new(status, message)
+    end
+
+    def git_annex_access_check(user, project, changes)
+      unless user && user_allowed?(user)
+        return build_status_object(false, "You don't have access")
+      end
+
+      unless project.repository.exists?
+        return build_status_object(false, "Repository does not exist")
+      end
+
+      if user.can?(:push_code, project)
+        build_status_object(true)
+      else
+        build_status_object(false, "You don't have permission")
+      end
     end
   end
 end
