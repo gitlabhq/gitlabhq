@@ -77,7 +77,7 @@ class @Notes
     $(document).off "click", ".js-discussion-reply-button"
     $(document).off "click", ".js-add-diff-note-button"
     $(document).off "visibilitychange"
-    $(document).off "keypress", @notes_forms
+    $(document).off "keydown", @notes_forms
     $(document).off "keyup", ".js-note-text"
     $(document).off "click", ".js-note-target-reopen"
     $(document).off "click", ".js-note-target-close"
