@@ -11,6 +11,8 @@ See the documentation below for details on how to configure these services.
 
 GitLab Enterprise Edition contains [advanced JIRA support](http://doc.gitlab.com/ee/integration/jira.html) and [advanced Jenkins support](http://doc.gitlab.com/ee/integration/jenkins.html).
 
+GitLab can also integrate with [Gmail](gitlab_buttons_in_gmail.md).
+
 ## Project services
 
 Integration with services such as Campfire, Flowdock, Gemnasium, HipChat, Pivotal Tracker, and Slack are available in the form of a Project Service.
