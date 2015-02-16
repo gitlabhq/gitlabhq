@@ -52,13 +52,7 @@ module Projects
         end
       end
 
-      if @project.persisted?
-        if @project.wiki_enabled?
-          @project.create_wiki
-        end
-
-        after_create_actions
-      end
+      after_create_actions if @project.persisted?
 
       @project
     rescue => ex
@@ -79,6 +73,10 @@ module Projects
 
     def after_create_actions
       log_info("#{@project.owner.name} created a new project \"#{@project.name_with_namespace}\"")
+
+      @project.create_wiki if @project.wiki_enabled?
+
+      event_service.create_project(@project, current_user)
       system_hook_service.execute_hooks_for(@project, :create)
 
       unless @project.group

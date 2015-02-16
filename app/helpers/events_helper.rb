@@ -10,11 +10,15 @@ module EventsHelper
   end
 
   def event_action_name(event)
-    target = if event.target_type
-               event.target_type.titleize.downcase
-             else
-               'project'
-             end
+    target =  if event.target_type
+                if event.note?
+                  event.note_target_type
+                else
+                  event.target_type.titleize.downcase
+                end
+              else
+                'project'
+              end
 
     [event.action_name, target].join(" ")
   end
@@ -42,21 +46,30 @@ module EventsHelper
   end
 
   def event_feed_title(event)
-    if event.issue?
-      "#{event.author_name} #{event.action_name} issue ##{event.target_iid}: #{event.issue_title} at #{event.project_name}"
-    elsif event.merge_request?
-      "#{event.author_name} #{event.action_name} MR ##{event.target_iid}: #{event.merge_request_title} at #{event.project_name}"
-    elsif event.push?
-      "#{event.author_name} #{event.push_action_name} #{event.ref_type} #{event.ref_name} at #{event.project_name}"
-    elsif event.membership_changed?
-      "#{event.author_name} #{event.action_name} #{event.project_name}"
-    elsif event.note? && event.note_commit?
-      "#{event.author_name} commented on #{event.note_target_type} #{event.note_short_commit_id} at #{event.project_name}"
-    elsif event.note?
-      "#{event.author_name} commented on #{event.note_target_type} ##{truncate event.note_target_iid} at #{event.project_name}"
-    else
-      ""
+    words = []
+    words << event.author_name
+    words << event_action_name(event)
+
+    if event.push?
+      words << event.ref_type
+      words << event.ref_name
+      words << "at"
+    elsif event.commented?
+      if event.note_commit?
+        words << event.note_short_commit_id
+      else
+        words << "##{truncate event.note_target_iid}"
+      end
+      words << "at"
+    elsif event.target
+      words << "##{event.target_iid}:" 
+      words << event.target.title if event.target.respond_to?(:title)
+      words << "at"
     end
+
+    words << event.project_name
+
+    words.join(" ")
   end
 
   def event_feed_url(event)
@@ -96,8 +109,6 @@ module EventsHelper
       render "events/event_push", event: event
     elsif event.merge_request?
       render "events/event_merge_request", merge_request: event.merge_request
-    elsif event.push?
-      render "events/event_push", event: event
     elsif event.note?
       render "events/event_note", note: event.note
     end

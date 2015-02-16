@@ -26,7 +26,7 @@ class CreateTagService < BaseService
         project.gitlab_ci_service.async_execute(push_data)
       end
 
-      Event.create_ref_event(project, current_user, new_tag, 'add', 'refs/tags')
+      EventCreateService.new.push_ref(project, current_user, new_tag, 'add', 'refs/tags')
       success(new_tag)
     else
       error('Invalid reference name')

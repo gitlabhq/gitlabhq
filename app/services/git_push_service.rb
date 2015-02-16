@@ -52,22 +52,13 @@ class GitPushService
       end
 
       @push_data = post_receive_data(oldrev, newrev, ref)
-      create_push_event(@push_data)
+      EventCreateService.new.push(project, user, @push_data)
       project.execute_hooks(@push_data.dup, :push_hooks)
       project.execute_services(@push_data.dup)
     end
   end
 
   protected
-
-  def create_push_event(push_data)
-    Event.create!(
-      project: project,
-      action: Event::PUSHED,
-      data: push_data,
-      author_id: push_data[:user_id]
-    )
-  end
 
   # Extract any GFM references from the pushed commit messages. If the configured issue-closing regex is matched,
   # close the referenced Issue. Create cross-reference Notes corresponding to any other referenced Mentionables.

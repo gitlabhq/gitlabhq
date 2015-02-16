@@ -19,6 +19,11 @@
       = f.label :gravatar_enabled, class: 'control-label'
       .col-sm-10
         = f.check_box :gravatar_enabled, class: 'checkbox'
+    .form-group
+      = f.label :twitter_sharing_enabled, "Twitter enabled", class: 'control-label'
+      .col-sm-10
+        = f.check_box :twitter_sharing_enabled, class: 'checkbox'
+        %span.help-block Show users button to share their newly created public or internal projects on twitter
   %fieldset
     %legend Misc
     .form-group
