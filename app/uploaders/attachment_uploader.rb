@@ -21,7 +21,7 @@ class AttachmentUploader < CarrierWave::Uploader::Base
   end
 
   def secure_url
-    Gitlab.config.gitlab.relative_url_root + "/files/#{model.class.to_s.underscore}/#{model.id}/#{file.filename}"
+    File.join(Gitlab.config.gitlab.relative_url_root, "files", model.class.to_s.underscore, model.id.to_s, file.filename)
   end
 
   def file_storage?

@@ -134,19 +134,6 @@ class ProjectsController < ApplicationController
     end
   end
 
-  def upload_file
-    link_to_file = ::Projects::FileService.new(repository, params, root_url).
-      execute
-
-    respond_to do |format|
-      if link_to_file
-        format.json { render json: { link: link_to_file } }
-      else
-        format.json { render json: 'Invalid file.', status: :unprocessable_entity }
-      end
-    end
-  end
-
   def toggle_star
     current_user.toggle_star(@project)
     @project.reload
@@ -158,10 +145,6 @@ class ProjectsController < ApplicationController
   end
 
   private
-
-  def invalid_file(error)
-    render json: { message: error.message }, status: :internal_server_error
-  end
 
   def set_title
     @title = 'New Project'

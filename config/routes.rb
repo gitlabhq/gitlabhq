@@ -220,7 +220,6 @@ Gitlab::Application.routes.draw do
       put :transfer
       post :archive
       post :unarchive
-      post :upload_file
       post :toggle_star
       post :markdown_preview
       get :autocomplete_sources
@@ -256,7 +255,11 @@ Gitlab::Application.routes.draw do
         end
       end
 
-      get '/uploads/:folder_id/:filename' => 'uploads#show', constraints: { filename:  /.+/ }
+      resources :uploads, only: [:create] do
+        collection do
+          get ":secret/:filename", action: :show, constraints: { filename: /.+/ }
+        end
+      end
 
       get '/compare/:from...:to' => 'compare#show', :as => 'compare',
           :constraints => { from: /.+/, to: /.+/ }

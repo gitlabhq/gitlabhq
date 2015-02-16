@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::FileService do
+describe Projects::UploadService do
   describe 'File service' do
     before do
       @user = create :user
@@ -10,9 +10,7 @@ describe Projects::FileService do
     context 'for valid gif file' do
       before do
         gif = fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif')
-        @link_to_file = upload_file(@project.repository,
-          { 'markdown_file' => gif },
-          'http://test.example/')
+        @link_to_file = upload_file(@project.repository, gif)
       end
 
       it { expect(@link_to_file).to have_key('alt') }
@@ -28,9 +26,7 @@ describe Projects::FileService do
       before do
         png = fixture_file_upload(Rails.root + 'spec/fixtures/dk.png',
           'image/png')
-        @link_to_file = upload_file(@project.repository,
-          { 'markdown_file' => png },
-          'http://test.example/')
+        @link_to_file = upload_file(@project.repository, png)
       end
 
       it { expect(@link_to_file).to have_key('alt') }
@@ -45,7 +41,7 @@ describe Projects::FileService do
      context 'for valid jpg file' do
       before do
         jpg = fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg')
-        @link_to_file = upload_file(@project.repository, { 'markdown_file' => jpg }, 'http://test.example/')
+        @link_to_file = upload_file(@project.repository, jpg)
       end
 
       it { expect(@link_to_file).to have_key('alt') }
@@ -60,9 +56,7 @@ describe Projects::FileService do
     context 'for txt file' do
       before do
         txt = fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain')
-        @link_to_file = upload_file(@project.repository,
-          { 'markdown_file' => txt },
-          'http://test.example/')
+        @link_to_file = upload_file(@project.repository, txt)
       end
 
       it { expect(@link_to_file).to have_key('alt') }
@@ -75,7 +69,7 @@ describe Projects::FileService do
     end
   end
 
-  def upload_file(repository, params, root_url)
-    Projects::FileService.new(repository, params, root_url).execute
+  def upload_file(repository, file)
+    Projects::UploadService.new(repository, file).execute
   end
 end
