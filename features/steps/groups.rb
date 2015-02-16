@@ -313,11 +313,11 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'LDAP enabled' do
-    Gitlab.config.ldap.stub(:enabled).and_return(true)
+    Gitlab.config.ldap.should_receive(:enabled).and_return(true)
   end
 
   step 'LDAP disabled' do
-    Gitlab.config.ldap.stub(:enabled).and_return(false)
+    Gitlab.config.ldap.should_receive(:enabled).and_return(false)
   end
 
   step 'I add a new LDAP synchronization' do
