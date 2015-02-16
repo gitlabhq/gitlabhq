@@ -60,7 +60,7 @@ Please see the [requirements documentation](doc/install/requirements.md) for sys
 
 ## Installation
 
-The recommended way to install GitLab is using the provided [Omnibus packages](https://about.gitlab.com/downloads/). Compared to a manual installation, this is faster and less error prone. Just select your operating system, download the respective package (Debian or RPM) and install it using the system's package manager.
+The recommended way to install GitLab is using the provided [Omnibus packages](https://about.gitlab.com/downloads/). Compared to an installation from source, this is faster and less error prone. Just select your operating system, download the respective package (Debian or RPM) and install it using the system's package manager.
 
 There are various other options to install GitLab, please refer to the [installation page on the GitLab website](https://about.gitlab.com/installation/) for more information.
 
@@ -76,7 +76,7 @@ Since 2011 a minor or major version of GitLab is released on the 22nd of every m
 
 ## Upgrading
 
-For updating the Omnibus installation please see the [update documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/update.md). For manual installations there is an [upgrader script](doc/update/upgrader.md) and there are [upgrade guides](doc/update) detailing all necessary commands to migrate to the next version.
+For updating the Omnibus installation please see the [update documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/update.md). For installations from source there is an [upgrader script](doc/update/upgrader.md) and there are [upgrade guides](doc/update) detailing all necessary commands to migrate to the next version.
 
 ## Install a development environment
 
