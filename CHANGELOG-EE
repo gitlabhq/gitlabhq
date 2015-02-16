@@ -1,6 +1,11 @@
 v 7.8.0
-  - Fixed JIRA issue closing integration
-  - Added JIRA issue mentions
+  - Improved Jira issue closing integration
+  - Improved message logging for Jira integration
+  - Added option of referencing JIRA issues from GitLab
+  - Update Sidetiq to 0.6.3
+  - Added Github Enterprise importer
+  - When project has MR rebase enabled, MR will have rebase checkbox selected by default
+  - Minor UI fixes for sidebar navigation
 
 v 7.7.0
   - Added custom header logo support (Drew Blessing)
