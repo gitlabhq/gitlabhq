@@ -12,6 +12,8 @@ See the documentation below for details on how to configure these services.
 
 Jenkins support is [available in GitLab EE](http://doc.gitlab.com/ee/integration/jenkins.html).
 
+GitLab can also integrate with [Gmail](gitlab_buttons_in_gmail.md).
+
 ## Project services
 
 Integration with services such as Campfire, Flowdock, Gemnasium, HipChat, Pivotal Tracker, and Slack are available in the form of a Project Service.
