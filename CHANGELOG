@@ -55,6 +55,7 @@ v 7.8.0 (unreleased)
   - Allow users that signed up via OAuth to set their password in order to use Git over HTTP(S).
   - Show users button to share their newly created public or internal projects on twitter
   - Add quick help links to the GitLab pricing and feature comparison pages.
+  - Fix duplicate authorized applications in user profile and incorrect application client count in admin area.
 
 v 7.7.2
   - Update GitLab Shell to version 2.4.2 that fixes a bug when developers can push to protected branch
