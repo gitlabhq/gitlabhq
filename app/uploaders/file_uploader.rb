@@ -20,7 +20,7 @@ class FileUploader < CarrierWave::Uploader::Base
   end
 
   def self.generate_secret
-    SecureRandom.hex(5)
+    SecureRandom.hex
   end
 
   def secure_url
