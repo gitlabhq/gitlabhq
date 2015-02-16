@@ -13,7 +13,7 @@
 
 ## Administrator documentation
 
-- [Install](install/README.md) Requirements, directory structures and manual installation.
+- [Install](install/README.md) Requirements, directory structures and installation from source.
 - [Integration](integration/README.md) How to integrate with systems such as JIRA, Redmine, LDAP and Twitter.
 - [Raketasks](raketasks/README.md) Backups, maintenance, automatic web hook setup and the importing of projects.
 - [Custom git hooks](hooks/custom_hooks.md) Custom git hooks (on the filesystem) for when web hooks aren't enough.

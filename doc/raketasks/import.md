@@ -13,7 +13,7 @@
 
 - For omnibus-gitlab, it is located at: `/var/opt/gitlab/git-data/repositories` by default, unless you changed
 it in the `/etc/gitlab/gitlab.rb` file.
-- For manual installations, it is usually located at: `/home/git/repositories` or you can see where
+- For installations from source, it is usually located at: `/home/git/repositories` or you can see where
 your repositories are located by looking at `config/gitlab.yml` under the `gitlab_shell => repos_path` entry.
 
 New folder needs to have git user ownership and read/write/execute access for git user and its group:
@@ -47,7 +47,7 @@ with `/home/git`.
 $ sudo gitlab-rake gitlab:import:repos
 ```
 
-#### Manual Installation
+#### Installation from source
 
 Before running this command you need to change the directory to where your GitLab installation is located:
 
