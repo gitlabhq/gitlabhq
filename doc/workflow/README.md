@@ -13,3 +13,4 @@
 - [Project importing from GitLab.com to your private GitLab instance](import_projects_from_gitlab_com.md)
 - [Protected branches](protected_branches.md)
 - [Web Editor](web_editor.md)
+- [Manage large binaries with git annex](git_annex.md)
