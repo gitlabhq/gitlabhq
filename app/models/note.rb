@@ -49,7 +49,7 @@ class Note < ActiveRecord::Base
   scope :not_inline, ->{ where(line_code: [nil, '']) }
   scope :system, ->{ where(system: true) }
   scope :common, ->{ where(noteable_type: ["", nil]) }
-  scope :fresh, ->{ order("created_at ASC, id ASC") }
+  scope :fresh, ->{ order(created_at: :asc, id: :asc) }
   scope :inc_author_project, ->{ includes(:project, :author) }
   scope :inc_author, ->{ includes(:author) }
 
@@ -124,6 +124,36 @@ class Note < ActiveRecord::Base
         note: body,
         system: true
       })
+    end
+
+    def create_labels_change_note(noteable, project, author, added_labels, removed_labels)
+      labels_count = added_labels.count + removed_labels.count
+      added_labels = added_labels.map{ |label| "~#{label.id}" }.join(' ')
+      removed_labels = removed_labels.map{ |label| "~#{label.id}" }.join(' ')
+      message = ''
+
+      if added_labels.present?
+        message << "added #{added_labels}"
+      end
+
+      if added_labels.present? && removed_labels.present?
+        message << ' and '
+      end
+
+      if removed_labels.present?
+        message << "removed #{removed_labels}"
+      end
+
+      message << ' ' << 'label'.pluralize(labels_count)
+      body = "_#{message.capitalize}_"
+
+      create(
+        noteable: noteable,
+        project: project,
+        author: author,
+        note: body,
+        system: true
+      )
     end
 
     def create_new_commits_note(noteable, project, author, commits)

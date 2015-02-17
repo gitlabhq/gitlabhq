@@ -7,21 +7,34 @@ module LabelsHelper
     label_color = label.color || Label::DEFAULT_COLOR
     text_color = text_color_for_bg(label_color)
 
-    content_tag :span, class: 'label color-label', style: "background:#{label_color};color:#{text_color}" do
+    content_tag :span, class: 'label color-label', style: "background-color:#{label_color};color:#{text_color}" do
       label.name
     end
   end
 
   def suggested_colors
     [
-      '#D9534F',
-      '#F0AD4E',
+      '#0033CC',
       '#428BCA',
+      '#44AD8E',
+      '#A8D695',
       '#5CB85C',
+      '#69D100',
+      '#004E00',
       '#34495E',
       '#7F8C8D',
+      '#A295D6',
+      '#5843AD',
       '#8E44AD',
-      '#FFECDB'
+      '#FFECDB',
+      '#AD4363',
+      '#D10069',
+      '#CC0033',
+      '#FF0000',
+      '#D9534F',
+      '#D1D100',
+      '#F0AD4E',
+      '#AD8D43'
     ]
   end
 

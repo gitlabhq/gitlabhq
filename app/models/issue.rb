@@ -24,6 +24,7 @@ class Issue < ActiveRecord::Base
   include Issuable
   include InternalId
   include Taskable
+  include Sortable
 
   ActsAsTaggableOn.strict_case_match = true
 

@@ -4,17 +4,23 @@ describe "User Feed", feature: true  do
   describe "GET /" do
     let!(:user) { create(:user) }
 
-    context "user atom feed via private token" do
+    context 'user atom feed via private token' do
       it "should render user atom feed" do
         visit user_path(user, :atom, private_token: user.private_token)
-        body.should have_selector("feed title")
+        expect(body).to have_selector('feed title')
       end
     end
 
     context 'feed content' do
       let(:project) { create(:project) }
-      let(:issue) { create(:issue, project: project, author: user, description: '') }
-      let(:note) { create(:note, noteable: issue, author: user, note: 'Bug confirmed', project: project) }
+      let(:issue) do
+        create(:issue, project: project,
+               author: user, description: '')
+      end
+      let(:note) do
+        create(:note, noteable: issue, author: user,
+               note: 'Bug confirmed', project: project)
+      end
 
       before do
         project.team << [user, :master]
@@ -23,11 +29,11 @@ describe "User Feed", feature: true  do
         visit user_path(user, :atom, private_token: user.private_token)
       end
 
-      it "should have issue opened event" do
+      it 'should have issue opened event' do
         expect(body).to have_content("#{safe_name} opened issue ##{issue.iid}")
       end
 
-      it "should have issue comment event" do
+      it 'should have issue comment event' do
         expect(body).
           to have_content("#{safe_name} commented on issue ##{issue.iid}")
       end

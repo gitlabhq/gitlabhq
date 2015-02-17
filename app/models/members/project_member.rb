@@ -114,13 +114,11 @@ class ProjectMember < Member
   end
 
   def post_create_hook
-    Event.create(
-      project_id: self.project.id,
-      action: Event::JOINED,
-      author_id: self.user.id
-    )
-
-    notification_service.new_team_member(self) unless owner?
+    unless owner?
+      event_service.join_project(self.project, self.user)
+      notification_service.new_team_member(self)
+    end
+    
     system_hook_service.execute_hooks_for(self, :create)
   end
 
@@ -129,13 +127,12 @@ class ProjectMember < Member
   end
 
   def post_destroy_hook
-    Event.create(
-      project_id: self.project.id,
-      action: Event::LEFT,
-      author_id: self.user.id
-    )
-
+    event_service.leave_project(self.project, self.user)
     system_hook_service.execute_hooks_for(self, :destroy)
+  end
+
+  def event_service
+    EventCreateService.new
   end
 
   def notification_service

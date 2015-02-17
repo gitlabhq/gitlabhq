@@ -5,11 +5,12 @@
 #  id         :integer          not null, primary key
 #  type       :string(255)
 #  title      :string(255)
-#  project_id :integer          not null
+#  project_id :integer
 #  created_at :datetime
 #  updated_at :datetime
 #  active     :boolean          default(FALSE), not null
 #  properties :text
+#  template   :boolean          default(FALSE)
 #
 
 class IssueTrackerService < Service
@@ -68,6 +69,29 @@ class IssueTrackerService < Service
     end
   end
 
+  def execute(data)
+    message = "#{self.type} was unable to reach #{self.project_url}. Check the url and try again."
+    result = false
+
+    begin
+      url = URI.parse(self.project_url)
+
+      if url.host && url.port
+        http = Net::HTTP.start(url.host, url.port, { open_timeout: 5, read_timeout: 5 })
+        response = http.head("/")
+
+        if response
+          message = "#{self.type} received response #{response.code} when attempting to connect to #{self.project_url}"
+          result = true
+        end
+      end
+    rescue Timeout::Error, SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED => error
+      message = "#{self.type} had an error when trying to connect to #{self.project_url}: #{error.message}"
+    end
+    Rails.logger.info(message)
+    result
+  end
+
   private
 
   def enabled_in_gitlab_config
@@ -81,12 +105,14 @@ class IssueTrackerService < Service
   end
 
   def set_project_url
-    id = self.project.issues_tracker_id
+    if self.project
+      id = self.project.issues_tracker_id
 
-    if id
-      issues_tracker['project_url'].gsub(":issues_tracker_id", id)
-    else
-      issues_tracker['project_url']
+      if id
+        issues_tracker['project_url'].gsub(":issues_tracker_id", id)
+      end
     end
+
+    issues_tracker['project_url']
   end
 end

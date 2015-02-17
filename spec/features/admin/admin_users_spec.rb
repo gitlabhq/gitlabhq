@@ -9,12 +9,12 @@ describe "Admin::Users", feature: true  do
     end
 
     it "should be ok" do
-      current_path.should == admin_users_path
+      expect(current_path).to eq(admin_users_path)
     end
 
     it "should have users list" do
-      page.should have_content(@user.email)
-      page.should have_content(@user.name)
+      expect(page).to have_content(@user.email)
+      expect(page).to have_content(@user.name)
     end
   end
 
@@ -32,31 +32,33 @@ describe "Admin::Users", feature: true  do
 
     it "should apply defaults to user" do
       click_button "Create user"
-      user = User.last
-      user.projects_limit.should == Gitlab.config.gitlab.default_projects_limit
-      user.can_create_group.should == Gitlab.config.gitlab.default_can_create_group
+      user = User.find_by(username: 'bang')
+      expect(user.projects_limit).
+        to eq(Gitlab.config.gitlab.default_projects_limit)
+      expect(user.can_create_group).
+        to eq(Gitlab.config.gitlab.default_can_create_group)
     end
 
     it "should create user with valid data" do
       click_button "Create user"
-      user = User.last
-      user.name.should ==  "Big Bang"
-      user.email.should == "bigbang@mail.com"
+      user = User.find_by(username: 'bang')
+      expect(user.name).to eq('Big Bang')
+      expect(user.email).to eq('bigbang@mail.com')
     end
 
     it "should call send mail" do
-      Notify.should_receive(:new_user_email)
+      expect(Notify).to receive(:new_user_email)
 
       click_button "Create user"
     end
 
     it "should send valid email to user with email & password" do
       click_button "Create user"
-      user = User.last
+      user = User.find_by(username: 'bang')
       email = ActionMailer::Base.deliveries.last
-      email.subject.should have_content("Account was created")
-      email.text_part.body.should have_content(user.email)
-      email.text_part.body.should have_content('password')
+      expect(email.subject).to have_content('Account was created')
+      expect(email.text_part.body).to have_content(user.email)
+      expect(email.text_part.body).to have_content('password')
     end
   end
 
@@ -67,8 +69,8 @@ describe "Admin::Users", feature: true  do
     end
 
     it "should have user info" do
-      page.should have_content(@user.email)
-      page.should have_content(@user.name)
+      expect(page).to have_content(@user.email)
+      expect(page).to have_content(@user.name)
     end
   end
 
@@ -80,8 +82,8 @@ describe "Admin::Users", feature: true  do
     end
 
     it "should have user edit page" do
-      page.should have_content("Name")
-      page.should have_content("Password")
+      expect(page).to have_content('Name')
+      expect(page).to have_content('Password')
     end
 
     describe "Update user" do
@@ -93,14 +95,14 @@ describe "Admin::Users", feature: true  do
       end
 
       it "should show page with  new data" do
-        page.should have_content("bigbang@mail.com")
-        page.should have_content("Big Bang")
+        expect(page).to have_content('bigbang@mail.com')
+        expect(page).to have_content('Big Bang')
       end
 
       it "should change user entry" do
         @simple_user.reload
-        @simple_user.name.should == "Big Bang"
-        @simple_user.is_admin?.should be_true
+        expect(@simple_user.name).to eq('Big Bang')
+        expect(@simple_user.is_admin?).to be_truthy
       end
     end
   end

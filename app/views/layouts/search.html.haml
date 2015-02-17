@@ -3,7 +3,7 @@
   = render "layouts/head", title: "Search"
   %body{class: "#{app_theme} #{theme_type} application", :'data-page' => body_data_page}
     = render "layouts/broadcast"
-    = render "layouts/head_panel", title: "Search"
+    = render "layouts/head_panel", title: link_to("Search", search_path)
     .container.navless-container
       .content
         = render "layouts/flash"

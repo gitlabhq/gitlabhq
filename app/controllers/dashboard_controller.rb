@@ -9,7 +9,7 @@ class DashboardController < ApplicationController
     # If user needs more - point to Dashboard#projects page
     @projects_limit = 30
 
-    @groups = current_user.authorized_groups.sort_by(&:human_name)
+    @groups = current_user.authorized_groups.order_name_asc
     @has_authorized_projects = @projects.count > 0
     @projects_count = @projects.count
     @projects = @projects.limit(@projects_limit)

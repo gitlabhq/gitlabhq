@@ -28,7 +28,7 @@ class Label < ActiveRecord::Base
             format: { with: /\A[^&\?,&]+\z/ },
             uniqueness: { scope: :project_id }
 
-  scope :order_by_name, -> { reorder("labels.title ASC") }
+  default_scope { order(title: :asc) }
 
   alias_attribute :name, :title
 

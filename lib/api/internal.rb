@@ -69,6 +69,14 @@ module API
           gitlab_rev: Gitlab::REVISION,
         }
       end
+
+      get "/broadcast_message" do
+        if message = BroadcastMessage.current
+          present message, with: Entities::BroadcastMessage
+        else
+          not_found!
+        end
+      end
     end
   end
 end

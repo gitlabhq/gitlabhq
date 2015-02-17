@@ -33,7 +33,7 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
   end
 
   step 'I should be redirected to group page' do
-    current_path.should == admin_group_path(Group.last)
+    current_path.should == admin_group_path(Group.find_by(path: 'gitlab'))
   end
 
   When 'I select user "John Doe" from user list as "Reporter"' do

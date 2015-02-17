@@ -16,5 +16,11 @@ class @Project
     $('.hide-no-ssh-message').on 'click', (e) ->
       path = '/'
       $.cookie('hide_no_ssh_message', 'false', { path: path })
-      $(@).parents('.no-ssh-key-message').hide()
+      $(@).parents('.no-ssh-key-message').remove()
+      e.preventDefault()
+
+    $('.hide-no-password-message').on 'click', (e) ->
+      path = '/'
+      $.cookie('hide_no_password_message', 'false', { path: path })
+      $(@).parents('.no-password-message').remove()
       e.preventDefault()

@@ -16,14 +16,14 @@ describe MergeRequests::ReopenService do
       let(:service) { MergeRequests::ReopenService.new(project, user, {}) }
 
       before do
-        service.stub(:execute_hooks)
+        allow(service).to receive(:execute_hooks)
 
         merge_request.state = :closed
         service.execute(merge_request)
       end
 
-      it { merge_request.should be_valid }
-      it { merge_request.should be_reopened }
+      it { expect(merge_request).to be_valid }
+      it { expect(merge_request).to be_reopened }
 
       it 'should execute hooks with reopen action' do
         expect(service).to have_received(:execute_hooks).
@@ -32,13 +32,13 @@ describe MergeRequests::ReopenService do
 
       it 'should send email to user2 about reopen of merge_request' do
         email = ActionMailer::Base.deliveries.last
-        email.to.first.should == user2.email
-        email.subject.should include(merge_request.title)
+        expect(email.to.first).to eq(user2.email)
+        expect(email.subject).to include(merge_request.title)
       end
 
       it 'should create system note about merge_request reopen' do
         note = merge_request.notes.last
-        note.note.should include 'Status changed to reopened'
+        expect(note.note).to include 'Status changed to reopened'
       end
     end
   end

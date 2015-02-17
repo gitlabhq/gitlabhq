@@ -110,7 +110,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I should be redirected to group "Samurai" page' do
-    current_path.should == group_path(Group.last)
+    current_path.should == group_path(Group.find_by(name: 'Samurai'))
   end
 
   step 'I should see newly created group "Samurai"' do
@@ -313,11 +313,11 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'LDAP enabled' do
-    Gitlab.config.ldap.stub(:enabled).and_return(true)
+    Settings.ldap['enabled'] = true
   end
 
   step 'LDAP disabled' do
-    Gitlab.config.ldap.stub(:enabled).and_return(false)
+    Settings.ldap['enabled'] = false
   end
 
   step 'I add a new LDAP synchronization' do

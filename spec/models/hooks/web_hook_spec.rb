@@ -19,25 +19,25 @@ require 'spec_helper'
 
 describe ProjectHook do
   describe "Associations" do
-    it { should belong_to :project }
+    it { is_expected.to belong_to :project }
   end
 
   describe "Mass assignment" do
   end
 
   describe "Validations" do
-    it { should validate_presence_of(:url) }
+    it { is_expected.to validate_presence_of(:url) }
 
     context "url format" do
-      it { should allow_value("http://example.com").for(:url) }
-      it { should allow_value("https://excample.com").for(:url) }
-      it { should allow_value("http://test.com/api").for(:url) }
-      it { should allow_value("http://test.com/api?key=abc").for(:url) }
-      it { should allow_value("http://test.com/api?key=abc&type=def").for(:url) }
+      it { is_expected.to allow_value("http://example.com").for(:url) }
+      it { is_expected.to allow_value("https://excample.com").for(:url) }
+      it { is_expected.to allow_value("http://test.com/api").for(:url) }
+      it { is_expected.to allow_value("http://test.com/api?key=abc").for(:url) }
+      it { is_expected.to allow_value("http://test.com/api?key=abc&type=def").for(:url) }
 
-      it { should_not allow_value("example.com").for(:url) }
-      it { should_not allow_value("ftp://example.com").for(:url) }
-      it { should_not allow_value("herp-and-derp").for(:url) }
+      it { is_expected.not_to allow_value("example.com").for(:url) }
+      it { is_expected.not_to allow_value("ftp://example.com").for(:url) }
+      it { is_expected.not_to allow_value("herp-and-derp").for(:url) }
     end
   end
 
@@ -53,22 +53,22 @@ describe ProjectHook do
 
     it "POSTs to the web hook URL" do
       @project_hook.execute(@data)
-      WebMock.should have_requested(:post, @project_hook.url).once
+      expect(WebMock).to have_requested(:post, @project_hook.url).once
     end
 
     it "POSTs the data as JSON" do
       json = @data.to_json
 
       @project_hook.execute(@data)
-      WebMock.should have_requested(:post, @project_hook.url).with(body: json).once
+      expect(WebMock).to have_requested(:post, @project_hook.url).with(body: json).once
     end
 
     it "catches exceptions" do
-      WebHook.should_receive(:post).and_raise("Some HTTP Post error")
+      expect(WebHook).to receive(:post).and_raise("Some HTTP Post error")
 
-      lambda {
+      expect {
         @project_hook.execute(@data)
-      }.should raise_error
+      }.to raise_error
     end
   end
 end

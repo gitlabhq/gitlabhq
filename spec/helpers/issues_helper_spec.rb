@@ -5,25 +5,25 @@ describe IssuesHelper do
   let(:issue) { create :issue, project: project }
   let(:ext_project) { create :redmine_project }
 
-  describe :title_for_issue do
+  describe "title_for_issue" do
     it "should return issue title if used internal tracker" do
       @project = project
-      title_for_issue(issue.iid).should eq issue.title
+      expect(title_for_issue(issue.iid)).to eq issue.title
     end
 
     it "should always return empty string if used external tracker" do
       @project = ext_project
-      title_for_issue(rand(100)).should eq ""
+      expect(title_for_issue(rand(100))).to eq ""
     end
 
     it "should always return empty string if project nil" do
       @project = nil
 
-      title_for_issue(rand(100)).should eq ""
+      expect(title_for_issue(rand(100))).to eq ""
     end
   end
 
-  describe :url_for_project_issues do
+  describe "url_for_project_issues" do
     let(:project_url) { ext_project.external_issue_tracker.project_url }
     let(:ext_expected) do
       project_url.gsub(':project_id', ext_project.id.to_s)
@@ -33,34 +33,34 @@ describe IssuesHelper do
 
     it "should return internal path if used internal tracker" do
       @project = project
-      url_for_project_issues.should match(int_expected)
+      expect(url_for_project_issues).to match(int_expected)
     end
 
     it "should return path to external tracker" do
       @project = ext_project
 
-      url_for_project_issues.should match(ext_expected)
+      expect(url_for_project_issues).to match(ext_expected)
     end
 
     it "should return empty string if project nil" do
       @project = nil
 
-      url_for_project_issues.should eq ""
+      expect(url_for_project_issues).to eq ""
     end
 
     describe "when external tracker was enabled and then config removed" do
       before do
         @project = ext_project
-        Gitlab.config.stub(:issues_tracker).and_return(nil)
+        allow(Gitlab.config).to receive(:issues_tracker).and_return(nil)
       end
 
       it "should return path to external tracker" do
-        url_for_project_issues.should match(ext_expected)
+        expect(url_for_project_issues).to match(ext_expected)
       end
     end
   end
 
-  describe :url_for_issue do
+  describe "url_for_issue" do
     let(:issues_url) { ext_project.external_issue_tracker.issues_url}
     let(:ext_expected) do
       issues_url.gsub(':id', issue.iid.to_s)
@@ -71,34 +71,34 @@ describe IssuesHelper do
 
     it "should return internal path if used internal tracker" do
       @project = project
-      url_for_issue(issue.iid).should match(int_expected)
+      expect(url_for_issue(issue.iid)).to match(int_expected)
     end
 
     it "should return path to external tracker" do
       @project = ext_project
 
-      url_for_issue(issue.iid).should match(ext_expected)
+      expect(url_for_issue(issue.iid)).to match(ext_expected)
     end
 
     it "should return empty string if project nil" do
       @project = nil
 
-      url_for_issue(issue.iid).should eq ""
+      expect(url_for_issue(issue.iid)).to eq ""
     end
 
     describe "when external tracker was enabled and then config removed" do
       before do
         @project = ext_project
-        Gitlab.config.stub(:issues_tracker).and_return(nil)
+        allow(Gitlab.config).to receive(:issues_tracker).and_return(nil)
       end
 
       it "should return external path" do
-        url_for_issue(issue.iid).should match(ext_expected)
+        expect(url_for_issue(issue.iid)).to match(ext_expected)
       end
     end
   end
 
-  describe :url_for_new_issue do
+  describe '#url_for_new_issue' do
     let(:issues_url) { ext_project.external_issue_tracker.new_issue_url }
     let(:ext_expected) do
       issues_url.gsub(':project_id', ext_project.id.to_s)
@@ -108,29 +108,29 @@ describe IssuesHelper do
 
     it "should return internal path if used internal tracker" do
       @project = project
-      url_for_new_issue.should match(int_expected)
+      expect(url_for_new_issue).to match(int_expected)
     end
 
     it "should return path to external tracker" do
       @project = ext_project
 
-      url_for_new_issue.should match(ext_expected)
+      expect(url_for_new_issue).to match(ext_expected)
     end
 
     it "should return empty string if project nil" do
       @project = nil
 
-      url_for_new_issue.should eq ""
+      expect(url_for_new_issue).to eq ""
     end
 
     describe "when external tracker was enabled and then config removed" do
       before do
         @project = ext_project
-        Gitlab.config.stub(:issues_tracker).and_return(nil)
+        allow(Gitlab.config).to receive(:issues_tracker).and_return(nil)
       end
 
       it "should return internal path" do
-        url_for_new_issue.should match(ext_expected)
+        expect(url_for_new_issue).to match(ext_expected)
       end
     end
   end

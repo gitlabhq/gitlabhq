@@ -10,18 +10,18 @@ class NotesFinder
     notes =
       case target_type
       when "commit"
-        project.notes.for_commit_id(target_id).not_inline.fresh
+        project.notes.for_commit_id(target_id).not_inline
       when "issue"
-        project.issues.find(target_id).notes.inc_author.fresh
+        project.issues.find(target_id).notes.inc_author
       when "merge_request"
-        project.merge_requests.find(target_id).mr_and_commit_notes.inc_author.fresh
+        project.merge_requests.find(target_id).mr_and_commit_notes.inc_author
       when "snippet", "project_snippet"
-        project.snippets.find(target_id).notes.fresh
+        project.snippets.find(target_id).notes
       else
         raise 'invalid target_type'
       end
 
     # Use overlapping intervals to avoid worrying about race conditions
-    notes.where('updated_at > ?', last_fetched_at - FETCH_OVERLAP)
+    notes.where('updated_at > ?', last_fetched_at - FETCH_OVERLAP).fresh
   end
 end

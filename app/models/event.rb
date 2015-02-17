@@ -15,6 +15,7 @@
 #
 
 class Event < ActiveRecord::Base
+  include Sortable
   default_scope { where.not(author_id: nil) }
 
   CREATED   = 1
@@ -48,29 +49,6 @@ class Event < ActiveRecord::Base
   scope :in_projects, ->(project_ids) { where(project_id: project_ids).recent }
 
   class << self
-    def create_ref_event(project, user, ref, action = 'add', prefix = 'refs/heads')
-      commit = project.repository.commit(ref.target)
-
-      if action.to_s == 'add'
-        before = '00000000'
-        after = commit.id
-      else
-        before = commit.id
-        after = '00000000'
-      end
-
-      Event.create(
-        project: project,
-        action: Event::PUSHED,
-        data: {
-          ref: "#{prefix}/#{ref.name}",
-          before: before,
-          after: after
-        },
-        author_id: user.id
-      )
-    end
-
     def reset_event_cache_for(target)
       Event.where(target_id: target.id, target_type: target.class.to_s).
         order('id DESC').limit(100).
@@ -82,6 +60,8 @@ class Event < ActiveRecord::Base
     if push?
       true
     elsif membership_changed?
+      true
+    elsif created_project?
       true
     else
       (issue? || merge_request? || note? || milestone?) && target
@@ -97,25 +77,51 @@ class Event < ActiveRecord::Base
   end
 
   def target_title
-    if target && target.respond_to?(:title)
-      target.title
-    end
+    target.title if target && target.respond_to?(:title)
+  end
+
+  def created?
+    action == CREATED
   end
 
   def push?
-    action == self.class::PUSHED && valid_push?
+    action == PUSHED && valid_push?
   end
 
   def merged?
-    action == self.class::MERGED
+    action == MERGED
   end
 
   def closed?
-    action == self.class::CLOSED
+    action == CLOSED
   end
 
   def reopened?
-    action == self.class::REOPENED
+    action == REOPENED
+  end
+
+  def joined?
+    action == JOINED
+  end
+
+  def left?
+    action == LEFT
+  end
+
+  def commented?
+    action == COMMENTED
+  end
+
+  def membership_changed?
+    joined? || left?
+  end
+
+  def created_project?
+    created? && !target
+  end
+
+  def created_target?
+    created? && target
   end
 
   def milestone?
@@ -134,32 +140,32 @@ class Event < ActiveRecord::Base
     target_type == "MergeRequest"
   end
 
-  def joined?
-    action == JOINED
-  end
-
-  def left?
-    action == LEFT
-  end
-
-  def membership_changed?
-    joined? || left?
+  def milestone
+    target if milestone?
   end
 
   def issue
-    target if target_type == "Issue"
+    target if issue?
   end
 
   def merge_request
-    target if target_type == "MergeRequest"
+    target if merge_request?
   end
 
   def note
-    target if target_type == "Note"
+    target if note?
   end
 
   def action_name
-    if closed?
+    if push?
+      if new_ref?
+        "pushed new"
+      elsif rm_ref?
+        "deleted"
+      else
+        "pushed to"
+      end
+    elsif closed?
       "closed"
     elsif merged?
       "accepted"
@@ -167,6 +173,10 @@ class Event < ActiveRecord::Base
       'joined'
     elsif left?
       'left'
+    elsif commented?
+      "commented on"
+    elsif created_project?
+      "created"
     else
       "opened"
     end
@@ -233,16 +243,6 @@ class Event < ActiveRecord::Base
 
   def ref_type
     tag? ? "tag" : "branch"
-  end
-
-  def push_action_name
-    if new_ref?
-      "pushed new"
-    elsif rm_ref?
-      "deleted"
-    else
-      "pushed to"
-    end
   end
 
   def push_with_commits?

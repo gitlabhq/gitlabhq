@@ -1,6 +1,4 @@
-Note: The upcoming release contains empty lines to reduce the number of merge conflicts, scroll down to see past releases.
-
-v 7.8.0
+v 7.8.0 (unreleased)
   - Replace highlight.js with rouge-fork rugments (Stefan Tatschner)
   - Make project search case insensitive (Hannes Rosenögger)
   - Include issue/mr participants in list of recipients for reassign/close/reopen emails
@@ -10,63 +8,53 @@ v 7.8.0
   - Add diff syntax highlighting in email-on-push service notifications (Hannes Rosenögger)
   - Add API endpoint to fetch all changes on a MergeRequest (Jeroen van Baarsen)
   - View note image attachments in new tab when clicked instead of downloading them
-  - 
+  - Improve sorting logic in UI and API. Explicitly define what sorting method is used by default
   - Allow more variations for commit messages closing issues (Julien Bianchi and Hannes Rosenögger)
-  - 
-  - 
+  - Fix overflow at sidebar when have several itens
+  - Add notes for label changes in issue and merge requests
   - Show tags in commit view (Hannes Rosenögger)
   - Only count a user's vote once on a merge request or issue (Michael Clarke)
-  - 
   - Increate font size when browse source files and diffs
   - Create new file in empty repository using GitLab UI
-  - 
   - Ability to clone project using oauth2 token
-  - 
   - Upgrade Sidekiq gem to version 3.3.0
   - Stop git zombie creation during force push check
   - Show success/error messages for test setting button in services
   - Added Rubocop for code style checks
   - Fix commits pagination
-  - 
   - Async load a branch information at the commit page
   - Disable blacklist validation for project names
   - Allow configuring protection of the default branch upon first push (Marco Wessel)
-  -
   - Add gitlab.com importer
   - Add an ability to login with gitlab.com
-  - 
   - Add a commit calendar to the user profile (Hannes Rosenögger)  
-  - 
   - Submit comment on command-enter
-  - 
+  - Notify all members of a group when that group is mentioned in a comment, for example: `@gitlab-org` or `@sales`.
+  - Extend issue clossing pattern to include "Resolve", "Resolves", "Resolved", "Resolving" and "Close"
   - Fix long broadcast message cut-off on left sidebar (Visay Keo)
   - Add Project Avatars (Steven Thonus and Hannes Rosenögger)
-  - 
-  - 
   - Password reset token validity increased from 2 hours to 2 days since it is also send on account creation.
-  - 
-  - 
+  - Edit group members via API
   - Enable raw image paste from clipboard, currently Chrome only (Marco Cyriacks)
-  - 
-  - 
   - Add action property to merge request hook (Julien Bianchi)
-  - 
   - Remove duplicates from group milestone participants list.
-  - 
-  - 
   - Add a new API function that retrieves all issues assigned to a single milestone (Justin Whear and Hannes Rosenögger)
-  - 
-  - 
   - API: Access groups with their path (Julien Bianchi)
   - Added link to milestone and keeping resource context on smaller viewports for issues and merge requests (Jason Blanchard)
-  - 
-  - 
+  - Allow notification email to be set separately from primary email.
   - API: Add support for editing an existing project (Mika Mäenpää and Hannes Rosenögger) 
-  - 
-  - 
+  - Don't have Markdown preview fail for long comments/wiki pages.
   - When test web hook - show error message instead of 500 error page if connection to hook url was reset
   - Added support for firing system hooks on group create/destroy and adding/removing users to group (Boyan Tabakov)
   - Added persistent collapse button for left side nav bar (Jason Blanchard)
+  - Prevent losing unsaved comments by automatically restoring them when comment page is loaded again.
+  - Don't allow page to be scaled on mobile.
+  - Clean the username acquired from OAuth/LDAP so it doesn't fail username validation and block signing up.
+  - Show assignees in merge request index page (Kelvin Mutuma)
+  - Link head panel titles to relevant root page.
+  - Allow users that signed up via OAuth to set their password in order to use Git over HTTP(S).
+  - Show users button to share their newly created public or internal projects on twitter
+  - Add quick help links to the GitLab pricing and feature comparison pages.
 
 v 7.7.2
   - Update GitLab Shell to version 2.4.2 that fixes a bug when developers can push to protected branch
@@ -102,9 +90,9 @@ v 7.7.0
   - When accept merge request - do merge using sidaekiq job
   - Enable web signups by default
   - Fixes for diff comments: drag-n-drop images, selecting images
-  - Fixes for edit comments: drag-n-drop images, preview mode, selecting images, save & update 
+  - Fixes for edit comments: drag-n-drop images, preview mode, selecting images, save & update
   - Remove password strength indicator
-  
+
 
 
 v 7.6.0

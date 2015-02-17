@@ -11,6 +11,7 @@ See the documentation below for details on how to configure these services.
 - [Jenkins](jenkins.md) Integrate with the Jenkins CI
 - [Slack](slack.md) Integrate with the Slack chat service
 - [Kerberos](kerberos.md) Integrate with Kerberos
+- [OAuth2 provider](oauth_provider.md) OAuth2 application creation
 
 ## Project services
 

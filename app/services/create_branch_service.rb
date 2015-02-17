@@ -17,7 +17,7 @@ class CreateBranchService < BaseService
     new_branch = repository.find_branch(branch_name)
 
     if new_branch
-      Event.create_ref_event(project, current_user, new_branch, 'add')
+      EventCreateService.new.push_ref(project, current_user, new_branch, 'add')
       return success(new_branch)
     else
       return error('Invalid reference name')

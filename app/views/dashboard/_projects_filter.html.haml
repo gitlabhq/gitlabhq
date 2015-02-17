@@ -82,19 +82,19 @@
       %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
         %span.light sort:
         - if @sort.present?
-          = @sort.humanize
+          = sort_options_hash[@sort]
         - else
-          Name
+          = sort_title_recently_created
         %b.caret
       %ul.dropdown-menu
         %li
-          = link_to projects_dashboard_filter_path(sort: nil) do
-            Name
-          = link_to projects_dashboard_filter_path(sort: 'newest') do
+          = link_to projects_dashboard_filter_path(sort: sort_value_recently_created) do
             = sort_title_recently_created
-          = link_to projects_dashboard_filter_path(sort: 'oldest') do
+          = link_to projects_dashboard_filter_path(sort: sort_value_oldest_created) do
             = sort_title_oldest_created
-          = link_to projects_dashboard_filter_path(sort: 'recently_updated') do
+          = link_to projects_dashboard_filter_path(sort: sort_value_recently_updated) do
             = sort_title_recently_updated
-          = link_to projects_dashboard_filter_path(sort: 'last_updated') do
+          = link_to projects_dashboard_filter_path(sort: sort_value_oldest_updated) do
             = sort_title_oldest_updated
+          = link_to projects_dashboard_filter_path(sort: sort_value_name) do
+            = sort_title_name

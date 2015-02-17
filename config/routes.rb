@@ -52,7 +52,7 @@ Gitlab::Application.routes.draw do
   end
   get '/s/:username' => 'snippets#user_index', as: :user_snippets, constraints: { username: /.*/ }
 
-  
+
   #
   # Import
   #
@@ -69,8 +69,8 @@ Gitlab::Application.routes.draw do
       get :jobs
     end
   end
-  
-  
+
+
 
   #
   # Explore area
@@ -141,7 +141,9 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resource :application_settings, only: [:show, :update]
+    resource :application_settings, only: [:show, :update] do
+      resources :services
+    end
 
     root to: 'dashboard#index'
   end
@@ -243,7 +245,7 @@ Gitlab::Application.routes.draw do
       post :unarchive
       post :upload_image
       post :toggle_star
-      get :markdown_preview
+      post :markdown_preview
       get :autocomplete_sources
     end
 

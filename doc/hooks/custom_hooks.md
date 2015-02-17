@@ -24,7 +24,7 @@ set up a custom hook.
 
 1. Pick a project that needs a custom git hook.
 1. On the GitLab server, navigate to the project's repository directory.
-For a manual install the path is usually 
+For an installation from source the path is usually
 `/home/git/repositories/<group>/<project>.git`. For Omnibus installs the path is
 usually `/var/opt/gitlab/git-data/repositories/<group>/<project>.git`.
 1. Create a new directory in this location called `custom_hooks`.

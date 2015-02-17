@@ -17,8 +17,8 @@ require 'spec_helper'
 
 describe Milestone do
   describe "Associations" do
-    it { should belong_to(:project) }
-    it { should have_many(:issues) }
+    it { is_expected.to belong_to(:project) }
+    it { is_expected.to have_many(:issues) }
   end
 
   describe "Mass assignment" do
@@ -26,8 +26,8 @@ describe Milestone do
 
   describe "Validation" do
     before { subject.stub(set_iid: false) }
-    it { should validate_presence_of(:title) }
-    it { should validate_presence_of(:project) }
+    it { is_expected.to validate_presence_of(:title) }
+    it { is_expected.to validate_presence_of(:project) }
   end
 
   let(:milestone) { create(:milestone) }
@@ -36,30 +36,30 @@ describe Milestone do
   describe "#percent_complete" do
     it "should not count open issues" do
       milestone.issues << issue
-      milestone.percent_complete.should == 0
+      expect(milestone.percent_complete).to eq(0)
     end
 
     it "should count closed issues" do
       issue.close
       milestone.issues << issue
-      milestone.percent_complete.should == 100
+      expect(milestone.percent_complete).to eq(100)
     end
 
     it "should recover from dividing by zero" do
-      milestone.issues.should_receive(:count).and_return(0)
-      milestone.percent_complete.should == 100
+      expect(milestone.issues).to receive(:count).and_return(0)
+      expect(milestone.percent_complete).to eq(100)
     end
   end
 
   describe "#expires_at" do
     it "should be nil when due_date is unset" do
       milestone.update_attributes(due_date: nil)
-      milestone.expires_at.should be_nil
+      expect(milestone.expires_at).to be_nil
     end
 
     it "should not be nil when due_date is set" do
       milestone.update_attributes(due_date: Date.tomorrow)
-      milestone.expires_at.should be_present
+      expect(milestone.expires_at).to be_present
     end
   end
 
@@ -69,7 +69,7 @@ describe Milestone do
         milestone.stub(due_date: Date.today.prev_year)
       end
 
-      it { milestone.expired?.should be_true }
+      it { expect(milestone.expired?).to be_truthy }
     end
 
     context "not expired" do
@@ -77,7 +77,7 @@ describe Milestone do
         milestone.stub(due_date: Date.today.next_year)
       end
 
-      it { milestone.expired?.should be_false }
+      it { expect(milestone.expired?).to be_falsey }
     end
   end
 
@@ -89,7 +89,7 @@ describe Milestone do
       )
     end
 
-    it { milestone.percent_complete.should == 75 }
+    it { expect(milestone.percent_complete).to eq(75) }
   end
 
   describe :items_count do
@@ -99,14 +99,14 @@ describe Milestone do
       milestone.merge_requests << create(:merge_request)
     end
 
-    it { milestone.closed_items_count.should == 1 }
-    it { milestone.open_items_count.should == 2 }
-    it { milestone.total_items_count.should == 3 }
-    it { milestone.is_empty?.should be_false }
+    it { expect(milestone.closed_items_count).to eq(1) }
+    it { expect(milestone.open_items_count).to eq(2) }
+    it { expect(milestone.total_items_count).to eq(3) }
+    it { expect(milestone.is_empty?).to be_falsey }
   end
 
   describe :can_be_closed? do
-    it { milestone.can_be_closed?.should be_true }
+    it { expect(milestone.can_be_closed?).to be_truthy }
   end
 
   describe :is_empty? do
@@ -116,7 +116,7 @@ describe Milestone do
     end
 
     it 'Should return total count of issues and merge requests assigned to milestone' do
-      milestone.total_items_count.should eq 2
+      expect(milestone.total_items_count).to eq 2
     end
   end
 
@@ -129,14 +129,14 @@ describe Milestone do
     end
 
     it 'should be true if milestone active and all nested issues closed' do
-      milestone.can_be_closed?.should be_true
+      expect(milestone.can_be_closed?).to be_truthy
     end
 
     it 'should be false if milestone active and not all nested issues closed' do
       issue.milestone = milestone
       issue.save
 
-      milestone.can_be_closed?.should be_false
+      expect(milestone.can_be_closed?).to be_falsey
     end
   end
 
