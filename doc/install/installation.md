@@ -141,7 +141,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
     # Try connecting to the new database with the new user
     sudo -u git -H psql -d gitlabhq_production
-    
+
     # Quit the database session
     gitlabhq_production> \q
 
@@ -183,11 +183,12 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 ### Clone the Source
 
     # Clone GitLab repository
-    
+
     sudo -u git -H git clone https://gitlab.com/subscribers/gitlab-ee.git -b 7-8-stable-ee gitlab
 
 
 **Note:** You can change `7-8-stable-ee` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+
 
 ### Configure It
 
