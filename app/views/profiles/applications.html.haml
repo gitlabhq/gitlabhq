@@ -36,12 +36,12 @@
           %th Scope
           %th
       %tbody
-        - @authorized_tokens.each do |token|
-          - application = token.application
-          %tr{:id => "application_#{application.id}"}
-            %td= application.name
+        - @authorized_apps.each do |app|
+          - token = app.authorized_tokens.order('created_at desc').first
+          %tr{:id => "application_#{app.id}"}
+            %td= app.name
             %td= token.created_at
             %td= token.scopes
-            %td= render 'doorkeeper/authorized_applications/delete_form', application: application
+            %td= render 'doorkeeper/authorized_applications/delete_form', application: app
   - else
     %p.light You dont have any authorized applications

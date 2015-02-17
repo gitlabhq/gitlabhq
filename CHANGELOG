@@ -10,7 +10,7 @@ v 7.8.0 (unreleased)
   - View note image attachments in new tab when clicked instead of downloading them
   - Improve sorting logic in UI and API. Explicitly define what sorting method is used by default
   - Allow more variations for commit messages closing issues (Julien Bianchi and Hannes Rosenögger)
-  - Fix overflow at sidebar when have several itens
+  - Fix overflow at sidebar when have several items
   - Add notes for label changes in issue and merge requests
   - Show tags in commit view (Hannes Rosenögger)
   - Only count a user's vote once on a merge request or issue (Michael Clarke)
@@ -55,6 +55,7 @@ v 7.8.0 (unreleased)
   - Allow users that signed up via OAuth to set their password in order to use Git over HTTP(S).
   - Show users button to share their newly created public or internal projects on twitter
   - Add quick help links to the GitLab pricing and feature comparison pages.
+  - Fix duplicate authorized applications in user profile and incorrect application client count in admin area.
 
 v 7.7.2
   - Update GitLab Shell to version 2.4.2 that fixes a bug when developers can push to protected branch
