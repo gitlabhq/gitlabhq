@@ -46,11 +46,7 @@ module Gitlab
       end
 
       def github_options
-        {
-          site: 'https://api.github.com',
-          authorize_url: 'https://github.com/login/oauth/authorize',
-          token_url: 'https://github.com/login/oauth/access_token'
-        }
+        OmniAuth::Strategies::GitHub.default_options[:client_options]
       end
     end
   end

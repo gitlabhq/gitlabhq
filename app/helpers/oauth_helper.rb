@@ -4,7 +4,7 @@ module OauthHelper
   end
 
   def default_providers
-    [:twitter, :github, :gitlab, :google_oauth2, :ldap]
+    [:twitter, :github, :gitlab, :bitbucket, :google_oauth2, :ldap]
   end
 
   def enabled_oauth_providers
@@ -13,7 +13,7 @@ module OauthHelper
 
   def enabled_social_providers
     enabled_oauth_providers.select do |name|
-      [:twitter, :gitlab, :github, :google_oauth2].include?(name.to_sym)
+      [:twitter, :gitlab, :github, :bitbucket, :google_oauth2].include?(name.to_sym)
     end
   end
 

@@ -14,6 +14,8 @@ class RepositoryImportWorker
                               Gitlab::GithubImport::Importer.new(project).execute
                             elsif project.import_type == 'gitlab'
                               Gitlab::GitlabImport::Importer.new(project).execute
+                            elsif project.import_type == 'bitbucket'
+                              Gitlab::BitbucketImport::Importer.new(project).execute
                             else
                               true
                             end

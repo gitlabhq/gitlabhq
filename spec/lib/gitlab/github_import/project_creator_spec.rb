@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Github::ProjectCreator do
+describe Gitlab::GithubImport::ProjectCreator do
   let(:user) { create(:user, github_access_token: "asdffg") }
   let(:repo) { OpenStruct.new(
     login: 'vim',
@@ -15,9 +15,8 @@ describe Gitlab::Github::ProjectCreator do
   it 'creates project' do
     allow_any_instance_of(Project).to receive(:add_import_job)
     
-    project_creator = Gitlab::Github::ProjectCreator.new(repo, namespace, user)
-    project_creator.execute
-    project = Project.last
+    project_creator = Gitlab::GithubImport::ProjectCreator.new(repo, namespace, user)
+    project = project_creator.execute
     
     expect(project.import_url).to eq("https://asdffg@gitlab.com/asd/vim.git")
     expect(project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)

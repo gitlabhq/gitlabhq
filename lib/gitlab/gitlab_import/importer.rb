@@ -25,7 +25,7 @@ module Gitlab
           end
 
           comments.each do |comment|
-            body += @formatter.comment_to_md(comment["author"]["name"], comment["created_at"], comment["body"])
+            body += @formatter.comment(comment["author"]["name"], comment["created_at"], comment["body"])
           end
 
           project.issues.create!(

@@ -273,4 +273,8 @@ module ProjectsHelper
   def gitlab_import_enabled?
     enabled_oauth_providers.include?(:gitlab)
   end
+
+  def bitbucket_import_enabled?
+    enabled_oauth_providers.include?(:bitbucket)
+  end
 end
