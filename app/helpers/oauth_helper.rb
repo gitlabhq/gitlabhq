@@ -20,4 +20,6 @@ module OauthHelper
   def additional_providers
     enabled_oauth_providers.reject{|provider| provider.to_s.starts_with?('ldap')}
   end
+  
+  extend self
 end

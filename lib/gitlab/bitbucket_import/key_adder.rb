@@ -9,13 +9,16 @@ module Gitlab
       end
 
       def execute
+        return false unless BitbucketImport.public_key.present?
+        
         project_identifier = "#{repo["owner"]}/#{repo["slug"]}"
         return true if client.deploy_key(project_identifier)
-
-        # TODO: Point to actual public key.
-        client.add_deploy_key(project_identifier, File.read("/Users/douwemaan/.ssh/id_rsa.pub"))
+        
+        client.add_deploy_key(project_identifier, BitbucketImport.public_key)
 
         true
+      rescue
+        false
       end
     end
   end

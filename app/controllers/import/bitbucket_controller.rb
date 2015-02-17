@@ -1,4 +1,5 @@
 class Import::BitbucketController < Import::BaseController
+  before_filter :verify_bitbucket_import_enabled
   before_filter :bitbucket_auth, except: :callback
 
   # rescue_from OAuth::Error, with: :bitbucket_unauthorized
@@ -53,6 +54,10 @@ class Import::BitbucketController < Import::BaseController
 
   def client
     @client ||= Gitlab::BitbucketImport::Client.new(current_user.bitbucket_access_token, current_user.bitbucket_access_token_secret)
+  end
+
+  def verify_bitbucket_import_enabled
+    not_found! unless bitbucket_import_enabled?
   end
 
   def bitbucket_auth
