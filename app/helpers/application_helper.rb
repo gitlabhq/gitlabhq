@@ -51,7 +51,13 @@ module ApplicationHelper
   end
 
   def project_icon(project_id, options = {})
-    project = Project.find_with_namespace(project_id)
+    project =
+      if project_id.is_a?(Project)
+        project = project_id
+      else
+        Project.find_with_namespace(project_id)
+      end
+
     if project.avatar.present?
       image_tag project.avatar.url, options
     elsif project.avatar_in_git

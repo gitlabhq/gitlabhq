@@ -12,11 +12,7 @@ class DashboardController < ApplicationController
     @groups = current_user.authorized_groups.order_name_asc
     @has_authorized_projects = @projects.count > 0
     @projects_count = @projects.count
-    @projects = @projects.limit(@projects_limit)
-
-    @events = Event.in_projects(current_user.authorized_projects.pluck(:id))
-    @events = @event_filter.apply_filter(@events)
-    @events = @events.limit(20).offset(params[:offset] || 0)
+    @projects = @projects.includes(:namespace).limit(@projects_limit)
 
     @last_push = current_user.recent_push
 
@@ -24,8 +20,16 @@ class DashboardController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { pager_json("events/_events", @events.count) }
-      format.atom { render layout: false }
+
+      format.json do
+        load_events
+        pager_json("events/_events", @events.count)
+      end
+
+      format.atom do
+        load_events
+        render layout: false
+      end
     end
   end
 
@@ -73,5 +77,11 @@ class DashboardController < ApplicationController
 
   def load_projects
     @projects = current_user.authorized_projects.sorted_by_activity.non_archived
+  end
+
+  def load_events
+    @events = Event.in_projects(current_user.authorized_projects.pluck(:id))
+    @events = @event_filter.apply_filter(@events).with_associations
+    @events = @events.limit(20).offset(params[:offset] || 0)
   end
 end
