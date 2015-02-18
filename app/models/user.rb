@@ -610,6 +610,7 @@ class User < ActiveRecord::Base
 
   def contributed_projects_ids
     Event.where(author_id: self).
+      where("created_at > ?", Time.now - 1.year).
       code_push.
       reorder(project_id: :desc).
       select('DISTINCT(project_id)').
