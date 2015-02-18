@@ -1,37 +1,40 @@
-%h4.page-title
-  .issue-box{ class: issue_box_class(@issue) }
-    - if @issue.closed?
-      Closed
-    - else
-      Open
-  Issue ##{@issue.iid}
-  %small.creator
-    &middot; created by #{link_to_member(@project, @issue.author)} #{issue_timestamp(@issue)}
+.issue
+  .issue-details
+    %h4.page-title
+      .issue-box{ class: issue_box_class(@issue) }
+        - if @issue.closed?
+          Closed
+        - else
+          Open
+      Issue ##{@issue.iid}
+      %small.creator
+        &middot; created by #{link_to_member(@project, @issue.author)} #{issue_timestamp(@issue)}
 
-  .pull-right
-    - if can?(current_user, :write_issue, @project)
-      = link_to new_project_issue_path(@project), class: "btn btn-grouped new-issue-link", title: "New Issue", id: "new_issue_link" do
-        %i.fa.fa-plus
-        New Issue
-    - if can?(current_user, :modify_issue, @issue)
-      - if @issue.closed?
-        = link_to 'Reopen', project_issue_path(@project, @issue, issue: {state_event: :reopen }, status_only: true), method: :put,  class: "btn btn-grouped btn-reopen"
-      - else
-        = link_to 'Close', project_issue_path(@project, @issue, issue: {state_event: :close }, status_only: true), method: :put, class: "btn btn-grouped btn-close", title: "Close Issue"
+      .pull-right
+        - if can?(current_user, :write_issue, @project)
+          = link_to new_project_issue_path(@project), class: "btn btn-grouped new-issue-link", title: "New Issue", id: "new_issue_link" do
+            %i.fa.fa-plus
+            New Issue
+        - if can?(current_user, :modify_issue, @issue)
+          - if @issue.closed?
+            = link_to 'Reopen', project_issue_path(@project, @issue, issue: {state_event: :reopen }, status_only: true), method: :put,  class: "btn btn-grouped btn-reopen"
+          - else
+            = link_to 'Close', project_issue_path(@project, @issue, issue: {state_event: :close }, status_only: true), method: :put, class: "btn btn-grouped btn-close", title: "Close Issue"
 
-      = link_to edit_project_issue_path(@project, @issue), class: "btn btn-grouped issuable-edit" do
-        %i.fa.fa-pencil-square-o
-        Edit
+          = link_to edit_project_issue_path(@project, @issue), class: "btn btn-grouped issuable-edit" do
+            %i.fa.fa-pencil-square-o
+            Edit
 
-%hr
-%h3.issue-title
-  = gfm escape_once(@issue.title)
-%div
-  - if @issue.description.present?
-    .description
-      .wiki
-        = preserve do
-          = markdown(@issue.description, parse_tasks: true)
+    %hr
+    %h3.issue-title
+      = gfm escape_once(@issue.title)
+    %div
+      - if @issue.description.present?
+        .description
+          .wiki
+            = preserve do
+              = markdown(@issue.description, parse_tasks: true)
 
-%hr
-= render "projects/issues/discussion"
+    %hr
+  .issue-discussion
+    = render "projects/issues/discussion"

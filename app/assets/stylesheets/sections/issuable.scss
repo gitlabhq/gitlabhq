@@ -1,0 +1,25 @@
+@media (max-width: $screen-sm-max) {
+  .issuable-affix {
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: $screen-md-max) {
+  .issuable-affix {
+    position: static;
+  }
+}
+
+@media (min-width: $screen-md-max) {
+  .issuable-affix {
+    &.affix-top {
+      position: static;
+    }
+
+    &.affix {
+      position: fixed;
+      top: 70px;
+      width: 220px;
+    }
+  }
+}
