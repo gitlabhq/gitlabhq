@@ -58,6 +58,7 @@ v 7.8.0 (unreleased)
   - Add quick help links to the GitLab pricing and feature comparison pages.
   - Fix duplicate authorized applications in user profile and incorrect application client count in admin area.
   - Make sure Markdown previews always use the same styling as the eventual destination.
+  - Remove deprecated Group#owner_id from API
 
 v 7.7.2
   - Update GitLab Shell to version 2.4.2 that fixes a bug when developers can push to protected branch
