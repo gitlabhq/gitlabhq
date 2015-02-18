@@ -62,9 +62,9 @@ module Gitlab
       end
 
       def find_deploy_key(project_identifier, key)
-        JSON.parse(api.get("/api/1.0/repositories/#{project_identifier}/deploy-keys").body).find { |deploy_key| 
+        JSON.parse(api.get("/api/1.0/repositories/#{project_identifier}/deploy-keys").body).find do |deploy_key| 
           deploy_key["key"].chomp == key.chomp
-        }
+        end
       end
 
       def add_deploy_key(project_identifier, key)
