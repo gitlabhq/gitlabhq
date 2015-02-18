@@ -73,8 +73,6 @@ module API
       get "/broadcast_message" do
         if message = BroadcastMessage.current
           present message, with: Entities::BroadcastMessage
-        else
-          not_found!
         end
       end
     end
