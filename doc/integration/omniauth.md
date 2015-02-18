@@ -70,6 +70,7 @@ Now we can choose one or more of the Supported Providers below to continue confi
 ## Supported Providers
 
 - [GitHub](github.md)
+- [Bitbucket](bitbucket.md)
 - [GitLab.com](gitlab.md)
 - [Google](google.md)
 - [Shibboleth](shibboleth.md)

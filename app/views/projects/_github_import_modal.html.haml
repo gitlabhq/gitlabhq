@@ -3,7 +3,11 @@
     .modal-content
       .modal-header
         %a.close{href: "#", "data-dismiss" => "modal"} ×
-        %h3 GitHub OAuth import
+        %h3 Import projects from GitHub
       .modal-body
-        You need to setup integration with GitHub first.
-        = link_to 'How to setup integration with GitHub', 'https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/integration/github.md'
+        To enable importing projects from GitHub, 
+        - if current_user.admin?
+          you need to
+        - else
+          your GitLab administrator needs to
+        == #{link_to 'setup OAuth integration', 'https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/integration/github.md'}.
