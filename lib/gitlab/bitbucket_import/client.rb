@@ -61,17 +61,28 @@ module Gitlab
         JSON.parse(api.get("/api/1.0/repositories/#{project_identifier}").body)
       end
 
-      def deploy_key(project_identifier)
-        JSON.parse(api.get("/api/1.0/repositories/#{project_identifier}/deploy-keys").body).find { |key| key["label"] =~ /GitLab/ }
+      def find_deploy_key(project_identifier, key)
+        JSON.parse(api.get("/api/1.0/repositories/#{project_identifier}/deploy-keys").body).find { |deploy_key| 
+          deploy_key["key"].chomp == key.chomp
+        }
       end
 
       def add_deploy_key(project_identifier, key)
+        deploy_key = find_deploy_key(project_identifier, key)
+        return if deploy_key
+
         JSON.parse(api.post("/api/1.0/repositories/#{project_identifier}/deploy-keys", key: key, label: "GitLab import key").body)
       end
 
+      def delete_deploy_key(project_identifier, key)
+        deploy_key = find_deploy_key(project_identifier, key)
+        return unless deploy_key
+
+        api.delete("/api/1.0/repositories/#{project_identifier}/deploy-keys/#{deploy_key["pk"]}").code == "204"
+      end
+
       def projects
-        JSON.parse(api.get("/api/1.0/user/repositories").body).
-          select { |repo| repo["scm"] == "git" }
+        JSON.parse(api.get("/api/1.0/user/repositories").body).select { |repo| repo["scm"] == "git" }
       end
 
       private

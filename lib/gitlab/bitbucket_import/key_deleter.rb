@@ -1,18 +1,18 @@
 module Gitlab
   module BitbucketImport
-    class KeyAdder
-      attr_reader :repo, :current_user, :client
+    class KeyDeleter
+      attr_reader :project, :current_user, :client
 
-      def initialize(repo, current_user)
-        @repo, @current_user = repo, current_user
+      def initialize(project)
+        @project = project
+        @current_user = project.creator
         @client = Client.new(current_user.bitbucket_access_token, current_user.bitbucket_access_token_secret)
       end
 
       def execute
         return false unless BitbucketImport.public_key.present?
         
-        project_identifier = "#{repo["owner"]}/#{repo["slug"]}"
-        client.add_deploy_key(project_identifier, BitbucketImport.public_key)
+        client.delete_deploy_key(project.import_source, BitbucketImport.public_key)
 
         true
       rescue
