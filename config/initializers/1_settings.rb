@@ -92,10 +92,18 @@ Settings.omniauth['enabled']      = false if Settings.omniauth['enabled'].nil?
 Settings.omniauth['providers']  ||= []
 
 # Fill out omniauth-gitlab settings. It is needed for easy set up GHE or GH by just specifying url.
+
+github_default_url = "https://github.com"
 github_settings = Settings.omniauth['providers'].find{|provider| provider["name"] == "github"}
 
 if github_settings
-  if github_settings["url"].include?("https://github.com")
+  # For compatibility with old config files (before 7.8)
+  # where people dont have url in github settings
+  if github_settings['url'].blank?
+    github_settings['url'] = github_default_url
+  end
+
+  if github_settings["url"].include?(github_default_url)
     github_settings["args"]["client_options"] = {
       "site" =>          'https://api.github.com/',
       "authorize_url" => 'https://github.com/login/oauth/authorize',
