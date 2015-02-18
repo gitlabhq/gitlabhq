@@ -3,11 +3,9 @@
     .project-access-icon
       = visibility_level_icon(project.visibility_level)
     = link_to project.name_with_namespace, project
-
-    - if current_page?(starred_explore_projects_path)
-      %strong.pull-right
-        %i.fa.fa-star
-        = pluralize project.star_count, 'star'
+    %span.pull-right
+      %i.fa.fa-star
+      = project.star_count
 
   .project-info
     - if project.description.present?

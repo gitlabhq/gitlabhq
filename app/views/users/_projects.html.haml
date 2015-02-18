@@ -1,6 +1,21 @@
-.panel.panel-default
-  .panel-heading Personal projects
-  %ul.well-list
-    - projects.each do |project|
-      %li
-        = link_to_project project
+- if @contributed_projects.present?
+  .panel.panel-default
+    .panel-heading Projects contributed to
+    %ul.well-list
+      - @contributed_projects.sort_by(&:star_count).reverse.each do |project|
+        %li
+          = link_to_project project
+          %span.pull-right.light
+            %i.fa.fa-star
+            = project.star_count
+
+- if @projects.present?
+  .panel.panel-default
+    .panel-heading Personal projects
+    %ul.well-list
+      - @projects.sort_by(&:star_count).reverse.each do |project|
+        %li
+          = link_to_project project
+          %span.pull-right.light
+            %i.fa.fa-star
+            = project.star_count
