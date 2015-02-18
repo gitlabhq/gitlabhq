@@ -12,6 +12,11 @@
     border-left: 1px solid #bbb;
   }
 
+  // highlight line via anchor
+  pre.hll {
+    background-color: #f8eec7 !important;
+  }
+
   .hll { background-color: #f8f8f8 }
   .c { color: #999988; font-style: italic; }
   .err { color: #a61717; background-color: #e3d2d2; }
