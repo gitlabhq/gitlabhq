@@ -8,6 +8,9 @@ class UsersController < ApplicationController
     visible_projects = ProjectsFinder.new.execute(current_user)
     authorized_projects_ids = visible_projects.pluck(:id)
 
+    @contributed_projects = Project.where(id: authorized_projects_ids).
+      in_group_namespace
+
     @projects = @user.personal_projects.
       where(id: authorized_projects_ids)
 
