@@ -120,6 +120,15 @@
   }
 }
 
+.dash-new-group {
+  background: $bg_success;
+  border: 1px solid $border_success;
+
+  a {
+    color: #FFF;
+  }
+}
+
 .dash-list .str-truncated {
   max-width: 72%;
 }
