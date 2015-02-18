@@ -12,6 +12,11 @@
     border-left: 1px solid #c5d0d4;
   }
 
+  // highlight line via anchor
+  pre.hll {
+    background-color: #eee8d5 !important;
+  }
+
   /* Solarized Light
 
   For use with Jekyll and Pygments
