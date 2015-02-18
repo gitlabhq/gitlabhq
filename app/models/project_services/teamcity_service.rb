@@ -115,13 +115,13 @@ class TeamcityService < CiService
     end
   end
 
-  def execute(data)
+  def execute(push)
     auth = {
       username: username,
       password: password,
     }
 
-    branch = data[:ref]
+    branch = push[:ref].gsub('refs/heads/', '')
 
     self.class.post("#{teamcity_url}/httpAuth/app/rest/buildQueue",
                     body: "<build branchName=\"#{branch}\">"\
