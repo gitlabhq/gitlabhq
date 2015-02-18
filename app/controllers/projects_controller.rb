@@ -76,7 +76,7 @@ class ProjectsController < ApplicationController
 
       format.json do
         @events = @project.events.recent
-        @events = event_filter.apply_filter(@events).includes(:target, project: :namespace)
+        @events = event_filter.apply_filter(@events).with_associations
         @events = @events.limit(limit).offset(params[:offset] || 0)
         pager_json('events/_events', @events.count)
       end

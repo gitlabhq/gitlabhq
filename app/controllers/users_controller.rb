@@ -20,7 +20,7 @@ class UsersController < ApplicationController
     # Get user activity feed for projects common for both users
     @events = @user.recent_events.
       where(project_id: authorized_projects_ids).
-      includes(:target, project: :namespace).limit(30)
+      with_associations.limit(30)
 
     @title = @user.name
     @title_url = user_path(@user)

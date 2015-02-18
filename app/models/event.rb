@@ -47,6 +47,7 @@ class Event < ActiveRecord::Base
   scope :recent, -> { order("created_at DESC") }
   scope :code_push, -> { where(action: PUSHED) }
   scope :in_projects, ->(project_ids) { where(project_id: project_ids).recent }
+  scope :with_associations, -> { includes(project: :namespace) }
 
   class << self
     def reset_event_cache_for(target)
