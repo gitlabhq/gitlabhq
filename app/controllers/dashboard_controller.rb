@@ -22,13 +22,14 @@ class DashboardController < ApplicationController
       format.html
 
       format.json do
-        @events = Event.in_projects(current_user.authorized_projects.pluck(:id))
-        @events = @event_filter.apply_filter(@events).includes(:target, project: :namespace)
-        @events = @events.limit(20).offset(params[:offset] || 0)
+        load_events
         pager_json("events/_events", @events.count)
       end
 
-      format.atom { render layout: false }
+      format.atom do
+        load_events
+        render layout: false
+      end
     end
   end
 
@@ -76,5 +77,11 @@ class DashboardController < ApplicationController
 
   def load_projects
     @projects = current_user.authorized_projects.sorted_by_activity.non_archived
+  end
+
+  def load_events
+    @events = Event.in_projects(current_user.authorized_projects.pluck(:id))
+    @events = @event_filter.apply_filter(@events).with_associations
+    @events = @events.limit(20).offset(params[:offset] || 0)
   end
 end

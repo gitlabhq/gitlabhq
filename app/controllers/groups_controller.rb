@@ -39,13 +39,14 @@ class GroupsController < ApplicationController
       format.html
 
       format.json do
-        @events = Event.in_projects(project_ids)
-        @events = event_filter.apply_filter(@events).includes(:target, project: :namespace)
-        @events = @events.limit(20).offset(params[:offset] || 0)
+        load_events
         pager_json("events/_events", @events.count)
       end
 
-      format.atom { render layout: false }
+      format.atom do
+        load_events
+        render layout: false
+      end
     end
   end
 
@@ -153,5 +154,11 @@ class GroupsController < ApplicationController
 
   def group_params
     params.require(:group).permit(:name, :description, :path, :avatar)
+  end
+
+  def load_events
+    @events = Event.in_projects(project_ids)
+    @events = event_filter.apply_filter(@events).with_associations
+    @events = @events.limit(20).offset(params[:offset] || 0)
   end
 end
