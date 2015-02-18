@@ -22,16 +22,7 @@ module TestEnv
     # Disable mailer for spinach tests
     disable_mailer if opts[:mailer] == false
 
-    # Clean /tmp/tests
-    tmp_test_path = Rails.root.join('tmp', 'tests')
-
-    if File.directory?(tmp_test_path)
-      Dir.entries(tmp_test_path).each do |entry|
-        unless ['.', '..', 'gitlab-shell', factory_repo_name].include?(entry)
-          FileUtils.rm_r(File.join(tmp_test_path, entry))
-        end
-      end
-    end
+    clean_test_path
 
     FileUtils.mkdir_p(repos_path)
 
@@ -50,15 +41,30 @@ module TestEnv
     allow_any_instance_of(NotificationService).to receive(:mailer).and_call_original
   end
 
+  # Clean /tmp/tests
+  #
+  # Keeps gitlab-shell and gitlab-test
+  def clean_test_path
+    tmp_test_path = Rails.root.join('tmp', 'tests', '**')
+
+    Dir[tmp_test_path].each do |entry|
+      unless File.basename(entry) =~ /\Agitlab-(shell|test)\z/
+        FileUtils.rm_rf(entry)
+      end
+    end
+  end
+
   def setup_gitlab_shell
-    `rake gitlab:shell:install`
+    unless File.directory?(Rails.root.join(*%w(tmp tests gitlab-shell)))
+      `rake gitlab:shell:install`
+    end
   end
 
   def setup_factory_repo
     clone_url = "https://gitlab.com/gitlab-org/#{factory_repo_name}.git"
 
     unless File.directory?(factory_repo_path)
-      system(*%W(git clone #{clone_url} #{factory_repo_path}))
+      system(*%W(git clone -q #{clone_url} #{factory_repo_path}))
     end
 
     Dir.chdir(factory_repo_path) do
@@ -79,7 +85,7 @@ module TestEnv
     end
 
     # We must copy bare repositories because we will push to them.
-    system(*%W(git clone --bare #{factory_repo_path} #{factory_repo_path_bare}))
+    system(*%W(git clone -q --bare #{factory_repo_path} #{factory_repo_path_bare}))
   end
 
   def copy_repo(project)
@@ -101,7 +107,7 @@ module TestEnv
   end
 
   def factory_repo_path_bare
-    factory_repo_path.to_s + '_bare'
+    "#{factory_repo_path}_bare"
   end
 
   def factory_repo_name
