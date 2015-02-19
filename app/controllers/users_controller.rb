@@ -8,15 +8,19 @@ class UsersController < ApplicationController
     visible_projects = ProjectsFinder.new.execute(current_user)
     authorized_projects_ids = visible_projects.pluck(:id)
 
+    @contributed_projects = Project.where(id: authorized_projects_ids).
+      in_group_namespace.includes(:namespace)
+
     @projects = @user.personal_projects.
-      where(id: authorized_projects_ids)
+      where(id: authorized_projects_ids).includes(:namespace)
 
     # Collect only groups common for both users
     @groups = @user.groups & GroupsFinder.new.execute(current_user)
 
     # Get user activity feed for projects common for both users
     @events = @user.recent_events.
-      where(project_id: authorized_projects_ids).limit(30)
+      where(project_id: authorized_projects_ids).
+      with_associations.limit(30)
 
     @title = @user.name
     @title_url = user_path(@user)

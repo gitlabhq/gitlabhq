@@ -185,6 +185,13 @@
   }
 }
 
-.merge-request-show-labels .label {
-  padding: 6px 10px;
+.merge-request-show-labels {
+  a {
+    margin-right: 5px;
+    margin-bottom: 5px;
+    display: inline-block;
+    .color-label {
+      padding: 6px 10px;
+    }
+  }
 }

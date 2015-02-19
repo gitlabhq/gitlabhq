@@ -10,4 +10,4 @@
   .md-write-holder
     = yield
   .md-preview-holder.hide
-    .js-md-preview
+    .js-md-preview{class: (preview_class if defined?(preview_class))}

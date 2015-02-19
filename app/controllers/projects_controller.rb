@@ -5,9 +5,10 @@ class ProjectsController < ApplicationController
 
   # Authorize
   before_filter :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer, :archive, :unarchive]
+  before_filter :set_title, only: [:new, :create]
+  before_filter :event_filter, only: :show
 
   layout 'navless', only: [:new, :create, :fork]
-  before_filter :set_title, only: [:new, :create]
 
   def new
     @project = Project.new
@@ -56,9 +57,6 @@ class ProjectsController < ApplicationController
     end
 
     limit = (params[:limit] || 20).to_i
-    @events = @project.events.recent
-    @events = event_filter.apply_filter(@events)
-    @events = @events.limit(limit).offset(params[:offset] || 0)
 
     @show_star = !(current_user && current_user.starred?(@project))
 
@@ -76,7 +74,12 @@ class ProjectsController < ApplicationController
         end
       end
 
-      format.json { pager_json('events/_events', @events.count) }
+      format.json do
+        @events = @project.events.recent
+        @events = event_filter.apply_filter(@events).with_associations
+        @events = @events.limit(limit).offset(params[:offset] || 0)
+        pager_json('events/_events', @events.count)
+      end
     end
   end
 

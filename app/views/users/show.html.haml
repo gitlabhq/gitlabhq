@@ -35,9 +35,7 @@
     = render @events
   .col-md-4
     = render 'profile', user: @user
-    - if @projects.present?
-      = render 'projects', projects: @projects
-
+    = render 'projects'
 
 :coffeescript
   $ ->
