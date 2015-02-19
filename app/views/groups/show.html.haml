@@ -13,10 +13,7 @@
       - if current_user
         = render "events/event_last_push", event: @last_push
         = render 'shared/event_filter'
-      - if @events.any?
-        .content_list
-      - else
-        .nothing-here-block Project activity will be displayed here
+      .content_list
       = spinner
     %aside.side.col-md-4
       = render "projects", projects: @projects

@@ -7,4 +7,5 @@
         = link_to "#L#{i}", id: "L#{i}", rel: "#L#{i}" do
           %i.fa.fa-link
           = i
-  = highlight(blob.name, blob.data)
+  :preserve
+    #{highlight(blob.name, blob.data)}

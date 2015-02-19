@@ -272,7 +272,7 @@ class @Notes
     note_li = $(".note-row-" + note.id)
     note_li.replaceWith(note.html)
     note_li.find('.note-edit-form').hide()
-    note_li.find('.note-text').show()
+    note_li.find('.note-body > .note-text').show()
 
   ###
   Called in response to clicking the edit note link
@@ -284,7 +284,7 @@ class @Notes
   showEditForm: (e) ->
     e.preventDefault()
     note = $(this).closest(".note")
-    note.find(".note-text").hide()
+    note.find(".note-body > .note-text").hide()
     note.find(".note-header").hide()
     base_form = note.find(".note-edit-form")
     form = base_form.clone().insertAfter(base_form)
@@ -311,7 +311,7 @@ class @Notes
   cancelEdit: (e) ->
     e.preventDefault()
     note = $(this).closest(".note")
-    note.find(".note-text").show()
+    note.find(".note-body > .note-text").show()
     note.find(".note-header").show()
     note.find(".current-note-edit-form").remove()
 
@@ -345,7 +345,7 @@ class @Notes
   removeAttachment: ->
     note = $(this).closest(".note")
     note.find(".note-attachment").remove()
-    note.find(".note-text").show()
+    note.find(".note-body > .note-text").show()
     note.find(".js-note-attachment-delete").hide()
     note.find(".note-edit-form").hide()
 

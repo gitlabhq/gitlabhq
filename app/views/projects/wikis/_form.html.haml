@@ -22,7 +22,7 @@
   .form-group.wiki-content
     = f.label :content, class: 'control-label'
     .col-sm-10
-      = render layout: 'projects/md_preview' do
+      = render layout: 'projects/md_preview', locals: { preview_class: "wiki" } do
         = render 'projects/zen', f: f, attr: :content, classes: 'description form-control'
         .col-sm-12.hint
           .pull-left Wiki content is parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"), target: '_blank'}
