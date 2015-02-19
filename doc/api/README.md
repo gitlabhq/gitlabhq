@@ -22,6 +22,7 @@
 ## Clients
 
 Find API Clients for GitLab [on our website](https://about.gitlab.com/applications/#api-clients).
+You can use [GitLab as an OAuth2 client](oauth2.md) to make API calls.
 
 ## Introduction
 
@@ -67,7 +68,7 @@ curl https://localhost:3000/api/v3/user?access_token=OAUTH-TOKEN
 curl -H "Authorization: Bearer OAUTH-TOKEN" https://localhost:3000/api/v3/user
 ```
 
-Read more about [OAuth2 in GitLab](oauth2.md).
+Read more about [GitLab as an OAuth2 client](oauth2.md).
 
 ## Status codes
 

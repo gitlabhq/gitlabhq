@@ -1,14 +1,17 @@
-# OAuth2 authentication
+# GitLab as an OAuth2 client
 
-OAuth2 is a protocol that enables us to get access to private details of user's account without getting its password. 
+This document is about using other OAuth authentication service providers to sign into GitLab.
+If you want GitLab to be an OAuth authentication service provider to sign into other services please see the [Oauth2 provider documentation](../integration/oauth_provider.md).
 
-Before using the OAuth2 you should create an application in user's account. Each application getting unique App ID and App Secret parameters. You should not share them.
+OAuth2 is a protocol that enables us to authenticate a user without requiring them to give their password. 
+
+Before using the OAuth2 you should create an application in user's account. Each application gets a unique App ID and App Secret parameters. You should not share these.
 
 This functionality is based on [doorkeeper gem](https://github.com/doorkeeper-gem/doorkeeper)
 
 ## Web Application Flow
 
-This flow is using for authentication from third-party web sites and probably is most used. 
+This flow is using for authentication from third-party web sites and is probably used the most. 
 It basically consists of an exchange of an authorization token for an access token. For more detailed info, check out the [RFC spec here](http://tools.ietf.org/html/rfc6749#section-4.1)
 
 This flow consists from 3 steps.
