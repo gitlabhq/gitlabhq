@@ -5,10 +5,9 @@ class FilesController < ApplicationController
 
     if uploader.file_storage?
       if can?(current_user, :read_project, note.project)
-        # Replace old notes location in /public with the new one in / and send the file
-        path = uploader.file.path.gsub("#{Rails.root}/public", Rails.root.to_s)
-
         disposition = uploader.image? ? 'inline' : 'attachment'
+        # Replace old notes location in /public with the new one in / and send the file
+        path = uploader.file.path.gsub("#{Rails.root}/public",Rails.root.to_s)
         send_file path, disposition: disposition
       else
         not_found!
