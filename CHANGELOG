@@ -1,4 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
+v 7.9.0 (unreleased)
+  - Added issue and merge request events to Slack service (Stan Hu)
+  - Fix broken access control for note attachments (Hannes Rosenögger)
 
 v 7.9.0 (unreleased)
   - Move labels/milestones tabs to sidebar

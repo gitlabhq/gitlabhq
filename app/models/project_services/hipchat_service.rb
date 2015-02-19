@@ -11,6 +11,10 @@
 #  active     :boolean          default(FALSE), not null
 #  properties :text
 #  template   :boolean          default(FALSE)
+#  push_events           :boolean
+#  issues_events         :boolean
+#  merge_requests_events :boolean
+#  tag_push_events       :boolean
 #
 
 class HipchatService < Service
@@ -41,6 +45,9 @@ class HipchatService < Service
   end
 
   def execute(push_data)
+    object_kind = push_data.fetch(:object_kind)
+    return unless object_kind == "push"
+
     gate[room].send('GitLab', create_message(push_data))
   end
 

@@ -11,6 +11,10 @@
 #  active     :boolean          default(FALSE), not null
 #  properties :text
 #  template   :boolean          default(FALSE)
+#  push_events           :boolean          default(TRUE)
+#  issues_events         :boolean          default(TRUE)
+#  merge_requests_events :boolean          default(TRUE)
+#  tag_push_events       :boolean          default(TRUE)
 #
 
 class IssueTrackerService < Service
@@ -66,6 +70,9 @@ class IssueTrackerService < Service
   end
 
   def execute(data)
+    object_kind = data[:object_kind]
+    return unless object_kind == "push"
+
     message = "#{self.type} was unable to reach #{self.project_url}. Check the url and try again."
     result = false
 

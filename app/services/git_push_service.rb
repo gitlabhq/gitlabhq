@@ -54,7 +54,7 @@ class GitPushService
       @push_data = post_receive_data(oldrev, newrev, ref)
       EventCreateService.new.push(project, user, @push_data)
       project.execute_hooks(@push_data.dup, :push_hooks)
-      project.execute_services(@push_data.dup)
+      project.execute_services(@push_data.dup, :push_hooks)
     end
   end
 

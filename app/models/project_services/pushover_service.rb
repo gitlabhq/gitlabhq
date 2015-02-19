@@ -11,6 +11,10 @@
 #  active     :boolean          default(FALSE), not null
 #  properties :text
 #  template   :boolean          default(FALSE)
+#  push_events           :boolean          default(TRUE)
+#  issues_events         :boolean          default(TRUE)
+#  merge_requests_events :boolean          default(TRUE)
+#  tag_push_events       :boolean          default(TRUE)
 #
 
 class PushoverService < Service
@@ -77,6 +81,9 @@ class PushoverService < Service
   end
 
   def execute(push_data)
+    object_kind = push_data[:object_kind]
+    return unless object_kind == "push"
+
     ref = push_data[:ref].gsub('refs/heads/', '')
     before = push_data[:before]
     after = push_data[:after]

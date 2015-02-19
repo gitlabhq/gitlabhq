@@ -11,6 +11,10 @@
 #  active     :boolean          default(FALSE), not null
 #  properties :text
 #  template   :boolean          default(FALSE)
+#  push_events           :boolean          default(TRUE)
+#  issues_events         :boolean          default(TRUE)
+#  merge_requests_events :boolean          default(TRUE)
+#  tag_push_events       :boolean          default(TRUE)
 #
 require "addressable/uri"
 
@@ -33,6 +37,9 @@ class BuildboxService < CiService
   end
 
   def execute(data)
+    object_kind = data[:object_kind]
+    return unless object_kind == "push"
+
     service_hook.execute(data)
   end
 

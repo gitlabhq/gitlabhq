@@ -364,9 +364,13 @@ ActiveRecord::Schema.define(version: 20150223022001) do
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "active",     default: false, null: false
+    t.boolean  "active",                default: false, null: false
     t.text     "properties"
-    t.boolean  "template",   default: false
+    t.boolean  "template",              default: false
+    t.boolean  "push_events",           default: true
+    t.boolean  "issues_events",         default: true
+    t.boolean  "merge_requests_events", default: true
+    t.boolean  "tag_push_events",       default: true
   end
 
   add_index "services", ["created_at", "id"], name: "index_services_on_created_at_and_id", using: :btree

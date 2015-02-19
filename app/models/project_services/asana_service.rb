@@ -11,6 +11,10 @@
 #  active     :boolean          default(FALSE), not null
 #  properties :text
 #  template   :boolean          default(FALSE)
+#  push_events           :boolean          default(TRUE)
+#  issues_events         :boolean          default(TRUE)
+#  merge_requests_events :boolean          default(TRUE)
+#  tag_push_events       :boolean          default(TRUE)
 #
 
 require 'asana'
@@ -62,6 +66,9 @@ automatically inspected. Leave blank to include all branches.'
   end
 
   def execute(push)
+    object_kind = push[:object_kind]
+    return unless object_kind == "push"
+
     Asana.configure do |client|
       client.api_key = api_key
     end

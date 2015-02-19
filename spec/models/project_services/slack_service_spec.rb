@@ -2,14 +2,18 @@
 #
 # Table name: services
 #
-#  id         :integer          not null, primary key
-#  type       :string(255)
-#  title      :string(255)
-#  project_id :integer          not null
-#  created_at :datetime
-#  updated_at :datetime
-#  active     :boolean          default(FALSE), not null
-#  properties :text
+#  id                    :integer          not null, primary key
+#  type                  :string(255)
+#  title                 :string(255)
+#  project_id            :integer          not null
+#  created_at            :datetime
+#  updated_at            :datetime
+#  active                :boolean          default(FALSE), not null
+#  properties            :text
+#  push_events           :boolean
+#  issues_events         :boolean
+#  merge_requests_events :boolean
+#  tag_push_events       :boolean
 #
 
 require 'spec_helper'
@@ -34,7 +38,7 @@ describe SlackService do
     let(:slack)   { SlackService.new }
     let(:user)    { create(:user) }
     let(:project) { create(:project) }
-    let(:sample_data) { Gitlab::PushDataBuilder.build_sample(project, user) }
+    let(:push_sample_data) { Gitlab::PushDataBuilder.build_sample(project, user) }
     let(:webhook_url) { 'https://hooks.slack.com/services/SVRWFV0VVAR97N/B02R25XN3/ZBqu7xMupaEEICInN685' }
     let(:username) { 'slack_username' }
     let(:channel) { 'slack_channel' }
@@ -48,10 +52,43 @@ describe SlackService do
       )
 
       WebMock.stub_request(:post, webhook_url)
+
+      opts = {
+        title: 'Awesome issue',
+        description: 'please fix'
+      }
+
+      issue_service = Issues::CreateService.new(project, user, opts)
+      @issue = issue_service.execute
+      @issues_sample_data = issue_service.hook_data(@issue, 'open')
+
+      opts = {
+        title: 'Awesome merge_request',
+        description: 'please fix',
+        source_branch: 'stable',
+        target_branch: 'master'
+      }
+      merge_service = MergeRequests::CreateService.new(project,
+                                                       user, opts)
+      @merge_request = merge_service.execute
+      @merge_sample_data = merge_service.hook_data(@merge_request,
+                                                   'open')
     end
 
-    it "should call Slack API" do
-      slack.execute(sample_data)
+    it "should call Slack API for pull requests" do
+      slack.execute(push_sample_data)
+
+      WebMock.should have_requested(:post, webhook_url).once
+    end
+
+    it "should call Slack API for issue events" do
+      slack.execute(@issues_sample_data)
+
+      WebMock.should have_requested(:post, webhook_url).once
+    end
+
+    it "should call Slack API for merge requests events" do
+      slack.execute(@merge_sample_data)
 
       expect(WebMock).to have_requested(:post, webhook_url).once
     end

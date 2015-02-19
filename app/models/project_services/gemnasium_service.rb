@@ -11,6 +11,10 @@
 #  active     :boolean          default(FALSE), not null
 #  properties :text
 #  template   :boolean          default(FALSE)
+#  push_events           :boolean
+#  issues_events         :boolean
+#  merge_requests_events :boolean
+#  tag_push_events       :boolean
 #
 
 require "gemnasium/gitlab_service"
@@ -39,6 +43,9 @@ class GemnasiumService < Service
   end
 
   def execute(push_data)
+    object_kind = push_data[:object_kind]
+    return unless object_kind == "push"
+
     Gemnasium::GitlabService.execute(
       ref: push_data[:ref],
       before: push_data[:before],

@@ -11,6 +11,10 @@
 #  active     :boolean          default(FALSE), not null
 #  properties :text
 #  template   :boolean          default(FALSE)
+#  push_events           :boolean          default(TRUE)
+#  issues_events         :boolean          default(TRUE)
+#  merge_requests_events :boolean          default(TRUE)
+#  tag_push_events       :boolean          default(TRUE)
 #
 
 class PivotaltrackerService < Service
@@ -38,6 +42,9 @@ class PivotaltrackerService < Service
   end
 
   def execute(push)
+    object_kind = push[:object_kind]
+    return unless object_kind == "push"
+
     url = 'https://www.pivotaltracker.com/services/v5/source_commits'
     push[:commits].each do |commit|
       message = {

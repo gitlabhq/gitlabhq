@@ -11,6 +11,10 @@
 #  active     :boolean          default(FALSE), not null
 #  properties :text
 #  template   :boolean          default(FALSE)
+#  push_events           :boolean
+#  issues_events         :boolean
+#  merge_requests_events :boolean
+#  tag_push_events       :boolean
 #
 
 class EmailsOnPushService < Service
@@ -30,6 +34,9 @@ class EmailsOnPushService < Service
   end
 
   def execute(push_data)
+    object_kind = push_data[:object_kind]
+    return unless object_kind == "push"
+
     EmailsOnPushWorker.perform_async(project_id, recipients, push_data)
   end
 

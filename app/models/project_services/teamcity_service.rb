@@ -11,6 +11,10 @@
 #  active     :boolean          default(FALSE), not null
 #  properties :text
 #  template   :boolean          default(FALSE)
+#  push_events           :boolean          default(TRUE)
+#  issues_events         :boolean          default(TRUE)
+#  merge_requests_events :boolean          default(TRUE)
+#  tag_push_events       :boolean          default(TRUE)
 #
 
 class TeamcityService < CiService
@@ -115,13 +119,16 @@ class TeamcityService < CiService
     end
   end
 
-  def execute(push)
+  def execute(data)
+    object_kind = data[:object_kind]
+    return unless object_kind == "push"
+
     auth = {
       username: username,
       password: password,
     }
 
-    branch = push[:ref].gsub('refs/heads/', '')
+    branch = data[:ref].gsub('refs/heads/', '')
 
     self.class.post("#{teamcity_url}/httpAuth/app/rest/buildQueue",
                     body: "<build branchName=\"#{branch}\">"\

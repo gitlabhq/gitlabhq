@@ -11,6 +11,10 @@
 #  active     :boolean          default(FALSE), not null
 #  properties :text
 #  template   :boolean          default(FALSE)
+#  push_events           :boolean
+#  issues_events         :boolean
+#  merge_requests_events :boolean
+#  tag_push_events       :boolean
 #
 
 require "flowdock-git-hook"
@@ -38,6 +42,9 @@ class FlowdockService < Service
   end
 
   def execute(push_data)
+    object_kind = push_data[:object_kind]
+    return unless object_kind == "push"
+
     Flowdock::Git.post(
       push_data[:ref],
       push_data[:before],

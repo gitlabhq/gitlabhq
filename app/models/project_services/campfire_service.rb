@@ -11,6 +11,10 @@
 #  active     :boolean          default(FALSE), not null
 #  properties :text
 #  template   :boolean          default(FALSE)
+#  push_events           :boolean          default(TRUE)
+#  issues_events         :boolean          default(TRUE)
+#  merge_requests_events :boolean          default(TRUE)
+#  tag_push_events       :boolean          default(TRUE)
 #
 
 class CampfireService < Service
@@ -38,6 +42,9 @@ class CampfireService < Service
   end
 
   def execute(push_data)
+    object_kind = push_data[:object_kind]
+    return unless object_kind == "push"
+
     room = gate.find_room_by_name(self.room)
     return true unless room
 
