@@ -12,6 +12,11 @@
     border-left: 1px solid #555;
   }
 
+  // highlight line via anchor
+  pre.hll {
+    background-color: #49483e !important;
+  }
+
   .hll { background-color: #49483e }
   .c { color: #75715e } /* Comment */
   .err { color: #960050; background-color: #1e0010 } /* Error */
