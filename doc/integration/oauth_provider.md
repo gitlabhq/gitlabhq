@@ -1,4 +1,8 @@
-## GitLab as OAuth2 provider
+## GitLab as OAuth2 authentication service provider
+
+This document is about using GitLab as an OAuth authentication service provider to sign into other services.
+If you want to use other OAuth authentication service providers to sign into GitLab please see the [OAuth2 client documentation](../api/oauth2.md)
+
 OAuth2 provides client applications a 'secure delegated access' to server resources on behalf of a resource owner. Or you can allow users to sign in to your application with their GitLab.com account.
 In fact OAuth allows to issue access token to third-party clients by an authorization server, 
 with the approval of the resource owner, or end-user. 
