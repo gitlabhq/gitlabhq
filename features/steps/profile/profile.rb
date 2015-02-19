@@ -29,7 +29,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I should see new avatar' do
-    @user.avatar.should be_instance_of AvatarUploader
+    @user.avatar.should be_instance_of AttachmentUploader
     @user.avatar.url.should == "/uploads/user/avatar/#{ @user.id }/gitlab_logo.png"
   end
 

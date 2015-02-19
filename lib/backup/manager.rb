@@ -1,6 +1,6 @@
 module Backup
   class Manager
-    BACKUP_CONTENTS = %w{repositories/ db/ public/ uploads/ backup_information.yml}
+    BACKUP_CONTENTS = %w{repositories/ db/ uploads/ backup_information.yml}
 
     def pack
       # saving additional informations
