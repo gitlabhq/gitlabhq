@@ -13,6 +13,8 @@ See the documentation below for details on how to configure these services.
 - [Kerberos](kerberos.md) Integrate with Kerberos
 - [OAuth2 provider](oauth_provider.md) OAuth2 application creation
 
+GitLab Enterprise Edition contains [advanced JIRA support](http://doc.gitlab.com/ee/integration/jira.html) and [advanced Jenkins support](http://doc.gitlab.com/ee/integration/jenkins.html).
+
 ## Project services
 
 Integration with services such as Campfire, Flowdock, Gemnasium, HipChat, Pivotal Tracker, and Slack are available in the form of a Project Service.

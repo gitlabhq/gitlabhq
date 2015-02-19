@@ -35,7 +35,7 @@ To enable the GitHub OmniAuth provider you must register your application with G
       sudo -u git -H editor config/gitlab.yml
     ```
 
-1.  See [Initial OmniAuth Configuration](README.md#initial-omniauth-configuration) for inital settings.
+1.  See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration) for inital settings.
 
 1.  Add the provider configuration:
 

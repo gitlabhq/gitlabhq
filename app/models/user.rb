@@ -177,7 +177,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  mount_uploader :avatar, AvatarUploader
+  mount_uploader :avatar, AttachmentUploader
 
   # Scopes
   scope :admins, -> { where(admin:  true) }
