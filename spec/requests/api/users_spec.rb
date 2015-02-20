@@ -35,6 +35,9 @@ describe API::API, api: true  do
         expect(json_response.first.keys).to include 'email'
         expect(json_response.first.keys).to include 'identities'
         expect(json_response.first.keys).to include 'can_create_project'
+        expect(json_response.first.keys).to include 'confirmed_at'
+        expect(json_response.first.keys).to include 'confirmation_token'
+        expect(json_response.first.keys).to include 'confirmation_sent_at'
       end
     end
   end
@@ -68,23 +71,31 @@ describe API::API, api: true  do
     end
 
     it "should create user with correct attributes" do
-      post api('/users', admin), attributes_for(:user, admin: true, can_create_group: true)
+      post api('/users', admin), attributes_for(
+        :user, admin: true, can_create_group: true, confirmed: true
+      )
       expect(response.status).to eq(201)
       user_id = json_response['id']
       new_user = User.find(user_id)
       expect(new_user).not_to eq(nil)
       expect(new_user.admin).to eq(true)
       expect(new_user.can_create_group).to eq(true)
+      expect(new_user.confirmed_at).not_to eq(nil)
+      expect(new_user.confirmation_token).to eq(nil)
     end
 
     it "should create non-admin user" do
-      post api('/users', admin), attributes_for(:user, admin: false, can_create_group: false)
+      post api('/users', admin), attributes_for(
+        :user, admin: false, can_create_group: false, confirmed: false
+      )
       expect(response.status).to eq(201)
       user_id = json_response['id']
       new_user = User.find(user_id)
       expect(new_user).not_to eq(nil)
       expect(new_user.admin).to eq(false)
       expect(new_user.can_create_group).to eq(false)
+      expect(new_user.confirmed_at).to eq(nil)
+      expect(new_user.confirmation_token).not_to eq(nil)
     end
 
     it "should create non-admin users by default" do
@@ -94,6 +105,8 @@ describe API::API, api: true  do
       new_user = User.find(user_id)
       expect(new_user).not_to eq(nil)
       expect(new_user.admin).to eq(false)
+      expect(new_user.confirmed_at).to eq(nil)
+      expect(new_user.confirmation_token).not_to eq(nil)
     end
 
     it "should return 201 Created on success" do
@@ -267,6 +280,26 @@ describe API::API, api: true  do
           to eq(['must be greater than or equal to 0'])
       expect(json_response['message']['username']).
           to eq([Gitlab::Regex.send(:default_regex_message)])
+    end
+
+    context 'email confirmation' do
+      let (:unconfirmed_user) { create(:user, confirmed_at: nil) }
+
+      it 'should update confirmed status' do
+        put api("/users/#{unconfirmed_user.id}", admin), confirmed: true
+        expect(response.status).to eq(200)
+        expect(json_response['confirmed_at']).not_to eq(nil)
+        expect(unconfirmed_user.reload.confirmed_at).not_to eq(nil)
+        expect(unconfirmed_user.reload.confirmation_token).to eq(nil)
+      end
+
+      it 'should not change confirmed status' do
+        put api("/users/#{unconfirmed_user.id}", admin), confirmed: false
+        expect(response.status).to eq(200)
+        expect(json_response['confirmed_at']).to eq(nil)
+        expect(unconfirmed_user.reload.confirmed_at).to eq(nil)
+        expect(unconfirmed_user.reload.confirmation_token).not_to eq(nil)
+      end
     end
 
     context "with existing user" do
