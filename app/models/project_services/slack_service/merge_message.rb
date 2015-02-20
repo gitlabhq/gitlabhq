@@ -1,4 +1,4 @@
-module SlackService
+class SlackService
   class MergeMessage < BaseMessage
     attr_reader :username
     attr_reader :project_name

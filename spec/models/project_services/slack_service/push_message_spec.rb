@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe SlackMessages::SlackPushMessage do
-  subject { SlackMessages::SlackPushMessage.new(args) }
+describe SlackService::PushMessage do
+  subject { SlackService::PushMessage.new(args) }
 
   let(:args) {
     {
@@ -31,8 +31,8 @@ describe SlackMessages::SlackPushMessage do
       )
       expect(subject.attachments).to eq([
         {
-          text: "<url1|abcdefghi>: message1 - author1\n"\
-                "<url2|123456789>: message2 - author2",
+          text: "<url1|abcdefgh>: message1 - author1\n"\
+                "<url2|12345678>: message2 - author2",
           color: color,
         }
       ])
