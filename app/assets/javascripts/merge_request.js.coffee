@@ -123,7 +123,7 @@ class @MergeRequest
   loadDiff: (event) ->
     $.ajax
       type: 'GET'
-      url: this.$('.merge-request-tabs .diffs-tab a').attr('href') + ".json";
+      url: this.$('.merge-request-tabs .diffs-tab a').attr('href') + ".json"
       beforeSend: =>
         this.$('.mr-loading-status .loading').show()
       complete: =>
