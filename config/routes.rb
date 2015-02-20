@@ -75,7 +75,21 @@ Gitlab::Application.routes.draw do
     end
   end
 
+  #
+  # Uploads
+  #
 
+  scope path: :uploads do
+    # Note attachments and User/Group/Project avatars
+    get ":model/:mounted_as/:id/:filename", 
+        to:           "uploads#show", 
+        constraints:  { model: /note|user|group|project/, mounted_as: /avatar|attachment/, filename: /.+/ }
+
+    # Project markdown uploads
+    get ":id/:secret/:filename", 
+        to:           "projects/uploads#show", 
+        constraints:  { id: /[a-zA-Z.0-9_\-]+\/[a-zA-Z.0-9_\-]+/, filename: /.+/ }
+  end
 
   #
   # Explore area
