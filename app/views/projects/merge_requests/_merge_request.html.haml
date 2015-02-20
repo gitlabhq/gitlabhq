@@ -2,7 +2,7 @@
   .merge-request-title
     %span.str-truncated
       = link_to_gfm merge_request.title, project_merge_request_path(merge_request.target_project, merge_request), class: "row_title"
-    .pull-right
+    .pull-right.light
       - if merge_request.merged?
         %span
           %i.fa.fa-check

@@ -23,3 +23,19 @@
     }
   }
 }
+
+.issuable-context-title {
+  font-size: 15px;
+  line-height: 1.4;
+  margin-bottom: 5px;
+
+  .avatar {
+    margin-left: 0;
+  }
+
+  label {
+    color: #666;
+    font-weight: normal;
+    margin-right: 4px;
+  }
+}

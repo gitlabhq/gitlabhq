@@ -6,7 +6,7 @@
   .issue-title
     %span.str-truncated
       = link_to_gfm issue.title, project_issue_path(issue.project, issue), class: "row_title"
-    .pull-right
+    .pull-right.light
       - if issue.closed?
         %span
           CLOSED
