@@ -49,8 +49,14 @@
           %span
             Graphs
 
+    = nav_link(controller: :milestones) do
+      = link_to project_milestones_path(@project), title: 'Milestones' do
+        %i.fa.fa-clock-o
+        %span
+          Milestones
+
     - if project_nav_tab? :issues
-      = nav_link(controller: %w(issues milestones labels)) do
+      = nav_link(controller: :issues) do
         = link_to url_for_project_issues, title: 'Issues', class: 'shortcuts-issues' do
           %i.fa.fa-exclamation-circle
           %span
@@ -65,6 +71,12 @@
           %span
             Merge Requests
             %span.count.merge_counter= @project.merge_requests.opened.count
+
+    = nav_link(controller: :labels) do
+      = link_to project_labels_path(@project), title: 'Labels' do
+        %i.fa.fa-tags
+        %span
+          Labels
 
     - if project_nav_tab? :wiki
       = nav_link(controller: :wikis) do

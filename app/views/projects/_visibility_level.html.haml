@@ -7,8 +7,8 @@
       - Gitlab::VisibilityLevel.values.each do |level|
         .radio
           - restricted = restricted_visibility_levels.include?(level)
-          = f.radio_button :visibility_level, level, checked: (visibility_level == level), disabled: restricted
           = label :project_visibility_level, level do
+            = f.radio_button :visibility_level, level, checked: (visibility_level == level), disabled: restricted
             = visibility_level_icon(level)
             .option-title
               = visibility_level_label(level)
