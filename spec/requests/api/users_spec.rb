@@ -110,17 +110,22 @@ describe API::API, api: true  do
     end
 
     it 'should return 400 error if name not given' do
-      post api('/users', admin), email: 'test@example.com', password: 'pass1234'
+      post api('/users', admin), attributes_for(:user).except(:name)
       expect(response.status).to eq(400)
     end
 
     it 'should return 400 error if password not given' do
-      post api('/users', admin), email: 'test@example.com', name: 'test'
+      post api('/users', admin), attributes_for(:user).except(:password)
       expect(response.status).to eq(400)
     end
 
-    it "should return 400 error if email not given" do
-      post api('/users', admin), password: 'pass1234', name: 'test'
+    it 'should return 400 error if email not given' do
+      post api('/users', admin), attributes_for(:user).except(:email)
+      expect(response.status).to eq(400)
+    end
+
+    it 'should return 400 error if username not given' do
+      post api('/users', admin), attributes_for(:user).except(:username)
       expect(response.status).to eq(400)
     end
 
