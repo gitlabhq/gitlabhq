@@ -24,7 +24,7 @@
         = preserve(gfm(escape_once(commit.description)))
 
   .commit-row-info
-    = commit_author_link(commit, avatar: true, size: 16)
+    = commit_author_link(commit, avatar: true, size: 24)
     authored
     .committed_ago
       #{time_ago_with_tooltip(commit.committed_date)} &nbsp;
