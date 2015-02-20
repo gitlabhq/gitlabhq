@@ -40,9 +40,12 @@
 
 .nav-sidebar li {
   &.active a {
-    color: #111;
-    background: #EEE;
+    color: #333;
+    background: #FFF;
     font-weight: bold;
+    border: 1px solid #EEE;
+    border-right: 1px solid transparent;
+    border-left: 3px solid $style_color;
 
     &.no-highlight {
       background: none;
