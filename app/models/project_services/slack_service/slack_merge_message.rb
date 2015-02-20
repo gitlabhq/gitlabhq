@@ -1,5 +1,5 @@
-module SlackMessages
-  class SlackMergeMessage < SlackBaseMessage
+module SlackService
+  class MergeMessage < BaseMessage
     attr_reader :username
     attr_reader :project_name
     attr_reader :project_url

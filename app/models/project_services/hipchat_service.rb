@@ -44,11 +44,11 @@ class HipchatService < Service
     ]
   end
 
-  def execute(push_data)
-    object_kind = push_data.fetch(:object_kind)
+  def execute(data)
+    object_kind = data[:object_kind]
     return unless object_kind == "push"
 
-    gate[room].send('GitLab', create_message(push_data))
+    gate[room].send('GitLab', create_message(data))
   end
 
   private

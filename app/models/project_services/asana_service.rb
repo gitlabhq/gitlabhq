@@ -65,16 +65,16 @@ automatically inspected. Leave blank to include all branches.'
     ]
   end
 
-  def execute(push)
-    object_kind = push[:object_kind]
+  def execute(data)
+    object_kind = data[:object_kind]
     return unless object_kind == "push"
 
     Asana.configure do |client|
       client.api_key = api_key
     end
 
-    user = push[:user_name]
-    branch = push[:ref].gsub('refs/heads/', '')
+    user = data[:user_name]
+    branch = data[:ref].gsub('refs/heads/', '')
 
     branch_restriction = restrict_to_branch.to_s
 
@@ -86,7 +86,7 @@ automatically inspected. Leave blank to include all branches.'
     project_name = project.name_with_namespace
     push_msg = user + ' pushed to branch ' + branch + ' of ' + project_name
 
-    push[:commits].each do |commit|
+    data[:commits].each do |commit|
       check_commit(' ( ' + commit[:url] + ' ): ' + commit[:message], push_msg)
     end
   end

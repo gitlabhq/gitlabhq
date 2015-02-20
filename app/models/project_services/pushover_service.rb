@@ -80,24 +80,24 @@ class PushoverService < Service
     ]
   end
 
-  def execute(push_data)
-    object_kind = push_data[:object_kind]
+  def execute(data)
+    object_kind = data[:object_kind]
     return unless object_kind == "push"
 
-    ref = push_data[:ref].gsub('refs/heads/', '')
-    before = push_data[:before]
-    after = push_data[:after]
+    ref = data[:ref].gsub('refs/heads/', '')
+    before = data[:before]
+    after = data[:after]
 
     if before.include?('000000')
-      message = "#{push_data[:user_name]} pushed new branch \"#{ref}\"."
+      message = "#{data[:user_name]} pushed new branch \"#{ref}\"."
     elsif after.include?('000000')
-      message = "#{push_data[:user_name]} deleted branch \"#{ref}\"."
+      message = "#{data[:user_name]} deleted branch \"#{ref}\"."
     else
-      message = "#{push_data[:user_name]} push to branch \"#{ref}\"."
+      message = "#{data[:user_name]} push to branch \"#{ref}\"."
     end
 
-    if push_data[:total_commits_count] > 0
-      message << "\nTotal commits count: #{push_data[:total_commits_count]}"
+    if data[:total_commits_count] > 0
+      message << "\nTotal commits count: #{data[:total_commits_count]}"
     end
 
     pushover_data = {
@@ -107,7 +107,7 @@ class PushoverService < Service
       priority: priority,
       title: "#{project.name_with_namespace}",
       message: message,
-      url: push_data[:repository][:homepage],
+      url: data[:repository][:homepage],
       url_title: "See project #{project.name_with_namespace}"
     }
 

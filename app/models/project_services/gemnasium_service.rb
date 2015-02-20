@@ -42,14 +42,14 @@ class GemnasiumService < Service
     ]
   end
 
-  def execute(push_data)
-    object_kind = push_data[:object_kind]
+  def execute(data)
+    object_kind = data[:object_kind]
     return unless object_kind == "push"
 
     Gemnasium::GitlabService.execute(
-      ref: push_data[:ref],
-      before: push_data[:before],
-      after: push_data[:after],
+      ref: data[:ref],
+      before: data[:before],
+      after: data[:after],
       token: token,
       api_key: api_key,
       repo: project.repository.path_to_repo

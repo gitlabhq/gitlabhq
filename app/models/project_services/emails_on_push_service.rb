@@ -33,11 +33,11 @@ class EmailsOnPushService < Service
     'emails_on_push'
   end
 
-  def execute(push_data)
-    object_kind = push_data[:object_kind]
+  def execute(data)
+    object_kind = data[:object_kind]
     return unless object_kind == "push"
 
-    EmailsOnPushWorker.perform_async(project_id, recipients, push_data)
+    EmailsOnPushWorker.perform_async(project_id, recipients, data)
   end
 
   def fields

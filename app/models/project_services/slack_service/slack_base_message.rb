@@ -1,7 +1,7 @@
 require 'slack-notifier'
 
-module SlackMessages
-  class SlackBaseMessage
+class SlackService
+  class BaseMessage
     def initialize(params)
       raise NotImplementedError
     end

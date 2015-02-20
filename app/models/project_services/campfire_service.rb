@@ -41,14 +41,14 @@ class CampfireService < Service
     ]
   end
 
-  def execute(push_data)
-    object_kind = push_data[:object_kind]
+  def execute(data)
+    object_kind = data[:object_kind]
     return unless object_kind == "push"
 
     room = gate.find_room_by_name(self.room)
     return true unless room
 
-    message = build_message(push_data)
+    message = build_message(data)
 
     room.speak(message)
   end

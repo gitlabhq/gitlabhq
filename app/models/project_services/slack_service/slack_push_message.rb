@@ -1,7 +1,7 @@
 require 'slack-notifier'
 
-module SlackMessages
-  class SlackPushMessage < SlackBaseMessage
+module SlackService
+  class PushMessage < BaseMessage
     attr_reader :after
     attr_reader :before
     attr_reader :commits

@@ -41,14 +41,14 @@ class FlowdockService < Service
     ]
   end
 
-  def execute(push_data)
-    object_kind = push_data[:object_kind]
+  def execute(data)
+    object_kind = data[:object_kind]
     return unless object_kind == "push"
 
     Flowdock::Git.post(
-      push_data[:ref],
-      push_data[:before],
-      push_data[:after],
+      data[:ref],
+      data[:before],
+      data[:after],
       token: token,
       repo: project.repository.path_to_repo,
       repo_url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}",

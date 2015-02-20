@@ -1,5 +1,5 @@
-module SlackMessages
-  class SlackIssueMessage < SlackBaseMessage
+module SlackService
+  class IssueMessage < BaseMessage
     attr_reader :username
     attr_reader :title
     attr_reader :project_name

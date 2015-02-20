@@ -41,12 +41,12 @@ class PivotaltrackerService < Service
     ]
   end
 
-  def execute(push)
-    object_kind = push[:object_kind]
+  def execute(data)
+    object_kind = data[:object_kind]
     return unless object_kind == "push"
 
     url = 'https://www.pivotaltracker.com/services/v5/source_commits'
-    push[:commits].each do |commit|
+    data[:commits].each do |commit|
       message = {
         'source_commit' => {
           'commit_id' => commit[:id],

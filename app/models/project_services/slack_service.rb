@@ -16,9 +16,6 @@
 #  merge_requests_events :boolean          default(TRUE)
 #  tag_push_events       :boolean          default(TRUE)
 #
-require "slack_messages/slack_issue_message"
-require "slack_messages/slack_push_message"
-require "slack_messages/slack_merge_message"
 
 class SlackService < Service
   prop_accessor :webhook, :username, :channel
@@ -59,14 +56,15 @@ class SlackService < Service
     # 'close' action. Ignore update events for now to prevent duplicate
     # messages from arriving.
 
-    message = case object_kind
-    when "push"
-      message = SlackMessages::SlackPushMessage.new(data)
-    when "issue"
-      message = SlackMessages::SlackIssueMessage.new(data) unless is_update?(data)
-    when "merge_request"
-      message = SlackMessages::SlackMergeMessage.new(data) unless is_update?(data)
-    end
+    message = \
+      case object_kind
+      when "push"
+        PushMessage.new(data)
+      when "issue"
+        IssueMessage.new(data) unless is_update?(data)
+      when "merge_request"
+        MergeMessage.new(data) unless is_update?(data)
+      end
 
     opt = {}
     opt[:channel] = channel if channel
@@ -92,3 +90,7 @@ class SlackService < Service
     data[:object_attributes][:action] == 'update'
   end
 end
+
+require "slack_service/issue_message"
+require "slack_service/push_message"
+require "slack_service/merge_message"
