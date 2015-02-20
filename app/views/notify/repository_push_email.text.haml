@@ -8,16 +8,29 @@ Commits:
   \- - - - -
 \
 \
+#{pluralize @diffs.count, "changed file"}:
+\
+- @diffs.each do |diff|
+  - if diff.deleted_file
+    \- − #{diff.old_path}
+  - elsif diff.renamed_file
+    \- #{diff.old_path} → #{diff.new_path}
+  - elsif diff.new_file
+    \- + #{diff.new_path}
+  - else
+    \- #{diff.new_path}
+\
+\
 Changes:
 - @diffs.each do |diff|
   \
   \=====================================
-  - if diff.old_path == diff.new_path
-    = diff.new_path
-  - elsif diff.new_path && diff.old_path
-    #{diff.old_path} &rarr; #{diff.new_path}
+  - if diff.deleted_file
+    #{diff.old_path} deleted
+  - elsif diff.renamed_file
+    #{diff.old_path} → #{diff.new_path}
   - else
-    = diff.new_path || diff.old_path
+    = diff.new_path
   \=====================================
   != diff.diff
 \
