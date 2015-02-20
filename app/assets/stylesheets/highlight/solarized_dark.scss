@@ -12,6 +12,11 @@
     border-left: 1px solid #113b46;
   }
 
+  // highlight line via anchor
+  pre.hll {
+    background-color: #073642 !important;
+  }
+
   /* Solarized Dark
 
   For use with Jekyll and Pygments

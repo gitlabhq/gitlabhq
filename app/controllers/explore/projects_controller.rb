@@ -18,7 +18,7 @@ class Explore::ProjectsController < ApplicationController
 
   def starred
     @starred_projects = ProjectsFinder.new.execute(current_user)
-    @starred_projects = @starred_projects.order('star_count DESC')
+    @starred_projects = @starred_projects.reorder('star_count DESC')
     @starred_projects = @starred_projects.page(params[:page]).per(10)
   end
 end

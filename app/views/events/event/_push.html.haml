@@ -1,6 +1,6 @@
 .event-title
   %span.author_name= link_to_author event
-  %span.event_label.pushed #{event.push_action_name} #{event.ref_type}
+  %span.event_label.pushed #{event.action_name} #{event.ref_type}
   - if event.rm_ref?
     %strong= event.ref_name
   - else

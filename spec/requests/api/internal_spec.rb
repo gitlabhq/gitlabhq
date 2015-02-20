@@ -32,7 +32,8 @@ describe API::API, api: true  do
       it do
         get api("/internal/broadcast_message"), secret_token: secret_token
 
-        expect(response.status).to eq(404)
+        expect(response.status).to eq(200)
+        expect(json_response).to be_empty
       end
     end
   end

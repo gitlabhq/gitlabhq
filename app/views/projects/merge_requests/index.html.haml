@@ -1,7 +1,10 @@
-= render "projects/issues_nav"
-
 .merge-requests-holder
   .append-bottom-10
+    .pull-right
+      - if can? current_user, :write_merge_request, @project
+        = link_to new_project_merge_request_path(@project), class: "btn btn-new pull-left", title: "New Merge Request" do
+          %i.fa.fa-plus
+          New Merge Request
     = render 'shared/issuable_filter'
   .panel.panel-default
     %ul.well-list.mr-list

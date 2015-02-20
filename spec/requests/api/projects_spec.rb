@@ -347,7 +347,7 @@ describe API::API, api: true  do
   end
 
   describe 'GET /projects/:id/events' do
-    before { project_member }
+    before { project_member2 }
 
     it 'should return a project events' do
       get api("/projects/#{project.id}/events", user)
@@ -356,7 +356,7 @@ describe API::API, api: true  do
 
       expect(json_event['action_name']).to eq('joined')
       expect(json_event['project_id'].to_i).to eq(project.id)
-      expect(json_event['author_username']).to eq(user.username)
+      expect(json_event['author_username']).to eq(user3.username)
     end
 
     it 'should return a 404 error if not found' do

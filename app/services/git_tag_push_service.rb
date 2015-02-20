@@ -5,7 +5,7 @@ class GitTagPushService
     @project, @user = project, user
     @push_data = create_push_data(oldrev, newrev, ref)
 
-    create_push_event
+    EventCreateService.new.push(project, user, @push_data)
     project.repository.expire_cache
     project.execute_hooks(@push_data.dup, :tag_push_hooks)
 
@@ -21,14 +21,5 @@ class GitTagPushService
   def create_push_data(oldrev, newrev, ref)
     Gitlab::PushDataBuilder.
       build(project, user, oldrev, newrev, ref, [])
-  end
-
-  def create_push_event
-    Event.create!(
-      project: project,
-      action: Event::PUSHED,
-      data: push_data,
-      author_id: push_data[:user_id]
-    )
   end
 end

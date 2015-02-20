@@ -8,6 +8,8 @@ GitLab has a great issue tracker but you can also use an external issue tracker 
 
 ![Jira screenshot](jira-integration-points.png)
 
+GitLab Enterprise Edition contains [advanced JIRA support](http://doc.gitlab.com/ee/integration/jira.html).
+
 ## Configuration
 
 ### Project Service
@@ -22,7 +24,6 @@ Fill in the required details on the page:
 * `project_url` The URL to the project in Redmine which is being linked to this GitLab project.
 * `issues_url` The URL to the issue in Redmine project that is linked to this GitLab project. Note that the `issues_url` requires `:id` in the url. This id is used by GitLab as a placeholder to replace the issue number.
 * `new_issue_url` This is the URL to create a new issue in Redmine for the project linked to this GitLab project.
-
 
 ### Service Template
 

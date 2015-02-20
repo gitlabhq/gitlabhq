@@ -14,7 +14,6 @@ GET /groups
     "id": 1,
     "name": "Foobar Group",
     "path": "foo-bar",
-    "owner_id": 18,
     "description": "An interesting group"
   }
 ]
@@ -87,7 +86,6 @@ GET /groups?search=foobar
     "id": 1,
     "name": "Foobar Group",
     "path": "foo-bar",
-    "owner_id": 18,
     "description": "An interesting group"
   }
 ]

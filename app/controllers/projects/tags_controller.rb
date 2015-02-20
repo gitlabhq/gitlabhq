@@ -27,7 +27,7 @@ class Projects::TagsController < Projects::ApplicationController
     tag = @repository.find_tag(params[:id])
 
     if tag && @repository.rm_tag(tag.name)
-      Event.create_ref_event(@project, current_user, tag, 'rm', 'refs/tags')
+      EventCreateService.new.push_ref(@project, current_user, tag, 'rm', 'refs/tags')
     end
 
     respond_to do |format|

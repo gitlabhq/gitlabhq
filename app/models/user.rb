@@ -55,14 +55,13 @@ class User < ActiveRecord::Base
   include Gitlab::ConfigHelper
   include TokenAuthenticatable
   extend Gitlab::ConfigHelper
-  extend Gitlab::CurrentSettings
+  include Gitlab::CurrentSettings
 
   default_value_for :admin, false
   default_value_for :can_create_group, gitlab_config.default_can_create_group
   default_value_for :can_create_team, false
   default_value_for :hide_no_ssh_key, false
   default_value_for :hide_no_password, false
-  default_value_for :projects_limit, current_application_settings.default_projects_limit
   default_value_for :theme_id, gitlab_config.default_theme
 
   devise :database_authenticatable, :lockable, :async,
@@ -141,6 +140,7 @@ class User < ActiveRecord::Base
 
   before_save :ensure_authentication_token
   after_save :ensure_namespace_correct
+  after_initialize :set_projects_limit
   after_create :post_create_hook
   after_destroy :post_destroy_hook
 
@@ -255,7 +255,7 @@ class User < ActiveRecord::Base
       counter = 0
       base = username
       while User.by_login(username).present? || Namespace.by_path(username).present?
-        counter += 1 
+        counter += 1
         username = "#{base}#{counter}"
       end
 
@@ -459,8 +459,15 @@ class User < ActiveRecord::Base
 
   def set_notification_email
     if self.notification_email.blank? || !self.all_emails.include?(self.notification_email)
-      self.notification_email = self.email 
+      self.notification_email = self.email
     end
+  end
+
+  def set_projects_limit
+    connection_default_value_defined = new_record? && !projects_limit_changed?
+    return unless self.projects_limit.nil? || connection_default_value_defined
+
+    self.projects_limit = current_application_settings.default_projects_limit
   end
 
   def requires_ldap_check?
@@ -559,7 +566,7 @@ class User < ActiveRecord::Base
 
   def post_create_hook
     log_info("User \"#{self.name}\" (#{self.email}) was created")
-    notification_service.new_user(self, @reset_token)
+    notification_service.new_user(self, @reset_token) if self.created_by_id
     system_hook_service.execute_hooks_for(self, :create)
   end
 
@@ -606,5 +613,14 @@ class User < ActiveRecord::Base
 
   def oauth_authorized_tokens
     Doorkeeper::AccessToken.where(resource_owner_id: self.id, revoked_at: nil)
+  end
+
+  def contributed_projects_ids
+    Event.where(author_id: self).
+      where("created_at > ?", Time.now - 1.year).
+      code_push.
+      reorder(project_id: :desc).
+      select('DISTINCT(project_id)').
+      map(&:project_id)
   end
 end

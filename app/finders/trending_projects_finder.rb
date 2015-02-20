@@ -8,7 +8,7 @@ class TrendingProjectsFinder
     # for period of time - ex. month
     projects.joins(:notes).where('notes.created_at > ?', start_date).
       select("projects.*, count(notes.id) as ncount").
-      group("projects.id").order("ncount DESC")
+      group("projects.id").reorder("ncount DESC")
   end
 
   private

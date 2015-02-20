@@ -584,7 +584,7 @@ describe GitlabMarkdownHelper do
     it "should leave code blocks untouched" do
       allow(helper).to receive(:user_color_scheme_class).and_return(:white)
 
-      target_html = "<pre class=\"code highlight white plaintext\"><code>some code from $40\nhere too\n</code></pre>\n"
+      target_html = "<pre class=\"code highlight white plaintext\"><code>some code from $#{snippet.id}\nhere too\n</code></pre>\n"
 
       expect(helper.markdown("\n    some code from $#{snippet.id}\n    here too\n")).
         to eq(target_html)
@@ -635,6 +635,18 @@ describe GitlabMarkdownHelper do
     it "should handle relative urls for a file in master" do
       actual = "[GitLab API doc](doc/api/README.md)\n"
       expected = "<p><a href=\"/#{project.path_with_namespace}/blob/#{@ref}/doc/api/README.md\">GitLab API doc</a></p>\n"
+      expect(markdown(actual)).to match(expected)
+    end
+
+    it "should handle relative urls for a file in master with an anchor" do
+      actual = "[GitLab API doc](doc/api/README.md#section)\n"
+      expected = "<p><a href=\"/#{project.path_with_namespace}/blob/#{@ref}/doc/api/README.md#section\">GitLab API doc</a></p>\n"
+      expect(markdown(actual)).to match(expected)
+    end
+
+    it "should not handle relative urls for the current file with an anchor" do
+      actual = "[GitLab API doc](#section)\n"
+      expected = "<p><a href=\"#section\">GitLab API doc</a></p>\n"
       expect(markdown(actual)).to match(expected)
     end
 

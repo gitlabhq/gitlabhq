@@ -4,19 +4,20 @@ class UsersController < ApplicationController
   layout :determine_layout
 
   def show
-    # Projects user can view
-    visible_projects = ProjectsFinder.new.execute(current_user)
-    authorized_projects_ids = visible_projects.pluck(:id)
+    @contributed_projects = Project.
+      where(id: authorized_projects_ids & @user.contributed_projects_ids).
+      in_group_namespace.includes(:namespace)
 
     @projects = @user.personal_projects.
-      where(id: authorized_projects_ids)
+      where(id: authorized_projects_ids).includes(:namespace)
 
     # Collect only groups common for both users
     @groups = @user.groups & GroupsFinder.new.execute(current_user)
 
     # Get user activity feed for projects common for both users
     @events = @user.recent_events.
-      where(project_id: authorized_projects_ids).limit(30)
+      where(project_id: authorized_projects_ids).
+      with_associations.limit(30)
 
     @title = @user.name
     @title_url = user_path(@user)
@@ -28,8 +29,8 @@ class UsersController < ApplicationController
   end
 
   def calendar
-    visible_projects = ProjectsFinder.new.execute(current_user)
-    calendar = Gitlab::CommitsCalendar.new(visible_projects, @user)
+    projects = Project.where(id: authorized_projects_ids & @user.contributed_projects_ids)
+    calendar = Gitlab::CommitsCalendar.new(projects, @user)
     @timestamps = calendar.timestamps
     @starting_year = calendar.starting_year
     @starting_month = calendar.starting_month
@@ -53,5 +54,11 @@ class UsersController < ApplicationController
     unless current_user || @user.public_profile?
       return authenticate_user!
     end
+  end
+
+  def authorized_projects_ids
+    # Projects user can view
+    @authorized_projects_ids ||=
+      ProjectsFinder.new.execute(current_user).pluck(:id)
   end
 end
