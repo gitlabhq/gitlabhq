@@ -55,7 +55,7 @@
         Milestones
 
     - if project_nav_tab? :issues
-      = nav_link(controller: %w(issues milestones labels)) do
+      = nav_link(controller: :issues) do
         = link_to url_for_project_issues, title: 'Issues', class: 'shortcuts-issues' do
           %i.fa.fa-exclamation-circle
           %span
