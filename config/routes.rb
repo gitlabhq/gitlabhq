@@ -103,11 +103,6 @@ Gitlab::Application.routes.draw do
   get 'public/projects' => 'explore/projects#index'
 
   #
-  # Attachments serving
-  #
-  get 'files/:type/:id/:filename' => 'files#download', constraints: { id: /\d+/, type: /[a-z]+/, filename:  /.+/ }
-
-  #
   # Admin Area
   #
   namespace :admin do
@@ -232,7 +227,6 @@ Gitlab::Application.routes.draw do
       put :transfer
       post :archive
       post :unarchive
-      post :upload_image
       post :toggle_star
       post :markdown_preview
       get :autocomplete_sources
@@ -265,6 +259,12 @@ Gitlab::Application.routes.draw do
       resources :graphs,    only: [:show], constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ } do
         member do
           get :commits
+        end
+      end
+
+      resources :uploads, only: [:create] do
+        collection do
+          get ":secret/:filename", action: :show, constraints: { filename: /.+/ }
         end
       end
 

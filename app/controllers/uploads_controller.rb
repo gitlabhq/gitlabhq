@@ -3,15 +3,13 @@ class UploadsController < ApplicationController
     model = params[:model].camelize.constantize.find(params[:id])
     uploader = model.send(params[:mounted_as])
 
-    if uploader.file_storage?
-      if !model.respond_to?(:project) || can?(current_user, :read_project, model.project)
-        disposition = uploader.image? ? 'inline' : 'attachment'
-        send_file uploader.file.path, disposition: disposition
-      else
-        not_found!
-      end
-    else
-      redirect_to uploader.url
-    end
+    return not_found! if model.respond_to?(:project) && !can?(current_user, :read_project, model.project)
+
+    return redirect_to uploader.url unless uploader.file_storage?
+
+    return not_found! unless uploader.file.exists?
+
+    disposition = uploader.image? ? 'inline' : 'attachment'
+    send_file uploader.file.path, disposition: disposition
   end
 end

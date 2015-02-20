@@ -205,6 +205,7 @@ group :development do
   gem "letter_opener"
   gem 'quiet_assets', '~> 1.0.1'
   gem 'rack-mini-profiler', require: false
+  gem "byebug"
 
   # Better errors handler
   gem 'better_errors'

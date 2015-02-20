@@ -6,17 +6,9 @@
 
       .comment-hints.clearfix
         .pull-left Comments are parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"),{ target: '_blank', tabindex: -1 }}
-        .pull-right Attach images (JPG, PNG, GIF) by dragging &amp; dropping or #{link_to "selecting them", '#', class: 'markdown-selector', tabindex: -1 }.
+        .pull-right Attach files by dragging &amp; dropping or #{link_to "selecting them", '#', class: 'markdown-selector', tabindex: -1 }.
 
     .note-form-actions
       .buttons
         = f.submit 'Save Comment', class: "btn btn-primary btn-save btn-grouped js-comment-button"
         = link_to  'Cancel', "#", class: "btn btn-cancel note-edit-cancel"
-
-      .note-form-option.hidden-xs
-        %a.choose-btn.btn.js-choose-note-attachment-button
-          %i.fa.fa-paperclip
-          %span Choose File ...
-        &nbsp;
-        %span.file_name.js-attachment-filename
-        = f.file_field :attachment, class: "js-note-attachment-input hidden"

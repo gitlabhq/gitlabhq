@@ -66,6 +66,22 @@ ul.notes {
         overflow: auto;
         word-wrap: break-word;
         @include md-typography;
+
+        a[href*="/uploads/"] {
+          &:before {
+            margin-right: 4px;
+            
+            font: normal normal normal 14px/1 FontAwesome;
+            font-size: inherit;
+            text-rendering: auto;
+            -webkit-font-smoothing: antialiased;
+            content: "\f0c6";
+          }
+
+          &:hover:before {
+            text-decoration: none;
+          }
+        }
       }
     }
     .note-header {
