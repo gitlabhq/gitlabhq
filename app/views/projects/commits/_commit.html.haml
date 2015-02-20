@@ -5,7 +5,8 @@
       - if commit.description?
         %a.text-expander.js-toggle-button ...
 
-    = link_to_browse_code(project, commit)
+    .pull-right
+      = link_to commit.short_id, project_commit_path(project, commit), class: "commit_short_id"
 
     .notes_count
       - if @note_counts
@@ -28,5 +29,4 @@
     authored
     .committed_ago
       #{time_ago_with_tooltip(commit.committed_date)} &nbsp;
-    .pull-right
-      = link_to commit.short_id, project_commit_path(project, commit), class: "commit_short_id"
+    = link_to_browse_code(project, commit)
