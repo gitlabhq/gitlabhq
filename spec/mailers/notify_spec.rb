@@ -597,6 +597,10 @@ describe Notify do
     it 'contains a link to the diff' do
       is_expected.to have_body_text /#{diff_path}/
     end
+
+    it 'doesn not contain the misleading footer' do
+      is_expected.not_to have_body_text /you are a member of/
+    end
   end
 
   describe 'email on push with a single commit' do

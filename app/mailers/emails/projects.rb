@@ -38,6 +38,8 @@ module Emails
         @subject << @commits.first.title
       end
 
+      @disable_footer = true
+
       mail(from: sender(author_id),
            to: recipient,
            subject: @subject)
