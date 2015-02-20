@@ -136,10 +136,13 @@
 /**
  * COMMIT ROW
  */
-li.commit {
+ul li.commit {
+  padding: 8px 0;
+
   .commit-row-title {
     font-size: $list-font-size;
-    margin-bottom: 2px;
+    line-height: 20px;
+    margin-bottom: 5px;
 
     .notes_count {
       float: right;
@@ -199,7 +202,7 @@ li.commit {
     }
 
     .committed_ago {
-      float: right;
+      display: inline-block;
     }
   }
 
@@ -243,5 +246,17 @@ li.commit {
     padding-left: $left;
     position: relative;
     z-index: 2;
+  }
+}
+
+.commits-row {
+  ul {
+    margin: 0;
+  }
+
+  .commits-row-date {
+    font-size: 15px;
+    line-height: 20px;
+    margin-bottom: 5px;
   }
 }

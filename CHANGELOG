@@ -1,5 +1,5 @@
 v 7.9.0 (unreleased)
-  - Fix broken access control for note attachments (Hannes Rosenögger)
+  - Move labels/milestones tabs to sidebar
 
 v 7.8.0 (unreleased)
   - Replace highlight.js with rouge-fork rugments (Stefan Tatschner)
