@@ -16,11 +16,8 @@ class @calendar
       subDomain: "day"
       range: 12
       tooltip: true
-      domainDynamicDimension: false
-      colLimit: 4
       label:
         position: "top"
-      domainMargin: 1
       legend: [
         0
         1
