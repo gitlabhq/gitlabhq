@@ -583,7 +583,7 @@ describe Notify do
     end
 
     it 'has the correct subject' do
-      is_expected.to have_subject /#{commits.length} new commits pushed to repository/
+      is_expected.to have_subject /\[#{project.path_with_namespace}\]\[master\] #{commits.length} commits:/
     end
 
     it 'includes commits list' do

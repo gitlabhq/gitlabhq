@@ -23,21 +23,24 @@ module Emails
       @commits = Commit.decorate(compare.commits)
       @diffs   = compare.diffs
       @branch  = branch
+
+      @subject = "[#{@project.path_with_namespace}][#{@branch}] "
+
       if @commits.length > 1
         @target_url = namespace_project_compare_url(@project.namespace,
                                                     @project,
                                                     from: @commits.first,
                                                     to: @commits.last)
-        @subject = "#{@commits.length} new commits pushed to repository"
+        @subject << "#{@commits.length} commits: #{@commits.first.title}"
       else
         @target_url = namespace_project_commit_url(@project.namespace,
                                                    @project, @commits.first)
-        @subject = @commits.first.title
+        @subject << @commits.first.title
       end
 
       mail(from: sender(author_id),
            to: recipient,
-           subject: subject(@subject))
+           subject: @subject)
     end
   end
 end
