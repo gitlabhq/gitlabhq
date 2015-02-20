@@ -41,6 +41,9 @@ module Gitlab
             url: project.url_to_repo,
             description: project.description,
             homepage: project.web_url,
+            git_http_url: project.http_url_to_repo,
+            git_ssh_url: project.ssh_url_to_repo,
+            visibility_level: project.visibility_level
           },
           commits: [],
           total_commits_count: commits_count
