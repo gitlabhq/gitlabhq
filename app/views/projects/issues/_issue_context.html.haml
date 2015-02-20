@@ -1,19 +1,25 @@
 = form_for [@project, @issue], remote: true, html: {class: 'edit-issue inline-update'} do |f|
   %div.prepend-top-20
-    %p
-      Assignee:
+    .issuable-context-title
+      %label
+        Assignee:
       - if issue.assignee
-        = link_to_member(@project, @issue.assignee)
+        %strong= link_to_member(@project, @issue.assignee, size: 24)
       - else
         none
     - if can?(current_user, :modify_issue, @issue)
       = project_users_select_tag('issue[assignee_id]', placeholder: 'Select assignee', class: 'custom-form-control js-select2 js-assignee', selected: @issue.assignee_id)
 
-  %div.prepend-top-20
-    %p
-      Milestone:
+  %div.prepend-top-20.clearfix
+    .issuable-context-title
+      %label
+        Milestone:
       - if issue.milestone
-        #{link_to @issue.milestone.title, project_milestone_path(@project, @issue.milestone)}
+        %span.back-to-milestone
+          = link_to project_milestone_path(@project, @issue.milestone) do
+            %strong
+              %i.fa.fa-clock-o
+              = @issue.milestone.title
       - else
         none
     - if can?(current_user, :modify_issue, @issue)

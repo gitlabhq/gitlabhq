@@ -16,8 +16,9 @@
         - note_count = notes.count
 
       - if note_count > 0
-        %span.label.label-gray
-          %i.fa.fa-comment= note_count
+        %span.light
+          %i.fa.fa-comments
+          = note_count
 
   - if commit.description?
     .commit-row-description.js-toggle-content
