@@ -1,6 +1,5 @@
 module Projects
   class UploadService < BaseService
-    include Rails.application.routes.url_helpers
     def initialize(project, file)
       @project, @file = project, file
     end
@@ -15,7 +14,7 @@ module Projects
 
       {
         'alt'       => filename,
-        'url'       => project_upload_url(@project, secret: uploader.secret, filename: uploader.file.filename),
+        'url'       => uploader.secure_url,
         'is_image'  => uploader.image?
       }
     end

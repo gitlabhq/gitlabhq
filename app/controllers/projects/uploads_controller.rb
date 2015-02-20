@@ -4,7 +4,7 @@ class Projects::UploadsController < Projects::ApplicationController
   before_filter :project
 
   def create
-    link_to_file = ::Projects::UploadService.new(repository, params[:file]).
+    link_to_file = ::Projects::UploadService.new(project, params[:file]).
       execute
 
     respond_to do |format|

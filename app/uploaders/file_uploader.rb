@@ -25,6 +25,10 @@ class FileUploader < CarrierWave::Uploader::Base
     SecureRandom.hex
   end
 
+  def secure_url
+    File.join(Gitlab.config.gitlab.url, @project.path_with_namespace, "uploads", @secret, file.filename)
+  end
+
   def file_storage?
     self.class.storage == CarrierWave::Storage::File
   end
