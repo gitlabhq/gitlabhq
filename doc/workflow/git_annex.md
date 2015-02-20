@@ -54,3 +54,31 @@ Internally GitLab uses [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell
 We've added a setting to GitLab Shell so you can disable GitLab Annex support if you don't want it.
 
 You'll have to use ssh style links for to git remote to your GitLab server instead of https style links.
+
+## Troubleshooting tips
+
+Differences in version of `git-annex` on `GitLab` server and on local machine can cause `git-annex` to raise unpredicted warnings and errors.
+Although there is no general guide for `git-annex` errors, there are a few tips on how to go arround the warnings.
+
+### git-annex-shell: Not a git-annex or gcrypt repository.
+
+This warning can appear on inital `git annex sync --content`. This is caused by differences in `git-annex-shell`, read more about it in [this git-annex issue](https://git-annex.branchable.com/forum/Error_from_git-annex-shell_on_creation_of_gcrypt_special_remote/).
+
+Important thing to note is that the `sync` succeeds and the files are pushed to the GitLab repository. After this warning it is required to do:
+
+```
+git config remote.origin.annex-ignore false
+```
+
+in the repository that was pushed.
+
+Consecutive `git annex sync --content` **should not** produce this warning and the output should look like this:
+
+```
+commit  ok
+pull origin
+ok
+pull origin
+ok
+push origin
+```
