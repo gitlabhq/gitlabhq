@@ -13,6 +13,9 @@ describe 'Gitlab::PushDataBuilder' do
     it { expect(data[:after]).to eq('5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
     it { expect(data[:ref]).to eq('refs/heads/master') }
     it { expect(data[:commits].size).to eq(3) }
+    it { expect(data[:repository][:git_http_url]).to eq(project.http_url_to_repo) }
+    it { expect(data[:repository][:git_ssh_url]).to eq(project.ssh_url_to_repo) }
+    it { expect(data[:repository][:visibility_level]).to eq(project.visibility_level) }
     it { expect(data[:total_commits_count]).to eq(3) }
   end
 

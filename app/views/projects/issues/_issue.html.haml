@@ -6,9 +6,15 @@
   .issue-title
     %span.str-truncated
       = link_to_gfm issue.title, project_issue_path(issue.project, issue), class: "row_title"
-    - if issue.closed?
-      %small.pull-right
-        CLOSED
+    .pull-right.light
+      - if issue.closed?
+        %span
+          CLOSED
+      - if issue.notes.any?
+        &nbsp;
+        %span
+          %i.fa.fa-comments
+          = issue.notes.count
 
   .issue-info
     %span.light= "##{issue.iid}"
@@ -16,10 +22,6 @@
       assigned to #{link_to_member(@project, issue.assignee)}
     - if issue.votes_count > 0
       = render 'votes/votes_inline', votable: issue
-    - if issue.notes.any?
-      %span
-        %i.fa.fa-comments
-        = issue.notes.count
     - if issue.milestone
       %span
         %i.fa.fa-clock-o

@@ -1,5 +1,5 @@
 .milestones-filters.append-bottom-10
-  %ul.nav.nav-pills.nav-compact
+  %ul.nav.nav-tabs
     %li{class: ("active" if params[:state].blank? || params[:state] == 'opened')}
       = link_to milestones_filter_path(state: 'opened') do
         %i.fa.fa-exclamation-circle

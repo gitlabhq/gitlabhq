@@ -24,6 +24,7 @@
 
     .accept-control {
       display: inline-block;
+      margin: 0;
       margin-left: 20px;
       padding: 10px 0;
       line-height: 20px;
@@ -31,6 +32,7 @@
 
       .remove_source_checkbox {
         margin: 0;
+        font-weight: bold;
       }
     }
   }
@@ -89,6 +91,7 @@
     .merge-request-title {
       margin-bottom: 5px;
       font-size: $list-font-size;
+      font-weight: bold;
     }
 
     .merge-request-info {

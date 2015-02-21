@@ -1,23 +1,30 @@
 = form_for [@project, @merge_request], remote: true, html: {class: 'edit-merge_request inline-update'} do |f|
   %div.prepend-top-20
-    %p
-      Assignee:
+    .issuable-context-title
+      %label
+        Assignee:
       - if @merge_request.assignee
-        = link_to_member(@project, @merge_request.assignee)
+        %strong= link_to_member(@project, @merge_request.assignee, size: 24)
       - else
         none
-    - if can?(current_user, :modify_merge_request, @merge_request)
-      = project_users_select_tag('merge_request[assignee_id]', placeholder: 'Select assignee', class: 'custom-form-control js-select2 js-assignee', selected: @merge_request.assignee_id)
+    .issuable-context-selectbox
+      - if can?(current_user, :modify_merge_request, @merge_request)
+        = project_users_select_tag('merge_request[assignee_id]', placeholder: 'Select assignee', class: 'custom-form-control js-select2 js-assignee', selected: @merge_request.assignee_id)
 
-  %div.prepend-top-20
-    %p
-      Milestone:
+  %div.prepend-top-20.clearfix
+    .issuable-context-title
+      %label
+        Milestone:
       - if @merge_request.milestone
         %span.back-to-milestone
-          #{link_to @merge_request.milestone.title, project_milestone_path(@project, @merge_request.milestone)}
+          = link_to project_milestone_path(@project, @merge_request.milestone) do
+            %strong
+              %i.fa.fa-clock-o
+              = @merge_request.milestone.title
       - else
         none
-    - if can?(current_user, :modify_merge_request, @merge_request)
-      = f.select(:milestone_id, milestone_options(@merge_request), { include_blank: "Select milestone" }, {class: 'select2 select2-compact js-select2 js-milestone'})
-      = hidden_field_tag :merge_request_context
-      = f.submit class: 'btn'
+    .issuable-context-selectbox
+      - if can?(current_user, :modify_merge_request, @merge_request)
+        = f.select(:milestone_id, milestone_options(@merge_request), { include_blank: "Select milestone" }, {class: 'select2 select2-compact js-select2 js-milestone'})
+        = hidden_field_tag :merge_request_context
+        = f.submit class: 'btn'

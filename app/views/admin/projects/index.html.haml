@@ -13,15 +13,13 @@
         .form-group
           %strong Activity
           .checkbox
-            = label_tag :with_push, 'Not empty'
-            = check_box_tag :with_push, 1, params[:with_push]
-            &nbsp;
-            %span.light Projects with push events
+            = label_tag :with_push do
+              = check_box_tag :with_push, 1, params[:with_push]
+              %span Projects with push events
           .checkbox
-            = label_tag :abandoned, 'Abandoned'
-            = check_box_tag :abandoned, 1, params[:abandoned]
-            &nbsp;
-            %span.light No activity over 6 month
+            = label_tag :abandoned do
+              = check_box_tag :abandoned, 1, params[:abandoned]
+              %span No activity over 6 month
 
         %fieldset
           %strong Visibility level:

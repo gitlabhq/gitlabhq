@@ -3,12 +3,13 @@
 
 - @commits.group_by { |c| c.committed_date.to_date }.sort.reverse.each do |day, commits|
   .row.commits-row
-    .col-md-2
-      %h4
+    .col-md-2.hidden-xs.hidden-sm
+      %h5.commits-row-date
         %i.fa.fa-calendar
         %span= day.stamp("28 Aug, 2010")
-      %p= pluralize(commits.count, 'commit')
-    .col-md-10
+      .light
+        = pluralize(commits.count, 'commit')
+    .col-md-10.col-sm-12
       %ul.bordered-list
         = render commits, project: project
   %hr.lists-separator

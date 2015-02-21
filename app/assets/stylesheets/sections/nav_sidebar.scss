@@ -12,7 +12,6 @@
 
 .sidebar-wrapper {
   z-index: 99;
-  overflow-y: auto;
   background: #F5F5F5;
 }
 
@@ -40,12 +39,16 @@
 
 .nav-sidebar li {
   &.active a {
-    color: #111;
-    background: #EEE;
+    color: #333;
+    background: #FFF !important;
     font-weight: bold;
+    border: 1px solid #EEE;
+    border-right: 1px solid transparent;
+    border-left: 3px solid $style_color;
 
     &.no-highlight {
       background: none;
+      border: none;
     }
 
     i {
@@ -65,7 +68,7 @@
     color: #555;
     display: block;
     text-decoration: none;
-    padding: 6px 15px;
+    padding: 8px 15px;
     font-size: 13px;
     line-height: 20px;
     text-shadow: 0 1px 2px #FFF;
@@ -74,7 +77,7 @@
     &:hover {
       text-decoration: none;
       color: #333;
-      background: #DDD;
+      background: #EEE;
     }
 
     &:active, &:focus {
@@ -122,7 +125,6 @@
 
   .sidebar-wrapper {
     width: 52px;
-    overflow-x: hidden;
 
     .nav-sidebar {
       margin-top: 20px;
@@ -133,8 +135,9 @@
       li a {
         padding-left: 18px;
         font-size: 14px;
-        padding: 10px 15px;
+        padding: 8px 15px;
         text-align: center;
+
 
         & > span {
           display: none;
