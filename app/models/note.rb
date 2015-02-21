@@ -409,19 +409,19 @@ class Note < ActiveRecord::Base
     prev_lines = []
 
     diff_lines.each do |line|
-      if generate_line_code(line) != self.line_code
-        if line.type == "match"
-          prev_lines.clear
-          prev_match_line = line
-        else
-          prev_lines.push(line)
-          prev_lines.shift if prev_lines.length >= max_number_of_lines
-        end
+      if line.type == "match"
+        prev_lines.clear
+        prev_match_line = line
       else
         prev_lines << line
-        return prev_lines
+        
+        break if generate_line_code(line) == self.line_code
+
+        prev_lines.shift if prev_lines.length >= max_number_of_lines
       end
     end
+
+    prev_lines
   end
 
   def diff_lines

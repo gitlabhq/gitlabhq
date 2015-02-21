@@ -94,23 +94,6 @@ server {
   ## Individual nginx logs for this GitLab vhost
   access_log  /var/log/nginx/gitlab_access.log;
   error_log   /var/log/nginx/gitlab_error.log;
-  
-  ## If you use HTTPS make sure you disable gzip compression
-  ## to be safe against BREACH attack.
-  gzip off;
-
-  ## https://github.com/gitlabhq/gitlabhq/issues/694
-  ## Some requests take more than 30 seconds.
-  proxy_read_timeout      300;
-  proxy_connect_timeout   300;
-  proxy_redirect          off;
-
-  proxy_set_header    Host                $http_host;
-  proxy_set_header    X-Real-IP           $remote_addr;
-  proxy_set_header    X-Forwarded-Ssl     on;
-  proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
-  proxy_set_header    X-Forwarded-Proto   $scheme;
-  proxy_set_header    X-Frame-Options     SAMEORIGIN;
 
   location / {
     ## Serve static files from defined root folder.
@@ -120,12 +103,56 @@ server {
 
   ## We route uploads through GitLab to prevent XSS and enforce access control.
   location /uploads/ {
+    ## If you use HTTPS make sure you disable gzip compression
+    ## to be safe against BREACH attack.
+    gzip off;
+
+    ## https://github.com/gitlabhq/gitlabhq/issues/694
+    ## Some requests take more than 30 seconds.
+    proxy_read_timeout      300;
+    proxy_connect_timeout   300;
+    proxy_redirect          off;
+
+    proxy_set_header    Host                $http_host;
+    proxy_set_header    X-Real-IP           $remote_addr;
+    proxy_set_header    X-Forwarded-Ssl     on;
+    proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
+    proxy_set_header    X-Forwarded-Proto   $scheme;
+    proxy_set_header    X-Frame-Options     SAMEORIGIN;
+
     proxy_pass http://gitlab;
+  }
+
+  ## If ``go get`` detected, return go-import meta tag.
+  ## This works for public and for private repositories.
+  ## See also http://golang.org/cmd/go/#hdr-Remote_import_paths
+  if ($http_user_agent ~* "Go") {
+    return 200 "
+      <!DOCTYPE html>
+      <head><meta content='$host$uri git $scheme://$host$uri.git' name='go-import'></head>
+      </html>";
   }
 
   ## If a file, which is not found in the root folder is requested,
   ## then the proxy passes the request to the upsteam (gitlab unicorn).
   location @gitlab {
+    ## If you use HTTPS make sure you disable gzip compression
+    ## to be safe against BREACH attack.
+    gzip off;
+
+    ## https://github.com/gitlabhq/gitlabhq/issues/694
+    ## Some requests take more than 30 seconds.
+    proxy_read_timeout      300;
+    proxy_connect_timeout   300;
+    proxy_redirect          off;
+
+    proxy_set_header    Host                $http_host;
+    proxy_set_header    X-Real-IP           $remote_addr;
+    proxy_set_header    X-Forwarded-Ssl     on;
+    proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
+    proxy_set_header    X-Forwarded-Proto   $scheme;
+    proxy_set_header    X-Frame-Options     SAMEORIGIN;
+
     proxy_pass http://gitlab;
   }
 
@@ -135,7 +162,7 @@ server {
   ## See config/application.rb under "Relative url support" for the list of
   ## other files that need to be changed for relative url support
   location ~ ^/(assets)/ {
-    gzip on;
+    root /home/git/gitlab/public;
     gzip_static on; # to serve pre-gzipped version
     expires max;
     add_header Cache-Control public;

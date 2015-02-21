@@ -1,6 +1,7 @@
 v 7.9.0 (unreleased)
   - Move labels/milestones tabs to sidebar
   - Improve UI for commits, issues and merge request lists
+  - Fix commit comments on first line of diff not rendering in Merge Request Discussion view.
 
 v 7.8.0 (unreleased)
   - Fix access control and protection against XSS for note attachments and other uploads.
@@ -67,6 +68,8 @@ v 7.8.0 (unreleased)
   - Remove deprecated Group#owner_id from API
   - Show projects user contributed to on user page. Show stars near project on user page.
   - Improve database performance for GitLab
+  - Add Asana service (Jeremy Benoist)
+  - Improve project web hooks with extra data
 
 v 7.7.2
   - Update GitLab Shell to version 2.4.2 that fixes a bug when developers can push to protected branch
