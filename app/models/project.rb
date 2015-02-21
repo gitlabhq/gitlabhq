@@ -73,7 +73,6 @@ class Project < ActiveRecord::Base
   has_one :asana_service, dependent: :destroy
   has_one :gemnasium_service, dependent: :destroy
   has_one :slack_service, dependent: :destroy
-  has_one :jira_service, dependent: :destroy
   has_one :jenkins_service, dependent: :destroy
   has_one :buildbox_service, dependent: :destroy
   has_one :bamboo_service, dependent: :destroy
