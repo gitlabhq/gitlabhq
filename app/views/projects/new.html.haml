@@ -66,6 +66,13 @@
               Import projects from GitLab.com
             = render 'gitlab_import_modal'
 
+      .project-import.form-group
+        .col-sm-2
+        .col-sm-10
+          = link_to new_import_gitorious_path do
+            %i.fa.fa-heart
+            Import projects from Gitorious.org
+
       %hr.prepend-botton-10
 
       .form-group
