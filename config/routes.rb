@@ -73,6 +73,7 @@ Gitlab::Application.routes.draw do
       get :callback
       get :jobs
     end
+    
     resource :gitorious, only: [:create, :new], controller: :gitorious do
       get :status
       get :callback

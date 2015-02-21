@@ -2,7 +2,7 @@ class Import::BitbucketController < Import::BaseController
   before_filter :verify_bitbucket_import_enabled
   before_filter :bitbucket_auth, except: :callback
 
-  # rescue_from OAuth::Error, with: :bitbucket_unauthorized
+  rescue_from OAuth::Error, with: :bitbucket_unauthorized
 
   def callback
     request_token = session.delete(:oauth_request_token) 
