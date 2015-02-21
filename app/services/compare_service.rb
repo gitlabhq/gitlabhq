@@ -7,12 +7,10 @@ class CompareService
     # Note: Use satellite only when need to compare between two repos
     # because satellites are slower than operations on bare repo
     if target_project == source_project
-      Gitlab::CompareResult.new(
-        Gitlab::Git::Compare.new(
-          target_project.repository.raw_repository,
-          target_branch,
-          source_branch,
-        )
+      Gitlab::Git::Compare.new(
+        target_project.repository.raw_repository,
+        target_branch,
+        source_branch,
       )
     else
       Gitlab::Satellite::CompareAction.new(

@@ -19,12 +19,12 @@ class Projects::CompareController < Projects::ApplicationController
     )
 
     @commits = compare_result.commits
-    @diffs = compare_result.diffs
+    @diffs = compare_result.diffs(params[:path])
     @commit = @commits.last
     @line_notes = []
   end
 
   def create
-    redirect_to project_compare_path(@project, params[:from], params[:to])
+    redirect_to project_compare_path(@project, params.slice(:from, :to, :path))
   end
 end

@@ -16,7 +16,7 @@ module Gitlab
           prepare_satellite!(target_repo)
           update_satellite_source_and_target!(target_repo)
 
-          Gitlab::CompareResult.new(compare(target_repo))
+          compare(target_repo)
         end
       rescue Grit::Git::CommandFailed => ex
         raise BranchesWithoutParent

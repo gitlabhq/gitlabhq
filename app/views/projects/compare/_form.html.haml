@@ -11,12 +11,13 @@
       .input-group.inline-input-group
         %span.input-group-addon to
         = text_field_tag :to, params[:to], class: "form-control"
+    .form-group
+      .input-group.inline-input-group
+        %span.input-group-addon path
+        = text_field_tag :path, params[:path], class: "form-control",
+          placeholder: "Optional - for ex.: app/"
     &nbsp;
     = button_tag "Compare", class: "btn btn-create commits-compare-btn"
-    - if compare_to_mr_button?
-      = link_to compare_mr_path, class: 'prepend-left-10 btn' do
-        %strong Make a merge request
-
 
 :javascript
   var availableTags = #{@project.repository.ref_names.to_json};
