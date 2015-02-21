@@ -1,6 +1,6 @@
-begin
-  app = Rails.application
+app = Rails.application
 
+if app.config.serve_static_assets
   # The `ActionDispatch::Static` middleware intercepts requests for static files 
   # by checking if they exist in the `/public` directory. 
   # We're replacing it with our `Gitlab::Middleware::Static` that does the same,
@@ -12,7 +12,4 @@ begin
     app.paths["public"].first, 
     app.config.static_cache_control
   )
-rescue
-  # If ActionDispatch::Static wasn't loaded onto the stack (like in production), 
-  # an exception is raised.
 end
