@@ -33,17 +33,23 @@ module Gitlab
 
     attr_reader :html_options
 
-    def gfm_with_tasks(text, project = @project, html_options = {})
-      text = gfm(text, project, html_options)
-      parse_tasks(text)
-    end
-
     # Public: Parse the provided text with GitLab-Flavored Markdown
     #
     # text         - the source text
     # project      - extra options for the reference links as given to link_to
     # html_options - extra options for the reference links as given to link_to
     def gfm(text, project = @project, html_options = {})
+      gfm_with_options(text, {}, project, html_options)
+    end
+
+    # Public: Parse the provided text with GitLab-Flavored Markdown
+    #
+    # text         - the source text
+    # options      - parse_tasks: true - render tasks
+    #              - xhtml: true       - output XHTML instead of HTML
+    # project      - extra options for the reference links as given to link_to
+    # html_options - extra options for the reference links as given to link_to
+    def gfm_with_options(text, options = {}, project = @project, html_options = {})
       return text if text.nil?
 
       # Duplicate the string so we don't alter the original, then call to_str
@@ -86,14 +92,22 @@ module Gitlab
       markdown_pipeline = HTML::Pipeline::Gitlab.new(filters).pipeline
 
       result = markdown_pipeline.call(text, markdown_context)
-      text = result[:output].to_html(save_with: 0)
+      saveoptions = 0
+      if options[:xhtml]
+        saveoptions |= Nokogiri::XML::Node::SaveOptions::AS_XHTML
+      end
+      text = result[:output].to_html(save_with: saveoptions)
 
       allowed_attributes = ActionView::Base.sanitized_allowed_attributes
       allowed_tags = ActionView::Base.sanitized_allowed_tags
 
-      sanitize text.html_safe,
-               attributes: allowed_attributes + %w(id class style),
-               tags: allowed_tags + %w(table tr td th)
+      text = sanitize text.html_safe,
+                      attributes: allowed_attributes + %w(id class style),
+                      tags: allowed_tags + %w(table tr td th)
+      if options[:parse_tasks]
+        text = parse_tasks(text)
+      end
+      text
     end
 
     private
