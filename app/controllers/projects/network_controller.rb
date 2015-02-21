@@ -2,9 +2,9 @@ class Projects::NetworkController < Projects::ApplicationController
   include ExtractsPath
   include ApplicationHelper
 
+  before_filter :require_non_empty_project
   before_filter :assign_ref_vars
   before_filter :authorize_download_code!
-  before_filter :require_non_empty_project
 
   def show
     respond_to do |format|

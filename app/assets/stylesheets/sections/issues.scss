@@ -6,6 +6,7 @@
     .issue-title {
       margin-bottom: 5px;
       font-size: $list-font-size;
+      font-weight: bold;
     }
 
     .issue-info {
@@ -170,9 +171,9 @@ form.edit-issue {
   }
 }
 
-h3.issue-title {
+h2.issue-title {
   margin-top: 0;
-  font-size: 2em;
+  font-weight: bold;
 }
 
 .context .select2-container {

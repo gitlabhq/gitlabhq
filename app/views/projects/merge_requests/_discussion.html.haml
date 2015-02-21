@@ -16,8 +16,7 @@
           = cross_project_reference(@project, @merge_request)
       %hr
       .context
-        %cite.cgray
-          = render partial: 'projects/merge_requests/show/context', locals: { merge_request: @merge_request }
+        = render partial: 'projects/merge_requests/show/context', locals: { merge_request: @merge_request }
       %hr
       .votes-holder
         %h6 Votes

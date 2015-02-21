@@ -12,7 +12,6 @@
 
 .sidebar-wrapper {
   z-index: 99;
-  overflow-y: auto;
   background: #F5F5F5;
 }
 
@@ -41,7 +40,7 @@
 .nav-sidebar li {
   &.active a {
     color: #333;
-    background: #FFF;
+    background: #FFF !important;
     font-weight: bold;
     border: 1px solid #EEE;
     border-right: 1px solid transparent;
@@ -78,7 +77,7 @@
     &:hover {
       text-decoration: none;
       color: #333;
-      background: #DDD;
+      background: #EEE;
     }
 
     &:active, &:focus {
@@ -126,7 +125,6 @@
 
   .sidebar-wrapper {
     width: 52px;
-    overflow-x: hidden;
 
     .nav-sidebar {
       margin-top: 20px;
@@ -139,6 +137,7 @@
         font-size: 14px;
         padding: 8px 15px;
         text-align: center;
+
 
         & > span {
           display: none;

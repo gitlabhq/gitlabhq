@@ -7,8 +7,7 @@
 .row
   .col-md-9
     .participants
-      %cite.cgray
-        = pluralize(@issue.participants.count, 'participant')
+      %span= pluralize(@issue.participants.count, 'participant')
       - @issue.participants.each do |participant|
         = link_to_member(@project, participant, name: false, size: 24)
 
@@ -20,8 +19,7 @@
           = cross_project_reference(@project, @issue)
       %hr
       .context
-        %cite.cgray
-          = render partial: 'issue_context', locals: { issue: @issue }
+        = render partial: 'issue_context', locals: { issue: @issue }
       %hr
       .clearfix
         .votes-holder

@@ -5,8 +5,8 @@ class Projects::BlobController < Projects::ApplicationController
   # Raised when given an invalid file path
   class InvalidPathError < StandardError; end
 
-  before_filter :authorize_download_code!
   before_filter :require_non_empty_project, except: [:new, :create]
+  before_filter :authorize_download_code!
   before_filter :authorize_push_code!, only: [:destroy]
   before_filter :assign_blob_vars
   before_filter :commit, except: [:new, :create]
