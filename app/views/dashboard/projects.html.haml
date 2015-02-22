@@ -20,7 +20,7 @@
           .project-access-icon
             = visibility_level_icon(project.visibility_level)
           = link_to project_path(project), class: dom_class(project) do
-            = project.name_with_namespace
+            %strong= project.name_with_namespace
 
           - if project.forked_from_project
             &nbsp;
