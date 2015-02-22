@@ -1,7 +1,7 @@
 .blob-result
   .file-holder
     .file-title
-      = link_to project_wiki_path(@project, wiki_blob.filename) do
+      = link_to namespace_project_wiki_path(@project.namespace, @project, wiki_blob.filename) do
         %i.fa.fa-file
         %strong
           = wiki_blob.filename

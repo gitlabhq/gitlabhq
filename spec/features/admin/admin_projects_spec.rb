@@ -8,11 +8,11 @@ describe "Admin::Projects", feature: true  do
 
   describe "GET /admin/projects" do
     before do
-      visit admin_projects_path
+      visit admin_namespaces_projects_path
     end
 
     it "should be ok" do
-      expect(current_path).to eq(admin_projects_path)
+      expect(current_path).to eq(admin_namespaces_projects_path)
     end
 
     it "should have projects list" do
@@ -22,7 +22,7 @@ describe "Admin::Projects", feature: true  do
 
   describe "GET /admin/projects/:id" do
     before do
-      visit admin_projects_path
+      visit admin_namespaces_projects_path
       click_link "#{@project.name}"
     end
 

@@ -18,7 +18,7 @@
                     = namespace.path
           - else
             .thumbnail.fork-thumbnail
-              = link_to project_fork_path(@project, namespace_id: namespace.id), title: "Fork here", method: "POST", class: 'has_tooltip' do
+              = link_to namespace_project_fork_path(@project.namespace, @project, namespace_key: namespace.id), title: "Fork here", method: "POST", class: 'has_tooltip' do
                 = image_tag namespace_icon(namespace, 200)
                 .caption
                   %h4=namespace.human_name

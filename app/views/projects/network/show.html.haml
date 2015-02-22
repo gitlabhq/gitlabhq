@@ -1,7 +1,7 @@
 = render "head"
 .project-network
   .controls
-    = form_tag project_network_path(@project, @id), method: :get, class: 'form-inline network-form' do |f|
+    = form_tag namespace_project_network_path(@project.namespace, @project, @id), method: :get, class: 'form-inline network-form' do |f|
       = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: "Input an extended SHA1 syntax", class: 'search-input form-control input-mx-250 search-sha'
       = button_tag class: 'btn btn-success btn-search-sha' do
         %i.fa.fa-search
@@ -18,8 +18,8 @@
   disableButtonIfEmptyField('#extended_sha1', '.btn-search-sha')
 
   network_graph = new Network({
-    url: '#{project_network_path(@project, @ref, @options.merge(format: :json))}',
-    commit_url: '#{project_commit_path(@project, 'ae45ca32').gsub("ae45ca32", "%s")}',
+    url: '#{namespace_project_network_path(@project.namespace, @project, @ref, @options.merge(format: :json))}',
+    commit_url: '#{namespace_project_commit_path(@project.namespace, @project, 'ae45ca32').gsub("ae45ca32", "%s")}',
     ref: '#{@ref}',
     commit_id: '#{@commit.id}'
   })

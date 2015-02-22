@@ -10,15 +10,15 @@
         Download as
         %span.caret
       %ul.dropdown-menu
-        %li= link_to "Email Patches", project_commit_path(@project, @commit, format: :patch)
-        %li= link_to "Plain Diff",    project_commit_path(@project, @commit, format: :diff)
-    = link_to project_tree_path(@project, @commit), class: "btn btn-primary btn-grouped" do
+        %li= link_to "Email Patches", namespace_project_commit_path(@project.namespace, @project, @commit, format: :patch)
+        %li= link_to "Plain Diff",    namespace_project_commit_path(@project.namespace, @project, @commit, format: :diff)
+    = link_to namespace_project_tree_path(@project.namespace, @project, @commit), class: "btn btn-primary btn-grouped" do
       %span Browse Code »
   %div
 
 %p
   %span.light Commit
-  = link_to @commit.id, project_commit_path(@project, @commit)
+  = link_to @commit.id, namespace_project_commit_path(@project.namespace, @project, @commit)
 .commit-info-row
   %span.light Authored by
   %strong
@@ -35,7 +35,7 @@
 .commit-info-row
   %span.cgray= pluralize(@commit.parents.count, "parent")
   - @commit.parents.each do |parent|
-    = link_to parent.short_id, project_commit_path(@project, parent)
+    = link_to parent.short_id, namespace_project_commit_path(@project.namespace, @project, parent)
 
 .commit-info-row.branches
   %i.fa.fa-spinner.fa-spin
@@ -49,4 +49,4 @@
 
 :coffeescript
   $ ->
-    $(".commit-info-row.branches").load("#{branches_project_commit_path(@project, @commit.id)}")
+    $(".commit-info-row.branches").load("#{branches_namespace_project_commit_path(@project.namespace, @project, @commit.id)}")

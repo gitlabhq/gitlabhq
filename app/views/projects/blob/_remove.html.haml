@@ -9,7 +9,7 @@
           %strong= @ref
 
       .modal-body
-        = form_tag project_blob_path(@project, @id), method: :delete, class: 'form-horizontal' do
+        = form_tag namespace_project_blob_path(@project.namespace, @project, @id), method: :delete, class: 'form-horizontal' do
           = render 'shared/commit_message_container', params: params,
                    placeholder: 'Removed this file because...'
           .form-group

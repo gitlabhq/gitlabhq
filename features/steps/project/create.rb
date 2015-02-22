@@ -9,7 +9,7 @@ class Spinach::Features::ProjectCreate < Spinach::FeatureSteps
 
   step 'I should see project page' do
     page.should have_content "Empty"
-    current_path.should == project_path(Project.last)
+    current_path.should == namespace_project_path(Project.last.namespace, Project.last)
   end
 
   step 'I should see empty project instuctions' do

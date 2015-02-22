@@ -1,7 +1,7 @@
 %h3.page-title Compare branches for new Merge Request
 %hr
 
-= form_for [@project, @merge_request], url: new_project_merge_request_path(@project), method: :get, html: { class: "merge-request-form form-inline" } do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @merge_request], url: new_namespace_project_merge_request_path(@project.namespace, @project), method: :get, html: { class: "merge-request-form form-inline" } do |f|
   .hide.alert.alert-danger.mr-compare-errors
   .merge-request-branches.row
     .col-md-6
@@ -60,19 +60,19 @@
     , target_branch = $("#merge_request_target_branch")
     , target_project = $("#merge_request_target_project_id");
 
-  $.get("#{branch_from_project_merge_requests_path(@source_project)}", {ref: source_branch.val() });
-  $.get("#{branch_to_project_merge_requests_path(@source_project)}", {target_project_id: target_project.val(),ref: target_branch.val() });
+  $.get("#{branch_from_namespace_project_merge_requests_path(@source_project.namespace, @source_project)}", {ref: source_branch.val() });
+  $.get("#{branch_to_namespace_project_merge_requests_path(@source_project.namespace, @source_project)}", {target_project_id: target_project.val(),ref: target_branch.val() });
 
   target_project.on("change", function() {
-    $.get("#{update_branches_project_merge_requests_path(@source_project)}", {target_project_id:  $(this).val() });
+    $.get("#{update_branches_namespace_project_merge_requests_path(@source_project.namespace, @source_project)}", {target_project_id:  $(this).val() });
   });
   source_branch.on("change", function() {
-    $.get("#{branch_from_project_merge_requests_path(@source_project)}", {ref: $(this).val() });
+    $.get("#{branch_from_namespace_project_merge_requests_path(@source_project.namespace, @source_project)}", {ref: $(this).val() });
     $(".mr-compare-errors").fadeOut();
     $(".mr-compare-btn").enable();
   });
   target_branch.on("change", function() {
-    $.get("#{branch_to_project_merge_requests_path(@source_project)}", {target_project_id: target_project.val(),ref: $(this).val() });
+    $.get("#{branch_to_namespace_project_merge_requests_path(@source_project.namespace, @source_project)}", {target_project_id: target_project.val(),ref: $(this).val() });
     $(".mr-compare-errors").fadeOut();
     $(".mr-compare-btn").enable();
   });

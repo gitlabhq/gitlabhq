@@ -24,6 +24,6 @@ class Projects::AvatarsController < Projects::ApplicationController
     @project.save
     @project.reset_events_cache
 
-    redirect_to edit_project_path(@project)
+    redirect_to edit_namespace_project_path(@project.namespace, @project)
   end
 end

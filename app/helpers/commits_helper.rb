@@ -37,7 +37,10 @@ module CommitsHelper
 
     # Add the root project link and the arrow icon
     crumbs = content_tag(:li) do
-      link_to(@project.path, project_commits_path(@project, @ref))
+      link_to(
+        @project.path,
+        namespace_project_commits_path(@project.namespace, @project, @ref)
+      )
     end
 
     if @path
@@ -46,7 +49,14 @@ module CommitsHelper
       parts.each_with_index do |part, i|
         crumbs << content_tag(:li) do
           # The text is just the individual part, but the link needs all the parts before it
-          link_to part, project_commits_path(@project, tree_join(@ref, parts[0..i].join('/')))
+          link_to(
+            part,
+            namespace_project_commits_path(
+              @project.namespace,
+              @project,
+              tree_join(@ref, parts[0..i].join('/'))
+            )
+          )
         end
       end
     end
@@ -63,7 +73,9 @@ module CommitsHelper
   # Returns the sorted alphabetically links to branches, separated by a comma
   def commit_branches_links(project, branches)
     branches.sort.map do |branch|
-      link_to(project_tree_path(project, branch)) do
+      link_to(
+        namespace_project_tree_path(project.namespace, project, branch)
+      ) do
         content_tag :span, class: 'label label-gray' do
           icon('code-fork') + ' ' + branch
         end
@@ -75,7 +87,10 @@ module CommitsHelper
   def commit_tags_links(project, tags)
     sorted = VersionSorter.rsort(tags)
     sorted.map do |tag|
-      link_to(project_commits_path(project, project.repository.find_tag(tag).name)) do
+      link_to(
+        namespace_project_commits_path(project.namespace, project,
+                                       project.repository.find_tag(tag).name)
+      ) do
         content_tag :span, class: 'label label-gray' do
           icon('tag') + ' ' + tag
         end
@@ -86,12 +101,26 @@ module CommitsHelper
   def link_to_browse_code(project, commit)
     if current_controller?(:projects, :commits)
       if @repo.blob_at(commit.id, @path)
-        return link_to "Browse File »", project_blob_path(project, tree_join(commit.id, @path)), class: "pull-right"
+        return link_to(
+          "Browse File »",
+          namespace_project_blob_path(project.namespace, project,
+                                      tree_join(commit.id, @path)),
+          class: "pull-right"
+        )
       elsif @path.present?
-        return link_to "Browse Dir »", project_tree_path(project, tree_join(commit.id, @path)), class: "pull-right"
+        return link_to(
+          "Browse Dir »",
+          namespace_project_tree_path(project.namespace, project,
+                                      tree_join(commit.id, @path)),
+          class: "pull-right"
+        )
       end
     end
-    link_to "Browse Code »", project_tree_path(project, commit), class: "pull-right"
+    link_to(
+      "Browse Code »",
+      namespace_project_tree_path(project.namespace, project, commit),
+      class: "pull-right"
+    )
   end
 
   protected
@@ -133,8 +162,11 @@ module CommitsHelper
   end
 
   def view_file_btn(commit_sha, diff, project)
-    link_to project_blob_path(project, tree_join(commit_sha, diff.new_path)),
-            class: 'btn btn-small view-file js-view-file' do
+    link_to(
+      namespace_project_blob_path(project.namespace, project,
+                                  tree_join(commit_sha, diff.new_path)),
+      class: 'btn btn-small view-file js-view-file'
+    ) do
       raw('View file @') + content_tag(:span, commit_sha[0..6],
                                        class: 'commit-short-id')
     end

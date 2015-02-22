@@ -1,4 +1,4 @@
-= form_for [@project, @note], remote: true, html: { :'data-type' => 'json', multipart: true, id: nil, class: "new_note js-new-note-form common-note-form gfm-form" }, authenticity_token: true do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @note], remote: true, html: { :'data-type' => 'json', multipart: true, id: nil, class: "new_note js-new-note-form common-note-form gfm-form" }, authenticity_token: true do |f|
   = note_target_fields
   = f.hidden_field :commit_id
   = f.hidden_field :line_code
@@ -29,4 +29,4 @@
       = f.file_field :attachment, class: "js-note-attachment-input hidden"
 
 :javascript
-  window.project_image_path_upload = "#{upload_image_project_path @project}";
+  window.project_image_path_upload = "#{upload_image_namespace_project_path @project.namespace, @project}";

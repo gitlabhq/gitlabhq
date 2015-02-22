@@ -20,6 +20,6 @@
         %span.light
           #{@projects_limit} of #{pluralize(@projects_count, 'project')} displayed.
         .pull-right
-          = link_to projects_dashboard_path do
+          = link_to namespace_projects_dashboard_path do
             Show all
             %i.fa.fa-angle-right

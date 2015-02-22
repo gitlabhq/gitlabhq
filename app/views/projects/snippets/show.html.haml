@@ -2,7 +2,7 @@
   = @snippet.title
 
   .pull-right
-    = link_to new_project_snippet_path(@project), class: "btn btn-new", title: "New Snippet" do
+    = link_to new_namespace_project_snippet_path(@project.namespace, @project), class: "btn btn-new", title: "New Snippet" do
       Add new snippet
 
 %hr
@@ -17,7 +17,7 @@
         = @snippet.author_name
 
   .back-link
-    = link_to project_snippets_path(@project) do
+    = link_to namespace_project_snippets_path(@project.namespace, @project) do
       &larr; project snippets
 
 .file-holder
@@ -28,10 +28,10 @@
     .options
       .btn-group
         - if can?(current_user, :modify_project_snippet, @snippet)
-          = link_to "edit", edit_project_snippet_path(@project, @snippet), class: "btn btn-small", title: 'Edit Snippet'
-        = link_to "raw", raw_project_snippet_path(@project, @snippet), class: "btn btn-small", target: "_blank"
+          = link_to "edit", edit_namespace_project_snippet_path(@project.namespace, @project, @snippet), class: "btn btn-small", title: 'Edit Snippet'
+        = link_to "raw", raw_namespace_project_snippet_path(@project.namespace, @project, @snippet), class: "btn btn-small", target: "_blank"
       - if can?(current_user, :admin_project_snippet, @snippet)
-        = link_to "remove", project_snippet_path(@project, @snippet), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-small btn-remove", title: 'Delete Snippet'
+        = link_to "remove", namespace_project_snippet_path(@project.namespace, @project, @snippet), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-small btn-remove", title: 'Delete Snippet'
   = render 'shared/snippets/blob'
 
 %div#notes= render "projects/notes/notes_with_form"

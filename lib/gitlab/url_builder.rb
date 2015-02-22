@@ -17,9 +17,10 @@ module Gitlab
 
     def issue_url(id)
       issue = Issue.find(id)
-      project_issue_url(id: issue.iid,
-                        project_id: issue.project,
-                        host: Gitlab.config.gitlab['url'])
+      namespace_project_issue_url(namespace_id: issue.project.namespace,
+                                  id: issue.iid,
+                                  project_id: issue.project,
+                                  host: Gitlab.config.gitlab['url'])
     end
   end
 end

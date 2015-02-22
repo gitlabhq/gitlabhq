@@ -32,7 +32,8 @@ class Projects::SnippetsController < Projects::ApplicationController
     @snippet.author = current_user
 
     if @snippet.save
-      redirect_to project_snippet_path(@project, @snippet)
+      redirect_to namespace_project_snippet_path(@project.namespace, @project,
+                                                 @snippet)
     else
       respond_with(@snippet)
     end
@@ -43,7 +44,7 @@ class Projects::SnippetsController < Projects::ApplicationController
 
   def update
     if @snippet.update_attributes(snippet_params)
-      redirect_to project_snippet_path(@project, @snippet)
+      redirect_to namespace_project_snippet_path(@project.namespace, @project, @snippet)
     else
       respond_with(@snippet)
     end
@@ -60,7 +61,7 @@ class Projects::SnippetsController < Projects::ApplicationController
 
     @snippet.destroy
 
-    redirect_to project_snippets_path(@project)
+    redirect_to namespace_project_snippets_path(@project.namespace, @project)
   end
 
   def raw

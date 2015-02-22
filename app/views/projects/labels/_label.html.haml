@@ -2,9 +2,9 @@
   = render_colored_label(label)
   .pull-right
     %strong.append-right-20
-      = link_to project_issues_path(@project, label_name: label.name) do
+      = link_to namespace_project_issues_path(@project.namespace, @project, label_name: label.name) do
         = pluralize label.open_issues_count, 'open issue'
 
     - if can? current_user, :admin_label, @project
-      = link_to 'Edit', edit_project_label_path(@project, label), class: 'btn'
-      = link_to 'Remove', project_label_path(@project, label), class: 'btn btn-remove remove-row', method: :delete, remote: true, data: {confirm: "Remove this label? Are you sure?"}
+      = link_to 'Edit', edit_namespace_project_label_path(@project.namespace, @project, label), class: 'btn'
+      = link_to 'Remove', namespace_project_label_path(@project.namespace, @project, label), class: 'btn btn-remove remove-row', method: :delete, remote: true, data: {confirm: "Remove this label? Are you sure?"}

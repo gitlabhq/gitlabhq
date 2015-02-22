@@ -41,7 +41,7 @@
         - @projects.each do |project|
           %li
             %strong
-              = link_to project.name_with_namespace, [:admin, project]
+              = link_to project.name_with_namespace, [:admin, project.namespace.becomes(Namespace), project]
               %span.label.label-gray
                 = repository_size(project)
             %span.pull-right.light

@@ -194,7 +194,7 @@ describe Notify do
           end
 
           it 'contains a link to the new issue' do
-            is_expected.to have_body_text /#{project_issue_path project, issue}/
+            is_expected.to have_body_text /#{namespace_project_issue_path project.namespace, project, issue}/
           end
         end
 
@@ -231,7 +231,7 @@ describe Notify do
           end
 
           it 'contains a link to the issue' do
-            is_expected.to have_body_text /#{project_issue_path project, issue}/
+            is_expected.to have_body_text /#{namespace_project_issue_path project.namespace, project, issue}/
           end
         end
 
@@ -260,7 +260,7 @@ describe Notify do
           end
 
           it 'contains a link to the issue' do
-            is_expected.to have_body_text /#{project_issue_path project, issue}/
+            is_expected.to have_body_text /#{namespace_project_issue_path project.namespace, project, issue}/
           end
         end
 
@@ -282,7 +282,7 @@ describe Notify do
           end
 
           it 'contains a link to the new merge request' do
-            is_expected.to have_body_text /#{project_merge_request_path(project, merge_request)}/
+            is_expected.to have_body_text /#{namespace_project_merge_request_path(project.namespace, project, merge_request)}/
           end
 
           it 'contains the source branch for the merge request' do
@@ -331,7 +331,7 @@ describe Notify do
           end
 
           it 'contains a link to the merge request' do
-            is_expected.to have_body_text /#{project_merge_request_path project, merge_request}/
+            is_expected.to have_body_text /#{namespace_project_merge_request_path project.namespace, project, merge_request}/
           end
         end
 
@@ -360,7 +360,7 @@ describe Notify do
           end
 
           it 'contains a link to the merge request' do
-            is_expected.to have_body_text /#{project_merge_request_path project, merge_request}/
+            is_expected.to have_body_text /#{namespace_project_merge_request_path project.namespace, project, merge_request}/
           end
         end
 
@@ -385,7 +385,7 @@ describe Notify do
           end
 
           it 'contains a link to the merge request' do
-            is_expected.to have_body_text /#{project_merge_request_path project, merge_request}/
+            is_expected.to have_body_text /#{namespace_project_merge_request_path project.namespace, project, merge_request}/
           end
         end
       end
@@ -477,7 +477,7 @@ describe Notify do
 
       describe 'on a merge request' do
         let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-        let(:note_on_merge_request_path) { project_merge_request_path(project, merge_request, anchor: "note_#{note.id}") }
+        let(:note_on_merge_request_path) { namespace_project_merge_request_path(project.namespace, project, merge_request, anchor: "note_#{note.id}") }
         before(:each) { allow(note).to receive(:noteable).and_return(merge_request) }
 
         subject { Notify.note_merge_request_email(recipient.id, note.id) }
@@ -496,7 +496,7 @@ describe Notify do
 
       describe 'on an issue' do
         let(:issue) { create(:issue, project: project) }
-        let(:note_on_issue_path) { project_issue_path(project, issue, anchor: "note_#{note.id}") }
+        let(:note_on_issue_path) { namespace_project_issue_path(project.namespace, project, issue, anchor: "note_#{note.id}") }
         before(:each) { allow(note).to receive(:noteable).and_return(issue) }
 
         subject { Notify.note_issue_email(recipient.id, note.id) }
@@ -568,7 +568,7 @@ describe Notify do
     let(:user) { create(:user) }
     let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_image_commit.id, sample_commit.id) }
     let(:commits) { Commit.decorate(compare.commits) }
-    let(:diff_path) { project_compare_path(project, from: commits.first, to: commits.last) }
+    let(:diff_path) { namespace_project_compare_path(project.namespace, project, from: commits.first, to: commits.last) }
 
     subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'master', compare) }
 
@@ -604,7 +604,7 @@ describe Notify do
     let(:user) { create(:user) }
     let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_commit.parent_id, sample_commit.id) }
     let(:commits) { Commit.decorate(compare.commits) }
-    let(:diff_path) { project_commit_path(project, commits.first) }
+    let(:diff_path) { namespace_project_commit_path(project.namespace, project, commits.first) }
 
     subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'master', compare) }
 
