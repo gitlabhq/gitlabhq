@@ -61,6 +61,10 @@ describe Service do
     end
   end
 
+  describe "Available services" do
+    it { expect(Service.available_services_names).to  include("jenkins", "jira")}
+  end
+
   describe "Template" do
     describe "for pushover service" do
       let(:service_template) {
