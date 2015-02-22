@@ -15,7 +15,11 @@ module Gitlab
           prepare_satellite!(repo)
 
           # create target branch in satellite at the corresponding commit from bare repo
-          repo.git.checkout({ raise: true, timeout: true, b: true }, ref, "origin/#{ref}")
+          begin
+            repo.git.checkout({ raise: true, timeout: true, b: true }, ref, "origin/#{ref}")
+          rescue Grit::Git::CommandFailed => ex
+            log_and_raise(CheckoutFailed, ex.message)
+          end
 
           # update the file in the satellite's working dir
           file_path_in_satellite = File.join(repo.working_dir, file_path)
@@ -31,19 +35,31 @@ module Gitlab
 
           # commit the changes
           # will raise CommandFailed when commit fails
-          repo.git.commit(raise: true, timeout: true, a: true, m: commit_message)
+          begin
+            repo.git.commit(raise: true, timeout: true, a: true, m: commit_message)
+          rescue Grit::Git::CommandFailed => ex
+            log_and_raise(CommitFailed, ex.message)
+          end
 
 
           # push commit back to bare repo
           # will raise CommandFailed when push fails
-          repo.git.push({ raise: true, timeout: true }, :origin, ref)
+          begin
+            repo.git.push({ raise: true, timeout: true }, :origin, ref)
+          rescue Grit::Git::CommandFailed => ex
+            log_and_raise(PushFailed, ex.message)
+          end
 
           # everything worked
           true
         end
-      rescue Grit::Git::CommandFailed => ex
-        Gitlab::GitLogger.error(ex.message)
-        false
+      end
+
+      private
+
+      def log_and_raise(errorClass, message)
+        Gitlab::GitLogger.error(message)
+        raise(errorClass, message)
       end
     end
   end

@@ -1,6 +1,7 @@
 v 7.9.0 (unreleased)
   - Move labels/milestones tabs to sidebar
   - Upgrade Rails gem to version 4.1.9.
+  - Improve error messages for file edit failures
   - Improve UI for commits, issues and merge request lists
   - Fix commit comments on first line of diff not rendering in Merge Request Discussion view.
 
