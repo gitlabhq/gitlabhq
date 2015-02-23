@@ -79,7 +79,7 @@ class Projects::IssuesController < Projects::ApplicationController
       format.js
       format.html do
         if @issue.valid?
-          redirect_to [@project.namespace, @project, @issue]
+          redirect_to [@project.namespace.becomes(Namespace), @project, @issue]
         else
           render :edit
         end
