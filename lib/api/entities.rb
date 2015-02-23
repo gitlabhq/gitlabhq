@@ -65,7 +65,7 @@ module API
     end
 
     class Group < Grape::Entity
-      expose :id, :name, :path, :owner_id, :description
+      expose :id, :name, :path, :description
     end
 
     class GroupDetail < Group
@@ -269,6 +269,10 @@ module API
 
     class Contributor < Grape::Entity
       expose :name, :email, :commits, :additions, :deletions
+    end
+
+    class BroadcastMessage < Grape::Entity
+      expose :message, :starts_at, :ends_at, :color, :font
     end
   end
 end
