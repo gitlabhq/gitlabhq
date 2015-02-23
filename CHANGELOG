@@ -3,6 +3,7 @@ v 7.9.0 (unreleased)
   - Upgrade Rails gem to version 4.1.9.
   - Improve UI for commits, issues and merge request lists
   - Fix commit comments on first line of diff not rendering in Merge Request Discussion view.
+  - Fix ordering of imported but unchanged projects (Marco Wessel)
 
 v 7.8.0
   - Fix access control and protection against XSS for note attachments and other uploads.

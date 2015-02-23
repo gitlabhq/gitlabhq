@@ -48,6 +48,12 @@ class Project < ActiveRecord::Base
   default_value_for :wall_enabled, false
   default_value_for :snippets_enabled, gitlab_config_features.snippets
 
+  # set last_activity_at to the same as updated_at
+  before_create :set_last_activity_at
+  def set_last_activity_at
+    self.last_activity_at = self.updated_at
+  end
+
   ActsAsTaggableOn.strict_case_match = true
   acts_as_taggable_on :tags
 
