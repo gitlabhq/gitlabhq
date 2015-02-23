@@ -69,6 +69,10 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     fill_in :file_name, with: new_file_name
   end
 
+  step 'I fill the new branch name' do
+    fill_in :new_branch, with: 'new_branch_name'
+  end
+
   step 'I fill the new file name with an illegal name' do
     fill_in :file_name, with: '.git'
   end
@@ -148,6 +152,10 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     expect(current_path).to eq(namespace_project_blob_path(@project.namespace, @project, 'master/.gitignore'))
   end
 
+  step 'I am redirected to the ".gitignore" on new branch' do
+    expect(current_path).to eq(namespace_project_blob_path(@project.namespace, @project, 'new_branch_name/.gitignore'))
+  end
+
   step 'I am redirected to the permalink URL' do
     expect(current_path).to(
       eq(namespace_project_blob_path(@project.namespace, @project,
@@ -159,6 +167,11 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   step 'I am redirected to the new file' do
     expect(current_path).to eq(namespace_project_blob_path(
       @project.namespace, @project, 'master/' + new_file_name))
+  end
+
+  step 'I am redirected to the new file on new branch' do
+    expect(current_path).to eq(namespace_project_blob_path(
+      @project.namespace, @project, 'new_branch_name/' + new_file_name))
   end
 
   step "I don't see the permalink link" do
@@ -177,7 +190,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     click_link 'add a file'
 
     # Remove pre-receive hook so we can push without auth
-    FileUtils.rm(File.join(@project.repository.path, 'hooks', 'pre-receive'))
+    FileUtils.rm_f(File.join(@project.repository.path, 'hooks', 'pre-receive'))
   end
 
   private
