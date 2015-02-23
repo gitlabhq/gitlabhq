@@ -269,16 +269,23 @@ Gitlab::Application.routes.draw do
         post '/preview/*id', to: 'blob#preview', constraints: { id: /.+/ }, as: 'preview_blob'
 
         scope do
-          get('/blob/*id/diff',
-              to: 'blob#diff',
-              constraints: { id: /.+/, format: false },
-              as: :blob_diff)
-          get('/blob/*id',
-              to: 'blob#show',
-              constraints: { id: /.+/, format: false }, as: :blob)
-          delete('/blob/*id',
-                 to: 'blob#destroy',
-                 constraints: { id: /.+/, format: false })
+          get(
+            '/blob/*id/diff',
+            to: 'blob#diff',
+            constraints: { id: /.+/, format: false },
+            as: :blob_diff
+          )
+          get(
+            '/blob/*id',
+            to: 'blob#show',
+            constraints: { id: /.+/, format: false },
+            as: :blob
+          )
+          delete(
+            '/blob/*id',
+            to: 'blob#destroy',
+            constraints: { id: /.+/, format: false }
+          )
         end
 
         scope do

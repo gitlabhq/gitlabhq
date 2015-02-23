@@ -474,7 +474,7 @@ describe GitlabMarkdownHelper do
 
       # First issue link
       expect(groups[1]).
-        to match(/href="#{namespace_project_issue_url(project.namespace, project, issues[0])}"/)
+        to match(/href="#{namespace_project_issue_path(project.namespace, project, issues[0])}"/)
       expect(groups[1]).to match(/##{issues[0].iid}$/)
 
       # Internal commit link
@@ -483,7 +483,7 @@ describe GitlabMarkdownHelper do
 
       # Second issue link
       expect(groups[3]).
-        to match(/href="#{namespace_project_issue_url(project.namespace, project, issues[1])}"/)
+        to match(/href="#{namespace_project_issue_path(project.namespace, project, issues[1])}"/)
       expect(groups[3]).to match(/##{issues[1].iid}$/)
 
       # Trailing commit link
@@ -611,7 +611,7 @@ describe GitlabMarkdownHelper do
     end
 
     it "should generate absolute urls for refs" do
-      expect(markdown("##{issue.iid}")).to include(namespace_project_issue_url(project.namespace, project, issue))
+      expect(markdown("##{issue.iid}")).to include(namespace_project_issue_path(project.namespace, project, issue))
     end
 
     it "should generate absolute urls for emoji" do
