@@ -81,13 +81,13 @@ Gitlab::Application.routes.draw do
 
   scope path: :uploads do
     # Note attachments and User/Group/Project avatars
-    get ":model/:mounted_as/:id/:filename", 
-        to:           "uploads#show", 
+    get ":model/:mounted_as/:id/:filename",
+        to:           "uploads#show",
         constraints:  { model: /note|user|group|project/, mounted_as: /avatar|attachment/, filename: /.+/ }
 
     # Project markdown uploads
-    get ":id/:secret/:filename", 
-        to:           "projects/uploads#show", 
+    get ":id/:secret/:filename",
+        to:           "projects/uploads#show",
         constraints:  { id: /[a-zA-Z.0-9_\-]+\/[a-zA-Z.0-9_\-]+/, filename: /.+/ }
   end
 
@@ -148,7 +148,8 @@ Gitlab::Application.routes.draw do
     resources :namespaces, path: '/projects', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only: [] do
       root to: 'projects#index', as: :projects
 
-      resources(:projects, path: '/',
+      resources(:projects,
+                path: '/',
                 constraints: { id: /[a-zA-Z.0-9_\-]+/ },
                 only: [:index, :show]) do
         root to: 'projects#show'
@@ -268,12 +269,15 @@ Gitlab::Application.routes.draw do
         post '/preview/*id', to: 'blob#preview', constraints: { id: /.+/ }, as: 'preview_blob'
 
         scope do
-          get('/blob/*id/diff', to: 'blob#diff',
+          get('/blob/*id/diff',
+              to: 'blob#diff',
               constraints: { id: /.+/, format: false },
               as: :blob_diff)
-          get('/blob/*id', to: 'blob#show',
+          get('/blob/*id',
+              to: 'blob#show',
               constraints: { id: /.+/, format: false }, as: :blob)
-          delete('/blob/*id', to: 'blob#destroy',
+          delete('/blob/*id',
+                 to: 'blob#destroy',
                  constraints: { id: /.+/, format: false })
         end
 
