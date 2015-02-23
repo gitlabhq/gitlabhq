@@ -57,6 +57,9 @@ GET /users
     "color_scheme_id": 2,
     "is_admin": false,
     "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
+    "confirmed_at": "2012-05-23T08:00:58Z",
+    "confirmation_token": null,
+    "confirmation_sent_at": null,
     "can_create_group": true
   },
   {
@@ -79,6 +82,9 @@ GET /users
     "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
     "can_create_group": true,
     "can_create_project": true,
+    "confirmed_at": null,
+    "confirmation_token": "b08f8d809eb9f9",
+    "confirmation_sent_at": "2012-05-23T08:01:01Z",
     "projects_limit": 100
   }
 ]
@@ -142,6 +148,9 @@ Parameters:
   "is_admin": false,
   "can_create_group": true,
   "can_create_project": true,
+  "confirmed_at": "2012-05-23T08:00:58Z",
+  "confirmation_token": null,
+  "confirmation_sent_at": null,
   "projects_limit": 100
 }
 ```
@@ -170,6 +179,9 @@ Parameters:
 - `bio` (optional)              - User's biography
 - `admin` (optional)            - User is admin - true or false (default)
 - `can_create_group` (optional) - User can create groups - true or false
+- `confirmed` (optional)        - Mark user's email as confirmed
+                                  and don't send confirmation email -
+                                  true of false (default)
 
 ## User modification
 
@@ -195,6 +207,8 @@ Parameters:
 - `bio`                         - User's biography
 - `admin` (optional)            - User is admin - true or false (default)
 - `can_create_group` (optional) - User can create groups - true or false
+- `confirmed` (optional)        - Mark user's email as confirmed if set to true,
+                                  ignored otherwise.
 
 Note, at the moment this method does only return a 404 error,
 even in cases where a 409 (Conflict) would be more appropriate,
@@ -243,6 +257,9 @@ GET /user
   "is_admin": false,
   "can_create_group": true,
   "can_create_project": true,
+  "confirmed_at": "2012-05-23T08:00:58Z",
+  "confirmation_token": null,
+  "confirmation_sent_at": null,
   "projects_limit": 100
 }
 ```

@@ -54,12 +54,21 @@ module API
       #   bio                               - Bio
       #   admin                             - User is admin - true or false (default)
       #   can_create_group                  - User can create groups - true or false
+      #   confirmed                         - Skip email confirmation - true or
+      #                                       false (default)
       # Example Request:
       #   POST /users
       post do
         authenticated_as_admin!
         required_attributes! [:email, :password, :name, :username]
-        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :bio, :can_create_group, :admin]
+        attrs = attributes_for_keys [
+          :email, :name, :password, :skype, :linkedin, :twitter,
+          :projects_limit, :username, :bio, :can_create_group, :admin,
+          :confirmed
+        ]
+
+        confirmed = attrs.delete(:confirmed)
+
         user = User.build_user(attrs)
         admin = attrs.delete(:admin)
         user.admin = admin unless admin.nil?
@@ -67,6 +76,11 @@ module API
         identity_attrs = attributes_for_keys [:provider, :extern_uid]
         if identity_attrs.any?
           user.identities.build(identity_attrs)
+        end
+
+        if [true, 'true'].include? confirmed
+          user.confirmed_at = Time.now
+          user.confirmation_token = nil
         end
 
         if user.save
@@ -98,17 +112,29 @@ module API
       #   bio                               - Bio
       #   admin                             - User is admin - true or false (default)
       #   can_create_group                  - User can create groups - true or false
+      #   confirmed                         - Mark user as having confirmed
+      #                                       email, if set to true
       # Example Request:
       #   PUT /users/:id
       put ":id" do
         authenticated_as_admin!
 
-        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :website_url, :projects_limit, :username, :bio, :can_create_group, :admin]
+        attrs = attributes_for_keys [
+          :email, :name, :password, :skype, :linkedin, :twitter,
+          :website_url, :projects_limit, :username, :bio, :can_create_group,
+          :admin, :confirmed
+        ]
         user = User.find(params[:id])
         not_found!('User') unless user
 
         admin = attrs.delete(:admin)
         user.admin = admin unless admin.nil?
+
+        confirmed = attrs.delete(:confirmed)
+        if [true, 'true'].include? confirmed
+          attrs[:confirmed_at] = Time.now
+          attrs[:confirmation_token] = nil
+        end
 
         conflict!('Email has already been taken') if attrs[:email] &&
             User.where(email: attrs[:email]).

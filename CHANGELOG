@@ -3,6 +3,7 @@ v 7.9.0 (unreleased)
   - Upgrade Rails gem to version 4.1.9.
   - Improve UI for commits, issues and merge request lists
   - Fix commit comments on first line of diff not rendering in Merge Request Discussion view.
+  - Improve API to support creating users with confirmed email and confirming email for existing users (Boyan Tabakov)
 
 v 7.8.0
   - Fix access control and protection against XSS for note attachments and other uploads.
