@@ -7,7 +7,7 @@
       .modal-body
         = label_tag :new_wiki_path do
           %span Page slug
-        = text_field_tag :new_wiki_path, nil, placeholder: 'how-to-setup', class: 'form-control', required: true, :'data-wikis-path' => project_wikis_path(@project)
+        = text_field_tag :new_wiki_path, nil, placeholder: 'how-to-setup', class: 'form-control', required: true, :'data-wikis-path' => namespace_project_wikis_path(@project.namespace, @project)
         %p.hint
           Please don't use spaces.
       .modal-footer

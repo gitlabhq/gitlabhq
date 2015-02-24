@@ -8,7 +8,7 @@
     %div
       = link_to_member(@project, note.author, avatar: false)
       started a discussion on commit
-      = link_to(note.noteable.short_id, project_commit_path(note.project, note.noteable), class: 'monospace')
+      = link_to(note.noteable.short_id, namespace_project_commit_path(note.project.namespace, note.project, note.noteable), class: 'monospace')
     .last-update.hide.js-toggle-content
       - last_note = discussion_notes.last
       last updated by

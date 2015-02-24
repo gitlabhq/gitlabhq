@@ -7,7 +7,7 @@ describe "Projects", feature: true, js: true do
     before do
       @project = create(:project, namespace: @user.namespace)
       @project.team << [@user, :master]
-      visit edit_project_path(@project)
+      visit edit_namespace_project_path(@project.namespace, @project)
     end
 
     it "should remove project" do

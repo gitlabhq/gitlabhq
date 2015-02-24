@@ -1,4 +1,4 @@
-= form_for [@project, @page], method: @page.persisted? ? :put : :post, html: { class: 'form-horizontal wiki-form gfm-form' } do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @page], method: @page.persisted? ? :put : :post, html: { class: 'form-horizontal wiki-form gfm-form' } do |f|
   -if @page.errors.any?
     #error_explanation
       .alert.alert-danger
@@ -37,11 +37,11 @@
   .form-actions
     - if @page && @page.persisted?
       = f.submit 'Save changes', class: "btn-save btn"
-      = link_to "Cancel", project_wiki_path(@project, @page), class: "btn btn-cancel"
+      = link_to "Cancel", namespace_project_wiki_path(@project.namespace, @project, @page), class: "btn btn-cancel"
     - else
       = f.submit 'Create page', class: "btn-create btn"
-      = link_to "Cancel", project_wiki_path(@project, :home), class: "btn btn-cancel"
+      = link_to "Cancel", namespace_project_wiki_path(@project.namespace, @project, :home), class: "btn btn-cancel"
 
 :javascript
-  window.project_image_path_upload = "#{upload_image_project_path @project}";
+  window.project_image_path_upload = "#{upload_image_namespace_project_path @project.namespace, @project}";
 

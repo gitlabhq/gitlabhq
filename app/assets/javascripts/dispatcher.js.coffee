@@ -26,7 +26,7 @@ class Dispatcher
         new ZenMode()
       when 'projects:milestones:show'
         new Milestone()
-      when 'projects:milestones:new'
+      when 'projects:milestones:new', 'projects:milestones:edit'
         new ZenMode()
       when 'projects:issues:new','projects:issues:edit'
         GitLab.GfmAutoComplete.setup()
@@ -54,6 +54,7 @@ class Dispatcher
       when 'projects:commit:show'
         new Commit()
         new Diff()
+        new ZenMode()
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:commits:show'
         shortcut_handler = new ShortcutsNavigation()

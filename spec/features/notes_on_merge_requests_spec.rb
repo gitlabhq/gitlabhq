@@ -12,7 +12,7 @@ describe 'Comments' do
 
     before do
       login_as :admin
-      visit project_merge_request_path(project, merge_request)
+      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
     end
 
     subject { page }
@@ -136,7 +136,7 @@ describe 'Comments' do
 
     before do
       login_as :admin
-      visit diffs_project_merge_request_path(project, merge_request)
+      visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
     end
 
     subject { page }

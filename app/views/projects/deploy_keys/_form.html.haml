@@ -1,5 +1,5 @@
 %div
-  = form_for [@project, @key], url: project_deploy_keys_path, html: { class: 'deploy-key-form form-horizontal' } do |f|
+  = form_for [@project.namespace.becomes(Namespace), @project, @key], url: namespace_project_deploy_keys_path, html: { class: 'deploy-key-form form-horizontal' } do |f|
     -if @key.errors.any?
       .alert.alert-danger
         %ul
@@ -19,5 +19,5 @@
 
     .form-actions
       = f.submit 'Create', class: "btn-create btn"
-      = link_to "Cancel", project_deploy_keys_path(@project), class: "btn btn-cancel"
+      = link_to "Cancel", namespace_project_deploy_keys_path(@project.namespace, @project), class: "btn btn-cancel"
 

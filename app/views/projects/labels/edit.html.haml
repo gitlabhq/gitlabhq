@@ -2,7 +2,7 @@
   Edit label
   %span.light #{@label.name}
 .back-link
-  = link_to project_labels_path(@project) do
+  = link_to namespace_project_labels_path(@project.namespace, @project) do
     &larr; To labels list
 %hr
 = render 'form'

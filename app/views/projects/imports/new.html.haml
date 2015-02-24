@@ -6,7 +6,7 @@
 
 %hr
 
-= form_for @project, url: project_import_path(@project), method: :post, html: { class: 'form-horizontal' } do |f|
+= form_for @project, url: namespace_project_import_path(@project.namespace, @project), method: :post, html: { class: 'form-horizontal' } do |f|
   .form-group.import-url-data
     = f.label :import_url, class: 'control-label' do
       %span Import existing git repo

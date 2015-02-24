@@ -1,4 +1,4 @@
-= form_for [@project, @merge_request], remote: true, html: {class: 'edit-merge_request inline-update'} do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @merge_request], remote: true, html: {class: 'edit-merge_request inline-update'} do |f|
   %div.prepend-top-20
     .issuable-context-title
       %label
@@ -17,7 +17,7 @@
         Milestone:
       - if @merge_request.milestone
         %span.back-to-milestone
-          = link_to project_milestone_path(@project, @merge_request.milestone) do
+          = link_to namespace_project_milestone_path(@project.namespace, @project, @merge_request.milestone) do
             %strong
               %i.fa.fa-clock-o
               = @merge_request.milestone.title

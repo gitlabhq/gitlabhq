@@ -102,7 +102,8 @@ module ExtractsPath
     raise InvalidPathError unless @commit
 
     @hex_path = Digest::SHA1.hexdigest(@path)
-    @logs_path = logs_file_project_ref_path(@project, @ref, @path)
+    @logs_path = logs_file_namespace_project_ref_path(@project.namespace,
+                                                      @project, @ref, @path)
 
   rescue RuntimeError, NoMethodError, InvalidPathError
     not_found!

@@ -17,7 +17,7 @@
               %i.fa.fa-pencil-square-o
               Edit
             &nbsp;
-            = link_to project_note_path(@project, note), title: "Remove comment", method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: "danger js-note-delete" do
+            = link_to namespace_project_note_path(@project.namespace, @project, note), title: "Remove comment", method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: "danger js-note-delete" do
               %i.fa.fa-trash-o.cred
               Remove
         - if note.system
@@ -63,7 +63,7 @@
             = link_to note.attachment.secure_url, target: "_blank" do
               %i.fa.fa-paperclip
               = note.attachment_identifier
-              = link_to delete_attachment_project_note_path(@project, note),
+              = link_to delete_attachment_namespace_project_note_path(@project.namespace, @project, note),
                 title: "Delete this attachment", method: :delete, remote: true, data: { confirm: 'Are you sure you want to remove the attachment?' }, class: "danger js-note-attachment-delete" do
                 %i.fa.fa-trash-o.cred
       .clear

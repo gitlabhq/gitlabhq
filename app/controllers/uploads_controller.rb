@@ -1,4 +1,7 @@
 class UploadsController < ApplicationController
+  skip_before_filter :authenticate_user!, :reject_blocked
+  before_filter :authorize_access
+
   def show
     model = params[:model].camelize.constantize.find(params[:id])
     uploader = model.send(params[:mounted_as])
@@ -12,6 +15,12 @@ class UploadsController < ApplicationController
       end
     else
       redirect_to uploader.url
+    end
+  end
+
+  def authorize_access
+    unless params[:mounted_as] == 'avatar'
+      authenticate_user! && reject_blocked
     end
   end
 end

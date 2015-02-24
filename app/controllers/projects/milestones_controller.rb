@@ -40,7 +40,8 @@ class Projects::MilestonesController < Projects::ApplicationController
     @milestone = Milestones::CreateService.new(project, current_user, milestone_params).execute
 
     if @milestone.save
-      redirect_to project_milestone_path(@project, @milestone)
+      redirect_to namespace_project_milestone_path(@project.namespace,
+                                                   @project, @milestone)
     else
       render "new"
     end
@@ -67,7 +68,7 @@ class Projects::MilestonesController < Projects::ApplicationController
     @milestone.destroy
 
     respond_to do |format|
-      format.html { redirect_to project_milestones_path }
+      format.html { redirect_to namespace_project_milestones_path }
       format.js { render nothing: true }
     end
   end

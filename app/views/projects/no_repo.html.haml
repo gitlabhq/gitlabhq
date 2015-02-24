@@ -9,14 +9,14 @@
 %hr
 
 .no-repo-actions
-  = link_to project_repository_path(@project), method: :post, class: 'btn btn-primary' do
+  = link_to namespace_project_repository_path(@project.namespace, @project), method: :post, class: 'btn btn-primary' do
     Create empty bare repository
 
   %strong.prepend-left-10.append-right-10 or
 
-  = link_to new_project_import_path(@project), class: 'btn' do
+  = link_to new_namespace_project_import_path(@project.namespace, @project), class: 'btn' do
     Import repository
 
 - if can? current_user, :remove_project, @project
   .prepend-top-20
-    = link_to 'Remove project', @project, data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-remove pull-right"
+    = link_to 'Remove project', namespace_project_path(@project.namespace, @project), data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-remove pull-right"

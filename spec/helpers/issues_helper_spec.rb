@@ -29,7 +29,7 @@ describe IssuesHelper do
       project_url.gsub(':project_id', ext_project.id.to_s)
                  .gsub(':issues_tracker_id', ext_project.issues_tracker_id.to_s)
     end
-    let(:int_expected) { polymorphic_path([project]) }
+    let(:int_expected) { polymorphic_path([@project.namespace, project]) }
 
     it "should return internal path if used internal tracker" do
       @project = project
@@ -67,7 +67,7 @@ describe IssuesHelper do
         .gsub(':project_id', ext_project.id.to_s)
         .gsub(':issues_tracker_id', ext_project.issues_tracker_id.to_s)
     end
-    let(:int_expected) { polymorphic_path([project, issue]) }
+    let(:int_expected) { polymorphic_path([@project.namespace, project, issue]) }
 
     it "should return internal path if used internal tracker" do
       @project = project
@@ -104,7 +104,7 @@ describe IssuesHelper do
       issues_url.gsub(':project_id', ext_project.id.to_s)
         .gsub(':issues_tracker_id', ext_project.issues_tracker_id.to_s)
     end
-    let(:int_expected) { new_project_issue_path(project) }
+    let(:int_expected) { new_namespace_project_issue_path(project.namespace, project) }
 
     it "should return internal path if used internal tracker" do
       @project = project

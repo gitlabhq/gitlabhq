@@ -60,7 +60,8 @@ class Projects::IssuesController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         if @issue.valid?
-          redirect_to project_issue_path(@project, @issue)
+          redirect_to namespace_project_issue_path(@project.namespace,
+                                                   @project, @issue)
         else
           render :new
         end
@@ -78,7 +79,7 @@ class Projects::IssuesController < Projects::ApplicationController
       format.js
       format.html do
         if @issue.valid?
-          redirect_to [@project, @issue]
+          redirect_to [@project.namespace.becomes(Namespace), @project, @issue]
         else
           render :edit
         end
@@ -128,7 +129,8 @@ class Projects::IssuesController < Projects::ApplicationController
     issue = @project.issues.find_by(id: params[:id])
 
     if issue
-      redirect_to project_issue_path(@project, issue)
+      redirect_to namespace_project_issue_path(@project.namespace, @project,
+                                               issue)
       return
     else
       raise ActiveRecord::RecordNotFound.new

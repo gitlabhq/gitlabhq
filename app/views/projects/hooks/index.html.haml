@@ -7,7 +7,7 @@
 
 %hr.clearfix
 
-= form_for [@project, @hook], as: :hook, url: project_hooks_path(@project), html: { class: 'form-horizontal' } do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @hook], as: :hook, url: namespace_project_hooks_path(@project.namespace, @project), html: { class: 'form-horizontal' } do |f|
   -if @hook.errors.any?
     .alert.alert-danger
       - @hook.errors.full_messages.each do |msg|
@@ -58,8 +58,8 @@
       - @hooks.each do |hook|
         %li
           .pull-right
-            = link_to 'Test Hook', test_project_hook_path(@project, hook), class: "btn btn-small btn-grouped"
-            = link_to 'Remove', project_hook_path(@project, hook), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove btn-small btn-grouped"
+            = link_to 'Test Hook', test_namespace_project_hook_path(@project.namespace, @project, hook), class: "btn btn-small btn-grouped"
+            = link_to 'Remove', namespace_project_hook_path(@project.namespace, @project, hook), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove btn-small btn-grouped"
           .clearfix
             %span.monospace= hook.url
           %p

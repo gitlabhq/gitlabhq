@@ -1,7 +1,7 @@
 %li{ class: mr_css_classes(merge_request) }
   .merge-request-title
     %span.str-truncated
-      = link_to_gfm merge_request.title, project_merge_request_path(merge_request.target_project, merge_request), class: "row_title"
+      = link_to_gfm merge_request.title, namespace_project_merge_request_path(merge_request.target_project.namespace, merge_request.target_project, merge_request), class: "row_title"
     .pull-right.light
       - if merge_request.merged?
         %span
@@ -43,5 +43,5 @@
 
     .merge-request-labels
       - merge_request.labels.each do |label|
-        = link_to project_merge_requests_path(merge_request.project, label_name: label.name) do
+        = link_to namespace_project_merge_requests_path(merge_request.project.namespace, merge_request.project, label_name: label.name) do
           = render_colored_label(label)

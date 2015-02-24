@@ -1,11 +1,11 @@
 %h3.page-title= @milestone.new_record? ? "New Milestone" : "Edit Milestone ##{@milestone.iid}"
 .back-link
-  = link_to project_milestones_path(@project) do
+  = link_to namespace_project_milestones_path(@project.namespace, @project) do
     &larr; To milestones
 
 %hr
 
-= form_for [@project, @milestone], html: {class: 'form-horizontal milestone-form gfm-form'}  do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @milestone], html: {class: 'form-horizontal milestone-form gfm-form'}  do |f|
   -if @milestone.errors.any?
     .alert.alert-danger
       %ul
@@ -38,10 +38,10 @@
   .form-actions
     - if @milestone.new_record?
       = f.submit 'Create milestone', class: "btn-create btn"
-      = link_to "Cancel", project_milestones_path(@project), class: "btn btn-cancel"
+      = link_to "Cancel", namespace_project_milestones_path(@project.namespace, @project), class: "btn btn-cancel"
     -else
       = f.submit 'Save changes', class: "btn-save btn"
-      = link_to "Cancel", project_milestone_path(@project, @milestone), class: "btn btn-cancel"
+      = link_to "Cancel", namespace_project_milestone_path(@project.namespace, @project, @milestone), class: "btn btn-cancel"
 
 
 :javascript
@@ -51,4 +51,4 @@
     onSelect: function(dateText, inst) { $("#milestone_due_date").val(dateText) }
   }).datepicker("setDate", $.datepicker.parseDate('yy-mm-dd', $('#milestone_due_date').val()));
 
-  window.project_image_path_upload = "#{upload_image_project_path @project}";
+  window.project_image_path_upload = "#{upload_image_namespace_project_path @project.namespace, @project}";

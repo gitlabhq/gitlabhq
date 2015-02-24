@@ -9,7 +9,7 @@
           = escaped_autolink(@group.description)
   %hr
   .row
-    %section.activities.col-md-8.hidden-sm.hidden-xs
+    %section.activities.col-md-8
       - if current_user
         = render "events/event_last_push", event: @last_push
         = render 'shared/event_filter'
@@ -19,3 +19,5 @@
       = render "projects", projects: @projects
       %br
       = render "shared_projects", projects: @shared_projects
+    = link_to '#aside', class: 'show-aside' do
+      %i.fa.fa-angle-left

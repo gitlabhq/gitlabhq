@@ -2,7 +2,7 @@
   .event-last-push
     .event-last-push-text
       %span You pushed to
-      = link_to project_commits_path(event.project, event.ref_name) do
+      = link_to namespace_project_commits_path(event.project.namespace, event.project, event.ref_name) do
         %strong= event.ref_name
       at
       %strong= link_to_project event.project
