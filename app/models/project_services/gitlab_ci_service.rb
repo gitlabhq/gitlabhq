@@ -32,7 +32,7 @@ class GitlabCiService < CiService
 
   def execute(data)
     object_kind = data[:object_kind]
-    return unless object_kind == "push"
+    return unless %w(push tag_push).include?(object_kind)
 
     service_hook.execute(data)
   end
