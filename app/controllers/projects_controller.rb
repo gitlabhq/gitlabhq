@@ -1,4 +1,5 @@
 class ProjectsController < ApplicationController
+  prepend_before_filter :render_go_import, only: [:show]
   skip_before_filter :authenticate_user!, only: [:show]
   before_filter :project, except: [:new, :create]
   before_filter :repository, except: [:new, :create]
@@ -183,5 +184,15 @@ class ProjectsController < ApplicationController
         }
       end
     end
+  end
+
+  def render_go_import
+    return unless params["go-get"] == "1"
+
+    @namespace = params[:namespace_id]
+    @id = params[:project_id] || params[:id]
+    @id = @id.gsub(/\.git\Z/, "")
+
+    render "go_import", layout: false
   end
 end
