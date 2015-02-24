@@ -6,12 +6,7 @@
         %span
           Back to project
 
-    = nav_link(html_options: {class: "#{project_tab_class} separate-item"}) do
-      = link_to edit_namespace_project_path(@project.namespace, @project), title: 'Settings', class: "stat-tab tab no-highlight" do
-        %i.fa.fa-cogs
-        %span
-          Settings
-          %i.fa.fa-angle-down
+    %li.separate-item
 
     = render 'projects/settings_nav'
 
@@ -98,4 +93,3 @@
           %i.fa.fa-cogs
           %span
             Settings
-            %i.fa.fa-angle-down
