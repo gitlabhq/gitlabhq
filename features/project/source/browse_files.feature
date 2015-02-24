@@ -34,6 +34,17 @@ Feature: Project Source Browse Files
     Then I am redirected to the new file
     And I should see its new content
 
+  @javascript
+  Scenario: I can create and commit file and specify new branch
+    Given I click on "new file" link in repo
+    And I edit code
+    And I fill the new file name
+    And I fill the commit message
+    And I fill the new branch name
+    And I click on "Commit Changes"
+    Then I am redirected to the new file on new branch
+    And I should see its new content
+
   @javascript @tricky
   Scenario: I can create file in empty repo
     Given I own an empty project
@@ -81,6 +92,17 @@ Feature: Project Source Browse Files
     And I fill the commit message
     And I click on "Commit Changes"
     Then I am redirected to the ".gitignore"
+    And I should see its new content
+
+  @javascript
+  Scenario: I can edit and commit file to new branch
+    Given I click on ".gitignore" file in repo
+    And I click button "Edit"
+    And I edit code
+    And I fill the commit message
+    And I fill the new branch name
+    And I click on "Commit Changes"
+    Then I am redirected to the ".gitignore" on new branch
     And I should see its new content
 
   @javascript  @wip

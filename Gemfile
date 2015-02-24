@@ -50,7 +50,7 @@ gem 'gitlab_omniauth-ldap', '1.2.0', require: "omniauth-ldap"
 gem 'gollum-lib', '~> 4.0.0'
 
 # Language detection
-gem "gitlab-linguist", "~> 3.0.0", require: "linguist"
+gem "gitlab-linguist", "~> 3.0.1", require: "linguist"
 
 # API
 gem "grape", "~> 0.6.1"

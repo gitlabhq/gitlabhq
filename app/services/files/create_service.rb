@@ -38,7 +38,8 @@ module Files
       created_successfully = new_file_action.commit!(
         params[:content],
         params[:commit_message],
-        params[:encoding]
+        params[:encoding],
+        params[:new_branch]
       )
 
       if created_successfully

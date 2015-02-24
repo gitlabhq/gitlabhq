@@ -6,6 +6,8 @@ v 7.9.0 (unreleased)
   - Improve error messages for file edit failures
   - Improve UI for commits, issues and merge request lists
   - Fix commit comments on first line of diff not rendering in Merge Request Discussion view.
+  - Improve trigger merge request hook when source project branch has been updated (Kirill Zaitsev)
+  - Save web edit in new branch
 
 v 7.8.0
   - Fix access control and protection against XSS for note attachments and other uploads.
