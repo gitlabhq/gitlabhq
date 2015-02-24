@@ -76,18 +76,42 @@ If everything goes well the user will be returned to GitLab and will be signed i
 
 ## Bitbucket project import
 
-To allow projects to be imported directly into GitLab, Bitbucket requires one extra setup step compared to GitHub and GitLab.com. 
+To allow projects to be imported directly into GitLab, Bitbucket requires two extra setup steps compared to GitHub and GitLab.com. 
 
 Bitbucket doesn't allow OAuth applications to clone repositories over HTTPS, and instead requires GitLab to use SSH and identify itself using your GitLab server's SSH key.
 
-GitLab will automatically register your public key with Bitbucket as a deploy key for the repositories to be imported. Your public key needs to be at `~/.ssh/id_rsa.pub`, which will expand to `/home/git/.ssh/id_rsa.pub` in most configurations.
+### Step 1: Known hosts
+
+To allow GitLab to connect to Bitbucket over SSH, you need to add 'bitbucket.org' to your GitLab server's known SSH hosts. Take the following steps to do so:
+
+1. Manually connect to 'bitbucket.org' over SSH, while logged in as the `git` account that GitLab will use:
+
+    ```sh
+    ssh git@bitbucket.org
+    ```
+
+1.  Verify the RSA key fingerprint you'll see in the response matches the one in the [Bitbucket documentation](https://confluence.atlassian.com/display/BITBUCKET/Use+the+SSH+protocol+with+Bitbucket#UsetheSSHprotocolwithBitbucket-KnownhostorBitbucket'spublickeyfingerprints) (the specific IP address doesn't matter):
+
+    ```sh
+    The authenticity of host 'bitbucket.org (207.223.240.182)' can't be established.
+    RSA key fingerprint is 97:8c:1b:f2:6f:14:6b:5c:3b:ec:aa:46:46:74:7c:40.
+    Are you sure you want to continue connecting (yes/no)? 
+    ```
+
+1. If the fingerprint matches, type `yes` to continue connecting and have 'bitbucket.org' be added to your known hosts.
+
+1. Your GitLab server is now able to connect to Bitbucket over SSH. Continue to step 2:
+
+### Step 2: Public key
+
+To be able to access repositories on Bitbucket, GitLab will automatically register your public key with Bitbucket as a deploy key for the repositories to be imported. Your public key needs to be at `~/.ssh/id_rsa.pub`, which will expand to `/home/git/.ssh/id_rsa.pub` in most configurations. 
 
 If you have that file in place, you're all set and should see the "Import projects from Bitbucket" option enabled. If you don't, do the following:
 
 1. Create a new SSH key:
 
     ```sh
-        sudo -u git -H ssh-keygen
+    sudo -u git -H ssh-keygen
     ```
 
     Make sure to use an **empty passphrase**.
