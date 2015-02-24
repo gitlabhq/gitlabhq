@@ -41,7 +41,7 @@ gem "browser"
 gem "gitlab_git", '7.0.0.rc14'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
-gem 'gitlab-grack', '~> 2.0.0.pre', require: 'grack'
+gem 'gitlab-grack', '~> 2.0.0.rc2', require: 'grack'
 
 # LDAP Auth
 gem 'gitlab_omniauth-ldap', '1.2.0', require: "omniauth-ldap"
