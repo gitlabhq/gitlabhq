@@ -22,14 +22,19 @@ class GitlabCiService < CiService
   validates :project_url, presence: true, if: :activated?
   validates :token, presence: true, if: :activated?
 
-  delegate :execute, to: :service_hook, prefix: nil
-
   after_save :compose_service_hook, if: :activated?
 
   def compose_service_hook
     hook = service_hook || build_service_hook
     hook.url = [project_url, "/build", "?token=#{token}"].join("")
     hook.save
+  end
+
+  def execute(data)
+    object_kind = data[:object_kind]
+    return unless object_kind == "push"
+
+    service_hook.execute(data)
   end
 
   def commit_status_path(sha)
