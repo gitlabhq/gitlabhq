@@ -120,13 +120,13 @@
 }
 
 .readme-holder {
-  border-top: 1px dashed #CCC;
-  padding-top: 10px;
-
   .readme-file-title {
     font-size: 14px;
+    font-weight: bold;
     margin-bottom: 20px;
     color: #777;
+    border-bottom: 1px solid #DDD;
+    padding: 10px 0;
   }
 }
 

@@ -117,7 +117,8 @@ module API
             branch_name: branch_name
           }
         else
-          render_api_error!(result[:message], 400)
+          http_status = result[:http_status] || 400
+          render_api_error!(result[:message], http_status)
         end
       end
 

@@ -45,6 +45,7 @@
 #  last_credential_check_at :datetime
 #  github_access_token      :string(255)
 #  notification_email       :string(255)
+#  password_automatically_set :boolean        default(FALSE)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -348,6 +349,10 @@ class User < ActiveRecord::Base
 
   def require_ssh_key?
     keys.count == 0
+  end
+
+  def require_password?
+    password_automatically_set? && !ldap_user?
   end
 
   def can_change_username?
