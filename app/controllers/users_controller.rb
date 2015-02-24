@@ -6,7 +6,9 @@ class UsersController < ApplicationController
   def show
     @contributed_projects = Project.
       where(id: authorized_projects_ids & @user.contributed_projects_ids).
-      in_group_namespace.includes(:namespace)
+      in_group_namespace.
+      includes(:namespace).
+      reject(&:forked?)
 
     @projects = @user.personal_projects.
       where(id: authorized_projects_ids).includes(:namespace)
