@@ -27,14 +27,20 @@ class GitlabIssueTrackerService < IssueTrackerService
   end
 
   def project_url
-    project_issues_path(project)
+    "#{gitlab_url}#{project_issues_path(project)}"
   end
 
   def new_issue_url
-    new_project_issue_path project_id: project
+    "#{gitlab_url}#{new_project_issue_path(project_id: project)}"
   end
 
   def issue_url(iid)
-    "#{Gitlab.config.gitlab.url}#{project_issue_path(project_id: project, id: iid)}"
+    "#{gitlab_url}#{project_issue_path(project_id: project, id: iid)}"
+  end
+
+  private
+
+  def gitlab_url
+    Gitlab.config.gitlab.relative_url_root.chomp("/") if Gitlab.config.gitlab.relative_url_root
   end
 end
