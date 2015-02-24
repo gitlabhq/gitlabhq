@@ -27,11 +27,11 @@ class GitlabIssueTrackerService < IssueTrackerService
   end
 
   def project_url
-    namespace_project_issues_path(project.namespace, project)
+    "#{Gitlab.config.gitlab.url}#{namespace_project_issues_path(project.namespace, project)}"
   end
 
   def new_issue_url
-    new_namespace_project_issue_path namespace_id: project.namespace, project_id: project
+    "#{Gitlab.config.gitlab.url}#{new_namespace_project_issue_path namespace_id: project.namespace, project_id: project}"
   end
 
   def issue_url(iid)
