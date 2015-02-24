@@ -192,10 +192,12 @@ describe ApplicationHelper do
     it 'sorts tags in a natural order' do
       # Stub repository.tag_names to make sure we get some valid testing data
       expect(@project.repository).to receive(:tag_names).
-        and_return(['v1.0.9', 'v1.0.10', 'v2.0', 'v3.1.4.2', 'v1.0.9a'])
+        and_return(['v1.0.9', 'v1.0.10', 'v2.0', 'v3.1.4.2', 'v1.0.9a',
+                    'v2.0-rc1', 'v2.0rc2'])
 
       expect(options[1][1]).
-        to eq(['v3.1.4.2', 'v2.0', 'v1.0.10', 'v1.0.9a', 'v1.0.9'])
+        to eq(['v3.1.4.2', 'v2.0', 'v2.0rc2', 'v2.0-rc1', 'v1.0.10', 'v1.0.9',
+               'v1.0.9a'])
     end
   end
 

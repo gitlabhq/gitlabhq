@@ -608,7 +608,7 @@ GEM
       raindrops (~> 0.7)
     unicorn-worker-killer (0.4.2)
       unicorn (~> 4)
-    version_sorter (1.1.0)
+    version_sorter (2.0.0)
     virtus (1.0.1)
       axiom-types (~> 0.0.5)
       coercible (~> 1.0)
