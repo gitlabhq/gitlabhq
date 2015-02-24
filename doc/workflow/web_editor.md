@@ -10,7 +10,7 @@ to create the first file and open it in the web editor.
 
 ![web editor 1](web_editor/empty_project.png)
 
-Fill in a file name, some content, a commit message and press the commit button.
+Fill in a file name, some content, a commit message, branch name and press the commit button.
 The file will be saved to the repository.
 
 ![web editor 2](web_editor/new_file.png)
@@ -21,6 +21,6 @@ viewing the file.
 ![web editor 3](web_editor/show_file.png)
 
 Editing a file is almost the same as creating a new file,
-with as addition the ability to preview your changes in a separate tab.
+with as addition the ability to preview your changes in a separate tab. Also you can save your change to another branch by filling out field `branch`
 
 ![web editor 3](web_editor/edit_file.png)
