@@ -78,7 +78,7 @@ GEM
       json (>= 1.7)
     celluloid (0.16.0)
       timers (~> 4.0.0)
-    charlock_holmes (0.7.3)
+    charlock_holmes (0.6.9.4)
     cliver (0.3.2)
     coderay (1.1.0)
     coercible (1.0.0)
