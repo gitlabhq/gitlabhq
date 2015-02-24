@@ -54,7 +54,7 @@ describe GitlabMarkdownHelper do
     end
 
     describe "referencing a commit" do
-      let(:expected) { project_commit_path(project, commit) }
+      let(:expected) { namespace_project_commit_path(project.namespace, project, commit) }
 
       it "should link using a full id" do
         actual = "Reverts #{commit.id}"
@@ -146,7 +146,7 @@ describe GitlabMarkdownHelper do
     # Currently limited to Snippets, Issues and MergeRequests
     shared_examples 'referenced object' do
       let(:actual)   { "Reference to #{reference}" }
-      let(:expected) { polymorphic_path([project, object]) }
+      let(:expected) { polymorphic_path([project.namespace, project, object]) }
 
       it "should link using a valid id" do
         expect(gfm(actual)).to match(expected)
@@ -199,9 +199,9 @@ describe GitlabMarkdownHelper do
       let(:actual)   { "Reference to #{full_reference}" }
       let(:expected) do
         if object.is_a?(Commit)
-          project_commit_path(@other_project, object)
+          namespace_project_commit_path(@other_project.namespace, @other_project, object)
         else
-          polymorphic_path([@other_project, object])
+          polymorphic_path([@other_project.namespace, @other_project, object])
         end
       end
 
@@ -353,7 +353,7 @@ describe GitlabMarkdownHelper do
       let(:object)    { snippet }
       let(:reference) { "$#{snippet.id}" }
       let(:actual)   { "Reference to #{reference}" }
-      let(:expected) { project_snippet_path(project, object) }
+      let(:expected) { namespace_project_snippet_path(project.namespace, project, object) }
 
       it "should link using a valid id" do
         expect(gfm(actual)).to match(expected)
@@ -395,17 +395,17 @@ describe GitlabMarkdownHelper do
       let(:actual) { "!#{merge_request.iid} -> #{commit.id} -> ##{issue.iid}" }
 
       it "should link to the merge request" do
-        expected = project_merge_request_path(project, merge_request)
+        expected = namespace_project_merge_request_path(project.namespace, project, merge_request)
         expect(gfm(actual)).to match(expected)
       end
 
       it "should link to the commit" do
-        expected = project_commit_path(project, commit)
+        expected = namespace_project_commit_path(project.namespace, project, commit)
         expect(gfm(actual)).to match(expected)
       end
 
       it "should link to the issue" do
-        expected = project_issue_path(project, issue)
+        expected = namespace_project_issue_path(project.namespace, project, issue)
         expect(gfm(actual)).to match(expected)
       end
     end
@@ -458,7 +458,7 @@ describe GitlabMarkdownHelper do
   end
 
   describe "#link_to_gfm" do
-    let(:commit_path) { project_commit_path(project, commit) }
+    let(:commit_path) { namespace_project_commit_path(project.namespace, project, commit) }
     let(:issues)      { create_list(:issue, 2, project: project) }
 
     it "should handle references nested in links with all the text" do
@@ -474,7 +474,7 @@ describe GitlabMarkdownHelper do
 
       # First issue link
       expect(groups[1]).
-        to match(/href="#{project_issue_url(project, issues[0])}"/)
+        to match(/href="#{namespace_project_issue_path(project.namespace, project, issues[0])}"/)
       expect(groups[1]).to match(/##{issues[0].iid}$/)
 
       # Internal commit link
@@ -483,7 +483,7 @@ describe GitlabMarkdownHelper do
 
       # Second issue link
       expect(groups[3]).
-        to match(/href="#{project_issue_url(project, issues[1])}"/)
+        to match(/href="#{namespace_project_issue_path(project.namespace, project, issues[1])}"/)
       expect(groups[3]).to match(/##{issues[1].iid}$/)
 
       # Trailing commit link
@@ -506,7 +506,7 @@ describe GitlabMarkdownHelper do
   describe "#markdown" do
     it "should handle references in paragraphs" do
       actual = "\n\nLorem ipsum dolor sit amet. #{commit.id} Nam pulvinar sapien eget.\n"
-      expected = project_commit_path(project, commit)
+      expected = namespace_project_commit_path(project.namespace, project, commit)
       expect(markdown(actual)).to match(expected)
     end
 
@@ -603,7 +603,7 @@ describe GitlabMarkdownHelper do
     end
 
     it "should leave ref-like href of 'manual' links untouched" do
-      expect(markdown("why not [inspect !#{merge_request.iid}](http://example.tld/#!#{merge_request.iid})")).to eq("<p>why not <a href=\"http://example.tld/#!#{merge_request.iid}\">inspect </a><a class=\"gfm gfm-merge_request \" href=\"#{project_merge_request_url(project, merge_request)}\" title=\"Merge Request: #{merge_request.title}\">!#{merge_request.iid}</a><a href=\"http://example.tld/#!#{merge_request.iid}\"></a></p>\n")
+      expect(markdown("why not [inspect !#{merge_request.iid}](http://example.tld/#!#{merge_request.iid})")).to eq("<p>why not <a href=\"http://example.tld/#!#{merge_request.iid}\">inspect </a><a class=\"gfm gfm-merge_request \" href=\"#{namespace_project_merge_request_url(project.namespace, project, merge_request)}\" title=\"Merge Request: #{merge_request.title}\">!#{merge_request.iid}</a><a href=\"http://example.tld/#!#{merge_request.iid}\"></a></p>\n")
     end
 
     it "should leave ref-like src of images untouched" do
@@ -611,7 +611,7 @@ describe GitlabMarkdownHelper do
     end
 
     it "should generate absolute urls for refs" do
-      expect(markdown("##{issue.iid}")).to include(project_issue_url(project, issue))
+      expect(markdown("##{issue.iid}")).to include(namespace_project_issue_path(project.namespace, project, issue))
     end
 
     it "should generate absolute urls for emoji" do

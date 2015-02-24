@@ -64,7 +64,7 @@ describe ApplicationHelper do
       project = create(:project)
       project.avatar = File.open(avatar_file_path)
       project.save!
-      expect(project_icon(project.to_param).to_s).to eq(
+      expect(project_icon("#{project.namespace.to_param}/#{project.to_param}").to_s).to eq(
         "<img alt=\"Gitlab logo\" src=\"/uploads/project/avatar/#{ project.id }/gitlab_logo.png\" />"
       )
     end
@@ -75,8 +75,8 @@ describe ApplicationHelper do
 
       allow_any_instance_of(Project).to receive(:avatar_in_git).and_return(true)
 
-      expect(project_icon(project.to_param).to_s).to match(
-        image_tag(project_avatar_path(project)))
+      expect(project_icon("#{project.namespace.to_param}/#{project.to_param}").to_s).to match(
+        image_tag(namespace_project_avatar_path(project.namespace, project)))
     end
   end
 

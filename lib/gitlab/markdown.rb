@@ -202,7 +202,7 @@ module Gitlab
         )
 
       if identifier == "all"
-        link_to("@all", project_url(project), options)
+        link_to("@all", namespace_project_url(project.namespace, project), options)
       elsif namespace = Namespace.find_by(path: identifier)
         url =
           if namespace.type == "Group"
@@ -222,7 +222,7 @@ module Gitlab
         )
         link_to(
           render_colored_label(label),
-          project_issues_path(project, label_name: label.name),
+          namespace_project_issues_path(project.namespace, project, label_name: label.name),
           options
         )
       end
@@ -255,7 +255,8 @@ module Gitlab
           title: "Merge Request: #{merge_request.title}",
           class: "gfm gfm-merge_request #{html_options[:class]}"
         )
-        url = project_merge_request_url(project, merge_request)
+        url = namespace_project_merge_request_url(project.namespace, project,
+                                                  merge_request)
         link_to("#{prefix_text}!#{identifier}", url, options)
       end
     end
@@ -266,8 +267,11 @@ module Gitlab
           title: "Snippet: #{snippet.title}",
           class: "gfm gfm-snippet #{html_options[:class]}"
         )
-        link_to("$#{identifier}", project_snippet_url(project, snippet),
-                options)
+        link_to(
+          "$#{identifier}",
+          namespace_project_snippet_url(project.namespace, project, snippet),
+          options
+        )
       end
     end
 
@@ -280,7 +284,7 @@ module Gitlab
         prefix_text = "#{prefix_text}@" if prefix_text
         link_to(
           "#{prefix_text}#{identifier}",
-          project_commit_url(project, commit),
+          namespace_project_commit_url(project.namespace, project, commit),
           options
         )
       end

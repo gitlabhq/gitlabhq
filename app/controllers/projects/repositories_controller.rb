@@ -7,7 +7,7 @@ class Projects::RepositoriesController < Projects::ApplicationController
   def create
     @project.create_repository
 
-    redirect_to @project
+    redirect_to namespace_project_path(@project.namespace, @project)
   end
 
   def archive

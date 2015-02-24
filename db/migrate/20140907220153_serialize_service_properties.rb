@@ -1,6 +1,9 @@
 class SerializeServiceProperties < ActiveRecord::Migration
   def change
-    add_column :services, :properties, :text
+    unless column_exists?(:services, :properties)
+      add_column :services, :properties, :text
+    end
+
     Service.reset_column_information
 
     associations =
@@ -19,18 +22,21 @@ class SerializeServiceProperties < ActiveRecord::Migration
                                :api_version, :jira_issue_transition_id],
     }
 
-    Service.all.each do |service|
+    Service.find_each(batch_size: 500).each do |service|
       associations[service.type.to_sym].each do |attribute|
         service.send("#{attribute}=", service.attributes[attribute.to_s])
       end
-      service.save
+
+      service.save(validate: false)
     end
 
-    remove_column :services, :project_url, :string
-    remove_column :services, :subdomain, :string
-    remove_column :services, :room, :string
-    remove_column :services, :recipients, :text
-    remove_column :services, :api_key, :string
-    remove_column :services, :token, :string
+    if column_exists?(:services, :project_url)
+      remove_column :services, :project_url, :string
+      remove_column :services, :subdomain, :string
+      remove_column :services, :room, :string
+      remove_column :services, :recipients, :text
+      remove_column :services, :api_key, :string
+      remove_column :services, :token, :string
+    end
   end
 end

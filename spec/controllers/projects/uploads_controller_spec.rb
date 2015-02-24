@@ -6,15 +6,18 @@ describe Projects::UploadsController do
   let(:jpg)     { fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg') }
   let(:txt)     { fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain') }
 
-  describe 'POST #create' do
+  describe "POST #create" do
     before do
       sign_in(user)
       project.team << [user, :developer]
     end
 
     context "without params['file']" do
-      it 'returns an error' do
-        post :create, project_id: project.to_param, format: :json
+      it "returns an error" do
+        post :create, 
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param, 
+          format: :json
         expect(response.status).to eq(422)
       end
     end
@@ -22,6 +25,7 @@ describe Projects::UploadsController do
     context 'with valid image' do
       before do
         post :create,
+          namespace_id: project.namespace.to_param
           project_id: project.to_param,
           file: jpg,
           format: :json
@@ -36,7 +40,11 @@ describe Projects::UploadsController do
 
     context 'with valid non-image file' do
       before do
-        post :create, project_id: project.to_param, file: txt, format: :json
+        post :create, 
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param, 
+          file: txt, 
+          format: :json
       end
 
       it 'returns a content with original filename, new link, and correct type.' do

@@ -1,4 +1,4 @@
-= form_tag switch_project_refs_path(@project), method: :get, class: "project-refs-form" do
+= form_tag switch_namespace_project_refs_path(@project.namespace, @project), method: :get, class: "project-refs-form" do
   = select_tag "ref", grouped_options_refs, class: "project-refs-select select2 select2-sm"
   = hidden_field_tag :destination, destination
   - if defined?(path)

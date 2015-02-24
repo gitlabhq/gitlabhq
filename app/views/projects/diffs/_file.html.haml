@@ -1,6 +1,6 @@
 - blob = project.repository.blob_for_diff(@commit, diff_file.diff)
 - return unless blob
-- blob_diff_path = diff_project_blob_path(project, tree_join(@commit.id, diff_file.file_path))
+- blob_diff_path = namespace_project_blob_diff_path(project.namespace, project, tree_join(@commit.id, diff_file.file_path))
 .diff-file{id: "diff-#{i}", data: {blob_diff_path: blob_diff_path }}
   .diff-header{id: "file-path-#{hexdigest(diff_file.new_path || diff_file.old_path)}"}
     - if diff_file.deleted_file

@@ -149,6 +149,7 @@ module Grack
         path_with_namespace = m.last
         path_with_namespace.gsub!(/\.wiki$/, '')
 
+        path_with_namespace[0] = '' if path_with_namespace.start_with?('/')
         Project.find_with_namespace(path_with_namespace)
       end
     end

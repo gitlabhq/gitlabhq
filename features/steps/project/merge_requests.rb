@@ -101,11 +101,11 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I switch to the diff tab' do
-    visit diffs_project_merge_request_path(project, merge_request)
+    visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
   end
 
   step 'I switch to the merge request\'s comments tab' do
-    visit project_merge_request_path(project, merge_request)
+    visit namespace_project_merge_request_path(project.namespace, project, merge_request)
   end
 
   step 'I click on the commit in the merge request' do

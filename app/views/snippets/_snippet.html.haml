@@ -11,7 +11,7 @@
 
   %small.pull-right.cgray
     - if snippet.project_id?
-      = link_to snippet.project.name_with_namespace, project_path(snippet.project)
+      = link_to snippet.project.name_with_namespace, namespace_project_path(snippet.project.namespace, snippet.project)
 
   .snippet-info
     = "##{snippet.id}"

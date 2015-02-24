@@ -4,7 +4,7 @@ module ProjectsHelper
   end
 
   def link_to_project(project)
-    link_to project do
+    link_to [project.namespace.becomes(Namespace), project] do
       title = content_tag(:span, project.name, class: 'project-name')
 
       if project.namespace
@@ -42,12 +42,20 @@ module ProjectsHelper
   def project_title(project)
     if project.group
       content_tag :span do
-        link_to(simple_sanitize(project.group.name), group_path(project.group)) + ' / ' + link_to(simple_sanitize(project.name), project_path(project))
+        link_to(
+          simple_sanitize(project.group.name), group_path(project.group)
+        ) + ' / ' +
+          link_to(simple_sanitize(project.name),
+                  namespace_project_path(project.namespace, project))
       end
     else
       owner = project.namespace.owner
       content_tag :span do
-        link_to(simple_sanitize(owner.name), user_path(owner)) + ' / ' + link_to(simple_sanitize(project.name), project_path(project))
+        link_to(
+          simple_sanitize(owner.name), user_path(owner)
+        ) + ' / ' +
+          link_to(simple_sanitize(project.name),
+                  namespace_project_path(project.namespace, project))
       end
     end
   end
@@ -100,7 +108,10 @@ module ProjectsHelper
 
 
     content_tag 'span', class: starred ? 'turn-on' : 'turn-off' do
-      link_to toggle_star_project_path(@project), link_opts do
+      link_to(
+        toggle_star_namespace_project_path(@project.namespace, @project),
+        link_opts
+      ) do
         toggle_html + ' ' + count_html
       end
     end
@@ -222,7 +233,12 @@ module ProjectsHelper
 
   def contribution_guide_url(project)
     if project && project.repository.contribution_guide
-      project_blob_path(project, tree_join(project.default_branch, project.repository.contribution_guide.name))
+      namespace_project_blob_path(
+        project.namespace,
+        project,
+        tree_join(project.default_branch,
+                  project.repository.contribution_guide.name)
+      )
     end
   end
 
@@ -236,7 +252,7 @@ module ProjectsHelper
 
   def project_wiki_path_with_version(proj, page, version, is_newest)
     url_params = is_newest ? {} : { version_id: version }
-    project_wiki_path(proj, page, url_params)
+    namespace_project_wiki_path(proj.namespace, proj, page, url_params)
   end
 
   def project_status_css_class(status)

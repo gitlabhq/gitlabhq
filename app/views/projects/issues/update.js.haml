@@ -6,7 +6,7 @@
   $('.context').html("#{escape_javascript(render partial: 'issue_context', locals: { issue: @issue })}");
   $('.context').effect('highlight');
   - if @issue.milestone
-    $('.milestone-nav-link').replaceWith("<span class='milestone-nav-link'>| <span class='light'>Milestone</span> #{escape_javascript(link_to @issue.milestone.title, project_milestone_path(@issue.project, @issue.milestone))}</span>")
+    $('.milestone-nav-link').replaceWith("<span class='milestone-nav-link'>| <span class='light'>Milestone</span> #{escape_javascript(link_to @issue.milestone.title, namespace_project_milestone_path(@issue.project.namespace, @issue.project, @issue.milestone))}</span>")
   - else
     $('.milestone-nav-link').html('')
 

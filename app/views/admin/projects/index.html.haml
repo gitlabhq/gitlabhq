@@ -1,7 +1,7 @@
 .row
   .col-md-3
     .admin-filter
-      = form_tag admin_projects_path, method: :get, class: '' do
+      = form_tag admin_namespaces_projects_path, method: :get, class: '' do
         .form-group
           = label_tag :name, 'Name:'
           = text_field_tag :name, params[:name], class: "form-control"
@@ -34,7 +34,7 @@
         %hr
         = hidden_field_tag :sort, params[:sort]
         = button_tag "Search", class: "btn submit btn-primary"
-        = link_to "Reset", admin_projects_path, class: "btn btn-cancel"
+        = link_to "Reset", admin_namespaces_projects_path, class: "btn btn-cancel"
 
   .col-md-9
     .panel.panel-default
@@ -51,15 +51,15 @@
               %b.caret
             %ul.dropdown-menu
               %li
-                = link_to admin_projects_path(sort: sort_value_recently_created) do
+                = link_to admin_namespaces_projects_path(sort: sort_value_recently_created) do
                   = sort_title_recently_created
-                = link_to admin_projects_path(sort: sort_value_oldest_created) do
+                = link_to admin_namespaces_projects_path(sort: sort_value_oldest_created) do
                   = sort_title_oldest_created
-                = link_to admin_projects_path(sort: sort_value_recently_updated) do
+                = link_to admin_namespaces_projects_path(sort: sort_value_recently_updated) do
                   = sort_title_recently_updated
-                = link_to admin_projects_path(sort: sort_value_oldest_updated) do
+                = link_to admin_namespaces_projects_path(sort: sort_value_oldest_updated) do
                   = sort_title_oldest_updated
-                = link_to admin_projects_path(sort: sort_value_largest_repo) do
+                = link_to admin_namespaces_projects_path(sort: sort_value_largest_repo) do
                   = sort_title_largest_repo
           = link_to 'New Project', new_project_path, class: "btn btn-new"
       %ul.well-list
@@ -68,12 +68,12 @@
             .list-item-name
               %span{ class: visibility_level_color(project.visibility_level) }
                 = visibility_level_icon(project.visibility_level)
-              = link_to project.name_with_namespace, [:admin, project]
+              = link_to project.name_with_namespace, [:admin, project.namespace.becomes(Namespace), project]
             .pull-right
               %span.label.label-gray
                 = repository_size(project)
-              = link_to 'Edit', edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-small"
-              = link_to 'Destroy', [project], data: { confirm: remove_project_message(project) }, method: :delete, class: "btn btn-small btn-remove"
+              = link_to 'Edit', edit_namespace_project_path(project.namespace, project), id: "edit_#{dom_id(project)}", class: "btn btn-small"
+              = link_to 'Destroy', [project.namespace.becomes(Namespace), project], data: { confirm: remove_project_message(project) }, method: :delete, class: "btn btn-small btn-remove"
         - if @projects.blank?
           .nothing-here-block 0 projects matches
     = paginate @projects, theme: "gitlab"

@@ -23,7 +23,8 @@ class Projects::BranchesController < Projects::ApplicationController
 
     if result[:status] == :success
       @branch = result[:branch]
-      redirect_to project_tree_path(@project, @branch.name)
+      redirect_to namespace_project_tree_path(@project.namespace, @project,
+                                              @branch.name)
     else
       @error = result[:message]
       render action: 'new'
@@ -35,7 +36,10 @@ class Projects::BranchesController < Projects::ApplicationController
     @branch_name = params[:id]
 
     respond_to do |format|
-      format.html { redirect_to project_branches_path(@project) }
+      format.html do
+        redirect_to namespace_project_branches_path(@project.namespace,
+                                                    @project)
+      end
       format.js
     end
   end

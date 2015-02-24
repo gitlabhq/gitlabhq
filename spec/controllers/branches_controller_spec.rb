@@ -19,6 +19,7 @@ describe Projects::BranchesController do
 
     before {
       post :create,
+        namespace_id: project.namespace.to_param,
         project_id: project.to_param,
         branch_name: branch,
         ref: ref

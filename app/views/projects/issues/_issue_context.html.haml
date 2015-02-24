@@ -1,4 +1,4 @@
-= form_for [@project, @issue], remote: true, html: {class: 'edit-issue inline-update'} do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @issue], remote: true, html: {class: 'edit-issue inline-update'} do |f|
   %div.prepend-top-20
     .issuable-context-title
       %label
@@ -16,7 +16,7 @@
         Milestone:
       - if issue.milestone
         %span.back-to-milestone
-          = link_to project_milestone_path(@project, @issue.milestone) do
+          = link_to namespace_project_milestone_path(@project.namespace, @project, @issue.milestone) do
             %strong
               %i.fa.fa-clock-o
               = @issue.milestone.title
