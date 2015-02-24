@@ -86,9 +86,9 @@ Gitlab::Application.routes.draw do
         constraints:  { model: /note|user|group|project/, mounted_as: /avatar|attachment/, filename: /.+/ }
 
     # Project markdown uploads
-    get ":id/:secret/:filename",
-        to:           "projects/uploads#show",
-        constraints:  { id: /[a-zA-Z.0-9_\-]+\/[a-zA-Z.0-9_\-]+/, filename: /.+/ }
+    get ":namespace_id/:id/:secret/:filename",
+      to:           "projects/uploads#show",
+      constraints:  { namespace_id: /[a-zA-Z.0-9_\-]+/, id: /[a-zA-Z.0-9_\-]+/, filename: /.+/ }
   end
 
   #
