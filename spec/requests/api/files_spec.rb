@@ -98,13 +98,33 @@ describe API::API, api: true  do
       expect(response.status).to eq(400)
     end
 
-    it "should return a 400 if satellite fails to create file" do
-      Gitlab::Satellite::EditFileAction.any_instance.stub(
-        commit!: false,
-      )
+    it 'should return a 400 if the checkout fails' do
+      Gitlab::Satellite::EditFileAction.any_instance.stub(:commit!)
+        .and_raise(Gitlab::Satellite::CheckoutFailed)
 
       put api("/projects/#{project.id}/repository/files", user), valid_params
       expect(response.status).to eq(400)
+
+      ref = valid_params[:branch_name]
+      expect(response.body).to match("ref '#{ref}' could not be checked out")
+    end
+
+    it 'should return a 409 if the file was not modified' do
+      Gitlab::Satellite::EditFileAction.any_instance.stub(:commit!)
+        .and_raise(Gitlab::Satellite::CommitFailed)
+
+      put api("/projects/#{project.id}/repository/files", user), valid_params
+      expect(response.status).to eq(409)
+      expect(response.body).to match("Maybe there was nothing to commit?")
+    end
+
+    it 'should return a 409 if the push fails' do
+      Gitlab::Satellite::EditFileAction.any_instance.stub(:commit!)
+        .and_raise(Gitlab::Satellite::PushFailed)
+
+      put api("/projects/#{project.id}/repository/files", user), valid_params
+      expect(response.status).to eq(409)
+      expect(response.body).to match("Maybe the file was changed by another process?")
     end
   end
 

@@ -1,5 +1,9 @@
 module Gitlab
   module Satellite
+    class CheckoutFailed < StandardError; end
+    class CommitFailed < StandardError; end
+    class PushFailed < StandardError; end
+
     class Satellite
       include Gitlab::Popen
 

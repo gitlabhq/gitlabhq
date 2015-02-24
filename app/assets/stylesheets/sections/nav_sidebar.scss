@@ -47,7 +47,7 @@
     border-left: 3px solid $style_color;
 
     &.no-highlight {
-      background: none;
+      background: none !important;
       border: none;
     }
 

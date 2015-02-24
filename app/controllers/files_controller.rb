@@ -1,4 +1,6 @@
 class FilesController < ApplicationController
+  skip_before_filter :authenticate_user!, :reject_blocked
+
   def download
     note = Note.find(params[:id])
     uploader = note.attachment
