@@ -86,6 +86,11 @@ Gitlab::Application.routes.draw do
         to:           "uploads#show", 
         constraints:  { model: /note|user|group|project/, mounted_as: /avatar|attachment/, filename: /.+/ }
 
+    # Appearance
+    get ":model/:mounted_as/:id/:filename", 
+        to:           "uploads#show", 
+        constraints:  { model: /appearance/, mounted_as: /logo|dark_logo|light_logo/, filename: /.+/ }
+
     # Project markdown uploads
     get ":id/:secret/:filename", 
         to:           "projects/uploads#show", 
