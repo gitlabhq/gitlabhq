@@ -10,8 +10,15 @@
         background: #F1F1F1;
         border-bottom: 1px solid #DDD;
 
-        .app_logo {
-          background-color: #DDD;
+        .title {
+          color: #555;
+
+          a {
+            color: #555;
+            &:hover {
+              text-decoration: underline;
+            }
+          }
         }
 
         .nav > li > a {

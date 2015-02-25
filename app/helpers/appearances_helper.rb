@@ -14,4 +14,8 @@ module AppearancesHelper
   def brand_text
     nil
   end
+
+  def brand_header_logo
+    image_tag 'logo-white.png'
+  end
 end
