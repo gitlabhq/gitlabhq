@@ -20,7 +20,7 @@
         %td
           = link_to project.import_source, "https://gitlab.com/#{project.import_source}", target: "_blank"
         %td
-          %strong= link_to project.path_with_namespace, project
+          %strong= link_to project.path_with_namespace, [project.namespace.becomes(Namespace), project]
         %td.job-status
           - if project.import_status == 'finished'
             %span.cgreen
