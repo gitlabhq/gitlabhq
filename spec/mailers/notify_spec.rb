@@ -607,11 +607,14 @@ describe Notify do
 
       let(:send_from_committer_email) { true }
 
-      context "when the committer email domain matches" do
+      before do
+        allow(Gitlab.config.gitlab).to receive(:host).and_return("gitlab.corp.company.com")
+      end
+
+      context "when the committer email domain is within the GitLab domain" do
 
         before do
-          allow(Gitlab.config.gitlab).to receive(:host).and_return("gitlab.dev")
-          user.update_attribute(:email, "user@#{Gitlab.config.gitlab.host}")
+          user.update_attribute(:email, "user@company.com")
           user.confirm!
         end
 
@@ -621,7 +624,25 @@ describe Notify do
         end
       end
 
-      context "when the committer email doesn't match" do
+      context "when the committer email domain is not completely within the GitLab domain" do
+
+        before do
+          user.update_attribute(:email, "user@something.company.com")
+          user.confirm!
+        end
+
+        it "is sent from the default email" do
+          sender = subject.header[:from].addrs[0]
+          expect(sender.address).to eq(gitlab_sender)
+        end
+      end
+
+      context "when the committer email domain is outside the GitLab domain" do
+
+        before do
+          user.update_attribute(:email, "user@mpany.com")
+          user.confirm!
+        end
 
         it "is sent from the default email" do
           sender = subject.header[:from].addrs[0]
