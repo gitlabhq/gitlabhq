@@ -9,6 +9,7 @@ v 7.9.0 (unreleased)
   - Improve trigger merge request hook when source project branch has been updated (Kirill Zaitsev)
   - Save web edit in new branch
   - Fix ordering of imported but unchanged projects (Marco Wessel)
+  - Mobile UI improvements: make aside content expandable
 
 v 7.8.1
   - Fix run of custom post receive hooks
