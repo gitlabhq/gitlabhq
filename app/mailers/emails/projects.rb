@@ -31,8 +31,8 @@ module Emails
       if @commits.length > 1
         @target_url = namespace_project_compare_url(@project.namespace,
                                                     @project,
-                                                    from: @commits.first,
-                                                    to: @commits.last)
+                                                    from: Commit.new(@compare.base),
+                                                    to:   Commit.new(@compare.head))
         @subject << "Deleted " if @reverse_compare
         @subject << "#{@commits.length} commits: #{@commits.first.title}"
       else

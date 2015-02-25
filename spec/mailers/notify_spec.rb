@@ -568,7 +568,7 @@ describe Notify do
     let(:user) { create(:user) }
     let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_image_commit.id, sample_commit.id) }
     let(:commits) { Commit.decorate(compare.commits) }
-    let(:diff_path) { namespace_project_compare_path(project.namespace, project, from: commits.first, to: commits.last) }
+    let(:diff_path) { namespace_project_compare_path(project.namespace, project, from: Commit.new(compare.base), to: Commit.new(compare.head)) }
     let(:send_from_committer_email) { false }
 
     subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'master', compare, false, send_from_committer_email) }
