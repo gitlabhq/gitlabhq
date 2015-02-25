@@ -12,12 +12,12 @@ class Projects::GroupLinksController < Projects::ApplicationController
     link.group_access = params[:link_group_access]
     link.save
 
-    redirect_to project_group_links_path(project)
+    redirect_to namespace_project_group_links_path(project.namespace, project)
   end
 
   def destroy
     project.project_group_links.find(params[:id]).destroy
 
-    redirect_to project_group_links_path(project)
+    redirect_to namespace_project_group_links_path(project.namespace, project)
   end
 end

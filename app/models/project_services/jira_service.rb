@@ -87,7 +87,7 @@ class JiraService < IssueTrackerService
       },
       project: {
         name: project.path_with_namespace,
-        url: resource_url(project_path(project))
+        url: resource_url(namespace_project_path(project.namespace, project))
       },
       entity: {
         name: noteable_name.humanize.downcase,
@@ -193,7 +193,11 @@ class JiraService < IssueTrackerService
   def build_entity_url(entity_name, entity_id)
     resource_url(
       polymorphic_url(
-        [self.project, entity_name],
+        [
+          self.project.namespace.becomes(Namespace),
+          self.project,
+          entity_name
+        ],
         id: entity_id,
         routing_type: :path
       )

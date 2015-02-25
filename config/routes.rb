@@ -481,9 +481,9 @@ Gitlab::Application.routes.draw do
         end
       end
 
-    end
+      get "/audit_events" => "audit_events#project_log"
 
-    get "/audit_events" => "audit_events#project_log"
+    end
   end
 
   get ':id' => 'namespaces#show', constraints: { id: /(?:[^.]|\.(?!atom$))+/, format: /atom/ }

@@ -248,7 +248,7 @@ module SharedPaths
   end
 
   step 'I visit project git hooks page' do
-    visit project_git_hooks_path(@project)
+    visit namespace_project_git_hooks_path(@project.namespace, @project)
   end
 
   step 'I visit project deploy keys page' do

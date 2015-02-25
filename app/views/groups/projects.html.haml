@@ -12,13 +12,13 @@
       %li
         .list-item-name
           = visibility_level_icon(project.visibility_level)
-          %strong= link_to project.name_with_namespace, project
+          %strong= link_to project.name_with_namespace, namespace_project_path(project.namespace, project)
           %span.label.label-gray
             = repository_size(project)
         .pull-right
           = link_to 'Members', namespace_project_team_index_path(project.namespace, project), id: "edit_#{dom_id(project)}", class: "btn btn-small"
           = link_to 'Edit', edit_namespace_project_path(project.namespace, project), id: "edit_#{dom_id(project)}", class: "btn btn-small"
-          = link_to 'Remove', project, data: { confirm: remove_project_message(project)}, method: :delete, class: "btn btn-small btn-remove"
+          = link_to 'Remove', namespace_project_path(project.namespace, project), data: { confirm: remove_project_message(project)}, method: :delete, class: "btn btn-small btn-remove"
     - if @projects.blank?
       .nothing-here-block This group has no projects yet
 

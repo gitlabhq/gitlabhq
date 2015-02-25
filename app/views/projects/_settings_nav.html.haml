@@ -10,7 +10,7 @@
       %span
         Members
   = nav_link(controller: :group_links) do
-    = link_to project_group_links_path(@project) do
+    = link_to namespace_project_group_links_path(@project.namespace, @project) do
       %i.fa.fa-share-square-o
       %span
         Groups
@@ -25,7 +25,7 @@
       %span
         Web Hooks
   = nav_link(controller: :git_hooks) do
-    = link_to project_git_hooks_path(@project) do
+    = link_to namespace_project_git_hooks_path(@project.namespace, @project) do
       %i.fa.fa-git-square
       %span
         Git Hooks
@@ -40,7 +40,7 @@
       %span
         Protected branches
   = nav_link(controller: :audit_events) do
-    = link_to project_audit_events_path(@project) do
+    = link_to namespace_project_audit_events_path(@project.namespace, @project) do
       %i.fa.fa-file-text-o
       %span
         Audit Events
