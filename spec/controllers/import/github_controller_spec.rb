@@ -5,6 +5,7 @@ describe Import::GithubController do
 
   before do
     sign_in(user)
+    controller.stub(:github_import_enabled?).and_return(true)
   end
 
   describe "GET callback" do

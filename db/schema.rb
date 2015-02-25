@@ -334,12 +334,12 @@ ActiveRecord::Schema.define(version: 20150223022001) do
     t.string   "import_url"
     t.integer  "visibility_level",       default: 0,        null: false
     t.boolean  "archived",               default: false,    null: false
+    t.string   "avatar"
     t.string   "import_status"
     t.float    "repository_size",        default: 0.0
     t.integer  "star_count",             default: 0,        null: false
     t.string   "import_type"
     t.string   "import_source"
-    t.string   "avatar"
   end
 
   add_index "projects", ["created_at", "id"], name: "index_projects_on_created_at_and_id", using: :btree
@@ -410,12 +410,12 @@ ActiveRecord::Schema.define(version: 20150223022001) do
   end
 
   create_table "users", force: true do |t|
-    t.string   "email",                      default: "",    null: false
-    t.string   "encrypted_password",         default: "",    null: false
+    t.string   "email",                         default: "",    null: false
+    t.string   "encrypted_password",            default: "",    null: false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",              default: 0
+    t.integer  "sign_in_count",                 default: 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
@@ -423,22 +423,22 @@ ActiveRecord::Schema.define(version: 20150223022001) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
-    t.boolean  "admin",                      default: false, null: false
-    t.integer  "projects_limit",             default: 10
-    t.string   "skype",                      default: "",    null: false
-    t.string   "linkedin",                   default: "",    null: false
-    t.string   "twitter",                    default: "",    null: false
+    t.boolean  "admin",                         default: false, null: false
+    t.integer  "projects_limit",                default: 10
+    t.string   "skype",                         default: "",    null: false
+    t.string   "linkedin",                      default: "",    null: false
+    t.string   "twitter",                       default: "",    null: false
     t.string   "authentication_token"
-    t.integer  "theme_id",                   default: 1,     null: false
+    t.integer  "theme_id",                      default: 1,     null: false
     t.string   "bio"
-    t.integer  "failed_attempts",            default: 0
+    t.integer  "failed_attempts",               default: 0
     t.datetime "locked_at"
     t.string   "username"
-    t.boolean  "can_create_group",           default: true,  null: false
-    t.boolean  "can_create_team",            default: true,  null: false
+    t.boolean  "can_create_group",              default: true,  null: false
+    t.boolean  "can_create_team",               default: true,  null: false
     t.string   "state"
-    t.integer  "color_scheme_id",            default: 1,     null: false
-    t.integer  "notification_level",         default: 1,     null: false
+    t.integer  "color_scheme_id",               default: 1,     null: false
+    t.integer  "notification_level",            default: 1,     null: false
     t.datetime "password_expires_at"
     t.integer  "created_by_id"
     t.datetime "last_credential_check_at"
@@ -447,13 +447,15 @@ ActiveRecord::Schema.define(version: 20150223022001) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string   "unconfirmed_email"
-    t.boolean  "hide_no_ssh_key",            default: false
-    t.string   "website_url",                default: "",    null: false
+    t.boolean  "hide_no_ssh_key",               default: false
+    t.string   "website_url",                   default: "",    null: false
     t.string   "github_access_token"
     t.string   "gitlab_access_token"
     t.string   "notification_email"
-    t.boolean  "hide_no_password",           default: false
-    t.boolean  "password_automatically_set", default: false
+    t.boolean  "hide_no_password",              default: false
+    t.boolean  "password_automatically_set",    default: false
+    t.string   "bitbucket_access_token"
+    t.string   "bitbucket_access_token_secret"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

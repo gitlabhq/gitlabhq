@@ -46,6 +46,7 @@
 #  github_access_token      :string(255)
 #  notification_email       :string(255)
 #  password_automatically_set :boolean        default(FALSE)
+#  bitbucket_access_token   :string(255)
 #
 
 require 'carrierwave/orm/activerecord'

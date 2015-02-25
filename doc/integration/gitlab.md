@@ -3,7 +3,7 @@
 Import projects from GitLab.com and login to your GitLab instance with your GitLab.com account.
 
 To enable the GitLab.com OmniAuth provider you must register your application with GitLab.com. 
-GitLab.com will generate a application ID and secret key for you to use.
+GitLab.com will generate an application ID and secret key for you to use.
 
 1.  Sign in to GitLab.com
 
@@ -46,7 +46,7 @@ GitLab.com will generate a application ID and secret key for you to use.
       sudo -u git -H editor config/gitlab.yml
     ```
 
-1.  See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration) for inital settings.
+1.  See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration) for initial settings.
 
 1.  Add the provider configuration:
 
@@ -56,8 +56,8 @@ GitLab.com will generate a application ID and secret key for you to use.
       gitlab_rails['omniauth_providers'] = [
         {
           "name" => "gitlab",
-          "app_id" => "YOUR APP ID",
-          "app_secret" => "YOUR APP SECRET",
+          "app_id" => "YOUR_APP_ID",
+          "app_secret" => "YOUR_APP_SECRET",
           "args" => { "scope" => "api" } }
         }
       ]
@@ -66,14 +66,14 @@ GitLab.com will generate a application ID and secret key for you to use.
     For installations from source:
 
     ```
-      - { name: 'gitlab', app_id: 'YOUR APP ID',
-        app_secret: 'YOUR APP SECRET',
+      - { name: 'gitlab', app_id: 'YOUR_APP_ID',
+        app_secret: 'YOUR_APP_SECRET',
         args: { scope: 'api' } }
     ```
 
-1.  Change 'YOUR APP ID' to the Application ID from the GitLab application page.
+1.  Change 'YOUR_APP_ID' to the Application ID from the GitLab.com application page.
 
-1.  Change 'YOUR APP SECRET' to the secret from the GitLab application page.
+1.  Change 'YOUR_APP_SECRET' to the secret from the GitLab.com application page.
 
 1.  Save the configuration file.
 

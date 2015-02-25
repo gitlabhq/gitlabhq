@@ -68,6 +68,12 @@ Gitlab::Application.routes.draw do
       get :jobs
     end
 
+    resource :bitbucket, only: [:create, :new], controller: :bitbucket do
+      get :status
+      get :callback
+      get :jobs
+    end
+    
     resource :gitorious, only: [:create, :new], controller: :gitorious do
       get :status
       get :callback

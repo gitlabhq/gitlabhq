@@ -1,4 +1,5 @@
 class Import::GitlabController < Import::BaseController
+  before_filter :verify_gitlab_import_enabled
   before_filter :gitlab_auth, except: :callback
 
   rescue_from OAuth2::Error, with: :gitlab_unauthorized
@@ -39,6 +40,10 @@ class Import::GitlabController < Import::BaseController
 
   def client
     @client ||= Gitlab::GitlabImport::Client.new(current_user.gitlab_access_token)
+  end
+
+  def verify_gitlab_import_enabled
+    not_found! unless gitlab_import_enabled?
   end
 
   def gitlab_auth

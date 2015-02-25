@@ -17,6 +17,8 @@ v 7.8.1
   - Fix the warning for LDAP users about need to set password
   - Fix avatars which were not shown for non logged in users
   - Fix urls for the issues when relative url was enabled
+  - Add Bitbucket omniauth provider.
+  - Add Bitbucket importer.
 
 v 7.8.0
   - Fix access control and protection against XSS for note attachments and other uploads.

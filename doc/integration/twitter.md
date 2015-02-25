@@ -47,7 +47,7 @@ To enable the Twitter OmniAuth provider you must register your application with 
       sudo -u git -H editor config/gitlab.yml
     ```
 
-1.  See [Initial OmniAuth Configuration](README.md#initial-omniauth-configuration) for inital settings.
+1.  See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration) for initial settings.
 
 1.  Add the provider configuration:
 
@@ -57,8 +57,8 @@ To enable the Twitter OmniAuth provider you must register your application with 
       gitlab_rails['omniauth_providers'] = [
         {
           "name" => "twitter",
-          "app_id" => "YOUR APP ID",
-          "app_secret" => "YOUR APP SECRET"
+          "app_id" => "YOUR_APP_ID",
+          "app_secret" => "YOUR_APP_SECRET"
         }
       ]
     ```
@@ -66,13 +66,13 @@ To enable the Twitter OmniAuth provider you must register your application with 
     For installations from source:
 
     ```
-      - { name: 'twitter', app_id: 'YOUR APP ID',
-        app_secret: 'YOUR APP SECRET' }
+      - { name: 'twitter', app_id: 'YOUR_APP_ID',
+        app_secret: 'YOUR_APP_SECRET' }
     ```
 
-1.  Change 'YOUR APP ID' to the API key from Twitter page in step 11.
+1.  Change 'YOUR_APP_ID' to the API key from Twitter page in step 11.
 
-1.  Change 'YOUR APP SECRET' to the API secret from the Twitter page in step 11.
+1.  Change 'YOUR_APP_SECRET' to the API secret from the Twitter page in step 11.
 
 1.  Save the configuration file.
 

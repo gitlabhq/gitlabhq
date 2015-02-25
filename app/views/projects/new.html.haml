@@ -53,6 +53,19 @@
               Import projects from GitHub
             = render 'github_import_modal'
 
+      .project-import.form-group
+        .col-sm-2
+        .col-sm-10
+          - if bitbucket_import_enabled?
+            = link_to status_import_bitbucket_path do
+              %i.fa.fa-bitbucket
+              Import projects from Bitbucket
+          - else
+            = link_to '#', class: 'how_to_import_link light' do
+              %i.fa.fa-bitbucket
+              Import projects from Bitbucket
+            = render 'bitbucket_import_modal'
+      
       - unless request.host == 'gitlab.com'
         .project-import.form-group
           .col-sm-2

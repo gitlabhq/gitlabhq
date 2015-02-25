@@ -16,6 +16,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   helper_method :abilities, :can?, :current_application_settings
+  helper_method :github_import_enabled?, :gitlab_import_enabled?, :bitbucket_import_enabled?
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -312,5 +313,17 @@ class ApplicationController < ActionController::Base
     merge_requests = MergeRequestsFinder.new.execute(current_user, @filter_params)
     set_filter_values(merge_requests)
     merge_requests
+  end
+
+  def github_import_enabled?
+    OauthHelper.enabled_oauth_providers.include?(:github)
+  end
+
+  def gitlab_import_enabled?
+    OauthHelper.enabled_oauth_providers.include?(:gitlab)
+  end
+
+  def bitbucket_import_enabled?
+    OauthHelper.enabled_oauth_providers.include?(:bitbucket) && Gitlab::BitbucketImport.public_key.present?
   end
 end

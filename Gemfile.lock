@@ -338,6 +338,10 @@ GEM
     omniauth (1.1.4)
       hashie (>= 1.2, < 3)
       rack
+    omniauth-bitbucket (0.0.2)
+      multi_json (~> 1.7)
+      omniauth (~> 1.1)
+      omniauth-oauth (~> 1.0)
     omniauth-github (1.1.1)
       omniauth (~> 1.0)
       omniauth-oauth2 (~> 1.1)
@@ -701,6 +705,7 @@ DEPENDENCIES
   nprogress-rails
   octokit (= 3.7.0)
   omniauth (~> 1.1.3)
+  omniauth-bitbucket
   omniauth-github
   omniauth-gitlab
   omniauth-google-oauth2

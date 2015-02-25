@@ -1,6 +1,6 @@
 module Gitlab
   class ImportFormatter
-    def comment_to_md(author, date, body)
+    def comment(author, date, body)
       "\n\n*By #{author} on #{date}*\n\n#{body}"
     end
 

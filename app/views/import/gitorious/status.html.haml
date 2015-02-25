@@ -1,6 +1,6 @@
 %h3.page-title
   %i.icon-gitorious.icon-gitorious-big
-  Import repositories from Gitorious.org
+  Import projects from Gitorious.org
 
 %p.light
   Select projects you want to import.
@@ -11,13 +11,14 @@
 %table.table.import-jobs
   %thead
     %tr
-      %th From Gitorious
+      %th From Gitorious.org
       %th To GitLab
       %th Status
   %tbody
     - @already_added_projects.each do |project|
       %tr{id: "project_#{project.id}", class: "#{project_status_css_class(project.import_status)}"}
-        %td= project.import_source
+        %td
+          = link_to project.import_source, "https://gitorious.org/#{project.import_source}", target: "_blank"
         %td
           %strong= link_to project.path_with_namespace, project
         %td.job-status
@@ -25,12 +26,16 @@
             %span.cgreen
               %i.fa.fa-check
               done
+          - elsif project.import_status == 'started'
+            %i.fa.fa-spinner.fa-spin
+            started
           - else
             = project.human_import_status_name
 
     - @repos.each do |repo|
       %tr{id: "repo_#{repo.id}"}
-        %td= repo.full_name
+        %td
+          = link_to repo.full_name, "https://gitorious.org/#{repo.full_name}", target: "_blank"
         %td.import-target
           = repo.full_name
         %td.import-actions.job-status
