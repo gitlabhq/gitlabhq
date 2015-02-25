@@ -9,7 +9,8 @@
       %div
         %span by #{commit.author_name}
         %i at #{commit.committed_date.strftime("%Y-%m-%dT%H:%M:%SZ")}
-      %pre #{commit.safe_message}
+      %pre.commit-message 
+        = commit.safe_message
 
 %h4 #{pluralize @diffs.count, "changed file"}:
 
