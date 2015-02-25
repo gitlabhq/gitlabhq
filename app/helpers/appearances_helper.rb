@@ -16,10 +16,6 @@ module AppearancesHelper
   end
 
   def brand_header_logo
-    if theme_type == 'light_theme'
-      image_tag 'logo-black.png'
-    else
-      image_tag 'logo-white.png'
-    end
+    image_tag 'logo-white.png'
   end
 end
