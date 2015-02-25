@@ -20,7 +20,7 @@ module Issues
 
       opts = {}
       opts[:milestone_id] = milestone_id if milestone_id.present?
-      opts[:assignee_id] = assignee_id if assignee_id.present?
+      opts[:assignee_id] = assignee_id
 
       issues = Issue.where(id: issues_ids)
       issues = issues.select { |issue| can?(current_user, :modify_issue, issue) }
