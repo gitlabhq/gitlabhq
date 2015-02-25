@@ -10,7 +10,7 @@ module Gitlab
       # Returns false if committing the change fails
       # Returns false if pushing from the satellite to bare repo failed or was rejected
       # Returns true otherwise
-      def commit!(content, commit_message, encoding)
+      def commit!(content, commit_message, encoding, new_branch = nil)
         in_locked_and_timed_satellite do |repo|
           prepare_satellite!(repo)
 
@@ -42,10 +42,12 @@ module Gitlab
           end
 
 
+          target_branch = new_branch.present? ? "#{ref}:#{new_branch}" : ref
+
           # push commit back to bare repo
           # will raise CommandFailed when push fails
           begin
-            repo.git.push({ raise: true, timeout: true }, :origin, ref)
+            repo.git.push({ raise: true, timeout: true }, :origin, target_branch)
           rescue Grit::Git::CommandFailed => ex
             log_and_raise(PushFailed, ex.message)
           end

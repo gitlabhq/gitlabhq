@@ -3,7 +3,7 @@
     .container
       %div.app_logo
         = link_to root_path, class: "home has_bottom_tooltip", title: "Dashboard" do
-          %h1 GITLAB
+          = brand_header_logo
       %h1.title= title
 
       %button.navbar-toggle{"data-target" => ".navbar-collapse", "data-toggle" => "collapse", type: "button"}

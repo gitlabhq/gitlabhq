@@ -6,6 +6,17 @@ v 7.9.0 (unreleased)
   - Improve error messages for file edit failures
   - Improve UI for commits, issues and merge request lists
   - Fix commit comments on first line of diff not rendering in Merge Request Discussion view.
+  - Improve trigger merge request hook when source project branch has been updated (Kirill Zaitsev)
+  - Save web edit in new branch
+  - Fix ordering of imported but unchanged projects (Marco Wessel)
+  - Mobile UI improvements: make aside content expandable
+
+v 7.8.1
+  - Fix run of custom post receive hooks
+  - Fix migration that caused issues when upgrading to version 7.8 from versions prior to 7.3
+  - Fix the warning for LDAP users about need to set password
+  - Fix avatars which were not shown for non logged in users
+  - Fix urls for the issues when relative url was enabled
 
 v 7.8.0
   - Fix access control and protection against XSS for note attachments and other uploads.
@@ -39,7 +50,7 @@ v 7.8.0
   - Allow configuring protection of the default branch upon first push (Marco Wessel)
   - Add gitlab.com importer
   - Add an ability to login with gitlab.com
-  - Add a commit calendar to the user profile (Hannes Rosenögger)  
+  - Add a commit calendar to the user profile (Hannes Rosenögger)
   - Submit comment on command-enter
   - Notify all members of a group when that group is mentioned in a comment, for example: `@gitlab-org` or `@sales`.
   - Extend issue clossing pattern to include "Resolve", "Resolves", "Resolved", "Resolving" and "Close"
@@ -54,7 +65,7 @@ v 7.8.0
   - API: Access groups with their path (Julien Bianchi)
   - Added link to milestone and keeping resource context on smaller viewports for issues and merge requests (Jason Blanchard)
   - Allow notification email to be set separately from primary email.
-  - API: Add support for editing an existing project (Mika Mäenpää and Hannes Rosenögger) 
+  - API: Add support for editing an existing project (Mika Mäenpää and Hannes Rosenögger)
   - Don't have Markdown preview fail for long comments/wiki pages.
   - When test web hook - show error message instead of 500 error page if connection to hook url was reset
   - Added support for firing system hooks on group create/destroy and adding/removing users to group (Boyan Tabakov)

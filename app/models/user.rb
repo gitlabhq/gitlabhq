@@ -623,9 +623,10 @@ class User < ActiveRecord::Base
   def contributed_projects_ids
     Event.where(author_id: self).
       where("created_at > ?", Time.now - 1.year).
-      code_push.
+      where("action = :pushed OR (target_type = 'MergeRequest' AND action = :created)", 
+        pushed: Event::PUSHED, created: Event::CREATED).
       reorder(project_id: :desc).
-      select('DISTINCT(project_id)').
-      map(&:project_id)
+      select(:project_id).
+      uniq
   end
 end
