@@ -100,18 +100,14 @@ header {
 
     a {
       float: left;
-      padding: 0px;
-      margin: 0 6px;
+      padding: 5px 0;
+      height: 46px;
+      width: 52px;
+      text-align: center;
 
-      h1 {
-        margin: 0;
-        background: image-url('logo-black.png') no-repeat center center;
-        background-size: 32px;
-        float: left;
-        height: 46px;
-        width: 40px;
-        @include header-font;
-        text-indent: -9999px;
+      img {
+        width: 36px;
+        height: 36px;
       }
     }
     &:hover {
