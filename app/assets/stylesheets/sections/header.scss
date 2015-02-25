@@ -173,68 +173,6 @@ header {
       @include transition(all 0.15s ease-in 0s);
     }
   }
-
-
-  /*
-   * Dark header
-   *
-   */
-  &.header-dark {
-    &.navbar-gitlab {
-      .navbar-inner {
-        background: #708090;
-        border-bottom: 1px solid #AAA;
-
-        .navbar-toggle { color: #fff; }
-
-        .nav > li > a {
-          color: #AAA;
-
-          &:hover, &:focus, &:active {
-            background: none;
-            color: #FFF;
-          }
-        }
-      }
-    }
-
-    .turbolink-spinner {
-      color: #FFF;
-    }
-
-    .search {
-      .search-input {
-        background-color: #D2D5DA;
-        background-color: rgba(255, 255, 255, 0.5);
-        border: 1px solid #AAA;
-
-        &:focus {
-          background-color: white;
-        }
-      }
-    }
-    .search-input::-webkit-input-placeholder {
-      color: #666;
-    }
-    .app_logo {
-      a {
-        h1 {
-          background: image-url('logo-white.png') no-repeat center center;
-          background-size: 32px;
-          color: #fff;
-        }
-      }
-    }
-    .title {
-      a {
-        color: #FFF;
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-      color: #fff;
-    }
-  }
 }
 
 .search .search-input {
