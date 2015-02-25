@@ -26,9 +26,12 @@ RUN mkdir -p /opt/gitlab/sv/sshd/supervise \
 # Expose web & ssh
 EXPOSE 80 22
 
-# Volume & configuration
+# Declare volumes
 VOLUME ["/var/opt/gitlab", "/var/log/gitlab", "/etc/gitlab"]
-ADD gitlab.rb /etc/gitlab/
 
-# Default is to run runit & reconfigure
-CMD gitlab-ctl reconfigure & /opt/gitlab/embedded/bin/runsvdir-start
+# Copy assets
+COPY assets/gitlab.rb /etc/gitlab/
+COPY assets/wrapper /usr/local/bin/
+
+# Wrapper to handle signal, trigger runit and reconfigure GitLab
+CMD ["/usr/local/bin/wrapper"]
