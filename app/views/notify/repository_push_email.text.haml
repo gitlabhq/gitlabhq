@@ -1,9 +1,13 @@
 #{@author.name} pushed to #{@branch} at #{@project.name_with_namespace}
-
 \
-Commits:
+\
+- if @reverse_compare
+  WARNING: The push did not contain any new commits, but force pushed to delete the commits and changes below.
+  \
+  \
+= @reverse_compare ? "Deleted commits:" : "Commits:"
 - @commits.each do |commit|
-  #{commit.short_id} by #{commit.author_name}
+  #{commit.short_id} by #{commit.author_name} at #{commit.committed_date.strftime("%Y-%m-%dT%H:%M:%SZ")}
   #{commit.safe_message}
   \- - - - -
 \

@@ -1,6 +1,12 @@
 %h3 #{@author.name} pushed to #{@branch} at #{link_to @project.name_with_namespace, namespace_project_url(@project.namespace, @project)}
 
-%h4 Commits:
+- if @reverse_compare
+  %p
+    %strong WARNING:
+    The push did not contain any new commits, but force pushed to delete the commits and changes below.
+
+%h4
+  = @reverse_compare ? "Deleted commits:" : "Commits:"
 
 %ul
   - @commits.each do |commit|

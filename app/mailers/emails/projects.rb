@@ -16,9 +16,10 @@ module Emails
            subject: subject("Project was moved"))
     end
 
-    def repository_push_email(project_id, recipient, author_id, branch, compare, send_from_committer_email = false, disable_diffs = false)
+    def repository_push_email(project_id, recipient, author_id, branch, compare, reverse_compare = false, send_from_committer_email = false, disable_diffs = false)
       @project = Project.find(project_id)
       @author  = User.find(author_id)
+      @reverse_compare = reverse_compare
       @compare = compare
       @commits = Commit.decorate(compare.commits)
       @diffs   = compare.diffs
@@ -32,10 +33,13 @@ module Emails
                                                     @project,
                                                     from: @commits.first,
                                                     to: @commits.last)
+        @subject << "Deleted " if @reverse_compare
         @subject << "#{@commits.length} commits: #{@commits.first.title}"
       else
         @target_url = namespace_project_commit_url(@project.namespace,
                                                    @project, @commits.first)
+
+        @subject << "Deleted 1 commit: " if @reverse_compare
         @subject << @commits.first.title
       end
 

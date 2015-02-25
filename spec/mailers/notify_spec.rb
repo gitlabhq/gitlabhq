@@ -571,7 +571,7 @@ describe Notify do
     let(:diff_path) { namespace_project_compare_path(project.namespace, project, from: commits.first, to: commits.last) }
     let(:send_from_committer_email) { false }
 
-    subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'master', compare, send_from_committer_email) }
+    subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'master', compare, false, send_from_committer_email) }
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
