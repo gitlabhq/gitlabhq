@@ -144,7 +144,7 @@ class Project < ActiveRecord::Base
     if: ->(project) { project.avatar && project.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
-  mount_uploader :avatar, AttachmentUploader
+  mount_uploader :avatar, AvatarUploader
 
   # Scopes
   scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }

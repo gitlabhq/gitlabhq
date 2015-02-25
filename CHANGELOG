@@ -10,6 +10,7 @@ v 7.9.0 (unreleased)
   - Save web edit in new branch
   - Fix ordering of imported but unchanged projects (Marco Wessel)
   - Mobile UI improvements: make aside content expandable
+  - Generalize image upload in drag and drop in markdown to all files (Hannes Rosenögger)
 
 v 7.8.1
   - Fix run of custom post receive hooks

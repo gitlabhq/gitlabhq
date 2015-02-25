@@ -110,7 +110,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I should see new group "Owned" avatar' do
-    Group.find_by(name: "Owned").avatar.should be_instance_of AttachmentUploader
+    Group.find_by(name: "Owned").avatar.should be_instance_of AvatarUploader
     Group.find_by(name: "Owned").avatar.url.should == "/uploads/group/avatar/#{ Group.find_by(name:"Owned").id }/gitlab_logo.png"
   end
 
