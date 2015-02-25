@@ -569,8 +569,9 @@ describe Notify do
     let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_image_commit.id, sample_commit.id) }
     let(:commits) { Commit.decorate(compare.commits) }
     let(:diff_path) { namespace_project_compare_path(project.namespace, project, from: commits.first, to: commits.last) }
+    let(:send_from_committer_email) { false }
 
-    subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'master', compare) }
+    subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'master', compare, send_from_committer_email) }
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
@@ -600,6 +601,33 @@ describe Notify do
 
     it 'doesn not contain the misleading footer' do
       is_expected.not_to have_body_text /you are a member of/
+    end
+
+    context "when set to send from committer email if domain matches" do
+
+      let(:send_from_committer_email) { true }
+
+      context "when the committer email domain matches" do
+
+        before do
+          allow(Gitlab.config.gitlab).to receive(:host).and_return("gitlab.dev")
+          user.update_attribute(:email, "user@#{Gitlab.config.gitlab.host}")
+          user.confirm!
+        end
+
+        it "is sent from the committer email" do
+          sender = subject.header[:from].addrs[0]
+          expect(sender.address).to eq(user.email)
+        end
+      end
+
+      context "when the committer email doesn't match" do
+
+        it "is sent from the default email" do
+          sender = subject.header[:from].addrs[0]
+          expect(sender.address).to eq(gitlab_sender)
+        end
+      end
     end
   end
 

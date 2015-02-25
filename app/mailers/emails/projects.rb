@@ -16,13 +16,13 @@ module Emails
            subject: subject("Project was moved"))
     end
 
-    def repository_push_email(project_id, recipient, author_id, branch, compare)
+    def repository_push_email(project_id, recipient, author_id, branch, compare, send_from_committer_email = false)
       @project = Project.find(project_id)
       @author  = User.find(author_id)
       @compare = compare
       @commits = Commit.decorate(compare.commits)
       @diffs   = compare.diffs
-      @branch  = branch
+      @branch  = branch.gsub("refs/heads/", "")
 
       @subject = "[#{@project.path_with_namespace}][#{@branch}] "
 
@@ -40,7 +40,7 @@ module Emails
 
       @disable_footer = true
 
-      mail(from: sender(author_id),
+      mail(from: sender(author_id, send_from_committer_email),
            to: recipient,
            subject: @subject)
     end

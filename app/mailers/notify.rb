@@ -45,10 +45,15 @@ class Notify < ActionMailer::Base
 
   # Return an email address that displays the name of the sender.
   # Only the displayed name changes; the actual email address is always the same.
-  def sender(sender_id)
+  def sender(sender_id, send_from_user_email = false)
     if sender = User.find(sender_id)
       address = default_sender_address
       address.display_name = sender.name
+
+      if send_from_user_email && sender.email.end_with?("@#{Gitlab.config.gitlab.host}")
+        address.address = sender.email
+      end
+
       address.format
     end
   end
