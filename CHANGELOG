@@ -10,6 +10,7 @@ v 7.9.0 (unreleased)
   - Save web edit in new branch
   - Fix ordering of imported but unchanged projects (Marco Wessel)
   - Mobile UI improvements: make aside content expandable
+  - Generalize image upload in drag and drop in markdown to all files (Hannes Rosenögger)
 
 v 7.8.1
   - Fix run of custom post receive hooks
@@ -20,8 +21,6 @@ v 7.8.1
 
 v 7.8.0
   - Fix access control and protection against XSS for note attachments and other uploads.
-  - Fix broken access control for note attachments (Hannes Rosenögger)
-  - Generalize image upload in drag and drop in markdown to all files (Hannes Rosenögger)
   - Replace highlight.js with rouge-fork rugments (Stefan Tatschner)
   - Make project search case insensitive (Hannes Rosenögger)
   - Include issue/mr participants in list of recipients for reassign/close/reopen emails
