@@ -44,9 +44,12 @@ class EmailsOnPushService < Service
   end
 
   def fields
+    domains = Notify.allowed_email_domains.map { |domain| "user@#{domain}" }.join(", ")
     [
-      { type: 'checkbox', name: 'send_from_committer_email', title: "Send from committer email if domain matches" },
-      { type: 'checkbox', name: 'disable_diffs', title: "Disable code diffs" },
+      { type: 'checkbox', name: 'send_from_committer_email', title: "Send from committer", 
+        help: "Send notifications from the committer's email address if the domain is part of the domain GitLab is running on (e.g. #{domains})." },
+      { type: 'checkbox', name: 'disable_diffs', title: "Disable code diffs",
+        help: "Don't include possibly sensitive code diffs in notification body." },
       { type: 'textarea', name: 'recipients', placeholder: 'Emails separated by whitespace' },
     ]
   end

@@ -35,6 +35,7 @@
     - placeholder = field[:placeholder]
     - choices = field[:choices]
     - default_choice = field[:default_choice]
+    - help = field[:help]
 
     .form-group
       = f.label name, title, class: "control-label"
@@ -49,6 +50,8 @@
           = f.select name, options_for_select(choices, value ? value : default_choice), {}, { class: "form-control" }
         - elsif type == 'password'
           = f.password_field name, class: 'form-control'
+        - if help
+          %span.help-block= help
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'
