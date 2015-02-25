@@ -19,20 +19,22 @@ Commits:
     \- + #{diff.new_path}
   - else
     \- #{diff.new_path}
-\
-\
-Changes:
-- @diffs.each do |diff|
+- unless @disable_diffs
   \
-  \=====================================
-  - if diff.deleted_file
-    #{diff.old_path} deleted
-  - elsif diff.renamed_file
-    #{diff.old_path} → #{diff.new_path}
-  - else
-    = diff.new_path
-  \=====================================
-  != diff.diff
-\
+  \
+  Changes:
+  - @diffs.each do |diff|
+    \
+    \=====================================
+    - if diff.deleted_file
+      #{diff.old_path} deleted
+    - elsif diff.renamed_file
+      #{diff.old_path} → #{diff.new_path}
+    - else
+      = diff.new_path
+    \=====================================
+    != diff.diff
 - if @compare.timeout
+  \
+  \
   Huge diff. To prevent performance issues it was hidden

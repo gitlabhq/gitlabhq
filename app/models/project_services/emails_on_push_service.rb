@@ -15,6 +15,7 @@
 
 class EmailsOnPushService < Service
   prop_accessor :send_from_committer_email
+  prop_accessor :disable_diffs
   prop_accessor :recipients
   validates :recipients, presence: true, if: :activated?
 
@@ -34,13 +35,18 @@ class EmailsOnPushService < Service
     self.send_from_committer_email == "1"
   end
 
+  def disable_diffs?
+    self.disable_diffs == "1"
+  end
+
   def execute(push_data)
-    EmailsOnPushWorker.perform_async(project_id, recipients, push_data, self.send_from_committer_email?)
+    EmailsOnPushWorker.perform_async(project_id, recipients, push_data, send_from_committer_email?, disable_diffs?)
   end
 
   def fields
     [
       { type: 'checkbox', name: 'send_from_committer_email', title: "Send from committer email if domain matches" },
+      { type: 'checkbox', name: 'disable_diffs', title: "Disable code diffs" },
       { type: 'textarea', name: 'recipients', placeholder: 'Emails separated by whitespace' },
     ]
   end

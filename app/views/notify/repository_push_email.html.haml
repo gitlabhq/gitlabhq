@@ -16,7 +16,7 @@
 %ul
   - @diffs.each_with_index do |diff, i|
     %li.file-stats
-      %a{href: "#diff-#{i}"}
+      %a{href: "#{@target_url if @disable_diffs}#diff-#{i}" }
         - if diff.deleted_file
           %span.deleted-file
             &minus;
@@ -32,27 +32,28 @@
         - else
           = diff.new_path
 
-%h4 Changes:
-- @diffs.each_with_index do |diff, i|
-  %li{id: "diff-#{i}"}
-    %a{href: @target_url + "#diff-#{i}"}
-      - if diff.deleted_file
-        %strong
-          = diff.old_path
-        deleted
-      - elsif diff.renamed_file
-        %strong
-          = diff.old_path
-        &rarr;
-        %strong
-          = diff.new_path
-      - else
-        %strong
-          = diff.new_path
-    %hr
-    %pre
-      = color_email_diff(diff.diff)
-    %br
+- unless @disable_diffs
+  %h4 Changes:
+  - @diffs.each_with_index do |diff, i|
+    %li{id: "diff-#{i}"}
+      %a{href: @target_url + "#diff-#{i}"}
+        - if diff.deleted_file
+          %strong
+            = diff.old_path
+          deleted
+        - elsif diff.renamed_file
+          %strong
+            = diff.old_path
+          &rarr;
+          %strong
+            = diff.new_path
+        - else
+          %strong
+            = diff.new_path
+      %hr
+      %pre
+        = color_email_diff(diff.diff)
+      %br
 
 - if @compare.timeout
   %h5 Huge diff. To prevent performance issues changes are hidden
