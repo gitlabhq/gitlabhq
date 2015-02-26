@@ -16,7 +16,7 @@ class Import::GitlabController < Import::BaseController
     @already_added_projects = current_user.created_projects.where(import_type: "gitlab")
     already_added_projects_names = @already_added_projects.pluck(:import_source)
 
-    @repos.to_a.reject!{ |repo| already_added_projects_names.include? repo["path_with_namespace"] }
+    @repos = @repos.to_a.reject{ |repo| already_added_projects_names.include? repo["path_with_namespace"] }
   end
 
   def jobs
