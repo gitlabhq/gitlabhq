@@ -15,7 +15,7 @@ class @ProjectUsersSelect
               name: 'Unassigned',
               avatar: null,
               username: 'none',
-              id: ''
+              id: -1
             }
 
             data.results.unshift(nullUser)
