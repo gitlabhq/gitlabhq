@@ -143,7 +143,7 @@ X-Gitlab-Event: Issue Hook
 
 ## Merge request events
 
-Triggered when a new merge request is created or an existing merge request was updated/merged/closed.
+Triggered when a new merge request is created, an existing merge request was updated/merged/closed or a commit is added in the source branch.
 
 **Request header**:
 
