@@ -1,4 +1,17 @@
 # Shorter routing method for project and project items
+# Since update to rails 4.1.9 we are now allowed to use `/` in project routing
+# so we use nested routing for project resources which include project and
+# project namespace. To avoid writing long methods every time we define shortcuts for
+# some of routing.
+#
+# For example instead of this:
+#
+#   namespace_project_merge_request_path(merge_request.project.namespace, merge_request.projects, merge_request)
+#
+# We can simply use shortcut:
+#
+#   merge_request_path(merge_request)
+#
 module GitlabRoutingHelper
   def project_path(project, *args)
     namespace_project_path(project.namespace, project, *args)
