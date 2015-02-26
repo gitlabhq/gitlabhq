@@ -139,6 +139,11 @@ path = File.join(repo_path, user_input)
 File.read(path)
 ```
 
+If you have to use user input a relative path, prefix `./` to the path.
+
+Prefixing user-supplied paths also offers extra protection against paths
+starting with `-` (see the discussion about using `--` above).
+
 ## Guard against path traversal
 
 Path traversal is a security where the program (GitLab) tries to restrict user
