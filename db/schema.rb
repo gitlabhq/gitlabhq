@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150213121042) do
+ActiveRecord::Schema.define(version: 20150225214822) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20150213121042) do
     t.string   "home_page_url"
     t.integer  "default_branch_protection", default: 2
     t.boolean  "twitter_sharing_enabled",   default: true
+    t.text     "help_text"
   end
 
   create_table "audit_events", force: true do |t|
@@ -512,8 +513,8 @@ ActiveRecord::Schema.define(version: 20150213121042) do
     t.string   "github_access_token"
     t.string   "gitlab_access_token"
     t.string   "notification_email"
-    t.boolean  "hide_no_password",           default: false
-    t.boolean  "password_automatically_set", default: false
+    t.boolean  "hide_no_password",            default: false
+    t.boolean  "password_automatically_set",  default: false
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

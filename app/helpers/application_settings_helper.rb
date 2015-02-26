@@ -18,4 +18,8 @@ module ApplicationSettingsHelper
   def extra_sign_in_text
     current_application_settings.sign_in_text
   end
+
+  def help_text
+    current_application_settings.help_text
+  end
 end

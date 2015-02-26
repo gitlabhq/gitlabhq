@@ -4,18 +4,24 @@
     %span.light Enterprise Edition
     %span= Gitlab::VERSION
     %small= Gitlab::REVISION
-  %p.slead
-    GitLab is open source software to collaborate on code.
-    %br
-    Manage git repositories with fine grained access controls that keep your code secure.
-    %br
-    Perform code reviews and enhance collaboration with merge requests.
-    %br
-    Each project can also have an issue tracker and a wiki.
-    %br
-    Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises.
-    %br
+  %br
     Read more about GitLab at #{link_to promo_host, promo_url, target: '_blank'}.
+  - if help_text.present?
+    %hr
+    %p.slead
+      = markdown(help_text)
+  - else
+    %p.slead
+      GitLab is open source software to collaborate on code.
+      %br
+      Manage git repositories with fine grained access controls that keep your code secure.
+      %br
+      Perform code reviews and enhance collaboration with merge requests.
+      %br
+      Each project can also have an issue tracker and a wiki.
+      %br
+      Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises.
+
 
 %hr
 
