@@ -8,6 +8,7 @@
     border-bottom: 1px solid #CCC;
     padding: 5px 5px 5px 10px;
     color: #555;
+    z-index: 10;
 
     > span {
       font-family: $monospace_font;
