@@ -1,4 +1,4 @@
-%li{ id: dom_id(issue, 'sortable'), class: 'issue-row', 'data-iid' => issue.iid, 'data-url' => namespace_project_issue_path(@project.namespace, @project, issue) }
+%li{ id: dom_id(issue, 'sortable'), class: 'issue-row', 'data-iid' => issue.iid, 'data-url' => issue_path(issue) }
   %span.str-truncated
     = link_to [@project.namespace.becomes(Namespace), @project, issue] do
       %span.cgray ##{issue.iid}

@@ -1,7 +1,7 @@
 %ul.project-navigation.nav.nav-sidebar
   - if @project_settings_nav
     = nav_link do
-      = link_to namespace_project_path(@project.namespace, @project), title: 'Back to project', class: "" do
+      = link_to project_path(@project), title: 'Back to project', class: "" do
         %i.fa.fa-caret-square-o-left
         %span
           Back to project
@@ -12,7 +12,7 @@
 
   - else
     = nav_link(path: 'projects#show', html_options: {class: "home"}) do
-      = link_to namespace_project_path(@project.namespace, @project), title: 'Project', class: 'shortcuts-project' do
+      = link_to project_path(@project), title: 'Project', class: 'shortcuts-project' do
         %i.fa.fa-dashboard
         %span
           Project
@@ -89,7 +89,7 @@
 
     - if project_nav_tab? :settings
       = nav_link(html_options: {class: "#{project_tab_class} separate-item"}) do
-        = link_to edit_namespace_project_path(@project.namespace, @project), title: 'Settings', class: "stat-tab tab no-highlight" do
+        = link_to edit_project_path(@project), title: 'Settings', class: "stat-tab tab no-highlight" do
           %i.fa.fa-cogs
           %span
             Settings
