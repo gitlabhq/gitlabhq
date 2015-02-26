@@ -95,6 +95,7 @@ class @MergeRequest
         this.$('.merge-request-tabs .diffs-tab').addClass 'active'
         this.loadDiff() unless @diffs_loaded
         this.$('.diffs').show()
+        $(".diff-header").trigger("sticky_kit:recalc")
       when 'commits'
         this.$('.merge-request-tabs .commits-tab').addClass 'active'
         this.$('.commits').show()
