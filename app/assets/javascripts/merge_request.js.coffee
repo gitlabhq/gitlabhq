@@ -20,11 +20,12 @@ class @MergeRequest
     if $("a.btn-close").length
       $("li.task-list-item input:checkbox").prop("disabled", false)
 
-    $('.issuable-affix').affix offset:
-      top: ->
-        @top = $('.merge-request-details').outerHeight(true) + 70
-      bottom: ->
-        @bottom = $('.footer').outerHeight(true)
+    $('.merge-request-details').waitForImages ->
+      $('.issuable-affix').affix offset:
+        top: ->
+          @top = $('.merge-request-details').outerHeight(true) + 91
+        bottom: ->
+          @bottom = $('.footer').outerHeight(true)
 
   # Local jQuery finder
   $: (selector) ->
@@ -95,6 +96,7 @@ class @MergeRequest
         this.$('.merge-request-tabs .diffs-tab').addClass 'active'
         this.loadDiff() unless @diffs_loaded
         this.$('.diffs').show()
+        $(".diff-header").trigger("sticky_kit:recalc")
       when 'commits'
         this.$('.merge-request-tabs .commits-tab').addClass 'active'
         this.$('.commits').show()

@@ -4,6 +4,5 @@ class SetMissingLastActivityAt < ActiveRecord::Migration
   end
 
   def down
-    raise ActiveRecord::IrreversibleMigration
   end
 end
