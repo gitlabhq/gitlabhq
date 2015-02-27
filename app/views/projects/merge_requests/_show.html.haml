@@ -1,4 +1,4 @@
-.merge-request{'data-url' => namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}
+.merge-request{'data-url' => merge_request_path(@merge_request)}
   .merge-request-details
     = render "projects/merge_requests/show/mr_title"
     %hr
@@ -28,8 +28,8 @@
                 Download as
                 %span.caret
               %ul.dropdown-menu
-                %li= link_to "Email Patches", namespace_project_merge_request_path(@project.namespace, @project, @merge_request, format: :patch)
-                %li= link_to "Plain Diff",    namespace_project_merge_request_path(@project.namespace, @project, @merge_request, format: :diff)
+                %li= link_to "Email Patches", merge_request_path(@merge_request, format: :patch)
+                %li= link_to "Plain Diff",    merge_request_path(@merge_request, format: :diff)
 
     = render "projects/merge_requests/show/how_to_merge"
     = render "projects/merge_requests/show/state_widget"
@@ -37,12 +37,12 @@
   - if @commits.present?
     %ul.nav.nav-tabs.merge-request-tabs
       %li.notes-tab{data: {action: 'notes'}}
-        = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request) do
+        = link_to merge_request_path(@merge_request) do
           %i.fa.fa-comments
           Discussion
           %span.badge= @merge_request.mr_and_commit_notes.count
       %li.commits-tab{data: {action: 'commits'}}
-        = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), title: 'Commits' do
+        = link_to merge_request_path(@merge_request), title: 'Commits' do
           %i.fa.fa-history
           Commits
           %span.badge= @commits.size

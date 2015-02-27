@@ -1,6 +1,6 @@
 %ul.project-settings-nav.sidebar-subnav
   = nav_link(path: 'projects#edit') do
-    = link_to edit_namespace_project_path(@project.namespace, @project), title: 'Project', class: "stat-tab tab " do
+    = link_to edit_project_path(@project), title: 'Project', class: "stat-tab tab " do
       %i.fa.fa-pencil-square-o
       %span
         Project

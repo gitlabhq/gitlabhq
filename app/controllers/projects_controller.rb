@@ -23,7 +23,7 @@ class ProjectsController < ApplicationController
 
     if @project.saved?
       redirect_to(
-        namespace_project_path(@project.namespace, @project),
+        project_path(@project),
         notice: 'Project was successfully created.'
       )
     else
@@ -39,7 +39,7 @@ class ProjectsController < ApplicationController
         flash[:notice] = 'Project was successfully updated.'
         format.html do
           redirect_to(
-            edit_namespace_project_path(@project.namespace, @project),
+            edit_project_path(@project),
             notice: 'Project was successfully updated.'
           )
         end
@@ -133,7 +133,7 @@ class ProjectsController < ApplicationController
     @project.archive!
 
     respond_to do |format|
-      format.html { redirect_to namespace_project_path(@project.namespace, @project) }
+      format.html { redirect_to project_path(@project) }
     end
   end
 
@@ -142,7 +142,7 @@ class ProjectsController < ApplicationController
     @project.unarchive!
 
     respond_to do |format|
-      format.html { redirect_to namespace_project_path(@project.namespace, @project) }
+      format.html { redirect_to project_path(@project) }
     end
   end
 

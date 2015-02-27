@@ -2,6 +2,7 @@ require 'gon'
 
 class ApplicationController < ActionController::Base
   include Gitlab::CurrentSettings
+  include GitlabRoutingHelper
 
   before_filter :authenticate_user_from_token!
   before_filter :authenticate_user!
