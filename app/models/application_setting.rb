@@ -13,6 +13,7 @@
 #  created_at             :datetime
 #  updated_at             :datetime
 #  home_page_url          :string(255)
+#  help_text              :text
 #
 
 class ApplicationSetting < ActiveRecord::Base
