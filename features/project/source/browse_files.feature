@@ -47,6 +47,7 @@ Feature: Project Source Browse Files
   @javascript
   Scenario: I can upload file and commit
     Given I click on "Upload" in repo
+     And I fill the new file name
     And I fill the commit message
     And I click on "Upload file"
     Then I am redirected to the new file
