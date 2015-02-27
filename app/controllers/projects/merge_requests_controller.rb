@@ -79,7 +79,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     if @merge_request.valid?
       redirect_to(
-        merge_request_path(@merge_request)
+        merge_request_path(@merge_request),
         notice: 'Merge request was successfully created.'
       )
     else
