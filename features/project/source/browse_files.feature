@@ -49,6 +49,7 @@ Feature: Project Source Browse Files
     Given I click on "Upload" in repo
     And I fill the commit message
     And I click on "Upload file"
+    And I should see its new content
 
   @javascript
   Scenario: I can edit file
