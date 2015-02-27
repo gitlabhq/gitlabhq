@@ -107,12 +107,12 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     page.should have_content "Commit message"
   end
 
-  step 'I click on "Upload" button in repo' do
-    pending 'step not implemented'
+  step 'I click on "Upload" in repo' do
+    click_button 'Upload'
   end
 
   step 'I click on "Upload file"' do
-    pending 'step not implemented'
+    click_button 'Upload file'
   end
   
   step 'I choose a file' do 
