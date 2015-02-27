@@ -505,4 +505,32 @@ describe User do
       expect(User.sort(nil).first).to eq(@user)
     end
   end
+
+  describe "#contributed_projects_ids" do
+
+    subject { create(:user) }
+    let!(:project1) { create(:project) }
+    let!(:project2) { create(:project, forked_from_project: project3) }
+    let!(:project3) { create(:project) }
+    let!(:merge_request) { create(:merge_request, source_project: project2, target_project: project3, author: subject) }
+    let!(:push_event) { create(:event, action: Event::PUSHED, project: project1, target: project1, author: subject) }
+    let!(:merge_event) { create(:event, action: Event::CREATED, project: project3, target: merge_request, author: subject) }
+
+    before do
+      project1.team << [subject, :master]
+      project2.team << [subject, :master]
+    end
+
+    it "includes IDs for projects the user has pushed to" do
+      expect(subject.contributed_projects_ids).to include(project1.id)
+    end
+
+    it "includes IDs for projects the user has had merge requests merged into" do
+      expect(subject.contributed_projects_ids).to include(project3.id)
+    end
+
+    it "doesn't include IDs for unrelated projects" do
+      expect(subject.contributed_projects_ids).not_to include(project2.id)
+    end
+  end
 end

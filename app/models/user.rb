@@ -629,5 +629,6 @@ class User < ActiveRecord::Base
       reorder(project_id: :desc).
       select(:project_id).
       uniq
+      .map(&:project_id)
   end
 end
