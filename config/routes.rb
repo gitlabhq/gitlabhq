@@ -97,6 +97,10 @@ Gitlab::Application.routes.draw do
       constraints:  { namespace_id: /[a-zA-Z.0-9_\-]+/, project_id: /[a-zA-Z.0-9_\-]+/, filename: /.+/ }
   end
 
+  get "files/note/:id/:filename",
+    to:           redirect("uploads/note/attachment/%{id}/%{filename}"),
+    constraints:  { filename: /.+/ }
+
   #
   # Explore area
   #
