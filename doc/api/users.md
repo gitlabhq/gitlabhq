@@ -170,6 +170,7 @@ Parameters:
 - `bio` (optional)              - User's biography
 - `admin` (optional)            - User is admin - true or false (default)
 - `can_create_group` (optional) - User can create groups - true or false
+- `confirm` (optional)          - Require confirmation - true (default) or false
 
 ## User modification
 

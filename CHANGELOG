@@ -12,6 +12,7 @@ v 7.9.0 (unreleased)
   - Mobile UI improvements: make aside content expandable
   - Generalize image upload in drag and drop in markdown to all files (Hannes Rosenögger)
   - Fix mass-unassignment of issues (Robert Speicher)
+  - Allow user confirmation to be skipped for new users via API
 
 v 7.8.1
   - Fix run of custom post receive hooks
