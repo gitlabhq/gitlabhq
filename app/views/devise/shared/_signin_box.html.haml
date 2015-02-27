@@ -1,0 +1,42 @@
+.login-box
+  - if signup_enabled?
+    .login-heading
+      %h3 Existing user? Sign in
+  - else
+    .login-heading
+      %h3 Sign in
+  .login-body
+    - if ldap_enabled?
+      %ul.nav.nav-tabs
+        - @ldap_servers.each_with_index do |server, i|
+          %li{class: (:active if i.zero?)}
+            = link_to server['label'], "#tab-#{server['provider_name']}", 'data-toggle' => 'tab'
+        - if signin_enabled?
+          %li
+            = link_to 'Standard', '#tab-signin', 'data-toggle' => 'tab'
+      .tab-content
+        - @ldap_servers.each_with_index do |server, i|
+          %div.tab-pane{id: "tab-#{server['provider_name']}", class: (:active if i.zero?)}
+            = render 'devise/sessions/new_ldap', provider: server['provider_name']
+        - if signin_enabled?
+          %div#tab-signin.tab-pane
+            = render 'devise/sessions/new_base'
+
+    - elsif signin_enabled?
+      = render 'devise/sessions/new_base'
+    - else
+      %div
+        No authentication methods configured.
+
+- if Gitlab.config.omniauth.enabled && devise_mapping.omniauthable?
+  .clearfix.prepend-top-20
+    %p
+      %span.light
+        Sign in with &nbsp;
+      - providers = additional_providers
+      - providers.each do |provider|
+        %span.light
+          - if default_providers.include?(provider)
+            = link_to authbutton(provider, 32), omniauth_authorize_path(resource_name, provider)
+          - else
+            = link_to provider.to_s.titleize, omniauth_authorize_path(resource_name, provider), class: "btn"

@@ -1,46 +1,76 @@
-.merge-request
-  = render "projects/merge_requests/show/mr_title"
-  = render "projects/merge_requests/show/how_to_merge"
-  = render "projects/merge_requests/show/mr_box"
-  = render "projects/merge_requests/show/state_widget"
-  = render "projects/merge_requests/show/commits"
-  = render "projects/merge_requests/show/participants"
+.merge-request{'data-url' => merge_request_path(@merge_request)}
+  .merge-request-details
+    = render "projects/merge_requests/show/mr_title"
+    %hr
+    = render "projects/merge_requests/show/mr_box"
+    %hr
+    .append-bottom-20
+      .slead
+        %span From
+        - if @merge_request.for_fork?
+          %strong.label-branch<
+            - if @merge_request.source_project
+              = link_to @merge_request.source_project_namespace, namespace_project_path(@merge_request.source_project.namespace, @merge_request.source_project)
+            - else
+              \ #{@merge_request.source_project_namespace}
+            \:#{@merge_request.source_branch}
+          %span into
+          %strong.label-branch #{@merge_request.target_project_namespace}:#{@merge_request.target_branch}
+        - else
+          %strong.label-branch #{@merge_request.source_branch}
+          %span into
+          %strong.label-branch #{@merge_request.target_branch}
+        - if @merge_request.open?
+          %span.pull-right
+            .btn-group
+              %a.btn.dropdown-toggle{ data: {toggle: :dropdown} }
+                %i.fa.fa-download
+                Download as
+                %span.caret
+              %ul.dropdown-menu
+                %li= link_to "Email Patches", merge_request_path(@merge_request, format: :patch)
+                %li= link_to "Plain Diff",    merge_request_path(@merge_request, format: :diff)
+
+    = render "projects/merge_requests/show/how_to_merge"
+    = render "projects/merge_requests/show/state_widget"
 
   - if @commits.present?
-    %ul.nav.nav-pills.merge-request-tabs
+    %ul.nav.nav-tabs.merge-request-tabs
       %li.notes-tab{data: {action: 'notes'}}
-        = link_to project_merge_request_path(@project, @merge_request) do
-          %i.fa.fa-comment
+        = link_to merge_request_path(@merge_request) do
+          %i.fa.fa-comments
           Discussion
           %span.badge= @merge_request.mr_and_commit_notes.count
+      %li.commits-tab{data: {action: 'commits'}}
+        = link_to merge_request_path(@merge_request), title: 'Commits' do
+          %i.fa.fa-history
+          Commits
+          %span.badge= @commits.size
       %li.diffs-tab{data: {action: 'diffs'}}
-        = link_to diffs_project_merge_request_path(@project, @merge_request) do
+        = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request) do
           %i.fa.fa-list-alt
           Changes
           %span.badge= @merge_request.diffs.size
 
-  - content_for :note_actions do
-    - if can?(current_user, :modify_merge_request, @merge_request)
-      - if @merge_request.open?
-        = link_to 'Close', project_merge_request_path(@project, @merge_request, merge_request: {state_event: :close }), method: :put, class: "btn btn-grouped btn-close close-mr-link js-note-target-close", title: "Close merge request"
-      - if @merge_request.closed?
-        = link_to 'Reopen', project_merge_request_path(@project, @merge_request, merge_request: {state_event: :reopen }), method: :put, class: "btn btn-grouped btn-reopen reopen-mr-link js-note-target-reopen", title: "Reopen merge request"
-
+  .notes.tab-content.voting_notes#notes{ class: (controller.action_name == 'show') ? "" : "hide" }
+    = render "projects/merge_requests/discussion"
+  .commits.tab-content
+    = render "projects/merge_requests/show/commits"
   .diffs.tab-content
     - if current_page?(action: 'diffs')
       = render "projects/merge_requests/show/diffs"
-  .notes.tab-content.voting_notes#notes{ class: (controller.action_name == 'show') ? "" : "hide" }
-    = render "projects/notes/notes_with_form"
+
   .mr-loading-status
     = spinner
+
 
 :javascript
   var merge_request;
 
   merge_request = new MergeRequest({
-    url_to_automerge_check: "#{automerge_check_project_merge_request_path(@project, @merge_request)}",
+    url_to_automerge_check: "#{automerge_check_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
     check_enable: #{@merge_request.unchecked? ? "true" : "false"},
-    url_to_ci_check: "#{ci_status_project_merge_request_path(@project, @merge_request)}",
+    url_to_ci_check: "#{ci_status_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
     ci_enable: #{@project.ci_service ? "true" : "false"},
     current_status: "#{@merge_request.merge_status_name}",
     action: "#{controller.action_name}"

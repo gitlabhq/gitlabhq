@@ -2,15 +2,16 @@ class Admin::UsersController < Admin::ApplicationController
   before_filter :user, only: [:show, :edit, :update, :destroy]
 
   def index
-    @users = User.filter(params[:filter])
+    @users = User.order_name_asc.filter(params[:filter])
     @users = @users.search(params[:name]) if params[:name].present?
     @users = @users.sort(@sort = params[:sort])
-    @users = @users.alphabetically.page(params[:page])
+    @users = @users.page(params[:page])
   end
 
   def show
     @personal_projects = user.personal_projects
     @joined_projects = user.projects.joined(@user)
+    @keys = user.keys
   end
 
   def new
@@ -101,6 +102,9 @@ class Admin::UsersController < Admin::ApplicationController
     email = user.emails.find(params[:email_id])
     email.destroy
 
+    user.set_notification_email
+    user.save if user.notification_email_changed?
+
     respond_to do |format|
       format.html { redirect_to :back, notice: "Successfully removed email." }
       format.js { render nothing: true }
@@ -117,8 +121,8 @@ class Admin::UsersController < Admin::ApplicationController
     params.require(:user).permit(
       :email, :remember_me, :bio, :name, :username,
       :skype, :linkedin, :twitter, :website_url, :color_scheme_id, :theme_id, :force_random_password,
-      :extern_uid, :provider, :password_expires_at, :avatar, :hide_no_ssh_key,
-      :projects_limit, :can_create_group, :admin
+      :extern_uid, :provider, :password_expires_at, :avatar, :hide_no_ssh_key, :hide_no_password,
+      :projects_limit, :can_create_group, :admin, :key_id
     )
   end
 end

@@ -10,12 +10,10 @@ class GroupsController < ApplicationController
 
   # Load group projects
   before_filter :load_projects, except: [:new, :create, :projects, :edit, :update]
-
-  before_filter :default_filter, only: [:issues, :merge_requests]
+  before_filter :event_filter, only: :show
+  before_filter :set_title, only: [:new, :create]
 
   layout :determine_layout
-
-  before_filter :set_title, only: [:new, :create]
 
   def new
     @group = Group.new
@@ -23,7 +21,7 @@ class GroupsController < ApplicationController
 
   def create
     @group = Group.new(group_params)
-    @group.path = @group.name.dup.parameterize if @group.name
+    @group.name = @group.path.dup unless @group.name
 
     if @group.save
       @group.add_owner(current_user)
@@ -34,26 +32,32 @@ class GroupsController < ApplicationController
   end
 
   def show
-    @events = Event.in_projects(project_ids)
-    @events = event_filter.apply_filter(@events)
-    @events = @events.limit(20).offset(params[:offset] || 0)
     @last_push = current_user.recent_push if current_user
+    @projects = @projects.includes(:namespace)
 
     respond_to do |format|
       format.html
-      format.json { pager_json("events/_events", @events.count) }
-      format.atom { render layout: false }
+
+      format.json do
+        load_events
+        pager_json("events/_events", @events.count)
+      end
+
+      format.atom do
+        load_events
+        render layout: false
+      end
     end
   end
 
   def merge_requests
-    @merge_requests = MergeRequestsFinder.new.execute(current_user, params)
+    @merge_requests = get_merge_requests_collection
     @merge_requests = @merge_requests.page(params[:page]).per(20)
     @merge_requests = @merge_requests.preload(:author, :target_project)
   end
 
   def issues
-    @issues = IssuesFinder.new.execute(current_user, params)
+    @issues = get_issues_collection
     @issues = @issues.page(params[:page]).per(20)
     @issues = @issues.preload(:author, :project)
 
@@ -148,19 +152,13 @@ class GroupsController < ApplicationController
     end
   end
 
-  def default_filter
-    if params[:scope].blank?
-      if current_user
-        params[:scope] = 'assigned-to-me'
-      else
-        params[:scope] = 'all'
-      end
-    end
-    params[:state] = 'opened' if params[:state].blank?
-    params[:group_id] = @group.id
-  end
-
   def group_params
     params.require(:group).permit(:name, :description, :path, :avatar)
+  end
+
+  def load_events
+    @events = Event.in_projects(project_ids)
+    @events = event_filter.apply_filter(@events).with_associations
+    @events = @events.limit(20).offset(params[:offset] || 0)
   end
 end

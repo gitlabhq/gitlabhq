@@ -1,10 +1,10 @@
 module API
   # Hooks API
   class SystemHooks < Grape::API
-    before {
+    before do
       authenticate!
       authenticated_as_admin!
-    }
+    end
 
     resource :hooks do
       # Get the list of system hooks

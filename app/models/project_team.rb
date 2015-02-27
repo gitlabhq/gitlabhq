@@ -160,7 +160,7 @@ class ProjectTeam
     end
 
     user_ids = project_members.pluck(:user_id)
-    user_ids += group_members.pluck(:user_id) if group
+    user_ids.push(*group_members.pluck(:user_id)) if group
 
     User.where(id: user_ids)
   end

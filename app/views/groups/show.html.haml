@@ -1,37 +1,21 @@
 .dashboard
-  %section.activities.col-md-8.hidden-sm.hidden-xs
-    - if current_user
-      = render "events/event_last_push", event: @last_push
-      = link_to dashboard_path, class: 'btn btn-tiny' do
-        &larr; To dashboard
-      &nbsp;
-    %span.cgray
-      Currently you are only seeing events from the
-      = @group.name
-      group
-    %hr
-    = render 'shared/event_filter'
-    - if @events.any?
+  %div
+    = image_tag group_icon(@group.path), class: "avatar group-avatar s90"
+    .clearfix
+      %h2
+        = @group.name
+      - if @group.description.present?
+        %p
+          = escaped_autolink(@group.description)
+  %hr
+  .row
+    %section.activities.col-md-8
+      - if current_user
+        = render "events/event_last_push", event: @last_push
+        = render 'shared/event_filter'
       .content_list
-    - else
-      .nothing-here-block Project activity will be displayed here
-    = spinner
-  %aside.side.col-md-4
-    .light-well.append-bottom-20
-      = image_tag group_icon(@group.path), class: "avatar s90"
-      .clearfix.light
-        %h3.page-title
-          = @group.name
-        - if @group.description.present?
-          %p
-            = escaped_autolink(@group.description)
-    = render "projects", projects: @projects
-    - if current_user
-      .prepend-top-20
-        = link_to group_path(@group, { format: :atom, private_token: current_user.private_token }), title: "Feed" do
-          %strong
-            %i.fa.fa-rss
-            News Feed
-
-    %hr
-    = render 'shared/promo'
+      = spinner
+    %aside.side.col-md-4
+      = render "projects", projects: @projects
+    = link_to '#aside', class: 'show-aside' do
+      %i.fa.fa-angle-left

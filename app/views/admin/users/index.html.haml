@@ -1,5 +1,7 @@
 .row
-  .col-md-3
+  = link_to '#aside', class: 'show-aside' do
+    %i.fa.fa-angle-left
+  %aside.col-md-3
     .admin-filter
       %ul.nav.nav-pills.nav-stacked
         %li{class: "#{'active' unless params[:filter]}"}
@@ -27,7 +29,7 @@
       %hr
       = link_to 'Reset', admin_users_path, class: "btn btn-cancel"
 
-  .col-md-9
+  %section.col-md-9
     .panel.panel-default
       .panel-heading
         Users (#{@users.total_count})
@@ -36,22 +38,27 @@
             %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
               %span.light sort:
               - if @sort.present?
-                = @sort.humanize
+                = sort_options_hash[@sort]
               - else
-                Name
+                = sort_title_name
               %b.caret
             %ul.dropdown-menu
               %li
-                = link_to admin_users_path(sort: nil) do
-                  Name
-                = link_to admin_users_path(sort: 'recent_sign_in') do
-                  Recent sign in
-                = link_to admin_users_path(sort: 'oldest_sign_in') do
-                  Oldest sign in
-                = link_to admin_users_path(sort: 'recently_created') do
-                  Recently created
-                = link_to admin_users_path(sort: 'late_created') do
-                  Late created
+                = link_to admin_users_path(sort: sort_value_name) do
+                  = sort_title_name
+                = link_to admin_users_path(sort: sort_value_recently_signin) do
+                  = sort_title_recently_signin
+                = link_to admin_users_path(sort: sort_value_oldest_signin) do
+                  = sort_title_oldest_signin
+                = link_to admin_users_path(sort: sort_value_recently_created) do
+                  = sort_title_recently_created
+                = link_to admin_users_path(sort: sort_value_oldest_created) do
+                  = sort_title_oldest_created
+                = link_to admin_users_path(sort: sort_value_recently_updated) do
+                  = sort_title_recently_updated
+                = link_to admin_users_path(sort: sort_value_oldest_updated) do
+                  = sort_title_oldest_updated
+
           = link_to 'New User', new_admin_user_path, class: "btn btn-new"
       %ul.well-list
         - @users.each do |user|

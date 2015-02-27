@@ -1,4 +1,4 @@
-= form_for [@project, @label], html: { class: 'form-horizontal label-form' } do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @label], html: { class: 'form-horizontal label-form' } do |f|
   -if @label.errors.any?
     .row
       .col-sm-10.col-sm-offset-2
@@ -16,7 +16,7 @@
     .col-sm-10
       .input-group
         .input-group-addon.label-color-preview &nbsp;
-        = f.text_field :color, placeholder: "#AA33EE", class: "form-control"
+        = f.color_field :color, placeholder: "#AA33EE", class: "form-control"
       .help-block
         6 character hex values starting with a # sign.
         %br
@@ -29,5 +29,5 @@
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-save js-save-button'
-    = link_to "Cancel", project_labels_path(@project), class: 'btn btn-cancel'
+    = link_to "Cancel", namespace_project_labels_path(@project.namespace, @project), class: 'btn btn-cancel'
 

@@ -15,6 +15,7 @@
 
 class Milestone < ActiveRecord::Base
   include InternalId
+  include Sortable
 
   belongs_to :project
   has_many :issues

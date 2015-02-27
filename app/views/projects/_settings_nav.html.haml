@@ -1,25 +1,31 @@
-%ul.nav.nav-pills.nav-stacked.nav-stacked-menu.append-bottom-20.project-settings-nav
+%ul.project-settings-nav.sidebar-subnav
   = nav_link(path: 'projects#edit') do
-    = link_to edit_project_path(@project), class: "stat-tab tab " do
+    = link_to edit_project_path(@project), title: 'Project', class: "stat-tab tab " do
       %i.fa.fa-pencil-square-o
-      Project
+      %span
+        Project
   = nav_link(controller: [:team_members, :teams]) do
-    = link_to project_team_index_path(@project), class: "team-tab tab" do
+    = link_to namespace_project_team_index_path(@project.namespace, @project), title: 'Members', class: "team-tab tab" do
       %i.fa.fa-users
-      Members
+      %span
+        Members
   = nav_link(controller: :deploy_keys) do
-    = link_to project_deploy_keys_path(@project) do
+    = link_to namespace_project_deploy_keys_path(@project.namespace, @project), title: 'Deploy Keys' do
       %i.fa.fa-key
-      Deploy Keys
+      %span
+        Deploy Keys
   = nav_link(controller: :hooks) do
-    = link_to project_hooks_path(@project) do
+    = link_to namespace_project_hooks_path(@project.namespace, @project), title: 'Web Hooks' do
       %i.fa.fa-link
-      Web Hooks
+      %span
+        Web Hooks
   = nav_link(controller: :services) do
-    = link_to project_services_path(@project) do
+    = link_to namespace_project_services_path(@project.namespace, @project), title: 'Services' do
       %i.fa.fa-cogs
-      Services
+      %span
+        Services
   = nav_link(controller: :protected_branches) do
-    = link_to project_protected_branches_path(@project) do
+    = link_to namespace_project_protected_branches_path(@project.namespace, @project), title: 'Protected Branches' do
       %i.fa.fa-lock
-      Protected branches
+      %span
+        Protected branches

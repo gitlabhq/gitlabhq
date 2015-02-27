@@ -1,12 +1,14 @@
-%h3 #{@author.name} pushed to #{@branch} at #{link_to @project.name_with_namespace, project_url(@project)}
+%h3 #{@author.name} pushed to #{@branch} at #{link_to @project.name_with_namespace, namespace_project_url(@project.namespace, @project)}
 
 %h4 Commits:
 
 %ul
   - @commits.each do |commit|
     %li
-      %strong #{link_to commit.short_id, project_commit_url(@project, commit)}
-      %span by #{commit.author_name}
+      %strong #{link_to commit.short_id, namespace_project_commit_url(@project.namespace, @project, commit)}
+      %div
+        %span by #{commit.author_name}
+        %i at #{commit.committed_date.strftime("%Y-%m-%dT%H:%M:%SZ")}
       %pre #{commit.safe_message}
 
 %h4 Changes:
@@ -21,7 +23,7 @@
         = diff.new_path || diff.old_path
     %hr
     %pre
-      = diff.diff
+      = color_email_diff(diff.diff)
     %br
 
 - if @compare.timeout

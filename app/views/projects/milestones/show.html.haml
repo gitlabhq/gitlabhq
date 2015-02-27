@@ -1,57 +1,50 @@
-= render "projects/issues/head"
-%h3.page-title
+%h4.page-title
+  .issue-box{ class: issue_box_class(@milestone) }
+    - if @milestone.closed?
+      Closed
+    - elsif @milestone.expired?
+      Expired
+    - else
+      Open
   Milestone ##{@milestone.iid}
+  %small.creator
+    = @milestone.expires_at
   .pull-right
     - if can?(current_user, :admin_milestone, @project)
-      = link_to edit_project_milestone_path(@project, @milestone), class: "btn btn-grouped" do
+      = link_to edit_namespace_project_milestone_path(@project.namespace, @project, @milestone), class: "btn btn-grouped" do
         %i.fa.fa-pencil-square-o
         Edit
       - if @milestone.active?
-        = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-close btn-grouped"
+        = link_to 'Close Milestone', namespace_project_milestone_path(@project.namespace, @project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-close btn-grouped"
       - else
-        = link_to 'Reopen Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-reopen btn-grouped"
+        = link_to 'Reopen Milestone', namespace_project_milestone_path(@project.namespace, @project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-reopen btn-grouped"
 
+%hr
 - if @milestone.issues.any? && @milestone.can_be_closed?
   .alert.alert-success
     %span All issues for this milestone are closed. You may close milestone now.
 
-.back-link
-  = link_to project_milestones_path(@project) do
-    &larr; To milestones list
-
-
-.issue-box{ class: issue_box_class(@milestone) }
-  .state.clearfix
-    .state-label
-      - if @milestone.closed?
-        Closed
-      - elsif @milestone.expired?
-        Expired
-      - else
-        Open
-    .creator
-      = @milestone.expires_at
-
-  %h4.title
-    = gfm escape_once(@milestone.title)
-
+%h3.issue-title
+  = gfm escape_once(@milestone.title)
+%div
   - if @milestone.description.present?
     .description
       .wiki
         = preserve do
           = markdown @milestone.description
 
-  .context
-    %p
-      Progress:
-      #{@milestone.closed_items_count} closed
-      &ndash;
-      #{@milestone.open_items_count} open
-      &nbsp;
-      %span.light #{@milestone.percent_complete}% complete
-      %span.pull-right= @milestone.expires_at
-    .progress.progress-info
-      .progress-bar{style: "width: #{@milestone.percent_complete}%;"}
+%hr
+.context
+  %p.lead
+    Progress:
+    #{@milestone.closed_items_count} closed
+    &ndash;
+    #{@milestone.open_items_count} open
+    &nbsp;
+    %span.light #{@milestone.percent_complete}% complete
+    %span.pull-right= @milestone.expires_at
+  .progress.progress-info
+    .progress-bar{style: "width: #{@milestone.percent_complete}%;"}
 
 
 %ul.nav.nav-tabs
@@ -69,10 +62,10 @@
       %span.badge= @users.count
 
   .pull-right
-    = link_to new_project_issue_path(@project, issue: { milestone_id: @milestone.id }), class: "btn btn-small btn-grouped", title: "New Issue" do
+    = link_to new_namespace_project_issue_path(@project.namespace, @project, issue: { milestone_id: @milestone.id }), class: "btn  btn-grouped", title: "New Issue" do
       %i.fa.fa-plus
       New Issue
-    = link_to 'Browse Issues', project_issues_path(@milestone.project, milestone_id: @milestone.id), class: "btn btn-small edit-milestone-link btn-grouped"
+    = link_to 'Browse Issues', namespace_project_issues_path(@milestone.project.namespace, @milestone.project, milestone_id: @milestone.id), class: "btn  edit-milestone-link btn-grouped"
 
 .tab-content
   .tab-pane.active#tab-issues

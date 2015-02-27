@@ -61,10 +61,6 @@ class Projects::NotesController < Projects::ApplicationController
     end
   end
 
-  def preview
-    render text: view_context.markdown(params[:note])
-  end
-
   private
 
   def note

@@ -4,7 +4,7 @@ module ProjectsHelper
   end
 
   def link_to_project(project)
-    link_to project do
+    link_to [project.namespace.becomes(Namespace), project] do
       title = content_tag(:span, project.name, class: 'project-name')
 
       if project.namespace
@@ -42,12 +42,20 @@ module ProjectsHelper
   def project_title(project)
     if project.group
       content_tag :span do
-        link_to(simple_sanitize(project.group.name), group_path(project.group)) + " / " + project.name
+        link_to(
+          simple_sanitize(project.group.name), group_path(project.group)
+        ) + ' / ' +
+          link_to(simple_sanitize(project.name),
+                  project_path(project))
       end
     else
       owner = project.namespace.owner
       content_tag :span do
-        link_to(simple_sanitize(owner.name), user_path(owner)) + " / " + project.name
+        link_to(
+          simple_sanitize(owner.name), user_path(owner)
+        ) + ' / ' +
+          link_to(simple_sanitize(project.name),
+                  project_path(project))
       end
     end
   end
@@ -68,67 +76,13 @@ module ProjectsHelper
     project_nav_tabs.include? name
   end
 
-  def selected_label?(label_name)
-    params[:label_name].to_s.split(',').include?(label_name)
-  end
-
-  def labels_filter_path(label_name)
-    label_name =
-      if selected_label?(label_name)
-        params[:label_name].split(',').reject { |l| l == label_name }.join(',')
-      elsif params[:label_name].present?
-        "#{params[:label_name]},#{label_name}"
-      else
-        label_name
-      end
-
-    project_filter_path(label_name: label_name)
-  end
-
-  def label_filter_class(label_name)
-    if selected_label?(label_name)
-      'label-filter-item active'
-    else
-      'label-filter-item light'
-    end
-  end
-
-  def project_filter_path(options={})
-    exist_opts = {
-      state: params[:state],
-      scope: params[:scope],
-      label_name: params[:label_name],
-      milestone_id: params[:milestone_id],
-      assignee_id: params[:assignee_id],
-      sort: params[:sort],
-    }
-
-    options = exist_opts.merge(options)
-
-    path = request.path
-    path << "?#{options.to_param}"
-    path
-  end
-
   def project_active_milestones
     @project.milestones.active.order("due_date, title ASC")
   end
 
-  def project_issues_trackers(current_tracker = nil)
-    values = Project.issues_tracker.values.map do |tracker_key|
-      if tracker_key.to_sym == :gitlab
-        ['GitLab', tracker_key]
-      else
-        [Gitlab.config.issues_tracker[tracker_key]['title'] || tracker_key, tracker_key]
-      end
-    end
-
-    options_for_select(values, current_tracker)
-  end
-
   def link_to_toggle_star(title, starred, signed_in)
     cls = 'star-btn'
-    cls += ' disabled' unless signed_in
+    cls << ' disabled' unless signed_in
 
     toggle_html = content_tag('span', class: 'toggle') do
       toggle_text = if starred
@@ -137,7 +91,7 @@ module ProjectsHelper
                       ' Star'
                     end
 
-      content_tag('i', ' ', class: 'fa fa-star') + toggle_text
+      icon('star') + toggle_text
     end
 
     count_html = content_tag('span', class: 'count') do
@@ -149,19 +103,22 @@ module ProjectsHelper
       class: cls,
       method: :post,
       remote: true,
-      data: {type: 'json'}
+      data: { type: 'json' }
     }
 
 
     content_tag 'span', class: starred ? 'turn-on' : 'turn-off' do
-      link_to toggle_star_project_path(@project), link_opts do
+      link_to(
+        toggle_star_namespace_project_path(@project.namespace, @project),
+        link_opts
+      ) do
         toggle_html + ' ' + count_html
       end
     end
   end
 
   def link_to_toggle_fork
-    out = content_tag(:i, '', class: 'fa fa-code-fork')
+    out = icon('code-fork')
     out << ' Fork'
     out << content_tag(:span, class: 'count') do
       @project.forks_count.to_s
@@ -229,7 +186,13 @@ module ProjectsHelper
                 "Issues - " + title
               end
             elsif current_controller?(:blob)
-              "#{@project.path}\/#{@blob.path} at #{@ref} - " + title
+              if current_action?(:new) || current_action?(:create)
+                "New file at #{@ref}"
+              elsif current_action?(:show)
+                "#{@blob.path} at #{@ref}"
+              elsif @blob
+                "Edit file #{@blob.path} at #{@ref}"
+              end
             elsif current_controller?(:commits)
               "Commits at #{@ref} - " + title
             elsif current_controller?(:merge_requests)
@@ -270,13 +233,36 @@ module ProjectsHelper
 
   def contribution_guide_url(project)
     if project && project.repository.contribution_guide
-      project_blob_path(project, tree_join(project.default_branch, project.repository.contribution_guide.name))
+      namespace_project_blob_path(
+        project.namespace,
+        project,
+        tree_join(project.default_branch,
+                  project.repository.contribution_guide.name)
+      )
     end
   end
 
   def hidden_pass_url(original_url)
     result = URI(original_url)
-    result.password = '*****' if result.password.present?
+    result.password = '*****' unless result.password.nil?
     result
+  rescue
+    original_url
+  end
+
+  def project_wiki_path_with_version(proj, page, version, is_newest)
+    url_params = is_newest ? {} : { version_id: version }
+    namespace_project_wiki_path(proj.namespace, proj, page, url_params)
+  end
+
+  def project_status_css_class(status)
+    case status
+    when "started"
+      "active"
+    when "failed"
+      "danger"
+    when "finished"
+      "success"
+    end
   end
 end

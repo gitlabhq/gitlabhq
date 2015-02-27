@@ -1,41 +1,37 @@
-.row
-  .col-md-2
-    = render 'settings_nav'
-  .col-md-10
-    .panel.panel-default
-      .panel-heading
-        %strong= @group.name
-        group settings:
-      .panel-body
-        = form_for @group, html: { multipart: true, class: "form-horizontal" }, authenticity_token: true do |f|
-          - if @group.errors.any?
-            .alert.alert-danger
-              %span= @group.errors.full_messages.first
-          = render 'shared/group_form', f: f
+.panel.panel-default
+  .panel-heading
+    %strong= @group.name
+    group settings:
+  .panel-body
+    = form_for @group, html: { multipart: true, class: "form-horizontal" }, authenticity_token: true do |f|
+      - if @group.errors.any?
+        .alert.alert-danger
+          %span= @group.errors.full_messages.first
+      = render 'shared/group_form', f: f
 
-          .form-group
-            .col-sm-2
-            .col-sm-10
-              = image_tag group_icon(@group.to_param), alt: '', class: 'avatar s160'
-              %p.light
-                - if @group.avatar?
-                  You can change your group avatar here
-                - else
-                  You can upload a group avatar here
-              = render 'shared/choose_group_avatar_button', f: f
-              - if @group.avatar?
-                %hr
-                = link_to 'Remove avatar', group_avatar_path(@group.to_param), data: { confirm: "Group avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-small remove-avatar"
+      .form-group
+        .col-sm-2
+        .col-sm-10
+          = image_tag group_icon(@group.to_param), alt: '', class: 'avatar group-avatar s160'
+          %p.light
+            - if @group.avatar?
+              You can change your group avatar here
+            - else
+              You can upload a group avatar here
+          = render 'shared/choose_group_avatar_button', f: f
+          - if @group.avatar?
+            %hr
+            = link_to 'Remove avatar', group_avatar_path(@group.to_param), data: { confirm: "Group avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-small remove-avatar"
 
-          .form-actions
-            = f.submit 'Save group', class: "btn btn-save"
+      .form-actions
+        = f.submit 'Save group', class: "btn btn-save"
 
-    .panel.panel-danger
-      .panel-heading Remove group
-      .panel-body
-        %p
-          Removing group will cause all child projects and resources to be removed.
-          %br
-          %strong Removed group can not be restored!
+.panel.panel-danger
+  .panel-heading Remove group
+  .panel-body
+    %p
+      Removing group will cause all child projects and resources to be removed.
+      %br
+      %strong Removed group can not be restored!
 
-        = link_to 'Remove Group', @group, data: {confirm: 'Removed group can not be restored! Are you sure?'}, method: :delete, class: "btn btn-remove"
+    = link_to 'Remove Group', @group, data: {confirm: 'Removed group can not be restored! Are you sure?'}, method: :delete, class: "btn btn-remove"

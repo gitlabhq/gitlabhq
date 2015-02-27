@@ -41,32 +41,33 @@ describe API, api: true do
   describe ".current_user" do
     it "should return nil for an invalid token" do
       env[API::APIHelpers::PRIVATE_TOKEN_HEADER] = 'invalid token'
-      current_user.should be_nil
+      allow_any_instance_of(self.class).to receive(:doorkeeper_guard){ false }
+      expect(current_user).to be_nil
     end
 
     it "should return nil for a user without access" do
       env[API::APIHelpers::PRIVATE_TOKEN_HEADER] = user.private_token
       Gitlab::UserAccess.stub(allowed?: false)
-      current_user.should be_nil
+      expect(current_user).to be_nil
     end
 
     it "should leave user as is when sudo not specified" do
       env[API::APIHelpers::PRIVATE_TOKEN_HEADER] = user.private_token
-      current_user.should == user
+      expect(current_user).to eq(user)
       clear_env
       params[API::APIHelpers::PRIVATE_TOKEN_PARAM] = user.private_token
-      current_user.should == user
+      expect(current_user).to eq(user)
     end
 
     it "should change current user to sudo when admin" do
       set_env(admin, user.id)
-      current_user.should == user
+      expect(current_user).to eq(user)
       set_param(admin, user.id)
-      current_user.should == user
+      expect(current_user).to eq(user)
       set_env(admin, user.username)
-      current_user.should == user
+      expect(current_user).to eq(user)
       set_param(admin, user.username)
-      current_user.should == user
+      expect(current_user).to eq(user)
     end
 
     it "should throw an error when the current user is not an admin and attempting to sudo" do
@@ -82,8 +83,8 @@ describe API, api: true do
 
     it "should throw an error when the user cannot be found for a given id" do
       id = user.id + admin.id
-      user.id.should_not == id
-      admin.id.should_not == id
+      expect(user.id).not_to eq(id)
+      expect(admin.id).not_to eq(id)
       set_env(admin, id)
       expect { current_user }.to raise_error
 
@@ -93,8 +94,8 @@ describe API, api: true do
 
     it "should throw an error when the user cannot be found for a given username" do
       username = "#{user.username}#{admin.username}"
-      user.username.should_not == username
-      admin.username.should_not == username
+      expect(user.username).not_to eq(username)
+      expect(admin.username).not_to eq(username)
       set_env(admin, username)
       expect { current_user }.to raise_error
 
@@ -104,69 +105,69 @@ describe API, api: true do
 
     it "should handle sudo's to oneself" do
       set_env(admin, admin.id)
-      current_user.should == admin
+      expect(current_user).to eq(admin)
       set_param(admin, admin.id)
-      current_user.should == admin
+      expect(current_user).to eq(admin)
       set_env(admin, admin.username)
-      current_user.should == admin
+      expect(current_user).to eq(admin)
       set_param(admin, admin.username)
-      current_user.should == admin
+      expect(current_user).to eq(admin)
     end
 
     it "should handle multiple sudo's to oneself" do
       set_env(admin, user.id)
-      current_user.should == user
-      current_user.should == user
+      expect(current_user).to eq(user)
+      expect(current_user).to eq(user)
       set_env(admin, user.username)
-      current_user.should == user
-      current_user.should == user
+      expect(current_user).to eq(user)
+      expect(current_user).to eq(user)
 
       set_param(admin, user.id)
-      current_user.should == user
-      current_user.should == user
+      expect(current_user).to eq(user)
+      expect(current_user).to eq(user)
       set_param(admin, user.username)
-      current_user.should == user
-      current_user.should == user
+      expect(current_user).to eq(user)
+      expect(current_user).to eq(user)
     end
 
     it "should handle multiple sudo's to oneself using string ids" do
       set_env(admin, user.id.to_s)
-      current_user.should == user
-      current_user.should == user
+      expect(current_user).to eq(user)
+      expect(current_user).to eq(user)
 
       set_param(admin, user.id.to_s)
-      current_user.should == user
-      current_user.should == user
+      expect(current_user).to eq(user)
+      expect(current_user).to eq(user)
     end
   end
 
   describe '.sudo_identifier' do
     it "should return integers when input is an int" do
       set_env(admin, '123')
-      sudo_identifier.should == 123
+      expect(sudo_identifier).to eq(123)
       set_env(admin, '0001234567890')
-      sudo_identifier.should == 1234567890
+      expect(sudo_identifier).to eq(1234567890)
 
       set_param(admin, '123')
-      sudo_identifier.should == 123
+      expect(sudo_identifier).to eq(123)
       set_param(admin, '0001234567890')
-      sudo_identifier.should == 1234567890
+      expect(sudo_identifier).to eq(1234567890)
     end
 
     it "should return string when input is an is not an int" do
       set_env(admin, '12.30')
-      sudo_identifier.should == "12.30"
+      expect(sudo_identifier).to eq("12.30")
       set_env(admin, 'hello')
-      sudo_identifier.should == 'hello'
+      expect(sudo_identifier).to eq('hello')
       set_env(admin, ' 123')
-      sudo_identifier.should == ' 123'
+      expect(sudo_identifier).to eq(' 123')
 
       set_param(admin, '12.30')
-      sudo_identifier.should == "12.30"
+      expect(sudo_identifier).to eq("12.30")
       set_param(admin, 'hello')
-      sudo_identifier.should == 'hello'
+      expect(sudo_identifier).to eq('hello')
       set_param(admin, ' 123')
-      sudo_identifier.should == ' 123'
+      expect(sudo_identifier).to eq(' 123')
     end
   end
 end

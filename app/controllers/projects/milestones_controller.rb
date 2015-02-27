@@ -11,7 +11,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   respond_to :html
 
   def index
-    @milestones = case params[:f]
+    @milestones = case params[:state]
                   when 'all'; @project.milestones.order("state, due_date DESC")
                   when 'closed'; @project.milestones.closed.order("due_date DESC")
                   else @project.milestones.active.order("due_date ASC")
@@ -40,7 +40,8 @@ class Projects::MilestonesController < Projects::ApplicationController
     @milestone = Milestones::CreateService.new(project, current_user, milestone_params).execute
 
     if @milestone.save
-      redirect_to project_milestone_path(@project, @milestone)
+      redirect_to namespace_project_milestone_path(@project.namespace,
+                                                   @project, @milestone)
     else
       render "new"
     end
@@ -67,7 +68,7 @@ class Projects::MilestonesController < Projects::ApplicationController
     @milestone.destroy
 
     respond_to do |format|
-      format.html { redirect_to project_milestones_path }
+      format.html { redirect_to namespace_project_milestones_path }
       format.js { render nothing: true }
     end
   end
@@ -103,7 +104,9 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def module_enabled
-    return render_404 unless @project.issues_enabled
+    unless @project.issues_enabled || @project.merge_requests_enabled
+      return render_404
+    end
   end
 
   def milestone_params

@@ -1,0 +1,74 @@
+/** Common mobile (screen XS, SM) styles **/
+@media (max-width: $screen-xs-max) {
+  .container .content {
+    margin-top: 20px;
+  }
+
+  .nav.nav-tabs > li > a {
+    padding: 10px;
+    font-size: 12px;
+    margin-right: 3px;
+
+    .badge {
+      display: none;
+    }
+  }
+
+  .issues-filters,
+  .dash-projects-filters,
+  .check-all-holder {
+    display: none;
+  }
+
+  .rss-btn {
+    display: none !important;
+  }
+
+  .project-home-panel {
+    .star-fork-buttons {
+      padding-top: 10px;
+      padding-right: 15px;
+    }
+  }
+
+  .project-home-links {
+    display: none;
+  }
+}
+
+@media (max-width: $screen-sm-max) {
+  .issues-filters {
+    .milestone-filter, .labels-filter {
+      display: none;
+    }
+  }
+
+  .page-title .new-issue-link {
+    display: none;
+  }
+
+  .issue_edited_ago, .note_edited_ago {
+    display: none;
+  }
+
+  aside {
+    display: none;
+  }
+
+  .show-aside {
+    display: block !important;
+  }
+}
+
+.show-aside {
+  display: none;
+  position: fixed;
+  right: 0px;
+  top: 30%;
+  padding: 5px 15px;
+  background: #EEE;
+  font-size: 20px;
+  color: #777;
+  z-index: 100;
+  @include box-shadow(0 1px 2px #DDD);
+}

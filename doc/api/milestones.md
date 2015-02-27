@@ -72,3 +72,16 @@ Parameters:
 - `description` (optional) - The description of a milestone
 - `due_date` (optional) - The due date of the milestone
 - `state_event` (optional) - The state event of the milestone (close|activate)
+
+## Get all issues assigned to a single milestone
+
+Gets all issues assigned to a single project milestone.
+
+```
+GET /projects/:id/milestones/:milestone_id/issues
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `milestone_id` (required) - The ID of a project milestone

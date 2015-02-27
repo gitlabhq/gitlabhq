@@ -1,22 +1,22 @@
 %ul.breadcrumb.repo-breadcrumb
   %li
     %i.fa.fa-angle-right
-    = link_to project_tree_path(@project, @ref) do
+    = link_to namespace_project_tree_path(@project.namespace, @project, @ref) do
       = @project.path
   - tree_breadcrumbs(@tree, 6) do |title, path|
     %li
       - if path
         - if path.end_with?(@path)
-          = link_to project_blob_path(@project, path) do
+          = link_to namespace_project_blob_path(@project.namespace, @project, path) do
             %strong
               = truncate(title, length: 40)
         - else
-          = link_to truncate(title, length: 40), project_tree_path(@project, path)
+          = link_to truncate(title, length: 40), namespace_project_tree_path(@project.namespace, @project, path)
       - else
         = link_to title, '#'
 
 %ul.blob-commit-info.bs-callout.bs-callout-info.hidden-xs
-  - blob_commit = @repository.last_commit_for_path(@commit.id, @blob.path)
+  - blob_commit = @repository.last_commit_for_path(@commit.id, blob.path)
   = render blob_commit, project: @project
 
 %div#tree-content-holder.tree-content-holder

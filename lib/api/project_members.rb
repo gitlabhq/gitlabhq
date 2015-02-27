@@ -4,14 +4,6 @@ module API
     before { authenticate! }
 
     resource :projects do
-      helpers do
-        def handle_project_member_errors(errors)
-          if errors[:access_level].any?
-            error!(errors[:access_level], 422)
-          end
-          not_found!
-        end
-      end
 
       # Get a project team members
       #
@@ -66,7 +58,7 @@ module API
           @member = team_member.user
           present @member, with: Entities::ProjectMember, project: user_project
         else
-          handle_project_member_errors team_member.errors
+          handle_member_errors team_member.errors
         end
       end
 
@@ -89,7 +81,7 @@ module API
           @member = team_member.user
           present @member, with: Entities::ProjectMember, project: user_project
         else
-          handle_project_member_errors team_member.errors
+          handle_member_errors team_member.errors
         end
       end
 
@@ -106,7 +98,7 @@ module API
         unless team_member.nil?
           team_member.destroy
         else
-          {message: "Access revoked", id: params[:user_id].to_i}
+          { message: "Access revoked", id: params[:user_id].to_i }
         end
       end
     end

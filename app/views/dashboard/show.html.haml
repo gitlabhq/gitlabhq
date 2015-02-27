@@ -2,11 +2,10 @@
   .dashboard.row
     %section.activities.col-md-8
       = render 'activities'
-    %aside.side.col-md-4.left.responsive-side
+    %aside.col-md-4
       = render 'sidebar'
-
-  .fixed.sidebar-expand-button.hidden-lg.hidden-md
-    %i.fa.fa-list.fa-2x
+    = link_to '#aside', class: 'show-aside' do
+      %i.fa.fa-angle-left
 
 - else
   = render "zero_authorized_projects"

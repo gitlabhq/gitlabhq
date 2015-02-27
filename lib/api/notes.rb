@@ -61,9 +61,42 @@ module API
           if @note.valid?
             present @note, with: Entities::Note
           else
-            not_found!
+            not_found!("Note #{@note.errors.messages}")
           end
         end
+
+        # Modify existing +noteable+ note
+        #
+        # Parameters:
+        #   id (required) - The ID of a project
+        #   noteable_id (required) - The ID of an issue or snippet
+        #   node_id (required) - The ID of a note
+        #   body (required) - New content of a note
+        # Example Request:
+        #   PUT /projects/:id/issues/:noteable_id/notes/:note_id
+        #   PUT /projects/:id/snippets/:noteable_id/notes/:node_id
+        put ":id/#{noteables_str}/:#{noteable_id_str}/notes/:note_id" do
+          required_attributes! [:body]
+
+          authorize! :admin_note, user_project.notes.find(params[:note_id])
+
+          opts = {
+            note: params[:body],
+            note_id: params[:note_id],
+            noteable_type: noteables_str.classify,
+            noteable_id: params[noteable_id_str]
+          }
+
+          @note = ::Notes::UpdateService.new(user_project, current_user,
+                                             opts).execute
+
+          if @note.valid?
+            present @note, with: Entities::Note
+          else
+            render_api_error!("Failed to save note #{note.errors.messages}", 400)
+          end
+        end
+
       end
     end
   end

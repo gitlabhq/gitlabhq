@@ -2,12 +2,12 @@ require 'spec_helper'
 
 describe "Dashboard Feed", feature: true  do
   describe "GET /" do
-    let!(:user) { create(:user) }
+    let!(:user) { create(:user, name: "Jonh") }
 
     context "projects atom feed via private token" do
       it "should render projects atom feed" do
         visit dashboard_path(:atom, private_token: user.private_token)
-        body.should have_selector("feed title")
+        expect(body).to have_selector('feed title')
       end
     end
 
@@ -24,11 +24,12 @@ describe "Dashboard Feed", feature: true  do
       end
 
       it "should have issue opened event" do
-        body.should have_content("#{user.name} opened issue ##{issue.iid}")
+        expect(body).to have_content("#{user.name} opened issue ##{issue.iid}")
       end
 
       it "should have issue comment event" do
-        body.should have_content("#{user.name} commented on issue ##{issue.iid}")
+        expect(body).
+          to have_content("#{user.name} commented on issue ##{issue.iid}")
       end
     end
   end

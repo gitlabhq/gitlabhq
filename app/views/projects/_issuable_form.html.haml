@@ -14,17 +14,20 @@
 .form-group.issuable-description
   = f.label :description, 'Description', class: 'control-label'
   .col-sm-10
-    = render 'projects/zen', f: f, attr: :description,
-                             classes: 'description form-control'
-    .col-sm-12.hint
-      .pull-left
-        Parsed with
-        #{link_to 'GitLab Flavored Markdown', help_page_path('markdown', 'markdown'), target: '_blank'}.
-      .pull-right
-        Attach images (JPG, PNG, GIF) by dragging &amp; dropping
-        or #{link_to 'selecting them', '#', class: 'markdown-selector' }.
-    .clearfix
-    .error-alert
+
+    = render layout: 'projects/md_preview', locals: { preview_class: "wiki" } do
+      = render 'projects/zen', f: f, attr: :description,
+                               classes: 'description form-control'
+      .col-sm-12.hint
+        .pull-left
+          Parsed with
+          #{link_to 'GitLab Flavored Markdown', help_page_path('markdown', 'markdown'), target: '_blank'}.
+        .pull-right
+          Attach files by dragging &amp; dropping
+          or #{link_to 'selecting them', '#', class: 'markdown-selector' }.
+
+      .clearfix
+      .error-alert
 %hr
 .form-group
   .issue-assignee
@@ -49,10 +52,11 @@
       - else
         %span.light No open milestones available.
       &nbsp;
-      = link_to 'Create new milestone', new_project_milestone_path(issuable.project)
+      - if can? current_user, :admin_milestone, issuable.project
+        = link_to 'Create new milestone', new_namespace_project_milestone_path(issuable.project.namespace, issuable.project), target: :blank
 .form-group
   = f.label :label_ids, class: 'control-label' do
-    %i.icon-tag
+    %i.fa.fa-tag
     Labels
   .col-sm-10
     - if issuable.project.labels.any?
@@ -61,9 +65,15 @@
     - else
       %span.light No labels yet.
     &nbsp;
-    = link_to 'Create new label', new_project_label_path(issuable.project)
+    - if can? current_user, :admin_label, issuable.project
+      = link_to 'Create new label', new_namespace_project_label_path(issuable.project.namespace, issuable.project), target: :blank
 
 .form-actions
+  - if !issuable.project.empty_repo? && contribution_guide_url(issuable.project) && !issuable.persisted?
+    %p
+      Please review the
+      %strong #{link_to 'guidelines for contribution', contribution_guide_url(issuable.project)}
+      to this repository.
   - if issuable.new_record?
     = f.submit "Submit new #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'
   - else
@@ -72,4 +82,4 @@
     - cancel_project = issuable.source_project
   - else
     - cancel_project = issuable.project
-  = link_to 'Cancel', [cancel_project, issuable], class: 'btn btn-cancel'
+  = link_to 'Cancel', [cancel_project.namespace.becomes(Namespace), cancel_project, issuable], class: 'btn btn-cancel'

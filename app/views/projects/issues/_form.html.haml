@@ -1,14 +1,8 @@
 %div.issue-form-holder
   %h3.page-title= @issue.new_record? ? "New Issue" : "Edit Issue ##{@issue.iid}"
   %hr
-  - if @repository.exists? && !@repository.empty? && @repository.contribution_guide && !@issue.persisted?
-    - contribution_guide_url = project_blob_path(@project, tree_join(@repository.root_ref, @repository.contribution_guide.name))
-    .row
-      .col-sm-10.col-sm-offset-2
-        .alert.alert-info
-          = "Please review the <strong>#{link_to "guidelines for contribution", contribution_guide_url}</strong> to this repository.".html_safe
 
-  = form_for [@project, @issue], html: { class: 'form-horizontal issue-form gfm-form' } do |f|
+  = form_for [@project.namespace.becomes(Namespace), @project, @issue], html: { class: 'form-horizontal issue-form gfm-form' } do |f|
     = render 'projects/issuable_form', f: f, issuable: @issue
 
 :javascript
@@ -17,4 +11,4 @@
     e.preventDefault();
   });
 
-  window.project_image_path_upload = "#{upload_image_project_path @project}";
+  window.project_uploads_path = "#{namespace_project_uploads_path @project.namespace, @project}";

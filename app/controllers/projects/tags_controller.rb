@@ -1,8 +1,6 @@
 class Projects::TagsController < Projects::ApplicationController
   # Authorize
-  before_filter :authorize_read_project!
   before_filter :require_non_empty_project
-
   before_filter :authorize_download_code!
   before_filter :authorize_push_code!, only: [:create]
   before_filter :authorize_admin_project!, only: [:destroy]
@@ -15,9 +13,10 @@ class Projects::TagsController < Projects::ApplicationController
   def create
     result = CreateTagService.new(@project, current_user).
       execute(params[:tag_name], params[:ref], params[:message])
+
     if result[:status] == :success
       @tag = result[:tag]
-      redirect_to project_tags_path(@project)
+      redirect_to namespace_project_tags_path(@project.namespace, @project)
     else
       @error = result[:message]
       render action: 'new'
@@ -28,11 +27,11 @@ class Projects::TagsController < Projects::ApplicationController
     tag = @repository.find_tag(params[:id])
 
     if tag && @repository.rm_tag(tag.name)
-      Event.create_ref_event(@project, current_user, tag, 'rm', 'refs/tags')
+      EventCreateService.new.push_ref(@project, current_user, tag, 'rm', 'refs/tags')
     end
 
     respond_to do |format|
-      format.html { redirect_to project_tags_path }
+      format.html { redirect_to namespace_project_tags_path }
       format.js
     end
   end

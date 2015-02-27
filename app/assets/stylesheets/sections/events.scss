@@ -47,7 +47,7 @@
   .event-title {
     @include str-truncated(72%);
     color: #333;
-    font-weight: normal;
+    font-weight: 500;
     font-size: 14px;
     .author_name {
       color: #333;
@@ -55,25 +55,28 @@
   }
   .event-body {
     margin-left: 35px;
-    margin-right: 100px;
+    margin-right: 80px;
+    color: #777;
 
-    .event-info {
-      color: #666;
-    }
     .event-note {
-      color: #666;
       margin-top: 5px;
+      word-wrap: break-word;
 
       .md {
         font-size: 13px;
+
+        iframe.twitter-share-button {
+          vertical-align: bottom;
+        }
       }
 
       pre {
         border: none;
         background: #f9f9f9;
         border-radius: 0;
-        color: #666;
+        color: #777;
         margin: 0 20px;
+        overflow: hidden;
       }
 
       .note-image-attach {
@@ -120,7 +123,6 @@
         padding: 3px;
         padding-left: 0;
         border: none;
-        color: #666;
         .commit-row-title {
           font-size: 12px;
         }
@@ -144,49 +146,50 @@
   }
 }
 
-/**
- * Event filter
- *
- */
-.event_filter {
-  position: absolute;
-  width: 40px;
-  margin-left: -55px;
-
-  .filter_icon {
-    a {
-      text-align:center;
-      background: $bg_primary;
-      margin-bottom: 10px;
-      float: left;
-      padding: 9px 6px;
-      font-size: 18px;
-      width: 40px;
-      color: #FFF;
-      @include border-radius(3px);
-    }
-
-    &.inactive {
-      a {
-        color: #DDD;
-        background: #f9f9f9;
-      }
-    }
-  }
-}
 
 /*
  * Last push widget
  */
 .event-last-push {
+  overflow: auto;
   .event-last-push-text {
-    @include str-truncated(75%);
+    @include str-truncated(100%);
+    float:left;
+    margin-right: -150px;
+    padding-right: 150px;
     line-height: 24px;
   }
 }
 
 @media (max-width: $screen-xs-max) {
-  .event-item .event-title {
-    @include str-truncated(65%);
+  .event-item {
+    .event-title {
+      white-space: normal;
+      overflow: visible;
+      max-width: 100%;
+    }
+    .avatar {
+      display: none;
+    }
+
+    .event-body {
+      margin: 0;
+      border-left: 2px solid #DDD;
+      padding-left: 10px;
+    }
+
+    .event-item-timestamp {
+      display: none;
+    }
   }
+}
+
+.event_filter {
+  
+  li a {
+    padding: 5px 10px;
+    background: rgba(0,0,0,0.045);
+    margin-left: 4px;
+  }
+
 }

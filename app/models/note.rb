@@ -49,7 +49,7 @@ class Note < ActiveRecord::Base
   scope :not_inline, ->{ where(line_code: [nil, '']) }
   scope :system, ->{ where(system: true) }
   scope :common, ->{ where(noteable_type: ["", nil]) }
-  scope :fresh, ->{ order("created_at ASC, id ASC") }
+  scope :fresh, ->{ order(created_at: :asc, id: :asc) }
   scope :inc_author_project, ->{ includes(:project, :author) }
   scope :inc_author, ->{ includes(:author) }
 
@@ -90,7 +90,7 @@ class Note < ActiveRecord::Base
         note_options.merge!(noteable: noteable)
       end
 
-      create(note_options)
+      create(note_options) unless cross_reference_disallowed?(noteable, mentioner)
     end
 
     def create_milestone_change_note(noteable, project, author, milestone)
@@ -119,6 +119,36 @@ class Note < ActiveRecord::Base
         note: body,
         system: true
       })
+    end
+
+    def create_labels_change_note(noteable, project, author, added_labels, removed_labels)
+      labels_count = added_labels.count + removed_labels.count
+      added_labels = added_labels.map{ |label| "~#{label.id}" }.join(' ')
+      removed_labels = removed_labels.map{ |label| "~#{label.id}" }.join(' ')
+      message = ''
+
+      if added_labels.present?
+        message << "added #{added_labels}"
+      end
+
+      if added_labels.present? && removed_labels.present?
+        message << ' and '
+      end
+
+      if removed_labels.present?
+        message << "removed #{removed_labels}"
+      end
+
+      message << ' ' << 'label'.pluralize(labels_count)
+      body = "_#{message.capitalize}_"
+
+      create(
+        noteable: noteable,
+        project: project,
+        author: author,
+        note: body,
+        system: true
+      )
     end
 
     def create_new_commits_note(noteable, project, author, commits)
@@ -163,6 +193,15 @@ class Note < ActiveRecord::Base
 
     def build_discussion_id(type, id, line_code)
       [:discussion, type.try(:underscore), id, line_code].join("-").to_sym
+    end
+
+    # Determine if cross reference note should be created.
+    # eg. mentioning a commit in MR comments which exists inside a MR
+    # should not create "mentioned in" note.
+    def cross_reference_disallowed?(noteable, mentioner)
+      if mentioner.kind_of?(MergeRequest)
+        mentioner.commits.map(&:id).include? noteable.id
+      end
     end
 
     # Determine whether or not a cross-reference note already exists.
@@ -251,8 +290,8 @@ class Note < ActiveRecord::Base
 
   def commit_author
     @commit_author ||=
-      project.users.find_by(email: noteable.author_email) ||
-      project.users.find_by(name: noteable.author_name)
+      project.team.users.find_by(email: noteable.author_email) ||
+      project.team.users.find_by(name: noteable.author_name)
   rescue
     nil
   end
@@ -287,6 +326,7 @@ class Note < ActiveRecord::Base
   # If not - its outdated diff
   def active?
     return true unless self.diff
+    return false unless noteable
 
     noteable.diffs.each do |mr_diff|
       next unless mr_diff.new_path == self.diff.new_path
@@ -308,7 +348,7 @@ class Note < ActiveRecord::Base
   end
 
   def diff_file_index
-    line_code.split('_')[0]
+    line_code.split('_')[0] if line_code
   end
 
   def diff_file_name
@@ -324,11 +364,11 @@ class Note < ActiveRecord::Base
   end
 
   def diff_old_line
-    line_code.split('_')[1].to_i
+    line_code.split('_')[1].to_i if line_code
   end
 
   def diff_new_line
-    line_code.split('_')[2].to_i
+    line_code.split('_')[2].to_i if line_code
   end
 
   def generate_line_code(line)
@@ -349,25 +389,39 @@ class Note < ActiveRecord::Base
     @diff_line
   end
 
+  def diff_line_type
+    return @diff_line_type if @diff_line_type
+
+    if diff
+      diff_lines.each do |line|
+        if generate_line_code(line) == self.line_code
+          @diff_line_type = line.type
+        end
+      end
+    end
+
+    @diff_line_type
+  end
+
   def truncated_diff_lines
     max_number_of_lines = 16
     prev_match_line = nil
     prev_lines = []
 
     diff_lines.each do |line|
-      if generate_line_code(line) != self.line_code
-        if line.type == "match"
-          prev_lines.clear
-          prev_match_line = line
-        else
-          prev_lines.push(line)
-          prev_lines.shift if prev_lines.length >= max_number_of_lines
-        end
+      if line.type == "match"
+        prev_lines.clear
+        prev_match_line = line
       else
         prev_lines << line
-        return prev_lines
+        
+        break if generate_line_code(line) == self.line_code
+
+        prev_lines.shift if prev_lines.length >= max_number_of_lines
       end
     end
+
+    prev_lines
   end
 
   def diff_lines
@@ -435,6 +489,26 @@ class Note < ActiveRecord::Base
                 )
   end
 
+  def superceded?(notes)
+    return false unless vote?
+
+    notes.each do |note|
+      next if note == self
+
+      if note.vote? &&
+        self[:author_id] == note[:author_id] &&
+        self[:created_at] <= note[:created_at]
+        return true
+      end
+    end
+
+    false
+  end
+
+  def vote?
+    upvote? || downvote?
+  end
+
   def votable?
     for_issue? || (for_merge_request? && !for_diff_line?)
   end
@@ -456,7 +530,7 @@ class Note < ActiveRecord::Base
   end
 
   # FIXME: Hack for polymorphic associations with STI
-  #        For more information wisit http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#label-Polymorphic+Associations
+  #        For more information visit http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#label-Polymorphic+Associations
   def noteable_type=(sType)
     super(sType.to_s.classify.constantize.base_class.to_s)
   end
@@ -479,6 +553,6 @@ class Note < ActiveRecord::Base
   end
 
   def editable?
-    !system
+    !read_attribute(:system)
   end
 end

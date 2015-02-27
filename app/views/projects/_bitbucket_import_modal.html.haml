@@ -1,0 +1,13 @@
+%div#bitbucket_import_modal.modal.hide
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %a.close{href: "#", "data-dismiss" => "modal"} ×
+        %h3 Import projects from Bitbucket
+      .modal-body
+        To enable importing projects from Bitbucket, 
+        - if current_user.admin?
+          you need to
+        - else
+          your GitLab administrator needs to
+        == #{link_to 'setup OAuth integration', 'https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/integration/butbucket.md'}.

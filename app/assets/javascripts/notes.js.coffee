@@ -36,17 +36,8 @@ class @Notes
     # delete note attachment
     $(document).on "click", ".js-note-attachment-delete", @removeAttachment
 
-    # Preview button
-    $(document).on "click", ".js-note-preview-button", @previewNote
-
-    # Preview button
-    $(document).on "click", ".js-note-write-button", @writeNote
-
     # reset main target form after submit
     $(document).on "ajax:complete", ".js-main-target-form", @resetMainTargetForm
-
-    # attachment button
-    $(document).on "click", ".js-choose-note-attachment-button", @chooseNoteAttachment
 
     # update the file name when an attachment is selected
     $(document).on "change", ".js-note-attachment-input", @updateFormAttachment
@@ -64,8 +55,9 @@ class @Notes
     $(document).on "visibilitychange", @visibilityChange
 
     @notes_forms = '.js-main-target-form textarea, .js-discussion-note-form textarea'
-    $(document).on('keypress', @notes_forms, (e)->
-      if e.keyCode == 10 || (e.ctrlKey && e.keyCode == 13)
+    # Chrome doesn't fire keypress or keyup for Command+Enter, so we need keydown.
+    $(document).on('keydown', @notes_forms, (e) ->
+      if e.keyCode == 10 || ((e.metaKey || e.ctrlKey) && e.keyCode == 13)
         $(@).parents('form').submit()
     )
 
@@ -77,14 +69,11 @@ class @Notes
     $(document).off "click", ".note-edit-cancel"
     $(document).off "click", ".js-note-delete"
     $(document).off "click", ".js-note-attachment-delete"
-    $(document).off "click", ".js-note-preview-button"
-    $(document).off "click", ".js-note-write-button"
     $(document).off "ajax:complete", ".js-main-target-form"
-    $(document).off "click", ".js-choose-note-attachment-button"
     $(document).off "click", ".js-discussion-reply-button"
     $(document).off "click", ".js-add-diff-note-button"
     $(document).off "visibilitychange"
-    $(document).off "keypress", @notes_forms
+    $(document).off "keydown", @notes_forms
     $(document).off "keyup", ".js-note-text"
     $(document).off "click", ".js-note-target-reopen"
     $(document).off "click", ".js-note-target-close"
@@ -122,10 +111,6 @@ class @Notes
     if @isNewNote(note)
       @note_ids.push(note.id)
       $('ul.main-notes-list').append(note.html)
-      code = "#note_" + note.id + " .highlight pre code"
-      $(code).each (i, e) ->
-        hljs.highlightBlock(e)
-
 
   ###
   Check if note does not exists on page
@@ -166,47 +151,6 @@ class @Notes
     @removeDiscussionNoteForm(form)
 
   ###
-  Shows write note textarea.
-  ###
-  writeNote: (e) ->
-    e.preventDefault()
-    form = $(this).closest("form")
-    # toggle tabs
-    form.find(".js-note-write-button").parent().addClass "active"
-    form.find(".js-note-preview-button").parent().removeClass "active"
-
-    # toggle content
-    form.find(".note-write-holder").show()
-    form.find(".note-preview-holder").hide()
-
-  ###
-  Shows the note preview.
-
-  Lets the server render GFM into Html and displays it.
-  ###
-  previewNote: (e) ->
-    e.preventDefault()
-    form = $(this).closest("form")
-    # toggle tabs
-    form.find(".js-note-write-button").parent().removeClass "active"
-    form.find(".js-note-preview-button").parent().addClass "active"
-
-    # toggle content
-    form.find(".note-write-holder").hide()
-    form.find(".note-preview-holder").show()
-
-    preview = form.find(".js-note-preview")
-    noteText = form.find(".js-note-text").val()
-    if noteText.trim().length is 0
-      preview.text "Nothing to preview."
-    else
-      preview.text "Loading..."
-      $.post($(this).data("url"),
-        note: noteText
-      ).success (previewData) ->
-        preview.html previewData
-
-  ###
   Called in response the main target form has been successfully submitted.
 
   Removes any errors.
@@ -220,17 +164,10 @@ class @Notes
     form.find(".js-errors").remove()
 
     # reset text and preview
-    form.find(".js-note-write-button").click()
+    form.find(".js-md-write-button").click()
     form.find(".js-note-text").val("").trigger "input"
 
-  ###
-  Called when clicking the "Choose File" button.
-
-  Opens the file selection dialog.
-  ###
-  chooseNoteAttachment: ->
-    form = $(this).closest("form")
-    form.find(".js-note-attachment-input").click()
+    form.find(".js-note-text").data("autosave").reset()
 
   ###
   Shows the main form and does some setup on it.
@@ -268,22 +205,33 @@ class @Notes
   setupNoteForm: (form) ->
     disableButtonIfEmptyField form.find(".js-note-text"), form.find(".js-comment-button")
     form.removeClass "js-new-note-form"
+    form.find('.div-dropzone').remove()
 
     # setup preview buttons
-    form.find(".js-note-write-button, .js-note-preview-button").tooltip placement: "left"
-    previewButton = form.find(".js-note-preview-button")
-    form.find(".js-note-text").on "input", ->
+    form.find(".js-md-write-button, .js-md-preview-button").tooltip placement: "left"
+    previewButton = form.find(".js-md-preview-button")
+
+    textarea = form.find(".js-note-text")
+
+    textarea.on "input", ->
       if $(this).val().trim() isnt ""
         previewButton.removeClass("turn-off").addClass "turn-on"
       else
         previewButton.removeClass("turn-on").addClass "turn-off"
 
+    new Autosave textarea, [
+      "Note"
+      form.find("#note_commit_id").val()
+      form.find("#note_line_code").val()
+      form.find("#note_noteable_type").val()
+      form.find("#note_noteable_id").val()
+    ]
 
     # remove notify commit author checkbox for non-commit notes
     form.find(".js-notify-commit-author").remove()  if form.find("#note_noteable_type").val() isnt "Commit"
     GitLab.GfmAutoComplete.setup()
+    new DropzoneInput(form)
     form.show()
-
 
   ###
   Called in response to the new note form being submitted
@@ -308,11 +256,10 @@ class @Notes
   Updates the current note field.
   ###
   updateNote: (xhr, note, status) =>
-    note_li = $("#note_" + note.id)
+    note_li = $(".note-row-" + note.id)
     note_li.replaceWith(note.html)
-    code = "#note_" + note.id + " .highlight pre code"
-    $(code).each (i, e) ->
-      hljs.highlightBlock(e)
+    note_li.find('.note-edit-form').hide()
+    note_li.find('.note-body > .note-text').show()
 
   ###
   Called in response to clicking the edit note link
@@ -324,12 +271,20 @@ class @Notes
   showEditForm: (e) ->
     e.preventDefault()
     note = $(this).closest(".note")
-    note.find(".note-text").hide()
+    note.find(".note-body > .note-text").hide()
+    note.find(".note-header").hide()
+    base_form = note.find(".note-edit-form")
+    form = base_form.clone().insertAfter(base_form)
+    form.addClass('current-note-edit-form')
+    form.find('.div-dropzone').remove()
 
     # Show the attachment delete link
     note.find(".js-note-attachment-delete").show()
+
+    # Setup markdown form
     GitLab.GfmAutoComplete.setup()
-    form = note.find(".note-edit-form")
+    new DropzoneInput(form)
+
     form.show()
     textarea = form.find("textarea")
     textarea.focus()
@@ -343,9 +298,9 @@ class @Notes
   cancelEdit: (e) ->
     e.preventDefault()
     note = $(this).closest(".note")
-    note.find(".note-text").show()
-    note.find(".js-note-attachment-delete").hide()
-    note.find(".note-edit-form").hide()
+    note.find(".note-body > .note-text").show()
+    note.find(".note-header").show()
+    note.find(".current-note-edit-form").remove()
 
   ###
   Called in response to deleting a note of any kind.
@@ -377,7 +332,7 @@ class @Notes
   removeAttachment: ->
     note = $(this).closest(".note")
     note.find(".note-attachment").remove()
-    note.find(".note-text").show()
+    note.find(".note-body > .note-text").show()
     note.find(".js-note-attachment-delete").hide()
     note.find(".note-edit-form").hide()
 
@@ -424,7 +379,7 @@ class @Notes
   ###
   addDiffNote: (e) =>
     e.preventDefault()
-    link = e.target
+    link = e.currentTarget
     form = $(".js-new-note-form")
     row = $(link).closest("tr")
     nextRow = row.next()
@@ -450,6 +405,8 @@ class @Notes
   ###
   removeDiscussionNoteForm: (form)->
     row = form.closest("tr")
+
+    form.find(".js-note-text").data("autosave").reset()
 
     # show the reply button (will only work for replies)
     form.prev(".js-discussion-reply-button").show()

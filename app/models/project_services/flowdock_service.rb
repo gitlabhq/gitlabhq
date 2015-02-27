@@ -5,11 +5,12 @@
 #  id         :integer          not null, primary key
 #  type       :string(255)
 #  title      :string(255)
-#  project_id :integer          not null
+#  project_id :integer
 #  created_at :datetime
 #  updated_at :datetime
 #  active     :boolean          default(FALSE), not null
 #  properties :text
+#  template   :boolean          default(FALSE)
 #
 
 require "flowdock-git-hook"
@@ -37,13 +38,12 @@ class FlowdockService < Service
   end
 
   def execute(push_data)
-    repo_path = File.join(Gitlab.config.gitlab_shell.repos_path, "#{project.path_with_namespace}.git")
     Flowdock::Git.post(
       push_data[:ref],
       push_data[:before],
       push_data[:after],
       token: token,
-      repo: repo_path,
+      repo: project.repository.path_to_repo,
       repo_url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}",
       commit_url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/commit/%s",
       diff_url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/compare/%s...%s",

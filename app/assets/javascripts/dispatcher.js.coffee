@@ -4,7 +4,6 @@ $ ->
 class Dispatcher
   constructor: () ->
     @initSearch()
-    @initHighlight()
     @initPageScripts()
 
   initPageScripts: ->
@@ -27,23 +26,26 @@ class Dispatcher
         new ZenMode()
       when 'projects:milestones:show'
         new Milestone()
-      when 'projects:milestones:new'
+      when 'projects:milestones:new', 'projects:milestones:edit'
         new ZenMode()
       when 'projects:issues:new','projects:issues:edit'
         GitLab.GfmAutoComplete.setup()
         shortcut_handler = new ShortcutsNavigation()
         new ZenMode()
+        new DropzoneInput($('.issue-form'))
       when 'projects:merge_requests:new', 'projects:merge_requests:edit'
         GitLab.GfmAutoComplete.setup()
         new Diff()
         shortcut_handler = new ShortcutsNavigation()
         new ZenMode()
+        new DropzoneInput($('.merge-request-form'))
       when 'projects:merge_requests:show'
         new Diff()
         shortcut_handler = new ShortcutsIssueable()
         new ZenMode()
       when "projects:merge_requests:diffs"
         new Diff()
+        new ZenMode()
       when 'projects:merge_requests:index'
         shortcut_handler = new ShortcutsNavigation()
       when 'dashboard:show'
@@ -52,14 +54,13 @@ class Dispatcher
       when 'projects:commit:show'
         new Commit()
         new Diff()
+        new ZenMode()
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:commits:show'
         shortcut_handler = new ShortcutsNavigation()
       when 'groups:show', 'projects:show'
         new Activities()
         shortcut_handler = new ShortcutsNavigation()
-      when 'projects:teams:members:index'
-        new TeamMembers()
       when 'groups:members'
         new GroupMembers()
         new UsersSelect()
@@ -77,6 +78,8 @@ class Dispatcher
         # Ensure we don't create a particular shortcut handler here. This is
         # already created, where the network graph is created.
         shortcut_handler = true
+      when 'projects:forks:new'
+        new ProjectFork()
       when 'users:show'
         new User()
 
@@ -94,6 +97,7 @@ class Dispatcher
         new Profile()
       when 'projects'
         new Project()
+        new ProjectAvatar()
         switch path[1]
           when 'edit'
             shortcut_handler = new ShortcutsNavigation()
@@ -108,6 +112,7 @@ class Dispatcher
             new Wikis()
             shortcut_handler = new ShortcutsNavigation()
             new ZenMode()
+            new DropzoneInput($('.wiki-form'))
           when 'snippets', 'labels', 'graphs'
             shortcut_handler = new ShortcutsNavigation()
           when 'team_members', 'deploy_keys', 'hooks', 'services', 'protected_branches'
@@ -126,10 +131,3 @@ class Dispatcher
     project_ref = opts.data('autocomplete-project-ref')
 
     new SearchAutocomplete(path, project_id, project_ref)
-
-  initHighlight: ->
-    $('.highlight pre code').each (i, e) ->
-      $(e).html($.map($(e).html().split("\n"), (line, i) ->
-        "<span class='line' id='LC" + (i + 1) + "'>" + line + "</span>"
-      ).join("\n"))
-      hljs.highlightBlock(e)

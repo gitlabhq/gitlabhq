@@ -24,9 +24,16 @@
 #  import_status          :string(255)
 #  repository_size        :float            default(0.0)
 #  star_count             :integer          default(0), not null
+#  import_type            :string(255)
+#  import_source          :string(255)
+#  avatar                 :string(255)
 #
 
 FactoryGirl.define do
+  # Project without repository
+  #
+  # Project does not have bare repository.
+  # Use this factory if you dont need repository in tests
   factory :empty_project, class: 'Project' do
     sequence(:name) { |n| "project#{n}" }
     path { name.downcase.gsub(/\s/, '_') }
@@ -47,6 +54,20 @@ FactoryGirl.define do
     end
   end
 
+  # Project with empty repository
+  #
+  # This is a case when you just created a project
+  # but not pushed any code there yet
+  factory :project_empty_repo, parent: :empty_project do
+    after :create do |project|
+      project.create_repository
+    end
+  end
+
+  # Project with test repository
+  #
+  # Test repository source can be found at
+  # https://gitlab.com/gitlab-org/gitlab-test
   factory :project, parent: :empty_project do
     path { 'gitlabhq' }
 
@@ -56,7 +77,19 @@ FactoryGirl.define do
   end
 
   factory :redmine_project, parent: :project do
-    issues_tracker { "redmine" }
-    issues_tracker_id { "project_name_in_redmine" }
+    after :create do |project|
+      project.create_redmine_service(
+        active: true,
+        properties: {
+          'project_url' => 'http://redmine/projects/project_name_in_redmine',
+          'issues_url' => "http://redmine/#{project.id}/project_name_in_redmine/:id",
+          'new_issue_url' => 'http://redmine/projects/project_name_in_redmine/issues/new'
+        }
+      )
+    end
+    after :create do |project|
+      project.issues_tracker = 'redmine'
+      project.issues_tracker_id = 'project_name_in_redmine'
+    end
   end
 end

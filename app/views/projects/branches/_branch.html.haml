@@ -1,7 +1,7 @@
 - commit = @repository.commit(branch.target)
 %li(class="js-branch-#{branch.name}")
   %h4
-    = link_to project_tree_path(@project, branch.name) do
+    = link_to namespace_project_tree_path(@project.namespace, @project, branch.name) do
       %strong.str-truncated= branch.name
       - if branch.name == @repository.root_ref
         %span.label.label-info default
@@ -13,12 +13,12 @@
       - if can?(current_user, :download_code, @project)
         = render 'projects/repositories/download_archive', ref: branch.name, btn_class: 'btn-grouped btn-group-small'
       - if branch.name != @repository.root_ref
-        = link_to project_compare_index_path(@project, from: @repository.root_ref, to: branch.name), class: 'btn btn-grouped btn-small', method: :post, title: "Compare" do
+        = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: branch.name), class: 'btn btn-grouped btn-small', method: :post, title: "Compare" do
           %i.fa.fa-files-o
           Compare
 
       - if can_remove_branch?(@project, branch.name)
-        = link_to project_branch_path(@project, branch.name), class: 'btn btn-grouped btn-small btn-remove remove-row', method: :delete, data: { confirm: 'Removed branch cannot be restored. Are you sure?'}, remote: true do
+        = link_to namespace_project_branch_path(@project.namespace, @project, branch.name), class: 'btn btn-grouped btn-small btn-remove remove-row', method: :delete, data: { confirm: 'Removed branch cannot be restored. Are you sure?'}, remote: true do
           %i.fa.fa-trash-o
 
   - if commit

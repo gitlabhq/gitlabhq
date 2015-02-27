@@ -14,21 +14,27 @@
 #
 
 class Namespace < ActiveRecord::Base
+  include Sortable
   include Gitlab::ShellAdapter
 
   has_many :projects, dependent: :destroy
   belongs_to :owner, class_name: "User"
 
   validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
-  validates :name, presence: true, uniqueness: true,
-            length: { within: 0..255 },
-            format: { with: Gitlab::Regex.name_regex,
-                      message: Gitlab::Regex.name_regex_message }
+  validates :name,
+    presence: true, uniqueness: true,
+    length: { within: 0..255 },
+    format: { with: Gitlab::Regex.name_regex,
+              message: Gitlab::Regex.name_regex_message }
+
   validates :description, length: { within: 0..255 }
-  validates :path, uniqueness: { case_sensitive: false }, presence: true, length: { within: 1..255 },
-            exclusion: { in: Gitlab::Blacklist.path },
-            format: { with: Gitlab::Regex.path_regex,
-                      message: Gitlab::Regex.path_regex_message }
+  validates :path,
+    uniqueness: { case_sensitive: false },
+    presence: true,
+    length: { within: 1..255 },
+    exclusion: { in: Gitlab::Blacklist.path },
+    format: { with: Gitlab::Regex.path_regex,
+              message: Gitlab::Regex.path_regex_message }
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
@@ -37,6 +43,10 @@ class Namespace < ActiveRecord::Base
   after_destroy :rm_dir
 
   scope :root, -> { where('type IS NULL') }
+
+  def self.by_path(path)
+    where('lower(path) = :value', value: path.downcase).first
+  end
 
   def self.search(query)
     where("name LIKE :query OR path LIKE :query", query: "%#{query}%")
@@ -89,5 +99,9 @@ class Namespace < ActiveRecord::Base
 
   def kind
     type == 'Group' ? 'group' : 'user'
+  end
+
+  def find_fork_of(project)
+    projects.joins(:forked_project_link).where('forked_project_links.forked_from_project_id = ?', project.id).first
   end
 end

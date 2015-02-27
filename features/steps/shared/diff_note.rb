@@ -32,7 +32,7 @@ module SharedDiffNote
     click_diff_line(sample_commit.line_code)
     within("#{diff_file_selector} form[rel$='#{sample_commit.line_code}']") do
       fill_in "note[note]", with: "Should fix it :smile:"
-      find(".js-note-preview-button").trigger("click")
+      find('.js-md-preview-button').click
     end
   end
 
@@ -41,7 +41,7 @@ module SharedDiffNote
 
     within("#{diff_file_selector} form[rel$='#{sample_commit.del_line_code}']") do
       fill_in "note[note]", with: "DRY this up"
-      find(".js-note-preview-button").trigger("click")
+      find('.js-md-preview-button').click
     end
   end
 
@@ -71,15 +71,16 @@ module SharedDiffNote
     end
   end
 
-  step 'I should not see the diff comment preview button' do
+  step 'The diff comment preview tab should say there is nothing to do' do
     within(diff_file_selector) do
-      page.should have_css(".js-note-preview-button", visible: false)
+      find('.js-md-preview-button').click
+      expect(find('.js-md-preview')).to have_content('Nothing to preview.')
     end
   end
 
   step 'I should not see the diff comment text field' do
     within(diff_file_selector) do
-      page.should have_css(".js-note-text", visible: false)
+      expect(find('.js-note-text')).not_to be_visible
     end
   end
 
@@ -114,7 +115,7 @@ module SharedDiffNote
   end
 
   step 'I should see add a diff comment button' do
-    page.should have_css(".js-add-diff-note-button", visible: false)
+    page.should have_css('.js-add-diff-note-button', visible: true)
   end
 
   step 'I should see an empty diff comment form' do
@@ -131,27 +132,28 @@ module SharedDiffNote
 
   step 'I should see the diff comment preview' do
     within("#{diff_file_selector} form") do
-      page.should have_css(".js-note-preview", visible: false)
+      expect(page).to have_css('.js-md-preview', visible: true)
     end
   end
 
-  step 'I should see the diff comment edit button' do
+  step 'I should see the diff comment write tab' do
     within(diff_file_selector) do
-      page.should have_css(".js-note-write-button", visible: true)
+      expect(page).to have_css('.js-md-write-button', visible: true)
     end
   end
 
-  step 'I should see the diff comment preview button' do
+  step 'The diff comment preview tab should display rendered Markdown' do
     within(diff_file_selector) do
-      page.should have_css(".js-note-preview-button", visible: true)
+      find('.js-md-preview-button').click
+      expect(find('.js-md-preview')).to have_css('img.emoji', visible: true)
     end
   end
 
   step 'I should see two separate previews' do
     within(diff_file_selector) do
-      page.should have_css(".js-note-preview", visible: true, count: 2)
-      page.should have_content("Should fix it")
-      page.should have_content("DRY this up")
+      expect(page).to have_css('.js-md-preview', visible: true, count: 2)
+      expect(page).to have_content('Should fix it')
+      expect(page).to have_content('DRY this up')
     end
   end
 

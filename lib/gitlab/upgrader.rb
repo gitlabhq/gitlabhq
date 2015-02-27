@@ -62,7 +62,7 @@ module Gitlab
     end
 
     def env
-      {'RAILS_ENV' => 'production'}
+      { 'RAILS_ENV' => 'production' }
     end
 
     def upgrade

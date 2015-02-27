@@ -1,4 +1,4 @@
-= form_for [@project, @page], method: @page.persisted? ? :put : :post, html: { class: 'form-horizontal wiki-form gfm-form' } do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @page], method: @page.persisted? ? :put : :post, html: { class: 'form-horizontal wiki-form gfm-form' } do |f|
   -if @page.errors.any?
     #error_explanation
       .alert.alert-danger
@@ -19,13 +19,15 @@
         %code [Link Title](page-slug)
         \.
 
-  .form-group
+  .form-group.wiki-content
     = f.label :content, class: 'control-label'
     .col-sm-10
-      = render 'projects/zen', f: f, attr: :content, classes: 'description form-control'
-      .col-sm-12.hint
-        .pull-left Wiki content is parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"), target: '_blank'}
-        .pull-right Attach images (JPG, PNG, GIF) by dragging & dropping or #{link_to "selecting them", '#', class: 'markdown-selector' }.
+      = render layout: 'projects/md_preview', locals: { preview_class: "wiki" } do
+        = render 'projects/zen', f: f, attr: :content, classes: 'description form-control'
+        .col-sm-12.hint
+          .pull-left Wiki content is parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"), target: '_blank'}
+          .pull-right Attach files by dragging &amp; dropping or #{link_to "selecting them", '#', class: 'markdown-selector' }.
+
       .clearfix
       .error-alert
   .form-group
@@ -35,11 +37,10 @@
   .form-actions
     - if @page && @page.persisted?
       = f.submit 'Save changes', class: "btn-save btn"
-      = link_to "Cancel", project_wiki_path(@project, @page), class: "btn btn-cancel"
+      = link_to "Cancel", namespace_project_wiki_path(@project.namespace, @project, @page), class: "btn btn-cancel"
     - else
       = f.submit 'Create page', class: "btn-create btn"
-      = link_to "Cancel", project_wiki_path(@project, :home), class: "btn btn-cancel"
+      = link_to "Cancel", namespace_project_wiki_path(@project.namespace, @project, :home), class: "btn btn-cancel"
 
 :javascript
-  window.project_image_path_upload = "#{upload_image_project_path @project}";
-
+  window.project_uploads_path = "#{namespace_project_uploads_path @project.namespace, @project}";

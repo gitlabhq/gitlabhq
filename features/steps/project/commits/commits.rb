@@ -24,7 +24,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I click on commit link' do
-    visit project_commit_path(@project, sample_commit.id)
+    visit namespace_project_commit_path(@project.namespace, @project, sample_commit.id)
   end
 
   step 'I see commit info' do
@@ -58,7 +58,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
 
   step 'I visit big commit page' do
     Commit::DIFF_SAFE_FILES = 20
-    visit project_commit_path(@project, sample_big_commit.id)
+    visit namespace_project_commit_path(@project.namespace, @project, sample_big_commit.id)
   end
 
   step 'I see big commit warning' do
@@ -68,7 +68,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I visit a commit with an image that changed' do
-    visit project_commit_path(@project, sample_image_commit.id)
+    visit namespace_project_commit_path(@project.namespace, @project, sample_image_commit.id)
   end
 
   step 'The diff links to both the previous and current image' do
@@ -78,14 +78,14 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I click side-by-side diff button' do
-    click_link "Side-by-side Diff"
+    click_link "Side-by-side"
   end
 
   step 'I see side-by-side diff button' do
-    page.should have_content "Side-by-side Diff"
+    page.should have_content "Side-by-side"
   end
 
   step 'I see inline diff button' do
-    page.should have_content "Inline Diff"
+    page.should have_content "Inline"
   end
 end

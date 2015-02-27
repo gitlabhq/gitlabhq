@@ -13,27 +13,32 @@ describe Projects::MergeRequestsController do
   describe "#show" do
     shared_examples "export merge as" do |format|
       it "should generally work" do
-        get :show, project_id: project.to_param, id: merge_request.iid, format: format
+        get(:show, namespace_id: project.namespace.to_param,
+            project_id: project.to_param, id: merge_request.iid, format: format)
 
         expect(response).to be_success
       end
 
       it "should generate it" do
-        MergeRequest.any_instance.should_receive(:"to_#{format}")
+        expect_any_instance_of(MergeRequest).to receive(:"to_#{format}")
 
-        get :show, project_id: project.to_param, id: merge_request.iid, format: format
+        get(:show, namespace_id: project.namespace.to_param,
+            project_id: project.to_param, id: merge_request.iid, format: format)
       end
 
       it "should render it" do
-        get :show, project_id: project.to_param, id: merge_request.iid, format: format
+        get(:show, namespace_id: project.namespace.to_param,
+            project_id: project.to_param, id: merge_request.iid, format: format)
 
         expect(response.body).to eq((merge_request.send(:"to_#{format}",user)).to_s)
       end
 
       it "should not escape Html" do
-        MergeRequest.any_instance.stub(:"to_#{format}").and_return('HTML entities &<>" ')
+        allow_any_instance_of(MergeRequest).to receive(:"to_#{format}").
+          and_return('HTML entities &<>" ')
 
-        get :show, project_id: project.to_param, id: merge_request.iid, format: format
+        get(:show, namespace_id: project.namespace.to_param,
+            project_id: project.to_param, id: merge_request.iid, format: format)
 
         expect(response.body).to_not include('&amp;')
         expect(response.body).to_not include('&gt;')
@@ -47,7 +52,8 @@ describe Projects::MergeRequestsController do
       let(:format) { :diff }
 
       it "should really only be a git diff" do
-        get :show, project_id: project.to_param, id: merge_request.iid, format: format
+        get(:show, namespace_id: project.namespace.to_param,
+            project_id: project.to_param, id: merge_request.iid, format: format)
 
         expect(response.body).to start_with("diff --git")
       end
@@ -58,13 +64,15 @@ describe Projects::MergeRequestsController do
       let(:format) { :patch }
 
       it "should really be a git email patch with commit" do
-        get :show, project_id: project.to_param, id: merge_request.iid, format: format
+        get(:show, namespace_id: project.namespace.to_param,
+            project_id: project.to_param, id: merge_request.iid, format: format)
 
         expect(response.body[0..100]).to start_with("From #{merge_request.commits.last.id}")
       end
 
       it "should contain git diffs" do
-        get :show, project_id: project.to_param, id: merge_request.iid, format: format
+        get(:show, namespace_id: project.namespace.to_param,
+            project_id: project.to_param, id: merge_request.iid, format: format)
 
         expect(response.body).to match(/^diff --git/)
       end

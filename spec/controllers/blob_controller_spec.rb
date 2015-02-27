@@ -9,29 +9,32 @@ describe Projects::BlobController do
 
     project.team << [user, :master]
 
-    project.stub(:branches).and_return(['master', 'foo/bar/baz'])
-    project.stub(:tags).and_return(['v1.0.0', 'v2.0.0'])
+    allow(project).to receive(:branches).and_return(['master', 'foo/bar/baz'])
+    allow(project).to receive(:tags).and_return(['v1.0.0', 'v2.0.0'])
     controller.instance_variable_set(:@project, project)
   end
 
   describe "GET show" do
     render_views
 
-    before { get :show, project_id: project.to_param, id: id }
+    before do
+      get(:show, namespace_id: project.namespace.to_param,
+          project_id: project.to_param, id: id)
+    end
 
     context "valid branch, valid file" do
       let(:id) { 'master/README.md' }
-      it { should respond_with(:success) }
+      it { is_expected.to respond_with(:success) }
     end
 
     context "valid branch, invalid file" do
       let(:id) { 'master/invalid-path.rb' }
-      it { should respond_with(:not_found) }
+      it { is_expected.to respond_with(:not_found) }
     end
 
     context "invalid branch, valid file" do
       let(:id) { 'invalid-branch/README.md' }
-      it { should respond_with(:not_found) }
+      it { is_expected.to respond_with(:not_found) }
     end
   end
 
@@ -39,13 +42,17 @@ describe Projects::BlobController do
     render_views
 
     before do
-      get :show, project_id: project.to_param, id: id
+      get(:show, namespace_id: project.namespace.to_param,
+          project_id: project.to_param, id: id)
       controller.instance_variable_set(:@blob, nil)
     end
 
     context 'redirect to tree' do
       let(:id) { 'markdown/doc' }
-      it { should redirect_to("/#{project.path_with_namespace}/tree/markdown/doc") }
+      it 'redirects' do
+        expect(subject).
+          to redirect_to("/#{project.path_with_namespace}/tree/markdown/doc")
+      end
     end
   end
 end

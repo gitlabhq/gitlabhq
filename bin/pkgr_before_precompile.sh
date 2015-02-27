@@ -18,6 +18,3 @@ rm config/resque.yml
 
 # Set default unicorn.rb file
 echo "" > config/unicorn.rb
-
-# Required for assets precompilation
-sudo service postgresql start

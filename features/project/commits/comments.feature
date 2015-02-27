@@ -14,14 +14,9 @@ Feature: Project Commits Comments
     Then I should not see the cancel comment button
 
   @javascript
-  Scenario: I can't preview without text
-    Given I haven't written any comment text
-    Then I should not see the comment preview button
-
-  @javascript
   Scenario: I can preview with text
-    Given I write a comment like "Nice"
-    Then I should see the comment preview button
+    Given I write a comment like ":+1: Nice"
+    Then The comment preview tab should be display rendered Markdown
 
   @javascript
   Scenario: I preview a comment
@@ -32,7 +27,7 @@ Feature: Project Commits Comments
   @javascript
   Scenario: I can edit after preview
     Given I preview a comment text like "Bug fixed :smile:"
-    Then I should see the comment edit button
+    Then I should see the comment write tab
 
   @javascript
   Scenario: I have a reset form after posting from preview

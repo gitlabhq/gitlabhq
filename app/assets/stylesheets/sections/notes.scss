@@ -36,12 +36,15 @@ ul.notes {
       font-size: 13px;
     }
     .author {
-      color: #555;
+      color: #333;
       font-weight: bold;
       font-size: 14px;
       &:hover {
-        color: $link_hover_color;
+        color: $link_color;
       }
+    }
+    .author-username {
+      font-size: 14px;
     }
   }
 
@@ -58,7 +61,28 @@ ul.notes {
       font-size: 14px;
     }
     .note-body {
-      @include md-typography;
+      overflow: auto;
+      .note-text {
+        overflow: auto;
+        word-wrap: break-word;
+        @include md-typography;
+
+        a[href*="/uploads/"] {
+          &:before {
+            margin-right: 4px;
+            
+            font: normal normal normal 14px/1 FontAwesome;
+            font-size: inherit;
+            text-rendering: auto;
+            -webkit-font-smoothing: antialiased;
+            content: "\f0c6";
+          }
+
+          &:hover:before {
+            text-decoration: none;
+          }
+        }
+      }
     }
     .note-header {
       padding-bottom: 3px;
@@ -73,7 +97,7 @@ ul.notes {
 .diff-file .notes_holder {
   font-size: 13px;
   line-height: 18px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: $regular_font;
 
   td {
     border: 1px solid #ddd;
@@ -152,19 +176,26 @@ ul.notes {
   }
 
   .add-diff-note {
-    background: image-url("diff_note_add.png") no-repeat left 0;
-    border: none;
-    height: 22px;
-    margin-left: -65px;
+    margin-top: -4px;
+    @include border-radius(40px);
+    background: #FFF;
+    padding: 4px;
+    font-size: 16px;
+    color: $link_color;
+    margin-left: -60px;
     position: absolute;
-    width: 22px;
     z-index: 10;
+
+    transition: all 0.2s ease;
 
     // "hide" it by default
     opacity: 0.0;
     filter: alpha(opacity=0);
 
     &:hover {
+      font-size: 24px;
+      background: $bg_primary;
+      color: #FFF;
       @include show-add-diff-note;
     }
   }
@@ -179,179 +210,3 @@ ul.notes {
   }
 }
 
-/**
- * Note Form
- */
-
-.comment-btn {
-  @extend .btn-create;
-}
-.reply-btn {
-  @extend .btn-primary;
-}
-.diff-file .diff-content {
-  tr.line_holder:hover {
-    &> td.line_content {
-      background: $hover !important;
-      border-color: darken($hover, 10%) !important;
-    }
-    &> td.new_line,
-    &> td.old_line {
-      background: darken($hover, 4%) !important;
-      border-color: darken($hover, 10%) !important;
-    }
-  }
-
-  tr.line_holder:hover > td .line_note_link {
-    opacity: 1.0;
-    filter: alpha(opacity=100);
-  }
-}
-.diff-file,
-.discussion {
-  .new_note {
-    margin: 0;
-    border: none;
-  }
-}
-.new_note {
-  display: none;
-  .buttons {
-    float: left;
-    margin-top: 8px;
-  }
-  .clearfix {
-    margin-bottom: 0;
-  }
-
-  .note-preview-holder,
-  .note_text {
-    background: #FFF;
-    border: 1px solid #ddd;
-    min-height: 100px;
-    padding: 5px;
-    font-size: 14px;
-    box-shadow: none;
-  }
-
-  .note-preview-holder {
-    > p {
-      overflow-x: auto;
-    }
-  }
-
-  .note_text {
-    width: 100%;
-  }
-  .nav-tabs {
-    margin-bottom: 0;
-    border: none;
-
-    li a,
-    li.active a {
-      border: 1px solid #DDD;
-    }
-  }
-}
-
-/* loading indicator */
-.notes-busy {
-  margin: 18px;
-}
-
-.note-image-attach {
-  @extend .col-md-4;
-  @extend .thumbnail;
-  margin-left: 45px;
-  float: none;
-}
-
-.common-note-form {
-  margin: 0;
-  background: #F9F9F9;
-  padding: 5px;
-  border: 1px solid #DDD;
-}
-
-.note-form-actions {
-  background: #F9F9F9;
-  height: 45px;
-
-  .note-form-option {
-    margin-top: 8px;
-    margin-left: 30px;
-    @extend .pull-left;
-  }
-
-  .js-notify-commit-author {
-    float: left;
-  }
-
-  .write-preview-btn {
-    // makes the "absolute" position for links relative to this
-    position: relative;
-
-    // preview/edit buttons
-    > a {
-      position: absolute;
-      right: 5px;
-      top: 8px;
-    }
-  }
-}
-
-.note-edit-form {
-  display: none;
-
-  .note_text {
-    border: 1px solid #DDD;
-    box-shadow: none;
-    font-size: 14px;
-    height: 80px;
-    width: 100%;
-  }
-
-  .form-actions {
-    padding-left: 20px;
-
-    .btn-save {
-      float: left;
-    }
-
-    .note-form-option {
-      float: left;
-      padding: 2px 0 0 25px;
-    }
-  }
-}
-
-.js-note-attachment-delete {
-  display: none;
-}
-
-.parallel-comment {
-  padding: 6px;
-}
-
-.error-alert > .alert {
-  margin-top: 5px;
-  margin-bottom: 5px;
-}
-
-.discussion-body,
-.diff-file {
-  .notes .note {
-    border-color: #ddd;
-    padding: 10px 15px;
-  }
-
-  .discussion-reply-holder {
-    background: #f9f9f9;
-    padding: 10px 15px;
-    border-top: 1px solid #DDD;
-  }
-}
-
-.discussion-notes-count {
-  font-size: 16px;
-}

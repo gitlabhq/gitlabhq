@@ -1,14 +1,17 @@
 - blob = project.repository.blob_for_diff(@commit, diff_file.diff)
 - return unless blob
-- blob_diff_path = diff_project_blob_path(project, tree_join(@commit.id, diff_file.file_path))
+- blob_diff_path = namespace_project_blob_diff_path(project.namespace, project, tree_join(@commit.id, diff_file.file_path))
 .diff-file{id: "diff-#{i}", data: {blob_diff_path: blob_diff_path }}
   .diff-header{id: "file-path-#{hexdigest(diff_file.new_path || diff_file.old_path)}"}
     - if diff_file.deleted_file
-      %span= diff_file.old_path
+      %span="#{diff_file.old_path} deleted"
 
       .diff-btn-group
         - if @commit.parent_ids.present?
           = view_file_btn(@commit.parent_id, diff_file, project)
+    - elsif diff_file.diff.submodule?
+      - submodule_item = project.repository.blob_at(@commit.id, diff_file.file_path)
+      = submodule_link(submodule_item, @commit.id)
     - else
       - if diff_file.renamed_file
         %span= "#{diff_file.old_path} renamed to #{diff_file.new_path}"
@@ -26,13 +29,13 @@
           &nbsp;
           = link_to '#', class: 'js-toggle-diff-comments btn btn-small' do
             %i.fa.fa-chevron-down
-            Diff comments
+            Show/Hide comments
           &nbsp;
 
         - if @merge_request && @merge_request.source_project
-          = link_to project_edit_tree_path(@merge_request.source_project, tree_join(@merge_request.source_branch, diff_file.new_path), from_merge_request_id: @merge_request.id), { class: 'btn btn-small' } do
-            Edit
-          &nbsp;
+          = edit_blob_link(@merge_request.source_project,
+              @merge_request.source_branch, diff_file.new_path,
+              after: '&nbsp;', from_merge_request_id: @merge_request.id)
 
         = view_file_btn(@commit.id, diff_file, project)
 

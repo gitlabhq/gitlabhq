@@ -13,7 +13,7 @@ To enable the Twitter OmniAuth provider you must register your application with 
     something else descriptive.
     - Description: Create a description.
     - Website: The URL to your GitLab installation. 'https://gitlab.example.com'
-    - Callback URL: 'https://gitlab.example.com/users/auth/github/callback'
+    - Callback URL: 'https://gitlab.example.com/users/auth/twitter/callback'
     - Agree to the "Rules of the Road."
 
     ![Twitter App Details](twitter_app_details.png)
@@ -33,25 +33,46 @@ To enable the Twitter OmniAuth provider you must register your application with 
 
 1.  On your GitLab server, open the configuration file.
 
+    For omnibus package:
+
     ```sh
-    cd /home/git/gitlab
-
-    sudo -u git -H editor config/gitlab.yml
+      sudo editor /etc/gitlab/gitlab.rb
     ```
 
-1.  Find the section dealing with OmniAuth. See [Initial OmniAuth Configuration](README.md#initial-omniauth-configuration)
-for more details.
+    For instalations from source:
 
-1.  Under `providers:` uncomment (or add) lines that look like the following:
+    ```sh
+      cd /home/git/gitlab
 
-    ```
-       - { name: 'twitter', app_id: 'YOUR APP ID',
-         app_secret: 'YOUR APP SECRET' }
+      sudo -u git -H editor config/gitlab.yml
     ```
 
-1.  Change 'YOUR APP ID' to the API key from Twitter page in step 11.
+1.  See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration) for initial settings.
 
-1.  Change 'YOUR APP SECRET' to the API secret from the Twitter page in step 11.
+1.  Add the provider configuration:
+
+    For omnibus package:
+
+    ```ruby
+      gitlab_rails['omniauth_providers'] = [
+        {
+          "name" => "twitter",
+          "app_id" => "YOUR_APP_ID",
+          "app_secret" => "YOUR_APP_SECRET"
+        }
+      ]
+    ```
+
+    For installations from source:
+
+    ```
+      - { name: 'twitter', app_id: 'YOUR_APP_ID',
+        app_secret: 'YOUR_APP_SECRET' }
+    ```
+
+1.  Change 'YOUR_APP_ID' to the API key from Twitter page in step 11.
+
+1.  Change 'YOUR_APP_SECRET' to the API secret from the Twitter page in step 11.
 
 1.  Save the configuration file.
 

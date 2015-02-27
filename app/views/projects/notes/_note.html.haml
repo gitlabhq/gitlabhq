@@ -1,7 +1,10 @@
-%li.timeline-entry{ id: dom_id(note), class: dom_class(note), data: { discussion: note.discussion_id } }
+%li.timeline-entry{ id: dom_id(note), class: [dom_class(note), "note-row-#{note.id}", ('system-note' if note.system)], data: { discussion: note.discussion_id } }
   .timeline-entry-inner
     .timeline-icon
-      = image_tag avatar_icon(note.author_email), class: "avatar s40"
+      - if note.system
+        %span.fa.fa-circle
+      - else
+        = image_tag avatar_icon(note.author_email), class: "avatar s40"
     .timeline-content
       .note-header
         .note-actions
@@ -14,56 +17,53 @@
               %i.fa.fa-pencil-square-o
               Edit
             &nbsp;
-            = link_to project_note_path(@project, note), title: "Remove comment", method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: "danger js-note-delete" do
+            = link_to namespace_project_note_path(@project.namespace, @project, note), title: "Remove comment", method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: "danger js-note-delete" do
               %i.fa.fa-trash-o.cred
               Remove
+        - if note.system
+          = image_tag avatar_icon(note.author_email), class: "avatar s16"
         = link_to_member(@project, note.author, avatar: false)
+        %span.author-username
+          = '@' + note.author.username
         %span.note-last-update
           = note_timestamp(note)
 
-        - if note.upvote?
-          %span.vote.upvote.label.label-success
-            %i.fa.fa-thumbs-up
-            \+1
-        - if note.downvote?
-          %span.vote.downvote.label.label-danger
-            %i.fa.fa-thumbs-down
-            \-1
+        - if note.superceded?(@notes)
+          - if note.upvote?
+            %span.vote.upvote.label.label-gray.strikethrough
+              %i.fa.fa-thumbs-up
+              \+1
+          - if note.downvote?
+            %span.vote.downvote.label.label-gray.strikethrough
+              %i.fa.fa-thumbs-down
+              \-1
+        - else
+          - if note.upvote?
+            %span.vote.upvote.label.label-success
+              %i.fa.fa-thumbs-up
+              \+1
+          - if note.downvote?
+            %span.vote.downvote.label.label-danger
+              %i.fa.fa-thumbs-down
+              \-1
 
 
       .note-body
         .note-text
           = preserve do
             = markdown(note.note, {no_header_anchors: true})
-
-        .note-edit-form
-          = form_for note, url: project_note_path(@project, note), method: :put, remote: true, authenticity_token: true do |f|
-            = f.text_area :note, class: 'note_text js-note-text js-gfm-input turn-on'
-
-            .form-actions.clearfix
-              = f.submit 'Save changes', class: "btn btn-primary btn-save js-comment-button"
-
-              .note-form-option
-                %a.choose-btn.btn.js-choose-note-attachment-button
-                  %i.fa.fa-paperclip
-                  %span Choose File ...
-                &nbsp;
-                %span.file_name.js-attachment-filename File name...
-                = f.file_field :attachment, class: "js-note-attachment-input hidden"
-
-              = link_to  'Cancel', "#", class: "btn btn-cancel note-edit-cancel"
-
+        = render 'projects/notes/edit_form', note: note
 
       - if note.attachment.url
         .note-attachment
           - if note.attachment.image?
-            = link_to note.attachment.secure_url, target: '_blank' do
-              = image_tag note.attachment.secure_url, class: 'note-image-attach'
-          .attachment.pull-right
-            = link_to note.attachment.secure_url, target: "_blank" do
+            = link_to note.attachment.url, target: '_blank' do
+              = image_tag note.attachment.url, class: 'note-image-attach'
+          .attachment
+            = link_to note.attachment.url, target: "_blank" do
               %i.fa.fa-paperclip
               = note.attachment_identifier
-              = link_to delete_attachment_project_note_path(@project, note),
+              = link_to delete_attachment_namespace_project_note_path(@project.namespace, @project, note),
                 title: "Delete this attachment", method: :delete, remote: true, data: { confirm: 'Are you sure you want to remove the attachment?' }, class: "danger js-note-attachment-delete" do
                 %i.fa.fa-trash-o.cred
       .clear

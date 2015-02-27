@@ -15,20 +15,20 @@
           %tr
             %td.blame-commit
               %span.commit
-                = link_to commit.short_id, project_commit_path(@project, commit), class: "commit_short_id"
+                = link_to commit.short_id, namespace_project_commit_path(@project.namespace, @project, commit), class: "commit_short_id"
                 &nbsp;
                 = commit_author_link(commit, avatar: true, size: 16)
                 &nbsp;
-                = link_to_gfm truncate(commit.title, length: 20), project_commit_path(@project, commit.id), class: "row_title"
+                = link_to_gfm truncate(commit.title, length: 20), namespace_project_commit_path(@project.namespace, @project, commit.id), class: "row_title"
             %td.lines.blame-numbers
               %pre
                 - (since...(since + lines.count)).each do |i|
                   = i
                   \
             %td.lines
-              %pre
-                %code{ class: highlightjs_class(@blob.name) }
+              %pre{class: 'code highlight white'}
+                %code
                   :erb
                     <% lines.each do |line| %>
-                    <%= line %>
+                      <%= highlight(@blob.name, line.force_encoding("utf-8"), true).html_safe %>
                     <% end %>

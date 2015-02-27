@@ -1,6 +1,6 @@
 ![GitLab Flow](gitlab_flow.png)
 
-# Introduction
+## Introduction
 
 Version management with git makes branching and merging much easier than older versioning systems such as SVN.
 This allows a wide variety of branching strategies and workflows.
@@ -29,9 +29,9 @@ People have a hard time figuring out which branch they should develop on or depl
 Frequently the reaction to this problem is to adopt a standardized pattern such as [git flow](http://nvie.com/posts/a-successful-git-branching-model/) and [GitHub flow](http://scottchacon.com/2011/08/31/github-flow.html)
 We think there is still room for improvement and will detail a set of practices we call GitLab flow.
 
-# Git flow and its problems
+## Git flow and its problems
 
-[![Git Flow timeline by Vincent Driessen, used with persmission](gitdashflow.png)
+[![Git Flow timeline by Vincent Driessen, used with permission](gitdashflow.png)
 
 Git flow was one of the first proposals to use git branches and it has gotten a lot of attention.
 It advocates a master branch and a separate develop branch as well as supporting branches for features, releases and hotfixes.
@@ -43,14 +43,14 @@ Since most tools automatically make the master branch the default one and displa
 The second problem of git flow is the complexity introduced by the hotfix and release branches.
 These branches can be a good idea for some organizations but are overkill for the vast majority of them.
 Nowadays most organizations practice continuous delivery which means that your default branch can be deployed.
-This means that hotfixed and release branches can be prevented including all the ceremony they introduce.
+This means that hotfix and release branches can be prevented including all the ceremony they introduce.
 An example of this ceremony is the merging back of release branches.
 Though specialized tools do exist to solve this, they require documentation and add complexity.
 Frequently developers make a mistake and for example changes are only merged into master and not into the develop branch.
 The root cause of these errors is that git flow is too complex for most of the use cases.
 And doing releases doesn't automatically mean also doing hotfixes.
 
-# GitHub flow as a simpler alternative
+## GitHub flow as a simpler alternative
 
 ![Master branch with feature branches merged in](github_flow.png)
 
@@ -62,13 +62,13 @@ Merging everything into the master branch and deploying often means you minimize
 But this flow still leaves a lot of questions unanswered regarding deployments, environments, releases and integrations with issues.
 With GitLab flow we offer additional guidance for these questions.
 
-# Production branch with GitLab flow
+## Production branch with GitLab flow
 
 ![Master branch and production branch with arrow that indicate deployments](production_branch.png)
 
 GitHub flow does assume you are able to deploy to production every time you merge a feature branch.
 This is possible for SaaS applications but are many cases where this is not possible.
-One would be a situation where you are not in control of the exact release moment, for example an iOS application that needs to pass AppStore validation.
+One would be a situation where you are not in control of the exact release moment, for example an iOS application that needs to pass App Store validation.
 Another example is when you have deployment windows (workdays from 10am to 4pm when the operations team is at full capacity) but you also merge code at other times.
 In these cases you can make a production branch that reflects the deployed code.
 You can deploy a new version by merging in master to the production branch.
@@ -78,7 +78,7 @@ This time is pretty accurate if you automatically deploy your production branch.
 If you need a more exact time you can have your deployment script create a tag on each deployment.
 This flow prevents the overhead of releasing, tagging and merging that is common to git flow.
 
-# Environment branches with GitLab flow
+## Environment branches with GitLab flow
 
 ![Multiple branches with the code cascading from one to another](environment_branches.png)
 
@@ -93,14 +93,14 @@ If master is good to go (it should be if you a practicing [continuous delivery](
 If this is not possible because more manual testing is required you can send merge requests from the feature branch to the downstream branches.
 An 'extreme' version of environment branches are setting up an environment for each feature branch as done by [Teatro](http://teatro.io/).
 
-# Release branches with GitLab flow
+## Release branches with GitLab flow
 
-![Master and multiple release branches that vary in length with cherrypicks from master](release_branches.png)
+![Master and multiple release branches that vary in length with cherry-picks from master](release_branches.png)
 
 Only in case you need to release software to the outside world you need to work with release branches.
 In this case, each branch contains a minor version (2-3-stable, 2-4-stable, etc.).
 The stable branch uses master as a starting point and is created as late as possible.
-By branching as late as possible you minimize the time you have to apply bugfixes to multiple branches.
+By branching as late as possible you minimize the time you have to apply bug fixes to multiple branches.
 After a release branch is announced, only serious bug fixes are included in the release branch.
 If possible these bug fixes are first merged into master and then cherry-picked into the release branch.
 This way you can't forget to cherry-pick them into master and encounter the same bug on subsequent releases.
@@ -109,7 +109,7 @@ Every time a bug-fix is included in a release branch the patch version is raised
 Some projects also have a stable branch that points to the same commit as the latest released branch.
 In this flow it is not common to have a production branch (or git flow master branch).
 
-# Merge/pull requests with GitLab flow
+## Merge/pull requests with GitLab flow
 
 ![Merge request with line comments](mr_inline_comments.png)
 
@@ -134,7 +134,7 @@ If the assigned person does not feel comfortable they can close the merge reques
 In GitLab it is common to protect the long-lived branches (e.g. the master branch) so that normal developers [can't modify these protected branches](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/permissions/permissions.md).
 So if you want to merge it into a protected branch you assign it to someone with master authorizations.
 
-# Issues with GitLab flow
+## Issues with GitLab flow
 
 ![Merge request with the branch name 15-require-a-password-to-change-it and assignee field shown](merge_request.png)
 
@@ -168,7 +168,7 @@ In this case it is no problem to reuse the same branch name since it was deleted
 At any time there is at most one branch for every issue.
 It is possible that one feature branch solves more than one issue.
 
-# Linking and closing issues from merge requests
+## Linking and closing issues from merge requests
 
 ![Merge request showing the linked issues that will be closed](close_issue_mr.png)
 
@@ -177,11 +177,11 @@ In GitLab this creates a comment in the issue that the merge requests mentions t
 And the merge request shows the linked issues.
 These issues are closed once code is merged into the default branch.
 
-If you only want to make the reference without closing the issue you can also just mention it: "Ducktyping is preferred. #12".
+If you only want to make the reference without closing the issue you can also just mention it: "Duck typing is preferred. #12".
 
 If you have an issue that spans across multiple repositories, the best thing is to create an issue for each repository and link all issues to a parent issue.
 
-# Squashing commits with rebase
+## Squashing commits with rebase
 
 ![Vim screen showing the rebase view](rebase.png)
 
@@ -189,7 +189,7 @@ With git you can use an interactive rebase (rebase -i) to squash multiple commit
 This functionality is useful if you made a couple of commits for small changes during development and want to replace them with a single commit or if you want to make the order more logical.
 However you should never rebase commits you have pushed to a remote server.
 Somebody can have referred to the commits or cherry-picked them.
-When you rebase you change the identifier (SHA1) of the commit and this is confusing.
+When you rebase you change the identifier (SHA-1) of the commit and this is confusing.
 If you do that the same change will be known under multiple identifiers and this can cause much confusion.
 If people already reviewed your code it will be hard for them to review only the improvements you made since then if you have rebased everything into one commit.
 
@@ -207,7 +207,7 @@ If you revert a merge and you change your mind, revert the revert instead of mer
 Being able to revert a merge is a good reason always to create a merge commit when you merge manually with the `--no-ff` option.
 Git management software will always create a merge commit when you accept a merge request.
 
-# Do not order commits with rebase
+## Do not order commits with rebase
 
 ![List of sequential merge commits](merge_commits.png)
 
@@ -231,8 +231,8 @@ The last reason for creating merge commits is having long lived branches that yo
 Martin Fowler, in [his article about feature branches](http://martinfowler.com/bliki/FeatureBranch.html) talks about this Continuous Integration (CI).
 At GitLab we are guilty of confusing CI with branch testing. Quoting Martin Fowler: "I've heard people say they are doing CI because they are running builds, perhaps using a CI server, on every branch with every commit.
 That's continuous building, and a Good Thing, but there's no integration, so it's not CI.".
-The solution to prevent many merge commits is to keep your feature branches shortlived, the vast majority should take less than one day of work.
-If your feature branches commenly take more than a day of work, look into ways to create smaller units of work and/or use [feature toggles](http://martinfowler.com/bliki/FeatureToggle.html).
+The solution to prevent many merge commits is to keep your feature branches short-lived, the vast majority should take less than one day of work.
+If your feature branches commonly take more than a day of work, look into ways to create smaller units of work and/or use [feature toggles](http://martinfowler.com/bliki/FeatureToggle.html).
 As for the long running branches that take more than one day there are two strategies.
 In a CI strategy you can merge in master at the start of the day to prevent painful merges at a later time.
 In a synchronization point strategy you only merge in from well defined points in time, for example a tagged release.
@@ -244,7 +244,7 @@ Developing software happen in small messy steps and it is OK to have your histor
 You can use tools to view the network graphs of commits and understand the messy history that created your code.
 If you rebase code the history is incorrect, and there is no way for tools to remedy this because they can't deal with changing commit identifiers.
 
-# Voting on merge requests
+## Voting on merge requests
 
 ![Voting slider in GitLab](voting_slider.png)
 
@@ -252,7 +252,7 @@ It is common to voice approval or disapproval by using +1 or -1 emoticons.
 In GitLab the +1 and -1 are aggregated and shown at the top of the merge request.
 As a rule of thumb anything that doesn't have two times more +1's than -1's is suspect and should not be merged yet.
 
-# Pushing and removing branches
+## Pushing and removing branches
 
 ![Remove checkbox for branch in merge requests](remove_checkbox.png)
 
@@ -266,7 +266,7 @@ This ensures that the branch overview in the repository management software show
 This also ensures that when someone reopens the issue a new branch with the same name can be used without problem.
 When you reopen an issue you need to create a new merge request.
 
-# Committing often and with the right message
+## Committing often and with the right message
 
 ![Good and bad commit message](good_commit.png)
 
@@ -282,7 +282,7 @@ Some words that are bad commit messages because they don't contain munch informa
 The word fix or fixes is also a red flag, unless it comes after the commit sentence and references an issue number.
 To see more information about the formatting of commit messages please see this great [blog post by Tim Pope](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
 
-# Testing before merging
+## Testing before merging
 
 ![Merge requests showing the test states, red, yellow and green](ci_mr.png)
 
@@ -299,7 +299,7 @@ If there are no merge conflicts and the feature branches are short lived the ris
 If there are merge conflicts you merge the master branch into the feature branch and the CI server will rerun the tests.
 If you have long lived feature branches that last for more than a few days you should make your issues smaller.
 
-# Merging in other code
+## Merging in other code
 
 ![Shell output showing git pull output](git_pull.png)
 

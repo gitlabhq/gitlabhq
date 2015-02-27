@@ -28,7 +28,6 @@ Feature: Explore Groups
     Given group "TestGroup" has internal project "Internal"
     When I sign in as a user
     And I visit group "TestGroup" issues page
-    And I change filter to Everyone's
     Then I should see project "Internal" items
     And I should not see project "Enterprise" items
 
@@ -36,7 +35,6 @@ Feature: Explore Groups
     Given group "TestGroup" has internal project "Internal"
     When I sign in as a user
     And I visit group "TestGroup" merge requests page
-    And I change filter to Everyone's
     Then I should see project "Internal" items
     And I should not see project "Enterprise" items
 
@@ -94,7 +92,6 @@ Feature: Explore Groups
     Given group "TestGroup" has public project "Community"
     When I sign in as a user
     And I visit group "TestGroup" issues page
-    And I change filter to Everyone's
     Then I should see project "Community" items
     And I should see project "Internal" items
     And I should not see project "Enterprise" items
@@ -104,7 +101,6 @@ Feature: Explore Groups
     Given group "TestGroup" has public project "Community"
     When I sign in as a user
     And I visit group "TestGroup" merge requests page
-    And I change filter to Everyone's
     Then I should see project "Community" items
     And I should see project "Internal" items
     And I should not see project "Enterprise" items

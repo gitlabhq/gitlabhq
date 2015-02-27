@@ -1,7 +1,7 @@
 = render 'nav'
 %h3.page-title
   %span.light History for
-  = link_to @page.title, project_wiki_path(@project, @page)
+  = link_to @page.title, namespace_project_wiki_path(@project.namespace, @project, @page)
 
 %table.table
   %thead
@@ -12,18 +12,19 @@
       %th Last updated
       %th Format
   %tbody
-    - @page.versions.each do |version|
+    - @page.versions.each_with_index do |version, index|
       - commit = version
       %tr
         %td
-          = link_to project_wiki_path(@project, @page, version_id: commit.id) do
+          = link_to project_wiki_path_with_version(@project, @page,
+                                                   commit.id, index == 0) do
             = truncate_sha(commit.id)
         %td
           = commit.author.name
         %td
           = commit.message
         %td
-          #{time_ago_with_tooltip(version.date)}
+          #{time_ago_with_tooltip(version.authored_date)}
         %td
           %strong
             = @page.page.wiki.page(@page.page.name, commit.id).try(:format)

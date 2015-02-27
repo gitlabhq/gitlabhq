@@ -5,11 +5,12 @@
 #  id         :integer          not null, primary key
 #  type       :string(255)
 #  title      :string(255)
-#  project_id :integer          not null
+#  project_id :integer
 #  created_at :datetime
 #  updated_at :datetime
 #  active     :boolean          default(FALSE), not null
 #  properties :text
+#  template   :boolean          default(FALSE)
 #
 
 require "gemnasium/gitlab_service"
@@ -38,14 +39,13 @@ class GemnasiumService < Service
   end
 
   def execute(push_data)
-    repo_path = File.join(Gitlab.config.gitlab_shell.repos_path, "#{project.path_with_namespace}.git")
     Gemnasium::GitlabService.execute(
       ref: push_data[:ref],
       before: push_data[:before],
       after: push_data[:after],
       token: token,
       api_key: api_key,
-      repo: repo_path
+      repo: project.repository.path_to_repo
       )
   end
 end

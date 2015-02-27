@@ -1,25 +1,9 @@
-.issue-box{ class: issue_box_class(@merge_request) }
-  .state.clearfix
-    .state-label
-      - if @merge_request.merged?
-        Merged
-      - elsif @merge_request.closed?
-        Closed
-      - else
-        Open
+%h2.issue-title
+  = gfm escape_once(@merge_request.title)
 
-    .creator
-      Created by #{link_to_member(@project, @merge_request.author)} #{time_ago_with_tooltip(@merge_request.created_at)}
-
-  %h4.title
-    = gfm escape_once(@merge_request.title)
-
+%div
   - if @merge_request.description.present?
     .description
       .wiki
         = preserve do
           = markdown(@merge_request.description, parse_tasks: true)
-
-  .context
-    %cite.cgray
-      = render partial: 'projects/merge_requests/show/context', locals: { merge_request: @merge_request }

@@ -5,11 +5,12 @@
 #  id         :integer          not null, primary key
 #  type       :string(255)
 #  title      :string(255)
-#  project_id :integer          not null
+#  project_id :integer
 #  created_at :datetime
 #  updated_at :datetime
 #  active     :boolean          default(FALSE), not null
 #  properties :text
+#  template   :boolean          default(FALSE)
 #
 
 class PushoverService < Service
@@ -80,9 +81,9 @@ class PushoverService < Service
     before = push_data[:before]
     after = push_data[:after]
 
-    if before =~ /000000/
+    if before.include?('000000')
       message = "#{push_data[:user_name]} pushed new branch \"#{ref}\"."
-    elsif after =~ /000000/
+    elsif after.include?('000000')
       message = "#{push_data[:user_name]} deleted branch \"#{ref}\"."
     else
       message = "#{push_data[:user_name]} push to branch \"#{ref}\"."

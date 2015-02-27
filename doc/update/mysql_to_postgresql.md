@@ -1,4 +1,5 @@
 # Migrating GitLab from MySQL to Postgres
+*Make sure you view this [guide from the `master` branch](../../../master/doc/update/mysql_to_postgresql.md) for the most up to date instructions.*
 
 If you are replacing MySQL with Postgres while keeping GitLab on the same server all you need to do is to export from MySQL, import into Postgres and rebuild the indexes as described below. If you are also moving GitLab to another server, or if you are switching to omnibus-gitlab, you may want to use a GitLab backup file. The second part of this documents explains the procedure to do this.
 
@@ -13,7 +14,7 @@ sudo service gitlab stop
 
 git clone https://github.com/gitlabhq/mysql-postgresql-converter.git
 cd mysql-postgresql-converter
-mysqldump --compatible=postgresql --default-character-set=utf8 -r databasename.mysql -u root gitlabhq_production
+mysqldump --compatible=postgresql --default-character-set=utf8 -r databasename.mysql -u root gitlabhq_production -p
 python db_converter.py databasename.mysql databasename.psql
 
 # Import the database dump as the application database user
@@ -94,7 +95,7 @@ sudo -u git -H mv tmp/backups/TIMESTAMP_gitlab_backup.tar tmp/backups/postgresql
 
 # Create a separate database dump with PostgreSQL compatibility
 cd tmp/backups/postgresql
-sudo -u git -H mysqldump --compatible=postgresql --default-character-set=utf8 -r gitlabhq_production.mysql -u root gitlabhq_production
+sudo -u git -H mysqldump --compatible=postgresql --default-character-set=utf8 -r gitlabhq_production.mysql -u root gitlabhq_production -p
 
 # Clone the database converter
 sudo -u git -H git clone https://github.com/gitlabhq/mysql-postgresql-converter.git

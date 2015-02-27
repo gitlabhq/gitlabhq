@@ -4,7 +4,7 @@
 %div
   .dashboard-intro-icon
     %i.fa.fa-bookmark-o
-  %div
+  .dashboard-intro-text
     %p.slead
       You don't have access to any projects right now.
       %br
@@ -17,28 +17,30 @@
     - if current_user.can_create_project?
       .link_holder
         = link_to new_project_path, class: "btn btn-new" do
-          New project »
+          %i.fa.fa-plus
+          New Project
 
 - if current_user.can_create_group?
   %hr
   %div
     .dashboard-intro-icon
       %i.fa.fa-users
-    %div
+    .dashboard-intro-text
       %p.slead
         You can create a group for several dependent projects.
         %br
         Groups are the best way to manage projects and members.
       .link_holder
         = link_to new_group_path, class: "btn btn-new" do
-          New group »
+          %i.fa.fa-plus
+          New Group
 
 -if @publicish_project_count > 0
   %hr
   %div
     .dashboard-intro-icon
       %i.fa.fa-globe
-    %div
+    .dashboard-intro-text
       %p.slead
         There are
         %strong= @publicish_project_count
@@ -47,4 +49,4 @@
         Public projects are an easy way to allow everyone to have read-only access.
       .link_holder
         = link_to trending_explore_projects_path, class: "btn btn-new" do
-          Browse public projects »
+          Browse public projects

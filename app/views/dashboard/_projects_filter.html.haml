@@ -1,55 +1,100 @@
-%fieldset
-  %ul.nav.nav-pills.nav-stacked
-    = nav_tab :scope, nil do
-      = link_to projects_dashboard_filter_path(scope: nil) do
-        All
-        %span.pull-right
-          = current_user.authorized_projects.count
-    = nav_tab :scope, 'personal' do
-      = link_to projects_dashboard_filter_path(scope: 'personal') do
-        Personal
-        %span.pull-right
-          = current_user.personal_projects.count
-    = nav_tab :scope, 'joined' do
-      = link_to projects_dashboard_filter_path(scope: 'joined') do
-        Joined
-        %span.pull-right
-          = current_user.authorized_projects.joined(current_user).count
-    = nav_tab :scope, 'owned' do
-      = link_to projects_dashboard_filter_path(scope: 'owned') do
-        Owned
-        %span.pull-right
-          = current_user.owned_projects.count
+.dash-projects-filters.append-bottom-20
+  .append-right-20
+    %ul.nav.nav-tabs
+      = nav_tab :scope, nil do
+        = link_to projects_dashboard_filter_path(scope: nil) do
+          All
+      = nav_tab :scope, 'personal' do
+        = link_to projects_dashboard_filter_path(scope: 'personal') do
+          Personal
+      = nav_tab :scope, 'joined' do
+        = link_to projects_dashboard_filter_path(scope: 'joined') do
+          Joined
+      = nav_tab :scope, 'owned' do
+        = link_to projects_dashboard_filter_path(scope: 'owned') do
+          Owned
 
-%fieldset
-  %legend Visibility
-  %ul.nav.nav-pills.nav-stacked.nav-small.visibility-filter
-    - Gitlab::VisibilityLevel.values.each do |level|
-      %li{ class: (level.to_s == params[:visibility_level]) ? 'active' : 'light' }
-        = link_to projects_dashboard_filter_path(visibility_level: level) do
-          = visibility_level_icon(level)
-          = visibility_level_label(level)
+  .dropdown.inline.append-right-10
+    %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+      %i.fa.fa-globe
+      %span.light Visibility:
+      - if params[:visibility_level].present?
+        = visibility_level_label(params[:visibility_level].to_i)
+      - else
+        Any
+      %b.caret
+    %ul.dropdown-menu
+      %li
+        = link_to projects_dashboard_filter_path(visibility_level: nil) do
+          Any
+      - Gitlab::VisibilityLevel.values.each do |level|
+        %li{ class: (level.to_s == params[:visibility_level]) ? 'active' : 'light' }
+          = link_to projects_dashboard_filter_path(visibility_level: level) do
+            = visibility_level_icon(level)
+            = visibility_level_label(level)
 
-- if @groups.present?
-  %fieldset
-    %legend Groups
-    %ul.nav.nav-pills.nav-stacked.nav-small
-      - @groups.each do |group|
-        %li{ class: (group.name == params[:group]) ? 'active' : 'light' }
-          = link_to projects_dashboard_filter_path(group: group.name) do
-            %i.fa.fa-folder-o
-            = group.name
-            %small.pull-right
-              = group.projects.count
+  - if @groups.present?
+    .dropdown.inline.append-right-10
+      %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+        %i.fa.fa-group
+        %span.light Group:
+        - if params[:group].present?
+          = Group.find_by(name: params[:group]).name
+        - else
+          Any
+        %b.caret
+      %ul.dropdown-menu
+        %li
+          = link_to projects_dashboard_filter_path(group: nil) do
+            Any
+        - @groups.each do |group|
+          %li{ class: (group.name == params[:group]) ? 'active' : 'light' }
+            = link_to projects_dashboard_filter_path(group: group.name) do
+              = group.name
+              %small.pull-right
+                = group.projects.count
 
 
 
-- if @tags.present?
-  %fieldset
-    %legend Tags
-    %ul.nav.nav-pills.nav-stacked.nav-small
-      - @tags.each do |tag|
-        %li{ class: (tag.name == params[:tag]) ? 'active' : 'light' }
-          = link_to projects_dashboard_filter_path(scope: params[:scope], tag: tag.name) do
-            %i.fa.fa-tag
-            = tag.name
+  - if @tags.present?
+    .dropdown.inline.append-right-10
+      %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+        %i.fa.fa-tags
+        %span.light Tags:
+        - if params[:tag].present?
+          = params[:tag]
+        - else
+          Any
+        %b.caret
+      %ul.dropdown-menu
+        %li
+          = link_to projects_dashboard_filter_path(tag: nil) do
+            Any
+
+        - @tags.each do |tag|
+          %li{ class: (tag.name == params[:tag]) ? 'active' : 'light' }
+            = link_to projects_dashboard_filter_path(tag: tag.name) do
+              %i.fa.fa-tag
+              = tag.name
+
+  .pull-right
+    .dropdown.inline
+      %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+        %span.light sort:
+        - if @sort.present?
+          = sort_options_hash[@sort]
+        - else
+          = sort_title_recently_created
+        %b.caret
+      %ul.dropdown-menu
+        %li
+          = link_to projects_dashboard_filter_path(sort: sort_value_recently_created) do
+            = sort_title_recently_created
+          = link_to projects_dashboard_filter_path(sort: sort_value_oldest_created) do
+            = sort_title_oldest_created
+          = link_to projects_dashboard_filter_path(sort: sort_value_recently_updated) do
+            = sort_title_recently_updated
+          = link_to projects_dashboard_filter_path(sort: sort_value_oldest_updated) do
+            = sort_title_oldest_updated
+          = link_to projects_dashboard_filter_path(sort: sort_value_name) do
+            = sort_title_name

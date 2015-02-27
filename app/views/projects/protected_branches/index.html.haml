@@ -11,7 +11,7 @@
   %p Read more about #{link_to "project permissions", help_page_path("permissions", "permissions"), class: "underlined-link"}
 
 - if can? current_user, :admin_project, @project
-  = form_for [@project, @protected_branch], html: { class: 'form-horizontal' } do |f|
+  = form_for [@project.namespace.becomes(Namespace), @project, @protected_branch], html: { class: 'form-horizontal' } do |f|
     -if @protected_branch.errors.any?
       .alert.alert-danger
         %ul
@@ -22,29 +22,14 @@
       = f.label :name, "Branch", class: 'control-label'
       .col-sm-10
         = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , {include_blank: "Select branch"}, {class: "select2"})
+    .form-group
+      = f.label :developers_can_push, class: 'control-label' do
+        Developers can push
+      .col-sm-10
+        .checkbox
+          = f.check_box :developers_can_push
+          %span.descr Allow developers to push to this branch
     .form-actions
       = f.submit 'Protect', class: "btn-create btn"
-- unless @branches.empty?
-  %h5 Already Protected:
-  %ul.bordered-list.protected-branches-list
-    - @branches.each do |branch|
-      %li
-        %h4
-          = link_to project_commits_path(@project, branch.name) do
-            %strong= branch.name
-            - if @project.root_ref?(branch.name)
-              %span.label.label-info default
-            %span.label.label-success
-              %i.fa.fa-lock
-          .pull-right
-            - if can? current_user, :admin_project, @project
-              = link_to 'Unprotect', [@project, branch], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: "btn btn-remove btn-small"
+= render 'branches_list'
 
-        - if commit = branch.commit
-          = link_to project_commit_path(@project, commit.id), class: 'commit_short_id' do
-            = commit.short_id
-          %span.light
-            = gfm escape_once(truncate(commit.title, length: 40))
-          #{time_ago_with_tooltip(commit.committed_date)}
-        - else
-          (branch was removed from repository)

@@ -3,12 +3,15 @@
     = render 'projects/errors'
   .project-edit-content
 
-    = form_for @project, remote: true, html: { class: 'new_project form-horizontal' } do |f|
+    = form_for @project, html: { class: 'new_project form-horizontal' } do |f|
       .form-group.project-name-holder
-        = f.label :name, class: 'control-label' do
-          %strong Project name
+        = f.label :path, class: 'control-label' do
+          %strong Project path
         .col-sm-10
-          = f.text_field :name, placeholder: "Example Project", class: "form-control", tabindex: 1, autofocus: true
+          .input-group
+            = f.text_field :path, placeholder: "my-awesome-project", class: "form-control", tabindex: 1, autofocus: true
+            .input-group-addon
+              \.git
 
       - if current_user.can_select_namespace?
         .form-group
@@ -23,24 +26,8 @@
           .col-sm-2
           .col-sm-10
             = link_to "#", class: 'js-toggle-button' do
-              %i.fa.fa-pencil-square-o
-              %span Customize repository name?
-        .js-toggle-content.hide
-          .form-group
-            = f.label :path, class: 'control-label' do
-              %span Repository name
-            .col-sm-10
-              .input-group
-                = f.text_field :path, class: 'form-control'
-                %span.input-group-addon .git
-
-      .js-toggle-container
-        .form-group
-          .col-sm-2
-          .col-sm-10
-            = link_to "#", class: 'js-toggle-button' do
               %i.fa.fa-upload
-              %span Import existing repository?
+              %span Import existing repository by URL
         .js-toggle-content.hide
           .form-group.import-url-data
             = f.label :import_url, class: 'control-label' do
@@ -52,7 +39,55 @@
                 %br
                 The import will time out after 4 minutes. For big repositories, use a clone/push combination.
                 For SVN repositories, check #{link_to "this migrating from SVN doc.", "http://doc.gitlab.com/ce/workflow/migrating_from_svn.html"}
-      %hr
+
+      .project-import.form-group
+        .col-sm-2
+        .col-sm-10
+          - if github_import_enabled?
+            = link_to status_import_github_path do
+              %i.fa.fa-github
+              Import projects from GitHub
+          - else
+            = link_to '#', class: 'how_to_import_link light' do
+              %i.fa.fa-github
+              Import projects from GitHub
+            = render 'github_import_modal'
+
+      .project-import.form-group
+        .col-sm-2
+        .col-sm-10
+          - if bitbucket_import_enabled?
+            = link_to status_import_bitbucket_path do
+              %i.fa.fa-bitbucket
+              Import projects from Bitbucket
+          - else
+            = link_to '#', class: 'how_to_import_link light' do
+              %i.fa.fa-bitbucket
+              Import projects from Bitbucket
+            = render 'bitbucket_import_modal'
+      
+      - unless request.host == 'gitlab.com'
+        .project-import.form-group
+          .col-sm-2
+          .col-sm-10
+            - if gitlab_import_enabled?
+              = link_to status_import_gitlab_path do
+                %i.fa.fa-heart
+                Import projects from GitLab.com
+            - else
+              = link_to '#', class: 'how_to_import_link light' do
+                %i.fa.fa-heart
+                Import projects from GitLab.com
+              = render 'gitlab_import_modal'
+
+      .project-import.form-group
+        .col-sm-2
+        .col-sm-10
+          = link_to new_import_gitorious_path do
+            %i.icon-gitorious.icon-gitorious-small
+            Import projects from Gitorious.org
+
+      %hr.prepend-botton-10
 
       .form-group
         = f.label :description, class: 'control-label' do
@@ -78,3 +113,11 @@
       %i.fa.fa-spinner.fa-spin
       Creating project &amp; repository.
     %p Please wait a moment, this page will automatically refresh when ready.
+
+:coffeescript
+  $ ->
+    $('.how_to_import_link').bind 'click', (e) ->
+      e.preventDefault()
+      import_modal = $(this).parent().find(".modal").show()
+    $('.modal-header .close').bind 'click', ->
+      $(".modal").hide()

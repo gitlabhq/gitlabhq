@@ -17,26 +17,17 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_filter :authorize_modify_merge_request!, only: [:close, :edit, :update, :sort]
 
   def index
-    params[:sort] ||= 'newest'
-    params[:scope] = 'all' if params[:scope].blank?
-    params[:state] = 'opened' if params[:state].blank?
-
-    @merge_requests = MergeRequestsFinder.new.execute(current_user, params.merge(project_id: @project.id))
+    @merge_requests = get_merge_requests_collection
     @merge_requests = @merge_requests.page(params[:page]).per(20)
-
-    @sort = params[:sort].humanize
-    assignee_id, milestone_id = params[:assignee_id], params[:milestone_id]
-    @assignee = @project.team.find(assignee_id) if assignee_id.present? && !assignee_id.to_i.zero?
-    @milestone = @project.milestones.find(milestone_id) if milestone_id.present? && !milestone_id.to_i.zero?
-    @assignees = User.where(id: @project.merge_requests.pluck(:assignee_id))
   end
 
   def show
     @note_counts = Note.where(commit_id: @merge_request.commits.map(&:id)).
-        group(:commit_id).count
+      group(:commit_id).count
 
     respond_to do |format|
       format.html
+      format.json { render json: @merge_request }
       format.diff { render text: @merge_request.to_diff(current_user) }
       format.patch { render text: @merge_request.to_patch(current_user) }
     end
@@ -87,7 +78,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request = MergeRequests::CreateService.new(project, current_user, merge_request_params).execute
 
     if @merge_request.valid?
-      redirect_to project_merge_request_path(@merge_request.target_project, @merge_request), notice: 'Merge request was successfully created.'
+      redirect_to(
+        merge_request_path(@merge_request),
+        notice: 'Merge request was successfully created.'
+      )
     else
       @source_project = @merge_request.source_project
       @target_project = @merge_request.target_project
@@ -102,7 +96,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       respond_to do |format|
         format.js
         format.html do
-          redirect_to [@merge_request.target_project, @merge_request], notice: 'Merge request was successfully updated.'
+          redirect_to([@merge_request.target_project.namespace.becomes(Namespace),
+                       @merge_request.target_project, @merge_request],
+                      notice: 'Merge request was successfully updated.')
         end
       end
     else
@@ -114,15 +110,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     if @merge_request.unchecked?
       @merge_request.check_if_can_be_merged
     end
-    render json: {merge_status: @merge_request.merge_status_name}
+
+    render json: { merge_status: @merge_request.merge_status_name }
   end
 
   def automerge
     return access_denied! unless allowed_to_merge?
 
     if @merge_request.open? && @merge_request.can_be_merged?
-      @merge_request.should_remove_source_branch = params[:should_remove_source_branch]
-      @merge_request.automerge!(current_user, params[:commit_message])
+      AutoMergeWorker.perform_async(@merge_request.id, current_user.id, params)
       @status = true
     else
       @status = false
@@ -225,6 +221,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @allowed_to_merge = allowed_to_merge?
     @show_merge_controls = @merge_request.open? && @commits.any? && @allowed_to_merge
     @source_branch = @merge_request.source_project.repository.find_branch(@merge_request.source_branch).try(:name)
+
+    if @merge_request.locked_long_ago?
+      @merge_request.unlock_mr
+      @merge_request.close
+    end
   end
 
   def allowed_to_merge?
@@ -237,13 +238,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def allowed_to_push_code?(project, branch)
-    action = if project.protected_branch?(branch)
-               :push_code_to_protected_branches
-             else
-               :push_code
-             end
-
-    can?(current_user, action, project)
+    ::Gitlab::GitAccess.can_push_to_branch?(current_user, project, branch)
   end
 
   def merge_request_params

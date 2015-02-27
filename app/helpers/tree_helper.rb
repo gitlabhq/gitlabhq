@@ -10,13 +10,16 @@ module TreeHelper
     tree = ""
 
     # Render folders if we have any
-    tree += render partial: 'projects/tree/tree_item', collection: folders, locals: {type: 'folder'} if folders.present?
+    tree << render(partial: 'projects/tree/tree_item', collection: folders,
+                   locals: { type: 'folder' }) if folders.present?
 
     # Render files if we have any
-    tree += render partial: 'projects/tree/blob_item', collection: files, locals: {type: 'file'} if files.present?
+    tree << render(partial: 'projects/tree/blob_item', collection: files,
+                   locals: { type: 'file' }) if files.present?
 
     # Render submodules if we have any
-    tree += render partial: 'projects/tree/submodule_item', collection: submodules if submodules.present?
+    tree << render(partial: 'projects/tree/submodule_item',
+                   collection: submodules) if submodules.present?
 
     tree.html_safe
   end
@@ -35,13 +38,8 @@ module TreeHelper
   #
   # type - String type of the tree item; either 'folder' or 'file'
   def tree_icon(type)
-    icon_class = if type == 'folder'
-                   'fa fa-folder'
-                 else
-                   'fa fa-file-o'
-                 end
-
-    content_tag :i, nil, class: icon_class
+    icon_class = type == 'folder' ? 'folder' : 'file-o'
+    icon(icon_class)
   end
 
   def tree_hex_class(content)
@@ -53,20 +51,18 @@ module TreeHelper
     File.join(*args)
   end
 
-  def allowed_tree_edit?
-    return false unless @repository.branch_names.include?(@ref)
+  def allowed_tree_edit?(project = nil, ref = nil)
+    project ||= @project
+    ref ||= @ref
+    return false unless project.repository.branch_names.include?(ref)
 
-    if @project.protected_branch? @ref
-      can?(current_user, :push_code_to_protected_branches, @project)
-    else
-      can?(current_user, :push_code, @project)
-    end
+    ::Gitlab::GitAccess.can_push_to_branch?(current_user, project, ref)
   end
 
   def tree_breadcrumbs(tree, max_links = 2)
     if @path.present?
       part_path = ""
-      parts = @path.split("\/")
+      parts = @path.split('/')
 
       yield('..', nil) if parts.count > max_links
 
@@ -80,20 +76,18 @@ module TreeHelper
     end
   end
 
-  def up_dir_path(tree)
+  def up_dir_path
     file = File.join(@path, "..")
     tree_join(@ref, file)
   end
 
-  def leave_edit_message
-    "Leave edit mode?\nAll unsaved changes will be lost."
-  end
-
-  def editing_preview_title(filename)
-    if Gitlab::MarkdownHelper.previewable?(filename)
-      'Preview'
+  # returns the relative path of the first subdir that doesn't have only one directory descendant
+  def flatten_tree(tree)
+    subtree = Gitlab::Git::Tree.where(@repository, @commit.id, tree.path)
+    if subtree.count == 1 && subtree.first.dir?
+      return tree_join(tree.name, flatten_tree(subtree.first))
     else
-      'Diff'
+      return tree.name
     end
   end
 end

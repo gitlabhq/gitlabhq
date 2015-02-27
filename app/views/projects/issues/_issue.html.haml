@@ -1,25 +1,27 @@
-%li{ id: dom_id(issue), class: issue_css_classes(issue), url: project_issue_path(issue.project, issue) }
+%li{ id: dom_id(issue), class: issue_css_classes(issue), url: issue_path(issue) }
   - if controller.controller_name == 'issues'
     .issue-check
       = check_box_tag dom_id(issue,"selected"), nil, false, 'data-id' => issue.id, class: "selected_issue", disabled: !can?(current_user, :modify_issue, issue)
 
   .issue-title
-    %span.light= "##{issue.iid}"
     %span.str-truncated
-      = link_to_gfm issue.title, project_issue_path(issue.project, issue), class: "row_title"
-    - if issue.closed?
-      %small.pull-right
-        CLOSED
+      = link_to_gfm issue.title, issue_path(issue), class: "row_title"
+    .pull-right.light
+      - if issue.closed?
+        %span
+          CLOSED
+      - if issue.notes.any?
+        &nbsp;
+        %span
+          %i.fa.fa-comments
+          = issue.notes.count
 
   .issue-info
+    %span.light= "##{issue.iid}"
     - if issue.assignee
       assigned to #{link_to_member(@project, issue.assignee)}
     - if issue.votes_count > 0
       = render 'votes/votes_inline', votable: issue
-    - if issue.notes.any?
-      %span
-        %i.fa.fa-comments
-        = issue.notes.count
     - if issue.milestone
       %span
         %i.fa.fa-clock-o
@@ -28,21 +30,21 @@
       %span.task-status
         = issue.task_status
 
-    .pull-right
+    .pull-right.issue-updated-at
       %small updated #{time_ago_with_tooltip(issue.updated_at, 'bottom', 'issue_update_ago')}
 
     .issue-labels
       - issue.labels.each do |label|
-        = link_to project_issues_path(issue.project, label_name: label.name) do
+        = link_to namespace_project_issues_path(issue.project.namespace, issue.project, label_name: label.name) do
           = render_colored_label(label)
 
   .issue-actions
     - if can? current_user, :modify_issue, issue
       - if issue.closed?
-        = link_to 'Reopen', project_issue_path(issue.project, issue, issue: {state_event: :reopen }, status_only: true), method: :put,  class: "btn btn-small btn-grouped reopen_issue btn-reopen", remote: true
+        = link_to 'Reopen', issue_path(issue, issue: {state_event: :reopen }, status_only: true), method: :put,  class: "btn btn-small btn-grouped reopen_issue btn-reopen", remote: true
       - else
-        = link_to 'Close', project_issue_path(issue.project, issue, issue: {state_event: :close }, status_only: true), method: :put, class: "btn btn-small btn-grouped close_issue btn-close", remote: true
-      = link_to edit_project_issue_path(issue.project, issue), class: "btn btn-small edit-issue-link btn-grouped" do
+        = link_to 'Close', issue_path(issue, issue: {state_event: :close }, status_only: true), method: :put, class: "btn btn-small btn-grouped close_issue btn-close", remote: true
+      = link_to edit_namespace_project_issue_path(issue.project.namespace, issue.project, issue), class: "btn btn-small edit-issue-link btn-grouped" do
         %i.fa.fa-pencil-square-o
         Edit
 

@@ -1,6 +1,7 @@
 class @Diff
   UNFOLD_COUNT = 20
   constructor: ->
+    $(document).off('click', '.js-unfold')
     $(document).on('click', '.js-unfold', (event) =>
       target = $(event.target)
       unfoldBottom = target.hasClass('js-unfold-bottom')
@@ -35,6 +36,8 @@ class @Diff
         target.parent().replaceWith(response)
       )
     )
+
+    $('.diff-header').stick_in_parent(recalc_every: 1, offset_top: $('.navbar').height())
 
   lineNumbers: (line) ->
     return ([0, 0]) unless line.children().length

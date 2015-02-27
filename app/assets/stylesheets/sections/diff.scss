@@ -8,6 +8,7 @@
     border-bottom: 1px solid #CCC;
     padding: 5px 5px 5px 10px;
     color: #555;
+    z-index: 10;
 
     > span {
       font-family: $monospace_font;
@@ -37,15 +38,15 @@
     overflow-y: hidden;
     background: #FFF;
     color: #333;
-    font-size: 12px;
+    font-size: $code_font_size;
     .old {
       span.idiff {
-        background-color: #F99;
+        background-color: #f8cbcb;
       }
     }
     .new {
       span.idiff {
-        background-color: #8F8;
+        background-color: #a6f3a6;
       }
     }
     .unfold {
@@ -64,8 +65,8 @@
       margin: 0px;
       padding: 0px;
       td {
-        line-height: 18px;
-        font-size: 12px;
+        line-height: $code_line_height;
+        font-size: $code_font_size;
       }
     }
 
@@ -84,7 +85,7 @@
       padding: 0px;
       border: none;
       background: #F5F5F5;
-      color: #666;
+      color: rgba(0,0,0,0.3);
       padding: 0px 5px;
       border-right: 1px solid #ccc;
       text-align: right;
@@ -96,7 +97,7 @@
         float: left;
         width: 35px;
         font-weight: normal;
-        color: #666;
+        color: rgba(0,0,0,0.3);
         &:hover {
           text-decoration: underline;
         }
@@ -114,13 +115,13 @@
     .line_holder {
       &.old .old_line,
       &.old .new_line {
-        background: #FCC;
-        border-color: #E7BABA;
+        background: #ffdddd;
+        border-color: #f1c0c0;
       }
       &.new .old_line,
       &.new .new_line {
-        background: #CFC;
-        border-color: #B9ECB9;
+        background: #dbffdb;
+        border-color: #c1e9c1;
       }
     }
     .line_content {
@@ -129,10 +130,10 @@
       padding: 0px 0.5em;
       border: none;
       &.new {
-        background: #CFD;
+        background: #eaffea;
       }
       &.old {
-        background: #FDD;
+        background: #ffecec;
       }
       &.matched {
         color: #ccc;

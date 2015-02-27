@@ -1,123 +1,32 @@
 /**
- * Issue box:
- * Huge block (one per page) for storing title, descripion and other information.
+ * Issue box for showing Open/Closed state:
  * Used for Issue#show page, MergeRequest#show page etc
  *
- * CLasses:
- *   .issue-box - Regular box
  */
 
 .issue-box {
-  color: #555;
-  margin:20px 0;
-  background: $box_bg;
-  @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.09));
+  display: inline-block;
+  padding: 7px 13px;
+  font-weight: normal;
+  margin-right: 5px;
 
   &.issue-box-closed {
-    .state {
-      background-color: #F3CECE;
-      border-color: $border_danger;
-    }
-    .state-label {
-      background-color: $bg_danger;
-      color: #FFF;
-    }
+    background-color: $bg_danger;
+    color: #FFF;
   }
 
   &.issue-box-merged {
-    .state {
-      background-color: #B7CEE7;
-      border-color: $border_primary;
-    }
-    .state-label {
-      background-color: $bg_primary;
-      color: #FFF;
-    }
+    background-color: $bg_primary;
+    color: #FFF;
   }
 
   &.issue-box-open {
-    .state {
-      background-color: #D6F1D7;
-      border-color: $bg_success;
-    }
-    .state-label {
-      background-color: $bg_success;
-      color: #FFF;
-    }
+    background-color: $bg_success;
+    color: #FFF;
   }
 
   &.issue-box-expired {
-    .state {
-      background-color: #EEE9B3;
-      border-color: #faebcc;
-    }
-    .state-label {
-      background: #cea61b;
-      color: #FFF;
-    }
-  }
-
-  .control-group {
-    margin-bottom: 0;
-  }
-
-  .state {
-    background-color: #f9f9f9;
-  }
-
-  .title {
-    font-size: 28px;
-    font-weight: normal;
-    line-height: 1.5;
-    margin: 0;
-    color: #333;
-    padding: 10px 15px;
-  }
-
-  .context {
-    border: none;
-    border-top: 1px solid #eee;
-    padding: 10px 15px;
-
-    // Reset text align for children
-    .text-right > * { text-align: left; }
-
-    @media (max-width: $screen-xs-max) {
-      // Don't right align on mobile
-      .text-right { text-align: left; }
-
-      .row .col-md-6 {
-        padding-top: 5px;
-      }
-    }
-  }
-
-  .description {
-    padding: 0 15px 10px 15px;
-
-    code {
-      white-space: pre-wrap;
-    }
-  }
-
-  .title, .context, .description {
-    .clearfix {
-      margin: 0;
-    }
-  }
-
-  .state-label {
-    font-size: 14px;
-    float: left;
-    font-weight: bold;
-    padding: 10px 15px;
-  }
-
-  .creator {
-    float: right;
-    padding: 10px 15px;
-    a {
-      text-decoration: underline;
-    }
+    background: #cea61b;
+    color: #FFF;
   }
 }

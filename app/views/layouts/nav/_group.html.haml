@@ -1,25 +1,42 @@
-%ul
+%ul.nav.nav-sidebar
   = nav_link(path: 'groups#show', html_options: {class: 'home'}) do
     = link_to group_path(@group), title: "Home" do
-      Activity
-  = nav_link(controller: [:group, :milestones]) do
-    = link_to group_milestones_path(@group) do
-      Milestones
+      %i.fa.fa-dashboard
+      %span
+        Activity
+  - if current_user
+    = nav_link(controller: [:group, :milestones]) do
+      = link_to group_milestones_path(@group), title: 'Milestones' do
+        %i.fa.fa-clock-o
+        %span
+          Milestones
   = nav_link(path: 'groups#issues') do
-    = link_to issues_group_path(@group) do
-      Issues
-      - if current_user
-        %span.count= current_user.assigned_issues.opened.of_group(@group).count
+    = link_to issues_group_path(@group), title: 'Issues' do
+      %i.fa.fa-exclamation-circle
+      %span
+        Issues
+        - if current_user
+          %span.count= Issue.opened.of_group(@group).count
   = nav_link(path: 'groups#merge_requests') do
-    = link_to merge_requests_group_path(@group) do
-      Merge Requests
-      - if current_user
-        %span.count= current_user.cared_merge_requests.opened.of_group(@group).count
+    = link_to merge_requests_group_path(@group), title: 'Merge Requests' do
+      %i.fa.fa-tasks
+      %span
+        Merge Requests
+        - if current_user
+          %span.count= MergeRequest.opened.of_group(@group).count
   = nav_link(path: 'groups#members') do
-    = link_to "Members", members_group_path(@group)
+    = link_to members_group_path(@group), title: 'Members' do
+      %i.fa.fa-users
+      %span
+        Members
 
   - if can?(current_user, :manage_group, @group)
-    = nav_link(path: 'groups#edit') do
-      = link_to edit_group_path(@group), class: "tab " do
-        Settings
+    = nav_link(html_options: { class: "#{"active" if group_settings_page?} separate-item" }) do
+      = link_to edit_group_path(@group), title: 'Settings', class: "tab no-highlight" do
+        %i.fa.fa-cogs
+        %span
+          Settings
+          %i.fa.fa-angle-down
 
+  - if group_settings_page?
+    = render 'groups/settings_nav'

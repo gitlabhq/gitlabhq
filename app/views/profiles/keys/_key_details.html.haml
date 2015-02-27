@@ -1,0 +1,22 @@
+- is_admin = defined?(admin) ? true : false
+.row
+  .col-md-4
+    .panel.panel-default
+      .panel-heading
+        SSH Key
+      %ul.well-list
+        %li
+          %span.light Title:
+          %strong= @key.title
+        %li
+          %span.light Created on:
+          %strong= @key.created_at.stamp("Aug 21, 2011")
+
+  .col-md-8
+    %p
+      %span.light Fingerprint:
+      %strong= @key.fingerprint
+    %pre.well-pre
+      = @key.key
+  .pull-right
+    = link_to 'Remove', path_to_key(@key, is_admin), data: {confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove delete-key"

@@ -1,188 +1,83 @@
-.white {
-  .line.hll {
-    background: #FFA;
-  }
+/* https://github.com/aahan/pygments-github-style */
+.code.white {
 
-  pre {
-    background-color: #fff;
-    color: #333;
-  }
-
-  .hljs {
-    background: #FFF;
-  }
-
+  pre.highlight,
+  .line-numbers,
   .line-numbers a {
-    color: #999;
+    background-color: #fff !important;
+    color: #333 !important;
   }
 
-  .hljs {
-    display: block;
-    background: #fff; color: black;
+  pre.code {
+    border-left: 1px solid #bbb;
   }
 
-  .hljs-comment,
-  .hljs-template_comment,
-  .hljs-javadoc,
-  .hljs-comment * {
-    color: #006a00;
+  // highlight line via anchor
+  pre.hll {
+    background-color: #f8eec7 !important;
   }
 
-  .hljs-keyword,
-  .hljs-literal,
-  .nginx .hljs-title {
-    color: #aa0d91;
-  }
-  .method,
-  .hljs-list .hljs-title,
-  .hljs-tag .hljs-title,
-  .setting .hljs-value,
-  .hljs-winutils,
-  .tex .hljs-command,
-  .http .hljs-title,
-  .hljs-request,
-  .hljs-status {
-    color: #008;
-  }
-
-  .hljs-envvar,
-  .tex .hljs-special {
-    color: #660;
-  }
-
-  .hljs-string {
-    color: #c41a16;
-  }
-  .hljs-tag .hljs-value,
-  .hljs-cdata,
-  .hljs-filter .hljs-argument,
-  .hljs-attr_selector,
-  .apache .hljs-cbracket,
-  .hljs-date,
-  .hljs-regexp {
-    color: #080;
-  }
-
-  .hljs-sub .hljs-identifier,
-  .hljs-pi,
-  .hljs-tag,
-  .hljs-tag .hljs-keyword,
-  .hljs-decorator,
-  .ini .hljs-title,
-  .hljs-shebang,
-  .hljs-prompt,
-  .hljs-hexcolor,
-  .hljs-rules .hljs-value,
-  .hljs-symbol,
-  .hljs-symbol .hljs-string,
-  .hljs-number,
-  .css .hljs-function,
-  .clojure .hljs-title,
-  .clojure .hljs-built_in,
-  .hljs-function .hljs-title,
-  .coffeescript .hljs-attribute {
-    color: #1c00cf;
-  }
-
-  .hljs-class .hljs-title,
-  .haskell .hljs-type,
-  .smalltalk .hljs-class,
-  .hljs-javadoctag,
-  .hljs-yardoctag,
-  .hljs-phpdoc,
-  .hljs-typename,
-  .hljs-tag .hljs-attribute,
-  .hljs-doctype,
-  .hljs-class .hljs-id,
-  .hljs-built_in,
-  .setting,
-  .hljs-params,
-  .clojure .hljs-attribute {
-    color: #5c2699;
-  }
-
-  .hljs-variable {
-   color: #3f6e74;
-  }
-  .css .hljs-tag,
-  .hljs-rules .hljs-property,
-  .hljs-pseudo,
-  .hljs-subst {
-    color: #000;
-  }
-
-  .css .hljs-class,
-  .css .hljs-id {
-    color: #9B703F;
-  }
-
-  .hljs-value .hljs-important {
-    color: #ff7700;
-    font-weight: bold;
-  }
-
-  .hljs-rules .hljs-keyword {
-    color: #C5AF75;
-  }
-
-  .hljs-annotation,
-  .apache .hljs-sqbracket,
-  .nginx .hljs-built_in {
-    color: #9B859D;
-  }
-
-  .hljs-preprocessor,
-  .hljs-preprocessor *,
-  .hljs-pragma {
-    color: #643820;
-  }
-
-  .tex .hljs-formula {
-    background-color: #EEE;
-    font-style: italic;
-  }
-
-  .diff .hljs-header,
-  .hljs-chunk {
-    color: #808080;
-    font-weight: bold;
-  }
-
-  .diff .hljs-change {
-    background-color: #BCCFF9;
-  }
-
-  .hljs-addition {
-    background-color: #BAEEBA;
-  }
-
-  .hljs-deletion {
-    background-color: #FFC8BD;
-  }
-
-  .hljs-comment .hljs-yardoctag {
-    font-weight: bold;
-  }
-
-  .method .hljs-id {
-    color: #000;
-  }
-}
-
-.shadow {
-  @include box-shadow(0 5px 15px #000);
-}
-
-.file-content {
-  &.code .white {
-    .highlight {
-      border-left: 1px solid #eee;
-    }
-  }
-
-  &.wiki .white {
-    .highlight, pre, .hljs {
-      background: #F9F9F9;
-    }
-  }
+  .hll { background-color: #f8f8f8 }
+  .c { color: #999988; font-style: italic; }
+  .err { color: #a61717; background-color: #e3d2d2; }
+  .k { font-weight: bold; }
+  .o { font-weight: bold; }
+  .cm { color: #999988; font-style: italic; }
+  .cp { color: #999999; font-weight: bold; }
+  .c1 { color: #999988; font-style: italic; }
+  .cs { color: #999999; font-weight: bold; font-style: italic; }
+  .gd { color: #000000; background-color: #ffdddd; }
+  .gd .x { color: #000000; background-color: #ffaaaa; }
+  .ge { font-style: italic; }
+  .gr { color: #aa0000; }
+  .gh { color: #999999; }
+  .gi { color: #000000; background-color: #ddffdd; }
+  .gi .x { color: #000000; background-color: #aaffaa; }
+  .go { color: #888888; }
+  .gp { color: #555555; }
+  .gs { font-weight: bold; }
+  .gu { color: #800080; font-weight: bold; }
+  .gt { color: #aa0000; }
+  .kc { font-weight: bold; }
+  .kd { font-weight: bold; }
+  .kn { font-weight: bold; }
+  .kp { font-weight: bold; }
+  .kr { font-weight: bold; }
+  .kt { color: #445588; font-weight: bold; }
+  .m { color: #009999; }
+  .s { color: #dd1144; }
+  .n { color: #333333; }
+  .na { color: teal; }
+  .nb { color: #0086b3; }
+  .nc { color: #445588; font-weight: bold; }
+  .no { color: teal; }
+  .ni { color: purple; }
+  .ne { color: #990000; font-weight: bold; }
+  .nf { color: #990000; font-weight: bold; }
+  .nn { color: #555555; }
+  .nt { color: navy; }
+  .nv { color: teal; }
+  .ow { font-weight: bold; }
+  .w { color: #bbbbbb; }
+  .mf { color: #009999; }
+  .mh { color: #009999; }
+  .mi { color: #009999; }
+  .mo { color: #009999; }
+  .sb { color: #dd1144; }
+  .sc { color: #dd1144; }
+  .sd { color: #dd1144; }
+  .s2 { color: #dd1144; }
+  .se { color: #dd1144; }
+  .sh { color: #dd1144; }
+  .si { color: #dd1144; }
+  .sx { color: #dd1144; }
+  .sr { color: #009926; }
+  .s1 { color: #dd1144; }
+  .ss { color: #990073; }
+  .bp { color: #999999; }
+  .vc { color: teal; }
+  .vg { color: teal; }
+  .vi { color: teal; }
+  .il { color: #009999; }
+  .gc { color: #999; background-color: #EAF2F5; }
 }

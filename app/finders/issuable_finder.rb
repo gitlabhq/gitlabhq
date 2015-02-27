@@ -33,6 +33,7 @@ class IssuableFinder
     items = by_search(items)
     items = by_milestone(items)
     items = by_assignee(items)
+    items = by_author(items)
     items = by_label(items)
     items = sort(items)
   end
@@ -120,6 +121,14 @@ class IssuableFinder
   def by_assignee(items)
     if params[:assignee_id].present?
       items = items.where(assignee_id: (params[:assignee_id] == '0' ? nil : params[:assignee_id]))
+    end
+
+    items
+  end
+
+  def by_author(items)
+    if params[:author_id].present?
+      items = items.where(author_id: (params[:author_id] == '0' ? nil : params[:author_id]))
     end
 
     items

@@ -3,7 +3,7 @@
   Branches
   .pull-right
     - if can? current_user, :push_code, @project
-      = link_to new_project_branch_path(@project), class: 'btn btn-create' do
+      = link_to new_namespace_project_branch_path(@project.namespace, @project), class: 'btn btn-create' do
         %i.fa.fa-add-sign
         New branch
       &nbsp;
@@ -17,12 +17,12 @@
         %b.caret
       %ul.dropdown-menu
         %li
-          = link_to project_branches_path(sort: nil) do
+          = link_to namespace_project_branches_path(sort: nil) do
             Name
-          = link_to project_branches_path(sort: 'recently_updated') do
-            Recently updated
-          = link_to project_branches_path(sort: 'last_updated') do
-            Last updated
+          = link_to namespace_project_branches_path(sort: 'recently_updated') do
+            = sort_title_recently_updated
+          = link_to namespace_project_branches_path(sort: 'last_updated') do
+            = sort_title_oldest_updated
 %hr
 - unless @branches.empty?
   %ul.bordered-list.top-list.all-branches

@@ -1,33 +1,6 @@
 /**
- * This file represent some UI that can be changed
- * during web app restyle or theme select.
- *
- * Next items should be placed there
- * - link colors
- * - header restyles
- *
+ * Gray GitLab UI theme
  */
 .ui_gray {
-  /*
-   *  Application Header
-   *
-   */
-  header {
-    @extend .header-dark;
-    &.navbar-gitlab {
-      .navbar-inner {
-        background: #373737;
-        border-bottom: 1px solid #272727;
-        .app_logo, .navbar-toggle {
-          &:hover {
-            background-color: #272727;
-          }
-        }
-        .separator {
-          background: #272727;
-          border-left: 1px solid #474747;
-        }
-      }
-    }
-  }
+  @include dark-theme(#979797, #373737, #272727, #222222);
 }

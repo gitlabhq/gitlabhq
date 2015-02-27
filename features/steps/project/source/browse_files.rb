@@ -11,7 +11,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I should see files from repository for "6d39438"' do
-    current_path.should == project_tree_path(@project, "6d39438")
+    current_path.should == namespace_project_tree_path(@project.namespace, @project, "6d39438")
     page.should have_content ".gitignore"
     page.should have_content "LICENSE"
   end
@@ -48,9 +48,17 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     click_link 'Edit'
   end
 
+  step 'I cannot see the edit button' do
+    page.should_not have_link 'edit'
+  end
+
+  step 'The edit button is disabled' do
+    page.should have_css '.disabled', text: 'Edit'
+  end
+
   step 'I can edit code' do
     set_new_content
-    evaluate_script('editor.getValue()').should == new_gitignore_content
+    evaluate_script('blob.editor.getValue()').should == new_gitignore_content
   end
 
   step 'I edit code' do
@@ -59,6 +67,10 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I fill the new file name' do
     fill_in :file_name, with: new_file_name
+  end
+
+  step 'I fill the new branch name' do
+    fill_in :new_branch, with: 'new_branch_name'
   end
 
   step 'I fill the new file name with an illegal name' do
@@ -70,7 +82,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click link "Diff"' do
-    click_link 'Diff'
+    click_link 'Preview changes'
   end
 
   step 'I click on "Commit Changes"' do
@@ -78,7 +90,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click on "Remove"' do
-    click_link 'Remove'
+    click_button 'Remove'
   end
 
   step 'I click on "Remove file"' do
@@ -95,7 +107,6 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I can see new file page' do
     page.should have_content "New file"
-    page.should have_content "File name"
     page.should have_content "Commit message"
   end
 
@@ -134,21 +145,33 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I am redirected to the files URL' do
-    current_path.should == project_tree_path(@project, 'master')
+    current_path.should == namespace_project_tree_path(@project.namespace, @project, 'master')
   end
 
   step 'I am redirected to the ".gitignore"' do
-    expect(current_path).to eq(project_blob_path(@project, 'master/.gitignore'))
+    expect(current_path).to eq(namespace_project_blob_path(@project.namespace, @project, 'master/.gitignore'))
+  end
+
+  step 'I am redirected to the ".gitignore" on new branch' do
+    expect(current_path).to eq(namespace_project_blob_path(@project.namespace, @project, 'new_branch_name/.gitignore'))
   end
 
   step 'I am redirected to the permalink URL' do
-    expect(current_path).to eq(project_blob_path(
-      @project, @project.repository.commit.sha + '/.gitignore'))
+    expect(current_path).to(
+      eq(namespace_project_blob_path(@project.namespace, @project,
+                                     @project.repository.commit.sha +
+                                     '/.gitignore'))
+    )
   end
 
   step 'I am redirected to the new file' do
-    expect(current_path).to eq(project_blob_path(
-      @project, 'master/' + new_file_name))
+    expect(current_path).to eq(namespace_project_blob_path(
+      @project.namespace, @project, 'master/' + new_file_name))
+  end
+
+  step 'I am redirected to the new file on new branch' do
+    expect(current_path).to eq(namespace_project_blob_path(
+      @project.namespace, @project, 'new_branch_name/' + new_file_name))
   end
 
   step "I don't see the permalink link" do
@@ -159,10 +182,21 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     expect(page).to have_content('Your changes could not be committed')
   end
 
+  step 'I create bare repo' do
+    click_link 'Create empty bare repository'
+  end
+
+  step 'I click on "add a file" link' do
+    click_link 'add a file'
+
+    # Remove pre-receive hook so we can push without auth
+    FileUtils.rm_f(File.join(@project.repository.path, 'hooks', 'pre-receive'))
+  end
+
   private
 
   def set_new_content
-    execute_script("editor.setValue('#{new_gitignore_content}')")
+    execute_script("blob.editor.setValue('#{new_gitignore_content}')")
   end
 
   # Content of the gitignore file on the seed repository.

@@ -2,21 +2,21 @@
   %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
     %span.light sort:
     - if @sort.present?
-      = @sort
+      = sort_options_hash[@sort]
     - else
-      Newest
+      = sort_title_recently_created
     %b.caret
-  %ul.dropdown-menu
+  %ul.dropdown-menu.dropdown-menu-align-right
     %li
-      = link_to project_filter_path(sort: 'newest') do
-        Newest
-      = link_to project_filter_path(sort: 'oldest') do
-        Oldest
-      = link_to project_filter_path(sort: 'recently_updated') do
-        Recently updated
-      = link_to project_filter_path(sort: 'last_updated') do
-        Last updated
-      = link_to project_filter_path(sort: 'milestone_due_soon') do
-        Milestone due soon
-      = link_to project_filter_path(sort: 'milestone_due_later') do
-        Milestone due later
+      = link_to page_filter_path(sort: sort_value_recently_created) do
+        = sort_title_recently_created
+      = link_to page_filter_path(sort: sort_value_oldest_created) do
+        = sort_title_oldest_created
+      = link_to page_filter_path(sort: sort_value_recently_updated) do
+        = sort_title_recently_updated
+      = link_to page_filter_path(sort: sort_value_oldest_updated) do
+        = sort_title_oldest_updated
+      = link_to page_filter_path(sort: sort_value_milestone_soon) do
+        = sort_title_milestone_soon
+      = link_to page_filter_path(sort: sort_value_milestone_later) do
+        = sort_title_milestone_later

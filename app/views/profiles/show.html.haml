@@ -1,7 +1,7 @@
 %h3.page-title
-  Profile settings
+  Profile Settings
 %p.light
-  This information appears on your profile.
+  This information will appear on your profile.
   - if current_user.ldap_user?
     Some options are unavailable for LDAP accounts
 %hr
@@ -83,7 +83,7 @@
             &nbsp;
             %span.file_name.js-avatar-filename File name...
             = f.file_field :avatar, class: "js-user-avatar-input hidden"
-            .light The maximum file size allowed is 100KB.
+            .light The maximum file size allowed is 200KB.
             - if @user.avatar?
               %hr
               = link_to 'Remove avatar', profile_avatar_path, data: { confirm: "Avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-small remove-avatar"

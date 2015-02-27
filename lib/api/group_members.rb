@@ -3,22 +3,6 @@ module API
     before { authenticate! }
 
     resource :groups do
-      helpers do
-        def find_group(id)
-          group = Group.find(id)
-
-          if can?(current_user, :read_group, group)
-            group
-          else
-            render_api_error!("403 Forbidden - #{current_user.username} lacks sufficient access to #{group.name}", 403)
-          end
-        end
-
-        def validate_access_level?(level)
-          Gitlab::Access.options_with_owner.values.include? level.to_i
-        end
-      end
-
       # Get a list of group members viewable by the authenticated user.
       #
       # Example Request:
@@ -54,6 +38,30 @@ module API
         group.add_users([params[:user_id]], params[:access_level])
         member = group.group_members.find_by(user_id: params[:user_id])
         present member.user, with: Entities::GroupMember, group: group
+      end
+
+      # Update group member
+      #
+      # Parameters:
+      #   id (required) - The ID of a group
+      #   user_id (required) - The ID of a group member
+      #   access_level (required) - Project access level
+      # Example Request:
+      #   PUT /groups/:id/members/:user_id
+      put ':id/members/:user_id' do
+        group = find_group(params[:id])
+        authorize! :manage_group, group
+        required_attributes! [:access_level]
+
+        team_member = group.group_members.find_by(user_id: params[:user_id])
+        not_found!('User can not be found') if team_member.nil?
+
+        if team_member.update_attributes(access_level: params[:access_level])
+          @member = team_member.user
+          present @member, with: Entities::GroupMember, group: group
+        else
+          handle_member_errors team_member.errors
+        end
       end
 
       # Remove member.

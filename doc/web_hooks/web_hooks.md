@@ -24,16 +24,19 @@ Triggered when you push to the repository except when pushing tags.
   "project_id": 15,
   "repository": {
     "name": "Diaspora",
-    "url": "git@example.com:diaspora.git",
+    "url": "git@example.com:mike/diasporadiaspora.git",
     "description": "",
-    "homepage": "http://example.com/diaspora"
+    "homepage": "http://example.com/mike/diaspora", 
+    "git_http_url":"http://example.com/mike/diaspora.git",
+    "git_ssh_url":"git@example.com:mike/diaspora.git",
+    "visibility_level":0
   },
   "commits": [
     {
       "id": "b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327",
       "message": "Update Catalan translation to e38cb41.",
       "timestamp": "2011-12-12T14:27:31+02:00",
-      "url": "http://example.com/diaspora/commits/b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327",
+      "url": "http://example.com/mike/diaspora/commit/b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327",
       "author": {
         "name": "Jordi Mallach",
         "email": "jordi@softcatala.org"
@@ -43,7 +46,7 @@ Triggered when you push to the repository except when pushing tags.
       "id": "da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
       "message": "fixed readme",
       "timestamp": "2012-01-03T23:36:29+02:00",
-      "url": "http://example.com/diaspora/commits/da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
+      "url": "http://example.com/mike/diaspora/commit/da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
       "author": {
         "name": "GitLab dev user",
         "email": "gitlabdev@dv6700.(none)"
@@ -51,6 +54,34 @@ Triggered when you push to the repository except when pushing tags.
     }
   ],
   "total_commits_count": 4
+}
+```
+
+## Tag events
+
+Triggered when you create (or delete) tags to the repository.
+
+**Request body:**
+
+```json
+{
+  "ref": "refs/tags/v1.0.0",
+  "before": "0000000000000000000000000000000000000000",
+  "after": "82b3d5ae55f7080f1e6022629cdb57bfae7cccc7",
+  "user_id": 1,
+  "user_name": "John Smith",
+  "project_id": 1,
+  "repository": {
+    "name": "jsmith",
+    "url": "ssh://git@example.com/jsmith/example.git",
+    "description": "",
+    "homepage": "http://example.com/jsmith/example",
+    "git_http_url":"http://example.com/jsmith/example.git",
+    "git_ssh_url":"git@example.com:jsmith/example.git",
+    "visibility_level":0
+  },
+  "commits": [],
+  "total_commits_count": 0
 }
 ```
 
@@ -63,6 +94,11 @@ Triggered when a new issue is created or an existing issue was updated/closed/re
 ```json
 {
   "object_kind": "issue",
+  "user": {
+    "name": "Administrator",
+    "username": "root",
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+  },
   "object_attributes": {
     "id": 301,
     "title": "New API: create/update/delete file",
@@ -92,6 +128,11 @@ Triggered when a new merge request is created or an existing merge request was u
 ```json
 {
   "object_kind": "merge_request",
+  "user": {
+    "name": "Administrator",
+    "username": "root",
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+  },
   "object_attributes": {
     "id": 99,
     "target_branch": "master",
@@ -133,7 +174,9 @@ Triggered when a new merge request is created or an existing merge request was u
         "name": "GitLab dev user",
         "email": "gitlabdev@dv6700.(none)"
       }
-    }
+    },
+    "url": "http://example.com/diaspora/merge_requests/1",
+    "action": "open"
   }
 }
 ```

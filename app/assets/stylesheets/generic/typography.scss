@@ -17,6 +17,10 @@ h3.page-title {
   font-size: 22px;
 }
 
+h4.page-title {
+  margin-top: 0px;
+}
+
 h6 {
   color: #888;
   text-transform: uppercase;
@@ -127,4 +131,8 @@ a:focus {
  */
 textarea.js-gfm-input {
   font-family: $monospace_font;
+}
+
+.strikethrough {
+  text-decoration: line-through;
 }

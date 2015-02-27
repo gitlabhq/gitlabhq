@@ -1,3 +1,7 @@
+- if current_user && can?(current_user, :download_code, @project)
+  = render 'shared/no_ssh'
+  = render 'shared/no_password'
+
 = render "home_panel"
 
 - readme = @repository.readme
@@ -11,20 +15,22 @@
         Readme
   .project-home-links
     - unless @project.empty_repo?
-      = link_to pluralize(number_with_delimiter(@repository.commit_count), 'commit'), project_commits_path(@project, @ref || @repository.root_ref)
-      = link_to pluralize(number_with_delimiter(@repository.branch_names.count), 'branch'), project_branches_path(@project)
-      = link_to pluralize(number_with_delimiter(@repository.tag_names.count), 'tag'), project_tags_path(@project)
+      = link_to pluralize(number_with_delimiter(@repository.commit_count), 'commit'), namespace_project_commits_path(@project.namespace, @project, @ref || @repository.root_ref)
+      = link_to pluralize(number_with_delimiter(@repository.branch_names.count), 'branch'), namespace_project_branches_path(@project.namespace, @project)
+      = link_to pluralize(number_with_delimiter(@repository.tag_names.count), 'tag'), namespace_project_tags_path(@project.namespace, @project)
       %span.light.prepend-left-20= repository_size
 
 .tab-content
   .tab-pane.active#tab-activity
     .row
+      = link_to '#aside', class: 'show-aside' do
+        %i.fa.fa-angle-left
       %section.col-md-9
         = render "events/event_last_push", event: @last_push
         = render 'shared/event_filter'
         .content_list
         = spinner
-      %aside.col-md-3.project-side.hidden-sm.hidden-xs
+      %aside.col-md-3.project-side
         .clearfix
           - if @project.archived?
             .alert.alert-warning
@@ -38,15 +44,15 @@
               %i.fa.fa-code-fork.project-fork-icon
               Forked from:
               %br
-              = link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)
+              = link_to @project.forked_from_project.name_with_namespace, namespace_project_path(@project.namespace, @project.forked_from_project)
 
           - unless @project.empty_repo?
-            = link_to project_compare_index_path(@project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-block' do
+            = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-block' do
               Compare code
 
             - if @repository.version
               - version = @repository.version
-              = link_to project_blob_path(@project, tree_join(@repository.root_ref, version.name)), class: 'btn btn-block' do
+              = link_to namespace_project_blob_path(@project.namespace, @project, tree_join(@repository.root_ref, version.name)), class: 'btn btn-block' do
                 Version:
                 %span.count
                   = @repository.blob_by_oid(version.id).data
@@ -65,16 +71,16 @@
           - @project.ci_services.each do |ci_service|
             - if ci_service.active? && ci_service.respond_to?(:builds_path)
               - if ci_service.respond_to?(:status_img_path)
-                = link_to ci_service.builds_path do
+                = link_to ci_service.builds_path, :'data-no-turbolink' => 'data-no-turbolink' do
                   = image_tag ci_service.status_img_path, alt: "build status"
               - else
                 %span.light CI provided by
-                = link_to ci_service.title, ci_service.builds_path
+                = link_to ci_service.title, ci_service.builds_path, :'data-no-turbolink' => 'data-no-turbolink'
 
   - if readme
     .tab-pane#tab-readme
       %article.readme-holder#README
-        = link_to project_blob_path(@project, tree_join(@repository.root_ref, readme.name)) do
+        = link_to namespace_project_blob_path(@project.namespace, @project, tree_join(@repository.root_ref, readme.name)) do
           %h4.readme-file-title
             %i.fa.fa-file
             = readme.name

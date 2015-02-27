@@ -21,7 +21,8 @@ class Projects::TeamMembersController < Projects::ApplicationController
     if params[:redirect_to]
       redirect_to params[:redirect_to]
     else
-      redirect_to project_team_index_path(@project)
+      redirect_to namespace_project_team_index_path(@project.namespace,
+                                                    @project)
     end
   end
 
@@ -32,7 +33,7 @@ class Projects::TeamMembersController < Projects::ApplicationController
     unless @user_project_relation.valid?
       flash[:alert] = "User should have at least one role"
     end
-    redirect_to project_team_index_path(@project)
+    redirect_to namespace_project_team_index_path(@project.namespace, @project)
   end
 
   def destroy
@@ -40,7 +41,10 @@ class Projects::TeamMembersController < Projects::ApplicationController
     @user_project_relation.destroy
 
     respond_to do |format|
-      format.html { redirect_to project_team_index_path(@project) }
+      format.html do
+        redirect_to namespace_project_team_index_path(@project.namespace,
+                                                      @project)
+      end
       format.js { render nothing: true }
     end
   end
@@ -59,7 +63,8 @@ class Projects::TeamMembersController < Projects::ApplicationController
     status = @project.team.import(giver)
     notice = status ? "Successfully imported" : "Import failed"
 
-    redirect_to project_team_index_path(project), notice: notice
+    redirect_to(namespace_project_team_index_path(project.namespace, project),
+                notice: notice)
   end
 
   protected

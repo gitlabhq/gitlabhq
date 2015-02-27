@@ -20,6 +20,8 @@
     %a{"data-toggle" => "tab", href: "#groups"} Groups
   %li
     %a{"data-toggle" => "tab", href: "#projects"} Projects
+  %li
+    %a{"data-toggle" => "tab", href: "#ssh-keys"} SSH keys
 
 .tab-content
   #account.tab-pane.active
@@ -95,7 +97,7 @@
               %li
                 %span.light LDAP uid:
                 %strong
-                  = @user.extern_uid
+                  = @user.ldap_identity.extern_uid
 
             - if @user.created_by
               %li
@@ -204,7 +206,7 @@
               - tm = project.team.find_tm(@user.id)
               %li.project_member
                 .list-item-name
-                  = link_to admin_project_path(project), class: dom_class(project) do
+                  = link_to admin_namespace_project_path(project.namespace, project), class: dom_class(project) do
                     = project.name_with_namespace
 
                 - if tm
@@ -215,5 +217,7 @@
                       %span.light= tm.human_access
 
                       - if tm.respond_to? :project
-                        = link_to project_team_member_path(project, @user), data: { confirm: remove_from_project_team_message(project, @user) }, remote: true, method: :delete, class: "btn-tiny btn btn-remove", title: 'Remove user from project' do
+                        = link_to namespace_project_team_member_path(project.namespace, project, @user), data: { confirm: remove_from_project_team_message(project, @user) }, remote: true, method: :delete, class: "btn-tiny btn btn-remove", title: 'Remove user from project' do
                           %i.fa.fa-times
+  #ssh-keys.tab-pane
+    = render 'profiles/keys/key_table', admin: true

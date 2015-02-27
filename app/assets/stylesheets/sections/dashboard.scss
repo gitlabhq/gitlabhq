@@ -23,20 +23,6 @@
   }
 }
 
-.dashboard {
-  .dash-filter {
-    width: 205px;
-    float: left;
-    height: inherit;
-  }
-}
-
-@media (max-width: 1200px) {
-  .dashboard .dash-filter {
-    width: 140px;
-  }
-}
-
 .dash-sidebar-tabs {
   margin-bottom: 2px;
   border: none;
@@ -98,7 +84,6 @@
   margin-left: 10px;
   float: left;
   margin-right: 15px;
-  font-size: 20px;
   margin-bottom: 15px;
 
   i {
@@ -106,8 +91,43 @@
   }
 }
 
+.dash-project-avatar {
+  float: left;
+
+  .avatar {
+    margin-top: -8px;
+    margin-left: -15px;
+    @include border-radius(0px);
+  }
+  .identicon {
+    line-height: 40px;
+  }
+}
+
 .dash-project-access-icon {
   float: left;
-  margin-right: 3px;
+  margin-right: 5px;
   width: 16px;
+}
+
+.dash-new-project {
+  background: $bg_success;
+  border: 1px solid $border_success;
+
+  a {
+    color: #FFF;
+  }
+}
+
+.dash-new-group {
+  background: $bg_success;
+  border: 1px solid $border_success;
+
+  a {
+    color: #FFF;
+  }
+}
+
+.dash-list .str-truncated {
+  max-width: 72%;
 }

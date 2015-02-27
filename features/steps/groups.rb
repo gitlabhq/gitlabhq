@@ -34,7 +34,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
       select2(user.id, from: "#user_ids", multiple: true)
       select "Reporter", from: "access_level"
     end
-    click_button "Add users into group"
+    click_button "Add users to group"
   end
 
   step 'I should see user "John Doe" in team list' do
@@ -77,29 +77,29 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'submit form with new group "Samurai" info' do
-    fill_in 'group_name', with: 'Samurai'
+    fill_in 'group_path', with: 'Samurai'
     fill_in 'group_description', with: 'Tokugawa Shogunate'
     click_button "Create group"
   end
 
   step 'I should be redirected to group "Samurai" page' do
-    current_path.should == group_path(Group.last)
+    current_path.should == group_path(Group.find_by(name: 'Samurai'))
   end
 
   step 'I should see newly created group "Samurai"' do
     page.should have_content "Samurai"
     page.should have_content "Tokugawa Shogunate"
-    page.should have_content "Currently you are only seeing events from the"
   end
 
   step 'I change group "Owned" name to "new-name"' do
     fill_in 'group_name', with: 'new-name'
+    fill_in 'group_path', with: 'new-name'
     click_button "Save group"
   end
 
   step 'I should see new group "Owned" name' do
     within ".navbar-gitlab" do
-      page.should have_content "group: new-name"
+      page.should have_content "new-name"
     end
   end
 
@@ -110,7 +110,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I should see new group "Owned" avatar' do
-    Group.find_by(name: "Owned").avatar.should be_instance_of AttachmentUploader
+    Group.find_by(name: "Owned").avatar.should be_instance_of AvatarUploader
     Group.find_by(name: "Owned").avatar.url.should == "/uploads/group/avatar/#{ Group.find_by(name:"Owned").id }/gitlab_logo.png"
   end
 
@@ -188,15 +188,14 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I should see group milestone with descriptions and expiry date' do
-    page.should have_content('Lorem Ipsum is simply dummy text of the printing and typesetting industry')
     page.should have_content('expires at Aug 20, 2114')
   end
 
   step 'I should see group milestone with all issues and MRs assigned to that milestone' do
     page.should have_content('Milestone GL-113')
     page.should have_content('Progress: 0 closed – 4 open')
-    page.should have_link(@issue1.title, href: project_issue_path(@project1, @issue1))
-    page.should have_link(@mr3.title, href: project_merge_request_path(@project3, @mr3))
+    page.should have_link(@issue1.title, href: namespace_project_issue_path(@project1.namespace, @project1, @issue1))
+    page.should have_link(@mr3.title, href: namespace_project_merge_request_path(@project3.namespace, @project3, @mr3))
   end
 
   protected

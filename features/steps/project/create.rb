@@ -3,13 +3,13 @@ class Spinach::Features::ProjectCreate < Spinach::FeatureSteps
   include SharedPaths
 
   step 'fill project form with valid data' do
-    fill_in 'project_name', with: 'Empty'
+    fill_in 'project_path', with: 'Empty'
     click_button "Create project"
   end
 
   step 'I should see project page' do
     page.should have_content "Empty"
-    current_path.should == project_path(Project.last)
+    current_path.should == namespace_project_path(Project.last.namespace, Project.last)
   end
 
   step 'I should see empty project instuctions' do

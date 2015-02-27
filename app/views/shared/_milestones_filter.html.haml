@@ -1,0 +1,14 @@
+.milestones-filters.append-bottom-10
+  %ul.nav.nav-tabs
+    %li{class: ("active" if params[:state].blank? || params[:state] == 'opened')}
+      = link_to milestones_filter_path(state: 'opened') do
+        %i.fa.fa-exclamation-circle
+        Open
+    %li{class: ("active" if params[:state] == 'closed')}
+      = link_to milestones_filter_path(state: 'closed') do
+        %i.fa.fa-check-circle
+        Closed
+    %li{class: ("active" if params[:state] == 'all')}
+      = link_to milestones_filter_path(state: 'all') do
+        %i.fa.fa-compass
+        All

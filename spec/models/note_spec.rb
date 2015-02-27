@@ -21,17 +21,17 @@ require 'spec_helper'
 
 describe Note do
   describe "Associations" do
-    it { should belong_to(:project) }
-    it { should belong_to(:noteable) }
-    it { should belong_to(:author).class_name('User') }
+    it { is_expected.to belong_to(:project) }
+    it { is_expected.to belong_to(:noteable) }
+    it { is_expected.to belong_to(:author).class_name('User') }
   end
 
   describe "Mass assignment" do
   end
 
   describe "Validation" do
-    it { should validate_presence_of(:note) }
-    it { should validate_presence_of(:project) }
+    it { is_expected.to validate_presence_of(:note) }
+    it { is_expected.to validate_presence_of(:project) }
   end
 
   describe "Voting score" do
@@ -39,44 +39,44 @@ describe Note do
 
     it "recognizes a neutral note" do
       note = create(:votable_note, note: "This is not a +1 note")
-      note.should_not be_upvote
-      note.should_not be_downvote
+      expect(note).not_to be_upvote
+      expect(note).not_to be_downvote
     end
 
     it "recognizes a neutral emoji note" do
       note = build(:votable_note, note: "I would :+1: this, but I don't want to")
-      note.should_not be_upvote
-      note.should_not be_downvote
+      expect(note).not_to be_upvote
+      expect(note).not_to be_downvote
     end
 
     it "recognizes a +1 note" do
       note = create(:votable_note, note: "+1 for this")
-      note.should be_upvote
+      expect(note).to be_upvote
     end
 
     it "recognizes a +1 emoji as a vote" do
       note = build(:votable_note, note: ":+1: for this")
-      note.should be_upvote
+      expect(note).to be_upvote
     end
 
     it "recognizes a thumbsup emoji as a vote" do
       note = build(:votable_note, note: ":thumbsup: for this")
-      note.should be_upvote
+      expect(note).to be_upvote
     end
 
     it "recognizes a -1 note" do
       note = create(:votable_note, note: "-1 for this")
-      note.should be_downvote
+      expect(note).to be_downvote
     end
 
     it "recognizes a -1 emoji as a vote" do
       note = build(:votable_note, note: ":-1: for this")
-      note.should be_downvote
+      expect(note).to be_downvote
     end
 
     it "recognizes a thumbsdown emoji as a vote" do
       note = build(:votable_note, note: ":thumbsdown: for this")
-      note.should be_downvote
+      expect(note).to be_downvote
     end
   end
 
@@ -87,22 +87,22 @@ describe Note do
     let!(:commit) { note.noteable }
 
     it "should be accessible through #noteable" do
-      note.commit_id.should == commit.id
-      note.noteable.should be_a(Commit)
-      note.noteable.should == commit
+      expect(note.commit_id).to eq(commit.id)
+      expect(note.noteable).to be_a(Commit)
+      expect(note.noteable).to eq(commit)
     end
 
     it "should save a valid note" do
-      note.commit_id.should == commit.id
+      expect(note.commit_id).to eq(commit.id)
       note.noteable == commit
     end
 
     it "should be recognized by #for_commit?" do
-      note.should be_for_commit
+      expect(note).to be_for_commit
     end
 
     it "should not be votable" do
-      note.should_not be_votable
+      expect(note).not_to be_votable
     end
   end
 
@@ -111,20 +111,20 @@ describe Note do
     let!(:commit) { note.noteable }
 
     it "should save a valid note" do
-      note.commit_id.should == commit.id
-      note.noteable.id.should == commit.id
+      expect(note.commit_id).to eq(commit.id)
+      expect(note.noteable.id).to eq(commit.id)
     end
 
     it "should be recognized by #for_diff_line?" do
-      note.should be_for_diff_line
+      expect(note).to be_for_diff_line
     end
 
     it "should be recognized by #for_commit_diff_line?" do
-      note.should be_for_commit_diff_line
+      expect(note).to be_for_commit_diff_line
     end
 
     it "should not be votable" do
-      note.should_not be_votable
+      expect(note).not_to be_votable
     end
   end
 
@@ -132,7 +132,7 @@ describe Note do
     let!(:note) { create(:note_on_issue, note: "+1 from me") }
 
     it "should not be votable" do
-      note.should be_votable
+      expect(note).to be_votable
     end
   end
 
@@ -140,7 +140,7 @@ describe Note do
     let!(:note) { create(:note_on_merge_request, note: "+1 from me") }
 
     it "should be votable" do
-      note.should be_votable
+      expect(note).to be_votable
     end
   end
 
@@ -148,7 +148,7 @@ describe Note do
     let!(:note) { create(:note_on_merge_request_diff, note: "+1 from me") }
 
     it "should not be votable" do
-      note.should_not be_votable
+      expect(note).not_to be_votable
     end
   end
 
@@ -161,20 +161,35 @@ describe Note do
     subject { Note.create_status_change_note(thing, project, author, status, nil) }
 
     it 'creates and saves a Note' do
-      should be_a Note
-      subject.id.should_not be_nil
+      is_expected.to be_a Note
+      expect(subject.id).not_to be_nil
     end
 
-    its(:noteable) { should == thing }
-    its(:project) { should == thing.project }
-    its(:author) { should == author }
-    its(:note) { should =~ /Status changed to #{status}/ }
+    describe '#noteable' do
+      subject { super().noteable }
+      it { is_expected.to eq(thing) }
+    end
+
+    describe '#project' do
+      subject { super().project }
+      it { is_expected.to eq(thing.project) }
+    end
+
+    describe '#author' do
+      subject { super().author }
+      it { is_expected.to eq(author) }
+    end
+
+    describe '#note' do
+      subject { super().note }
+      it { is_expected.to match(/Status changed to #{status}/) }
+    end
 
     it 'appends a back-reference if a closing mentionable is supplied' do
       commit = double('commit', gfm_reference: 'commit 123456')
       n = Note.create_status_change_note(thing, project, author, status, commit)
 
-      n.note.should =~ /Status changed to #{status} by commit 123456/
+      expect(n.note).to match(/Status changed to #{status} by commit 123456/)
     end
   end
 
@@ -187,19 +202,41 @@ describe Note do
     subject { Note.create_assignee_change_note(thing, project, author, assignee) }
 
     context 'creates and saves a Note' do
-      it { should be_a Note }
-      its(:id) { should_not be_nil }
+      it { is_expected.to be_a Note }
+
+      describe '#id' do
+        subject { super().id }
+        it { is_expected.not_to be_nil }
+      end
     end
 
-    its(:noteable) { should == thing }
-    its(:project) { should == thing.project }
-    its(:author) { should == author }
-    its(:note) { should =~ /Reassigned to @#{assignee.username}/ }
+    describe '#noteable' do
+      subject { super().noteable }
+      it { is_expected.to eq(thing) }
+    end
+
+    describe '#project' do
+      subject { super().project }
+      it { is_expected.to eq(thing.project) }
+    end
+
+    describe '#author' do
+      subject { super().author }
+      it { is_expected.to eq(author) }
+    end
+
+    describe '#note' do
+      subject { super().note }
+      it { is_expected.to match(/Reassigned to @#{assignee.username}/) }
+    end
 
     context 'assignee is removed' do
       let(:assignee) { nil }
 
-      its(:note) { should =~ /Assignee removed/ }
+      describe '#note' do
+        subject { super().note }
+        it { is_expected.to match(/Assignee removed/) }
+      end
     end
   end
 
@@ -216,58 +253,144 @@ describe Note do
     context 'issue from a merge request' do
       subject { Note.create_cross_reference_note(issue, mergereq, author, project) }
 
-      it { should be_valid }
-      its(:noteable) { should == issue }
-      its(:project)  { should == issue.project }
-      its(:author)   { should == author }
-      its(:note) { should == "_mentioned in merge request !#{mergereq.iid}_" }
+      it { is_expected.to be_valid }
+
+      describe '#noteable' do
+        subject { super().noteable }
+        it { is_expected.to eq(issue) }
+      end
+
+      describe '#project' do
+        subject { super().project }
+        it { is_expected.to eq(issue.project) }
+      end
+
+      describe '#author' do
+        subject { super().author }
+        it { is_expected.to eq(author) }
+      end
+
+      describe '#note' do
+        subject { super().note }
+        it { is_expected.to eq("_mentioned in merge request !#{mergereq.iid}_") }
+      end
     end
 
     context 'issue from a commit' do
       subject { Note.create_cross_reference_note(issue, commit, author, project) }
 
-      it { should be_valid }
-      its(:noteable) { should == issue }
-      its(:note) { should == "_mentioned in commit #{commit.sha}_" }
+      it { is_expected.to be_valid }
+
+      describe '#noteable' do
+        subject { super().noteable }
+        it { is_expected.to eq(issue) }
+      end
+
+      describe '#note' do
+        subject { super().note }
+        it { is_expected.to eq("_mentioned in commit #{commit.sha}_") }
+      end
     end
 
     context 'merge request from an issue' do
       subject { Note.create_cross_reference_note(mergereq, issue, author, project) }
 
-      it { should be_valid }
-      its(:noteable) { should == mergereq }
-      its(:project) { should == mergereq.project }
-      its(:note) { should == "_mentioned in issue ##{issue.iid}_" }
+      it { is_expected.to be_valid }
+
+      describe '#noteable' do
+        subject { super().noteable }
+        it { is_expected.to eq(mergereq) }
+      end
+
+      describe '#project' do
+        subject { super().project }
+        it { is_expected.to eq(mergereq.project) }
+      end
+
+      describe '#note' do
+        subject { super().note }
+        it { is_expected.to eq("_mentioned in issue ##{issue.iid}_") }
+      end
     end
 
     context 'commit from a merge request' do
       subject { Note.create_cross_reference_note(commit, mergereq, author, project) }
 
-      it { should be_valid }
-      its(:noteable) { should == commit }
-      its(:project) { should == project }
-      its(:note) { should == "_mentioned in merge request !#{mergereq.iid}_" }
+      it { is_expected.to be_valid }
+
+      describe '#noteable' do
+        subject { super().noteable }
+        it { is_expected.to eq(commit) }
+      end
+
+      describe '#project' do
+        subject { super().project }
+        it { is_expected.to eq(project) }
+      end
+
+      describe '#note' do
+        subject { super().note }
+        it { is_expected.to eq("_mentioned in merge request !#{mergereq.iid}_") }
+      end
+    end
+
+    context 'commit contained in a merge request' do
+      subject { Note.create_cross_reference_note(mergereq.commits.first, mergereq, author, project) }
+
+      it { is_expected.to be_nil }
     end
 
     context 'commit from issue' do
       subject { Note.create_cross_reference_note(commit, issue, author, project) }
 
-      it { should be_valid }
-      its(:noteable_type) { should == "Commit" }
-      its(:noteable_id) { should be_nil }
-      its(:commit_id) { should == commit.id }
-      its(:note) { should == "_mentioned in issue ##{issue.iid}_" }
+      it { is_expected.to be_valid }
+
+      describe '#noteable_type' do
+        subject { super().noteable_type }
+        it { is_expected.to eq("Commit") }
+      end
+
+      describe '#noteable_id' do
+        subject { super().noteable_id }
+        it { is_expected.to be_nil }
+      end
+
+      describe '#commit_id' do
+        subject { super().commit_id }
+        it { is_expected.to eq(commit.id) }
+      end
+
+      describe '#note' do
+        subject { super().note }
+        it { is_expected.to eq("_mentioned in issue ##{issue.iid}_") }
+      end
     end
 
     context 'commit from commit' do
       let(:parent_commit) { commit.parents.first }
       subject { Note.create_cross_reference_note(commit, parent_commit, author, project) }
 
-      it { should be_valid }
-      its(:noteable_type) { should == "Commit" }
-      its(:noteable_id) { should be_nil }
-      its(:commit_id) { should == commit.id }
-      its(:note) { should == "_mentioned in commit #{parent_commit.id}_" }
+      it { is_expected.to be_valid }
+
+      describe '#noteable_type' do
+        subject { super().noteable_type }
+        it { is_expected.to eq("Commit") }
+      end
+
+      describe '#noteable_id' do
+        subject { super().noteable_id }
+        it { is_expected.to be_nil }
+      end
+
+      describe '#commit_id' do
+        subject { super().commit_id }
+        it { is_expected.to eq(commit.id) }
+      end
+
+      describe '#note' do
+        subject { super().note }
+        it { is_expected.to eq("_mentioned in commit #{parent_commit.id}_") }
+      end
     end
   end
 
@@ -283,11 +406,11 @@ describe Note do
     end
 
     it 'detects if a mentionable has already been mentioned' do
-      Note.cross_reference_exists?(issue, commit0).should be_true
+      expect(Note.cross_reference_exists?(issue, commit0)).to be_truthy
     end
 
     it 'detects if a mentionable has not already been mentioned' do
-      Note.cross_reference_exists?(issue, commit1).should be_false
+      expect(Note.cross_reference_exists?(issue, commit1)).to be_falsey
     end
 
     context 'commit on commit' do
@@ -295,8 +418,8 @@ describe Note do
         Note.create_cross_reference_note(commit0, commit1, author, project)
       end
 
-      it { Note.cross_reference_exists?(commit0, commit1).should be_true }
-      it { Note.cross_reference_exists?(commit1, commit0).should be_false }
+      it { expect(Note.cross_reference_exists?(commit0, commit1)).to be_truthy }
+      it { expect(Note.cross_reference_exists?(commit1, commit0)).to be_falsey }
     end
   end
 
@@ -309,22 +432,22 @@ describe Note do
 
     it 'should recognize user-supplied notes as non-system' do
       @note = create(:note_on_issue)
-      @note.should_not be_system
+      expect(@note).not_to be_system
     end
 
     it 'should identify status-change notes as system notes' do
       @note = Note.create_status_change_note(issue, project, author, 'closed', nil)
-      @note.should be_system
+      expect(@note).to be_system
     end
 
     it 'should identify cross-reference notes as system notes' do
       @note = Note.create_cross_reference_note(issue, other, author, project)
-      @note.should be_system
+      expect(@note).to be_system
     end
 
     it 'should identify assignee-change notes as system notes' do
       @note = Note.create_assignee_change_note(issue, project, author, assignee)
-      @note.should be_system
+      expect(@note).to be_system
     end
   end
 
@@ -345,9 +468,9 @@ describe Note do
         @p2.project_members.create(user: @u3, access_level: ProjectMember::GUEST)
       end
 
-      it { @abilities.allowed?(@u1, :read_note, @p1).should be_false }
-      it { @abilities.allowed?(@u2, :read_note, @p1).should be_true }
-      it { @abilities.allowed?(@u3, :read_note, @p1).should be_false }
+      it { expect(@abilities.allowed?(@u1, :read_note, @p1)).to be_falsey }
+      it { expect(@abilities.allowed?(@u2, :read_note, @p1)).to be_truthy }
+      it { expect(@abilities.allowed?(@u3, :read_note, @p1)).to be_falsey }
     end
 
     describe :write do
@@ -356,9 +479,9 @@ describe Note do
         @p2.project_members.create(user: @u3, access_level: ProjectMember::DEVELOPER)
       end
 
-      it { @abilities.allowed?(@u1, :write_note, @p1).should be_false }
-      it { @abilities.allowed?(@u2, :write_note, @p1).should be_true }
-      it { @abilities.allowed?(@u3, :write_note, @p1).should be_false }
+      it { expect(@abilities.allowed?(@u1, :write_note, @p1)).to be_falsey }
+      it { expect(@abilities.allowed?(@u2, :write_note, @p1)).to be_truthy }
+      it { expect(@abilities.allowed?(@u3, :write_note, @p1)).to be_falsey }
     end
 
     describe :admin do
@@ -368,9 +491,9 @@ describe Note do
         @p2.project_members.create(user: @u3, access_level: ProjectMember::MASTER)
       end
 
-      it { @abilities.allowed?(@u1, :admin_note, @p1).should be_false }
-      it { @abilities.allowed?(@u2, :admin_note, @p1).should be_true }
-      it { @abilities.allowed?(@u3, :admin_note, @p1).should be_false }
+      it { expect(@abilities.allowed?(@u1, :admin_note, @p1)).to be_falsey }
+      it { expect(@abilities.allowed?(@u2, :admin_note, @p1)).to be_truthy }
+      it { expect(@abilities.allowed?(@u3, :admin_note, @p1)).to be_falsey }
     end
   end
 

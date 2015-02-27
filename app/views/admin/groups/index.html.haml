@@ -8,9 +8,30 @@
 
 %hr
 = form_tag admin_groups_path, method: :get, class: 'form-inline' do
+  = hidden_field_tag :sort, @sort
   .form-group
     = text_field_tag :name, params[:name], class: "form-control input-mn-300"
   = button_tag "Search", class: "btn submit btn-primary"
+
+  .pull-right
+    .dropdown.inline
+      %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+        %span.light sort:
+        - if @sort.present?
+          = sort_options_hash[@sort]
+        - else
+          = sort_title_recently_created
+        %b.caret
+      %ul.dropdown-menu
+        %li
+          = link_to admin_groups_path(sort: sort_value_recently_created) do
+            = sort_title_recently_created
+          = link_to admin_groups_path(sort: sort_value_oldest_created) do
+            = sort_title_oldest_created
+          = link_to admin_groups_path(sort: sort_value_recently_updated) do
+            = sort_title_recently_updated
+          = link_to admin_groups_path(sort: sort_value_oldest_updated) do
+            = sort_title_oldest_updated
 
 %hr
 

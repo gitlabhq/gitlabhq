@@ -14,9 +14,14 @@ module API
       expose :bio, :skype, :linkedin, :twitter, :website_url
     end
 
+    class Identity < Grape::Entity
+      expose :provider, :extern_uid
+    end
+
     class UserFull < User
       expose :email
-      expose :theme_id, :color_scheme_id, :extern_uid, :provider
+      expose :theme_id, :color_scheme_id, :projects_limit
+      expose :identities, using: Entities::Identity
       expose :can_create_group?, as: :can_create_group
       expose :can_create_project?, as: :can_create_project
     end
@@ -50,7 +55,7 @@ module API
       expose :path, :path_with_namespace
       expose :issues_enabled, :merge_requests_enabled, :wiki_enabled, :snippets_enabled, :created_at, :last_activity_at
       expose :namespace
-      expose :forked_from_project, using: Entities::ForkedFromProject, :if => lambda{ | project, options | project.forked? }
+      expose :forked_from_project, using: Entities::ForkedFromProject, if: lambda{ | project, options | project.forked? }
     end
 
     class ProjectMember < UserBasic
@@ -60,7 +65,7 @@ module API
     end
 
     class Group < Grape::Entity
-      expose :id, :name, :path, :owner_id
+      expose :id, :name, :path, :description
     end
 
     class GroupDetail < Group
@@ -142,6 +147,11 @@ module API
       expose :state, :created_at, :updated_at
     end
 
+    class RepoDiff < Grape::Entity
+      expose :old_path, :new_path, :a_mode, :b_mode, :diff
+      expose :new_file, :renamed_file, :deleted_file
+    end
+
     class Milestone < ProjectEntity
       expose :due_date
     end
@@ -161,6 +171,12 @@ module API
       expose :milestone, using: Entities::Milestone
     end
 
+    class MergeRequestChanges < MergeRequest
+      expose :diffs, as: :changes, using: Entities::RepoDiff do |compare, _|
+        compare.diffs
+      end
+    end
+
     class SSHKey < Grape::Entity
       expose :id, :title, :key, :created_at
     end
@@ -175,6 +191,14 @@ module API
 
     class MRNote < Grape::Entity
       expose :note
+      expose :author, using: Entities::UserBasic
+    end
+
+    class CommitNote < Grape::Entity
+      expose :note
+      expose(:path) { |note| note.diff_file_name }
+      expose(:line) { |note| note.diff_new_line }
+      expose(:line_type) { |note| note.diff_line_type }
       expose :author, using: Entities::UserBasic
     end
 
@@ -223,11 +247,6 @@ module API
       expose :name, :color
     end
 
-    class RepoDiff < Grape::Entity
-      expose :old_path, :new_path, :a_mode, :b_mode, :diff
-      expose :new_file, :renamed_file, :deleted_file
-    end
-
     class Compare < Grape::Entity
       expose :commit, using: Entities::RepoCommit do |compare, options|
         Commit.decorate(compare.commits).last
@@ -250,6 +269,10 @@ module API
 
     class Contributor < Grape::Entity
       expose :name, :email, :commits, :additions, :deletions
+    end
+
+    class BroadcastMessage < Grape::Entity
+      expose :message, :starts_at, :ends_at, :color, :font
     end
   end
 end

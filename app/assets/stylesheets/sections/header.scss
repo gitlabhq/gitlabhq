@@ -4,9 +4,11 @@
  */
 header {
   &.navbar-gitlab {
+    z-index: 100;
     margin-bottom: 0;
     min-height: 40px;
     border: none;
+    width: 100%;
 
     .navbar-inner {
       filter: none;
@@ -52,13 +54,12 @@ header {
       border-width: 0;
       font-size: 18px;
 
-      .app_logo { margin-left: -15px; }
-
       .title {
         @include str-truncated(70%);
       }
 
       .navbar-collapse {
+        margin-top: 47px;
         padding-right: 0;
         padding-left: 0;
       }
@@ -83,7 +84,10 @@ header {
     }
   }
 
-  z-index: 10;
+  .container {
+    width: 100% !important;
+    padding: 0px;
+  }
 
   /**
    *
@@ -96,18 +100,14 @@ header {
 
     a {
       float: left;
-      padding: 0px;
-      margin: 0 6px;
+      padding: 5px 0;
+      height: 46px;
+      width: 52px;
+      text-align: center;
 
-      h1 {
-        margin: 0;
-        background: image-url('logo-black.png') no-repeat center center;
-        background-size: 32px;
-        float: left;
-        height: 46px;
-        width: 40px;
-        @include header-font;
-        text-indent: -9999px;
+      img {
+        width: 36px;
+        height: 36px;
       }
     }
     &:hover {
@@ -130,13 +130,13 @@ header {
   }
 
   .profile-pic {
-    position: relative;
-    top: -1px;
-    padding-right: 0px !important;
+    padding: 0px !important;
+    width: 46px;
+    height: 46px;
+    margin-left: 5px;
     img {
-      width: 26px;
-      height: 26px;
-      @include border-radius(4px);
+      width: 46px;
+      height: 46px;
     }
   }
 
@@ -168,83 +168,6 @@ header {
       box-shadow: none;
       @include transition(all 0.15s ease-in 0s);
     }
-  }
-
-
-  /*
-   * Dark header
-   *
-   */
-  &.header-dark {
-    &.navbar-gitlab {
-      .navbar-inner {
-        background: #708090;
-        border-bottom: 1px solid #AAA;
-
-        .navbar-toggle { color: #fff; }
-
-        .nav > li > a {
-          color: #AAA;
-
-          &:hover, &:focus, &:active {
-            background: none;
-            color: #FFF;
-          }
-        }
-      }
-    }
-
-    .turbolink-spinner {
-      color: #FFF;
-    }
-
-    .search {
-      .search-input {
-        background-color: #D2D5DA;
-        background-color: rgba(255, 255, 255, 0.5);
-        border: 1px solid #AAA;
-
-        &:focus {
-          background-color: white;
-        }
-      }
-    }
-    .search-input::-webkit-input-placeholder {
-      color: #666;
-    }
-    .app_logo {
-      a {
-        h1 {
-          background: image-url('logo-white.png') no-repeat center center;
-          background-size: 32px;
-          color: #fff;
-        }
-      }
-    }
-    .title {
-      a {
-        color: #FFF;
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-      color: #fff;
-    }
-  }
-
-  .app_logo {
-    .separator {
-      margin-left: 0;
-      margin-right: 0;
-    }
-  }
-
-  .separator {
-    float: left;
-    height: 46px;
-    width: 2px;
-    margin-left: 10px;
-    margin-right: 10px;
   }
 }
 

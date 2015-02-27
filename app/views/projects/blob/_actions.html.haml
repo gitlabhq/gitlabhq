@@ -1,27 +1,22 @@
 .btn-group.tree-btn-group
-  -# only show edit link for text files
-  - if @blob.text?
-    - if allowed_tree_edit?
-      = link_to 'Edit', project_edit_tree_path(@project, @id),
-          class: 'btn btn-small'
-    - else
-      %span.btn.btn-small.disabled Edit
-  = link_to 'Raw', project_raw_path(@project, @id),
+  = edit_blob_link(@project, @ref, @path)
+  = link_to 'Raw', namespace_project_raw_path(@project.namespace, @project, @id),
       class: 'btn btn-small', target: '_blank'
   -# only show normal/blame view links for text files
   - if @blob.text?
-    - if current_page? project_blame_path(@project, @id)
-      = link_to 'Normal View', project_blob_path(@project, @id),
+    - if current_page? namespace_project_blame_path(@project.namespace, @project, @id)
+      = link_to 'Normal View', namespace_project_blob_path(@project.namespace, @project, @id),
           class: 'btn btn-small'
     - else
-      = link_to 'Blame', project_blame_path(@project, @id),
+      = link_to 'Blame', namespace_project_blame_path(@project.namespace, @project, @id),
           class: 'btn btn-small' unless @blob.empty?
-  = link_to 'History', project_commits_path(@project, @id),
+  = link_to 'History', namespace_project_commits_path(@project.namespace, @project, @id),
       class: 'btn btn-small'
   - if @ref != @commit.sha
-    = link_to 'Permalink', project_blob_path(@project,
+    = link_to 'Permalink', namespace_project_blob_path(@project.namespace, @project,
         tree_join(@commit.sha, @path)), class: 'btn btn-small'
 
 - if allowed_tree_edit?
-  = link_to '#modal-remove-blob', class: "remove-blob btn btn-small btn-remove", "data-toggle" => "modal" do
+  = button_tag class: 'remove-blob btn btn-small btn-remove',
+      'data-toggle' => 'modal', 'data-target' => '#modal-remove-blob' do
     Remove

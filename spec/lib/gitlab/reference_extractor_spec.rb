@@ -3,52 +3,51 @@ require 'spec_helper'
 describe Gitlab::ReferenceExtractor do
   it 'extracts username references' do
     subject.analyze('this contains a @user reference', nil)
-    subject.users.should == [{ project: nil, id: 'user' }]
+    expect(subject.users).to eq([{ project: nil, id: 'user' }])
   end
 
   it 'extracts issue references' do
     subject.analyze('this one talks about issue #1234', nil)
-    subject.issues.should == [{ project: nil, id: '1234' }]
+    expect(subject.issues).to eq([{ project: nil, id: '1234' }])
   end
 
   it 'extracts JIRA issue references' do
-    Gitlab.config.gitlab.stub(:issues_tracker).and_return('jira')
     subject.analyze('this one talks about issue JIRA-1234', nil)
-    subject.issues.should == [{ project: nil, id: 'JIRA-1234' }]
+    expect(subject.issues).to eq([{ project: nil, id: 'JIRA-1234' }])
   end
 
   it 'extracts merge request references' do
     subject.analyze("and here's !43, a merge request", nil)
-    subject.merge_requests.should == [{ project: nil, id: '43' }]
+    expect(subject.merge_requests).to eq([{ project: nil, id: '43' }])
   end
 
   it 'extracts snippet ids' do
     subject.analyze('snippets like $12 get extracted as well', nil)
-    subject.snippets.should == [{ project: nil, id: '12' }]
+    expect(subject.snippets).to eq([{ project: nil, id: '12' }])
   end
 
   it 'extracts commit shas' do
     subject.analyze('commit shas 98cf0ae3 are pulled out as Strings', nil)
-    subject.commits.should == [{ project: nil, id: '98cf0ae3' }]
+    expect(subject.commits).to eq([{ project: nil, id: '98cf0ae3' }])
   end
 
   it 'extracts multiple references and preserves their order' do
     subject.analyze('@me and @you both care about this', nil)
-    subject.users.should == [
+    expect(subject.users).to eq([
       { project: nil, id: 'me' },
       { project: nil, id: 'you' }
-    ]
+    ])
   end
 
   it 'leaves the original note unmodified' do
     text = 'issue #123 is just the worst, @user'
     subject.analyze(text, nil)
-    text.should == 'issue #123 is just the worst, @user'
+    expect(text).to eq('issue #123 is just the worst, @user')
   end
 
   it 'handles all possible kinds of references' do
     accessors = Gitlab::Markdown::TYPES.map { |t| "#{t}s".to_sym }
-    subject.should respond_to(*accessors)
+    expect(subject).to respond_to(*accessors)
   end
 
   context 'with a project' do
@@ -63,7 +62,7 @@ describe Gitlab::ReferenceExtractor do
       project.team << [@u_bar, :guest]
 
       subject.analyze('@foo, @baduser, @bar, and @offteam', project)
-      subject.users_for(project).should == [@u_foo, @u_bar]
+      expect(subject.users_for(project)).to eq([@u_foo, @u_bar])
     end
 
     it 'accesses valid issue objects' do
@@ -71,7 +70,7 @@ describe Gitlab::ReferenceExtractor do
       @i1 = create(:issue, project: project)
 
       subject.analyze("##{@i0.iid}, ##{@i1.iid}, and #999.", project)
-      subject.issues_for(project).should == [@i0, @i1]
+      expect(subject.issues_for(project)).to eq([@i0, @i1])
     end
 
     it 'accesses valid merge requests' do
@@ -79,7 +78,7 @@ describe Gitlab::ReferenceExtractor do
       @m1 = create(:merge_request, source_project: project, target_project: project, source_branch: 'bbb')
 
       subject.analyze("!999, !#{@m1.iid}, and !#{@m0.iid}.", project)
-      subject.merge_requests_for(project).should == [@m1, @m0]
+      expect(subject.merge_requests_for(project)).to eq([@m1, @m0])
     end
 
     it 'accesses valid snippets' do
@@ -88,7 +87,7 @@ describe Gitlab::ReferenceExtractor do
       @s2 = create(:project_snippet)
 
       subject.analyze("$#{@s0.id}, $999, $#{@s2.id}, $#{@s1.id}", project)
-      subject.snippets_for(project).should == [@s0, @s1]
+      expect(subject.snippets_for(project)).to eq([@s0, @s1])
     end
 
     it 'accesses valid commits' do
@@ -97,9 +96,9 @@ describe Gitlab::ReferenceExtractor do
       subject.analyze("this references commits #{commit.sha[0..6]} and 012345",
                       project)
       extracted = subject.commits_for(project)
-      extracted.should have(1).item
-      extracted[0].sha.should == commit.sha
-      extracted[0].message.should == commit.message
+      expect(extracted.size).to eq(1)
+      expect(extracted[0].sha).to eq(commit.sha)
+      expect(extracted[0].message).to eq(commit.message)
     end
   end
 end

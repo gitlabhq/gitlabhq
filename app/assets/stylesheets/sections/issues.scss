@@ -5,7 +5,8 @@
 
     .issue-title {
       margin-bottom: 5px;
-      font-size: 14px;
+      font-size: $list-font-size;
+      font-weight: bold;
     }
 
     .issue-info {
@@ -94,8 +95,15 @@
   }
 }
 
-.issue-show-labels .color-label {
-  padding: 6px 10px;
+.issue-show-labels {
+  a {
+    margin-right: 5px;
+    margin-bottom: 5px;
+    display: inline-block;
+    .color-label {
+      padding: 6px 10px;
+    }
+  }
 }
 
 form.edit-issue {
@@ -151,4 +159,23 @@ form.edit-issue {
       }
     }
   }
+
+  .issue {
+    &:hover  .issue-actions {
+      display: none !important;
+    }
+
+    .issue-updated-at {
+      display: none;
+    }
+  }
+}
+
+h2.issue-title {
+  margin-top: 0;
+  font-weight: bold;
+}
+
+.context .select2-container {
+  width: 100% !important;
 }

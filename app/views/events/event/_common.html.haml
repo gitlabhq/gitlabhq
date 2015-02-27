@@ -1,15 +1,17 @@
 .event-title
   %span.author_name= link_to_author event
-  %span.event_label{class: event.action_name}= event_action_name(event)
+  %span.event_label{class: event.action_name}
+    = event_action_name(event)
+
   - if event.target
-    %strong= link_to "##{event.target_iid}", [event.project, event.target]
-  - else
-    %strong= gfm event.target_title
-  at
+    %strong= link_to "##{event.target_iid}", [event.project.namespace.becomes(Namespace), event.project, event.target]
+    at
+
   - if event.project
     = link_to_project event.project
   - else
     = event.project_name
+    
 - if event.target.respond_to?(:title)
   .event-body
     .event-note

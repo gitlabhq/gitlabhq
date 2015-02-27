@@ -1,9 +1,13 @@
 %h3.page-title
-  My email addresses
+  Email Settings
 %p.light
   Your
   %b Primary Email
-  will be used for account notifications, avatar detection and web based operations, such as edits and merges.
+  will be used for avatar detection and web based operations, such as edits and merges.
+  %br
+  Your
+  %b Notification Email
+  will be used for account notifications.
   %br
   All email addresses will be used to identify your commits.
 
@@ -30,4 +34,4 @@
     .col-sm-10
       = f.text_field :email, class: 'form-control'
   .form-actions
-    = f.submit 'Add', class: 'btn btn-create'
+    = f.submit 'Add email address', class: 'btn btn-create'

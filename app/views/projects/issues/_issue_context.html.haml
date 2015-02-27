@@ -1,25 +1,28 @@
-= form_for [@project, @issue], remote: true, html: {class: 'edit-issue inline-update'} do |f|
-  .row
-    .col-sm-6
-      %strong.append-right-10
+= form_for [@project.namespace.becomes(Namespace), @project, @issue], remote: true, html: {class: 'edit-issue inline-update'} do |f|
+  %div.prepend-top-20
+    .issuable-context-title
+      %label
         Assignee:
-
-      - if can?(current_user, :modify_issue, @issue)
-        = project_users_select_tag('issue[assignee_id]', placeholder: 'Select assignee', class: 'custom-form-control js-select2 js-assignee', selected: @issue.assignee_id)
-      - elsif issue.assignee
-        = link_to_member(@project, @issue.assignee)
+      - if issue.assignee
+        %strong= link_to_member(@project, @issue.assignee, size: 24)
       - else
-        None
+        none
+    - if can?(current_user, :modify_issue, @issue)
+      = project_users_select_tag('issue[assignee_id]', placeholder: 'Select assignee', class: 'custom-form-control js-select2 js-assignee', selected: @issue.assignee_id)
 
-    .col-sm-6.text-right
-      %strong.append-right-10
+  %div.prepend-top-20.clearfix
+    .issuable-context-title
+      %label
         Milestone:
-      - if can?(current_user, :modify_issue, @issue)
-        = f.select(:milestone_id, milestone_options(@issue), { include_blank: "Select milestone" }, {class: 'select2 select2-compact js-select2 js-milestone'})
-        = hidden_field_tag :issue_context
-        = f.submit class: 'btn'
-      - elsif issue.milestone
-        = link_to project_milestone_path(@project, @issue.milestone) do
-          = @issue.milestone.title
+      - if issue.milestone
+        %span.back-to-milestone
+          = link_to namespace_project_milestone_path(@project.namespace, @project, @issue.milestone) do
+            %strong
+              %i.fa.fa-clock-o
+              = @issue.milestone.title
       - else
-        None
+        none
+    - if can?(current_user, :modify_issue, @issue)
+      = f.select(:milestone_id, milestone_options(@issue), { include_blank: "Select milestone" }, {class: 'select2 select2-compact js-select2 js-milestone'})
+      = hidden_field_tag :issue_context
+      = f.submit class: 'btn'

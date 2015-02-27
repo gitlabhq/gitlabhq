@@ -16,11 +16,28 @@
 
 .project-home-panel {
   margin-bottom: 15px;
+  position: relative;
+  padding-left: 85px;
 
   &.empty-project {
     border-bottom: 0px;
     padding-bottom: 15px;
     margin-bottom: 0px;
+  }
+
+  .project-identicon-holder {
+    position: absolute;
+    left: 0;
+
+    .avatar {
+      width: 70px;
+      height: 70px;
+    }
+
+    .identicon {
+      font-size: 45px;
+      line-height: 1.6;
+    }
   }
 
   .project-home-dropdown {
@@ -94,6 +111,8 @@
     color: $link_color;
 
     &.active {
+      background-color: #f5f5f5;
+      border: 1px solid rgba(0,0,0,0.195);
       color: #333;
       font-weight: bold;
     }
@@ -268,5 +287,36 @@ ul.nav.nav-projects-tabs {
   > li + li:before {
     padding: 0 3px;
     color: #999;
+  }
+}
+
+.fork-namespaces {
+  .thumbnail {
+
+    &.fork-exists-thumbnail {
+      border-color: #EEE;
+
+      .caption {
+        color: #999;
+      }
+    }
+
+    &.fork-thumbnail {
+      border-color: #AAA;
+
+      &:hover {
+        background-color: $hover;
+      }
+    }
+
+    a {
+      text-decoration: none;
+    }
+  }
+}
+
+table.table.protected-branches-list tr.no-border {
+  th, td {
+    border: 0;
   }
 }

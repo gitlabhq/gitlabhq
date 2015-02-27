@@ -13,14 +13,31 @@
 
 - For omnibus-gitlab, it is located at: `/var/opt/gitlab/git-data/repositories` by default, unless you changed
 it in the `/etc/gitlab/gitlab.rb` file.
-- For manual installations, it is usually located at: `/home/git/repositories` or you can see where
+- For installations from source, it is usually located at: `/home/git/repositories` or you can see where
 your repositories are located by looking at `config/gitlab.yml` under the `gitlab_shell => repos_path` entry.
+
+New folder needs to have git user ownership and read/write/execute access for git user and its group:
+
+```
+sudo -u git mkdir /var/opt/gitlab/git-data/repositories/new_group
+```
+
+If you are using an installation from source, replace `/var/opt/gitlab/git-data`
+with `/home/git`.
 
 ### Copy your bare repositories inside this newly created folder:
 
 ```
-$ cp -r /old/git/foo.git/ /home/git/repositories/new_group/
+sudo cp -r /old/git/foo.git /var/opt/gitlab/git-data/repositories/new_group/
+
+# Do this once when you are done copying git repositories
+sudo chown -R git:git /var/opt/gitlab/git-data/repositories/new_group/
 ```
+
+`foo.git` needs to be owned by the git user and git users group.
+
+If you are using an installation from source, replace `/var/opt/gitlab/git-data`
+with `/home/git`.
 
 ### Run the command below depending on your type of installation:
 
@@ -30,7 +47,7 @@ $ cp -r /old/git/foo.git/ /home/git/repositories/new_group/
 $ sudo gitlab-rake gitlab:import:repos
 ```
 
-#### Manual Installation
+#### Installation from source
 
 Before running this command you need to change the directory to where your GitLab installation is located:
 

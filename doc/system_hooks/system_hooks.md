@@ -1,6 +1,6 @@
 # System hooks
 
-Your GitLab instance can perform HTTP POST requests on the following events: `project_create`, `project_destroy`, `user_add_to_team`, `user_remove_from_team`, `user_create`, `user_destroy`, `key_create` and `key_destroy`.
+Your GitLab instance can perform HTTP POST requests on the following events: `project_create`, `project_destroy`, `user_add_to_team`, `user_remove_from_team`, `user_create`, `user_destroy`, `key_create`, `key_destroy`, `group_create`, `group_destroy`, `user_add_to_group` and `user_remove_from_group`.
 
 System hooks can be used, e.g. for logging or changing information in a LDAP server.
 
@@ -15,8 +15,8 @@ System hooks can be used, e.g. for logging or changing information in a LDAP ser
                 "name": "StoreCloud",
          "owner_email": "johnsmith@gmail.com",
           "owner_name": "John Smith",
-                "path": "stormcloud",
- "path_with_namespace": "jsmith/stormcloud",
+                "path": "storecloud",
+ "path_with_namespace": "jsmith/storecloud",
           "project_id": 74,
   "project_visibility": "private",
 }
@@ -50,6 +50,7 @@ System hooks can be used, e.g. for logging or changing information in a LDAP ser
        "project_path": "storecloud",
          "user_email": "johnsmith@gmail.com",
           "user_name": "John Smith",
+            "user_id": 41,
  "project_visibility": "private",
 }
 ```
@@ -66,6 +67,7 @@ System hooks can be used, e.g. for logging or changing information in a LDAP ser
        "project_path": "storecloud",
          "user_email": "johnsmith@gmail.com",
           "user_name": "John Smith",
+            "user_id": 41,
  "project_visibility": "private",
 }
 ```
@@ -115,5 +117,64 @@ System hooks can be used, e.g. for logging or changing information in a LDAP ser
       "username": "root",
            "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC58FwqHUbebw2SdT7SP4FxZ0w+lAO/erhy2ylhlcW/tZ3GY3mBu9VeeiSGoGz8hCx80Zrz+aQv28xfFfKlC8XQFpCWwsnWnQqO2Lv9bS8V1fIHgMxOHIt5Vs+9CAWGCCvUOAurjsUDoE2ALIXLDMKnJxcxD13XjWdK54j6ZXDB4syLF0C2PnAQSVY9X7MfCYwtuFmhQhKaBussAXpaVMRHltie3UYSBUUuZaB3J4cg/7TxlmxcNd+ppPRIpSZAB0NI6aOnqoBCpimscO/VpQRJMVLr3XiSYeT6HBiDXWHnIVPfQc03OGcaFqOit6p8lYKMaP/iUQLm+pgpZqrXZ9vB john@localhost",
             "id": 4
+}
+```
+
+**Group created:**
+
+```json
+{
+   "created_at": "2012-07-21T07:30:54Z",
+   "event_name": "group_create",
+         "name": "StoreCloud",
+  "owner_email": "johnsmith@gmail.com",
+   "owner_name": "John Smith",
+         "path": "storecloud",
+     "group_id": 78
+}
+```
+
+**Group removed:**
+
+```json
+{
+   "created_at": "2012-07-21T07:30:54Z",
+   "event_name": "group_destroy",
+         "name": "StoreCloud",
+  "owner_email": "johnsmith@gmail.com",
+   "owner_name": "John Smith",
+         "path": "storecloud",
+     "group_id": 78
+}
+```
+
+**New Group Member:**
+
+```json
+{
+    "created_at": "2012-07-21T07:30:56Z",
+    "event_name": "user_add_to_group",
+  "group_access": "Master",
+      "group_id": 78,
+    "group_name": "StoreCloud",
+    "group_path": "storecloud",
+    "user_email": "johnsmith@gmail.com",
+     "user_name": "John Smith",
+       "user_id": 41
+}
+```
+**Group Member Removed:**
+
+```json
+{
+    "created_at": "2012-07-21T07:30:56Z",
+    "event_name": "user_remove_from_group",
+  "group_access": "Master",
+      "group_id": 78,
+    "group_name": "StoreCloud",
+    "group_path": "storecloud",
+    "user_email": "johnsmith@gmail.com",
+     "user_name": "John Smith",
+       "user_id": 41
 }
 ```

@@ -1,5 +1,5 @@
 ## GitLab
-## Maintainer: @randx
+## Contributors: randx, yin8086, sashkab, orkoden, axilleas, bbodenmiller, DouweM
 ##
 ## Lines starting with two hashes (##) are comments with information.
 ## Lines starting with one hash (#) are configuration parameters that can be uncommented.
@@ -15,7 +15,7 @@
 ## - installing an old version of Nginx with the chunkin module [2] compiled in, or
 ## - using a newer version of Nginx.
 ##
-## At the time of writing we do not know if either of these theoretical solutions works. 
+## At the time of writing we do not know if either of these theoretical solutions works.
 ## As a workaround users can use Git over SSH to push large files.
 ##
 ## [0] https://git.kernel.org/cgit/git/git.git/tree/Documentation/technical/http-protocol.txt#n99
@@ -26,6 +26,7 @@
 ##         configuration         ##
 ###################################
 ##
+## See installation.md#using-https for additional HTTPS configuration details.
 
 upstream gitlab {
   server unix:/home/git/gitlab/tmp/sockets/gitlab.socket fail_timeout=0;
@@ -33,7 +34,8 @@ upstream gitlab {
 
 ## Normal HTTP host
 server {
-  listen *:80 default_server;
+  listen 0.0.0.0:80 default_server;
+  listen [::]:80 default_server;
   server_name YOUR_SERVER_FQDN; ## Replace this with something like gitlab.example.com
   server_tokens off; ## Don't show the nginx version number, a security best practice
   root /home/git/gitlab/public;
@@ -41,6 +43,8 @@ server {
   ## Increase this if you want to upload large attachments
   ## Or if you want to accept large git objects over http
   client_max_body_size 20m;
+
+  ## See app/controllers/application_controller.rb for headers set
 
   ## Individual nginx logs for this GitLab vhost
   access_log  /var/log/nginx/gitlab_access.log;
@@ -50,6 +54,37 @@ server {
     ## Serve static files from defined root folder.
     ## @gitlab is a named location for the upstream fallback, see below.
     try_files $uri $uri/index.html $uri.html @gitlab;
+  }
+
+  ## We route uploads through GitLab to prevent XSS and enforce access control.
+  location /uploads/ {
+    ## If you use HTTPS make sure you disable gzip compression
+    ## to be safe against BREACH attack.
+    # gzip off;
+
+    ## https://github.com/gitlabhq/gitlabhq/issues/694
+    ## Some requests take more than 30 seconds.
+    proxy_read_timeout      300;
+    proxy_connect_timeout   300;
+    proxy_redirect          off;
+
+    proxy_set_header    Host                $http_host;
+    proxy_set_header    X-Real-IP           $remote_addr;
+    proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
+    proxy_set_header    X-Forwarded-Proto   $scheme;
+    proxy_set_header    X-Frame-Options     SAMEORIGIN;
+
+    proxy_pass http://gitlab;
+  }
+
+  ## If ``go get`` detected, return go-import meta tag.
+  ## This works for public and for private repositories.
+  ## See also http://golang.org/cmd/go/#hdr-Remote_import_paths
+  if ($http_user_agent ~* "Go") {
+    return 200 "
+      <!DOCTYPE html>
+      <head><meta content='$host$uri git $scheme://$host$uri.git' name='go-import'></head>
+      </html>";
   }
 
   ## If a file, which is not found in the root folder is requested,

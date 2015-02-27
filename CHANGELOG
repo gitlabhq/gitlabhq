@@ -1,14 +1,199 @@
+Please view this file on the master branch, on stable branches it's out of date.
+
+v 7.9.0 (unreleased)
+  - Move labels/milestones tabs to sidebar
+  - Upgrade Rails gem to version 4.1.9.
+  - Improve error messages for file edit failures
+  - Improve UI for commits, issues and merge request lists
+  - Fix commit comments on first line of diff not rendering in Merge Request Discussion view.
+  - Improve trigger merge request hook when source project branch has been updated (Kirill Zaitsev)
+  - Save web edit in new branch
+  - Fix ordering of imported but unchanged projects (Marco Wessel)
+  - Mobile UI improvements: make aside content expandable
+  - Generalize image upload in drag and drop in markdown to all files (Hannes Rosenögger)
+  - Fix mass-unassignment of issues (Robert Speicher)
+  - Allow user confirmation to be skipped for new users via API
+
+v 7.8.1
+  - Fix run of custom post receive hooks
+  - Fix migration that caused issues when upgrading to version 7.8 from versions prior to 7.3
+  - Fix the warning for LDAP users about need to set password
+  - Fix avatars which were not shown for non logged in users
+  - Fix urls for the issues when relative url was enabled
+  - Add Bitbucket omniauth provider.
+  - Add Bitbucket importer.
+
+v 7.8.0
+  - Fix access control and protection against XSS for note attachments and other uploads.
+  - Replace highlight.js with rouge-fork rugments (Stefan Tatschner)
+  - Make project search case insensitive (Hannes Rosenögger)
+  - Include issue/mr participants in list of recipients for reassign/close/reopen emails
+  - Expose description in groups API
+  - Better UI for project services page
+  - Cleaner UI for web editor
+  - Add diff syntax highlighting in email-on-push service notifications (Hannes Rosenögger)
+  - Add API endpoint to fetch all changes on a MergeRequest (Jeroen van Baarsen)
+  - View note image attachments in new tab when clicked instead of downloading them
+  - Improve sorting logic in UI and API. Explicitly define what sorting method is used by default
+  - Allow more variations for commit messages closing issues (Julien Bianchi and Hannes Rosenögger)
+  - Fix overflow at sidebar when have several items
+  - Add notes for label changes in issue and merge requests
+  - Show tags in commit view (Hannes Rosenögger)
+  - Only count a user's vote once on a merge request or issue (Michael Clarke)
+  - Increate font size when browse source files and diffs
+  - Create new file in empty repository using GitLab UI
+  - Ability to clone project using oauth2 token
+  - Upgrade Sidekiq gem to version 3.3.0
+  - Stop git zombie creation during force push check
+  - Show success/error messages for test setting button in services
+  - Added Rubocop for code style checks
+  - Fix commits pagination
+  - Async load a branch information at the commit page
+  - Disable blacklist validation for project names
+  - Allow configuring protection of the default branch upon first push (Marco Wessel)
+  - Add gitlab.com importer
+  - Add an ability to login with gitlab.com
+  - Add a commit calendar to the user profile (Hannes Rosenögger)
+  - Submit comment on command-enter
+  - Notify all members of a group when that group is mentioned in a comment, for example: `@gitlab-org` or `@sales`.
+  - Extend issue clossing pattern to include "Resolve", "Resolves", "Resolved", "Resolving" and "Close"
+  - Fix long broadcast message cut-off on left sidebar (Visay Keo)
+  - Add Project Avatars (Steven Thonus and Hannes Rosenögger)
+  - Password reset token validity increased from 2 hours to 2 days since it is also send on account creation.
+  - Edit group members via API
+  - Enable raw image paste from clipboard, currently Chrome only (Marco Cyriacks)
+  - Add action property to merge request hook (Julien Bianchi)
+  - Remove duplicates from group milestone participants list.
+  - Add a new API function that retrieves all issues assigned to a single milestone (Justin Whear and Hannes Rosenögger)
+  - API: Access groups with their path (Julien Bianchi)
+  - Added link to milestone and keeping resource context on smaller viewports for issues and merge requests (Jason Blanchard)
+  - Allow notification email to be set separately from primary email.
+  - API: Add support for editing an existing project (Mika Mäenpää and Hannes Rosenögger)
+  - Don't have Markdown preview fail for long comments/wiki pages.
+  - When test web hook - show error message instead of 500 error page if connection to hook url was reset
+  - Added support for firing system hooks on group create/destroy and adding/removing users to group (Boyan Tabakov)
+  - Added persistent collapse button for left side nav bar (Jason Blanchard)
+  - Prevent losing unsaved comments by automatically restoring them when comment page is loaded again.
+  - Don't allow page to be scaled on mobile.
+  - Clean the username acquired from OAuth/LDAP so it doesn't fail username validation and block signing up.
+  - Show assignees in merge request index page (Kelvin Mutuma)
+  - Link head panel titles to relevant root page.
+  - Allow users that signed up via OAuth to set their password in order to use Git over HTTP(S).
+  - Show users button to share their newly created public or internal projects on twitter
+  - Add quick help links to the GitLab pricing and feature comparison pages.
+  - Fix duplicate authorized applications in user profile and incorrect application client count in admin area.
+  - Make sure Markdown previews always use the same styling as the eventual destination.
+  - Remove deprecated Group#owner_id from API
+  - Show projects user contributed to on user page. Show stars near project on user page.
+  - Improve database performance for GitLab
+  - Add Asana service (Jeremy Benoist)
+  - Improve project web hooks with extra data
+
+v 7.7.2
+  - Update GitLab Shell to version 2.4.2 that fixes a bug when developers can push to protected branch
+  - Fix issue when LDAP user can't login with existing GitLab account
+
+v 7.7.1
+  - Improve mention autocomplete performance
+  - Show setup instructions for GitHub import if disabled
+  - Allow use http for OAuth applications
+
+v 7.7.0
+  - Import from GitHub.com feature
+  - Add Jetbrains Teamcity CI service (Jason Lippert)
+  - Mention notification level
+  - Markdown preview in wiki (Yuriy Glukhov)
+  - Raise group avatar filesize limit to 200kb
+  - OAuth applications feature
+  - Show user SSH keys in admin area
+  - Developer can push to protected branches option
+  - Set project path instead of project name in create form
+  - Block Git HTTP access after 10 failed authentication attempts
+  - Updates to the messages returned by API (sponsored by O'Reilly Media)
+  - New UI layout with side navigation
+  - Add alert message in case of outdated browser (IE < 10)
+  - Added API support for sorting projects
+  - Update gitlab_git to version 7.0.0.rc14
+  - Add API project search filter option for authorized projects
+  - Fix File blame not respecting branch selection
+  - Change some of application settings on fly in admin area UI
+  - Redesign signin/signup pages
+  - Close standard input in Gitlab::Popen.popen
+  - Trigger GitLab CI when push tags
+  - When accept merge request - do merge using sidaekiq job
+  - Enable web signups by default
+  - Fixes for diff comments: drag-n-drop images, selecting images
+  - Fixes for edit comments: drag-n-drop images, preview mode, selecting images, save & update
+  - Remove password strength indicator
+
+
+
+v 7.6.0
+  - Fork repository to groups
+  - New rugged version
+  - Add CRON=1 backup setting for quiet backups
+  - Fix failing wiki restore
+  - Add optional Sidekiq MemoryKiller middleware (enabled via SIDEKIQ_MAX_RSS env variable)
+  - Monokai highlighting style now more faithful to original design (Mark Riedesel)
+  - Create project with repository in synchrony
+  - Added ability to create empty repo or import existing one if project does not have repository
+  - Reactivate highlight.js language autodetection
+  - Mobile UI improvements
+  - Change maximum avatar file size from 100KB to 200KB
+  - Strict validation for snippet file names
+  - Enable Markdown preview for issues, merge requests, milestones, and notes (Vinnie Okada)
+  - In the docker directory is a container template based on the Omnibus packages.
+  - Update Sidekiq to version 2.17.8
+  - Add author filter to project issues and merge requests pages
+  - Atom feed for user activity
+  - Support multiple omniauth providers for the same user
+  - Rendering cross reference in issue title and tooltip for merge request
+  - Show username in comments
+  - Possibility to create Milestones or Labels when Issues are disabled
+  - Fix bug with showing gpg signature in tag
+
+v 7.5.3
+  - Bump gitlab_git to 7.0.0.rc12 (includes Rugged 0.21.2)
+
+v 7.5.2
+  - Don't log Sidekiq arguments by default
+  - Fix restore of wiki repositories from backups
+
+v 7.5.1
+  - Add missing timestamps to 'members' table
+
 v 7.5.0
   - API: Add support for Hipchat (Kevin Houdebert)
-  - Add time zone configuration on gitlab.yml (Sullivan Senechal)
+  - Add time zone configuration in gitlab.yml (Sullivan Senechal)
   - Fix LDAP authentication for Git HTTP access
+  - Run 'GC.start' after every EmailsOnPushWorker job
   - Fix LDAP config lookup for provider 'ldap'
+  - Drop all sequences during Postgres database restore
+  - Project title links to project homepage (Ben Bodenmiller)
   - Add Atlassian Bamboo CI service (Drew Blessing)
   - Mentioned @user will receive email even if he is not participating in issue or commit
+  - Session API: Use case-insensitive authentication like in UI (Andrey Krivko)
   - Tie up loose ends with annotated tags: API & UI (Sean Edge)
   - Return valid json for deleting branch via API (sponsored by O'Reilly Media)
   - Expose username in project events API (sponsored by O'Reilly Media)
-  - Allow user confirmation to be skipped for new users via API
+  - Adds comments to commits in the API
+  - Performance improvements
+  - Fix post-receive issue for projects with deleted forks
+  - New gitlab-shell version with custom hooks support
+  - Improve code
+  - GitLab CI 5.2+ support (does not support older versions)
+  - Fixed bug when you can not push commits starting with 000000 to protected branches
+  - Added a password strength indicator
+  - Change project name and path in one form
+  - Display renamed files in diff views (Vinnie Okada)
+  - Fix raw view for public snippets
+  - Use secret token with GitLab internal API.
+  - Add missing timestamps to 'members' table
+
+v 7.4.3
+  - Fix raw snippets view
+  - Fix security issue for member api
+  - Fix buildbox integration
 
 v 7.4.2
   - Fix internal snippet exposing for unauthenticated users
@@ -30,6 +215,7 @@ v 7.4.0
   - Do not delete tmp/repositories itself during clean-up, only its contents
   - Support for backup uploads to remote storage
   - Prevent notes polling when there are not notes
+  - Internal ForkService: Prepare support for fork to a given namespace
   - API: Add support for forking a project via the API (Bernhard Kaindl)
   - API: filter project issues by milestone (Julien Bianchi)
   - Fail harder in the backup script
@@ -53,7 +239,7 @@ v 7.4.0
   - Fix ambiguous sha problem with mentioned commit
   - Fixed bug with apostrophe when at mentioning users
   - Add active directory ldap option
-  - Developers can push to wiki repo. Protected branches does not affect wiki repo any more 
+  - Developers can push to wiki repo. Protected branches does not affect wiki repo any more
   - Faster rev list
   - Fix branch removal
 

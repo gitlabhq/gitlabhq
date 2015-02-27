@@ -37,16 +37,26 @@ module CommitsHelper
 
     # Add the root project link and the arrow icon
     crumbs = content_tag(:li) do
-      link_to(@project.path, project_commits_path(@project, @ref))
+      link_to(
+        @project.path,
+        namespace_project_commits_path(@project.namespace, @project, @ref)
+      )
     end
 
     if @path
       parts = @path.split('/')
 
       parts.each_with_index do |part, i|
-        crumbs += content_tag(:li) do
+        crumbs << content_tag(:li) do
           # The text is just the individual part, but the link needs all the parts before it
-          link_to part, project_commits_path(@project, tree_join(@ref, parts[0..i].join('/')))
+          link_to(
+            part,
+            namespace_project_commits_path(
+              @project.namespace,
+              @project,
+              tree_join(@ref, parts[0..i].join('/'))
+            )
+          )
         end
       end
     end
@@ -62,18 +72,55 @@ module CommitsHelper
 
   # Returns the sorted alphabetically links to branches, separated by a comma
   def commit_branches_links(project, branches)
-    branches.sort.map { |branch| link_to(branch, project_tree_path(project, branch)) }.join(", ").html_safe
+    branches.sort.map do |branch|
+      link_to(
+        namespace_project_tree_path(project.namespace, project, branch)
+      ) do
+        content_tag :span, class: 'label label-gray' do
+          icon('code-fork') + ' ' + branch
+        end
+      end
+    end.join(" ").html_safe
+  end
+
+  # Returns the sorted links to tags, separated by a comma
+  def commit_tags_links(project, tags)
+    sorted = VersionSorter.rsort(tags)
+    sorted.map do |tag|
+      link_to(
+        namespace_project_commits_path(project.namespace, project,
+                                       project.repository.find_tag(tag).name)
+      ) do
+        content_tag :span, class: 'label label-gray' do
+          icon('tag') + ' ' + tag
+        end
+      end
+    end.join(" ").html_safe
   end
 
   def link_to_browse_code(project, commit)
     if current_controller?(:projects, :commits)
       if @repo.blob_at(commit.id, @path)
-        return link_to "Browse File »", project_blob_path(project, tree_join(commit.id, @path)), class: "pull-right"
+        return link_to(
+          "Browse File »",
+          namespace_project_blob_path(project.namespace, project,
+                                      tree_join(commit.id, @path)),
+          class: "pull-right"
+        )
       elsif @path.present?
-        return link_to "Browse Dir »", project_tree_path(project, tree_join(commit.id, @path)), class: "pull-right"
+        return link_to(
+          "Browse Dir »",
+          namespace_project_tree_path(project.namespace, project,
+                                      tree_join(commit.id, @path)),
+          class: "pull-right"
+        )
       end
     end
-    link_to "Browse Code »", project_tree_path(project, commit), class: "pull-right"
+    link_to(
+      "Browse Code »",
+      namespace_project_tree_path(project.namespace, project, commit),
+      class: "pull-right"
+    )
   end
 
   protected
@@ -87,19 +134,20 @@ module CommitsHelper
   #  avatar: true will prepend the avatar image
   #  size:   size of the avatar image in px
   def commit_person_link(commit, options = {})
-    source_name = commit.send "#{options[:source]}_name".to_sym
-    source_email = commit.send "#{options[:source]}_email".to_sym
+    source_name = clean(commit.send "#{options[:source]}_name".to_sym)
+    source_email = clean(commit.send "#{options[:source]}_email".to_sym)
 
     user = User.find_for_commit(source_email, source_name)
     person_name = user.nil? ? source_name : user.name
     person_email = user.nil? ? source_email : user.email
 
-    text = if options[:avatar]
-            avatar = image_tag(avatar_icon(person_email, options[:size]), class: "avatar #{"s#{options[:size]}" if options[:size]}", width: options[:size], alt: "")
-            %Q{#{avatar} <span class="commit-#{options[:source]}-name">#{person_name}</span>}
-          else
-            person_name
-          end
+    text =
+      if options[:avatar]
+        avatar = image_tag(avatar_icon(person_email, options[:size]), class: "avatar #{"s#{options[:size]}" if options[:size]}", width: options[:size], alt: "")
+        %Q{#{avatar} <span class="commit-#{options[:source]}-name">#{person_name}</span>}
+      else
+        person_name
+      end
 
     options = {
       class: "commit-#{options[:source]}-link has_tooltip",
@@ -114,8 +162,11 @@ module CommitsHelper
   end
 
   def view_file_btn(commit_sha, diff, project)
-    link_to project_blob_path(project, tree_join(commit_sha, diff.new_path)),
-            class: 'btn btn-small view-file js-view-file' do
+    link_to(
+      namespace_project_blob_path(project.namespace, project,
+                                  tree_join(commit_sha, diff.new_path)),
+      class: 'btn btn-small view-file js-view-file'
+    ) do
       raw('View file @') + content_tag(:span, commit_sha[0..6],
                                        class: 'commit-short-id')
     end
@@ -123,5 +174,9 @@ module CommitsHelper
 
   def truncate_sha(sha)
     Commit.truncate_sha(sha)
+  end
+
+  def clean(string)
+    Sanitize.clean(string, remove_contents: true)
   end
 end

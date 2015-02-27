@@ -5,11 +5,12 @@
 #  id         :integer          not null, primary key
 #  type       :string(255)
 #  title      :string(255)
-#  project_id :integer          not null
+#  project_id :integer
 #  created_at :datetime
 #  updated_at :datetime
 #  active     :boolean          default(FALSE), not null
 #  properties :text
+#  template   :boolean          default(FALSE)
 #
 
 class CampfireService < Service
@@ -60,9 +61,9 @@ class CampfireService < Service
     message << "[#{project.name_with_namespace}] "
     message << "#{push[:user_name]} "
 
-    if before =~ /000000/
+    if before.include?('000000')
       message << "pushed new branch #{ref} \n"
-    elsif after =~ /000000/
+    elsif after.include?('000000')
       message << "removed branch #{ref} \n"
     else
       message << "pushed #{push[:total_commits_count]} commits to #{ref}. "

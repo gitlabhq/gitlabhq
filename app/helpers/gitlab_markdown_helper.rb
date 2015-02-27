@@ -110,7 +110,7 @@ module GitlabMarkdownHelper
   end
 
   def link_to_ignore?(link)
-    if link =~ /\#\w+/
+    if link =~ /\A\#\w+/
       # ignore anchors like <a href="#my-header">
       true
     else
@@ -122,10 +122,11 @@ module GitlabMarkdownHelper
     ["http://","https://", "ftp://", "mailto:"]
   end
 
-  def rebuild_path(path)
-    path.gsub!(/(#.*)/, "")
+  def rebuild_path(file_path)
+    file_path = file_path.dup
+    file_path.gsub!(/(#.*)/, "")
     id = $1 || ""
-    file_path = relative_file_path(path)
+    file_path = relative_file_path(file_path)
     file_path = sanitize_slashes(file_path)
 
     [
@@ -252,6 +253,18 @@ module GitlabMarkdownHelper
       true
     else
       truncated
+    end
+  end
+
+  def cross_project_reference(project, entity)
+    path = project.path_with_namespace
+
+    if entity.kind_of?(Issue)
+      [path, entity.iid].join('#')
+    elsif entity.kind_of?(MergeRequest)
+      [path, entity.iid].join('!')
+    else
+      raise 'Not supported type'
     end
   end
 end

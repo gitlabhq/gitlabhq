@@ -23,7 +23,7 @@ module SharedNote
   step 'I preview a comment text like "Bug fixed :smile:"' do
     within(".js-main-target-form") do
       fill_in "note[note]", with: "Bug fixed :smile:"
-      find(".js-note-preview-button").trigger("click")
+      find('.js-md-preview-button').click
     end
   end
 
@@ -33,9 +33,9 @@ module SharedNote
     end
   end
 
-  step 'I write a comment like "Nice"' do
+  step 'I write a comment like ":+1: Nice"' do
     within(".js-main-target-form") do
-      fill_in "note[note]", with: "Nice"
+      fill_in 'note[note]', with: ':+1: Nice'
     end
   end
 
@@ -51,19 +51,20 @@ module SharedNote
 
   step 'I should not see the comment preview' do
     within(".js-main-target-form") do
-      page.should have_css(".js-note-preview", visible: false)
+      expect(find('.js-md-preview')).not_to be_visible
     end
   end
 
-  step 'I should not see the comment preview button' do
+  step 'The comment preview tab should say there is nothing to do' do
     within(".js-main-target-form") do
-      page.should have_css(".js-note-preview-button", visible: false)
+      find('.js-md-preview-button').click
+      expect(find('.js-md-preview')).to have_content('Nothing to preview.')
     end
   end
 
   step 'I should not see the comment text field' do
     within(".js-main-target-form") do
-      page.should have_css(".js-note-text", visible: false)
+      expect(find('.js-note-text')).not_to be_visible
     end
   end
 
@@ -79,21 +80,22 @@ module SharedNote
     end
   end
 
-  step 'I should see the comment edit button' do
+  step 'I should see the comment write tab' do
     within(".js-main-target-form") do
-      page.should have_css(".js-note-write-button", visible: true)
+      expect(page).to have_css('.js-md-write-button', visible: true)
+    end
+  end
+
+  step 'The comment preview tab should be display rendered Markdown' do
+    within(".js-main-target-form") do
+      find('.js-md-preview-button').click
+      expect(find('.js-md-preview')).to have_css('img.emoji', visible: true)
     end
   end
 
   step 'I should see the comment preview' do
     within(".js-main-target-form") do
-      page.should have_css(".js-note-preview", visible: true)
-    end
-  end
-
-  step 'I should see the comment preview button' do
-    within(".js-main-target-form") do
-      page.should have_css(".js-note-preview-button", visible: true)
+      expect(page).to have_css('.js-md-preview', visible: true)
     end
   end
 
@@ -114,7 +116,7 @@ module SharedNote
   end
 
   step 'The comment with the header should not have an ID' do
-    within(".note-text") do
+    within(".note-body > .note-text") do
       page.should     have_content("Comment with a header")
       page.should_not have_css("#comment-with-a-header")
     end

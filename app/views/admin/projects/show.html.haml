@@ -79,11 +79,11 @@
       .panel-heading
         Transfer project
       .panel-body
-        = form_for @project, url: transfer_admin_project_path(@project), method: :put, html: { class: 'form-horizontal' } do |f|
+        = form_for @project, url: transfer_admin_namespace_project_path(@project.namespace, @project), method: :put, html: { class: 'form-horizontal' } do |f|
           .form-group
-            = f.label :namespace_id, "Namespace", class: 'control-label'
+            = f.label :new_namespace_id, "Namespace", class: 'control-label'
             .col-sm-10
-              = namespace_select_tag :namespace_id, selected: params[:namespace_id], class: 'input-large'
+              = namespace_select_tag :new_namespace_id, selected: params[:namespace_id], class: 'input-large'
 
           .form-group
             .col-sm-2
@@ -111,7 +111,7 @@
         %small
           (#{@project.users.count})
         .pull-right
-          = link_to project_team_index_path(@project), class: "btn btn-tiny" do
+          = link_to namespace_project_team_index_path(@project.namespace, @project), class: "btn btn-tiny" do
             %i.fa.fa-pencil-square-o
             Manage Access
       %ul.well-list.team_members
@@ -126,7 +126,7 @@
                 %span.light Owner
               - else
                 %span.light= project_member.human_access
-                = link_to project_team_member_path(@project, user), data: { confirm: remove_from_project_team_message(@project, user)}, method: :delete, remote: true, class: "btn btn-small btn-remove" do
+                = link_to namespace_project_team_member_path(@project.namespace, @project, user), data: { confirm: remove_from_project_team_message(@project, user)}, method: :delete, remote: true, class: "btn btn-small btn-remove" do
                   %i.fa.fa-times
       .panel-footer
         = paginate @project_members, param_name: 'project_members_page', theme: 'gitlab'

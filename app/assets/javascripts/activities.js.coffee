@@ -12,7 +12,7 @@ class @Activities
 
 
   toggleFilter: (sender) ->
-    sender.parent().toggleClass "inactive"
+    sender.parent().toggleClass "active"
     event_filters = $.cookie("event_filter")
     filter = sender.attr("id").split("_")[0]
     if event_filters

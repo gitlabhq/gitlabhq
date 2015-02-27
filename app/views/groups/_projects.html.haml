@@ -12,6 +12,8 @@
     - projects.each do |project|
       %li.project-row
         = link_to project_path(project), class: dom_class(project) do
+          .dash-project-avatar
+            = project_icon(project, alt: '', class: 'avatar s40')
           .dash-project-access-icon
             = visibility_level_icon(project.visibility_level)
           %span.str-truncated

@@ -574,24 +574,16 @@ namespace :gitlab do
       Gitlab::Shell.new.version
     end
 
-    def required_gitlab_shell_version
-      File.read(File.join(Rails.root, "GITLAB_SHELL_VERSION")).strip
-    end
-
     def gitlab_shell_major_version
-      required_gitlab_shell_version.split(".")[0].to_i
+      Gitlab::Shell.version_required.split('.')[0].to_i
     end
 
     def gitlab_shell_minor_version
-      required_gitlab_shell_version.split(".")[1].to_i
+      Gitlab::Shell.version_required.split('.')[1].to_i
     end
 
     def gitlab_shell_patch_version
-      required_gitlab_shell_version.split(".")[2].to_i
-    end
-
-    def has_gitlab_shell3?
-      gitlab_shell_version.try(:start_with?, "v3.")
+      Gitlab::Shell.version_required.split('.')[2].to_i
     end
   end
 
@@ -794,14 +786,14 @@ namespace :gitlab do
   end
 
   def sanitized_message(project)
-    if sanitize
+    if should_sanitize?
       "#{project.namespace_id.to_s.yellow}/#{project.id.to_s.yellow} ... "
     else
       "#{project.name_with_namespace.yellow} ... "
     end
   end
 
-  def sanitize
+  def should_sanitize?
     if ENV['SANITIZE'] == "true"
       true
     else

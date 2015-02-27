@@ -8,7 +8,7 @@ class Spinach::Features::ProjectIssuesMilestones < Spinach::FeatureSteps
     milestone = @project.milestones.find_by(title: "v2.2")
     page.should have_content(milestone.title[0..10])
     page.should have_content(milestone.expires_at)
-    page.should have_content("Browse Issues")
+    page.should have_content("Issues")
   end
 
   step 'I click link "v2.2"' do
@@ -28,7 +28,7 @@ class Spinach::Features::ProjectIssuesMilestones < Spinach::FeatureSteps
     milestone = @project.milestones.find_by(title: "v2.3")
     page.should have_content(milestone.title[0..10])
     page.should have_content(milestone.expires_at)
-    page.should have_content("Browse Issues")
+    page.should have_content("Issues")
   end
 
   step 'project "Shop" has milestone "v2.2"' do

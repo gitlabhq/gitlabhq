@@ -52,16 +52,16 @@ module SearchHelper
       ref    = @ref || @project.repository.root_ref
 
       [
-        { label: "#{prefix} - Files",          url: project_tree_path(@project, ref) },
-        { label: "#{prefix} - Commits",        url: project_commits_path(@project, ref) },
-        { label: "#{prefix} - Network",        url: project_network_path(@project, ref) },
-        { label: "#{prefix} - Graph",          url: project_graph_path(@project, ref) },
-        { label: "#{prefix} - Issues",         url: project_issues_path(@project) },
-        { label: "#{prefix} - Merge Requests", url: project_merge_requests_path(@project) },
-        { label: "#{prefix} - Milestones",     url: project_milestones_path(@project) },
-        { label: "#{prefix} - Snippets",       url: project_snippets_path(@project) },
-        { label: "#{prefix} - Team",           url: project_team_index_path(@project) },
-        { label: "#{prefix} - Wiki",           url: project_wikis_path(@project) },
+        { label: "#{prefix} - Files",          url: namespace_project_tree_path(@project.namespace, @project, ref) },
+        { label: "#{prefix} - Commits",        url: namespace_project_commits_path(@project.namespace, @project, ref) },
+        { label: "#{prefix} - Network",        url: namespace_project_network_path(@project.namespace, @project, ref) },
+        { label: "#{prefix} - Graph",          url: namespace_project_graph_path(@project.namespace, @project, ref) },
+        { label: "#{prefix} - Issues",         url: namespace_project_issues_path(@project.namespace, @project) },
+        { label: "#{prefix} - Merge Requests", url: namespace_project_merge_requests_path(@project.namespace, @project) },
+        { label: "#{prefix} - Milestones",     url: namespace_project_milestones_path(@project.namespace, @project) },
+        { label: "#{prefix} - Snippets",       url: namespace_project_snippets_path(@project.namespace, @project) },
+        { label: "#{prefix} - Team",           url: namespace_project_team_index_path(@project.namespace, @project) },
+        { label: "#{prefix} - Wiki",           url: namespace_project_wikis_path(@project.namespace, @project) },
       ]
     else
       []
@@ -84,7 +84,7 @@ module SearchHelper
       sorted_by_stars.non_archived.limit(limit).map do |p|
       {
         label: "project: #{search_result_sanitize(p.name_with_namespace)}",
-        url: project_path(p)
+        url: namespace_project_path(p.namespace, p)
       }
     end
   end

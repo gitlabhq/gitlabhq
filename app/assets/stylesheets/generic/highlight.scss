@@ -1,4 +1,4 @@
-.highlighted-data {
+.file-content.code {
   border: none;
   box-shadow: none;
   margin: 0px;
@@ -10,11 +10,16 @@
     border: none;
     border-radius: 0;
     font-family: $monospace_font;
-    font-size: 12px !important;
-    line-height: 16px !important;
+    font-size: $code_font_size !important;
+    line-height: $code_line_height !important;
     margin: 0;
+    overflow: auto;
+    overflow-y: hidden;
+    white-space: pre;
+    word-wrap: normal;
 
     code {
+      font-family: $monospace_font;
       white-space: pre;
       word-wrap: normal;
       padding: 0;
@@ -25,10 +30,6 @@
     }
   }
 
-  .hljs {
-    padding: 0;
-  }
-
   .line-numbers {
     padding: 10px;
     text-align: right;
@@ -37,8 +38,8 @@
     a {
       font-family: $monospace_font;
       display: block;
-      font-size: 12px !important;
-      line-height: 16px !important;
+      font-size: $code_font_size !important;
+      line-height: $code_line_height !important;
       white-space: nowrap;
 
       i {
@@ -51,14 +52,19 @@
       }
     }
   }
+}
 
-  .highlight {
-    overflow: auto;
-    overflow-y: hidden;
+.note-text .code {
+  border: none;
+  box-shadow: none;
+  background: $box_bg;
+  padding: 1em;
+  overflow-x: auto;
 
-    pre {
-      white-space: pre;
-      word-wrap: normal;
-    }
+  code {
+    font-family: $monospace_font;
+    white-space: pre;
+    word-wrap: normal;
+    padding: 0;
   }
 }

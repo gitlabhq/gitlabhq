@@ -39,14 +39,20 @@ class Spinach::Features::DashboardMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click "Authored by me" link' do
-    within ".scope-filter" do
-      click_link 'Created by me'
+    within ".assignee-filter" do
+      click_link "Any"
+    end
+    within ".author-filter" do
+      click_link current_user.name
     end
   end
 
   step 'I click "All" link' do
-    within ".scope-filter" do
-      click_link "Everyone's"
+    within ".author-filter" do
+      click_link "Any"
+    end
+    within ".assignee-filter" do
+      click_link "Any"
     end
   end
 

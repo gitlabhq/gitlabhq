@@ -12,9 +12,10 @@ module Gitlab
       class << self
         def find_by_uid_and_provider(uid, provider)
           # LDAP distinguished name is case-insensitive
-          ::User.
+          identity = ::Identity.
             where(provider: [provider, :ldap]).
             where('lower(extern_uid) = ?', uid.downcase).last
+          identity && identity.user
         end
       end
 
@@ -34,19 +35,21 @@ module Gitlab
       end
 
       def find_by_email
-        model.find_by(email: auth_hash.email)
+        ::User.find_by(email: auth_hash.email)
       end
 
       def update_user_attributes
-        gl_user.attributes = {
-          extern_uid: auth_hash.uid,
-          provider: auth_hash.provider,
-          email: auth_hash.email
-        }
+        gl_user.email = auth_hash.email
+
+        # Build new identity only if we dont have have same one
+        gl_user.identities.find_or_initialize_by(provider: auth_hash.provider,
+                                                 extern_uid: auth_hash.uid)
+
+        gl_user
       end
 
       def changed?
-        gl_user.changed?
+        gl_user.changed? || gl_user.identities.any?(&:changed?)
       end
 
       def needs_blocking?

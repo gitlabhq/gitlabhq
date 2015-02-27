@@ -2,13 +2,13 @@
 
 ## Consider the Omnibus package installation
 
-Since a manual installation is a lot of work and error prone we strongly recommend the fast and reliable [Omnibus package installation](https://about.gitlab.com/downloads/) (deb/rpm).
+Since an installation from source is a lot of work and error prone we strongly recommend the fast and reliable [Omnibus package installation](https://about.gitlab.com/downloads/) (deb/rpm).
 
 ## Select Version to Install
 
-Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install. In most cases this should be the highest numbered stable branch (example shown below).
-
-![Select latest branch](https://i.imgur.com/Lrdxk1k.png)
+Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) from the tag (version) of GitLab you would like to install.
+In most cases this should be the highest numbered production tag (without rc in it).
+You can select the tag in the version dropdown in the top left corner of GitLab (below the menu bar).
 
 If the highest number stable branch is unclear please check the [GitLab Blog](https://about.gitlab.com/blog/) for installation guide links by version.
 
@@ -22,7 +22,9 @@ This is the official installation guide to set up a production server. To set up
 
 The following steps have been known to work. Please **use caution when you deviate** from this guide. Make sure you don't violate any assumptions GitLab makes about its environment. For example many people run into permission problems because they changed the location of directories or run services as the wrong user.
 
-If you find a bug/error in this guide please **submit a merge request** following the [contributing guide](../../CONTRIBUTING.md).
+If you find a bug/error in this guide please **submit a merge request**
+following the
+[contributing guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md).
 
 ## Overview
 
@@ -54,7 +56,7 @@ up-to-date and install it.
 
 Install the required packages (needed to compile Ruby and native extensions to Ruby gems):
 
-    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate python-docutils pkg-config cmake
+    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate python-docutils pkg-config cmake libkrb5-dev
 
 Make sure you have the right version of Git installed
 
@@ -101,8 +103,8 @@ Remove the old Ruby 1.8 if present
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl -L --progress ftp://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz | tar xz
-    cd ruby-2.1.2
+    curl -L --progress http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.5.tar.gz | tar xz
+    cd ruby-2.1.5
     ./configure --disable-install-rdoc
     make
     sudo make install
@@ -127,7 +129,8 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Login to PostgreSQL
     sudo -u postgres psql -d template1
 
-    # Create a user for GitLab.
+    # Create a user for GitLab
+    # Do not type the 'template1=#', this is part of the prompt
     template1=# CREATE USER git CREATEDB;
 
     # Create the GitLab production database & grant all privileges on database
@@ -138,6 +141,9 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
     # Try connecting to the new database with the new user
     sudo -u git -H psql -d gitlabhq_production
+
+    # Quit the database session
+    gitlabhq_production> \q
 
 ## 5. Redis
 
@@ -177,9 +183,9 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-4-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-8-stable gitlab
 
-**Note:** You can change `7-4-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `7-8-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -195,7 +201,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Make sure GitLab can write to the log/ and tmp/ directories
     sudo chown -R git log/
     sudo chown -R git tmp/
-    sudo chmod -R u+rwX log/
+    sudo chmod -R u+rwX,go-w log/
     sudo chmod -R u+rwX tmp/
 
     # Create directory for satellites
@@ -274,7 +280,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 GitLab Shell is an SSH access and repository management software developed specially for GitLab.
 
     # Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
-    sudo -u git -H bundle exec rake gitlab:shell:install[v2.0.1] REDIS_URL=unix:/var/run/redis/redis.sock RAILS_ENV=production
+    sudo -u git -H bundle exec rake gitlab:shell:install[v2.5.4] REDIS_URL=unix:/var/run/redis/redis.sock RAILS_ENV=production
 
     # By default, the gitlab-shell config is generated from your main GitLab config.
     # You can review (and modify) the gitlab-shell config as follows:
@@ -290,9 +296,9 @@ GitLab Shell is an SSH access and repository management software developed speci
 
     # When done you see 'Administrator account created:'
 
-**Note:** You can set the Administrator password by supplying it in environmental variable `GITLAB_ROOT_PASSWORD`, eg.:
+**Note:** You can set the Administrator/root password by supplying it in environmental variable `GITLAB_ROOT_PASSWORD` as seen below. If you don't set the password (and it is set to the default one) please wait with exposing GitLab to the public internet until the installation is done and you've logged into the server the first time. During the first login you'll be forced to change the default password.
 
-    sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=newpassword
+    sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=yourpassword
 
 ### Install Init Script
 
@@ -379,14 +385,16 @@ NOTE: Supply `SANITIZE=true` environment variable to `gitlab:check` to omit proj
 
 ### Initial Login
 
-Visit YOUR_SERVER in your web browser for your first GitLab login. The setup has created an admin account for you. You can use it to log in:
+Visit YOUR_SERVER in your web browser for your first GitLab login. The setup has created a default admin account for you. You can use it to log in:
 
     root
     5iveL!fe
 
-**Important Note:** Please go over to your profile page and immediately change the password, so nobody can access your GitLab by using this login information later on.
+**Important Note:** On login you'll be prompted to change the password.
 
 **Enjoy!**
+
+You can use `sudo service gitlab start` and `sudo service gitlab stop` to start and stop GitLab.
 
 ## Advanced Setup Tips
 
@@ -451,4 +459,4 @@ You can configure LDAP authentication in `config/gitlab.yml`. Please restart Git
 
 ### Using Custom Omniauth Providers
 
-See the [omniauth integration document](doc/integration/omniauth.md)
+See the [omniauth integration document](../integration/omniauth.md)

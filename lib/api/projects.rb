@@ -11,23 +11,46 @@ module API
           attrs[:visibility_level] = Gitlab::VisibilityLevel::PUBLIC if !attrs[:visibility_level].present? && publik == true
           attrs
         end
+
+        def filter_projects(projects)
+          # If the archived parameter is passed, limit results accordingly
+          if params[:archived].present?
+            projects = projects.where(archived: parse_boolean(params[:archived]))
+          end
+
+          if params[:search].present?
+            projects = projects.search(params[:search])
+          end
+
+          projects.reorder(project_order_by => project_sort)
+        end
+
+        def project_order_by
+          order_fields = %w(id name path created_at updated_at last_activity_at)
+
+          if order_fields.include?(params['order_by'])
+            params['order_by']
+          else
+            'created_at'
+          end
+        end
+
+        def project_sort
+          if params["sort"] == 'asc'
+            :asc
+          else
+            :desc
+          end
+        end
       end
 
       # Get a projects list for authenticated user
-      #
-      # Parameters:
-      #   archived (optional) - if passed, limit by archived status
       #
       # Example Request:
       #   GET /projects
       get do
         @projects = current_user.authorized_projects
-
-        # If the archived parameter is passed, limit results accordingly
-        if params[:archived].present?
-          @projects = @projects.where(archived: parse_boolean(params[:archived]))
-        end
-
+        @projects = filter_projects(@projects)
         @projects = paginate @projects
         present @projects, with: Entities::Project
       end
@@ -37,7 +60,9 @@ module API
       # Example Request:
       #   GET /projects/owned
       get '/owned' do
-        @projects = paginate current_user.owned_projects
+        @projects = current_user.owned_projects
+        @projects = filter_projects(@projects)
+        @projects = paginate @projects
         present @projects, with: Entities::Project
       end
 
@@ -47,7 +72,9 @@ module API
       #   GET /projects/all
       get '/all' do
         authenticated_as_admin!
-        @projects = paginate Project
+        @projects = Project.all
+        @projects = filter_projects(@projects)
+        @projects = paginate @projects
         present @projects, with: Entities::Project
       end
 
@@ -66,7 +93,7 @@ module API
       # Parameters:
       #   id (required) - The ID of a project
       # Example Request:
-      #   GET /projects/:id
+      #   GET /projects/:id/events
       get ":id/events" do
         limit = (params[:per_page] || 20).to_i
         offset = (params[:page] || 0).to_i * limit
@@ -170,6 +197,49 @@ module API
         end
       end
 
+      # Update an existing project
+      #
+      # Parameters:
+      #   id (required) - the id of a project
+      #   name (optional) - name of a project
+      #   path (optional) - path of a project
+      #   description (optional) - short project description
+      #   issues_enabled (optional)
+      #   merge_requests_enabled (optional)
+      #   wiki_enabled (optional)
+      #   snippets_enabled (optional)
+      #   public (optional) - if true same as setting visibility_level = 20
+      #   visibility_level (optional) - visibility level of a project
+      # Example Request
+      #   PUT /projects/:id
+      put ':id' do
+        attrs = attributes_for_keys [:name,
+                                     :path,
+                                     :description,
+                                     :default_branch,
+                                     :issues_enabled,
+                                     :merge_requests_enabled,
+                                     :wiki_enabled,
+                                     :snippets_enabled,
+                                     :public,
+                                     :visibility_level]
+        attrs = map_public_to_visibility_level(attrs)
+        authorize_admin_project
+        authorize! :rename_project, user_project if attrs[:name].present?
+        if attrs[:visibility_level].present?
+          authorize! :change_visibility_level, user_project
+        end
+
+        ::Projects::UpdateService.new(user_project,
+                                      current_user, attrs).execute
+
+        if user_project.valid?
+          present user_project, with: Entities::Project
+        else
+          render_validation_error!(user_project)
+        end
+      end
+
       # Remove project
       #
       # Parameters:
@@ -198,7 +268,7 @@ module API
             render_api_error!("Project already forked", 409)
           end
         else
-          not_found!
+          not_found!("Source Project")
         end
 
       end
@@ -227,6 +297,16 @@ module API
         ids = current_user.authorized_projects.map(&:id)
         visibility_levels = [ Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PUBLIC ]
         projects = Project.where("(id in (?) OR visibility_level in (?)) AND (name LIKE (?))", ids, visibility_levels, "%#{params[:query]}%")
+        sort = params[:sort] == 'desc' ? 'desc' : 'asc'
+
+        projects = case params["order_by"]
+                   when 'id' then projects.order("id #{sort}")
+                   when 'name' then projects.order("name #{sort}")
+                   when 'created_at' then projects.order("created_at #{sort}")
+                   when 'last_activity_at' then projects.order("last_activity_at #{sort}")
+                   else projects
+                   end
+
         present paginate(projects), with: Entities::Project
       end
 

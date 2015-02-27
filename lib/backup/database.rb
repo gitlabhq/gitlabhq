@@ -13,10 +13,10 @@ module Backup
     def dump
       success = case config["adapter"]
       when /^mysql/ then
-        print "Dumping MySQL database #{config['database']} ... "
+        $progress.print "Dumping MySQL database #{config['database']} ... "
         system('mysqldump', *mysql_args, config['database'], out: db_file_name)
       when "postgresql" then
-        print "Dumping PostgreSQL database #{config['database']} ... "
+        $progress.print "Dumping PostgreSQL database #{config['database']} ... "
         pg_env
         system('pg_dump', config['database'], out: db_file_name)
       end
@@ -27,13 +27,14 @@ module Backup
     def restore
       success = case config["adapter"]
       when /^mysql/ then
-        print "Restoring MySQL database #{config['database']} ... "
+        $progress.print "Restoring MySQL database #{config['database']} ... "
         system('mysql', *mysql_args, config['database'], in: db_file_name)
       when "postgresql" then
-        print "Restoring PostgreSQL database #{config['database']} ... "
+        $progress.print "Restoring PostgreSQL database #{config['database']} ... "
         # Drop all tables because PostgreSQL DB dumps do not contain DROP TABLE
         # statements like MySQL.
         Rake::Task["gitlab:db:drop_all_tables"].invoke
+        Rake::Task["gitlab:db:drop_all_postgres_sequences"].invoke
         pg_env
         system('psql', config['database'], '-f', db_file_name)
       end
@@ -68,9 +69,9 @@ module Backup
 
     def report_success(success)
       if success
-        puts '[DONE]'.green
+        $progress.puts '[DONE]'.green
       else
-        puts '[FAILED]'.red
+        $progress.puts '[FAILED]'.red
       end
     end
   end

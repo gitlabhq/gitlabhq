@@ -8,23 +8,23 @@ describe Gitlab::OAuth::User do
   let(:auth_hash) { double(uid: uid, provider: provider, info: double(info_hash)) }
   let(:info_hash) do
     {
-      nickname: 'john',
+      nickname: '-john+gitlab-ETC%.git@gmail.com',
       name: 'John',
       email: 'john@mail.com'
     }
   end
 
   describe :persisted? do
-    let!(:existing_user) { create(:user, extern_uid: 'my-uid', provider: 'my-provider') }
+    let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
 
     it "finds an existing user based on uid and provider (facebook)" do
       auth = double(info: double(name: 'John'), uid: 'my-uid', provider: 'my-provider')
-      expect( oauth_user.persisted? ).to be_true
+      expect( oauth_user.persisted? ).to be_truthy
     end
 
     it "returns false if use is not found in database" do
       auth_hash.stub(uid: 'non-existing')
-      expect( oauth_user.persisted? ).to be_false
+      expect( oauth_user.persisted? ).to be_falsey
     end
   end
 
@@ -39,8 +39,9 @@ describe Gitlab::OAuth::User do
           oauth_user.save
 
           expect(gl_user).to be_valid
-          expect(gl_user.extern_uid).to eql uid
-          expect(gl_user.provider).to eql 'twitter'
+          identity = gl_user.identities.first
+          expect(identity.extern_uid).to eql uid
+          expect(identity.provider).to eql 'twitter'
         end
       end
 
@@ -61,8 +62,8 @@ describe Gitlab::OAuth::User do
 
           it do
             oauth_user.save
-            gl_user.should be_valid
-            gl_user.should_not be_blocked
+            expect(gl_user).to be_valid
+            expect(gl_user).not_to be_blocked
           end
         end
 
@@ -71,8 +72,8 @@ describe Gitlab::OAuth::User do
 
           it do
             oauth_user.save
-            gl_user.should be_valid
-            gl_user.should be_blocked
+            expect(gl_user).to be_valid
+            expect(gl_user).to be_blocked
           end
         end
       end
@@ -88,8 +89,8 @@ describe Gitlab::OAuth::User do
 
           it do
             oauth_user.save
-            gl_user.should be_valid
-            gl_user.should_not be_blocked
+            expect(gl_user).to be_valid
+            expect(gl_user).not_to be_blocked
           end
         end
 
@@ -98,8 +99,8 @@ describe Gitlab::OAuth::User do
 
           it do
             oauth_user.save
-            gl_user.should be_valid
-            gl_user.should_not be_blocked
+            expect(gl_user).to be_valid
+            expect(gl_user).not_to be_blocked
           end
         end
       end

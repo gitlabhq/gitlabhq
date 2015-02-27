@@ -1,0 +1,25 @@
+- if @already_been_taken
+  :plain
+    target_field = $("tr#repo_#{@repo_id} .import-target")
+    origin_target = target_field.text()
+    project_name = "#{@project_name}"
+    origin_namespace = "#{@target_namespace}"
+    target_field.empty()
+    target_field.append("<p class='alert alert-danger'>This namespace already been taken! Please choose another one</p>")
+    target_field.append("<input type='text' name='target_namespace' />")
+    target_field.append("/" + project_name)
+    target_field.data("project_name", project_name)
+    target_field.find('input').prop("value", origin_namespace)
+- elsif @access_denied
+  :plain
+    job = $("tr#repo_#{@repo_id}")
+    job.find(".import-actions").html("<p class='alert alert-danger'>Access denied! Please verify you can add deploy keys to this repository.</p>"")
+- else
+  :plain
+    job = $("tr#repo_#{@repo_id}")
+    job.attr("id", "project_#{@project.id}")
+    target_field = job.find(".import-target")
+    target_field.empty()
+    target_field.append('<strong>#{link_to @project.path_with_namespace, [@project.namespace.becomes(Namespace), @project]}</strong>')
+    $("table.import-jobs tbody").prepend(job)
+    job.addClass("active").find(".import-actions").html("<i class='fa fa-spinner fa-spin'></i> started")

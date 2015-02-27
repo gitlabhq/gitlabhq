@@ -26,8 +26,6 @@
 #  bio                      :string(255)
 #  failed_attempts          :integer          default(0)
 #  locked_at                :datetime
-#  extern_uid               :string(255)
-#  provider                 :string(255)
 #  username                 :string(255)
 #  can_create_group         :boolean          default(TRUE), not null
 #  can_create_team          :boolean          default(TRUE), not null
@@ -36,29 +34,36 @@
 #  notification_level       :integer          default(1), not null
 #  password_expires_at      :datetime
 #  created_by_id            :integer
-#  last_credential_check_at :datetime
 #  avatar                   :string(255)
 #  confirmation_token       :string(255)
 #  confirmed_at             :datetime
 #  confirmation_sent_at     :datetime
 #  unconfirmed_email        :string(255)
 #  hide_no_ssh_key          :boolean          default(FALSE)
+#  hide_no_password         :boolean          default(FALSE)
 #  website_url              :string(255)      default(""), not null
+#  last_credential_check_at :datetime
+#  github_access_token      :string(255)
+#  notification_email       :string(255)
+#  password_automatically_set :boolean        default(FALSE)
+#  bitbucket_access_token   :string(255)
 #
 
 require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class User < ActiveRecord::Base
+  include Sortable
   include Gitlab::ConfigHelper
-  extend Gitlab::ConfigHelper
   include TokenAuthenticatable
+  extend Gitlab::ConfigHelper
+  include Gitlab::CurrentSettings
 
   default_value_for :admin, false
   default_value_for :can_create_group, gitlab_config.default_can_create_group
   default_value_for :can_create_team, false
   default_value_for :hide_no_ssh_key, false
-  default_value_for :projects_limit, gitlab_config.default_projects_limit
+  default_value_for :hide_no_password, false
   default_value_for :theme_id, gitlab_config.default_theme
 
   devise :database_authenticatable, :lockable, :async,
@@ -79,6 +84,7 @@ class User < ActiveRecord::Base
   # Profile
   has_many :keys, dependent: :destroy
   has_many :emails, dependent: :destroy
+  has_many :identities, dependent: :destroy
 
   # Groups
   has_many :members, dependent: :destroy
@@ -105,32 +111,38 @@ class User < ActiveRecord::Base
   has_many :recent_events, -> { order "id DESC" }, foreign_key: :author_id,   class_name: "Event"
   has_many :assigned_issues,          dependent: :destroy, foreign_key: :assignee_id, class_name: "Issue"
   has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
+  has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
 
 
   #
   # Validations
   #
   validates :name, presence: true
-  validates :email, presence: true, email: {strict_mode: true}, uniqueness: true
+  validates :email, presence: true, email: { strict_mode: true }, uniqueness: true
+  validates :notification_email, presence: true, email: { strict_mode: true }
   validates :bio, length: { maximum: 255 }, allow_blank: true
-  validates :extern_uid, allow_blank: true, uniqueness: {scope: :provider}
-  validates :projects_limit, presence: true, numericality: {greater_than_or_equal_to: 0}
-  validates :username, presence: true, uniqueness: { case_sensitive: false },
-            exclusion: { in: Gitlab::Blacklist.path },
-            format: { with: Gitlab::Regex.username_regex,
-                      message: Gitlab::Regex.username_regex_message }
+  validates :projects_limit, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :username,
+    presence: true,
+    uniqueness: { case_sensitive: false },
+    exclusion: { in: Gitlab::Blacklist.path },
+    format: { with: Gitlab::Regex.username_regex,
+              message: Gitlab::Regex.username_regex_message }
 
   validates :notification_level, inclusion: { in: Notification.notification_levels }, presence: true
   validate :namespace_uniq, if: ->(user) { user.username_changed? }
   validate :avatar_type, if: ->(user) { user.avatar_changed? }
   validate :unique_email, if: ->(user) { user.email_changed? }
-  validates :avatar, file_size: { maximum: 100.kilobytes.to_i }
+  validate :owns_notification_email, if: ->(user) { user.notification_email_changed? }
+  validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :generate_password, on: :create
   before_validation :sanitize_attrs
+  before_validation :set_notification_email, if: ->(user) { user.email_changed? }
 
   before_save :ensure_authentication_token
   after_save :ensure_namespace_correct
+  after_initialize :set_projects_limit
   after_create :post_create_hook
   after_destroy :post_destroy_hook
 
@@ -167,18 +179,16 @@ class User < ActiveRecord::Base
     end
   end
 
-  mount_uploader :avatar, AttachmentUploader
+  mount_uploader :avatar, AvatarUploader
 
   # Scopes
   scope :admins, -> { where(admin:  true) }
   scope :blocked, -> { with_state(:blocked) }
   scope :active, -> { with_state(:active) }
-  scope :alphabetically, -> { order('name ASC') }
   scope :in_team, ->(team){ where(id: team.member_ids) }
   scope :not_in_team, ->(team){ where('users.id NOT IN (:ids)', ids: team.member_ids) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members)') }
-  scope :ldap, -> { where('provider LIKE ?', 'ldap%') }
   scope :potential_team_members, ->(team) { team.members.any? ? active.not_in_team(team) : active  }
 
   #
@@ -197,11 +207,10 @@ class User < ActiveRecord::Base
 
     def sort(method)
       case method.to_s
-      when 'recent_sign_in' then reorder('users.last_sign_in_at DESC')
-      when 'oldest_sign_in' then reorder('users.last_sign_in_at ASC')
-      when 'recently_created' then reorder('users.created_at DESC')
-      when 'late_created' then reorder('users.created_at ASC')
-      else reorder("users.name ASC")
+      when 'recent_sign_in' then reorder(last_sign_in_at: :desc)
+      when 'oldest_sign_in' then reorder(last_sign_in_at: :asc)
+      else
+        order_by(method)
       end
     end
 
@@ -226,12 +235,33 @@ class User < ActiveRecord::Base
       where("lower(name) LIKE :query OR lower(email) LIKE :query OR lower(username) LIKE :query", query: "%#{query.downcase}%")
     end
 
+    def by_login(login)
+      where('lower(username) = :value OR lower(email) = :value',
+            value: login.to_s.downcase).first
+    end
+
     def by_username_or_id(name_or_id)
       where('users.username = ? OR users.id = ?', name_or_id.to_s, name_or_id.to_i).first
     end
 
     def build_user(attrs = {})
       User.new(attrs)
+    end
+
+    def clean_username(username)
+      username.gsub!(/@.*\z/,             "")
+      username.gsub!(/\.git\z/,           "")
+      username.gsub!(/\A-/,               "")
+      username.gsub!(/[^a-zA-Z0-9_\-\.]/, "")
+
+      counter = 0
+      base = username
+      while User.by_login(username).present? || Namespace.by_path(username).present?
+        counter += 1
+        username = "#{base}#{counter}"
+      end
+
+      username
     end
   end
 
@@ -264,7 +294,8 @@ class User < ActiveRecord::Base
 
   def namespace_uniq
     namespace_name = self.username
-    if Namespace.find_by(path: namespace_name)
+    existing_namespace = Namespace.by_path(namespace_name)
+    if existing_namespace && existing_namespace != self.namespace
       self.errors.add :username, "already exists"
     end
   end
@@ -279,11 +310,15 @@ class User < ActiveRecord::Base
     self.errors.add(:email, 'has already been taken') if Email.exists?(email: self.email)
   end
 
+  def owns_notification_email
+    self.errors.add(:notification_email, "is not an email you own") unless self.all_emails.include?(self.notification_email)
+  end
+
   # Groups user has access to
   def authorized_groups
     @authorized_groups ||= begin
                              group_ids = (groups.pluck(:id) + authorized_projects.pluck(:namespace_id))
-                             Group.where(id: group_ids).order('namespaces.name ASC')
+                             Group.where(id: group_ids)
                            end
   end
 
@@ -292,9 +327,9 @@ class User < ActiveRecord::Base
   def authorized_projects
     @authorized_projects ||= begin
                                project_ids = personal_projects.pluck(:id)
-                               project_ids += groups_projects.pluck(:id)
-                               project_ids += projects.pluck(:id).uniq
-                               Project.where(id: project_ids).joins(:namespace).order('namespaces.name ASC')
+                               project_ids.push(*groups_projects.pluck(:id))
+                               project_ids.push(*projects.pluck(:id).uniq)
+                               Project.where(id: project_ids)
                              end
   end
 
@@ -315,6 +350,10 @@ class User < ActiveRecord::Base
 
   def require_ssh_key?
     keys.count == 0
+  end
+
+  def require_password?
+    password_automatically_set? && !ldap_user?
   end
 
   def can_change_username?
@@ -402,7 +441,11 @@ class User < ActiveRecord::Base
   end
 
   def ldap_user?
-    extern_uid && provider.start_with?('ldap')
+    identities.exists?(["provider LIKE ? AND extern_uid IS NOT NULL", "ldap%"])
+  end
+
+  def ldap_identity
+    @ldap_identity ||= identities.find_by(["provider LIKE ?", "ldap%"])
   end
 
   def accessible_deploy_keys
@@ -418,6 +461,19 @@ class User < ActiveRecord::Base
       value = self.send(attr)
       self.send("#{attr}=", Sanitize.clean(value)) if value.present?
     end
+  end
+
+  def set_notification_email
+    if self.notification_email.blank? || !self.all_emails.include?(self.notification_email)
+      self.notification_email = self.email
+    end
+  end
+
+  def set_projects_limit
+    connection_default_value_defined = new_record? && !projects_limit_changed?
+    return unless self.projects_limit.nil? || connection_default_value_defined
+
+    self.projects_limit = current_application_settings.default_projects_limit
   end
 
   def requires_ldap_check?
@@ -478,7 +534,7 @@ class User < ActiveRecord::Base
   end
 
   def temp_oauth_email?
-    email =~ /\Atemp-email-for-oauth/
+    email.start_with?('temp-email-for-oauth')
   end
 
   def public_profile?
@@ -487,10 +543,22 @@ class User < ActiveRecord::Base
 
   def avatar_url(size = nil)
     if avatar.present?
-      [gitlab_config.url, avatar.url].join("/")
+      [gitlab_config.url, avatar.url].join
     else
       GravatarService.new.execute(email, size)
     end
+  end
+
+  def all_emails
+    [self.email, *self.emails.map(&:email)]
+  end
+
+  def hook_attrs
+    {
+      name: name,
+      username: username,
+      avatar_url: avatar_url
+    }
   end
 
   def ensure_namespace_correct
@@ -504,7 +572,7 @@ class User < ActiveRecord::Base
 
   def post_create_hook
     log_info("User \"#{self.name}\" (#{self.email}) was created")
-    notification_service.new_user(self, @reset_token)
+    notification_service.new_user(self, @reset_token) if self.created_by_id
     system_hook_service.execute_hooks_for(self, :create)
   end
 
@@ -537,5 +605,30 @@ class User < ActiveRecord::Base
     else
       UsersStarProject.create!(project: project, user: self)
     end
+  end
+
+  def manageable_namespaces
+    @manageable_namespaces ||=
+      begin
+        namespaces = []
+        namespaces << namespace
+        namespaces += owned_groups
+        namespaces += masters_groups
+      end
+  end
+
+  def oauth_authorized_tokens
+    Doorkeeper::AccessToken.where(resource_owner_id: self.id, revoked_at: nil)
+  end
+
+  def contributed_projects_ids
+    Event.where(author_id: self).
+      where("created_at > ?", Time.now - 1.year).
+      where("action = :pushed OR (target_type = 'MergeRequest' AND action = :created)", 
+        pushed: Event::PUSHED, created: Event::CREATED).
+      reorder(project_id: :desc).
+      select(:project_id).
+      uniq
+      .map(&:project_id)
   end
 end

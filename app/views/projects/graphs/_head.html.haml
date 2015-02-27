@@ -1,5 +1,5 @@
 %ul.nav.nav-tabs
   = nav_link(action: :show) do
-    = link_to 'Contributors', project_graph_path
+    = link_to 'Contributors', namespace_project_graph_path
   = nav_link(action: :commits) do
-    = link_to 'Commits', commits_project_graph_path
+    = link_to 'Commits', commits_namespace_project_graph_path

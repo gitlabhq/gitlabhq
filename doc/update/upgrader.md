@@ -1,4 +1,5 @@
 # GitLab Upgrader
+*Make sure you view this [upgrade guide from the `master` branch](../../../master/doc/update/upgrader.md) for the most up to date instructions.*
 
 GitLab Upgrader - a ruby script that allows you easily upgrade GitLab to latest minor version.
 
@@ -9,6 +10,8 @@ You still need to create a backup and manually restart GitLab after running the 
 If you have local changes to your GitLab repository the script will stash them and you need to use `git stash pop` after running the script.
 
 **GitLab Upgrader is available only for GitLab version 6.4.2 or higher.**
+
+**This script does NOT update gitlab-shell, it needs manual update. See step 5 below.**
 
 ## 0. Backup
 
@@ -21,7 +24,7 @@ If you have local changes to your GitLab repository the script will stash them a
 
 ## 2. Run GitLab upgrade tool
 
-Note: GitLab 7.2 adds `pkg-config` and `cmake` as dependency. Please check the dependencies in the [installation guide.](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md#1-packages-dependencies)
+Note: GitLab 7.6 adds `libkrb5-dev` as a dependency (installed by default on Ubuntu and OSX) while 7.2 adds `pkg-config` and `cmake` as dependency. Please check the dependencies in the [installation guide.](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md#1-packages-dependencies)
 
     # Starting with GitLab version 7.0 upgrader script has been moved to bin directory
     cd /home/git/gitlab
@@ -43,28 +46,31 @@ Check if GitLab and its dependencies are configured correctly:
 
 If all items are green, then congratulations upgrade is complete!
 
-## 5. Upgrade GitLab Shell (if needed)
+## 5. Upgrade GitLab Shell
 
-If the `gitlab:check` task reports an outdated version of `gitlab-shell` you should upgrade it.
-
-Upgrade it by running the commands below after replacing 2.0.1 with the correct version number:
+GitLab Shell might be outdated, running the commands below ensures you're using a compatible version:
 
 ```
 cd /home/git/gitlab-shell
 sudo -u git -H git fetch
-sudo -u git -H git checkout v2.0.1
+sudo -u git -H git checkout v`cat /home/git/gitlab/GITLAB_SHELL_VERSION`
 ```
 
 ## One line upgrade command
 
 You've read through the entire guide and probably already did all the steps one by one.
 
-Here is a one line command with step 1 to 4 for the next time you upgrade:
+Here is a one line command with step 1 to 5 for the next time you upgrade:
 
 ```bash
-cd /home/git/gitlab; sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production; \
+cd /home/git/gitlab; \
+  sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production; \
   sudo service gitlab stop; \
   if [ -f bin/upgrade.rb ]; then sudo -u git -H ruby bin/upgrade.rb -y; else sudo -u git -H ruby script/upgrade.rb -y; fi; \
+  cd /home/git/gitlab-shell; \
+  sudo -u git -H git fetch; \
+  sudo -u git -H git checkout v`cat /home/git/gitlab/GITLAB_SHELL_VERSION`; \
+  cd /home/git/gitlab; \
   sudo service gitlab start; \
   sudo service nginx restart; sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 ```

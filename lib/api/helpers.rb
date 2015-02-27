@@ -11,7 +11,7 @@ module API
 
     def current_user
       private_token = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
-      @current_user ||= User.find_by(authentication_token: private_token)
+      @current_user ||= (User.find_by(authentication_token: private_token) || doorkeeper_guard)
 
       unless @current_user && Gitlab::UserAccess.allowed?(@current_user)
         return nil
@@ -42,7 +42,7 @@ module API
 
     def user_project
       @project ||= find_project(params[:id])
-      @project || not_found!
+      @project || not_found!("Project")
     end
 
     def find_project(id)
@@ -52,6 +52,21 @@ module API
         project
       else
         nil
+      end
+    end
+
+    def find_group(id)
+      begin
+        group = Group.find(id)
+      rescue ActiveRecord::RecordNotFound
+        group = Group.find_by!(path: id)
+      end
+
+      if can?(current_user, :read_group, group)
+        group
+      else
+        forbidden!("#{current_user.username} lacks sufficient "\
+        "access to #{group.name}")
       end
     end
 
@@ -68,7 +83,7 @@ module API
     end
 
     def authenticate_by_gitlab_shell_token!
-      unauthorized! unless secret_token == params['secret_token']
+      unauthorized! unless secret_token == params['secret_token'].try(:chomp)
     end
 
     def authenticated_as_admin!
@@ -135,10 +150,32 @@ module API
       errors
     end
 
+    def validate_access_level?(level)
+      Gitlab::Access.options_with_owner.values.include? level.to_i
+    end
+
+    def issuable_order_by
+      if params["order_by"] == 'updated_at'
+        'updated_at'
+      else
+        'created_at'
+      end
+    end
+
+    def issuable_sort
+      if params["sort"] == 'asc'
+        :asc
+      else
+        :desc
+      end
+    end
+
     # error helpers
 
-    def forbidden!
-      render_api_error!('403 Forbidden', 403)
+    def forbidden!(reason = nil)
+      message = ['403 Forbidden']
+      message << " - #{reason}" if reason
+      render_api_error!(message.join(' '), 403)
     end
 
     def bad_request!(attribute)
@@ -173,7 +210,7 @@ module API
     end
 
     def render_api_error!(message, status)
-      error!({'message' => message}, status)
+      error!({ 'message' => message }, status)
     end
 
     private
@@ -199,7 +236,12 @@ module API
     end
 
     def secret_token
-      File.read(Rails.root.join('.gitlab_shell_secret'))
+      File.read(Rails.root.join('.gitlab_shell_secret')).chomp
+    end
+
+    def handle_member_errors(errors)
+      error!(errors[:access_level], 422) if errors[:access_level].any?
+      not_found!(errors)
     end
   end
 end

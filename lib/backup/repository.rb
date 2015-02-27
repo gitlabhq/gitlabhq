@@ -8,19 +8,21 @@ module Backup
       prepare
 
       Project.find_each(batch_size: 1000) do |project|
-        print " * #{project.path_with_namespace} ... "
+        $progress.print " * #{project.path_with_namespace} ... "
 
         # Create namespace dir if missing
         FileUtils.mkdir_p(File.join(backup_repos_path, project.namespace.path)) if project.namespace
 
         if project.empty_repo?
-          puts "[SKIPPED]".cyan
+          $progress.puts "[SKIPPED]".cyan
         else
-          output, status = Gitlab::Popen.popen(%W(git --git-dir=#{path_to_repo(project)} bundle create #{path_to_bundle(project)} --all))
+          cmd = %W(git --git-dir=#{path_to_repo(project)} bundle create #{path_to_bundle(project)} --all)
+          output, status = Gitlab::Popen.popen(cmd)
           if status.zero?
-            puts "[DONE]".green
+            $progress.puts "[DONE]".green
           else
             puts "[FAILED]".red
+            puts "failed: #{cmd.join(' ')}"
             puts output
             abort 'Backup failed'
           end
@@ -29,15 +31,17 @@ module Backup
         wiki = ProjectWiki.new(project)
 
         if File.exists?(path_to_repo(wiki))
-          print " * #{wiki.path_with_namespace} ... "
+          $progress.print " * #{wiki.path_with_namespace} ... "
           if wiki.repository.empty?
-            puts " [SKIPPED]".cyan
+            $progress.puts " [SKIPPED]".cyan
           else
-            output, status = Gitlab::Popen.popen(%W(git --git-dir=#{path_to_repo(wiki)} bundle create #{path_to_bundle(wiki)} --all))
+            cmd = %W(git --git-dir=#{path_to_repo(wiki)} bundle create #{path_to_bundle(wiki)} --all)
+            output, status = Gitlab::Popen.popen(cmd)
             if status.zero?
-              puts " [DONE]".green
+              $progress.puts " [DONE]".green
             else
               puts " [FAILED]".red
+              puts "failed: #{cmd.join(' ')}"
               abort 'Backup failed'
             end
           end
@@ -55,35 +59,52 @@ module Backup
       FileUtils.mkdir_p(repos_path)
 
       Project.find_each(batch_size: 1000) do |project|
-        print "#{project.path_with_namespace} ... "
+        $progress.print " * #{project.path_with_namespace} ... "
 
         project.namespace.ensure_dir_exist if project.namespace
 
-        if system(*%W(git clone --bare #{path_to_bundle(project)} #{path_to_repo(project)}), silent)
-          puts "[DONE]".green
+        if File.exists?(path_to_bundle(project))
+          cmd = %W(git clone --bare #{path_to_bundle(project)} #{path_to_repo(project)})
+        else
+          cmd = %W(git init --bare #{path_to_repo(project)})
+        end
+
+        if system(*cmd, silent)
+          $progress.puts "[DONE]".green
         else
           puts "[FAILED]".red
+          puts "failed: #{cmd.join(' ')}"
           abort 'Restore failed'
         end
 
         wiki = ProjectWiki.new(project)
 
         if File.exists?(path_to_bundle(wiki))
-          print " * #{wiki.path_with_namespace} ... "
-          if system(*%W(git clone --bare #{path_to_bundle(wiki)} #{path_to_repo(wiki)}), silent)
-            puts " [DONE]".green
+          $progress.print " * #{wiki.path_with_namespace} ... "
+
+          # If a wiki bundle exists, first remove the empty repo
+          # that was initialized with ProjectWiki.new() and then
+          # try to restore with 'git clone --bare'.
+          FileUtils.rm_rf(path_to_repo(wiki))
+          cmd = %W(git clone --bare #{path_to_bundle(wiki)} #{path_to_repo(wiki)})
+
+          if system(*cmd, silent)
+            $progress.puts " [DONE]".green
           else
             puts " [FAILED]".red
+            puts "failed: #{cmd.join(' ')}"
             abort 'Restore failed'
           end
         end
       end
 
-      print 'Put GitLab hooks in repositories dirs'.yellow
-      if system("#{Gitlab.config.gitlab_shell.path}/bin/create-hooks")
-        puts " [DONE]".green
+      $progress.print 'Put GitLab hooks in repositories dirs'.yellow
+      cmd = "#{Gitlab.config.gitlab_shell.path}/bin/create-hooks"
+      if system(cmd)
+        $progress.puts " [DONE]".green
       else
         puts " [FAILED]".red
+        puts "failed: #{cmd}"
       end
 
     end
@@ -91,7 +112,7 @@ module Backup
     protected
 
     def path_to_repo(project)
-      File.join(repos_path, project.path_with_namespace + '.git')
+      project.repository.path_to_repo
     end
 
     def path_to_bundle(project)

@@ -1,7 +1,7 @@
 %h3.page-title
   New project member(s)
 
-= form_for @user_project_relation, as: :project_member, url: project_team_members_path(@project), html: { class: "form-horizontal users-project-form" } do |f|
+= form_for @user_project_relation, as: :project_member, url: namespace_project_team_members_path(@project.namespace, @project), html: { class: "form-horizontal users-project-form" } do |f|
   -if @user_project_relation.errors.any?
     .alert.alert-danger
       %ul
@@ -17,8 +17,13 @@
   %p 2. Set access level for them
   .form-group
     = f.label :access_level, "Project Access", class: 'control-label'
-    .col-sm-10= select_tag :access_level, options_for_select(Gitlab::Access.options, @user_project_relation.access_level), class: "project-access-select select2"
+    .col-sm-10
+      = select_tag :access_level, options_for_select(Gitlab::Access.options, @user_project_relation.access_level), class: "project-access-select select2"
+      .help-block
+        Read more about role permissions
+        %strong= link_to "here", help_page_path("permissions", "permissions"), class: "vlink"
+
 
   .form-actions
     = f.submit 'Add users', class: "btn btn-create"
-    = link_to "Cancel", project_team_index_path(@project), class: "btn btn-cancel"
+    = link_to "Cancel", namespace_project_team_index_path(@project.namespace, @project), class: "btn btn-cancel"

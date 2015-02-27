@@ -16,14 +16,13 @@ Gitlab::Seeder.quiet do
 
   (1..5).each do |i|
     begin
-      User.seed(:id, [
-        id: i + 10,
-        username: "user#{i}",
-        name: "User #{i}",
-        email: "user#{i}@example.com",
-        confirmed_at: DateTime.now,
-        password: '12345678'
-      ])
+      User.seed do |s|
+        s.username = "user#{i}"
+        s.name = "User #{i}"
+        s.email = "user#{i}@example.com"
+        s.confirmed_at = DateTime.now
+        s.password = '12345678'
+      end
       print '.'
     rescue ActiveRecord::RecordNotSaved
       print 'F'

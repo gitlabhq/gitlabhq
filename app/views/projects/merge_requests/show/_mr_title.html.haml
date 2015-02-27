@@ -1,45 +1,22 @@
-%h3.page-title
+%h4.page-title
+  .issue-box{ class: issue_box_class(@merge_request) }
+    - if @merge_request.merged?
+      Merged
+    - elsif @merge_request.closed?
+      Closed
+    - else
+      Open
   = "Merge Request ##{@merge_request.iid}"
+  %small.creator
+    &middot;
+    created by #{link_to_member(@project, @merge_request.author)} #{time_ago_with_tooltip(@merge_request.created_at)}
 
-  %span.pull-right.issue-btn-group
+  .issue-btn-group.pull-right
     - if can?(current_user, :modify_merge_request, @merge_request)
       - if @merge_request.open?
-        .btn-group.pull-left
-          %a.btn.btn-grouped.dropdown-toggle{ data: {toggle: :dropdown} }
-            %i.fa.fa-download
-            Download as
-            %span.caret
-          %ul.dropdown-menu
-            %li= link_to "Email Patches", project_merge_request_path(@project, @merge_request, format: :patch)
-            %li= link_to "Plain Diff",    project_merge_request_path(@project, @merge_request, format: :diff)
-
-        = link_to 'Close', project_merge_request_path(@project, @merge_request, merge_request: { state_event: :close }), method: :put, class: "btn btn-grouped btn-close", title: "Close merge request"
-
-        = link_to edit_project_merge_request_path(@project, @merge_request), class: "btn btn-grouped", id:"edit_merge_request" do
+        = link_to 'Close', merge_request_path(@merge_request, merge_request: { state_event: :close }), method: :put, class: "btn btn-grouped btn-close", title: "Close merge request"
+        = link_to edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: "btn btn-grouped issuable-edit", id: "edit_merge_request" do
           %i.fa.fa-pencil-square-o
           Edit
       - if @merge_request.closed?
-        = link_to 'Reopen', project_merge_request_path(@project, @merge_request, merge_request: {state_event: :reopen }), method: :put, class: "btn btn-grouped btn-reopen reopen-mr-link", title: "Close merge request"
-
-.votes-holder.hidden-sm.hidden-xs
-  #votes= render 'votes/votes_block', votable: @merge_request
-
-.back-link
-  = link_to project_merge_requests_path(@project) do
-    &larr; To merge requests
-
-  %span.prepend-left-20
-    %span From
-    - if @merge_request.for_fork?
-      %strong.label-branch<
-        - if @merge_request.source_project
-          = link_to @merge_request.source_project_namespace, project_path(@merge_request.source_project)
-        - else
-          \ #{@merge_request.source_project_namespace}
-        \:#{@merge_request.source_branch}
-      %span into
-      %strong.label-branch #{@merge_request.target_project_namespace}:#{@merge_request.target_branch}
-    - else
-      %strong.label-branch #{@merge_request.source_branch}
-      %span into
-      %strong.label-branch #{@merge_request.target_branch}
+        = link_to 'Reopen', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: "btn btn-grouped btn-reopen reopen-mr-link", title: "Close merge request"

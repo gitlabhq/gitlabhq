@@ -1,9 +1,6 @@
 /*
  * Twitter bootstrap with GitLab customizations/additions
  *
- * Some unused bootstrap compontents like panels are not included.
- * Other components like tabs are modified to GitLab style.
- *
  */
 
 $font-size-base: 13px !default;
@@ -146,6 +143,10 @@ $list-group-active-bg: $bg_primary;
 .nav-tabs > li > a,
 .nav-pills > li > a {
   color: #666;
+}
+
+.nav-compact > li > a {
+  padding: 6px 12px;
 }
 
 .nav-small > li > a {

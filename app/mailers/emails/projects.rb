@@ -3,7 +3,7 @@ module Emails
     def project_access_granted_email(user_project_id)
       @project_member = ProjectMember.find user_project_id
       @project = @project_member.project
-      @target_url = project_url(@project)
+      @target_url = namespace_project_url(@project.namespace, @project)
       mail(to: @project_member.user.email,
            subject: subject("Access to project was granted"))
     end
@@ -11,8 +11,8 @@ module Emails
     def project_was_moved_email(project_id, user_id)
       @user = User.find user_id
       @project = Project.find project_id
-      @target_url = project_url(@project)
-      mail(to: @user.email,
+      @target_url = namespace_project_url(@project.namespace, @project)
+      mail(to: @user.notification_email,
            subject: subject("Project was moved"))
     end
 
@@ -24,10 +24,14 @@ module Emails
       @diffs   = compare.diffs
       @branch  = branch
       if @commits.length > 1
-        @target_url = project_compare_url(@project, from: @commits.first, to: @commits.last)
+        @target_url = namespace_project_compare_url(@project.namespace,
+                                                    @project,
+                                                    from: @commits.first,
+                                                    to: @commits.last)
         @subject = "#{@commits.length} new commits pushed to repository"
       else
-        @target_url = project_commit_url(@project, @commits.first)
+        @target_url = namespace_project_commit_url(@project.namespace,
+                                                   @project, @commits.first)
         @subject = @commits.first.title
       end
 

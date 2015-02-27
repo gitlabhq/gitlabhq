@@ -6,17 +6,27 @@ class RepositoryImportWorker
 
   def perform(project_id)
     project = Project.find(project_id)
-    result = gitlab_shell.send(:import_repository,
+
+    import_result = gitlab_shell.send(:import_repository,
                                project.path_with_namespace,
                                project.import_url)
+    return project.import_fail unless import_result
 
-    if result
-      project.import_finish
-      project.save
-      project.satellite.create unless project.satellite.exists?
-      project.update_repository_size
-    else
-      project.import_fail
-    end
+    data_import_result =  if project.import_type == 'github'
+                            Gitlab::GithubImport::Importer.new(project).execute
+                          elsif project.import_type == 'gitlab'
+                            Gitlab::GitlabImport::Importer.new(project).execute
+                          elsif project.import_type == 'bitbucket'
+                            Gitlab::BitbucketImport::Importer.new(project).execute
+                          else
+                            true
+                          end
+    return project.import_fail unless data_import_result
+
+    project.import_finish
+    project.save
+    project.satellite.create unless project.satellite.exists?
+    project.update_repository_size
+    Gitlab::BitbucketImport::KeyDeleter.new(project).execute if project.import_type == 'bitbucket'
   end
 end

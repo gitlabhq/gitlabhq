@@ -5,6 +5,8 @@
 #
 module Gitlab
   module OAuth
+    class ForbiddenAction < StandardError; end
+
     class User
       attr_accessor :auth_hash, :gl_user
 
@@ -70,24 +72,25 @@ module Gitlab
       end
 
       def find_by_uid_and_provider
-        model.where(provider: auth_hash.provider, extern_uid: auth_hash.uid).last
+        identity = Identity.find_by(provider: auth_hash.provider, extern_uid: auth_hash.uid)
+        identity && identity.user
       end
 
       def build_new_user
-        model.new(user_attributes).tap do |user|
-          user.skip_confirmation!
-        end
+        user = ::User.new(user_attributes)
+        user.skip_confirmation!
+        user.identities.new(extern_uid: auth_hash.uid, provider: auth_hash.provider)
+        user
       end
 
       def user_attributes
         {
-          extern_uid: auth_hash.uid,
-          provider: auth_hash.provider,
-          name: auth_hash.name,
-          username: auth_hash.username,
-          email: auth_hash.email,
-          password: auth_hash.password,
-          password_confirmation: auth_hash.password,
+          name:                       auth_hash.name,
+          username:                   ::User.clean_username(auth_hash.username),
+          email:                      auth_hash.email,
+          password:                   auth_hash.password,
+          password_confirmation:      auth_hash.password,
+          password_automatically_set: true
         }
       end
 
@@ -95,12 +98,8 @@ module Gitlab
         Gitlab::AppLogger
       end
 
-      def model
-        ::User
-      end
-
-      def raise_unauthorized_to_create
-        raise StandardError.new("Unauthorized to create user, signup disabled for #{auth_hash.provider}")
+      def unauthorized_to_create
+        raise ForbiddenAction.new("Unauthorized to create user, signup disabled for #{auth_hash.provider}")
       end
     end
   end

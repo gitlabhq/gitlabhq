@@ -1,15 +1,17 @@
 .panel.panel-default
   .panel-heading.clearfix
-    = search_field_tag :filter_group, nil, placeholder: 'Filter by name', class: 'dash-filter form-control'
-    - if current_user.can_create_group?
-      = link_to new_group_path, class: "btn btn-new pull-right" do
-        %i.fa.fa-plus
-        New group
+    .input-group
+      = search_field_tag :filter_group, nil, placeholder: 'Filter by name', class: 'dash-filter form-control'
+      - if current_user.can_create_group?
+        .input-group-addon.dash-new-group
+          = link_to new_group_path, class: "" do
+            %strong New group
   %ul.well-list.dash-list
     - groups.each do |group|
       %li.group-row
         = link_to group_path(id: group.path), class: dom_class(group) do
-          = image_tag group_icon(group.path), class: "avatar s24"
+          .dash-project-avatar
+            = image_tag group_icon(group.path), class: "avatar s40"
           %span.group-name.filter-title
             = truncate(group.name, length: 35)
           %span.arrow

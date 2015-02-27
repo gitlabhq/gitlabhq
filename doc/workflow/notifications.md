@@ -24,14 +24,14 @@ Each of these settings have levels of notification:
 #### Global Settings
 
 Global Settings are at the bottom of the hierarchy.
-Any setting set here will be overriden by a setting at the group or a project level.
+Any setting set here will be overridden by a setting at the group or a project level.
 
 Group or Project settings can use `global` notification setting which will then use
 anything that is set at Global Settings.
 
 #### Group Settings
 
-Group Settings are taking presedence over Global Settings but are on a level below Project Settings.
+Group Settings are taking precedence over Global Settings but are on a level below Project Settings.
 This means that you can set a different level of notifications per group while still being able
 to have a finer level setting per project.
 Organization like this is suitable for users that belong to different groups but don't have the
@@ -39,7 +39,7 @@ same need for being notified for every group they are member of.
 
 #### Project Settings
 
-Project Settings are at the top level and any setting placed at this level will take presedence of any
+Project Settings are at the top level and any setting placed at this level will take precedence of any
 other setting.
 This is suitable for users that have different needs for notifications per project basis.
 

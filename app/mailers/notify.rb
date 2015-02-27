@@ -11,6 +11,7 @@ class Notify < ActionMailer::Base
   add_template_helper ApplicationHelper
   add_template_helper GitlabMarkdownHelper
   add_template_helper MergeRequestsHelper
+  add_template_helper EmailsHelper
 
   default_url_options[:host]     = Gitlab.config.gitlab.host
   default_url_options[:protocol] = Gitlab.config.gitlab.protocol
@@ -23,6 +24,14 @@ class Notify < ActionMailer::Base
   # Just send email with 2 seconds delay
   def self.delay
     delay_for(2.seconds)
+  end
+
+  def test_email(recipient_email, subject, body)
+    mail(to: recipient_email,
+         subject: subject,
+         body: body.html_safe,
+         content_type: 'text/html'
+    )
   end
 
   private
@@ -51,7 +60,7 @@ class Notify < ActionMailer::Base
   # Returns a String containing the User's email address.
   def recipient(recipient_id)
     if recipient = User.find(recipient_id)
-      recipient.email
+      recipient.notification_email
     end
   end
 
@@ -102,6 +111,7 @@ class Notify < ActionMailer::Base
   # See: mail_answer_thread
   def mail_new_thread(model, headers = {}, &block)
     headers['Message-ID'] = message_id(model)
+    headers['X-GitLab-Project'] = "#{@project.name} | " if @project
     mail(headers, &block)
   end
 
@@ -116,6 +126,7 @@ class Notify < ActionMailer::Base
   def mail_answer_thread(model, headers = {}, &block)
     headers['In-Reply-To'] = message_id(model)
     headers['References'] = message_id(model)
+    headers['X-GitLab-Project'] = "#{@project.name} | " if @project
 
     if (headers[:subject])
       headers[:subject].prepend('Re: ')

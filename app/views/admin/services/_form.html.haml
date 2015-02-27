@@ -1,0 +1,40 @@
+%h3.page-title
+  = @service.title
+
+%p #{@service.description} template
+
+= form_for :service, url: admin_application_settings_service_path, method: :put, html: { class: 'form-horizontal fieldset-form' } do |f|
+  - if @service.errors.any?
+    #error_explanation
+      .alert.alert-danger
+        - @service.errors.full_messages.each do |msg|
+          %p= msg
+  - if @service.help.present?
+    .bs-callout
+      = preserve do
+        = markdown @service.help
+
+  - @service.fields.each do |field|
+    - name = field[:name]
+    - value = @service.send(name) unless field[:type] == 'password'
+    - type = field[:type]
+    - placeholder = field[:placeholder]
+    - choices = field[:choices]
+    - default_choice = field[:default_choice]
+
+    .form-group
+      = f.label name, class: "control-label"
+      .col-sm-10
+        - if type == 'text'
+          = f.text_field name, class: "form-control", placeholder: placeholder
+        - elsif type == 'textarea'
+          = f.text_area name, rows: 5, class: "form-control", placeholder: placeholder
+        - elsif type == 'checkbox'
+          = f.check_box name
+        - elsif type == 'select'
+          = f.select name, options_for_select(choices, value ? value : default_choice), {}, { class: "form-control" }
+        - elsif type == 'password'
+          = f.password_field name, class: 'form-control'
+
+  .form-actions
+    = f.submit 'Save', class: 'btn btn-save'

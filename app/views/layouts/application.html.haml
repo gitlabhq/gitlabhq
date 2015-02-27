@@ -1,12 +1,6 @@
 !!! 5
 %html{ lang: "en"}
   = render "layouts/head", title: "Dashboard"
-  %body{class: "#{app_theme} application", :'data-page' => body_data_page }
-    = render "layouts/broadcast"
-    = render "layouts/head_panel", title: "Dashboard"
-    %nav.main-nav.navbar-collapse.collapse
-      .container= render 'layouts/nav/dashboard'
-    .container
-      .content
-        = render "layouts/flash"
-        = yield
+  %body{class: "#{app_theme}  application", :'data-page' => body_data_page }
+    = render "layouts/head_panel", title: link_to("Dashboard", root_path)
+    = render 'layouts/page', sidebar: 'layouts/nav/dashboard'

@@ -1,73 +1,60 @@
 %h3.page-title
   My Projects
-.pull-right
-  .dropdown.inline
-    %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
-      %span.light sort:
-      - if @sort.present?
-        = @sort.humanize
-      - else
-        Name
-      %b.caret
-    %ul.dropdown-menu
-      %li
-        = link_to projects_dashboard_filter_path(sort: nil) do
-          Name
-        = link_to projects_dashboard_filter_path(sort: 'newest') do
-          Newest
-        = link_to projects_dashboard_filter_path(sort: 'oldest') do
-          Oldest
-        = link_to projects_dashboard_filter_path(sort: 'recently_updated') do
-          Recently updated
-        = link_to projects_dashboard_filter_path(sort: 'last_updated') do
-          Last updated
+
+  = link_to new_project_path, class: "btn btn-new pull-right" do
+    %i.fa.fa-plus
+    New Project
+
 %p.light
   All projects you have access to are listed here. Public projects are not included here unless you are a member
 %hr
-.row
-  .col-md-3.hidden-sm.hidden-xs.side-filters
-    = render "projects_filter"
-  .col-md-9
-    %ul.bordered-list.my-projects.top-list
-      - @projects.each do |project|
-        %li.my-project-row
-          %h4.project-title
-            .project-access-icon
-              = visibility_level_icon(project.visibility_level)
-            = link_to project_path(project), class: dom_class(project) do
-              = project.name_with_namespace
+.side-filters
+  = render "projects_filter"
+.dash-projects
+  %ul.bordered-list.my-projects.top-list
+    - @projects.each do |project|
+      %li.my-project-row
+        %h4.project-title
+          .pull-left
+            = project_icon("#{project.namespace.to_param}/#{project.to_param}", alt: '', class: 'avatar project-avatar s60')
+          .project-access-icon
+            = visibility_level_icon(project.visibility_level)
+          = link_to project_path(project), class: dom_class(project) do
+            %strong= project.name_with_namespace
 
-            - if current_user.can_leave_project?(project)
-              .pull-right
-                = link_to leave_project_team_members_path(project), data: { confirm: "Leave project?"}, method: :delete, remote: true, class: "btn-tiny btn remove-row", title: 'Leave project' do
-                  %i.fa.fa-sign-out
-                  Leave
+          - if project.forked_from_project
+            &nbsp;
+            %small
+              %i.fa.fa-code-fork
+              Forked from:
+              = link_to project.forked_from_project.name_with_namespace, namespace_project_path(project.namespace, project.forked_from_project)
 
-            - if project.forked_from_project
-              %small.pull-right
-                %i.fa.fa-code-fork
-                Forked from:
-                = link_to project.forked_from_project.name_with_namespace, project_path(project.forked_from_project)
-          .project-info
+          - if current_user.can_leave_project?(project)
             .pull-right
-              - if project.archived?
-                %span.label
-                  %i.fa.fa-archive
-                  Archived
-              - project.tags.each do |tag|
-                %span.label.label-info
-                  %i.fa.fa-tag
-                  = tag.name
-            - if project.description.present?
-              %p= truncate project.description, length: 100
-            .last-activity
-              %span.light Last activity:
-              %span.date= project_last_activity(project)
+              = link_to leave_namespace_project_team_members_path(project.namespace, project), data: { confirm: "Leave project?"}, method: :delete, remote: true, class: "btn-tiny btn remove-row", title: 'Leave project' do
+                %i.fa.fa-sign-out
+                Leave
+
+        .project-info
+          .pull-right
+            - if project.archived?
+              %span.label
+                %i.fa.fa-archive
+                Archived
+            - project.tags.each do |tag|
+              %span.label.label-info
+                %i.fa.fa-tag
+                = tag.name
+          - if project.description.present?
+            %p= truncate project.description, length: 100
+          .last-activity
+            %span.light Last activity:
+            %span.date= project_last_activity(project)
 
 
-        - if @projects.blank?
-          %li
-            .nothing-here-block There are no projects here.
-    .bottom
-      = paginate @projects, theme: "gitlab"
+      - if @projects.blank?
+        %li
+          .nothing-here-block There are no projects here.
+  .bottom
+    = paginate @projects, theme: "gitlab"
 

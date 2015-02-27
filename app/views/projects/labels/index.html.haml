@@ -1,7 +1,5 @@
-= render "projects/issues/head"
-
 - if can? current_user, :admin_label, @project
-  = link_to new_project_label_path(@project), class: "pull-right btn btn-new" do
+  = link_to new_namespace_project_label_path(@project.namespace, @project), class: "pull-right btn btn-new" do
     New label
 %h3.page-title
   Labels
@@ -14,4 +12,4 @@
     = paginate @labels, theme: 'gitlab'
   - else
     .light-well
-      .nothing-here-block Create first label or #{link_to 'generate', generate_project_labels_path(@project), method: :post} default set of labels
+      .nothing-here-block Create first label or #{link_to 'generate', generate_namespace_project_labels_path(@project.namespace, @project), method: :post} default set of labels

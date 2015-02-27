@@ -3,11 +3,7 @@ require_relative "base_service"
 module Files
   class UpdateService < BaseService
     def execute
-      allowed = if project.protected_branch?(ref)
-                  can?(current_user, :push_code_to_protected_branches, project)
-                else
-                  can?(current_user, :push_code, project)
-                end
+      allowed = ::Gitlab::GitAccess.can_push_to_branch?(current_user, project, ref)
 
       unless allowed
         return error("You are not allowed to push into this branch")
@@ -24,17 +20,20 @@ module Files
       end
 
       edit_file_action = Gitlab::Satellite::EditFileAction.new(current_user, project, ref, path)
-      created_successfully = edit_file_action.commit!(
+      edit_file_action.commit!(
         params[:content],
         params[:commit_message],
-        params[:encoding]
+        params[:encoding],
+        params[:new_branch]
       )
 
-      if created_successfully
-        success
-      else
-        error("Your changes could not be committed. Maybe the file was changed by another process or there was nothing to commit?")
-      end
+      success
+    rescue Gitlab::Satellite::CheckoutFailed => ex
+      error("Your changes could not be committed because ref '#{ref}' could not be checked out", 400)
+    rescue Gitlab::Satellite::CommitFailed => ex
+      error("Your changes could not be committed. Maybe there was nothing to commit?", 409)
+    rescue Gitlab::Satellite::PushFailed => ex
+      error("Your changes could not be committed. Maybe the file was changed by another process?", 409)
     end
   end
 end

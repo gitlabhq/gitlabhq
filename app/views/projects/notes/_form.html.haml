@@ -1,27 +1,18 @@
-= form_for [@project, @note], remote: true, html: { :'data-type' => 'json', multipart: true, id: nil, class: "new_note js-new-note-form common-note-form gfm-form" }, authenticity_token: true do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @note], remote: true, html: { :'data-type' => 'json', multipart: true, id: nil, class: "new_note js-new-note-form common-note-form gfm-form" }, authenticity_token: true do |f|
   = note_target_fields
   = f.hidden_field :commit_id
   = f.hidden_field :line_code
   = f.hidden_field :noteable_id
   = f.hidden_field :noteable_type
 
-  %ul.nav.nav-tabs
-    %li.active
-      = link_to '#note-write-holder', class: 'js-note-write-button' do
-        Write
-    %li
-      = link_to '#note-preview-holder', class: 'js-note-preview-button', data: { url: preview_project_notes_path(@project) } do
-        Preview
-  %div
-    .note-write-holder
-      = render 'projects/zen', f: f, attr: :note,
-                               classes: 'note_text js-note-text'
-      .light.clearfix
-        .pull-left Comments are parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"),{ target: '_blank', tabindex: -1 }}
-        .pull-right Attach images (JPG, PNG, GIF) by dragging &amp; dropping or #{link_to "selecting them", '#', class: 'markdown-selector', tabindex: -1 }.
+  = render layout: 'projects/md_preview', locals: { preview_class: "note-text" } do
+    = render 'projects/zen', f: f, attr: :note,
+      classes: 'note_text js-note-text'
 
-    .note-preview-holder.hide
-      .js-note-preview
+    .comment-hints.clearfix
+      .pull-left Comments are parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"),{ target: '_blank', tabindex: -1 }}
+      .pull-right Attach files by dragging &amp; dropping or #{link_to "selecting them", '#', class: 'markdown-selector', tabindex: -1 }.
+
 
   .note-form-actions
     .buttons
@@ -29,13 +20,5 @@
       = yield(:note_actions)
       %a.btn.grouped.js-close-discussion-note-form Cancel
 
-    .note-form-option
-      %a.choose-btn.btn.js-choose-note-attachment-button
-        %i.fa.fa-paperclip
-        %span Choose File ...
-      &nbsp;
-      %span.file_name.js-attachment-filename File name...
-      = f.file_field :attachment, class: "js-note-attachment-input hidden"
-
 :javascript
-  window.project_image_path_upload = "#{upload_image_project_path @project}";
+  window.project_uploads_path = "#{namespace_project_uploads_path @project.namespace, @project}";

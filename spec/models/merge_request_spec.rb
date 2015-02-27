@@ -18,41 +18,42 @@
 #  iid               :integer
 #  description       :text
 #  position          :integer          default(0)
+#  locked_at         :datetime
 #
 
 require 'spec_helper'
 
 describe MergeRequest do
   describe "Validation" do
-    it { should validate_presence_of(:target_branch) }
-    it { should validate_presence_of(:source_branch) }
+    it { is_expected.to validate_presence_of(:target_branch) }
+    it { is_expected.to validate_presence_of(:source_branch) }
   end
 
   describe "Mass assignment" do
   end
 
   describe "Respond to" do
-    it { should respond_to(:unchecked?) }
-    it { should respond_to(:can_be_merged?) }
-    it { should respond_to(:cannot_be_merged?) }
+    it { is_expected.to respond_to(:unchecked?) }
+    it { is_expected.to respond_to(:can_be_merged?) }
+    it { is_expected.to respond_to(:cannot_be_merged?) }
   end
 
   describe 'modules' do
-    it { should include_module(Issuable) }
+    it { is_expected.to include_module(Issuable) }
   end
 
   describe "#mr_and_commit_notes" do
     let!(:merge_request) { create(:merge_request) }
 
     before do
-      merge_request.stub(:commits) { [merge_request.source_project.repository.commit] }
+      allow(merge_request).to receive(:commits) { [merge_request.source_project.repository.commit] }
       create(:note, commit_id: merge_request.commits.first.id, noteable_type: 'Commit', project: merge_request.project)
       create(:note, noteable: merge_request, project: merge_request.project)
     end
 
     it "should include notes for commits" do
-      merge_request.commits.should_not be_empty
-      merge_request.mr_and_commit_notes.count.should == 2
+      expect(merge_request.commits).not_to be_empty
+      expect(merge_request.mr_and_commit_notes.count).to eq(2)
     end
   end
 
@@ -61,10 +62,10 @@ describe MergeRequest do
   describe '#is_being_reassigned?' do
     it 'returns true if the merge_request assignee has changed' do
       subject.assignee = create(:user)
-      subject.is_being_reassigned?.should be_true
+      expect(subject.is_being_reassigned?).to be_truthy
     end
     it 'returns false if the merge request assignee has not changed' do
-      subject.is_being_reassigned?.should be_false
+      expect(subject.is_being_reassigned?).to be_falsey
     end
   end
 
@@ -73,11 +74,11 @@ describe MergeRequest do
       subject.source_project = create(:project, namespace: create(:group))
       subject.target_project = create(:project, namespace: create(:group))
 
-      subject.for_fork?.should be_true
+      expect(subject.for_fork?).to be_truthy
     end
 
     it 'returns false if is not for a fork' do
-      subject.for_fork?.should be_false
+      expect(subject.for_fork?).to be_falsey
     end
   end
 
@@ -95,14 +96,14 @@ describe MergeRequest do
     it 'accesses the set of issues that will be closed on acceptance' do
       subject.project.stub(default_branch: subject.target_branch)
 
-      subject.closes_issues.should == [issue0, issue1].sort_by(&:id)
+      expect(subject.closes_issues).to eq([issue0, issue1].sort_by(&:id))
     end
 
     it 'only lists issues as to be closed if it targets the default branch' do
       subject.project.stub(default_branch: 'master')
       subject.target_branch = 'something-else'
 
-      subject.closes_issues.should be_empty
+      expect(subject.closes_issues).to be_empty
     end
 
     it 'detects issues mentioned in the description' do
@@ -110,7 +111,7 @@ describe MergeRequest do
       subject.description = "Closes ##{issue2.iid}"
       subject.project.stub(default_branch: subject.target_branch)
 
-      subject.closes_issues.should include(issue2)
+      expect(subject.closes_issues).to include(issue2)
     end
   end
 

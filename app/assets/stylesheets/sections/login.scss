@@ -1,48 +1,69 @@
 /* Login Page */
 .login-page {
-  h1 {
-    font-size: 3em;
-    font-weight: 200;
+  .container {
+    max-width: 960px;
+  }
+
+  .navbar-gitlab .container {
+    max-width: none;
+  }
+
+  .brand-holder {
+    font-size: 18px;
+    line-height: 1.5;
+
+    p {
+      color: #888;
+    }
+
+    h1:first-child {
+      font-weight: normal;
+      margin-bottom: 30px;
+    }
+
+    img {
+      max-width: 100%;
+      margin-bottom:  30px;
+    }
+
+    a {
+      font-weight: bold;
+    }
   }
 
   .login-box{
-    padding: 0 15px;
+    background: #fafafa;
+    border-radius: 10px;
+    box-shadow: 0 0px 2px #CCC;
+    padding: 15px;
 
     .login-heading h3 {
       font-weight: 300;
-      line-height: 2;
+      line-height: 1.5;
+      margin: 0 0 10px 0;
     }
 
     .login-footer {
       margin-top: 10px;
+
+      p:last-child {
+        margin-bottom: 0;
+      }
     }
 
-    .btn {
-      padding: 12px !important;
-      @extend .btn-block;
-    }
-  }
-
-  .brand-image {
-    img {
-      max-width: 100%;
-      margin-bottom:  20px;
+    a.forgot {
+      float: right;
+      padding-top: 6px
     }
 
-    &.default-brand-image {
-      margin: 0 80px;
+    .nav .active a {
+      background: transparent;
     }
-  }
-
-  .login-logo {
-    margin: 10px 0 30px 0;
-    display: block;
   }
 
   .form-control {
-    background-color: #F5F5F5;
-    font-size: 16px;
-    padding: 14px 10px;
+    font-size: 14px;
+    padding: 10px 8px;
     width: 100%;
     height: auto;
 
@@ -68,19 +89,27 @@
     }
   }
 
-  .login-box a.forgot {
-    float: right;
-    padding-top: 6px
-  }
-
   .devise-errors {
     h2 {
+      margin-top: 0;
       font-size: 14px;
       color: #a00;
     }
   }
 
-  .brand-holder {
-    border-right: 1px solid #EEE;
+  .remember-me {
+    margin-top: -10px;
+
+    label {
+      font-weight: normal;
+    }
+  }
+}
+
+@media (max-width: $screen-xs-max) {
+  .login-page {
+    .col-sm-5.pull-right {
+      float: none !important;
+    }
   }
 }

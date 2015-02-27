@@ -1,9 +1,7 @@
 module API
   # Internal access API
   class Internal < Grape::API
-    before {
-      authenticate_by_gitlab_shell_token!
-    }
+    before { authenticate_by_gitlab_shell_token! }
 
     namespace 'internal' do
       # Check if git command is allowed to project
@@ -25,25 +23,30 @@ module API
         # project. This applies the correct project permissions to
         # the wiki repository as well.
         access =
-          if project_path =~ /\.wiki\Z/
-            project_path.sub!(/\.wiki\Z/, '')
+          if project_path.end_with?('.wiki')
+            project_path.chomp!('.wiki')
             Gitlab::GitAccessWiki.new
           else
             Gitlab::GitAccess.new
           end
 
         project = Project.find_with_namespace(project_path)
-        return false unless project
+
+        unless project
+          return Gitlab::GitAccessStatus.new(false, 'No such project')
+        end
 
         actor = if params[:key_id]
-                  Key.find(params[:key_id])
+                  Key.find_by(id: params[:key_id])
                 elsif params[:user_id]
-                  User.find(params[:user_id])
+                  User.find_by(id: params[:user_id])
                 end
 
-        return false unless actor
+        unless actor
+          return Gitlab::GitAccessStatus.new(false, 'No such user or key')
+        end
 
-        access.allowed?(
+        access.check(
           actor,
           params[:action],
           project,
@@ -65,6 +68,14 @@ module API
           gitlab_version: Gitlab::VERSION,
           gitlab_rev: Gitlab::REVISION,
         }
+      end
+
+      get "/broadcast_message" do
+        if message = BroadcastMessage.current
+          present message, with: Entities::BroadcastMessage
+        else
+          {}
+        end
       end
     end
   end

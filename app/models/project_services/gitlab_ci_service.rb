@@ -5,11 +5,12 @@
 #  id         :integer          not null, primary key
 #  type       :string(255)
 #  title      :string(255)
-#  project_id :integer          not null
+#  project_id :integer
 #  created_at :datetime
 #  updated_at :datetime
 #  active     :boolean          default(FALSE), not null
 #  properties :text
+#  template   :boolean          default(FALSE)
 #
 
 class GitlabCiService < CiService
@@ -28,7 +29,7 @@ class GitlabCiService < CiService
   end
 
   def commit_status_path(sha)
-    project_url + "/builds/#{sha}/status.json?token=#{token}"
+    project_url + "/commits/#{sha}/status.json?token=#{token}"
   end
 
   def get_ci_build(sha)
@@ -55,7 +56,7 @@ class GitlabCiService < CiService
   end
 
   def build_page(sha)
-    project_url + "/builds/#{sha}"
+    project_url + "/commits/#{sha}"
   end
 
   def builds_path
@@ -81,7 +82,7 @@ class GitlabCiService < CiService
   def fields
     [
       { type: 'text', name: 'token', placeholder: 'GitLab CI project specific token' },
-      { type: 'text', name: 'project_url', placeholder: 'http://ci.gitlabhq.com/projects/3'}
+      { type: 'text', name: 'project_url', placeholder: 'http://ci.gitlabhq.com/projects/3' }
     ]
   end
 end

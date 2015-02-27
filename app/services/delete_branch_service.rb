@@ -25,7 +25,7 @@ class DeleteBranchService < BaseService
     end
 
     if repository.rm_branch(branch_name)
-      Event.create_ref_event(project, current_user, branch, 'rm')
+      EventCreateService.new.push_ref(project, current_user, branch, 'rm')
       success('Branch was removed')
     else
       return error('Failed to remove branch')

@@ -22,7 +22,7 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
   end
 
   step 'submit form with new group info' do
-    fill_in 'group_name', with: 'gitlab'
+    fill_in 'group_path', with: 'gitlab'
     fill_in 'group_description', with: 'Group description'
     click_button "Create group"
   end
@@ -33,7 +33,7 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
   end
 
   step 'I should be redirected to group page' do
-    current_path.should == admin_group_path(Group.last)
+    current_path.should == admin_group_path(Group.find_by(path: 'gitlab'))
   end
 
   When 'I select user "John Doe" from user list as "Reporter"' do
@@ -41,7 +41,7 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
     within "#new_team_member" do
       select "Reporter", from: "access_level"
     end
-    click_button "Add users into group"
+    click_button "Add users to group"
   end
 
   step 'I should see "John Doe" in team list in every project as "Reporter"' do

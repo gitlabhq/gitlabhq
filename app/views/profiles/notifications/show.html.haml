@@ -1,33 +1,56 @@
 %h3.page-title
-  Notifications settings
+  Notifications Settings
 %p.light
-  GitLab uses the email specified in your profile for notifications
+  These are your global notification settings.
 %hr
-= form_tag profile_notifications_path, method: :put, remote: true, class: 'update-notifications form-horizontal global-notifications-form' do
+
+= form_for @user, url: profile_notifications_path, method: :put, html: { class: 'update-notifications form-horizontal global-notifications-form' } do |f|
+  -if @user.errors.any?
+    %div.alert.alert-danger
+      %ul
+        - @user.errors.full_messages.each do |msg|
+          %li= msg
+
   = hidden_field_tag :notification_type, 'global'
 
-  = label_tag :notification_level, 'Notification level', class: 'control-label'
-  .col-sm-10
-    .radio
-      = label_tag nil, class: '' do
-        = radio_button_tag :notification_level, Notification::N_DISABLED, @notification.disabled?, class: 'trigger-submit'
-        .level-title
-          Disabled
-        %p You will not get any notifications via email
+  .form-group
+    = f.label :notification_email, class: "control-label"
+    .col-sm-10
+      = f.select :notification_email, @user.all_emails, { include_blank: false }, class: "form-control"
 
-    .radio
-      = label_tag nil, class: '' do
-        = radio_button_tag :notification_level, Notification::N_PARTICIPATING, @notification.participating?, class: 'trigger-submit'
-        .level-title
-          Participating
-        %p You will only receive notifications from related resources (e.g. from your commits or assigned issues)
+  .form-group
+    = f.label :notification_level, class: 'control-label'
+    .col-sm-10
+      .radio
+        = f.label :notification_level, value: Notification::N_DISABLED do
+          = f.radio_button :notification_level, Notification::N_DISABLED
+          .level-title
+            Disabled
+          %p You will not get any notifications via email
 
-    .radio
-      = label_tag nil, class: '' do
-        = radio_button_tag :notification_level, Notification::N_WATCH, @notification.watch?, class: 'trigger-submit'
-        .level-title
-          Watch
-        %p You will receive all notifications from projects in which you participate
+      .radio
+        = f.label :notification_level, value: Notification::N_MENTION do
+          = f.radio_button :notification_level, Notification::N_MENTION
+          .level-title
+            Mention
+          %p You will receive notifications only for comments in which you were @mentioned
+
+      .radio
+        = f.label :notification_level, value: Notification::N_PARTICIPATING do
+          = f.radio_button :notification_level, Notification::N_PARTICIPATING
+          .level-title
+            Participating
+          %p You will only receive notifications from related resources (e.g. from your commits or assigned issues)
+
+      .radio
+        = f.label :notification_level, value: Notification::N_WATCH do
+          = f.radio_button :notification_level, Notification::N_WATCH
+          .level-title
+            Watch
+          %p You will receive all notifications from projects in which you participate
+
+  .form-actions
+    = f.submit 'Save changes', class: "btn btn-save"
 
 .clearfix
   %hr
@@ -36,7 +59,7 @@
     %p
       You can also specify notification level per group or per project.
       %br
-      By default all projects and groups uses notification level set above.
+      By default, all projects and groups will use the notification level set above.
     %h4 Groups:
     %ul.bordered-list
       - @group_members.each do |users_group|
@@ -45,7 +68,7 @@
 
   .col-md-6
     %p
-      To specify notification level per project of a group you belong to,
+      To specify the notification level per project of a group you belong to,
       %br
       you need to be a member of the project itself, not only its group.
     %h4 Projects:

@@ -12,26 +12,23 @@
 - if @show_merge_controls
   .automerge_widget.can_be_merged.hide
     .clearfix
-      = form_for [:automerge, @project, @merge_request], remote: true, method: :post do |f|
-        %h4
-          You can accept this request automatically.
-        .accept-merge-holder.clearfix
-          .accept-group
-            .pull-left
-              = f.submit "Accept Merge Request", class: "btn btn-create accept_merge_request"
-            - if can_remove_branch?(@merge_request.source_project, @merge_request.source_branch) && !@merge_request.for_fork?
-              .remove_branch_holder.pull-left
-                = label_tag :should_remove_source_branch, class: "checkbox" do
-                  = check_box_tag :should_remove_source_branch
-                  Remove source-branch
-            .js-toggle-container
-              %label
-                %i.fa.fa-edit
-                = link_to "modify merge commit message", "#", class: "modify-merge-commit-link js-toggle-button", title: "Modify merge commit message"
-              .js-toggle-content.hide
-                = render 'shared/commit_message_container', params: params,
-                    text: @merge_request.merge_commit_message,
-                    rows: 14, hint: true
+      = form_for [:automerge, @project.namespace.becomes(Namespace), @project, @merge_request], remote: true, method: :post do |f|
+        .accept-merge-holder.clearfix.js-toggle-container
+          .accept-action
+            = f.submit "Accept Merge Request", class: "btn btn-create accept_merge_request"
+          - if can_remove_branch?(@merge_request.source_project, @merge_request.source_branch) && !@merge_request.for_fork?
+            .accept-control.checkbox
+              = label_tag :should_remove_source_branch, class: "remove_source_checkbox" do
+                = check_box_tag :should_remove_source_branch
+                Remove source-branch
+          .accept-control
+            = link_to "#", class: "modify-merge-commit-link js-toggle-button", title: "Modify merge commit message" do
+              %i.fa.fa-edit
+              Modify commit message
+          .js-toggle-content.hide.prepend-top-20
+            = render 'shared/commit_message_container', params: params,
+                text: @merge_request.merge_commit_message,
+                rows: 14, hint: true
 
         %hr
         .light
@@ -48,10 +45,17 @@
   .automerge_widget.cannot_be_merged.hide
     %h4
       This request can't be merged with GitLab.
-    %p
       You should do it manually with
       %strong
-        = link_to "command line", "#modal_merge_info", class: "how_to_merge_link", title: "How To Merge", "data-toggle" => "modal"
+        = link_to "#modal_merge_info", class: "underlined-link how_to_merge_link", title: "How To Merge", "data-toggle" => "modal" do
+          command line
+
+    %p
+      %button.btn.disabled
+        %i.fa.fa-warning
+        Accept Merge Request
+      &nbsp;
+      This usually happens when git can not resolve conflicts between branches automatically.
 
   .automerge_widget.unchecked
     %p

@@ -4,7 +4,7 @@
       - project = group[0]
       .panel-heading
         = link_to_project project
-        = link_to 'show all', project_issues_path(project), class: 'pull-right'
+        = link_to 'show all', namespace_project_issues_path(project.namespace, project), class: 'pull-right'
 
       %ul.well-list.issues-list
         - group[1].each do |issue|

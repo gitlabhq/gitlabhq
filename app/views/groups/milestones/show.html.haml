@@ -1,4 +1,9 @@
-%h3.page-title
+%h4.page-title
+  .issue-box{ class: "issue-box-#{@group_milestone.closed? ? 'closed' : 'open'}" }
+    - if @group_milestone.closed?
+      Closed
+    - else
+      Open
   Milestone #{@group_milestone.title}
   .pull-right
     - if can?(current_user, :manage_group, @group)
@@ -7,46 +12,41 @@
       - else
         = link_to 'Reopen Milestone', group_milestone_path(@group, @group_milestone.safe_title, title: @group_milestone.title, milestone: {state_event: :activate }), method: :put, class: "btn btn-small btn-grouped btn-reopen"
 
+%hr
 - if (@group_milestone.total_items_count == @group_milestone.closed_items_count) && @group_milestone.active?
   .alert.alert-success
     %span All issues for this milestone are closed. You may close the milestone now.
 
-.back-link
-  = link_to group_milestones_path(@group) do
-    &larr; To milestones list
-
-.issue-box{ class: "issue-box-#{@group_milestone.closed? ? 'closed' : 'open'}" }
-  .state.clearfix
-    .state-label
-      - if @group_milestone.closed?
-        Closed
-      - else
-        Open
-
-  %h4.title
-    = gfm escape_once(@group_milestone.title)
-
-  .description
-    - @group_milestone.milestones.each do |milestone|
-      %hr
-      %h4
-        = link_to "#{milestone.project.name} - #{milestone.title}", project_milestone_path(milestone.project, milestone)
-        %span.pull-right= milestone.expires_at
+.description
+%table.table
+  %thead
+    %tr
+      %th Project
+      %th Open issues
+      %th State
+      %th Due date
+  - @group_milestone.milestones.each do |milestone|
+    %tr
+      %td
+        = link_to "#{milestone.project.name}", namespace_project_milestone_path(milestone.project.namespace, milestone.project, milestone)
+      %td
+        = milestone.issues.opened.count
+      %td
         - if milestone.closed?
-          %span.label.label-danger #{milestone.state}
-      = preserve do
-        - if milestone.description.present?
-          = milestone.description
+          Closed
+        - else
+          Open
+      %td
+        = milestone.expires_at
 
-  .context
-    %p
-      Progress:
-      #{@group_milestone.closed_items_count} closed
-      &ndash;
-      #{@group_milestone.open_items_count} open
-
-    .progress.progress-info
-      .progress-bar{style: "width: #{@group_milestone.percent_complete}%;"}
+.context
+  %p.lead
+    Progress:
+    #{@group_milestone.closed_items_count} closed
+    &ndash;
+    #{@group_milestone.open_items_count} open
+  .progress.progress-info
+    .progress-bar{style: "width: #{@group_milestone.percent_complete}%;"}
 
 %ul.nav.nav-tabs
   %li.active

@@ -1,0 +1,14 @@
+.note-edit-form
+  = form_for note, url: namespace_project_note_path(@project.namespace, @project, note), method: :put, remote: true, authenticity_token: true do |f|
+    = render layout: 'projects/md_preview', locals: { preview_class: "note-text" } do
+      = render 'projects/zen', f: f, attr: :note,
+        classes: 'note_text js-note-text'
+
+      .comment-hints.clearfix
+        .pull-left Comments are parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"),{ target: '_blank', tabindex: -1 }}
+        .pull-right Attach files by dragging &amp; dropping or #{link_to "selecting them", '#', class: 'markdown-selector', tabindex: -1 }.
+
+    .note-form-actions
+      .buttons
+        = f.submit 'Save Comment', class: "btn btn-primary btn-save btn-grouped js-comment-button"
+        = link_to  'Cancel', "#", class: "btn btn-cancel note-edit-cancel"

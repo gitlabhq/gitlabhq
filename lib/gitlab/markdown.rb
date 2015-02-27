@@ -92,7 +92,7 @@ module Gitlab
       allowed_tags = ActionView::Base.sanitized_allowed_tags
 
       sanitize text.html_safe,
-               attributes: allowed_attributes + %w(id class),
+               attributes: allowed_attributes + %w(id class style),
                tags: allowed_tags + %w(table tr td th)
     end
 
@@ -128,6 +128,7 @@ module Gitlab
       (?<prefix>\W)?                         # Prefix
       (                                      # Reference
          @(?<user>#{NAME_STR})               # User name
+        |~(?<label>\d+)                      # Label ID
         |(?<issue>([A-Z\-]+-)\d+)            # JIRA Issue ID
         |#{PROJ_STR}?\#(?<issue>([a-zA-Z\-]+-)?\d+) # Issue ID
         |#{PROJ_STR}?!(?<merge_request>\d+)  # MR ID
@@ -138,7 +139,7 @@ module Gitlab
       (?<suffix>\W)?                         # Suffix
     }x.freeze
 
-    TYPES = [:user, :issue, :merge_request, :snippet, :commit].freeze
+    TYPES = [:user, :issue, :label, :merge_request, :snippet, :commit].freeze
 
     def parse_references(text, project = @project)
       # parse reference links
@@ -201,14 +202,34 @@ module Gitlab
         )
 
       if identifier == "all"
-        link_to("@all", project_url(project), options)
-      elsif User.find_by(username: identifier)
-        link_to("@#{identifier}", user_url(identifier), options)
+        link_to("@all", namespace_project_url(project.namespace, project), options)
+      elsif namespace = Namespace.find_by(path: identifier)
+        url =
+          if namespace.type == "Group"
+            group_url(identifier)
+          else 
+            user_url(identifier)
+          end
+          
+        link_to("@#{identifier}", url, options)
+      end
+    end
+
+    def reference_label(identifier, project = @project, _ = nil)
+      if label = project.labels.find_by(id: identifier)
+        options = html_options.merge(
+          class: "gfm gfm-label #{html_options[:class]}"
+        )
+        link_to(
+          render_colored_label(label),
+          namespace_project_issues_path(project.namespace, project, label_name: label.name),
+          options
+        )
       end
     end
 
     def reference_issue(identifier, project = @project, prefix_text = nil)
-      if project.used_default_issues_tracker? || !external_issues_tracker_enabled?
+      if project.default_issues_tracker?
         if project.issue_exists? identifier
           url = url_for_issue(identifier, project)
           title = title_for_issue(identifier, project)
@@ -220,10 +241,8 @@ module Gitlab
           link_to("#{prefix_text}##{identifier}", url, options)
         end
       else
-        config = Gitlab.config
-        external_issue_tracker = config.issues_tracker[project.issues_tracker]
-        if external_issue_tracker.present?
-          reference_external_issue(identifier, external_issue_tracker, project,
+        if project.external_issue_tracker.present?
+          reference_external_issue(identifier, project,
                                    prefix_text)
         end
       end
@@ -236,7 +255,8 @@ module Gitlab
           title: "Merge Request: #{merge_request.title}",
           class: "gfm gfm-merge_request #{html_options[:class]}"
         )
-        url = project_merge_request_url(project, merge_request)
+        url = namespace_project_merge_request_url(project.namespace, project,
+                                                  merge_request)
         link_to("#{prefix_text}!#{identifier}", url, options)
       end
     end
@@ -247,8 +267,11 @@ module Gitlab
           title: "Snippet: #{snippet.title}",
           class: "gfm gfm-snippet #{html_options[:class]}"
         )
-        link_to("$#{identifier}", project_snippet_url(project, snippet),
-                options)
+        link_to(
+          "$#{identifier}",
+          namespace_project_snippet_url(project.namespace, project, snippet),
+          options
+        )
       end
     end
 
@@ -261,16 +284,16 @@ module Gitlab
         prefix_text = "#{prefix_text}@" if prefix_text
         link_to(
           "#{prefix_text}#{identifier}",
-          project_commit_url(project, commit),
+          namespace_project_commit_url(project.namespace, project, commit),
           options
         )
       end
     end
 
-    def reference_external_issue(identifier, issue_tracker, project = @project,
+    def reference_external_issue(identifier, project = @project,
                                  prefix_text = nil)
       url = url_for_issue(identifier, project)
-      title = issue_tracker['title']
+      title = project.external_issue_tracker.title
 
       options = html_options.merge(
         title: "Issue in #{title}",

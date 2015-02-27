@@ -1,0 +1,27 @@
+.event-title
+  %span.author_name= link_to_author event
+  %span.event_label{class: event.action_name}
+    = event_action_name(event)
+
+  - if event.project
+    = link_to_project event.project
+  - else
+    = event.project_name
+
+- if current_user == event.author && !event.project.private? && twitter_sharing_enabled?
+  .event-body
+    .event-note
+      .md
+        %p
+          Congratulations! Why not share your accomplishment with the world?
+
+          %a.twitter-share-button{ |
+            href: "https://twitter.com/share", |
+            "data-url" => event.project.web_url, |
+            "data-text" => "I just created a new project in GitLab! GitLab is version control on your server.", |
+            "data-size" => "medium", |
+            "data-related" => "gitlab", |
+            "data-hashtags" => "gitlab", |
+            "data-count" => "none"}
+            Tweet
+          %script{src: "//platform.twitter.com/widgets.js"}

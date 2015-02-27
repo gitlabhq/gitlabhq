@@ -2,9 +2,15 @@ Rake::Task["spinach"].clear if Rake::Task.task_defined?('spinach')
 
 desc "GITLAB | Run spinach"
 task :spinach do
+  tags = if ENV['SEMAPHORE']
+           '~@tricky'
+         else
+           '~@semaphore'
+         end
+
   cmds = [
     %W(rake gitlab:setup),
-    %W(spinach),
+    %W(spinach --tags #{tags}),
   ]
   run_commands(cmds)
 end

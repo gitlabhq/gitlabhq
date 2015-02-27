@@ -1,43 +1,6 @@
 /**
- * This file represent some UI that can be changed
- * during web app restyle or theme select.
- *
- * Next items should be placed there
- * - link colors
- * - header restyles
- *
+ * Modern GitLab UI theme
  */
 .ui_modern {
-  /*
-   *  Application Header
-   *
-   */
-  header {
-    @extend .header-dark;
-    &.navbar-gitlab {
-      .navbar-inner {
-        background: #019875;
-        border-bottom: 1px solid #019875;
-        .app_logo, .navbar-toggle {
-          &:hover {
-            background-color: #018865;
-          }
-        }
-        .separator {
-          background: #018865;
-          border-left: 1px solid #11A885;
-        }
-        .nav > li > a {
-          color: #ADC;
-        }
-        .search-input {
-          border-color: #8ba;
-        }
-      }
-    }
-  }
-
-  .nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
-    background: #019875;
-  }
+  @include dark-theme(#ADC, #019875, #018865, #017855);
 }

@@ -1,10 +1,10 @@
 .event-title
   %span.author_name= link_to_author event
-  %span.event_label.pushed #{event.push_action_name} #{event.ref_type}
+  %span.event_label.pushed #{event.action_name} #{event.ref_type}
   - if event.rm_ref?
     %strong= event.ref_name
   - else
-    = link_to project_commits_path(event.project, event.ref_name) do
+    = link_to namespace_project_commits_path(event.project.namespace, event.project, event.ref_name) do
       %strong= event.ref_name
   at
   = link_to_project event.project
@@ -21,5 +21,5 @@
         %li.commits-stat
           - if event.commits_count > 2
             %span ... and #{event.commits_count - 2} more commits.
-          = link_to project_compare_path(event.project, from: event.commit_from, to: event.commit_to) do
+          = link_to namespace_project_compare_path(event.project.namespace, event.project, from: event.commit_from, to: event.commit_to) do
             %strong Compare &rarr; #{truncate_sha(event.commit_from)}...#{truncate_sha(event.commit_to)}

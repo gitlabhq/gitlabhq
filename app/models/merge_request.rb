@@ -18,6 +18,7 @@
 #  iid               :integer
 #  description       :text
 #  position          :integer          default(0)
+#  locked_at         :datetime
 #
 
 require Rails.root.join("app/models/commit")
@@ -27,6 +28,7 @@ class MergeRequest < ActiveRecord::Base
   include Issuable
   include Taskable
   include InternalId
+  include Sortable
 
   belongs_to :target_project, foreign_key: :target_project_id, class_name: "Project"
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
@@ -68,6 +70,16 @@ class MergeRequest < ActiveRecord::Base
 
     event :unlock_mr do
       transition locked: :reopened
+    end
+
+    after_transition any => :locked do |merge_request, transition|
+      merge_request.locked_at = Time.now
+      merge_request.save
+    end
+
+    after_transition locked: (any - :locked) do |merge_request, transition|
+      merge_request.locked_at = nil
+      merge_request.save
     end
 
     state :opened
@@ -179,7 +191,9 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def automerge!(current_user, commit_message = nil)
-    MergeRequests::AutoMergeService.new.execute(self, current_user, commit_message)
+    MergeRequests::AutoMergeService.
+      new(target_project, current_user).
+      execute(self, commit_message)
   end
 
   def open?
@@ -238,7 +252,8 @@ class MergeRequest < ActiveRecord::Base
   def closes_issues
     if target_branch == project.default_branch
       issues = commits.flat_map { |c| c.closes_issues(project) }
-      issues += Gitlab::ClosingIssueExtractor.closed_by_message_in_project(description, project)
+      issues.push(*Gitlab::ClosingIssueExtractor.
+                  closed_by_message_in_project(description, project))
       issues.uniq.sort_by(&:id)
     else
       []
@@ -318,7 +333,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   # Return array of possible target branches
-  # dependes on target project of MR
+  # depends on target project of MR
   def target_branches
     if target_project.nil?
       []
@@ -328,12 +343,16 @@ class MergeRequest < ActiveRecord::Base
   end
 
   # Return array of possible source branches
-  # dependes on source project of MR
+  # depends on source project of MR
   def source_branches
     if source_project.nil?
       []
     else
       source_project.repository.branch_names
     end
+  end
+
+  def locked_long_ago?
+    locked_at && locked_at < (Time.now - 1.day)
   end
 end

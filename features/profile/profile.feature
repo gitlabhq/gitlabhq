@@ -71,6 +71,20 @@ Feature: Profile
     And I click on my profile picture
     Then I should see my user page
 
+  Scenario: I can manage application
+    Given I visit profile applications page
+    Then I click on new application button
+    And I should see application form
+    Then I fill application form out and submit
+    And I see application
+    Then I click edit
+    And I see edit application form
+    Then I change name of application and submit
+    And I see that application was changed
+    Then I visit profile applications page
+    And I click to remove application
+    Then I see that application is removed
+
   @javascript
   Scenario: I change my application theme
     Given I visit profile design page
@@ -83,22 +97,3 @@ Feature: Profile
     Given I visit profile design page
     When I change my code preview theme
     Then I should receive feedback that the changes were saved
-
-  @javascript
-  Scenario: I see the password strength indicator
-    Given I visit profile password page
-    When I try to set a weak password
-    Then I should see the input field yellow
-
-  @javascript
-  Scenario: I see the password strength indicator error
-    Given I visit profile password page
-    When I try to set a short password
-    Then I should see the input field red
-    And I should see the password error message
-
-  @javascript
-  Scenario: I see the password strength indicator with success
-    Given I visit profile password page
-    When I try to set a strong password
-    Then I should see the input field green

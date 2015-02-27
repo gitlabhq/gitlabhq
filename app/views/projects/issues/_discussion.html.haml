@@ -1,0 +1,37 @@
+- content_for :note_actions do
+  - if can?(current_user, :modify_issue, @issue)
+    - if @issue.closed?
+      = link_to 'Reopen Issue', issue_path(@issue, issue: {state_event: :reopen }, status_only: true), method: :put, class: "btn btn-grouped btn-reopen js-note-target-reopen", title: 'Reopen Issue'
+    - else
+      = link_to 'Close Issue', issue_path(@issue, issue: {state_event: :close }, status_only: true), method: :put, class: "btn btn-grouped btn-close js-note-target-close", title: "Close Issue"
+.row
+  %section.col-md-9
+    .participants
+      %span= pluralize(@issue.participants.count, 'participant')
+      - @issue.participants.each do |participant|
+        = link_to_member(@project, participant, name: false, size: 24)
+
+    .voting_notes#notes= render "projects/notes/notes_with_form"
+  %aside.col-md-3
+    .issuable-affix
+      .clearfix
+        %span.slead.has_tooltip{:"data-original-title" => 'Cross-project reference'}
+          = cross_project_reference(@project, @issue)
+      %hr
+      .context
+        = render partial: 'issue_context', locals: { issue: @issue }
+      %hr
+      .clearfix
+        .votes-holder
+          %h6 Votes
+          #votes= render 'votes/votes_block', votable: @issue
+
+      - if @issue.labels.any?
+        %hr
+        %h6 Labels
+        .issue-show-labels
+          - @issue.labels.each do |label|
+            = link_to namespace_project_issues_path(@project.namespace, @project, label_name: label.name) do
+              = render_colored_label(label)
+  = link_to '#aside', class: 'show-aside' do
+    %i.fa.fa-angle-left

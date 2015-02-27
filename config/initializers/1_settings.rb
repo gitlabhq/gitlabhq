@@ -13,7 +13,11 @@ class Settings < Settingslogic
       if gitlab_shell.ssh_port != 22
         "ssh://#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}:#{gitlab_shell.ssh_port}/"
       else
-        "#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}:"
+        if gitlab_shell.ssh_host.include? ':'
+          "[#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}]:"
+        else
+          "#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}:"
+        end
       end
     end
 
@@ -87,6 +91,7 @@ Settings['issues_tracker']  ||= {}
 #
 Settings['gitlab'] ||= Settingslogic.new({})
 Settings.gitlab['default_projects_limit'] ||= 10
+Settings.gitlab['default_branch_protection'] ||= 2
 Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_can_create_group'].nil?
 Settings.gitlab['default_theme'] = Gitlab::Theme::MARS if Settings.gitlab['default_theme'].nil?
 Settings.gitlab['host']       ||= 'localhost'
@@ -105,11 +110,12 @@ rescue ArgumentError # no user configured
   '/home/' + Settings.gitlab['user']
 end
 Settings.gitlab['time_zone']  ||= nil
-Settings.gitlab['signup_enabled'] ||= false
+Settings.gitlab['signup_enabled'] ||= true if Settings.gitlab['signup_enabled'].nil?
 Settings.gitlab['signin_enabled'] ||= true if Settings.gitlab['signin_enabled'].nil?
+Settings.gitlab['twitter_sharing_enabled'] ||= true if Settings.gitlab['twitter_sharing_enabled'].nil?
 Settings.gitlab['restricted_visibility_levels'] = Settings.send(:verify_constant_array, Gitlab::VisibilityLevel, Settings.gitlab['restricted_visibility_levels'], [])
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
-Settings.gitlab['issue_closing_pattern'] = '([Cc]lose[sd]|[Ff]ixe[sd]) #(\d+)' if Settings.gitlab['issue_closing_pattern'].nil?
+Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)) +(?:(?:issues? +)?#\d+(?:(?:, *| +and +)?))+)' if Settings.gitlab['issue_closing_pattern'].nil?
 Settings.gitlab['default_projects_features'] ||= {}
 Settings.gitlab['webhook_timeout'] ||= 10
 Settings.gitlab.default_projects_features['issues']         = true if Settings.gitlab.default_projects_features['issues'].nil?
@@ -148,7 +154,7 @@ Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.send(:build_gitlab_shell_s
 Settings['backup'] ||= Settingslogic.new({})
 Settings.backup['keep_time']  ||= 0
 Settings.backup['path']         = File.expand_path(Settings.backup['path'] || "tmp/backups/", Rails.root)
-Settings.backup['upload'] ||= Settingslogic.new({'remote_directory' => nil, 'connection' => nil})
+Settings.backup['upload'] ||= Settingslogic.new({ 'remote_directory' => nil, 'connection' => nil })
 # Convert upload connection settings to use symbol keys, to make Fog happy
 if Settings.backup['upload']['connection']
   Settings.backup['upload']['connection'] = Hash[Settings.backup['upload']['connection'].map { |k, v| [k.to_sym, v] }]
@@ -170,6 +176,16 @@ Settings.satellites['timeout'] ||= 30
 # Extra customization
 #
 Settings['extra'] ||= Settingslogic.new({})
+
+#
+# Rack::Attack settings
+#
+Settings['rack_attack'] ||= Settingslogic.new({})
+Settings.rack_attack['git_basic_auth'] ||= Settingslogic.new({})
+Settings.rack_attack.git_basic_auth['ip_whitelist'] ||= %w{127.0.0.1}
+Settings.rack_attack.git_basic_auth['maxretry'] ||= 10
+Settings.rack_attack.git_basic_auth['findtime'] ||= 1.minute
+Settings.rack_attack.git_basic_auth['bantime'] ||= 1.hour
 
 #
 # Testing settings

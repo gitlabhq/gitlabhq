@@ -16,6 +16,7 @@
 #
 
 class Snippet < ActiveRecord::Base
+  include Sortable
   include Linguist::BlobHelper
   include Gitlab::VisibilityLevel
 
@@ -29,7 +30,11 @@ class Snippet < ActiveRecord::Base
 
   validates :author, presence: true
   validates :title, presence: true, length: { within: 0..255 }
-  validates :file_name, presence: true, length: { within: 0..255 }
+  validates :file_name,
+    presence: true,
+    length: { within: 0..255 },
+    format: { with: Gitlab::Regex.path_regex,
+              message: Gitlab::Regex.path_regex_message }
   validates :content, presence: true
   validates :visibility_level, inclusion: { in: Gitlab::VisibilityLevel.values }
 
@@ -62,6 +67,10 @@ class Snippet < ActiveRecord::Base
     file_name
   end
 
+  def sanitized_file_name
+    file_name.gsub(/[^a-zA-Z0-9_\-\.]+/, '')
+  end
+
   def mode
     nil
   end
@@ -72,7 +81,7 @@ class Snippet < ActiveRecord::Base
 
   def visibility_level_field
     visibility_level
-  end 
+  end
 
   class << self
     def search(query)

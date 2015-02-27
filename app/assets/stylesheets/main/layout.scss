@@ -2,10 +2,10 @@ html {
   overflow-y: scroll;
 
   &.touch .tooltip { display: none !important; }
-}
 
-body {
-  padding-bottom: 20px;
+  body {
+    padding-top: 47px;
+  }
 }
 
 .container {
@@ -17,3 +17,6 @@ body {
   margin: 0 0;
 }
 
+.navless-container {
+  margin-top: 30px;
+}

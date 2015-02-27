@@ -7,7 +7,7 @@ class Projects::LabelsController < Projects::ApplicationController
   respond_to :js, :html
 
   def index
-    @labels = @project.labels.order_by_name.page(params[:page]).per(20)
+    @labels = @project.labels.page(params[:page]).per(20)
   end
 
   def new
@@ -18,7 +18,7 @@ class Projects::LabelsController < Projects::ApplicationController
     @label = @project.labels.create(label_params)
 
     if @label.valid?
-      redirect_to project_labels_path(@project)
+      redirect_to namespace_project_labels_path(@project.namespace, @project)
     else
       render 'new'
     end
@@ -29,7 +29,7 @@ class Projects::LabelsController < Projects::ApplicationController
 
   def update
     if @label.update_attributes(label_params)
-      redirect_to project_labels_path(@project)
+      redirect_to namespace_project_labels_path(@project.namespace, @project)
     else
       render 'edit'
     end
@@ -39,11 +39,12 @@ class Projects::LabelsController < Projects::ApplicationController
     Gitlab::IssuesLabels.generate(@project)
 
     if params[:redirect] == 'issues'
-      redirect_to project_issues_path(@project)
+      redirect_to namespace_project_issues_path(@project.namespace, @project)
     elsif params[:redirect] == 'merge_requests'
-      redirect_to project_merge_requests_path(@project)
+      redirect_to namespace_project_merge_requests_path(@project.namespace,
+                                                        @project)
     else
-      redirect_to project_labels_path(@project)
+      redirect_to namespace_project_labels_path(@project.namespace, @project)
     end
   end
 
@@ -51,7 +52,10 @@ class Projects::LabelsController < Projects::ApplicationController
     @label.destroy
 
     respond_to do |format|
-      format.html { redirect_to project_labels_path(@project), notice: 'Label was removed' }
+      format.html do
+        redirect_to(namespace_project_labels_path(@project.namespace, @project),
+                    notice: 'Label was removed')
+      end
       format.js
     end
   end

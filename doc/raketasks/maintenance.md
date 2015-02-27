@@ -8,7 +8,7 @@ This command gathers information about your GitLab installation and the System i
 # omnibus-gitlab
 sudo gitlab-rake gitlab:env:info
 
-# installation from source or cookbook
+# installation from source
 bundle exec rake gitlab:env:info RAILS_ENV=production
 ```
 
@@ -16,30 +16,31 @@ Example output:
 
 ```
 System information
-System:		Debian 6.0.7
-Current User:	git
-Using RVM:	no
-Ruby Version: 2.0.0-p481
-Gem Version:  1.8.23
-Bundler Version:1.3.5
-Rake Version:	10.0.4
+System:           Debian 7.8
+Current User:     git
+Using RVM:        no
+Ruby Version:     2.1.5p273
+Gem Version:      2.4.3
+Bundler Version:  1.7.6
+Rake Version:     10.3.2
+Sidekiq Version:  2.17.8
 
 GitLab information
-Version:	5.1.0.beta2
-Revision:	4da8b37
-Directory:	/home/git/gitlab
-DB Adapter:	mysql2
-URL:		http://example.com
-HTTP Clone URL:	http://example.com/some-project.git
-SSH Clone URL:	git@example.com:some-project.git
-Using LDAP:	no
-Using Omniauth:	no
+Version:          7.7.1
+Revision:         41ab9e1
+Directory:        /home/git/gitlab
+DB Adapter:       postgresql
+URL:              https://gitlab.example.com
+HTTP Clone URL:   https://gitlab.example.com/some-project.git
+SSH Clone URL:    git@gitlab.example.com:some-project.git
+Using LDAP:       no
+Using Omniauth:   no
 
 GitLab Shell
-Version:	1.2.0
-Repositories:	/home/git/repositories/
-Hooks:		/home/git/gitlab-shell/hooks/
-Git:		/usr/bin/git
+Version:          2.4.1
+Repositories:     /home/git/repositories/
+Hooks:            /home/git/gitlab-shell/hooks/
+Git:              /usr/bin/git
 ```
 
 ## Check GitLab configuration
@@ -59,7 +60,7 @@ You may also have a look at our [Trouble Shooting Guide](https://github.com/gitl
 # omnibus-gitlab
 sudo gitlab-rake gitlab:check
 
-# installation from source or cookbook
+# installation from source
 bundle exec rake gitlab:check RAILS_ENV=production
 ```
 
@@ -121,4 +122,57 @@ If necessary, remove the `repo_satellites` directory and rerun the commands belo
 sudo -u git -H mkdir -p /home/git/gitlab-satellites
 sudo -u git -H bundle exec rake gitlab:satellites:create RAILS_ENV=production
 sudo chmod u+rwx,g=rx,o-rwx /home/git/gitlab-satellites
+```
+
+## Rebuild authorized_keys file
+
+In some case it is necessary to rebuild the `authorized_keys` file.
+
+For Omnibus-packages:
+```
+sudo gitlab-rake gitlab:shell:setup
+```
+
+For installations from source:
+```
+cd /home/git/gitlab
+sudo -u git -H bundle exec rake gitlab:shell:setup RAILS_ENV=production
+```
+
+```
+This will rebuild an authorized_keys file.
+You will lose any data stored in authorized_keys file.
+Do you want to continue (yes/no)? yes
+```
+
+## Clear redis cache
+
+If for some reason the dashboard shows wrong information you might want to 
+clear Redis' cache.
+
+For Omnibus-packages:
+```
+sudo gitlab-rake cache:clear
+```
+
+For installations from source:
+```
+cd /home/git/gitlab
+sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
+```
+
+## Precompile the assets
+
+Sometimes during version upgrades you might end up with some wrong CSS or
+missing some icons. In that case, try to precompile the assets again.
+
+For Omnibus-packages:
+```
+sudo gitlab-rake assets:precompile
+```
+
+For installations from source:
+```
+cd /home/git/gitlab
+sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
 ```

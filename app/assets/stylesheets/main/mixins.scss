@@ -58,8 +58,8 @@
 }
 
 @mixin md-typography {
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 15px;
+  line-height: 1.5;
 
   img {
     max-width: 100%;
@@ -69,7 +69,12 @@
     margin-top: 0;
   }
 
-  code { padding: 0 4px; }
+  code {
+    font-family: $monospace_font;
+    white-space: pre;
+    word-wrap: normal;
+    padding: 0;
+  }
 
   h1 {
     margin-top: 45px;
@@ -93,7 +98,7 @@
 
   blockquote p {
     color: #888;
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.5;
   }
 
@@ -134,7 +139,7 @@
 }
 
 @mixin panel-colored {
-  border: none;
+  border: 1px solid #EEE;
   background: $box_bg;
   @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.09));
 

@@ -16,7 +16,7 @@
       font-size:small;
       color:#777
     }
-
+    #{add_email_highlight_css}
   %body
     %div.content
       = yield
@@ -24,7 +24,8 @@
       %p
         \—
         %br
-        - if @project
-          You're receiving this notification because you are a member of the #{link_to_unless @target_url, @project.name_with_namespace, project_url(@project)} project team.
         - if @target_url
           #{link_to "View it on GitLab", @target_url}
+          = email_action @target_url
+        - if @project
+          You're receiving this notification because you are a member of the #{link_to_unless @target_url, @project.name_with_namespace, namespace_project_url(@project.namespace, @project)} project team.

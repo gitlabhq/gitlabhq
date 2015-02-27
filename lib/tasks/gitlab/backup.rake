@@ -6,6 +6,7 @@ namespace :gitlab do
     desc "GITLAB | Create a backup of the GitLab system"
     task create: :environment do
       warn_user_is_not_gitlab
+      configure_cron_mode
 
       Rake::Task["gitlab:backup:db:create"].invoke
       Rake::Task["gitlab:backup:repo:create"].invoke
@@ -21,6 +22,7 @@ namespace :gitlab do
     desc "GITLAB | Restore a previously created backup"
     task restore: :environment do
       warn_user_is_not_gitlab
+      configure_cron_mode
 
       backup = Backup::Manager.new
       backup.unpack
@@ -35,43 +37,54 @@ namespace :gitlab do
 
     namespace :repo do
       task create: :environment do
-        puts "Dumping repositories ...".blue
+        $progress.puts "Dumping repositories ...".blue
         Backup::Repository.new.dump
-        puts "done".green
+        $progress.puts "done".green
       end
 
       task restore: :environment do
-        puts "Restoring repositories ...".blue
+        $progress.puts "Restoring repositories ...".blue
         Backup::Repository.new.restore
-        puts "done".green
+        $progress.puts "done".green
       end
     end
 
     namespace :db do
       task create: :environment do
-        puts "Dumping database ... ".blue
+        $progress.puts "Dumping database ... ".blue
         Backup::Database.new.dump
-        puts "done".green
+        $progress.puts "done".green
       end
 
       task restore: :environment do
-        puts "Restoring database ... ".blue
+        $progress.puts "Restoring database ... ".blue
         Backup::Database.new.restore
-        puts "done".green
+        $progress.puts "done".green
       end
     end
 
     namespace :uploads do
       task create: :environment do
-        puts "Dumping uploads ... ".blue
+        $progress.puts "Dumping uploads ... ".blue
         Backup::Uploads.new.dump
-        puts "done".green
+        $progress.puts "done".green
       end
 
       task restore: :environment do
-        puts "Restoring uploads ... ".blue
+        $progress.puts "Restoring uploads ... ".blue
         Backup::Uploads.new.restore
-        puts "done".green
+        $progress.puts "done".green
+      end
+    end
+
+    def configure_cron_mode
+      if ENV['CRON']
+        # We need an object we can say 'puts' and 'print' to; let's use a
+        # StringIO.
+        require 'stringio'
+        $progress = StringIO.new
+      else
+        $progress = $stdout
       end
     end
   end # namespace end: backup

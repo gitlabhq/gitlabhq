@@ -27,7 +27,7 @@ class SnippetsController < ApplicationController
     @snippets = SnippetsFinder.new.execute(current_user, {
       filter: :by_user,
       user: @user,
-      scope: params[:scope]}).
+      scope: params[:scope] }).
     page(params[:page]).per(20)
 
     if @user == current_user
@@ -79,7 +79,7 @@ class SnippetsController < ApplicationController
       @snippet.content,
       type: 'text/plain; charset=utf-8',
       disposition: 'inline',
-      filename: @snippet.file_name
+      filename: @snippet.sanitized_file_name
     )
   end
 
@@ -106,6 +106,7 @@ class SnippetsController < ApplicationController
 
   def set_title
     @title = 'Snippets'
+    @title_url = snippets_path
   end
 
   def snippet_params
