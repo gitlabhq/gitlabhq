@@ -25,6 +25,10 @@ class CiService < Service
     :ci
   end
 
+  def supported_events
+    %w(push)
+  end
+
   # Return complete url to build page
   #
   # Ex.

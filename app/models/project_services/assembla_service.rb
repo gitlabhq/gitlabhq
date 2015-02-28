@@ -42,9 +42,12 @@ class AssemblaService < Service
     ]
   end
 
+  def supported_events
+    %w(push)
+  end
+
   def execute(data)
-    object_kind = data[:object_kind]
-    return unless object_kind == "push"
+    return unless supported_events.include?(data[:object_kind])
 
     url = "https://atlas.assembla.com/spaces/#{subdomain}/github_tool?secret_key=#{token}"
     AssemblaService.post(url, body: { payload: data }.to_json, headers: { 'Content-Type' => 'application/json' })

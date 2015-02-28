@@ -69,9 +69,12 @@ class IssueTrackerService < Service
     end
   end
 
+  def supported_events
+    %w(push)
+  end
+
   def execute(data)
-    object_kind = data[:object_kind]
-    return unless object_kind == "push"
+    return unless supported_events.include?(data[:object_kind])
 
     message = "#{self.type} was unable to reach #{self.project_url}. Check the url and try again."
     result = false

@@ -41,9 +41,12 @@ class PivotaltrackerService < Service
     ]
   end
 
+  def supported_events
+    %w(push)
+  end
+
   def execute(data)
-    object_kind = data[:object_kind]
-    return unless object_kind == "push"
+    return unless supported_events.include?(data[:object_kind])
 
     url = 'https://www.pivotaltracker.com/services/v5/source_commits'
     data[:commits].each do |commit|

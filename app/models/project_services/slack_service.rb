@@ -42,7 +42,12 @@ class SlackService < Service
     ]
   end
 
+  def supported_events
+    %w(push issue merge_request)
+  end
+
   def execute(data)
+    return unless supported_events.include?(data[:object_kind])
     return unless webhook.present?
 
     object_kind = data[:object_kind]

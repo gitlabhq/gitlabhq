@@ -30,9 +30,12 @@ class GitlabCiService < CiService
     hook.save
   end
 
+  def supported_events
+    %w(push tag_push)
+  end
+
   def execute(data)
-    object_kind = data[:object_kind]
-    return unless %w(push tag_push).include?(object_kind)
+    return unless supported_events.include?(data[:object_kind])
 
     service_hook.execute(data)
   end

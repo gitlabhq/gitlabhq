@@ -73,6 +73,10 @@ class BambooService < CiService
     ]
   end
 
+  def supported_events
+    %w(push)
+  end
+  
   def build_info(sha)
     url = URI.parse("#{bamboo_url}/rest/api/latest/result?label=#{sha}")
 
@@ -123,8 +127,7 @@ class BambooService < CiService
   end
 
   def execute(data)
-    object_kind = data[:object_kind]
-    return unless object_kind == "push"
+    return unless supported_events.include?(data[:object_kind])
 
     # Bamboo requires a GET and does not take any data.
     self.class.get("#{bamboo_url}/updateAndBuild.action?buildKey=#{build_key}",

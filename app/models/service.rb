@@ -80,6 +80,10 @@ class Service < ActiveRecord::Base
     []
   end
 
+  def supported_events
+    %w(push tag_push issue merge_request)
+  end
+
   def execute
     # implement inside child
   end
@@ -105,6 +109,8 @@ class Service < ActiveRecord::Base
   end
 
   def async_execute(data)
+    return unless supported_events.include?(data[:object_kind])
+    
     Sidekiq::Client.enqueue(ProjectServiceWorker, id, data)
   end
 

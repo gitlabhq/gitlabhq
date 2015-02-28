@@ -14,6 +14,43 @@
       = preserve do
         = markdown @service.help
 
+  .form-group
+    = f.label :url, "Trigger", class: 'control-label'
+    - if @service.supported_events.length > 1
+      .col-sm-10
+        - if @service.supported_events.include?("push")
+          %div
+            = f.check_box :push_events, class: 'pull-left'
+            .prepend-left-20
+              = f.label :push_events, class: 'list-label' do
+                %strong Push events
+              %p.light
+                This url will be triggered by a push to the repository
+        - if @service.supported_events.include?("tag_push")
+          %div
+            = f.check_box :tag_push_events, class: 'pull-left'
+            .prepend-left-20
+              = f.label :tag_push_events, class: 'list-label' do
+                %strong Tag push events
+              %p.light
+                This url will be triggered when a new tag is pushed to the repository
+        - if @service.supported_events.include?("issue")
+          %div
+            = f.check_box :issues_events, class: 'pull-left'
+            .prepend-left-20
+              = f.label :issues_events, class: 'list-label' do
+                %strong Issues events
+              %p.light
+                This url will be triggered when an issue is created
+        - if @service.supported_events.include?("merge_request")
+          %div
+            = f.check_box :merge_requests_events, class: 'pull-left'
+            .prepend-left-20
+              = f.label :merge_requests_events, class: 'list-label' do
+                %strong Merge Request events
+              %p.light
+                This url will be triggered when a merge request is created
+
   - @service.fields.each do |field|
     - name = field[:name]
     - value = @service.send(name) unless field[:type] == 'password'

@@ -80,9 +80,12 @@ class PushoverService < Service
     ]
   end
 
+  def supported_events
+    %w(push)
+  end
+
   def execute(data)
-    object_kind = data[:object_kind]
-    return unless object_kind == "push"
+    return unless supported_events.include?(data[:object_kind])
 
     ref = data[:ref].gsub('refs/heads/', '')
     before = data[:before]

@@ -65,9 +65,12 @@ automatically inspected. Leave blank to include all branches.'
     ]
   end
 
+  def supported_events
+    %w(push)
+  end
+
   def execute(data)
-    object_kind = data[:object_kind]
-    return unless object_kind == "push"
+    return unless supported_events.include?(data[:object_kind])
 
     Asana.configure do |client|
       client.api_key = api_key

@@ -36,9 +36,12 @@ class BuildboxService < CiService
     hook.save
   end
 
+  def supported_events
+    %w(push)
+  end
+
   def execute(data)
-    object_kind = data[:object_kind]
-    return unless object_kind == "push"
+    return unless supported_events.include?(data[:object_kind])
 
     service_hook.execute(data)
   end

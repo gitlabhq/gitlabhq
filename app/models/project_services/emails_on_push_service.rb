@@ -33,9 +33,12 @@ class EmailsOnPushService < Service
     'emails_on_push'
   end
 
+  def supported_events
+    %w(push)
+  end
+
   def execute(data)
-    object_kind = data[:object_kind]
-    return unless object_kind == "push"
+    return unless supported_events.include?(data[:object_kind])
 
     EmailsOnPushWorker.perform_async(project_id, recipients, data)
   end
