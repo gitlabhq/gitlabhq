@@ -1,6 +1,8 @@
 ## Log system
 GitLab has advanced log system so everything is logging and you can analize your instance using various system log files.
-These log files are typically plain text in a standard log file format. This guide talks about how to read and use these system log files.
+In addition to system log files, GitLab Enterprise Edition comes with Audit Events. Find more about them [in Audit Events documentation](http://doc.gitlab.com/ee/administration/audit_events.html)
+
+System log files are typically plain text in a standard log file format. This guide talks about how to read and use these system log files.
 
 #### production.log
 This file lives in `/var/log/gitlab/gitlab-rails/production.log` for omnibus package or in `/home/git/gitlab/logs/production.log` for installations from the source.
@@ -12,7 +14,7 @@ This task is more useful for GitLab contributors and developers. Use part of thi
 Started GET "/gitlabhq/yaml_db/tree/master" for 168.111.56.1 at 2015-02-12 19:34:53 +0200
 Processing by Projects::TreeController#show as HTML
   Parameters: {"project_id"=>"gitlabhq/yaml_db", "id"=>"master"}
-  
+
   ... [CUT OUT]
 
   amespaces"."created_at" DESC, "namespaces"."id" DESC LIMIT 1[0m  [["id", 26]]
