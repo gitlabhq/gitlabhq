@@ -4,6 +4,8 @@ describe EventsHelper do
   include ApplicationHelper
   include GitlabMarkdownHelper
 
+  let(:current_user) { create(:user, email: "current@email.com") }
+
   it 'should display one line of plain text without alteration' do
     input = 'A short, plain note'
     expect(event_note(input)).to match(input)
@@ -49,5 +51,15 @@ describe EventsHelper do
 
     expect(event_note(input)).to match(link_url)
     expect(event_note(input)).to match(expected_link_text)
+  end
+
+  it 'should preserve code color scheme' do
+    input = "```ruby\ndef test\n  'hello world'\nend\n```"
+    expected = '<pre class="code highlight white ruby">' \
+      "<code><span class=\"k\">def</span> <span class=\"nf\">test</span>\n" \
+      "  <span class=\"s1\">\'hello world\'</span>\n" \
+      "<span class=\"k\">end</span>\n" \
+      '</code></pre>'
+    expect(event_note(input)).to eq(expected)
   end
 end
