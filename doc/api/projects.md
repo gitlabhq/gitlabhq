@@ -68,7 +68,8 @@ Parameters:
       "path": "diaspora",
       "updated_at": "2013-09-30T13: 46: 02Z"
     },
-    "archived": false
+    "archived": false,
+    "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png"
   },
   {
     "id": 6,
@@ -103,7 +104,8 @@ Parameters:
       "path": "brightbox",
       "updated_at": "2013-09-30T13:46:02Z"
     },
-    "archived": false
+    "archived": false,
+    "avatar_url": null
   }
 ]
 ```
@@ -195,7 +197,8 @@ Parameters:
       "notification_level": 3
     }
   },
-  "archived": false
+  "archived": false,
+  "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png"
 }
 ```
 
