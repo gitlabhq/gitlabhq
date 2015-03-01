@@ -5,8 +5,7 @@ module Gitlab
 
       RequestStore.store[key] ||= begin
         if ActiveRecord::Base.connected? && ActiveRecord::Base.connection.table_exists?('application_settings')
-          RequestStore.store[:current_application_settings] =
-            (ApplicationSetting.current || ApplicationSetting.create_from_defaults)
+          ApplicationSetting.current || ApplicationSetting.create_from_defaults
         else
           fake_application_settings
         end
@@ -21,6 +20,7 @@ module Gitlab
         signin_enabled: Settings.gitlab['signin_enabled'],
         gravatar_enabled: Settings.gravatar['enabled'],
         sign_in_text: Settings.extra['sign_in_text'],
+        restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels']
       )
     end
   end

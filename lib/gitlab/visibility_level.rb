@@ -5,6 +5,8 @@
 #
 module Gitlab
   module VisibilityLevel
+    extend CurrentSettings
+
     PRIVATE  = 0 unless const_defined?(:PRIVATE)
     INTERNAL = 10 unless const_defined?(:INTERNAL)
     PUBLIC   = 20 unless const_defined?(:PUBLIC)
@@ -23,21 +25,21 @@ module Gitlab
       end
 
       def allowed_for?(user, level)
-        user.is_admin? || allowed_level?(level)
+        user.is_admin? || allowed_level?(level.to_i)
       end
 
-      # Level can be a string `"public"` or a value `20`, first check if valid,
-      # then check if the corresponding string appears in the config
+      # Return true if the specified level is allowed for the current user.
+      # Level should be a numeric value, e.g. `20`.
       def allowed_level?(level)
-        if options.has_key?(level.to_s)
-          non_restricted_level?(level)
-        elsif options.has_value?(level.to_i)
-          non_restricted_level?(options.key(level.to_i).downcase)
-        end
+        valid_level?(level) && non_restricted_level?(level)
       end
 
       def non_restricted_level?(level)
-        ! Gitlab.config.gitlab.restricted_visibility_levels.include?(level)
+        ! current_application_settings.restricted_visibility_levels.include?(level)
+      end
+
+      def valid_level?(level)
+        options.has_value?(level)
       end
     end
 

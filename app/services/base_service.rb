@@ -31,10 +31,6 @@ class BaseService
     SystemHooksService.new
   end
 
-  def current_application_settings
-    ApplicationSetting.current
-  end
-
   private
 
   def error(message, http_status = nil)
