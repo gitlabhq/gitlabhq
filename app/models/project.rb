@@ -37,6 +37,8 @@ class Project < ActiveRecord::Base
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
   include Gitlab::ConfigHelper
+  include Rails.application.routes.url_helpers
+
   extend Gitlab::ConfigHelper
   extend Enumerize
 
@@ -406,6 +408,14 @@ class Project < ActiveRecord::Base
     @avatar_file ||= 'logo.jpg' if repository.blob_at_branch('master', 'logo.jpg')
     @avatar_file ||= 'logo.gif' if repository.blob_at_branch('master', 'logo.gif')
     @avatar_file
+  end
+
+  def avatar_url
+    if avatar.present?
+      [gitlab_config.url, avatar.url].join
+    elsif avatar_in_git
+      [gitlab_config.url, namespace_project_avatar_path(namespace, self)].join
+    end
   end
 
   # For compatibility with old code
