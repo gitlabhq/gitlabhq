@@ -6,7 +6,7 @@
     - if can_change_visibility_level
       - Gitlab::VisibilityLevel.values.each do |level|
         .radio
-          - restricted = restricted_visibility_levels.include?(level)
+          - restricted = restricted_visibility_levels_snippets.include?(level)
           = f.radio_button :visibility_level, level, disabled: restricted
           = label "#{dom_class(@snippet)}_visibility_level", level do
             = visibility_level_icon(level)
@@ -14,7 +14,7 @@
               = visibility_level_label(level)
             .option-descr
               = snippet_visibility_level_description(level)
-      - unless restricted_visibility_levels.empty?
+      - unless restricted_visibility_levels_snippets.empty?
         .col-sm-10
           %span.info
             Some visibility level settings have been restricted by the administrator.
