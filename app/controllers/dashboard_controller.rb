@@ -47,7 +47,7 @@ class DashboardController < ApplicationController
 
     @projects = @projects.where(namespace_id: Group.find_by(name: params[:group])) if params[:group].present?
     @projects = @projects.where(visibility_level: params[:visibility_level]) if params[:visibility_level].present?
-    @projects = @projects.includes(:namespace)
+    @projects = @projects.includes(:namespace, :forked_from_project, :tags)
     @projects = @projects.tagged_with(params[:tag]) if params[:tag].present?
     @projects = @projects.sort(@sort = params[:sort])
     @projects = @projects.page(params[:page]).per(30)
