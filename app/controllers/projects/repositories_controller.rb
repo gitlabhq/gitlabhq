@@ -1,13 +1,13 @@
 class Projects::RepositoriesController < Projects::ApplicationController
   # Authorize
-  before_filter :authorize_download_code!
   before_filter :require_non_empty_project, except: :create
+  before_filter :authorize_download_code!
   before_filter :authorize_admin_project!, only: :create
 
   def create
     @project.create_repository
 
-    redirect_to @project
+    redirect_to namespace_project_path(@project.namespace, @project)
   end
 
   def archive

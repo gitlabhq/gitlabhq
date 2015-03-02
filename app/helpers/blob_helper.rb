@@ -36,8 +36,12 @@ module BlobHelper
       link_opts[:from_merge_request_id] = from_mr if from_mr
       cls = 'btn btn-small'
       if allowed_tree_edit?(project, ref)
-        link_to text, project_edit_blob_path(project, tree_join(ref, path),
-                                             link_opts), class: cls
+        link_to(text,
+                namespace_project_edit_blob_path(project.namespace, project,
+                                                 tree_join(ref, path),
+                                                 link_opts),
+                class: cls
+               )
       else
         content_tag :span, text, class: cls + ' disabled'
       end + after.html_safe

@@ -16,7 +16,7 @@
               = group.name
             %small.light up to #{group_link.human_access}
             .pull-right
-              = link_to project_group_link_path(@project, group_link), method: :delete, class: 'btn btn-small append-right-10' do
+              = link_to namespace_project_group_link_path(@project.namespace, @project, group_link), method: :delete, class: 'btn btn-small append-right-10' do
                 %i.icon-remove
                 disable sharing
 
@@ -25,7 +25,7 @@
   %h4
     Can be shared with
   %div
-    = form_tag project_group_links_path(@project), method: :post, class: 'form-horizontal' do
+    = form_tag namespace_project_group_links_path(@project.namespace, @project), method: :post, class: 'form-horizontal' do
       .form-group
         = label_tag :link_group_id, 'Group', class: 'control-label'
         .col-sm-10

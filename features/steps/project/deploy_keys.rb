@@ -24,7 +24,7 @@ class Spinach::Features::ProjectDeployKeys < Spinach::FeatureSteps
   end
 
   step 'I should be on deploy keys page' do
-    current_path.should == project_deploy_keys_path(@project)
+    current_path.should == namespace_project_deploy_keys_path(@project.namespace, @project)
   end
 
   step 'I should see newly created deploy key' do

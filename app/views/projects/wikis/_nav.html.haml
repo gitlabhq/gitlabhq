@@ -1,12 +1,12 @@
 %ul.nav.nav-tabs
   = nav_link(html_options: {class: params[:id] == 'home' ? 'active' : '' }) do
-    = link_to 'Home', project_wiki_path(@project, :home)
+    = link_to 'Home', namespace_project_wiki_path(@project.namespace, @project, :home)
 
   = nav_link(path: 'wikis#pages') do
-    = link_to 'Pages', pages_project_wikis_path(@project)
+    = link_to 'Pages', pages_namespace_project_wikis_path(@project.namespace, @project)
 
   = nav_link(path: 'wikis#git_access') do
-    = link_to git_access_project_wikis_path(@project) do
+    = link_to git_access_namespace_project_wikis_path(@project.namespace, @project) do
       %i.fa.fa-download
       Git Access
 

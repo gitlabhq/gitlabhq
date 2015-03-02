@@ -5,7 +5,7 @@
 
 %hr.clearfix
 
-= form_for [@project, @pre_receive_hook], html: { class: 'form-horizontal' } do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @pre_receive_hook], html: { class: 'form-horizontal' } do |f|
   -if @pre_receive_hook.errors.any?
     .alert.alert-danger
       - @pre_receive_hook.errors.full_messages.each do |msg|

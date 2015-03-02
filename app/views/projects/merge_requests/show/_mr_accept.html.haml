@@ -12,7 +12,7 @@
 - if @show_merge_controls
   .automerge_widget.can_be_merged.hide
     .clearfix
-      = form_for [:automerge, @project, @merge_request], remote: true, method: :post do |f|
+      = form_for [:automerge, @project.namespace.becomes(Namespace), @project, @merge_request], remote: true, method: :post do |f|
         .accept-merge-holder.clearfix.js-toggle-container
           .accept-action
             = f.submit "Accept Merge Request", class: "btn btn-create accept_merge_request"

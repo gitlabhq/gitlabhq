@@ -22,7 +22,10 @@ class ProjectsController < ApplicationController
     @project = ::Projects::CreateService.new(current_user, project_params).execute
 
     if @project.saved?
-      redirect_to project_path(@project), notice: 'Project was successfully created.'
+      redirect_to(
+        namespace_project_path(@project.namespace, @project),
+        notice: 'Project was successfully created.'
+      )
     else
       render 'new'
     end
@@ -34,7 +37,12 @@ class ProjectsController < ApplicationController
     respond_to do |format|
       if status
         flash[:notice] = 'Project was successfully updated.'
-        format.html { redirect_to edit_project_path(@project), notice: 'Project was successfully updated.' }
+        format.html do
+          redirect_to(
+            edit_namespace_project_path(@project.namespace, @project),
+            notice: 'Project was successfully updated.'
+          )
+        end
         format.js
       else
         format.html { render 'edit', layout: 'project_settings' }
@@ -44,7 +52,8 @@ class ProjectsController < ApplicationController
   end
 
   def transfer
-    ::Projects::TransferService.new(project, current_user, project_params).execute
+    transfer_params = params.permit(:new_namespace_id)
+    ::Projects::TransferService.new(project, current_user, transfer_params).execute
     if @project.errors[:namespace_id].present?
       flash[:alert] = @project.errors[:namespace_id].first
     end
@@ -52,7 +61,7 @@ class ProjectsController < ApplicationController
 
   def show
     if @project.import_in_progress?
-      redirect_to project_import_path(@project)
+      redirect_to namespace_project_import_path(@project.namespace, @project)
       return
     end
 
@@ -93,7 +102,7 @@ class ProjectsController < ApplicationController
         flash[:alert] = 'Project deleted.'
 
         if request.referer.include?('/admin')
-          redirect_to admin_projects_path
+          redirect_to admin_namespace_projects_path
         else
           redirect_to projects_dashboard_path
         end
@@ -124,7 +133,7 @@ class ProjectsController < ApplicationController
     @project.archive!
 
     respond_to do |format|
-      format.html { redirect_to @project }
+      format.html { redirect_to namespace_project_path(@project.namespace, @project) }
     end
   end
 
@@ -133,7 +142,7 @@ class ProjectsController < ApplicationController
     @project.unarchive!
 
     respond_to do |format|
-      format.html { redirect_to @project }
+      format.html { redirect_to namespace_project_path(@project.namespace, @project) }
     end
   end
 

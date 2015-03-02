@@ -5,8 +5,8 @@ class Projects::BlobController < Projects::ApplicationController
   # Raised when given an invalid file path
   class InvalidPathError < StandardError; end
 
-  before_filter :authorize_download_code!
   before_filter :require_non_empty_project, except: [:new, :create]
+  before_filter :authorize_download_code!
   before_filter :authorize_push_code!, only: [:destroy]
   before_filter :assign_blob_vars
   before_filter :commit, except: [:new, :create]
@@ -25,7 +25,7 @@ class Projects::BlobController < Projects::ApplicationController
 
     if result[:status] == :success
       flash[:notice] = "Your changes have been successfully committed"
-      redirect_to project_blob_path(@project, File.join(@ref, file_path))
+      redirect_to namespace_project_blob_path(@project.namespace, @project, File.join(@ref, file_path))
     else
       flash[:alert] = result[:message]
       render :new
@@ -70,7 +70,8 @@ class Projects::BlobController < Projects::ApplicationController
 
     if result[:status] == :success
       flash[:notice] = "Your changes have been successfully committed"
-      redirect_to project_tree_path(@project, @ref)
+      redirect_to namespace_project_tree_path(@project.namespace, @project,
+                                              @ref)
     else
       flash[:alert] = result[:message]
       render :show
@@ -102,7 +103,7 @@ class Projects::BlobController < Projects::ApplicationController
     else
       if tree = @repository.tree(@commit.id, @path)
         if tree.entries.any?
-          redirect_to project_tree_path(@project, File.join(@ref, @path)) and return
+          redirect_to namespace_project_tree_path(@project.namespace, @project, File.join(@ref, @path)) and return
         end
       end
 
@@ -128,10 +129,10 @@ class Projects::BlobController < Projects::ApplicationController
   def after_edit_path
     @after_edit_path ||=
       if from_merge_request
-        diffs_project_merge_request_path(from_merge_request.target_project, from_merge_request) +
+        diffs_namespace_project_merge_request_path(from_merge_request.target_project.namespace, from_merge_request.target_project, from_merge_request) +
           "#file-path-#{hexdigest(@path)}"
       else
-        project_blob_path(@project, @id)
+        namespace_project_blob_path(@project.namespace, @project, @id)
       end
   end
 

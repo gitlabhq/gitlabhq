@@ -16,22 +16,22 @@
       %li.my-project-row
         %h4.project-title
           .pull-left
-            = project_icon(project.to_param, alt: '', class: 'avatar project-avatar s60')
+            = project_icon("#{project.namespace.to_param}/#{project.to_param}", alt: '', class: 'avatar project-avatar s60')
           .project-access-icon
             = visibility_level_icon(project.visibility_level)
-          = link_to project_path(project), class: dom_class(project) do
-            = project.name_with_namespace
+          = link_to namespace_project_path(project.namespace, project), class: dom_class(project) do
+            %strong= project.name_with_namespace
 
           - if project.forked_from_project
             &nbsp;
             %small
               %i.fa.fa-code-fork
               Forked from:
-              = link_to project.forked_from_project.name_with_namespace, project_path(project.forked_from_project)
+              = link_to project.forked_from_project.name_with_namespace, namespace_project_path(project.namespace, project.forked_from_project)
 
           - if current_user.can_leave_project?(project)
             .pull-right
-              = link_to leave_project_team_members_path(project), data: { confirm: "Leave project?"}, method: :delete, remote: true, class: "btn-tiny btn remove-row", title: 'Leave project' do
+              = link_to leave_namespace_project_team_members_path(project.namespace, project), data: { confirm: "Leave project?"}, method: :delete, remote: true, class: "btn-tiny btn remove-row", title: 'Leave project' do
                 %i.fa.fa-sign-out
                 Leave
 

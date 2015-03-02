@@ -17,7 +17,7 @@ class Projects::GitHooksController < Projects::ApplicationController
     @pre_receive_hook.update_attributes(git_hook_params)
 
     if @pre_receive_hook.valid?
-      redirect_to project_git_hooks_path(@project)
+      redirect_to namespace_project_git_hooks_path(@project.namespace, @project)
     else
       render :index
     end

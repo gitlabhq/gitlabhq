@@ -18,7 +18,10 @@ describe Projects::TreeController do
     # Make sure any errors accessing the tree in our views bubble up to this spec
     render_views
 
-    before { get :show, project_id: project.to_param, id: id }
+    before do
+      get(:show, namespace_id: project.namespace.to_param,
+          project_id: project.to_param, id: id)
+    end
 
     context "valid branch, no path" do
       let(:id) { 'master' }
@@ -45,7 +48,8 @@ describe Projects::TreeController do
     render_views
 
     before do
-      get :show, project_id: project.to_param, id: id
+      get(:show, namespace_id: project.namespace.to_param,
+          project_id: project.to_param, id: id)
     end
 
     context 'redirect to blob' do

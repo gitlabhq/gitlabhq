@@ -93,6 +93,7 @@ class ApplicationController < ActionController::Base
 
   def project
     unless @project
+      namespace = params[:namespace_id]
       id = params[:project_id] || params[:id]
 
       # Redirect from
@@ -104,7 +105,7 @@ class ApplicationController < ActionController::Base
         redirect_to request.original_url.gsub(/\.git\Z/, '') and return
       end
 
-      @project = Project.find_with_namespace(id)
+      @project = Project.find_with_namespace("#{namespace}/#{id}")
 
       if @project and can?(current_user, :read_project, @project)
         @project
@@ -121,7 +122,8 @@ class ApplicationController < ActionController::Base
 
   def repository
     @repository ||= project.repository
-  rescue Grit::NoSuchPathError
+  rescue Grit::NoSuchPathError(e)
+    log_exception(e)
     nil
   end
 

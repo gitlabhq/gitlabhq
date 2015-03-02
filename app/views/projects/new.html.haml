@@ -53,18 +53,19 @@
               Import projects from GitHub
             = render 'github_import_modal'
 
-      .project-import.form-group
-        .col-sm-2
-        .col-sm-10
-          - if gitlab_import_enabled?
-            = link_to status_import_gitlab_path do
-              %i.fa.fa-heart
-              Import projects from GitLab.com
-          - elsif request.host != 'gitlab.com'
-            = link_to '#', class: 'how_to_import_link light' do
-              %i.fa.fa-heart
-              Import projects from GitLab.com
-            = render 'gitlab_import_modal'
+      - unless request.host == 'gitlab.com'
+        .project-import.form-group
+          .col-sm-2
+          .col-sm-10
+            - if gitlab_import_enabled?
+              = link_to status_import_gitlab_path do
+                %i.fa.fa-heart
+                Import projects from GitLab.com
+            - else
+              = link_to '#', class: 'how_to_import_link light' do
+                %i.fa.fa-heart
+                Import projects from GitLab.com
+              = render 'gitlab_import_modal'
 
       .project-import.form-group
         .col-sm-2

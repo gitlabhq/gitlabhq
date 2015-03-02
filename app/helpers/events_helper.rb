@@ -74,17 +74,23 @@ module EventsHelper
 
   def event_feed_url(event)
     if event.issue?
-      project_issue_url(event.project, event.issue)
+      namespace_project_issue_url(event.project.namespace, event.project,
+                                  event.issue)
     elsif event.merge_request?
-      project_merge_request_url(event.project, event.merge_request)
+      namespace_project_merge_request_url(event.project.namespace,
+                                          event.project, event.merge_request)
     elsif event.note? && event.note_commit?
-      project_commit_url(event.project, event.note_target)
+      namespace_project_commit_url(event.project.namespace, event.project,
+                                   event.note_target)
     elsif event.note?
       if event.note_target
         if event.note_commit?
-          project_commit_path(event.project, event.note_commit_id, anchor: dom_id(event.target))
+          namespace_project_commit_path(event.project.namespace, event.project,
+                                        event.note_commit_id,
+                                        anchor: dom_id(event.target))
         elsif event.note_project_snippet?
-          project_snippet_path(event.project, event.note_target)
+          namespace_project_snippet_path(event.project.namespace,
+                                         event.project, event.note_target)
         else
           event_note_target_path(event)
         end
@@ -92,12 +98,16 @@ module EventsHelper
     elsif event.push?
       if event.push_with_commits?
         if event.commits_count > 1
-          project_compare_url(event.project, from: event.commit_from, to: event.commit_to)
+          namespace_project_compare_url(event.project.namespace, event.project,
+                                        from: event.commit_from, to:
+                                        event.commit_to)
         else
-          project_commit_url(event.project, id: event.commit_to)
+          namespace_project_commit_url(event.project.namespace, event.project,
+                                       id: event.commit_to)
         end
       else
-        project_commits_url(event.project, event.ref_name)
+        namespace_project_commits_url(event.project.namespace, event.project,
+                                      event.ref_name)
       end
     end
   end
@@ -116,20 +126,30 @@ module EventsHelper
 
   def event_note_target_path(event)
     if event.note? && event.note_commit?
-      project_commit_path(event.project, event.note_target)
+      namespace_project_commit_path(event.project.namespace, event.project,
+                                    event.note_target)
     else
-      polymorphic_path([event.project, event.note_target], anchor: dom_id(event.target))
+      polymorphic_path([event.project.namespace.becomes(Namespace),
+                        event.project, event.note_target],
+                       anchor: dom_id(event.target))
     end
   end
 
   def event_note_title_html(event)
     if event.note_target
       if event.note_commit?
-        link_to project_commit_path(event.project, event.note_commit_id, anchor: dom_id(event.target)), class: "commit_short_id" do
+        link_to(
+          namespace_project_commit_path(event.project.namespace, event.project,
+                                        event.note_commit_id,
+                                        anchor: dom_id(event.target)),
+          class: "commit_short_id"
+        ) do
           "#{event.note_target_type} #{event.note_short_commit_id}"
         end
       elsif event.note_project_snippet?
-        link_to(project_snippet_path(event.project, event.note_target)) do
+        link_to(namespace_project_snippet_path(event.project.namespace,
+                                               event.project,
+                                               event.note_target)) do
           "#{event.note_target_type} ##{truncate event.note_target_id}"
         end
       else

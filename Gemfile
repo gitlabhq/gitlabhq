@@ -178,9 +178,6 @@ gem 'ace-rails-ap'
 # Keyboard shortcuts
 gem 'mousetrap-rails'
 
-# Semantic UI Sass for Sidebar
-gem 'semantic-ui-sass', '~> 1.8.0'
-
 gem "sass-rails", '~> 4.0.2'
 gem "coffee-rails"
 gem "uglifier"
@@ -252,8 +249,8 @@ group :development, :test do
 
   gem 'jasmine', '2.0.2'
 
-  gem "spring", '1.1.3'
-  gem "spring-commands-rspec", '1.0.1'
+  gem "spring", '1.3.1'
+  gem "spring-commands-rspec", '1.0.4'
   gem "spring-commands-spinach", '1.0.0'
 end
 

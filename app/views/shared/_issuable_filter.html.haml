@@ -111,7 +111,7 @@
                     = render_colored_label(label)
             - else
               %li
-                = link_to generate_project_labels_path(@project, redirect: request.original_url), method: :post do
+                = link_to generate_namespace_project_labels_path(@project.namespace, @project, redirect: request.original_url), method: :post do
                   %i.fa.fa-plus-circle
                   Create default labels
 

@@ -1,6 +1,6 @@
 .search-result-row
   %h4
-    = link_to [merge_request.target_project, merge_request] do
+    = link_to [merge_request.target_project.namespace.becomes(Namespace), merge_request.target_project, merge_request] do
       %span.term.str-truncated= merge_request.title
     .pull-right ##{merge_request.iid}
   - if merge_request.description.present?

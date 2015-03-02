@@ -23,25 +23,25 @@ describe "GitLab Flavored Markdown", feature: true do
 
   describe "for commits" do
     it "should render title in commits#index" do
-      visit project_commits_path(project, 'master', limit: 1)
+      visit namespace_project_commits_path(project.namespace, project, 'master', limit: 1)
 
       expect(page).to have_link("##{issue.iid}")
     end
 
     it "should render title in commits#show" do
-      visit project_commit_path(project, commit)
+      visit namespace_project_commit_path(project.namespace, project, commit)
 
       expect(page).to have_link("##{issue.iid}")
     end
 
     it "should render description in commits#show" do
-      visit project_commit_path(project, commit)
+      visit namespace_project_commit_path(project.namespace, project, commit)
 
       expect(page).to have_link("@#{fred.username}")
     end
 
     it "should render title in repositories#branches" do
-      visit project_branches_path(project)
+      visit namespace_project_branches_path(project.namespace, project)
 
       expect(page).to have_link("##{issue.iid}")
     end
@@ -62,19 +62,19 @@ describe "GitLab Flavored Markdown", feature: true do
     end
 
     it "should render subject in issues#index" do
-      visit project_issues_path(project)
+      visit namespace_project_issues_path(project.namespace, project)
 
       expect(page).to have_link("##{@other_issue.iid}")
     end
 
     it "should render subject in issues#show" do
-      visit project_issue_path(project, @issue)
+      visit namespace_project_issue_path(project.namespace, project, @issue)
 
       expect(page).to have_link("##{@other_issue.iid}")
     end
 
     it "should render details in issues#show" do
-      visit project_issue_path(project, @issue)
+      visit namespace_project_issue_path(project.namespace, project, @issue)
 
       expect(page).to have_link("@#{fred.username}")
     end
@@ -87,13 +87,13 @@ describe "GitLab Flavored Markdown", feature: true do
     end
 
     it "should render title in merge_requests#index" do
-      visit project_merge_requests_path(project)
+      visit namespace_project_merge_requests_path(project.namespace, project)
 
       expect(page).to have_link("##{issue.iid}")
     end
 
     it "should render title in merge_requests#show" do
-      visit project_merge_request_path(project, @merge_request)
+      visit namespace_project_merge_request_path(project.namespace, project, @merge_request)
 
       expect(page).to have_link("##{issue.iid}")
     end
@@ -109,19 +109,19 @@ describe "GitLab Flavored Markdown", feature: true do
     end
 
     it "should render title in milestones#index" do
-      visit project_milestones_path(project)
+      visit namespace_project_milestones_path(project.namespace, project)
 
       expect(page).to have_link("##{issue.iid}")
     end
 
     it "should render title in milestones#show" do
-      visit project_milestone_path(project, @milestone)
+      visit namespace_project_milestone_path(project.namespace, project, @milestone)
 
       expect(page).to have_link("##{issue.iid}")
     end
 
     it "should render description in milestones#show" do
-      visit project_milestone_path(project, @milestone)
+      visit namespace_project_milestone_path(project.namespace, project, @milestone)
 
       expect(page).to have_link("@#{fred.username}")
     end
