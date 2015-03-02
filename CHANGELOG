@@ -76,6 +76,7 @@ v 7.10.0 (unreleased)
   - Bust group page project list cache when namespace name or path changes.
   - Explicitly set image alt-attribute to prevent graphical glitches if gravatars could not be loaded
   - Allow user to choose a public email to show on public profile
+  - Remove truncation from issue titles on milestone page (Jason Blanchard)
 
 v 7.9.3
   - Contains no changes
