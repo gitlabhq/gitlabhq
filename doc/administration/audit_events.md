@@ -2,6 +2,8 @@
 
 GitLab Enterprise Edition offers a way to view the changes made within the GitLab server as a help to system administrators.
 
+GitLab system administrators can also take advantage of the logs located on the filesystem, see [the logs system documentation](logs/logs.md) for more details.
+
 
 # Security Events
 
