@@ -326,4 +326,35 @@ describe Project do
       expect(project.avatar_type).to eq(['only images allowed'])
     end
   end
+
+  describe :avatar_url do
+    subject { project.avatar_url }
+
+    let(:project) { create(:project) }
+
+    context 'When avatar file is uploaded' do
+      before do
+        project.update_columns(avatar: 'uploads/avatar.png')
+        allow(project.avatar).to receive(:present?) { true }
+      end
+
+      let(:avatar_path) do
+        "/uploads/project/avatar/#{project.id}/uploads/avatar.png"
+      end
+
+      it { should eq "http://localhost#{avatar_path}" }
+    end
+
+    context 'When avatar file in git' do
+      before do
+        allow(project).to receive(:avatar_in_git) { true }
+      end
+
+      let(:avatar_path) do
+        "/#{project.namespace.name}/#{project.path}/avatar"
+      end
+
+      it { should eq "http://localhost#{avatar_path}" }
+    end
+  end
 end

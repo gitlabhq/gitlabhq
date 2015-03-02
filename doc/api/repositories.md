@@ -15,24 +15,21 @@ Parameters:
 ```json
 [
   {
-    "name": "v1.0.0",
     "commit": {
-      "id": "2695effb5807a22ff3d138d593fd856244e155e7",
-      "parents": [],
-      "tree": "38017f2f189336fe4497e9d230c5bb1bf873f08d",
-      "message": "Initial commit",
-      "author": {
-        "name": "John Smith",
-        "email": "john@example.com"
-      },
-      "committer": {
-        "name": "Jack Smith",
-        "email": "jack@example.com"
-      },
+      "author_name": "John Smith",
+      "author_email": "john@example.com",
       "authored_date": "2012-05-28T04:42:42-07:00",
-      "committed_date": "2012-05-28T04:42:42-07:00"
+      "committed_date": "2012-05-28T04:42:42-07:00",
+      "committer_name": "Jack Smith",
+      "committer_email": "jack@example.com",
+      "id": "2695effb5807a22ff3d138d593fd856244e155e7",
+      "message": "Initial commit",
+      "parents_ids": [
+        "2a4b78934375d7f53875269ffd4f45fd83a84ebe"
+      ]
     },
-    "protected": null
+    "name": "v1.0.0",
+    "message": null
   }
 ]
 ```
@@ -53,23 +50,23 @@ Parameters:
 - `message` (optional) - Creates annotated tag.
 
 ```json
-[
-  {
-    "name": "v1.0.0",
-    "message": "Release 1.0.0",
-    "commit": {
-      "id": "2695effb5807a22ff3d138d593fd856244e155e7",
-      "parents": [],
-      "message": "Initial commit",
-      "authored_date": "2012-05-28T04:42:42-07:00",
-      "author_name": "John Smith",
-      "author email": "john@example.com",
-      "committer_name": "Jack Smith",
-      "committed_date": "2012-05-28T04:42:42-07:00",
-      "committer_email": "jack@example.com"
-    },
-  }
-]
+{
+  "commit": {
+    "author_name": "John Smith",
+    "author_email": "john@example.com",
+    "authored_date": "2012-05-28T04:42:42-07:00",
+    "committed_date": "2012-05-28T04:42:42-07:00",
+    "committer_name": "Jack Smith",
+    "committer_email": "jack@example.com",
+    "id": "2695effb5807a22ff3d138d593fd856244e155e7",
+    "message": "Initial commit",
+    "parents_ids": [
+      "2a4b78934375d7f53875269ffd4f45fd83a84ebe"
+    ]
+  },
+  "name": "v1.0.0",
+  "message": null
+}
 ```
 The message will be `nil` when creating a lightweight tag otherwise
 it will contain the annotation.

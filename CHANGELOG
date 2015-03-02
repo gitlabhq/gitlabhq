@@ -10,6 +10,7 @@ v 7.9.0 (unreleased)
   - Save web edit in new branch
   - Fix ordering of imported but unchanged projects (Marco Wessel)
   - Mobile UI improvements: make aside content expandable
+  - Expose avatar_url in projects API
   - Generalize image upload in drag and drop in markdown to all files (Hannes Rosenögger)
   - Fix mass-unassignment of issues (Robert Speicher)
   - Allow user confirmation to be skipped for new users via API
