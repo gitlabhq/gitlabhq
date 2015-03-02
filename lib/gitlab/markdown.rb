@@ -121,7 +121,7 @@ module Gitlab
       text
     end
 
-    NAME_STR = '[a-zA-Z][a-zA-Z0-9_\-\.]*'
+    NAME_STR = '[a-zA-Z0-9_][a-zA-Z0-9_\-\.]*'
     PROJ_STR = "(?<project>#{NAME_STR}/#{NAME_STR})"
 
     REFERENCE_PATTERN = %r{
