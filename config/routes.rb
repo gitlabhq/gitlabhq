@@ -97,6 +97,7 @@ Gitlab::Application.routes.draw do
       constraints:  { namespace_id: /[a-zA-Z.0-9_\-]+/, project_id: /[a-zA-Z.0-9_\-]+/, filename: /.+/ }
   end
 
+  # Redirect old note attachments path to new uploads path.
   get "files/note/:id/:filename",
     to:           redirect("uploads/note/attachment/%{id}/%{filename}"),
     constraints:  { filename: /.+/ }
