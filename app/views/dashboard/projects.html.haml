@@ -16,7 +16,7 @@
       %li.my-project-row
         %h4.project-title
           .pull-left
-            = project_icon("#{project.namespace.to_param}/#{project.to_param}", alt: '', class: 'avatar project-avatar s60')
+            = project_icon(project, alt: '', class: 'avatar project-avatar s60')
           .project-access-icon
             = visibility_level_icon(project.visibility_level)
           = link_to project_path(project), class: dom_class(project) do
