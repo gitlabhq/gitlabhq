@@ -74,8 +74,8 @@ module API
         required_attributes! [:file_path, :branch_name, :content, :commit_message]
         attrs = attributes_for_keys [:file_path, :branch_name, :content, :commit_message, :encoding]
         if params[:content].try(:include?, 'tempfile')
-            attrs['content'] = Base64.encode64(params[:content][:tempfile].read)
-            attrs['encoding'] = 'base64'
+          attrs['content'] = Base64.encode64(params[:content][:tempfile].read)
+          attrs['encoding'] = 'base64'
         end
         branch_name = attrs.delete(:branch_name)
         file_path = attrs.delete(:file_path)
@@ -110,8 +110,8 @@ module API
         required_attributes! [:file_path, :branch_name, :content, :commit_message]
         attrs = attributes_for_keys [:file_path, :branch_name, :content, :commit_message, :encoding]
         if params[:content].try(:include?, 'tempfile')
-            attrs['content'] = Base64.encode64(params[:content][:tempfile].read)
-            attrs['encoding'] = 'base64'
+          attrs['content'] = Base64.encode64(params[:content][:tempfile].read)
+          attrs['encoding'] = 'base64'
         end
         branch_name = attrs.delete(:branch_name)
         file_path = attrs.delete(:file_path)
