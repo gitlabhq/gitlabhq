@@ -48,7 +48,9 @@ module Gitlab
 
       def ssh_keys
         if config.sync_ssh_keys? && entry.respond_to?(config.sync_ssh_keys)
-          entry[config.sync_ssh_keys.to_sym]
+          entry[config.sync_ssh_keys.to_sym].
+            map { |key| key[/(ssh|ecdsa)-[^ ]+ [^\s]+/] }.
+            compact
         else
           []
         end
