@@ -17,7 +17,7 @@
 
   - if current_user && current_user.can?(:manage_group, @group)
     .pull-right
-      = link_to '#', class: 'btn btn-new js-toggle-button' do
+      = button_tag class: 'btn btn-new js-toggle-button', type: 'button' do
         Add members
         %i.fa.fa-chevron-down
 
