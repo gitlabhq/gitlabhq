@@ -1,5 +1,5 @@
 %div.issue-form-holder
-  %h3.page-title= @issue.new_record? ? "New Issue" : "Edit Issue ##{@issue.iid}"
+  %h3.page-title= @issue.new_record? ? "Create Issue" : "Edit Issue ##{@issue.iid}"
   %hr
 
   = form_for [@project.namespace.becomes(Namespace), @project, @issue], html: { class: 'form-horizontal issue-form gfm-form' } do |f|
@@ -11,4 +11,4 @@
     e.preventDefault();
   });
 
-  window.project_image_path_upload = "#{upload_image_namespace_project_path @project.namespace, @project}";
+  window.project_uploads_path = "#{namespace_project_uploads_path @project.namespace, @project}";

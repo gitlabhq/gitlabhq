@@ -46,6 +46,7 @@
 #  github_access_token      :string(255)
 #  notification_email       :string(255)
 #  password_automatically_set :boolean        default(FALSE)
+#  bitbucket_access_token   :string(255)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -178,7 +179,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  mount_uploader :avatar, AttachmentUploader
+  mount_uploader :avatar, AvatarUploader
 
   # Scopes
   scope :admins, -> { where(admin:  true) }
@@ -639,9 +640,11 @@ class User < ActiveRecord::Base
   def contributed_projects_ids
     Event.where(author_id: self).
       where("created_at > ?", Time.now - 1.year).
-      code_push.
+      where("action = :pushed OR (target_type = 'MergeRequest' AND action = :created)", 
+        pushed: Event::PUSHED, created: Event::CREATED).
       reorder(project_id: :desc).
-      select('DISTINCT(project_id)').
-      map(&:project_id)
+      select(:project_id).
+      uniq
+      .map(&:project_id)
   end
 end

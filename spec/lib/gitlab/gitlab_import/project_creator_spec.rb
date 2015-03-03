@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::GitlabImport::ProjectCreator do
   let(:user) { create(:user, gitlab_access_token: "asdffg") }
-  let(:repo) {{
+  let(:repo) { {
     name: 'vim',
     path: 'vim',
     visibility_level: Gitlab::VisibilityLevel::PRIVATE,
@@ -16,8 +16,7 @@ describe Gitlab::GitlabImport::ProjectCreator do
     allow_any_instance_of(Project).to receive(:add_import_job)
     
     project_creator = Gitlab::GitlabImport::ProjectCreator.new(repo, namespace, user)
-    project_creator.execute
-    project = Project.last
+    project = project_creator.execute
     
     expect(project.import_url).to eq("https://oauth2:asdffg@gitlab.com/asd/vim.git")
     expect(project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)

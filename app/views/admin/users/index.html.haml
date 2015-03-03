@@ -1,5 +1,7 @@
 .row
-  .col-md-3
+  = link_to '#aside', class: 'show-aside' do
+    %i.fa.fa-angle-left
+  %aside.col-md-3
     .admin-filter
       %ul.nav.nav-pills.nav-stacked
         %li{class: "#{'active' unless params[:filter]}"}
@@ -27,7 +29,7 @@
       %hr
       = link_to 'Reset', admin_users_path, class: "btn btn-cancel"
 
-  .col-md-9
+  %section.col-md-9
     .panel.panel-default
       .panel-heading
         Users (#{@users.total_count})

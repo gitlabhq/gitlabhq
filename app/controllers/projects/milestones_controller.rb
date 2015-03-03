@@ -54,7 +54,8 @@ class Projects::MilestonesController < Projects::ApplicationController
       format.js
       format.html do
         if @milestone.valid?
-          redirect_to [@project, @milestone]
+          redirect_to namespace_project_milestone_path(@project.namespace,
+                                                   @project, @milestone)
         else
           render :edit
         end

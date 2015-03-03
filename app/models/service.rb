@@ -118,6 +118,7 @@ class Service < ActiveRecord::Base
       jira
       redmine
       custom_issue_tracker
+      irker
     )
   end
 

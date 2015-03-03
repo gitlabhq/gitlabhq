@@ -27,7 +27,8 @@ module Files
       edit_file_action.commit!(
         params[:content],
         params[:commit_message],
-        params[:encoding]
+        params[:encoding],
+        params[:new_branch]
       )
 
       success

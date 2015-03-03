@@ -65,6 +65,9 @@ GEM
       sass (>= 3.2.19)
     browser (0.7.2)
     builder (3.2.2)
+    byebug (3.2.0)
+      columnize (~> 0.8)
+      debugger-linecache (~> 1.2)
     cal-heatmap-rails (0.0.1)
     capybara (2.2.1)
       mime-types (>= 1.16)
@@ -78,7 +81,7 @@ GEM
       json (>= 1.7)
     celluloid (0.16.0)
       timers (~> 4.0.0)
-    charlock_holmes (0.7.3)
+    charlock_holmes (0.6.9.4)
     cliver (0.3.2)
     coderay (1.1.0)
     coercible (1.0.0)
@@ -92,6 +95,7 @@ GEM
     coffee-script-source (1.6.3)
     colored (1.2)
     colorize (0.5.8)
+    columnize (0.9.0)
     connection_pool (2.1.0)
     coveralls (0.7.0)
       multi_json (~> 1.3)
@@ -107,6 +111,7 @@ GEM
     daemons (1.1.9)
     database_cleaner (1.3.0)
     debug_inspector (0.0.2)
+    debugger-linecache (1.2.0)
     default_value_for (3.0.0)
       activerecord (>= 3.2.0, < 5.0)
     descendants_tracker (0.0.3)
@@ -174,8 +179,8 @@ GEM
       dotenv (>= 0.7)
       thor (>= 0.13.6)
     formatador (0.2.4)
-    gemnasium-gitlab-service (0.2.3)
-      rugged (~> 0.19)
+    gemnasium-gitlab-service (0.2.4)
+      rugged (~> 0.21)
     gherkin-ruby (0.3.1)
       racc
     github-markup (1.3.1)
@@ -183,14 +188,14 @@ GEM
     gitlab-flowdock-git-hook (0.4.2.2)
       gitlab-grit (>= 2.4.1)
       multi_json
-    gitlab-grack (2.0.0.pre)
+    gitlab-grack (2.0.0.rc2)
       rack (~> 1.5.1)
     gitlab-grit (2.7.2)
       charlock_holmes (~> 0.6)
       diff-lcs (~> 1.1)
       mime-types (~> 1.15)
       posix-spawn (~> 0.3)
-    gitlab-linguist (3.0.0)
+    gitlab-linguist (3.0.1)
       charlock_holmes (~> 0.6.6)
       escape_utils (~> 0.2.4)
       mime-types (~> 1.19)
@@ -339,6 +344,10 @@ GEM
     omniauth (1.1.4)
       hashie (>= 1.2, < 3)
       rack
+    omniauth-bitbucket (0.0.2)
+      multi_json (~> 1.7)
+      omniauth (~> 1.1)
+      omniauth-oauth (~> 1.0)
     omniauth-github (1.1.1)
       omniauth (~> 1.0)
       omniauth-oauth2 (~> 1.1)
@@ -490,7 +499,7 @@ GEM
     ruby-progressbar (1.7.1)
     rubyntlm (0.4.0)
     rubypants (0.2.0)
-    rugged (0.21.2)
+    rugged (0.21.4)
     rugments (1.0.0.beta3)
     safe_yaml (0.9.7)
     sanitize (2.1.0)
@@ -613,7 +622,7 @@ GEM
       raindrops (~> 0.7)
     unicorn-worker-killer (0.4.2)
       unicorn (~> 4)
-    version_sorter (1.1.0)
+    version_sorter (2.0.0)
     virtus (1.0.1)
       axiom-types (~> 0.0.5)
       coercible (~> 1.0)
@@ -648,6 +657,7 @@ DEPENDENCIES
   binding_of_caller
   bootstrap-sass (~> 3.0)
   browser
+  byebug
   cal-heatmap-rails (~> 0.0.1)
   capybara (~> 2.2.1)
   carrierwave
@@ -673,8 +683,8 @@ DEPENDENCIES
   gemnasium-gitlab-service (~> 0.2)
   github-markup
   gitlab-flowdock-git-hook (~> 0.4.2)
-  gitlab-grack (~> 2.0.0.pre)
-  gitlab-linguist (~> 3.0.0)
+  gitlab-grack (~> 2.0.0.rc2)
+  gitlab-linguist (~> 3.0.1)
   gitlab_emoji (~> 0.0.1.1)
   gitlab_git (= 7.0.0.rc14)
   gitlab_meta (= 7.0)
@@ -707,6 +717,7 @@ DEPENDENCIES
   nprogress-rails
   octokit (= 3.7.0)
   omniauth (~> 1.1.3)
+  omniauth-bitbucket
   omniauth-github
   omniauth-gitlab
   omniauth-google-oauth2

@@ -1,9 +1,9 @@
 - content_for :note_actions do
   - if can?(current_user, :modify_merge_request, @merge_request)
     - if @merge_request.open?
-      = link_to 'Close', namespace_project_merge_request_path(@project.namespace, @project, @merge_request, merge_request: {state_event: :close }), method: :put, class: "btn btn-grouped btn-close close-mr-link js-note-target-close", title: "Close merge request"
+      = link_to 'Close', merge_request_path(@merge_request, merge_request: {state_event: :close }), method: :put, class: "btn btn-grouped btn-close close-mr-link js-note-target-close", title: "Close merge request"
     - if @merge_request.closed?
-      = link_to 'Reopen', namespace_project_merge_request_path(@project.namespace, @project, @merge_request, merge_request: {state_event: :reopen }), method: :put, class: "btn btn-grouped btn-reopen reopen-mr-link js-note-target-reopen", title: "Reopen merge request"
+      = link_to 'Reopen', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: "btn btn-grouped btn-reopen reopen-mr-link js-note-target-reopen", title: "Reopen merge request"
 
 .row
   %section.col-md-9

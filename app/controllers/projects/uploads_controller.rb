@@ -1,19 +1,35 @@
 class Projects::UploadsController < Projects::ApplicationController
-  layout "project"
+  layout 'project'
 
   before_filter :project
 
+  def create
+    link_to_file = ::Projects::UploadService.new(project, params[:file]).
+      execute
+
+    respond_to do |format|
+      if link_to_file
+        format.json do
+          render json: { link: link_to_file }
+        end
+      else
+        format.json do
+          render json: 'Invalid file.', status: :unprocessable_entity
+        end
+      end
+    end
+  end
+
   def show
-    path = File.join(project.path_with_namespace, params[:secret])
-    uploader = FileUploader.new('uploads', path)
+    uploader = FileUploader.new(project, params[:secret])
+
+    return redirect_to uploader.url unless uploader.file_storage?
 
     uploader.retrieve_from_store!(params[:filename])
 
-    if uploader.file.exists?
-      # Right now, these are always images, so we can safely render them inline.
-      send_file uploader.file.path, disposition: 'inline'
-    else
-      not_found!
-    end
+    return not_found! unless uploader.file.exists?
+
+    disposition = uploader.image? ? 'inline' : 'attachment'
+    send_file uploader.file.path, disposition: disposition
   end
 end

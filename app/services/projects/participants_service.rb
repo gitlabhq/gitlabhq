@@ -35,15 +35,21 @@ module Projects
     end
 
     def sorted(users)
-      users.uniq.to_a.compact.sort_by(&:username).map { |user| { username: user.username, name: user.name } }
+      users.uniq.to_a.compact.sort_by(&:username).map do |user| 
+        { username: user.username, name: user.name }
+      end
     end
 
     def groups
-      @user.authorized_groups.sort_by(&:path).map { |group| { username: group.path, name: group.name } }
+      @user.authorized_groups.sort_by(&:path).map do |group| 
+        count = group.users.count
+        { username: group.path, name: "#{group.name} (#{count})" }
+      end
     end
 
     def all_members
-      [{ username: "all", name: "Project and Group Members" }]
+      count = @project.team.members.flatten.count
+      [{ username: "all", name: "All Project and Group Members (#{count})" }]
     end
   end
 end

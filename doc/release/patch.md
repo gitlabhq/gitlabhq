@@ -51,6 +51,6 @@ CE=false be rake release['x.x.x']
 
 1. [Build new packages with the latest version](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/release.md)
 1. Apply the patch to GitLab.com and the private GitLab development server
-1. Create and publish a blog post
+1. Create and publish a blog post, see [patch release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/patch_release_blog_template.md)
 1. Send tweets about the release from `@gitlab`, tweet should include the most important feature that the release is addressing and link to the blog post
 1. Note in the 'GitLab X.X regressions' issue that the patch was published (CE only)

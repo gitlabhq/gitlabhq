@@ -13,6 +13,7 @@ __Project integrations with external services for continuous integration and mor
 - Gemnasium
 - GitLab CI
 - HipChat
+- [Irker](irker.md) An IRC gateway to receive messages on repository updates.
 - Pivotal Tracker
 - Pushover
 - Slack

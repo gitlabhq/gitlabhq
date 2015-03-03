@@ -1,4 +1,5 @@
 class Import::GithubController < Import::BaseController
+  before_filter :verify_github_import_enabled
   before_filter :github_auth, except: :callback
 
   rescue_from Octokit::Unauthorized, with: :github_unauthorized
@@ -42,6 +43,10 @@ class Import::GithubController < Import::BaseController
 
   def client
     @client ||= Gitlab::GithubImport::Client.new(current_user.github_access_token)
+  end
+
+  def verify_github_import_enabled
+    not_found! unless github_import_enabled?
   end
 
   def github_auth

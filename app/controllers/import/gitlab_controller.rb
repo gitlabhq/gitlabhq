@@ -1,4 +1,5 @@
 class Import::GitlabController < Import::BaseController
+  before_filter :verify_gitlab_import_enabled
   before_filter :gitlab_auth, except: :callback
 
   rescue_from OAuth2::Error, with: :gitlab_unauthorized
@@ -16,7 +17,7 @@ class Import::GitlabController < Import::BaseController
     @already_added_projects = current_user.created_projects.where(import_type: "gitlab")
     already_added_projects_names = @already_added_projects.pluck(:import_source)
 
-    @repos.to_a.reject!{ |repo| already_added_projects_names.include? repo["path_with_namespace"] }
+    @repos = @repos.to_a.reject{ |repo| already_added_projects_names.include? repo["path_with_namespace"] }
   end
 
   def jobs
@@ -39,6 +40,10 @@ class Import::GitlabController < Import::BaseController
 
   def client
     @client ||= Gitlab::GitlabImport::Client.new(current_user.gitlab_access_token)
+  end
+
+  def verify_gitlab_import_enabled
+    not_found! unless gitlab_import_enabled?
   end
 
   def gitlab_auth

@@ -46,7 +46,7 @@ module Gitlab
       end
 
       def github_options
-        config["args"]["client_options"].deep_symbolize_keys
+        OmniAuth::Strategies::GitHub.default_options[:client_options]
       end
     end
   end

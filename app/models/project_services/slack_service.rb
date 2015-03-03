@@ -14,7 +14,7 @@
 #
 
 class SlackService < Service
-  prop_accessor :webhook
+  prop_accessor :webhook, :username, :channel
   validates :webhook, presence: true, if: :activated?
 
   def title
@@ -31,7 +31,10 @@ class SlackService < Service
 
   def fields
     [
-      { type: 'text', name: 'webhook', placeholder: 'https://hooks.slack.com/services/...' }
+      { type: 'text', name: 'webhook',
+        placeholder: 'https://hooks.slack.com/services/...' },
+      { type: 'text', name: 'username', placeholder: 'username' },
+      { type: 'text', name: 'channel', placeholder: '#channel' }
     ]
   end
 
@@ -43,7 +46,11 @@ class SlackService < Service
       project_name: project_name
     ))
 
-    notifier = Slack::Notifier.new(webhook)
+    opt = {}
+    opt[:channel] = channel if channel
+    opt[:username] = username if username
+
+    notifier = Slack::Notifier.new(webhook, opt)
     notifier.ping(message.pretext, attachments: message.attachments)
   end
 

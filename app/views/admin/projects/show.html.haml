@@ -1,6 +1,6 @@
 %h3.page-title
   Project: #{@project.name_with_namespace}
-  = link_to edit_namespace_project_path(@project.namespace, @project), class: "btn pull-right" do
+  = link_to edit_project_path(@project), class: "btn pull-right" do
     %i.fa.fa-pencil-square-o
     Edit
 %hr
@@ -13,7 +13,7 @@
         %li
           %span.light Name:
           %strong
-            = link_to @project.name, namespace_project_path(@project.namespace, @project)
+            = link_to @project.name, project_path(@project)
         %li
           %span.light Namespace:
           %strong

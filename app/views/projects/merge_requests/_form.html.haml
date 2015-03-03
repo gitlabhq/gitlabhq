@@ -9,4 +9,4 @@
     e.preventDefault();
   });
 
-  window.project_image_path_upload = "#{upload_image_namespace_project_path @project.namespace, @project}";
+  window.project_uploads_path = "#{namespace_project_uploads_path @project.namespace, @project}";

@@ -9,7 +9,7 @@ module Gitlab
       # Returns false if committing the change fails
       # Returns false if pushing from the satellite to bare repo failed or was rejected
       # Returns true otherwise
-      def commit!(content, commit_message, encoding)
+      def commit!(content, commit_message, encoding, new_branch = nil)
         in_locked_and_timed_satellite do |repo|
           prepare_satellite!(repo)
 
@@ -45,9 +45,15 @@ module Gitlab
           # will raise CommandFailed when commit fails
           repo.git.commit(raise: true, timeout: true, a: true, m: commit_message)
 
+          target_branch = if new_branch.present? && !@project.empty_repo?
+                            "#{ref}:#{new_branch}"
+                          else
+                            "#{current_ref}:#{ref}"
+                          end
+
           # push commit back to bare repo
           # will raise CommandFailed when push fails
-          repo.git.push({ raise: true, timeout: true }, :origin, "#{current_ref}:#{ref}")
+          repo.git.push({ raise: true, timeout: true }, :origin, target_branch)
 
           # everything worked
           true

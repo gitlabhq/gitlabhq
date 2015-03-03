@@ -208,7 +208,7 @@ If an error occurs, an error number and a message explaining the reason is retur
 
 ## Delete existing issue (**Deprecated**)
 
-The function is deprecated and returns a `405 Method Not Allowed` error if called. An issue gets now closed and is done by calling `PUT /projects/:id/issues/:issue_id` with parameter `closed` set to 1.
+The function is deprecated and returns a `405 Method Not Allowed` error if called. An issue gets now closed and is done by calling `PUT /projects/:id/issues/:issue_id` with parameter `state_event` set to `close`.
 
 ```
 DELETE /projects/:id/issues/:issue_id
