@@ -1,4 +1,4 @@
-# Installation
+# Installation from source
 
 ## Consider the Omnibus package installation
 
