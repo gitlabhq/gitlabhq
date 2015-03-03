@@ -18,9 +18,9 @@
     - note = event.target
     - if note.attachment.url
       - if note.attachment.image?
-        = link_to note.attachment.secure_url, target: '_blank' do
-          = image_tag note.attachment.secure_url, class: 'note-image-attach'
+        = link_to note.attachment.url, target: '_blank' do
+          = image_tag note.attachment.url, class: 'note-image-attach'
       - else
-        = link_to note.attachment.secure_url, target: "_blank", class: 'note-file-attach' do
+        = link_to note.attachment.url, target: "_blank", class: 'note-file-attach' do
           %i.fa.fa-paperclip
           = note.attachment_identifier

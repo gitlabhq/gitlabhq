@@ -30,7 +30,7 @@ module EventsHelper
              end
 
     content_tag :li, class: "filter_icon #{active}" do
-      link_to request.path, class: 'has_tooltip event_filter_link', id: "#{key}_event_filter", 'data-original-title' => tooltip do
+      link_to request.path, class: 'has_tooltip event_filter_link', id: "#{key}_event_filter", 'data-original-title' => 'Filter by ' + tooltip.downcase do
         icon(icon_for_event[key]) + content_tag(:span, ' ' + tooltip)
       end
     end

@@ -5,6 +5,7 @@ describe Import::GitlabController do
 
   before do
     sign_in(user)
+    controller.stub(:gitlab_import_enabled?).and_return(true)
   end
 
   describe "GET callback" do

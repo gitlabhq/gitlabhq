@@ -184,6 +184,12 @@
   }
 }
 
-.event_filter li a {
-  padding: 5px 10px;
+.event_filter {
+  
+  li a {
+    padding: 5px 10px;
+    background: rgba(0,0,0,0.045);
+    margin-left: 4px;
+  }
+
 }

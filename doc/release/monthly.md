@@ -15,7 +15,7 @@ This person should also make sure this document is kept up to date and issues ar
 
 ## Take vacations into account
 
-The time is measured in weekdays to compensate for weekends. 
+The time is measured in weekdays to compensate for weekends.
 Do everything on time to prevent problems due to rush jobs or too little testing time.
 Make sure that you take into account any vacations of maintainers.
 If the release is falling behind immediately warn the team.
@@ -38,29 +38,30 @@ Xth: (7 working days before the 22nd)
 Xth: (6 working days before the 22nd)
 
 - [ ] Merge CE master in to EE master via merge request (#LINK)
-- [ ] Create CE, EE, CI RC1 versions (#LINK)
 - [ ] Determine QA person and notify this person
+- [ ] Check the tasks in [how to rc1 guide](howto_rc1.md) and delegate tasks if necessary
+- [ ] Create CE, EE, CI RC1 versions (#LINK)
 
 Xth: (5 working days before the 22nd)
 
 - [ ] Do QA and fix anything coming out of it (#LINK)
 - [ ] Close the omnibus-gitlab milestone
+- [ ] Prepare the blog post (#LINK)
 
 Xth: (4 working days before the 22nd)
 
-- [ ] Build rc1 package for GitLab.com (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#build-a-package)
 - [ ] Update GitLab.com with rc1 (#LINK) (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#deploy-the-package)
+- [ ] Create regression issues (CE, CI) (#LINK)
+- [ ] Tweet about rc1 (#LINK)
 
 Xth: (3 working days before the 22nd)
 
-- [ ] Create regression issues (CE, CI) (#LINK)
-- [ ] Tweet about rc1 (#LINK)
-- [ ] Prepare the blog post (#LINK)
+- [ ] Merge CE stable branch into EE stable branch
 
 Xth: (2 working days before the 22nd)
 
-- [ ] Merge CE stable branch into EE stable branch
 - [ ] Check that everyone is mentioned on the blog post (the reviewer should have done this one working day ago)
+- [ ] Check that MVP is added to the mvp page (source/mvp/index.html in www-gitlab-com)
 
 Xth: (1 working day before the 22nd)
 
@@ -93,13 +94,13 @@ There are three changelogs that need to be updated: CE, EE and CI.
 
 ## Prepare CHANGELOG for next release
 
-Once the stable branches have been created, update the CHANGELOG in `master` with the upcoming version.
+Once the stable branches have been created, update the CHANGELOG in `master` with the upcoming version, usually X.X.X.pre.
 
 ## QA
 
 Create issue on dev.gitlab.org `gitlab` repository, named "GitLab X.X QA" in order to keep track of the progress.
 
-Use the omnibus packages of Enterprise Edition using [this guide](https://dev.gitlab.org/gitlab/gitlab-ee/blob/master/doc/release/manual_testing.md).
+Use the omnibus packages created for RC1 of Enterprise Edition using [this guide](https://dev.gitlab.org/gitlab/gitlab-ee/blob/master/doc/release/manual_testing.md).
 
 **NOTE** Upgrader can only be tested when tags are pushed to all repositories. Do not forget to confirm it is working before releasing. Note that in the issue.
 
@@ -112,8 +113,7 @@ create an issue about it in order to discuss the next steps after the release.
 
 ## Update GitLab.com with RC1
 
-Merge the RC1 EE code into GitLab.com.
-Once the build is green, create a package.
+Use the omnibus EE packages created for RC1.
 If there are big database migrations consider testing them with the production db on a VM.
 Try to deploy in the morning.
 It is important to do this as soon as possible, so we can catch any errors before we release the full version.
@@ -127,7 +127,7 @@ Please do not raise issues directly in this issue but link to issues that might 
 The decision to create a patch release or not is with the release manager who is assigned to this issue.
 The release manager will comment here about the plans for patch releases.
 
-Assign the issue to the release manager and /cc all the core-team members active on the issue tracker. If there are any known bugs in the release add them immediately.
+Assign the issue to the release manager and at mention all members of gitlab core team. If there are any known bugs in the release add them immediately.
 
 ## Tweet about RC1
 
@@ -143,8 +143,8 @@ Tweet about the RC release:
 1. Also check the CI changelog
 1. Add a proposed tweet text to the blog post WIP MR description.
 1. Create a WIP MR for the blog post
-1. Ask Dmitriy to add screenshots to the WIP MR.
-1. Decide with team who will be the MVP user. 
+1. Ask Dmitriy (or a team member with OS X) to add screenshots to the WIP MR.
+1. Decide with core team who will be the MVP user.
 1. Create WIP MR for adding MVP to MVP page on website
 1. Add a note if there are security fixes: This release fixes an important security issue and we advise everyone to upgrade as soon as possible.
 1. Create a merge request on [GitLab.com](https://gitlab.com/gitlab-com/www-gitlab-com/tree/master)
@@ -166,11 +166,7 @@ Bump version, create release tag and push to remotes:
 bundle exec rake release["x.x.0"]
 ```
 
-Also perform these steps for GitLab CI:
-
-1. bump version in the stable branch
-1. create annotated tag
-1. push the stable branch and the annotated tag to the public repositories
+This will create correct version and tag and push to all CE, EE and CI remotes.
 
 Update [installation.md](/doc/install/installation.md) to the newest version in master.
 

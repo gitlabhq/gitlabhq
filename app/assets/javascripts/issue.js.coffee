@@ -16,8 +16,9 @@ class @Issue
       updateTaskState
     )
 
-    $('.issuable-affix').affix offset:
-      top: ->
-        @top = $('.issue-details').outerHeight(true) + 25
-      bottom: ->
-        @bottom = $('.footer').outerHeight(true)
+    $('.issue-details').waitForImages ->
+      $('.issuable-affix').affix offset:
+        top: ->
+          @top = $('.issue-details').outerHeight(true) + 25
+        bottom: ->
+          @bottom = $('.footer').outerHeight(true)

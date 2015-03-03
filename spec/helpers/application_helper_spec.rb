@@ -64,8 +64,9 @@ describe ApplicationHelper do
       project = create(:project)
       project.avatar = File.open(avatar_file_path)
       project.save!
+      avatar_url = "http://localhost/uploads/project/avatar/#{ project.id }/gitlab_logo.png"
       expect(project_icon("#{project.namespace.to_param}/#{project.to_param}").to_s).to eq(
-        "<img alt=\"Gitlab logo\" src=\"/uploads/project/avatar/#{ project.id }/gitlab_logo.png\" />"
+        "<img alt=\"Gitlab logo\" src=\"#{avatar_url}\" />"
       )
     end
 
@@ -75,8 +76,9 @@ describe ApplicationHelper do
 
       allow_any_instance_of(Project).to receive(:avatar_in_git).and_return(true)
 
+      avatar_url = 'http://localhost' + namespace_project_avatar_path(project.namespace, project)
       expect(project_icon("#{project.namespace.to_param}/#{project.to_param}").to_s).to match(
-        image_tag(namespace_project_avatar_path(project.namespace, project)))
+        image_tag(avatar_url))
     end
   end
 
@@ -192,10 +194,12 @@ describe ApplicationHelper do
     it 'sorts tags in a natural order' do
       # Stub repository.tag_names to make sure we get some valid testing data
       expect(@project.repository).to receive(:tag_names).
-        and_return(['v1.0.9', 'v1.0.10', 'v2.0', 'v3.1.4.2', 'v1.0.9a'])
+        and_return(['v1.0.9', 'v1.0.10', 'v2.0', 'v3.1.4.2', 'v2.0rc1¿',
+                    'v1.0.9a', 'v2.0-rc1', 'v2.0rc2'])
 
       expect(options[1][1]).
-        to eq(['v3.1.4.2', 'v2.0', 'v1.0.10', 'v1.0.9a', 'v1.0.9'])
+        to eq(['v3.1.4.2', 'v2.0', 'v2.0rc2', 'v2.0rc1¿', 'v2.0-rc1', 'v1.0.10',
+               'v1.0.9', 'v1.0.9a'])
     end
   end
 

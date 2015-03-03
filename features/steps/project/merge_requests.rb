@@ -213,7 +213,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see a comment like "Line is wrong" in the second file' do
-    within '.files [id^=diff]:nth-child(2) .note-text' do
+    within '.files [id^=diff]:nth-child(2) .note-body > .note-text' do
       page.should have_visible_content "Line is wrong"
     end
   end
@@ -225,7 +225,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see a comment like "Line is wrong here" in the second file' do
-    within '.files [id^=diff]:nth-child(2) .note-text' do
+    within '.files [id^=diff]:nth-child(2) .note-body > .note-text' do
       page.should have_visible_content "Line is wrong here"
     end
   end
@@ -238,7 +238,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       click_button "Add Comment"
     end
 
-    within ".files [id^=diff]:nth-child(1) .note-text" do
+    within ".files [id^=diff]:nth-child(1) .note-body > .note-text" do
       page.should have_content "Line is correct"
     end
   end

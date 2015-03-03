@@ -108,7 +108,7 @@
     width: $sidebar_width;
 
     .nav-sidebar {
-      margin-top: 20px;
+      margin-top: 29px;
       position: fixed;
       top: 45px;
       width: $sidebar_width;
@@ -127,7 +127,7 @@
     width: 52px;
 
     .nav-sidebar {
-      margin-top: 20px;
+      margin-top: 29px;
       position: fixed;
       top: 45px;
       width: 52px;
@@ -144,14 +144,22 @@
         }
       }
     }
+
+    .collapse-nav a {
+      left: 0px;
+      padding: 5px 23px 3px 22px;
+    }
   }
 }
 
 .collapse-nav a {
   position: fixed;
-  bottom: 15px;
-  padding: 10px;
-  background: #DDD;
+  top: 47px;
+  padding: 5px 13px 3px 13px;
+  left: 197px;
+  background: #EEE;
+  color: black;
+  border: 1px solid rgba(0,0,0,0.035);
 }
 
 @media (max-width: $screen-md-max) {

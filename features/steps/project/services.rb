@@ -17,6 +17,7 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
     page.should have_content 'Atlassian Bamboo'
     page.should have_content 'JetBrains TeamCity'
     page.should have_content 'Asana'
+    page.should have_content 'Irker (IRC gateway)'
   end
 
   step 'I click gitlab-ci service link' do
@@ -130,6 +131,22 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
 
   step 'I should see email on push service settings saved' do
     find_field('Recipients').value.should == 'qa@company.name'
+  end
+
+  step 'I click Irker service link' do
+    click_link 'Irker (IRC gateway)'
+  end
+
+  step 'I fill Irker settings' do
+    check 'Active'
+    fill_in 'Recipients', with: 'irc://chat.freenode.net/#commits'
+    check 'Colorize messages'
+    click_button 'Save'
+  end
+
+  step 'I should see Irker service settings saved' do
+    find_field('Recipients').value.should == 'irc://chat.freenode.net/#commits'
+    find_field('Colorize messages').value.should == '1'
   end
 
   step 'I click Slack service link' do

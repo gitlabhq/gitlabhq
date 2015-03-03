@@ -11,7 +11,7 @@
       .nothing-here-block This group has no projects yet
     - projects.each do |project|
       %li.project-row
-        = link_to namespace_project_path(project.namespace, project), class: dom_class(project) do
+        = link_to project_path(project), class: dom_class(project) do
           .dash-project-avatar
             = project_icon(project, alt: '', class: 'avatar s40')
           .dash-project-access-icon

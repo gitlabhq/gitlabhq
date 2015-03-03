@@ -1,0 +1,99 @@
+module Gitlab
+  module BitbucketImport
+    class Client
+      attr_reader :consumer, :api
+
+      def initialize(access_token = nil, access_token_secret = nil)
+        @consumer = ::OAuth::Consumer.new(
+          config.app_id,
+          config.app_secret,
+          bitbucket_options
+        )
+
+        if access_token && access_token_secret
+          @api = ::OAuth::AccessToken.new(@consumer, access_token, access_token_secret)
+        end
+      end
+
+      def request_token(redirect_uri)
+        request_token = consumer.get_request_token(oauth_callback: redirect_uri)
+
+        {
+          oauth_token:              request_token.token,
+          oauth_token_secret:       request_token.secret,
+          oauth_callback_confirmed: request_token.callback_confirmed?.to_s
+        }
+      end
+
+      def authorize_url(request_token, redirect_uri)
+        request_token = ::OAuth::RequestToken.from_hash(consumer, request_token) if request_token.is_a?(Hash)
+
+        if request_token.callback_confirmed?
+          request_token.authorize_url
+        else
+          request_token.authorize_url(oauth_callback: redirect_uri)
+        end
+      end
+
+      def get_token(request_token, oauth_verifier, redirect_uri)
+        request_token = ::OAuth::RequestToken.from_hash(consumer, request_token) if request_token.is_a?(Hash)
+
+        if request_token.callback_confirmed?
+          request_token.get_access_token(oauth_verifier: oauth_verifier)
+        else
+          request_token.get_access_token(oauth_callback: redirect_uri)
+        end
+      end
+
+      def user
+        JSON.parse(api.get("/api/1.0/user").body)
+      end
+
+      def issues(project_identifier)
+        JSON.parse(api.get("/api/1.0/repositories/#{project_identifier}/issues").body)
+      end
+
+      def issue_comments(project_identifier, issue_id)
+        JSON.parse(api.get("/api/1.0/repositories/#{project_identifier}/issues/#{issue_id}/comments").body)
+      end
+
+      def project(project_identifier)
+        JSON.parse(api.get("/api/1.0/repositories/#{project_identifier}").body)
+      end
+
+      def find_deploy_key(project_identifier, key)
+        JSON.parse(api.get("/api/1.0/repositories/#{project_identifier}/deploy-keys").body).find do |deploy_key| 
+          deploy_key["key"].chomp == key.chomp
+        end
+      end
+
+      def add_deploy_key(project_identifier, key)
+        deploy_key = find_deploy_key(project_identifier, key)
+        return if deploy_key
+
+        JSON.parse(api.post("/api/1.0/repositories/#{project_identifier}/deploy-keys", key: key, label: "GitLab import key").body)
+      end
+
+      def delete_deploy_key(project_identifier, key)
+        deploy_key = find_deploy_key(project_identifier, key)
+        return unless deploy_key
+
+        api.delete("/api/1.0/repositories/#{project_identifier}/deploy-keys/#{deploy_key["pk"]}").code == "204"
+      end
+
+      def projects
+        JSON.parse(api.get("/api/1.0/user/repositories").body).select { |repo| repo["scm"] == "git" }
+      end
+
+      private
+
+      def config
+        Gitlab.config.omniauth.providers.find { |provider| provider.name == "bitbucket"}
+      end
+
+      def bitbucket_options
+        OmniAuth::Strategies::Bitbucket.default_options[:client_options]
+      end
+    end
+  end
+end

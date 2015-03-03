@@ -37,6 +37,8 @@ class Project < ActiveRecord::Base
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
   include Gitlab::ConfigHelper
+  include Rails.application.routes.url_helpers
+
   extend Gitlab::ConfigHelper
   extend Enumerize
 
@@ -47,6 +49,12 @@ class Project < ActiveRecord::Base
   default_value_for :wiki_enabled, gitlab_config_features.wiki
   default_value_for :wall_enabled, false
   default_value_for :snippets_enabled, gitlab_config_features.snippets
+
+  # set last_activity_at to the same as created_at
+  after_create :set_last_activity_at
+  def set_last_activity_at
+    update_column(:last_activity_at, self.created_at)
+  end
 
   ActsAsTaggableOn.strict_case_match = true
   acts_as_taggable_on :tags
@@ -66,6 +74,7 @@ class Project < ActiveRecord::Base
   has_one :gitlab_ci_service, dependent: :destroy
   has_one :campfire_service, dependent: :destroy
   has_one :emails_on_push_service, dependent: :destroy
+  has_one :irker_service, dependent: :destroy
   has_one :pivotaltracker_service, dependent: :destroy
   has_one :hipchat_service, dependent: :destroy
   has_one :flowdock_service, dependent: :destroy
@@ -136,7 +145,7 @@ class Project < ActiveRecord::Base
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
   validates :import_url,
-    format: { with: URI::regexp(%w(git http https)), message: 'should be a valid url' },
+    format: { with: URI::regexp(%w(ssh git http https)), message: 'should be a valid url' },
     if: :import?
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
@@ -144,7 +153,7 @@ class Project < ActiveRecord::Base
     if: ->(project) { project.avatar && project.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
-  mount_uploader :avatar, AttachmentUploader
+  mount_uploader :avatar, AvatarUploader
 
   # Scopes
   scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
@@ -414,6 +423,14 @@ class Project < ActiveRecord::Base
     @avatar_file ||= 'logo.jpg' if repository.blob_at_branch('master', 'logo.jpg')
     @avatar_file ||= 'logo.gif' if repository.blob_at_branch('master', 'logo.gif')
     @avatar_file
+  end
+
+  def avatar_url
+    if avatar.present?
+      [gitlab_config.url, avatar.url].join
+    elsif avatar_in_git
+      [gitlab_config.url, namespace_project_avatar_path(namespace, self)].join
+    end
   end
 
   # For compatibility with old code

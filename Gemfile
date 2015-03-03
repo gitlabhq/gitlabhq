@@ -30,6 +30,7 @@ gem 'omniauth-github'
 gem 'omniauth-shibboleth'
 gem 'omniauth-kerberos'
 gem 'omniauth-gitlab'
+gem 'omniauth-bitbucket'
 gem 'doorkeeper', '2.1.0'
 gem "rack-oauth2", "~> 1.0.5"
 
@@ -41,7 +42,7 @@ gem "browser"
 gem "gitlab_git", '7.0.0.rc14'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
-gem 'gitlab-grack', '~> 2.0.0.pre', require: 'grack'
+gem 'gitlab-grack', '~> 2.0.0.rc2', require: 'grack'
 
 # LDAP Auth
 gem 'gitlab_omniauth-ldap', '1.2.0', require: "omniauth-ldap"
@@ -51,7 +52,7 @@ gem 'net-ldap'
 gem 'gollum-lib', '~> 4.0.0'
 
 # Language detection
-gem "gitlab-linguist", "~> 3.0.0", require: "linguist"
+gem "gitlab-linguist", "~> 3.0.1", require: "linguist"
 
 # API
 gem "grape", "~> 0.6.1"
@@ -204,6 +205,7 @@ group :development do
   gem "letter_opener"
   gem 'quiet_assets', '~> 1.0.1'
   gem 'rack-mini-profiler', require: false
+  gem "byebug"
 
   # Better errors handler
   gem 'better_errors'

@@ -20,7 +20,7 @@ module Gitlab
               body += @formatter.comments_header
 
               client.issue_comments(project.import_source, issue.number).each do |c|
-                body += @formatter.comment_to_md(c.user.login, c.created_at, c.body)
+                body += @formatter.comment(c.user.login, c.created_at, c.body)
               end
             end
 

@@ -84,6 +84,25 @@ describe Issues::BulkUpdateService do
       expect(@project.issues.first.assignee).to eq(@new_assignee)
     }
 
+    it 'allows mass-unassigning' do
+      @project.issues.first.update_attribute(:assignee, @new_assignee)
+      expect(@project.issues.first.assignee).not_to be_nil
+
+      @params[:update][:assignee_id] = -1
+
+      Issues::BulkUpdateService.new(@project, @user, @params).execute
+      expect(@project.issues.first.assignee).to be_nil
+    end
+
+    it 'does not unassign when assignee_id is not present' do
+      @project.issues.first.update_attribute(:assignee, @new_assignee)
+      expect(@project.issues.first.assignee).not_to be_nil
+
+      @params[:update][:assignee_id] = ''
+
+      Issues::BulkUpdateService.new(@project, @user, @params).execute
+      expect(@project.issues.first.assignee).not_to be_nil
+    end
   end
 
   describe :update_milestone do

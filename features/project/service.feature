@@ -67,6 +67,12 @@ Feature: Project Services
     And I fill jira settings
     Then I should see jira service settings saved
 
+  Scenario: Activate Irker (IRC Gateway) service
+    When I visit project "Shop" services page
+    And I click Irker service link
+    And I fill Irker settings
+    Then I should see Irker service settings saved
+
   Scenario: Activate Atlassian Bamboo CI service
     When I visit project "Shop" services page
     And I click Atlassian Bamboo CI service link

@@ -37,4 +37,8 @@ module AppearancesHelper
   def brand_item
     @appearance ||= Appearance.first
   end
+
+  def brand_header_logo
+    image_tag 'logo-white.png'
+  end
 end

@@ -43,7 +43,7 @@ To enable the Google OAuth2 OmniAuth provider you must register your application
       sudo -u git -H editor config/gitlab.yml
     ```
 
-1.  See [Initial OmniAuth Configuration](README.md#initial-omniauth-configuration) for inital settings.
+1.  See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration) for initial settings.
 
 1.  Add the provider configuration:
 
@@ -53,8 +53,8 @@ To enable the Google OAuth2 OmniAuth provider you must register your application
       gitlab_rails['omniauth_providers'] = [
         {
           "name" => "google_oauth2",
-          "app_id" => "YOUR APP ID",
-          "app_secret" => "YOUR APP SECRET",
+          "app_id" => "YOUR_APP_ID",
+          "app_secret" => "YOUR_APP_SECRET",
           "args" => { "access_type" => "offline", "approval_prompt" => '' } }
         }
       ]
@@ -63,14 +63,14 @@ To enable the Google OAuth2 OmniAuth provider you must register your application
     For installations from source:
 
     ```
-     - { name: 'google_oauth2', app_id: 'YOUR APP ID',
-       app_secret: 'YOUR APP SECRET',
+     - { name: 'google_oauth2', app_id: 'YOUR_APP_ID',
+       app_secret: 'YOUR_APP_SECRET',
        args: { access_type: 'offline', approval_prompt: '' } }
     ```
 
-1.  Change 'YOUR APP ID' to the client ID from the Google Developer page from step 10.
+1.  Change 'YOUR_APP_ID' to the client ID from the Google Developer page from step 10.
 
-1.  Change 'YOUR APP SECRET' to the client secret from the Google Developer page from step 10.
+1.  Change 'YOUR_APP_SECRET' to the client secret from the Google Developer page from step 10.
 
 1.  Save the configuration file.
 

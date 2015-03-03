@@ -14,6 +14,13 @@
     = render 'projects/blob/editor', ref: @ref, path: @path, blob_data: @blob.data
     = render 'shared/commit_message_container', params: params,
              placeholder: "Update #{@blob.name}"
+
+    .form-group.branch
+      = label_tag 'branch', class: 'control-label' do
+        Branch
+      .col-sm-10
+        = text_field_tag 'new_branch', @ref, class: "form-control"
+
     = hidden_field_tag 'last_commit', @last_commit
     = hidden_field_tag 'content', '', id: "file-content"
     = hidden_field_tag 'from_merge_request_id', params[:from_merge_request_id]

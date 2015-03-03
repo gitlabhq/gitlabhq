@@ -3,7 +3,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   include SharedPaths
 
   step 'I should see my profile info' do
-    page.should have_content "Profile settings"
+    page.should have_content "Profile Settings"
   end
 
   step 'I change my profile info' do
@@ -29,7 +29,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I should see new avatar' do
-    @user.avatar.should be_instance_of AttachmentUploader
+    @user.avatar.should be_instance_of AvatarUploader
     @user.avatar.url.should == "/uploads/user/avatar/#{ @user.id }/gitlab_logo.png"
   end
 

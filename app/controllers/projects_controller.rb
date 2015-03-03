@@ -23,7 +23,7 @@ class ProjectsController < ApplicationController
 
     if @project.saved?
       redirect_to(
-        namespace_project_path(@project.namespace, @project),
+        project_path(@project),
         notice: 'Project was successfully created.'
       )
     else
@@ -39,7 +39,7 @@ class ProjectsController < ApplicationController
         flash[:notice] = 'Project was successfully updated.'
         format.html do
           redirect_to(
-            edit_namespace_project_path(@project.namespace, @project),
+            edit_project_path(@project),
             notice: 'Project was successfully updated.'
           )
         end
@@ -102,7 +102,7 @@ class ProjectsController < ApplicationController
         flash[:alert] = 'Project deleted.'
 
         if request.referer.include?('/admin')
-          redirect_to admin_namespace_projects_path
+          redirect_to admin_namespaces_projects_path
         else
           redirect_to projects_dashboard_path
         end
@@ -133,7 +133,7 @@ class ProjectsController < ApplicationController
     @project.archive!
 
     respond_to do |format|
-      format.html { redirect_to namespace_project_path(@project.namespace, @project) }
+      format.html { redirect_to project_path(@project) }
     end
   end
 
@@ -142,19 +142,7 @@ class ProjectsController < ApplicationController
     @project.unarchive!
 
     respond_to do |format|
-      format.html { redirect_to namespace_project_path(@project.namespace, @project) }
-    end
-  end
-
-  def upload_image
-    link_to_image = ::Projects::ImageService.new(repository, params, root_url).execute
-
-    respond_to do |format|
-      if link_to_image
-        format.json { render json: { link: link_to_image } }
-      else
-        format.json { render json: 'Invalid file.', status: :unprocessable_entity }
-      end
+      format.html { redirect_to project_path(@project) }
     end
   end
 
@@ -169,15 +157,6 @@ class ProjectsController < ApplicationController
   end
 
   private
-
-  def upload_path
-    base_dir = FileUploader.generate_dir
-    File.join(repository.path_with_namespace, base_dir)
-  end
-
-  def accepted_images
-    %w(png jpg jpeg gif)
-  end
 
   def set_title
     @title = 'New Project'

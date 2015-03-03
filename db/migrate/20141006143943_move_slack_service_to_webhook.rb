@@ -10,7 +10,7 @@ class MoveSlackServiceToWebhook < ActiveRecord::Migration
         slack_service.properties.delete('subdomain')
         # Room is configured on the Slack side
         slack_service.properties.delete('room')
-        slack_service.save
+        slack_service.save(validate: false)
       end
     end
   end

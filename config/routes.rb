@@ -69,6 +69,12 @@ Gitlab::Application.routes.draw do
       get :jobs
     end
 
+    resource :bitbucket, only: [:create, :new], controller: :bitbucket do
+      get :status
+      get :callback
+      get :jobs
+    end
+    
     resource :gitorious, only: [:create, :new], controller: :gitorious do
       get :status
       get :callback
@@ -92,10 +98,15 @@ Gitlab::Application.routes.draw do
         constraints:  { model: /appearance/, mounted_as: /logo|dark_logo|light_logo/, filename: /.+/ }
 
     # Project markdown uploads
-    get ":namespace_id/:id/:secret/:filename",
+    get ":namespace_id/:project_id/:secret/:filename",
       to:           "projects/uploads#show",
-      constraints:  { namespace_id: /[a-zA-Z.0-9_\-]+/, id: /[a-zA-Z.0-9_\-]+/, filename: /.+/ }
+      constraints:  { namespace_id: /[a-zA-Z.0-9_\-]+/, project_id: /[a-zA-Z.0-9_\-]+/, filename: /.+/ }
   end
+
+  # Redirect old note attachments path to new uploads path.
+  get "files/note/:id/:filename",
+    to:           redirect("uploads/note/attachment/%{id}/%{filename}"),
+    constraints:  { filename: /.+/ }
 
   #
   # Explore area
@@ -115,11 +126,6 @@ Gitlab::Application.routes.draw do
   # Compatibility with old routing
   get 'public' => 'explore/projects#index'
   get 'public/projects' => 'explore/projects#index'
-
-  #
-  # Attachments serving
-  #
-  get 'files/:type/:id/:filename' => 'files#download', constraints: { id: /\d+/, type: /[a-z]+/, filename:  /.+/ }
 
   #
   # Admin Area
@@ -282,7 +288,6 @@ Gitlab::Application.routes.draw do
         put :transfer
         post :archive
         post :unarchive
-        post :upload_image
         post :toggle_star
         post :markdown_preview
         get :autocomplete_sources
@@ -477,6 +482,12 @@ Gitlab::Application.routes.draw do
         resources :notes, only: [:index, :create, :destroy, :update], constraints: { id: /\d+/ } do
           member do
             delete :delete_attachment
+          end
+        end
+
+        resources :uploads, only: [:create] do
+          collection do
+            get ":secret/:filename", action: :show, as: :show, constraints: { filename: /.+/ }
           end
         end
       end
