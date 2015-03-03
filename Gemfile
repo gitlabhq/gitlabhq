@@ -177,6 +177,9 @@ gem 'ace-rails-ap'
 # Keyboard shortcuts
 gem 'mousetrap-rails'
 
+# Shutting down requests that take too long
+gem "slowpoke"
+
 gem "sass-rails", '~> 4.0.2'
 gem "coffee-rails"
 gem "uglifier"
