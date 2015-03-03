@@ -15,21 +15,6 @@ module AppearancesHelper
     end
   end
 
-  def brand_header_logo
-    if brand_item.header_logos?
-      haml_tag(:style) do
-        # Dark theme/light logo
-        haml_concat ".dark_theme .app_logo a h1 {" \
-                    "background: url('#{brand_item.light_logo}') " \
-                    "no-repeat center center !important; }"
-        # Light theme/dark logo
-        haml_concat ".light_theme .app_logo a h1 {" \
-                    "background: url('#{brand_item.dark_logo}') " \
-                    "no-repeat center center !important; }"
-      end
-    end
-  end
-
   def brand_text
     markdown(brand_item.description)
   end
@@ -39,6 +24,10 @@ module AppearancesHelper
   end
 
   def brand_header_logo
-    image_tag 'logo-white.png'
+    if brand_item.light_logo?
+      image_tag brand_item.light_logo
+    else
+      image_tag 'logo-white.png'
+    end
   end
 end
