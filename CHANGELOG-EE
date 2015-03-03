@@ -1,3 +1,7 @@
+v 7.9.0 (unreleased)
+  - Strip prefixes and suffixes from synced SSH keys: 
+    `SSHKey:ssh-rsa keykeykey` and `ssh-rsa keykeykey (SSH key)` will now work
+
 v 7.8.0
   - Improved Jira issue closing integration
   - Improved message logging for Jira integration
