@@ -43,11 +43,15 @@ Feature: Project Source Browse Files
     And I click on "Commit changes"
     Then I am on the new file page
     And I see a commit error message
-
+    
   @javascript
   Scenario: I can upload file and commit
     Given I click on "Upload" in repo
+    When I upload ".gitignore"
     And I fill the commit message
+    And I click on "Upload file"
+    Then I am redirected to ".gitignore"
+    And I should see its content
 
   @javascript
   Scenario: I can edit file
