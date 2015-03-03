@@ -37,7 +37,10 @@ bundle install --deployment --path vendor/bundle (Setup)
 cp config/gitlab.yml.example config/gitlab.yml (Setup)
 bundle exec rake db:create (Setup)
 bundle exec rake spinach (Thread #1)
-bundle exec rake spec (Thread #2)
+bundle exec rake spec (thread #2)
+bundle exec rake rubocop (thread #3)
+bundle exec rake brakeman (thread #4)
+bundle exec rake jasmine:ci (thread #5)
 ```
 
 Use rubygems mirror.
