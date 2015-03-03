@@ -3,6 +3,9 @@
 # 2. Edit settings inside this file
 # 3. Restart GitLab instance
 #
+# For full list of options and their values see http://api.rubyonrails.org/classes/ActionMailer/Base.html
+#
+
 if Rails.env.production?
   Gitlab::Application.config.action_mailer.delivery_method = :smtp
 
@@ -14,6 +17,6 @@ if Rails.env.production?
     domain: "gitlab.company.com",
     authentication: :login,
     enable_starttls_auto: true,
-    openssl_verify_mode: 'none'
+    openssl_verify_mode: 'peer' # See ActionMailer documentation for other possible options
   }
 end
