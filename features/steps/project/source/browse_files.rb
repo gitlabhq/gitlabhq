@@ -116,7 +116,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
   
   step 'I upload ".gitignore"' do
-    attach_file(:file_na, File.join(@path, File.basename(".gitignore")))
+    attach_file(:file_na, ".gitignore")
   end
   
   step 'I choose a file' do 
