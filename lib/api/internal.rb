@@ -16,6 +16,17 @@ module API
       #
       post "/allowed" do
         status 200
+
+        actor = if params[:key_id]
+                  Key.find_by(id: params[:key_id])
+                elsif params[:user_id]
+                  User.find_by(id: params[:user_id])
+                end
+
+        unless actor
+          return Gitlab::GitAccessStatus.new(false, 'No such user or key')
+        end
+
         project_path = params[:project]
 
         # Check for *.wiki repositories.
@@ -32,26 +43,20 @@ module API
 
         project = Project.find_with_namespace(project_path)
 
-        unless project
-          return Gitlab::GitAccessStatus.new(false, 'No such project')
+        if project
+          status = access.check(
+            actor,
+            params[:action],
+            project,
+            params[:changes]
+          )
         end
 
-        actor = if params[:key_id]
-                  Key.find_by(id: params[:key_id])
-                elsif params[:user_id]
-                  User.find_by(id: params[:user_id])
-                end
-
-        unless actor
-          return Gitlab::GitAccessStatus.new(false, 'No such user or key')
+        if project && status && status.allowed?
+          status
+        else
+          Gitlab::GitAccessStatus.new(false, 'No such project')
         end
-
-        access.check(
-          actor,
-          params[:action],
-          project,
-          params[:changes]
-        )
       end
 
       #
