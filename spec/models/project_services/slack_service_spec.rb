@@ -99,8 +99,8 @@ describe SlackService do
         with(webhook_url, username: username).
         and_return(
           double(:slack_service).as_null_object
-                                   )
-      slack.execute(sample_data)
+        )
+      slack.execute(push_sample_data)
     end
 
     it 'should use the channel as an option when it is configured' do
@@ -110,7 +110,7 @@ describe SlackService do
         and_return(
           double(:slack_service).as_null_object
         )
-      slack.execute(sample_data)
+      slack.execute(push_sample_data)
     end
   end
 end
