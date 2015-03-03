@@ -15,15 +15,9 @@ class Projects::TeamMembersController < Projects::ApplicationController
 
   def create
     users = User.where(id: params[:user_ids].split(','))
-
     @project.team << [users, params[:access_level]]
 
-    if params[:redirect_to]
-      redirect_to params[:redirect_to]
-    else
-      redirect_to namespace_project_team_index_path(@project.namespace,
-                                                    @project)
-    end
+    redirect_to namespace_project_team_index_path(@project.namespace, @project)
   end
 
   def update
