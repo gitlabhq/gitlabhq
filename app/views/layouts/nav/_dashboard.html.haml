@@ -9,6 +9,11 @@
       %i.fa.fa-cube
       %span
         Projects
+  = nav_link(controller: :milestones) do
+    = link_to dashboard_milestones_path, title: 'Milestones' do
+      %i.fa.fa-clock-o
+      %span
+        Milestones
   = nav_link(path: 'dashboard#issues') do
     = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'shortcuts-issues' do
       %i.fa.fa-exclamation-circle
