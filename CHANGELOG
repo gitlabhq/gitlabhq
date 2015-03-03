@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.10.0 (unreleased)
+  - Disable reference creation for comments surrounded by code/preformatted blocks (Stan Hu)
   - enable line wrapping per default and remove the checkbox to toggle it (Hannes Rosenögger)
   - extend the commit calendar to show the actual commits made on a date (Hannes Rosenögger)
   - Add a service to support external wikis (Hannes Rosenögger)

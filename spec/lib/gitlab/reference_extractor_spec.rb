@@ -50,6 +50,26 @@ describe Gitlab::ReferenceExtractor do
     expect(text).to eq('issue #123 is just the worst, @user')
   end
 
+  it 'extracts no references for <pre>..</pre> blocks' do
+    subject.analyze("<pre>def puts '#1 issue'\nend\n</pre>```", nil)
+    expect(subject.issues).to be_blank
+  end
+
+  it 'extracts no references for <code>..</code> blocks' do
+    subject.analyze("<code>def puts '!1 request'\nend\n</code>```", nil)
+    expect(subject.merge_requests).to be_blank
+  end
+
+  it 'extracts no references for code blocks with language' do
+    subject.analyze("this code:\n```ruby\ndef puts '#1 issue'\nend\n```", nil)
+    expect(subject.issues).to be_blank
+  end
+
+  it 'extracts issue references for invalid code blocks' do
+    subject.analyze('test: ```this one talks about issue #1234```', nil)
+    expect(subject.issues).to eq([{ project: nil, id: '1234' }])
+  end
+
   it 'handles all possible kinds of references' do
     accessors = Gitlab::Markdown::TYPES.map { |t| "#{t}s".to_sym }
     expect(subject).to respond_to(*accessors)
