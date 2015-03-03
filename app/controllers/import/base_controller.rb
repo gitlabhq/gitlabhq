@@ -3,7 +3,7 @@ class Import::BaseController < ApplicationController
   private
 
   def get_or_create_namespace
-    existing_namespace = Namespace.find_by("path = ? OR name = ?", @target_namespace, @target_namespace)
+    existing_namespace = Namespace.find_by_path_or_name(@target_namespace)
 
     if existing_namespace
       if existing_namespace.owner == current_user

@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.9.0 (unreleased)
+  - Fix merge request URL passed to Webhooks. (Stan Hu)
   - Move labels/milestones tabs to sidebar
   - Upgrade Rails gem to version 4.1.9.
   - Improve error messages for file edit failures
@@ -15,6 +16,8 @@ v 7.9.0 (unreleased)
   - Fix mass-unassignment of issues (Robert Speicher)
   - Allow user confirmation to be skipped for new users via API
   - Add a service to send updates to an Irker gateway (Romain Coltel)
+  - Add brakeman (security scanner for Ruby on Rails)
+  - Slack username and channel options
 
 v 7.8.1
   - Fix run of custom post receive hooks
@@ -91,7 +94,6 @@ v 7.8.0
   - Improve database performance for GitLab
   - Add Asana service (Jeremy Benoist)
   - Improve project web hooks with extra data
-  - Slack username and channel options
 
 v 7.7.2
   - Update GitLab Shell to version 2.4.2 that fixes a bug when developers can push to protected branch

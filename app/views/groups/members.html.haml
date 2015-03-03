@@ -21,7 +21,7 @@
         = link_to reset_access_group_ldap_path(@group), class: 'btn btn-grouped', data: { confirm: "Force GitLab to do LDAP permission checks for all group members? All members besides yourself will be reduced to 'Guest' access until their next interaction with GitLab." }, method: :put do
           Clear LDAP permission cache
 
-      = link_to '#', class: 'btn btn-new js-toggle-button' do
+      = button_tag class: 'btn btn-new js-toggle-button', type: 'button' do
         Add members
         %i.fa.fa-chevron-down
 

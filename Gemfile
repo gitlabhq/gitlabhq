@@ -201,6 +201,7 @@ gem "virtus"
 gem 'addressable'
 
 group :development do
+  gem 'brakeman', require: false
   gem "annotate", "~> 2.6.0.beta2"
   gem "letter_opener"
   gem 'quiet_assets', '~> 1.0.1'
