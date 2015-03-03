@@ -1,7 +1,4 @@
 Please view this file on the master branch, on stable branches it's out of date.
-v 7.9.0 (unreleased)
-  - Added issue and merge request events to Slack service (Stan Hu)
-  - Fix broken access control for note attachments (Hannes Rosenögger)
 
 v 7.9.0 (unreleased)
   - Move labels/milestones tabs to sidebar
@@ -19,6 +16,7 @@ v 7.9.0 (unreleased)
   - Allow user confirmation to be skipped for new users via API
   - Add a service to send updates to an Irker gateway (Romain Coltel)
   - Add brakeman (security scanner for Ruby on Rails)
+  - Added issue and merge request events to Slack service (Stan Hu)
 
 v 7.8.1
   - Fix run of custom post receive hooks
