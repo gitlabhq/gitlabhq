@@ -9,10 +9,9 @@ See the documentation below for details on how to configure these services.
 - [OmniAuth](omniauth.md) Sign in via Twitter, GitHub, GitLab, and Google via OAuth.
 - [Slack](slack.md) Integrate with the Slack chat service
 - [OAuth2 provider](oauth_provider.md) OAuth2 application creation
+- [Gmail](gitlab_buttons_in_gmail.md) Adds GitLab actions to messages
 
 Jenkins support is [available in GitLab EE](http://doc.gitlab.com/ee/integration/jenkins.html).
-
-GitLab can also integrate with [Gmail](gitlab_buttons_in_gmail.md).
 
 ## Project services
 
