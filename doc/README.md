@@ -24,6 +24,7 @@
 - [Audit Events](administration/audit_events.md) Check how user access changed in projects and groups.
 
 - [Branded login page](customization/branded_login_page.md) Change the login page appearance for your GitLab instance.
+- [Help message](customization/help_message.md) Set information about administrators of your GitLab instance.
 - [Git Hooks](git_hooks/git_hooks.md) Advanced push rules for your project.
 - [Email](tools/email.md) Email GitLab users from GitLab
 - [Welcome message](customization/welcome_message.md) Add a custom welcome message to the sign-in page.
