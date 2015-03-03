@@ -115,6 +115,10 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     click_button 'Upload file'
   end
   
+  step 'I upload ".gitignore"' do
+    attach_file(".gitignore")
+  end
+  
   step 'I choose a file' do 
     pending 'step not implemented'
   end
