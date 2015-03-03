@@ -48,6 +48,11 @@ class Namespace < ActiveRecord::Base
     where('lower(path) = :value', value: path.downcase).first
   end
 
+  # Case insensetive search for namespace by path or name
+  def self.find_by_path_or_name(path)
+    find_by("lower(path) = :path OR lower(name) = :path", path: path.downcase)
+  end
+
   def self.search(query)
     where("name LIKE :query OR path LIKE :query", query: "%#{query}%")
   end
