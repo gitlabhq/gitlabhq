@@ -20,8 +20,8 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     page.should have_content '.gitignore'
   end
   
-  step 'I see the "uploadfile.txt"' do
-    page.should have_content 'uploadfile.txt'
+  step 'I see the "user.feature"' do
+    page.should have_content 'user.feature'
   end
 
   step 'I don\'t see the ".gitignore"' do
@@ -119,8 +119,8 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     click_button 'Upload file'
   end
   
-  step 'I upload "uploadfile.txt"' do
-    attach_file(:file_upload, File.join('gitlabhq', 'features', 'uploadfile.txt'))
+  step 'I upload "user.feature"' do
+    attach_file(:file_upload, File.join('gitlabhq', 'features', 'user.feature'))
   end
   
   step 'I replace it with "LICENSE"' do
