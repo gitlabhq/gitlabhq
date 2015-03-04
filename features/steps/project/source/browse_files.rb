@@ -123,8 +123,8 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     attach_file(:file_upload, File.join(RAILS_ROOT, 'features', 'uploadfile.txt'))
   end
   
-  step 'I replace it with "LINCENSE"' do
-    attach_file(:file_upload, "LINCENSE")
+  step 'I replace it with "LICENSE"' do
+    attach_file(:file_upload, "LICENSE")
   end
 
   step 'I click on files directory' do
