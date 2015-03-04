@@ -135,6 +135,8 @@ class Spinach::Features::Project < Spinach::FeatureSteps
     within "#user_#{user.id}" do
       select "Master", from: "project_member_access_level"
     end
+
+    sleep 0.05
   end
 
   step 'I go to "Audit Events"' do
