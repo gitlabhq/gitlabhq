@@ -33,12 +33,16 @@ class Dispatcher
         shortcut_handler = new ShortcutsNavigation()
         new ZenMode()
         new DropzoneInput($('.issue-form'))
+        if page == 'projects:issues:new'
+          new IssuableForm($('.issue-form'))
       when 'projects:merge_requests:new', 'projects:merge_requests:edit'
         GitLab.GfmAutoComplete.setup()
         new Diff()
         shortcut_handler = new ShortcutsNavigation()
         new ZenMode()
         new DropzoneInput($('.merge-request-form'))
+        if page == 'projects:merge_requests:new'
+          new IssuableForm($('.merge-request-form'))
       when 'projects:merge_requests:show'
         new Diff()
         shortcut_handler = new ShortcutsIssueable()
