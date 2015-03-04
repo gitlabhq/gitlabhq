@@ -120,7 +120,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
   
   step 'I upload "uploadfile.txt"' do
-    attach_file(:file_upload, File.join(RAILS_ROOT, 'features', 'uploadfile.txt'))
+    attach_file(:file_upload, File.join('gitlabhq', 'features', 'uploadfile.txt'))
   end
   
   step 'I replace it with "LICENSE"' do
