@@ -173,10 +173,11 @@ GitLab administrator users who do not have LDAP enabled are not affected by the 
 Below we assume that you have an LDAP group with the common name (CN) 'GitLab administrators' containing the users that should be GitLab administrators.
 We recommend that you keep a non-LDAP GitLab administrator user around on your GitLab instance in case you accidentally remove the admin status from your own LDAP-enabled GitLab user.
 
-For omnibus-gitlab, add the following to the LDAP part of `/etc/gitlab/gitlab.rb` under the `main:` section and run `gitlab-ctl reconfigure`.
+For omnibus-gitlab, add the following to the LDAP part of `/etc/gitlab/gitlab.rb` under one (or more) of the servers in
+the `servers:` section and run `gitlab-ctl reconfigure`.
 
 ```yaml
-admin_group: 'GitLab administrators'
+    admin_group: 'GitLab administrators'
 ```
 
 For installations from source, add the following setting in the 'ldap' section of gitlab.yml, and run `service gitlab reload` afterwards.
