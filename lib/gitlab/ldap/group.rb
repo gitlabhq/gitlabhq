@@ -34,9 +34,12 @@ module Gitlab
       end
 
       def has_member?(user)
+        user_uid = user.uid.downcase
+        user_dn = user.dn.downcase
+
         if memberuid?
-          member_uids.include?(user.uid)
-        elsif member_dns.include?(user.dn)
+          member_uids.any? { |member_uid| member_uid.downcase == user_uid }
+        elsif member_dns.any? { |member_dn| member_dn.downcase == user_dn }
           true
         elsif adapter.config.active_directory
           adapter.dn_matches_filter?(user.dn, active_directory_recursive_memberof_filter)

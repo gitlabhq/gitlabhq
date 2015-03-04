@@ -15,6 +15,7 @@ v 7.9.0 (unreleased)
   - Fix mass-unassignment of issues (Robert Speicher)
   - Allow user confirmation to be skipped for new users via API
   - Add a service to send updates to an Irker gateway (Romain Coltel)
+  - Ignore case of LDAP user DN when checking group membership.
 
 v 7.8.1
   - Fix run of custom post receive hooks

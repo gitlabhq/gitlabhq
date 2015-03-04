@@ -293,8 +293,8 @@ objectclass: posixGroup
 cn: group1
 description: GitLab group 1
 gidnumber: 21
-memberuid: #{ldap_user.uid}
-memberuid: user2
+uniquemember: #{ldap_user.dn.downcase}
+uniquemember: uid=user2,ou=people,dc=example
 objectclass: top
 objectclass: posixGroup
 })
@@ -321,7 +321,8 @@ objectclass: posixGroup
 
     before do
       access.stub(ldap_user: ldap_user)
-      ldap_user.stub(:uid) { 'user42' }
+      ldap_user.stub(:uid) { 'user1' }
+      ldap_user.stub(:dn) { 'uid=user1,ou=People,dc=example' }
     end
 
     it "only returns ldap cns to which the user has access" do
