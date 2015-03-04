@@ -17,7 +17,7 @@ class Spinach::Features::ProjectGraph < Spinach::FeatureSteps
   end
 
   step 'page should have commits graphs' do
-    page.should have_content "Commits statistic for master"
+    page.should have_content "Commit statistics for master"
     page.should have_content "Commits per day of month"
   end
 end
