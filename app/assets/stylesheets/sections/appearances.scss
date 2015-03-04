@@ -3,10 +3,9 @@
   margin-bottom: 20px;
 }
 
-.appearance-dark-logo-preview {
-  background-color: #F1F1F1;
-}
-
 .appearance-light-logo-preview {
-  background-color:  #373737;
+  background-color:  $style_color;
+  max-width: 72px;
+  padding: 10px;
+  margin-bottom: 10px;
 }

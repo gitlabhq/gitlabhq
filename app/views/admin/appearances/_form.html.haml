@@ -33,23 +33,16 @@
     %legend
       Navigation bar:
   .form-group
-    = f.label :dark_logo, class: 'control-label'
-    .col-sm-10
-      - if @appearance.dark_logo?
-        = image_tag @appearance.dark_logo, class: 'appearance-dark-logo-preview'
-      = f.file_field :dark_logo, class: ""
-      .hint
-        Maximum size is 1MB, page optimized for logo size 40x40px
-    = f.label :light_logo, class: 'control-label'
+    = f.label :light_logo, 'Header logo', class: 'control-label'
     .col-sm-10
       - if @appearance.light_logo?
         = image_tag @appearance.light_logo, class: 'appearance-light-logo-preview'
       = f.file_field :light_logo, class: ""
       .hint
-        Maximum size is 1MB, page optimized for logo size 41x41px
-      -if @appearance.light_logo? || @appearance.dark_logo?
+        Maximum size is 1MB, page optimized for logo size 72x72px
+      -if @appearance.light_logo?
         %br
-          = link_to 'Remove header logos', header_logos_admin_appearances_path, data: { confirm: "Header logos will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-small remove-logo"
+          = link_to 'Remove header logo', header_logos_admin_appearances_path, data: { confirm: "Header logos will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-small remove-logo"
 
 
   .form-actions
