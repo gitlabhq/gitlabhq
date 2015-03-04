@@ -11,14 +11,15 @@ class @ProjectUsersSelect
           Api.projectUsers project_id, query.term, (users) ->
             data = { results: users }
 
-            nullUser = {
-              name: 'Unassigned',
-              avatar: null,
-              username: 'none',
-              id: -1
-            }
+            if query.term.length == 0
+              nullUser = {
+                name: 'Unassigned',
+                avatar: null,
+                username: 'none',
+                id: -1
+              }
 
-            data.results.unshift(nullUser)
+              data.results.unshift(nullUser)
 
             query.callback(data)
 

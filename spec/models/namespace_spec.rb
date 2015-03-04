@@ -75,4 +75,14 @@ describe Namespace do
       expect(namespace.rm_dir).to be_truthy
     end
   end
+
+  describe :find_by_path_or_name do
+    before do
+      @namespace = create(:namespace, name: 'WoW', path: 'woW')
+    end
+
+    it { expect(Namespace.find_by_path_or_name('wow')).to eq(@namespace) }
+    it { expect(Namespace.find_by_path_or_name('WOW')).to eq(@namespace) }
+    it { expect(Namespace.find_by_path_or_name('unknown')).to eq(nil) }
+  end
 end

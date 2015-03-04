@@ -41,3 +41,9 @@ Feature: Project Commits Comments
     Given I leave a comment like "XML attached"
     And I delete a comment
     Then I should not see a comment saying "XML attached"
+
+  @javascript
+  Scenario: I can edit a comment with +1
+    Given I leave a comment like "XML attached"
+    And I edit the last comment with a +1
+    Then I should see +1 in the description

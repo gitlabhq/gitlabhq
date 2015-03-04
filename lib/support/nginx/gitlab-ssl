@@ -123,16 +123,6 @@ server {
     proxy_pass http://gitlab;
   }
 
-  ## If ``go get`` detected, return go-import meta tag.
-  ## This works for public and for private repositories.
-  ## See also http://golang.org/cmd/go/#hdr-Remote_import_paths
-  if ($http_user_agent ~* "Go") {
-    return 200 "
-      <!DOCTYPE html>
-      <head><meta content='$host$uri git $scheme://$host$uri.git' name='go-import'></head>
-      </html>";
-  }
-
   ## If a file, which is not found in the root folder is requested,
   ## then the proxy passes the request to the upsteam (gitlab unicorn).
   location @gitlab {

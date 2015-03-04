@@ -877,7 +877,7 @@ Lint/ParenthesesAsGroupedExpression:
                  Checks for method calls with a space before the opening
                  parenthesis.
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#parens-no-spaces'
-  Enabled: false
+  Enabled: true
 
 Lint/RequireParentheses:
   Description: >-
