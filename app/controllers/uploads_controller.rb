@@ -29,7 +29,7 @@ class UploadsController < ApplicationController
   private
 
   def authorize_access
-    unless params[:mounted_as] == 'avatar' || params[:mounted_as] == 'light_logo' || params[:mounted_as] == 'logo'
+    unless %w(avatar logo light_logo).include?(params[:mounted_as])
       authenticate_user! && reject_blocked!
     end
   end
@@ -39,14 +39,15 @@ class UploadsController < ApplicationController
       user: User,
       project: Project,
       note: Note,
-      group: Group
+      group: Group,
+      appearance: Appearance
     }
 
     upload_models[params[:model].to_sym]
   end
 
   def upload_mount
-    upload_mounts = %w(avatar attachment file)
+    upload_mounts = %w(avatar attachment file logo light_logo)
 
     if upload_mounts.include?(params[:mounted_as])
       params[:mounted_as]
