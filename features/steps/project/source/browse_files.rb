@@ -115,8 +115,8 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     click_button 'Upload file'
   end
   
-  step 'I upload ".gitignore"' do
-    attach_file(:file_upload, ".gitignore")
+  step 'I upload "LICENSE"' do
+    attach_file(:file_upload, "LICENSE")
   end
 
   step 'I click on files directory' do
