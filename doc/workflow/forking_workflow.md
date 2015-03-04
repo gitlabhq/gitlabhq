@@ -1,7 +1,9 @@
 # Code forking workflow
 
 Forking a project to your own namespace is useful if you have no write access to the project you want to contribute
-to. If you do have write access, we recommend using the **[Code Branching Workflow](https://about.gitlab.com/2014/09/29/gitlab-flow/)**.
+to. If you do have write access or can request it we recommend working together in the same repository since it is simpler.
+See our **[GitLab Flow](https://about.gitlab.com/2014/09/29/gitlab-flow/)** article for more information about using
+branches to work together.
 
 ## Creating a fork
 
