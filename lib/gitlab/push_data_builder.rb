@@ -9,6 +9,7 @@ module Gitlab
       #   ref: String,
       #   user_id: String,
       #   user_name: String,
+      #   user_email: String
       #   project_id: String,
       #   repository: {
       #     name: String,
@@ -35,6 +36,7 @@ module Gitlab
           checkout_sha: checkout_sha(project.repository, newrev, ref),
           user_id: user.id,
           user_name: user.name,
+          user_email: user.email,
           project_id: project.id,
           repository: {
             name: project.name,
