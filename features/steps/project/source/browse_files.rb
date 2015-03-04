@@ -115,7 +115,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     click_button 'Upload file'
   end
   
-  step 'I upload "LICENSE"' do
+  step 'I upload "uploadfile.txt"' do
     attach_file(:file_upload, File.join(RAILS_ROOT, 'features', 'uploadfile.txt'))
   end
 
