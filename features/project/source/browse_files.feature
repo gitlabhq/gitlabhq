@@ -50,8 +50,8 @@ Feature: Project Source Browse Files
     When I upload ".gitignore"
     And I fill the commit message
     And I click on "Upload file"
-    Then I am redirected to the ".gitignore"
-    And I should see its content
+    Then I see the ".gitignore"
+    
 
   @javascript
   Scenario: I can edit file
