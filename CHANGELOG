@@ -48,7 +48,8 @@ v 7.8.0
   - Add notes for label changes in issue and merge requests
   - Show tags in commit view (Hannes Rosenögger)
   - Only count a user's vote once on a merge request or issue (Michael Clarke)
-  - Increate font size when browse source files and diffs
+  - Increase font size when browse source files and diffs
+  - Service Templates now let you set default values for all services
   - Create new file in empty repository using GitLab UI
   - Ability to clone project using oauth2 token
   - Upgrade Sidekiq gem to version 3.3.0
