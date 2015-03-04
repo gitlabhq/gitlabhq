@@ -105,7 +105,7 @@ Feature: Project Source Browse Files
     When I upload ".gitignore"
     And I fill the commit message
     And I click on "Replace file"
-    Then I am redirected to the ".gitignore"
+    Then I am redirected to the "LICENSE"
     
 
   Scenario: I can browse directory with Browse Dir
