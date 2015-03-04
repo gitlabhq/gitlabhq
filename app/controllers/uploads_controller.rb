@@ -1,5 +1,5 @@
 class UploadsController < ApplicationController
-  skip_before_filter :authenticate_user!, :reject_blocked
+  skip_before_filter :authenticate_user!, :reject_blocked!
   before_filter :authorize_access
 
   def show
@@ -20,7 +20,7 @@ class UploadsController < ApplicationController
 
   def authorize_access
     unless params[:mounted_as] == 'avatar'
-      authenticate_user! && reject_blocked
+      authenticate_user! && reject_blocked!
     end
   end
 end
