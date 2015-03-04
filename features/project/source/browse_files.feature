@@ -47,10 +47,10 @@ Feature: Project Source Browse Files
   @javascript
   Scenario: I can upload file and commit
     Given I click on "Upload" in repo
-    When I upload ".gitignore"
+    When I upload "uploadfile.txt"
     And I fill the commit message
     And I click on "Upload file"
-    Then I see the ".gitignore"
+    Then I see the "uploadfile.txt"
     
 
   @javascript
@@ -102,10 +102,10 @@ Feature: Project Source Browse Files
     Given I click on ".gitignore" file in repo
     And I see the ".gitignore"
     And I click on "Replace"
-    When I upload ".gitignore"
+    When I upload "uploadfile.txt"
     And I fill the commit message
     And I click on "Replace file"
-    Then I am redirected to the "LICENSE"
+    Then I am redirected to the ".gitignore"
     
 
   Scenario: I can browse directory with Browse Dir
