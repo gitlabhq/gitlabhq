@@ -33,8 +33,6 @@ The source of GitLab Community Edition is [hosted on GitLab.com](https://gitlab.
 
 - [![Coverage Status](https://coveralls.io/repos/gitlabhq/gitlabhq/badge.png?branch=master)](https://coveralls.io/r/gitlabhq/gitlabhq?branch=master)
 
-- [![PullReview stats](https://www.pullreview.com/gitlab/gitlab-org/gitlab-ce/badges/master.svg?)](https://www.pullreview.com/gitlab.gitlab.com/gitlab-org/gitlab-ce/reviews/master)
-
 ## Website
 
 On [about.gitlab.com](https://about.gitlab.com/) you can find more information about:
