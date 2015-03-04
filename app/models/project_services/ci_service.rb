@@ -11,6 +11,10 @@
 #  active     :boolean          default(FALSE), not null
 #  properties :text
 #  template   :boolean          default(FALSE)
+#  push_events           :boolean
+#  issues_events         :boolean
+#  merge_requests_events :boolean
+#  tag_push_events       :boolean
 #
 
 # Base class for CI services
@@ -19,6 +23,10 @@
 class CiService < Service
   def category
     :ci
+  end
+
+  def supported_events
+    %w(push)
   end
 
   # Return complete url to build page

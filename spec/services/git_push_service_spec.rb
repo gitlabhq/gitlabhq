@@ -49,6 +49,7 @@ describe GitPushService do
 
     subject { @push_data }
 
+    it { is_expected.to include(object_kind: 'push') }
     it { is_expected.to include(before: @oldrev) }
     it { is_expected.to include(after: @newrev) }
     it { is_expected.to include(ref: @ref) }

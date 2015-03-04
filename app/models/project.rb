@@ -479,8 +479,9 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def execute_services(data)
-    services.select(&:active).each do |service|
+  def execute_services(data, hooks_scope = :push_hooks)
+    # Call only service hooks that are active for this scope
+    services.send(hooks_scope).each do |service|
       service.async_execute(data)
     end
   end

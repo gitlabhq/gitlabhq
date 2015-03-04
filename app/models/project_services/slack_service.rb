@@ -11,6 +11,10 @@
 #  active     :boolean          default(FALSE), not null
 #  properties :text
 #  template   :boolean          default(FALSE)
+#  push_events           :boolean          default(TRUE)
+#  issues_events         :boolean          default(TRUE)
+#  merge_requests_events :boolean          default(TRUE)
+#  tag_push_events       :boolean          default(TRUE)
 #
 
 class SlackService < Service
@@ -38,20 +42,43 @@ class SlackService < Service
     ]
   end
 
-  def execute(push_data)
+  def supported_events
+    %w(push issue merge_request)
+  end
+
+  def execute(data)
+    return unless supported_events.include?(data[:object_kind])
     return unless webhook.present?
 
-    message = SlackMessage.new(push_data.merge(
+    object_kind = data[:object_kind]
+
+    data = data.merge(
       project_url: project_url,
       project_name: project_name
-    ))
+    )
+
+    # WebHook events often have an 'update' event that follows a 'open' or
+    # 'close' action. Ignore update events for now to prevent duplicate
+    # messages from arriving.
+
+    message = \
+      case object_kind
+      when "push"
+        PushMessage.new(data)
+      when "issue"
+        IssueMessage.new(data) unless is_update?(data)
+      when "merge_request"
+        MergeMessage.new(data) unless is_update?(data)
+      end
 
     opt = {}
     opt[:channel] = channel if channel
     opt[:username] = username if username
 
-    notifier = Slack::Notifier.new(webhook, opt)
-    notifier.ping(message.pretext, attachments: message.attachments)
+    if message
+      notifier = Slack::Notifier.new(webhook, opt)
+      notifier.ping(message.pretext, attachments: message.attachments)
+    end
   end
 
   private
@@ -63,4 +90,12 @@ class SlackService < Service
   def project_url
     project.web_url
   end
+
+  def is_update?(data)
+    data[:object_attributes][:action] == 'update'
+  end
 end
+
+require "slack_service/issue_message"
+require "slack_service/push_message"
+require "slack_service/merge_message"

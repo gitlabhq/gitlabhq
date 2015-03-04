@@ -30,6 +30,7 @@ module Gitlab
 
         # Hash to be passed as post_receive_data
         data = {
+          object_kind: "push",
           before: oldrev,
           after: newrev,
           ref: ref,

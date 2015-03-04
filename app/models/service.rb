@@ -11,6 +11,11 @@
 #  active     :boolean          default(FALSE), not null
 #  properties :text
 #  template   :boolean          default(FALSE)
+#  push_events           :boolean
+#  issues_events         :boolean
+#  merge_requests_events :boolean
+#  tag_push_events       :boolean
+#
 
 # To add new service you should build a class inherited from Service
 # and implement a set of methods
@@ -19,6 +24,10 @@ class Service < ActiveRecord::Base
   serialize :properties, JSON
 
   default_value_for :active, false
+  default_value_for :push_events, true
+  default_value_for :issues_events, true
+  default_value_for :merge_requests_events, true
+  default_value_for :tag_push_events, true
 
   after_initialize :initialize_properties
 
@@ -28,6 +37,11 @@ class Service < ActiveRecord::Base
   validates :project_id, presence: true, unless: Proc.new { |service| service.template? }
 
   scope :visible, -> { where.not(type: 'GitlabIssueTrackerService') }
+
+  scope :push_hooks, -> { where(push_events: true, active: true) }
+  scope :tag_push_hooks, -> { where(tag_push_events: true, active: true) }
+  scope :issue_hooks, -> { where(issues_events: true, active: true) }
+  scope :merge_request_hooks, -> { where(merge_requests_events: true, active: true) }
 
   def activated?
     active
@@ -66,6 +80,10 @@ class Service < ActiveRecord::Base
     []
   end
 
+  def supported_events
+    %w(push tag_push issue merge_request)
+  end
+
   def execute
     # implement inside child
   end
@@ -91,6 +109,8 @@ class Service < ActiveRecord::Base
   end
 
   def async_execute(data)
+    return unless supported_events.include?(data[:object_kind])
+    
     Sidekiq::Client.enqueue(ProjectServiceWorker, id, data)
   end
 

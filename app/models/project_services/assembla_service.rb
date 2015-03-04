@@ -11,6 +11,10 @@
 #  active     :boolean          default(FALSE), not null
 #  properties :text
 #  template   :boolean          default(FALSE)
+#  push_events           :boolean          default(TRUE)
+#  issues_events         :boolean          default(TRUE)
+#  merge_requests_events :boolean          default(TRUE)
+#  tag_push_events       :boolean          default(TRUE)
 #
 
 class AssemblaService < Service
@@ -38,8 +42,14 @@ class AssemblaService < Service
     ]
   end
 
-  def execute(push)
+  def supported_events
+    %w(push)
+  end
+
+  def execute(data)
+    return unless supported_events.include?(data[:object_kind])
+
     url = "https://atlas.assembla.com/spaces/#{subdomain}/github_tool?secret_key=#{token}"
-    AssemblaService.post(url, body: { payload: push }.to_json, headers: { 'Content-Type' => 'application/json' })
+    AssemblaService.post(url, body: { payload: data }.to_json, headers: { 'Content-Type' => 'application/json' })
   end
 end

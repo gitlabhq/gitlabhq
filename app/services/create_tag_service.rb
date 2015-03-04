@@ -21,12 +21,12 @@ class CreateTagService < BaseService
     new_tag = repository.find_tag(tag_name)
 
     if new_tag
-      if project.gitlab_ci?
-        push_data = create_push_data(project, current_user, new_tag)
-        project.gitlab_ci_service.async_execute(push_data)
-      end
-
       EventCreateService.new.push_ref(project, current_user, new_tag, 'add', 'refs/tags')
+
+      push_data = create_push_data(project, current_user, new_tag)
+      project.execute_hooks(push_data.dup, :tag_push_hooks)
+      project.execute_services(push_data.dup, :tag_push_hooks)
+
       success(new_tag)
     else
       error('Invalid reference name')
@@ -40,7 +40,9 @@ class CreateTagService < BaseService
   end
 
   def create_push_data(project, user, tag)
-    Gitlab::PushDataBuilder.
+    data = Gitlab::PushDataBuilder.
       build(project, user, Gitlab::Git::BLANK_SHA, tag.target, 'refs/tags/' + tag.name, [])
+    data[:object_kind] = "tag_push"
+    data
   end
 end

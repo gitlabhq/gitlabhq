@@ -8,10 +8,7 @@ class GitTagPushService
     EventCreateService.new.push(project, user, @push_data)
     project.repository.expire_cache
     project.execute_hooks(@push_data.dup, :tag_push_hooks)
-
-    if project.gitlab_ci?
-      project.gitlab_ci_service.async_execute(@push_data)
-    end
+    project.execute_services(@push_data.dup, :tag_push_hooks)
 
     true
   end
@@ -19,7 +16,8 @@ class GitTagPushService
   private
 
   def create_push_data(oldrev, newrev, ref)
-    Gitlab::PushDataBuilder.
-      build(project, user, oldrev, newrev, ref, [])
+    data = Gitlab::PushDataBuilder.build(project, user, oldrev, newrev, ref, [])
+    data[:object_kind] = "tag_push"
+    data
   end
 end

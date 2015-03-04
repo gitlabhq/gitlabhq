@@ -11,6 +11,10 @@
 #  active     :boolean          default(FALSE), not null
 #  properties :text
 #  template   :boolean          default(FALSE)
+#  push_events           :boolean
+#  issues_events         :boolean
+#  merge_requests_events :boolean
+#  tag_push_events       :boolean
 #
 
 class HipchatService < Service
@@ -40,8 +44,14 @@ class HipchatService < Service
     ]
   end
 
-  def execute(push_data)
-    gate[room].send('GitLab', create_message(push_data))
+  def supported_events
+    %w(push)
+  end
+
+  def execute(data)
+    return unless supported_events.include?(data[:object_kind])
+
+    gate[room].send('GitLab', create_message(data))
   end
 
   private

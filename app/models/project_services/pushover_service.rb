@@ -11,6 +11,10 @@
 #  active     :boolean          default(FALSE), not null
 #  properties :text
 #  template   :boolean          default(FALSE)
+#  push_events           :boolean          default(TRUE)
+#  issues_events         :boolean          default(TRUE)
+#  merge_requests_events :boolean          default(TRUE)
+#  tag_push_events       :boolean          default(TRUE)
 #
 
 class PushoverService < Service
@@ -76,21 +80,27 @@ class PushoverService < Service
     ]
   end
 
-  def execute(push_data)
-    ref = push_data[:ref].gsub('refs/heads/', '')
-    before = push_data[:before]
-    after = push_data[:after]
+  def supported_events
+    %w(push)
+  end
+
+  def execute(data)
+    return unless supported_events.include?(data[:object_kind])
+
+    ref = data[:ref].gsub('refs/heads/', '')
+    before = data[:before]
+    after = data[:after]
 
     if before.include?('000000')
-      message = "#{push_data[:user_name]} pushed new branch \"#{ref}\"."
+      message = "#{data[:user_name]} pushed new branch \"#{ref}\"."
     elsif after.include?('000000')
-      message = "#{push_data[:user_name]} deleted branch \"#{ref}\"."
+      message = "#{data[:user_name]} deleted branch \"#{ref}\"."
     else
-      message = "#{push_data[:user_name]} push to branch \"#{ref}\"."
+      message = "#{data[:user_name]} push to branch \"#{ref}\"."
     end
 
-    if push_data[:total_commits_count] > 0
-      message << "\nTotal commits count: #{push_data[:total_commits_count]}"
+    if data[:total_commits_count] > 0
+      message << "\nTotal commits count: #{data[:total_commits_count]}"
     end
 
     pushover_data = {
@@ -100,7 +110,7 @@ class PushoverService < Service
       priority: priority,
       title: "#{project.name_with_namespace}",
       message: message,
-      url: push_data[:repository][:homepage],
+      url: data[:repository][:homepage],
       url_title: "See project #{project.name_with_namespace}"
     }
 

@@ -11,6 +11,10 @@
 #  active     :boolean          default(FALSE), not null
 #  properties :text
 #  template   :boolean          default(FALSE)
+#  push_events           :boolean
+#  issues_events         :boolean
+#  merge_requests_events :boolean
+#  tag_push_events       :boolean
 #
 
 class GitlabCiService < CiService
@@ -18,14 +22,22 @@ class GitlabCiService < CiService
   validates :project_url, presence: true, if: :activated?
   validates :token, presence: true, if: :activated?
 
-  delegate :execute, to: :service_hook, prefix: nil
-
   after_save :compose_service_hook, if: :activated?
 
   def compose_service_hook
     hook = service_hook || build_service_hook
     hook.url = [project_url, "/build", "?token=#{token}"].join("")
     hook.save
+  end
+
+  def supported_events
+    %w(push tag_push)
+  end
+
+  def execute(data)
+    return unless supported_events.include?(data[:object_kind])
+
+    service_hook.execute(data)
   end
 
   def commit_status_path(sha)

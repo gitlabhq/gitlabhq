@@ -11,6 +11,10 @@
 #  active     :boolean          default(FALSE), not null
 #  properties :text
 #  template   :boolean          default(FALSE)
+#  push_events           :boolean
+#  issues_events         :boolean
+#  merge_requests_events :boolean
+#  tag_push_events       :boolean
 #
 
 require "gemnasium/gitlab_service"
@@ -38,11 +42,17 @@ class GemnasiumService < Service
     ]
   end
 
-  def execute(push_data)
+  def supported_events
+    %w(push)
+  end
+
+  def execute(data)
+    return unless supported_events.include?(data[:object_kind])
+
     Gemnasium::GitlabService.execute(
-      ref: push_data[:ref],
-      before: push_data[:before],
-      after: push_data[:after],
+      ref: data[:ref],
+      before: data[:before],
+      after: data[:after],
       token: token,
       api_key: api_key,
       repo: project.repository.path_to_repo
