@@ -19,6 +19,10 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   step 'I see the ".gitignore"' do
     page.should have_content '.gitignore'
   end
+  
+  step 'I see the "uploadfile.txt"' do
+    page.should have_content 'uploadfile.txt'
+  end
 
   step 'I don\'t see the ".gitignore"' do
     page.should_not have_content '.gitignore'
