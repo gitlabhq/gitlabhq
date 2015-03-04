@@ -20,6 +20,13 @@ Please treat our volunteers with courtesy and respect, it will go a long way tow
 
 Issues and merge requests should be in English and contain appropriate language for audiences of all ages.
 
+## Helping others
+
+Please help other GitLab users when you can.
+The channnels people will reach out on can be found on the [getting help page](https://about.gitlab.com/getting-help/).
+Sign up for the mailinglist, answer GitLab questions on StackOverflow or respond in the irc channel.
+You can also sign up on [CodeTriage](http://www.codetriage.com/gitlabhq/gitlabhq) to help with one issue every day.
+
 ## Issue tracker
 
 To get support for your particular problem please use the channels as detailed in the [getting help section of the readme](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#getting-help). Professional [support subscriptions](http://about.gitlab.com/subscription/) and [consulting services](http://about.gitlab.com/consultancy/) are available from [GitLab.com](http://about.gitlab.com/).
