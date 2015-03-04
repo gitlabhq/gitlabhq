@@ -40,7 +40,8 @@
                 .progress-bar{style: "width: #{milestone.percent_complete}%;"}
               %div
                 %br
-                - milestone.projects.each do |project|
-                  %span.label.label-default
-                    = project.name
+                - milestone.milestones.each do |milestone|
+                  = link_to namespace_project_milestone_path(milestone.project.namespace, milestone.project, milestone) do
+                    %span.label.label-default
+                      = milestone.project.name
   = paginate @group_milestones, theme: "gitlab"

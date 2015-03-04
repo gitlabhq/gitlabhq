@@ -220,6 +220,10 @@ Gitlab::Application.routes.draw do
       get :issues
       get :merge_requests
     end
+
+    scope module: :dashboard do
+      resources :milestones, only: [:index, :show]
+    end
   end
 
   #
@@ -236,7 +240,7 @@ Gitlab::Application.routes.draw do
     scope module: :groups do
       resources :group_members, only: [:create, :update, :destroy]
       resource :avatar, only: [:destroy]
-      resources :milestones
+      resources :milestones, only: [:index, :show, :update]
     end
   end
 
