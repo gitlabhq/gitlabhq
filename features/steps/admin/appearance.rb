@@ -39,7 +39,6 @@ class Spinach::Features::AdminAppearance < Spinach::FeatureSteps
 
   step 'I attach header logos' do
     attach_file(:appearance_light_logo, File.join(Rails.root, 'public', 'header_logo_light.png'))
-    attach_file(:appearance_dark_logo, File.join(Rails.root, 'public', 'header_logo_dark.png'))
     click_button 'Save'
   end
 
@@ -49,7 +48,6 @@ class Spinach::Features::AdminAppearance < Spinach::FeatureSteps
 
   step 'I should see header logos' do
     page.should have_xpath('//img[@src="/uploads/appearance/light_logo/1/header_logo_light.png"]')
-    page.should have_xpath('//img[@src="/uploads/appearance/dark_logo/1/header_logo_dark.png"]')
   end
 
   step 'I remove the logo' do
@@ -57,7 +55,7 @@ class Spinach::Features::AdminAppearance < Spinach::FeatureSteps
   end
 
   step 'I remove the header logos' do
-    click_link 'Remove header logos'
+    click_link 'Remove header logo'
   end
 
   step 'I should see logo removed' do
@@ -66,7 +64,6 @@ class Spinach::Features::AdminAppearance < Spinach::FeatureSteps
 
   step 'I should see header logos removed' do
     page.should_not have_xpath('//img[@src="/uploads/appearance/light_logo/1/header_logo_light.png"]')
-    page.should_not have_xpath('//img[@src="/uploads/appearance/dark_logo/1/header_logo_dark.png"]')
   end
 
   def appearance

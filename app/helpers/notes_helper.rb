@@ -4,9 +4,9 @@ module NotesHelper
     (@noteable.class.name == note.noteable_type && !note.for_diff_line?)
   end
 
-  def note_target_fields
-    hidden_field_tag(:target_type, @target_type) +
-    hidden_field_tag(:target_id, @target_id)
+  def note_target_fields(note)
+    hidden_field_tag(:target_type, note.noteable.class.name.underscore) +
+    hidden_field_tag(:target_id, note.noteable.id)
   end
 
   def link_to_commit_diff_line_note(note)

@@ -26,7 +26,7 @@ class Projects::ImportsController < Projects::ApplicationController
   def show
     unless @project.import_in_progress?
       if @project.import_finished?
-        redirect_to(@project) and return
+        redirect_to(project_path(@project)) and return
       else
         redirect_to new_namespace_project_import_path(@project.namespace,
                                                       @project) && return

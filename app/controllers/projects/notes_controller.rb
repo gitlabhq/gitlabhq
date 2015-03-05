@@ -3,10 +3,10 @@ class Projects::NotesController < Projects::ApplicationController
   before_filter :authorize_read_note!
   before_filter :authorize_write_note!, only: [:create]
   before_filter :authorize_admin_note!, only: [:update, :destroy]
+  before_filter :find_current_user_notes, except: [:destroy, :delete_attachment]
 
   def index
     current_fetched_at = Time.now.to_i
-    @notes = NotesFinder.new.execute(project, current_user, params)
 
     notes_json = { notes: [], last_fetched_at: current_fetched_at }
 
@@ -115,5 +115,11 @@ class Projects::NotesController < Projects::ApplicationController
       :note, :noteable, :noteable_id, :noteable_type, :project_id,
       :attachment, :line_code, :commit_id
     )
+  end
+
+  private
+
+  def find_current_user_notes
+    @notes = NotesFinder.new.execute(project, current_user, params)
   end
 end

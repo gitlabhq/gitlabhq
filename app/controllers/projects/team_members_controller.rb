@@ -30,12 +30,7 @@ class Projects::TeamMembersController < Projects::ApplicationController
       AuditEventService.new(current_user, @project, details).security_event
     end
 
-    if params[:redirect_to]
-      redirect_to params[:redirect_to]
-    else
-      redirect_to namespace_project_team_index_path(@project.namespace,
-                                                    @project)
-    end
+    redirect_to namespace_project_team_index_path(@project.namespace, @project)
   end
 
   def update

@@ -139,6 +139,15 @@ Feature: Project Issues
     And I leave a comment with task markdown
     Then I should not see task checkboxes in the comment
 
+  @javascript
+  Scenario: Issue notes should be editable with +1
+    Given project "Shop" has "Tasks-open" open issue with task markdown
+    When I visit issue page "Tasks-open"
+    And I leave a comment with a header containing "Comment with a header"
+    Then The comment with the header should not have an ID
+    And I edit the last comment with a +1
+    Then I should see +1 in the description
+
   # Task status in issues list
 
   Scenario: Issues list should display task status

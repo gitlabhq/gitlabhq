@@ -1,5 +1,5 @@
 = form_for [@project.namespace.becomes(Namespace), @project, @note], remote: true, html: { :'data-type' => 'json', multipart: true, id: nil, class: "new_note js-new-note-form common-note-form gfm-form" }, authenticity_token: true do |f|
-  = note_target_fields
+  = note_target_fields(@note)
   = f.hidden_field :commit_id
   = f.hidden_field :line_code
   = f.hidden_field :noteable_id

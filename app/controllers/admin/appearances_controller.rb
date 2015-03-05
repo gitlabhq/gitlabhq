@@ -37,11 +37,9 @@ class Admin::AppearancesController < Admin::ApplicationController
   def header_logos
     appearance = Appearance.last
     appearance.remove_light_logo!
-    appearance.remove_dark_logo!
-
     appearance.save
 
-    redirect_to admin_appearances_path, notice: 'Header logos were succesfully removed.'
+    redirect_to admin_appearances_path, notice: 'Header logo were succesfully removed.'
   end
 
   private
