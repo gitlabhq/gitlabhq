@@ -59,7 +59,7 @@ describe BuildboxService do
 
     describe :build_page do
       it 'returns the correct build page' do
-        expect(@service.build_page('2ab7834c')).to eq(
+        expect(@service.build_page('2ab7834c', nil)).to eq(
           'https://buildbox.io/account-name/example-project/builds?commit=2ab7834c'
         )
       end

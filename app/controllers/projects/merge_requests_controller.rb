@@ -160,10 +160,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def ci_status
     ci_service = @merge_request.source_project.ci_service
-    status = ci_service.commit_status(merge_request.last_commit.sha)
+    status = ci_service.commit_status(merge_request.last_commit.sha, merge_request.source_branch)
 
     if ci_service.respond_to?(:commit_coverage)
-      coverage = ci_service.commit_coverage(merge_request.last_commit.sha)
+      coverage = ci_service.commit_coverage(merge_request.last_commit.sha, merge_request.source_branch)
     end
 
     response = {
