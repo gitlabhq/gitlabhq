@@ -45,7 +45,7 @@ class HipchatService < Service
   end
 
   def supported_events
-    %w(push issue merge_request)
+    %w(push issue merge_request note)
   end
 
   def execute(data)
@@ -73,6 +73,8 @@ class HipchatService < Service
         create_issue_message(data) unless is_update?(data)
       when "merge_request"
         create_merge_request_message(data) unless is_update?(data)
+      when "note"
+        create_note_message(data)
       end
   end
 
@@ -108,6 +110,14 @@ class HipchatService < Service
     message
   end
 
+  def format_body(body)
+    if body
+      body = body.truncate(200, separator: ' ', omission: '...')
+    end
+
+    "<pre>#{body}</pre>"
+  end
+
   def create_issue_message(data)
     username = data[:user][:username]
 
@@ -123,8 +133,8 @@ class HipchatService < Service
     message = "#{username} #{state} issue #{issue_link} in #{project_link}: <b>#{title}</b>"
 
     if description
-      description = description.truncate(200, separator: ' ', omission: '...')
-      message << "<pre>#{description}</pre>"
+      description = format_body(description)
+      message << description
     end
 
     message
@@ -148,8 +158,62 @@ class HipchatService < Service
       "#{project_link}: <b>#{title}</b>"
 
     if description
-      description = description.truncate(200, separator: ' ', omission: '...')
-      message << "<pre>#{description}</pre>"
+      description = format_body(description)
+      message << description
+    end
+
+    message
+  end
+
+  def format_title(title)
+    "<b>" + title.lines.first.chomp + "</b>"
+  end
+
+  def create_note_message(data)
+    data = HashWithIndifferentAccess.new(data)
+    username = data[:user][:username]
+
+    repo_attr = HashWithIndifferentAccess.new(data[:repository])
+
+    obj_attr = HashWithIndifferentAccess.new(data[:object_attributes])
+    note = obj_attr[:note]
+    note_url = obj_attr[:url]
+    noteable_type = obj_attr[:noteable_type]
+
+    case noteable_type
+    when "Commit"
+      commit_attr = HashWithIndifferentAccess.new(data[:commit])
+      subject_desc = commit_attr[:id]
+      subject_desc = Commit.truncate_sha(subject_desc)
+      subject_type = "commit"
+      title = format_title(commit_attr[:message])
+    when "Issue"
+      subj_attr = HashWithIndifferentAccess.new(data[:issue])
+      subject_id = subj_attr[:iid]
+      subject_desc = "##{subject_id}"
+      subject_type = "issue"
+      title = format_title(subj_attr[:title])
+    when "MergeRequest"
+      subj_attr = HashWithIndifferentAccess.new(data[:merge_request])
+      subject_id = subj_attr[:iid]
+      subject_desc = "##{subject_id}"
+      subject_type = "merge request"
+      title = format_title(subj_attr[:title])
+    when "Snippet"
+      subj_attr = HashWithIndifferentAccess.new(data[:snippet])
+      subject_id = subj_attr[:id]
+      subject_desc = "##{subject_id}"
+      subject_type = "snippet"
+      title = format_title(subj_attr[:title])
+    end
+
+    subject_html = "<a href=\"#{note_url}\">#{subject_type} #{subject_desc}</a>"
+    message = "#{username} commented on #{subject_html} in #{project_link}: "
+    message << title
+
+    if note
+      note = format_body(note)
+      message << note
     end
 
     message
