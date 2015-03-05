@@ -1,25 +1,10 @@
 .panel.panel-default
   .panel-heading.clearfix
     .input-group
-      = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'dash-filter form-control'
+      = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control'
       - if current_user.can_create_project?
         .input-group-addon.dash-new-project
           = link_to new_project_path do
             %strong New project
 
-  %ul.well-list.dash-list
-    - projects.each do |project|
-      %li.project-row
-        = render "project", project: project
-
-    - if projects.blank?
-      %li
-        .nothing-here-block There are no projects here.
-    - if @projects_count > @projects_limit
-      %li.bottom
-        %span.light
-          #{@projects_limit} of #{pluralize(@projects_count, 'project')} displayed.
-        .pull-right
-          = link_to projects_dashboard_path do
-            Show all
-            %i.fa.fa-angle-right
+  = render 'shared/projects_list', projects: @projects, projects_limit: 20
