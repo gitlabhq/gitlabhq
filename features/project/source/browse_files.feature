@@ -109,7 +109,7 @@ Feature: Project Source Browse Files
     Then I am redirected to the ".gitignore"
     And I should see its content
     
-
+    
   Scenario: I can browse directory with Browse Dir
     Given I click on files directory
     And I click on History link
