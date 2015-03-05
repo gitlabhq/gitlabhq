@@ -123,8 +123,9 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     attach_file(:file_upload, File.join('features', 'user.feature'))
   end
   
-  step 'I replace it with "LICENSE"' do
-    attach_file(:file_upload, "LICENSE")
+  step 'I replace it with "user.feature"' do
+    attach_file(:file_upload, "user.feature")
+    set_new_content
   end
 
   step 'I click on files directory' do
