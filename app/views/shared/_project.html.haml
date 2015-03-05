@@ -1,6 +1,7 @@
 = link_to project_path(project), class: dom_class(project) do
-  .dash-project-avatar
-    = project_icon(project, alt: '', class: 'avatar project-avatar s40')
+  - if avatar
+    .dash-project-avatar
+      = project_icon(project, alt: '', class: 'avatar project-avatar s40')
   .dash-project-access-icon
     = visibility_level_icon(project.visibility_level)
   %span.str-truncated
@@ -10,5 +11,10 @@
         \/
     %span.project-name.filter-title
       = project.name
-  %span.arrow
-    %i.fa.fa-angle-right
+  - if stars
+    %span.pull-right.light
+      %i.fa.fa-star
+      = project.star_count
+  - else
+    %span.arrow
+      %i.fa.fa-angle-right

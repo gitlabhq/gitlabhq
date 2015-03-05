@@ -1,0 +1,17 @@
+- projects_limit = 20 unless local_assigns[:projects_limit]
+- avatar = true unless local_assigns[:avatar] == false
+- stars = false unless local_assigns[:stars] == true
+%ul.well-list.projects-list
+  - projects.each_with_index do |project, i|
+    %li{class: (i >= projects_limit) ? 'project-row hide' : 'project-row'}
+      = render "shared/project", project: project, avatar: avatar, stars: stars
+  - if projects.blank?
+    %li
+      .nothing-here-block There are no projects here.
+  - if projects.count > projects_limit
+    %li.bottom
+      %span.light
+        #{projects_limit} of #{pluralize(projects.count, 'project')} displayed.
+      %span
+        = link_to '#', class: 'js-expand' do
+          Show all
