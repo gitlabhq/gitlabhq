@@ -191,7 +191,7 @@ GEM
       dotenv (>= 0.7)
       thor (>= 0.13.6)
     formatador (0.2.4)
-    gemnasium-gitlab-service (0.2.4)
+    gemnasium-gitlab-service (0.2.5)
       rugged (~> 0.21)
     gherkin-ruby (0.3.1)
       racc
