@@ -60,6 +60,10 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   step 'I edit code' do
     set_new_content
   end
+  
+  step 'I begin to replace file' do
+    set_new_content 
+  end
 
   step 'I fill the new file name' do
     fill_in :file_name, with: new_file_name
