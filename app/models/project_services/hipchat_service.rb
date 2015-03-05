@@ -45,7 +45,7 @@ class HipchatService < Service
   end
 
   def supported_events
-    %w(push)
+    %w(push issue merge_request)
   end
 
   def execute(data)
@@ -62,7 +62,21 @@ class HipchatService < Service
     @gate ||= HipChat::Client.new(token, options)
   end
 
-  def create_message(push)
+  def create_message(data)
+    object_kind = data[:object_kind]
+
+    message = \
+      case object_kind
+      when "push"
+        create_push_message(data)
+      when "issue"
+        create_issue_message(data) unless is_update?(data)
+      when "merge_request"
+        create_merge_request_message(data) unless is_update?(data)
+      end
+  end
+
+  def create_push_message(push)
     ref = push[:ref].gsub("refs/heads/", "")
     before = push[:before]
     after = push[:after]
@@ -71,9 +85,9 @@ class HipchatService < Service
     message << "#{push[:user_name]} "
     if before.include?('000000')
       message << "pushed new branch <a href=\""\
-                 "#{project.web_url}/commits/#{URI.escape(ref)}\">#{ref}</a>"\
-                 " to <a href=\"#{project.web_url}\">"\
-                 "#{project.name_with_namespace.gsub!(/\s/, "")}</a>\n"
+                 "#{project_url}/commits/#{URI.escape(ref)}\">#{ref}</a>"\
+                 " to <a href=\"#{project_url}\">"\
+                 "#{project_url}</a>\n"
     elsif after.include?('000000')
       message << "removed branch #{ref} from <a href=\"#{project.web_url}\">#{project.name_with_namespace.gsub!(/\s/,'')}</a> \n"
     else
@@ -92,5 +106,68 @@ class HipchatService < Service
     end
 
     message
+  end
+
+  def create_issue_message(data)
+    username = data[:user][:username]
+
+    obj_attr = data[:object_attributes]
+    obj_attr = HashWithIndifferentAccess.new(obj_attr)
+    title = obj_attr[:title]
+    state = obj_attr[:state]
+    issue_iid = obj_attr[:iid]
+    issue_url = obj_attr[:url]
+    description = obj_attr[:description]
+
+    issue_link = "<a href=\"#{issue_url}\">##{issue_iid}</a>"
+    message = "#{username} #{state} issue #{issue_link} in #{project_link}: <b>#{title}</b>"
+
+    if description
+      description = description.truncate(200, separator: ' ', omission: '...')
+      message << "<pre>#{description}</pre>"
+    end
+
+    message
+  end
+
+  def create_merge_request_message(data)
+    username = data[:user][:username]
+
+    obj_attr = data[:object_attributes]
+    obj_attr = HashWithIndifferentAccess.new(obj_attr)
+    merge_request_id = obj_attr[:iid]
+    source_branch = obj_attr[:source_branch]
+    target_branch = obj_attr[:target_branch]
+    state = obj_attr[:state]
+    description = obj_attr[:description]
+    title = obj_attr[:title]
+
+    merge_request_url = "#{project_url}/merge_requests/#{merge_request_id}"
+    merge_request_link = "<a href=\"#{merge_request_url}\">##{merge_request_id}</a>"
+    message = "#{username} #{state} merge request #{merge_request_link} in " \
+      "#{project_link}: <b>#{title}</b>"
+
+    if description
+      description = description.truncate(200, separator: ' ', omission: '...')
+      message << "<pre>#{description}</pre>"
+    end
+
+    message
+  end
+
+  def project_name
+    project.name_with_namespace.gsub(/\s/, '')
+  end
+
+  def project_url
+    project.web_url
+  end
+
+  def project_link
+    "<a href=\"#{project_url}\">#{project_name}</a>"
+  end
+
+  def is_update?(data)
+    data[:object_attributes][:action] == 'update'
   end
 end
