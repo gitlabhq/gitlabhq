@@ -95,6 +95,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   
   step 'I click on "Replace file"' do
     click_button 'Replace file'
+    set_new_content
   end
   
   step 'I see diff' do
@@ -125,7 +126,6 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   
   step 'I replace it with "user.feature"' do
     attach_file(:file_upload, File.join('features', 'user.feature'))
-    set_new_content
   end
 
   step 'I click on files directory' do
