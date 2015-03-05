@@ -124,7 +124,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
   
   step 'I replace it with "user.feature"' do
-    attach_file(:file_upload, "user.feature")
+    attach_file(:file_upload, File.join('features', 'user.feature'))
     set_new_content
   end
 
