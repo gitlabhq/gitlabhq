@@ -20,6 +20,7 @@ v 7.9.0 (unreleased)
   - Add brakeman (security scanner for Ruby on Rails)
   - Slack username and channel options
   - Add grouped milestones from all projects to dashboard.
+  - Escape wildcards when searching LDAP by username.
 
 v 7.8.1
   - Fix run of custom post receive hooks
