@@ -27,6 +27,7 @@ v 7.9.0 (unreleased)
   - Add Bitbucket omniauth provider.
   - Add Bitbucket importer.
   - Support referencing issues to a project whose name starts with a digit
+  - Automatically link commit ranges to compare page: sha1...sha4 or sha1..sha4 (includes sha1 in comparison)
 
 v 7.8.2
   - Fix service migration issue when upgrading from versions prior to 7.3

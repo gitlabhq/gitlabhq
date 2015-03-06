@@ -31,6 +31,11 @@ describe Gitlab::ReferenceExtractor do
     expect(subject.commits).to eq([{ project: nil, id: '98cf0ae3' }])
   end
 
+  it 'extracts commit ranges' do
+    subject.analyze('here you go, a commit range: 98cf0ae3...98cf0ae4', nil)
+    expect(subject.commit_ranges).to eq([{ project: nil, id: '98cf0ae3...98cf0ae4' }])
+  end
+
   it 'extracts multiple references and preserves their order' do
     subject.analyze('@me and @you both care about this', nil)
     expect(subject.users).to eq([
@@ -99,6 +104,20 @@ describe Gitlab::ReferenceExtractor do
       expect(extracted.size).to eq(1)
       expect(extracted[0].sha).to eq(commit.sha)
       expect(extracted[0].message).to eq(commit.message)
+    end
+
+    it 'accesses valid commit ranges' do
+      commit = project.repository.commit('master')
+      earlier_commit = project.repository.commit('master~2')
+
+      subject.analyze("this references commits #{earlier_commit.sha[0..6]}...#{commit.sha[0..6]}",
+                      project)
+      extracted = subject.commit_ranges_for(project)
+      expect(extracted.size).to eq(1)
+      expect(extracted[0][0].sha).to eq(earlier_commit.sha)
+      expect(extracted[0][0].message).to eq(earlier_commit.message)
+      expect(extracted[0][1].sha).to eq(commit.sha)
+      expect(extracted[0][1].message).to eq(commit.message)
     end
   end
 end
