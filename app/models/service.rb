@@ -28,6 +28,7 @@ class Service < ActiveRecord::Base
   default_value_for :issues_events, true
   default_value_for :merge_requests_events, true
   default_value_for :tag_push_events, true
+  default_value_for :note_events, true
 
   after_initialize :initialize_properties
 
@@ -42,6 +43,7 @@ class Service < ActiveRecord::Base
   scope :tag_push_hooks, -> { where(tag_push_events: true, active: true) }
   scope :issue_hooks, -> { where(issues_events: true, active: true) }
   scope :merge_request_hooks, -> { where(merge_requests_events: true, active: true) }
+  scope :note_hooks, -> { where(note_events: true, active: true) }
 
   def activated?
     active

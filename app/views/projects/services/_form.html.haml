@@ -47,6 +47,14 @@
                 %strong Tag push events
               %p.light
                 This url will be triggered when a new tag is pushed to the repository
+        - if @service.supported_events.include?("note")
+          %div
+            = f.check_box :note_events, class: 'pull-left'
+            .prepend-left-20
+              = f.label :note_events, class: 'list-label' do
+                %strong Comments
+              %p.light
+                This url will be triggered when someone adds a comment
         - if @service.supported_events.include?("issue")
           %div
             = f.check_box :issues_events, class: 'pull-left'
