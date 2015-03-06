@@ -6,7 +6,7 @@ class @ProjectShow
       new Flash('Star toggle failed. Try again later.', 'alert')
 
     $("a[data-toggle='tab']").on "shown.bs.tab", (e) ->
-        $.cookie "default_view", $(e.target).attr("href"), { expires: 30 }
+        $.cookie "default_view", $(e.target).attr("href"), { expires: 30, path: '/' }
 
       defaultView = $.cookie("default_view")
       if defaultView
