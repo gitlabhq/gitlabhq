@@ -7,12 +7,18 @@
     = link_to '#groups', 'data-toggle' => 'tab', id: 'sidebar-groups-tab' do
       Groups
       %span.badge= @groups.count
+  %li
+    = link_to '#mentions', 'data-toggle' => 'tab', id: 'sidebar-mentions-tab' do
+      Mentioned In
+      %span.badge= @mentions_count
 
 .tab-content
   .tab-pane.active#projects
     = render "projects", projects: @projects
   .tab-pane#groups
     = render "groups", groups: @groups
+  .tab-pane#mentions
+    = render "mentions", mentions: @mentions
 
 .prepend-top-20
   = render 'shared/promo'
