@@ -161,7 +161,7 @@ class Note < ActiveRecord::Base
           if existing_commits.length == 1
             existing_commits.first.short_id
           else
-            "#{existing_commits.first.short_id}...#{existing_commits.last.short_id}"
+            "#{existing_commits.first.short_id}..#{existing_commits.last.short_id}"
           end
 
         commits_text = ActionController::Base.helpers.pluralize(existing_commits.length, 'commit')
