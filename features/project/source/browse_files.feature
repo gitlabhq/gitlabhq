@@ -50,6 +50,7 @@ Feature: Project Source Browse Files
     When I upload "user.feature"
     And I fill the commit message
     And I click on "Upload file"
+    And I check name of the upload file
     Then I see the "user.feature"
     
 
