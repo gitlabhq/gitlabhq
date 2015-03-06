@@ -40,7 +40,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     page.should have_content new_gitignore_content
   end
   
-  step 'I should see new file content'
+  step 'I should see new file content' do
     page.should_not have_content old_gitignore_content 
   end
 
