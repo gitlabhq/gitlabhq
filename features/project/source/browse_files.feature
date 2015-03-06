@@ -101,10 +101,10 @@ Feature: Project Source Browse Files
   Scenario: I can replace file and commit
     Given I click on ".gitignore" file in repo
     And I see the ".gitignore"
-    And I click button "Replace"
+    And I click on "Replace"
     When I replace it with "user.feature"
     And I fill the commit message
-    And I click button "Replace file"
+    And I click on "Replace file"
     Then I am redirected to the ".gitignore"
     And I should see its content
     
