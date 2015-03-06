@@ -106,7 +106,7 @@ Feature: Project Source Browse Files
     And I fill the commit message
     And I click on "Replace file"
     Then I am redirected to the ".gitignore"
-    And I should see its new content
+    And I should see its content
     
     
   Scenario: I can browse directory with Browse Dir
