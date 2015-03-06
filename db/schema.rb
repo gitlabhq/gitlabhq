@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150223022001) do
+ActiveRecord::Schema.define(version: 20150225065047) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -371,6 +371,7 @@ ActiveRecord::Schema.define(version: 20150223022001) do
     t.boolean  "issues_events",         default: true
     t.boolean  "merge_requests_events", default: true
     t.boolean  "tag_push_events",       default: true
+    t.boolean  "note_events",           default: true,  null: false
   end
 
   add_index "services", ["created_at", "id"], name: "index_services_on_created_at_and_id", using: :btree

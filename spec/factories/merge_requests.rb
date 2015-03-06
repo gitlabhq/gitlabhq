@@ -40,7 +40,7 @@ FactoryGirl.define do
     source_branch "master"
     target_branch "feature"
 
-    merge_status :can_be_merged
+    merge_status "can_be_merged"
 
     trait :with_diffs do
     end

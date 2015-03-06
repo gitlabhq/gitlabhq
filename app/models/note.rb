@@ -308,6 +308,10 @@ class Note < ActiveRecord::Base
     end
   end
 
+  def hook_attrs
+    attributes
+  end
+
   def set_diff
     # First lets find notes with same diff
     # before iterating over all mr diffs
@@ -464,6 +468,10 @@ class Note < ActiveRecord::Base
 
   def for_merge_request_diff_line?
     for_merge_request? && for_diff_line?
+  end
+
+  def for_project_snippet?
+    noteable_type == "Snippet"
   end
 
   # override to return commits, which are not active record
