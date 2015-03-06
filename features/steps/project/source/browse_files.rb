@@ -39,6 +39,10 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   step 'I should see its new content' do
     page.should have_content new_gitignore_content
   end
+  
+  step 'I should see new file content'
+    page.should_not have_content old_gitignore_content 
+  end
 
   step 'I click link "Raw"' do
     click_link 'Raw'
@@ -90,7 +94,6 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click on "Replace"' do
-    new_file_content
     click_button  'Replace'
   end
   
@@ -125,8 +128,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
   
   step 'I replace it with "LICENSE"' do
-    new_file_content;
-    attach_file(:file_upload, "LICENSE")
+    attach_file(".gitignore", "LICENSE")
   end
 
   step 'I click on files directory' do
