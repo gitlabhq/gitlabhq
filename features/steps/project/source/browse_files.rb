@@ -129,6 +129,8 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   
   step 'I check name of the upload file' do
     '.gitignore' != 'user.feature'
+    'LICENSE' != 'user.feature'
+    'VERSION' != 'user.feature'
   end
   
   step 'I replace it with "LICENSE"' do
