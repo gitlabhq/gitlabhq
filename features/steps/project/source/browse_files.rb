@@ -127,6 +127,10 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     attach_file(:file_upload, File.join('features', 'user.feature'))
   end
   
+  step 'I check name of the upload file' do
+    '.gitignore' != 'user.feature'
+  end
+  
   step 'I replace it with "LICENSE"' do
     attach_file(:file_upload, "LICENSE")
     old_gitignore_content = "LICENSE"
