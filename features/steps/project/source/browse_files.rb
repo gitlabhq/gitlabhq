@@ -41,7 +41,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
   
   step 'I should see new file content' do
-    page.should_not have_content old_gitignore_content 
+    old_gitignore_content != '*.rbc'
   end
 
   step 'I click link "Raw"' do
