@@ -124,8 +124,8 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     attach_file(:file_upload, File.join('features', 'user.feature'))
   end
   
-  step 'I replace it with "user.feature"' do
-    attach_file(:file_upload, File.join('features', 'user.feature'))
+  step 'I replace it with ".gitignore"' do
+    attach_file(:file_upload, File.join('features', '.gitignore'))
   end
 
   step 'I click on files directory' do
