@@ -129,7 +129,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   
   step 'I replace it with "LICENSE"' do
     attach_file(:file_upload, "LICENSE")
-    ".gitignore" = :file_upload
+    @".gitignore" = :file_upload
   end
 
   step 'I click on files directory' do
