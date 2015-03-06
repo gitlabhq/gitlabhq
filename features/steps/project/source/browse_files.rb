@@ -90,12 +90,12 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click on "Replace"' do
+    new_file_content
     click_button  'Replace'
   end
   
   step 'I click on "Replace file"' do
     click_button  'Replace file'
-    set_new_content
   end
   
   step 'I see diff' do
@@ -189,6 +189,10 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   private
+
+  def new_file_content
+    old_gitignore_content + 'a'
+  end
 
   def set_new_content
     execute_script("editor.setValue('#{new_gitignore_content}')")
