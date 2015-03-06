@@ -125,6 +125,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
   
   step 'I replace it with ".LICENSE"' do
+    new_file_content;
     attach_file(:file_upload, ".LICENSE")
   end
 
