@@ -193,10 +193,6 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   private
 
-  def new_file_content
-    old_gitignore_content + 'a'
-  end
-
   def set_new_content
     execute_script("editor.setValue('#{new_gitignore_content}')")
   end
