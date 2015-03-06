@@ -89,12 +89,12 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     click_button 'Remove file'
   end
 
-  step 'I click button "Replace"' do
-    click_link  'Replace'
+  step 'I click on "Replace"' do
+    click_button  'Replace'
   end
   
-  step 'I click button "Replace file"' do
-    click_link  'Replace file'
+  step 'I click on "Replace file"' do
+    click_button  'Replace file'
   end
   
   step 'I see diff' do
