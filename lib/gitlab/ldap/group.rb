@@ -4,6 +4,7 @@ module Gitlab
       attr_accessor :adapter
 
       def self.find_by_cn(cn, adapter)
+        cn = Net::LDAP::Filter.escape(cn)
         adapter.group(cn)
       end
 

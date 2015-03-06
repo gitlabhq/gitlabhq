@@ -6,6 +6,8 @@ module API
     resource :ldap do
       helpers do
         def get_group_list(provider, search)
+          search ||= ""
+          search = Net::LDAP::Filter.escape(search)
           Gitlab::LDAP::Adapter.new(provider).groups("#{search}*", 20)
         end
       end
@@ -17,7 +19,7 @@ module API
       #  GET /ldap/groups
       get 'groups' do
         provider = Gitlab::LDAP::Config.servers.first['provider_name']
-        @groups = Gitlab::LDAP::Adapter.new(provider).groups("#{params[:search]}*", 20)
+        @groups = get_group_list(provider, params[:search])
         present @groups, with: Entities::LdapGroup
       end
 
