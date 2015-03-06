@@ -93,7 +93,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def bulk_update
-    result = Issues::BulkUpdateService.new(project, current_user, params).execute
+    result = Issues::BulkUpdateService.new(project, current_user, bulk_update_params).execute
     redirect_to :back, notice: "#{result[:count]} issues updated"
   end
 
@@ -139,6 +139,15 @@ class Projects::IssuesController < Projects::ApplicationController
     params.require(:issue).permit(
       :title, :assignee_id, :position, :description,
       :milestone_id, :state_event, :task_num, label_ids: []
+    )
+  end
+
+  def bulk_update_params
+    params.require(:update).permit(
+      :issues_ids,
+      :assignee_id,
+      :milestone_id,
+      :state_event
     )
   end
 end

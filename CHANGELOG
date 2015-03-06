@@ -26,6 +26,7 @@ v 7.9.0 (unreleased)
   - Add Bitbucket omniauth provider.
   - Add Bitbucket importer.
   - Support referencing issues to a project whose name starts with a digit
+  - Send notifications and leave system comments when bulk updating issues.
 
 v 7.8.2
   - Fix service migration issue when upgrading from versions prior to 7.3

@@ -21,10 +21,8 @@ describe Issues::BulkUpdateService do
         create(:issue, project: @project)
       end
       @params = {
-        update: {
-          status: 'closed',
-          issues_ids: @issues.map(&:id)
-        }
+        state_event: 'close',
+        issues_ids: @issues.map(&:id)
       }
     end
 
@@ -46,10 +44,8 @@ describe Issues::BulkUpdateService do
         create(:closed_issue, project: @project)
       end
       @params = {
-        update: {
-          status: 'reopen',
-          issues_ids: @issues.map(&:id)
-        }
+        state_event: 'reopen',
+        issues_ids: @issues.map(&:id)
       }
     end
 
@@ -69,10 +65,8 @@ describe Issues::BulkUpdateService do
     before do
       @new_assignee = create :user
       @params = {
-        update: {
-          issues_ids: [issue.id],
-          assignee_id: @new_assignee.id
-        }
+        issues_ids: [issue.id],
+        assignee_id: @new_assignee.id
       }
     end
 
@@ -88,7 +82,7 @@ describe Issues::BulkUpdateService do
       @project.issues.first.update_attribute(:assignee, @new_assignee)
       expect(@project.issues.first.assignee).not_to be_nil
 
-      @params[:update][:assignee_id] = -1
+      @params[:assignee_id] = -1
 
       Issues::BulkUpdateService.new(@project, @user, @params).execute
       expect(@project.issues.first.assignee).to be_nil
@@ -98,7 +92,7 @@ describe Issues::BulkUpdateService do
       @project.issues.first.update_attribute(:assignee, @new_assignee)
       expect(@project.issues.first.assignee).not_to be_nil
 
-      @params[:update][:assignee_id] = ''
+      @params[:assignee_id] = ''
 
       Issues::BulkUpdateService.new(@project, @user, @params).execute
       expect(@project.issues.first.assignee).not_to be_nil
@@ -110,10 +104,8 @@ describe Issues::BulkUpdateService do
     before do
       @milestone = create :milestone
       @params = {
-        update: {
-          issues_ids: [issue.id],
-          milestone_id: @milestone.id
-        }
+        issues_ids: [issue.id],
+        milestone_id: @milestone.id
       }
     end
 
