@@ -6,7 +6,8 @@ class SlackService
     attr_reader :project_name
     attr_reader :project_url
     attr_reader :ref
-    attr_reader :username
+    attr_reader :ref_type
+    attr_reader :user_name
 
     def initialize(params)
       @after = params[:after]
@@ -14,8 +15,14 @@ class SlackService
       @commits = params.fetch(:commits, [])
       @project_name = params[:project_name]
       @project_url = params[:project_url]
-      @ref = params[:ref].gsub('refs/heads/', '')
-      @username = params[:user_name]
+      if params[:ref].starts_with?('refs/tags/')
+        @ref_type = 'tag'
+        @ref = params[:ref].gsub('refs/tags/', '')
+      else
+        @ref_type = 'branch'
+        @ref = params[:ref].gsub('refs/heads/', '')
+      end
+      @user_name = params[:user_name]
     end
 
     def pretext
@@ -45,15 +52,15 @@ class SlackService
     end
 
     def new_branch_message
-      "#{username} pushed new branch #{branch_link} to #{project_link}"
+      "#{user_name} pushed new #{ref_type} #{branch_link} to #{project_link}"
     end
 
     def removed_branch_message
-      "#{username} removed branch #{ref} from #{project_link}"
+      "#{user_name} removed #{ref_type} #{ref} from #{project_link}"
     end
 
     def push_message
-      "#{username} pushed to branch #{branch_link} of #{project_link} (#{compare_link})"
+      "#{user_name} pushed to #{ref_type} #{branch_link} of #{project_link} (#{compare_link})"
     end
 
     def commit_messages

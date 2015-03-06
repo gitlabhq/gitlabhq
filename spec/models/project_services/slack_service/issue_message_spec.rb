@@ -6,7 +6,8 @@ describe SlackService::IssueMessage do
   let(:args) {
     {
       user: {
-        username: 'username'
+        name: 'Test User',
+        username: 'Test User'
       },
       project_name: 'project_name',
       project_url: 'somewhere.com',
@@ -29,8 +30,8 @@ describe SlackService::IssueMessage do
   context 'open' do
     it 'returns a message regarding opening of issues' do
       expect(subject.pretext).to eq(
-        'username opened issue <url|#100> in <somewhere.com|project_name>: '\
-        'Issue title')
+        'Test User opened <url|issue #100> in <somewhere.com|project_name>: '\
+        '*Issue title*')
       expect(subject.attachments).to eq([
         {
           text: "issue description",
@@ -47,8 +48,8 @@ describe SlackService::IssueMessage do
     end
     it 'returns a message regarding closing of issues' do
       expect(subject.pretext). to eq(
-        'username closed issue <url|#100> in <somewhere.com|project_name>: '\
-        'Issue title')
+        'Test User closed <url|issue #100> in <somewhere.com|project_name>: '\
+        '*Issue title*')
       expect(subject.attachments).to be_empty
     end
   end

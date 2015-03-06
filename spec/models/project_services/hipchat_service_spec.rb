@@ -50,6 +50,35 @@ describe HipchatService do
 
         expect(WebMock).to have_requested(:post, api_url).once
       end
+
+      it "should create a push message" do
+        message = hipchat.send(:create_push_message, push_sample_data)
+
+        obj_attr = push_sample_data[:object_attributes]
+        branch = push_sample_data[:ref].gsub('refs/heads/', '')
+        expect(message).to include("#{user.name} pushed to branch " \
+            "<a href=\"#{project.web_url}/commits/#{branch}\">#{branch}</a> of " \
+            "<a href=\"#{project.web_url}\">#{project_name}</a>")
+      end
+    end
+
+    context 'tag_push events' do
+      let(:push_sample_data) { Gitlab::PushDataBuilder.build(project, user, '000000', '111111', 'refs/tags/test', []) }
+
+      it "should call Hipchat API for tag push events" do
+        hipchat.execute(push_sample_data)
+
+        expect(WebMock).to have_requested(:post, api_url).once
+      end
+
+      it "should create a tag push message" do
+        message = hipchat.send(:create_push_message, push_sample_data)
+
+        obj_attr = push_sample_data[:object_attributes]
+        expect(message).to eq("#{user.name} pushed new tag " \
+            "<a href=\"#{project.web_url}/commits/test\">test</a> to " \
+            "<a href=\"#{project.web_url}\">#{project_name}</a>\n")
+      end
     end
 
     context 'issue events' do
@@ -67,8 +96,8 @@ describe HipchatService do
         message = hipchat.send(:create_issue_message, issues_sample_data)
 
         obj_attr = issues_sample_data[:object_attributes]
-        expect(message).to eq("#{user.username} opened issue " \
-            "<a href=\"#{obj_attr[:url]}\">##{obj_attr["iid"]}</a> in " \
+        expect(message).to eq("#{user.name} opened " \
+            "<a href=\"#{obj_attr[:url]}\">issue ##{obj_attr["iid"]}</a> in " \
             "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
             "<b>Awesome issue</b>" \
             "<pre>please fix</pre>")
@@ -91,8 +120,8 @@ describe HipchatService do
                                merge_sample_data)
 
         obj_attr = merge_sample_data[:object_attributes]
-        expect(message).to eq("#{user.username} opened merge request " \
-            "<a href=\"#{obj_attr[:url]}\">##{obj_attr["iid"]}</a> in " \
+        expect(message).to eq("#{user.name} opened " \
+            "<a href=\"#{obj_attr[:url]}\">merge request ##{obj_attr["iid"]}</a> in " \
             "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
             "<b>Awesome merge request</b>" \
             "<pre>please fix</pre>")
@@ -122,7 +151,7 @@ describe HipchatService do
         commit_id = Commit.truncate_sha(data[:commit][:id])
         title = hipchat.send(:format_title, data[:commit][:message])
 
-        expect(message).to eq("#{user.username} commented on " \
+        expect(message).to eq("#{user.name} commented on " \
             "<a href=\"#{obj_attr[:url]}\">commit #{commit_id}</a> in " \
             "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
             "#{title}" \
@@ -141,7 +170,7 @@ describe HipchatService do
         merge_id = data[:merge_request]['iid']
         title = data[:merge_request]['title']
 
-        expect(message).to eq("#{user.username} commented on " \
+        expect(message).to eq("#{user.name} commented on " \
             "<a href=\"#{obj_attr[:url]}\">merge request ##{merge_id}</a> in " \
             "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
             "<b>#{title}</b>" \
@@ -158,7 +187,7 @@ describe HipchatService do
         issue_id = data[:issue]['iid']
         title = data[:issue]['title']
 
-        expect(message).to eq("#{user.username} commented on " \
+        expect(message).to eq("#{user.name} commented on " \
             "<a href=\"#{obj_attr[:url]}\">issue ##{issue_id}</a> in " \
             "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
             "<b>#{title}</b>" \
@@ -177,7 +206,7 @@ describe HipchatService do
         snippet_id = data[:snippet]['id']
         title = data[:snippet]['title']
 
-        expect(message).to eq("#{user.username} commented on " \
+        expect(message).to eq("#{user.name} commented on " \
             "<a href=\"#{obj_attr[:url]}\">snippet ##{snippet_id}</a> in " \
             "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
             "<b>#{title}</b>" \

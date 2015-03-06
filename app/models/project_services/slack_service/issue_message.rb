@@ -1,6 +1,6 @@
 class SlackService
   class IssueMessage < BaseMessage
-    attr_reader :username
+    attr_reader :user_name
     attr_reader :title
     attr_reader :project_name
     attr_reader :project_url
@@ -11,7 +11,7 @@ class SlackService
     attr_reader :description
 
     def initialize(params)
-      @username = params[:user][:username]
+      @user_name = params[:user][:name]
       @project_name = params[:project_name]
       @project_url = params[:project_url]
 
@@ -34,7 +34,7 @@ class SlackService
     private
 
     def message
-      "#{username} #{state} issue #{issue_link} in #{project_link}: #{title}"
+      "#{user_name} #{state} #{issue_link} in #{project_link}: *#{title}*"
     end
 
     def opened_issue?
@@ -50,7 +50,7 @@ class SlackService
     end
 
     def issue_link
-      "[##{issue_iid}](#{issue_url})"
+      "[issue ##{issue_iid}](#{issue_url})"
     end
   end
 end
