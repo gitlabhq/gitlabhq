@@ -45,7 +45,7 @@ class HipchatService < Service
   end
 
   def supported_events
-    %w(push issue merge_request note)
+    %w(push issue merge_request note tag_push)
   end
 
   def execute(data)
@@ -67,7 +67,7 @@ class HipchatService < Service
 
     message = \
       case object_kind
-      when "push"
+      when "push", "tag_push"
         create_push_message(data)
       when "issue"
         create_issue_message(data) unless is_update?(data)
@@ -79,21 +79,27 @@ class HipchatService < Service
   end
 
   def create_push_message(push)
-    ref = push[:ref].gsub("refs/heads/", "")
+    if push[:ref].starts_with?('refs/tags/')
+      ref_type = 'tag'
+      ref = push[:ref].gsub('refs/tags/', '')
+    else
+      ref_type = 'branch'
+      ref = push[:ref].gsub('refs/heads/', '')
+    end
+
     before = push[:before]
     after = push[:after]
 
     message = ""
     message << "#{push[:user_name]} "
     if before.include?('000000')
-      message << "pushed new branch <a href=\""\
+      message << "pushed new #{ref_type} <a href=\""\
                  "#{project_url}/commits/#{URI.escape(ref)}\">#{ref}</a>"\
-                 " to <a href=\"#{project_url}\">"\
-                 "#{project_url}</a>\n"
+                 " to #{project_link}\n"
     elsif after.include?('000000')
-      message << "removed branch #{ref} from <a href=\"#{project.web_url}\">#{project.name_with_namespace.gsub!(/\s/,'')}</a> \n"
+      message << "removed #{ref_type} <b>#{ref}</b> from <a href=\"#{project.web_url}\">#{project_name}</a> \n"
     else
-      message << "pushed to branch <a href=\""\
+      message << "pushed to #{ref_type} <a href=\""\
                   "#{project.web_url}/commits/#{URI.escape(ref)}\">#{ref}</a> "
       message << "of <a href=\"#{project.web_url}\">#{project.name_with_namespace.gsub!(/\s/,'')}</a> "
       message << "(<a href=\"#{project.web_url}/compare/#{before}...#{after}\">Compare changes</a>)"
@@ -119,7 +125,7 @@ class HipchatService < Service
   end
 
   def create_issue_message(data)
-    username = data[:user][:username]
+    user_name = data[:user][:name]
 
     obj_attr = data[:object_attributes]
     obj_attr = HashWithIndifferentAccess.new(obj_attr)
@@ -129,8 +135,8 @@ class HipchatService < Service
     issue_url = obj_attr[:url]
     description = obj_attr[:description]
 
-    issue_link = "<a href=\"#{issue_url}\">##{issue_iid}</a>"
-    message = "#{username} #{state} issue #{issue_link} in #{project_link}: <b>#{title}</b>"
+    issue_link = "<a href=\"#{issue_url}\">issue ##{issue_iid}</a>"
+    message = "#{user_name} #{state} #{issue_link} in #{project_link}: <b>#{title}</b>"
 
     if description
       description = format_body(description)
@@ -141,7 +147,7 @@ class HipchatService < Service
   end
 
   def create_merge_request_message(data)
-    username = data[:user][:username]
+    user_name = data[:user][:name]
 
     obj_attr = data[:object_attributes]
     obj_attr = HashWithIndifferentAccess.new(obj_attr)
@@ -153,8 +159,8 @@ class HipchatService < Service
     title = obj_attr[:title]
 
     merge_request_url = "#{project_url}/merge_requests/#{merge_request_id}"
-    merge_request_link = "<a href=\"#{merge_request_url}\">##{merge_request_id}</a>"
-    message = "#{username} #{state} merge request #{merge_request_link} in " \
+    merge_request_link = "<a href=\"#{merge_request_url}\">merge request ##{merge_request_id}</a>"
+    message = "#{user_name} #{state} #{merge_request_link} in " \
       "#{project_link}: <b>#{title}</b>"
 
     if description
@@ -171,7 +177,7 @@ class HipchatService < Service
 
   def create_note_message(data)
     data = HashWithIndifferentAccess.new(data)
-    username = data[:user][:username]
+    user_name = data[:user][:name]
 
     repo_attr = HashWithIndifferentAccess.new(data[:repository])
 
@@ -208,7 +214,7 @@ class HipchatService < Service
     end
 
     subject_html = "<a href=\"#{note_url}\">#{subject_type} #{subject_desc}</a>"
-    message = "#{username} commented on #{subject_html} in #{project_link}: "
+    message = "#{user_name} commented on #{subject_html} in #{project_link}: "
     message << title
 
     if note

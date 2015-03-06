@@ -1,8 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.9.0 (unreleased)
-  - Added comment notification events to HipChat and Slack services (Stan Hu)
-  - Added issue and merge request events to HipChat and Slack services (Stan Hu)
+  - Add tag push notifications and normalize HipChat and Slack messages to be consistent (Stan Hu)
+  - Add comment notification events to HipChat and Slack services (Stan Hu)
+  - Add issue and merge request events to HipChat and Slack services (Stan Hu)
   - Fix merge request URL passed to Webhooks. (Stan Hu)
   - Fix bug that caused a server error when editing a comment to "+1" or "-1" (Stan Hu)
   - Move labels/milestones tabs to sidebar
@@ -35,7 +36,6 @@ v 7.8.2
   - Fix response of push to repository to return "Not found" if user doesn't have access
   - Fix check if user is allowed to view the file attachment
   - Fix import check for case sensetive namespaces
-  - Added issue and merge request events to Slack service (Stan Hu)
   - Increase timeout for Git-over-HTTP requests to 1 hour since large pulls/pushes can take a long time.
 
 v 7.8.1

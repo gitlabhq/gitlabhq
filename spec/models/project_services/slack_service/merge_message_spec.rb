@@ -6,13 +6,14 @@ describe SlackService::MergeMessage do
   let(:args) {
     {
       user: {
-        username: 'username'
+          name: 'Test User',
+          username: 'Test User'
       },
       project_name: 'project_name',
       project_url: 'somewhere.com',
 
       object_attributes: {
-        title: 'Issue title',
+        title: "Issue title\nSecond line",
         id: 10,
         iid: 100,
         assignee_id: 1,
@@ -30,8 +31,8 @@ describe SlackService::MergeMessage do
   context 'open' do
     it 'returns a message regarding opening of merge requests' do
       expect(subject.pretext).to eq(
-        'username opened merge request <somewhere.com/merge_requests/100|#100> '\
-        'in <somewhere.com|project_name>')
+        'Test User opened <somewhere.com/merge_requests/100|merge request #100> '\
+        'in <somewhere.com|project_name>: *Issue title*')
       expect(subject.attachments).to be_empty
     end
   end
@@ -42,8 +43,8 @@ describe SlackService::MergeMessage do
     end
     it 'returns a message regarding closing of merge requests' do
       expect(subject.pretext).to eq(
-        'username closed merge request <somewhere.com/merge_requests/100|#100> '\
-        'in <somewhere.com|project_name>')
+        'Test User closed <somewhere.com/merge_requests/100|merge request #100> '\
+        'in <somewhere.com|project_name>: *Issue title*')
       expect(subject.attachments).to be_empty
     end
   end
