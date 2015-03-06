@@ -3,19 +3,17 @@ class Import::BaseController < ApplicationController
   private
 
   def get_or_create_namespace
-    existing_namespace = Namespace.find_by_path_or_name(@target_namespace)
-
-    if existing_namespace
-      if existing_namespace.owner == current_user
-        namespace = existing_namespace
-      else
+    begin
+      namespace = Group.create!(name: @target_namespace, path: @target_namespace, owner: current_user)
+      namespace.add_owner(current_user)
+    rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
+      namespace = Namespace.find_by_path_or_name(@target_namespace)
+      unless namespace.owner == current_user
         @already_been_taken = true
         return false
       end
-    else
-      namespace = Group.create(name: @target_namespace, path: @target_namespace, owner: current_user)
-      namespace.add_owner(current_user)
-      namespace
     end
+
+    namespace
   end
 end
