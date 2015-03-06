@@ -60,10 +60,6 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   step 'I edit code' do
     set_new_content
   end
-  
-  step 'I begin to replace file' do
-    execute_script("editor.setValue('#{new_gitignore_content}')") 
-  end
 
   step 'I fill the new file name' do
     fill_in :file_name, with: new_file_name
@@ -93,12 +89,12 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     click_button 'Remove file'
   end
 
-  step 'I click on "Replace"' do
-    click_button 'Replace'
+  step 'I click button "Replace"' do
+    click_link  'Replace'
   end
   
-  step 'I click on "Replace file"' do
-    click_button 'Replace file'
+  step 'I click button "Replace file"' do
+    click_link  'Replace file'
   end
   
   step 'I see diff' do
