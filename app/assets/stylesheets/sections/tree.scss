@@ -39,11 +39,6 @@
     .tree-item-file-name {
       max-width: 320px;
       vertical-align: middle;
-      a {
-        &:hover {
-          color: $link_hover_color;
-        }
-      }
 
       i {
         color: $gl-primary;
