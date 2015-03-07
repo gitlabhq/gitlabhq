@@ -425,7 +425,8 @@ describe API::API, api: true  do
   describe 'POST /projects/:id/snippets' do
     it 'should create a new project snippet' do
       post api("/projects/#{project.id}/snippets", user),
-        title: 'api test', file_name: 'sample.rb', code: 'test'
+        title: 'api test', file_name: 'sample.rb', code: 'test',
+        visibility_level: '0'
       expect(response.status).to eq(201)
       expect(json_response['title']).to eq('api test')
     end

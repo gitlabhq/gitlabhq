@@ -1,5 +1,5 @@
 module Projects
-  class CreateService < Projects::BaseService
+  class CreateService < BaseService
     def initialize(user, params)
       @current_user, @params = user, params.dup
     end

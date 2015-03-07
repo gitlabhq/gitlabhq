@@ -1,5 +1,5 @@
 module Projects
-  class UpdateService < Projects::BaseService
+  class UpdateService < BaseService
     def execute
       # check that user is allowed to set specified visibility_level
       new_visibility = params[:visibility_level]
