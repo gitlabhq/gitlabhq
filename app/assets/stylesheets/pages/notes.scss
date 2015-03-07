@@ -40,7 +40,7 @@ ul.notes {
       font-weight: bold;
       font-size: 14px;
       &:hover {
-        color: $link_color;
+        color: $gl-link-color;
       }
     }
     .author-username {
@@ -70,7 +70,7 @@ ul.notes {
         a[href*="/uploads/"] {
           &:before {
             margin-right: 4px;
-            
+
             font: normal normal normal 14px/1 FontAwesome;
             font-size: inherit;
             text-rendering: auto;
@@ -153,7 +153,6 @@ ul.notes {
       @extend .cgray;
 
       &:hover {
-        color: $link_hover_color;
         &.danger { @extend .cred; }
       }
     }
@@ -181,7 +180,7 @@ ul.notes {
     background: #FFF;
     padding: 4px;
     font-size: 16px;
-    color: $link_color;
+    color: $gl-link-color;
     margin-left: -60px;
     position: absolute;
     z-index: 10;
@@ -194,7 +193,7 @@ ul.notes {
 
     &:hover {
       font-size: 24px;
-      background: $bg_primary;
+      background: $gl-primary;
       color: #FFF;
       @include show-add-diff-note;
     }

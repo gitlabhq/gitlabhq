@@ -35,7 +35,7 @@
         Users (#{@users.total_count})
         .panel-head-actions
           .dropdown.inline
-            %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+            %a.dropdown-toggle.btn.btn-sm{href: '#', "data-toggle" => "dropdown"}
               %span.light sort:
               - if @sort.present?
                 = sort_options_hash[@sort]
@@ -59,7 +59,7 @@
                 = link_to admin_users_path(sort: sort_value_oldest_updated) do
                   = sort_title_oldest_updated
 
-          = link_to 'New User', new_admin_user_path, class: "btn btn-new"
+          = link_to 'New User', new_admin_user_path, class: "btn btn-new btn-sm"
       %ul.well-list
         - @users.each do |user|
           %li

@@ -4,7 +4,7 @@
     projects:
     - if can? current_user, :manage_group, @group
       .panel-head-actions
-        = link_to new_project_path(namespace_id: @group.id), class: "btn btn-new" do
+        = link_to new_project_path(namespace_id: @group.id), class: "btn btn-sm btn-success" do
           %i.fa.fa-plus
           New Project
   %ul.well-list

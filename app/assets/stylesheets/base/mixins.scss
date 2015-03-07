@@ -121,14 +121,6 @@
   }
 }
 
-@mixin page-title {
-  color: #333;
-  line-height: 1.5;
-  font-weight: normal;
-  margin-top: 0px;
-  margin-bottom: 10px;
-}
-
 @mixin str-truncated($max_width: 82%) {
   display: inline-block;
   overflow: hidden;
@@ -136,15 +128,4 @@
   vertical-align: top;
   white-space: nowrap;
   max-width: $max_width;
-}
-
-@mixin panel-colored {
-  border: 1px solid #EEE;
-  background: $box_bg;
-  @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.09));
-
-  .panel-heading {
-    font-weight: bold;
-    background-color: $box_bg;
-  }
 }

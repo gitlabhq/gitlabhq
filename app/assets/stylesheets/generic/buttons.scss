@@ -6,12 +6,10 @@
   }
 
   &.btn-create {
-    @extend .wide;
     @extend .btn-success;
   }
 
   &.btn-save {
-    @extend .wide;
     @extend .btn-primary;
   }
 
@@ -21,11 +19,6 @@
 
   &.btn-cancel {
     float: right;
-  }
-
-  &.wide {
-    padding-left: 20px;
-    padding-right: 20px;
   }
 
   &.btn-small {
@@ -41,16 +34,16 @@
   }
 
   &.btn-close {
-    color: $bg_danger;
-    border-color: $border_danger;
+    color: $gl-danger;
+    border-color: $gl-danger;
     &:hover {
       color: #B94A48;
     }
   }
 
   &.btn-reopen {
-    color: $bg_success;
-    border-color: $border_success;
+    color: $gl-success;
+    border-color: $gl-success;
     &:hover {
       color: #468847;
     }

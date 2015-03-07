@@ -61,7 +61,7 @@ pre {
 
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus {
-  background: $bg_primary;
+  background: $gl-primary;
   color: #FFF
 }
 
@@ -71,7 +71,7 @@ pre {
 
 /** FLASH message **/
 .author_link {
-  color: $link_color;
+  color: $gl-link-color;
 }
 
 .help li { color:$style_color; }

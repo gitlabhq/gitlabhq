@@ -99,25 +99,6 @@
     margin-right: 45px;
   }
 
-  .btn,
-  .form-control {
-    border: 1px solid #E1E1E1;
-    box-shadow: none;
-    padding: 6px 9px;
-  }
-
-  .btn {
-    background: none;
-    color: $link_color;
-
-    &.active {
-      background-color: #f5f5f5;
-      border: 1px solid rgba(0,0,0,0.195);
-      color: #333;
-      font-weight: bold;
-    }
-  }
-
   .form-control {
     cursor: auto;
     @extend .monospace;
@@ -267,15 +248,15 @@ ul.nav.nav-projects-tabs {
 }
 
 .vs-public {
-  color: $bg_primary;
+  color: $gl-primary;
 }
 
 .vs-internal {
-  color: $bg_warning;
+  color: $gl-warning;
 }
 
 .vs-private {
-  color: $bg_success;
+  color: $gl-success;
 }
 
 .breadcrumb.repo-breadcrumb {

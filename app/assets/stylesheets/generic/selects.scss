@@ -3,10 +3,11 @@
   .select2-choice {
     background: #FFF;
     border-color: #BBB;
-    padding: 6px 12px;
+    padding: 6px 14px;
     font-size: 13px;
     line-height: 18px;
     height: auto;
+    margin: 2px 0;
 
     .select2-arrow {
       background: #FFF;
@@ -20,7 +21,7 @@
 }
 
 .select2-container-multi .select2-choices .select2-search-field input {
-  padding: 6px 12px;
+  padding: 8px 14px;
   font-size: 13px;
   line-height: 18px;
   height: auto;
@@ -42,7 +43,7 @@
   .select2-results {
     max-height: 350px;
     .select2-highlighted {
-      background: $bg_primary;
+      background: $gl-primary;
     }
   }
 }

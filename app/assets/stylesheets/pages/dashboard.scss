@@ -31,11 +31,8 @@
   li {
     &.active {
       a {
-        background-color: #EEE;
-        border-bottom: 1px solid #EEE !important;
-        &:hover {
-          background: #eee;
-        }
+        background-color: whitesmoke !important;
+        border-bottom: 1px solid whitesmoke !important;
       }
     }
 
@@ -111,8 +108,8 @@
 }
 
 .dash-new-project {
-  background: $bg_success;
-  border: 1px solid $border_success;
+  background: $gl-success;
+  border: 1px solid $gl-success;
 
   a {
     color: #FFF;
@@ -120,8 +117,8 @@
 }
 
 .dash-new-group {
-  background: $bg_success;
-  border: 1px solid $border_success;
+  background: $gl-success;
+  border: 1px solid $gl-success;
 
   a {
     color: #FFF;
