@@ -189,3 +189,11 @@
     }
   }
 }
+
+.alert {
+  a {
+    @extend .alert-link;
+    color: #fff;
+    text-decoration: underline;
+  }
+}
