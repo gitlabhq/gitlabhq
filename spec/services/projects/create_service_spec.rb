@@ -55,6 +55,33 @@ describe Projects::CreateService do
         it { expect(File.exists?(@path)).to be_falsey }
       end
     end
+
+    context 'restricted visibility level' do
+      before do
+        allow_any_instance_of(ApplicationSetting).to(
+          receive(:restricted_visibility_levels).and_return([20])
+        )
+
+        @opts.merge!(
+          visibility_level: Gitlab::VisibilityLevel.options['Public']
+        )
+      end
+
+      it 'should not allow a restricted visibility level for non-admins' do
+        project = create_project(@user, @opts)
+        expect(project).to respond_to(:errors)
+        expect(project.errors.messages).to have_key(:visibility_level)
+        expect(project.errors.messages[:visibility_level].first).to(
+          match('restricted by your GitLab administrator')
+        )
+      end
+
+      it 'should allow a restricted visibility level for admins' do
+        project = create_project(@admin, @opts)
+        expect(project.errors.any?).to be(false)
+        expect(project.saved?).to be(true)
+      end
+    end
   end
 
   def create_project(user, opts)

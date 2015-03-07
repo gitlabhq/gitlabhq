@@ -233,10 +233,10 @@ module API
         ::Projects::UpdateService.new(user_project,
                                       current_user, attrs).execute
 
-        if user_project.valid?
-          present user_project, with: Entities::Project
-        else
+        if user_project.errors.any?
           render_validation_error!(user_project)
+        else
+          present user_project, with: Entities::Project
         end
       end
 

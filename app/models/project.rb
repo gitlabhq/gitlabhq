@@ -34,8 +34,6 @@ require 'file_size_validator'
 
 class Project < ActiveRecord::Base
   include Sortable
-  include Gitlab::CurrentSettings
-  extend Gitlab::CurrentSettings
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
   include Gitlab::ConfigHelper
@@ -133,9 +131,6 @@ class Project < ActiveRecord::Base
               message: Gitlab::Regex.path_regex_message }
   validates :issues_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }
-  validates :visibility_level,
-    exclusion: { in: current_application_settings.restricted_visibility_levels },
-    if: -> { current_application_settings.restricted_visibility_levels.any? }
   validates :issues_tracker_id, length: { maximum: 255 }, allow_blank: true
   validates :namespace, presence: true
   validates_uniqueness_of :name, scope: :namespace_id

@@ -3,6 +3,7 @@ require 'spec_helper'
 
 describe API::API, api: true  do
   include ApiHelpers
+  include Gitlab::CurrentSettings
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
@@ -201,6 +202,31 @@ describe API::API, api: true  do
       post api('/projects', user), project
       expect(json_response['public']).to be_falsey
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
+    end
+
+    context 'when a visibility level is restricted' do
+      before do
+        @project = attributes_for(:project, { public: true })
+        allow_any_instance_of(ApplicationSetting).to(
+          receive(:restricted_visibility_levels).and_return([20])
+        )
+      end
+
+      it 'should not allow a non-admin to use a restricted visibility level' do
+        post api('/projects', user), @project
+        expect(response.status).to eq(400)
+        expect(json_response['message']['visibility_level'].first).to(
+          match('restricted by your GitLab administrator')
+        )
+      end
+
+      it 'should allow an admin to override restricted visibility settings' do
+        post api('/projects', admin), @project
+        expect(json_response['public']).to be_truthy
+        expect(json_response['visibility_level']).to(
+          eq(Gitlab::VisibilityLevel::PUBLIC)
+        )
+      end
     end
   end
 

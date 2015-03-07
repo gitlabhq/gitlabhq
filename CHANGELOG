@@ -11,6 +11,7 @@ v 7.9.0 (unreleased)
   - Improve error messages for file edit failures
   - Improve UI for commits, issues and merge request lists
   - Fix commit comments on first line of diff not rendering in Merge Request Discussion view.
+  - Allow admins to override restricted project visibility settings.
   - Move restricted visibility settings from gitlab.yml into the web UI.
   - Improve trigger merge request hook when source project branch has been updated (Kirill Zaitsev)
   - Save web edit in new branch
