@@ -82,8 +82,14 @@ module MergeRequests
       merge_requests = filter_merge_requests(merge_requests)
 
       merge_requests.each do |merge_request|
+        mr_commit_ids = Set.new(merge_request.commits.map(&:id))
+
+        new_commits, existing_commits = @commits.partition do |commit|
+          mr_commit_ids.include?(commit.id)
+        end
+
         Note.create_new_commits_note(merge_request, merge_request.project,
-                                     @current_user, @commits)
+                                     @current_user, new_commits, existing_commits)
       end
     end
 
