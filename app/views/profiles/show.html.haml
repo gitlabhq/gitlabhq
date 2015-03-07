@@ -89,7 +89,7 @@
               = link_to 'Remove avatar', profile_avatar_path, data: { confirm: "Avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-small remove-avatar"
 
       - if @user.public_profile?
-        .bs-callout.bs-callout-info
+        .alert.alert-info
           %h4 Public profile
           %p Your profile is publicly visible because you joined public project(s)
 
