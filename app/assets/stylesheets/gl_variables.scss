@@ -617,7 +617,7 @@ $font-size-base:          $gl-font-size;
 //## Define alert colors, border radius, and padding.
 
 // $alert-padding:               15px
-// $alert-border-radius:         $border-radius-base
+$alert-border-radius:            0;
 // $alert-link-font-weight:      bold
 
 // $alert-success-bg:            $state-success-bg
@@ -702,7 +702,7 @@ $font-size-base:          $gl-font-size;
 // $panel-body-padding:          15px
 // $panel-heading-padding:       10px 15px
 // $panel-footer-padding:        $panel-heading-padding
-// $panel-border-radius:         $border-radius-base
+$panel-border-radius:            0;
 
 //** Border color for elements within panels
 // $panel-inner-border:          #ddd

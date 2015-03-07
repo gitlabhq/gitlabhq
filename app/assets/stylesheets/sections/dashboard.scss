@@ -31,11 +31,8 @@
   li {
     &.active {
       a {
-        background-color: #EEE;
-        border-bottom: 1px solid #EEE !important;
-        &:hover {
-          background: #eee;
-        }
+        background-color: whitesmoke !important;
+        border-bottom: 1px solid whitesmoke !important;
       }
     }
 
