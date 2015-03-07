@@ -444,21 +444,21 @@ $font-size-base:          $gl-font-size;
 //
 //##
 
-// $pagination-color:                     $link-color
-// $pagination-bg:                        #fff
-// $pagination-border:                    #ddd
+$pagination-color:                     #fff;
+$pagination-bg:                        $brand-success;
+$pagination-border:                    transparent;
 
-// $pagination-hover-color:               $link-hover-color
-// $pagination-hover-bg:                  $gray-lighter
-// $pagination-hover-border:              #ddd
+$pagination-hover-color:               #fff;
+$pagination-hover-bg:                  darken($brand-success, 15%);
+$pagination-hover-border:              transparent;
 
-// $pagination-active-color:              #fff
-// $pagination-active-bg:                 $brand-primary
-// $pagination-active-border:             $brand-primary
+$pagination-active-color:              #fff;
+$pagination-active-bg:                 darken($brand-success, 15%);
+$pagination-active-border:             transparent;
 
-// $pagination-disabled-color:            $gray-light
-// $pagination-disabled-bg:               #fff
-// $pagination-disabled-border:           #ddd
+$pagination-disabled-color:            #b4bcc2;
+$pagination-disabled-bg:               lighten($brand-success, 15%);
+$pagination-disabled-border:           transparent;
 
 
 //== Pager
@@ -492,21 +492,22 @@ $font-size-base:          $gl-font-size;
 //
 //## Define colors for form feedback states and, by default, alerts.
 
-// $state-success-text:             #3c763d
-// $state-success-bg:               #dff0d8
-// $state-success-border:           darken(adjust-hue($state-success-bg, -10), 5%)
 
-// $state-info-text:                #31708f
-// $state-info-bg:                  #d9edf7
-// $state-info-border:              darken(adjust-hue($state-info-bg, -10), 7%)
+$state-success-text:             #fff;
+$state-success-bg:               $brand-success;
+$state-success-border:           $brand-success;
 
-// $state-warning-text:             #8a6d3b
-// $state-warning-bg:               #fcf8e3
-// $state-warning-border:           darken(adjust-hue($state-warning-bg, -10), 5%)
+$state-info-text:                #fff;
+$state-info-bg:                  $brand-info;
+$state-info-border:              $brand-info;
 
-// $state-danger-text:              #a94442
-// $state-danger-bg:                #f2dede
-// $state-danger-border:            darken(adjust-hue($state-danger-bg, -10), 5%)
+$state-warning-text:             #fff;
+$state-warning-bg:               $brand-warning;
+$state-warning-border:           $brand-warning;
+
+$state-danger-text:              #fff;
+$state-danger-bg:                $brand-danger;
+$state-danger-border:            $brand-danger;
 
 
 //== Tooltips

@@ -1,8 +1,8 @@
 - if cookies[:hide_no_ssh_message].blank? && !current_user.hide_no_ssh_key && current_user.require_ssh_key?
   .no-ssh-key-message.alert.alert-warning.hidden-xs
-    You won't be able to pull or push project code via SSH until you #{link_to 'add an SSH key', new_profile_key_path} to your profile
+    You won't be able to pull or push project code via SSH until you #{link_to 'add an SSH key', new_profile_key_path, class: 'alert-link'} to your profile
 
     .pull-right
-      = link_to "Don't show again", profile_path(user: {hide_no_ssh_key: true}), method: :put
+      = link_to "Don't show again", profile_path(user: {hide_no_ssh_key: true}), method: :put, class: 'alert-link'
       |
-      = link_to 'Remind later', '#', class: 'hide-no-ssh-message'
+      = link_to 'Remind later', '#', class: 'hide-no-ssh-message alert-link'

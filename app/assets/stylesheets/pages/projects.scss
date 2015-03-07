@@ -101,21 +101,7 @@
 
   .btn,
   .form-control {
-    border: 1px solid #E1E1E1;
-    box-shadow: none;
     padding: 6px 9px;
-  }
-
-  .btn {
-    background: none;
-    color: $gl-link-color;
-
-    &.active {
-      background-color: #f5f5f5;
-      border: 1px solid rgba(0,0,0,0.195);
-      color: #333;
-      font-weight: bold;
-    }
   }
 
   .form-control {
