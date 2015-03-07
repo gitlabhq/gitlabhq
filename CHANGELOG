@@ -29,6 +29,7 @@ v 7.9.0 (unreleased)
   - Add Bitbucket importer.
   - Support referencing issues to a project whose name starts with a digit
   - Condense commits already in target branch when updating merge request source branch.
+  - Send notifications and leave system comments when bulk updating issues.
 
 v 7.8.2
   - Fix service migration issue when upgrading from versions prior to 7.3

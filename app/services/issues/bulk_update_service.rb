@@ -1,38 +1,23 @@
 module Issues
   class BulkUpdateService < BaseService
     def execute
-      update_data = params[:update]
+      issues_ids   = params.delete(:issues_ids).split(",")
+      issue_params = params
 
-      issues_ids   = update_data[:issues_ids].split(",")
-      milestone_id = update_data[:milestone_id]
-      assignee_id  = update_data[:assignee_id]
-      status       = update_data[:status]
-
-      new_state = nil
-
-      if status.present?
-        if status == 'closed'
-          new_state = :close
-        else
-          new_state = :reopen
-        end
-      end
-
-      opts = {}
-      opts[:milestone_id] = milestone_id if milestone_id.present?
-      opts[:assignee_id] = assignee_id if assignee_id.present?
+      issue_params.delete(:state_event) unless issue_params[:state_event].present?
+      issue_params.delete(:milestone_id) unless issue_params[:milestone_id].present?
+      issue_params.delete(:assignee_id) unless issue_params[:assignee_id].present?
 
       issues = Issue.where(id: issues_ids)
-      issues = issues.select { |issue| can?(current_user, :modify_issue, issue) }
-
       issues.each do |issue|
-        issue.update_attributes(opts)
-        issue.send new_state if new_state
+        next unless can?(current_user, :modify_issue, issue)
+
+        Issues::UpdateService.new(issue.project, current_user, issue_params).execute(issue)
       end
 
       {
-        count: issues.count,
-        success: !issues.count.zero?
+        count:    issues.count,
+        success:  !issues.count.zero?
       }
     end
   end
