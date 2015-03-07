@@ -1,15 +1,16 @@
 class SlackService
   class MergeMessage < BaseMessage
-    attr_reader :username
+    attr_reader :user_name
     attr_reader :project_name
     attr_reader :project_url
     attr_reader :merge_request_id
     attr_reader :source_branch
     attr_reader :target_branch
     attr_reader :state
+    attr_reader :title
 
     def initialize(params)
-      @username = params[:user][:username]
+      @user_name = params[:user][:name]
       @project_name = params[:project_name]
       @project_url = params[:project_url]
 
@@ -19,6 +20,7 @@ class SlackService
       @source_branch = obj_attr[:source_branch]
       @target_branch = obj_attr[:target_branch]
       @state = obj_attr[:state]
+      @title = format_title(obj_attr[:title])
     end
 
     def pretext
@@ -31,6 +33,10 @@ class SlackService
 
     private
 
+    def format_title(title)
+      '*' + title.lines.first.chomp + '*'
+    end
+
     def message
       merge_request_message
     end
@@ -40,11 +46,11 @@ class SlackService
     end
 
     def merge_request_message
-      "#{username} #{state} merge request #{merge_request_link} in #{project_link}"
+      "#{user_name} #{state} #{merge_request_link} in #{project_link}: #{title}"
     end
 
     def merge_request_link
-      "[##{merge_request_id}](#{merge_request_url})"
+      "[merge request ##{merge_request_id}](#{merge_request_url})"
     end
 
     def merge_request_url

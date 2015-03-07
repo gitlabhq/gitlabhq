@@ -44,7 +44,7 @@ class SlackService < Service
   end
 
   def supported_events
-    %w(push issue merge_request note)
+    %w(push issue merge_request note tag_push)
   end
 
   def execute(data)
@@ -64,7 +64,7 @@ class SlackService < Service
 
     message = \
       case object_kind
-      when "push"
+      when "push", "tag_push"
         PushMessage.new(data)
       when "issue"
         IssueMessage.new(data) unless is_update?(data)

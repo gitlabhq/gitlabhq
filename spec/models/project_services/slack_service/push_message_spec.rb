@@ -39,6 +39,26 @@ describe SlackService::PushMessage do
     end
   end
 
+  context 'tag push' do
+    let(:args) {
+      {
+          after: 'after',
+          before: '000000',
+          project_name: 'project_name',
+          ref: 'refs/tags/new_tag',
+          user_name: 'user_name',
+          project_url: 'url'
+      }
+    }
+
+    it 'returns a message regarding pushes' do
+      expect(subject.pretext).to eq('user_name pushed new tag ' \
+       '<url/commits/new_tag|new_tag> to ' \
+       '<url|project_name>')
+      expect(subject.attachments).to be_empty
+    end
+  end
+
   context 'new branch' do
     before do
       args[:before] = '000000'
