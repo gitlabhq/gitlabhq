@@ -4,15 +4,27 @@
  */
 
 $font-size-base: 13px !default;
-$nav-pills-active-link-hover-bg: $bg_primary;
-$pagination-active-bg: $bg_primary;
-$list-group-active-bg: $bg_primary;
+$nav-pills-active-link-hover-bg: $gl-primary;
+$pagination-active-bg: $gl-primary;
+$list-group-active-bg: $gl-primary;
 
-$brand-primary:         $bg_primary;
-$brand-success:         $bg_success;
-$brand-info:            #029ACF;
-$brand-warning:         $bg_warning;
-$brand-danger:          $bg_danger;
+$brand-primary:    $gl-primary;
+$brand-success:    $gl-success;
+$brand-info:       #029ACF;
+$brand-warning:    $gl-warning;
+$brand-danger:     $gl-danger;
+
+$state-primary-bg: lighten($gl-primary, 30%);
+$state-success-bg: lighten($gl-success, 10%);
+$state-info-bg:    lighten($gl-info, 30%);
+$state-warning-bg: lighten($gl-warning, 30%);
+$state-danger-bg:  lighten($gl-danger, 30%);
+
+$state-primary-txt: $gl-primary;
+$state-success-txt: $gl-success;
+$state-info-txt:    $gl-info;
+$state-warning-txt: $gl-warning;
+$state-danger-txt:  $gl-danger;
 
 // Core variables and mixins
 @import "bootstrap/variables";
@@ -226,31 +238,31 @@ $brand-danger:          $bg_danger;
 .panel-danger {
   @include panel-colored;
   .panel-heading {
-    color: $border_danger;
-    border-color: $border_danger;
+    color: $gl-danger;
+    border-color: $gl-danger;
   }
 }
 
 .panel-success {
   @include panel-colored;
   .panel-heading {
-    color: $border_success;
-    border-color: $border_success;
+    color: $gl-success;
+    border-color: $gl-success;
   }
 }
 
 .panel-primary {
   @include panel-colored;
   .panel-heading {
-    color: $border_primary;
-    border-color: $border_primary;
+    color: $gl-primary;
+    border-color: $gl-primary;
   }
 }
 
 .panel-warning {
   @include panel-colored;
   .panel-heading {
-    color: $border_warning;
-    border-color: $border_warning;
+    color: $gl-warning;
+    border-color: $gl-warning;
   }
 }

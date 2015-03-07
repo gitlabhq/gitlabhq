@@ -14,28 +14,13 @@ $link_hover_color: darken($link-color, 10%);
 $btn-border: 1px solid #ccc;
 
 /*
- * Success colors (green)
+ * State colors:
  */
-$border_success: #019875;
-$bg_success: #019875;
-
-/*
- * Danger colors (red)
- */
-$border_danger: #d43f3a;
-$bg_danger: #d9534f;
-
-/*
- * Primary colors (blue)
- */
-$border_primary: #446e9b;
-$bg_primary: #446e9b;
-
-/*
- * Warning colors (yellow)
- */
-$bg_warning: #EB9532;
-$border_warning: #EB9532;
+$gl-success: #019875;
+$gl-danger: #d9534f;
+$gl-primary: #446e9b;
+$gl-info: #029ACF;
+$gl-warning: #EB9532;
 
 /**
  * Commit Diff Colors

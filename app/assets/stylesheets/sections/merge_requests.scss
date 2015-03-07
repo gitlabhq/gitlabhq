@@ -136,8 +136,8 @@
     background-color: #F5F5F5;
 
     &.ci-success {
-      color: $bg_success;
-      border-color: $border_success;
+      color: $gl-success;
+      border-color: $gl-success;
       background-color: #F1FAF1;
     }
 
@@ -148,20 +148,20 @@
     }
 
     &.ci-running {
-      color: $bg_warning;
-      border-color: $border_warning;
+      color: $gl-warning;
+      border-color: $gl-warning;
       background-color: #FAF5F1;
     }
 
     &.ci-failed {
-      color: $bg_danger;
-      border-color: $border_danger;
+      color: $gl-danger;
+      border-color: $gl-danger;
       background-color: #FAF1F1;
     }
 
     &.ci-error {
-      color: $bg_danger;
-      border-color: $border_danger;
+      color: $gl-danger;
+      border-color: $gl-danger;
       background-color: #FAF1F1;
     }
   }

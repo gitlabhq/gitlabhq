@@ -194,7 +194,7 @@ ul.notes {
 
     &:hover {
       font-size: 24px;
-      background: $bg_primary;
+      background: $gl-primary;
       color: #FFF;
       @include show-add-diff-note;
     }

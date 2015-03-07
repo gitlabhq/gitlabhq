@@ -41,16 +41,16 @@
   }
 
   &.btn-close {
-    color: $bg_danger;
-    border-color: $border_danger;
+    color: $gl-danger;
+    border-color: $gl-danger;
     &:hover {
       color: #B94A48;
     }
   }
 
   &.btn-reopen {
-    color: $bg_success;
-    border-color: $border_success;
+    color: $gl-success;
+    border-color: $gl-success;
     &:hover {
       color: #468847;
     }
