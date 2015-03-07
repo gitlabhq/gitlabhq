@@ -19,8 +19,14 @@ $gl-primary: #446e9b;
 $gl-info: #029ACF;
 $gl-warning: #EB9532;
 
-/**
+/*
  * Commit Diff Colors
  */
 $added: #63c363;
 $deleted: #f77;
+
+/*
+ * Fonts
+ */
+$monospace_font: 'Menlo', 'Liberation Mono', 'Consolas', 'DejaVu Sans Mono', 'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console', monospace;
+$regular_font: "Helvetica Neue", Helvetica, Arial, sans-serif;
