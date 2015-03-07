@@ -6,12 +6,10 @@
   }
 
   &.btn-create {
-    @extend .wide;
     @extend .btn-success;
   }
 
   &.btn-save {
-    @extend .wide;
     @extend .btn-primary;
   }
 
@@ -21,11 +19,6 @@
 
   &.btn-cancel {
     float: right;
-  }
-
-  &.wide {
-    padding-left: 20px;
-    padding-right: 20px;
   }
 
   &.btn-small {

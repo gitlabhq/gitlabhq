@@ -44,7 +44,7 @@
         Projects (#{@projects.total_count})
         .panel-head-actions
           .dropdown.inline
-            %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
+            %button.dropdown-toggle.btn.btn-sm{type: 'button', 'data-toggle' => 'dropdown'}
               %span.light sort:
               - if @sort.present?
                 = sort_options_hash[@sort]
@@ -63,7 +63,7 @@
                   = sort_title_oldest_updated
                 = link_to admin_namespaces_projects_path(sort: sort_value_largest_repo) do
                   = sort_title_largest_repo
-          = link_to 'New Project', new_project_path, class: "btn btn-new"
+          = link_to 'New Project', new_project_path, class: "btn btn-sm btn-success"
       %ul.well-list
         - @projects.each do |project|
           %li
