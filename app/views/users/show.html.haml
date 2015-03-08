@@ -1,5 +1,7 @@
 .row
-  .col-md-8
+  = link_to '#aside', class: 'show-aside' do
+    %i.fa.fa-angle-left
+  %section.col-md-8
     %h3.page-title
       = image_tag avatar_icon(@user.email, 90), class: "avatar avatar-tile s90", alt: ''
       = @user.name
@@ -19,10 +21,11 @@
       = render 'groups', groups: @groups
       %hr
 
-    .user-calendar
-      %h4.center.light
-        %i.fa.fa-spinner.fa-spin
-    %hr
+    .hidden-xs
+      .user-calendar
+        %h4.center.light
+          %i.fa.fa-spinner.fa-spin
+      %hr
     %h4
       User Activity
 
@@ -33,7 +36,7 @@
               %i.fa.fa-rss
 
     = render @events
-  .col-md-4
+  %aside.col-md-4
     = render 'profile', user: @user
     = render 'projects'
 
