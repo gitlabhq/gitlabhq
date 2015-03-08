@@ -100,6 +100,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
                        @merge_request.target_project, @merge_request],
                       notice: 'Merge request was successfully updated.')
         end
+        format.json do
+          render json: {
+            saved: @merge_request.valid?,
+            assignee_avatar_url: @merge_request.assignee.try(:avatar_url)
+          }
+        end
       end
     else
       render "edit"
