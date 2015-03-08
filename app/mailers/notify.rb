@@ -34,6 +34,20 @@ class Notify < ActionMailer::Base
     )
   end
 
+  # Splits "gitlab.corp.company.com" up into "gitlab.corp.company.com",
+  # "corp.company.com" and "company.com".
+  # Respects set tld length so "company.co.uk" won't match "somethingelse.uk"
+  def self.allowed_email_domains
+    domain_parts = Gitlab.config.gitlab.host.split(".")
+    allowed_domains = []
+    begin
+      allowed_domains << domain_parts.join(".")
+      domain_parts.shift
+    end while domain_parts.length > ActionDispatch::Http::URL.tld_length
+
+    allowed_domains
+  end
+
   private
 
   # The default email address to send emails from
@@ -45,10 +59,16 @@ class Notify < ActionMailer::Base
 
   # Return an email address that displays the name of the sender.
   # Only the displayed name changes; the actual email address is always the same.
-  def sender(sender_id)
+  def sender(sender_id, send_from_user_email = false)
     if sender = User.find(sender_id)
       address = default_sender_address
       address.display_name = sender.name
+
+      sender_domain = sender.email.split("@").last
+      if send_from_user_email && self.class.allowed_email_domains.include?(sender_domain)
+        address.address = sender.email
+      end
+
       address.format
     end
   end

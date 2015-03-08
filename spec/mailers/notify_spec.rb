@@ -568,9 +568,10 @@ describe Notify do
     let(:user) { create(:user) }
     let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_image_commit.id, sample_commit.id) }
     let(:commits) { Commit.decorate(compare.commits) }
-    let(:diff_path) { namespace_project_compare_path(project.namespace, project, from: commits.first, to: commits.last) }
+    let(:diff_path) { namespace_project_compare_path(project.namespace, project, from: Commit.new(compare.base), to: Commit.new(compare.head)) }
+    let(:send_from_committer_email) { false }
 
-    subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'master', compare) }
+    subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'master', compare, false, send_from_committer_email) }
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
@@ -583,7 +584,7 @@ describe Notify do
     end
 
     it 'has the correct subject' do
-      is_expected.to have_subject /#{commits.length} new commits pushed to repository/
+      is_expected.to have_subject /\[#{project.path_with_namespace}\]\[master\] #{commits.length} commits:/
     end
 
     it 'includes commits list' do
@@ -596,6 +597,58 @@ describe Notify do
 
     it 'contains a link to the diff' do
       is_expected.to have_body_text /#{diff_path}/
+    end
+
+    it 'doesn not contain the misleading footer' do
+      is_expected.not_to have_body_text /you are a member of/
+    end
+
+    context "when set to send from committer email if domain matches" do
+
+      let(:send_from_committer_email) { true }
+
+      before do
+        allow(Gitlab.config.gitlab).to receive(:host).and_return("gitlab.corp.company.com")
+      end
+
+      context "when the committer email domain is within the GitLab domain" do
+
+        before do
+          user.update_attribute(:email, "user@company.com")
+          user.confirm!
+        end
+
+        it "is sent from the committer email" do
+          sender = subject.header[:from].addrs[0]
+          expect(sender.address).to eq(user.email)
+        end
+      end
+
+      context "when the committer email domain is not completely within the GitLab domain" do
+
+        before do
+          user.update_attribute(:email, "user@something.company.com")
+          user.confirm!
+        end
+
+        it "is sent from the default email" do
+          sender = subject.header[:from].addrs[0]
+          expect(sender.address).to eq(gitlab_sender)
+        end
+      end
+
+      context "when the committer email domain is outside the GitLab domain" do
+
+        before do
+          user.update_attribute(:email, "user@mpany.com")
+          user.confirm!
+        end
+
+        it "is sent from the default email" do
+          sender = subject.header[:from].addrs[0]
+          expect(sender.address).to eq(gitlab_sender)
+        end
+      end
     end
   end
 
