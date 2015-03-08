@@ -40,6 +40,7 @@ v 7.8.2
   - Fix check if user is allowed to view the file attachment
   - Fix import check for case sensetive namespaces
   - Increase timeout for Git-over-HTTP requests to 1 hour since large pulls/pushes can take a long time.
+  - Properly handle autosave local storage exceptions.
 
 v 7.8.1
   - Fix run of custom post receive hooks
