@@ -9,6 +9,7 @@ describe GitlabMarkdownHelper do
 
   let(:user)          { create(:user, username: 'gfm') }
   let(:commit)        { project.repository.commit }
+  let(:earlier_commit){ project.repository.commit("HEAD~2") }
   let(:issue)         { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:snippet)       { create(:project_snippet, project: project) }
@@ -51,6 +52,53 @@ describe GitlabMarkdownHelper do
     it "should forward HTML options to links" do
       expect(gfm("Fixed in #{commit.id}", @project, class: 'foo')).
           to have_selector('a.gfm.foo')
+    end
+
+    describe "referencing a commit range" do
+      let(:expected) { namespace_project_compare_path(project.namespace, project, from: earlier_commit.id, to: commit.id) }
+
+      it "should link using a full id" do
+        actual = "What happened in #{earlier_commit.id}...#{commit.id}"
+        expect(gfm(actual)).to match(expected)
+      end
+
+      it "should link using a short id" do
+        actual = "What happened in #{earlier_commit.short_id}...#{commit.short_id}"
+        expected = namespace_project_compare_path(project.namespace, project, from: earlier_commit.short_id, to: commit.short_id)
+        expect(gfm(actual)).to match(expected)
+      end
+
+      it "should link inclusively" do
+        actual = "What happened in #{earlier_commit.id}..#{commit.id}"
+        expected = namespace_project_compare_path(project.namespace, project, from: "#{earlier_commit.id}^", to: commit.id)
+        expect(gfm(actual)).to match(expected)
+      end
+
+      it "should link with adjacent text" do
+        actual = "(see #{earlier_commit.id}...#{commit.id})"
+        expect(gfm(actual)).to match(expected)
+      end
+
+      it "should keep whitespace intact" do
+        actual   = "Changes #{earlier_commit.id}...#{commit.id} dramatically"
+        expected = /Changes <a.+>#{earlier_commit.id}...#{commit.id}<\/a> dramatically/
+        expect(gfm(actual)).to match(expected)
+      end
+
+      it "should not link with an invalid id" do
+        actual = expected = "What happened in #{earlier_commit.id.reverse}...#{commit.id.reverse}"
+        expect(gfm(actual)).to eq(expected)
+      end
+
+      it "should include a title attribute" do
+        actual = "What happened in #{earlier_commit.id}...#{commit.id}"
+        expect(gfm(actual)).to match(/title="Commits #{earlier_commit.id} through #{commit.id}"/)
+      end
+
+      it "should include standard gfm classes" do
+        actual = "What happened in #{earlier_commit.id}...#{commit.id}"
+        expect(gfm(actual)).to match(/class="\s?gfm gfm-commit_range\s?"/)
+      end
     end
 
     describe "referencing a commit" do

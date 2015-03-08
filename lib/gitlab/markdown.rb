@@ -14,6 +14,7 @@ module Gitlab
   #   * !123 for merge requests
   #   * $123 for snippets
   #   * 123456 for commits
+  #   * 123456...7890123 for commit ranges (comparisons)
   #
   # It also parses Emoji codes to insert images. See
   # http://www.emoji-cheat-sheet.com/ for a list of the supported icons.
@@ -133,13 +134,14 @@ module Gitlab
         |#{PROJ_STR}?\#(?<issue>([a-zA-Z\-]+-)?\d+) # Issue ID
         |#{PROJ_STR}?!(?<merge_request>\d+)  # MR ID
         |\$(?<snippet>\d+)                   # Snippet ID
+        |(#{PROJ_STR}@)?(?<commit_range>[\h]{6,40}\.{2,3}[\h]{6,40}) # Commit range
         |(#{PROJ_STR}@)?(?<commit>[\h]{6,40}) # Commit ID
         |(?<skip>gfm-extraction-[\h]{6,40})  # Skip gfm extractions. Otherwise will be parsed as commit
       )
       (?<suffix>\W)?                         # Suffix
     }x.freeze
 
-    TYPES = [:user, :issue, :label, :merge_request, :snippet, :commit].freeze
+    TYPES = [:user, :issue, :label, :merge_request, :snippet, :commit, :commit_range].freeze
 
     def parse_references(text, project = @project)
       # parse reference links
@@ -285,6 +287,30 @@ module Gitlab
         link_to(
           "#{prefix_text}#{identifier}",
           namespace_project_commit_url(project.namespace, project, commit),
+          options
+        )
+      end
+    end
+
+    def reference_commit_range(identifier, project = @project, prefix_text = nil)
+      from_id, to_id = identifier.split(/\.{2,3}/, 2)
+
+      inclusive = identifier !~ /\.{3}/
+      from_id << "^" if inclusive
+
+      if project.valid_repo? && 
+          from = project.repository.commit(from_id) && 
+          to = project.repository.commit(to_id)
+
+        options = html_options.merge(
+          title: "Commits #{from_id} through #{to_id}",
+          class: "gfm gfm-commit_range #{html_options[:class]}"
+        )
+        prefix_text = "#{prefix_text}@" if prefix_text
+
+        link_to(
+          "#{prefix_text}#{identifier}",
+          namespace_project_compare_url(project.namespace, project, from: from_id, to: to_id),
           options
         )
       end
