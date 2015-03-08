@@ -21,6 +21,8 @@
       = link_to 'Alerts', '#alerts'
     %li
       = link_to 'Forms', '#forms'
+    %li
+      = link_to 'Markdown', '#markdown'
 
   %h2#blocks Blocks
 
@@ -190,3 +192,17 @@
         %input{:type => "checkbox"}/
         Remember me
     %button.btn.btn-default{:type => "submit"} Sign in
+
+  %h2#markdown Markdown
+  %h3
+    %code .md or .wiki and others
+
+  Markdown rendering has a bit different css and presented in next UI elements:
+
+  %ul
+    %li comment
+    %li issue, merge request description
+    %li wiki page
+    %li help page
+
+  You can check how markdown rendered at #{link_to 'Markdown help page', help_page_path("markdown", "markdown")}.
