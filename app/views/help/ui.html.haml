@@ -1,0 +1,208 @@
+- lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed fermentum nisi sapien, non consequat lectus aliquam ultrices. Suspendisse sodales est euismod nunc condimentum, a consectetur diam ornare."
+
+.gitlab-ui-dev-kit
+  %h1 GitLab UI development kit
+  %p.light
+    Use page inspector in your browser to check element classes and structure
+    of examples below.
+  %hr
+  %ul
+    %li
+      = link_to 'Blocks', '#blocks'
+    %li
+      = link_to 'Lists', '#lists'
+    %li
+      = link_to 'Tables', '#tables'
+    %li
+      = link_to 'Buttons', '#buttons'
+    %li
+      = link_to 'Panels', '#panels'
+    %li
+      = link_to 'Alerts', '#alerts'
+    %li
+      = link_to 'Forms', '#forms'
+    %li
+      = link_to 'Markdown', '#markdown'
+
+  %h2#blocks Blocks
+
+  %h3
+    %code .well
+
+
+  .well
+    %h4 Something
+    = lorem
+
+
+  %h2#lists Lists
+
+  %h3
+    %code .well-list
+  %ul.well-list
+    %li
+      One item
+    %li
+      One item
+    %li
+      One item
+
+  %h3
+    %code .panel .well-list
+
+  .panel.panel-default
+    .panel-heading My list
+    %ul.well-list
+      %li
+        One item
+      %li
+        One item
+      %li
+        One item
+
+  %h3
+    %code .bordered-list
+  %ul.bordered-list
+    %li
+      One item
+    %li
+      One item
+    %li
+      One item
+
+
+
+  %h2#tables Tables
+
+  .example
+    %table.table
+      %thead
+        %tr
+          %th #
+          %th First Name
+          %th Last Name
+          %th Username
+      %tbody
+        %tr
+          %td 1
+          %td Mark
+          %td Otto
+          %td @mdo
+        %tr
+          %td 2
+          %td Jacob
+          %td Thornton
+          %td @fat
+        %tr
+          %td 3
+          %td Larry
+          %td the Bird
+          %td @twitter
+
+
+  %h2#buttons Buttons
+
+  .example
+    %button.btn.btn-default{:type => "button"} Default
+    %button.btn.btn-primary{:type => "button"} Primary
+    %button.btn.btn-success{:type => "button"} Success
+    %button.btn.btn-info{:type => "button"} Info
+    %button.btn.btn-warning{:type => "button"} Warning
+    %button.btn.btn-danger{:type => "button"} Danger
+    %button.btn.btn-link{:type => "button"} Link
+
+  %h2#panels Panels
+
+  .row
+    .col-md-6
+      .panel.panel-success
+        .panel-heading Success
+        .panel-body
+          = lorem
+      .panel.panel-primary
+        .panel-heading Primary
+        .panel-body
+          = lorem
+      .panel.panel-info
+        .panel-heading Info
+        .panel-body
+          = lorem
+    .col-md-6
+      .panel.panel-warning
+        .panel-heading Warning
+        .panel-body
+          = lorem
+      .panel.panel-danger
+        .panel-heading Danger
+        .panel-body
+          = lorem
+
+  %h2#alert Alerts
+
+  .row
+    .col-md-6
+      .alert.alert-success
+        = lorem
+      .alert.alert-primary
+        = lorem
+      .alert.alert-info
+        = lorem
+    .col-md-6
+      .alert.alert-warning
+        = lorem
+      .alert.alert-danger
+        = lorem
+
+  %h2#forms Forms
+
+  %h3
+    %code form.horizontal-form
+
+  %form.form-horizontal
+    .form-group
+      %label.col-sm-2.control-label{:for => "inputEmail3"} Email
+      .col-sm-10
+        %input#inputEmail3.form-control{:placeholder => "Email", :type => "email"}/
+    .form-group
+      %label.col-sm-2.control-label{:for => "inputPassword3"} Password
+      .col-sm-10
+        %input#inputPassword3.form-control{:placeholder => "Password", :type => "password"}/
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          %label
+            %input{:type => "checkbox"}/
+            Remember me
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        %button.btn.btn-default{:type => "submit"} Sign in
+
+  %h3
+    %code form
+
+  %form
+    .form-group
+      %label{:for => "exampleInputEmail1"} Email address
+      %input#exampleInputEmail1.form-control{:placeholder => "Enter email", :type => "email"}/
+    .form-group
+      %label{:for => "exampleInputPassword1"} Password
+      %input#exampleInputPassword1.form-control{:placeholder => "Password", :type => "password"}/
+    .checkbox
+      %label
+        %input{:type => "checkbox"}/
+        Remember me
+    %button.btn.btn-default{:type => "submit"} Sign in
+
+  %h2#markdown Markdown
+  %h3
+    %code .md or .wiki and others
+
+  Markdown rendering has a bit different css and presented in next UI elements:
+
+  %ul
+    %li comment
+    %li issue, merge request description
+    %li wiki page
+    %li help page
+
+  You can check how markdown rendered at #{link_to 'Markdown help page', help_page_path("markdown", "markdown")}.

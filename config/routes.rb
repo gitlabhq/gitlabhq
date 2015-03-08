@@ -7,9 +7,8 @@ Gitlab::Application.routes.draw do
                 authorized_applications: 'oauth/authorized_applications',
                 authorizations: 'oauth/authorizations'
   end
-  #
+
   # Search
-  #
   get 'search' => 'search#show'
   get 'search/autocomplete' => 'search#autocomplete', as: :search_autocomplete
 
@@ -33,13 +32,11 @@ Gitlab::Application.routes.draw do
     receive_pack: Gitlab.config.gitlab_shell.receive_pack
   }), at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post]
 
-  #
   # Help
-  #
-
   get 'help'                  => 'help#index'
   get 'help/:category/:file'  => 'help#show', as: :help_page
   get 'help/shortcuts'
+  get 'help/ui'               => 'help#ui'
 
   #
   # Global snippets
@@ -73,7 +70,7 @@ Gitlab::Application.routes.draw do
       get :callback
       get :jobs
     end
-    
+
     resource :gitorious, only: [:create, :new], controller: :gitorious do
       get :status
       get :callback
