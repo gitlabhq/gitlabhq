@@ -52,4 +52,12 @@ describe "Dashboard access", feature: true  do
     it { expect(new_group_path).to be_allowed_for :user }
     it { expect(new_group_path).to be_denied_for :visitor }
   end
+
+  describe "GET /profile/groups" do
+    subject { dashboard_groups_path }
+
+    it { is_expected.to be_allowed_for :admin }
+    it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_denied_for :visitor }
+  end
 end
