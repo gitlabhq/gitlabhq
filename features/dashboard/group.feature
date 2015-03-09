@@ -1,5 +1,5 @@
 @dashboard
-Feature: Profile Group
+Feature: Dashboard Group
   Background:
     Given I sign in as "John Doe"
     And "John Doe" is owner of group "Owned"
