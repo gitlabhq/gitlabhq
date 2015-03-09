@@ -58,7 +58,7 @@ GitLab.com will generate an application ID and secret key for you to use.
           "name" => "gitlab",
           "app_id" => "YOUR_APP_ID",
           "app_secret" => "YOUR_APP_SECRET",
-          "args" => { "scope" => "api" } }
+          "args" => { "scope" => "api" }
         }
       ]
     ```
