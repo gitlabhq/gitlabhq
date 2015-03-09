@@ -32,9 +32,9 @@
         %span.light.pull-right
           = Milestone.count
       %p
-        Users who signed in during last 30 days
+        Users
         %span.light.pull-right
-          = User.where("current_sign_in_at > ?", 30.days.ago).count
+          = User.count
     .col-md-4
       %h4
         Features
@@ -91,10 +91,10 @@
           = link_to('New Project', new_project_path, class: "btn btn-new")
     .col-sm-4
       .light-well
-        %h4 Users
+        %h4 Active Users
         .data
           = link_to admin_users_path do
-            %h1= User.count
+            %h1= User.active.count
           %hr
           = link_to 'New User', new_admin_user_path, class: "btn btn-new"
     .col-sm-4
