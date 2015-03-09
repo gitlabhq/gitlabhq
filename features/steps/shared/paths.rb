@@ -95,6 +95,10 @@ module SharedPaths
     current_path.should == dashboard_groups_path
   end
 
+  step 'I visit dashboard starred projects page' do
+    visit starred_dashboard_projects_path
+  end
+
   # ----------------------------------------
   # Profile
   # ----------------------------------------

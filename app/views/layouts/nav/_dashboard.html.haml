@@ -9,6 +9,11 @@
       %i.fa.fa-cube
       %span
         Projects
+  = nav_link(path: 'projects#starred') do
+    = link_to starred_dashboard_projects_path, title: 'Starred Projects' do
+      %i.fa.fa-star
+      %span
+        Starred Projects
   = nav_link(controller: :groups) do
     = link_to dashboard_groups_path, title: 'Groups' do
       %i.fa.fa-group

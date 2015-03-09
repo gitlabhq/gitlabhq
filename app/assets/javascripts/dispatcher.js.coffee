@@ -55,6 +55,9 @@ class Dispatcher
       when 'dashboard:show'
         new Dashboard()
         new Activities()
+      when 'dashboard:projects:starred'
+        new Activities()
+        new ProjectsList()
       when 'projects:commit:show'
         new Commit()
         new Diff()

@@ -221,6 +221,12 @@ Gitlab::Application.routes.draw do
           delete :leave
         end
       end
+
+      resources :projects, only: [] do
+        collection do
+          get :starred
+        end
+      end
     end
   end
 

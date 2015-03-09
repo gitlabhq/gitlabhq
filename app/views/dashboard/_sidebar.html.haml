@@ -10,9 +10,9 @@
 
 .tab-content
   .tab-pane.active#projects
-    = render "projects", projects: @projects
+    = render "dashboard/projects", projects: @projects
   .tab-pane#groups
-    = render "groups", groups: @groups
+    = render "dashboard/groups", groups: @groups
 
 .prepend-top-20
   = render 'shared/promo'

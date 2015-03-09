@@ -1,0 +1,23 @@
+- if @projects.any?
+  .dashboard.row
+    %section.activities.col-md-8
+      = render 'dashboard/activities'
+    %aside.col-md-4
+      .panel.panel-default
+        .panel-heading.clearfix
+          .input-group
+            = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control'
+            - if current_user.can_create_project?
+              .input-group-addon.dash-new-project
+                = link_to new_project_path do
+                  %strong New project
+
+        = render 'shared/projects_list', projects: @projects,
+          projects_limit: 20, stars: true, avatar: false
+
+    = link_to '#aside', class: 'show-aside' do
+      %i.fa.fa-angle-left
+
+- else
+  %h3 You dont have starred projects yet
+  %p.slead Visit project page and press on star icon and it will appear on this page.
