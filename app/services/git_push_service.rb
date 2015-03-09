@@ -42,8 +42,10 @@ class GitPushService
           # as a heuristic. This may include more commits than are actually pushed, but
           # that shouldn't matter because we check for existing cross-references later.
           @push_commits = project.repository.commits_between(project.default_branch, newrev)
+
+          # don't process commits for the initial push to the default branch
+          process_commit_messages(ref)
         end
-        process_commit_messages(ref)
       elsif push_to_existing_branch?(ref, oldrev)
         # Collect data for this git push
         @push_commits = project.repository.commits_between(oldrev, newrev)
