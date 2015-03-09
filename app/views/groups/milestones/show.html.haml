@@ -45,8 +45,7 @@
     #{@group_milestone.closed_items_count} closed
     &ndash;
     #{@group_milestone.open_items_count} open
-  .progress.progress-info
-    .progress-bar{style: "width: #{@group_milestone.percent_complete}%;"}
+  = milestone_progress_bar(@group_milestone)
 
 %ul.nav.nav-tabs
   %li.active
