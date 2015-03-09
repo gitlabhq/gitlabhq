@@ -23,7 +23,7 @@
               Settings
 
           - if can?(current_user, :destroy, user_group)
-            = link_to leave_profile_group_path(group), data: { confirm: leave_group_message(group.name) }, method: :delete, class: "btn-small btn btn-grouped", title: 'Remove user from group' do
+            = link_to leave_dashboard_group_path(group), data: { confirm: leave_group_message(group.name) }, method: :delete, class: "btn-small btn btn-grouped", title: 'Remove user from group' do
               %i.fa.fa-sign-out
               Leave
 
