@@ -341,6 +341,12 @@ test:
         group_base: 'ou=groups,dc=example,dc=com'
         admin_group: ''
         sync_ssh_keys: false
+  omniauth:
+    enabled: false
+    providers:
+      - { name: 'github', app_id: 'YOUR_APP_ID',
+          app_secret: 'YOUR_APP_SECRET',
+          args: { scope: 'user:email' } }
 
 staging:
   <<: *base
