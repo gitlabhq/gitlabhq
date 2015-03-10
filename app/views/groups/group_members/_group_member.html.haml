@@ -8,6 +8,9 @@
     %span.cgray= user.username
     - if user == current_user
       %span.label.label-success It's you
+    - if user.blocked?
+      %label.label.label-danger
+        %strong Blocked
 
   - if show_roles
     %span.pull-right

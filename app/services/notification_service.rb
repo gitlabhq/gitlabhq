@@ -268,6 +268,7 @@ class NotificationService
   # Also remove duplications and nil recipients
   def reject_muted_users(users, project = nil)
     users = users.to_a.compact.uniq
+    users = users.reject(&:blocked?)
 
     users.reject do |user|
       next user.notification.disabled? unless project

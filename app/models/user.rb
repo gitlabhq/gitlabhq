@@ -154,24 +154,6 @@ class User < ActiveRecord::Base
   delegate :path, to: :namespace, allow_nil: true, prefix: true
 
   state_machine :state, initial: :active do
-    after_transition any => :blocked do |user, transition|
-      # Remove user from all projects and
-      user.project_members.find_each do |membership|
-        # skip owned resources
-        next if membership.project.owner == user
-
-        return false unless membership.destroy
-      end
-
-      # Remove user from all groups
-      user.group_members.find_each do |membership|
-        # skip owned resources
-        next if membership.group.last_owner?(user)
-
-        return false unless membership.destroy
-      end
-    end
-
     event :block do
       transition active: :blocked
     end
@@ -626,7 +608,7 @@ class User < ActiveRecord::Base
   def contributed_projects_ids
     Event.where(author_id: self).
       where("created_at > ?", Time.now - 1.year).
-      where("action = :pushed OR (target_type = 'MergeRequest' AND action = :created)", 
+      where("action = :pushed OR (target_type = 'MergeRequest' AND action = :created)",
         pushed: Event::PUSHED, created: Event::CREATED).
       reorder(project_id: :desc).
       select(:project_id).
