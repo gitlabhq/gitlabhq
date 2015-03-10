@@ -38,13 +38,11 @@ ul.notes {
     .author {
       color: #333;
       font-weight: bold;
-      font-size: 14px;
       &:hover {
         color: $gl-link-color;
       }
     }
     .author-username {
-      font-size: 14px;
     }
   }
 
@@ -57,9 +55,6 @@ ul.notes {
   .note {
     display: block;
     position:relative;
-    .attachment {
-      font-size: 14px;
-    }
     .note-body {
       overflow: auto;
       .note-text {
@@ -184,6 +179,7 @@ ul.notes {
     margin-left: -60px;
     position: absolute;
     z-index: 10;
+    width: 32px;
 
     transition: all 0.2s ease;
 
@@ -192,8 +188,9 @@ ul.notes {
     filter: alpha(opacity=0);
 
     &:hover {
-      font-size: 24px;
-      background: $gl-primary;
+      width: 38px;
+      font-size: 20px;
+      background: $gl-info;
       color: #FFF;
       @include show-add-diff-note;
     }
