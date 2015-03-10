@@ -12,6 +12,7 @@
   = image_tag avatar_icon(user.email, 32), class: "avatar s32"
   %p
     %strong= user.name
+    - if user.blocked?
+      %label.label.label-danger
+        %strong Blocked
   %span.cgray= user.username
-
-
