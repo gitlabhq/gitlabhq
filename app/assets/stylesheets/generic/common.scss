@@ -306,18 +306,6 @@ table {
   width: 100%;
 }
 
-.broadcast-message {
-  padding: 10px;
-  text-align: center;
-  background: #555;
-  color: #BBB;
-}
-
-.broadcast-message-preview {
-  @extend .broadcast-message;
-  margin-bottom: 20px;
-}
-
 .btn-sign-in {
   margin-top: 5px;
   text-shadow: none;
