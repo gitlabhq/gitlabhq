@@ -1,0 +1,67 @@
+.pull-left
+  = form_tag explore_projects_filter_path, method: :get, class: 'form-inline form-tiny' do |f|
+    .form-group
+      = search_field_tag :search, params[:search], placeholder: "Filter by name", class: "form-control search-text-input input-mn-300", id: "projects_search"
+    .form-group
+      = button_tag 'Search', class: "btn btn-primary wide"
+
+.pull-right.hidden-sm.hidden-xs
+  - if current_user
+    .dropdown.inline.append-right-10
+      %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+        %i.fa.fa-globe
+        %span.light Visibility:
+        - if params[:visibility_level].present?
+          = visibility_level_label(params[:visibility_level].to_i)
+        - else
+          Any
+        %b.caret
+      %ul.dropdown-menu
+        %li
+          = link_to explore_projects_filter_path(visibility_level: nil) do
+            Any
+        - Gitlab::VisibilityLevel.values.each do |level|
+          %li{ class: (level.to_s == params[:visibility_level]) ? 'active' : 'light' }
+            = link_to explore_projects_filter_path(visibility_level: level) do
+              = visibility_level_icon(level)
+              = visibility_level_label(level)
+
+  - if @tags.present?
+    .dropdown.inline.append-right-10
+      %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+        %i.fa.fa-tags
+        %span.light Tags:
+        - if params[:tag].present?
+          = params[:tag]
+        - else
+          Any
+        %b.caret
+      %ul.dropdown-menu
+        %li
+          = link_to explore_projects_filter_path(tag: nil) do
+            Any
+
+        - @tags.each do |tag|
+          %li{ class: (tag.name == params[:tag]) ? 'active' : 'light' }
+            = link_to explore_projects_filter_path(tag: tag.name) do
+              %i.fa.fa-tag
+              = tag.name
+
+  .dropdown.inline
+    %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
+      %span.light sort:
+      - if @sort.present?
+        = sort_options_hash[@sort]
+      - else
+        = sort_title_recently_created
+      %b.caret
+    %ul.dropdown-menu
+      %li
+        = link_to explore_projects_filter_path(sort: sort_value_recently_created) do
+          = sort_title_recently_created
+        = link_to explore_projects_filter_path(sort: sort_value_oldest_created) do
+          = sort_title_oldest_created
+        = link_to explore_projects_filter_path(sort: sort_value_recently_updated) do
+          = sort_title_recently_updated
+        = link_to explore_projects_filter_path(sort: sort_value_oldest_updated) do
+          = sort_title_oldest_updated
