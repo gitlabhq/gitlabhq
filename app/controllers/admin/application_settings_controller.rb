@@ -28,7 +28,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :gravatar_enabled,
       :twitter_sharing_enabled,
       :sign_in_text,
-      :home_page_url
+      :home_page_url,
+      :version_check_enabled
     )
   end
 end

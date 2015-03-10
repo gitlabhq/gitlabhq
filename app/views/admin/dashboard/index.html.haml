@@ -58,8 +58,9 @@
     .col-md-4
       %h4
         Components
-        .pull-right
-          = version_status_badge
+        - if current_application_settings.version_check_enabled
+          .pull-right
+            = version_status_badge
 
       %hr
       %p
