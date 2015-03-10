@@ -8,4 +8,15 @@ module MilestonesHelper
       dashboard_milestones_path(opts)
     end
   end
+
+  def milestone_progress_bar(milestone)
+    options = {
+      class: 'progress-bar progress-bar-success',
+      style: "width: #{milestone.percent_complete}%;"
+    }
+
+    content_tag :div, class: 'progress' do
+      content_tag :div, nil, options
+    end
+  end
 end
