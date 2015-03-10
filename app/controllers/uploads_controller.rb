@@ -1,24 +1,15 @@
 class UploadsController < ApplicationController
-  skip_before_filter :authenticate_user!, :reject_blocked!
-  before_filter :authorize_access
+  skip_before_filter :authenticate_user!
+  before_filter :find_model, :authorize_access!
 
   def show
-    unless upload_model && upload_mount
-      return not_found!
-    end
-
-    model = upload_model.find(params[:id])
-    uploader = model.send(upload_mount)
-
-    if model.respond_to?(:project) && !can?(current_user, :read_project, model.project)
-      return not_found!
-    end
+    uploader = @model.send(upload_mount)
 
     unless uploader.file_storage?
       return redirect_to uploader.url
     end
 
-    unless uploader.file.exists?
+    unless uploader.file && uploader.file.exists?
       return not_found!
     end
 
@@ -28,9 +19,34 @@ class UploadsController < ApplicationController
 
   private
 
-  def authorize_access
-    unless params[:mounted_as] == 'avatar'
-      authenticate_user! && reject_blocked!
+  def find_model
+    unless upload_model && upload_mount
+      return not_found!
+    end
+
+    @model = upload_model.find(params[:id])
+  end
+
+  def authorize_access!
+    authorized = 
+      case @model
+      when Project
+        can?(current_user, :read_project, @model)
+      when Group
+        can?(current_user, :read_group, @model)
+      when Note
+        can?(current_user, :read_project, @model.project)
+      else
+        # No authentication required for user avatars.
+        true
+      end
+
+    return if authorized
+
+    if current_user
+      not_found!
+    else
+      authenticate_user!
     end
   end
 

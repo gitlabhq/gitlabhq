@@ -45,6 +45,7 @@ v 7.9.0 (unreleased)
   - Send EmailsOnPush emails when deleting commits using force push.  
   - Fix EmailsOnPush email comparison link to include first commit.
   - Fix highliht of selected lines in file
+  - Reject access to group/project avatar if the user doesn't have access.
 
 v 7.8.2
   - Fix service migration issue when upgrading from versions prior to 7.3
