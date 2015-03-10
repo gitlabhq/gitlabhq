@@ -22,7 +22,7 @@ Please report suspected security vulnerabilities in private to <support@gitlab.c
 1. Merge and publish the blog posts
 1. Send tweets about the release from `@gitlabhq`
 1. Send out an email to [the community google mailing list](https://groups.google.com/forum/#!forum/gitlabhq)
-1. Post a signed copy of our complete announcement to [oss-security](http://www.openwall.com/lists/oss-security/) and request a CVE number
+1. Post a signed copy of our complete announcement to [oss-security](http://www.openwall.com/lists/oss-security/) and request a CVE number. CVE is only needed for bugs that allow someone to own the server (Remote Code Execution) or access to code of projects they are not a member of.
 1. Add the security researcher to the [Security Researcher Acknowledgments list](http://about.gitlab.com/vulnerability-acknowledgements/)
 1. Thank the security researcher in an email for their cooperation
 1. Update the blog post and the CHANGELOG when we receive the CVE number
