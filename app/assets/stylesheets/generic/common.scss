@@ -319,7 +319,7 @@ table {
 }
 
 .btn-sign-in {
-  margin-top: 7px;
+  margin-top: 5px;
   text-shadow: none;
 }
 
@@ -337,8 +337,11 @@ table {
   overflow-x: auto;
 }
 
-.footer-links a {
-  margin-right: 15px;
+.footer-links {
+  margin-bottom: 20px;
+  a {
+    margin-right: 15px;
+  }
 }
 
 .search_box {
