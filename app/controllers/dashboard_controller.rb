@@ -5,14 +5,8 @@ class DashboardController < ApplicationController
   before_filter :event_filter, only: :show
 
   def show
-    @projects_limit = 20
-    @groups = current_user.authorized_groups.order_name_asc
-    @has_authorized_projects = @projects.count > 0
-    @projects_count = @projects.count
     @projects = @projects.includes(:namespace)
     @last_push = current_user.recent_push
-
-    @publicish_project_count = Project.publicish(current_user).count
 
     respond_to do |format|
       format.html
