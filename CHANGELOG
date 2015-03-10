@@ -46,6 +46,7 @@ v 7.9.0 (unreleased)
   - Fix EmailsOnPush email comparison link to include first commit.
   - Fix highliht of selected lines in file
   - Reject access to group/project avatar if the user doesn't have access.
+  - Add database migration to clean group duplicates with same path and name (Make sure you have a backup before update)
 
 v 7.8.2
   - Fix service migration issue when upgrading from versions prior to 7.3
