@@ -15,6 +15,12 @@
 // $gray:                   lighten($gray-base, 33.5%) // #555
 // $gray-light:             lighten($gray-base, 46.7%) // #777
 // $gray-lighter:           lighten($gray-base, 93.5%) // #eee
+$gray-base:              #000;
+$gray-darker:            lighten($gray-base, 13.5%); // #222
+$gray-dark:              #7b8a8b;   // #333
+$gray:                   #95a5a6; // #555
+$gray-light:             #b4bcc2;   // #999
+$gray-lighter:           #ecf0f1; // #eee
 
 $brand-primary:  $gl-primary;
 $brand-success:  $gl-success;
@@ -30,7 +36,7 @@ $brand-danger:   $gl-danger;
 //** Background color for `<body>`.
 // $body-bg:               #fff
 //** Global text color on `<body>`.
-// $text-color:            $gray-dark
+$text-color:            $brand-primary;
 
 //** Global textual link color.
 $link-color:            $gl-link-color;
@@ -187,9 +193,9 @@ $padding-base-horizontal:   14px;
 // $input-bg-disabled:              $gray-lighter
 
 //** Text color for `<input>`s
-// $input-color:                    $gray
+$input-color:                    $text-color;
 //** `<input>` border color
-// $input-border:                   #ccc
+$input-border:                   #dce4ec;
 
 // TODO: Rename `$input-border-radius` to `$input-border-radius-base` in v4
 //** Default `.form-control` border radius
@@ -201,7 +207,7 @@ $padding-base-horizontal:   14px;
 // $input-border-radius-small:      $border-radius-small
 
 //** Border color for inputs on focus
-// $input-border-focus:             #66afe9
+$input-border-focus:             $brand-info;
 
 //** Placeholder text color
 // $input-color-placeholder:        #999
@@ -213,7 +219,7 @@ $padding-base-horizontal:   14px;
 //** Small `.form-control` height
 // $input-height-small:             (floor($font-size-small * $line-height-small) + ($padding-small-vertical * 2) + 2)
 
-// $legend-color:                   $gray-dark
+$legend-color:                   $text-color;
 // $legend-border-color:            #e5e5e5
 
 //** Background color for textual input addons
@@ -709,7 +715,7 @@ $panel-border-radius:            0;
 // $panel-inner-border:          #ddd
 // $panel-footer-bg:             #f5f5f5
 
-// $panel-default-text:          $gray-dark
+$panel-default-text:          $text-color;
 // $panel-default-border:        #ddd
 // $panel-default-heading-bg:    #f5f5f5
 
@@ -757,8 +763,8 @@ $panel-border-radius:            0;
 //
 //##
 
-// $well-bg:                     #f5f5f5
-// $well-border:                 darken($well-bg, 7%)
+$well-bg:                     $gray-lighter;
+$well-border:                 transparent;
 
 
 //== Badges
@@ -826,15 +832,15 @@ $panel-border-radius:            0;
 //
 //##
 
-// $code-color:                  #c7254e
-// $code-bg:                     #f9f2f4
+$code-color:                  #c7254e;
+$code-bg:                     #f9f2f4;
 
-// $kbd-color:                   #fff
-// $kbd-bg:                      #333
+$kbd-color:                   #fff;
+$kbd-bg:                      #333;
 
-// $pre-bg:                      #f5f5f5
-// $pre-color:                   $gray-dark
-// $pre-border-color:            #ccc
+$pre-bg:                      $gray-lighter;
+$pre-color:                   $gray-dark;
+$pre-border-color:            #ccc;
 // $pre-scrollable-max-height:   340px
 
 
