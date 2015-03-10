@@ -1,3 +1,6 @@
+v 7.8.3
+  - Bump version of gitlab_git fixing annotated tags without message
+
 v 7.8.2
   - Fix service migration issue when upgrading from versions prior to 7.3
   - Fix setting of the default use project limit via admin UI
