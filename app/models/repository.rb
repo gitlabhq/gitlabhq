@@ -146,7 +146,8 @@ class Repository
   end
 
   def timestamps_by_user_log(user)
-    args = %W(git log --author=#{user.email} --since=#{(Date.today - 1.year).to_s} --branches --pretty=format:%cd --date=short)
+    author_emails = '(' + user.all_emails.map{ |e| Regexp.escape(e) }.join('|') + ')'
+    args = %W(git log -E --author=#{author_emails} --since=#{(Date.today - 1.year).to_s} --branches --pretty=format:%cd --date=short)
     dates = Gitlab::Popen.popen(args, path_to_repo).first.split("\n")
 
     if dates.present?
