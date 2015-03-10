@@ -10,6 +10,12 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
     super options
   end
 
+  def preprocess(full_document)
+    # Redcarpet doesn't allow SMB links when `safe_links_only` is enabled.
+    # FTP links are allowed, so we trick Redcarpet.
+    full_document.gsub("smb://", "ftp://smb:")
+  end
+
   # If project has issue number 39, apostrophe will be linked in
   # regular text to the issue as Redcarpet will convert apostrophe to
   # #39;
@@ -54,6 +60,8 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
   end
 
   def postprocess(full_document)
+    full_document.gsub!("ftp://smb:", "smb://")
+
     full_document.gsub!("&rsquo;", "'")
     unless @template.instance_variable_get("@project_wiki") || @project.nil?
       full_document = h.create_relative_links(full_document)
