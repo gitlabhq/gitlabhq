@@ -35,6 +35,15 @@ v 7.9.0 (unreleased)
   - Move groups page from profile to dashboard
   - Starred projects page at dashboard 
   - Blocking user does not remove him/her from project/groups but show blocked label
+  - Change subject of EmailsOnPush emails to include namespace, project and branch.
+  - Change subject of EmailsOnPush emails to include first commit message when multiple were pushed.
+  - Remove confusing footer from EmailsOnPush mail body.
+  - Add list of changed files to EmailsOnPush emails. 
+  - Add option to send EmailsOnPush emails from committer email if domain matches. 
+  - Add option to disable code diffs in EmailOnPush emails.
+  - Wrap commit message in EmailsOnPush email.
+  - Send EmailsOnPush emails when deleting commits using force push.  
+  - Fix EmailsOnPush email comparison link to include first commit.
 
 v 7.8.2
   - Fix service migration issue when upgrading from versions prior to 7.3
