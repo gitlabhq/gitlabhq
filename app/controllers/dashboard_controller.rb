@@ -23,28 +23,6 @@ class DashboardController < ApplicationController
     end
   end
 
-  def projects
-    @projects = case params[:scope]
-                when 'personal' then
-                  current_user.namespace.projects
-                when 'joined' then
-                  current_user.authorized_projects.joined(current_user)
-                when 'owned' then
-                  current_user.owned_projects
-                else
-                  current_user.authorized_projects
-                end
-
-    @projects = @projects.where(namespace_id: Group.find_by(name: params[:group])) if params[:group].present?
-    @projects = @projects.includes(:namespace, :forked_from_project, :tags)
-    @projects = @projects.tagged_with(params[:tag]) if params[:tag].present?
-    @projects = @projects.sort(@sort = params[:sort])
-    @projects = @projects.page(params[:page]).per(30)
-
-    @tags = current_user.authorized_projects.tags_on(:tags)
-    @groups = current_user.authorized_groups
-  end
-
   def merge_requests
     @merge_requests = get_merge_requests_collection
     @merge_requests = @merge_requests.page(params[:page]).per(20)
