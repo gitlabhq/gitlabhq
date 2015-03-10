@@ -8,7 +8,7 @@ class EmailsOnPushWorker
     branch = push_data["ref"]
     author_id = push_data["user_id"]
 
-    if before_sha =~ /^000000/ || after_sha =~ /^000000/
+    if Gitlab::Git.blank_ref?(before_sha) || Gitlab::Git.blank_ref?(after_sha)
       # skip if new branch was pushed or branch was removed
       return true
     end

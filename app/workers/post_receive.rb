@@ -33,7 +33,7 @@ class PostReceive
         return false
       end
 
-      if tag?(ref)
+      if Gitlab::Git.tag_ref?(ref)
         GitTagPushService.new.execute(project, @user, oldrev, newrev, ref)
       else
         GitPushService.new.execute(project, @user, oldrev, newrev, ref)
@@ -43,11 +43,5 @@ class PostReceive
 
   def log(message)
     Gitlab::GitLogger.error("POST-RECEIVE: #{message}")
-  end
-
-  private
-
-  def tag?(ref)
-    !!(/refs\/tags\/(.*)/.match(ref))
   end
 end

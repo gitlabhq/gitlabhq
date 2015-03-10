@@ -115,7 +115,7 @@ module Gitlab
       # we dont allow force push to protected branch
       if forced_push?(project, oldrev, newrev)
         :force_push_code_to_protected_branches
-      elsif newrev == Gitlab::Git::BLANK_SHA
+      elsif Gitlab::Git.blank_ref?(newrev)
         # and we dont allow remove of protected branch
         :remove_protected_branches
       elsif project.developers_can_push_to_protected_branch?(branch_name)
@@ -135,8 +135,8 @@ module Gitlab
 
     def branch_name(ref)
       ref = ref.to_s
-      if ref.start_with?('refs/heads')
-        ref.sub(%r{\Arefs/heads/}, '')
+      if Gitlab::Git.branch_ref?(ref)
+        Gitlab::Git.ref_name(ref)
       else
         nil
       end
@@ -144,8 +144,8 @@ module Gitlab
 
     def tag_name(ref)
       ref = ref.to_s
-      if ref.start_with?('refs/tags')
-        ref.sub(%r{\Arefs/tags/}, '')
+      if Gitlab::Git.tag_ref?(ref)
+        Gitlab::Git.ref_name(ref)
       else
         nil
       end

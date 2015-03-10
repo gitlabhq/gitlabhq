@@ -23,7 +23,7 @@ module Emails
       @compare = compare
       @commits = Commit.decorate(compare.commits)
       @diffs   = compare.diffs
-      @branch  = branch.gsub("refs/heads/", "")
+      @branch  = Gitlab::Git.ref_name(branch)
       @disable_diffs = disable_diffs
 
       @subject = "[#{@project.path_with_namespace}][#{@branch}] "
