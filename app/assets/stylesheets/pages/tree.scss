@@ -40,8 +40,8 @@
       max-width: 320px;
       vertical-align: middle;
 
-      i {
-        color: $gl-info;
+      i, a {
+        color: $gl-link-color;
       }
 
       img {
@@ -61,13 +61,18 @@
 
   .tree_author {
     padding-right: 8px;
+
+    .commit-author-name {
+      color: gray;
+    }
   }
 
   .tree_commit {
     color: gray;
 
     .tree-commit-link {
-      color: #444;
+      color: gray;
+
       &:hover {
         text-decoration: underline;
       }
