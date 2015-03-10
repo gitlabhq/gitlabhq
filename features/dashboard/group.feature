@@ -46,3 +46,11 @@ Feature: Dashboard Group
     When I visit dashboard groups page
     Then I should see group "Owned" in group list
     Then I should not see group "Guest" in group list
+
+  Scenario: Create a group from dasboard
+    And I visit dashboard groups page
+    And I click new group link
+    And submit form with new group "Samurai" info
+    Then I should be redirected to group "Samurai" page
+    And I should see newly created group "Samurai"
+

@@ -72,25 +72,6 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
       author: current_user
   end
 
-  When 'I click new group link' do
-    click_link "New group"
-  end
-
-  step 'submit form with new group "Samurai" info' do
-    fill_in 'group_path', with: 'Samurai'
-    fill_in 'group_description', with: 'Tokugawa Shogunate'
-    click_button "Create group"
-  end
-
-  step 'I should be redirected to group "Samurai" page' do
-    current_path.should == group_path(Group.find_by(name: 'Samurai'))
-  end
-
-  step 'I should see newly created group "Samurai"' do
-    page.should have_content "Samurai"
-    page.should have_content "Tokugawa Shogunate"
-  end
-
   step 'I change group "Owned" name to "new-name"' do
     fill_in 'group_name', with: 'new-name'
     fill_in 'group_path', with: 'new-name'
