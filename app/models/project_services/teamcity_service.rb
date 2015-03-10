@@ -132,7 +132,7 @@ class TeamcityService < CiService
       password: password,
     }
 
-    branch = data[:ref].gsub('refs/heads/', '')
+    branch = Gitlab::Git.ref_name(data[:ref])
 
     self.class.post("#{teamcity_url}/httpAuth/app/rest/buildQueue",
                     body: "<build branchName=\"#{branch}\">"\

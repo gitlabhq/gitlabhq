@@ -77,7 +77,7 @@ automatically inspected. Leave blank to include all branches.'
     end
 
     user = data[:user_name]
-    branch = data[:ref].gsub('refs/heads/', '')
+    branch = Gitlab::Git.ref_name(data[:ref])
 
     branch_restriction = restrict_to_branch.to_s
 

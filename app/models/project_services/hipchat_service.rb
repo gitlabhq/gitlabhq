@@ -79,24 +79,19 @@ class HipchatService < Service
   end
 
   def create_push_message(push)
-    if push[:ref].starts_with?('refs/tags/')
-      ref_type = 'tag'
-      ref = push[:ref].gsub('refs/tags/', '')
-    else
-      ref_type = 'branch'
-      ref = push[:ref].gsub('refs/heads/', '')
-    end
+    ref_type = Gitlab::Git.tag_ref?(push[:ref]) ? 'tag' : 'branch'
+    ref = Gitlab::Git.ref_name(push[:ref])
 
     before = push[:before]
     after = push[:after]
 
     message = ""
     message << "#{push[:user_name]} "
-    if before.include?('000000')
+    if Gitlab::Git.blank_ref?(before)
       message << "pushed new #{ref_type} <a href=\""\
                  "#{project_url}/commits/#{URI.escape(ref)}\">#{ref}</a>"\
                  " to #{project_link}\n"
-    elsif after.include?('000000')
+    elsif Gitlab::Git.blank_ref?(after)
       message << "removed #{ref_type} <b>#{ref}</b> from <a href=\"#{project.web_url}\">#{project_name}</a> \n"
     else
       message << "pushed to #{ref_type} <a href=\""\

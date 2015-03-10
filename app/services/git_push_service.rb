@@ -107,30 +107,24 @@ class GitPushService
   end
 
   def push_to_existing_branch?(ref, oldrev)
-    ref_parts = ref.split('/')
-
     # Return if this is not a push to a branch (e.g. new commits)
-    ref_parts[1].include?('heads') && oldrev != Gitlab::Git::BLANK_SHA
+    Gitlab::Git.branch_ref?(ref) && oldrev != Gitlab::Git::BLANK_SHA
   end
 
   def push_to_new_branch?(ref, oldrev)
-    ref_parts = ref.split('/')
-
-    ref_parts[1].include?('heads') && oldrev == Gitlab::Git::BLANK_SHA
+    Gitlab::Git.branch_ref?(ref) && Gitlab::Git.blank_ref?(oldrev)
   end
 
   def push_remove_branch?(ref, newrev)
-    ref_parts = ref.split('/')
-
-    ref_parts[1].include?('heads') && newrev == Gitlab::Git::BLANK_SHA
+    Gitlab::Git.branch_ref?(ref) && Gitlab::Git.blank_ref?(newrev)
   end
 
   def push_to_branch?(ref)
-    ref.include?('refs/heads')
+    Gitlab::Git.branch_ref?(ref)
   end
 
   def is_default_branch?(ref)
-    ref == "refs/heads/#{project.default_branch}"
+    Gitlab::Git.branch_ref?(ref) && Gitlab::Git.ref_name(ref) == project.default_branch
   end
 
   def commit_user(commit)
