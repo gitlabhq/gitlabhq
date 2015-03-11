@@ -1,3 +1,7 @@
+v 7.8.4
+  - Fix issue_tracker_id substitution in custom issue trackers
+  - Fix path and name duplication in namespaces
+
 v 7.8.3
   - Bump version of gitlab_git fixing annotated tags without message
 
