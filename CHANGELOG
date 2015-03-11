@@ -47,6 +47,8 @@ v 7.9.0 (unreleased)
   - Fix highliht of selected lines in file
   - Reject access to group/project avatar if the user doesn't have access.
   - Add database migration to clean group duplicates with same path and name (Make sure you have a backup before update)
+  - Starred projects page at dashboard
+  - Make email display name configurable
 
 v 7.8.2
   - Fix service migration issue when upgrading from versions prior to 7.3

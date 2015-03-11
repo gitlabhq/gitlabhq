@@ -5,6 +5,7 @@ describe Notify do
   include EmailSpec::Matchers
   include RepoHelpers
 
+  let(:gitlab_sender_display_name) { Gitlab.config.gitlab.email_display_name }
   let(:gitlab_sender) { Gitlab.config.gitlab.email_from }
   let(:recipient) { create(:user, email: 'recipient@example.com') }
   let(:project) { create(:project) }
@@ -23,7 +24,7 @@ describe Notify do
   shared_examples 'an email sent from GitLab' do
     it 'is sent from GitLab' do
       sender = subject.header[:from].addrs[0]
-      expect(sender.display_name).to eq('GitLab')
+      expect(sender.display_name).to eq(gitlab_sender_display_name)
       expect(sender.address).to eq(gitlab_sender)
     end
   end
