@@ -58,6 +58,7 @@ v 7.8.2
   - Fix import check for case sensetive namespaces
   - Increase timeout for Git-over-HTTP requests to 1 hour since large pulls/pushes can take a long time.
   - Properly handle autosave local storage exceptions.
+  - Escape wildcards when searching LDAP by username.
 
 v 7.8.1
   - Fix run of custom post receive hooks
