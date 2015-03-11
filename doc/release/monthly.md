@@ -200,3 +200,7 @@ Consider creating a post on Hacker News.
 ## Update GitLab.com with the stable version
 
 - Deploy the package (should not need downtime because of the small difference with RC1)
+
+## Release new AMIs
+
+[Follow this guide](https://dev.gitlab.org/gitlab/AMI/blob/master/README.md)
