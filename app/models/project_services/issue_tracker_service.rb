@@ -30,18 +30,6 @@ class IssueTrackerService < Service
     false
   end
 
-  def project_url
-    # implement inside child
-  end
-
-  def issues_url
-    # implement inside child
-  end
-
-  def new_issue_url
-    # implement inside child
-  end
-
   def issue_url(iid)
     self.issues_url.gsub(':id', iid.to_s)
   end
