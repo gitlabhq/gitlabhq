@@ -35,6 +35,7 @@ v 7.9.0 (unreleased)
   - Move groups page from profile to dashboard
   - Starred projects page at dashboard 
   - Blocking user does not remove him/her from project/groups but show blocked label
+  - Allow smb:// links in Markdown text.
 
 v 7.8.2
   - Fix service migration issue when upgrading from versions prior to 7.3
