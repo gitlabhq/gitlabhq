@@ -51,13 +51,13 @@ module API
 
         attrs = attributes_for_keys [:title, :file_name, :visibility_level]
         attrs[:content] = params[:code] if params[:code].present?
-        @snippet = CreateSnippetservice.new(user_project, current_user,
+        @snippet = CreateSnippetService.new(user_project, current_user,
                                             attrs).execute
 
-        if @snippet.saved?
-          present @snippet, with: Entities::ProjectSnippet
-        else
+        if @snippet.errors.any?
           render_validation_error!(@snippet)
+        else
+          present @snippet, with: Entities::ProjectSnippet
         end
       end
 

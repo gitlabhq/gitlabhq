@@ -29,7 +29,8 @@ module ApplicationSettingsHelper
       checkbox_name = 'application_setting[restricted_visibility_levels][]'
 
       label_tag(checkbox_name, class: css_class) do
-        check_box_tag(checkbox_name, level, checked, autocomplete: 'off',
+        check_box_tag(checkbox_name, level, checked,
+                      autocomplete: 'off',
                       'aria-describedby' => help_block_id) + name
       end
     end
