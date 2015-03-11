@@ -105,7 +105,7 @@ class ProjectsController < ApplicationController
         if request.referer.include?('/admin')
           redirect_to admin_namespaces_projects_path
         else
-          redirect_to projects_dashboard_path
+          redirect_to dashboard_path
         end
       end
     end

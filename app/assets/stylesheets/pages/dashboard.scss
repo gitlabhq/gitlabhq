@@ -23,25 +23,6 @@
   }
 }
 
-.dash-sidebar-tabs {
-  margin-bottom: 2px;
-  border: none;
-  margin: 0 !important;
-
-  li {
-    &.active {
-      a {
-        background-color: whitesmoke !important;
-        border-bottom: 1px solid whitesmoke !important;
-      }
-    }
-
-    a {
-      border-color: #DDD !important;
-    }
-  }
-}
-
 .project-row, .group-row {
   padding: 0 !important;
   font-size: 14px;
@@ -108,15 +89,6 @@
 }
 
 .dash-new-project {
-  background: $gl-success;
-  border: 1px solid $gl-success;
-
-  a {
-    color: #FFF;
-  }
-}
-
-.dash-new-group {
   background: $gl-success;
   border: 1px solid $gl-success;
 

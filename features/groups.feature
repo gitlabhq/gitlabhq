@@ -10,14 +10,6 @@ Feature: Groups
     Then I should see group "Owned" projects list
     And I should see projects activity feed
 
-  Scenario: Create a group from dasboard
-    When I visit group "Owned" page
-    And I visit dashboard page
-    And I click new group link
-    And submit form with new group "Samurai" info
-    Then I should be redirected to group "Samurai" page
-    And I should see newly created group "Samurai"
-
   Scenario: I should see group "Owned" issues list
     Given project from group "Owned" has issues assigned to me
     When I visit group "Owned" issues page

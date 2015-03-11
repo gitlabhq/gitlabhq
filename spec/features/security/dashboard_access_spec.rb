@@ -25,8 +25,8 @@ describe "Dashboard access", feature: true  do
     it { is_expected.to be_denied_for :visitor }
   end
 
-  describe "GET /dashboard/projects" do
-    subject { projects_dashboard_path }
+  describe "GET /dashboard/projects/starred" do
+    subject { starred_dashboard_projects_path }
 
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_allowed_for :user }
