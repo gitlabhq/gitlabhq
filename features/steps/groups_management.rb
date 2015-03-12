@@ -39,7 +39,7 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
   end
 
   step 'I go to group settings page' do
-    click_link 'sidebar-groups-tab'
+    visit dashboard_groups_path
     click_link 'Sourcing'
     click_link 'Settings'
   end
