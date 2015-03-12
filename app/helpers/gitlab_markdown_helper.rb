@@ -121,7 +121,7 @@ module GitlabMarkdownHelper
   end
 
   def ignored_protocols
-    ["http://","https://", "ftp://", "mailto:"]
+    ["http://","https://", "ftp://", "mailto:", "smb://"]
   end
 
   def rebuild_path(file_path)
