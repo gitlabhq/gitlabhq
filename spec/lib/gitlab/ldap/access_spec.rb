@@ -20,6 +20,11 @@ describe Gitlab::LDAP::Access do
         before { Gitlab::LDAP::Person.stub(disabled_via_active_directory?: true) }
 
         it { is_expected.to be_falsey }
+
+        it "should block user in GitLab" do
+          access.allowed?
+          user.should be_blocked
+        end
       end
 
       context 'and has no disabled flag in active diretory' do
