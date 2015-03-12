@@ -34,7 +34,14 @@ module Gitlab
       def allowed?
         if Gitlab::LDAP::Person.find_by_dn(user.ldap_identity.extern_uid, adapter)
           return true unless ldap_config.active_directory
-          !Gitlab::LDAP::Person.disabled_via_active_directory?(user.ldap_identity.extern_uid, adapter)
+
+          # Block user in GitLab if he/she was blocked in AD
+          if Gitlab::LDAP::Person.disabled_via_active_directory?(user.ldap_identity.extern_uid, adapter)
+            user.block unless user.blocked?
+            false
+          else
+            true
+          end
         else
           false
         end
