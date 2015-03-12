@@ -1,4 +1,4 @@
-class Groups::GroupMembersController < ApplicationController
+class Groups::GroupMembersController < Groups::ApplicationController
   before_filter :group
 
   # Authorize
@@ -35,12 +35,6 @@ class Groups::GroupMembersController < ApplicationController
 
   def group
     @group ||= Group.find_by(path: params[:group_id])
-  end
-
-  def authorize_admin_group!
-    unless can?(current_user, :manage_group, group)
-      return render_404
-    end
   end
 
   def member_params

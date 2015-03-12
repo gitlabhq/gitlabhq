@@ -1,4 +1,4 @@
-class GroupsController < ApplicationController
+class GroupsController < Groups::ApplicationController
   skip_before_filter :authenticate_user!, only: [:show, :issues, :members, :merge_requests]
   respond_to :html
   before_filter :group, except: [:new, :create]
@@ -128,12 +128,6 @@ class GroupsController < ApplicationController
 
   def authorize_create_group!
     unless can?(current_user, :create_group, nil)
-      return render_404
-    end
-  end
-
-  def authorize_admin_group!
-    unless can?(current_user, :manage_group, group)
       return render_404
     end
   end
