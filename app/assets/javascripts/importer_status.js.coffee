@@ -16,20 +16,20 @@ class @ImporterStatus
     $(".js-import-all").click (event) =>
       $(".js-add-to-import").each ->
         $(this).click()
-  
+
   setAutoUpdate: ->
     setInterval (=>
       $.get @jobs_url, (data) =>
         $.each data, (i, job) =>
           job_item = $("#project_" + job.id)
           status_field = job_item.find(".job-status")
-          
+
           if job.import_status == 'finished'
             job_item.removeClass("active").addClass("success")
-            status_field.html('<span class="cgreen"><i class="fa fa-check"></i> done</span>')
+            status_field.html('<span><i class="fa fa-check"></i> done</span>')
           else if job.import_status == 'started'
             status_field.html("<i class='fa fa-spinner fa-spin'></i> started")
           else
             status_field.html(job.import_status)
-          
+
     ), 4000
