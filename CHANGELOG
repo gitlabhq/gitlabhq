@@ -44,6 +44,7 @@ v 7.9.0 (unreleased)
   - Wrap commit message in EmailsOnPush email.
   - Send EmailsOnPush emails when deleting commits using force push.  
   - Fix EmailsOnPush email comparison link to include first commit.
+  - Fix missing GitHub organisation repositories on import page.
 
 v 7.8.2
   - Fix service migration issue when upgrading from versions prior to 7.3
