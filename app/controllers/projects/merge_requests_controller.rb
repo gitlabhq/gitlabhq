@@ -18,7 +18,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def index
     @merge_requests = get_merge_requests_collection
-    @merge_requests = @merge_requests.page(params[:page]).per(20)
+    @merge_requests = @merge_requests.page(params[:page]).per(PER_PAGE)
   end
 
   def show

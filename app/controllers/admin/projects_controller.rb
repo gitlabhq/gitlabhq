@@ -11,15 +11,15 @@ class Admin::ProjectsController < Admin::ApplicationController
     @projects = @projects.abandoned if params[:abandoned].present?
     @projects = @projects.search(params[:name]) if params[:name].present?
     @projects = @projects.sort(@sort = params[:sort])
-    @projects = @projects.includes(:namespace).order("namespaces.path, projects.name ASC").page(params[:page]).per(20)
+    @projects = @projects.includes(:namespace).order("namespaces.path, projects.name ASC").page(params[:page]).per(PER_PAGE)
   end
 
   def show
     if @group
-      @group_members = @group.members.order("access_level DESC").page(params[:group_members_page]).per(30)
+      @group_members = @group.members.order("access_level DESC").page(params[:group_members_page]).per(PER_PAGE)
     end
 
-    @project_members = @project.project_members.page(params[:project_members_page]).per(30)
+    @project_members = @project.project_members.page(params[:project_members_page]).per(PER_PAGE)
   end
 
   def transfer

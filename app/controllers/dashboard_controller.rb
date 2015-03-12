@@ -25,13 +25,13 @@ class DashboardController < ApplicationController
 
   def merge_requests
     @merge_requests = get_merge_requests_collection
-    @merge_requests = @merge_requests.page(params[:page]).per(20)
+    @merge_requests = @merge_requests.page(params[:page]).per(PER_PAGE)
     @merge_requests = @merge_requests.preload(:author, :target_project)
   end
 
   def issues
     @issues = get_issues_collection
-    @issues = @issues.page(params[:page]).per(20)
+    @issues = @issues.page(params[:page]).per(PER_PAGE)
     @issues = @issues.preload(:author, :project)
 
     respond_to do |format|

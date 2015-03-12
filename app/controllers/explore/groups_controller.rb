@@ -8,6 +8,6 @@ class Explore::GroupsController < ApplicationController
     @groups = GroupsFinder.new.execute(current_user)
     @groups = @groups.search(params[:search]) if params[:search].present?
     @groups = @groups.sort(@sort = params[:sort])
-    @groups = @groups.page(params[:page]).per(20)
+    @groups = @groups.page(params[:page]).per(PER_PAGE)
   end
 end

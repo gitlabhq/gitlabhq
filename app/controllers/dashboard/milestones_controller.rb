@@ -8,7 +8,7 @@ class Dashboard::MilestonesController < ApplicationController
                          else state('active')
                          end
     @dashboard_milestones = Milestones::GroupService.new(project_milestones).execute
-    @dashboard_milestones = Kaminari.paginate_array(@dashboard_milestones).page(params[:page]).per(30)
+    @dashboard_milestones = Kaminari.paginate_array(@dashboard_milestones).page(params[:page]).per(PER_PAGE)
   end
 
   def show
