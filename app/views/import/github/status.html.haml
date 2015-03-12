@@ -23,7 +23,7 @@
           %strong= link_to project.path_with_namespace, [project.namespace.becomes(Namespace), project]
         %td.job-status
           - if project.import_status == 'finished'
-            %span.cgreen
+            %span
               %i.fa.fa-check
               done
           - elsif project.import_status == 'started'
