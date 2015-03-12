@@ -3,6 +3,7 @@
 - [Feature branch workflow](workflow.md)
 - [Project Features](project_features.md)
 - [Authorization for merge requests](authorization_for_merge_requests.md)
+- [Rebase before merge](rebase_before_merge.md)
 - [Groups](groups.md)
 - [Share projects with other groups](share_projects_with_other_groups.md)
 - [Labels](labels.md)
