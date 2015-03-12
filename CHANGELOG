@@ -53,16 +53,18 @@ v 7.9.0 (unreleased)
   - Make email display name configurable
   - Improve json validation in hook data
   - Use Emoji One
-
   - Updated emoji help documentation to properly reference EmojiOne.
+  - Fix missing GitHub organisation repositories on import page.
+  - Added blue thmeme
+  - Remove annoying notice messages when create/update merge request
+  - Allow smb:// links in Markdown text.
+
 v 7.8.4
   - Fix issue_tracker_id substitution in custom issue trackers
   - Fix path and name duplication in namespaces
 
 v 7.8.3
   - Bump version of gitlab_git fixing annotated tags without message
-  - Allow smb:// links in Markdown text.
-  - Fix missing GitHub organisation repositories on import page.
 
 v 7.8.2
   - Fix service migration issue when upgrading from versions prior to 7.3
