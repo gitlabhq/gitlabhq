@@ -1,6 +1,6 @@
 class Dashboard::GroupsController < ApplicationController
   def index
-    @user_groups = current_user.group_members.page(params[:page]).per(20)
+    @user_groups = current_user.group_members.page(params[:page]).per(PER_PAGE)
   end
 
   def leave

@@ -5,12 +5,12 @@ class Admin::GroupsController < Admin::ApplicationController
     @groups = Group.all
     @groups = @groups.sort(@sort = params[:sort])
     @groups = @groups.search(params[:name]) if params[:name].present?
-    @groups = @groups.page(params[:page]).per(20)
+    @groups = @groups.page(params[:page]).per(PER_PAGE)
   end
 
   def show
-    @members = @group.members.order("access_level DESC").page(params[:members_page]).per(30)
-    @projects = @group.projects.page(params[:projects_page]).per(30)
+    @members = @group.members.order("access_level DESC").page(params[:members_page]).per(PER_PAGE)
+    @projects = @group.projects.page(params[:projects_page]).per(PER_PAGE)
   end
 
   def new
