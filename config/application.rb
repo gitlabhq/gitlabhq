@@ -50,6 +50,8 @@ module Gitlab
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
+    config.action_view.sanitized_allowed_protocols = %w(smb)
+
     # Relative url support
     # Uncomment and customize the last line to run in a non-root path
     # WARNING: We recommend creating a FQDN to host GitLab in a root path instead of this.

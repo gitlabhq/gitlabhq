@@ -147,7 +147,7 @@
 
     .collapse-nav a {
       left: 0px;
-      padding: 5px 23px 3px 22px;
+      padding: 7px 23px 3px 22px;
     }
   }
 }
@@ -155,12 +155,19 @@
 .collapse-nav a {
   position: fixed;
   top: 46px;
-  padding: 5px 13px 3px 13px;
+  padding: 5px 13px 5px 13px;
   left: 197px;
   font-size: 13px;
   background: #EEE;
   color: black;
-  border: 1px solid rgba(0,0,0,0.035);
+  border-left: 1px solid rgba(0,0,0,0.035);
+  border-right: 1px solid rgba(0,0,0,0.035);
+}
+
+.collapse-nav a:hover {
+  text-decoration: none;
+  color: #333;
+  background: #eaeaea;
 }
 
 @media (max-width: $screen-md-max) {
