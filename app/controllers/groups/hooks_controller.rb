@@ -1,4 +1,4 @@
-class Groups::HooksController < ApplicationController
+class Groups::HooksController < Groups::ApplicationController
   # Authorize
   before_filter :group
   before_filter :authorize_admin_group!
@@ -55,15 +55,5 @@ class Groups::HooksController < ApplicationController
 
   def hook_params
     params.require(:hook).permit(:url, :push_events, :issues_events, :merge_requests_events, :tag_push_events)
-  end
-
-  def group
-    @group ||= Group.find_by(path: params[:group_id])
-  end
-
-  def authorize_admin_group!
-    unless can?(current_user, :manage_group, group)
-      return render_404
-    end
   end
 end

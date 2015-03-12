@@ -71,10 +71,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   protected
 
-  def group
-    @group ||= Group.find_by(path: params[:group_id])
-  end
-
   def member_params
     params.require(:group_member).permit(:access_level, :user_id)
   end
