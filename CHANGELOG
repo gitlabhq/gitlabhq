@@ -62,6 +62,7 @@ v 7.8.4
 v 7.8.3
   - Bump version of gitlab_git fixing annotated tags without message
   - Allow smb:// links in Markdown text.
+  - Fix missing GitHub organisation repositories on import page.
 
 v 7.8.2
   - Fix service migration issue when upgrading from versions prior to 7.3
