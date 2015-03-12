@@ -120,4 +120,18 @@ describe Gitlab::ReferenceExtractor do
       expect(extracted[0][1].message).to eq(commit.message)
     end
   end
+
+  context 'with a project with an underscore' do
+    let(:project) { create(:project, path: 'test_project') }
+    let(:issue) { create(:issue, project: project) }
+
+    it 'handles project issue references' do
+      subject.analyze("this refers issue #{project.path_with_namespace}##{issue.iid}",
+          project)
+      extracted = subject.issues_for(project)
+      expect(extracted.size).to eq(1)
+      expect(extracted).to eq([issue])
+    end
+
+  end
 end
