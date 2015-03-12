@@ -112,4 +112,20 @@ namespace :gitlab do
       @warned_user_not_gitlab = true
     end
   end
+
+  # Tries to configure git itself
+  #
+  # Returns true if all subcommands were successfull (according to their exit code)
+  # Returns false if any or all subcommands failed.
+  def auto_fix_git_config(options)
+    if !@warned_user_not_gitlab && options['user.email'] != 'example@example.com' # default email should be overridden?
+      command_success = options.map do |name, value|
+        system(%W(#{Gitlab.config.git.bin_path} config --global #{name} #{value}))
+      end
+
+      command_success.all?
+    else
+      false
+    end
+  end
 end
