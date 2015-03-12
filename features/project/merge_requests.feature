@@ -218,3 +218,10 @@ Feature: Project Merge Requests
     And I click link "Edit" for the merge request
     And I preview a description text like "Bug fixed :smile:"
     Then I should see the Markdown write tab
+
+  @javascript
+  Scenario: I search merge request
+    Given I click link "All"
+    When I fill in merge request search with "Fe"
+    Then I should see "Feature NS-03" in merge requests
+    And I should not see "Bug NS-04" in merge requests
