@@ -190,19 +190,19 @@ class Event < ActiveRecord::Base
   end
 
   def tag?
-    data[:ref]["refs/tags"]
+    Gitlab::Git.tag_ref?(data[:ref])
   end
 
   def branch?
-    data[:ref]["refs/heads"]
+    Gitlab::Git.branch_ref?(data[:ref])
   end
 
   def new_ref?
-    commit_from =~ /^00000/
+    Gitlab::Git.blank_ref?(commit_from)
   end
 
   def rm_ref?
-    commit_to =~ /^00000/
+    Gitlab::Git.blank_ref?(commit_to)
   end
 
   def md_ref?
@@ -226,11 +226,11 @@ class Event < ActiveRecord::Base
   end
 
   def branch_name
-    @branch_name ||= data[:ref].gsub("refs/heads/", "")
+    @branch_name ||= Gitlab::Git.ref_name(data[:ref])
   end
 
   def tag_name
-    @tag_name ||= data[:ref].gsub("refs/tags/", "")
+    @tag_name ||= Gitlab::Git.ref_name(data[:ref])
   end
 
   # Max 20 commits from push DESC

@@ -1,0 +1,22 @@
+.global-notifications-form .level-title {
+  font-size: 15px;
+  color: #333;
+  font-weight: bold;
+}
+
+.notification-icon-holder {
+  width: 20px;
+  float: left;
+}
+
+.ns-part {
+  color: $gl-primary;
+}
+
+.ns-watch {
+  color: $gl-success;
+}
+
+.ns-mute {
+  color: $gl-danger;
+}

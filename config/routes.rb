@@ -7,9 +7,8 @@ Gitlab::Application.routes.draw do
                 authorized_applications: 'oauth/authorized_applications',
                 authorizations: 'oauth/authorizations'
   end
-  #
+
   # Search
-  #
   get 'search' => 'search#show'
   get 'search/autocomplete' => 'search#autocomplete', as: :search_autocomplete
 
@@ -33,14 +32,12 @@ Gitlab::Application.routes.draw do
     receive_pack: Gitlab.config.gitlab_shell.receive_pack
   }), at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post]
 
-  #
   # Help
-  #
-
   get 'help'                  => 'help#index'
   get 'help/:category/:file'  => 'help#show', as: :help_page
   get 'help/:category/*file'  => 'help#show'
   get 'help/shortcuts'
+  get 'help/ui'               => 'help#ui'
 
   #
   # Global snippets
@@ -74,7 +71,7 @@ Gitlab::Application.routes.draw do
       get :callback
       get :jobs
     end
-    
+
     resource :gitorious, only: [:create, :new], controller: :gitorious do
       get :status
       get :callback
@@ -211,11 +208,6 @@ Gitlab::Application.routes.draw do
       end
       resources :keys
       resources :emails, only: [:index, :create, :destroy]
-      resources :groups, only: [:index] do
-        member do
-          delete :leave
-        end
-      end
       resource :avatar, only: [:destroy]
     end
   end
@@ -231,9 +223,24 @@ Gitlab::Application.routes.draw do
   #
   resource :dashboard, controller: 'dashboard', only: [:show] do
     member do
-      get :projects
       get :issues
       get :merge_requests
+    end
+
+    scope module: :dashboard do
+      resources :milestones, only: [:index, :show]
+
+      resources :groups, only: [:index] do
+        member do
+          delete :leave
+        end
+      end
+
+      resources :projects, only: [] do
+        collection do
+          get :starred
+        end
+      end
     end
   end
 
@@ -260,7 +267,7 @@ Gitlab::Application.routes.draw do
       resources :ldap_group_links, only: [:index, :create, :destroy]
       resources :group_members, only: [:create, :update, :destroy]
       resource :avatar, only: [:destroy]
-      resources :milestones
+      resources :milestones, only: [:index, :show, :update]
     end
 
     get "/audit_events" => "audit_events#group_log"

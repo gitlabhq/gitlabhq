@@ -43,8 +43,10 @@
     }
   }
 
-  .page-title .new-issue-link {
-    display: none;
+  .page-title {
+    .note_created_ago, .new-issue-link {
+      display: none;
+    }
   }
 
   .issue_edited_ago, .note_edited_ago {

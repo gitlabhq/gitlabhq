@@ -62,19 +62,19 @@ class EventCreateService
     create_event(project, current_user, Event::CREATED)
   end
 
-  def push_ref(project, current_user, ref, action = 'add', prefix = 'refs/heads')
+  def push_ref(project, current_user, ref, action = 'add', prefix = Gitlab::Git::BRANCH_REF_PREFIX)
     commit = project.repository.commit(ref.target)
 
     if action.to_s == 'add'
-      before = '00000000'
+      before = Gitlab::Git::BLANK_SHA
       after = commit.id
     else
       before = commit.id
-      after = '00000000'
+      after = Gitlab::Git::BLANK_SHA
     end
 
     data = {
-      ref: "#{prefix}/#{ref.name}",
+      ref: "#{prefix}#{ref.name}",
       before: before,
       after: after
     }

@@ -1,3 +1,4 @@
+- publicish_project_count = Project.publicish(current_user).count
 %h3.page-title Welcome to GitLab!
 %p.light Self hosted Git management application.
 %hr
@@ -35,7 +36,7 @@
           %i.fa.fa-plus
           New Group
 
--if @publicish_project_count > 0
+-if publicish_project_count > 0
   %hr
   %div
     .dashboard-intro-icon
@@ -43,7 +44,7 @@
     .dashboard-intro-text
       %p.slead
         There are
-        %strong= @publicish_project_count
+        %strong= publicish_project_count
         public projects on this server.
         %br
         Public projects are an easy way to allow everyone to have read-only access.

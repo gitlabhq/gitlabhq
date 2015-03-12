@@ -2,15 +2,20 @@
 #
 # Table name: services
 #
-#  id         :integer          not null, primary key
-#  type       :string(255)
-#  title      :string(255)
-#  project_id :integer
-#  created_at :datetime
-#  updated_at :datetime
-#  active     :boolean          default(FALSE), not null
-#  properties :text
-#  template   :boolean          default(FALSE)
+#  id                    :integer          not null, primary key
+#  type                  :string(255)
+#  title                 :string(255)
+#  project_id            :integer
+#  created_at            :datetime
+#  updated_at            :datetime
+#  active                :boolean          default(FALSE), not null
+#  properties            :text
+#  template              :boolean          default(FALSE)
+#  push_events           :boolean          default(TRUE)
+#  issues_events         :boolean          default(TRUE)
+#  merge_requests_events :boolean          default(TRUE)
+#  tag_push_events       :boolean          default(TRUE)
+#  note_events           :boolean          default(TRUE), not null
 #
 
 class IssueTrackerService < Service
@@ -23,18 +28,6 @@ class IssueTrackerService < Service
 
   def default?
     false
-  end
-
-  def project_url
-    # implement inside child
-  end
-
-  def issues_url
-    # implement inside child
-  end
-
-  def new_issue_url
-    # implement inside child
   end
 
   def create_cross_reference_note
@@ -59,9 +52,9 @@ class IssueTrackerService < Service
       if enabled_in_gitlab_config
         self.properties = {
           title: issues_tracker['title'],
-          project_url: set_project_url,
-          issues_url: issues_tracker['issues_url'],
-          new_issue_url: issues_tracker['new_issue_url']
+          project_url: add_issues_tracker_id(issues_tracker['project_url']),
+          issues_url: add_issues_tracker_id(issues_tracker['issues_url']),
+          new_issue_url: add_issues_tracker_id(issues_tracker['new_issue_url'])
         }
       else
         self.properties = {}
@@ -69,7 +62,13 @@ class IssueTrackerService < Service
     end
   end
 
+  def supported_events
+    %w(push)
+  end
+
   def execute(data)
+    return unless supported_events.include?(data[:object_kind])
+
     message = "#{self.type} was unable to reach #{self.project_url}. Check the url and try again."
     result = false
 
@@ -104,15 +103,15 @@ class IssueTrackerService < Service
     Gitlab.config.issues_tracker[to_param]
   end
 
-  def set_project_url
+  def add_issues_tracker_id(url)
     if self.project
       id = self.project.issues_tracker_id
 
       if id
-        issues_tracker['project_url'].gsub(":issues_tracker_id", id)
+        url = url.gsub(":issues_tracker_id", id)
       end
     end
 
-    issues_tracker['project_url']
+    url
   end
 end

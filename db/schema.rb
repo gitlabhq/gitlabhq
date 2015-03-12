@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150225214822) do
+ActiveRecord::Schema.define(version: 20150306023112) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -291,9 +291,9 @@ ActiveRecord::Schema.define(version: 20150225214822) do
   end
 
   add_index "namespaces", ["created_at", "id"], name: "index_namespaces_on_created_at_and_id", using: :btree
-  add_index "namespaces", ["name"], name: "index_namespaces_on_name", using: :btree
+  add_index "namespaces", ["name"], name: "index_namespaces_on_name", unique: true, using: :btree
   add_index "namespaces", ["owner_id"], name: "index_namespaces_on_owner_id", using: :btree
-  add_index "namespaces", ["path"], name: "index_namespaces_on_path", using: :btree
+  add_index "namespaces", ["path"], name: "index_namespaces_on_path", unique: true, using: :btree
   add_index "namespaces", ["type"], name: "index_namespaces_on_type", using: :btree
 
   create_table "notes", force: true do |t|
@@ -399,7 +399,7 @@ ActiveRecord::Schema.define(version: 20150225214822) do
     t.boolean  "merge_requests_rebase_enabled", default: false
     t.string   "import_type"
     t.string   "import_source"
-    t.boolean  "merge_requests_rebase_default", default: false
+    t.boolean  "merge_requests_rebase_default", default: true
   end
 
   add_index "projects", ["created_at", "id"], name: "index_projects_on_created_at_and_id", using: :btree
@@ -424,9 +424,14 @@ ActiveRecord::Schema.define(version: 20150225214822) do
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "active",     default: false, null: false
+    t.boolean  "active",                default: false, null: false
     t.text     "properties"
-    t.boolean  "template",   default: false
+    t.boolean  "template",              default: false
+    t.boolean  "push_events",           default: true
+    t.boolean  "issues_events",         default: true
+    t.boolean  "merge_requests_events", default: true
+    t.boolean  "tag_push_events",       default: true
+    t.boolean  "note_events",           default: true,  null: false
   end
 
   add_index "services", ["created_at", "id"], name: "index_services_on_created_at_and_id", using: :btree

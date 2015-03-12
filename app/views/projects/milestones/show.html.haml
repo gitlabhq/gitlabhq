@@ -43,8 +43,7 @@
     &nbsp;
     %span.light #{@milestone.percent_complete}% complete
     %span.pull-right= @milestone.expires_at
-  .progress.progress-info
-    .progress-bar{style: "width: #{@milestone.percent_complete}%;"}
+  = milestone_progress_bar(@milestone)
 
 
 %ul.nav.nav-tabs

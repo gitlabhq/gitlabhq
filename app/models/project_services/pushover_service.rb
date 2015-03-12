@@ -2,15 +2,20 @@
 #
 # Table name: services
 #
-#  id         :integer          not null, primary key
-#  type       :string(255)
-#  title      :string(255)
-#  project_id :integer
-#  created_at :datetime
-#  updated_at :datetime
-#  active     :boolean          default(FALSE), not null
-#  properties :text
-#  template   :boolean          default(FALSE)
+#  id                    :integer          not null, primary key
+#  type                  :string(255)
+#  title                 :string(255)
+#  project_id            :integer
+#  created_at            :datetime
+#  updated_at            :datetime
+#  active                :boolean          default(FALSE), not null
+#  properties            :text
+#  template              :boolean          default(FALSE)
+#  push_events           :boolean          default(TRUE)
+#  issues_events         :boolean          default(TRUE)
+#  merge_requests_events :boolean          default(TRUE)
+#  tag_push_events       :boolean          default(TRUE)
+#  note_events           :boolean          default(TRUE), not null
 #
 
 class PushoverService < Service
@@ -76,21 +81,27 @@ class PushoverService < Service
     ]
   end
 
-  def execute(push_data)
-    ref = push_data[:ref].gsub('refs/heads/', '')
-    before = push_data[:before]
-    after = push_data[:after]
+  def supported_events
+    %w(push)
+  end
 
-    if before.include?('000000')
-      message = "#{push_data[:user_name]} pushed new branch \"#{ref}\"."
-    elsif after.include?('000000')
-      message = "#{push_data[:user_name]} deleted branch \"#{ref}\"."
+  def execute(data)
+    return unless supported_events.include?(data[:object_kind])
+
+    ref = Gitlab::Git.ref_name(data[:ref])
+    before = data[:before]
+    after = data[:after]
+
+    if Gitlab::Git.blank_ref?(before)
+      message = "#{data[:user_name]} pushed new branch \"#{ref}\"."
+    elsif Gitlab::Git.blank_ref?(after)
+      message = "#{data[:user_name]} deleted branch \"#{ref}\"."
     else
-      message = "#{push_data[:user_name]} push to branch \"#{ref}\"."
+      message = "#{data[:user_name]} push to branch \"#{ref}\"."
     end
 
-    if push_data[:total_commits_count] > 0
-      message << "\nTotal commits count: #{push_data[:total_commits_count]}"
+    if data[:total_commits_count] > 0
+      message << "\nTotal commits count: #{data[:total_commits_count]}"
     end
 
     pushover_data = {
@@ -100,7 +111,7 @@ class PushoverService < Service
       priority: priority,
       title: "#{project.name_with_namespace}",
       message: message,
-      url: push_data[:repository][:homepage],
+      url: data[:repository][:homepage],
       url_title: "See project #{project.name_with_namespace}"
     }
 

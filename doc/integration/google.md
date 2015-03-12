@@ -55,7 +55,7 @@ To enable the Google OAuth2 OmniAuth provider you must register your application
           "name" => "google_oauth2",
           "app_id" => "YOUR_APP_ID",
           "app_secret" => "YOUR_APP_SECRET",
-          "args" => { "access_type" => "offline", "approval_prompt" => '' } }
+          "args" => { "access_type" => "offline", "approval_prompt" => '' }
         }
       ]
     ```

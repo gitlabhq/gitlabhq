@@ -57,7 +57,6 @@
   border: 1px solid #ddd;
   min-height: 100px;
   padding: 5px;
-  font-size: 14px;
   box-shadow: none;
 }
 
@@ -76,4 +75,13 @@
       border: 1px solid #DDD;
     }
   }
+}
+
+.markdown-area {
+  background: #FFF;
+  border: 1px solid #ddd;
+  min-height: 100px;
+  padding: 5px;
+  box-shadow: none;
+  width: 100%;
 }

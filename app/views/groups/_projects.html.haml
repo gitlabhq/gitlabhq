@@ -1,23 +1,10 @@
 .panel.panel-default
-  .panel-heading
-    Projects (#{projects.count})
-    - if can? current_user, :create_projects, @group
-      .panel-head-actions
-        = link_to new_project_path(namespace_id: @group.id), class: "btn btn-new" do
-          %i.fa.fa-plus
-          New project
-  %ul.well-list
-    - if projects.blank?
-      .nothing-here-block This group has no projects yet
-    - projects.each do |project|
-      %li.project-row
-        = link_to project_path(project), class: dom_class(project) do
-          .dash-project-avatar
-            = project_icon(project, alt: '', class: 'avatar s40')
-          .dash-project-access-icon
-            = visibility_level_icon(project.visibility_level)
-          %span.str-truncated
-            %span.project-name
-              = project.name
-          %span.arrow
-            %i.fa.fa-angle-right
+  .panel-heading.clearfix
+    .input-group
+      = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control'
+      - if can? current_user, :create_projects, @group
+        .input-group-addon.dash-new-project
+          = link_to new_project_path(namespace_id: @group.id) do
+            %strong New project
+
+  = render 'shared/projects_list', projects: @projects, projects_limit: 20

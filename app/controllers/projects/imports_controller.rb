@@ -37,7 +37,7 @@ class Projects::ImportsController < Projects::ApplicationController
   private
 
   def require_no_repo
-    if @project.repository_exists?
+    if @project.repository_exists? && !@project.import_in_progress?
       redirect_to(namespace_project_path(@project.namespace, @project)) and return
     end
   end

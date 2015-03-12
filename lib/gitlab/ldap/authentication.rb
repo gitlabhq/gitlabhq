@@ -50,7 +50,7 @@ module Gitlab
       end
 
       def user_filter(login)
-        filter = Net::LDAP::Filter.eq(config.uid, login)
+        filter = Net::LDAP::Filter.equals(config.uid, login)
 
         # Apply LDAP user filter if present
         if config.user_filter.present?

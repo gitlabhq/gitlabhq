@@ -1,4 +1,4 @@
-- if @has_authorized_projects
+- if @projects.any?
   .dashboard.row
     %section.activities.col-md-8
       = render 'activities'
