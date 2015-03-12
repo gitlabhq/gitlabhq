@@ -664,19 +664,19 @@ describe GitlabMarkdownHelper do
 
     it "should generate absolute urls for emoji" do
       expect(markdown(':smile:')).to(
-        include(%(src="#{Gitlab.config.gitlab.url}/assets/emoji/smile.png))
+        include(%(src="#{Gitlab.config.gitlab.url}/assets/emoji/#{Emoji.emoji_filename('smile')}.png))
       )
     end
 
     it "should generate absolute urls for emoji if relative url is present" do
       allow(Gitlab.config.gitlab).to receive(:url).and_return('http://localhost/gitlab/root')
-      expect(markdown(":smile:")).to include("src=\"http://localhost/gitlab/root/assets/emoji/smile.png")
+      expect(markdown(":smile:")).to include("src=\"http://localhost/gitlab/root/assets/emoji/#{Emoji.emoji_filename('smile')}.png")
     end
 
     it "should generate absolute urls for emoji if asset_host is present" do
       allow(Gitlab::Application.config).to receive(:asset_host).and_return("https://cdn.example.com")
       ActionView::Base.any_instance.stub_chain(:config, :asset_host).and_return("https://cdn.example.com")
-      expect(markdown(":smile:")).to include("src=\"https://cdn.example.com/assets/emoji/smile.png")
+      expect(markdown(":smile:")).to include("src=\"https://cdn.example.com/assets/emoji/#{Emoji.emoji_filename('smile')}.png")
     end
 
 
