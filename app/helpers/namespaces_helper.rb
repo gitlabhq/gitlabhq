@@ -28,7 +28,7 @@ module NamespacesHelper
 
   def namespace_icon(namespace, size = 40)
     if namespace.kind_of?(Group)
-      group_icon(namespace.path)
+      group_icon(namespace)
     else
       avatar_icon(namespace.owner.email, size)
     end
