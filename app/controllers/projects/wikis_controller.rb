@@ -7,7 +7,7 @@ class Projects::WikisController < Projects::ApplicationController
   before_filter :load_project_wiki
 
   def pages
-    @wiki_pages = Kaminari.paginate_array(@project_wiki.pages).page(params[:page]).per(30)
+    @wiki_pages = Kaminari.paginate_array(@project_wiki.pages).page(params[:page]).per(PER_PAGE)
   end
 
   def show

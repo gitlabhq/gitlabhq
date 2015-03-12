@@ -20,7 +20,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     terms = params['issue_search']
     @merge_requests = get_merge_requests_collection
     @merge_requests = @merge_requests.full_search(terms) if terms.present?
-    @merge_requests = @merge_requests.page(params[:page]).per(20)
+    @merge_requests = @merge_requests.page(params[:page]).per(PER_PAGE)
 
     respond_to do |format|
       format.html

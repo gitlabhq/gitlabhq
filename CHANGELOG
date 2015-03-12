@@ -60,6 +60,7 @@ v 7.9.0 (unreleased)
   - Remove annoying notice messages when create/update merge request
   - Allow smb:// links in Markdown text.
   - Filter merge request by title or description at Merge Requests page
+  - Block user if he/she was blocked in Active Directory
 
 v 7.8.4
   - Fix issue_tracker_id substitution in custom issue trackers
