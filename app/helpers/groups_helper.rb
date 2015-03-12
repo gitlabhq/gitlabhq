@@ -40,4 +40,16 @@ module GroupsHelper
       false
     end
   end
+
+  def group_icon(group)
+    if group.is_a?(String)
+      group = Group.find_by(path: group)
+    end
+
+    if group && group.avatar.present?
+      group.avatar.url
+    else
+      image_path('no_group_avatar.png')
+    end
+  end
 end
