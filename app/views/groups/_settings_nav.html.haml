@@ -15,6 +15,11 @@
         %i.fa.fa-exchange
         %span
           LDAP Groups
+  = nav_link(controller: :hooks) do
+    = link_to group_hooks_path(@group) do
+      %i.fa.fa-link
+      %span
+        Web Hooks
   = nav_link(controller: :audit_events) do
     = link_to group_audit_events_path(@group) do
       %i.fa.fa-file-text-o

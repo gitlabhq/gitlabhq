@@ -4,6 +4,8 @@ v 7.9.0 (unreleased)
   - Check if LDAP admin group exists before querying for user membership
   - Use one custom header logo for all GitLab themes in appearance settings
   - Escape wildcards when searching LDAP by group name.
+v 7.9.0
+  - Group level Web Hooks
 
 v 7.8.0
   - Improved Jira issue closing integration

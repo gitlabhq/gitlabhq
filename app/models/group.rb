@@ -22,6 +22,7 @@ class Group < Namespace
   has_many :project_group_links, dependent: :destroy
   has_many :shared_projects, through: :project_group_links, source: :project
   has_many :ldap_group_links, foreign_key: 'group_id', dependent: :destroy
+  has_many :hooks, dependent: :destroy, class_name: 'GroupHook'
 
   validate :avatar_type, if: ->(user) { user.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
@@ -117,5 +118,9 @@ class Group < Namespace
 
   def system_hook_service
     SystemHooksService.new
+  end
+
+  def first_non_empty_project
+    projects.detect{ |project| !project.empty_repo? }
   end
 end

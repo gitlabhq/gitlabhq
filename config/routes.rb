@@ -271,6 +271,12 @@ Gitlab::Application.routes.draw do
     end
 
     get "/audit_events" => "audit_events#group_log"
+
+    resources :hooks, only: [:index, :create, :destroy], constraints: { id: /\d+/ }, module: :groups do
+      member do
+        get :test
+      end
+    end
   end
 
   get  'unsubscribes/:email', to: 'unsubscribes#show', as: :unsubscribe
