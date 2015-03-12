@@ -108,45 +108,49 @@
       .col-md-6
         - unless @user == current_user
           - if @user.blocked?
-            .alert.alert-info
-              %h4 This user is blocked
-              %p Blocking user has the following effects:
-              %ul
-                %li User will not be able to login
-                %li User will not be able to access git repositories
-                %li User will be removed from joined projects and groups
-                %li Personal projects will be left
-                %li Owned groups will be left
-              %br
-              = link_to 'Unblock user', unblock_admin_user_path(@user), method: :put, class: "btn btn-new", data: { confirm: 'Are you sure?' }
+            .panel.panel-info
+              .panel-heading
+                This user is blocked
+              .panel-body
+                %p Blocking user has the following effects:
+                %ul
+                  %li User will not be able to login
+                  %li User will not be able to access git repositories
+                  %li Personal projects will be left
+                  %li Owned groups will be left
+                %br
+                = link_to 'Unblock user', unblock_admin_user_path(@user), method: :put, class: "btn btn-info", data: { confirm: 'Are you sure?' }
           - else
-            .alert.alert-warning
-              %h4 Block this user
-              %p Blocking user has the following effects:
-              %ul
-                %li User will not be able to login
-                %li User will not be able to access git repositories
-                %li User will be removed from joined projects and groups
-                %li Personal projects will be left
-                %li Owned groups will be left
-              %br
-              = link_to 'Block user', block_admin_user_path(@user), data: { confirm: 'USER WILL BE BLOCKED! Are you sure?' }, method: :put, class: "btn btn-remove"
+            .panel.panel-warning
+              .panel-heading
+                Block this user
+              .panel-body
+                %p Blocking user has the following effects:
+                %ul
+                  %li User will not be able to login
+                  %li User will not be able to access git repositories
+                  %li User will be removed from joined projects and groups
+                  %li Personal projects will be left
+                  %li Owned groups will be left
+                %br
+                = link_to 'Block user', block_admin_user_path(@user), data: { confirm: 'USER WILL BE BLOCKED! Are you sure?' }, method: :put, class: "btn btn-warning"
 
-          .alert.alert-danger
-            %h4
+          .panel.panel-danger
+            .panel-heading
               Remove user
-            %p Deleting a user has the following effects:
-            %ul
-              %li All user content like authored issues, snippets, comments will be removed
-              - rp = @user.personal_projects.count
-              - unless rp.zero?
-                %li #{pluralize rp, 'personal project'} will be removed and cannot be restored
-              - if @user.solo_owned_groups.present?
-                %li
-                  Next groups with all content will be removed:
-                  %strong #{@user.solo_owned_groups.map(&:name).join(', ')}
-            %br
-            = link_to 'Remove user', [:admin, @user], data: { confirm: "USER #{@user.name} WILL BE REMOVED! Are you sure?" }, method: :delete, class: "btn btn-remove"
+            .panel-body
+              %p Deleting a user has the following effects:
+              %ul
+                %li All user content like authored issues, snippets, comments will be removed
+                - rp = @user.personal_projects.count
+                - unless rp.zero?
+                  %li #{pluralize rp, 'personal project'} will be removed and cannot be restored
+                - if @user.solo_owned_groups.present?
+                  %li
+                    Next groups with all content will be removed:
+                    %strong #{@user.solo_owned_groups.map(&:name).join(', ')}
+              %br
+              = link_to 'Remove user', [:admin, @user], data: { confirm: "USER #{@user.name} WILL BE REMOVED! Are you sure?" }, method: :delete, class: "btn btn-remove"
 
   #profile.tab-pane
     .row

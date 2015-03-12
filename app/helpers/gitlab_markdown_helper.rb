@@ -31,7 +31,9 @@ module GitlabMarkdownHelper
   def markdown(text, options={})
     unless (@markdown and options == @options)
       @options = options
-      gitlab_renderer = Redcarpet::Render::GitlabHTML.new(self, {
+      gitlab_renderer = Redcarpet::Render::GitlabHTML.new(self,
+                                                          user_color_scheme_class,
+                                                          {
                             # see https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch-
                             filter_html: true,
                             with_toc_data: true,

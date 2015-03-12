@@ -11,12 +11,17 @@
  *= require cal-heatmap
 */
 
-@import "main/*";
+
+@import "base/variables";
+@import "base/mixins";
+@import "base/layout";
+
 
 /**
  * Customized Twitter bootstrap
  */
-@import 'gl_bootstrap';
+@import 'base/gl_variables';
+@import 'base/gl_bootstrap';
 
 /**
  * NProgress load bar css
@@ -39,7 +44,7 @@
  * Page specific styles (issues, projects etc):
  */
 
-@import "sections/*";
+@import "pages/*";
 
 /**
  * Code highlight

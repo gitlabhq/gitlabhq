@@ -21,6 +21,7 @@ Triggered when you push to the repository except when pushing tags.
   "ref": "refs/heads/master",
   "user_id": 4,
   "user_name": "John Smith",
+  "user_email": "john@example.com",
   "project_id": 15,
   "repository": {
     "name": "Diaspora",

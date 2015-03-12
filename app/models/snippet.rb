@@ -59,6 +59,10 @@ class Snippet < ActiveRecord::Base
     content
   end
 
+  def hook_attrs
+    attributes
+  end
+
   def size
     0
   end

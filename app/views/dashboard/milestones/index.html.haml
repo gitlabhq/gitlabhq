@@ -1,0 +1,38 @@
+%h3.page-title
+  Milestones
+  %span.pull-right #{@dashboard_milestones.count} milestones
+
+%p.light
+  List all milestones from all projects you have access to.
+
+%hr
+
+= render 'shared/milestones_filter'
+.milestones
+  .panel.panel-default
+    %ul.well-list
+      - if @dashboard_milestones.blank?
+        %li
+          .nothing-here-block No milestones to show
+      - else
+        - @dashboard_milestones.each do |milestone|
+          %li{class: "milestone milestone-#{milestone.closed? ? 'closed' : 'open'}", id: dom_id(milestone.milestones.first) }
+            %h4
+              = link_to_gfm truncate(milestone.title, length: 100), dashboard_milestone_path(milestone.safe_title, title: milestone.title)
+            %div
+              %div
+                = link_to dashboard_milestone_path(milestone.safe_title, title: milestone.title) do
+                  = pluralize milestone.issue_count, 'Issue'
+                &nbsp;
+                = link_to dashboard_milestone_path(milestone.safe_title, title: milestone.title) do
+                  = pluralize milestone.merge_requests_count, 'Merge Request'
+                &nbsp;
+                %span.light #{milestone.percent_complete}% complete
+              = milestone_progress_bar(milestone)
+              %div
+                %br
+                - milestone.milestones.each do |milestone|
+                  = link_to namespace_project_milestone_path(milestone.project.namespace, milestone.project, milestone) do
+                    %span.label.label-default
+                      = milestone.project.name_with_namespace
+  = paginate @dashboard_milestones, theme: "gitlab"

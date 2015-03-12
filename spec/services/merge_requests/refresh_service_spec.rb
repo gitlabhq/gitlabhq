@@ -61,7 +61,7 @@ describe MergeRequests::RefreshService do
 
       it { expect(@merge_request.notes).to be_empty }
       it { expect(@merge_request).to be_open }
-      it { expect(@fork_merge_request.notes.last.note).to include('new commit') }
+      it { expect(@fork_merge_request.notes.last.note).to include('Added 4 commits') }
       it { expect(@fork_merge_request).to be_open }
     end
 

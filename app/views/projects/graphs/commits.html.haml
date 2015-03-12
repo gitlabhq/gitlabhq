@@ -1,7 +1,7 @@
 = render 'head'
 
 %p.lead
-  Commits statistic for
+  Commit statistics for
   %strong #{@repository.root_ref}
   #{@commits_graph.start_date.strftime('%b %d')} - #{@commits_graph.end_date.strftime('%b %d')}
 

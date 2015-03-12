@@ -100,5 +100,4 @@ module Mentionable
     preexisting = references(p, original)
     create_cross_references!(p, a, preexisting)
   end
-
 end

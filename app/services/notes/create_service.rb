@@ -17,10 +17,22 @@ module Notes
           note.references.each do |mentioned|
             Note.create_cross_reference_note(mentioned, note.noteable, note.author, note.project)
           end
+
+          execute_hooks(note)
         end
       end
 
       note
+    end
+
+    def hook_data(note)
+      Gitlab::NoteDataBuilder.build(note, current_user)
+    end
+
+    def execute_hooks(note)
+      note_data = hook_data(note)
+      # TODO: Support Webhooks
+      note.project.execute_services(note_data, :note_hooks)
     end
   end
 end

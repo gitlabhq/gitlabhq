@@ -19,4 +19,7 @@ class HelpController < ApplicationController
 
   def shortcuts
   end
+
+  def ui
+  end
 end

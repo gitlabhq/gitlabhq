@@ -3,12 +3,22 @@
     = link_to root_path, title: 'Home', class: 'shortcuts-activity' do
       %i.fa.fa-dashboard
       %span
-        Activity
-  = nav_link(path: 'dashboard#projects') do
-    = link_to projects_dashboard_path, title: 'Projects', class: 'shortcuts-projects' do
-      %i.fa.fa-cube
+        Your Projects
+  = nav_link(path: 'projects#starred') do
+    = link_to starred_dashboard_projects_path, title: 'Starred Projects' do
+      %i.fa.fa-star
       %span
-        Projects
+        Starred Projects
+  = nav_link(controller: :groups) do
+    = link_to dashboard_groups_path, title: 'Groups' do
+      %i.fa.fa-group
+      %span
+        Groups
+  = nav_link(controller: :milestones) do
+    = link_to dashboard_milestones_path, title: 'Milestones' do
+      %i.fa.fa-clock-o
+      %span
+        Milestones
   = nav_link(path: 'dashboard#issues') do
     = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'shortcuts-issues' do
       %i.fa.fa-exclamation-circle
@@ -26,4 +36,3 @@
       %i.fa.fa-question-circle
       %span
         Help
-

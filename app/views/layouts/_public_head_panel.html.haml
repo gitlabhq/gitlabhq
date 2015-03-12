@@ -12,7 +12,7 @@
 
       - unless current_controller?('sessions')
         .pull-right.hidden-xs
-          = link_to "Sign in", new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in btn-new'
+          = link_to "Sign in", new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in btn-new append-right-10'
 
         .navbar-collapse.collapse
           %ul.nav.navbar-nav

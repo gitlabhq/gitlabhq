@@ -49,6 +49,7 @@ describe GitPushService do
 
     subject { @push_data }
 
+    it { is_expected.to include(object_kind: 'push') }
     it { is_expected.to include(before: @oldrev) }
     it { is_expected.to include(after: @newrev) }
     it { is_expected.to include(ref: @ref) }
@@ -195,15 +196,6 @@ describe GitPushService do
       expect(Note).to receive(:create_cross_reference_note).with(issue, commit, commit_author, project)
 
       service.execute(project, user, @blankrev, @newrev, 'refs/heads/other')
-    end
-
-    it "finds references in the first push to a default branch" do
-      allow(project.repository).to receive(:commits_between).with(@blankrev, @newrev).and_return([])
-      allow(project.repository).to receive(:commits).with(@newrev).and_return([commit])
-
-      expect(Note).to receive(:create_cross_reference_note).with(issue, commit, commit_author, project)
-
-      service.execute(project, user, @blankrev, @newrev, 'refs/heads/master')
     end
   end
 

@@ -13,6 +13,8 @@
 #  created_at             :datetime
 #  updated_at             :datetime
 #  home_page_url          :string(255)
+#  default_branch_protection :integer          default(2)
+#  twitter_sharing_enabled   :boolean          default(TRUE)
 #  help_text              :text
 #
 

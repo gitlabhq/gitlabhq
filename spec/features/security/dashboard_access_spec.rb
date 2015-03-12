@@ -25,8 +25,8 @@ describe "Dashboard access", feature: true  do
     it { is_expected.to be_denied_for :visitor }
   end
 
-  describe "GET /dashboard/projects" do
-    subject { projects_dashboard_path }
+  describe "GET /dashboard/projects/starred" do
+    subject { starred_dashboard_projects_path }
 
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_allowed_for :user }
@@ -51,5 +51,13 @@ describe "Dashboard access", feature: true  do
     it { expect(new_group_path).to be_allowed_for :admin }
     it { expect(new_group_path).to be_allowed_for :user }
     it { expect(new_group_path).to be_denied_for :visitor }
+  end
+
+  describe "GET /profile/groups" do
+    subject { dashboard_groups_path }
+
+    it { is_expected.to be_allowed_for :admin }
+    it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_denied_for :visitor }
   end
 end

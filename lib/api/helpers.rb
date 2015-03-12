@@ -83,7 +83,10 @@ module API
     end
 
     def authenticate_by_gitlab_shell_token!
-      unauthorized! unless secret_token == params['secret_token'].try(:chomp)
+      input = params['secret_token'].try(:chomp)
+      unless Devise.secure_compare(secret_token, input)
+        unauthorized!
+      end
     end
 
     def authenticated_as_admin!

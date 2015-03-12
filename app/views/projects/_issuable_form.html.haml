@@ -50,6 +50,7 @@
         = f.select(:milestone_id, milestone_options(issuable),
           { include_blank: 'Select milestone' }, { class: 'select2' })
       - else
+        .prepend-top-10
         %span.light No open milestones available.
       &nbsp;
       - if can? current_user, :admin_milestone, issuable.project
@@ -63,6 +64,7 @@
       = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
         { selected: issuable.label_ids }, multiple: true, class: 'select2'
     - else
+      .prepend-top-10
       %span.light No labels yet.
     &nbsp;
     - if can? current_user, :admin_label, issuable.project

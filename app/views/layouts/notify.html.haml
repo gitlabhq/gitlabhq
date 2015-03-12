@@ -16,6 +16,18 @@
       font-size:small;
       color:#777
     }
+    pre.commit-message {
+      white-space: pre-wrap;
+    }
+    .file-stats a {
+      text-decoration: none;
+    }
+    .file-stats .new-file {
+      color: #090;
+    }
+    .file-stats .deleted-file {
+      color: #B00;
+    }
     #{add_email_highlight_css}
   %body
     %div.content
@@ -27,5 +39,5 @@
         - if @target_url
           #{link_to "View it on GitLab", @target_url}
           = email_action @target_url
-        - if @project
+        - if @project && !@disable_footer
           You're receiving this notification because you are a member of the #{link_to_unless @target_url, @project.name_with_namespace, namespace_project_url(@project.namespace, @project)} project team.

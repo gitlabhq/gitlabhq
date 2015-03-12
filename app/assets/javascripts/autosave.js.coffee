@@ -14,7 +14,11 @@ class @Autosave
   restore: ->
     return unless window.localStorage?
 
-    text = window.localStorage.getItem @key
+    try
+      text = window.localStorage.getItem @key
+    catch
+      return
+
     @field.val text if text?.length > 0
     @field.trigger "input"    
 
@@ -23,11 +27,13 @@ class @Autosave
 
     text = @field.val()
     if text?.length > 0
-      window.localStorage.setItem @key, text
+      try
+        window.localStorage.setItem @key, text
     else
       @reset()
 
   reset: ->
     return unless window.localStorage?
 
-    window.localStorage.removeItem @key
+    try 
+      window.localStorage.removeItem @key

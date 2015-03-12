@@ -1,10 +1,10 @@
 module MergeRequests
   class RefreshService < MergeRequests::BaseService
     def execute(oldrev, newrev, ref)
-      return true unless ref =~ /heads/
+      return true unless Gitlab::Git.branch_ref?(ref)
 
       @oldrev, @newrev = oldrev, newrev
-      @branch_name = ref.gsub("refs/heads/", "")
+      @branch_name = Gitlab::Git.ref_name(ref)
       @fork_merge_requests = @project.fork_merge_requests.opened
       @commits = @project.repository.commits_between(oldrev, newrev)
 
@@ -82,8 +82,14 @@ module MergeRequests
       merge_requests = filter_merge_requests(merge_requests)
 
       merge_requests.each do |merge_request|
+        mr_commit_ids = Set.new(merge_request.commits.map(&:id))
+
+        new_commits, existing_commits = @commits.partition do |commit|
+          mr_commit_ids.include?(commit.id)
+        end
+
         Note.create_new_commits_note(merge_request, merge_request.project,
-                                     @current_user, @commits)
+                                     @current_user, new_commits, existing_commits)
       end
     end
 

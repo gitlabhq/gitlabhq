@@ -30,6 +30,7 @@ FactoryGirl.define do
     factory :note_on_issue, traits: [:on_issue], aliases: [:votable_note]
     factory :note_on_merge_request, traits: [:on_merge_request]
     factory :note_on_merge_request_diff, traits: [:on_merge_request, :on_diff]
+    factory :note_on_project_snippet, traits: [:on_project_snippet]
 
     trait :on_commit do
       project factory: :project
@@ -50,6 +51,11 @@ FactoryGirl.define do
     trait :on_issue do
       noteable_id 1
       noteable_type "Issue"
+    end
+
+    trait :on_project_snippet do
+      noteable_id 1
+      noteable_type "Snippet"
     end
 
     trait :with_attachment do

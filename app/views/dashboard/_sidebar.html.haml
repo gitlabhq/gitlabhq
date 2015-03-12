@@ -1,18 +1,3 @@
-%ul.nav.nav-tabs.dash-sidebar-tabs
-  %li.active
-    = link_to '#projects', 'data-toggle' => 'tab', id: 'sidebar-projects-tab' do
-      Projects
-      %span.badge= @projects_count
-  %li
-    = link_to '#groups', 'data-toggle' => 'tab', id: 'sidebar-groups-tab' do
-      Groups
-      %span.badge= @groups.count
-
-.tab-content
-  .tab-pane.active#projects
-    = render "projects", projects: @projects
-  .tab-pane#groups
-    = render "groups", groups: @groups
-
+= render "dashboard/projects", projects: @projects
 .prepend-top-20
   = render 'shared/promo'

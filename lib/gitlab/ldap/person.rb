@@ -9,10 +9,12 @@ module Gitlab
       attr_accessor :entry, :provider
 
       def self.find_by_uid(uid, adapter)
+        uid = Net::LDAP::Filter.escape(uid)
         adapter.user(adapter.config.uid, uid)
       end
 
       def self.find_by_dn(dn, adapter)
+        dn = Net::LDAP::Filter.escape(dn)
         adapter.user('dn', dn)
       end
 

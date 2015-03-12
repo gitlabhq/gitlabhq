@@ -18,4 +18,27 @@ describe Repository do
 
     it { is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8') }
   end
+
+  context :timestamps_by_user_log do
+    before do
+      Date.stub(:today).and_return(Date.new(2015, 03, 01))
+    end
+
+    describe 'single e-mail for user' do
+      let(:user) { create(:user, email: sample_commit.author_email) }
+
+      subject { repository.timestamps_by_user_log(user) }
+
+      it { is_expected.to eq(["2014-08-06", "2014-07-31", "2014-07-31"]) }
+    end
+
+    describe 'multiple emails for user' do
+      let(:email_alias) { create(:email, email: another_sample_commit.author_email) }
+      let(:user) { create(:user, email: sample_commit.author_email, emails: [email_alias]) }
+
+      subject { repository.timestamps_by_user_log(user) }
+
+      it { is_expected.to eq(["2015-01-10", "2014-08-06", "2014-07-31", "2014-07-31"]) }
+    end
+  end
 end
