@@ -152,6 +152,10 @@ FactoryGirl.define do
     url
   end
 
+  factory :group_hook do
+    url
+  end
+
   factory :project_snippet do
     project
     author
