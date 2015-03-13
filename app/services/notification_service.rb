@@ -194,11 +194,11 @@ class NotificationService
     project_members = project_member_notification(project)
 
     users_with_project_level_global = project_member_notification(project, Notification::N_GLOBAL)
-    users_with_group_level_global = users_group_notification(project, Notification::N_GLOBAL)
+    users_with_group_level_global = group_member_notification(project, Notification::N_GLOBAL)
     users = users_with_global_level_watch([users_with_project_level_global, users_with_group_level_global].flatten.uniq)
 
     users_with_project_setting = select_project_member_setting(project, users_with_project_level_global, users)
-    users_with_group_setting = select_users_group_setting(project, project_members, users_with_group_level_global, users)
+    users_with_group_setting = select_group_member_setting(project, project_members, users_with_group_level_global, users)
 
     User.where(id: users_with_project_setting.concat(users_with_group_setting).uniq).to_a
   end
@@ -213,7 +213,7 @@ class NotificationService
     end
   end
 
-  def users_group_notification(project, notification_level)
+  def group_member_notification(project, notification_level)
     if project.group
       project.group.group_members.where(notification_level: notification_level).pluck(:user_id)
     else
@@ -243,8 +243,8 @@ class NotificationService
   end
 
   # Build a list of users based on group notification settings
-  def select_users_group_setting(project, project_members, global_setting, users_global_level_watch)
-    uids = users_group_notification(project, Notification::N_WATCH)
+  def select_group_member_setting(project, project_members, global_setting, users_global_level_watch)
+    uids = group_member_notification(project, Notification::N_WATCH)
 
     # Group setting is watch, add to users list if user is not project member
     users = []

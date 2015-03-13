@@ -11,10 +11,10 @@
 .panel.panel-default
   .panel-heading
     %strong Groups
-    (#{@user_groups.count})
+    (#{@group_members.count})
   %ul.well-list
-    - @user_groups.each do |user_group|
-      - group = user_group.group
+    - @group_members.each do |group_member|
+      - group = group_member.group
       %li
         .pull-right
           - if can?(current_user, :manage_group, group)
@@ -22,7 +22,7 @@
               %i.fa.fa-cogs
               Settings
 
-          - if can?(current_user, :destroy, user_group)
+          - if can?(current_user, :destroy_group_member, group_member)
             = link_to leave_dashboard_group_path(group), data: { confirm: leave_group_message(group.name) }, method: :delete, class: "btn-sm btn btn-grouped", title: 'Remove user from group' do
               %i.fa.fa-sign-out
               Leave
@@ -32,9 +32,9 @@
           %strong= group.name
 
         as
-        %strong #{user_group.human_access}
+        %strong #{group_member.human_access}
 
         %div.light
           #{pluralize(group.projects.count, "project")}, #{pluralize(group.users.count, "user")}
 
-= paginate @user_groups
+= paginate @group_members

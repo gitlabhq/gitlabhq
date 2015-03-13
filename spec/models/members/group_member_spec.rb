@@ -28,18 +28,18 @@ describe GroupMember do
 
     describe "#after_update" do
       before do
-        @membership = create :group_member
-        @membership.stub(notification_service: double('NotificationService').as_null_object)
+        @group_member = create :group_member
+        @group_member.stub(notification_service: double('NotificationService').as_null_object)
       end
 
       it "should send email to user" do
-        expect(@membership).to receive(:notification_service)
-        @membership.update_attribute(:access_level, GroupMember::MASTER)
+        expect(@group_member).to receive(:notification_service)
+        @group_member.update_attribute(:access_level, GroupMember::MASTER)
       end
 
       it "does not send an email when the access level has not changed" do
-        expect(@membership).not_to receive(:notification_service)
-        @membership.update_attribute(:access_level, GroupMember::OWNER)
+        expect(@group_member).not_to receive(:notification_service)
+        @group_member.update_attribute(:access_level, GroupMember::OWNER)
       end
     end
   end

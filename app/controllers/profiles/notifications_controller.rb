@@ -14,9 +14,9 @@ class Profiles::NotificationsController < ApplicationController
     @saved = if type == 'global'
                current_user.update_attributes(user_params)
              elsif type == 'group'
-               users_group = current_user.group_members.find(params[:notification_id])
-               users_group.notification_level = params[:notification_level]
-               users_group.save
+               group_member = current_user.group_members.find(params[:notification_id])
+               group_member.notification_level = params[:notification_level]
+               group_member.save
              else
                project_member = current_user.project_members.find(params[:notification_id])
                project_member.notification_level = params[:notification_level]

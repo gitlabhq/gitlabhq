@@ -18,10 +18,10 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   def destroy
-    @users_group = @group.group_members.find(params[:id])
+    @group_member = @group.group_members.find(params[:id])
 
-    if can?(current_user, :destroy, @users_group)  # May fail if last owner.
-      @users_group.destroy
+    if can?(current_user, :destroy_group_member, @group_member)  # May fail if last owner.
+      @group_member.destroy
       respond_to do |format|
         format.html { redirect_to members_group_path(@group), notice: 'User was  successfully removed from group.' }
         format.js { render nothing: true }
