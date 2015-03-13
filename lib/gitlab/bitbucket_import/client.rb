@@ -92,7 +92,7 @@ module Gitlab
       end
 
       def bitbucket_options
-        OmniAuth::Strategies::Bitbucket.default_options[:client_options]
+        OmniAuth::Strategies::Bitbucket.default_options[:client_options].dup
       end
     end
   end

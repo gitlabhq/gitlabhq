@@ -71,7 +71,7 @@ module Gitlab
       end
 
       def gitlab_options
-        OmniAuth::Strategies::GitLab.default_options[:client_options]
+        OmniAuth::Strategies::GitLab.default_options[:client_options].dup
       end
     end
   end
