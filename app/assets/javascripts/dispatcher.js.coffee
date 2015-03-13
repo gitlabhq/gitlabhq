@@ -52,6 +52,7 @@ class Dispatcher
         new ZenMode()
       when 'projects:merge_requests:index'
         shortcut_handler = new ShortcutsNavigation()
+        MergeRequests.init()
       when 'dashboard:show'
         new Dashboard()
         new Activities()
