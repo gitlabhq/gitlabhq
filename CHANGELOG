@@ -64,6 +64,7 @@ v 7.9.0 (unreleased)
   - Block user if he/she was blocked in Active Directory
   - Fix import pages not working after first load.
   - Use custom LDAP label in LDAP signin form.
+  - Execute hooks and services when branch or tag is created or deleted through web interface.
 
 v 7.8.4
   - Fix issue_tracker_id substitution in custom issue trackers

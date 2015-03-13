@@ -53,7 +53,8 @@ class GitPushService
         process_commit_messages(ref)
       end
 
-      @push_data = post_receive_data(oldrev, newrev, ref)
+      @push_data = build_push_data(oldrev, newrev, ref)
+
       EventCreateService.new.push(project, user, @push_data)
       project.execute_hooks(@push_data.dup, :push_hooks)
       project.execute_services(@push_data.dup, :push_hooks)
@@ -101,7 +102,7 @@ class GitPushService
     end
   end
 
-  def post_receive_data(oldrev, newrev, ref)
+  def build_push_data(oldrev, newrev, ref)
     Gitlab::PushDataBuilder.
       build(project, user, oldrev, newrev, ref, push_commits)
   end
