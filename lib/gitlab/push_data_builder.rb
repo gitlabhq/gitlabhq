@@ -28,9 +28,10 @@ module Gitlab
         # Get latest 20 commits ASC
         commits_limited = commits.last(20)
 
+        type = Gitlab::Git.tag_ref?(ref) ? "tag_push" : "push"
         # Hash to be passed as post_receive_data
         data = {
-          object_kind: "push",
+          object_kind: type,
           before: oldrev,
           after: newrev,
           ref: ref,

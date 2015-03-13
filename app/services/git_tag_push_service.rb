@@ -16,8 +16,6 @@ class GitTagPushService
   private
 
   def create_push_data(oldrev, newrev, ref)
-    data = Gitlab::PushDataBuilder.build(project, user, oldrev, newrev, ref, [])
-    data[:object_kind] = "tag_push"
-    data
+    Gitlab::PushDataBuilder.build(project, user, oldrev, newrev, ref, [])
   end
 end

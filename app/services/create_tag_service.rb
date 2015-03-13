@@ -40,9 +40,7 @@ class CreateTagService < BaseService
   end
 
   def create_push_data(project, user, tag)
-    data = Gitlab::PushDataBuilder.
+    Gitlab::PushDataBuilder.
       build(project, user, Gitlab::Git::BLANK_SHA, tag.target, "#{Gitlab::Git::TAG_REF_PREFIX}#{tag.name}", [])
-    data[:object_kind] = "tag_push"
-    data
   end
 end
