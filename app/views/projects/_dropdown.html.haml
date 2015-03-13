@@ -17,7 +17,7 @@
             New snippet
       - if can?(current_user, :admin_project_member, @project)
         %li
-          = link_to new_namespace_project_team_member_path(@project.namespace, @project), title: "New project member" do
+          = link_to namespace_project_project_members_path(@project.namespace, @project), title: "New project member" do
             New project member
       - if can? current_user, :push_code, @project
         %li.divider

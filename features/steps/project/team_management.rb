@@ -15,18 +15,18 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
     page.should have_content(user.username)
   end
 
-  step 'I click link "New Team Member"' do
-    click_link "New project member"
+  step 'I click link "Add members"' do
+    find(:css, 'a.btn-add').click
   end
 
   step 'I select "Mike" as "Reporter"' do
     user = User.find_by(name: "Mike")
 
-    select2(user.id, from: "#user_ids", multiple: true)
-    within "#new_project_member" do
+    within ".users-project-form" do
+      select2(user.id, from: "#user_ids", multiple: true)
       select "Reporter", from: "access_level"
     end
-    click_button "Add users"
+    click_button "Add users to project"
   end
 
   step 'I should see "Mike" in team list as "Reporter"' do
@@ -42,8 +42,10 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   step 'I change "Sam" role to "Reporter"' do
-    user = User.find_by(name: "Sam")
-    within "#user_#{user.id}" do
+    project = Project.find_by(name: "Shop")
+    user = User.find_by(name: 'Sam')
+    project_member = project.project_members.find_by(user_id: user.id)
+    within "#project_member_#{project_member.id}" do
       select "Reporter", from: "project_member_access_level"
     end
   end
@@ -100,7 +102,10 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   step 'I click cancel link for "Sam"' do
-    within "#user_#{User.find_by(name: 'Sam').id}" do
+    project = Project.find_by(name: "Shop")
+    user = User.find_by(name: 'Sam')
+    project_member = project.project_members.find_by(user_id: user.id)
+    within "#project_member_#{project_member.id}" do
       click_link('Remove user from team')
     end
   end

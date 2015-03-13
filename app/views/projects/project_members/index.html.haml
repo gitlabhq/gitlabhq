@@ -1,0 +1,35 @@
+%h3.page-title
+  Users with access to this project
+
+%p.light
+  Read more about project permissions
+  %strong= link_to "here", help_page_path("permissions", "permissions"), class: "vlink"
+
+%hr
+
+.clearfix.js-toggle-container
+  = form_tag namespace_project_project_members_path(@project.namespace, @project), method: :get, class: 'form-inline member-search-form'  do
+    .form-group
+      = search_field_tag :search, params[:search], { placeholder: 'Find existing member by name', class: 'form-control search-text-input input-mn-300' }
+    = button_tag 'Search', class: 'btn'
+
+  - if can?(current_user, :admin_project_member, @project)
+    %span.pull-right
+      = button_tag class: 'btn btn-new btn-grouped js-toggle-button', type: 'button' do
+        Add members
+        %i.fa.fa-chevron-down
+      = link_to import_namespace_project_project_members_path(@project.namespace, @project), class: "btn btn-grouped", title: "Import members from another project" do
+        Import members
+
+    .js-toggle-content.hide.new-group-member-holder
+      = render "new_project_member"
+
+= render "team", members: @project_members
+
+- if @group
+  = render "group_members", members: @group_members
+
+:coffeescript
+  $('form.member-search-form').on 'submit', (event) ->
+    event.preventDefault()
+    Turbolinks.visit @.action + '?' + $(@).serialize()

@@ -76,6 +76,9 @@ class Dispatcher
       when 'groups:group_members:index'
         new GroupMembers()
         new UsersSelect()
+      when 'projects:project_members:index'
+        new ProjectMembers()
+        new UsersSelect()
       when 'groups:new', 'groups:edit', 'admin:groups:edit'
         new GroupAvatar()
       when 'projects:tree:show'
@@ -129,7 +132,6 @@ class Dispatcher
             shortcut_handler = new ShortcutsNavigation()
           when 'project_members', 'deploy_keys', 'hooks', 'services', 'protected_branches'
             shortcut_handler = new ShortcutsNavigation()
-            new UsersSelect()
 
 
     # If we haven't installed a custom shortcut handler, install the default one
