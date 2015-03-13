@@ -43,12 +43,12 @@ class HipchatService < Service
       { type: 'checkbox', name: 'notification' },
       { type: 'select', name: 'color', choices:
         [
-          [ '- Random Color -', 'random'],
-          [ 'Gray', 'gray' ],
-          [ 'Green', 'green' ],
-          [ 'Purple', 'purple' ],
-          [ 'Red', 'red' ],
-          [ 'Yellow', 'yellow' ]
+          ['- Random Color -', 'random'],
+          ['Gray', 'gray'],
+          ['Green', 'green'],
+          ['Purple', 'purple'],
+          ['Red', 'red'],
+          ['Yellow', 'yellow']
         ],
         default_choice: 'yellow'
       },
@@ -64,7 +64,9 @@ class HipchatService < Service
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
 
-    gate[room].send('GitLab', create_message(data), { color: color, notify: notification? })
+    options = { color: color, notify: notification? }
+
+    gate[room].send('GitLab', create_message(data), options)
   end
 
   private
@@ -234,7 +236,7 @@ class HipchatService < Service
   end
 
   def notification?
-    self.notification == "1"
+    notification == '1'
   end
 
   def project_name

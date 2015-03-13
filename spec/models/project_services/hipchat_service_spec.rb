@@ -37,7 +37,7 @@ describe HipchatService do
         project: project,
         room: 123456,
         color: 'yellow',
-	notification: '0',
+        notification: '0',
         server: 'https://hipchat.example.com',
         token: 'verySecret'
       )
