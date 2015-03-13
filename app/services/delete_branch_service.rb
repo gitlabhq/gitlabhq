@@ -28,6 +28,9 @@ class DeleteBranchService < BaseService
       push_data = build_push_data(branch)
 
       EventCreateService.new.push(project, current_user, push_data)
+      project.execute_hooks(push_data.dup, :push_hooks)
+      project.execute_services(push_data.dup, :push_hooks)
+
       success('Branch was removed')
     else
       error('Failed to remove branch')
