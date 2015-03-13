@@ -46,6 +46,17 @@ class Groups::GroupMembersController < Groups::ApplicationController
     end
   end
 
+  def leave
+    @group_member = @group.group_members.where(user_id: current_user.id).first
+    
+    if can?(current_user, :destroy_group_member, @group_member)
+      @group_member.destroy
+      redirect_to(dashboard_groups_path, info: "You left #{group.name} group.")
+    else
+      return render_403
+    end
+  end
+
   protected
 
   def group

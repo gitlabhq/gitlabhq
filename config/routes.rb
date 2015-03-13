@@ -215,11 +215,7 @@ Gitlab::Application.routes.draw do
     scope module: :dashboard do
       resources :milestones, only: [:index, :show]
 
-      resources :groups, only: [:index] do
-        member do
-          delete :leave
-        end
-      end
+      resources :groups, only: [:index]
 
       resources :projects, only: [] do
         collection do
@@ -241,6 +237,7 @@ Gitlab::Application.routes.draw do
 
     scope module: :groups do
       resources :group_members, only: [:index, :create, :update, :destroy] do
+        delete :leave, on: :collection
       end
       
       resource :avatar, only: [:destroy]
