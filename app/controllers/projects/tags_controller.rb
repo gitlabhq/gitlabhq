@@ -24,14 +24,13 @@ class Projects::TagsController < Projects::ApplicationController
   end
 
   def destroy
-    tag = @repository.find_tag(params[:id])
-
-    if tag && @repository.rm_tag(tag.name)
-      EventCreateService.new.push_ref(@project, current_user, tag, 'rm', Gitlab::Git::TAG_REF_PREFIX)
-    end
+    DeleteTagService.new(project, current_user).execute(params[:id])
 
     respond_to do |format|
-      format.html { redirect_to namespace_project_tags_path }
+      format.html do
+        redirect_to namespace_project_tags_path(@project.namespace,
+                                                @project)
+      end
       format.js
     end
   end
