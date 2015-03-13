@@ -57,7 +57,7 @@ v 7.9.0 (unreleased)
   - Use Emoji One
   - Updated emoji help documentation to properly reference EmojiOne.
   - Fix missing GitHub organisation repositories on import page.
-  - Added blue thmeme
+  - Added blue theme
   - Remove annoying notice messages when create/update merge request
   - Allow smb:// links in Markdown text.
   - Filter merge request by title or description at Merge Requests page
