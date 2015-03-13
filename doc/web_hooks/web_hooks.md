@@ -16,6 +16,7 @@ Triggered when you push to the repository except when pushing tags.
 
 ```json
 {
+  "object_kind": "push",
   "before": "95790bf891e76fee5e1747ab589903a6a1f80f22",
   "after": "da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
   "ref": "refs/heads/master",
@@ -66,6 +67,7 @@ Triggered when you create (or delete) tags to the repository.
 
 ```json
 {
+  "object_kind": "tag_push",
   "ref": "refs/tags/v1.0.0",
   "before": "0000000000000000000000000000000000000000",
   "after": "82b3d5ae55f7080f1e6022629cdb57bfae7cccc7",
