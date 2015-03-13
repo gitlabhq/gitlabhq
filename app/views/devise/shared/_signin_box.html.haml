@@ -17,7 +17,7 @@
       .tab-content
         - @ldap_servers.each_with_index do |server, i|
           %div.tab-pane{id: "tab-#{server['provider_name']}", class: (:active if i.zero?)}
-            = render 'devise/sessions/new_ldap', provider: server['provider_name']
+            = render 'devise/sessions/new_ldap', server: server
         - if signin_enabled?
           %div#tab-signin.tab-pane
             = render 'devise/sessions/new_base'
