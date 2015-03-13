@@ -236,12 +236,13 @@ Gitlab::Application.routes.draw do
     member do
       get :issues
       get :merge_requests
-      get :members
       get :projects
     end
 
     scope module: :groups do
-      resources :group_members, only: [:create, :update, :destroy]
+      resources :group_members, only: [:index, :create, :update, :destroy] do
+      end
+      
       resource :avatar, only: [:destroy]
       resources :milestones, only: [:index, :show, :update]
     end

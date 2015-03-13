@@ -73,7 +73,7 @@ class Dispatcher
         new Activities()
         shortcut_handler = new ShortcutsNavigation()
         new ProjectsList()
-      when 'groups:members'
+      when 'groups:group_members:index'
         new GroupMembers()
         new UsersSelect()
       when 'groups:new', 'groups:edit', 'admin:groups:edit'

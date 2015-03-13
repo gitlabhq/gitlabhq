@@ -1,5 +1,5 @@
 class GroupsController < Groups::ApplicationController
-  skip_before_filter :authenticate_user!, only: [:show, :issues, :members, :merge_requests]
+  skip_before_filter :authenticate_user!, only: [:show, :issues, :merge_requests]
   respond_to :html
   before_filter :group, except: [:new, :create]
 
@@ -65,19 +65,6 @@ class GroupsController < Groups::ApplicationController
       format.html
       format.atom { render layout: false }
     end
-  end
-
-  def members
-    @project = group.projects.find(params[:project_id]) if params[:project_id]
-    @members = group.group_members
-
-    if params[:search].present?
-      users = group.users.search(params[:search]).to_a
-      @members = @members.where(user_id: users)
-    end
-
-    @members = @members.order('access_level DESC').page(params[:page]).per(50)
-    @users_group = GroupMember.new
   end
 
   def edit
