@@ -1,29 +1,45 @@
-.calendar_onclick_placeholder {
-  padding: 0 0 2px 0;
-}
+.user-calendar-activities {
+  
+  .calendar_commit_activity {
+    padding: 5px 0 0;
+  }
+  
+  .calendar_onclick_hr {
+    padding: 0;
+    margin: 10px 0;
+  }
+  
+  .calendar_commit_date {
+    color: #999;
+  }
+  
+  .calendar_activity_summary {
+    font-size: 14px;
+  }
 
-.calendar_commit_activity {
-  padding: 5px 0 0;
-}
+  .str-truncated {
+    max-width: 70%;
+  }
 
-.calendar_onclick_second {
-  font-size: 14px;
-  display: block;
+  .text-expander {
+    background: #eee;
+    color: #555;
+    padding: 0 5px;
+    cursor: pointer;
+    margin-left: 4px;
+    &:hover {
+      background-color: #ddd;
+    }
+  }
+  
+  .commit-row-message {
+    color: #333;
+    &:hover {
+      color: #444;
+      text-decoration: underline;
+    }
+  }
 }
-
-.calendar_onclick_hr {
-  padding: 0;
-  margin: 10px 0;
-}
-
-.calendar_commit_date {
-  color: #999;
-}
-
-.calendar_activity_summary {
-  font-size: 14px;
-}
-
 /**
 * This overwrites the default values of the cal-heatmap gem
 */
