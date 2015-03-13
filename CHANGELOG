@@ -61,6 +61,7 @@ v 7.9.0 (unreleased)
   - Allow smb:// links in Markdown text.
   - Filter merge request by title or description at Merge Requests page
   - Block user if he/she was blocked in Active Directory
+  - Execute hooks and services when branch or tag is created or deleted through web interface.
 
 v 7.8.4
   - Fix issue_tracker_id substitution in custom issue trackers
