@@ -16,7 +16,7 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   step 'I click link "Add members"' do
-    find(:css, 'a.btn-add').click
+    find(:css, 'button.btn-new').click
   end
 
   step 'I select "Mike" as "Reporter"' do
@@ -46,7 +46,9 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
     user = User.find_by(name: 'Sam')
     project_member = project.project_members.find_by(user_id: user.id)
     within "#project_member_#{project_member.id}" do
+      click_button "Edit access level"
       select "Reporter", from: "project_member_access_level"
+      click_button "Save"
     end
   end
 
