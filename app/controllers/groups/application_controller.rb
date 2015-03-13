@@ -7,4 +7,8 @@ class Groups::ApplicationController < ApplicationController
       return render_404
     end
   end
+
+  def group
+    @group ||= Group.find_by(path: params[:group_id])
+  end
 end

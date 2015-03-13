@@ -1,4 +1,4 @@
-class Groups::LdapGroupLinksController < ApplicationController
+class Groups::LdapGroupLinksController < Groups::ApplicationController
   before_action :group
   before_action :require_ldap_enabled
   before_action :authorize_admin_group!
@@ -27,14 +27,6 @@ class Groups::LdapGroupLinksController < ApplicationController
   end
 
   private
-
-  def group
-    @group ||= Group.find_by(path: params[:group_id])
-  end
-
-  def authorize_admin_group!
-    render_404 unless can?(current_user, :manage_group, group)
-  end
 
   def ldap_group_link_params
     params.require(:ldap_group_link).permit(:cn, :group_access, :provider)

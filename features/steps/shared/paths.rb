@@ -251,6 +251,10 @@ module SharedPaths
     visit namespace_project_hooks_path(@project.namespace, @project)
   end
 
+  step 'I visit group hooks page' do
+    visit group_hooks_path(@group)
+  end
+
   step 'I visit project git hooks page' do
     visit namespace_project_git_hooks_path(@project.namespace, @project)
   end

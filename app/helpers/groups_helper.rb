@@ -36,7 +36,7 @@ module GroupsHelper
   def group_settings_page?
     if current_controller?('groups')
       current_action?('edit') || current_action?('projects')
-    elsif current_controller?('ldap_group_links') || current_controller?('audit_events')
+    elsif ['ldap_group_links', 'audit_events', 'hooks'].any?{ |c| current_controller? c }
       true
     else
       false

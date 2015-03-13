@@ -491,6 +491,11 @@ class Project < ActiveRecord::Base
     hooks.send(hooks_scope).each do |hook|
       hook.async_execute(data)
     end
+    if group
+      group.hooks.send(hooks_scope).each do |hook|
+        hook.async_execute(data)
+      end
+    end
   end
 
   def execute_services(data, hooks_scope = :push_hooks)
