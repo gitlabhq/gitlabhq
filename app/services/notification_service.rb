@@ -273,20 +273,20 @@ class NotificationService
     users.reject do |user|
       next user.notification.disabled? unless project
 
-      tm = project.project_members.find_by(user_id: user.id)
+      member = project.project_members.find_by(user_id: user.id)
 
-      if !tm && project.group
-        tm = project.group.group_members.find_by(user_id: user.id)
+      if !member && project.group
+        member = project.group.group_members.find_by(user_id: user.id)
       end
 
       # reject users who globally disabled notification and has no membership
-      next user.notification.disabled? unless tm
+      next user.notification.disabled? unless member
 
       # reject users who disabled notification in project
-      next true if tm.notification.disabled?
+      next true if member.notification.disabled?
 
       # reject users who have N_GLOBAL in project and disabled in global settings
-      tm.notification.global? && user.notification.disabled?
+      member.notification.global? && user.notification.disabled?
     end
   end
 
@@ -297,20 +297,20 @@ class NotificationService
     users.reject do |user|
       next user.notification.mention? unless project
 
-      tm = project.project_members.find_by(user_id: user.id)
+      member = project.project_members.find_by(user_id: user.id)
 
-      if !tm && project.group
-        tm = project.group.group_members.find_by(user_id: user.id)
+      if !member && project.group
+        member = project.group.group_members.find_by(user_id: user.id)
       end
 
       # reject users who globally set mention notification and has no membership
-      next user.notification.mention? unless tm
+      next user.notification.mention? unless member
 
       # reject users who set mention notification in project
-      next true if tm.notification.mention?
+      next true if member.notification.mention?
 
       # reject users who have N_MENTION in project and disabled in global settings
-      tm.notification.global? && user.notification.mention?
+      member.notification.global? && user.notification.mention?
     end
   end
 
