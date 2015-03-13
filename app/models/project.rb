@@ -445,13 +445,13 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def team_member_by_name_or_email(name = nil, email = nil)
+  def project_member_by_name_or_email(name = nil, email = nil)
     user = users.where('name like ? or email like ?', name, email).first
     project_members.where(user: user) if user
   end
 
   # Get Team Member record by user id
-  def team_member_by_id(user_id)
+  def project_member_by_id(user_id)
     project_members.find_by(user_id: user_id)
   end
 

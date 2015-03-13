@@ -127,7 +127,7 @@ class Dispatcher
             new DropzoneInput($('.wiki-form'))
           when 'snippets', 'labels', 'graphs'
             shortcut_handler = new ShortcutsNavigation()
-          when 'team_members', 'deploy_keys', 'hooks', 'services', 'protected_branches'
+          when 'project_members', 'deploy_keys', 'hooks', 'services', 'protected_branches'
             shortcut_handler = new ShortcutsNavigation()
             new UsersSelect()
 

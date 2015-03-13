@@ -162,20 +162,20 @@ class NotificationService
     end
   end
 
-  def new_team_member(project_member)
+  def new_project_member(project_member)
     mailer.project_access_granted_email(project_member.id)
   end
 
-  def update_team_member(project_member)
+  def update_project_member(project_member)
     mailer.project_access_granted_email(project_member.id)
   end
 
-  def new_group_member(users_group)
-    mailer.group_access_granted_email(users_group.id)
+  def new_group_member(group_member)
+    mailer.group_access_granted_email(group_member.id)
   end
 
-  def update_group_member(users_group)
-    mailer.group_access_granted_email(users_group.id)
+  def update_group_member(group_member)
+    mailer.group_access_granted_email(group_member.id)
   end
 
   def project_was_moved(project)

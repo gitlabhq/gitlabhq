@@ -12,8 +12,8 @@ module Projects
         else
           []
         end
-      team_members = sorted(@project.team.members)
-      participants = all_members + groups + team_members + participating
+      project_members = sorted(@project.team.members)
+      participants = all_members + groups + project_members + participating
       participants.uniq
     end
 

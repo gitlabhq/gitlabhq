@@ -89,7 +89,7 @@ module TabHelper
   def project_tab_class
     return "active" if current_page?(controller: "/projects", action: :edit, id: @project)
 
-    if ['services', 'hooks', 'deploy_keys', 'team_members', 'protected_branches'].include? controller.controller_name
+    if ['services', 'hooks', 'deploy_keys', 'project_members', 'protected_branches'].include? controller.controller_name
       "active"
     end
   end

@@ -136,7 +136,7 @@ Gitlab::Application.routes.draw do
 
     resources :groups, constraints: { id: /[^\/]+/ } do
       member do
-        put :project_teams_update
+        put :members_update
       end
     end
 
@@ -445,7 +445,7 @@ Gitlab::Application.routes.draw do
           end
         end
 
-        resources :team_members, except: [:index, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ } do
+        resources :project_members, except: [:new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ } do
           collection do
             delete :leave
 
