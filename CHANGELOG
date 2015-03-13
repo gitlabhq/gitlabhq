@@ -61,6 +61,7 @@ v 7.9.0 (unreleased)
   - Allow smb:// links in Markdown text.
   - Filter merge request by title or description at Merge Requests page
   - Block user if he/she was blocked in Active Directory
+  - Fix import pages not working after first load.
 
 v 7.8.4
   - Fix issue_tracker_id substitution in custom issue trackers
