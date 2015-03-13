@@ -68,9 +68,15 @@ class IrkerService < Service
     'irker'
   end
 
-  def execute(push_data)
+  def supported_events
+    %w(push)
+  end
+
+  def execute(data)
+    return unless supported_events.include?(data[:object_kind])
+
     IrkerWorker.perform_async(project_id, channels,
-                              colorize_messages, push_data, @settings)
+                              colorize_messages, data, @settings)
   end
 
   def fields
