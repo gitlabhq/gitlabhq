@@ -40,6 +40,7 @@ module Gitlab
             user.block unless user.blocked?
             false
           else
+            user.activate if user.blocked?
             true
           end
         else

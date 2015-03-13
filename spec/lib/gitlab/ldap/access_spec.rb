@@ -28,9 +28,18 @@ describe Gitlab::LDAP::Access do
       end
 
       context 'and has no disabled flag in active diretory' do
-        before { Gitlab::LDAP::Person.stub(disabled_via_active_directory?: false) }
+        before do
+          user.block
+          
+          Gitlab::LDAP::Person.stub(disabled_via_active_directory?: false)
+        end
 
         it { is_expected.to be_truthy }
+
+        it "should unblock user in GitLab" do
+          access.allowed?
+          user.should_not be_blocked
+        end
       end
 
       context 'without ActiveDirectory enabled' do
