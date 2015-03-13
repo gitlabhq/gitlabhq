@@ -29,6 +29,9 @@ class GitPushService
       elsif push_to_new_branch?(ref, oldrev)
         # Re-find the pushed commits.
         if is_default_branch?(ref)
+          # Initial push to the default branch. Take the full history of that branch as "newly pushed".
+          @push_commits = project.repository.commits(newrev)
+
           # Set protection on the default branch if configured
           if (current_application_settings.default_branch_protection != PROTECTION_NONE)
             developers_can_push = current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_PUSH ? true : false
