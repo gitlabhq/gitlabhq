@@ -386,7 +386,7 @@ module SharedPaths
   end
 
   step 'I visit project "Shop" team page' do
-    visit namespace_project_team_index_path(project.namespace, project)
+    visit namespace_project_project_members_path(project.namespace, project)
   end
 
   step 'I visit project wiki page' do

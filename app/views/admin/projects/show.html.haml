@@ -111,7 +111,7 @@
         %small
           (#{@project.users.count})
         .pull-right
-          = link_to namespace_project_team_index_path(@project.namespace, @project), class: "btn btn-xs" do
+          = link_to namespace_project_project_members_path(@project.namespace, @project), class: "btn btn-xs" do
             %i.fa.fa-pencil-square-o
             Manage Access
       %ul.well-list.project_members

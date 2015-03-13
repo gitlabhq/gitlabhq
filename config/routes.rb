@@ -425,7 +425,6 @@ Gitlab::Application.routes.draw do
           end
         end
 
-        resources :team, controller: 'team_members', only: [:index]
         resources :milestones, except: [:destroy], constraints: { id: /\d+/ } do
           member do
             put :sort_issues
