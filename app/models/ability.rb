@@ -225,13 +225,15 @@ class Ability
 
     [:issue, :note, :project_snippet, :personal_snippet, :merge_request].each do |name|
       define_method "#{name}_abilities" do |user, subject|
-        if subject.author == user
-          [
+        if subject.author == user || user.is_admin?
+          rules = [
             :"read_#{name}",
             :"write_#{name}",
             :"modify_#{name}",
             :"admin_#{name}"
           ]
+          rules.push(:change_visibility_level) if subject.is_a?(Snippet)
+          rules
         elsif subject.respond_to?(:assignee) && subject.assignee == user
           [
             :"read_#{name}",
