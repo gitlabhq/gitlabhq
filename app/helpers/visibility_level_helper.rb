@@ -63,4 +63,12 @@ module VisibilityLevelHelper
   def restricted_visibility_levels
     current_user.is_admin? ? [] : gitlab_config.restricted_visibility_levels
   end
+
+  def restricted_visibility_levels_snippets
+    if current_user.is_admin?
+      []
+    else
+      gitlab_config.restricted_visibility_levels_snippets
+    end
+  end
 end
