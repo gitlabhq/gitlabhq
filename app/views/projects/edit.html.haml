@@ -87,7 +87,7 @@
                     You can change your project avatar here
                   - else
                     You can upload a project avatar here
-                %a.choose-btn.btn.btn-small.js-choose-project-avatar-button
+                %a.choose-btn.btn.btn-sm.js-choose-project-avatar-button
                   %i.icon-paper-clip
                   %span Choose File ...
                 &nbsp;
@@ -96,7 +96,7 @@
                 .light The maximum file size allowed is 200KB.
                 - if @project.avatar?
                   %hr
-                  = link_to 'Remove avatar', namespace_project_avatar_path(@project.namespace, @project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-small remove-avatar"
+                  = link_to 'Remove avatar', namespace_project_avatar_path(@project.namespace, @project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
 
           .form-actions
             = f.submit 'Save changes', class: "btn btn-save"

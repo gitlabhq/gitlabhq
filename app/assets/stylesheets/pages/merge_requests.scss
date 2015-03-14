@@ -123,10 +123,10 @@
 }
 
 .mr-state-widget {
-  background: $box_bg;
+  background: $background-color;
   margin-bottom: 20px;
   color: #666;
-  border: 1px solid #EEE;
+  border: 1px solid $border-color;
   @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.09));
 
   .ci_widget {

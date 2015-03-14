@@ -77,7 +77,7 @@
                   %br
                   or change it at #{link_to "gravatar.com", "http://gravatar.com"}
             %hr
-            %a.choose-btn.btn.btn-small.js-choose-user-avatar-button
+            %a.choose-btn.btn.btn-sm.js-choose-user-avatar-button
               %i.fa.fa-paperclip
               %span Choose File ...
             &nbsp;
@@ -86,7 +86,7 @@
             .light The maximum file size allowed is 200KB.
             - if @user.avatar?
               %hr
-              = link_to 'Remove avatar', profile_avatar_path, data: { confirm: "Avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-small remove-avatar"
+              = link_to 'Remove avatar', profile_avatar_path, data: { confirm: "Avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
 
       - if @user.public_profile?
         .alert.alert-info

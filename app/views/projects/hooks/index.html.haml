@@ -58,8 +58,8 @@
       - @hooks.each do |hook|
         %li
           .pull-right
-            = link_to 'Test Hook', test_namespace_project_hook_path(@project.namespace, @project, hook), class: "btn btn-small btn-grouped"
-            = link_to 'Remove', namespace_project_hook_path(@project.namespace, @project, hook), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove btn-small btn-grouped"
+            = link_to 'Test Hook', test_namespace_project_hook_path(@project.namespace, @project, hook), class: "btn btn-sm btn-grouped"
+            = link_to 'Remove', namespace_project_hook_path(@project.namespace, @project, hook), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove btn-sm btn-grouped"
           .clearfix
             %span.monospace= hook.url
           %p

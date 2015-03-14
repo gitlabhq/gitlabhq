@@ -1,11 +1,11 @@
 .project-network {
-  border: 1px solid #CCC;
+  border: 1px solid $border-color;
 
   .controls {
     color: #888;
     font-size: 14px;
     padding: 5px;
-    border-bottom: 1px solid #bbb;
+    border-bottom: 1px solid $border-color;
     background: #EEE;
   }
 
