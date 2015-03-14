@@ -23,9 +23,9 @@
 .file-holder
   .file-title
     %i.fa.fa-file
-    %span.file_name
+    %strong
       = @snippet.file_name
-    .options
+    .file-actions
       .btn-group
         - if can?(current_user, :modify_project_snippet, @snippet)
           = link_to "edit", edit_namespace_project_snippet_path(@project.namespace, @project, @snippet), class: "btn btn-small", title: 'Edit Snippet'

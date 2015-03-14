@@ -13,12 +13,6 @@
       .file-title
         %i.fa.fa-file
         %strong= snippet_blob[:snippet_object].file_name
-        %span.options
-          .btn-group.tree-btn-group.pull-right
-            - if snippet_blob[:snippet_object].author == current_user
-              = link_to "Edit", edit_snippet_path(snippet_blob[:snippet_object]), class: "btn btn-tiny", title: 'Edit Snippet'
-              = link_to "Delete", snippet_path(snippet_blob[:snippet_object]), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-tiny", title: 'Delete Snippet'
-            = link_to "Raw", raw_snippet_path(snippet_blob[:snippet_object]), class: "btn btn-tiny", target: "_blank"
       - if gitlab_markdown?(snippet_blob[:snippet_object].file_name)
         .file-content.wiki
           - snippet_blob[:snippet_chunks].each do |snippet|

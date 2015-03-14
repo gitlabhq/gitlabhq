@@ -18,26 +18,20 @@
     text-align: left;
     padding: 10px 15px;
 
-    .options {
+    .file-actions {
       float: right;
-      margin-top: -3px;
+      position: relative;
+      top: -5px;
+
+      .btn {
+        padding: 0px 10px;
+        font-size: 13px;
+        line-height: 28px;
+      }
     }
 
     .left-options {
       margin-top: -3px;
-    }
-
-    .file_name {
-      font-weight: bold;
-      padding-left: 3px;
-      font-size: 14px;
-
-      small {
-        color: #888;
-        font-size: 13px;
-        font-weight: normal;
-        padding-left: 10px;
-      }
     }
   }
   .file-content {
