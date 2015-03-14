@@ -36,16 +36,16 @@ v 7.9.0 (unreleased)
   - Send notifications and leave system comments when bulk updating issues.
   - Automatically link commit ranges to compare page: sha1...sha4 or sha1..sha4 (includes sha1 in comparison)
   - Move groups page from profile to dashboard
-  - Starred projects page at dashboard 
+  - Starred projects page at dashboard
   - Blocking user does not remove him/her from project/groups but show blocked label
   - Change subject of EmailsOnPush emails to include namespace, project and branch.
   - Change subject of EmailsOnPush emails to include first commit message when multiple were pushed.
   - Remove confusing footer from EmailsOnPush mail body.
-  - Add list of changed files to EmailsOnPush emails. 
-  - Add option to send EmailsOnPush emails from committer email if domain matches. 
+  - Add list of changed files to EmailsOnPush emails.
+  - Add option to send EmailsOnPush emails from committer email if domain matches.
   - Add option to disable code diffs in EmailOnPush emails.
   - Wrap commit message in EmailsOnPush email.
-  - Send EmailsOnPush emails when deleting commits using force push.  
+  - Send EmailsOnPush emails when deleting commits using force push.
   - Fix EmailsOnPush email comparison link to include first commit.
   - Fix highliht of selected lines in file
   - Reject access to group/project avatar if the user doesn't have access.
@@ -66,6 +66,7 @@ v 7.9.0 (unreleased)
   - Use custom LDAP label in LDAP signin form.
   - Execute hooks and services when branch or tag is created or deleted through web interface.
   - Block and unblock user if he/she was blocked/unblocked in Active Directory
+  - Raise recommended number of unicorn workers from 2 to 3
 
 v 7.8.4
   - Fix issue_tracker_id substitution in custom issue trackers
