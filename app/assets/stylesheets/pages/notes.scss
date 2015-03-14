@@ -89,6 +89,11 @@ ul.notes {
   }
 }
 
+// Diff code in discussion view
+.discussion-body .diff-file .line_content {
+  white-space: pre-wrap;
+}
+
 .diff-file .notes_holder {
   font-size: 13px;
   line-height: 18px;
