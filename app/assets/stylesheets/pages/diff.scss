@@ -1,25 +1,30 @@
 .diff-file {
-  border: 1px solid #CCC;
+  border: 1px solid $border-color;
   margin-bottom: 1em;
 
   .diff-header {
-    @extend .clearfix;
-    background: #EEE;
-    border-bottom: 1px solid #CCC;
-    padding: 5px 5px 5px 10px;
+    position: relative;
+    background: $background-color;
+    border-bottom: 1px solid $border-color;
+    padding: 10px 15px;
     color: #555;
     z-index: 10;
 
     > span {
+      @include str-truncated(65%);
       font-family: $monospace_font;
-      line-height: 2;
     }
 
     .diff-btn-group {
       float: right;
+      position: absolute;
+      top: 5px;
+      right: 15px;
 
       .btn {
-        background-color: #FFF;
+        padding: 0px 10px;
+        font-size: 13px;
+        line-height: 28px;
       }
     }
 
@@ -87,7 +92,7 @@
       background: #F5F5F5;
       color: rgba(0,0,0,0.3);
       padding: 0px 5px;
-      border-right: 1px solid #ccc;
+      border-right: 1px solid $border-color;
       text-align: right;
       min-width: 35px;
       max-width: 50px;
@@ -136,7 +141,7 @@
         background: #ffecec;
       }
       &.matched {
-        color: #ccc;
+        color: $border-color;
         background: #fafafa;
       }
       &.parallel {
