@@ -21,18 +21,6 @@
     float: right;
   }
 
-  &.btn-small {
-    padding: 2px 10px;
-    font-size: 12px;
-  }
-
-  &.btn-tiny {
-    font-size: 11px;
-    padding: 2px 6px;
-    line-height: 16px;
-    margin: 2px;
-  }
-
   &.btn-close {
     color: $gl-danger;
     border-color: $gl-danger;
@@ -84,6 +72,3 @@
     }
   }
 }
-
-.btn-group-small > .btn { @extend .btn.btn-small; }
-.btn-group-tiny > .btn { @extend .btn.btn-tiny; }

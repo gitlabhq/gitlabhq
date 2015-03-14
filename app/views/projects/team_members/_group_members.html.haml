@@ -4,7 +4,7 @@
     %strong #{@group.name}
     group members (#{group_users_count})
     .pull-right
-      = link_to members_group_path(@group), class: 'btn btn-small' do
+      = link_to members_group_path(@group), class: 'btn btn-sm' do
         %i.fa.fa-pencil-square-o
   %ul.well-list
     - @group.group_members.order('access_level DESC').limit(20).each do |member|
