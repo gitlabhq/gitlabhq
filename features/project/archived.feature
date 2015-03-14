@@ -14,15 +14,6 @@ Feature: Project Archived
     And I visit project "Forum" page
     Then I should see "Archived"
 
-  Scenario: I should not see archived on projects page with no archived projects
-    And I visit dashboard projects page
-    Then I should not see "Archived"
-
-  Scenario: I should see archived on projects page with archived projects
-    And project "Forum" is archived
-    And I visit dashboard projects page
-    Then I should see "Archived"
-
   Scenario: I archive project
     When project "Shop" has push event
     And I visit project "Shop" page

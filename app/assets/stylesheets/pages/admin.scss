@@ -1,0 +1,63 @@
+/**
+ * Admin area
+ *
+ */
+.admin-dashboard {
+  .data {
+    a {
+      h1 {
+        line-height: 48px;
+        font-size: 48px;
+        padding: 20px;
+        text-align: center;
+        font-weight: normal;
+      }
+    }
+  }
+
+  .str-truncated {
+    max-width: 60%;
+  }
+}
+
+.admin-filter form {
+  .select2-container {
+    width: 100%
+  }
+
+  .controls {
+    margin-left: 130px;
+  }
+
+  .form-actions {
+    padding-left: 130px;
+    background: #fff
+   }
+
+   .visibility-levels {
+     .controls {
+       margin-bottom: 9px;
+    }
+
+    i {
+      color: inherit;
+    }
+  }
+}
+
+.broadcast-messages {
+  .message {
+    line-height: 2;
+  }
+}
+
+.broadcast-message {
+  @extend .alert-warning;
+  padding: 10px;
+  text-align: center;
+}
+
+.broadcast-message-preview {
+  @extend .broadcast-message;
+  margin-bottom: 20px;
+}

@@ -1,4 +1,4 @@
-class GroupsController < ApplicationController
+class GroupsController < Groups::ApplicationController
   skip_before_filter :authenticate_user!, only: [:show, :issues, :members, :merge_requests]
   respond_to :html
   before_filter :group, except: [:new, :create]
@@ -52,13 +52,13 @@ class GroupsController < ApplicationController
 
   def merge_requests
     @merge_requests = get_merge_requests_collection
-    @merge_requests = @merge_requests.page(params[:page]).per(20)
+    @merge_requests = @merge_requests.page(params[:page]).per(PER_PAGE)
     @merge_requests = @merge_requests.preload(:author, :target_project)
   end
 
   def issues
     @issues = get_issues_collection
-    @issues = @issues.page(params[:page]).per(20)
+    @issues = @issues.page(params[:page]).per(PER_PAGE)
     @issues = @issues.preload(:author, :project)
 
     respond_to do |format|
@@ -128,12 +128,6 @@ class GroupsController < ApplicationController
 
   def authorize_create_group!
     unless can?(current_user, :create_group, nil)
-      return render_404
-    end
-  end
-
-  def authorize_admin_group!
-    unless can?(current_user, :manage_group, group)
       return render_404
     end
   end

@@ -64,7 +64,7 @@ class CampfireService < Service
   end
 
   def build_message(push)
-    ref = push[:ref].gsub("refs/heads/", "")
+    ref = Gitlab::Git.ref_name(push[:ref])
     before = push[:before]
     after = push[:after]
 
@@ -72,9 +72,9 @@ class CampfireService < Service
     message << "[#{project.name_with_namespace}] "
     message << "#{push[:user_name]} "
 
-    if before.include?('000000')
+    if Gitlab::Git.blank_ref?(before)
       message << "pushed new branch #{ref} \n"
-    elsif after.include?('000000')
+    elsif Gitlab::Git.blank_ref?(after)
       message << "removed branch #{ref} \n"
     else
       message << "pushed #{push[:total_commits_count]} commits to #{ref}. "

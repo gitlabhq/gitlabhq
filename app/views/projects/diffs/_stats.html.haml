@@ -9,7 +9,7 @@
         and
         %strong.cred #{@commit.stats.deletions} deletions
     &nbsp;
-    = link_to '#', class: 'btn btn-small js-toggle-button' do
+    = link_to '#', class: 'btn btn-sm js-toggle-button' do
       Show diff stats
       %i.fa.fa-chevron-down
   .file-stats.js-toggle-content.hide
@@ -26,7 +26,7 @@
               %a{href: "#diff-#{i}"}
                 %i.fa.fa-minus
                 = diff.old_path
-                \->
+                &rarr;
                 = diff.new_path
           - elsif diff.new_file
             %span.new-file

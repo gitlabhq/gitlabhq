@@ -16,7 +16,7 @@ class SnippetsController < ApplicationController
   layout :determine_layout
 
   def index
-    @snippets = SnippetsFinder.new.execute(current_user, filter: :all).page(params[:page]).per(20)
+    @snippets = SnippetsFinder.new.execute(current_user, filter: :all).page(params[:page]).per(PER_PAGE)
   end
 
   def user_index
@@ -28,7 +28,7 @@ class SnippetsController < ApplicationController
       filter: :by_user,
       user: @user,
       scope: params[:scope] }).
-    page(params[:page]).per(20)
+    page(params[:page]).per(PER_PAGE)
 
     if @user == current_user
       render 'current_user_index'

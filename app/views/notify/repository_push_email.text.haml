@@ -1,25 +1,47 @@
-#{@author.name} pushed to #{@branch} at #{link_to @project.name_with_namespace, namespace_project_url(@project.namespace, @project)}
-
+#{@author.name} pushed to #{@branch} at #{@project.name_with_namespace}
 \
-Commits:
+\
+- if @reverse_compare
+  WARNING: The push did not contain any new commits, but force pushed to delete the commits and changes below.
+  \
+  \
+= @reverse_compare ? "Deleted commits:" : "Commits:"
 - @commits.each do |commit|
-  #{link_to commit.short_id, namespace_project_commit_url(@project.namespace, @project, commit)} by #{commit.author_name}
+  #{commit.short_id} by #{commit.author_name} at #{commit.committed_date.strftime("%Y-%m-%dT%H:%M:%SZ")}
   #{commit.safe_message}
   \- - - - -
 \
 \
-Changes:
-- @diffs.each do |diff|
-  \
-  \=====================================
-  - if diff.old_path == diff.new_path
-    = diff.new_path
-  - elsif diff.new_path && diff.old_path
-    #{diff.old_path} &rarr; #{diff.new_path}
-  - else
-    = diff.new_path || diff.old_path
-  \=====================================
-  != diff.diff
+#{pluralize @diffs.count, "changed file"}:
 \
+- @diffs.each do |diff|
+  - if diff.deleted_file
+    \- − #{diff.old_path}
+  - elsif diff.renamed_file
+    \- #{diff.old_path} → #{diff.new_path}
+  - elsif diff.new_file
+    \- + #{diff.new_path}
+  - else
+    \- #{diff.new_path}
+- unless @disable_diffs
+  \
+  \
+  Changes:
+  - @diffs.each do |diff|
+    \
+    \=====================================
+    - if diff.deleted_file
+      #{diff.old_path} deleted
+    - elsif diff.renamed_file
+      #{diff.old_path} → #{diff.new_path}
+    - else
+      = diff.new_path
+    \=====================================
+    != diff.diff
 - if @compare.timeout
+  \
+  \
   Huge diff. To prevent performance issues it was hidden
+\
+\
+View it on GitLab: #{@target_url}

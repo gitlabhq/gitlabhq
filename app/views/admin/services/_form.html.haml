@@ -10,7 +10,7 @@
         - @service.errors.full_messages.each do |msg|
           %p= msg
   - if @service.help.present?
-    .bs-callout
+    .alert.alert-info
       = preserve do
         = markdown @service.help
 
@@ -53,14 +53,16 @@
 
   - @service.fields.each do |field|
     - name = field[:name]
+    - title = field[:title] || name.humanize
     - value = @service.send(name) unless field[:type] == 'password'
     - type = field[:type]
     - placeholder = field[:placeholder]
     - choices = field[:choices]
     - default_choice = field[:default_choice]
+    - help = field[:help]
 
     .form-group
-      = f.label name, class: "control-label"
+      = f.label name, title, class: "control-label"
       .col-sm-10
         - if type == 'text'
           = f.text_field name, class: "form-control", placeholder: placeholder
@@ -72,6 +74,8 @@
           = f.select name, options_for_select(choices, value ? value : default_choice), {}, { class: "form-control" }
         - elsif type == 'password'
           = f.password_field name, class: 'form-control'
+        - if help
+          %span.help-block= help
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'

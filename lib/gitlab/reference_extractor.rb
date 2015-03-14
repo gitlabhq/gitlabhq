@@ -1,13 +1,13 @@
 module Gitlab
   # Extract possible GFM references from an arbitrary String for further processing.
   class ReferenceExtractor
-    attr_accessor :users, :labels, :issues, :merge_requests, :snippets, :commits
+    attr_accessor :users, :labels, :issues, :merge_requests, :snippets, :commits, :commit_ranges
 
     include Markdown
 
     def initialize
-      @users, @labels, @issues, @merge_requests, @snippets, @commits =
-        [], [], [], [], [], []
+      @users, @labels, @issues, @merge_requests, @snippets, @commits, @commit_ranges =
+        [], [], [], [], [], [], []
     end
 
     def analyze(string, project)
@@ -56,6 +56,16 @@ module Gitlab
         repo = entry[:project].repository if entry[:project]
         if should_lookup?(project, entry[:project])
           repo.commit(entry[:id]) if repo
+        end
+      end.reject(&:nil?)
+    end
+
+    def commit_ranges_for(project = nil)
+      commit_ranges.map do |entry|
+        repo = entry[:project].repository if entry[:project]
+        if repo && should_lookup?(project, entry[:project])
+          from_id, to_id = entry[:id].split(/\.{2,3}/, 2)
+          [repo.commit(from_id), repo.commit(to_id)]
         end
       end.reject(&:nil?)
     end

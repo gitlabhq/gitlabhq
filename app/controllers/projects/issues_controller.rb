@@ -20,7 +20,7 @@ class Projects::IssuesController < Projects::ApplicationController
     terms = params['issue_search']
     @issues = get_issues_collection
     @issues = @issues.full_search(terms) if terms.present?
-    @issues = @issues.page(params[:page]).per(20)
+    @issues = @issues.page(params[:page]).per(PER_PAGE)
 
     respond_to do |format|
       format.html

@@ -27,17 +27,20 @@ describe Import::GithubController do
   describe "GET status" do
     before do
       @repo = OpenStruct.new(login: 'vim', full_name: 'asd/vim')
+      @org = OpenStruct.new(login: 'company')
+      @org_repo = OpenStruct.new(login: 'company', full_name: 'company/repo')
     end
 
     it "assigns variables" do
       @project = create(:project, import_type: 'github', creator_id: user.id)
       controller.stub_chain(:client, :repos).and_return([@repo])
-      controller.stub_chain(:client, :orgs).and_return([])
+      controller.stub_chain(:client, :orgs).and_return([@org])
+      controller.stub_chain(:client, :org_repos).with(@org.login).and_return([@org_repo])
 
       get :status
 
       expect(assigns(:already_added_projects)).to eq([@project])
-      expect(assigns(:repos)).to eq([@repo])
+      expect(assigns(:repos)).to eq([@repo, @org_repo])
     end
 
     it "does not show already added project" do

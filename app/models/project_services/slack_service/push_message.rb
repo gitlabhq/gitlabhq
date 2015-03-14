@@ -15,13 +15,8 @@ class SlackService
       @commits = params.fetch(:commits, [])
       @project_name = params[:project_name]
       @project_url = params[:project_url]
-      if params[:ref].starts_with?('refs/tags/')
-        @ref_type = 'tag'
-        @ref = params[:ref].gsub('refs/tags/', '')
-      else
-        @ref_type = 'branch'
-        @ref = params[:ref].gsub('refs/heads/', '')
-      end
+      @ref_type = Gitlab::Git.tag_ref?(params[:ref]) ? 'tag' : 'branch'
+      @ref = Gitlab::Git.ref_name(params[:ref])
       @user_name = params[:user_name]
     end
 
@@ -81,11 +76,11 @@ class SlackService
     end
 
     def new_branch?
-      before.include?('000000')
+      Gitlab::Git.blank_ref?(before)
     end
 
     def removed_branch?
-      after.include?('000000')
+      Gitlab::Git.blank_ref?(after)
     end
 
     def branch_url

@@ -15,7 +15,7 @@ class @NewBlob
     $(".js-commit-button").click ->
       $("#file-content").val editor.getValue()
       $(".file-editor form").submit()
-      return
+      return false
 
   editor: ->
     return @editor

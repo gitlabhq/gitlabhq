@@ -21,9 +21,9 @@ class CreateTagService < BaseService
     new_tag = repository.find_tag(tag_name)
 
     if new_tag
-      EventCreateService.new.push_ref(project, current_user, new_tag, 'add', 'refs/tags')
-
       push_data = create_push_data(project, current_user, new_tag)
+
+      EventCreateService.new.push(project, current_user, push_data)
       project.execute_hooks(push_data.dup, :tag_push_hooks)
       project.execute_services(push_data.dup, :tag_push_hooks)
 
@@ -40,9 +40,7 @@ class CreateTagService < BaseService
   end
 
   def create_push_data(project, user, tag)
-    data = Gitlab::PushDataBuilder.
-      build(project, user, Gitlab::Git::BLANK_SHA, tag.target, 'refs/tags/' + tag.name, [])
-    data[:object_kind] = "tag_push"
-    data
+    Gitlab::PushDataBuilder.
+      build(project, user, Gitlab::Git::BLANK_SHA, tag.target, "#{Gitlab::Git::TAG_REF_PREFIX}#{tag.name}", [])
   end
 end

@@ -105,7 +105,7 @@ class ProjectsController < ApplicationController
         if request.referer.include?('/admin')
           redirect_to admin_namespaces_projects_path
         else
-          redirect_to projects_dashboard_path
+          redirect_to dashboard_path
         end
       end
     end
@@ -176,11 +176,11 @@ class ProjectsController < ApplicationController
   end
 
   def autocomplete_emojis
-    Rails.cache.fetch("autocomplete-emoji-#{Emoji::VERSION}") do
-      Emoji.names.map do |e|
+    Rails.cache.fetch("autocomplete-emoji-#{Gemojione::VERSION}") do
+      Emoji.emojis.map do |name, emoji|
         {
-          name: e,
-          path: view_context.image_url("emoji/#{e}.png")
+          name: name,
+          path: view_context.image_url("emoji/#{emoji["unicode"]}.png")
         }
       end
     end

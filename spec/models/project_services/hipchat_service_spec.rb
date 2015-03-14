@@ -63,7 +63,7 @@ describe HipchatService do
     end
 
     context 'tag_push events' do
-      let(:push_sample_data) { Gitlab::PushDataBuilder.build(project, user, '000000', '111111', 'refs/tags/test', []) }
+      let(:push_sample_data) { Gitlab::PushDataBuilder.build(project, user, Gitlab::Git::BLANK_SHA, '1' * 40, 'refs/tags/test', []) }
 
       it "should call Hipchat API for tag push events" do
         hipchat.execute(push_sample_data)

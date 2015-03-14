@@ -24,7 +24,7 @@
 
 .slead {
   color: #666;
-  font-size: 14px;
+  font-size: 15px;
   margin-bottom: 12px;
   font-weight: normal;
   line-height: 24px;
@@ -61,7 +61,7 @@ pre {
 
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus {
-  background: $bg_primary;
+  background: $gl-primary;
   color: #FFF
 }
 
@@ -71,7 +71,7 @@ pre {
 
 /** FLASH message **/
 .author_link {
-  color: $link_color;
+  color: $gl-link-color;
 }
 
 .help li { color:$style_color; }
@@ -306,20 +306,8 @@ table {
   width: 100%;
 }
 
-.broadcast-message {
-  padding: 10px;
-  text-align: center;
-  background: #555;
-  color: #BBB;
-}
-
-.broadcast-message-preview {
-  @extend .broadcast-message;
-  margin-bottom: 20px;
-}
-
 .btn-sign-in {
-  margin-top: 7px;
+  margin-top: 5px;
   text-shadow: none;
 }
 
@@ -337,8 +325,11 @@ table {
   overflow-x: auto;
 }
 
-.footer-links a {
-  margin-right: 15px;
+.footer-links {
+  margin-bottom: 20px;
+  a {
+    margin-right: 15px;
+  }
 }
 
 .search_box {

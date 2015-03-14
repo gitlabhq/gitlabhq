@@ -276,6 +276,10 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
+  step 'I fill in merge request search with "Fe"' do
+    fill_in 'issue_search', with: "Fe"
+  end
+
   def merge_request
     @merge_request ||= MergeRequest.find_by!(title: "Bug NS-05")
   end

@@ -31,4 +31,4 @@
             %td
               .pull-right
                 - if can? current_user, :admin_project, @project
-                  = link_to 'Unprotect', [@project.namespace.becomes(Namespace), @project, branch], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: "btn btn-remove btn-small"
+                  = link_to 'Unprotect', [@project.namespace.becomes(Namespace), @project, branch], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: "btn btn-remove btn-sm"

@@ -57,9 +57,9 @@ class IrkerWorker
   end
 
   def send_branch_updates(push_data, project, repo_name, committer, branch)
-    if push_data['before'] =~ /^000000/
+    if push_data['before'] == Gitlab::Git::BLANK_SHA
       send_new_branch project, repo_name, committer, branch
-    elsif push_data['after'] =~ /^000000/
+    elsif push_data['after'] == Gitlab::Git::BLANK_SHA
       send_del_branch repo_name, committer, branch
     end
   end
@@ -83,7 +83,7 @@ class IrkerWorker
     return if push_data['total_commits_count'] == 0
 
     # Next message is for number of commit pushed, if any
-    if push_data['before'] =~ /^000000/
+    if push_data['before'] == Gitlab::Git::BLANK_SHA
       # Tweak on push_data["before"] in order to have a nice compare URL
       push_data['before'] = before_on_new_branch push_data, project
     end

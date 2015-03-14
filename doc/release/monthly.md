@@ -51,6 +51,7 @@ Xth: (5 working days before the 22nd)
 Xth: (4 working days before the 22nd)
 
 - [ ] Update GitLab.com with rc1 (#LINK) (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#deploy-the-package)
+- [ ] Update ci.gitLab.com with rc1 (#LINK) (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#deploy-the-package)
 - [ ] Create regression issues (CE, CI) (#LINK)
 - [ ] Tweet about rc1 (#LINK)
 
@@ -68,6 +69,7 @@ Xth: (1 working day before the 22nd)
 - [ ] Create CE, EE, CI stable versions (#LINK)
 - [ ] Create Omnibus tags and build packages
 - [ ] Update GitLab.com with the stable version (#LINK)
+- [ ] Update ci.gitLab.com with the stable version (#LINK)
 
 22nd:
 
@@ -200,3 +202,7 @@ Consider creating a post on Hacker News.
 ## Update GitLab.com with the stable version
 
 - Deploy the package (should not need downtime because of the small difference with RC1)
+
+## Release new AMIs
+
+[Follow this guide](https://dev.gitlab.org/gitlab/AMI/blob/master/README.md)

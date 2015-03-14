@@ -11,17 +11,17 @@
   margin-right: 5px;
 
   &.issue-box-closed {
-    background-color: $bg_danger;
+    background-color: $gl-danger;
     color: #FFF;
   }
 
   &.issue-box-merged {
-    background-color: $bg_primary;
+    background-color: $gl-primary;
     color: #FFF;
   }
 
   &.issue-box-open {
-    background-color: $bg_success;
+    background-color: $gl-success;
     color: #FFF;
   }
 

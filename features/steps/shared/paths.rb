@@ -87,6 +87,18 @@ module SharedPaths
     visit help_path
   end
 
+  step 'I visit dashboard groups page' do
+    visit dashboard_groups_path
+  end
+
+  step 'I should be redirected to the dashboard groups page' do
+    current_path.should == dashboard_groups_path
+  end
+
+  step 'I visit dashboard starred projects page' do
+    visit starred_dashboard_projects_path
+  end
+
   # ----------------------------------------
   # Profile
   # ----------------------------------------
@@ -117,14 +129,6 @@ module SharedPaths
 
   step 'I visit profile history page' do
     visit history_profile_path
-  end
-
-  step 'I visit profile groups page' do
-    visit profile_groups_path
-  end
-
-  step 'I should be redirected to the profile groups page' do
-    current_path.should == profile_groups_path
   end
 
   # ----------------------------------------

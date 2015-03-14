@@ -15,7 +15,7 @@ class @EditBlob
     $(".js-commit-button").click ->
       $("#file-content").val editor.getValue()
       $(".file-editor form").submit()
-      return
+      return false
 
     editModePanes = $(".js-edit-mode-pane")
     editModeLinks = $(".js-edit-mode a")

@@ -35,7 +35,7 @@
         Users (#{@users.total_count})
         .panel-head-actions
           .dropdown.inline
-            %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+            %a.dropdown-toggle.btn.btn-sm{href: '#', "data-toggle" => "dropdown"}
               %span.light sort:
               - if @sort.present?
                 = sort_options_hash[@sort]
@@ -59,7 +59,7 @@
                 = link_to admin_users_path(sort: sort_value_oldest_updated) do
                   = sort_title_oldest_updated
 
-          = link_to 'New User', new_admin_user_path, class: "btn btn-new"
+          = link_to 'New User', new_admin_user_path, class: "btn btn-new btn-sm"
       %ul.well-list
         - @users.each do |user|
           %li
@@ -78,11 +78,11 @@
                 %i.fa.fa-envelope
                 = mail_to user.email, user.email, class: 'light'
               &nbsp;
-              = link_to 'Edit', edit_admin_user_path(user), id: "edit_#{dom_id(user)}", class: "btn btn-small"
+              = link_to 'Edit', edit_admin_user_path(user), id: "edit_#{dom_id(user)}", class: "btn btn-sm"
               - unless user == current_user
                 - if user.blocked?
-                  = link_to 'Unblock', unblock_admin_user_path(user), method: :put, class: "btn btn-small success"
+                  = link_to 'Unblock', unblock_admin_user_path(user), method: :put, class: "btn btn-sm success"
                 - else
-                  = link_to 'Block', block_admin_user_path(user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: "btn btn-small btn-remove"
-                = link_to 'Destroy', [:admin, user], data: { confirm: "USER #{user.name} WILL BE REMOVED! All tickets linked to this user will also be removed! Maybe block the user instead? Are you sure?" }, method: :delete, class: "btn btn-small btn-remove"
+                  = link_to 'Block', block_admin_user_path(user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: "btn btn-sm btn-remove"
+                = link_to 'Destroy', [:admin, user], data: { confirm: "USER #{user.name} WILL BE REMOVED! All tickets linked to this user will also be removed! Maybe block the user instead? Are you sure?" }, method: :delete, class: "btn btn-sm btn-remove"
     = paginate @users, theme: "gitlab"

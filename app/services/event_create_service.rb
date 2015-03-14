@@ -62,26 +62,6 @@ class EventCreateService
     create_event(project, current_user, Event::CREATED)
   end
 
-  def push_ref(project, current_user, ref, action = 'add', prefix = 'refs/heads')
-    commit = project.repository.commit(ref.target)
-
-    if action.to_s == 'add'
-      before = '00000000'
-      after = commit.id
-    else
-      before = commit.id
-      after = '00000000'
-    end
-
-    data = {
-      ref: "#{prefix}/#{ref.name}",
-      before: before,
-      after: after
-    }
-
-    push(project, current_user, data)
-  end
-
   def push(project, current_user, push_data)
     create_event(project, current_user, Event::PUSHED, data: push_data)
   end

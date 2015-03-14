@@ -39,7 +39,7 @@ gem "browser"
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '7.0.1'
+gem "gitlab_git", '~> 7.1.0'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 2.0.0.rc2', require: 'grack'
@@ -88,7 +88,7 @@ gem "six"
 gem "seed-fu"
 
 # Markup pipeline for GitLab
-gem 'html-pipeline-gitlab', '~> 0.1.0'
+gem 'html-pipeline-gitlab', '~> 0.1'
 
 # Markdown to HTML
 gem "github-markup"
@@ -194,7 +194,7 @@ gem "jquery-scrollto-rails"
 gem "raphael-rails", "~> 2.1.2"
 gem 'bootstrap-sass', '~> 3.0'
 gem "font-awesome-rails", '~> 4.2'
-gem "gitlab_emoji", "~> 0.0.1.1"
+gem "gitlab_emoji", "~> 0.1"
 gem "gon", '~> 5.0.0'
 gem 'nprogress-rails'
 gem 'request_store'

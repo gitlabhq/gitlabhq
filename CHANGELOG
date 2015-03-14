@@ -1,11 +1,15 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.9.0 (unreleased)
+  - Update documentation for object_kind field in Webhook push and tag push Webhooks (Stan Hu)
+  - Fix broken email images (Hannes Rosenögger)
+  - Fix mass SQL statements on initial push (Hannes Rosenögger)
   - Add tag push notifications and normalize HipChat and Slack messages to be consistent (Stan Hu)
   - Add comment notification events to HipChat and Slack services (Stan Hu)
   - Add issue and merge request events to HipChat and Slack services (Stan Hu)
   - Fix merge request URL passed to Webhooks. (Stan Hu)
   - Fix bug that caused a server error when editing a comment to "+1" or "-1" (Stan Hu)
+  - Fix code preview theme setting for comments, issues, merge requests, and snippets (Stan Hu)
   - Move labels/milestones tabs to sidebar
   - Upgrade Rails gem to version 4.1.9.
   - Improve error messages for file edit failures
@@ -32,6 +36,46 @@ v 7.9.0 (unreleased)
   - Support referencing issues to a project whose name starts with a digit
   - Condense commits already in target branch when updating merge request source branch.
   - Send notifications and leave system comments when bulk updating issues.
+  - Automatically link commit ranges to compare page: sha1...sha4 or sha1..sha4 (includes sha1 in comparison)
+  - Move groups page from profile to dashboard
+  - Starred projects page at dashboard
+  - Blocking user does not remove him/her from project/groups but show blocked label
+  - Change subject of EmailsOnPush emails to include namespace, project and branch.
+  - Change subject of EmailsOnPush emails to include first commit message when multiple were pushed.
+  - Remove confusing footer from EmailsOnPush mail body.
+  - Add list of changed files to EmailsOnPush emails.
+  - Add option to send EmailsOnPush emails from committer email if domain matches.
+  - Add option to disable code diffs in EmailOnPush emails.
+  - Wrap commit message in EmailsOnPush email.
+  - Send EmailsOnPush emails when deleting commits using force push.
+  - Fix EmailsOnPush email comparison link to include first commit.
+  - Fix highliht of selected lines in file
+  - Reject access to group/project avatar if the user doesn't have access.
+  - Add database migration to clean group duplicates with same path and name (Make sure you have a backup before update)
+  - Add GitLab active users count to rake gitlab:check
+  - Starred projects page at dashboard
+  - Make email display name configurable
+  - Improve json validation in hook data
+  - Use Emoji One
+  - Updated emoji help documentation to properly reference EmojiOne.
+  - Fix missing GitHub organisation repositories on import page.
+  - Added blue theme
+  - Remove annoying notice messages when create/update merge request
+  - Allow smb:// links in Markdown text.
+  - Filter merge request by title or description at Merge Requests page
+  - Block user if he/she was blocked in Active Directory
+  - Fix import pages not working after first load.
+  - Use custom LDAP label in LDAP signin form.
+  - Execute hooks and services when branch or tag is created or deleted through web interface.
+  - Block and unblock user if he/she was blocked/unblocked in Active Directory
+  - Raise recommended number of unicorn workers from 2 to 3
+
+v 7.8.4
+  - Fix issue_tracker_id substitution in custom issue trackers
+  - Fix path and name duplication in namespaces
+
+v 7.8.3
+  - Bump version of gitlab_git fixing annotated tags without message
 
 v 7.8.2
   - Fix service migration issue when upgrading from versions prior to 7.3
@@ -41,6 +85,8 @@ v 7.8.2
   - Fix check if user is allowed to view the file attachment
   - Fix import check for case sensetive namespaces
   - Increase timeout for Git-over-HTTP requests to 1 hour since large pulls/pushes can take a long time.
+  - Properly handle autosave local storage exceptions.
+  - Escape wildcards when searching LDAP by username.
 
 v 7.8.1
   - Fix run of custom post receive hooks

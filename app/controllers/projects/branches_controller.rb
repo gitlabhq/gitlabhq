@@ -8,7 +8,7 @@ class Projects::BranchesController < Projects::ApplicationController
   def index
     @sort = params[:sort] || 'name'
     @branches = @repository.branches_sorted_by(@sort)
-    @branches = Kaminari.paginate_array(@branches).page(params[:page]).per(30)
+    @branches = Kaminari.paginate_array(@branches).page(params[:page]).per(PER_PAGE)
   end
 
   def recent

@@ -28,9 +28,10 @@ module Gitlab
         # Get latest 20 commits ASC
         commits_limited = commits.last(20)
 
+        type = Gitlab::Git.tag_ref?(ref) ? "tag_push" : "push"
         # Hash to be passed as post_receive_data
         data = {
-          object_kind: "push",
+          object_kind: type,
           before: oldrev,
           after: newrev,
           ref: ref,
@@ -58,6 +59,7 @@ module Gitlab
           data[:commits] << commit.hook_attrs(project)
         end
 
+        data[:commits] = "" if data[:commits].count == 0
         data
       end
 
@@ -65,12 +67,13 @@ module Gitlab
       # existing project and commits to test web hooks
       def build_sample(project, user)
         commits = project.repository.commits(project.default_branch, nil, 3)
-        build(project, user, commits.last.id, commits.first.id, "refs/heads/#{project.default_branch}", commits)
+        ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}#{project.default_branch}"
+        build(project, user, commits.last.id, commits.first.id, ref, commits)
       end
 
       def checkout_sha(repository, newrev, ref)
-        if newrev != Gitlab::Git::BLANK_SHA && ref.start_with?('refs/tags/')
-          tag_name = Gitlab::Git.extract_ref_name(ref)
+        if newrev != Gitlab::Git::BLANK_SHA && Gitlab::Git.tag_ref?(ref)
+          tag_name = Gitlab::Git.ref_name(ref)
           tag = repository.find_tag(tag_name)
 
           if tag

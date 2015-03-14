@@ -43,7 +43,7 @@ describe SlackService::PushMessage do
     let(:args) {
       {
           after: 'after',
-          before: '000000',
+          before: Gitlab::Git::BLANK_SHA,
           project_name: 'project_name',
           ref: 'refs/tags/new_tag',
           user_name: 'user_name',
@@ -61,7 +61,7 @@ describe SlackService::PushMessage do
 
   context 'new branch' do
     before do
-      args[:before] = '000000'
+      args[:before] = Gitlab::Git::BLANK_SHA
     end
 
     it 'returns a message regarding a new branch' do
@@ -75,7 +75,7 @@ describe SlackService::PushMessage do
 
   context 'removed branch' do
     before do
-      args[:after] = '000000'
+      args[:after] = Gitlab::Git::BLANK_SHA
     end
 
     it 'returns a message regarding a removed branch' do

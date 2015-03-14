@@ -88,13 +88,13 @@ class PushoverService < Service
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
 
-    ref = data[:ref].gsub('refs/heads/', '')
+    ref = Gitlab::Git.ref_name(data[:ref])
     before = data[:before]
     after = data[:after]
 
-    if before.include?('000000')
+    if Gitlab::Git.blank_ref?(before)
       message = "#{data[:user_name]} pushed new branch \"#{ref}\"."
-    elsif after.include?('000000')
+    elsif Gitlab::Git.blank_ref?(after)
       message = "#{data[:user_name]} deleted branch \"#{ref}\"."
     else
       message = "#{data[:user_name]} push to branch \"#{ref}\"."

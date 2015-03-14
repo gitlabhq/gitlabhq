@@ -29,6 +29,7 @@ namespace :gitlab do
       check_redis_version
       check_ruby_version
       check_git_version
+      check_active_users
 
       finished_checking "GitLab"
     end
@@ -779,6 +780,10 @@ namespace :gitlab do
       )
       fix_and_rerun
     end
+  end
+
+  def check_active_users
+    puts "Active users: #{User.active.count}"
   end
 
   def omnibus_gitlab?
