@@ -23,6 +23,7 @@ v 7.9.0 (unreleased)
   - Fix checkbox alignment on the application settings page.
   - Generalize image upload in drag and drop in markdown to all files (Hannes Rosenögger)
   - Fix mass-unassignment of issues (Robert Speicher)
+  - Fix hidden diff comments in merge request discussion view
   - Allow user confirmation to be skipped for new users via API
   - Add a service to send updates to an Irker gateway (Romain Coltel)
   - Add brakeman (security scanner for Ruby on Rails)
