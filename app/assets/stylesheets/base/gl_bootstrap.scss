@@ -187,6 +187,11 @@
   }
 }
 
+.panel-succes .panel-heading,
+.panel-info .panel-heading,
+.panel-danger .panel-heading,
+.panel-warning .panel-heading,
+.panel-primary .panel-heading,
 .alert {
   a {
     @extend .alert-link;
