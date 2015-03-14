@@ -4,7 +4,7 @@
 # If any command return non-zero status - stop deploy
 set -e
 
-echo 'Deploy: Stoping sidekiq..'
+echo 'Deploy: Stopping sidekiq..'
 cd /home/git/gitlab/ && sudo -u git -H bundle exec rake sidekiq:stop RAILS_ENV=production
 
 echo 'Deploy: Show deploy index page'
