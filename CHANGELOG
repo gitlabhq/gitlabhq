@@ -68,6 +68,7 @@ v 7.9.0 (unreleased)
   - Execute hooks and services when branch or tag is created or deleted through web interface.
   - Block and unblock user if he/she was blocked/unblocked in Active Directory
   - Raise recommended number of unicorn workers from 2 to 3
+  - Use same layout and interactivity for project members as group members.
 
 v 7.8.4
   - Fix issue_tracker_id substitution in custom issue trackers
