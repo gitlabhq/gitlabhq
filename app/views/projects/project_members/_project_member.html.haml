@@ -31,4 +31,4 @@
       = form_for member, as: :project_member, url: namespace_project_project_member_path(@project.namespace, @project, member.user), remote: true do |f|
         .alert.prepend-top-20
           = f.select :access_level, options_for_select(ProjectMember.access_roles, member.access_level)
-          = f.submit 'Save', class: 'btn btn-save btn-small'
+          = f.submit 'Save', class: 'btn btn-save btn-sm'
