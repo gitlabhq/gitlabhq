@@ -2,7 +2,7 @@ require 'gitlab/satellite/satellite'
 
 class Projects::MergeRequestsController < Projects::ApplicationController
   before_filter :module_enabled
-  before_filter :merge_request, only: [:edit, :update, :show, :diffs, :automerge, :automerge_check, :ci_status]
+  before_filter :merge_request, only: [:edit, :update, :show, :diffs, :automerge, :automerge_check, :ci_status, :set_subscription]
   before_filter :closes_issues, only: [:edit, :update, :show, :diffs]
   before_filter :validates_merge_request, only: [:show, :diffs]
   before_filter :define_show_vars, only: [:show, :diffs]
@@ -172,6 +172,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     }
 
     render json: response
+  end
+
+  def set_subscription
+    subscribed = params[:subscription] == "Subscribe"
+
+    sub = @merge_request.subscribes.find_or_create_by(user_id: current_user.id)
+    sub.update(subscribed: subscribed)
+    
+    render nothing: true
   end
 
   protected

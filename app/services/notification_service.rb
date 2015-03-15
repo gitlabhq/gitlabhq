@@ -314,6 +314,13 @@ class NotificationService
     end
   end
 
+  def reject_unsubscribed_users(recipients, target)
+    recipients.reject do |user|
+      subscribe = target.subscribes.find_by_user_id(user.id)
+      subscribe && !subscribe.subscribed
+    end
+  end
+
   def new_resource_email(target, project, method)
     recipients = build_recipients(target, project)
     recipients.delete(target.author)
@@ -361,10 +368,21 @@ class NotificationService
 
     recipients = reject_muted_users(recipients, project)
     recipients = reject_mention_users(recipients, project)
+    recipients = add_subscribers(recipients, project)
     recipients = recipients.concat(project_watchers(project)).uniq
+    recipients = reject_unsubscribed_users(recipients, target)
     recipients
   end
 
+  def add_subscribers(recipients, target)
+    subs = target.subscribes
+    if subs.any?
+      recipients.merge(subs.where("subscribed is true").map(&:user))
+    else
+      recipients
+    end
+  end
+  
   def mailer
     Notify.delay
   end

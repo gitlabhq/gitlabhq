@@ -15,6 +15,7 @@ module Issuable
     has_many :notes, as: :noteable, dependent: :destroy
     has_many :label_links, as: :target, dependent: :destroy
     has_many :labels, through: :label_links
+    has_many :subscribes, dependent: :destroy
 
     validates :author, presence: true
     validates :title, presence: true, length: { within: 0..255 }
@@ -130,6 +131,15 @@ module Issuable
     end
 
     users.concat(mentions.reduce([], :|)).uniq
+  end
+
+  def subscribe_status(user)
+    sub = subscribes.find_by_user_id(user.id)
+    if sub
+      return sub.subscribed
+    end
+
+    participants.include?(user)
   end
 
   def to_hook_data(user)

@@ -406,6 +406,7 @@ Gitlab::Application.routes.draw do
             post :automerge
             get :automerge_check
             get :ci_status
+            post :set_subscription
           end
 
           collection do
@@ -440,6 +441,9 @@ Gitlab::Application.routes.draw do
         end
 
         resources :issues, constraints: { id: /\d+/ }, except: [:destroy] do
+          member do
+            post :set_subscription
+          end
           collection do
             post  :bulk_update
           end
