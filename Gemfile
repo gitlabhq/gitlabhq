@@ -177,6 +177,9 @@ gem 'ace-rails-ap'
 # Keyboard shortcuts
 gem 'mousetrap-rails'
 
+# Detect and convert string character encoding
+gem 'charlock_holmes'
+
 # Shutting down requests that take too long
 gem "slowpoke"
 
