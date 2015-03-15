@@ -34,6 +34,7 @@ v 7.9.0 (unreleased)
   - Add a service to send updates to an Irker gateway (Romain Coltel)
   - Add brakeman (security scanner for Ruby on Rails)
   - Slack username and channel options
+  - Restrict permissions on backup files
   - Add grouped milestones from all projects to dashboard.
   - Web hook sends pusher email as well as commiter
   - Add Bitbucket omniauth provider.
