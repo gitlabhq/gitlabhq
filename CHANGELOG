@@ -4,7 +4,7 @@ v 7.9.0 (unreleased)
   - Add HipChat integration documentation (Stan Hu)
   - Update documentation for object_kind field in Webhook push and tag push Webhooks (Stan Hu)
   - Fix broken email images (Hannes Rosenögger)
-  - Automaticly config git if user forgot, where possible
+  - Automatically config git if user forgot, where possible (Zeger-Jan van de Weg)
   - Fix mass SQL statements on initial push (Hannes Rosenögger)
   - Add tag push notifications and normalize HipChat and Slack messages to be consistent (Stan Hu)
   - Add comment notification events to HipChat and Slack services (Stan Hu)
