@@ -42,25 +42,19 @@ class SnippetsController < ApplicationController
   end
 
   def create
-    @snippet = PersonalSnippet.new(snippet_params)
-    @snippet.author = current_user
+    @snippet = CreateSnippetService.new(nil, current_user,
+                                        snippet_params).execute
 
-    if @snippet.save
-      redirect_to snippet_path(@snippet)
-    else
-      respond_with @snippet
-    end
+    respond_with @snippet.becomes(Snippet)
   end
 
   def edit
   end
 
   def update
-    if @snippet.update_attributes(snippet_params)
-      redirect_to snippet_path(@snippet)
-    else
-      respond_with @snippet
-    end
+    UpdateSnippetService.new(nil, current_user, @snippet,
+                             snippet_params).execute
+    respond_with @snippet.becomes(Snippet)
   end
 
   def show

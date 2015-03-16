@@ -57,10 +57,6 @@ production: &base
     ##   COLOR  = 5
     # default_theme: 2 # default: 2
 
-    # Restrict setting visibility levels for non-admin users.
-    # The default is to allow all levels.
-    # restricted_visibility_levels: [ "public" ]
-
     ## Automatic issue closing
     # If a commit message matches this regular expression, all issues referenced from the matched text will be closed.
     # This happens when the commit is pushed or merged into the default branch of a project.

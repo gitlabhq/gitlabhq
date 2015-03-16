@@ -42,21 +42,22 @@ module API
       #   title (required) - The title of a snippet
       #   file_name (required) - The name of a snippet file
       #   code (required) - The content of a snippet
+      #   visibility_level (required) - The snippet's visibility
       # Example Request:
       #   POST /projects/:id/snippets
       post ":id/snippets" do
         authorize! :write_project_snippet, user_project
-        required_attributes! [:title, :file_name, :code]
+        required_attributes! [:title, :file_name, :code, :visibility_level]
 
-        attrs = attributes_for_keys [:title, :file_name]
+        attrs = attributes_for_keys [:title, :file_name, :visibility_level]
         attrs[:content] = params[:code] if params[:code].present?
-        @snippet = user_project.snippets.new attrs
-        @snippet.author = current_user
+        @snippet = CreateSnippetService.new(user_project, current_user,
+                                            attrs).execute
 
-        if @snippet.save
-          present @snippet, with: Entities::ProjectSnippet
-        else
+        if @snippet.errors.any?
           render_validation_error!(@snippet)
+        else
+          present @snippet, with: Entities::ProjectSnippet
         end
       end
 
@@ -68,19 +69,22 @@ module API
       #   title (optional) - The title of a snippet
       #   file_name (optional) - The name of a snippet file
       #   code (optional) - The content of a snippet
+      #   visibility_level (optional) - The snippet's visibility
       # Example Request:
       #   PUT /projects/:id/snippets/:snippet_id
       put ":id/snippets/:snippet_id" do
         @snippet = user_project.snippets.find(params[:snippet_id])
         authorize! :modify_project_snippet, @snippet
 
-        attrs = attributes_for_keys [:title, :file_name]
+        attrs = attributes_for_keys [:title, :file_name, :visibility_level]
         attrs[:content] = params[:code] if params[:code].present?
 
-        if @snippet.update_attributes attrs
-          present @snippet, with: Entities::ProjectSnippet
-        else
+        UpdateSnippetService.new(user_project, current_user, @snippet,
+                                 attrs).execute
+        if @snippet.errors.any?
           render_validation_error!(@snippet)
+        else
+          present @snippet, with: Entities::ProjectSnippet
         end
       end
 

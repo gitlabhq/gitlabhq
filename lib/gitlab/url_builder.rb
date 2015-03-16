@@ -51,9 +51,9 @@ module Gitlab
                           anchor: "note_#{note.id}")
       elsif note.for_project_snippet?
         snippet = Snippet.find(note.noteable_id)
-        snippet_url(snippet,
-                    host: Gitlab.config.gitlab['url'],
-                    anchor: "note_#{note.id}")
+        project_snippet_url(snippet,
+                            host: Gitlab.config.gitlab['url'],
+                            anchor: "note_#{note.id}")
       end
     end
   end

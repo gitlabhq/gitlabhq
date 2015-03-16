@@ -18,4 +18,21 @@ module ApplicationSettingsHelper
   def extra_sign_in_text
     current_application_settings.sign_in_text
   end
+
+  # Return a group of checkboxes that use Bootstrap's button plugin for a
+  # toggle button effect.
+  def restricted_level_checkboxes(help_block_id)
+    Gitlab::VisibilityLevel.options.map do |name, level|
+      checked = restricted_visibility_levels(true).include?(level)
+      css_class = 'btn btn-primary'
+      css_class += ' active' if checked
+      checkbox_name = 'application_setting[restricted_visibility_levels][]'
+
+      label_tag(checkbox_name, class: css_class) do
+        check_box_tag(checkbox_name, level, checked,
+                      autocomplete: 'off',
+                      'aria-describedby' => help_block_id) + name
+      end
+    end
+  end
 end
