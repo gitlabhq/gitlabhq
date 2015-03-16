@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 7.9.0 (unreleased)
   - Update documentation for object_kind field in Webhook push and tag push Webhooks (Stan Hu)
   - Fix broken email images (Hannes Rosenögger)
+  - Automaticly config git if user forgot, where possible
   - Fix mass SQL statements on initial push (Hannes Rosenögger)
   - Add tag push notifications and normalize HipChat and Slack messages to be consistent (Stan Hu)
   - Add comment notification events to HipChat and Slack services (Stan Hu)
