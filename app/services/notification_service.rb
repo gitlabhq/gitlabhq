@@ -368,16 +368,16 @@ class NotificationService
 
     recipients = reject_muted_users(recipients, project)
     recipients = reject_mention_users(recipients, project)
-    recipients = add_subscribers(recipients, project)
+    recipients = add_subscribed_users(recipients, project)
     recipients = recipients.concat(project_watchers(project)).uniq
     recipients = reject_unsubscribed_users(recipients, target)
     recipients
   end
 
-  def add_subscribers(recipients, target)
-    subs = target.subscribes
-    if subs.any?
-      recipients.merge(subs.where("subscribed is true").map(&:user))
+  def add_subscribed_users(recipients, target)
+    subscribes = target.subscribes
+    if subscribes.any?
+      recipients.merge(subscribes.where("subscribed is true").map(&:user))
     else
       recipients
     end

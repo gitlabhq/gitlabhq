@@ -406,6 +406,10 @@ ActiveRecord::Schema.define(version: 20150313012111) do
     t.datetime "updated_at"
   end
 
+  add_index "subscribes", ["issue_id"], name: "index_subscribes_on_issue_id", using: :btree
+  add_index "subscribes", ["merge_request_id"], name: "index_subscribes_on_merge_request_id", using: :btree
+  add_index "subscribes", ["user_id"], name: "index_subscribes_on_user_id", using: :btree
+
   create_table "taggings", force: true do |t|
     t.integer  "tag_id"
     t.integer  "taggable_id"

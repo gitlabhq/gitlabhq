@@ -134,9 +134,9 @@ module Issuable
   end
 
   def subscribe_status(user)
-    sub = subscribes.find_by_user_id(user.id)
-    if sub
-      return sub.subscribed
+    subscribe = subscribes.find_by_user_id(user.id)
+    if subscribe
+      return subscribe.subscribed
     end
 
     participants.include?(user)

@@ -8,5 +8,9 @@ class CreateSubscribesTable < ActiveRecord::Migration
       
       t.timestamps
     end
+
+    add_index :subscribes, :user_id
+    add_index :subscribes, :issue_id
+    add_index :subscribes, :merge_request_id
   end
 end
