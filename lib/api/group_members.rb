@@ -53,14 +53,14 @@ module API
         authorize! :manage_group, group
         required_attributes! [:access_level]
 
-        team_member = group.group_members.find_by(user_id: params[:user_id])
-        not_found!('User can not be found') if team_member.nil?
+        group_member = group.group_members.find_by(user_id: params[:user_id])
+        not_found!('User can not be found') if group_member.nil?
 
-        if team_member.update_attributes(access_level: params[:access_level])
-          @member = team_member.user
+        if group_member.update_attributes(access_level: params[:access_level])
+          @member = group_member.user
           present @member, with: Entities::GroupMember, group: group
         else
-          handle_member_errors team_member.errors
+          handle_member_errors group_member.errors
         end
       end
 

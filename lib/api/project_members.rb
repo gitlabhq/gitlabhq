@@ -46,19 +46,19 @@ module API
         required_attributes! [:user_id, :access_level]
 
         # either the user is already a team member or a new one
-        team_member = user_project.team_member_by_id(params[:user_id])
-        if team_member.nil?
-          team_member = user_project.project_members.new(
+        project_member = user_project.project_member_by_id(params[:user_id])
+        if project_member.nil?
+          project_member = user_project.project_members.new(
             user_id: params[:user_id],
             access_level: params[:access_level]
           )
         end
 
-        if team_member.save
-          @member = team_member.user
+        if project_member.save
+          @member = project_member.user
           present @member, with: Entities::ProjectMember, project: user_project
         else
-          handle_member_errors team_member.errors
+          handle_member_errors project_member.errors
         end
       end
 
@@ -74,14 +74,14 @@ module API
         authorize! :admin_project, user_project
         required_attributes! [:access_level]
 
-        team_member = user_project.project_members.find_by(user_id: params[:user_id])
-        not_found!("User can not be found") if team_member.nil?
+        project_member = user_project.project_members.find_by(user_id: params[:user_id])
+        not_found!("User can not be found") if project_member.nil?
 
-        if team_member.update_attributes(access_level: params[:access_level])
-          @member = team_member.user
+        if project_member.update_attributes(access_level: params[:access_level])
+          @member = project_member.user
           present @member, with: Entities::ProjectMember, project: user_project
         else
-          handle_member_errors team_member.errors
+          handle_member_errors project_member.errors
         end
       end
 
@@ -94,9 +94,9 @@ module API
       #   DELETE /projects/:id/members/:user_id
       delete ":id/members/:user_id" do
         authorize! :admin_project, user_project
-        team_member = user_project.project_members.find_by(user_id: params[:user_id])
-        unless team_member.nil?
-          team_member.destroy
+        project_member = user_project.project_members.find_by(user_id: params[:user_id])
+        unless project_member.nil?
+          project_member.destroy
         else
           { message: "Access revoked", id: params[:user_id].to_i }
         end

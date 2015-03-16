@@ -32,7 +32,7 @@ module SharedPaths
   end
 
   step 'I visit group "Owned" members page' do
-    visit members_group_path(Group.find_by(name:"Owned"))
+    visit group_group_members_path(Group.find_by(name:"Owned"))
   end
 
   step 'I visit group "Owned" settings page' do
@@ -52,7 +52,7 @@ module SharedPaths
   end
 
   step 'I visit group "Guest" members page' do
-    visit members_group_path(Group.find_by(name:"Guest"))
+    visit group_group_members_path(Group.find_by(name:"Guest"))
   end
 
   step 'I visit group "Guest" settings page' do
@@ -386,7 +386,7 @@ module SharedPaths
   end
 
   step 'I visit project "Shop" team page' do
-    visit namespace_project_team_index_path(project.namespace, project)
+    visit namespace_project_project_members_path(project.namespace, project)
   end
 
   step 'I visit project wiki page' do

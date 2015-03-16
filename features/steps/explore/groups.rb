@@ -35,7 +35,7 @@ class Spinach::Features::ExploreGroups < Spinach::FeatureSteps
   end
 
   step 'I visit group "TestGroup" members page' do
-    visit members_group_path(Group.find_by(name: "TestGroup"))
+    visit group_group_members_path(Group.find_by(name: "TestGroup"))
   end
 
   step 'I should not see project "Enterprise" items' do

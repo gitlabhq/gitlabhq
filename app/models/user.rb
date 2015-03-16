@@ -169,11 +169,8 @@ class User < ActiveRecord::Base
   scope :admins, -> { where(admin:  true) }
   scope :blocked, -> { with_state(:blocked) }
   scope :active, -> { with_state(:active) }
-  scope :in_team, ->(team){ where(id: team.member_ids) }
-  scope :not_in_team, ->(team){ where('users.id NOT IN (:ids)', ids: team.member_ids) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members)') }
-  scope :potential_team_members, ->(team) { team.members.any? ? active.not_in_team(team) : active  }
 
   #
   # Class methods
@@ -407,7 +404,7 @@ class User < ActiveRecord::Base
   end
 
   def tm_of(project)
-    project.team_member_by_id(self.id)
+    project.project_member_by_id(self.id)
   end
 
   def already_forked?(project)

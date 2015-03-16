@@ -55,8 +55,8 @@ describe "Group with internal project access", feature: true  do
       it { is_expected.to be_denied_for :visitor }
     end
 
-    describe "GET /groups/:path/members" do
-      subject { members_group_path(group) }
+    describe "GET /groups/:path/group_members" do
+      subject { group_group_members_path(group) }
 
       it { is_expected.to be_allowed_for owner }
       it { is_expected.to be_allowed_for master }

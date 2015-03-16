@@ -136,7 +136,7 @@ Gitlab::Application.routes.draw do
 
     resources :groups, constraints: { id: /[^\/]+/ } do
       member do
-        put :project_teams_update
+        put :members_update
       end
     end
 
@@ -215,11 +215,7 @@ Gitlab::Application.routes.draw do
     scope module: :dashboard do
       resources :milestones, only: [:index, :show]
 
-      resources :groups, only: [:index] do
-        member do
-          delete :leave
-        end
-      end
+      resources :groups, only: [:index]
 
       resources :projects, only: [] do
         collection do
@@ -236,12 +232,14 @@ Gitlab::Application.routes.draw do
     member do
       get :issues
       get :merge_requests
-      get :members
       get :projects
     end
 
     scope module: :groups do
-      resources :group_members, only: [:create, :update, :destroy]
+      resources :group_members, only: [:index, :create, :update, :destroy] do
+        delete :leave, on: :collection
+      end
+      
       resource :avatar, only: [:destroy]
       resources :milestones, only: [:index, :show, :update]
     end
@@ -425,7 +423,6 @@ Gitlab::Application.routes.draw do
           end
         end
 
-        resources :team, controller: 'team_members', only: [:index]
         resources :milestones, except: [:destroy], constraints: { id: /\d+/ } do
           member do
             put :sort_issues
@@ -445,7 +442,7 @@ Gitlab::Application.routes.draw do
           end
         end
 
-        resources :team_members, except: [:index, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ } do
+        resources :project_members, except: [:new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ } do
           collection do
             delete :leave
 

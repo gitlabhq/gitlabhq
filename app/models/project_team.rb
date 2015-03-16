@@ -31,16 +31,16 @@ class ProjectTeam
     user
   end
 
-  def find_tm(user_id)
-    tm = project.project_members.find_by(user_id: user_id)
+  def find_member(user_id)
+    member = project.project_members.find_by(user_id: user_id)
 
     # If user is not in project members
     # we should check for group membership
-    if group && !tm
-      tm = group.group_members.find_by(user_id: user_id)
+    if group && !member
+      member = group.group_members.find_by(user_id: user_id)
     end
 
-    tm
+    member
   end
 
   def add_user(user, access)
@@ -91,24 +91,24 @@ class ProjectTeam
   def import(source_project)
     target_project = project
 
-    source_team = source_project.project_members.to_a
+    source_members = source_project.project_members.to_a
     target_user_ids = target_project.project_members.pluck(:user_id)
 
-    source_team.reject! do |tm|
+    source_members.reject! do |member|
       # Skip if user already present in team
-      target_user_ids.include?(tm.user_id)
+      target_user_ids.include?(member.user_id)
     end
 
-    source_team.map! do |tm|
-      new_tm = tm.dup
-      new_tm.id = nil
-      new_tm.source = target_project
-      new_tm
+    source_members.map! do |member|
+      new_member = member.dup
+      new_member.id = nil
+      new_member.source = target_project
+      new_member
     end
 
     ProjectMember.transaction do
-      source_team.each do |tm|
-        tm.save
+      source_members.each do |member|
+        member.save
       end
     end
 
@@ -118,26 +118,26 @@ class ProjectTeam
   end
 
   def guest?(user)
-    max_tm_access(user.id) == Gitlab::Access::GUEST
+    max_member_access(user.id) == Gitlab::Access::GUEST
   end
 
   def reporter?(user)
-    max_tm_access(user.id) == Gitlab::Access::REPORTER
+    max_member_access(user.id) == Gitlab::Access::REPORTER
   end
 
   def developer?(user)
-    max_tm_access(user.id) == Gitlab::Access::DEVELOPER
+    max_member_access(user.id) == Gitlab::Access::DEVELOPER
   end
 
   def master?(user)
-    max_tm_access(user.id) == Gitlab::Access::MASTER
+    max_member_access(user.id) == Gitlab::Access::MASTER
   end
 
   def member?(user_id)
-    !!find_tm(user_id)
+    !!find_member(user_id)
   end
 
-  def max_tm_access(user_id)
+  def max_member_access(user_id)
     access = []
     access << project.project_members.find_by(user_id: user_id).try(:access_field)
 

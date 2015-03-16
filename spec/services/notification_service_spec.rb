@@ -69,9 +69,9 @@ describe NotificationService do
           user_project = note.project.project_members.find_by_user_id(@u_watcher.id)
           user_project.notification_level = Notification::N_PARTICIPATING
           user_project.save
-          user_group = note.project.group.group_members.find_by_user_id(@u_watcher.id)
-          user_group.notification_level = Notification::N_GLOBAL
-          user_group.save
+          group_member = note.project.group.group_members.find_by_user_id(@u_watcher.id)
+          group_member.notification_level = Notification::N_GLOBAL
+          group_member.save
         end
 
         it do

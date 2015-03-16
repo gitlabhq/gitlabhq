@@ -1,5 +1,5 @@
 class Admin::GroupsController < Admin::ApplicationController
-  before_filter :group, only: [:edit, :show, :update, :destroy, :project_update, :project_teams_update]
+  before_filter :group, only: [:edit, :show, :update, :destroy, :project_update, :members_update]
 
   def index
     @groups = Group.all
@@ -40,7 +40,7 @@ class Admin::GroupsController < Admin::ApplicationController
     end
   end
 
-  def project_teams_update
+  def members_update
     @group.add_users(params[:user_ids].split(','), params[:access_level])
 
     redirect_to [:admin, @group], notice: 'Users were successfully added.'

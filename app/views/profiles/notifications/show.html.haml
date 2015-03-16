@@ -62,9 +62,9 @@
       By default, all projects and groups will use the notification level set above.
     %h4 Groups:
     %ul.bordered-list
-      - @group_members.each do |users_group|
-        - notification = Notification.new(users_group)
-        = render 'settings', type: 'group', membership: users_group, notification: notification
+      - @group_members.each do |group_member|
+        - notification = Notification.new(group_member)
+        = render 'settings', type: 'group', membership: group_member, notification: notification
 
   .col-md-6
     %p

@@ -24,8 +24,8 @@
         Merge Requests
         - if current_user
           %span.count= MergeRequest.opened.of_group(@group).count
-  = nav_link(path: 'groups#members') do
-    = link_to members_group_path(@group), title: 'Members' do
+  = nav_link(controller: [:group_members]) do
+    = link_to group_group_members_path(@group), title: 'Members' do
       %i.fa.fa-users
       %span
         Members
