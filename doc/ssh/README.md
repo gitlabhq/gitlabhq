@@ -45,7 +45,7 @@ clip < ~/.ssh/id_rsa.pub
 pbcopy < ~/.ssh/id_rsa.pub
 ```
 
-**Linux (requires xclip):**
+**GNU/Linux (requires xclip):**
 ```bash
 xclip -sel clip < ~/.ssh/id_rsa.pub
 ```
