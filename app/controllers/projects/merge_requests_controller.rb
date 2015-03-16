@@ -177,7 +177,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def set_subscription
     subscribed = params[:subscription] == "Subscribe"
 
-    sub = @merge_request.subscribes.find_or_create_by(user_id: current_user.id)
+    sub = @merge_request.subscriptions.find_or_create_by(user_id: current_user.id)
     sub.update(subscribed: subscribed)
     
     render nothing: true

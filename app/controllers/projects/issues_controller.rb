@@ -100,7 +100,7 @@ class Projects::IssuesController < Projects::ApplicationController
   def set_subscription
     subscribed = params[:subscription] == "Subscribe"
 
-    sub = @issue.subscribes.find_or_create_by(user_id: current_user.id)
+    sub = @issue.subscriptions.find_or_create_by(user_id: current_user.id)
     sub.update(subscribed: subscribed)
     
     render nothing: true

@@ -35,8 +35,8 @@
         Subscription:
         %i.fa.fa-spinner.fa-spin.hidden.subscription
         %span.sub_status
-          = @merge_request.subscribe_status(current_user) ? "subscribed" : "unsubscribed"
-    - subscribe_action = @merge_request.subscribe_status(current_user) ? "Unsubscribe" : "Subscribe"
+          = @merge_request.subscription_status(current_user) ? "subscribed" : "unsubscribed"
+    - subscribe_action = @merge_request.subscription_status(current_user) ? "Unsubscribe" : "Subscribe"
     %input.btn.subscribe-button{:type => "button", :value => subscribe_action}
 
 :coffeescript

@@ -397,18 +397,16 @@ ActiveRecord::Schema.define(version: 20150313012111) do
   add_index "snippets", ["project_id"], name: "index_snippets_on_project_id", using: :btree
   add_index "snippets", ["visibility_level"], name: "index_snippets_on_visibility_level", using: :btree
 
-  create_table "subscribes", force: true do |t|
+  create_table "subscriptions", force: true do |t|
     t.integer  "user_id"
-    t.integer  "merge_request_id"
-    t.integer  "issue_id"
+    t.integer  "subscribable_id"
+    t.string   "subscribable_type"
     t.boolean  "subscribed"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "subscribes", ["issue_id"], name: "index_subscribes_on_issue_id", using: :btree
-  add_index "subscribes", ["merge_request_id"], name: "index_subscribes_on_merge_request_id", using: :btree
-  add_index "subscribes", ["user_id"], name: "index_subscribes_on_user_id", using: :btree
+  add_index "subscriptions", ["subscribable_id", "subscribable_type", "user_id"], name: "subscriptions_user_id_and_ref_fields", unique: true, using: :btree
 
   create_table "taggings", force: true do |t|
     t.integer  "tag_id"

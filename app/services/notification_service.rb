@@ -316,8 +316,8 @@ class NotificationService
 
   def reject_unsubscribed_users(recipients, target)
     recipients.reject do |user|
-      subscribe = target.subscribes.find_by_user_id(user.id)
-      subscribe && !subscribe.subscribed
+      subscription = target.subscriptions.find_by_user_id(user.id)
+      subscription && !subscription.subscribed
     end
   end
 
@@ -375,9 +375,9 @@ class NotificationService
   end
 
   def add_subscribed_users(recipients, target)
-    subscribes = target.subscribes
-    if subscribes.any?
-      recipients.merge(subscribes.where("subscribed is true").map(&:user))
+    subscriptions = target.subscriptions
+    if subscriptions.any?
+      recipients.merge(subscriptions.where("subscribed is true").map(&:user))
     else
       recipients
     end
