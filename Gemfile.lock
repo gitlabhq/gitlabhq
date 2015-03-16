@@ -684,6 +684,7 @@ DEPENDENCIES
   cal-heatmap-rails (~> 0.0.1)
   capybara (~> 2.2.1)
   carrierwave
+  charlock_holmes
   coffee-rails
   colored
   coveralls
