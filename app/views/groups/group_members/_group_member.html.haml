@@ -22,6 +22,7 @@
                        title: 'Edit access level', type: 'button' do
             %i.fa.fa-pencil-square-o
         - if can?(current_user, :destroy_group_member, member)
+          &nbsp;
           - if current_user == user
             = link_to leave_group_group_members_path(@group), data: { confirm: leave_group_message(@group.name)}, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove user from group' do
               %i.fa.fa-minus.fa-inverse
