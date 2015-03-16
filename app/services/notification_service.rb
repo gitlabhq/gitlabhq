@@ -151,6 +151,10 @@ class NotificationService
     # Reject mutes users
     recipients = reject_muted_users(recipients, note.project)
 
+    recipients = add_subscribed_users(recipients, note.noteable)
+    
+    recipients = reject_unsubscribed_users(recipients, note.noteable)
+
     # Reject author
     recipients.delete(note.author)
 
@@ -315,12 +319,26 @@ class NotificationService
   end
 
   def reject_unsubscribed_users(recipients, target)
+    return recipients unless target.respond_to? :subscriptions
+    
     recipients.reject do |user|
       subscription = target.subscriptions.find_by_user_id(user.id)
       subscription && !subscription.subscribed
     end
   end
 
+  def add_subscribed_users(recipients, target)
+    return recipients unless target.respond_to? :subscriptions
+
+    subscriptions = target.subscriptions
+
+    if subscriptions.any?
+      recipients + subscriptions.where("subscribed is true").map(&:user)
+    else
+      recipients
+    end
+  end
+  
   def new_resource_email(target, project, method)
     recipients = build_recipients(target, project)
     recipients.delete(target.author)
@@ -368,21 +386,12 @@ class NotificationService
 
     recipients = reject_muted_users(recipients, project)
     recipients = reject_mention_users(recipients, project)
-    recipients = add_subscribed_users(recipients, project)
+    recipients = add_subscribed_users(recipients, target)
     recipients = recipients.concat(project_watchers(project)).uniq
     recipients = reject_unsubscribed_users(recipients, target)
     recipients
   end
 
-  def add_subscribed_users(recipients, target)
-    subscriptions = target.subscriptions
-    if subscriptions.any?
-      recipients.merge(subscriptions.where("subscribed is true").map(&:user))
-    else
-      recipients
-    end
-  end
-  
   def mailer
     Notify.delay
   end
