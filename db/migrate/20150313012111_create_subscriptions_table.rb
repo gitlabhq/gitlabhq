@@ -8,6 +8,9 @@ class CreateSubscriptionsTable < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :subscriptions, [:subscribable_id, :subscribable_type, :user_id], unique: true, name: 'subscriptions_user_id_and_ref_fields'
+    add_index :subscriptions, 
+              [:subscribable_id, :subscribable_type, :user_id],
+              unique: true,
+              name: 'subscriptions_user_id_and_ref_fields'
   end
 end

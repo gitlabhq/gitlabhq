@@ -133,7 +133,7 @@ module Issuable
     users.concat(mentions.reduce([], :|)).uniq
   end
 
-  def subscription_status(user)
+  def subscribed?(user)
     subscription = subscriptions.find_by_user_id(user.id)
 
     if subscription
@@ -141,6 +141,12 @@ module Issuable
     end
 
     participants.include?(user)
+  end
+
+  def toggle_subscription(user)
+    subscriptions.
+      find_or_initialize_by(user_id: user.id).
+      update(subscribed: !subscribed?(user))
   end
 
   def to_hook_data(user)

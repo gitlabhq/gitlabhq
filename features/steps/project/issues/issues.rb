@@ -18,8 +18,21 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
     page.should_not have_content "Tweet control"
   end
 
+  step 'I should see that I am subscribed' do
+    find(".sub_status").text.should == "subscribed"
+  end
+
+  step 'I should see that I am unsubscribed' do
+    sleep 0.2
+    find(".sub_status").text.should == "unsubscribed"
+  end
+
   step 'I click link "Closed"' do
     click_link "Closed"
+  end
+
+  step 'I click button "Unsubscribe"' do
+    click_on "Unsubscribe"
   end
 
   step 'I should see "Release 0.3" in issues' do

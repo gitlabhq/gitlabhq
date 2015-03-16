@@ -92,6 +92,8 @@ class NotificationService
   #
   def merge_mr(merge_request, current_user)
     recipients = reject_muted_users([merge_request.author, merge_request.assignee], merge_request.target_project)
+    recipients = add_subscribed_users(recipients, merge_request)
+    recipients = reject_unsubscribed_users(recipients, merge_request)
     recipients = recipients.concat(project_watchers(merge_request.target_project)).uniq
     recipients.delete(current_user)
 
@@ -333,7 +335,7 @@ class NotificationService
     subscriptions = target.subscriptions
 
     if subscriptions.any?
-      recipients + subscriptions.where("subscribed is true").map(&:user)
+      recipients + subscriptions.where(subscribed: true).map(&:user)
     else
       recipients
     end

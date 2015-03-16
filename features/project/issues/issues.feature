@@ -202,3 +202,11 @@ Feature: Project Issues
     And I click link "Edit" for the issue
     And I preview a description text like "Bug fixed :smile:"
     Then I should see the Markdown write tab
+
+  @javascript
+  Scenario: I can unsubscribe from issue
+    Given project "Shop" has "Tasks-open" open issue with task markdown
+    When I visit issue page "Tasks-open"
+    Then I should see that I am subscribed
+    When I click button "Unsubscribe"
+    Then I should see that I am unsubscribed

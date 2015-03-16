@@ -33,12 +33,12 @@
         Subscription:
         %i.fa.fa-spinner.fa-spin.hidden.subscription
         %span.sub_status
-          = @issue.subscription_status(current_user) ? "subscribed" : "unsubscribed"
-    - subscribe_action = @issue.subscription_status(current_user) ? "Unsubscribe" : "Subscribe"
+          = @issue.subscribed?(current_user) ? "subscribed" : "unsubscribed"
+    - subscribe_action = @issue.subscribed?(current_user) ? "Unsubscribe" : "Subscribe"
     %input.btn.subscribe-button{:type => "button", :value => subscribe_action}
 
 :coffeescript
   $ ->
-    new Subscription("#{set_subscription_namespace_project_issue_path(@issue.project.namespace, @project, @issue)}")
+    new Subscription("#{toggle_subscription_namespace_project_issue_path(@issue.project.namespace, @project, @issue)}")
     
       

@@ -1,6 +1,6 @@
 class Projects::IssuesController < Projects::ApplicationController
   before_filter :module_enabled
-  before_filter :issue, only: [:edit, :update, :show, :set_subscription]
+  before_filter :issue, only: [:edit, :update, :show, :toggle_subscription]
 
   # Allow read any issue
   before_filter :authorize_read_issue!
@@ -97,11 +97,8 @@ class Projects::IssuesController < Projects::ApplicationController
     redirect_to :back, notice: "#{result[:count]} issues updated"
   end
 
-  def set_subscription
-    subscribed = params[:subscription] == "Subscribe"
-
-    sub = @issue.subscriptions.find_or_create_by(user_id: current_user.id)
-    sub.update(subscribed: subscribed)
+  def toggle_subscription
+    @issue.toggle_subscription(current_user)
     
     render nothing: true
   end
