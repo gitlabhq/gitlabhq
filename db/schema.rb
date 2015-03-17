@@ -394,11 +394,11 @@ ActiveRecord::Schema.define(version: 20150312000132) do
     t.string   "avatar"
     t.string   "import_status"
     t.float    "repository_size",               default: 0.0
-    t.text     "merge_requests_template"
     t.integer  "star_count",                    default: 0,        null: false
-    t.boolean  "merge_requests_rebase_enabled", default: false
     t.string   "import_type"
     t.string   "import_source"
+    t.text     "merge_requests_template"
+    t.boolean  "merge_requests_rebase_enabled", default: false
     t.boolean  "merge_requests_rebase_default", default: true
   end
 
@@ -514,7 +514,6 @@ ActiveRecord::Schema.define(version: 20150312000132) do
     t.string   "unconfirmed_email"
     t.boolean  "hide_no_ssh_key",               default: false
     t.string   "website_url",                   default: "",    null: false
-    t.datetime "admin_email_unsubscribed_at"
     t.string   "github_access_token"
     t.string   "gitlab_access_token"
     t.string   "notification_email"
@@ -522,6 +521,7 @@ ActiveRecord::Schema.define(version: 20150312000132) do
     t.boolean  "password_automatically_set",    default: false
     t.string   "bitbucket_access_token"
     t.string   "bitbucket_access_token_secret"
+    t.datetime "admin_email_unsubscribed_at"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
