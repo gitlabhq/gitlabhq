@@ -21,7 +21,9 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   def application_setting_params
     restricted_levels = params[:application_setting][:restricted_visibility_levels]
-    unless restricted_levels.nil?
+    if restricted_levels.nil?
+      params[:application_setting][:restricted_visibility_levels] = []
+    else
       restricted_levels.map! do |level|
         level.to_i
       end

@@ -27,9 +27,11 @@ class ApplicationSetting < ActiveRecord::Base
     if: :home_page_url_column_exist
 
   validates_each :restricted_visibility_levels do |record, attr, value|
-    value.each do |level|
-      unless Gitlab::VisibilityLevel.options.has_value?(level)
-        record.errors.add(attr, "'#{level}' is not a valid visibility level")
+    unless value.nil?
+      value.each do |level|
+        unless Gitlab::VisibilityLevel.options.has_value?(level)
+          record.errors.add(attr, "'#{level}' is not a valid visibility level")
+        end
       end
     end
   end
