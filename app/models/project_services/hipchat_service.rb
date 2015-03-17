@@ -20,8 +20,9 @@
 class HipchatService < Service
   MAX_COMMITS = 3
 
-  prop_accessor :token, :room, :server
+  prop_accessor :token, :room, :server, :color, :notification
   validates :token, presence: true, if: :activated?
+  validates :room, presence: true, if: :activated?
 
   def title
     'HipChat'
@@ -39,6 +40,18 @@ class HipchatService < Service
     [
       { type: 'text', name: 'token',     placeholder: 'Room token' },
       { type: 'text', name: 'room',      placeholder: 'Room name or ID' },
+      { type: 'checkbox', name: 'notification' },
+      { type: 'select', name: 'color', choices:
+        [
+          ['- Random Color -', 'random'],
+          ['Gray', 'gray'],
+          ['Green', 'green'],
+          ['Purple', 'purple'],
+          ['Red', 'red'],
+          ['Yellow', 'yellow']
+        ],
+        default_choice: 'yellow'
+      },
       { type: 'text', name: 'server',
         placeholder: 'Leave blank for default. https://hipchat.example.com' }
     ]
@@ -51,7 +64,9 @@ class HipchatService < Service
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
 
-    gate[room].send('GitLab', create_message(data))
+    options = { color: color, notify: notification? }
+
+    gate[room].send('GitLab', create_message(data), options)
   end
 
   private
@@ -218,6 +233,10 @@ class HipchatService < Service
     end
 
     message
+  end
+
+  def notification?
+    notification == '1'
   end
 
   def project_name
