@@ -16,4 +16,12 @@ class DeployKeysProject < ActiveRecord::Base
   validates :deploy_key_id, presence: true
   validates :deploy_key_id, uniqueness: { scope: [:project_id], message: "already exists in project" }
   validates :project_id, presence: true
+
+  after_destroy :destroy_orphaned_deploy_key
+
+  private
+
+  def destroy_orphaned_deploy_key
+    self.deploy_key.destroy if self.deploy_key.deploy_keys_projects.length == 0
+  end
 end
