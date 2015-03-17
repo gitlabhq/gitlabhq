@@ -76,14 +76,17 @@ Notice: The 25 workers of Sidekiq will show up as separate processes in your pro
 
 ## Unicorn Workers
 
-It's possible to increase the amount of unicorn workers and tis will usually help for to reduce the response time of the applications.
+It's possible to increase the amount of unicorn workers and tis will usually help for to reduce the response time of the applications and increase the ability to handle parallel requests.
+
 For most instances we recommend using: CPU cores + 1 = unicorn workers.
 So for a machine with 2 cores, 3 unicorn workers is ideal.
 
-For all machines that have 1GB and up we recommend a minimum of two unicorn workers.
+For all machines that have 1GB and up we recommend a minimum of three unicorn workers.
 If you have a 512MB machine with a magnetic (non-SSD) swap drive we recommend to configure only one Unicorn worker to prevent excessive swapping.
 With one Unicorn worker only git over ssh access will work because the git over HTTP access requires two running workers (one worker to receive the user request and one worker for the authorization check).
 If you have a 512MB machine with a SSD drive you can use two Unicorn workers, this will allow HTTP access although it will be slow due to swapping.
+
+To change the Unicorn workers when you have the Omnibus package please see [the Unicorn settings in the Omnibus GitLab documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/unicorn.md#unicorn-settings).
 
 ## Database
 

@@ -1,16 +1,10 @@
 .commits-compare-switch{
+  @extend .btn;
   background: image-url("switch_icon.png") no-repeat center center;
-  width: 32px;
-  height: 32px;
   text-indent: -9999px;
   float: left;
   margin-right: 9px;
-  border: 1px solid #DDD;
-  @include border-radius(4px);
-  padding: 4px;
-  background-color: #EEE;
 }
-
 
 .lists-separator {
   margin: 10px 0;

@@ -36,9 +36,10 @@ ActiveRecord::Schema.define(version: 20150312000132) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "home_page_url"
-    t.integer  "default_branch_protection", default: 2
-    t.boolean  "twitter_sharing_enabled",   default: true
+    t.integer  "default_branch_protection",    default: 2
+    t.boolean  "twitter_sharing_enabled",      default: true
     t.text     "help_text"
+    t.text     "restricted_visibility_levels"
   end
 
   create_table "audit_events", force: true do |t|

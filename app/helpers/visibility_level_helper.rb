@@ -60,7 +60,8 @@ module VisibilityLevelHelper
     Project.visibility_levels.key(level)
   end
 
-  def restricted_visibility_levels
-    current_user.is_admin? ? [] : gitlab_config.restricted_visibility_levels
+  def restricted_visibility_levels(show_all = false)
+    return [] if current_user.is_admin? && !show_all
+    current_application_settings.restricted_visibility_levels || []
   end
 end

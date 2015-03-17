@@ -46,7 +46,7 @@
               %li
                 %span.light Secondary email:
                 %strong= email.email
-                = link_to remove_email_admin_user_path(@user, email), data: { confirm: "Are you sure you want to remove #{email.email}?" }, method: :delete, class: "btn-tiny btn btn-remove pull-right", title: 'Remove secondary email', id: "remove_email_#{email.id}" do
+                = link_to remove_email_admin_user_path(@user, email), data: { confirm: "Are you sure you want to remove #{email.email}?" }, method: :delete, class: "btn-xs btn btn-remove pull-right", title: 'Remove secondary email', id: "remove_email_#{email.id}" do
                   %i.fa.fa-times
 
             %li
@@ -174,15 +174,15 @@
       .panel.panel-default
         .panel-heading Groups:
         %ul.well-list
-          - @user.group_members.each do |user_group|
-            - group = user_group.group
+          - @user.group_members.each do |group_member|
+            - group = group_member.group
             %li.group_member
-              %span{class: ("list-item-name" unless user_group.owner?)}
+              %span{class: ("list-item-name" unless group_member.owner?)}
                 %strong= link_to group.name, admin_group_path(group)
               .pull-right
-                %span.light= user_group.human_access
-                - unless user_group.owner?
-                  = link_to group_group_member_path(group, user_group), data: { confirm: remove_user_from_group_message(group, @user) }, method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
+                %span.light= group_member.human_access
+                - unless group_member.owner?
+                  = link_to group_group_member_path(group, group_member), data: { confirm: remove_user_from_group_message(group, @user) }, method: :delete, remote: true, class: "btn-xs btn btn-remove", title: 'Remove user from group' do
                     %i.fa.fa-times.fa-inverse
     - else
       .nothing-here-block This user has no groups.
@@ -207,21 +207,21 @@
           .panel-heading Joined projects (#{@joined_projects.count})
           %ul.well-list
             - @joined_projects.sort_by(&:name_with_namespace).each do |project|
-              - tm = project.team.find_tm(@user.id)
+              - member = project.team.find_member(@user.id)
               %li.project_member
                 .list-item-name
                   = link_to admin_namespace_project_path(project.namespace, project), class: dom_class(project) do
                     = project.name_with_namespace
 
-                - if tm
+                - if member
                   .pull-right
-                    - if tm.owner?
+                    - if member.owner?
                       %span.light Owner
                     - else
-                      %span.light= tm.human_access
+                      %span.light= member.human_access
 
-                      - if tm.respond_to? :project
-                        = link_to namespace_project_team_member_path(project.namespace, project, @user), data: { confirm: remove_from_project_team_message(project, @user) }, remote: true, method: :delete, class: "btn-tiny btn btn-remove", title: 'Remove user from project' do
+                      - if member.respond_to? :project
+                        = link_to namespace_project_project_member_path(project.namespace, project, @user), data: { confirm: remove_from_project_team_message(project, @user) }, remote: true, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove user from project' do
                           %i.fa.fa-times
   #ssh-keys.tab-pane
     = render 'profiles/keys/key_table', admin: true

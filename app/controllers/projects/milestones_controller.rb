@@ -18,7 +18,7 @@ class Projects::MilestonesController < Projects::ApplicationController
                   end
 
     @milestones = @milestones.includes(:project)
-    @milestones = @milestones.page(params[:page]).per(20)
+    @milestones = @milestones.page(params[:page]).per(PER_PAGE)
   end
 
   def new

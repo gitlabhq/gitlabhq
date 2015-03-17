@@ -116,14 +116,14 @@ class ProjectMember < Member
   def post_create_hook
     unless owner?
       event_service.join_project(self.project, self.user)
-      notification_service.new_team_member(self)
+      notification_service.new_project_member(self)
     end
     
     system_hook_service.execute_hooks_for(self, :create)
   end
 
   def post_update_hook
-    notification_service.update_team_member(self) if self.access_level_changed?
+    notification_service.update_project_member(self) if self.access_level_changed?
   end
 
   def post_destroy_hook

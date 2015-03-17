@@ -12,7 +12,7 @@ __Project integrations with external services for continuous integration and mor
 - Flowdock
 - Gemnasium
 - GitLab CI
-- HipChat
+- [HipChat](hipchat.md) An Atlassian product for private group chat and instant messaging.
 - [Irker](irker.md) An IRC gateway to receive messages on repository updates.
 - Pivotal Tracker
 - Pushover

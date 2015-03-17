@@ -3,7 +3,7 @@
  *
  */
 .file-holder {
-  border: 1px solid #CCC;
+  border: 1px solid $border-color;
   margin-bottom: 1em;
 
   table {
@@ -11,33 +11,29 @@
   }
 
   .file-title {
-    background: #EEE;
-    border-bottom: 1px solid #CCC;
+    position: relative;
+    background: $background-color;
+    border-bottom: 1px solid $border-color;
     text-shadow: 0 1px 1px #fff;
     margin: 0;
     text-align: left;
     padding: 10px 15px;
 
-    .options {
+    .file-actions {
       float: right;
-      margin-top: -3px;
+      position: absolute;
+      top: 5px;
+      right: 15px;
+
+      .btn {
+        padding: 0px 10px;
+        font-size: 13px;
+        line-height: 28px;
+      }
     }
 
     .left-options {
       margin-top: -3px;
-    }
-
-    .file_name {
-      font-weight: bold;
-      padding-left: 3px;
-      font-size: 14px;
-
-      small {
-        color: #888;
-        font-size: 13px;
-        font-weight: normal;
-        padding-left: 10px;
-      }
     }
   }
   .file-content {
@@ -119,7 +115,7 @@
       ol {
         margin-left: 40px;
         padding: 10px 0;
-        border-left: 1px solid #CCC;
+        border-left: 1px solid $border-color;
         margin-bottom: 0;
         background: white;
         li {

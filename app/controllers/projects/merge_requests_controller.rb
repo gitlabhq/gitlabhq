@@ -17,8 +17,19 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_filter :authorize_modify_merge_request!, only: [:close, :edit, :update, :sort]
 
   def index
+    terms = params['issue_search']
     @merge_requests = get_merge_requests_collection
-    @merge_requests = @merge_requests.page(params[:page]).per(20)
+    @merge_requests = @merge_requests.full_search(terms) if terms.present?
+    @merge_requests = @merge_requests.page(params[:page]).per(PER_PAGE)
+
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: {
+          html: view_to_html_string("projects/merge_requests/_merge_requests")
+        }
+      end
+    end
   end
 
   def show

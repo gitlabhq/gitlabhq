@@ -23,7 +23,7 @@
               - application.redirect_uri.split.each do |uri|
                 %div= uri
             %td= application.access_tokens.count
-            %td= link_to 'Edit', edit_oauth_application_path(application), class: 'btn btn-link btn-small'
+            %td= link_to 'Edit', edit_oauth_application_path(application), class: 'btn btn-link btn-sm'
             %td= render 'doorkeeper/applications/delete_form', application: application
 
 %fieldset.oauth-authorized-applications.prepend-top-20

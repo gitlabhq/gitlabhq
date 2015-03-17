@@ -39,7 +39,7 @@ gem "browser"
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '7.1.0'
+gem "gitlab_git", '~> 7.1.0'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 2.0.0.rc2', require: 'grack'
@@ -179,6 +179,9 @@ gem 'ace-rails-ap'
 # Keyboard shortcuts
 gem 'mousetrap-rails'
 
+# Detect and convert string character encoding
+gem 'charlock_holmes'
+
 # Shutting down requests that take too long
 gem "slowpoke"
 
@@ -270,7 +273,6 @@ end
 
 group :production do
   gem "gitlab_meta", '7.0'
-  gem "therubyracer"
 end
 
 gem "newrelic_rpm"

@@ -11,30 +11,30 @@
 .panel.panel-default
   .panel-heading
     %strong Groups
-    (#{@user_groups.count})
+    (#{@group_members.count})
   %ul.well-list
-    - @user_groups.each do |user_group|
-      - group = user_group.group
+    - @group_members.each do |group_member|
+      - group = group_member.group
       %li
         .pull-right
           - if can?(current_user, :manage_group, group)
-            = link_to edit_group_path(group), class: "btn-small btn btn-grouped" do
+            = link_to edit_group_path(group), class: "btn-sm btn btn-grouped" do
               %i.fa.fa-cogs
               Settings
 
-          - if can?(current_user, :destroy, user_group)
-            = link_to leave_dashboard_group_path(group), data: { confirm: leave_group_message(group.name) }, method: :delete, class: "btn-small btn btn-grouped", title: 'Remove user from group' do
+          - if can?(current_user, :destroy_group_member, group_member)
+            = link_to leave_group_group_members_path(group), data: { confirm: leave_group_message(group.name) }, method: :delete, class: "btn-sm btn btn-grouped", title: 'Remove user from group' do
               %i.fa.fa-sign-out
               Leave
 
-        = image_tag group_icon(group.path), class: "avatar s40 avatar-tile"
+        = image_tag group_icon(group), class: "avatar s40 avatar-tile"
         = link_to group, class: 'group-name' do
           %strong= group.name
 
         as
-        %strong #{user_group.human_access}
+        %strong #{group_member.human_access}
 
         %div.light
           #{pluralize(group.projects.count, "project")}, #{pluralize(group.users.count, "user")}
 
-= paginate @user_groups
+= paginate @group_members

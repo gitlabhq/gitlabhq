@@ -180,7 +180,7 @@ describe GitlabMarkdownHelper do
       end
 
       it "should include standard gfm classes" do
-        expect(gfm(actual)).to match(/class="\s?gfm gfm-team_member\s?"/)
+        expect(gfm(actual)).to match(/class="\s?gfm gfm-project_member\s?"/)
       end
     end
 

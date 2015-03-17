@@ -84,8 +84,8 @@ describe "Public Project Access", feature: true  do
     it { is_expected.to be_allowed_for :visitor }
   end
 
-  describe "GET /:project_path/team" do
-    subject { namespace_project_team_index_path(project.namespace, project) }
+  describe "GET /:project_path/project_members" do
+    subject { namespace_project_project_members_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for master }
     it { is_expected.to be_denied_for reporter }

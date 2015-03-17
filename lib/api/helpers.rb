@@ -207,7 +207,7 @@ module API
     end
 
     def render_validation_error!(model)
-      unless model.valid?
+      if model.errors.any?
         render_api_error!(model.errors.messages || '400 Bad Request', 400)
       end
     end

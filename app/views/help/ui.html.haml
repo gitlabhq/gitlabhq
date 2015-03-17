@@ -22,6 +22,8 @@
     %li
       = link_to 'Forms', '#forms'
     %li
+      = link_to 'Files', '#file'
+    %li
       = link_to 'Markdown', '#markdown'
 
   %h2#blocks Blocks
@@ -192,6 +194,23 @@
         %input{:type => "checkbox"}/
         Remember me
     %button.btn.btn-default{:type => "submit"} Sign in
+
+  %h2#file File
+  %h3
+    %code .file-holder
+
+  - blob = Snippet.new(content: "Wow\nSuch\nFile")
+  .example
+    .file-holder
+      .file-title
+        Awesome file
+        .file-actions
+          .btn-group
+            %a.btn Edit
+            %a.btn Remove
+      .file-contenta.code
+        = render 'shared/file_highlight', blob: blob
+
 
   %h2#markdown Markdown
   %h3

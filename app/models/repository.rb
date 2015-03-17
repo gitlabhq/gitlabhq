@@ -136,8 +136,8 @@ class Repository
         commit = Gitlab::Git::Commit.new(rugged_commit)
 
         {
-          author_name: commit.author_name.force_encoding('UTF-8'),
-          author_email: commit.author_email.force_encoding('UTF-8'),
+          author_name: commit.author_name,
+          author_email: commit.author_email,
           additions: commit.stats.additions,
           deletions: commit.stats.deletions,
         }

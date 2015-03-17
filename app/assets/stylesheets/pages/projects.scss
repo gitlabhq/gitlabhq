@@ -156,7 +156,7 @@ ul.nav.nav-projects-tabs {
   }
 }
 
-.team_member_row form {
+.project_member_row form {
   margin: 0px;
 }
 
@@ -300,4 +300,9 @@ table.table.protected-branches-list tr.no-border {
   th, td {
     border: 0;
   }
+}
+
+.project-import .btn {
+  float: left;
+  margin-right: 10px;
 }

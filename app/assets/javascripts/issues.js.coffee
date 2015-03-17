@@ -47,7 +47,7 @@
   initSearch: ->
     @timer = null
     $("#issue_search").keyup ->
-      clearTimeout(@timer);
+      clearTimeout(@timer)
       @timer = setTimeout(Issues.filterResults, 500)
 
   filterResults: =>
