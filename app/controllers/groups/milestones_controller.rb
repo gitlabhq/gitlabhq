@@ -10,7 +10,7 @@ class Groups::MilestonesController < ApplicationController
                          else state('active')
                          end
     @group_milestones = Milestones::GroupService.new(project_milestones).execute
-    @group_milestones = Kaminari.paginate_array(@group_milestones).page(params[:page]).per(30)
+    @group_milestones = Kaminari.paginate_array(@group_milestones).page(params[:page]).per(PER_PAGE)
   end
 
   def show

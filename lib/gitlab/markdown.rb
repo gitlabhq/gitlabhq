@@ -200,7 +200,7 @@ module Gitlab
 
     def reference_user(identifier, project = @project, _ = nil)
       options = html_options.merge(
-          class: "gfm gfm-team_member #{html_options[:class]}"
+          class: "gfm gfm-project_member #{html_options[:class]}"
         )
 
       if identifier == "all"

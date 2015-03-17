@@ -21,12 +21,14 @@
 
 %div#tree-content-holder.tree-content-holder
   %article.file-holder
-    .file-title.clearfix
+    .file-title
       %i.fa.fa-file
-      %span.file_name
+      %strong
         = blob.name
-        %small= number_to_human_size blob.size
-      %span.options.hidden-xs= render "actions"
+      %small
+        = number_to_human_size(blob.size)
+      .file-actions.hidden-xs
+        = render "actions"
     - if blob.text?
       = render "text", blob: blob
     - elsif blob.image?

@@ -13,7 +13,7 @@ Feature: Project Team Management
 
   @javascript
   Scenario: Add user to project
-    Given I click link "New Team Member"
+    Given I click link "Add members"
     And I select "Mike" as "Reporter"
     Then I should see "Mike" in team list as "Reporter"
 

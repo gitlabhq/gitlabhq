@@ -38,7 +38,7 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
 
   When 'I select user "John Doe" from user list as "Reporter"' do
     select2(user_john.id, from: "#user_ids", multiple: true)
-    within "#new_team_member" do
+    within "#new_project_member" do
       select "Reporter", from: "access_level"
     end
     click_button "Add users to group"

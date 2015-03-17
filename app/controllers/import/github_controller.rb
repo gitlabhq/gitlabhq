@@ -14,7 +14,7 @@ class Import::GithubController < Import::BaseController
   def status
     @repos = client.repos
     client.orgs.each do |org|
-      @repos += client.repos(org.login)
+      @repos += client.org_repos(org.login)
     end
 
     @already_added_projects = current_user.created_projects.where(import_type: "github")

@@ -1,5 +1,5 @@
 .dropdown.inline
-  %button.dropdown-toggle.btn.btn-small{type: 'button', 'data-toggle' => 'dropdown'}
+  %button.dropdown-toggle.btn.btn-sm{type: 'button', 'data-toggle' => 'dropdown'}
     %i.fa.fa-tags
     %span.light Group:
     - if @group.present?
@@ -17,7 +17,7 @@
           = group.name
 
 .dropdown.inline.prepend-left-10.project-filter
-  %button.dropdown-toggle.btn.btn-small{type: 'button', 'data-toggle' => 'dropdown'}
+  %button.dropdown-toggle.btn.btn-sm{type: 'button', 'data-toggle' => 'dropdown'}
     %i.fa.fa-tags
     %span.light Project:
     - if @project.present?

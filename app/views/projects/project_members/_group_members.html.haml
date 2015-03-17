@@ -1,0 +1,16 @@
+.panel.panel-default
+  .panel-heading
+    %strong #{@group.name}
+    group members
+    %small
+      (#{members.count})
+    .panel-head-actions
+      = link_to group_group_members_path(@group), class: 'btn btn-sm' do
+        %i.fa.fa-pencil-square-o
+        Edit group members
+  %ul.well-list
+    - members.each do |member|
+      = render 'groups/group_members/group_member', member: member, show_controls: false
+    - if members.count > 20
+      %li
+        and #{members.count - 20} more. For full list visit #{link_to 'group members page', group_group_members_path(@group)}

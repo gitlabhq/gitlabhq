@@ -21,7 +21,9 @@ class PostReceive
       return false
     end
 
-    changes = changes.lines if changes.kind_of?(String)
+    changes = Base64.decode64(changes) unless changes.include?(" ")
+    changes = utf8_encode_changes(changes)
+    changes = changes.lines
 
     changes.each do |change|
       oldrev, newrev, ref = change.strip.split(' ')
@@ -39,6 +41,19 @@ class PostReceive
         GitPushService.new.execute(project, @user, oldrev, newrev, ref)
       end
     end
+  end
+
+  def utf8_encode_changes(changes)
+    changes = changes.dup
+    
+    changes.force_encoding("UTF-8")
+    return changes if changes.valid_encoding?
+
+    # Convert non-UTF-8 branch/tag names to UTF-8 so they can be dumped as JSON.
+    detection = CharlockHolmes::EncodingDetector.detect(changes)
+    return changes unless detection && detection[:encoding]
+
+    CharlockHolmes::Converter.convert(changes, detection[:encoding], 'UTF-8')
   end
 
   def log(message)

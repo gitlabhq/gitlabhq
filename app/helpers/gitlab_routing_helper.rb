@@ -45,7 +45,8 @@ module GitlabRoutingHelper
     namespace_project_merge_request_url(entity.project.namespace, entity.project, entity, *args)
   end
 
-  def snippet_url(entity, *args)
+  def project_snippet_url(entity, *args)
     namespace_project_snippet_url(entity.project.namespace, entity.project, entity, *args)
+
   end
 end

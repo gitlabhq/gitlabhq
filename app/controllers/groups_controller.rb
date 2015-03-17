@@ -1,5 +1,5 @@
 class GroupsController < Groups::ApplicationController
-  skip_before_filter :authenticate_user!, only: [:show, :issues, :members, :merge_requests]
+  skip_before_filter :authenticate_user!, only: [:show, :issues, :merge_requests]
   respond_to :html
   before_filter :group, except: [:new, :create]
 
@@ -54,32 +54,19 @@ class GroupsController < Groups::ApplicationController
 
   def merge_requests
     @merge_requests = get_merge_requests_collection
-    @merge_requests = @merge_requests.page(params[:page]).per(20)
+    @merge_requests = @merge_requests.page(params[:page]).per(PER_PAGE)
     @merge_requests = @merge_requests.preload(:author, :target_project)
   end
 
   def issues
     @issues = get_issues_collection
-    @issues = @issues.page(params[:page]).per(20)
+    @issues = @issues.page(params[:page]).per(PER_PAGE)
     @issues = @issues.preload(:author, :project)
 
     respond_to do |format|
       format.html
       format.atom { render layout: false }
     end
-  end
-
-  def members
-    @project = group.projects.find(params[:project_id]) if params[:project_id]
-    @members = group.group_members
-
-    if params[:search].present?
-      users = group.users.search(params[:search]).to_a
-      @members = @members.where(user_id: users)
-    end
-
-    @members = @members.order('access_level DESC').page(params[:page]).per(50)
-    @users_group = GroupMember.new
   end
 
   def edit

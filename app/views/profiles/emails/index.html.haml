@@ -25,7 +25,7 @@
         %strong= email.email
         %span.cgray
           added #{time_ago_with_tooltip(email.created_at)}
-        = link_to 'Remove', profile_email_path(email), data: { confirm: 'Are you sure?'}, method: :delete, class: 'btn btn-small btn-remove pull-right'
+        = link_to 'Remove', profile_email_path(email), data: { confirm: 'Are you sure?'}, method: :delete, class: 'btn btn-sm btn-remove pull-right'
 
 %h4 Add email address
 = form_for 'email', url: profile_emails_path, html: { class: 'form-horizontal' } do |f|

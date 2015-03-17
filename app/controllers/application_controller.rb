@@ -4,6 +4,8 @@ class ApplicationController < ActionController::Base
   include Gitlab::CurrentSettings
   include GitlabRoutingHelper
 
+  PER_PAGE = 20
+
   before_filter :authenticate_user_from_token!
   before_filter :authenticate_user!
   before_filter :reject_blocked!

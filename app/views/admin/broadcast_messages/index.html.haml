@@ -52,7 +52,7 @@
             %strong
               #{broadcast_message.ends_at.to_s(:short)}
           &nbsp;
-          = link_to [:admin, broadcast_message], method: :delete, remote: true, class: 'remove-row btn btn-tiny' do
+          = link_to [:admin, broadcast_message], method: :delete, remote: true, class: 'remove-row btn btn-xs' do
             %i.fa.fa-times.cred
 
         .message= broadcast_message.message

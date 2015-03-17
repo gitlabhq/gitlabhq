@@ -140,25 +140,25 @@ But let's throw in a <b>tag</b>.
 
 ## Emoji
 
-	Sometimes you want to be a :ninja: and add some :glowing_star: to your :speech_balloon:. Well we have a gift for you:
+	Sometimes you want to :monkey: around a bit and add some :star2: to your :speech_balloon:. Well we have a gift for you:
 
-	:high_voltage_sign: You can use emoji anywhere GFM is supported. :victory_hand:
+	:zap: You can use emoji anywhere GFM is supported. :v:
 
-	You can use it to point out a :bug: or warn about :speak_no_evil_monkey: patches. And if someone improves your really :snail: code, send them some :cake:. People will :heart: you for that.
+	You can use it to point out a :bug: or warn about :speak_no_evil: patches. And if someone improves your really :snail: code, send them some :birthday:. People will :heart: you for that.
 
-	If you are new to this, don't be :fearful_face:. You can easily join the emoji :family:. All you need to do is to look up on the supported codes.
+	If you are new to this, don't be :fearful:. You can easily join the emoji :family:. All you need to do is to look up on the supported codes.
 
-	Consult the [Emoji Cheat Sheet](https://s3.amazonaws.com/emoji-cheatsheet/cheat_sheet.pdf) for a list of all supported emoji codes. :thumbsup:
+	Consult the [Emoji Cheat Sheet](http://emoji.codes) for a list of all supported emoji codes. :thumbsup:
 
-Sometimes you want to be a :ninja: and add some :glowing_star: to your :speech_balloon:. Well we have a gift for you:
+Sometimes you want to :monkey: around a bit and add some :star2: to your :speech_balloon:. Well we have a gift for you:
 
-:high_voltage_sign: You can use emoji anywhere GFM is supported. :victory_hand:
+:zap: You can use emoji anywhere GFM is supported. :v:
 
-You can use it to point out a :bug: or warn about :speak_no_evil_monkey: patches. And if someone improves your really :snail: code, send them some :cake:. People will :heart: you for that.
+You can use it to point out a :bug: or warn about :speak_no_evil: patches. And if someone improves your really :snail: code, send them some :birthday:. People will :heart: you for that.
 
-If you are new to this, don't be :fearful_face:. You can easily join the emoji :family:. All you need to do is to look up on the supported codes.
+If you are new to this, don't be :fearful:. You can easily join the emoji :family:. All you need to do is to look up on the supported codes.
 
-Consult the [Emoji Cheat Sheet](https://s3.amazonaws.com/emoji-cheatsheet/cheat_sheet.pdf) for a list of all supported emoji codes. :thumbsup:
+Consult the [Emoji Cheat Sheet](http://emoji.codes) for a list of all supported emoji codes. :thumbsup:
 
 ## Special GitLab References
 
@@ -485,6 +485,10 @@ This line is separated from the one above by two newlines, so it will be a *sepa
 
 This line is also a separate paragraph, but...
 This line is only separated by a single newline, so it's a separate line in the *same paragraph*.
+
+This line is also a separate paragraph, and...  
+This line is on its own line, because the previous line ends with two
+spaces.
 ```
 
 Here's a line for us to start with.
@@ -493,6 +497,10 @@ This line is separated from the one above by two newlines, so it will be a *sepa
 
 This line is also begins a separate paragraph, but...
 This line is only separated by a single newline, so it's a separate line in the *same paragraph*.
+
+This line is also a separate paragraph, and...  
+This line is on its own line, because the previous line ends with two
+spaces.
 
 ## Tables
 

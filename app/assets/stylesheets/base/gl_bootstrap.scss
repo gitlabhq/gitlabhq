@@ -152,12 +152,9 @@
  */
 .panel {
   .panel-heading {
-    font-size: 14px;
-    line-height: 18px;
-
     .panel-head-actions {
       position: relative;
-      top: -6px;
+      top: -5px;
       float: right;
     }
   }
@@ -190,10 +187,62 @@
   }
 }
 
+.panel-succes .panel-heading,
+.panel-info .panel-heading,
+.panel-danger .panel-heading,
+.panel-warning .panel-heading,
+.panel-primary .panel-heading,
 .alert {
-  a {
+  a:not(.btn) {
     @extend .alert-link;
     color: #fff;
     text-decoration: underline;
+  }
+}
+
+// Typography =================================================================
+
+.text-primary,
+.text-primary:hover {
+  color: $brand-primary;
+}
+
+.text-success,
+.text-success:hover {
+  color: $brand-success;
+}
+
+.text-danger,
+.text-danger:hover {
+  color: $brand-danger;
+}
+
+.text-warning,
+.text-warning:hover {
+  color: $brand-warning;
+}
+
+.text-info,
+.text-info:hover {
+  color: $brand-info;
+}
+
+// Tables =====================================================================
+
+table.table {
+  .dropdown-menu a {
+    text-decoration: none;
+  }
+
+  .success,
+  .warning,
+  .danger,
+  .info {
+    color: #fff;
+
+    a:not(.btn) {
+      text-decoration: underline;
+      color: #fff;
+    }
   }
 }

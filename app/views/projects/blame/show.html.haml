@@ -4,10 +4,11 @@
   .file-holder
     .file-title
       %i.fa.fa-file
-      %span.file_name
+      %strong
         = @path
-        %small= number_to_human_size @blob.size
-      %span.options= render "projects/blob/actions"
+      %small= number_to_human_size @blob.size
+      .file-actions
+        = render "projects/blob/actions"
     .file-content.blame.highlight
       %table
         - @blame.each do |commit, lines, since|
@@ -30,5 +31,5 @@
                 %code
                   :erb
                     <% lines.each do |line| %>
-                      <%= highlight(@blob.name, line.force_encoding("utf-8"), true).html_safe %>
+                      <%= highlight(@blob.name, line, true).html_safe %>
                     <% end %>

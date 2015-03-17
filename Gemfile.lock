@@ -321,7 +321,6 @@ GEM
       addressable (~> 2.3)
     letter_opener (1.1.2)
       launchy (~> 2.2)
-    libv8 (3.16.14.3)
     listen (2.3.1)
       celluloid (>= 0.15.2)
       rb-fsevent (>= 0.9.3)
@@ -480,7 +479,6 @@ GEM
       redis-store (~> 1.1.0)
     redis-store (1.1.4)
       redis (>= 2.2)
-    ref (1.0.5)
     request_store (1.0.5)
     rest-client (1.6.7)
       mime-types (>= 1.16)
@@ -605,9 +603,6 @@ GEM
       tins (~> 0.8)
     terminal-table (1.4.5)
     test_after_commit (0.2.2)
-    therubyracer (0.12.0)
-      libv8 (~> 3.16.14.0)
-      ref
     thin (1.6.1)
       daemons (>= 1.0.9)
       eventmachine (>= 1.0.0)
@@ -689,6 +684,7 @@ DEPENDENCIES
   cal-heatmap-rails (~> 0.0.1)
   capybara (~> 2.2.1)
   carrierwave
+  charlock_holmes
   coffee-rails
   colored
   coveralls
@@ -714,7 +710,7 @@ DEPENDENCIES
   gitlab-grack (~> 2.0.0.rc2)
   gitlab-linguist (~> 3.0.1)
   gitlab_emoji (~> 0.1)
-  gitlab_git (= 7.1.0)
+  gitlab_git (~> 7.1.0)
   gitlab_meta (= 7.0)
   gitlab_omniauth-ldap (= 1.2.0)
   gollum-lib (~> 4.0.0)
@@ -795,7 +791,6 @@ DEPENDENCIES
   stamp
   state_machine
   test_after_commit
-  therubyracer
   thin
   tinder (~> 1.9.2)
   turbolinks

@@ -86,15 +86,6 @@ module ApplicationHelper
     end
   end
 
-  def group_icon(group_path)
-    group = Group.find_by(path: group_path)
-    if group && group.avatar.present?
-      group.avatar.url
-    else
-      image_path('no_group_avatar.png')
-    end
-  end
-
   def avatar_icon(user_email = '', size = nil)
     user = User.find_by(email: user_email)
 

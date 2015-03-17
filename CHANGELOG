@@ -1,6 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.9.0 (unreleased)
+  - Add HipChat integration documentation (Stan Hu)
+  - Update documentation for object_kind field in Webhook push and tag push Webhooks (Stan Hu)
+  - Fix broken email images (Hannes Rosenögger)
+  - Automatically config git if user forgot, where possible (Zeger-Jan van de Weg)
   - Fix mass SQL statements on initial push (Hannes Rosenögger)
   - Add tag push notifications and normalize HipChat and Slack messages to be consistent (Stan Hu)
   - Add comment notification events to HipChat and Slack services (Stan Hu)
@@ -13,6 +17,8 @@ v 7.9.0 (unreleased)
   - Improve error messages for file edit failures
   - Improve UI for commits, issues and merge request lists
   - Fix commit comments on first line of diff not rendering in Merge Request Discussion view.
+  - Allow admins to override restricted project visibility settings.
+  - Move restricted visibility settings from gitlab.yml into the web UI.
   - Improve trigger merge request hook when source project branch has been updated (Kirill Zaitsev)
   - Save web edit in new branch
   - Fix ordering of imported but unchanged projects (Marco Wessel)
@@ -21,6 +27,7 @@ v 7.9.0 (unreleased)
   - Fix checkbox alignment on the application settings page.
   - Generalize image upload in drag and drop in markdown to all files (Hannes Rosenögger)
   - Fix mass-unassignment of issues (Robert Speicher)
+  - Fix hidden diff comments in merge request discussion view
   - Allow user confirmation to be skipped for new users via API
   - Add a service to send updates to an Irker gateway (Romain Coltel)
   - Ignore case of LDAP user DN when checking group membership.
@@ -35,16 +42,16 @@ v 7.9.0 (unreleased)
   - Send notifications and leave system comments when bulk updating issues.
   - Automatically link commit ranges to compare page: sha1...sha4 or sha1..sha4 (includes sha1 in comparison)
   - Move groups page from profile to dashboard
-  - Starred projects page at dashboard 
+  - Starred projects page at dashboard
   - Blocking user does not remove him/her from project/groups but show blocked label
   - Change subject of EmailsOnPush emails to include namespace, project and branch.
   - Change subject of EmailsOnPush emails to include first commit message when multiple were pushed.
   - Remove confusing footer from EmailsOnPush mail body.
-  - Add list of changed files to EmailsOnPush emails. 
-  - Add option to send EmailsOnPush emails from committer email if domain matches. 
+  - Add list of changed files to EmailsOnPush emails.
+  - Add option to send EmailsOnPush emails from committer email if domain matches.
   - Add option to disable code diffs in EmailOnPush emails.
   - Wrap commit message in EmailsOnPush email.
-  - Send EmailsOnPush emails when deleting commits using force push.  
+  - Send EmailsOnPush emails when deleting commits using force push.
   - Fix EmailsOnPush email comparison link to include first commit.
   - Fix highliht of selected lines in file
   - Reject access to group/project avatar if the user doesn't have access.
@@ -54,6 +61,20 @@ v 7.9.0 (unreleased)
   - Make email display name configurable
   - Improve json validation in hook data
   - Use Emoji One
+  - Updated emoji help documentation to properly reference EmojiOne.
+  - Fix missing GitHub organisation repositories on import page.
+  - Added blue theme
+  - Remove annoying notice messages when create/update merge request
+  - Allow smb:// links in Markdown text.
+  - Filter merge request by title or description at Merge Requests page
+  - Block user if he/she was blocked in Active Directory
+  - Fix import pages not working after first load.
+  - Use custom LDAP label in LDAP signin form.
+  - Execute hooks and services when branch or tag is created or deleted through web interface.
+  - Block and unblock user if he/she was blocked/unblocked in Active Directory
+  - Raise recommended number of unicorn workers from 2 to 3
+  - Use same layout and interactivity for project members as group members.
+  - Prevent gitlab-shell character encoding issues by receiving its changes as raw data.
 
 v 7.8.4
   - Fix issue_tracker_id substitution in custom issue trackers
@@ -61,7 +82,6 @@ v 7.8.4
 
 v 7.8.3
   - Bump version of gitlab_git fixing annotated tags without message
-  - Allow smb:// links in Markdown text.
 
 v 7.8.2
   - Fix service migration issue when upgrading from versions prior to 7.3

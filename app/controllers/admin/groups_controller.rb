@@ -1,16 +1,16 @@
 class Admin::GroupsController < Admin::ApplicationController
-  before_filter :group, only: [:edit, :show, :update, :destroy, :project_update, :project_teams_update]
+  before_filter :group, only: [:edit, :show, :update, :destroy, :project_update, :members_update]
 
   def index
     @groups = Group.all
     @groups = @groups.sort(@sort = params[:sort])
     @groups = @groups.search(params[:name]) if params[:name].present?
-    @groups = @groups.page(params[:page]).per(20)
+    @groups = @groups.page(params[:page]).per(PER_PAGE)
   end
 
   def show
-    @members = @group.members.order("access_level DESC").page(params[:members_page]).per(30)
-    @projects = @group.projects.page(params[:projects_page]).per(30)
+    @members = @group.members.order("access_level DESC").page(params[:members_page]).per(PER_PAGE)
+    @projects = @group.projects.page(params[:projects_page]).per(PER_PAGE)
   end
 
   def new
@@ -40,7 +40,7 @@ class Admin::GroupsController < Admin::ApplicationController
     end
   end
 
-  def project_teams_update
+  def members_update
     @group.add_users(params[:user_ids].split(','), params[:access_level])
 
     redirect_to [:admin, @group], notice: 'Users were successfully added.'

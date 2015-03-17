@@ -16,8 +16,6 @@
     }
   }
   .commit-button-annotation {
-    @extend .alert;
-    @extend .alert-info;
     display: inline-block;
     margin: 0;
     padding: 2px;

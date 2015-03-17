@@ -20,7 +20,7 @@
       .tab-content
         - @ldap_servers.each_with_index do |server, i|
           %div.tab-pane{id: "tab-#{server['provider_name']}", class: (:active if i.zero?)}
-            = render 'devise/sessions/new_ldap', provider: server['provider_name']
+            = render 'devise/sessions/new_ldap', server: server
         - if kerberos_enabled?
           %div#tab-kerberos.tab-pane{class: (:active unless ldap_enabled?)}
             = render 'devise/sessions/new_kerberos', provider: :kerberos

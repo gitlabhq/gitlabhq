@@ -40,52 +40,45 @@
                 The import will time out after 4 minutes. For big repositories, use a clone/push combination.
                 For SVN repositories, check #{link_to "this migrating from SVN doc.", "http://doc.gitlab.com/ce/workflow/migrating_from_svn.html"}
 
+
       .project-import.form-group
-        .col-sm-2
+        %label.control-label Import projects from
         .col-sm-10
           - if github_import_enabled?
-            = link_to status_import_github_path do
+            = link_to status_import_github_path, class: 'btn' do
               %i.fa.fa-github
-              Import projects from GitHub
+              GitHub
           - else
-            = link_to '#', class: 'how_to_import_link light' do
+            = link_to '#', class: 'how_to_import_link light btn' do
               %i.fa.fa-github
-              Import projects from GitHub
+              GitHub
             = render 'github_import_modal'
 
-      .project-import.form-group
-        .col-sm-2
-        .col-sm-10
+
           - if bitbucket_import_enabled?
-            = link_to status_import_bitbucket_path do
+            = link_to status_import_bitbucket_path, class: 'btn' do
               %i.fa.fa-bitbucket
-              Import projects from Bitbucket
+              Bitbucket
           - else
-            = link_to '#', class: 'how_to_import_link light' do
+            = link_to '#', class: 'how_to_import_link light btn' do
               %i.fa.fa-bitbucket
-              Import projects from Bitbucket
+              Bitbucket
             = render 'bitbucket_import_modal'
 
-      - unless request.host == 'gitlab.com'
-        .project-import.form-group
-          .col-sm-2
-          .col-sm-10
+          - unless request.host == 'gitlab.com'
             - if gitlab_import_enabled?
-              = link_to status_import_gitlab_path do
+              = link_to status_import_gitlab_path, class: 'btn' do
                 %i.fa.fa-heart
-                Import projects from GitLab.com
+                GitLab.com
             - else
-              = link_to '#', class: 'how_to_import_link light' do
+              = link_to '#', class: 'how_to_import_link light btn' do
                 %i.fa.fa-heart
-                Import projects from GitLab.com
+                GitLab.com
               = render 'gitlab_import_modal'
 
-      .project-import.form-group
-        .col-sm-2
-        .col-sm-10
-          = link_to new_import_gitorious_path do
+          = link_to new_import_gitorious_path, class: 'btn' do
             %i.icon-gitorious.icon-gitorious-small
-            Import projects from Gitorious.org
+            Gitorious.org
 
       %hr.prepend-botton-10
 
@@ -104,7 +97,7 @@
           .pull-right
             .light
               Need a group for several dependent projects?
-              = link_to new_group_path, class: "btn btn-tiny" do
+              = link_to new_group_path, class: "btn btn-xs" do
                 Create a group
 
 .save-project-loader.hide

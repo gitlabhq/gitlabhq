@@ -12,14 +12,8 @@
   }
 
   .accept-merge-holder {
-    margin-top: 5px;
-
     .accept-action {
       display: inline-block;
-
-      .accept_merge_request {
-        padding: 10px 20px;
-      }
     }
 
     .accept-control {
@@ -123,7 +117,8 @@
 }
 
 .mr-state-widget {
-  background: $box_bg;
+  font-size: 13px;
+  background: #F9F9F9;
   margin-bottom: 20px;
   color: #666;
   border: 1px solid #EEE;

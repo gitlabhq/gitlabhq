@@ -1,0 +1,13 @@
+.panel.panel-default
+  %ul.well-list.mr-list
+    = render @merge_requests
+    - if @merge_requests.blank?
+      %li
+        .nothing-here-block No merge requests to show
+
+- if @merge_requests.present?
+  .pull-right
+    %span.cgray.pull-right #{@merge_requests.total_count} merge requests for this filter
+
+  = paginate @merge_requests, theme: "gitlab"
+

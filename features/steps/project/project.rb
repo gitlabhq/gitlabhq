@@ -132,8 +132,12 @@ class Spinach::Features::Project < Spinach::FeatureSteps
 
   step 'I change "Pete" access level to master' do
     user = User.find_by(name: "Pete")
-    within "#user_#{user.id}" do
+    project_member = @project.project_members.find_by(user_id: user)
+
+    within "#project_member_#{project_member.id}" do
+      click_button "Edit access level"
       select "Master", from: "project_member_access_level"
+      click_button "Save"
     end
 
     sleep 0.05

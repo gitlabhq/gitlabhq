@@ -3,15 +3,15 @@
     Too many changes.
     .pull-right
       - unless diff_hard_limit_enabled?
-        = link_to "Reload with full diff", url_for(params.merge(force_show_diff: true)), class: "btn btn-small btn-warning"
+        = link_to "Reload with full diff", url_for(params.merge(force_show_diff: true)), class: "btn btn-sm btn-warning"
 
       - if current_controller?(:commit) or current_controller?(:merge_requests)
         - if current_controller?(:commit)
-          = link_to "Plain diff", namespace_project_commit_path(@project.namespace, @project, @commit, format: :diff), class: "btn btn-warning btn-small"
-          = link_to "Email patch", namespace_project_commit_path(@project.namespace, @project, @commit, format: :patch), class: "btn btn-warning btn-small"
+          = link_to "Plain diff", namespace_project_commit_path(@project.namespace, @project, @commit, format: :diff), class: "btn btn-warning btn-sm"
+          = link_to "Email patch", namespace_project_commit_path(@project.namespace, @project, @commit, format: :patch), class: "btn btn-warning btn-sm"
         - elsif @merge_request && @merge_request.persisted?
-          = link_to "Plain diff", merge_request_path(@merge_request, format: :diff), class: "btn btn-warning btn-small"
-          = link_to "Email patch", merge_request_path(@merge_request, format: :patch), class: "btn btn-warning btn-small"
+          = link_to "Plain diff", merge_request_path(@merge_request, format: :diff), class: "btn btn-warning btn-sm"
+          = link_to "Email patch", merge_request_path(@merge_request, format: :patch), class: "btn btn-warning btn-sm"
   %p
     To preserve performance only
     %strong #{allowed_diff_size} of #{diffs.size}

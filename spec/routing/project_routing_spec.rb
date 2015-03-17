@@ -338,17 +338,14 @@ describe Projects::CommitsController, 'routing' do
   end
 end
 
-#     project_team_members GET    /:project_id/team_members(.:format)          team_members#index
-#                          POST   /:project_id/team_members(.:format)          team_members#create
-#  new_project_team_member GET    /:project_id/team_members/new(.:format)      team_members#new
-# edit_project_team_member GET    /:project_id/team_members/:id/edit(.:format) team_members#edit
-#      project_team_member GET    /:project_id/team_members/:id(.:format)      team_members#show
-#                          PUT    /:project_id/team_members/:id(.:format)      team_members#update
-#                          DELETE /:project_id/team_members/:id(.:format)      team_members#destroy
-describe Projects::TeamMembersController, 'routing' do
+#     project_project_members GET    /:project_id/project_members(.:format)          project_members#index
+#                          POST   /:project_id/project_members(.:format)          project_members#create
+#                          PUT    /:project_id/project_members/:id(.:format)      project_members#update
+#                          DELETE /:project_id/project_members/:id(.:format)      project_members#destroy
+describe Projects::ProjectMembersController, 'routing' do
   it_behaves_like 'RESTful project resources' do
-    let(:actions)    { [:new, :create, :update, :destroy] }
-    let(:controller) { 'team_members' }
+    let(:actions)    { [:index, :create, :update, :destroy] }
+    let(:controller) { 'project_members' }
   end
 end
 

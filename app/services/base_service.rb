@@ -31,8 +31,19 @@ class BaseService
     SystemHooksService.new
   end
 
-  def current_application_settings
-    ApplicationSetting.current
+  # Add an error to the specified model for restricted visibility levels
+  def deny_visibility_level(model, denied_visibility_level = nil)
+    denied_visibility_level ||= model.visibility_level
+
+    level_name = 'Unknown'
+    Gitlab::VisibilityLevel.options.each do |name, level|
+      level_name = name if level == denied_visibility_level
+    end
+
+    model.errors.add(
+      :visibility_level,
+      "#{level_name} visibility has been restricted by your GitLab administrator"
+    )
   end
 
   private

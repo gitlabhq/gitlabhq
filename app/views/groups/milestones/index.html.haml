@@ -22,9 +22,9 @@
             .pull-right
               - if can?(current_user, :manage_group, @group)
                 - if milestone.closed?
-                  = link_to 'Reopen Milestone', group_milestone_path(@group, milestone.safe_title, title: milestone.title, milestone: {state_event: :activate }), method: :put, class: "btn btn-small btn-grouped btn-reopen"
+                  = link_to 'Reopen Milestone', group_milestone_path(@group, milestone.safe_title, title: milestone.title, milestone: {state_event: :activate }), method: :put, class: "btn btn-sm btn-grouped btn-reopen"
                 - else
-                  = link_to 'Close Milestone', group_milestone_path(@group, milestone.safe_title, title: milestone.title, milestone: {state_event: :close }), method: :put, class: "btn btn-small btn-close"
+                  = link_to 'Close Milestone', group_milestone_path(@group, milestone.safe_title, title: milestone.title, milestone: {state_event: :close }), method: :put, class: "btn btn-sm btn-close"
             %h4
               = link_to_gfm truncate(milestone.title, length: 100), group_milestone_path(@group, milestone.safe_title, title: milestone.title)
             %div
