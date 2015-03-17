@@ -52,7 +52,8 @@
 
             - if @repository.version
               - version = @repository.version
-              = link_to namespace_project_blob_path(@project.namespace, @project, tree_join(@repository.root_ref, version.name)), class: 'btn btn-block' do
+              - detail_file = @repository.changelog.try(:name) || version.name
+              = link_to namespace_project_blob_path(@project.namespace, @project, tree_join(@repository.root_ref, detail_file)), class: 'btn btn-block' do
                 Version:
                 %span.count
                   = @repository.blob_by_oid(version.id).data
