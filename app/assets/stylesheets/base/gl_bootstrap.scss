@@ -193,7 +193,7 @@
 .panel-warning .panel-heading,
 .panel-primary .panel-heading,
 .alert {
-  a {
+  a:not(.btn) {
     @extend .alert-link;
     color: #fff;
     text-decoration: underline;
