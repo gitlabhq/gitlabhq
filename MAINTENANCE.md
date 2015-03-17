@@ -2,7 +2,7 @@
 
 GitLab is a fast moving and evolving project. We currently don't have the resources to support many releases concurrently. We support exactly one stable release at any given time.
 
-GitLab follows the [Semantic Versioning](http://semver.org/) for its releases: `(Major).(Minor).(Patch)`.
+GitLab follows the [Semantic Versioning](http://semver.org/) for its releases: `(Major).(Minor).(Patch)` in a [pragmatic way](https://gist.github.com/jashkenas/cbd2b088e20279ae2c8e).
 
 - **Major version**: Whenever there is something significant or any backwards incompatible changes are introduced to the public API.
 - **Minor version**: When new, backwards compatible functionality is introduced to the public API or a minor feature is introduced, or when a set of smaller features is rolled out.
