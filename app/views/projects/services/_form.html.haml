@@ -27,9 +27,9 @@
     .col-sm-10
       = f.check_box :active
 
-  .form-group
-    = f.label :url, "Trigger", class: 'control-label'
-    - if @service.supported_events.length > 1
+  - if @service.supported_events.length > 1
+    .form-group
+      = f.label :url, "Trigger", class: 'control-label'
       .col-sm-10
         - if @service.supported_events.include?("push")
           %div
