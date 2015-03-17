@@ -197,7 +197,12 @@ class Repository
   end
 
   def contribution_guide
-    cache.fetch(:contribution_guide) { tree(:head).contribution_guide }
+    cache.fetch(:contribution_guide) do
+      tree(:head).blobs.find do |file|
+        file.contributing?
+      end
+    end
+  end
   end
 
   def head_commit
