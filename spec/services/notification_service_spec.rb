@@ -41,13 +41,18 @@ describe NotificationService do
 
       describe :new_note do
         it do
+          add_users_with_subscription(note.project, issue)
+
           should_email(@u_watcher.id)
           should_email(note.noteable.author_id)
           should_email(note.noteable.assignee_id)
           should_email(@u_mentioned.id)
+          should_email(@subscriber.id)
           should_not_email(note.author_id)
           should_not_email(@u_participating.id)
           should_not_email(@u_disabled.id)
+          should_not_email(@unsubscriber.id)
+
           notification.new_note(note)
         end
 
@@ -191,6 +196,7 @@ describe NotificationService do
 
     before do
       build_team(issue.project)
+      add_users_with_subscription(issue.project, issue)
     end
 
     describe :new_issue do
@@ -224,6 +230,8 @@ describe NotificationService do
         should_email(issue.assignee_id)
         should_email(@u_watcher.id)
         should_email(@u_participant_mentioned.id)
+        should_email(@subscriber.id)
+        should_not_email(@unsubscriber.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
 
@@ -245,6 +253,8 @@ describe NotificationService do
         should_email(issue.author_id)
         should_email(@u_watcher.id)
         should_email(@u_participant_mentioned.id)
+        should_email(@subscriber.id)
+        should_not_email(@unsubscriber.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
 
@@ -266,6 +276,8 @@ describe NotificationService do
         should_email(issue.author_id)
         should_email(@u_watcher.id)
         should_email(@u_participant_mentioned.id)
+        should_email(@subscriber.id)
+        should_not_email(@unsubscriber.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
 
@@ -287,6 +299,7 @@ describe NotificationService do
 
     before do
       build_team(merge_request.target_project)
+      add_users_with_subscription(merge_request.target_project, merge_request)
     end
 
     describe :new_merge_request do
@@ -311,6 +324,8 @@ describe NotificationService do
       it do
         should_email(merge_request.assignee_id)
         should_email(@u_watcher.id)
+        should_email(@subscriber.id)
+        should_not_email(@unsubscriber.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
         notification.reassigned_merge_request(merge_request, merge_request.author)
@@ -329,6 +344,8 @@ describe NotificationService do
       it do
         should_email(merge_request.assignee_id)
         should_email(@u_watcher.id)
+        should_email(@subscriber.id)
+        should_not_email(@unsubscriber.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
         notification.close_mr(merge_request, @u_disabled)
@@ -347,6 +364,8 @@ describe NotificationService do
       it do
         should_email(merge_request.assignee_id)
         should_email(@u_watcher.id)
+        should_email(@subscriber.id)
+        should_not_email(@unsubscriber.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
         notification.merge_mr(merge_request, @u_disabled)
@@ -365,6 +384,8 @@ describe NotificationService do
       it do
         should_email(merge_request.assignee_id)
         should_email(@u_watcher.id)
+        should_email(@subscriber.id)
+        should_not_email(@unsubscriber.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
         notification.reopen_mr(merge_request, @u_disabled)
@@ -419,5 +440,16 @@ describe NotificationService do
     project.team << [@u_disabled, :master]
     project.team << [@u_mentioned, :master]
     project.team << [@u_committer, :master]
+  end
+
+  def add_users_with_subscription(project, issuable)
+    @subscriber = create :user
+    @unsubscriber = create :user
+
+    project.team << [@subscriber, :master]
+    project.team << [@unsubscriber, :master]
+
+    issuable.subscriptions.create(user: @subscriber, subscribed: true)
+    issuable.subscriptions.create(user: @unsubscriber, subscribed: false)
   end
 end

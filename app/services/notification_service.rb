@@ -92,6 +92,8 @@ class NotificationService
   #
   def merge_mr(merge_request, current_user)
     recipients = reject_muted_users([merge_request.author, merge_request.assignee], merge_request.target_project)
+    recipients = add_subscribed_users(recipients, merge_request)
+    recipients = reject_unsubscribed_users(recipients, merge_request)
     recipients = recipients.concat(project_watchers(merge_request.target_project)).uniq
     recipients.delete(current_user)
 
@@ -150,6 +152,10 @@ class NotificationService
 
     # Reject mutes users
     recipients = reject_muted_users(recipients, note.project)
+
+    recipients = add_subscribed_users(recipients, note.noteable)
+    
+    recipients = reject_unsubscribed_users(recipients, note.noteable)
 
     # Reject author
     recipients.delete(note.author)
@@ -314,6 +320,27 @@ class NotificationService
     end
   end
 
+  def reject_unsubscribed_users(recipients, target)
+    return recipients unless target.respond_to? :subscriptions
+    
+    recipients.reject do |user|
+      subscription = target.subscriptions.find_by_user_id(user.id)
+      subscription && !subscription.subscribed
+    end
+  end
+
+  def add_subscribed_users(recipients, target)
+    return recipients unless target.respond_to? :subscriptions
+
+    subscriptions = target.subscriptions
+
+    if subscriptions.any?
+      recipients + subscriptions.where(subscribed: true).map(&:user)
+    else
+      recipients
+    end
+  end
+  
   def new_resource_email(target, project, method)
     recipients = build_recipients(target, project)
     recipients.delete(target.author)
@@ -361,7 +388,9 @@ class NotificationService
 
     recipients = reject_muted_users(recipients, project)
     recipients = reject_mention_users(recipients, project)
+    recipients = add_subscribed_users(recipients, target)
     recipients = recipients.concat(project_watchers(project)).uniq
+    recipients = reject_unsubscribed_users(recipients, target)
     recipients
   end
 

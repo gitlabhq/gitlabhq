@@ -74,6 +74,7 @@ v 7.9.0 (unreleased)
   - Raise recommended number of unicorn workers from 2 to 3
   - Use same layout and interactivity for project members as group members.
   - Prevent gitlab-shell character encoding issues by receiving its changes as raw data.
+  - Ability to unsubscribe/subscribe to issue or merge request
 
 v 7.8.4
   - Fix issue_tracker_id substitution in custom issue trackers

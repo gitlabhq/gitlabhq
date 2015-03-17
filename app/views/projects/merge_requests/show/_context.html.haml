@@ -28,3 +28,23 @@
         = f.select(:milestone_id, milestone_options(@merge_request), { include_blank: "Select milestone" }, {class: 'select2 select2-compact js-select2 js-milestone'})
         = hidden_field_tag :merge_request_context
         = f.submit class: 'btn'
+
+  %div.prepend-top-20.clearfix
+    .issuable-context-title
+      %label
+        Subscription:
+    %button.btn.btn-block.subscribe-button
+      %i.fa.fa-eye
+      %span= @merge_request.subscribed?(current_user) ? "Unsubscribe" : "Subscribe"
+    - subscribtion_status = @merge_request.subscribed?(current_user) ? "subscribed" : "unsubscribed"
+    .subscription-status{"data-status" => subscribtion_status}
+      .description-block.unsubscribed{class: ( "hidden" if @merge_request.subscribed?(current_user) )}
+        You're not receiving notifications from this thread.
+      .description-block.subscribed{class: ( "hidden" unless @merge_request.subscribed?(current_user) )}
+        You're receiving notifications because you're subscribed to this thread.
+
+:coffeescript
+  $ ->
+    new Subscription("#{toggle_subscription_namespace_project_merge_request_path(@merge_request.project.namespace, @project, @merge_request)}")
+    
+      
