@@ -37,7 +37,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
     @key.destroy
 
     respond_to do |format|
-      format.html { redirect_to project_deploy_keys_url }
+      format.html { redirect_to namespace_project_deploy_keys_path(@project.namespace, @project) }
       format.js { render nothing: true }
     end
   end
@@ -50,7 +50,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def disable
-    @project.deploy_keys_projects.where(deploy_key_id: params[:id]).last.destroy
+    @project.deploy_keys_projects.find_by(deploy_key_id: params[:id]).destroy
 
     redirect_to namespace_project_deploy_keys_path(@project.namespace,
                                                    @project)
