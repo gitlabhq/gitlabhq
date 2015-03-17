@@ -17,14 +17,18 @@ module Backup
         file << s.to_yaml.gsub(/^---\n/,'')
       end
 
+      FileUtils.chmod_R(0700, %w{db uploads repositories})
+
       # create archive
       $progress.print "Creating backup archive: #{tar_file} ... "
+      orig_umask = File.umask(0077)
       if Kernel.system('tar', '-cf', tar_file, *BACKUP_CONTENTS)
         $progress.puts "done".green
       else
         puts "creating archive #{tar_file} failed".red
         abort 'Backup failed'
       end
+      File.umask(orig_umask)
 
       upload(tar_file)
     end
