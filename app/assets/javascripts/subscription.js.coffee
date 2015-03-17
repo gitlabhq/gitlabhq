@@ -1,17 +1,17 @@
 class @Subscription
   constructor: (url) ->
-    $(".subscribe-button").click (event)=>
+    $(".subscribe-button").unbind("click").click (event)=>
       btn = $(event.currentTarget)
-      action = btn.prop("value")
-      current_status = $(".sub_status").text().trim()
-      $(".fa-spinner.subscription").removeClass("hidden")
-      $(".sub_status").empty()
+      action = btn.find("span").text()
+      current_status = $(".subscription-status").attr("data-status")
+      btn.prop("disabled", true)
       
       $.post url, =>
-        $(".fa-spinner.subscription").addClass("hidden")
+        btn.prop("disabled", false)
         status = if current_status == "subscribed" then "unsubscribed" else "subscribed"
-        $(".sub_status").text(status)
+        $(".subscription-status").attr("data-status", status)
         action = if status == "subscribed" then "Unsubscribe" else "Subscribe"
-        btn.prop("value", action)
+        btn.find("span").text(action)
+        $(".subscription-status>div").toggleClass("hidden")
 
     

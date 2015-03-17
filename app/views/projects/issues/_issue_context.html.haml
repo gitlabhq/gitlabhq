@@ -31,11 +31,15 @@
     .issuable-context-title
       %label
         Subscription:
-        %i.fa.fa-spinner.fa-spin.hidden.subscription
-        %span.sub_status
-          = @issue.subscribed?(current_user) ? "subscribed" : "unsubscribed"
-    - subscribe_action = @issue.subscribed?(current_user) ? "Unsubscribe" : "Subscribe"
-    %input.btn.subscribe-button{:type => "button", :value => subscribe_action}
+    %button.btn.btn-block.subscribe-button
+      %i.fa.fa-eye
+      %span= @issue.subscribed?(current_user) ? "Unsubscribe" : "Subscribe"
+    - subscribtion_status = @issue.subscribed?(current_user) ? "subscribed" : "unsubscribed"
+    .subscription-status{"data-status" => subscribtion_status}
+      .description-block.unsubscribed{class: ( "hidden" if @issue.subscribed?(current_user) )}
+        You're not receiving notifications from this thread.
+      .description-block.subscribed{class: ( "hidden" unless @issue.subscribed?(current_user) )}
+        You're receiving notifications because you're subscribed to this thread.
 
 :coffeescript
   $ ->

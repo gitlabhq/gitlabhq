@@ -19,12 +19,12 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I should see that I am subscribed' do
-    find(".sub_status").text.should == "subscribed"
+    find(".subscribe-button span").text.should == "Unsubscribe"
   end
 
   step 'I should see that I am unsubscribed' do
     sleep 0.2
-    find(".sub_status").text.should == "unsubscribed"
+    find(".subscribe-button span").text.should == "Subscribe"
   end
 
   step 'I click link "Closed"' do
