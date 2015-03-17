@@ -33,7 +33,6 @@ v 7.9.0 (unreleased)
   - Ignore case of LDAP user DN when checking group membership.
   - Add brakeman (security scanner for Ruby on Rails)
   - Slack username and channel options
-  - Restrict permissions on backup files
   - Add grouped milestones from all projects to dashboard.
   - Web hook sends pusher email as well as commiter
   - Add Bitbucket omniauth provider.
