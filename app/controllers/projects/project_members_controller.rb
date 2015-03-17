@@ -1,6 +1,7 @@
 class Projects::ProjectMembersController < Projects::ApplicationController
   # Authorize
   before_filter :authorize_admin_project!, except: :leave
+  before_filter :check_membership_lock, only: [:create, :update, :destroy]
 
   layout "project_settings"
 
@@ -102,5 +103,11 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   def log_audit_event(member, options = {})
     AuditEventService.new(current_user, @project, options).
       for_member(member).security_event
+  end
+
+  def check_membership_lock
+    if @project.group && @project.group.membership_lock
+      return access_denied!
+    end
   end
 end

@@ -8,9 +8,11 @@
       group, members with
       %strong #{group_links.human_access}
       role (#{shared_group_users_count})
-      .pull-right
-        = link_to members_group_path(shared_group), class: 'btn btn-small' do
-          %i.icon-edit
+      - if current_user.can?(:manage_group, shared_group)
+        .panel-head-actions
+          = link_to group_group_members_path(shared_group), class: 'btn btn-sm' do
+            %i.fa.fa-pencil-square-o
+            Edit group members
     %ul.well-list
       - shared_group.group_members.order('access_level DESC').limit(20).each do |member|
         = render 'groups/group_members/group_member', member: member, show_controls: false, show_roles: false

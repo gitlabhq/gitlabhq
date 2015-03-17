@@ -36,6 +36,8 @@ class AuditEventService
           target_details: user_name,
         }
       end
+
+    self
   end
 
   def security_event

@@ -29,7 +29,7 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
   end
 
   step 'I can control user membership' do
-    page.should have_link 'New project member'
+    page.should have_button 'Add members'
     page.should have_link 'Import members'
     page.should have_selector '#project_member_access_level', text: 'Master'
   end
@@ -53,12 +53,12 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
     @project = Project.find_by(name: "Open")
     click_link 'Projects'
 
-    link = "/#{@project.path_with_namespace}/team"
+    link = "/#{@project.path_with_namespace}/project_members"
     find(:xpath, "//a[@href=\"#{link}\"]").click
   end
 
   step 'I cannot control user membership from project page' do
-    page.should_not have_link 'New project member'
+    page.should_not have_button 'Add members'
     page.should_not have_link 'Import members'
     page.should have_selector '#project_member_access_level', text: 'Master'
   end

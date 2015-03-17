@@ -5,6 +5,10 @@
   Read more about project permissions
   %strong= link_to "here", help_page_path("permissions", "permissions"), class: "vlink"
 
+  - if membership_locked?
+    %span.pull-right.text-warning
+      Adding new users is disabled at group level
+
 %hr
 
 .clearfix.js-toggle-container
@@ -13,7 +17,7 @@
       = search_field_tag :search, params[:search], { placeholder: 'Find existing member by name', class: 'form-control search-text-input input-mn-300' }
     = button_tag 'Search', class: 'btn'
 
-  - if can?(current_user, :admin_project_member, @project)
+  - if !membership_locked? && can?(current_user, :admin_project_member, @project)
     %span.pull-right
       = button_tag class: 'btn btn-new btn-grouped js-toggle-button', type: 'button' do
         Add members
@@ -28,6 +32,8 @@
 
 - if @group
   = render "group_members", members: @group_members
+- if @project_group_links.any?
+  = render "shared_group_members"
 
 :coffeescript
   $('form.member-search-form').on 'submit', (event) ->
