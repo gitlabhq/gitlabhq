@@ -5,6 +5,7 @@ v 7.9.0 (unreleased)
   - Use one custom header logo for all GitLab themes in appearance settings
   - Escape wildcards when searching LDAP by group name.
   - Group level Web Hooks
+  - Don't allow project to be shared with the group it is already in.
 
 v 7.8.0
   - Improved Jira issue closing integration
