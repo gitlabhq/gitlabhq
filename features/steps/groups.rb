@@ -62,7 +62,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     member = Group.find_by(name: "Owned").members.where(user_id: user.id).first
 
     within "#group_member_#{member.id}" do
-      find(".btn-tiny.btn.js-toggle-button").click
+      find(".js-toggle-button").click
       within "#edit_group_member_#{member.id}" do
         select 'Developer', from: 'group_member_access_level'
         click_on 'Save'
