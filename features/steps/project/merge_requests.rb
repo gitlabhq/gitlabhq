@@ -56,6 +56,19 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     page.should_not have_content "Bug NS-04"
   end
 
+  step 'I should see that I am subscribed' do
+    find(".subscribe-button span").text.should == "Unsubscribe"
+  end
+
+  step 'I should see that I am unsubscribed' do
+    sleep 0.2
+    find(".subscribe-button span").text.should == "Subscribe"
+  end
+
+  step 'I click button "Unsubscribe"' do
+    click_on "Unsubscribe"
+  end
+
   step 'I click link "Close"' do
     first(:css, '.close-mr-link').click
   end

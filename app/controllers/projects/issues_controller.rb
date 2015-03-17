@@ -1,6 +1,6 @@
 class Projects::IssuesController < Projects::ApplicationController
   before_filter :module_enabled
-  before_filter :issue, only: [:edit, :update, :show]
+  before_filter :issue, only: [:edit, :update, :show, :toggle_subscription]
 
   # Allow read any issue
   before_filter :authorize_read_issue!
@@ -95,6 +95,12 @@ class Projects::IssuesController < Projects::ApplicationController
   def bulk_update
     result = Issues::BulkUpdateService.new(project, current_user, bulk_update_params).execute
     redirect_to :back, notice: "#{result[:count]} issues updated"
+  end
+
+  def toggle_subscription
+    @issue.toggle_subscription(current_user)
+    
+    render nothing: true
   end
 
   protected
