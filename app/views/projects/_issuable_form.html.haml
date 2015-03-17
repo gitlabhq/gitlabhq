@@ -71,10 +71,10 @@
       = link_to 'Create new label', new_namespace_project_label_path(issuable.project.namespace, issuable.project), target: :blank
 
 .form-actions
-  - if !issuable.project.empty_repo? && contribution_guide_url(issuable.project) && !issuable.persisted?
+  - if !issuable.project.empty_repo? && (guide_url = contribution_guide_url(issuable.project)) && !issuable.persisted?
     %p
       Please review the
-      %strong #{link_to 'guidelines for contribution', contribution_guide_url(issuable.project)}
+      %strong #{link_to 'guidelines for contribution', guide_url}
       to this repository.
   - if issuable.new_record?
     = f.submit "Submit new #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'

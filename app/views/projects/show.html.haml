@@ -47,20 +47,26 @@
               = link_to @project.forked_from_project.name_with_namespace, namespace_project_path(@project.namespace, @project.forked_from_project)
 
           - unless @project.empty_repo?
-            = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-block' do
-              Compare code
-
-            - version = @repository.version
-            - changelog = @repository.changelog
-            - if version
-              - detail_file = changelog.try(:name) || version.name
-              = link_to namespace_project_blob_path(@project.namespace, @project, tree_join(@repository.root_ref, detail_file)), class: 'btn btn-block' do
+            - if version = @repository.version
+              - detail_url = changelog_url(@project) || version_url(@project)
+              = link_to detail_url, class: 'btn btn-block' do
                 Version:
                 %span.count
                   = @repository.blob_by_oid(version.id).data
-            - elsif changelog
-              = link_to namespace_project_blob_path(@project.namespace, @project, tree_join(@repository.root_ref, changelog.name)), class: 'btn btn-block' do
+            - elsif @repository.changelog
+              = link_to changelog_url(@project), class: 'btn btn-block' do
                 View changelog
+
+            - if @repository.contribution_guide
+              = link_to contribution_guide_url(@project), class: 'btn btn-block' do
+                View contribution guide
+
+            - if @repository.license
+              = link_to license_url(@project), class: 'btn btn-block' do
+                View license
+            
+            = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-block' do
+              Compare code
 
         .prepend-top-10
           %p
