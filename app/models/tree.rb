@@ -1,33 +1,32 @@
 class Tree
   include Gitlab::MarkdownHelper
 
-  attr_accessor :entries, :readme
+  attr_accessor :entries
 
   def initialize(repository, sha, path = '/')
     path = '/' if path.blank?
     git_repo = repository.raw_repository
     @entries = Gitlab::Git::Tree.where(git_repo, sha, path)
+  end
 
-    available_readmes = @entries.select(&:readme?)
+  def readme
+    return @readme if defined?(@readme)
 
-    if available_readmes.count > 0
-      # If there is more than 1 readme in tree, find readme which is supported
-      # by markup renderer.
-      if available_readmes.length > 1
-        supported_readmes = available_readmes.select do |readme|
-          previewable?(readme.name)
-        end
+    available_readmes = @blobs.select(&:readme?)
 
-        # Take the first supported readme, or the first available readme, if we
-        # don't support any of them
-        readme_tree = supported_readmes.first || available_readmes.first
-      else
-        readme_tree = available_readmes.first
-      end
-
-      readme_path = path == '/' ? readme_tree.name : File.join(path, readme_tree.name)
-      @readme = Gitlab::Git::Blob.find(git_repo, sha, readme_path)
+    if available_readmes.count == 0
+      return @readme = nil 
     end
+
+    # Take the first previewable readme, or the first available readme, if we
+    # can't preview any of them
+    readme_tree = available_readmes.find do |readme|
+      previewable?(readme.name)
+    end || available_readmes.first
+
+    readme_path = path == '/' ? readme_tree.name : File.join(path, readme_tree.name)
+
+    @readme = Gitlab::Git::Blob.find(git_repo, sha, readme_path)
   end
 
   def trees
