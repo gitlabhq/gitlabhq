@@ -38,7 +38,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   def create
     users = User.where(id: params[:user_ids].split(','))
     @project.team << [users, params[:access_level]]
-    members = @project.project_members.where(user_id: user_ids)
+    members = @project.project_members.where(user_id: users.pluck(:id))
 
     members.each do |member|
       log_audit_event(member, action: :create)
