@@ -1,18 +1,23 @@
 class Tree
   include Gitlab::MarkdownHelper
 
-  attr_accessor :entries
+  attr_accessor :repository, :sha, :path, :entries
 
   def initialize(repository, sha, path = '/')
     path = '/' if path.blank?
-    git_repo = repository.raw_repository
-    @entries = Gitlab::Git::Tree.where(git_repo, sha, path)
+    
+    @repository = repository
+    @sha = sha
+    @path = path
+
+    git_repo = @repository.raw_repository
+    @entries = Gitlab::Git::Tree.where(git_repo, @sha, @path)
   end
 
   def readme
     return @readme if defined?(@readme)
 
-    available_readmes = @blobs.select(&:readme?)
+    available_readmes = blobs.select(&:readme?)
 
     if available_readmes.count == 0
       return @readme = nil 
@@ -26,6 +31,7 @@ class Tree
 
     readme_path = path == '/' ? readme_tree.name : File.join(path, readme_tree.name)
 
+    git_repo = repository.raw_repository
     @readme = Gitlab::Git::Blob.find(git_repo, sha, readme_path)
   end
 
