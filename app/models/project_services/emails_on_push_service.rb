@@ -36,7 +36,7 @@ class EmailsOnPushService < Service
   end
 
   def supported_events
-    %w(push)
+    %w(push tag_push)
   end
 
   def execute(push_data)
