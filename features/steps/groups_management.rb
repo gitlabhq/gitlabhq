@@ -31,7 +31,7 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
   step 'I can control user membership' do
     page.should have_button 'Add members'
     page.should have_link 'Import members'
-    page.should have_selector '#project_member_access_level', text: 'Master'
+    page.should have_selector '#project_member_access_level'
   end
 
   step 'I reload "Open" project members page' do
@@ -60,6 +60,6 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
   step 'I cannot control user membership from project page' do
     page.should_not have_button 'Add members'
     page.should_not have_link 'Import members'
-    page.should have_selector '#project_member_access_level', text: 'Master'
+    page.should have_selector '#project_member_access_level'
   end
 end

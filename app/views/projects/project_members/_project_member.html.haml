@@ -12,7 +12,7 @@
       %label.label.label-danger
         %strong Blocked
 
-  - if current_user_can_admin_project && !membership_locked?
+  - if current_user_can_admin_project
     - unless @project.personal? && user == current_user
       .pull-right
         %strong= member.human_access
