@@ -37,8 +37,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
     @key.destroy
 
     respond_to do |format|
-      format.html { redirect_to namespace_project_deploy_keys_path(@project.namespace,
-                                                   @project) }
+      format.html { redirect_to namespace_project_deploy_keys_path(@project.namespace, @project) }
       format.js { render nothing: true }
     end
   end
