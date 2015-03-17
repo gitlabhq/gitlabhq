@@ -50,13 +50,17 @@
             = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-block' do
               Compare code
 
-            - if @repository.version
-              - version = @repository.version
-              - detail_file = @repository.changelog.try(:name) || version.name
+            - version = @repository.version
+            - changelog = @repository.changelog
+            - if version
+              - detail_file = changelog.try(:name) || version.name
               = link_to namespace_project_blob_path(@project.namespace, @project, tree_join(@repository.root_ref, detail_file)), class: 'btn btn-block' do
                 Version:
                 %span.count
                   = @repository.blob_by_oid(version.id).data
+            - elsif changelog
+              = link_to namespace_project_blob_path(@project.namespace, @project, tree_join(@repository.root_ref, changelog.name)), class: 'btn btn-block' do
+                View changelog
 
         .prepend-top-10
           %p
