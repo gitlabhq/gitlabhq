@@ -96,7 +96,7 @@ module EventsHelper
         end
       end
     elsif event.push?
-      if event.push_with_commits?
+      if event.push_with_commits? && event.md_ref?
         if event.commits_count > 1
           namespace_project_compare_url(event.project.namespace, event.project,
                                         from: event.commit_from, to:
