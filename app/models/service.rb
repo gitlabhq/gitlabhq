@@ -112,7 +112,7 @@ class Service < ActiveRecord::Base
 
   def async_execute(data)
     return unless supported_events.include?(data[:object_kind])
-    
+
     Sidekiq::Client.enqueue(ProjectServiceWorker, id, data)
   end
 
@@ -141,6 +141,7 @@ class Service < ActiveRecord::Base
       redmine
       custom_issue_tracker
       irker
+      external_wiki
     )
   end
 

@@ -22,6 +22,14 @@ module Gitlab
       end
     end
 
+    def self.get_commits_for_date(projects, user, date)
+      user_commits = {}
+      projects.reject(&:forked?).each do |project|
+        user_commits[project] = ProjectContributions.new(project, user).user_commits_on_date(date)
+      end
+      user_commits
+    end
+
     def starting_year
       (Time.now - 1.year).strftime("%Y")
     end
