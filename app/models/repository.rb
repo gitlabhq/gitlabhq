@@ -122,7 +122,7 @@ class Repository
 
   def expire_cache
     %i(size branch_names tag_names commit_count graph_log
-       readme version contribution_guide).each do |key|
+       readme version contribution_guide changelog license).each do |key|
       cache.expire(key)
     end
   end
@@ -211,7 +211,27 @@ class Repository
   end
 
   def contribution_guide
-    cache.fetch(:contribution_guide) { tree(:head).contribution_guide }
+    cache.fetch(:contribution_guide) do
+      tree(:head).blobs.find do |file|
+        file.contributing?
+      end
+    end
+  end
+
+  def changelog
+    cache.fetch(:changelog) do
+      tree(:head).blobs.find do |file|
+        file.name =~ /^(changelog|history)/i
+      end
+    end
+  end
+
+  def license
+    cache.fetch(:license) do
+      tree(:head).blobs.find do |file|
+        file.name =~ /^license/i
+      end
+    end
   end
 
   def head_commit
