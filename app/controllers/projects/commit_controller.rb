@@ -3,20 +3,18 @@
 # Not to be confused with CommitsController, plural.
 class Projects::CommitController < Projects::ApplicationController
   # Authorize
-  before_filter :authorize_read_project!
-  before_filter :authorize_code_access!
   before_filter :require_non_empty_project
+  before_filter :authorize_download_code!
   before_filter :commit
 
   def show
     return git_not_found! unless @commit
 
-    @line_notes = project.notes.for_commit_id(commit.id).inline
-    @branches = project.repository.branch_names_contains(commit.id)
+    @line_notes = @project.notes.for_commit_id(commit.id).inline
     @diffs = @commit.diffs
-    @note = project.build_commit_note(commit)
-    @notes_count = project.notes.for_commit_id(commit.id).count
-    @notes = project.notes.for_commit_id(@commit.id).not_inline.fresh
+    @note = @project.build_commit_note(commit)
+    @notes_count = @project.notes.for_commit_id(commit.id).count
+    @notes = @project.notes.for_commit_id(@commit.id).not_inline.fresh
     @noteable = @commit
     @comments_allowed = @reply_allowed = true
     @comments_target  = {
@@ -31,7 +29,13 @@ class Projects::CommitController < Projects::ApplicationController
     end
   end
 
+  def branches
+    @branches = @project.repository.branch_names_contains(commit.id)
+    @tags = @project.repository.tag_names_contains(commit.id)
+    render layout: false
+  end
+
   def commit
-    @commit ||= project.repository.commit(params[:id])
+    @commit ||= @project.repository.commit(params[:id])
   end
 end

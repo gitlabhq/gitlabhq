@@ -1,5 +1,5 @@
 # Based on https://github.com/balexand/email_validator
-# 
+#
 # Extended to use only strict mode with following allowed characters:
 # ' - apostrophe
 #

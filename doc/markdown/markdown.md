@@ -6,7 +6,7 @@
 
 * [Newlines](#newlines)
 * [Multiple underscores in words](#multiple-underscores-in-words)
-* [URL autolinking](#url-autolinking)
+* [URL auto-linking](#url-autolinking)
 * [Code and Syntax Highlighting](#code-and-syntax-highlighting)
 * [Emoji](#emoji)
 * [Special GitLab references](#special-gitlab-references)
@@ -40,7 +40,7 @@ You can use GFM in
 - milestones
 - wiki pages
 
-You can also use other rich text files in GitLab. You might have to install a depency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
+You can also use other rich text files in GitLab. You might have to install a dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
 
 ## Newlines
 
@@ -68,7 +68,7 @@ It is not reasonable to italicize just _part_ of a word, especially when you're 
 perform_complicated_task
 do_this_and_do_that_and_another_thing
 
-## URL autolinking
+## URL auto-linking
 
 GFM will autolink standard URLs you copy and paste into your text. So if you want to link to a URL (instead of a textural link), you can simply put the URL in verbatim and it will be turned into a link to that URL.
 
@@ -140,25 +140,25 @@ But let's throw in a <b>tag</b>.
 
 ## Emoji
 
-	Sometimes you want to be a :ninja: and add some :glowing_star: to your :speech_balloon:. Well we have a gift for you:
+	Sometimes you want to :monkey: around a bit and add some :star2: to your :speech_balloon:. Well we have a gift for you:
 
-	:high_voltage_sign: You can use emoji anywhere GFM is supported. :victory_hand:
+	:zap: You can use emoji anywhere GFM is supported. :v:
 
-	You can use it to point out a :bug: or warn about :speak_no_evil_monkey: patches. And if someone improves your really :snail: code, send them some :cake:. People will :heart: you for that.
+	You can use it to point out a :bug: or warn about :speak_no_evil: patches. And if someone improves your really :snail: code, send them some :birthday:. People will :heart: you for that.
 
-	If you are new to this, don't be :fearful_face:. You can easily join the emoji :family:. All you need to do is to look up on the supported codes.
+	If you are new to this, don't be :fearful:. You can easily join the emoji :family:. All you need to do is to look up on the supported codes.
 
-	Consult the [Emoji Cheat Sheet](https://www.dropbox.com/s/b9xaqb977s6d8w1/cheat_sheet.pdf) for a list of all supported emoji codes. :thumbsup:
+	Consult the [Emoji Cheat Sheet](http://emoji.codes) for a list of all supported emoji codes. :thumbsup:
 
-Sometimes you want to be a :ninja: and add some :glowing_star: to your :speech_balloon:. Well we have a gift for you:
+Sometimes you want to :monkey: around a bit and add some :star2: to your :speech_balloon:. Well we have a gift for you:
 
-:high_voltage_sign: You can use emoji anywhere GFM is supported. :victory_hand:
+:zap: You can use emoji anywhere GFM is supported. :v:
 
-You can use it to point out a :bug: or warn about :speak_no_evil_monkey: patches. And if someone improves your really :snail: code, send them some :cake:. People will :heart: you for that.
+You can use it to point out a :bug: or warn about :speak_no_evil: patches. And if someone improves your really :snail: code, send them some :birthday:. People will :heart: you for that.
 
-If you are new to this, don't be :fearful_face:. You can easily join the emoji :family:. All you need to do is to look up on the supported codes.
+If you are new to this, don't be :fearful:. You can easily join the emoji :family:. All you need to do is to look up on the supported codes.
 
-Consult the [Emoji Cheat Sheet](https://www.dropbox.com/s/b9xaqb977s6d8w1/cheat_sheet.pdf) for a list of all supported emoji codes. :thumbsup:
+Consult the [Emoji Cheat Sheet](http://emoji.codes) for a list of all supported emoji codes. :thumbsup:
 
 ## Special GitLab References
 
@@ -170,7 +170,7 @@ GFM will turn that reference into a link so you can navigate between them easily
 
 GFM will recognize the following:
 
-- @foo : for team members
+- @foo : for specific team members or groups
 - @all : for the whole team
 - #123 : for issues
 - !123 : for merge requests
@@ -250,17 +250,17 @@ The IDs are generated from the content of the header according to the following 
 For example:
 
 ```
-###### ..Ab_c-d. e [anchor](url) ![alt text](url)..
+###### ..Ab_c-d. e [anchor](URL) ![alt text](URL)..
 ```
 
 which renders as:
 
-###### ..Ab_c-d. e [anchor](url) ![alt text](url)..
+###### ..Ab_c-d. e [anchor](URL) ![alt text](URL)..
 
 will first be converted by step 1) into a string like:
 
 ```
-..Ab_c-d. e &lt;a href="url">anchor&lt;/a> &lt;img src="url" alt="alt text"/>..
+..Ab_c-d. e &lt;a href="URL">anchor&lt;/a> &lt;img src="URL" alt="alt text"/>..
 ```
 
 After removing the tags in step 2) we get:
@@ -277,8 +277,8 @@ ab_c-d-e-anchor
 
 Note in particular how:
 
-- for markdown anchors `[text](url)`, only the `text` is used
-- markdown images `![alt](url)` are completely ignored
+- for markdown anchors `[text](URL)`, only the `text` is used
+- markdown images `![alt](URL)` are completely ignored
 
 ## Emphasis
 
@@ -420,6 +420,8 @@ Quote break.
 
 You can also use raw HTML in your Markdown, and it'll mostly work pretty well.
 
+Note that inline HTML is disabled in the default Gitlab configuration, although it is [possible](https://github.com/gitlabhq/gitlabhq/pull/8007/commits) for the system administrator to enable it.
+
 ```no-highlight
 <dl>
   <dt>Definition list</dt>
@@ -542,6 +544,10 @@ This line is separated from the one above by two newlines, so it will be a *sepa
 
 This line is also a separate paragraph, but...
 This line is only separated by a single newline, so it's a separate line in the *same paragraph*.
+
+This line is also a separate paragraph, and...  
+This line is on its own line, because the previous line ends with two
+spaces.
 ```
 
 Here's a line for us to start with.
@@ -550,6 +556,10 @@ This line is separated from the one above by two newlines, so it will be a *sepa
 
 This line is also begins a separate paragraph, but...
 This line is only separated by a single newline, so it's a separate line in the *same paragraph*.
+
+This line is also a separate paragraph, and...  
+This line is on its own line, because the previous line ends with two
+spaces.
 
 ## Tables
 
@@ -568,6 +578,10 @@ Code above produces next output:
 | -------- | -------- |
 | cell 1   | cell 2   |
 | cell 3   | cell 4   |
+
+**Note**
+
+The row of dashes between the table header and body must have at least three dashes in each column.
 
 ## References
 

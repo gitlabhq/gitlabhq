@@ -4,11 +4,20 @@
     = hidden_field_tag :group_id, @group.try(:id)
     - if @project && @project.persisted?
       = hidden_field_tag :project_id, @project.id
-      = hidden_field_tag :search_code, true
+
+      - if current_controller?(:issues)
+        = hidden_field_tag :scope, 'issues'
+      - elsif current_controller?(:merge_requests)
+        = hidden_field_tag :scope, 'merge_requests'
+      - elsif current_controller?(:wikis)
+        = hidden_field_tag :scope, 'wiki_blobs'
+      - else
+        = hidden_field_tag :search_code, true
+
     - if @snippet || @snippets
       = hidden_field_tag :snippets, true
     = hidden_field_tag :repository_ref, @ref
-    = submit_tag 'Go' if ENV['RAILS_ENV'] == 'test'
+    = button_tag 'Go' if ENV['RAILS_ENV'] == 'test'
     .search-autocomplete-opts.hide{:'data-autocomplete-path' => search_autocomplete_path, :'data-autocomplete-project-id' => @project.try(:id), :'data-autocomplete-project-ref' => @ref }
 
 :javascript

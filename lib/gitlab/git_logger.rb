@@ -1,7 +1,7 @@
 module Gitlab
   class GitLogger < Gitlab::Logger
-    def self.file_name
-      'githost.log'
+    def self.file_name_noext
+      'githost'
     end
 
     def format_message(severity, timestamp, progname, msg)

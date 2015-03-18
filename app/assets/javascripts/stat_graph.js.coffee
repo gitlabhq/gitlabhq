@@ -1,4 +1,4 @@
-class window.StatGraph  
+class @StatGraph  
   @log: {}
   @get_log: ->
     @log

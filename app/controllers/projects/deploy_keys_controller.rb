@@ -25,7 +25,8 @@ class Projects::DeployKeysController < Projects::ApplicationController
     @key = DeployKey.new(deploy_key_params)
 
     if @key.valid? && @project.deploy_keys << @key
-      redirect_to project_deploy_keys_path(@project)
+      redirect_to namespace_project_deploy_keys_path(@project.namespace,
+                                                     @project)
     else
       render "new"
     end
@@ -36,21 +37,23 @@ class Projects::DeployKeysController < Projects::ApplicationController
     @key.destroy
 
     respond_to do |format|
-      format.html { redirect_to project_deploy_keys_url }
+      format.html { redirect_to namespace_project_deploy_keys_path(@project.namespace, @project) }
       format.js { render nothing: true }
     end
   end
 
   def enable
-    project.deploy_keys << available_keys.find(params[:id])
+    @project.deploy_keys << available_keys.find(params[:id])
 
-    redirect_to project_deploy_keys_path(@project)
+    redirect_to namespace_project_deploy_keys_path(@project.namespace,
+                                                   @project)
   end
 
   def disable
-    @project.deploy_keys_projects.where(deploy_key_id: params[:id]).last.destroy
+    @project.deploy_keys_projects.find_by(deploy_key_id: params[:id]).destroy
 
-    redirect_to project_deploy_keys_path(@project)
+    redirect_to namespace_project_deploy_keys_path(@project.namespace,
+                                                   @project)
   end
 
   protected

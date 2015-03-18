@@ -1,0 +1,213 @@
+/**
+ * Notes
+ */
+
+@-webkit-keyframes targe3-note {
+  from { background:#fffff0; }
+  50% { background:#ffffd3; }
+  to { background:#fffff0; }
+}
+
+ul.notes {
+  display: block;
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+
+  .discussion-header,
+  .note-header {
+    @extend .cgray;
+    padding-bottom: 15px;
+
+    a:hover {
+      text-decoration: none;
+    }
+
+    .avatar {
+      float: left;
+      margin-right: 10px;
+    }
+
+    .discussion-last-update,
+    .note-last-update {
+      &:before {
+        content: "\00b7";
+      }
+      font-size: 13px;
+    }
+    .author {
+      color: #333;
+      font-weight: bold;
+      &:hover {
+        color: $gl-link-color;
+      }
+    }
+    .author-username {
+    }
+  }
+
+  .discussion {
+    overflow: hidden;
+    display: block;
+    position:relative;
+  }
+
+  .note {
+    display: block;
+    position:relative;
+    .note-body {
+      overflow: auto;
+      .note-text {
+        overflow: auto;
+        word-wrap: break-word;
+        @include md-typography;
+
+        a[href*="/uploads/"] {
+          &:before {
+            margin-right: 4px;
+
+            font: normal normal normal 14px/1 FontAwesome;
+            font-size: inherit;
+            text-rendering: auto;
+            -webkit-font-smoothing: antialiased;
+            content: "\f0c6";
+          }
+
+          &:hover:before {
+            text-decoration: none;
+          }
+        }
+      }
+    }
+    .note-header {
+      padding-bottom: 3px;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+// Diff code in discussion view
+.discussion-body .diff-file .line_content {
+  white-space: pre-wrap;
+}
+
+.diff-file .notes_holder {
+  font-size: 13px;
+  line-height: 18px;
+  font-family: $regular_font;
+
+  td {
+    border: 1px solid #ddd;
+    border-left: none;
+
+    &.notes_line {
+      text-align: center;
+      padding: 10px 0;
+      background: #FFF;
+    }
+    &.notes_line2 {
+      text-align: center;
+      padding: 10px 0;
+      border-left: 1px solid #ddd !important;
+    }
+    &.notes_content {
+      background-color: #fff;
+      border-width: 1px 0;
+      padding-top: 0;
+      vertical-align: top;
+      &.parallel{
+        border-width: 1px;
+      }
+    }
+  }
+}
+
+/**
+ * Actions for Discussions/Notes
+ */
+
+.discussion,
+.note {
+  &.note:hover {
+    .note-actions { display: block; }
+  }
+  .discussion-header:hover {
+    .discussion-actions { display: block; }
+  }
+
+  .discussion-actions,
+  .note-actions {
+    display: none;
+    float: right;
+
+    [class~="fa"] {
+      font-size: 16px;
+      line-height: 16px;
+      vertical-align: middle;
+    }
+
+    a {
+      @extend .cgray;
+
+      &:hover {
+        &.danger { @extend .cred; }
+      }
+    }
+  }
+}
+.diff-file .note .note-actions {
+  right: 0;
+  top: 0;
+}
+
+
+/**
+ * Line note button on the side of diffs
+ */
+
+.diff-file tr.line_holder {
+  @mixin show-add-diff-note {
+    filter: alpha(opacity=100);
+    opacity: 1.0;
+  }
+
+  .add-diff-note {
+    margin-top: -4px;
+    @include border-radius(40px);
+    background: #FFF;
+    padding: 4px;
+    font-size: 16px;
+    color: $gl-link-color;
+    margin-left: -60px;
+    position: absolute;
+    z-index: 10;
+    width: 32px;
+
+    transition: all 0.2s ease;
+
+    // "hide" it by default
+    opacity: 0.0;
+    filter: alpha(opacity=0);
+
+    &:hover {
+      width: 38px;
+      font-size: 20px;
+      background: $gl-info;
+      color: #FFF;
+      @include show-add-diff-note;
+    }
+  }
+
+  // "show" the icon also if we just hover somewhere over the line
+  &:hover > td {
+    background: $hover !important;
+
+    .add-diff-note {
+      @include show-add-diff-note;
+    }
+  }
+}
+

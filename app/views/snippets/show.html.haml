@@ -31,13 +31,13 @@
 .file-holder
   .file-title
     %i.fa.fa-file
-    %span.file_name
+    %strong
       = @snippet.file_name
-    .options
+    .file-actions
       .btn-group
         - if can?(current_user, :modify_personal_snippet, @snippet)
-          = link_to "edit", edit_snippet_path(@snippet), class: "btn btn-small", title: 'Edit Snippet'
-        = link_to "raw", raw_snippet_path(@snippet), class: "btn btn-small", target: "_blank"
+          = link_to "edit", edit_snippet_path(@snippet), class: "btn btn-sm", title: 'Edit Snippet'
+        = link_to "raw", raw_snippet_path(@snippet), class: "btn btn-sm", target: "_blank"
       - if can?(current_user, :admin_personal_snippet, @snippet)
-        = link_to "remove", snippet_path(@snippet), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-small btn-remove", title: 'Delete Snippet'
+        = link_to "remove", snippet_path(@snippet), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-sm btn-remove", title: 'Delete Snippet'
   = render 'shared/snippets/blob'

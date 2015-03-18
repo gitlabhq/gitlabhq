@@ -1,0 +1,115 @@
+/* Login Page */
+.login-page {
+  .container {
+    max-width: 960px;
+  }
+
+  .navbar-gitlab .container {
+    max-width: none;
+  }
+
+  .brand-holder {
+    font-size: 18px;
+    line-height: 1.5;
+
+    p {
+      color: #888;
+    }
+
+    h1:first-child {
+      font-weight: normal;
+      margin-bottom: 30px;
+    }
+
+    img {
+      max-width: 100%;
+      margin-bottom:  30px;
+    }
+
+    a {
+      font-weight: bold;
+    }
+  }
+
+  .login-box{
+    background: #fafafa;
+    border-radius: 10px;
+    box-shadow: 0 0px 2px #CCC;
+    padding: 15px;
+
+    .login-heading h3 {
+      font-weight: 300;
+      line-height: 1.5;
+      margin: 0 0 10px 0;
+    }
+
+    .login-footer {
+      margin-top: 10px;
+
+      p:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    a.forgot {
+      float: right;
+      padding-top: 6px
+    }
+
+    .nav .active a {
+      background: transparent;
+    }
+  }
+
+  .form-control {
+    font-size: 14px;
+    padding: 10px 8px;
+    width: 100%;
+    height: auto;
+
+    &.top {
+      @include border-radius(5px 5px 0 0);
+      margin-bottom: 0px;
+    }
+
+    &.bottom {
+      @include border-radius(0 0 5px 5px);
+      border-top: 0;
+      margin-bottom: 20px;
+    }
+
+    &.middle {
+      border-top: 0;
+      margin-bottom:0px;
+      @include border-radius(0);
+    }
+
+    &:active, &:focus {
+      background-color: #FFF;
+    }
+  }
+
+  .devise-errors {
+    h2 {
+      margin-top: 0;
+      font-size: 14px;
+      color: #a00;
+    }
+  }
+
+  .remember-me {
+    margin-top: -10px;
+
+    label {
+      font-weight: normal;
+    }
+  }
+}
+
+@media (max-width: $screen-xs-max) {
+  .login-page {
+    .col-sm-5.pull-right {
+      float: none !important;
+    }
+  }
+}

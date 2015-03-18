@@ -22,7 +22,7 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
   end
 
   step 'submit form with new group info' do
-    fill_in 'group_name', with: 'gitlab'
+    fill_in 'group_path', with: 'gitlab'
     fill_in 'group_description', with: 'Group description'
     click_button "Create group"
   end
@@ -33,16 +33,15 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
   end
 
   step 'I should be redirected to group page' do
-    current_path.should == admin_group_path(Group.last)
+    current_path.should == admin_group_path(Group.find_by(path: 'gitlab'))
   end
 
   When 'I select user "John Doe" from user list as "Reporter"' do
-    user = User.find_by(name: "John Doe")
-    select2(user.id, from: "#user_ids", multiple: true)
-    within "#new_team_member" do
+    select2(user_john.id, from: "#user_ids", multiple: true)
+    within "#new_project_member" do
       select "Reporter", from: "access_level"
     end
-    click_button "Add users into group"
+    click_button "Add users to group"
   end
 
   step 'I should see "John Doe" in team list in every project as "Reporter"' do
@@ -58,9 +57,29 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
     end
   end
 
+  step 'we have user "John Doe" in group' do
+    current_group.add_user(user_john, Gitlab::Access::REPORTER)
+  end
+
+  step 'I remove user "John Doe" from group' do
+    within "#user_#{user_john.id}" do
+      click_link 'Remove user from group'
+    end
+  end
+
+  step 'I should not see "John Doe" in team list' do
+    within ".group-users-list" do
+      page.should_not have_content "John Doe"
+    end
+  end
+
   protected
 
   def current_group
     @group ||= Group.first
+  end
+
+  def user_john
+    @user_john ||= User.find_by(name: "John Doe")
   end
 end

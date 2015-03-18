@@ -1,54 +1,53 @@
 require 'spec_helper'
 
 describe Gitlab::LDAP::User do
-  let(:gl_user) { Gitlab::LDAP::User }
+  let(:gl_user) { Gitlab::LDAP::User.new(auth_hash) }
   let(:info) do
-    double(
+    {
       name: 'John',
       email: 'john@example.com',
       nickname: 'john'
-    )
+    }
   end
-  before { Gitlab.config.stub(omniauth: {}) }
+  let(:auth_hash) do
+    double(uid: 'my-uid', provider: 'ldapmain', info: double(info))
+  end
 
-  describe :find_or_create do
-    let(:auth) do
-      double(info: info, provider: 'ldap', uid: 'my-uid')
+  describe :changed? do
+    it "marks existing ldap user as changed" do
+      existing_user = create(:omniauth_user, extern_uid: 'my-uid', provider: 'ldapmain')
+      expect(gl_user.changed?).to be_truthy
     end
 
-    it "finds the user if already existing" do
-      existing_user = create(:user, extern_uid: 'my-uid', provider: 'ldap')
+    it "marks existing non-ldap user if the email matches as changed" do
+      existing_user = create(:user, email: 'john@example.com')
+      expect(gl_user.changed?).to be_truthy
+    end
 
-      expect{ gl_user.find_or_create(auth) }.to_not change{ User.count }
+    it "dont marks existing ldap user as changed" do
+      existing_user = create(:omniauth_user, email: 'john@example.com', extern_uid: 'my-uid', provider: 'ldapmain')
+      expect(gl_user.changed?).to be_falsey
+    end
+  end
+
+  describe :find_or_create do
+    it "finds the user if already existing" do
+      existing_user = create(:omniauth_user, extern_uid: 'my-uid', provider: 'ldapmain')
+
+      expect{ gl_user.save }.to_not change{ User.count }
     end
 
     it "connects to existing non-ldap user if the email matches" do
-      existing_user = create(:user, email: 'john@example.com')
-      expect{ gl_user.find_or_create(auth) }.to_not change{ User.count }
+      existing_user = create(:omniauth_user, email: 'john@example.com', provider: "twitter")
+      expect{ gl_user.save }.to_not change{ User.count }
 
       existing_user.reload
-      expect(existing_user.extern_uid).to eql 'my-uid'
-      expect(existing_user.provider).to eql 'ldap'
+      expect(existing_user.ldap_identity.extern_uid).to eql 'my-uid'
+      expect(existing_user.ldap_identity.provider).to eql 'ldapmain'
     end
 
     it "creates a new user if not found" do
-      expect{ gl_user.find_or_create(auth) }.to change{ User.count }.by(1)
-    end
-  end
-
-  describe "authenticate" do
-    let(:login) { 'john' }
-    let(:password) { 'my-secret' }
-
-    before {
-      Gitlab.config.ldap['enabled'] = true
-      Gitlab.config.ldap['user_filter'] = 'employeeType=developer'
-    }
-    after  { Gitlab.config.ldap['enabled'] = false }
-
-    it "send an authentication request to ldap" do
-      expect( Gitlab::LDAP::User.adapter ).to receive(:bind_as)
-      Gitlab::LDAP::User.authenticate(login, password)
+      expect{ gl_user.save }.to change{ User.count }.by(1)
     end
   end
 end

@@ -1,9 +1,29 @@
-= render "head"
-.row
-  .fixed.fixed.sidebar-expand-button.hidden-lg.hidden-md.hidden-xs
-    %i.fa.fa-list.fa-2x
-  .col-md-3.responsive-side
-    = render 'shared/project_filter', project_entities_path: project_issues_path(@project),
-             labels: true, redirect: 'issues', entity: 'issue'
-  .col-md-9.issues-holder
-    = render "issues"
+.append-bottom-10
+  .pull-right
+    .pull-left
+      - if current_user
+        .hidden-xs.pull-left
+          = link_to namespace_project_issues_path(@project.namespace, @project, :atom, { private_token: current_user.private_token }), class: 'btn append-right-10' do
+            %i.fa.fa-rss
+
+      = render 'shared/issuable_search_form', path: namespace_project_issues_path(@project.namespace, @project)
+
+    - if can? current_user, :write_issue, @project
+      = link_to new_namespace_project_issue_path(@project.namespace, @project, issue: { assignee_id: params[:assignee_id], milestone_id: params[:milestone_id]}), class: "btn btn-new pull-left", title: "New Issue", id: "new_issue_link" do
+        %i.fa.fa-plus
+        New Issue
+
+  = render 'shared/issuable_filter'
+
+  .clearfix
+    .issues_bulk_update.hide
+      = form_tag bulk_update_namespace_project_issues_path(@project.namespace, @project), method: :post  do
+        = select_tag('update[state_event]', options_for_select([['Open', 'reopen'], ['Closed', 'close']]), prompt: "Status")
+        = project_users_select_tag('update[assignee_id]', placeholder: 'Assignee')
+        = select_tag('update[milestone_id]', bulk_update_milestone_options, prompt: "Milestone")
+        = hidden_field_tag 'update[issues_ids]', []
+        = hidden_field_tag :state_event, params[:state_event]
+        = button_tag "Update issues", class: "btn update_selected_issues btn-save"
+
+.issues-holder
+  = render "issues"

@@ -16,19 +16,19 @@ describe ProjectTeam do
     end
 
     describe 'members collection' do
-      it { project.team.masters.should include(master) }
-      it { project.team.masters.should_not include(guest) }
-      it { project.team.masters.should_not include(reporter) }
-      it { project.team.masters.should_not include(nonmember) }
+      it { expect(project.team.masters).to include(master) }
+      it { expect(project.team.masters).not_to include(guest) }
+      it { expect(project.team.masters).not_to include(reporter) }
+      it { expect(project.team.masters).not_to include(nonmember) }
     end
 
     describe 'access methods' do
-      it { project.team.master?(master).should be_true }
-      it { project.team.master?(guest).should be_false }
-      it { project.team.master?(reporter).should be_false }
-      it { project.team.master?(nonmember).should be_false }
-      it { project.team.member?(nonmember).should be_false }
-      it { project.team.member?(guest).should be_true }
+      it { expect(project.team.master?(master)).to be_truthy }
+      it { expect(project.team.master?(guest)).to be_falsey }
+      it { expect(project.team.master?(reporter)).to be_falsey }
+      it { expect(project.team.master?(nonmember)).to be_falsey }
+      it { expect(project.team.member?(nonmember)).to be_falsey }
+      it { expect(project.team.member?(guest)).to be_truthy }
     end
   end
 
@@ -49,21 +49,21 @@ describe ProjectTeam do
     end
 
     describe 'members collection' do
-      it { project.team.reporters.should include(reporter) }
-      it { project.team.masters.should include(master) }
-      it { project.team.masters.should include(guest) }
-      it { project.team.masters.should_not include(reporter) }
-      it { project.team.masters.should_not include(nonmember) }
+      it { expect(project.team.reporters).to include(reporter) }
+      it { expect(project.team.masters).to include(master) }
+      it { expect(project.team.masters).to include(guest) }
+      it { expect(project.team.masters).not_to include(reporter) }
+      it { expect(project.team.masters).not_to include(nonmember) }
     end
 
     describe 'access methods' do
-      it { project.team.reporter?(reporter).should be_true }
-      it { project.team.master?(master).should be_true }
-      it { project.team.master?(guest).should be_true }
-      it { project.team.master?(reporter).should be_false }
-      it { project.team.master?(nonmember).should be_false }
-      it { project.team.member?(nonmember).should be_false }
-      it { project.team.member?(guest).should be_true }
+      it { expect(project.team.reporter?(reporter)).to be_truthy }
+      it { expect(project.team.master?(master)).to be_truthy }
+      it { expect(project.team.master?(guest)).to be_truthy }
+      it { expect(project.team.master?(reporter)).to be_falsey }
+      it { expect(project.team.master?(nonmember)).to be_falsey }
+      it { expect(project.team.member?(nonmember)).to be_falsey }
+      it { expect(project.team.member?(guest)).to be_truthy }
     end
   end
 end

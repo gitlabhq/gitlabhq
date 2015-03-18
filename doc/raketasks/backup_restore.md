@@ -13,8 +13,8 @@ You can only restore a backup to exactly the same version of GitLab that you cre
 # use this command if you've installed GitLab with the Omnibus package
 sudo gitlab-rake gitlab:backup:create
 
-# if you've installed GitLab from source or using the cookbook
-bundle exec rake gitlab:backup:create RAILS_ENV=production
+# if you've installed GitLab from source
+sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
 
 Example output:
@@ -137,7 +137,7 @@ with the name of your bucket:
 Please be informed that a backup does not store your configuration files.
 If you use an Omnibus package please see the [instructions in the readme to backup your configuration](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#backup-and-restore-omnibus-gitlab-configuration).
 If you have a cookbook installation there should be a copy of your configuration in Chef.
-If you have a manual installation please consider backing up your gitlab.yml file and any SSL keys and certificates.
+If you have an installation from source, please consider backing up your `gitlab.yml` file, any SSL keys and certificates, and your [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
 
 ## Restore a previously created backup
 
@@ -147,7 +147,7 @@ You can only restore a backup to exactly the same version of GitLab that you cre
 # Omnibus package installation
 sudo gitlab-rake gitlab:backup:restore
 
-# installation from source or cookbook
+# installation from source
 bundle exec rake gitlab:backup:restore RAILS_ENV=production
 ```
 
@@ -192,7 +192,7 @@ Deleting tmp directories...[DONE]
 
 For Omnibus package installations, see https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#scheduling-a-backup .
 
-For installation from source or cookbook:
+For installation from source:
 ```
 cd /home/git/gitlab
 sudo -u git -H editor config/gitlab.yml # Enable keep_time in the backup section to automatically delete old backups
@@ -203,5 +203,31 @@ Add the following lines at the bottom:
 
 ```
 # Create a full backup of the GitLab repositories and SQL database every day at 4am
-0 4 * * * cd /home/git/gitlab && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
+0 4 * * * cd /home/git/gitlab && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production CRON=1
 ```
+
+The `CRON=1` environment setting tells the backup script to suppress all progress output if there are no errors.
+This is recommended to reduce cron spam.
+
+## Alternative backup strategies
+
+If your GitLab server contains a lot of Git repository data you may find the GitLab backup script to be too slow.
+In this case you can consider using filesystem snapshots as part of your backup strategy.
+
+Example: Amazon EBS
+
+> A GitLab server using omnibus-gitlab hosted on Amazon AWS.
+> An EBS drive containing an ext4 filesystem is mounted at `/var/opt/gitlab`.
+> In this case you could make an application backup by taking an EBS snapshot.
+> The backup includes all repositories, uploads and Postgres data.
+
+Example: LVM snapshots + rsync
+
+> A GitLab server using omnibus-gitlab, with an LVM logical volume mounted at `/var/opt/gitlab`.
+> Replicating the `/var/opt/gitlab` directory using rsync would not be reliable because too many files would change while rsync is running.
+> Instead of rsync-ing `/var/opt/gitlab`, we create a temporary LVM snapshot, which we mount as a read-only filesystem at `/mnt/gitlab_backup`.
+> Now we can have a longer running rsync job which will create a consistent replica on the remote server.
+> The replica includes all repositories, uploads and Postgres data.
+
+If you are running GitLab on a virtualized server you can possibly also create VM snapshots of the entire GitLab server.
+It is not uncommon however for a VM snapshot to require you to power down the server, so this approach is probably of limited practical use.

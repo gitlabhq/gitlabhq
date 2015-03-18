@@ -21,7 +21,9 @@ class PostReceive
       return false
     end
 
-    changes = changes.lines if changes.kind_of?(String)
+    changes = Base64.decode64(changes) unless changes.include?(" ")
+    changes = utf8_encode_changes(changes)
+    changes = changes.lines
 
     changes.each do |change|
       oldrev, newrev, ref = change.strip.split(' ')
@@ -33,7 +35,7 @@ class PostReceive
         return false
       end
 
-      if tag?(ref)
+      if Gitlab::Git.tag_ref?(ref)
         GitTagPushService.new.execute(project, @user, oldrev, newrev, ref)
       else
         GitPushService.new.execute(project, @user, oldrev, newrev, ref)
@@ -41,13 +43,20 @@ class PostReceive
     end
   end
 
-  def log(message)
-    Gitlab::GitLogger.error("POST-RECEIVE: #{message}")
+  def utf8_encode_changes(changes)
+    changes = changes.dup
+    
+    changes.force_encoding("UTF-8")
+    return changes if changes.valid_encoding?
+
+    # Convert non-UTF-8 branch/tag names to UTF-8 so they can be dumped as JSON.
+    detection = CharlockHolmes::EncodingDetector.detect(changes)
+    return changes unless detection && detection[:encoding]
+
+    CharlockHolmes::Converter.convert(changes, detection[:encoding], 'UTF-8')
   end
 
-  private
-
-  def tag?(ref)
-    !!(/refs\/tags\/(.*)/.match(ref))
+  def log(message)
+    Gitlab::GitLogger.error("POST-RECEIVE: #{message}")
   end
 end

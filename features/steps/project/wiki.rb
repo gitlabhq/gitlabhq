@@ -11,7 +11,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I should be redirected back to the Edit Home Wiki page' do
-    current_path.should == project_wiki_path(project, :home)
+    current_path.should == namespace_project_wiki_path(project.namespace, project, :home)
   end
 
   step 'I create the Wiki Home page' do
@@ -33,7 +33,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I browse to that Wiki page' do
-    visit project_wiki_path(project, @page)
+    visit namespace_project_wiki_path(project.namespace, project, @page)
   end
 
   step 'I click on the Edit button' do
@@ -50,7 +50,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I should be redirected back to that Wiki page' do
-    current_path.should == project_wiki_path(project, @page)
+    current_path.should == namespace_project_wiki_path(project.namespace, project, @page)
   end
 
   step 'That page has two revisions' do
@@ -90,7 +90,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I browse to wiki page with images' do
-    visit project_wiki_path(project, @wiki_page)
+    visit namespace_project_wiki_path(project.namespace, project, @wiki_page)
   end
 
   step 'I click on existing image link' do

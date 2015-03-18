@@ -89,15 +89,15 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
     click_link('Labels')
   end
 
-  step 'the active sub tab should be Browse Issues' do
-    ensure_active_sub_tab('Browse Issues')
+  step 'the active sub tab should be Issues' do
+    ensure_active_sub_tab('Issues')
   end
 
-  step 'the active sub tab should be Milestones' do
-    ensure_active_sub_tab('Milestones')
+  step 'the active main tab should be Milestones' do
+    ensure_active_main_tab('Milestones')
   end
 
-  step 'the active sub tab should be Labels' do
-    ensure_active_sub_tab('Labels')
+  step 'the active main tab should be Labels' do
+    ensure_active_main_tab('Labels')
   end
 end

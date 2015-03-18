@@ -1,13 +1,16 @@
 require 'gon'
 
 class ApplicationController < ActionController::Base
+  include Gitlab::CurrentSettings
+  include GitlabRoutingHelper
+
+  PER_PAGE = 20
+
   before_filter :authenticate_user_from_token!
   before_filter :authenticate_user!
   before_filter :reject_blocked!
   before_filter :check_password_expiration
-  before_filter :add_abilities
   before_filter :ldap_security_check
-  before_filter :dev_tools if Rails.env == 'development'
   before_filter :default_headers
   before_filter :add_gon_variables
   before_filter :configure_permitted_parameters, if: :devise_controller?
@@ -15,7 +18,8 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery with: :exception
 
-  helper_method :abilities, :can?
+  helper_method :abilities, :can?, :current_application_settings
+  helper_method :github_import_enabled?, :gitlab_import_enabled?, :bitbucket_import_enabled?
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -48,6 +52,17 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def authenticate_user!(*args)
+    # If user is not signed-in and tries to access root_path - redirect him to landing page
+    if current_application_settings.home_page_url.present?
+      if current_user.nil? && controller_name == 'dashboard' && action_name == 'show'
+        redirect_to current_application_settings.home_page_url and return
+      end
+    end
+
+    super(*args)
+  end
+
   def log_exception(exception)
     application_trace = ActionDispatch::ExceptionWrapper.new(env, exception).application_trace
     application_trace.map!{ |t| "  #{t}\n" }
@@ -73,7 +88,7 @@ class ApplicationController < ActionController::Base
   end
 
   def abilities
-    @abilities ||= Six.new
+    Ability.abilities
   end
 
   def can?(object, action, subject)
@@ -81,50 +96,43 @@ class ApplicationController < ActionController::Base
   end
 
   def project
-    id = params[:project_id] || params[:id]
+    unless @project
+      namespace = params[:namespace_id]
+      id = params[:project_id] || params[:id]
 
-    # Redirect from
-    #   localhost/group/project.git
-    # to
-    #   localhost/group/project
-    #
-    if id =~ /\.git\Z/
-      redirect_to request.original_url.gsub(/\.git\Z/, '') and return
+      # Redirect from
+      #   localhost/group/project.git
+      # to
+      #   localhost/group/project
+      #
+      if id =~ /\.git\Z/
+        redirect_to request.original_url.gsub(/\.git\Z/, '') and return
+      end
+
+      @project = Project.find_with_namespace("#{namespace}/#{id}")
+
+      if @project and can?(current_user, :read_project, @project)
+        @project
+      elsif current_user.nil?
+        @project = nil
+        authenticate_user!
+      else
+        @project = nil
+        render_404 and return
+      end
     end
-
-    @project = Project.find_with_namespace(id)
-
-    if @project and can?(current_user, :read_project, @project)
-      @project
-    elsif current_user.nil?
-      @project = nil
-      authenticate_user!
-    else
-      @project = nil
-      render_404 and return
-    end
+    @project
   end
 
   def repository
     @repository ||= project.repository
-  rescue Grit::NoSuchPathError
+  rescue Grit::NoSuchPathError(e)
+    log_exception(e)
     nil
-  end
-
-  def add_abilities
-    abilities << Ability
   end
 
   def authorize_project!(action)
     return access_denied! unless can?(current_user, action, project)
-  end
-
-  def authorize_code_access!
-    return access_denied! unless can?(current_user, :download_code, project)
-  end
-
-  def authorize_push!
-    return access_denied! unless can?(current_user, :push_code, project)
   end
 
   def authorize_labels!
@@ -170,9 +178,6 @@ class ApplicationController < ActionController::Base
     response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
   end
 
-  def dev_tools
-  end
-
   def default_headers
     headers['X-Frame-Options'] = 'DENY'
     headers['X-XSS-Protection'] = '1; mode=block'
@@ -182,7 +187,7 @@ class ApplicationController < ActionController::Base
   end
 
   def add_gon_variables
-    gon.default_issues_tracker = Project.issues_tracker.default_value
+    gon.default_issues_tracker = Project.new.default_issue_tracker.to_param
     gon.api_version = API::API.version
     gon.relative_url_root = Gitlab.config.gitlab.relative_url_root
     gon.default_avatar_url = URI::join(Gitlab.config.gitlab.url, ActionController::Base.helpers.image_path('no_avatar.png')).to_s
@@ -252,5 +257,76 @@ class ApplicationController < ActionController::Base
     if current_user && current_user.temp_oauth_email?
       redirect_to profile_path, notice: 'Please complete your profile with email address' and return
     end
+  end
+
+  def set_filters_params
+    params[:sort] ||= 'created_desc'
+    params[:scope] = 'all' if params[:scope].blank?
+    params[:state] = 'opened' if params[:state].blank?
+
+    @filter_params = params.dup
+
+    if @project
+      @filter_params[:project_id] = @project.id
+    elsif @group
+      @filter_params[:group_id] = @group.id
+    else
+      # TODO: this filter ignore issues/mr created in public or
+      # internal repos where you are not a member. Enable this filter
+      # or improve current implementation to filter only issues you
+      # created or assigned or mentioned
+      #@filter_params[:authorized_only] = true
+    end
+
+    @filter_params
+  end
+
+  def set_filter_values(collection)
+    assignee_id = @filter_params[:assignee_id]
+    author_id = @filter_params[:author_id]
+    milestone_id = @filter_params[:milestone_id]
+
+    @sort = @filter_params[:sort]
+    @assignees = User.where(id: collection.pluck(:assignee_id))
+    @authors = User.where(id: collection.pluck(:author_id))
+    @milestones = Milestone.where(id: collection.pluck(:milestone_id))
+
+    if assignee_id.present? && !assignee_id.to_i.zero?
+      @assignee = @assignees.find_by(id: assignee_id)
+    end
+
+    if author_id.present? && !author_id.to_i.zero?
+      @author = @authors.find_by(id: author_id)
+    end
+
+    if milestone_id.present? && !milestone_id.to_i.zero?
+      @milestone = @milestones.find_by(id: milestone_id)
+    end
+  end
+
+  def get_issues_collection
+    set_filters_params
+    issues = IssuesFinder.new.execute(current_user, @filter_params)
+    set_filter_values(issues)
+    issues
+  end
+
+  def get_merge_requests_collection
+    set_filters_params
+    merge_requests = MergeRequestsFinder.new.execute(current_user, @filter_params)
+    set_filter_values(merge_requests)
+    merge_requests
+  end
+
+  def github_import_enabled?
+    OauthHelper.enabled_oauth_providers.include?(:github)
+  end
+
+  def gitlab_import_enabled?
+    OauthHelper.enabled_oauth_providers.include?(:gitlab)
+  end
+
+  def bitbucket_import_enabled?
+    OauthHelper.enabled_oauth_providers.include?(:bitbucket) && Gitlab::BitbucketImport.public_key.present?
   end
 end

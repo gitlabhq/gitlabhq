@@ -1,0 +1,8 @@
+%h4 Commits calendar
+#cal-heatmap.calendar
+  :javascript
+    new calendar(
+      #{@timestamps.to_json},
+      #{@starting_year},
+      #{@starting_month}
+    );

@@ -1,0 +1,22 @@
+%h3.page-title
+  System OAuth applications
+%p.light
+  System OAuth application does not belong to certain user and can be managed only by admins
+%hr
+%p= link_to 'New Application', new_admin_application_path, class: 'btn btn-success'
+%table.table.table-striped
+  %thead
+    %tr
+      %th Name
+      %th Callback URL
+      %th Clients
+      %th
+      %th
+  %tbody.oauth-applications
+    - @applications.each do |application|
+      %tr{:id => "application_#{application.id}"}
+        %td= link_to application.name, admin_application_path(application)
+        %td= application.redirect_uri
+        %td= application.access_tokens.map(&:resource_owner_id).uniq.count
+        %td= link_to 'Edit', edit_admin_application_path(application), class: 'btn btn-link'
+        %td= render 'delete_form', application: application

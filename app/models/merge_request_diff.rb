@@ -14,6 +14,8 @@
 require Rails.root.join("app/models/commit")
 
 class MergeRequestDiff < ActiveRecord::Base
+  include Sortable
+
   # Prevent store of diff
   # if commits amount more then 200
   COMMITS_SAFE_SIZE = 200
@@ -55,7 +57,7 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def last_commit_short_sha
-    @last_commit_short_sha ||= last_commit.sha[0..10]
+    @last_commit_short_sha ||= last_commit.short_id
   end
 
   private

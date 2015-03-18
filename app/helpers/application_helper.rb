@@ -5,8 +5,9 @@ module ApplicationHelper
   COLOR_SCHEMES = {
     1 => 'white',
     2 => 'dark',
-    3 => 'solarized-dark',
-    4 => 'monokai',
+    3 => 'solarized-light',
+    4 => 'solarized-dark',
+    5 => 'monokai',
   }
   COLOR_SCHEMES.default = 'white'
 
@@ -49,12 +50,39 @@ module ApplicationHelper
     args.any? { |v| v.to_s.downcase == action_name }
   end
 
-  def group_icon(group_path)
-    group = Group.find_by(path: group_path)
-    if group && group.avatar.present?
-      group.avatar.url
-    else
-      image_path('no_group_avatar.png')
+  def project_icon(project_id, options = {})
+    project =
+      if project_id.is_a?(Project)
+        project = project_id
+      else
+        Project.find_with_namespace(project_id)
+      end
+
+    if project.avatar_url
+      image_tag project.avatar_url, options
+    else # generated icon
+      project_identicon(project, options)
+    end
+  end
+
+  def project_identicon(project, options = {})
+    allowed_colors = {
+      red: 'FFEBEE',
+      purple: 'F3E5F5',
+      indigo: 'E8EAF6',
+      blue: 'E3F2FD',
+      teal: 'E0F2F1',
+      orange: 'FBE9E7',
+      gray: 'EEEEEE'
+    }
+
+    options[:class] ||= ''
+    options[:class] << ' identicon'
+    bg_key = project.id % 7
+    style = "background-color: ##{ allowed_colors.values[bg_key] }; color: #555"
+
+    content_tag(:div, class: options[:class], style: style) do
+      project.name[0, 1].upcase
     end
   end
 
@@ -81,24 +109,24 @@ module ApplicationHelper
     if project.repo_exists?
       time_ago_with_tooltip(project.repository.commit.committed_date)
     else
-      "Never"
+      'Never'
     end
   rescue
-    "Never"
+    'Never'
   end
 
   def grouped_options_refs
     repository = @project.repository
 
     options = [
-      ["Branches", repository.branch_names],
-      ["Tags", VersionSorter.rsort(repository.tag_names)]
+      ['Branches', repository.branch_names],
+      ['Tags', VersionSorter.rsort(repository.tag_names)]
     ]
 
     # If reference is commit id - we should add it to branch/tag selectbox
     if(@ref && !options.flatten.include?(@ref) &&
        @ref =~ /^[0-9a-zA-Z]{6,52}$/)
-      options << ["Commit", [@ref]]
+      options << ['Commit', [@ref]]
     end
 
     grouped_options_for_select(options, @ref || @project.default_branch)
@@ -112,6 +140,10 @@ module ApplicationHelper
 
   def app_theme
     Gitlab::Theme.css_class_by_id(current_user.try(:theme_id))
+  end
+
+  def theme_type
+    Gitlab::Theme.type_css_class_by_id(current_user.try(:theme_id))
   end
 
   def user_color_scheme_class
@@ -156,7 +188,7 @@ module ApplicationHelper
     path = controller.controller_path.split('/')
     namespace = path.first if path.second
 
-    [namespace, controller.controller_name, controller.action_name].compact.join(":")
+    [namespace, controller.controller_name, controller.action_name].compact.join(':')
   end
 
   # shortcut for gitlab config
@@ -171,13 +203,13 @@ module ApplicationHelper
 
   def search_placeholder
     if @project && @project.persisted?
-      "Search in this project"
+      'Search in this project'
     elsif @snippet || @snippets || @show_snippets
       'Search snippets'
     elsif @group && @group.persisted?
-      "Search in this group"
+      'Search in this group'
     else
-      "Search"
+      'Search'
     end
   end
 
@@ -185,24 +217,10 @@ module ApplicationHelper
     BroadcastMessage.current
   end
 
-  def highlight_js(&block)
-    string = capture(&block)
-
-    content_tag :div, class: "highlighted-data #{user_color_scheme_class}" do
-      content_tag :div, class: 'highlight' do
-        content_tag :pre do
-          content_tag :code do
-            string.html_safe
-          end
-        end
-      end
-    end
-  end
-
   def time_ago_with_tooltip(date, placement = 'top', html_class = 'time_ago')
     capture_haml do
       haml_tag :time, date.to_s,
-        class: html_class, datetime: date.getutc.iso8601, title: date.stamp("Aug 21, 2011 9:23pm"),
+        class: html_class, datetime: date.getutc.iso8601, title: date.stamp('Aug 21, 2011 9:23pm'),
         data: { toggle: 'tooltip', placement: placement }
 
       haml_tag :script, "$('." + html_class + "').timeago().tooltip()"
@@ -224,15 +242,6 @@ module ApplicationHelper
     Gitlab::MarkdownHelper.gitlab_markdown?(filename)
   end
 
-  def spinner(text = nil, visible = false)
-    css_class = "loading"
-    css_class << " hide" unless visible
-
-    content_tag :div, class: css_class do
-      content_tag(:i, nil, class: 'fa fa-spinner fa-spin') + text
-    end
-  end
-
   def link_to(name = nil, options = nil, html_options = nil, &block)
     begin
       uri = URI(options)
@@ -243,17 +252,17 @@ module ApplicationHelper
       absolute_uri = nil
     end
 
-    # Add "nofollow" only to external links
+    # Add 'nofollow' only to external links
     if host && host != Gitlab.config.gitlab.host && absolute_uri
       if html_options
         if html_options[:rel]
-          html_options[:rel] << " nofollow"
+          html_options[:rel] << ' nofollow'
         else
-          html_options.merge!(rel: "nofollow")
+          html_options.merge!(rel: 'nofollow')
         end
       else
         html_options = Hash.new
-        html_options[:rel] = "nofollow"
+        html_options[:rel] = 'nofollow'
       end
     end
 
@@ -270,5 +279,43 @@ module ApplicationHelper
 
   def promo_url
     'https://' + promo_host
+  end
+
+  def page_filter_path(options={})
+    exist_opts = {
+      state: params[:state],
+      scope: params[:scope],
+      label_name: params[:label_name],
+      milestone_id: params[:milestone_id],
+      assignee_id: params[:assignee_id],
+      author_id: params[:author_id],
+      sort: params[:sort],
+    }
+
+    options = exist_opts.merge(options)
+
+    path = request.path
+    path << "?#{options.to_param}"
+    path
+  end
+
+  def outdated_browser?
+    browser.ie? && browser.version.to_i < 10
+  end
+
+  def path_to_key(key, admin = false)
+    if admin
+      admin_user_key_path(@user, key)
+    else
+      profile_key_path(key)
+    end
+  end
+
+  def nav_sidebar_class
+    if nav_menu_collapsed?
+      "page-sidebar-collapsed"
+    else
+      "page-sidebar-expanded"
+    end
   end
 end

@@ -8,6 +8,38 @@ EE releases are available not long after CE releases. To obtain the GitLab EE th
 
 Both EE and CE require an add-on component called gitlab-shell. It is obtained from the [gitlab-shell repository](https://gitlab.com/gitlab-org/gitlab-shell/tree/master). New versions are usually tags but staying on the master branch will give you the latest stable version. New releases are generally around the same time as GitLab CE releases with exception for informal security updates deemed critical.
 
+## Physical office analogy
+
+You can imagine GitLab as a physical office.
+
+**The repositories** are the goods GitLab handling.
+They can be stored in a warehouse.
+This can be either a hard disk, or something more complex, such as a NFS filesystem;
+
+**Nginx** acts like the front-desk.
+Users come to Nginx and request actions to be done by workers in the office;
+
+**The database** is a series of metal file cabinets with information on:
+ - The goods in the warehouse (metadata, issues, merge requests etc);
+ - The users coming to the front desk (permissions)
+
+**Redis** is a communication board with “cubby holes” that can contain tasks for office workers;
+
+**Sidekiq** is a worker that primarily handles sending out emails.
+It takes tasks from the Redis communication board;
+
+**A Unicorn worker** is a worker that handles quick/mundane tasks.
+They work with the communication board (Redis).
+Their job description:
+ - check permissions by checking the user session stored in a Redis “cubby hole”;
+ - make tasks for Sidekiq;
+ - fetch stuff from the warehouse or move things around in there;
+
+**Gitlab-shell** is a third kind of worker that takes orders from a fax machine (SSH) instead of the front desk (HTTP).
+Gitlab-shell communicates with Sidekiq via the “communication board” (Redis), and asks quick questions of the Unicorn workers either directly or via the front desk.
+
+**GitLab Enterprise Edition (the application)** is the collection of processes and business practices that the office is run by.
+
 ## System Layout
 
 When referring to ~git in the pictures it means the home directory of the git user which is typically /home/git.
@@ -38,7 +70,7 @@ To summarize here's the [directory structure of the `git` user home directory](.
 
     ps aux | grep '^git'
 
-GitLab has several components to operate. As a system user (i.e. any user that is not the `git` user) it requires a persistent database (MySQL/PostreSQL) and redis database. It also uses Apache httpd or nginx to proxypass Unicorn. As the `git` user it starts Sidekiq and Unicorn (a simple ruby HTTP server running on port `8080` by default). Under the GitLab user there are normally 4 processes: `unicorn_rails master` (1 process), `unicorn_rails worker` (2 processes), `sidekiq` (1 process).
+GitLab has several components to operate. As a system user (i.e. any user that is not the `git` user) it requires a persistent database (MySQL/PostreSQL) and redis database. It also uses Apache httpd or Nginx to proxypass Unicorn. As the `git` user it starts Sidekiq and Unicorn (a simple ruby HTTP server running on port `8080` by default). Under the GitLab user there are normally 4 processes: `unicorn_rails master` (1 process), `unicorn_rails worker` (2 processes), `sidekiq` (1 process).
 
 ### Repository access
 
@@ -114,13 +146,13 @@ nginx
 
 Apache httpd
 
-- [Explanation of apache logs](http://httpd.apache.org/docs/2.2/logs.html).
+- [Explanation of Apache logs](http://httpd.apache.org/docs/2.2/logs.html).
 - `/var/log/apache2/` contains error and output logs (on Ubuntu).
 - `/var/log/httpd/` contains error and output logs (on RHEL).
 
 redis
 
-- `/var/log/redis/redis.log` there are also logrotated logs there.
+- `/var/log/redis/redis.log` there are also log-rotated logs there.
 
 PostgreSQL
 

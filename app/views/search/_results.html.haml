@@ -2,7 +2,7 @@
   #{@search_results.total_count} results found
   - unless @show_snippets
     - if @project
-      for #{link_to @project.name_with_namespace, @project}
+      for #{link_to @project.name_with_namespace, [@project.namespace.becomes(Namespace), @project]}
     - elsif @group
       for #{link_to @group.name, @group}
 

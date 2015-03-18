@@ -78,7 +78,8 @@ GET /users
     "is_admin": false,
     "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
     "can_create_group": true,
-    "can_create_project": true
+    "can_create_project": true,
+    "projects_limit": 100
   }
 ]
 ```
@@ -140,7 +141,8 @@ Parameters:
   "color_scheme_id": 2,
   "is_admin": false,
   "can_create_group": true,
-  "can_create_project": true
+  "can_create_project": true,
+  "projects_limit": 100
 }
 ```
 
@@ -168,6 +170,7 @@ Parameters:
 - `bio` (optional)              - User's biography
 - `admin` (optional)            - User is admin - true or false (default)
 - `can_create_group` (optional) - User can create groups - true or false
+- `confirm` (optional)          - Require confirmation - true (default) or false
 
 ## User modification
 
@@ -240,7 +243,8 @@ GET /user
   "color_scheme_id": 2,
   "is_admin": false,
   "can_create_group": true,
-  "can_create_project": true
+  "can_create_project": true,
+  "projects_limit": 100
 }
 ```
 
@@ -257,12 +261,14 @@ GET /user/keys
   {
     "id": 1,
     "title": "Public key",
-    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0="
+    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
+    "created_at": "2014-08-01T14:47:39.080Z"
   },
   {
     "id": 3,
     "title": "Another Public key",
-    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0="
+    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
+    "created_at": "2014-08-01T14:47:39.080Z"
   }
 ]
 ```
@@ -299,7 +305,8 @@ Parameters:
 {
   "id": 1,
   "title": "Public key",
-  "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0="
+  "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
+  "created_at": "2014-08-01T14:47:39.080Z"
 }
 ```
 
@@ -315,6 +322,31 @@ Parameters:
 
 - `title` (required) - new SSH Key's title
 - `key` (required)   - new SSH key
+
+```json
+{
+  "created_at": "2015-01-21T17:44:33.512Z",
+  "key": "ssh-dss AAAAB3NzaC1kc3MAAACBAMLrhYgI3atfrSD6KDas1b/3n6R/HP+bLaHHX6oh+L1vg31mdUqK0Ac/NjZoQunavoyzqdPYhFz9zzOezCrZKjuJDS3NRK9rspvjgM0xYR4d47oNZbdZbwkI4cTv/gcMlquRy0OvpfIvJtjtaJWMwTLtM5VhRusRuUlpH99UUVeXAAAAFQCVyX+92hBEjInEKL0v13c/egDCTQAAAIEAvFdWGq0ccOPbw4f/F8LpZqvWDydAcpXHV3thwb7WkFfppvm4SZte0zds1FJ+Hr8Xzzc5zMHe6J4Nlay/rP4ewmIW7iFKNBEYb/yWa+ceLrs+TfR672TaAgO6o7iSRofEq5YLdwgrwkMmIawa21FrZ2D9SPao/IwvENzk/xcHu7YAAACAQFXQH6HQnxOrw4dqf0NqeKy1tfIPxYYUZhPJfo9O0AmBW2S36pD2l14kS89fvz6Y1g8gN/FwFnRncMzlLY/hX70FSc/3hKBSbH6C6j8hwlgFKfizav21eS358JJz93leOakJZnGb8XlWvz1UJbwCsnR2VEY8Dz90uIk1l/UqHkA= loic@call",
+  "title": "ABC",
+  "id": 4
+}
+```
+
+Will return created key with status `201 Created` on success. If an
+error occurs a `400 Bad Request` is returned with a message explaining the error:
+
+```json
+{
+  "message": {
+    "fingerprint": [
+      "has already been taken"
+    ],
+    "key": [
+      "has already been taken"
+    ]
+  }
+}
+```
 
 ## Add SSH key for user
 

@@ -21,7 +21,7 @@ module Gitlab
       end
 
       def name
-        (info.name || full_name).to_s.force_encoding('utf-8')
+        (info.try(:name) || full_name).to_s.force_encoding('utf-8')
       end
 
       def full_name

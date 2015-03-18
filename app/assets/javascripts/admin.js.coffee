@@ -1,4 +1,4 @@
-class Admin
+class @Admin
   constructor: ->
     $('input#user_force_random_password').on 'change', (elem) ->
       elems = $('#user_password, #user_password_confirmation')
@@ -51,5 +51,3 @@ class Admin
 
     $('li.group_member').bind 'ajax:success', ->
       Turbolinks.visit(location.href)
-
-@Admin = Admin

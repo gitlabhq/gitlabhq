@@ -55,16 +55,10 @@ Feature: Project Commits Diff Comments
     Then I should see a discussion reply button
 
   @javascript
-  Scenario: I can't preview without text
-    Given I open a diff comment form
-    And I haven't written any diff comment text
-    Then I should not see the diff comment preview button
-
-  @javascript
   Scenario: I can preview with text
     Given I open a diff comment form
     And I write a diff comment like ":-1: I don't like this"
-    Then I should see the diff comment preview button
+    Then The diff comment preview tab should display rendered Markdown
 
   @javascript
   Scenario: I preview a diff comment
@@ -75,7 +69,7 @@ Feature: Project Commits Diff Comments
   @javascript
   Scenario: I can edit after preview
     Given I preview a diff comment text like "Should fix it :smile:"
-    Then I should see the diff comment edit button
+    Then I should see the diff comment write tab
 
   @javascript
   Scenario: The form gets removed after posting

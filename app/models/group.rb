@@ -21,9 +21,22 @@ class Group < Namespace
   has_many :users, through: :group_members
 
   validate :avatar_type, if: ->(user) { user.avatar_changed? }
-  validates :avatar, file_size: { maximum: 100.kilobytes.to_i }
+  validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
-  mount_uploader :avatar, AttachmentUploader
+  mount_uploader :avatar, AvatarUploader
+
+  after_create :post_create_hook
+  after_destroy :post_destroy_hook
+
+  class << self
+    def search(query)
+      where("LOWER(namespaces.name) LIKE :query or LOWER(namespaces.path) LIKE :query", query: "%#{query.downcase}%")
+    end
+
+    def sort(method)
+      order_by(method)
+    end
+  end
 
   def human_name
     name
@@ -74,19 +87,15 @@ class Group < Namespace
     projects.public_only.any?
   end
 
-  class << self
-    def search(query)
-      where("LOWER(namespaces.name) LIKE :query", query: "%#{query.downcase}%")
-    end
+  def post_create_hook
+    system_hook_service.execute_hooks_for(self, :create)
+  end
 
-    def sort(method)
-      case method.to_s
-      when "newest" then reorder("namespaces.created_at DESC")
-      when "oldest" then reorder("namespaces.created_at ASC")
-      when "recently_updated" then reorder("namespaces.updated_at DESC")
-      when "last_updated" then reorder("namespaces.updated_at ASC")
-      else reorder("namespaces.path, namespaces.name ASC")
-      end
-    end
+  def post_destroy_hook
+    system_hook_service.execute_hooks_for(self, :destroy)
+  end
+
+  def system_hook_service
+    SystemHooksService.new
   end
 end

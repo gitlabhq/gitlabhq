@@ -1,39 +1,6 @@
 /**
- * This file represent some UI that can be changed
- * during web app restyle or theme select.
- *
- * Next items should be placed there
- * - link colors
- * - header restyles
- *
+ * Classic GitLab UI theme
  */
 .ui_mars {
-  /*
-   *  Application Header
-   *
-   */
-  header {
-    @extend .header-dark;
-    &.navbar-gitlab {
-      .navbar-inner {
-        background: #474D57;
-        border-bottom: 1px solid #373D47;
-        .app_logo, .navbar-toggle {
-          &:hover {
-            background-color: #373D47;
-          }
-        }
-        .separator {
-          background: #373D47;
-          border-left: 1px solid #575D67;
-        }
-        .nav > li > a {
-          color: #979DA7;
-        }
-        .search-input {
-          border-color: #979DA7;
-        }
-      }
-    }
-  }
+  @include dark-theme(#979DA7, #474D57, #373D47, #24272D);
 }

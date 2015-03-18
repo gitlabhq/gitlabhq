@@ -5,7 +5,7 @@
 - if @page.historical?
   .warning_message
     This is an old version of this page.
-    You can view the #{link_to "most recent version", project_wiki_path(@project, @page)} or browse the #{link_to "history", history_project_wiki_path(@project, @page)}.
+    You can view the #{link_to "most recent version", namespace_project_wiki_path(@project.namespace, @project, @page)} or browse the #{link_to "history", history_namespace_project_wiki_path(@project.namespace, @project, @page)}.
 
 %hr
 

@@ -1,43 +1,6 @@
 /**
- * This file represent some UI that can be changed
- * during web app restyle or theme select.
- *
- * Next items should be placed there
- * - link colors
- * - header restyles
- *
+ * Violet GitLab UI theme
  */
 .ui_color {
-  /*
-   *  Application Header
-   *
-   */
-  header {
-    @extend .header-dark;
-    &.navbar-gitlab {
-      .navbar-inner {
-        background: #548;
-        border-bottom: 1px solid #436;
-        .app_logo, .navbar-toggle {
-          &:hover {
-            background-color: #436;
-          }
-        }
-        .separator {
-          background: #436;
-          border-left: 1px solid #659;
-        }
-        .nav > li > a {
-          color: #98C;
-        }
-        .search-input {
-          border-color: #98C;
-        }
-      }
-    }
-  }
-
-  .nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
-    background: #659;
-  }
+  @include dark-theme(#98C, #548, #436, #325);
 }

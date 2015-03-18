@@ -5,7 +5,7 @@ class ProjectWiki
     'Markdown' => :markdown,
     'RDoc'     => :rdoc,
     'AsciiDoc' => :asciidoc
-  }
+  } unless defined?(MARKUPS)
 
   class CouldNotCreateWikiError < StandardError; end
 
@@ -136,7 +136,7 @@ class ProjectWiki
   def commit_details(action, message = nil, title = nil)
     commit_message = message || default_message(action, title)
 
-    {email: @user.email, name: @user.name, message: commit_message}
+    { email: @user.email, name: @user.name, message: commit_message }
   end
 
   def default_message(action, title)

@@ -5,27 +5,50 @@ describe API::API, api: true  do
   let(:user) { create(:user) }
   let(:key) { create(:key, user: user) }
   let(:project) { create(:project) }
+  let(:secret_token) { File.read Rails.root.join('.gitlab_shell_secret') }
 
   describe "GET /internal/check", no_db: true do
     it do
-      get api("/internal/check")
+      get api("/internal/check"), secret_token: secret_token
 
-      response.status.should == 200
-      json_response['api_version'].should == API::API.version
+      expect(response.status).to eq(200)
+      expect(json_response['api_version']).to eq(API::API.version)
+    end
+  end
+
+  describe "GET /internal/broadcast_message" do
+    context "broadcast message exists" do
+      let!(:broadcast_message) { create(:broadcast_message, starts_at: Time.now.yesterday, ends_at: Time.now.tomorrow ) }
+
+      it do
+        get api("/internal/broadcast_message"), secret_token: secret_token
+
+        expect(response.status).to eq(200)
+        expect(json_response["message"]).to eq(broadcast_message.message)
+      end
+    end
+
+    context "broadcast message doesn't exist" do
+      it do
+        get api("/internal/broadcast_message"), secret_token: secret_token
+
+        expect(response.status).to eq(200)
+        expect(json_response).to be_empty
+      end
     end
   end
 
   describe "GET /internal/discover" do
     it do
-      get(api("/internal/discover"), key_id: key.id)
+      get(api("/internal/discover"), key_id: key.id, secret_token: secret_token)
 
-      response.status.should == 200
+      expect(response.status).to eq(200)
 
-      json_response['name'].should == user.name
+      expect(json_response['name']).to eq(user.name)
     end
   end
 
-  describe "GET /internal/allowed" do
+  describe "POST /internal/allowed" do
     context "access granted" do
       before do
         project.team << [user, :developer]
@@ -35,8 +58,8 @@ describe API::API, api: true  do
         it do
           pull(key, project)
 
-          response.status.should == 200
-          response.body.should == 'true'
+          expect(response.status).to eq(200)
+          expect(json_response["status"]).to be_truthy
         end
       end
 
@@ -44,8 +67,8 @@ describe API::API, api: true  do
         it do
           push(key, project)
 
-          response.status.should == 200
-          response.body.should == 'true'
+          expect(response.status).to eq(200)
+          expect(json_response["status"]).to be_truthy
         end
       end
     end
@@ -59,8 +82,8 @@ describe API::API, api: true  do
         it do
           pull(key, project)
 
-          response.status.should == 200
-          response.body.should == 'false'
+          expect(response.status).to eq(200)
+          expect(json_response["status"]).to be_falsey
         end
       end
 
@@ -68,8 +91,8 @@ describe API::API, api: true  do
         it do
           push(key, project)
 
-          response.status.should == 200
-          response.body.should == 'false'
+          expect(response.status).to eq(200)
+          expect(json_response["status"]).to be_falsey
         end
       end
     end
@@ -85,8 +108,8 @@ describe API::API, api: true  do
         it do
           pull(key, personal_project)
 
-          response.status.should == 200
-          response.body.should == 'false'
+          expect(response.status).to eq(200)
+          expect(json_response["status"]).to be_falsey
         end
       end
 
@@ -94,8 +117,8 @@ describe API::API, api: true  do
         it do
           push(key, personal_project)
 
-          response.status.should == 200
-          response.body.should == 'false'
+          expect(response.status).to eq(200)
+          expect(json_response["status"]).to be_falsey
         end
       end
     end
@@ -112,8 +135,8 @@ describe API::API, api: true  do
         it do
           pull(key, project)
 
-          response.status.should == 200
-          response.body.should == 'true'
+          expect(response.status).to eq(200)
+          expect(json_response["status"]).to be_truthy
         end
       end
 
@@ -121,8 +144,8 @@ describe API::API, api: true  do
         it do
           push(key, project)
 
-          response.status.should == 200
-          response.body.should == 'false'
+          expect(response.status).to eq(200)
+          expect(json_response["status"]).to be_falsey
         end
       end
     end
@@ -138,8 +161,8 @@ describe API::API, api: true  do
         it do
           archive(key, project)
 
-          response.status.should == 200
-          response.body.should == 'true'
+          expect(response.status).to eq(200)
+          expect(json_response["status"]).to be_truthy
         end
       end
 
@@ -147,9 +170,27 @@ describe API::API, api: true  do
         it do
           archive(key, project)
 
-          response.status.should == 200
-          response.body.should == 'false'
+          expect(response.status).to eq(200)
+          expect(json_response["status"]).to be_falsey
         end
+      end
+    end
+
+    context 'project does not exist' do
+      it do
+        pull(key, OpenStruct.new(path_with_namespace: 'gitlab/notexists'))
+
+        expect(response.status).to eq(200)
+        expect(json_response["status"]).to be_falsey
+      end
+    end
+
+    context 'user does not exist' do
+      it do
+        pull(OpenStruct.new(id: 0), project)
+
+        expect(response.status).to eq(200)
+        expect(json_response["status"]).to be_falsey
       end
     end
   end
@@ -159,7 +200,8 @@ describe API::API, api: true  do
       api("/internal/allowed"),
       key_id: key.id,
       project: project.path_with_namespace,
-      action: 'git-upload-pack'
+      action: 'git-upload-pack',
+      secret_token: secret_token
     )
   end
 
@@ -169,7 +211,8 @@ describe API::API, api: true  do
       changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
       key_id: key.id,
       project: project.path_with_namespace,
-      action: 'git-receive-pack'
+      action: 'git-receive-pack',
+      secret_token: secret_token
     )
   end
 
@@ -179,7 +222,8 @@ describe API::API, api: true  do
       ref: 'master',
       key_id: key.id,
       project: project.path_with_namespace,
-      action: 'git-upload-archive'
+      action: 'git-upload-archive',
+      secret_token: secret_token
     )
   end
 end

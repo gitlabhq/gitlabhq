@@ -1,7 +1,9 @@
 .row
-  .col-md-3
+  = link_to '#aside', class: 'show-aside' do
+    %i.fa.fa-angle-left
+  %aside.col-md-3
     .admin-filter
-      = form_tag admin_projects_path, method: :get, class: '' do
+      = form_tag admin_namespaces_projects_path, method: :get, class: '' do
         .form-group
           = label_tag :name, 'Name:'
           = text_field_tag :name, params[:name], class: "form-control"
@@ -13,15 +15,13 @@
         .form-group
           %strong Activity
           .checkbox
-            = label_tag :with_push, 'Not empty'
-            = check_box_tag :with_push, 1, params[:with_push]
-            &nbsp;
-            %span.light Projects with push events
+            = label_tag :with_push do
+              = check_box_tag :with_push, 1, params[:with_push]
+              %span Projects with push events
           .checkbox
-            = label_tag :abandoned, 'Abandoned'
-            = check_box_tag :abandoned, 1, params[:abandoned]
-            &nbsp;
-            %span.light No activity over 6 month
+            = label_tag :abandoned do
+              = check_box_tag :abandoned, 1, params[:abandoned]
+              %span No activity over 6 month
 
         %fieldset
           %strong Visibility level:
@@ -35,49 +35,47 @@
                     = label
         %hr
         = hidden_field_tag :sort, params[:sort]
-        = submit_tag "Search", class: "btn submit btn-primary"
-        = link_to "Reset", admin_projects_path, class: "btn btn-cancel"
+        = button_tag "Search", class: "btn submit btn-primary"
+        = link_to "Reset", admin_namespaces_projects_path, class: "btn btn-cancel"
 
-  .col-md-9
+  %section.col-md-9
     .panel.panel-default
       .panel-heading
         Projects (#{@projects.total_count})
         .panel-head-actions
           .dropdown.inline
-            %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+            %button.dropdown-toggle.btn.btn-sm{type: 'button', 'data-toggle' => 'dropdown'}
               %span.light sort:
               - if @sort.present?
-                = @sort.humanize
+                = sort_options_hash[@sort]
               - else
-                Name
+                = sort_title_recently_created
               %b.caret
             %ul.dropdown-menu
               %li
-                = link_to admin_projects_path(sort: nil) do
-                  Name
-                = link_to admin_projects_path(sort: 'newest') do
-                  Newest
-                = link_to admin_projects_path(sort: 'oldest') do
-                  Oldest
-                = link_to admin_projects_path(sort: 'recently_updated') do
-                  Recently updated
-                = link_to admin_projects_path(sort: 'last_updated') do
-                  Last updated
-                = link_to admin_projects_path(sort: 'largest_repository') do
-                  Largest repository
-          = link_to 'New Project', new_project_path, class: "btn btn-new"
+                = link_to admin_namespaces_projects_path(sort: sort_value_recently_created) do
+                  = sort_title_recently_created
+                = link_to admin_namespaces_projects_path(sort: sort_value_oldest_created) do
+                  = sort_title_oldest_created
+                = link_to admin_namespaces_projects_path(sort: sort_value_recently_updated) do
+                  = sort_title_recently_updated
+                = link_to admin_namespaces_projects_path(sort: sort_value_oldest_updated) do
+                  = sort_title_oldest_updated
+                = link_to admin_namespaces_projects_path(sort: sort_value_largest_repo) do
+                  = sort_title_largest_repo
+          = link_to 'New Project', new_project_path, class: "btn btn-sm btn-success"
       %ul.well-list
         - @projects.each do |project|
           %li
             .list-item-name
               %span{ class: visibility_level_color(project.visibility_level) }
                 = visibility_level_icon(project.visibility_level)
-              = link_to project.name_with_namespace, [:admin, project]
+              = link_to project.name_with_namespace, [:admin, project.namespace.becomes(Namespace), project]
             .pull-right
               %span.label.label-gray
                 = repository_size(project)
-              = link_to 'Edit', edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-small"
-              = link_to 'Destroy', [project], data: { confirm: remove_project_message(project) }, method: :delete, class: "btn btn-small btn-remove"
+              = link_to 'Edit', edit_namespace_project_path(project.namespace, project), id: "edit_#{dom_id(project)}", class: "btn btn-sm"
+              = link_to 'Destroy', [project.namespace.becomes(Namespace), project], data: { confirm: remove_project_message(project) }, method: :delete, class: "btn btn-sm btn-remove"
         - if @projects.blank?
           .nothing-here-block 0 projects matches
     = paginate @projects, theme: "gitlab"

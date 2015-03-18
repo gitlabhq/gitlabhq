@@ -114,28 +114,25 @@ class ProjectMember < Member
   end
 
   def post_create_hook
-    Event.create(
-      project_id: self.project.id,
-      action: Event::JOINED,
-      author_id: self.user.id
-    )
-
-    notification_service.new_team_member(self) unless owner?
+    unless owner?
+      event_service.join_project(self.project, self.user)
+      notification_service.new_project_member(self)
+    end
+    
     system_hook_service.execute_hooks_for(self, :create)
   end
 
   def post_update_hook
-    notification_service.update_team_member(self) if self.access_level_changed?
+    notification_service.update_project_member(self) if self.access_level_changed?
   end
 
   def post_destroy_hook
-    Event.create(
-      project_id: self.project.id,
-      action: Event::LEFT,
-      author_id: self.user.id
-    )
-
+    event_service.leave_project(self.project, self.user)
     system_hook_service.execute_hooks_for(self, :destroy)
+  end
+
+  def event_service
+    EventCreateService.new
   end
 
   def notification_service

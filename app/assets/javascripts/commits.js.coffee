@@ -1,4 +1,4 @@
-class CommitsList
+class @CommitsList
   @data =
     ref: null
     limit: 0
@@ -53,5 +53,3 @@ class CommitsList
         @disable
       callback: =>
         this.getOld()
-
-this.CommitsList = CommitsList

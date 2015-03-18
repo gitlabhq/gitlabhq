@@ -21,13 +21,8 @@
 
 ## Clients
 
-- [php-gitlab-api](https://github.com/m4tthumphrey/php-gitlab-api) - PHP
-- [Laravel API Wrapper for GitLab CE](https://github.com/adamgoose/gitlab) - PHP / [Laravel](http://laravel.com)
-- [Ruby Wrapper](https://github.com/NARKOZ/gitlab) - Ruby
-- [python-gitlab](https://github.com/Itxaka/python-gitlab) - Python
-- [java-gitlab-api](https://github.com/timols/java-gitlab-api) - Java
-- [node-gitlab](https://github.com/moul/node-gitlab) - Node.js
-- [NGitLab](https://github.com/Scooletz/NGitLab) - .NET
+Find API Clients for GitLab [on our website](https://about.gitlab.com/applications/#api-clients).
+You can use [GitLab as an OAuth2 client](oauth2.md) to make API calls.
 
 ## Introduction
 
@@ -57,6 +52,24 @@ curl --header "PRIVATE-TOKEN: QVy1PB7sTxfy4pqfZM1U" "http://example.com/api/v3/p
 
 The API uses JSON to serialize data. You don't need to specify `.json` at the end of API URL.
 
+## Authentication with OAuth2 token
+
+Instead of the private_token you can transmit the OAuth2 access token as a header or as a parameter.
+
+### OAuth2 token (as a parameter)
+
+```
+curl https://localhost:3000/api/v3/user?access_token=OAUTH-TOKEN
+```
+
+###  OAuth2 token (as a header)
+
+```
+curl -H "Authorization: Bearer OAUTH-TOKEN" https://localhost:3000/api/v3/user
+```
+
+Read more about [GitLab as an OAuth2 client](oauth2.md).
+
 ## Status codes
 
 The API is designed to return different status codes according to context and action. In this way if a request results in an error the caller is able to get insight into what went wrong, e.g. status code `400 Bad Request` is returned if a required attribute is missing from the request. The following list gives an overview of how the API functions generally behave.
@@ -85,7 +98,7 @@ Return values:
 
 ## Sudo
 
-All API requests support performing an api call as if you were another user, if your private token is for an administration account. You need to pass  `sudo` parameter by url or header with an id or username of the user you want to perform the operation as. If passed as header, the header name must be "SUDO" (capitals).
+All API requests support performing an api call as if you were another user, if your private token is for an administration account. You need to pass  `sudo` parameter by URL or header with an id or username of the user you want to perform the operation as. If passed as header, the header name must be "SUDO" (capitals).
 
 If a non administrative `private_token` is provided then an error message will be returned with status code 403:
 
@@ -130,7 +143,7 @@ When listing resources you can pass the following parameters:
 - `page` (default: `1`) - page number
 - `per_page` (default: `20`, max: `100`) - number of items to list per page
 
-[Link headers](http://www.w3.org/wiki/LinkHeader) are send back with each response. These have `rel` prev/next/first/last and contain the relevant URL. Please use these instead of generating your own urls.
+[Link headers](http://www.w3.org/wiki/LinkHeader) are send back with each response. These have `rel` prev/next/first/last and contain the relevant URL. Please use these instead of generating your own URLs.
 
 ## id vs iid
 
@@ -158,7 +171,7 @@ When an attribute is missing, you will get something like:
 
     HTTP/1.1 400 Bad Request
     Content-Type: application/json
-    
+
     {
         "message":"400 (Bad request) \"title\" not given"
     }
@@ -167,7 +180,7 @@ When a validation error occurs, error messages will be different. They will hold
 
     HTTP/1.1 400 Bad Request
     Content-Type: application/json
-    
+
     {
         "message": {
             "bio": [

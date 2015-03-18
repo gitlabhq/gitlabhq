@@ -1,19 +1,60 @@
-%ul
+%ul.nav.nav-sidebar
   = nav_link(controller: :dashboard, html_options: {class: 'home'}) do
     = link_to admin_root_path, title: "Stats" do
-      Overview
+      %i.fa.fa-dashboard
+      %span
+        Overview
   = nav_link(controller: :projects) do
-    = link_to "Projects", admin_projects_path
+    = link_to admin_namespaces_projects_path, title: 'Projects' do
+      %i.fa.fa-cube
+      %span
+        Projects
   = nav_link(controller: :users) do
-    = link_to "Users", admin_users_path
+    = link_to admin_users_path, title: 'Users' do
+      %i.fa.fa-user
+      %span
+        Users
   = nav_link(controller: :groups) do
-    = link_to "Groups", admin_groups_path
+    = link_to admin_groups_path, title: 'Groups' do
+      %i.fa.fa-group
+      %span
+        Groups
   = nav_link(controller: :logs) do
-    = link_to "Logs", admin_logs_path
+    = link_to admin_logs_path, title: 'Logs' do
+      %i.fa.fa-file-text
+      %span
+        Logs
   = nav_link(controller: :broadcast_messages) do
-    = link_to "Messages", admin_broadcast_messages_path
+    = link_to admin_broadcast_messages_path, title: 'Broadcast Messages' do
+      %i.fa.fa-bullhorn
+      %span
+        Messages
   = nav_link(controller: :hooks) do
-    = link_to "Hooks", admin_hooks_path
+    = link_to admin_hooks_path, title: 'Hooks' do
+      %i.fa.fa-external-link
+      %span
+        Hooks
   = nav_link(controller: :background_jobs) do
-    = link_to "Background Jobs", admin_background_jobs_path
+    = link_to admin_background_jobs_path, title: 'Background Jobs' do
+      %i.fa.fa-cog
+      %span
+        Background Jobs
+
+  = nav_link(controller: :applications) do
+    = link_to admin_applications_path, title: 'Applications' do
+      %i.fa.fa-cloud
+      %span
+        Applications
+
+  = nav_link(controller: :services) do
+    = link_to admin_application_settings_services_path, title: 'Service Templates' do
+      %i.fa.fa-copy
+      %span
+        Service Templates
+
+  = nav_link(controller: :application_settings, html_options: { class: 'separate-item'}) do
+    = link_to admin_application_settings_path, title: 'Settings' do
+      %i.fa.fa-cogs
+      %span
+        Settings
 

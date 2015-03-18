@@ -1,12 +1,5 @@
 %head
   %meta{charset: "utf-8"}
-
-  -# Go repository retrieval support
-  -# Need to be the fist thing in the head
-  -# Since Go is using an XML parser to process HTML5
-  -# https://github.com/gitlabhq/gitlabhq/pull/5958#issuecomment-45397555
-  - if controller_name == 'projects' && action_name == 'show'
-    %meta{name: "go-import", content: "#{@project.web_url_without_protocol} git #{@project.web_url}.git"}
   %meta{content: "GitLab Community Edition", name: "description"}
 
   %title
@@ -18,7 +11,8 @@
   = javascript_include_tag "application"
   = csrf_meta_tags
   = include_gon
-  %meta{name: 'viewport', content: 'width=device-width, initial-scale=1.0'}
+  %meta{name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1'}
+  %meta{name: 'theme-color', content: '#474D57'}
 
   = render 'layouts/google_analytics' if extra_config.has_key?('google_analytics_id')
   = render 'layouts/piwik' if extra_config.has_key?('piwik_url') && extra_config.has_key?('piwik_site_id')
@@ -29,6 +23,6 @@
       = auto_discovery_link_tag :atom, projects_url(:atom, private_token: current_user.private_token), title: "Dashboard feed"
     - if @project && !@project.new_record?
       - if current_controller?(:tree, :commits)
-        = auto_discovery_link_tag(:atom, project_commits_url(@project, @ref, format: :atom, private_token: current_user.private_token), title: "Recent commits to #{@project.name}:#{@ref}")
+        = auto_discovery_link_tag(:atom, namespace_project_commits_url(@project.namespace, @project, @ref, format: :atom, private_token: current_user.private_token), title: "Recent commits to #{@project.name}:#{@ref}")
       - if current_controller?(:issues)
-        = auto_discovery_link_tag(:atom, project_issues_url(@project, :atom, private_token: current_user.private_token), title: "#{@project.name} issues")
+        = auto_discovery_link_tag(:atom, namespace_project_issues_url(@project.namespace, @project, :atom, private_token: current_user.private_token), title: "#{@project.name} issues")

@@ -4,28 +4,32 @@ namespace :gitlab do
     task :install, [:tag, :repo] => :environment do |t, args|
       warn_user_is_not_gitlab
 
-      default_version = File.read(File.join(Rails.root, "GITLAB_SHELL_VERSION")).strip
+      default_version = Gitlab::Shell.version_required
       args.with_defaults(tag: 'v' + default_version, repo: "https://gitlab.com/gitlab-org/gitlab-shell.git")
 
-      user = Settings.gitlab.user
-      home_dir = Rails.env.test? ? Rails.root.join('tmp/tests') : Settings.gitlab.user_home
-      gitlab_url = Settings.gitlab.url
+      user = Gitlab.config.gitlab.user
+      home_dir = Rails.env.test? ? Rails.root.join('tmp/tests') : Gitlab.config.gitlab.user_home
+      gitlab_url = Gitlab.config.gitlab.url
       # gitlab-shell requires a / at the end of the url
-      gitlab_url += "/" unless gitlab_url.match(/\/$/)
+      gitlab_url += '/' unless gitlab_url.end_with?('/')
       repos_path = Gitlab.config.gitlab_shell.repos_path
       target_dir = Gitlab.config.gitlab_shell.path
 
       # Clone if needed
       unless File.directory?(target_dir)
-        sh "git clone '#{args.repo}' '#{target_dir}'"
+        system(*%W(git clone -- #{args.repo} #{target_dir}))
       end
 
       # Make sure we're on the right tag
       Dir.chdir(target_dir) do
         # First try to checkout without fetching
         # to avoid stalling tests if the Internet is down.
-        reset = "git reset --hard $(git describe #{args.tag} || git describe origin/#{args.tag})"
-        sh "#{reset} || git fetch origin && #{reset}"
+        reseted = reset_to_commit(args)
+
+        unless reseted
+          system(*%W(git fetch origin))
+          reset_to_commit(args)
+        end
 
         config = {
           user: user,
@@ -54,7 +58,7 @@ namespace :gitlab do
         File.open("config.yml", "w+") {|f| f.puts config.to_yaml}
 
         # Launch installation process
-        sh "bin/install"
+        system(*%W(bin/install))
       end
 
       # Required for debian packaging with PKGR: Setup .ssh/environment with
@@ -76,7 +80,7 @@ namespace :gitlab do
     desc "GITLAB | Build missing projects"
     task build_missing_projects: :environment do
       Project.find_each(batch_size: 1000) do |project|
-        path_to_repo = File.join(Gitlab.config.gitlab_shell.repos_path, "#{project.path_with_namespace}.git")
+        path_to_repo = project.repository.path_to_repo
         if File.exists?(path_to_repo)
           print '-'
         else
@@ -117,6 +121,17 @@ namespace :gitlab do
   rescue Gitlab::TaskAbortedByUserError
     puts "Quitting...".red
     exit 1
+  end
+
+  def reset_to_commit(args)
+    tag, status = Gitlab::Popen.popen(%W(git describe -- #{args.tag}))
+
+    unless status.zero?
+      tag, status = Gitlab::Popen.popen(%W(git describe -- origin/#{args.tag}))
+    end
+
+    tag = tag.strip
+    system(*%W(git reset --hard #{tag}))
   end
 end
 

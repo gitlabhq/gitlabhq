@@ -4,16 +4,20 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   include SharedPaths
 
   step 'I visit project "Shop" services page' do
-    visit project_services_path(@project)
+    visit namespace_project_services_path(@project.namespace, @project)
   end
 
   step 'I should see list of available services' do
     page.should have_content 'Project services'
     page.should have_content 'Campfire'
-    page.should have_content 'Hipchat'
+    page.should have_content 'HipChat'
     page.should have_content 'GitLab CI'
     page.should have_content 'Assembla'
     page.should have_content 'Pushover'
+    page.should have_content 'Atlassian Bamboo'
+    page.should have_content 'JetBrains TeamCity'
+    page.should have_content 'Asana'
+    page.should have_content 'Irker (IRC gateway)'
   end
 
   step 'I click gitlab-ci service link' do
@@ -32,7 +36,7 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   end
 
   step 'I click hipchat service link' do
-    click_link 'Hipchat'
+    click_link 'HipChat'
   end
 
   step 'I fill hipchat settings' do
@@ -46,6 +50,17 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
     find_field('Room').value.should == 'gitlab'
   end
 
+  step 'I fill hipchat settings with custom server' do
+    check 'Active'
+    fill_in 'Room', with: 'gitlab_custom'
+    fill_in 'Token', with: 'secretCustom'
+    fill_in 'Server', with: 'https://chat.example.com'
+    click_button 'Save'
+  end
+
+  step 'I should see hipchat service settings with custom server saved' do
+    find_field('Server').value.should == 'https://chat.example.com'
+  end
 
   step 'I click pivotaltracker service link' do
     click_link 'PivotalTracker'
@@ -89,6 +104,22 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
     find_field('Token').value.should == 'verySecret'
   end
 
+  step 'I click Asana service link' do
+    click_link 'Asana'
+  end
+
+  step 'I fill Asana settings' do
+    check 'Active'
+    fill_in 'Api key', with: 'verySecret'
+    fill_in 'Restrict to branch', with: 'master'
+    click_button 'Save'
+  end
+
+  step 'I should see Asana service settings saved' do
+    find_field('Api key').value.should == 'verySecret'
+    find_field('Restrict to branch').value.should == 'master'
+  end
+
   step 'I click email on push service link' do
     click_link 'Emails on push'
   end
@@ -102,18 +133,34 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
     find_field('Recipients').value.should == 'qa@company.name'
   end
 
+  step 'I click Irker service link' do
+    click_link 'Irker (IRC gateway)'
+  end
+
+  step 'I fill Irker settings' do
+    check 'Active'
+    fill_in 'Recipients', with: 'irc://chat.freenode.net/#commits'
+    check 'Colorize messages'
+    click_button 'Save'
+  end
+
+  step 'I should see Irker service settings saved' do
+    find_field('Recipients').value.should == 'irc://chat.freenode.net/#commits'
+    find_field('Colorize messages').value.should == '1'
+  end
+
   step 'I click Slack service link' do
     click_link 'Slack'
   end
 
   step 'I fill Slack settings' do
     check 'Active'
-    fill_in 'Webhook', with: 'https://gitlabhq.slack.com/services/hooks?token=cdIj4r4LfXUOySDUjp0tk3OI'
+    fill_in 'Webhook', with: 'https://hooks.slack.com/services/SVRWFV0VVAR97N/B02R25XN3/ZBqu7xMupaEEICInN685'
     click_button 'Save'
   end
 
   step 'I should see Slack service settings saved' do
-    find_field('Webhook').value.should == 'https://gitlabhq.slack.com/services/hooks?token=cdIj4r4LfXUOySDUjp0tk3OI'
+    find_field('Webhook').value.should == 'https://hooks.slack.com/services/SVRWFV0VVAR97N/B02R25XN3/ZBqu7xMupaEEICInN685'
   end
 
   step 'I click Pushover service link' do
@@ -136,5 +183,43 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
     find_field('Device').value.should == 'myDevice'
     find_field('Priority').find('option[selected]').value.should == '1'
     find_field('Sound').find('option[selected]').value.should == 'bike'
+  end
+
+  step 'I click Atlassian Bamboo CI service link' do
+    click_link 'Atlassian Bamboo CI'
+  end
+
+  step 'I fill Atlassian Bamboo CI settings' do
+    check 'Active'
+    fill_in 'Bamboo url', with: 'http://bamboo.example.com'
+    fill_in 'Build key', with: 'KEY'
+    fill_in 'Username', with: 'user'
+    fill_in 'Password', with: 'verySecret'
+    click_button 'Save'
+  end
+
+  step 'I should see Atlassian Bamboo CI service settings saved' do
+    find_field('Bamboo url').value.should == 'http://bamboo.example.com'
+    find_field('Build key').value.should == 'KEY'
+    find_field('Username').value.should == 'user'
+  end
+
+  step 'I click JetBrains TeamCity CI service link' do
+    click_link 'JetBrains TeamCity CI'
+  end
+
+  step 'I fill JetBrains TeamCity CI settings' do
+    check 'Active'
+    fill_in 'Teamcity url', with: 'http://teamcity.example.com'
+    fill_in 'Build type', with: 'GitlabTest_Build'
+    fill_in 'Username', with: 'user'
+    fill_in 'Password', with: 'verySecret'
+    click_button 'Save'
+  end
+
+  step 'I should see JetBrains TeamCity CI service settings saved' do
+    find_field('Teamcity url').value.should == 'http://teamcity.example.com'
+    find_field('Build type').value.should == 'GitlabTest_Build'
+    find_field('Username').value.should == 'user'
   end
 end

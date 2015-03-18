@@ -1,4 +1,4 @@
-class Activities
+class @Activities
   constructor: ->
     Pager.init 20, true
     $(".event_filter_link").bind "click", (event) =>
@@ -12,7 +12,7 @@ class Activities
 
 
   toggleFilter: (sender) ->
-    sender.parent().toggleClass "inactive"
+    sender.parent().toggleClass "active"
     event_filters = $.cookie("event_filter")
     filter = sender.attr("id").split("_")[0]
     if event_filters
@@ -27,5 +27,3 @@ class Activities
       event_filters.splice index, 1
 
     $.cookie "event_filter", event_filters.join(","), { path: '/' }
-
-@Activities = Activities

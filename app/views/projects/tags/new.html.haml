@@ -5,7 +5,7 @@
 %h3.page-title
   %i.fa.fa-code-fork
   New tag
-= form_tag project_tags_path, method: :post, class: "form-horizontal" do
+= form_tag namespace_project_tags_path, method: :post, id: "new-tag-form", class: "form-horizontal" do
   .form-group
     = label_tag :tag_name, 'Name for new tag', class: 'control-label'
     .col-sm-10
@@ -21,10 +21,11 @@
       = text_field_tag :message, nil, placeholder: 'Enter message.', required: false, tabindex: 3, class: 'form-control'
       .light (Optional) Entering a message will create an annotated tag.
   .form-actions
-    = submit_tag 'Create tag', class: 'btn btn-create', tabindex: 3
-    = link_to 'Cancel', project_tags_path(@project), class: 'btn btn-cancel'
+    = button_tag 'Create tag', class: 'btn btn-create', tabindex: 3
+    = link_to 'Cancel', namespace_project_tags_path(@project.namespace, @project), class: 'btn btn-cancel'
 
 :javascript
+  disableButtonIfAnyEmptyField($("#new-tag-form"), ".form-control", ".btn-create");
   var availableTags = #{@project.repository.ref_names.to_json};
 
   $("#ref").autocomplete({

@@ -1,6 +1,6 @@
 module ProfileHelper
   def oauth_active_class(provider)
-    if current_user.provider == provider.to_s
+    if current_user.identities.exists?(provider: provider.to_s)
       'active'
     end
   end
@@ -10,10 +10,10 @@ module ProfileHelper
   end
 
   def show_profile_social_tab?
-    enabled_social_providers.any? && !current_user.ldap_user?
+    enabled_social_providers.any?
   end
 
   def show_profile_remove_tab?
-    gitlab_config.signup_enabled && !current_user.ldap_user?
+    signup_enabled?
   end
 end

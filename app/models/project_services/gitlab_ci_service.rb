@@ -2,22 +2,25 @@
 #
 # Table name: services
 #
-#  id         :integer          not null, primary key
-#  type       :string(255)
-#  title      :string(255)
-#  project_id :integer          not null
-#  created_at :datetime
-#  updated_at :datetime
-#  active     :boolean          default(FALSE), not null
-#  properties :text
+#  id                    :integer          not null, primary key
+#  type                  :string(255)
+#  title                 :string(255)
+#  project_id            :integer
+#  created_at            :datetime
+#  updated_at            :datetime
+#  active                :boolean          default(FALSE), not null
+#  properties            :text
+#  template              :boolean          default(FALSE)
+#  push_events           :boolean          default(TRUE)
+#  issues_events         :boolean          default(TRUE)
+#  merge_requests_events :boolean          default(TRUE)
+#  tag_push_events       :boolean          default(TRUE)
 #
 
 class GitlabCiService < CiService
   prop_accessor :project_url, :token
   validates :project_url, presence: true, if: :activated?
   validates :token, presence: true, if: :activated?
-
-  delegate :execute, to: :service_hook, prefix: nil
 
   after_save :compose_service_hook, if: :activated?
 
@@ -27,8 +30,18 @@ class GitlabCiService < CiService
     hook.save
   end
 
+  def supported_events
+    %w(push tag_push)
+  end
+
+  def execute(data)
+    return unless supported_events.include?(data[:object_kind])
+
+    service_hook.execute(data)
+  end
+
   def commit_status_path(sha)
-    project_url + "/builds/#{sha}/status.json?token=#{token}"
+    project_url + "/commits/#{sha}/status.json?token=#{token}"
   end
 
   def get_ci_build(sha)
@@ -55,7 +68,7 @@ class GitlabCiService < CiService
   end
 
   def build_page(sha)
-    project_url + "/builds/#{sha}"
+    project_url + "/commits/#{sha}"
   end
 
   def builds_path
@@ -81,7 +94,7 @@ class GitlabCiService < CiService
   def fields
     [
       { type: 'text', name: 'token', placeholder: 'GitLab CI project specific token' },
-      { type: 'text', name: 'project_url', placeholder: 'http://ci.gitlabhq.com/projects/3'}
+      { type: 'text', name: 'project_url', placeholder: 'http://ci.gitlabhq.com/projects/3' }
     ]
   end
 end

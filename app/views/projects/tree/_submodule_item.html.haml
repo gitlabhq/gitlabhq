@@ -1,14 +1,6 @@
-- tree, commit = submodule_links(submodule_item)
 %tr{ class: "tree-item" }
   %td.tree-item-file-name
     %i.fa.fa-archive
-    %span
-      = link_to truncate(submodule_item.name, length: 40), tree
-    @
-    %span.monospace
-      - if commit.nil?
-        #{submodule_item.id[0..10]}
-      - else
-        = link_to "#{submodule_item.id[0..10]}", commit
+    = submodule_link(submodule_item, @ref)
   %td
   %td.hidden-xs

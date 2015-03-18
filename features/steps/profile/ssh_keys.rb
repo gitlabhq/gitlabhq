@@ -37,9 +37,7 @@ class Spinach::Features::ProfileSshKeys < Spinach::FeatureSteps
   end
 
   step 'I should not see "Work" ssh key' do
-    within "#keys-table" do
-      page.should_not have_content "Work"
-    end
+    page.should_not have_content "Work"
   end
 
   step 'I have ssh key "ssh-rsa Work"' do

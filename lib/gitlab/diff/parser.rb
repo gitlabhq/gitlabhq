@@ -4,7 +4,7 @@ module Gitlab
       include Enumerable
 
       def parse(lines)
-        @lines = lines,
+        @lines = lines
         lines_obj = []
         line_obj_index = 0
         line_old = 1
@@ -27,7 +27,7 @@ module Gitlab
             line_old = line.match(/\-[0-9]*/)[0].to_i.abs rescue 0
             line_new = line.match(/\+[0-9]*/)[0].to_i.abs rescue 0
 
-            next if line_old == 1 && line_new == 1 #top of file
+            next if line_old <= 1 && line_new <= 1 #top of file
             lines_obj << Gitlab::Diff::Line.new(full_line, type, line_obj_index, line_old, line_new)
             line_obj_index += 1
             next
@@ -74,7 +74,7 @@ module Gitlab
 
       def html_escape(str)
         replacements = { '&' => '&amp;', '>' => '&gt;', '<' => '&lt;', '"' => '&quot;', "'" => '&#39;' }
-          str.gsub(/[&"'><]/, replacements)
+        str.gsub(/[&"'><]/, replacements)
       end
     end
   end

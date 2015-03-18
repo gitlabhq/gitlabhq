@@ -13,11 +13,11 @@ class Spinach::Features::ProjectRedirects < Spinach::FeatureSteps
 
   step 'I visit project "Community" page' do
     project = Project.find_by(name: 'Community')
-    visit project_path(project)
+    visit namespace_project_path(project.namespace, project)
   end
 
   step 'I should see project "Community" home page' do
-    Gitlab.config.gitlab.stub(:host).and_return("www.example.com")
+    Gitlab.config.gitlab.should_receive(:host).and_return("www.example.com")
     within '.navbar-gitlab .title' do
       page.should have_content 'Community'
     end
@@ -25,12 +25,12 @@ class Spinach::Features::ProjectRedirects < Spinach::FeatureSteps
 
   step 'I visit project "Enterprise" page' do
     project = Project.find_by(name: 'Enterprise')
-    visit project_path(project)
+    visit namespace_project_path(project.namespace, project)
   end
 
   step 'I visit project "CommunityDoesNotExist" page' do
     project = Project.find_by(name: 'Community')
-    visit project_path(project) + 'DoesNotExist'
+    visit namespace_project_path(project.namespace, project) + 'DoesNotExist'
   end
 
   step 'I click on "Sign In"' do

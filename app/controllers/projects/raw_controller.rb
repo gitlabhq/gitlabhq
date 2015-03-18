@@ -2,10 +2,9 @@
 class Projects::RawController < Projects::ApplicationController
   include ExtractsPath
 
-  # Authorize
-  before_filter :authorize_read_project!
-  before_filter :authorize_code_access!
   before_filter :require_non_empty_project
+  before_filter :assign_ref_vars
+  before_filter :authorize_download_code!
 
   def show
     @blob = @repository.blob_at(@commit.id, @path)
@@ -36,4 +35,3 @@ class Projects::RawController < Projects::ApplicationController
     end
   end
 end
-

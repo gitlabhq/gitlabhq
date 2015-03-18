@@ -1,4 +1,4 @@
-class window.ContributorsStatGraph
+class @ContributorsStatGraph
   init: (log) ->
     @parsed_log = ContributorsStatGraphUtil.parse_log(log)
     @set_current_field("commits")

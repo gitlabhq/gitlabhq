@@ -15,7 +15,7 @@
           $(this).html totalIssues + 1
         else
           $(this).html totalIssues - 1
-    $("body").on "click", ".issues-filters .dropdown-menu a", ->
+    $("body").on "click", ".issues-other-filters .dropdown-menu a", ->
       $('.issues-list').block(
         message: null,
         overlayCSS:
@@ -47,7 +47,7 @@
   initSearch: ->
     @timer = null
     $("#issue_search").keyup ->
-      clearTimeout(@timer);
+      clearTimeout(@timer)
       @timer = setTimeout(Issues.filterResults, 500)
 
   filterResults: =>
@@ -77,9 +77,9 @@
         ids.push $(value).attr("data-id")
 
       $("#update_issues_ids").val ids
-      $(".issues-filters").hide()
+      $(".issues-other-filters").hide()
       $(".issues_bulk_update").show()
     else
       $("#update_issues_ids").val []
       $(".issues_bulk_update").hide()
-      $(".issues-filters").show()
+      $(".issues-other-filters").show()

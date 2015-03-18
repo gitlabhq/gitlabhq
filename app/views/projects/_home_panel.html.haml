@@ -1,26 +1,28 @@
 - empty_repo = @project.empty_repo?
 .project-home-panel{:class => ("empty-project" if empty_repo)}
+  .project-identicon-holder
+    = project_icon(@project, alt: '', class: 'avatar project-avatar')
   .project-home-row
     .project-home-desc
       - if @project.description.present?
         = escaped_autolink(@project.description)
       - if can?(current_user, :admin_project, @project)
         &ndash;
-        = link_to 'Edit', edit_project_path
+        = link_to 'Edit', edit_namespace_project_path
       - elsif !@project.empty_repo? && @repository.readme
         - readme = @repository.readme
         &ndash;
-        = link_to project_blob_path(@project, tree_join(@repository.root_ref, readme.name)) do
+        = link_to namespace_project_blob_path(@project.namespace, @project, tree_join(@repository.root_ref, readme.name)) do
           = readme.name
     .star-fork-buttons
       - unless @project.empty_repo?
         .fork-buttons
           - if current_user && can?(current_user, :fork_project, @project) && @project.namespace != current_user.namespace
-            - if current_user.already_forked?(@project)
-              = link_to project_path(current_user.fork_of(@project)), title: 'Go to my fork' do
+            - if current_user.already_forked?(@project) && current_user.manageable_namespaces.size < 2
+              = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: 'Go to my fork' do
                 = link_to_toggle_fork
             - else
-              = link_to fork_project_path(@project), title: "Fork project", method: "POST" do
+              = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "Fork project" do
                 = link_to_toggle_fork
 
       .star-buttons
@@ -31,7 +33,7 @@
           - else
             = link_to_toggle_star('You must sign in to star a project.', false, false)
 
-  .project-home-row
+  .project-home-row.hidden-xs
     - if current_user && !empty_repo
       .project-home-dropdown
         = render "dropdown"

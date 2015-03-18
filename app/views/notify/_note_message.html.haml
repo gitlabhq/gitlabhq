@@ -1,2 +1,2 @@
 %div
-  = markdown(@note.note)
+  = replace_image_links_with_base64(markdown(@note.note), @note.project)

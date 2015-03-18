@@ -14,10 +14,12 @@ GET /groups
     "id": 1,
     "name": "Foobar Group",
     "path": "foo-bar",
-    "owner_id": 18
+    "description": "An interesting group"
   }
 ]
 ```
+
+You can search for groups by name or path, see below.
 
 ## Details of a group
 
@@ -29,7 +31,7 @@ GET /groups/:id
 
 Parameters:
 
-- `id` (required) - The ID of a group
+- `id` (required) - The ID or path of a group
 
 ## New group
 
@@ -43,6 +45,7 @@ Parameters:
 
 - `name` (required) - The name of the group
 - `path` (required) - The path of the group
+- `description` (optional) - The group's description
 
 ## Transfer project to group
 
@@ -54,7 +57,7 @@ POST  /groups/:id/projects/:project_id
 
 Parameters:
 
-- `id` (required) - The ID of a group
+- `id` (required) - The ID or path of a group
 - `project_id` (required) - The ID of a project
 
 ## Remove group
@@ -67,7 +70,26 @@ DELETE /groups/:id
 
 Parameters:
 
-- `id` (required) - The ID of a user group
+- `id` (required) - The ID or path of a user group
+
+## Search for group
+
+Get all groups that match your string in their name or path.
+
+```
+GET /groups?search=foobar
+```
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Foobar Group",
+    "path": "foo-bar",
+    "description": "An interesting group"
+  }
+]
+```
 
 ## Group members
 
@@ -124,8 +146,22 @@ POST /groups/:id/members
 
 Parameters:
 
-- `id` (required) - The ID of a group
+- `id` (required) - The ID or path of a group
 - `user_id` (required) - The ID of a user to add
+- `access_level` (required) - Project access level
+
+### Edit group team member
+
+Updates a group team member to a specified access level.
+
+```
+PUT /groups/:id/members/:user_id
+```
+
+Parameters:
+
+- `id` (required) - The ID of a group
+- `user_id` (required) - The ID of a group member
 - `access_level` (required) - Project access level
 
 ### Remove user team member
@@ -138,5 +174,5 @@ DELETE /groups/:id/members/:user_id
 
 Parameters:
 
-- `id` (required) - The ID of a user group
+- `id` (required) - The ID or path of a user group
 - `user_id` (required) - The ID of a group member

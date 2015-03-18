@@ -1,6 +1,6 @@
 // Remove body class for any previous theme, re-add current one
-$('body').removeClass('ui_basic ui_mars ui_modern ui_gray ui_color')
-$('body').addClass('<%= app_theme %>')
+$('body').removeClass('ui_basic ui_mars ui_modern ui_gray ui_color light_theme dark_theme')
+$('body').addClass('<%= app_theme %> <%= theme_type %>')
 
 // Re-render the header to reflect the new theme
 $('header').html('<%= escape_javascript(render("layouts/head_panel", title: "Profile")) %>')

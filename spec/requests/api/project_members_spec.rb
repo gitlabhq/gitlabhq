@@ -15,23 +15,23 @@ describe API::API, api: true  do
 
     it "should return project team members" do
       get api("/projects/#{project.id}/members", user)
-      response.status.should == 200
-      json_response.should be_an Array
-      json_response.count.should == 2
-      json_response.map { |u| u['username'] }.should include user.username
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.count).to eq(2)
+      expect(json_response.map { |u| u['username'] }).to include user.username
     end
 
     it "finds team members with query string" do
       get api("/projects/#{project.id}/members", user), query: user.username
-      response.status.should == 200
-      json_response.should be_an Array
-      json_response.count.should == 1
-      json_response.first['username'].should == user.username
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.count).to eq(1)
+      expect(json_response.first['username']).to eq(user.username)
     end
 
     it "should return a 404 error if id not found" do
       get api("/projects/9999/members", user)
-      response.status.should == 404
+      expect(response.status).to eq(404)
     end
   end
 
@@ -40,14 +40,14 @@ describe API::API, api: true  do
 
     it "should return project team member" do
       get api("/projects/#{project.id}/members/#{user.id}", user)
-      response.status.should == 200
-      json_response['username'].should == user.username
-      json_response['access_level'].should == ProjectMember::MASTER
+      expect(response.status).to eq(200)
+      expect(json_response['username']).to eq(user.username)
+      expect(json_response['access_level']).to eq(ProjectMember::MASTER)
     end
 
     it "should return a 404 error if user id not found" do
       get api("/projects/#{project.id}/members/1234", user)
-      response.status.should == 404
+      expect(response.status).to eq(404)
     end
   end
 
@@ -58,9 +58,9 @@ describe API::API, api: true  do
           access_level: ProjectMember::DEVELOPER
       }.to change { ProjectMember.count }.by(1)
 
-      response.status.should == 201
-      json_response['username'].should == user2.username
-      json_response['access_level'].should == ProjectMember::DEVELOPER
+      expect(response.status).to eq(201)
+      expect(json_response['username']).to eq(user2.username)
+      expect(json_response['access_level']).to eq(ProjectMember::DEVELOPER)
     end
 
     it "should return a 201 status if user is already project member" do
@@ -69,26 +69,26 @@ describe API::API, api: true  do
       expect {
         post api("/projects/#{project.id}/members", user), user_id: user2.id,
           access_level: ProjectMember::DEVELOPER
-      }.not_to change { ProjectMember.count }.by(1)
+      }.not_to change { ProjectMember.count }
 
-      response.status.should == 201
-      json_response['username'].should == user2.username
-      json_response['access_level'].should == ProjectMember::DEVELOPER
+      expect(response.status).to eq(201)
+      expect(json_response['username']).to eq(user2.username)
+      expect(json_response['access_level']).to eq(ProjectMember::DEVELOPER)
     end
 
     it "should return a 400 error when user id is not given" do
       post api("/projects/#{project.id}/members", user), access_level: ProjectMember::MASTER
-      response.status.should == 400
+      expect(response.status).to eq(400)
     end
 
     it "should return a 400 error when access level is not given" do
       post api("/projects/#{project.id}/members", user), user_id: user2.id
-      response.status.should == 400
+      expect(response.status).to eq(400)
     end
 
     it "should return a 422 error when access level is not known" do
       post api("/projects/#{project.id}/members", user), user_id: user2.id, access_level: 1234
-      response.status.should == 422
+      expect(response.status).to eq(422)
     end
   end
 
@@ -97,24 +97,24 @@ describe API::API, api: true  do
 
     it "should update project team member" do
       put api("/projects/#{project.id}/members/#{user3.id}", user), access_level: ProjectMember::MASTER
-      response.status.should == 200
-      json_response['username'].should == user3.username
-      json_response['access_level'].should == ProjectMember::MASTER
+      expect(response.status).to eq(200)
+      expect(json_response['username']).to eq(user3.username)
+      expect(json_response['access_level']).to eq(ProjectMember::MASTER)
     end
 
     it "should return a 404 error if user_id is not found" do
       put api("/projects/#{project.id}/members/1234", user), access_level: ProjectMember::MASTER
-      response.status.should == 404
+      expect(response.status).to eq(404)
     end
 
     it "should return a 400 error when access level is not given" do
       put api("/projects/#{project.id}/members/#{user3.id}", user)
-      response.status.should == 400
+      expect(response.status).to eq(400)
     end
 
     it "should return a 422 error when access level is not known" do
       put api("/projects/#{project.id}/members/#{user3.id}", user), access_level: 123
-      response.status.should == 422
+      expect(response.status).to eq(422)
     end
   end
 
@@ -132,22 +132,22 @@ describe API::API, api: true  do
       delete api("/projects/#{project.id}/members/#{user3.id}", user)
       expect {
         delete api("/projects/#{project.id}/members/#{user3.id}", user)
-      }.to_not change { ProjectMember.count }.by(1)
+      }.to_not change { ProjectMember.count }
     end
 
     it "should return 200 if team member already removed" do
       delete api("/projects/#{project.id}/members/#{user3.id}", user)
       delete api("/projects/#{project.id}/members/#{user3.id}", user)
-      response.status.should == 200
+      expect(response.status).to eq(200)
     end
 
     it "should return 200 OK when the user was not member" do
       expect {
         delete api("/projects/#{project.id}/members/1000000", user)
       }.to change { ProjectMember.count }.by(0)
-      response.status.should == 200
-      json_response['message'].should == "Access revoked"
-      json_response['id'].should == 1000000
+      expect(response.status).to eq(200)
+      expect(json_response['message']).to eq("Access revoked")
+      expect(json_response['id']).to eq(1000000)
     end
   end
 end

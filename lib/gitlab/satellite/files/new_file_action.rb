@@ -9,12 +9,19 @@ module Gitlab
       # Returns false if committing the change fails
       # Returns false if pushing from the satellite to bare repo failed or was rejected
       # Returns true otherwise
-      def commit!(content, commit_message, encoding)
+      def commit!(content, commit_message, encoding, new_branch = nil)
         in_locked_and_timed_satellite do |repo|
           prepare_satellite!(repo)
 
           # create target branch in satellite at the corresponding commit from bare repo
-          repo.git.checkout({raise: true, timeout: true, b: true}, ref, "origin/#{ref}")
+          current_ref =
+            if @project.empty_repo?
+              # skip this step if we want to add first file to empty repo
+              Satellite::PARKING_BRANCH
+            else
+              repo.git.checkout({ raise: true, timeout: true, b: true }, ref, "origin/#{ref}")
+              ref
+            end
 
           file_path_in_satellite = File.join(repo.working_dir, file_path)
           dir_name_in_satellite = File.dirname(file_path_in_satellite)
@@ -38,10 +45,15 @@ module Gitlab
           # will raise CommandFailed when commit fails
           repo.git.commit(raise: true, timeout: true, a: true, m: commit_message)
 
+          target_branch = if new_branch.present? && !@project.empty_repo?
+                            "#{ref}:#{new_branch}"
+                          else
+                            "#{current_ref}:#{ref}"
+                          end
 
           # push commit back to bare repo
           # will raise CommandFailed when push fails
-          repo.git.push({raise: true, timeout: true}, :origin, ref)
+          repo.git.push({ raise: true, timeout: true }, :origin, target_branch)
 
           # everything worked
           true

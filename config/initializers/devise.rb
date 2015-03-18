@@ -145,7 +145,8 @@ Devise.setup do |config|
   # Time interval you can reset your password with a reset password key.
   # Don't put a too small interval or your users won't have the time to
   # change their passwords.
-  config.reset_password_within = 2.hours
+  # When someone else invites you to GitLab this time is also used so it should be pretty long.
+  config.reset_password_within = 2.days
 
   # ==> Configuration for :encryptable
   # Allow you to use another encryption algorithm besides bcrypt (default). You can use
@@ -204,22 +205,24 @@ Devise.setup do |config|
   #   manager.default_strategies(scope: :user).unshift :some_external_strategy
   # end
 
-  if Gitlab.config.ldap.enabled
-    if Gitlab.config.ldap.allow_username_or_email_login
-      email_stripping_proc = ->(name) {name.gsub(/@.*$/,'')}
-    else
-      email_stripping_proc = ->(name) {name}
-    end
+  if Gitlab::LDAP::Config.enabled?
+    Gitlab.config.ldap.servers.values.each do |server|
+      if server['allow_username_or_email_login']
+        email_stripping_proc = ->(name) {name.gsub(/@.*$/,'')}
+      else
+        email_stripping_proc = ->(name) {name}
+      end
 
-    config.omniauth :ldap,
-      host:     Gitlab.config.ldap['host'],
-      base:     Gitlab.config.ldap['base'],
-      uid:      Gitlab.config.ldap['uid'],
-      port:     Gitlab.config.ldap['port'],
-      method:   Gitlab.config.ldap['method'],
-      bind_dn:  Gitlab.config.ldap['bind_dn'],
-      password: Gitlab.config.ldap['password'],
-      name_proc: email_stripping_proc
+      config.omniauth server['provider_name'],
+        host:     server['host'],
+        base:     server['base'],
+        uid:      server['uid'],
+        port:     server['port'],
+        method:   server['method'],
+        bind_dn:  server['bind_dn'],
+        password: server['password'],
+        name_proc: email_stripping_proc
+    end
   end
 
   Gitlab.config.omniauth.providers.each do |provider|

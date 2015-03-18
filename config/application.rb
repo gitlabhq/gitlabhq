@@ -12,20 +12,15 @@ module Gitlab
     # -- all .rb files in that directory are automatically loaded.
 
     # Custom directories with classes and modules you want to be autoloadable.
-    config.autoload_paths += %W(#{config.root}/lib
-                                #{config.root}/app/finders
-                                #{config.root}/app/models/hooks
-                                #{config.root}/app/models/concerns
-                                #{config.root}/app/models/project_services
-                                #{config.root}/app/models/members)
+    config.autoload_paths.push(*%W(#{config.root}/lib
+                                   #{config.root}/app/models/hooks
+                                   #{config.root}/app/models/concerns
+                                   #{config.root}/app/models/project_services
+                                   #{config.root}/app/models/members))
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
     # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
-
-    # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
-    # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
-    # config.time_zone = 'Central Time (US & Canada)'
 
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
@@ -36,7 +31,7 @@ module Gitlab
     config.encoding = "utf-8"
 
     # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters += [:password]
+    config.filter_parameters.push(:password, :password_confirmation, :private_token)
 
     # Enable escaping HTML in JSON.
     config.active_support.escape_html_entities_in_json = true
@@ -54,6 +49,8 @@ module Gitlab
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+    config.action_view.sanitized_allowed_protocols = %w(smb)
 
     # Relative url support
     # Uncomment and customize the last line to run in a non-root path
@@ -75,7 +72,10 @@ module Gitlab
     config.middleware.use Rack::Cors do
       allow do
         origins '*'
-        resource '/api/*', headers: :any, methods: [:get, :post, :options, :put, :delete]
+        resource '/api/*',
+          headers: :any,
+          methods: [:get, :post, :options, :put, :delete],
+          expose: ['Link']
       end
     end
 
@@ -97,5 +97,8 @@ module Gitlab
 
     redis_config_hash[:namespace] = 'cache:gitlab'
     config.cache_store = :redis_store, redis_config_hash
+
+    # This is needed for gitlab-shell
+    ENV['GITLAB_PATH_OUTSIDE_HOOK'] = ENV['PATH']
   end
 end

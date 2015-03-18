@@ -10,21 +10,32 @@ class Commit
   # Used to prevent 500 error on huge commits by suppressing diff
   #
   # User can force display of diff above this size
-  DIFF_SAFE_FILES  = 100
-  DIFF_SAFE_LINES  = 5000
+  DIFF_SAFE_FILES  = 100 unless defined?(DIFF_SAFE_FILES)
+  DIFF_SAFE_LINES  = 5000 unless defined?(DIFF_SAFE_LINES)
 
   # Commits above this size will not be rendered in HTML
-  DIFF_HARD_LIMIT_FILES = 1000
-  DIFF_HARD_LIMIT_LINES = 50000
+  DIFF_HARD_LIMIT_FILES = 1000 unless defined?(DIFF_HARD_LIMIT_FILES)
+  DIFF_HARD_LIMIT_LINES = 50000 unless defined?(DIFF_HARD_LIMIT_LINES)
 
   class << self
     def decorate(commits)
-      commits.map { |c| self.new(c) }
+      commits.map do |commit|
+        if commit.kind_of?(Commit)
+          commit
+        else
+          self.new(commit)
+        end
+      end
     end
 
     # Calculate number of lines to render for diffs
     def diff_line_count(diffs)
       diffs.reduce(0) { |sum, d| sum + d.diff.lines.count }
+    end
+
+    # Truncate sha to 8 characters
+    def truncate_sha(sha)
+      sha[0..7]
     end
   end
 
@@ -64,11 +75,11 @@ class Commit
 
     return no_commit_message if title.blank?
 
-    title_end = title.index(/\n/)
+    title_end = title.index("\n")
     if (!title_end && title.length > 100) || (title_end && title_end > 100)
       title[0..79] << "&hellip;".html_safe
     else
-      title.split(/\n/, 2).first
+      title.split("\n", 2).first
     end
   end
 
@@ -76,12 +87,13 @@ class Commit
   #
   # cut off, ellipses (`&hellp;`) are prepended to the commit message.
   def description
-    title_end = safe_message.index(/\n/)
-    @description ||= if (!title_end && safe_message.length > 100) || (title_end && title_end > 100)
-                    "&hellip;".html_safe << safe_message[80..-1]
-                  else
-                    safe_message.split(/\n/, 2)[1].try(:chomp)
-                  end
+    title_end = safe_message.index("\n")
+    @description ||=
+      if (!title_end && safe_message.length > 100) || (title_end && title_end > 100)
+        "&hellip;".html_safe << safe_message[80..-1]
+      else
+        safe_message.split("\n", 2)[1].try(:chomp)
+      end
   end
 
   def description?
@@ -111,7 +123,7 @@ class Commit
 
   # Mentionable override.
   def gfm_reference
-    "commit #{sha[0..5]}"
+    "commit #{id}"
   end
 
   def method_missing(m, *args, &block)
@@ -122,6 +134,11 @@ class Commit
     return true if @raw.respond_to?(method)
 
     super
+  end
+
+  # Truncate sha to 8 characters
+  def short_id
+    @raw.short_id(7)
   end
 
   def parents

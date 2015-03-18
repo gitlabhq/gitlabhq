@@ -15,6 +15,7 @@ module Issuable
     has_many :notes, as: :noteable, dependent: :destroy
     has_many :label_links, as: :target, dependent: :destroy
     has_many :labels, through: :label_links
+    has_many :subscriptions, dependent: :destroy, as: :subscribable
 
     validates :author, presence: true
     validates :title, presence: true, length: { within: 0..255 }
@@ -29,6 +30,8 @@ module Issuable
     scope :only_opened, -> { with_state(:opened) }
     scope :only_reopened, -> { with_state(:reopened) }
     scope :closed, -> { with_state(:closed) }
+    scope :order_milestone_due_desc, -> { joins(:milestone).reorder('milestones.due_date DESC, milestones.id DESC') }
+    scope :order_milestone_due_asc, -> { joins(:milestone).reorder('milestones.due_date ASC, milestones.id ASC') }
 
     delegate :name,
              :email,
@@ -55,13 +58,10 @@ module Issuable
 
     def sort(method)
       case method.to_s
-      when 'newest' then reorder("#{table_name}.created_at DESC")
-      when 'oldest' then reorder("#{table_name}.created_at ASC")
-      when 'recently_updated' then reorder("#{table_name}.updated_at DESC")
-      when 'last_updated' then reorder("#{table_name}.updated_at ASC")
-      when 'milestone_due_soon' then joins(:milestone).reorder("milestones.due_date ASC")
-      when 'milestone_due_later' then joins(:milestone).reorder("milestones.due_date DESC")
-      else reorder("#{table_name}.created_at DESC")
+      when 'milestone_due_asc' then order_milestone_due_asc
+      when 'milestone_due_desc' then order_milestone_due_desc
+      else
+        order_by(method)
       end
     end
   end
@@ -88,7 +88,7 @@ module Issuable
 
   # Return the number of -1 comments (downvotes)
   def downvotes
-    notes.select(&:downvote?).size
+    filter_superceded_votes(notes.select(&:downvote?), notes).size
   end
 
   def downvotes_in_percent
@@ -101,7 +101,7 @@ module Issuable
 
   # Return the number of +1 comments (upvotes)
   def upvotes
-    notes.select(&:upvote?).size
+    filter_superceded_votes(notes.select(&:upvote?), notes).size
   end
 
   def upvotes_in_percent
@@ -124,16 +124,35 @@ module Issuable
     users << assignee if is_assigned?
     mentions = []
     mentions << self.mentioned_users
+
     notes.each do |note|
       users << note.author
       mentions << note.mentioned_users
     end
+
     users.concat(mentions.reduce([], :|)).uniq
   end
 
-  def to_hook_data
+  def subscribed?(user)
+    subscription = subscriptions.find_by_user_id(user.id)
+
+    if subscription
+      return subscription.subscribed
+    end
+
+    participants.include?(user)
+  end
+
+  def toggle_subscription(user)
+    subscriptions.
+      find_or_initialize_by(user_id: user.id).
+      update(subscribed: !subscribed?(user))
+  end
+
+  def to_hook_data(user)
     {
       object_kind: self.class.name.underscore,
+      user: user.hook_attrs,
       object_attributes: hook_attrs
     }
   end
@@ -148,9 +167,23 @@ module Issuable
 
   def add_labels_by_names(label_names)
     label_names.each do |label_name|
-      label = project.labels.create_with(
-        color: Label::DEFAULT_COLOR).find_or_create_by(title: label_name.strip)
+      label = project.labels.create_with(color: Label::DEFAULT_COLOR).
+        find_or_create_by(title: label_name.strip)
       self.labels << label
     end
+  end
+
+  private
+
+  def filter_superceded_votes(votes, notes)
+    filteredvotes = [] + votes
+
+    votes.each do |vote|
+      if vote.superceded?(notes)
+        filteredvotes.delete(vote)
+      end
+    end
+
+    filteredvotes
   end
 end

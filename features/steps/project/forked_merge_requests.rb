@@ -23,7 +23,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   step 'I should see merge request "Merge Request On Forked Project"' do
     @project.merge_requests.size.should >= 1
     @merge_request = @project.merge_requests.last
-    current_path.should == project_merge_request_path(@project, @merge_request)
+    current_path.should == namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
     @merge_request.title.should == "Merge Request On Forked Project"
     @merge_request.source_project.should == @forked_project
     @merge_request.source_branch.should == "fix"
@@ -64,14 +64,14 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I see prefilled new Merge Request page for the forked project' do
-    current_path.should == new_project_merge_request_path(@forked_project)
+    current_path.should == new_namespace_project_merge_request_path(@forked_project.namespace, @forked_project)
     find("#merge_request_source_project_id").value.should == @forked_project.id.to_s
     find("#merge_request_target_project_id").value.should == @project.id.to_s
     find("#merge_request_source_branch").value.should have_content "new_design"
     find("#merge_request_target_branch").value.should have_content "master"
     find("#merge_request_title").value.should == "New Design"
-    verify_commit_link(".mr_target_commit",@project)
-    verify_commit_link(".mr_source_commit",@forked_project)
+    verify_commit_link(".mr_target_commit", @project)
+    verify_commit_link(".mr_source_commit", @forked_project)
   end
 
   step 'I update the merge request title' do
@@ -86,7 +86,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
     page.should have_content "An Edited Forked Merge Request"
     @project.merge_requests.size.should >= 1
     @merge_request = @project.merge_requests.last
-    current_path.should == project_merge_request_path(@project, @merge_request)
+    current_path.should == namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
     @merge_request.source_project.should == @forked_project
     @merge_request.source_branch.should == "fix"
     @merge_request.target_branch.should == "master"
@@ -106,7 +106,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I see the edit page prefilled for "Merge Request On Forked Project"' do
-    current_path.should == edit_project_merge_request_path(@project, @merge_request)
+    current_path.should == edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
     page.should have_content "Edit merge request ##{@merge_request.id}"
     find("#merge_request_title").value.should == "Merge Request On Forked Project"
   end
@@ -114,7 +114,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   step 'I fill out an invalid "Merge Request On Forked Project" merge request' do
     select "Select branch", from: "merge_request_target_branch"
     find(:select, "merge_request_source_project_id", {}).value.should == @forked_project.id.to_s
-    find(:select, "merge_request_target_project_id", {}).value.should == project.id.to_s
+    find(:select, "merge_request_target_project_id", {}).value.should == @project.id.to_s
     find(:select, "merge_request_source_branch", {}).value.should == ""
     find(:select, "merge_request_target_branch", {}).value.should == ""
     click_button "Compare branches"
@@ -125,7 +125,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'the target repository should be the original repository' do
-    page.should have_select("merge_request_target_project_id", selected: project.path_with_namespace)
+    page.should have_select("merge_request_target_project_id", selected: @project.path_with_namespace)
   end
 
   # Verify a link is generated against the correct project

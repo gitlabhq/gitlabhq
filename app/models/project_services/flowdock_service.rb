@@ -2,14 +2,19 @@
 #
 # Table name: services
 #
-#  id         :integer          not null, primary key
-#  type       :string(255)
-#  title      :string(255)
-#  project_id :integer          not null
-#  created_at :datetime
-#  updated_at :datetime
-#  active     :boolean          default(FALSE), not null
-#  properties :text
+#  id                    :integer          not null, primary key
+#  type                  :string(255)
+#  title                 :string(255)
+#  project_id            :integer
+#  created_at            :datetime
+#  updated_at            :datetime
+#  active                :boolean          default(FALSE), not null
+#  properties            :text
+#  template              :boolean          default(FALSE)
+#  push_events           :boolean          default(TRUE)
+#  issues_events         :boolean          default(TRUE)
+#  merge_requests_events :boolean          default(TRUE)
+#  tag_push_events       :boolean          default(TRUE)
 #
 
 require "flowdock-git-hook"
@@ -36,14 +41,19 @@ class FlowdockService < Service
     ]
   end
 
-  def execute(push_data)
-    repo_path = File.join(Gitlab.config.gitlab_shell.repos_path, "#{project.path_with_namespace}.git")
+  def supported_events
+    %w(push)
+  end
+
+  def execute(data)
+    return unless supported_events.include?(data[:object_kind])
+
     Flowdock::Git.post(
-      push_data[:ref],
-      push_data[:before],
-      push_data[:after],
+      data[:ref],
+      data[:before],
+      data[:after],
       token: token,
-      repo: repo_path,
+      repo: project.repository.path_to_repo,
       repo_url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}",
       commit_url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/commit/%s",
       diff_url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/compare/%s...%s",

@@ -1,4 +1,4 @@
-class Milestone
+class @Milestone
   @updateIssue: (li, issue_url, data) ->
     $.ajax
       type: "PUT"
@@ -49,6 +49,13 @@ class Milestone
       data: data
       success: (data) ->
         if data.saved == true
+          if data.assignee_avatar_url
+            img_tag = $('<img/>')
+            img_tag.attr('src', data.assignee_avatar_url)
+            img_tag.addClass('avatar s16')
+            $(li).find('.assignee-icon').html(img_tag)
+          else
+            $(li).find('.assignee-icon').html('')
           $(li).effect 'highlight'
         else
           new Flash("Issue update failed", 'alert')
@@ -115,5 +122,3 @@ class Milestone
         Milestone.updateMergeRequest(ui.item, merge_request_url, data)
 
     ).disableSelection()
-
-@Milestone = Milestone

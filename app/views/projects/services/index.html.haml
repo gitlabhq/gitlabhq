@@ -1,13 +1,22 @@
 %h3.page-title Project services
 %p.light Project services allow you to integrate GitLab with other applications
-%hr
 
-%ul.bordered-list
+%table.table
+  %thead
+    %tr
+      %th
+      %th Service
+      %th Description
+      %th Last edit
   - @services.sort_by(&:title).each do |service|
-    %li
-      %h4
-        = link_to edit_project_service_path(@project, service.to_param) do
-          = service.title
-        .pull-right
-          = boolean_to_icon service.activated?
-      %p= service.description
+    %tr
+      %td
+        = boolean_to_icon service.activated?
+      %td
+        = link_to edit_namespace_project_service_path(@project.namespace, @project, service.to_param) do
+          %strong= service.title
+      %td
+        = service.description
+      %td.light
+        = time_ago_in_words service.updated_at
+        ago

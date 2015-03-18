@@ -1,0 +1,19 @@
+- is_admin = defined?(admin) ? true : false
+.panel.panel-default
+  - if @keys.any?
+    %table.table
+      %thead.panel-heading
+        %tr
+          %th Title
+          %th Fingerprint
+          %th Added at
+          %th
+      %tbody
+        - @keys.each do |key|
+          = render 'profiles/keys/key', key: key, is_admin: is_admin
+  - else
+    .nothing-here-block
+      - if is_admin
+        User has no ssh keys
+      - else
+        There are no SSH keys with access to your account.

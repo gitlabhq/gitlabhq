@@ -1,33 +1,17 @@
-= render "projects/issues/head"
-.milestones_content
-  %h3.page-title
-    Milestones
-    - if can? current_user, :admin_milestone, @project
-      = link_to new_project_milestone_path(@project), class: "pull-right btn btn-new", title: "New Milestone" do
-        %i.fa.fa-plus
-        New Milestone
+.pull-right
+  - if can? current_user, :admin_milestone, @project
+    = link_to new_namespace_project_milestone_path(@project.namespace, @project), class: "pull-right btn btn-new", title: "New Milestone" do
+      %i.fa.fa-plus
+      New Milestone
+= render 'shared/milestones_filter'
 
-  .row
-    .fixed.sidebar-expand-button.hidden-lg.hidden-md.hidden-xs
-      %i.fa.fa-list.fa-2x
-    .col-md-3.responsive-side
-      %ul.nav.nav-pills.nav-stacked
-        %li{class: ("active" if (params[:f] == "active" || !params[:f]))}
-          = link_to project_milestones_path(@project, f: "active") do
-            Active
-        %li{class: ("active" if params[:f] == "closed")}
-          = link_to project_milestones_path(@project, f: "closed") do
-            Closed
-        %li{class: ("active" if params[:f] == "all")}
-          = link_to project_milestones_path(@project, f: "all") do
-            All
-    .col-md-9
-      .panel.panel-default
-        %ul.well-list
-          = render @milestones
+.milestones
+  .panel.panel-default
+    %ul.well-list
+      = render @milestones
 
-          - if @milestones.blank?
-            %li
-              .nothing-here-block No milestones to show
+      - if @milestones.blank?
+        %li
+          .nothing-here-block No milestones to show
 
-      = paginate @milestones, theme: "gitlab"
+  = paginate @milestones, theme: "gitlab"

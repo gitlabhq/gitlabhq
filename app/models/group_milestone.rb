@@ -66,15 +66,15 @@ class GroupMilestone
   end
 
   def issues
-    @group_issues ||= milestones.map { |milestone| milestone.issues }.flatten.group_by(&:state)
+    @group_issues ||= milestones.map(&:issues).flatten.group_by(&:state)
   end
 
   def merge_requests
-    @group_merge_requests ||= milestones.map { |milestone| milestone.merge_requests }.flatten.group_by(&:state)
+    @group_merge_requests ||= milestones.map(&:merge_requests).flatten.group_by(&:state)
   end
 
   def participants
-    milestones.map { |milestone| milestone.participants.uniq }.reject(&:empty?).flatten
+    @group_participants ||= milestones.map(&:participants).flatten.compact.uniq
   end
 
   def opened_issues

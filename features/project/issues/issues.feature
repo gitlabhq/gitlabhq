@@ -139,6 +139,15 @@ Feature: Project Issues
     And I leave a comment with task markdown
     Then I should not see task checkboxes in the comment
 
+  @javascript
+  Scenario: Issue notes should be editable with +1
+    Given project "Shop" has "Tasks-open" open issue with task markdown
+    When I visit issue page "Tasks-open"
+    And I leave a comment with a header containing "Comment with a header"
+    Then The comment with the header should not have an ID
+    And I edit the last comment with a +1
+    Then I should see +1 in the description
+
   # Task status in issues list
 
   Scenario: Issues list should display task status
@@ -159,3 +168,45 @@ Feature: Project Issues
     Given project "Shop" has "Tasks-closed" closed issue with task markdown
     When I visit issue page "Tasks-closed"
     Then Task checkboxes should be disabled
+
+  # Issue description preview
+
+  @javascript
+  Scenario: I can't preview without text
+    Given I click link "New Issue"
+    And I haven't written any description text
+    Then The Markdown preview tab should say there is nothing to do
+
+  @javascript
+  Scenario: I can preview with text
+    Given I click link "New Issue"
+    And I write a description like ":+1: Nice"
+    Then The Markdown preview tab should display rendered Markdown
+
+  @javascript
+  Scenario: I preview an issue description
+    Given I click link "New Issue"
+    And I preview a description text like "Bug fixed :smile:"
+    Then I should see the Markdown preview
+    And I should not see the Markdown text field
+
+  @javascript
+  Scenario: I can edit after preview
+    Given I click link "New Issue"
+    And I preview a description text like "Bug fixed :smile:"
+    Then I should see the Markdown write tab
+
+  @javascript
+  Scenario: I can preview when editing an existing issue
+    Given I click link "Release 0.4"
+    And I click link "Edit" for the issue
+    And I preview a description text like "Bug fixed :smile:"
+    Then I should see the Markdown write tab
+
+  @javascript
+  Scenario: I can unsubscribe from issue
+    Given project "Shop" has "Tasks-open" open issue with task markdown
+    When I visit issue page "Tasks-open"
+    Then I should see that I am subscribed
+    When I click button "Unsubscribe"
+    Then I should see that I am unsubscribed

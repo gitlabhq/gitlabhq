@@ -1,0 +1,123 @@
+.commit-title{
+  display: block;
+}
+
+.commit-title{
+  margin-bottom: 10px;
+}
+
+.commit-author, .commit-committer{
+  display: block;
+  color: #999;
+  font-weight: normal;
+  font-style: italic;
+}
+
+.commit-author strong, .commit-committer strong{
+  font-weight: bold;
+  font-style: normal;
+}
+
+.commit-description {
+  background: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.commit-stat-summary {
+  color: #666;
+  font-size: 14px;
+  font-weight: normal;
+  padding: 3px 0;
+  margin-bottom: 10px;
+}
+
+.commit-info-row {
+  margin-bottom: 10px;
+  .avatar {
+    @extend .avatar-inline;
+  }
+  .commit-committer-link,
+  .commit-author-link {
+    color: #444;
+    font-weight: bold;
+  }
+}
+
+.commit-box {
+  margin: 10px 0;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  padding: 20px 0;
+
+  .commit-title {
+    margin: 0;
+  }
+
+  .commit-description {
+    margin-top: 15px;
+  }
+}
+
+.file-stats a {
+  color: $style_color;
+}
+
+.file-stats {
+  .new-file {
+    a {
+      color: #090;
+    }
+    i {
+      color: #1BCF00;
+    }
+  }
+  .renamed-file {
+    i {
+      color: #FE9300;
+    }
+  }
+  .deleted-file {
+    a {
+      color: #B00;
+    }
+    i {
+      color: #EE0000;
+    }
+  }
+  .edit-file{
+    i{
+      color: #555;
+    }
+  }
+}
+
+/*
+ * Commit message textarea for web editor and
+ * custom merge request message
+ */
+.commit-message-container {
+  background-color: $body-bg;
+  position: relative;
+  font-family: $monospace_font;
+  $left: 12px;
+  .max-width-marker {
+    width: 72ch;
+    color: rgba(0, 0, 0, 0.0);
+    font-family: inherit;
+    left: $left;
+    height: 100%;
+    border-right: 1px solid mix($input-border, white);
+    position: absolute;
+    z-index: 1;
+  }
+  > textarea {
+    background-color: rgba(0, 0, 0, 0.0);
+    font-family: inherit;
+    padding-left: $left;
+    position: relative;
+    z-index: 2;
+  }
+}

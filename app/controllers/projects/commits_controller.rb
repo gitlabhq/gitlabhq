@@ -3,10 +3,9 @@ require "base64"
 class Projects::CommitsController < Projects::ApplicationController
   include ExtractsPath
 
-  # Authorize
-  before_filter :authorize_read_project!
-  before_filter :authorize_code_access!
   before_filter :require_non_empty_project
+  before_filter :assign_ref_vars
+  before_filter :authorize_download_code!
 
   def show
     @repo = @project.repository
@@ -14,7 +13,7 @@ class Projects::CommitsController < Projects::ApplicationController
 
     @commits = @repo.commits(@ref, @path, @limit, @offset)
     @note_counts = Note.where(commit_id: @commits.map(&:id)).
-        group(:commit_id).count
+      group(:commit_id).count
 
     respond_to do |format|
       format.html

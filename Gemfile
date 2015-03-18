@@ -28,22 +28,30 @@ gem 'omniauth-google-oauth2'
 gem 'omniauth-twitter'
 gem 'omniauth-github'
 gem 'omniauth-shibboleth'
+gem 'omniauth-kerberos'
+gem 'omniauth-gitlab'
+gem 'omniauth-bitbucket'
+gem 'doorkeeper', '2.1.0'
+gem "rack-oauth2", "~> 1.0.5"
+
+# Browser detection
+gem "browser"
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '7.0.0.rc9'
+gem "gitlab_git", '~> 7.1.0'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
-gem 'gitlab-grack', '~> 2.0.0.pre', require: 'grack'
+gem 'gitlab-grack', '~> 2.0.0.rc2', require: 'grack'
 
 # LDAP Auth
-gem 'gitlab_omniauth-ldap', '1.1.0', require: "omniauth-ldap"
+gem 'gitlab_omniauth-ldap', '1.2.1', require: "omniauth-ldap"
 
 # Git Wiki
-gem 'gollum-lib', '~> 3.0.0'
+gem 'gollum-lib', '~> 4.0.0'
 
 # Language detection
-gem "gitlab-linguist", "~> 3.0.0", require: "linguist"
+gem "gitlab-linguist", "~> 3.0.1", require: "linguist"
 
 # API
 gem "grape", "~> 0.6.1"
@@ -80,7 +88,7 @@ gem "six"
 gem "seed-fu"
 
 # Markup pipeline for GitLab
-gem 'html-pipeline-gitlab', '~> 0.1.0'
+gem 'html-pipeline-gitlab', '~> 0.1'
 
 # Markdown to HTML
 gem "github-markup"
@@ -89,7 +97,7 @@ gem "github-markup"
 gem 'redcarpet', '~> 3.1.2'
 gem 'RedCloth'
 gem 'rdoc', '~>3.6'
-gem 'org-ruby', '= 0.9.9'
+gem 'org-ruby', '= 0.9.12'
 gem 'creole', '~>0.3.6'
 gem 'wikicloth', '=0.8.1'
 gem 'asciidoctor', '= 0.1.4'
@@ -112,7 +120,7 @@ gem "acts-as-taggable-on"
 # Background jobs
 gem 'slim'
 gem 'sinatra', require: nil
-gem 'sidekiq', '2.17.0'
+gem 'sidekiq', '~> 3.3'
 
 # HTTP requests
 gem "httparty"
@@ -134,7 +142,7 @@ gem "redis-rails"
 gem 'tinder', '~> 1.9.2'
 
 # HipChat integration
-gem "hipchat", "~> 0.14.0"
+gem "hipchat", "~> 1.4.0"
 
 # Flowdock integration
 gem "gitlab-flowdock-git-hook", "~> 0.4.2"
@@ -143,10 +151,16 @@ gem "gitlab-flowdock-git-hook", "~> 0.4.2"
 gem "gemnasium-gitlab-service", "~> 0.2"
 
 # Slack integration
-gem "slack-notifier", "~> 0.3.2"
+gem "slack-notifier", "~> 1.0.0"
+
+# Asana integration
+gem 'asana', '~> 0.0.6'
 
 # d3
 gem "d3_rails", "~> 3.1.4"
+
+#cal-heatmap
+gem "cal-heatmap-rails", "~> 0.0.1"
 
 # underscore-rails
 gem "underscore-rails", "~> 1.4.4"
@@ -163,13 +177,15 @@ gem 'ace-rails-ap'
 # Keyboard shortcuts
 gem 'mousetrap-rails'
 
-# Semantic UI Sass for Sidebar
-gem 'semantic-ui-sass', '~> 0.16.1.0'
+# Detect and convert string character encoding
+gem 'charlock_holmes'
+
+# Shutting down requests that take too long
+gem "slowpoke"
 
 gem "sass-rails", '~> 4.0.2'
 gem "coffee-rails"
 gem "uglifier"
-gem "therubyracer"
 gem 'turbolinks'
 gem 'jquery-turbolinks'
 
@@ -181,23 +197,24 @@ gem "jquery-scrollto-rails"
 gem "raphael-rails", "~> 2.1.2"
 gem 'bootstrap-sass', '~> 3.0'
 gem "font-awesome-rails", '~> 4.2'
-gem "gitlab_emoji", "~> 0.0.1.1"
+gem "gitlab_emoji", "~> 0.1"
 gem "gon", '~> 5.0.0'
 gem 'nprogress-rails'
 gem 'request_store'
 gem "virtus"
+gem 'addressable'
 
 group :development do
+  gem 'brakeman', require: false
   gem "annotate", "~> 2.6.0.beta2"
   gem "letter_opener"
   gem 'quiet_assets', '~> 1.0.1'
   gem 'rack-mini-profiler', require: false
+  gem "byebug"
 
   # Better errors handler
   gem 'better_errors'
   gem 'binding_of_caller'
-
-  gem 'rails_best_practices'
 
   # Docs generator
   gem "sdoc"
@@ -208,11 +225,12 @@ end
 
 group :development, :test do
   gem 'coveralls', require: false
+  gem 'rubocop', '0.28.0', require: false
   # gem 'rails-dev-tweaks'
   gem 'spinach-rails'
-  gem "rspec-rails"
+  gem "rspec-rails", '2.99'
   gem "capybara", '~> 2.2.1'
-  gem "pry"
+  gem "pry-rails"
   gem "awesome_print"
   gem "database_cleaner"
   gem "launchy"
@@ -238,14 +256,14 @@ group :development, :test do
 
   gem 'jasmine', '2.0.2'
 
-  gem "spring", '1.1.3'
-  gem "spring-commands-rspec", '1.0.1'
+  gem "spring", '~> 1.3.1'
+  gem "spring-commands-rspec", '1.0.4'
   gem "spring-commands-spinach", '1.0.0'
 end
 
 group :test do
   gem "simplecov", require: false
-  gem "shoulda-matchers", "~> 2.1.0"
+  gem "shoulda-matchers", "~> 2.7.0"
   gem 'email_spec'
   gem "webmock"
   gem 'test_after_commit'
@@ -256,3 +274,6 @@ group :production do
 end
 
 gem "newrelic_rpm"
+
+gem 'octokit', '3.7.0'
+gem "rugments"

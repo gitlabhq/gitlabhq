@@ -35,7 +35,7 @@ module API
         file_path = attrs.delete(:file_path)
 
         commit = user_project.repository.commit(ref)
-        not_found! "Commit" unless commit
+        not_found! 'Commit' unless commit
 
         blob = user_project.repository.blob_at(commit.sha, file_path)
 
@@ -53,7 +53,7 @@ module API
             commit_id: commit.id,
           }
         else
-          render_api_error!('File not found', 404)
+          not_found! 'File'
         end
       end
 
@@ -85,7 +85,7 @@ module API
             branch_name: branch_name
           }
         else
-          render_api_error!(result[:error], 400)
+          render_api_error!(result[:message], 400)
         end
       end
 
@@ -117,7 +117,8 @@ module API
             branch_name: branch_name
           }
         else
-          render_api_error!(result[:error], 400)
+          http_status = result[:http_status] || 400
+          render_api_error!(result[:message], http_status)
         end
       end
 
@@ -149,7 +150,7 @@ module API
             branch_name: branch_name
           }
         else
-          render_api_error!(result[:error], 400)
+          render_api_error!(result[:message], 400)
         end
       end
     end

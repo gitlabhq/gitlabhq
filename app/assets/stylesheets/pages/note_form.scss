@@ -1,0 +1,175 @@
+/**
+ * Note Form
+ */
+
+.comment-btn {
+  @extend .btn-create;
+}
+.reply-btn {
+  @extend .btn-primary;
+}
+.diff-file .diff-content {
+  tr.line_holder:hover {
+    &> td.line_content {
+      background: $hover !important;
+      border-color: darken($hover, 10%) !important;
+    }
+    &> td.new_line,
+    &> td.old_line {
+      background: darken($hover, 4%) !important;
+      border-color: darken($hover, 10%) !important;
+    }
+  }
+
+  tr.line_holder:hover > td .line_note_link {
+    opacity: 1.0;
+    filter: alpha(opacity=100);
+  }
+}
+.diff-file,
+.discussion {
+  .new_note {
+    margin: 0;
+    border: none;
+  }
+}
+.new_note {
+  display: none;
+}
+
+.new_note, .edit_note {
+  .buttons {
+    float: left;
+    margin-top: 8px;
+  }
+  .clearfix {
+    margin-bottom: 0;
+  }
+
+  .note-preview-holder {
+    > p {
+      overflow-x: auto;
+    }
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  .note_text {
+    width: 100%;
+  }
+}
+
+/* loading indicator */
+.notes-busy {
+  margin: 18px;
+}
+
+.note-image-attach {
+  @extend .col-md-4;
+  @extend .thumbnail;
+  margin-left: 45px;
+  float: none;
+}
+
+.common-note-form {
+  margin: 0;
+  background: #F9F9F9;
+  padding: 5px;
+  border: 1px solid #DDD;
+}
+
+.note-form-actions {
+  background: #F9F9F9;
+  height: 45px;
+
+  .note-form-option {
+    margin-top: 8px;
+    margin-left: 30px;
+    @extend .pull-left;
+  }
+
+  .js-notify-commit-author {
+    float: left;
+  }
+
+  .write-preview-btn {
+    // makes the "absolute" position for links relative to this
+    position: relative;
+
+    // preview/edit buttons
+    > a {
+      position: absolute;
+      right: 5px;
+      top: 8px;
+    }
+  }
+}
+
+.note-edit-form {
+  display: none;
+  font-size: 13px;
+
+  .form-actions {
+    padding-left: 20px;
+
+    .btn-save {
+      float: left;
+    }
+
+    .note-form-option {
+      float: left;
+      padding: 2px 0 0 25px;
+    }
+  }
+}
+
+.js-note-attachment-delete {
+  display: none;
+}
+
+.parallel-comment {
+  padding: 6px;
+}
+
+.error-alert > .alert {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.discussion-body,
+.diff-file {
+  .notes .note {
+    border-color: #ddd;
+    padding: 10px 15px;
+  }
+
+  .discussion-reply-holder {
+    background: #f9f9f9;
+    padding: 10px 15px;
+    border-top: 1px solid #DDD;
+  }
+}
+
+.discussion-notes-count {
+  font-size: 16px;
+}
+
+.edit_note {
+  .markdown-area {
+    min-height: 140px;
+  }
+  .note-form-actions {
+    background: transparent;
+  }
+}
+
+.comment-hints {
+  color: #999;
+  background: #FFF;
+  padding: 5px;
+  margin-top: -11px;
+  border: 1px solid #DDD;
+  font-size: 13px;
+}

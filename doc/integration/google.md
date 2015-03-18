@@ -27,27 +27,50 @@ To enable the Google OAuth2 OmniAuth provider you must register your application
     - Authorized redirect URI: 'https://gitlab.example.com/users/auth/google_oauth2/callback'
 1. Under the heading "Client ID for web application" you should see a Client ID and Client secret (see screenshot). Keep this page open as you continue configuration. ![Google app](google_app.png)
 
-1. On your GitLab server, open the configuration file.
+1.  On your GitLab server, open the configuration file.
+
+    For omnibus package:
 
     ```sh
-    cd /home/git/gitlab
-
-    sudo -u git -H editor config/gitlab.yml
+      sudo editor /etc/gitlab/gitlab.rb
     ```
 
-1.  Find the section dealing with OmniAuth. See [Initial OmniAuth Configuration](README.md#initial-omniauth-configuration) for more details.
+    For instalations from source:
 
-1.  Under `providers:` uncomment (or add) lines that look like the following:
+    ```sh
+      cd /home/git/gitlab
 
-    ```
-           - { name: 'google_oauth2', app_id: 'YOUR APP ID',
-             app_secret: 'YOUR APP SECRET',
-             args: { access_type: 'offline', approval_prompt: '' } }
+      sudo -u git -H editor config/gitlab.yml
     ```
 
-1.  Change 'YOUR APP ID' to the client ID from the GitHub application page from step 7.
+1.  See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration) for initial settings.
 
-1.  Change 'YOUR APP SECRET' to the client secret from the GitHub application page  from step 7.
+1.  Add the provider configuration:
+
+    For omnibus package:
+
+    ```ruby
+      gitlab_rails['omniauth_providers'] = [
+        {
+          "name" => "google_oauth2",
+          "app_id" => "YOUR_APP_ID",
+          "app_secret" => "YOUR_APP_SECRET",
+          "args" => { "access_type" => "offline", "approval_prompt" => '' }
+        }
+      ]
+    ```
+
+    For installations from source:
+
+    ```
+     - { name: 'google_oauth2', app_id: 'YOUR_APP_ID',
+       app_secret: 'YOUR_APP_SECRET',
+       args: { access_type: 'offline', approval_prompt: '' } }
+    ```
+
+1.  Change 'YOUR_APP_ID' to the client ID from the Google Developer page from step 10.
+
+1.  Change 'YOUR_APP_SECRET' to the client secret from the Google Developer page from step 10.
 
 1.  Save the configuration file.
 

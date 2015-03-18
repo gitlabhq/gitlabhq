@@ -9,14 +9,14 @@ class SnippetsController < ApplicationController
 
   before_filter :set_title
 
-  skip_before_filter :authenticate_user!, only: [:index, :user_index]
+  skip_before_filter :authenticate_user!, only: [:index, :user_index, :show, :raw]
 
   respond_to :html
 
   layout :determine_layout
 
   def index
-    @snippets = SnippetsFinder.new.execute(current_user, filter: :all).page(params[:page]).per(20)
+    @snippets = SnippetsFinder.new.execute(current_user, filter: :all).page(params[:page]).per(PER_PAGE)
   end
 
   def user_index
@@ -27,8 +27,8 @@ class SnippetsController < ApplicationController
     @snippets = SnippetsFinder.new.execute(current_user, {
       filter: :by_user,
       user: @user,
-      scope: params[:scope]}).
-    page(params[:page]).per(20)
+      scope: params[:scope] }).
+    page(params[:page]).per(PER_PAGE)
 
     if @user == current_user
       render 'current_user_index'
@@ -42,25 +42,19 @@ class SnippetsController < ApplicationController
   end
 
   def create
-    @snippet = PersonalSnippet.new(snippet_params)
-    @snippet.author = current_user
+    @snippet = CreateSnippetService.new(nil, current_user,
+                                        snippet_params).execute
 
-    if @snippet.save
-      redirect_to snippet_path(@snippet)
-    else
-      respond_with @snippet
-    end
+    respond_with @snippet.becomes(Snippet)
   end
 
   def edit
   end
 
   def update
-    if @snippet.update_attributes(snippet_params)
-      redirect_to snippet_path(@snippet)
-    else
-      respond_with @snippet
-    end
+    UpdateSnippetService.new(nil, current_user, @snippet,
+                             snippet_params).execute
+    respond_with @snippet.becomes(Snippet)
   end
 
   def show
@@ -79,7 +73,7 @@ class SnippetsController < ApplicationController
       @snippet.content,
       type: 'text/plain; charset=utf-8',
       disposition: 'inline',
-      filename: @snippet.file_name
+      filename: @snippet.sanitized_file_name
     )
   end
 
@@ -106,6 +100,7 @@ class SnippetsController < ApplicationController
 
   def set_title
     @title = 'Snippets'
+    @title_url = snippets_path
   end
 
   def snippet_params

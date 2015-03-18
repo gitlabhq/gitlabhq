@@ -1,45 +1,95 @@
-%ul.project-navigation
-  = nav_link(path: 'projects#show', html_options: {class: "home"}) do
-    = link_to project_path(@project), title: 'Project', class: 'shortcuts-project' do
-      Project
-  - if project_nav_tab? :files
-    = nav_link(controller: %w(tree blob blame edit_tree new_tree)) do
-      = link_to 'Files', project_tree_path(@project, @ref || @repository.root_ref), class: 'shortcuts-tree'
+%ul.project-navigation.nav.nav-sidebar
+  - if @project_settings_nav
+    = nav_link do
+      = link_to project_path(@project), title: 'Back to project', class: "" do
+        %i.fa.fa-caret-square-o-left
+        %span
+          Back to project
 
-  - if project_nav_tab? :commits
-    = nav_link(controller: %w(commit commits compare repositories tags branches)) do
-      = link_to "Commits", project_commits_path(@project, @ref || @repository.root_ref), class: 'shortcuts-commits'
+    %li.separate-item
 
-  - if project_nav_tab? :network
-    = nav_link(controller: %w(network)) do
-      = link_to "Network", project_network_path(@project, @ref || @repository.root_ref), class: 'shortcuts-network'
+    = render 'projects/settings_nav'
 
-  - if project_nav_tab? :graphs
-    = nav_link(controller: %w(graphs)) do
-      = link_to "Graphs", project_graph_path(@project, @ref || @repository.root_ref), class: 'shortcuts-graphs'
+  - else
+    = nav_link(path: 'projects#show', html_options: {class: "home"}) do
+      = link_to project_path(@project), title: 'Project', class: 'shortcuts-project' do
+        %i.fa.fa-dashboard
+        %span
+          Project
+    - if project_nav_tab? :files
+      = nav_link(controller: %w(tree blob blame edit_tree new_tree)) do
+        = link_to namespace_project_tree_path(@project.namespace, @project, @ref || @repository.root_ref), title: 'Files',  class: 'shortcuts-tree' do
+          %i.fa.fa-files-o
+          %span
+            Files
 
-  - if project_nav_tab? :issues
-    = nav_link(controller: %w(issues milestones labels)) do
-      = link_to url_for_project_issues, class: 'shortcuts-issues' do
-        Issues
-        - if @project.used_default_issues_tracker?
-          %span.count.issue_counter= @project.issues.opened.count
+    - if project_nav_tab? :commits
+      = nav_link(controller: %w(commit commits compare repositories tags branches)) do
+        = link_to namespace_project_commits_path(@project.namespace, @project, @ref || @repository.root_ref), title: 'Commits', class: 'shortcuts-commits' do
+          %i.fa.fa-history
+          %span
+            Commits
 
-  - if project_nav_tab? :merge_requests
-    = nav_link(controller: :merge_requests) do
-      = link_to project_merge_requests_path(@project), class: 'shortcuts-merge_requests'  do
-        Merge Requests
-        %span.count.merge_counter= @project.merge_requests.opened.count
+    - if project_nav_tab? :network
+      = nav_link(controller: %w(network)) do
+        = link_to namespace_project_network_path(@project.namespace, @project, @ref || @repository.root_ref), title: 'Network', class: 'shortcuts-network' do
+          %i.fa.fa-code-fork
+          %span
+            Network
 
-  - if project_nav_tab? :wiki
-    = nav_link(controller: :wikis) do
-      = link_to 'Wiki', project_wiki_path(@project, :home), class: 'shortcuts-wiki'
+    - if project_nav_tab? :graphs
+      = nav_link(controller: %w(graphs)) do
+        = link_to namespace_project_graph_path(@project.namespace, @project, @ref || @repository.root_ref), title: 'Graphs',  class: 'shortcuts-graphs' do
+          %i.fa.fa-area-chart
+          %span
+            Graphs
 
-  - if project_nav_tab? :snippets
-    = nav_link(controller: :snippets) do
-      = link_to 'Snippets', project_snippets_path(@project), class: 'shortcuts-snippets'
+    = nav_link(controller: :milestones) do
+      = link_to namespace_project_milestones_path(@project.namespace, @project), title: 'Milestones' do
+        %i.fa.fa-clock-o
+        %span
+          Milestones
 
-  - if project_nav_tab? :settings
-    = nav_link(html_options: {class: "#{project_tab_class}"}) do
-      = link_to edit_project_path(@project), class: "stat-tab tab " do
-        Settings
+    - if project_nav_tab? :issues
+      = nav_link(controller: :issues) do
+        = link_to url_for_project_issues, title: 'Issues', class: 'shortcuts-issues' do
+          %i.fa.fa-exclamation-circle
+          %span
+            Issues
+            - if @project.default_issues_tracker?
+              %span.count.issue_counter= @project.issues.opened.count
+
+    - if project_nav_tab? :merge_requests
+      = nav_link(controller: :merge_requests) do
+        = link_to namespace_project_merge_requests_path(@project.namespace, @project), title: 'Merge Requests', class: 'shortcuts-merge_requests'  do
+          %i.fa.fa-tasks
+          %span
+            Merge Requests
+            %span.count.merge_counter= @project.merge_requests.opened.count
+
+    = nav_link(controller: :labels) do
+      = link_to namespace_project_labels_path(@project.namespace, @project), title: 'Labels' do
+        %i.fa.fa-tags
+        %span
+          Labels
+
+    - if project_nav_tab? :wiki
+      = nav_link(controller: :wikis) do
+        = link_to namespace_project_wiki_path(@project.namespace, @project, :home), title: 'Wiki', class: 'shortcuts-wiki' do
+          %i.fa.fa-book
+          %span
+            Wiki
+
+    - if project_nav_tab? :snippets
+      = nav_link(controller: :snippets) do
+        = link_to namespace_project_snippets_path(@project.namespace, @project), title: 'Snippets', class: 'shortcuts-snippets' do
+          %i.fa.fa-file-text-o
+          %span
+            Snippets
+
+    - if project_nav_tab? :settings
+      = nav_link(html_options: {class: "#{project_tab_class} separate-item"}) do
+        = link_to edit_project_path(@project), title: 'Settings', class: "stat-tab tab no-highlight" do
+          %i.fa.fa-cogs
+          %span
+            Settings

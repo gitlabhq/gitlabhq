@@ -33,14 +33,20 @@ production: &base
     # Uncomment and customize if you can't use the default user to run GitLab (default: 'git')
     # user: git
 
+    ## Date & Time settings
+    # Uncomment and customize if you want to change the default time zone of GitLab application.
+    # To see all available zones, run `bundle exec rake time:zones:all RAILS_ENV=production`
+    # time_zone: 'UTC'
+
     ## Email settings
+    # Uncomment and set to false if you need to disable email sending from GitLab (default: true)
+    # email_enabled: true
     # Email address used in the "From" field in mails sent by GitLab
     email_from: example@example.com
+    email_display_name: GitLab
 
-    # Email server smtp settings are in [a separate file](initializers/smtp_settings.rb.sample).
+    # Email server smtp settings are in config/initializers/smtp_settings.rb.sample
 
-    ## User settings
-    default_projects_limit: 10
     # default_can_create_group: false  # default: true
     # username_changing_enabled: false # default: true - User can change her username/namespace
     ## Default theme
@@ -51,26 +57,12 @@ production: &base
     ##   COLOR  = 5
     # default_theme: 2 # default: 2
 
-    ## Users can create accounts
-    # This also allows normal users to sign up for accounts themselves
-    # default: false - By default GitLab administrators must create all new accounts
-    # signup_enabled: true
-
-    ## Standard login settings
-    # The standard login can be disabled to force login via LDAP
-    # default: true - If set to false the standard login form won't be shown on the sign-in page
-    # signin_enabled: false
-
-    # Restrict setting visibility levels for non-admin users.
-    # The default is to allow all levels.
-    # restricted_visibility_levels: [ "public" ]
-
     ## Automatic issue closing
     # If a commit message matches this regular expression, all issues referenced from the matched text will be closed.
     # This happens when the commit is pushed or merged into the default branch of a project.
     # When not specified the default issue_closing_pattern as specified below will be used.
     # Tip: you can test your closing pattern at http://rubular.com
-    # issue_closing_pattern: '([Cc]lose[sd]|[Ff]ixe[sd]) #(\d+)'
+    # issue_closing_pattern: '((?:[Cc]los(?:e[sd]|ing)|[Ff]ix(?:e[sd]|ing)?) +(?:(?:issues? +)?#\d+(?:(?:, *| +and +)?))+)'
 
     ## Default project features settings
     default_projects_features:
@@ -119,6 +111,7 @@ production: &base
     #   new_issue_url: "http://jira.sample/secure/CreateIssue.jspa"
 
   ## Gravatar
+  ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
   gravatar:
     enabled: true                 # Use user avatar image from Gravatar.com (default: true)
     # gravatar urls: possible placeholders: %{hash} %{size} %{email}
@@ -134,43 +127,61 @@ production: &base
   #   bundle exec rake gitlab:ldap:check RAILS_ENV=production
   ldap:
     enabled: false
-    host: '_your_ldap_server'
-    port: 636
-    uid: 'sAMAccountName'
-    method: 'ssl' # "tls" or "ssl" or "plain"
-    bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
-    password: '_the_password_of_the_bind_user'
+    servers:
+      main: # 'main' is the GitLab 'provider ID' of this LDAP server
+        ## label
+        #
+        # A human-friendly name for your LDAP server. It is OK to change the label later,
+        # for instance if you find out it is too large to fit on the web page.
+        #
+        # Example: 'Paris' or 'Acme, Ltd.'
+        label: 'LDAP'
 
-    # This setting specifies if LDAP server is Active Directory LDAP server.
-    # For non AD servers it skips the AD specific queries.
-    # If your LDAP server is not AD, set this to false.
-    active_directory: true
+        host: '_your_ldap_server'
+        port: 389
+        uid: 'sAMAccountName'
+        method: 'plain' # "tls" or "ssl" or "plain"
+        bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
+        password: '_the_password_of_the_bind_user'
 
-    # If allow_username_or_email_login is enabled, GitLab will ignore everything
-    # after the first '@' in the LDAP username submitted by the user on login.
-    #
-    # Example:
-    # - the user enters 'jane.doe@example.com' and 'p@ssw0rd' as LDAP credentials;
-    # - GitLab queries the LDAP server with 'jane.doe' and 'p@ssw0rd'.
-    #
-    # If you are using "uid: 'userPrincipalName'" on ActiveDirectory you need to
-    # disable this setting, because the userPrincipalName contains an '@'.
-    allow_username_or_email_login: false
+        # This setting specifies if LDAP server is Active Directory LDAP server.
+        # For non AD servers it skips the AD specific queries.
+        # If your LDAP server is not AD, set this to false.
+        active_directory: true
 
-    # Base where we can search for users
-    #
-    #   Ex. ou=People,dc=gitlab,dc=example
-    #
-    base: ''
+        # If allow_username_or_email_login is enabled, GitLab will ignore everything
+        # after the first '@' in the LDAP username submitted by the user on login.
+        #
+        # Example:
+        # - the user enters 'jane.doe@example.com' and 'p@ssw0rd' as LDAP credentials;
+        # - GitLab queries the LDAP server with 'jane.doe' and 'p@ssw0rd'.
+        #
+        # If you are using "uid: 'userPrincipalName'" on ActiveDirectory you need to
+        # disable this setting, because the userPrincipalName contains an '@'.
+        allow_username_or_email_login: false
 
-    # Filter LDAP users
-    #
-    #   Format: RFC 4515 http://tools.ietf.org/search/rfc4515
-    #   Ex. (employeeType=developer)
-    #
-    #   Note: GitLab does not support omniauth-ldap's custom filter syntax.
-    #
-    user_filter: ''
+        # Base where we can search for users
+        #
+        #   Ex. ou=People,dc=gitlab,dc=example
+        #
+        base: ''
+
+        # Filter LDAP users
+        #
+        #   Format: RFC 4515 http://tools.ietf.org/search/rfc4515
+        #   Ex. (employeeType=developer)
+        #
+        #   Note: GitLab does not support omniauth-ldap's custom filter syntax.
+        #
+        user_filter: ''
+
+      # GitLab EE only: add more LDAP servers
+      # Choose an ID made of a-z and 0-9 . This ID will be stored in the database
+      # so that GitLab can remember which LDAP server a user belongs to.
+      # uswest2:
+      #   label:
+      #   host:
+      #   ....
 
 
   ## OmniAuth settings
@@ -193,14 +204,19 @@ production: &base
     # arguments, followed by optional 'args' which can be either a hash or an array.
     # Documentation for this is available at http://doc.gitlab.com/ce/integration/omniauth.html
     providers:
-      # - { name: 'google_oauth2', app_id: 'YOUR APP ID',
-      #     app_secret: 'YOUR APP SECRET',
+      # - { name: 'google_oauth2', app_id: 'YOUR_APP_ID',
+      #     app_secret: 'YOUR_APP_SECRET',
       #     args: { access_type: 'offline', approval_prompt: '' } }
-      # - { name: 'twitter', app_id: 'YOUR APP ID',
-      #     app_secret: 'YOUR APP SECRET'}
-      # - { name: 'github', app_id: 'YOUR APP ID',
-      #     app_secret: 'YOUR APP SECRET',
+      # - { name: 'twitter', app_id: 'YOUR_APP_ID',
+      #     app_secret: 'YOUR_APP_SECRET'}
+      # - { name: 'github', app_id: 'YOUR_APP_ID',
+      #     app_secret: 'YOUR_APP_SECRET',
       #     args: { scope: 'user:email' } }
+      # - { name: 'gitlab', app_id: 'YOUR_APP_ID',
+      #     app_secret: 'YOUR_APP_SECRET',
+      #     args: { scope: 'api' } }
+      # - { name: 'bitbucket', app_id: 'YOUR_APP_ID',
+      #     app_secret: 'YOUR_APP_SECRET'}
 
 
 
@@ -267,10 +283,19 @@ production: &base
     # piwik_url: '_your_piwik_url'
     # piwik_site_id: '_your_piwik_site_id'
 
-    ## Text under sign-in page (Markdown enabled)
-    # sign_in_text: |
-    #   ![Company Logo](http://www.companydomain.com/logo.png)
-    #   [Learn more about CompanyName](http://www.companydomain.com/)
+  rack_attack:
+    git_basic_auth:
+      # Whitelist requests from 127.0.0.1 for web proxies (NGINX/Apache) with incorrect headers
+      # ip_whitelist: ["127.0.0.1"]
+      #
+      # Limit the number of Git HTTP authentication attempts per IP
+      # maxretry: 10
+      #
+      # Reset the auth attempt counter per IP after 60 seconds
+      # findtime: 60
+      #
+      # Ban an IP for one hour (3600s) after too many auth attempts
+      # bantime: 3600
 
 development:
   <<: *base
@@ -299,6 +324,20 @@ test:
       project_url: "http://redmine/projects/:issues_tracker_id"
       issues_url: "http://redmine/:project_id/:issues_tracker_id/:id"
       new_issue_url: "http://redmine/projects/:issues_tracker_id/issues/new"
+  ldap:
+    enabled: false
+    servers:
+      main:
+        label: ldap
+        host: 127.0.0.1
+        port: 3890
+        uid: 'uid'
+        method: 'plain' # "tls" or "ssl" or "plain"
+        base: 'dc=example,dc=com'
+        user_filter: ''
+        group_base: 'ou=groups,dc=example,dc=com'
+        admin_group: ''
+        sync_ssh_keys: false
 
 staging:
   <<: *base

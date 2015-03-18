@@ -25,10 +25,15 @@ class DeleteBranchService < BaseService
     end
 
     if repository.rm_branch(branch_name)
-      Event.create_ref_event(project, current_user, branch, 'rm')
+      push_data = build_push_data(branch)
+
+      EventCreateService.new.push(project, current_user, push_data)
+      project.execute_hooks(push_data.dup, :push_hooks)
+      project.execute_services(push_data.dup, :push_hooks)
+
       success('Branch was removed')
     else
-      return error('Failed to remove branch')
+      error('Failed to remove branch')
     end
   end
 
@@ -42,5 +47,10 @@ class DeleteBranchService < BaseService
     out = super()
     out[:message] = message
     out
+  end
+
+  def build_push_data(branch)
+    Gitlab::PushDataBuilder
+      .build(project, current_user, branch.target, Gitlab::Git::BLANK_SHA, "#{Gitlab::Git::BRANCH_REF_PREFIX}#{branch.name}", [])
   end
 end

@@ -1,9 +1,4 @@
 .participants
-  %cite.cgray #{@merge_request.participants.count} participants
+  %span #{@merge_request.participants.count} participants
   - @merge_request.participants.each do |participant|
     = link_to_member(@project, participant, name: false, size: 24)
-
-  .merge-request-show-labels.pull-right
-    - @merge_request.labels.each do |label|
-      = link_to project_merge_requests_path(@project, label_name: label.name) do
-        = render_colored_label(label)

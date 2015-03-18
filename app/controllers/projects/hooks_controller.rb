@@ -16,7 +16,7 @@ class Projects::HooksController < Projects::ApplicationController
     @hook.save
 
     if @hook.valid?
-      redirect_to project_hooks_path(@project)
+      redirect_to namespace_project_hooks_path(@project.namespace, @project)
     else
       @hooks = @project.hooks.select(&:persisted?)
       render :index
@@ -26,6 +26,7 @@ class Projects::HooksController < Projects::ApplicationController
   def test
     if !@project.empty_repo?
       status = TestHookService.new.execute(hook, current_user)
+
       if status
         flash[:notice] = 'Hook successfully executed.'
       else
@@ -42,7 +43,7 @@ class Projects::HooksController < Projects::ApplicationController
   def destroy
     hook.destroy
 
-    redirect_to project_hooks_path(@project)
+    redirect_to namespace_project_hooks_path(@project.namespace, @project)
   end
 
   private

@@ -1,5 +1,6 @@
 class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   include SharedAuthentication
+  include SharedIssuable
   include SharedProject
   include SharedNote
   include SharedPaths
@@ -17,8 +18,21 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
     page.should_not have_content "Tweet control"
   end
 
+  step 'I should see that I am subscribed' do
+    find(".subscribe-button span").text.should == "Unsubscribe"
+  end
+
+  step 'I should see that I am unsubscribed' do
+    sleep 0.2
+    find(".subscribe-button span").text.should == "Subscribe"
+  end
+
   step 'I click link "Closed"' do
     click_link "Closed"
+  end
+
+  step 'I click button "Unsubscribe"' do
+    click_on "Unsubscribe"
   end
 
   step 'I should see "Release 0.3" in issues' do
@@ -167,7 +181,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   When 'I visit empty project page' do
     project = Project.find_by(name: 'Empty Project')
-    visit project_path(project)
+    visit namespace_project_path(project.namespace, project)
   end
 
   step 'I see empty project details with ssh clone info' do
@@ -179,7 +193,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   When "I visit empty project's issues page" do
     project = Project.find_by(name: 'Empty Project')
-    visit project_issues_path(project)
+    visit namespace_project_issues_path(project.namespace, project)
   end
 
   step 'I leave a comment with code block' do

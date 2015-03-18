@@ -1,6 +1,6 @@
 class Projects::IssuesController < Projects::ApplicationController
   before_filter :module_enabled
-  before_filter :issue, only: [:edit, :update, :show]
+  before_filter :issue, only: [:edit, :update, :show, :toggle_subscription]
 
   # Allow read any issue
   before_filter :authorize_read_issue!
@@ -18,17 +18,9 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def index
     terms = params['issue_search']
-
-    @issues = issues_filtered
+    @issues = get_issues_collection
     @issues = @issues.full_search(terms) if terms.present?
-    @issues = @issues.page(params[:page]).per(20)
-
-    assignee_id, milestone_id = params[:assignee_id], params[:milestone_id]
-    @assignee = @project.team.find(assignee_id) if assignee_id.present? && !assignee_id.to_i.zero?
-    @milestone = @project.milestones.find(milestone_id) if milestone_id.present? && !milestone_id.to_i.zero?
-    sort_param = params[:sort] || 'newest'
-    @sort = sort_param.humanize unless sort_param.empty?
-    @assignees = User.where(id: @project.issues.pluck(:assignee_id)).active
+    @issues = @issues.page(params[:page]).per(PER_PAGE)
 
     respond_to do |format|
       format.html
@@ -68,7 +60,7 @@ class Projects::IssuesController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         if @issue.valid?
-          redirect_to project_issue_path(@project, @issue)
+          redirect_to issue_path(@issue)
         else
           render :new
         end
@@ -86,7 +78,7 @@ class Projects::IssuesController < Projects::ApplicationController
       format.js
       format.html do
         if @issue.valid?
-          redirect_to [@project, @issue]
+          redirect_to issue_path(@issue)
         else
           render :edit
         end
@@ -101,8 +93,14 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def bulk_update
-    result = Issues::BulkUpdateService.new(project, current_user, params).execute
+    result = Issues::BulkUpdateService.new(project, current_user, bulk_update_params).execute
     redirect_to :back, notice: "#{result[:count]} issues updated"
+  end
+
+  def toggle_subscription
+    @issue.toggle_subscription(current_user)
+    
+    render nothing: true
   end
 
   protected
@@ -127,12 +125,6 @@ class Projects::IssuesController < Projects::ApplicationController
     return render_404 unless @project.issues_enabled
   end
 
-  def issues_filtered
-    params[:scope] = 'all' if params[:scope].blank?
-    params[:state] = 'opened' if params[:state].blank?
-    @issues = IssuesFinder.new.execute(current_user, params.merge(project_id: @project.id))
-  end
-
   # Since iids are implemented only in 6.1
   # user may navigate to issue page using old global ids.
   #
@@ -142,7 +134,7 @@ class Projects::IssuesController < Projects::ApplicationController
     issue = @project.issues.find_by(id: params[:id])
 
     if issue
-      redirect_to project_issue_path(@project, issue)
+      redirect_to issue_path(issue)
       return
     else
       raise ActiveRecord::RecordNotFound.new
@@ -153,6 +145,15 @@ class Projects::IssuesController < Projects::ApplicationController
     params.require(:issue).permit(
       :title, :assignee_id, :position, :description,
       :milestone_id, :state_event, :task_num, label_ids: []
+    )
+  end
+
+  def bulk_update_params
+    params.require(:update).permit(
+      :issues_ids,
+      :assignee_id,
+      :milestone_id,
+      :state_event
     )
   end
 end

@@ -1,0 +1,33 @@
+- content_for :note_actions do
+  - if can?(current_user, :modify_merge_request, @merge_request)
+    - if @merge_request.open?
+      = link_to 'Close', merge_request_path(@merge_request, merge_request: {state_event: :close }), method: :put, class: "btn btn-grouped btn-close close-mr-link js-note-target-close", title: "Close merge request"
+    - if @merge_request.closed?
+      = link_to 'Reopen', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: "btn btn-grouped btn-reopen reopen-mr-link js-note-target-reopen", title: "Reopen merge request"
+
+.row
+  %section.col-md-9
+    = render "projects/merge_requests/show/participants"
+    = render "projects/notes/notes_with_form"
+  %aside.col-md-3
+    .issuable-affix
+      .clearfix
+        %span.slead.has_tooltip{:"data-original-title" => 'Cross-project reference'}
+          = cross_project_reference(@project, @merge_request)
+      %hr
+      .context
+        = render partial: 'projects/merge_requests/show/context', locals: { merge_request: @merge_request }
+      %hr
+      .votes-holder
+        %h6 Votes
+        #votes= render 'votes/votes_block', votable: @merge_request
+
+      - if @merge_request.labels.any?
+        %hr
+        %h6 Labels
+        .merge-request-show-labels
+          - @merge_request.labels.each do |label|
+            = link_to namespace_project_merge_requests_path(@project.namespace, @project, label_name: label.name) do
+              = render_colored_label(label)
+  = link_to '#aside', class: 'show-aside' do
+    %i.fa.fa-angle-left

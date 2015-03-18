@@ -1,6 +1,13 @@
-.panel.panel-default
-  .panel-heading Personal projects
-  %ul.well-list
-    - projects.each do |project|
-      %li
-        = link_to_project project
+- if @contributed_projects.present?
+  .panel.panel-default
+    .panel-heading Projects contributed to
+    = render 'shared/projects_list',
+      projects: @contributed_projects.sort_by(&:star_count).reverse,
+      projects_limit: 5, stars: true, avatar: false
+
+- if @projects.present?
+  .panel.panel-default
+    .panel-heading Personal projects
+    = render 'shared/projects_list',
+      projects: @projects.sort_by(&:star_count).reverse,
+      projects_limit: 10, stars: true, avatar: false

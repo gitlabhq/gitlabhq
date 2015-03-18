@@ -92,6 +92,8 @@ class NotificationService
   #
   def merge_mr(merge_request, current_user)
     recipients = reject_muted_users([merge_request.author, merge_request.assignee], merge_request.target_project)
+    recipients = add_subscribed_users(recipients, merge_request)
+    recipients = reject_unsubscribed_users(recipients, merge_request)
     recipients = recipients.concat(project_watchers(merge_request.target_project)).uniq
     recipients.delete(current_user)
 
@@ -107,7 +109,7 @@ class NotificationService
   # Notify new user with email after creation
   def new_user(user, token = nil)
     # Don't email omniauth created users
-    mailer.new_user_email(user.id, user.password, token) unless user.extern_uid?
+    mailer.new_user_email(user.id, token) unless user.identities.any?
   end
 
   # Notify users on new note in system
@@ -118,12 +120,13 @@ class NotificationService
     return true unless note.noteable_type.present?
 
     # ignore gitlab service messages
-    return true if note.note =~ /\A_Status changed to closed_/
-    return true if note.note =~ /\A_mentioned in / && note.system == true
+    return true if note.note.start_with?('_Status changed to closed_')
+    return true if note.cross_reference? && note.system == true
 
     opts = { noteable_type: note.noteable_type, project_id: note.project_id }
 
     target = note.noteable
+
     if target.respond_to?(:participants)
       recipients = target.participants
     else
@@ -143,8 +146,16 @@ class NotificationService
     # Merge project watchers
     recipients = recipients.concat(project_watchers(note.project)).compact.uniq
 
+    # Reject mention users unless mentioned in comment
+    recipients = reject_mention_users(recipients - note.mentioned_users, note.project)
+    recipients = recipients + note.mentioned_users
+
     # Reject mutes users
     recipients = reject_muted_users(recipients, note.project)
+
+    recipients = add_subscribed_users(recipients, note.noteable)
+    
+    recipients = reject_unsubscribed_users(recipients, note.noteable)
 
     # Reject author
     recipients.delete(note.author)
@@ -157,20 +168,20 @@ class NotificationService
     end
   end
 
-  def new_team_member(project_member)
+  def new_project_member(project_member)
     mailer.project_access_granted_email(project_member.id)
   end
 
-  def update_team_member(project_member)
+  def update_project_member(project_member)
     mailer.project_access_granted_email(project_member.id)
   end
 
-  def new_group_member(users_group)
-    mailer.group_access_granted_email(users_group.id)
+  def new_group_member(group_member)
+    mailer.group_access_granted_email(group_member.id)
   end
 
-  def update_group_member(users_group)
-    mailer.group_access_granted_email(users_group.id)
+  def update_group_member(group_member)
+    mailer.group_access_granted_email(group_member.id)
   end
 
   def project_was_moved(project)
@@ -189,11 +200,11 @@ class NotificationService
     project_members = project_member_notification(project)
 
     users_with_project_level_global = project_member_notification(project, Notification::N_GLOBAL)
-    users_with_group_level_global = users_group_notification(project, Notification::N_GLOBAL)
+    users_with_group_level_global = group_member_notification(project, Notification::N_GLOBAL)
     users = users_with_global_level_watch([users_with_project_level_global, users_with_group_level_global].flatten.uniq)
 
     users_with_project_setting = select_project_member_setting(project, users_with_project_level_global, users)
-    users_with_group_setting = select_users_group_setting(project, project_members, users_with_group_level_global, users)
+    users_with_group_setting = select_group_member_setting(project, project_members, users_with_group_level_global, users)
 
     User.where(id: users_with_project_setting.concat(users_with_group_setting).uniq).to_a
   end
@@ -208,7 +219,7 @@ class NotificationService
     end
   end
 
-  def users_group_notification(project, notification_level)
+  def group_member_notification(project, notification_level)
     if project.group
       project.group.group_members.where(notification_level: notification_level).pluck(:user_id)
     else
@@ -237,9 +248,9 @@ class NotificationService
     users
   end
 
-  # Build a list of users based on group notifcation settings
-  def select_users_group_setting(project, project_members, global_setting, users_global_level_watch)
-    uids = users_group_notification(project, Notification::N_WATCH)
+  # Build a list of users based on group notification settings
+  def select_group_member_setting(project, project_members, global_setting, users_global_level_watch)
+    uids = group_member_notification(project, Notification::N_WATCH)
 
     # Group setting is watch, add to users list if user is not project member
     users = []
@@ -263,35 +274,75 @@ class NotificationService
   # Also remove duplications and nil recipients
   def reject_muted_users(users, project = nil)
     users = users.to_a.compact.uniq
+    users = users.reject(&:blocked?)
 
     users.reject do |user|
       next user.notification.disabled? unless project
 
-      tm = project.project_members.find_by(user_id: user.id)
+      member = project.project_members.find_by(user_id: user.id)
 
-      if !tm && project.group
-        tm = project.group.group_members.find_by(user_id: user.id)
+      if !member && project.group
+        member = project.group.group_members.find_by(user_id: user.id)
       end
 
       # reject users who globally disabled notification and has no membership
-      next user.notification.disabled? unless tm
+      next user.notification.disabled? unless member
 
       # reject users who disabled notification in project
-      next true if tm.notification.disabled?
+      next true if member.notification.disabled?
 
       # reject users who have N_GLOBAL in project and disabled in global settings
-      tm.notification.global? && user.notification.disabled?
+      member.notification.global? && user.notification.disabled?
     end
   end
 
-  def new_resource_email(target, project, method)
-    if target.respond_to?(:participants)
-      recipients = target.participants
-    else
-      recipients = []
+  # Remove users with notification level 'Mentioned'
+  def reject_mention_users(users, project = nil)
+    users = users.to_a.compact.uniq
+
+    users.reject do |user|
+      next user.notification.mention? unless project
+
+      member = project.project_members.find_by(user_id: user.id)
+
+      if !member && project.group
+        member = project.group.group_members.find_by(user_id: user.id)
+      end
+
+      # reject users who globally set mention notification and has no membership
+      next user.notification.mention? unless member
+
+      # reject users who set mention notification in project
+      next true if member.notification.mention?
+
+      # reject users who have N_MENTION in project and disabled in global settings
+      member.notification.global? && user.notification.mention?
     end
-    recipients = reject_muted_users(recipients, project)
-    recipients = recipients.concat(project_watchers(project)).uniq
+  end
+
+  def reject_unsubscribed_users(recipients, target)
+    return recipients unless target.respond_to? :subscriptions
+    
+    recipients.reject do |user|
+      subscription = target.subscriptions.find_by_user_id(user.id)
+      subscription && !subscription.subscribed
+    end
+  end
+
+  def add_subscribed_users(recipients, target)
+    return recipients unless target.respond_to? :subscriptions
+
+    subscriptions = target.subscriptions
+
+    if subscriptions.any?
+      recipients + subscriptions.where(subscribed: true).map(&:user)
+    else
+      recipients
+    end
+  end
+  
+  def new_resource_email(target, project, method)
+    recipients = build_recipients(target, project)
     recipients.delete(target.author)
 
     recipients.each do |recipient|
@@ -300,8 +351,7 @@ class NotificationService
   end
 
   def close_resource_email(target, project, current_user, method)
-    recipients = reject_muted_users([target.author, target.assignee], project)
-    recipients = recipients.concat(project_watchers(project)).uniq
+    recipients = build_recipients(target, project)
     recipients.delete(current_user)
 
     recipients.each do |recipient|
@@ -311,16 +361,7 @@ class NotificationService
 
   def reassign_resource_email(target, project, current_user, method)
     assignee_id_was = previous_record(target, "assignee_id")
-
-    recipients = User.where(id: [target.assignee_id, assignee_id_was])
-
-    # Add watchers to email list
-    recipients = recipients.concat(project_watchers(project))
-
-    # reject users with disabled notifications
-    recipients = reject_muted_users(recipients, project)
-
-    # Reject me from recipients if I reassign an item
+    recipients = build_recipients(target, project)
     recipients.delete(current_user)
 
     recipients.each do |recipient|
@@ -329,13 +370,28 @@ class NotificationService
   end
 
   def reopen_resource_email(target, project, current_user, method, status)
-    recipients = reject_muted_users([target.author, target.assignee], project)
-    recipients = recipients.concat(project_watchers(project)).uniq
+    recipients = build_recipients(target, project)
     recipients.delete(current_user)
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id, status, current_user.id)
     end
+  end
+
+  def build_recipients(target, project)
+    recipients =
+      if target.respond_to?(:participants)
+        target.participants
+      else
+        [target.author, target.assignee]
+      end
+
+    recipients = reject_muted_users(recipients, project)
+    recipients = reject_mention_users(recipients, project)
+    recipients = add_subscribed_users(recipients, target)
+    recipients = recipients.concat(project_watchers(project)).uniq
+    recipients = reject_unsubscribed_users(recipients, target)
+    recipients
   end
 
   def mailer

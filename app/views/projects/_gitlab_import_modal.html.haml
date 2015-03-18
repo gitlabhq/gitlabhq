@@ -1,0 +1,13 @@
+%div#gitlab_import_modal.modal.hide
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %a.close{href: "#", "data-dismiss" => "modal"} ×
+        %h3 Import projects from GitLab.com
+      .modal-body
+        To enable importing projects from GitLab.com, 
+        - if current_user.admin?
+          you need to
+        - else
+          your GitLab administrator needs to
+        == #{link_to 'setup OAuth integration', 'https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/integration/gitlab.md'}.

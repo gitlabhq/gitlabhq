@@ -1,32 +1,34 @@
 %ul.breadcrumb.repo-breadcrumb
   %li
     %i.fa.fa-angle-right
-    = link_to project_tree_path(@project, @ref) do
+    = link_to namespace_project_tree_path(@project.namespace, @project, @ref) do
       = @project.path
   - tree_breadcrumbs(@tree, 6) do |title, path|
     %li
       - if path
         - if path.end_with?(@path)
-          = link_to project_blob_path(@project, path) do
+          = link_to namespace_project_blob_path(@project.namespace, @project, path) do
             %strong
               = truncate(title, length: 40)
         - else
-          = link_to truncate(title, length: 40), project_tree_path(@project, path)
+          = link_to truncate(title, length: 40), namespace_project_tree_path(@project.namespace, @project, path)
       - else
         = link_to title, '#'
 
-%ul.blob-commit-info.bs-callout.bs-callout-info.hidden-xs
-  - blob_commit = @repository.last_commit_for_path(@commit.id, @blob.path)
+%ul.blob-commit-info.well.hidden-xs
+  - blob_commit = @repository.last_commit_for_path(@commit.id, blob.path)
   = render blob_commit, project: @project
 
 %div#tree-content-holder.tree-content-holder
   %article.file-holder
-    .file-title.clearfix
+    .file-title
       %i.fa.fa-file
-      %span.file_name
+      %strong
         = blob.name
-        %small= number_to_human_size blob.size
-      %span.options.hidden-xs= render "actions"
+      %small
+        = number_to_human_size(blob.size)
+      .file-actions.hidden-xs
+        = render "actions"
     - if blob.text?
       = render "text", blob: blob
     - elsif blob.image?

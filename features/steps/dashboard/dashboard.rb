@@ -21,7 +21,7 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
   end
 
   step 'I see prefilled new Merge Request page' do
-    current_path.should == new_project_merge_request_path(@project)
+    current_path.should == new_namespace_project_merge_request_path(@project.namespace, @project)
     find("#merge_request_target_project_id").value.should == @project.id.to_s
     find("#merge_request_source_branch").value.should == "fix"
     find("#merge_request_target_branch").value.should == "master"
@@ -37,8 +37,8 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
     )
   end
 
-  step 'I should see "John Doe joined project at Shop" event' do
-    page.should have_content "John Doe joined project at #{project.name_with_namespace}"
+  step 'I should see "John Doe joined project Shop" event' do
+    page.should have_content "John Doe joined project #{project.name_with_namespace}"
   end
 
   step 'user with name "John Doe" left project "Shop"' do
@@ -50,8 +50,8 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
     )
   end
 
-  step 'I should see "John Doe left project at Shop" event' do
-    page.should have_content "John Doe left project at #{project.name_with_namespace}"
+  step 'I should see "John Doe left project Shop" event' do
+    page.should have_content "John Doe left project #{project.name_with_namespace}"
   end
 
   step 'I have group with projects' do

@@ -1,0 +1,9 @@
+.form-actions
+  .commit-button-annotation
+    = button_tag 'Commit Changes',
+                 class: 'btn commit-btn js-commit-button btn-create'
+    .message
+      to branch
+      %strong= ref
+  = link_to 'Cancel', cancel_path,
+            class: 'btn btn-cancel', data: {confirm: leave_edit_message}

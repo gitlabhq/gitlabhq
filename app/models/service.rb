@@ -2,32 +2,55 @@
 #
 # Table name: services
 #
-#  id         :integer          not null, primary key
-#  type       :string(255)
-#  title      :string(255)
-#  project_id :integer          not null
-#  created_at :datetime
-#  updated_at :datetime
-#  active     :boolean          default(FALSE), not null
-#  properties :text
+#  id                    :integer          not null, primary key
+#  type                  :string(255)
+#  title                 :string(255)
+#  project_id            :integer
+#  created_at            :datetime
+#  updated_at            :datetime
+#  active                :boolean          default(FALSE), not null
+#  properties            :text
+#  template              :boolean          default(FALSE)
+#  push_events           :boolean          default(TRUE)
+#  issues_events         :boolean          default(TRUE)
+#  merge_requests_events :boolean          default(TRUE)
+#  tag_push_events       :boolean          default(TRUE)
 #
 
 # To add new service you should build a class inherited from Service
 # and implement a set of methods
 class Service < ActiveRecord::Base
+  include Sortable
   serialize :properties, JSON
 
   default_value_for :active, false
+  default_value_for :push_events, true
+  default_value_for :issues_events, true
+  default_value_for :merge_requests_events, true
+  default_value_for :tag_push_events, true
+  default_value_for :note_events, true
 
   after_initialize :initialize_properties
 
   belongs_to :project
   has_one :service_hook
 
-  validates :project_id, presence: true
+  validates :project_id, presence: true, unless: Proc.new { |service| service.template? }
+
+  scope :visible, -> { where.not(type: 'GitlabIssueTrackerService') }
+
+  scope :push_hooks, -> { where(push_events: true, active: true) }
+  scope :tag_push_hooks, -> { where(tag_push_events: true, active: true) }
+  scope :issue_hooks, -> { where(issues_events: true, active: true) }
+  scope :merge_request_hooks, -> { where(merge_requests_events: true, active: true) }
+  scope :note_hooks, -> { where(note_events: true, active: true) }
 
   def activated?
     active
+  end
+
+  def template?
+    template
   end
 
   def category
@@ -59,6 +82,10 @@ class Service < ActiveRecord::Base
     []
   end
 
+  def supported_events
+    %w(push tag_push issue merge_request)
+  end
+
   def execute
     # implement inside child
   end
@@ -81,5 +108,28 @@ class Service < ActiveRecord::Base
         end
       }
     end
+  end
+
+  def async_execute(data)
+    return unless supported_events.include?(data[:object_kind])
+    
+    Sidekiq::Client.enqueue(ProjectServiceWorker, id, data)
+  end
+
+  def issue_tracker?
+    self.category == :issue_tracker
+  end
+
+  def self.available_services_names
+    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla asana
+       emails_on_push gemnasium slack pushover buildbox bamboo teamcity jira
+       redmine custom_issue_tracker irker)
+  end
+
+  def self.create_from_template(project_id, template)
+    service = template.dup
+    service.template = false
+    service.project_id = project_id
+    service if service.save
   end
 end

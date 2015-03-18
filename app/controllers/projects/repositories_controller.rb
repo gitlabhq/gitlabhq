@@ -1,8 +1,14 @@
 class Projects::RepositoriesController < Projects::ApplicationController
   # Authorize
-  before_filter :authorize_read_project!
-  before_filter :authorize_code_access!
-  before_filter :require_non_empty_project
+  before_filter :require_non_empty_project, except: :create
+  before_filter :authorize_download_code!
+  before_filter :authorize_admin_project!, only: :create
+
+  def create
+    @project.create_repository
+
+    redirect_to project_path(@project)
+  end
 
   def archive
     unless can?(current_user, :download_code, @project)

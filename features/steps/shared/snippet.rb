@@ -51,4 +51,13 @@ module SharedSnippet
            visibility_level: Snippet::PUBLIC,
            author: current_user)
   end
+
+  step 'There is public "Personal snippet one" snippet' do
+    create(:personal_snippet,
+           title: "Personal snippet one",
+           content: "Test content",
+           file_name: "snippet.rb",
+           visibility_level: Snippet::PUBLIC,
+           author: create(:user))
+  end
 end

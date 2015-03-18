@@ -28,11 +28,16 @@ module SharedProject
     @project.team << [@user, :master]
   end
 
+  step 'I visit my empty project page' do
+    project = Project.find_by(name: 'Empty Project')
+    visit namespace_project_path(project.namespace, project)
+  end
+
   step 'project "Shop" has push event' do
     @project = Project.find_by(name: "Shop")
 
     data = {
-      before: "0000000000000000000000000000000000000000",
+      before: Gitlab::Git::BLANK_SHA,
       after: "6d394385cf567f80a8fd85055db1ab4c5295806f",
       ref: "refs/heads/fix",
       user_id: @user.id,
@@ -60,7 +65,7 @@ module SharedProject
   end
 
   step 'I should see project settings' do
-    current_path.should == edit_project_path(@project)
+    current_path.should == edit_namespace_project_path(@project.namespace, @project)
     page.should have_content("Project name")
     page.should have_content("Features:")
   end
@@ -131,7 +136,7 @@ module SharedProject
   end
 
   step 'public empty project "Empty Public Project"' do
-    create :empty_project, :public, name: "Empty Public Project"
+    create :project_empty_repo, :public, name: "Empty Public Project"
   end
 
   step 'project "Community" has comments' do

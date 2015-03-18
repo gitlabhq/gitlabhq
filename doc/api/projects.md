@@ -1,5 +1,23 @@
 # Projects
 
+
+### Project visibility level
+
+Project in GitLab has be either private, internal or public.
+You can determine it by `visibility_level` field in project. 
+
+Constants for project visibility levels are next:
+
+* Private. `visibility_level` is `0`. 
+  Project access must be granted explicitly for each user.
+
+* Internal. `visibility_level` is `10`.
+  The project can be cloned by any logged in user.
+ 
+* Public. `visibility_level` is `20`.
+  The project can be cloned without any authentication.
+
+
 ## List projects
 
 Get a list of projects accessible by the authenticated user.
@@ -11,6 +29,9 @@ GET /projects
 Parameters:
 
 - `archived` (optional) - if passed, limit by archived status
+- `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
+- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
+- `search` (optional) - Return list of authorized projects according to a search criteria
 
 ```json
 [
@@ -47,7 +68,8 @@ Parameters:
       "path": "diaspora",
       "updated_at": "2013-09-30T13: 46: 02Z"
     },
-    "archived": false
+    "archived": false,
+    "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png"
   },
   {
     "id": 6,
@@ -82,7 +104,8 @@ Parameters:
       "path": "brightbox",
       "updated_at": "2013-09-30T13:46:02Z"
     },
-    "archived": false
+    "archived": false,
+    "avatar_url": null
   }
 ]
 ```
@@ -95,6 +118,13 @@ Get a list of projects which are owned by the authenticated user.
 GET /projects/owned
 ```
 
+Parameters:
+
+- `archived` (optional) - if passed, limit by archived status
+- `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
+- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
+- `search` (optional) - Return list of authorized projects according to a search criteria
+
 ### List ALL projects
 
 Get a list of all GitLab projects (admin only).
@@ -102,6 +132,13 @@ Get a list of all GitLab projects (admin only).
 ```
 GET /projects/all
 ```
+
+Parameters:
+
+- `archived` (optional) - if passed, limit by archived status
+- `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
+- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
+- `search` (optional) - Return list of authorized projects according to a search criteria
 
 ### Get single project
 
@@ -160,7 +197,8 @@ Parameters:
       "notification_level": 3
     }
   },
-  "archived": false
+  "archived": false,
+  "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png"
 }
 ```
 
@@ -186,6 +224,7 @@ Parameters:
     "target_id": 830,
     "target_type": "Issue",
     "author_id": 1,
+    "author_username": "john",
     "data": null,
     "target_title": "Public project search field"
   },
@@ -196,6 +235,7 @@ Parameters:
     "target_id": null,
     "target_type": null,
     "author_id": 1,
+    "author_username": "john",
     "data": {
       "before": "50d4420237a9de7be1304607147aec22e4a14af7",
       "after": "c5feabde2d8cd023215af4d2ceeb7a64839fc428",
@@ -231,6 +271,7 @@ Parameters:
     "target_id": 840,
     "target_type": "Issue",
     "author_id": 1,
+    "author_username": "john",
     "data": null,
     "target_title": "Finish & merge Code search PR"
   }
@@ -280,6 +321,31 @@ Parameters:
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
 - `import_url` (optional)
+
+### Edit project
+
+Updates an existing project
+
+```
+PUT /projects/:id
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `name` (optional) - project name
+- `path` (optional) - repository name for project
+- `description` (optional) - short project description
+- `default_branch` (optional)
+- `issues_enabled` (optional)
+- `merge_requests_enabled` (optional)
+- `wiki_enabled` (optional)
+- `snippets_enabled` (optional)
+- `public` (optional) - if `true` same as setting visibility_level = 20
+- `visibility_level` (optional)
+
+On success, method returns 200 with the updated project. If parameters are 
+invalid, 400 is returned.
 
 ### Fork project
 
@@ -510,7 +576,7 @@ Parameters:
         }
       ],
       "tree": "c68537c6534a02cc2b176ca1549f4ffa190b58ee",
-      "message": "give caolan credit where it's due (up top)",
+      "message": "give Caolan credit where it's due (up top)",
       "author": {
         "name": "Jeremy Ashkenas",
         "email": "jashkenas@example.com"
@@ -625,6 +691,8 @@ GET /projects/search/:query
 
 Parameters:
 
--   query (required) - A string contained in the project name
--   per_page (optional) - number of projects to return per page
--   page (optional) - the page to retrieve
+- `query` (required) - A string contained in the project name
+- `per_page` (optional) - number of projects to return per page
+- `page` (optional) - the page to retrieve
+- `order_by` (optional) - Return requests ordered by `id`, `name`, `created_at` or `last_activity_at` fields
+- `sort` (optional) - Return requests sorted in `asc` or `desc` order

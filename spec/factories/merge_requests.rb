@@ -18,6 +18,7 @@
 #  iid               :integer
 #  description       :text
 #  position          :integer          default(0)
+#  locked_at         :datetime
 #
 
 FactoryGirl.define do
@@ -39,7 +40,7 @@ FactoryGirl.define do
     source_branch "master"
     target_branch "feature"
 
-    merge_status :can_be_merged
+    merge_status "can_be_merged"
 
     trait :with_diffs do
     end

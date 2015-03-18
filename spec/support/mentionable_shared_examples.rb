@@ -30,16 +30,16 @@ def common_mentionable_setup
     "!#{mentioned_mr.iid}, " +
     "#{ext_proj.path_with_namespace}##{ext_issue.iid}, " +
     "#{ext_proj.path_with_namespace}!#{ext_mr.iid}, " +
-    "#{ext_proj.path_with_namespace}@#{ext_commit.id[0..5]}, " +
-    "#{mentioned_commit.sha[0..5]} and itself as #{backref_text}"
+    "#{ext_proj.path_with_namespace}@#{ext_commit.short_id}, " +
+    "#{mentioned_commit.sha[0..10]} and itself as #{backref_text}"
   end
 
   before do
     # Wire the project's repository to return the mentioned commit, and +nil+ for any
     # unrecognized commits.
-    commitmap = { '123456' => mentioned_commit }
-    extra_commits.each { |c| commitmap[c.sha[0..5]] = c }
-    mproject.repository.stub(:commit) { |sha| commitmap[sha] }
+    commitmap = { '1234567890a' => mentioned_commit }
+    extra_commits.each { |c| commitmap[c.short_id] = c }
+    allow(mproject.repository).to receive(:commit) { |sha| commitmap[sha] }
     set_mentionable_text.call(ref_string)
   end
 end
@@ -48,20 +48,19 @@ shared_examples 'a mentionable' do
   common_mentionable_setup
 
   it 'generates a descriptive back-reference' do
-    subject.gfm_reference.should == backref_text
+    expect(subject.gfm_reference).to eq(backref_text)
   end
 
   it "extracts references from its reference property" do
     # De-duplicate and omit itself
     refs = subject.references(mproject)
-
-    refs.should have(6).items
-    refs.should include(mentioned_issue)
-    refs.should include(mentioned_mr)
-    refs.should include(mentioned_commit)
-    refs.should include(ext_issue)
-    refs.should include(ext_mr)
-    refs.should include(ext_commit)
+    expect(refs.size).to eq(6)
+    expect(refs).to include(mentioned_issue)
+    expect(refs).to include(mentioned_mr)
+    expect(refs).to include(mentioned_commit)
+    expect(refs).to include(ext_issue)
+    expect(refs).to include(ext_mr)
+    expect(refs).to include(ext_commit)
   end
 
   it 'creates cross-reference notes' do
@@ -69,7 +68,7 @@ shared_examples 'a mentionable' do
                          ext_issue, ext_mr, ext_commit]
 
     mentioned_objects.each do |referenced|
-      Note.should_receive(:create_cross_reference_note).with(referenced, subject.local_reference, mauthor, mproject)
+      expect(Note).to receive(:create_cross_reference_note).with(referenced, subject.local_reference, mauthor, mproject)
     end
 
     subject.create_cross_references!(mproject, mauthor)
@@ -78,8 +77,8 @@ shared_examples 'a mentionable' do
   it 'detects existing cross-references' do
     Note.create_cross_reference_note(mentioned_issue, subject.local_reference, mauthor, mproject)
 
-    subject.has_mentioned?(mentioned_issue).should be_true
-    subject.has_mentioned?(mentioned_mr).should be_false
+    expect(subject.has_mentioned?(mentioned_issue)).to be_truthy
+    expect(subject.has_mentioned?(mentioned_mr)).to be_falsey
   end
 end
 
@@ -90,18 +89,18 @@ shared_examples 'an editable mentionable' do
 
   it 'creates new cross-reference notes when the mentionable text is edited' do
     new_text = "still mentions ##{mentioned_issue.iid}, " +
-      "#{mentioned_commit.sha[0..5]}, " +
+      "#{mentioned_commit.sha[0..10]}, " +
       "#{ext_issue.iid}, " +
       "new refs: ##{other_issue.iid}, " +
       "#{ext_proj.path_with_namespace}##{other_ext_issue.iid}"
 
     [mentioned_issue, mentioned_commit, ext_issue].each do |oldref|
-      Note.should_not_receive(:create_cross_reference_note).with(oldref, subject.local_reference,
+      expect(Note).not_to receive(:create_cross_reference_note).with(oldref, subject.local_reference,
         mauthor, mproject)
     end
 
     [other_issue, other_ext_issue].each do |newref|
-      Note.should_receive(:create_cross_reference_note).with(
+      expect(Note).to receive(:create_cross_reference_note).with(
         newref,
         subject.local_reference,
         mauthor,

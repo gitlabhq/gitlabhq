@@ -28,25 +28,22 @@ class Projects::SnippetsController < Projects::ApplicationController
   end
 
   def create
-    @snippet = @project.snippets.build(snippet_params)
-    @snippet.author = current_user
-
-    if @snippet.save
-      redirect_to project_snippet_path(@project, @snippet)
-    else
-      respond_with(@snippet)
-    end
+    @snippet = CreateSnippetService.new(@project, current_user,
+                                        snippet_params).execute
+    respond_with(@snippet,
+                 location: namespace_project_snippet_path(@project.namespace,
+                                                          @project, @snippet))
   end
 
   def edit
   end
 
   def update
-    if @snippet.update_attributes(snippet_params)
-      redirect_to project_snippet_path(@project, @snippet)
-    else
-      respond_with(@snippet)
-    end
+    UpdateSnippetService.new(project, current_user, @snippet,
+                             snippet_params).execute
+    respond_with(@snippet,
+                 location: namespace_project_snippet_path(@project.namespace,
+                                                          @project, @snippet))
   end
 
   def show
@@ -60,7 +57,7 @@ class Projects::SnippetsController < Projects::ApplicationController
 
     @snippet.destroy
 
-    redirect_to project_snippets_path(@project)
+    redirect_to namespace_project_snippets_path(@project.namespace, @project)
   end
 
   def raw
@@ -68,7 +65,7 @@ class Projects::SnippetsController < Projects::ApplicationController
       @snippet.content,
       type: 'text/plain; charset=utf-8',
       disposition: 'inline',
-      filename: @snippet.file_name
+      filename: @snippet.sanitized_file_name
     )
   end
 

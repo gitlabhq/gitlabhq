@@ -17,18 +17,18 @@ describe Issues::CloseService do
         @issue = Issues::CloseService.new(project, user, {}).execute(issue)
       end
 
-      it { @issue.should be_valid }
-      it { @issue.should be_closed }
+      it { expect(@issue).to be_valid }
+      it { expect(@issue).to be_closed }
 
       it 'should send email to user2 about assign of new issue' do
         email = ActionMailer::Base.deliveries.last
-        email.to.first.should == user2.email
-        email.subject.should include(issue.title)
+        expect(email.to.first).to eq(user2.email)
+        expect(email.subject).to include(issue.title)
       end
 
       it 'should create system note about issue reassign' do
         note = @issue.notes.last
-        note.note.should include "Status changed to closed"
+        expect(note.note).to include "Status changed to closed"
       end
     end
   end

@@ -1,5 +1,9 @@
 module Gitlab
   module Satellite
+    class CheckoutFailed < StandardError; end
+    class CommitFailed < StandardError; end
+    class PushFailed < StandardError; end
+
     class Satellite
       include Gitlab::Popen
 
@@ -98,13 +102,13 @@ module Gitlab
         if heads.include? PARKING_BRANCH
           repo.git.checkout({}, PARKING_BRANCH)
         else
-          repo.git.checkout(default_options({b: true}), PARKING_BRANCH)
+          repo.git.checkout(default_options({ b: true }), PARKING_BRANCH)
         end
 
         # remove the parking branch from the list of heads ...
         heads.delete(PARKING_BRANCH)
         # ... and delete all others
-        heads.each { |head| repo.git.branch(default_options({D: true}), head) }
+        heads.each { |head| repo.git.branch(default_options({ D: true }), head) }
       end
 
       # Deletes all remotes except origin
@@ -126,7 +130,7 @@ module Gitlab
       end
 
       def default_options(options = {})
-        {raise: true, timeout: true}.merge(options)
+        { raise: true, timeout: true }.merge(options)
       end
 
       # Create directory for storing

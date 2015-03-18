@@ -4,13 +4,13 @@ class Groups::MilestonesController < ApplicationController
   before_filter :authorize_group_milestone!, only: :update
 
   def index
-    project_milestones = case params[:status]
-                         when 'all'; status
-                         when 'closed'; status('closed')
-                         else status('active')
+    project_milestones = case params[:state]
+                         when 'all'; state
+                         when 'closed'; state('closed')
+                         else state('active')
                          end
     @group_milestones = Milestones::GroupService.new(project_milestones).execute
-    @group_milestones = Kaminari.paginate_array(@group_milestones).page(params[:page]).per(30)
+    @group_milestones = Kaminari.paginate_array(@group_milestones).page(params[:page]).per(PER_PAGE)
   end
 
   def show
@@ -44,7 +44,7 @@ class Groups::MilestonesController < ApplicationController
     params[:title]
   end
 
-  def status(state = nil)
+  def state(state = nil)
     conditions = { project_id: group.projects }
     conditions.reverse_merge!(state: state) if state
     Milestone.where(conditions).order("title ASC")

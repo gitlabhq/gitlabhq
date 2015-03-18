@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe NotificationsHelper do
+  include FontAwesome::Rails::IconHelper
+  include IconsHelper
+
   describe 'notification_icon' do
     let(:notification) { double(disabled?: false, participating?: false, watch?: false) }
 
@@ -8,7 +11,7 @@ describe NotificationsHelper do
       before { notification.stub(disabled?: true) }
 
       it "has a red icon" do
-        notification_icon(notification).should match('class="fa fa-volume-off ns-mute"')
+        expect(notification_icon(notification)).to match('class="fa fa-volume-off ns-mute"')
       end
     end
 
@@ -16,7 +19,7 @@ describe NotificationsHelper do
       before { notification.stub(participating?: true) }
 
       it "has a blue icon" do
-        notification_icon(notification).should match('class="fa fa-volume-down ns-part"')
+        expect(notification_icon(notification)).to match('class="fa fa-volume-down ns-part"')
       end
     end
 
@@ -24,12 +27,12 @@ describe NotificationsHelper do
       before { notification.stub(watch?: true) }
 
       it "has a green icon" do
-        notification_icon(notification).should match('class="fa fa-volume-up ns-watch"')
+        expect(notification_icon(notification)).to match('class="fa fa-volume-up ns-watch"')
       end
     end
 
     it "has a blue icon" do
-      notification_icon(notification).should match('class="fa fa-circle-o ns-default"')
+      expect(notification_icon(notification)).to match('class="fa fa-circle-o ns-default"')
     end
   end
 end

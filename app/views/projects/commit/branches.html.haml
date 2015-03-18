@@ -1,0 +1,16 @@
+- if @branches.any?
+  %span
+    - branch = commit_default_branch(@project, @branches)
+    = link_to(namespace_project_tree_path(@project.namespace, @project, branch)) do
+      %span.label.label-gray
+        %i.fa.fa-code-fork
+        = branch
+    - if @branches.any? || @tags.any?
+      = link_to("#", class: "js-details-expand") do
+        %span.label.label-gray
+          \...
+      %span.js-details-content.hide
+        - if @branches.any?
+          = commit_branches_links(@project, @branches)
+        - if @tags.any?
+          = commit_tags_links(@project, @tags)

@@ -3,7 +3,9 @@ module Emails
     def new_merge_request_email(recipient_id, merge_request_id)
       @merge_request = MergeRequest.find(merge_request_id)
       @project = @merge_request.project
-      @target_url = project_merge_request_url(@project, @merge_request)
+      @target_url = namespace_project_merge_request_url(@project.namespace,
+                                                        @project,
+                                                        @merge_request)
       mail_new_thread(@merge_request,
                       from: sender(@merge_request.author_id),
                       to: recipient(recipient_id),
@@ -14,7 +16,9 @@ module Emails
       @merge_request = MergeRequest.find(merge_request_id)
       @previous_assignee = User.find_by(id: previous_assignee_id) if previous_assignee_id
       @project = @merge_request.project
-      @target_url = project_merge_request_url(@project, @merge_request)
+      @target_url = namespace_project_merge_request_url(@project.namespace,
+                                                        @project,
+                                                        @merge_request)
       mail_answer_thread(@merge_request,
                          from: sender(updated_by_user_id),
                          to: recipient(recipient_id),
@@ -25,7 +29,9 @@ module Emails
       @merge_request = MergeRequest.find(merge_request_id)
       @updated_by = User.find updated_by_user_id
       @project = @merge_request.project
-      @target_url = project_merge_request_url(@project, @merge_request)
+      @target_url = namespace_project_merge_request_url(@project.namespace,
+                                                        @project,
+                                                        @merge_request)
       mail_answer_thread(@merge_request,
                          from: sender(updated_by_user_id),
                          to: recipient(recipient_id),
@@ -35,7 +41,9 @@ module Emails
     def merged_merge_request_email(recipient_id, merge_request_id, updated_by_user_id)
       @merge_request = MergeRequest.find(merge_request_id)
       @project = @merge_request.project
-      @target_url = project_merge_request_url(@project, @merge_request)
+      @target_url = namespace_project_merge_request_url(@project.namespace,
+                                                        @project,
+                                                        @merge_request)
       mail_answer_thread(@merge_request,
                          from: sender(updated_by_user_id),
                          to: recipient(recipient_id),
@@ -47,7 +55,9 @@ module Emails
       @mr_status = status
       @project = @merge_request.project
       @updated_by = User.find updated_by_user_id
-      @target_url = project_merge_request_url(@project, @merge_request)
+      @target_url = namespace_project_merge_request_url(@project.namespace,
+                                                        @project,
+                                                        @merge_request)
       set_reference("merge_request_#{merge_request_id}")
       mail_answer_thread(@merge_request,
                          from: sender(updated_by_user_id),
@@ -56,7 +66,7 @@ module Emails
     end
   end
 
-  # Over rides default behavour to show source/target
+  # Over rides default behaviour to show source/target
   # Formats arguments into a String suitable for use as an email subject
   #
   # extra - Extra Strings to be inserted into the subject

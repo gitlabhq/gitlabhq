@@ -12,7 +12,7 @@ class Spinach::Features::ProjectNetworkGraph < Spinach::FeatureSteps
     Network::Graph.stub(max_count: 10)
 
     project = Project.find_by(name: "Shop")
-    visit project_network_path(project, "master")
+    visit namespace_project_network_path(project.namespace, project, "master")
   end
 
   step 'page should select "master" in select box' do

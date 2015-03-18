@@ -17,12 +17,13 @@ describe "Dashboard Issues Feed", feature: true  do
       it "should render atom feed via private token" do
         visit issues_dashboard_path(:atom, private_token: user.private_token)
 
-        response_headers['Content-Type'].should have_content("application/atom+xml")
-        body.should have_selector("title", text: "#{user.name} issues")
-        body.should have_selector("author email", text: issue1.author_email)
-        body.should have_selector("entry summary", text: issue1.title)
-        body.should have_selector("author email", text: issue2.author_email)
-        body.should have_selector("entry summary", text: issue2.title)
+        expect(response_headers['Content-Type']).
+          to have_content('application/atom+xml')
+        expect(body).to have_selector('title', text: "#{user.name} issues")
+        expect(body).to have_selector('author email', text: issue1.author_email)
+        expect(body).to have_selector('entry summary', text: issue1.title)
+        expect(body).to have_selector('author email', text: issue2.author_email)
+        expect(body).to have_selector('entry summary', text: issue2.title)
       end
     end
   end

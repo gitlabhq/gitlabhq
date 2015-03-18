@@ -12,19 +12,19 @@ describe ProjectWiki do
 
   describe "#path_with_namespace" do
     it "returns the project path with namespace with the .wiki extension" do
-      subject.path_with_namespace.should == project.path_with_namespace + ".wiki"
+      expect(subject.path_with_namespace).to eq(project.path_with_namespace + ".wiki")
     end
   end
 
   describe "#url_to_repo" do
     it "returns the correct ssh url to the repo" do
-      subject.url_to_repo.should == gitlab_shell.url_to_repo(subject.path_with_namespace)
+      expect(subject.url_to_repo).to eq(gitlab_shell.url_to_repo(subject.path_with_namespace))
     end
   end
 
   describe "#ssh_url_to_repo" do
     it "equals #url_to_repo" do
-      subject.ssh_url_to_repo.should == subject.url_to_repo
+      expect(subject.ssh_url_to_repo).to eq(subject.url_to_repo)
     end
   end
 
@@ -32,21 +32,21 @@ describe ProjectWiki do
     it "provides the full http url to the repo" do
       gitlab_url = Gitlab.config.gitlab.url
       repo_http_url = "#{gitlab_url}/#{subject.path_with_namespace}.git"
-      subject.http_url_to_repo.should == repo_http_url
+      expect(subject.http_url_to_repo).to eq(repo_http_url)
     end
   end
 
   describe "#wiki" do
     it "contains a Gollum::Wiki instance" do
-      subject.wiki.should be_a Gollum::Wiki
+      expect(subject.wiki).to be_a Gollum::Wiki
     end
 
     it "creates a new wiki repo if one does not yet exist" do
-      project_wiki.create_page("index", "test content").should be_true
+      expect(project_wiki.create_page("index", "test content")).to be_truthy
     end
 
     it "raises CouldNotCreateWikiError if it can't create the wiki repository" do
-      project_wiki.stub(:init_repo).and_return(false)
+      allow(project_wiki).to receive(:init_repo).and_return(false)
       expect { project_wiki.send(:create_repo!) }.to raise_exception(ProjectWiki::CouldNotCreateWikiError)
     end
   end
@@ -54,21 +54,27 @@ describe ProjectWiki do
   describe "#empty?" do
     context "when the wiki repository is empty" do
       before do
-        Gitlab::Shell.any_instance.stub(:add_repository) do
+        allow_any_instance_of(Gitlab::Shell).to receive(:add_repository) do
           create_temp_repo("#{Rails.root}/tmp/test-git-base-path/non-existant.wiki.git")
         end
-        project.stub(:path_with_namespace).and_return("non-existant")
+        allow(project).to receive(:path_with_namespace).and_return("non-existant")
       end
 
-      its(:empty?) { should be_true }
+      describe '#empty?' do
+        subject { super().empty? }
+        it { is_expected.to be_truthy }
+      end
     end
 
     context "when the wiki has pages" do
       before do
-        create_page("index", "This is an awesome new Gollum Wiki")
+        project_wiki.create_page("index", "This is an awesome new Gollum Wiki")
       end
 
-      its(:empty?) { should be_false }
+      describe '#empty?' do
+        subject { super().empty? }
+        it { is_expected.to be_falsey }
+      end
     end
   end
 
@@ -83,11 +89,11 @@ describe ProjectWiki do
     end
 
     it "returns an array of WikiPage instances" do
-      @pages.first.should be_a WikiPage
+      expect(@pages.first).to be_a WikiPage
     end
 
     it "returns the correct number of pages" do
-      @pages.count.should == 1
+      expect(@pages.count).to eq(1)
     end
   end
 
@@ -102,55 +108,55 @@ describe ProjectWiki do
 
     it "returns the latest version of the page if it exists" do
       page = subject.find_page("index page")
-      page.title.should == "index page"
+      expect(page.title).to eq("index page")
     end
 
     it "returns nil if the page does not exist" do
-      subject.find_page("non-existant").should == nil
+      expect(subject.find_page("non-existant")).to eq(nil)
     end
 
     it "can find a page by slug" do
       page = subject.find_page("index-page")
-      page.title.should == "index page"
+      expect(page.title).to eq("index page")
     end
 
     it "returns a WikiPage instance" do
       page = subject.find_page("index page")
-      page.should be_a WikiPage
+      expect(page).to be_a WikiPage
     end
   end
 
   describe '#find_file' do
     before do
       file = Gollum::File.new(subject.wiki)
-      Gollum::Wiki.any_instance.
-                   stub(:file).with('image.jpg', 'master', true).
+      allow_any_instance_of(Gollum::Wiki).
+                   to receive(:file).with('image.jpg', 'master', true).
                    and_return(file)
-      Gollum::File.any_instance.
-                   stub(:mime_type).
+      allow_any_instance_of(Gollum::File).
+                   to receive(:mime_type).
                    and_return('image/jpeg')
-      Gollum::Wiki.any_instance.
-                   stub(:file).with('non-existant', 'master', true).
+      allow_any_instance_of(Gollum::Wiki).
+                   to receive(:file).with('non-existant', 'master', true).
                    and_return(nil)
     end
 
     after do
-      Gollum::Wiki.any_instance.unstub(:file)
-      Gollum::File.any_instance.unstub(:mime_type)
+      allow_any_instance_of(Gollum::Wiki).to receive(:file).and_call_original
+      allow_any_instance_of(Gollum::File).to receive(:mime_type).and_call_original
     end
 
     it 'returns the latest version of the file if it exists' do
       file = subject.find_file('image.jpg')
-      file.mime_type.should == 'image/jpeg'
+      expect(file.mime_type).to eq('image/jpeg')
     end
 
     it 'returns nil if the page does not exist' do
-      subject.find_file('non-existant').should == nil
+      expect(subject.find_file('non-existant')).to eq(nil)
     end
 
     it 'returns a Gollum::File instance' do
       file = subject.find_file('image.jpg')
-      file.should be_a Gollum::File
+      expect(file).to be_a Gollum::File
     end
   end
 
@@ -160,23 +166,23 @@ describe ProjectWiki do
     end
 
     it "creates a new wiki page" do
-      subject.create_page("test page", "this is content").should_not == false
-      subject.pages.count.should == 1
+      expect(subject.create_page("test page", "this is content")).not_to eq(false)
+      expect(subject.pages.count).to eq(1)
     end
 
     it "returns false when a duplicate page exists" do
       subject.create_page("test page", "content")
-      subject.create_page("test page", "content").should == false
+      expect(subject.create_page("test page", "content")).to eq(false)
     end
 
     it "stores an error message when a duplicate page exists" do
       2.times { subject.create_page("test page", "content") }
-      subject.error_message.should =~ /Duplicate page:/
+      expect(subject.error_message).to match(/Duplicate page:/)
     end
 
     it "sets the correct commit message" do
       subject.create_page("test page", "some content", :markdown, "commit message")
-      subject.pages.first.page.version.message.should == "commit message"
+      expect(subject.pages.first.page.version.message).to eq("commit message")
     end
   end
 
@@ -193,11 +199,11 @@ describe ProjectWiki do
     end
 
     it "updates the content of the page" do
-      @page.raw_data.should == "some other content"
+      expect(@page.raw_data).to eq("some other content")
     end
 
     it "sets the correct commit message" do
-      @page.version.message.should == "updated page"
+      expect(@page.version.message).to eq("updated page")
     end
   end
 
@@ -209,7 +215,7 @@ describe ProjectWiki do
 
     it "deletes the page" do
       subject.delete_page(@page)
-      subject.pages.count.should == 0
+      expect(subject.pages.count).to eq(0)
     end
   end
 

@@ -19,27 +19,27 @@ describe GitTagPushService do
 
     subject { @push_data }
 
-    it { should include(ref: @ref) }
-    it { should include(before: @oldrev) }
-    it { should include(after: @newrev) }
-    it { should include(user_id: user.id) }
-    it { should include(user_name: user.name) }
-    it { should include(project_id: project.id) }
+    it { is_expected.to include(ref: @ref) }
+    it { is_expected.to include(before: @oldrev) }
+    it { is_expected.to include(after: @newrev) }
+    it { is_expected.to include(user_id: user.id) }
+    it { is_expected.to include(user_name: user.name) }
+    it { is_expected.to include(project_id: project.id) }
 
     context 'With repository data' do
       subject { @push_data[:repository] }
 
-      it { should include(name: project.name) }
-      it { should include(url: project.url_to_repo) }
-      it { should include(description: project.description) }
-      it { should include(homepage: project.web_url) }
+      it { is_expected.to include(name: project.name) }
+      it { is_expected.to include(url: project.url_to_repo) }
+      it { is_expected.to include(description: project.description) }
+      it { is_expected.to include(homepage: project.web_url) }
     end
   end
 
   describe "Web Hooks" do
     context "execute web hooks" do
       it "when pushing tags" do
-        project.should_receive(:execute_hooks)
+        expect(project).to receive(:execute_hooks)
         service.execute(project, user, 'oldrev', 'newrev', 'refs/tags/v1.0.0')
       end
     end

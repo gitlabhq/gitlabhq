@@ -1,6 +1,10 @@
 .event-title
   %span.author_name= link_to_author event
-  %span.event_label commented on #{event_note_title_html(event)} at
+  %span.event_label
+    = event.action_name
+    = event_note_title_html(event)
+    at
+    
   - if event.project
     = link_to_project event.project
   - else
@@ -14,9 +18,9 @@
     - note = event.target
     - if note.attachment.url
       - if note.attachment.image?
-        = link_to note.attachment.secure_url, target: '_blank' do
-          = image_tag note.attachment.secure_url, class: 'note-image-attach'
+        = link_to note.attachment.url, target: '_blank' do
+          = image_tag note.attachment.url, class: 'note-image-attach'
       - else
-        = link_to note.attachment.secure_url, target: "_blank", class: 'note-file-attach' do
+        = link_to note.attachment.url, target: "_blank", class: 'note-file-attach' do
           %i.fa.fa-paperclip
           = note.attachment_identifier

@@ -1,0 +1,22 @@
+%h2
+  %i.fa.fa-warning
+  No repository
+
+%p.slead
+  The repository for this project does not exist.
+  %br
+  This means you can not push code until you create an empty repository or import existing one.
+%hr
+
+.no-repo-actions
+  = link_to namespace_project_repository_path(@project.namespace, @project), method: :post, class: 'btn btn-primary' do
+    Create empty bare repository
+
+  %strong.prepend-left-10.append-right-10 or
+
+  = link_to new_namespace_project_import_path(@project.namespace, @project), class: 'btn' do
+    Import repository
+
+- if can? current_user, :remove_project, @project
+  .prepend-top-20
+    = link_to 'Remove project', project_path(@project), data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-remove pull-right"

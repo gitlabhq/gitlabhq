@@ -1,4 +1,4 @@
-class ConfirmDangerModal
+class @ConfirmDangerModal
   constructor: (form, text) ->
     @form = form
     $('.js-confirm-text').text(text || '')
@@ -16,5 +16,3 @@ class ConfirmDangerModal
 
     $('.js-confirm-danger-submit').on 'click', =>
       @form.submit()
-
-@ConfirmDangerModal = ConfirmDangerModal

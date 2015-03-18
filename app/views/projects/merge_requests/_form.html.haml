@@ -1,4 +1,4 @@
-= form_for [@project, @merge_request], html: { class: 'merge-request-form form-horizontal gfm-form' } do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @merge_request], html: { class: 'merge-request-form form-horizontal gfm-form' } do |f|
   .merge-request-form-info
     = render 'projects/issuable_form', f: f, issuable: @merge_request
 
@@ -9,4 +9,4 @@
     e.preventDefault();
   });
 
-  window.project_image_path_upload = "#{upload_image_project_path @project}";
+  window.project_uploads_path = "#{namespace_project_uploads_path @project.namespace, @project}";

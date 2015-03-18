@@ -1,22 +1,23 @@
 class Projects::RefsController < Projects::ApplicationController
   include ExtractsPath
 
-  # Authorize
-  before_filter :authorize_read_project!
-  before_filter :authorize_code_access!
   before_filter :require_non_empty_project
+  before_filter :assign_ref_vars
+  before_filter :authorize_download_code!
 
   def switch
     respond_to do |format|
       format.html do
         new_path = if params[:destination] == "tree"
-                     project_tree_path(@project, (@id))
+                     namespace_project_tree_path(@project.namespace, @project,
+                                                 (@id))
                    elsif params[:destination] == "blob"
-                     project_blob_path(@project, (@id))
+                     namespace_project_blob_path(@project.namespace, @project,
+                                                 (@id))
                    elsif params[:destination] == "graph"
-                     project_network_path(@project, @id, @options)
+                     namespace_project_network_path(@project.namespace, @project, @id, @options)
                    else
-                     project_commits_path(@project, @id)
+                     namespace_project_commits_path(@project.namespace, @project, @id)
                    end
 
         redirect_to new_path
@@ -32,19 +33,19 @@ class Projects::RefsController < Projects::ApplicationController
 
   def logs_tree
     @offset = if params[:offset].present?
-             params[:offset].to_i
-           else
-             0
-           end
+                params[:offset].to_i
+              else
+                0
+              end
 
     @limit = 25
 
     @path = params[:path]
 
     contents = []
-    contents += tree.trees
-    contents += tree.blobs
-    contents += tree.submodules
+    contents.push(*tree.trees)
+    contents.push(*tree.blobs)
+    contents.push(*tree.submodules)
 
     @logs = contents[@offset, @limit].to_a.map do |content|
       file = @path ? File.join(@path, content.name) : content.name

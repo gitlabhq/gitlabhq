@@ -50,14 +50,13 @@ module Mentionable
     matches.each do |match|
       identifier = match.delete "@"
       if identifier == "all"
-        users += project.team.members.flatten
-      else
-        if has_project
-          id = project.team.members.find_by(username: identifier).try(:id)
+        users.push(*project.team.members.flatten)
+      elsif namespace = Namespace.find_by(path: identifier)
+        if namespace.type == "Group"
+          users.push(*namespace.users)
         else
-          id = User.find_by(username: identifier).try(:id)
+          users << namespace.owner
         end
-        users << User.find(id) unless id.blank?
       end
     end
     users.uniq
@@ -68,9 +67,10 @@ module Mentionable
     return [] if text.blank?
     ext = Gitlab::ReferenceExtractor.new
     ext.analyze(text, p)
-    (ext.issues_for +
-     ext.merge_requests_for +
-     ext.commits_for).uniq - [local_reference]
+
+    (ext.issues_for(p)  +
+     ext.merge_requests_for(p) +
+     ext.commits_for(p)).uniq - [local_reference]
   end
 
   # Create a cross-reference Note for each GFM reference to another Mentionable found in +mentionable_text+.
@@ -99,5 +99,4 @@ module Mentionable
     preexisting = references(p, original)
     create_cross_references!(p, a, preexisting)
   end
-
 end

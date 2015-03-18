@@ -12,15 +12,15 @@ describe "Admin::Hooks", feature: true do
   describe "GET /admin/hooks" do
     it "should be ok" do
       visit admin_root_path
-      within ".main-nav" do
+      within ".sidebar-wrapper" do
         click_on "Hooks"
       end
-      current_path.should == admin_hooks_path
+      expect(current_path).to eq(admin_hooks_path)
     end
 
     it "should have hooks list" do
       visit admin_hooks_path
-      page.should have_content(@system_hook.url)
+      expect(page).to have_content(@system_hook.url)
     end
   end
 
@@ -33,8 +33,8 @@ describe "Admin::Hooks", feature: true do
     end
 
     it "should open new hook popup" do
-      current_path.should == admin_hooks_path
-      page.should have_content(@url)
+      expect(current_path).to eq(admin_hooks_path)
+      expect(page).to have_content(@url)
     end
   end
 
@@ -45,7 +45,7 @@ describe "Admin::Hooks", feature: true do
       click_link "Test Hook"
     end
 
-    it { current_path.should == admin_hooks_path }
+    it { expect(current_path).to eq(admin_hooks_path) }
   end
 
 end

@@ -1,9 +1,26 @@
 Gitlab::Seeder.quiet do
-  contents = [
-    `curl https://gist.githubusercontent.com/randx/4275756/raw/da2f262920c96d1a970d48bf2e99147954b1f4bd/glus1204.sh`,
-    `curl https://gist.githubusercontent.com/randx/3754594/raw/11026a295e6ef3a151c635707a3e1e8e15fc4725/gitlab_setup.sh`,
-    `curl https://gist.githubusercontent.com/randx/3065552/raw/29fbd09f4605a5ea22a5a9095e35fd1938dea4d6/gistfile1.sh`,
-  ]
+  content =<<eos
+class Member < ActiveRecord::Base
+  include Notifiable
+  include Gitlab::Access
+
+  belongs_to :user
+  belongs_to :source, polymorphic: true
+
+  validates :user, presence: true
+  validates :source, presence: true
+  validates :user_id, uniqueness: { scope: [:source_type, :source_id], message: "already exists in source" }
+  validates :access_level, inclusion: { in: Gitlab::Access.all_values }, presence: true
+
+  scope :guests, -> { where(access_level: GUEST) }
+  scope :reporters, -> { where(access_level: REPORTER) }
+  scope :developers, -> { where(access_level: DEVELOPER) }
+  scope :masters,  -> { where(access_level: MASTER) }
+  scope :owners,  -> { where(access_level: OWNER) }
+
+  delegate :name, :username, :email, to: :user, prefix: true
+end
+eos
 
   (1..50).each  do |i|
     user = User.all.sample
@@ -12,10 +29,11 @@ Gitlab::Seeder.quiet do
       id: i,
       author_id: user.id,
       title: Faker::Lorem.sentence(3),
-      file_name:  Faker::Internet.domain_word + '.sh',
-      private: [true, false].sample,
-      content: contents.sample,
+      file_name:  Faker::Internet.domain_word + '.rb',
+      visibility_level: Gitlab::VisibilityLevel.values.sample,
+      content: content,
     }])
+
     print('.')
   end
 end

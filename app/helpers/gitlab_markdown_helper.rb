@@ -31,7 +31,9 @@ module GitlabMarkdownHelper
   def markdown(text, options={})
     unless (@markdown and options == @options)
       @options = options
-      gitlab_renderer = Redcarpet::Render::GitlabHTML.new(self, {
+      gitlab_renderer = Redcarpet::Render::GitlabHTML.new(self,
+                                                          user_color_scheme_class,
+                                                          {
                             # see https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch-
                             with_toc_data: true,
                             safe_links_only: true
@@ -50,12 +52,14 @@ module GitlabMarkdownHelper
     @markdown.render(sanitize_html(text)).html_safe
   end
 
-  def first_line_in_markdown(text)
-    line = text.split("\n").detect do |i|
-      i.present? && markdown(i).present?
-    end
-    line += '...' unless line.nil?
-    line
+  # Return the first line of +text+, up to +max_chars+, after parsing the line
+  # as Markdown.  HTML tags in the parsed output are not counted toward the
+  # +max_chars+ limit.  If the length limit falls within a tag's contents, then
+  # the tag contents are truncated without removing the closing tag.
+  def first_line_in_markdown(text, max_chars = nil)
+    md = markdown(text).strip
+
+    truncate_visible(md, max_chars || md.length) if md.present?
   end
 
   def render_wiki_content(wiki_page)
@@ -107,7 +111,7 @@ module GitlabMarkdownHelper
   end
 
   def link_to_ignore?(link)
-    if link =~ /\#\w+/
+    if link =~ /\A\#\w+/
       # ignore anchors like <a href="#my-header">
       true
     else
@@ -116,13 +120,14 @@ module GitlabMarkdownHelper
   end
 
   def ignored_protocols
-    ["http://","https://", "ftp://", "mailto:"]
+    ["http://","https://", "ftp://", "mailto:", "smb://"]
   end
 
-  def rebuild_path(path)
-    path.gsub!(/(#.*)/, "")
+  def rebuild_path(file_path)
+    file_path = file_path.dup
+    file_path.gsub!(/(#.*)/, "")
     id = $1 || ""
-    file_path = relative_file_path(path)
+    file_path = relative_file_path(file_path)
     file_path = sanitize_slashes(file_path)
 
     [
@@ -202,5 +207,65 @@ module GitlabMarkdownHelper
   # We will assume that if no ref exists we can point to master
   def correct_ref
     @ref ? @ref : "master"
+  end
+
+  private
+
+  # Return +text+, truncated to +max_chars+ characters, excluding any HTML
+  # tags.
+  def truncate_visible(text, max_chars)
+    doc = Nokogiri::HTML.fragment(text)
+    content_length = 0
+    truncated = false
+
+    doc.traverse do |node|
+      if node.text? || node.content.empty?
+        if truncated
+          node.remove
+          next
+        end
+
+        # Handle line breaks within a node
+        if node.content.strip.lines.length > 1
+          node.content = "#{node.content.lines.first.chomp}..."
+          truncated = true
+        end
+
+        num_remaining = max_chars - content_length
+        if node.content.length > num_remaining
+          node.content = node.content.truncate(num_remaining)
+          truncated = true
+        end
+        content_length += node.content.length
+      end
+
+      truncated = truncate_if_block(node, truncated)
+    end
+
+    doc.to_html
+  end
+
+  # Used by #truncate_visible.  If +node+ is the first block element, and the
+  # text hasn't already been truncated, then append "..." to the node contents
+  # and return true.  Otherwise return false.
+  def truncate_if_block(node, truncated)
+    if node.element? && node.description.block? && !truncated
+      node.content = "#{node.content}..." if node.next_sibling
+      true
+    else
+      truncated
+    end
+  end
+
+  def cross_project_reference(project, entity)
+    path = project.path_with_namespace
+
+    if entity.kind_of?(Issue)
+      [path, entity.iid].join('#')
+    elsif entity.kind_of?(MergeRequest)
+      [path, entity.iid].join('!')
+    else
+      raise 'Not supported type'
+    end
   end
 end

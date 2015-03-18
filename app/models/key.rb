@@ -15,11 +15,12 @@
 require 'digest/md5'
 
 class Key < ActiveRecord::Base
+  include Sortable
   include Gitlab::Popen
 
   belongs_to :user
 
-  before_validation :strip_white_space, :generate_fingerpint
+  before_validation :strip_white_space, :generate_fingerprint
 
   validates :title, presence: true, length: { within: 0..255 }
   validates :key, presence: true, length: { within: 0..5000 }, format: { with: /\A(ssh|ecdsa)-.*\Z/ }, uniqueness: true
@@ -76,7 +77,7 @@ class Key < ActiveRecord::Base
 
   private
 
-  def generate_fingerpint
+  def generate_fingerprint
     self.fingerprint = nil
     return unless key.present?
 
@@ -89,7 +90,7 @@ class Key < ActiveRecord::Base
     end
 
     if cmd_status.zero?
-      cmd_output.gsub /([\d\h]{2}:)+[\d\h]{2}/ do |match|
+      cmd_output.gsub /(\h{2}:)+\h{2}/ do |match|
         self.fingerprint = match
       end
     end

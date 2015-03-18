@@ -1,9 +1,9 @@
-class Issue
+class @Issue
   constructor: ->
     $('.edit-issue.inline-update input[type="submit"]').hide()
-    $(".issue-box .inline-update").on "change", "select", ->
+    $(".context .inline-update").on "change", "select", ->
       $(this).submit()
-    $(".issue-box .inline-update").on "change", "#issue_assignee_id", ->
+    $(".context .inline-update").on "change", "#issue_assignee_id", ->
       $(this).submit()
 
     if $("a.btn-close").length
@@ -16,4 +16,9 @@ class Issue
       updateTaskState
     )
 
-@Issue = Issue
+    $('.issue-details').waitForImages ->
+      $('.issuable-affix').affix offset:
+        top: ->
+          @top = $('.issue-details').outerHeight(true) + 25
+        bottom: ->
+          @bottom = $('.footer').outerHeight(true)

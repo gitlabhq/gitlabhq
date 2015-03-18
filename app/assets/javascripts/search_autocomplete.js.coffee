@@ -1,4 +1,4 @@
-class SearchAutocomplete
+class @SearchAutocomplete
   constructor: (search_autocomplete_path, project_id, project_ref) ->
     project_id = '' unless project_id
     project_ref = '' unless project_ref
@@ -9,5 +9,3 @@ class SearchAutocomplete
       minLength: 1
       select: (event, ui) ->
         location.href = ui.item.url
-
-@SearchAutocomplete = SearchAutocomplete

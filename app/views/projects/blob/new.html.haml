@@ -1,0 +1,19 @@
+%h3.page-title New file
+.file-editor
+  = form_tag(namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post, class: 'form-horizontal form-new-file') do
+    = render 'projects/blob/editor', ref: @ref
+    = render 'shared/commit_message_container', params: params,
+             placeholder: 'Add new file'
+
+    .form-group.branch
+      = label_tag 'branch', class: 'control-label' do
+        Branch
+      .col-sm-10
+        = text_field_tag 'new_branch', @ref, class: "form-control"
+
+    = hidden_field_tag 'content', '', id: 'file-content'
+    = render 'projects/commit_button', ref: @ref,
+              cancel_path: namespace_project_tree_path(@project.namespace, @project, @id)
+
+:javascript
+  blob = new NewBlob(gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}", null)

@@ -1,18 +1,21 @@
+# LDAP authorization model
+#
+# * Check if we are allowed access (not blocked)
+#
 module Gitlab
   module LDAP
     class Access
-      attr_reader :adapter
+      attr_reader :adapter, :provider, :user
 
-      def self.open(&block)
-        Gitlab::LDAP::Adapter.open do |adapter|
-          block.call(self.new(adapter))
+      def self.open(user, &block)
+        Gitlab::LDAP::Adapter.open(user.ldap_identity.provider) do |adapter|
+          block.call(self.new(user, adapter))
         end
       end
 
       def self.allowed?(user)
-        self.open do |access|
-          if access.allowed?(user)
-            # GitLab EE LDAP code goes here
+        self.open(user) do |access|
+          if access.allowed?
             user.last_credential_check_at = Time.now
             user.save
             true
@@ -22,20 +25,37 @@ module Gitlab
         end
       end
 
-      def initialize(adapter=nil)
+      def initialize(user, adapter=nil)
         @adapter = adapter
+        @user = user
+        @provider = user.ldap_identity.provider
       end
 
-      def allowed?(user)
-        if Gitlab::LDAP::Person.find_by_dn(user.extern_uid, adapter)
-          if Gitlab.config.ldap.active_directory
-            !Gitlab::LDAP::Person.disabled_via_active_directory?(user.extern_uid, adapter)
+      def allowed?
+        if Gitlab::LDAP::Person.find_by_dn(user.ldap_identity.extern_uid, adapter)
+          return true unless ldap_config.active_directory
+
+          # Block user in GitLab if he/she was blocked in AD
+          if Gitlab::LDAP::Person.disabled_via_active_directory?(user.ldap_identity.extern_uid, adapter)
+            user.block unless user.blocked?
+            false
+          else
+            user.activate if user.blocked?
+            true
           end
         else
           false
         end
       rescue
         false
+      end
+
+      def adapter
+        @adapter ||= Gitlab::LDAP::Adapter.new(provider)
+      end
+
+      def ldap_config
+        Gitlab::LDAP::Config.new(provider)
       end
     end
   end

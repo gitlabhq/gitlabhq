@@ -12,7 +12,7 @@
     - unless user.linkedin.blank?
       %li
         %span.light LinkedIn:
-        %strong= user.linkedin
+        %strong= link_to user.linkedin, "http://www.linkedin.com/in/#{user.linkedin}"
     - unless user.twitter.blank?
       %li
         %span.light Twitter:

@@ -11,7 +11,7 @@ module Gitlab
     end
 
     def project_name_regex
-      /\A[a-zA-Z0-9_][a-zA-Z0-9_\-\. ]*\z/
+      /\A[a-zA-Z0-9_.][a-zA-Z0-9_\-\. ]*\z/
     end
 
     def project_regex_message
@@ -67,8 +67,7 @@ module Gitlab
 
     def default_regex_message
       "can contain only letters, digits, '_', '-' and '.'. " \
-      "It must start with letter, digit or '_', optionally preceeded by '.'. " \
-      "It must not end in '.git'."
+      "Cannot start with '-' or end in '.git'" \
     end
 
     def default_regex

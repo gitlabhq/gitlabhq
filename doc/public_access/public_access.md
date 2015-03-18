@@ -41,4 +41,4 @@ When visiting the public page of an user, you will only see listed projects whic
 
 ## Restricting the use of public or internal projects
 
-In [gitlab.yml](https://gitlab.com/gitlab-org/gitlab-ce/blob/dbd88d453b8e6c78a423fa7e692004b1db6ea069/config/gitlab.yml.example#L64) you can disable public projects or public and internal projects for the entire GitLab installation to prevent people making code public by accident.
+In [gitlab.yml](https://gitlab.com/gitlab-org/gitlab-ce/blob/dbd88d453b8e6c78a423fa7e692004b1db6ea069/config/gitlab.yml.example#L64) you can disable public projects or public and internal projects for the entire GitLab installation to prevent people making code public by accident.  The restricted visibility settings do not apply to admin users.

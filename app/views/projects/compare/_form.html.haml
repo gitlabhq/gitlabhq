@@ -1,4 +1,4 @@
-= form_tag project_compare_index_path(@project), method: :post, class: 'form-inline' do
+= form_tag namespace_project_compare_index_path(@project.namespace, @project), method: :post, class: 'form-inline' do
   .clearfix.append-bottom-20
     - if params[:to] && params[:from]
       = link_to 'switch', {from: params[:to], to: params[:from]}, {class: 'commits-compare-switch has_tooltip', title: 'Switch base of comparison'}
@@ -12,7 +12,7 @@
         %span.input-group-addon to
         = text_field_tag :to, params[:to], class: "form-control"
     &nbsp;
-    = submit_tag "Compare", class: "btn btn-create commits-compare-btn"
+    = button_tag "Compare", class: "btn btn-create commits-compare-btn"
     - if compare_to_mr_button?
       = link_to compare_mr_path, class: 'prepend-left-10 btn' do
         %strong Make a merge request

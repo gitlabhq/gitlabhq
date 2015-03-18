@@ -16,27 +16,27 @@ describe WikiPage do
       end
 
       it "sets the slug attribute" do
-        @wiki_page.slug.should == "test-page"
+        expect(@wiki_page.slug).to eq("test-page")
       end
 
       it "sets the title attribute" do
-        @wiki_page.title.should == "test page"
+        expect(@wiki_page.title).to eq("test page")
       end
 
       it "sets the formatted content attribute" do
-        @wiki_page.content.should == "test content"
+        expect(@wiki_page.content).to eq("test content")
       end
 
       it "sets the format attribute" do
-        @wiki_page.format.should == :markdown
+        expect(@wiki_page.format).to eq(:markdown)
       end
 
       it "sets the message attribute" do
-        @wiki_page.message.should == "test commit"
+        expect(@wiki_page.message).to eq("test commit")
       end
 
       it "sets the version attribute" do
-        @wiki_page.version.should be_a Grit::Commit
+        expect(@wiki_page.version).to be_a Gollum::Git::Commit
       end
     end
   end
@@ -48,12 +48,12 @@ describe WikiPage do
 
     it "validates presence of title" do
       subject.attributes.delete(:title)
-      subject.valid?.should be_false
+      expect(subject.valid?).to be_falsey
     end
 
     it "validates presence of content" do
       subject.attributes.delete(:content)
-      subject.valid?.should be_false
+      expect(subject.valid?).to be_falsey
     end
   end
 
@@ -69,11 +69,11 @@ describe WikiPage do
     context "with valid attributes" do
       it "saves the wiki page" do
         subject.create(@wiki_attr)
-        wiki.find_page("Index").should_not be_nil
+        expect(wiki.find_page("Index")).not_to be_nil
       end
 
       it "returns true" do
-        subject.create(@wiki_attr).should == true
+        expect(subject.create(@wiki_attr)).to eq(true)
       end
     end
   end
@@ -95,7 +95,7 @@ describe WikiPage do
       end
 
       it "returns true" do
-        @page.update("more content").should be_true
+        expect(@page.update("more content")).to be_truthy
       end
     end
   end
@@ -108,11 +108,11 @@ describe WikiPage do
 
     it "should delete the page" do
       @page.delete
-      wiki.pages.should be_empty
+      expect(wiki.pages).to be_empty
     end
 
     it "should return true" do
-      @page.delete.should == true
+      expect(@page.delete).to eq(true)
     end
   end
 
@@ -128,7 +128,7 @@ describe WikiPage do
 
     it "returns an array of all commits for the page" do
       3.times { |i| @page.update("content #{i}") }
-      @page.versions.count.should == 4
+      expect(@page.versions.count).to eq(4)
     end
   end
 
@@ -144,7 +144,7 @@ describe WikiPage do
 
     it "should be replace a hyphen to a space" do
       @page.title = "Import-existing-repositories-into-GitLab"
-      @page.title.should == "Import existing repositories into GitLab"
+      expect(@page.title).to eq("Import existing repositories into GitLab")
     end
   end
 
