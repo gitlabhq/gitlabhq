@@ -4,7 +4,6 @@
  */
 .page-title {
   margin-top: 0px;
-  color: #333;
   line-height: 1.5;
   font-weight: normal;
   margin-bottom: 5px;
@@ -16,7 +15,7 @@ pre {
 
   &.dark {
     background: #333;
-    color: #f5f5f5;
+    color: $background-color;
   }
 }
 
