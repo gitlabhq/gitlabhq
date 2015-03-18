@@ -54,7 +54,7 @@
 
       .timeline-content {
         position: relative;
-        background: #f5f5f6;
+        background: $background-color;
         padding: 10px 15px;
         margin-left: 60px;
 
@@ -70,7 +70,7 @@
           height: 0;
           border-style: solid;
           border-width: 9px 9px 9px 0;
-          border-color: transparent #f5f5f6 transparent transparent;
+          border-color: transparent $background-color transparent transparent;
           left: 0;
           top: 10px;
           margin-left: -9px;

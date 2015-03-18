@@ -58,8 +58,6 @@
 }
 
 .nav-sidebar li {
-  text-shadow: 0 1px 1px $border-color;
-
   &.separate-item {
     border-top: 1px solid $border-color;
     padding-top: 10px;
@@ -67,7 +65,7 @@
   }
 
   a {
-    color: #3b5a5b;
+    color: $gray;
     display: block;
     text-decoration: none;
     padding: 8px 15px;
@@ -78,7 +76,7 @@
     &:hover {
       text-decoration: none;
       color: $text-color;
-      background: #f2f6f7;
+      background: $border-color;
     }
 
     &:active, &:focus {
@@ -87,7 +85,7 @@
 
     i {
       width: 20px;
-      color: $gray-dark;
+      color: $gray-light;
       margin-right: 23px;
     }
   }
