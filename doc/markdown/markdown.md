@@ -440,64 +440,7 @@ Note that inline HTML is disabled in the default Gitlab configuration, although 
   <dd>Does *not* work **very** well. Use HTML <em>tags</em>.</dd>
 </dl>
 
-The following tags can be used:
-
-* `<a/>`
-* `<abbr/>`
-* `<acronym/>`
-* `<address/>`
-* `<b/>`
-* `<big/>`
-* `<blockquote/>`
-* `<br/>`
-* `<cite/>`
-* `<code/>`
-* `<dd/>`
-* `<del/>`
-* `<dfn/>`
-* `<div/>`
-* `<dl/>`
-* `<dt/>`
-* `<em/>`
-* `<h1/>`
-* `<h2/>`
-* `<h3/>`
-* `<h4/>`
-* `<h5/>`
-* `<h6/>`
-* `<hr/>`
-* `<i/>`
-* `<img/>`
-* `<ins/>`
-* `<kbd/>`
-* `<li/>`
-* `<ol/>`
-* `<p/>`
-* `<pre/>`
-* `<samp/>`
-* `<small/>`
-* `<span/>`
-* `<strong/>`
-* `<sub/>`
-* `<sup/>`
-* `<tt/>`
-* `<ul/>`
-* `<var/>`
-
-You can also use the following HTML attributes in your inline tags:
-
-* `abbr`
-* `alt`
-* `cite`
-* `class`
-* `datetime`
-* `height`
-* `href`
-* `name`
-* `src`
-* `title`
-* `width`
-* `xml:lang`
+See the documentation for HTML::Pipeline's [SanitizationFilter](http://www.rubydoc.info/gems/html-pipeline/HTML/Pipeline/SanitizationFilter#WHITELIST-constant) class for the list of allowed HTML tags and attributes.  In addition to the default `SanitizationFilter` whitelist, GitLab allows the `class`, `id`, and `style` attributes.
 
 ## Horizontal Rule
 

@@ -49,7 +49,7 @@ module GitlabMarkdownHelper
                       space_after_headers: true,
                       superscript: true)
     end
-    @markdown.render(sanitize_html(text)).html_safe
+    @markdown.render(text).html_safe
   end
 
   # Return the first line of +text+, up to +max_chars+, after parsing the line

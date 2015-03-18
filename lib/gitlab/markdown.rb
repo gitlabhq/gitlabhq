@@ -79,15 +79,34 @@ module Gitlab
 
       # Used markdown pipelines in GitLab:
       # GitlabEmojiFilter - performs emoji replacement.
+      # SanitizationFilter - remove unsafe HTML tags and attributes
       #
       # see https://gitlab.com/gitlab-org/html-pipeline-gitlab for more filters
       filters = [
-        HTML::Pipeline::Gitlab::GitlabEmojiFilter
+        HTML::Pipeline::Gitlab::GitlabEmojiFilter,
+        HTML::Pipeline::SanitizationFilter
       ]
+
+      whitelist = HTML::Pipeline::SanitizationFilter::WHITELIST
+      whitelist[:attributes][:all].push('class', 'id', 'style')
+
+      # Remove the rel attribute that the sanitize gem adds, and remove the
+      # href attribute if it contains inline javascript
+      fix_anchors = lambda do |env|
+        name, node = env[:node_name], env[:node]
+        if name == 'a'
+          node.remove_attribute('rel')
+          if node['href'] && node['href'].match('javascript:')
+            node.remove_attribute('href')
+          end
+        end
+      end
+      whitelist[:transformers].push(fix_anchors)
 
       markdown_context = {
               asset_root: Gitlab.config.gitlab.url,
-              asset_host: Gitlab::Application.config.asset_host
+              asset_host: Gitlab::Application.config.asset_host,
+              whitelist: whitelist
       }
 
       markdown_pipeline = HTML::Pipeline::Gitlab.new(filters).pipeline
@@ -97,22 +116,13 @@ module Gitlab
       if options[:xhtml]
         saveoptions |= Nokogiri::XML::Node::SaveOptions::AS_XHTML
       end
+
       text = result[:output].to_html(save_with: saveoptions)
 
-      sanitize_html(text)
-    end
-
-    # Remove HTML tags and attributes that are not whitelisted
-    def sanitize_html(text)
-      allowed_attributes = ActionView::Base.sanitized_allowed_attributes
-      allowed_tags = ActionView::Base.sanitized_allowed_tags
-
-      text = sanitize text.html_safe,
-                      attributes: allowed_attributes + %w(id class style),
-                      tags: allowed_tags + %w(table tr td th)
       if options[:parse_tasks]
         text = parse_tasks(text)
       end
+
       text
     end
 
