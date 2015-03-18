@@ -21,5 +21,11 @@
         %li.commits-stat
           - if event.commits_count > 2
             %span ... and #{event.commits_count - 2} more commits.
-          = link_to namespace_project_compare_path(event.project.namespace, event.project, from: event.commit_from, to: event.commit_to) do
-            %strong Compare &rarr; #{truncate_sha(event.commit_from)}...#{truncate_sha(event.commit_to)}
+          - if event.md_ref?
+            - from = event.commit_from
+            - from_label = truncate_sha(from)
+          - else
+            - from = event.project.default_branch
+            - from_label = from
+          = link_to namespace_project_compare_path(event.project.namespace, event.project, from: from, to: event.commit_to) do
+            %strong Compare &rarr; #{from_label}...#{truncate_sha(event.commit_to)}
