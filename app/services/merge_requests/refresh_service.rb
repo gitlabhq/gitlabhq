@@ -89,7 +89,7 @@ module MergeRequests
         end
 
         Note.create_new_commits_note(merge_request, merge_request.project,
-                                     @current_user, new_commits, existing_commits)
+                                     @current_user, new_commits, existing_commits, @oldrev)
       end
     end
 
