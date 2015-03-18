@@ -1,0 +1,33 @@
+.calendar_commit_activity
+  %hr
+  %h4
+    Commit Activity
+  %strong
+    - if @commit_count == 0
+      no
+    - else
+      = @commit_count
+  %span.calendar_commit_date
+    unique
+    = 'commit'.pluralize(@commit_count)
+    on
+    = @calendar_date.strftime("%b %d, %Y") rescue ''
+  -unless @commit_count == 0
+    %hr
+  - @calendar_activities.each do |project, commits|
+    - next if commits.empty?
+    %div.js-toggle-container
+      %strong
+        = pluralize(commits.count, 'commit')
+        in project
+        = link_to project.name_with_namespace, project_path(project)
+        %a.text-expander.js-toggle-button &hellip;
+        %hr
+      %div.js-toggle-content
+        - commits.each do |commit|
+          %span.monospace
+            = commit.committed_date.strftime("%H:%M")
+            = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id"
+          = link_to commit.message, namespace_project_commit_path(project.namespace, project, commit), class: "commit-row-message str-truncated"
+          %br
+        %hr

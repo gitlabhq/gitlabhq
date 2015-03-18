@@ -198,7 +198,10 @@ Gitlab::Application.routes.draw do
   end
 
   get 'u/:username/calendar' => 'users#calendar', as: :user_calendar,
-      constraints: { username: /(?:[^.]|\.(?!atom$))+/, format: /atom/ }
+      constraints: { username: /.*/ }
+
+  get 'u/:username/calendar_activities' => 'users#calendar_activities', as: :user_calendar_activities,
+      constraints: { username: /.*/ }
 
   get '/u/:username' => 'users#show', as: :user,
       constraints: { username: /(?:[^.]|\.(?!atom$))+/, format: /atom/ }
