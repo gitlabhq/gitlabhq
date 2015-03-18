@@ -44,6 +44,7 @@ class Note < ActiveRecord::Base
   mount_uploader :attachment, AttachmentUploader
 
   # Scopes
+  default_scope { order(created_at: :asc, id: :asc) }
   scope :for_commit_id, ->(commit_id) { where(noteable_type: "Commit", commit_id: commit_id) }
   scope :inline, ->{ where("line_code IS NOT NULL") }
   scope :not_inline, ->{ where(line_code: [nil, '']) }
