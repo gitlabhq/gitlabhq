@@ -232,12 +232,45 @@ module ProjectsHelper
   end
 
   def contribution_guide_url(project)
-    if project && project.repository.contribution_guide
+    if project && contribution_guide = project.repository.contribution_guide
       namespace_project_blob_path(
         project.namespace,
         project,
         tree_join(project.default_branch,
-                  project.repository.contribution_guide.name)
+                  contribution_guide.name)
+      )
+    end
+  end
+
+  def changelog_url(project)
+    if project && changelog = project.repository.changelog
+      namespace_project_blob_path(
+        project.namespace,
+        project,
+        tree_join(project.default_branch,
+                  changelog.name)
+      )
+    end
+  end
+
+  def license_url(project)
+    if project && license = project.repository.license
+      namespace_project_blob_path(
+        project.namespace,
+        project,
+        tree_join(project.default_branch,
+                  license.name)
+      )
+    end
+  end
+
+  def version_url(project)
+    if project && version = project.repository.version
+      namespace_project_blob_path(
+        project.namespace,
+        project,
+        tree_join(project.default_branch,
+                  version.name)
       )
     end
   end

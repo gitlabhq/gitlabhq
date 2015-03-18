@@ -4,6 +4,8 @@ v 7.10.0 (unreleased)
   - enable line wrapping per default and remove the checkbox to toggle it (Hannes Rosenögger)
   - extend the commit calendar to show the actual commits made on a date (Hannes Rosenögger)
   - Add a service to support external wikis (Hannes Rosenögger)
+  - List new commits for newly pushed branch in activity view.
+  - Add changelog, license and contribution guide links to project sidebar.
 
 v 7.9.0 (unreleased)
   - Add HipChat integration documentation (Stan Hu)

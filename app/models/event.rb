@@ -247,7 +247,7 @@ class Event < ActiveRecord::Base
   end
 
   def push_with_commits?
-    md_ref? && commits.any? && commit_from && commit_to
+    !commits.empty? && commit_from && commit_to
   end
 
   def last_push_to_non_root?
