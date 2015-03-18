@@ -35,7 +35,7 @@
       color: #8a6d3b;
     }
 
-    &.smoke { background-color: #f5f5f5; }
+    &.smoke { background-color: $background-color; }
 
     &:hover {
       background: $hover;
@@ -46,7 +46,7 @@
       border-bottom: none;
 
       &.bottom {
-        background: #f5f5f5;
+        background: $background-color;
       }
     }
 
@@ -61,7 +61,7 @@
     p {
       padding-top: 1px;
       margin: 0;
-      color: #222;
+      color: $gray-dark;
       img {
         position: relative;
         top: 3px;
@@ -74,9 +74,10 @@
     }
 
     .row_title {
-      color: #444;
+      color: $gray-dark;
+
       &:hover {
-        color: #444;
+        color: $text-color;
         text-decoration: underline;
       }
     }

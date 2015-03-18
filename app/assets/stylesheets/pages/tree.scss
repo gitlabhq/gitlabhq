@@ -27,7 +27,7 @@
       }
       &.selected {
         td {
-          background: #f5f5f5;
+          background: $background-color;
           border-top: 1px solid #EEE;
           border-bottom: 1px solid #EEE;
         }

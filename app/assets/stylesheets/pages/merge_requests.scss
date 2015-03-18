@@ -129,7 +129,7 @@
     font-size: 15px;
     border-bottom: 1px solid #BBB;
     color: #777;
-    background-color: #F5F5F5;
+    background-color: $background-color;
 
     &.ci-success {
       color: $gl-success;
