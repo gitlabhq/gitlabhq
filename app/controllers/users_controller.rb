@@ -32,12 +32,31 @@ class UsersController < ApplicationController
 
   def calendar
     projects = Project.where(id: authorized_projects_ids & @user.contributed_projects_ids)
+
     calendar = Gitlab::CommitsCalendar.new(projects, @user)
     @timestamps = calendar.timestamps
     @starting_year = calendar.starting_year
     @starting_month = calendar.starting_month
 
     render 'calendar', layout: false
+  end
+
+  def calendar_activities
+    projects = Project.where(id: authorized_projects_ids & @user.contributed_projects_ids)
+
+    date = Date.parse(params[:date]) rescue nil
+    if date
+      @calendar_activities = Gitlab::CommitsCalendar.get_commits_for_date(projects, @user, date)
+    else
+      @calendar_activities = {}
+    end
+
+    # get the total number of unique commits
+    @commit_count = @calendar_activities.values.flatten.map(&:id).uniq.count
+
+    @calendar_date = date
+
+    render 'calendar_activities', layout: false
   end
 
   def determine_layout
