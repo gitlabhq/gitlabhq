@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.10.0 (unreleased)
+  - Add a service to support external wikis (Hannes Rosenögger)
 
 v 7.9.0 (unreleased)
   - Add HipChat integration documentation (Stan Hu)
@@ -14,7 +15,6 @@ v 7.9.0 (unreleased)
   - Fix merge request URL passed to Webhooks. (Stan Hu)
   - Fix bug that caused a server error when editing a comment to "+1" or "-1" (Stan Hu)
   - Fix code preview theme setting for comments, issues, merge requests, and snippets (Stan Hu)
-  - Add a service to support external wikis (Hannes Rosenögger)
   - Move labels/milestones tabs to sidebar
   - Upgrade Rails gem to version 4.1.9.
   - Improve error messages for file edit failures
