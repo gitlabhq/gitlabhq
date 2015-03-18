@@ -140,7 +140,7 @@ class Service < ActiveRecord::Base
       redmine
       custom_issue_tracker
       irker
-      external_wiki_service
+      external_wiki
     )
   end
 
