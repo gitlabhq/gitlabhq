@@ -151,7 +151,7 @@ class Note < ActiveRecord::Base
       )
     end
 
-    def create_new_commits_note(merge_request, project, author, new_commits, existing_commits = [])
+    def create_new_commits_note(merge_request, project, author, new_commits, existing_commits = [], oldrev = nil)
       total_count = new_commits.length + existing_commits.length
       commits_text = ActionController::Base.helpers.pluralize(total_count, 'commit')
       body = "Added #{commits_text}:\n\n"
@@ -161,7 +161,11 @@ class Note < ActiveRecord::Base
           if existing_commits.length == 1
             existing_commits.first.short_id
           else
-            "#{existing_commits.first.short_id}..#{existing_commits.last.short_id}"
+            if oldrev
+              "#{Commit.truncate_sha(oldrev)}...#{existing_commits.last.short_id}"
+            else
+              "#{existing_commits.first.short_id}..#{existing_commits.last.short_id}"
+            end
           end
 
         commits_text = ActionController::Base.helpers.pluralize(existing_commits.length, 'commit')
