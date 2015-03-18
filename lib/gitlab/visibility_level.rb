@@ -35,7 +35,11 @@ module Gitlab
       end
 
       def non_restricted_level?(level)
-        ! current_application_settings.restricted_visibility_levels.include?(level)
+        if current_application_settings.restricted_visibility_levels.nil?
+          true
+        else
+          ! current_application_settings.restricted_visibility_levels.include?(level)
+        end
       end
 
       def valid_level?(level)
