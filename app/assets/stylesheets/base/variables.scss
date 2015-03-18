@@ -1,5 +1,6 @@
 $style_color: #474D57;
 $hover: #FFF3EB;
+$gl-text-color: #222222;
 $gl-link-color: #446e9b;
 $nprogress-color: #c0392b;
 $gl-font-size: 14px;
@@ -8,23 +9,18 @@ $sidebar_width: 230px;
 $avatar_radius: 50%;
 $code_font_size: 13px;
 $code_line_height: 1.5;
-$border-color: #dce4ec;
-$background-color: #ECF0F1;
+$border-color: #E5E5E5;
+$background-color: #f5f5f5;
 
 /*
  * State colors:
  */
-$gl-success: #019875;
-$gl-danger: #d9534f;
 $gl-primary: #446e9b;
+$gl-success: #019875;
 $gl-info: #029ACF;
 $gl-warning: #EB9532;
+$gl-danger: #d9534f;
 
-$gl-primary:         #2C3E50;
-$gl-success:         #18BC9C;
-$gl-info:            #3498DB;
-$gl-warning:         #F39C12;
-$gl-danger:          #E74C3C;
 /*
  * Commit Diff Colors
  */
