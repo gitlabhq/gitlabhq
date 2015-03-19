@@ -47,6 +47,9 @@
               = link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)
 
           - unless @project.empty_repo?
+            = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-block' do
+              Compare code
+
             - if version = @repository.version
               - detail_url = changelog_url(@project) || version_url(@project)
               = link_to detail_url, class: 'btn btn-block' do
@@ -64,9 +67,6 @@
             - if @repository.license
               = link_to license_url(@project), class: 'btn btn-block' do
                 View license
-
-            = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-block' do
-              Compare code
 
         .prepend-top-10
           %p
