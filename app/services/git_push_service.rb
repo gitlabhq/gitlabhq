@@ -109,7 +109,7 @@ class GitPushService
 
   def push_to_existing_branch?(ref, oldrev)
     # Return if this is not a push to a branch (e.g. new commits)
-    Gitlab::Git.branch_ref?(ref) && oldrev != Gitlab::Git::BLANK_SHA
+    Gitlab::Git.branch_ref?(ref) && !Gitlab::Git.blank_ref?(oldrev)
   end
 
   def push_to_new_branch?(ref, oldrev)
