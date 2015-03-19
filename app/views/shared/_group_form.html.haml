@@ -15,7 +15,7 @@
       = f.text_field :path, placeholder: 'open-source', class: 'form-control',
           autofocus: local_assigns[:autofocus] || false
     - if @group.persisted?
-      .alert.alert-danger
+      .alert.alert-warning.prepend-top-10
         %ul
           %li Changing group path can have unintended side effects.
           %li Renaming group path will rename directory for all related projects
