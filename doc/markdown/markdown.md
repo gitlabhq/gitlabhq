@@ -6,7 +6,7 @@
 
 * [Newlines](#newlines)
 * [Multiple underscores in words](#multiple-underscores-in-words)
-* [URL auto-linking](#url-autolinking)
+* [URL auto-linking](#url-auto-linking)
 * [Code and Syntax Highlighting](#code-and-syntax-highlighting)
 * [Emoji](#emoji)
 * [Special GitLab references](#special-gitlab-references)
