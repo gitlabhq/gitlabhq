@@ -90,13 +90,14 @@ namespace :gitlab do
       warn_user_is_not_gitlab
       block_flag = ENV['BLOCK']
 
-      User.ldap.each do |ldap_user|
-        print "#{ldap_user.name} (#{ldap_user.extern_uid}) ..."
-        if Gitlab::LDAP::Access.allowed?(ldap_user)
+      User.find_each do |user|
+        next unless user.ldap_user?
+        print "#{user.name} (#{user.ldap_identity.extern_uid}) ..."
+        if Gitlab::LDAP::Access.allowed?(user)
           puts " [OK]".green
         else
           if block_flag
-            ldap_user.block! unless ldap_user.blocked?
+            user.block! unless user.blocked?
             puts " [BLOCKED]".red
           else
             puts " [NOT IN LDAP]".yellow
