@@ -22,7 +22,7 @@
 
       .diff-btn-group
         - if blob.text?
-          = link_to '#', class: 'js-toggle-diff-comments btn btn-sm active' do
+          = link_to '#', class: 'js-toggle-diff-comments btn btn-sm active has_tooltip', title: "Toggle comments for this file" do
             %i.fa.fa-comments
           &nbsp;
 
