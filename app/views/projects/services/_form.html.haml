@@ -101,5 +101,6 @@
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'
     &nbsp;
-    - if @service.valid? && @service.activated? && @service.can_test?
-      = link_to 'Test settings', test_namespace_project_service_path(@project.namespace, @project, @service.to_param), class: 'btn'
+    - if @service.valid? && @service.activated?
+      - disabled = @service.can_test? ? '':'disabled'
+      = link_to 'Test settings', test_namespace_project_service_path(@project.namespace, @project, @service.to_param), class: "btn #{disabled}"
