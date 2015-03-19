@@ -28,6 +28,10 @@
   font-size: 14px;
   line-height: 24px;
 
+  .str-truncated {
+    max-width: 75%;
+  }
+
   a {
     display: block;
     padding: 8px 15px;
@@ -86,17 +90,4 @@
   float: left;
   margin-right: 5px;
   width: 16px;
-}
-
-.dash-new-project {
-  background: $gl-success;
-  border: 1px solid $gl-success;
-
-  a {
-    color: #FFF;
-  }
-}
-
-.dash-list .str-truncated {
-  max-width: 72%;
 }

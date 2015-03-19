@@ -3,8 +3,8 @@
     .input-group
       = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control'
       - if can? current_user, :create_projects, @group
-        .input-group-addon.dash-new-project
-          = link_to new_project_path(namespace_id: @group.id) do
-            %strong New project
+        %span.input-group-btn
+          = link_to new_project_path(namespace_id: @group.id), class: 'btn btn-success' do
+            New project
 
   = render 'shared/projects_list', projects: @projects, projects_limit: 20
