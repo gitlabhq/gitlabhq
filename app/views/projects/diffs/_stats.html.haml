@@ -1,17 +1,14 @@
 .js-toggle-container
   .commit-stat-summary
     Showing
-    %strong.cdark #{pluralize(diffs.count, "changed file")}
+    = link_to '#', class: 'js-toggle-button' do
+      %strong #{pluralize(diffs.count, "changed file")}
     - if current_controller?(:commit)
       - unless @commit.has_zero_stats?
         with
         %strong.cgreen #{@commit.stats.additions} additions
         and
         %strong.cred #{@commit.stats.deletions} deletions
-    &nbsp;
-    = link_to '#', class: 'btn btn-sm js-toggle-button' do
-      Show diff stats
-      %i.fa.fa-chevron-down
   .file-stats.js-toggle-content.hide
     %ul.bordered-list
       - diffs.each_with_index do |diff, i|
