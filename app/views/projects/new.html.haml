@@ -64,19 +64,22 @@
 
             = link_to "#", class: 'btn js-toggle-button' do
               %i.fa.fa-git
-              %span Existing repo by URL
+              %span Any repo by URL
 
         .js-toggle-content.hide
           .form-group.import-url-data
             = f.label :import_url, class: 'control-label' do
               %span Git repository URL
             .col-sm-10
-              = f.text_field :import_url, class: 'form-control', placeholder: 'https://github.com/randx/six.git'
+              = f.text_field :import_url, class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git'
               .alert.alert-info.prepend-top-10
-                This URL must be publicly accessible or you can add a username and password like this: https://username:password@gitlab.com/company/project.git.
-                %br
-                The import will time out after 4 minutes. For big repositories, use a clone/push combination.
-                For SVN repositories, check #{link_to "this migrating from SVN doc.", "http://doc.gitlab.com/ce/workflow/migrating_from_svn.html"}
+                %ul
+                  %li 
+                    The repository must be accessible over HTTP(S). If it is not publicly accessible, you can add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>.
+                  %li 
+                    The import will time out after 4 minutes. For big repositories, use a clone/push combination.
+                  %li
+                    To migrate an SVN repository, check out #{link_to "this document", "http://doc.gitlab.com/ce/workflow/migrating_from_svn.html"}.
 
       %hr.prepend-botton-10
 
