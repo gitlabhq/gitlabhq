@@ -44,7 +44,7 @@
               %i.fa.fa-code-fork.project-fork-icon
               Forked from:
               %br
-              = link_to @project.forked_from_project.name_with_namespace, namespace_project_path(@project.namespace, @project.forked_from_project)
+              = link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)
 
           - unless @project.empty_repo?
             = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-block' do
