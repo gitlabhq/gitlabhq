@@ -1,16 +1,12 @@
 %li
-  %h4= ldap_group_link.cn
   .pull-right
-    = link_to group_ldap_group_link_path(group, ldap_group_link), method: :delete, class: 'btn btn-danger btn-small' do
+    = link_to group_ldap_group_link_path(group, ldap_group_link), method: :delete, class: 'btn btn-danger btn-sm' do
       = fa_icon('unlink', text: 'unlink')
+  %strong= ldap_group_link.cn
 
   - if ldap_group_link.config
     %p.light
-      As
-      %strong #{ldap_group_link.human_access}
-      on
-      %strong #{ldap_group_link.provider_label}
-      server
+      As #{ldap_group_link.human_access} on #{ldap_group_link.provider_label} server
   - else
     %p.cred
       %i.fa.fa-warning
