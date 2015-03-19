@@ -31,7 +31,9 @@
               %i.fa.fa-minus.fa-inverse
 
     .edit-member.hide.js-toggle-content
+      %br
       = form_for [@group, member], remote: true do |f|
-        .alert.prepend-top-20
-          = f.select :access_level, options_for_select(GroupMember.access_level_roles, member.access_level)
+        .prepend-top-10
+          = f.select :access_level, options_for_select(GroupMember.access_level_roles, member.access_level), {}, class: 'form-control'
+        .prepend-top-10
           = f.submit 'Save', class: 'btn btn-save btn-sm'
