@@ -192,7 +192,11 @@ describe NotificationService do
   end
 
   describe 'Issues' do
-    let(:issue) { create :issue, assignee: create(:user), description: 'cc @participant' }
+    let(:issue) do
+      create :issue, assignee: create(:user), description: description
+    end
+
+    let(:description) { 'cc @participant' }
 
     before do
       build_team(issue.project)
@@ -200,22 +204,48 @@ describe NotificationService do
     end
 
     describe :new_issue do
-      it do
-        should_email(issue.assignee_id)
-        should_email(@u_watcher.id)
-        should_email(@u_participant_mentioned.id)
-        should_not_email(@u_mentioned.id)
-        should_not_email(@u_participating.id)
-        should_not_email(@u_disabled.id)
-        notification.new_issue(issue, @u_disabled)
+      context 'mentioning a user that the username starts with a letter' do
+        it do
+          should_email(issue.assignee_id)
+          should_email(@u_watcher.id)
+          should_email(@u_participant_mentioned.id)
+          should_not_email(@u_mentioned.id)
+          should_not_email(@u_participating.id)
+          should_not_email(@u_disabled.id)
+          should_not_email(@u_participant_mentioned_number.id)
+          notification.new_issue(issue, @u_disabled)
+        end
+
+        it do
+          issue.assignee.
+            update_attributes(notification_level: Notification::N_MENTION)
+          should_not_email(issue.assignee_id)
+          notification.new_issue(issue, @u_disabled)
+        end
       end
 
-      it do
-        issue.assignee.update_attributes(notification_level: Notification::N_MENTION)
-        should_not_email(issue.assignee_id)
-        notification.new_issue(issue, @u_disabled)
-      end
+      context 'mentioning a user that the username starts with a number' do
+        let(:description) do
+          'cc @123participant'
+        end
+        it do
+          should_email(issue.assignee_id)
+          should_email(@u_watcher.id)
+          should_email(@u_participant_mentioned_number.id)
+          should_not_email(@u_mentioned.id)
+          should_not_email(@u_participating.id)
+          should_not_email(@u_disabled.id)
+          should_not_email(@u_participant_mentioned.id)
+          notification.new_issue(issue, @u_disabled)
+        end
 
+        it do
+          issue.assignee.
+            update_attributes(notification_level: Notification::N_MENTION)
+          should_not_email(issue.assignee_id)
+          notification.new_issue(issue, @u_disabled)
+        end
+      end
       def should_email(user_id)
         expect(Notify).to receive(:new_issue_email).with(user_id, issue.id)
       end
@@ -430,6 +460,9 @@ describe NotificationService do
     @u_watcher = create(:user, notification_level: Notification::N_WATCH)
     @u_participating = create(:user, notification_level: Notification::N_PARTICIPATING)
     @u_participant_mentioned = create(:user, username: 'participant', notification_level: Notification::N_PARTICIPATING)
+    @u_participant_mentioned_number =
+      create(:user, username: '123participant',
+                    notification_level: Notification::N_PARTICIPATING)
     @u_disabled = create(:user, notification_level: Notification::N_DISABLED)
     @u_mentioned = create(:user, username: 'mention', notification_level: Notification::N_MENTION)
     @u_committer = create(:user, username: 'committer')

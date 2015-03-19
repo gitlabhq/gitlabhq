@@ -46,7 +46,7 @@ module Mentionable
     users = []
     return users if mentionable_text.blank?
     has_project = self.respond_to? :project
-    matches = mentionable_text.scan(/@[a-zA-Z][a-zA-Z0-9_\-\.]*/)
+    matches = mentionable_text.scan Regexp.new(Gitlab::Markdown::NAME_STR)
     matches.each do |match|
       identifier = match.delete "@"
       if identifier == "all"
