@@ -22,9 +22,8 @@
 
       .diff-btn-group
         - if blob.text?
-          = link_to '#', class: 'js-toggle-diff-comments btn btn-sm' do
-            %i.fa.fa-chevron-down
-            Show/Hide comments
+          = link_to '#', class: 'js-toggle-diff-comments btn btn-sm active' do
+            %i.fa.fa-comments
           &nbsp;
 
         - if @merge_request && @merge_request.source_project
