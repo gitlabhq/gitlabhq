@@ -155,6 +155,12 @@
       background-color: #FAF1F1;
     }
 
+    &.ci-canceled {
+      color: $gl-warning;
+      border-color: $gl-danger;
+      background-color: #FAF5F1;
+    }
+
     &.ci-error {
       color: $gl-danger;
       border-color: $gl-danger;

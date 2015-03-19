@@ -86,6 +86,7 @@ v 7.9.0 (unreleased)
   - Ability to unsubscribe/subscribe to issue or merge request
   - Delete deploy key when last connection to a project is destroyed.
   - Fix invalid Atom feeds when using emoji, horizontal rules, or images (Christian Walther)
+  - Add canceled status for CI
 
 v 7.8.4
   - Fix issue_tracker_id substitution in custom issue trackers
