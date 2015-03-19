@@ -88,6 +88,7 @@ v 7.9.0 (unreleased)
   - Delete deploy key when last connection to a project is destroyed.
   - Fix invalid Atom feeds when using emoji, horizontal rules, or images (Christian Walther)
   - Backup of repositories with tar instead of git bundle (only now are git-annex files included in the backup)
+  - Add canceled status for CI
 
 v 7.8.4
   - Fix issue_tracker_id substitution in custom issue trackers
