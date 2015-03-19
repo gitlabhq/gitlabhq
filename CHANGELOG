@@ -6,6 +6,8 @@ v 7.10.0 (unreleased)
   - Add a service to support external wikis (Hannes Rosenögger)
   - List new commits for newly pushed branch in activity view.
   - Add changelog, license and contribution guide links to project sidebar.
+  - Improve diff UI
+  - Identical look of selectboxes in UI
 
 v 7.9.0 (unreleased)
   - Add HipChat integration documentation (Stan Hu)
