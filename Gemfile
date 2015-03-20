@@ -180,9 +180,6 @@ gem 'mousetrap-rails'
 # Detect and convert string character encoding
 gem 'charlock_holmes'
 
-# Shutting down requests that take too long
-gem "slowpoke"
-
 gem "sass-rails", '~> 4.0.2'
 gem "coffee-rails"
 gem "uglifier"
