@@ -11,6 +11,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
     fill_in "user_linkedin", with: "testlinkedin"
     fill_in "user_twitter", with: "testtwitter"
     fill_in "user_website_url", with: "testurl"
+    fill_in "user_location", with: "Ukraine"
     click_button "Save changes"
     @user.reload
   end
@@ -20,6 +21,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
     @user.linkedin.should == 'testlinkedin'
     @user.twitter.should == 'testtwitter'
     @user.website_url.should == 'testurl'
+    find("#user_location").value.should == "Ukraine"
   end
 
   step 'I change my avatar' do
