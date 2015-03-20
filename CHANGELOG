@@ -72,6 +72,9 @@ v 7.9.1
   - Downgrade gemnasium-gitlab-service gem
 
 v 7.9.0
+  - Add confirmation dialog when click in "Accept Merge Request".
+
+v 7.9.0 (unreleased)
   - Add HipChat integration documentation (Stan Hu)
   - Update documentation for object_kind field in Webhook push and tag push Webhooks (Stan Hu)
   - Fix broken email images (Hannes Rosenögger)

@@ -66,6 +66,12 @@ class @MergeRequest
       this.activateTab($(event.currentTarget).data('action'))
 
     this.$('.accept_merge_request').on 'click', ->
+      source_branch = $('#source_branch').text()
+      target_branch = $('#target_branch').text()
+      message = 'This will merge ' + source_branch + ' into ' +
+                target_branch + '. Are you sure?'
+      if !confirm(message)
+        return false
       $('.automerge_widget.can_be_merged').hide()
       $('.merge-in-progress').show()
 
