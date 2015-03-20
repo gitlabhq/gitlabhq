@@ -50,11 +50,11 @@ class JenkinsService < CiService
     ]
   end
 
-  def build_page sha
+  def build_page(sha, ref = nil)
     project_url + "/scm/bySHA1/#{sha}"
   end
 
-  def commit_status sha
+  def commit_status(sha, ref = nil)
     parsed_url = URI.parse(build_page(sha))
 
     if parsed_url.userinfo.blank?
