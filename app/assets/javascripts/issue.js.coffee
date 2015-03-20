@@ -19,6 +19,6 @@ class @Issue
     $('.issue-details').waitForImages ->
       $('.issuable-affix').affix offset:
         top: ->
-          @top = $('.issue-details').outerHeight(true) + 25
+          @top = ($('.issuable-affix').offset().top - 70)
         bottom: ->
           @bottom = $('.footer').outerHeight(true)
