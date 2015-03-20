@@ -8,6 +8,9 @@ describe API::API, api: true  do
   let!(:merge_request_closed) { create(:merge_request, state: "closed", author: user, assignee: user, source_project: project, target_project: project, title: "Closed test") }
   let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignee: user, source_project: project, target_project: project, title: "Merged test") }
   let!(:note) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
+  let(:merge_request_comments_url) do
+    "/projects/#{project.id}/merge_request/#{merge_request.id}/comments"
+  end
   before {
     project.team << [user, :reporters]
   }
@@ -358,14 +361,27 @@ describe API::API, api: true  do
 
   describe "POST /projects/:id/merge_request/:merge_request_id/comments" do
     it "should return comment" do
-      post api("/projects/#{project.id}/merge_request/#{merge_request.id}/comments", user), note: "My comment"
-      expect(response.status).to eq(201)
-      expect(json_response['note']).to eq('My comment')
+      post api(merge_request_comments_url, user), note: "My comment"
+      response.status.should == 201
+      json_response['note'].should == "My comment"
+    end
+
+    it "should return comment with line and file_path" do
+      post api(merge_request_comments_url, user),
+           note: "comment with line and path",
+           line: 5,
+           file_path: 'files/ruby/feature.rb',
+           line_type: 'new'
+
+      response.status.should == 201
+      json_response['note'].should == "comment with line and path"
+      json_response['file_path'].should == 'files/ruby/feature.rb'
+      json_response['line'].should == 5
     end
 
     it "should return 400 if note is missing" do
-      post api("/projects/#{project.id}/merge_request/#{merge_request.id}/comments", user)
-      expect(response.status).to eq(400)
+      post api(merge_request_comments_url, user)
+      response.status.should == 400
     end
 
     it "should return 404 if note is attached to non existent merge request" do
@@ -377,12 +393,40 @@ describe API::API, api: true  do
 
   describe "GET :id/merge_request/:merge_request_id/comments" do
     it "should return merge_request comments" do
-      get api("/projects/#{project.id}/merge_request/#{merge_request.id}/comments", user)
-      expect(response.status).to eq(200)
-      expect(json_response).to be_an Array
-      expect(json_response.length).to eq(1)
-      expect(json_response.first['note']).to eq("a comment on a MR")
-      expect(json_response.first['author']['id']).to eq(user.id)
+      get api(merge_request_comments_url, user)
+      response.status.should == 200
+      json_response.should be_an Array
+      json_response.length.should == 1
+      json_response.first['note'].should == "a comment on a MR"
+      json_response.first['author']['id'].should == user.id
+      json_response.first['file_path'].should be_nil
+      json_response.first['line'].should be_nil
+    end
+
+    it "should return merge_request comments with line and path" do
+      line_code = Gitlab::Diff::LineCode.generate('files/ruby/feature.rb', 5, 0)
+      create(:note_on_merge_request,
+             author: user,
+             project: project,
+             noteable: merge_request,
+             note: "comment with line",
+             line_code: line_code
+            )
+
+      get api(merge_request_comments_url, user)
+      response.status.should == 200
+      json_response.should be_an Array
+      json_response.length.should == 2
+      note =
+        if json_response.first['note'] == "comment with line"
+          json_response.first
+        else
+          json_response.last
+        end
+      note["note"].should == "comment with line"
+      note["file_path"].should == "files/ruby/feature.rb"
+      note["line"].should == 5
+      note["author"]["id"].should == user.id
     end
 
     it "should return a 404 error if merge_request_id not found" do

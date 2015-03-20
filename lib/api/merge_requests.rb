@@ -227,6 +227,9 @@ module API
       #   id (required) - The ID of a project
       #   merge_request_id (required) - ID of MR
       #   note (required) - Text of comment
+      #   line (optional) - Append Comment on Line
+      #   file_path (optional) - Append Commment for file
+      #   line_type (optional) -- type of line (new or old)
       # Examples:
       #   POST /projects/:id/merge_request/:merge_request_id/comments
       #
@@ -234,7 +237,17 @@ module API
         required_attributes! [:note]
 
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
-        note = merge_request.notes.new(note: params[:note], project_id: user_project.id)
+        opts = { note: params[:note], project_id: user_project.id }
+
+        # append line_code if create comment on line
+        if params[:line] && params[:file_path] && params[:line_type]
+          opts[:line_code] = merge_request.line_code_by(
+            params[:file_path],
+            params[:line_type],
+            params[:line]
+          )
+        end
+        note = merge_request.notes.new(opts)
         note.author = current_user
 
         if note.save

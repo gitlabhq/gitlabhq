@@ -333,6 +333,9 @@ Parameters:
 - `id` (required)               - The ID of a project
 - `merge_request_id` (required) - ID of merge request
 - `note` (required)             - Text of comment
+- `file_path` (optional)        - file path if comment on special line
+- `line` (optional)             - line number if comment on special line
+- `line_type` (optional)        - line_type, 'new' or 'old'
 
 ```json
 {
@@ -344,7 +347,9 @@ Parameters:
     "blocked": false,
     "created_at": "2012-04-29T08:46:00Z"
   },
-  "note": "text1"
+  "note": "text1",
+  "file_path": "files/ruby/feature.rb",
+  "line": 2
 }
 ```
 
@@ -365,6 +370,8 @@ Parameters:
 [
   {
     "note": "this is the 1st comment on the 2merge merge request",
+    "file_path": "files/ruby/feature.rb",
+    "line": 5,
     "author": {
       "id": 11,
       "username": "admin",
@@ -376,6 +383,8 @@ Parameters:
   },
   {
     "note": "_Status changed to closed_",
+    "file_path": null,
+    "line": null,
     "author": {
       "id": 11,
       "username": "admin",
