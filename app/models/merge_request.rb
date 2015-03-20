@@ -95,11 +95,11 @@ class MergeRequest < ActiveRecord::Base
     end
 
     event :mark_as_mergeable do
-      transition unchecked: :can_be_merged
+      transition [:unchecked, :cannot_be_merged] => :can_be_merged
     end
 
     event :mark_as_unmergeable do
-      transition unchecked: :cannot_be_merged
+      transition [:unchecked, :can_be_merged] => :cannot_be_merged
     end
 
     state :unchecked
