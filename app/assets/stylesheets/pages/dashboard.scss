@@ -28,6 +28,10 @@
   font-size: 14px;
   line-height: 24px;
 
+  .str-truncated {
+    max-width: 72%;
+  }
+
   a {
     display: block;
     padding: 8px 15px;
