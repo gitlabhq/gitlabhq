@@ -136,8 +136,8 @@ GEM
     diff-lcs (1.2.5)
     diffy (3.0.3)
     docile (1.1.5)
-    doorkeeper (2.1.0)
-      railties (>= 3.1)
+    doorkeeper (2.1.3)
+      railties (>= 3.2)
     dotenv (0.9.0)
     dropzonejs-rails (0.4.14)
       rails (> 3.1)
@@ -683,7 +683,7 @@ DEPENDENCIES
   devise (= 3.2.4)
   devise-async (= 0.9.0)
   diffy (~> 3.0.3)
-  doorkeeper (= 2.1.0)
+  doorkeeper (= 2.1.3)
   dropzonejs-rails
   email_spec
   enumerize

@@ -31,7 +31,7 @@ gem 'omniauth-shibboleth'
 gem 'omniauth-kerberos'
 gem 'omniauth-gitlab'
 gem 'omniauth-bitbucket'
-gem 'doorkeeper', '2.1.0'
+gem 'doorkeeper', '2.1.3'
 gem "rack-oauth2", "~> 1.0.5"
 
 # Browser detection
