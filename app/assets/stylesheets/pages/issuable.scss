@@ -25,7 +25,7 @@
 }
 
 .issuable-context-title {
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.4;
   margin-bottom: 5px;
 
@@ -38,4 +38,10 @@
     font-weight: normal;
     margin-right: 4px;
   }
+}
+
+.issuable-affix .context {
+  font-size: 13px;
+
+  .btn { font-size: 13px; }
 }
