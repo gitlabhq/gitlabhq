@@ -6,11 +6,12 @@
       = link_to 'Close Issue', issue_path(@issue, issue: {state_event: :close }, status_only: true), method: :put, class: "btn btn-grouped btn-close js-note-target-close", title: "Close Issue"
 .row
   %section.col-md-9
+    .votes-holder.pull-right
+      #votes= render 'votes/votes_block', votable: @issue
     .participants
       %span= pluralize(@issue.participants.count, 'participant')
       - @issue.participants.each do |participant|
         = link_to_member(@project, participant, name: false, size: 24)
-
     .voting_notes#notes= render "projects/notes/notes_with_form"
   %aside.col-md-3
     .issuable-affix
@@ -20,15 +21,10 @@
       %hr
       .context
         = render partial: 'issue_context', locals: { issue: @issue }
-      %hr
-      .clearfix
-        .votes-holder
-          %h6 Votes
-          #votes= render 'votes/votes_block', votable: @issue
 
       - if @issue.labels.any?
-        %hr
-        %h6 Labels
+        .issuable-context-title
+          %label Labels
         .issue-show-labels
           - @issue.labels.each do |label|
             = link_to namespace_project_issues_path(@project.namespace, @project, label_name: label.name) do
