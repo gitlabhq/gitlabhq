@@ -7,6 +7,8 @@
 
 .row
   %section.col-md-9
+    .votes-holder.pull-right
+      #votes= render 'votes/votes_block', votable: @merge_request
     = render "projects/merge_requests/show/participants"
     = render "projects/notes/notes_with_form"
   %aside.col-md-3
@@ -17,14 +19,10 @@
       %hr
       .context
         = render partial: 'projects/merge_requests/show/context', locals: { merge_request: @merge_request }
-      %hr
-      .votes-holder
-        %h6 Votes
-        #votes= render 'votes/votes_block', votable: @merge_request
 
       - if @merge_request.labels.any?
-        %hr
-        %h6 Labels
+        .issuable-context-title
+          %label Labels
         .merge-request-show-labels
           - @merge_request.labels.each do |label|
             = link_to namespace_project_merge_requests_path(@project.namespace, @project, label_name: label.name) do

@@ -1,9 +1,9 @@
 .votes.votes-inline
   - unless votable.upvotes.zero?
-    .upvotes
+    %span.upvotes.cgreen
       + #{votable.upvotes}
     - unless votable.downvotes.zero?
       \/
   - unless votable.downvotes.zero?
-    .downvotes
+    %span.downvotes.cred
       \- #{votable.downvotes}

@@ -350,14 +350,6 @@ Gitlab::Application.routes.draw do
             as: :tree
           )
         end
-        resource  :avatar,    only: [:show, :destroy]
-
-        resources :commit,    only: [:show], constraints: { id: /[[:alnum:]]{6,40}/ } do
-          get :branches, on: :member
-        end
-
-        resources :commits,   only: [:show], constraints: { id: /(?:[^.]|\.(?!atom$))+/, format: /atom/ }
-        resources :compare,   only: [:index, :create]
 
         scope do
           get(
@@ -368,8 +360,24 @@ Gitlab::Application.routes.draw do
           )
         end
 
-        resources :network,   only: [:show], constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ }
-        resources :graphs,    only: [:show], constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ } do
+        scope do
+          get(
+            '/commits/*id',
+            to: 'commits#show',
+            constraints: { id: /(?:[^.]|\.(?!atom$))+/, format: /atom/ },
+            as: :commits
+          )
+        end
+
+        resource  :avatar, only: [:show, :destroy]
+        resources :commit, only: [:show], constraints: { id: /[[:alnum:]]{6,40}/ } do
+          get :branches, on: :member
+        end
+
+        resources :compare, only: [:index, :create]
+        resources :network, only: [:show], constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ }
+
+        resources :graphs, only: [:show], constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ } do
           member do
             get :commits
           end

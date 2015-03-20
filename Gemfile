@@ -31,7 +31,7 @@ gem 'omniauth-shibboleth'
 gem 'omniauth-kerberos'
 gem 'omniauth-gitlab'
 gem 'omniauth-bitbucket'
-gem 'doorkeeper', '2.1.0'
+gem 'doorkeeper', '2.1.3'
 gem "rack-oauth2", "~> 1.0.5"
 
 # Browser detection
@@ -49,7 +49,7 @@ gem 'gitlab_omniauth-ldap', '1.2.1', require: "omniauth-ldap"
 gem 'net-ldap'
 
 # Git Wiki
-gem 'gollum-lib', '~> 4.0.0'
+gem 'gollum-lib', '~> 4.0.2'
 
 # Language detection
 gem "gitlab-linguist", "~> 3.0.1", require: "linguist"

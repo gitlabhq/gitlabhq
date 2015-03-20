@@ -34,8 +34,8 @@ module MergeRequestsHelper
     classes
   end
 
-  def ci_build_details_path merge_request
-    build_url = merge_request.source_project.ci_service.build_page(merge_request.last_commit.sha)
+  def ci_build_details_path(merge_request)
+    build_url = merge_request.source_project.ci_service.build_page(merge_request.last_commit.sha, merge_request.source_branch)
     parsed_url = URI.parse(build_url)
 
     unless parsed_url.userinfo.blank?
