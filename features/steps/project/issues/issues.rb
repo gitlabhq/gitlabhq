@@ -204,6 +204,12 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
     end
   end
 
+  step 'I should see an error alert section within the comment form' do
+    within(".js-main-target-form") do
+      find(".error-alert")
+    end
+  end
+
   step 'The code block should be unchanged' do
     page.should have_content("```\nCommand [1]: /usr/local/bin/git , see [text](doc/text)\n```")
   end

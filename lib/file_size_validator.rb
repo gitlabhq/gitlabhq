@@ -25,8 +25,8 @@ class FileSizeValidator < ActiveModel::EachValidator
     keys.each do |key|
       value = options[key]
 
-      unless value.is_a?(Integer) && value >= 0
-        raise ArgumentError, ":#{key} must be a nonnegative Integer"
+      unless (value.is_a?(Integer) && value >= 0) || value.is_a?(Symbol)
+        raise ArgumentError, ":#{key} must be a nonnegative Integer or symbol"
       end
     end
   end
@@ -38,6 +38,14 @@ class FileSizeValidator < ActiveModel::EachValidator
 
     CHECKS.each do |key, validity_check|
       next unless check_value = options[key]
+
+      check_value =
+        case check_value
+        when Integer
+          check_value
+        when Symbol
+          record.send(check_value)
+        end
 
       value ||= [] if key == :maximum
 

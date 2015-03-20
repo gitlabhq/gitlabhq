@@ -67,6 +67,16 @@ describe Projects::UploadService do
       it { expect(@link_to_file['url']).to match("/#{@project.path_with_namespace}") }
       it { expect(@link_to_file['url']).to match('doc_sample.txt') }
     end
+
+    context 'for too large a file' do
+      before do
+        txt = fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain')
+        allow(txt).to receive(:size) { 1000.megabytes.to_i }
+        @link_to_file = upload_file(@project.repository, txt)
+      end
+
+      it { expect(@link_to_file).to eq(nil) }
+    end
   end
 
   def upload_file(repository, file)

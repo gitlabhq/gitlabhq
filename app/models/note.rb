@@ -22,6 +22,7 @@ require 'file_size_validator'
 
 class Note < ActiveRecord::Base
   include Mentionable
+  include Gitlab::CurrentSettings
 
   default_value_for :system, false
 
@@ -36,7 +37,8 @@ class Note < ActiveRecord::Base
 
   validates :note, :project, presence: true
   validates :line_code, format: { with: /\A[a-z0-9]+_\d+_\d+\Z/ }, allow_blank: true
-  validates :attachment, file_size: { maximum: 10.megabytes.to_i }
+  # Attachments are deprecated and are handled by Markdown uploader
+  validates :attachment, file_size: { maximum: :max_attachment_size }
 
   validates :noteable_id, presence: true, if: ->(n) { n.noteable_type.present? && n.noteable_type != 'Commit' }
   validates :commit_id, presence: true, if: ->(n) { n.noteable_type == 'Commit' }
@@ -321,6 +323,10 @@ class Note < ActiveRecord::Base
     end
   end
 
+  def max_attachment_size
+    current_application_settings.max_attachment_size.megabytes.to_i
+  end
+
   def commit_author
     @commit_author ||=
       project.team.users.find_by(email: noteable.author_email) ||
@@ -451,7 +457,7 @@ class Note < ActiveRecord::Base
         prev_match_line = line
       else
         prev_lines << line
-        
+
         break if generate_line_code(line) == self.line_code
 
         prev_lines.shift if prev_lines.length >= max_number_of_lines
