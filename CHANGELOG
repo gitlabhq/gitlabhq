@@ -1,6 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.10.0 (unreleased)
+  - Update poltergeist to version 1.6.0 to support PhantomJS 2.0 (Zeger-Jan van de Weg)
+  - Fix cross references when usernames, milestones, or project names contain underscores (Stan Hu)
   - enable line wrapping per default and remove the checkbox to toggle it (Hannes Rosenögger)
   - extend the commit calendar to show the actual commits made on a date (Hannes Rosenögger)
   - Add a service to support external wikis (Hannes Rosenögger)
