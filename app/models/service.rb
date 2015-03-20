@@ -141,6 +141,7 @@ class Service < ActiveRecord::Base
       custom_issue_tracker
       irker
       external_wiki
+      gocd
     )
   end
 
