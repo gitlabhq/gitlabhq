@@ -239,7 +239,7 @@ Gitlab::Application.routes.draw do
       resources :group_members, only: [:index, :create, :update, :destroy] do
         delete :leave, on: :collection
       end
-      
+
       resource :avatar, only: [:destroy]
       resources :milestones, only: [:index, :show, :update]
     end
@@ -321,7 +321,6 @@ Gitlab::Application.routes.draw do
           get :branches, on: :member
         end
 
-        resources :commits,   only: [:show], constraints: { id: /(?:[^.]|\.(?!atom$))+/, format: /atom/ }
         resources :compare,   only: [:index, :create]
 
         scope do
@@ -330,6 +329,15 @@ Gitlab::Application.routes.draw do
             to: 'blame#show',
             constraints: { id: /.+/, format: /(html|js)/ },
             as: :blame
+          )
+        end
+
+        scope do
+          get(
+            '/commits/*id',
+            to: 'commits#show',
+            constraints: { id: /(?:[^.]|\.(?!atom$))+/, format: /atom/ },
+            as: :commits
           )
         end
 
