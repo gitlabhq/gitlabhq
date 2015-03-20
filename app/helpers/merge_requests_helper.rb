@@ -35,7 +35,7 @@ module MergeRequestsHelper
   end
 
   def ci_build_details_path(merge_request)
-    merge_request.source_project.ci_service.build_page(merge_request.last_commit.sha)
+    merge_request.source_project.ci_service.build_page(merge_request.last_commit.sha, merge_request.source_branch)
   end
 
   def merge_path_description(merge_request, separator)

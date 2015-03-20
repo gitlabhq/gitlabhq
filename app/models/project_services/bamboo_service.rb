@@ -93,7 +93,7 @@ class BambooService < CiService
     end
   end
 
-  def build_page(sha)
+  def build_page(sha, ref)
     build_info(sha) if @response.nil? || !@response.code
 
     if @response.code != 200 || @response['results']['results']['size'] == '0'
@@ -106,7 +106,7 @@ class BambooService < CiService
     end
   end
 
-  def commit_status(sha)
+  def commit_status(sha, ref)
     build_info(sha) if @response.nil? || !@response.code
     return :error unless @response.code == 200 || @response.code == 404
 

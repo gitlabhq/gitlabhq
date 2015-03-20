@@ -88,7 +88,7 @@ class TeamcityService < CiService
     @response = HTTParty.get("#{url}", verify: false, basic_auth: auth)
   end
 
-  def build_page(sha)
+  def build_page(sha, ref)
     build_info(sha) if @response.nil? || !@response.code
 
     if @response.code != 200
@@ -103,7 +103,7 @@ class TeamcityService < CiService
     end
   end
 
-  def commit_status(sha)
+  def commit_status(sha, ref)
     build_info(sha) if @response.nil? || !@response.code
     return :error unless @response.code == 200 || @response.code == 404
 
