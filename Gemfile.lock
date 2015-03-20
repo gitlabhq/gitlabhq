@@ -147,7 +147,6 @@ GEM
     enumerize (0.7.0)
       activesupport (>= 3.2)
     equalizer (0.0.8)
-    errbase (0.0.2)
     erubis (2.7.0)
     escape_utils (0.2.4)
     eventmachine (1.0.4)
@@ -429,7 +428,6 @@ GEM
       rack
     rack-test (0.6.3)
       rack (>= 1.0)
-    rack-timeout (0.2.0)
     rails (4.1.9)
       actionmailer (= 4.1.9)
       actionpack (= 4.1.9)
@@ -482,8 +480,6 @@ GEM
     rest-client (1.6.7)
       mime-types (>= 1.16)
     rinku (1.7.3)
-    robustly (0.0.3)
-      errbase
     rouge (1.7.4)
     rspec (2.99.0)
       rspec-core (~> 2.99.0)
@@ -566,9 +562,6 @@ GEM
       temple (~> 0.6.6)
       tilt (>= 1.3.3, < 2.1)
     slop (3.6.0)
-    slowpoke (0.0.5)
-      rack-timeout (>= 0.1.0)
-      robustly
     spinach (0.8.7)
       colorize (= 0.5.8)
       gherkin-ruby (>= 0.3.1)
@@ -776,7 +769,6 @@ DEPENDENCIES
   six
   slack-notifier (~> 1.0.0)
   slim
-  slowpoke
   spinach-rails
   spring (~> 1.3.1)
   spring-commands-rspec (= 1.0.4)
