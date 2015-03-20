@@ -425,7 +425,7 @@ class @Notes
     @removeDiscussionNoteForm(form)
 
   updateVotes: ->
-    (new NotesVotes).updateVotes()
+    true
 
   ###
   Called after an attachment file has been selected.
