@@ -73,7 +73,7 @@
             %span.light Created on
             #{@project.created_at.stamp('Aug 22, 2013')}
           %p
-            %span.light Owned by
+            %span.light Owned by #{@project.group ? "the" : nil}
             - if @project.group
               #{link_to @project.group.name, @project.group} group
             - else
