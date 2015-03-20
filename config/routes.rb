@@ -332,7 +332,7 @@ Gitlab::Application.routes.draw do
           get(
             '/commits/*id',
             to: 'commits#show',
-            constraints: { id: /.+/, format: /(html|js)/ },
+            constraints: { id: /(?:[^.]|\.(?!atom$))+/, format: /atom/ },
             as: :commits
           )
         end
@@ -342,7 +342,6 @@ Gitlab::Application.routes.draw do
           get :branches, on: :member
         end
 
-        resources :commits, only: [:show], constraints: { id: /(?:[^.]|\.(?!atom$))+/, format: /atom/ }
         resources :compare, only: [:index, :create]
         resources :network, only: [:show], constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ }
 
