@@ -110,7 +110,7 @@ class @MergeRequest
 
   showCiState: (state) ->
     $('.ci_widget').hide()
-    allowed_states = ["failed", "running", "pending", "success"]
+    allowed_states = ["failed", "canceled", "running", "pending", "success"]
     if state in allowed_states
       $('.ci_widget.ci-' + state).show()
     else

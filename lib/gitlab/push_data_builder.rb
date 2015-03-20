@@ -71,7 +71,8 @@ module Gitlab
       end
 
       def checkout_sha(repository, newrev, ref)
-        if newrev != Gitlab::Git::BLANK_SHA && Gitlab::Git.tag_ref?(ref)
+        # Find sha for tag, except when it was deleted.
+        if Gitlab::Git.tag_ref?(ref) && !Gitlab::Git.blank_ref?(newrev)
           tag_name = Gitlab::Git.ref_name(ref)
           tag = repository.find_tag(tag_name)
 

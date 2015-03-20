@@ -22,7 +22,7 @@
           %i.fa.fa-comments
           = merge_request.mr_and_commit_notes.count
   .merge-request-info
-    %span.light= "##{merge_request.iid}"
+    = link_to "##{merge_request.iid}", merge_request_path(merge_request), class: "light"
     - if merge_request.assignee
       assigned to #{link_to_member(merge_request.source_project, merge_request.assignee)}
     - else

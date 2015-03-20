@@ -375,7 +375,7 @@ Parameters:
     }
   },
   {
-    "note": "_Status changed to closed_",
+    "note": "Status changed to closed",
     "author": {
       "id": 11,
       "username": "admin",

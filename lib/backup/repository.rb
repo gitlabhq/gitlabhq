@@ -16,7 +16,7 @@ module Backup
         if project.empty_repo?
           $progress.puts "[SKIPPED]".cyan
         else
-          cmd = %W(git --git-dir=#{path_to_repo(project)} bundle create #{path_to_bundle(project)} --all)
+          cmd = %W(tar -cf #{path_to_bundle(project)} -C #{path_to_repo(project)} .)
           output, status = Gitlab::Popen.popen(cmd)
           if status.zero?
             $progress.puts "[DONE]".green
@@ -64,7 +64,8 @@ module Backup
         project.namespace.ensure_dir_exist if project.namespace
 
         if File.exists?(path_to_bundle(project))
-          cmd = %W(git clone --bare #{path_to_bundle(project)} #{path_to_repo(project)})
+          FileUtils.mkdir_p(path_to_repo(project))
+          cmd = %W(tar -xf #{path_to_bundle(project)} -C #{path_to_repo(project)})
         else
           cmd = %W(git init --bare #{path_to_repo(project)})
         end

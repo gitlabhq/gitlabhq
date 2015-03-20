@@ -209,13 +209,13 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I click link "Hide inline discussion" of the second file' do
     within '.files [id^=diff]:nth-child(2)' do
-      click_link 'Show/Hide comments'
+      find('.js-toggle-diff-comments').click
     end
   end
 
   step 'I click link "Show inline discussion" of the second file' do
     within '.files [id^=diff]:nth-child(2)' do
-      click_link 'Show/Hide comments'
+      find('.js-toggle-diff-comments').click
     end
   end
 

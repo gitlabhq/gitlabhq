@@ -46,55 +46,13 @@
   }
 }
 
-select {
-  &.select2 {
-    width: 100px;
-  }
-
-  &.select2-sm {
-    width: 100px;
-  }
+.select2-container {
+  width: 100% !important;
 }
-
-@media (min-width: $screen-sm-min) {
-  select {
-    &.select2 {
-      width: 150px;
-    }
-    &.select2-sm {
-      width: 120px;
-    }
-  }
-}
-
-/* Medium devices (desktops, 992px and up) */
-@media (min-width: $screen-md-min) {
-  select {
-    &.select2 {
-      width: 170px;
-    }
-    &.select2-sm {
-      width: 140px;
-    }
-  }
-}
-
-/* Large devices (large desktops, 1200px and up) */
-@media (min-width: $screen-lg-min) {
-  select {
-    &.select2 {
-      width: 200px;
-    }
-    &.select2-sm {
-      width: 150px;
-    }
-  }
-}
-
 
 /** Branch/tag selector **/
 .project-refs-form .select2-container {
-  margin-right: 10px;
+  width: 160px !important;
 }
 
 .ajax-users-dropdown, .ajax-project-users-dropdown {

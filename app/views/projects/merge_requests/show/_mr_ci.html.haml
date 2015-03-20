@@ -23,6 +23,12 @@
     %i.fa.fa-spinner
     Checking for CI status for #{@merge_request.last_commit_short_sha}
 
+  .ci_widget.ci-canceled{style: "display:none"}
+    %i.fa.fa-times
+    %span CI build canceled
+    for #{@merge_request.last_commit_short_sha}.
+    = link_to "View build page", ci_build_details_path(@merge_request), :"data-no-turbolink" => "data-no-turbolink"
+
   .ci_widget.ci-error{style: "display:none"}
     %i.fa.fa-times
     %span Cannot connect to the CI server. Please check your settings and try again.

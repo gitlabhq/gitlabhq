@@ -25,7 +25,8 @@ class ProfilesController < ApplicationController
     if @user.update_attributes(user_params)
       flash[:notice] = "Profile was successfully updated"
     else
-      flash[:alert] = "Failed to update profile"
+      messages = @user.errors.full_messages.uniq.join('. ')
+      flash[:alert] = "Failed to update profile. #{messages}"
     end
 
     respond_to do |format|

@@ -17,7 +17,7 @@
           = issue.notes.count
 
   .issue-info
-    %span.light= "##{issue.iid}"
+    = link_to "##{issue.iid}", issue_path(issue), class: "light"
     - if issue.assignee
       assigned to #{link_to_member(@project, issue.assignee)}
     - if issue.votes_count > 0

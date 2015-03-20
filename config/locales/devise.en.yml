@@ -23,8 +23,8 @@ en:
       timeout: 'Your session expired, please sign in again to continue.'
       inactive: 'Your account was not activated yet.'
     sessions:
-      signed_in: 'Signed in successfully.'
-      signed_out: 'Signed out successfully.'
+      signed_in: ''
+      signed_out: ''
     users_sessions:
       user:
         signed_in: 'Signed in successfully.'
