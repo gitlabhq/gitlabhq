@@ -7,6 +7,7 @@ v 7.10.0 (unreleased)
   - extend the commit calendar to show the actual commits made on a date (Hannes Rosenögger)
   - Add a service to support external wikis (Hannes Rosenögger)
   - List new commits for newly pushed branch in activity view.
+  - Add sidetiq gem dependency to match EE
   - Add changelog, license and contribution guide links to project sidebar.
   - Improve diff UI
   - Fix alignment of navbar toggle button (Cody Mize)
