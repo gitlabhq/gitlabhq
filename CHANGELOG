@@ -16,6 +16,7 @@ v 7.10.0 (unreleased)
   - Improve error message when save profile has error.
   - Passing the name of pushed ref to CI service (requires GitLab CI 7.9+)
   - Add location field to user profile
+  - Fix print view for markdown files and wiki pages
 
 v 7.9.0 (unreleased)
   - Add HipChat integration documentation (Stan Hu)
