@@ -355,3 +355,22 @@ table {
   bottom: 20px !important;
   left: 20px !important;
 }
+
+.header-with-avatar {
+  h3 {
+    margin: 0;
+    font-weight: bold;
+  }
+
+  .username {
+    font-size: 18px;
+    color: #666;
+    margin-top: 8px;
+  }
+
+  .description {
+    font-size: 16px;
+    color: #666;
+    margin-top: 8px;
+  }
+}

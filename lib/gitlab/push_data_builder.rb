@@ -27,6 +27,12 @@ module Gitlab
 
         # Get latest 20 commits ASC
         commits_limited = commits.last(20)
+        
+        # For performance purposes maximum 20 latest commits
+        # will be passed as post receive hook data.
+        commit_attrs = commits_limited.map do |commit|
+          commit.hook_attrs(project)
+        end
 
         type = Gitlab::Git.tag_ref?(ref) ? "tag_push" : "push"
         # Hash to be passed as post_receive_data
@@ -49,17 +55,10 @@ module Gitlab
             git_ssh_url: project.ssh_url_to_repo,
             visibility_level: project.visibility_level
           },
-          commits: [],
+          commits: commit_attrs,
           total_commits_count: commits_count
         }
 
-        # For performance purposes maximum 20 latest commits
-        # will be passed as post receive hook data.
-        commits_limited.each do |commit|
-          data[:commits] << commit.hook_attrs(project)
-        end
-
-        data[:commits] = "" if data[:commits].count == 0
         data
       end
 
@@ -72,7 +71,8 @@ module Gitlab
       end
 
       def checkout_sha(repository, newrev, ref)
-        if newrev != Gitlab::Git::BLANK_SHA && Gitlab::Git.tag_ref?(ref)
+        # Find sha for tag, except when it was deleted.
+        if Gitlab::Git.tag_ref?(ref) && !Gitlab::Git.blank_ref?(newrev)
           tag_name = Gitlab::Git.ref_name(ref)
           tag = repository.find_tag(tag_name)
 

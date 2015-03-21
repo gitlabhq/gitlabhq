@@ -47,6 +47,5 @@ module GitlabRoutingHelper
 
   def project_snippet_url(entity, *args)
     namespace_project_snippet_url(entity.project.namespace, entity.project, entity, *args)
-
   end
 end

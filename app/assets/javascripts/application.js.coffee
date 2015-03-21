@@ -169,9 +169,7 @@ $ ->
 
   # Show/hide comments on diff
   $("body").on "click", ".js-toggle-diff-comments", (e) ->
-    $(@).find('i').
-      toggleClass('fa fa-chevron-down').
-      toggleClass('fa fa-chevron-up')
+    $(@).toggleClass('active')
     $(@).closest(".diff-file").find(".notes_holder").toggle()
     e.preventDefault()
 

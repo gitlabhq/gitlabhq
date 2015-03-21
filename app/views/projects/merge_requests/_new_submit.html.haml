@@ -69,10 +69,10 @@
           = link_to 'Create new label', new_namespace_project_label_path(@merge_request.target_project.namespace, @merge_request.target_project), target: :blank
 
     .form-actions
-      - if contribution_guide_url(@target_project)
+      - if guide_url = contribution_guide_url(@target_project)
         %p
           Please review the
-          %strong #{link_to 'guidelines for contribution', contribution_guide_url(@target_project)}
+          %strong #{link_to 'guidelines for contribution', guide_url}
           to this repository.
       = f.hidden_field :source_project_id
       = f.hidden_field :source_branch

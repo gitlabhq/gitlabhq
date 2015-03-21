@@ -21,7 +21,7 @@
       %li
         %span.light Website:
         %strong= link_to user.short_website_url, user.full_website_url
-    - unless user.bio.blank?
+    - unless user.location.blank?
       %li
-        %span.light Bio:
-        %span= user.bio
+        %span.light Location:
+        %strong= user.location

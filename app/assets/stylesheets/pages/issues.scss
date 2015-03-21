@@ -59,31 +59,32 @@
   }
 }
 
-@media (min-width: 800px)  { .issues_filters select { width: 160px; }  }
-@media (min-width: 1200px) { .issues_filters select { width: 220px; }  }
+@media (min-width: 800px)  {
+  .issues_bulk_update {
+    select, .select2-container {
+      width: 120px !important;
+      display: inline-block;
+    }
+  }
+}
 
-@media (min-width: 800px)  { .issues_bulk_update .select2-container { min-width: 120px; }  }
-@media (min-width: 1200px) { .issues_bulk_update .select2-container { min-width: 160px; }  }
+@media (min-width: 1200px) {
+  .issues_bulk_update {
+    select, .select2-container {
+      width: 160px !important;
+      display: inline-block;
+    }
+  }
+}
 
 .issues_bulk_update {
   .select2-container .select2-choice {
     color: #444 !important;
-    font-weight: 500;
   }
-}
-
-#update_status {
-  width: 100px;
 }
 
 .participants {
   margin-bottom: 20px;
-}
-
-.issues_bulk_update {
-  .select2-container {
-    text-shadow: none;
-  }
 }
 
 .issue-search-form {
@@ -177,6 +178,6 @@ h2.issue-title {
   font-weight: bold;
 }
 
-.context .select2-container {
-  width: 100% !important;
+.issue-form .select2-container {
+  width: 250px !important;
 }

@@ -39,11 +39,11 @@ describe GitlabCiService do
     end
 
     describe :commit_status_path do
-      it { expect(@service.commit_status_path("2ab7834c")).to eq("http://ci.gitlab.org/projects/2/commits/2ab7834c/status.json?token=verySecret")}
+      it { expect(@service.commit_status_path("2ab7834c", 'master')).to eq("http://ci.gitlab.org/projects/2/refs/master/commits/2ab7834c/status.json?token=verySecret")}
     end
 
     describe :build_page do
-      it { expect(@service.build_page("2ab7834c")).to eq("http://ci.gitlab.org/projects/2/commits/2ab7834c")}
+      it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://ci.gitlab.org/projects/2/refs/master/commits/2ab7834c")}
     end
   end
 end

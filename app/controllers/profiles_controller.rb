@@ -25,7 +25,8 @@ class ProfilesController < ApplicationController
     if @user.update_attributes(user_params)
       flash[:notice] = "Profile was successfully updated"
     else
-      flash[:alert] = "Failed to update profile"
+      messages = @user.errors.full_messages.uniq.join('. ')
+      flash[:alert] = "Failed to update profile. #{messages}"
     end
 
     respond_to do |format|
@@ -68,7 +69,7 @@ class ProfilesController < ApplicationController
     params.require(:user).permit(
       :email, :password, :password_confirmation, :bio, :name, :username,
       :skype, :linkedin, :twitter, :website_url, :color_scheme_id, :theme_id,
-      :avatar, :hide_no_ssh_key, :hide_no_password
+      :avatar, :hide_no_ssh_key, :hide_no_password, :location
     )
   end
 end

@@ -1,12 +1,13 @@
 .dashboard
-  %div
+  .header-with-avatar.clearfix
     = image_tag group_icon(@group), class: "avatar group-avatar s90"
-    .clearfix
-      %h2
-        = @group.name
-      - if @group.description.present?
-        %p
-          = escaped_autolink(@group.description)
+    %h3
+      = @group.name
+    .username
+      @#{@group.path}
+    - if @group.description.present?
+      .description
+        = escaped_autolink(@group.description)
   %hr
   .row
     %section.activities.col-md-8

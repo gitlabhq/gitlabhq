@@ -48,7 +48,7 @@ class BuildboxService < CiService
     service_hook.execute(data)
   end
 
-  def commit_status(sha)
+  def commit_status(sha, ref)
     response = HTTParty.get(commit_status_path(sha), verify: false)
 
     if response.code == 200 && response['status']
@@ -62,7 +62,7 @@ class BuildboxService < CiService
     "#{buildbox_endpoint('gitlab')}/status/#{status_token}.json?commit=#{sha}"
   end
 
-  def build_page(sha)
+  def build_page(sha, ref)
     "#{project_url}/builds?commit=#{sha}"
   end
 

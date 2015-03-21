@@ -154,10 +154,12 @@
   overflow: auto;
   .event-last-push-text {
     @include str-truncated(100%);
+    padding: 5px 0;
+    font-size: 13px;
     float:left;
     margin-right: -150px;
     padding-right: 150px;
-    line-height: 24px;
+    line-height: 20px;
   }
 }
 
@@ -188,7 +190,7 @@
   li a {
     font-size: 13px;
     padding: 5px 10px;
-    background: rgba(0,0,0,0.045);
+    background: $background-color;
     margin-left: 4px;
   }
 }

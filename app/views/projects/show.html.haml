@@ -44,25 +44,36 @@
               %i.fa.fa-code-fork.project-fork-icon
               Forked from:
               %br
-              = link_to @project.forked_from_project.name_with_namespace, namespace_project_path(@project.namespace, @project.forked_from_project)
+              = link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)
 
           - unless @project.empty_repo?
             = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-block' do
               Compare code
 
-            - if @repository.version
-              - version = @repository.version
-              = link_to namespace_project_blob_path(@project.namespace, @project, tree_join(@repository.root_ref, version.name)), class: 'btn btn-block' do
+            - if version = @repository.version
+              - detail_url = changelog_url(@project) || version_url(@project)
+              = link_to detail_url, class: 'btn btn-block' do
                 Version:
                 %span.count
                   = @repository.blob_by_oid(version.id).data
+            - elsif @repository.changelog
+              = link_to changelog_url(@project), class: 'btn btn-block' do
+                View changelog
+
+            - if @repository.contribution_guide
+              = link_to contribution_guide_url(@project), class: 'btn btn-block' do
+                View contribution guide
+
+            - if @repository.license
+              = link_to license_url(@project), class: 'btn btn-block' do
+                View license
 
         .prepend-top-10
           %p
             %span.light Created on
             #{@project.created_at.stamp('Aug 22, 2013')}
           %p
-            %span.light Owned by
+            %span.light Owned by #{@project.group ? "the" : nil}
             - if @project.group
               #{link_to @project.group.name, @project.group} group
             - else

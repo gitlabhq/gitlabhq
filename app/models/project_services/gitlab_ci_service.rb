@@ -40,17 +40,17 @@ class GitlabCiService < CiService
     service_hook.execute(data)
   end
 
-  def commit_status_path(sha)
-    project_url + "/commits/#{sha}/status.json?token=#{token}"
+  def commit_status_path(sha, ref)
+    project_url + "/refs/#{ref}/commits/#{sha}/status.json?token=#{token}"
   end
 
-  def get_ci_build(sha)
+  def get_ci_build(sha, ref)
     @ci_builds ||= {}
-    @ci_builds[sha] ||= HTTParty.get(commit_status_path(sha), verify: false)
+    @ci_builds[sha] ||= HTTParty.get(commit_status_path(sha, ref), verify: false)
   end
 
-  def commit_status(sha)
-    response = get_ci_build(sha)
+  def commit_status(sha, ref)
+    response = get_ci_build(sha, ref)
 
     if response.code == 200 and response["status"]
       response["status"]
@@ -59,16 +59,16 @@ class GitlabCiService < CiService
     end
   end
 
-  def commit_coverage(sha)
-    response = get_ci_build(sha)
+  def commit_coverage(sha, ref)
+    response = get_ci_build(sha, ref)
 
     if response.code == 200 and response["coverage"]
       response["coverage"]
     end
   end
 
-  def build_page(sha)
-    project_url + "/commits/#{sha}"
+  def build_page(sha, ref)
+    project_url + "/refs/#{ref}/commits/#{sha}"
   end
 
   def builds_path

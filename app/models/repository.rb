@@ -122,7 +122,7 @@ class Repository
 
   def expire_cache
     %i(size branch_names tag_names commit_count graph_log
-       readme version contribution_guide).each do |key|
+       readme version contribution_guide changelog license).each do |key|
       cache.expire(key)
     end
   end
@@ -154,6 +154,20 @@ class Repository
       dates
     else
       []
+    end
+  end
+
+  def commits_by_user_on_date_log(user, date)
+    # format the date string for git
+    start_date = date.strftime("%Y-%m-%d 00:00:00")
+    end_date = date.strftime("%Y-%m-%d 23:59:59")
+
+    author_emails = '(' + user.all_emails.map{ |e| Regexp.escape(e) }.join('|') + ')'
+    args = %W(git log -E --author=#{author_emails} --after=#{start_date.to_s} --until=#{end_date.to_s} --branches --pretty=format:%h)
+    commits = Gitlab::Popen.popen(args, path_to_repo).first.split("\n")
+
+    commits.map! do |commit_id|
+      commit(commit_id)
     end
   end
 
@@ -197,7 +211,27 @@ class Repository
   end
 
   def contribution_guide
-    cache.fetch(:contribution_guide) { tree(:head).contribution_guide }
+    cache.fetch(:contribution_guide) do
+      tree(:head).blobs.find do |file|
+        file.contributing?
+      end
+    end
+  end
+
+  def changelog
+    cache.fetch(:changelog) do
+      tree(:head).blobs.find do |file|
+        file.name =~ /^(changelog|history)/i
+      end
+    end
+  end
+
+  def license
+    cache.fetch(:license) do
+      tree(:head).blobs.find do |file|
+        file.name =~ /^license/i
+      end
+    end
   end
 
   def head_commit

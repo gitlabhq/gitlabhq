@@ -54,6 +54,9 @@
         = f.label :website_url, 'Website', class: "control-label"
         .col-sm-10= f.text_field :website_url, class: "form-control"
       .form-group
+        = f.label :location, 'Location', class: "control-label"
+        .col-sm-10= f.text_field :location, class: "form-control"
+      .form-group
         = f.label :bio, class: "control-label"
         .col-sm-10
           = f.text_area :bio, rows: 4, class: "form-control", maxlength: 250

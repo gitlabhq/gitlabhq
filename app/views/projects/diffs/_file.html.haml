@@ -22,14 +22,8 @@
 
       .diff-btn-group
         - if blob.text?
-          - unless params[:view] == 'parallel'
-            %label
-              = check_box_tag nil, 1, false, class: 'js-toggle-diff-line-wrap'
-              Wrap text
-          &nbsp;
-          = link_to '#', class: 'js-toggle-diff-comments btn btn-sm' do
-            %i.fa.fa-chevron-down
-            Show/Hide comments
+          = link_to '#', class: 'js-toggle-diff-comments btn btn-sm active has_tooltip', title: "Toggle comments for this file" do
+            %i.fa.fa-comments
           &nbsp;
 
         - if @merge_request && @merge_request.source_project
@@ -39,7 +33,7 @@
 
         = view_file_btn(@commit.id, diff_file, project)
 
-  .diff-content
+  .diff-content.diff-wrap-lines
     -# Skipp all non non-supported blobs
     - return unless blob.respond_to?('text?')
     - if blob.text?

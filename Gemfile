@@ -31,7 +31,7 @@ gem 'omniauth-shibboleth'
 gem 'omniauth-kerberos'
 gem 'omniauth-gitlab'
 gem 'omniauth-bitbucket'
-gem 'doorkeeper', '2.1.0'
+gem 'doorkeeper', '2.1.3'
 gem "rack-oauth2", "~> 1.0.5"
 
 # Browser detection
@@ -39,7 +39,7 @@ gem "browser"
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 7.1.0'
+gem "gitlab_git", '~> 7.1.2'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 2.0.0.rc2', require: 'grack'
@@ -48,7 +48,7 @@ gem 'gitlab-grack', '~> 2.0.0.rc2', require: 'grack'
 gem 'gitlab_omniauth-ldap', '1.2.1', require: "omniauth-ldap"
 
 # Git Wiki
-gem 'gollum-lib', '~> 4.0.0'
+gem 'gollum-lib', '~> 4.0.2'
 
 # Language detection
 gem "gitlab-linguist", "~> 3.0.1", require: "linguist"
@@ -179,9 +179,6 @@ gem 'mousetrap-rails'
 
 # Detect and convert string character encoding
 gem 'charlock_holmes'
-
-# Shutting down requests that take too long
-gem "slowpoke"
 
 gem "sass-rails", '~> 4.0.2'
 gem "coffee-rails"

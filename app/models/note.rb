@@ -59,7 +59,7 @@ class Note < ActiveRecord::Base
 
   class << self
     def create_status_change_note(noteable, project, author, status, source)
-      body = "_Status changed to #{status}#{' by ' + source.gfm_reference if source}_"
+      body = "Status changed to #{status}#{' by ' + source.gfm_reference if source}"
 
       create(
         noteable: noteable,
@@ -95,9 +95,9 @@ class Note < ActiveRecord::Base
 
     def create_milestone_change_note(noteable, project, author, milestone)
       body = if milestone.nil?
-               '_Milestone removed_'
+               'Milestone removed'
              else
-               "_Milestone changed to #{milestone.title}_"
+               "Milestone changed to #{milestone.title}"
              end
 
       create(
@@ -110,7 +110,7 @@ class Note < ActiveRecord::Base
     end
 
     def create_assignee_change_note(noteable, project, author, assignee)
-      body = assignee.nil? ? '_Assignee removed_' : "_Reassigned to @#{assignee.username}_"
+      body = assignee.nil? ? 'Assignee removed' : "Reassigned to @#{assignee.username}"
 
       create({
         noteable: noteable,
@@ -140,7 +140,7 @@ class Note < ActiveRecord::Base
       end
 
       message << ' ' << 'label'.pluralize(labels_count)
-      body = "_#{message.capitalize}_"
+      body = "#{message.capitalize}"
 
       create(
         noteable: noteable,
@@ -151,7 +151,7 @@ class Note < ActiveRecord::Base
       )
     end
 
-    def create_new_commits_note(merge_request, project, author, new_commits, existing_commits = [])
+    def create_new_commits_note(merge_request, project, author, new_commits, existing_commits = [], oldrev = nil)
       total_count = new_commits.length + existing_commits.length
       commits_text = ActionController::Base.helpers.pluralize(total_count, 'commit')
       body = "Added #{commits_text}:\n\n"
@@ -161,19 +161,23 @@ class Note < ActiveRecord::Base
           if existing_commits.length == 1
             existing_commits.first.short_id
           else
-            "#{existing_commits.first.short_id}..#{existing_commits.last.short_id}"
+            if oldrev
+              "#{Commit.truncate_sha(oldrev)}...#{existing_commits.last.short_id}"
+            else
+              "#{existing_commits.first.short_id}..#{existing_commits.last.short_id}"
+            end
           end
 
         commits_text = ActionController::Base.helpers.pluralize(existing_commits.length, 'commit')
 
-        branch = 
+        branch =
           if merge_request.for_fork?
             "#{merge_request.target_project_namespace}:#{merge_request.target_branch}"
           else
             merge_request.target_branch
           end
 
-        message = "* #{commit_ids} - _#{commits_text} from branch `#{branch}`_"
+        message = "* #{commit_ids} - #{commits_text} from branch `#{branch}`"
         body << message
         body << "\n"
       end
@@ -236,7 +240,7 @@ class Note < ActiveRecord::Base
                 where(noteable_id: noteable.id)
               end
 
-      notes.where('note like ?', cross_reference_note_content(gfm_reference)).
+      notes.where('note like ?', cross_reference_note_pattern(gfm_reference)).
         system.any?
     end
 
@@ -245,13 +249,18 @@ class Note < ActiveRecord::Base
     end
 
     def cross_reference_note_prefix
-      '_mentioned in '
+      'mentioned in '
     end
 
     private
 
     def cross_reference_note_content(gfm_reference)
-      cross_reference_note_prefix + "#{gfm_reference}_"
+      cross_reference_note_prefix + "#{gfm_reference}"
+    end
+
+    def cross_reference_note_pattern(gfm_reference)
+      # Older cross reference notes contained underscores for emphasis
+      "%" + cross_reference_note_content(gfm_reference) + "%"
     end
 
     # Prepend the mentioner's namespaced project path to the GFM reference for
