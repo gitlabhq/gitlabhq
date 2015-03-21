@@ -11,8 +11,10 @@
     z-index: 10;
 
     > span {
-      @include str-truncated(65%);
       font-family: $monospace_font;
+      word-break: break-all;
+      margin-right: 200px;
+      display: block;
     }
 
     .diff-btn-group {
