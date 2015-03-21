@@ -69,7 +69,7 @@ class ProfilesController < ApplicationController
     params.require(:user).permit(
       :email, :password, :password_confirmation, :bio, :name, :username,
       :skype, :linkedin, :twitter, :website_url, :color_scheme_id, :theme_id,
-      :avatar, :hide_no_ssh_key, :hide_no_password
+      :avatar, :hide_no_ssh_key, :hide_no_password, :location
     )
   end
 end
