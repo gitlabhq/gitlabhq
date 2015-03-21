@@ -248,12 +248,20 @@ class Repository
   end
 
   def head_commit
-    commit(self.root_ref)
+    @head_commit ||= commit(self.root_ref)
+  end
+
+  def head_tree
+    @head_tree ||= Tree.new(self, head_commit.sha, nil)
   end
 
   def tree(sha = :head, path = nil)
     if sha == :head
-      sha = head_commit.sha
+      if path.nil?
+        return head_tree
+      else
+        sha = head_commit.sha
+      end
     end
 
     Tree.new(self, sha, path)
