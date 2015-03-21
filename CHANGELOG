@@ -5,6 +5,7 @@ v 7.10.0 (unreleased)
   - Fix cross references when usernames, milestones, or project names contain underscores (Stan Hu)
   - enable line wrapping per default and remove the checkbox to toggle it (Hannes Rosenögger)
   - extend the commit calendar to show the actual commits made on a date (Hannes Rosenögger)
+  - Fix a link in the patch update guide
   - Add a service to support external wikis (Hannes Rosenögger)
   - List new commits for newly pushed branch in activity view.
   - Add changelog, license and contribution guide links to project sidebar.
