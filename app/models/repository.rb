@@ -184,8 +184,17 @@ class Repository
       end
   end
 
+  def lookup_cache
+    @lookup_cache ||= {}
+  end
+
   def method_missing(m, *args, &block)
-    raw_repository.send(m, *args, &block)
+    if m == :lookup && !block_given?
+      lookup_cache[m] ||= {}
+      lookup_cache[m][args.join(":")] ||= raw_repository.send(m, *args, &block)
+    else
+      raw_repository.send(m, *args, &block)
+    end
   end
 
   def respond_to?(method)
