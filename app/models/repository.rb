@@ -62,24 +62,28 @@ class Repository
 
   def add_branch(branch_name, ref)
     cache.expire(:branch_names)
+    @branches = nil
 
     gitlab_shell.add_branch(path_with_namespace, branch_name, ref)
   end
 
   def add_tag(tag_name, ref, message = nil)
     cache.expire(:tag_names)
+    @tags = nil
 
     gitlab_shell.add_tag(path_with_namespace, tag_name, ref, message)
   end
 
   def rm_branch(branch_name)
     cache.expire(:branch_names)
+    @branches = nil
 
     gitlab_shell.rm_branch(path_with_namespace, branch_name)
   end
 
   def rm_tag(tag_name)
     cache.expire(:tag_names)
+    @tags = nil
 
     gitlab_shell.rm_tag(path_with_namespace, tag_name)
   end
@@ -366,6 +370,18 @@ class Repository
     else
       []
     end
+  end
+
+  def branches
+    @branches ||= raw_repository.branches
+  end
+
+  def tags
+    @tags ||= raw_repository.tags
+  end
+
+  def root_ref
+    @root_ref ||= raw_repository.root_ref
   end
 
   private
