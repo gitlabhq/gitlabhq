@@ -352,11 +352,12 @@ module Gitlab
       # ActiveSupport::SafeBuffer, hence the `String.new`
       String.new(text).gsub(Taskable::TASK_PATTERN_HTML) do
         checked = $LAST_MATCH_INFO[:checked].downcase == 'x'
+        p_tag = $LAST_MATCH_INFO[:p_tag]
 
         if checked
-          "#{li_tag}#{checked_box}"
+          "#{li_tag}#{p_tag}#{checked_box}"
         else
-          "#{li_tag}#{unchecked_box}"
+          "#{li_tag}#{p_tag}#{unchecked_box}"
         end
       end
     end
