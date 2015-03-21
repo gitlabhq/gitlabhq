@@ -18,6 +18,7 @@ v 7.10.0 (unreleased)
   - Add location field to user profile
   - Fix print view for markdown files and wiki pages
   - Improve GitLab performance when working with git repositories
+  - Add tag message and last commit to tag hook (Kamil Trzciński)
 
 v 7.9.0 (unreleased)
   - Add HipChat integration documentation (Stan Hu)

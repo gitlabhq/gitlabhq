@@ -21,7 +21,7 @@ module Gitlab
       #   total_commits_count: Fixnum
       # }
       #
-      def build(project, user, oldrev, newrev, ref, commits = [])
+      def build(project, user, oldrev, newrev, ref, commits = [], message = nil)
         # Total commits count
         commits_count = commits.size
 
@@ -42,6 +42,7 @@ module Gitlab
           after: newrev,
           ref: ref,
           checkout_sha: checkout_sha(project.repository, newrev, ref),
+          message: message,
           user_id: user.id,
           user_name: user.name,
           user_email: user.email,
