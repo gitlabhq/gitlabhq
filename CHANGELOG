@@ -5,8 +5,10 @@ v 7.10.0 (unreleased)
   - Fix cross references when usernames, milestones, or project names contain underscores (Stan Hu)
   - enable line wrapping per default and remove the checkbox to toggle it (Hannes Rosenögger)
   - extend the commit calendar to show the actual commits made on a date (Hannes Rosenögger)
+  - Fix a link in the patch update guide
   - Add a service to support external wikis (Hannes Rosenögger)
   - List new commits for newly pushed branch in activity view.
+  - Add sidetiq gem dependency to match EE
   - Add changelog, license and contribution guide links to project sidebar.
   - Improve diff UI
   - Fix alignment of navbar toggle button (Cody Mize)
@@ -14,6 +16,13 @@ v 7.10.0 (unreleased)
   - Move "Import existing repository by URL" option to button.
   - Improve error message when save profile has error.
   - Passing the name of pushed ref to CI service (requires GitLab CI 7.9+)
+  - Add location field to user profile
+  - Fix print view for markdown files and wiki pages
+  - Improve GitLab performance when working with git repositories
+  - Add tag message and last commit to tag hook (Kamil Trzciński)
+  - Restrict permissions on backup files
+  - Improve oauth accounts UI in profile page
+  - Add ability to unlink connected accounts
 
 v 7.9.0 (unreleased)
   - Add HipChat integration documentation (Stan Hu)

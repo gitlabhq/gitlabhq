@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150313012111) do
+ActiveRecord::Schema.define(version: 20150320234437) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -395,11 +395,11 @@ ActiveRecord::Schema.define(version: 20150313012111) do
     t.string   "avatar"
     t.string   "import_status"
     t.float    "repository_size",               default: 0.0
+    t.text     "merge_requests_template"
     t.integer  "star_count",                    default: 0,        null: false
+    t.boolean  "merge_requests_rebase_enabled", default: false
     t.string   "import_type"
     t.string   "import_source"
-    t.text     "merge_requests_template"
-    t.boolean  "merge_requests_rebase_enabled", default: false
     t.boolean  "merge_requests_rebase_default", default: true
   end
 
@@ -518,6 +518,7 @@ ActiveRecord::Schema.define(version: 20150313012111) do
     t.integer  "notification_level",            default: 1,     null: false
     t.datetime "password_expires_at"
     t.integer  "created_by_id"
+    t.datetime "last_credential_check_at"
     t.string   "avatar"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
@@ -525,7 +526,7 @@ ActiveRecord::Schema.define(version: 20150313012111) do
     t.string   "unconfirmed_email"
     t.boolean  "hide_no_ssh_key",               default: false
     t.string   "website_url",                   default: "",    null: false
-    t.datetime "last_credential_check_at"
+    t.datetime "admin_email_unsubscribed_at"
     t.string   "github_access_token"
     t.string   "gitlab_access_token"
     t.string   "notification_email"
@@ -533,7 +534,7 @@ ActiveRecord::Schema.define(version: 20150313012111) do
     t.boolean  "password_automatically_set",    default: false
     t.string   "bitbucket_access_token"
     t.string   "bitbucket_access_token_secret"
-    t.datetime "admin_email_unsubscribed_at"
+    t.string   "location"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

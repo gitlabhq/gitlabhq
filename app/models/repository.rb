@@ -62,24 +62,28 @@ class Repository
 
   def add_branch(branch_name, ref)
     cache.expire(:branch_names)
+    @branches = nil
 
     gitlab_shell.add_branch(path_with_namespace, branch_name, ref)
   end
 
   def add_tag(tag_name, ref, message = nil)
     cache.expire(:tag_names)
+    @tags = nil
 
     gitlab_shell.add_tag(path_with_namespace, tag_name, ref, message)
   end
 
   def rm_branch(branch_name)
     cache.expire(:branch_names)
+    @branches = nil
 
     gitlab_shell.rm_branch(path_with_namespace, branch_name)
   end
 
   def rm_tag(tag_name)
     cache.expire(:tag_names)
+    @tags = nil
 
     gitlab_shell.rm_tag(path_with_namespace, tag_name)
   end
@@ -180,8 +184,17 @@ class Repository
       end
   end
 
+  def lookup_cache
+    @lookup_cache ||= {}
+  end
+
   def method_missing(m, *args, &block)
-    raw_repository.send(m, *args, &block)
+    if m == :lookup && !block_given?
+      lookup_cache[m] ||= {}
+      lookup_cache[m][args.join(":")] ||= raw_repository.send(m, *args, &block)
+    else
+      raw_repository.send(m, *args, &block)
+    end
   end
 
   def respond_to?(method)
@@ -235,12 +248,20 @@ class Repository
   end
 
   def head_commit
-    commit(self.root_ref)
+    @head_commit ||= commit(self.root_ref)
+  end
+
+  def head_tree
+    @head_tree ||= Tree.new(self, head_commit.sha, nil)
   end
 
   def tree(sha = :head, path = nil)
     if sha == :head
-      sha = head_commit.sha
+      if path.nil?
+        return head_tree
+      else
+        sha = head_commit.sha
+      end
     end
 
     Tree.new(self, sha, path)
@@ -366,6 +387,18 @@ class Repository
     else
       []
     end
+  end
+
+  def branches
+    @branches ||= raw_repository.branches
+  end
+
+  def tags
+    @tags ||= raw_repository.tags
+  end
+
+  def root_ref
+    @root_ref ||= raw_repository.root_ref
   end
 
   private

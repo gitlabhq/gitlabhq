@@ -1,31 +1,7 @@
 .account-page {
   fieldset {
     margin-bottom: 15px;
-    border-bottom: 1px dashed #ddd;
     padding-bottom: 15px;
-
-    &:last-child {
-      border: none;
-    }
-
-    legend {
-      border: none;
-      margin-bottom: 10px;
-    }
-  }
-}
-
-.oauth_select_holder {
-  img {
-    padding: 2px;
-    margin-right: 10px;
-  }
-  .active {
-    img {
-      border: 1px solid #4BD;
-      background: $hover;
-      @include border-radius(5px);
-    }
   }
 }
 
@@ -39,11 +15,6 @@
   hr {
     margin: 10px 0;
   }
-}
-
-.user-show-username {
-  font-weight: 200;
-  color: #666;
 }
 
 /*
@@ -103,6 +74,22 @@
         max-width: 100%;
         @include border-radius(4px);
       }
+    }
+  }
+}
+
+.oauth-buttons {
+  .btn-group {
+    margin-right: 10px;
+  }
+
+  .btn {
+    line-height: 36px;
+    height: 56px;
+
+    img {
+      width: 32px;
+      height: 32px;
     }
   }
 }
