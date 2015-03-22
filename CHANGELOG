@@ -24,7 +24,7 @@ v 7.10.0 (unreleased)
   - Improve oauth accounts UI in profile page
   - Add ability to unlink connected accounts
 
-v 7.9.0 (unreleased)
+v 7.9.0
   - Add HipChat integration documentation (Stan Hu)
   - Update documentation for object_kind field in Webhook push and tag push Webhooks (Stan Hu)
   - Fix broken email images (Hannes Rosenögger)
