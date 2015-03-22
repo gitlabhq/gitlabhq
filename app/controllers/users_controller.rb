@@ -4,10 +4,7 @@ class UsersController < ApplicationController
   layout :determine_layout
 
   def show
-    @contributed_projects = Project.
-      where(id: authorized_projects_ids & @user.contributed_projects_ids).
-      in_group_namespace.
-      includes(:namespace).
+    @contributed_projects = contributed_projects.joined(@user).
       reject(&:forked?)
 
     @projects = @user.personal_projects.
@@ -76,11 +73,12 @@ class UsersController < ApplicationController
 
   def contributed_projects
     @contributed_projects = Project.
-      where(id: authorized_projects_ids & @user.contributed_projects_ids).reject(&:forked?)
+      where(id: authorized_projects_ids & @user.contributed_projects_ids).
+      includes(:namespace)
   end
 
   def contributions_calendar
     @contributions_calendar ||= Gitlab::ContributionsCalendar.
-      new(contributed_projects, @user)
+      new(contributed_projects.reject(&:forked?), @user)
   end
 end

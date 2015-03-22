@@ -14,7 +14,7 @@ module Gitlab
       date_from = 1.year.ago
       date_to = Date.today
 
-      events = Event.where(author_id: user.id).where(action: event_type).
+      events = Event.contributions.where(author_id: user.id).
         where("created_at > ?", date_from).where(project_id: projects)
 
       grouped_events = events.to_a.group_by { |event| event.created_at.to_date.to_s }
@@ -41,7 +41,7 @@ module Gitlab
     end
 
     def events_by_date(date)
-      events = Event.where(author_id: user.id).where(action: event_type).
+      events = Event.contributions.where(author_id: user.id).
         where("created_at > ? AND created_at < ?", date.beginning_of_day, date.end_of_day).
         where(project_id: projects)
 
@@ -56,10 +56,6 @@ module Gitlab
 
     def starting_month
       Date.today.strftime("%m").to_i
-    end
-
-    def event_type
-      [Event::PUSHED, Event::CREATED, Event::CLOSED, Event::MERGED]
     end
   end
 end
