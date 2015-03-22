@@ -16,17 +16,16 @@ class UsersController < ApplicationController
     # Collect only groups common for both users
     @groups = @user.groups & GroupsFinder.new.execute(current_user)
 
-    # Get user activity feed for projects common for both users
-    @events = @user.recent_events.
-      where(project_id: authorized_projects_ids).
-      with_associations.limit(30)
-
     @title = @user.name
     @title_url = user_path(@user)
 
     respond_to do |format|
       format.html
       format.atom { render layout: false }
+      format.json do
+        load_events
+        pager_json("events/_events", @events.count)
+      end
     end
   end
 
@@ -81,5 +80,14 @@ class UsersController < ApplicationController
     # Projects user can view
     @authorized_projects_ids ||=
       ProjectsFinder.new.execute(current_user).pluck(:id)
+  end
+
+  def load_events
+    # Get user activity feed for projects common for both users
+    @events = @user.recent_events.
+      where(project_id: authorized_projects_ids).
+      with_associations
+
+    @events = @events.limit(20).offset(params[:offset] || 0)
   end
 end

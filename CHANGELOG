@@ -23,6 +23,7 @@ v 7.10.0 (unreleased)
   - Restrict permissions on backup files
   - Improve oauth accounts UI in profile page
   - Add ability to unlink connected accounts
+  - Add inifinite scroll to user page activity
 
 v 7.9.0 (unreleased)
   - Add HipChat integration documentation (Stan Hu)
