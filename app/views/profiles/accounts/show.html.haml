@@ -1,11 +1,6 @@
-%h3.page-title
-  Account Settings
-%p.light
-  You can change your username and private token here.
-  - if current_user.ldap_user?
+- if current_user.ldap_user?
+  .alert.alert-info
     Some options are unavailable for LDAP accounts
-%hr
-
 
 .account-page
   %fieldset.update-token
@@ -33,12 +28,16 @@
 
   - if show_profile_social_tab?
     %fieldset
-      %legend Social Accounts
-      .oauth_select_holder.append-bottom-10
+      %legend Connected Accounts
+      .oauth-buttons.append-bottom-10
         %p Click on icon to activate signin with one of the following services
         - enabled_social_providers.each do |provider|
-          %span{class: oauth_active_class(provider) }
-            = link_to authbutton(provider, 32), omniauth_authorize_path(User, provider)
+          .btn-group
+            = link_to oauth_image_tag(provider), omniauth_authorize_path(User, provider),
+              class: "btn btn-lg #{'active' if oauth_active?(provider)}"
+            - if oauth_active?(provider)
+              = link_to unlink_profile_account_path(provider: provider), method: :delete, class: 'btn btn-lg' do
+                %i.fa.fa-close
 
   - if show_profile_username_tab?
     %fieldset.update-username

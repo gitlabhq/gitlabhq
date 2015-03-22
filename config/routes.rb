@@ -184,7 +184,11 @@ Gitlab::Application.routes.draw do
     end
 
     scope module: :profiles do
-      resource :account, only: [:show, :update]
+      resource :account, only: [:show, :update] do
+        member do
+          delete :unlink
+        end
+      end
       resource :notifications, only: [:show, :update]
       resource :password, only: [:new, :create, :edit, :update] do
         member do
