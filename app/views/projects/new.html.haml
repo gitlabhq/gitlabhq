@@ -111,6 +111,6 @@
   $ ->
     $('.how_to_import_link').bind 'click', (e) ->
       e.preventDefault()
-      import_modal = $(this).parent().find(".modal").show()
+      import_modal = $(this).next(".modal").show()
     $('.modal-header .close').bind 'click', ->
       $(".modal").hide()
