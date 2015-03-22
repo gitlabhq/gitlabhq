@@ -7,7 +7,7 @@ class @calendar
   constructor: (timestamps, starting_year, starting_month, calendar_activities_path) ->
     cal = new CalHeatMap()
     cal.init
-      itemName: ["commit"]
+      itemName: ["contribution"]
       data: timestamps
       start: new Date(starting_year, starting_month)
       domainLabelFormat: "%b"
