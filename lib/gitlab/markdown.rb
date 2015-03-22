@@ -89,6 +89,7 @@ module Gitlab
 
       whitelist = HTML::Pipeline::SanitizationFilter::WHITELIST
       whitelist[:attributes][:all].push('class', 'id')
+      whitelist[:elements].push('span')
 
       # Remove the rel attribute that the sanitize gem adds, and remove the
       # href attribute if it contains inline javascript
@@ -123,7 +124,7 @@ module Gitlab
         text = parse_tasks(text)
       end
 
-      text
+      text.html_safe
     end
 
     private
