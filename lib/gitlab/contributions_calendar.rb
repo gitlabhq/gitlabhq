@@ -14,11 +14,11 @@ module Gitlab
       date_from = 1.year.ago
       date_to = Date.today
 
-      events = Event.contributions.where(author_id: user.id).
+      events = Event.reorder(nil).contributions.where(author_id: user.id).
         where("created_at > ?", date_from).where(project_id: projects).
         group('date(created_at)').
         select('date(created_at), count(id) as total_amount').
-        reorder(nil).map(&:attributes)
+        map(&:attributes)
 
       dates = (1.year.ago.to_date..(Date.today + 1.day)).to_a
 

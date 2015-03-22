@@ -1,4 +1,3 @@
-.calendar_commit_activity
 %h4.prepend-top-20
   %span.light Contributions for
   %strong #{@calendar_date.to_s(:short)}
@@ -9,14 +8,14 @@
       %span.light
         %i.fa.fa-clock-o
         = event.created_at.to_s(:time)
-      - if event.push? && event.commits_count > 0
-        pushed #{event.commits_count} commits to
+      - if event.push?
+        #{event.action_name} #{event.ref_type} #{event.ref_name}
       - else
         = event_action_name(event)
         - if event.target
           %strong= link_to "##{event.target_iid}", [event.project.namespace.becomes(Namespace), event.project, event.target]
-          at
 
+      at
       %strong
         - if event.project
           = link_to_project event.project
