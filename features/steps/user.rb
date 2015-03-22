@@ -35,7 +35,7 @@ class Spinach::Features::User < Spinach::FeatureSteps
 
   step 'I should see contributions calendar' do
     within '.calendar' do
-      page.should have_css('.graph-rect.r2.q2')
+      page.should have_css('.graph-rect.r3.q3')
     end
   end
 

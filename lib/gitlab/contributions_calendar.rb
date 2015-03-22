@@ -15,25 +15,20 @@ module Gitlab
       date_to = Date.today
 
       events = Event.contributions.where(author_id: user.id).
-        where("created_at > ?", date_from).where(project_id: projects)
+        where("created_at > ?", date_from).where(project_id: projects).
+        group('date(created_at)').
+        select('date(created_at), count(id) as total_amount').
+        reorder(nil).map(&:attributes)
 
-      grouped_events = events.to_a.group_by { |event| event.created_at.to_date.to_s }
       dates = (1.year.ago.to_date..(Date.today + 1.day)).to_a
 
       dates.each do |date|
         date_id = date.to_time.to_i.to_s
         @timestamps[date_id] = 0
+        day_events = events.find { |day_events| day_events["date"] == date }
 
-        if grouped_events.has_key?(date.to_s)
-          grouped_events[date.to_s].each do |event|
-            if event.created_at.to_date == date
-              if event.issue? || event.merge_request?
-                @timestamps[date_id] += 1
-              elsif event.push?
-                @timestamps[date_id] += event.commits_count
-              end
-            end
-          end
+        if day_events
+          @timestamps[date_id] = day_events["total_amount"]
         end
       end
 
