@@ -179,7 +179,8 @@ class WikiPage
     if valid? && project_wiki.send(method, *args)
 
       page_details = if method == :update_page
-                       @page.path
+                       # Use url_path instead of path to omit format extension
+                       @page.url_path
                      else
                        title
                      end
