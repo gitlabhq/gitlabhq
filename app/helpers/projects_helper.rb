@@ -146,6 +146,10 @@ module ProjectsHelper
       nav_tabs << feature if project.send :"#{feature}_enabled"
     end
 
+    if project.issues_enabled
+      nav_tabs << [:milestones, :labels]
+    end
+
     nav_tabs.flatten
   end
 

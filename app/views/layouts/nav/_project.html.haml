@@ -44,7 +44,7 @@
           %span
             Graphs
 
-    - if project_nav_tab? :issues
+    - if project_nav_tab? :milestones
       = nav_link(controller: :milestones) do
         = link_to namespace_project_milestones_path(@project.namespace, @project), title: 'Milestones' do
           %i.fa.fa-clock-o
@@ -68,7 +68,7 @@
             Merge Requests
             %span.count.merge_counter= @project.merge_requests.opened.count
 
-    - if project_nav_tab? :issues
+    - if project_nav_tab? :labels
       = nav_link(controller: :labels) do
         = link_to namespace_project_labels_path(@project.namespace, @project), title: 'Labels' do
           %i.fa.fa-tags
