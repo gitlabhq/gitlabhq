@@ -40,7 +40,8 @@ class CreateTagService < BaseService
   end
 
   def create_push_data(project, user, tag)
+    commits = [project.repository.commit(tag.target)].compact
     Gitlab::PushDataBuilder.
-      build(project, user, Gitlab::Git::BLANK_SHA, tag.target, "#{Gitlab::Git::TAG_REF_PREFIX}#{tag.name}", [])
+      build(project, user, Gitlab::Git::BLANK_SHA, tag.target, "#{Gitlab::Git::TAG_REF_PREFIX}#{tag.name}", commits, tag.message)
   end
 end

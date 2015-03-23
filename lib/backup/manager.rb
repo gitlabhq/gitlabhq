@@ -11,22 +11,27 @@ module Backup
       s[:tar_version]        = tar_version
       tar_file = "#{s[:backup_created_at].to_i}_gitlab_backup.tar"
 
-      Dir.chdir(Gitlab.config.backup.path)
+      Dir.chdir(Gitlab.config.backup.path) do
+        File.open("#{Gitlab.config.backup.path}/backup_information.yml",
+                  "w+") do |file|
+          file << s.to_yaml.gsub(/^---\n/,'')
+        end
 
-      File.open("#{Gitlab.config.backup.path}/backup_information.yml", "w+") do |file|
-        file << s.to_yaml.gsub(/^---\n/,'')
+        FileUtils.chmod_R(0700, %w{db uploads repositories})
+
+        # create archive
+        $progress.print "Creating backup archive: #{tar_file} ... "
+        orig_umask = File.umask(0077)
+        if Kernel.system('tar', '-cf', tar_file, *BACKUP_CONTENTS)
+          $progress.puts "done".green
+        else
+          puts "creating archive #{tar_file} failed".red
+          abort 'Backup failed'
+        end
+        File.umask(orig_umask)
+
+        upload(tar_file)
       end
-
-      # create archive
-      $progress.print "Creating backup archive: #{tar_file} ... "
-      if Kernel.system('tar', '-cf', tar_file, *BACKUP_CONTENTS)
-        $progress.puts "done".green
-      else
-        puts "creating archive #{tar_file} failed".red
-        abort 'Backup failed'
-      end
-
-      upload(tar_file)
     end
 
     def upload(tar_file)
@@ -51,11 +56,13 @@ module Backup
 
     def cleanup
       $progress.print "Deleting tmp directories ... "
-      if Kernel.system('rm', '-rf', *BACKUP_CONTENTS)
-        $progress.puts "done".green
-      else
-        puts "deleting tmp directory failed".red
-        abort 'Backup failed'
+      BACKUP_CONTENTS.each do |dir|
+        if FileUtils.rm_rf(File.join(Gitlab.config.backup.path, dir))
+          $progress.puts "done".green
+        else
+          puts "deleting tmp directory '#{dir}' failed".red
+          abort 'Backup failed'
+        end
       end
     end
 

@@ -20,6 +20,15 @@ module OauthHelper
   def additional_providers
     enabled_oauth_providers.reject{|provider| provider.to_s.starts_with?('ldap')}
   end
-  
+
+  def oauth_image_tag(provider, size = 64)
+    file_name = "#{provider.to_s.split('_').first}_#{size}.png"
+    image_tag(image_path("authbuttons/#{file_name}"), alt: "Sign in with #{provider.to_s.titleize}")
+  end
+
+  def oauth_active?(provider)
+    current_user.identities.exists?(provider: provider.to_s)
+  end
+
   extend self
 end

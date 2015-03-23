@@ -74,9 +74,9 @@
               = f.text_field :import_url, class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git'
               .alert.alert-info.prepend-top-10
                 %ul
-                  %li 
+                  %li
                     The repository must be accessible over HTTP(S). If it is not publicly accessible, you can add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>.
-                  %li 
+                  %li
                     The import will time out after 4 minutes. For big repositories, use a clone/push combination.
                   %li
                     To migrate an SVN repository, check out #{link_to "this document", "http://doc.gitlab.com/ce/workflow/migrating_from_svn.html"}.
@@ -112,6 +112,6 @@
   $ ->
     $('.how_to_import_link').bind 'click', (e) ->
       e.preventDefault()
-      import_modal = $(this).parent().find(".modal").show()
+      import_modal = $(this).next(".modal").show()
     $('.modal-header .close').bind 'click', ->
       $(".modal").hide()

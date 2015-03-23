@@ -104,7 +104,7 @@ class ProjectWiki
   def page_title_and_dir(title)
     title_array =  title.split("/")
     title = title_array.pop
-    [title.gsub(/\.[^.]*$/, ""), title_array.join("/")]
+    [title, title_array.join("/")]
   end
 
   def search_files(query)

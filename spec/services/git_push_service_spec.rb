@@ -145,11 +145,6 @@ describe GitPushService do
         expect(project).to receive(:execute_hooks)
         service.execute(project, user, 'oldrev', 'newrev', 'refs/heads/master')
       end
-
-      it "when pushing tags" do
-        expect(project).not_to receive(:execute_hooks)
-        service.execute(project, user, 'newrev', 'newrev', 'refs/tags/v1.0.0')
-      end
     end
   end
 
