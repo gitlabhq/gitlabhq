@@ -199,7 +199,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   private
-
+  
   def set_new_content
     execute_script("editor.setValue('#{new_gitignore_content}')")
   end
