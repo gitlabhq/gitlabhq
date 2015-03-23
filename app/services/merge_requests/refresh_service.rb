@@ -53,7 +53,7 @@ module MergeRequests
 
         if merge_request.source_branch == @branch_name || force_push?
           merge_request.reload_code
-          update_merge_request(merge_request)
+          merge_request.mark_as_unchecked
         else
           mr_commit_ids = merge_request.commits.map(&:id)
           push_commit_ids = @commits.map(&:id)
@@ -61,18 +61,12 @@ module MergeRequests
 
           if matches.any?
             merge_request.reload_code
-            update_merge_request(merge_request)
+            merge_request.mark_as_unchecked
           else
-            update_merge_request(merge_request)
+            merge_request.mark_as_unchecked
           end
         end
       end
-    end
-
-    def update_merge_request(merge_request)
-      MergeRequests::UpdateService.new(
-        merge_request.target_project,
-        @current_user, merge_status: 'unchecked').execute(merge_request)
     end
 
     # Add comment about pushing new commits to merge requests
