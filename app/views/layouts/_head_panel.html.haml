@@ -25,7 +25,7 @@
             = link_to explore_root_path, title: "Explore", class: 'has_bottom_tooltip', 'data-original-title' => 'Public area' do
               %i.fa.fa-globe
           %li
-            = link_to user_snippets_path(current_user), title: "My snippets", class: 'has_bottom_tooltip', 'data-original-title' => 'My snippets' do
+            = link_to user_snippets_path(current_user), title: "Your snippets", class: 'has_bottom_tooltip', 'data-original-title' => 'Your snippets' do
               %i.fa.fa-clipboard
           - if current_user.is_admin?
             %li

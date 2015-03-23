@@ -23,9 +23,9 @@ module SearchHelper
   # Autocomplete results for various settings pages
   def default_autocomplete
     [
-      { label: "My Profile settings", url: profile_path },
-      { label: "My SSH Keys",         url: profile_keys_path },
-      { label: "My Dashboard",        url: root_path },
+      { label: "Profile settings", url: profile_path },
+      { label: "SSH Keys",         url: profile_keys_path },
+      { label: "Dashboard",        url: root_path },
       { label: "Admin Section",       url: admin_root_path },
     ]
   end
