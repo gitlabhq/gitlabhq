@@ -40,7 +40,8 @@
             %strong
               %i.fa.fa-rss
 
-    = render @events
+    .content_list
+    = spinner
   %aside.col-md-4
     = render 'profile', user: @user
     = render 'projects'
