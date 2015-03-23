@@ -3,8 +3,6 @@
   .pull-right
     = link_to "Add SSH Key", new_profile_key_path, class: "btn btn-new"
 %p.light
-  My SSH keys: #{@keys.count}
-  %br
   Before you can add an SSH key you need to
   = link_to "generate it.", help_page_path("ssh", "README")
 %hr
