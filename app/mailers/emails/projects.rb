@@ -16,13 +16,17 @@ module Emails
            subject: subject("Project was moved"))
     end
 
-    def repository_push_email(project_id, recipient,  author_id:, 
-                                                      ref:, 
-                                                      action:, 
+    def repository_push_email(project_id, recipient,  author_id: nil, 
+                                                      ref: nil, 
+                                                      action: nil, 
                                                       compare: nil, 
                                                       reverse_compare: false, 
                                                       send_from_committer_email: false, 
                                                       disable_diffs: false)
+      unless author_id && ref && action
+        raise ArgumentError, "missing keywords: author_id, ref, action"
+      end
+
       @project = Project.find(project_id)
       @author  = User.find(author_id)
       @reverse_compare = reverse_compare
