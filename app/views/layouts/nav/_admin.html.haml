@@ -34,6 +34,11 @@
       %i.fa.fa-external-link
       %span
         Hooks
+  = nav_link(controller: :git_hooks) do
+    = link_to admin_git_hooks_path, title: 'Git Hooks' do
+      %i.fa.fa-git
+      %span
+        Git Hooks
   = nav_link(controller: :background_jobs) do
     = link_to admin_background_jobs_path, title: 'Background Jobs' do
       %i.fa.fa-cog

@@ -138,6 +138,8 @@ Gitlab::Application.routes.draw do
       end
     end
 
+    resources :git_hooks, only: [:index, :update]
+
     resources :applications
 
     resources :groups, constraints: { id: /[^\/]+/ } do
