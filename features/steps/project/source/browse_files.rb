@@ -128,9 +128,9 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
   
   step 'I check name of the upload file' do
-    '.gitignore' != 'user.feature'
-    'LICENSE' != 'user.feature'
-    'VERSION' != 'user.feature'
+    ".gitignore" != "user.feature"
+    "LICENSE" != "user.feature"
+    "VERSION" != "user.feature"
   end
   
   step 'I replace it with "LICENSE"' do
@@ -139,7 +139,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click on files directory' do
-    click_link 'files'
+    click_link "files"
   end
 
   step 'I click on History link' do
