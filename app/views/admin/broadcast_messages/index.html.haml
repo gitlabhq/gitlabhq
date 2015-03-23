@@ -21,12 +21,12 @@
   .form-group.js-toggle-colors-container.hide
     = f.label :color, "Background Color", class: 'control-label'
     .col-sm-10
-      = f.text_field :color, placeholder: "#AA33EE", class: "form-control"
+      = f.color_field :color, placeholder: "#AA33EE", class: "form-control"
       .light 6 character hex values starting with a # sign.
   .form-group.js-toggle-colors-container.hide
     = f.label :font, "Font Color", class: 'control-label'
     .col-sm-10
-      = f.text_field :font, placeholder: "#224466", class: "form-control"
+      = f.color_field :font, placeholder: "#224466", class: "form-control"
       .light 6 character hex values starting with a # sign.
   .form-group
     = f.label :starts_at, class: 'control-label'
