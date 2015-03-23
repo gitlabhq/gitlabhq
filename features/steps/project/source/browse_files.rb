@@ -116,7 +116,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click on "Upload" in repo' do
-    click_button 'Upload'
+    click_button "Upload"
   end
 
   step 'I click on "Upload file"' do
