@@ -138,11 +138,11 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     old_gitignore_content = "LICENSE"
   end
 
-  step "I click on files directory" do
-    click_link "files"
+  step 'I click on files directory' do
+    click_link 'files'
   end
 
-  step "I click on History link" do
+  step 'I click on History link'' do
     click_link 'History'
   end
 
