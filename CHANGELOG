@@ -33,6 +33,9 @@ v 7.10.0 (unreleased)
   - Don't show commit comment button when user is not signed in.
 
 v 7.9.0
+  - Send EmailsOnPush email when branch or tag is created or deleted.
+
+v 7.9.0 (unreleased)
   - Add HipChat integration documentation (Stan Hu)
   - Update documentation for object_kind field in Webhook push and tag push Webhooks (Stan Hu)
   - Fix broken email images (Hannes Rosenögger)
