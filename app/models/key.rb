@@ -95,7 +95,7 @@ class Key < ActiveRecord::Base
         out, _ = version_output.scan /.*?(\d)\.(\d).*?,/
         major, minor = out[0], out[1]
         if major.to_i > 6 or (major.to_i == 6 and minor.to_i >= 8)
-            explicit_fingerprint_algorithm = true
+          explicit_fingerprint_algorithm = true
         end
       end
 
