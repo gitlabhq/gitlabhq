@@ -16,7 +16,13 @@ module Emails
            subject: subject("Project was moved"))
     end
 
-    def repository_push_email(project_id, recipient, author_id, ref, action, compare, reverse_compare = false, send_from_committer_email = false, disable_diffs = false)
+    def repository_push_email(project_id, recipient,  author_id:, 
+                                                      ref:, 
+                                                      action:, 
+                                                      compare: nil, 
+                                                      reverse_compare: false, 
+                                                      send_from_committer_email: false, 
+                                                      disable_diffs: false)
       @project = Project.find(project_id)
       @author  = User.find(author_id)
       @reverse_compare = reverse_compare

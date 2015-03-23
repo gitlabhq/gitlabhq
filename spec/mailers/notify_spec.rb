@@ -645,7 +645,7 @@ describe Notify do
     let(:user) { create(:user) }
     let(:tree_path) { namespace_project_tree_path(project.namespace, project, "master") }
 
-    subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'refs/heads/master', :create, nil) }
+    subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/heads/master', action: :create) }
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
@@ -671,7 +671,7 @@ describe Notify do
     let(:user) { create(:user) }
     let(:tree_path) { namespace_project_tree_path(project.namespace, project, "v1.0") }
 
-    subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'refs/tags/v1.0', :create, nil) }
+    subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/tags/v1.0', action: :create) }
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
@@ -696,7 +696,7 @@ describe Notify do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
 
-    subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'refs/heads/master', :delete, nil) }
+    subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/heads/master', action: :delete) }
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
@@ -717,7 +717,7 @@ describe Notify do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
 
-    subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'refs/tags/v1.0', :delete, nil) }
+    subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/tags/v1.0', action: :delete) }
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
@@ -742,7 +742,7 @@ describe Notify do
     let(:diff_path) { namespace_project_compare_path(project.namespace, project, from: Commit.new(compare.base), to: Commit.new(compare.head)) }
     let(:send_from_committer_email) { false }
 
-    subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'refs/heads/master', :push, compare, false, send_from_committer_email) }
+    subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare, reverse_compare: false, send_from_committer_email: send_from_committer_email) }
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
@@ -830,7 +830,7 @@ describe Notify do
     let(:commits) { Commit.decorate(compare.commits) }
     let(:diff_path) { namespace_project_commit_path(project.namespace, project, commits.first) }
 
-    subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'refs/heads/master', :push, compare) }
+    subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare) }
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]

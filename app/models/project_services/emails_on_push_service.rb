@@ -42,7 +42,13 @@ class EmailsOnPushService < Service
   def execute(push_data)
     return unless supported_events.include?(push_data[:object_kind])
 
-    EmailsOnPushWorker.perform_async(project_id, recipients, push_data, send_from_committer_email?, disable_diffs?)
+    EmailsOnPushWorker.perform_async(
+      project_id, 
+      recipients, 
+      push_data, 
+      send_from_committer_email:  send_from_committer_email?, 
+      disable_diffs:              disable_diffs?
+    )
   end
 
   def send_from_committer_email?

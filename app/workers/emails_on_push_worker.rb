@@ -1,7 +1,7 @@
 class EmailsOnPushWorker
   include Sidekiq::Worker
 
-  def perform(project_id, recipients, push_data, send_from_committer_email = false, disable_diffs = false)
+  def perform(project_id, recipients, push_data, send_from_committer_email: false, disable_diffs: false)
     project = Project.find(project_id)
     before_sha = push_data["before"]
     after_sha = push_data["after"]
@@ -37,13 +37,13 @@ class EmailsOnPushWorker
       Notify.repository_push_email(
         project_id, 
         recipient, 
-        author_id, 
-        ref, 
-        action,
-        compare, 
-        reverse_compare,
-        send_from_committer_email,
-        disable_diffs
+        author_id:                  author_id, 
+        ref:                        ref, 
+        action:                     action,
+        compare:                    compare, 
+        reverse_compare:            reverse_compare,
+        send_from_committer_email:  send_from_committer_email,
+        disable_diffs:              disable_diffs
       ).deliver
     end
   ensure
