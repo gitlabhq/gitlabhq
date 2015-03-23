@@ -125,7 +125,6 @@ Feature: Project Source Browse Files
     Then I see Browse code link
 
   # Permalink
-
   Scenario: I click on the permalink link from a branch ref
     Given I click on ".gitignore" file in repo
     And I click on Permalink
