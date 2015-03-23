@@ -21,7 +21,12 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.atom { render layout: false }
+
+      format.atom do
+        load_events
+        render layout: false
+      end
+
       format.json do
         load_events
         pager_json("events/_events", @events.count)
