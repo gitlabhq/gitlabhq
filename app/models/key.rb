@@ -86,7 +86,24 @@ class Key < ActiveRecord::Base
     Tempfile.open('gitlab_key_file') do |file|
       file.puts key
       file.rewind
-      cmd_output, cmd_status = popen(%W(ssh-keygen -lf #{file.path}), '/tmp')
+      
+      # OpenSSH 6.8 introduces a new default output format for fingerprints.
+      # Check the version and decide which command to use.
+      version_output, version_status = popen(%W(ssh -V))
+      explicit_fingerprint_algorithm = false
+      if version_status.zero?
+        out, _ = version_output.scan /.*?(\d)\.(\d).*?,/
+        major, minor = out[0], out[1]
+        if major.to_i > 6 or (major.to_i == 6 and minor.to_i >= 8)
+            explicit_fingerprint_algorithm = true
+        end
+      end
+
+      if explicit_fingerprint_algorithm
+        cmd_output, cmd_status = popen(%W(ssh-keygen -E md5 -lf #{file.path}), '/tmp')
+      else
+        cmd_output, cmd_status = popen(%W(ssh-keygen -lf #{file.path}), '/tmp')
+      end
     end
 
     if cmd_status.zero?
