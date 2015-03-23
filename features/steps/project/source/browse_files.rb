@@ -142,7 +142,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     click_link 'files'
   end
 
-  step 'I click on History link'' do
+  step 'I click on History link' do
     click_link 'History'
   end
 
