@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.10.0 (unreleased)
+  - Include missing events and fix save functionality in admin service template settings form (Stan Hu)
   - Fix "Import projects from" button to show the correct instructions (Stan Hu)
   - Fix dots in Wiki slugs causing errors (Stan Hu)
   - Fix OAuth2 issue importing a new project from GitHub and GitLab (Stan Hu)
@@ -27,6 +28,7 @@ v 7.10.0 (unreleased)
   - Restrict permissions on backup files
   - Improve oauth accounts UI in profile page
   - Add ability to unlink connected accounts
+  - Replace commits calendar with faster contribution calendar that includes issues and merge requests
 
 v 7.9.0
   - Add HipChat integration documentation (Stan Hu)

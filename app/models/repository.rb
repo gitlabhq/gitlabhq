@@ -149,41 +149,6 @@ class Repository
     end
   end
 
-  def timestamps_by_user_log(user)
-    author_emails = '(' + user.all_emails.map{ |e| Regexp.escape(e) }.join('|') + ')'
-    args = %W(git log -E --author=#{author_emails} --since=#{(Date.today - 1.year).to_s} --branches --pretty=format:%cd --date=short)
-    dates = Gitlab::Popen.popen(args, path_to_repo).first.split("\n")
-
-    if dates.present?
-      dates
-    else
-      []
-    end
-  end
-
-  def commits_by_user_on_date_log(user, date)
-    # format the date string for git
-    start_date = date.strftime("%Y-%m-%d 00:00:00")
-    end_date = date.strftime("%Y-%m-%d 23:59:59")
-
-    author_emails = '(' + user.all_emails.map{ |e| Regexp.escape(e) }.join('|') + ')'
-    args = %W(git log -E --author=#{author_emails} --after=#{start_date.to_s} --until=#{end_date.to_s} --branches --pretty=format:%h)
-    commits = Gitlab::Popen.popen(args, path_to_repo).first.split("\n")
-
-    commits.map! do |commit_id|
-      commit(commit_id)
-    end
-  end
-
-  def commits_per_day_for_user(user)
-    timestamps_by_user_log(user).
-      group_by { |commit_date| commit_date }.
-      inject({}) do |hash, (timestamp_date, commits)|
-        hash[timestamp_date] = commits.count
-        hash
-      end
-  end
-
   def lookup_cache
     @lookup_cache ||= {}
   end
