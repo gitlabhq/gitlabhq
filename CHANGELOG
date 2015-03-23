@@ -28,6 +28,7 @@ v 7.10.0 (unreleased)
   - Restrict permissions on backup files
   - Improve oauth accounts UI in profile page
   - Add ability to unlink connected accounts
+  - Replace commits calendar with faster contribution calendar that includes issues and merge requests
 
 v 7.9.0
   - Add HipChat integration documentation (Stan Hu)
