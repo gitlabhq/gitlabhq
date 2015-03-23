@@ -34,9 +34,7 @@ class Spinach::Features::User < Spinach::FeatureSteps
   end
 
   step 'I should see contributions calendar' do
-    within '.calendar' do
-      page.should have_css('.graph-rect.r3.q3')
-    end
+    page.should have_css('.cal-heatmap-container')
   end
 
   def contributed_project
