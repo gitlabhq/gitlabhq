@@ -188,7 +188,7 @@ GEM
       dotenv (>= 0.7)
       thor (>= 0.13.6)
     formatador (0.2.4)
-    gemnasium-gitlab-service (0.2.5)
+    gemnasium-gitlab-service (0.2.4)
       rugged (~> 0.21)
     gemojione (2.0.0)
       json
