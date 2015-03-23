@@ -14,11 +14,11 @@ module Gitlab
       end
 
       def write_file(abs_file_path, content, file_encoding = 'text')
-		if file_encoding == 'base64'
-			 File.open(abs_file_path, 'wb') { |f| f.write(Base64.encode64(content))}
-		else
-			 enc_64=Base64.encode64(content)
-			 File.open(abs_file_path, 'wb') { |f| f.write(Base64.decode64(enc_64))} 
+	if file_encoding == 'base64'
+		 File.open(abs_file_path, 'wb') { |f| f.write(Base64.encode64(content))}
+	else
+		 enc_64 = Base64.encode64(content)
+		 File.open(abs_file_path, 'wb') { |f| f.write(Base64.decode64(enc_64))} 
         end
       end
     end
