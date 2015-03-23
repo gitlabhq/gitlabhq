@@ -62,7 +62,7 @@ module Gitlab
       end
 
       def find_deploy_key(project_identifier, key)
-        JSON.parse(api.get("/api/1.0/repositories/#{project_identifier}/deploy-keys").body).find do |deploy_key| 
+        JSON.parse(api.get("/api/1.0/repositories/#{project_identifier}/deploy-keys").body).find do |deploy_key|
           deploy_key["key"].chomp == key.chomp
         end
       end
@@ -92,7 +92,7 @@ module Gitlab
       end
 
       def bitbucket_options
-        OmniAuth::Strategies::Bitbucket.default_options[:client_options].dup
+        OmniAuth::Strategies::Bitbucket.default_options[:client_options].symbolize_keys
       end
     end
   end

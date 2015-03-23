@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 7.10.0 (unreleased)
   - Fix "Import projects from" button to show the correct instructions (Stan Hu)
   - Fix dots in Wiki slugs causing errors (Stan Hu)
+  - Fix OAuth2 issue importing a new project from GitHub and GitLab (Stan Hu)
   - Update poltergeist to version 1.6.0 to support PhantomJS 2.0 (Zeger-Jan van de Weg)
   - Fix cross references when usernames, milestones, or project names contain underscores (Stan Hu)
   - Disable reference creation for comments surrounded by code/preformatted blocks (Stan Hu)
