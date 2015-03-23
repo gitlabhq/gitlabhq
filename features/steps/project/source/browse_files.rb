@@ -94,7 +94,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click on "Replace"' do
-    click_button  'Replace'
+    click_button  "Replace"
   end
   
   step 'I click on "Replace file"' do
