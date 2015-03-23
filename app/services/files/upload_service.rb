@@ -2,6 +2,7 @@ require_relative "base_service"
 
 module Files
   class UploadService < BaseService
+    
     def execute
       allowed = if project.protected_branch?(ref)
                   can?(current_user, :push_code_to_protected_branches, project)
