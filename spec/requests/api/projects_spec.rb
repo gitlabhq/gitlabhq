@@ -252,7 +252,7 @@ describe API::API, api: true  do
       expect(json_response['message']['path']).to eq([
         'can\'t be blank',
         'is too short (minimum is 0 characters)',
-        Gitlab::Regex.send(:default_regex_message)
+        Gitlab::Regex.send(:project_path_regex_message)
       ])
     end
 

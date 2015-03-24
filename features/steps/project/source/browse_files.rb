@@ -74,7 +74,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I fill the new file name with an illegal name' do
-    fill_in :file_name, with: '.git'
+    fill_in :file_name, with: 'Spaces Not Allowed'
   end
 
   step 'I fill the commit message' do
