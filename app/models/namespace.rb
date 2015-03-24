@@ -24,8 +24,8 @@ class Namespace < ActiveRecord::Base
   validates :name,
     presence: true, uniqueness: true,
     length: { within: 0..255 },
-    format: { with: Gitlab::Regex.name_regex,
-              message: Gitlab::Regex.name_regex_message }
+    format: { with: Gitlab::Regex.namespace_name_regex,
+              message: Gitlab::Regex.namespace_name_regex_message }
 
   validates :description, length: { within: 0..255 }
   validates :path,
@@ -33,8 +33,8 @@ class Namespace < ActiveRecord::Base
     presence: true,
     length: { within: 1..255 },
     exclusion: { in: Gitlab::Blacklist.path },
-    format: { with: Gitlab::Regex.path_regex,
-              message: Gitlab::Regex.path_regex_message }
+    format: { with: Gitlab::Regex.namespace_regex,
+              message: Gitlab::Regex.namespace_regex_message }
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 

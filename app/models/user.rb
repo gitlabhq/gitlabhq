@@ -129,8 +129,8 @@ class User < ActiveRecord::Base
     presence: true,
     uniqueness: { case_sensitive: false },
     exclusion: { in: Gitlab::Blacklist.path },
-    format: { with: Gitlab::Regex.username_regex,
-              message: Gitlab::Regex.username_regex_message }
+    format: { with: Gitlab::Regex.namespace_regex,
+              message: Gitlab::Regex.namespace_regex_message }
 
   validates :notification_level, inclusion: { in: Notification.notification_levels }, presence: true
   validate :namespace_uniq, if: ->(user) { user.username_changed? }
