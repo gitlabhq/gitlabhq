@@ -7,7 +7,7 @@ class RepositoryArchiveWorker
 
   def perform(project_id, ref, format)
     @project = Project.find(project_id)
-    @ref, @format = ref, format
+    @ref, @format = ref, format.downcase
 
     repository = project.repository
 
@@ -15,7 +15,7 @@ class RepositoryArchiveWorker
 
     return if archived? || archiving?
 
-    repository.archive_repo(*archive_args)
+    repository.archive_repo(ref, storage_path, format)
   end
 
   private
@@ -24,16 +24,12 @@ class RepositoryArchiveWorker
     Gitlab.config.gitlab.repository_downloads_path
   end
 
-  def archive_args
-    @archive_args ||= [ref, storage_path, format.downcase]
-  end
-
   def file_path
-    @file_path ||= project.repository.archive_file_path(*archive_args)
+    @file_path ||= project.repository.archive_file_path(ref, storage_path, format)
   end
 
   def pid_file_path
-    @pid_file_path ||= project.repository.archive_pid_file_path(*archive_args)
+    @pid_file_path ||= project.repository.archive_pid_file_path(ref, storage_path, format)
   end
 
   def archived?

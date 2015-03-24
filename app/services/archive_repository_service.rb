@@ -3,7 +3,7 @@ class ArchiveRepositoryService
 
   def initialize(project, ref, format)
     format ||= 'tar.gz'
-    @project, @ref, @format = project, ref, format
+    @project, @ref, @format = project, ref, format.downcase
   end
 
   def execute
@@ -28,16 +28,12 @@ class ArchiveRepositoryService
     Gitlab.config.gitlab.repository_downloads_path
   end
 
-  def archive_args
-    @archive_args ||= [ref, storage_path, format.downcase]
-  end
-
   def file_path
-    @file_path ||= project.repository.archive_file_path(*archive_args)
+    @file_path ||= project.repository.archive_file_path(ref, storage_path, format)
   end
 
   def pid_file_path
-    @pid_file_path ||= project.repository.archive_pid_file_path(*archive_args)
+    @pid_file_path ||= project.repository.archive_pid_file_path(ref, storage_path, format)
   end
 
   def archived?
@@ -48,8 +44,7 @@ class ArchiveRepositoryService
     File.exist?(pid_file_path)
   end
 
-  def wait_until_archived
-    timeout = 5.0
+  def wait_until_archived(timeout = 5.0)
     t1 = Time.now
 
     begin
