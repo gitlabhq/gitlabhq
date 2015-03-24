@@ -50,7 +50,7 @@ module API
           status = access.check(params[:action], params[:changes])
         end
 
-        if project && status && status.allowed?
+        if project && access.can_read_project?
           status
         else
           Gitlab::GitAccessStatus.new(false, 'No such project')
