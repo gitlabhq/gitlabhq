@@ -31,6 +31,7 @@ v 7.10.0 (unreleased)
   - Replace commits calendar with faster contribution calendar that includes issues and merge requests
   - Add inifinite scroll to user page activity
   - Don't show commit comment button when user is not signed in.
+  - Don't include system notes in issue/MR comment count.
 
 v 7.9.0
   - Send EmailsOnPush email when branch or tag is created or deleted.

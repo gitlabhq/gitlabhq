@@ -13,12 +13,13 @@
       - submodule_item = project.repository.blob_at(@commit.id, diff_file.file_path)
       = submodule_link(submodule_item, @commit.id)
     - else
-      - if diff_file.renamed_file
-        %span= "#{diff_file.old_path} renamed to #{diff_file.new_path}"
-      - else
-        %span= diff_file.new_path
-      - if diff_file.mode_changed?
-        %span.file-mode= "#{diff_file.diff.a_mode} → #{diff_file.diff.b_mode}"
+      %span
+        - if diff_file.renamed_file
+          = "#{diff_file.old_path} renamed to #{diff_file.new_path}"
+        - else
+          = diff_file.new_path
+        - if diff_file.mode_changed?
+          %span.file-mode= "#{diff_file.diff.a_mode} → #{diff_file.diff.b_mode}"
 
       .diff-btn-group
         - if blob.text?
