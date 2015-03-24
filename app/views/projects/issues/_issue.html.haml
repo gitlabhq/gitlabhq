@@ -10,11 +10,12 @@
       - if issue.closed?
         %span
           CLOSED
-      - if issue.notes.any?
+      - note_count = issue.notes.user.count
+      - if note_count > 0
         &nbsp;
         %span
           %i.fa.fa-comments
-          = issue.notes.count
+          = note_count
 
   .issue-info
     = link_to "##{issue.iid}", issue_path(issue), class: "light"
