@@ -44,21 +44,40 @@ class Namespace < ActiveRecord::Base
 
   scope :root, -> { where('type IS NULL') }
 
-  def self.by_path(path)
-    where('lower(path) = :value', value: path.downcase).first
-  end
+  class << self
+    def by_path(path)
+      where('lower(path) = :value', value: path.downcase).first
+    end
 
-  # Case insensetive search for namespace by path or name
-  def self.find_by_path_or_name(path)
-    find_by("lower(path) = :path OR lower(name) = :path", path: path.downcase)
-  end
+    # Case insensetive search for namespace by path or name
+    def find_by_path_or_name(path)
+      find_by("lower(path) = :path OR lower(name) = :path", path: path.downcase)
+    end
 
-  def self.search(query)
-    where("name LIKE :query OR path LIKE :query", query: "%#{query}%")
-  end
+    def search(query)
+      where("name LIKE :query OR path LIKE :query", query: "%#{query}%")
+    end
 
-  def self.global_id
-    'GLN'
+    def global_id
+      'GLN'
+    end
+
+    def clean_path(path)
+      path.gsub!(/@.*\z/,             "")
+      path.gsub!(/\.git\z/,           "")
+      path.gsub!(/\A-/,               "")
+      path.gsub!(/\z./,               "")
+      path.gsub!(/[^a-zA-Z0-9_\-\.]/, "")
+
+      counter = 0
+      base = path
+      while Namespace.by_path(path).present?
+        counter += 1
+        path = "#{base}#{counter}"
+      end
+
+      path
+    end
   end
 
   def to_param
