@@ -15,14 +15,18 @@ class Projects::RepositoriesController < Projects::ApplicationController
       render_404 and return
     end
 
-    file_path = ArchiveRepositoryService.new.execute(@project, params[:ref], params[:format])
+    begin
+      file_path = ArchiveRepositoryService.new(@project, params[:ref], params[:format]).execute
+    rescue
+      return render_404
+    end
 
     if file_path
       # Send file to user
       response.headers["Content-Length"] = File.open(file_path).size.to_s
       send_file file_path
     else
-      render_404
+      redirect_to request.fullpath
     end
   end
 end
