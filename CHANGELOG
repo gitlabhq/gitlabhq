@@ -155,7 +155,6 @@ v 7.8.0
   - Add API endpoint to fetch all changes on a MergeRequest (Jeroen van Baarsen)
   - View note image attachments in new tab when clicked instead of downloading them
   - Improve sorting logic in UI and API. Explicitly define what sorting method is used by default
-  - Allow more variations for commit messages closing issues (Julien Bianchi and Hannes Rosenögger)
   - Fix overflow at sidebar when have several items
   - Add notes for label changes in issue and merge requests
   - Show tags in commit view (Hannes Rosenögger)
@@ -177,7 +176,7 @@ v 7.8.0
   - Add a commit calendar to the user profile (Hannes Rosenögger)
   - Submit comment on command-enter
   - Notify all members of a group when that group is mentioned in a comment, for example: `@gitlab-org` or `@sales`.
-  - Extend issue clossing pattern to include "Resolve", "Resolves", "Resolved", "Resolving" and "Close"
+  - Extend issue clossing pattern to include "Resolve", "Resolves", "Resolved", "Resolving" and "Close" (Julien Bianchi and Hannes Rosenögger)
   - Fix long broadcast message cut-off on left sidebar (Visay Keo)
   - Add Project Avatars (Steven Thonus and Hannes Rosenögger)
   - Password reset token validity increased from 2 hours to 2 days since it is also send on account creation.
