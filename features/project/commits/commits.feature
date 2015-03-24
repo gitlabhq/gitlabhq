@@ -21,10 +21,13 @@ Feature: Project Commits
     And I click side-by-side diff button
     Then I see inline diff button
 
+  @javascript
   Scenario: I compare refs
     Given I visit compare refs page
     And I fill compare fields with refs
     Then I see compared refs
+    And I unfold diff
+    Then I should see additional file lines
 
   Scenario: I browse commits for a specific path
     Given I visit my project's commits page for a specific path
