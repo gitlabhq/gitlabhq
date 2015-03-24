@@ -25,7 +25,7 @@ class @ProjectUsersSelect
 
         initSelection: (element, callback) ->
           id = $(element).val()
-          if id isnt ""
+          if id != "" && id != "-1"
             Api.user(id, callback)
 
 
@@ -44,10 +44,7 @@ class @ProjectUsersSelect
     else
       avatar = gon.default_avatar_url
 
-    if user.id == ''
-      avatarMarkup = ''
-    else
-      avatarMarkup = "<div class='user-image'><img class='avatar s24' src='#{avatar}'></div>"
+    avatarMarkup = "<div class='user-image'><img class='avatar s24' src='#{avatar}'></div>"
 
     "<div class='user-result'>
        #{avatarMarkup}
