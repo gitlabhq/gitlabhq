@@ -817,6 +817,17 @@ EOT
       )
     end
 
+    it 'should render checkboxes for nested tasks' do
+      rendered_text = markdown(@source_text_asterisk, parse_tasks: true)
+
+      expect(rendered_text).to match(
+        /<input.*checkbox.*valid unchecked nested task/
+      )
+      expect(rendered_text).to match(
+        /<input.*checkbox.*valid checked nested task/
+      )
+    end
+
     it 'should not be confused by whitespace before bullets' do
       rendered_text_asterisk = markdown(@source_text_asterisk,
                                         parse_tasks: true)
