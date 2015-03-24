@@ -113,8 +113,14 @@ class @MergeRequest
     allowed_states = ["failed", "canceled", "running", "pending", "success"]
     if state in allowed_states
       $('.ci_widget.ci-' + state).show()
+      switch state
+        when "failed", "canceled"
+          @setMergeButtonClass('btn-danger')
+        when "running", "pending"
+          @setMergeButtonClass('btn-warning')
     else
       $('.ci_widget.ci-error').show()
+      @setMergeButtonClass('btn-danger')
 
   showCiCoverage: (coverage) ->
     cov_html = $('<span>')
@@ -143,6 +149,9 @@ class @MergeRequest
     this.$('.automerge_widget').hide()
     this.$('.merge-in-progress').hide()
     this.$('.automerge_widget.already_cannot_be_merged').show()
+
+  setMergeButtonClass: (css_class) ->
+    $('.accept_merge_request').removeClass("btn-create").addClass(css_class)
 
   mergeInProgress: ->
     $.ajax
