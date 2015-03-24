@@ -83,14 +83,14 @@ class Key < ActiveRecord::Base
 
     cmd_status = 0
     cmd_output = ''
+    explicit_fingerprint_algorithm = false
     Tempfile.open('gitlab_key_file') do |file|
       file.puts key
       file.rewind
-      
+
       # OpenSSH 6.8 introduces a new default output format for fingerprints.
       # Check the version and decide which command to use.
       version_output, version_status = popen(%W(ssh -V))
-      explicit_fingerprint_algorithm = false
       if version_status.zero?
         out, _ = version_output.scan /.*?(\d)\.(\d).*?,/
         major, minor = out[0], out[1]
@@ -107,8 +107,15 @@ class Key < ActiveRecord::Base
     end
 
     if cmd_status.zero?
-      cmd_output.gsub /(\h{2}:)+\h{2}/ do |match|
-        self.fingerprint = match
+      if explicit_fingerprint_algorithm
+        cmd_output.gsub /(MD5:)(\h{2}:)+\h{2}/ do |match|
+          match.slice! /^MD5:/
+          self.fingerprint = match
+        end
+      else
+        cmd_output.gsub /(\h{2}:)+\h{2}/ do |match|
+          self.fingerprint = match
+        end
       end
     end
   end
