@@ -6,7 +6,7 @@ describe Grack::Auth do
 
   let(:app)   { lambda { |env| [200, {}, "Success!"] } }
   let!(:auth) { Grack::Auth.new(app) }
-  let(:env) { 
+  let(:env) {
     {
       "rack.input" => "",
       "REQUEST_METHOD" => "GET",
@@ -85,6 +85,17 @@ describe Grack::Auth do
             it "responds with status 401" do
               expect(status).to eq(401)
             end
+
+            context "when the user is IP banned" do
+              before do
+                expect(Rack::Attack::Allow2Ban).to receive(:filter).and_return(true)
+                allow_any_instance_of(Rack::Request).to receive(:ip).and_return('1.2.3.4')
+              end
+
+              it "responds with status 401" do
+                expect(status).to eq(401)
+              end
+            end
           end
 
           context "when authentication succeeds" do
@@ -109,8 +120,47 @@ describe Grack::Auth do
               end
 
               context "when the user isn't blocked" do
+                before do
+                 expect(Rack::Attack::Allow2Ban).to receive(:reset)
+                end
+
                 it "responds with status 200" do
                   expect(status).to eq(200)
+                end
+              end
+
+              context "when blank password attempts follow a valid login" do
+                let(:options) { Gitlab.config.rack_attack.git_basic_auth }
+                let(:maxretry) { options[:maxretry] - 1 }
+                let(:ip) { '1.2.3.4' }
+
+                before do
+                  allow_any_instance_of(Rack::Request).to receive(:ip).and_return(ip)
+                  Rack::Attack::Allow2Ban.reset(ip, options)
+                end
+
+                after do
+                  Rack::Attack::Allow2Ban.reset(ip, options)
+                end
+
+                def attempt_login(include_password)
+                  password = include_password ? user.password : ""
+                  env["HTTP_AUTHORIZATION"] = ActionController::HttpAuthentication::Basic.encode_credentials(user.username, password)
+                  Grack::Auth.new(app)
+                  auth.call(env).first
+                end
+
+                it "repeated attempts followed by successful attempt" do
+                  for n in 0..maxretry do
+                    expect(attempt_login(false)).to eq(401)
+                  end
+
+                  expect(attempt_login(true)).to eq(200)
+                  expect(Rack::Attack::Allow2Ban.send(:banned?, ip)).to eq(nil)
+
+                  for n in 0..maxretry do
+                    expect(attempt_login(false)).to eq(401)
+                  end
                 end
               end
             end
