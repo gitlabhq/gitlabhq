@@ -2,13 +2,13 @@
 - if diff
   .diff-file
     .diff-header
-      - if diff.deleted_file
-        %span= diff.old_path
-      - else
-        %span= diff.new_path
-        - if diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode
-          %span.file-mode= "#{diff.a_mode} → #{diff.b_mode}"
-      %br/
+      %span
+        - if diff.deleted_file
+          = diff.old_path
+        - else
+          = diff.new_path
+          - if diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode
+            %span.file-mode= "#{diff.a_mode} → #{diff.b_mode}"
     .diff-content
       %table
         - note.truncated_diff_lines.each do |line|
