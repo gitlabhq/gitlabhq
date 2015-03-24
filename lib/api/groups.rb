@@ -12,7 +12,7 @@ module API
         @groups = if current_user.admin
                     Group.all
                   else
-                    current_user.groups
+                    current_user.authorized_groups
                   end
 
         @groups = @groups.search(params[:search]) if params[:search].present?
