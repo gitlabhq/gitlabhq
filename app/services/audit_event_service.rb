@@ -40,6 +40,30 @@ class AuditEventService
     self
   end
 
+  def for_deploy_key(key_title)
+    action = @details[:action]
+
+    @details =
+      case action
+      when :destroy
+        {
+          remove: "deploy_key",
+          target_id: key_title,
+          target_type: "DeployKey",
+          target_details: key_title,
+        }
+      when :create
+        {
+          add: "deploy_key",
+          target_id: key_title,
+          target_type: "DeployKey",
+          target_details: key_title,
+        }
+      end
+
+    self
+  end
+
   def security_event
     SecurityEvent.create(
       author_id: @author.id,

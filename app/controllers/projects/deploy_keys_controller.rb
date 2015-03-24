@@ -25,6 +25,8 @@ class Projects::DeployKeysController < Projects::ApplicationController
     @key = DeployKey.new(deploy_key_params)
 
     if @key.valid? && @project.deploy_keys << @key
+      log_audit_event(@key.title, action: :create)
+
       redirect_to namespace_project_deploy_keys_path(@project.namespace,
                                                      @project)
     else
@@ -35,6 +37,8 @@ class Projects::DeployKeysController < Projects::ApplicationController
   def destroy
     @key = @project.deploy_keys.find(params[:id])
     @key.destroy
+
+    log_audit_event(@key.title, action: :destroy)
 
     respond_to do |format|
       format.html { redirect_to namespace_project_deploy_keys_path(@project.namespace, @project) }
@@ -64,5 +68,10 @@ class Projects::DeployKeysController < Projects::ApplicationController
 
   def deploy_key_params
     params.require(:deploy_key).permit(:key, :title)
+  end
+
+  def log_audit_event(key_title, options = {})
+    AuditEventService.new(current_user, @project, options).
+      for_deploy_key(key_title).security_event
   end
 end
