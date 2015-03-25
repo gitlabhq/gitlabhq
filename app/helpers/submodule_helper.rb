@@ -49,7 +49,7 @@ module SubmoduleHelper
 
   def standard_links(host, namespace, project, commit)
     base = [ 'https://', host, '/', namespace, '/', project ].join('')
-    return base, [ base, '/tree/', commit ].join('')
+    [base, [ base, '/tree/', commit ].join('')]
   end
 
   def relative_self_links(url, commit)
@@ -58,7 +58,10 @@ module SubmoduleHelper
     else
       base = [ @project.group.path, '/', url[/([^\/]*)\.git/, 1] ].join('')
     end
-    return namespace_project_path(base.namespace, base),
+
+    [
+      namespace_project_path(base.namespace, base),
       namespace_project_tree_path(base.namespace, base, commit)
+    ]
   end
 end

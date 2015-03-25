@@ -29,7 +29,7 @@ module GitlabMarkdownHelper
   end
 
   def markdown(text, options={})
-    unless (@markdown and options == @options)
+    unless @markdown && options == @options
       @options = options
       gitlab_renderer = Redcarpet::Render::GitlabHTML.new(self,
                                                           user_color_scheme_class,
@@ -182,7 +182,7 @@ module GitlabMarkdownHelper
 
   def file_exists?(path)
     return false if path.nil?
-    return @repository.blob_at(current_sha, path).present? || @repository.tree(current_sha, path).entries.any?
+    @repository.blob_at(current_sha, path).present? || @repository.tree(current_sha, path).entries.any?
   end
 
   # Check if the path is pointing to a directory(tree) or a file(blob)
@@ -190,7 +190,7 @@ module GitlabMarkdownHelper
   def local_path(path)
     return "tree" if @repository.tree(current_sha, path).entries.any?
     return "raw" if @repository.blob_at(current_sha, path).image?
-    return "blob"
+    "blob"
   end
 
   def current_sha

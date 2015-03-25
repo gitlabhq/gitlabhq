@@ -29,7 +29,7 @@ module Gitlab
         @cmd_status = wait_thr.value.exitstatus
       end
 
-      return @cmd_output, @cmd_status
+      [@cmd_output, @cmd_status]
     end
   end
 end

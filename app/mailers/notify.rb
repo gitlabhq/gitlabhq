@@ -148,7 +148,7 @@ class Notify < ActionMailer::Base
     headers['References'] = message_id(model)
     headers['X-GitLab-Project'] = "#{@project.name} | " if @project
 
-    if (headers[:subject])
+    if headers[:subject]
       headers[:subject].prepend('Re: ')
     end
 
