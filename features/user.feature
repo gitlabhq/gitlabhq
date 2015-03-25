@@ -74,3 +74,12 @@ Feature: User
     Then I should see unsubscribe text and button
     And I press the unsubscribe button
     Then I should be unsubscribed
+
+  @javascript
+  Scenario: "John Doe" contribution profile
+    Given I sign in as a user
+    And "John Doe" has contributions
+    When I visit user "John Doe" page
+    Then I should see user "John Doe" page
+    And I should see contributed projects
+    And I should see contributions calendar

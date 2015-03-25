@@ -1,3 +1,4 @@
+require_relative 'rack_attack_helpers'
 require_relative 'shell_env'
 
 module Grack
@@ -85,25 +86,41 @@ module Grack
         user = oauth_access_token_check(login, password)
       end
 
-      return user if user.present?
-
-      # At this point, we know the credentials were wrong. We let Rack::Attack
-      # know there was a failed authentication attempt from this IP. This
-      # information is stored in the Rails cache (Redis) and will be used by
-      # the Rack::Attack middleware to decide whether to block requests from
-      # this IP.
+      # If the user authenticated successfully, we reset the auth failure count
+      # from Rack::Attack for that IP. A client may attempt to authenticate
+      # with a username and blank password first, and only after it receives
+      # a 401 error does it present a password. Resetting the count prevents
+      # false positives from occurring.
+      #
+      # Otherwise, we let Rack::Attack know there was a failed authentication
+      # attempt from this IP. This information is stored in the Rails cache
+      # (Redis) and will be used by the Rack::Attack middleware to decide
+      # whether to block requests from this IP.
       config = Gitlab.config.rack_attack.git_basic_auth
-      Rack::Attack::Allow2Ban.filter(@request.ip, config) do
-        # Unless the IP is whitelisted, return true so that Allow2Ban
-        # increments the counter (stored in Rails.cache) for the IP
-        if config.ip_whitelist.include?(@request.ip)
-          false
+
+      if config.enabled
+        if user
+          # A successful login will reset the auth failure count from this IP
+          Rack::Attack::Allow2Ban.reset(@request.ip, config)
         else
-          true
+          banned = Rack::Attack::Allow2Ban.filter(@request.ip, config) do
+            # Unless the IP is whitelisted, return true so that Allow2Ban
+            # increments the counter (stored in Rails.cache) for the IP
+            if config.ip_whitelist.include?(@request.ip)
+              false
+            else
+              true
+            end
+          end
+
+          if banned
+            Rails.logger.info "IP #{@request.ip} failed to login " \
+              "as #{login} but has been temporarily banned from Git auth"
+          end
         end
       end
 
-      nil # No user was found
+      user
     end
 
     def authorized_request?
@@ -112,7 +129,7 @@ module Grack
       case git_cmd
       when *Gitlab::GitAccess::DOWNLOAD_COMMANDS
         if user
-          Gitlab::GitAccess.new.download_access_check(user, project).allowed?
+          Gitlab::GitAccess.new(user, project).download_access_check.allowed?
         elsif project.public?
           # Allow clone/fetch for public projects
           true

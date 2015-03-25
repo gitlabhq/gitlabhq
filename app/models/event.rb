@@ -55,6 +55,12 @@ class Event < ActiveRecord::Base
         order('id DESC').limit(100).
         update_all(updated_at: Time.now)
     end
+
+    def contributions
+      where("action = ? OR (target_type in (?) AND action in (?))",
+            Event::PUSHED, ["MergeRequest", "Issue"],
+            [Event::CREATED, Event::CLOSED, Event::MERGED])
+    end
   end
 
   def proper?

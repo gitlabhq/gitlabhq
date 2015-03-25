@@ -67,7 +67,7 @@ module Gitlab
     end
 
     def notes
-      Note.where(project_id: limit_project_ids).search(query).order('updated_at DESC')
+      Note.where(project_id: limit_project_ids).user.search(query).order('updated_at DESC')
     end
 
     def limit_project_ids

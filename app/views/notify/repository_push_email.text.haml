@@ -1,47 +1,49 @@
-#{@author.name} pushed to #{@branch} at #{@project.name_with_namespace}
-\
-\
-- if @reverse_compare
-  WARNING: The push did not contain any new commits, but force pushed to delete the commits and changes below.
+#{@author.name} #{@action_name} #{@ref_type} #{@ref_name} at #{@project.name_with_namespace}
+- if @compare
   \
   \
-= @reverse_compare ? "Deleted commits:" : "Commits:"
-- @commits.each do |commit|
-  #{commit.short_id} by #{commit.author_name} at #{commit.committed_date.strftime("%Y-%m-%dT%H:%M:%SZ")}
-  #{commit.safe_message}
-  \- - - - -
-\
-\
-#{pluralize @diffs.count, "changed file"}:
-\
-- @diffs.each do |diff|
-  - if diff.deleted_file
-    \- − #{diff.old_path}
-  - elsif diff.renamed_file
-    \- #{diff.old_path} → #{diff.new_path}
-  - elsif diff.new_file
-    \- + #{diff.new_path}
-  - else
-    \- #{diff.new_path}
-- unless @disable_diffs
-  \
-  \
-  Changes:
-  - @diffs.each do |diff|
+  - if @reverse_compare
+    WARNING: The push did not contain any new commits, but force pushed to delete the commits and changes below.
     \
-    \=====================================
+    \
+  = @reverse_compare ? "Deleted commits:" : "Commits:"
+  - @commits.each do |commit|
+    #{commit.short_id} by #{commit.author_name} at #{commit.committed_date.strftime("%Y-%m-%dT%H:%M:%SZ")}
+    #{commit.safe_message}
+    \- - - - -
+  \
+  \
+  #{pluralize @diffs.count, "changed file"}:
+  \
+  - @diffs.each do |diff|
     - if diff.deleted_file
-      #{diff.old_path} deleted
+      \- − #{diff.old_path}
     - elsif diff.renamed_file
-      #{diff.old_path} → #{diff.new_path}
+      \- #{diff.old_path} → #{diff.new_path}
+    - elsif diff.new_file
+      \- + #{diff.new_path}
     - else
-      = diff.new_path
-    \=====================================
-    != diff.diff
-- if @compare.timeout
-  \
-  \
-  Huge diff. To prevent performance issues it was hidden
-\
-\
-View it on GitLab: #{@target_url}
+      \- #{diff.new_path}
+  - unless @disable_diffs
+    \
+    \
+    Changes:
+    - @diffs.each do |diff|
+      \
+      \=====================================
+      - if diff.deleted_file
+        #{diff.old_path} deleted
+      - elsif diff.renamed_file
+        #{diff.old_path} → #{diff.new_path}
+      - else
+        = diff.new_path
+      \=====================================
+      != diff.diff
+  - if @compare.timeout
+    \
+    \
+    Huge diff. To prevent performance issues it was hidden
+  - if @target_url
+    \
+    \
+    View it on GitLab: #{@target_url}

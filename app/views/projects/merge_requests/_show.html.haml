@@ -40,7 +40,7 @@
         = link_to merge_request_path(@merge_request) do
           %i.fa.fa-comments
           Discussion
-          %span.badge= @merge_request.mr_and_commit_notes.count
+          %span.badge= @merge_request.mr_and_commit_notes.user.count
       %li.commits-tab{data: {action: 'commits'}}
         = link_to merge_request_path(@merge_request), title: 'Commits' do
           %i.fa.fa-history

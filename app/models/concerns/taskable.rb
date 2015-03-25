@@ -5,7 +5,7 @@
 # Used by MergeRequest and Issue
 module Taskable
   TASK_PATTERN_MD = /^(?<bullet> *[*-] *)\[(?<checked>[ xX])\]/.freeze
-  TASK_PATTERN_HTML = /^<li>\[(?<checked>[ xX])\]/.freeze
+  TASK_PATTERN_HTML = /^<li>(?<p_tag>\s*<p>)?\[(?<checked>[ xX])\]/.freeze
 
   # Change the state of a task list item for this Taskable.  Edit the object's
   # description by finding the nth task item and changing its checkbox

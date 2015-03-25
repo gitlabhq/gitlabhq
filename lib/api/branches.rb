@@ -1,4 +1,5 @@
 require 'mime/types'
+require 'uri'
 
 module API
   # Projects API
@@ -103,7 +104,7 @@ module API
       delete ":id/repository/branches/:branch" do
         authorize_push_project
         result = DeleteBranchService.new(user_project, current_user).
-          execute(params[:branch])
+          execute(URI.unescape(params[:branch]))
 
         if result[:status] == :success
           {

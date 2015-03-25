@@ -1,20 +1,7 @@
 .user-calendar-activities {
-  
-  .calendar_commit_activity {
-    padding: 5px 0 0;
-  }
-  
   .calendar_onclick_hr {
     padding: 0;
     margin: 10px 0;
-  }
-  
-  .calendar_commit_date {
-    color: #999;
-  }
-  
-  .calendar_activity_summary {
-    font-size: 14px;
   }
 
   .str-truncated {
@@ -29,14 +16,6 @@
     margin-left: 4px;
     &:hover {
       background-color: #ddd;
-    }
-  }
-  
-  .commit-row-message {
-    color: #333;
-    &:hover {
-      color: #444;
-      text-decoration: underline;
     }
   }
 }

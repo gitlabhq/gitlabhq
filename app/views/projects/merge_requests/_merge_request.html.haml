@@ -16,11 +16,12 @@
           %span.label-branch<
             %i.fa.fa-code-fork
             %span= merge_request.target_branch
-      - if merge_request.notes.any?
+      - note_count = merge_request.mr_and_commit_notes.user.count
+      - if note_count > 0
         &nbsp;
         %span
           %i.fa.fa-comments
-          = merge_request.mr_and_commit_notes.count
+          = note_count
   .merge-request-info
     = link_to "##{merge_request.iid}", merge_request_path(merge_request), class: "light"
     - if merge_request.assignee

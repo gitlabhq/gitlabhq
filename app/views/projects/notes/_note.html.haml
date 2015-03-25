@@ -4,7 +4,8 @@
       - if note.system
         %span.fa.fa-circle
       - else
-        = image_tag avatar_icon(note.author_email), class: "avatar s40"
+        = link_to user_path(note.author) do
+          = image_tag avatar_icon(note.author_email), class: "avatar s40"
     .timeline-content
       .note-header
         .note-actions
@@ -21,7 +22,8 @@
               %i.fa.fa-trash-o.cred
               Remove
         - if note.system
-          = image_tag avatar_icon(note.author_email), class: "avatar s16"
+          = link_to user_path(note.author) do
+            = image_tag avatar_icon(note.author_email), class: "avatar s16"
         = link_to_member(@project, note.author, avatar: false)
         %span.author-username
           = '@' + note.author.username

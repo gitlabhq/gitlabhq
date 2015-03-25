@@ -112,6 +112,7 @@ namespace :gitlab do
         print '.'
       end
     end
+    puts ""
 
     unless $?.success?
       puts "Failed to add keys...".red

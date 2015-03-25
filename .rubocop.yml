@@ -355,7 +355,7 @@ Style/MultilineBlockChain:
 
 Style/MultilineBlockLayout:
   Description: 'Ensures newlines after multiline block do statements.'
-  Enabled: false
+  Enabled: true
 
 Style/MultilineIfThen:
   Description: 'Do not use then for multi-line if/unless.'
@@ -390,7 +390,7 @@ Style/NegatedWhile:
 Style/NestedTernaryOperator:
   Description: 'Use one expression per branch in a ternary operator.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-nested-ternary'
-  Enabled: false
+  Enabled: true
 
 Style/Next:
   Description: 'Use `next` to skip iteration instead of a condition at the end.'
@@ -400,17 +400,17 @@ Style/Next:
 Style/NilComparison:
   Description: 'Prefer x.nil? to x == nil.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#predicate-methods'
-  Enabled: false
+  Enabled: true
 
 Style/NonNilCheck:
   Description: 'Checks for redundant nil checks.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-non-nil-checks'
-  Enabled: false
+  Enabled: true
 
 Style/Not:
   Description: 'Use ! instead of not.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#bang-not-not'
-  Enabled: false
+  Enabled: true
 
 Style/NumericLiterals:
   Description: >-
@@ -424,7 +424,7 @@ Style/OneLineConditional:
                  Favor the ternary operator(?:) over
                  if/then/else/end constructs.
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#ternary-operator'
-  Enabled: false
+  Enabled: true
 
 Style/OpMethod:
   Description: 'When defining binary operators, name the argument other.'
@@ -436,7 +436,7 @@ Style/ParenthesesAroundCondition:
                  Don't use parentheses around the condition of an
                  if/unless/while.
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-parens-if'
-  Enabled: false
+  Enabled: true
 
 Style/PercentLiteralDelimiters:
   Description: 'Use `%`-literal delimiters consistently'
@@ -480,7 +480,7 @@ Style/RedundantException:
 Style/RedundantReturn:
   Description: "Don't use return where it's not required."
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-explicit-return'
-  Enabled: false
+  Enabled: true
 
 Style/RedundantSelf:
   Description: "Don't use self where it's not needed."

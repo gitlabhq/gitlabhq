@@ -108,6 +108,15 @@ class MergeRequest < ActiveRecord::Base
     state :unchecked
     state :can_be_merged
     state :cannot_be_merged
+
+    around_transition do |merge_request, transition, block|
+      merge_request.record_timestamps = false
+      begin
+        block.call
+      ensure
+        merge_request.record_timestamps = true
+      end
+    end
   end
 
   validates :source_project, presence: true, unless: :allow_broken

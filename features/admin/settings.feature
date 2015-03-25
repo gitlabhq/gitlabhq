@@ -15,3 +15,10 @@ Feature: Admin Settings
     Then I should see the help text
     And I logout
     Then I should see the help text
+
+  Scenario: Change Slack Service Template settings
+    When I click on "Service Templates"
+    And I click on "Slack" service
+    Then I check all events and submit form
+    And I should see service template settings saved
+    And I should see all checkboxes checked

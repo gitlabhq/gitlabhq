@@ -11,7 +11,13 @@ module Gitlab
     end
 
     def analyze(string, project)
-      parse_references(string.dup, project)
+      text = string.dup
+
+      # Remove preformatted/code blocks so that references are not included
+      text.gsub!(%r{<pre>.*?</pre>|<code>.*?</code>}m) { |match| '' }
+      text.gsub!(%r{^```.*?^```}m) { |match| '' }
+
+      parse_references(text, project)
     end
 
     # Given a valid project, resolve the extracted identifiers of the requested type to
