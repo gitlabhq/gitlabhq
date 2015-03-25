@@ -188,7 +188,7 @@ class JiraService < IssueTrackerService
     default_ports = [80, 443].include?(server.port)
     server_url = "#{server.scheme}://#{server.host}"
     server_url.concat(":#{server.port}") unless default_ports
-    return server_url
+    server_url
   end
 
   def resource_url(resource)
