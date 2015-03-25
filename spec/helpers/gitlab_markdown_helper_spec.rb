@@ -727,6 +727,36 @@ describe GitlabMarkdownHelper do
       expected = ""
       expect(markdown(actual)).to match(expected)
     end
+
+    it 'should allow whitelisted HTML tags from the user' do
+      actual = '<dl><dt>Term</dt><dd>Definition</dd></dl>'
+      expect(markdown(actual)).to match(actual)
+    end
+
+    it 'should sanitize tags that are not whitelisted' do
+      actual = '<textarea>no inputs allowed</textarea> <blink>no blinks</blink>'
+      expected = 'no inputs allowed no blinks'
+      expect(markdown(actual)).to match(expected)
+      expect(markdown(actual)).not_to match('<.textarea>')
+      expect(markdown(actual)).not_to match('<.blink>')
+    end
+
+    it 'should allow whitelisted tag attributes from the user' do
+      actual = '<a class="custom">link text</a>'
+      expect(markdown(actual)).to match(actual)
+    end
+
+    it 'should sanitize tag attributes that are not whitelisted' do
+      actual = '<a href="http://example.com/bar.html" foo="bar">link text</a>'
+      expected = '<a href="http://example.com/bar.html">link text</a>'
+      expect(markdown(actual)).to match(expected)
+    end
+
+    it 'should sanitize javascript in attributes' do
+      actual = %q(<a href="javascript:alert('foo')">link text</a>)
+      expected = '<a>link text</a>'
+      expect(markdown(actual)).to match(expected)
+    end
   end
 
   describe 'markdown for empty repository' do
