@@ -37,8 +37,6 @@ class @Diff
       )
     )
 
-    $('.diff-header').stick_in_parent(recalc_every: 1, offset_top: $('.navbar').height())
-
   lineNumbers: (line) ->
     return ([0, 0]) unless line.children().length
     lines = line.children().slice(0, 2)
