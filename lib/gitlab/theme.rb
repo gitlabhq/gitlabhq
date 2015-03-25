@@ -19,7 +19,7 @@ module Gitlab
 
       id ||= Gitlab.config.gitlab.default_theme
 
-      return themes[id]
+      themes[id]
     end
 
     def self.type_css_class_by_id(id)

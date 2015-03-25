@@ -97,7 +97,7 @@ module Gitlab
         in_locked_and_timed_satellite do |merge_repo|
           prepare_satellite!(merge_repo)
           update_satellite_source_and_target!(merge_repo)
-          if (merge_request.for_fork?)
+          if merge_request.for_fork?
             repository = Gitlab::Git::Repository.new(merge_repo.path)
             commits = Gitlab::Git::Commit.between(
               repository,
