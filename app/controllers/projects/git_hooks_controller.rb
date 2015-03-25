@@ -9,14 +9,14 @@ class Projects::GitHooksController < Projects::ApplicationController
   def index
     project.create_git_hook unless project.git_hook
 
-    @pre_receive_hook = project.git_hook
+    @git_hook = project.git_hook
   end
 
   def update
-    @pre_receive_hook = project.git_hook
-    @pre_receive_hook.update_attributes(git_hook_params)
+    @git_hook = project.git_hook
+    @git_hook.update_attributes(git_hook_params)
 
-    if @pre_receive_hook.valid?
+    if @git_hook.valid?
       redirect_to namespace_project_git_hooks_path(@project.namespace, @project)
     else
       render :index

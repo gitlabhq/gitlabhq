@@ -92,10 +92,11 @@ module Projects
         @project.import_start
       end
 
-      predefined_git_hook = GitHook.find_by(project_id: nil)
+      predefined_git_hook = GitHook.find_by(is_sample: true)
 
       if predefined_git_hook
-        project.git_hook = predefined_git_hook.clone
+        git_hook = predefined_git_hook.dup.tap{ |gh| gh.is_sample = false }
+        project.git_hook = git_hook
       end
     end
   end
