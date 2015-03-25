@@ -480,7 +480,7 @@ Style/RedundantException:
 Style/RedundantReturn:
   Description: "Don't use return where it's not required."
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-explicit-return'
-  Enabled: false
+  Enabled: true
 
 Style/RedundantSelf:
   Description: "Don't use self where it's not needed."

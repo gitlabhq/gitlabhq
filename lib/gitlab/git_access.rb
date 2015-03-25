@@ -7,7 +7,7 @@ module Gitlab
 
     def self.can_push_to_branch?(user, project, ref)
       return false unless user
-      
+
       if project.protected_branch?(ref)  &&
           !(project.developers_can_push_to_protected_branch?(ref) && project.team.developer?(user))
         user.can?(:push_code_to_protected_branches, project)
@@ -83,7 +83,7 @@ module Gitlab
         end
       end
 
-      return build_status_object(true)
+      build_status_object(true)
     end
 
     def change_access_check(user, project, change)
