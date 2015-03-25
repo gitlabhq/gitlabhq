@@ -1,6 +1,15 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 7.9.0 (unreleased)
+v 7.9.1
+  - Include missing events and fix save functionality in admin service template settings form (Stan Hu)
+  - Fix "Import projects from" button to show the correct instructions (Stan Hu)
+  - Fix OAuth2 issue importing a new project from GitHub and GitLab (Stan Hu)
+  - Fix for LDAP with commas in DN
+  - Fix missing events and in admin Slack service template settings form (Stan Hu)
+  - Don't show commit comment button when user is not signed in.
+  - Downgrade gemnasium-gitlab-service gem
+
+v 7.9.0
   - Add HipChat integration documentation (Stan Hu)
   - Update documentation for object_kind field in Webhook push and tag push Webhooks (Stan Hu)
   - Fix broken email images (Hannes Rosenögger)
