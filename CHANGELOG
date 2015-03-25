@@ -37,11 +37,9 @@ v 7.10.0 (unreleased)
   - Don't mark merge request as updated when merge status relative to target branch changes.
   - Link note avatar to user.
   - Make Git-over-SSH errors more descriptive.
-
-v 7.9.0
   - Send EmailsOnPush email when branch or tag is created or deleted.
 
-v 7.9.0 (unreleased)
+v 7.9.0
   - Add HipChat integration documentation (Stan Hu)
   - Update documentation for object_kind field in Webhook push and tag push Webhooks (Stan Hu)
   - Fix broken email images (Hannes Rosenögger)
