@@ -91,6 +91,12 @@ module Projects
       if @project.import?
         @project.import_start
       end
+
+      predefined_git_hook = GitHook.find_by(project_id: nil)
+
+      if predefined_git_hook
+        project.git_hook = predefined_git_hook.clone
+      end
     end
   end
 end
