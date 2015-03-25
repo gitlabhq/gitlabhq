@@ -19,6 +19,10 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   step 'I see the ".gitignore"' do
     page.should have_content '.gitignore'
   end
+  
+  step 'I see the "user.feature"' do
+    page.should have_content 'user.feature'
+  end
 
   step 'I don\'t see the ".gitignore"' do
     page.should_not have_content '.gitignore'
@@ -34,6 +38,10 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I should see its new content' do
     page.should have_content new_gitignore_content
+  end
+  
+  step 'I should see new file content' do
+    old_gitignore_content != '*.rbc'
   end
 
   step 'I click link "Raw"' do
@@ -85,6 +93,14 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     click_button 'Remove file'
   end
 
+  step 'I click on "Replace"' do
+    click_button  "Replace"
+  end
+  
+  step 'I click on "Replace file"' do
+    click_button  'Replace file'
+  end
+  
   step 'I see diff' do
     page.should have_css '.line_holder.new'
   end
@@ -97,6 +113,29 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     page.should have_content "New file"
     page.should have_content "File name"
     page.should have_content "Commit message"
+  end
+
+  step 'I click on "Upload" in repo' do
+    click_button "Upload"
+  end
+
+  step 'I click on "Upload file"' do
+    click_button 'Upload file'
+  end
+  
+  step 'I upload "user.feature"' do
+    attach_file(:file_upload, File.join('features', 'user.feature'))
+  end
+  
+  step 'I check name of the upload file' do
+    ".gitignore" != "user.feature"
+    "LICENSE" != "user.feature"
+    "VERSION" != "user.feature"
+  end
+  
+  step 'I replace it with "LICENSE"' do
+    attach_file(:file_upload, "LICENSE")
+    old_gitignore_content = "LICENSE"
   end
 
   step 'I click on files directory' do
@@ -160,7 +199,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   private
-
+  
   def set_new_content
     execute_script("editor.setValue('#{new_gitignore_content}')")
   end
