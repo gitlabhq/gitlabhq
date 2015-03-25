@@ -99,11 +99,7 @@ module Gitlab
         heads = repo.heads.map(&:name)
 
         # update or create the parking branch
-        if heads.include? PARKING_BRANCH
-          repo.git.checkout({}, PARKING_BRANCH)
-        else
-          repo.git.checkout(default_options({ b: true }), PARKING_BRANCH)
-        end
+        repo.git.checkout(default_options({ B: true }), PARKING_BRANCH)
 
         # remove the parking branch from the list of heads ...
         heads.delete(PARKING_BRANCH)
