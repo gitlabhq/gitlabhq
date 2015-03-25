@@ -31,22 +31,6 @@ describe GitlabIssueTrackerService do
 
     context 'with absolute urls' do
       before do
-        @service = project.create_gitlab_issue_tracker_service(active: true)
-      end
-
-      after do
-        @service.destroy!
-      end
-
-      it 'should give the correct path' do
-        expect(@service.project_url).to eq("http://localhost/#{project.path_with_namespace}/issues")
-        expect(@service.new_issue_url).to eq("http://localhost/#{project.path_with_namespace}/issues/new")
-        expect(@service.issue_url(432)).to eq("http://localhost/#{project.path_with_namespace}/issues/432")
-      end
-    end
-
-    context 'with enabled relative urls' do
-      before do
         GitlabIssueTrackerService.default_url_options[:script_name] = "/gitlab/root"
         @service = project.create_gitlab_issue_tracker_service(active: true)
       end
@@ -59,6 +43,23 @@ describe GitlabIssueTrackerService do
         expect(@service.project_url).to eq("http://localhost/gitlab/root/#{project.path_with_namespace}/issues")
         expect(@service.new_issue_url).to eq("http://localhost/gitlab/root/#{project.path_with_namespace}/issues/new")
         expect(@service.issue_url(432)).to eq("http://localhost/gitlab/root/#{project.path_with_namespace}/issues/432")
+      end
+    end
+
+    context 'with relative urls' do
+      before do
+        GitlabIssueTrackerService.default_url_options[:script_name] = "/gitlab/root"
+        @service = project.create_gitlab_issue_tracker_service(active: true)
+      end
+
+      after do
+        @service.destroy!
+      end
+
+      it 'should give the correct path' do
+        expect(@service.project_path).to eq("/gitlab/root/#{project.path_with_namespace}/issues")
+        expect(@service.new_issue_path).to eq("/gitlab/root/#{project.path_with_namespace}/issues/new")
+        expect(@service.issue_path(432)).to eq("/gitlab/root/#{project.path_with_namespace}/issues/432")
       end
     end
   end

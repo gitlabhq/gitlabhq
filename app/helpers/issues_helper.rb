@@ -13,22 +13,34 @@ module IssuesHelper
     OpenStruct.new(id: 0, title: 'None (backlog)', name: 'Unassigned')
   end
 
-  def url_for_project_issues(project = @project)
+  def url_for_project_issues(project = @project, options = {})
     return '' if project.nil?
 
-    project.issues_tracker.project_url
+    if options[:only_path]
+      project.issues_tracker.project_path
+    else
+      project.issues_tracker.project_url
+    end
   end
 
-  def url_for_new_issue(project = @project)
+  def url_for_new_issue(project = @project, options = {})
     return '' if project.nil?
 
-    project.issues_tracker.new_issue_url
+    if options[:only_path]
+      project.issues_tracker.new_issue_path
+    else
+      project.issues_tracker.new_issue_url
+    end
   end
 
-  def url_for_issue(issue_iid, project = @project)
+  def url_for_issue(issue_iid, project = @project, options = {})
     return '' if project.nil?
 
-    project.issues_tracker.issue_url(issue_iid)
+    if options[:only_path]
+      project.issues_tracker.issue_path(issue_iid)
+    else
+      project.issues_tracker.issue_url(issue_iid)
+    end
   end
 
   def title_for_issue(issue_iid, project = @project)

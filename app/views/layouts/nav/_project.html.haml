@@ -53,7 +53,7 @@
 
     - if project_nav_tab? :issues
       = nav_link(controller: :issues) do
-        = link_to url_for_project_issues, title: 'Issues', class: 'shortcuts-issues' do
+        = link_to url_for_project_issues(@project, only_path: true), title: 'Issues', class: 'shortcuts-issues' do
           %i.fa.fa-exclamation-circle
           %span
             Issues
