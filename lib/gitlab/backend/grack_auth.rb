@@ -129,7 +129,7 @@ module Grack
       case git_cmd
       when *Gitlab::GitAccess::DOWNLOAD_COMMANDS
         if user
-          Gitlab::GitAccess.new.download_access_check(user, project).allowed?
+          Gitlab::GitAccess.new(user, project).download_access_check.allowed?
         elsif project.public?
           # Allow clone/fetch for public projects
           true

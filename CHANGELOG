@@ -36,6 +36,7 @@ v 7.10.0 (unreleased)
   - Don't include system notes in issue/MR comment count.
   - Don't mark merge request as updated when merge status relative to target branch changes.
   - Link note avatar to user.
+  - Make Git-over-SSH errors more descriptive.
 
 v 7.9.0
   - Send EmailsOnPush email when branch or tag is created or deleted.

@@ -56,7 +56,7 @@ module TreeHelper
     ref ||= @ref
     return false unless project.repository.branch_names.include?(ref)
 
-    ::Gitlab::GitAccess.can_push_to_branch?(current_user, project, ref)
+    ::Gitlab::GitAccess.new(current_user, project).can_push_to_branch?(ref)
   end
 
   def tree_breadcrumbs(tree, max_links = 2)
