@@ -29,7 +29,7 @@ module GitlabMarkdownHelper
   end
 
   def markdown(text, options={})
-    unless (@markdown and options == @options)
+    unless @markdown && options == @options
       @options = options
       gitlab_renderer = Redcarpet::Render::GitlabHTML.new(self,
                                                           user_color_scheme_class,
