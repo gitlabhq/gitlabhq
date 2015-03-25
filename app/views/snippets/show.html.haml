@@ -23,7 +23,7 @@
   .back-link
     - if @snippet.author == current_user
       = link_to user_snippets_path(current_user) do
-        &larr; my snippets
+        &larr; your snippets
     - else
       = link_to snippets_path do
         &larr; discover snippets

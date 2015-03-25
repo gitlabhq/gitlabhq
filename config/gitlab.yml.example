@@ -285,6 +285,9 @@ production: &base
 
   rack_attack:
     git_basic_auth:
+      # Rack Attack IP banning enabled
+      # enabled: true
+      #
       # Whitelist requests from 127.0.0.1 for web proxies (NGINX/Apache) with incorrect headers
       # ip_whitelist: ["127.0.0.1"]
       #

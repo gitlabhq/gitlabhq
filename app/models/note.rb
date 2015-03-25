@@ -48,6 +48,7 @@ class Note < ActiveRecord::Base
   scope :inline, ->{ where("line_code IS NOT NULL") }
   scope :not_inline, ->{ where(line_code: [nil, '']) }
   scope :system, ->{ where(system: true) }
+  scope :user, ->{ where(system: false) }
   scope :common, ->{ where(noteable_type: ["", nil]) }
   scope :fresh, ->{ order(created_at: :asc, id: :asc) }
   scope :inc_author_project, ->{ includes(:project, :author) }

@@ -188,7 +188,7 @@ GEM
       dotenv (>= 0.7)
       thor (>= 0.13.6)
     formatador (0.2.4)
-    gemnasium-gitlab-service (0.2.5)
+    gemnasium-gitlab-service (0.2.4)
       rugged (~> 0.21)
     gemojione (2.0.0)
       json
@@ -516,7 +516,7 @@ GEM
     rubyntlm (0.5.0)
     rubypants (0.2.0)
     rugged (0.21.4)
-    rugments (1.0.0.beta5)
+    rugments (1.0.0.beta6)
     safe_yaml (0.9.7)
     sanitize (2.1.0)
       nokogiri (>= 1.4.4)

@@ -110,6 +110,7 @@ class User < ActiveRecord::Base
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id
   has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id
   has_many :events,                   dependent: :destroy, foreign_key: :author_id,   class_name: "Event"
+  has_many :subscriptions,            dependent: :destroy
   has_many :recent_events, -> { order "id DESC" }, foreign_key: :author_id,   class_name: "Event"
   has_many :assigned_issues,          dependent: :destroy, foreign_key: :assignee_id, class_name: "Issue"
   has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
@@ -603,13 +604,10 @@ class User < ActiveRecord::Base
   end
 
   def contributed_projects_ids
-    Event.where(author_id: self).
+    Event.contributions.where(author_id: self).
       where("created_at > ?", Time.now - 1.year).
-      where("action = :pushed OR (target_type = 'MergeRequest' AND action = :created)",
-        pushed: Event::PUSHED, created: Event::CREATED).
       reorder(project_id: :desc).
       select(:project_id).
-      uniq
-      .map(&:project_id)
+      uniq.map(&:project_id)
   end
 end

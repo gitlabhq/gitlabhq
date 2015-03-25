@@ -14,6 +14,9 @@ module Issues
         issue.update_nth_task(params[:task_num].to_i, false)
       end
 
+      params[:assignee_id]  = "" if params[:assignee_id] == "-1"
+      params[:milestone_id] = "" if params[:milestone_id] == "-1"
+
       old_labels = issue.labels.to_a
 
       if params.present? && issue.update_attributes(params.except(:state_event,

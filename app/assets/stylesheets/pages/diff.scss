@@ -15,6 +15,11 @@
       word-break: break-all;
       margin-right: 200px;
       display: block;
+
+      .file-mode {
+        margin-left: 10px;
+        color: #777;
+      }
     }
 
     .diff-btn-group {
@@ -33,11 +38,6 @@
     .commit-short-id {
       font-family: $monospace_font;
       font-size: smaller;
-    }
-
-    .file-mode {
-      font-family: $monospace_font;
-      margin-left: 10px;
     }
   }
   .diff-content {

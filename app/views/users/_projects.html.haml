@@ -1,5 +1,5 @@
 - if @contributed_projects.present?
-  .panel.panel-default
+  .panel.panel-default.contributed-projects
     .panel-heading Projects contributed to
     = render 'shared/projects_list',
       projects: @contributed_projects.sort_by(&:star_count).reverse,

@@ -4,10 +4,7 @@ class UsersController < ApplicationController
   layout :determine_layout
 
   def show
-    @contributed_projects = Project.
-      where(id: authorized_projects_ids & @user.contributed_projects_ids).
-      in_group_namespace.
-      includes(:namespace).
+    @contributed_projects = contributed_projects.joined(@user).
       reject(&:forked?)
 
     @projects = @user.personal_projects.
@@ -16,24 +13,26 @@ class UsersController < ApplicationController
     # Collect only groups common for both users
     @groups = @user.groups & GroupsFinder.new.execute(current_user)
 
-    # Get user activity feed for projects common for both users
-    @events = @user.recent_events.
-      where(project_id: authorized_projects_ids).
-      with_associations.limit(30)
-
     @title = @user.name
     @title_url = user_path(@user)
 
     respond_to do |format|
       format.html
-      format.atom { render layout: false }
+
+      format.atom do
+        load_events
+        render layout: false
+      end
+
+      format.json do
+        load_events
+        pager_json("events/_events", @events.count)
+      end
     end
   end
 
   def calendar
-    projects = Project.where(id: authorized_projects_ids & @user.contributed_projects_ids)
-
-    calendar = Gitlab::CommitsCalendar.new(projects, @user)
+    calendar = contributions_calendar
     @timestamps = calendar.timestamps
     @starting_year = calendar.starting_year
     @starting_month = calendar.starting_month
@@ -42,19 +41,12 @@ class UsersController < ApplicationController
   end
 
   def calendar_activities
-    projects = Project.where(id: authorized_projects_ids & @user.contributed_projects_ids)
+    @calendar_date = Date.parse(params[:date]) rescue nil
+    @events = []
 
-    date = Date.parse(params[:date]) rescue nil
-    if date
-      @calendar_activities = Gitlab::CommitsCalendar.get_commits_for_date(projects, @user, date)
-    else
-      @calendar_activities = {}
+    if @calendar_date
+      @events = contributions_calendar.events_by_date(@calendar_date)
     end
-
-    # get the total number of unique commits
-    @commit_count = @calendar_activities.values.flatten.map(&:id).uniq.count
-
-    @calendar_date = date
 
     render 'calendar_activities', layout: false
   end
@@ -81,5 +73,25 @@ class UsersController < ApplicationController
     # Projects user can view
     @authorized_projects_ids ||=
       ProjectsFinder.new.execute(current_user).pluck(:id)
+  end
+
+  def contributed_projects
+    @contributed_projects = Project.
+      where(id: authorized_projects_ids & @user.contributed_projects_ids).
+      includes(:namespace)
+  end
+
+  def contributions_calendar
+    @contributions_calendar ||= Gitlab::ContributionsCalendar.
+      new(contributed_projects.reject(&:forked?), @user)
+  end
+
+  def load_events
+    # Get user activity feed for projects common for both users
+    @events = @user.recent_events.
+      where(project_id: authorized_projects_ids).
+      with_associations
+
+    @events = @events.limit(20).offset(params[:offset] || 0)
   end
 end
