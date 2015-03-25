@@ -102,7 +102,7 @@
           %strong #{@group.name}
           group members (#{@group.group_members.count})
           .pull-right
-            = link_to admin_group_path(@group), class: 'btn btn-sm' do
+            = link_to admin_group_path(@group), class: 'btn btn-xs' do
               %i.fa.fa-pencil-square-o
         %ul.well-list
           - @group_members.each do |member|
