@@ -68,6 +68,11 @@
             %strong.cred
               does not exist
 
+        - if @project.archived?
+          %li
+            %span.light archived:
+            %strong repository is read-only
+
         %li
           %span.light access:
           %strong
