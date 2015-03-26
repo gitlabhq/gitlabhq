@@ -1,5 +1,5 @@
 $ ->
-  $(":checkbox").change ->
+  $(".protected-branches-list :checkbox").change ->
     name = $(this).attr("name")
     if name == "developers_can_push"
       id = $(this).val()
