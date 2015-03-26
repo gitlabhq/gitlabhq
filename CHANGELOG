@@ -40,6 +40,7 @@ v 7.10.0 (unreleased)
   - Make Git-over-SSH errors more descriptive.
   - Send EmailsOnPush email when branch or tag is created or deleted.
   - Faster merge request processing for large repository
+  - Prevent doubling AJAX request with each commit visit via Turbolink
 
 v 7.9.0
   - Add HipChat integration documentation (Stan Hu)
