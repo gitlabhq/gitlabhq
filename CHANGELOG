@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.10.0 (unreleased)
+  - Add ability to configure Reply-To address in gitlab.yml (Stan Hu)
   - Fix broken side-by-side diff view on merge request page (Stan Hu)
   - Set Application controller default URL options to ensure all url_for calls are consistent (Stan Hu)
   - Allow HTML tags in Markdown input

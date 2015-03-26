@@ -49,6 +49,7 @@ production: &base
     # Email address used in the "From" field in mails sent by GitLab
     email_from: example@example.com
     email_display_name: GitLab
+    email_reply_to: noreply@example.com
 
     # Email server smtp settings are in config/initializers/smtp_settings.rb.sample
 
