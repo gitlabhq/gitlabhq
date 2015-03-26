@@ -36,6 +36,9 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
   password: '_the_password_of_the_bind_user'
 
+  # This setting allows an LDAP group to become GitLab administrators
+  admin_group: ''
+
   # This setting specifies if LDAP server is Active Directory LDAP server.
   # For non AD servers it skips the AD specific queries.
   # If your LDAP server is not AD, set this to false.
@@ -170,10 +173,11 @@ GitLab administrator users who do not have LDAP enabled are not affected by the 
 Below we assume that you have an LDAP group with the common name (CN) 'GitLab administrators' containing the users that should be GitLab administrators.
 We recommend that you keep a non-LDAP GitLab administrator user around on your GitLab instance in case you accidentally remove the admin status from your own LDAP-enabled GitLab user.
 
-For omnibus-gitlab, add the following to `/etc/gitlab/gitlab.rb` and run `gitlab-ctl reconfigure`.
+For omnibus-gitlab, add the following to the LDAP part of `/etc/gitlab/gitlab.rb` under one (or more) of the servers in
+the `servers:` section and run `gitlab-ctl reconfigure`.
 
-```ruby
-gitlab_rails['ldap_admin_group'] = 'GitLab administrators'
+```yaml
+    admin_group: 'GitLab administrators'
 ```
 
 For installations from source, add the following setting in the 'ldap' section of gitlab.yml, and run `service gitlab reload` afterwards.
