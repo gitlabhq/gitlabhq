@@ -199,6 +199,10 @@ module SharedPaths
     visit admin_applications_path
   end
 
+  step 'I visit git hooks page' do
+    visit admin_git_hooks_path
+  end
+
   # ----------------------------------------
   # Generic Project
   # ----------------------------------------

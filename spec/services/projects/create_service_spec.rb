@@ -82,6 +82,19 @@ describe Projects::CreateService do
         expect(project.saved?).to be(true)
       end
     end
+
+    context "git hook sample" do
+      before do
+        @git_hook_sample = create :git_hook_sample
+      end
+
+      it "creates git hook from sample" do
+        git_hook = create_project(@user, @opts).git_hook
+        [:force_push_regex, :deny_delete_tag, :delete_branch_regex, :commit_message_regex].each do |attr_name|
+          git_hook.send(attr_name).should == @git_hook_sample.send(attr_name)
+        end
+      end
+    end
   end
 
   def create_project(user, opts)

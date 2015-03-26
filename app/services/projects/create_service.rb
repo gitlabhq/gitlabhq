@@ -91,6 +91,13 @@ module Projects
       if @project.import?
         @project.import_start
       end
+
+      predefined_git_hook = GitHook.find_by(is_sample: true)
+
+      if predefined_git_hook
+        git_hook = predefined_git_hook.dup.tap{ |gh| gh.is_sample = false }
+        project.git_hook = git_hook
+      end
     end
   end
 end

@@ -7,5 +7,9 @@ FactoryGirl.define do
     delete_branch_regex "MyString"
     project
     commit_message_regex "MyString"
+
+    factory :git_hook_sample do
+      is_sample true
+    end
   end
 end
