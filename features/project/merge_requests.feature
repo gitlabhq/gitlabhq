@@ -166,6 +166,13 @@ Feature: Project Merge Requests
     And I click Side-by-side Diff tab
     Then I should see comments on the side-by-side diff page
 
+  @javascript
+  Scenario: I view diffs on a merge request
+    Given project "Shop" have "Bug NS-05" open merge request with diffs inside
+    And I visit merge request page "Bug NS-05"
+    And I click on the Changes tab via Javascript
+    Then I should see the proper Inline and Side-by-side links
+
   # Task status in issues list
 
   Scenario: Merge requests list should display task status
