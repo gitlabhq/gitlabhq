@@ -90,8 +90,13 @@ ul.notes {
 }
 
 // Diff code in discussion view
-.discussion-body .diff-file .line_content {
-  white-space: pre-wrap;
+.discussion-body .diff-file {
+  .diff-header > span {
+    margin-right: 10px;
+  }
+  .line_content {
+    white-space: pre-wrap;
+  }
 }
 
 .diff-file .notes_holder {
