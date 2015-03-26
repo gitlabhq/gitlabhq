@@ -42,6 +42,7 @@ v 7.10.0 (unreleased)
   - Send EmailsOnPush email when branch or tag is created or deleted.
   - Faster merge request processing for large repository
   - Prevent doubling AJAX request with each commit visit via Turbolink
+  - Prevent unnecessary doubling of js events on import pages and user calendar
 
 v 7.9.0
   - Add HipChat integration documentation (Stan Hu)
