@@ -1,4 +1,4 @@
-class @calendar
+class @Calendar
   options =
     month: "short"
     day: "numeric"

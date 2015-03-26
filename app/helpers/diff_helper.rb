@@ -121,6 +121,8 @@ module DiffHelper
   def inline_diff_btn
     params_copy = params.dup
     params_copy[:view] = 'inline'
+    # Always use HTML to handle case where JSON diff rendered this button
+    params_copy.delete(:format)
 
     link_to url_for(params_copy), id: "commit-diff-viewtype", class: (params[:view] != 'parallel' ? 'btn btn-sm active' : 'btn btn-sm') do
       'Inline'
@@ -130,6 +132,8 @@ module DiffHelper
   def parallel_diff_btn
     params_copy = params.dup
     params_copy[:view] = 'parallel'
+    # Always use HTML to handle case where JSON diff rendered this button
+    params_copy.delete(:format)
 
     link_to url_for(params_copy), id: "commit-diff-viewtype", class: (params[:view] == 'parallel' ? 'btn active btn-sm' : 'btn btn-sm') do
       'Side-by-side'
