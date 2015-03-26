@@ -10,7 +10,7 @@
         - @service.errors.full_messages.each do |msg|
           %p= msg
   - if @service.help.present?
-    .alert.alert-info
+    .well
       = preserve do
         = markdown @service.help
 
