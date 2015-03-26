@@ -43,6 +43,7 @@ v 7.10.0 (unreleased)
   - Link note avatar to user.
   - Make Git-over-SSH errors more descriptive.
   - Fix EmailsOnPush.
+  - List available backups when more than one is available during restore. (Robert Speicher)
 
 v 7.9.0
   - Send EmailsOnPush email when branch or tag is created or deleted.
