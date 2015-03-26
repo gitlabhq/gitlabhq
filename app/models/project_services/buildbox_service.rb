@@ -20,7 +20,11 @@
 
 require "addressable/uri"
 
+# Buildbox renamed to Buildkite, but for backwards compatability with the STI
+# of Services, the class name is kept as "Buildbox"
 class BuildboxService < CiService
+  ENDPOINT = "https://buildkite.com"
+
   prop_accessor :project_url, :token
 
   validates :project_url, presence: true, if: :activated?
@@ -29,7 +33,7 @@ class BuildboxService < CiService
   after_save :compose_service_hook, if: :activated?
 
   def webhook_url
-    "#{buildbox_endpoint('webhook')}/deliver/#{webhook_token}"
+    "#{buildkite_endpoint('webhook')}/deliver/#{webhook_token}"
   end
 
   def compose_service_hook
@@ -59,7 +63,7 @@ class BuildboxService < CiService
   end
 
   def commit_status_path(sha)
-    "#{buildbox_endpoint('gitlab')}/status/#{status_token}.json?commit=#{sha}"
+    "#{buildkite_endpoint('gitlab')}/status/#{status_token}.json?commit=#{sha}"
   end
 
   def build_page(sha, ref)
@@ -71,11 +75,11 @@ class BuildboxService < CiService
   end
 
   def status_img_path
-    "#{buildbox_endpoint('badge')}/#{status_token}.svg"
+    "#{buildkite_endpoint('badge')}/#{status_token}.svg"
   end
 
   def title
-    'Buildbox'
+    'Buildkite'
   end
 
   def description
@@ -83,18 +87,18 @@ class BuildboxService < CiService
   end
 
   def to_param
-    'buildbox'
+    'buildkite'
   end
 
   def fields
     [
       { type: 'text',
         name: 'token',
-        placeholder: 'Buildbox project GitLab token' },
+        placeholder: 'Buildkite project GitLab token' },
 
       { type: 'text',
         name: 'project_url',
-        placeholder: 'https://buildbox.io/example/project' }
+        placeholder: "#{ENDPOINT}/example/project" }
     ]
   end
 
@@ -116,11 +120,9 @@ class BuildboxService < CiService
     end
   end
 
-  def buildbox_endpoint(subdomain = nil)
-    endpoint = 'https://buildbox.io'
-
+  def buildkite_endpoint(subdomain = nil)
     if subdomain.present?
-      uri = Addressable::URI.parse(endpoint)
+      uri = Addressable::URI.parse(ENDPOINT)
       new_endpoint = "#{uri.scheme || 'http'}://#{subdomain}.#{uri.host}"
 
       if uri.port.present?
@@ -129,7 +131,7 @@ class BuildboxService < CiService
         new_endpoint
       end
     else
-      endpoint
+      ENDPOINT
     end
   end
 end
