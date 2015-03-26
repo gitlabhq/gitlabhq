@@ -1,5 +1,6 @@
 v 7.10.0 (unreleased)
   - Improve UI for next pages: Group LDAP sync, Project git hooks, Project share with groups, Admin -> Appearance settigns
+  - Default git hooks for new projects
 
 v 7.9.0 (unreleased)
   - Strip prefixes and suffixes from synced SSH keys:
