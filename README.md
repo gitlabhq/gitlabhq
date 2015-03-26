@@ -1,3 +1,7 @@
+## Canonical source
+
+The source of GitLab Community Edition is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/) and there are mirrors to make [contributing](CONTRIBUTING.md) as easy as possible.
+
 # ![logo](https://about.gitlab.com/images/gitlab_logo.png) GitLab
 
 ## Open source software to collaborate on code
@@ -18,10 +22,6 @@ There are two editions of GitLab.
 
 *GitLab Enterprise Edition (EE)* includes [extra features](https://about.gitlab.com/features/#compare) that are most useful for organizations with more than 100 users.
 To get access to the EE and support please [become a subscriber](https://about.gitlab.com/pricing/).
-
-## Canonical source
-
-The source of GitLab Community Edition is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/) and there are mirrors to make [contributing](CONTRIBUTING.md) as easy as possible.
 
 ## Code status
 
