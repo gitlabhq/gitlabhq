@@ -119,8 +119,9 @@ class @ImageFile
 
   requestImageInfo: (img, callback) ->
     domImg = img.get(0)
-    if domImg.complete
-      callback.call(this, domImg.naturalWidth, domImg.naturalHeight)
-    else
-      img.on 'load', =>
+    if domImg
+      if domImg.complete
         callback.call(this, domImg.naturalWidth, domImg.naturalHeight)
+      else
+        img.on 'load', =>
+          callback.call(this, domImg.naturalWidth, domImg.naturalHeight)
