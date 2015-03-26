@@ -117,6 +117,20 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
   end
 
+  step 'I click on the Changes tab via Javascript' do
+    find('.diffs-tab').click
+    sleep 2
+  end
+
+  step 'I should see the proper Inline and Side-by-side links' do
+    buttons = all('#commit-diff-viewtype')
+    expect(buttons.count).to eq(2)
+
+    buttons.each do |b|
+      expect(b['href']).should_not have_content('json')
+    end
+  end
+
   step 'I switch to the merge request\'s comments tab' do
     visit namespace_project_merge_request_path(project.namespace, project, merge_request)
   end
