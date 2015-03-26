@@ -45,7 +45,4 @@
           You're receiving notifications because you're subscribed to this thread.
 
 :coffeescript
-  $ ->
-    new Subscription("#{toggle_subscription_namespace_project_merge_request_path(@merge_request.project.namespace, @project, @merge_request)}")
-    
-      
+  new Subscription("#{toggle_subscription_namespace_project_merge_request_path(@merge_request.project.namespace, @project, @merge_request)}")

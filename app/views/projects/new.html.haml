@@ -109,9 +109,8 @@
     %p Please wait a moment, this page will automatically refresh when ready.
 
 :coffeescript
-  $ ->
-    $('.how_to_import_link').bind 'click', (e) ->
-      e.preventDefault()
-      import_modal = $(this).next(".modal").show()
-    $('.modal-header .close').bind 'click', ->
-      $(".modal").hide()
+  $('.how_to_import_link').bind 'click', (e) ->
+    e.preventDefault()
+    import_modal = $(this).next(".modal").show()
+  $('.modal-header .close').bind 'click', ->
+    $(".modal").hide()
