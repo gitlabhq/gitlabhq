@@ -27,6 +27,7 @@ v 7.10.0 (unreleased)
   - Passing the name of pushed ref to CI service (requires GitLab CI 7.9+)
   - Add location field to user profile
   - Fix print view for markdown files and wiki pages
+  - Fix errors when deleting old backups
   - Improve GitLab performance when working with git repositories
   - Add tag message and last commit to tag hook (Kamil Trzciński)
   - Restrict permissions on backup files
