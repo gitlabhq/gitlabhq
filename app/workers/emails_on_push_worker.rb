@@ -1,7 +1,15 @@
 class EmailsOnPushWorker
   include Sidekiq::Worker
 
-  def perform(project_id, recipients, push_data, send_from_committer_email: false, disable_diffs: false)
+  def perform(project_id, recipients, push_data, options = {})
+    options.symbolize_keys!
+    options.reverse_merge!(
+      send_from_committer_email:  false, 
+      disable_diffs:              false
+    )
+    send_from_committer_email = options[:send_from_committer_email]
+    disable_diffs = options[:disable_diffs]
+
     project = Project.find(project_id)
     before_sha = push_data["before"]
     after_sha = push_data["after"]
