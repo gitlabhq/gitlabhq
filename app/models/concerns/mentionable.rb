@@ -42,10 +42,10 @@ module Mentionable
     Note.cross_reference_exists?(target, local_reference)
   end
 
-  def mentioned_users
+  def mentioned_users(current_user = nil)
     return [] if mentionable_text.blank?
 
-    ext = Gitlab::ReferenceExtractor.new(self.project)
+    ext = Gitlab::ReferenceExtractor.new(self.project, current_user)
     ext.analyze(text)
     ext.users.uniq
   end

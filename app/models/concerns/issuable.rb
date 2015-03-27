@@ -118,16 +118,16 @@ module Issuable
   end
 
   # Return all users participating on the discussion
-  def participants
+  def participants(current_user = self.author)
     users = []
     users << author
     users << assignee if is_assigned?
     mentions = []
-    mentions << self.mentioned_users
+    mentions << self.mentioned_users(current_user)
 
     notes.each do |note|
       users << note.author
-      mentions << note.mentioned_users
+      mentions << note.mentioned_users(current_user)
     end
 
     users.concat(mentions.reduce([], :|)).uniq
@@ -140,7 +140,7 @@ module Issuable
       return subscription.subscribed
     end
 
-    participants.include?(user)
+    participants(user).include?(user)
   end
 
   def toggle_subscription(user)
