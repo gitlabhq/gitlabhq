@@ -28,7 +28,6 @@ module MilestonesHelper
         Milestone.where(project_id: @projects)
       end.active
 
-    options_for_select([['Any', nil]]) +
-      options_from_collection_for_select(milestones, 'id', 'title', params[:milestone_id])
+    options_from_collection_for_select(milestones, 'id', 'title', params[:milestone_id])
   end
 end

@@ -14,7 +14,7 @@
           %i.fa.fa-compass
           All
 
-  %div
+  .issues-details-filters
     = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_id, :label_name]), method: :get, class: 'filter-form' do
       - if controller.controller_name == 'issues'
         .check-all-holder
@@ -23,35 +23,19 @@
             disabled: !can?(current_user, :modify_issue, @project)
       .issues-other-filters
         .filter-item.inline
-          %span.light
-            %i.fa.fa-user
-            Assignee
-          %strong
-            = users_select_tag(:assignee_id, selected: params[:assignee_id],
-              placeholder: 'Any', class: 'trigger-submit', any_user: true, null_user: true)
+          = users_select_tag(:assignee_id, selected: params[:assignee_id],
+            placeholder: 'Assignee', class: 'trigger-submit', any_user: true, null_user: true)
 
         .filter-item.inline
-          %span.light
-            %i.fa.fa-user
-            Author
-          %strong
-            = users_select_tag(:author_id, selected: params[:author_id],
-              placeholder: 'Any', class: 'trigger-submit', any_user: true)
+          = users_select_tag(:author_id, selected: params[:author_id],
+            placeholder: 'Author', class: 'trigger-submit', any_user: true)
 
-        .filter-item.inline
-          %span.light
-            %i.fa.fa-clock-o
-            Milestone
-          %strong
-            = select_tag('milestone_id', projects_milestones_options, class: "select2 trigger-submit")
+        .filter-item.inline.milestone-filter
+          = select_tag('milestone_id', projects_milestones_options, class: "select2 trigger-submit", prompt: 'Milestone')
 
         - if @project
-          .filter-item.inline
-            %span.light
-              %i.fa.fa-tag
-              Label
-            %strong
-              = select_tag('label_name', project_labels_options(@project), class: "select2 trigger-submit")
+          .filter-item.inline.labels-filter
+            = select_tag('label_name', project_labels_options(@project), class: "select2 trigger-submit", prompt: 'Label')
 
         .pull-right
           = render 'shared/sort_dropdown'
