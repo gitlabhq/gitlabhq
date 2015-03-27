@@ -1,89 +1,89 @@
 module Gitlab
   # Extract possible GFM references from an arbitrary String for further processing.
   class ReferenceExtractor
-    attr_accessor :users, :labels, :issues, :merge_requests, :snippets, :commits, :commit_ranges
+    attr_accessor :project, :references
 
     include Markdown
 
-    def initialize
-      @users, @labels, @issues, @merge_requests, @snippets, @commits, @commit_ranges =
-        [], [], [], [], [], [], []
+    def initialize(project)
+      @project = project
+
+      @references = Hash.new { [] }
     end
 
-    def analyze(string, project)
-      text = string.dup
+    def analyze(text)
+      text = text.dup
 
       # Remove preformatted/code blocks so that references are not included
       text.gsub!(%r{<pre>.*?</pre>|<code>.*?</code>}m) { |match| '' }
       text.gsub!(%r{^```.*?^```}m) { |match| '' }
 
-      parse_references(text, project)
+      parse_references(text)
     end
 
     # Given a valid project, resolve the extracted identifiers of the requested type to
     # model objects.
 
-    def users_for(project)
-      users.map do |entry|
+    def users
+      references[:users].map do |entry|
         project.users.where(username: entry[:id]).first
-      end.reject(&:nil?)
+      end.compact
     end
 
-    def labels_for(project = nil)
-      labels.map do |entry|
+    def labels
+      references[:labels].map do |entry|
         project.labels.where(id: entry[:id]).first
-      end.reject(&:nil?)
+      end.compact
     end
 
-    def issues_for(project = nil)
-      issues.map do |entry|
-        if should_lookup?(project, entry[:project])
+    def issues
+      references[:issues].map do |entry|
+        if should_lookup?(entry[:project])
           entry[:project].issues.where(iid: entry[:id]).first
         end
-      end.reject(&:nil?)
+      end.compact
     end
 
-    def merge_requests_for(project = nil)
-      merge_requests.map do |entry|
-        if should_lookup?(project, entry[:project])
+    def merge_requests
+      references[:merge_requests].map do |entry|
+        if should_lookup?(entry[:project])
           entry[:project].merge_requests.where(iid: entry[:id]).first
         end
-      end.reject(&:nil?)
+      end.compact
     end
 
-    def snippets_for(project)
-      snippets.map do |entry|
+    def snippets
+      references[:snippets].map do |entry|
         project.snippets.where(id: entry[:id]).first
-      end.reject(&:nil?)
+      end.compact
     end
 
-    def commits_for(project = nil)
-      commits.map do |entry|
+    def commits
+      references[:commits].map do |entry|
         repo = entry[:project].repository if entry[:project]
-        if should_lookup?(project, entry[:project])
+        if should_lookup?(entry[:project])
           repo.commit(entry[:id]) if repo
         end
-      end.reject(&:nil?)
+      end.compact
     end
 
-    def commit_ranges_for(project = nil)
-      commit_ranges.map do |entry|
+    def commit_ranges
+      references[:commit_ranges].map do |entry|
         repo = entry[:project].repository if entry[:project]
-        if repo && should_lookup?(project, entry[:project])
+        if repo && should_lookup?(entry[:project])
           from_id, to_id = entry[:id].split(/\.{2,3}/, 2)
           [repo.commit(from_id), repo.commit(to_id)]
         end
-      end.reject(&:nil?)
+      end.compact
     end
 
     private
 
     def reference_link(type, identifier, project, _)
-      # Append identifier to the appropriate collection.
-      send("#{type}s") << { project: project, id: identifier }
+      references[type] << { project: project, id: identifier }
     end
 
-    def should_lookup?(project, entry_project)
+    def should_lookup?(entry_project)
       if entry_project.nil?
         false
       else

@@ -9,9 +9,9 @@ module Gitlab
         md = message.scan(ISSUE_CLOSING_REGEX)
 
         md.each do |ref|
-          extractor = Gitlab::ReferenceExtractor.new
-          extractor.analyze(ref[0], project)
-          issues += extractor.issues_for(project)
+          extractor = Gitlab::ReferenceExtractor.new(project)
+          extractor.analyze(ref[0])
+          issues += extractor.issues
         end
       end
 

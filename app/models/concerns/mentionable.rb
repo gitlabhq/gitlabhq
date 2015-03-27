@@ -65,12 +65,10 @@ module Mentionable
   # Extract GFM references to other Mentionables from this Mentionable. Always excludes its #local_reference.
   def references(p = project, text = mentionable_text)
     return [] if text.blank?
-    ext = Gitlab::ReferenceExtractor.new
-    ext.analyze(text, p)
+    ext = Gitlab::ReferenceExtractor.new(p)
+    ext.analyze(text)
 
-    (ext.issues_for(p)  +
-     ext.merge_requests_for(p) +
-     ext.commits_for(p)).uniq - [local_reference]
+    (ext.issues + ext.merge_requests + ext.commits).uniq - [local_reference]
   end
 
   # Create a cross-reference Note for each GFM reference to another Mentionable found in +mentionable_text+.
