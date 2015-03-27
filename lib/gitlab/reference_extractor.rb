@@ -34,8 +34,16 @@ module Gitlab
 
     def users
       references[:users].map do |entry|
-        project.users.where(username: entry[:id]).first
-      end.compact
+        if entry[:id] == "all"
+          project.team.members.flatten
+        elsif namespace = Namespace.find_by(path: entry[:id])
+          if namespace.is_a?(Group)
+            namespace.users
+          else
+            namespace.owner
+          end
+        end
+      end.flatten.compact
     end
 
     def labels

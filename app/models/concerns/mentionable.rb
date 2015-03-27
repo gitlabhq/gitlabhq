@@ -43,28 +43,17 @@ module Mentionable
   end
 
   def mentioned_users
-    users = []
-    return users if mentionable_text.blank?
-    has_project = self.respond_to? :project
-    matches = mentionable_text.scan(/@[a-zA-Z][a-zA-Z0-9_\-\.]*/)
-    matches.each do |match|
-      identifier = match.delete "@"
-      if identifier == "all"
-        users.push(*project.team.members.flatten)
-      elsif namespace = Namespace.find_by(path: identifier)
-        if namespace.is_a?(Group)
-          users.push(*namespace.users)
-        else
-          users << namespace.owner
-        end
-      end
-    end
-    users.uniq
+    return [] if mentionable_text.blank?
+
+    ext = Gitlab::ReferenceExtractor.new(self.project)
+    ext.analyze(text)
+    ext.users.uniq
   end
 
   # Extract GFM references to other Mentionables from this Mentionable. Always excludes its #local_reference.
   def references(p = project, text = mentionable_text)
     return [] if text.blank?
+    
     ext = Gitlab::ReferenceExtractor.new(p)
     ext.analyze(text)
 
