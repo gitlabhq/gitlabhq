@@ -68,6 +68,6 @@ You can't add the same deploy key twice with the 'New Deploy Key' option.
 If you want to add the same key to another project, please enable it in the
 list that says 'Deploy keys from projects available to you'. All the deploy
 keys of all the projects you have access to are available. This project
-access can happen through being a direct member of the projecti, or through
+access can happen through being a direct member of the project, or through
 a group. See `def accessible_deploy_keys` in `app/models/user.rb` for more
 information.

@@ -19,6 +19,8 @@
 require_relative 'projects_finder'
 
 class IssuableFinder
+  NONE = '0'
+
   attr_accessor :current_user, :params
 
   def execute(current_user, params)
@@ -112,7 +114,7 @@ class IssuableFinder
 
   def by_milestone(items)
     if params[:milestone_id].present?
-      items = items.where(milestone_id: (params[:milestone_id] == '0' ? nil : params[:milestone_id]))
+      items = items.where(milestone_id: (params[:milestone_id] == NONE ? nil : params[:milestone_id]))
     end
 
     items
@@ -120,7 +122,7 @@ class IssuableFinder
 
   def by_assignee(items)
     if params[:assignee_id].present?
-      items = items.where(assignee_id: (params[:assignee_id] == '0' ? nil : params[:assignee_id]))
+      items = items.where(assignee_id: (params[:assignee_id] == NONE ? nil : params[:assignee_id]))
     end
 
     items
@@ -128,7 +130,7 @@ class IssuableFinder
 
   def by_author(items)
     if params[:author_id].present?
-      items = items.where(author_id: (params[:author_id] == '0' ? nil : params[:author_id]))
+      items = items.where(author_id: (params[:author_id] == NONE ? nil : params[:author_id]))
     end
 
     items

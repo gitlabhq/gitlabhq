@@ -4,18 +4,27 @@ module SelectsHelper
     css_class << "multiselect " if opts[:multiple]
     css_class << (opts[:class] || '')
     value = opts[:selected] || ''
+    placeholder = opts[:placeholder] || 'Search for a user'
 
-    hidden_field_tag(id, value, class: css_class)
-  end
+    null_user = opts[:null_user] || false
+    any_user = opts[:any_user] || false
 
-  def project_users_select_tag(id, opts = {})
-    css_class = "ajax-project-users-select "
-    css_class << "multiselect " if opts[:multiple]
-    css_class << (opts[:class] || '')
-    value = opts[:selected] || ''
-    placeholder = opts[:placeholder] || 'Select user'
-    project_id = opts[:project_id] || @project.id
-    hidden_field_tag(id, value, class: css_class, 'data-placeholder' => placeholder, 'data-project-id' => project_id)
+    html = {
+      class: css_class,
+      'data-placeholder' => placeholder,
+      'data-null-user' => null_user,
+      'data-any-user' => any_user,
+    }
+
+    unless opts[:scope] == :all
+      if @project
+        html['data-project-id'] = @project.id
+      elsif @group
+        html['data-group-id'] = @group.id
+      end
+    end
+
+    hidden_field_tag(id, value, html)
   end
 
   def groups_select_tag(id, opts = {})

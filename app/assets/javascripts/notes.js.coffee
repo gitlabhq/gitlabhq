@@ -57,6 +57,7 @@ class @Notes
     @notes_forms = '.js-main-target-form textarea, .js-discussion-note-form textarea'
     # Chrome doesn't fire keypress or keyup for Command+Enter, so we need keydown.
     $(document).on('keydown', @notes_forms, (e) ->
+      return if e.originalEvent.repeat
       if e.keyCode == 10 || ((e.metaKey || e.ctrlKey) && e.keyCode == 13)
         $(@).parents('form').submit()
     )

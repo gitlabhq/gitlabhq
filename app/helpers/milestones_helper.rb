@@ -19,4 +19,15 @@ module MilestonesHelper
       content_tag :div, nil, options
     end
   end
+
+  def projects_milestones_options
+    milestones =
+      if @project
+        @project.milestones
+      else
+        Milestone.where(project_id: @projects)
+      end.active
+
+    options_from_collection_for_select(milestones, 'id', 'title', params[:milestone_id])
+  end
 end
