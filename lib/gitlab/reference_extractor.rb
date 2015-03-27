@@ -13,9 +13,6 @@ module Gitlab
     end
 
     def can?(user, action, subject)
-      # When extracting references, no user means access to everything.
-      return true if user.nil?
-
       Ability.abilities.allowed?(user, action, subject)
     end
 
