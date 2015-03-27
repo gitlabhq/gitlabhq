@@ -85,7 +85,7 @@ module TestEnv
     end
 
     # We must copy bare repositories because we will push to them.
-    system(*%W(git clone -q --bare #{factory_repo_path} #{factory_repo_path_bare}))
+    system(git_env, *%W(git clone -q --bare #{factory_repo_path} #{factory_repo_path_bare}))
   end
 
   def copy_repo(project)
@@ -112,5 +112,11 @@ module TestEnv
 
   def factory_repo_name
     'gitlab-test'
+  end
+
+  # Prevent developer git configurations from being persisted to test
+  # repositories
+  def git_env
+    {'GIT_TEMPLATE_DIR' => ''}
   end
 end
