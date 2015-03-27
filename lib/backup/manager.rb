@@ -3,19 +3,8 @@ module Backup
     BACKUP_CONTENTS = %w{repositories/ db/ uploads/ backup_information.yml}
 
     def pack
-      # saving additional informations
-      s = {}
-      s[:db_version]         = "#{ActiveRecord::Migrator.current_version}"
-      s[:backup_created_at]  = Time.now
-      s[:gitlab_version]     = Gitlab::VERSION
-      s[:tar_version]        = tar_version
-      tar_file = "#{s[:backup_created_at].to_i}_gitlab_backup.tar"
-
       Dir.chdir(Gitlab.config.backup.path) do
-        File.open("#{Gitlab.config.backup.path}/backup_information.yml",
-                  "w+") do |file|
-          file << s.to_yaml.gsub(/^---\n/,'')
-        end
+        tar_file = write_backup_information
 
         FileUtils.chmod_R(0700, %w{db uploads repositories})
 
@@ -74,9 +63,7 @@ module Backup
       if keep_time > 0
         removed = 0
         Dir.chdir(Gitlab.config.backup.path) do
-          file_list = Dir.glob('*_gitlab_backup.tar')
-          file_list.map! { |f| $1.to_i if f =~ /(\d+)_gitlab_backup.tar/ }
-          file_list.sort.each do |timestamp|
+          collect_archive_timestamps.each do |timestamp|
             if Time.at(timestamp) < (Time.now - keep_time)
               if Kernel.system(*%W(rm #{timestamp}_gitlab_backup.tar))
                 removed += 1
@@ -94,10 +81,11 @@ module Backup
       Dir.chdir(Gitlab.config.backup.path)
 
       # check for existing backups in the backup dir
-      file_list = Dir.glob("*_gitlab_backup.tar").each.map { |f| f.split(/_/).first.to_i }
+      file_list = collect_archive_timestamps
       puts "no backups found" if file_list.count == 0
       if file_list.count > 1 && ENV["BACKUP"].nil?
         puts "Found more than one backup, please specify which one you want to restore:"
+        file_list.each { |f| puts "--> #{f}" }
         puts "rake gitlab:backup:restore BACKUP=timestamp_of_backup"
         exit 1
       end
@@ -130,6 +118,37 @@ module Backup
         puts "Hint: git checkout v#{settings[:gitlab_version]}"
         exit 1
       end
+    end
+
+    private
+
+    # Full path to the backup_information.yml file
+    def backup_information_file
+      File.join(Gitlab.config.backup.path, 'backup_information.yml')
+    end
+
+    # Write backup information to the backup_information.yml file
+    #
+    # Returns the filename of the timestamped .tar file
+    def write_backup_information
+      s = {}
+      s[:db_version]         = "#{ActiveRecord::Migrator.current_version}"
+      s[:backup_created_at]  = Time.now
+      s[:gitlab_version]     = Gitlab::VERSION
+      s[:tar_version]        = tar_version
+
+      File.open(backup_information_file, 'w+') do |file|
+        file << s.to_yaml.gsub(/^---\n/, '')
+      end
+
+      "#{s[:backup_created_at].to_i}_gitlab_backup.tar"
+    end
+
+    # Returns a sorted Array of backup archive timestamps
+    def collect_archive_timestamps
+      Dir.glob('*_gitlab_backup.tar')
+        .map { |f| f.split('_').first.to_i }
+        .sort
     end
 
     def tar_version
