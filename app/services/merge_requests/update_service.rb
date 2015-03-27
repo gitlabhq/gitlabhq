@@ -23,8 +23,8 @@ module MergeRequests
         merge_request.update_nth_task(params[:task_num].to_i, false)
       end
 
-      params[:assignee_id]  = "" if params[:assignee_id] == "-1"
-      params[:milestone_id] = "" if params[:milestone_id] == "-1"
+      params[:assignee_id]  = "" if params[:assignee_id] == IssuableFinder::NONE
+      params[:milestone_id] = "" if params[:milestone_id] == IssuableFinder::NONE
 
       old_labels = merge_request.labels.to_a
 

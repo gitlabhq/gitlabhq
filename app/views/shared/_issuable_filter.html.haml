@@ -15,105 +15,50 @@
           All
 
   %div
-    - if controller.controller_name == 'issues'
-      .check-all-holder
-        = check_box_tag "check_all_issues", nil, false,
-          class: "check_all_issues left",
-          disabled: !can?(current_user, :modify_issue, @project)
-    .issues-other-filters
-      .dropdown.inline.assignee-filter
-        %button.dropdown-toggle.btn{type: 'button', "data-toggle" => "dropdown"}
-          %i.fa.fa-user
-          %span.light assignee:
-          - if @assignee.present?
-            %strong= @assignee.name
-          - elsif params[:assignee_id] == "0"
-            Unassigned
-          - else
-            Any
-          %b.caret
-        %ul.dropdown-menu
-          %li
-            = link_to page_filter_path(assignee_id: nil) do
-              Any
-            = link_to page_filter_path(assignee_id: 0) do
-              Unassigned
-          - @assignees.sort_by(&:name).each do |user|
-            %li
-              = link_to page_filter_path(assignee_id: user.id) do
-                = image_tag avatar_icon(user.email), class: "avatar s16", alt: ''
-                = user.name
+    = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_id, :label_name]), method: :get, class: 'filter-form' do
+      - if controller.controller_name == 'issues'
+        .check-all-holder
+          = check_box_tag "check_all_issues", nil, false,
+            class: "check_all_issues left",
+            disabled: !can?(current_user, :modify_issue, @project)
+      .issues-other-filters
+        .filter-item.inline
+          %span.light
+            %i.fa.fa-user
+            Assignee
+          %strong
+            = users_select_tag(:assignee_id, selected: params[:assignee_id],
+              placeholder: 'Any', class: 'trigger-submit', any_user: true, null_user: true)
 
-      .dropdown.inline.prepend-left-10.author-filter
-        %button.dropdown-toggle.btn{type: 'button', "data-toggle" => "dropdown"}
-          %i.fa.fa-user
-          %span.light author:
-          - if @author.present?
-            %strong= @author.name
-          - elsif params[:author_id] == "0"
-            Unassigned
-          - else
-            Any
-          %b.caret
-        %ul.dropdown-menu
-          %li
-            = link_to page_filter_path(author_id: nil) do
-              Any
-            = link_to page_filter_path(author_id: 0) do
-              Unassigned
-          - @authors.sort_by(&:name).each do |user|
-            %li
-              = link_to page_filter_path(author_id: user.id) do
-                = image_tag avatar_icon(user.email), class: "avatar s16", alt: ''
-                = user.name
+        .filter-item.inline
+          %span.light
+            %i.fa.fa-user
+            Author
+          %strong
+            = users_select_tag(:author_id, selected: params[:author_id],
+              placeholder: 'Any', class: 'trigger-submit', any_user: true)
 
-      .dropdown.inline.prepend-left-10.milestone-filter
-        %button.dropdown-toggle.btn{type: 'button', "data-toggle" => "dropdown"}
-          %i.fa.fa-clock-o
-          %span.light milestone:
-          - if @milestone.present?
-            %strong= @milestone.title
-          - elsif params[:milestone_id] == "0"
-            None (backlog)
-          - else
-            Any
-          %b.caret
-        %ul.dropdown-menu
-          %li
-            = link_to page_filter_path(milestone_id: nil) do
-              Any
-            = link_to page_filter_path(milestone_id: 0) do
-              None (backlog)
-          - @milestones.each do |milestone|
-            %li
-              = link_to page_filter_path(milestone_id: milestone.id) do
-                %strong= milestone.title
-                %small.light= milestone.expires_at
+        .filter-item.inline
+          %span.light
+            %i.fa.fa-clock-o
+            Milestone
+          %strong
+            = select_tag('milestone_id', projects_milestones_options, class: "select2 trigger-submit")
 
-      - if @project
-        .dropdown.inline.prepend-left-10.labels-filter
-          %button.dropdown-toggle.btn{type: 'button', "data-toggle" => "dropdown"}
-            %i.fa.fa-tags
-            %span.light label:
-            - if params[:label_name].present?
-              %strong= params[:label_name]
-            - else
-              Any
-            %b.caret
-          %ul.dropdown-menu
-            %li
-              = link_to page_filter_path(label_name: nil) do
-                Any
-            - if @project.labels.any?
-              - @project.labels.each do |label|
-                %li
-                  = link_to page_filter_path(label_name: label.name) do
-                    = render_colored_label(label)
-            - else
-              %li
-                = link_to generate_namespace_project_labels_path(@project.namespace, @project, redirect: request.original_url), method: :post do
-                  %i.fa.fa-plus-circle
-                  Create default labels
+        - if @project
+          .filter-item.inline
+            %span.light
+              %i.fa.fa-tag
+              Label
+            %strong
+              = select_tag('label_name', project_labels_options(@project), class: "select2 trigger-submit")
 
-      .pull-right
-        = render 'shared/sort_dropdown'
+        .pull-right
+          = render 'shared/sort_dropdown'
+
+:coffeescript
+  new UsersSelect()
+
+  $('form.filter-form').on 'submit', (event) ->
+    event.preventDefault()
+    Turbolinks.visit @.action + '&' + $(@).serialize()

@@ -2,7 +2,7 @@
   $('.context').html("#{escape_javascript(render partial: 'projects/merge_requests/show/context', locals: { issue: @issue })}");
   $('.context').effect('highlight');
 
-  new ProjectUsersSelect();
+  new UsersSelect()
 
   $('select.select2').select2({width: 'resolve', dropdownAutoWidth: true});
   merge_request = new MergeRequest();

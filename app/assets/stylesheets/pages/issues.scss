@@ -60,6 +60,7 @@
 }
 
 @media (min-width: 800px)  {
+  .issues-filters,
   .issues_bulk_update {
     select, .select2-container {
       width: 120px !important;
@@ -69,14 +70,16 @@
 }
 
 @media (min-width: 1200px) {
+  .issues-filters,
   .issues_bulk_update {
     select, .select2-container {
-      width: 160px !important;
+      width: 140px !important;
       display: inline-block;
     }
   }
 }
 
+.issues-filters,
 .issues_bulk_update {
   .select2-container .select2-choice {
     color: #444 !important;

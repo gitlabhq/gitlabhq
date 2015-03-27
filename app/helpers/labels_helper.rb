@@ -47,4 +47,9 @@ module LabelsHelper
       "#FFF"
     end
   end
+
+  def project_labels_options(project)
+    options_for_select([['Any', nil]]) +
+      options_from_collection_for_select(project.labels, 'name', 'name', params[:label_name])
+  end
 end

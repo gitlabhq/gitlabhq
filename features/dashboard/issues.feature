@@ -10,10 +10,12 @@ Feature: Dashboard Issues
   Scenario: I should see assigned issues
     Then I should see issues assigned to me
 
+  @javascript
   Scenario: I should see authored issues
     When I click "Authored by me" link
     Then I should see issues authored by me
 
+  @javascript
   Scenario: I should see all issues
     When I click "All" link
     Then I should see all issues

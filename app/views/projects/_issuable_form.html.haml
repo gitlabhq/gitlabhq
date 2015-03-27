@@ -35,8 +35,8 @@
       %i.fa.fa-user
       Assign to
     .col-sm-10
-      = project_users_select_tag("#{issuable.class.model_name.param_key}[assignee_id]",
-          placeholder: 'Select a user', class: 'custom-form-control',
+      = users_select_tag("#{issuable.class.model_name.param_key}[assignee_id]",
+          placeholder: 'Select a user', class: 'custom-form-control', null_user: true,
           selected: issuable.assignee_id)
       &nbsp;
       = link_to 'Assign to me', '#', class: 'btn assign-to-me-link'
