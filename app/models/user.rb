@@ -57,6 +57,9 @@ require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class User < ActiveRecord::Base
+  devise :two_factor_authenticatable,
+         :otp_secret_encryption_key => File.read(Rails.root.join('.secret')).chomp
+
   include Sortable
   include Gitlab::ConfigHelper
   include TokenAuthenticatable
@@ -70,7 +73,7 @@ class User < ActiveRecord::Base
   default_value_for :hide_no_password, false
   default_value_for :theme_id, gitlab_config.default_theme
 
-  devise :database_authenticatable, :lockable, :async,
+  devise :lockable, :async,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :confirmable, :registerable
 
   attr_accessor :force_random_password
