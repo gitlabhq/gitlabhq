@@ -19,7 +19,7 @@
 require_relative 'projects_finder'
 
 class IssuableFinder
-  NONE = 0
+  NONE = '0'
 
   attr_accessor :current_user, :params
 
