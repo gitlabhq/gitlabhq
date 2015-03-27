@@ -56,33 +56,6 @@
   }
 }
 
-@media (min-width: 800px)  {
-  .issues-filters,
-  .issues_bulk_update {
-    select, .select2-container {
-      width: 120px !important;
-      display: inline-block;
-    }
-  }
-}
-
-@media (min-width: 1200px) {
-  .issues-filters,
-  .issues_bulk_update {
-    select, .select2-container {
-      width: 150px !important;
-      display: inline-block;
-    }
-  }
-}
-
-.issues-filters,
-.issues_bulk_update {
-  .select2-container .select2-choice {
-    color: #444 !important;
-  }
-}
-
 .participants {
   margin-bottom: 20px;
 }
@@ -120,12 +93,12 @@ form.edit-issue {
   }
 
   &.closed {
-    background: #F5f5f5;
+    background: #F9F9F9;
     border-color: #E5E5E5;
   }
 
   &.merged {
-    background: #F5f5f5;
+    background: #F9F9F9;
     border-color: #E5E5E5;
   }
 }
