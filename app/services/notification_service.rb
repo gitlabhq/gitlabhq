@@ -123,32 +123,29 @@ class NotificationService
     return true if note.note.start_with?('Status changed to closed')
     return true if note.cross_reference? && note.system == true
 
-    opts = { noteable_type: note.noteable_type, project_id: note.project_id }
-
     target = note.noteable
 
-    if target.respond_to?(:participants)
-      recipients = target.participants
-    else
-      recipients = note.mentioned_users
-    end
+    recipients = []
 
     if note.commit_id.present?
-      opts.merge!(commit_id: note.commit_id)
       recipients << note.commit_author
-    else
-      opts.merge!(noteable_id: note.noteable_id)
     end
 
     # Get users who left comment in thread
-    recipients = recipients.concat(User.where(id: Note.where(opts).pluck(:author_id)))
+    recipients = recipients.concat(noteable_commenters(note))
 
     # Merge project watchers
     recipients = recipients.concat(project_watchers(note.project)).compact.uniq
 
-    # Reject mention users unless mentioned in comment
-    recipients = reject_mention_users(recipients - note.mentioned_users, note.project)
-    recipients = recipients + note.mentioned_users
+    # Reject users with Mention notification level
+    recipients = reject_mention_users(recipients, note.project)
+
+    # Add explicitly mentioned users
+    if target.respond_to?(:participants)
+      recipients = recipients.concat(target.participants)
+    else
+      recipients = recipients.concat(note.mentioned_users)
+    end
 
     # Reject mutes users
     recipients = reject_muted_users(recipients, note.project)
@@ -194,6 +191,18 @@ class NotificationService
   end
 
   protected
+
+  def noteable_commenters(note)
+    opts = { noteable_type: note.noteable_type, project_id: note.project_id }
+
+    if note.commit_id.present?
+      opts.merge!(commit_id: note.commit_id)
+    else
+      opts.merge!(noteable_id: note.noteable_id)
+    end
+
+    User.where(id: Note.where(opts).pluck(:author_id))
+  end
 
   # Get project users with WATCH notification level
   def project_watchers(project)
