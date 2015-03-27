@@ -1,14 +1,22 @@
 module Gitlab
   # Extract possible GFM references from an arbitrary String for further processing.
   class ReferenceExtractor
-    attr_accessor :project, :references
+    attr_accessor :project, :current_user, :references
 
     include Markdown
 
-    def initialize(project)
+    def initialize(project, current_user = nil)
       @project = project
+      @current_user = user
 
       @references = Hash.new { [] }
+    end
+
+    def can?(user, action, subject)
+      # When extracting references, no user means access to everything.
+      return true if user.nil?
+
+      Ability.abilities.allowed?(user, action, subject)
     end
 
     def analyze(text)
@@ -79,7 +87,7 @@ module Gitlab
 
     private
 
-    def reference_link(type, identifier, project, _)
+    def reference_link(type, identifier, project, user, _)
       references[type] << { project: project, id: identifier }
     end
 
