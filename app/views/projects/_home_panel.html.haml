@@ -28,10 +28,10 @@
         .fork-buttons
           - if current_user && can?(current_user, :fork_project, @project) && @project.namespace != current_user.namespace
             - if current_user.already_forked?(@project) && current_user.manageable_namespaces.size < 2
-              = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: 'Go to your fork', class: 'btn btn-primary' do
+              = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: 'Go to your fork', class: 'btn btn-default' do
                 = link_to_toggle_fork
             - else
-              = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "Fork project", class: 'btn btn-primary' do
+              = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "Fork project", class: 'btn btn-default' do
                 = link_to_toggle_fork
     - unless @project.empty_repo?
       - if can? current_user, :download_code, @project

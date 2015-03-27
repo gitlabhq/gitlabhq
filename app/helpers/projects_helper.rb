@@ -81,7 +81,7 @@ module ProjectsHelper
   end
 
   def link_to_toggle_star(title, starred, signed_in)
-    cls = 'star-btn btn btn-primary'
+    cls = 'star-btn btn btn-default'
     cls << ' disabled' unless signed_in
 
     toggle_html = content_tag('span', class: 'toggle') do
