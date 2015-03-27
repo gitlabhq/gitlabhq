@@ -28,6 +28,7 @@
 .select2-drop-active {
   border: 1px solid #BBB !important;
   margin-top: 4px;
+  font-size: 13px;
 
   &.select2-drop-above {
     margin-bottom: 8px;
@@ -105,4 +106,8 @@
     margin-left: 10px;
     font-weight: bolder;
   }
+}
+
+.ajax-users-dropdown {
+  min-width: 225px !important;
 }
