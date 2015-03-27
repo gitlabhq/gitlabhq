@@ -126,6 +126,14 @@ class Commit
     "commit #{id}"
   end
 
+  def author
+    User.find_for_commit(author_email, author_name)
+  end
+
+  def committer
+    User.find_for_commit(committer_email, committer_name)
+  end
+
   def method_missing(m, *args, &block)
     @raw.send(m, *args, &block)
   end

@@ -134,12 +134,13 @@ module CommitsHelper
   #  avatar: true will prepend the avatar image
   #  size:   size of the avatar image in px
   def commit_person_link(commit, options = {})
+    user = commit.send(options[:source])
+    
     source_name = clean(commit.send "#{options[:source]}_name".to_sym)
     source_email = clean(commit.send "#{options[:source]}_email".to_sym)
 
-    user = User.find_for_commit(source_email, source_name)
-    person_name = user.nil? ? source_name : user.name
-    person_email = user.nil? ? source_email : user.email
+    person_name = user.try(:name) || source_name
+    person_email = user.try(:email) || source_email
 
     text =
       if options[:avatar]
