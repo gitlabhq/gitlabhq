@@ -9,6 +9,8 @@ class Projects::DeployKeysController < Projects::ApplicationController
   def index
     @enabled_keys = @project.deploy_keys
     @available_keys = available_keys - @enabled_keys
+    @available_project_keys = current_user.project_deploy_keys - @enabled_keys
+    @available_public_keys = DeployKey.are_public - @available_project_keys - @enabled_keys
   end
 
   def show
@@ -32,18 +34,9 @@ class Projects::DeployKeysController < Projects::ApplicationController
     end
   end
 
-  def destroy
-    @key = @project.deploy_keys.find(params[:id])
-    @key.destroy
-
-    respond_to do |format|
-      format.html { redirect_to namespace_project_deploy_keys_path(@project.namespace, @project) }
-      format.js { render nothing: true }
-    end
-  end
-
   def enable
-    @project.deploy_keys << available_keys.find(params[:id])
+    @key = current_user.accessible_deploy_keys.find(params[:id])
+    @project.deploy_keys << @key
 
     redirect_to namespace_project_deploy_keys_path(@project.namespace,
                                                    @project)
@@ -52,8 +45,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
   def disable
     @project.deploy_keys_projects.find_by(deploy_key_id: params[:id]).destroy
 
-    redirect_to namespace_project_deploy_keys_path(@project.namespace,
-                                                   @project)
+    redirect_to :back
   end
 
   protected

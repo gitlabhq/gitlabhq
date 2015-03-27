@@ -22,6 +22,10 @@ class DeployKeysProject < ActiveRecord::Base
   private
 
   def destroy_orphaned_deploy_key
-    self.deploy_key.destroy if self.deploy_key.deploy_keys_projects.length == 0
+    # Public deploy keys are never automatically deleted
+    return if self.deploy_key.public?
+    return if self.deploy_key.deploy_keys_projects.length > 0
+
+    self.deploy_key.destroy
   end
 end

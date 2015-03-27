@@ -28,17 +28,32 @@ describe DeployKeysProject do
     let(:deploy_key)  { subject.deploy_key }
 
     context "when the deploy key is only used by this project" do
-      it "destroys the deploy key" do
-        subject.destroy
+      context "when the deploy key is public" do
+        before do
+          deploy_key.update_attribute(:public, true)
+        end
 
-        expect {
-          deploy_key.reload
-        }.to raise_error(ActiveRecord::RecordNotFound)
+        it "doesn't destroy the deploy key" do
+          subject.destroy
+
+          expect {
+            deploy_key.reload
+          }.not_to raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
+
+      context "when the deploy key is private" do
+        it "destroys the deploy key" do
+          subject.destroy
+
+          expect {
+            deploy_key.reload
+          }.to raise_error(ActiveRecord::RecordNotFound)
+        end
       end
     end
 
     context "when the deploy key is used by more than one project" do
-
       let!(:other_project) { create(:project) }
 
       before do

@@ -132,6 +132,7 @@ ActiveRecord::Schema.define(version: 20150328132231) do
     t.string   "title"
     t.string   "type"
     t.string   "fingerprint"
+    t.boolean  "public",      default: false, null: false
   end
 
   add_index "keys", ["created_at", "id"], name: "index_keys_on_created_at_and_id", using: :btree

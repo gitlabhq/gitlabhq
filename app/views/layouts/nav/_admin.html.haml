@@ -19,6 +19,11 @@
       %i.fa.fa-group
       %span
         Groups
+  = nav_link(controller: :deploy_keys) do
+    = link_to admin_deploy_keys_path, title: 'Deploy Keys' do
+      %i.fa.fa-key
+      %span
+        Deploy Keys
   = nav_link(controller: :logs) do
     = link_to admin_logs_path, title: 'Logs' do
       %i.fa.fa-file-text

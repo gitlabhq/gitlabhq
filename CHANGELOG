@@ -58,6 +58,7 @@ v 7.10.0 (unreleased)
   - Fix "Hello @username." references not working by no longer allowing usernames to end in period.
   - Archive repositories in background worker.
   - Import GitHub, Bitbucket or GitLab.com projects owned by authenticated user into current namespace.
+  - Allow admin to create public deploy keys that are accessible to any project.
 
 
 v 7.9.2
