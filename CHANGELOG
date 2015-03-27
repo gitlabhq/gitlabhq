@@ -52,6 +52,7 @@ v 7.10.0 (unreleased)
   - Don't show commit comment button when user is not signed in.
   - Fix admin user projects lists.
   - Don't leak private group existence by redirecting from namespace controller to group controller.
+  - Ability to skip some items from backup (database, respositories or uploads)
 
 v 7.9.2
   - Contains no changes
