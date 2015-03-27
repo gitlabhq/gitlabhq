@@ -7,7 +7,7 @@ module Gitlab
 
     def initialize(project, current_user = nil)
       @project = project
-      @current_user = user
+      @current_user = current_user
 
       @references = Hash.new { [] }
     end
@@ -51,7 +51,7 @@ module Gitlab
 
     def issues
       references[:issues].map do |entry|
-        if should_lookup?(entry[:project])
+        if entry[:project].default_issues_tracker?
           entry[:project].issues.where(iid: entry[:id]).first
         end
       end.compact
@@ -59,9 +59,7 @@ module Gitlab
 
     def merge_requests
       references[:merge_requests].map do |entry|
-        if should_lookup?(entry[:project])
-          entry[:project].merge_requests.where(iid: entry[:id]).first
-        end
+        entry[:project].merge_requests.where(iid: entry[:id]).first
       end.compact
     end
 
@@ -73,17 +71,15 @@ module Gitlab
 
     def commits
       references[:commits].map do |entry|
-        repo = entry[:project].repository if entry[:project]
-        if should_lookup?(entry[:project])
-          repo.commit(entry[:id]) if repo
-        end
+        repo = entry[:project].repository
+        repo.commit(entry[:id]) if repo
       end.compact
     end
 
     def commit_ranges
       references[:commit_ranges].map do |entry|
         repo = entry[:project].repository if entry[:project]
-        if repo && should_lookup?(entry[:project])
+        if repo
           from_id, to_id = entry[:id].split(/\.{2,3}/, 2)
           [repo.commit(from_id), repo.commit(to_id)]
         end
@@ -94,14 +90,6 @@ module Gitlab
 
     def reference_link(type, identifier, project, user, _)
       references[type] << { project: project, id: identifier }
-    end
-
-    def should_lookup?(entry_project)
-      if entry_project.nil?
-        false
-      else
-        project.nil? || entry_project.default_issues_tracker?
-      end
     end
   end
 end

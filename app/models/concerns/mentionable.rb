@@ -46,7 +46,7 @@ module Mentionable
     return [] if mentionable_text.blank?
 
     ext = Gitlab::ReferenceExtractor.new(self.project, current_user)
-    ext.analyze(text)
+    ext.analyze(mentionable_text)
     ext.users.uniq
   end
 

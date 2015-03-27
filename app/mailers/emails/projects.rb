@@ -4,12 +4,13 @@ module Emails
       @project_member = ProjectMember.find user_project_id
       @project = @project_member.project
       @target_url = namespace_project_url(@project.namespace, @project)
+      @current_user = @project_member.user
       mail(to: @project_member.user.email,
            subject: subject("Access to project was granted"))
     end
 
     def project_was_moved_email(project_id, user_id)
-      @user = User.find user_id
+      @current_user = @user = User.find user_id
       @project = Project.find project_id
       @target_url = namespace_project_url(@project.namespace, @project)
       mail(to: @user.notification_email,
@@ -28,7 +29,7 @@ module Emails
       end
 
       @project = Project.find(project_id)
-      @author  = User.find(author_id)
+      @current_user = @author  = User.find(author_id)
       @reverse_compare = reverse_compare
       @compare = compare
       @ref_name  = Gitlab::Git.ref_name(ref)

@@ -192,7 +192,7 @@ module Gitlab
         project_path = $LAST_MATCH_INFO[:project]
         if project_path
           actual_project = ::Project.find_with_namespace(project_path)
-          actual_project ||= nil unless can?(user, :read_project, actual_project)
+          actual_project = nil unless can?(user, :read_project, actual_project)
           project_prefix = project_path
         end
 
@@ -235,7 +235,7 @@ module Gitlab
     #
     # Returns string rendered by the processing method
     def reference_link(type, identifier, project = @project, user = current_user, prefix_text = nil)
-      send("reference_#{type}", identifier, project, prefix_text)
+      send("reference_#{type}", identifier, project, user, prefix_text)
     end
 
     def reference_user(identifier, project = @project, user = current_user, _ = nil)
