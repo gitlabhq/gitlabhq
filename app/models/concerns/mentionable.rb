@@ -51,10 +51,10 @@ module Mentionable
   end
 
   # Extract GFM references to other Mentionables from this Mentionable. Always excludes its #local_reference.
-  def references(p = project, text = mentionable_text)
+  def references(p = project, current_user = self.author, text = mentionable_text)
     return [] if text.blank?
 
-    ext = Gitlab::ReferenceExtractor.new(p)
+    ext = Gitlab::ReferenceExtractor.new(p, current_user)
     ext.analyze(text)
 
     (ext.issues + ext.merge_requests + ext.commits).uniq - [local_reference]
@@ -83,7 +83,7 @@ module Mentionable
     # Only proceed if the saved changes actually include a chance to an attr_mentionable field.
     return unless mentionable_changed
 
-    preexisting = references(p, original)
+    preexisting = references(p, self.author, original)
     create_cross_references!(p, a, preexisting)
   end
 end
