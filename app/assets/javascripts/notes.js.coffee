@@ -37,7 +37,8 @@ class @Notes
     $(document).on "click", ".js-note-attachment-delete", @removeAttachment
 
     # reset main target form after submit
-    $(document).on "ajax:complete", ".js-main-target-form", @resetMainTargetForm
+    $(document).on "ajax:complete", ".js-main-target-form", @reenableTargetFormSubmitButton
+    $(document).on "ajax:success", ".js-main-target-form", @resetMainTargetForm
 
     # update the file name when an attachment is selected
     $(document).on "change", ".js-note-attachment-input", @updateFormAttachment
@@ -70,6 +71,7 @@ class @Notes
     $(document).off "click", ".js-note-delete"
     $(document).off "click", ".js-note-attachment-delete"
     $(document).off "ajax:complete", ".js-main-target-form"
+    $(document).off "ajax:success", ".js-main-target-form"
     $(document).off "click", ".js-discussion-reply-button"
     $(document).off "click", ".js-add-diff-note-button"
     $(document).off "visibilitychange"
@@ -168,6 +170,11 @@ class @Notes
     form.find(".js-note-text").val("").trigger "input"
 
     form.find(".js-note-text").data("autosave").reset()
+
+  reenableTargetFormSubmitButton: ->
+    form = $(".js-main-target-form")
+
+    form.find(".js-note-text").trigger "input"
 
   ###
   Shows the main form and does some setup on it.

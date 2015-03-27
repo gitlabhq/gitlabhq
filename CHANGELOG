@@ -46,6 +46,7 @@ v 7.10.0 (unreleased)
   - Refactor issue filtering
   - AJAX selectbox for issue assignee and author filters
   - Fix issue with missing options in issue filtering dropdown if selected one
+  - Prevent note form from being cleared when submitting failed.
 
 v 7.9.0
   - Send EmailsOnPush email when branch or tag is created or deleted.
