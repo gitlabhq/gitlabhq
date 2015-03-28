@@ -87,7 +87,7 @@ describe 'gitlab:app namespace rake task' do
       expect(tar_contents).to match('db/')
       expect(tar_contents).to match('uploads/')
       expect(tar_contents).to match('repositories/')
-      expect(tar_contents).not_to match(/^.{4,9}[rwx]/)
+      expect(tar_contents).not_to match(/^.{4,9}[rwx].*(db|uploads|repositories)\/$/)
     end
 
     it 'should delete temp directories' do
