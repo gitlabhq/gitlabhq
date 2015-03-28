@@ -30,9 +30,17 @@
     %legend Two-Factor Authentication
     %p
       Keep your account secure by enabling two-factor authentication.
+      %br
       Each time you log in, you’ll be required to provide your password plus a randomly generated access code.
     %div
-      = link_to "Enable 2-Factor Authentication", new_profile_two_factor_auth_path, class: 'btn btn-success'
+      - if current_user.otp_required_for_login
+        %strong.text-success
+          %i.fa.fa-check
+          2-Factor Authentication enabled
+        .pull-right
+          = link_to "Disable 2-Factor Authentication", profile_two_factor_auth_path, method: :delete, class: 'btn btn-close btn-sm'
+      - else
+        = link_to "Enable 2-Factor Authentication", new_profile_two_factor_auth_path, class: 'btn btn-success'
 
   - if show_profile_social_tab?
     %fieldset

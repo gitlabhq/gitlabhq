@@ -5,7 +5,10 @@
 
 %hr
 
-= form_tag new_profile_two_factor_auth_path, method: :post, class: 'form-horizontal' do |f|
+= form_tag profile_two_factor_auth_path, method: :post, class: 'form-horizontal' do |f|
+  - if @error
+    .alert.alert-danger
+      = @error
   .form-group
     .col-sm-2
     .col-sm-10

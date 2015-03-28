@@ -1,16 +1,25 @@
 class Profiles::TwoFactorAuthsController < ApplicationController
   def new
-    issuer = "GitLab | #{current_user.email}"
-    uri = current_user.otp_provisioning_uri(current_user.email, issuer: issuer)
-    @qr_code = RQRCode::render_qrcode(uri, :svg, level: :l, unit: 2)
+    unless current_user.otp_secret
+      current_user.otp_secret = User.generate_otp_secret
+      current_user.save!
+    end
+
+    @qr_code = build_qr_code
   end
 
   def create
-    current_user.otp_required_for_login = true
-    current_user.otp_secret = User.generate_otp_secret
-    current_user.save!
+    if current_user.valid_otp?(params[:pin_code])
+      current_user.otp_required_for_login = true
+      #current_user.otp_secret = User.generate_otp_secret
+      current_user.save!
 
-    redirect_to profile_account_path
+      redirect_to profile_account_path
+    else
+      @error = 'Invalid pin code'
+      @qr_code = build_qr_code
+      render 'new'
+    end
   end
 
   def destroy
@@ -18,5 +27,13 @@ class Profiles::TwoFactorAuthsController < ApplicationController
     current_user.save!
 
     redirect_to profile_account_path
+  end
+
+  private
+
+  def build_qr_code
+    issuer = "GitLab | #{current_user.email}"
+    uri = current_user.otp_provisioning_uri(current_user.email, issuer: issuer)
+    RQRCode::render_qrcode(uri, :svg, level: :m, unit: 3)
   end
 end
