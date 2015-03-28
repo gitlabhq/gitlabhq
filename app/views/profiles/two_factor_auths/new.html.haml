@@ -1,0 +1,18 @@
+%h2.page-title Two-Factor Authentication (TFA)
+%p
+  Download the Google Authenticator application from App Store for iOS or
+  Google Play for Android and scan this code.
+
+%hr
+
+= form_tag new_profile_two_factor_auth_path, method: :post, class: 'form-horizontal' do |f|
+  .form-group
+    .col-sm-2
+    .col-sm-10
+      = raw @qr_code
+  .form-group
+    = label_tag :pin_code, nil, class: "control-label"
+    .col-sm-10
+      = text_field_tag :pin_code, nil, class: "form-control", required: true
+  .form-actions
+    = submit_tag 'Submit', class: 'btn btn-success'

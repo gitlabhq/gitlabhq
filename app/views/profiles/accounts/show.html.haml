@@ -26,6 +26,13 @@
               %span You don`t have one yet. Click generate to fix it.
               = f.submit 'Generate', class: "btn success btn-build-token"
 
+  %fieldset
+    %legend Two-Factor Authentication
+    %p
+      Keep your account secure by enabling two-factor authentication.
+      Each time you log in, you’ll be required to provide your password plus a randomly generated access code.
+    %div
+      = link_to "Enable 2-Factor Authentication", new_profile_two_factor_auth_path, class: 'btn btn-success'
 
   - if show_profile_social_tab?
     %fieldset
