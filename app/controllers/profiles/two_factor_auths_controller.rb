@@ -11,7 +11,6 @@ class Profiles::TwoFactorAuthsController < ApplicationController
   def create
     if current_user.valid_otp?(params[:pin_code])
       current_user.otp_required_for_login = true
-      #current_user.otp_secret = User.generate_otp_secret
       current_user.save!
 
       redirect_to profile_account_path

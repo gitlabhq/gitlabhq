@@ -58,7 +58,7 @@ require 'file_size_validator'
 
 class User < ActiveRecord::Base
   devise :two_factor_authenticatable,
-         :otp_secret_encryption_key => File.read(Rails.root.join('.secret')).chomp
+         otp_secret_encryption_key: File.read(Rails.root.join('.secret')).chomp
 
   include Sortable
   include Gitlab::ConfigHelper
