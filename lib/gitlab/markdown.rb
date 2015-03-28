@@ -70,8 +70,6 @@ module Gitlab
 
       # TODO: add popups with additional information
 
-      text = parse(text, project)
-
       # Insert pre block extractions
       text.gsub!(/\{gfm-extraction-(\h{32})\}/) do
         insert_piece($1)
@@ -120,6 +118,8 @@ module Gitlab
 
       text = result[:output].to_html(save_with: saveoptions)
 
+      text = parse(text, project)
+
       if options[:parse_tasks]
         text = parse_tasks(text)
       end
@@ -141,7 +141,7 @@ module Gitlab
       @extractions[id]
     end
 
-    # Private: Parses text for references and emoji
+    # Private: Parses text for references
     #
     # text - Text to parse
     #
