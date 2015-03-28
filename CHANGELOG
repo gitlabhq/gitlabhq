@@ -12,6 +12,7 @@ v 7.10.0 (unreleased)
   - Improve diff UI
   - Fix alignment of navbar toggle button (Cody Mize)
   - Identical look of selectboxes in UI
+  - Upgrade the gitlab_git gem to version 7.1.3
   - Move "Import existing repository by URL" option to button.
   - Improve error message when save profile has error.
   - Passing the name of pushed ref to CI service (requires GitLab CI 7.9+)
