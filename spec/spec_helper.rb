@@ -44,3 +44,5 @@ RSpec.configure do |config|
     TestEnv.init
   end
 end
+
+ActiveRecord::Migration.maintain_test_schema!
