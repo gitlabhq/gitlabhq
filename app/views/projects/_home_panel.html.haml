@@ -14,11 +14,6 @@
         &ndash;
         = link_to namespace_project_blob_path(@project.namespace, @project, tree_join(@repository.root_ref, readme.name)) do
           = readme.name
-
-  .project-home-row.hidden-xs
-    - if current_user && !empty_repo
-      .project-home-dropdown
-        = render "dropdown"
     %span.star.pull-right.prepend-left-10.js-toggler-container{class: @show_star ? 'on' : ''}
       - if current_user
         = link_to_toggle_star('Star this project.', false, true)
@@ -33,8 +28,9 @@
             - else
               = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "Fork project", class: 'btn btn-default' do
                 = link_to_toggle_fork
-    - unless @project.empty_repo?
-      - if can? current_user, :download_code, @project
-        .pull-right.prepend-left-10
-          = render 'projects/repositories/download_archive', split_button: true
+
+  .project-home-row.hidden-xs
+    - if current_user && !empty_repo
+      .project-home-dropdown
+        = render "dropdown"
     = render "shared/clone_panel"
