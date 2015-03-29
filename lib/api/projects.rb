@@ -95,10 +95,7 @@ module API
       # Example Request:
       #   GET /projects/:id/events
       get ":id/events" do
-        limit = (params[:per_page] || 20).to_i
-        offset = (params[:page] || 0).to_i * limit
-        events = user_project.events.recent.limit(limit).offset(offset)
-
+        events = paginate user_project.events.recent
         present events, with: Entities::Event
       end
 
