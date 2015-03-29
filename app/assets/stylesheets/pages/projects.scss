@@ -48,6 +48,10 @@
   .project-home-row {
     @extend .clearfix;
     margin-bottom: 15px;
+    
+    &.project-home-row-top {
+      margin-bottom: 11px;
+    }
 
     .project-home-desc {
       font-size: 16px;
@@ -70,6 +74,10 @@
     i {
       color: inherit;
     }
+  }
+  
+  .project-repo-buttons {
+    margin-top: -5px;
   }
 }
 

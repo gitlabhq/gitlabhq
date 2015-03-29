@@ -89,8 +89,7 @@
                 = link_to ci_service.title, ci_service.builds_path, :'data-no-turbolink' => 'data-no-turbolink'
         - unless @project.empty_repo?
           - if can? current_user, :download_code, @project
-            .pull-right.prepend-left-10
-              = render 'projects/repositories/download_archive', split_button: true
+            = render 'projects/repositories/download_archive', split_button: true
 
   - if readme
     .tab-pane#tab-readme
