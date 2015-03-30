@@ -81,7 +81,7 @@ module ProjectsHelper
   end
 
   def link_to_toggle_star(title, starred, signed_in)
-    cls = 'star-btn'
+    cls = 'star-btn btn btn-sm btn-default'
     cls << ' disabled' unless signed_in
 
     toggle_html = content_tag('span', class: 'toggle') do
@@ -120,7 +120,7 @@ module ProjectsHelper
   def link_to_toggle_fork
     out = icon('code-fork')
     out << ' Fork'
-    out << content_tag(:span, class: 'count') do
+    out << content_tag(:span, class: 'count btn-action-count') do
       @project.forks_count.to_s
     end
   end
