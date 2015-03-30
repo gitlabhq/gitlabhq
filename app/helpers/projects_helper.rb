@@ -118,11 +118,15 @@ module ProjectsHelper
   end
 
   def link_to_toggle_fork
-    out = icon('code-fork')
-    out << ' Fork'
-    out << content_tag(:span, class: 'count btn-action-count') do
+    html = content_tag('span') do
+      icon('code-fork') + ' Fork'
+    end
+
+    count_html = content_tag(:span, class: 'count') do
       @project.forks_count.to_s
     end
+
+    html + count_html
   end
 
   private
