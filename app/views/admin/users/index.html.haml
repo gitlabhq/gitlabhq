@@ -30,9 +30,8 @@
             Without projects
             %small.pull-right= User.without_projects.count
       %hr
-      = form_tag admin_users_path, method: :get, class: 'form-inline' do
-        .form-group
-          = search_field_tag :name, params[:name], placeholder: 'Name, email or username', class: 'form-control'
+      = bootstrap_form_tag url: admin_users_path, method: :get, layout: :inline do |f|
+        = f.search_field :name, value: params[:name], hide_label: true, placeholder: 'Name, email or username'
         = button_tag class: 'btn btn-primary' do
           %i.fa.fa-search
       %hr

@@ -193,6 +193,7 @@ gem 'jquery-turbolinks'
 
 gem 'addressable'
 gem 'bootstrap-sass',     '~> 3.0'
+gem 'bootstrap_form'
 gem 'font-awesome-rails', '~> 4.2'
 gem 'gitlab_emoji',       '~> 0.1'
 gem 'gon',                '~> 5.0.0'

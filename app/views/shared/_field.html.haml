@@ -7,18 +7,15 @@
 - default_choice = field[:default_choice]
 - help = field[:help]
 
-.form-group
-  = form.label name, title, class: "control-label"
-  .col-sm-10
-    - if type == 'text'
-      = form.text_field name, class: "form-control", placeholder: placeholder
-    - elsif type == 'textarea'
-      = form.text_area name, rows: 5, class: "form-control", placeholder: placeholder
-    - elsif type == 'checkbox'
-      = form.check_box name
-    - elsif type == 'select'
-      = form.select name, options_for_select(choices, value ? value : default_choice), {}, { class: "form-control" }
-    - elsif type == 'password'
-      = form.password_field name, placeholder: value, class: 'form-control'
-    - if help
-      %span.help-block= help
+- case type
+- when 'textarea'
+  = form.text_area name, label: title, help: help, rows: 5, placeholder: placeholder
+- when 'checkbox'
+  = form.form_group name, label: { text: title }, help: help do
+    = form.check_box name, label: title
+- when 'select'
+  = form.select name, options_for_select(choices, value ? value : default_choice), { label: title, help: help }, {}
+- when 'password'
+  = form.password_field name, label: title, help: help
+- else
+  = form.text_field name, label: title, help: help, placeholder: placeholder

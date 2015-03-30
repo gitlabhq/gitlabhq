@@ -4,36 +4,20 @@
 .row
   %aside.col-md-3
     .admin-filter
-      = form_tag admin_namespaces_projects_path, method: :get, class: '' do
-        .form-group
-          = label_tag :name, 'Name:'
-          = text_field_tag :name, params[:name], class: "form-control"
-
-        .form-group
-          = label_tag :namespace_id, "Namespace"
+      = bootstrap_form_tag url: admin_namespaces_projects_path, method: :get do |f|
+        = f.text_field :name, value: params[:name]
+        = f.form_group label: { text: 'Namespace' } do
           = namespace_select_tag :namespace_id, selected: params[:namespace_id], class: 'input-large'
 
-        .form-group
-          %strong Activity
-          .checkbox
-            = label_tag :with_push do
-              = check_box_tag :with_push, 1, params[:with_push]
-              %span Projects with push events
-          .checkbox
-            = label_tag :abandoned do
-              = check_box_tag :abandoned, 1, params[:abandoned]
-              %span No activity over 6 month
+        = f.form_group label: { text: 'Activity' } do
+          = f.check_box :with_push, name: :with_push, label: 'Projects with push events', checked: params[:with_push]
+          = f.check_box :abandoned, name: :abandoned, label: 'No activity over 6 month', checked: params[:abandoned]
 
-        %fieldset
-          %strong Visibility level:
-          .visibility-levels
-            - Project.visibility_levels.each do |label, level|
-              .checkbox
-                %label
-                  = check_box_tag 'visibility_levels[]', level, params[:visibility_levels].present? && params[:visibility_levels].include?(level.to_s)
-                  %span.descr
-                    = visibility_level_icon(level)
-                    = label
+        = f.form_group label: { text: 'Visibility level' } do
+          - Project.visibility_levels.each do |label, level|
+            -# TODO: Put back `visibility_level_icon(level)`
+            = f.check_box :visibility_levels, name: 'visibility_levels[]', label: label, value: level, checked: params[:visibility_levels].present? && params[:visibility_levels].include?(level.to_s)
+
         %hr
         = hidden_field_tag :sort, params[:sort]
         = button_tag "Search", class: "btn submit btn-primary"

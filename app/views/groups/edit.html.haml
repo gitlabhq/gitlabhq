@@ -3,24 +3,22 @@
     %strong= @group.name
     group settings:
   .panel-body
-    = form_for @group, html: { multipart: true, class: "form-horizontal" }, authenticity_token: true do |f|
-      - if @group.errors.any?
-        .alert.alert-danger
-          %span= @group.errors.full_messages.first
+    = bootstrap_form_for @group, layout: :horizontal, html: { multipart: true }, authenticity_token: true do |f|
+      = f.alert_message 'Please check your form for possible errors.'
+
       = render 'shared/group_form', f: f
 
-      .form-group
-        .col-sm-offset-2.col-sm-10
-          = image_tag group_icon(@group), alt: '', class: 'avatar group-avatar s160'
-          %p.light
-            - if @group.avatar?
-              You can change your group avatar here
-            - else
-              You can upload a group avatar here
-          = render 'shared/choose_group_avatar_button', f: f
+      = f.form_group :avatar, label: { text: 'Group avatar' } do
+        = image_tag group_icon(@group), alt: '', class: 'avatar group-avatar s160'
+        %p.light
           - if @group.avatar?
-            %hr
-            = link_to 'Remove avatar', group_avatar_path(@group.to_param), data: { confirm: "Group avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
+            You can change your group avatar here
+          - else
+            You can upload a group avatar here
+        = render 'shared/choose_group_avatar_button', f: f
+        - if @group.avatar?
+          %hr
+          = link_to 'Remove avatar', group_avatar_path(@group.to_param), data: { confirm: "Group avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
 
       .form-actions
         = f.submit 'Save group', class: "btn btn-save"

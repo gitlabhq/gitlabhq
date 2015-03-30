@@ -43,6 +43,10 @@ label {
   &.inline-label {
     margin: 0;
   }
+
+  &.required:after {
+    content:" *";
+  }
 }
 
 .inline-input-group {
