@@ -13,7 +13,7 @@ Feature: Project Star
     Given public project "Community"
     And I visit project "Community" page
     When I click on the star toggle button
-    Then The project has 0 stars
+    Then I redirected to sign in page
 
   @javascript
   Scenario: Signed in users can toggle star

@@ -17,8 +17,15 @@
     .project-repo-buttons
       .inline.star.js-toggler-container{class: @show_star ? 'on' : ''}
         - if current_user
-          = link_to_toggle_star('Star this project.', false, true)
-          = link_to_toggle_star('Unstar this project.', true, true)
+          = link_to_toggle_star('Star this project.', false)
+          = link_to_toggle_star('Unstar this project.', true)
+        - else
+          = link_to new_user_session_path, class: 'btn star-btn has_tooltip', title: 'You must sign in to star a project' do
+            %span
+              = icon('star')
+              Star
+            %span.count
+              = @project.star_count
       - unless @project.empty_repo?
         - if current_user && can?(current_user, :fork_project, @project) && @project.namespace != current_user.namespace
           .inline.fork-buttons.prepend-left-10
