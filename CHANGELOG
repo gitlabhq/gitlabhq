@@ -51,6 +51,7 @@ v 7.10.0 (unreleased)
   - Prevent holding Control-Enter or Command-Enter from posting comment multiple times.
   - Prevent note form from being cleared when submitting failed.
   - Improve file icons rendering on tree (Sullivan Sénéchal)
+  - API: Add pagination to project events
 
 v 7.9.0
   - Send EmailsOnPush email when branch or tag is created or deleted.

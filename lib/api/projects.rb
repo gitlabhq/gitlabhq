@@ -88,7 +88,7 @@ module API
         present user_project, with: Entities::ProjectWithAccess, user: current_user
       end
 
-      # Get a single project events
+      # Get events for a single project
       #
       # Parameters:
       #   id (required) - The ID of a project
