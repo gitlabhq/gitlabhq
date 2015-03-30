@@ -34,12 +34,13 @@ module TreeHelper
     end
   end
 
-  # Return an image icon depending on the file type
+  # Return an image icon depending on the file type and mode
   #
   # type - String type of the tree item; either 'folder' or 'file'
-  def tree_icon(type)
-    icon_class = type == 'folder' ? 'folder' : 'file-o'
-    icon(icon_class)
+  # mode - File unix mode
+  # name - File name
+  def tree_icon(type, mode, name)
+    icon("#{file_type_icon_class(type, mode, name)} fw")
   end
 
   def tree_hex_class(content)
