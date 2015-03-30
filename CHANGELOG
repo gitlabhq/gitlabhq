@@ -11,6 +11,7 @@ v 7.11.0 (unreleased)
   -
   -
   - Improve new project command options (Ben Bodenmiller)
+  - Prevent sending empty messages to HipChat (Chulki Lee)
 
 v 7.10.0 (unreleased)
   - Ignore submodules that are defined in .gitmodules but are checked in as directories.
