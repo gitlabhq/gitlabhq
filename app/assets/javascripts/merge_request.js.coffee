@@ -81,12 +81,8 @@ class @MergeRequest
       this.$('.remove_source_branch_in_progress').hide()
       this.$('.remove_source_branch_widget.failed').show()
 
-    $(".task-list-item input:checkbox").on(
-      "click"
-      null
-      "merge_request"
-      updateTaskState
-    )
+    $('.task-list-item input:checkbox').off('change')
+    $('.task-list-item input:checkbox').change('merge_request', updateTaskState)
 
   activateTab: (action) ->
     this.$('.merge-request-tabs li').removeClass 'active'
