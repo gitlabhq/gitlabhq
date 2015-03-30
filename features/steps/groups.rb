@@ -5,6 +5,32 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   include SharedUser
   include Select2Helper
 
+  step 'gitlab user "Mike"' do
+    create(:user, name: "Mike")
+  end
+
+  step 'I click link "Add members"' do
+    find(:css, 'button.btn-new').click
+  end
+
+  step 'I select "Mike" as "Reporter"' do
+    user = User.find_by(name: "Mike")
+
+    within ".users-group-form" do
+      select2(user.id, from: "#user_ids", multiple: true)
+      select "Reporter", from: "access_level"
+    end
+
+    click_button "Add users to group"
+  end
+
+  step 'I should see "Mike" in team list as "Reporter"' do
+    within '.well-list' do
+      page.should have_content('Mike')
+      page.should have_content('Reporter')
+    end
+  end
+
   step 'I should see group "Owned" projects list' do
     Group.find_by(name: "Owned").projects.each do |project|
       page.should have_link project.name

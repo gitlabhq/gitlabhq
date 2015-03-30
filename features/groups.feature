@@ -47,6 +47,14 @@ Feature: Groups
     Then I should not see group "Owned" avatar
     And I should not see the "Remove avatar" button
 
+  @javascript
+  Scenario: Add user to group
+    Given gitlab user "Mike"
+    When I visit group "Owned" members page
+    And I click link "Add members"
+    When I select "Mike" as "Reporter"
+    Then I should see "Mike" in team list as "Reporter"
+
   # Leave
 
   @javascript
