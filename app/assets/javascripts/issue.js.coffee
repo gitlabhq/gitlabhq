@@ -9,12 +9,8 @@ class @Issue
     if $("a.btn-close").length
       $("li.task-list-item input:checkbox").prop("disabled", false)
 
-    $(".task-list-item input:checkbox").on(
-      "click"
-      null
-      "issue"
-      updateTaskState
-    )
+    $('.task-list-item input:checkbox').off('change')
+    $('.task-list-item input:checkbox').change('issue', updateTaskState)
 
     $('.issue-details').waitForImages ->
       $('.issuable-affix').affix offset:
