@@ -271,8 +271,9 @@ GEM
     hashie (2.1.2)
     highline (1.6.21)
     hike (1.2.3)
-    hipchat (1.4.0)
+    hipchat (1.5.0)
       httparty
+      mimemagic
     hitimes (1.2.2)
     html-pipeline (1.11.0)
       activesupport (>= 2)
@@ -284,7 +285,7 @@ GEM
       mime-types
       sanitize (~> 2.1)
     http_parser.rb (0.5.3)
-    httparty (0.13.0)
+    httparty (0.13.3)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
     httpauth (0.2.1)
@@ -329,6 +330,7 @@ GEM
       mime-types (>= 1.16, < 3)
     method_source (0.8.2)
     mime-types (1.25.1)
+    mimemagic (0.3.0)
     mini_portile (0.6.1)
     minitest (5.3.5)
     mousetrap-rails (1.4.6)
@@ -714,7 +716,7 @@ DEPENDENCIES
   guard-rspec
   guard-spinach
   haml-rails
-  hipchat (~> 1.4.0)
+  hipchat (~> 1.5.0)
   html-pipeline-gitlab (~> 0.1)
   httparty
   jasmine (= 2.0.2)

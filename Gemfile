@@ -143,7 +143,7 @@ gem "redis-rails"
 gem 'tinder', '~> 1.9.2'
 
 # HipChat integration
-gem "hipchat", "~> 1.4.0"
+gem 'hipchat', '~> 1.5.0'
 
 # Flowdock integration
 gem "gitlab-flowdock-git-hook", "~> 0.4.2"
