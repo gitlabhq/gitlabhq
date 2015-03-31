@@ -1,4 +1,6 @@
 class SessionsController < Devise::SessionsController
+  prepend_before_filter :two_factor_enabled?, only: :create
+
   def new
     redirect_path =
       if request.referer.present? && (params['redirect_to_referer'] == 'yes')
@@ -31,6 +33,28 @@ class SessionsController < Devise::SessionsController
       if resource.reset_password_token.present?
         resource.update_attributes(reset_password_token: nil,
                                    reset_password_sent_at: nil)
+      end
+    end
+  end
+
+  private
+
+  def two_factor_enabled?
+    user_params = params[:user]
+    @user = User.by_login(user_params[:login])
+
+    if user_params[:otp_attempt].present?
+      unless @user.valid_otp?(user_params[:otp_attempt])
+        @error = 'Invalid two-factor code'
+        render :two_factor and return
+      end
+    else
+      if @user && @user.valid_password?(params[:user][:password])
+        self.resource = @user
+
+        if resource.otp_required_for_login
+          render :two_factor and return
+        end
       end
     end
   end
