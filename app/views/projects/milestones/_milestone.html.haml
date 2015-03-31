@@ -11,16 +11,14 @@
       %span.cred (Expired)
     %small
       = milestone.expires_at
-  - if milestone.is_empty?
-    %span.muted Empty
-  - else
-    %div
-      %div
-        = link_to namespace_project_issues_path(milestone.project.namespace, milestone.project, milestone_id: milestone.id) do
-          = pluralize milestone.issues.count, 'Issue'
-        &nbsp;
-        = link_to namespace_project_merge_requests_path(milestone.project.namespace, milestone.project, milestone_id: milestone.id) do
-          = pluralize milestone.merge_requests.count, 'Merge Request'
-        &nbsp;
-        %span.light #{milestone.percent_complete}% complete
+  .row
+    .col-sm-6
+      = link_to namespace_project_issues_path(milestone.project.namespace, milestone.project, milestone_id: milestone.id) do
+        = pluralize milestone.issues.count, 'Issue'
+      &nbsp;
+      = link_to namespace_project_merge_requests_path(milestone.project.namespace, milestone.project, milestone_id: milestone.id) do
+        = pluralize milestone.merge_requests.count, 'Merge Request'
+      &nbsp;
+      %span.light #{milestone.percent_complete}% complete
+    .col-sm-6
       = milestone_progress_bar(milestone)
