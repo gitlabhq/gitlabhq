@@ -28,20 +28,31 @@
 
   - unless current_user.ldap_user?
     %fieldset
-      %legend Two-Factor Authentication
-      %p
-        Keep your account secure by enabling two-factor authentication.
-        %br
-        Each time you log in, you’ll be required to provide your password plus a randomly generated access code.
-      %div
-        - if current_user.otp_required_for_login
-          %strong.text-success
-            %i.fa.fa-check
-            2-Factor Authentication enabled
+      - if current_user.otp_required_for_login
+        %legend.text-success
+          %i.fa.fa-check
+          Two-Factor Authentication enabled
+        %div
           .pull-right
             = link_to "Disable 2-Factor Authentication", profile_two_factor_auth_path, method: :delete, class: 'btn btn-close btn-sm'
-        - else
-          = link_to "Enable 2-Factor Authentication", new_profile_two_factor_auth_path, class: 'btn btn-success'
+          %p.slead
+            %i.fa.fa-warning
+            Please
+            %strong #{link_to "download recovery codes", codes_profile_two_factor_auth_path}
+            so you can access your account if you lose your phone.
+            %br
+            %i.fa.fa-warning
+            Every time you download recovery codes - we generate the new codes. Previously downloaded codes won't work anymore.
+
+      - else
+        %legend Two-Factor Authentication
+        %div
+          %p
+            Keep your account secure by enabling two-factor authentication.
+            %br
+            Each time you log in, you’ll be required to provide your password plus a randomly generated access code.
+          %div
+            = link_to "Enable 2-Factor Authentication", new_profile_two_factor_auth_path, class: 'btn btn-success'
 
   - if show_profile_social_tab?
     %fieldset

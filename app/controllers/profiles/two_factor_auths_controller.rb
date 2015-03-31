@@ -21,6 +21,12 @@ class Profiles::TwoFactorAuthsController < ApplicationController
     end
   end
 
+  def codes
+    codes = current_user.generate_otp_backup_codes!
+    current_user.save!
+    send_data codes.join("\n"), filename: 'gitlab_recovery_codes.txt'
+  end
+
   def destroy
     current_user.otp_required_for_login = false
     current_user.save!

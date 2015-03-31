@@ -44,7 +44,8 @@ class SessionsController < Devise::SessionsController
     @user = User.by_login(user_params[:login])
 
     if user_params[:otp_attempt].present?
-      unless @user.valid_otp?(user_params[:otp_attempt])
+      unless @user.valid_otp?(user_params[:otp_attempt]) ||
+        @user.recovery_code?(user_params[:otp_attempt])
         @error = 'Invalid two-factor code'
         render :two_factor and return
       end
