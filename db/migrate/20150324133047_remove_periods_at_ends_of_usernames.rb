@@ -37,7 +37,7 @@ class RemovePeriodsAtEndsOfUsernames < ActiveRecord::Migration
 
       username = quote_string(username)
       execute "UPDATE users SET username = '#{username}' WHERE id = #{user["id"]}"
-      execute "UPDATE namespaces SET path = '#{username}', name = '#{username}' WHERE type = NULL AND owner_id = #{user["id"]}"
+      execute "UPDATE namespaces SET path = '#{username}', name = '#{username}' WHERE type IS NULL AND owner_id = #{user["id"]}"
     end
 
     select_all("SELECT id, path FROM namespaces WHERE type = 'Group' AND path LIKE '%.'").each do |group|
