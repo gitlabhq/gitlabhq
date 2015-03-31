@@ -48,8 +48,6 @@ v 7.10.0 (unreleased)
   - Prevent note form from being cleared when submitting failed.
   - Improve file icons rendering on tree (Sullivan Sénéchal)
   - API: Add pagination to project events
-
-v 7.9.0
   - Send EmailsOnPush email when branch or tag is created or deleted.
   - Faster merge request processing for large repository
   - Prevent doubling AJAX request with each commit visit via Turbolink
