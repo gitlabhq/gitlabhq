@@ -11,14 +11,10 @@ class Projects::RepositoriesController < Projects::ApplicationController
   end
 
   def archive
-    unless can?(current_user, :download_code, @project)
-      render_404 and return
-    end
-
     begin
       file_path = ArchiveRepositoryService.new(@project, params[:ref], params[:format]).execute
     rescue
-      return render_404
+      return head :not_found
     end
 
     if file_path

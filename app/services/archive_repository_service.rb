@@ -6,7 +6,7 @@ class ArchiveRepositoryService
     @project, @ref, @format = project, ref, format.downcase
   end
 
-  def execute
+  def execute(options = {})
     project.repository.clean_old_archives
 
     raise "No archive file path" unless file_path
@@ -17,7 +17,7 @@ class ArchiveRepositoryService
       RepositoryArchiveWorker.perform_async(project.id, ref, format)
     end
 
-    archived = wait_until_archived
+    archived = wait_until_archived(options[:timeout] || 5.0)
 
     file_path if archived
   end
@@ -45,6 +45,8 @@ class ArchiveRepositoryService
   end
 
   def wait_until_archived(timeout = 5.0)
+    return archived? if timeout == 0.0
+    
     t1 = Time.now
 
     begin

@@ -13,6 +13,7 @@ class RepositoryArchiveWorker
 
     repository.clean_old_archives
 
+    return unless file_path
     return if archived? || archiving?
 
     repository.archive_repo(ref, storage_path, format)
