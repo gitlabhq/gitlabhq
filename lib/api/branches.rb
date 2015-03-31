@@ -100,7 +100,7 @@ module API
       #   branch (required) - The name of the branch
       # Example Request:
       #   DELETE /projects/:id/repository/branches/:branch
-      delete ":id/repository/branches/:branch"
+      delete ":id/repository/branches/:branch",
           requirements: { branch: /.*/ } do
         authorize_push_project
         result = DeleteBranchService.new(user_project, current_user).
