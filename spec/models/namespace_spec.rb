@@ -33,8 +33,6 @@ describe Namespace do
     it { is_expected.to respond_to(:to_param) }
   end
 
-  it { expect(Namespace.global_id).to eq('GLN') }
-
   describe :to_param do
     it { expect(namespace.to_param).to eq(namespace.path) }
   end

@@ -58,10 +58,6 @@ class Namespace < ActiveRecord::Base
       where("name LIKE :query OR path LIKE :query", query: "%#{query}%")
     end
 
-    def global_id
-      'GLN'
-    end
-
     def clean_path(path)
       path.gsub!(/@.*\z/,             "")
       path.gsub!(/\.git\z/,           "")
