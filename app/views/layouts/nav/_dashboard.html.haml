@@ -31,8 +31,3 @@
       %span
         Merge Requests
         %span.count= current_user.assigned_merge_requests.opened.count
-  = nav_link(controller: :help) do
-    = link_to help_path, title: 'Help' do
-      %i.fa.fa-question-circle
-      %span
-        Help
