@@ -34,6 +34,18 @@ class IssueTrackerService < Service
     self.issues_url.gsub(':id', iid.to_s)
   end
 
+  def project_path
+    project_url
+  end
+
+  def new_issue_path
+    new_issue_url
+  end
+
+  def issue_path(iid)
+    issue_url(iid)
+  end
+
   def fields
     [
       { type: 'text', name: 'description', placeholder: description },

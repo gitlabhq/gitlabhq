@@ -32,12 +32,12 @@ module Gitlab
   module Markdown
     include IssuesHelper
 
-    attr_reader :html_options
+    attr_reader :options, :html_options
 
     # Public: Parse the provided text with GitLab-Flavored Markdown
     #
     # text         - the source text
-    # project      - extra options for the reference links as given to link_to
+    # project      - the project
     # html_options - extra options for the reference links as given to link_to
     def gfm(text, project = @project, html_options = {})
       gfm_with_options(text, {}, project, html_options)
@@ -46,9 +46,10 @@ module Gitlab
     # Public: Parse the provided text with GitLab-Flavored Markdown
     #
     # text         - the source text
-    # options      - parse_tasks: true - render tasks
-    #              - xhtml: true       - output XHTML instead of HTML
-    # project      - extra options for the reference links as given to link_to
+    # options      - parse_tasks          - render tasks
+    #              - xhtml                - output XHTML instead of HTML
+    #              - reference_only_path  - Use relative path for reference links
+    # project      - the project
     # html_options - extra options for the reference links as given to link_to
     def gfm_with_options(text, options = {}, project = @project, html_options = {})
       return text if text.nil?
@@ -58,6 +59,13 @@ module Gitlab
       # for gsub calls to work as we need them to.
       text = text.dup.to_str
 
+      options.reverse_merge!(
+        parse_tasks:          false,
+        xhtml:                false,
+        reference_only_path:  true
+      )
+
+      @options      = options
       @html_options = html_options
 
       # Extract pre blocks so they are not altered
@@ -113,12 +121,13 @@ module Gitlab
       markdown_pipeline = HTML::Pipeline::Gitlab.new(filters).pipeline
 
       result = markdown_pipeline.call(text, markdown_context)
-      saveoptions = 0
+      
+      save_options = 0
       if options[:xhtml]
-        saveoptions |= Nokogiri::XML::Node::SaveOptions::AS_XHTML
+        save_options |= Nokogiri::XML::Node::SaveOptions::AS_XHTML
       end
 
-      text = result[:output].to_html(save_with: saveoptions)
+      text = result[:output].to_html(save_with: save_options)
 
       if options[:parse_tasks]
         text = parse_tasks(text)
@@ -229,33 +238,37 @@ module Gitlab
     end
 
     def reference_user(identifier, project = @project, _ = nil)
-      options = html_options.merge(
+      link_options = html_options.merge(
           class: "gfm gfm-project_member #{html_options[:class]}"
         )
 
       if identifier == "all"
-        link_to("@all", namespace_project_url(project.namespace, project), options)
+        link_to(
+          "@all", 
+          namespace_project_url(project.namespace, project, only_path: options[:reference_only_path]), 
+          link_options
+        )
       elsif namespace = Namespace.find_by(path: identifier)
         url =
           if namespace.type == "Group"
-            group_url(identifier)
+            group_url(identifier, only_path: options[:reference_only_path])
           else 
-            user_url(identifier)
+            user_url(identifier, only_path: options[:reference_only_path])
           end
           
-        link_to("@#{identifier}", url, options)
+        link_to("@#{identifier}", url, link_options)
       end
     end
 
     def reference_label(identifier, project = @project, _ = nil)
       if label = project.labels.find_by(id: identifier)
-        options = html_options.merge(
+        link_options = html_options.merge(
           class: "gfm gfm-label #{html_options[:class]}"
         )
         link_to(
           render_colored_label(label),
           namespace_project_issues_path(project.namespace, project, label_name: label.name),
-          options
+          link_options
         )
       end
     end
@@ -263,14 +276,14 @@ module Gitlab
     def reference_issue(identifier, project = @project, prefix_text = nil)
       if project.default_issues_tracker?
         if project.issue_exists? identifier
-          url = url_for_issue(identifier, project)
+          url = url_for_issue(identifier, project, only_path: options[:reference_only_path])
           title = title_for_issue(identifier, project)
-          options = html_options.merge(
+          link_options = html_options.merge(
             title: "Issue: #{title}",
             class: "gfm gfm-issue #{html_options[:class]}"
           )
 
-          link_to("#{prefix_text}##{identifier}", url, options)
+          link_to("#{prefix_text}##{identifier}", url, link_options)
         end
       else
         if project.external_issue_tracker.present?
@@ -280,44 +293,46 @@ module Gitlab
       end
     end
 
-    def reference_merge_request(identifier, project = @project,
-                                prefix_text = nil)
+    def reference_merge_request(identifier, project = @project, prefix_text = nil)
       if merge_request = project.merge_requests.find_by(iid: identifier)
-        options = html_options.merge(
+        link_options = html_options.merge(
           title: "Merge Request: #{merge_request.title}",
           class: "gfm gfm-merge_request #{html_options[:class]}"
         )
         url = namespace_project_merge_request_url(project.namespace, project,
-                                                  merge_request)
-        link_to("#{prefix_text}!#{identifier}", url, options)
+                                                  merge_request, 
+                                                  only_path: options[:reference_only_path])
+        link_to("#{prefix_text}!#{identifier}", url, link_options)
       end
     end
 
     def reference_snippet(identifier, project = @project, _ = nil)
       if snippet = project.snippets.find_by(id: identifier)
-        options = html_options.merge(
+        link_options = html_options.merge(
           title: "Snippet: #{snippet.title}",
           class: "gfm gfm-snippet #{html_options[:class]}"
         )
         link_to(
           "$#{identifier}",
-          namespace_project_snippet_url(project.namespace, project, snippet),
-          options
+          namespace_project_snippet_url(project.namespace, project, snippet, 
+                                        only_path: options[:reference_only_path]),
+          link_options
         )
       end
     end
 
     def reference_commit(identifier, project = @project, prefix_text = nil)
       if project.valid_repo? && commit = project.repository.commit(identifier)
-        options = html_options.merge(
+        link_options = html_options.merge(
           title: commit.link_title,
           class: "gfm gfm-commit #{html_options[:class]}"
         )
         prefix_text = "#{prefix_text}@" if prefix_text
         link_to(
           "#{prefix_text}#{identifier}",
-          namespace_project_commit_url(project.namespace, project, commit),
-          options
+          namespace_project_commit_url( project.namespace, project, commit, 
+                                        only_path: options[:reference_only_path]),
+          link_options
         )
       end
     end
@@ -332,7 +347,7 @@ module Gitlab
           from = project.repository.commit(from_id) && 
           to = project.repository.commit(to_id)
 
-        options = html_options.merge(
+        link_options = html_options.merge(
           title: "Commits #{from_id} through #{to_id}",
           class: "gfm gfm-commit_range #{html_options[:class]}"
         )
@@ -340,22 +355,23 @@ module Gitlab
 
         link_to(
           "#{prefix_text}#{identifier}",
-          namespace_project_compare_url(project.namespace, project, from: from_id, to: to_id),
-          options
+          namespace_project_compare_url(project.namespace, project, 
+                                        from: from_id, to: to_id, 
+                                        only_path: options[:reference_only_path]),
+          link_options
         )
       end
     end
 
-    def reference_external_issue(identifier, project = @project,
-                                 prefix_text = nil)
-      url = url_for_issue(identifier, project)
+    def reference_external_issue(identifier, project = @project, prefix_text = nil)
+      url = url_for_issue(identifier, project, only_path: options[:reference_only_path])
       title = project.external_issue_tracker.title
 
-      options = html_options.merge(
+      link_options = html_options.merge(
         title: "Issue in #{title}",
         class: "gfm gfm-issue #{html_options[:class]}"
       )
-      link_to("#{prefix_text}##{identifier}", url, options)
+      link_to("#{prefix_text}##{identifier}", url, link_options)
     end
 
     # Turn list items that start with "[ ]" into HTML checkbox inputs.

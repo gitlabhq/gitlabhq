@@ -651,7 +651,7 @@ describe GitlabMarkdownHelper do
     end
 
     it "should leave ref-like href of 'manual' links untouched" do
-      expect(markdown("why not [inspect !#{merge_request.iid}](http://example.tld/#!#{merge_request.iid})")).to eq("<p>why not <a href=\"http://example.tld/#!#{merge_request.iid}\">inspect </a><a class=\"gfm gfm-merge_request \" href=\"#{namespace_project_merge_request_url(project.namespace, project, merge_request)}\" title=\"Merge Request: #{merge_request.title}\">!#{merge_request.iid}</a><a href=\"http://example.tld/#!#{merge_request.iid}\"></a></p>\n")
+      expect(markdown("why not [inspect !#{merge_request.iid}](http://example.tld/#!#{merge_request.iid})")).to eq("<p>why not <a href=\"http://example.tld/#!#{merge_request.iid}\">inspect </a><a class=\"gfm gfm-merge_request \" href=\"#{namespace_project_merge_request_path(project.namespace, project, merge_request)}\" title=\"Merge Request: #{merge_request.title}\">!#{merge_request.iid}</a><a href=\"http://example.tld/#!#{merge_request.iid}\"></a></p>\n")
     end
 
     it "should leave ref-like src of images untouched" do

@@ -48,6 +48,7 @@ v 7.10.0 (unreleased)
   - Prevent note form from being cleared when submitting failed.
   - Improve file icons rendering on tree (Sullivan Sénéchal)
   - API: Add pagination to project events
+  - Get issue links in notification mail to work again.
 
 v 7.9.0
   - Send EmailsOnPush email when branch or tag is created or deleted.
