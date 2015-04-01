@@ -237,7 +237,7 @@ module Gitlab
         link_to("@all", namespace_project_url(project.namespace, project), options)
       elsif namespace = Namespace.find_by(path: identifier)
         url =
-          if namespace.type == "Group"
+          if namespace.is_a?(Group)
             group_url(identifier)
           else 
             user_url(identifier)
