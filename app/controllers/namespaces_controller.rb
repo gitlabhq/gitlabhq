@@ -4,14 +4,22 @@ class NamespacesController < ApplicationController
   def show
     namespace = Namespace.find_by(path: params[:id])
 
-    unless namespace
-      return render_404
+    if namespace
+      if namespace.is_a?(Group)
+        group = namespace
+      else
+        user = namespace.owner
+      end
     end
 
-    if namespace.type == "Group"
-      redirect_to group_path(namespace)
+    if user
+      redirect_to user_path(user)
+    elsif group && can?(current_user, :read_group, group)
+      redirect_to group_path(group)
+    elsif current_user.nil?
+      authenticate_user!
     else
-      redirect_to user_path(namespace.owner)
+      render_404
     end
   end
 end

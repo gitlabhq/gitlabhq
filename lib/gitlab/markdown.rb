@@ -121,7 +121,7 @@ module Gitlab
       markdown_pipeline = HTML::Pipeline::Gitlab.new(filters).pipeline
 
       result = markdown_pipeline.call(text, markdown_context)
-      
+
       save_options = 0
       if options[:xhtml]
         save_options |= Nokogiri::XML::Node::SaveOptions::AS_XHTML
@@ -244,18 +244,18 @@ module Gitlab
 
       if identifier == "all"
         link_to(
-          "@all", 
-          namespace_project_url(project.namespace, project, only_path: options[:reference_only_path]), 
+          "@all",
+          namespace_project_url(project.namespace, project, only_path: options[:reference_only_path]),
           link_options
         )
       elsif namespace = Namespace.find_by(path: identifier)
         url =
-          if namespace.type == "Group"
+          if namespace.is_a?(Group)
             group_url(identifier, only_path: options[:reference_only_path])
-          else 
+          else
             user_url(identifier, only_path: options[:reference_only_path])
           end
-          
+
         link_to("@#{identifier}", url, link_options)
       end
     end
@@ -300,7 +300,7 @@ module Gitlab
           class: "gfm gfm-merge_request #{html_options[:class]}"
         )
         url = namespace_project_merge_request_url(project.namespace, project,
-                                                  merge_request, 
+                                                  merge_request,
                                                   only_path: options[:reference_only_path])
         link_to("#{prefix_text}!#{identifier}", url, link_options)
       end
@@ -314,7 +314,7 @@ module Gitlab
         )
         link_to(
           "$#{identifier}",
-          namespace_project_snippet_url(project.namespace, project, snippet, 
+          namespace_project_snippet_url(project.namespace, project, snippet,
                                         only_path: options[:reference_only_path]),
           link_options
         )
@@ -330,7 +330,7 @@ module Gitlab
         prefix_text = "#{prefix_text}@" if prefix_text
         link_to(
           "#{prefix_text}#{identifier}",
-          namespace_project_commit_url( project.namespace, project, commit, 
+          namespace_project_commit_url( project.namespace, project, commit,
                                         only_path: options[:reference_only_path]),
           link_options
         )
@@ -343,8 +343,8 @@ module Gitlab
       inclusive = identifier !~ /\.{3}/
       from_id << "^" if inclusive
 
-      if project.valid_repo? && 
-          from = project.repository.commit(from_id) && 
+      if project.valid_repo? &&
+          from = project.repository.commit(from_id) &&
           to = project.repository.commit(to_id)
 
         link_options = html_options.merge(
@@ -355,8 +355,8 @@ module Gitlab
 
         link_to(
           "#{prefix_text}#{identifier}",
-          namespace_project_compare_url(project.namespace, project, 
-                                        from: from_id, to: to_id, 
+          namespace_project_compare_url(project.namespace, project,
+                                        from: from_id, to: to_id,
                                         only_path: options[:reference_only_path]),
           link_options
         )

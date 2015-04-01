@@ -100,6 +100,8 @@ class Dispatcher
       when 'users:show'
         new User()
         new Activities()
+      when 'admin:users:show'
+        new ProjectsList()
 
     switch path.first()
       when 'admin'
