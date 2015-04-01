@@ -56,18 +56,98 @@ describe Import::GithubController do
   end
 
   describe "POST create" do
+    let(:github_username) { user.username }
+
+    let(:github_user) {
+      OpenStruct.new(login: github_username)
+    }
+
+    let(:github_repo) {
+      OpenStruct.new(name: 'vim', full_name: "#{github_username}/vim", owner: OpenStruct.new(login: github_username))
+    }
+
     before do
-      @repo = OpenStruct.new(login: 'vim', full_name: 'asd/vim', owner: OpenStruct.new(login: "john"))
+      controller.stub_chain(:client, :user).and_return(github_user)
+      controller.stub_chain(:client, :repo).and_return(github_repo)
     end
 
-    it "takes already existing namespace" do
-      namespace = create(:namespace, name: "john", owner: user)
-      expect(Gitlab::GithubImport::ProjectCreator).
-        to receive(:new).with(@repo, namespace, user).
-        and_return(double(execute: true))
-      controller.stub_chain(:client, :repo).and_return(@repo)
+    context "when the repository owner is the GitHub user" do
+      context "when the GitHub user and GitLab user's usernames match" do
+        it "takes the current user's namespace" do
+          expect(Gitlab::GithubImport::ProjectCreator).
+            to receive(:new).with(github_repo, user.namespace, user).
+            and_return(double(execute: true))
 
-      post :create, format: :js
+          post :create, format: :js
+        end
+      end
+
+      context "when the GitHub user and GitLab user's usernames don't match" do
+        let(:github_username) { "someone_else" }
+
+        it "takes the current user's namespace" do
+          expect(Gitlab::GithubImport::ProjectCreator).
+            to receive(:new).with(github_repo, user.namespace, user).
+            and_return(double(execute: true))
+
+          post :create, format: :js
+        end
+      end
+    end
+
+    context "when the repository owner is not the GitHub user" do
+      let(:other_username) { "someone_else" }
+
+      before do
+        github_repo.owner = OpenStruct.new(login: other_username)
+      end
+
+      context "when a namespace with the GitHub user's username already exists" do
+        let!(:existing_namespace) { create(:namespace, name: other_username, owner: user) }
+
+        context "when the namespace is owned by the GitLab user" do
+          it "takes the existing namespace" do
+            expect(Gitlab::GithubImport::ProjectCreator).
+              to receive(:new).with(github_repo, existing_namespace, user).
+              and_return(double(execute: true))
+
+            post :create, format: :js
+          end
+        end
+
+        context "when the namespace is not owned by the GitLab user" do
+          before do
+            existing_namespace.owner = create(:user)
+            existing_namespace.save
+          end
+
+          it "doesn't create a project" do
+            expect(Gitlab::GithubImport::ProjectCreator).
+              not_to receive(:new)
+
+            post :create, format: :js
+          end
+        end
+      end
+
+      context "when a namespace with the GitHub user's username doesn't exist" do
+        it "creates the namespace" do
+          expect(Gitlab::GithubImport::ProjectCreator).
+            to receive(:new).and_return(double(execute: true))
+
+          post :create, format: :js
+
+          expect(Namespace.where(name: other_username).first).not_to be_nil
+        end
+
+        it "takes the new namespace" do
+          expect(Gitlab::GithubImport::ProjectCreator).
+            to receive(:new).with(github_repo, an_instance_of(Group), user).
+            and_return(double(execute: true))
+
+          post :create, format: :js
+        end
+      end
     end
   end
 end
