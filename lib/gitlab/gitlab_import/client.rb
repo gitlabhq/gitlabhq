@@ -28,6 +28,10 @@ module Gitlab
         client.auth_code.get_token(code, redirect_uri: redirect_uri).token
       end
 
+      def user
+        api.get("/api/v3/user").parsed
+      end
+
       def issues(project_identifier)
         lazy_page_iterator(PER_PAGE) do |page|
           api.get("/api/v3/projects/#{project_identifier}/issues?per_page=#{PER_PAGE}&page=#{page}").parsed

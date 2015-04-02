@@ -36,8 +36,11 @@ class Import::BitbucketController < Import::BaseController
   def create
     @repo_id = params[:repo_id] || ""
     repo = client.project(@repo_id.gsub("___", "/"))
-    @target_namespace = params[:new_namespace].presence || repo["owner"]
     @project_name = repo["slug"]
+
+    repo_owner = repo["owner"]
+    repo_owner = current_user.username if repo_owner == client.user["user"]["username"]
+    @target_namespace = params[:new_namespace].presence || repo_owner
     
     namespace = get_or_create_namespace || (render and return)
 
