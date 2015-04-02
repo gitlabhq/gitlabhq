@@ -58,6 +58,8 @@ v 7.9.0
   - Faster merge request processing for large repository
   - Prevent doubling AJAX request with each commit visit via Turbolink
   - Prevent unnecessary doubling of js events on import pages and user calendar
+v 7.9.2
+  - Contains no changes
 
 v 7.9.1
   - Include missing events and fix save functionality in admin service template settings form (Stan Hu)
