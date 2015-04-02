@@ -124,12 +124,12 @@ class Project < ActiveRecord::Base
     presence: true,
     length: { within: 0..255 },
     format: { with: Gitlab::Regex.project_name_regex,
-              message: Gitlab::Regex.project_regex_message }
+              message: Gitlab::Regex.project_name_regex_message }
   validates :path,
     presence: true,
     length: { within: 0..255 },
-    format: { with: Gitlab::Regex.path_regex,
-              message: Gitlab::Regex.path_regex_message }
+    format: { with: Gitlab::Regex.project_path_regex,
+              message: Gitlab::Regex.project_path_regex_message }
   validates :issues_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }
   validates :issues_tracker_id, length: { maximum: 255 }, allow_blank: true

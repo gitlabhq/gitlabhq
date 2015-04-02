@@ -307,16 +307,6 @@ describe User do
     end
   end
 
-  describe ".clean_username" do
-
-    let!(:user) { create(:user, username: "johngitlab-etc") }
-    let!(:namespace) { create(:namespace, path: "JohnGitLab-etc1") }
-
-    it "cleans a username and makes sure it's available" do
-      expect(User.clean_username("-john+gitlab-ETC%.git@gmail.com")).to eq("johngitlab-ETC2")
-    end
-  end
-
   describe 'all_ssh_keys' do
     it { is_expected.to have_many(:keys).dependent(:destroy) }
 

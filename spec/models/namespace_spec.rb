@@ -33,8 +33,6 @@ describe Namespace do
     it { is_expected.to respond_to(:to_param) }
   end
 
-  it { expect(Namespace.global_id).to eq('GLN') }
-
   describe :to_param do
     it { expect(namespace.to_param).to eq(namespace.path) }
   end
@@ -84,5 +82,15 @@ describe Namespace do
     it { expect(Namespace.find_by_path_or_name('wow')).to eq(@namespace) }
     it { expect(Namespace.find_by_path_or_name('WOW')).to eq(@namespace) }
     it { expect(Namespace.find_by_path_or_name('unknown')).to eq(nil) }
+  end
+
+  describe ".clean_path" do
+
+    let!(:user)       { create(:user, username: "johngitlab-etc") }
+    let!(:namespace)  { create(:namespace, path: "JohnGitLab-etc1") }
+
+    it "cleans the path and makes sure it's available" do
+      expect(Namespace.clean_path("-john+gitlab-ETC%.git@gmail.com")).to eq("johngitlab-ETC2")
+    end
   end
 end

@@ -86,7 +86,7 @@ module Gitlab
       def user_attributes
         {
           name:                       auth_hash.name,
-          username:                   ::User.clean_username(auth_hash.username),
+          username:                   ::Namespace.clean_path(auth_hash.username),
           email:                      auth_hash.email,
           password:                   auth_hash.password,
           password_confirmation:      auth_hash.password,

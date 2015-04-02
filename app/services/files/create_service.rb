@@ -12,10 +12,10 @@ module Files
       file_name = File.basename(path)
       file_path = path
 
-      unless file_name =~ Gitlab::Regex.path_regex
+      unless file_name =~ Gitlab::Regex.file_name_regex
         return error(
           'Your changes could not be committed, because the file name ' +
-          Gitlab::Regex.path_regex_message
+          Gitlab::Regex.file_name_regex_message
         )
       end
 
