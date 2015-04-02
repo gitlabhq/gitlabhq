@@ -40,7 +40,7 @@ module IconsHelper
   def file_type_icon_class(type, mode, name)
     if type == 'folder'
       icon_class = 'folder'
-    elsif mode == 0120000
+    elsif mode == '120000'
       icon_class = 'share'
     else
       # Guess which icon to choose based on file extension.
