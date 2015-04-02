@@ -11,9 +11,10 @@ class Profiles::TwoFactorAuthsController < ApplicationController
   def create
     if current_user.valid_otp?(params[:pin_code])
       current_user.otp_required_for_login = true
+      @codes = current_user.generate_otp_backup_codes!
       current_user.save!
 
-      redirect_to profile_account_path
+      render 'create'
     else
       @error = 'Invalid pin code'
       @qr_code = build_qr_code
@@ -22,9 +23,8 @@ class Profiles::TwoFactorAuthsController < ApplicationController
   end
 
   def codes
-    codes = current_user.generate_otp_backup_codes!
+    @codes = current_user.generate_otp_backup_codes!
     current_user.save!
-    send_data codes.join("\n"), filename: 'gitlab_recovery_codes.txt'
   end
 
   def destroy

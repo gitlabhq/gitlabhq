@@ -228,7 +228,7 @@ Gitlab::Application.routes.draw do
       resource :avatar, only: [:destroy]
       resource :two_factor_auth, only: [:new, :create, :destroy] do
         member do
-          get :codes
+          post :codes
         end
       end
     end
