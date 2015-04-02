@@ -3,18 +3,18 @@
 class @ShortcutsNavigation extends Shortcuts
   constructor: ->
     super()
-    Mousetrap.bind('g p', -> ShortcutsNavigation.findAndollowLink('.shortcuts-project'))
-    Mousetrap.bind('g f', -> ShortcutsNavigation.findAndollowLink('.shortcuts-tree'))
-    Mousetrap.bind('g c', -> ShortcutsNavigation.findAndollowLink('.shortcuts-commits'))
-    Mousetrap.bind('g n', -> ShortcutsNavigation.findAndollowLink('.shortcuts-network'))
-    Mousetrap.bind('g g', -> ShortcutsNavigation.findAndollowLink('.shortcuts-graphs'))
-    Mousetrap.bind('g i', -> ShortcutsNavigation.findAndollowLink('.shortcuts-issues'))
-    Mousetrap.bind('g m', -> ShortcutsNavigation.findAndollowLink('.shortcuts-merge_requests'))
-    Mousetrap.bind('g w', -> ShortcutsNavigation.findAndollowLink('.shortcuts-wiki'))
-    Mousetrap.bind('g s', -> ShortcutsNavigation.findAndollowLink('.shortcuts-snippets'))
+    Mousetrap.bind('g p', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-project'))
+    Mousetrap.bind('g f', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-tree'))
+    Mousetrap.bind('g c', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-commits'))
+    Mousetrap.bind('g n', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-network'))
+    Mousetrap.bind('g g', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-graphs'))
+    Mousetrap.bind('g i', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-issues'))
+    Mousetrap.bind('g m', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-merge_requests'))
+    Mousetrap.bind('g w', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-wiki'))
+    Mousetrap.bind('g s', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-snippets'))
     @enabledHelp.push('.hidden-shortcut.project')
-   
-  @findAndollowLink: (selector) ->
+
+  @findAndFollowLink: (selector) ->
    link = $(selector).attr('href')
    if link
      window.location = link
