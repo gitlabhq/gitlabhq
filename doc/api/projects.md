@@ -142,8 +142,8 @@ Parameters:
 
 ### Get single project
 
-Get a specific project, identified by project ID or NAMESPACE/PROJECT_NAME, which is owned by the authenticated user.
-If using namespaced projects call make sure that the NAMESPACE/PROJECT_NAME is URL-encoded, eg. `/api/v3/projects/diaspora%2Fdiaspora` (where `/` is represented by `%2F`).
+Get a specific project, identified by project ID or NAMESPACE_PROJECT_NAME, which is owned by the authenticated user.
+If using namespaced projects call make sure that the NAMESPACE_PROJECT_NAME is URL-encoded, eg. `/api/v3/projects/diaspora_diaspora` .
 
 ```
 GET /projects/:id
@@ -151,7 +151,7 @@ GET /projects/:id
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
+- `id` (required) - The ID or NAMESPACE_PROJECT_NAME of a project
 
 ```json
 {
@@ -213,7 +213,7 @@ GET /projects/:id/events
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
+- `id` (required) - The ID or NAMESPACE_PROJECT_NAME of a project
 
 ```json
 [
