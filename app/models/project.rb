@@ -224,9 +224,9 @@ class Project < ActiveRecord::Base
     end
 
     def find_with_namespace(id)
-      return nil unless id.include?('/')
+      return nil unless id.include?('_')
 
-      id = id.split('/')
+      id = id.split('_')
       namespace = Namespace.find_by(path: id.first)
       return nil unless namespace
 
