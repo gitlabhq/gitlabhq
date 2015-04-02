@@ -25,3 +25,5 @@ Sidekiq.configure_client do |config|
     namespace: 'resque:gitlab'
   }
 end
+
+Sidekiq::Queue["archive_repo"].limit = 2

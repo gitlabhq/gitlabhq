@@ -54,6 +54,7 @@ v 7.10.0 (unreleased)
   - Don't leak private group existence by redirecting from namespace controller to group controller.
   - Ability to skip some items from backup (database, respositories or uploads)
   - Fix "Hello @username." references not working by no longer allowing usernames to end in period.
+  - Archive repositories in background worker.
 
 
 v 7.9.2

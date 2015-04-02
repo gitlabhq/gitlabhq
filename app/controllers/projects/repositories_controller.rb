@@ -11,18 +11,18 @@ class Projects::RepositoriesController < Projects::ApplicationController
   end
 
   def archive
-    unless can?(current_user, :download_code, @project)
-      render_404 and return
+    begin
+      file_path = ArchiveRepositoryService.new(@project, params[:ref], params[:format]).execute
+    rescue
+      return head :not_found
     end
-
-    file_path = ArchiveRepositoryService.new.execute(@project, params[:ref], params[:format])
 
     if file_path
       # Send file to user
       response.headers["Content-Length"] = File.open(file_path).size.to_s
       send_file file_path
     else
-      render_404
+      redirect_to request.fullpath
     end
   end
 end
