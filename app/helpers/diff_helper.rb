@@ -101,7 +101,7 @@ module DiffHelper
   end
 
   def line_comments
-    @line_comments ||= @line_notes.group_by(&:line_code)
+    @line_comments ||= @line_notes.select(&:active?).group_by(&:line_code)
   end
 
   def organize_comments(type_left, type_right, line_code_left, line_code_right)

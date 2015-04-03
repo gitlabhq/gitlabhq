@@ -23,7 +23,7 @@
         %td.line_content{class: "noteable_line #{type} #{line_code}", "line_code" => line_code}= raw diff_line_content(line.text)
 
     - if @reply_allowed
-      - comments = @line_notes.select { |n| n.line_code == line_code }.sort_by(&:created_at)
+      - comments = @line_notes.select { |n| n.line_code == line_code && n.active? }.sort_by(&:created_at)
       - unless comments.empty?
         = render "projects/notes/diff_notes_with_reply", notes: comments, line: line.text
 
