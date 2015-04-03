@@ -2,48 +2,48 @@ require 'spec_helper'
 
 describe Gitlab::ReferenceExtractor do
   let(:project) { create(:project) }
-  subject { Gitlab::ReferenceExtractor.new(project) }
+  subject { Gitlab::ReferenceExtractor.new(project, project.creator) }
 
   it 'extracts username references' do
     subject.analyze('this contains a @user reference')
-    expect(subject.users).to eq([{ project: project, id: 'user' }])
+    expect(subject.references[:user]).to eq([[project, 'user']])
   end
 
   it 'extracts issue references' do
     subject.analyze('this one talks about issue #1234')
-    expect(subject.issues).to eq([{ project: project, id: '1234' }])
+    expect(subject.references[:issue]).to eq([[project, '1234']])
   end
 
   it 'extracts JIRA issue references' do
     subject.analyze('this one talks about issue JIRA-1234')
-    expect(subject.issues).to eq([{ project: project, id: 'JIRA-1234' }])
+    expect(subject.references[:issue]).to eq([[project, 'JIRA-1234']])
   end
 
   it 'extracts merge request references' do
     subject.analyze("and here's !43, a merge request")
-    expect(subject.merge_requests).to eq([{ project: project, id: '43' }])
+    expect(subject.references[:merge_request]).to eq([[project, '43']])
   end
 
   it 'extracts snippet ids' do
     subject.analyze('snippets like $12 get extracted as well')
-    expect(subject.snippets).to eq([{ project: project, id: '12' }])
+    expect(subject.references[:snippet]).to eq([[project, '12']])
   end
 
   it 'extracts commit shas' do
     subject.analyze('commit shas 98cf0ae3 are pulled out as Strings')
-    expect(subject.commits).to eq([{ project: project, id: '98cf0ae3' }])
+    expect(subject.references[:commit]).to eq([[project, '98cf0ae3']])
   end
 
   it 'extracts commit ranges' do
     subject.analyze('here you go, a commit range: 98cf0ae3...98cf0ae4')
-    expect(subject.commit_ranges).to eq([{ project: project, id: '98cf0ae3...98cf0ae4' }])
+    expect(subject.references[:commit_range]).to eq([[project, '98cf0ae3...98cf0ae4']])
   end
 
   it 'extracts multiple references and preserves their order' do
     subject.analyze('@me and @you both care about this')
-    expect(subject.users).to eq([
-      { project: project, id: 'me' },
-      { project: project, id: 'you' }
+    expect(subject.references[:user]).to eq([
+      [project, 'me'],
+      [project, 'you']
     ])
   end
 
@@ -70,7 +70,7 @@ describe Gitlab::ReferenceExtractor do
 
   it 'extracts issue references for invalid code blocks' do
     subject.analyze('test: ```this one talks about issue #1234```')
-    expect(subject.issues).to eq([{ project: project, id: '1234' }])
+    expect(subject.references[:issue]).to eq([[project, '1234']])
   end
 
   it 'handles all possible kinds of references' do
@@ -78,16 +78,16 @@ describe Gitlab::ReferenceExtractor do
     expect(subject).to respond_to(*accessors)
   end
 
-  it 'accesses valid user objects on the project team' do
+  it 'accesses valid user objects' do
     @u_foo = create(:user, username: 'foo')
     @u_bar = create(:user, username: 'bar')
-    create(:user, username: 'offteam')
+    @u_offteam = create(:user, username: 'offteam')
 
     project.team << [@u_foo, :reporter]
     project.team << [@u_bar, :guest]
 
     subject.analyze('@foo, @baduser, @bar, and @offteam')
-    expect(subject.users).to eq([@u_foo, @u_bar])
+    expect(subject.users).to eq([@u_foo, @u_bar, @u_offteam])
   end
 
   it 'accesses valid issue objects' do
@@ -139,11 +139,15 @@ describe Gitlab::ReferenceExtractor do
   end
 
   context 'with a project with an underscore' do
-    let(:project) { create(:project, path: 'test_project') }
-    let(:issue) { create(:issue, project: project) }
+    let(:other_project) { create(:project, path: 'test_project') }
+    let(:issue) { create(:issue, project: other_project) }
+
+    before do
+      other_project.team << [project.creator, :developer]
+    end
 
     it 'handles project issue references' do
-      subject.analyze("this refers issue #{project.path_with_namespace}##{issue.iid}")
+      subject.analyze("this refers issue #{other_project.path_with_namespace}##{issue.iid}")
       extracted = subject.issues
       expect(extracted.size).to eq(1)
       expect(extracted).to eq([issue])
