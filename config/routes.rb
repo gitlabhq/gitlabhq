@@ -81,6 +81,12 @@ Gitlab::Application.routes.draw do
       get :callback
       get :jobs
     end
+
+    resource :google_code, only: [:create, :new], controller: :google_code do
+      get :status
+      post :callback
+      get :jobs
+    end
   end
 
   #

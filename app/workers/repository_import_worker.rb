@@ -18,6 +18,8 @@ class RepositoryImportWorker
                             Gitlab::GitlabImport::Importer.new(project).execute
                           elsif project.import_type == 'bitbucket'
                             Gitlab::BitbucketImport::Importer.new(project).execute
+                          elsif project.import_type == 'google_code'
+                            Gitlab::GoogleCodeImport::Importer.new(project).execute
                           else
                             true
                           end

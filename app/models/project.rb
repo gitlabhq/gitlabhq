@@ -27,6 +27,7 @@
 #  import_type            :string(255)
 #  import_source          :string(255)
 #  avatar                 :string(255)
+#  import_data            :text
 #
 
 require 'carrierwave/orm/activerecord'
@@ -49,6 +50,8 @@ class Project < ActiveRecord::Base
   default_value_for :wiki_enabled, gitlab_config_features.wiki
   default_value_for :wall_enabled, false
   default_value_for :snippets_enabled, gitlab_config_features.snippets
+
+  serialize :import_data, JSON
 
   # set last_activity_at to the same as created_at
   after_create :set_last_activity_at
@@ -185,6 +188,7 @@ class Project < ActiveRecord::Base
     state :failed
 
     after_transition any => :started, do: :add_import_job
+    after_transition any => :finished, do: :clear_import_data
   end
 
   class << self
@@ -260,6 +264,11 @@ class Project < ActiveRecord::Base
 
   def add_import_job
     RepositoryImportWorker.perform_in(2.seconds, id)
+  end
+
+  def clear_import_data
+    self.import_data = nil
+    self.save
   end
 
   def import?

@@ -1,0 +1,17 @@
+%h3.page-title
+  %i.fa.fa-google
+  Import projects from Google Code
+%hr
+
+= form_tag callback_import_google_code_path, class: 'form-horizontal', multipart: true do
+  %ul
+    %li
+      Use Google Takeout etc
+
+  .form-group
+    = label_tag :dump_file, "Google Takeout JSON file", class: 'control-label'
+    .col-sm-10
+      %input{type: "file", name: "dump_file", id: "dump_file"}
+
+  .form-actions
+    = submit_tag 'Select projects to import', class: "btn btn-create"

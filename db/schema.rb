@@ -342,6 +342,7 @@ ActiveRecord::Schema.define(version: 20150328132231) do
     t.integer  "star_count",             default: 0,        null: false
     t.string   "import_type"
     t.string   "import_source"
+    t.text     "import_data"
   end
 
   add_index "projects", ["created_at", "id"], name: "index_projects_on_created_at_and_id", using: :btree
