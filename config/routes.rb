@@ -39,9 +39,9 @@ Gitlab::Application.routes.draw do
 
   # Help
   get 'help'                  => 'help#index'
-  get 'help/:category/:file'  => 'help#show', as: :help_page
   get 'help/shortcuts'
   get 'help/ui'               => 'help#ui'
+  get 'help/:filepath'        => 'help#show', as: :help_page, constraints: { filepath: /[^\.]+/ }
 
   #
   # Global snippets
