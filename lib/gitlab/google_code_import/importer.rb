@@ -169,13 +169,9 @@ module Gitlab
           "#428bca"
         when "Status: Accepted"
           "#5cb85c"
-        when "Status: NeedInfo"
-          "#f0ad4e"
         when "Status: Started"
           "#8e44ad"
-        when "Status: Wishlist"
-          "#a8d695"
-        #
+        
         when "Priority: Critical"
           "#ffcfcf"
         when "Priority: High"
@@ -184,17 +180,17 @@ module Gitlab
           "#fff5cc"
         when "Priority: Low"
           "#cfe9ff"
-        #
+        
         when "Type: Defect"
           "#d9534f"
         when "Type: Enhancement"
           "#44ad8e"
-        when "Type: Other"
-          "#7f8c8d"
-        when "Type: Review"
-          "#8e44ad"
         when "Type: Task"
           "#4b6dd0"
+        when "Type: Review"
+          "#8e44ad"
+        when "Type: Other"
+          "#7f8c8d"
         else
           "#e2e2e2"
         end
@@ -253,6 +249,10 @@ module Gitlab
           updates << "*Status: #{raw_updates["status"]}*"
         end
 
+        if raw_updates.has_key?("owner")
+          updates << "*Owner: #{mask_email(raw_updates["owner"])}*"
+        end
+
         if raw_updates.has_key?("cc")
           cc = raw_updates["cc"].map do |l| 
             deleted = l.start_with?("-") 
@@ -275,10 +275,6 @@ module Gitlab
           end
 
           updates << "*Labels: #{labels.join(", ")}*"
-        end
-
-        if raw_updates.has_key?("owner")
-          updates << "*Owner: #{raw_updates["owner"]}*"
         end
 
         if raw_updates.has_key?("mergedInto")
