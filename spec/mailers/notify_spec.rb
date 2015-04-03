@@ -7,8 +7,11 @@ describe Notify do
 
   let(:gitlab_sender_display_name) { Gitlab.config.gitlab.email_display_name }
   let(:gitlab_sender) { Gitlab.config.gitlab.email_from }
+  let(:gitlab_sender_reply_to) { Gitlab.config.gitlab.email_reply_to }
   let(:recipient) { create(:user, email: 'recipient@example.com') }
   let(:project) { create(:project) }
+
+  around(:each) { ActionMailer::Base.deliveries.clear }
 
   before(:each) do
     email = recipient.emails.create(email: "notifications@example.com")
@@ -26,6 +29,11 @@ describe Notify do
       sender = subject.header[:from].addrs[0]
       expect(sender.display_name).to eq(gitlab_sender_display_name)
       expect(sender.address).to eq(gitlab_sender)
+    end
+
+    it 'has a Reply-To address' do
+      reply_to = subject.header[:reply_to].addresses
+      expect(reply_to).to eq([gitlab_sender_reply_to])
     end
   end
 

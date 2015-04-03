@@ -103,6 +103,7 @@ Settings.gitlab['protocol']   ||= Settings.gitlab.https ? "https" : "http"
 Settings.gitlab['email_enabled'] ||= true if Settings.gitlab['email_enabled'].nil?
 Settings.gitlab['email_from'] ||= "gitlab@#{Settings.gitlab.host}"
 Settings.gitlab['email_display_name'] ||= "GitLab"
+Settings.gitlab['email_reply_to'] ||= "noreply@#{Settings.gitlab.host}"
 Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
 Settings.gitlab['user']       ||= 'git'
 Settings.gitlab['user_home']  ||= begin

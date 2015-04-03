@@ -19,7 +19,7 @@ class Notify < ActionMailer::Base
   default_url_options[:script_name] = Gitlab.config.gitlab.relative_url_root
 
   default from: Proc.new { default_sender_address.format }
-  default reply_to: "noreply@#{Gitlab.config.gitlab.host}"
+  default reply_to: Gitlab.config.gitlab.email_reply_to
 
   # Just send email with 2 seconds delay
   def self.delay
