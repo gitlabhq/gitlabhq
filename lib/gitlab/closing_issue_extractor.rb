@@ -1,21 +1,20 @@
 module Gitlab
-  module ClosingIssueExtractor
+  class ClosingIssueExtractor
     ISSUE_CLOSING_REGEX = Regexp.new(Gitlab.config.gitlab.issue_closing_pattern)
 
-    def self.closed_by_message_in_project(message, project, current_user = nil)
-      issues = []
+    def initialize(project, current_user = nil)
+      @extractor = Gitlab::ReferenceExtractor.new(project, current_user)
+    end
 
-      unless message.nil?
-        md = message.scan(ISSUE_CLOSING_REGEX)
+    def closed_by_message(message)
+      return [] if message.nil?
+      
+      closing_statements = message.scan(ISSUE_CLOSING_REGEX).
+        map { |ref| ref[0] }.join(" ")
 
-        md.each do |ref|
-          extractor = Gitlab::ReferenceExtractor.new(project, current_user)
-          extractor.analyze(ref[0])
-          issues += extractor.issues
-        end
-      end
+      @extractor.analyze(closing_statements)
 
-      issues.uniq
+      @extractor.issues
     end
   end
 end

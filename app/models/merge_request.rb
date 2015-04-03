@@ -260,8 +260,8 @@ class MergeRequest < ActiveRecord::Base
   def closes_issues(current_user = self.author)
     if target_branch == project.default_branch
       issues = commits.flat_map { |c| c.closes_issues(project, current_user) }
-      issues.push(*Gitlab::ClosingIssueExtractor.
-                  closed_by_message_in_project(description, project, current_user))
+      issues.push(*Gitlab::ClosingIssueExtractor.new(project, current_user).
+                  closed_by_message(description))
       issues.uniq.sort_by(&:id)
     else
       []
