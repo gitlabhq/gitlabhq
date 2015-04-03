@@ -4,14 +4,48 @@
 %hr
 
 = form_tag callback_import_google_code_path, class: 'form-horizontal', multipart: true do
-  %ul
+  %p
+    Follow the steps below to export your Google Code project data. 
+    In the next step, you'll be able to select the projects you want to import.
+  %ol
     %li
-      Use Google Takeout etc
-
-  .form-group
-    = label_tag :dump_file, "Google Takeout JSON file", class: 'control-label'
-    .col-sm-10
-      %input{type: "file", name: "dump_file", id: "dump_file"}
-
-  .form-actions
-    = submit_tag 'Select projects to import', class: "btn btn-create"
+      %p
+        Go to
+        #{link_to "Google Takeout", "https://www.google.com/settings/takeout", target: "_blank"}.
+    %li
+      %p
+        Make sure you're logged into the account that owns the projects you'd like to import.
+    %li
+      %p
+        Click the <strong>Select none</strong> button on the right, since we only need "Google Code Project Hosting".
+    %li
+      %p
+        Scroll down to <strong>Google Code Project Hosting</strong> and enable the switch on the right.
+    %li
+      %p
+        Choose <strong>Next</strong> at the bottom of the page.
+    %li
+      %p
+        Leave the "File type" and "Delivery method" options on their default values.
+    %li
+      %p
+        Choose <strong>Create archive</strong> and wait for archiving to complete.
+    %li
+      %p
+        Click the <strong>Download</strong> button and wait for downloading to complete.
+    %li
+      %p
+        Find the downloaded ZIP file and decompress it.
+    %li
+      %p
+        Find the newly extracted <code>Takeout/Google Code Project Hosting/GoogleCodeProjectHosting.json</code> file.
+    %li
+      %p
+        Upload <code>GoogleCodeProjectHosting.json</code> here:
+      %p
+        %input{type: "file", name: "dump_file", id: "dump_file"}
+    %li
+      %p
+        Continue to the next step:
+      %p
+        = submit_tag 'Select projects to import', class: "btn btn-create"
