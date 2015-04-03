@@ -57,6 +57,7 @@ v 7.10.0 (unreleased)
   - Archive repositories in background worker.
   - Import GitHub, Bitbucket or GitLab.com projects owned by authenticated user into current namespace.
   - Fix and improve help rendering (Sullivan Sénéchal)
+  - Add confirmation dialog when click in "Accept Merge Request".
 
 
 v 7.9.2
@@ -70,9 +71,6 @@ v 7.9.1
   - Fix missing events and in admin Slack service template settings form (Stan Hu)
   - Don't show commit comment button when user is not signed in.
   - Downgrade gemnasium-gitlab-service gem
-
-v 7.9.0
-  - Add confirmation dialog when click in "Accept Merge Request".
 
 v 7.9.0 (unreleased)
   - Add HipChat integration documentation (Stan Hu)

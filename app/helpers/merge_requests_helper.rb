@@ -49,4 +49,8 @@ module MergeRequestsHelper
   def issues_sentence(issues)
     issues.map { |i| "##{i.iid}" }.to_sentence
   end
+
+  def merge_request_message(merge_request)
+    "This will merge #{merge_request.source_branch} into #{merge_request.target_branch}.\nAre you ABSOLUTELY sure?"
+  end
 end

@@ -1,5 +1,5 @@
 class @ConfirmDangerModal
-  constructor: (form, text) ->
+  constructor: (form, text, actionCallback) ->
     @form = form
     $('.js-confirm-text').text(text || '')
     $('.js-confirm-danger-input').val('')
@@ -16,3 +16,4 @@ class @ConfirmDangerModal
 
     $('.js-confirm-danger-submit').on 'click', =>
       @form.submit()
+      actionCallback() if actionCallback

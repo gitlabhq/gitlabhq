@@ -8,18 +8,18 @@
       .slead
         %span From
         - if @merge_request.for_fork?
-          %strong#source_branch.label-branch<
+          %strong.label-branch<
             - if @merge_request.source_project
               = link_to @merge_request.source_project_namespace, namespace_project_path(@merge_request.source_project.namespace, @merge_request.source_project)
             - else
               \ #{@merge_request.source_project_namespace}
             \:#{@merge_request.source_branch}
           %span into
-          %strong#target_branch.label-branch #{@merge_request.target_project_namespace}:#{@merge_request.target_branch}
+          %strong.label-branch #{@merge_request.target_project_namespace}:#{@merge_request.target_branch}
         - else
-          %strong#source_branch.label-branch #{@merge_request.source_branch}
+          %strong.label-branch #{@merge_request.source_branch}
           %span into
-          %strong#target_branch.label-branch #{@merge_request.target_branch}
+          %strong.label-branch #{@merge_request.target_branch}
         - if @merge_request.open?
           %span.pull-right
             .btn-group
@@ -40,7 +40,7 @@
         = link_to merge_request_path(@merge_request) do
           %i.fa.fa-comments
           Discussion
-          %span.badge= @merge_request.mr_and_commit_notes.user.count
+          %span.badge= @merge_request.mr_and_commit_notes.count
       %li.commits-tab{data: {action: 'commits'}}
         = link_to merge_request_path(@merge_request), title: 'Commits' do
           %i.fa.fa-history
@@ -63,6 +63,7 @@
   .mr-loading-status
     = spinner
 
+  = render 'shared/confirm_modal', phrase: @merge_request.source_branch
 
 :javascript
   var merge_request;

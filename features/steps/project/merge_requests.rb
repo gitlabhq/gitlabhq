@@ -201,13 +201,28 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     )
 
     within '.can_be_merged' do
-      click_button "Accept Merge Request"
+      click_link "Accept Merge Request"
     end
+  end
+
+  step 'I accept the confirmation dialog' do
+    fill_in 'confirm_name_input', with: merge_request.source_branch
+    first(:css, '.js-confirm-danger-submit').click
+  end
+
+  step 'I close the confirmation dialog' do
+    first(:css, '#modal-confirm-danger a.close').click
   end
 
   step 'I should see merged request' do
     within '.issue-box' do
       page.should have_content "Merged"
+    end
+  end
+
+  step 'I should see the merge request is open yet' do
+    within '.issue-box' do
+      page.should have_content "Open"
     end
   end
 
