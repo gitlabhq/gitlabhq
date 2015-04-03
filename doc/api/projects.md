@@ -44,6 +44,10 @@ Parameters:
     "ssh_url_to_repo": "git@example.com:diaspora/diaspora-client.git",
     "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
     "web_url": "http://example.com/diaspora/diaspora-client",
+    "tag_list": [
+      "example",
+      "disapora client"
+    ],
     "owner": {
       "id": 3,
       "name": "Diaspora",
@@ -80,6 +84,10 @@ Parameters:
     "ssh_url_to_repo": "git@example.com:brightbox/puppet.git",
     "http_url_to_repo": "http://example.com/brightbox/puppet.git",
     "web_url": "http://example.com/brightbox/puppet",
+    "tag_list": [
+      "example",
+      "puppet"
+    ],
     "owner": {
       "id": 4,
       "name": "Brightbox",
@@ -163,6 +171,10 @@ Parameters:
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
+  "tag_list": [
+    "example",
+    "disapora project"
+  ],
   "owner": {
     "id": 3,
     "name": "Diaspora",
