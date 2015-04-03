@@ -7,9 +7,13 @@ module LabelsHelper
     label_color = label.color || Label::DEFAULT_COLOR
     text_color = text_color_for_bg(label_color)
 
-    content_tag :span, class: 'label color-label', style: "background-color:#{label_color};color:#{text_color}" do
-      label.name
-    end
+    # Intentionally not using content_tag here so that this method can be called
+    # by LabelReferenceFilter
+    span = %(<span class="label color-label") +
+      %( style="background-color: #{label_color}; color: #{text_color}">) +
+      label.name + '</span>'
+
+    span.html_safe
   end
 
   def suggested_colors
@@ -42,13 +46,15 @@ module LabelsHelper
     r, g, b = bg_color.slice(1,7).scan(/.{2}/).map(&:hex)
 
     if (r + g + b) > 500
-      "#333"
+      '#333333'
     else
-      "#FFF"
+      '#FFFFFF'
     end
   end
 
   def project_labels_options(project)
     options_from_collection_for_select(project.labels, 'name', 'name', params[:label_name])
   end
+
+  module_function :render_colored_label, :text_color_for_bg
 end

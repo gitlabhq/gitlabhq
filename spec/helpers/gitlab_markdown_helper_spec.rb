@@ -348,56 +348,6 @@ describe GitlabMarkdownHelper do
       end
     end
 
-    describe "referencing a Jira issue" do
-      let(:actual)   { "Reference to JIRA-#{issue.iid}" }
-      let(:expected) { "http://jira.example/browse/JIRA-#{issue.iid}" }
-      let(:reference) { "JIRA-#{issue.iid}" }
-
-      before do
-        jira = @project.create_jira_service if @project.jira_service.nil?
-        properties = {"title"=>"JIRA tracker", "project_url"=>"http://jira.example/issues/?jql=project=A", "issues_url"=>"http://jira.example/browse/:id", "new_issue_url"=>"http://jira.example/secure/CreateIssue.jspa"}
-        jira.update_attributes(properties: properties, active: true)
-      end
-
-      after do
-        @project.jira_service.destroy! unless @project.jira_service.nil?
-      end
-
-      it "should link using a valid id" do
-        expect(gfm(actual)).to match(expected)
-      end
-
-      it "should link with adjacent text" do
-        # Wrap the reference in parenthesis
-        expect(gfm(actual.gsub(reference, "(#{reference})"))).to match(expected)
-
-        # Append some text to the end of the reference
-        expect(gfm(actual.gsub(reference, "#{reference}, right?"))).
-          to match(expected)
-      end
-
-      it "should keep whitespace intact" do
-        actual   = "Referenced #{reference} already."
-        expected = /Referenced <a.+>[^\s]+<\/a> already/
-        expect(gfm(actual)).to match(expected)
-      end
-
-      it "should not link with an invalid id" do
-        # Modify the reference string so it's still parsed, but is invalid
-        invalid_reference = actual.gsub(/(\d+)$/, "r45")
-        expect(gfm(invalid_reference)).to eq(invalid_reference)
-      end
-
-      it "should include a title attribute" do
-        title = "Issue in JIRA tracker"
-        expect(gfm(actual)).to match(/title="#{title}"/)
-      end
-
-      it "should include standard gfm classes" do
-        expect(gfm(actual)).to match(/class="\s?gfm gfm-issue\s?"/)
-      end
-    end
-
     describe "referencing a merge request" do
       let(:object)    { merge_request }
       let(:reference) { "!#{merge_request.iid}" }
@@ -659,7 +609,7 @@ describe GitlabMarkdownHelper do
     end
 
     it "should leave ref-like href of 'manual' links untouched" do
-      expect(markdown("why not [inspect !#{merge_request.iid}](http://example.tld/#!#{merge_request.iid})")).to eq("<p>why not <a href=\"http://example.tld/#!#{merge_request.iid}\">inspect </a><a class=\"gfm gfm-merge_request \" href=\"#{namespace_project_merge_request_path(project.namespace, project, merge_request)}\" title=\"Merge Request: #{merge_request.title}\">!#{merge_request.iid}</a><a href=\"http://example.tld/#!#{merge_request.iid}\"></a></p>\n")
+      expect(markdown("why not [inspect !#{merge_request.iid}](http://example.tld/#!#{merge_request.iid})")).to eq("<p>why not <a href=\"http://example.tld/#!#{merge_request.iid}\">inspect </a><a href=\"#{namespace_project_merge_request_path(project.namespace, project, merge_request)}\" title=\"Merge Request: #{merge_request.title}\" class=\"gfm gfm-merge_request \">!#{merge_request.iid}</a><a href=\"http://example.tld/#!#{merge_request.iid}\"></a></p>\n")
     end
 
     it "should leave ref-like src of images untouched" do

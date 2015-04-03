@@ -108,4 +108,6 @@ module IssuesHelper
       xml.summary issue.title
     end
   end
+
+  module_function :url_for_issue, :title_for_issue
 end
