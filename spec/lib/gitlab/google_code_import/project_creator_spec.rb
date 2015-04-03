@@ -15,8 +15,7 @@ describe Gitlab::GoogleCodeImport::ProjectCreator do
     allow_any_instance_of(Project).to receive(:add_import_job)
 
     project_creator = Gitlab::GoogleCodeImport::ProjectCreator.new(repo, namespace, user)
-    project_creator.execute
-    project = Project.last
+    project = project_creator.execute
     
     expect(project.import_url).to eq("https://vim.googlecode.com/git/")
     expect(project.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
