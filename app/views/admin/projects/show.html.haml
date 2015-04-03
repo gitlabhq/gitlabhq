@@ -42,11 +42,11 @@
         %li
           %span.light http:
           %strong
-            = link_to @project.http_url_to_repo
+            = link_to @project.http_url_to_repo, project_path(@project)
         %li
           %span.light ssh:
           %strong
-            = link_to @project.ssh_url_to_repo
+            = link_to @project.ssh_url_to_repo, project_path(@project)
         - if @project.repository.exists?
           %li
             %span.light fs:
