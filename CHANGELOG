@@ -1,11 +1,13 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.10.0 (unreleased)
+  - Fix bug where error messages from Dropzone would not be displayed on the issues page (Stan Hu)
   - Fix broken side-by-side diff view on merge request page (Stan Hu)
   - Set Application controller default URL options to ensure all url_for calls are consistent (Stan Hu)
   - Allow HTML tags in Markdown input
   - Fix code unfold not working on Compare commits page (Stan Hu)
   - Fix dots in Wiki slugs causing errors (Stan Hu)
+  - Make maximum attachment size configurable via Application Settings (Stan Hu)
   - Update poltergeist to version 1.6.0 to support PhantomJS 2.0 (Zeger-Jan van de Weg)
   - Fix cross references when usernames, milestones, or project names contain underscores (Stan Hu)
   - Disable reference creation for comments surrounded by code/preformatted blocks (Stan Hu)
