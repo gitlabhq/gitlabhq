@@ -127,6 +127,14 @@ module ProjectsHelper
     html + count_html
   end
 
+  def project_for_deploy_key(deploy_key)
+    if deploy_key.projects.include?(@project)
+      @project
+    else
+      deploy_key.projects.find { |project| can?(current_user, :read_project, project) }
+    end
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)

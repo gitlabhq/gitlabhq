@@ -8,9 +8,14 @@ class Projects::DeployKeysController < Projects::ApplicationController
 
   def index
     @enabled_keys = @project.deploy_keys
-    @available_keys = available_keys - @enabled_keys
+
+    @available_keys         = accessible_keys - @enabled_keys
     @available_project_keys = current_user.project_deploy_keys - @enabled_keys
-    @available_public_keys = DeployKey.are_public - @available_project_keys - @enabled_keys
+    @available_public_keys  = DeployKey.are_public - @enabled_keys
+
+    # Public keys that are already used by another accessible project are already
+    # in @available_project_keys.
+    @available_public_keys -= @available_project_keys
   end
 
   def show
@@ -35,7 +40,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def enable
-    @key = current_user.accessible_deploy_keys.find(params[:id])
+    @key = accessible_keys.find(params[:id])
     @project.deploy_keys << @key
 
     redirect_to namespace_project_deploy_keys_path(@project.namespace,
@@ -50,8 +55,8 @@ class Projects::DeployKeysController < Projects::ApplicationController
 
   protected
 
-  def available_keys
-    @available_keys ||= current_user.accessible_deploy_keys
+  def accessible_keys
+    @accessible_keys ||= current_user.accessible_deploy_keys
   end
 
   def deploy_key_params

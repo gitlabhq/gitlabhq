@@ -1,8 +1,9 @@
 class Admin::DeployKeysController < Admin::ApplicationController
+  before_filter :deploy_keys, only: [:index]
   before_filter :deploy_key, only: [:show, :destroy]
 
   def index
-    @deploy_keys = DeployKey.are_public
+
   end
 
   def show
@@ -10,12 +11,11 @@ class Admin::DeployKeysController < Admin::ApplicationController
   end
 
   def new
-    @deploy_key = DeployKey.new(public: true)
+    @deploy_key = deploy_keys.new
   end
 
   def create
-    @deploy_key = DeployKey.new(deploy_key_params)
-    @deploy_key.public = true
+    @deploy_key = deploy_keys.new(deploy_key_params)
 
     if @deploy_key.save
       redirect_to admin_deploy_keys_path
@@ -36,7 +36,11 @@ class Admin::DeployKeysController < Admin::ApplicationController
   protected
 
   def deploy_key
-    @deploy_key ||= DeployKey.find(params[:id])
+    @deploy_key ||= deploy_keys.find(params[:id])
+  end
+
+  def deploy_keys
+    @deploy_keys ||= DeployKey.are_public
   end
 
   def deploy_key_params
