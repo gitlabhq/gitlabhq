@@ -547,8 +547,6 @@ GEM
       json
       redis (>= 3.0.6)
       redis-namespace (>= 1.3.1)
-    sidekiq-limit_fetch (2.4.1)
-      sidekiq (>= 2.6.5, < 4.0)
     sidetiq (0.6.3)
       celluloid (>= 0.14.1)
       ice_cube (= 0.11.1)
@@ -771,7 +769,6 @@ DEPENDENCIES
   settingslogic
   shoulda-matchers (~> 2.7.0)
   sidekiq (~> 3.3)
-  sidekiq-limit_fetch
   sidetiq (= 0.6.3)
   simplecov
   sinatra
