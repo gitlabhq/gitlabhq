@@ -49,7 +49,8 @@ describe Gitlab::GoogleCodeImport::Importer do
       expect(issue.description).to include('Patch is attached that adds two new mouse\-actions \(next\_taskprev\_task\)')
       expect(issue.description).to include('that can be used for exactly that purpose.')
       expect(issue.description).to include('all the best!')
-      expect(issue.description).to include('https://storage.googleapis.com/google-code-attachments/tint2/issue-169/comment-0/tint2_task_scrolling.diff')
+      expect(issue.description).to include('[tint2_task_scrolling.diff](https://storage.googleapis.com/google-code-attachments/tint2/issue-169/comment-0/tint2_task_scrolling.diff)')
+      expect(issue.description).to include('![screenshot.png](https://storage.googleapis.com/google-code-attachments/tint2/issue-169/comment-0/screenshot.png)')
     end
 
     it "imports issue comments" do

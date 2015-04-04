@@ -372,6 +372,11 @@
               "fileName" : "tint2_task_scrolling.diff",
               "fileSize" : 3059,
               "mimetype" : "text/x-c++; charset=us-ascii"
+            }, {
+              "attachmentId" : "000",
+              "fileName" : "screenshot.png",
+              "fileSize" : 0,
+              "mimetype" : "image/png"
             } ]
           }, {
             "id" : 1,

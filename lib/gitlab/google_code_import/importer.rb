@@ -314,8 +314,12 @@ module Gitlab
         raw_attachments.map do |attachment|
           next if attachment["isDeleted"]
 
-          link = "https://storage.googleapis.com/google-code-attachments/#{@repo.name}/issue-#{issue_id}/comment-#{comment_id}/#{attachment["fileName"]}"
-          "[#{attachment["fileName"]}](#{link})"
+          filename = attachment["fileName"]
+          link = "https://storage.googleapis.com/google-code-attachments/#{@repo.name}/issue-#{issue_id}/comment-#{comment_id}/#{filename}"
+          
+          text = "[#{filename}](#{link})"
+          text = "!#{text}" if filename =~ /\.(png|jpg|jpeg|gif|bmp|tiff)\z/
+          text
         end.compact
       end
     end
