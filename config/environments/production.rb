@@ -62,6 +62,9 @@ Gitlab::Application.configure do
   # the I18n.default_locale when a translation can not be found)
   config.i18n.fallbacks = true
 
+	## customization
+	config.i18n.available_locales = [:zh, :en]
+
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
 
