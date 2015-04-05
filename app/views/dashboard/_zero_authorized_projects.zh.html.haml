@@ -1,0 +1,53 @@
+- publicish_project_count = Project.publicish(current_user).count
+%h3.page-title 欢迎来到 GitLab!
+%p.light Self-hosted Git管理应用
+%hr
+%div
+  .dashboard-intro-icon
+    %i.fa.fa-bookmark-o
+  .dashboard-intro-text
+    %p.slead
+      您现在还没有任何项目的访问权限.
+      %br
+      - if current_user.can_create_project?
+        您最多可以创建的项目数为
+        %strong= current_user.projects_limit
+      - else
+        如果您被添加到某个项目, 将会显示在这里.
+
+    - if current_user.can_create_project?
+      .link_holder
+        = link_to new_project_path, class: "btn btn-new" do
+          %i.fa.fa-plus
+          新建项目
+
+- if current_user.can_create_group?
+  %hr
+  %div
+    .dashboard-intro-icon
+      %i.fa.fa-users
+    .dashboard-intro-text
+      %p.slead
+        您可以为多个独立的项目创建组.
+        %br
+        组是管理项目和成员的最好方式.
+      .link_holder
+        = link_to new_group_path, class: "btn btn-new" do
+          %i.fa.fa-plus
+          新建组
+
+-if publicish_project_count > 0
+  %hr
+  %div
+    .dashboard-intro-icon
+      %i.fa.fa-globe
+    .dashboard-intro-text
+      %p.slead
+        在这台服务器上共有
+        %strong= publicish_project_count
+        个公开项目.
+        %br
+        公开项目是让每个人都有只读权限的最简单方式.
+      .link_holder
+        = link_to trending_explore_projects_path, class: "btn btn-new" do
+          浏览公开项目

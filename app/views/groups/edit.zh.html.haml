@@ -1,0 +1,37 @@
+.panel.panel-default
+  .panel-heading
+    %strong= @group.name
+    组设置:
+  .panel-body
+    = form_for @group, html: { multipart: true, class: "form-horizontal" }, authenticity_token: true do |f|
+      - if @group.errors.any?
+        .alert.alert-danger
+          %span= @group.errors.full_messages.first
+      = render 'shared/group_form', f: f
+
+      .form-group
+        .col-sm-2
+        .col-sm-10
+          = image_tag group_icon(@group), alt: '', class: 'avatar group-avatar s160'
+          %p.light
+            - if @group.avatar?
+              您可以在此修改您的组头像
+            - else
+              您可以在此上传组头像
+          = render 'shared/choose_group_avatar_button', f: f
+          - if @group.avatar?
+            %hr
+            = link_to '删除头像', group_avatar_path(@group.to_param), data: { confirm: "组头像将会被删除. 您确定?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
+
+      .form-actions
+        = f.submit '保存修改', class: "btn btn-save"
+
+.panel.panel-danger
+  .panel-heading 删除组
+  .panel-body
+    %p
+      删除组将会导致所有的子项目和资源被删除.
+      %br
+      %strong 删除的组不可恢复!
+
+    = link_to '删除组', @group, data: {confirm: '删除组不可恢复! 您确定?'}, method: :delete, class: "btn btn-remove"

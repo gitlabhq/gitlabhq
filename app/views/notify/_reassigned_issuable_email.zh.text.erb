@@ -1,0 +1,6 @@
+重新指定 <%= issuable.class.model_name.human.titleize %> <%= issuable.iid %>
+
+<%= url_for([issuable.project.namespace.becomes(Namespace), issuable.project, issuable, {only_path: false}]) %>
+
+指定人发生改变 <%= "from #{@previous_assignee.name}" if @previous_assignee -%>
+ to <%= "#{issuable.assignee_id ? issuable.assignee_name : '未指定'}" %>

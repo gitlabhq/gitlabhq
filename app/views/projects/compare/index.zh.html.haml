@@ -1,0 +1,17 @@
+= render "projects/commits/head"
+
+%h3.page-title
+  对比视图
+%p.slead
+  对比分支, 标签或提交范围
+  %br
+  在输入框中填写提交id如
+  %code.label-branch 4eedf23
+  或分支/标签名称如
+  %code.label-branch master
+  然后点击对比按钮后即可查看提交列表和代码对比效果
+  %br
+  <b>源版本修改</b>显示在第一列, <b>目标版本修改</b>显示在第二列.
+
+
+= render "form"

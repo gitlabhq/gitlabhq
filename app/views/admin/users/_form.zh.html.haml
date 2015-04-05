@@ -1,0 +1,90 @@
+.user_new
+  = form_for [:admin, @user], html: { class: 'form-horizontal fieldset-form' } do |f|
+    -if @user.errors.any?
+      #error_explanation
+        .alert.alert-danger
+          - @user.errors.full_messages.each do |msg|
+            %p= msg
+
+    %fieldset
+      %legend 帐号
+      .form-group
+        = f.label :name, class: 'control-label'
+        .col-sm-10
+          = f.text_field :name, required: true, autocomplete: "off", class: 'form-control'
+          %span.help-inline * 必填
+      .form-group
+        = f.label :username, class: 'control-label'
+        .col-sm-10
+          = f.text_field :username, required: true, autocomplete: "off", class: 'form-control'
+          %span.help-inline * 必填
+      .form-group
+        = f.label :email, class: 'control-label'
+        .col-sm-10
+          = f.text_field :email, required: true, autocomplete: "off", class: 'form-control'
+          %span.help-inline * 必填
+
+    - if @user.new_record?
+      %fieldset
+        %legend 密码
+        .form-group
+          = f.label :password, class: 'control-label'
+          .col-sm-10
+            %strong
+              重置链接将会生成并发送给用户.
+              %br
+              用户在第一次登录的时候会被强制要求设置密码.
+    - else
+      %fieldset
+        %legend Password
+        .form-group
+          = f.label :password, class: 'control-label'
+          .col-sm-10= f.password_field :password, disabled: f.object.force_random_password, class: 'form-control'
+        .form-group
+          = f.label :password_confirmation, class: 'control-label'
+          .col-sm-10= f.password_field :password_confirmation, disabled: f.object.force_random_password, class: 'form-control'
+
+    %fieldset
+      %legend 访问控制
+      .form-group
+        = f.label :projects_limit, class: 'control-label'
+        .col-sm-10= f.number_field :projects_limit, class: 'form-control'
+
+      .form-group
+        = f.label :can_create_group, class: 'control-label'
+        .col-sm-10= f.check_box :can_create_group
+
+      .form-group
+        = f.label :admin, class: 'control-label'
+        - if current_user == @user
+          .col-sm-10= f.check_box :admin, disabled: true
+          .col-sm-10 您不能删除你自己的管理员权限
+        - else
+          .col-sm-10= f.check_box :admin
+    %fieldset
+      %legend 用户资料
+      .form-group
+        = f.label :avatar, class: 'control-label'
+        .col-sm-10
+          = f.file_field :avatar
+
+      .form-group
+        = f.label :skype, class: 'control-label'
+        .col-sm-10= f.text_field :skype, class: 'form-control'
+      .form-group
+        = f.label :linkedin, class: 'control-label'
+        .col-sm-10= f.text_field :linkedin, class: 'form-control'
+      .form-group
+        = f.label :twitter, class: 'control-label'
+        .col-sm-10= f.text_field :twitter, class: 'form-control'
+      .form-group
+        = f.label :website_url, '网站', class: 'control-label'
+        .col-sm-10= f.text_field :website_url, class: 'form-control'
+
+    .form-actions
+      - if @user.new_record?
+        = f.submit '创建用户', class: "btn btn-create"
+        = link_to '取消', admin_users_path, class: "btn btn-cancel"
+      - else
+        = f.submit '保存修改', class: "btn btn-save"
+        = link_to '取消', admin_user_path(@user), class: "btn btn-cancel"

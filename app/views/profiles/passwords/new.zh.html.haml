@@ -1,0 +1,26 @@
+%h3.page-title 设置新密码
+%hr
+= form_for @user, url: profile_password_path, method: :post, html: { class: 'form-horizontal '} do |f|
+  %p.slead
+    在继续之前请设置新密码.
+    %br
+    成功更新密码之后您会被重定向到登录页.
+  -if @user.errors.any?
+    .alert.alert-danger
+      %ul
+        - @user.errors.full_messages.each do |msg|
+          %li= msg
+  
+  - unless @user.password_automatically_set?
+    .form-group
+      = f.label :current_password, class: 'control-label'
+      .col-sm-10= f.password_field :current_password, required: true, class: 'form-control'
+  .form-group
+    = f.label :password, class: 'control-label'
+    .col-sm-10= f.password_field :password, required: true, class: 'form-control'
+  .form-group
+    = f.label :password_confirmation, class: 'control-label'
+    .col-sm-10
+      = f.password_field :password_confirmation, required: true, class: 'form-control'
+  .form-actions
+    = f.submit '设置新密码', class: "btn btn-create"

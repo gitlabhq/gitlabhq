@@ -1,0 +1,42 @@
+%ul.nav.nav-sidebar
+  = nav_link(path: 'groups#show', html_options: {class: 'home'}) do
+    = link_to group_path(@group), title: "首页" do
+      %i.fa.fa-dashboard
+      %span
+        活动
+  - if current_user
+    = nav_link(controller: [:group, :milestones]) do
+      = link_to group_milestones_path(@group), title: '里程碑' do
+        %i.fa.fa-clock-o
+        %span
+          里程碑
+  = nav_link(path: 'groups#issues') do
+    = link_to issues_group_path(@group), title: '问题' do
+      %i.fa.fa-exclamation-circle
+      %span
+        问题
+        - if current_user
+          %span.count= Issue.opened.of_group(@group).count
+  = nav_link(path: 'groups#merge_requests') do
+    = link_to merge_requests_group_path(@group), title: '合并请求' do
+      %i.fa.fa-tasks
+      %span
+        合并请求
+        - if current_user
+          %span.count= MergeRequest.opened.of_group(@group).count
+  = nav_link(controller: [:group_members]) do
+    = link_to group_group_members_path(@group), title: '成员' do
+      %i.fa.fa-users
+      %span
+        成员
+
+  - if can?(current_user, :manage_group, @group)
+    = nav_link(html_options: { class: "#{"active" if group_settings_page?} separate-item" }) do
+      = link_to edit_group_path(@group), title: '设置', class: "tab no-highlight" do
+        %i.fa.fa-cogs
+        %span
+          设置
+          %i.fa.fa-angle-down
+
+  - if group_settings_page?
+    = render 'groups/settings_nav'

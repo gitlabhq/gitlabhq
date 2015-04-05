@@ -1,0 +1,39 @@
+%h3.page-title Fork项目
+%p.lead
+  点击fork项目到用户或组
+%hr
+
+.fork-namespaces
+  - @namespaces.in_groups_of(6, false) do |group|
+    .row
+      - group.each do |namespace|
+        .col-md-2.col-sm-3
+          - if fork = namespace.find_fork_of(@project)
+            .thumbnail.fork-exists-thumbnail
+              = link_to project_path(fork), title: "访问fork的项目", class: 'has_tooltip' do
+                = image_tag namespace_icon(namespace, 200)
+                .caption
+                  %h4=namespace.human_name
+                  %p
+                    = namespace.path
+          - else
+            .thumbnail.fork-thumbnail
+              = link_to namespace_project_fork_path(@project.namespace, @project, namespace_key: namespace.id), title: "Fork here", method: "POST", class: 'has_tooltip' do
+                = image_tag namespace_icon(namespace, 200)
+                .caption
+                  %h4=namespace.human_name
+                  %p
+                    = namespace.path
+
+  %p.light
+    Fork是项目仓库的一份拷贝.
+    %br
+    Fork一个项目允许您做出修改且不影响原有项目.
+
+.save-project-loader.hide
+  .center
+    %h2
+      %i.fa.fa-spinner.fa-spin
+      正在fork仓库
+    %p 请稍候， 操作完成后此页将会自动刷新.
+

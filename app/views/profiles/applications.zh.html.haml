@@ -1,0 +1,49 @@
+%h3.page-title
+  应用设置
+%p.light
+  下面为OAuth2协议设置.
+
+%fieldset.oauth-applications
+  %legend 您的应用
+  %p= link_to '新建应用', new_oauth_application_path, class: 'btn btn-success'
+  - if @applications.any?
+    %table.table.table-striped
+      %thead
+        %tr
+          %th 名称
+          %th 回调URL
+          %th 客户端
+          %th
+          %th
+      %tbody
+        - @applications.each do |application|
+          %tr{:id => "application_#{application.id}"}
+            %td= link_to application.name, oauth_application_path(application)
+            %td
+              - application.redirect_uri.split.each do |uri|
+                %div= uri
+            %td= application.access_tokens.count
+            %td= link_to '编辑', edit_oauth_application_path(application), class: 'btn btn-link btn-sm'
+            %td= render 'doorkeeper/applications/delete_form', application: application
+
+%fieldset.oauth-authorized-applications.prepend-top-20
+  %legend 已认证的应用
+
+  - if @authorized_tokens.any?
+    %table.table.table-striped
+      %thead
+        %tr
+          %th 名称
+          %th 认证于
+          %th 范围
+          %th
+      %tbody
+        - @authorized_apps.each do |app|
+          - token = app.authorized_tokens.order('created_at desc').first
+          %tr{:id => "application_#{app.id}"}
+            %td= app.name
+            %td= token.created_at
+            %td= token.scopes
+            %td= render 'doorkeeper/authorized_applications/delete_form', application: app
+  - else
+    %p.light 您还没有已认证的应用

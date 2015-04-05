@@ -1,0 +1,53 @@
+%h3.page-title
+  设计设置
+%p.light
+  外观设置会保存到你的用户资料中, 在所有设备中都可用.
+%hr
+
+= form_for @user, url: profile_path, remote: true, method: :put do |f|
+  %fieldset.application-theme
+    %legend
+      应用主题
+    .themes_opts
+      = label_tag do
+        .prev.default
+        = f.radio_button :theme_id, 1
+        默认
+
+      = label_tag do
+        .prev.classic
+        = f.radio_button :theme_id, 2
+        经典
+
+      = label_tag do
+        .prev.modern
+        = f.radio_button :theme_id, 3
+        现代
+
+      = label_tag do
+        .prev.gray
+        = f.radio_button :theme_id, 4
+        灰度
+
+      = label_tag do
+        .prev.violet
+        = f.radio_button :theme_id, 5
+        紫色
+
+      = label_tag do
+        .prev.blue
+        = f.radio_button :theme_id, 6
+        蓝色
+    %br
+    .clearfix
+
+  %fieldset.code-preview-theme
+    %legend
+      代码预览主题
+    .code_highlight_opts
+      - color_schemes.each do |color_scheme_id, color_scheme|
+        = label_tag do
+          .prev
+            = image_tag "#{color_scheme}-scheme-preview.png"
+          = f.radio_button :color_scheme_id, color_scheme_id
+          = color_scheme.gsub(/[-_]+/, ' ').humanize

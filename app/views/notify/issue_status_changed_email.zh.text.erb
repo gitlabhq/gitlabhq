@@ -1,0 +1,4 @@
+<%= @updated_by.name %>将状态修改为<%= @issue_status %>
+
+问题 <%= @issue.iid %>: <%= url_for(namespace_project_issue_url(@issue.project.namespace, @issue.project, @issue)) %>
+

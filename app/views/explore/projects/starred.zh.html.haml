@@ -1,0 +1,10 @@
+.explore-trending-block
+  %p.lead
+    %i.fa.fa-star
+    查看收藏最多的项目
+  %hr
+  .public-projects
+    %ul.bordered-list
+      = render @starred_projects
+
+  = paginate @starred_projects, theme: 'gitlab'

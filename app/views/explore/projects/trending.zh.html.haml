@@ -1,0 +1,11 @@
+.explore-trending-block
+  %p.lead
+    %i.fa.fa-comments-o
+    查看上月讨论最多的项目
+  %hr
+  .public-projects
+    %ul.bordered-list
+      = render @trending_projects
+
+  .center
+    = link_to '显示所有项目', explore_projects_path, class: 'btn btn-primary'

@@ -1,0 +1,22 @@
+%h3.page-title 服务模板
+%p.light 服务模板允许您为项目服务设置默认值
+
+%table.table
+  %thead
+    %tr
+      %th
+      %th 服务
+      %th 描述
+      %th 最近编辑
+  - @services.sort_by(&:title).each do |service|
+    %tr
+      %td
+        = icon("copy", class: 'clgray')
+      %td
+        = link_to edit_admin_application_settings_service_path(service.id) do
+          %strong= service.title
+      %td
+        = service.description
+      %td.light
+        = time_ago_in_words service.updated_at
+        ago

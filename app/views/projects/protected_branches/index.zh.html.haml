@@ -1,0 +1,35 @@
+%h3.page-title 受保护的分支
+%p.light 让稳定分支保持安全状态, 强制开发人员使用合并请求
+%hr
+
+.alert.alert-info
+  %p 受保护的分支设计用于
+  %ul
+    %li 阻止除 #{link_to "masters", help_page_path("permissions", "permissions"), class: "vlink"} 外的任何人推送
+    %li 阻止所有人强制推送到分支
+    %li 阻止所有人删除分支
+  %p 阅读更多关于 #{link_to "项目权限", help_page_path("permissions", "permissions"), class: "underlined-link"} 的信息
+
+- if can? current_user, :admin_project, @project
+  = form_for [@project.namespace.becomes(Namespace), @project, @protected_branch], html: { class: 'form-horizontal' } do |f|
+    -if @protected_branch.errors.any?
+      .alert.alert-danger
+        %ul
+          - @protected_branch.errors.full_messages.each do |msg|
+            %li= msg
+
+    .form-group
+      = f.label :name, "分支", class: 'control-label'
+      .col-sm-10
+        = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , {include_blank: "请选择分支"}, {class: "select2"})
+    .form-group
+      = f.label :developers_can_push, class: 'control-label' do
+        开发人员可以推送
+      .col-sm-10
+        .checkbox
+          = f.check_box :developers_can_push
+          %span.descr 允许开发人员推送到分支
+    .form-actions
+      = f.submit '保护', class: "btn-create btn"
+= render 'branches_list'
+

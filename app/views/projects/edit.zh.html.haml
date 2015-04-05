@@ -1,0 +1,209 @@
+.project-edit-container
+  .project-edit-errors
+  .project-edit-content
+    %div
+      %h3.page-title
+        项目设置
+      %hr
+      .panel-body
+        = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit_project form-horizontal" }, authenticity_token: true do |f|
+
+          %fieldset
+            .form-group.project_name_holder
+              = f.label :name, class: 'control-label' do
+                项目名称
+              .col-sm-10
+                = f.text_field :name, placeholder: "示例项目", class: "form-control", id: "project_name_edit"
+
+
+            .form-group
+              = f.label :description, class: 'control-label' do
+                项目描述
+                %span.light (可选)
+              .col-sm-10
+                = f.text_area :description, placeholder: "超酷的项目", class: "form-control", rows: 3, maxlength: 250
+
+            - if @project.repository.exists? && @project.repository.branch_names.any?
+              .form-group
+                = f.label :default_branch, "默认分支", class: 'control-label'
+                .col-sm-10= f.select(:default_branch, @repository.branch_names, {}, {class: 'select2 select-wide'})
+
+
+          = render "visibility_level", f: f, visibility_level: @project.visibility_level, can_change_visibility_level: can?(current_user, :change_visibility_level, @project)
+
+          %fieldset.features
+            %legend
+              标签:
+            .form-group
+              = f.label :tag_list, "标签", class: 'control-label'
+              .col-sm-10
+                = f.text_field :tag_list, maxlength: 2000, class: "form-control"
+                %p.hint 以,号分隔标签.
+
+          %fieldset.features
+            %legend
+              功能点:
+            .form-group
+              = f.label :issues_enabled, "问题", class: 'control-label'
+              .col-sm-10
+                .checkbox
+                  = f.check_box :issues_enabled
+                  %span.descr 用于此项目的轻量级问题跟踪系统
+
+            .form-group
+              = f.label :merge_requests_enabled, "合并请求", class: 'control-label'
+              .col-sm-10
+                .checkbox
+                  = f.check_box :merge_requests_enabled
+                  %span.descr 提交修改给上游合并.
+
+            .form-group
+              = f.label :wiki_enabled, "Wiki", class: 'control-label'
+              .col-sm-10
+                .checkbox
+                  = f.check_box :wiki_enabled
+                  %span.descr 用于制作项目文档页面
+
+            .form-group
+              = f.label :snippets_enabled, "Snippets", class: 'control-label'
+              .col-sm-10
+                .checkbox
+                  = f.check_box :snippets_enabled
+                  %span.descr 与其它人分享git仓库之外的代码
+
+          %fieldset.features
+            %legend
+              项目头像:
+            .form-group
+              .col-sm-2
+              .col-sm-10
+                - if @project.avatar?
+                  = project_icon("#{@project.namespace.to_param}/#{@project.to_param}", alt: '', class: 'avatar project-avatar s160')
+                %p.light
+                  - if @project.avatar_in_git
+                    仓库里的项目头像: #{ @project.avatar_in_git }
+                %p.light
+                  - if @project.avatar?
+                    您可以在此修改项目头像
+                  - else
+                    您可以在此上传头像
+                %a.choose-btn.btn.btn-sm.js-choose-project-avatar-button
+                  %i.icon-paper-clip
+                  %span 选择文件...
+                &nbsp;
+                %span.file_name.js-avatar-filename File name...
+                = f.file_field :avatar, class: "js-project-avatar-input hidden"
+                .light 允许的最大文件大小是200KB.
+                - if @project.avatar?
+                  %hr
+                  = link_to '删除头像', namespace_project_avatar_path(@project.namespace, @project), data: { confirm: "将删除项目头像. 您确定?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
+
+          .form-actions
+            = f.submit '保存修改', class: "btn btn-save"
+
+
+
+    .danger-settings
+      - if can? current_user, :archive_project, @project
+        - if @project.archived?
+          .panel.panel-success
+            .panel-heading
+              解包项目
+            .panel-body
+              %p
+                解包项目会把项目标识为活跃状态.
+                %br
+                项目将可以提交代码.
+                %br
+                %strong 一旦项目被激活, 该项目将会在搜索和面板中显示.
+              = link_to '解包', unarchive_namespace_project_path(@project.namespace, @project),
+                  data: { confirm: "您确认要解包该项目?\n一旦这个项目被解包, 项目将被激活, 激活后项目可以提交代码." },
+                  method: :post, class: "btn btn-success"
+        - else
+          .panel.panel-warning
+            .panel-heading
+              打包项目
+            .panel-body
+              %p
+                打包项目将会将项目标识为只读.
+                %br
+                将会从面板只隐藏且不会在搜索中显示.
+                %br
+                %strong 打包的项目将不能提交代码!
+              = link_to '打包', archive_namespace_project_path(@project.namespace, @project),
+                  data: { confirm: "您确认您要打包此项目?\n打包的项目不能提交代码." },
+                  method: :post, class: "btn btn-warning"
+      - else
+        .nothing-here-block 只有项目所有者能打包项目
+
+      .panel.panel-default.panel.panel-warning
+        .panel-heading 重命名项目
+        .errors-holder
+        .panel-body
+          = form_for([@project.namespace.becomes(Namespace), @project], html: { class: 'form-horizontal' }) do |f|
+            .form-group.project_name_holder
+              = f.label :name, class: 'control-label' do
+                项目名称
+              .col-sm-9
+                .form-group
+                  = f.text_field :name, placeholder: "示例项目", class: "form-control"
+            .form-group
+              = f.label :path, class: 'control-label' do
+                %span 路径
+              .col-sm-9
+                .form-group
+                  .input-group
+                    .input-group-addon
+                      #{URI.join(root_url, @project.namespace.path)}/
+                    = f.text_field :path, class: 'form-control'
+                    %span.input-group-addon .git
+                %ul
+                  %li 注意了! 重命名项目会产生意想不到的副作用.
+                  %li 您需要更新您的本地仓库指向新的地址.
+            .form-actions
+              = f.submit '重命名', class: "btn btn-warning"
+
+      - if can?(current_user, :change_namespace, @project)
+        .panel.panel-default.panel.panel-danger
+          .panel-heading 移交项目
+          .errors-holder
+          .panel-body
+            = form_for([@project.namespace.becomes(Namespace), @project], url: transfer_namespace_project_path(@project.namespace, @project), method: :put, remote: true, html: { class: 'transfer-project form-horizontal' }) do |f|
+              .form-group
+                = label_tag :new_namespace_id, nil, class: 'control-label' do
+                  %span 命名空间
+                .col-sm-10
+                  .form-group
+                    = select_tag :new_namespace_id, namespaces_options(@project.namespace_id), { prompt: '选择命名空间', class: 'select2' }
+                  %ul
+                    %li 注意了! 修改项目命名空间会产生意想不到的副作用.
+                    %li 您只能转移项目到您管理的命名空间.
+                    %li 您需要更新您的本地仓库指向新的地址.
+              .form-actions
+                = f.submit '移交', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => transfer_project_message(@project) }
+      - else
+        .nothing-here-block 只有项目所有者可以移交项目
+
+      - if can?(current_user, :remove_project, @project)
+        .panel.panel-default.panel.panel-danger
+          .panel-heading 删除项目
+          .panel-body
+            = form_tag(namespace_project_path(@project.namespace, @project), method: :delete, html: { class: 'form-horizontal'}) do
+              %p
+                删除项目会删除其仓库及其所有关联资源如问题,合并请求等.
+                %br
+                %strong 删除的项目不能恢复!
+
+              = link_to '删除项目', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }
+      - else
+        .nothing-here-block 只有项目所有者可以删除项目
+
+.save-project-loader.hide
+  .center
+    %h2
+      %i.fa.fa-spinner.fa-spin
+      保存项目.
+    %p 请稍候, 完成后此页面将会自动刷新.
+
+
+= render 'shared/confirm_modal', phrase: @project.path

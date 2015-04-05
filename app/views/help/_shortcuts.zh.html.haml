@@ -1,0 +1,209 @@
+#modal-shortcuts.modal.hide{tabindex: -1}
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %a.close{href: "#", "data-dismiss" => "modal"} ×
+        %h4
+          键盘快捷键
+          %small
+            = link_to '(显示所有)', '#', class: 'js-more-help-button'
+      .modal-body.shortcuts-cheatsheet
+        .col-lg-4
+          %table.shortcut-mappings
+            %tbody
+              %tr
+                %th
+                %th 全局快捷键
+              %tr
+                %td.shortcut
+                  .key s
+                %td 搜索框取得焦点
+              %tr
+                %td.shortcut
+                  .key ?
+                %td 显示此窗口
+            %tbody
+              %tr
+                %th
+                %th 浏览项目文件
+              %tr
+                %td.shortcut
+                  .key
+                    %i.fa.fa-arrow-up
+                %td 上移所选项
+              %tr
+                %td.shortcut
+                  .key
+                    %i.fa.fa-arrow-down
+                %td 下移所选项
+              %tr
+                %td.shortcut
+                  .key enter
+                %td 打开所选
+
+        .col-lg-4
+          %table.shortcut-mappings
+            %tbody{ class: 'hidden-shortcut project', style: 'display:none' }
+              %tr
+                %th
+                %th 全局面表盘
+              %tr
+                %td.shortcut
+                  .key g
+                  .key a
+                %td
+                  前往活动动态
+              %tr
+                %td.shortcut
+                  .key g
+                  .key p
+                %td
+                  前往项目列表页
+              %tr
+                %td.shortcut
+                  .key g
+                  .key i
+                %td
+                  前往问题列表页
+              %tr
+                %td.shortcut
+                  .key g
+                  .key m
+                %td
+                  前往合并请求页
+            %tbody
+              %tr
+                %th
+                %th 项目
+              %tr
+                %td.shortcut
+                  .key g
+                  .key p
+                %td
+                  前往项目的活动动态页
+              %tr
+                %td.shortcut
+                  .key g
+                  .key f
+                %td
+                  前往文件列表页
+              %tr
+                %td.shortcut
+                  .key g
+                  .key c
+                %td
+                  前往提交列表页
+              %tr
+                %td.shortcut
+                  .key g
+                  .key n
+                %td
+                  前往网络图示页
+              %tr
+                %td.shortcut
+                  .key g
+                  .key g
+                %td
+                  前往图示页
+              %tr
+                %td.shortcut
+                  .key g
+                  .key i
+                %td
+                  前往问题列表页
+              %tr
+                %td.shortcut
+                  .key g
+                  .key m
+                %td
+                  前往合并请求页
+              %tr
+                %td.shortcut
+                  .key g
+                  .key s
+                %td
+                  前往代码片段页
+        .col-lg-4
+          %table.shortcut-mappings
+            %tbody{ class: 'hidden-shortcut network', style: 'display:none' }
+              %tr
+                %th
+                %th 网络图示页
+              %tr
+                %td.shortcut
+                  .key
+                    %i.fa.fa-arrow-left
+                  \/
+                  .key h
+                %td 向左滚
+              %tr
+                %td.shortcut
+                  .key
+                    %i.fa.fa-arrow-right
+                  \/
+                  .key l
+                %td 向右滚
+              %tr
+                %td.shortcut
+                  .key
+                    %i.fa.fa-arrow-up
+                  \/
+                  .key k
+                %td 向上滚
+              %tr
+                %td.shortcut
+                  .key
+                    %i.fa.fa-arrow-down
+                  \/
+                  .key j
+                %td 向下滚
+              %tr
+                %td.shortcut
+                  .key
+                    shift
+                    %i.fa.fa-arrow-up
+                  \/
+                  .key
+                    shift k
+                %td 滚至顶部
+              %tr
+                %td.shortcut
+                  .key
+                    shift
+                    %i.fa.fa-arrow-down
+                  \/
+                  .key
+                    shift j
+                %td 滚至底部
+            %tbody{ class: 'hidden-shortcut issues', style: 'display:none' }
+              %tr
+                %th
+                %th 问题列表
+              %tr
+                %td.shortcut
+                  .key a
+                %td 修改指定人
+              %tr
+                %td.shortcut
+                  .key m
+                %td 修改里程碑
+            %tbody{ class: 'hidden-shortcut merge_reuests', style: 'display:none' }
+              %tr
+                %th
+                %th 合并请求
+              %tr
+                %td.shortcut
+                  .key a
+                %td 修改指定人
+              %tr
+                %td.shortcut
+                  .key m
+                %td 修改里程碑
+
+
+:javascript
+  $('.js-more-help-button').click(function(e){
+      $(this).remove()
+      $('.hidden-shortcut').show()
+      e.preventDefault()
+  });

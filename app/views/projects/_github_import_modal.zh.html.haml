@@ -1,0 +1,13 @@
+%div#github_import_modal.modal.hide
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %a.close{href: "#", "data-dismiss" => "modal"} ×
+        %h3 从GitHub导入项目
+      .modal-body
+        要启用从GitHub导入项目的功能,
+        - if current_user.admin?
+          您需要
+        - else
+          您的GitLab管理员需要
+        == #{link_to '设置OAuth集成', 'https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/integration/github.md'}.

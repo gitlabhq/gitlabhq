@@ -1,0 +1,10 @@
+!!! 5
+%html{ lang: "zh"}
+  = render "layouts/head", title: "搜索"
+  %body{class: "#{app_theme}  application", :'data-page' => body_data_page}
+    = render "layouts/broadcast"
+    = render "layouts/head_panel", title: link_to("搜索", search_path)
+    .container.navless-container
+      .content
+        = render "layouts/flash"
+        = yield

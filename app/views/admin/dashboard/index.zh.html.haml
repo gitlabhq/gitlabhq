@@ -1,0 +1,137 @@
+.admin-dashboard
+  .row
+    .col-md-4
+      %h4 统计数据
+      %hr
+      %p
+        Fork
+        %span.light.pull-right
+          = ForkedProjectLink.count
+      %p
+        问题
+        %span.light.pull-right
+          = Issue.count
+      %p
+        合并请求
+        %span.light.pull-right
+          = MergeRequest.count
+      %p
+        笔记
+        %span.light.pull-right
+          = Note.count
+      %p
+        代码片段
+        %span.light.pull-right
+          = Snippet.count
+      %p
+        SSH Key
+        %span.light.pull-right
+          = Key.count
+      %p
+        里程碑
+        %span.light.pull-right
+          = Milestone.count
+      %p
+        活跃用户
+        %span.light.pull-right
+          = User.active.count
+    .col-md-4
+      %h4
+        特性
+      %hr
+      %p
+        注册
+        %span.light.pull-right
+          = boolean_to_icon signup_enabled?
+      %p
+        LDAP
+        %span.light.pull-right
+          = boolean_to_icon Gitlab.config.ldap.enabled
+      %p
+        Gravatar(头像)
+        %span.light.pull-right
+          = boolean_to_icon gravatar_enabled?
+      %p
+        OmniAuth(认证)
+        %span.light.pull-right
+          = boolean_to_icon Gitlab.config.omniauth.enabled
+    .col-md-4
+      %h4 组件
+      %hr
+      %p
+        GitLab
+        %span.pull-right
+          = Gitlab::VERSION
+      %p
+        GitLab Shell
+        %span.pull-right
+          = Gitlab::Shell.new.version
+      %p
+        GitLab API
+        %span.pull-right
+          = API::API::version
+      %p
+        Ruby
+        %span.pull-right
+          #{RUBY_VERSION}p#{RUBY_PATCHLEVEL}
+
+      %p
+        Rails
+        %span.pull-right
+          #{Rails::VERSION::STRING}
+  %hr
+  .row
+    .col-sm-4
+      .light-well
+        %h4 项目
+        .data
+          = link_to admin_namespaces_projects_path do
+            %h1= Project.count
+          %hr
+          = link_to('新建项目', new_project_path, class: "btn btn-new")
+    .col-sm-4
+      .light-well
+        %h4 用户
+        .data
+          = link_to admin_users_path do
+            %h1= User.count
+          %hr
+          = link_to '新建用户', new_admin_user_path, class: "btn btn-new"
+    .col-sm-4
+      .light-well
+        %h4 组
+        .data
+          = link_to admin_groups_path do
+            %h1= Group.count
+          %hr
+          = link_to '新建组', new_admin_group_path, class: "btn btn-new"
+
+  .row.prepend-top-10
+    .col-md-4
+      %h4 最近的项目
+      %hr
+      - @projects.each do |project|
+        %p
+          = link_to project.name_with_namespace, [:admin, project.namespace.becomes(Namespace), project], class: 'str-truncated'
+          %span.light.pull-right
+            #{time_ago_with_tooltip(project.created_at)}
+
+    .col-md-4
+      %h4 最近注册的用户
+      %hr
+      - @users.each do |user|
+        %p
+          = link_to [:admin, user], class: 'str-truncated' do
+            = user.name
+          %span.light.pull-right
+            #{time_ago_with_tooltip(user.created_at)}
+
+    .col-md-4
+      %h4 最近创建的组
+      %hr
+      - @groups.each do |group|
+        %p
+          = link_to [:admin, group], class: 'str-truncated' do
+            = group.name
+          %span.light.pull-right
+            #{time_ago_with_tooltip(group.created_at)}

@@ -1,0 +1,17 @@
+%h3.page-title
+  公开代码片段
+
+  .pull-right
+    
+    - if current_user
+      = link_to new_snippet_path, class: "btn btn-new btn-grouped", title: "New Snippet" do
+        添加代码片段
+      = link_to user_snippets_path(current_user), class: "btn btn-grouped"  do
+        我的代码片段
+
+%p.light
+  由您和其它用户创建的代码片段显示在这里
+
+%hr
+= render 'snippets'
+

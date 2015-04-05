@@ -1,0 +1,9 @@
+.save-project-loader
+  .center
+    %h2
+      %i.fa.fa-spinner.fa-spin
+      正在导入.
+    %p.monospace git clone --bare #{hidden_pass_url(@project.import_url)}
+    %p 请稍等我们正在为你导入仓库. 您随时可以刷新.
+    :javascript
+      new ProjectImport();

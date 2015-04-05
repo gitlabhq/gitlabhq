@@ -1,0 +1,36 @@
+%h3.page-title
+  系统钩子
+
+%p.light
+  #{link_to "系统钩子 ", help_page_path("system_hooks", "system_hooks"), class: "vlink"} 用于绑定GitLab用户或项目创建事件.
+
+%hr
+
+
+= form_for @hook, as: :hook, url: admin_hooks_path, html: { class: 'form-horizontal' } do |f|
+  -if @hook.errors.any?
+    .alert.alert-danger
+      - @hook.errors.full_messages.each do |msg|
+        %p= msg
+  .form-group
+    = f.label :url, "URL:", class: 'control-label'
+    .col-sm-10
+      = f.text_field :url, class: "form-control"
+  .form-actions
+    = f.submit "添加系统钩子", class: "btn btn-create"
+%hr
+
+-if @hooks.any?
+  .panel.panel-default
+    .panel-heading
+      系统钩子(#{@hooks.count})
+    %ul.well-list
+      - @hooks.each do |hook|
+        %li
+          .list-item-name
+            = link_to admin_hook_path(hook) do
+              %strong= hook.url
+
+          .pull-right
+            = link_to '测试钩子', admin_hook_test_path(hook), class: "btn btn-sm"
+            = link_to '删除钩子', admin_hook_path(hook), data: { confirm: '您确定?' }, method: :delete, class: "btn btn-remove btn-sm"

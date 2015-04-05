@@ -1,0 +1,5 @@
+.top-tabs
+  = link_to namespace_project_merge_requests_path(@project.namespace, @project), class: "tab #{'active' if current_page?(namespace_project_merge_requests_path(@project.namespace, @project)) }" do
+    %span
+    合并请求
+

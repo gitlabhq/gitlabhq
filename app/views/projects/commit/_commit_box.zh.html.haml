@@ -1,0 +1,52 @@
+.pull-right
+  %div
+    - if @notes_count > 0
+      %span.btn.disabled.btn-grouped
+        %i.fa.fa-comment
+        = @notes_count
+    .pull-left.btn-group
+      %a.btn.btn-grouped.dropdown-toggle{ data: {toggle: :dropdown} }
+        %i.fa.fa-download
+        下载另存为
+        %span.caret
+      %ul.dropdown-menu
+        %li= link_to "Email补丁", namespace_project_commit_path(@project.namespace, @project, @commit, format: :patch)
+        %li= link_to "普通diff文件",    namespace_project_commit_path(@project.namespace, @project, @commit, format: :diff)
+    = link_to namespace_project_tree_path(@project.namespace, @project, @commit), class: "btn btn-primary btn-grouped" do
+      %span Browse Code »
+  %div
+
+%p
+  %span.light 提交
+  = link_to @commit.id, namespace_project_commit_path(@project.namespace, @project, @commit)
+.commit-info-row
+  %span.light 作者为
+  %strong
+    = commit_author_link(@commit, avatar: true, size: 24)
+  #{time_ago_with_tooltip(@commit.authored_date)}
+
+- if @commit.different_committer?
+  .commit-info-row
+    %span.light 提交者为
+    %strong
+      = commit_committer_link(@commit, avatar: true, size: 24)
+    #{time_ago_with_tooltip(@commit.committed_date)}
+
+.commit-info-row
+  %span.cgray= pluralize(@commit.parents.count, "parent")
+  - @commit.parents.each do |parent|
+    = link_to parent.short_id, namespace_project_commit_path(@project.namespace, @project, parent)
+
+.commit-info-row.branches
+  %i.fa.fa-spinner.fa-spin
+
+.commit-box
+  %h3.commit-title
+    = gfm escape_once(@commit.title)
+  - if @commit.description.present?
+    %pre.commit-description
+      = preserve(gfm(escape_once(@commit.description)))
+
+:coffeescript
+  $ ->
+    $(".commit-info-row.branches").load("#{branches_namespace_project_commit_path(@project.namespace, @project, @commit.id)}")

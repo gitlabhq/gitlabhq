@@ -1,0 +1,16 @@
+.panel.panel-default
+  .panel-heading
+    %strong #{@group.name}
+    组成员
+    %small
+      (#{members.count})
+    .panel-head-actions
+      = link_to group_group_members_path(@group), class: 'btn btn-sm' do
+        %i.fa.fa-pencil-square-o
+        编辑组成员
+  %ul.well-list
+    - members.each do |member|
+      = render 'groups/group_members/group_member', member: member, show_controls: false
+    - if members.count > 20
+      %li
+        组成员数还有 #{members.count - 20} 个. 访问 #{link_to '组成员页面', group_group_members_path(@group)} 查看完整的列表

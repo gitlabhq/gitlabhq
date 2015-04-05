@@ -1,0 +1,22 @@
+#modal-confirm-danger.modal.hide{tabindex: -1}
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %a.close{href: "#", "data-dismiss" => "modal"} ×
+        %h4 请确认
+
+      .modal-body
+        %p.cred.lead.js-confirm-text
+
+        %p
+          此操作会导致数据丢失.
+          为防止意外操作请确认这是你的真实要求.
+          %br
+          请输入
+          %code.js-confirm-danger-match #{phrase}
+          继续或关闭窗口取消操作
+
+        .form-group
+          = text_field_tag 'confirm_name_input', '', class: 'form-control js-confirm-danger-input'
+        .form-group
+          = submit_tag '确认', class: "btn btn-danger js-confirm-danger-submit"

@@ -1,0 +1,78 @@
+%h3.page-title
+  通知设置
+%p.light
+  这些是全局通知设置.
+%hr
+
+= form_for @user, url: profile_notifications_path, method: :put, html: { class: 'update-notifications form-horizontal global-notifications-form' } do |f|
+  -if @user.errors.any?
+    %div.alert.alert-danger
+      %ul
+        - @user.errors.full_messages.each do |msg|
+          %li= msg
+
+  = hidden_field_tag :notification_type, 'global'
+
+  .form-group
+    = f.label :notification_email, class: "control-label"
+    .col-sm-10
+      = f.select :notification_email, @user.all_emails, { include_blank: false }, class: "form-control"
+
+  .form-group
+    = f.label :notification_level, class: 'control-label'
+    .col-sm-10
+      .radio
+        = f.label :notification_level, value: Notification::N_DISABLED do
+          = f.radio_button :notification_level, Notification::N_DISABLED
+          .level-title
+            已禁用
+          %p 您不会收到任何邮件通知
+
+      .radio
+        = f.label :notification_level, value: Notification::N_MENTION do
+          = f.radio_button :notification_level, Notification::N_MENTION
+          .level-title
+            提及(Mention)
+          %p 您只会收到评论中@了您的通知信息
+
+      .radio
+        = f.label :notification_level, value: Notification::N_PARTICIPATING do
+          = f.radio_button :notification_level, Notification::N_PARTICIPATING
+          .level-title
+            参与
+          %p 您只会收到相关资源的通知(如来自于您的提交或已指定的问题)
+
+      .radio
+        = f.label :notification_level, value: Notification::N_WATCH do
+          = f.radio_button :notification_level, Notification::N_WATCH
+          .level-title
+            观察
+          %p 您会收到您参与项目的所有通知
+
+  .form-actions
+    = f.submit '保存修改', class: "btn btn-create"
+
+.clearfix
+  %hr
+.row.all-notifications
+  .col-md-6
+    %p
+      您也可以基于组或项目设置特定的通知设置.
+      %br
+      默认情况下, 所有的项目和组会使用以上的通知设置.
+    %h4 Groups:
+    %ul.bordered-list
+      - @group_members.each do |group_member|
+        - notification = Notification.new(group_member)
+        = render 'settings', type: 'group', membership: group_member, notification: notification
+
+  .col-md-6
+    %p
+      为了设置您拥有组中项目的通知设置,
+      %br
+      您需要是这个项目的成员而不仅是组的成员.
+    %h4 项目:
+    %ul.bordered-list
+      - @project_members.each do |project_member|
+        - notification = Notification.new(project_member)
+        = render 'settings', type: 'project', membership: project_member, notification: notification

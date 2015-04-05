@@ -1,0 +1,46 @@
+= form_for [@project.namespace.becomes(Namespace), @project, @page], method: @page.persisted? ? :put : :post, html: { class: 'form-horizontal wiki-form gfm-form' } do |f|
+  -if @page.errors.any?
+    #error_explanation
+      .alert.alert-danger
+        - @page.errors.full_messages.each do |msg|
+          %p= msg
+
+  = f.hidden_field :title, value: @page.title
+  .form-group
+    = f.label :format, class: 'control-label'
+    .col-sm-10
+      = f.select :format, options_for_select(ProjectWiki::MARKUPS, {selected: @page.format}), {}, class: "form-control"
+
+  .row
+    .col-sm-2
+    .col-sm-10
+      %p.cgray
+        链接到(新)页面您可以输入
+        %code [Link Title](page-slug)
+        \.
+
+  .form-group.wiki-content
+    = f.label :content, class: 'control-label'
+    .col-sm-10
+      = render layout: 'projects/md_preview', locals: { preview_class: "wiki" } do
+        = render 'projects/zen', f: f, attr: :content, classes: 'description form-control'
+        .col-sm-12.hint
+          .pull-left Wiki内容由 #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"), target: '_blank'} 解析
+          .pull-right 拖放文件或 #{link_to "选择文件", '#', class: 'markdown-selector' } 添加附件.
+
+      .clearfix
+      .error-alert
+  .form-group
+    = f.label :commit_message, class: 'control-label'
+    .col-sm-10= f.text_field :message, class: 'form-control', rows: 18
+
+  .form-actions
+    - if @page && @page.persisted?
+      = f.submit '保存修改', class: "btn-save btn"
+      = link_to "取消", namespace_project_wiki_path(@project.namespace, @project, @page), class: "btn btn-cancel"
+    - else
+      = f.submit '新建页面', class: "btn-create btn"
+      = link_to "取消", namespace_project_wiki_path(@project.namespace, @project, :home), class: "btn btn-cancel"
+
+:javascript
+  window.project_uploads_path = "#{namespace_project_uploads_path @project.namespace, @project}";

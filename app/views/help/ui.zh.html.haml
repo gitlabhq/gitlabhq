@@ -1,0 +1,226 @@
+- lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed fermentum nisi sapien, non consequat lectus aliquam ultrices. Suspendisse sodales est euismod nunc condimentum, a consectetur diam ornare."
+
+.gitlab-ui-dev-kit
+  %h1 GitLab UI开发包
+  %p.light
+    使用浏览器的页面检视器(inspector)检查以下示例元素的class和结构.
+  %hr
+  %ul
+    %li
+      = link_to '区块', '#blocks'
+    %li
+      = link_to '列表', '#lists'
+    %li
+      = link_to '表格', '#tables'
+    %li
+      = link_to '按钮', '#buttons'
+    %li
+      = link_to '面板', '#panels'
+    %li
+      = link_to '警告', '#alerts'
+    %li
+      = link_to '表单', '#forms'
+    %li
+      = link_to '文件', '#file'
+    %li
+      = link_to 'Markdown', '#markdown'
+
+  %h2#blocks 区块
+
+  %h3
+    %code .well
+
+
+  .well
+    %h4 Something
+    = lorem
+
+
+  %h2#lists 列表
+
+  %h3
+    %code .well-list
+  %ul.well-list
+    %li
+      某条目
+    %li
+      某条目
+    %li
+      某条目
+
+  %h3
+    %code .panel .well-list
+
+  .panel.panel-default
+    .panel-heading My list
+    %ul.well-list
+      %li
+        某条目
+      %li
+        某条目
+      %li
+        某条目
+
+  %h3
+    %code .bordered-list
+  %ul.bordered-list
+    %li
+      某条目
+    %li
+      某条目
+    %li
+      某条目
+
+
+
+  %h2#tables 表格
+
+  .example
+    %table.table
+      %thead
+        %tr
+          %th #
+          %th 名
+          %th 姓
+          %th 用户名
+      %tbody
+        %tr
+          %td 1
+          %td Mark
+          %td Otto
+          %td @mdo
+        %tr
+          %td 2
+          %td Jacob
+          %td Thornton
+          %td @fat
+        %tr
+          %td 3
+          %td Larry
+          %td the Bird
+          %td @twitter
+
+
+  %h2#buttons 按钮
+
+  .example
+    %button.btn.btn-default{:type => "button"} 默认
+    %button.btn.btn-primary{:type => "button"} 主要
+    %button.btn.btn-success{:type => "button"} 成功
+    %button.btn.btn-info{:type => "button"} 信息
+    %button.btn.btn-warning{:type => "button"} 警告
+    %button.btn.btn-danger{:type => "button"} 危险
+    %button.btn.btn-link{:type => "button"} 链接
+
+  %h2#panels 面板
+
+  .row
+    .col-md-6
+      .panel.panel-success
+        .panel-heading 成功
+        .panel-body
+          = lorem
+      .panel.panel-primary
+        .panel-heading 主要
+        .panel-body
+          = lorem
+      .panel.panel-info
+        .panel-heading 信息
+        .panel-body
+          = lorem
+    .col-md-6
+      .panel.panel-warning
+        .panel-heading 警告
+        .panel-body
+          = lorem
+      .panel.panel-danger
+        .panel-heading 危险
+        .panel-body
+          = lorem
+
+  %h2#alert 警告提醒
+
+  .row
+    .col-md-6
+      .alert.alert-success
+        = lorem
+      .alert.alert-primary
+        = lorem
+      .alert.alert-info
+        = lorem
+    .col-md-6
+      .alert.alert-warning
+        = lorem
+      .alert.alert-danger
+        = lorem
+
+  %h2#forms 表单
+
+  %h3
+    %code form.horizontal-form
+
+  %form.form-horizontal
+    .form-group
+      %label.col-sm-2.control-label{:for => "inputEmail3"} 邮箱
+      .col-sm-10
+        %input#inputEmail3.form-control{:placeholder => "邮箱", :type => "email"}/
+    .form-group
+      %label.col-sm-2.control-label{:for => "inputPassword3"} 密码
+      .col-sm-10
+        %input#inputPassword3.form-control{:placeholder => "密码", :type => "password"}/
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          %label
+            %input{:type => "checkbox"}/
+            记住我
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        %button.btn.btn-default{:type => "submit"} 登录
+
+  %h3
+    %code form
+
+  %form
+    .form-group
+      %label{:for => "exampleInputEmail1"} 邮箱地址
+      %input#exampleInputEmail1.form-control{:placeholder => "输入邮箱", :type => "email"}/
+    .form-group
+      %label{:for => "exampleInputPassword1"} 密码
+      %input#exampleInputPassword1.form-control{:placeholder => "密码", :type => "password"}/
+    .checkbox
+      %label
+        %input{:type => "checkbox"}/
+        记住我
+    %button.btn.btn-default{:type => "submit"} 登录
+
+  %h2#file 文件
+  %h3
+    %code .file-holder
+
+  - blob = Snippet.new(content: "Wow\nSuch\nFile")
+  .example
+    .file-holder
+      .file-title
+        超酷的文件
+        .file-actions
+          .btn-group
+            %a.btn 编辑
+            %a.btn 删除
+      .file-contenta.code
+        = render 'shared/file_highlight', blob: blob
+
+
+  %h2#markdown Markdown
+  %h3
+    %code .md或.wiki及其它
+
+  Markdown渲染使用有微少差别的css， 显示效果见下面的元素:
+
+  %ul
+    %li 评论
+    %li 问题, 合并请求描述
+    %li wiki页
+    %li 帮助页
+
+  您可以查看 #{link_to 'Markdown帮助页', help_page_path("markdown", "markdown")} 了解markdown是如何渲染的.

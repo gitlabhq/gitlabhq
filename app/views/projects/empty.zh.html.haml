@@ -1,0 +1,49 @@
+- if current_user && can?(current_user, :download_code, @project)
+  = render 'shared/no_ssh'
+  = render 'shared/no_password'
+
+= render "home_panel"
+
+.center.well
+  %h3
+    该项目的仓库是空的
+  %h4
+    您可以
+    = link_to namespace_project_new_blob_path(@project.namespace, @project, 'master'), class: 'btn btn-new btn-lg' do
+      添加文件
+    &nbsp;或通过命令行推送
+
+%h4
+  %strong 命令行说明
+%div.git-empty
+  %fieldset
+    %legend Git全局设置
+    %pre.dark
+      :preserve
+        git config --global user.name "#{git_user_name}"
+        git config --global user.email "#{git_user_email}"
+
+  %fieldset
+    %legend 创建新仓库
+    %pre.dark
+      :preserve
+        mkdir #{@project.path}
+        cd #{@project.path}
+        git init
+        touch README.md
+        git add README.md
+        git commit -m "first commit"
+        git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
+        git push -u origin master
+
+  %fieldset
+    %legend 推送已有仓库
+    %pre.dark
+      :preserve
+        cd existing_git_repo
+        git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
+        git push -u origin master
+
+- if can? current_user, :remove_project, @project
+  .prepend-top-20
+    = link_to '删除项目', [@project.namespace.becomes(Namespace), @project], data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-remove pull-right"

@@ -1,0 +1,9 @@
+%p.details
+  != merge_path_description(@merge_request, '&rarr;')
+
+- if @merge_request.assignee_id.present?
+  %p
+    指定给: #{@merge_request.author_name} &rarr; #{@merge_request.assignee_name}
+
+-if @merge_request.description
+  = replace_image_links_with_base64(markdown(@merge_request.description), @merge_request.project)

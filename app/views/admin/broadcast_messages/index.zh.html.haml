@@ -1,0 +1,61 @@
+%h3.page-title
+  广播信息
+%p.light
+  广播信息会显示给每个用户, 可用于通知用户常规维护、最新更新等.
+.broadcast-message-preview
+  %i.fa.fa-bullhorn
+  %span 您的消息显示在这里
+
+= form_for [:admin, @broadcast_message], html: { class: 'broadcast-message-form form-horizontal'} do |f|
+  -if @broadcast_message.errors.any?
+    .alert.alert-danger
+      - @broadcast_message.errors.full_messages.each do |msg|
+        %p= msg
+  .form-group
+    = f.label :message, class: 'control-label'
+    .col-sm-10
+      = f.text_area :message, class: "form-control", rows: 2, required: true
+      %div
+        = link_to '#', class: 'js-toggle-colors-link' do
+          自定义颜色
+  .form-group.js-toggle-colors-container.hide
+    = f.label :color, "Background Color", class: 'control-label'
+    .col-sm-10
+      = f.text_field :color, placeholder: "#AA33EE", class: "form-control"
+      .light 以#号开始的6位十六进制值.
+  .form-group.js-toggle-colors-container.hide
+    = f.label :font, "Font Color", class: 'control-label'
+    .col-sm-10
+      = f.text_field :font, placeholder: "#224466", class: "form-control"
+      .light 以#号开始的6位十六进制值.
+  .form-group
+    = f.label :starts_at, class: 'control-label'
+    .col-sm-10.datetime-controls
+      = f.datetime_select :starts_at
+  .form-group
+    = f.label :ends_at, class: 'control-label'
+    .col-sm-10.datetime-controls
+      = f.datetime_select :ends_at
+  .form-actions
+    = f.submit "添加广播信息", class: "btn btn-create"
+
+-if @broadcast_messages.any?
+  %ul.bordered-list.broadcast-messages
+    - @broadcast_messages.each do |broadcast_message|
+      %li
+        .pull-right
+          - if broadcast_message.starts_at
+            %strong
+              #{broadcast_message.starts_at.to_s(:short)}
+            \...
+          - if broadcast_message.ends_at
+            %strong
+              #{broadcast_message.ends_at.to_s(:short)}
+          &nbsp;
+          = link_to [:admin, broadcast_message], method: :delete, remote: true, class: 'remove-row btn btn-xs' do
+            %i.fa.fa-times.cred
+
+        .message= broadcast_message.message
+
+
+  = paginate @broadcast_messages

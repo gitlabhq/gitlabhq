@@ -1,0 +1,13 @@
+.panel.panel-default
+  %ul.well-list.mr-list
+    = render @merge_requests
+    - if @merge_requests.blank?
+      %li
+        .nothing-here-block 无合并请求可显示
+
+- if @merge_requests.present?
+  .pull-right
+    %span.cgray.pull-right 该筛选下有 #{@merge_requests.total_count} 个合并请求
+
+  = paginate @merge_requests, theme: "gitlab"
+

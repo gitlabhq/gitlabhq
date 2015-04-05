@@ -1,0 +1,23 @@
+- if @projects.any?
+  .dashboard.row
+    %section.activities.col-md-8
+      = render 'dashboard/activities'
+    %aside.col-md-4
+      .panel.panel-default
+        .panel-heading.clearfix
+          .input-group
+            = search_field_tag :filter_projects, nil, placeholder: '按名称筛选', class: 'projects-list-filter form-control'
+            - if current_user.can_create_project?
+              %span.input-group-btn
+                = link_to new_project_path, class: 'btn btn-success' do
+                  新建项目
+
+        = render 'shared/projects_list', projects: @projects,
+          projects_limit: 20, stars: true, avatar: false
+
+    = link_to '#aside', class: 'show-aside' do
+      %i.fa.fa-angle-left
+
+- else
+  %h3 您还没有收藏过项目
+  %p.slead 访问项目页在星号上点击后会显示在此页.

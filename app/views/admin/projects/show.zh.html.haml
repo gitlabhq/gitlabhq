@@ -1,0 +1,132 @@
+%h3.page-title
+  项目: #{@project.name_with_namespace}
+  = link_to edit_project_path(@project), class: "btn pull-right" do
+    %i.fa.fa-pencil-square-o
+    编辑
+%hr
+.row
+  .col-md-6
+    .panel.panel-default
+      .panel-heading
+        项目信息:
+      %ul.well-list
+        %li
+          %span.light 项目名:
+          %strong
+            = link_to @project.name, project_path(@project)
+        %li
+          %span.light 命名空间:
+          %strong
+            - if @project.namespace
+              = link_to @project.namespace.human_name, [:admin, @project.group || @project.owner]
+            - else
+              全局的
+        %li
+          %span.light 所有者:
+          %strong
+            - if @project.owner
+              = link_to @project.owner_name, [:admin, @project.owner]
+            - else
+              (已删除)
+
+        %li
+          %span.light 创建者:
+          %strong
+            = @project.creator.try(:name) || '(已删除)'
+
+        %li
+          %span.light 创建于:
+          %strong
+            = @project.created_at.stamp("March 1, 1999")
+
+        %li
+          %span.light http:
+          %strong
+            = link_to @project.http_url_to_repo
+        %li
+          %span.light ssh:
+          %strong
+            = link_to @project.ssh_url_to_repo
+        - if @project.repository.exists?
+          %li
+            %span.light fs:
+            %strong
+              = @repository.path_to_repo
+
+          %li
+            %span.light 大小
+            %strong
+              = repository_size(@project)
+
+          %li
+            %span.light 上次提交:
+            %strong
+              = last_commit(@project)
+        - else
+          %li
+            %span.light 仓库:
+            %strong.cred
+              不存在
+
+        %li
+          %span.light 访问控制:
+          %strong
+            %span{ class: visibility_level_color(@project.visibility_level) }
+              = visibility_level_icon(@project.visibility_level)
+              = visibility_level_label(@project.visibility_level)
+
+    .panel.panel-default
+      .panel-heading
+        移交项目
+      .panel-body
+        = form_for @project, url: transfer_admin_namespace_project_path(@project.namespace, @project), method: :put, html: { class: 'form-horizontal' } do |f|
+          .form-group
+            = f.label :new_namespace_id, "命名空间", class: 'control-label'
+            .col-sm-10
+              = namespace_select_tag :new_namespace_id, selected: params[:namespace_id], class: 'input-large'
+
+          .form-group
+            .col-sm-2
+            .col-sm-10
+              = f.submit '移交', class: 'btn btn-primary'
+
+  .col-md-6
+    - if @group
+      .panel.panel-default
+        .panel-heading
+          %strong #{@group.name}
+          组成员 (#{@group.group_members.count})
+          .pull-right
+            = link_to admin_group_path(@group), class: 'btn btn-sm' do
+              %i.fa.fa-pencil-square-o
+        %ul.well-list
+          - @group_members.each do |member|
+            = render 'groups/group_members/group_member', member: member, show_controls: false
+        .panel-footer
+          = paginate @group_members, param_name: 'group_members_page', theme: 'gitlab'
+
+    .panel.panel-default
+      .panel-heading
+        项目成员
+        %small
+          (#{@project.users.count})
+        .pull-right
+          = link_to namespace_project_project_members_path(@project.namespace, @project), class: "btn btn-xs" do
+            %i.fa.fa-pencil-square-o
+            管理访问权限
+      %ul.well-list.project_members
+        - @project_members.each do |project_member|
+          - user = project_member.user
+          %li.project_member
+            .list-item-name
+              %strong
+                = link_to user.name, admin_user_path(user)
+            .pull-right
+              - if project_member.owner?
+                %span.light 所有者
+              - else
+                %span.light= project_member.human_access
+                = link_to namespace_project_project_member_path(@project.namespace, @project, user), data: { confirm: remove_from_project_team_message(@project, user)}, method: :delete, remote: true, class: "btn btn-sm btn-remove" do
+                  %i.fa.fa-times
+      .panel-footer
+        = paginate @project_members, param_name: 'project_members_page', theme: 'gitlab'

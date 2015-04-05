@@ -1,0 +1,27 @@
+= form_for [:admin, @group], html: { class: "form-horizontal" } do |f|
+  - if @group.errors.any?
+    .alert.alert-danger
+      %span= @group.errors.full_messages.first
+
+  = render 'shared/group_form', f: f
+
+  .form-group.group-description-holder
+    = f.label :avatar, "Group avatar", class: 'control-label'
+    .col-sm-10
+      = render 'shared/choose_group_avatar_button', f: f
+
+  - if @group.new_record?
+    .form-group
+      .col-sm-2
+      .col-sm-10
+        .alert.alert-info
+          = render 'shared/group_tips'
+    .form-actions
+      = f.submit '创建组', class: "btn btn-create"
+      = link_to  '取消', admin_groups_path, class: "btn btn-cancel"
+
+  - else
+    .form-actions
+      = f.submit '保存修改', class: "btn btn-primary"
+      = link_to  '取消', admin_group_path(@group), class: "btn btn-cancel"
+

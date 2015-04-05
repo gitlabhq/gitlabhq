@@ -1,0 +1,103 @@
+%h4.page-title
+  .issue-box{ class: issue_box_class(@milestone) }
+    - if @milestone.closed?
+      已关闭
+    - elsif @milestone.expired?
+      已过期
+    - else
+      打开状态
+  里程碑 ##{@milestone.iid}
+  %small.creator
+    = @milestone.expires_at
+  .pull-right
+    - if can?(current_user, :admin_milestone, @project)
+      = link_to edit_namespace_project_milestone_path(@project.namespace, @project, @milestone), class: "btn btn-grouped" do
+        %i.fa.fa-pencil-square-o
+        编辑
+      - if @milestone.active?
+        = link_to '关闭里程碑', namespace_project_milestone_path(@project.namespace, @project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-close btn-grouped"
+      - else
+        = link_to '重新打开里程碑', namespace_project_milestone_path(@project.namespace, @project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-reopen btn-grouped"
+
+%hr
+- if @milestone.issues.any? && @milestone.can_be_closed?
+  .alert.alert-success
+    %span 该里程碑析所有问题已经是关闭状态. 您现在可以关闭里程碑.
+
+%h3.issue-title
+  = gfm escape_once(@milestone.title)
+%div
+  - if @milestone.description.present?
+    .description
+      .wiki
+        = preserve do
+          = markdown @milestone.description
+
+%hr
+.context
+  %p.lead
+    进度:
+    #{@milestone.closed_items_count} 已关闭
+    &ndash;
+    #{@milestone.open_items_count} 打开状态
+    &nbsp;
+    %span.light 已完成 #{@milestone.percent_complete}% 
+    %span.pull-right= @milestone.expires_at
+  = milestone_progress_bar(@milestone)
+
+
+%ul.nav.nav-tabs
+  %li.active
+    = link_to '#tab-issues', 'data-toggle' => 'tab' do
+      问题
+      %span.badge= @issues.count
+  %li
+    = link_to '#tab-merge-requests', 'data-toggle' => 'tab' do
+      合并请求
+      %span.badge= @merge_requests.count
+  %li
+    = link_to '#tab-participants', 'data-toggle' => 'tab' do
+      参与者
+      %span.badge= @users.count
+
+  - if @project.issues_enabled
+    .pull-right
+      = link_to new_namespace_project_issue_path(@project.namespace, @project, issue: { milestone_id: @milestone.id }), class: "btn  btn-grouped", title: "新建问题" do
+        %i.fa.fa-plus
+        新建问题
+      = link_to '浏览问题', namespace_project_issues_path(@milestone.project.namespace, @milestone.project, milestone_id: @milestone.id), class: "btn  edit-milestone-link btn-grouped"
+
+.tab-content
+  .tab-pane.active#tab-issues
+    .row
+      .col-md-4
+        = render('issues', title: '未开始的问题(打开状态且未指定人)', issues: @issues.opened.unassigned, id: 'unassigned')
+      .col-md-4
+        = render('issues', title: '进行中的问题(打开状态并已指定人)', issues: @issues.opened.assigned, id: 'ongoing')
+      .col-md-4
+        = render('issues', title: '完成的问题(已关闭)', issues: @issues.closed, id: 'closed')
+
+  .tab-pane#tab-merge-requests
+    .row
+      .col-md-3
+        = render('merge_requests', title: '进行中的(打开状态并已指定人)', merge_requests: @merge_requests.opened.unassigned, id: 'unassigned')
+      .col-md-3
+        = render('merge_requests', title: '待合并(打开状态且已指定)', merge_requests: @merge_requests.opened.assigned, id: 'ongoing')
+      .col-md-3
+        = render('merge_requests', title: '被拒绝(已关闭)', merge_requests: @merge_requests.declined, id: 'closed')
+      .col-md-3
+        .panel.panel-primary
+          .panel-heading 已合并
+          %ul.well-list
+            - @merge_requests.merged.each do |merge_request|
+              = render 'merge_request', merge_request: merge_request
+
+  .tab-pane#tab-participants
+    %ul.bordered-list
+      - @users.each do |user|
+        %li
+          = link_to user, title: user.name, class: "darken" do
+            = image_tag avatar_icon(user.email, 32), class: "avatar s32"
+            %strong= truncate(user.name, lenght: 40)
+            %br
+            %small.cgray= user.username

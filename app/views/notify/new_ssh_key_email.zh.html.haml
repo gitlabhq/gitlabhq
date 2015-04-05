@@ -1,0 +1,11 @@
+%p
+  Hi #{@user.name}!
+%p
+  新的公用key添加至您的帐号:
+%p
+  标题:
+  %code= @key.title
+%p
+  如果这个key是错误添加, 您可以前往
+  = link_to "SSH Key", profile_keys_url
+  列表中找到并删除它 

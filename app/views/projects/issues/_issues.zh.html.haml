@@ -1,0 +1,13 @@
+.panel.panel-default
+  %ul.well-list.issues-list
+    = render @issues
+    - if @issues.blank?
+      %li
+        .nothing-here-block 无问题可显示
+
+- if @issues.present?
+  .pull-right
+    %span.issue_counter #{@issues.total_count}
+    筛选后的问题
+
+  = paginate @issues, theme: "gitlab"

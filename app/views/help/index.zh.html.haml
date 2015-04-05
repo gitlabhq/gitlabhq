@@ -1,0 +1,50 @@
+%div
+  %h1
+    GitLab
+    %span= Gitlab::VERSION
+    %small= Gitlab::REVISION
+  %p.slead
+    GitLab是用于协作编码的开源软件.
+    %br
+    支持细分控制权限, 管理git仓库保证您的代码安全.
+    %br
+    代码审核和合并请求增强合作.
+    %br
+    每个项目还可以开启问题跟踪和wiki.
+    %br
+    被超过10万家的组织采用, GitLab是git仓库管理解决方案中最受欢迎的.
+    %br
+    访问 #{link_to promo_host, promo_url, target: '_blank'} 了解更多关于GitLab的信息.
+
+%hr
+
+.row
+  .col-md-8
+    .documentation-index
+      = preserve do
+        - readme_text = File.read(Rails.root.join("doc", "README.md"))
+        - text = readme_text.dup
+        - readme_text.scan(/\]\(([^(]+)\)/) { |match| text.gsub!(match.first, "help/#{match.first}") }
+        = markdown text
+
+  .col-md-4
+    .panel.panel-default
+      .panel-heading
+        快捷帮助
+      %ul.well-list
+        %li
+          访问我们网站
+          = link_to '取得帮助', promo_url + '/getting-help/'
+        %li
+          使用此页顶部的
+          = link_to '搜索栏', '#', onclick: 'Shortcuts.focusSearch(event)'
+        %li
+          使用
+          = link_to '快捷键', '#', onclick: 'Shortcuts.showHelp(event)'
+        %li
+          通过
+          = link_to '订阅', 'https://about.gitlab.com/pricing/'
+          获取支持
+        %li
+          = link_to '对比', 'https://about.gitlab.com/features/#compare'
+          GitLab各版本

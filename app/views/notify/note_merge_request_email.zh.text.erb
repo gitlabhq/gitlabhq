@@ -1,0 +1,9 @@
+合并请求# <%= @merge_request.iid %> 有了新评论
+
+<%= url_for(namespace_project_merge_request_url(@merge_request.target_project.namespace, @merge_request.target_project, @merge_request, anchor: "note_#{@note.id}")) %>
+
+
+<%= @note.author_name %>
+
+<%= @note.note %>
+

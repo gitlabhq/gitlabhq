@@ -1,0 +1,86 @@
+- if issuable.errors.any?
+  .row
+    .col-sm-10.col-sm-offset-2
+      .alert.alert-danger
+        - issuable.errors.full_messages.each do |msg|
+          %span= msg
+          %br
+.form-group
+  = f.label :title, class: 'control-label' do
+    %strong= 'Title *'
+  .col-sm-10
+    = f.text_field :title, maxlength: 255, autofocus: true,
+        class: 'form-control pad js-gfm-input', required: true
+.form-group.issuable-description
+  = f.label :description, '描述', class: 'control-label'
+  .col-sm-10
+
+    = render layout: 'projects/md_preview', locals: { preview_class: "wiki" } do
+      = render 'projects/zen', f: f, attr: :description,
+                               classes: 'description form-control'
+      .col-sm-12.hint
+        .pull-left
+          Parsed with
+          #{link_to 'GitLab Flavored Markdown', help_page_path('markdown', 'markdown'), target: '_blank'}.
+        .pull-right
+          拖放文件或
+          #{link_to '选择文件', '#', class: 'markdown-selector' } 添加附件.
+
+      .clearfix
+      .error-alert
+%hr
+.form-group
+  .issue-assignee
+    = f.label :assignee_id, class: 'control-label' do
+      %i.fa.fa-user
+      指定给
+    .col-sm-10
+      = project_users_select_tag("#{issuable.class.model_name.param_key}[assignee_id]",
+          placeholder: '选择一个用户', class: 'custom-form-control',
+          selected: issuable.assignee_id)
+      &nbsp;
+      = link_to '指定给我', '#', class: 'btn assign-to-me-link'
+.form-group
+  .issue-milestone
+    = f.label :milestone_id, class: 'control-label' do
+      %i.fa.fa-clock-o
+      里程碑
+    .col-sm-10
+      - if milestone_options(issuable).present?
+        = f.select(:milestone_id, milestone_options(issuable),
+          { include_blank: '选择里程碑' }, { class: 'select2' })
+      - else
+        .prepend-top-10
+        %span.light 没有打开状态的里程碑可用.
+      &nbsp;
+      - if can? current_user, :admin_milestone, issuable.project
+        = link_to '创建里程碑', new_namespace_project_milestone_path(issuable.project.namespace, issuable.project), target: :blank
+.form-group
+  = f.label :label_ids, class: 'control-label' do
+    %i.fa.fa-tag
+    标签
+  .col-sm-10
+    - if issuable.project.labels.any?
+      = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
+        { selected: issuable.label_ids }, multiple: true, class: 'select2'
+    - else
+      .prepend-top-10
+      %span.light 还没有标签.
+    &nbsp;
+    - if can? current_user, :admin_label, issuable.project
+      = link_to '创建新标签', new_namespace_project_label_path(issuable.project.namespace, issuable.project), target: :blank
+
+.form-actions
+  - if !issuable.project.empty_repo? && (guide_url = contribution_guide_url(issuable.project)) && !issuable.persisted?
+    %p
+      请详细阅读该项目的
+      %strong #{link_to '贡献指南', guide_url} .
+  - if issuable.new_record?
+    = f.submit "提交新的 #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'
+  - else
+    = f.submit '保存修改', class: 'btn btn-save'
+  - if issuable.new_record?
+    - cancel_project = issuable.source_project
+  - else
+    - cancel_project = issuable.project
+  = link_to '取消', [cancel_project.namespace.becomes(Namespace), cancel_project, issuable], class: 'btn btn-cancel'

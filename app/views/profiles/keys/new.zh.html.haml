@@ -1,0 +1,16 @@
+%h3.page-title 添加SSH Key
+%p.light
+  在此粘贴您的public key. 阅读 #{link_to "SSH帮助页", help_page_path("ssh", "README")} 了解更多关于如何生成key的信息.
+%hr
+= render 'form'
+
+:javascript
+  $('#key_key').on('focusout', function(){
+    var title = $('#key_title'),
+        val      = $('#key_key').val(),
+        comment = val.match(/^\S+ \S+ (.+)$/);
+
+    if( comment && comment.length > 1 && title.val() == '' ){
+      $('#key_title').val( comment[1] );
+    }
+  });

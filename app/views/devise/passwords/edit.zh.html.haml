@@ -1,0 +1,19 @@
+.login-box
+  .login-heading
+    %h3 修改您的密码
+  .login-body
+    = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f|
+      .devise-errors
+        = devise_error_messages!
+      = f.hidden_field :reset_password_token
+      %div
+        = f.password_field :password, class: "form-control top", placeholder: "New password", required: true
+      %div
+        = f.password_field :password_confirmation, class: "form-control bottom", placeholder: "Confirm new password", required: true
+      .clearfix
+        = f.submit "修改我的密码", class: "btn btn-primary"
+
+.clearfix.prepend-top-20
+  %p
+    = link_to "没有收到确认说明?", new_confirmation_path(resource_name)
+  = render 'devise/shared/sign_in_link'

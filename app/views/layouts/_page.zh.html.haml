@@ -1,0 +1,23 @@
+- if defined?(sidebar)
+  .page-with-sidebar{ class: nav_sidebar_class }
+    = render "layouts/broadcast"
+    .sidebar-wrapper
+      = render(sidebar)
+      .collapse-nav
+        = render partial: 'layouts/collapse_button'
+    .content-wrapper
+      .container-fluid
+        .content
+          = render "layouts/flash"
+          .clearfix
+            = yield
+- else
+  .container.navless-container
+    .content
+      = yield
+
+= yield :embedded_scripts
+
+:coffeescript
+  $('.page-sidebar-collapsed .nav-sidebar a').tooltip placement: "right"
+

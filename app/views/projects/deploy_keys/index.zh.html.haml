@@ -1,0 +1,30 @@
+%h3.page-title
+  布署key允许只读访问仓库
+
+  = link_to new_namespace_project_deploy_key_path(@project.namespace, @project), class: "btn btn-new pull-right", title: "New Deploy Key" do
+    %i.fa.fa-plus
+    创建布署key
+
+%p.light
+  布署key可用于持续集成, staging或工作环境服务器.
+  您可以创建布署key或添加已有的key.
+
+%hr.clearfix
+
+.row
+  .col-md-6.enabled-keys
+    %h5
+      %strong.cgreen 启用这个项目的布署key
+    %ul.bordered-list
+      = render @enabled_keys
+      - if @enabled_keys.blank?
+        .light-well
+          .nothing-here-block #{link_to '新建布署key', new_namespace_project_deploy_key_path(@project.namespace, @project)} 或添加已有的key
+  .col-md-6.available-keys
+    %h5
+      %strong 用于您有访问权限的项目的key
+    %ul.bordered-list
+      = render @available_keys
+      - if @available_keys.blank?
+        .light-well
+          .nothing-here-block 您有访问权限的项目的布署key都会显示在这里.

@@ -1,0 +1,15 @@
+%p
+  项目已被移往新地址
+%p
+  项目现在在
+  = link_to namespace_project_url(@project.namespace, @project) do
+    = @project.name_with_namespace
+%p
+  更新您本地仓库的远程url, 运行(用于ssh):
+%p{ style: "background: #f5f5f5; padding:10px; border:1px solid #ddd" }
+  git remote set-url origin #{@project.ssh_url_to_repo}
+%p
+  或运行(用于http或https):
+%p{ style: "background: #f5f5f5; padding:10px; border:1px solid #ddd" }
+  git remote set-url origin #{@project.http_url_to_repo}
+%br

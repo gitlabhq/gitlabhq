@@ -1,0 +1,17 @@
+.pull-right
+  - if can? current_user, :admin_milestone, @project
+    = link_to new_namespace_project_milestone_path(@project.namespace, @project), class: "pull-right btn btn-new", title: "新建里程碑" do
+      %i.fa.fa-plus
+      新建里程碑
+= render 'shared/milestones_filter'
+
+.milestones
+  .panel.panel-default
+    %ul.well-list
+      = render @milestones
+
+      - if @milestones.blank?
+        %li
+          .nothing-here-block 无里程碑可显示
+
+  = paginate @milestones, theme: "gitlab"

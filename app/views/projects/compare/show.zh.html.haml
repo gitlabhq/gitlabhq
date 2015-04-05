@@ -1,0 +1,23 @@
+= render "projects/commits/head"
+
+%h3.page-title
+  对比视图
+
+= render "form"
+
+- if @commits.present?
+  = render "projects/commits/commit_list"
+  = render "projects/diffs/diffs", diffs: @diffs, project: @project
+- else
+  .light-well
+    .center
+      %h4
+        没有可对比的内容.
+      %p.slead
+        - if params[:to] == params[:from]
+          %span.label-branch #{params[:from]}
+          与
+          %span.label-branch #{params[:to]}
+          是一致的.
+        - else
+          您需要使用不同的分支名称才能得到有效的对比结果.

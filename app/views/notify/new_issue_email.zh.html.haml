@@ -1,0 +1,6 @@
+-if @issue.description
+  = replace_image_links_with_base64(markdown(@issue.description), @issue.project)
+
+- if @issue.assignee_id.present?
+  %p
+    指定给: #{@issue.assignee_name}

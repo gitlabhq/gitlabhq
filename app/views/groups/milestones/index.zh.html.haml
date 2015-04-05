@@ -1,0 +1,46 @@
+%h3.page-title
+  里程碑
+  %span.pull-right #{@group_milestones.count} milestones
+
+%p.light
+  只有来自于
+  %strong #{@group.name}
+  组的里程碑显示在这里.
+
+%hr
+
+= render 'shared/milestones_filter'
+.milestones
+  .panel.panel-default
+    %ul.well-list
+      - if @group_milestones.blank?
+        %li
+          .nothing-here-block 无里程碑可显示
+      - else
+        - @group_milestones.each do |milestone|
+          %li{class: "milestone milestone-#{milestone.closed? ? 'closed' : 'open'}", id: dom_id(milestone.milestones.first) }
+            .pull-right
+              - if can?(current_user, :manage_group, @group)
+                - if milestone.closed?
+                  = link_to '重新打开里程碑', group_milestone_path(@group, milestone.safe_title, title: milestone.title, milestone: {state_event: :activate }), method: :put, class: "btn btn-sm btn-grouped btn-reopen"
+                - else
+                  = link_to '关闭里程碑', group_milestone_path(@group, milestone.safe_title, title: milestone.title, milestone: {state_event: :close }), method: :put, class: "btn btn-sm btn-close"
+            %h4
+              = link_to_gfm truncate(milestone.title, length: 100), group_milestone_path(@group, milestone.safe_title, title: milestone.title)
+            %div
+              %div
+                = link_to group_milestone_path(@group, milestone.safe_title, title: milestone.title) do
+                  = pluralize milestone.issue_count, 'Issue'
+                &nbsp;
+                = link_to group_milestone_path(@group, milestone.safe_title, title: milestone.title) do
+                  = pluralize milestone.merge_requests_count, 'Merge Request'
+                &nbsp;
+                %span.light #{milestone.percent_complete}% complete
+              = milestone_progress_bar(milestone)
+              %div
+                %br
+                - milestone.milestones.each do |milestone|
+                  = link_to namespace_project_milestone_path(milestone.project.namespace, milestone.project, milestone) do
+                    %span.label.label-default
+                      = milestone.project.name
+  = paginate @group_milestones, theme: "gitlab"

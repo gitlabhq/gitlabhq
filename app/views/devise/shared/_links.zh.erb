@@ -1,0 +1,19 @@
+<%- if controller_name != 'sessions' %>
+  <%= link_to "登录", new_session_path(resource_name), class: "btn" %><br />
+<% end -%>
+
+<%- if devise_mapping.registerable? && controller_name != 'registrations' && gitlab_config.signup_enabled %>
+  <%= link_to "注册", new_registration_path(resource_name) %><br />
+<% end -%>
+
+<%- if devise_mapping.recoverable? && controller_name != 'passwords' %>
+<%= link_to "忘记您的密码?", new_password_path(resource_name), class: "btn" %><br />
+<% end -%>
+
+<%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
+  <%= link_to "没有收到确认说明?", new_confirmation_path(resource_name) %><br />
+<% end -%>
+
+<%- if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks' %>
+  <%= link_to "没有收到解锁说明?", new_unlock_path(resource_name) %><br />
+<% end -%>

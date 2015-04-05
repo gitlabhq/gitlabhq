@@ -1,0 +1,4 @@
+- submit_btn_css ||= 'btn btn-link btn-remove btn-sm'
+= form_tag oauth_application_path(application) do
+  %input{:name => "_method", :type => "hidden", :value => "delete"}/
+  = submit_tag '删除', onclick: "return confirm('您确定?')", class: submit_btn_css

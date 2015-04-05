@@ -1,0 +1,12 @@
+%tr
+  %td
+    = link_to path_to_key(key, is_admin) do
+      %strong= key.title
+  %td
+    %span
+      (#{key.fingerprint})
+  %td
+    %span.cgray
+      添加于 #{time_ago_with_tooltip(key.created_at)}
+  %td
+    = link_to '删除', path_to_key(key, is_admin), data: { confirm: '您确定?'}, method: :delete, class: "btn btn-sm btn-remove delete-key pull-right"

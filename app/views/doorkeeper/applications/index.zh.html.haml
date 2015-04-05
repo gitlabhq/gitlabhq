@@ -1,0 +1,16 @@
+%h3.page-title 您的应用
+%p= link_to '新建应用', new_oauth_application_path, class: 'btn btn-success'
+%table.table.table-striped
+  %thead
+    %tr
+      %th 名称
+      %th 回调URL
+      %th
+      %th
+  %tbody
+    - @applications.each do |application|
+      %tr{:id => "application_#{application.id}"}
+        %td= link_to application.name, oauth_application_path(application)
+        %td= application.redirect_uri
+        %td= link_to '编辑', edit_oauth_application_path(application), class: 'btn btn-link'
+        %td= render 'delete_form', application: application

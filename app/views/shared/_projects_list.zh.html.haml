@@ -1,0 +1,17 @@
+- projects_limit = 20 unless local_assigns[:projects_limit]
+- avatar = true unless local_assigns[:avatar] == false
+- stars = false unless local_assigns[:stars] == true
+%ul.well-list.projects-list
+  - projects.each_with_index do |project, i|
+    %li{class: (i >= projects_limit) ? 'project-row hide' : 'project-row'}
+      = render "shared/project", project: project, avatar: avatar, stars: stars
+  - if projects.blank?
+    %li
+      .nothing-here-block 无项目.
+  - if projects.count > projects_limit
+    %li.bottom
+      %span.light
+        显示了 #{projects_limit} / #{pluralize(projects.count, 'project')} 个项目.
+      %span
+        = link_to '#', class: 'js-expand' do
+          显示所有

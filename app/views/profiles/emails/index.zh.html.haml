@@ -1,0 +1,37 @@
+%h3.page-title
+  邮箱设置
+%p.light
+  您的
+  %b 主邮箱
+  会用于头像检测及基于网页的操作如编辑和合并.
+  %br
+  您的
+  %b 通知邮箱
+  会用于帐号通知.
+  %br
+  所有的邮箱地址会用于表明提交身份.
+
+%hr
+
+.panel.panel-default
+  .panel-heading
+    邮箱 (#{@emails.count + 1})
+  %ul.well-list#emails-table
+    %li
+      %strong= @primary
+      %span.label.label-success Primary Email
+    - @emails.each do |email|
+      %li
+        %strong= email.email
+        %span.cgray
+          添加于 #{time_ago_with_tooltip(email.created_at)}
+        = link_to '删除', profile_email_path(email), data: { confirm: '您确定?'}, method: :delete, class: 'btn btn-sm btn-remove pull-right'
+
+%h4 Add email address
+= form_for 'email', url: profile_emails_path, html: { class: 'form-horizontal' } do |f|
+  .form-group
+    = f.label :email, class: 'control-label'
+    .col-sm-10
+      = f.text_field :email, class: 'form-control'
+  .form-actions
+    = f.submit '添加邮箱', class: 'btn btn-create'

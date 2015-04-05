@@ -1,0 +1,39 @@
+%h3.page-title
+  我的代码片段
+  .pull-right
+    = link_to new_snippet_path, class: "btn btn-new btn-grouped", title: "New Snippet" do
+      添加新的代码片段
+    = link_to snippets_path, class: "btn btn-grouped"  do
+      发现代码片段
+
+%p.light
+  与其它人分享git仓库外的内容
+%hr
+
+.row
+  .col-md-3
+    %ul.nav.nav-pills.nav-stacked
+      = nav_tab :scope, nil do
+        = link_to user_snippets_path(@user) do
+          所有
+          %span.pull-right
+            = @user.snippets.count
+      = nav_tab :scope, 'are_private' do
+        = link_to user_snippets_path(@user, scope: 'are_private') do
+          私有
+          %span.pull-right
+            = @user.snippets.are_private.count
+      = nav_tab :scope, 'are_internal' do
+        = link_to user_snippets_path(@user, scope: 'are_internal') do
+          内部
+          %span.pull-right
+            = @user.snippets.are_internal.count
+      = nav_tab :scope, 'are_public' do
+        = link_to user_snippets_path(@user, scope: 'are_public') do
+          公开
+          %span.pull-right
+            = @user.snippets.are_public.count
+
+  .col-md-9.my-snippets
+    = render 'snippets'
+

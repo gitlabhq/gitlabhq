@@ -1,0 +1,15 @@
+.note-edit-form
+  = form_for note, url: namespace_project_note_path(@project.namespace, @project, note), method: :put, remote: true, authenticity_token: true do |f|
+    = note_target_fields(note)
+    = render layout: 'projects/md_preview', locals: { preview_class: "note-text" } do
+      = render 'projects/zen', f: f, attr: :note,
+        classes: 'note_text js-note-text'
+
+      .comment-hints.clearfix
+        .pull-left 讨论内容通过 #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"),{ target: '_blank', tabindex: -1 }} 解析
+        .pull-right 拖放文件或 #{link_to "选择文件", '#', class: 'markdown-selector', tabindex: -1 }添加附件.
+
+    .note-form-actions
+      .buttons
+        = f.submit '保存讨论', class: "btn btn-primary btn-save btn-grouped js-comment-button"
+        = link_to  '取消', "#", class: "btn btn-cancel note-edit-cancel"

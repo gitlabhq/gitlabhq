@@ -1,0 +1,43 @@
+%h3.page-title
+  = @snippet.title
+
+  - if @snippet.private?
+    %span.label.label-success
+      %i.fa.fa-lock
+      私有
+
+  .pull-right
+    = link_to new_snippet_path, class: "btn btn-new", title: "New Snippet" do
+      添加代码片段
+%hr
+
+.append-bottom-20
+  .pull-right
+    = "##{@snippet.id}"
+    %span.light
+      由
+      = link_to user_snippets_path(@snippet.author) do
+        = image_tag avatar_icon(@snippet.author_email), class: "avatar avatar-inline s16"
+        = @snippet.author_name
+
+  .back-link
+    - if @snippet.author == current_user
+      = link_to user_snippets_path(current_user) do
+        &larr; 我的代码片段
+    - else
+      = link_to snippets_path do
+        &larr; 发现代码片段
+
+.file-holder
+  .file-title
+    %i.fa.fa-file
+    %strong
+      = @snippet.file_name
+    .file-actions
+      .btn-group
+        - if can?(current_user, :modify_personal_snippet, @snippet)
+          = link_to "编辑", edit_snippet_path(@snippet), class: "btn btn-sm", title: 'Edit Snippet'
+        = link_to "raw", raw_snippet_path(@snippet), class: "btn btn-sm", target: "_blank"
+      - if can?(current_user, :admin_personal_snippet, @snippet)
+        = link_to "删除", snippet_path(@snippet), method: :delete, data: { confirm: "您确定?" }, class: "btn btn-sm btn-remove", title: '删除代码片段'
+  = render 'shared/snippets/blob'

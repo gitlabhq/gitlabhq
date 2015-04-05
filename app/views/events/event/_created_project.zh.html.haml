@@ -1,0 +1,27 @@
+.event-title
+  %span.author_name= link_to_author event
+  %span.event_label{class: event.action_name}
+    = event_action_name(event)
+
+  - if event.project
+    = link_to_project event.project
+  - else
+    = event.project_name
+
+- if current_user == event.author && !event.project.private? && twitter_sharing_enabled?
+  .event-body
+    .event-note
+      .md
+        %p
+          恭喜您! 为何不将您的成熟分享给其它人也?
+
+          %a.twitter-share-button{ |
+            href: "https://twitter.com/share", |
+            "data-url" => event.project.web_url, |
+            "data-text" => "我刚在GitLab上新建了一个项目! GitLab是在您的服务器上做版本控制的软件.", |
+            "data-size" => "medium", |
+            "data-related" => "gitlab", |
+            "data-hashtags" => "gitlab", |
+            "data-count" => "none"}
+            Tweet
+          %script{src: "//platform.twitter.com/widgets.js"}

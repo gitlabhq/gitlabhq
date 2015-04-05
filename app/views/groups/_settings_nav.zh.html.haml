@@ -1,0 +1,11 @@
+%ul.sidebar-subnav
+  = nav_link(path: 'groups#edit') do
+    = link_to edit_group_path(@group), title: '组' do
+      %i.fa.fa-pencil-square-o
+      %span
+        组
+  = nav_link(path: 'groups#projects') do
+    = link_to projects_group_path(@group), title: '项目' do
+      %i.fa.fa-folder
+      %span
+        项目

@@ -1,0 +1,44 @@
+%h3.page-title 后台执行的任务
+%p.light GitLab使用 #{link_to "sidekiq", "http://sidekiq.org/"} 库实现异步任务的处理
+
+%hr
+
+.panel.panel-default
+  .panel-heading Sidekiq运行中的进程
+  .panel-body
+    - if @sidekiq_processes.empty?
+      %h4.cred
+        %i.fa.fa-exclamation-triangle
+        没有运行中的sidekiq进程. 请重启GitLab
+    - else
+      %table.table
+        %thead
+          %th 用户
+          %th 进程ID
+          %th CPU
+          %th 内存
+          %th 状态
+          %th 开始
+          %th 命令
+        %tbody
+          - @sidekiq_processes.each do |process|
+            - next unless process.match(/(sidekiq \d+\.\d+\.\d+.+$)/)
+            - data = process.strip.split(' ')
+            %tr
+              %td= gitlab_config.user
+              - 5.times do
+                %td= data.shift
+              %td= data.join(' ')
+
+      .clearfix
+        %p
+          %i.fa.fa-exclamation-circle
+          如果显示'[25 of 25 busy]', 请使用 'sudo service gitlab reload' 重启GitLab服务. 
+        %p
+          %i.fa.fa-exclamation-circle
+          如果不止一个sidekiq进程在列表中, 停止GitLab, 杀死剩余的sidekiq进程 ( sudo pkill -u #{gitlab_config.user} -f sidekiq ) 后重启GitLab服务.
+
+
+
+.panel.panel-default
+  %iframe{src: sidekiq_path, width: '100%', height: 900, style: "border: none"}

@@ -1,0 +1,19 @@
+.alert.alert-warning
+  %h4
+    修改太多.
+    .pull-right
+      - unless diff_hard_limit_enabled?
+        = link_to "重新加载全文对比", url_for(params.merge(force_show_diff: true)), class: "btn btn-sm btn-warning"
+
+      - if current_controller?(:commit) or current_controller?(:merge_requests)
+        - if current_controller?(:commit)
+          = link_to "普通文本对比", namespace_project_commit_path(@project.namespace, @project, @commit, format: :diff), class: "btn btn-warning btn-sm"
+          = link_to "邮件补丁", namespace_project_commit_path(@project.namespace, @project, @commit, format: :patch), class: "btn btn-warning btn-sm"
+        - elsif @merge_request && @merge_request.persisted?
+          = link_to "普通文本对比", merge_request_path(@merge_request, format: :diff), class: "btn btn-warning btn-sm"
+          = link_to "邮件补丁", merge_request_path(@merge_request, format: :patch), class: "btn btn-warning btn-sm"
+  %p
+    为了保障性能只显示了
+    %strong #{allowed_diff_size} of #{diffs.size}
+    个文件.
+

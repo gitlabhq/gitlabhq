@@ -1,0 +1,6 @@
+.form-actions
+  .commit-button-annotation
+    = button_tag '提交修改',
+                 class: 'btn commit-btn js-commit-button btn-create'
+  = link_to '取消', cancel_path,
+            class: 'btn btn-cancel', data: {confirm: leave_edit_message}

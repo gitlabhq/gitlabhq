@@ -1,0 +1,11 @@
+.clearfix
+  = render 'filter'
+
+%hr
+.public-projects
+  %ul.bordered-list.top-list
+    = render @projects
+    - unless @projects.present?
+      .nothing-here-block 无公开项目
+
+  = paginate @projects, theme: "gitlab"

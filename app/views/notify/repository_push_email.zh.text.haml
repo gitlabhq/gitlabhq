@@ -1,0 +1,47 @@
+#{@author.name} 推送到 #{@branch} at #{@project.name_with_namespace}
+\
+\
+- if @reverse_compare
+  警告: 推送不包含新提交, 但是强制推送将删除下面的提交和修改.
+  \
+  \
+= @reverse_compare ? "已删除的提交:" : "提交:"
+- @commits.each do |commit|
+  #{commit.short_id} by #{commit.author_name} at #{commit.committed_date.strftime("%Y-%m-%dT%H:%M:%SZ")}
+  #{commit.safe_message}
+  \- - - - -
+\
+\
+#{pluralize @diffs.count, "changed file"}:
+\
+- @diffs.each do |diff|
+  - if diff.deleted_file
+    \- − #{diff.old_path}
+  - elsif diff.renamed_file
+    \- #{diff.old_path} → #{diff.new_path}
+  - elsif diff.new_file
+    \- + #{diff.new_path}
+  - else
+    \- #{diff.new_path}
+- unless @disable_diffs
+  \
+  \
+  修改:
+  - @diffs.each do |diff|
+    \
+    \=====================================
+    - if diff.deleted_file
+      #{diff.old_path} 被删除
+    - elsif diff.renamed_file
+      #{diff.old_path} → #{diff.new_path}
+    - else
+      = diff.new_path
+    \=====================================
+    != diff.diff
+- if @compare.timeout
+  \
+  \
+  差别很大. 为了避免性能问题修改被隐藏
+\
+\
+在GitLab中查看: #{@target_url}

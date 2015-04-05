@@ -1,0 +1,38 @@
+%ul.nav.nav-sidebar
+  = nav_link(path: 'dashboard#show', html_options: {class: 'home'}) do
+    = link_to root_path, title: '首页', class: 'shortcuts-activity' do
+      %i.fa.fa-dashboard
+      %span
+        您的项目
+  = nav_link(path: 'projects#starred') do
+    = link_to starred_dashboard_projects_path, title: '收藏的项目' do
+      %i.fa.fa-star
+      %span
+        收藏的项目
+  = nav_link(controller: :groups) do
+    = link_to dashboard_groups_path, title: '组' do
+      %i.fa.fa-group
+      %span
+        组
+  = nav_link(controller: :milestones) do
+    = link_to dashboard_milestones_path, title: '里程碑' do
+      %i.fa.fa-clock-o
+      %span
+        里程碑
+  = nav_link(path: 'dashboard#issues') do
+    = link_to assigned_issues_dashboard_path, title: '问题', class: 'shortcuts-issues' do
+      %i.fa.fa-exclamation-circle
+      %span
+        问题
+        %span.count= current_user.assigned_issues.opened.count
+  = nav_link(path: 'dashboard#merge_requests') do
+    = link_to assigned_mrs_dashboard_path, title: '合并请求', class: 'shortcuts-merge_requests' do
+      %i.fa.fa-tasks
+      %span
+        合并请求
+        %span.count= current_user.assigned_merge_requests.opened.count
+  = nav_link(controller: :help) do
+    = link_to help_path, title: '帮助' do
+      %i.fa.fa-question-circle
+      %span
+        帮助

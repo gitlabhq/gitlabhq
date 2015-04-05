@@ -1,0 +1,23 @@
+.merge-request
+  = render "projects/merge_requests/show/mr_title"
+  = render "projects/merge_requests/show/mr_box"
+
+  .alert.alert-danger
+    %p
+      我们不能正常显示该合并请求因为
+      - if @merge_request.for_fork? && !@merge_request.source_project
+        fork的项目已经被删除
+      - elsif !@merge_request.source_branch_exists?
+        %span.label.label-inverse= @merge_request.source_branch
+        不存在于
+        %span.label.label-info= @merge_request.source_project_path
+      - elsif !@merge_request.target_branch_exists?
+        %span.label.label-inverse= @merge_request.target_branch
+        不存在于
+        %span.label.label-info= @merge_request.target_project_path
+      - else
+        内部错误
+
+    %strong
+      请关闭合并请求或改成已有的分支
+

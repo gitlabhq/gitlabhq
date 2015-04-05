@@ -1,0 +1,19 @@
+%ul.nav.nav-pills.event_filter
+  = event_filter_link EventFilter.push, '推送事件'
+  = event_filter_link EventFilter.merged, '合并事件'
+  = event_filter_link EventFilter.comments, '评论'
+  = event_filter_link EventFilter.team, '团队'
+
+  - if current_user
+    - if current_controller?(:dashboard)
+      %li.pull-right
+        = link_to dashboard_path(:atom, { private_token: current_user.private_token }), class: 'rss-btn' do
+          %i.fa.fa-rss
+          新闻推送
+
+    - if current_controller?(:groups)
+      %li.pull-right
+        = link_to group_path(@group, { format: :atom, private_token: current_user.private_token }), title: "Feed", class: 'rss-btn' do
+          %i.fa.fa-rss
+          新闻推送
+%hr

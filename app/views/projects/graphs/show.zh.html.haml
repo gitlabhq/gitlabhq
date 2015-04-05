@@ -1,0 +1,37 @@
+= render 'head'
+.loading-graph
+  .center
+    %h3.page-title
+      %i.fa.fa-spinner.fa-spin
+      生成仓库图示
+    %p.slead 请稍等, 完成后会自动刷新.
+
+.stat-graph.hide
+  .header.clearfix
+    %h3#date_header.page-title
+    %p.light
+      #{@project.default_branch}分支的提交, 不含合并提交. 不超过6000个
+    %input#brush_change{:type => "hidden"}
+  .graphs
+    #contributors-master
+    #contributors.clearfix
+      %ol.contributors-list.clearfix
+
+
+
+:coffeescript
+  $.ajax
+    type: "GET",
+    url: location.href,
+    success: (data) ->
+      graph = new ContributorsStatGraph()
+      graph.init(data)
+
+      $("#brush_change").change ->
+        graph.change_date_header()
+        graph.redraw_authors()
+
+      $(".stat-graph").fadeIn();
+      $(".loading-graph").hide();
+    dataType: "json"
+

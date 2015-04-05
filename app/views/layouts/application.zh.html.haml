@@ -1,0 +1,6 @@
+!!! 5
+%html{ lang: "zh"}
+  = render "layouts/head", title: "仪表盘"
+  %body{class: "#{app_theme}  application", :'data-page' => body_data_page }
+    = render "layouts/head_panel", title: link_to("仪表盘", root_path)
+    = render 'layouts/page', sidebar: 'layouts/nav/dashboard'

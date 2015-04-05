@@ -1,0 +1,43 @@
+%html{lang: "zh"}
+  %head
+    %meta{content: "text/html; charset=utf-8", "http-equiv" => "Content-Type"}
+      %title
+        GitLab
+  :css
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+    p.details {
+      font-style:italic;
+      color:#777
+    }
+    .footer p {
+      font-size:small;
+      color:#777
+    }
+    pre.commit-message {
+      white-space: pre-wrap;
+    }
+    .file-stats a {
+      text-decoration: none;
+    }
+    .file-stats .new-file {
+      color: #090;
+    }
+    .file-stats .deleted-file {
+      color: #B00;
+    }
+    #{add_email_highlight_css}
+  %body
+    %div.content
+      = yield
+    %div.footer{style: "margin-top: 10px;"}
+      %p
+        \—
+        %br
+        - if @target_url
+          #{link_to "在GitLab中查看", @target_url}
+          = email_action @target_url
+        - if @project && !@disable_footer
+          您收到这个通知是因为您是 #{link_to_unless @target_url, @project.name_with_namespace, namespace_project_url(@project.namespace, @project)} 项目组的成员.

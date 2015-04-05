@@ -1,0 +1,15 @@
+- if can? current_user, :admin_label, @project
+  = link_to new_namespace_project_label_path(@project.namespace, @project), class: "pull-right btn btn-new" do
+    新建标签
+%h3.page-title
+  标签
+%hr
+
+.labels
+  - if @labels.present?
+    %ul.bordered-list.manage-labels-list
+      = render @labels
+    = paginate @labels, theme: 'gitlab'
+  - else
+    .light-well
+      .nothing-here-block 创建第一个标签或 #{link_to '生成', generate_namespace_project_labels_path(@project.namespace, @project), method: :post} 默认的标签组

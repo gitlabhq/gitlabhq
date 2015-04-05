@@ -1,0 +1,44 @@
+- empty_repo = @project.empty_repo?
+.project-home-panel{:class => ("empty-project" if empty_repo)}
+  .project-identicon-holder
+    = project_icon(@project, alt: '', class: 'avatar project-avatar')
+  .project-home-row
+    .project-home-desc
+      - if @project.description.present?
+        = escaped_autolink(@project.description)
+      - if can?(current_user, :admin_project, @project)
+        &ndash;
+        = link_to '编辑', edit_namespace_project_path
+      - elsif !@project.empty_repo? && @repository.readme
+        - readme = @repository.readme
+        &ndash;
+        = link_to namespace_project_blob_path(@project.namespace, @project, tree_join(@repository.root_ref, readme.name)) do
+          = readme.name
+    .star-fork-buttons
+      - unless @project.empty_repo?
+        .fork-buttons
+          - if current_user && can?(current_user, :fork_project, @project) && @project.namespace != current_user.namespace
+            - if current_user.already_forked?(@project) && current_user.manageable_namespaces.size < 2
+              = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: '前往我fork的项目' do
+                = link_to_toggle_fork
+            - else
+              = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "Fork项目" do
+                = link_to_toggle_fork
+
+      .star-buttons
+        %span.star.js-toggler-container{class: @show_star ? 'on' : ''}
+          - if current_user
+            = link_to_toggle_star('收藏此项目.', false, true)
+            = link_to_toggle_star('取消收藏此项目.', true, true)
+          - else
+            = link_to_toggle_star('您必须登录后才能收藏项目.', false, false)
+
+  .project-home-row.hidden-xs
+    - if current_user && !empty_repo
+      .project-home-dropdown
+        = render "dropdown"
+    - unless @project.empty_repo?
+      - if can? current_user, :download_code, @project
+        .pull-right.prepend-left-10
+          = render 'projects/repositories/download_archive', split_button: true
+    = render "shared/clone_panel"

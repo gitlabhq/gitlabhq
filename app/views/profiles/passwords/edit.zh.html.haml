@@ -1,0 +1,38 @@
+%h3.page-title 密码设置
+%p.light
+  - if @user.password_automatically_set?
+    设置您的密码.
+  - else
+    设置您的密码或找回当前密码.
+%hr
+.update-password
+  = form_for @user, url: profile_password_path, method: :put, html: { class: 'form-horizontal' }  do |f|
+    %div
+      %p.slead
+        - unless @user.password_automatically_set?
+          您要修改密码必须提供当前密码.
+          %br
+        成功更新密码后, 您会重定向到登录页面请使用新密码登录.
+      -if @user.errors.any?
+        .alert.alert-danger
+          %ul
+            - @user.errors.full_messages.each do |msg|
+              %li= msg
+      - unless @user.password_automatically_set?
+        .form-group
+          = f.label :current_password, class: 'control-label'
+          .col-sm-10
+            = f.password_field :current_password, required: true, class: 'form-control'
+            %div
+              = link_to "忘记密码?", reset_profile_password_path, method: :put
+
+      .form-group
+        = f.label :password, 'New password', class: 'control-label'
+        .col-sm-10
+          = f.password_field :password, required: true, class: 'form-control'
+      .form-group
+        = f.label :password_confirmation, class: 'control-label'
+        .col-sm-10
+          = f.password_field :password_confirmation, required: true, class: 'form-control'
+      .form-actions
+        = f.submit '保存密码', class: "btn btn-create"

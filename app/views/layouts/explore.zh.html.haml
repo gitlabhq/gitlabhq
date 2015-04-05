@@ -1,0 +1,30 @@
+- page_title = '探索'
+!!! 5
+%html{ lang: "zh"}
+  = render "layouts/head", title: page_title
+  %body{class: "#{app_theme}  application", :'data-page' => body_data_page}
+    = render "layouts/broadcast"
+    - if current_user
+      = render "layouts/head_panel", title: link_to(page_title, explore_root_path)
+    - else
+      = render "layouts/public_head_panel", title: link_to(page_title, explore_root_path)
+    .container.navless-container
+      .content
+        .explore-title
+          %h3
+            探索GitLab
+          %p.lead
+            发现项目和组. 与其它人分享项目
+
+
+        %ul.nav.nav-tabs
+          = nav_link(path: 'projects#trending') do
+            = link_to '项目趋势', explore_root_path
+          = nav_link(path: 'projects#starred') do
+            = link_to '收藏最多的项目', starred_explore_projects_path
+          = nav_link(path: 'projects#index') do
+            = link_to '所有项目', explore_projects_path
+          = nav_link(controller: :groups) do
+            = link_to '所有组', explore_groups_path
+
+        = yield

@@ -1,0 +1,10 @@
+项目已被移往新地址
+
+项目现在在
+<%= namespace_project_url(@project.namespace, @project) %>
+
+
+更新您本地仓库的远程url, 运行(用于ssh):
+  git remote set-url origin <%= @project.ssh_url_to_repo %>
+或运行(用于http或https):
+  git remote set-url origin <%= @project.http_url_to_repo %>

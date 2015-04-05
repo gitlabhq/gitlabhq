@@ -1,0 +1,8 @@
+Hi <%= @user.name %>!
+
+管理员为您创建了帐号. 现在您是公司GitLab应用的成员之一.
+
+登录名.................. <%= @user.email %>
+<% if @user.created_by_id %>
+  <%= link_to "点此设置密码", edit_password_url(@user, :reset_password_token => @token) %>
+<% end %>

@@ -1,0 +1,12 @@
+%h1 422
+%h3 使用 #{@provider} 认证登录失败 
+%hr
+%p 因 #{@error} 登录失败.
+%p 您可以按以下步骤处理:
+
+%ul
+  %li 尝试使用邮箱登录
+  %li 尝试使用用户名登录
+  %li 如果您忘记了您的密码, 尝试使用#{ link_to "密码恢复", new_password_path(resource_name) } 恢复.
+
+%p 如果以上都无效, 请联系GitLab管理员.

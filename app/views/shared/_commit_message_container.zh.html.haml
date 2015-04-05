@@ -1,0 +1,14 @@
+.form-group.commit_message-group
+  = label_tag 'commit_message', class: 'control-label' do
+    提交信息
+  .col-sm-10
+    .commit-message-container
+      .max-width-marker
+      = text_area_tag 'commit_message',
+          (params[:commit_message] || local_assigns[:text]),
+          class: 'form-control', placeholder: local_assigns[:placeholder],
+          required: true, rows: (local_assigns[:rows] || 3)
+    - if local_assigns[:hint]
+      %p.hint
+        保持首行字数在52个字以下
+        其余各行在72个字以下

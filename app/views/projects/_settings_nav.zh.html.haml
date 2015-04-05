@@ -1,0 +1,31 @@
+%ul.project-settings-nav.sidebar-subnav
+  = nav_link(path: 'projects#edit') do
+    = link_to edit_project_path(@project), title: '项目', class: "stat-tab tab " do
+      %i.fa.fa-pencil-square-o
+      %span
+        项目
+  = nav_link(controller: [:project_members, :teams]) do
+    = link_to namespace_project_project_members_path(@project.namespace, @project), title: '成员', class: "team-tab tab" do
+      %i.fa.fa-users
+      %span
+        成员
+  = nav_link(controller: :deploy_keys) do
+    = link_to namespace_project_deploy_keys_path(@project.namespace, @project), title: '布署Key' do
+      %i.fa.fa-key
+      %span
+        布署Keys
+  = nav_link(controller: :hooks) do
+    = link_to namespace_project_hooks_path(@project.namespace, @project), title: 'Web钩子' do
+      %i.fa.fa-link
+      %span
+        Web钩子
+  = nav_link(controller: :services) do
+    = link_to namespace_project_services_path(@project.namespace, @project), title: '服务' do
+      %i.fa.fa-cogs
+      %span
+        服务
+  = nav_link(controller: :protected_branches) do
+    = link_to namespace_project_protected_branches_path(@project.namespace, @project), title: '受保护的分支' do
+      %i.fa.fa-lock
+      %span
+        受保护的分支

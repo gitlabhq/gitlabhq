@@ -1,0 +1,12 @@
+%h3.page-title
+  SSH Key设置
+  .pull-right
+    = link_to "添加SSH Key", new_profile_key_path, class: "btn btn-new"
+%p.light
+  我的SSH Key: #{@keys.count}
+  %br
+  在添加SSH Key之前您需要
+  = link_to "生成.", help_page_path("ssh", "README")
+%hr
+
+= render 'key_table'

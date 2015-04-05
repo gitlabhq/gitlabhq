@@ -1,0 +1,35 @@
+!!! 5
+%html{ lang: "zh"}
+  = render "layouts/head"
+  %body.ui_mars.login-page.application
+    = render "layouts/broadcast"
+    = render "layouts/public_head_panel", title: ''
+    .container.navless-container
+      .content
+        = render "layouts/flash"
+        .row.prepend-top-20
+          .col-sm-5.pull-right
+            = yield
+          .col-sm-7.brand-holder.pull-left
+            %h1
+              = brand_title
+            - if brand_item
+              = brand_image
+              = brand_text
+            - else
+              %h3 代码协作开源软件
+
+              %p
+                具有细分的访问控制, 管理git仓库保持您的代码安全.
+                合并语法, 代码审核, 增强合作.
+                每个项目可以有问题跟踪和wiki.
+
+            - if extra_sign_in_text.present?
+              = markdown(extra_sign_in_text)
+
+    %hr
+    .container
+      .footer-links
+        = link_to "探索", explore_root_path
+        = link_to "文档", "http://doc.gitlab.com/"
+        = link_to "关于GitLab", "https://about.gitlab.com/"

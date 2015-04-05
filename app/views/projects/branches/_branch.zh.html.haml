@@ -1,0 +1,29 @@
+- commit = @repository.commit(branch.target)
+%li(class="js-branch-#{branch.name}")
+  %h4
+    = link_to namespace_project_tree_path(@project.namespace, @project, branch.name) do
+      %strong.str-truncated= branch.name
+      - if branch.name == @repository.root_ref
+        %span.label.label-info 默认
+      - if @project.protected_branch? branch.name
+        %span.label.label-success
+          %i.fa.fa-lock
+          受保护的
+    .pull-right
+      - if can?(current_user, :download_code, @project)
+        = render 'projects/repositories/download_archive', ref: branch.name, btn_class: 'btn-grouped btn-group-sm'
+      - if branch.name != @repository.root_ref
+        = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: branch.name), class: 'btn btn-grouped btn-sm', method: :post, title: "对比" do
+          %i.fa.fa-files-o
+          对比
+
+      - if can_remove_branch?(@project, branch.name)
+        = link_to namespace_project_branch_path(@project.namespace, @project, branch.name), class: 'btn btn-grouped btn-sm btn-remove remove-row', method: :delete, data: { confirm: '删除分支将不可恢复. 您确定?'}, remote: true do
+          %i.fa.fa-trash-o
+
+  - if commit
+    %ul.list-unstyled
+      = render 'projects/commits/inline_commit', commit: commit, project: @project
+  - else
+    %p
+      不能找到该分支的HEAD提交

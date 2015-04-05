@@ -1,0 +1,97 @@
+%ul.project-navigation.nav.nav-sidebar
+  - if @project_settings_nav
+    = nav_link do
+      = link_to project_path(@project), title: '返回项目', class: "" do
+        %i.fa.fa-caret-square-o-left
+        %span
+          返回项目
+
+    %li.separate-item
+
+    = render 'projects/settings_nav'
+
+  - else
+    = nav_link(path: 'projects#show', html_options: {class: "home"}) do
+      = link_to project_path(@project), title: '项目', class: 'shortcuts-project' do
+        %i.fa.fa-dashboard
+        %span
+          项目
+    - if project_nav_tab? :files
+      = nav_link(controller: %w(tree blob blame edit_tree new_tree)) do
+        = link_to namespace_project_tree_path(@project.namespace, @project, @ref || @repository.root_ref), title: '文件',  class: 'shortcuts-tree' do
+          %i.fa.fa-files-o
+          %span
+            文件
+
+    - if project_nav_tab? :commits
+      = nav_link(controller: %w(commit commits compare repositories tags branches)) do
+        = link_to namespace_project_commits_path(@project.namespace, @project, @ref || @repository.root_ref), title: '提交', class: 'shortcuts-commits' do
+          %i.fa.fa-history
+          %span
+            提交
+
+    - if project_nav_tab? :network
+      = nav_link(controller: %w(network)) do
+        = link_to namespace_project_network_path(@project.namespace, @project, @ref || @repository.root_ref), title: '网络', class: 'shortcuts-network' do
+          %i.fa.fa-code-fork
+          %span
+            网络
+
+    - if project_nav_tab? :graphs
+      = nav_link(controller: %w(graphs)) do
+        = link_to namespace_project_graph_path(@project.namespace, @project, @ref || @repository.root_ref), title: '图示',  class: 'shortcuts-graphs' do
+          %i.fa.fa-area-chart
+          %span
+            图示
+
+    - if project_nav_tab? :milestones
+      = nav_link(controller: :milestones) do
+        = link_to namespace_project_milestones_path(@project.namespace, @project), title: '里程碑' do
+          %i.fa.fa-clock-o
+          %span
+            里程碑
+
+    - if project_nav_tab? :issues
+      = nav_link(controller: :issues) do
+        = link_to url_for_project_issues, title: '问题', class: 'shortcuts-issues' do
+          %i.fa.fa-exclamation-circle
+          %span
+            问题
+            - if @project.default_issues_tracker?
+              %span.count.issue_counter= @project.issues.opened.count
+
+    - if project_nav_tab? :merge_requests
+      = nav_link(controller: :merge_requests) do
+        = link_to namespace_project_merge_requests_path(@project.namespace, @project), title: '合并请求', class: 'shortcuts-merge_requests'  do
+          %i.fa.fa-tasks
+          %span
+            合并请求
+            %span.count.merge_counter= @project.merge_requests.opened.count
+
+    - if project_nav_tab? :labels
+      = nav_link(controller: :labels) do
+        = link_to namespace_project_labels_path(@project.namespace, @project), title: '标签(label)' do
+          %i.fa.fa-tags
+          %span
+            标签
+
+    - if project_nav_tab? :wiki
+      = nav_link(controller: :wikis) do
+        = link_to namespace_project_wiki_path(@project.namespace, @project, :home), title: 'Wiki', class: 'shortcuts-wiki' do
+          %i.fa.fa-book
+          %span
+            Wiki
+
+    - if project_nav_tab? :snippets
+      = nav_link(controller: :snippets) do
+        = link_to namespace_project_snippets_path(@project.namespace, @project), title: '代码片段', class: 'shortcuts-snippets' do
+          %i.fa.fa-file-text-o
+          %span
+            代码片段
+
+    - if project_nav_tab? :settings
+      = nav_link(html_options: {class: "#{project_tab_class} separate-item"}) do
+        = link_to edit_project_path(@project), title: '设置', class: "stat-tab tab no-highlight" do
+          %i.fa.fa-cogs
+          %span
+            设置

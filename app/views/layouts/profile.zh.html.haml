@@ -1,0 +1,6 @@
+!!! 5
+%html{ lang: "zh"}
+  = render "layouts/head", title: "用户资料"
+  %body{class: "#{app_theme}  profile", :'data-page' => body_data_page}
+    = render "layouts/head_panel", title: link_to("用户资料", profile_path)
+    = render 'layouts/page', sidebar: 'layouts/nav/profile'

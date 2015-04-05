@@ -1,0 +1,33 @@
+- if current_user
+  .dropdown.pull-right
+    %a.dropdown-toggle.btn.btn-new{href: '#', "data-toggle" => "dropdown"}
+      %i.fa.fa-bars
+    %ul.dropdown-menu
+      - if @project.issues_enabled && can?(current_user, :write_issue, @project)
+        %li
+          = link_to url_for_new_issue, title: "创建问题" do
+            创建问题
+      - if @project.merge_requests_enabled && can?(current_user, :write_merge_request, @project)
+        %li
+          = link_to new_namespace_project_merge_request_path(@project.namespace, @project), title: "新建合并请求" do
+            新建合并请求
+      - if @project.snippets_enabled && can?(current_user, :write_snippet, @project)
+        %li
+          = link_to new_namespace_project_snippet_path(@project.namespace, @project), title: "新建代码片段" do
+            新建代码片段
+      - if can?(current_user, :admin_project_member, @project)
+        %li
+          = link_to namespace_project_project_members_path(@project.namespace, @project), title: "新加项目成员" do
+            新加项目成员
+      - if can? current_user, :push_code, @project
+        %li.divider
+        %li
+          = link_to new_namespace_project_branch_path(@project.namespace, @project) do
+            %i.fa.fa-code-fork
+            Git分支
+        %li
+          = link_to new_namespace_project_tag_path(@project.namespace, @project) do
+            %i.fa.fa-tag
+            Git标签
+
+

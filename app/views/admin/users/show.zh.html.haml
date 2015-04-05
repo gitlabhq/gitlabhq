@@ -1,0 +1,227 @@
+%h3.page-title
+  用户:
+  = @user.name
+  - if @user.blocked?
+    %span.cred (被屏蔽)
+  - if @user.admin
+    %span.cred (管理员)
+
+  .pull-right
+    = link_to edit_admin_user_path(@user), class: "btn btn-grouped" do
+      %i.fa.fa-pencil-square-o
+      编辑
+%hr
+%ul.nav.nav-tabs
+  %li.active
+    %a{"data-toggle" => "tab", href: "#account"} 帐号
+  %li
+    %a{"data-toggle" => "tab", href: "#profile"} 用户资料
+  %li
+    %a{"data-toggle" => "tab", href: "#groups"} 组
+  %li
+    %a{"data-toggle" => "tab", href: "#projects"} 项目
+  %li
+    %a{"data-toggle" => "tab", href: "#ssh-keys"} SSH key
+
+.tab-content
+  #account.tab-pane.active
+    .row
+      .col-md-6
+        .panel.panel-default
+          .panel-heading
+            帐号:
+          %ul.well-list
+            %li
+              %span.light 名称:
+              %strong= @user.name
+            %li
+              %span.light 用户名:
+              %strong
+                = @user.username
+            %li
+              %span.light 邮箱:
+              %strong
+                = mail_to @user.email
+            - @user.emails.each do |email|
+              %li
+                %span.light 备用邮箱:
+                %strong= email.email
+                = link_to remove_email_admin_user_path(@user, email), data: { confirm: "您确定要删除邮箱 #{email.email}?" }, method: :delete, class: "btn-xs btn btn-remove pull-right", title: '删除备用邮箱', id: "remove_email_#{email.id}" do
+                  %i.fa.fa-times
+
+            %li
+              %span.light 能否创建组:
+              %strong
+                = @user.can_create_group ? "能" : "不能"
+            %li
+              %span.light 个人项目限制数:
+              %strong
+                = @user.projects_limit
+            %li
+              %span.light 用户创建于:
+              %strong
+                = @user.created_at.stamp("Nov 12, 2031")
+            - if @user.confirmed_at
+              %li
+                %span.light 确认于:
+                %strong
+                  = @user.confirmed_at.stamp("Nov 12, 2031")
+            - else
+              %li
+                %span.light 是否确认:
+                %strong.cred
+                  否
+
+            %li
+              %span.light 当前登录于:
+              %strong
+                - if @user.current_sign_in_at
+                  = @user.current_sign_in_at.stamp("Nov 12, 2031")
+                - else
+                  未曾登录
+
+            %li
+              %span.light 最近登录于:
+              %strong
+                - if @user.last_sign_in_at
+                  = @user.last_sign_in_at.stamp("Nov 12, 2031")
+                - else
+                  未曾登录
+
+            %li
+              %span.light 登录次数:
+              %strong
+                = @user.sign_in_count
+
+            - if @user.ldap_user?
+              %li
+                %span.light LDAP uid:
+                %strong
+                  = @user.ldap_identity.extern_uid
+
+            - if @user.created_by
+              %li
+                %span.light 创建者:
+                %strong
+                  = link_to @user.created_by.name, [:admin, @user.created_by]
+
+      .col-md-6
+        - unless @user == current_user
+          - if @user.blocked?
+            .panel.panel-info
+              .panel-heading
+                用户被屏蔽
+              .panel-body
+                %p 屏蔽用户会有以下影响:
+                %ul
+                  %li 用户不能登录
+                  %li 用户不能访问git仓库
+                  %li 个人项目会被保留
+                  %li 拥有的组会被保留
+                %br
+                = link_to '取消屏蔽用户', unblock_admin_user_path(@user), method: :put, class: "btn btn-info", data: { confirm: '您确定?' }
+          - else
+            .panel.panel-warning
+              .panel-heading
+                屏蔽该用户
+              .panel-body
+                %p 屏蔽用户会有以下影响:
+                %ul
+                  %li 用户不能登录
+                  %li 用户不能访问git仓库
+                  %li 用户会被移出参与的项目和组
+                  %li 个人项目会被保留
+                  %li 拥有的组会被保留
+                %br
+                = link_to '屏蔽用户', block_admin_user_path(@user), data: { confirm: '用户即将被屏蔽! 您确定?' }, method: :put, class: "btn btn-warning"
+
+          .panel.panel-danger
+            .panel-heading
+              删除用户
+            .panel-body
+              %p 删除用户会有以下影响:
+              %ul
+                %li 所有的用户内容像提交的问题, 代码片段, 评论等将被删除
+                - rp = @user.personal_projects.count
+                - unless rp.zero?
+                  %li #{pluralize rp, 'personal project'} will be removed and cannot be restored
+                - if @user.solo_owned_groups.present?
+                  %li
+                    组及其内容也会被删除:
+                    %strong #{@user.solo_owned_groups.map(&:name).join(', ')}
+              %br
+              = link_to '删除用户', [:admin, @user], data: { confirm: "用户 #{@user.name} 即将被删除! 您确定?" }, method: :delete, class: "btn btn-remove"
+
+  #profile.tab-pane
+    .row
+      .col-md-6
+        .panel.panel-default
+          .panel-heading
+            = @user.name
+          %ul.well-list
+            %li
+              = image_tag avatar_icon(@user.email, 60), class: "avatar s60"
+            %li
+              %span.light 用户资料页:
+              %strong
+                = link_to user_path(@user) do
+                  = @user.username
+      .col-md-6
+        = render 'users/profile', user: @user
+
+  #groups.tab-pane
+    - if @user.group_members.present?
+      .panel.panel-default
+        .panel-heading 组:
+        %ul.well-list
+          - @user.group_members.each do |group_member|
+            - group = group_member.group
+            %li.group_member
+              %span{class: ("list-item-name" unless group_member.owner?)}
+                %strong= link_to group.name, admin_group_path(group)
+              .pull-right
+                %span.light= group_member.human_access
+                - unless group_member.owner?
+                  = link_to group_group_member_path(group, group_member), data: { confirm: remove_user_from_group_message(group, @user) }, method: :delete, remote: true, class: "btn-xs btn btn-remove", title: '从组中删除用户' do
+                    %i.fa.fa-times.fa-inverse
+    - else
+      .nothing-here-block 该用户没属于任务组.
+
+  #projects.tab-pane
+    - if @user.groups.any?
+      .panel.panel-default
+        .panel-heading 组项目
+        %ul.well-list
+          - @user.groups.each do |group|
+            %li
+              %strong= group.name
+              &ndash; access to
+              #{pluralize(group.projects.count, 'project')}
+
+    .row
+      .col-md-6
+        = render 'users/projects', projects: @personal_projects
+
+      .col-md-6
+        .panel.panel-default
+          .panel-heading 加入的项目 (#{@joined_projects.count})
+          %ul.well-list
+            - @joined_projects.sort_by(&:name_with_namespace).each do |project|
+              - member = project.team.find_member(@user.id)
+              %li.project_member
+                .list-item-name
+                  = link_to admin_namespace_project_path(project.namespace, project), class: dom_class(project) do
+                    = project.name_with_namespace
+
+                - if member
+                  .pull-right
+                    - if member.owner?
+                      %span.light Owner
+                    - else
+                      %span.light= member.human_access
+
+                      - if member.respond_to? :project
+                        = link_to namespace_project_project_member_path(project.namespace, project, @user), data: { confirm: remove_from_project_team_message(project, @user) }, remote: true, method: :delete, class: "btn-xs btn btn-remove", title: '从项目中删除用户' do
+                          %i.fa.fa-times
+  #ssh-keys.tab-pane
+    = render 'profiles/keys/key_table', admin: true

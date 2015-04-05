@@ -1,0 +1,37 @@
+- ref = ref || nil
+- btn_class = btn_class || ''
+- split_button = split_button || false
+- if split_button == true
+  %span.btn-group{class: btn_class}
+    = link_to archive_namespace_project_repository_path(@project.namespace, @project, ref: ref, format: 'zip'), class: 'btn', rel: 'nofollow' do
+      %i.fa.fa-download
+      %span Download zip
+    %a.btn.dropdown-toggle{ 'data-toggle' => 'dropdown' }
+      %span.caret
+      %span.sr-only
+        选择打包格式
+    %ul.dropdown-menu{ role: 'menu' }
+      %li
+        = link_to archive_namespace_project_repository_path(@project.namespace, @project, ref: ref, format: 'zip'), rel: 'nofollow' do
+          %i.fa.fa-download
+          %span 下载zip包
+      %li
+        = link_to archive_namespace_project_repository_path(@project.namespace, @project, ref: ref, format: 'tar.gz'), rel: 'nofollow' do
+          %i.fa.fa-download
+          %span 下载tar.gz包
+      %li
+        = link_to archive_namespace_project_repository_path(@project.namespace, @project, ref: ref, format: 'tar.bz2'), rel: 'nofollow' do
+          %i.fa.fa-download
+          %span 下载tar.bz2包
+      %li
+        = link_to archive_namespace_project_repository_path(@project.namespace, @project, ref: ref, format: 'tar'), rel: 'nofollow' do
+          %i.fa.fa-download
+          %span 下载tar包
+- else
+  %span.btn-group{class: btn_class}
+    = link_to archive_namespace_project_repository_path(@project.namespace, @project, ref: ref, format: 'zip'), class: 'btn', rel: 'nofollow' do
+      %i.fa.fa-download
+      %span zip
+    = link_to archive_namespace_project_repository_path(@project.namespace, @project, ref: ref, format: 'tar.gz'), class: 'btn', rel: 'nofollow' do
+      %i.fa.fa-download
+      %span tar.gz

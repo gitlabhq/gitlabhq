@@ -1,0 +1,28 @@
+- if @error
+  .alert.alert-danger
+    %button{ type: "button", class: "close", "data-dismiss" => "alert"} &times;
+    = @error
+%h3.page-title
+  %i.fa.fa-code-fork
+  新建分支
+= form_tag namespace_project_branches_path, method: :post, id: "new-branch-form", class: "form-horizontal" do
+  .form-group
+    = label_tag :branch_name, '新分支名称', class: 'control-label'
+    .col-sm-10
+      = text_field_tag :branch_name, params[:branch_name], placeholder: '输入新分支名称', required: true, tabindex: 1, class: 'form-control'
+  .form-group
+    = label_tag :ref, '创建来自于', class: 'control-label'
+    .col-sm-10
+      = text_field_tag :ref, params[:ref], placeholder: '已有分支名,标签或提交SHA1值', required: true, tabindex: 2, class: 'form-control'
+  .form-actions
+    = button_tag '创建分支', class: 'btn btn-create', tabindex: 3
+    = link_to '取消', namespace_project_branches_path(@project.namespace, @project), class: 'btn btn-cancel'
+
+:javascript
+  disableButtonIfAnyEmptyField($("#new-branch-form"), ".form-control", ".btn-create");
+  var availableTags = #{@project.repository.ref_names.to_json};
+
+  $("#ref").autocomplete({
+    source: availableTags,
+    minLength: 1
+  });

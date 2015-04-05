@@ -1,0 +1,36 @@
+%h3.page-title
+  有权限访问此项目的用户
+
+%p.light
+  点
+  %strong= link_to "此", help_page_path("permissions", "permissions"), class: "vlink"
+  查看更多关于项目权限的信息
+
+%hr
+
+.clearfix.js-toggle-container
+  = form_tag namespace_project_project_members_path(@project.namespace, @project), method: :get, class: 'form-inline member-search-form'  do
+    .form-group
+      = search_field_tag :search, params[:search], { placeholder: '按名字查找已有成员', class: 'form-control search-text-input input-mn-300' }
+    = button_tag '搜索', class: 'btn'
+
+  - if can?(current_user, :admin_project_member, @project)
+    %span.pull-right
+      = button_tag class: 'btn btn-new btn-grouped js-toggle-button', type: 'button' do
+        添加成员
+        %i.fa.fa-chevron-down
+      = link_to import_namespace_project_project_members_path(@project.namespace, @project), class: "btn btn-grouped", title: "从其它项目导入成员" do
+        导入成员
+
+    .js-toggle-content.hide.new-group-member-holder
+      = render "new_project_member"
+
+= render "team", members: @project_members
+
+- if @group
+  = render "group_members", members: @group_members
+
+:coffeescript
+  $('form.member-search-form').on 'submit', (event) ->
+    event.preventDefault()
+    Turbolinks.visit @.action + '?' + $(@).serialize()

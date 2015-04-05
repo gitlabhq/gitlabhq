@@ -1,0 +1,16 @@
+%header.page-header
+  %h1 您已认证的应用
+%main{:role => "main"}
+  %table.table.table-striped
+    %thead
+      %tr
+        %th 应用
+        %th 创建于
+        %th
+        %th
+    %tbody
+      - @applications.each do |application|
+        %tr
+          %td= application.name
+          %td= application.created_at.strftime('%Y-%m-%d %H:%M:%S')
+          %td= render 'delete_form', application: application
