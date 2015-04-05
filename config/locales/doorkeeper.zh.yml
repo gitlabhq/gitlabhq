@@ -1,0 +1,73 @@
+zh:
+  activerecord:
+    errors:
+      models:
+        application:
+          attributes:
+            redirect_uri:
+              fragment_present: '不能包含锚点.'
+              invalid_uri: '必须是有效的URI地址.'
+              relative_uri: '必须是绝对URI地址.'
+  mongoid:
+    errors:
+      models:
+        application:
+          attributes:
+            redirect_uri:
+              fragment_present: '不能包含锚点.'
+              invalid_uri: '必须是有效的URI地址.'
+              relative_uri: '必须是绝对URI地址.'
+  mongo_mapper:
+    errors:
+      models:
+        application:
+          attributes:
+            redirect_uri:
+              fragment_present: '不能包含锚点.'
+              invalid_uri: '必须是有效的URI地址.'
+              relative_uri: '必须是绝对URI地址.'
+  doorkeeper:
+    errors:
+      messages:
+        # Common error messages
+        invalid_request: '请求缺少必要参数, 如不支持的参数值或参数格式不正确.'
+        invalid_redirect_uri: '包含的重定向uri地址无效.'
+        unauthorized_client: '客户端未被授权使用此方式发起请求.'
+        access_denied: '资源所有者或认证服务器拒绝此请求.'
+        invalid_scope: '请求的范围无效、未被识别或格式有误.'
+        server_error: '认证服务器出现意外情况, 无法完成请求.'
+        temporarily_unavailable: '认证服务器因临时超负荷或正在维护中, 现在无法处理此请求.'
+
+        #configuration error messages
+        credential_flow_not_configured: '资源所有者密码信息验证流程失败, 因为Doorkeeper.configure.resource_owner_from_credentials未配置.'
+        resource_owner_authenticator_not_configured: '因Doorkeeper.configure.resource_owner_authenticator未配置, 查找资源所有者失败.'
+
+        # Access grant errors
+        unsupported_response_type: '认证服务器不支持此类型的返回.'
+
+        # Access token errors
+        invalid_client: '客户端认证失败, 失败原因为客户端未被识别, 客户端未包含认证信息或不支持的认证方法.'
+        invalid_grant: '提供的认证授权无效, 已过期, 已被撤消, 与认证请求中使用的跳转地址不匹配或认证授权是授权给其它客户端的.'
+        unsupported_grant_type: '认证服务器不支持该认证授权类型.'
+
+        # Password Access token errors
+        invalid_resource_owner: '提供的资源所有者身份信息无效或未找到资源所有者'
+
+        invalid_token:
+          revoked: "访问Token已经被撤消"
+          expired: "访问Token已过期"
+          unknown: "访问Token无效"
+    scopes:
+      api: "访问您的API"
+
+    flash:
+      applications:
+        create:
+          notice: '创建应用成功.'
+        destroy:
+          notice: '删除应用成功.'
+        update:
+          notice: '更新应用成功.'
+      authorized_applications:
+        destroy:
+          notice: '撤消应用授权成功.'
