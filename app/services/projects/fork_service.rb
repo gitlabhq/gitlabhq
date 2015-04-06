@@ -50,7 +50,7 @@ module Projects
           end
 
           if @from_project.gitlab_ci?
-            ForkRegistratorWorker.perform_async(@from_project.id, project.id, @current_user.private_token)
+            ForkRegistrationWorker.perform_async(@from_project.id, project.id, @current_user.private_token)
           end
         rescue => ex
           project.errors.add(:base, 'Fork transaction failed.')

@@ -18,6 +18,8 @@
 #
 
 class GitlabCiService < CiService
+  API_PREFIX = "api/v1"
+
   prop_accessor :project_url, :token
   validates :project_url, presence: true, if: :activated?
   validates :token, presence: true, if: :activated?
@@ -59,7 +61,7 @@ class GitlabCiService < CiService
     end
   end
 
-  def register_fork(new_project, user_token)
+  def fork_registration(new_project, private_token)
     params = {
       id:                  new_project.id,
       name_with_namespace: new_project.name_with_namespace,
@@ -69,12 +71,12 @@ class GitlabCiService < CiService
     }
 
     HTTParty.post(
-      register_fork_path, 
+      fork_registration_path,
       body: {
         project_id: project.id,
         project_token: token,
-        user_token: user_token,
-        data: params.to_yaml},
+        private_token: private_token,
+        data: params },
       verify: false
     )
   end
@@ -93,10 +95,6 @@ class GitlabCiService < CiService
 
   def builds_path
     project_url + "?ref=" + project.default_branch
-  end
-
-  def register_fork_path
-    project_url.sub(/projects\/\d*/, 'api/v1/forks')
   end
 
   def status_img_path
@@ -120,5 +118,11 @@ class GitlabCiService < CiService
       { type: 'text', name: 'token', placeholder: 'GitLab CI project specific token' },
       { type: 'text', name: 'project_url', placeholder: 'http://ci.gitlabhq.com/projects/3' }
     ]
+  end
+
+  private
+
+  def fork_registration_path
+    project_url.sub(/projects\/\d*/, "#{API_PREFIX}/forks")
   end
 end
