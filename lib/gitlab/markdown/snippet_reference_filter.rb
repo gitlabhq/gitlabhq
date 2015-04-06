@@ -7,11 +7,14 @@ module Gitlab
     # snippets that do not exist are ignored.
     #
     # Context options:
-    #   :project (required) - Current project.
+    #   :project (required) - Current project, ignored when reference is
+    #                         cross-project.
     #   :reference_class    - Custom CSS class added to reference links.
     #   :only_path          - Generate path-only links.
     #
     class SnippetReferenceFilter < HTML::Pipeline::Filter
+      include CrossProjectReference
+
       # Public: Find `$123` snippet references in text
       #
       #   SnippetReferenceFilter.references_in(text) do |match, snippet|
@@ -20,17 +23,20 @@ module Gitlab
       #
       # text - String text to search.
       #
-      # Yields the String match and the Integer snippet ID.
+      # Yields the String match, the Integer snippet ID, and an optional String
+      # of the external project reference.
       #
       # Returns a String replaced with the return of the block.
       def self.references_in(text)
         text.gsub(SNIPPET_PATTERN) do |match|
-          yield match, $~[:snippet].to_i
+          yield match, $~[:snippet].to_i, $~[:project]
         end
       end
 
       # Pattern used to extract `$123` snippet references from text
-      SNIPPET_PATTERN = /\$(?<snippet>\d+)/
+      #
+      # This pattern supports cross-project references.
+      SNIPPET_PATTERN = /#{PROJECT_PATTERN}?\$(?<snippet>\d+)/
 
       # Don't look for references in text nodes that are children of these
       # elements.
@@ -40,7 +46,7 @@ module Gitlab
         doc.search('text()').each do |node|
           content = node.to_html
 
-          next if project.nil?
+          next if context[:project].nil?
           next unless content.match(SNIPPET_PATTERN)
           next if has_ancestor?(node, IGNORE_PARENTS)
 
@@ -66,9 +72,9 @@ module Gitlab
       # Returns a String with `$123` references replaced with links. All links
       # have `gfm` and `gfm-snippet` class names attached for styling.
       def snippet_link_filter(text)
-        project = context[:project]
+        self.class.references_in(text) do |match, id, project_ref|
+          project = self.project_from_ref(project_ref)
 
-        self.class.references_in(text) do |match, id|
           if snippet = project.snippets.find_by(id: id)
             title = "Snippet: #{snippet.title}"
             klass = "gfm gfm-snippet #{context[:reference_class]}".strip
@@ -77,15 +83,11 @@ module Gitlab
 
             %(<a href="#{url}"
                  title="#{title}"
-                 class="#{klass}">$#{id}</a>)
+                 class="#{klass}">#{project_ref}$#{id}</a>)
           else
             match
           end
         end
-      end
-
-      def project
-        context[:project]
       end
 
       def url_for_snippet(snippet, project)

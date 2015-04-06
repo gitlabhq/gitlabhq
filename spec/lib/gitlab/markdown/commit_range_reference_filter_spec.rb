@@ -51,7 +51,7 @@ module Gitlab::Markdown
         expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
       end
 
-      it 'ignores invalid issue IDs' do
+      it 'ignores invalid commit IDs' do
         exp = act = "See #{commit1.id.reverse}...#{commit2.id}"
 
         expect(project).to receive(:valid_repo?).and_return(true)
@@ -83,31 +83,32 @@ module Gitlab::Markdown
       end
     end
 
-    # TODO (rspeicher): Remove or re-enable
-    # context 'cross-project reference' do
-    #   let(:namespace) { create(:namespace, name: 'cross-reference') }
-    #   let(:project2)  { create(:project, namespace: namespace) }
-    #   let(:commit1)   { project.repository.commit }
-    #   let(:commit2)   { project.repository.commit("HEAD~2") }
-    #   let(:reference) { "#{project2.path_with_namespace}@#{commit.id}" }
+    context 'cross-project reference' do
+      let(:namespace) { create(:namespace, name: 'cross-reference') }
+      let(:project2)  { create(:project, namespace: namespace) }
+      let(:commit1)   { project.repository.commit }
+      let(:commit2)   { project.repository.commit("HEAD~2") }
+      let(:reference) { "#{project2.path_with_namespace}@#{commit1.id}...#{commit2.id}" }
 
-    #   it 'links to a valid reference' do
-    #     doc = filter("See #{reference}")
+      it 'links to a valid reference' do
+        doc = filter("See #{reference}")
 
-    #     expect(doc.css('a').first.attr('href')).
-    #       to eq urls.namespace_project_commit_url(project2.namespace, project2, commit.id)
-    #   end
+        expect(doc.css('a').first.attr('href')).
+          to eq urls.namespace_project_compare_url(project2.namespace, project2, from: commit1.id, to: commit2.id)
+      end
 
-    #   it 'links with adjacent text' do
-    #     doc = filter("Fixed (#{reference}.)")
-    #     expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
-    #   end
+      it 'links with adjacent text' do
+        doc = filter("Fixed (#{reference}.)")
+        expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
+      end
 
-    #   it 'ignores invalid issue IDs on the referenced project' do
-    #     exp = act = "Fixed #{project2.path_with_namespace}##{commit.id.reverse}"
+      it 'ignores invalid commit IDs on the referenced project' do
+        exp = act = "Fixed #{project2.path_with_namespace}##{commit1.id.reverse}...#{commit2.id}"
+        expect(filter(act).to_html).to eq exp
 
-    #     expect(filter(act).to_html).to eq exp
-    #   end
-    # end
+        exp = act = "Fixed #{project2.path_with_namespace}##{commit1.id}...#{commit2.id.reverse}"
+        expect(filter(act).to_html).to eq exp
+      end
+    end
   end
 end

@@ -38,7 +38,7 @@ module Gitlab::Markdown
         expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
       end
 
-      it 'ignores invalid issue IDs' do
+      it 'ignores invalid commit IDs' do
         exp = act = "See #{reference.reverse}"
 
         expect(project).to receive(:valid_repo?).and_return(true)
@@ -88,9 +88,8 @@ module Gitlab::Markdown
         expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
       end
 
-      it 'ignores invalid issue IDs on the referenced project' do
-        exp = act = "Fixed #{project2.path_with_namespace}##{commit.id.reverse}"
-
+      it 'ignores invalid commit IDs on the referenced project' do
+        exp = act = "Committed #{project2.path_with_namespace}##{commit.id.reverse}"
         expect(filter(act).to_html).to eq exp
       end
     end
