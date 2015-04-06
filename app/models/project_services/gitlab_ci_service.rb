@@ -59,6 +59,26 @@ class GitlabCiService < CiService
     end
   end
 
+  def register_fork(new_project, user_token)
+    params = {
+      id:                  new_project.id,
+      name_with_namespace: new_project.name_with_namespace,
+      web_url:             new_project.web_url,
+      default_branch:      new_project.default_branch,
+      ssh_url_to_repo:     new_project.ssh_url_to_repo
+    }
+
+    HTTParty.post(
+      register_fork_path, 
+      body: {
+        project_id: project.id,
+        project_token: token,
+        user_token: user_token,
+        data: params.to_yaml},
+      verify: false
+    )
+  end
+
   def commit_coverage(sha, ref)
     response = get_ci_build(sha, ref)
 
@@ -73,6 +93,10 @@ class GitlabCiService < CiService
 
   def builds_path
     project_url + "?ref=" + project.default_branch
+  end
+
+  def register_fork_path
+    project_url.sub(/projects\/\d*/, 'api/v1/forks')
   end
 
   def status_img_path
