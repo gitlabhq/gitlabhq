@@ -145,22 +145,22 @@ describe Gitlab::LDAP::Access do
     end
 
     it "should not update email if email attribute is not set" do
-      expect{ access.update_email }.to_not change(user, :unconfirmed_email)
+      expect{ access.update_email }.to_not change(user, :email)
     end
 
     it "should not update the email if the user has the same email in GitLab and in LDAP" do
       entry['mail'] = [user.email]
-      expect{ access.update_email }.to_not change(user, :unconfirmed_email)
+      expect{ access.update_email }.to_not change(user, :email)
     end
 
     it "should not update the email if the user has the same email GitLab and in LDAP, but with upper case in LDAP" do
       entry['mail'] = [user.email.upcase]
-      expect{ access.update_email }.to_not change(user, :unconfirmed_email)
+      expect{ access.update_email }.to_not change(user, :email)
     end
 
     it "should update the email if the user email is different" do
       entry['mail'] = ["new_email@example.com"]
-      expect{ access.update_email }.to change(user, :unconfirmed_email)
+      expect{ access.update_email }.to change(user, :email)
     end
   end
 
