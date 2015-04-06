@@ -38,6 +38,14 @@ module Gitlab::Markdown
           to eq urls.namespace_project_compare_url(project.namespace, project, from: commit1.id, to: commit2.id)
       end
 
+      it 'links to a valid short ID' do
+        reference = "#{commit1.short_id}...#{commit2.id}"
+        reference2 = "#{commit1.id}...#{commit2.short_id}"
+
+        expect(filter("See #{reference}").css('a').first.text).to eq reference
+        expect(filter("See #{reference2}").css('a').first.text).to eq reference2
+      end
+
       it 'links with adjacent text' do
         doc = filter("See (#{reference}.)")
         expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
