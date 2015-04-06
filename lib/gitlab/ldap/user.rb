@@ -39,6 +39,7 @@ module Gitlab
       end
 
       def update_user_attributes
+        gl_user.skip_reconfirmation!
         gl_user.email = auth_hash.email
 
         # Build new identity only if we dont have have same one

@@ -62,6 +62,7 @@ v 7.10.0 (unreleased)
   - Project labels are now available over the API under the "tag_list" field (Cristian Medina) 
   - Fixed link paths for HTTP and SSH on the admin project view (Jeremy Maziarz)
   - Fix and improve help rendering (Sullivan Sénéchal)
+  - Skip email confirmation when set by admin or via LDAP.
 
 
 v 7.9.2
