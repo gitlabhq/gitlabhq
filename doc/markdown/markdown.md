@@ -176,14 +176,18 @@ GFM will recognize the following:
 - #123 : for issues
 - !123 : for merge requests
 - $123 : for snippets
-- 1234567 : for commits
+- ~123 : for labels
+- 9ba12248 : for specific commits
+- 9ba12248...b19a04f5 : for commit range comparisons
 - \[file\](path/to/file) : for file references
 
 GFM also recognizes references to commits, issues, and merge requests in other projects:
 
 - namespace/project#123 : for issues
 - namespace/project!123 : for merge requests
-- namespace/project@1234567 : for commits
+- namespace/project$123 : for snippets
+- namespace/project@9ba12248 : for specific commits
+- namespace/project@9ba12248...b19a04f5 : for commit range comparisons
 
 ## Task Lists
 
