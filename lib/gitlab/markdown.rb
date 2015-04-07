@@ -92,9 +92,14 @@ module Gitlab
 
     # Custom filters for html-pipeline:
     #
+    # SanitizationFilter should come first so that all generated reference HTML
+    # goes through untouched.
+    #
     # See https://gitlab.com/gitlab-org/html-pipeline-gitlab for more filters
     def filters
       [
+        HTML::Pipeline::SanitizationFilter,
+
         Gitlab::Markdown::UserReferenceFilter,
         Gitlab::Markdown::IssueReferenceFilter,
         Gitlab::Markdown::ExternalIssueReferenceFilter,
@@ -103,8 +108,8 @@ module Gitlab
         Gitlab::Markdown::CommitRangeReferenceFilter,
         Gitlab::Markdown::CommitReferenceFilter,
         Gitlab::Markdown::LabelReferenceFilter,
-        HTML::Pipeline::Gitlab::GitlabEmojiFilter,
-        HTML::Pipeline::SanitizationFilter
+
+        HTML::Pipeline::Gitlab::GitlabEmojiFilter
       ]
     end
 
