@@ -22,6 +22,23 @@ You can override this version check with the `--oldpackage` option:
 rpm -Uvh --oldpackage gitlab-7.5.3_ee.omnibus.5.2.1.ci-1.el7.x86_64.rpm
 ```
 
+### GitLab Enterprise Edition and GitLab CI 7.9.3
+
+- Ubuntu 14.04 64-bit [gitlab_7.9.3-ee.omnibus-1_amd64.deb](https://downloads-packages.s3.amazonaws.com/c506c72a45e4ac08cb1b0388ebb0c0e33a0b8f92/ubuntu-14.04/gitlab_7.9.3-ee.omnibus-1_amd64.deb)
++ SHA256: 693335ac4af038ec89a78d91cd2da1682822546f86eb3a0ab08e1a78406239cd
+
+- Ubuntu 12.04 64-bit [gitlab_7.9.3-ee.omnibus-1_amd64.deb](https://downloads-packages.s3.amazonaws.com/dd13aeb6435a2b188b6164a55005d46dd08be2cd/ubuntu-12.04/gitlab_7.9.3-ee.omnibus-1_amd64.deb)
++ SHA256: 59b30354beaf2e41ba7b281b62d7a4cd5b9acd163f157bbeeb224570353ab889
+
+- Debian 7 64-bit [gitlab_7.9.3-ee.omnibus-1_amd64.deb](https://downloads-packages.s3.amazonaws.com/a80a71bf632ab37f49bfcdac2bd0936fa80a87e3/debian-7.8/gitlab_7.9.3-ee.omnibus-1_amd64.deb)
++ SHA256: 7498c8fd7816fd4304c957cda359705144accb9c5d9b039b568f429f1d6d3159
+
+- CentOS 6 64-bit [gitlab-7.9.3_ee.omnibus-1.el6.x86_64.rpm](https://downloads-packages.s3.amazonaws.com/c737562ed6ec92757fa95bb95b8b8f7c54b68005/centos-6.6/gitlab-7.9.3_ee.omnibus-1.el6.x86_64.rpm)
++ SHA256: 91fc2ed1827b4d2f75937b8a171ddf38db35fdd69d2361f675a9358c7d899b9e
+
+- CentOS 7 64-bit [gitlab-7.9.3_ee.omnibus-1.el7.x86_64.rpm](https://downloads-packages.s3.amazonaws.com/1340d3b7ced6e222d48b7a9fba6cd1bdddbf2932/centos-7.1.1503/gitlab-7.9.3_ee.omnibus-1.el7.x86_64.rpm)
++ SHA256: 1735eb0eb5598ad253f84d39407e92eb138434f1b4c93e4b6a4c9fd623be9c71
+
 ### GitLab Enterprise Edition and GitLab CI 7.9.2
 
 - Ubuntu 14.04 64-bit [gitlab_7.9.2-ee.omnibus-1_amd64.deb](https://downloads-packages.s3.amazonaws.com/30983aa2979fe9384bf8fc6f9a381f71e8877322/ubuntu-14.04/gitlab_7.9.2-ee.omnibus-1_amd64.deb)
