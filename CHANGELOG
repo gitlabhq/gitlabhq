@@ -63,6 +63,8 @@ v 7.10.0 (unreleased)
   - Fixed link paths for HTTP and SSH on the admin project view (Jeremy Maziarz)
   - Fix and improve help rendering (Sullivan Sénéchal)
 
+v 7.9.3
+  - Contains no changes
 
 v 7.9.2
   - Contains no changes
