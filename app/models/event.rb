@@ -183,7 +183,11 @@ class Event < ActiveRecord::Base
     elsif commented?
       "commented on"
     elsif created_project?
-      "created"
+      if project.import?
+        "imported"
+      else
+        "created"
+      end
     else
       "opened"
     end
