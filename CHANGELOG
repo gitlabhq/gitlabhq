@@ -64,6 +64,7 @@ v 7.10.0 (unreleased)
   - Fix and improve help rendering (Sullivan Sénéchal)
   - Fix final line in EmailsOnPush email diff being rendered as error.
 
+  - Add icons to Add dropdown items.
 
 v 7.9.2
   - Contains no changes
