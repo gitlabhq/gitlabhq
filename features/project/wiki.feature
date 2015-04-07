@@ -62,3 +62,27 @@ Feature: Project Wiki
     And I browse to wiki page with images
     And I click on image link
     Then I should see the new wiki page form
+
+  @javascript
+  Scenario: New Wiki page that has a path
+    Given I create a New page with paths
+    And I click on the "Pages" button
+    Then I should see non-escaped link in the pages list
+
+  @javascript
+  Scenario: Edit Wiki page that has a path
+    Given I create a New page with paths
+    And I click on the "Pages" button
+    And I edit the Wiki page with a path
+    Then I should see a non-escaped path
+    And I should see the Editing page
+    And I change the content
+    Then I should see the updated content
+
+  @javascript
+  Scenario: View the page history of a Wiki page that has a path
+    Given I create a New page with paths
+    And I click on the "Pages" button
+    And I view the page history of a Wiki page that has a path
+    Then I should see a non-escaped path
+    And I should see the page history
