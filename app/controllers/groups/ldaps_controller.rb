@@ -5,6 +5,6 @@ class Groups::LdapsController < Groups::ApplicationController
   def reset_access
     LdapGroupResetService.new.execute(group, current_user)
 
-    redirect_to members_group_path(@group), notice: 'Access reset complete'
+    redirect_to group_group_members_path(@group), notice: 'Access reset complete'
   end
 end
