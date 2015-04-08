@@ -1,4 +1,4 @@
-# Code forking workflow
+# Project forking workflow
 
 Forking a project to your own namespace is useful if you have no write access to the project you want to contribute
 to. If you do have write access or can request it we recommend working together in the same repository since it is simpler.
