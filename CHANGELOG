@@ -62,6 +62,7 @@ v 7.10.0 (unreleased)
   - Project labels are now available over the API under the "tag_list" field (Cristian Medina) 
   - Fixed link paths for HTTP and SSH on the admin project view (Jeremy Maziarz)
   - Fix and improve help rendering (Sullivan Sénéchal)
+  - Add confirmation dialog when click in "Accept Merge Request".
 
 
 v 7.9.2
@@ -76,7 +77,7 @@ v 7.9.1
   - Don't show commit comment button when user is not signed in.
   - Downgrade gemnasium-gitlab-service gem
 
-v 7.9.0
+v 7.9.0 (unreleased)
   - Add HipChat integration documentation (Stan Hu)
   - Update documentation for object_kind field in Webhook push and tag push Webhooks (Stan Hu)
   - Fix broken email images (Hannes Rosenögger)

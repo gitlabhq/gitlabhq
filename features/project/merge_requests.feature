@@ -75,14 +75,26 @@ Feature: Project Merge Requests
     Then I should see a discussion has started on commit
 
   @javascript
-  Scenario: I accept merge request with custom commit message
+  Scenario: I accept merge request with custom commit message and confirm the dialog
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And merge request "Bug NS-05" is mergeable
     And I visit merge request page "Bug NS-05"
     And merge request is mergeable
     Then I modify merge commit message
     And I accept this merge request
+    And I accept the confirmation dialog
     Then I should see merged request
+
+  @javascript
+  Scenario: I accept merge request with custom commit message and close the confirmation dialog
+    Given project "Shop" have "Bug NS-05" open merge request with diffs inside
+    And merge request "Bug NS-05" is mergeable
+    And I visit merge request page "Bug NS-05"
+    And merge request is mergeable
+    Then I modify merge commit message
+    And I accept this merge request
+    And I close the confirmation dialog
+    Then I should see the merge request is open yet
 
   # Markdown
 

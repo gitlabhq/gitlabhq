@@ -31,6 +31,8 @@ class @MergeRequest
       .on 'affixed-top.bs.affix affixed-bottom.bs.affix', ->
         $(@).width('')
 
+
+
   # Local jQuery finder
   $: (selector) ->
     this.$el.find(selector)
@@ -69,9 +71,17 @@ class @MergeRequest
     this.$('.merge-request-tabs').on 'click', 'li', (event) =>
       this.activateTab($(event.currentTarget).data('action'))
 
-    this.$('.accept_merge_request').on 'click', ->
-      $('.automerge_widget.can_be_merged').hide()
-      $('.merge-in-progress').show()
+    this.$('.js-confirm-merge-danger').on 'click', (e) ->
+      e.preventDefault()
+      btn = $(e.target)
+      text = btn.data("confirm-danger-message")
+      form = btn.closest("form")
+      mergeCallback = ->
+        $('.automerge_widget.can_be_merged').hide()
+        $('.merge-in-progress').show()
+        $('#modal-confirm-danger').modal('hide')
+
+      new ConfirmDangerModal(form, text, mergeCallback)
 
     this.$('.remove_source_branch').on 'click', ->
       $('.remove_source_branch_widget').hide()
