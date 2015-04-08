@@ -62,7 +62,7 @@ class Namespace < ActiveRecord::Base
       path.gsub!(/@.*\z/,             "")
       path.gsub!(/\.git\z/,           "")
       path.gsub!(/\A-/,               "")
-      path.gsub!(/\.\z/,              "")
+      path.gsub!(/\.+\z/,             "")
       path.gsub!(/[^a-zA-Z0-9_\-\.]/, "")
 
       counter = 0
