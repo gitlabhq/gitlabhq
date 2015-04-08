@@ -59,8 +59,7 @@
             %strong
               = diff.new_path
         %hr
-        %pre
-          = color_email_diff(diff.diff)
+        = color_email_diff(diff.diff)
         %br
 
   - if @compare.timeout

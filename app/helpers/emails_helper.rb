@@ -33,12 +33,8 @@ module EmailsHelper
     end
   end
 
-  def add_email_highlight_css
-    Rugments::Themes::Github.render(scope: '.highlight')
-  end
-
   def color_email_diff(diffcontent)
-    formatter = Rugments::Formatters::HTML.new(cssclass: 'highlight')
+    formatter = Rugments::Formatters::HTML.new(cssclass: "highlight", inline_theme: :github)
     lexer = Rugments::Lexers::Diff.new
     raw formatter.format(lexer.lex(diffcontent))
   end
