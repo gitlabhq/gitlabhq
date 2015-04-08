@@ -74,7 +74,7 @@ describe Gitlab::ReferenceExtractor do
   end
 
   it 'handles all possible kinds of references' do
-    accessors = Gitlab::Markdown::TYPES.map { |t| "#{t}s".to_sym }
+    accessors = described_class::TYPES.map { |t| "#{t}s".to_sym }
     expect(subject).to respond_to(*accessors)
   end
 
