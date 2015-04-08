@@ -20,7 +20,7 @@ v 7.10.0 (unreleased)
   - Omit the "email patches" link and fix plain diff view for merge commits
   - List new commits for newly pushed branch in activity view.
   - Add sidetiq gem dependency to match EE
-  - Add changelog, license and contribution guide links to project sidebar.
+  - Add changelog, license and contribution guide links to project tab bar.
   - Improve diff UI
   - Fix alignment of navbar toggle button (Cody Mize)
   - Fix checkbox rendering for nested task lists
