@@ -1,13 +1,15 @@
 = form_for [:admin, @application], url: @url, html: {class: 'form-horizontal', role: 'form'} do |f|
   - if application.errors.any?
-    .alert.alert-danger{"data-alert" => ""}
-      %p Whoops! Check your form for possible errors
-  = content_tag :div, class: "form-group#{' has-error' if application.errors[:name].present?}" do
+    .alert.alert-danger
+      %button{ type: "button", class: "close", "data-dismiss" => "alert"} &times;
+      - application.errors.full_messages.each do |msg|
+        %p= msg
+  = content_tag :div, class: 'form-group' do
     = f.label :name, class: 'col-sm-2 control-label'
     .col-sm-10
       = f.text_field :name, class: 'form-control'
       = doorkeeper_errors_for application, :name
-  = content_tag :div, class: "form-group#{' has-error' if application.errors[:redirect_uri].present?}" do
+  = content_tag :div, class: 'form-group' do
     = f.label :redirect_uri, class: 'col-sm-2 control-label'
     .col-sm-10
       = f.text_area :redirect_uri, class: 'form-control'
