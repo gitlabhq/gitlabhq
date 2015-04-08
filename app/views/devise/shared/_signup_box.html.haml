@@ -22,5 +22,6 @@
 
 .clearfix.prepend-top-20
   %p
-    %span.light Did not receive confirmation email?
-    = link_to "Send again", new_confirmation_path(resource_name)
+    %span.light Didn't receive a confirmation email?
+    = succeed '.' do
+      = link_to "Request a new one", new_confirmation_path(resource_name)
