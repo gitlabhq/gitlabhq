@@ -63,6 +63,7 @@ v 7.10.0 (unreleased)
   - Fixed link paths for HTTP and SSH on the admin project view (Jeremy Maziarz)
   - Fix and improve help rendering (Sullivan Sénéchal)
   - Fix final line in EmailsOnPush email diff being rendered as error.
+  - Explicitly set image alt-attribute to prevent graphical glitches if gravatars could not be loaded
 
   - Add icons to Add dropdown items.
 

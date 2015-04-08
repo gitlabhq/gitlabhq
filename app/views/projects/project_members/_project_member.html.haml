@@ -3,7 +3,7 @@
 
 %li{class: "#{dom_class(member)} js-toggle-container project_member_row access-#{member.human_access.downcase}", id: dom_id(member)}
   %span.list-item-name
-    = image_tag avatar_icon(user.email, 16), class: "avatar s16"
+    = image_tag avatar_icon(user.email, 16), class: "avatar s16", alt: ''
     %strong= user.name
     %span.cgray= user.username
     - if user == current_user
