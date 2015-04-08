@@ -55,5 +55,10 @@ class Projects::RefsController < Projects::ApplicationController
         commit: last_commit
       }
     end
+
+    respond_to do |format|
+      format.html { render_404 }
+      format.js
+    end
   end
 end
