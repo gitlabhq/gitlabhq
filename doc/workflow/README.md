@@ -1,7 +1,7 @@
 # Workflow
 
 - [Feature branch workflow](workflow.md)
-- [Code forking workflow](forking_workflow.md)
+- [Project forking workflow](forking_workflow.md)
 - [Project Features](project_features.md)
 - [Authorization for merge requests](authorization_for_merge_requests.md)
 - [Groups](groups.md)
