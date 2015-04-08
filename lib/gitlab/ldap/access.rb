@@ -103,17 +103,14 @@ module Gitlab
 
       # Update user email if it changed in LDAP
       def update_email
-        if ldap_user.try(:email)
-          ldap_email = ldap_user.email.last.to_s.downcase
+        return false unless ldap_user.try(:email)
 
-          if (user.email != ldap_email)
-            user.update(email: ldap_email)
-          else
-            false
-          end
-        else
-          false
-        end
+        ldap_email = ldap_user.email.last.to_s.downcase
+
+        return false if user.email == ldap_email
+        
+        user.skip_reconfirmation!
+        user.update(email: ldap_email)
       end
 
       def update_admin_status
