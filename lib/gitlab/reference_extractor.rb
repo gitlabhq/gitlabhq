@@ -3,7 +3,7 @@ module Gitlab
   class ReferenceExtractor
     attr_accessor :users, :labels, :issues, :merge_requests, :snippets, :commits, :commit_ranges
 
-    include Markdown
+    include ::Gitlab::Markdown
 
     def initialize
       @users, @labels, @issues, @merge_requests, @snippets, @commits, @commit_ranges =
