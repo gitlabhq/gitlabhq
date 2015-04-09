@@ -40,11 +40,17 @@ module Projects
             if project.save
               project.team << [@current_user, :master]
             end
+
             #Now fork the repo
             unless gitlab_shell.fork_repository(@from_project.path_with_namespace, project.namespace.path)
               raise 'forking failed in gitlab-shell'
             end
+
             project.ensure_satellite_exists
+          end
+
+          if @from_project.gitlab_ci?
+            ForkRegistrationWorker.perform_async(@from_project.id, project.id, @current_user.private_token)
           end
         rescue => ex
           project.errors.add(:base, 'Fork transaction failed.')
