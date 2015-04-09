@@ -58,12 +58,17 @@ describe Key do
       expect(build(:key)).to be_valid
     end
 
-    it "rejects the unfingerprintable key (contains space in middle)" do
-      expect(build(:key_with_a_space_in_the_middle)).not_to be_valid
+    it 'rejects an unfingerprintable key that contains a space' do
+      key = build(:key)
+
+      # Not always the middle, but close enough
+      key.key = key.key[0..100] + ' ' + key.key[100..-1]
+
+      expect(key).not_to be_valid
     end
 
-    it "rejects the unfingerprintable key (not a key)" do
-      expect(build(:invalid_key)).not_to be_valid
+    it 'rejects the unfingerprintable key (not a key)' do
+      expect(build(:key, key: 'ssh-rsa an-invalid-key==')).not_to be_valid
     end
   end
 
