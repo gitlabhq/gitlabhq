@@ -1,4 +1,4 @@
-require 'gitlab/oauth/user'
+require 'gitlab/o_auth/user'
 
 # LDAP extension for User model
 #
