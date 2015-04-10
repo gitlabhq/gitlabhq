@@ -13,7 +13,7 @@ module GitlabMarkdownHelper
   def link_to_gfm(body, url, html_options = {})
     return "" if body.blank?
 
-    escaped_body = if body =~ /^\<img/
+    escaped_body = if body =~ /\A\<img/
                      body
                    else
                      escape_once(body)
@@ -139,7 +139,7 @@ module GitlabMarkdownHelper
       @project.path_with_namespace,
       path_with_ref(file_path),
       file_path
-    ].compact.join("/").gsub(/^\/*|\/*$/, '') + id
+    ].compact.join("/").gsub(/\A\/*|\/*\z/, '') + id
   end
 
   def sanitize_slashes(path)

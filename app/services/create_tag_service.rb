@@ -13,9 +13,7 @@ class CreateTagService < BaseService
       return error('Tag already exists')
     end
 
-    if message
-      message.gsub!(/^\s+|\s+$/, '')
-    end
+    message.strip! if message
 
     repository.add_tag(tag_name, ref, message)
     new_tag = repository.find_tag(tag_name)

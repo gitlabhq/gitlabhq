@@ -125,7 +125,7 @@ module ApplicationHelper
 
     # If reference is commit id - we should add it to branch/tag selectbox
     if(@ref && !options.flatten.include?(@ref) &&
-       @ref =~ /^[0-9a-zA-Z]{6,52}$/)
+       @ref =~ /\A[0-9a-zA-Z]{6,52}\z/)
       options << ['Commit', [@ref]]
     end
 
