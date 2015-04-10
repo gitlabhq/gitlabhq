@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe SubmoduleHelper do
+  include RepoHelpers
+
   describe 'submodule links' do
     let(:submodule_item) { double(id: 'hash', path: 'rack') }
     let(:config) { Gitlab.config.gitlab }
@@ -109,6 +111,39 @@ describe SubmoduleHelper do
 
         stub_url('http://mygitserver.com/gitlab-org/gitlab-ce.git')
         expect(submodule_links(submodule_item)).to eq([ repo.submodule_url_for, nil ])
+      end
+    end
+
+    context 'submodules with relative links' do
+      let(:group) { create(:group) }
+      let(:project) { create(:project, group: group) }
+
+      before do
+        self.instance_variable_set(:@project, project)
+      end
+
+      it 'one level down' do
+        commit_id = sample_commit[:id]
+        result = relative_self_links('../test.git', commit_id)
+        expect(result).to eq(["/#{group.path}/test", "/#{group.path}/test/tree/#{commit_id}"])
+      end
+
+      it 'two levels down' do
+        commit_id = sample_commit[:id]
+        result = relative_self_links('../../test.git', commit_id)
+        expect(result).to eq(["/#{group.path}/test", "/#{group.path}/test/tree/#{commit_id}"])
+      end
+
+      it 'one level down with namespace and repo' do
+        commit_id = sample_commit[:id]
+        result = relative_self_links('../foobar/test.git', commit_id)
+        expect(result).to eq(["/foobar/test", "/foobar/test/tree/#{commit_id}"])
+      end
+
+      it 'two levels down with namespace and repo' do
+        commit_id = sample_commit[:id]
+        result = relative_self_links('../foobar/baz/test.git', commit_id)
+        expect(result).to eq(["/baz/test", "/baz/test/tree/#{commit_id}"])
       end
     end
   end
