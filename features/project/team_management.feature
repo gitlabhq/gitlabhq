@@ -18,6 +18,12 @@ Feature: Project Team Management
     Then I should see "Mike" in team list as "Reporter"
 
   @javascript
+  Scenario: Invite user to project
+    Given I click link "Add members"
+    And I select "sjobs@apple.com" as "Reporter"
+    Then I should see "sjobs@apple.com" in team list as invited "Reporter"
+
+  @javascript
   Scenario: Update user access
     Given I should see "Sam" in team list as "Developer"
     And I change "Sam" role to "Reporter"

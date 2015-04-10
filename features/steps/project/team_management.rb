@@ -35,6 +35,22 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
     end
   end
 
+  step 'I select "sjobs@apple.com" as "Reporter"' do
+    within ".users-project-form" do
+      select2("sjobs@apple.com", from: "#user_ids", multiple: true)
+      select "Reporter", from: "access_level"
+    end
+    click_button "Add users to project"
+  end
+
+  step 'I should see "sjobs@apple.com" in team list as invited "Reporter"' do
+    within ".access-reporter" do
+      page.should have_content('sjobs@apple.com')
+      page.should have_content('invited')
+      page.should have_content('Reporter')
+    end
+  end
+
   step 'I should see "Sam" in team list as "Developer"' do
     within ".access-developer" do
       page.should have_content('Sam')

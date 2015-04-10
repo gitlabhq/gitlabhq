@@ -55,6 +55,13 @@ Feature: Groups
     When I select "Mike" as "Reporter"
     Then I should see "Mike" in team list as "Reporter"
 
+  @javascript
+  Scenario: Invite user to group
+    When I visit group "Owned" members page
+    And I click link "Add members"
+    When I select "sjobs@apple.com" as "Reporter"
+    Then I should see "sjobs@apple.com" in team list as invited "Reporter"
+
   # Leave
 
   @javascript
