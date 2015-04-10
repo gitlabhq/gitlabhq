@@ -9,8 +9,7 @@ module API
       #  GET /groups/:id/members
       get ":id/members" do
         group = find_group(params[:id])
-        members = group.group_members
-        users = (paginate members).collect(&:user)
+        users = group.users
         present users, with: Entities::GroupMember, group: group
       end
 
