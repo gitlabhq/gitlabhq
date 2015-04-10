@@ -27,10 +27,6 @@ class ProjectMember < Member
   validates_format_of :source_type, with: /\AProject\z/
   default_scope { where(source_type: SOURCE_TYPE) }
 
-  after_create :post_create_hook
-  after_update :post_update_hook
-  after_destroy :post_destroy_hook
-
   scope :in_project, ->(project) { where(source_id: project.id) }
   scope :in_projects, ->(projects) { where(source_id: projects.pluck(:id)) }
   scope :with_user, ->(user) { where(user_id: user.id) }
@@ -110,9 +106,15 @@ class ProjectMember < Member
     access_level
   end
 
+  def project
+    source
+  end
+
   def owner?
     project.owner == user
   end
+
+  private
 
   def post_create_hook
     unless owner?
@@ -120,31 +122,24 @@ class ProjectMember < Member
       notification_service.new_project_member(self)
     end
     
-    system_hook_service.execute_hooks_for(self, :create)
+    super
   end
 
   def post_update_hook
-    notification_service.update_project_member(self) if self.access_level_changed?
+    if access_level_changed?
+      notification_service.update_project_member(self) 
+    end
+
+    super
   end
 
   def post_destroy_hook
     event_service.leave_project(self.project, self.user)
-    system_hook_service.execute_hooks_for(self, :destroy)
+
+    super
   end
 
   def event_service
     EventCreateService.new
-  end
-
-  def notification_service
-    NotificationService.new
-  end
-
-  def system_hook_service
-    SystemHooksService.new
-  end
-
-  def project
-    source
   end
 end
