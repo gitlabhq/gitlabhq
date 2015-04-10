@@ -3,7 +3,7 @@ class HelpController < ApplicationController
   end
 
   def show
-    @filepath = params[:filepath]
+    @filepath = clean_path_info(params[:filepath])
     @format = params[:format]
 
     respond_to do |format|
@@ -35,5 +35,23 @@ class HelpController < ApplicationController
   end
 
   def ui
+  end
+
+  # Taken from ActionDispatch::FileHandler
+  PATH_SEPS = Regexp.union(*[::File::SEPARATOR, ::File::ALT_SEPARATOR].compact)
+
+  def clean_path_info(path_info)
+    parts = path_info.split PATH_SEPS
+
+    clean = []
+
+    parts.each do |part|
+      next if part.empty? || part == '.'
+      part == '..' ? clean.pop : clean << part
+    end
+
+    clean.unshift '/' if parts.empty? || parts.first.empty?
+
+    ::File.join(*clean)
   end
 end

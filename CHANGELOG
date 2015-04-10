@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.10.0 (unreleased)
   - Fix directory traversal vulnerability around uploads routes.
+  - Fix directory traversal vulnerability around help pages.
   - Fix broken file browsing with a submodule that contains a relative link (Stan Hu)
   - Fix bug where Wiki pages that included a '/' were no longer accessible (Stan Hu)
   - Fix bug where error messages from Dropzone would not be displayed on the issues page (Stan Hu)
