@@ -131,7 +131,7 @@
                 %span.light Owner
               - else
                 %span.light= project_member.human_access
-                = link_to namespace_project_project_member_path(@project.namespace, @project, user), data: { confirm: remove_from_project_team_message(@project, user)}, method: :delete, remote: true, class: "btn btn-sm btn-remove" do
+                = link_to namespace_project_project_member_path(@project.namespace, @project, project_member), data: { confirm: remove_from_project_team_message(@project, user)}, method: :delete, remote: true, class: "btn btn-sm btn-remove" do
                   %i.fa.fa-times
       .panel-footer
         = paginate @project_members, param_name: 'project_members_page', theme: 'gitlab'

@@ -41,12 +41,12 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   def update
-    @project_member = @project.project_members.find_by(user_id: member)
+    @project_member = @project.project_members.find(params[:id])
     @project_member.update_attributes(member_params)
   end
 
   def destroy
-    @project_member = @project.project_members.find_by(user_id: member)
+    @project_member = @project.project_members.find(params[:id])
     @project_member.destroy
 
     respond_to do |format|
@@ -77,10 +77,6 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   protected
-
-  def member
-    @member ||= User.find_by(username: params[:id])
-  end
 
   def member_params
     params.require(:project_member).permit(:user_id, :access_level)
