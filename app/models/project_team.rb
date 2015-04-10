@@ -93,7 +93,7 @@ class ProjectTeam
 
     source_members.reject! do |member|
       # Skip if user already present in team
-      target_user_ids.include?(member.user_id)
+      !member.invite? && target_user_ids.include?(member.user_id)
     end
 
     source_members.map! do |member|
