@@ -66,7 +66,8 @@ v 7.10.0 (unreleased)
   - Fixed link paths for HTTP and SSH on the admin project view (Jeremy Maziarz)
   - Fix and improve help rendering (Sullivan Sénéchal)
   - Fix final line in EmailsOnPush email diff being rendered as error.
-  - Authometic setup GitLab CI project for forks if origin project has GitLab CI enabled
+  - Automatically setup GitLab CI project for forks if origin project has GitLab CI enabled
+  - Bust group page project list cache when namespace name or path changes.
 
 v 7.9.3
   - Contains no changes
