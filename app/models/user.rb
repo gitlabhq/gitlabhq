@@ -486,13 +486,13 @@ class User < ActiveRecord::Base
   end
 
   def full_website_url
-    return "http://#{website_url}" if website_url !~ /^https?:\/\//
+    return "http://#{website_url}" if website_url !~ /\Ahttps?:\/\//
 
     website_url
   end
 
   def short_website_url
-    website_url.gsub(/https?:\/\//, '')
+    website_url.sub(/\Ahttps?:\/\//, '')
   end
 
   def all_ssh_keys
