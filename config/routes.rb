@@ -53,6 +53,15 @@ Gitlab::Application.routes.draw do
   end
   get '/s/:username' => 'snippets#user_index', as: :user_snippets, constraints: { username: /.*/ }
 
+  #
+  # Invites
+  #
+
+  resources :invites, only: [:show], constraints: { id: /[A-Za-z0-9_-]+/ } do
+    member do
+      post :accept
+    end
+  end
 
   #
   # Import

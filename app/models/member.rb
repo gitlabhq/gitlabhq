@@ -52,11 +52,18 @@ class Member < ActiveRecord::Base
 
   delegate :name, :username, :email, to: :user, prefix: true
 
+  def self.find_by_invite_token(invite_token)
+    invite_token = Devise.token_generator.digest(self, :invite_token, invite_token)
+    find_by(invite_token: invite_token)
+  end
+
   def invite?
     self.invite_token.present?
   end
 
   def accept_invite!(new_user)
+    return false unless invite?
+    
     self.invite_token = nil
     self.invite_accepted_at = Time.now.utc
 
