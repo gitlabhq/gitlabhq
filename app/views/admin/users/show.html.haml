@@ -182,7 +182,7 @@
               .pull-right
                 %span.light= group_member.human_access
                 - unless group_member.owner?
-                  = link_to group_group_member_path(group, group_member), data: { confirm: remove_user_from_group_message(group, @user) }, method: :delete, remote: true, class: "btn-xs btn btn-remove", title: 'Remove user from group' do
+                  = link_to group_group_member_path(group, group_member), data: { confirm: remove_user_from_group_message(group, group_member) }, method: :delete, remote: true, class: "btn-xs btn btn-remove", title: 'Remove user from group' do
                     %i.fa.fa-times.fa-inverse
     - else
       .nothing-here-block This user has no groups.
@@ -221,7 +221,7 @@
                       %span.light= member.human_access
 
                       - if member.respond_to? :project
-                        = link_to namespace_project_project_member_path(project.namespace, project, @user), data: { confirm: remove_from_project_team_message(project, @user) }, remote: true, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove user from project' do
+                        = link_to namespace_project_project_member_path(project.namespace, project, member), data: { confirm: remove_from_project_team_message(project, member) }, remote: true, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove user from project' do
                           %i.fa.fa-times
   #ssh-keys.tab-pane
     = render 'profiles/keys/key_table', admin: true
