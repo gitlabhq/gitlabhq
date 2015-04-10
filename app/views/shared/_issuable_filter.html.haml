@@ -24,11 +24,11 @@
       .issues-other-filters
         .filter-item.inline
           = users_select_tag(:assignee_id, selected: params[:assignee_id],
-            placeholder: 'Assignee', class: 'trigger-submit', any_user: true, null_user: true)
+            placeholder: 'Assignee', class: 'trigger-submit', any_user: true, null_user: true, first_user: true)
 
         .filter-item.inline
           = users_select_tag(:author_id, selected: params[:author_id],
-            placeholder: 'Author', class: 'trigger-submit', any_user: true)
+            placeholder: 'Author', class: 'trigger-submit', any_user: true, first_user: true)
 
         .filter-item.inline.milestone-filter
           = select_tag('milestone_id', projects_milestones_options, class: "select2 trigger-submit", prompt: 'Milestone')

@@ -14,6 +14,13 @@ module SharedProject
     @project.team << [@user, :master]
   end
 
+  # Add another user to project "Shop"
+  step 'I add a user to project "Shop"' do
+    @project = Project.find_by(name: "Shop")
+    other_user = create(:user, name: 'Alpha')
+    @project.team << [other_user, :master]
+  end
+
   # Create another specific project called "Forum"
   step 'I own project "Forum"' do
     @project = Project.find_by(name: "Forum")

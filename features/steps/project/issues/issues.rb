@@ -59,6 +59,18 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
     click_link "New Issue"
   end
 
+  step 'I click "author" dropdown' do
+    first('.ajax-users-select').click
+  end
+
+  step 'I see current user as the first user' do
+    expect(page).to have_selector('.user-result', visible: true, count: 4)
+    users = page.all('.user-name')
+    users[0].text.should == 'Any'
+    users[1].text.should == 'Unassigned'
+    users[2].text.should == current_user.name
+  end
+
   step 'I submit new issue "500 error on profile"' do
     fill_in "issue_title", with: "500 error on profile"
     click_button "Submit new issue"

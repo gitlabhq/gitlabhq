@@ -1,9 +1,11 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.10.0 (unreleased)
+  - Fix broken file browsing with a submodule that contains a relative link (Stan Hu)
   - Fix bug where Wiki pages that included a '/' were no longer accessible (Stan Hu)
   - Fix bug where error messages from Dropzone would not be displayed on the issues page (Stan Hu)
   - Add ability to configure Reply-To address in gitlab.yml (Stan Hu)
+  - Move current user to the top of the list in assignee/author filters (Stan Hu)
   - Fix broken side-by-side diff view on merge request page (Stan Hu)
   - Set Application controller default URL options to ensure all url_for calls are consistent (Stan Hu)
   - Allow HTML tags in Markdown input
@@ -64,6 +66,7 @@ v 7.10.0 (unreleased)
   - Fixed link paths for HTTP and SSH on the admin project view (Jeremy Maziarz)
   - Fix and improve help rendering (Sullivan Sénéchal)
   - Fix final line in EmailsOnPush email diff being rendered as error.
+  - Authometic setup GitLab CI project for forks if origin project has GitLab CI enabled
 
 v 7.9.3
   - Contains no changes

@@ -8,6 +8,7 @@ class @UsersSelect
       @groupId = $(select).data('group-id')
       showNullUser = $(select).data('null-user')
       showAnyUser = $(select).data('any-user')
+      firstUser = $(select).data('first-user')
 
       $(select).select2
         placeholder: "Search for a user"
@@ -32,6 +33,13 @@ class @UsersSelect
                 id: 0
               }
 
+              if firstUser
+                # Move current user to the front of the list
+                for obj, index in data.results
+                  if obj.username == firstUser
+                    data.results.splice(index, 1)
+                    data.results.unshift(obj)
+                    break
               if showNullUser
                 data.results.unshift(nullUser)
               if showAnyUser
