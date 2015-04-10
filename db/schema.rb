@@ -163,15 +163,20 @@ ActiveRecord::Schema.define(version: 20150411180045) do
     t.integer  "access_level",       null: false
     t.integer  "source_id",          null: false
     t.string   "source_type",        null: false
-    t.integer  "user_id",            null: false
+    t.integer  "user_id"
     t.integer  "notification_level", null: false
     t.string   "type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "created_by_id"
+    t.string   "invite_email"
+    t.string   "invite_token"
+    t.datetime "invite_accepted_at"
   end
 
   add_index "members", ["access_level"], name: "index_members_on_access_level", using: :btree
   add_index "members", ["created_at", "id"], name: "index_members_on_created_at_and_id", using: :btree
+  add_index "members", ["invite_token"], name: "index_members_on_invite_token", unique: true, using: :btree
   add_index "members", ["source_id", "source_type"], name: "index_members_on_source_id_and_source_type", using: :btree
   add_index "members", ["type"], name: "index_members_on_type", using: :btree
   add_index "members", ["user_id"], name: "index_members_on_user_id", using: :btree
