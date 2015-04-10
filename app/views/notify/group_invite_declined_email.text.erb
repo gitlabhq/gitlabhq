@@ -1,0 +1,3 @@
+<%= @invite_email %> has declined your invitation to join group <%= @group.name %> as <%= Gitlab::Access.options_with_owner.key(@access_level) %>.
+
+<%= group_url(@group) %>

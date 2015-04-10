@@ -1,5 +1,6 @@
 class InvitesController < ApplicationController
   before_filter :member
+  skip_before_filter :authenticate_user!, only: :decline
 
   respond_to :html
 
@@ -28,6 +29,32 @@ class InvitesController < ApplicationController
       redirect_to path, notice: "You have been granted #{member.human_access} access to #{source}."
     else
       redirect_to :back, alert: "The invite could not be accepted."
+    end
+  end
+
+  def decline
+    if member.decline_invite!
+      case member.source
+      when Project
+        project = member.source
+        source = "project #{project.name_with_namespace}"
+      when Group
+        group = member.source
+        source = "group #{group.name}"
+      else
+        source = "who knows what"
+      end
+
+      path = 
+        if current_user
+          dashboard_path
+        else
+          new_user_session_path
+        end
+
+      redirect_to path, notice: "You have declined the invite to join #{source}."
+    else
+      redirect_to :back, alert: "The invite could not be declined."
     end
   end
 

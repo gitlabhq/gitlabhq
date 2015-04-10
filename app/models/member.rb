@@ -76,6 +76,16 @@ class Member < ActiveRecord::Base
     saved
   end
 
+  def decline_invite!
+    return false unless invite?
+
+    destroyed = self.destroy
+
+    after_decline_invite if destroyed
+
+    destroyed
+  end
+
   def generate_invite_token
     raw, enc = Devise.token_generator.generate(self.class, :invite_token)
     @raw_invite_token = raw
@@ -114,6 +124,10 @@ class Member < ActiveRecord::Base
 
   def after_accept_invite
     post_create_hook
+  end
+
+  def after_decline_invite
+    # override in subclass
   end
 
   def system_hook_service

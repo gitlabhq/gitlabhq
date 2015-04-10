@@ -9,3 +9,5 @@
 
 %p
   = link_to 'Accept invitation', invite_url(@token)
+  or
+  = link_to 'decline', decline_invite_url(@token)

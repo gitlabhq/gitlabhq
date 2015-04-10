@@ -26,3 +26,4 @@
 - else
   .actions
     = link_to "Accept invitation", accept_invite_url(@token), method: :post, class: "btn btn-success"
+    = link_to "Decline", decline_invite_url(@token), method: :post, class: "btn btn-danger prepend-left-10"

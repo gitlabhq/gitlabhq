@@ -1,0 +1,3 @@
+<%= @invite_email %> has declined your invitation to join project <%= @project.name_with_namespace %> as <%= Gitlab::Access.options_with_owner.key(@access_level) %>.
+
+<%= namespace_project_url(@project.namespace, @project) %>

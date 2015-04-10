@@ -1,0 +1,6 @@
+%p
+  #{@invite_email}
+  has declined your invitation to join group
+  = link_to @group.name, group_url(@group)
+  as #{Gitlab::Access.options_with_owner.key(@access_level)}.
+

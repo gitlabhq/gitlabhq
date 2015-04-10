@@ -167,6 +167,12 @@ class ProjectMember < Member
     super
   end
 
+  def after_decline_invite
+    notification_service.decline_project_invite(self)
+
+    super
+  end
+
   def event_service
     EventCreateService.new
   end

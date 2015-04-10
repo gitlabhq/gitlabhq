@@ -88,6 +88,23 @@ describe Member do
     end
   end
 
+  describe "#decline_invite!" do
+
+    let!(:member) { create(:project_member, invite_email: "user@example.com", user: nil) }
+
+    it "destroys the member" do
+      member.decline_invite!
+
+      expect(member).to be_destroyed
+    end
+
+    it "calls #after_decline_invite" do
+      expect(member).to receive(:after_decline_invite)
+
+      member.decline_invite!
+    end
+  end
+
   describe "#generate_invite_token" do
 
     let!(:member) { create(:project_member, invite_email: "user@example.com", user: nil) }

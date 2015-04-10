@@ -60,6 +60,7 @@ Gitlab::Application.routes.draw do
   resources :invites, only: [:show], constraints: { id: /[A-Za-z0-9_-]+/ } do
     member do
       post :accept
+      match :decline, via: [:get, :post]
     end
   end
 

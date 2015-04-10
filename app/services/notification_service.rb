@@ -173,6 +173,10 @@ class NotificationService
     mailer.project_invite_accepted_email(project_member.id)
   end
 
+  def decline_project_invite(project_member)
+    mailer.project_invite_declined_email(project_member.project.id, project_member.invite_email, project_member.access_level, project_member.created_by_id)
+  end
+
   def new_project_member(project_member)
     mailer.project_access_granted_email(project_member.id)
   end
@@ -187,6 +191,10 @@ class NotificationService
 
   def accept_group_invite(group_member)
     mailer.group_invite_accepted_email(group_member.id)
+  end
+
+  def decline_group_invite(group_member)
+    mailer.group_invite_declined_email(group_member.group.id, group_member.invite_email, group_member.access_level, group_member.created_by_id)
   end
 
   def new_group_member(group_member)

@@ -66,4 +66,10 @@ class GroupMember < Member
 
     super
   end
+
+  def after_decline_invite
+    notification_service.decline_group_invite(self)
+
+    super
+  end
 end
