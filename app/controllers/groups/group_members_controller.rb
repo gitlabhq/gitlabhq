@@ -39,7 +39,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
     if can?(current_user, :destroy_group_member, @group_member)  # May fail if last owner.
       @group_member.destroy
       respond_to do |format|
-        format.html { redirect_to group_group_members_path(@group), notice: 'User was  successfully removed from group.' }
+        format.html { redirect_to group_group_members_path(@group), notice: 'User was successfully removed from group.' }
         format.js { render nothing: true }
       end
     else
@@ -63,7 +63,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
     
     if can?(current_user, :destroy_group_member, @group_member)
       @group_member.destroy
-      redirect_to(dashboard_groups_path, info: "You left #{group.name} group.")
+      redirect_to(dashboard_groups_path, notice: "You left #{group.name} group.")
     else
       return render_403
     end
