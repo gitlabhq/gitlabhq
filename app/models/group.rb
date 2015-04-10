@@ -47,10 +47,24 @@ class Group < Namespace
   end
 
   def add_users(user_ids, access_level, current_user = nil)
-    user_ids.compact.each do |user_id|
-      member = self.group_members.find_or_initialize_by(user_id: user_id)
-      member.access_level = access_level
+    users = user_ids.map do |user_id|
+      (user_id if user_id.is_a?(User)) ||
+        User.find_by(id: user_id) || 
+        User.find_by(email: user_id) || 
+        user_id
+    end
+
+    users.compact.each do |user|
+      if user.is_a?(User)
+        member = self.group_members.find_or_initialize_by(user_id: user.id)
+      else
+        member = self.group_members.build
+        member.invite_email = user
+      end
+
       member.created_by ||= current_user
+      member.access_level = access_level
+
       member.save
     end
   end

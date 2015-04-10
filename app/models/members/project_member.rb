@@ -60,12 +60,28 @@ class ProjectMember < Member
                        raise "Non valid access"
                      end
 
+      users = user_ids.map do |user_id|
+        (user_id if user_id.is_a?(User)) ||
+          User.find_by(id: user_id) || 
+          User.find_by(email: user_id) || 
+          user_id
+      end
+
       ProjectMember.transaction do
         project_ids.each do |project_id|
-          user_ids.each do |user_id|
-            member = ProjectMember.new(access_level: access_level, user_id: user_id)
-            member.source_id = project_id
+          project = Project.find(project_id)
+
+          users.each do |user|
+            if user.is_a?(User)
+              member = project.project_members.find_or_initialize_by(user_id: user.id)
+            else
+              member = project.project_members.build
+              member.invite_email = user
+            end
+
             member.created_by ||= current_user
+            member.access_level = access_level
+
             member.save
           end
         end
