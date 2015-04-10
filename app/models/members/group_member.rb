@@ -41,6 +41,12 @@ class GroupMember < Member
 
   private
 
+  def send_invite
+    notification_service.invite_group_member(self, @raw_invite_token)
+
+    super
+  end
+
   def post_create_hook
     notification_service.new_group_member(self)
 
@@ -51,6 +57,12 @@ class GroupMember < Member
     if access_level_changed?
       notification_service.update_group_member(self)
     end
+
+    super
+  end
+
+  def after_accept_invite
+    notification_service.accept_group_invite(self)
 
     super
   end

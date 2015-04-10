@@ -1,12 +1,31 @@
 module Emails
   module Projects
-    def project_access_granted_email(user_project_id)
-      @project_member = ProjectMember.find user_project_id
+    def project_access_granted_email(project_member_id)
+      @project_member = ProjectMember.find project_member_id
       @project = @project_member.project
       @target_url = namespace_project_url(@project.namespace, @project)
       @current_user = @project_member.user
-      mail(to: @project_member.user.email,
+      mail(to: @project_member.user.notification_email,
            subject: subject("Access to project was granted"))
+    end
+
+    def project_member_invited_email(project_member_id, token)
+      @project_member = ProjectMember.find project_member_id
+      @project = @project_member.project
+      @token = token
+      @target_url = namespace_project_url(@project.namespace, @project)
+      mail(to: @project_member.invite_email,
+           subject: "Invite to join project #{@project.name_with_namespace}")
+    end
+
+    def project_invite_accepted_email(project_member_id)
+      @project_member = ProjectMember.find project_member_id
+      return if @project_member.created_by.nil?
+
+      @project = @project_member.project
+      @target_url = namespace_project_url(@project.namespace, @project)
+      mail(to: @project_member.created_by.notification_email,
+           subject: subject("Invite accepted"))
     end
 
     def project_was_moved_email(project_id, user_id)

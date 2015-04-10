@@ -116,6 +116,12 @@ class ProjectMember < Member
 
   private
 
+  def send_invite
+    notification_service.invite_project_member(self, @raw_invite_token)
+
+    super
+  end
+
   def post_create_hook
     unless owner?
       event_service.join_project(self.project, self.user)
@@ -135,6 +141,12 @@ class ProjectMember < Member
 
   def post_destroy_hook
     event_service.leave_project(self.project, self.user)
+
+    super
+  end
+
+  def after_accept_invite
+    notification_service.accept_project_invite(self)
 
     super
   end
