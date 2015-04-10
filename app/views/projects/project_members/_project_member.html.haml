@@ -24,6 +24,10 @@
           = link_to member.created_by.name, user_path(member.created_by)
         = time_ago_with_tooltip(member.created_at)
 
+      - if current_user_can_admin_project
+        = link_to resend_invite_namespace_project_project_member_path(@project.namespace, @project, member), method: :post, class: "btn-xs btn", title: 'Resend invite' do
+          Resend invite
+
   - if current_user_can_admin_project
     - unless @project.personal? && user == current_user
       .pull-right

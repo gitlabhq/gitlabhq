@@ -260,6 +260,7 @@ Gitlab::Application.routes.draw do
 
     scope module: :groups do
       resources :group_members, only: [:index, :create, :update, :destroy] do
+        post :resend_invite, on: :member
         delete :leave, on: :collection
       end
 
@@ -485,6 +486,10 @@ Gitlab::Application.routes.draw do
             # from another project
             get :import
             post :apply_import
+          end
+
+          member do
+            post :resend_invite
           end
         end
 

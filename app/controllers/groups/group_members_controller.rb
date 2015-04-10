@@ -47,6 +47,17 @@ class Groups::GroupMembersController < Groups::ApplicationController
     end
   end
 
+  def resend_invite
+    @group_member = @group.group_members.find(params[:id])
+    if @group_member.invite?
+      @group_member.resend_invite
+
+      redirect_to group_group_members_path(@group), notice: 'Invite was successfully resent.'
+    else
+      redirect_to group_group_members_path(@group), alert: 'The invite has already been accepted.'
+    end
+  end
+
   def leave
     @group_member = @group.group_members.where(user_id: current_user.id).first
     
