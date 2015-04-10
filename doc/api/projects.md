@@ -63,6 +63,7 @@ Parameters:
     "snippets_enabled": false,
     "created_at": "2013-09-30T13: 46: 02Z",
     "last_activity_at": "2013-09-30T13: 46: 02Z",
+    "creator_id": 3,
     "namespace": {
       "created_at": "2013-09-30T13: 46: 02Z",
       "description": "",
@@ -103,6 +104,7 @@ Parameters:
     "snippets_enabled": false,
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
+    "creator_id": 3,
     "namespace": {
       "created_at": "2013-09-30T13:46:02Z",
       "description": "",
@@ -190,6 +192,7 @@ Parameters:
   "snippets_enabled": false,
   "created_at": "2013-09-30T13: 46: 02Z",
   "last_activity_at": "2013-09-30T13: 46: 02Z",
+  "creator_id": 3,
   "namespace": {
     "created_at": "2013-09-30T13: 46: 02Z",
     "description": "",
