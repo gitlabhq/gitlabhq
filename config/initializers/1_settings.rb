@@ -1,3 +1,5 @@
+require 'gitlab' # Load lib/gitlab.rb as soon as possible
+
 class Settings < Settingslogic
   source ENV.fetch('GITLAB_CONFIG') { "#{Rails.root}/config/gitlab.yml" }
   namespace Rails.env
