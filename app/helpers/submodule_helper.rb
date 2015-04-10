@@ -53,15 +53,22 @@ module SubmoduleHelper
   end
 
   def relative_self_links(url, commit)
-    if url.scan(/(\.\.\/)/).size == 2
-      base = url[/([^\/]*\/[^\/]*)\.git/, 1]
-    else
-      base = [ @project.group.path, '/', url[/([^\/]*)\.git/, 1] ].join('')
+    # Map relative links to a namespace and project
+    # For example:
+    # ../bar.git -> same namespace, repo bar
+    # ../foo/bar.git -> namespace foo, repo bar
+    # ../../foo/bar/baz.git -> namespace bar, repo baz
+    components = url.split('/')
+    base = components.pop.gsub(/.git$/, '')
+    namespace = components.pop.gsub(/^\.\.$/, '')
+
+    if namespace.empty?
+      namespace = @project.group.path
     end
 
     [
-      namespace_project_path(base.namespace, base),
-      namespace_project_tree_path(base.namespace, base, commit)
+      namespace_project_path(namespace, base),
+      namespace_project_tree_path(namespace, base, commit)
     ]
   end
 end
