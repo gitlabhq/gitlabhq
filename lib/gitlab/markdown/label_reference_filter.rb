@@ -13,25 +13,34 @@ module Gitlab
     class LabelReferenceFilter < HTML::Pipeline::Filter
       # Public: Find label references in text
       #
-      #   LabelReferenceFilter.references_in(text) do |match, label|
-      #     "<a href=...>#{label}</a>"
+      #   LabelReferenceFilter.references_in(text) do |match, id, name|
+      #     "<a href=...>#{Label.find(id)}</a>"
       #   end
       #
       # text - String text to search.
       #
-      # Yields the String match and the Integer label ID.
+      # Yields the String match, an optional Integer label ID, and an optional
+      # String label name.
       #
       # Returns a String replaced with the return of the block.
       def self.references_in(text)
         text.gsub(LABEL_PATTERN) do |match|
-          yield match, $~[:label].to_i
+          yield match, $~[:label_id].to_i, $~[:label_name]
         end
       end
 
       # Pattern used to extract label references from text
       #
-      # This pattern supports cross-project references.
-      LABEL_PATTERN = /~(?<label>\d+)/
+      # TODO (rspeicher): Limit to double quotes (meh) or disallow single quotes in label names (bad).
+      LABEL_PATTERN = %r{
+        ~(
+          (?<label_id>\d+)   | # Integer-based label ID, or
+          (?<label_name>
+            [^'"&\?,\s]+     | # String-based single-word label title
+            ['"][^&\?,]+['"]   # String-based multi-word label surrounded in quotes
+          )
+        )
+      }x
 
       # Don't look for references in text nodes that are children of these
       # elements.
@@ -68,8 +77,10 @@ module Gitlab
       def label_link_filter(text)
         project = context[:project]
 
-        self.class.references_in(text) do |match, id|
-          if label = project.labels.find_by(id: id)
+        self.class.references_in(text) do |match, id, name|
+          params = label_params(id, name)
+
+          if label = project.labels.find_by(params)
             url = url_for_label(project, label)
 
             klass = "gfm gfm-label #{context[:reference_class]}".strip
@@ -90,6 +101,22 @@ module Gitlab
 
       def render_colored_label(label)
         LabelsHelper.render_colored_label(label)
+      end
+
+      # Parameters to pass to `Label.find_by` based on the given arguments
+      #
+      # id   - Integer ID to pass. If present, returns {id: id}
+      # name - String name to pass. If `id` is absent, finds by name without
+      #        surrounding quotes.
+      #
+      # Returns a Hash.
+      def label_params(id, name)
+        if id > 0
+          { id: id }
+        else
+          # TODO (rspeicher): Don't strip single quotes if we decide to only use double quotes for surrounding.
+          { name: name.tr('\'"', '') }
+        end
       end
 
       def project
