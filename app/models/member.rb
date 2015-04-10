@@ -11,6 +11,10 @@
 #  type               :string(255)
 #  created_at         :datetime
 #  updated_at         :datetime
+#  created_by_id      :integer
+#  invite_email       :string
+#  invite_token       :string
+#  invite_accepted_at :datetime
 #
 
 class Member < ActiveRecord::Base
@@ -18,6 +22,7 @@ class Member < ActiveRecord::Base
   include Notifiable
   include Gitlab::Access
 
+  belongs_to :created_by, class_name: "User"
   belongs_to :user
   belongs_to :source, polymorphic: true
 

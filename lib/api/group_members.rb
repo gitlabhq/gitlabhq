@@ -34,7 +34,7 @@ module API
           render_api_error!("Already exists", 409)
         end
 
-        group.add_users([params[:user_id]], params[:access_level])
+        group.add_users([params[:user_id]], params[:access_level], current_user)
         member = group.group_members.find_by(user_id: params[:user_id])
         present member.user, with: Entities::GroupMember, group: group
       end

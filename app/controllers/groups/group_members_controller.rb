@@ -22,7 +22,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   def create
-    @group.add_users(params[:user_ids].split(','), params[:access_level])
+    @group.add_users(params[:user_ids].split(','), params[:access_level], current_user)
 
     redirect_to group_group_members_path(@group), notice: 'Users were successfully added.'
   end
