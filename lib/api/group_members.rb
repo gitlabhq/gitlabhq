@@ -24,7 +24,7 @@ module API
       #  POST /groups/:id/members
       post ":id/members" do
         group = find_group(params[:id])
-        authorize! :manage_group, group
+        authorize! :admin_group, group
         required_attributes! [:user_id, :access_level]
 
         unless validate_access_level?(params[:access_level])
@@ -50,7 +50,7 @@ module API
       #   PUT /groups/:id/members/:user_id
       put ':id/members/:user_id' do
         group = find_group(params[:id])
-        authorize! :manage_group, group
+        authorize! :admin_group, group
         required_attributes! [:access_level]
 
         group_member = group.group_members.find_by(user_id: params[:user_id])
@@ -74,7 +74,7 @@ module API
       #   DELETE /groups/:id/members/:user_id
       delete ":id/members/:user_id" do
         group = find_group(params[:id])
-        authorize! :manage_group, group
+        authorize! :admin_group, group
         member = group.group_members.find_by(user_id: params[:user_id])
 
         if member.nil?
