@@ -8,7 +8,7 @@
       - else
         none
     - if can?(current_user, :modify_issue, @issue)
-      = users_select_tag('issue[assignee_id]', placeholder: 'Select assignee', class: 'custom-form-control js-select2 js-assignee', selected: @issue.assignee_id, null_user: true)
+      = users_select_tag('issue[assignee_id]', placeholder: 'Select assignee', class: 'custom-form-control js-select2 js-assignee', selected: @issue.assignee_id, null_user: true, first_user: true)
 
   %div.prepend-top-20.clearfix
     .issuable-context-title

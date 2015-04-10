@@ -8,12 +8,14 @@ module SelectsHelper
 
     null_user = opts[:null_user] || false
     any_user = opts[:any_user] || false
+    first_user = opts[:first_user] && current_user ? current_user.username : false
 
     html = {
       class: css_class,
       'data-placeholder' => placeholder,
       'data-null-user' => null_user,
       'data-any-user' => any_user,
+      'data-first-user' => first_user
     }
 
     unless opts[:scope] == :all

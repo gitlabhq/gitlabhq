@@ -25,6 +25,12 @@ Feature: Project Issues
     Given I click link "Release 0.4"
     Then I should see issue "Release 0.4"
 
+  @javascript
+  Scenario: I visit issue page
+    Given I add a user to project "Shop"
+    And I click "author" dropdown
+    Then I see current user as the first user
+
   Scenario: I submit new unassigned issue
     Given I click link "New Issue"
     And I submit new issue "500 error on profile"
