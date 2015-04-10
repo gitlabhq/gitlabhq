@@ -6,6 +6,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
   def index
     @project_members = @project.project_members
+    @project_members = @project_members.non_invite unless can?(current_user, :admin_project, @project)
 
     if params[:search].present?
       users = @project.users.search(params[:search]).to_a
@@ -17,6 +18,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     @group = @project.group
     if @group
       @group_members = @group.group_members
+      @group_members = @group_members.non_invite unless can?(current_user, :admin_group, @group)
 
       if params[:search].present?
         users = @group.users.search(params[:search]).to_a

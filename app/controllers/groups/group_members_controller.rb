@@ -11,6 +11,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   def index
     @project = @group.projects.find(params[:project_id]) if params[:project_id]
     @members = @group.group_members
+    @members = @members.non_invite unless can?(current_user, :admin_group, @group)
 
     if params[:search].present?
       users = @group.users.search(params[:search]).to_a
