@@ -49,6 +49,7 @@
 #  password_automatically_set    :boolean          default(FALSE)
 #  bitbucket_access_token        :string(255)
 #  bitbucket_access_token_secret :string(255)
+#  email_display_in_profile      :boolean          default(FALSE), not null
 #
 
 require 'carrierwave/orm/activerecord'

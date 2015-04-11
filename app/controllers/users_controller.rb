@@ -16,6 +16,11 @@ class UsersController < ApplicationController
     @title = @user.name
     @title_url = user_path(@user)
 
+    # Handle email display
+    if current_user and (current_user.id === @user.id or current_user.admin)
+      @user.email_display_in_profile = true
+    end
+
     respond_to do |format|
       format.html
 
