@@ -67,6 +67,7 @@ v 7.10.0 (unreleased)
   - Fix and improve help rendering (Sullivan Sénéchal)
   - Fix final line in EmailsOnPush email diff being rendered as error.
   - Authometic setup GitLab CI project for forks if origin project has GitLab CI enabled
+  - Fix git over ssh errors 'fatal: protocol error: bad line length character' 
 
 v 7.9.3
   - Contains no changes
