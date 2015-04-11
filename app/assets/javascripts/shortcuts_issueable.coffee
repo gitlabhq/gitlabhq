@@ -13,7 +13,7 @@ class @ShortcutsIssueable extends ShortcutsNavigation
     )
     
     if isMergeRequest
-      @enabledHelp.push('.hidden-shortcut.merge_reuests')
+      @enabledHelp.push('.hidden-shortcut.merge_requests')
     else
       @enabledHelp.push('.hidden-shortcut.issues')
 
