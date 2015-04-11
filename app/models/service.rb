@@ -125,7 +125,7 @@ class Service < ActiveRecord::Base
       asana
       assembla
       bamboo
-      buildbox
+      buildkite
       campfire
       custom_issue_tracker
       emails_on_push
