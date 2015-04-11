@@ -25,7 +25,7 @@ class TeamcityService < CiService
 
   validates :teamcity_url,
     presence: true,
-    format: { with: URI::regexp }, if: :activated?
+    format: { with: /\A#{URI.regexp}\z/ }, if: :activated?
   validates :build_type, presence: true, if: :activated?
   validates :username,
     presence: true,
