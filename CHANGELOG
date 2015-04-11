@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.10.0 (unreleased)
+  - Fix project import URL regex to prevent arbitary local repos from being imported.
   - Fix bug where Wiki pages that included a '/' were no longer accessible (Stan Hu)
   - Fix bug where error messages from Dropzone would not be displayed on the issues page (Stan Hu)
   - Add ability to configure Reply-To address in gitlab.yml (Stan Hu)
