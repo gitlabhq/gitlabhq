@@ -67,7 +67,7 @@ Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
 if Settings.ldap['enabled'] || Rails.env.test?
   if Settings.ldap['host'].present?
     server = Settings.ldap.except('sync_time')
-    server['provider_name'] = 'ldap'
+    server['provider_name'] = 'ldapmain'
     Settings.ldap['servers'] = {
       'ldap' => server
     }
@@ -80,7 +80,12 @@ if Settings.ldap['enabled'] || Rails.env.test?
     server['provider_name'] ||= "ldap#{key}".downcase
     server['provider_class'] = OmniAuth::Utils.camelize(server['provider_name'])
   end
+
+  unless Settings.ldap['servers'].select{ |k, server| server['provider_name'] == "ldapmain"}.any?
+    raise "Wrong LDAP configuration. The 'main' LDAP section is missing"
+  end
 end
+
 
 Settings['omniauth'] ||= Settingslogic.new({})
 Settings.omniauth['enabled']      = false if Settings.omniauth['enabled'].nil?
