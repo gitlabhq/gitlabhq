@@ -153,7 +153,7 @@ class ApplicationController < ActionController::Base
   end
 
   def method_missing(method_sym, *arguments, &block)
-    if method_sym.to_s =~ /^authorize_(.*)!$/
+    if method_sym.to_s =~ /\Aauthorize_(.*)!\z/
       authorize_project!($1.to_sym)
     else
       super

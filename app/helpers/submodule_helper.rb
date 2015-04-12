@@ -44,7 +44,7 @@ module SubmoduleHelper
 
   def relative_self_url?(url)
     # (./)?(../repo.git) || (./)?(../../project/repo.git) )
-    url =~ /^((\.\/)?(\.\.\/))(?!(\.\.)|(.*\/)).*\.git\Z/ || url =~ /^((\.\/)?(\.\.\/){2})(?!(\.\.))([^\/]*)\/(?!(\.\.)|(.*\/)).*\.git\Z/
+    url =~ /\A((\.\/)?(\.\.\/))(?!(\.\.)|(.*\/)).*\.git\z/ || url =~ /\A((\.\/)?(\.\.\/){2})(?!(\.\.))([^\/]*)\/(?!(\.\.)|(.*\/)).*\.git\z/
   end
 
   def standard_links(host, namespace, project, commit)
