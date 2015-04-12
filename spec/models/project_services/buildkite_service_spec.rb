@@ -19,7 +19,7 @@
 
 require 'spec_helper'
 
-describe BuildboxService do
+describe BuildkiteService do
   describe 'Associations' do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -32,7 +32,7 @@ describe BuildboxService do
         default_branch: 'default-brancho'
       )
 
-      @service = BuildboxService.new
+      @service = BuildkiteService.new
       @service.stub(
         project: @project,
         service_hook: true,
