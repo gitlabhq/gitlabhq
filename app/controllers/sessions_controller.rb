@@ -26,6 +26,12 @@ class SessionsController < Devise::SessionsController
   end
 
   def create
-    super
+    super do |resource|
+      # User has successfully signed in, so clear any unused reset tokens
+      if resource.reset_password_token.present?
+        resource.update_attributes(reset_password_token: nil,
+                                   reset_password_sent_at: nil)
+      end
+    end
   end
 end
