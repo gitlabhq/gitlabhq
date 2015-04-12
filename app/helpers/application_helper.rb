@@ -240,7 +240,7 @@ module ApplicationHelper
   # external links
   def link_to(name = nil, options = nil, html_options = {})
     if options.kind_of?(String)
-      if options[0] != '/' && options[0] != '#'
+      if !options.start_with?('#', '/')
         html_options = add_nofollow(options, html_options)
       end
     end
