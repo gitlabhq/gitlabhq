@@ -18,7 +18,7 @@ class ExternalWikiService < Service
   prop_accessor :external_wiki_url
   validates :external_wiki_url,
             presence: true,
-            format: { with: URI::regexp },
+            format: { with: /\A#{URI.regexp}\z/ },
             if: :activated?
 
   def title

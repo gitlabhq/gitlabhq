@@ -25,7 +25,7 @@ class BambooService < CiService
 
   validates :bamboo_url,
     presence: true,
-    format: { with: URI::regexp },
+    format: { with: /\A#{URI.regexp}\z/ },
     if: :activated?
   validates :build_key, presence: true, if: :activated?
   validates :username,
