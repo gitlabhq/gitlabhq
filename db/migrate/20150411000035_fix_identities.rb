@@ -1,13 +1,15 @@
 class FixIdentities < ActiveRecord::Migration
   def up
     new_provider = Gitlab.config.ldap.servers.first.last['provider_name']
+
 	  # Delete duplicate identities
-    Identity.connection.select_one("DELETE FROM identities WHERE provider = 'ldap' AND user_id IN (SELECT user_id FROM identities WHERE provider = '#{new_provider}')")
-	  # Update legacy identities
-    Identity.where(provider: 'ldap').update_all(provider: new_provider)
+    execute "DELETE FROM identities WHERE provider = 'ldap' AND user_id IN (SELECT user_id FROM identities WHERE provider = '#{new_provider}')"
+
+    # Update legacy identities
+    execute "UPDATE identities SET provider = '#{new_provider}' WHERE provider = 'ldap';"
 
     if defined?(LdapGroupLink)
-      LdapGroupLink.where('provider IS NULL').update_all(provider: new_provider)
+      execute "UPDATE ldap_group_links SET provider = '#{new_provider}' WHERE provider IS NULL;"
     end
   end
 
