@@ -1,6 +1,3 @@
-require 'html/pipeline'
-require 'html/pipeline/gitlab'
-
 module EmailsHelper
 
   # Google Actions
@@ -37,27 +34,5 @@ module EmailsHelper
     formatter = Rugments::Formatters::HTML.new(cssclass: "highlight", inline_theme: :github)
     lexer = Rugments::Lexers::Diff.new
     raw formatter.format(lexer.lex(diffcontent))
-  end
-
-  def replace_image_links_with_base64(text, project)
-    # Used pipelines in GitLab:
-    # GitlabEmailImageFilter - replaces images that have been uploaded as attachments with inline images in emails.
-    #
-    # see https://gitlab.com/gitlab-org/html-pipeline-gitlab for more filters
-    filters = [
-      HTML::Pipeline::Gitlab::GitlabEmailImageFilter
-    ]
-
-    context = {
-      base_url: File.join(Gitlab.config.gitlab.url, project.path_with_namespace, 'uploads'),
-      upload_path: File.join(Rails.root, 'public', 'uploads', project.path_with_namespace),
-    }
-
-    pipeline = HTML::Pipeline::Gitlab.new(filters).pipeline
-
-    result = pipeline.call(text, context)
-    text = result[:output].to_html(save_with: 0)
-
-    text.html_safe
   end
 end
