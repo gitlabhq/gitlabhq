@@ -1,5 +1,4 @@
 @dashboard
-Feature: Dashboard Active Tab
   Background:
     Given I sign in as a user
 
@@ -16,9 +15,4 @@ Feature: Dashboard Active Tab
   Scenario: On Dashboard Merge Requests
     Given I visit dashboard merge requests page
     Then the active main tab should be Merge Requests
-    And no other main tabs should be active
-
-  Scenario: On Dashboard Help
-    Given I visit dashboard help page
-    Then the active main tab should be Help
     And no other main tabs should be active
