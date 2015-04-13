@@ -37,6 +37,7 @@ describe GitlabMarkdownHelper do
 
   describe "#gfm" do
     it "should return unaltered text if project is nil" do
+      skip "rspeicher - This isn't actually checked in this method anymore."
       actual = "Testing references: ##{issue.iid}"
 
       expect(gfm(actual)).not_to eq(actual)
@@ -46,11 +47,13 @@ describe GitlabMarkdownHelper do
     end
 
     it "should not alter non-references" do
+      skip "rspeicher - Invalid test: markdown has already been parsed by the time gfm gets it"
       actual = expected = "_Please_ *stop* 'helping' and all the other b*$#%' you do."
       expect(gfm(actual)).to eq(expected)
     end
 
     it "should not touch HTML entities" do
+      skip "rspeicher - Invalid test: Sanitize (or Nokogiri?) translates the HTML entity back"
       allow(@project).to receive(:issue_exists?).
         with(39).and_return([issue])
       actual = 'We&#39;ll accept good pull requests.'
@@ -60,341 +63,6 @@ describe GitlabMarkdownHelper do
     it "should forward HTML options to links" do
       expect(gfm("Fixed in #{commit.id}", @project, class: 'foo')).
           to have_selector('a.gfm.foo')
-    end
-
-    describe "referencing a commit range" do
-      let(:expected) { namespace_project_compare_path(project.namespace, project, from: earlier_commit.id, to: commit.id) }
-
-      it "should link using a full id" do
-        actual = "What happened in #{earlier_commit.id}...#{commit.id}"
-        expect(gfm(actual)).to match(expected)
-      end
-
-      it "should link using a short id" do
-        actual = "What happened in #{earlier_commit.short_id}...#{commit.short_id}"
-        expected = namespace_project_compare_path(project.namespace, project, from: earlier_commit.short_id, to: commit.short_id)
-        expect(gfm(actual)).to match(expected)
-      end
-
-      it "should link inclusively" do
-        actual = "What happened in #{earlier_commit.id}..#{commit.id}"
-        expected = namespace_project_compare_path(project.namespace, project, from: "#{earlier_commit.id}^", to: commit.id)
-        expect(gfm(actual)).to match(expected)
-      end
-
-      it "should link with adjacent text" do
-        actual = "(see #{earlier_commit.id}...#{commit.id})"
-        expect(gfm(actual)).to match(expected)
-      end
-
-      it "should keep whitespace intact" do
-        actual   = "Changes #{earlier_commit.id}...#{commit.id} dramatically"
-        expected = /Changes <a.+>#{earlier_commit.id}...#{commit.id}<\/a> dramatically/
-        expect(gfm(actual)).to match(expected)
-      end
-
-      it "should not link with an invalid id" do
-        actual = expected = "What happened in #{earlier_commit.id.reverse}...#{commit.id.reverse}"
-        expect(gfm(actual)).to eq(expected)
-      end
-
-      it "should include a title attribute" do
-        actual = "What happened in #{earlier_commit.id}...#{commit.id}"
-        expect(gfm(actual)).to match(/title="Commits #{earlier_commit.id} through #{commit.id}"/)
-      end
-
-      it "should include standard gfm classes" do
-        actual = "What happened in #{earlier_commit.id}...#{commit.id}"
-        expect(gfm(actual)).to match(/class="\s?gfm gfm-commit_range\s?"/)
-      end
-    end
-
-    describe "referencing a commit" do
-      let(:expected) { namespace_project_commit_path(project.namespace, project, commit) }
-
-      it "should link using a full id" do
-        actual = "Reverts #{commit.id}"
-        expect(gfm(actual)).to match(expected)
-      end
-
-      it "should link using a short id" do
-        actual = "Backported from #{commit.short_id}"
-        expect(gfm(actual)).to match(expected)
-      end
-
-      it "should link with adjacent text" do
-        actual = "Reverted (see #{commit.id})"
-        expect(gfm(actual)).to match(expected)
-      end
-
-      it "should keep whitespace intact" do
-        actual   = "Changes #{commit.id} dramatically"
-        expected = /Changes <a.+>#{commit.id}<\/a> dramatically/
-        expect(gfm(actual)).to match(expected)
-      end
-
-      it "should not link with an invalid id" do
-        actual = expected = "What happened in #{commit.id.reverse}"
-        expect(gfm(actual)).to eq(expected)
-      end
-
-      it "should include a title attribute" do
-        actual = "Reverts #{commit.id}"
-        expect(gfm(actual)).to match(/title="#{commit.link_title}"/)
-      end
-
-      it "should include standard gfm classes" do
-        actual = "Reverts #{commit.id}"
-        expect(gfm(actual)).to match(/class="\s?gfm gfm-commit\s?"/)
-      end
-    end
-
-    describe "referencing a team member" do
-      let(:actual)   { "@#{user.username} you are right." }
-      let(:expected) { user_path(user) }
-
-      before do
-        project.team << [user, :master]
-      end
-
-      it "should link using a simple name" do
-        expect(gfm(actual)).to match(expected)
-      end
-
-      it "should link using a name with dots" do
-        user.update_attributes(name: "alphA.Beta")
-        expect(gfm(actual)).to match(expected)
-      end
-
-      it "should link using name with underscores" do
-        user.update_attributes(name: "ping_pong_king")
-        expect(gfm(actual)).to match(expected)
-      end
-
-      it "should link with adjacent text" do
-        actual = "Mail the admin (@#{user.username})"
-        expect(gfm(actual)).to match(expected)
-      end
-
-      it "should keep whitespace intact" do
-        actual   = "Yes, @#{user.username} is right."
-        expected = /Yes, <a.+>@#{user.username}<\/a> is right/
-        expect(gfm(actual)).to match(expected)
-      end
-
-      it "should not link with an invalid id" do
-        actual = expected = "@#{user.username.reverse} you are right."
-        expect(gfm(actual)).to eq(expected)
-      end
-
-      it "should include standard gfm classes" do
-        expect(gfm(actual)).to match(/class="\s?gfm gfm-project_member\s?"/)
-      end
-    end
-
-    # Shared examples for referencing an object
-    #
-    # Expects the following attributes to be available in the example group:
-    #
-    # - object    - The object itself
-    # - reference - The object reference string (e.g., #1234, $1234, !1234)
-    #
-    # Currently limited to Snippets, Issues and MergeRequests
-    shared_examples 'referenced object' do
-      let(:actual)   { "Reference to #{reference}" }
-      let(:expected) { polymorphic_path([project.namespace, project, object]) }
-
-      it "should link using a valid id" do
-        expect(gfm(actual)).to match(expected)
-      end
-
-      it "should link with adjacent text" do
-        # Wrap the reference in parenthesis
-        expect(gfm(actual.gsub(reference, "(#{reference})"))).to match(expected)
-
-        # Append some text to the end of the reference
-        expect(gfm(actual.gsub(reference, "#{reference}, right?"))).
-          to match(expected)
-      end
-
-      it "should keep whitespace intact" do
-        actual   = "Referenced #{reference} already."
-        expected = /Referenced <a.+>[^\s]+<\/a> already/
-        expect(gfm(actual)).to match(expected)
-      end
-
-      it "should not link with an invalid id" do
-        # Modify the reference string so it's still parsed, but is invalid
-        reference.gsub!(/^(.)(\d+)$/, '\1' + ('\2' * 2))
-        expect(gfm(actual)).to eq(actual)
-      end
-
-      it "should include a title attribute" do
-        title = "#{object.class.to_s.titlecase}: #{object.title}"
-        expect(gfm(actual)).to match(/title="#{title}"/)
-      end
-
-      it "should include standard gfm classes" do
-        css = object.class.to_s.underscore
-        expect(gfm(actual)).to match(/class="\s?gfm gfm-#{css}\s?"/)
-      end
-    end
-
-    # Shared examples for referencing an object in a different project
-    #
-    # Expects the following attributes to be available in the example group:
-    #
-    # - object    - The object itself
-    # - reference - The object reference string (e.g., #1234, $1234, !1234)
-    # - other_project - The project that owns the target object
-    #
-    # Currently limited to Snippets, Issues and MergeRequests
-    shared_examples 'cross-project referenced object' do
-      let(:project_path) { @other_project.path_with_namespace }
-      let(:full_reference) { "#{project_path}#{reference}" }
-      let(:actual)   { "Reference to #{full_reference}" }
-      let(:expected) do
-        if object.is_a?(Commit)
-          namespace_project_commit_path(@other_project.namespace, @other_project, object)
-        else
-          polymorphic_path([@other_project.namespace, @other_project, object])
-        end
-      end
-
-      it 'should link using a valid id' do
-        expect(gfm(actual)).to match(
-          /#{expected}.*#{Regexp.escape(full_reference)}/
-        )
-      end
-
-      it 'should link with adjacent text' do
-        # Wrap the reference in parenthesis
-        expect(gfm(actual.gsub(full_reference, "(#{full_reference})"))).to(
-          match(expected)
-        )
-
-        # Append some text to the end of the reference
-        expect(gfm(actual.gsub(full_reference, "#{full_reference}, right?"))).
-          to(match(expected))
-      end
-
-      it 'should keep whitespace intact' do
-        actual   = "Referenced #{full_reference} already."
-        expected = /Referenced <a.+>[^\s]+<\/a> already/
-        expect(gfm(actual)).to match(expected)
-      end
-
-      it 'should not link with an invalid id' do
-        # Modify the reference string so it's still parsed, but is invalid
-        if object.is_a?(Commit)
-          reference.gsub!(/^(.).+$/, '\1' + '12345abcd')
-        else
-          reference.gsub!(/^(.)(\d+)$/, '\1' + ('\2' * 2))
-        end
-        expect(gfm(actual)).to eq(actual)
-      end
-
-      it 'should include a title attribute' do
-        if object.is_a?(Commit)
-          title = object.link_title
-        else
-          title = "#{object.class.to_s.titlecase}: #{object.title}"
-        end
-        expect(gfm(actual)).to match(/title="#{title}"/)
-      end
-
-      it 'should include standard gfm classes' do
-        css = object.class.to_s.underscore
-        expect(gfm(actual)).to match(/class="\s?gfm gfm-#{css}\s?"/)
-      end
-    end
-
-    describe "referencing an issue" do
-      let(:object)    { issue }
-      let(:reference) { "##{issue.iid}" }
-
-      include_examples 'referenced object'
-    end
-
-    context 'cross-repo references' do
-      before(:all) do
-        @other_project = create(:project, :public)
-        @commit2 = @other_project.repository.commit
-        @issue2 = create(:issue, project: @other_project)
-        @merge_request2 = create(:merge_request,
-                                 source_project: @other_project,
-                                 target_project: @other_project)
-      end
-
-      describe 'referencing an issue in another project' do
-        let(:object)    { @issue2 }
-        let(:reference) { "##{@issue2.iid}" }
-
-        include_examples 'cross-project referenced object'
-      end
-
-      describe 'referencing an merge request in another project' do
-        let(:object)    { @merge_request2 }
-        let(:reference) { "!#{@merge_request2.iid}" }
-
-        include_examples 'cross-project referenced object'
-      end
-
-      describe 'referencing a commit in another project' do
-        let(:object)    { @commit2 }
-        let(:reference) { "@#{@commit2.id}" }
-
-        include_examples 'cross-project referenced object'
-      end
-    end
-
-    describe "referencing a merge request" do
-      let(:object)    { merge_request }
-      let(:reference) { "!#{merge_request.iid}" }
-
-      include_examples 'referenced object'
-    end
-
-    describe "referencing a snippet" do
-      let(:object)    { snippet }
-      let(:reference) { "$#{snippet.id}" }
-      let(:actual)   { "Reference to #{reference}" }
-      let(:expected) { namespace_project_snippet_path(project.namespace, project, object) }
-
-      it "should link using a valid id" do
-        expect(gfm(actual)).to match(expected)
-      end
-
-      it "should link with adjacent text" do
-        # Wrap the reference in parenthesis
-        expect(gfm(actual.gsub(reference, "(#{reference})"))).to match(expected)
-
-        # Append some text to the end of the reference
-        expect(gfm(actual.gsub(reference, "#{reference}, right?"))).to match(expected)
-      end
-
-      it "should keep whitespace intact" do
-        actual   = "Referenced #{reference} already."
-        expected = /Referenced <a.+>[^\s]+<\/a> already/
-        expect(gfm(actual)).to match(expected)
-      end
-
-      it "should not link with an invalid id" do
-        # Modify the reference string so it's still parsed, but is invalid
-        reference.gsub!(/^(.)(\d+)$/, '\1' + ('\2' * 2))
-        expect(gfm(actual)).to eq(actual)
-      end
-
-      it "should include a title attribute" do
-        title = "Snippet: #{object.title}"
-        expect(gfm(actual)).to match(/title="#{title}"/)
-      end
-
-      it "should include standard gfm classes" do
-        css = object.class.to_s.underscore
-        expect(gfm(actual)).to match(/class="\s?gfm gfm-snippet\s?"/)
-      end
-
     end
 
     describe "referencing multiple objects" do
@@ -416,6 +84,7 @@ describe GitlabMarkdownHelper do
       end
     end
 
+    # TODO (rspeicher): These tests belong in the emoji filter spec
     describe "emoji" do
       it "matches at the start of a string" do
         expect(gfm(":+1:")).to match(/<img/)
@@ -510,11 +179,15 @@ describe GitlabMarkdownHelper do
   end
 
   describe "#markdown" do
+    # TODO (rspeicher) - This block tests multiple different contexts. Break this up!
+
     it "should handle references in paragraphs" do
+      skip "rspeicher - redundant"
       actual = "\n\nLorem ipsum dolor sit amet. #{commit.id} Nam pulvinar sapien eget.\n"
       expected = namespace_project_commit_path(project.namespace, project, commit)
       expect(markdown(actual)).to match(expected)
     end
+    # REFERENCES (PART TWO: THE REVENGE) ---------------------------------------
 
     it "should handle references in headers" do
       actual = "\n# Working around ##{issue.iid}\n## Apply !#{merge_request.iid}"
@@ -541,6 +214,7 @@ describe GitlabMarkdownHelper do
     end
 
     it "should handle references in lists" do
+      skip "rspeicher - redundant"
       project.team << [user, :master]
 
       actual = "\n* dark: ##{issue.iid}\n* light by @#{member.user.username}"
@@ -552,6 +226,8 @@ describe GitlabMarkdownHelper do
     end
 
     it "should not link the apostrophe to issue 39" do
+      skip "rspeicher - Redundant"
+
       project.team << [user, :master]
       allow(project.issues).
         to receive(:where).with(iid: '39').and_return([issue])
@@ -562,6 +238,8 @@ describe GitlabMarkdownHelper do
     end
 
     it "should not link the apostrophe to issue 39 in code blocks" do
+      skip "rspeicher - Redundant"
+
       project.team << [user, :master]
       allow(project.issues).
         to receive(:where).with(iid: '39').and_return([issue])
@@ -579,6 +257,8 @@ describe GitlabMarkdownHelper do
     end
 
     it "should handle tables" do
+      skip "rspeicher - Aren't we just testing Redcarpet here?"
+
       actual = %Q{| header 1 | header 2 |
 | -------- | -------- |
 | cell 1   | cell 2   |
@@ -586,6 +266,8 @@ describe GitlabMarkdownHelper do
 
       expect(markdown(actual)).to match(/\A<table/)
     end
+
+    # CODE BLOCKS -------------------------------------------------------------
 
     it "should leave code blocks untouched" do
       allow(helper).to receive(:user_color_scheme_class).and_return(:white)
@@ -604,6 +286,9 @@ describe GitlabMarkdownHelper do
       )
     end
 
+    # REF-LIKE AUTOLINKS? -----------------------------------------------------
+    # Basically: Don't parse references inside `<a>` tags.
+
     it "should leave ref-like autolinks untouched" do
       expect(markdown("look at http://example.tld/#!#{merge_request.iid}")).to eq("<p>look at <a href=\"http://example.tld/#!#{merge_request.iid}\">http://example.tld/#!#{merge_request.iid}</a></p>\n")
     end
@@ -620,23 +305,30 @@ describe GitlabMarkdownHelper do
       expect(markdown("##{issue.iid}")).to include(namespace_project_issue_path(project.namespace, project, issue))
     end
 
+    # EMOJI -------------------------------------------------------------------
+
     it "should generate absolute urls for emoji" do
+      # TODO (rspeicher): Why isn't this with the emoji tests?
       expect(markdown(':smile:')).to(
         include(%(src="#{Gitlab.config.gitlab.url}/assets/emoji/#{Emoji.emoji_filename('smile')}.png))
       )
     end
 
     it "should generate absolute urls for emoji if relative url is present" do
+      # TODO (rspeicher): Why isn't this with the emoji tests?
       allow(Gitlab.config.gitlab).to receive(:url).and_return('http://localhost/gitlab/root')
       expect(markdown(":smile:")).to include("src=\"http://localhost/gitlab/root/assets/emoji/#{Emoji.emoji_filename('smile')}.png")
     end
 
     it "should generate absolute urls for emoji if asset_host is present" do
+      # TODO (rspeicher): Why isn't this with the emoji tests?
       allow(Gitlab::Application.config).to receive(:asset_host).and_return("https://cdn.example.com")
       ActionView::Base.any_instance.stub_chain(:config, :asset_host).and_return("https://cdn.example.com")
       expect(markdown(":smile:")).to include("src=\"https://cdn.example.com/assets/emoji/#{Emoji.emoji_filename('smile')}.png")
     end
 
+    # RELATIVE URLS -----------------------------------------------------------
+    # TODO (rspeicher): These belong in a relative link filter spec
 
     it "should handle relative urls for a file in master" do
       actual = "[GitLab API doc](doc/api/README.md)\n"
@@ -691,6 +383,8 @@ describe GitlabMarkdownHelper do
       expect(markdown(actual)).to match(actual)
     end
 
+    # SANITIZATION ------------------------------------------------------------
+
     it 'should sanitize tags that are not whitelisted' do
       actual = '<textarea>no inputs allowed</textarea> <blink>no blinks</blink>'
       expected = 'no inputs allowed no blinks'
@@ -717,6 +411,7 @@ describe GitlabMarkdownHelper do
     end
   end
 
+  # TODO (rspeicher): This should be a context of relative link specs, not its own thing
   describe 'markdown for empty repository' do
     before do
       @project = empty_project
