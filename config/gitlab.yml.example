@@ -105,6 +105,15 @@ production: &base
   ldap:
     enabled: false
     servers:
+      ##########################################################################
+      #
+      # Since GitLab 7.4, LDAP servers get ID's (below the ID is 'main'). GitLab
+      # Enterprise Edition now supports connecting to multiple LDAP servers.
+      #
+      # If you are updating from the old (pre-7.4) syntax, you MUST give your
+      # old server the ID 'main'.
+      #
+      ##########################################################################
       main: # 'main' is the GitLab 'provider ID' of this LDAP server
         ## label
         #
