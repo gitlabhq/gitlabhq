@@ -1,5 +1,14 @@
 class FixIdentities < ActiveRecord::Migration
   def up
+    # Up until now, legacy 'ldap' references in the database were charitably
+    # interpreted to point to the first LDAP server specified in the GitLab
+    # configuration. So if the database said 'provider: ldap' but the first
+    # LDAP server was called 'ldapmain', then we would try to interpret
+    # 'provider: ldap' as if it said 'provider: ldapmain'. This migration (and
+    # accompanying changes in the GitLab LDAP code) get rid of this complicated
+    # behavior. Any database references to 'provider: ldap' get rewritten to
+    # whatever the code would have interpreted it as, i.e. as a reference to
+    # the first LDAP server specified in gitlab.yml / gitlab.rb.
     new_provider = Gitlab.config.ldap.servers.first.last['provider_name']
 
 	  # Delete duplicate identities
