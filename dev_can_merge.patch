@@ -1,0 +1,324 @@
+From b647d5521c176b30dfa7bd7ce1126585982276f1 Mon Sep 17 00:00:00 2001
+From: dilcom <dilcom3107@gmail.com>
+Date: Fri, 6 Feb 2015 10:11:39 +0300
+Subject: [PATCH 1/3] feature implemented now protected branches have options
+ allowing developers to only accept merge request
+
+---
+ app/assets/javascripts/protected_branches.js.coffee        | 10 +++++++---
+ app/controllers/projects/merge_requests_controller.rb      |  2 +-
+ app/controllers/projects/protected_branches_controller.rb  |  6 ++++--
+ app/models/project.rb                                      |  8 ++++++++
+ app/models/protected_branch.rb                             | 14 ++++++++------
+ .../projects/protected_branches/_branches_list.html.haml   |  6 ++++++
+ app/views/projects/protected_branches/index.html.haml      | 14 ++++++++++++++
+ ...13015_add_developers_can_merge_to_protected_branches.rb |  6 ++++++
+ lib/api/merge_requests.rb                                  |  4 +---
+ lib/gitlab/git_access.rb                                   |  6 ++++++
+ 10 files changed, 61 insertions(+), 15 deletions(-)
+ create mode 100644 db/migrate/20150205113015_add_developers_can_merge_to_protected_branches.rb
+
+diff --git a/app/assets/javascripts/protected_branches.js.coffee b/app/assets/javascripts/protected_branches.js.coffee
+index 691fd4f..d69e1ad 100644
+--- a/app/assets/javascripts/protected_branches.js.coffee
++++ b/app/assets/javascripts/protected_branches.js.coffee
+@@ -1,9 +1,11 @@
+ $ ->
+   $(":checkbox").change ->
+     name = $(this).attr("name")
+-    if name == "developers_can_push"
++    if name == "developers_can_push" or name == "developers_can_merge" or name == "authors_can_merge"
+       id = $(this).val()
+-      checked = $(this).is(":checked")
++      checkedpush = $("[value=#{id}][name=developers_can_push]").is(":checked")
++      checkedmerge = $("[value=#{id}][name=developers_can_merge]").is(":checked")
++      checkedauthors = $("[value=#{id}][name=authors_can_merge]").is(":checked")
+       url = $(this).data("url")
+       $.ajax
+         type: "PUT"
+@@ -11,7 +13,9 @@ $ ->
+         dataType: "json"
+         data:
+           id: id
+-          developers_can_push: checked
++          developers_can_push: checkedpush
++          developers_can_merge: checkedmerge
++          authors_can_merge: checkedauthors
+ 
+         success: ->
+           new Flash("Branch updated.", "notice")
+diff --git a/app/controllers/projects/merge_requests_controller.rb b/app/controllers/projects/merge_requests_controller.rb
+index 912f9eb..d067385 100644
+--- a/app/controllers/projects/merge_requests_controller.rb
++++ b/app/controllers/projects/merge_requests_controller.rb
+@@ -224,7 +224,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
+   end
+ 
+   def allowed_to_merge?
+-    allowed_to_push_code?(project, @merge_request.target_branch)
++    ::Gitlab::GitAccess.can_merge?(current_user, project, @merge_request.target_branch, @merge_request.author_id)
+   end
+ 
+   def invalid_mr
+diff --git a/app/controllers/projects/protected_branches_controller.rb b/app/controllers/projects/protected_branches_controller.rb
+index f45df38..0e77500 100644
+--- a/app/controllers/projects/protected_branches_controller.rb
++++ b/app/controllers/projects/protected_branches_controller.rb
+@@ -20,7 +20,9 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
+ 
+     if protected_branch &&
+        protected_branch.update_attributes(
+-        developers_can_push: params[:developers_can_push]
++        developers_can_push: params[:developers_can_push],
++	developers_can_merge: params[:developers_can_merge],
++        authors_can_merge: params[:authors_can_merge]
+        )
+ 
+       respond_to do |format|
+@@ -45,6 +47,6 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
+   private
+ 
+   def protected_branch_params
+-    params.require(:protected_branch).permit(:name, :developers_can_push)
++    params.require(:protected_branch).permit(:name, :developers_can_push, :developers_can_merge, :authors_can_merge)
+   end
+ end
+diff --git a/app/models/project.rb b/app/models/project.rb
+index 390e145..dd5a8c2 100644
+--- a/app/models/project.rb
++++ b/app/models/project.rb
+@@ -536,6 +536,14 @@ class Project < ActiveRecord::Base
+     protected_branches.any? { |pb| pb.name == branch_name && pb.developers_can_push }
+   end
+ 
++  def developers_can_merge_to_protected_branch?(branch_name)
++    protected_branches.any? { |pb| pb.name == branch_name && pb.developers_can_merge }
++  end
++
++  def authors_can_merge_to_protected_branch?(branch_name)
++    protected_branches.any? { |pb| pb.name == branch_name && pb.authors_can_merge }
++  end
++
+   def forked?
+     !(forked_project_link.nil? || forked_project_link.forked_from_project.nil?)
+   end
+diff --git a/app/models/protected_branch.rb b/app/models/protected_branch.rb
+index 97207ba..f2573c7 100644
+--- a/app/models/protected_branch.rb
++++ b/app/models/protected_branch.rb
+@@ -2,12 +2,14 @@
+ #
+ # Table name: protected_branches
+ #
+-#  id                  :integer          not null, primary key
+-#  project_id          :integer          not null
+-#  name                :string(255)      not null
+-#  created_at          :datetime
+-#  updated_at          :datetime
+-#  developers_can_push :boolean          default(FALSE), not null
++#  id                   :integer          not null, primary key
++#  project_id           :integer          not null
++#  name                 :string(255)      not null
++#  created_at           :datetime
++#  updated_at           :datetime
++#  developers_can_push  :boolean          default(FALSE), not null
++#  developers_can_merge :boolean          default(FALSE), not null
++#  authors_can_merge	:boolean	  default(FALSE), not null
+ #
+ 
+ class ProtectedBranch < ActiveRecord::Base
+diff --git a/app/views/projects/protected_branches/_branches_list.html.haml b/app/views/projects/protected_branches/_branches_list.html.haml
+index e422799..70223f7 100644
+--- a/app/views/projects/protected_branches/_branches_list.html.haml
++++ b/app/views/projects/protected_branches/_branches_list.html.haml
+@@ -6,6 +6,8 @@
+       %tr.no-border
+         %th Branch
+         %th Developers can push
++        %th Developers can merge
++        %th Request authors can merge
+         %th Last commit
+         %th
+ 
+@@ -21,6 +23,10 @@
+             %td
+               = check_box_tag "developers_can_push", branch.id, branch.developers_can_push, "data-url" => @url
+             %td
++              = check_box_tag "developers_can_merge", branch.id, branch.developers_can_merge, "data-url" => @url
++            %td
++              = check_box_tag "authors_can_merge", branch.id, branch.authors_can_merge, "data-url" => @url
++            %td
+               - if commit = branch.commit
+                 = link_to project_commit_path(@project, commit.id), class: 'commit_short_id' do
+                   = commit.short_id
+diff --git a/app/views/projects/protected_branches/index.html.haml b/app/views/projects/protected_branches/index.html.haml
+index 2164c87..1c0deb7 100644
+--- a/app/views/projects/protected_branches/index.html.haml
++++ b/app/views/projects/protected_branches/index.html.haml
+@@ -29,6 +29,20 @@
+         .checkbox
+           = f.check_box :developers_can_push
+           %span.descr Allow developers to push to this branch
++    .form-group
++      = f.label :developers_can_merge, class: 'control-label' do
++        Developers can merge
++      .col-sm-10
++        .checkbox
++          = f.check_box :developers_can_merge
++          %span.descr Allow developers to merge to this branch
++    .form-group
++      = f.label :authors_can_merge, class: 'control-label' do
++        Request authors can merge
++      .col-sm-10
++        .checkbox
++          = f.check_box :authors_can_merge
++          %span.descr Allow merge request authors to merge to this branch
+     .form-actions
+       = f.submit 'Protect', class: "btn-create btn"
+ = render 'branches_list'
+diff --git a/db/migrate/20150205113015_add_developers_can_merge_to_protected_branches.rb b/db/migrate/20150205113015_add_developers_can_merge_to_protected_branches.rb
+new file mode 100644
+index 0000000..86b0dcc
+--- /dev/null
++++ b/db/migrate/20150205113015_add_developers_can_merge_to_protected_branches.rb
+@@ -0,0 +1,6 @@
++class AddDevelopersCanMergeToProtectedBranches < ActiveRecord::Migration
++  def change
++    add_column :protected_branches, :developers_can_merge, :boolean, default: false, null: false
++    add_column :protected_branches, :authors_can_merge, :boolean, default: false, null: false
++  end
++end
+diff --git a/lib/api/merge_requests.rb b/lib/api/merge_requests.rb
+index a0ebd8d..0d43026 100644
+--- a/lib/api/merge_requests.rb
++++ b/lib/api/merge_requests.rb
+@@ -182,9 +182,7 @@ module API
+       #
+       put ":id/merge_request/:merge_request_id/merge" do
+         merge_request = user_project.merge_requests.find(params[:merge_request_id])
+-
+-        allowed = ::Gitlab::GitAccess.can_push_to_branch?(current_user, user_project, merge_request.target_branch)
+-
++        allowed = ::Gitlab::GitAccess.can_merge?(current_user, user_project, merge_request.target_branch, merge_request.author_id)
+         if allowed
+           if merge_request.unchecked?
+             merge_request.check_if_can_be_merged
+diff --git a/lib/gitlab/git_access.rb b/lib/gitlab/git_access.rb
+index 6444cec..56394d1 100644
+--- a/lib/gitlab/git_access.rb
++++ b/lib/gitlab/git_access.rb
+@@ -14,6 +14,12 @@ module Gitlab
+       end
+     end
+ 
++    def self.can_merge?(user, project, ref, author_id)
++      can_push_to_branch?(user, project, ref) ||
++        (project.developers_can_merge_to_protected_branch?(ref) && project.team.developer?(user) && user.id != author_id) ||
++        (project.authors_can_merge_to_protected_branch?(ref) && project.team.developer?(user) && user.id == author_id)
++    end
++
+     def check(actor, cmd, project, changes = nil)
+       case cmd
+       when *DOWNLOAD_COMMANDS
+-- 
+2.1.1
+
+
+From 13134044e000e8e54d0e7c1f5845b70c4cbc1fcc Mon Sep 17 00:00:00 2001
+From: dilcom <dilcom3107@gmail.com>
+Date: Fri, 6 Feb 2015 10:34:01 +0300
+Subject: [PATCH 2/3] cosmetic fix
+
+---
+ app/models/protected_branch.rb | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/app/models/protected_branch.rb b/app/models/protected_branch.rb
+index f2573c7..b7ea53c 100644
+--- a/app/models/protected_branch.rb
++++ b/app/models/protected_branch.rb
+@@ -9,7 +9,7 @@
+ #  updated_at           :datetime
+ #  developers_can_push  :boolean          default(FALSE), not null
+ #  developers_can_merge :boolean          default(FALSE), not null
+-#  authors_can_merge	:boolean	  default(FALSE), not null
++#  authors_can_merge    :boolean          default(FALSE), not null
+ #
+ 
+ class ProtectedBranch < ActiveRecord::Base
+-- 
+2.1.1
+
+
+From e7bf91c9041e6927cd77b2be39310290102f4ac2 Mon Sep 17 00:00:00 2001
+From: GitLab <git@kshn.local>
+Date: Fri, 6 Feb 2015 18:26:27 +0300
+Subject: [PATCH 3/3] update db schema
+
+---
+ db/schema.rb | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/db/schema.rb b/db/schema.rb
+index 0e4af3d..32630b8 100644
+--- a/db/schema.rb
++++ b/db/schema.rb
+@@ -11,7 +11,7 @@
+ #
+ # It's strongly recommended that you check this file into your version control system.
+ 
+-ActiveRecord::Schema.define(version: 20150125163100) do
++ActiveRecord::Schema.define(version: 20150205113015) do
+ 
+   # These are extensions that must be enabled in order to support this database
+   enable_extension "plpgsql"
+@@ -323,12 +323,12 @@ ActiveRecord::Schema.define(version: 20150125163100) do
+     t.string   "import_url"
+     t.integer  "visibility_level",       default: 0,        null: false
+     t.boolean  "archived",               default: false,    null: false
+-    t.string   "avatar"
+     t.string   "import_status"
+     t.float    "repository_size",        default: 0.0
+     t.integer  "star_count",             default: 0,        null: false
+     t.string   "import_type"
+     t.string   "import_source"
++    t.string   "avatar"
+   end
+ 
+   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree
+@@ -337,11 +337,13 @@ ActiveRecord::Schema.define(version: 20150125163100) do
+   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
+ 
+   create_table "protected_branches", force: true do |t|
+-    t.integer  "project_id",                          null: false
+-    t.string   "name",                                null: false
++    t.integer  "project_id",                           null: false
++    t.string   "name",                                 null: false
+     t.datetime "created_at"
+     t.datetime "updated_at"
+-    t.boolean  "developers_can_push", default: false, null: false
++    t.boolean  "developers_can_push",  default: false, null: false
++    t.boolean  "developers_can_merge", default: false, null: false
++    t.boolean  "authors_can_merge",    default: false, null: false
+   end
+ 
+   add_index "protected_branches", ["project_id"], name: "index_protected_branches_on_project_id", using: :btree
+@@ -426,7 +428,6 @@ ActiveRecord::Schema.define(version: 20150125163100) do
+     t.integer  "notification_level",       default: 1,     null: false
+     t.datetime "password_expires_at"
+     t.integer  "created_by_id"
+-    t.datetime "last_credential_check_at"
+     t.string   "avatar"
+     t.string   "confirmation_token"
+     t.datetime "confirmed_at"
+@@ -434,6 +435,7 @@ ActiveRecord::Schema.define(version: 20150125163100) do
+     t.string   "unconfirmed_email"
+     t.boolean  "hide_no_ssh_key",          default: false
+     t.string   "website_url",              default: "",    null: false
++    t.datetime "last_credential_check_at"
+     t.string   "github_access_token"
+     t.string   "gitlab_access_token"
+   end
+-- 
+2.1.1
+

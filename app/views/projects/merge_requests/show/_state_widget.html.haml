@@ -1,5 +1,5 @@
 .mr-state-widget
-  - if @merge_request.source_project.ci_service && @commits.any?
+  - if @merge_request.target_project.ci_service && @commits.any?
     .mr-widget-heading
       = render "projects/merge_requests/show/mr_ci"
   .mr-widget-body
