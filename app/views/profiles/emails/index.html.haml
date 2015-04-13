@@ -20,9 +20,13 @@
     %li
       %strong= @primary
       %span.label.label-success Primary Email
+      - if @primary === @public_email
+        %span.label.label-info Public Email
     - @emails.each do |email|
       %li
         %strong= email.email
+        - if email.email === @public_email
+          %span.label.label-info Public Email
         %span.cgray
           added #{time_ago_with_tooltip(email.created_at)}
         = link_to 'Remove', profile_email_path(email), data: { confirm: 'Are you sure?'}, method: :delete, class: 'btn btn-sm btn-remove pull-right'
