@@ -146,6 +146,18 @@ If you use an Omnibus package please see the [instructions in the readme to back
 If you have a cookbook installation there should be a copy of your configuration in Chef.
 If you have an installation from source, please consider backing up your `gitlab.yml` file, any SSL keys and certificates, and your [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
 
+## Outputing a CSV list of users
+
+A CSV file of registered users and generic account details can be generated. The output will be written to `users.csv` in the configured backup folder.
+
+```
+# use this command if you've installed GitLab with the Omnibus package
+sudo gitlab-rake gitlab:backup:users
+
+# if you've installed GitLab from source
+sudo -u git -H bundle exec rake gitlab:backup:users RAILS_ENV=production
+```
+
 ## Restore a previously created backup
 
 You can only restore a backup to exactly the same version of GitLab that you created it on, for example 7.2.1.

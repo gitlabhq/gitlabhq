@@ -73,6 +73,7 @@ v 7.10.0 (unreleased)
   - Fix git over ssh errors 'fatal: protocol error: bad line length character' 
   - Automatically setup GitLab CI project for forks if origin project has GitLab CI enabled
   - Bust group page project list cache when namespace name or path changes.
+  - Add backup users list to CSV file option (Ben Bodenmiller)
 
 v 7.9.3
   - Contains no changes
