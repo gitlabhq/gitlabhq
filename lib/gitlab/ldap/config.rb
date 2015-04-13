@@ -27,8 +27,6 @@ module Gitlab
       def initialize(provider)
         if self.class.valid_provider?(provider)
           @provider = provider
-        elsif provider == 'ldap'
-          @provider = self.class.providers.first
         else
           self.class.invalid_provider(provider)
         end
