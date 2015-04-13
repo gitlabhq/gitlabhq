@@ -23,7 +23,7 @@ class FixIdentities < ActiveRecord::Migration
     execute "UPDATE identities SET provider = '#{new_provider}' WHERE provider = 'ldap';"
 
     if table_exists?('ldap_group_links')
-      execute "UPDATE ldap_group_links SET provider = '#{new_provider}' WHERE provider IS NULL;"
+      execute "UPDATE ldap_group_links SET provider = '#{new_provider}' WHERE provider IS NULL OR provider = 'ldap';"
     end
   end
 
