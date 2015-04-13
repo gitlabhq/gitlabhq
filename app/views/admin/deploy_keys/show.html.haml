@@ -1,0 +1,34 @@
+.row
+  .col-md-4
+    .panel.panel-default
+      .panel-heading
+        Deploy Key
+      %ul.well-list
+        %li
+          %span.light Title:
+          %strong= @deploy_key.title
+        %li
+          %span.light Created on:
+          %strong= @deploy_key.created_at.stamp("Aug 21, 2011")
+
+    .panel.panel-default
+      .panel-heading Projects (#{@deploy_key.deploy_keys_projects.count})
+      - if @deploy_key.deploy_keys_projects.any?
+        %ul.well-list
+          - @deploy_key.projects.each do |project|
+            %li
+              %span
+                %strong
+                = link_to project.name_with_namespace, [:admin, project.namespace.becomes(Namespace), project]
+              .pull-right
+                = link_to disable_namespace_project_deploy_key_path(project.namespace, project, @deploy_key), data: { confirm: "Are you sure?" }, method: :put, class: "btn-xs btn btn-remove", title: 'Remove deploy key from project' do
+                  %i.fa.fa-times.fa-inverse
+
+  .col-md-8
+    %p
+      %span.light Fingerprint:
+      %strong= @deploy_key.fingerprint
+    %pre.well-pre
+      = @deploy_key.key
+  .pull-right
+    = link_to 'Remove', admin_deploy_key_path(@deploy_key), data: {confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove delete-key"
