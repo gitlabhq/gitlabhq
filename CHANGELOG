@@ -78,6 +78,7 @@ v 7.9.3
   - Contains no changes
   - Add icons to Add dropdown items.
   - Allow admin to create public deploy keys that are accessible to any project.
+  - Warn when gitlab-shell version doesn't match requirement.
 
 
 v 7.9.2
