@@ -7,6 +7,7 @@ v 7.11.0 (unreleased)
   - Fix "Cannot move project" error message from popping up after a successful transfer (Stan Hu)
   - Redirect to sign in page after signing out.
   - Fix "Hello @username." references not working by no longer allowing usernames to end in period.
+  - Fix "Revspec not found" errors when viewing diffs in a forked project with submodules (Stan Hu)
   -
   - Fix broken file browsing with relative submodule in personal projects (Stan Hu)
   - Add "Reply quoting selected text" shortcut key (`r`)

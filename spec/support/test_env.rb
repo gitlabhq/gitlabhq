@@ -14,6 +14,10 @@ module TestEnv
     'master'           => '5937ac0'
   }
 
+  FORKED_BRANCH_SHA = BRANCH_SHA.merge({
+    'add-submodule-version-bump' => '3f547c08'
+  })
+
   # Test environment
   #
   # See gitlab.yml.example test section for paths
@@ -31,6 +35,8 @@ module TestEnv
 
     # Create repository for FactoryGirl.create(:project)
     setup_factory_repo
+    # Create repository for FactoryGirl.create(:forked_project_with_submodules)
+    setup_forked_repo
   end
 
   def disable_mailer
@@ -61,14 +67,26 @@ module TestEnv
   end
 
   def setup_factory_repo
-    clone_url = "https://gitlab.com/gitlab-org/#{factory_repo_name}.git"
+    setup_repo(factory_repo_path, factory_repo_path_bare, factory_repo_name,
+               BRANCH_SHA)
+  end
 
-    unless File.directory?(factory_repo_path)
-      system(*%W(git clone -q #{clone_url} #{factory_repo_path}))
+  # This repo has a submodule commit that is not present in the main test
+  # repository.
+  def setup_forked_repo
+    setup_repo(forked_repo_path, forked_repo_path_bare, forked_repo_name,
+               FORKED_BRANCH_SHA)
+  end
+
+  def setup_repo(repo_path, repo_path_bare, repo_name, branch_sha)
+    clone_url = "https://gitlab.com/gitlab-org/#{repo_name}.git"
+
+    unless File.directory?(repo_path)
+      system(*%W(git clone -q #{clone_url} #{repo_path}))
     end
 
-    Dir.chdir(factory_repo_path) do
-      BRANCH_SHA.each do |branch, sha|
+    Dir.chdir(repo_path) do
+      branch_sha.each do |branch, sha|
         # Try to reset without fetching to avoid using the network.
         reset = %W(git update-ref refs/heads/#{branch} #{sha})
         unless system(*reset)
@@ -85,7 +103,7 @@ module TestEnv
     end
 
     # We must copy bare repositories because we will push to them.
-    system(git_env, *%W(git clone -q --bare #{factory_repo_path} #{factory_repo_path_bare}))
+    system(git_env, *%W(git clone -q --bare #{repo_path} #{repo_path_bare}))
   end
 
   def copy_repo(project)
@@ -98,6 +116,14 @@ module TestEnv
 
   def repos_path
     Gitlab.config.gitlab_shell.repos_path
+  end
+
+  def copy_forked_repo_with_submodules(project)
+    base_repo_path = File.expand_path(forked_repo_path_bare)
+    target_repo_path = File.expand_path(repos_path + "/#{project.namespace.path}/#{project.path}.git")
+    FileUtils.mkdir_p(target_repo_path)
+    FileUtils.cp_r("#{base_repo_path}/.", target_repo_path)
+    FileUtils.chmod_R 0755, target_repo_path
   end
 
   private
@@ -114,9 +140,22 @@ module TestEnv
     'gitlab-test'
   end
 
+  def forked_repo_path
+    @forked_repo_path ||= Rails.root.join('tmp', 'tests', forked_repo_name)
+  end
+
+  def forked_repo_path_bare
+    "#{forked_repo_path}_bare"
+  end
+
+  def forked_repo_name
+    'gitlab-test-fork'
+  end
+
+
   # Prevent developer git configurations from being persisted to test
   # repositories
   def git_env
-    {'GIT_TEMPLATE_DIR' => ''}
+    { 'GIT_TEMPLATE_DIR' => '' }
   end
 end
