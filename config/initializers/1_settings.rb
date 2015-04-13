@@ -81,10 +81,6 @@ if Settings.ldap['enabled'] || Rails.env.test?
     server['provider_name'] ||= "ldap#{key}".downcase
     server['provider_class'] = OmniAuth::Utils.camelize(server['provider_name'])
   end
-
-  unless Settings.ldap['servers'].select{ |k, server| server['provider_name'] == "ldapmain"}.any?
-    raise "Wrong LDAP configuration. The 'main' LDAP section is missing"
-  end
 end
 
 
