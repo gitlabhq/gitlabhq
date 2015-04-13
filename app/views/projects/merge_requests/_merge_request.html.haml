@@ -24,6 +24,7 @@
           = note_count
   .merge-request-info
     = link_to "##{merge_request.iid}", merge_request_path(merge_request), class: "light"
+    created by #{link_to_member(@project, merge_request.author)}
     - if merge_request.assignee
       assigned to #{link_to_member(merge_request.source_project, merge_request.assignee)}
     - else
