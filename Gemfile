@@ -208,7 +208,6 @@ group :development do
   gem "letter_opener"
   gem 'quiet_assets', '~> 1.0.1'
   gem 'rack-mini-profiler', require: false
-  gem "byebug"
 
   # Better errors handler
   gem 'better_errors'
@@ -257,6 +256,8 @@ group :development, :test do
   gem "spring", '~> 1.3.1'
   gem "spring-commands-rspec", '1.0.4'
   gem "spring-commands-spinach", '1.0.0'
+  
+  gem "byebug"
 end
 
 group :test do

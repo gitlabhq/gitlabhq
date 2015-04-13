@@ -1,73 +1,76 @@
 require 'spec_helper'
 
 describe Gitlab::ReferenceExtractor do
+  let(:project) { create(:project) }
+  subject { Gitlab::ReferenceExtractor.new(project, project.creator) }
+
   it 'extracts username references' do
-    subject.analyze('this contains a @user reference', nil)
-    expect(subject.users).to eq([{ project: nil, id: 'user' }])
+    subject.analyze('this contains a @user reference')
+    expect(subject.references[:user]).to eq([[project, 'user']])
   end
 
   it 'extracts issue references' do
-    subject.analyze('this one talks about issue #1234', nil)
-    expect(subject.issues).to eq([{ project: nil, id: '1234' }])
+    subject.analyze('this one talks about issue #1234')
+    expect(subject.references[:issue]).to eq([[project, '1234']])
   end
 
   it 'extracts JIRA issue references' do
-    subject.analyze('this one talks about issue JIRA-1234', nil)
-    expect(subject.issues).to eq([{ project: nil, id: 'JIRA-1234' }])
+    subject.analyze('this one talks about issue JIRA-1234')
+    expect(subject.references[:issue]).to eq([[project, 'JIRA-1234']])
   end
 
   it 'extracts merge request references' do
-    subject.analyze("and here's !43, a merge request", nil)
-    expect(subject.merge_requests).to eq([{ project: nil, id: '43' }])
+    subject.analyze("and here's !43, a merge request")
+    expect(subject.references[:merge_request]).to eq([[project, '43']])
   end
 
   it 'extracts snippet ids' do
-    subject.analyze('snippets like $12 get extracted as well', nil)
-    expect(subject.snippets).to eq([{ project: nil, id: '12' }])
+    subject.analyze('snippets like $12 get extracted as well')
+    expect(subject.references[:snippet]).to eq([[project, '12']])
   end
 
   it 'extracts commit shas' do
-    subject.analyze('commit shas 98cf0ae3 are pulled out as Strings', nil)
-    expect(subject.commits).to eq([{ project: nil, id: '98cf0ae3' }])
+    subject.analyze('commit shas 98cf0ae3 are pulled out as Strings')
+    expect(subject.references[:commit]).to eq([[project, '98cf0ae3']])
   end
 
   it 'extracts commit ranges' do
-    subject.analyze('here you go, a commit range: 98cf0ae3...98cf0ae4', nil)
-    expect(subject.commit_ranges).to eq([{ project: nil, id: '98cf0ae3...98cf0ae4' }])
+    subject.analyze('here you go, a commit range: 98cf0ae3...98cf0ae4')
+    expect(subject.references[:commit_range]).to eq([[project, '98cf0ae3...98cf0ae4']])
   end
 
   it 'extracts multiple references and preserves their order' do
-    subject.analyze('@me and @you both care about this', nil)
-    expect(subject.users).to eq([
-      { project: nil, id: 'me' },
-      { project: nil, id: 'you' }
+    subject.analyze('@me and @you both care about this')
+    expect(subject.references[:user]).to eq([
+      [project, 'me'],
+      [project, 'you']
     ])
   end
 
   it 'leaves the original note unmodified' do
     text = 'issue #123 is just the worst, @user'
-    subject.analyze(text, nil)
+    subject.analyze(text)
     expect(text).to eq('issue #123 is just the worst, @user')
   end
 
   it 'extracts no references for <pre>..</pre> blocks' do
-    subject.analyze("<pre>def puts '#1 issue'\nend\n</pre>```", nil)
+    subject.analyze("<pre>def puts '#1 issue'\nend\n</pre>```")
     expect(subject.issues).to be_blank
   end
 
   it 'extracts no references for <code>..</code> blocks' do
-    subject.analyze("<code>def puts '!1 request'\nend\n</code>```", nil)
+    subject.analyze("<code>def puts '!1 request'\nend\n</code>```")
     expect(subject.merge_requests).to be_blank
   end
 
   it 'extracts no references for code blocks with language' do
-    subject.analyze("this code:\n```ruby\ndef puts '#1 issue'\nend\n```", nil)
+    subject.analyze("this code:\n```ruby\ndef puts '#1 issue'\nend\n```")
     expect(subject.issues).to be_blank
   end
 
   it 'extracts issue references for invalid code blocks' do
-    subject.analyze('test: ```this one talks about issue #1234```', nil)
-    expect(subject.issues).to eq([{ project: nil, id: '1234' }])
+    subject.analyze('test: ```this one talks about issue #1234```')
+    expect(subject.references[:issue]).to eq([[project, '1234']])
   end
 
   it 'handles all possible kinds of references' do
@@ -75,83 +78,79 @@ describe Gitlab::ReferenceExtractor do
     expect(subject).to respond_to(*accessors)
   end
 
-  context 'with a project' do
-    let(:project) { create(:project) }
+  it 'accesses valid user objects' do
+    @u_foo = create(:user, username: 'foo')
+    @u_bar = create(:user, username: 'bar')
+    @u_offteam = create(:user, username: 'offteam')
 
-    it 'accesses valid user objects on the project team' do
-      @u_foo = create(:user, username: 'foo')
-      @u_bar = create(:user, username: 'bar')
-      create(:user, username: 'offteam')
+    project.team << [@u_foo, :reporter]
+    project.team << [@u_bar, :guest]
 
-      project.team << [@u_foo, :reporter]
-      project.team << [@u_bar, :guest]
+    subject.analyze('@foo, @baduser, @bar, and @offteam')
+    expect(subject.users).to eq([@u_foo, @u_bar, @u_offteam])
+  end
 
-      subject.analyze('@foo, @baduser, @bar, and @offteam', project)
-      expect(subject.users_for(project)).to eq([@u_foo, @u_bar])
-    end
+  it 'accesses valid issue objects' do
+    @i0 = create(:issue, project: project)
+    @i1 = create(:issue, project: project)
 
-    it 'accesses valid issue objects' do
-      @i0 = create(:issue, project: project)
-      @i1 = create(:issue, project: project)
+    subject.analyze("##{@i0.iid}, ##{@i1.iid}, and #999.")
+    expect(subject.issues).to eq([@i0, @i1])
+  end
 
-      subject.analyze("##{@i0.iid}, ##{@i1.iid}, and #999.", project)
-      expect(subject.issues_for(project)).to eq([@i0, @i1])
-    end
+  it 'accesses valid merge requests' do
+    @m0 = create(:merge_request, source_project: project, target_project: project, source_branch: 'aaa')
+    @m1 = create(:merge_request, source_project: project, target_project: project, source_branch: 'bbb')
 
-    it 'accesses valid merge requests' do
-      @m0 = create(:merge_request, source_project: project, target_project: project, source_branch: 'aaa')
-      @m1 = create(:merge_request, source_project: project, target_project: project, source_branch: 'bbb')
+    subject.analyze("!999, !#{@m1.iid}, and !#{@m0.iid}.")
+    expect(subject.merge_requests).to eq([@m1, @m0])
+  end
 
-      subject.analyze("!999, !#{@m1.iid}, and !#{@m0.iid}.", project)
-      expect(subject.merge_requests_for(project)).to eq([@m1, @m0])
-    end
+  it 'accesses valid snippets' do
+    @s0 = create(:project_snippet, project: project)
+    @s1 = create(:project_snippet, project: project)
+    @s2 = create(:project_snippet)
 
-    it 'accesses valid snippets' do
-      @s0 = create(:project_snippet, project: project)
-      @s1 = create(:project_snippet, project: project)
-      @s2 = create(:project_snippet)
+    subject.analyze("$#{@s0.id}, $999, $#{@s2.id}, $#{@s1.id}")
+    expect(subject.snippets).to eq([@s0, @s1])
+  end
 
-      subject.analyze("$#{@s0.id}, $999, $#{@s2.id}, $#{@s1.id}", project)
-      expect(subject.snippets_for(project)).to eq([@s0, @s1])
-    end
+  it 'accesses valid commits' do
+    commit = project.repository.commit('master')
 
-    it 'accesses valid commits' do
-      commit = project.repository.commit('master')
+    subject.analyze("this references commits #{commit.sha[0..6]} and 012345")
+    extracted = subject.commits
+    expect(extracted.size).to eq(1)
+    expect(extracted[0].sha).to eq(commit.sha)
+    expect(extracted[0].message).to eq(commit.message)
+  end
 
-      subject.analyze("this references commits #{commit.sha[0..6]} and 012345",
-                      project)
-      extracted = subject.commits_for(project)
-      expect(extracted.size).to eq(1)
-      expect(extracted[0].sha).to eq(commit.sha)
-      expect(extracted[0].message).to eq(commit.message)
-    end
+  it 'accesses valid commit ranges' do
+    commit = project.repository.commit('master')
+    earlier_commit = project.repository.commit('master~2')
 
-    it 'accesses valid commit ranges' do
-      commit = project.repository.commit('master')
-      earlier_commit = project.repository.commit('master~2')
-
-      subject.analyze("this references commits #{earlier_commit.sha[0..6]}...#{commit.sha[0..6]}",
-                      project)
-      extracted = subject.commit_ranges_for(project)
-      expect(extracted.size).to eq(1)
-      expect(extracted[0][0].sha).to eq(earlier_commit.sha)
-      expect(extracted[0][0].message).to eq(earlier_commit.message)
-      expect(extracted[0][1].sha).to eq(commit.sha)
-      expect(extracted[0][1].message).to eq(commit.message)
-    end
+    subject.analyze("this references commits #{earlier_commit.sha[0..6]}...#{commit.sha[0..6]}")
+    extracted = subject.commit_ranges
+    expect(extracted.size).to eq(1)
+    expect(extracted[0][0].sha).to eq(earlier_commit.sha)
+    expect(extracted[0][0].message).to eq(earlier_commit.message)
+    expect(extracted[0][1].sha).to eq(commit.sha)
+    expect(extracted[0][1].message).to eq(commit.message)
   end
 
   context 'with a project with an underscore' do
-    let(:project) { create(:project, path: 'test_project') }
-    let(:issue) { create(:issue, project: project) }
+    let(:other_project) { create(:project, path: 'test_project') }
+    let(:issue) { create(:issue, project: other_project) }
+
+    before do
+      other_project.team << [project.creator, :developer]
+    end
 
     it 'handles project issue references' do
-      subject.analyze("this refers issue #{project.path_with_namespace}##{issue.iid}",
-          project)
-      extracted = subject.issues_for(project)
+      subject.analyze("this refers issue #{other_project.path_with_namespace}##{issue.iid}")
+      extracted = subject.issues
       expect(extracted.size).to eq(1)
       expect(extracted).to eq([issue])
     end
-
   end
 end

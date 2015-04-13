@@ -81,6 +81,7 @@ v 7.9.3
   - Warn when gitlab-shell version doesn't match requirement.
   - Skip email confirmation when set by admin or via LDAP.
 
+  - Only allow users to reference groups, projects, issues, MRs, commits they have access to.
 
 v 7.9.2
   - Contains no changes

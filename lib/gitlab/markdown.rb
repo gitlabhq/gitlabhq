@@ -192,6 +192,7 @@ module Gitlab
         project_path = $LAST_MATCH_INFO[:project]
         if project_path
           actual_project = ::Project.find_with_namespace(project_path)
+          actual_project = nil unless can?(current_user, :read_project, actual_project)
           project_prefix = project_path
         end
 
@@ -251,6 +252,7 @@ module Gitlab
       elsif namespace = Namespace.find_by(path: identifier)
         url =
           if namespace.is_a?(Group)
+            return nil unless can?(current_user, :read_group, namespace)
             group_url(identifier, only_path: options[:reference_only_path])
           else
             user_url(identifier, only_path: options[:reference_only_path])

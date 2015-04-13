@@ -4,6 +4,11 @@ describe GitlabMarkdownHelper do
   include ApplicationHelper
   include IssuesHelper
 
+  # TODO: Properly test this
+  def can?(*)
+    true
+  end
+
   let!(:project) { create(:project) }
   let(:empty_project) { create(:empty_project) }
 
@@ -14,6 +19,9 @@ describe GitlabMarkdownHelper do
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:snippet)       { create(:project_snippet, project: project) }
   let(:member)        { project.project_members.where(user_id: user).first }
+
+  # Helper expects a current_user method.
+  let(:current_user) { user }
 
   def url_helper(image_name)
     File.join(root_url, 'assets', image_name)

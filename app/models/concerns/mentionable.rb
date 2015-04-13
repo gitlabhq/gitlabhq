@@ -42,35 +42,22 @@ module Mentionable
     Note.cross_reference_exists?(target, local_reference)
   end
 
-  def mentioned_users
-    users = []
-    return users if mentionable_text.blank?
-    has_project = self.respond_to? :project
-    matches = mentionable_text.scan(/@[a-zA-Z][a-zA-Z0-9_\-\.]*/)
-    matches.each do |match|
-      identifier = match.delete "@"
-      if identifier == "all"
-        users.push(*project.team.members.flatten)
-      elsif namespace = Namespace.find_by(path: identifier)
-        if namespace.is_a?(Group)
-          users.push(*namespace.users)
-        else
-          users << namespace.owner
-        end
-      end
-    end
-    users.uniq
+  def mentioned_users(current_user = nil)
+    return [] if mentionable_text.blank?
+
+    ext = Gitlab::ReferenceExtractor.new(self.project, current_user)
+    ext.analyze(mentionable_text)
+    ext.users.uniq
   end
 
   # Extract GFM references to other Mentionables from this Mentionable. Always excludes its #local_reference.
-  def references(p = project, text = mentionable_text)
+  def references(p = project, current_user = self.author, text = mentionable_text)
     return [] if text.blank?
-    ext = Gitlab::ReferenceExtractor.new
-    ext.analyze(text, p)
 
-    (ext.issues_for(p)  +
-     ext.merge_requests_for(p) +
-     ext.commits_for(p)).uniq - [local_reference]
+    ext = Gitlab::ReferenceExtractor.new(p, current_user)
+    ext.analyze(text)
+
+    (ext.issues + ext.merge_requests + ext.commits).uniq - [local_reference]
   end
 
   # Create a cross-reference Note for each GFM reference to another Mentionable found in +mentionable_text+.
@@ -96,7 +83,7 @@ module Mentionable
     # Only proceed if the saved changes actually include a chance to an attr_mentionable field.
     return unless mentionable_changed
 
-    preexisting = references(p, original)
+    preexisting = references(p, self.author, original)
     create_cross_references!(p, a, preexisting)
   end
 end

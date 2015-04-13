@@ -13,6 +13,9 @@ class Notify < ActionMailer::Base
   add_template_helper MergeRequestsHelper
   add_template_helper EmailsHelper
 
+  attr_accessor :current_user
+  helper_method :current_user, :can?
+
   default_url_options[:host]     = Gitlab.config.gitlab.host
   default_url_options[:protocol] = Gitlab.config.gitlab.protocol
   default_url_options[:port]     = Gitlab.config.gitlab.port unless Gitlab.config.gitlab_on_standard_port?
@@ -79,9 +82,8 @@ class Notify < ActionMailer::Base
   #
   # Returns a String containing the User's email address.
   def recipient(recipient_id)
-    if recipient = User.find(recipient_id)
-      recipient.notification_email
-    end
+    @current_user = User.find(recipient_id)
+    @current_user.notification_email
   end
 
   # Set the References header field
@@ -153,5 +155,9 @@ class Notify < ActionMailer::Base
     end
 
     mail(headers, &block)
+  end
+
+  def can?
+    Ability.abilities.allowed?(user, action, subject)
   end
 end
