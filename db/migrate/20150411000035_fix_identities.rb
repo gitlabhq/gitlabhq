@@ -9,9 +9,14 @@ class FixIdentities < ActiveRecord::Migration
     # behavior. Any database references to 'provider: ldap' get rewritten to
     # whatever the code would have interpreted it as, i.e. as a reference to
     # the first LDAP server specified in gitlab.yml / gitlab.rb.
-    new_provider = Gitlab.config.ldap.servers.first.last['provider_name']
+    new_provider = if Gitlab.config.ldap.enabled
+                     first_ldap_server = Gitlab.config.ldap.servers.values.first
+                     first_ldap_server['provider_name']
+                   else
+                     'ldapmain'
+                   end
 
-	  # Delete duplicate identities
+    # Delete duplicate identities
     execute "DELETE FROM identities WHERE provider = 'ldap' AND user_id IN (SELECT user_id FROM identities WHERE provider = '#{new_provider}')"
 
     # Update legacy identities
