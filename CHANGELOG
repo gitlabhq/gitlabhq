@@ -1,6 +1,6 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-add "replace" and "upload" functionalities
+add "replace" and "upload"  functionalities
 
 v 7.10.0 (unreleased)
   - Fix broken file browsing with a submodule that contains a relative link (Stan Hu)
