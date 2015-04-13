@@ -366,20 +366,10 @@ describe GitlabMarkdownHelper do
         to match(%r{Apply <em><a.+>!#{merge_request.iid}</a></em>})
     end
 
-    it "should handle tables" do
-      skip "rspeicher - Aren't we just testing Redcarpet here?"
-
-      actual = %Q{| header 1 | header 2 |
-| -------- | -------- |
-| cell 1   | cell 2   |
-| cell 3   | cell 4   |}
-
-      expect(markdown(actual)).to match(/\A<table/)
-    end
-
     # CODE BLOCKS -------------------------------------------------------------
 
     it "should leave code blocks untouched" do
+      allow(helper).to receive(:current_user).and_return(user)
       allow(helper).to receive(:user_color_scheme_class).and_return(:white)
 
       target_html = "<pre class=\"code highlight white plaintext\"><code>some code from $#{snippet.id}\nhere too\n</code></pre>\n"
