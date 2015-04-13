@@ -41,8 +41,14 @@
 
             - else
               %span.help-block We also use email for avatar detection if no avatar is uploaded.
-          = f.check_box(:email_display_in_profile)
-          = f.label(:email_display_in_profile, "Display this email in my public profile")
+      .form-group
+        = f.label :public_email, class: "control-label"
+        .col-sm-10
+          %select.form-control{:name => "user[public_email]", :id => :user_public_email}
+            %option{:value => "", :selected => @user.public_email.blank?}= "Do not show in profile"
+            %option{:value => @user.email, :selected => @user.email == @user.public_email}= @user.email
+            - @emails.each do |email|
+              %option{:value => email.email, :selected => email.email == @user.public_email}= email.email
       .form-group
         = f.label :skype, class: "control-label"
         .col-sm-10= f.text_field :skype, class: "form-control"

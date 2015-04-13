@@ -16,9 +16,9 @@ class UsersController < ApplicationController
     @title = @user.name
     @title_url = user_path(@user)
 
-    # Handle email display
-    if current_user and (current_user.id === @user.id or current_user.admin)
-      @user.email_display_in_profile = true
+    # Handle email display if user doesn't have public email
+    if @user.public_email == '' and current_user and (current_user.id === @user.id or current_user.admin)
+      @user.public_email = @user.email
     end
 
     respond_to do |format|
