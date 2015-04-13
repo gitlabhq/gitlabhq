@@ -36,30 +36,6 @@ describe GitlabMarkdownHelper do
   end
 
   describe "#gfm" do
-    it "should return unaltered text if project is nil" do
-      skip "rspeicher - This isn't actually checked in this method anymore."
-      actual = "Testing references: ##{issue.iid}"
-
-      expect(gfm(actual)).not_to eq(actual)
-
-      @project = nil
-      expect(gfm(actual)).to eq(actual)
-    end
-
-    it "should not alter non-references" do
-      skip "rspeicher - Invalid test: markdown has already been parsed by the time gfm gets it"
-      actual = expected = "_Please_ *stop* 'helping' and all the other b*$#%' you do."
-      expect(gfm(actual)).to eq(expected)
-    end
-
-    it "should not touch HTML entities" do
-      skip "rspeicher - Invalid test: Sanitize (or Nokogiri?) translates the HTML entity back"
-      allow(@project).to receive(:issue_exists?).
-        with(39).and_return([issue])
-      actual = 'We&#39;ll accept good pull requests.'
-      expect(gfm(actual)).to eq("We'll accept good pull requests.")
-    end
-
     it "should forward HTML options to links" do
       expect(gfm("Fixed in #{commit.id}", @project, class: 'foo')).
           to have_selector('a.gfm.foo')
@@ -291,12 +267,6 @@ describe GitlabMarkdownHelper do
   describe "#markdown" do
     # TODO (rspeicher) - This block tests multiple different contexts. Break this up!
 
-    it "should handle references in paragraphs" do
-      skip "rspeicher - redundant"
-      actual = "\n\nLorem ipsum dolor sit amet. #{commit.id} Nam pulvinar sapien eget.\n"
-      expected = namespace_project_commit_path(project.namespace, project, commit)
-      expect(markdown(actual)).to match(expected)
-    end
     # REFERENCES (PART TWO: THE REVENGE) ---------------------------------------
 
     it "should handle references in headers" do
@@ -321,42 +291,6 @@ describe GitlabMarkdownHelper do
       expect(markdown("# [link text](url) ![img alt](url)")).to match(
         %r{<h1 id="#{id}"><a href="[^"]*url">link text</a> <img[^>]*><a href="[^"]*##{id}"></a></h1>}
       )
-    end
-
-    it "should handle references in lists" do
-      skip "rspeicher - redundant"
-      project.team << [user, :master]
-
-      actual = "\n* dark: ##{issue.iid}\n* light by @#{member.user.username}"
-
-      expect(markdown(actual)).
-        to match(%r{<li>dark: <a.+>##{issue.iid}</a></li>})
-      expect(markdown(actual)).
-        to match(%r{<li>light by <a.+>@#{member.user.username}</a></li>})
-    end
-
-    it "should not link the apostrophe to issue 39" do
-      skip "rspeicher - Redundant"
-
-      project.team << [user, :master]
-      allow(project.issues).
-        to receive(:where).with(iid: '39').and_return([issue])
-
-      actual   = "Yes, it is @#{member.user.username}'s task."
-      expected = /Yes, it is <a.+>@#{member.user.username}<\/a>'s task/
-      expect(markdown(actual)).to match(expected)
-    end
-
-    it "should not link the apostrophe to issue 39 in code blocks" do
-      skip "rspeicher - Redundant"
-
-      project.team << [user, :master]
-      allow(project.issues).
-        to receive(:where).with(iid: '39').and_return([issue])
-
-      actual   = "Yes, `it is @#{member.user.username}'s task.`"
-      expected = /Yes, <code>it is @gfm\'s task.<\/code>/
-      expect(markdown(actual)).to match(expected)
     end
 
     it "should handle references in <em>" do
