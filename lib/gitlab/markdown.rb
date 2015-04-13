@@ -67,6 +67,7 @@ module Gitlab
         whitelist:       sanitization_whitelist,
         reference_class: html_options[:class],
         only_path:       options[:reference_only_path],
+        current_user:    current_user,
         project:         project
       }
 
