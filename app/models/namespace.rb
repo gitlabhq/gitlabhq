@@ -61,8 +61,8 @@ class Namespace < ActiveRecord::Base
     def clean_path(path)
       path.gsub!(/@.*\z/,             "")
       path.gsub!(/\.git\z/,           "")
-      path.gsub!(/\A-/,               "")
-      path.gsub!(/.\z/,               "")
+      path.gsub!(/\A-+/,              "")
+      path.gsub!(/\.+\z/,             "")
       path.gsub!(/[^a-zA-Z0-9_\-\.]/, "")
 
       counter = 0
