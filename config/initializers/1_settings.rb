@@ -64,10 +64,11 @@ Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
 # backwards compatibility, we only have one host
 if Settings.ldap['enabled'] || Rails.env.test?
   if Settings.ldap['host'].present?
+    # We detected old LDAP configuration syntax. Update the config to make it
+    # look like it was entered with the new syntax.
     server = Settings.ldap.except('sync_time')
-    server['provider_name'] = 'ldap'
     Settings.ldap['servers'] = {
-      'ldap' => server
+      'main' => server
     }
   end
 
@@ -79,6 +80,7 @@ if Settings.ldap['enabled'] || Rails.env.test?
     server['provider_class'] = OmniAuth::Utils.camelize(server['provider_name'])
   end
 end
+
 
 Settings['omniauth'] ||= Settingslogic.new({})
 Settings.omniauth['enabled']      = false if Settings.omniauth['enabled'].nil?
