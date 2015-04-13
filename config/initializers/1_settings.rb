@@ -66,10 +66,11 @@ Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
 # backwards compatibility, we only have one host
 if Settings.ldap['enabled'] || Rails.env.test?
   if Settings.ldap['host'].present?
+    # We detected old LDAP configuration syntax. Update the config to make it
+    # look like it was entered with the new syntax.
     server = Settings.ldap.except('sync_time')
-    server['provider_name'] = 'ldapmain'
     Settings.ldap['servers'] = {
-      'ldap' => server
+      'main' => server
     }
   end
 
