@@ -4,7 +4,7 @@
 
 %li{class: "#{dom_class(member)} js-toggle-container", id: dom_id(member)}
   %span{class: ("list-item-name" if show_controls)}
-    = image_tag avatar_icon(user.email, 16), class: "avatar s16"
+    = image_tag avatar_icon(user.email, 16), class: "avatar s16", alt: ''
     %strong= user.name
     %span.cgray= user.username
     - if user == current_user
