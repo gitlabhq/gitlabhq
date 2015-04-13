@@ -19,7 +19,6 @@ v 7.10.0 (unreleased)
   - Disable reference creation for comments surrounded by code/preformatted blocks (Stan Hu)
   - Reduce Rack Attack false positives causing 403 errors during HTTP authentication (Stan Hu)
   - enable line wrapping per default and remove the checkbox to toggle it (Hannes Rosenögger)
-  - extend the commit calendar to show the actual commits made on a date (Hannes Rosenögger)
   - Fix a link in the patch update guide
   - Add a service to support external wikis (Hannes Rosenögger)
   - Omit the "email patches" link and fix plain diff view for merge commits
