@@ -71,6 +71,8 @@ v 7.10.0 (unreleased)
   - Authometic setup GitLab CI project for forks if origin project has GitLab CI enabled
   - Prevent duplicate Buildkite service creation.
   - Fix git over ssh errors 'fatal: protocol error: bad line length character' 
+  - Automatically setup GitLab CI project for forks if origin project has GitLab CI enabled
+  - Bust group page project list cache when namespace name or path changes.
 
 v 7.9.3
   - Contains no changes

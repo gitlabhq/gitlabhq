@@ -1,4 +1,4 @@
-= cache [project, controller.controller_name, controller.action_name] do
+= cache [project.namespace, project, controller.controller_name, controller.action_name] do
   = link_to project_path(project), class: dom_class(project) do
     - if avatar
       .dash-project-avatar
