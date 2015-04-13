@@ -47,11 +47,21 @@ module Gitlab::Markdown
       end
     end
 
-    it 'links to a Group' do
-      group = create(:group)
+    context 'mentioning a group' do
+      let(:group) { create(:group) }
+      let(:user)  { create(:user) }
 
-      doc = filter("Hey @#{group.name}")
-      expect(doc.css('a').first.attr('href')).to eq urls.group_url(group)
+      it 'links to a Group that the current user can read' do
+        group.add_user(user, Gitlab::Access::DEVELOPER)
+
+        doc = filter("Hey @#{group.name}", current_user: user)
+        expect(doc.css('a').first.attr('href')).to eq urls.group_url(group)
+      end
+
+      it 'ignores references to a Group that the current user cannot read' do
+        doc = filter("Hey @#{group.name}", current_user: user)
+        expect(doc.to_html).to eq "Hey @#{group.name}"
+      end
     end
 
     it 'links with adjacent text' do
