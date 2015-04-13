@@ -190,7 +190,7 @@ GEM
     formatador (0.2.4)
     gemnasium-gitlab-service (0.2.4)
       rugged (~> 0.21)
-    gemojione (2.0.0)
+    gemojione (2.0.1)
       json
     gherkin-ruby (0.3.1)
       racc
