@@ -17,13 +17,26 @@ class FixIdentities < ActiveRecord::Migration
                    end
 
     # Delete duplicate identities
-    execute "DELETE FROM identities WHERE provider = 'ldap' AND user_id IN (SELECT user_id FROM identities WHERE provider = '#{new_provider}')"
+    # We use a sort of self-join to find rows in identities which match on
+    # user_id but where one has provider 'ldap'. We delete the duplicate row
+    # with provider 'ldap'.
+    delete_statement = ''
+    case adapter_name.downcase
+    when /^mysql/
+      delete_statement << 'DELETE FROM id1 USING identities AS id1, identities AS id2'
+    when 'postgresql'
+      delete_statement << 'DELETE FROM identities AS id1 USING identities AS id2'
+    else
+      raise "Unknown DB adapter: #{adapter_name}"
+    end
+    delete_statement << " WHERE id1.user_id = id2.user_id AND id1.provider = 'ldap' AND id2.provider = '#{new_provider}'"
+    execute delete_statement
 
     # Update legacy identities
-    execute "UPDATE identities SET provider = '#{new_provider}' WHERE provider = 'ldap';"
+    execute "UPDATE identities SET provider = '#{new_provider}' WHERE provider = 'ldap'"
 
     if table_exists?('ldap_group_links')
-      execute "UPDATE ldap_group_links SET provider = '#{new_provider}' WHERE provider IS NULL OR provider = 'ldap';"
+      execute "UPDATE ldap_group_links SET provider = '#{new_provider}' WHERE provider IS NULL OR provider = 'ldap'"
     end
   end
 
