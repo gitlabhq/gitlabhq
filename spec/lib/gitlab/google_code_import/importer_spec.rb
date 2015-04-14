@@ -43,7 +43,6 @@ describe Gitlab::GoogleCodeImport::Importer do
       expect(issue.title).to eq("Scrolling through tasks")
       expect(issue.state).to eq("closed")
       expect(issue.description).to include("schattenpr...")
-      expect(issue.description).to include("https://code.google.com/u/106498139506637530000/")
       expect(issue.description).to include("November 18, 2009 00:20")
       expect(issue.description).to include('I like to scroll through the tasks with my scrollwheel \(like in fluxbox\).')
       expect(issue.description).to include('Patch is attached that adds two new mouse\-actions \(next\_taskprev\_task\)')
@@ -59,7 +58,6 @@ describe Gitlab::GoogleCodeImport::Importer do
       note = project.issues.first.notes.first
       expect(note).to_not be_nil
       expect(note.note).to include("thilo...")
-      expect(note.note).to include("https://code.google.com/u/104224918623172014000/")
       expect(note.note).to include("November 18, 2009 05:14")
       expect(note.note).to include("applied, thanks.")
       expect(note.note).to include("Status: Fixed")

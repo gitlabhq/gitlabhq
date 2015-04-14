@@ -66,12 +66,11 @@ module Gitlab
           end
           last_id = raw_issue["id"]
 
-          author      = mask_email(raw_issue["author"]["name"])
-          author_link = raw_issue["author"]["htmlLink"]
-          date        = DateTime.parse(raw_issue["published"]).to_formatted_s(:long)
+          author  = mask_email(raw_issue["author"]["name"])
+          date    = DateTime.parse(raw_issue["published"]).to_formatted_s(:long)
 
           body = []
-          body << "*By [#{author}](#{author_link}) on #{date}*"
+          body << "*By #{author} on #{date}*"
           body << "---"
 
           comments = raw_issue["comments"]["items"]
@@ -120,12 +119,11 @@ module Gitlab
         comments.each_with_index do |raw_comment, i|
           next if raw_comment.has_key?("deletedBy")
 
-          author      = mask_email(raw_comment["author"]["name"])
-          author_link = raw_comment["author"]["htmlLink"]
-          date        = DateTime.parse(raw_comment["published"]).to_formatted_s(:long)
+          author  = mask_email(raw_comment["author"]["name"])
+          date    = DateTime.parse(raw_comment["published"]).to_formatted_s(:long)
 
           body = []
-          body << "*By [#{author}](#{author_link}) on #{date}*"
+          body << "*By #{author} on #{date}*"
           body << "---"
 
           content = format_content(raw_comment["content"])
