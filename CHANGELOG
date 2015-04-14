@@ -1,6 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.10.0 (unreleased)
+  - Fix broken side-by-side diff view on merge request page (Stan Hu)
+  - Set Application controller default URL options to ensure all url_for calls are consistent (Stan Hu)
+  - Allow HTML tags in Markdown input
+  - Fix code unfold not working on Compare commits page (Stan Hu)
   - Include missing events and fix save functionality in admin service template settings form (Stan Hu)
   - Fix "Import projects from" button to show the correct instructions (Stan Hu)
   - Fix dots in Wiki slugs causing errors (Stan Hu)
@@ -25,6 +29,7 @@ v 7.10.0 (unreleased)
   - Passing the name of pushed ref to CI service (requires GitLab CI 7.9+)
   - Add location field to user profile
   - Fix print view for markdown files and wiki pages
+  - Fix errors when deleting old backups
   - Improve GitLab performance when working with git repositories
   - Add tag message and last commit to tag hook (Kamil Trzciński)
   - Restrict permissions on backup files
@@ -40,7 +45,18 @@ v 7.9.0 (unreleased)
   - Don't mark merge request as updated when merge status relative to target branch changes.
   - Link note avatar to user.
   - Make Git-over-SSH errors more descriptive.
+  - Fix EmailsOnPush.
+  - Refactor issue filtering
+  - AJAX selectbox for issue assignee and author filters
+  - Fix issue with missing options in issue filtering dropdown if selected one
+  - Prevent holding Control-Enter or Command-Enter from posting comment multiple times.
+  - Improve file icons rendering on tree (Sullivan Sénéchal)
+
+v 7.9.0
   - Send EmailsOnPush email when branch or tag is created or deleted.
+  - Faster merge request processing for large repository
+  - Prevent doubling AJAX request with each commit visit via Turbolink
+  - Prevent unnecessary doubling of js events on import pages and user calendar
 
 v 7.9.0
   - Add HipChat integration documentation (Stan Hu)

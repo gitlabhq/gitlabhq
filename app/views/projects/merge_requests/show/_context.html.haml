@@ -9,7 +9,7 @@
         none
     .issuable-context-selectbox
       - if can?(current_user, :modify_merge_request, @merge_request)
-        = project_users_select_tag('merge_request[assignee_id]', placeholder: 'Select assignee', class: 'custom-form-control js-select2 js-assignee', selected: @merge_request.assignee_id)
+        = users_select_tag('merge_request[assignee_id]', placeholder: 'Select assignee', class: 'custom-form-control js-select2 js-assignee', selected: @merge_request.assignee_id, null_user: true)
 
   %div.prepend-top-20.clearfix
     .issuable-context-title
@@ -45,7 +45,4 @@
           You're receiving notifications because you're subscribed to this thread.
 
 :coffeescript
-  $ ->
-    new Subscription("#{toggle_subscription_namespace_project_merge_request_path(@merge_request.project.namespace, @project, @merge_request)}")
-    
-      
+  new Subscription("#{toggle_subscription_namespace_project_merge_request_path(@merge_request.project.namespace, @project, @merge_request)}")

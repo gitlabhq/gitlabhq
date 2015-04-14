@@ -70,16 +70,17 @@ module Backup
       # delete backups
       $progress.print "Deleting old backups ... "
       keep_time = Gitlab.config.backup.keep_time.to_i
-      path = Gitlab.config.backup.path
 
       if keep_time > 0
         removed = 0
-        file_list = Dir.glob(Rails.root.join(path, "*_gitlab_backup.tar"))
-        file_list.map! { |f| $1.to_i if f =~ /(\d+)_gitlab_backup.tar/ }
-        file_list.sort.each do |timestamp|
-          if Time.at(timestamp) < (Time.now - keep_time)
-            if Kernel.system(*%W(rm #{timestamp}_gitlab_backup.tar))
-              removed += 1
+        Dir.chdir(Gitlab.config.backup.path) do
+          file_list = Dir.glob('*_gitlab_backup.tar')
+          file_list.map! { |f| $1.to_i if f =~ /(\d+)_gitlab_backup.tar/ }
+          file_list.sort.each do |timestamp|
+            if Time.at(timestamp) < (Time.now - keep_time)
+              if Kernel.system(*%W(rm #{timestamp}_gitlab_backup.tar))
+                removed += 1
+              end
             end
           end
         end

@@ -14,106 +14,45 @@
           %i.fa.fa-compass
           All
 
-  %div
+  .issues-details-filters
+    = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_id, :label_name]), method: :get, class: 'filter-form' do
+      - if controller.controller_name == 'issues'
+        .check-all-holder
+          = check_box_tag "check_all_issues", nil, false,
+            class: "check_all_issues left",
+            disabled: !can?(current_user, :modify_issue, @project)
+      .issues-other-filters
+        .filter-item.inline
+          = users_select_tag(:assignee_id, selected: params[:assignee_id],
+            placeholder: 'Assignee', class: 'trigger-submit', any_user: true, null_user: true)
+
+        .filter-item.inline
+          = users_select_tag(:author_id, selected: params[:author_id],
+            placeholder: 'Author', class: 'trigger-submit', any_user: true)
+
+        .filter-item.inline.milestone-filter
+          = select_tag('milestone_id', projects_milestones_options, class: "select2 trigger-submit", prompt: 'Milestone')
+
+        - if @project
+          .filter-item.inline.labels-filter
+            = select_tag('label_name', project_labels_options(@project), class: "select2 trigger-submit", prompt: 'Label')
+
+        .pull-right
+          = render 'shared/sort_dropdown'
+
     - if controller.controller_name == 'issues'
-      .check-all-holder
-        = check_box_tag "check_all_issues", nil, false,
-          class: "check_all_issues left",
-          disabled: !can?(current_user, :modify_issue, @project)
-    .issues-other-filters
-      .dropdown.inline.assignee-filter
-        %button.dropdown-toggle.btn{type: 'button', "data-toggle" => "dropdown"}
-          %i.fa.fa-user
-          %span.light assignee:
-          - if @assignee.present?
-            %strong= @assignee.name
-          - elsif params[:assignee_id] == "0"
-            Unassigned
-          - else
-            Any
-          %b.caret
-        %ul.dropdown-menu
-          %li
-            = link_to page_filter_path(assignee_id: nil) do
-              Any
-            = link_to page_filter_path(assignee_id: 0) do
-              Unassigned
-          - @assignees.sort_by(&:name).each do |user|
-            %li
-              = link_to page_filter_path(assignee_id: user.id) do
-                = image_tag avatar_icon(user.email), class: "avatar s16", alt: ''
-                = user.name
+      .issues_bulk_update.hide
+        = form_tag bulk_update_namespace_project_issues_path(@project.namespace, @project), method: :post  do
+          = select_tag('update[state_event]', options_for_select([['Open', 'reopen'], ['Closed', 'close']]), prompt: "Status", class: 'form-control')
+          = users_select_tag('update[assignee_id]', placeholder: 'Assignee', null_user: true)
+          = select_tag('update[milestone_id]', bulk_update_milestone_options, prompt: "Milestone")
+          = hidden_field_tag 'update[issues_ids]', []
+          = hidden_field_tag :state_event, params[:state_event]
+          = button_tag "Update issues", class: "btn update_selected_issues btn-save"
 
-      .dropdown.inline.prepend-left-10.author-filter
-        %button.dropdown-toggle.btn{type: 'button', "data-toggle" => "dropdown"}
-          %i.fa.fa-user
-          %span.light author:
-          - if @author.present?
-            %strong= @author.name
-          - elsif params[:author_id] == "0"
-            Unassigned
-          - else
-            Any
-          %b.caret
-        %ul.dropdown-menu
-          %li
-            = link_to page_filter_path(author_id: nil) do
-              Any
-            = link_to page_filter_path(author_id: 0) do
-              Unassigned
-          - @authors.sort_by(&:name).each do |user|
-            %li
-              = link_to page_filter_path(author_id: user.id) do
-                = image_tag avatar_icon(user.email), class: "avatar s16", alt: ''
-                = user.name
+:coffeescript
+  new UsersSelect()
 
-      .dropdown.inline.prepend-left-10.milestone-filter
-        %button.dropdown-toggle.btn{type: 'button', "data-toggle" => "dropdown"}
-          %i.fa.fa-clock-o
-          %span.light milestone:
-          - if @milestone.present?
-            %strong= @milestone.title
-          - elsif params[:milestone_id] == "0"
-            None (backlog)
-          - else
-            Any
-          %b.caret
-        %ul.dropdown-menu
-          %li
-            = link_to page_filter_path(milestone_id: nil) do
-              Any
-            = link_to page_filter_path(milestone_id: 0) do
-              None (backlog)
-          - @milestones.each do |milestone|
-            %li
-              = link_to page_filter_path(milestone_id: milestone.id) do
-                %strong= milestone.title
-                %small.light= milestone.expires_at
-
-      - if @project
-        .dropdown.inline.prepend-left-10.labels-filter
-          %button.dropdown-toggle.btn{type: 'button', "data-toggle" => "dropdown"}
-            %i.fa.fa-tags
-            %span.light label:
-            - if params[:label_name].present?
-              %strong= params[:label_name]
-            - else
-              Any
-            %b.caret
-          %ul.dropdown-menu
-            %li
-              = link_to page_filter_path(label_name: nil) do
-                Any
-            - if @project.labels.any?
-              - @project.labels.each do |label|
-                %li
-                  = link_to page_filter_path(label_name: label.name) do
-                    = render_colored_label(label)
-            - else
-              %li
-                = link_to generate_namespace_project_labels_path(@project.namespace, @project, redirect: request.original_url), method: :post do
-                  %i.fa.fa-plus-circle
-                  Create default labels
-
-      .pull-right
-        = render 'shared/sort_dropdown'
+  $('form.filter-form').on 'submit', (event) ->
+    event.preventDefault()
+    Turbolinks.visit @.action + '&' + $(@).serialize()

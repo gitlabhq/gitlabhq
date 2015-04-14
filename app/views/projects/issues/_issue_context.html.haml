@@ -8,7 +8,7 @@
       - else
         none
     - if can?(current_user, :modify_issue, @issue)
-      = project_users_select_tag('issue[assignee_id]', placeholder: 'Select assignee', class: 'custom-form-control js-select2 js-assignee', selected: @issue.assignee_id)
+      = users_select_tag('issue[assignee_id]', placeholder: 'Select assignee', class: 'custom-form-control js-select2 js-assignee', selected: @issue.assignee_id, null_user: true)
 
   %div.prepend-top-20.clearfix
     .issuable-context-title
@@ -43,7 +43,4 @@
           You're receiving notifications because you're subscribed to this thread.
 
 :coffeescript
-  $ ->
-    new Subscription("#{toggle_subscription_namespace_project_issue_path(@issue.project.namespace, @project, @issue)}")
-
-
+  new Subscription("#{toggle_subscription_namespace_project_issue_path(@issue.project.namespace, @project, @issue)}")

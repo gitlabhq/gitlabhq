@@ -39,7 +39,7 @@
           %i.fa.fa-user
           Assign to
       .col-sm-10
-        = project_users_select_tag('merge_request[assignee_id]', placeholder: 'Select a user', class: 'custom-form-control', selected: @merge_request.assignee_id, project_id: @merge_request.target_project_id)
+        = users_select_tag('merge_request[assignee_id]', placeholder: 'Select a user', class: 'custom-form-control', selected: @merge_request.assignee_id, project_id: @merge_request.target_project_id)
         &nbsp;
         = link_to 'Assign to me', '#', class: 'btn assign-to-me-link'
     .form-group

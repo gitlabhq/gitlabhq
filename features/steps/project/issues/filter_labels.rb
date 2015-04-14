@@ -2,24 +2,7 @@ class Spinach::Features::ProjectIssuesFilterLabels < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
-
-  step 'I should see "bug" in labels filter' do
-    within ".labels-filter" do
-      page.should have_content "bug"
-    end
-  end
-
-  step 'I should see "feature" in labels filter' do
-    within ".labels-filter" do
-      page.should have_content "feature"
-    end
-  end
-
-  step 'I should see "enhancement" in labels filter' do
-    within ".labels-filter" do
-      page.should have_content "enhancement"
-    end
-  end
+  include Select2Helper
 
   step 'I should see "Bugfix1" in issues list' do
     within ".issues-list" do
@@ -46,9 +29,7 @@ class Spinach::Features::ProjectIssuesFilterLabels < Spinach::FeatureSteps
   end
 
   step 'I click link "bug"' do
-    within ".labels-filter" do
-      click_link "bug"
-    end
+    select2('bug', from: "#label_name")
   end
 
   step 'I click link "feature"' do

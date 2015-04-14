@@ -38,6 +38,18 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
     click_button "Compare"
   end
 
+  step 'I unfold diff' do
+    @diff = first('.js-unfold')
+    @diff.click
+    sleep 2
+  end
+
+  step 'I should see additional file lines' do
+    within @diff.parent do
+      first('.new_line').text.should_not have_content "..."
+    end
+  end
+
   step 'I see compared refs' do
     page.should have_content "Compare View"
     page.should have_content "Commits (1)"

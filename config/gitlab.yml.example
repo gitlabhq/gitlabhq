@@ -2,6 +2,11 @@
 # GitLab application config file  #
 # # # # # # # # # # # # # # # # # #
 #
+###########################  NOTE  #####################################
+# This file should not receive new settings. All configuration options #
+# are being moved to ApplicationSetting model!                         #
+########################################################################
+#
 # How to use:
 # 1. Copy file as gitlab.yml
 # 2. Update gitlab -> host with your fully qualified domain name
