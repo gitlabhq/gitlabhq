@@ -1,0 +1,14 @@
+.form-group.commit_message-group
+  = label_tag 'commit_message_replace', class: 'control-label' do
+    Commit message
+  .col-sm-10
+    .commit-message-replace-container
+      .max-width-marker
+      = text_area_tag 'commit_message_replace',
+          (params[:commit_message_replace] || local_assigns[:text]),
+          class: 'form-control', placeholder: local_assigns[:placeholder],
+          required: true, rows: (local_assigns[:rows] || 3)
+    - if local_assigns[:hint]
+      %p.hint
+        Try to keep the first line under 52 characters
+        and the others under 72.
