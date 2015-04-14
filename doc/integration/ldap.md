@@ -125,7 +125,7 @@ your `gitlab.rb` or `gitlab.yml` file. This setting will tell GitLab where to lo
 
 ```
 group_base: 'OU=groups,DC=example,DC=com'
-``
+```
 
 Suppose we want to synchronize the GitLab group 'example group' with the LDAP group 'Engineering'.
 
