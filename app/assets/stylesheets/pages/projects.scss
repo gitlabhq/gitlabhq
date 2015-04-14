@@ -220,6 +220,10 @@ ul.nav.nav-projects-tabs {
       background-color: #F9F9F9;
       border-color: #DDD;
 
+      &.dropdown-toggle {
+        text-align: center;
+      }
+
       &:hover {
         background-color: #eee;
         border-color: #DDD;

@@ -60,11 +60,16 @@
 
           - unless @project.empty_repo?
             = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-block' do
+              %i.fa.fa-exchange
               Compare code
+
+            - if can?(current_user, :download_code, @project)
+              = render 'projects/repositories/download_archive', split_button: true, btn_class: 'btn-block'
 
             - if version = @repository.version
               - detail_url = changelog_url(@project) || version_url(@project)
               = link_to detail_url, class: 'btn btn-block' do
+                %i.fa.fa-file-text-o
                 Version:
                 %span.count
                   = @repository.blob_by_oid(version.id).data
@@ -80,11 +85,6 @@
             - else
               #{link_to @project.owner_name, @project.owner}
 
-        - unless @project.empty_repo?
-          - if can? current_user, :download_code, @project
-            %hr
-            .prepend-top-10.append-bottom-10
-              = render 'projects/repositories/download_archive', split_button: true
 
         .prepend-top-10
           - @project.ci_services.each do |ci_service|
