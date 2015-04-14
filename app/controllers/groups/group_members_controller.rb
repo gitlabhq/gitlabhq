@@ -52,9 +52,9 @@ class Groups::GroupMembersController < Groups::ApplicationController
     if @group_member.invite?
       @group_member.resend_invite
 
-      redirect_to group_group_members_path(@group), notice: 'Invite was successfully resent.'
+      redirect_to group_group_members_path(@group), notice: 'The invitation was successfully resent.'
     else
-      redirect_to group_group_members_path(@group), alert: 'The invite has already been accepted.'
+      redirect_to group_group_members_path(@group), alert: 'The invitation has already been accepted.'
     end
   end
 

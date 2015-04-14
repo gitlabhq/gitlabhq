@@ -3,7 +3,7 @@ module ProjectsHelper
     if member.user
       "You are going to remove #{member.user.name} from #{project.name} project team. Are you sure?"
     else
-      "You are going to cancel invitation for #{member.invite_email} to join #{project.name} project team. Are you sure?"
+      "You are going to revoke the invitation for #{member.invite_email} to join #{project.name} project team. Are you sure?"
     end
   end
 

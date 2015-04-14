@@ -14,8 +14,9 @@ module Emails
       @project = @project_member.project
       @token = token
       @target_url = namespace_project_url(@project.namespace, @project)
+      @current_user = @project_member.user
       mail(to: @project_member.invite_email,
-           subject: "Invite to join project #{@project.name_with_namespace}")
+           subject: "Invitation to join project #{@project.name_with_namespace}")
     end
 
     def project_invite_accepted_email(project_member_id)
@@ -24,21 +25,23 @@ module Emails
 
       @project = @project_member.project
       @target_url = namespace_project_url(@project.namespace, @project)
+      @current_user = @project_member.created_by
+
       mail(to: @project_member.created_by.notification_email,
-           subject: subject("Invite accepted"))
+           subject: subject("Invitation accepted"))
     end
 
     def project_invite_declined_email(project_id, invite_email, access_level, created_by_id)
       return if created_by_id.nil?
 
       @project = Project.find(project_id)
-      @created_by = User.find(created_by_id)
+      @current_user = @created_by = User.find(created_by_id)
       @access_level = access_level
       @invite_email = invite_email
       @target_url = namespace_project_url(@project.namespace, @project)
 
       mail(to: @created_by.notification_email,
-           subject: subject("Invite declined"))
+           subject: subject("Invitation declined"))
     end
 
     def project_was_moved_email(project_id, user_id)

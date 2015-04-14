@@ -60,15 +60,15 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   def resend_invite
+    redirect_path = namespace_project_project_members_path(@project.namespace, @project)
+
     @project_member = @project.project_members.find(params[:id])
     if @project_member.invite?
       @project_member.resend_invite
 
-      redirect_to namespace_project_project_members_path(@project.namespace,
-                                                        @project), notice: 'Invite was successfully resent.'
+      redirect_to redirect_path, notice: 'The invitation was successfully resent.'
     else
-      redirect_to namespace_project_project_members_path(@project.namespace,
-                                                        @project), alert: 'The invite has already been accepted.'
+      redirect_to redirect_path, alert: 'The invitation has already been accepted.'
     end
   end
 

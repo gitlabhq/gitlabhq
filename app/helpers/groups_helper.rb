@@ -3,7 +3,7 @@ module GroupsHelper
     if member.user
       "Are you sure you want to remove \"#{member.user.name}\" from \"#{group.name}\"?"
     else
-      "Are you sure you want to cancel invitation for \"#{member.invite_email}\" to join \"#{group.name}\"?"
+      "Are you sure you want to revoke the invitation for \"#{member.invite_email}\" to join \"#{group.name}\"?"
     end
   end
 
