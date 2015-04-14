@@ -39,6 +39,8 @@ module Gitlab
       end
 
       def update_user_attributes
+        return unless persisted?
+
         gl_user.skip_reconfirmation!
         gl_user.email = auth_hash.email
 
