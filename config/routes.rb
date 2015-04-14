@@ -8,7 +8,7 @@ Gitlab::Application.routes.draw do
                 authorizations: 'oauth/authorizations'
   end
 
-  # Autocomplete
+  # Autocomplete 
   get '/autocomplete/users' => 'autocomplete#users'
   get '/autocomplete/users/:id' => 'autocomplete#user'
 
