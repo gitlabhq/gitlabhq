@@ -12,21 +12,9 @@ class InvitesController < ApplicationController
 
   def accept
     if member.accept_invite!(current_user)
-      case member.source
-      when Project
-        project = member.source
-        source = "project #{project.name_with_namespace}"
-        path = namespace_project_path(project.namespace, project)
-      when Group
-        group = member.source
-        source = "group #{group.name}"
-        path = group_path(group)
-      else
-        source = "who knows what"
-        path = dashboard_path
-      end
+      label, path = source_info(member.source)
 
-      redirect_to path, notice: "You have been granted #{member.human_access} access to #{source}."
+      redirect_to path, notice: "You have been granted #{member.human_access} access to #{label}."
     else
       redirect_to :back, alert: "The invitation could not be accepted."
     end
@@ -34,16 +22,7 @@ class InvitesController < ApplicationController
 
   def decline
     if member.decline_invite!
-      case member.source
-      when Project
-        project = member.source
-        source = "project #{project.name_with_namespace}"
-      when Group
-        group = member.source
-        source = "group #{group.name}"
-      else
-        source = "who knows what"
-      end
+      label, _ = source_info(member.source)
 
       path = 
         if current_user
@@ -80,5 +59,23 @@ class InvitesController < ApplicationController
 
     store_location_for :user, request.fullpath
     redirect_to new_user_session_path, notice: notice
+  end
+
+  def source_info(source)
+    case source
+    when Project
+      project = member.source
+      label = "project #{project.name_with_namespace}"
+      path = namespace_project_path(project.namespace, project)
+    when Group
+      group = member.source
+      label = "group #{group.name}"
+      path = group_path(group)
+    else
+      label = "who knows what"
+      path = dashboard_path
+    end
+
+    [label, path]
   end
 end
