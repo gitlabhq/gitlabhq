@@ -120,6 +120,13 @@ LDAP group synchronization in GitLab Enterprise Edition allows you to synchroniz
 
 ### Setting up LDAP group synchronization
 
+Before enabling group synchronization, you need to make sure that the `group_base` field is set in your LDAP settings on
+your `gitlab.rb` or `gitlab.yml` file. This setting will tell GitLab where to look for groups within your LDAP server.
+
+```
+group_base: 'OU=groups,DC=example,DC=com'
+```
+
 Suppose we want to synchronize the GitLab group 'example group' with the LDAP group 'Engineering'.
 
 1. As an owner, go to the group settings page for 'example group'.
