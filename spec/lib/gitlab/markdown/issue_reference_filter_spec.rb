@@ -82,6 +82,11 @@ module Gitlab::Markdown
       let(:issue)     { create(:issue, project: project2) }
       let(:reference) { "#{project2.path_with_namespace}##{issue.iid}" }
 
+      before do
+        allow_any_instance_of(described_class).
+          to receive(:user_can_reference_project?).and_return(true)
+      end
+
       it 'links to a valid reference' do
         doc = filter("See #{reference}")
 
