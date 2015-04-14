@@ -33,10 +33,10 @@ class FixIdentities < ActiveRecord::Migration
     execute delete_statement
 
     # Update legacy identities
-    execute "UPDATE identities SET provider = '#{new_provider}' WHERE provider = 'ldap';"
+    execute "UPDATE identities SET provider = '#{new_provider}' WHERE provider = 'ldap'"
 
     if table_exists?('ldap_group_links')
-      execute "UPDATE ldap_group_links SET provider = '#{new_provider}' WHERE provider IS NULL OR provider = 'ldap';"
+      execute "UPDATE ldap_group_links SET provider = '#{new_provider}' WHERE provider IS NULL OR provider = 'ldap'"
     end
   end
 
