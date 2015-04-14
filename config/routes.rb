@@ -144,7 +144,9 @@ Gitlab::Application.routes.draw do
         put :members_update
       end
     end
-
+    
+    resources :deploy_keys, only: [:index, :show, :new, :create, :destroy]
+    
     resources :hooks, only: [:index, :create, :destroy] do
       get :test
     end
@@ -403,7 +405,7 @@ Gitlab::Application.routes.draw do
           end
         end
 
-        resources :deploy_keys, constraints: { id: /\d+/ } do
+        resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :show, :new, :create] do
           member do
             put :enable
             put :disable
