@@ -4,6 +4,8 @@ v 7.10.0 (unreleased)
   - Fix broken file browsing with a submodule that contains a relative link (Stan Hu)
   - Fix persistent XSS vulnerability around profile website URLs.
   - Fix project import URL regex to prevent arbitary local repos from being imported.
+  - Fix directory traversal vulnerability around uploads routes.
+  - Fix directory traversal vulnerability around help pages.
   - Fix bug where Wiki pages that included a '/' were no longer accessible (Stan Hu)
   - Fix bug where error messages from Dropzone would not be displayed on the issues page (Stan Hu)
   - Add ability to configure Reply-To address in gitlab.yml (Stan Hu)
