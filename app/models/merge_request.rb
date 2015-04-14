@@ -361,6 +361,6 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def locked_long_ago?
-    locked_at && locked_at < (Time.now - 1.day)
+    locked_at.nil? || locked_at < (Time.now - 1.day)
   end
 end
