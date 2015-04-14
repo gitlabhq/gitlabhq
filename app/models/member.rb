@@ -52,9 +52,39 @@ class Member < ActiveRecord::Base
 
   delegate :name, :username, :email, to: :user, prefix: true
 
-  def self.find_by_invite_token(invite_token)
-    invite_token = Devise.token_generator.digest(self, :invite_token, invite_token)
-    find_by(invite_token: invite_token)
+  class << self
+    def find_by_invite_token(invite_token)
+      invite_token = Devise.token_generator.digest(self, :invite_token, invite_token)
+      find_by(invite_token: invite_token)
+    end
+
+    # This method is used to find users that have been entered into the "Add members" field.
+    # These can be the User objects directly, their IDs, their emails, or new emails to be invited.
+    def user_for_id(user_id)
+      return user_id if user_id.is_a?(User)
+
+      user = User.find_by(id: user_id)
+      user ||= User.find_by(email: user_id)
+      user ||= user_id
+      user
+    end
+
+    def add_user(members, user_id, access_level, current_user = nil)
+      user = user_for_id(user_id)
+      
+      # `user` can be either a User object or an email to be invited
+      if user.is_a?(User)
+        member = members.find_or_initialize_by(user_id: user.id)
+      else
+        member = members.build
+        member.invite_email = user
+      end
+
+      member.created_by ||= current_user
+      member.access_level = access_level
+
+      member.save
+    end
   end
 
   def invite?

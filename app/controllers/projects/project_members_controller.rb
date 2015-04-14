@@ -52,8 +52,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to namespace_project_project_members_path(@project.namespace,
-                                                      @project)
+        redirect_to namespace_project_project_members_path(@project.namespace, @project)
       end
       format.js { render nothing: true }
     end

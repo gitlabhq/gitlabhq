@@ -58,6 +58,43 @@ describe Member do
     it { is_expected.to respond_to(:user_email) }
   end
 
+  describe ".add_user" do
+    let!(:user)    { create(:user) }
+    let(:project) { create(:project) }
+
+    context "when called with a user id" do
+      it "adds the user as a member" do
+        Member.add_user(project.project_members, user.id, ProjectMember::MASTER)
+
+        expect(project.users).to include(user)
+      end
+    end
+
+    context "when called with a user object" do
+      it "adds the user as a member" do
+        Member.add_user(project.project_members, user, ProjectMember::MASTER)
+
+        expect(project.users).to include(user)
+      end
+    end
+
+    context "when called with a known user email" do
+      it "adds the user as a member" do
+        Member.add_user(project.project_members, user.email, ProjectMember::MASTER)
+
+        expect(project.users).to include(user)
+      end
+    end
+
+    context "when called with an unknown user email" do
+      it "adds a member invite" do
+        Member.add_user(project.project_members, "user@example.com", ProjectMember::MASTER)
+
+        expect(project.project_members.invite.pluck(:invite_email)).to include("user@example.com")
+      end
+    end
+  end
+
   describe "#accept_invite!" do
 
     let!(:member) { create(:project_member, invite_email: "user@example.com", user: nil) }
@@ -89,7 +126,6 @@ describe Member do
   end
 
   describe "#decline_invite!" do
-
     let!(:member) { create(:project_member, invite_email: "user@example.com", user: nil) }
 
     it "destroys the member" do
@@ -106,7 +142,6 @@ describe Member do
   end
 
   describe "#generate_invite_token" do
-
     let!(:member) { create(:project_member, invite_email: "user@example.com", user: nil) }
     
     it "sets the invite token" do
