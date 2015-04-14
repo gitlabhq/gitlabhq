@@ -17,8 +17,3 @@ Feature: Dashboard Active Tab
     Given I visit dashboard merge requests page
     Then the active main tab should be Merge Requests
     And no other main tabs should be active
-
-  Scenario: On Dashboard Help
-    Given I visit dashboard help page
-    Then the active main tab should be Help
-    And no other main tabs should be active
