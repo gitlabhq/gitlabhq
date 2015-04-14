@@ -21,6 +21,10 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def create
+    if !params[:file_upload].nil?
+						params[:file_name] = params[:file_upload].original_filename
+						params[:content] = params[:file_upload].read
+	end
     file_path = File.join(@path, File.basename(params[:file_name]))
     result = Files::CreateService.new(
       @project,
@@ -48,18 +52,28 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def update
-    result = Files::UpdateService.
-      new(
-        @project,
-        current_user,
-        params.merge(new_branch: sanitized_new_branch_name),
-        @ref,
-        @path
-      ).execute
-
+    result=''
+				if !params[:file_upload].nil?
+						params[:content] = params[:file_upload].read
+						params[:file_name] = params[:file_upload].original_filename
+						result = Files::UploadService.new(
+							@project, 
+							current_user, 
+							params.merge(new_branch: sanitized_new_branch_name), 
+							@ref, 
+							@path
+						).execute
+				else
+						result = Files::UpdateService.new(
+						@project, 
+						current_user, 
+						params.merge(new_branch: sanitized_new_branch_name), 
+						@ref, 
+						@path
+						).execute
+				end
     if result[:status] == :success
       flash[:notice] = "Your changes have been successfully committed"
-
       if from_merge_request
         from_merge_request.reload_code
       end

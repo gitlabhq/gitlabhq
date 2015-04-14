@@ -145,8 +145,6 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resources :deploy_keys, only: [:index, :show, :new, :create, :destroy]
-
     resources :hooks, only: [:index, :create, :destroy] do
       get :test
     end
@@ -310,6 +308,16 @@ Gitlab::Application.routes.draw do
             to: 'blob#destroy',
             constraints: { id: /.+/, format: false }
           )
+          put(
+            '/blob/*id',
+            to: 'blob#update',
+            constraints: { id: /.+/, format: false }
+          )
+          post(
+            '/blob/*id',
+            to: 'blob#create',
+            constraints: { id: /.+/, format: false }
+          )
         end
 
         scope do
@@ -395,7 +403,7 @@ Gitlab::Application.routes.draw do
           end
         end
 
-        resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :show, :new, :create] do
+        resources :deploy_keys, constraints: { id: /\d+/ } do
           member do
             put :enable
             put :disable

@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+Add "replace" and "upload" functionalities
+"replace" allows user replace existing file with fine content check. If same content, then "replace" not allowed
+"upload" allows user upload new file into existing repository. If the same name file exists in current repository, then "upload" not allowed 
+
 v 7.10.0 (unreleased)
   - Fix broken file browsing with a submodule that contains a relative link (Stan Hu)
   - Fix persistent XSS vulnerability around profile website URLs.
