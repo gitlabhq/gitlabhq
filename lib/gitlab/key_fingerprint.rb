@@ -27,10 +27,10 @@ module Gitlab
       return nil unless cmd_status.zero?
 
       # 16 hex bytes separated by ':', optionally starting with "MD5:"
-      fingerprint_match = cmd_output.match(/(MD5:)?(?<fingerprint>(?:\h{2}:){15}\h{2})/)
-      return nil unless fingerprint_match
+      fingerprint_matches = cmd_output.match(/(MD5:)?(?<fingerprint>(\h{2}:){15}\h{2})/)
+      return nil unless fingerprint_matches
 
-      fingerprint_match[:fingerprint]
+      fingerprint_matches[:fingerprint]
     end
 
     private
