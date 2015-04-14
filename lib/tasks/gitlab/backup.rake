@@ -34,6 +34,17 @@ namespace :gitlab do
 
       backup.cleanup
     end
+    
+    # Export GitLab user details
+    desc "GITLAB | Export basic user account details"
+    task users: :environment do
+      warn_user_is_not_gitlab
+      configure_cron_mode
+
+      $progress.puts "Dumping user details ... ".blue
+      Backup::Users.new.dump
+      $progress.puts "done".green 
+    end
 
     namespace :repo do
       task create: :environment do

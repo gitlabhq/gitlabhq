@@ -98,6 +98,32 @@ describe 'gitlab:app namespace rake task' do
       expect(temp_dirs).to be_empty
     end
   end # backup_create task
+  
+  describe 'backup_users' do
+    def tars_glob
+      Dir.glob(File.join(Gitlab.config.backup.path, '*_gitlab_backup.tar'))
+    end
+
+    before :all do
+      existing_tars = tars_glob
+
+      # Redirect STDOUT and run the rake task
+      orig_stdout = $stdout
+      $stdout = StringIO.new
+      run_rake_task('gitlab:backup:users')
+      $stdout = orig_stdout
+
+      @backup_tar = (tars_glob - existing_tars).first
+    end
+    
+    it 'should not create a tar file' do
+      expect(@backup_tar).to be_nil
+    end
+    
+    it 'should create users.csv' do
+      expect(File.exist?(File.join(Gitlab.config.backup.path, 'users.csv'))).to be_truthy
+    end
+  end # backup_users task
 
   describe "Skipping items" do
     def tars_glob
