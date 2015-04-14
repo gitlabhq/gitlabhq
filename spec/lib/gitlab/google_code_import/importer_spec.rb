@@ -1,20 +1,22 @@
 require "spec_helper"
 
 describe Gitlab::GoogleCodeImport::Importer do
+  let(:mapped_user) { create(:user, username: "thilo123") }
   let(:raw_data) { JSON.parse(File.read(Rails.root.join("spec/fixtures/GoogleCodeProjectHosting.json"))) }
   let(:client) { Gitlab::GoogleCodeImport::Client.new(raw_data) }
   let(:import_data) { 
     {
       "repo"      => client.repo("tint2").raw_data,
       "user_map"  => {
-        "thilo..." => "@thilo123"
+        "thilo..." => "@#{mapped_user.username}"
       }
     } 
   }
   let(:project) { create(:project, import_data: import_data) }
-  subject { described_class.new(project) }
+  subject       { described_class.new(project) }
 
   describe "#execute" do
+
     it "imports status labels" do
       subject.execute
 
@@ -43,6 +45,8 @@ describe Gitlab::GoogleCodeImport::Importer do
       issue = project.issues.first
       expect(issue).to_not be_nil
       expect(issue.iid).to eq(169)
+      expect(issue.author).to eq(project.creator)
+      expect(issue.assignee).to eq(mapped_user)
       expect(issue.state).to eq("closed")
       expect(issue.label_names).to include("Priority: Medium")
       expect(issue.label_names).to include("Status: Fixed")
@@ -65,7 +69,7 @@ describe Gitlab::GoogleCodeImport::Importer do
       note = project.issues.first.notes.first
       expect(note).to_not be_nil
       expect(note.note).to include("Comment 1")
-      expect(note.note).to include("@thilo123")
+      expect(note.note).to include("@#{mapped_user.username}")
       expect(note.note).to include("November 18, 2009 05:14")
       expect(note.note).to include("applied, thanks.")
       expect(note.note).to include("Status: Fixed")

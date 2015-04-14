@@ -99,10 +99,24 @@ module Gitlab
           end
           labels << nice_status_name(raw_issue["status"])
 
+          assignee_id = nil
+          if raw_issue.has_key?("owner")
+            username = user_map[raw_issue["owner"]["name"]]
+
+            if username.start_with?("@")
+              username = username[1..-1]
+
+              if user = User.find_by(username: username)
+                assignee_id = user.id
+              end
+            end
+          end
+
           issue = project.issues.create!(
             title:        raw_issue["title"],
             description:  body,
             author_id:    project.creator_id,
+            assignee_id:  assignee_id,
             state:        raw_issue["state"] == "closed" ? "closed" : "opened"
           )
           issue.add_labels_by_names(labels)

@@ -344,6 +344,11 @@
           "name" : "schattenpr...",
           "htmlLink" : "https://code.google.com/u/106498139506637530000/"
         },
+        "owner" : {
+          "kind" : "projecthosting#issuePerson",
+          "name" : "thilo...",
+          "htmlLink" : "https://code.google.com/u/104224918623172014000/"
+        },
         "updated" : "2009-11-18T05:14:58.000Z",
         "published" : "2009-11-18T00:20:19.000Z",
         "closed" : "2009-11-18T05:14:58.000Z",
