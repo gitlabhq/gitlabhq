@@ -49,6 +49,7 @@
 #  password_automatically_set    :boolean          default(FALSE)
 #  bitbucket_access_token        :string(255)
 #  bitbucket_access_token_secret :string(255)
+#  public_email                  :string(255)      default(""), not null
 #
 
 require 'carrierwave/orm/activerecord'
@@ -123,6 +124,7 @@ class User < ActiveRecord::Base
   validates :name, presence: true
   validates :email, presence: true, email: { strict_mode: true }, uniqueness: true
   validates :notification_email, presence: true, email: { strict_mode: true }
+  validates :public_email, presence: true, email: { strict_mode: true }, allow_blank: true, uniqueness: true
   validates :bio, length: { maximum: 255 }, allow_blank: true
   validates :projects_limit, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :username,
@@ -142,6 +144,7 @@ class User < ActiveRecord::Base
   before_validation :generate_password, on: :create
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: ->(user) { user.email_changed? }
+  before_validation :set_public_email, if: ->(user) { user.public_email_changed? }
 
   before_save :ensure_authentication_token
   after_save :ensure_namespace_correct
@@ -440,6 +443,12 @@ class User < ActiveRecord::Base
   def set_notification_email
     if self.notification_email.blank? || !self.all_emails.include?(self.notification_email)
       self.notification_email = self.email
+    end
+  end
+
+  def set_public_email
+    if self.public_email.blank? || !self.all_emails.include?(self.public_email)
+      self.public_email = ''
     end
   end
 

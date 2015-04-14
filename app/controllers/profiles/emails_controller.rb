@@ -3,6 +3,7 @@ class Profiles::EmailsController < ApplicationController
 
   def index
     @primary = current_user.email
+    @public_email = current_user.public_email
     @emails = current_user.emails
   end
 
@@ -19,7 +20,8 @@ class Profiles::EmailsController < ApplicationController
     @email.destroy
 
     current_user.set_notification_email
-    current_user.save if current_user.notification_email_changed?
+    current_user.set_public_email
+    current_user.save if current_user.notification_email_changed? or current_user.public_email_changed?
 
     respond_to do |format|
       format.html { redirect_to profile_emails_url }
