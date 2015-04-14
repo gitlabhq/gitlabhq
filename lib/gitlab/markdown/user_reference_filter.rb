@@ -118,7 +118,6 @@ module Gitlab
       end
 
       def user_can_reference_group?(group)
-        return false if context[:current_user].blank?
         Ability.abilities.allowed?(context[:current_user], :read_group, group)
       end
     end
