@@ -32,7 +32,7 @@ module Gitlab
           project.team.members.flatten
         elsif namespace = Namespace.find_by(path: identifier)
           if namespace.is_a?(Group)
-            namespace.users
+            namespace.users if can?(current_user, :read_group, namespace)
           else
             namespace.owner
           end
