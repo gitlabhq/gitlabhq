@@ -79,25 +79,13 @@ module Gitlab
           author  = user_map[raw_issue["author"]["name"]]
           date    = DateTime.parse(raw_issue["published"]).to_formatted_s(:long)
 
-          body = []
-          body << "*By #{author} on #{date}*"
-          body << "---"
-
           comments = raw_issue["comments"]["items"]
-
           issue_comment = comments.shift
 
-          content = format_content(issue_comment["content"])
-          if content.blank?
-            content = "*(No description has been entered for this issue)*"
-          end
-          body << content
-
+          content     = format_content(issue_comment["content"])
           attachments = format_attachments(raw_issue["id"], 0, issue_comment["attachments"])
-          if attachments.any?
-            body << "---"
-            body += attachments
-          end
+
+          body = format_issue_body(author, date, content, attachments)
 
           labels = []
           raw_issue["labels"].each do |label|
@@ -113,7 +101,7 @@ module Gitlab
 
           issue = project.issues.create!(
             title:        raw_issue["title"],
-            description:  body.join("\n\n"),
+            description:  body,
             author_id:    project.creator_id,
             state:        raw_issue["state"] == "closed" ? "closed" : "opened"
           )
@@ -129,35 +117,28 @@ module Gitlab
         comments.each do |raw_comment|
           next if raw_comment.has_key?("deletedBy")
 
+          content     = format_content(raw_comment["content"])
+          updates     = format_updates(raw_comment["updates"])
+          attachments = format_attachments(issue.iid, raw_comment["id"], raw_comment["attachments"])
+
+          next if content.blank? && updates.blank? && attachments.blank?
+
           author  = user_map[raw_comment["author"]["name"]]
           date    = DateTime.parse(raw_comment["published"]).to_formatted_s(:long)
 
-          body = []
-          body << "*Comment #{raw_comment["id"]} by #{author} on #{date}*"
-          body << "---"
+          body = format_issue_comment_body(
+            raw_comment["id"],
+            author,
+            date,
+            content,
+            updates,
+            attachments
+          )
 
-          content = format_content(raw_comment["content"])
-          if content.blank?
-            content = "*(No comment has been entered for this change)*"
-          end
-          body << content
-
-          updates = format_updates(raw_comment["updates"])
-          if updates.any?
-            body << "---"
-            body += updates
-          end
-
-          attachments = format_attachments(issue.iid, raw_comment["id"], raw_comment["attachments"])
-          if attachments.any?
-            body << "---"
-            body += attachments
-          end
-
-          comment = issue.notes.create!(
+          issue.notes.create!(
             project_id: project.id,
             author_id:  project.creator_id,
-            note:       body.join("\n\n")
+            note:       body
           )
         end
       end
@@ -323,6 +304,47 @@ module Gitlab
           text = "!#{text}" if filename =~ /\.(png|jpg|jpeg|gif|bmp|tiff)\z/
           text
         end.compact
+      end
+
+      def format_issue_comment_body(id, author, date, content, updates, attachments)
+        body = []
+        body << "*Comment #{id} by #{author} on #{date}*"
+        body << "---"
+
+        if content.blank?
+          content = "*(No comment has been entered for this change)*"
+        end
+        body << content
+
+        if updates.any?
+          body << "---"
+          body += updates
+        end
+
+        if attachments.any?
+          body << "---"
+          body += attachments
+        end
+
+        body.join("\n\n")
+      end
+
+      def format_issue_body(author, date, content, attachments)
+        body = []
+        body << "*By #{author} on #{date}*"
+        body << "---"
+
+        if content.blank?
+          content = "*(No description has been entered for this issue)*"
+        end
+        body << content
+
+        if attachments.any?
+          body << "---"
+          body += attachments
+        end
+
+        body.join("\n\n")
       end
     end
   end
