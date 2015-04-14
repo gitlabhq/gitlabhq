@@ -28,6 +28,8 @@ class Dispatcher
         new Milestone()
       when 'projects:milestones:new', 'projects:milestones:edit'
         new ZenMode()
+      when 'projects:compare:show'
+        new Diff()
       when 'projects:issues:new','projects:issues:edit'
         GitLab.GfmAutoComplete.setup()
         shortcut_handler = new ShortcutsNavigation()
@@ -119,6 +121,8 @@ class Dispatcher
         new Project()
         new ProjectAvatar()
         switch path[1]
+          when 'compare'
+            shortcut_handler = new ShortcutsNavigation()
           when 'edit'
             shortcut_handler = new ShortcutsNavigation()
             new ProjectNew()
@@ -127,7 +131,7 @@ class Dispatcher
           when 'show'
             new ProjectShow()
           when 'issues', 'merge_requests'
-            new ProjectUsersSelect()
+            new UsersSelect()
           when 'wikis'
             new Wikis()
             shortcut_handler = new ShortcutsNavigation()

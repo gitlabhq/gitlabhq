@@ -15,15 +15,5 @@
 
   = render 'shared/issuable_filter'
 
-  .clearfix
-    .issues_bulk_update.hide
-      = form_tag bulk_update_namespace_project_issues_path(@project.namespace, @project), method: :post  do
-        = select_tag('update[state_event]', options_for_select([['Open', 'reopen'], ['Closed', 'close']]), prompt: "Status", class: 'form-control')
-        = project_users_select_tag('update[assignee_id]', placeholder: 'Assignee')
-        = select_tag('update[milestone_id]', bulk_update_milestone_options, prompt: "Milestone")
-        = hidden_field_tag 'update[issues_ids]', []
-        = hidden_field_tag :state_event, params[:state_event]
-        = button_tag "Update issues", class: "btn update_selected_issues btn-save"
-
 .issues-holder
   = render "issues"

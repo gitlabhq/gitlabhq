@@ -275,7 +275,9 @@ module ApplicationHelper
     'https://' + promo_host
   end
 
-  def page_filter_path(options={})
+  def page_filter_path(options = {})
+    without = options.delete(:without)
+
     exist_opts = {
       state: params[:state],
       scope: params[:scope],
@@ -287,6 +289,12 @@ module ApplicationHelper
     }
 
     options = exist_opts.merge(options)
+
+    if without.present?
+      without.each do |key|
+        options.delete(key)
+      end
+    end
 
     path = request.path
     path << "?#{options.to_param}"

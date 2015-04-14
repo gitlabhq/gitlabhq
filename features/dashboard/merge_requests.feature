@@ -10,10 +10,12 @@ Feature: Dashboard Merge Requests
   Scenario: I should see assigned merge_requests
     Then I should see merge requests assigned to me
 
+  @javascript
   Scenario: I should see authored merge_requests
     When I click "Authored by me" link
     Then I should see merge requests authored by me
 
+  @javascript
   Scenario: I should see all merge_requests
     When I click "All" link
     Then I should see all merge requests

@@ -41,12 +41,9 @@
 }
 
 .check-all-holder {
-  height: 36px;
+  line-height: 36px;
   float: left;
-  margin-right: 12px;
-  padding: 6px 15px;
-  border: 1px solid #ccc;
-  @include border-radius(4px);
+  margin-right: 15px;
 }
 
 .issues_content {
@@ -56,30 +53,6 @@
 
   form {
     margin: 0;
-  }
-}
-
-@media (min-width: 800px)  {
-  .issues_bulk_update {
-    select, .select2-container {
-      width: 120px !important;
-      display: inline-block;
-    }
-  }
-}
-
-@media (min-width: 1200px) {
-  .issues_bulk_update {
-    select, .select2-container {
-      width: 160px !important;
-      display: inline-block;
-    }
-  }
-}
-
-.issues_bulk_update {
-  .select2-container .select2-choice {
-    color: #444 !important;
   }
 }
 
@@ -120,12 +93,12 @@ form.edit-issue {
   }
 
   &.closed {
-    background: #F5f5f5;
+    background: #F9F9F9;
     border-color: #E5E5E5;
   }
 
   &.merged {
-    background: #F5f5f5;
+    background: #F9F9F9;
     border-color: #E5E5E5;
   }
 }

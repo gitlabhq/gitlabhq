@@ -18,7 +18,7 @@
           %li= msg
 
   - if @service.help.present?
-    .alert.alert-info
+    .well
       = preserve do
         = markdown @service.help
 

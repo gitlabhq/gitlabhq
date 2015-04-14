@@ -31,14 +31,11 @@
 
           = render "visibility_level", f: f, visibility_level: @project.visibility_level, can_change_visibility_level: can?(current_user, :change_visibility_level, @project)
 
-          %fieldset.features
-            %legend
-              Tags:
-            .form-group
-              = f.label :tag_list, "Tags", class: 'control-label'
-              .col-sm-10
-                = f.text_field :tag_list, maxlength: 2000, class: "form-control"
-                %p.hint Separate tags with commas.
+          .form-group
+            = f.label :tag_list, "Tags", class: 'control-label'
+            .col-sm-10
+              = f.text_field :tag_list, maxlength: 2000, class: "form-control"
+              %p.help-block Separate tags with commas.
 
           %fieldset.features
             %legend

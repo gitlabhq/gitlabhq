@@ -43,6 +43,9 @@ module Projects
         project.namespace = new_namespace
         project.save!
 
+        # Notifications
+        project.send_move_instructions
+
         # Move main repository
         unless gitlab_shell.mv_repository(old_path, new_path)
           raise TransferError.new('Cannot move project')

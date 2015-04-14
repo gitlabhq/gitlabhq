@@ -72,7 +72,7 @@
               %span Git repository URL
             .col-sm-10
               = f.text_field :import_url, class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git'
-              .alert.alert-info.prepend-top-10
+              .well.prepend-top-20
                 %ul
                   %li
                     The repository must be accessible over HTTP(S). If it is not publicly accessible, you can add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>.
@@ -109,9 +109,8 @@
     %p Please wait a moment, this page will automatically refresh when ready.
 
 :coffeescript
-  $ ->
-    $('.how_to_import_link').bind 'click', (e) ->
-      e.preventDefault()
-      import_modal = $(this).next(".modal").show()
-    $('.modal-header .close').bind 'click', ->
-      $(".modal").hide()
+  $('.how_to_import_link').bind 'click', (e) ->
+    e.preventDefault()
+    import_modal = $(this).next(".modal").show()
+  $('.modal-header .close').bind 'click', ->
+    $(".modal").hide()
