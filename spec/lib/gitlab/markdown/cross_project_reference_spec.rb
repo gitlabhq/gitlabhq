@@ -2,21 +2,48 @@ require 'spec_helper'
 
 module Gitlab::Markdown
   describe CrossProjectReference do
-    include CrossProjectReference
+    # context in the html-pipeline sense, not in the rspec sense
+    let(:context) do
+      {
+        current_user: double('user'),
+        project: double('project')
+      }
+    end
+
+    include described_class
 
     describe '#project_from_ref' do
-      let(:project) { double('project') }
-
-      it 'returns a project from a valid reference' do
-        expect(Project).to receive(:find_with_namespace).with('cross-reference/foo').and_return(project)
-
-        expect(project_from_ref('cross-reference/foo')).to eq project
+      context 'when referenced project does not exist' do
+        it 'returns the project from context' do
+          expect(project_from_ref('invalid/reference')).to eq context[:project]
+        end
       end
 
-      it 'returns the project from context when reference is invalid' do
-        expect(self).to receive(:context).and_return({project: project})
+      context 'when referenced project exists' do
+        let(:project2) { double('referenced project') }
 
-        expect(project_from_ref('invalid/reference')).to eq project
+        before do
+          expect(Project).to receive(:find_with_namespace).
+            with('cross/reference').and_return(project2)
+        end
+
+        context 'and the user has permission to read it' do
+          it 'returns the referenced project' do
+            expect(self).to receive(:user_can_reference_project?).
+              with(project2).and_return(true)
+
+            expect(project_from_ref('cross/reference')).to eq project2
+          end
+        end
+
+        context 'and the user does not have permission to read it' do
+          it 'returns the project from context' do
+            expect(self).to receive(:user_can_reference_project?).
+              with(project2).and_return(false)
+
+            expect(project_from_ref('cross/reference')).to eq context[:project]
+          end
+        end
       end
     end
   end
