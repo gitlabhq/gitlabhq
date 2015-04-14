@@ -1,5 +1,83 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 7.10.0 (unreleased)
+  - Fix project import URL regex to prevent arbitary local repos from being imported.
+  - Fix bug where Wiki pages that included a '/' were no longer accessible (Stan Hu)
+  - Fix bug where error messages from Dropzone would not be displayed on the issues page (Stan Hu)
+  - Add ability to configure Reply-To address in gitlab.yml (Stan Hu)
+  - Fix broken side-by-side diff view on merge request page (Stan Hu)
+  - Set Application controller default URL options to ensure all url_for calls are consistent (Stan Hu)
+  - Allow HTML tags in Markdown input
+  - Fix code unfold not working on Compare commits page (Stan Hu)
+  - Fix dots in Wiki slugs causing errors (Stan Hu)
+  - Make maximum attachment size configurable via Application Settings (Stan Hu)
+  - Update poltergeist to version 1.6.0 to support PhantomJS 2.0 (Zeger-Jan van de Weg)
+  - Fix cross references when usernames, milestones, or project names contain underscores (Stan Hu)
+  - Disable reference creation for comments surrounded by code/preformatted blocks (Stan Hu)
+  - Reduce Rack Attack false positives causing 403 errors during HTTP authentication (Stan Hu)
+  - enable line wrapping per default and remove the checkbox to toggle it (Hannes Rosenögger)
+  - extend the commit calendar to show the actual commits made on a date (Hannes Rosenögger)
+  - Fix a link in the patch update guide
+  - Add a service to support external wikis (Hannes Rosenögger)
+  - Omit the "email patches" link and fix plain diff view for merge commits
+  - List new commits for newly pushed branch in activity view.
+  - Add sidetiq gem dependency to match EE
+  - Add changelog, license and contribution guide links to project tab bar.
+  - Improve diff UI
+  - Fix alignment of navbar toggle button (Cody Mize)
+  - Fix checkbox rendering for nested task lists
+  - Identical look of selectboxes in UI
+  - Upgrade the gitlab_git gem to version 7.1.3
+  - Move "Import existing repository by URL" option to button.
+  - Improve error message when save profile has error.
+  - Passing the name of pushed ref to CI service (requires GitLab CI 7.9+)
+  - Add location field to user profile
+  - Fix print view for markdown files and wiki pages
+  - Fix errors when deleting old backups
+  - Improve GitLab performance when working with git repositories
+  - Add tag message and last commit to tag hook (Kamil Trzciński)
+  - Restrict permissions on backup files
+  - Improve oauth accounts UI in profile page
+  - Add ability to unlink connected accounts
+  - Replace commits calendar with faster contribution calendar that includes issues and merge requests
+  - Add inifinite scroll to user page activity
+  - Don't include system notes in issue/MR comment count.
+  - Don't mark merge request as updated when merge status relative to target branch changes.
+  - Link note avatar to user.
+  - Make Git-over-SSH errors more descriptive.
+  - Fix EmailsOnPush.
+  - Refactor issue filtering
+  - AJAX selectbox for issue assignee and author filters
+  - Fix issue with missing options in issue filtering dropdown if selected one
+  - Prevent holding Control-Enter or Command-Enter from posting comment multiple times.
+  - Prevent note form from being cleared when submitting failed.
+  - Improve file icons rendering on tree (Sullivan Sénéchal)
+  - API: Add pagination to project events
+  - Get issue links in notification mail to work again.
+  - Don't show commit comment button when user is not signed in.
+  - Fix admin user projects lists.
+  - Don't leak private group existence by redirecting from namespace controller to group controller.
+  - Ability to skip some items from backup (database, respositories or uploads)
+  - Fix "Hello @username." references not working by no longer allowing usernames to end in period.
+  - Archive repositories in background worker.
+  - Import GitHub, Bitbucket or GitLab.com projects owned by authenticated user into current namespace.
+  - Project labels are now available over the API under the "tag_list" field (Cristian Medina) 
+  - Fixed link paths for HTTP and SSH on the admin project view (Jeremy Maziarz)
+  - Fix and improve help rendering (Sullivan Sénéchal)
+  - Fix final line in EmailsOnPush email diff being rendered as error.
+
+v 7.9.4
+  - Security: Fix project import URL regex to prevent arbitary local repos from being imported
+  - Fixed issue where only 25 commits would load in file listings
+  - Fix LDAP identities  after config update
+
+v 7.9.3
+  - Contains no changes
+  - Add icons to Add dropdown items.
+
+v 7.9.2
+  - Contains no changes
+
 v 7.9.1
   - Include missing events and fix save functionality in admin service template settings form (Stan Hu)
   - Fix "Import projects from" button to show the correct instructions (Stan Hu)

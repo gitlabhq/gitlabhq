@@ -15,5 +15,5 @@
     if(current_url == log_url) {
       // Load 10 more commit log for each file in tree
       // if we still on the same page
-      ajaxGet('#{logs_file_namespace_project_ref_path(@project.namespace, @project, @ref, @path || '/', offset: (@offset +  @limit))}');
+      ajaxGet('#{logs_file_namespace_project_ref_path(@project.namespace, @project, @ref, @path || '', offset: (@offset +  @limit))}');
     }
