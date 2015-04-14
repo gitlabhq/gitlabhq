@@ -78,7 +78,7 @@ module Gitlab
             %(<a href="#{url}" class="#{klass}">@#{user}</a>)
           elsif namespace = Namespace.find_by(path: user)
             if namespace.is_a?(Group)
-              if user_can_read_group?(namespace)
+              if user_can_reference_group?(namespace)
                 url = group_url(user, only_path: context[:only_path])
                 %(<a href="#{url}" class="#{klass}">@#{user}</a>)
               else
@@ -117,7 +117,7 @@ module Gitlab
                                 only_path: context[:only_path])
       end
 
-      def user_can_read_group?(group)
+      def user_can_reference_group?(group)
         return false if context[:current_user].blank?
         Ability.abilities.allowed?(context[:current_user], :read_group, group)
       end
