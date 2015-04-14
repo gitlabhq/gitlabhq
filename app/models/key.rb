@@ -16,7 +16,6 @@ require 'digest/md5'
 
 class Key < ActiveRecord::Base
   include Sortable
-  include Gitlab::Popen
 
   belongs_to :user
 
@@ -79,44 +78,9 @@ class Key < ActiveRecord::Base
 
   def generate_fingerprint
     self.fingerprint = nil
-    return unless key.present?
 
-    cmd_status = 0
-    cmd_output = ''
-    explicit_fingerprint_algorithm = false
-    Tempfile.open('gitlab_key_file') do |file|
-      file.puts key
-      file.rewind
+    return unless self.key.present?
 
-      # OpenSSH 6.8 introduces a new default output format for fingerprints.
-      # Check the version and decide which command to use.
-      version_output, version_status = popen(%W(ssh -V))
-      if version_status.zero?
-        out, _ = version_output.scan /.*?(\d)\.(\d).*?,/
-        major, minor = out[0], out[1]
-        if major.to_i > 6 or (major.to_i == 6 and minor.to_i >= 8)
-          explicit_fingerprint_algorithm = true
-        end
-      end
-
-      if explicit_fingerprint_algorithm
-        cmd_output, cmd_status = popen(%W(ssh-keygen -E md5 -lf #{file.path}), '/tmp')
-      else
-        cmd_output, cmd_status = popen(%W(ssh-keygen -lf #{file.path}), '/tmp')
-      end
-    end
-
-    if cmd_status.zero?
-      if explicit_fingerprint_algorithm
-        cmd_output.gsub /(MD5:)(\h{2}:)+\h{2}/ do |match|
-          match.slice! /^MD5:/
-          self.fingerprint = match
-        end
-      else
-        cmd_output.gsub /(\h{2}:)+\h{2}/ do |match|
-          self.fingerprint = match
-        end
-      end
-    end
+    self.fingerprint = Gitlab::KeyFingerprint.new(self.key).fingerprint
   end
 end
