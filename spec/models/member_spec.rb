@@ -13,7 +13,6 @@ describe Member do
     it { is_expected.to validate_inclusion_of(:access_level).in_array(Gitlab::Access.values) }
 
     context "when an invite email is provided" do
-
       let(:member) { build(:project_member, invite_email: "user@example.com", user: nil) }
 
       it "doesn't require a user" do
@@ -38,7 +37,6 @@ describe Member do
     end
 
     context "when an invite email is not provided" do
-
       let(:member) { build(:project_member) }
 
       it "requires a user" do
@@ -96,7 +94,6 @@ describe Member do
   end
 
   describe "#accept_invite!" do
-
     let!(:member) { create(:project_member, invite_email: "user@example.com", user: nil) }
     let(:user) { create(:user) }
 

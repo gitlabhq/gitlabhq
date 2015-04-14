@@ -48,13 +48,16 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   def resend_invite
+    redirect_path = group_group_members_path(@group)
+    
     @group_member = @group.group_members.find(params[:id])
+
     if @group_member.invite?
       @group_member.resend_invite
 
-      redirect_to group_group_members_path(@group), notice: 'The invitation was successfully resent.'
+      redirect_to redirect_path, notice: 'The invitation was successfully resent.'
     else
-      redirect_to group_group_members_path(@group), alert: 'The invitation has already been accepted.'
+      redirect_to redirect_path, alert: 'The invitation has already been accepted.'
     end
   end
 

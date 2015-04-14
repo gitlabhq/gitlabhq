@@ -3,8 +3,10 @@ module Emails
     def project_access_granted_email(project_member_id)
       @project_member = ProjectMember.find project_member_id
       @project = @project_member.project
+
       @target_url = namespace_project_url(@project.namespace, @project)
       @current_user = @project_member.user
+
       mail(to: @project_member.user.notification_email,
            subject: subject("Access to project was granted"))
     end
@@ -13,8 +15,10 @@ module Emails
       @project_member = ProjectMember.find project_member_id
       @project = @project_member.project
       @token = token
+
       @target_url = namespace_project_url(@project.namespace, @project)
       @current_user = @project_member.user
+
       mail(to: @project_member.invite_email,
            subject: "Invitation to join project #{@project.name_with_namespace}")
     end
@@ -24,6 +28,7 @@ module Emails
       return if @project_member.created_by.nil?
 
       @project = @project_member.project
+
       @target_url = namespace_project_url(@project.namespace, @project)
       @current_user = @project_member.created_by
 
@@ -38,6 +43,7 @@ module Emails
       @current_user = @created_by = User.find(created_by_id)
       @access_level = access_level
       @invite_email = invite_email
+      
       @target_url = namespace_project_url(@project.namespace, @project)
 
       mail(to: @created_by.notification_email,

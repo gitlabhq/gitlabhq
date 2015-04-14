@@ -43,10 +43,13 @@ class InvitesController < ApplicationController
     return @member if defined?(@member)
     
     @token = params[:id]
-
     @member = Member.find_by_invite_token(@token)
 
-    render_404 unless @member
+    unless @member
+      render_404 and return
+    end
+
+    @member
   end
 
   def authenticate_user!

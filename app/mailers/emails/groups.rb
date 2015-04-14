@@ -3,8 +3,10 @@ module Emails
     def group_access_granted_email(group_member_id)
       @group_member = GroupMember.find(group_member_id)
       @group = @group_member.group
+
       @target_url = group_url(@group)
       @current_user = @group_member.user
+
       mail(to: @group_member.user.notification_email,
            subject: subject("Access to group was granted"))
     end
@@ -13,8 +15,10 @@ module Emails
       @group_member = GroupMember.find group_member_id
       @group = @group_member.group
       @token = token
+
       @target_url = group_url(@group)
       @current_user = @group_member.user
+
       mail(to: @group_member.invite_email,
            subject: "Invitation to join group #{@group.name}")
     end
@@ -24,8 +28,10 @@ module Emails
       return if @group_member.created_by.nil?
 
       @group = @group_member.group
+
       @target_url = group_url(@group)
       @current_user = @group_member.created_by
+
       mail(to: @group_member.created_by.notification_email,
            subject: subject("Invitation accepted"))
     end
@@ -37,6 +43,7 @@ module Emails
       @current_user = @created_by = User.find(created_by_id)
       @access_level = access_level
       @invite_email = invite_email
+      
       @target_url = group_url(@group)
       mail(to: @created_by.notification_email,
            subject: subject("Invitation declined"))

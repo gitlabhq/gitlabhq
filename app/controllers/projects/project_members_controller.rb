@@ -62,6 +62,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     redirect_path = namespace_project_project_members_path(@project.namespace, @project)
 
     @project_member = @project.project_members.find(params[:id])
+    
     if @project_member.invite?
       @project_member.resend_invite
 

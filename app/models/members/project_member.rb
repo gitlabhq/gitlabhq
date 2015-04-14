@@ -80,6 +80,7 @@ class ProjectMember < Member
     def truncate_teams(project_ids)
       ProjectMember.transaction do
         members = ProjectMember.where(source_id: project_ids)
+        
         members.each do |member|
           member.destroy
         end
