@@ -57,6 +57,7 @@ describe Gitlab::GoogleCodeImport::Importer do
 
       note = project.issues.first.notes.first
       expect(note).to_not be_nil
+      expect(note.note).to include("Comment 1")
       expect(note.note).to include("thilo...")
       expect(note.note).to include("November 18, 2009 05:14")
       expect(note.note).to include("applied, thanks.")

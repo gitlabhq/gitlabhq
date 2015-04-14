@@ -52,7 +52,7 @@ module Gitlab
         deleted_issues = []
 
         issues = repo.raw_data["issues"]["items"]
-        issues.each_with_index do |raw_issue, i|
+        issues.each do |raw_issue|
           while raw_issue["id"] > last_id + 1
             last_id += 1
 
@@ -116,14 +116,14 @@ module Gitlab
       end
 
       def import_issue_comments(issue, comments)
-        comments.each_with_index do |raw_comment, i|
+        comments.each do |raw_comment|
           next if raw_comment.has_key?("deletedBy")
 
           author  = mask_email(raw_comment["author"]["name"])
           date    = DateTime.parse(raw_comment["published"]).to_formatted_s(:long)
 
           body = []
-          body << "*By #{author} on #{date}*"
+          body << "*Comment #{raw_comment["id"]} by #{author} on #{date}*"
           body << "---"
 
           content = format_content(raw_comment["content"])
