@@ -236,31 +236,33 @@ module ApplicationHelper
     Gitlab::MarkdownHelper.gitlab_markdown?(filename)
   end
 
-  def link_to(name = nil, options = nil, html_options = nil, &block)
-    begin
-      uri = URI(options)
-      host = uri.host
-      absolute_uri = uri.absolute?
-    rescue URI::InvalidURIError, ArgumentError
-      host = nil
-      absolute_uri = nil
-    end
-
-    # Add 'nofollow' only to external links
-    if host && host != Gitlab.config.gitlab.host && absolute_uri
-      if html_options
-        if html_options[:rel]
-          html_options[:rel] << ' nofollow'
-        else
-          html_options.merge!(rel: 'nofollow')
-        end
-      else
-        html_options = Hash.new
-        html_options[:rel] = 'nofollow'
+  # Overrides ActionView::Helpers::UrlHelper#link_to to add `rel="nofollow"` to
+  # external links
+  def link_to(name = nil, options = nil, html_options = {})
+    if options.kind_of?(String)
+      if !options.start_with?('#', '/')
+        html_options = add_nofollow(options, html_options)
       end
     end
 
     super
+  end
+
+  # Add `"rel=nofollow"` to external links
+  #
+  # link         - String link to check
+  # html_options - Hash of `html_options` passed to `link_to`
+  #
+  # Returns `html_options`, adding `rel: nofollow` for external links
+  def add_nofollow(link, html_options = {})
+    uri = URI(link)
+
+    if uri && uri.absolute? && uri.host != Gitlab.config.gitlab.host
+      rel = html_options.fetch(:rel, '')
+      html_options[:rel] = (rel + ' nofollow').strip
+    end
+
+    html_options
   end
 
   def escaped_autolink(text)
