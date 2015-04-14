@@ -76,6 +76,7 @@ if Settings.ldap['enabled'] || Rails.env.test?
 
   Settings.ldap['servers'].each do |key, server|
     server['label'] ||= 'LDAP'
+    server['block_auto_created_users'] = false if server['block_auto_created_users'].nil?
     server['allow_username_or_email_login'] = false if server['allow_username_or_email_login'].nil?
     server['active_directory'] = true if server['active_directory'].nil?
     server['provider_name'] ||= "ldap#{key}".downcase

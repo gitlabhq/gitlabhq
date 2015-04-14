@@ -80,6 +80,10 @@ module Gitlab
         options['active_directory']
       end
 
+      def block_auto_created_users
+        options['block_auto_created_users']
+      end
+
       protected
       def base_config
         Gitlab.config.ldap
