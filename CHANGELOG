@@ -73,7 +73,6 @@ v 7.10.0 (unreleased)
   - Automatically setup GitLab CI project for forks if origin project has GitLab CI enabled
   - Bust group page project list cache when namespace name or path changes.
   - Explicitly set image alt-attribute to prevent graphical glitches if gravatars could not be loaded
-  - Fix stuck Merge Request merging events from old installations (Ben Bodenmiller)
 
 v 7.9.3
   - Contains no changes
