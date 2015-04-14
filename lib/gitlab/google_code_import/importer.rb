@@ -5,7 +5,7 @@ module Gitlab
 
       def initialize(project)
         @project = project
-        @repo = GoogleCodeImport::Repository.new(project.import_data)
+        @repo = GoogleCodeImport::Repository.new(project.import_data["repo"])
 
         @closed_statuses = []
         @known_labels = Set.new
@@ -24,6 +24,17 @@ module Gitlab
       end
 
       private
+
+      def user_map
+        @user_map ||= begin
+          user_map = Hash.new { |hash, user| hash[user] = Client.mask_email(user) }
+
+          stored_user_map = project.import_data["user_map"]
+          user_map.update(stored_user_map) if stored_user_map
+
+          user_map
+        end
+      end
 
       def import_status_labels
         repo.raw_data["issuesConfig"]["statuses"].each do |status|
@@ -45,14 +56,13 @@ module Gitlab
       end
 
       def import_issues
-        return unless repo.raw_data["issues"]
+        return unless repo.issues
 
         last_id = 0
 
         deleted_issues = []
 
-        issues = repo.raw_data["issues"]["items"]
-        issues.each do |raw_issue|
+        repo.issues.each do |raw_issue|
           while raw_issue["id"] > last_id + 1
             last_id += 1
 
@@ -66,7 +76,7 @@ module Gitlab
           end
           last_id = raw_issue["id"]
 
-          author  = mask_email(raw_issue["author"]["name"])
+          author  = user_map[raw_issue["author"]["name"]]
           date    = DateTime.parse(raw_issue["published"]).to_formatted_s(:long)
 
           body = []
@@ -119,7 +129,7 @@ module Gitlab
         comments.each do |raw_comment|
           next if raw_comment.has_key?("deletedBy")
 
-          author  = mask_email(raw_comment["author"]["name"])
+          author  = user_map[raw_comment["author"]["name"]]
           date    = DateTime.parse(raw_comment["published"]).to_formatted_s(:long)
 
           body = []
@@ -202,12 +212,6 @@ module Gitlab
         "Status: #{name}"
       end
 
-      def mask_email(author)
-        parts = author.split("@", 2)
-        parts[0] = "#{parts[0][0...-3]}..."
-        parts.join("@")
-      end
-
       def linkify_issues(s)
         s.gsub(/([Ii]ssue) ([0-9]+)/, '\1 #\2')
       end
@@ -248,14 +252,14 @@ module Gitlab
         end
 
         if raw_updates.has_key?("owner")
-          updates << "*Owner: #{mask_email(raw_updates["owner"])}*"
+          updates << "*Owner: #{user_map[raw_updates["owner"]]}*"
         end
 
         if raw_updates.has_key?("cc")
           cc = raw_updates["cc"].map do |l| 
             deleted = l.start_with?("-") 
             l = l[1..-1] if deleted
-            l = mask_email(l)
+            l = user_map[l]
             l = "~~#{l}~~" if deleted
             l
           end

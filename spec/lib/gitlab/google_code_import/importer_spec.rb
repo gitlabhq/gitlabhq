@@ -3,7 +3,14 @@ require "spec_helper"
 describe Gitlab::GoogleCodeImport::Importer do
   let(:raw_data) { JSON.parse(File.read(Rails.root.join("spec/fixtures/GoogleCodeProjectHosting.json"))) }
   let(:client) { Gitlab::GoogleCodeImport::Client.new(raw_data) }
-  let(:import_data) { client.repo("tint2").raw_data }
+  let(:import_data) { 
+    {
+      "repo"      => client.repo("tint2").raw_data,
+      "user_map"  => {
+        "thilo..." => "@thilo123"
+      }
+    } 
+  }
   let(:project) { create(:project, import_data: import_data) }
   subject { described_class.new(project) }
 
@@ -58,7 +65,7 @@ describe Gitlab::GoogleCodeImport::Importer do
       note = project.issues.first.notes.first
       expect(note).to_not be_nil
       expect(note.note).to include("Comment 1")
-      expect(note.note).to include("thilo...")
+      expect(note.note).to include("@thilo123")
       expect(note.note).to include("November 18, 2009 05:14")
       expect(note.note).to include("applied, thanks.")
       expect(note.note).to include("Status: Fixed")

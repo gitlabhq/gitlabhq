@@ -34,6 +34,10 @@ module Gitlab
       def import_url
         raw_data["repositoryUrls"].first
       end
+
+      def issues
+        raw_data["issues"] && raw_data["issues"]["items"]
+      end
     end
   end
 end

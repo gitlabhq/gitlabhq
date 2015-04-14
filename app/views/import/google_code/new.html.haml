@@ -46,6 +46,15 @@
         %input{type: "file", name: "dump_file", id: "dump_file"}
     %li
       %p
-        Continue to the next step:
+        Do you want to customize how Google Code email addresses and usernames are imported into GitLab?
       %p
-        = submit_tag 'Select projects to import', class: "btn btn-create"
+        = label_tag :create_user_map_0 do
+          = radio_button_tag :create_user_map, 0, true
+          No, directly import the existing email addresses and usernames.
+      %p
+        = label_tag :create_user_map_1 do
+          = radio_button_tag :create_user_map, 1, false
+          Yes, let me map Google Code users to full names or GitLab users.
+    %li
+      %p
+        = submit_tag 'Continue to the next step', class: "btn btn-create"

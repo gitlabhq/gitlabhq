@@ -1,4 +1,5 @@
 class Import::GoogleCodeController < Import::BaseController
+  before_filter :user_map, only: [:new_user_map, :create_user_map]
 
   def new
     
@@ -17,11 +18,46 @@ class Import::GoogleCodeController < Import::BaseController
       return redirect_to :back, alert: "The uploaded file is not a valid Google Takeout archive."
     end
 
-    unless Gitlab::GoogleCodeImport::Client.new(dump).valid?
+    client = Gitlab::GoogleCodeImport::Client.new(dump)
+    unless client.valid?
       return redirect_to :back, alert: "The uploaded file is not a valid Google Takeout archive."
     end
 
     session[:google_code_dump] = dump
+
+    if params[:create_user_map] == "1"
+      redirect_to new_user_map_import_google_code_path
+    else
+      redirect_to status_import_google_code_path
+    end
+  end
+
+  def new_user_map
+
+  end
+
+  def create_user_map
+    user_map_json = params[:user_map]
+    user_map_json = "{}" if user_map_json.blank?
+
+    begin
+      user_map = JSON.parse(user_map_json)
+    rescue
+      flash.now[:alert] = "The entered user map is not a valid JSON user map."
+
+      render "new_user_map" and return
+    end
+
+    unless user_map.is_a?(Hash) && user_map.all? { |k, v| k.is_a?(String) && v.is_a?(String) }
+      flash.now[:alert] = "The entered user map is not a valid JSON user map."
+
+      render "new_user_map" and return
+    end
+
+    session[:google_code_user_map] = user_map
+
+    flash[:notice] = "The user map has been saved. Continue by selecting the projects you want to import."
+
     redirect_to status_import_google_code_path
   end
 
@@ -51,7 +87,9 @@ class Import::GoogleCodeController < Import::BaseController
 
     namespace = @target_namespace
 
-    @project = Gitlab::GoogleCodeImport::ProjectCreator.new(repo, namespace, current_user).execute
+    user_map = session[:google_code_user_map]
+
+    @project = Gitlab::GoogleCodeImport::ProjectCreator.new(repo, namespace, current_user, user_map).execute
   end
 
   private
@@ -60,4 +98,14 @@ class Import::GoogleCodeController < Import::BaseController
     @client ||= Gitlab::GoogleCodeImport::Client.new(session[:google_code_dump])
   end
 
+  def user_map
+    @user_map ||= begin
+      user_map = client.user_map
+
+      stored_user_map = session[:google_code_user_map]
+      user_map.update(stored_user_map) if stored_user_map
+
+      Hash[user_map.sort]
+    end
+  end
 end
