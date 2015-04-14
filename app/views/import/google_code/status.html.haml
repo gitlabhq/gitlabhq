@@ -4,10 +4,13 @@
 
 %p.light
   Select projects you want to import.
+%p.light
+  Optionally, you can
+  = link_to "customize", new_user_map_import_google_code_path
+  how Google Code email addresses and usernames are imported into GitLab.
 %hr
 %p
   = button_tag 'Import all projects', class: "btn btn-success js-import-all"
-  = link_to "Specify user map", new_user_map_import_google_code_path, class: "btn prepend-left-10"
 
 %table.table.import-jobs
   %thead
