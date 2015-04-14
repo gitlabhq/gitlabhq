@@ -22,6 +22,8 @@ class Member < ActiveRecord::Base
   include Notifiable
   include Gitlab::Access
 
+  attr_accessor :raw_invite_token
+
   belongs_to :created_by, class_name: "User"
   belongs_to :user
   belongs_to :source, polymorphic: true
