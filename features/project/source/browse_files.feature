@@ -33,6 +33,15 @@ Feature: Project Source Browse Files
     And I click on "Commit Changes"
     Then I am redirected to the new file
     And I should see its new content
+    
+  @javascript
+  Scenario: I can upload file and commit
+    Given I click on "Upload" in repo
+    When I upload "user.feature"
+    And I fill the commit message
+    And I click on "Upload file"
+    And I check name of the upload file
+    Then I see the "user.feature"
 
   @javascript
   Scenario: I can create and commit file and specify new branch
@@ -132,6 +141,17 @@ Feature: Project Source Browse Files
     And I click on "Remove file"
     Then I am redirected to the files URL
     And I don't see the ".gitignore"
+
+  @javascript
+  Scenario: I can replace file and commit
+    Given I click on ".gitignore" file in repo
+    And I see the ".gitignore"
+    And I click on "Replace"
+    When I replace it with "LICENSE"
+    And I fill the commit message
+    And I click on "Replace file"
+    Then I am redirected to the ".gitignore"
+    And I should see new file content
 
   Scenario: I can browse directory with Browse Dir
     Given I click on files directory
