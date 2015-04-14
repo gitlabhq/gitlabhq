@@ -20,9 +20,9 @@ class @Calendar
         position: "top"
       legend: [
         0
-        1
-        4
-        7
+        10
+        20
+        30
       ]
       legendCellPadding: 3
       onClick: (date, count) ->

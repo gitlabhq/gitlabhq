@@ -39,7 +39,7 @@ gem "browser"
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 7.1.2'
+gem "gitlab_git", '~> 7.1.3'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 2.0.0.rc2', require: 'grack'
@@ -116,13 +116,14 @@ end
 gem "state_machine"
 
 # Issue tags
-gem "acts-as-taggable-on"
+gem 'acts-as-taggable-on', '~> 3.4'
 
 # Background jobs
 gem 'slim'
 gem 'sinatra', require: nil
 gem 'sidekiq', '~> 3.3'
 gem 'sidetiq', '0.6.3'
+gem 'sidekiq-limit_fetch'
 
 # HTTP requests
 gem "httparty"

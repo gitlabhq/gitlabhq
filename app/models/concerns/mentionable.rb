@@ -52,7 +52,7 @@ module Mentionable
       if identifier == "all"
         users.push(*project.team.members.flatten)
       elsif namespace = Namespace.find_by(path: identifier)
-        if namespace.type == "Group"
+        if namespace.is_a?(Group)
           users.push(*namespace.users)
         else
           users << namespace.owner

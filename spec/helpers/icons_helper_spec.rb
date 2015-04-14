@@ -7,7 +7,7 @@ describe IconsHelper do
     end
 
     it 'returns share class' do
-      expect(file_type_icon_class('file', 0120000, 'link')).to eq 'share'
+      expect(file_type_icon_class('file', '120000', 'link')).to eq 'share'
     end
 
     it 'returns file-pdf-o class with .pdf' do

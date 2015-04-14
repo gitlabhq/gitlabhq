@@ -88,17 +88,14 @@ module API
         present user_project, with: Entities::ProjectWithAccess, user: current_user
       end
 
-      # Get a single project events
+      # Get events for a single project
       #
       # Parameters:
       #   id (required) - The ID of a project
       # Example Request:
       #   GET /projects/:id/events
       get ":id/events" do
-        limit = (params[:per_page] || 20).to_i
-        offset = (params[:page] || 0).to_i * limit
-        events = user_project.events.recent.limit(limit).offset(offset)
-
+        events = paginate user_project.events.recent
         present events, with: Entities::Event
       end
 

@@ -54,6 +54,14 @@ Feature: Groups
     Then I see a new LDAP synchronization listed
     And LDAP disabled
 
+  @javascript
+  Scenario: Add user to group
+    Given gitlab user "Mike"
+    When I visit group "Owned" members page
+    And I click link "Add members"
+    When I select "Mike" as "Reporter"
+    Then I should see "Mike" in team list as "Reporter"
+
   # Leave
 
   @javascript

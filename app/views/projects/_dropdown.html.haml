@@ -5,7 +5,7 @@
     %ul.dropdown-menu
       - if @project.issues_enabled && can?(current_user, :write_issue, @project)
         %li
-          = link_to url_for_new_issue, title: "New Issue" do
+          = link_to url_for_new_issue(@project, only_path: true), title: "New Issue" do
             New issue
       - if @project.merge_requests_enabled && can?(current_user, :write_merge_request, @project)
         %li

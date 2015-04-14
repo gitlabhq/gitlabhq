@@ -5,10 +5,7 @@ v 7.10.0 (unreleased)
   - Set Application controller default URL options to ensure all url_for calls are consistent (Stan Hu)
   - Allow HTML tags in Markdown input
   - Fix code unfold not working on Compare commits page (Stan Hu)
-  - Include missing events and fix save functionality in admin service template settings form (Stan Hu)
-  - Fix "Import projects from" button to show the correct instructions (Stan Hu)
   - Fix dots in Wiki slugs causing errors (Stan Hu)
-  - Fix OAuth2 issue importing a new project from GitHub and GitLab (Stan Hu)
   - Update poltergeist to version 1.6.0 to support PhantomJS 2.0 (Zeger-Jan van de Weg)
   - Fix cross references when usernames, milestones, or project names contain underscores (Stan Hu)
   - Disable reference creation for comments surrounded by code/preformatted blocks (Stan Hu)
@@ -17,6 +14,7 @@ v 7.10.0 (unreleased)
   - extend the commit calendar to show the actual commits made on a date (Hannes Rosenögger)
   - Fix a link in the patch update guide
   - Add a service to support external wikis (Hannes Rosenögger)
+  - Omit the "email patches" link and fix plain diff view for merge commits
   - List new commits for newly pushed branch in activity view.
   - Add sidetiq gem dependency to match EE
   - Add changelog, license and contribution guide links to project sidebar.
@@ -24,6 +22,7 @@ v 7.10.0 (unreleased)
   - Fix alignment of navbar toggle button (Cody Mize)
   - Fix checkbox rendering for nested task lists
   - Identical look of selectboxes in UI
+  - Upgrade the gitlab_git gem to version 7.1.3
   - Move "Import existing repository by URL" option to button.
   - Improve error message when save profile has error.
   - Passing the name of pushed ref to CI service (requires GitLab CI 7.9+)
@@ -40,7 +39,6 @@ v 7.10.0 (unreleased)
 v 7.9.0 (unreleased)
   - Replace commits calendar with faster contribution calendar that includes issues and merge requests
   - Add inifinite scroll to user page activity
-  - Don't show commit comment button when user is not signed in.
   - Don't include system notes in issue/MR comment count.
   - Don't mark merge request as updated when merge status relative to target branch changes.
   - Link note avatar to user.
@@ -50,13 +48,31 @@ v 7.9.0 (unreleased)
   - AJAX selectbox for issue assignee and author filters
   - Fix issue with missing options in issue filtering dropdown if selected one
   - Prevent holding Control-Enter or Command-Enter from posting comment multiple times.
+  - Prevent note form from being cleared when submitting failed.
   - Improve file icons rendering on tree (Sullivan Sénéchal)
+  - API: Add pagination to project events
+  - Get issue links in notification mail to work again.
+  - Don't show commit comment button when user is not signed in.
+  - Fix admin user projects lists.
+  - Don't leak private group existence by redirecting from namespace controller to group controller.
+  - Ability to skip some items from backup (database, respositories or uploads)
+  - Fix "Hello @username." references not working by no longer allowing usernames to end in period.
+  - Archive repositories in background worker.
+  - Import GitHub, Bitbucket or GitLab.com projects owned by authenticated user into current namespace.
+  - Fix and improve help rendering (Sullivan Sénéchal)
 
-v 7.9.0
-  - Send EmailsOnPush email when branch or tag is created or deleted.
-  - Faster merge request processing for large repository
-  - Prevent doubling AJAX request with each commit visit via Turbolink
-  - Prevent unnecessary doubling of js events on import pages and user calendar
+
+v 7.9.2
+  - Contains no changes
+
+v 7.9.1
+  - Include missing events and fix save functionality in admin service template settings form (Stan Hu)
+  - Fix "Import projects from" button to show the correct instructions (Stan Hu)
+  - Fix OAuth2 issue importing a new project from GitHub and GitLab (Stan Hu)
+  - Fix for LDAP with commas in DN
+  - Fix missing events and in admin Slack service template settings form (Stan Hu)
+  - Don't show commit comment button when user is not signed in.
+  - Downgrade gemnasium-gitlab-service gem
 
 v 7.9.0
   - Add HipChat integration documentation (Stan Hu)
@@ -138,6 +154,10 @@ v 7.9.0
   - Fix invalid Atom feeds when using emoji, horizontal rules, or images (Christian Walther)
   - Backup of repositories with tar instead of git bundle (only now are git-annex files included in the backup)
   - Add canceled status for CI
+  - Send EmailsOnPush email when branch or tag is created or deleted.
+  - Faster merge request processing for large repository
+  - Prevent doubling AJAX request with each commit visit via Turbolink
+  - Prevent unnecessary doubling of js events on import pages and user calendar
 
 v 7.8.4
   - Fix issue_tracker_id substitution in custom issue trackers

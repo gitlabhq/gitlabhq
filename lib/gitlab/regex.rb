@@ -2,49 +2,66 @@ module Gitlab
   module Regex
     extend self
 
-    def username_regex
-      default_regex
+    NAMESPACE_REGEX_STR = '(?:[a-zA-Z0-9_\.][a-zA-Z0-9_\-\.]*[a-zA-Z0-9_\-]|[a-zA-Z0-9_])'.freeze
+
+    def namespace_regex
+      @namespace_regex ||= /\A#{NAMESPACE_REGEX_STR}\z/.freeze
     end
 
-    def username_regex_message
-      default_regex_message
+    def namespace_regex_message
+      "can contain only letters, digits, '_', '-' and '.'. " \
+      "Cannot start with '-' or end in '.'." \
     end
+
+
+    def namespace_name_regex
+      @namespace_name_regex ||= /\A[a-zA-Z0-9_\-\. ]*\z/.freeze
+    end
+
+    def namespace_name_regex_message
+      "can contain only letters, digits, '_', '-', '.' and space."
+    end
+
 
     def project_name_regex
-      /\A[a-zA-Z0-9_.][a-zA-Z0-9_\-\. ]*\z/
+      @project_name_regex ||= /\A[a-zA-Z0-9_.][a-zA-Z0-9_\-\. ]*\z/.freeze
     end
 
-    def project_regex_message
-      "can contain only letters, digits, '_', '-' and '.' and space. " \
+    def project_name_regex_message
+      "can contain only letters, digits, '_', '-', '.' and space. " \
       "It must start with letter, digit or '_'."
     end
 
-    def name_regex
-      /\A[a-zA-Z0-9_\-\. ]*\z/
+
+    def project_path_regex
+      @project_path_regex ||= /\A[a-zA-Z0-9_.][a-zA-Z0-9_\-\.]*(?<!\.git)\z/.freeze
     end
 
-    def name_regex_message
-      "can contain only letters, digits, '_', '-' and '.' and space."
+    def project_path_regex_message
+      "can contain only letters, digits, '_', '-' and '.'. " \
+      "Cannot start with '-' or end in '.git'" \
     end
 
-    def path_regex
-      default_regex
+
+    def file_name_regex
+      @file_name_regex ||= /\A[a-zA-Z0-9_\-\.]*\z/.freeze
     end
 
-    def path_regex_message
-      default_regex_message
+    def file_name_regex_message
+      "can contain only letters, digits, '_', '-' and '.'. "
     end
+
 
     def archive_formats_regex
-      #|zip|tar|    tar.gz    |         tar.bz2         |
-      /(zip|tar|tar\.gz|tgz|gz|tar\.bz2|tbz|tbz2|tb2|bz2)/
+      #                           |zip|tar|    tar.gz    |         tar.bz2         |
+      @archive_formats_regex ||= /(zip|tar|tar\.gz|tgz|gz|tar\.bz2|tbz|tbz2|tb2|bz2)/.freeze
     end
 
     def git_reference_regex
       # Valid git ref regex, see:
       # https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html
 
-      %r{
+      @git_reference_regex ||= %r{
         (?!
            (?# doesn't begins with)
            \/|                    (?# rule #6)
@@ -60,18 +77,7 @@ module Gitlab
         (?# doesn't end with)
         (?<!\.lock)               (?# rule #1)
         (?<![\/.])                (?# rule #6-7)
-      }x
-    end
-
-    protected
-
-    def default_regex_message
-      "can contain only letters, digits, '_', '-' and '.'. " \
-      "Cannot start with '-' or end in '.git'" \
-    end
-
-    def default_regex
-      /\A[a-zA-Z0-9_.][a-zA-Z0-9_\-\.]*(?<!\.git)\z/
+      }x.freeze
     end
   end
 end

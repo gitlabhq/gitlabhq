@@ -44,7 +44,7 @@
     = spinner
   %aside.col-md-4
     = render 'profile', user: @user
-    = render 'projects'
+    = render 'projects', projects: @projects, contributed_projects: @contributed_projects
 
 :coffeescript
   $(".user-calendar").load("#{user_calendar_path}")

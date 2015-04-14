@@ -10,7 +10,8 @@
         Download as
         %span.caret
       %ul.dropdown-menu
-        %li= link_to "Email Patches", namespace_project_commit_path(@project.namespace, @project, @commit, format: :patch)
+        - unless @commit.parents.length > 1
+          %li= link_to "Email Patches", namespace_project_commit_path(@project.namespace, @project, @commit, format: :patch)
         %li= link_to "Plain Diff",    namespace_project_commit_path(@project.namespace, @project, @commit, format: :diff)
     = link_to namespace_project_tree_path(@project.namespace, @project, @commit), class: "btn btn-primary btn-grouped" do
       %span Browse Code »
