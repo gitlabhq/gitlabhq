@@ -1,18 +1,9 @@
-require 'html/pipeline'
-
 module Gitlab
   module Markdown
-    # HTML filter that replaces user or group references with links. References
-    # within <pre>, <code>, <a>, and <style> elements are ignored.
+    # HTML filter that replaces user or group references with links.
     #
     # A special `@all` reference is also supported.
-    #
-    # Context options:
-    #   :project (required) - Current project.
-    #   :reference_class    - Custom CSS class added to reference links.
-    #   :only_path          - Generate path-only links.
-    #
-    class UserReferenceFilter < HTML::Pipeline::Filter
+    class UserReferenceFilter < ReferenceFilter
       # Public: Find `@user` user references in text
       #
       #   UserReferenceFilter.references_in(text) do |match, username|
@@ -33,30 +24,10 @@ module Gitlab
       # Pattern used to extract `@user` user references from text
       USER_PATTERN = /@(?<user>#{Gitlab::Regex::NAMESPACE_REGEX_STR})/
 
-      # Don't look for references in text nodes that are children of these
-      # elements.
-      IGNORE_PARENTS = %w(pre code a style).to_set
-
       def call
-        doc.search('text()').each do |node|
-          content = node.to_html
-
-          next if project.nil?
-          next unless content.match(USER_PATTERN)
-          next if has_ancestor?(node, IGNORE_PARENTS)
-
-          html = user_link_filter(content)
-
-          next if html == content
-
-          node.replace(html)
+        replace_text_nodes_matching(USER_PATTERN) do |content|
+          user_link_filter(content)
         end
-
-        doc
-      end
-
-      def validate
-        needs :project
       end
 
       # Replace `@user` user references in text with links to the referenced
@@ -70,7 +41,7 @@ module Gitlab
         project = context[:project]
 
         self.class.references_in(text) do |match, user|
-          klass = "gfm gfm-project_member #{context[:reference_class]}".strip
+          klass = reference_class(:project_member)
 
           if user == 'all'
             url = link_to_all(project)
@@ -94,27 +65,23 @@ module Gitlab
         end
       end
 
-      def project
-        context[:project]
+      private
+
+      def urls
+        Rails.application.routes.url_helpers
       end
 
-      # TODO (rspeicher): Cleanup
       def group_url(*args)
-        h = Rails.application.routes.url_helpers
-        h.group_url(*args)
+        urls.group_url(*args)
       end
 
-      # TODO (rspeicher): Cleanup
       def user_url(*args)
-        h = Rails.application.routes.url_helpers
-        h.user_url(*args)
+        urls.user_url(*args)
       end
 
-      # TODO (rspeicher): Cleanup
       def link_to_all(project)
-        h = Rails.application.routes.url_helpers
-        h.namespace_project_url(project.namespace, project,
-                                only_path: context[:only_path])
+        urls.namespace_project_url(project.namespace, project,
+                                   only_path: context[:only_path])
       end
 
       def user_can_reference_group?(group)

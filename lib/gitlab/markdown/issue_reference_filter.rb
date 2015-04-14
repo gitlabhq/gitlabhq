@@ -1,20 +1,10 @@
-require 'html/pipeline'
-
 module Gitlab
   module Markdown
-    # HTML filter that replaces issue references with links. References within
-    # <pre>, <code>, <a>, and <style> elements are ignored. References to issues
-    # that do not exist are ignored.
+    # HTML filter that replaces issue references with links. References to
+    # issues that do not exist are ignored.
     #
     # This filter supports cross-project references.
-    #
-    # Context options:
-    #   :project (required) - Current project, ignored when reference is
-    #                         cross-project.
-    #   :reference_class    - Custom CSS class added to reference links.
-    #   :only_path          - Generate path-only links.
-    #
-    class IssueReferenceFilter < HTML::Pipeline::Filter
+    class IssueReferenceFilter < ReferenceFilter
       include CrossProjectReference
 
       # Public: Find `#123` issue references in text
@@ -40,31 +30,10 @@ module Gitlab
       # This pattern supports cross-project references.
       ISSUE_PATTERN = /#{PROJECT_PATTERN}?\#(?<issue>([a-zA-Z\-]+-)?\d+)/
 
-      # Don't look for references in text nodes that are children of these
-      # elements.
-      IGNORE_PARENTS = %w(pre code a style).to_set
-
       def call
-        doc.search('text()').each do |node|
-          content = node.to_html
-
-          next if project.nil?
-          next unless project.default_issues_tracker?
-          next unless content.match(ISSUE_PATTERN)
-          next if has_ancestor?(node, IGNORE_PARENTS)
-
-          html = issue_link_filter(content)
-
-          next if html == content
-
-          node.replace(html)
+        replace_text_nodes_matching(ISSUE_PATTERN) do |content|
+          issue_link_filter(content)
         end
-
-        doc
-      end
-
-      def validate
-        needs :project
       end
 
       # Replace `#123` issue references in text with links to the referenced
@@ -79,11 +48,10 @@ module Gitlab
           project = self.project_from_ref(project_ref)
 
           if project.issue_exists?(issue)
-            # FIXME: Ugly
             url = url_for_issue(issue, project, only_path: context[:only_path])
 
             title = "Issue: #{title_for_issue(issue, project)}"
-            klass = "gfm gfm-issue #{context[:reference_class]}".strip
+            klass = reference_class(:issue)
 
             %(<a href="#{url}"
                  title="#{title}"
@@ -92,10 +60,6 @@ module Gitlab
             match
           end
         end
-      end
-
-      def project
-        context[:project]
       end
 
       def url_for_issue(*args)

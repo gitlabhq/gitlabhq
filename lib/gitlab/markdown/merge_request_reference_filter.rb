@@ -1,20 +1,10 @@
-require 'html/pipeline'
-
 module Gitlab
   module Markdown
     # HTML filter that replaces merge request references with links. References
-    # within <pre>, <code>, <a>, and <style> elements are ignored. References to
-    # merge requests that do not exist are ignored.
+    # to merge requests that do not exist are ignored.
     #
     # This filter supports cross-project references.
-    #
-    # Context options:
-    #   :project (required) - Current project, ignored when reference is
-    #                         cross-project.
-    #   :reference_class    - Custom CSS class added to reference links.
-    #   :only_path          - Generate path-only links.
-    #
-    class MergeRequestReferenceFilter < HTML::Pipeline::Filter
+    class MergeRequestReferenceFilter < ReferenceFilter
       include CrossProjectReference
 
       # Public: Find `!123` merge request references in text
@@ -45,25 +35,9 @@ module Gitlab
       IGNORE_PARENTS = %w(pre code a style).to_set
 
       def call
-        doc.search('text()').each do |node|
-          content = node.to_html
-
-          next if project.nil?
-          next unless content.match(MERGE_REQUEST_PATTERN)
-          next if has_ancestor?(node, IGNORE_PARENTS)
-
-          html = merge_request_link_filter(content)
-
-          next if html == content
-
-          node.replace(html)
+        replace_text_nodes_matching(MERGE_REQUEST_PATTERN) do |content|
+          merge_request_link_filter(content)
         end
-
-        doc
-      end
-
-      def validate
-        needs :project
       end
 
       # Replace `!123` merge request references in text with links to the
@@ -79,7 +53,7 @@ module Gitlab
 
           if merge_request = project.merge_requests.find_by(iid: id)
             title = "Merge Request: #{merge_request.title}"
-            klass = "gfm gfm-merge_request #{context[:reference_class]}".strip
+            klass = reference_class(:merge_request)
 
             url = url_for_merge_request(merge_request, project)
 
@@ -90,10 +64,6 @@ module Gitlab
             match
           end
         end
-      end
-
-      def project
-        context[:project]
       end
 
       # TODO (rspeicher): Cleanup

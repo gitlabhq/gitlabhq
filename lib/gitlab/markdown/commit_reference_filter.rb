@@ -1,19 +1,9 @@
-require 'html/pipeline'
-
 module Gitlab
   module Markdown
-    # HTML filter that replaces commit references with links. References within
-    # <pre>, <code>, <a>, and <style> elements are ignored.
+    # HTML filter that replaces commit references with links.
     #
     # This filter supports cross-project references.
-    #
-    # Context options:
-    #   :project (required) - Current project, ignored when reference is
-    #                         cross-project.
-    #   :reference_class    - Custom CSS class added to reference links.
-    #   :only_path          - Generate path-only links.
-    #
-    class CommitReferenceFilter < HTML::Pipeline::Filter
+    class CommitReferenceFilter < ReferenceFilter
       include CrossProjectReference
 
       # Public: Find commit references in text
@@ -41,30 +31,10 @@ module Gitlab
       # This pattern supports cross-project references.
       COMMIT_PATTERN = /(#{PROJECT_PATTERN}@)?(?<commit>\h{6,40})/
 
-      # Don't look for references in text nodes that are children of these
-      # elements.
-      IGNORE_PARENTS = %w(pre code a style).to_set
-
       def call
-        doc.search('text()').each do |node|
-          content = node.to_html
-
-          next if project.nil?
-          next unless content.match(COMMIT_PATTERN)
-          next if has_ancestor?(node, IGNORE_PARENTS)
-
-          html = commit_link_filter(content)
-
-          next if html == content
-
-          node.replace(html)
+        replace_text_nodes_matching(COMMIT_PATTERN) do |content|
+          commit_link_filter(content)
         end
-
-        doc
-      end
-
-      def validate
-        needs :project
       end
 
       # Replace commit references in text with links to the commit specified.
@@ -81,7 +51,7 @@ module Gitlab
             url = url_for_commit(project, commit)
 
             title = commit.link_title
-            klass = "gfm gfm-commit #{context[:reference_class]}".strip
+            klass = reference_class(:commit)
 
             project_ref += '@' if project_ref
 
@@ -98,10 +68,6 @@ module Gitlab
         h = Rails.application.routes.url_helpers
         h.namespace_project_commit_url(project.namespace, project, commit,
                                         only_path: context[:only_path])
-      end
-
-      def project
-        context[:project]
       end
     end
   end

@@ -1,16 +1,7 @@
-require 'html/pipeline'
-
 module Gitlab
   module Markdown
-    # HTML filter that replaces label references with links. References within
-    # <pre>, <code>, <a>, and <style> elements are ignored.
-    #
-    # Context options:
-    #   :project (required) - Current project.
-    #   :reference_class    - Custom CSS class added to reference links.
-    #   :only_path          - Generate path-only links.
-    #
-    class LabelReferenceFilter < HTML::Pipeline::Filter
+    # HTML filter that replaces label references with links.
+    class LabelReferenceFilter < ReferenceFilter
       # Public: Find label references in text
       #
       #   LabelReferenceFilter.references_in(text) do |match, id, name|
@@ -42,30 +33,10 @@ module Gitlab
         )
       }x
 
-      # Don't look for references in text nodes that are children of these
-      # elements.
-      IGNORE_PARENTS = %w(pre code a style).to_set
-
       def call
-        doc.search('text()').each do |node|
-          content = node.to_html
-
-          next if project.nil?
-          next unless content.match(LABEL_PATTERN)
-          next if has_ancestor?(node, IGNORE_PARENTS)
-
-          html = label_link_filter(content)
-
-          next if html == content
-
-          node.replace(html)
+        replace_text_nodes_matching(LABEL_PATTERN) do |content|
+          label_link_filter(content)
         end
-
-        doc
-      end
-
-      def validate
-        needs :project
       end
 
       # Replace label references in text with links to the label specified.
@@ -83,7 +54,7 @@ module Gitlab
           if label = project.labels.find_by(params)
             url = url_for_label(project, label)
 
-            klass = "gfm gfm-label #{context[:reference_class]}".strip
+            klass = reference_class(:label)
 
             %(<a href="#{url}" class="#{klass}">#{render_colored_label(label)}</a>)
           else
@@ -117,10 +88,6 @@ module Gitlab
           # TODO (rspeicher): Don't strip single quotes if we decide to only use double quotes for surrounding.
           { name: name.tr('\'"', '') }
         end
-      end
-
-      def project
-        context[:project]
       end
     end
   end

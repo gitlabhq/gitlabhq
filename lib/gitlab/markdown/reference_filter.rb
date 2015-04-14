@@ -7,8 +7,7 @@ module Gitlab
     # References within <pre>, <code>, <a>, and <style> elements are ignored.
     #
     # Context options:
-    #   :project (required) - Current project, ignored when reference is
-    #                         cross-project.
+    #   :project (required) - Current project, ignored if reference is cross-project.
     #   :reference_class    - Custom CSS class added to reference links.
     #   :only_path          - Generate path-only links.
     #

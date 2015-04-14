@@ -1,19 +1,9 @@
-require 'html/pipeline'
-
 module Gitlab
   module Markdown
-    # HTML filter that replaces commit range references with links. References
-    # within <pre>, <code>, <a>, and <style> elements are ignored.
+    # HTML filter that replaces commit range references with links.
     #
     # This filter supports cross-project references.
-    #
-    # Context options:
-    #   :project (required) - Current project, ignored when reference is
-    #                         cross-project.
-    #   :reference_class    - Custom CSS class added to reference links.
-    #   :only_path          - Generate path-only links.
-    #
-    class CommitRangeReferenceFilter < HTML::Pipeline::Filter
+    class CommitRangeReferenceFilter < ReferenceFilter
       include CrossProjectReference
 
       # Public: Find commit range references in text
@@ -42,26 +32,10 @@ module Gitlab
       # This pattern supports cross-project references.
       COMMIT_RANGE_PATTERN = /(#{PROJECT_PATTERN}@)?(?<commit_range>\h{6,40}\.{2,3}\h{6,40})/
 
-      # Don't look for references in text nodes that are children of these
-      # elements.
-      IGNORE_PARENTS = %w(pre code a style).to_set
-
       def call
-        doc.search('text()').each do |node|
-          content = node.to_html
-
-          next if project.nil?
-          next unless content.match(COMMIT_RANGE_PATTERN)
-          next if has_ancestor?(node, IGNORE_PARENTS)
-
-          html = commit_range_link_filter(content)
-
-          next if html == content
-
-          node.replace(html)
+        replace_text_nodes_matching(COMMIT_RANGE_PATTERN) do |content|
+          commit_range_link_filter(content)
         end
-
-        doc
       end
 
       # Replace commit range references in text with links to compare the commit
@@ -82,7 +56,7 @@ module Gitlab
             url = url_for_commit_range(project, from_id, to_id)
 
             title = "Commits #{from_id} through #{to_id}"
-            klass = "gfm gfm-commit_range #{context[:reference_class]}".strip
+            klass = reference_class(:commit_range)
 
             project_ref += '@' if project_ref
 
@@ -93,10 +67,6 @@ module Gitlab
             match
           end
         end
-      end
-
-      def validate
-        needs :project
       end
 
       def split_commit_range(range)
@@ -117,10 +87,6 @@ module Gitlab
         h.namespace_project_compare_url(project.namespace, project,
                                         from: from_id, to: to_id,
                                         only_path: context[:only_path])
-      end
-
-      def project
-        context[:project]
       end
     end
   end

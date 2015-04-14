@@ -1,16 +1,7 @@
-require 'html/pipeline'
-
 module Gitlab
   module Markdown
     # HTML filter that replaces external issue tracker references with links.
-    # References within <pre>, <code>, <a>, and <style> elements are ignored.
-    #
-    # Context options:
-    #   :project (required) - Current project.
-    #   :reference_class    - Custom CSS class added to reference links.
-    #   :only_path          - Generate path-only links.
-    #
-    class ExternalIssueReferenceFilter < HTML::Pipeline::Filter
+    class ExternalIssueReferenceFilter < ReferenceFilter
       # Public: Find `JIRA-123` issue references in text
       #
       #   ExternalIssueReferenceFilter.references_in(text) do |match, issue|
@@ -31,31 +22,10 @@ module Gitlab
       # Pattern used to extract `JIRA-123` issue references from text
       ISSUE_PATTERN = /(?<issue>([A-Z\-]+-)\d+)/
 
-      # Don't look for references in text nodes that are children of these
-      # elements.
-      IGNORE_PARENTS = %w(pre code a style).to_set
-
       def call
-        doc.search('text()').each do |node|
-          content = node.to_html
-
-          next if project.nil?
-          next if project.default_issues_tracker?
-          next unless content.match(ISSUE_PATTERN)
-          next if has_ancestor?(node, IGNORE_PARENTS)
-
-          html = issue_link_filter(content)
-
-          next if html == content
-
-          node.replace(html)
+        replace_text_nodes_matching(ISSUE_PATTERN) do |content|
+          issue_link_filter(content)
         end
-
-        doc
-      end
-
-      def validate
-        needs :project
       end
 
       # Replace `JIRA-123` issue references in text with links to the referenced
@@ -72,7 +42,7 @@ module Gitlab
           url = url_for_issue(issue, project, only_path: context[:only_path])
 
           title = "Issue in #{project.external_issue_tracker.title}"
-          klass = "gfm gfm-issue #{context[:reference_class]}".strip
+          klass = reference_class(:issue)
 
           %(<a href="#{url}"
                title="#{title}"
@@ -80,12 +50,6 @@ module Gitlab
         end
       end
 
-      # TODO (rspeicher): Duplicates IssueReferenceFilter
-      def project
-        context[:project]
-      end
-
-      # TODO (rspeicher): Duplicates IssueReferenceFilter
       def url_for_issue(*args)
         IssuesHelper.url_for_issue(*args)
       end
