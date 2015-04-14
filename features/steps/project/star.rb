@@ -22,12 +22,16 @@ class Spinach::Features::ProjectStar < Spinach::FeatureSteps
 
   # Requires @javascript
   step "I click on the star toggle button" do
-    find(".star .toggle", visible: true).click
+    find(".star-btn", visible: true).click
+  end
+
+  step 'I redirected to sign in page' do
+    current_path.should == new_user_session_path
   end
 
   protected
 
   def has_n_stars(n)
-    expect(page).to have_css(".star .count", text: /^#{n}$/, visible: true)
+    expect(page).to have_css(".star-btn .count", text: n, visible: true)
   end
 end

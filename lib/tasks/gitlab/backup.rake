@@ -27,9 +27,9 @@ namespace :gitlab do
       backup = Backup::Manager.new
       backup.unpack
 
-      Rake::Task["gitlab:backup:db:restore"].invoke
-      Rake::Task["gitlab:backup:repo:restore"].invoke
-      Rake::Task["gitlab:backup:uploads:restore"].invoke
+      Rake::Task["gitlab:backup:db:restore"].invoke unless backup.skipped?("db")
+      Rake::Task["gitlab:backup:repo:restore"].invoke unless backup.skipped?("repositories")
+      Rake::Task["gitlab:backup:uploads:restore"].invoke unless backup.skipped?("uploads")
       Rake::Task["gitlab:shell:setup"].invoke
 
       backup.cleanup
@@ -38,8 +38,13 @@ namespace :gitlab do
     namespace :repo do
       task create: :environment do
         $progress.puts "Dumping repositories ...".blue
-        Backup::Repository.new.dump
-        $progress.puts "done".green
+
+        if ENV["SKIP"] && ENV["SKIP"].include?("repositories")
+          $progress.puts "[SKIPPED]".cyan
+        else
+          Backup::Repository.new.dump
+          $progress.puts "done".green
+        end
       end
 
       task restore: :environment do
@@ -52,8 +57,13 @@ namespace :gitlab do
     namespace :db do
       task create: :environment do
         $progress.puts "Dumping database ... ".blue
-        Backup::Database.new.dump
-        $progress.puts "done".green
+
+        if ENV["SKIP"] && ENV["SKIP"].include?("db")
+          $progress.puts "[SKIPPED]".cyan
+        else
+          Backup::Database.new.dump
+          $progress.puts "done".green
+        end
       end
 
       task restore: :environment do
@@ -66,8 +76,13 @@ namespace :gitlab do
     namespace :uploads do
       task create: :environment do
         $progress.puts "Dumping uploads ... ".blue
-        Backup::Uploads.new.dump
-        $progress.puts "done".green
+
+        if ENV["SKIP"] && ENV["SKIP"].include?("uploads")
+          $progress.puts "[SKIPPED]".cyan
+        else
+          Backup::Uploads.new.dump
+          $progress.puts "done".green
+        end
       end
 
       task restore: :environment do

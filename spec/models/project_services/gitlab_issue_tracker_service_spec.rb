@@ -31,6 +31,7 @@ describe GitlabIssueTrackerService do
 
     context 'with absolute urls' do
       before do
+        GitlabIssueTrackerService.default_url_options[:script_name] = "/gitlab/root"
         @service = project.create_gitlab_issue_tracker_service(active: true)
       end
 
@@ -39,15 +40,15 @@ describe GitlabIssueTrackerService do
       end
 
       it 'should give the correct path' do
-        expect(@service.project_url).to eq("/#{project.path_with_namespace}/issues")
-        expect(@service.new_issue_url).to eq("/#{project.path_with_namespace}/issues/new")
-        expect(@service.issue_url(432)).to eq("/#{project.path_with_namespace}/issues/432")
+        expect(@service.project_url).to eq("http://localhost/gitlab/root/#{project.path_with_namespace}/issues")
+        expect(@service.new_issue_url).to eq("http://localhost/gitlab/root/#{project.path_with_namespace}/issues/new")
+        expect(@service.issue_url(432)).to eq("http://localhost/gitlab/root/#{project.path_with_namespace}/issues/432")
       end
     end
 
-    context 'with enabled relative urls' do
+    context 'with relative urls' do
       before do
-        Settings.gitlab.stub(:relative_url_root).and_return("/gitlab/root")
+        GitlabIssueTrackerService.default_url_options[:script_name] = "/gitlab/root"
         @service = project.create_gitlab_issue_tracker_service(active: true)
       end
 
@@ -56,9 +57,9 @@ describe GitlabIssueTrackerService do
       end
 
       it 'should give the correct path' do
-        expect(@service.project_url).to eq("/gitlab/root/#{project.path_with_namespace}/issues")
-        expect(@service.new_issue_url).to eq("/gitlab/root/#{project.path_with_namespace}/issues/new")
-        expect(@service.issue_url(432)).to eq("/gitlab/root/#{project.path_with_namespace}/issues/432")
+        expect(@service.project_path).to eq("/gitlab/root/#{project.path_with_namespace}/issues")
+        expect(@service.new_issue_path).to eq("/gitlab/root/#{project.path_with_namespace}/issues/new")
+        expect(@service.issue_path(432)).to eq("/gitlab/root/#{project.path_with_namespace}/issues/432")
       end
     end
   end

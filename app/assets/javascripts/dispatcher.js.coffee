@@ -104,6 +104,8 @@ class Dispatcher
         new GroupsSelect()
       when 'admin:emails:show'
         new AdminEmailSelect()
+      when 'admin:users:show'
+        new ProjectsList()
 
     switch path.first()
       when 'admin'

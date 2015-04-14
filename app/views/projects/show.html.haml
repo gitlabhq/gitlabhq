@@ -68,7 +68,7 @@
               = link_to license_url(@project), class: 'btn btn-block' do
                 View license
 
-        .prepend-top-10
+        .prepend-top-10.append-bottom-10
           %p
             %span.light Created on
             #{@project.created_at.stamp('Aug 22, 2013')}
@@ -79,8 +79,16 @@
             - else
               #{link_to @project.owner_name, @project.owner}
 
+        - unless @project.empty_repo?
+          - if can? current_user, :download_code, @project
+            %hr
+            .prepend-top-10.append-bottom-10
+              = render 'projects/repositories/download_archive', split_button: true
+
+        .prepend-top-10
           - @project.ci_services.each do |ci_service|
             - if ci_service.active? && ci_service.respond_to?(:builds_path)
+              %hr
               - if ci_service.respond_to?(:status_img_path)
                 = link_to ci_service.builds_path, :'data-no-turbolink' => 'data-no-turbolink' do
                   = image_tag ci_service.status_img_path, alt: "build status"
@@ -97,4 +105,3 @@
             = readme.name
         .wiki
           = render_readme(readme)
-

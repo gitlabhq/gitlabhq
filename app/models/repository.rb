@@ -267,6 +267,9 @@ class Repository
   # Remove archives older than 2 hours
   def clean_old_archives
     repository_downloads_path = Gitlab.config.gitlab.repository_downloads_path
+
+    return unless File.directory?(repository_downloads_path)
+
     Gitlab::Popen.popen(%W(find #{repository_downloads_path} -not -path #{repository_downloads_path} -mmin +120 -delete))
   end
 

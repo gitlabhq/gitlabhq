@@ -49,34 +49,19 @@
     @extend .clearfix;
     margin-bottom: 15px;
 
-    .project-home-desc,
-    .star-fork-buttons {
+    &.project-home-row-top {
+      margin-bottom: 15px;
+    }
+
+    .project-home-desc {
       font-size: 16px;
       line-height: 1.3;
+      margin-right: 215px;
     }
 
     .project-home-desc {
       float: left;
       color: #666;
-    }
-
-    .star-fork-buttons {
-      float: right;
-      min-width: 200px;
-      font-weight: bold;
-
-      .star-buttons, .fork-buttons {
-        float: right;
-        margin-left: 20px;
-
-        a:hover {
-          text-decoration: none;
-        }
-
-        .count {
-          margin-left: 5px;
-        }
-      }
     }
   }
 
@@ -85,6 +70,27 @@
     font-weight: bold;
     i {
       color: inherit;
+    }
+  }
+
+  .project-repo-buttons {
+    margin-top: -3px;
+    position: absolute;
+    right: 0;
+    width: 260px;
+    text-align: right;
+
+    .btn {
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 16px;
+
+      .count {
+        padding-left: 10px;
+        border-left: 1px solid #ccc;
+        display: inline-block;
+        margin-left: 10px;
+      }
     }
   }
 }

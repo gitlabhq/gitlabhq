@@ -80,17 +80,17 @@ module ProjectsHelper
     @project.milestones.active.order("due_date, title ASC")
   end
 
-  def link_to_toggle_star(title, starred, signed_in)
-    cls = 'star-btn'
-    cls << ' disabled' unless signed_in
+  def link_to_toggle_star(title, starred)
+    cls = 'star-btn btn btn-sm btn-default'
+
+    toggle_text =
+      if starred
+        ' Unstar'
+      else
+        ' Star'
+      end
 
     toggle_html = content_tag('span', class: 'toggle') do
-      toggle_text = if starred
-                      ' Unstar'
-                    else
-                      ' Star'
-                    end
-
       icon('star') + toggle_text
     end
 
@@ -106,23 +106,25 @@ module ProjectsHelper
       data: { type: 'json' }
     }
 
+    path = toggle_star_namespace_project_path(@project.namespace, @project)
 
     content_tag 'span', class: starred ? 'turn-on' : 'turn-off' do
-      link_to(
-        toggle_star_namespace_project_path(@project.namespace, @project),
-        link_opts
-      ) do
+      link_to(path, link_opts) do
         toggle_html + ' ' + count_html
       end
     end
   end
 
   def link_to_toggle_fork
-    out = icon('code-fork')
-    out << ' Fork'
-    out << content_tag(:span, class: 'count') do
+    html = content_tag('span') do
+      icon('code-fork') + ' Fork'
+    end
+
+    count_html = content_tag(:span, class: 'count') do
       @project.forks_count.to_s
     end
+
+    html + count_html
   end
 
   private

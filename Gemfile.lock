@@ -33,8 +33,8 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
-    acts-as-taggable-on (2.4.1)
-      rails (>= 3, < 5)
+    acts-as-taggable-on (3.5.0)
+      activerecord (>= 3.2, < 5)
     addressable (2.3.5)
     annotate (2.6.0)
       activerecord (>= 2.3.0)
@@ -212,7 +212,7 @@ GEM
       mime-types (~> 1.19)
     gitlab_emoji (0.1.0)
       gemojione (~> 2.0)
-    gitlab_git (7.1.2)
+    gitlab_git (7.1.3)
       activesupport (~> 4.0)
       charlock_holmes (~> 0.6)
       gitlab-linguist (~> 3.0)
@@ -547,6 +547,8 @@ GEM
       json
       redis (>= 3.0.6)
       redis-namespace (>= 1.3.1)
+    sidekiq-limit_fetch (2.4.1)
+      sidekiq (>= 2.6.5, < 4.0)
     sidetiq (0.6.3)
       celluloid (>= 0.14.1)
       ice_cube (= 0.11.1)
@@ -662,7 +664,7 @@ PLATFORMS
 DEPENDENCIES
   RedCloth
   ace-rails-ap
-  acts-as-taggable-on
+  acts-as-taggable-on (~> 3.4)
   addressable
   annotate (~> 2.6.0.beta2)
   asana (~> 0.0.6)
@@ -703,7 +705,7 @@ DEPENDENCIES
   gitlab-grack (~> 2.0.0.rc2)
   gitlab-linguist (~> 3.0.1)
   gitlab_emoji (~> 0.1)
-  gitlab_git (~> 7.1.2)
+  gitlab_git (~> 7.1.3)
   gitlab_meta (= 7.0)
   gitlab_omniauth-ldap (= 1.2.1)
   gollum-lib (~> 4.0.2)
@@ -770,6 +772,7 @@ DEPENDENCIES
   settingslogic
   shoulda-matchers (~> 2.7.0)
   sidekiq (~> 3.3)
+  sidekiq-limit_fetch
   sidetiq (= 0.6.3)
   simplecov
   sinatra

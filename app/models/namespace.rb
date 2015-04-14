@@ -24,8 +24,8 @@ class Namespace < ActiveRecord::Base
   validates :name,
     presence: true, uniqueness: true,
     length: { within: 0..255 },
-    format: { with: Gitlab::Regex.name_regex,
-              message: Gitlab::Regex.name_regex_message }
+    format: { with: Gitlab::Regex.namespace_name_regex,
+              message: Gitlab::Regex.namespace_name_regex_message }
 
   validates :description, length: { within: 0..255 }
   validates :path,
@@ -33,8 +33,8 @@ class Namespace < ActiveRecord::Base
     presence: true,
     length: { within: 1..255 },
     exclusion: { in: Gitlab::Blacklist.path },
-    format: { with: Gitlab::Regex.path_regex,
-              message: Gitlab::Regex.path_regex_message }
+    format: { with: Gitlab::Regex.namespace_regex,
+              message: Gitlab::Regex.namespace_regex_message }
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
@@ -44,21 +44,36 @@ class Namespace < ActiveRecord::Base
 
   scope :root, -> { where('type IS NULL') }
 
-  def self.by_path(path)
-    where('lower(path) = :value', value: path.downcase).first
-  end
+  class << self
+    def by_path(path)
+      where('lower(path) = :value', value: path.downcase).first
+    end
 
-  # Case insensetive search for namespace by path or name
-  def self.find_by_path_or_name(path)
-    find_by("lower(path) = :path OR lower(name) = :path", path: path.downcase)
-  end
+    # Case insensetive search for namespace by path or name
+    def find_by_path_or_name(path)
+      find_by("lower(path) = :path OR lower(name) = :path", path: path.downcase)
+    end
 
-  def self.search(query)
-    where("name LIKE :query OR path LIKE :query", query: "%#{query}%")
-  end
+    def search(query)
+      where("name LIKE :query OR path LIKE :query", query: "%#{query}%")
+    end
 
-  def self.global_id
-    'GLN'
+    def clean_path(path)
+      path.gsub!(/@.*\z/,             "")
+      path.gsub!(/\.git\z/,           "")
+      path.gsub!(/\A-/,               "")
+      path.gsub!(/.\z/,               "")
+      path.gsub!(/[^a-zA-Z0-9_\-\.]/, "")
+
+      counter = 0
+      base = path
+      while Namespace.by_path(path).present?
+        counter += 1
+        path = "#{base}#{counter}"
+      end
+
+      path
+    end
   end
 
   def to_param
