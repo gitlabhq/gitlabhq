@@ -16,13 +16,6 @@ module Gitlab::Markdown
         to raise_error(ArgumentError, /:project/)
     end
 
-    it 'ignores valid references when using non-default tracker' do
-      expect(project).to receive(:default_issues_tracker?).and_return(false)
-
-      exp = act = "Issue ##{issue.iid}"
-      expect(filter(act).to_html).to eq exp
-    end
-
     %w(pre code a style).each do |elem|
       it "ignores valid references contained inside '#{elem}' element" do
         exp = act = "<#{elem}>Issue ##{issue.iid}</#{elem}>"
@@ -32,6 +25,13 @@ module Gitlab::Markdown
 
     context 'internal reference' do
       let(:reference) { "##{issue.iid}" }
+
+      it 'ignores valid references when using non-default tracker' do
+        expect(project).to receive(:issue_exists?).with(issue.iid).and_return(false)
+
+        exp = act = "Issue ##{issue.iid}"
+        expect(filter(act).to_html).to eq exp
+      end
 
       it 'links to a valid reference' do
         doc = filter("See #{reference}")
@@ -85,6 +85,14 @@ module Gitlab::Markdown
       before do
         allow_any_instance_of(described_class).
           to receive(:user_can_reference_project?).and_return(true)
+      end
+
+      it 'ignores valid references when cross-reference project uses external tracker' do
+        expect_any_instance_of(Project).to receive(:issue_exists?).
+          with(issue.iid).and_return(false)
+
+        exp = act = "Issue ##{issue.iid}"
+        expect(filter(act).to_html).to eq exp
       end
 
       it 'links to a valid reference' do

@@ -1,6 +1,8 @@
 module Gitlab
   module Markdown
     # HTML filter that replaces external issue tracker references with links.
+    # References are ignored if the project doesn't use an external issue
+    # tracker.
     class ExternalIssueReferenceFilter < ReferenceFilter
       # Public: Find `JIRA-123` issue references in text
       #
@@ -23,6 +25,8 @@ module Gitlab
       ISSUE_PATTERN = /(?<issue>([A-Z\-]+-)\d+)/
 
       def call
+        return doc if project.default_issues_tracker?
+
         replace_text_nodes_matching(ISSUE_PATTERN) do |content|
           issue_link_filter(content)
         end
