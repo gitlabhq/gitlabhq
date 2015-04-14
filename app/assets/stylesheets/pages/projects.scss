@@ -15,7 +15,7 @@
 }
 
 .project-home-panel {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   position: relative;
   padding-left: 85px;
 
@@ -66,13 +66,12 @@
 
     .project-home-desc {
       float: left;
-      color: #666;
+      color: $gray;
     }
   }
 
   .visibility-level-label {
-    color: #555;
-    font-weight: bold;
+    color: $gray;
     i {
       color: inherit;
     }
@@ -138,7 +137,7 @@
 
     .option-descr {
       margin-left: 24px;
-      color: #666;
+      color: $gray;
     }
   }
 }
@@ -217,8 +216,6 @@ ul.nav.nav-projects-tabs {
       white-space: normal;
       text-align: left;
       padding: 10px 15px;
-      background-color: #F9F9F9;
-      border-color: #DDD;
 
       &.dropdown-toggle {
         text-align: center;
