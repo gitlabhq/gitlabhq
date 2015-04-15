@@ -17,7 +17,7 @@
       - group = group_member.group
       %li
         .pull-right
-          - if can?(current_user, :manage_group, group)
+          - if can?(current_user, :admin_group, group)
             = link_to edit_group_path(group), class: "btn-sm btn btn-grouped" do
               %i.fa.fa-cogs
               Settings

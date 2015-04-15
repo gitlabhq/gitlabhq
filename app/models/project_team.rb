@@ -12,12 +12,12 @@ class ProjectTeam
   #   @team << [@users, :master]
   #
   def <<(args)
-    users = args.first
+    users, access, current_user = *args
 
     if users.respond_to?(:each)
-      add_users(users, args.second)
+      add_users(users, access, current_user)
     else
-      add_user(users, args.second)
+      add_user(users, access, current_user)
     end
   end
 
@@ -43,20 +43,17 @@ class ProjectTeam
     member
   end
 
-  def add_user(user, access)
-    add_users_ids([user.id], access)
-  end
-
-  def add_users(users, access)
-    add_users_ids(users.map(&:id), access)
-  end
-
-  def add_users_ids(user_ids, access)
+  def add_users(users, access, current_user = nil)
     ProjectMember.add_users_into_projects(
       [project.id],
-      user_ids,
-      access
+      users,
+      access,
+      current_user
     )
+  end
+
+  def add_user(user, access, current_user = nil)
+    add_users([user], access, current_user)
   end
 
   # Remove all users from project team
@@ -88,7 +85,7 @@ class ProjectTeam
     @masters ||= fetch_members(:masters)
   end
 
-  def import(source_project)
+  def import(source_project, current_user = nil)
     target_project = project
 
     source_members = source_project.project_members.to_a
@@ -96,13 +93,14 @@ class ProjectTeam
 
     source_members.reject! do |member|
       # Skip if user already present in team
-      target_user_ids.include?(member.user_id)
+      !member.invite? && target_user_ids.include?(member.user_id)
     end
 
     source_members.map! do |member|
       new_member = member.dup
       new_member.id = nil
       new_member.source = target_project
+      new_member.created_by = current_user
       new_member
     end
 

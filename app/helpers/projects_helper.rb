@@ -1,6 +1,10 @@
 module ProjectsHelper
-  def remove_from_project_team_message(project, user)
-    "You are going to remove #{user.name} from #{project.name} project team. Are you sure?"
+  def remove_from_project_team_message(project, member)
+    if member.user
+      "You are going to remove #{member.user.name} from #{project.name} project team. Are you sure?"
+    else
+      "You are going to revoke the invitation for #{member.invite_email} to join #{project.name} project team. Are you sure?"
+    end
   end
 
   def link_to_project(project)

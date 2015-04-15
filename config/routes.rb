@@ -53,6 +53,16 @@ Gitlab::Application.routes.draw do
   end
   get '/s/:username' => 'snippets#user_index', as: :user_snippets, constraints: { username: /.*/ }
 
+  #
+  # Invites
+  #
+
+  resources :invites, only: [:show], constraints: { id: /[A-Za-z0-9_-]+/ } do
+    member do
+      post :accept
+      match :decline, via: [:get, :post]
+    end
+  end
 
   #
   # Import
@@ -260,6 +270,7 @@ Gitlab::Application.routes.draw do
 
     scope module: :groups do
       resources :group_members, only: [:index, :create, :update, :destroy] do
+        post :resend_invite, on: :member
         delete :leave, on: :collection
       end
 
@@ -485,6 +496,10 @@ Gitlab::Application.routes.draw do
             # from another project
             get :import
             post :apply_import
+          end
+
+          member do
+            post :resend_invite
           end
         end
 

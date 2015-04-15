@@ -46,19 +46,18 @@ class Group < Namespace
     @owners ||= group_members.owners.map(&:user)
   end
 
-  def add_users(user_ids, access_level)
-    user_ids.compact.each do |user_id|
-      user = self.group_members.find_or_initialize_by(user_id: user_id)
-      user.update_attributes(access_level: access_level)
+  def add_users(user_ids, access_level, current_user = nil)
+    user_ids.each do |user_id|
+      Member.add_user(self.group_members, user_id, access_level, current_user)
     end
   end
 
-  def add_user(user, access_level)
-    self.group_members.create(user_id: user.id, access_level: access_level)
+  def add_user(user, access_level, current_user = nil)
+    add_users([user], access_level, current_user)
   end
 
-  def add_owner(user)
-    self.add_user(user, Gitlab::Access::OWNER)
+  def add_owner(user, current_user = nil)
+    self.add_user(user, Gitlab::Access::OWNER, current_user)
   end
 
   def has_owner?(user)

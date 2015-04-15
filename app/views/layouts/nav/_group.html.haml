@@ -30,7 +30,7 @@
       %span
         Members
 
-  - if can?(current_user, :manage_group, @group)
+  - if can?(current_user, :admin_group, @group)
     = nav_link(html_options: { class: "#{"active" if group_settings_page?} separate-item" }) do
       = link_to edit_group_path(@group), title: 'Settings', class: "tab no-highlight" do
         %i.fa.fa-cogs

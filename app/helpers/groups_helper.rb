@@ -1,6 +1,10 @@
 module GroupsHelper
-  def remove_user_from_group_message(group, user)
-    "Are you sure you want to remove \"#{user.name}\" from \"#{group.name}\"?"
+  def remove_user_from_group_message(group, member)
+    if member.user
+      "Are you sure you want to remove \"#{member.user.name}\" from \"#{group.name}\"?"
+    else
+      "Are you sure you want to revoke the invitation for \"#{member.invite_email}\" to join \"#{group.name}\"?"
+    end
   end
 
   def leave_group_message(group)
