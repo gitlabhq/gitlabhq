@@ -122,6 +122,7 @@ module Issuable
     users = []
     users << author
     users << assignee if is_assigned?
+    
     mentions = []
     mentions << self.mentioned_users(current_user)
 

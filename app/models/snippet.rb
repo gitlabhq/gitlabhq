@@ -91,6 +91,8 @@ class Snippet < ActiveRecord::Base
     users = []
     users << author
 
+    mentions = []
+    
     notes.each do |note|
       users << note.author
       mentions << note.mentioned_users(current_user)

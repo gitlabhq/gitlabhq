@@ -138,6 +138,7 @@ class Commit
     users = []
     users << author
     users << committer
+    
     mentions = []
     mentions << self.mentioned_users(current_user, project)
 
