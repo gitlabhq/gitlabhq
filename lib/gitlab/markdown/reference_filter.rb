@@ -40,7 +40,7 @@ module Gitlab
       # Yields the current node's String contents. The result of the block will
       # replace the node's existing content and update the current document.
       #
-      # Returns the updated Nokogiri::Document object.
+      # Returns the updated Nokogiri::XML::Document object.
       def replace_text_nodes_matching(pattern)
         doc.search('text()').each do |node|
           content = node.to_html
