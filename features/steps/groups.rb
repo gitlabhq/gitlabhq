@@ -31,6 +31,23 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     end
   end
 
+  step 'I select "sjobs@apple.com" as "Reporter"' do
+    within ".users-group-form" do
+      select2("sjobs@apple.com", from: "#user_ids", multiple: true)
+      select "Reporter", from: "access_level"
+    end
+
+    click_button "Add users to group"
+  end
+
+  step 'I should see "sjobs@apple.com" in team list as invited "Reporter"' do
+    within '.well-list' do
+      page.should have_content('sjobs@apple.com')
+      page.should have_content('invited')
+      page.should have_content('Reporter')
+    end
+  end
+
   step 'I should see group "Owned" projects list' do
     Group.find_by(name: "Owned").projects.each do |project|
       page.should have_link project.name

@@ -126,7 +126,7 @@ class ApplicationController < ActionController::Base
 
   def repository
     @repository ||= project.repository
-  rescue Grit::NoSuchPathError(e)
+  rescue Grit::NoSuchPathError => e
     log_exception(e)
     nil
   end

@@ -27,10 +27,6 @@ class GroupMember < Member
   scope :with_group, ->(group) { where(source_id: group.id) }
   scope :with_user, ->(user) { where(user_id: user.id) }
 
-  after_create :post_create_hook
-  after_update :notify_update
-  after_destroy :post_destroy_hook
-
   def self.access_level_roles
     Gitlab::Access.options_with_owner
   end
@@ -43,26 +39,37 @@ class GroupMember < Member
     access_level
   end
 
-  def post_create_hook
-    notification_service.new_group_member(self)
-    system_hook_service.execute_hooks_for(self, :create)
+  private
+
+  def send_invite
+    notification_service.invite_group_member(self, @raw_invite_token)
+
+    super
   end
 
-  def notify_update
+  def post_create_hook
+    notification_service.new_group_member(self)
+
+    super
+  end
+
+  def post_update_hook
     if access_level_changed?
       notification_service.update_group_member(self)
     end
+
+    super
   end
 
-  def post_destroy_hook
-    system_hook_service.execute_hooks_for(self, :destroy)
+  def after_accept_invite
+    notification_service.accept_group_invite(self)
+
+    super
   end
 
-  def system_hook_service
-    SystemHooksService.new
-  end
+  def after_decline_invite
+    notification_service.decline_group_invite(self)
 
-  def notification_service
-    NotificationService.new
+    super
   end
 end

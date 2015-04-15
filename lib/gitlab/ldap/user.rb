@@ -39,6 +39,8 @@ module Gitlab
       end
 
       def update_user_attributes
+        return unless persisted?
+
         gl_user.skip_reconfirmation!
         gl_user.email = auth_hash.email
 
@@ -53,12 +55,16 @@ module Gitlab
         gl_user.changed? || gl_user.identities.any?(&:changed?)
       end
 
-      def needs_blocking?
-        false
+      def block_after_signup?
+        ldap_config.block_auto_created_users
       end
 
       def allowed?
         Gitlab::LDAP::Access.allowed?(gl_user)
+      end
+
+      def ldap_config
+        Gitlab::LDAP::Config.new(auth_hash.provider)
       end
     end
   end

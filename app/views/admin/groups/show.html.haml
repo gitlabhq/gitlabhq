@@ -60,7 +60,7 @@
 
         = form_tag members_update_admin_group_path(@group), id: "new_project_member", class: "bulk_import", method: :put  do
           %div
-            = users_select_tag(:user_ids, multiple: true)
+            = users_select_tag(:user_ids, multiple: true, email_user: true)
           %div.prepend-top-10
             = select_tag :access_level, options_for_select(GroupMember.access_level_roles), class: "project-access-select select2"
           %hr
@@ -74,13 +74,18 @@
       %ul.well-list.group-users-list
         - @members.each do |member|
           - user = member.user
-          %li{class: dom_class(member), id: dom_id(user)}
+          %li{class: dom_class(member), id: (dom_id(user) if user)}
             .list-item-name
-              %strong
-                = link_to user.name, admin_user_path(user)
+              - if user
+                %strong
+                  = link_to user.name, admin_user_path(user)
+              - else
+                %strong
+                  = member.invite_email
+                (invited)
             %span.pull-right.light
               = member.human_access
-              = link_to group_group_member_path(@group, member), data: { confirm: remove_user_from_group_message(@group, user) }, method: :delete, remote: true, class: "btn-xs btn btn-remove", title: 'Remove user from group' do
+              = link_to group_group_member_path(@group, member), data: { confirm: remove_user_from_group_message(@group, member) }, method: :delete, remote: true, class: "btn-xs btn btn-remove", title: 'Remove user from group' do
                 %i.fa.fa-minus.fa-inverse
       .panel-footer
         = paginate @members, param_name: 'members_page', theme: 'gitlab'

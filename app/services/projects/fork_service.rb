@@ -38,7 +38,7 @@ module Projects
             #First save the DB entries as they can be rolled back if the repo fork fails
             project.build_forked_project_link(forked_to_project_id: project.id, forked_from_project_id: @from_project.id)
             if project.save
-              project.team << [@current_user, :master]
+              project.team << [@current_user, :master, @current_user]
             end
 
             #Now fork the repo

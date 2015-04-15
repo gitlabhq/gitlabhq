@@ -51,6 +51,11 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   # disable this setting, because the userPrincipalName contains an '@'.
   allow_username_or_email_login: false
 
+  # To maintain tight control over the number of active users on your GitLab installation,
+  # enable this setting to keep new users blocked until they have been cleared by the admin 
+  # (default: false).
+  block_auto_created_users: false
+
   # Base where we can search for users
   #
   #   Ex. ou=People,dc=gitlab,dc=example

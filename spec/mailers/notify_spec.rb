@@ -725,6 +725,11 @@ describe Notify do
           sender = subject.header[:from].addrs[0]
           expect(sender.address).to eq(user.email)
         end
+
+        it "is set to reply to the committer email" do
+          sender = subject.header[:reply_to].addrs[0]
+          expect(sender.address).to eq(user.email)
+        end
       end
 
       context "when the committer email domain is not completely within the GitLab domain" do
@@ -738,6 +743,11 @@ describe Notify do
           sender = subject.header[:from].addrs[0]
           expect(sender.address).to eq(gitlab_sender)
         end
+
+        it "is set to reply to the default email" do
+          sender = subject.header[:reply_to].addrs[0]
+          expect(sender.address).to eq(gitlab_sender_reply_to)
+        end
       end
 
       context "when the committer email domain is outside the GitLab domain" do
@@ -750,6 +760,11 @@ describe Notify do
         it "is sent from the default email" do
           sender = subject.header[:from].addrs[0]
           expect(sender.address).to eq(gitlab_sender)
+        end
+
+        it "is set to reply to the default email" do
+          sender = subject.header[:reply_to].addrs[0]
+          expect(sender.address).to eq(gitlab_sender_reply_to)
         end
       end
     end
