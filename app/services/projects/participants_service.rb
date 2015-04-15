@@ -21,8 +21,8 @@ module Projects
                 merge_request = project.merge_requests.find_by_iid(id)
                 merge_request ? merge_request.participants(current_user) : []
               when "Commit"
-                author_ids = Note.for_commit_id(id).pluck(:author_id).uniq
-                User.where(id: author_ids)
+                commit = project.repository.commit(id)
+                commit ? commit.participants(project, current_user) : []
               else
                 []
               end
