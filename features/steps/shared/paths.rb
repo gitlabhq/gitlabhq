@@ -83,6 +83,10 @@ module SharedPaths
     visit search_path
   end
 
+  step 'I visit dashboard help page' do
+    visit help_path
+  end
+
   step 'I visit dashboard groups page' do
     visit dashboard_groups_path
   end
