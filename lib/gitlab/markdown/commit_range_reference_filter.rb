@@ -24,6 +24,12 @@ module Gitlab
         end
       end
 
+      def initialize(*args)
+        super
+
+        @commit_map = {}
+      end
+
       # Pattern used to extract commit range references from text
       #
       # The beginning and ending SHA1 sums can be between 6 and 40 hex
@@ -76,10 +82,16 @@ module Gitlab
         [from_id, to_id]
       end
 
+      def commit(id)
+        unless @commit_map[id]
+          @commit_map[id] = project.repository.commit(id)
+        end
+
+        @commit_map[id]
+      end
+
       def valid_range?(project, from_id, to_id)
-        project.valid_repo? &&
-          project.repository.commit(from_id) &&
-          project.repository.commit(to_id)
+        project.valid_repo? && commit(from_id) && commit(to_id)
       end
 
       def url_for_commit_range(project, from_id, to_id)
