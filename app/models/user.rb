@@ -49,6 +49,7 @@
 #  password_automatically_set    :boolean          default(FALSE)
 #  bitbucket_access_token        :string(255)
 #  bitbucket_access_token_secret :string(255)
+#  public_email                  :string(255)      default(""), not null
 #
 
 require 'carrierwave/orm/activerecord'
@@ -123,6 +124,7 @@ class User < ActiveRecord::Base
   validates :name, presence: true
   validates :email, presence: true, email: { strict_mode: true }, uniqueness: true
   validates :notification_email, presence: true, email: { strict_mode: true }
+  validates :public_email, presence: true, email: { strict_mode: true }, allow_blank: true, uniqueness: true
   validates :bio, length: { maximum: 255 }, allow_blank: true
   validates :projects_limit, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :username,
@@ -142,6 +144,7 @@ class User < ActiveRecord::Base
   before_validation :generate_password, on: :create
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: ->(user) { user.email_changed? }
+  before_validation :set_public_email, if: ->(user) { user.public_email_changed? }
 
   before_save :ensure_authentication_token
   after_save :ensure_namespace_correct
@@ -442,8 +445,16 @@ class User < ActiveRecord::Base
     @ldap_identity ||= identities.find_by(["provider LIKE ?", "ldap%"])
   end
 
+  def project_deploy_keys
+    DeployKey.in_projects(self.authorized_projects.pluck(:id))
+  end
+
   def accessible_deploy_keys
-    DeployKey.in_projects(self.authorized_projects.pluck(:id)).uniq
+    @accessible_deploy_keys ||= begin
+      key_ids = project_deploy_keys.pluck(:id)
+      key_ids.push(*DeployKey.are_public.pluck(:id))
+      DeployKey.where(id: key_ids)
+    end
   end
 
   def created_by
@@ -460,6 +471,12 @@ class User < ActiveRecord::Base
   def set_notification_email
     if self.notification_email.blank? || !self.all_emails.include?(self.notification_email)
       self.notification_email = self.email
+    end
+  end
+
+  def set_public_email
+    if self.public_email.blank? || !self.all_emails.include?(self.public_email)
+      self.public_email = ''
     end
   end
 
@@ -514,13 +531,13 @@ class User < ActiveRecord::Base
   end
 
   def full_website_url
-    return "http://#{website_url}" if website_url !~ /^https?:\/\//
+    return "http://#{website_url}" if website_url !~ /\Ahttps?:\/\//
 
     website_url
   end
 
   def short_website_url
-    website_url.gsub(/https?:\/\//, '')
+    website_url.sub(/\Ahttps?:\/\//, '')
   end
 
   def all_ssh_keys

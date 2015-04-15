@@ -83,7 +83,7 @@ module Projects
       system_hook_service.execute_hooks_for(@project, :create)
 
       unless @project.group
-        @project.team << [current_user, :master]
+        @project.team << [current_user, :master, current_user]
       end
 
       @project.update_column(:last_activity_at, @project.created_at)

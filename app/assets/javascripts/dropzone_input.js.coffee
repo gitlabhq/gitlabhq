@@ -10,6 +10,7 @@ class @DropzoneInput
     iconSpinner = "<i class=\"fa fa-spinner fa-spin div-dropzone-icon\"></i>"
     btnAlert = "<button type=\"button\"" + alertAttr + ">&times;</button>"
     project_uploads_path = window.project_uploads_path or null
+    max_file_size = gon.max_file_size or 10
 
     form_textarea = $(form).find("textarea.markdown-area")
     form_textarea.wrap "<div class=\"div-dropzone\"></div>"
@@ -76,7 +77,7 @@ class @DropzoneInput
       dictDefaultMessage: ""
       clickable: true
       paramName: "file"
-      maxFilesize: 10
+      maxFilesize: max_file_size
       uploadMultiple: false
       headers:
         "X-CSRF-Token": $("meta[name=\"csrf-token\"]").attr("content")
@@ -108,9 +109,10 @@ class @DropzoneInput
         return
 
       error: (temp, errorMessage) ->
-        checkIfMsgExists = $(".error-alert").children().length
+        errorAlert = $(form).find('.error-alert')
+        checkIfMsgExists = errorAlert.children().length
         if checkIfMsgExists is 0
-          $(".error-alert").append divAlert
+          errorAlert.append divAlert
           $(".div-dropzone-alert").append btnAlert + errorMessage
         return
 
@@ -221,9 +223,10 @@ class @DropzoneInput
         "display": "none"
 
     showError = (message) ->
-      checkIfMsgExists = $(".error-alert").children().length
+      errorAlert = $(form).find('.error-alert')
+      checkIfMsgExists = errorAlert.children().length
       if checkIfMsgExists is 0
-        $(".error-alert").append divAlert
+        errorAlert.append divAlert
         $(".div-dropzone-alert").append btnAlert + message
 
     closeAlertMessage = ->

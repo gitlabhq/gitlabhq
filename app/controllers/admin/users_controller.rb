@@ -72,8 +72,8 @@ class Admin::UsersController < Admin::ApplicationController
     end
 
     respond_to do |format|
+      user.skip_reconfirmation!
       if user.update_attributes(user_params_with_pass)
-        user.confirm!
         format.html { redirect_to [:admin, user], notice: 'User was successfully updated.' }
         format.json { head :ok }
       else

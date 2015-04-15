@@ -198,11 +198,11 @@ class Ability
         ])
       end
 
-      # Only group owner and administrators can manage group
+      # Only group owner and administrators can admin group
       if group.has_owner?(user) || user.admin?
         rules.push(*[
-          :manage_group,
-          :manage_namespace
+          :admin_group,
+          :admin_namespace
         ])
       end
 
@@ -212,11 +212,11 @@ class Ability
     def namespace_abilities(user, namespace)
       rules = []
 
-      # Only namespace owner and administrators can manage it
+      # Only namespace owner and administrators can admin it
       if namespace.owner == user || user.admin?
         rules.push(*[
           :create_projects,
-          :manage_namespace
+          :admin_namespace
         ])
       end
 
@@ -254,7 +254,7 @@ class Ability
       rules = []
       target_user = subject.user
       group = subject.group
-      can_manage = group_abilities(user, group).include?(:manage_group)
+      can_manage = group_abilities(user, group).include?(:admin_group)
       if can_manage && (user != target_user)
         rules << :modify_group_member
         rules << :destroy_group_member

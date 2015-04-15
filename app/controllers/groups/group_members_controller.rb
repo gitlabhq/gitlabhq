@@ -11,6 +11,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   def index
     @project = @group.projects.find(params[:project_id]) if params[:project_id]
     @members = @group.group_members
+    @members = @members.non_invite unless can?(current_user, :admin_group, @group)
 
     if params[:search].present?
       users = @group.users.search(params[:search]).to_a
@@ -25,7 +26,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
     access_level = params[:access_level]
     user_ids = params[:user_ids].split(',')
 
-    @group.add_users(user_ids, access_level)
+    @group.add_users(user_ids, access_level, current_user)
     group_members = @group.group_members.where(user_id: user_ids)
 
     group_members.each do |group_member|
@@ -52,11 +53,25 @@ class Groups::GroupMembersController < Groups::ApplicationController
       log_audit_event(@group_member, action: :destroy)
 
       respond_to do |format|
-        format.html { redirect_to group_group_members_path(@group), notice: 'User was  successfully removed from group.' }
+        format.html { redirect_to group_group_members_path(@group), notice: 'User was successfully removed from group.' }
         format.js { render nothing: true }
       end
     else
       return render_403
+    end
+  end
+
+  def resend_invite
+    redirect_path = group_group_members_path(@group)
+
+    @group_member = @group.group_members.find(params[:id])
+
+    if @group_member.invite?
+      @group_member.resend_invite
+
+      redirect_to redirect_path, notice: 'The invitation was successfully resent.'
+    else
+      redirect_to redirect_path, alert: 'The invitation has already been accepted.'
     end
   end
 
@@ -65,9 +80,13 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
     if can?(current_user, :destroy_group_member, @group_member)
       @group_member.destroy
+<<<<<<< HEAD
       log_audit_event(@group_member, action: :destroy)
 
       redirect_to(dashboard_groups_path, info: "You left #{group.name} group.")
+=======
+      redirect_to(dashboard_groups_path, notice: "You left #{group.name} group.")
+>>>>>>> 9193b94ecec58c7c386f9c1b5a6f06f01b1ef42a
     else
       return render_403
     end

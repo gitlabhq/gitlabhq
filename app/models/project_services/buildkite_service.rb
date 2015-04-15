@@ -20,9 +20,7 @@
 
 require "addressable/uri"
 
-# Buildbox renamed to Buildkite, but for backwards compatability with the STI
-# of Services, the class name is kept as "Buildbox"
-class BuildboxService < CiService
+class BuildkiteService < CiService
   ENDPOINT = "https://buildkite.com"
 
   prop_accessor :project_url, :token

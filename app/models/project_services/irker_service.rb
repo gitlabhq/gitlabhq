@@ -148,7 +148,7 @@ class IrkerService < Service
 
   def consider_uri(uri)
     # Authorize both irc://domain.com/#chan and irc://domain.com/chan
-    if uri.is_a?(URI) && uri.scheme[/^ircs?$/] && !uri.path.nil?
+    if uri.is_a?(URI) && uri.scheme[/^ircs?\z/] && !uri.path.nil?
       # Do not authorize irc://domain.com/
       if uri.fragment.nil? && uri.path.length > 1
         uri.to_s

@@ -9,6 +9,8 @@ class @UsersSelect
       @groupId = $(select).data('group-id')
       showNullUser = $(select).data('null-user')
       showAnyUser = $(select).data('any-user')
+      showEmailUser = $(select).data('email-user')
+      firstUser = $(select).data('first-user')
 
       $(select).select2
         placeholder: "Search for a user"
@@ -19,24 +21,40 @@ class @UsersSelect
             data = { results: users }
 
             if query.term.length == 0
-              anyUser = {
-                name: 'Any',
-                avatar: null,
-                username: 'none',
-                id: null
-              }
-
-              nullUser = {
-                name: 'Unassigned',
-                avatar: null,
-                username: 'none',
-                id: 0
-              }
+              if firstUser
+                # Move current user to the front of the list
+                for obj, index in data.results
+                  if obj.username == firstUser
+                    data.results.splice(index, 1)
+                    data.results.unshift(obj)
+                    break
 
               if showNullUser
+                nullUser = {
+                  name: 'Unassigned',
+                  avatar: null,
+                  username: 'none',
+                  id: 0
+                }
                 data.results.unshift(nullUser)
+
               if showAnyUser
+                anyUser = {
+                  name: 'Any',
+                  avatar: null,
+                  username: 'none',
+                  id: null
+                }
                 data.results.unshift(anyUser)
+
+            if showEmailUser && data.results.length == 0 && query.term.match(/^[^@]+@[^@]+$/)
+              emailUser = {
+                name: "Invite \"#{query.term}\"",
+                avatar: null,
+                username: query.term,
+                id: query.term
+              }
+              data.results.unshift(emailUser)
 
             query.callback(data)
 

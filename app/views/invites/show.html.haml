@@ -1,0 +1,29 @@
+%h3.page-title Invitation
+
+%p
+  You have been invited
+  - if inviter = @member.created_by
+    by
+    = link_to inviter.name, user_url(inviter)
+  to join 
+  - case @member.source
+  - when Project
+    - project = @member.source
+    project
+    %strong
+      = link_to project.name_with_namespace, namespace_project_url(project.namespace, project)
+  - when Group
+    - group = @member.source
+    group
+    %strong
+      = link_to group.name, group_url(group)
+  as #{@member.human_access}.
+
+- if @member.source.users.include?(current_user)
+  %p
+    However, you are already a member of this #{@member.source.is_a?(Group) ? "group" : "project"}.
+    Sign in using a different account to accept the invitation.
+- else
+  .actions
+    = link_to "Accept invitation", accept_invite_url(@token), method: :post, class: "btn btn-success"
+    = link_to "Decline", decline_invite_url(@token), method: :post, class: "btn btn-danger prepend-left-10"

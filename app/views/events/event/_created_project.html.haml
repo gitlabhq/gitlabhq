@@ -18,7 +18,7 @@
           %a.twitter-share-button{ |
             href: "https://twitter.com/share", |
             "data-url" => event.project.web_url, |
-            "data-text" => "I just created a new project in GitLab! GitLab is version control on your server.", |
+            "data-text" => "I just #{event.project.imported? ? "imported" : "created"} a new project in GitLab! GitLab is version control on your server.", |
             "data-size" => "medium", |
             "data-related" => "gitlab", |
             "data-hashtags" => "gitlab", |

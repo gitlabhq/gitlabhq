@@ -199,7 +199,7 @@ class Repository
   def changelog
     cache.fetch(:changelog) do
       tree(:head).blobs.find do |file|
-        file.name =~ /^(changelog|history)/i
+        file.name =~ /\A(changelog|history)/i
       end
     end
   end
@@ -207,7 +207,7 @@ class Repository
   def license
     cache.fetch(:license) do
       tree(:head).blobs.find do |file|
-        file.name =~ /^license/i
+        file.name =~ /\Alicense/i
       end
     end
   end

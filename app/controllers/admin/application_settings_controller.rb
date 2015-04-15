@@ -39,6 +39,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :sign_in_text,
       :home_page_url,
       :help_text,
+      :max_attachment_size,
       restricted_visibility_levels: []
     )
   end

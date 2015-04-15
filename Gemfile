@@ -39,7 +39,7 @@ gem "browser"
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 7.1.3'
+gem "gitlab_git", '~> 7.1.6'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 2.0.0.rc2', require: 'grack'
@@ -95,7 +95,7 @@ gem 'html-pipeline-gitlab', '~> 0.1'
 gem "github-markup"
 
 # Required markup gems by github-markdown
-gem 'redcarpet', '~> 3.1.2'
+gem 'redcarpet', '~> 3.2.3'
 gem 'RedCloth'
 gem 'rdoc', '~>3.6'
 gem 'org-ruby', '= 0.9.12'
@@ -123,7 +123,6 @@ gem 'slim'
 gem 'sinatra', require: nil
 gem 'sidekiq', '~> 3.3'
 gem 'sidetiq', '0.6.3'
-gem 'sidekiq-limit_fetch'
 
 # HTTP requests
 gem "httparty"
@@ -210,7 +209,6 @@ group :development do
   gem "letter_opener"
   gem 'quiet_assets', '~> 1.0.1'
   gem 'rack-mini-profiler', require: false
-  gem "byebug"
 
   # Better errors handler
   gem 'better_errors'
@@ -259,6 +257,8 @@ group :development, :test do
   gem "spring", '~> 1.3.1'
   gem "spring-commands-rspec", '1.0.4'
   gem "spring-commands-spinach", '1.0.0'
+  
+  gem "byebug"
 end
 
 group :test do

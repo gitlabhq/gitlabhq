@@ -9,8 +9,7 @@ describe Gitlab::GitoriousImport::ProjectCreator do
     allow_any_instance_of(Project).to receive(:add_import_job)
 
     project_creator = Gitlab::GitoriousImport::ProjectCreator.new(repo, namespace, user)
-    project_creator.execute
-    project = Project.last
+    project = project_creator.execute
 
     expect(project.name).to eq("Bar Baz Qux")
     expect(project.path).to eq("bar-baz-qux")

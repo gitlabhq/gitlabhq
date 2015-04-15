@@ -26,6 +26,10 @@ class @MergeRequest
           @top = ($('.issuable-affix').offset().top - 70)
         bottom: ->
           @bottom = $('.footer').outerHeight(true)
+      $('.issuable-affix').on 'affix.bs.affix', ->
+        $(@).width($(@).outerWidth())
+      .on 'affixed-top.bs.affix affixed-bottom.bs.affix', ->
+        $(@).width('')
 
   # Local jQuery finder
   $: (selector) ->
@@ -160,4 +164,3 @@ class @MergeRequest
           else
             setTimeout(merge_request.mergeInProgress, 3000)
       dataType: 'json'
-

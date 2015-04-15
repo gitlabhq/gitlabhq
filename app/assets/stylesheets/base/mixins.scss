@@ -119,6 +119,22 @@
   li {
     line-height: 1.5;
   }
+
+  a[href*="/uploads/"], a[href*="storage.googleapis.com/google-code-attachments/"] {
+    &:before {
+      margin-right: 4px;
+
+      font: normal normal normal 14px/1 FontAwesome;
+      font-size: inherit;
+      text-rendering: auto;
+      -webkit-font-smoothing: antialiased;
+      content: "\f0c6";
+    }
+
+    &:hover:before {
+      text-decoration: none;
+    }
+  }
 }
 
 @mixin str-truncated($max_width: 82%) {

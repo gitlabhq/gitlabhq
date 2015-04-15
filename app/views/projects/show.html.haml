@@ -4,15 +4,27 @@
 
 = render "home_panel"
 
-- readme = @repository.readme
 %ul.nav.nav-tabs
   %li.active
     = link_to '#tab-activity', 'data-toggle' => 'tab' do
       Activity
-  - if readme
+  - if @repository.readme
     %li
       = link_to '#tab-readme', 'data-toggle' => 'tab' do
         Readme
+  - if @repository.changelog
+    %li
+      = link_to changelog_url(@project) do
+        Changelog
+  - if @repository.contribution_guide
+    %li
+      = link_to contribution_guide_url(@project) do
+        Contribution guide
+  - if @repository.license
+    %li
+      = link_to license_url(@project) do
+        License
+
   .project-home-links
     - unless @project.empty_repo?
       = link_to pluralize(number_with_delimiter(@repository.commit_count), 'commit'), namespace_project_commits_path(@project.namespace, @project, @ref || @repository.root_ref)
@@ -48,25 +60,19 @@
 
           - unless @project.empty_repo?
             = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-block' do
+              %i.fa.fa-exchange
               Compare code
+
+            - if can?(current_user, :download_code, @project)
+              = render 'projects/repositories/download_archive', split_button: true, btn_class: 'btn-block'
 
             - if version = @repository.version
               - detail_url = changelog_url(@project) || version_url(@project)
               = link_to detail_url, class: 'btn btn-block' do
+                %i.fa.fa-file-text-o
                 Version:
                 %span.count
                   = @repository.blob_by_oid(version.id).data
-            - elsif @repository.changelog
-              = link_to changelog_url(@project), class: 'btn btn-block' do
-                View changelog
-
-            - if @repository.contribution_guide
-              = link_to contribution_guide_url(@project), class: 'btn btn-block' do
-                View contribution guide
-
-            - if @repository.license
-              = link_to license_url(@project), class: 'btn btn-block' do
-                View license
 
         .prepend-top-10.append-bottom-10
           %p
@@ -79,11 +85,6 @@
             - else
               #{link_to @project.owner_name, @project.owner}
 
-        - unless @project.empty_repo?
-          - if can? current_user, :download_code, @project
-            %hr
-            .prepend-top-10.append-bottom-10
-              = render 'projects/repositories/download_archive', split_button: true
 
         .prepend-top-10
           - @project.ci_services.each do |ci_service|
@@ -96,7 +97,7 @@
                 %span.light CI provided by
                 = link_to ci_service.title, ci_service.builds_path, :'data-no-turbolink' => 'data-no-turbolink'
 
-  - if readme
+  - if readme = @repository.readme
     .tab-pane#tab-readme
       %article.readme-holder#README
         = link_to namespace_project_blob_path(@project.namespace, @project, tree_join(@repository.root_ref, readme.name)) do

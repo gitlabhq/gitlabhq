@@ -6,7 +6,17 @@ Feature: Project Deploy Keys
   Scenario: I should see deploy keys list
     Given project has deploy key
     When I visit project deploy keys page
-    Then I should see project deploy keys
+    Then I should see project deploy key
+
+  Scenario: I should see project deploy keys
+    Given other project has deploy key
+    When I visit project deploy keys page
+    Then I should see other project deploy key 
+
+  Scenario: I should see public deploy keys
+    Given public deploy key exists
+    When I visit project deploy keys page
+    Then I should see public deploy key
 
   Scenario: I add new deploy key
     Given I visit project deploy keys page
@@ -15,8 +25,15 @@ Feature: Project Deploy Keys
     Then I should be on deploy keys page
     And I should see newly created deploy key
 
-  Scenario: I attach deploy key to project
+  Scenario: I attach other project deploy key to project
     Given other project has deploy key
+    And I visit project deploy keys page
+    When I click attach deploy key
+    Then I should be on deploy keys page
+    And I should see newly created deploy key
+
+  Scenario: I attach public deploy key to project
+    Given public deploy key exists
     And I visit project deploy keys page
     When I click attach deploy key
     Then I should be on deploy keys page

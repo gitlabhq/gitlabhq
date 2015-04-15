@@ -27,10 +27,6 @@ class ProjectMember < Member
   validates_format_of :source_type, with: /\AProject\z/
   default_scope { where(source_type: SOURCE_TYPE) }
 
-  after_create :post_create_hook
-  after_update :post_update_hook
-  after_destroy :post_destroy_hook
-
   scope :in_project, ->(project) { where(source_id: project.id) }
   scope :in_projects, ->(projects) { where(source_id: projects.pluck(:id)) }
   scope :with_user, ->(user) { where(user_id: user.id) }
@@ -55,7 +51,7 @@ class ProjectMember < Member
     #     :master
     #   )
     #
-    def add_users_into_projects(project_ids, user_ids, access)
+    def add_users_into_projects(project_ids, user_ids, access, current_user = nil)
       access_level = if roles_hash.has_key?(access)
                        roles_hash[access]
                      elsif roles_hash.values.include?(access.to_i)
@@ -64,12 +60,14 @@ class ProjectMember < Member
                        raise "Non valid access"
                      end
 
+      users = user_ids.map { |user_id| Member.user_for_id(user_id) }
+
       ProjectMember.transaction do
         project_ids.each do |project_id|
-          user_ids.each do |user_id|
-            member = ProjectMember.new(access_level: access_level, user_id: user_id)
-            member.source_id = project_id
-            member.save
+          project = Project.find(project_id)
+
+          users.each do |user|
+            Member.add_user(project.project_members, user, access_level, current_user)
           end
         end
       end
@@ -82,6 +80,7 @@ class ProjectMember < Member
     def truncate_teams(project_ids)
       ProjectMember.transaction do
         members = ProjectMember.where(source_id: project_ids)
+        
         members.each do |member|
           member.destroy
         end
@@ -109,8 +108,20 @@ class ProjectMember < Member
     access_level
   end
 
+  def project
+    source
+  end
+
   def owner?
     project.owner == user
+  end
+
+  private
+
+  def send_invite
+    notification_service.invite_project_member(self, @raw_invite_token)
+
+    super
   end
 
   def post_create_hook
@@ -119,31 +130,36 @@ class ProjectMember < Member
       notification_service.new_project_member(self)
     end
     
-    system_hook_service.execute_hooks_for(self, :create)
+    super
   end
 
   def post_update_hook
-    notification_service.update_project_member(self) if self.access_level_changed?
+    if access_level_changed?
+      notification_service.update_project_member(self) 
+    end
+
+    super
   end
 
   def post_destroy_hook
     event_service.leave_project(self.project, self.user)
-    system_hook_service.execute_hooks_for(self, :destroy)
+
+    super
+  end
+
+  def after_accept_invite
+    notification_service.accept_project_invite(self)
+
+    super
+  end
+
+  def after_decline_invite
+    notification_service.decline_project_invite(self)
+
+    super
   end
 
   def event_service
     EventCreateService.new
-  end
-
-  def notification_service
-    NotificationService.new
-  end
-
-  def system_hook_service
-    SystemHooksService.new
-  end
-
-  def project
-    source
   end
 end

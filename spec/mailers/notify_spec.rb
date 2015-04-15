@@ -7,8 +7,11 @@ describe Notify do
 
   let(:gitlab_sender_display_name) { Gitlab.config.gitlab.email_display_name }
   let(:gitlab_sender) { Gitlab.config.gitlab.email_from }
+  let(:gitlab_sender_reply_to) { Gitlab.config.gitlab.email_reply_to }
   let(:recipient) { create(:user, email: 'recipient@example.com') }
   let(:project) { create(:project) }
+
+  around(:each) { ActionMailer::Base.deliveries.clear }
 
   before(:each) do
     email = recipient.emails.create(email: "notifications@example.com")
@@ -26,6 +29,11 @@ describe Notify do
       sender = subject.header[:from].addrs[0]
       expect(sender.display_name).to eq(gitlab_sender_display_name)
       expect(sender.address).to eq(gitlab_sender)
+    end
+
+    it 'has a Reply-To address' do
+      reply_to = subject.header[:reply_to].addresses
+      expect(reply_to).to eq([gitlab_sender_reply_to])
     end
   end
 
@@ -183,13 +191,6 @@ describe Notify do
       context 'for issues' do
         let(:issue) { create(:issue, author: current_user, assignee: assignee, project: project) }
         let(:issue_with_description) { create(:issue, author: current_user, assignee: assignee, project: project, description: Faker::Lorem.sentence) }
-        let(:issue_with_image) do
-          create(:issue,
-                 author: current_user,
-                 assignee: assignee,
-                 project: project,
-                 description: "![test](#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/uploads/12345/test.jpg)")
-        end
 
         describe 'that are new' do
           subject { Notify.new_issue_email(issue.assignee_id, issue.id) }
@@ -211,22 +212,6 @@ describe Notify do
 
           it 'contains the description' do
             is_expected.to have_body_text /#{issue_with_description.description}/
-          end
-        end
-
-        describe 'that contain images' do
-          let(:png) { File.read("#{Rails.root}/spec/fixtures/dk.png") }
-          let(:png_encoded) { Base64::encode64(png) }
-
-          before :each do
-            file_path = File.join(Rails.root, 'public', 'uploads', issue_with_image.project.path_with_namespace, '12345/test.jpg')
-            allow(File).to receive(:file?).with(file_path).and_return(true)
-            allow(File).to receive(:read).with(file_path).and_return(png)
-          end
-
-          subject { Notify.new_issue_email(issue_with_image.assignee_id, issue_with_image.id) }
-          it 'replaces attached images with inline images' do
-            is_expected.to have_body_text URI.encode(png_encoded)
           end
         end
 
@@ -294,14 +279,6 @@ describe Notify do
         let(:merge_author) { create(:user) }
         let(:merge_request) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project) }
         let(:merge_request_with_description) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project, description: Faker::Lorem.sentence) }
-        let(:merge_request_with_image) do
-           create(:merge_request,
-                  author: current_user,
-                  assignee: assignee,
-                  source_project: project,
-                  target_project: project,
-                  description: "![test](#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/uploads/12345/test.jpg)")
-         end
 
         describe 'that are new' do
           subject { Notify.new_merge_request_email(merge_request.assignee_id, merge_request.id) }
@@ -335,22 +312,6 @@ describe Notify do
 
           it 'contains the description' do
             is_expected.to have_body_text /#{merge_request_with_description.description}/
-          end
-        end
-
-        describe 'that are new and contain contain images in the description' do
-          let(:png) {File.read("#{Rails.root}/spec/fixtures/dk.png")}
-          let(:png_encoded) { Base64::encode64(png) }
-
-          before :each do
-            file_path = File.join(Rails.root, 'public', 'uploads', merge_request_with_image.project.path_with_namespace, '/12345/test.jpg')
-            allow(File).to receive(:file?).with(file_path).and_return(true)
-            allow(File).to receive(:read).with(file_path).and_return(png)
-          end
-
-          subject { Notify.new_merge_request_email(merge_request_with_image.assignee_id, merge_request_with_image.id) }
-          it 'replaces attached images with inline images' do
-            is_expected.to have_body_text URI.encode(png_encoded)
           end
         end
 
@@ -462,12 +423,9 @@ describe Notify do
     describe 'project access changed' do
       let(:project) { create(:project) }
       let(:user) { create(:user) }
-      let(:project_member) do
-        create(:project_member,
-               project: project,
-               user: user)
-      end
-
+      let(:project_member) { create(:project_member,
+                                   project: project,
+                                   user: user) }
       subject { Notify.project_access_granted_email(project_member.id) }
 
       it_behaves_like 'an email sent from GitLab'
@@ -504,32 +462,6 @@ describe Notify do
 
         it 'contains the message from the note' do
           is_expected.to have_body_text /#{note.note}/
-        end
-      end
-
-      describe 'on a commit that contains an image' do
-        let(:commit) { project.repository.commit }
-        let(:note_with_image) do
-          create(:note,
-                 project: project,
-                 author: note_author,
-                 note: "![test](#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/uploads/12345/test.jpg)")
-        end
-
-        let(:png) {File.read("#{Rails.root}/spec/fixtures/dk.png")}
-        let(:png_encoded) { Base64::encode64(png) }
-
-        before :each do
-          file_path = File.join(Rails.root, 'public', 'uploads', note_with_image.project.path_with_namespace, '12345/test.jpg')
-          allow(File).to receive(:file?).with(file_path).and_return(true)
-          allow(File).to receive(:read).with(file_path).and_return(png)
-          allow(Note).to receive(:find).with(note_with_image.id).and_return(note_with_image)
-          allow(note_with_image).to receive(:noteable).and_return(commit)
-        end
-
-        subject { Notify.note_commit_email(recipient.id, note_with_image.id) }
-        it 'replaces attached images with inline images' do
-          is_expected.to have_body_text URI.encode(png_encoded)
         end
       end
 
@@ -793,6 +725,11 @@ describe Notify do
           sender = subject.header[:from].addrs[0]
           expect(sender.address).to eq(user.email)
         end
+
+        it "is set to reply to the committer email" do
+          sender = subject.header[:reply_to].addrs[0]
+          expect(sender.address).to eq(user.email)
+        end
       end
 
       context "when the committer email domain is not completely within the GitLab domain" do
@@ -806,6 +743,11 @@ describe Notify do
           sender = subject.header[:from].addrs[0]
           expect(sender.address).to eq(gitlab_sender)
         end
+
+        it "is set to reply to the default email" do
+          sender = subject.header[:reply_to].addrs[0]
+          expect(sender.address).to eq(gitlab_sender_reply_to)
+        end
       end
 
       context "when the committer email domain is outside the GitLab domain" do
@@ -818,6 +760,11 @@ describe Notify do
         it "is sent from the default email" do
           sender = subject.header[:from].addrs[0]
           expect(sender.address).to eq(gitlab_sender)
+        end
+
+        it "is set to reply to the default email" do
+          sender = subject.header[:reply_to].addrs[0]
+          expect(sender.address).to eq(gitlab_sender_reply_to)
         end
       end
     end

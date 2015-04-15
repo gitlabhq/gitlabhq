@@ -1,23 +1,42 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.10.0 (unreleased)
+  - Allow users to be invited by email to join a group or project.
+  - Don't crash when project repository doesn't exist.
+  - Add config var to block auto-created LDAP users.
+  - Don't use HTML ellipsis in EmailsOnPush subject truncated commit message.
+  - Set EmailsOnPush reply-to address to committer email when enabled.
+  - Fix broken file browsing with a submodule that contains a relative link (Stan Hu)
+  - Fix persistent XSS vulnerability around profile website URLs.
+  - Fix project import URL regex to prevent arbitary local repos from being imported.
+  - Fix directory traversal vulnerability around uploads routes.
+  - Fix directory traversal vulnerability around help pages.
+  - Don't leak existence of project via search autocomplete.
+  - Don't leak existence of group or project via search.
+  - Fix bug where Wiki pages that included a '/' were no longer accessible (Stan Hu)
+  - Fix bug where error messages from Dropzone would not be displayed on the issues page (Stan Hu)
+  - Add ability to configure Reply-To address in gitlab.yml (Stan Hu)
+  - Move current user to the top of the list in assignee/author filters (Stan Hu)
   - Fix broken side-by-side diff view on merge request page (Stan Hu)
   - Set Application controller default URL options to ensure all url_for calls are consistent (Stan Hu)
   - Allow HTML tags in Markdown input
   - Fix code unfold not working on Compare commits page (Stan Hu)
+  - Fix generating SSH key fingerprints with OpenSSH 6.8. (Sašo Stanovnik)
+  - Include missing events and fix save functionality in admin service template settings form (Stan Hu)
+  - Fix "Import projects from" button to show the correct instructions (Stan Hu)
   - Fix dots in Wiki slugs causing errors (Stan Hu)
+  - Make maximum attachment size configurable via Application Settings (Stan Hu)
   - Update poltergeist to version 1.6.0 to support PhantomJS 2.0 (Zeger-Jan van de Weg)
   - Fix cross references when usernames, milestones, or project names contain underscores (Stan Hu)
   - Disable reference creation for comments surrounded by code/preformatted blocks (Stan Hu)
   - Reduce Rack Attack false positives causing 403 errors during HTTP authentication (Stan Hu)
   - enable line wrapping per default and remove the checkbox to toggle it (Hannes Rosenögger)
-  - extend the commit calendar to show the actual commits made on a date (Hannes Rosenögger)
   - Fix a link in the patch update guide
   - Add a service to support external wikis (Hannes Rosenögger)
   - Omit the "email patches" link and fix plain diff view for merge commits
   - List new commits for newly pushed branch in activity view.
   - Add sidetiq gem dependency to match EE
-  - Add changelog, license and contribution guide links to project sidebar.
+  - Add changelog, license and contribution guide links to project tab bar.
   - Improve diff UI
   - Fix alignment of navbar toggle button (Cody Mize)
   - Fix checkbox rendering for nested task lists
@@ -59,8 +78,30 @@ v 7.9.0 (unreleased)
   - Fix "Hello @username." references not working by no longer allowing usernames to end in period.
   - Archive repositories in background worker.
   - Import GitHub, Bitbucket or GitLab.com projects owned by authenticated user into current namespace.
+  - Project labels are now available over the API under the "tag_list" field (Cristian Medina) 
+  - Fixed link paths for HTTP and SSH on the admin project view (Jeremy Maziarz)
   - Fix and improve help rendering (Sullivan Sénéchal)
+  - Fix final line in EmailsOnPush email diff being rendered as error.
+  - Authometic setup GitLab CI project for forks if origin project has GitLab CI enabled
+  - Prevent duplicate Buildkite service creation.
+  - Fix git over ssh errors 'fatal: protocol error: bad line length character' 
+  - Automatically setup GitLab CI project for forks if origin project has GitLab CI enabled
+  - Bust group page project list cache when namespace name or path changes.
+  - Explicitly set image alt-attribute to prevent graphical glitches if gravatars could not be loaded
+  - Allow user to choose a public email to show on public profile
+  - Remove truncation from issue titles on milestone page (Jason Blanchard)
+  - Fix stuck Merge Request merging events from old installations (Ben Bodenmiller)
 
+v 7.9.3
+  - Contains no changes
+  - Add icons to Add dropdown items.
+  - Allow admin to create public deploy keys that are accessible to any project.
+  - Warn when gitlab-shell version doesn't match requirement.
+  - Skip email confirmation when set by admin or via LDAP.
+  - Only allow users to reference groups, projects, issues, MRs, commits they have access to.
+
+v 7.9.3
+  - Contains no changes
 
 v 7.9.2
   - Contains no changes

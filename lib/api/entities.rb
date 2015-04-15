@@ -51,7 +51,7 @@ module API
     end
 
     class Project < Grape::Entity
-      expose :id, :description, :default_branch
+      expose :id, :description, :default_branch, :tag_list
       expose :public?, as: :public
       expose :archived?, as: :archived
       expose :visibility_level, :ssh_url_to_repo, :http_url_to_repo, :web_url
@@ -59,6 +59,7 @@ module API
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
       expose :issues_enabled, :merge_requests_enabled, :wiki_enabled, :snippets_enabled, :created_at, :last_activity_at
+      expose :creator_id
       expose :namespace
       expose :forked_from_project, using: Entities::ForkedFromProject, if: lambda{ | project, options | project.forked? }
       expose :avatar_url

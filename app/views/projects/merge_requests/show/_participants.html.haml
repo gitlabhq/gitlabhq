@@ -1,4 +1,4 @@
 .participants
-  %span #{@merge_request.participants.count} participants
-  - @merge_request.participants.each do |participant|
+  %span #{@merge_request.participants(current_user).count} participants
+  - @merge_request.participants(current_user).each do |participant|
     = link_to_member(@project, participant, name: false, size: 24)

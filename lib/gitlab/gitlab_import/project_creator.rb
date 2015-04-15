@@ -10,29 +10,16 @@ module Gitlab
       end
 
       def execute
-        @project = Project.new(
+        ::Projects::CreateService.new(current_user,
           name: repo["name"],
           path: repo["path"],
           description: repo["description"],
-          namespace: namespace,
-          creator: current_user,
+          namespace_id: namespace.id,
           visibility_level: repo["visibility_level"],
           import_type: "gitlab",
           import_source: repo["path_with_namespace"],
           import_url: repo["http_url_to_repo"].sub("://", "://oauth2:#{current_user.gitlab_access_token}@")
-        )
-
-        if @project.save!
-          @project.reload
-
-          if @project.import_failed?
-            @project.import_retry
-          else
-            @project.import_start
-          end
-        end
-
-        @project
+        ).execute
       end
     end
   end
