@@ -10,7 +10,11 @@ describe Gitlab::GithubImport::ProjectCreator do
     clone_url: "https://gitlab.com/asd/vim.git",
     owner: OpenStruct.new(login: "john"))
   }
-  let(:namespace){ create(:namespace) }
+  let(:namespace){ create(:group, owner: user) }
+
+  before do
+    namespace.add_owner(user)
+  end
 
   it 'creates project' do
     allow_any_instance_of(Project).to receive(:add_import_job)
