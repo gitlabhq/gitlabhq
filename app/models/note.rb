@@ -354,7 +354,7 @@ class Note < ActiveRecord::Base
   def set_diff
     # First lets find notes with same diff
     # before iterating over all mr diffs
-    diff = Note.where(noteable_id: self.noteable_id, noteable_type: self.noteable_type, line_code: self.line_code).last.try(:diff)
+    diff = diff_for_line_code unless for_merge_request?
     diff ||= find_diff
 
     self.st_diff = diff.to_hash if diff
@@ -362,6 +362,10 @@ class Note < ActiveRecord::Base
 
   def diff
     @diff ||= Gitlab::Git::Diff.new(st_diff) if st_diff.respond_to?(:map)
+  end
+
+  def diff_for_line_code
+    Note.where(noteable_id: noteable_id, noteable_type: noteable_type, line_code: line_code).last.try(:diff)
   end
 
   # Check if such line of code exists in merge request diff
