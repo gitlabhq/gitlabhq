@@ -6,6 +6,8 @@ v 7.10.0 (unreleased)
   - Fix project import URL regex to prevent arbitary local repos from being imported.
   - Fix directory traversal vulnerability around uploads routes.
   - Fix directory traversal vulnerability around help pages.
+  - Don't leak existence of project via search autocomplete.
+  - Don't leak existence of group or project via search.
   - Fix bug where Wiki pages that included a '/' were no longer accessible (Stan Hu)
   - Fix bug where error messages from Dropzone would not be displayed on the issues page (Stan Hu)
   - Add ability to configure Reply-To address in gitlab.yml (Stan Hu)
