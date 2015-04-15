@@ -65,7 +65,7 @@ describe SnippetsController, "routing" do
 end
 
 #            help GET /help(.:format)                 help#index
-#       help_page GET /help/:category/:file(.:format) help#show {:category=>/[^\.]+/, :file=>/[^\.]+/}
+#       help_page GET /help/:category/:file(.:format) help#show {:category=>/.*/, :file=>/[^\/\.]+/}
 #  help_shortcuts GET /help/shortcuts(.:format)       help#shortcuts
 #         help_ui GET /help/ui(.:format)              help#ui
 describe HelpController, "routing" do

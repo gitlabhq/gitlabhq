@@ -4,7 +4,7 @@ class HelpController < ApplicationController
 
   def show
     category = clean_path_info(path_params[:category])
-    file = clean_path_info(path_params[:file])
+    file = path_params[:file]
 
     respond_to do |format|
       format.any(:markdown, :md, :html) do
