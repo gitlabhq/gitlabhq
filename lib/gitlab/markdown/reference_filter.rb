@@ -42,10 +42,11 @@ module Gitlab
       #
       # Returns the updated Nokogiri::XML::Document object.
       def replace_text_nodes_matching(pattern)
+        return doc if project.nil?
+
         doc.search('text()').each do |node|
           content = node.to_html
 
-          next if project.nil?
           next unless content.match(pattern)
           next if ignored_ancestry?(node)
 
@@ -59,6 +60,9 @@ module Gitlab
         doc
       end
 
+      # Ensure that a :project key exists in context
+      #
+      # Note that while the key might exist, its value could be nil!
       def validate
         needs :project
       end

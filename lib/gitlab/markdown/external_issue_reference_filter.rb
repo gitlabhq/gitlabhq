@@ -25,7 +25,8 @@ module Gitlab
       ISSUE_PATTERN = /(?<issue>([A-Z\-]+-)\d+)/
 
       def call
-        return doc if project.default_issues_tracker?
+        # Early return if the project isn't using an external tracker
+        return doc if project.nil? || project.default_issues_tracker?
 
         replace_text_nodes_matching(ISSUE_PATTERN) do |content|
           issue_link_filter(content)
