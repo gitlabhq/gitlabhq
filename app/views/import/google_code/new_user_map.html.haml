@@ -1,0 +1,20 @@
+%h3.page-title
+  %i.fa.fa-google
+  Import projects from Google Code
+%hr
+
+= form_tag create_user_map_import_google_code_path, class: 'form-horizontal' do
+  %p
+    Customize how Google Code email addresses and usernames are imported into GitLab.
+    In the next step, you'll be able to select the projects you want to import.
+  %p 
+    The user map is a JSON document mapping Google Code users (as keys) to the way they will be imported into GitLab (as values). By default the username is masked to ensure users' privacy.
+  %p
+    To map a Google Code user to a full name or GitLab user, simply replace the value, e.g. <code>"johnsmith@gmail.com": "John Smith"</code> or <code>"johnsmith@gmail.com": "@johnsmith"</code>. Be sure to preserve the surrounding double quotes and other punctuation.
+
+  .form-group
+    .col-sm-12
+      = text_area_tag :user_map, JSON.pretty_generate(@user_map), class: 'form-control', rows: 15
+
+  .form-actions
+    = submit_tag 'Continue to the next step', class: "btn btn-create"

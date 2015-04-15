@@ -1,0 +1,60 @@
+%h3.page-title
+  %i.fa.fa-google
+  Import projects from Google Code
+%hr
+
+= form_tag callback_import_google_code_path, class: 'form-horizontal', multipart: true do
+  %p
+    Follow the steps below to export your Google Code project data. 
+    In the next step, you'll be able to select the projects you want to import.
+  %ol
+    %li
+      %p
+        Go to
+        #{link_to "Google Takeout", "https://www.google.com/settings/takeout", target: "_blank"}.
+    %li
+      %p
+        Make sure you're logged into the account that owns the projects you'd like to import.
+    %li
+      %p
+        Click the <strong>Select none</strong> button on the right, since we only need "Google Code Project Hosting".
+    %li
+      %p
+        Scroll down to <strong>Google Code Project Hosting</strong> and enable the switch on the right.
+    %li
+      %p
+        Choose <strong>Next</strong> at the bottom of the page.
+    %li
+      %p
+        Leave the "File type" and "Delivery method" options on their default values.
+    %li
+      %p
+        Choose <strong>Create archive</strong> and wait for archiving to complete.
+    %li
+      %p
+        Click the <strong>Download</strong> button and wait for downloading to complete.
+    %li
+      %p
+        Find the downloaded ZIP file and decompress it.
+    %li
+      %p
+        Find the newly extracted <code>Takeout/Google Code Project Hosting/GoogleCodeProjectHosting.json</code> file.
+    %li
+      %p
+        Upload <code>GoogleCodeProjectHosting.json</code> here:
+      %p
+        %input{type: "file", name: "dump_file", id: "dump_file"}
+    %li
+      %p
+        Do you want to customize how Google Code email addresses and usernames are imported into GitLab?
+      %p
+        = label_tag :create_user_map_0 do
+          = radio_button_tag :create_user_map, 0, true
+          No, directly import the existing email addresses and usernames.
+      %p
+        = label_tag :create_user_map_1 do
+          = radio_button_tag :create_user_map, 1, false
+          Yes, let me map Google Code users to full names or GitLab users.
+    %li
+      %p
+        = submit_tag 'Continue to the next step', class: "btn btn-create"
