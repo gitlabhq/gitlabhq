@@ -75,6 +75,11 @@ module Gitlab::Markdown
         expect(link).not_to match %r(https?://)
         expect(link).to eq urls.namespace_project_commit_url(project.namespace, project, reference, only_path: true)
       end
+
+      it 'adds to the results hash' do
+        result = pipeline_result("See #{reference}")
+        expect(result[:references][:commit]).not_to be_empty
+      end
     end
 
     context 'cross-project reference' do
@@ -101,6 +106,11 @@ module Gitlab::Markdown
         it 'ignores invalid commit IDs on the referenced project' do
           exp = act = "Committed #{project2.path_with_namespace}##{commit.id.reverse}"
           expect(filter(act).to_html).to eq exp
+        end
+
+        it 'adds to the results hash' do
+          result = pipeline_result("See #{reference}")
+          expect(result[:references][:commit]).not_to be_empty
         end
       end
 

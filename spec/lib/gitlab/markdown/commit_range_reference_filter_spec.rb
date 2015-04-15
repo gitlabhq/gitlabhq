@@ -81,6 +81,11 @@ module Gitlab::Markdown
         expect(link).not_to match %r(https?://)
         expect(link).to eq urls.namespace_project_compare_url(project.namespace, project, from: commit1.id, to: commit2.id, only_path: true)
       end
+
+      it 'adds to the results hash' do
+        result = pipeline_result("See #{reference}")
+        expect(result[:references][:commit_range]).not_to be_empty
+      end
     end
 
     context 'cross-project reference' do
@@ -111,6 +116,11 @@ module Gitlab::Markdown
 
           exp = act = "Fixed #{project2.path_with_namespace}##{commit1.id}...#{commit2.id.reverse}"
           expect(filter(act).to_html).to eq exp
+        end
+
+        it 'adds to the results hash' do
+          result = pipeline_result("See #{reference}")
+          expect(result[:references][:commit_range]).not_to be_empty
         end
       end
 

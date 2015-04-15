@@ -48,6 +48,9 @@ module Gitlab
           project = self.project_from_ref(project_ref)
 
           if project && project.issue_exists?(issue)
+            # FIXME (rspeicher): Law of Demeter
+            push_result(:issue, project.issues.where(iid: issue).first)
+
             url = url_for_issue(issue, project, only_path: context[:only_path])
 
             title = escape_once("Issue: #{title_for_issue(issue, project)}")

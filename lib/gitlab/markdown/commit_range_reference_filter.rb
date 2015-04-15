@@ -59,6 +59,8 @@ module Gitlab
           from_id, to_id = split_commit_range(commit_range)
 
           if valid_range?(project, from_id, to_id)
+            push_result(:commit_range, [commit(from_id), commit(to_id)])
+
             url = url_for_commit_range(project, from_id, to_id)
 
             title = "Commits #{from_id} through #{to_id}"
