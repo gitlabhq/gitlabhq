@@ -16,7 +16,6 @@ require 'digest/md5'
 
 class Key < ActiveRecord::Base
   include Sortable
-  include Gitlab::Popen
 
   belongs_to :user
 
@@ -79,20 +78,9 @@ class Key < ActiveRecord::Base
 
   def generate_fingerprint
     self.fingerprint = nil
-    return unless key.present?
 
-    cmd_status = 0
-    cmd_output = ''
-    Tempfile.open('gitlab_key_file') do |file|
-      file.puts key
-      file.rewind
-      cmd_output, cmd_status = popen(%W(ssh-keygen -lf #{file.path}), '/tmp')
-    end
+    return unless self.key.present?
 
-    if cmd_status.zero?
-      cmd_output.gsub /(\h{2}:)+\h{2}/ do |match|
-        self.fingerprint = match
-      end
-    end
+    self.fingerprint = Gitlab::KeyFingerprint.new(self.key).fingerprint
   end
 end
