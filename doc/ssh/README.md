@@ -80,8 +80,7 @@ How to add your ssh key to Eclipse: http://wiki.eclipse.org/EGit/User_Guide#Ecli
 
 ## Tip: Non-default OpenSSH key file names or locations
 
-If, for whatever reason, you decide to specify a non-default location and filename for your Gitlab SSH key pair, you must configure your SSH client to find your Gitlab SSH private key for connections to your Gitlab server (perhaps gitlab.com).
-For OpenSSH clients, this is handled in the `~/.ssh/config` file with a stanza similar to the following:
+If, for whatever reason, you decide to specify a non-default location and filename for your Gitlab SSH key pair, you must configure your SSH client to find your Gitlab SSH private key for connections to your Gitlab server (perhaps gitlab.com). For OpenSSH clients, this is handled in the `~/.ssh/config` file with a stanza similar to the following:
 
 ```
 #
@@ -90,6 +89,7 @@ For OpenSSH clients, this is handled in the `~/.ssh/config` file with a stanza s
 Host gitlab.com
 RSAAuthentication yes
 IdentityFile ~/my-ssh-key-directory/my-gitlab-private-key-filename
+User mygitlabusername
 ```
 
 Another example
@@ -102,4 +102,6 @@ RSAAuthentication yes
 IdentityFile ~/my-ssh-key-directory/company-com-private-key-filename
 ```
 
-Due to the wide variety of SSH clients and their very large number of configuration options, further explanation of this topic is beyond the scope of this document.
+Note in the gitlab.com example above a username was specified to override the default chosen by OpenSSH (your local username). This is only required if your local and remote usernames differ.
+
+Due to the wide variety of SSH clients and their very large number of configuration options, further explanation of these topics is beyond the scope of this document.
