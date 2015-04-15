@@ -3,39 +3,23 @@ class HelpController < ApplicationController
   end
 
   def show
-    @filepath = clean_path_info(params[:filepath])
-    @format = params[:format]
+    @category = clean_path_info(params[:category])
+    @file = clean_path_info(params[:file])
 
-    respond_to do |format|
-      format.md { render_doc }
-      format.all { send_file_data }
+    if File.exists?(Rails.root.join('doc', @category, @file + '.md'))
+      render 'show'
+    else
+      not_found!
     end
   end
 
   def shortcuts
   end
 
-  private
-
-  def render_doc
-    if File.exists?(Rails.root.join('doc', @filepath + '.md'))
-      render 'show.html.haml'
-    else
-      not_found!
-    end
-  end
-
-  def send_file_data
-    path = Rails.root.join('doc', "#{@filepath}.#{@format}")
-    if File.exists?(path)
-      send_file(path, disposition: 'inline')
-    else
-      head :not_found
-    end
-  end
-
   def ui
   end
+
+  private
 
   PATH_SEPS = Regexp.union(*[::File::SEPARATOR, ::File::ALT_SEPARATOR].compact)
 
