@@ -3,13 +3,36 @@ class HelpController < ApplicationController
   end
 
   def show
-    @category = clean_path_info(params[:category])
-    @file = clean_path_info(params[:file])
+    category = clean_path_info(path_params[:category])
+    file = clean_path_info(path_params[:file])
 
-    if File.exists?(Rails.root.join('doc', @category, @file + '.md'))
-      render 'show'
-    else
-      not_found!
+    respond_to do |format|
+      format.any(:markdown, :md, :html) do
+        path = Rails.root.join('doc', category, "#{file}.md")
+
+        if File.exist?(path)
+          @markdown = File.read(path)
+
+          render 'show.html.haml'
+        else
+          # Force template to Haml
+          render 'errors/not_found.html.haml', layout: 'errors', status: 404
+        end
+      end
+
+      # Allow access to images in the doc folder
+      format.any(:png, :gif, :jpeg) do
+        path = Rails.root.join('doc', category, "#{file}.#{params[:format]}")
+
+        if File.exist?(path)
+          send_file(path, disposition: 'inline')
+        else
+          head :not_found
+        end
+      end
+
+      # Any other format we don't recognize, just respond 404
+      format.any { head :not_found }
     end
   end
 
@@ -20,6 +43,13 @@ class HelpController < ApplicationController
   end
 
   private
+
+  def path_params
+    params.require(:category)
+    params.require(:file)
+
+    params
+  end
 
   PATH_SEPS = Regexp.union(*[::File::SEPARATOR, ::File::ALT_SEPARATOR].compact)
 
