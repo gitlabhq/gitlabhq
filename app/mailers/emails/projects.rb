@@ -125,9 +125,17 @@ module Emails
 
       @disable_footer = true
 
-      mail(from: sender(author_id, send_from_committer_email),
-           to: recipient,
-           subject: @subject)
+      reply_to = 
+        if send_from_committer_email && can_send_from_user_email?(@author)
+          @author.email
+        else
+          Gitlab.config.gitlab.email_reply_to
+        end
+
+      mail(from:      sender(author_id, send_from_committer_email),
+           reply_to:  reply_to,
+           to:        recipient,
+           subject:   @subject)
     end
   end
 end

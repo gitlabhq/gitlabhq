@@ -5,6 +5,7 @@ v 7.10.0 (unreleased)
   - Don't crash when project repository doesn't exist.
   - Add config var to block auto-created LDAP users.
   - Don't use HTML ellipsis in EmailsOnPush subject truncated commit message.
+  - Set EmailsOnPush reply-to address to committer email when enabled.
   - Fix broken file browsing with a submodule that contains a relative link (Stan Hu)
   - Fix persistent XSS vulnerability around profile website URLs.
   - Fix project import URL regex to prevent arbitary local repos from being imported.

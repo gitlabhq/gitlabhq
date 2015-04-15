@@ -60,20 +60,24 @@ class Notify < ActionMailer::Base
     address
   end
 
+  def can_send_from_user_email?(sender)
+    sender_domain = sender.email.split("@").last
+    self.class.allowed_email_domains.include?(sender_domain)
+  end
+
   # Return an email address that displays the name of the sender.
   # Only the displayed name changes; the actual email address is always the same.
   def sender(sender_id, send_from_user_email = false)
-    if sender = User.find(sender_id)
-      address = default_sender_address
-      address.display_name = sender.name
+    return unless sender = User.find(sender_id)
+    
+    address = default_sender_address
+    address.display_name = sender.name
 
-      sender_domain = sender.email.split("@").last
-      if send_from_user_email && self.class.allowed_email_domains.include?(sender_domain)
-        address.address = sender.email
-      end
-
-      address.format
+    if send_from_user_email && can_send_from_user_email?(sender)
+      address.address = sender.email
     end
+
+    address.format
   end
 
   # Look up a User by their ID and return their email address
