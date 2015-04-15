@@ -133,11 +133,13 @@ class NotificationService
     
     # Add all users participating in the thread (author, assignee, comment authors)
     participants = 
-      if target.is_a?(Commit)
+      if target.respond_to?(:participants)
+        target.participants
+      elsif target.is_a?(Commit)
         author_ids = Note.for_commit_id(target.id).pluck(:author_id).uniq
         User.where(id: author_ids)
       else
-        target.participants
+        note.mentioned_users
       end
     recipients = recipients.concat(participants)
 
