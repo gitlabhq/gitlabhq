@@ -80,13 +80,9 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
     if can?(current_user, :destroy_group_member, @group_member)
       @group_member.destroy
-<<<<<<< HEAD
       log_audit_event(@group_member, action: :destroy)
 
-      redirect_to(dashboard_groups_path, info: "You left #{group.name} group.")
-=======
       redirect_to(dashboard_groups_path, notice: "You left #{group.name} group.")
->>>>>>> 9193b94ecec58c7c386f9c1b5a6f06f01b1ef42a
     else
       return render_403
     end
