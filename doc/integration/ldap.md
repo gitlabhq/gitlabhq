@@ -267,24 +267,24 @@ cd /home/git/gitlab
 bundle exec rails runner -e production 'puts (Gitlab.config.ldap["host"] ? :old_syntax : :new_syntax)'
 ```
 
-### 3. Migrate existing users and groups
+If you are not using the new syntax yet, please edit `/etc/gitlab/gitlab.rb` or
+`gitlab.yml` (for installations from source) and make your LDAP configuration
+setting look as above. With the new syntax, LDAP server blocks are named. Your
+existing LDAP server should be named 'main'.
 
-After switching to the new LDAP configuration syntax there will be a mismatch between the LDAP provider linked to your GitLab users and groups and the new LDAP provider defined in GitLab's configuration.
-The following command will associate all existing legacy LDAP users and groups on your GitLab server with the first LDAP server listed in `gitlab.rb` (omnibus) or `gitlab.yml`.
-
-```
-# For omnibus packages
-sudo gitlab-rake gitlab:migrate_ldap_providers
-
-# For installations from source
-cd /home/git/gitlab
-sudo -u git -H bundle exec rake gitlab:migrate_ldap_providers RAILS_ENV=production
-```
-
-### 4. Add new LDAP servers
+### 3. Add new LDAP servers
 
 Now you can add new LDAP servers via `/etc/gitlab/gitlab.rb` (omnibus packages) or `gitlab.yml` (installations from source).
 Remember to run `sudo gitlab-ctl reconfigure` or `sudo service gitlab reload` for the new servers to become available.
+
+Tip: you can assign labels to the different servers to give them human-friendly names.
+
+```
+ldap:
+  servers:
+    main:
+      label: 'LDAP HQ'
+```
 
 ## Automatic Daily LDAP Sync
 
