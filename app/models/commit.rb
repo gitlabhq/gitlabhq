@@ -77,7 +77,7 @@ class Commit
 
     title_end = title.index("\n")
     if (!title_end && title.length > 100) || (title_end && title_end > 100)
-      title[0..79] << "&hellip;".html_safe
+      title[0..79] << "…"
     else
       title.split("\n", 2).first
     end
@@ -90,7 +90,7 @@ class Commit
     title_end = safe_message.index("\n")
     @description ||=
       if (!title_end && safe_message.length > 100) || (title_end && title_end > 100)
-        "&hellip;".html_safe << safe_message[80..-1]
+        "…" << safe_message[80..-1]
       else
         safe_message.split("\n", 2)[1].try(:chomp)
       end

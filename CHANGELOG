@@ -4,6 +4,7 @@ v 7.10.0 (unreleased)
   - Allow users to be invited by email to join a group or project.
   - Don't crash when project repository doesn't exist.
   - Add config var to block auto-created LDAP users.
+  - Don't use HTML ellipsis in EmailsOnPush subject truncated commit message.
   - Fix broken file browsing with a submodule that contains a relative link (Stan Hu)
   - Fix persistent XSS vulnerability around profile website URLs.
   - Fix project import URL regex to prevent arbitary local repos from being imported.
