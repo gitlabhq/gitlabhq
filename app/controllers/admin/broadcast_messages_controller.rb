@@ -1,5 +1,5 @@
 class Admin::BroadcastMessagesController < Admin::ApplicationController
-  before_filter :broadcast_messages
+  before_action :broadcast_messages
 
   def index
     @broadcast_message = BroadcastMessage.new

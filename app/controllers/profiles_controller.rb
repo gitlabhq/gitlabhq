@@ -1,9 +1,9 @@
 class ProfilesController < ApplicationController
   include ActionView::Helpers::SanitizeHelper
 
-  before_filter :user
-  before_filter :authorize_change_username!, only: :update_username
-  skip_before_filter :require_email, only: [:show, :update]
+  before_action :user
+  before_action :authorize_change_username!, only: :update_username
+  skip_before_action :require_email, only: [:show, :update]
 
   layout 'profile'
 

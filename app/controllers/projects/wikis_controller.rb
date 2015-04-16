@@ -1,10 +1,10 @@
 require 'project_wiki'
 
 class Projects::WikisController < Projects::ApplicationController
-  before_filter :authorize_read_wiki!
-  before_filter :authorize_write_wiki!, only: [:edit, :create, :history]
-  before_filter :authorize_admin_wiki!, only: :destroy
-  before_filter :load_project_wiki
+  before_action :authorize_read_wiki!
+  before_action :authorize_write_wiki!, only: [:edit, :create, :history]
+  before_action :authorize_admin_wiki!, only: :destroy
+  before_action :load_project_wiki
   include WikiHelper
 
   def pages

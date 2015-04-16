@@ -1,7 +1,7 @@
 class Groups::MilestonesController < ApplicationController
   layout 'group'
 
-  before_filter :authorize_group_milestone!, only: :update
+  before_action :authorize_group_milestone!, only: :update
 
   def index
     project_milestones = case params[:state]

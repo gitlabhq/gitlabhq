@@ -1,11 +1,11 @@
 class Projects::UploadsController < Projects::ApplicationController
   layout 'project'
 
-  # We want to skip these filters for only the `show` action if `image?` is true, 
+  # We want to skip these filters for only the `show` action if `image?` is true,
   # but `skip_before_filter` doesn't work with both `only` and `if`, so we accomplish the same like this.
   skipped_filters = [:authenticate_user!, :reject_blocked!, :project, :repository]
-  skip_before_filter  *skipped_filters, only: [:show]
-  before_filter       *skipped_filters, only: [:show], unless: :image?
+  skip_before_action  *skipped_filters, only: [:show]
+  before_action       *skipped_filters, only: [:show], unless: :image?
 
   def create
     link_to_file = ::Projects::UploadService.new(project, params[:file]).
@@ -40,7 +40,7 @@ class Projects::UploadsController < Projects::ApplicationController
     file_project = Project.find_with_namespace("#{namespace}/#{id}")
 
     if file_project.nil?
-      @uploader = nil 
+      @uploader = nil
       return
     end
 

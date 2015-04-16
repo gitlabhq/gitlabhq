@@ -1,5 +1,5 @@
 class Admin::UsersController < Admin::ApplicationController
-  before_filter :user, only: [:show, :edit, :update, :destroy]
+  before_action :user, only: [:show, :edit, :update, :destroy]
 
   def index
     @users = User.order_name_asc.filter(params[:filter])

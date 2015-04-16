@@ -1,5 +1,5 @@
 class Explore::ProjectsController < ApplicationController
-  skip_before_filter :authenticate_user!,
+  skip_before_action :authenticate_user!,
                      :reject_blocked
 
   layout 'explore'

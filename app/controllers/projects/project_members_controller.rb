@@ -1,6 +1,6 @@
 class Projects::ProjectMembersController < Projects::ApplicationController
   # Authorize
-  before_filter :authorize_admin_project!, except: :leave
+  before_action :authorize_admin_project!, except: :leave
 
   layout "project_settings"
 
@@ -24,7 +24,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
         users = @group.users.search(params[:search]).to_a
         @group_members = @group_members.where(user_id: users)
       end
-      
+
       @group_members = @group_members.order('access_level DESC').limit(20)
     end
 
@@ -62,7 +62,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     redirect_path = namespace_project_project_members_path(@project.namespace, @project)
 
     @project_member = @project.project_members.find(params[:id])
-    
+
     if @project_member.invite?
       @project_member.resend_invite
 

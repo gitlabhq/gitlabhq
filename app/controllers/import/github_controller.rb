@@ -1,6 +1,6 @@
 class Import::GithubController < Import::BaseController
-  before_filter :verify_github_import_enabled
-  before_filter :github_auth, except: :callback
+  before_action :verify_github_import_enabled
+  before_action :github_auth, except: :callback
 
   rescue_from Octokit::Unauthorized, with: :github_unauthorized
 
@@ -36,7 +36,7 @@ class Import::GithubController < Import::BaseController
     repo_owner = repo.owner.login
     repo_owner = current_user.username if repo_owner == client.user.login
     @target_namespace = params[:new_namespace].presence || repo_owner
-    
+
     namespace = get_or_create_namespace || (render and return)
 
     @project = Gitlab::GithubImport::ProjectCreator.new(repo, namespace, current_user).execute

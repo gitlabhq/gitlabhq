@@ -6,15 +6,15 @@ class ApplicationController < ActionController::Base
 
   PER_PAGE = 20
 
-  before_filter :authenticate_user_from_token!
-  before_filter :authenticate_user!
-  before_filter :reject_blocked!
-  before_filter :check_password_expiration
-  before_filter :ldap_security_check
-  before_filter :default_headers
-  before_filter :add_gon_variables
-  before_filter :configure_permitted_parameters, if: :devise_controller?
-  before_filter :require_email, unless: :devise_controller?
+  before_action :authenticate_user_from_token!
+  before_action :authenticate_user!
+  before_action :reject_blocked!
+  before_action :check_password_expiration
+  before_action :ldap_security_check
+  before_action :default_headers
+  before_action :add_gon_variables
+  before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :require_email, unless: :devise_controller?
 
   protect_from_forgery with: :exception
 

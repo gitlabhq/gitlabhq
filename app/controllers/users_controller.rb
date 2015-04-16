@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
-  skip_before_filter :authenticate_user!
-  before_filter :set_user
+  skip_before_action :authenticate_user!
+  before_action :set_user
   layout :determine_layout
 
   def show
