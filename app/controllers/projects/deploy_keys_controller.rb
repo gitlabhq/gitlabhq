@@ -44,13 +44,16 @@ class Projects::DeployKeysController < Projects::ApplicationController
   def enable
     @key = accessible_keys.find(params[:id])
     @project.deploy_keys << @key
+    log_audit_event(@key.title, action: :create)
 
     redirect_to namespace_project_deploy_keys_path(@project.namespace,
                                                    @project)
   end
 
   def disable
+    @key = accessible_keys.find(params[:id])
     @project.deploy_keys_projects.find_by(deploy_key_id: params[:id]).destroy
+    log_audit_event(@key.title, action: :destroy)
 
     redirect_to :back
   end
