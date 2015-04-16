@@ -52,7 +52,7 @@ module Gitlab
           project = self.project_from_ref(project_ref)
 
           if merge_request = project.merge_requests.find_by(iid: id)
-            title = "Merge Request: #{merge_request.title}"
+            title = escape_once("Merge Request: #{merge_request.title}")
             klass = reference_class(:merge_request)
 
             url = url_for_merge_request(merge_request, project)

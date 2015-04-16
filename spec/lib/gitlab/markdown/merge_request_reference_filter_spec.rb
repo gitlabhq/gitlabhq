@@ -45,6 +45,13 @@ module Gitlab::Markdown
         expect(doc.css('a').first.attr('title')).to eq "Merge Request: #{merge.title}"
       end
 
+      it 'escapes the title attribute' do
+        merge.update_attribute(:title, %{"></a>whatever<a title="})
+
+        doc = filter("Merge #{reference}")
+        expect(doc.text).to eq "Merge #{reference}"
+      end
+
       it 'includes default classes' do
         doc = filter("Merge #{reference}")
         expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-merge_request'

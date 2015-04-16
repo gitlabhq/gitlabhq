@@ -46,7 +46,7 @@ module Gitlab
         self.class.references_in(text) do |match, issue|
           url = url_for_issue(issue, project, only_path: context[:only_path])
 
-          title = "Issue in #{project.external_issue_tracker.title}"
+          title = escape_once("Issue in #{project.external_issue_tracker.title}")
           klass = reference_class(:issue)
 
           %(<a href="#{url}"

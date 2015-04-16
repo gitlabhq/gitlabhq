@@ -50,7 +50,7 @@ module Gitlab
           if project.valid_repo? && commit = project.repository.commit(commit_ref)
             url = url_for_commit(project, commit)
 
-            title = commit.link_title
+            title = escape_once(commit.link_title)
             klass = reference_class(:commit)
 
             project_ref += '@' if project_ref

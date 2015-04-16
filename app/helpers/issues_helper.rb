@@ -109,5 +109,6 @@ module IssuesHelper
     end
   end
 
+  # Required for Gitlab::Markdown::IssueReferenceFilter
   module_function :url_for_issue, :title_for_issue
 end

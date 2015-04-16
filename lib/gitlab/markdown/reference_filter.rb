@@ -1,3 +1,4 @@
+require 'active_support/core_ext/string/output_safety'
 require 'html/pipeline'
 
 module Gitlab
@@ -12,6 +13,10 @@ module Gitlab
     #   :only_path          - Generate path-only links.
     #
     class ReferenceFilter < HTML::Pipeline::Filter
+      def escape_once(html)
+        ERB::Util.html_escape_once(html)
+      end
+
       # Don't look for references in text nodes that are children of these
       # elements.
       IGNORE_PARENTS = %w(pre code a style).to_set

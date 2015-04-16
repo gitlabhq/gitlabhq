@@ -48,7 +48,7 @@ module Gitlab
           project = self.project_from_ref(project_ref)
 
           if snippet = project.snippets.find_by(id: id)
-            title = "Snippet: #{snippet.title}"
+            title = escape_once("Snippet: #{snippet.title}")
             klass = reference_class(:snippet)
 
             url = url_for_snippet(snippet, project)

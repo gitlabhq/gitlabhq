@@ -1,4 +1,6 @@
 module LabelsHelper
+  include ActionView::Helpers::TagHelper
+
   def project_label_names
     @project.labels.pluck(:title)
   end
@@ -11,7 +13,7 @@ module LabelsHelper
     # by LabelReferenceFilter
     span = %(<span class="label color-label") +
       %( style="background-color: #{label_color}; color: #{text_color}">) +
-      label.name + '</span>'
+      escape_once(label.name) + '</span>'
 
     span.html_safe
   end
@@ -56,5 +58,6 @@ module LabelsHelper
     options_from_collection_for_select(project.labels, 'name', 'name', params[:label_name])
   end
 
-  module_function :render_colored_label, :text_color_for_bg
+  # Required for Gitlab::Markdown::LabelReferenceFilter
+  module_function :render_colored_label, :text_color_for_bg, :escape_once
 end

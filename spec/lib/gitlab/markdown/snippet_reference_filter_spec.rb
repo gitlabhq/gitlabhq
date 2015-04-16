@@ -44,6 +44,13 @@ module Gitlab::Markdown
         expect(doc.css('a').first.attr('title')).to eq "Snippet: #{snippet.title}"
       end
 
+      it 'escapes the title attribute' do
+        snippet.update_attribute(:title, %{"></a>whatever<a title="})
+
+        doc = filter("Snippet #{reference}")
+        expect(doc.text).to eq "Snippet #{reference}"
+      end
+
       it 'includes default classes' do
         doc = filter("Snippet #{reference}")
         expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-snippet'

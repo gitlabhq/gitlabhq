@@ -51,6 +51,13 @@ module Gitlab::Markdown
         expect(doc.css('a').first.attr('title')).to eq commit.link_title
       end
 
+      it 'escapes the title attribute' do
+        allow_any_instance_of(Commit).to receive(:title).and_return(%{"></a>whatever<a title="})
+
+        doc = filter("See #{reference}")
+        expect(doc.text).to eq "See #{commit.id}"
+      end
+
       it 'includes default classes' do
         doc = filter("See #{reference}")
         expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-commit'

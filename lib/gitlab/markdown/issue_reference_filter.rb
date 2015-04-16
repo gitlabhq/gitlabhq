@@ -50,7 +50,7 @@ module Gitlab
           if project.issue_exists?(issue)
             url = url_for_issue(issue, project, only_path: context[:only_path])
 
-            title = "Issue: #{title_for_issue(issue, project)}"
+            title = escape_once("Issue: #{title_for_issue(issue, project)}")
             klass = reference_class(:issue)
 
             %(<a href="#{url}"
