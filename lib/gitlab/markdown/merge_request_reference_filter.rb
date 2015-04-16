@@ -30,10 +30,6 @@ module Gitlab
       # This pattern supports cross-project references.
       MERGE_REQUEST_PATTERN = /#{PROJECT_PATTERN}?!(?<merge_request>\d+)/
 
-      # Don't look for references in text nodes that are children of these
-      # elements.
-      IGNORE_PARENTS = %w(pre code a style).to_set
-
       def call
         replace_text_nodes_matching(MERGE_REQUEST_PATTERN) do |content|
           merge_request_link_filter(content)
