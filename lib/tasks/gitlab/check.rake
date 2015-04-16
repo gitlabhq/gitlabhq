@@ -687,6 +687,23 @@ namespace :gitlab do
     end
   end
 
+  namespace :repo do
+    desc "GITLAB | Check the integrity of the repositories managed by GitLab"
+    task check: :environment do
+      namespace_dirs = Dir.glob(
+        File.join(Gitlab.config.gitlab_shell.repos_path, '*')
+      )
+
+      namespace_dirs.each do |namespace_dir|
+        repo_dirs = Dir.glob(File.join(namespace_dir, '*'))
+        repo_dirs.each do |dir|
+          puts "\nChecking repo at #{dir}"
+          system(*%w(git fsck), chdir: dir)
+        end
+      end
+    end
+  end
+
   # Helper methods
   ##########################
 
