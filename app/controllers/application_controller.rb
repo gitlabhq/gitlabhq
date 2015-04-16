@@ -126,7 +126,7 @@ class ApplicationController < ActionController::Base
 
   def repository
     @repository ||= project.repository
-  rescue Grit::NoSuchPathError(e)
+  rescue Grit::NoSuchPathError => e
     log_exception(e)
     nil
   end
@@ -153,7 +153,7 @@ class ApplicationController < ActionController::Base
   end
 
   def method_missing(method_sym, *arguments, &block)
-    if method_sym.to_s =~ /^authorize_(.*)!$/
+    if method_sym.to_s =~ /\Aauthorize_(.*)!\z/
       authorize_project!($1.to_sym)
     else
       super
@@ -203,6 +203,7 @@ class ApplicationController < ActionController::Base
     gon.api_version = API::API.version
     gon.relative_url_root = Gitlab.config.gitlab.relative_url_root
     gon.default_avatar_url = URI::join(Gitlab.config.gitlab.url, ActionController::Base.helpers.image_path('no_avatar.png')).to_s
+    gon.max_file_size = current_application_settings.max_attachment_size;
 
     if current_user
       gon.current_user_id = current_user.id

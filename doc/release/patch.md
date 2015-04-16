@@ -35,16 +35,13 @@ git clone git@dev.gitlab.org:gitlab/release-tools.git
 cd release-tools
 ```
 
-Bump version in stable branch, create release tag and push to remotes:
+Bump all versions in stable branch, even if the changes affect only EE, CE, or CI. Since all the versions are synced now,
+it doesn't make sense to say upgrade CE to 7.2, EE to 7.3 and CI to 7.1.
+
+Create release tag and push to remotes:
 
 ```
 bundle exec rake release["x.x.x"]
-```
-
-Or if you need to release only EE:
-
-```
-CE=false be rake release['x.x.x']
 ```
 
 ### Release

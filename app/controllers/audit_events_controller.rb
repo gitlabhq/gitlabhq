@@ -22,7 +22,7 @@ class AuditEventsController < ApplicationController
   end
 
   def authorize_admin_group!
-    render_404 unless can?(current_user, :manage_group, group)
+    render_404 unless can?(current_user, :admin_group, group)
   end
 
   def determine_layout

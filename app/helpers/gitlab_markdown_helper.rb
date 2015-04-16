@@ -13,7 +13,7 @@ module GitlabMarkdownHelper
   def link_to_gfm(body, url, html_options = {})
     return "" if body.blank?
 
-    escaped_body = if body =~ /^\<img/
+    escaped_body = if body =~ /\A\<img/
                      body
                    else
                      escape_once(body)
@@ -31,24 +31,28 @@ module GitlabMarkdownHelper
   def markdown(text, options={})
     unless @markdown && options == @options
       @options = options
-      gitlab_renderer = Redcarpet::Render::GitlabHTML.new(self,
-                                                          user_color_scheme_class,
-                                                          {
-                            # see https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch-
-                            with_toc_data: true,
-                            safe_links_only: true
-                          }.merge(options))
-      @markdown = Redcarpet::Markdown.new(gitlab_renderer,
-                      # see https://github.com/vmg/redcarpet#and-its-like-really-simple-to-use
-                      no_intra_emphasis: true,
-                      tables: true,
-                      fenced_code_blocks: true,
-                      autolink: true,
-                      strikethrough: true,
-                      lax_spacing: true,
-                      space_after_headers: true,
-                      superscript: true)
+
+      # see https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch
+      rend = Redcarpet::Render::GitlabHTML.new(self, user_color_scheme_class, {
+        with_toc_data:   true,
+        safe_links_only: true,
+        # Handled further down the line by HTML::Pipeline::SanitizationFilter
+        escape_html:     false
+      }.merge(options))
+
+      # see https://github.com/vmg/redcarpet#and-its-like-really-simple-to-use
+      @markdown = Redcarpet::Markdown.new(rend,
+        no_intra_emphasis:   true,
+        tables:              true,
+        fenced_code_blocks:  true,
+        autolink:            true,
+        strikethrough:       true,
+        lax_spacing:         true,
+        space_after_headers: true,
+        superscript:         true
+      )
     end
+
     @markdown.render(text).html_safe
   end
 
@@ -135,7 +139,7 @@ module GitlabMarkdownHelper
       @project.path_with_namespace,
       path_with_ref(file_path),
       file_path
-    ].compact.join("/").gsub(/^\/*|\/*$/, '') + id
+    ].compact.join("/").gsub(/\A\/*|\/*\z/, '') + id
   end
 
   def sanitize_slashes(path)

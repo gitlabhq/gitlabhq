@@ -14,7 +14,7 @@ describe Commit do
       message = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis id blandit. Vivamus egestas lacinia lacus, sed rutrum mauris.'
 
       allow(commit).to receive(:safe_message).and_return(message)
-      expect(commit.title).to eq("#{message[0..79]}&hellip;")
+      expect(commit.title).to eq("#{message[0..79]}…")
     end
 
     it "truncates a message with a newline before 80 characters at the newline" do

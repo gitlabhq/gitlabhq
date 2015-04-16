@@ -77,7 +77,7 @@ class Commit
 
     title_end = title.index("\n")
     if (!title_end && title.length > 100) || (title_end && title_end > 100)
-      title[0..79] << "&hellip;".html_safe
+      title[0..79] << "…"
     else
       title.split("\n", 2).first
     end
@@ -90,7 +90,7 @@ class Commit
     title_end = safe_message.index("\n")
     @description ||=
       if (!title_end && safe_message.length > 100) || (title_end && title_end > 100)
-        "&hellip;".html_safe << safe_message[80..-1]
+        "…" << safe_message[80..-1]
       else
         safe_message.split("\n", 2)[1].try(:chomp)
       end
@@ -117,13 +117,21 @@ class Commit
 
   # Discover issues should be closed when this commit is pushed to a project's
   # default branch.
-  def closes_issues(project)
-    Gitlab::ClosingIssueExtractor.closed_by_message_in_project(safe_message, project)
+  def closes_issues(project, current_user = self.committer)
+    Gitlab::ClosingIssueExtractor.new(project, current_user).closed_by_message(safe_message)
   end
 
   # Mentionable override.
   def gfm_reference
     "commit #{id}"
+  end
+
+  def author
+    User.find_for_commit(author_email, author_name)
+  end
+
+  def committer
+    User.find_for_commit(committer_email, committer_name)
   end
 
   def method_missing(m, *args, &block)

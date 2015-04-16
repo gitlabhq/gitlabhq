@@ -6,4 +6,4 @@
     Assignee: #{@merge_request.author_name} &rarr; #{@merge_request.assignee_name}
 
 -if @merge_request.description
-  = replace_image_links_with_base64(markdown(@merge_request.description, reference_only_path: false), @merge_request.project)
+  = markdown(@merge_request.description, reference_only_path: false)

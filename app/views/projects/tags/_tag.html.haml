@@ -9,9 +9,9 @@
       = strip_gpg_signature(tag.message)
     .pull-right
       - if can? current_user, :download_code, @project
-        = render 'projects/repositories/download_archive', ref: tag.name, btn_class: 'btn-grouped btn-group-sm'
+        = render 'projects/repositories/download_archive', ref: tag.name, btn_class: 'btn-grouped btn-group-xs'
       - if can?(current_user, :admin_project, @project)
-        = link_to namespace_project_tag_path(@project.namespace, @project, tag.name), class: 'btn btn-sm btn-remove remove-row grouped', method: :delete, data: { confirm: 'Removed tag cannot be restored. Are you sure?'}, remote: true do
+        = link_to namespace_project_tag_path(@project.namespace, @project, tag.name), class: 'btn btn-xs btn-remove remove-row grouped', method: :delete, data: { confirm: 'Removed tag cannot be restored. Are you sure?'}, remote: true do
           %i.fa.fa-trash-o
 
   - if commit

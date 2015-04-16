@@ -3,15 +3,22 @@ class SearchController < ApplicationController
 
   def show
     return if params[:search].nil? || params[:search].blank?
-    @project = Project.find_by(id: params[:project_id]) if params[:project_id].present?
-    @group = Group.find_by(id: params[:group_id]) if params[:group_id].present?
+
+    if params[:project_id].present?
+      @project = Project.find_by(id: params[:project_id])
+      @project = nil unless can?(current_user, :download_code, @project)
+    end
+
+    if params[:group_id].present?
+      @group = Group.find_by(id: params[:group_id]) 
+      @group = nil unless can?(current_user, :read_group, @group)
+    end
+    
     @scope = params[:scope]
     @show_snippets = params[:snippets].eql? 'true'
 
     @search_results = 
       if @project
-        return access_denied! unless can?(current_user, :download_code, @project)
-
         unless %w(blobs notes issues merge_requests wiki_blobs).
           include?(@scope)
           @scope = 'blobs'
@@ -35,7 +42,12 @@ class SearchController < ApplicationController
 
   def autocomplete
     term = params[:term]
-    @project = Project.find(params[:project_id]) if params[:project_id].present?
+
+    if params[:project_id].present?
+      @project = Project.find_by(id: params[:project_id])
+      @project = nil unless can?(current_user, :read_project, @project)
+    end
+
     @ref = params[:project_ref] if params[:project_ref].present?
 
     render json: search_autocomplete_opts(term).to_json

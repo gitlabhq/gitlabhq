@@ -54,7 +54,7 @@
   }
 
   ctx = $("#hour-chart").get(0).getContext("2d");
-  new Chart(ctx).Line(data,{"scaleOverlay": true, responsive: true});
+  new Chart(ctx).Line(data,{"scaleOverlay": true, responsive: true, pointHitDetectionRadius: 2})
 
   data = {
     labels : #{@commits_per_week_days.keys.to_json},
@@ -68,7 +68,7 @@
   }
 
   ctx = $("#weekday-chart").get(0).getContext("2d");
-  new Chart(ctx).Line(data,{"scaleOverlay": true, responsive: true});
+  new Chart(ctx).Line(data,{"scaleOverlay": true, responsive: true, pointHitDetectionRadius: 2})
 
   data = {
     labels : #{@commits_per_month.keys.to_json},
@@ -82,4 +82,4 @@
   }
 
   ctx = $("#month-chart").get(0).getContext("2d");
-  new Chart(ctx).Line(data,{"scaleOverlay": true, responsive: true});
+  new Chart(ctx).Line(data, {"scaleOverlay": true, responsive: true, pointHitDetectionRadius: 2})

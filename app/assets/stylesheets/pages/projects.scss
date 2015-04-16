@@ -15,7 +15,7 @@
 }
 
 .project-home-panel {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   position: relative;
   padding-left: 85px;
 
@@ -37,6 +37,11 @@
     .identicon {
       font-size: 45px;
       line-height: 1.6;
+    }
+
+    .avatar, .identicon {
+      @include border-radius(4px);
+      box-shadow: 0 1px 2px #ddd;
     }
   }
 
@@ -61,13 +66,12 @@
 
     .project-home-desc {
       float: left;
-      color: #666;
+      color: $gray;
     }
   }
 
   .visibility-level-label {
-    color: #555;
-    font-weight: bold;
+    color: $gray;
     i {
       color: inherit;
     }
@@ -115,6 +119,10 @@
     background: #FAFAFA;
     width: 100%;
   }
+
+  .input-group-addon {
+    background: #FAFAFA;
+  }
 }
 
 .project-visibility-level-holder {
@@ -133,7 +141,7 @@
 
     .option-descr {
       margin-left: 24px;
-      color: #666;
+      color: $gray;
     }
   }
 }
@@ -212,8 +220,10 @@ ul.nav.nav-projects-tabs {
       white-space: normal;
       text-align: left;
       padding: 10px 15px;
-      background-color: #F9F9F9;
-      border-color: #DDD;
+
+      &.dropdown-toggle {
+        text-align: center;
+      }
 
       &:hover {
         background-color: #eee;

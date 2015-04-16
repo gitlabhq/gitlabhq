@@ -240,7 +240,7 @@ module Gitlab
       gitlab_shell_version_file = "#{gitlab_shell_path}/VERSION"
 
       if File.readable?(gitlab_shell_version_file)
-        File.read(gitlab_shell_version_file)
+        File.read(gitlab_shell_version_file).chomp
       end
     end
 

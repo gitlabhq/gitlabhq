@@ -45,7 +45,8 @@
   padding: 12px 0px;
   border-bottom: 1px solid #eee;
   .event-title {
-    @include str-truncated(72%);
+    max-width: 70%;
+    @include str-truncated(calc(100% - 174px));
     font-weight: 500;
     font-size: 14px;
     .author_name {

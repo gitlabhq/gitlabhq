@@ -27,6 +27,7 @@
 #  import_type            :string(255)
 #  import_source          :string(255)
 #  avatar                 :string(255)
+#  import_data            :text
 #
 
 require 'carrierwave/orm/activerecord'
@@ -49,6 +50,8 @@ class Project < ActiveRecord::Base
   default_value_for :wiki_enabled, gitlab_config_features.wiki
   default_value_for :wall_enabled, false
   default_value_for :snippets_enabled, gitlab_config_features.snippets
+
+  serialize :import_data, JSON
 
   # set last_activity_at to the same as created_at
   after_create :set_last_activity_at
@@ -83,7 +86,7 @@ class Project < ActiveRecord::Base
   has_one :gemnasium_service, dependent: :destroy
   has_one :slack_service, dependent: :destroy
   has_one :jenkins_service, dependent: :destroy
-  has_one :buildbox_service, dependent: :destroy
+  has_one :buildkite_service, dependent: :destroy
   has_one :bamboo_service, dependent: :destroy
   has_one :teamcity_service, dependent: :destroy
   has_one :pushover_service, dependent: :destroy
@@ -143,7 +146,7 @@ class Project < ActiveRecord::Base
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
   validates :import_url,
-    format: { with: URI::regexp(%w(ssh git http https)), message: 'should be a valid url' },
+    format: { with: /\A#{URI.regexp(%w(ssh git http https))}\z/, message: 'should be a valid url' },
     if: :import?
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
@@ -191,6 +194,7 @@ class Project < ActiveRecord::Base
     state :failed
 
     after_transition any => :started, do: :add_import_job
+    after_transition any => :finished, do: :clear_import_data
   end
 
   class << self
@@ -266,6 +270,11 @@ class Project < ActiveRecord::Base
 
   def add_import_job
     RepositoryImportWorker.perform_in(2.seconds, id)
+  end
+
+  def clear_import_data
+    self.import_data = nil
+    self.save
   end
 
   def import?

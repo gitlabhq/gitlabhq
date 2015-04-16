@@ -20,7 +20,8 @@ module Gitlab
         signin_enabled: Settings.gitlab['signin_enabled'],
         gravatar_enabled: Settings.gravatar['enabled'],
         sign_in_text: Settings.extra['sign_in_text'],
-        restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels']
+        restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
+        max_attachment_size: Settings.gitlab['max_attachment_size']
       )
     end
   end

@@ -11,8 +11,6 @@ describe API::API, api: true  do
   let!(:master) { create(:project_member, user: user, project: project, access_level: ProjectMember::MASTER) }
   let!(:guest) { create(:project_member, user: user2, project: project, access_level: ProjectMember::GUEST) }
 
-  before { project.team << [user, :reporter] }
-
   describe "GET /projects/:id/repository/tags" do
     it "should return an array of project tags" do
       get api("/projects/#{project.id}/repository/tags", user)

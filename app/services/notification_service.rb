@@ -123,30 +123,30 @@ class NotificationService
     return true if note.note.start_with?('Status changed to closed')
     return true if note.cross_reference? && note.system == true
 
-    opts = { noteable_type: note.noteable_type, project_id: note.project_id }
-
     target = note.noteable
 
-    if target.respond_to?(:participants)
-      recipients = target.participants
-    else
-      recipients = note.mentioned_users
-    end
+    recipients = []
 
     if note.commit_id.present?
-      opts.merge!(commit_id: note.commit_id)
       recipients << note.commit_author
-    else
-      opts.merge!(noteable_id: note.noteable_id)
     end
-
-    # Get users who left comment in thread
-    recipients = recipients.concat(User.where(id: Note.where(opts).pluck(:author_id)))
+    
+    # Add all users participating in the thread (author, assignee, comment authors)
+    participants = 
+      if target.respond_to?(:participants)
+        target.participants
+      elsif target.is_a?(Commit)
+        author_ids = Note.for_commit_id(target.id).pluck(:author_id).uniq
+        User.where(id: author_ids)
+      else
+        note.mentioned_users
+      end
+    recipients = recipients.concat(participants)
 
     # Merge project watchers
     recipients = recipients.concat(project_watchers(note.project)).compact.uniq
 
-    # Reject mention users unless mentioned in comment
+    # Reject users with Mention notification level, except those mentioned in _this_ note.
     recipients = reject_mention_users(recipients - note.mentioned_users, note.project)
     recipients = recipients + note.mentioned_users
 
@@ -168,12 +168,36 @@ class NotificationService
     end
   end
 
+  def invite_project_member(project_member, token)
+    mailer.project_member_invited_email(project_member.id, token)
+  end
+
+  def accept_project_invite(project_member)
+    mailer.project_invite_accepted_email(project_member.id)
+  end
+
+  def decline_project_invite(project_member)
+    mailer.project_invite_declined_email(project_member.project.id, project_member.invite_email, project_member.access_level, project_member.created_by_id)
+  end
+
   def new_project_member(project_member)
     mailer.project_access_granted_email(project_member.id)
   end
 
   def update_project_member(project_member)
     mailer.project_access_granted_email(project_member.id)
+  end
+
+  def invite_group_member(group_member, token)
+    mailer.group_member_invited_email(group_member.id, token)
+  end
+
+  def accept_group_invite(group_member)
+    mailer.group_invite_accepted_email(group_member.id)
+  end
+
+  def decline_group_invite(group_member)
+    mailer.group_invite_declined_email(group_member.group.id, group_member.invite_email, group_member.access_level, group_member.created_by_id)
   end
 
   def new_group_member(group_member)

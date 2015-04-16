@@ -70,7 +70,7 @@ module API
       #   DELETE /groups/:id
       delete ":id" do
         group = find_group(params[:id])
-        authorize! :manage_group, group
+        authorize! :admin_group, group
         group.destroy
       end
 

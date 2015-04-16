@@ -40,6 +40,17 @@ describe Projects::ForkService do
         expect(@to_project.errors[:base]).not_to include("Fork transaction failed.")
       end
     end
+
+    context 'GitLab CI is enabled' do
+      it "calls fork registrator for CI" do
+        @from_project.build_missing_services
+        @from_project.gitlab_ci_service.update_attributes(active: true)
+
+        expect(ForkRegistrationWorker).to receive(:perform_async)
+
+        fork_project(@from_project, @to_user)
+      end
+    end
   end
 
   describe :fork_to_namespace do
@@ -89,7 +100,8 @@ describe Projects::ForkService do
 
   def fork_project(from_project, user, fork_success = true, params = {})
     context = Projects::ForkService.new(from_project, user, params)
-    shell = double('gitlab_shell').stub(fork_repository: fork_success)
+    shell = double('gitlab_shell')
+    shell.stub(fork_repository: fork_success)
     context.stub(gitlab_shell: shell)
     context.execute
   end

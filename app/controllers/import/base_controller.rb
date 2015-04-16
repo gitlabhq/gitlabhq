@@ -8,7 +8,7 @@ class Import::BaseController < ApplicationController
       namespace.add_owner(current_user)
     rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
       namespace = Namespace.find_by_path_or_name(@target_namespace)
-      unless namespace.owner == current_user
+      unless current_user.can?(:create_projects, namespace)
         @already_been_taken = true
         return false
       end

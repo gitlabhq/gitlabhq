@@ -5,6 +5,10 @@
     %li
       %span.light Member since
       %strong= user.created_at.stamp("Aug 21, 2011")
+    - unless user.public_email.blank?
+      %li
+        %span.light E-mail:
+        %strong= link_to user.public_email, "mailto:#{user.public_email}"
     - unless user.skype.blank?
       %li
         %span.light Skype:

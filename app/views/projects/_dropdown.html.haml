@@ -6,28 +6,32 @@
       - if @project.issues_enabled && can?(current_user, :write_issue, @project)
         %li
           = link_to url_for_new_issue(@project, only_path: true), title: "New Issue" do
+            %i.fa.fa-fw.fa-exclamation-circle
             New issue
       - if @project.merge_requests_enabled && can?(current_user, :write_merge_request, @project)
         %li
           = link_to new_namespace_project_merge_request_path(@project.namespace, @project), title: "New Merge Request" do
+            %i.fa.fa-fw.fa-tasks
             New merge request
       - if @project.snippets_enabled && can?(current_user, :write_snippet, @project)
         %li
           = link_to new_namespace_project_snippet_path(@project.namespace, @project), title: "New Snippet" do
+            %i.fa.fa-fw.fa-file-text-o
             New snippet
       - if can?(current_user, :admin_project_member, @project)
         %li
           = link_to namespace_project_project_members_path(@project.namespace, @project), title: "New project member" do
+            %i.fa.fa-fw.fa-users
             New project member
       - if can? current_user, :push_code, @project
         %li.divider
         %li
           = link_to new_namespace_project_branch_path(@project.namespace, @project) do
-            %i.fa.fa-code-fork
-            Git branch
+            %i.fa.fa-fw.fa-code-fork
+            New branch
         %li
           = link_to new_namespace_project_tag_path(@project.namespace, @project) do
-            %i.fa.fa-tag
-            Git tag
+            %i.fa.fa-fw.fa-tag
+            New tag
 
 

@@ -225,25 +225,29 @@ describe ApplicationHelper do
   end
 
   describe 'link_to' do
-
     it 'should not include rel=nofollow for internal links' do
-      expect(link_to('Home', root_path)).to eq("<a href=\"/\">Home</a>")
+      expect(link_to('Home', root_path)).to eq('<a href="/">Home</a>')
     end
 
     it 'should include rel=nofollow for external links' do
-      expect(link_to('Example', 'http://www.example.com')).to eq("<a href=\"http://www.example.com\" rel=\"nofollow\">Example</a>")
+      expect(link_to('Example', 'http://www.example.com')).
+        to eq '<a href="http://www.example.com" rel="nofollow">Example</a>'
     end
 
-    it 'should include re=nofollow for external links and honor existing html_options' do
-      expect(
-        link_to('Example', 'http://www.example.com', class: 'toggle', data: {toggle: 'dropdown'})
-      ).to eq("<a class=\"toggle\" data-toggle=\"dropdown\" href=\"http://www.example.com\" rel=\"nofollow\">Example</a>")
+    it 'should include rel=nofollow for external links and honor existing html_options' do
+      expect(link_to('Example', 'http://www.example.com', class: 'toggle', data: {toggle: 'dropdown'}))
+        .to eq '<a class="toggle" data-toggle="dropdown" href="http://www.example.com" rel="nofollow">Example</a>'
     end
 
-    it 'should include rel=nofollow for external links and preserver other rel values' do
-      expect(
-        link_to('Example', 'http://www.example.com', rel: 'noreferrer')
-      ).to eq("<a href=\"http://www.example.com\" rel=\"noreferrer nofollow\">Example</a>")
+    it 'should include rel=nofollow for external links and preserve other rel values' do
+      expect(link_to('Example', 'http://www.example.com', rel: 'noreferrer'))
+        .to eq '<a href="http://www.example.com" rel="noreferrer nofollow">Example</a>'
+    end
+
+    it 'should not include rel=nofollow for external links on the same host as GitLab' do
+      expect(Gitlab.config.gitlab).to receive(:host).and_return('example.foo')
+      expect(link_to('Example', 'http://example.foo/bar')).
+        to eq '<a href="http://example.foo/bar">Example</a>'
     end
   end
 

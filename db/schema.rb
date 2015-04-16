@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150324223425) do
+ActiveRecord::Schema.define(version: 20150413192223) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(version: 20150324223425) do
     t.boolean  "twitter_sharing_enabled",      default: true
     t.text     "help_text"
     t.text     "restricted_visibility_levels"
+    t.integer  "max_attachment_size",          default: 10,   null: false
   end
 
   create_table "audit_events", force: true do |t|
@@ -171,6 +172,7 @@ ActiveRecord::Schema.define(version: 20150324223425) do
     t.string   "title"
     t.string   "type"
     t.string   "fingerprint"
+    t.boolean  "public",      default: false, null: false
   end
 
   add_index "keys", ["created_at", "id"], name: "index_keys_on_created_at_and_id", using: :btree
@@ -210,15 +212,20 @@ ActiveRecord::Schema.define(version: 20150324223425) do
     t.integer  "access_level",       null: false
     t.integer  "source_id",          null: false
     t.string   "source_type",        null: false
-    t.integer  "user_id",            null: false
+    t.integer  "user_id"
     t.integer  "notification_level", null: false
     t.string   "type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "created_by_id"
+    t.string   "invite_email"
+    t.string   "invite_token"
+    t.datetime "invite_accepted_at"
   end
 
   add_index "members", ["access_level"], name: "index_members_on_access_level", using: :btree
   add_index "members", ["created_at", "id"], name: "index_members_on_created_at_and_id", using: :btree
+  add_index "members", ["invite_token"], name: "index_members_on_invite_token", unique: true, using: :btree
   add_index "members", ["source_id", "source_type"], name: "index_members_on_source_id_and_source_type", using: :btree
   add_index "members", ["type"], name: "index_members_on_type", using: :btree
   add_index "members", ["user_id"], name: "index_members_on_user_id", using: :btree
@@ -402,6 +409,7 @@ ActiveRecord::Schema.define(version: 20150324223425) do
     t.string   "import_type"
     t.string   "import_source"
     t.boolean  "merge_requests_rebase_default", default: true
+    t.text     "import_data"
   end
 
   add_index "projects", ["created_at", "id"], name: "index_projects_on_created_at_and_id", using: :btree
@@ -536,6 +544,7 @@ ActiveRecord::Schema.define(version: 20150324223425) do
     t.string   "bitbucket_access_token"
     t.string   "bitbucket_access_token_secret"
     t.string   "location"
+    t.string   "public_email",                  default: "",    null: false
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

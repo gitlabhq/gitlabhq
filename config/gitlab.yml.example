@@ -49,6 +49,7 @@ production: &base
     # Email address used in the "From" field in mails sent by GitLab
     email_from: example@example.com
     email_display_name: GitLab
+    email_reply_to: noreply@example.com
 
     # Email server smtp settings are in config/initializers/smtp_settings.rb.sample
 
@@ -112,6 +113,15 @@ production: &base
     schedule_sync_minute: 30 # Minute of the hour. Value from 0-59.
 
     servers:
+      ##########################################################################
+      #
+      # Since GitLab 7.4, LDAP servers get ID's (below the ID is 'main'). GitLab
+      # Enterprise Edition now supports connecting to multiple LDAP servers.
+      #
+      # If you are updating from the old (pre-7.4) syntax, you MUST give your
+      # old server the ID 'main'.
+      #
+      ##########################################################################
       main: # 'main' is the GitLab 'provider ID' of this LDAP server
         ## label
         #
@@ -143,6 +153,11 @@ production: &base
         # If you are using "uid: 'userPrincipalName'" on ActiveDirectory you need to
         # disable this setting, because the userPrincipalName contains an '@'.
         allow_username_or_email_login: false
+
+        # To maintain tight control over the number of active users on your GitLab installation,
+        # enable this setting to keep new users blocked until they have been cleared by the admin 
+        # (default: false).
+        block_auto_created_users: false
 
         # Base where we can search for users
         #

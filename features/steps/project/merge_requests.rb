@@ -61,8 +61,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see that I am unsubscribed' do
-    sleep 0.2
-    find(".subscribe-button span").text.should == "Subscribe"
+    find(".subscribe-button span").should have_content("Subscribe")
   end
 
   step 'I click button "Unsubscribe"' do

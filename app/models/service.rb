@@ -122,26 +122,26 @@ class Service < ActiveRecord::Base
 
   def self.available_services_names
     %w(
-      gitlab_ci
-      campfire
-      hipchat
-      pivotaltracker
-      flowdock
-      assembla
       asana
-      emails_on_push
-      gemnasium
-      slack
-      jenkins
-      pushover
-      buildbox
+      assembla
       bamboo
-      teamcity
-      jira
-      redmine
+      buildkite
+      campfire
       custom_issue_tracker
-      irker
+      emails_on_push
       external_wiki
+      flowdock
+      gemnasium
+      gitlab_ci
+      hipchat
+      irker
+      jenkins
+      jira
+      pivotaltracker
+      pushover
+      redmine
+      slack
+      teamcity
     )
   end
 
