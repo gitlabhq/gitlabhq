@@ -92,8 +92,8 @@ shared_examples 'a mentionable' do
   it 'detects existing cross-references' do
     Note.create_cross_reference_note(mentioned_issue, subject.local_reference, author, project)
 
-    expect(subject.has_mentioned?(mentioned_issue)).to be_truthy
-    expect(subject.has_mentioned?(mentioned_mr)).to be_falsey
+    expect(subject).to have_mentioned(mentioned_issue)
+    expect(subject).not_to have_mentioned(mentioned_mr)
   end
 end
 
