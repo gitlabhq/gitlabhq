@@ -76,27 +76,36 @@ module Gitlab::Markdown
       let(:snippet)   { create(:project_snippet, project: project2) }
       let(:reference) { "#{project2.path_with_namespace}$#{snippet.id}" }
 
-      before do
-        allow_any_instance_of(described_class).
-          to receive(:user_can_reference_project?).and_return(true)
+      context 'when user can access reference' do
+        before { allow_cross_reference! }
+
+        it 'links to a valid reference' do
+          doc = filter("See #{reference}")
+
+          expect(doc.css('a').first.attr('href')).
+            to eq urls.namespace_project_snippet_url(project2.namespace, project2, snippet)
+        end
+
+        it 'links with adjacent text' do
+          doc = filter("See (#{reference}.)")
+          expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
+        end
+
+        it 'ignores invalid snippet IDs on the referenced project' do
+          exp = act = "See #{project2.path_with_namespace}$#{snippet.id + 1}"
+
+          expect(filter(act).to_html).to eq exp
+        end
       end
 
-      it 'links to a valid reference' do
-        doc = filter("See #{reference}")
+      context 'when user cannot access reference' do
+        before { disallow_cross_reference! }
 
-        expect(doc.css('a').first.attr('href')).
-          to eq urls.namespace_project_snippet_url(project2.namespace, project2, snippet)
-      end
+        it 'ignores valid references' do
+          exp = act = "See #{reference}"
 
-      it 'links with adjacent text' do
-        doc = filter("See (#{reference}.)")
-        expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
-      end
-
-      it 'ignores invalid snippet IDs on the referenced project' do
-        exp = act = "See #{project2.path_with_namespace}$#{snippet.id + 1}"
-
-        expect(filter(act).to_html).to eq exp
+          expect(filter(act).to_html).to eq exp
+        end
       end
     end
   end

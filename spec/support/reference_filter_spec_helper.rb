@@ -34,4 +34,14 @@ module ReferenceFilterSpecHelper
     contexts.reverse_merge!(project: project)
     described_class.call(html, contexts)
   end
+
+  def allow_cross_reference!
+    allow_any_instance_of(described_class).
+      to receive(:user_can_reference_project?).and_return(true)
+  end
+
+  def disallow_cross_reference!
+    allow_any_instance_of(described_class).
+      to receive(:user_can_reference_project?).and_return(false)
+  end
 end

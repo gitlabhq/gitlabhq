@@ -89,35 +89,44 @@ module Gitlab::Markdown
       let(:issue)     { create(:issue, project: project2) }
       let(:reference) { "#{project2.path_with_namespace}##{issue.iid}" }
 
-      before do
-        allow_any_instance_of(described_class).
-          to receive(:user_can_reference_project?).and_return(true)
+      context 'when user can access reference' do
+        before { allow_cross_reference! }
+
+        it 'ignores valid references when cross-reference project uses external tracker' do
+          expect_any_instance_of(Project).to receive(:issue_exists?).
+            with(issue.iid).and_return(false)
+
+          exp = act = "Issue ##{issue.iid}"
+          expect(filter(act).to_html).to eq exp
+        end
+
+        it 'links to a valid reference' do
+          doc = filter("See #{reference}")
+
+          expect(doc.css('a').first.attr('href')).
+            to eq helper.url_for_issue(issue.iid, project2)
+        end
+
+        it 'links with adjacent text' do
+          doc = filter("Fixed (#{reference}.)")
+          expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
+        end
+
+        it 'ignores invalid issue IDs on the referenced project' do
+          exp = act = "Fixed #{project2.path_with_namespace}##{issue.iid + 1}"
+
+          expect(filter(act).to_html).to eq exp
+        end
       end
 
-      it 'ignores valid references when cross-reference project uses external tracker' do
-        expect_any_instance_of(Project).to receive(:issue_exists?).
-          with(issue.iid).and_return(false)
+      context 'when user cannot access reference' do
+        before { disallow_cross_reference! }
 
-        exp = act = "Issue ##{issue.iid}"
-        expect(filter(act).to_html).to eq exp
-      end
+        it 'ignores valid references' do
+          exp = act = "See #{reference}"
 
-      it 'links to a valid reference' do
-        doc = filter("See #{reference}")
-
-        expect(doc.css('a').first.attr('href')).
-          to eq helper.url_for_issue(issue.iid, project2)
-      end
-
-      it 'links with adjacent text' do
-        doc = filter("Fixed (#{reference}.)")
-        expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
-      end
-
-      it 'ignores invalid issue IDs on the referenced project' do
-        exp = act = "Fixed #{project2.path_with_namespace}##{issue.iid + 1}"
-
-        expect(filter(act).to_html).to eq exp
+          expect(filter(act).to_html).to eq exp
+        end
       end
     end
   end

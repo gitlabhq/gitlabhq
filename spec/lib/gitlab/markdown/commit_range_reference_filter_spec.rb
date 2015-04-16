@@ -90,29 +90,38 @@ module Gitlab::Markdown
       let(:commit2)   { project.repository.commit("HEAD~2") }
       let(:reference) { "#{project2.path_with_namespace}@#{commit1.id}...#{commit2.id}" }
 
-      before do
-        allow_any_instance_of(described_class).
-          to receive(:user_can_reference_project?).and_return(true)
+      context 'when user can access reference' do
+        before { allow_cross_reference! }
+
+        it 'links to a valid reference' do
+          doc = filter("See #{reference}")
+
+          expect(doc.css('a').first.attr('href')).
+            to eq urls.namespace_project_compare_url(project2.namespace, project2, from: commit1.id, to: commit2.id)
+        end
+
+        it 'links with adjacent text' do
+          doc = filter("Fixed (#{reference}.)")
+          expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
+        end
+
+        it 'ignores invalid commit IDs on the referenced project' do
+          exp = act = "Fixed #{project2.path_with_namespace}##{commit1.id.reverse}...#{commit2.id}"
+          expect(filter(act).to_html).to eq exp
+
+          exp = act = "Fixed #{project2.path_with_namespace}##{commit1.id}...#{commit2.id.reverse}"
+          expect(filter(act).to_html).to eq exp
+        end
       end
 
-      it 'links to a valid reference' do
-        doc = filter("See #{reference}")
+      context 'when user cannot access reference' do
+        before { disallow_cross_reference! }
 
-        expect(doc.css('a').first.attr('href')).
-          to eq urls.namespace_project_compare_url(project2.namespace, project2, from: commit1.id, to: commit2.id)
-      end
+        it 'ignores valid references' do
+          exp = act = "See #{reference}"
 
-      it 'links with adjacent text' do
-        doc = filter("Fixed (#{reference}.)")
-        expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
-      end
-
-      it 'ignores invalid commit IDs on the referenced project' do
-        exp = act = "Fixed #{project2.path_with_namespace}##{commit1.id.reverse}...#{commit2.id}"
-        expect(filter(act).to_html).to eq exp
-
-        exp = act = "Fixed #{project2.path_with_namespace}##{commit1.id}...#{commit2.id.reverse}"
-        expect(filter(act).to_html).to eq exp
+          expect(filter(act).to_html).to eq exp
+        end
       end
     end
   end
