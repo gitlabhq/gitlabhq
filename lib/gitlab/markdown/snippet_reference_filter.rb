@@ -47,7 +47,7 @@ module Gitlab
         self.class.references_in(text) do |match, id, project_ref|
           project = self.project_from_ref(project_ref)
 
-          if snippet = project.snippets.find_by(id: id)
+          if project && snippet = project.snippets.find_by(id: id)
             title = escape_once("Snippet: #{snippet.title}")
             klass = reference_class(:snippet)
 

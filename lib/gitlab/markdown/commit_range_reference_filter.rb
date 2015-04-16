@@ -91,7 +91,7 @@ module Gitlab
       end
 
       def valid_range?(project, from_id, to_id)
-        project.valid_repo? && commit(from_id) && commit(to_id)
+        project && project.valid_repo? && commit(from_id) && commit(to_id)
       end
 
       def url_for_commit_range(project, from_id, to_id)

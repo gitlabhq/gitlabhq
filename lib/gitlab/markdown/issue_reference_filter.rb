@@ -47,7 +47,7 @@ module Gitlab
         self.class.references_in(text) do |match, issue, project_ref|
           project = self.project_from_ref(project_ref)
 
-          if project.issue_exists?(issue)
+          if project && project.issue_exists?(issue)
             url = url_for_issue(issue, project, only_path: context[:only_path])
 
             title = escape_once("Issue: #{title_for_issue(issue, project)}")

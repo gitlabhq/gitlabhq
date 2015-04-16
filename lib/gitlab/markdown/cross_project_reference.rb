@@ -10,18 +10,17 @@ module Gitlab
       #
       # Defaults to value of `context[:project]` if:
       # * No reference is given OR
-      # * Reference given doesn't exist OR
-      # * Reference given can't be read by the current user
+      # * Reference given doesn't exist
       #
       # ref - String reference.
       #
-      # Returns a Project
+      # Returns a Project, or nil if the reference can't be accessed
       def project_from_ref(ref)
         if ref && other = Project.find_with_namespace(ref)
           if user_can_reference_project?(other)
             other
           else
-            context[:project]
+            nil
           end
         else
           context[:project]

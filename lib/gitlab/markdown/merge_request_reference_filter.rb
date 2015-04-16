@@ -47,7 +47,7 @@ module Gitlab
         self.class.references_in(text) do |match, id, project_ref|
           project = self.project_from_ref(project_ref)
 
-          if merge_request = project.merge_requests.find_by(iid: id)
+          if project && merge_request = project.merge_requests.find_by(iid: id)
             title = escape_once("Merge Request: #{merge_request.title}")
             klass = reference_class(:merge_request)
 

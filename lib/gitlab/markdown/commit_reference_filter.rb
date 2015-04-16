@@ -47,7 +47,7 @@ module Gitlab
         self.class.references_in(text) do |match, commit_ref, project_ref|
           project = self.project_from_ref(project_ref)
 
-          if project.valid_repo? && commit = project.repository.commit(commit_ref)
+          if commit = commit_from_ref(project, commit_ref)
             url = url_for_commit(project, commit)
 
             title = escape_once(commit.link_title)
@@ -61,6 +61,12 @@ module Gitlab
           else
             match
           end
+        end
+      end
+
+      def commit_from_ref(project, commit_ref)
+        if project && project.valid_repo?
+          project.repository.commit(commit_ref)
         end
       end
 
