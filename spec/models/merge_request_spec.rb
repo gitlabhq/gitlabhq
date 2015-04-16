@@ -116,12 +116,13 @@ describe MergeRequest do
   end
 
   it_behaves_like 'an editable mentionable' do
-    let(:subject) { create :merge_request, source_project: mproject, target_project: mproject }
+    subject { create(:merge_request, source_project: project, target_project: project) }
+
     let(:backref_text) { "merge request !#{subject.iid}" }
     let(:set_mentionable_text) { ->(txt){ subject.title = txt } }
   end
 
   it_behaves_like 'a Taskable' do
-    let(:subject) { create :merge_request, :simple }
+    subject { create :merge_request, :simple }
   end
 end

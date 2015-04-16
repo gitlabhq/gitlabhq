@@ -629,8 +629,9 @@ describe Note do
   end
 
   it_behaves_like 'an editable mentionable' do
+    subject { create :note, noteable: issue, project: project }
+
     let(:issue) { create :issue, project: project }
-    let(:subject) { create :note, noteable: issue, project: project }
     let(:backref_text) { issue.gfm_reference }
     let(:set_mentionable_text) { ->(txt) { subject.note = txt } }
   end

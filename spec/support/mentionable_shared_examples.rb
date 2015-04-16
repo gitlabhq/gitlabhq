@@ -1,6 +1,6 @@
 # Specifications for behavior common to all Mentionable implementations.
 # Requires a shared context containing:
-# - let(:subject) { "the mentionable implementation" }
+# - subject { "the mentionable implementation" }
 # - let(:backref_text) { "the way that +subject+ should refer to itself in backreferences " }
 # - let(:set_mentionable_text) { lambda { |txt| "block that assigns txt to the subject's mentionable_text" } }
 

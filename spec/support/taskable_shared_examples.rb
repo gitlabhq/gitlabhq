@@ -1,7 +1,7 @@
 # Specs for task state functionality for issues and merge requests.
 #
 # Requires a context containing:
-#   let(:subject) { Issue or MergeRequest }
+#   subject { Issue or MergeRequest }
 shared_examples 'a Taskable' do
   before do
     subject.description = <<EOT.gsub(/ {6}/, '')
