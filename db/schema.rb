@@ -343,7 +343,6 @@ ActiveRecord::Schema.define(version: 20150205113015) do
     t.datetime "updated_at"
     t.boolean  "developers_can_push",  default: false, null: false
     t.boolean  "developers_can_merge", default: false, null: false
-    t.boolean  "authors_can_merge",    default: false, null: false
   end
 
   add_index "protected_branches", ["project_id"], name: "index_protected_branches_on_project_id", using: :btree

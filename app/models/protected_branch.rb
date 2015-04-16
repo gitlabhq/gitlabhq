@@ -9,7 +9,6 @@
 #  updated_at           :datetime
 #  developers_can_push  :boolean          default(FALSE), not null
 #  developers_can_merge :boolean          default(FALSE), not null
-#  authors_can_merge    :boolean          default(FALSE), not null
 #
 
 class ProtectedBranch < ActiveRecord::Base

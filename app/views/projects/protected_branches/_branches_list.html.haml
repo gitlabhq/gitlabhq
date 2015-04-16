@@ -7,7 +7,6 @@
         %th Branch
         %th Developers can push
         %th Developers can merge
-        %th Request authors can merge
         %th Last commit
         %th
 
@@ -24,8 +23,6 @@
               = check_box_tag "developers_can_push", branch.id, branch.developers_can_push, "data-url" => @url
             %td
               = check_box_tag "developers_can_merge", branch.id, branch.developers_can_merge, "data-url" => @url
-            %td
-              = check_box_tag "authors_can_merge", branch.id, branch.authors_can_merge, "data-url" => @url
             %td
               - if commit = branch.commit
                 = link_to project_commit_path(@project, commit.id), class: 'commit_short_id' do
