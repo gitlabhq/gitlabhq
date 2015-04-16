@@ -10,15 +10,12 @@ describe GitlabMarkdownHelper do
   end
 
   let!(:project) { create(:project) }
-  let(:empty_project) { create(:empty_project) }
 
   let(:user)          { create(:user, username: 'gfm') }
   let(:commit)        { project.repository.commit }
-  let(:earlier_commit){ project.repository.commit("HEAD~2") }
   let(:issue)         { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:snippet)       { create(:project_snippet, project: project) }
-  let(:member)        { project.project_members.where(user_id: user).first }
 
   # Helper expects a current_user method.
   let(:current_user) { user }
@@ -57,53 +54,6 @@ describe GitlabMarkdownHelper do
       it "should link to the issue" do
         expected = namespace_project_issue_path(project.namespace, project, issue)
         expect(gfm(actual)).to match(expected)
-      end
-    end
-
-    # TODO (rspeicher): These tests belong in the emoji filter spec
-    describe "emoji" do
-      it "matches at the start of a string" do
-        expect(gfm(":+1:")).to match(/<img/)
-      end
-
-      it "matches at the end of a string" do
-        expect(gfm("This gets a :-1:")).to match(/<img/)
-      end
-
-      it "matches with adjacent text" do
-        expect(gfm("+1 (:+1:)")).to match(/<img/)
-      end
-
-      it "has a title attribute" do
-        expect(gfm(":-1:")).to match(/title=":-1:"/)
-      end
-
-      it "has an alt attribute" do
-        expect(gfm(":-1:")).to match(/alt=":-1:"/)
-      end
-
-      it "has an emoji class" do
-        expect(gfm(":+1:")).to match('class="emoji"')
-      end
-
-      it "sets height and width" do
-        actual = gfm(":+1:")
-        expect(actual).to match(/width="20"/)
-        expect(actual).to match(/height="20"/)
-      end
-
-      it "keeps whitespace intact" do
-        expect(gfm('This deserves a :+1: big time.')).
-          to match(/deserves a <img.+> big time/)
-      end
-
-      it "ignores invalid emoji" do
-        expect(gfm(":invalid-emoji:")).not_to match(/<img/)
-      end
-
-      it "should work independent of reference links (i.e. without @project being set)" do
-        @project = nil
-        expect(gfm(":+1:")).to match(/<img/)
       end
     end
 
@@ -339,28 +289,6 @@ describe GitlabMarkdownHelper do
       expect(markdown("##{issue.iid}")).to include(namespace_project_issue_path(project.namespace, project, issue))
     end
 
-    # EMOJI -------------------------------------------------------------------
-
-    it "should generate absolute urls for emoji" do
-      # TODO (rspeicher): Why isn't this with the emoji tests?
-      expect(markdown(':smile:')).to(
-        include(%(src="#{Gitlab.config.gitlab.url}/assets/emoji/#{Emoji.emoji_filename('smile')}.png))
-      )
-    end
-
-    it "should generate absolute urls for emoji if relative url is present" do
-      # TODO (rspeicher): Why isn't this with the emoji tests?
-      allow(Gitlab.config.gitlab).to receive(:url).and_return('http://localhost/gitlab/root')
-      expect(markdown(":smile:")).to include("src=\"http://localhost/gitlab/root/assets/emoji/#{Emoji.emoji_filename('smile')}.png")
-    end
-
-    it "should generate absolute urls for emoji if asset_host is present" do
-      # TODO (rspeicher): Why isn't this with the emoji tests?
-      allow(Gitlab::Application.config).to receive(:asset_host).and_return("https://cdn.example.com")
-      ActionView::Base.any_instance.stub_chain(:config, :asset_host).and_return("https://cdn.example.com")
-      expect(markdown(":smile:")).to include("src=\"https://cdn.example.com/assets/emoji/#{Emoji.emoji_filename('smile')}.png")
-    end
-
     # RELATIVE URLS -----------------------------------------------------------
     # TODO (rspeicher): These belong in a relative link filter spec
 
@@ -448,8 +376,8 @@ describe GitlabMarkdownHelper do
   # TODO (rspeicher): This should be a context of relative link specs, not its own thing
   describe 'markdown for empty repository' do
     before do
-      @project = empty_project
-      @repository = empty_project.repository
+      @project = create(:empty_project)
+      @repository = @project.repository
     end
 
     it "should not touch relative urls" do
