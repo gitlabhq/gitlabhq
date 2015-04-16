@@ -22,7 +22,6 @@ v 7.10.0 (unreleased)
   - Allow HTML tags in Markdown input
   - Fix code unfold not working on Compare commits page (Stan Hu)
   - Fix generating SSH key fingerprints with OpenSSH 6.8. (Sašo Stanovnik)
-  - Include missing events and fix save functionality in admin service template settings form (Stan Hu)
   - Fix "Import projects from" button to show the correct instructions (Stan Hu)
   - Fix dots in Wiki slugs causing errors (Stan Hu)
   - Make maximum attachment size configurable via Application Settings (Stan Hu)
