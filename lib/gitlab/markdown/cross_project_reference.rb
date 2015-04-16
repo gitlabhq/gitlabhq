@@ -29,7 +29,7 @@ module Gitlab
       end
 
       def user_can_reference_project?(project, user = context[:current_user])
-        user && Ability.abilities.allowed?(user, :read_project, project)
+        Ability.abilities.allowed?(user, :read_project, project)
       end
     end
   end
