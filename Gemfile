@@ -88,7 +88,7 @@ gem "six"
 gem "seed-fu"
 
 # Markup pipeline for GitLab
-gem 'html-pipeline-gitlab', '~> 0.1'
+gem 'html-pipeline', '~> 1.11.0'
 
 # Markdown to HTML
 gem "github-markup"
