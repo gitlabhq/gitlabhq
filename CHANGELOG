@@ -1,5 +1,16 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 7.11.0 (unreleased)
+  - Fix clone URL field and X11 Primary selection (Dmitry Medvinsky)
+  - Ignore invalid lines in .gitmodules
+  -
+  -
+  -
+  -
+  -
+  -
+  -
+
 v 7.10.0 (unreleased)
   - Allow users to be invited by email to join a group or project.
   - Don't crash when project repository doesn't exist.
@@ -15,6 +26,7 @@ v 7.10.0 (unreleased)
   - Don't leak existence of group or project via search.
   - Fix bug where Wiki pages that included a '/' were no longer accessible (Stan Hu)
   - Fix bug where error messages from Dropzone would not be displayed on the issues page (Stan Hu)
+  - Add a rake task to check repository integrity with `git fsck`
   - Add ability to configure Reply-To address in gitlab.yml (Stan Hu)
   - Move current user to the top of the list in assignee/author filters (Stan Hu)
   - Fix broken side-by-side diff view on merge request page (Stan Hu)

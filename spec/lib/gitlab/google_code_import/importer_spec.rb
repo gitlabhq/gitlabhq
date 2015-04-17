@@ -12,8 +12,12 @@ describe Gitlab::GoogleCodeImport::Importer do
       }
     } 
   }
-  let(:project) { create(:project, import_data: import_data) }
+  let(:project) { create(:project) }
   subject       { described_class.new(project) }
+
+  before do
+    project.create_import_data(data: import_data)
+  end
 
   describe "#execute" do
 
