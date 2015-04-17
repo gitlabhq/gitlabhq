@@ -3,21 +3,21 @@ class RemovePeriodsAtEndsOfUsernames < ActiveRecord::Migration
 
   class Namespace < ActiveRecord::Base
     class << self
-      def by_path(path)
-        where('lower(path) = :value', value: path.downcase).first
+      def find_by_path_or_name(path)
+        find_by("lower(path) = :path OR lower(name) = :path", path: path.downcase)
       end
 
       def clean_path(path)
         path = path.dup
         path.gsub!(/@.*\z/,             "")
         path.gsub!(/\.git\z/,           "")
-        path.gsub!(/\A-/,               "")
-        path.gsub!(/.\z/,               "")
+        path.gsub!(/\A-+/,              "")
+        path.gsub!(/\.+\z/,             "")
         path.gsub!(/[^a-zA-Z0-9_\-\.]/, "")
 
         counter = 0
         base = path
-        while Namespace.by_path(path).present?
+        while Namespace.find_by_path_or_name(path)
           counter += 1
           path = "#{base}#{counter}"
         end
