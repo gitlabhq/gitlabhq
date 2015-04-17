@@ -13,9 +13,15 @@ module Gitlab::Markdown
     include described_class
 
     describe '#project_from_ref' do
-      context 'when referenced project does not exist' do
+      context 'when no project was referenced' do
         it 'returns the project from context' do
-          expect(project_from_ref('invalid/reference')).to eq context[:project]
+          expect(project_from_ref(nil)).to eq context[:project]
+        end
+      end
+
+      context 'when referenced project does not exist' do
+        it 'returns nil' do
+          expect(project_from_ref('invalid/reference')).to be_nil
         end
       end
 

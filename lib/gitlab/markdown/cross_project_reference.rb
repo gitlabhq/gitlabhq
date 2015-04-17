@@ -16,15 +16,12 @@ module Gitlab
       #
       # Returns a Project, or nil if the reference can't be accessed
       def project_from_ref(ref)
-        if ref && other = Project.find_with_namespace(ref)
-          if user_can_reference_project?(other)
-            other
-          else
-            nil
-          end
-        else
-          context[:project]
-        end
+        return context[:project] unless ref
+
+        other = Project.find_with_namespace(ref)
+        return nil unless other && user_can_reference_project?(other)
+        
+        other
       end
 
       def user_can_reference_project?(project, user = context[:current_user])
