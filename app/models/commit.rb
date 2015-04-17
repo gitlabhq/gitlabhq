@@ -139,15 +139,14 @@ class Commit
     users << author
     users << committer
     
-    mentions = []
-    mentions << self.mentioned_users(current_user, project)
+    users.push *self.mentioned_users(current_user, project)
 
     notes(project).each do |note|
       users << note.author
-      mentions << note.mentioned_users(current_user, project)
+      users.push *note.mentioned_users(current_user, project)
     end
 
-    users.concat(mentions.reduce([], :|)).uniq
+    users.uniq
   end
 
   def notes(project)
