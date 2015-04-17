@@ -11,7 +11,7 @@ Doorkeeper.configure do
   end
 
   resource_owner_from_credentials do |routes|
-    u = User.find_by(email: params[:username])
+    u = User.find_by(email: params[:username]) || User.find_by(username: params[:username])
     u if u && u.valid_password?(params[:password])
   end
 
@@ -83,7 +83,7 @@ Doorkeeper.configure do
   #
   # If not specified, Doorkeeper enables all the four grant flows.
   #
-  # grant_flows %w(authorization_code implicit password client_credentials)
+  grant_flows %w(authorization_code password client_credentials)
 
   # Under some circumstances you might want to have applications auto-approved,
   # so that the user skips the authorization step.

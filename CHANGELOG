@@ -101,6 +101,12 @@ v 7.10.0 (unreleased)
   - Remove truncation from issue titles on milestone page (Jason Blanchard)
   - Fix stuck Merge Request merging events from old installations (Ben Bodenmiller)
   - Fix merge request comments on files with multiple commits
+  - Fix Resource Owner Password Authentication Flow
+  
+v 7.9.4
+  - Security: Fix project import URL regex to prevent arbitary local repos from being imported
+  - Fixed issue where only 25 commits would load in file listings
+  - Fix LDAP identities  after config update
 
 v 7.9.3
   - Contains no changes
