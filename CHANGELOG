@@ -12,6 +12,7 @@ v 7.11.0 (unreleased)
   -
 
 v 7.10.0 (unreleased)
+  - Ignore submodules that are defined in .gitmodules but are checked in as directories.
   - Allow projects to be imported from Google Code.
   - Allow users to be invited by email to join a group or project.
   - Don't crash when project repository doesn't exist.
