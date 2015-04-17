@@ -84,7 +84,6 @@ module Gitlab::Markdown
       end
 
       it 'links with adjacent text' do
-        skip 'FIXME (rspeicher): This will fail, because a period and parentheses are both currently valid in label names.'
         doc = filter("Label (#{reference}.)")
         expect(doc.to_html).to match(%r(\(<a.+><span.+>#{label.name}</span></a>\.\)))
       end

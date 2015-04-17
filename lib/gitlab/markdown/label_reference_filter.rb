@@ -27,7 +27,7 @@ module Gitlab
         ~(
           (?<label_id>\d+)   | # Integer-based label ID, or
           (?<label_name>
-            [^'"&\?,\s]+     | # String-based single-word label title
+            [A-Za-z0-9_-]+   | # String-based single-word label title
             ['"][^&\?,]+['"]   # String-based multi-word label surrounded in quotes
           )
         )
