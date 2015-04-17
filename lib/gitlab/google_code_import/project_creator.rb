@@ -11,12 +11,7 @@ module Gitlab
       end
 
       def execute
-        import_data = {
-          "repo"      => repo.raw_data,
-          "user_map"  => user_map
-        }
-
-        @project = Project.new(
+        project = ::Projects::CreateService.new(current_user,
           name: repo.name,
           path: repo.name,
           description: repo.summary,
@@ -25,21 +20,17 @@ module Gitlab
           visibility_level: Gitlab::VisibilityLevel::PUBLIC,
           import_type: "google_code",
           import_source: repo.name,
-          import_url: repo.import_url,
-          import_data: import_data
+          import_url: repo.import_url
+        ).execute
+
+        import_data = project.create_import_data(
+          data: {
+            "repo"      => repo.raw_data,
+            "user_map"  => user_map
+          }
         )
 
-        if @project.save!
-          @project.reload
-
-          if @project.import_failed?
-            @project.import_retry
-          else
-            @project.import_start
-          end
-        end
-
-        @project
+        project
       end
     end
   end

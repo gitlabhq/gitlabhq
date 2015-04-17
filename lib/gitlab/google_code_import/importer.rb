@@ -5,7 +5,10 @@ module Gitlab
 
       def initialize(project)
         @project = project
-        @repo = GoogleCodeImport::Repository.new(project.import_data["repo"])
+
+        import_data = project.import_data.try(:data)
+        repo_data = import_data["repo"] if import_data
+        @repo = GoogleCodeImport::Repository.new(repo_data)
 
         @closed_statuses = []
         @known_labels = Set.new
@@ -27,9 +30,10 @@ module Gitlab
 
       def user_map
         @user_map ||= begin
-          user_map = Hash.new { |hash, user| hash[user] = Client.mask_email(user) }
+          user_map = Hash.new { |hash, user| Client.mask_email(user) }
 
-          stored_user_map = project.import_data["user_map"]
+          import_data = project.import_data.try(:data)
+          stored_user_map = import_data["user_map"] if import_data
           user_map.update(stored_user_map) if stored_user_map
 
           user_map
