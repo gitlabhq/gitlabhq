@@ -60,20 +60,7 @@ module Gitlab
 
       @html_options = html_options
 
-      # Extract pre blocks so they are not altered
-      # from http://github.github.com/github-flavored-markdown/
-      text.gsub!(%r{<pre>.*?</pre>|<code>.*?</code>}m) { |match| extract_piece(match) }
-      # Extract links with probably parsable hrefs
-      text.gsub!(%r{<a.*?>.*?</a>}m) { |match| extract_piece(match) }
-      # Extract images with probably parsable src
-      text.gsub!(%r{<img.*?>}m) { |match| extract_piece(match) }
-
       # TODO: add popups with additional information
-
-      # Insert pre block extractions
-      text.gsub!(/\{gfm-extraction-(\h{32})\}/) do
-        insert_piece($1)
-      end
 
       # Used markdown pipelines in GitLab:
       # GitlabEmojiFilter - performs emoji replacement.
@@ -118,7 +105,20 @@ module Gitlab
 
       text = result[:output].to_html(save_with: saveoptions)
 
+      # Extract pre blocks so they are not altered
+      # from http://github.github.com/github-flavored-markdown/
+      text.gsub!(%r{<pre>.*?</pre>|<code>.*?</code>}m) { |match| extract_piece(match) }
+      # Extract links with probably parsable hrefs
+      text.gsub!(%r{<a.*?>.*?</a>}m) { |match| extract_piece(match) }
+      # Extract images with probably parsable src
+      text.gsub!(%r{<img.*?>}m) { |match| extract_piece(match) }
+
       text = parse(text, project)
+
+      # Insert pre block extractions
+      text.gsub!(/\{gfm-extraction-(\h{32})\}/) do
+        insert_piece($1)
+      end
 
       if options[:parse_tasks]
         text = parse_tasks(text)
