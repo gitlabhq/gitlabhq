@@ -1,7 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.10.0 (unreleased)
-  - remove access control for images to fix broken images in emails (Hannes Rosenögger)
+  - Remove access control for uploaded images to fix broken images in emails (Hannes Rosenögger)
   - Allow users to be invited by email to join a group or project.
   - Don't crash when project repository doesn't exist.
   - Add config var to block auto-created LDAP users.
