@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150413192223) do
+ActiveRecord::Schema.define(version: 20150417122318) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -323,6 +323,11 @@ ActiveRecord::Schema.define(version: 20150413192223) do
   add_index "oauth_applications", ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type", using: :btree
   add_index "oauth_applications", ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
 
+  create_table "project_import_data", force: true do |t|
+    t.integer "project_id"
+    t.text    "data"
+  end
+
   create_table "projects", force: true do |t|
     t.string   "name"
     t.string   "path"
@@ -348,7 +353,6 @@ ActiveRecord::Schema.define(version: 20150413192223) do
     t.integer  "star_count",             default: 0,        null: false
     t.string   "import_type"
     t.string   "import_source"
-    t.text     "import_data"
   end
 
   add_index "projects", ["created_at", "id"], name: "index_projects_on_created_at_and_id", using: :btree
