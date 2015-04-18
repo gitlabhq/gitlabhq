@@ -449,16 +449,6 @@ class Note < ActiveRecord::Base
     @discussion_id ||= Note.build_discussion_id(noteable_type, noteable_id || commit_id, line_code)
   end
 
-  # Returns true if this is a downvote note,
-  # otherwise false is returned
-  def downvote?
-    votable? && (note.start_with?('-1') ||
-                 note.start_with?(':-1:') ||
-                 note.start_with?(':thumbsdown:') ||
-                 note.start_with?(':thumbs_down_sign:')
-                )
-  end
-
   def for_commit?
     noteable_type == "Commit"
   end
@@ -500,14 +490,18 @@ class Note < ActiveRecord::Base
     nil
   end
 
-  # Returns true if this is an upvote note,
-  # otherwise false is returned
+  DOWNVOTES = %w(-1 :-1: :thumbsdown: :thumbs_down_sign:)
+
+  # Check if the note is a downvote
+  def downvote?
+    votable? && note.start_with?(*DOWNVOTES)
+  end
+
+  UPVOTES = %w(+1 :+1: :thumbsup: :thumbs_up_sign:)
+
+  # Check if the note is an upvote
   def upvote?
-    votable? && (note.start_with?('+1') ||
-                 note.start_with?(':+1:') ||
-                 note.start_with?(':thumbsup:') ||
-                 note.start_with?(':thumbs_up_sign:')
-                )
+    votable? && note.start_with?(*UPVOTES)
   end
 
   def superceded?(notes)
