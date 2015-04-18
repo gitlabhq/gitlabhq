@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 7.11.0 (unreleased)
   - Fix clone URL field and X11 Primary selection (Dmitry Medvinsky)
   - Ignore invalid lines in .gitmodules
+  - Redirect to sign in page after signing out.
   -
   -
   -
@@ -12,7 +13,6 @@ v 7.11.0 (unreleased)
   -
 
 v 7.10.0 (unreleased)
-  - Redirect to sign in page after signing out.
   - Allow projects to be imported from Google Code.
   - Allow users to be invited by email to join a group or project.
   - Don't crash when project repository doesn't exist.
