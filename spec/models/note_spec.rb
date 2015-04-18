@@ -34,48 +34,46 @@ describe Note do
     it { is_expected.to validate_presence_of(:project) }
   end
 
-  describe "Voting score" do
-    let(:project) { create(:project) }
-
-    it "recognizes a neutral note" do
-      note = create(:votable_note, note: "This is not a +1 note")
+  describe 'voting score' do
+    it 'recognizes a neutral note' do
+      note = build(:votable_note, note: 'This is not a +1 note')
       expect(note).not_to be_upvote
       expect(note).not_to be_downvote
     end
 
-    it "recognizes a neutral emoji note" do
+    it 'recognizes a neutral emoji note' do
       note = build(:votable_note, note: "I would :+1: this, but I don't want to")
       expect(note).not_to be_upvote
       expect(note).not_to be_downvote
     end
 
-    it "recognizes a +1 note" do
-      note = create(:votable_note, note: "+1 for this")
+    it 'recognizes a +1 note' do
+      note = build(:votable_note, note: '+1 for this')
       expect(note).to be_upvote
     end
 
-    it "recognizes a +1 emoji as a vote" do
-      note = build(:votable_note, note: ":+1: for this")
+    it 'recognizes a +1 emoji as a vote' do
+      note = build(:votable_note, note: ':+1: for this')
       expect(note).to be_upvote
     end
 
-    it "recognizes a thumbsup emoji as a vote" do
-      note = build(:votable_note, note: ":thumbsup: for this")
+    it 'recognizes a thumbsup emoji as a vote' do
+      note = build(:votable_note, note: ':thumbsup: for this')
       expect(note).to be_upvote
     end
 
-    it "recognizes a -1 note" do
-      note = create(:votable_note, note: "-1 for this")
+    it 'recognizes a -1 note' do
+      note = build(:votable_note, note: '-1 for this')
       expect(note).to be_downvote
     end
 
-    it "recognizes a -1 emoji as a vote" do
-      note = build(:votable_note, note: ":-1: for this")
+    it 'recognizes a -1 emoji as a vote' do
+      note = build(:votable_note, note: ':-1: for this')
       expect(note).to be_downvote
     end
 
-    it "recognizes a thumbsdown emoji as a vote" do
-      note = build(:votable_note, note: ":thumbsdown: for this")
+    it 'recognizes a thumbsdown emoji as a vote' do
+      note = build(:votable_note, note: ':thumbsdown: for this')
       expect(note).to be_downvote
     end
   end
