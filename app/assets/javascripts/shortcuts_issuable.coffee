@@ -3,7 +3,7 @@
 
 #= require shortcuts_navigation
 
-class @ShortcutsIssueable extends ShortcutsNavigation
+class @ShortcutsIssuable extends ShortcutsNavigation
   constructor: (isMergeRequest) ->
     super()
     Mousetrap.bind('a', ->

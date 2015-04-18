@@ -1,11 +1,11 @@
 #= require jquery
 #= require jasmine-fixture
 
-#= require shortcuts_issueable
+#= require shortcuts_issuable
 
-describe 'ShortcutsIssueable', ->
+describe 'ShortcutsIssuable', ->
   beforeEach ->
-    @shortcut = new ShortcutsIssueable()
+    @shortcut = new ShortcutsIssuable()
 
   describe '#replyWithSelectedText', ->
     # Stub window.getSelection to return the provided String.
