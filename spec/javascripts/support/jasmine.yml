@@ -1,124 +1,50 @@
-# src_files
-#
-# Return an array of filepaths relative to src_dir to include before jasmine specs.
-# Default: []
-#
-# EXAMPLE:
-#
-# src_files:
-#   - lib/source1.js
-#   - lib/source2.js
-#   - dist/**/*.js
-#
+# path to parent directory of src_files
+# relative path from Rails.root
+# defaults to app/assets/javascripts
+src_dir: "app/assets/javascripts"
+
+# path to additional directory of source file that are not part of assets pipeline and need to be included
+# relative path from Rails.root
+# defaults to []
+# include_dir:
+#   - ../mobile_app/public/js
+
+# path to parent directory of css_files
+# relative path from Rails.root
+# defaults to app/assets/stylesheets
+css_dir: "app/assets/stylesheets"
+
+# list of file expressions to include as source files
+# relative path from src_dir
 src_files:
-  - assets/application.js
+ - "application.{js.coffee,js,coffee}"
 
-# stylesheets
-#
-# Return an array of stylesheet filepaths relative to src_dir to include before jasmine specs.
-# Default: []
-#
-# EXAMPLE:
-#
-# stylesheets:
-#   - css/style.css
-#   - stylesheets/*.css
-#
-stylesheets:
-  - assets/application.css
+# list of file expressions to include as css files
+# relative path from css_dir
+css_files:
 
-# helpers
+# path to parent directory of spec_files
+# relative path from Rails.root
 #
-# Return an array of filepaths relative to spec_dir to include before jasmine specs.
-# Default: ["helpers/**/*.js"]
+# Alternatively accept an array of directory to include external spec files
+# spec_dir:
+#   - spec/javascripts
+#   - ../engine/spec/javascripts
 #
-# EXAMPLE:
-#
-# helpers:
-#   - helpers/**/*.js
-#
+# defaults to spec/javascripts
+spec_dir: spec/javascripts
+
+# list of file expressions to include as helpers into spec runner
+# relative path from spec_dir
 helpers:
-  - 'helpers/**/*.js'
+  - "helpers/**/*.{js.coffee,js,coffee}"
 
-# spec_files
-#
-# Return an array of filepaths relative to spec_dir to include.
-# Default: ["**/*[sS]pec.js"]
-#
-# EXAMPLE:
-#
-# spec_files:
-#   - **/*[sS]pec.js
-#
+# list of file expressions to include as specs into spec runner
+# relative path from spec_dir
 spec_files:
-  - '**/*[sS]pec.js'
+  - "**/*[Ss]pec.{js.coffee,js,coffee}"
 
-# src_dir
-#
-# Source directory path. Your src_files must be returned relative to this path. Will use root if left blank.
-# Default: project root
-#
-# EXAMPLE:
-#
-# src_dir: public
-#
-src_dir:
-
-# spec_dir
-#
-# Spec directory path. Your spec_files must be returned relative to this path.
-# Default: spec/javascripts
-#
-# EXAMPLE:
-#
-# spec_dir: spec/javascripts
-#
-spec_dir:
-
-# spec_helper
-#
-# Ruby file that Jasmine server will require before starting.
-# Returned relative to your root path
-# Default spec/javascripts/support/jasmine_helper.rb
-#
-# EXAMPLE:
-#
-# spec_helper: spec/javascripts/support/jasmine_helper.rb
-#
-spec_helper: spec/javascripts/support/jasmine_helper.rb
-
-# boot_dir
-#
-# Boot directory path. Your boot_files must be returned relative to this path.
-# Default: Built in boot file
-#
-# EXAMPLE:
-#
-# boot_dir: spec/javascripts/support/boot
-#
-boot_dir:
-
-# boot_files
-#
-# Return an array of filepaths relative to boot_dir to include in order to boot Jasmine
-# Default: Built in boot file
-#
-# EXAMPLE
-#
-# boot_files:
-#   - '**/*.js'
-#
-boot_files:
-
-# rack_options
-#
-# Extra options to be passed to the rack server
-# by default, Port and AccessLog are passed.
-#
-# This is an advanced options, and left empty by default
-#
-# EXAMPLE
-#
-# rack_options:
-#   server: 'thin'
-
+# path to directory of temporary files
+# (spec runner and asset cache)
+# defaults to tmp/jasmine
+tmp_dir: "tmp/jasmine"
