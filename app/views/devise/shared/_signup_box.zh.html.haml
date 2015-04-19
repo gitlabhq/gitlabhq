@@ -10,15 +10,15 @@
       .devise-errors
         = devise_error_messages!
       %div
-        = f.text_field :name, class: "form-control top", placeholder: "Name", required: true
+        = f.text_field :name, class: "form-control top", placeholder: "名字", required: true
       %div
-        = f.text_field :username, class: "form-control middle", placeholder: "Username", required: true
+        = f.text_field :username, class: "form-control middle", placeholder: "用户名", required: true
       %div
-        = f.email_field :email, class: "form-control middle", placeholder: "Email", required: true
+        = f.email_field :email, class: "form-control middle", placeholder: "邮箱", required: true
       .form-group.append-bottom-20#password-strength
-        = f.password_field :password, class: "form-control bottom", id: "user_password_sign_up", placeholder: "Password", required: true
+        = f.password_field :password, class: "form-control bottom", id: "user_password_sign_up", placeholder: "密码", required: true
       %div
-        = f.submit "Sign up", class: "btn-create btn"
+        = f.submit "注册", class: "btn-create btn"
 
 .clearfix.prepend-top-20
   %p
