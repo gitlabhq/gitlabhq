@@ -64,50 +64,35 @@ describe SnippetsController, "routing" do
   end
 end
 
-#              help GET    /help(.:format)              help#index
-#  help_permissions GET    /help/permissions(.:format)  help#permissions
-#     help_workflow GET    /help/workflow(.:format)     help#workflow
-#          help_api GET    /help/api(.:format)          help#api
-#    help_web_hooks GET    /help/web_hooks(.:format)    help#web_hooks
-# help_system_hooks GET    /help/system_hooks(.:format) help#system_hooks
-#     help_markdown GET    /help/markdown(.:format)     help#markdown
-#          help_ssh GET    /help/ssh(.:format)          help#ssh
-#    help_raketasks GET    /help/raketasks(.:format)    help#raketasks
-describe HelpController, 'routing' do
-  it 'to #index' do
-    expect(get('/help')).to route_to('help#index')
+#            help GET /help(.:format)                 help#index
+#       help_page GET /help/:category/:file(.:format) help#show {:category=>/.*/, :file=>/[^\/\.]+/}
+#  help_shortcuts GET /help/shortcuts(.:format)       help#shortcuts
+#         help_ui GET /help/ui(.:format)              help#ui
+describe HelpController, "routing" do
+  it "to #index" do
+    expect(get("/help")).to route_to('help#index')
   end
 
-  it 'to #permissions' do
-    expect(get('/help/permissions/permissions')).to route_to('help#show', filepath: 'permissions/permissions')
+  it 'to #show' do
+    path = '/help/markdown/markdown.md'
+    expect(get(path)).to route_to('help#show',
+                                  category: 'markdown',
+                                  file: 'markdown',
+                                  format: 'md')
+
+    path = '/help/workflow/protected_branches/protected_branches1.png'
+    expect(get(path)).to route_to('help#show',
+                                  category: 'workflow/protected_branches',
+                                  file: 'protected_branches1',
+                                  format: 'png')
   end
 
-  it 'to #workflow' do
-    expect(get('/help/workflow/README')).to route_to('help#show', filepath: 'workflow/README')
+  it 'to #shortcuts' do
+    expect(get('/help/shortcuts')).to route_to('help#shortcuts')
   end
 
-  it 'to #api' do
-    expect(get('/help/api/README')).to route_to('help#show', filepath: 'api/README')
-  end
-
-  it 'to #web_hooks' do
-    expect(get('/help/web_hooks/web_hooks')).to route_to('help#show', filepath: 'web_hooks/web_hooks')
-  end
-
-  it 'to #system_hooks' do
-    expect(get('/help/system_hooks/system_hooks')).to route_to('help#show', filepath: 'system_hooks/system_hooks')
-  end
-
-  it 'to #markdown' do
-    expect(get('/help/markdown/markdown')).to route_to('help#show',filepath: 'markdown/markdown')
-  end
-
-  it 'to #ssh' do
-    expect(get('/help/ssh/README')).to route_to('help#show', filepath: 'ssh/README')
-  end
-
-  it 'to #raketasks' do
-    expect(get('/help/raketasks/README')).to route_to('help#show', filepath: 'raketasks/README')
+  it 'to #ui' do
+    expect(get('/help/ui')).to route_to('help#ui')
   end
 end
 
