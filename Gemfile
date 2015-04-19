@@ -188,7 +188,7 @@ gem 'turbolinks'
 gem 'jquery-turbolinks'
 
 gem 'select2-rails'
-gem 'jquery-atwho-rails', "~> 0.3.3"
+gem 'jquery-atwho-rails', '~> 1.0.0'
 gem "jquery-rails"
 gem "jquery-ui-rails"
 gem "jquery-scrollto-rails"
