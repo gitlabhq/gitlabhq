@@ -158,7 +158,7 @@ gem "slack-notifier", "~> 1.0.0"
 gem 'asana', '~> 0.0.6'
 
 # d3
-gem "d3_rails", "~> 3.1.4"
+gem 'd3_rails', '~> 3.5.5'
 
 #cal-heatmap
 gem "cal-heatmap-rails", "~> 0.0.1"
