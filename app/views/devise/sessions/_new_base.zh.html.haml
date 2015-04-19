@@ -5,8 +5,8 @@
     .remember-me.checkbox
       %label{for: "user_remember_me"}
         = f.check_box :remember_me
-        %span 记信我
+        %span 记住我
       .pull-right
         = link_to "忘记了您的密码?", new_password_path(resource_name)
   %div
-    = f.submit "注册", class: "btn btn-save"
+    = f.submit "登录", class: "btn btn-save"
