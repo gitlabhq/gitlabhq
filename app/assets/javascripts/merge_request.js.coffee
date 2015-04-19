@@ -58,14 +58,6 @@ class @MergeRequest
       , 'json'
 
   bindEvents: ->
-    this.$('.merge-request-tabs').on 'click', 'a', (event) =>
-      a = $(event.currentTarget)
-
-      href = a.attr('href')
-      History.replaceState {path: href}, document.title, href
-
-      event.preventDefault()
-
     this.$('.merge-request-tabs').on 'click', 'li', (event) =>
       this.activateTab($(event.currentTarget).data('action'))
 
