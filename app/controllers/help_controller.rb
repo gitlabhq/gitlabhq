@@ -3,38 +3,52 @@ class HelpController < ApplicationController
   end
 
   def show
-    @filepath = clean_path_info(params[:filepath])
-    @format = params[:format]
+    category = clean_path_info(path_params[:category])
+    file = path_params[:file]
 
     respond_to do |format|
-      format.md { render_doc }
-      format.all { send_file_data }
+      format.any(:markdown, :md, :html) do
+        path = Rails.root.join('doc', category, "#{file}.md")
+
+        if File.exist?(path)
+          @markdown = File.read(path)
+
+          render 'show.html.haml'
+        else
+          # Force template to Haml
+          render 'errors/not_found.html.haml', layout: 'errors', status: 404
+        end
+      end
+
+      # Allow access to images in the doc folder
+      format.any(:png, :gif, :jpeg) do
+        path = Rails.root.join('doc', category, "#{file}.#{params[:format]}")
+
+        if File.exist?(path)
+          send_file(path, disposition: 'inline')
+        else
+          head :not_found
+        end
+      end
+
+      # Any other format we don't recognize, just respond 404
+      format.any { head :not_found }
     end
   end
 
   def shortcuts
   end
 
+  def ui
+  end
+
   private
 
-  def render_doc
-    if File.exists?(Rails.root.join('doc', @filepath + '.md'))
-      render 'show.html.haml'
-    else
-      not_found!
-    end
-  end
+  def path_params
+    params.require(:category)
+    params.require(:file)
 
-  def send_file_data
-    path = Rails.root.join('doc', "#{@filepath}.#{@format}")
-    if File.exists?(path)
-      send_file(path, disposition: 'inline')
-    else
-      head :not_found
-    end
-  end
-
-  def ui
+    params
   end
 
   PATH_SEPS = Regexp.union(*[::File::SEPARATOR, ::File::ALT_SEPARATOR].compact)
