@@ -3,7 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 7.11.0 (unreleased)
   - Fix clone URL field and X11 Primary selection (Dmitry Medvinsky)
   - Ignore invalid lines in .gitmodules
-  -
+  - Fix "Cannot move project" error message from popping up after a successful transfer (Stan Hu)
   -
   -
   -
