@@ -87,6 +87,18 @@ class Snippet < ActiveRecord::Base
     visibility_level
   end
 
+  def participants(current_user = self.author)
+    users = []
+    users << author
+    
+    notes.each do |note|
+      users << note.author
+      users.push *note.mentioned_users(current_user)
+    end
+
+    users.uniq
+  end
+
   class << self
     def search(query)
       where('(title LIKE :query OR file_name LIKE :query)', query: "%#{query}%")

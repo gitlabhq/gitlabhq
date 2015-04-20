@@ -115,8 +115,8 @@ if location.hash
 window.addEventListener "hashchange", shiftWindow
 
 $ ->
-  # Click a .one_click_select field, select the contents
-  $(".one_click_select").on 'click', -> $(@).select()
+  # Click a .js-select-on-focus field, select the contents
+  $(".js-select-on-focus").on "focusin", -> $(this).select()
 
   $('.remove-row').bind 'ajax:success', ->
     $(this).closest('li').fadeOut()

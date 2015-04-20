@@ -214,7 +214,7 @@ class @BranchGraph
       stroke: @colors[commit.space]
       "stroke-width": 2
     )
-    r.image(gon.relative_url_root + commit.author.icon, avatar_box_x, avatar_box_y, 20, 20)
+    r.image(commit.author.icon, avatar_box_x, avatar_box_y, 20, 20)
     r.text(@offsetX + @unitSpace * @mspace + 35, y, commit.message.split("\n")[0]).attr(
       "text-anchor": "start"
       font: "14px Monaco, monospace"

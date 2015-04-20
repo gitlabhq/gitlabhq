@@ -71,3 +71,9 @@ keys of all the projects you have access to are available. This project
 access can happen through being a direct member of the project, or through
 a group. See `def accessible_deploy_keys` in `app/models/user.rb` for more
 information.
+
+## Applications
+
+### Eclipse
+
+How to add your ssh key to Eclipse: http://wiki.eclipse.org/EGit/User_Guide#Eclipse_SSH_Configuration

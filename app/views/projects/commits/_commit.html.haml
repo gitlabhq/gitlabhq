@@ -12,7 +12,7 @@
       - if @note_counts
         - note_count = @note_counts.fetch(commit.id, 0)
       - else
-        - notes = project.notes.for_commit_id(commit.id)
+        - notes = commit.notes(project)
         - note_count = notes.user.count
 
       - if note_count > 0
