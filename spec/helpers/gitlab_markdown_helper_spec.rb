@@ -168,43 +168,45 @@ describe GitlabMarkdownHelper do
     end
   end
 
-  describe "#link_to_gfm" do
+  describe '#link_to_gfm' do
     let(:commit_path) { namespace_project_commit_path(project.namespace, project, commit) }
     let(:issues)      { create_list(:issue, 2, project: project) }
 
-    it "should handle references nested in links with all the text" do
+    it 'should handle references nested in links with all the text' do
       actual = link_to_gfm("This should finally fix ##{issues[0].iid} and ##{issues[1].iid} for real", commit_path)
-
-      # Break the result into groups of links with their content, without
-      # closing tags
-      groups = actual.split("</a>")
+      doc = Nokogiri::HTML.parse(actual)
 
       # Leading commit link
-      expect(groups[0]).to match(/href="#{commit_path}"/)
-      expect(groups[0]).to match(/This should finally fix $/)
+      expect(doc.css('a')[0].attr('href')).to eq commit_path
+      expect(doc.css('a')[0].text).to eq 'This should finally fix '
 
       # First issue link
-      expect(groups[1]).
-        to match(/href="#{namespace_project_issue_path(project.namespace, project, issues[0])}"/)
-      expect(groups[1]).to match(/##{issues[0].iid}$/)
+      expect(doc.css('a')[1].attr('href')).
+        to eq namespace_project_issue_path(project.namespace, project, issues[0])
+      expect(doc.css('a')[1].text).to eq "##{issues[0].iid}"
 
       # Internal commit link
-      expect(groups[2]).to match(/href="#{commit_path}"/)
-      expect(groups[2]).to match(/ and /)
+      expect(doc.css('a')[2].attr('href')).to eq commit_path
+      expect(doc.css('a')[2].text).to eq ' and '
 
       # Second issue link
-      expect(groups[3]).
-        to match(/href="#{namespace_project_issue_path(project.namespace, project, issues[1])}"/)
-      expect(groups[3]).to match(/##{issues[1].iid}$/)
+      expect(doc.css('a')[3].attr('href')).
+        to eq namespace_project_issue_path(project.namespace, project, issues[1])
+      expect(doc.css('a')[3].text).to eq "##{issues[1].iid}"
 
       # Trailing commit link
-      expect(groups[4]).to match(/href="#{commit_path}"/)
-      expect(groups[4]).to match(/ for real$/)
+      expect(doc.css('a')[4].attr('href')).to eq commit_path
+      expect(doc.css('a')[4].text).to eq ' for real'
     end
 
-    it "should forward HTML options" do
+    it 'should forward HTML options' do
       actual = link_to_gfm("Fixed in #{commit.id}", commit_path, class: 'foo')
-      expect(actual).to have_selector 'a.gfm.gfm-commit.foo'
+      doc = Nokogiri::HTML.parse(actual)
+
+      expect(doc.css('a')).to satisfy do |v|
+        # 'foo' gets added to all links
+        v.all? { |a| a.attr('class').match(/foo$/) }
+      end
     end
 
     it "escapes HTML passed in as the body" do
