@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.9.1
+  - Git gc as rescheduling sidekiq background job (Per Gärden)
   - Include missing events and fix save functionality in admin service template settings form (Stan Hu)
   - Fix "Import projects from" button to show the correct instructions (Stan Hu)
   - Fix OAuth2 issue importing a new project from GitHub and GitLab (Stan Hu)
