@@ -136,7 +136,7 @@ class JiraService < IssueTrackerService
   end
 
   def add_comment(data, issue_name)
-    url = add_comment_url(issue_name)
+    url = comment_url(issue_name)
     user_name = data[:user][:name]
     user_url = data[:user][:url]
     entity_name = data[:entity][:name]
@@ -147,9 +147,11 @@ class JiraService < IssueTrackerService
 
     message = {
       body: "[#{user_name}|#{user_url}] mentioned this issue in [a #{entity_name} of #{project_name}|#{entity_url}]."
-    }.to_json
+    }
 
-    send_message(url, message)
+    unless existing_comment?(issue_name, message)
+      send_message(url, message.to_json)
+    end
   end
 
 
@@ -183,6 +185,30 @@ class JiraService < IssueTrackerService
     Rails.logger.info "#{self.class.name} ERROR: #{e.message}. Hostname: #{url}."
   end
 
+  def existing_comment?(issue_name, new_comment)
+    result = JiraService.get(
+      comment_url(issue_name),
+      headers: {
+        'Content-Type' => 'application/json',
+        'Authorization' => "Basic #{auth}"
+      }
+    )
+
+    case result.code
+    when 201, 200
+      existing_comments = JSON.parse(result.body)['comments']
+      new_comment = new_comment['body']
+
+      if existing_comments.present?
+        return existing_comments.map { |comment| comment['body'].include?(new_comment) }.any?
+      end
+    end
+
+    false
+  rescue JSON::ParserError
+    false
+  end
+
   def server_url
     server = URI(project_url)
     default_ports = [80, 443].include?(server.port)
@@ -213,7 +239,7 @@ class JiraService < IssueTrackerService
     "#{server_url}/rest/api/#{self.api_version}/issue/#{issue_name}/transitions"
   end
 
-  def add_comment_url(issue_name)
+  def comment_url(issue_name)
     "#{server_url}/rest/api/#{self.api_version}/issue/#{issue_name}/comment"
   end
 end
