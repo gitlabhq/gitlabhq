@@ -1,15 +1,15 @@
 class SnippetsController < ApplicationController
-  before_filter :snippet, only: [:show, :edit, :destroy, :update, :raw]
+  before_action :snippet, only: [:show, :edit, :destroy, :update, :raw]
 
   # Allow modify snippet
-  before_filter :authorize_modify_snippet!, only: [:edit, :update]
+  before_action :authorize_modify_snippet!, only: [:edit, :update]
 
   # Allow destroy snippet
-  before_filter :authorize_admin_snippet!, only: [:destroy]
+  before_action :authorize_admin_snippet!, only: [:destroy]
 
-  before_filter :set_title
+  before_action :set_title
 
-  skip_before_filter :authenticate_user!, only: [:index, :user_index, :show, :raw]
+  skip_before_action :authenticate_user!, only: [:index, :user_index, :show, :raw]
 
   respond_to :html
 

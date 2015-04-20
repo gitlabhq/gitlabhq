@@ -1,5 +1,5 @@
 class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
-  before_filter :authenticate_resource_owner!
+  before_action :authenticate_resource_owner!
   layout "profile"
 
   def new

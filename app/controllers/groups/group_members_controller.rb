@@ -1,10 +1,10 @@
 class Groups::GroupMembersController < Groups::ApplicationController
-  skip_before_filter :authenticate_user!, only: [:index]
-  before_filter :group
+  skip_before_action :authenticate_user!, only: [:index]
+  before_action :group
 
   # Authorize
-  before_filter :authorize_read_group!
-  before_filter :authorize_admin_group!, except: [:index, :leave]
+  before_action :authorize_read_group!
+  before_action :authorize_admin_group!, except: [:index, :leave]
 
   layout :determine_layout
 
@@ -49,7 +49,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   def resend_invite
     redirect_path = group_group_members_path(@group)
-    
+
     @group_member = @group.group_members.find(params[:id])
 
     if @group_member.invite?
@@ -63,7 +63,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   def leave
     @group_member = @group.group_members.where(user_id: current_user.id).first
-    
+
     if can?(current_user, :destroy_group_member, @group_member)
       @group_member.destroy
       redirect_to(dashboard_groups_path, notice: "You left #{group.name} group.")

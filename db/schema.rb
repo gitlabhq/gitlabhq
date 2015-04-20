@@ -470,7 +470,6 @@ ActiveRecord::Schema.define(version: 20150417122318) do
     t.integer  "notification_level",            default: 1,     null: false
     t.datetime "password_expires_at"
     t.integer  "created_by_id"
-    t.datetime "last_credential_check_at"
     t.string   "avatar"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
@@ -478,6 +477,7 @@ ActiveRecord::Schema.define(version: 20150417122318) do
     t.string   "unconfirmed_email"
     t.boolean  "hide_no_ssh_key",               default: false
     t.string   "website_url",                   default: "",    null: false
+    t.datetime "last_credential_check_at"
     t.string   "github_access_token"
     t.string   "gitlab_access_token"
     t.string   "notification_email"

@@ -1,18 +1,18 @@
 class Projects::IssuesController < Projects::ApplicationController
-  before_filter :module_enabled
-  before_filter :issue, only: [:edit, :update, :show, :toggle_subscription]
+  before_action :module_enabled
+  before_action :issue, only: [:edit, :update, :show, :toggle_subscription]
 
   # Allow read any issue
-  before_filter :authorize_read_issue!
+  before_action :authorize_read_issue!
 
   # Allow write(create) issue
-  before_filter :authorize_write_issue!, only: [:new, :create]
+  before_action :authorize_write_issue!, only: [:new, :create]
 
   # Allow modify issue
-  before_filter :authorize_modify_issue!, only: [:edit, :update]
+  before_action :authorize_modify_issue!, only: [:edit, :update]
 
   # Allow issues bulk update
-  before_filter :authorize_admin_issues!, only: [:bulk_update]
+  before_action :authorize_admin_issues!, only: [:bulk_update]
 
   respond_to :html
 
@@ -99,7 +99,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def toggle_subscription
     @issue.toggle_subscription(current_user)
-    
+
     render nothing: true
   end
 
