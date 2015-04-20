@@ -12,6 +12,9 @@ v 7.11.0 (unreleased)
   -
 
 v 7.10.0 (unreleased)
+  - Ignore submodules that are defined in .gitmodules but are checked in as directories.
+  - Allow projects to be imported from Google Code.
+  - Remove access control for uploaded images to fix broken images in emails (Hannes Rosenögger)
   - Allow users to be invited by email to join a group or project.
   - Don't crash when project repository doesn't exist.
   - Add config var to block auto-created LDAP users.
@@ -84,7 +87,6 @@ v 7.10.0 (unreleased)
   - Fix admin user projects lists.
   - Don't leak private group existence by redirecting from namespace controller to group controller.
   - Ability to skip some items from backup (database, respositories or uploads)
-  - Fix "Hello @username." references not working by no longer allowing usernames to end in period.
   - Archive repositories in background worker.
   - Import GitHub, Bitbucket or GitLab.com projects owned by authenticated user into current namespace.
   - Project labels are now available over the API under the "tag_list" field (Cristian Medina) 
@@ -101,6 +103,12 @@ v 7.10.0 (unreleased)
   - Remove truncation from issue titles on milestone page (Jason Blanchard)
   - Fix stuck Merge Request merging events from old installations (Ben Bodenmiller)
   - Fix merge request comments on files with multiple commits
+  - Fix Resource Owner Password Authentication Flow
+  
+v 7.9.4
+  - Security: Fix project import URL regex to prevent arbitary local repos from being imported
+  - Fixed issue where only 25 commits would load in file listings
+  - Fix LDAP identities  after config update
 
 v 7.9.3
   - Contains no changes
