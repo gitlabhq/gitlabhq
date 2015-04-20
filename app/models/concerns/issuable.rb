@@ -122,15 +122,15 @@ module Issuable
     users = []
     users << author
     users << assignee if is_assigned?
-    mentions = []
-    mentions << self.mentioned_users(current_user)
+
+    users.push *self.mentioned_users(current_user)
 
     notes.each do |note|
       users << note.author
-      mentions << note.mentioned_users(current_user)
+      users.push *note.mentioned_users(current_user)
     end
 
-    users.concat(mentions.reduce([], :|)).uniq
+    users.uniq
   end
 
   def subscribed?(user)

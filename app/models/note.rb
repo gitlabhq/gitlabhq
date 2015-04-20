@@ -327,14 +327,6 @@ class Note < ActiveRecord::Base
     current_application_settings.max_attachment_size.megabytes.to_i
   end
 
-  def commit_author
-    @commit_author ||=
-      project.team.users.find_by(email: noteable.author_email) ||
-      project.team.users.find_by(name: noteable.author_name)
-  rescue
-    nil
-  end
-
   def cross_reference?
     note.start_with?(self.class.cross_reference_note_prefix)
   end

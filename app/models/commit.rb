@@ -134,6 +134,25 @@ class Commit
     User.find_for_commit(committer_email, committer_name)
   end
 
+  def participants(project, current_user = nil)
+    users = []
+    users << author
+    users << committer
+    
+    users.push *self.mentioned_users(current_user, project)
+
+    notes(project).each do |note|
+      users << note.author
+      users.push *note.mentioned_users(current_user, project)
+    end
+
+    users.uniq
+  end
+
+  def notes(project)
+    project.notes.for_commit_id(self.id)
+  end
+
   def method_missing(m, *args, &block)
     @raw.send(m, *args, &block)
   end
