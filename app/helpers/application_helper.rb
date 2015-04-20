@@ -323,7 +323,9 @@ module ApplicationHelper
     entity_title = entity.to_s.humanize
 
     count =
-      if current_controller?(:issues)
+      if project.nil?
+        ""
+      elsif current_controller?(:issues)
         " (#{project.issues.send(entity).count})"
       elsif current_controller?(:merge_requests)
         " (#{project.merge_requests.send(entity).count})"
