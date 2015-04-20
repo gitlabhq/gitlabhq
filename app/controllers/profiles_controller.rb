@@ -1,8 +1,10 @@
 class ProfilesController < ApplicationController
   include ActionView::Helpers::SanitizeHelper
+  include ActionView::Helpers::OutputSafetyHelper
 
   before_filter :user
   before_filter :authorize_change_username!, only: :update_username
+  before_filter :quote_bio, only: :update
   skip_before_filter :require_email, only: [:show, :update]
 
   layout 'profile'
@@ -59,6 +61,7 @@ class ProfilesController < ApplicationController
 
   def user
     @user = current_user
+    @user[:bio] = raw @user[:bio]
   end
 
   def authorize_change_username!
@@ -72,5 +75,9 @@ class ProfilesController < ApplicationController
       :color_scheme_id, :theme_id, :avatar, :hide_no_ssh_key,
       :hide_no_password, :location, :public_email
     )
+  end
+
+  def quote_bio
+    params[:user][:bio] = h(params[:user][:bio])
   end
 end
