@@ -5,7 +5,10 @@ module Gitlab
 
       def initialize(project)
         @project = project
-        @repo = GoogleCodeImport::Repository.new(project.import_data["repo"])
+
+        import_data = project.import_data.try(:data)
+        repo_data = import_data["repo"] if import_data
+        @repo = GoogleCodeImport::Repository.new(repo_data)
 
         @closed_statuses = []
         @known_labels = Set.new
@@ -27,9 +30,10 @@ module Gitlab
 
       def user_map
         @user_map ||= begin
-          user_map = Hash.new { |hash, user| hash[user] = Client.mask_email(user) }
+          user_map = Hash.new { |hash, user| Client.mask_email(user) }
 
-          stored_user_map = project.import_data["user_map"]
+          import_data = project.import_data.try(:data)
+          stored_user_map = import_data["user_map"] if import_data
           user_map.update(stored_user_map) if stored_user_map
 
           user_map
@@ -58,24 +62,7 @@ module Gitlab
       def import_issues
         return unless repo.issues
 
-        last_id = 0
-
-        deleted_issues = []
-
-        repo.issues.each do |raw_issue|
-          while raw_issue["id"] > last_id + 1
-            last_id += 1
-
-            issue = project.issues.create!(
-              title:        "Deleted issue",
-              description:  "*This issue has been deleted*",
-              author_id:    project.creator_id,
-              state:        "closed"
-            )
-            deleted_issues << issue
-          end
-          last_id = raw_issue["id"]
-
+        while raw_issue = repo.issues.shift
           author  = user_map[raw_issue["author"]["name"]]
           date    = DateTime.parse(raw_issue["published"]).to_formatted_s(:long)
 
@@ -112,7 +99,8 @@ module Gitlab
             end
           end
 
-          issue = project.issues.create!(
+          issue = Issue.create!(
+            project_id:   project.id,
             title:        raw_issue["title"],
             description:  body,
             author_id:    project.creator_id,
@@ -121,39 +109,46 @@ module Gitlab
           )
           issue.add_labels_by_names(labels)
 
+          if issue.iid != raw_issue["id"]
+            issue.update_attribute(:iid, raw_issue["id"])
+          end
+
           import_issue_comments(issue, comments)
         end
-
-        deleted_issues.each(&:destroy!)
       end
 
       def import_issue_comments(issue, comments)
-        comments.each do |raw_comment|
-          next if raw_comment.has_key?("deletedBy")
+        Note.transaction do
+          while raw_comment = comments.shift
+            next if raw_comment.has_key?("deletedBy")
 
-          content     = format_content(raw_comment["content"])
-          updates     = format_updates(raw_comment["updates"])
-          attachments = format_attachments(issue.iid, raw_comment["id"], raw_comment["attachments"])
+            content     = format_content(raw_comment["content"])
+            updates     = format_updates(raw_comment["updates"])
+            attachments = format_attachments(issue.iid, raw_comment["id"], raw_comment["attachments"])
 
-          next if content.blank? && updates.blank? && attachments.blank?
+            next if content.blank? && updates.blank? && attachments.blank?
 
-          author  = user_map[raw_comment["author"]["name"]]
-          date    = DateTime.parse(raw_comment["published"]).to_formatted_s(:long)
+            author  = user_map[raw_comment["author"]["name"]]
+            date    = DateTime.parse(raw_comment["published"]).to_formatted_s(:long)
 
-          body = format_issue_comment_body(
-            raw_comment["id"],
-            author,
-            date,
-            content,
-            updates,
-            attachments
-          )
+            body = format_issue_comment_body(
+              raw_comment["id"],
+              author,
+              date,
+              content,
+              updates,
+              attachments
+            )
 
-          issue.notes.create!(
-            project_id: project.id,
-            author_id:  project.creator_id,
-            note:       body
-          )
+            # Needs to match order of `comment_columns` below.
+            Note.create!(
+              project_id:     project.id,
+              noteable_type:  "Issue",
+              noteable_id:    issue.id,
+              author_id:      project.creator_id,
+              note:           body
+            )
+          end
         end
       end
 
@@ -232,7 +227,7 @@ module Gitlab
 
       def create_label(name)
         color = nice_label_color(name)
-        project.labels.create!(name: name, color: color)
+        Label.create!(project_id: project.id, name: name, color: color)
       end
 
       def format_content(raw_content)

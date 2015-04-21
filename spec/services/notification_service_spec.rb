@@ -149,7 +149,7 @@ describe NotificationService do
 
       before do
         build_team(note.project)
-        note.stub(:commit_author => @u_committer)
+        allow_any_instance_of(Commit).to receive(:author).and_return(@u_committer)
       end
 
       describe :new_note do

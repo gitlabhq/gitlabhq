@@ -27,20 +27,19 @@
     %legend Create a new repository
     %pre.dark
       :preserve
-        mkdir #{@project.path}
+        git clone #{ content_tag(:span, default_url_to_repo, class: 'clone')}
         cd #{@project.path}
-        git init
         touch README.md
         git add README.md
-        git commit -m "first commit"
-        git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
+        git commit -m "add README"
         git push -u origin master
 
   %fieldset
-    %legend Push an existing Git repository
+    %legend Existing folder or Git repository
     %pre.dark
       :preserve
-        cd existing_git_repo
+        cd existing_folder
+        git init
         git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
         git push -u origin master
 

@@ -59,6 +59,7 @@ class Namespace < ActiveRecord::Base
     end
 
     def clean_path(path)
+      path = path.dup
       path.gsub!(/@.*\z/,             "")
       path.gsub!(/\.git\z/,           "")
       path.gsub!(/\A-+/,              "")

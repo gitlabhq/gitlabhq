@@ -27,7 +27,6 @@
 #  import_type            :string(255)
 #  import_source          :string(255)
 #  avatar                 :string(255)
-#  import_data            :text
 #
 
 require 'carrierwave/orm/activerecord'
@@ -50,8 +49,6 @@ class Project < ActiveRecord::Base
   default_value_for :wiki_enabled, gitlab_config_features.wiki
   default_value_for :wall_enabled, false
   default_value_for :snippets_enabled, gitlab_config_features.snippets
-
-  serialize :import_data, JSON
 
   # set last_activity_at to the same as created_at
   after_create :set_last_activity_at
@@ -122,6 +119,7 @@ class Project < ActiveRecord::Base
 
   has_many :project_group_links, dependent: :destroy
   has_many :invited_groups, through: :project_group_links, source: :group
+  has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
@@ -273,8 +271,7 @@ class Project < ActiveRecord::Base
   end
 
   def clear_import_data
-    self.import_data = nil
-    self.save
+    self.import_data.destroy if self.import_data
   end
 
   def import?
