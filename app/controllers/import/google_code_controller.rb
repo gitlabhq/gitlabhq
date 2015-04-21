@@ -68,7 +68,7 @@ class Import::GoogleCodeController < Import::BaseController
 
   def status
     unless client.valid?
-      return redirect_to new_import_google_path 
+      return redirect_to new_import_google_code_path 
     end
 
     @repos = client.repos
