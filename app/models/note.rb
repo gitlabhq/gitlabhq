@@ -238,7 +238,7 @@ class Note < ActiveRecord::Base
 
     # Determine whether or not a cross-reference note already exists.
     def cross_reference_exists?(noteable, mentioner)
-      gfm_reference = mentioner_gfm_ref(noteable, mentioner, nil)
+      gfm_reference = mentioner_gfm_ref(noteable, mentioner, true)
       notes = if noteable.is_a?(Commit)
                 where(commit_id: noteable.id, noteable_type: 'Commit')
               else
@@ -271,12 +271,12 @@ class Note < ActiveRecord::Base
     # Prepend the mentioner's namespaced project path to the GFM reference for
     # cross-project references.  For same-project references, return the
     # unmodified GFM reference.
-    def mentioner_gfm_ref(noteable, mentioner, mentioner_project = mentioner.project)
-      if mentioner.is_a?(Commit) && mentioner_project.nil?
+    def mentioner_gfm_ref(noteable, mentioner, cross_reference = false)
+      if mentioner.is_a?(Commit) && cross_reference
         return mentioner.gfm_reference.sub('commit ', 'commit %')
       end
       
-      full_gfm_reference(mentioner_project, noteable.project, mentioner)
+      full_gfm_reference(mentioner.project, noteable.project, mentioner)
     end
 
     # Return the +mentioner+ GFM reference.  If the mentioner and noteable
