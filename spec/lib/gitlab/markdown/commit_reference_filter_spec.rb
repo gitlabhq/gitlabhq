@@ -27,15 +27,23 @@ module Gitlab::Markdown
         it "links to a valid reference of #{size} characters" do
           doc = filter("See #{reference[0...size]}")
 
-          expect(doc.css('a').first.text).to eq reference[0...size]
+          expect(doc.css('a').first.text).to eq commit.short_id
           expect(doc.css('a').first.attr('href')).
             to eq urls.namespace_project_commit_url(project.namespace, project, reference)
         end
       end
 
+      it 'always uses the short ID as the link text' do
+        doc = filter("See #{commit.id}")
+        expect(doc.text).to eq "See #{commit.short_id}"
+
+        doc = filter("See #{commit.id[0...6]}")
+        expect(doc.text).to eq "See #{commit.short_id}"
+      end
+
       it 'links with adjacent text' do
         doc = filter("See (#{reference}.)")
-        expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
+        expect(doc.to_html).to match(/\(<a.+>#{commit.short_id}<\/a>\.\)/)
       end
 
       it 'ignores invalid commit IDs' do
@@ -55,7 +63,7 @@ module Gitlab::Markdown
         allow_any_instance_of(Commit).to receive(:title).and_return(%{"></a>whatever<a title="})
 
         doc = filter("See #{reference}")
-        expect(doc.text).to eq "See #{commit.id}"
+        expect(doc.text).to eq "See #{commit.short_id}"
       end
 
       it 'includes default classes' do
@@ -100,7 +108,9 @@ module Gitlab::Markdown
 
         it 'links with adjacent text' do
           doc = filter("Fixed (#{reference}.)")
-          expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
+
+          exp = Regexp.escape(project2.path_with_namespace)
+          expect(doc.to_html).to match(/\(<a.+>#{exp}@#{commit.short_id}<\/a>\.\)/)
         end
 
         it 'ignores invalid commit IDs on the referenced project' do

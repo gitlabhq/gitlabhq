@@ -59,7 +59,7 @@ module Gitlab
 
             %(<a href="#{url}"
                  title="#{title}"
-                 class="#{klass}">#{project_ref}#{commit_ref}</a>)
+                 class="#{klass}">#{project_ref}#{commit.short_id}</a>)
           else
             match
           end
