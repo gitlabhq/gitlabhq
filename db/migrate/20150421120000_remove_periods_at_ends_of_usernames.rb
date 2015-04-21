@@ -54,6 +54,9 @@ class RemovePeriodsAtEndsOfUsernames < ActiveRecord::Migration
     end
 
     changed_paths.each do |path_was, path|
+      # Don't attempt to move if original path only contains periods.
+      next if path_was =~ /\A\.+\z/
+
       if gitlab_shell.mv_namespace(path_was, path)
         # If repositories moved successfully we need to remove old satellites
         # and send update instructions to users.
