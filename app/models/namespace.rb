@@ -60,10 +60,15 @@ class Namespace < ActiveRecord::Base
 
     def clean_path(path)
       path = path.dup
+      # Get the email username by removing everything after an `@` sign.
       path.gsub!(/@.*\z/,             "")
+      # Usernames can't end in .git, so remove it.
       path.gsub!(/\.git\z/,           "")
+      # Remove dashes at the start of the username.
       path.gsub!(/\A-+/,              "")
+      # Remove periods at the end of the username.
       path.gsub!(/\.+\z/,             "")
+      # Remove everything that's not in the list of allowed characters.
       path.gsub!(/[^a-zA-Z0-9_\-\.]/, "")
 
       # Users with the great usernames of "." or ".." would end up with a blank username.
