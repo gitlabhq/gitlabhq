@@ -85,7 +85,7 @@ module Gitlab
 
     private
 
-    NAME_STR = Gitlab::Regex::NAMESPACE_REGEX_STR
+    NAME_STR = Gitlab::Regex::NAMESPACE_PATH_REGEX_STR
     PROJ_STR = "(?<project>#{NAME_STR}/#{NAME_STR})"
 
     REFERENCE_PATTERN = %r{

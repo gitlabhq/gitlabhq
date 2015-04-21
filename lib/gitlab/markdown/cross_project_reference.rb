@@ -3,7 +3,7 @@ module Gitlab
     # Common methods for ReferenceFilters that support an optional cross-project
     # reference.
     module CrossProjectReference
-      NAMING_PATTERN  = Gitlab::Regex::NAMESPACE_REGEX_STR
+      NAMING_PATTERN  = Gitlab::Regex::NAMESPACE_PATH_REGEX_STR
       PROJECT_PATTERN = "(?<project>#{NAMING_PATTERN}/#{NAMING_PATTERN})"
 
       # Given a cross-project reference string, get the Project record

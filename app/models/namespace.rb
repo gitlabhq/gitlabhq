@@ -33,8 +33,8 @@ class Namespace < ActiveRecord::Base
     presence: true,
     length: { within: 1..255 },
     exclusion: { in: Gitlab::Blacklist.path },
-    format: { with: Gitlab::Regex.namespace_regex,
-              message: Gitlab::Regex.namespace_regex_message }
+    format: { with: Gitlab::Regex.namespace_path_regex,
+              message: Gitlab::Regex.namespace_path_regex_message }
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 

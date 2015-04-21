@@ -2,13 +2,13 @@ module Gitlab
   module Regex
     extend self
 
-    NAMESPACE_REGEX_STR = '(?:[a-zA-Z0-9_\.][a-zA-Z0-9_\-\.]*[a-zA-Z0-9_\-]|[a-zA-Z0-9_])'.freeze
+    NAMESPACE_PATH_REGEX_STR = '(?:[a-zA-Z0-9_\.][a-zA-Z0-9_\-\.]*[a-zA-Z0-9_\-]|[a-zA-Z0-9_])'.freeze
 
-    def namespace_regex
-      @namespace_regex ||= /\A#{NAMESPACE_REGEX_STR}\z/.freeze
+    def namespace_path_regex
+      @namespace_path_regex ||= /\A#{NAMESPACE_PATH_REGEX_STR}\z/.freeze
     end
 
-    def namespace_regex_message
+    def namespace_path_regex_message
       "can contain only letters, digits, '_', '-' and '.'. " \
       "Cannot start with '-' or end in '.'." \
     end
