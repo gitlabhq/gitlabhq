@@ -203,7 +203,9 @@ module Gitlab
       end
 
       def linkify_issues(s)
-        s.gsub(/([Ii]ssue) ([0-9]+)/, '\1 #\2')
+        s = s.gsub(/([Ii]ssue) ([0-9]+)/, '\1 #\2')
+        s = s.gsub(/([Cc]omment) #([0-9]+)/, '\1 \2')
+        s
       end
 
       def escape_for_markdown(s)
