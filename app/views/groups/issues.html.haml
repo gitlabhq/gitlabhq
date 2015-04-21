@@ -14,5 +14,11 @@
 %hr
 
 .append-bottom-20
+  .pull-right
+    - if current_user
+      .hidden-xs.pull-left
+        = link_to issues_group_url(@group, format: :atom, private_token: current_user.private_token), class: 'btn' do
+          %i.fa.fa-rss
+
   = render 'shared/issuable_filter'
 = render 'shared/issues'
