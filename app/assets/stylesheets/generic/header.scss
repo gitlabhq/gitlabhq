@@ -16,7 +16,16 @@ header {
       filter: none;
 
       .title {
+        position: relative;
+        float: left;
+        margin: 0;
+        margin-left: 25px;
+        font-size: 18px;
+        line-height: 44px;
+        font-weight: normal;
         color: #555;
+
+        @include str-truncated(37%);
 
         a {
           color: #555;
@@ -154,23 +163,6 @@ header {
     &:hover {
       background-color: #EEE;
     }
-  }
-
-  /**
-   *
-   * Project / Area name
-   *
-   */
-  .title {
-    position: relative;
-    float: left;
-    margin: 0;
-    margin-left: 25px;
-    font-size: 18px;
-    line-height: 44px;
-    font-weight: normal;
-
-    @include str-truncated(37%);
   }
 
   .profile-pic {
