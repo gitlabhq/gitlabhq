@@ -129,9 +129,7 @@ class NotificationService
 
     # Add all users participating in the thread (author, assignee, comment authors)
     participants = 
-      if target.is_a?(Commit)
-        target.participants(note.project, note.author)
-      elsif target.respond_to?(:participants)
+      if target.respond_to?(:participants)
         target.participants(note.author)
       else
         note.mentioned_users

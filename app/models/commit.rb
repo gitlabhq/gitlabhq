@@ -103,7 +103,7 @@ class Commit
     description.present?
   end
 
-  def hook_attrs(project)
+  def hook_attrs
     path_with_namespace = project.path_with_namespace
 
     {
@@ -120,7 +120,7 @@ class Commit
 
   # Discover issues should be closed when this commit is pushed to a project's
   # default branch.
-  def closes_issues(project, current_user = self.committer)
+  def closes_issues(current_user = self.committer)
     Gitlab::ClosingIssueExtractor.new(project, current_user).closed_by_message(safe_message)
   end
 
@@ -137,22 +137,22 @@ class Commit
     User.find_for_commit(committer_email, committer_name)
   end
 
-  def participants(project, current_user = nil)
+  def participants(current_user = nil)
     users = []
     users << author
     users << committer
     
-    users.push *self.mentioned_users(current_user, project)
+    users.push *self.mentioned_users(current_user)
 
-    notes(project).each do |note|
+    notes.each do |note|
       users << note.author
-      users.push *note.mentioned_users(current_user, project)
+      users.push *note.mentioned_users(current_user)
     end
 
     users.uniq
   end
 
-  def notes(project)
+  def notes
     project.notes.for_commit_id(self.id)
   end
 
