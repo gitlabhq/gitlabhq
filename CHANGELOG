@@ -5,6 +5,7 @@ v 7.11.0 (unreleased)
   - Ignore invalid lines in .gitmodules
   - Fix "Cannot move project" error message from popping up after a successful transfer (Stan Hu)
   - Redirect to sign in page after signing out.
+  - Fix "Hello @username." references not working by no longer allowing usernames to end in period.
   -
   - Add "Reply quoting selected text" shortcut key (`r`)
   - Fix bug causing `@whatever` inside an issue's first code block to be picked up as a user mention.
@@ -97,7 +98,6 @@ v 7.10.0 (unreleased)
   - Fix admin user projects lists.
   - Don't leak private group existence by redirecting from namespace controller to group controller.
   - Ability to skip some items from backup (database, respositories or uploads)
-  - Fix "Hello @username." references not working by no longer allowing usernames to end in period.
   - Archive repositories in background worker.
   - Import GitHub, Bitbucket or GitLab.com projects owned by authenticated user into current namespace.
   - Project labels are now available over the API under the "tag_list" field (Cristian Medina) 
