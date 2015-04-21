@@ -6,7 +6,6 @@
     top: 0;
     left: 0;
     height: 100%;
-    border-right: 1px solid $border-color;
   }
 }
 
@@ -38,28 +37,10 @@
 }
 
 .nav-sidebar li {
-  &.active a {
-    color: $text-color;
-    background: #FFF !important;
-    font-weight: bold;
-    border: 1px solid #EEE;
-    border-right: 1px solid transparent;
-    border-left: 3px solid $style_color;
-
-    &.no-highlight {
-      background: none !important;
-      border: none;
-    }
-
-    i {
-      color: $text-color;
-    }
-  }
 }
 
 .nav-sidebar li {
   &.separate-item {
-    border-top: 1px solid $border-color;
     padding-top: 10px;
     margin-top: 10px;
   }
@@ -75,8 +56,6 @@
 
     &:hover {
       text-decoration: none;
-      color: $text-color;
-      background: $border-color;
     }
 
     &:active, &:focus {
@@ -158,9 +137,6 @@
   left: 198px;
   font-size: 13px;
   background: transparent;
-  color: black;
-  border-left: 1px solid $border-color;
-  border-bottom: 1px solid $border-color;
 }
 
 .collapse-nav a:hover {

@@ -11,9 +11,23 @@ header {
     width: 100%;
 
     .navbar-inner {
+      background: #FFF;
+      border-bottom: 1px solid #DDD;
       filter: none;
 
+      .title {
+        color: #555;
+
+        a {
+          color: #555;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
       .nav > li > a {
+        color: #666;
         font-size: 14px;
         line-height: 32px;
         padding: 6px 10px;
@@ -100,10 +114,8 @@ header {
 
     a {
       float: left;
-      padding: 5px 0;
       height: 46px;
-      width: 52px;
-      text-align: center;
+      width: 100%;
 
       img {
         width: 36px;
@@ -124,8 +136,11 @@ header {
     position: relative;
     float: left;
     margin: 0;
-    margin-left: 5px;
-    @include header-font;
+    margin-left: 25px;
+    font-size: 18px;
+    line-height: 44px;
+    font-weight: normal;
+
     @include str-truncated(37%);
   }
 
@@ -164,9 +179,10 @@ header {
       padding-left: 25px;
       font-size: 13px;
       @include border-radius(3px);
-      border: 1px solid #c6c6c6;
+      border: 1px solid #DDD;
       box-shadow: none;
       @include transition(all 0.15s ease-in 0s);
+      background-color: #f5f5f5;
     }
   }
 }

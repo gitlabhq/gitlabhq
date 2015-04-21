@@ -2,60 +2,101 @@
   header {
     &.navbar-gitlab {
       .navbar-inner {
-        background: $color;
-
         .navbar-toggle {
           color: #FFF;
         }
 
         .app_logo, .navbar-toggle {
+          a {
+            color: $color-light;
+          }
+          background-color: $color-darker;
+
           &:hover {
-            background-color: $color-darker;
+            background-color: $color-dark;
+            a {
+              color: #FFF;
+            }
           }
         }
 
         .app_logo {
-          background-color: $color-dark;
-        }
-
-        .title {
-          color: #FFF;
+          @media (max-width: $screen-md-max) {
+            width: 52px;
+            h3 {
+              display: none;
+            }
+          }
+          border-bottom: 1px solid transparent;
+          margin-bottom: -1px;
 
           a {
-            color: #FFF;
-            &:hover {
-              text-decoration: underline;
+            padding: 5px 8px;
+
+            img {
+              float: left;
+            }
+
+            h3 {
+              width: 158px;
+              float: left;
+              margin: 0;
+              margin-left: 20px;
+              font-size: 18px;
+              line-height: 34px;
+              font-weight: normal;
             }
           }
         }
+      }
+    }
+  }
 
-        .search {
-          .search-input {
-            background-color: $color-light;
-            background-color: rgba(255, 255, 255, 0.5);
-            border: 1px solid $color-light;
+  .page-with-sidebar {
+    background: $color-darker;
 
-            &:focus {
-              background-color: white;
-            }
-          }
+    .collapse-nav a {
+      color: #FFF;
+      background: $color;
+    }
+
+    .sidebar-wrapper {
+      background: $color-darker;
+      border-right: 1px solid $color-darker;
+    }
+
+    .nav-sidebar li {
+      a {
+        color: $color-light;
+
+        &:hover, &:focus, &:active {
+          background: $color-dark;
         }
 
-        .search-input::-webkit-input-placeholder {
-          color: #666;
-        }
-
-        .nav > li > a {
+        i {
           color: $color-light;
-
-          &:hover, &:focus, &:active {
-            background: none;
-            color: #FFF;
-          }
         }
 
-        .search-input {
-          border-color: $color-light;
+        .count {
+          color: $color-light;
+          background: $color-dark;
+        }
+      }
+
+      &.separate-item {
+        border-top: 1px solid $color;
+      }
+
+      &.active a {
+        color: #FFF;
+        font-weight: bold;
+
+        &.no-highlight {
+          border: none;
+        }
+
+        i {
+          color: #FFF
         }
       }
     }
