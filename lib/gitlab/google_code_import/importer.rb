@@ -207,21 +207,19 @@ module Gitlab
       end
 
       def escape_for_markdown(s)
-        s = s.gsub("*", "\\*")
-        s = s.gsub("#", "\\#")
+        # No headings and lists
+        s = s.gsub(/^#/, "\\#")
+        s = s.gsub(/^-/, "\\-")
+
+        # No inline code
         s = s.gsub("`", "\\`")
-        s = s.gsub(":", "\\:")
-        s = s.gsub("-", "\\-")
-        s = s.gsub("+", "\\+")
-        s = s.gsub("_", "\\_")
-        s = s.gsub("(", "\\(")
-        s = s.gsub(")", "\\)")
-        s = s.gsub("[", "\\[")
-        s = s.gsub("]", "\\]")
-        s = s.gsub("<", "\\<")
-        s = s.gsub(">", "\\>")
+
+        # Carriage returns make me sad
         s = s.gsub("\r", "")
+
+        # Markdown ignores single newlines, but we need them as <br />.
         s = s.gsub("\n", "  \n")
+
         s
       end
 
