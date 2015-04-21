@@ -77,11 +77,11 @@ class Note < ActiveRecord::Base
     # +mentioner+'s description or an associated Note.
     # Create a system Note associated with +noteable+ with a GFM back-reference
     # to +mentioner+.
-    def create_cross_reference_note(noteable, mentioner, author, project)
-      gfm_reference = mentioner_gfm_ref(noteable, mentioner, project)
+    def create_cross_reference_note(noteable, mentioner, author)
+      gfm_reference = mentioner_gfm_ref(noteable, mentioner)
 
       note_options = {
-        project: project,
+        project: noteable.project,
         author: author,
         note: cross_reference_note_content(gfm_reference),
         system: true
@@ -236,7 +236,7 @@ class Note < ActiveRecord::Base
 
     # Determine whether or not a cross-reference note already exists.
     def cross_reference_exists?(noteable, mentioner)
-      gfm_reference = mentioner_gfm_ref(noteable, mentioner)
+      gfm_reference = mentioner_gfm_ref(noteable, mentioner, nil)
       notes = if noteable.is_a?(Commit)
                 where(commit_id: noteable.id, noteable_type: 'Commit')
               else
@@ -269,43 +269,19 @@ class Note < ActiveRecord::Base
     # Prepend the mentioner's namespaced project path to the GFM reference for
     # cross-project references.  For same-project references, return the
     # unmodified GFM reference.
-    def mentioner_gfm_ref(noteable, mentioner, project = nil)
-      if mentioner.is_a?(Commit)
-        if project.nil?
-          return mentioner.gfm_reference.sub('commit ', 'commit %')
-        else
-          mentioning_project = project
-        end
-      else
-        mentioning_project = mentioner.project
+    def mentioner_gfm_ref(noteable, mentioner, mentioner_project = mentioner.project)
+      if mentioner.is_a?(Commit) && project.nil?
+        return mentioner.gfm_reference.sub('commit ', 'commit %')
       end
-
-      noteable_project_id = noteable_project_id(noteable, mentioning_project)
-
-      full_gfm_reference(mentioning_project, noteable_project_id, mentioner)
-    end
-
-    # Return the ID of the project that +noteable+ belongs to, or nil if
-    # +noteable+ is a commit and is not part of the project that owns
-    # +mentioner+.
-    def noteable_project_id(noteable, mentioning_project)
-      if noteable.is_a?(Commit)
-        if mentioning_project.commit(noteable.id)
-          # The noteable commit belongs to the mentioner's project
-          mentioning_project.id
-        else
-          nil
-        end
-      else
-        noteable.project.id
-      end
+      
+      full_gfm_reference(mentioner_project, noteable.project, mentioner)
     end
 
     # Return the +mentioner+ GFM reference.  If the mentioner and noteable
     # projects are not the same, add the mentioning project's path to the
     # returned value.
-    def full_gfm_reference(mentioning_project, noteable_project_id, mentioner)
-      if mentioning_project.id == noteable_project_id
+    def full_gfm_reference(mentioning_project, noteable_project, mentioner)
+      if mentioning_project.id == noteable_project
         mentioner.gfm_reference
       else
         if mentioner.is_a?(Commit)

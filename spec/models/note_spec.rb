@@ -335,7 +335,7 @@ describe Note do
     # roles, to ensure that the correct information can be inferred from any argument.
 
     context 'issue from a merge request' do
-      subject { Note.create_cross_reference_note(issue, mergereq, author, project) }
+      subject { Note.create_cross_reference_note(issue, mergereq, author) }
 
       it { is_expected.to be_valid }
 
@@ -361,7 +361,7 @@ describe Note do
     end
 
     context 'issue from a commit' do
-      subject { Note.create_cross_reference_note(issue, commit, author, project) }
+      subject { Note.create_cross_reference_note(issue, commit, author) }
 
       it { is_expected.to be_valid }
 
@@ -377,7 +377,7 @@ describe Note do
     end
 
     context 'merge request from an issue' do
-      subject { Note.create_cross_reference_note(mergereq, issue, author, project) }
+      subject { Note.create_cross_reference_note(mergereq, issue, author) }
 
       it { is_expected.to be_valid }
 
@@ -398,7 +398,7 @@ describe Note do
     end
 
     context 'commit from a merge request' do
-      subject { Note.create_cross_reference_note(commit, mergereq, author, project) }
+      subject { Note.create_cross_reference_note(commit, mergereq, author) }
 
       it { is_expected.to be_valid }
 
@@ -419,13 +419,13 @@ describe Note do
     end
 
     context 'commit contained in a merge request' do
-      subject { Note.create_cross_reference_note(mergereq.commits.first, mergereq, author, project) }
+      subject { Note.create_cross_reference_note(mergereq.commits.first, mergereq, author) }
 
       it { is_expected.to be_nil }
     end
 
     context 'commit from issue' do
-      subject { Note.create_cross_reference_note(commit, issue, author, project) }
+      subject { Note.create_cross_reference_note(commit, issue, author) }
 
       it { is_expected.to be_valid }
 
@@ -452,7 +452,7 @@ describe Note do
 
     context 'commit from commit' do
       let(:parent_commit) { commit.parents.first }
-      subject { Note.create_cross_reference_note(commit, parent_commit, author, project) }
+      subject { Note.create_cross_reference_note(commit, parent_commit, author) }
 
       it { is_expected.to be_valid }
 
@@ -486,7 +486,7 @@ describe Note do
     let(:commit1) { project.commit('HEAD~2') }
 
     before do
-      Note.create_cross_reference_note(issue, commit0, author, project)
+      Note.create_cross_reference_note(issue, commit0, author)
     end
 
     it 'detects if a mentionable has already been mentioned' do
@@ -499,7 +499,7 @@ describe Note do
 
     context 'commit on commit' do
       before do
-        Note.create_cross_reference_note(commit0, commit1, author, project)
+        Note.create_cross_reference_note(commit0, commit1, author)
       end
 
       it { expect(Note.cross_reference_exists?(commit0, commit1)).to be_truthy }
@@ -527,7 +527,7 @@ describe Note do
     let(:author) { create :user }
     let(:issue0) { create :issue, project: project }
     let(:issue1) { create :issue, project: second_project }
-    let!(:note) { Note.create_cross_reference_note(issue0, issue1, author, project) }
+    let!(:note) { Note.create_cross_reference_note(issue0, issue1, author) }
 
     it 'detects if a mentionable has already been mentioned' do
       expect(Note.cross_reference_exists?(issue0, issue1)).to be_truthy
@@ -562,7 +562,7 @@ describe Note do
     end
 
     it 'should identify cross-reference notes as system notes' do
-      @note = Note.create_cross_reference_note(issue, other, author, project)
+      @note = Note.create_cross_reference_note(issue, other, author)
       expect(@note).to be_system
     end
 

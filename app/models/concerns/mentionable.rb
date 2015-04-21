@@ -64,7 +64,7 @@ module Mentionable
   def create_cross_references!(p = project, a = author, without = [])
     refs = references(p) - without
     refs.each do |ref|
-      Note.create_cross_reference_note(ref, local_reference, a, p)
+      Note.create_cross_reference_note(ref, local_reference, a)
     end
   end
 

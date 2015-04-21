@@ -94,7 +94,7 @@ class GitPushService
         author ||= commit_user(commit)
 
         refs.each do |r|
-          Note.create_cross_reference_note(r, commit, author, project)
+          Note.create_cross_reference_note(r, commit, author)
         end
       end
     end
