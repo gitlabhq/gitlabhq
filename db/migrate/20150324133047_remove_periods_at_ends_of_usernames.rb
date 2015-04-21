@@ -15,6 +15,10 @@ class RemovePeriodsAtEndsOfUsernames < ActiveRecord::Migration
         path.gsub!(/\.+\z/,             "")
         path.gsub!(/[^a-zA-Z0-9_\-\.]/, "")
 
+        # Users with the great usernames of "." or ".." would end up with a blank username.
+        # Work around that by setting their username to "blank", followed by a counter.
+        path = "blank" if path.blank?
+
         counter = 0
         base = path
         while Namespace.find_by_path_or_name(path)
