@@ -276,11 +276,18 @@ module Gitlab
         if raw_updates.has_key?("blockedOn")
           blocked_ons = raw_updates["blockedOn"].map do |raw_blocked_on|
             name, id = raw_blocked_on.split(":", 2)
-            if name == project.import_source
-              "##{id}"
-            else
-              "#{project.namespace.path}/#{name}##{id}"
-            end
+
+            deleted = name.start_with?("-") 
+            name = name[1..-1] if deleted
+
+            text =
+              if name == project.import_source
+                "##{id}"
+              else
+                "#{project.namespace.path}/#{name}##{id}"
+              end
+            text = "~~#{text}~~" if deleted
+            text
           end
           updates << "*Blocked on: #{blocked_ons.join(", ")}*"
         end
@@ -288,11 +295,18 @@ module Gitlab
         if raw_updates.has_key?("blocking")
           blockings = raw_updates["blocking"].map do |raw_blocked_on|
             name, id = raw_blocked_on.split(":", 2)
-            if name == project.import_source
-              "##{id}"
-            else
-              "#{project.namespace.path}/#{name}##{id}"
-            end
+            
+            deleted = name.start_with?("-") 
+            name = name[1..-1] if deleted
+
+            text =
+              if name == project.import_source
+                "##{id}"
+              else
+                "#{project.namespace.path}/#{name}##{id}"
+              end
+            text = "~~#{text}~~" if deleted
+            text
           end
           updates << "*Blocking: #{blockings.join(", ")}*"
         end
