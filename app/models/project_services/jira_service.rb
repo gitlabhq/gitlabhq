@@ -70,7 +70,13 @@ class JiraService < IssueTrackerService
   end
 
   def execute(push, issue = nil)
-    close_issue(push, issue) if issue
+    if issue.nil?
+      # No specific issue, that means
+      # we just want to test settings
+      test_settings
+    else
+      close_issue(push, issue)
+    end
   end
 
   def create_cross_reference_note(mentioned, noteable, author)
@@ -101,6 +107,28 @@ class JiraService < IssueTrackerService
     }
 
     add_comment(data, issue_name)
+  end
+
+  def test_settings
+    result = JiraService.get(
+      jira_project_url,
+      headers: {
+        'Content-Type' => 'application/json',
+        'Authorization' => "Basic #{auth}"
+      }
+    )
+
+    case result.code
+    when 201, 200
+      Rails.logger.info("#{self.class.name} SUCCESS #{result.code}: Sucessfully connected to #{server_url}.")
+      true
+    else
+      Rails.logger.info("#{self.class.name} ERROR #{result.code}: #{result.parsed_response}")
+      false
+    end
+  rescue Errno::ECONNREFUSED => e
+    Rails.logger.info "#{self.class.name} ERROR: #{e.message}. Hostname: #{server_url}."
+    false
   end
 
   private
@@ -149,7 +177,7 @@ class JiraService < IssueTrackerService
       body: "[#{user_name}|#{user_url}] mentioned this issue in [a #{entity_name} of #{project_name}|#{entity_url}]."
     }
 
-    unless existing_comment?(issue_name, message)
+    unless existing_comment?(issue_name, message[:body])
       send_message(url, message.to_json)
     end
   end
@@ -181,7 +209,7 @@ class JiraService < IssueTrackerService
 
     Rails.logger.info(message)
     message
-  rescue URI::InvalidURIError => e
+  rescue URI::InvalidURIError, Errno::ECONNREFUSED => e
     Rails.logger.info "#{self.class.name} ERROR: #{e.message}. Hostname: #{url}."
   end
 
@@ -197,7 +225,6 @@ class JiraService < IssueTrackerService
     case result.code
     when 201, 200
       existing_comments = JSON.parse(result.body)['comments']
-      new_comment = new_comment['body']
 
       if existing_comments.present?
         return existing_comments.map { |comment| comment['body'].include?(new_comment) }.any?
@@ -241,5 +268,9 @@ class JiraService < IssueTrackerService
 
   def comment_url(issue_name)
     "#{server_url}/rest/api/#{self.api_version}/issue/#{issue_name}/comment"
+  end
+
+  def jira_project_url
+    "#{server_url}/rest/api/#{self.api_version}/project"
   end
 end
