@@ -79,7 +79,7 @@ module Emails
       @disable_diffs = disable_diffs
 
       if @compare
-        @commits = Commit.decorate(compare.commits)
+        @commits = Commit.decorate(compare.commits, @project)
         @diffs   = compare.diffs
       end
 
@@ -101,8 +101,8 @@ module Emails
         if @commits.length > 1
           @target_url = namespace_project_compare_url(@project.namespace,
                                                       @project,
-                                                      from: Commit.new(@compare.base),
-                                                      to:   Commit.new(@compare.head))
+                                                      from: Commit.new(@compare.base, @project),
+                                                      to:   Commit.new(@compare.head, @project))
           @subject << "Deleted " if @reverse_compare
           @subject << "#{@commits.length} commits: #{@commits.first.title}"
         else

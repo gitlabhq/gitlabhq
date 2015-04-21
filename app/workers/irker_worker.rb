@@ -137,8 +137,7 @@ class IrkerWorker
   end
 
   def commit_from_id(project, id)
-    commit = Gitlab::Git::Commit.find(project.repository, id)
-    Commit.new(commit)
+    project.commit(id)
   end
 
   def files_count(commit)

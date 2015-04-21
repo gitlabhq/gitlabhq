@@ -1,11 +1,12 @@
 class Repository
   include Gitlab::ShellAdapter
 
-  attr_accessor :raw_repository, :path_with_namespace
+  attr_accessor :raw_repository, :path_with_namespace, :project
 
-  def initialize(path_with_namespace, default_branch = nil)
+  def initialize(path_with_namespace, default_branch = nil, project = nil)
     @path_with_namespace = path_with_namespace
     @raw_repository = Gitlab::Git::Repository.new(path_to_repo) if path_with_namespace
+    @project = project
   rescue Gitlab::Git::Repository::NoRepository
     nil
   end
@@ -28,7 +29,7 @@ class Repository
   def commit(id = 'HEAD')
     return nil unless raw_repository
     commit = Gitlab::Git::Commit.find(raw_repository, id)
-    commit = Commit.new(commit) if commit
+    commit = Commit.new(commit, @project) if commit
     commit
   rescue Rugged::OdbError
     nil
@@ -42,13 +43,13 @@ class Repository
       limit: limit,
       offset: offset,
     )
-    commits = Commit.decorate(commits) if commits.present?
+    commits = Commit.decorate(commits, @project) if commits.present?
     commits
   end
 
   def commits_between(from, to)
     commits = Gitlab::Git::Commit.between(raw_repository, from, to)
-    commits = Commit.decorate(commits) if commits.present?
+    commits = Commit.decorate(commits, @project) if commits.present?
     commits
   end
 
