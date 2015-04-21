@@ -125,7 +125,7 @@ describe Gitlab::ReferenceExtractor do
   end
 
   it 'accesses valid commits' do
-    commit = project.repository.commit('master')
+    commit = project.commit('master')
 
     subject.analyze("this references commits #{commit.sha[0..6]} and 012345")
     extracted = subject.commits
@@ -135,8 +135,8 @@ describe Gitlab::ReferenceExtractor do
   end
 
   it 'accesses valid commit ranges' do
-    commit = project.repository.commit('master')
-    earlier_commit = project.repository.commit('master~2')
+    commit = project.commit('master')
+    earlier_commit = project.commit('master~2')
 
     subject.analyze("this references commits #{earlier_commit.sha[0..6]}...#{commit.sha[0..6]}")
     extracted = subject.commit_ranges

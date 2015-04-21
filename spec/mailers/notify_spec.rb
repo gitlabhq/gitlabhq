@@ -466,7 +466,7 @@ describe Notify do
       end
 
       describe 'on a commit' do
-        let(:commit) { project.repository.commit }
+        let(:commit) { project.commit }
 
         before(:each) { allow(note).to receive(:noteable).and_return(commit) }
 

@@ -34,7 +34,7 @@ module API
         ref = attrs.delete(:ref)
         file_path = attrs.delete(:file_path)
 
-        commit = user_project.repository.commit(ref)
+        commit = user_project.commit(ref)
         not_found! 'Commit' unless commit
 
         blob = user_project.repository.blob_at(commit.sha, file_path)

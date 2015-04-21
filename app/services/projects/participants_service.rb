@@ -22,7 +22,7 @@ module Projects
           merge_request = project.merge_requests.find_by_iid(id)
           merge_request.participants(current_user) if merge_request
         when "Commit"
-          commit = project.repository.commit(id)
+          commit = project.commit(id)
           commit.participants(project, current_user) if commit
         end
 

@@ -66,7 +66,7 @@ module Gitlab
 
       def commit_from_ref(project, commit_ref)
         if project && project.valid_repo?
-          project.repository.commit(commit_ref)
+          project.commit(commit_ref)
         end
       end
 

@@ -5,7 +5,7 @@ module Gitlab::Markdown
     include ReferenceFilterSpecHelper
 
     let(:project) { create(:project) }
-    let(:commit)  { project.repository.commit }
+    let(:commit)  { project.commit }
 
     it 'requires project context' do
       expect { described_class.call('Commit 1c002d', {}) }.
@@ -80,7 +80,7 @@ module Gitlab::Markdown
     context 'cross-project reference' do
       let(:namespace) { create(:namespace, name: 'cross-reference') }
       let(:project2)  { create(:project, namespace: namespace) }
-      let(:commit)    { project.repository.commit }
+      let(:commit)    { project.commit }
       let(:reference) { "#{project2.path_with_namespace}@#{commit.id}" }
 
       context 'when user can access reference' do

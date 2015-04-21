@@ -36,6 +36,6 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def commit
-    @commit ||= @project.repository.commit(params[:id])
+    @commit ||= @project.commit(params[:id])
   end
 end

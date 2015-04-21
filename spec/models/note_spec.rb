@@ -329,7 +329,7 @@ describe Note do
     let(:author)     { create(:user) }
     let(:issue)      { create(:issue, project: project) }
     let(:mergereq)   { create(:merge_request, :simple, target_project: project, source_project: project) }
-    let(:commit)     { project.repository.commit }
+    let(:commit)     { project.commit }
 
     # Test all of {issue, merge request, commit} in both the referenced and referencing
     # roles, to ensure that the correct information can be inferred from any argument.
@@ -482,8 +482,8 @@ describe Note do
     let(:project) { create :project }
     let(:author) { create :user }
     let(:issue) { create :issue }
-    let(:commit0) { project.repository.commit }
-    let(:commit1) { project.repository.commit('HEAD~2') }
+    let(:commit0) { project.commit }
+    let(:commit1) { project.commit('HEAD~2') }
 
     before do
       Note.create_cross_reference_note(issue, commit0, author, project)

@@ -44,7 +44,7 @@ describe GitPushService do
     before do
       service.execute(project, user, @oldrev, @newrev, @ref)
       @push_data = service.push_data
-      @commit = project.repository.commit(@newrev)
+      @commit = project.commit(@newrev)
     end
 
     subject { @push_data }
@@ -151,7 +151,7 @@ describe GitPushService do
   describe "cross-reference notes" do
     let(:issue) { create :issue, project: project }
     let(:commit_author) { create :user }
-    let(:commit) { project.repository.commit }
+    let(:commit) { project.commit }
 
     before do
       commit.stub({
@@ -198,7 +198,7 @@ describe GitPushService do
     let(:issue) { create :issue, project: project }
     let(:other_issue) { create :issue, project: project }
     let(:commit_author) { create :user }
-    let(:closing_commit) { project.repository.commit }
+    let(:closing_commit) { project.commit }
 
     before do
       closing_commit.stub({

@@ -257,7 +257,7 @@ class Project < ActiveRecord::Base
     @repository ||= Repository.new(path_with_namespace, nil, self)
   end
 
-  def commit(id)
+  def commit(id = 'HEAD')
     repository.commit(id)
   end
 

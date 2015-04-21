@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Commit do
   let(:project) { create :project }
-  let(:commit) { project.repository.commit }
+  let(:commit) { project.commit }
 
   describe '#title' do
     it "returns no_commit_message when safe_message is blank" do

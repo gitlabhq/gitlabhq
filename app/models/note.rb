@@ -290,7 +290,7 @@ class Note < ActiveRecord::Base
     # +mentioner+.
     def noteable_project_id(noteable, mentioning_project)
       if noteable.is_a?(Commit)
-        if mentioning_project.repository.commit(noteable.id)
+        if mentioning_project.commit(noteable.id)
           # The noteable commit belongs to the mentioner's project
           mentioning_project.id
         else
@@ -512,7 +512,7 @@ class Note < ActiveRecord::Base
   # override to return commits, which are not active record
   def noteable
     if for_commit?
-      project.repository.commit(commit_id)
+      project.commit(commit_id)
     else
       super
     end

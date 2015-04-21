@@ -84,7 +84,7 @@ module Gitlab
 
       def commit(id)
         unless @commit_map[id]
-          @commit_map[id] = project.repository.commit(id)
+          @commit_map[id] = project.commit(id)
         end
 
         @commit_map[id]
