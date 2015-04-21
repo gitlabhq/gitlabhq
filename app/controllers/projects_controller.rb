@@ -66,8 +66,6 @@ class ProjectsController < ApplicationController
       return
     end
 
-    limit = (params[:limit] || 20).to_i
-
     @show_star = !(current_user && current_user.starred?(@project))
 
     respond_to do |format|
@@ -85,10 +83,13 @@ class ProjectsController < ApplicationController
       end
 
       format.json do
-        @events = @project.events.recent
-        @events = event_filter.apply_filter(@events).with_associations
-        @events = @events.limit(limit).offset(params[:offset] || 0)
+        load_events
         pager_json('events/_events', @events.count)
+      end
+
+      format.atom do
+        load_events
+        render layout: false
       end
     end
   end
@@ -165,6 +166,13 @@ class ProjectsController < ApplicationController
 
   def user_layout
     current_user ? 'projects' : 'public_projects'
+  end
+
+  def load_events
+    @events = @project.events.recent
+    @events = event_filter.apply_filter(@events).with_associations
+    limit = (params[:limit] || 20).to_i
+    @events = @events.limit(limit).offset(params[:offset] || 0)
   end
 
   def project_params
