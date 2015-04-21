@@ -163,7 +163,7 @@ Consult the [Emoji Cheat Sheet](http://emoji.codes) for a list of all supported 
 
 ## Special GitLab References
 
-GFM recognized special references.
+GFM recognizes special references.
 
 You can easily reference e.g. an issue, a commit, a team member or even the whole team within a project.
 
@@ -171,19 +171,30 @@ GFM will turn that reference into a link so you can navigate between them easily
 
 GFM will recognize the following:
 
-- @foo : for specific team members or groups
-- @all : for the whole team
-- #123 : for issues
-- !123 : for merge requests
-- $123 : for snippets
-- 1234567 : for commits
-- \[file\](path/to/file) : for file references
+| input                  | references                 |
+|-----------------------:|:---------------------------|
+| `@user_name`           | specific user              |
+| `@group_name`          | specific group             |
+| `@all`                 | entire team                |
+| `#123`                 | issue                      |
+| `!123`                 | merge request              |
+| `$123`                 | snippet                    |
+| `~123`                 | label by ID                |
+| `~bug`                 | one-word label by name     |
+| `~"feature request"`   | multi-word label by name   |
+| `9ba12248`             | specific commit            |
+| `9ba12248...b19a04f5`  | commit range comparison    |
+| `[README](doc/README)` | repository file references |
 
-GFM also recognizes references to commits, issues, and merge requests in other projects:
+GFM also recognizes certain cross-project references:
 
-- namespace/project#123 : for issues
-- namespace/project!123 : for merge requests
-- namespace/project@1234567 : for commits
+| input                                   | references              |
+|----------------------------------------:|:------------------------|
+| `namespace/project#123`                 | issue                   |
+| `namespace/project!123`                 | merge request           |
+| `namespace/project$123`                 | snippet                 |
+| `namespace/project@9ba12248`            | specific commit         |
+| `namespace/project@9ba12248...b19a04f5` | commit range comparison |
 
 ## Task Lists
 

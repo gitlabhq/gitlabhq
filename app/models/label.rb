@@ -27,7 +27,7 @@ class Label < ActiveRecord::Base
   # Don't allow '?', '&', and ',' for label titles
   validates :title,
             presence: true,
-            format: { with: /\A[^&\?,&]+\z/ },
+            format: { with: /\A[^&\?,]+\z/ },
             uniqueness: { scope: :project_id }
 
   default_scope { order(title: :asc) }

@@ -74,7 +74,7 @@ describe Gitlab::ReferenceExtractor do
   end
 
   it 'handles all possible kinds of references' do
-    accessors = Gitlab::Markdown::TYPES.map { |t| "#{t}s".to_sym }
+    accessors = described_class::TYPES.map { |t| "#{t}s".to_sym }
     expect(subject).to respond_to(*accessors)
   end
 
@@ -104,6 +104,15 @@ describe Gitlab::ReferenceExtractor do
 
     subject.analyze("!999, !#{@m1.iid}, and !#{@m0.iid}.")
     expect(subject.merge_requests).to eq([@m1, @m0])
+  end
+
+  it 'accesses valid labels' do
+    @l0 = create(:label, title: 'one', project: project)
+    @l1 = create(:label, title: 'two', project: project)
+    @l2 = create(:label)
+
+    subject.analyze("~#{@l0.id}, ~999, ~#{@l2.id}, ~#{@l1.id}")
+    expect(subject.labels).to eq([@l0, @l1])
   end
 
   it 'accesses valid snippets' do
