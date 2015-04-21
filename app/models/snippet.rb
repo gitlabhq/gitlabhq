@@ -19,6 +19,7 @@ class Snippet < ActiveRecord::Base
   include Sortable
   include Linguist::BlobHelper
   include Gitlab::VisibilityLevel
+  include Participable
 
   default_value_for :visibility_level, Snippet::PRIVATE
 
@@ -46,6 +47,8 @@ class Snippet < ActiveRecord::Base
   scope :fresh,   -> { order("created_at DESC") }
   scope :expired, -> { where(["expires_at IS NOT NULL AND expires_at < ?", Time.current]) }
   scope :non_expired, -> { where(["expires_at IS NULL OR expires_at > ?", Time.current]) }
+
+  participant :author, :notes
 
   def self.content_types
     [
@@ -85,18 +88,6 @@ class Snippet < ActiveRecord::Base
 
   def visibility_level_field
     visibility_level
-  end
-
-  def participants(current_user = self.author)
-    users = []
-    users << author
-    
-    notes.each do |note|
-      users << note.author
-      users.push *note.mentioned_users(current_user)
-    end
-
-    users.uniq
   end
 
   class << self

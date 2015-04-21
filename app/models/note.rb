@@ -23,10 +23,12 @@ require 'file_size_validator'
 class Note < ActiveRecord::Base
   include Mentionable
   include Gitlab::CurrentSettings
+  include Participable
 
   default_value_for :system, false
 
   attr_mentionable :note
+  participant :author, :mentioned_users
 
   belongs_to :project
   belongs_to :noteable, polymorphic: true

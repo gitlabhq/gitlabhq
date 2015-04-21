@@ -3,8 +3,10 @@ class Commit
   include StaticModel
   extend ActiveModel::Naming
   include Mentionable
+  include Participable
 
   attr_mentionable :safe_message
+  participant :author, :committer, :notes, :mentioned_users
 
   attr_accessor :project
 
@@ -135,21 +137,6 @@ class Commit
 
   def committer
     User.find_for_commit(committer_email, committer_name)
-  end
-
-  def participants(current_user = nil)
-    users = []
-    users << author
-    users << committer
-    
-    users.push *self.mentioned_users(current_user)
-
-    notes.each do |note|
-      users << note.author
-      users.push *note.mentioned_users(current_user)
-    end
-
-    users.uniq
   end
 
   def notes
