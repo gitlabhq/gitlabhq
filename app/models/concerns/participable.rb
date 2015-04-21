@@ -27,16 +27,17 @@ module Participable
   end
 
   private
-    def participants_for(value, current_user = nil)
-      case value
-      when User
-        [value]
-      when Array
-        value.flat_map { |v| participants_for(v, current_user) }
-      when Participable
-        value.participants(current_user)
-      when Mentionable
-        value.mentioned_users(current_user)
-      end
+  
+  def participants_for(value, current_user = nil)
+    case value
+    when User
+      [value]
+    when Array
+      value.flat_map { |v| participants_for(v, current_user) }
+    when Participable
+      value.participants(current_user)
+    when Mentionable
+      value.mentioned_users(current_user)
     end
+  end
 end
