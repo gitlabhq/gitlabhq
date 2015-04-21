@@ -173,6 +173,7 @@ $ ->
     $(@).closest(".diff-file").find(".notes_holder").toggle()
     e.preventDefault()
 
+  $(document).off "click", '.js-confirm-danger'
   $(document).on "click", '.js-confirm-danger', (e) ->
     e.preventDefault()
     btn = $(e.target)
