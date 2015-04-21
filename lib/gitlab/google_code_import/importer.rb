@@ -340,7 +340,7 @@ module Gitlab
 
       def format_issue_body(author, date, content, attachments)
         body = []
-        body << "*By #{author} on #{date}*"
+        body << "*By #{author} on #{date} (imported from Google Code)*"
         body << "---"
 
         if content.blank?
