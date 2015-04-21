@@ -26,6 +26,35 @@ header {
         }
       }
 
+      .app_logo {
+        @media (max-width: $screen-md-max) {
+          width: 52px;
+          h3 {
+            display: none;
+          }
+        }
+        border-bottom: 1px solid transparent;
+        margin-bottom: -1px;
+
+        a {
+          padding: 5px 8px;
+
+          img {
+            float: left;
+          }
+
+          h3 {
+            width: 158px;
+            float: left;
+            margin: 0;
+            margin-left: 20px;
+            font-size: 18px;
+            line-height: 34px;
+            font-weight: normal;
+          }
+        }
+      }
+
       .nav > li > a {
         color: #666;
         font-size: 14px;
