@@ -30,7 +30,10 @@ module Gitlab
 
       def user_map
         @user_map ||= begin
-          user_map = Hash.new { |hash, user| Client.mask_email(user) }
+          user_map = Hash.new do |hash, user| 
+            # Replace ... by \.\.\., so `johnsm...@gmail.com` isn't autolinked.
+            Client.mask_email(user).sub("...", "\\.\\.\\.")
+          end
 
           import_data = project.import_data.try(:data)
           stored_user_map = import_data["user_map"] if import_data
