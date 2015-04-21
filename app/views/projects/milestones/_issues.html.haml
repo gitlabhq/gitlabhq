@@ -1,6 +1,0 @@
-.panel.panel-default
-  .panel-heading= title
-  %ul{ class: "well-list issues-sortable-list", id: "issues-list-#{id}", "data-state" => id }
-    - issues.sort_by(&:position).each do |issue|
-      = render 'issue', issue: issue
-    %li.light.ui-sort-disabled Drag and drop available

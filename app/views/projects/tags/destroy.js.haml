@@ -1,3 +1,0 @@
-$('.js-totaltags-count').html("#{@repository.tags.size}")
-- if @repository.tags.size == 0
-  $('.tags').load(document.URL + ' .nothing-here-block').hide().fadeIn(1000)

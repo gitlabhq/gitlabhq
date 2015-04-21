@@ -1,9 +1,0 @@
-%h2.issue-title
-  = gfm escape_once(@merge_request.title)
-
-%div
-  - if @merge_request.description.present?
-    .description
-      .wiki
-        = preserve do
-          = markdown(@merge_request.description, parse_tasks: true)

@@ -1,9 +1,0 @@
-%p.details
-  != merge_path_description(@merge_request, '&rarr;')
-
-- if @merge_request.assignee_id.present?
-  %p
-    Assignee: #{@merge_request.author_name} &rarr; #{@merge_request.assignee_name}
-
--if @merge_request.description
-  = markdown(@merge_request.description, reference_only_path: false)

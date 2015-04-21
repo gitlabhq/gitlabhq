@@ -1,6 +1,0 @@
--if @issue.description
-  = markdown(@issue.description, reference_only_path: false)
-
-- if @issue.assignee_id.present?
-  %p
-    Assignee: #{@issue.assignee_name}

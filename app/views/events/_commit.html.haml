@@ -1,5 +1,0 @@
-%li.commit
-  .commit-row-title
-    = link_to truncate_sha(commit[:id]), namespace_project_commit_path(project.namespace, project, commit[:id]), class: "commit_short_id", alt: ''
-    &nbsp;
-    = gfm event_commit_title(commit[:message]), project

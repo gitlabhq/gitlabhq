@@ -1,9 +1,0 @@
-New comment for Issue <%= @issue.iid %>
-
-<%= url_for(namespace_project_issue_url(@issue.project.namespace, @issue.project, @issue, anchor: "note_#{@note.id}")) %>
-
-
-Author: <%= @note.author_name %>
-
-<%= @note.note %>
-
