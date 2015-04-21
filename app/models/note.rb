@@ -272,7 +272,7 @@ class Note < ActiveRecord::Base
     # cross-project references.  For same-project references, return the
     # unmodified GFM reference.
     def mentioner_gfm_ref(noteable, mentioner, mentioner_project = mentioner.project)
-      if mentioner.is_a?(Commit) && project.nil?
+      if mentioner.is_a?(Commit) && mentioner_project.nil?
         return mentioner.gfm_reference.sub('commit ', 'commit %')
       end
       
@@ -283,7 +283,7 @@ class Note < ActiveRecord::Base
     # projects are not the same, add the mentioning project's path to the
     # returned value.
     def full_gfm_reference(mentioning_project, noteable_project, mentioner)
-      if mentioning_project.id == noteable_project
+      if mentioning_project == noteable_project
         mentioner.gfm_reference
       else
         if mentioner.is_a?(Commit)
