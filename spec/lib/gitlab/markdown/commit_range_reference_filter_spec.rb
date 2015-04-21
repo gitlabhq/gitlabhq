@@ -42,13 +42,17 @@ module Gitlab::Markdown
         reference = "#{commit1.short_id}...#{commit2.id}"
         reference2 = "#{commit1.id}...#{commit2.short_id}"
 
-        expect(filter("See #{reference}").css('a').first.text).to eq reference
-        expect(filter("See #{reference2}").css('a').first.text).to eq reference2
+        exp = commit1.short_id + '...' + commit2.short_id
+
+        expect(filter("See #{reference}").css('a').first.text).to eq exp
+        expect(filter("See #{reference2}").css('a').first.text).to eq exp
       end
 
       it 'links with adjacent text' do
         doc = filter("See (#{reference}.)")
-        expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
+
+        exp = Regexp.escape("#{commit1.short_id}...#{commit2.short_id}")
+        expect(doc.to_html).to match(/\(<a.+>#{exp}<\/a>\.\)/)
       end
 
       it 'ignores invalid commit IDs' do
@@ -107,7 +111,9 @@ module Gitlab::Markdown
 
         it 'links with adjacent text' do
           doc = filter("Fixed (#{reference}.)")
-          expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
+
+          exp = Regexp.escape("#{project2.path_with_namespace}@#{commit1.short_id}...#{commit2.short_id}")
+          expect(doc.to_html).to match(/\(<a.+>#{exp}<\/a>\.\)/)
         end
 
         it 'ignores invalid commit IDs on the referenced project' do
