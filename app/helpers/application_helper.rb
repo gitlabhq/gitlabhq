@@ -255,11 +255,15 @@ module ApplicationHelper
   #
   # Returns `html_options`, adding `rel: nofollow` for external links
   def add_nofollow(link, html_options = {})
-    uri = URI(link)
+    begin
+      uri = URI(link)
 
-    if uri && uri.absolute? && uri.host != Gitlab.config.gitlab.host
-      rel = html_options.fetch(:rel, '')
-      html_options[:rel] = (rel + ' nofollow').strip
+      if uri && uri.absolute? && uri.host != Gitlab.config.gitlab.host
+        rel = html_options.fetch(:rel, '')
+        html_options[:rel] = (rel + ' nofollow').strip
+      end
+    rescue URI::Error
+      # noop
     end
 
     html_options
