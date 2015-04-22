@@ -68,7 +68,7 @@ module API
         user = User.build_user(attrs)
         user.admin = admin unless admin.nil?
         user.skip_confirmation! unless confirm
-	user.confirmed_at = DateTime.now unless confirm
+        user.confirmed_at = DateTime.now unless confirm
 
         identity_attrs = attributes_for_keys [:provider, :extern_uid]
         if identity_attrs.any?
