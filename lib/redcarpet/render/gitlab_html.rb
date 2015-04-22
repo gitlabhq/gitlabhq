@@ -50,16 +50,6 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
     h.link_to_gfm(content, link, title: title)
   end
 
-  def header(text, level)
-    if @options[:no_header_anchors]
-      "<h#{level}>#{text}</h#{level}>"
-    else
-      id = ActionController::Base.helpers.strip_tags(h.gfm(text)).downcase() \
-          .gsub(/[^a-z0-9_-]/, '-').gsub(/-+/, '-').gsub(/^-/, '').gsub(/-$/, '')
-      "<h#{level} id=\"#{id}\">#{text}<a href=\"\##{id}\"></a></h#{level}>"
-    end
-  end
-
   def postprocess(full_document)
     full_document.gsub!("ftp://smb:", "smb://")
 

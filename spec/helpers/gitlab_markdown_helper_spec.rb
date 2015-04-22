@@ -207,23 +207,6 @@ describe GitlabMarkdownHelper do
   end
 
   describe "#markdown" do
-    # TODO (rspeicher) - This block tests multiple different contexts. Break this up!
-
-    it "should add ids and links to headers" do
-      # Test every rule except nested tags.
-      text = '..Ab_c-d. e..'
-      id = 'ab_c-d-e'
-      expect(markdown("# #{text}")).
-        to match(%r{<h1 id="#{id}">#{text}<a href="[^"]*##{id}"></a></h1>})
-      expect(markdown("# #{text}", {no_header_anchors:true})).
-      to eq("<h1>#{text}</h1>")
-
-      id = 'link-text'
-      expect(markdown("# [link text](url) ![img alt](url)")).to match(
-        %r{<h1 id="#{id}"><a href="[^"]*url">link text</a> <img[^>]*><a href="[^"]*##{id}"></a></h1>}
-      )
-    end
-
     # REFERENCES (PART TWO: THE REVENGE) ---------------------------------------
 
     it "should handle references in headers" do

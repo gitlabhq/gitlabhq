@@ -34,7 +34,6 @@ module GitlabMarkdownHelper
 
       # see https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch
       rend = Redcarpet::Render::GitlabHTML.new(self, user_color_scheme_class, {
-        with_toc_data:   true,
         safe_links_only: true,
         # Handled further down the line by HTML::Pipeline::SanitizationFilter
         escape_html:     false

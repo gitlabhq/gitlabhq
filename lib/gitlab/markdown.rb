@@ -38,6 +38,7 @@ module Gitlab
     autoload :LabelReferenceFilter,         'gitlab/markdown/label_reference_filter'
     autoload :MergeRequestReferenceFilter,  'gitlab/markdown/merge_request_reference_filter'
     autoload :SnippetReferenceFilter,       'gitlab/markdown/snippet_reference_filter'
+    autoload :TableOfContentsFilter,        'gitlab/markdown/table_of_contents_filter'
     autoload :UserReferenceFilter,          'gitlab/markdown/user_reference_filter'
 
     # Public: Parse the provided text with GitLab-Flavored Markdown
@@ -81,6 +82,9 @@ module Gitlab
         asset_root: Gitlab.config.gitlab.url,
         asset_host: Gitlab::Application.config.asset_host,
 
+        # TableOfContentsFilter
+        no_header_anchors: options[:no_header_anchors],
+
         # ReferenceFilter
         current_user:    current_user,
         only_path:       options[:reference_only_path],
@@ -117,6 +121,7 @@ module Gitlab
         HTML::Pipeline::SanitizationFilter,
 
         Gitlab::Markdown::EmojiFilter,
+        Gitlab::Markdown::TableOfContentsFilter,
 
         Gitlab::Markdown::UserReferenceFilter,
         Gitlab::Markdown::IssueReferenceFilter,
