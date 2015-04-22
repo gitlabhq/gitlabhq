@@ -251,7 +251,8 @@ group :development, :test do
   # PhantomJS driver for Capybara
   gem 'poltergeist', '~> 1.5.1'
 
-  gem 'jasmine', '2.0.2'
+  gem 'jasmine', '~> 2.2.0'
+  gem 'jasmine-rails'
 
   gem "spring", '~> 1.3.1'
   gem "spring-commands-rspec", '1.0.4'

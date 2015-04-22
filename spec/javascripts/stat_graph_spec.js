@@ -1,3 +1,5 @@
+//= require stat_graph
+
 describe("StatGraph", function () {
 
   describe("#get_log", function () {

@@ -5,6 +5,7 @@ v 7.11.0 (unreleased)
   - Ignore invalid lines in .gitmodules
   - Fix "Cannot move project" error message from popping up after a successful transfer (Stan Hu)
   -
+  - Add "Reply quoting selected text" shortcut key (`r`)
   -
   -
   -

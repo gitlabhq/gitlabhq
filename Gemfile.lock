@@ -287,12 +287,17 @@ GEM
     i18n (0.7.0)
     ice_cube (0.11.1)
     ice_nine (0.10.0)
-    jasmine (2.0.2)
-      jasmine-core (~> 2.0.0)
+    jasmine (2.2.0)
+      jasmine-core (~> 2.2)
       phantomjs
       rack (>= 1.2.1)
       rake
-    jasmine-core (2.0.0)
+    jasmine-core (2.2.0)
+    jasmine-rails (0.10.8)
+      jasmine-core (>= 1.3, < 3.0)
+      phantomjs (>= 1.9)
+      railties (>= 3.2.0)
+      sprockets-rails
     jquery-atwho-rails (0.3.3)
     jquery-rails (3.1.0)
       railties (>= 3.0, < 5.0)
@@ -387,7 +392,7 @@ GEM
     parser (2.2.0.2)
       ast (>= 1.1, < 3.0)
     pg (0.15.1)
-    phantomjs (1.9.2.0)
+    phantomjs (1.9.8.0)
     poltergeist (1.5.1)
       capybara (~> 2.1)
       cliver (~> 0.3.1)
@@ -713,7 +718,8 @@ DEPENDENCIES
   hipchat (~> 1.5.0)
   html-pipeline (~> 1.11.0)
   httparty
-  jasmine (= 2.0.2)
+  jasmine (~> 2.2.0)
+  jasmine-rails
   jquery-atwho-rails (~> 0.3.3)
   jquery-rails
   jquery-scrollto-rails
