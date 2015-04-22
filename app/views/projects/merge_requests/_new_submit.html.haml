@@ -82,12 +82,12 @@
 
 .mr-compare.merge-request
   %ul.nav.nav-tabs.merge-request-tabs
-    %li.commits-tab{data: {action: 'commits'}}
+    %li.commits-tab{data: {action: 'commits', toggle: 'tab'}}
       = link_to url_for(params) do
         %i.fa.fa-history
         Commits
         %span.badge= @commits.size
-    %li.diffs-tab{data: {action: 'diffs'}}
+    %li.diffs-tab{data: {action: 'diffs', toggle: 'tab'}}
       = link_to url_for(params) do
         %i.fa.fa-list-alt
         Changes
