@@ -42,7 +42,7 @@ gem "browser"
 gem "gitlab_git", '~> 7.1.10'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
-gem 'gitlab-grack', '~> 2.0.1', require: 'grack'
+gem 'gitlab-grack', '~> 2.0.2', require: 'grack'
 
 # LDAP Auth
 gem 'gitlab_omniauth-ldap', '1.2.1', require: "omniauth-ldap"
@@ -256,7 +256,7 @@ group :development, :test do
   gem "spring", '~> 1.3.1'
   gem "spring-commands-rspec", '1.0.4'
   gem "spring-commands-spinach", '1.0.0'
-  
+
   gem "byebug"
 end
 
