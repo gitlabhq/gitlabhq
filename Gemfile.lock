@@ -199,7 +199,7 @@ GEM
     gitlab-flowdock-git-hook (0.4.2.2)
       gitlab-grit (>= 2.4.1)
       multi_json
-    gitlab-grack (2.0.1)
+    gitlab-grack (2.0.2)
       rack (~> 1.5.1)
     gitlab-grit (2.7.2)
       charlock_holmes (~> 0.6)
@@ -700,7 +700,7 @@ DEPENDENCIES
   gemnasium-gitlab-service (~> 0.2)
   github-markup
   gitlab-flowdock-git-hook (~> 0.4.2)
-  gitlab-grack (~> 2.0.1)
+  gitlab-grack (~> 2.0.2)
   gitlab-linguist (~> 3.0.1)
   gitlab_emoji (~> 0.1)
   gitlab_git (~> 7.1.10)
