@@ -3,7 +3,7 @@
 
 %p #{@service.description} template
 
-= form_for :service, url: admin_application_settings_service_path, method: :put, html: { class: 'form-horizontal fieldset-form' } do |f|
+= form_for :service, url: admin_application_settings_service_path, method: :put, html: { class: 'form-horizontal fieldset-form' } do |form|
   - if @service.errors.any?
     #error_explanation
       .alert.alert-danger
@@ -15,80 +15,68 @@
         = markdown @service.help
 
   .form-group
-    = f.label :active, "Active", class: "control-label"
+    = form.label :active, "Active", class: "control-label"
     .col-sm-10
-      = f.check_box :active
+      = form.check_box :active
 
   - if @service.supported_events.length > 1
     .form-group
-      = f.label :url, "Trigger", class: 'control-label'
+      = form.label :url, "Trigger", class: 'control-label'
       .col-sm-10
         - if @service.supported_events.include?("push")
           %div
-            = f.check_box :push_events, class: 'pull-left'
+            = form.check_box :push_events, class: 'pull-left'
             .prepend-left-20
-              = f.label :push_events, class: 'list-label' do
+              = form.label :push_events, class: 'list-label' do
                 %strong Push events
               %p.light
                 This url will be triggered by a push to the repository
         - if @service.supported_events.include?("tag_push")
           %div
-            = f.check_box :tag_push_events, class: 'pull-left'
+            = form.check_box :tag_push_events, class: 'pull-left'
             .prepend-left-20
-              = f.label :tag_push_events, class: 'list-label' do
+              = form.label :tag_push_events, class: 'list-label' do
                 %strong Tag push events
               %p.light
                 This url will be triggered when a new tag is pushed to the repository
         - if @service.supported_events.include?("note")
           %div
-            = f.check_box :note_events, class: 'pull-left'
+            = form.check_box :note_events, class: 'pull-left'
             .prepend-left-20
-              = f.label :note_events, class: 'list-label' do
+              = form.label :note_events, class: 'list-label' do
                 %strong Comments
               %p.light
                 This url will be triggered when someone adds a comment
         - if @service.supported_events.include?("issue")
           %div
-            = f.check_box :issues_events, class: 'pull-left'
+            = form.check_box :issues_events, class: 'pull-left'
             .prepend-left-20
-              = f.label :issues_events, class: 'list-label' do
+              = form.label :issues_events, class: 'list-label' do
                 %strong Issues events
               %p.light
                 This url will be triggered when an issue is created
         - if @service.supported_events.include?("merge_request")
           %div
-            = f.check_box :merge_requests_events, class: 'pull-left'
+            = form.check_box :merge_requests_events, class: 'pull-left'
             .prepend-left-20
-              = f.label :merge_requests_events, class: 'list-label' do
+              = form.label :merge_requests_events, class: 'list-label' do
                 %strong Merge Request events
               %p.light
                 This url will be triggered when a merge request is created
 
   - @service.fields.each do |field|
-    - name = field[:name]
-    - title = field[:title] || name.humanize
-    - value = @service.send(name) unless field[:type] == 'password'
     - type = field[:type]
-    - placeholder = field[:placeholder]
-    - choices = field[:choices]
-    - default_choice = field[:default_choice]
-    - help = field[:help]
 
-    .form-group
-      = f.label name, title, class: "control-label"
-      .col-sm-10
-        - if type == 'text'
-          = f.text_field name, class: "form-control", placeholder: placeholder
-        - elsif type == 'textarea'
-          = f.text_area name, rows: 5, class: "form-control", placeholder: placeholder
-        - elsif type == 'checkbox'
-          = f.check_box name
-        - elsif type == 'select'
-          = f.select name, options_for_select(choices, value ? value : default_choice), {}, { class: "form-control" }
-        - elsif type == 'password'
-          = f.password_field name, class: 'form-control'
-        - if help
-          %span.help-block= help
+    - if type == 'fieldset'
+      - fields = field[:fields]
+      - legend = field[:legend]
+
+      %fieldset
+        %legend= legend
+        - fields.each do |subfield|
+          = render 'shared/field', form: form, field: subfield
+    - else
+      = render 'shared/field', form: form, field: field
 
   .form-actions
-    = f.submit 'Save', class: 'btn btn-save'
+    = form.submit 'Save', class: 'btn btn-save'
