@@ -49,7 +49,7 @@ module Gitlab
       def replace_text_nodes_matching(pattern)
         return doc if project.nil?
 
-        doc.search('text()').each do |node|
+        search_text_nodes(doc).each do |node|
           content = node.to_html
 
           next unless content.match(pattern)
