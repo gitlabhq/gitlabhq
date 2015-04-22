@@ -36,12 +36,6 @@ header {
       }
 
       .app_logo {
-        @media (max-width: $screen-md-max) {
-          width: 52px;
-          h3 {
-            display: none;
-          }
-        }
         border-bottom: 1px solid transparent;
         margin-bottom: -1px;
 
@@ -227,5 +221,28 @@ header {
 @media (max-width: $screen-xs-max) {
   #nprogress .spinner {
     right: 35px !important;
+  }
+}
+
+@media (max-width: $screen-md-max) {
+  .header-collapsed, .header-expanded {
+    width: 52px;
+
+    h3 {
+      display: none;
+    }
+  }
+}
+
+@media(min-width: $screen-md-max) {
+  .header-collapsed {
+    width: 52px;
+
+    h3 {
+      display: none;
+    }
+  }
+
+  .header-expanded {
   }
 }
