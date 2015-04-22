@@ -2,43 +2,27 @@ require 'spec_helper'
 
 describe GitlabMarkdownHelper do
   include ApplicationHelper
-  include IssuesHelper
-
-  # TODO: Properly test this
-  def can?(*)
-    true
-  end
 
   let!(:project) { create(:project) }
-  let(:empty_project) { create(:empty_project) }
 
   let(:user)          { create(:user, username: 'gfm') }
   let(:commit)        { project.repository.commit }
-  let(:earlier_commit){ project.repository.commit("HEAD~2") }
   let(:issue)         { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:snippet)       { create(:project_snippet, project: project) }
-  let(:member)        { project.project_members.where(user_id: user).first }
 
   # Helper expects a current_user method.
   let(:current_user) { user }
 
-  def url_helper(image_name)
-    File.join(root_url, 'assets', image_name)
-  end
-
   before do
     # Helper expects a @project instance variable
     @project = project
-    @ref = 'markdown'
-    @repository = project.repository
-    @request.host = Gitlab.config.gitlab.host
   end
 
   describe "#gfm" do
     it "should forward HTML options to links" do
       expect(gfm("Fixed in #{commit.id}", @project, class: 'foo')).
-          to have_selector('a.gfm.foo')
+        to have_selector('a.gfm.foo')
     end
 
     describe "referencing multiple objects" do
@@ -57,53 +41,6 @@ describe GitlabMarkdownHelper do
       it "should link to the issue" do
         expected = namespace_project_issue_path(project.namespace, project, issue)
         expect(gfm(actual)).to match(expected)
-      end
-    end
-
-    # TODO (rspeicher): These tests belong in the emoji filter spec
-    describe "emoji" do
-      it "matches at the start of a string" do
-        expect(gfm(":+1:")).to match(/<img/)
-      end
-
-      it "matches at the end of a string" do
-        expect(gfm("This gets a :-1:")).to match(/<img/)
-      end
-
-      it "matches with adjacent text" do
-        expect(gfm("+1 (:+1:)")).to match(/<img/)
-      end
-
-      it "has a title attribute" do
-        expect(gfm(":-1:")).to match(/title=":-1:"/)
-      end
-
-      it "has an alt attribute" do
-        expect(gfm(":-1:")).to match(/alt=":-1:"/)
-      end
-
-      it "has an emoji class" do
-        expect(gfm(":+1:")).to match('class="emoji"')
-      end
-
-      it "sets height and width" do
-        actual = gfm(":+1:")
-        expect(actual).to match(/width="20"/)
-        expect(actual).to match(/height="20"/)
-      end
-
-      it "keeps whitespace intact" do
-        expect(gfm('This deserves a :+1: big time.')).
-          to match(/deserves a <img.+> big time/)
-      end
-
-      it "ignores invalid emoji" do
-        expect(gfm(":invalid-emoji:")).not_to match(/<img/)
-      end
-
-      it "should work independent of reference links (i.e. without @project being set)" do
-        @project = nil
-        expect(gfm(":+1:")).to match(/<img/)
       end
     end
 
@@ -218,43 +155,48 @@ describe GitlabMarkdownHelper do
     end
   end
 
-  describe "#link_to_gfm" do
+  describe '#link_to_gfm' do
     let(:commit_path) { namespace_project_commit_path(project.namespace, project, commit) }
     let(:issues)      { create_list(:issue, 2, project: project) }
 
-    it "should handle references nested in links with all the text" do
+    it 'should handle references nested in links with all the text' do
       actual = link_to_gfm("This should finally fix ##{issues[0].iid} and ##{issues[1].iid} for real", commit_path)
+      doc = Nokogiri::HTML.parse(actual)
 
-      # Break the result into groups of links with their content, without
-      # closing tags
-      groups = actual.split("</a>")
+      # Make sure we didn't create invalid markup
+      expect(doc.errors).to be_empty
 
       # Leading commit link
-      expect(groups[0]).to match(/href="#{commit_path}"/)
-      expect(groups[0]).to match(/This should finally fix $/)
+      expect(doc.css('a')[0].attr('href')).to eq commit_path
+      expect(doc.css('a')[0].text).to eq 'This should finally fix '
 
       # First issue link
-      expect(groups[1]).
-        to match(/href="#{namespace_project_issue_path(project.namespace, project, issues[0])}"/)
-      expect(groups[1]).to match(/##{issues[0].iid}$/)
+      expect(doc.css('a')[1].attr('href')).
+        to eq namespace_project_issue_path(project.namespace, project, issues[0])
+      expect(doc.css('a')[1].text).to eq "##{issues[0].iid}"
 
       # Internal commit link
-      expect(groups[2]).to match(/href="#{commit_path}"/)
-      expect(groups[2]).to match(/ and /)
+      expect(doc.css('a')[2].attr('href')).to eq commit_path
+      expect(doc.css('a')[2].text).to eq ' and '
 
       # Second issue link
-      expect(groups[3]).
-        to match(/href="#{namespace_project_issue_path(project.namespace, project, issues[1])}"/)
-      expect(groups[3]).to match(/##{issues[1].iid}$/)
+      expect(doc.css('a')[3].attr('href')).
+        to eq namespace_project_issue_path(project.namespace, project, issues[1])
+      expect(doc.css('a')[3].text).to eq "##{issues[1].iid}"
 
       # Trailing commit link
-      expect(groups[4]).to match(/href="#{commit_path}"/)
-      expect(groups[4]).to match(/ for real$/)
+      expect(doc.css('a')[4].attr('href')).to eq commit_path
+      expect(doc.css('a')[4].text).to eq ' for real'
     end
 
-    it "should forward HTML options" do
+    it 'should forward HTML options' do
       actual = link_to_gfm("Fixed in #{commit.id}", commit_path, class: 'foo')
-      expect(actual).to have_selector 'a.gfm.gfm-commit.foo'
+      doc = Nokogiri::HTML.parse(actual)
+
+      expect(doc.css('a')).to satisfy do |v|
+        # 'foo' gets added to all links
+        v.all? { |a| a.attr('class').match(/foo$/) }
+      end
     end
 
     it "escapes HTML passed in as the body" do
@@ -266,17 +208,6 @@ describe GitlabMarkdownHelper do
 
   describe "#markdown" do
     # TODO (rspeicher) - This block tests multiple different contexts. Break this up!
-
-    # REFERENCES (PART TWO: THE REVENGE) ---------------------------------------
-
-    it "should handle references in headers" do
-      actual = "\n# Working around ##{issue.iid}\n## Apply !#{merge_request.iid}"
-
-      expect(markdown(actual, no_header_anchors: true)).
-        to match(%r{<h1[^<]*>Working around <a.+>##{issue.iid}</a></h1>})
-      expect(markdown(actual, no_header_anchors: true)).
-        to match(%r{<h2[^<]*>Apply <a.+>!#{merge_request.iid}</a></h2>})
-    end
 
     it "should add ids and links to headers" do
       # Test every rule except nested tags.
@@ -291,6 +222,17 @@ describe GitlabMarkdownHelper do
       expect(markdown("# [link text](url) ![img alt](url)")).to match(
         %r{<h1 id="#{id}"><a href="[^"]*url">link text</a> <img[^>]*><a href="[^"]*##{id}"></a></h1>}
       )
+    end
+
+    # REFERENCES (PART TWO: THE REVENGE) ---------------------------------------
+
+    it "should handle references in headers" do
+      actual = "\n# Working around ##{issue.iid}\n## Apply !#{merge_request.iid}"
+
+      expect(markdown(actual, no_header_anchors: true)).
+        to match(%r{<h1[^<]*>Working around <a.+>##{issue.iid}</a></h1>})
+      expect(markdown(actual, no_header_anchors: true)).
+        to match(%r{<h2[^<]*>Apply <a.+>!#{merge_request.iid}</a></h2>})
     end
 
     it "should handle references in <em>" do
@@ -308,16 +250,15 @@ describe GitlabMarkdownHelper do
 
       target_html = "<pre class=\"code highlight white plaintext\"><code>some code from $#{snippet.id}\nhere too\n</code></pre>\n"
 
-      expect(helper.markdown("\n    some code from $#{snippet.id}\n    here too\n")).
+      expect(markdown("\n    some code from $#{snippet.id}\n    here too\n")).
         to eq(target_html)
-      expect(helper.markdown("\n```\nsome code from $#{snippet.id}\nhere too\n```\n")).
+      expect(markdown("\n```\nsome code from $#{snippet.id}\nhere too\n```\n")).
         to eq(target_html)
     end
 
     it "should leave inline code untouched" do
-      expect(markdown("\nDon't use `$#{snippet.id}` here.\n")).to eq(
-        "<p>Don't use <code>$#{snippet.id}</code> here.</p>\n"
-      )
+      expect(markdown("Don't use `$#{snippet.id}` here.")).
+        to eq "<p>Don't use <code>$#{snippet.id}</code> here.</p>\n"
     end
 
     # REF-LIKE AUTOLINKS? -----------------------------------------------------
@@ -335,89 +276,86 @@ describe GitlabMarkdownHelper do
       expect(markdown("screen shot: ![some image](http://example.tld/#!#{merge_request.iid})")).to eq("<p>screen shot: <img src=\"http://example.tld/#!#{merge_request.iid}\" alt=\"some image\"></p>\n")
     end
 
-    it "should generate absolute urls for refs" do
-      expect(markdown("##{issue.iid}")).to include(namespace_project_issue_path(project.namespace, project, issue))
-    end
-
-    # EMOJI -------------------------------------------------------------------
-
-    it "should generate absolute urls for emoji" do
-      # TODO (rspeicher): Why isn't this with the emoji tests?
-      expect(markdown(':smile:')).to(
-        include(%(src="#{Gitlab.config.gitlab.url}/assets/emoji/#{Emoji.emoji_filename('smile')}.png))
-      )
-    end
-
-    it "should generate absolute urls for emoji if relative url is present" do
-      # TODO (rspeicher): Why isn't this with the emoji tests?
-      allow(Gitlab.config.gitlab).to receive(:url).and_return('http://localhost/gitlab/root')
-      expect(markdown(":smile:")).to include("src=\"http://localhost/gitlab/root/assets/emoji/#{Emoji.emoji_filename('smile')}.png")
-    end
-
-    it "should generate absolute urls for emoji if asset_host is present" do
-      # TODO (rspeicher): Why isn't this with the emoji tests?
-      allow(Gitlab::Application.config).to receive(:asset_host).and_return("https://cdn.example.com")
-      ActionView::Base.any_instance.stub_chain(:config, :asset_host).and_return("https://cdn.example.com")
-      expect(markdown(":smile:")).to include("src=\"https://cdn.example.com/assets/emoji/#{Emoji.emoji_filename('smile')}.png")
-    end
-
     # RELATIVE URLS -----------------------------------------------------------
     # TODO (rspeicher): These belong in a relative link filter spec
 
-    it "should handle relative urls for a file in master" do
-      actual = "[GitLab API doc](doc/api/README.md)\n"
-      expected = "<p><a href=\"/#{project.path_with_namespace}/blob/#{@ref}/doc/api/README.md\">GitLab API doc</a></p>\n"
-      expect(markdown(actual)).to match(expected)
-    end
+    context 'relative links' do
+      context 'with a valid repository' do
+        before do
+          @repository = project.repository
+          @ref = 'markdown'
+        end
 
-    it "should handle relative urls for a file in master with an anchor" do
-      actual = "[GitLab API doc](doc/api/README.md#section)\n"
-      expected = "<p><a href=\"/#{project.path_with_namespace}/blob/#{@ref}/doc/api/README.md#section\">GitLab API doc</a></p>\n"
-      expect(markdown(actual)).to match(expected)
-    end
+        it "should handle relative urls for a file in master" do
+          actual = "[GitLab API doc](doc/api/README.md)\n"
+          expected = "<p><a href=\"/#{project.path_with_namespace}/blob/#{@ref}/doc/api/README.md\">GitLab API doc</a></p>\n"
+          expect(markdown(actual)).to match(expected)
+        end
 
-    it "should not handle relative urls for the current file with an anchor" do
-      actual = "[GitLab API doc](#section)\n"
-      expected = "<p><a href=\"#section\">GitLab API doc</a></p>\n"
-      expect(markdown(actual)).to match(expected)
-    end
+        it "should handle relative urls for a file in master with an anchor" do
+          actual = "[GitLab API doc](doc/api/README.md#section)\n"
+          expected = "<p><a href=\"/#{project.path_with_namespace}/blob/#{@ref}/doc/api/README.md#section\">GitLab API doc</a></p>\n"
+          expect(markdown(actual)).to match(expected)
+        end
 
-    it "should handle relative urls for a directory in master" do
-      actual = "[GitLab API doc](doc/api)\n"
-      expected = "<p><a href=\"/#{project.path_with_namespace}/tree/#{@ref}/doc/api\">GitLab API doc</a></p>\n"
-      expect(markdown(actual)).to match(expected)
-    end
+        it "should not handle relative urls for the current file with an anchor" do
+          actual = "[GitLab API doc](#section)\n"
+          expected = "<p><a href=\"#section\">GitLab API doc</a></p>\n"
+          expect(markdown(actual)).to match(expected)
+        end
 
-    it "should handle absolute urls" do
-      actual = "[GitLab](https://www.gitlab.com)\n"
-      expected = "<p><a href=\"https://www.gitlab.com\">GitLab</a></p>\n"
-      expect(markdown(actual)).to match(expected)
-    end
+        it "should handle relative urls for a directory in master" do
+          actual = "[GitLab API doc](doc/api)\n"
+          expected = "<p><a href=\"/#{project.path_with_namespace}/tree/#{@ref}/doc/api\">GitLab API doc</a></p>\n"
+          expect(markdown(actual)).to match(expected)
+        end
 
-    it "should handle relative urls in reference links for a file in master" do
-      actual = "[GitLab API doc][GitLab readme]\n [GitLab readme]: doc/api/README.md\n"
-      expected = "<p><a href=\"/#{project.path_with_namespace}/blob/#{@ref}/doc/api/README.md\">GitLab API doc</a></p>\n"
-      expect(markdown(actual)).to match(expected)
-    end
+        it "should handle absolute urls" do
+          actual = "[GitLab](https://www.gitlab.com)\n"
+          expected = "<p><a href=\"https://www.gitlab.com\">GitLab</a></p>\n"
+          expect(markdown(actual)).to match(expected)
+        end
 
-    it "should handle relative urls in reference links for a directory in master" do
-      actual = "[GitLab API doc directory][GitLab readmes]\n [GitLab readmes]: doc/api/\n"
-      expected = "<p><a href=\"/#{project.path_with_namespace}/tree/#{@ref}/doc/api\">GitLab API doc directory</a></p>\n"
-      expect(markdown(actual)).to match(expected)
-    end
+        it "should handle relative urls in reference links for a file in master" do
+          actual = "[GitLab API doc][GitLab readme]\n [GitLab readme]: doc/api/README.md\n"
+          expected = "<p><a href=\"/#{project.path_with_namespace}/blob/#{@ref}/doc/api/README.md\">GitLab API doc</a></p>\n"
+          expect(markdown(actual)).to match(expected)
+        end
 
-     it "should not handle malformed relative urls in reference links for a file in master" do
-      actual = "[GitLab readme]: doc/api/README.md\n"
-      expected = ""
-      expect(markdown(actual)).to match(expected)
-    end
+        it "should handle relative urls in reference links for a directory in master" do
+          actual = "[GitLab API doc directory][GitLab readmes]\n [GitLab readmes]: doc/api/\n"
+          expected = "<p><a href=\"/#{project.path_with_namespace}/tree/#{@ref}/doc/api\">GitLab API doc directory</a></p>\n"
+          expect(markdown(actual)).to match(expected)
+        end
 
-    it 'should allow whitelisted HTML tags from the user' do
-      actual = '<dl><dt>Term</dt><dd>Definition</dd></dl>'
-      expect(markdown(actual)).to match(actual)
+        it "should not handle malformed relative urls in reference links for a file in master" do
+          actual = "[GitLab readme]: doc/api/README.md\n"
+          expected = ""
+          expect(markdown(actual)).to match(expected)
+        end
+
+        it 'should allow whitelisted HTML tags from the user' do
+          actual = '<dl><dt>Term</dt><dd>Definition</dd></dl>'
+          expect(markdown(actual)).to match(actual)
+        end
+      end
+
+      context 'with an empty repository' do
+        before do
+          @project = create(:empty_project)
+          @repository = @project.repository
+        end
+
+        it "should not touch relative urls" do
+          actual = "[GitLab API doc][GitLab readme]\n [GitLab readme]: doc/api/README.md\n"
+          expected = "<p><a href=\"doc/api/README.md\">GitLab API doc</a></p>\n"
+          expect(markdown(actual)).to match(expected)
+        end
+      end
     end
 
     # SANITIZATION ------------------------------------------------------------
+    # TODO (rspeicher): These are testing SanitizationFilter, not `markdown`
 
     it 'should sanitize tags that are not whitelisted' do
       actual = '<textarea>no inputs allowed</textarea> <blink>no blinks</blink>'
@@ -441,20 +379,6 @@ describe GitlabMarkdownHelper do
     it 'should sanitize javascript in attributes' do
       actual = %q(<a href="javascript:alert('foo')">link text</a>)
       expected = '<a>link text</a>'
-      expect(markdown(actual)).to match(expected)
-    end
-  end
-
-  # TODO (rspeicher): This should be a context of relative link specs, not its own thing
-  describe 'markdown for empty repository' do
-    before do
-      @project = empty_project
-      @repository = empty_project.repository
-    end
-
-    it "should not touch relative urls" do
-      actual = "[GitLab API doc][GitLab readme]\n [GitLab readme]: doc/api/README.md\n"
-      expected = "<p><a href=\"doc/api/README.md\">GitLab API doc</a></p>\n"
       expect(markdown(actual)).to match(expected)
     end
   end

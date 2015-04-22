@@ -1,5 +1,4 @@
 require 'html/pipeline'
-require 'html/pipeline/gitlab'
 
 module Gitlab
   # Custom parser for GitLab-flavored Markdown
@@ -61,19 +60,24 @@ module Gitlab
         reference_only_path:  true
       )
 
-      markdown_context = {
+      pipeline = HTML::Pipeline.new(filters)
+
+      context = {
+        # SanitizationFilter
+        whitelist:       sanitization_whitelist,
+
+        # EmojiFilter
         asset_root:      Gitlab.config.gitlab.url,
         asset_host:      Gitlab::Application.config.asset_host,
-        whitelist:       sanitization_whitelist,
-        reference_class: html_options[:class],
-        only_path:       options[:reference_only_path],
+
+        # ReferenceFilter
         current_user:    current_user,
-        project:         project
+        only_path:       options[:reference_only_path],
+        project:         project,
+        reference_class: html_options[:class]
       }
 
-      markdown_pipeline = HTML::Pipeline::Gitlab.new(filters).pipeline
-
-      result = markdown_pipeline.call(text, markdown_context)
+      result = pipeline.call(text, context)
 
       save_options = 0
       if options[:xhtml]
@@ -91,7 +95,7 @@ module Gitlab
 
     private
 
-    # Custom filters for html-pipeline:
+    # Filters used in our pipeline
     #
     # SanitizationFilter should come first so that all generated reference HTML
     # goes through untouched.
@@ -101,6 +105,8 @@ module Gitlab
       [
         HTML::Pipeline::SanitizationFilter,
 
+        Gitlab::Markdown::EmojiFilter,
+
         Gitlab::Markdown::UserReferenceFilter,
         Gitlab::Markdown::IssueReferenceFilter,
         Gitlab::Markdown::ExternalIssueReferenceFilter,
@@ -109,8 +115,6 @@ module Gitlab
         Gitlab::Markdown::CommitRangeReferenceFilter,
         Gitlab::Markdown::CommitReferenceFilter,
         Gitlab::Markdown::LabelReferenceFilter,
-
-        HTML::Pipeline::Gitlab::GitlabEmojiFilter
       ]
     end
 
