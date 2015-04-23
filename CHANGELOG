@@ -13,6 +13,7 @@ v 7.11.0 (unreleased)
   -
   - Improve new project command options (Ben Bodenmiller)
   - Prevent sending empty messages to HipChat (Chulki Lee)
+  - Fix GitHub #9177 "cannot add user to group" and GitLab #1480 "Admin can't add user to group in 'Admin area'" (Matteo Peggy Perego)
 
 v 7.10.0 (unreleased)
   - Ignore submodules that are defined in .gitmodules but are checked in as directories.
