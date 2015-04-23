@@ -24,20 +24,20 @@ rpm -Uvh --oldpackage gitlab-7.5.3_ee.omnibus.5.2.1.ci-1.el7.x86_64.rpm
 
 ### GitLab Enterprise Edition and GitLab CI 7.10.0
 
-- Ubuntu 14.04 64-bit [gitlab-ee_7.10.0~ee.omnibus-1_amd64.deb](https://downloads-packages.s3.amazonaws.com/53d114b847c946a099ddb446975be047f6017c5e/ubuntu-14.04/gitlab-ee_7.10.0~ee.omnibus-1_amd64.deb)
-+ SHA256: 62a50ee51f51bfcf81d9294bf9e4fe95cc149e9093db1914d0648ada9c81253a
+- Ubuntu 14.04 64-bit [gitlab-ee_7.10.0~ee.omnibus.2-1_amd64.deb](https://downloads-packages.s3.amazonaws.com/659cc99adf5c91e157b3d44ce2e7b1322ab1e53e/ubuntu-14.04/gitlab-ee_7.10.0~ee.omnibus.2-1_amd64.deb)
++ SHA256: a553fba54f352d4103a79bec01394a6db4db483f065754564393905659798f9a
 
-- Ubuntu 12.04 64-bit [gitlab-ee_7.10.0~ee.omnibus-1_amd64.deb](https://downloads-packages.s3.amazonaws.com/213a9c801b83b46e096035fc5fddfb60aa5b49fe/ubuntu-12.04/gitlab-ee_7.10.0~ee.omnibus-1_amd64.deb)
-+ SHA256: 5608af3b758d2684c357b28f91d5bd05caf49c34eb71784d531252951d08e93e
+- Ubuntu 12.04 64-bit [gitlab-ee_7.10.0~ee.omnibus.2-1_amd64.deb](https://downloads-packages.s3.amazonaws.com/be472d772899492a2e2c9aa0c75a42f355bde685/ubuntu-12.04/gitlab-ee_7.10.0~ee.omnibus.2-1_amd64.deb)
++ SHA256: a73acbe244449beda8d19d2f5103630e6a22e5b43448885131bbccf4a4158967
 
-- Debian 7 64-bit [gitlab-ee_7.10.0~ee.omnibus-1_amd64.deb](https://downloads-packages.s3.amazonaws.com/53a346bf53c4e3e2b61e094916c95f386ec44452/debian-7.8/gitlab-ee_7.10.0~ee.omnibus-1_amd64.deb)
-+ SHA256: 0cee72838bac73470fe110d6aa93e361565a30e39c7f6e86547da3c8a9bbe54f
+- Debian 7 64-bit [gitlab-ee_7.10.0~ee.omnibus.2-1_amd64.deb](https://downloads-packages.s3.amazonaws.com/e3292e09c11d5cd211899faf91c0cff828884ac4/debian-7.8/gitlab-ee_7.10.0~ee.omnibus.2-1_amd64.deb)
++ SHA256: 4f697a75f68b44c1cf8ffaa933b97696a998f8750540ac56b06588aa0b7fcb5a
 
-- CentOS 6 64-bit [gitlab-ee-7.10.0~ee.omnibus-1.x86_64.rpm](https://downloads-packages.s3.amazonaws.com/29b59cbd2d0a63f89a74ec896161796fb2b46207/centos-6.6/gitlab-ee-7.10.0~ee.omnibus-1.x86_64.rpm)
-+ SHA256: 1ec4c94af807298f03e4a595e0e271d27ecd168cec8ada5b4e703427ab887f5b
+- CentOS 6 64-bit [gitlab-ee-7.10.0~ee.omnibus-1.x86_64.rpm](https://downloads-packages.s3.amazonaws.com/cbbe2844510a0b5a5537c5e6883ff0cdc9906791/centos-6.6/gitlab-ee-7.10.0~ee.omnibus.2-1.x86_64.rpm)
++ SHA256: 0621808e5e1b0563ad9bc16266049f8375dbbb87adf7b0ebde1b9560aa36407d
 
-- CentOS 7 64-bit [gitlab-ee-7.10.0~ee.omnibus-1.x86_64.rpm](https://downloads-packages.s3.amazonaws.com/6ef9bf27f3c1c8e35266a3b6d8fb79484297aeef/centos-7.1.1503/gitlab-ee-7.10.0~ee.omnibus-1.x86_64.rpm)
-+ SHA256: 4bbc5c769470e6d577015642ad6827eb5b0f92b1da92a5a28e7401a7dfdd5b4f
+- CentOS 7 64-bit [gitlab-ee-7.10.0~ee.omnibus-1.x86_64.rpm](https://downloads-packages.s3.amazonaws.com/1eb2990b32a2c18ae0617e7a28ba203293b6c9bc/centos-7.1.1503/gitlab-ee-7.10.0~ee.omnibus.2-1.x86_64.rpm)
++ SHA256: 59293b491a1e202f8269d3b6ce0d58383cb248b90863d4e36ee217b443ea2b97
 
 ### GitLab Enterprise Edition and GitLab CI 7.9.4
 
