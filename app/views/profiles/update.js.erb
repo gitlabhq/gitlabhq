@@ -1,6 +1,3 @@
 // Remove body class for any previous theme, re-add current one
 $('body').removeClass('<%= Gitlab::Theme.body_classes %>')
 $('body').addClass('<%= app_theme %> <%= theme_type %>')
-
-// Re-render the header to reflect the new theme
-$('header').html('<%= escape_javascript(render("layouts/head_panel", title: "Profile")) %>')
