@@ -14,39 +14,39 @@ module Gitlab
 
     def users
       result = pipeline_result(:user)
-      result[:references][:user].flatten.compact.uniq
+      result.uniq
     end
 
     def labels
       result = pipeline_result(:label)
-      result[:references][:label].compact.uniq
+      result.uniq
     end
 
     def issues
       # TODO (rspeicher): What about external issues?
 
       result = pipeline_result(:issue)
-      result[:references][:issue].compact.uniq
+      result.uniq
     end
 
     def merge_requests
       result = pipeline_result(:merge_request)
-      result[:references][:merge_request].compact.uniq
+      result.uniq
     end
 
     def snippets
       result = pipeline_result(:snippet)
-      result[:references][:snippet].compact.uniq
+      result.uniq
     end
 
     def commits
       result = pipeline_result(:commit)
-      result[:references][:commit].compact.uniq
+      result.uniq
     end
 
     def commit_ranges
       result = pipeline_result(:commit_range)
-      result[:references][:commit_range].compact.uniq
+      result.uniq
     end
 
     private
@@ -56,7 +56,7 @@ module Gitlab
     #
     # filter_type - Symbol reference type (e.g., :commit, :issue, etc.)
     #
-    # Returns the results Hash
+    # Returns the results Array for the requested filter type
     def pipeline_result(filter_type)
       klass  = filter_type.to_s.camelize + 'ReferenceFilter'
       filter = "Gitlab::Markdown::#{klass}".constantize
@@ -69,7 +69,9 @@ module Gitlab
       }
 
       pipeline = HTML::Pipeline.new([filter], context)
-      pipeline.call(@_text)
+      result = pipeline.call(@_text)
+
+      result[:references][filter_type]
     end
   end
 end
