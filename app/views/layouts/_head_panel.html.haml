@@ -2,48 +2,47 @@
   .navbar-inner
     .container
       %div.app_logo
-        = link_to root_path, class: "home has_bottom_tooltip", title: "Dashboard" do
+        = link_to root_path, class: 'home has_bottom_tooltip', title: 'Dashboard' do
           = brand_header_logo
           %h3 GitLab
       %h1.title= title
 
-      %button.navbar-toggle{"data-target" => ".navbar-collapse", "data-toggle" => "collapse", type: "button"}
+      %button.navbar-toggle{type: 'button', data: {target: '.navbar-collapse', toggle: 'collapse'}}
         %span.sr-only Toggle navigation
-        %i.fa.fa-bars
+        = icon('bars')
 
       .navbar-collapse.collapse
         %ul.nav.navbar-nav
           %li.hidden-sm.hidden-xs
-            = render "layouts/search"
+            = render 'layouts/search'
           %li.visible-sm.visible-xs
-            = link_to search_path, title: "Search", class: 'has_bottom_tooltip', 'data-original-title' => 'Search area' do
-              %i.fa.fa-search
+            = link_to search_path, title: 'Search', class: 'has_bottom_tooltip' do
+              = icon('search')
           %li
-            = link_to help_path, title: 'Help', class: 'has_bottom_tooltip',
-               'data-original-title' => 'Help'  do
-              %i.fa.fa-question-circle
+            = link_to help_path, title: 'Help', class: 'has_bottom_tooltip' do
+              = icon('question-circle')
           %li
-            = link_to explore_root_path, title: "Explore", class: 'has_bottom_tooltip', 'data-original-title' => 'Public area' do
-              %i.fa.fa-globe
+            = link_to explore_root_path, title: 'Explore', class: 'has_bottom_tooltip' do
+              = icon('globe')
           %li
-            = link_to user_snippets_path(current_user), title: "Your snippets", class: 'has_bottom_tooltip', 'data-original-title' => 'Your snippets' do
-              %i.fa.fa-clipboard
+            = link_to user_snippets_path(current_user), title: 'Your snippets', class: 'has_bottom_tooltip' do
+              = icon('clipboard')
           - if current_user.is_admin?
             %li
-              = link_to admin_root_path, title: "Admin area", class: 'has_bottom_tooltip', 'data-original-title' => 'Admin area' do
-                %i.fa.fa-cogs
+              = link_to admin_root_path, title: 'Admin area', class: 'has_bottom_tooltip' do
+                = icon('cogs')
           - if current_user.can_create_project?
             %li
-              = link_to new_project_path, title: "New project", class: 'has_bottom_tooltip', 'data-original-title' => 'New project'  do
-                %i.fa.fa-plus
+              = link_to new_project_path, title: 'New project', class: 'has_bottom_tooltip' do
+                = icon('plus')
           %li
-            = link_to profile_path, title: "Profile settings", class: 'has_bottom_tooltip', 'data-original-title' => 'Profile settings"'  do
-              %i.fa.fa-user
+            = link_to profile_path, title: 'Profile settings', class: 'has_bottom_tooltip' do
+              = icon('user')
           %li
-            = link_to destroy_user_session_path, class: "logout", method: :delete, title: "Sign out", class: 'has_bottom_tooltip', 'data-original-title' => 'Sign out'  do
-              %i.fa.fa-sign-out
+            = link_to destroy_user_session_path, class: 'logout', method: :delete, title: 'Sign out', class: 'has_bottom_tooltip' do
+              = icon('sign-out')
           %li.hidden-xs
-            = link_to current_user, class: "profile-pic has_bottom_tooltip", id: 'profile-pic', 'data-original-title' => 'Your profile' do
+            = link_to current_user, class: 'profile-pic has_bottom_tooltip', id: 'profile-pic' do
               = image_tag avatar_icon(current_user.email, 60), alt: 'User activity'
 
 = render 'shared/outdated_browser'
