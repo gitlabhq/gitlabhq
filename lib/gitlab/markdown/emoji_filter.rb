@@ -15,7 +15,7 @@ module Gitlab
       IGNORED_ANCESTOR_TAGS = %w(pre code tt).to_set
 
       def call
-        doc.search('text()').each do |node|
+        search_text_nodes(doc).each do |node|
           content = node.to_html
           next unless content.include?(':')
           next if has_ancestor?(node, IGNORED_ANCESTOR_TAGS)
