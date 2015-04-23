@@ -39,24 +39,12 @@ describe CommitRange do
   end
 
   describe '#to_s' do
-    context 'with short IDs' do
-      it 'is correct for three-dot syntax' do
-        expect(range.to_s).to eq "#{sha_from[0..7]}...#{sha_to[0..7]}"
-      end
-
-      it 'is correct for two-dot syntax' do
-        expect(range2.to_s).to eq "#{sha_from[0..7]}..#{sha_to[0..7]}"
-      end
+    it 'is correct for three-dot syntax' do
+      expect(range.to_s).to eq "#{sha_from[0..7]}...#{sha_to[0..7]}"
     end
 
-    context 'with full IDs' do
-      it 'is correct for three-dot syntax' do
-        expect(range.to_s(short: false)).to eq "#{sha_from}...#{sha_to}"
-      end
-
-      it 'is correct for two-dot syntax' do
-        expect(range2.to_s(short: false)).to eq "#{sha_from}..#{sha_to}"
-      end
+    it 'is correct for two-dot syntax' do
+      expect(range2.to_s).to eq "#{sha_from[0..7]}..#{sha_to[0..7]}"
     end
   end
 

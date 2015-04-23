@@ -67,12 +67,8 @@ class CommitRange
     end
   end
 
-  def to_s(short: true)
-    if short
-      "#{sha_from[0..7]}#{notation}#{sha_to[0..7]}"
-    else
-      "#{sha_from}#{notation}#{sha_to}"
-    end
+  def to_s
+    "#{sha_from[0..7]}#{notation}#{sha_to[0..7]}"
   end
 
   # Returns a String for use in a link's title attribute
