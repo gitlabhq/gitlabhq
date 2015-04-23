@@ -18,8 +18,8 @@ describe CommitRange do
 
       before do
         expect(range).to receive(:valid_commits?).and_return(true)
-        allow(range).to receive(:commit).with(sha_from).and_return(commit1)
-        allow(range).to receive(:commit).with(sha_to).and_return(commit2)
+        allow(range).to receive(:commit_from).and_return(commit1)
+        allow(range).to receive(:commit_to).and_return(commit2)
       end
 
       it 'returns an Array of Commits' do

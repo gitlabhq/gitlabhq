@@ -45,12 +45,10 @@ class CommitRange
       raise ArgumentError, "invalid CommitRange string format: #{range_string}"
     end
 
-    @inclusive = range_string !~ /\.{3}/
+    @inclusive = !range_string.include?('...')
     @sha_from, @notation, @sha_to = range_string.split(/(\.{2,3})/, 2)
 
     @project = project
-
-    @_commit_map = {}
   end
 
   def inspect
@@ -63,7 +61,7 @@ class CommitRange
   # Returns `[nil, nil]` if `valid_commits?` is falsey
   def to_a
     if valid_commits?
-      [commit(sha_from), commit(sha_to)]
+      [commit_from, commit_to]
     else
       [nil, nil]
     end
@@ -104,25 +102,24 @@ class CommitRange
     return nil   unless project.present?
     return false unless project.valid_repo?
 
-    commit(sha_from).present? && commit(sha_to).present?
+    commit_from.present? && commit_to.present?
   end
 
   def persisted?
     true
   end
 
+  def commit_from
+    @commit_from ||= project.repository.commit(sha_from_as_param)
+  end
+
+  def commit_to
+    @commit_to ||= project.repository.commit(sha_to)
+  end
+
   private
 
   def sha_from_as_param
     sha_from + (inclusive? ? '^' : '')
-  end
-
-  def commit(sha)
-    unless @_commit_map[sha]
-      # FIXME (rspeicher): Law of Demeter
-      @_commit_map[sha] = project.repository.commit(sha)
-    end
-
-    @_commit_map[sha]
   end
 end
