@@ -52,10 +52,9 @@ def common_mentionable_setup
     }
     extra_commits.each { |c| commitmap[c.short_id] = c }
 
-    allow(project).to receive(:commit) { |sha| commitmap[sha] }
+    allow(project.repository).to receive(:commit) { |sha| commitmap[sha] }
     
     set_mentionable_text.call(ref_string)
-    subject.save
   end
 end
 
@@ -108,6 +107,8 @@ shared_examples 'an editable mentionable' do
   end
 
   it 'creates new cross-reference notes when the mentionable text is edited' do
+    subject.save
+
     cross = ext_proj.path_with_namespace
 
     new_text = <<-MSG
@@ -136,7 +137,6 @@ shared_examples 'an editable mentionable' do
         with(newref, subject.local_reference, author)
     end
 
-    subject.save
     set_mentionable_text.call(new_text)
     subject.notice_added_references(project, author)
   end
