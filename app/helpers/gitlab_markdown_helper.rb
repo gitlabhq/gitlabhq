@@ -74,6 +74,7 @@ module GitlabMarkdownHelper
     end
   end
 
+  # TODO (rspeicher): This should be its own filter
   def create_relative_links(text)
     paths = extract_paths(text)
 

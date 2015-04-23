@@ -1,5 +1,5 @@
 class Dashboard::ProjectsController < ApplicationController
-  before_filter :event_filter
+  before_action :event_filter
 
   def starred
     @projects = current_user.starred_projects

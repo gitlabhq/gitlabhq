@@ -1,3 +1,5 @@
+//= require stat_graph_contributors_util
+
 describe("ContributorsStatGraphUtil", function () {
 
   describe("#parse_log", function () {

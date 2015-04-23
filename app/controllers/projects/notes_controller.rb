@@ -1,9 +1,9 @@
 class Projects::NotesController < Projects::ApplicationController
   # Authorize
-  before_filter :authorize_read_note!
-  before_filter :authorize_write_note!, only: [:create]
-  before_filter :authorize_admin_note!, only: [:update, :destroy]
-  before_filter :find_current_user_notes, except: [:destroy, :delete_attachment]
+  before_action :authorize_read_note!
+  before_action :authorize_write_note!, only: [:create]
+  before_action :authorize_admin_note!, only: [:update, :destroy]
+  before_action :find_current_user_notes, except: [:destroy, :delete_attachment]
 
   def index
     current_fetched_at = Time.now.to_i

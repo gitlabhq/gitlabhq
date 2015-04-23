@@ -1,11 +1,11 @@
 class Profiles::PasswordsController < ApplicationController
   layout :determine_layout
 
-  skip_before_filter :check_password_expiration, only: [:new, :create]
+  skip_before_action :check_password_expiration, only: [:new, :create]
 
-  before_filter :set_user
-  before_filter :set_title
-  before_filter :authorize_change_password!
+  before_action :set_user
+  before_action :set_title
+  before_action :authorize_change_password!
 
   def new
   end

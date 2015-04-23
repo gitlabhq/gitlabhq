@@ -3,14 +3,16 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 7.11.0 (unreleased)
   - Fix clone URL field and X11 Primary selection (Dmitry Medvinsky)
   - Ignore invalid lines in .gitmodules
+  - Fix "Cannot move project" error message from popping up after a successful transfer (Stan Hu)
   -
-  -
+  - Add "Reply quoting selected text" shortcut key (`r`)
   -
   -
   -
   -
   -
   - Improve new project command options (Ben Bodenmiller)
+  - Prevent sending empty messages to HipChat (Chulki Lee)
 
 v 7.10.0 (unreleased)
   - Ignore submodules that are defined in .gitmodules but are checked in as directories.
@@ -38,7 +40,6 @@ v 7.10.0 (unreleased)
   - Allow HTML tags in Markdown input
   - Fix code unfold not working on Compare commits page (Stan Hu)
   - Fix generating SSH key fingerprints with OpenSSH 6.8. (Sašo Stanovnik)
-  - Include missing events and fix save functionality in admin service template settings form (Stan Hu)
   - Fix "Import projects from" button to show the correct instructions (Stan Hu)
   - Fix dots in Wiki slugs causing errors (Stan Hu)
   - Make maximum attachment size configurable via Application Settings (Stan Hu)

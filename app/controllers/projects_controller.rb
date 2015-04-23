@@ -1,13 +1,13 @@
 class ProjectsController < ApplicationController
   prepend_before_filter :render_go_import, only: [:show]
-  skip_before_filter :authenticate_user!, only: [:show]
-  before_filter :project, except: [:new, :create]
-  before_filter :repository, except: [:new, :create]
+  skip_before_action :authenticate_user!, only: [:show]
+  before_action :project, except: [:new, :create]
+  before_action :repository, except: [:new, :create]
 
   # Authorize
-  before_filter :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer, :archive, :unarchive]
-  before_filter :set_title, only: [:new, :create]
-  before_filter :event_filter, only: :show
+  before_action :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer, :archive, :unarchive]
+  before_action :set_title, only: [:new, :create]
+  before_action :event_filter, only: :show
 
   layout 'navless', only: [:new, :create, :fork]
 

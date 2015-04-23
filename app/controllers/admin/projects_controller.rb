@@ -1,7 +1,7 @@
 class Admin::ProjectsController < Admin::ApplicationController
-  before_filter :project, only: [:show, :transfer]
-  before_filter :group, only: [:show, :transfer]
-  before_filter :repository, only: [:show, :transfer]
+  before_action :project, only: [:show, :transfer]
+  before_action :group, only: [:show, :transfer]
+  before_action :repository, only: [:show, :transfer]
 
   def index
     @projects = Project.all

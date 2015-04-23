@@ -1,8 +1,8 @@
 class DashboardController < ApplicationController
   respond_to :html
 
-  before_filter :load_projects, except: [:projects]
-  before_filter :event_filter, only: :show
+  before_action :load_projects, except: [:projects]
+  before_action :event_filter, only: :show
 
   def show
     @projects = @projects.includes(:namespace)

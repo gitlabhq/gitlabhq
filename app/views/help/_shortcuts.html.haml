@@ -187,7 +187,11 @@
                 %td.shortcut
                   .key m
                 %td Change milestone
-            %tbody{ class: 'hidden-shortcut merge_reuests', style: 'display:none' }
+              %tr
+                %td.shortcut
+                  .key r
+                %td Reply (quoting selected text)
+            %tbody{ class: 'hidden-shortcut merge_requests', style: 'display:none' }
               %tr
                 %th
                 %th Merge Requests
@@ -199,6 +203,10 @@
                 %td.shortcut
                   .key m
                 %td Change milestone
+              %tr
+                %td.shortcut
+                  .key r
+                %td Reply (quoting selected text)
 
 
 :javascript

@@ -3,9 +3,9 @@ require "base64"
 class Projects::CommitsController < Projects::ApplicationController
   include ExtractsPath
 
-  before_filter :require_non_empty_project
-  before_filter :assign_ref_vars
-  before_filter :authorize_download_code!
+  before_action :require_non_empty_project
+  before_action :assign_ref_vars
+  before_action :authorize_download_code!
 
   def show
     @repo = @project.repository

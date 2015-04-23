@@ -1,3 +1,7 @@
+#= require d3
+#= require jquery
+#= require underscore
+
 class @ContributorsGraph
   MARGIN:
     top: 20
