@@ -3,7 +3,7 @@
   .sidebar-wrapper
     - if defined?(sidebar)
       = render(sidebar)
-    - else
+    - elsif current_user
       = render 'layouts/nav/dashboard'
     .collapse-nav
       = render partial: 'layouts/collapse_button'
