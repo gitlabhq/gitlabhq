@@ -107,7 +107,6 @@ class @UsersSelect
         per_page: 20
         active: true
         project_id: @projectId
-        group_id: @groupId
       dataType: "json"
     ).done (users) ->
       callback(users)
