@@ -16,8 +16,8 @@ module Gitlab
       text = text.dup
 
       # Remove preformatted/code blocks so that references are not included
-      text.gsub!(%r{<pre>.*?</pre>|<code>.*?</code>}m) { |match| '' }
-      text.gsub!(%r{^```.*?^```}m) { |match| '' }
+      text.gsub!(/^```.*?^```/m, '')
+      text.gsub!(/[^`]`[^`]*?`[^`]/, '')
 
       @references = Hash.new { |hash, type| hash[type] = [] }
       parse_references(text)

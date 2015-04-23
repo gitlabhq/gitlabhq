@@ -6,6 +6,9 @@ v 7.11.0 (unreleased)
   - Fix "Cannot move project" error message from popping up after a successful transfer (Stan Hu)
   -
   - Add "Reply quoting selected text" shortcut key (`r`)
+  - Fix bug causing `@whatever` inside an issue's first code block to be picked up as a user mention.
+  - Fix bug causing `@whatever` inside an inline code snippet (backtick-style) to be picked up as a user mention.
+  -
   -
   -
   -
