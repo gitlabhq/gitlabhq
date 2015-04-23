@@ -1,18 +1,18 @@
 %ul.nav.nav-sidebar
   = nav_link(path: 'projects#trending') do
     = link_to explore_root_path do
-      %i.fa.fa-comments
+      = icon('comments fw')
       %span Trending Projects
   = nav_link(path: 'projects#starred') do
     = link_to starred_explore_projects_path do
-      %i.fa.fa-star
+      = icon('star fw')
       %span Most Starred Projects
   = nav_link(path: 'projects#index') do
     = link_to explore_projects_path do
-      %i.fa.fa-bookmark
+      = icon('bookmark fw')
       %span All Projects
   = nav_link(controller: :groups) do
     = link_to explore_groups_path do
-      %i.fa.fa-group
+      = icon('group fw')
       %span All Groups
 

@@ -1,65 +1,64 @@
 %ul.nav.nav-sidebar
   = nav_link(controller: :dashboard, html_options: {class: 'home'}) do
     = link_to admin_root_path, title: "Stats" do
-      %i.fa.fa-dashboard
+      = icon('dashboard fw')
       %span
         Overview
   = nav_link(controller: :projects) do
     = link_to admin_namespaces_projects_path, title: 'Projects' do
-      %i.fa.fa-cube
+      = icon('cube fw')
       %span
         Projects
   = nav_link(controller: :users) do
     = link_to admin_users_path, title: 'Users' do
-      %i.fa.fa-user
+      = icon('user fw')
       %span
         Users
   = nav_link(controller: :groups) do
     = link_to admin_groups_path, title: 'Groups' do
-      %i.fa.fa-group
+      = icon('group fw')
       %span
         Groups
   = nav_link(controller: :deploy_keys) do
     = link_to admin_deploy_keys_path, title: 'Deploy Keys' do
-      %i.fa.fa-key
+      = icon('key fw')
       %span
         Deploy Keys
   = nav_link(controller: :logs) do
     = link_to admin_logs_path, title: 'Logs' do
-      %i.fa.fa-file-text
+      = icon('file-text fw')
       %span
         Logs
   = nav_link(controller: :broadcast_messages) do
     = link_to admin_broadcast_messages_path, title: 'Broadcast Messages' do
-      %i.fa.fa-bullhorn
+      = icon('bullhorn fw')
       %span
         Messages
   = nav_link(controller: :hooks) do
     = link_to admin_hooks_path, title: 'Hooks' do
-      %i.fa.fa-external-link
+      = icon('external-link fw')
       %span
         Hooks
   = nav_link(controller: :background_jobs) do
     = link_to admin_background_jobs_path, title: 'Background Jobs' do
-      %i.fa.fa-cog
+      = icon('cog fw')
       %span
         Background Jobs
 
   = nav_link(controller: :applications) do
     = link_to admin_applications_path, title: 'Applications' do
-      %i.fa.fa-cloud
+      = icon('cloud fw')
       %span
         Applications
 
   = nav_link(controller: :services) do
     = link_to admin_application_settings_services_path, title: 'Service Templates' do
-      %i.fa.fa-copy
+      = icon('copy fw')
       %span
         Service Templates
 
   = nav_link(controller: :application_settings, html_options: { class: 'separate-item'}) do
     = link_to admin_application_settings_path, title: 'Settings' do
-      %i.fa.fa-cogs
+      = icon('cogs fw')
       %span
         Settings
-
