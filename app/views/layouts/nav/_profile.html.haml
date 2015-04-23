@@ -1,50 +1,50 @@
 %ul.nav.nav-sidebar
   = nav_link(path: 'profiles#show', html_options: {class: 'home'}) do
     = link_to profile_path, title: "Profile" do
-      %i.fa.fa-user
+      = icon('user fw')
       %span
         Profile
   = nav_link(controller: :accounts) do
     = link_to profile_account_path, title: 'Account' do
-      %i.fa.fa-gear
+      = icon('gear fw')
       %span
         Account
   = nav_link(path: ['profiles#applications', 'applications#edit', 'applications#show', 'applications#new']) do
     = link_to applications_profile_path, title: 'Applications' do
-      %i.fa.fa-cloud
+      = icon('cloud fw')
       %span
         Applications
   = nav_link(controller: :emails) do
     = link_to profile_emails_path, title: 'Emails' do
-      %i.fa.fa-envelope-o
+      = icon('envelope-o fw')
       %span
         Emails
         %span.count= current_user.emails.count + 1
   - unless current_user.ldap_user?
     = nav_link(controller: :passwords) do
       = link_to edit_profile_password_path, title: 'Password' do
-        %i.fa.fa-lock
+        = icon('lock fw')
         %span
           Password
   = nav_link(controller: :notifications) do
     = link_to profile_notifications_path, title: 'Notifications' do
-      %i.fa.fa-inbox
+      = icon('inbox fw')
       %span
         Notifications
 
   = nav_link(controller: :keys) do
     = link_to profile_keys_path, title: 'SSH Keys' do
-      %i.fa.fa-key
+      = icon('key fw')
       %span
         SSH Keys
         %span.count= current_user.keys.count
   = nav_link(path: 'profiles#design') do
     = link_to design_profile_path, title: 'Design' do
-      %i.fa.fa-image
+      = icon('image fw')
       %span
         Design
   = nav_link(path: 'profiles#history') do
     = link_to history_profile_path, title: 'History' do
-      %i.fa.fa-history
+      = icon('history fw')
       %span
         History

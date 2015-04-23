@@ -1,38 +1,38 @@
 %ul.nav.nav-sidebar
   = nav_link(path: 'dashboard#show', html_options: {class: 'home'}) do
     = link_to root_path, title: 'Home', class: 'shortcuts-activity' do
-      %i.fa.fa-dashboard
+      = icon('dashboard fw')
       %span
         Your Projects
   = nav_link(path: 'projects#starred') do
     = link_to starred_dashboard_projects_path, title: 'Starred Projects' do
-      %i.fa.fa-star
+      = icon('star fw')
       %span
         Starred Projects
   = nav_link(controller: :groups) do
     = link_to dashboard_groups_path, title: 'Groups' do
-      %i.fa.fa-group
+      = icon('group fw')
       %span
         Groups
   = nav_link(controller: :milestones) do
     = link_to dashboard_milestones_path, title: 'Milestones' do
-      %i.fa.fa-clock-o
+      = icon('clock-o fw')
       %span
         Milestones
   = nav_link(path: 'dashboard#issues') do
     = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'shortcuts-issues' do
-      %i.fa.fa-exclamation-circle
+      = icon('exclamation-circle fw')
       %span
         Issues
         %span.count= current_user.assigned_issues.opened.count
   = nav_link(path: 'dashboard#merge_requests') do
     = link_to assigned_mrs_dashboard_path, title: 'Merge Requests', class: 'shortcuts-merge_requests' do
-      %i.fa.fa-tasks
+      = icon('tasks fw')
       %span
         Merge Requests
         %span.count= current_user.assigned_merge_requests.opened.count
   = nav_link(controller: :help) do
     = link_to help_path, title: 'Help' do
-      %i.fa.fa-question-circle
+      = icon('question-circle fw')
       %span
         Help
