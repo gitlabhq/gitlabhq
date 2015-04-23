@@ -49,8 +49,12 @@ describe CommitRange do
   end
 
   describe '#reference_title' do
-    it 'returns the correct String' do
+    it 'returns the correct String for three-dot ranges' do
       expect(range.reference_title).to eq "Commits #{sha_from} through #{sha_to}"
+    end
+
+    it 'returns the correct String for two-dot ranges' do
+      expect(range2.reference_title).to eq "Commits #{sha_from}^ through #{sha_to}"
     end
   end
 

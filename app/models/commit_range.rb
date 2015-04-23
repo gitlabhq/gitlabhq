@@ -73,7 +73,7 @@ class CommitRange
 
   # Returns a String for use in a link's title attribute
   def reference_title
-    "Commits #{sha_from} through #{sha_to}"
+    "Commits #{sha_from_as_param} through #{sha_to}"
   end
 
   # Return a Hash of parameters for passing to a URL helper
