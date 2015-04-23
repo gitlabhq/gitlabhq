@@ -42,6 +42,8 @@ module Gitlab
       # type  - Singular Symbol reference type (e.g., :issue, :user, etc.)
       # value - Object to add
       def push_result(type, value)
+        return if value.nil?
+
         result[:references][type].push(value)
       end
 
