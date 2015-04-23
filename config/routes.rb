@@ -52,7 +52,8 @@ Gitlab::Application.routes.draw do
       get 'raw'
     end
   end
-  get '/s/:username' => 'snippets#user_index', as: :user_snippets, constraints: { username: /.*/ }
+
+  get '/s/:username' => 'snippets#index', as: :user_snippets, constraints: { username: /.*/ }
 
   #
   # Invites

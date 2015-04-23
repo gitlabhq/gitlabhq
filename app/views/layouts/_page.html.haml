@@ -1,20 +1,18 @@
-- if defined?(sidebar)
-  .page-with-sidebar{ class: nav_sidebar_class }
-    = render "layouts/broadcast"
-    .sidebar-wrapper
+.page-with-sidebar{ class: nav_sidebar_class }
+  = render "layouts/broadcast"
+  .sidebar-wrapper
+    - if defined?(sidebar)
       = render(sidebar)
-      .collapse-nav
-        = render partial: 'layouts/collapse_button'
-    .content-wrapper
-      .container-fluid
-        .content
-          = render "layouts/flash"
-          .clearfix
-            = yield
-- else
-  .container.navless-container
-    .content
-      = yield
+    - elsif current_user
+      = render 'layouts/nav/dashboard'
+    .collapse-nav
+      = render partial: 'layouts/collapse_button'
+  .content-wrapper
+    .container-fluid
+      .content
+        = render "layouts/flash"
+        .clearfix
+          = yield
 
 = yield :embedded_scripts
 

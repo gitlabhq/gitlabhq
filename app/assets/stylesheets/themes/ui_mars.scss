@@ -2,5 +2,5 @@
  * Classic GitLab UI theme
  */
 .ui_mars {
-  @include dark-theme(#979DA7, #474D57, #373D47, #24272D);
+  @include gitlab-theme(#979DA7, #474D57, #373D47, #24272D);
 }

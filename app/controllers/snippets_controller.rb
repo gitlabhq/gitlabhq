@@ -16,24 +16,24 @@ class SnippetsController < ApplicationController
   layout :determine_layout
 
   def index
-    @snippets = SnippetsFinder.new.execute(current_user, filter: :all).page(params[:page]).per(PER_PAGE)
-  end
+    if params[:username].present?
+      @user = User.find_by(username: params[:username])
 
-  def user_index
-    @user = User.find_by(username: params[:username])
+      render_404 and return unless @user
 
-    render_404 and return unless @user
+      @snippets = SnippetsFinder.new.execute(current_user, {
+        filter: :by_user,
+        user: @user,
+        scope: params[:scope] }).
+      page(params[:page]).per(PER_PAGE)
 
-    @snippets = SnippetsFinder.new.execute(current_user, {
-      filter: :by_user,
-      user: @user,
-      scope: params[:scope] }).
-    page(params[:page]).per(PER_PAGE)
-
-    if @user == current_user
-      render 'current_user_index'
+      if @user == current_user
+        render 'current_user_index'
+      else
+        render 'user_index'
+      end
     else
-      render 'user_index'
+      @snippets = SnippetsFinder.new.execute(current_user, filter: :all).page(params[:page]).per(PER_PAGE)
     end
   end
 
@@ -108,6 +108,6 @@ class SnippetsController < ApplicationController
   end
 
   def determine_layout
-    current_user ? 'navless' : 'public_users'
+    current_user ? 'snippets' : 'public_users'
   end
 end
