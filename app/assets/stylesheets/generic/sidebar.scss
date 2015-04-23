@@ -133,10 +133,13 @@
 .collapse-nav a {
   position: fixed;
   top: 46px;
-  padding: 5px 13px 5px 13px;
   left: 198px;
   font-size: 13px;
   background: transparent;
+  width: 32px;
+  height: 32px;
+  text-align: center;
+  line-height: 32px;
 }
 
 .collapse-nav a:hover {
