@@ -29,6 +29,17 @@ module Gitlab
   #   >> gfm(":trollface:")
   #   => "<img alt=\":trollface:\" class=\"emoji\" src=\"/images/trollface.png" title=\":trollface:\" />
   module Markdown
+    # Provide autoload paths for filters to prevent a circular dependency error
+    autoload :CommitRangeReferenceFilter,   'gitlab/markdown/commit_range_reference_filter'
+    autoload :CommitReferenceFilter,        'gitlab/markdown/commit_reference_filter'
+    autoload :EmojiFilter,                  'gitlab/markdown/emoji_filter'
+    autoload :ExternalIssueReferenceFilter, 'gitlab/markdown/external_issue_reference_filter'
+    autoload :IssueReferenceFilter,         'gitlab/markdown/issue_reference_filter'
+    autoload :LabelReferenceFilter,         'gitlab/markdown/label_reference_filter'
+    autoload :MergeRequestReferenceFilter,  'gitlab/markdown/merge_request_reference_filter'
+    autoload :SnippetReferenceFilter,       'gitlab/markdown/snippet_reference_filter'
+    autoload :UserReferenceFilter,          'gitlab/markdown/user_reference_filter'
+
     # Public: Parse the provided text with GitLab-Flavored Markdown
     #
     # text         - the source text
@@ -64,11 +75,11 @@ module Gitlab
 
       context = {
         # SanitizationFilter
-        whitelist:       sanitization_whitelist,
+        whitelist: sanitization_whitelist,
 
         # EmojiFilter
-        asset_root:      Gitlab.config.gitlab.url,
-        asset_host:      Gitlab::Application.config.asset_host,
+        asset_root: Gitlab.config.gitlab.url,
+        asset_host: Gitlab::Application.config.asset_host,
 
         # ReferenceFilter
         current_user:    current_user,
