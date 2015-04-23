@@ -76,14 +76,9 @@ header {
       }
 
       .navbar-toggle {
-        color: $style_color;
+        color: #666;
         margin: 0;
-        padding: 10px;
         border-radius: 0;
-
-        button i { font-size: 22px; }
-
-        &.collapsed { background-color: transparent !important;}
 
         &:hover {
           background-color: #EEE;
@@ -106,8 +101,6 @@ header {
 
       .navbar-collapse {
         margin-top: 47px;
-        padding-right: 0;
-        padding-left: 0;
       }
 
       .navbar-nav {

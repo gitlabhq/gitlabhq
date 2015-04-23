@@ -2,15 +2,12 @@
   header {
     &.navbar-gitlab {
       .navbar-inner {
-        .navbar-toggle {
-          color: #FFF;
-        }
+        .app_logo {
+          background-color: $color-darker;
 
-        .app_logo, .navbar-toggle {
           a {
             color: $color-light;
           }
-          background-color: $color-darker;
 
           &:hover {
             background-color: $color-dark;
