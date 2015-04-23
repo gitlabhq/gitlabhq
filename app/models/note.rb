@@ -238,9 +238,9 @@ class Note < ActiveRecord::Base
     def cross_reference_exists?(noteable, mentioner)
       gfm_reference = mentioner_gfm_ref(noteable, mentioner)
       notes = if noteable.is_a?(Commit)
-                where(commit_id: noteable.id)
+                where(commit_id: noteable.id, noteable_type: 'Commit')
               else
-                where(noteable_id: noteable.id)
+                where(noteable_id: noteable.id, noteable_type: noteable.class)
               end
 
       notes.where('note like ?', cross_reference_note_pattern(gfm_reference)).
