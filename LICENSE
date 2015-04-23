@@ -7,8 +7,9 @@ free to modify this Software and publish patches. It is forbidden to copy,
 merge, publish, distribute, sublicense, and/or sell copies of the Software.
 
 The above copyright notice applies only to the part of this Software that is
-not distributed as part of GitLab Community Edition (CE). Any part of this
-Software distributed as part of GitLab CE is copyrighted under the MIT Expat
+not distributed as part of GitLab Community Edition (CE) and that is not
+client side javascript. Any part of this Software distributed as part of
+GitLab CE or that is client side javascript is copyrighted under the MIT Expat
 license. The above copyright notice and this permission notice shall be
 included in all copies or substantial portions of the Software.
 
