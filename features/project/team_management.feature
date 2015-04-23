@@ -3,13 +3,13 @@ Feature: Project Team Management
     Given I sign in as a user
     And I own project "Shop"
     And gitlab user "Mike"
-    And gitlab user "Sam"
-    And "Sam" is "Shop" developer
+    And gitlab user "Dmitriy"
+    And "Dmitriy" is "Shop" developer
     And I visit project "Shop" team page
 
   Scenario: See all team members
     Then I should be able to see myself in team
-    And I should see "Sam" in team list
+    And I should see "Dmitriy" in team list
 
   @javascript
   Scenario: Add user to project
@@ -25,14 +25,14 @@ Feature: Project Team Management
 
   @javascript
   Scenario: Update user access
-    Given I should see "Sam" in team list as "Developer"
-    And I change "Sam" role to "Reporter"
-    And I should see "Sam" in team list as "Reporter"
+    Given I should see "Dmitriy" in team list as "Developer"
+    And I change "Dmitriy" role to "Reporter"
+    And I should see "Dmitriy" in team list as "Reporter"
 
   Scenario: Cancel team member
-    Given I click cancel link for "Sam"
+    Given I click cancel link for "Dmitriy"
     Then I visit project "Shop" team page
-    And I should not see "Sam" in team list
+    And I should not see "Dmitriy" in team list
 
   Scenario: Import team from another project
     Given I own project "Website"
