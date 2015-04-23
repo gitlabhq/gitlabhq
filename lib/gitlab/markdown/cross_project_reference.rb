@@ -20,7 +20,7 @@ module Gitlab
 
         other = Project.find_with_namespace(ref)
         return nil unless other && user_can_reference_project?(other)
-        
+
         other
       end
 
