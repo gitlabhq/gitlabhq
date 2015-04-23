@@ -132,10 +132,9 @@ $ ->
     ), 1
 
   # Initialize tooltips
-  $('.has_tooltip').tooltip()
-
-  # Bottom tooltip
-  $('.has_bottom_tooltip').tooltip(placement: 'bottom')
+  $('body').tooltip({
+    selector: '.has_tooltip, [data-toggle="tooltip"]'
+  })
 
   # Form submitter
   $('.trigger-submit').on 'change', ->

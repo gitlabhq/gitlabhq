@@ -4,6 +4,3 @@ $('body').addClass('<%= app_theme %> <%= theme_type %>')
 
 // Re-render the header to reflect the new theme
 $('header').html('<%= escape_javascript(render("layouts/head_panel", title: "Profile")) %>')
-
-// Re-initialize header tooltips
-$('.has_bottom_tooltip').tooltip({placement: 'bottom'})
