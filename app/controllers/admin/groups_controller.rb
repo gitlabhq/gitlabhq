@@ -1,5 +1,5 @@
 class Admin::GroupsController < Admin::ApplicationController
-  before_filter :group, only: [:edit, :show, :update, :destroy, :project_update, :members_update]
+  before_action :group, only: [:edit, :show, :update, :destroy, :project_update, :members_update]
 
   def index
     @groups = Group.all

@@ -7,4 +7,4 @@
       - if default_providers.include?(provider)
         = link_to oauth_image_tag(provider), omniauth_authorize_path(resource_name, provider), class: 'oauth-image-link'
       - else
-        = link_to provider.to_s.titleize, omniauth_authorize_path(resource_name, provider), class: "btn"
+        = link_to provider.to_s.titleize, omniauth_authorize_path(resource_name, provider), class: "btn", "data-no-turbolink" => "true"

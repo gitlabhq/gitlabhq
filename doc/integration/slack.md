@@ -16,7 +16,7 @@ To enable Slack integration you must create an Incoming WebHooks integration on 
 
 1.  Choose the channel name you want to send notifications to
 
-1.  Click **Add Incoming WebHooks Integration**Add Integrations.
+1.  Click **Add Incoming WebHooks Integration**
     - Optional step; You can change bot's name and avatar by clicking modifying the bot name or avatar under **Integration Settings**.
 
 1. Copy the **Webhook URL**, we'll need this later for GitLab.
@@ -32,10 +32,15 @@ After Slack is ready we need to setup GitLab. Here are the steps to achieve this
 
 1.  Navigate to Settings -> Services -> Slack
 
-1.  Fill in your Slack details
+1. Pick the triggers you want to activate
 
+1.  Fill in your Slack details
+    - Webhook: Paste the Webhook URL from the step above
+    - Username: Fill this in if you want to change the username of the bot
+    - Channel: Fill this in if you want to change the channel where the messages will be posted
     - Mark it as active
-    - Paste in the webhook URL you got from Slack
+    
+1. Save your settings
 
 Have fun :)
 

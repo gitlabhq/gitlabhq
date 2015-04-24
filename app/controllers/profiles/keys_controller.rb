@@ -1,6 +1,6 @@
 class Profiles::KeysController < ApplicationController
   layout "profile"
-  skip_before_filter :authenticate_user!, only: [:get_keys]
+  skip_before_action :authenticate_user!, only: [:get_keys]
 
   def index
     @keys = current_user.keys

@@ -22,7 +22,7 @@ class Dispatcher
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:issues:show'
         new Issue()
-        shortcut_handler = new ShortcutsIssueable()
+        shortcut_handler = new ShortcutsIssuable()
         new ZenMode()
       when 'projects:milestones:show'
         new Milestone()
@@ -47,7 +47,7 @@ class Dispatcher
           new IssuableForm($('.merge-request-form'))
       when 'projects:merge_requests:show'
         new Diff()
-        shortcut_handler = new ShortcutsIssueable()
+        shortcut_handler = new ShortcutsIssuable()
         new ZenMode()
       when "projects:merge_requests:diffs"
         new Diff()

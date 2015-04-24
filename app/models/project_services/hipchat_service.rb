@@ -50,8 +50,9 @@ class HipchatService < Service
 
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
-
-    gate[room].send('GitLab', create_message(data))
+    message = create_message(data)
+    return unless message.present?
+    gate[room].send('GitLab', message)
   end
 
   private

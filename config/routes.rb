@@ -2,6 +2,7 @@ require 'sidekiq/web'
 require 'api/api'
 
 Gitlab::Application.routes.draw do
+  mount JasmineRails::Engine => '/specs' if defined?(JasmineRails)
   use_doorkeeper do
     controllers applications: 'oauth/applications',
                 authorized_applications: 'oauth/authorized_applications',
@@ -51,7 +52,8 @@ Gitlab::Application.routes.draw do
       get 'raw'
     end
   end
-  get '/s/:username' => 'snippets#user_index', as: :user_snippets, constraints: { username: /.*/ }
+
+  get '/s/:username' => 'snippets#index', as: :user_snippets, constraints: { username: /.*/ }
 
   #
   # Invites

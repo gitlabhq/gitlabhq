@@ -1,3 +1,9 @@
+.explore-title
+  %h3
+    Explore GitLab
+  %p.lead
+    Discover projects and groups. Share your projects with others
+%hr
 .explore-trending-block
   %p.lead
     %i.fa.fa-comments-o
@@ -7,5 +13,5 @@
     %ul.bordered-list
       = render @trending_projects
 
-  .center
+  .center.append-bottom-20
     = link_to 'Show all projects', explore_projects_path, class: 'btn btn-primary'

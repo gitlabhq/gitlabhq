@@ -1,4 +1,4 @@
-- page_title = 'Explore'
+- page_title = 'Explore GitLab'
 !!! 5
 %html{ lang: "en"}
   = render "layouts/head", title: page_title
@@ -8,23 +8,5 @@
       = render "layouts/head_panel", title: link_to(page_title, explore_root_path)
     - else
       = render "layouts/public_head_panel", title: link_to(page_title, explore_root_path)
-    .container.navless-container
-      .content
-        .explore-title
-          %h3
-            Explore GitLab
-          %p.lead
-            Discover projects and groups. Share your projects with others
 
-
-        %ul.nav.nav-tabs
-          = nav_link(path: 'projects#trending') do
-            = link_to 'Trending Projects', explore_root_path
-          = nav_link(path: 'projects#starred') do
-            = link_to 'Most Starred Projects', starred_explore_projects_path
-          = nav_link(path: 'projects#index') do
-            = link_to 'All Projects', explore_projects_path
-          = nav_link(controller: :groups) do
-            = link_to 'All Groups', explore_groups_path
-
-        = yield
+    = render 'layouts/page', sidebar: 'layouts/nav/explore'

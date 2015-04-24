@@ -6,15 +6,15 @@ class Projects::BlobController < Projects::ApplicationController
   # Raised when given an invalid file path
   class InvalidPathError < StandardError; end
 
-  before_filter :require_non_empty_project, except: [:new, :create]
-  before_filter :authorize_download_code!
-  before_filter :authorize_push_code!, only: [:destroy]
-  before_filter :assign_blob_vars
-  before_filter :commit, except: [:new, :create]
-  before_filter :blob, except: [:new, :create]
-  before_filter :from_merge_request, only: [:edit, :update]
-  before_filter :after_edit_path, only: [:edit, :update]
-  before_filter :require_branch_head, only: [:edit, :update]
+  before_action :require_non_empty_project, except: [:new, :create]
+  before_action :authorize_download_code!
+  before_action :authorize_push_code!, only: [:destroy]
+  before_action :assign_blob_vars
+  before_action :commit, except: [:new, :create]
+  before_action :blob, except: [:new, :create]
+  before_action :from_merge_request, only: [:edit, :update]
+  before_action :after_edit_path, only: [:edit, :update]
+  before_action :require_branch_head, only: [:edit, :update]
 
   def new
     commit unless @repository.empty?

@@ -1,7 +1,7 @@
 class Projects::ServicesController < Projects::ApplicationController
   # Authorize
-  before_filter :authorize_admin_project!
-  before_filter :service, only: [:edit, :update, :test]
+  before_action :authorize_admin_project!
+  before_action :service, only: [:edit, :update, :test]
 
   respond_to :html
 

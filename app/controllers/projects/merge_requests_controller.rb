@@ -1,20 +1,20 @@
 require 'gitlab/satellite/satellite'
 
 class Projects::MergeRequestsController < Projects::ApplicationController
-  before_filter :module_enabled
-  before_filter :merge_request, only: [:edit, :update, :show, :diffs, :automerge, :automerge_check, :ci_status, :toggle_subscription]
-  before_filter :closes_issues, only: [:edit, :update, :show, :diffs]
-  before_filter :validates_merge_request, only: [:show, :diffs]
-  before_filter :define_show_vars, only: [:show, :diffs]
+  before_action :module_enabled
+  before_action :merge_request, only: [:edit, :update, :show, :diffs, :automerge, :automerge_check, :ci_status, :toggle_subscription]
+  before_action :closes_issues, only: [:edit, :update, :show, :diffs]
+  before_action :validates_merge_request, only: [:show, :diffs]
+  before_action :define_show_vars, only: [:show, :diffs]
 
   # Allow read any merge_request
-  before_filter :authorize_read_merge_request!
+  before_action :authorize_read_merge_request!
 
   # Allow write(create) merge_request
-  before_filter :authorize_write_merge_request!, only: [:new, :create]
+  before_action :authorize_write_merge_request!, only: [:new, :create]
 
   # Allow modify merge_request
-  before_filter :authorize_modify_merge_request!, only: [:close, :edit, :update, :sort]
+  before_action :authorize_modify_merge_request!, only: [:close, :edit, :update, :sort]
 
   def index
     terms = params['issue_search']
@@ -176,7 +176,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def toggle_subscription
     @merge_request.toggle_subscription(current_user)
-    
+
     render nothing: true
   end
 

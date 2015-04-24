@@ -6,7 +6,6 @@
     top: 0;
     left: 0;
     height: 100%;
-    border-right: 1px solid $border-color;
   }
 }
 
@@ -38,28 +37,10 @@
 }
 
 .nav-sidebar li {
-  &.active a {
-    color: $text-color;
-    background: #FFF !important;
-    font-weight: bold;
-    border: 1px solid #EEE;
-    border-right: 1px solid transparent;
-    border-left: 3px solid $style_color;
-
-    &.no-highlight {
-      background: none !important;
-      border: none;
-    }
-
-    i {
-      color: $text-color;
-    }
-  }
 }
 
 .nav-sidebar li {
   &.separate-item {
-    border-top: 1px solid $border-color;
     padding-top: 10px;
     margin-top: 10px;
   }
@@ -71,12 +52,10 @@
     padding: 8px 15px;
     font-size: 13px;
     line-height: 20px;
-    padding-left: 20px;
+    padding-left: 16px;
 
     &:hover {
       text-decoration: none;
-      color: $text-color;
-      background: $border-color;
     }
 
     &:active, &:focus {
@@ -146,7 +125,7 @@
 
     .collapse-nav a {
       left: 0px;
-      padding: 7px 23px 3px 22px;
+      width: 52px;
     }
   }
 }
@@ -154,13 +133,13 @@
 .collapse-nav a {
   position: fixed;
   top: 46px;
-  padding: 5px 13px 5px 13px;
   left: 198px;
   font-size: 13px;
   background: transparent;
-  color: black;
-  border-left: 1px solid $border-color;
-  border-bottom: 1px solid $border-color;
+  width: 32px;
+  height: 28px;
+  text-align: center;
+  line-height: 28px;
 }
 
 .collapse-nav a:hover {

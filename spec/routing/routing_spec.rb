@@ -28,7 +28,7 @@ end
 #          DELETE /snippets/:id(.:format)      snippets#destroy
 describe SnippetsController, "routing" do
   it "to #user_index" do
-    expect(get("/s/User")).to route_to('snippets#user_index', username: 'User')
+    expect(get("/s/User")).to route_to('snippets#index', username: 'User')
   end
 
   it "to #raw" do

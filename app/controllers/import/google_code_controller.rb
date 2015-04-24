@@ -1,8 +1,8 @@
 class Import::GoogleCodeController < Import::BaseController
-  before_filter :user_map, only: [:new_user_map, :create_user_map]
+  before_action :user_map, only: [:new_user_map, :create_user_map]
 
   def new
-    
+
   end
 
   def callback
@@ -68,7 +68,7 @@ class Import::GoogleCodeController < Import::BaseController
 
   def status
     unless client.valid?
-      return redirect_to new_import_google_path 
+      return redirect_to new_import_google_code_path
     end
 
     @repos = client.repos

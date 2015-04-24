@@ -1,39 +1,39 @@
 class SnippetsController < ApplicationController
-  before_filter :snippet, only: [:show, :edit, :destroy, :update, :raw]
+  before_action :snippet, only: [:show, :edit, :destroy, :update, :raw]
 
   # Allow modify snippet
-  before_filter :authorize_modify_snippet!, only: [:edit, :update]
+  before_action :authorize_modify_snippet!, only: [:edit, :update]
 
   # Allow destroy snippet
-  before_filter :authorize_admin_snippet!, only: [:destroy]
+  before_action :authorize_admin_snippet!, only: [:destroy]
 
-  before_filter :set_title
+  before_action :set_title
 
-  skip_before_filter :authenticate_user!, only: [:index, :user_index, :show, :raw]
+  skip_before_action :authenticate_user!, only: [:index, :user_index, :show, :raw]
 
   respond_to :html
 
   layout :determine_layout
 
   def index
-    @snippets = SnippetsFinder.new.execute(current_user, filter: :all).page(params[:page]).per(PER_PAGE)
-  end
+    if params[:username].present?
+      @user = User.find_by(username: params[:username])
 
-  def user_index
-    @user = User.find_by(username: params[:username])
+      render_404 and return unless @user
 
-    render_404 and return unless @user
+      @snippets = SnippetsFinder.new.execute(current_user, {
+        filter: :by_user,
+        user: @user,
+        scope: params[:scope] }).
+      page(params[:page]).per(PER_PAGE)
 
-    @snippets = SnippetsFinder.new.execute(current_user, {
-      filter: :by_user,
-      user: @user,
-      scope: params[:scope] }).
-    page(params[:page]).per(PER_PAGE)
-
-    if @user == current_user
-      render 'current_user_index'
+      if @user == current_user
+        render 'current_user_index'
+      else
+        render 'user_index'
+      end
     else
-      render 'user_index'
+      @snippets = SnippetsFinder.new.execute(current_user, filter: :all).page(params[:page]).per(PER_PAGE)
     end
   end
 
@@ -108,6 +108,6 @@ class SnippetsController < ApplicationController
   end
 
   def determine_layout
-    current_user ? 'navless' : 'public_users'
+    current_user ? 'snippets' : 'public_users'
   end
 end

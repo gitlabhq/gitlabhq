@@ -1,8 +1,8 @@
 class Projects::ImportsController < Projects::ApplicationController
   # Authorize
-  before_filter :authorize_admin_project!
-  before_filter :require_no_repo
-  before_filter :redirect_if_progress, except: :show
+  before_action :authorize_admin_project!
+  before_action :require_no_repo
+  before_action :redirect_if_progress, except: :show
 
   def new
   end

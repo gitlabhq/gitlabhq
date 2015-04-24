@@ -1,8 +1,8 @@
 class Projects::RepositoriesController < Projects::ApplicationController
   # Authorize
-  before_filter :require_non_empty_project, except: :create
-  before_filter :authorize_download_code!
-  before_filter :authorize_admin_project!, only: :create
+  before_action :require_non_empty_project, except: :create
+  before_action :authorize_download_code!
+  before_action :authorize_admin_project!, only: :create
 
   def create
     @project.create_repository

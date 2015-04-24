@@ -1,6 +1,6 @@
 class Projects::ApplicationController < ApplicationController
-  before_filter :project
-  before_filter :repository
+  before_action :project
+  before_action :repository
   layout :determine_layout
 
   def authenticate_user!
