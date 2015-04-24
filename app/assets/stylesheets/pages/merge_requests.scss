@@ -91,11 +91,16 @@
     .merge-request-info {
       color: #999;
       font-size: 13px;
-
-      .merge-request-labels {
-        display: inline-block;
-      }
     }
+
+  }
+
+  .merge-request-labels {
+    display: inline-block;
+  }
+
+  .merge-request-no-comments {
+    opacity: 0.5;
   }
 }
 

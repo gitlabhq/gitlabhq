@@ -21,7 +21,7 @@ describe 'Issues', feature: true do
     end
 
     before do
-      visit namespace_project_issues_path(project.namespace, project)
+      visit edit_namespace_project_issue_path(project.namespace, project, issue)
       click_link "Edit"
     end
 
