@@ -20,6 +20,8 @@
 require 'spec_helper'
 
 describe Note do
+  include JiraServiceHelper
+
   describe "Associations" do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:noteable) }
@@ -332,7 +334,6 @@ describe Note do
     let(:commit)     { project.repository.commit }
     let(:jira_issue) { JiraIssue.new("JIRA-1", project)}
     let(:jira_tracker) { project.create_jira_service if project.jira_service.nil? }
-    let(:api_mention_url) { 'http://jira.example/rest/api/2/issue/JIRA-1/comment' }
 
     # Test all of {issue, merge request, commit} in both the referenced and referencing
     # roles, to ensure that the correct information can be inferred from any argument.
@@ -368,7 +369,9 @@ describe Note do
       context 'in JIRA issue tracker' do
         before do
           jira_service_settings
-          WebMock.stub_request(:post, api_mention_url)
+          WebMock.stub_request(:post, jira_api_comment_url)
+          WebMock.stub_request(:get, jira_api_comment_url).
+            to_return(:body => jira_issue_comments)
         end
 
         after do
@@ -402,16 +405,34 @@ describe Note do
       context 'in JIRA issue tracker' do
         before do
           jira_service_settings
-          WebMock.stub_request(:post, api_mention_url)
+          WebMock.stub_request(:post, jira_api_comment_url)
         end
 
         after do
           jira_tracker.destroy!
         end
 
-        subject { Note.create_cross_reference_note(jira_issue, commit, author, project) }
+        describe "new reference" do
+          before do
+            WebMock.stub_request(:get, jira_api_comment_url).
+              to_return(:body => jira_issue_comments)
+          end
 
-        it { is_expected.to eq(jira_status_message) }
+          subject { Note.create_cross_reference_note(jira_issue, commit, author, project) }
+
+          it { is_expected.to eq(jira_status_message) }
+        end
+
+        describe "existing reference" do
+          before do
+            message = "[#{author.name}|http://localhost/u/#{author.username}] mentioned this issue in [a commit of #{project.path_with_namespace}|http://localhost/#{project.path_with_namespace}/commit/#{commit.id}]."
+            WebMock.stub_request(:get, jira_api_comment_url).
+              to_return(:body => "{\"comments\":[{\"body\":\"#{message}\"}]}")
+          end
+
+          subject { Note.create_cross_reference_note(jira_issue, commit, author, project) }
+          it { is_expected.not_to eq(jira_status_message) }
+        end
       end
     end
 
@@ -419,7 +440,9 @@ describe Note do
       context 'in JIRA issue tracker' do
         before do
           jira_service_settings
-          WebMock.stub_request(:post, api_mention_url)
+          WebMock.stub_request(:post, jira_api_comment_url)
+          WebMock.stub_request(:get, jira_api_comment_url).
+            to_return(:body => jira_issue_comments)
         end
 
         after do
@@ -689,20 +712,5 @@ describe Note do
     let(:subject) { create :note, noteable: issue, project: project }
     let(:backref_text) { issue.gfm_reference }
     let(:set_mentionable_text) { ->(txt) { subject.note = txt } }
-  end
-
-  def jira_service_settings
-    properties = {
-      "title"=>"JIRA tracker",
-      "project_url"=>"http://jira.example/issues/?jql=project=A",
-      "issues_url"=>"http://jira.example/browse/JIRA-1",
-      "new_issue_url"=>"http://jira.example/secure/CreateIssue.jspa"
-    }
-
-    jira_tracker.update_attributes(properties: properties, active: true)
-  end
-
-  def jira_status_message
-    "JiraService SUCCESS 200: Sucessfully posted to #{api_mention_url}."
   end
 end

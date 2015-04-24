@@ -1,10 +1,13 @@
-v 7.10.0 (unreleased)
+v 7.11.1
+  - Check if comment exists in Jira before sending a reference
+
+v 7.10.0
   - Improve UI for next pages: Group LDAP sync, Project git hooks, Project share with groups, Admin -> Appearance settigns
   - Default git hooks for new projects
   - Fix LDAP group links page by using new group members route.
   - Skip email confirmation when updated via LDAP.
 
-v 7.9.0 (unreleased)
+v 7.9.0
   - Strip prefixes and suffixes from synced SSH keys:
     `SSHKey:ssh-rsa keykeykey` and `ssh-rsa keykeykey (SSH key)` will now work
   - Check if LDAP admin group exists before querying for user membership
