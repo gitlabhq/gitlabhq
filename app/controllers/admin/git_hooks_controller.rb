@@ -1,5 +1,5 @@
 class Admin::GitHooksController < Admin::ApplicationController
-  before_filter :git_hook
+  before_action :git_hook
 
   respond_to :html
 

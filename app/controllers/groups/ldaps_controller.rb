@@ -1,6 +1,6 @@
 class Groups::LdapsController < Groups::ApplicationController
-  before_filter :group
-  before_filter :authorize_admin_group!
+  before_action :group
+  before_action :authorize_admin_group!
 
   def reset_access
     LdapGroupResetService.new.execute(group, current_user)

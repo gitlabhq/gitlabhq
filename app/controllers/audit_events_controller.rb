@@ -1,9 +1,9 @@
 class AuditEventsController < ApplicationController
   # Authorize
-  before_filter :repository, only: :project_log
-  before_filter :authorize_admin_project!, only: :project_log
-  before_filter :group, only: :group_log
-  before_filter :authorize_admin_group!, only: :group_log
+  before_action :repository, only: :project_log
+  before_action :authorize_admin_project!, only: :project_log
+  before_action :group, only: :group_log
+  before_action :authorize_admin_group!, only: :group_log
 
   layout :determine_layout
 

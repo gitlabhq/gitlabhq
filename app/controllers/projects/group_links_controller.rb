@@ -1,6 +1,6 @@
 class Projects::GroupLinksController < Projects::ApplicationController
   layout 'project_settings'
-  before_filter :authorize_admin_project!
+  before_action :authorize_admin_project!
 
   def index
     @group_links = project.project_group_links.all
