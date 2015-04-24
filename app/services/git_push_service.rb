@@ -70,7 +70,7 @@ class GitPushService
       # Close issues if these commits were pushed to the project's default branch and the commit message matches the
       # closing regex. Exclude any mentioned Issues from cross-referencing even if the commits are being pushed to
       # a different branch.
-      issues_to_close = commit.closes_issues(project, user)
+      issues_to_close = commit.closes_issues(user)
 
       # Load commit author only if needed.
       # For push with 1k commits it prevents 900+ requests in database
@@ -94,7 +94,7 @@ class GitPushService
         author ||= commit_user(commit)
 
         refs.each do |r|
-          Note.create_cross_reference_note(r, commit, author, project)
+          Note.create_cross_reference_note(r, commit, author)
         end
       end
     end

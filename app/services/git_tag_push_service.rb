@@ -25,7 +25,7 @@ class GitTagPushService
       tag_name = Gitlab::Git.ref_name(ref)
       tag = project.repository.find_tag(tag_name)
       if tag && tag.target == newrev
-        commit = project.repository.commit(tag.target)
+        commit = project.commit(tag.target)
         commits = [commit].compact
         message = tag.message
       end

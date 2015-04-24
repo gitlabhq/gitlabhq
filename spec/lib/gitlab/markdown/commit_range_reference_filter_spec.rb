@@ -5,8 +5,8 @@ module Gitlab::Markdown
     include ReferenceFilterSpecHelper
 
     let(:project) { create(:project) }
-    let(:commit1) { project.repository.commit }
-    let(:commit2) { project.repository.commit("HEAD~2") }
+    let(:commit1) { project.commit }
+    let(:commit2) { project.commit("HEAD~2") }
 
     it 'requires project context' do
       expect { described_class.call('Commit Range 1c002d..d200c1', {}) }.
@@ -86,8 +86,8 @@ module Gitlab::Markdown
     context 'cross-project reference' do
       let(:namespace) { create(:namespace, name: 'cross-reference') }
       let(:project2)  { create(:project, namespace: namespace) }
-      let(:commit1)   { project.repository.commit }
-      let(:commit2)   { project.repository.commit("HEAD~2") }
+      let(:commit1)   { project.commit }
+      let(:commit2)   { project.commit("HEAD~2") }
       let(:reference) { "#{project2.path_with_namespace}@#{commit1.id}...#{commit2.id}" }
 
       context 'when user can access reference' do

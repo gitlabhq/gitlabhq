@@ -69,8 +69,8 @@ module Gitlab
 
       def build_data_for_commit(project, user, note)
         # commit_id is the SHA hash
-        commit = project.repository.commit(note.commit_id)
-        commit.hook_attrs(project)
+        commit = project.commit(note.commit_id)
+        commit.hook_attrs
       end
     end
   end

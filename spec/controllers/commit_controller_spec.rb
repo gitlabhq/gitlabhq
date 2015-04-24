@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Projects::CommitController do
   let(:project) { create(:project) }
   let(:user)    { create(:user) }
-  let(:commit)  { project.repository.commit("master") }
+  let(:commit)  { project.commit("master") }
 
   before do
     sign_in(user)

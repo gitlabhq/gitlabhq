@@ -44,7 +44,7 @@ describe GitPushService do
     before do
       service.execute(project, user, @oldrev, @newrev, @ref)
       @push_data = service.push_data
-      @commit = project.repository.commit(@newrev)
+      @commit = project.commit(@newrev)
     end
 
     subject { @push_data }
@@ -151,7 +151,7 @@ describe GitPushService do
   describe "cross-reference notes" do
     let(:issue) { create :issue, project: project }
     let(:commit_author) { create :user }
-    let(:commit) { project.repository.commit }
+    let(:commit) { project.commit }
 
     before do
       commit.stub({
@@ -164,22 +164,22 @@ describe GitPushService do
     end
 
     it "creates a note if a pushed commit mentions an issue" do
-      expect(Note).to receive(:create_cross_reference_note).with(issue, commit, commit_author, project)
+      expect(Note).to receive(:create_cross_reference_note).with(issue, commit, commit_author)
 
       service.execute(project, user, @oldrev, @newrev, @ref)
     end
 
     it "only creates a cross-reference note if one doesn't already exist" do
-      Note.create_cross_reference_note(issue, commit, user, project)
+      Note.create_cross_reference_note(issue, commit, user)
 
-      expect(Note).not_to receive(:create_cross_reference_note).with(issue, commit, commit_author, project)
+      expect(Note).not_to receive(:create_cross_reference_note).with(issue, commit, commit_author)
 
       service.execute(project, user, @oldrev, @newrev, @ref)
     end
 
     it "defaults to the pushing user if the commit's author is not known" do
       commit.stub(author_name: 'unknown name', author_email: 'unknown@email.com')
-      expect(Note).to receive(:create_cross_reference_note).with(issue, commit, user, project)
+      expect(Note).to receive(:create_cross_reference_note).with(issue, commit, user)
 
       service.execute(project, user, @oldrev, @newrev, @ref)
     end
@@ -188,7 +188,7 @@ describe GitPushService do
       allow(project.repository).to receive(:commits_between).with(@blankrev, @newrev).and_return([])
       allow(project.repository).to receive(:commits_between).with("master", @newrev).and_return([commit])
 
-      expect(Note).to receive(:create_cross_reference_note).with(issue, commit, commit_author, project)
+      expect(Note).to receive(:create_cross_reference_note).with(issue, commit, commit_author)
 
       service.execute(project, user, @blankrev, @newrev, 'refs/heads/other')
     end
@@ -198,7 +198,7 @@ describe GitPushService do
     let(:issue) { create :issue, project: project }
     let(:other_issue) { create :issue, project: project }
     let(:commit_author) { create :user }
-    let(:closing_commit) { project.repository.commit }
+    let(:closing_commit) { project.commit }
 
     before do
       closing_commit.stub({

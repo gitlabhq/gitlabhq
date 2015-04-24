@@ -254,7 +254,11 @@ class Project < ActiveRecord::Base
   end
 
   def repository
-    @repository ||= Repository.new(path_with_namespace)
+    @repository ||= Repository.new(path_with_namespace, nil, self)
+  end
+
+  def commit(id = 'HEAD')
+    repository.commit(id)
   end
 
   def saved?

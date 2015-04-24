@@ -6,7 +6,7 @@ describe GitlabMarkdownHelper do
   let!(:project) { create(:project) }
 
   let(:user)          { create(:user, username: 'gfm') }
-  let(:commit)        { project.repository.commit }
+  let(:commit)        { project.commit }
   let(:issue)         { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:snippet)       { create(:project_snippet, project: project) }

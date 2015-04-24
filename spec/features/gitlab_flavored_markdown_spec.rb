@@ -14,7 +14,7 @@ describe "GitLab Flavored Markdown", feature: true do
     Commit.any_instance.stub(title: "fix ##{issue.iid}\n\nask @#{fred.username} for details")
   end
 
-  let(:commit) { project.repository.commit }
+  let(:commit) { project.commit }
 
   before do
     login_as :user
