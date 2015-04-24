@@ -318,4 +318,18 @@ module ApplicationHelper
       profile_key_path(key)
     end
   end
+
+  def state_filters_text_for(entity, project)
+    entity_title = entity.to_s.humanize
+
+    count =
+      if project.nil?
+        ""
+      elsif current_controller?(:issues)
+        " (#{project.issues.send(entity).count})"
+      elsif current_controller?(:merge_requests)
+        " (#{project.merge_requests.send(entity).count})"
+      end
+    "#{entity_title}#{count}"
+  end
 end
