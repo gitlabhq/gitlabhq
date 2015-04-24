@@ -1,3 +1,5 @@
+require 'date'
+
 module API
   # Users API
   class Users < Grape::API
@@ -60,12 +62,13 @@ module API
       post do
         authenticated_as_admin!
         required_attributes! [:email, :password, :name, :username]
-        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :bio, :can_create_group, :admin, :confirm]
+        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :bio, :can_create_group, :admin]
         admin = attrs.delete(:admin)
         confirm = !(attrs.delete(:confirm) =~ (/(false|f|no|0)$/i))
         user = User.build_user(attrs)
         user.admin = admin unless admin.nil?
         user.skip_confirmation! unless confirm
+        user.confirmed_at = DateTime.now unless confirm
 
         identity_attrs = attributes_for_keys [:provider, :extern_uid]
         if identity_attrs.any?
