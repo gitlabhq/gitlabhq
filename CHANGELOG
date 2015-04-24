@@ -24,7 +24,7 @@ v 7.11.0 (unreleased)
   - Prevent sending empty messages to HipChat (Chulki Lee)
   - Improve UI for mobile phones on dashboard and project pages
 
-v 7.10.0 (unreleased)
+v 7.10.0
   - Ignore submodules that are defined in .gitmodules but are checked in as directories.
   - Allow projects to be imported from Google Code.
   - Remove access control for uploaded images to fix broken images in emails (Hannes Rosenögger)
