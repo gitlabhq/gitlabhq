@@ -28,7 +28,7 @@ module Mentionable
 
   # Construct a String that contains possible GFM references.
   def mentionable_text
-    self.class.mentionable_attrs.map { |attr| send(attr) || '' }.join
+    self.class.mentionable_attrs.map { |attr| send(attr) }.compact.join("\n\n")
   end
 
   # The GFM reference to this Mentionable, which shouldn't be included in its #references.

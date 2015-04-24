@@ -1,10 +1,10 @@
 class Groups::GroupMembersController < Groups::ApplicationController
-  skip_before_filter :authenticate_user!, only: [:index]
-  before_filter :group
+  skip_before_action :authenticate_user!, only: [:index]
+  before_action :group
 
   # Authorize
-  before_filter :authorize_read_group!
-  before_filter :authorize_admin_group!, except: [:index, :leave]
+  before_action :authorize_read_group!
+  before_action :authorize_admin_group!, except: [:index, :leave]
 
   layout :determine_layout
 

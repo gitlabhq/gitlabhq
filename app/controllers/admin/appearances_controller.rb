@@ -1,5 +1,5 @@
 class Admin::AppearancesController < Admin::ApplicationController
-  before_filter :set_appearance, except: :create
+  before_action :set_appearance, except: :create
 
   def show
   end

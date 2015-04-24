@@ -162,6 +162,7 @@ Options:
 
 ```
 BACKUP=timestamp_of_backup (required if more than one backup exists)
+force=yes (do not ask if the authorized_keys file should get regenerated)
 ```
 
 Example output:

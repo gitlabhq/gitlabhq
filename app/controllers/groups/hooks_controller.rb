@@ -1,7 +1,7 @@
 class Groups::HooksController < Groups::ApplicationController
   # Authorize
-  before_filter :group
-  before_filter :authorize_admin_group!
+  before_action :group
+  before_action :authorize_admin_group!
 
   respond_to :html
 

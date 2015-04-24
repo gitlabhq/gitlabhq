@@ -1,6 +1,6 @@
 class Projects::HooksController < Projects::ApplicationController
   # Authorize
-  before_filter :authorize_admin_project!
+  before_action :authorize_admin_project!
 
   respond_to :html
 

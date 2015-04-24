@@ -1,9 +1,9 @@
 class Projects::TagsController < Projects::ApplicationController
   # Authorize
-  before_filter :require_non_empty_project
-  before_filter :authorize_download_code!
-  before_filter :authorize_push_code!, only: [:create]
-  before_filter :authorize_admin_project!, only: [:destroy]
+  before_action :require_non_empty_project
+  before_action :authorize_download_code!
+  before_action :authorize_push_code!, only: [:create]
+  before_action :authorize_admin_project!, only: [:destroy]
 
   def index
     sorted = VersionSorter.rsort(@repository.tag_names)

@@ -32,19 +32,19 @@ class Spinach::Features::SnippetsUser < Spinach::FeatureSteps
   end
 
   step 'I click "Internal" filter' do
-    within('.nav-stacked') do
+    within('.nav-tabs') do
       click_link "Internal"
     end
   end
 
   step 'I click "Private" filter' do
-    within('.nav-stacked') do
+    within('.nav-tabs') do
       click_link "Private"
     end
   end
 
   step 'I click "Public" filter' do
-    within('.nav-stacked') do
+    within('.nav-tabs') do
       click_link "Public"
     end
   end

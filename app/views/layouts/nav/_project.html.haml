@@ -2,7 +2,7 @@
   - if @project_settings_nav
     = nav_link do
       = link_to project_path(@project), title: 'Back to project', class: "" do
-        %i.fa.fa-caret-square-o-left
+        = icon('caret-square-o-left fw')
         %span
           Back to project
 
@@ -13,48 +13,48 @@
   - else
     = nav_link(path: 'projects#show', html_options: {class: "home"}) do
       = link_to project_path(@project), title: 'Project', class: 'shortcuts-project' do
-        %i.fa.fa-dashboard
+        = icon('dashboard fw')
         %span
           Project
     - if project_nav_tab? :files
       = nav_link(controller: %w(tree blob blame edit_tree new_tree)) do
         = link_to namespace_project_tree_path(@project.namespace, @project, @ref || @repository.root_ref), title: 'Files',  class: 'shortcuts-tree' do
-          %i.fa.fa-files-o
+          = icon('files-o fw')
           %span
             Files
 
     - if project_nav_tab? :commits
       = nav_link(controller: %w(commit commits compare repositories tags branches)) do
         = link_to namespace_project_commits_path(@project.namespace, @project, @ref || @repository.root_ref), title: 'Commits', class: 'shortcuts-commits' do
-          %i.fa.fa-history
+          = icon('history fw')
           %span
             Commits
 
     - if project_nav_tab? :network
       = nav_link(controller: %w(network)) do
         = link_to namespace_project_network_path(@project.namespace, @project, @ref || @repository.root_ref), title: 'Network', class: 'shortcuts-network' do
-          %i.fa.fa-code-fork
+          = icon('code-fork fw')
           %span
             Network
 
     - if project_nav_tab? :graphs
       = nav_link(controller: %w(graphs)) do
         = link_to namespace_project_graph_path(@project.namespace, @project, @ref || @repository.root_ref), title: 'Graphs',  class: 'shortcuts-graphs' do
-          %i.fa.fa-area-chart
+          = icon('area-chart fw')
           %span
             Graphs
 
     - if project_nav_tab? :milestones
       = nav_link(controller: :milestones) do
         = link_to namespace_project_milestones_path(@project.namespace, @project), title: 'Milestones' do
-          %i.fa.fa-clock-o
+          = icon('clock-o fw')
           %span
             Milestones
 
     - if project_nav_tab? :issues
       = nav_link(controller: :issues) do
         = link_to url_for_project_issues(@project, only_path: true), title: 'Issues', class: 'shortcuts-issues' do
-          %i.fa.fa-exclamation-circle
+          = icon('exclamation-circle fw')
           %span
             Issues
             - if @project.default_issues_tracker?
@@ -63,7 +63,7 @@
     - if project_nav_tab? :merge_requests
       = nav_link(controller: :merge_requests) do
         = link_to namespace_project_merge_requests_path(@project.namespace, @project), title: 'Merge Requests', class: 'shortcuts-merge_requests'  do
-          %i.fa.fa-tasks
+          = icon('tasks fw')
           %span
             Merge Requests
             %span.count.merge_counter= @project.merge_requests.opened.count
@@ -71,27 +71,27 @@
     - if project_nav_tab? :labels
       = nav_link(controller: :labels) do
         = link_to namespace_project_labels_path(@project.namespace, @project), title: 'Labels' do
-          %i.fa.fa-tags
+          = icon('tags fw')
           %span
             Labels
 
     - if project_nav_tab? :wiki
       = nav_link(controller: :wikis) do
         = link_to get_project_wiki_path(@project), title: 'Wiki', class: 'shortcuts-wiki' do
-          %i.fa.fa-book
+          = icon('book fw')
           %span
             Wiki
 
     - if project_nav_tab? :snippets
       = nav_link(controller: :snippets) do
         = link_to namespace_project_snippets_path(@project.namespace, @project), title: 'Snippets', class: 'shortcuts-snippets' do
-          %i.fa.fa-file-text-o
+          = icon('file-text-o fw')
           %span
             Snippets
 
     - if project_nav_tab? :settings
       = nav_link(html_options: {class: "#{project_tab_class} separate-item"}) do
         = link_to edit_project_path(@project), title: 'Settings', class: "stat-tab tab no-highlight" do
-          %i.fa.fa-cogs
+          = icon('cogs fw')
           %span
             Settings

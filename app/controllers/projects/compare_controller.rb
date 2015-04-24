@@ -1,7 +1,7 @@
 class Projects::CompareController < Projects::ApplicationController
   # Authorize
-  before_filter :require_non_empty_project
-  before_filter :authorize_download_code!
+  before_action :require_non_empty_project
+  before_action :authorize_download_code!
 
   def index
   end

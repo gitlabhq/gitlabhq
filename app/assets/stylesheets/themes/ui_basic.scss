@@ -4,27 +4,5 @@
  *
  */
 .ui_basic {
-  header {
-    &.navbar-gitlab {
-      .navbar-inner {
-        background: #F1F1F1;
-        border-bottom: 1px solid #DDD;
-
-        .title {
-          color: #555;
-
-          a {
-            color: #555;
-            &:hover {
-              text-decoration: underline;
-            }
-          }
-        }
-
-        .nav > li > a {
-          color: $style_color;
-        }
-      }
-    }
-  }
+  @include gitlab-theme(#CCCCCC, #888888, #777777, #666666);
 }

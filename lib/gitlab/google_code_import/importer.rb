@@ -30,7 +30,10 @@ module Gitlab
 
       def user_map
         @user_map ||= begin
-          user_map = Hash.new { |hash, user| Client.mask_email(user) }
+          user_map = Hash.new do |hash, user| 
+            # Replace ... by \.\.\., so `johnsm...@gmail.com` isn't autolinked.
+            Client.mask_email(user).sub("...", "\\.\\.\\.")
+          end
 
           import_data = project.import_data.try(:data)
           stored_user_map = import_data["user_map"] if import_data
@@ -203,25 +206,25 @@ module Gitlab
       end
 
       def linkify_issues(s)
-        s.gsub(/([Ii]ssue) ([0-9]+)/, '\1 #\2')
+        s = s.gsub(/([Ii]ssue) ([0-9]+)/, '\1 #\2')
+        s = s.gsub(/([Cc]omment) #([0-9]+)/, '\1 \2')
+        s
       end
 
       def escape_for_markdown(s)
-        s = s.gsub("*", "\\*")
-        s = s.gsub("#", "\\#")
+        # No headings and lists
+        s = s.gsub(/^#/, "\\#")
+        s = s.gsub(/^-/, "\\-")
+
+        # No inline code
         s = s.gsub("`", "\\`")
-        s = s.gsub(":", "\\:")
-        s = s.gsub("-", "\\-")
-        s = s.gsub("+", "\\+")
-        s = s.gsub("_", "\\_")
-        s = s.gsub("(", "\\(")
-        s = s.gsub(")", "\\)")
-        s = s.gsub("[", "\\[")
-        s = s.gsub("]", "\\]")
-        s = s.gsub("<", "\\<")
-        s = s.gsub(">", "\\>")
+
+        # Carriage returns make me sad
         s = s.gsub("\r", "")
+
+        # Markdown ignores single newlines, but we need them as <br />.
         s = s.gsub("\n", "  \n")
+
         s
       end
 
@@ -276,11 +279,18 @@ module Gitlab
         if raw_updates.has_key?("blockedOn")
           blocked_ons = raw_updates["blockedOn"].map do |raw_blocked_on|
             name, id = raw_blocked_on.split(":", 2)
-            if name == project.import_source
-              "##{id}"
-            else
-              "#{project.namespace.path}/#{name}##{id}"
-            end
+
+            deleted = name.start_with?("-") 
+            name = name[1..-1] if deleted
+
+            text =
+              if name == project.import_source
+                "##{id}"
+              else
+                "#{project.namespace.path}/#{name}##{id}"
+              end
+            text = "~~#{text}~~" if deleted
+            text
           end
           updates << "*Blocked on: #{blocked_ons.join(", ")}*"
         end
@@ -288,11 +298,18 @@ module Gitlab
         if raw_updates.has_key?("blocking")
           blockings = raw_updates["blocking"].map do |raw_blocked_on|
             name, id = raw_blocked_on.split(":", 2)
-            if name == project.import_source
-              "##{id}"
-            else
-              "#{project.namespace.path}/#{name}##{id}"
-            end
+            
+            deleted = name.start_with?("-") 
+            name = name[1..-1] if deleted
+
+            text =
+              if name == project.import_source
+                "##{id}"
+              else
+                "#{project.namespace.path}/#{name}##{id}"
+              end
+            text = "~~#{text}~~" if deleted
+            text
           end
           updates << "*Blocking: #{blockings.join(", ")}*"
         end
@@ -340,7 +357,7 @@ module Gitlab
 
       def format_issue_body(author, date, content, attachments)
         body = []
-        body << "*By #{author} on #{date}*"
+        body << "*By #{author} on #{date} (imported from Google Code)*"
         body << "---"
 
         if content.blank?

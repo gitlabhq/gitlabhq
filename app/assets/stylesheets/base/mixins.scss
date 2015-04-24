@@ -50,13 +50,6 @@
   @include box-shadow(0 0 0 3px #f1f1f1);
 }
 
-@mixin header-font {
-  color: $style_color;
-  font-size: 16px;
-  line-height: 44px;
-  font-weight: normal;
-}
-
 @mixin md-typography {
   font-size: 15px;
   line-height: 1.5;

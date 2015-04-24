@@ -1,6 +1,6 @@
 class Import::GitlabController < Import::BaseController
-  before_filter :verify_gitlab_import_enabled
-  before_filter :gitlab_auth, except: :callback
+  before_action :verify_gitlab_import_enabled
+  before_action :gitlab_auth, except: :callback
 
   rescue_from OAuth2::Error, with: :gitlab_unauthorized
 
@@ -13,7 +13,7 @@ class Import::GitlabController < Import::BaseController
 
   def status
     @repos = client.projects
-    
+
     @already_added_projects = current_user.created_projects.where(import_type: "gitlab")
     already_added_projects_names = @already_added_projects.pluck(:import_source)
 
@@ -33,7 +33,7 @@ class Import::GitlabController < Import::BaseController
     repo_owner = repo["namespace"]["path"]
     repo_owner = current_user.username if repo_owner == client.user["username"]
     @target_namespace = params[:new_namespace].presence || repo_owner
-    
+
     namespace = get_or_create_namespace || (render and return)
 
     @project = Gitlab::GitlabImport::ProjectCreator.new(repo, namespace, current_user).execute

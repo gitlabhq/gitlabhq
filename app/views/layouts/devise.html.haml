@@ -2,8 +2,8 @@
 %html{ lang: "en"}
   = render "layouts/head"
   %body.ui_mars.login-page.application
+    = render "layouts/empty_head_panel"
     = render "layouts/broadcast"
-    = render "layouts/public_head_panel", title: ''
     .container.navless-container
       .content
         = render "layouts/flash"

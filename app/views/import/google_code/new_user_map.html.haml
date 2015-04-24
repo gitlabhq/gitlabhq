@@ -8,9 +8,31 @@
     Customize how Google Code email addresses and usernames are imported into GitLab.
     In the next step, you'll be able to select the projects you want to import.
   %p 
-    The user map is a JSON document mapping Google Code users (as keys) to the way they will be imported into GitLab (as values). By default the username is masked to ensure users' privacy.
-  %p
-    To map a Google Code user to a full name or GitLab user, simply replace the value, e.g. <code>"johnsmith@gmail.com": "John Smith"</code> or <code>"johnsmith@gmail.com": "@johnsmith"</code>. Be sure to preserve the surrounding double quotes and other punctuation.
+    The user map is a JSON document mapping the Google Code users that participated on your projects to the way their email addresses and usernames will be imported into GitLab. You can change this by changing the value on the right hand side of <code>:</code>. Be sure to preserve the surrounding double quotes, other punctuation and the email address or username on the left hand side.
+  %ul
+    %li
+      %strong Default: Directly import the Google Code email address or username
+      %p
+        <code>"johnsmith@example.com": "johnsm...@example.com"</code> 
+        will add "By johnsm...@example.com" to all issues and comments originally created by johnsmith@example.com. 
+        The email address or username is masked to ensure the user's privacy.
+    %li
+      %strong Map a Google Code user to a GitLab user
+      %p
+        <code>"johnsmith@example.com": "@johnsmith"</code> 
+        will add "By <a href="#">@johnsmith</a>" to all issues and comments originally created by johnsmith@example.com, 
+        and will set <a href="#">@johnsmith</a> as the assignee on all issues originally assigned to johnsmith@example.com.
+    %li
+      %strong Map a Google Code user to a full name
+      %p
+        <code>"johnsmith@example.com": "John Smith"</code> 
+        will add "By John Smith" to all issues and comments originally created by johnsmith@example.com.
+    %li
+      %strong Map a Google Code user to a full email address
+      %p
+        <code>"johnsmith@example.com": "johnsmith@example.com"</code> 
+        will add "By <a href="#">johnsmith@example.com</a>" to all issues and comments originally created by johnsmith@example.com. 
+        By default, the email address or username is masked to ensure the user's privacy. Use this option if you want to show the full email address.
 
   .form-group
     .col-sm-12

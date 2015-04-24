@@ -28,13 +28,12 @@ class JiraService < IssueTrackerService
   before_validation :set_api_version, :set_jira_issue_transition_id
 
   def help
-    issue_tracker_link =  help_page_path("integration", "external-issue-tracker")
+    line1 = 'Setting `project_url`, `issues_url` and `new_issue_url` will '\
+    'allow a user to easily navigate to the Jira issue tracker. See the '\
+    '[integration doc](http://doc.gitlab.com/ce/integration/external-issue-tracker.html) '\
+    'for details.'
 
-    line1 = "Setting `project_url`, `issues_url` and `new_issue_url` will "\
-    "allow a user to easily navigate to the Jira issue tracker. "\
-    "See the [integration doc](#{issue_tracker_link}) for details."
-
-    line2 = 'Support for referencing commits and automatic closing of Jira issues directly ' \
+    line2 = 'Support for referencing commits and automatic closing of Jira issues directly '\
     'from GitLab is [available in GitLab EE.](http://doc.gitlab.com/ee/integration/jira.html)'
 
     [line1, line2].join("\n\n")

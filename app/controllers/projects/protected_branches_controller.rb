@@ -1,7 +1,7 @@
 class Projects::ProtectedBranchesController < Projects::ApplicationController
   # Authorize
-  before_filter :require_non_empty_project
-  before_filter :authorize_admin_project!
+  before_action :require_non_empty_project
+  before_action :authorize_admin_project!
 
   layout "project_settings"
 

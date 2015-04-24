@@ -1,0 +1,72 @@
+@mixin gitlab-theme($color-light, $color, $color-darker, $color-dark) {
+  header {
+    &.navbar-gitlab {
+      .navbar-inner {
+        .app_logo {
+          background-color: $color-darker;
+
+          a {
+            color: $color-light;
+          }
+
+          &:hover {
+            background-color: $color-dark;
+            a {
+              color: #FFF;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .page-with-sidebar {
+    background: $color-darker;
+
+    .collapse-nav a {
+      color: #FFF;
+      background: $color;
+    }
+
+    .sidebar-wrapper {
+      background: $color-darker;
+      border-right: 1px solid $color-darker;
+    }
+
+    .nav-sidebar li {
+      a {
+        color: $color-light;
+
+        &:hover, &:focus, &:active {
+          background: $color-dark;
+        }
+
+        i {
+          color: $color-light;
+        }
+
+        .count {
+          color: $color-light;
+          background: $color-dark;
+        }
+      }
+
+      &.separate-item {
+        border-top: 1px solid $color;
+      }
+
+      &.active a {
+        color: #FFF;
+        font-weight: bold;
+
+        &.no-highlight {
+          border: none;
+        }
+
+        i {
+          color: #FFF
+        }
+      }
+    }
+  }
+}

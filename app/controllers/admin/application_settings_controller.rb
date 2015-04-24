@@ -1,5 +1,5 @@
 class Admin::ApplicationSettingsController < Admin::ApplicationController
-  before_filter :set_application_setting
+  before_action :set_application_setting
 
   def show
   end

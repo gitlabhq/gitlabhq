@@ -11,9 +11,55 @@ header {
     width: 100%;
 
     .navbar-inner {
+      background: #FFF;
+      border-bottom: 1px solid #DDD;
       filter: none;
 
+      .title {
+        position: relative;
+        float: left;
+        margin: 0;
+        margin-left: 25px;
+        font-size: 18px;
+        line-height: 44px;
+        font-weight: normal;
+        color: #555;
+
+        @include str-truncated(37%);
+
+        a {
+          color: #555;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      .app_logo {
+        border-bottom: 1px solid transparent;
+        margin-bottom: -1px;
+
+        a {
+          padding: 5px 8px;
+
+          img {
+            float: left;
+          }
+
+          h3 {
+            width: 158px;
+            float: left;
+            margin: 0;
+            margin-left: 20px;
+            font-size: 18px;
+            line-height: 34px;
+            font-weight: normal;
+          }
+        }
+      }
+
       .nav > li > a {
+        color: #666;
         font-size: 14px;
         line-height: 32px;
         padding: 6px 10px;
@@ -30,14 +76,9 @@ header {
       }
 
       .navbar-toggle {
-        color: $style_color;
+        color: #666;
         margin: 0;
-        padding: 10px;
         border-radius: 0;
-
-        button i { font-size: 22px; }
-
-        &.collapsed { background-color: transparent !important;}
 
         &:hover {
           background-color: #EEE;
@@ -60,8 +101,6 @@ header {
 
       .navbar-collapse {
         margin-top: 47px;
-        padding-right: 0;
-        padding-left: 0;
       }
 
       .navbar-nav {
@@ -100,10 +139,8 @@ header {
 
     a {
       float: left;
-      padding: 5px 0;
       height: 46px;
-      width: 52px;
-      text-align: center;
+      width: 100%;
 
       img {
         width: 36px;
@@ -113,20 +150,6 @@ header {
     &:hover {
       background-color: #EEE;
     }
-  }
-
-  /**
-   *
-   * Project / Area name
-   *
-   */
-  .title {
-    position: relative;
-    float: left;
-    margin: 0;
-    margin-left: 5px;
-    @include header-font;
-    @include str-truncated(37%);
   }
 
   .profile-pic {
@@ -164,9 +187,10 @@ header {
       padding-left: 25px;
       font-size: 13px;
       @include border-radius(3px);
-      border: 1px solid #c6c6c6;
+      border: 1px solid #DDD;
       box-shadow: none;
       @include transition(all 0.15s ease-in 0s);
+      background-color: #f5f5f5;
     }
   }
 }
@@ -190,5 +214,28 @@ header {
 @media (max-width: $screen-xs-max) {
   #nprogress .spinner {
     right: 35px !important;
+  }
+}
+
+@media (max-width: $screen-md-max) {
+  .header-collapsed, .header-expanded {
+    width: 52px;
+
+    h3 {
+      display: none;
+    }
+  }
+}
+
+@media(min-width: $screen-md-max) {
+  .header-collapsed {
+    width: 52px;
+
+    h3 {
+      display: none;
+    }
+  }
+
+  .header-expanded {
   }
 }

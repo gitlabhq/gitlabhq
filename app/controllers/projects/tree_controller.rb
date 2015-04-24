@@ -2,9 +2,9 @@
 class Projects::TreeController < Projects::ApplicationController
   include ExtractsPath
 
-  before_filter :require_non_empty_project, except: [:new, :create]
-  before_filter :assign_ref_vars
-  before_filter :authorize_download_code!
+  before_action :require_non_empty_project, except: [:new, :create]
+  before_action :assign_ref_vars
+  before_action :authorize_download_code!
 
   def show
     if tree.entries.empty?

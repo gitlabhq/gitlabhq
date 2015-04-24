@@ -249,6 +249,16 @@ describe ApplicationHelper do
       expect(link_to('Example', 'http://example.foo/bar')).
         to eq '<a href="http://example.foo/bar">Example</a>'
     end
+
+    it 'should not raise an error when given a bad URI' do
+      expect { link_to('default', 'if real=1 RANDOM; if real>1 IDLHS; if real>500 LHS') }.
+        not_to raise_error
+    end
+
+    it 'should not raise an error when given a bad mailto URL' do
+      expect { link_to('email', 'mailto://foo.bar@example.es?subject=Subject%20Line') }.
+        not_to raise_error
+    end
   end
 
   describe 'markup_render' do

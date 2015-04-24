@@ -1,5 +1,5 @@
 class Admin::ServicesController < Admin::ApplicationController
-  before_filter :service, only: [:edit, :update]
+  before_action :service, only: [:edit, :update]
 
   def index
     @services = services_templates

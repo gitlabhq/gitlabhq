@@ -2,7 +2,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
   respond_to :html
 
   # Authorize
-  before_filter :authorize_admin_project!
+  before_action :authorize_admin_project!
 
   layout "project_settings"
 
