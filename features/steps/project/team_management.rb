@@ -9,8 +9,8 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
     page.should have_content(@user.username)
   end
 
-  step 'I should see "Sam" in team list' do
-    user = User.find_by(name: "Sam")
+  step 'I should see "Dmitriy" in team list' do
+    user = User.find_by(name: "Dmitriy")
     page.should have_content(user.name)
     page.should have_content(user.username)
   end
@@ -51,15 +51,15 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
     end
   end
 
-  step 'I should see "Sam" in team list as "Developer"' do
+  step 'I should see "Dmitriy" in team list as "Developer"' do
     within ".access-developer" do
-      page.should have_content('Sam')
+      page.should have_content('Dmitriy')
     end
   end
 
-  step 'I change "Sam" role to "Reporter"' do
+  step 'I change "Dmitriy" role to "Reporter"' do
     project = Project.find_by(name: "Shop")
-    user = User.find_by(name: 'Sam')
+    user = User.find_by(name: 'Dmitriy')
     project_member = project.project_members.find_by(user_id: user.id)
     within "#project_member_#{project_member.id}" do
       click_button "Edit access level"
@@ -68,9 +68,9 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
     end
   end
 
-  step 'I should see "Sam" in team list as "Reporter"' do
+  step 'I should see "Dmitriy" in team list as "Reporter"' do
     within ".access-reporter" do
-      page.should have_content('Sam')
+      page.should have_content('Dmitriy')
     end
   end
 
@@ -78,8 +78,8 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
     click_link "Remove from team"
   end
 
-  step 'I should not see "Sam" in team list' do
-    user = User.find_by(name: "Sam")
+  step 'I should not see "Dmitriy" in team list' do
+    user = User.find_by(name: "Dmitriy")
     page.should_not have_content(user.name)
     page.should_not have_content(user.username)
   end
@@ -88,12 +88,12 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
     create(:user, name: "Mike")
   end
 
-  step 'gitlab user "Sam"' do
-    create(:user, name: "Sam")
+  step 'gitlab user "Dmitriy"' do
+    create(:user, name: "Dmitriy")
   end
 
-  step '"Sam" is "Shop" developer' do
-    user = User.find_by(name: "Sam")
+  step '"Dmitriy" is "Shop" developer' do
+    user = User.find_by(name: "Dmitriy")
     project = Project.find_by(name: "Shop")
     project.team << [user, :developer]
   end
@@ -119,9 +119,9 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
     click_button 'Import'
   end
 
-  step 'I click cancel link for "Sam"' do
+  step 'I click cancel link for "Dmitriy"' do
     project = Project.find_by(name: "Shop")
-    user = User.find_by(name: 'Sam')
+    user = User.find_by(name: 'Dmitriy')
     project_member = project.project_members.find_by(user_id: user.id)
     within "#project_member_#{project_member.id}" do
       click_link('Remove user from team')
