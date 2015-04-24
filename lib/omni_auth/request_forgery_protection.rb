@@ -1,7 +1,7 @@
 # Protects OmniAuth request phase against CSRF.
 
 module OmniAuth
-  # Based from ActionController::RequestForgeryProtection.
+  # Based on ActionController::RequestForgeryProtection.
   class RequestForgeryProtection
     def initialize(env)
       @env = env
@@ -13,6 +13,10 @@ module OmniAuth
 
     def session
       request.session
+    end
+
+    def reset_session
+      request.reset_session
     end
 
     def params
