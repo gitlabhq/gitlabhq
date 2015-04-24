@@ -50,7 +50,6 @@ describe API::API, api: true  do
       it 'should fail if forked project exists in the user namespace' do
         post api("/projects/fork/#{project.id}", user)
         expect(response.status).to eq(409)
-        expect(json_response['message']['base']).to eq(['Invalid fork destination'])
         expect(json_response['message']['name']).to eq(['has already been taken'])
         expect(json_response['message']['path']).to eq(['has already been taken'])
       end

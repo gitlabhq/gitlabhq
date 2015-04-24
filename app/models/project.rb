@@ -686,11 +686,21 @@ class Project < ActiveRecord::Base
   end
 
   def create_repository
-    if gitlab_shell.add_repository(path_with_namespace)
-      true
+    if forked?
+      if gitlab_shell.fork_repository(forked_from_project.path_with_namespace, self.namespace.path)
+        ensure_satellite_exists
+        true
+      else
+        errors.add(:base, 'Failed to fork repository')
+        false
+      end
     else
-      errors.add(:base, 'Failed to create repository')
-      false
+      if gitlab_shell.add_repository(path_with_namespace)
+        true
+      else
+        errors.add(:base, 'Failed to create repository')
+        false
+      end
     end
   end
 

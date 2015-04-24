@@ -1,66 +1,28 @@
 module Projects
   class ForkService < BaseService
-    include Gitlab::ShellAdapter
-
     def execute
-      @from_project = @project
-
-      project_params = {
-        visibility_level: @from_project.visibility_level,
-        description: @from_project.description,
+      new_params = {
+        forked_from_project_id: @project.id,
+        visibility_level:       @project.visibility_level,
+        description:            @project.description,
+        name:                   @project.name,
+        path:                   @project.path,
+        namespace_id:           @params[:namespace].try(:id) || current_user.namespace.id
       }
 
-      project = Project.new(project_params)
-      project.name = @from_project.name
-      project.path = @from_project.path
-      project.creator = @current_user
-      if @from_project.avatar.present? && @from_project.avatar.image?
-        project.avatar = @from_project.avatar
+      if @project.avatar.present? && @project.avatar.image?
+        new_params[:avatar] = @project.avatar
       end
 
-      if namespace = @params[:namespace]
-        project.namespace = namespace
-      else
-        project.namespace = @current_user.namespace
-      end
+      new_project = CreateService.new(current_user, new_params).execute
 
-      unless @current_user.can?(:create_projects, project.namespace)
-        project.errors.add(:namespace, 'insufficient access rights')
-        return project
-      end
-
-      # If the project cannot save, we do not want to trigger the project destroy
-      # as this can have the side effect of deleting a repo attached to an existing
-      # project with the same name and namespace
-      if project.valid?
-        begin
-          Project.transaction do
-            #First save the DB entries as they can be rolled back if the repo fork fails
-            project.build_forked_project_link(forked_to_project_id: project.id, forked_from_project_id: @from_project.id)
-            if project.save
-              project.team << [@current_user, :master, @current_user]
-            end
-
-            #Now fork the repo
-            unless gitlab_shell.fork_repository(@from_project.path_with_namespace, project.namespace.path)
-              raise 'forking failed in gitlab-shell'
-            end
-
-            project.ensure_satellite_exists
-          end
-
-          if @from_project.gitlab_ci?
-            ForkRegistrationWorker.perform_async(@from_project.id, project.id, @current_user.private_token)
-          end
-        rescue => ex
-          project.errors.add(:base, 'Fork transaction failed.')
-          project.destroy
+      if new_project.persisted?
+        if @project.gitlab_ci?
+          ForkRegistrationWorker.perform_async(@project.id, new_project.id, @current_user.private_token)
         end
-      else
-        project.errors.add(:base, 'Invalid fork destination')
       end
 
-      project
+      new_project
     end
   end
 end
