@@ -4,6 +4,11 @@
     margin-top: 20px;
   }
 
+  .container-fluid {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
   .nav.nav-tabs > li > a {
     padding: 10px;
     font-size: 12px;
@@ -26,6 +31,34 @@
 
   .project-home-links {
     display: none;
+  }
+
+  .project-avatar {
+    display: none;
+  }
+
+  .project-home-panel {
+    padding-left: 0 !important;
+
+    .project-home-row {
+      .project-home-desc {
+        margin-right: 0 !important;
+        float: none !important;
+      }
+
+      .project-repo-buttons {
+        position: static;
+        margin-top: 15px;
+        width: 100%;
+        float: none;
+        text-align: left;
+      }
+    }
+  }
+
+  .navbar-inner .title {
+    margin-left: 6px !important;
+    max-width: 70% !important;
   }
 }
 
