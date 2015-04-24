@@ -1,3 +1,7 @@
+= content_for :meta_tags do
+  - if current_user
+    = auto_discovery_link_tag(:atom, issues_dashboard_url(format: :atom, private_token: current_user.private_token), title: "#{current_user.name} issues")
+
 %h3.page-title
   Issues
 
@@ -6,5 +10,11 @@
 %hr
 
 .append-bottom-20
+  .pull-right
+    - if current_user
+      .hidden-xs.pull-left
+        = link_to issues_dashboard_url(format: :atom, private_token: current_user.private_token), class: 'btn' do
+          %i.fa.fa-rss
+
   = render 'shared/issuable_filter'
 = render 'shared/issues'
