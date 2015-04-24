@@ -145,7 +145,7 @@ describe API::API, api: true  do
       expect(json_response['message']['projects_limit']).
           to eq(['must be greater than or equal to 0'])
       expect(json_response['message']['username']).
-          to eq([Gitlab::Regex.send(:namespace_path_regex_message)])
+          to eq([Gitlab::Regex.send(:namespace_regex_message)])
     end
 
     it "shouldn't available for non admin users" do
@@ -271,7 +271,7 @@ describe API::API, api: true  do
       expect(json_response['message']['projects_limit']).
           to eq(['must be greater than or equal to 0'])
       expect(json_response['message']['username']).
-          to eq([Gitlab::Regex.send(:namespace_path_regex_message)])
+          to eq([Gitlab::Regex.send(:namespace_regex_message)])
     end
 
     context "with existing user" do

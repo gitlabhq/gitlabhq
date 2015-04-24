@@ -22,7 +22,7 @@ module Gitlab
       end
 
       # Pattern used to extract `@user` user references from text
-      USER_PATTERN = /@(?<user>#{Gitlab::Regex::NAMESPACE_PATH_REGEX_STR})/
+      USER_PATTERN = /@(?<user>#{Gitlab::Regex::NAMESPACE_REGEX_STR})/
 
       def call
         replace_text_nodes_matching(USER_PATTERN) do |content|
