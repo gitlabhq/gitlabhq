@@ -11,7 +11,7 @@ v 7.11.0 (unreleased)
   - Fix bug causing `@whatever` inside an inline code snippet (backtick-style) to be picked up as a user mention.
   -
   -
-  -
+  - API: Allow recursive tree request
   -
   - Move snippets UI to fluid layout
   - Improve UI for sidebar. Increase separation between navigation and content
@@ -95,13 +95,13 @@ v 7.10.0 (unreleased)
   - Ability to skip some items from backup (database, respositories or uploads)
   - Archive repositories in background worker.
   - Import GitHub, Bitbucket or GitLab.com projects owned by authenticated user into current namespace.
-  - Project labels are now available over the API under the "tag_list" field (Cristian Medina) 
+  - Project labels are now available over the API under the "tag_list" field (Cristian Medina)
   - Fixed link paths for HTTP and SSH on the admin project view (Jeremy Maziarz)
   - Fix and improve help rendering (Sullivan Sénéchal)
   - Fix final line in EmailsOnPush email diff being rendered as error.
   - Authometic setup GitLab CI project for forks if origin project has GitLab CI enabled
   - Prevent duplicate Buildkite service creation.
-  - Fix git over ssh errors 'fatal: protocol error: bad line length character' 
+  - Fix git over ssh errors 'fatal: protocol error: bad line length character'
   - Automatically setup GitLab CI project for forks if origin project has GitLab CI enabled
   - Bust group page project list cache when namespace name or path changes.
   - Explicitly set image alt-attribute to prevent graphical glitches if gravatars could not be loaded
@@ -110,7 +110,7 @@ v 7.10.0 (unreleased)
   - Fix stuck Merge Request merging events from old installations (Ben Bodenmiller)
   - Fix merge request comments on files with multiple commits
   - Fix Resource Owner Password Authentication Flow
-  
+
 v 7.9.4
   - Security: Fix project import URL regex to prevent arbitary local repos from being imported
   - Fixed issue where only 25 commits would load in file listings

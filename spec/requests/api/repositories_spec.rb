@@ -117,6 +117,23 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'GET /projects/:id/repository/tree?recursive=1' do
+    context 'authorized user' do
+      before { project.team << [user2, :reporter] }
+
+      it 'should return project commits' do
+        get api("/projects/#{project.id}/repository/tree?recursive=1", user)
+        response.status.should == 200
+
+        json_response.should be_an Array
+        json_response[2]['name'].should == 'html'
+        json_response[2]['path'].should == 'files/html'
+        json_response[2]['type'].should == 'tree'
+        json_response[2]['mode'].should == '040000'
+      end
+    end
+  end
+
   describe "GET /projects/:id/repository/blobs/:sha" do
     it "should get the raw file contents" do
       get api("/projects/#{project.id}/repository/blobs/master?filepath=README.md", user)
