@@ -17,7 +17,7 @@ v 7.11.0 (unreleased)
   - Include commit comments in MR from a forked project.
   -
   -
-  -
+  - Fix bug where Slack service channel was not saved in admin template settings. (Stan Hu)
   - Move snippets UI to fluid layout
   - Improve UI for sidebar. Increase separation between navigation and content
   - Improve new project command options (Ben Bodenmiller)

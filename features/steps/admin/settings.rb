@@ -31,8 +31,13 @@ class Spinach::Features::AdminSettings < Spinach::FeatureSteps
     page.check('Comments')
     page.check('Issues events')
     page.check('Merge Request events')
-    fill_in 'Webhook', with: "http://localhost"
     click_on 'Save'
+  end
+
+  step 'I fill out Slack settings' do
+    fill_in 'Webhook', with: 'http://localhost'
+    fill_in 'Username', with: 'test_user'
+    fill_in 'Channel', with: '#test_channel'
   end
 
   step 'I should see service template settings saved' do
@@ -43,5 +48,11 @@ class Spinach::Features::AdminSettings < Spinach::FeatureSteps
     all('input[type=checkbox]').each do |checkbox|
       checkbox.should be_checked
     end
+  end
+
+  step 'I should see Slack settings saved' do
+    find_field('Webhook').value.should eq 'http://localhost'
+    find_field('Username').value.should eq 'test_user'
+    find_field('Channel').value.should eq '#test_channel'
   end
 end
