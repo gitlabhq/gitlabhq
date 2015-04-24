@@ -11,6 +11,9 @@ Feature: Admin Settings
   Scenario: Change Slack Service Template settings
     When I click on "Service Templates"
     And I click on "Slack" service
+    And I fill out Slack settings
     Then I check all events and submit form
     And I should see service template settings saved
+    Then I click on "Slack" service
     And I should see all checkboxes checked
+    And I should see Slack settings saved
