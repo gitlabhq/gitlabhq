@@ -354,9 +354,9 @@ GEM
       rack (~> 1.2)
     octokit (3.7.0)
       sawyer (~> 0.6.0, >= 0.5.3)
-    omniauth (1.1.4)
-      hashie (>= 1.2, < 3)
-      rack
+    omniauth (1.2.2)
+      hashie (>= 1.2, < 4)
+      rack (~> 1.0)
     omniauth-bitbucket (0.0.2)
       multi_json (~> 1.7)
       omniauth (~> 1.1)
@@ -734,7 +734,7 @@ DEPENDENCIES
   newrelic_rpm
   nprogress-rails
   octokit (= 3.7.0)
-  omniauth (~> 1.1.3)
+  omniauth (~> 1.2.2)
   omniauth-bitbucket
   omniauth-github
   omniauth-gitlab

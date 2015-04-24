@@ -14,7 +14,7 @@ v 7.11.0 (unreleased)
   - Add project activity atom feed.
   - Don't crash when an MR from a fork has a cross-reference comment from the target project on of its commits.
   - Include commit comments in MR from a forked project.
-  -
+  - Protect OmniAuth request phase against CSRF.
   -
   -
   - Move snippets UI to fluid layout
