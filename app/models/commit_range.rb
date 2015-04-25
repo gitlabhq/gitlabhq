@@ -61,14 +61,14 @@ class CommitRange
 
   # Returns a String for use in a link's title attribute
   def reference_title
-    "Commits #{sha_from_as_param} through #{sha_to}"
+    "Commits #{suffixed_sha_from} through #{sha_to}"
   end
 
   # Return a Hash of parameters for passing to a URL helper
   #
   # See `namespace_project_compare_url`
   def to_param
-    { from: sha_from_as_param, to: sha_to }
+    { from: suffixed_sha_from, to: sha_to }
   end
 
   def exclude_start?
@@ -91,7 +91,7 @@ class CommitRange
   end
 
   def commit_from
-    @commit_from ||= project.repository.commit(sha_from_as_param)
+    @commit_from ||= project.repository.commit(suffixed_sha_from)
   end
 
   def commit_to
@@ -100,7 +100,7 @@ class CommitRange
 
   private
 
-  def sha_from_as_param
+  def suffixed_sha_from
     sha_from + (exclude_start? ? '^' : '')
   end
 end
