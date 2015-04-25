@@ -11,33 +11,6 @@ describe CommitRange do
     expect { described_class.new("Foo") }.to raise_error
   end
 
-  describe '#to_a' do
-    context 'when valid' do
-      let(:commit1) { double('commit1') }
-      let(:commit2) { double('commit2') }
-
-      before do
-        expect(range).to receive(:valid_commits?).and_return(true)
-        allow(range).to receive(:commit_from).and_return(commit1)
-        allow(range).to receive(:commit_to).and_return(commit2)
-      end
-
-      it 'returns an Array of Commits' do
-        expect(range.to_a).to eq [commit1, commit2]
-      end
-    end
-
-    context 'when invalid' do
-      before do
-        expect(range).to receive(:valid_commits?).and_return(false)
-      end
-
-      it 'returns [nil, nil]' do
-        expect(range.to_a).to eq [nil, nil]
-      end
-    end
-  end
-
   describe '#to_s' do
     it 'is correct for three-dot syntax' do
       expect(range.to_s).to eq "#{sha_from[0..7]}...#{sha_to[0..7]}"

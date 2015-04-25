@@ -15,7 +15,6 @@
 #   # Assuming `project` is a Project with a repository containing both commits:
 #   range.project = project
 #   range.valid_commits? # => true
-#   range.to_a           # => [#<Commit ...>, #<Commit ...>]
 #
 class CommitRange
   include ActiveModel::Conversion
@@ -53,18 +52,6 @@ class CommitRange
 
   def inspect
     %(#<#{self.class}:#{object_id} #{to_s}>)
-  end
-
-  # Returns an Array of Commit objects, where the first value is the starting
-  # commit, and the second value is the ending commit
-  #
-  # Returns `[nil, nil]` if `valid_commits?` is falsey
-  def to_a
-    if valid_commits?
-      [commit_from, commit_to]
-    else
-      [nil, nil]
-    end
   end
 
   def to_s
