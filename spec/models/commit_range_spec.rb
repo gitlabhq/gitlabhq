@@ -45,13 +45,13 @@ describe CommitRange do
     end
   end
 
-  describe '#inclusive?' do
+  describe '#exclude_start?' do
     it 'is false for three-dot ranges' do
-      expect(range).not_to be_inclusive
+      expect(range.exclude_start?).to eq false
     end
 
     it 'is true for two-dot ranges' do
-      expect(range2).to be_inclusive
+      expect(range2.exclude_start?).to eq true
     end
   end
 

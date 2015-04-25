@@ -3,14 +3,15 @@
 # Examples:
 #
 #   range = CommitRange.new('f3f85602...e86e1013')
-#   range.inclusive?      # => false
-#   range.to_s            # => "f3f85602...e86e1013"
+#   range.exclude_start?  # => false
 #   range.reference_title # => "Commits f3f85602 through e86e1013"
+#   range.to_s            # => "f3f85602...e86e1013"
 #
 #   range = CommitRange.new('f3f856029bc5f966c5a7ee24cf7efefdd20e6019..e86e1013709735be5bb767e2b228930c543f25ae')
-#   range.inclusive? # => true
-#   range.to_s       # => "f3f85602..e86e1013"
-#   range.to_param   # => {from: "f3f856029bc5f966c5a7ee24cf7efefdd20e6019^", to: "e86e1013709735be5bb767e2b228930c543f25ae"}
+#   range.exclude_start?  # => true
+#   range.reference_title # => "Commits f3f85602^ through e86e1013"
+#   range.to_param        # => {from: "f3f856029bc5f966c5a7ee24cf7efefdd20e6019^", to: "e86e1013709735be5bb767e2b228930c543f25ae"}
+#   range.to_s            # => "f3f85602..e86e1013"
 #
 #   # Assuming `project` is a Project with a repository containing both commits:
 #   range.project = project
@@ -24,8 +25,8 @@ class CommitRange
   # Optional Project model
   attr_accessor :project
 
-  # See `inclusive?`
-  attr_reader :inclusive
+  # See `exclude_start?`
+  attr_reader :exclude_start
 
   # The beginning and ending SHA sums can be between 6 and 40 hex characters,
   # and the range selection can be double- or triple-dot.
@@ -44,7 +45,7 @@ class CommitRange
       raise ArgumentError, "invalid CommitRange string format: #{range_string}"
     end
 
-    @inclusive = !range_string.include?('...')
+    @exclude_start = !range_string.include?('...')
     @sha_from, @notation, @sha_to = range_string.split(/(\.{2,3})/, 2)
 
     @project = project
@@ -70,11 +71,8 @@ class CommitRange
     { from: sha_from_as_param, to: sha_to }
   end
 
-  # Check if the range is inclusive
-  #
-  # We consider a CommitRange "inclusive" when it uses the two-dot syntax.
-  def inclusive?
-    inclusive
+  def exclude_start?
+    exclude_start
   end
 
   # Check if both the starting and ending commit IDs exist in a project's
@@ -103,6 +101,6 @@ class CommitRange
   private
 
   def sha_from_as_param
-    sha_from + (inclusive? ? '^' : '')
+    sha_from + (exclude_start? ? '^' : '')
   end
 end
