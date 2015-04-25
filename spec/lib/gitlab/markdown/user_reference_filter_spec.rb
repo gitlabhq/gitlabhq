@@ -38,7 +38,7 @@ module Gitlab::Markdown
 
       it 'adds to the results hash' do
         result = pipeline_result('Hey @all')
-        expect(result[:references][:user]).to eq [[project.creator]]
+        expect(result[:references][:user]).to eq [project.creator]
       end
     end
 
@@ -90,7 +90,7 @@ module Gitlab::Markdown
 
         it 'adds to the results hash' do
           result = pipeline_result("Hey #{reference}", current_user: user)
-          expect(result[:references][:user]).to eq [group.users]
+          expect(result[:references][:user]).to eq group.users
         end
       end
 
