@@ -134,6 +134,14 @@ $ ->
   # Initialize tooltips
   $('body').tooltip({
     selector: '.has_tooltip, [data-toggle="tooltip"], .page-sidebar-collapsed .nav-sidebar a'
+    placement: (_, el) ->
+      $el = $(el)
+      if $el.attr('id') == 'js-shortcuts-home'
+        # Place the logo tooltip on the right when collapsed, bottom when expanded
+        $el.parents('header').hasClass('header-collapsed') and 'right' or 'bottom'
+      else
+        # Otherwise use the data-placement attribute like normal
+        $el.data('placement')
   })
 
   # Form submitter
