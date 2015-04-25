@@ -1,16 +1,19 @@
 require 'spinach/capybara'
 require 'capybara/poltergeist'
 
+# Give CI some extra time
+timeout = (ENV['CI'] || ENV['CI_SERVER']) ? 90 : 10
+
 Capybara.javascript_driver = :poltergeist
 Capybara.register_driver :poltergeist do |app|
-  Capybara::Poltergeist::Driver.new(app, js_errors: false, timeout: 90)
+  Capybara::Poltergeist::Driver.new(app, js_errors: false, timeout: timeout)
 end
 
 Spinach.hooks.on_tag("javascript") do
   Capybara.current_driver = Capybara.javascript_driver
 end
 
-Capybara.default_wait_time = 60
+Capybara.default_wait_time = timeout
 Capybara.ignore_hidden_elements = false
 
 require 'capybara-screenshot/spinach'
