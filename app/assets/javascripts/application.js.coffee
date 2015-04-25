@@ -133,7 +133,7 @@ $ ->
 
   # Initialize tooltips
   $('body').tooltip({
-    selector: '.has_tooltip, [data-toggle="tooltip"]'
+    selector: '.has_tooltip, [data-toggle="tooltip"], .page-sidebar-collapsed .nav-sidebar a'
   })
 
   # Form submitter
