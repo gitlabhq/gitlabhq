@@ -65,12 +65,12 @@ describe Gitlab::ReferenceExtractor do
     earlier_commit = project.commit('master~2')
 
     subject.analyze("this references commits #{earlier_commit.sha[0..6]}...#{commit.sha[0..6]}")
+
     extracted = subject.commit_ranges
     expect(extracted.size).to eq(1)
-    expect(extracted[0][0].sha).to eq(earlier_commit.sha)
-    expect(extracted[0][0].message).to eq(earlier_commit.message)
-    expect(extracted[0][1].sha).to eq(commit.sha)
-    expect(extracted[0][1].message).to eq(commit.message)
+    expect(extracted.first).to be_kind_of(CommitRange)
+    expect(extracted.first.commit_from).to eq earlier_commit
+    expect(extracted.first.commit_to).to eq commit
   end
 
   context 'with a project with an underscore' do

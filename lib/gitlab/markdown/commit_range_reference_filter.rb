@@ -56,7 +56,7 @@ module Gitlab
           range = CommitRange.new(id, project)
 
           if range.valid_commits?
-            push_result(:commit_range, range.to_a)
+            push_result(:commit_range, range)
 
             url = url_for_commit_range(project, range)
 
