@@ -6,7 +6,7 @@ timeout = (ENV['CI'] || ENV['CI_SERVER']) ? 90 : 10
 
 Capybara.javascript_driver = :poltergeist
 Capybara.register_driver :poltergeist do |app|
-  Capybara::Poltergeist::Driver.new(app, js_errors: false, timeout: timeout)
+  Capybara::Poltergeist::Driver.new(app, js_errors: true, timeout: timeout)
 end
 
 Spinach.hooks.on_tag("javascript") do
