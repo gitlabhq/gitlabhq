@@ -39,8 +39,8 @@ module Gitlab
 
       # Add a reference to the pipeline's result Hash
       #
-      # type  - Singular Symbol reference type (e.g., :issue, :user, etc.)
-      # value - Object to add
+      # type   - Singular Symbol reference type (e.g., :issue, :user, etc.)
+      # values - One or more Objects to add
       def push_result(type, *values)
         return if values.empty?
 
