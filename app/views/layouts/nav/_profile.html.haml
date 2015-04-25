@@ -1,50 +1,50 @@
 %ul.nav.nav-sidebar
   = nav_link(path: 'profiles#show', html_options: {class: 'home'}) do
-    = link_to profile_path, title: "Profile" do
+    = link_to profile_path, title: 'Profile', data: {placement: 'right'} do
       = icon('user fw')
       %span
         Profile
   = nav_link(controller: :accounts) do
-    = link_to profile_account_path, title: 'Account' do
+    = link_to profile_account_path, title: 'Account', data: {placement: 'right'} do
       = icon('gear fw')
       %span
         Account
   = nav_link(path: ['profiles#applications', 'applications#edit', 'applications#show', 'applications#new']) do
-    = link_to applications_profile_path, title: 'Applications' do
+    = link_to applications_profile_path, title: 'Applications', data: {placement: 'right'} do
       = icon('cloud fw')
       %span
         Applications
   = nav_link(controller: :emails) do
-    = link_to profile_emails_path, title: 'Emails' do
+    = link_to profile_emails_path, title: 'Emails', data: {placement: 'right'} do
       = icon('envelope-o fw')
       %span
         Emails
         %span.count= current_user.emails.count + 1
   - unless current_user.ldap_user?
     = nav_link(controller: :passwords) do
-      = link_to edit_profile_password_path, title: 'Password' do
+      = link_to edit_profile_password_path, title: 'Password', data: {placement: 'right'} do
         = icon('lock fw')
         %span
           Password
   = nav_link(controller: :notifications) do
-    = link_to profile_notifications_path, title: 'Notifications' do
+    = link_to profile_notifications_path, title: 'Notifications', data: {placement: 'right'} do
       = icon('inbox fw')
       %span
         Notifications
 
   = nav_link(controller: :keys) do
-    = link_to profile_keys_path, title: 'SSH Keys' do
+    = link_to profile_keys_path, title: 'SSH Keys', data: {placement: 'right'} do
       = icon('key fw')
       %span
         SSH Keys
         %span.count= current_user.keys.count
   = nav_link(path: 'profiles#design') do
-    = link_to design_profile_path, title: 'Design' do
+    = link_to design_profile_path, title: 'Design', data: {placement: 'right'} do
       = icon('image fw')
       %span
         Design
   = nav_link(path: 'profiles#history') do
-    = link_to history_profile_path, title: 'History' do
+    = link_to history_profile_path, title: 'History', data: {placement: 'right'} do
       = icon('history fw')
       %span
         History
