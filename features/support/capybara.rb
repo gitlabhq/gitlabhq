@@ -16,7 +16,9 @@ end
 Capybara.default_wait_time = timeout
 Capybara.ignore_hidden_elements = false
 
-require 'capybara-screenshot/spinach'
+unless ENV['CI'] || ENV['CI_SERVER']
+  require 'capybara-screenshot/spinach'
 
-# Keep only the screenshots generated from the last failing test suite
-Capybara::Screenshot.prune_strategy = :keep_last_run
+  # Keep only the screenshots generated from the last failing test suite
+  Capybara::Screenshot.prune_strategy = :keep_last_run
+end
