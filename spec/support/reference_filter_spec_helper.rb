@@ -35,6 +35,20 @@ module ReferenceFilterSpecHelper
     described_class.call(html, contexts)
   end
 
+  # Run text through HTML::Pipeline with the current filter and return the
+  # result Hash
+  #
+  # body     - String text to run through the pipeline
+  # contexts - Hash context for the filter. (default: {project: project})
+  #
+  # Returns the Hash of the pipeline result
+  def pipeline_result(body, contexts = {})
+    contexts.reverse_merge!(project: project)
+
+    pipeline = HTML::Pipeline.new([described_class], contexts)
+    pipeline.call(body)
+  end
+
   def allow_cross_reference!
     allow_any_instance_of(described_class).
       to receive(:user_can_reference_project?).and_return(true)

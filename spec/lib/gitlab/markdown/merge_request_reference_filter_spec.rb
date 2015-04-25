@@ -69,6 +69,11 @@ module Gitlab::Markdown
         expect(link).not_to match %r(https?://)
         expect(link).to eq urls.namespace_project_merge_request_url(project.namespace, project, merge, only_path: true)
       end
+
+      it 'adds to the results hash' do
+        result = pipeline_result("Merge #{reference}")
+        expect(result[:references][:merge_request]).to eq [merge]
+      end
     end
 
     context 'cross-project reference' do
@@ -97,6 +102,11 @@ module Gitlab::Markdown
           exp = act = "Merge #{project2.path_with_namespace}!#{merge.iid + 1}"
 
           expect(filter(act).to_html).to eq exp
+        end
+
+        it 'adds to the results hash' do
+          result = pipeline_result("Merge #{reference}")
+          expect(result[:references][:merge_request]).to eq [merge]
         end
       end
 

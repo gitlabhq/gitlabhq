@@ -44,18 +44,25 @@ module Gitlab
           klass = reference_class(:project_member)
 
           if user == 'all'
+            # FIXME (rspeicher): Law of Demeter
+            push_result(:user, *project.team.members.flatten)
+
             url = link_to_all(project)
 
             %(<a href="#{url}" class="#{klass}">@#{user}</a>)
           elsif namespace = Namespace.find_by(path: user)
             if namespace.is_a?(Group)
               if user_can_reference_group?(namespace)
+                push_result(:user, *namespace.users)
+
                 url = group_url(user, only_path: context[:only_path])
                 %(<a href="#{url}" class="#{klass}">@#{user}</a>)
               else
                 match
               end
             else
+              push_result(:user, namespace.owner)
+
               url = user_url(user, only_path: context[:only_path])
               %(<a href="#{url}" class="#{klass}">@#{user}</a>)
             end

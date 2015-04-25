@@ -48,6 +48,8 @@ module Gitlab
           project = self.project_from_ref(project_ref)
 
           if project && snippet = project.snippets.find_by(id: id)
+            push_result(:snippet, snippet)
+
             title = escape_once("Snippet: #{snippet.title}")
             klass = reference_class(:snippet)
 
