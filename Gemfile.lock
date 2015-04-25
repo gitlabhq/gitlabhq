@@ -85,6 +85,9 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
+    capybara-screenshot (1.0.9)
+      capybara (>= 1.0, < 3)
+      launchy
     carrierwave (0.9.0)
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
@@ -677,6 +680,7 @@ DEPENDENCIES
   byebug
   cal-heatmap-rails (~> 0.0.1)
   capybara (~> 2.2.1)
+  capybara-screenshot (~> 1.0.0)
   carrierwave
   charlock_holmes
   coffee-rails
@@ -726,7 +730,6 @@ DEPENDENCIES
   jquery-turbolinks
   jquery-ui-rails
   kaminari (~> 0.15.1)
-  launchy
   letter_opener
   minitest (~> 5.3.0)
   mousetrap-rails
