@@ -1,4 +1,6 @@
 - if @projects.any?
+  = render 'shared/show_aside'
+
   .dashboard.row
     %section.activities.col-md-8
       = render 'dashboard/activities'
@@ -14,9 +16,6 @@
 
         = render 'shared/projects_list', projects: @projects,
           projects_limit: 20, stars: true, avatar: false
-
-    = link_to '#aside', class: 'show-aside' do
-      %i.fa.fa-angle-left
 
 - else
   %h3 You don't have starred projects yet

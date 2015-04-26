@@ -37,9 +37,9 @@
 
 .tab-content
   .tab-pane.active#tab-activity
+    = render 'shared/show_aside'
+
     .row
-      = link_to '#aside', class: 'show-aside' do
-        %i.fa.fa-angle-left
       %section.col-md-9
         .hidden-xs
           = render "events/event_last_push", event: @last_push
