@@ -10,7 +10,21 @@ module VisibilityLevelHelper
     end
   end
 
-  def visibility_level_description(level)
+  # Return the description for the +level+ argument.
+  #
+  # +level+ One of the Gitlab::VisibilityLevel constants
+  # +form_model+ Either a model object (Project, Snippet, etc.) or the name of
+  #              a Project or Snippet class.
+  def visibility_level_description(level, form_model)
+    case form_model.is_a?(String) ? form_model : form_model.class.name
+    when 'PersonalSnippet', 'ProjectSnippet', 'Snippet'
+      snippet_visibility_level_description(level)
+    when 'Project'
+      project_visibility_level_description(level)
+    end
+  end
+
+  def project_visibility_level_description(level)
     capture_haml do
       haml_tag :span do
         case level
@@ -63,5 +77,13 @@ module VisibilityLevelHelper
   def restricted_visibility_levels(show_all = false)
     return [] if current_user.is_admin? && !show_all
     current_application_settings.restricted_visibility_levels || []
+  end
+
+  def default_project_visibility
+    current_application_settings.default_project_visibility
+  end
+
+  def default_snippet_visibility
+    current_application_settings.default_snippet_visibility
   end
 end

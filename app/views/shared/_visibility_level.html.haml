@@ -1,0 +1,14 @@
+.form-group.project-visibility-level-holder
+  = f.label :visibility_level, class: 'control-label' do
+    Visibility Level
+    = link_to "(?)", help_page_path("public_access", "public_access")
+  .col-sm-10
+    - if can_change_visibility_level
+      = render('shared/visibility_radios', model_method: :visibility_level, form: f, selected_level: visibility_level, form_model: form_model)
+    - else
+      .col-sm-10
+        %span.info
+          = visibility_level_icon(visibility_level)
+          %strong
+            = visibility_level_label(visibility_level)
+          .light= visibility_level_description(visibility_level, form_model)
