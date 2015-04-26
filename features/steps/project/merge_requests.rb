@@ -31,7 +31,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see closed merge request "Bug NS-04"' do
     merge_request = MergeRequest.find_by!(title: "Bug NS-04")
-    merge_request.closed?.should be_true
+    expect(merge_request.closed?).to be_truthy
     page.should have_content "Closed by"
   end
 
@@ -118,7 +118,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see the proper Inline and Side-by-side links' do
-    buttons = all('#commit-diff-viewtype')
+    buttons = page.all('#commit-diff-viewtype')
     expect(buttons.count).to eq(2)
 
     buttons.each do |b|
@@ -161,20 +161,26 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see a discussion has started on diff' do
-    page.should have_content "#{current_user.name} started a discussion"
-    page.should have_content sample_commit.line_code_path
-    page.should have_content "Line is wrong"
+    within(".notes") do
+      page.should have_content "#{current_user.name} started a discussion"
+      page.should have_content sample_commit.line_code_path
+      page.should have_content "Line is wrong"
+    end
   end
 
   step 'I should see a discussion has started on commit diff' do
-    page.should have_content "#{current_user.name} started a discussion on commit"
-    page.should have_content sample_commit.line_code_path
-    page.should have_content "Line is wrong"
+    within(".notes") do
+      page.should have_content "#{current_user.name} started a discussion on commit"
+      page.should have_content sample_commit.line_code_path
+      page.should have_content "Line is wrong"
+    end
   end
 
   step 'I should see a discussion has started on commit' do
-    page.should have_content "#{current_user.name} started a discussion on commit"
-    page.should have_content "One comment to rule them all"
+    within(".notes") do
+      page.should have_content "#{current_user.name} started a discussion on commit"
+      page.should have_content "One comment to rule them all"
+    end
   end
 
   step 'merge request is mergeable' do
@@ -315,8 +321,9 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       fill_in "note_note", with: message
       click_button "Add Comment"
     end
-
-    page.should have_content message
+    within(".notes-holder") do
+      page.should have_content message
+    end
   end
 
   def init_diff_note_first_file

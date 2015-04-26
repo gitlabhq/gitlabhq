@@ -59,7 +59,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should see the default project avatar' do
-    @project.avatar?.should be_false
+    expect(@project.avatar?).to be_falsey
   end
 
   step 'I should not see the "Remove avatar" button' do
