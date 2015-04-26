@@ -9,7 +9,7 @@ merge, publish, distribute, sublicense, and/or sell copies of the Software.
 The above copyright notices applies only to the part of this Software that is
 not distributed as part of GitLab Community Edition (CE), and that is not a
 file that produces client-side JavaScript, in whole or in part. Any part of
-this Software distributed as part of GitLab CE or that is not a file that
+this Software distributed as part of GitLab CE or that is a file that
 produces client-side JavaScript, in whole or in part, is copyrighted under the
 MIT Expat license. The above copyright notice and this permission notice shall
 be included in all copies or substantial portions of the Software.
