@@ -80,15 +80,13 @@ module Gitlab
       end
 
       def link_to_group(group, namespace)
-        if user_can_reference_group?(namespace)
-          push_result(:user, *namespace.users)
+        return unless user_can_reference_group?(namespace)
 
-          url = urls.group_url(group, only_path: context[:only_path])
+        push_result(:user, *namespace.users)
 
-          %(<a href="#{url}" class="#{link_class}">@#{group}</a>)
-        else
-          nil
-        end
+        url = urls.group_url(group, only_path: context[:only_path])
+
+        %(<a href="#{url}" class="#{link_class}">@#{group}</a>)
       end
 
       def link_to_user(user, namespace)
