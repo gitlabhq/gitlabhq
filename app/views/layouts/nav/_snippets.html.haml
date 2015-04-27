@@ -1,11 +1,11 @@
 %ul.nav.nav-sidebar
   = nav_link(path: user_snippets_path(current_user), html_options: {class: 'home'}) do
-    = link_to user_snippets_path(current_user), title: 'Your snippets' do
+    = link_to user_snippets_path(current_user), title: 'Your snippets', data: {placement: 'right'} do
       = icon('dashboard fw')
       %span
         Your Snippets
   = nav_link(path: snippets_path) do
-    = link_to snippets_path, title: 'Discover snippets' do
+    = link_to snippets_path, title: 'Discover snippets', data: {placement: 'right'} do
       = icon('globe fw')
       %span
         Discover Snippets

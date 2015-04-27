@@ -4,7 +4,9 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
   include SharedProject
 
   step 'I click "New project" link' do
-    click_link "New project"
+    within('.content') do
+      click_link "New project"
+    end
   end
 
   step 'I see "New project" page' do
