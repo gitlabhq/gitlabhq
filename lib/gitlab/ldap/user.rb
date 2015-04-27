@@ -45,9 +45,11 @@ module Gitlab
         gl_user.email = auth_hash.email
 
         # Build new identity only if we dont have have same one
-        gl_user.identities.find_or_initialize_by(provider: auth_hash.provider,
-                                                 extern_uid: auth_hash.uid)
-
+        if gl_user.persisted?
+          gl_user.identities.find_or_initialize_by(provider: auth_hash.provider,
+                                                   extern_uid: auth_hash.uid)
+        end
+  
         gl_user
       end
 
