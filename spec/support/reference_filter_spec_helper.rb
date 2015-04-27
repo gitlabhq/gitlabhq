@@ -4,17 +4,6 @@
 module ReferenceFilterSpecHelper
   extend ActiveSupport::Concern
 
-  included do
-    before { set_default_url_options }
-  end
-
-  # Allow *_url helpers to work
-  def set_default_url_options
-    Rails.application.routes.default_url_options = {
-      host: 'example.foo'
-    }
-  end
-
   # Shortcut to Rails' auto-generated routes helpers, to avoid including the
   # module
   def urls
