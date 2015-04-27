@@ -11,7 +11,6 @@ v 7.11.0 (unreleased)
   - Add "Reply quoting selected text" shortcut key (`r`)
   - Fix bug causing `@whatever` inside an issue's first code block to be picked up as a user mention.
   - Fix bug causing `@whatever` inside an inline code snippet (backtick-style) to be picked up as a user mention.
-  - Added GitLab Event header for project hooks
   -
   - Show Atom feed buttons everywhere where applicable.
   - Add project activity atom feed.
