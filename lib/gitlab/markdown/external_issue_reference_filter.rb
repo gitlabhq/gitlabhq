@@ -43,15 +43,19 @@ module Gitlab
       def issue_link_filter(text)
         project = context[:project]
 
-        self.class.references_in(text) do |match, issue|
-          url = url_for_issue(issue, project, only_path: context[:only_path])
+        self.class.references_in(text) do |match, id|
+          issue = ExternalIssue.new(id, project)
+
+          push_result(:external_issue, issue)
+
+          url = url_for_issue(id, project, only_path: context[:only_path])
 
           title = escape_once("Issue in #{project.external_issue_tracker.title}")
           klass = reference_class(:issue)
 
           %(<a href="#{url}"
                title="#{title}"
-               class="#{klass}">#{issue}</a>)
+               class="#{klass}">#{id}</a>)
         end
       end
 
