@@ -5,60 +5,60 @@
       %span
         Overview
   = nav_link(controller: :projects) do
-    = link_to admin_namespaces_projects_path, title: 'Projects' do
+    = link_to admin_namespaces_projects_path, title: 'Projects', data: {placement: 'right'} do
       = icon('cube fw')
       %span
         Projects
   = nav_link(controller: :users) do
-    = link_to admin_users_path, title: 'Users' do
+    = link_to admin_users_path, title: 'Users', data: {placement: 'right'} do
       = icon('user fw')
       %span
         Users
   = nav_link(controller: :groups) do
-    = link_to admin_groups_path, title: 'Groups' do
+    = link_to admin_groups_path, title: 'Groups', data: {placement: 'right'} do
       = icon('group fw')
       %span
         Groups
   = nav_link(controller: :deploy_keys) do
-    = link_to admin_deploy_keys_path, title: 'Deploy Keys' do
+    = link_to admin_deploy_keys_path, title: 'Deploy Keys', data: {placement: 'right'} do
       = icon('key fw')
       %span
         Deploy Keys
   = nav_link(controller: :logs) do
-    = link_to admin_logs_path, title: 'Logs' do
+    = link_to admin_logs_path, title: 'Logs', data: {placement: 'right'} do
       = icon('file-text fw')
       %span
         Logs
   = nav_link(controller: :broadcast_messages) do
-    = link_to admin_broadcast_messages_path, title: 'Broadcast Messages' do
+    = link_to admin_broadcast_messages_path, title: 'Broadcast Messages', data: {placement: 'right'} do
       = icon('bullhorn fw')
       %span
         Messages
   = nav_link(controller: :hooks) do
-    = link_to admin_hooks_path, title: 'Hooks' do
+    = link_to admin_hooks_path, title: 'Hooks', data: {placement: 'right'} do
       = icon('external-link fw')
       %span
         Hooks
   = nav_link(controller: :background_jobs) do
-    = link_to admin_background_jobs_path, title: 'Background Jobs' do
+    = link_to admin_background_jobs_path, title: 'Background Jobs', data: {placement: 'right'} do
       = icon('cog fw')
       %span
         Background Jobs
 
   = nav_link(controller: :applications) do
-    = link_to admin_applications_path, title: 'Applications' do
+    = link_to admin_applications_path, title: 'Applications', data: {placement: 'right'} do
       = icon('cloud fw')
       %span
         Applications
 
   = nav_link(controller: :services) do
-    = link_to admin_application_settings_services_path, title: 'Service Templates' do
+    = link_to admin_application_settings_services_path, title: 'Service Templates', data: {placement: 'right'} do
       = icon('copy fw')
       %span
         Service Templates
 
   = nav_link(controller: :application_settings, html_options: { class: 'separate-item'}) do
-    = link_to admin_application_settings_path, title: 'Settings' do
+    = link_to admin_application_settings_path, title: 'Settings', data: {placement: 'right'} do
       = icon('cogs fw')
       %span
         Settings

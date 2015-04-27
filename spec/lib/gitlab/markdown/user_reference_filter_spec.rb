@@ -24,9 +24,29 @@ module Gitlab::Markdown
       end
     end
 
+    context 'mentioning @all' do
+      before do
+        project.team << [project.creator, :developer]
+      end
+
+      it 'supports a special @all mention' do
+        doc = filter("Hey @all")
+        expect(doc.css('a').length).to eq 1
+        expect(doc.css('a').first.attr('href'))
+          .to eq urls.namespace_project_url(project.namespace, project)
+      end
+
+      it 'adds to the results hash' do
+        result = pipeline_result('Hey @all')
+        expect(result[:references][:user]).to eq [project.creator]
+      end
+    end
+
     context 'mentioning a user' do
+      let(:reference) { "@#{user.username}" }
+
       it 'links to a User' do
-        doc = filter("Hey @#{user.username}")
+        doc = filter("Hey #{reference}")
         expect(doc.css('a').first.attr('href')).to eq urls.user_url(user)
       end
 
@@ -45,22 +65,45 @@ module Gitlab::Markdown
         doc = filter("Hey @#{user.username}")
         expect(doc.css('a').length).to eq 1
       end
+
+      it 'adds to the results hash' do
+        result = pipeline_result("Hey #{reference}")
+        expect(result[:references][:user]).to eq [user]
+      end
     end
 
     context 'mentioning a group' do
       let(:group) { create(:group) }
       let(:user)  { create(:user) }
 
-      it 'links to a Group that the current user can read' do
-        group.add_user(user, Gitlab::Access::DEVELOPER)
+      let(:reference) { "@#{group.name}" }
 
-        doc = filter("Hey @#{group.name}", current_user: user)
-        expect(doc.css('a').first.attr('href')).to eq urls.group_url(group)
+      context 'that the current user can read' do
+        before do
+          group.add_user(user, Gitlab::Access::DEVELOPER)
+        end
+
+        it 'links to the Group' do
+          doc = filter("Hey #{reference}", current_user: user)
+          expect(doc.css('a').first.attr('href')).to eq urls.group_url(group)
+        end
+
+        it 'adds to the results hash' do
+          result = pipeline_result("Hey #{reference}", current_user: user)
+          expect(result[:references][:user]).to eq group.users
+        end
       end
 
-      it 'ignores references to a Group that the current user cannot read' do
-        doc = filter("Hey @#{group.name}", current_user: user)
-        expect(doc.to_html).to eq "Hey @#{group.name}"
+      context 'that the current user cannot read' do
+        it 'ignores references to the Group' do
+          doc = filter("Hey #{reference}", current_user: user)
+          expect(doc.to_html).to eq "Hey #{reference}"
+        end
+
+        it 'does not add to the results hash' do
+          result = pipeline_result("Hey #{reference}", current_user: user)
+          expect(result[:references][:user]).to eq []
+        end
       end
     end
 
@@ -68,13 +111,6 @@ module Gitlab::Markdown
       skip 'TODO (rspeicher): Re-enable when usernames can\'t end in periods.'
       doc = filter("Mention me (@#{user.username}.)")
       expect(doc.to_html).to match(/\(<a.+>@#{user.username}<\/a>\.\)/)
-    end
-
-    it 'supports a special @all mention' do
-      doc = filter("Hey @all")
-      expect(doc.css('a').length).to eq 1
-      expect(doc.css('a').first.attr('href'))
-        .to eq urls.namespace_project_url(project.namespace, project)
     end
 
     it 'includes default classes' do

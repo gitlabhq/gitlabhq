@@ -32,11 +32,8 @@ module Gitlab
 
       # Pattern used to extract commit range references from text
       #
-      # The beginning and ending SHA1 sums can be between 6 and 40 hex
-      # characters, and the range selection can be double- or triple-dot.
-      #
       # This pattern supports cross-project references.
-      COMMIT_RANGE_PATTERN = /(#{PROJECT_PATTERN}@)?(?<commit_range>\h{6,40}\.{2,3}\h{6,40})/
+      COMMIT_RANGE_PATTERN = /(#{PROJECT_PATTERN}@)?(?<commit_range>#{CommitRange::PATTERN})/
 
       def call
         replace_text_nodes_matching(COMMIT_RANGE_PATTERN) do |content|
@@ -53,52 +50,34 @@ module Gitlab
       # links have `gfm` and `gfm-commit_range` class names attached for
       # styling.
       def commit_range_link_filter(text)
-        self.class.references_in(text) do |match, commit_range, project_ref|
+        self.class.references_in(text) do |match, id, project_ref|
           project = self.project_from_ref(project_ref)
 
-          from_id, to_id = split_commit_range(commit_range)
+          range = CommitRange.new(id, project)
 
-          if valid_range?(project, from_id, to_id)
-            url = url_for_commit_range(project, from_id, to_id)
+          if range.valid_commits?
+            push_result(:commit_range, range)
 
-            title = "Commits #{from_id} through #{to_id}"
+            url = url_for_commit_range(project, range)
+
+            title = range.reference_title
             klass = reference_class(:commit_range)
 
             project_ref += '@' if project_ref
 
             %(<a href="#{url}"
                  title="#{title}"
-                 class="#{klass}">#{project_ref}#{commit_range}</a>)
+                 class="#{klass}">#{project_ref}#{range}</a>)
           else
             match
           end
         end
       end
 
-      def split_commit_range(range)
-        from_id, to_id = range.split(/\.{2,3}/, 2)
-        from_id << "^" if range !~ /\.{3}/
-
-        [from_id, to_id]
-      end
-
-      def commit(id)
-        unless @commit_map[id]
-          @commit_map[id] = project.commit(id)
-        end
-
-        @commit_map[id]
-      end
-
-      def valid_range?(project, from_id, to_id)
-        project && project.valid_repo? && commit(from_id) && commit(to_id)
-      end
-
-      def url_for_commit_range(project, from_id, to_id)
+      def url_for_commit_range(project, range)
         h = Rails.application.routes.url_helpers
         h.namespace_project_compare_url(project.namespace, project,
-                                        from: from_id, to: to_id,
-                                        only_path: context[:only_path])
+                                        range.to_param.merge(only_path: context[:only_path]))
       end
     end
   end

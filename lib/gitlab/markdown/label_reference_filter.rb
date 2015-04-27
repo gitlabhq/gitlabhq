@@ -52,11 +52,13 @@ module Gitlab
           params = label_params(id, name)
 
           if label = project.labels.find_by(params)
-            url = url_for_label(project, label)
+            push_result(:label, label)
 
+            url = url_for_label(project, label)
             klass = reference_class(:label)
 
-            %(<a href="#{url}" class="#{klass}">#{render_colored_label(label)}</a>)
+            %(<a href="#{url}"
+                 class="#{klass}">#{render_colored_label(label)}</a>)
           else
             match
           end
