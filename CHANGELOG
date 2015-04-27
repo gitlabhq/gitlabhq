@@ -10,6 +10,7 @@ v 7.11.0 (unreleased)
   - Add "Reply quoting selected text" shortcut key (`r`)
   - Fix bug causing `@whatever` inside an issue's first code block to be picked up as a user mention.
   - Fix bug causing `@whatever` inside an inline code snippet (backtick-style) to be picked up as a user mention.
+  - Added GitLab Event header for project hooks
   -
   - Show Atom feed buttons everywhere where applicable.
   - Add project activity atom feed.
@@ -23,8 +24,9 @@ v 7.11.0 (unreleased)
   - Improve new project command options (Ben Bodenmiller)
   - Prevent sending empty messages to HipChat (Chulki Lee)
   - Improve UI for mobile phones on dashboard and project pages
+  - Add room notification and message color option for HipChat
 
-v 7.10.0 (unreleased)
+v 7.10.0
   - Ignore submodules that are defined in .gitmodules but are checked in as directories.
   - Allow projects to be imported from Google Code.
   - Remove access control for uploaded images to fix broken images in emails (Hannes Rosenögger)

@@ -282,7 +282,8 @@ namespace :gitlab do
     def check_redis_version
       print "Redis version >= 2.0.0? ... "
 
-      if run_and_match(%W(redis-cli --version), /redis-cli 2.\d.\d/)
+      redis_version = run(%W(redis-cli --version))
+      if redis_version.try(:match, /redis-cli 2.\d.\d/) || redis_version.try(:match, /redis-cli 3.\d.\d/)
         puts "yes".green
       else
         puts "no".red
