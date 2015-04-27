@@ -1,5 +1,5 @@
 class Projects::ServicesController < Projects::ApplicationController
-  ALLOWED_PARAMS = [:title, :token, :type, :active, :api_key, :subdomain,
+  ALLOWED_PARAMS = [:title, :token, :type, :active, :api_key, :api_version, :subdomain,
                     :room, :recipients, :project_url, :webhook,
                     :user_key, :device, :priority, :sound, :bamboo_url, :username, :password,
                     :build_key, :server, :teamcity_url, :build_type,
