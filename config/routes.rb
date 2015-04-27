@@ -252,7 +252,7 @@ Gitlab::Application.routes.draw do
       constraints: { username: /.*/ }
 
   get '/u/:username' => 'users#show', as: :user,
-      constraints: { username: /(?:[^.]|\.(?!atom$))+/, format: /atom/ }
+      constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }
 
   #
   # Dashboard Area
@@ -279,7 +279,7 @@ Gitlab::Application.routes.draw do
   #
   # Groups Area
   #
-  resources :groups, constraints: { id: /(?:[^.]|\.(?!atom$))+/, format: /atom/ }  do
+  resources :groups, constraints: { id: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }  do
     member do
       get :issues
       get :merge_requests
@@ -328,7 +328,7 @@ Gitlab::Application.routes.draw do
   # Project Area
   #
   resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only: [] do
-    resources(:projects, constraints: { id: /[a-zA-Z.0-9_\-]+/ }, except:
+    resources(:projects, constraints: { id: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }, except:
               [:new, :create, :index], path: "/") do
       member do
         put :transfer

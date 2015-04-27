@@ -1,3 +1,6 @@
+= content_for :meta_tags do
+  = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")
+
 .row
   = link_to '#aside', class: 'show-aside' do
     %i.fa.fa-angle-left

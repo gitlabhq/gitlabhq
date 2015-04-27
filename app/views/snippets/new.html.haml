@@ -1,4 +1,4 @@
 %h3.page-title
   New snippet
 %hr
-= render "shared/snippets/form", url: snippets_path(@snippet)
+= render "shared/snippets/form", url: snippets_path(@snippet), visibility_level: default_snippet_visibility

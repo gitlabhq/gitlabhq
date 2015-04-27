@@ -40,6 +40,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :home_page_url,
       :help_text,
       :max_attachment_size,
+      :default_project_visibility,
+      :default_snippet_visibility,
       restricted_visibility_levels: []
     )
   end

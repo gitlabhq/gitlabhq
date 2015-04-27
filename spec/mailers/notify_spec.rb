@@ -466,7 +466,7 @@ describe Notify do
       end
 
       describe 'on a commit' do
-        let(:commit) { project.repository.commit }
+        let(:commit) { project.commit }
 
         before(:each) { allow(note).to receive(:noteable).and_return(commit) }
 
@@ -670,8 +670,8 @@ describe Notify do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
     let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_image_commit.id, sample_commit.id) }
-    let(:commits) { Commit.decorate(compare.commits) }
-    let(:diff_path) { namespace_project_compare_path(project.namespace, project, from: Commit.new(compare.base), to: Commit.new(compare.head)) }
+    let(:commits) { Commit.decorate(compare.commits, nil) }
+    let(:diff_path) { namespace_project_compare_path(project.namespace, project, from: Commit.new(compare.base, project), to: Commit.new(compare.head, project)) }
     let(:send_from_committer_email) { false }
 
     subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare, reverse_compare: false, send_from_committer_email: send_from_committer_email) }
@@ -774,7 +774,7 @@ describe Notify do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
     let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_commit.parent_id, sample_commit.id) }
-    let(:commits) { Commit.decorate(compare.commits) }
+    let(:commits) { Commit.decorate(compare.commits, nil) }
     let(:diff_path) { namespace_project_commit_path(project.namespace, project, commits.first) }
 
     subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare) }

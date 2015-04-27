@@ -62,7 +62,7 @@ module API
         ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
         path = params[:path] || nil
 
-        commit = user_project.repository.commit(ref)
+        commit = user_project.commit(ref)
         not_found!('Tree') unless commit
 
         tree = user_project.repository.tree(commit.id, path)

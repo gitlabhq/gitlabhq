@@ -10,11 +10,11 @@ class Projects::CommitController < Projects::ApplicationController
   def show
     return git_not_found! unless @commit
 
-    @line_notes = commit.notes(@project).inline
+    @line_notes = commit.notes.inline
     @diffs = @commit.diffs
     @note = @project.build_commit_note(commit)
-    @notes_count = commit.notes(@project).count
-    @notes = commit.notes(@project).not_inline.fresh
+    @notes_count = commit.notes.count
+    @notes = commit.notes.not_inline.fresh
     @noteable = @commit
     @comments_allowed = @reply_allowed = true
     @comments_target  = {
@@ -36,6 +36,6 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def commit
-    @commit ||= @project.repository.commit(params[:id])
+    @commit ||= @project.commit(params[:id])
   end
 end

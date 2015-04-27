@@ -5,7 +5,7 @@ module Gitlab
     def identify(identifier, project, newrev)
       if identifier.blank?
         # Local push from gitlab
-        email = project.repository.commit(newrev).author_email rescue nil
+        email = project.commit(newrev).author_email rescue nil
         User.find_by(email: email) if email
 
       elsif identifier =~ /\Auser-\d+\Z/

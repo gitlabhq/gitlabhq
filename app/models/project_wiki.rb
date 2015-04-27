@@ -112,7 +112,7 @@ class ProjectWiki
   end
 
   def repository
-    Repository.new(path_with_namespace, default_branch)
+    Repository.new(path_with_namespace, default_branch, @project)
   end
 
   def default_branch

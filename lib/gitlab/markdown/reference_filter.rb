@@ -12,7 +12,15 @@ module Gitlab
     #   :reference_class    - Custom CSS class added to reference links.
     #   :only_path          - Generate path-only links.
     #
+    # Results:
+    #   :references - A Hash of references that were found and replaced.
     class ReferenceFilter < HTML::Pipeline::Filter
+      def initialize(*args)
+        super
+
+        result[:references] = Hash.new { |hash, type| hash[type] = [] }
+      end
+
       def escape_once(html)
         ERB::Util.html_escape_once(html)
       end
@@ -27,6 +35,16 @@ module Gitlab
 
       def project
         context[:project]
+      end
+
+      # Add a reference to the pipeline's result Hash
+      #
+      # type   - Singular Symbol reference type (e.g., :issue, :user, etc.)
+      # values - One or more Objects to add
+      def push_result(type, *values)
+        return if values.empty?
+
+        result[:references][type].push(*values)
       end
 
       def reference_class(type)

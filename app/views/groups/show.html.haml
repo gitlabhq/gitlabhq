@@ -1,3 +1,7 @@
+= content_for :meta_tags do
+  - if current_user
+    = auto_discovery_link_tag(:atom, group_url(@group, format: :atom, private_token: current_user.private_token), title: "#{@group.name} activity")
+
 .dashboard
   .header-with-avatar.clearfix
     = image_tag group_icon(@group), class: "avatar group-avatar s90"
@@ -11,9 +15,20 @@
   %hr
   .row
     %section.activities.col-md-8
-      - if current_user
-        = render "events/event_last_push", event: @last_push
-        = render 'shared/event_filter'
+      .hidden-xs
+        - if current_user
+          = render "events/event_last_push", event: @last_push
+
+          - if current_user
+            %ul.nav.nav-pills.event_filter.pull-right
+              %li
+                = link_to group_path(@group, { format: :atom, private_token: current_user.private_token }), title: "Feed", class: 'rss-btn' do
+                  %i.fa.fa-rss
+                  Activity Feed
+
+          = render 'shared/event_filter'
+          %hr
+
       .content_list
       = spinner
     %aside.side.col-md-4

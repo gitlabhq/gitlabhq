@@ -1,9 +1,12 @@
+= content_for :meta_tags do
+  - if current_user
+    = auto_discovery_link_tag(:atom, namespace_project_path(@project.namespace, @project, format: :atom, private_token: current_user.private_token), title: "#{@project.name} activity")
+
 - if current_user && can?(current_user, :download_code, @project)
   = render 'shared/no_ssh'
   = render 'shared/no_password'
 
 = render "home_panel"
-
 %ul.nav.nav-tabs
   %li.active
     = link_to '#tab-activity', 'data-toggle' => 'tab' do
@@ -13,11 +16,11 @@
       = link_to '#tab-readme', 'data-toggle' => 'tab' do
         Readme
   - if @repository.changelog
-    %li
+    %li.hidden-xs
       = link_to changelog_url(@project) do
         Changelog
   - if @repository.contribution_guide
-    %li
+    %li.hidden-xs
       = link_to contribution_guide_url(@project) do
         Contribution guide
   - if @repository.license
@@ -38,8 +41,18 @@
       = link_to '#aside', class: 'show-aside' do
         %i.fa.fa-angle-left
       %section.col-md-9
-        = render "events/event_last_push", event: @last_push
-        = render 'shared/event_filter'
+        .hidden-xs
+          = render "events/event_last_push", event: @last_push
+
+          - if current_user
+            %ul.nav.nav-pills.event_filter.pull-right
+              %li
+                = link_to namespace_project_path(@project.namespace, @project, format: :atom, private_token: current_user.private_token), title: "Feed", class: 'rss-btn' do
+                  %i.fa.fa-rss
+                  Activity Feed
+
+          = render 'shared/event_filter'
+          %hr
         .content_list
         = spinner
       %aside.col-md-3.project-side

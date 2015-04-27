@@ -1,3 +1,9 @@
+## Canonical source
+
+The source of GitLab Community Edition is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/) and there are mirrors to make [contributing](CONTRIBUTING.md) as easy as possible.
+
+The source of GitLab Enterprise Edition is [hosted on GitLab.com](https://gitlab.com/subscribers/gitlab-ee) and acessible only to [subscribers](https://about.gitlab.com/subscription/).
+
 # ![logo](https://about.gitlab.com/images/gitlab_logo.png) GitLab
 
 ## Subscriber onboarding information
@@ -42,10 +48,6 @@ There are two editions of GitLab.
 
 *GitLab Enterprise Edition (EE)* includes [extra features](https://about.gitlab.com/features/#compare) that are most useful for organizations with more than 100 users.
 To get access to the EE and support please [become a subscriber](https://about.gitlab.com/pricing/).
-
-## Canonical source
-
-- The source of GitLab Enterprise Edition is [hosted on GitLab.com](https://dev.gitlab.org/gitlab/gitlab-ee/) and acessible only to [subscribers](https://about.gitlab.com/subscription/).
 
 ## Code status
 

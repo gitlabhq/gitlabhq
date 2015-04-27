@@ -159,7 +159,7 @@ gem "slack-notifier", "~> 1.0.0"
 gem 'asana', '~> 0.0.6'
 
 # d3
-gem "d3_rails", "~> 3.1.4"
+gem 'd3_rails', '~> 3.5.5'
 
 #cal-heatmap
 gem "cal-heatmap-rails", "~> 0.0.1"
@@ -189,7 +189,7 @@ gem 'turbolinks'
 gem 'jquery-turbolinks'
 
 gem 'select2-rails'
-gem 'jquery-atwho-rails', "~> 0.3.3"
+gem 'jquery-atwho-rails', '~> 1.0.0'
 gem "jquery-rails"
 gem "jquery-ui-rails"
 gem "jquery-scrollto-rails"
@@ -224,14 +224,13 @@ end
 group :development, :test do
   gem 'coveralls', require: false
   gem 'rubocop', '0.28.0', require: false
-  # gem 'rails-dev-tweaks'
   gem 'spinach-rails'
   gem "rspec-rails", '2.99'
-  gem "capybara", '~> 2.2.1'
+  gem 'capybara', '~> 2.2.1'
+  gem 'capybara-screenshot', '~> 1.0.0'
   gem "pry-rails"
   gem "awesome_print"
   gem "database_cleaner"
-  gem "launchy"
   gem 'factory_girl_rails'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)

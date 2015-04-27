@@ -19,7 +19,7 @@ describe GitTagPushService do
       @push_data = service.push_data
       @tag_name = Gitlab::Git.ref_name(@ref)
       @tag = project.repository.find_tag(@tag_name)
-      @commit = project.repository.commit(@tag.target)
+      @commit = project.commit(@tag.target)
     end
 
     subject { @push_data }

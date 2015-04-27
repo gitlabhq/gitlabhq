@@ -27,7 +27,7 @@ describe Projects::ForkService do
       it "fails due to transaction failure" do
         @to_project = fork_project(@from_project, @to_user, false)
         expect(@to_project.errors).not_to be_empty
-        expect(@to_project.errors[:base]).to include("Fork transaction failed.")
+        expect(@to_project.errors[:base]).to include("Failed to fork repository")
       end
     end
 
@@ -36,8 +36,8 @@ describe Projects::ForkService do
         @existing_project = create(:project, creator_id: @to_user.id, name: @from_project.name, namespace: @to_namespace)
         @to_project = fork_project(@from_project, @to_user)
         expect(@existing_project.persisted?).to be_truthy
-        expect(@to_project.errors[:base]).to include("Invalid fork destination")
-        expect(@to_project.errors[:base]).not_to include("Fork transaction failed.")
+        expect(@to_project.errors[:name]).to eq(['has already been taken'])
+        expect(@to_project.errors[:path]).to eq(['has already been taken'])
       end
     end
 
@@ -81,7 +81,7 @@ describe Projects::ForkService do
     context 'fork project for group when user not owner' do
       it 'group developer should fail to fork project into the group' do
         to_project = fork_project(@project, @developer, true, @opts)
-        expect(to_project.errors[:namespace]).to eq(['insufficient access rights'])
+        expect(to_project.errors[:namespace]).to eq(['is not valid'])
       end
     end
 
@@ -91,7 +91,6 @@ describe Projects::ForkService do
                                             namespace: @group)
         to_project = fork_project(@project, @group_owner, true, @opts)
         expect(existing_project.persisted?).to be_truthy
-        expect(to_project.errors[:base]).to eq(['Invalid fork destination'])
         expect(to_project.errors[:name]).to eq(['has already been taken'])
         expect(to_project.errors[:path]).to eq(['has already been taken'])
       end
@@ -99,10 +98,7 @@ describe Projects::ForkService do
   end
 
   def fork_project(from_project, user, fork_success = true, params = {})
-    context = Projects::ForkService.new(from_project, user, params)
-    shell = double('gitlab_shell')
-    shell.stub(fork_repository: fork_success)
-    context.stub(gitlab_shell: shell)
-    context.execute
+    allow_any_instance_of(Gitlab::Shell).to receive(:fork_repository).and_return(fork_success)
+    Projects::ForkService.new(from_project, user, params).execute
   end
 end

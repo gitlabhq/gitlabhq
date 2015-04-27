@@ -18,6 +18,6 @@ class ProtectedBranch < ActiveRecord::Base
   validates :project, presence: true
 
   def commit
-    project.repository.commit(self.name)
+    project.commit(self.name)
   end
 end

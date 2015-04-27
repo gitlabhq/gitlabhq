@@ -5,6 +5,8 @@ module Projects
     end
 
     def execute
+      forked_from_project_id = params.delete(:forked_from_project_id)
+
       @project = Project.new(params)
 
       # Make sure that the user is allowed to use the specified visibility
@@ -45,10 +47,14 @@ module Projects
 
       @project.creator = current_user
 
+      if forked_from_project_id
+        @project.build_forked_project_link(forked_from_project_id: forked_from_project_id)
+      end
+
       Project.transaction do
         @project.save
 
-        unless @project.import?
+        if @project.persisted? && !@project.import?
           unless @project.create_repository
             raise 'Failed to create repository'
           end
