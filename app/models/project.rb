@@ -70,51 +70,51 @@ class Project < ActiveRecord::Base
 
   # Project services
   has_many :services
-  has_one :gitlab_ci_service, dependent: :destroy
-  has_one :campfire_service, dependent: :destroy
-  has_one :emails_on_push_service, dependent: :destroy
-  has_one :irker_service, dependent: :destroy
-  has_one :pivotaltracker_service, dependent: :destroy
-  has_one :hipchat_service, dependent: :destroy
-  has_one :flowdock_service, dependent: :destroy
-  has_one :assembla_service, dependent: :destroy
-  has_one :asana_service, dependent: :destroy
-  has_one :gemnasium_service, dependent: :destroy
-  has_one :slack_service, dependent: :destroy
-  has_one :buildkite_service, dependent: :destroy
-  has_one :bamboo_service, dependent: :destroy
-  has_one :teamcity_service, dependent: :destroy
-  has_one :pushover_service, dependent: :destroy
-  has_one :jira_service, dependent: :destroy
-  has_one :redmine_service, dependent: :destroy
-  has_one :custom_issue_tracker_service, dependent: :destroy
-  has_one :gitlab_issue_tracker_service, dependent: :destroy
-  has_one :external_wiki_service, dependent: :destroy
+  has_one :gitlab_ci_service, dependent: :delete_all
+  has_one :campfire_service, dependent: :delete_all
+  has_one :emails_on_push_service, dependent: :delete_all
+  has_one :irker_service, dependent: :delete_all
+  has_one :pivotaltracker_service, dependent: :delete_all
+  has_one :hipchat_service, dependent: :delete_all
+  has_one :flowdock_service, dependent: :delete_all
+  has_one :assembla_service, dependent: :delete_all
+  has_one :asana_service, dependent: :delete_all
+  has_one :gemnasium_service, dependent: :delete_all
+  has_one :slack_service, dependent: :delete_all
+  has_one :buildkite_service, dependent: :delete_all
+  has_one :bamboo_service, dependent: :delete_all
+  has_one :teamcity_service, dependent: :delete_all
+  has_one :pushover_service, dependent: :delete_all
+  has_one :jira_service, dependent: :delete_all
+  has_one :redmine_service, dependent: :delete_all
+  has_one :custom_issue_tracker_service, dependent: :delete_all
+  has_one :gitlab_issue_tracker_service, dependent: :delete_all
+  has_one :external_wiki_service, dependent: :delete_all
 
-  has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
+  has_one :forked_project_link, dependent: :delete_all, foreign_key: "forked_to_project_id"
 
   has_one :forked_from_project, through: :forked_project_link
   # Merge Requests for target project should be removed with it
-  has_many :merge_requests,     dependent: :destroy, foreign_key: 'target_project_id'
+  has_many :merge_requests,     dependent: :delete_all, foreign_key: 'target_project_id'
   # Merge requests from source project should be kept when source project was removed
   has_many :fork_merge_requests, foreign_key: 'source_project_id', class_name: MergeRequest
-  has_many :issues,             dependent: :destroy
-  has_many :labels,             dependent: :destroy
-  has_many :services,           dependent: :destroy
-  has_many :events,             dependent: :destroy
-  has_many :milestones,         dependent: :destroy
-  has_many :notes,              dependent: :destroy
-  has_many :snippets,           dependent: :destroy, class_name: 'ProjectSnippet'
-  has_many :hooks,              dependent: :destroy, class_name: 'ProjectHook'
-  has_many :protected_branches, dependent: :destroy
-  has_many :project_members, dependent: :destroy, as: :source, class_name: 'ProjectMember'
+  has_many :issues,             dependent: :delete_all
+  has_many :labels,             dependent: :delete_all
+  has_many :services,           dependent: :delete_all
+  has_many :events,             dependent: :delete_all
+  has_many :milestones,         dependent: :delete_all
+  has_many :notes,              dependent: :delete_all
+  has_many :snippets,           dependent: :delete_all, class_name: 'ProjectSnippet'
+  has_many :hooks,              dependent: :delete_all, class_name: 'ProjectHook'
+  has_many :protected_branches, dependent: :delete_all
+  has_many :project_members, dependent: :delete_all, as: :source, class_name: 'ProjectMember'
   has_many :users, through: :project_members
-  has_many :deploy_keys_projects, dependent: :destroy
+  has_many :deploy_keys_projects, dependent: :delete_all
   has_many :deploy_keys, through: :deploy_keys_projects
-  has_many :users_star_projects, dependent: :destroy
+  has_many :users_star_projects, dependent: :delete_all
   has_many :starrers, through: :users_star_projects, source: :user
 
-  has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
+  has_one :import_data, dependent: :delete_all, class_name: "ProjectImportData"
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
