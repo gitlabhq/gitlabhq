@@ -91,6 +91,11 @@ describe Notify do
     it 'includes a link to the site' do
       is_expected.to have_body_text /#{example_site_path}/
     end
+
+    it 'explains the reset link expiration' do
+      is_expected.to have_body_text(/This link is valid for \d+ (hours?|days?)/)
+      is_expected.to have_body_text(new_user_password_url)
+    end
   end
 
 
