@@ -164,6 +164,7 @@ class Service < ActiveRecord::Base
       bamboo
       buildkite
       campfire
+      composer
       custom_issue_tracker
       drone_ci
       emails_on_push

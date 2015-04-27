@@ -137,6 +137,10 @@ gem "redis-rails", '~> 4.0.0'
 # Campfire integration
 gem 'tinder', '~> 1.10.0'
 
+# Composer integration
+gem 'php-composer', '~> 0.4.4'
+gem 'digest-crc', '~> 0.4.1'
+
 # HipChat integration
 gem 'hipchat', '~> 1.5.0'
 
