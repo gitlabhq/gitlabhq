@@ -30,6 +30,7 @@ module Gitlab
   #   => "<img alt=\":trollface:\" class=\"emoji\" src=\"/images/trollface.png" title=\":trollface:\" />
   module Markdown
     # Provide autoload paths for filters to prevent a circular dependency error
+    autoload :AutolinkFilter,               'gitlab/markdown/autolink_filter'
     autoload :CommitRangeReferenceFilter,   'gitlab/markdown/commit_range_reference_filter'
     autoload :CommitReferenceFilter,        'gitlab/markdown/commit_reference_filter'
     autoload :EmojiFilter,                  'gitlab/markdown/emoji_filter'
@@ -122,6 +123,7 @@ module Gitlab
 
         Gitlab::Markdown::EmojiFilter,
         Gitlab::Markdown::TableOfContentsFilter,
+        Gitlab::Markdown::AutolinkFilter,
 
         Gitlab::Markdown::UserReferenceFilter,
         Gitlab::Markdown::IssueReferenceFilter,
@@ -130,7 +132,7 @@ module Gitlab
         Gitlab::Markdown::SnippetReferenceFilter,
         Gitlab::Markdown::CommitRangeReferenceFilter,
         Gitlab::Markdown::CommitReferenceFilter,
-        Gitlab::Markdown::LabelReferenceFilter,
+        Gitlab::Markdown::LabelReferenceFilter
       ]
     end
 
