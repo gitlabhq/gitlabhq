@@ -63,7 +63,7 @@ module SubmoduleHelper
     namespace = components.pop.gsub(/^\.\.$/, '')
 
     if namespace.empty?
-      namespace = @project.group.path
+      namespace = @project.namespace.name
     end
 
     [
