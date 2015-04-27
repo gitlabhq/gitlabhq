@@ -34,7 +34,7 @@ module GitlabMarkdownHelper
 
       # see https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch
       rend = Redcarpet::Render::GitlabHTML.new(self, user_color_scheme_class, {
-        # Handled further down the line by HTML::Pipeline::SanitizationFilter
+        # Handled further down the line by Gitlab::Markdown::SanitizationFilter
         escape_html: false
       }.merge(options))
 

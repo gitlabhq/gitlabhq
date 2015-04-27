@@ -38,6 +38,7 @@ module Gitlab
     autoload :IssueReferenceFilter,         'gitlab/markdown/issue_reference_filter'
     autoload :LabelReferenceFilter,         'gitlab/markdown/label_reference_filter'
     autoload :MergeRequestReferenceFilter,  'gitlab/markdown/merge_request_reference_filter'
+    autoload :SanitizationFilter,           'gitlab/markdown/sanitization_filter'
     autoload :SnippetReferenceFilter,       'gitlab/markdown/snippet_reference_filter'
     autoload :TableOfContentsFilter,        'gitlab/markdown/table_of_contents_filter'
     autoload :UserReferenceFilter,          'gitlab/markdown/user_reference_filter'
@@ -76,9 +77,6 @@ module Gitlab
       pipeline = HTML::Pipeline.new(filters)
 
       context = {
-        # SanitizationFilter
-        whitelist: sanitization_whitelist,
-
         # EmojiFilter
         asset_root: Gitlab.config.gitlab.url,
         asset_host: Gitlab::Application.config.asset_host,
@@ -116,10 +114,10 @@ module Gitlab
     # SanitizationFilter should come first so that all generated reference HTML
     # goes through untouched.
     #
-    # See https://gitlab.com/gitlab-org/html-pipeline-gitlab for more filters
+    # See https://github.com/jch/html-pipeline#filters for more filters.
     def filters
       [
-        HTML::Pipeline::SanitizationFilter,
+        Gitlab::Markdown::SanitizationFilter,
 
         Gitlab::Markdown::EmojiFilter,
         Gitlab::Markdown::TableOfContentsFilter,
@@ -134,32 +132,6 @@ module Gitlab
         Gitlab::Markdown::CommitReferenceFilter,
         Gitlab::Markdown::LabelReferenceFilter
       ]
-    end
-
-    # Customize the SanitizationFilter whitelist
-    #
-    # - Allow `class` and `id` attributes on all elements
-    # - Allow `span` elements
-    # - Remove `rel` attributes from `a` elements
-    # - Remove `a` nodes with `javascript:` in the `href` attribute
-    def sanitization_whitelist
-      whitelist = HTML::Pipeline::SanitizationFilter::WHITELIST
-      whitelist[:attributes][:all].push('class', 'id')
-      whitelist[:elements].push('span')
-
-      fix_anchors = lambda do |env|
-        name, node = env[:node_name], env[:node]
-        if name == 'a'
-          node.remove_attribute('rel')
-          if node['href'] && node['href'].match('javascript:')
-            node.remove_attribute('href')
-          end
-        end
-      end
-
-      whitelist[:transformers].push(fix_anchors)
-
-      whitelist
     end
 
     # Turn list items that start with "[ ]" into HTML checkbox inputs.
