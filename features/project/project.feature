@@ -55,3 +55,10 @@ Feature: Project
     Then I should see project "Forum" README
     And I visit project "Shop" page
     Then I should see project "Shop" README
+
+  Scenario: I tag a project
+    When I visit edit project "Shop" page
+    Then I should see project settings
+    And I add project tags
+    And I save project
+    Then I should see project tags
