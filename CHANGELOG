@@ -16,7 +16,7 @@ v 7.11.0 (unreleased)
   - Don't crash when an MR from a fork has a cross-reference comment from the target project on of its commits.
   - Include commit comments in MR from a forked project.
   -
-  -
+  - Add default project and snippet visibility settings to the admin web UI.
   - Fix bug where Slack service channel was not saved in admin template settings. (Stan Hu)
   - Move snippets UI to fluid layout
   - Improve UI for sidebar. Increase separation between navigation and content

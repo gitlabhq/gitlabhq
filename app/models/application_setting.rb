@@ -17,6 +17,8 @@
 #  twitter_sharing_enabled      :boolean          default(TRUE)
 #  restricted_visibility_levels :text
 #  max_attachment_size          :integer          default(10)
+#  default_project_visibility   :integer
+#  default_snippet_visibility   :integer
 #
 
 class ApplicationSetting < ActiveRecord::Base
@@ -51,7 +53,9 @@ class ApplicationSetting < ActiveRecord::Base
       gravatar_enabled: Settings.gravatar['enabled'],
       sign_in_text: Settings.extra['sign_in_text'],
       restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
-      max_attachment_size: Settings.gitlab['max_attachment_size']
+      max_attachment_size: Settings.gitlab['max_attachment_size'],
+      default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
+      default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level']
     )
   end
 

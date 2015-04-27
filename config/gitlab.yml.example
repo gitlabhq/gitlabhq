@@ -76,7 +76,6 @@ production: &base
       merge_requests: true
       wiki: true
       snippets: false
-      visibility_level: "private"  # can be "private" | "internal" | "public"
 
     ## Webhook settings
     # Number of seconds to wait for HTTP response after sending webhook HTTP POST request (default: 10)

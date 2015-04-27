@@ -1,4 +1,4 @@
 %h3.page-title
   Edit snippet
 %hr
-= render "shared/snippets/form", url: snippet_path(@snippet)
+= render 'shared/snippets/form', url: snippet_path(@snippet), visibility_level: @snippet.visibility_level
