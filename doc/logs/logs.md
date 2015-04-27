@@ -5,7 +5,7 @@ In addition to system log files, GitLab Enterprise Edition comes with Audit Even
 System log files are typically plain text in a standard log file format. This guide talks about how to read and use these system log files.
 
 #### production.log
-This file lives in `/var/log/gitlab/gitlab-rails/production.log` for omnibus package or in `/home/git/gitlab/logs/production.log` for installations from the source.
+This file lives in `/var/log/gitlab/gitlab-rails/production.log` for omnibus package or in `/home/git/gitlab/log/production.log` for installations from the source.
 
 This file contains information about all performed requests. You can see url and type of request, IP address and what exactly parts of code were involved to service this particular request. Also you can see all SQL request that have been performed and how much time it took.
 This task is more useful for GitLab contributors and developers. Use part of this log file when you are going to report bug.
