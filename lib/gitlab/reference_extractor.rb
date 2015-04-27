@@ -23,19 +23,12 @@ module Gitlab
     end
 
     def issues
-      # TODO (rspeicher): What about external issues?
-      #EE code
-#<<<<<<< HEAD
-      #references[:issue].uniq.map do |project, identifier|
-        #if project.default_issues_tracker?
-          #project.issues.where(iid: identifier).first
-        #elsif project.jira_tracker?
-          #JiraIssue.new(identifier, project)
-        #end
-      #end.compact.uniq
-#=======
+      if project.default_issues_tracker?
+        result = pipeline_result(:issue)
+      elsif project.jira_tracker?
+        result = pipeline_result(:external_issue)
+      end
 
-      result = pipeline_result(:issue)
       result.uniq
     end
 
