@@ -39,6 +39,11 @@ module Gitlab::Markdown
       expect(link).to eq urls.namespace_project_issues_url(project.namespace, project, label_name: label.name, only_path: true)
     end
 
+    it 'adds to the results hash' do
+      result = pipeline_result("Label #{reference}")
+      expect(result[:references][:label]).to eq [label]
+    end
+
     describe 'label span element' do
       it 'includes default classes' do
         doc = filter("Label #{reference}")

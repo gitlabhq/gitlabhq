@@ -48,6 +48,8 @@ module Gitlab
           project = self.project_from_ref(project_ref)
 
           if commit = commit_from_ref(project, commit_ref)
+            push_result(:commit, commit)
+
             url = url_for_commit(project, commit)
 
             title = escape_once(commit.link_title)
@@ -57,7 +59,7 @@ module Gitlab
 
             %(<a href="#{url}"
                  title="#{title}"
-                 class="#{klass}">#{project_ref}#{commit_ref}</a>)
+                 class="#{klass}">#{project_ref}#{commit.short_id}</a>)
           else
             match
           end

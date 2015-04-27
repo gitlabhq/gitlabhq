@@ -34,7 +34,7 @@ module Gitlab::Markdown
       end
 
       it 'links to a valid reference' do
-        doc = filter("See #{reference}")
+        doc = filter("Fixed #{reference}")
 
         expect(doc.css('a').first.attr('href')).
           to eq helper.url_for_issue(issue.iid, project)
@@ -81,6 +81,11 @@ module Gitlab::Markdown
         expect(link).not_to match %r(https?://)
         expect(link).to eq helper.url_for_issue(issue.iid, project, only_path: true)
       end
+
+      it 'adds to the results hash' do
+        result = pipeline_result("Fixed #{reference}")
+        expect(result[:references][:issue]).to eq [issue]
+      end
     end
 
     context 'cross-project reference' do
@@ -116,6 +121,11 @@ module Gitlab::Markdown
           exp = act = "Fixed #{project2.path_with_namespace}##{issue.iid + 1}"
 
           expect(filter(act).to_html).to eq exp
+        end
+
+        it 'adds to the results hash' do
+          result = pipeline_result("Fixed #{reference}")
+          expect(result[:references][:issue]).to eq [issue]
         end
       end
 
