@@ -82,8 +82,10 @@ class Note < ActiveRecord::Base
     def create_cross_reference_note(noteable, mentioner, author)
       gfm_reference = mentioner_gfm_ref(noteable, mentioner)
 
+      project = noteable.project
+
       note_options = {
-        project: noteable.project,
+        project: project,
         author: author,
         note: cross_reference_note_content(gfm_reference),
         system: true
@@ -94,7 +96,6 @@ class Note < ActiveRecord::Base
       else
         note_options.merge!(noteable: noteable)
       end
-
 
       if noteable.is_a?(ExternalIssue)
         project.issues_tracker.create_cross_reference_note(noteable, mentioner, author)

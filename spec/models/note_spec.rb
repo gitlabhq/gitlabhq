@@ -380,7 +380,7 @@ describe Note do
           jira_tracker.destroy!
         end
 
-        subject { Note.create_cross_reference_note(jira_issue, mergereq, author, project) }
+        subject { Note.create_cross_reference_note(jira_issue, mergereq, author) }
 
         it { is_expected.to eq(jira_status_message) }
       end
@@ -419,7 +419,7 @@ describe Note do
               to_return(:body => jira_issue_comments)
           end
 
-          subject { Note.create_cross_reference_note(jira_issue, commit, author, project) }
+          subject { Note.create_cross_reference_note(jira_issue, commit, author) }
 
           it { is_expected.to eq(jira_status_message) }
         end
@@ -431,7 +431,7 @@ describe Note do
               to_return(:body => "{\"comments\":[{\"body\":\"#{message}\"}]}")
           end
 
-          subject { Note.create_cross_reference_note(jira_issue, commit, author, project) }
+          subject { Note.create_cross_reference_note(jira_issue, commit, author) }
           it { is_expected.not_to eq(jira_status_message) }
         end
       end
@@ -450,7 +450,7 @@ describe Note do
           jira_tracker.destroy!
         end
 
-        subject { Note.create_cross_reference_note(jira_issue, issue, author, project) }
+        subject { Note.create_cross_reference_note(jira_issue, issue, author) }
 
         it { is_expected.to eq(jira_status_message) }
       end
