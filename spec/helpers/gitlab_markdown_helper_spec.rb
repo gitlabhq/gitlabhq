@@ -107,8 +107,7 @@ describe GitlabMarkdownHelper do
       end
 
       it 'should not be confused by whitespace before bullets' do
-        rendered_text_asterisk = markdown(@source_text_asterisk,
-                                          parse_tasks: true)
+        rendered_text_asterisk = markdown(@source_text_asterisk, parse_tasks: true)
         rendered_text_dash = markdown(@source_text_dash, parse_tasks: true)
 
         expect(rendered_text_asterisk).to match(
@@ -207,61 +206,7 @@ describe GitlabMarkdownHelper do
   end
 
   describe "#markdown" do
-    # REFERENCES (PART TWO: THE REVENGE) ---------------------------------------
-
-    it "should handle references in headers" do
-      actual = "\n# Working around ##{issue.iid}\n## Apply !#{merge_request.iid}"
-
-      expect(markdown(actual, no_header_anchors: true)).
-        to match(%r{<h1[^<]*>Working around <a.+>##{issue.iid}</a></h1>})
-      expect(markdown(actual, no_header_anchors: true)).
-        to match(%r{<h2[^<]*>Apply <a.+>!#{merge_request.iid}</a></h2>})
-    end
-
-    it "should handle references in <em>" do
-      actual = "Apply _!#{merge_request.iid}_ ASAP"
-
-      expect(markdown(actual)).
-        to match(%r{Apply <em><a.+>!#{merge_request.iid}</a></em>})
-    end
-
-    # CODE BLOCKS -------------------------------------------------------------
-
-    it "should leave code blocks untouched" do
-      allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:user_color_scheme_class).and_return(:white)
-
-      target_html = "<pre class=\"code highlight white plaintext\"><code>some code from $#{snippet.id}\nhere too\n</code></pre>\n"
-
-      expect(markdown("\n    some code from $#{snippet.id}\n    here too\n")).
-        to eq(target_html)
-      expect(markdown("\n```\nsome code from $#{snippet.id}\nhere too\n```\n")).
-        to eq(target_html)
-    end
-
-    it "should leave inline code untouched" do
-      expect(markdown("Don't use `$#{snippet.id}` here.")).
-        to eq "<p>Don't use <code>$#{snippet.id}</code> here.</p>\n"
-    end
-
-    # REF-LIKE AUTOLINKS? -----------------------------------------------------
-    # Basically: Don't parse references inside `<a>` tags.
-
-    it "should leave ref-like autolinks untouched" do
-      expect(markdown("look at http://example.tld/#!#{merge_request.iid}")).to eq("<p>look at <a href=\"http://example.tld/#!#{merge_request.iid}\">http://example.tld/#!#{merge_request.iid}</a></p>\n")
-    end
-
-    it "should leave ref-like href of 'manual' links untouched" do
-      expect(markdown("why not [inspect !#{merge_request.iid}](http://example.tld/#!#{merge_request.iid})")).to eq("<p>why not <a href=\"http://example.tld/#!#{merge_request.iid}\">inspect </a><a href=\"#{namespace_project_merge_request_path(project.namespace, project, merge_request)}\" title=\"Merge Request: #{merge_request.title}\" class=\"gfm gfm-merge_request\">!#{merge_request.iid}</a><a href=\"http://example.tld/#!#{merge_request.iid}\"></a></p>\n")
-    end
-
-    it "should leave ref-like src of images untouched" do
-      expect(markdown("screen shot: ![some image](http://example.tld/#!#{merge_request.iid})")).to eq("<p>screen shot: <img src=\"http://example.tld/#!#{merge_request.iid}\" alt=\"some image\"></p>\n")
-    end
-
-    # RELATIVE URLS -----------------------------------------------------------
     # TODO (rspeicher): These belong in a relative link filter spec
-
     context 'relative links' do
       context 'with a valid repository' do
         before do
