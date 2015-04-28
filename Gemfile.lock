@@ -167,7 +167,7 @@ GEM
       faraday (>= 0.7.4, < 0.9)
     fastercsv (1.5.5)
     ffaker (1.22.1)
-    ffi (1.9.3)
+    ffi (1.9.8)
     fog (1.21.0)
       fog-brightbox
       fog-core (~> 1.21, >= 1.21.1)
@@ -323,8 +323,8 @@ GEM
       addressable (~> 2.3)
     letter_opener (1.1.2)
       launchy (~> 2.2)
-    listen (2.3.1)
-      celluloid (>= 0.15.2)
+    listen (2.10.0)
+      celluloid (~> 0.16.0)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
     lumberjack (1.0.4)
@@ -456,8 +456,8 @@ GEM
     raindrops (0.13.0)
     rake (10.4.2)
     raphael-rails (2.1.2)
-    rb-fsevent (0.9.3)
-    rb-inotify (0.9.2)
+    rb-fsevent (0.9.4)
+    rb-inotify (0.9.5)
       ffi (>= 0.5.0)
     rdoc (3.12.2)
       json (~> 1.4)
@@ -482,6 +482,8 @@ GEM
     redis-store (1.1.4)
       redis (>= 2.2)
     request_store (1.0.5)
+    rerun (0.10.0)
+      listen (~> 2.7, >= 2.7.3)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     rinku (1.7.3)
@@ -763,6 +765,7 @@ DEPENDENCIES
   redcarpet (~> 3.2.3)
   redis-rails
   request_store
+  rerun (~> 0.10.0)
   rspec-rails (= 2.99)
   rubocop (= 0.28.0)
   rugments
