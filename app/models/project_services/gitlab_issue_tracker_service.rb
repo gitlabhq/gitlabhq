@@ -21,11 +21,6 @@
 class GitlabIssueTrackerService < IssueTrackerService
   include Rails.application.routes.url_helpers
 
-  default_url_options[:host]     = Gitlab.config.gitlab.host
-  default_url_options[:protocol] = Gitlab.config.gitlab.protocol
-  default_url_options[:port]     = Gitlab.config.gitlab.port unless Gitlab.config.gitlab_on_standard_port?
-  default_url_options[:script_name] = Gitlab.config.gitlab.relative_url_root
-
   prop_accessor :title, :description, :project_url, :issues_url, :new_issue_url
 
   def default?

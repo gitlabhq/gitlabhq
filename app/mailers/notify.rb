@@ -16,11 +16,6 @@ class Notify < ActionMailer::Base
   attr_accessor :current_user
   helper_method :current_user, :can?
 
-  default_url_options[:host]     = Gitlab.config.gitlab.host
-  default_url_options[:protocol] = Gitlab.config.gitlab.protocol
-  default_url_options[:port]     = Gitlab.config.gitlab.port unless Gitlab.config.gitlab_on_standard_port?
-  default_url_options[:script_name] = Gitlab.config.gitlab.relative_url_root
-
   default from: Proc.new { default_sender_address.format }
   default reply_to: Gitlab.config.gitlab.email_reply_to
 
@@ -69,7 +64,7 @@ class Notify < ActionMailer::Base
   # Only the displayed name changes; the actual email address is always the same.
   def sender(sender_id, send_from_user_email = false)
     return unless sender = User.find(sender_id)
-    
+
     address = default_sender_address
     address.display_name = sender.name
 

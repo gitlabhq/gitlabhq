@@ -182,18 +182,6 @@ class ApplicationController < ActionController::Base
     response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
   end
 
-  def default_url_options
-    if !Rails.env.test?
-      port = Gitlab.config.gitlab.port unless Gitlab.config.gitlab_on_standard_port?
-      { host: Gitlab.config.gitlab.host,
-        protocol: Gitlab.config.gitlab.protocol,
-        port: port,
-        script_name: Gitlab.config.gitlab.relative_url_root }
-    else
-      super
-    end
-  end
-
   def default_headers
     headers['X-Frame-Options'] = 'DENY'
     headers['X-XSS-Protection'] = '1; mode=block'
