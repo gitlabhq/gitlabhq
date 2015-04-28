@@ -527,4 +527,55 @@ describe API::API, api: true  do
       expect(response.status).to eq(401)
     end
   end
+
+  describe 'PUT /user/:id/block' do
+    before { admin }
+    it 'should block existing user' do
+      put api("/users/#{user.id}/block", admin)
+      expect(response.status).to eq(200)
+      expect(user.reload.state).to eq('blocked')
+    end
+
+    it 'should not be available for non admin users' do
+      put api("/users/#{user.id}/block", user)
+      expect(response.status).to eq(403)
+      expect(user.reload.state).to eq('active')
+    end
+
+    it 'should return a 404 error if user id not found' do
+      put api('/users/9999/block', admin)
+      expect(response.status).to eq(404)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+  end
+
+  describe 'PUT /user/:id/unblock' do
+    before { admin }
+    it 'should unblock existing user' do
+      put api("/users/#{user.id}/unblock", admin)
+      expect(response.status).to eq(200)
+      expect(user.reload.state).to eq('active')
+    end
+
+    it 'should unblock a blocked user' do
+      put api("/users/#{user.id}/block", admin)
+      expect(response.status).to eq(200)
+      expect(user.reload.state).to eq('blocked')
+      put api("/users/#{user.id}/unblock", admin)
+      expect(response.status).to eq(200)
+      expect(user.reload.state).to eq('active')
+    end
+
+    it 'should not be available for non admin users' do
+      put api("/users/#{user.id}/unblock", user)
+      expect(response.status).to eq(403)
+      expect(user.reload.state).to eq('active')
+    end
+
+    it 'should return a 404 error if user id not found' do
+      put api('/users/9999/block', admin)
+      expect(response.status).to eq(404)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+  end
 end

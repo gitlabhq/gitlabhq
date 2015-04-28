@@ -199,6 +199,36 @@ module API
           not_found!('User')
         end
       end
+
+      # Block user. Available only for admin
+      #
+      # Example Request:
+      #   PUT /users/:id/block
+      put ':id/block' do
+        authenticated_as_admin!
+        user = User.find_by(id: params[:id])
+
+        if user
+          user.block
+        else
+          not_found!('User')
+        end
+      end
+
+      # Unblock user. Available only for admin
+      #
+      # Example Request:
+      #   PUT /users/:id/unblock
+      put ':id/unblock' do
+        authenticated_as_admin!
+        user = User.find_by(id: params[:id])
+
+        if user
+          user.activate
+        else
+          not_found!('User')
+        end
+      end
     end
 
     resource :user do
