@@ -1,18 +1,4 @@
+= render 'search/form'
+%hr
 - if @search_term
-  .lead
-    Search for
-    %code
-      = @search_term
-    - unless @show_snippets
-      - if @project
-        in project #{link_to @project.name_with_namespace, [@project.namespace.becomes(Namespace), @project]}
-      - elsif @group
-        in group #{link_to @group.name, @group}
-
-    .pull-right
-      = render 'filter'
-  %hr
-  .results.prepend-top-10
-    = render 'search/results'
-- else
-  wow
+  = render 'search/results'
