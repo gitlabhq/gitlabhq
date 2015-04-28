@@ -8,6 +8,7 @@ v 7.11.0 (unreleased)
   - Redirect to sign in page after signing out.
   - Fix "Hello @username." references not working by no longer allowing usernames to end in period.
   -
+  - Fix broken file browsing with relative submodule in personal projects (Stan Hu)
   - Add "Reply quoting selected text" shortcut key (`r`)
   - Fix bug causing `@whatever` inside an issue's first code block to be picked up as a user mention.
   - Fix bug causing `@whatever` inside an inline code snippet (backtick-style) to be picked up as a user mention.
