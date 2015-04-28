@@ -20,7 +20,7 @@
 class HipchatService < Service
   MAX_COMMITS = 3
 
-  prop_accessor :token, :room, :server, :notify, :color
+  prop_accessor :token, :room, :server, :notify, :color, :api_version
   validates :token, presence: true, if: :activated?
 
   def title
@@ -41,6 +41,8 @@ class HipchatService < Service
       { type: 'text', name: 'room',      placeholder: 'Room name or ID' },
       { type: 'checkbox', name: 'notify' },
       { type: 'select', name: 'color', choices: ['yellow', 'red', 'green', 'purple', 'gray', 'random'] },
+      { type: 'text', name: 'api_version',
+        placeholder: 'Leave blank for default (v2)' },
       { type: 'text', name: 'server',
         placeholder: 'Leave blank for default. https://hipchat.example.com' }
     ]
@@ -60,7 +62,7 @@ class HipchatService < Service
   private
 
   def gate
-    options = { api_version: 'v2' }
+    options = { api_version: api_version || 'v2' }
     options[:server_url] = server unless server.blank?
     @gate ||= HipChat::Client.new(token, options)
   end
