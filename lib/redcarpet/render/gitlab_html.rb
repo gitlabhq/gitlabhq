@@ -1,5 +1,6 @@
-class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
+require 'active_support/core_ext/string/output_safety'
 
+class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
   attr_reader :template
   alias_method :h, :template
 
@@ -21,6 +22,7 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
   def normal_text(text)
     return text unless text.present?
 
+    text = ERB::Util.html_escape_once(text)
     text.gsub("'", "&rsquo;")
   end
 
