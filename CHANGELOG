@@ -19,6 +19,8 @@ v 7.11.0 (unreleased)
   - Include commit comments in MR from a forked project.
   - Fix adding new group members from admin area
   - Add default project and snippet visibility settings to the admin web UI.
+  -
+  - Fix bug where commit data would not appear in some subdirectories (Stan Hu)
   - Fix bug where Slack service channel was not saved in admin template settings. (Stan Hu)
   - Move snippets UI to fluid layout
   - Improve UI for sidebar. Increase separation between navigation and content
