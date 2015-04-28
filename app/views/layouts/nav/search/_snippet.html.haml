@@ -1,0 +1,14 @@
+%li{class: ("active" if @scope == 'snippet_blobs')}
+  = link_to search_filter_path(scope: 'snippet_blobs', snippets: true, group_id: nil, project_id: nil) do
+    = icon('code fw')
+    %span
+      Snippet Contents
+      %span.count
+        = @search_results.snippet_blobs_count
+%li{class: ("active" if @scope == 'snippet_titles')}
+  = link_to search_filter_path(scope: 'snippet_titles', snippets: true, group_id: nil, project_id: nil) do
+    = icon('book fw')
+    %span
+      Titles and Filenames
+      %span.count
+        = @search_results.snippet_titles_count
