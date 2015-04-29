@@ -30,9 +30,7 @@ module Gitlab
         
         # For performance purposes maximum 20 latest commits
         # will be passed as post receive hook data.
-        commit_attrs = commits_limited.map do |commit|
-          commit.hook_attrs(project)
-        end
+        commit_attrs = commits_limited.map(&:hook_attrs)
 
         type = Gitlab::Git.tag_ref?(ref) ? "tag_push" : "push"
         # Hash to be passed as post_receive_data

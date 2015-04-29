@@ -2,6 +2,10 @@
   .merge-request-title
     %span.str-truncated
       = link_to_gfm merge_request.title, merge_request_path(merge_request), class: "row_title"
+    .merge-request-labels
+      - merge_request.labels.each do |label|
+        = link_to namespace_project_merge_requests_path(merge_request.project.namespace, merge_request.project, label_name: label.name) do
+          = render_colored_label(label)
     .pull-right.light
       - if merge_request.merged?
         %span
@@ -17,20 +21,26 @@
             %i.fa.fa-code-fork
             %span= merge_request.target_branch
       - note_count = merge_request.mr_and_commit_notes.user.count
+      - if merge_request.assignee
+        &nbsp;
+        = link_to_member(merge_request.source_project, merge_request.assignee, name: false)
       - if note_count > 0
         &nbsp;
         %span
           %i.fa.fa-comments
           = note_count
+      - else
+        &nbsp;
+        %span.merge-request-no-comments
+          %i.fa.fa-comments
+          = 0
+
   .merge-request-info
-    = link_to "##{merge_request.iid}", merge_request_path(merge_request), class: "light"
-    - if merge_request.assignee
-      assigned to #{link_to_member(merge_request.source_project, merge_request.assignee)}
-    - else
-      Unassigned
+    = "##{merge_request.iid} opened #{time_ago_with_tooltip(merge_request.created_at, 'bottom')} by #{link_to_member(@project, merge_request.author, avatar: false)}".html_safe
     - if merge_request.votes_count > 0
       = render 'votes/votes_inline', votable: merge_request
     - if merge_request.milestone_id?
+      &nbsp;
       %span
         %i.fa.fa-clock-o
         = merge_request.milestone.title
@@ -38,11 +48,5 @@
       %span.task-status
         = merge_request.task_status
 
-
     .pull-right.hidden-xs
       %small updated #{time_ago_with_tooltip(merge_request.updated_at, 'bottom', 'merge_request_updated_ago')}
-
-    .merge-request-labels
-      - merge_request.labels.each do |label|
-        = link_to namespace_project_merge_requests_path(merge_request.project.namespace, merge_request.project, label_name: label.name) do
-          = render_colored_label(label)

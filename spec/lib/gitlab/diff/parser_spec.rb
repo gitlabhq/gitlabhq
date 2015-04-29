@@ -4,7 +4,7 @@ describe Gitlab::Diff::Parser do
   include RepoHelpers
 
   let(:project) { create(:project) }
-  let(:commit) { project.repository.commit(sample_commit.id) }
+  let(:commit) { project.commit(sample_commit.id) }
   let(:diff) { commit.diffs.first }
   let(:parser) { Gitlab::Diff::Parser.new }
 

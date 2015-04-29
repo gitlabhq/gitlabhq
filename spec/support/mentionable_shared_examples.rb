@@ -83,14 +83,14 @@ shared_examples 'a mentionable' do
 
     mentioned_objects.each do |referenced|
       expect(Note).to receive(:create_cross_reference_note).
-        with(referenced, subject.local_reference, author, project)
+        with(referenced, subject.local_reference, author)
     end
 
     subject.create_cross_references!(project, author)
   end
 
   it 'detects existing cross-references' do
-    Note.create_cross_reference_note(mentioned_issue, subject.local_reference, author, project)
+    Note.create_cross_reference_note(mentioned_issue, subject.local_reference, author)
 
     expect(subject).to have_mentioned(mentioned_issue)
     expect(subject).not_to have_mentioned(mentioned_mr)
@@ -107,6 +107,8 @@ shared_examples 'an editable mentionable' do
   end
 
   it 'creates new cross-reference notes when the mentionable text is edited' do
+    subject.save
+
     cross = ext_proj.path_with_namespace
 
     new_text = <<-MSG
@@ -132,10 +134,9 @@ shared_examples 'an editable mentionable' do
     # These two issues are new and should receive reference notes
     new_issues.each do |newref|
       expect(Note).to receive(:create_cross_reference_note).
-        with(newref, subject.local_reference, author, project)
+        with(newref, subject.local_reference, author)
     end
 
-    subject.save
     set_mentionable_text.call(new_text)
     subject.notice_added_references(project, author)
   end

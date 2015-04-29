@@ -331,16 +331,17 @@ describe Note do
     let(:author)     { create(:user) }
     let(:issue)      { create(:issue, project: project) }
     let(:mergereq)   { create(:merge_request, :simple, target_project: project, source_project: project) }
-    let(:commit)     { project.repository.commit }
     let(:jira_issue) { JiraIssue.new("JIRA-1", project)}
     let(:jira_tracker) { project.create_jira_service if project.jira_service.nil? }
+    let(:commit)     { project.commit }
 
     # Test all of {issue, merge request, commit} in both the referenced and referencing
     # roles, to ensure that the correct information can be inferred from any argument.
 
     context 'issue from a merge request' do
+      subject { Note.create_cross_reference_note(issue, mergereq, author) }
+
       context 'in default issue tracker' do
-        subject { Note.create_cross_reference_note(issue, mergereq, author, project) }
 
         it { is_expected.to be_valid }
 
@@ -366,6 +367,7 @@ describe Note do
         end
       end
 
+
       context 'in JIRA issue tracker' do
         before do
           jira_service_settings
@@ -378,17 +380,16 @@ describe Note do
           jira_tracker.destroy!
         end
 
-        subject { Note.create_cross_reference_note(jira_issue, mergereq, author, project) }
+        subject { Note.create_cross_reference_note(jira_issue, mergereq, author) }
 
         it { is_expected.to eq(jira_status_message) }
       end
     end
 
     context 'issue from a commit' do
+      subject { Note.create_cross_reference_note(issue, commit, author) }
+
       context 'in default issue tracker' do
-        subject { Note.create_cross_reference_note(issue, commit, author, project) }
-
-
         it { is_expected.to be_valid }
 
         describe '#noteable' do
@@ -418,7 +419,7 @@ describe Note do
               to_return(:body => jira_issue_comments)
           end
 
-          subject { Note.create_cross_reference_note(jira_issue, commit, author, project) }
+          subject { Note.create_cross_reference_note(jira_issue, commit, author) }
 
           it { is_expected.to eq(jira_status_message) }
         end
@@ -430,7 +431,7 @@ describe Note do
               to_return(:body => "{\"comments\":[{\"body\":\"#{message}\"}]}")
           end
 
-          subject { Note.create_cross_reference_note(jira_issue, commit, author, project) }
+          subject { Note.create_cross_reference_note(jira_issue, commit, author) }
           it { is_expected.not_to eq(jira_status_message) }
         end
       end
@@ -449,14 +450,14 @@ describe Note do
           jira_tracker.destroy!
         end
 
-        subject { Note.create_cross_reference_note(jira_issue, issue, author, project) }
+        subject { Note.create_cross_reference_note(jira_issue, issue, author) }
 
         it { is_expected.to eq(jira_status_message) }
       end
     end
 
     context 'merge request from an issue' do
-      subject { Note.create_cross_reference_note(mergereq, issue, author, project) }
+      subject { Note.create_cross_reference_note(mergereq, issue, author) }
 
       it { is_expected.to be_valid }
 
@@ -477,7 +478,7 @@ describe Note do
     end
 
     context 'commit from a merge request' do
-      subject { Note.create_cross_reference_note(commit, mergereq, author, project) }
+      subject { Note.create_cross_reference_note(commit, mergereq, author) }
 
       it { is_expected.to be_valid }
 
@@ -498,13 +499,13 @@ describe Note do
     end
 
     context 'commit contained in a merge request' do
-      subject { Note.create_cross_reference_note(mergereq.commits.first, mergereq, author, project) }
+      subject { Note.create_cross_reference_note(mergereq.commits.first, mergereq, author) }
 
       it { is_expected.to be_nil }
     end
 
     context 'commit from issue' do
-      subject { Note.create_cross_reference_note(commit, issue, author, project) }
+      subject { Note.create_cross_reference_note(commit, issue, author) }
 
       it { is_expected.to be_valid }
 
@@ -531,7 +532,7 @@ describe Note do
 
     context 'commit from commit' do
       let(:parent_commit) { commit.parents.first }
-      subject { Note.create_cross_reference_note(commit, parent_commit, author, project) }
+      subject { Note.create_cross_reference_note(commit, parent_commit, author) }
 
       it { is_expected.to be_valid }
 
@@ -561,11 +562,11 @@ describe Note do
     let(:project) { create :project }
     let(:author) { create :user }
     let(:issue) { create :issue }
-    let(:commit0) { project.repository.commit }
-    let(:commit1) { project.repository.commit('HEAD~2') }
+    let(:commit0) { project.commit }
+    let(:commit1) { project.commit('HEAD~2') }
 
     before do
-      Note.create_cross_reference_note(issue, commit0, author, project)
+      Note.create_cross_reference_note(issue, commit0, author)
     end
 
     it 'detects if a mentionable has already been mentioned' do
@@ -578,7 +579,7 @@ describe Note do
 
     context 'commit on commit' do
       before do
-        Note.create_cross_reference_note(commit0, commit1, author, project)
+        Note.create_cross_reference_note(commit0, commit1, author)
       end
 
       it { expect(Note.cross_reference_exists?(commit0, commit1)).to be_truthy }
@@ -606,7 +607,7 @@ describe Note do
     let(:author) { create :user }
     let(:issue0) { create :issue, project: project }
     let(:issue1) { create :issue, project: second_project }
-    let!(:note) { Note.create_cross_reference_note(issue0, issue1, author, project) }
+    let!(:note) { Note.create_cross_reference_note(issue0, issue1, author) }
 
     it 'detects if a mentionable has already been mentioned' do
       expect(Note.cross_reference_exists?(issue0, issue1)).to be_truthy
@@ -641,7 +642,7 @@ describe Note do
     end
 
     it 'should identify cross-reference notes as system notes' do
-      @note = Note.create_cross_reference_note(issue, other, author, project)
+      @note = Note.create_cross_reference_note(issue, other, author)
       expect(@note).to be_system
     end
 

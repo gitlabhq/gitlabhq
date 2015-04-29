@@ -1,24 +1,33 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.11.0 (unreleased)
+  - Get Gitorious importer to work again.
   - Fix clone URL field and X11 Primary selection (Dmitry Medvinsky)
   - Ignore invalid lines in .gitmodules
   - Fix "Cannot move project" error message from popping up after a successful transfer (Stan Hu)
   - Redirect to sign in page after signing out.
+  - Fix "Hello @username." references not working by no longer allowing usernames to end in period.
   -
   - Add "Reply quoting selected text" shortcut key (`r`)
   - Fix bug causing `@whatever` inside an issue's first code block to be picked up as a user mention.
   - Fix bug causing `@whatever` inside an inline code snippet (backtick-style) to be picked up as a user mention.
+  - Added GitLab Event header for project hooks
   -
+  - Show Atom feed buttons everywhere where applicable.
+  - Add project activity atom feed.
+  - Don't crash when an MR from a fork has a cross-reference comment from the target project on of its commits.
+  - Include commit comments in MR from a forked project.
   -
-  -
-  -
+  - Add default project and snippet visibility settings to the admin web UI.
+  - Fix bug where Slack service channel was not saved in admin template settings. (Stan Hu)
   - Move snippets UI to fluid layout
   - Improve UI for sidebar. Increase separation between navigation and content
   - Improve new project command options (Ben Bodenmiller)
   - Prevent sending empty messages to HipChat (Chulki Lee)
+  - Improve UI for mobile phones on dashboard and project pages
+  - Add room notification and message color option for HipChat
 
-v 7.10.0 (unreleased)
+v 7.10.0
   - Ignore submodules that are defined in .gitmodules but are checked in as directories.
   - Allow projects to be imported from Google Code.
   - Remove access control for uploaded images to fix broken images in emails (Hannes Rosenögger)

@@ -14,7 +14,7 @@ module Gitlab
       end
 
       def repos
-        @repos ||= repo_names.map { |full_name| Repository.new(full_name) }
+        @repos ||= repo_names.map { |full_name| GitoriousImport::Repository.new(full_name) }
       end
 
       def repo(id)

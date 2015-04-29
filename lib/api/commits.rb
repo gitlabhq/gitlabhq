@@ -32,7 +32,7 @@ module API
       #   GET /projects/:id/repository/commits/:sha
       get ":id/repository/commits/:sha" do
         sha = params[:sha]
-        commit = user_project.repository.commit(sha)
+        commit = user_project.commit(sha)
         not_found! "Commit" unless commit
         present commit, with: Entities::RepoCommitDetail
       end
@@ -46,7 +46,7 @@ module API
       #   GET /projects/:id/repository/commits/:sha/diff
       get ":id/repository/commits/:sha/diff" do
         sha = params[:sha]
-        commit = user_project.repository.commit(sha)
+        commit = user_project.commit(sha)
         not_found! "Commit" unless commit
         commit.diffs
       end
@@ -60,7 +60,7 @@ module API
       #   GET /projects/:id/repository/commits/:sha/comments
       get ':id/repository/commits/:sha/comments' do
         sha = params[:sha]
-        commit = user_project.repository.commit(sha)
+        commit = user_project.commit(sha)
         not_found! 'Commit' unless commit
         notes = Note.where(commit_id: commit.id)
         present paginate(notes), with: Entities::CommitNote
@@ -81,7 +81,7 @@ module API
         required_attributes! [:note]
 
         sha = params[:sha]
-        commit = user_project.repository.commit(sha)
+        commit = user_project.commit(sha)
         not_found! 'Commit' unless commit
         opts = {
           note: params[:note],

@@ -18,7 +18,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   step 'I see commits atom feed' do
     commit = @project.repository.commit
     response_headers['Content-Type'].should have_content("application/atom+xml")
-    body.should have_selector("title", text: "Recent commits to #{@project.name}")
+    body.should have_selector("title", text: "#{@project.name}:master commits")
     body.should have_selector("author email", text: commit.author_email)
     body.should have_selector("entry summary", text: commit.description[0..10])
   end

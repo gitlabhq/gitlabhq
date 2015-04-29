@@ -68,6 +68,11 @@ module Gitlab::Markdown
         expect(link).not_to match %r(https?://)
         expect(link).to eq urls.namespace_project_snippet_url(project.namespace, project, snippet, only_path: true)
       end
+
+      it 'adds to the results hash' do
+        result = pipeline_result("Snippet #{reference}")
+        expect(result[:references][:snippet]).to eq [snippet]
+      end
     end
 
     context 'cross-project reference' do
@@ -95,6 +100,11 @@ module Gitlab::Markdown
           exp = act = "See #{project2.path_with_namespace}$#{snippet.id + 1}"
 
           expect(filter(act).to_html).to eq exp
+        end
+
+        it 'adds to the results hash' do
+          result = pipeline_result("Snippet #{reference}")
+          expect(result[:references][:snippet]).to eq [snippet]
         end
       end
 

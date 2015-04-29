@@ -67,7 +67,7 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def load_commits(array)
-    array.map { |hash| Commit.new(Gitlab::Git::Commit.new(hash)) }
+    array.map { |hash| Commit.new(Gitlab::Git::Commit.new(hash), merge_request.source_project) }
   end
 
   def dump_diffs(diffs)
@@ -88,7 +88,7 @@ class MergeRequestDiff < ActiveRecord::Base
     commits = compare_result.commits
 
     if commits.present?
-      commits = Commit.decorate(commits).
+      commits = Commit.decorate(commits, merge_request.source_project).
         sort_by(&:created_at).
         reverse
     end

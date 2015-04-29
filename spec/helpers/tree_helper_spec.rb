@@ -6,7 +6,7 @@ describe TreeHelper do
 
     before {
       @repository = project.repository
-      @commit = project.repository.commit("e56497bb")
+      @commit = project.commit("e56497bb")
     }
 
     context "on a directory containing more than one file/directory" do

@@ -6,7 +6,7 @@ class Import::GitoriousController < Import::BaseController
 
   def callback
     session[:gitorious_repos] = params[:repos]
-    redirect_to status_import_gitorious_url
+    redirect_to status_import_gitorious_path
   end
 
   def status

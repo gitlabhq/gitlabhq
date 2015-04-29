@@ -146,7 +146,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def branch_to
     @target_project = selected_target_project
-    @commit = @target_project.repository.commit(params[:ref]) if params[:ref].present?
+    @commit = @target_project.commit(params[:ref]) if params[:ref].present?
   end
 
   def update_branches

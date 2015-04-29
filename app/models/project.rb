@@ -259,7 +259,11 @@ class Project < ActiveRecord::Base
   end
 
   def repository
-    @repository ||= Repository.new(path_with_namespace)
+    @repository ||= Repository.new(path_with_namespace, nil, self)
+  end
+
+  def commit(id = 'HEAD')
+    repository.commit(id)
   end
 
   def saved?
@@ -492,7 +496,7 @@ class Project < ActiveRecord::Base
 
   def execute_hooks(data, hooks_scope = :push_hooks)
     hooks.send(hooks_scope).each do |hook|
-      hook.async_execute(data)
+      hook.async_execute(data, hooks_scope.to_s)
     end
     if group
       group.hooks.send(hooks_scope).each do |hook|
@@ -708,11 +712,21 @@ class Project < ActiveRecord::Base
   end
 
   def create_repository
-    if gitlab_shell.add_repository(path_with_namespace)
-      true
+    if forked?
+      if gitlab_shell.fork_repository(forked_from_project.path_with_namespace, self.namespace.path)
+        ensure_satellite_exists
+        true
+      else
+        errors.add(:base, 'Failed to fork repository')
+        false
+      end
     else
-      errors.add(:base, 'Failed to create repository')
-      false
+      if gitlab_shell.add_repository(path_with_namespace)
+        true
+      else
+        errors.add(:base, 'Failed to create repository')
+        false
+      end
     end
   end
 

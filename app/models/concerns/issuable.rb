@@ -7,6 +7,7 @@
 module Issuable
   extend ActiveSupport::Concern
   include Mentionable
+  include Participable
 
   included do
     belongs_to :author, class_name: "User"
@@ -45,6 +46,7 @@ module Issuable
              prefix: true
 
     attr_mentionable :title, :description
+    participant :author, :assignee, :notes, :mentioned_users
   end
 
   module ClassMethods
@@ -115,22 +117,6 @@ module Issuable
   # Return the total number of votes
   def votes_count
     upvotes + downvotes
-  end
-
-  # Return all users participating on the discussion
-  def participants(current_user = self.author)
-    users = []
-    users << author
-    users << assignee if is_assigned?
-
-    users.push *self.mentioned_users(current_user)
-
-    notes.each do |note|
-      users << note.author
-      users.push *note.mentioned_users(current_user)
-    end
-
-    users.uniq
   end
 
   def subscribed?(user)

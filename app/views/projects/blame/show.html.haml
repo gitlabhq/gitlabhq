@@ -12,7 +12,7 @@
     .file-content.blame.highlight
       %table
         - @blame.each do |commit, lines, since|
-          - commit = Commit.new(commit)
+          - commit = Commit.new(commit, @project)
           %tr
             %td.blame-commit
               %span.commit

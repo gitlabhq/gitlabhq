@@ -8,28 +8,11 @@ module Gitlab::Markdown
       IssuesHelper
     end
 
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:jira_project) }
     let(:issue)   { double('issue', iid: 123) }
 
     context 'JIRA issue references' do
       let(:reference) { "JIRA-#{issue.iid}" }
-
-      before do
-        jira = project.create_jira_service
-
-        props = {
-          'title'         => 'JIRA tracker',
-          'project_url'   => 'http://jira.example/issues/?jql=project=A',
-          'issues_url'    => 'http://jira.example/browse/:id',
-          'new_issue_url' => 'http://jira.example/secure/CreateIssue.jspa'
-        }
-
-        jira.update_attributes(properties: props, active: true)
-      end
-
-      after do
-        project.jira_service.destroy
-      end
 
       it 'requires project context' do
         expect { described_class.call('Issue JIRA-123', {}) }.
@@ -103,6 +86,14 @@ module Gitlab::Markdown
         link = doc.css('a').first.attr('href')
 
         expect(link).to eq helper.url_for_issue("#{reference}", project, only_path: true)
+      end
+
+      it 'adds to the results hash' do
+        ext = JiraIssue.new(reference, project)
+
+        result = pipeline_result("Issue #{reference}")
+        expect(result[:references][:external_issue]).not_to be_empty
+        expect(result[:references][:external_issue]).to eq [ext]
       end
     end
   end

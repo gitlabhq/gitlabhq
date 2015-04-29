@@ -1,3 +1,7 @@
+= content_for :meta_tags do
+  - if current_user
+    = auto_discovery_link_tag(:atom, dashboard_url(format: :atom, private_token: current_user.private_token), title: "All activity")
+
 - if @projects.any?
   .dashboard.row
     %section.activities.col-md-8

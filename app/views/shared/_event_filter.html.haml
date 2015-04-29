@@ -3,17 +3,3 @@
   = event_filter_link EventFilter.merged, 'Merge events'
   = event_filter_link EventFilter.comments, 'Comments'
   = event_filter_link EventFilter.team, 'Team'
-
-  - if current_user
-    - if current_controller?(:dashboard)
-      %li.pull-right
-        = link_to dashboard_path(:atom, { private_token: current_user.private_token }), class: 'rss-btn' do
-          %i.fa.fa-rss
-          News Feed
-
-    - if current_controller?(:groups)
-      %li.pull-right
-        = link_to group_path(@group, { format: :atom, private_token: current_user.private_token }), title: "Feed", class: 'rss-btn' do
-          %i.fa.fa-rss
-          News Feed
-%hr

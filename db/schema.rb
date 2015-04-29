@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150417122318) do
+ActiveRecord::Schema.define(version: 20150425173433) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,8 @@ ActiveRecord::Schema.define(version: 20150417122318) do
     t.text     "help_text"
     t.text     "restricted_visibility_levels"
     t.integer  "max_attachment_size",          default: 10,   null: false
+    t.integer  "default_project_visibility"
+    t.integer  "default_snippet_visibility"
   end
 
   create_table "audit_events", force: true do |t|
