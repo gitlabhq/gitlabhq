@@ -207,11 +207,9 @@ describe 'GitLab Markdown' do
         expect(item(5).children.first['href']).to eq 'irc://irc.freenode.net/git'
       end
 
-      # TODO (rspeicher): Do we really want this?
       it 'autolinks short, invalid URLs' do
-        skip 'rspeicher: Pending decision'
         expect(item(6).children.first.name).to eq 'a'
-        expect(item(6).children.first['href']).to eq 'http://foo'
+        expect(item(6).children.first['href']).to eq 'http://localhost:3000'
       end
 
       %w(code a kbd).each do |elem|

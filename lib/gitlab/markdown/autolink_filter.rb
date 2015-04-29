@@ -52,7 +52,10 @@ module Gitlab
 
         # NOTE: We don't parse email links because it will erroneously match
         # external Commit and CommitRange references.
-        rinku = Rinku.auto_link(html, :urls, options, IGNORE_PARENTS.to_a)
+        #
+        # The final argument tells Rinku to link short URLs that don't include a
+        # period (e.g., http://localhost:3000/)
+        rinku = Rinku.auto_link(html, :urls, options, IGNORE_PARENTS.to_a, 1)
 
         # Rinku returns a String, so parse it back to a Nokogiri::XML::Document
         # for further processing.

@@ -41,6 +41,14 @@ module Gitlab::Markdown
         expect(doc.at_css('a')['href']).to eq link
       end
 
+      it 'autolinks short URLs' do
+        link = 'http://localhost:3000/'
+        doc = filter("See #{link}")
+
+        expect(doc.at_css('a').text).to eq link
+        expect(doc.at_css('a')['href']).to eq link
+      end
+
       it 'accepts link_attr options' do
         doc = filter("See #{link}", link_attr: {class: 'custom'})
 
