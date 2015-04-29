@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150425173433) do
+ActiveRecord::Schema.define(version: 20150430101032) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -489,6 +489,11 @@ ActiveRecord::Schema.define(version: 20150425173433) do
     t.string   "bitbucket_access_token_secret"
     t.string   "location"
     t.string   "public_email",                  default: "",    null: false
+    t.integer  "longest_streak",                default: 0
+    t.integer  "current_streak",                default: 0
+    t.date     "last_contributed_at"
+    t.date     "longest_streak_start_at"
+    t.date     "longest_streak_end_at"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

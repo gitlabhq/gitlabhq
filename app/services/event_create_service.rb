@@ -79,6 +79,11 @@ class EventCreateService
       author_id: current_user.id
     )
 
-    Event.create(attributes)
+    event = Event.create(attributes)
+    if event && event.contribute?
+      current_user.streak
+    end
+
+    event
   end
 end

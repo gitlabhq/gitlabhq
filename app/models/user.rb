@@ -50,6 +50,10 @@
 #  bitbucket_access_token        :string(255)
 #  bitbucket_access_token_secret :string(255)
 #  public_email                  :string(255)      default(""), not null
+#  longest_streak_start_at       :date
+#  longest_streak_end_at         :date
+#  current_streak                :integer          default(0)
+#  last_contributed_at           :date
 #
 
 require 'carrierwave/orm/activerecord'
@@ -148,7 +152,7 @@ class User < ActiveRecord::Base
 
   before_save :ensure_authentication_token
   after_save :ensure_namespace_correct
-  after_initialize :set_projects_limit
+  after_initialize :set_projects_limit, :set_current_streak
   after_create :post_create_hook
   after_destroy :post_destroy_hook
 
@@ -459,6 +463,14 @@ class User < ActiveRecord::Base
     self.projects_limit = current_application_settings.default_projects_limit
   end
 
+  def set_current_streak
+    if last_contributed_at.nil? || last_contributed_at + 1 < Date.today
+      self.current_streak = 0
+    end
+
+    true
+  end
+
   def requires_ldap_check?
     if !Gitlab.config.ldap.enabled
       false
@@ -610,5 +622,58 @@ class User < ActiveRecord::Base
       reorder(project_id: :desc).
       select(:project_id).
       uniq.map(&:project_id)
+  end
+
+  def contribution_year_period
+    streak_date_format(1.year.ago) + ' - ' + streak_date_format(Date.today)
+  end
+
+  def longest_streak
+    longest_streak_start_at && longest_streak_end_at ? (longest_streak_end_at - longest_streak_start_at + 1).to_i : 0
+  end
+
+  def longest_streak_period
+    return 'No contribution yet' if longest_streak.zero?
+
+    if longest_streak_start_at == longest_streak_end_at
+      streak_date_format(longest_streak_start_at)
+    else
+      streak_date_format(longest_streak_start_at) + ' - ' + streak_date_format(longest_streak_end_at)
+    end
+  end
+
+  def current_streak_period
+    return 'No contribution yet' if longest_streak.zero?
+
+    if last_contributed_at + 1 < Date.today
+      return 'Last contributed at ' + streak_date_format(last_contributed_at)
+    end
+
+    if current_streak == 1
+      streak_date_format(last_contributed_at)
+    else
+      streak_date_format(last_contributed_at - current_streak + 1) + ' - ' + streak_date_format(last_contributed_at)
+    end
+  end
+
+  def streak
+    return if last_contributed_at == Date.today
+
+    self.current_streak ||= 1
+    self.current_streak += 1 if last_contributed_at && (last_contributed_at + 1 == Date.today)
+
+    if current_streak > longest_streak
+      self.longest_streak_start_at = Date.today - current_streak + 1
+      self.longest_streak_end_at = Date.today
+    end
+
+    self.last_contributed_at = Date.today
+    self.save
+  end
+
+  private
+
+  def streak_date_format(date)
+    date.strftime("%b %d,%Y")
   end
 end

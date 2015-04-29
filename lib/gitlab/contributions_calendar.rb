@@ -35,9 +35,11 @@ module Gitlab
       @timestamps
     end
 
-    def events_by_date(date)
+    def events_by_period(start_date, end_date=nil)
+      end_date = end_date || start_date
+
       events = Event.contributions.where(author_id: user.id).
-        where("created_at > ? AND created_at < ?", date.beginning_of_day, date.end_of_day).
+        where("created_at > ? AND created_at < ?", start_date.beginning_of_day, end_date.end_of_day).
         where(project_id: projects)
 
       events.select do |event|

@@ -63,6 +63,10 @@ class Event < ActiveRecord::Base
     end
   end
 
+  def contribute?
+    push? || ((merge_request? || issue?) && [CREATED, CLOSED, MERGED].include?(action))
+  end
+
   def proper?
     if push?
       true

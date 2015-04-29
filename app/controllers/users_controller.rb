@@ -10,6 +10,8 @@ class UsersController < ApplicationController
     @projects = @user.personal_projects.
       where(id: authorized_projects_ids).includes(:namespace)
 
+    @streak_info = streak_info
+
     # Collect only groups common for both users
     @groups = @user.groups & GroupsFinder.new.execute(current_user)
 
@@ -45,7 +47,7 @@ class UsersController < ApplicationController
     @events = []
 
     if @calendar_date
-      @events = contributions_calendar.events_by_date(@calendar_date)
+      @events = contributions_calendar.events_by_period(@calendar_date)
     end
 
     render 'calendar_activities', layout: false
@@ -73,6 +75,19 @@ class UsersController < ApplicationController
     # Projects user can view
     @authorized_projects_ids ||=
       ProjectsFinder.new.execute(current_user).pluck(:id)
+  end
+
+  def streak_info
+    @streak_info = {
+      contribution_year: contributions_calendar.events_by_period((Time.now - 1.year), Time.now).count,
+      contribution_year_period: @user.contribution_year_period,
+
+      longest_streak: @user.longest_streak,
+      longest_streak_period: @user.longest_streak_period,
+
+      current_streak: @user.current_streak,
+      current_streak_period: @user.current_streak_period,
+    }
   end
 
   def contributed_projects

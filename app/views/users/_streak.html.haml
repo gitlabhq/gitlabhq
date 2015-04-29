@@ -1,0 +1,24 @@
+.user-streak.row.prepend-top-20.text-center
+  .col-md-4
+    %p.light
+      Contributions in last year
+    %h3
+      #{@streak_info[:contribution_year]} total
+    %p.light
+      #{@streak_info[:contribution_year_period]}
+
+  .col-md-4
+    %p.light
+      Longest streak
+    %h3
+      #{@streak_info[:longest_streak]} days
+    %p.light
+      #{@streak_info[:longest_streak_period]}
+
+  .col-md-4
+    %p.light
+      Current streak
+    %h3
+      #{@streak_info[:current_streak]} days
+    %p.light
+      #{@streak_info[:current_streak_period]}
