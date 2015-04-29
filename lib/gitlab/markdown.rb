@@ -1,4 +1,5 @@
 require 'html/pipeline'
+require 'task_list/filter'
 
 module Gitlab
   # Custom parser for GitLab-flavored Markdown
@@ -76,9 +77,9 @@ module Gitlab
 
       text = result[:output].to_html(save_with: save_options)
 
-      if options[:parse_tasks]
-        text = parse_tasks(text)
-      end
+      # if options[:parse_tasks]
+      #   text = parse_tasks(text)
+      # end
 
       text.html_safe
     end
@@ -106,7 +107,9 @@ module Gitlab
         Gitlab::Markdown::SnippetReferenceFilter,
         Gitlab::Markdown::CommitRangeReferenceFilter,
         Gitlab::Markdown::CommitReferenceFilter,
-        Gitlab::Markdown::LabelReferenceFilter
+        Gitlab::Markdown::LabelReferenceFilter,
+
+        TaskList::Filter
       ]
     end
 
