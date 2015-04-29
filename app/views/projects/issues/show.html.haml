@@ -31,10 +31,12 @@
       = gfm escape_once(@issue.title)
     %div
       - if @issue.description.present?
-        .description
+        .description.js-task-list-container
           .wiki
             = preserve do
               = markdown(@issue.description, parse_tasks: true)
+          %textarea.hidden.js-task-list-field
+            = @issue.description
 
     %hr
   .issue-discussion

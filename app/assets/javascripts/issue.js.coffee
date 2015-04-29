@@ -6,11 +6,11 @@ class @Issue
     $(".context .inline-update").on "change", "#issue_assignee_id", ->
       $(this).submit()
 
-    if $("a.btn-close").length
-      $("li.task-list-item input:checkbox").prop("disabled", false)
+    # Prevent duplicate event bindings
+    @disableTaskList()
 
-    $('.task-list-item input:checkbox').off('change')
-    $('.task-list-item input:checkbox').change('issue', updateTaskState)
+    if $("a.btn-close").length
+      @initTaskList()
 
     $('.issue-details').waitForImages ->
       $('.issuable-affix').affix offset:
@@ -22,3 +22,22 @@ class @Issue
         $(@).width($(@).outerWidth())
       .on 'affixed-top.bs.affix affixed-bottom.bs.affix', ->
         $(@).width('')
+
+  initTaskList: ->
+    $('.issue-details .js-task-list-container').taskList('enable')
+    $(document).on 'tasklist:changed', '.issue-details .js-task-list-container', @updateTaskList
+
+  disableTaskList: ->
+    $('.issue-details .js-task-list-container').taskList('disable')
+    $(document).off 'tasklist:changed', '.issue-details .js-task-list-container'
+
+  # TODO (rspeicher): Make the issue description inline-editable like a note so
+  # that we can re-use its form here
+  updateTaskList: ->
+    patchData = {}
+    patchData['issue'] = {'description': $('.js-task-list-field', this).val()}
+
+    $.ajax
+      type: 'PATCH'
+      url: $('form.js-issue-update').attr('action')
+      data: patchData
