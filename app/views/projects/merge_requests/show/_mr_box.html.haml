@@ -6,6 +6,6 @@
     .description.js-task-list-container
       .wiki
         = preserve do
-          = markdown(@merge_request.description, parse_tasks: true)
+          = markdown(@merge_request.description)
       %textarea.hidden.js-task-list-field
         = @merge_request.description

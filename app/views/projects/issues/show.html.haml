@@ -34,7 +34,7 @@
         .description.js-task-list-container
           .wiki
             = preserve do
-              = markdown(@issue.description, parse_tasks: true)
+              = markdown(@issue.description)
           %textarea.hidden.js-task-list-field
             = @issue.description
 
