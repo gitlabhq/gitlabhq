@@ -25,7 +25,9 @@ module Gitlab
       # The negative lookbehind ensures that users can paste a URL followed by a
       # period or comma for punctuation without those characters being included
       # in the generated link.
-      SCHEME_PATTERN = %r{([a-z][a-z0-9_\+\.\-]+:\/\/[^\s]+)(?<!,|\.)}
+      #
+      # Rubular: http://rubular.com/r/cxjPyZc7Sb
+      SCHEME_PATTERN = %r{([a-z][a-z0-9\+\.-]+://\S+)(?<!,|\.)}
 
       # Text matching SCHEME_PATTERN inside these elements will not be linked
       IGNORE_PARENTS = %w(a code kbd pre script style).to_set
