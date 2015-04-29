@@ -49,7 +49,8 @@ module GitlabMarkdownHelper
         strikethrough:       true,
         lax_spacing:         true,
         space_after_headers: true,
-        superscript:         true
+        superscript:         true,
+        footnotes:           true
       )
     end
 
