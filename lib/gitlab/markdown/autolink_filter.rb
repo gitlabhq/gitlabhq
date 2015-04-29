@@ -27,9 +27,9 @@ module Gitlab
       # in the generated link.
       #
       # Rubular: http://rubular.com/r/cxjPyZc7Sb
-      SCHEME_PATTERN = %r{([a-z][a-z0-9\+\.-]+://\S+)(?<!,|\.)}
+      LINK_PATTERN = %r{([a-z][a-z0-9\+\.-]+://\S+)(?<!,|\.)}
 
-      # Text matching SCHEME_PATTERN inside these elements will not be linked
+      # Text matching LINK_PATTERN inside these elements will not be linked
       IGNORE_PARENTS = %w(a code kbd pre script style).to_set
 
       def call
@@ -62,14 +62,14 @@ module Gitlab
         @doc = parse_html(rinku)
       end
 
-      # Autolinks any text matching SCHEME_PATTERN that Rinku didn't already
+      # Autolinks any text matching LINK_PATTERN that Rinku didn't already
       # replace
       def text_parse
         search_text_nodes(doc).each do |node|
           content = node.to_html
 
           next if has_ancestor?(node, IGNORE_PARENTS)
-          next unless content.match(SCHEME_PATTERN)
+          next unless content.match(LINK_PATTERN)
 
           # If Rinku didn't link this, there's probably a good reason, so we'll
           # skip it too
@@ -86,7 +86,7 @@ module Gitlab
       end
 
       def autolink_filter(text)
-        text.gsub(SCHEME_PATTERN) do |match|
+        text.gsub(LINK_PATTERN) do |match|
           options = link_options.merge(href: match)
           content_tag(:a, match, options)
         end
