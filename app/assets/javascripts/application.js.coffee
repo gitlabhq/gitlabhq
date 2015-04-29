@@ -41,6 +41,7 @@
 #= require shortcuts_issuable
 #= require shortcuts_network
 #= require cal-heatmap
+#= require task_list
 #= require_tree .
 
 window.slugify = (text) ->
