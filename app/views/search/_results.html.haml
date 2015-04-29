@@ -1,28 +1,21 @@
-%h4
-  #{@search_results.total_count} results found
-  - unless @show_snippets
-    - if @project
-      for #{link_to @project.name_with_namespace, [@project.namespace.becomes(Namespace), @project]}
-    - elsif @group
-      for #{link_to @group.name, @group}
+- if @search_results.empty?
+  = render partial: "search/results/empty"
+- else
+  .light
+    Search results for
+    %code
+      = @search_term
+    - unless @show_snippets
+      - if @project
+        in project #{link_to @project.name_with_namespace, [@project.namespace.becomes(Namespace), @project]}
+      - elsif @group
+        in group #{link_to @group.name, @group}
 
-%hr
-
-.row
-  .col-sm-3
-    - if @project
-      = render "project_filter"
-    - elsif @show_snippets
-      = render 'snippet_filter'
-    - else
-      = render "global_filter"
-  .col-sm-9
+  %br
+  .results.prepend-top-10
     .search-results
-      - if @search_results.empty?
-        = render partial: "search/results/empty", locals: { message: "We couldn't find any matching results" }
-      - else
-        = render partial: "search/results/#{@scope.singularize}", collection: @objects
-        = paginate @objects, theme: 'gitlab'
+      = render partial: "search/results/#{@scope.singularize}", collection: @objects
+      = paginate @objects, theme: 'gitlab'
 
 :javascript
   $(".search-results .term").highlight("#{escape_javascript(params[:search])}");
