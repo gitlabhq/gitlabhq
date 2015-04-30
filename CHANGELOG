@@ -11,6 +11,7 @@ v 7.11.0 (unreleased)
   - Fix "Revspec not found" errors when viewing diffs in a forked project with submodules (Stan Hu)
   -
   - Fix broken file browsing with relative submodule in personal projects (Stan Hu)
+  - Fix DB error when trying to tag a repository (Stan Hu)
   - Add "Reply quoting selected text" shortcut key (`r`)
   - Fix bug causing `@whatever` inside an issue's first code block to be picked up as a user mention.
   - Fix bug causing `@whatever` inside an inline code snippet (backtick-style) to be picked up as a user mention.
