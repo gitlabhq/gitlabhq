@@ -354,7 +354,7 @@ class Project < ActiveRecord::Base
   end
 
   def default_issues_tracker?
-    external_issue_tracker.blank?
+    !external_issue_tracker
   end
 
   def external_issues_trackers
