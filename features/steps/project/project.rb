@@ -94,4 +94,12 @@ class Spinach::Features::Project < Spinach::FeatureSteps
     page.should have_link 'README.md'
     page.should have_content 'testme'
   end
+
+  step 'I add project tags' do
+    fill_in 'Tags', with: 'tag1, tag2'
+  end
+
+  step 'I should see project tags' do
+    expect(find_field('Tags').value).to eq 'tag1, tag2'
+  end
 end
