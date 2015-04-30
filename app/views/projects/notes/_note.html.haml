@@ -13,7 +13,7 @@
             = icon('link')
             Link here
           &nbsp;
-          - if can?(current_user, :admin_note, note) && note.editable?
+          - if note_editable?(note)
             = link_to '#', title: 'Edit comment', class: 'js-note-edit' do
               = icon('pencil-square-o')
               Edit
@@ -50,7 +50,7 @@
               \-1
 
 
-      .note-body.js-task-list-container
+      .note-body{class: note_editable?(note) ? 'js-task-list-container' : ''}
         .note-text
           = preserve do
             = markdown(note.note, {no_header_anchors: true})
