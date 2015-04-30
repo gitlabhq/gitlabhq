@@ -23,6 +23,7 @@ describe Gitlab::GoogleCodeImport::Client do
   describe "#repos" do
     it "returns only Git repositories" do
       expect(subject.repos.length).to eq(1)
+      expect(subject.incompatible_repos.length).to eq(1)
     end
   end
 

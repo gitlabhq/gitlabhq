@@ -27,21 +27,34 @@ describe Import::GoogleCodeController do
     it "assigns variables" do
       @project = create(:project, import_type: 'google_code', creator_id: user.id)
       controller.stub_chain(:client, :repos).and_return([@repo])
+      controller.stub_chain(:client, :incompatible_repos).and_return([])
 
       get :status
 
       expect(assigns(:already_added_projects)).to eq([@project])
       expect(assigns(:repos)).to eq([@repo])
+      expect(assigns(:incompatible_repos)).to eq([])
     end
 
     it "does not show already added project" do
       @project = create(:project, import_type: 'google_code', creator_id: user.id, import_source: 'vim')
       controller.stub_chain(:client, :repos).and_return([@repo])
+      controller.stub_chain(:client, :incompatible_repos).and_return([])
 
       get :status
 
       expect(assigns(:already_added_projects)).to eq([@project])
       expect(assigns(:repos)).to eq([])
+    end
+
+    it "does not show any invalid projects" do
+      controller.stub_chain(:client, :repos).and_return([])
+      controller.stub_chain(:client, :incompatible_repos).and_return([@repo])
+
+      get :status
+
+      expect(assigns(:repos)).to be_empty
+      expect(assigns(:incompatible_repos)).to eq([@repo])
     end
   end
 end

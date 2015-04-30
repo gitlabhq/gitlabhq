@@ -21,6 +21,10 @@ module Gitlab
         @repos ||= raw_data["projects"].map { |raw_repo| GoogleCodeImport::Repository.new(raw_repo) }.select(&:git?)
       end
 
+      def incompatible_repos
+        @incompatible_repos ||= raw_data["projects"].map { |raw_repo| GoogleCodeImport::Repository.new(raw_repo) }.reject(&:git?)
+      end
+
       def repo(id)
         repos.find { |repo| repo.id == id }
       end

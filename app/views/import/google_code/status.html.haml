@@ -2,15 +2,19 @@
   %i.fa.fa-google
   Import projects from Google Code
 
-%p.light
-  Select projects you want to import.
-%p.light
-  Optionally, you can
-  = link_to "customize", new_user_map_import_google_code_path
-  how Google Code email addresses and usernames are imported into GitLab.
-%hr
-%p
-  = button_tag 'Import all projects', class: "btn btn-success js-import-all"
+- if @repos.any?
+  %p.light
+    Select projects you want to import.
+  %p.light
+    Optionally, you can
+    = link_to "customize", new_user_map_import_google_code_path
+    how Google Code email addresses and usernames are imported into GitLab.
+  %hr
+  %p
+  - if @incompatible_repos.any?
+    = button_tag 'Import all compatible projects', class: "btn btn-success js-import-all"
+  - else
+    = button_tag 'Import all projects', class: "btn btn-success js-import-all"
 
 %table.table.import-jobs
   %thead
@@ -44,6 +48,22 @@
           = "#{current_user.username}/#{repo.name}"
         %td.import-actions.job-status
           = button_tag "Import", class: "btn js-add-to-import"
+    - @incompatible_repos.each do |repo|
+      %tr{id: "repo_#{repo.id}"}
+        %td
+          = link_to repo.name, "https://code.google.com/p/#{repo.name}", target: "_blank"
+        %td.import-target
+        %td.import-actions-job-status
+          = label_tag "Incompatible Project", nil, class: "label label-danger"
+
+- if @incompatible_repos.any?
+  %p
+    One or more of your Google Code projects cannot be imported into GitLab
+    directly because they use Subversion or Mercurial for version control,
+    rather than Git. Please convert them to Git on Google Code, and go
+    through the
+    = link_to "import flow", new_import_google_code_path
+    again.
 
 :coffeescript
   new ImporterStatus("#{jobs_import_google_code_path}", "#{import_google_code_path}")
