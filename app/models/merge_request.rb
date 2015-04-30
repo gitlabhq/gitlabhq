@@ -199,6 +199,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def automerge!(current_user, commit_message = nil)
+    return unless automergeable?
+
     MergeRequests::AutoMergeService.
       new(target_project, current_user).
       execute(self, commit_message)
@@ -206,6 +208,22 @@ class MergeRequest < ActiveRecord::Base
 
   def open?
     opened? || reopened?
+  end
+
+  def work_in_progress?
+    title =~ /\A\[?WIP\]?:? /i
+  end
+
+  def automergeable?
+    open? && !work_in_progress? && can_be_merged?
+  end
+
+  def automerge_status
+    if work_in_progress?
+      "work_in_progress"
+    else
+      merge_status_name
+    end
   end
 
   def mr_and_commit_notes
