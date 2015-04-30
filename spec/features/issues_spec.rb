@@ -95,7 +95,7 @@ describe 'Issues', feature: true do
     let(:issue) { @issue }
 
     it 'should allow filtering by issues with no specified milestone' do
-      visit namespace_project_issues_path(project.namespace, project, milestone_id: IssuableFinder::NONE)
+      visit namespace_project_issues_path(project.namespace, project, milestone_title: IssuableFinder::NONE)
 
       expect(page).not_to have_content 'foobar'
       expect(page).to have_content 'barbaz'
@@ -103,7 +103,7 @@ describe 'Issues', feature: true do
     end
 
     it 'should allow filtering by a specified milestone' do
-      visit namespace_project_issues_path(project.namespace, project, milestone_id: issue.milestone.id)
+      visit namespace_project_issues_path(project.namespace, project, milestone_title: issue.milestone.title)
 
       expect(page).to have_content 'foobar'
       expect(page).not_to have_content 'barbaz'

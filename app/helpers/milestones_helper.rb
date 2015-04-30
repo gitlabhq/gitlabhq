@@ -28,6 +28,7 @@ module MilestonesHelper
         Milestone.where(project_id: @projects)
       end.active
 
-    options_from_collection_for_select(milestones, 'id', 'title', params[:milestone_id])
+    grouped_milestones = Milestones::GroupService.new(milestones).execute
+    options_from_collection_for_select(grouped_milestones, 'title', 'title', params[:milestone_title])
   end
 end
