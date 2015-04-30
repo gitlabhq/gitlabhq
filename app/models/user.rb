@@ -139,6 +139,7 @@ class User < ActiveRecord::Base
   validate :avatar_type, if: ->(user) { user.avatar_changed? }
   validate :unique_email, if: ->(user) { user.email_changed? }
   validate :owns_notification_email, if: ->(user) { user.notification_email_changed? }
+  validate :owns_public_email, if: ->(user) { user.public_email_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :generate_password, on: :create
@@ -146,6 +147,7 @@ class User < ActiveRecord::Base
   before_validation :set_notification_email, if: ->(user) { user.email_changed? }
   before_validation :set_public_email, if: ->(user) { user.public_email_changed? }
 
+  after_update :update_emails_with_primary_email, if: ->(user) { user.email_changed? }
   before_save :ensure_authentication_token
   after_save :ensure_namespace_correct
   after_initialize :set_projects_limit
@@ -276,11 +278,27 @@ class User < ActiveRecord::Base
   end
 
   def unique_email
-    self.errors.add(:email, 'has already been taken') if Email.exists?(email: self.email)
+    if !self.emails.exists?(email: self.email) && Email.exists?(email: self.email)
+      self.errors.add(:email, 'has already been taken')
+    end
   end
 
   def owns_notification_email
     self.errors.add(:notification_email, "is not an email you own") unless self.all_emails.include?(self.notification_email)
+  end
+
+  def owns_public_email
+    self.errors.add(:public_email, "is not an email you own") unless self.all_emails.include?(self.public_email)
+  end
+
+  def update_emails_with_primary_email
+    primary_email_record = self.emails.find_by(email: self.email)
+    if primary_email_record
+      primary_email_record.destroy
+      self.emails.create(email: self.email_was)
+      
+      self.update_secondary_emails!
+    end
   end
 
   # Groups user has access to
@@ -448,8 +466,14 @@ class User < ActiveRecord::Base
 
   def set_public_email
     if self.public_email.blank? || !self.all_emails.include?(self.public_email)
-      self.public_email = ''
+      self.public_email = nil
     end
+  end
+
+  def update_secondary_emails!
+    self.set_notification_email
+    self.set_public_email
+    self.save if self.notification_email_changed? || self.public_email_changed?
   end
 
   def set_projects_limit

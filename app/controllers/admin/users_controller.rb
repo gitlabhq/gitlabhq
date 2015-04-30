@@ -102,8 +102,7 @@ class Admin::UsersController < Admin::ApplicationController
     email = user.emails.find(params[:email_id])
     email.destroy
 
-    user.set_notification_email
-    user.save if user.notification_email_changed?
+    user.update_secondary_emails!
 
     respond_to do |format|
       format.html { redirect_to :back, notice: "Successfully removed email." }
