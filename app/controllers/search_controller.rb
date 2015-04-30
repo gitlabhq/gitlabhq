@@ -1,6 +1,8 @@
 class SearchController < ApplicationController
   include SearchHelper
 
+  before_action :set_title
+
   def show
     return if params[:search].nil? || params[:search].blank?
 
@@ -54,5 +56,12 @@ class SearchController < ApplicationController
     @ref = params[:project_ref] if params[:project_ref].present?
 
     render json: search_autocomplete_opts(term).to_json
+  end
+
+  private
+
+  def set_title
+    @title      = "Search"
+    @title_url  = search_path
   end
 end

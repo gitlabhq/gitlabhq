@@ -13,8 +13,6 @@ class SnippetsController < ApplicationController
 
   respond_to :html
 
-  layout :determine_layout
-
   def index
     if params[:username].present?
       @user = User.find_by(username: params[:username])
@@ -99,15 +97,12 @@ class SnippetsController < ApplicationController
   end
 
   def set_title
-    @title = 'Snippets'
-    @title_url = snippets_path
+    @title      = 'Snippets'
+    @title_url  = snippets_path
+    @sidebar    = "snippets"
   end
 
   def snippet_params
     params.require(:personal_snippet).permit(:title, :content, :file_name, :private, :visibility_level)
-  end
-
-  def determine_layout
-    current_user ? 'snippets' : 'public_users'
   end
 end

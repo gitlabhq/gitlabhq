@@ -1,4 +1,5 @@
 class Groups::ApplicationController < ApplicationController
+  before_action :set_title
 
   private
   
@@ -18,11 +19,9 @@ class Groups::ApplicationController < ApplicationController
     end
   end
 
-  def determine_layout
-    if current_user
-      'group'
-    else
-      'public_group'
-    end
+  def set_title
+    @title      = group.name
+    @title_url  = group_path(group)
+    @sidebar    = "group"
   end
 end

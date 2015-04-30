@@ -39,4 +39,15 @@
           = icon ('angle-down fw')
 
   - if group_settings_page?
-    = render 'groups/settings_nav'
+    %ul.sidebar-subnav
+      = nav_link(path: 'groups#edit') do
+        = link_to edit_group_path(@group), title: 'Group', data: {placement: 'right'} do
+          = icon('pencil-square-o')
+          %span
+            Group
+      = nav_link(path: 'groups#projects') do
+        = link_to projects_group_path(@group), title: 'Projects', data: {placement: 'right'} do
+          = icon('folder')
+          %span
+            Projects
+
