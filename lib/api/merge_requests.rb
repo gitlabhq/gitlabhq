@@ -186,7 +186,7 @@ module API
             merge_request.check_if_can_be_merged
           end
 
-          if merge_request.open?
+          if merge_request.open? && !merge_request.work_in_progress?
             if merge_request.can_be_merged?
               merge_request.automerge!(current_user, params[:merge_commit_message] || merge_request.merge_commit_message)
               present merge_request, with: Entities::MergeRequest
@@ -195,7 +195,7 @@ module API
             end
           else
             # Merge request can not be merged
-            # because it is already closed/merged
+            # because it is already closed/merged or marked as WIP
             not_allowed!
           end
         else
