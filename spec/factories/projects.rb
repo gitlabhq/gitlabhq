@@ -76,6 +76,14 @@ FactoryGirl.define do
     end
   end
 
+  factory :forked_project_with_submodules, parent: :empty_project do
+    path { 'forked-gitlabhq' }
+
+    after :create do |project|
+      TestEnv.copy_forked_repo_with_submodules(project)
+    end
+  end
+
   factory :redmine_project, parent: :project do
     after :create do |project|
       project.create_redmine_service(

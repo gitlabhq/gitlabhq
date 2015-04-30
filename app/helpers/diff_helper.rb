@@ -140,8 +140,8 @@ module DiffHelper
     end
   end
 
-  def submodule_link(blob, ref)
-    tree, commit = submodule_links(blob, ref)
+  def submodule_link(blob, ref, repository = @repository)
+    tree, commit = submodule_links(blob, ref, repository)
     commit_id = if commit.nil?
                   blob.id[0..10]
                 else
