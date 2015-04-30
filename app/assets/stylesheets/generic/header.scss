@@ -10,7 +10,10 @@ header {
     border: none;
     width: 100%;
 
-    .navbar-inner {
+    .container {
+      width: 100% !important;
+      padding: 0;
+
       background: #FFF;
       border-bottom: 1px solid #DDD;
       filter: none;
@@ -121,11 +124,6 @@ header {
         }
       }
     }
-  }
-
-  .container {
-    width: 100% !important;
-    padding: 0px;
   }
 
   /**
