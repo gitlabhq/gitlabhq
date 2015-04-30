@@ -1,4 +1,4 @@
-class Profiles::PasswordsController < ApplicationController
+class Profiles::PasswordsController < Profiles::ApplicationController
   skip_before_action :check_password_expiration, only: [:new, :create]
 
   before_action :set_user
