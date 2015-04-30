@@ -115,6 +115,32 @@ describe MergeRequest do
     end
   end
 
+  describe "#work_in_progress?" do
+    it "detects the 'WIP ' prefix" do
+      subject.title = "WIP #{subject.title}"
+      expect(subject).to be_work_in_progress
+    end
+
+    it "detects the 'WIP: ' prefix" do
+      subject.title = "WIP: #{subject.title}"
+      expect(subject).to be_work_in_progress
+    end
+
+    it "detects the '[WIP] ' prefix" do
+      subject.title = "[WIP] #{subject.title}"
+      expect(subject).to be_work_in_progress
+    end
+
+    it "doesn't detect WIP for words starting with WIP" do
+      subject.title = "Wipwap #{subject.title}"
+      expect(subject).not_to be_work_in_progress
+    end
+
+    it "doesn't detect WIP by default" do
+      expect(subject).not_to be_work_in_progress
+    end
+  end
+
   it_behaves_like 'an editable mentionable' do
     subject { create(:merge_request, source_project: project, target_project: project) }
 

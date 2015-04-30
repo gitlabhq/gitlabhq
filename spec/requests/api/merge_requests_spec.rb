@@ -312,6 +312,13 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('405 Method Not Allowed')
     end
 
+    it "should return 405 if merge_request is a work in progress" do
+      merge_request.update_attribute(:title, "WIP: #{merge_request.title}")
+      put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user)
+      expect(response.status).to eq(405)
+      expect(json_response['message']).to eq('405 Method Not Allowed')
+    end
+
     it "should return 401 if user has no permissions to merge" do
       user2 = create(:user)
       project.team << [user2, :reporter]
