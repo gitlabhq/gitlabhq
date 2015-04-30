@@ -1,5 +1,5 @@
 class Oauth::AuthorizedApplicationsController < Doorkeeper::AuthorizedApplicationsController
-  before_filter :set_title
+  before_action :set_title
 
   def destroy
     Doorkeeper::AccessToken.revoke_all_for(params[:id], current_resource_owner)
