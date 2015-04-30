@@ -29,6 +29,7 @@ v 7.11.0 (unreleased)
   - Improve UI for mobile phones on dashboard and project pages
   - Add room notification and message color option for HipChat
   - Allow to use non-ASCII letters and dashes in project and namespace name. (Jakub Jirutka)
+  - Add footnotes support to Markdown (Guillaume Delbergue)
 
 v 7.10.0
   - Ignore submodules that are defined in .gitmodules but are checked in as directories.
