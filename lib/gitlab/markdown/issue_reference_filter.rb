@@ -44,21 +44,20 @@ module Gitlab
       # Returns a String with `#123` references replaced with links. All links
       # have `gfm` and `gfm-issue` class names attached for styling.
       def issue_link_filter(text)
-        self.class.references_in(text) do |match, issue, project_ref|
+        self.class.references_in(text) do |match, id, project_ref|
           project = self.project_from_ref(project_ref)
 
-          if project && project.issue_exists?(issue)
-            # FIXME (rspeicher): Law of Demeter
-            push_result(:issue, project.issues.where(iid: issue).first)
+          if project && issue = project.get_issue(id)
+            push_result(:issue, issue)
 
-            url = url_for_issue(issue, project, only_path: context[:only_path])
+            url = url_for_issue(id, project, only_path: context[:only_path])
 
-            title = escape_once("Issue: #{title_for_issue(issue, project)}")
+            title = escape_once("Issue: #{title_for_issue(id, project)}")
             klass = reference_class(:issue)
 
             %(<a href="#{url}"
                  title="#{title}"
-                 class="#{klass}">#{project_ref}##{issue}</a>)
+                 class="#{klass}">#{project_ref}##{id}</a>)
           else
             match
           end
