@@ -52,7 +52,7 @@ module Gitlab
 
             url = url_for_issue(id, project, only_path: context[:only_path])
 
-            title = escape_once("Issue: #{title_for_issue(id, project)}")
+            title = escape_once("Issue: #{issue.title}")
             klass = reference_class(:issue)
 
             %(<a href="#{url}"
@@ -66,10 +66,6 @@ module Gitlab
 
       def url_for_issue(*args)
         IssuesHelper.url_for_issue(*args)
-      end
-
-      def title_for_issue(*args)
-        IssuesHelper.title_for_issue(*args)
       end
     end
   end
