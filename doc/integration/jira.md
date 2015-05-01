@@ -1,6 +1,8 @@
 # GitLab Jira integration
 
 GitLab can be configured to interact with Jira.
+Configuration happens via username and password.
+Connecting to a Jira server via CAS is not possible.
 
 Each project can be configured to connect to a different Jira instance, configuration is explained [here](#configuration).
 If you have one Jira instance you can pre-fill the settings page with a default template. To configure the template [see external issue tracker document](external-issue-tracker.md#service-template)).
