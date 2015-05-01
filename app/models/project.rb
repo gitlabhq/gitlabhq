@@ -338,7 +338,7 @@ class Project < ActiveRecord::Base
   end
 
   def issue_exists?(issue_id)
-    get_issue(issue_id).present?
+    get_issue(issue_id)
   end
 
   def default_issue_tracker
