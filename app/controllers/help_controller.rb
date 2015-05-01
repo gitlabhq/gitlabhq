@@ -1,5 +1,5 @@
 class HelpController < ApplicationController
-  before_action :set_title
+  layout 'help'
 
   def index
   end
@@ -45,11 +45,6 @@ class HelpController < ApplicationController
   end
 
   private
-
-  def set_title
-    @title      = "Help"
-    @title_url  = help_path
-  end
 
   def path_params
     params.require(:category)

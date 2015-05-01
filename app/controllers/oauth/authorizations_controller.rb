@@ -1,6 +1,7 @@
 class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   before_action :authenticate_resource_owner!
-  before_action :set_title
+
+  layout 'profile'
 
   def new
     if pre_auth.authorizable?
@@ -53,11 +54,5 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
 
   def strategy
     @strategy ||= server.authorization_request(pre_auth.response_type)
-  end
-  
-  def set_title
-    @title      = "Profile"
-    @title_url  = profile_path
-    @sidebar    = "profile"
   end
 end

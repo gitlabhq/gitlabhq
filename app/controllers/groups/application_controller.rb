@@ -1,5 +1,5 @@
 class Groups::ApplicationController < ApplicationController
-  before_action :set_title
+  layout 'group'
 
   private
   
@@ -17,11 +17,5 @@ class Groups::ApplicationController < ApplicationController
     unless can?(current_user, :admin_group, group)
       return render_404
     end
-  end
-
-  def set_title
-    @title      = group.name
-    @title_url  = group_path(group)
-    @sidebar    = "group"
   end
 end

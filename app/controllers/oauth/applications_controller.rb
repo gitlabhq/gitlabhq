@@ -1,6 +1,9 @@
 class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
+  include PageLayoutHelper
+  
   before_action :authenticate_user!
-  before_action :set_title
+
+  layout 'profile'
 
   def index
     head :forbidden and return
@@ -35,11 +38,5 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
 
   rescue_from ActiveRecord::RecordNotFound do |exception|
     render "errors/not_found", layout: "errors", status: 404
-  end
-
-  def set_title
-    @title      = "Profile"
-    @title_url  = profile_path
-    @sidebar    = "profile"
   end
 end

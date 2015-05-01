@@ -332,12 +332,4 @@ module ApplicationHelper
       end
     "#{entity_title}#{count}"
   end
-
-  def page_title(*titles)
-    @page_title ||= []
-
-    @page_title.push(*titles.compact) if titles.any?
-
-    @page_title.join(" | ")
-  end
 end

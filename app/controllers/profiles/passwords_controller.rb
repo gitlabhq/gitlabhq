@@ -2,8 +2,9 @@ class Profiles::PasswordsController < Profiles::ApplicationController
   skip_before_action :check_password_expiration, only: [:new, :create]
 
   before_action :set_user
-  before_action :set_title
   before_action :authorize_change_password!
+
+  layout :determine_layout
 
   def new
   end
@@ -64,11 +65,11 @@ class Profiles::PasswordsController < Profiles::ApplicationController
     @user = current_user
   end
 
-  def set_title
+  def determine_layout
     if [:new, :create].include?(action_name.to_sym)
-      @title = "New password"
+      'application'
     else
-      super
+      'profile'
     end
   end
 

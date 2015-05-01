@@ -1,13 +1,10 @@
-- page_title @title
 !!! 5
 %html{ lang: "en"}
   = render "layouts/head"
-  %body{class: "#{app_theme}  application", :'data-page' => body_data_page}
-    - title = defined?(@title_url) ? link_to(@title, @title_url) : @title
-
+  %body{class: "#{app_theme}", :'data-page' => body_data_page}
     - if current_user
-      = render "layouts/head_panel", title: title
+      = render "layouts/head_panel", title: header_title
     - else
-      = render "layouts/public_head_panel", title: title
+      = render "layouts/public_head_panel", title: header_title
 
-    = render 'layouts/page', sidebar: @sidebar
+    = render 'layouts/page', sidebar: sidebar

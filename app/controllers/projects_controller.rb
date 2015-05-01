@@ -6,7 +6,6 @@ class ProjectsController < ApplicationController
 
   # Authorize
   before_action :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer, :archive, :unarchive]
-  before_action :set_title, only: [:new, :create]
   before_action :event_filter, only: :show
 
   layout :determine_layout
@@ -159,10 +158,6 @@ class ProjectsController < ApplicationController
   end
 
   private
-
-  def set_title
-    @title = 'New Project'
-  end
 
   def determine_layout
     if [:new, :create].include?(action_name.to_sym)

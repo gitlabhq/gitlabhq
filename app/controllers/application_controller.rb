@@ -3,6 +3,7 @@ require 'gon'
 class ApplicationController < ActionController::Base
   include Gitlab::CurrentSettings
   include GitlabRoutingHelper
+  include PageLayoutHelper
 
   PER_PAGE = 20
 
