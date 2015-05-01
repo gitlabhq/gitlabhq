@@ -1,0 +1,116 @@
+%h3.page-title 
+  Your License
+  = link_to 'Upload License', new_admin_license_path, class: "btn btn-new pull-right"
+
+%hr
+
+.row
+  .col-md-6
+    .panel.panel-default
+      .panel-heading
+        Licensed to
+      %ul.well-list
+        - @license.licensee.each do |label, value|
+          %li
+            %span.light #{label}:
+            %strong= value
+
+    .panel.panel-default
+      .panel-heading
+        Details
+      %ul.well-list
+        %li
+          %span.light Issued:
+          %strong= time_ago_with_tooltip @license.issued_at
+        %li
+          %span.light Uploaded:
+          %strong= time_ago_with_tooltip @license.created_at
+        %li
+          %span.light Expires:
+          %strong
+            - if @license.will_expire?
+              = time_ago_with_tooltip @license.expires_at
+              - if @license.expired?
+                %span.label.label-danger.pull-right
+                  %strong Expired
+            - else
+              Never
+
+    .panel.panel-default
+      .panel-heading
+        Restrictions
+      %ul.well-list
+        %li
+          %span.light Active users:
+          %strong
+            - if @license.restricted?(:active_user_count)
+              - restricted_user_count = @license.restrictions[:active_user_count]
+              - active_user_count = User.active.count
+              #{restricted_user_count} users
+
+              - if active_user_count > restricted_user_count
+                %span.label.label-danger.pull-right
+                  %strong Exceeded by #{active_user_count - restricted_user_count} users
+              - elsif restricted_user_count > active_user_count
+                %span.label.label-success.pull-right
+                  %strong #{restricted_user_count - active_user_count} more allowed
+              - else
+                %span.label.label-info.pull-right
+                  %strong Right at the limit
+
+            - else
+              Unlimited
+
+  .col-md-6
+    .panel.panel-info
+      .panel-heading
+        Download license
+      .panel-body
+        %p Your license will be included in your GitLab backup and will survive upgrades, so in normal usage you should never need to re-upload your <code>.gitlab-license</code>.
+        %p Still, we recommend keeping it save somewhere, because if you ever need it and have lost it, you will need to request GitLab B.V. to send it to you again.
+        %br
+        = link_to 'Download license', download_admin_license_path, class: "btn btn-info"
+
+
+    .panel.panel-danger
+      .panel-heading
+        Remove license
+      .panel-body
+        %p If you remove this license, GitLab will fall back on the previous license, if any.
+        %p If there is no previous license or if the previous license has expired, some GitLab functionality will be blocked until a new, valid license is uploaded.
+        %br
+        = link_to 'Remove license', admin_license_path, data: { confirm: "LICENSE WILL BE REMOVED! Are you sure?" }, method: :delete, class: "btn btn-remove"
+
+- if @previous_licenses.any?
+  %h4 Previous Licenses
+
+  .panel.panel-default
+    %table.table
+      %thead.panel-heading
+        %tr
+          - @license.licensee.keys.each do |label|
+            %th= label
+          %th Issued at
+          %th Uploaded at
+          %th Expired at
+          %th Active users
+      %tbody
+        - @previous_licenses.each do |license|
+          %tr
+            - @license.licensee.keys.each do |label|
+              %td= license.licensee[label]
+            %td
+              %span
+                = license.issued_at
+            %td
+              %span
+                = license.created_at
+            %td
+              %span
+                = license.expires_at || "Never"
+            %td
+              %span
+                - if license.restricted?(:active_user_count)
+                  #{license.restrictions[:active_user_count]} users
+                - else
+                  Unlimited

@@ -5,18 +5,28 @@ class Ability
       return [] unless user.kind_of?(User)
       return [] if user.blocked?
 
-      case subject.class.name
-      when "Project" then project_abilities(user, subject)
-      when "Issue" then issue_abilities(user, subject)
-      when "Note" then note_abilities(user, subject)
-      when "ProjectSnippet" then project_snippet_abilities(user, subject)
-      when "PersonalSnippet" then personal_snippet_abilities(user, subject)
-      when "MergeRequest" then merge_request_abilities(user, subject)
-      when "Group" then group_abilities(user, subject)
-      when "Namespace" then namespace_abilities(user, subject)
-      when "GroupMember" then group_member_abilities(user, subject)
-      else []
-      end.concat(global_abilities(user))
+      abilities = 
+        case subject.class.name
+        when "Project" then project_abilities(user, subject)
+        when "Issue" then issue_abilities(user, subject)
+        when "Note" then note_abilities(user, subject)
+        when "ProjectSnippet" then project_snippet_abilities(user, subject)
+        when "PersonalSnippet" then personal_snippet_abilities(user, subject)
+        when "MergeRequest" then merge_request_abilities(user, subject)
+        when "Group" then group_abilities(user, subject)
+        when "Namespace" then namespace_abilities(user, subject)
+        when "GroupMember" then group_member_abilities(user, subject)
+        else []
+        end.concat(global_abilities(user))
+
+      if License.block_changes?
+        abilities.delete(:push_code)
+        abilities.delete(:push_code_to_protected_branches)
+        abilities.delete(:write_issue)
+        abilities.delete(:write_merge_request)
+      end
+
+      abilities
     end
 
     # List of possible abilities
@@ -68,7 +78,7 @@ class Ability
     def project_abilities(user, project)
       rules = []
       key = "/user/#{user.id}/project/#{project.id}"
-      RequestStore.store[key] ||= begin
+      rules = RequestStore.store[key] ||= begin
         team = project.team
 
         # Rules based on role in project

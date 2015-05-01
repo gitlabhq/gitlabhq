@@ -2,3 +2,8 @@
   .broadcast-message{ style: broadcast_styling(broadcast_message) }
     %i.fa.fa-bullhorn
     = broadcast_message.message
+
+- if (message = license_message) && message.present?
+  .broadcast-message
+    %i.fa.fa-bullhorn
+    = message

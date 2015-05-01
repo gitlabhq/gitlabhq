@@ -114,6 +114,8 @@ if location.hash
   setTimeout shiftWindow, 1
 window.addEventListener "hashchange", shiftWindow
 
+$.timeago.settings.allowFuture = true
+
 $ ->
   # Click a .js-select-on-focus field, select the contents
   $(".js-select-on-focus").on "focusin", -> $(this).select()

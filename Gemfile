@@ -203,6 +203,8 @@ gem 'request_store'
 gem "virtus"
 gem 'addressable'
 
+gem "gitlab-license"
+
 group :development do
   gem 'brakeman', require: false
   gem "annotate", "~> 2.6.0.beta2"

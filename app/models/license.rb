@@ -1,0 +1,93 @@
+class License < ActiveRecord::Base
+  validates :data, presence: true
+  validate :valid_license
+
+  before_validation :reset_license, if: :data_changed?
+
+  after_create :reset_current
+  after_destroy :reset_current
+
+  class << self
+    def current
+      return @current if @current
+
+      license = self.last
+      return unless license && license.valid?
+
+      @current = license
+    end
+
+    def reset_current
+      @current = nil
+    end
+
+    def block_changes?
+      !current || current.block_changes?
+    end
+  end
+
+  def data_filename
+    clean_company_name = self.licensee.values.first.gsub(/[^A-Za-z0-9]/, "")
+    "#{clean_company_name}.gitlab-license"
+  end
+
+  def data_file
+    return nil unless self.data
+
+    Tempfile.new(self.data_filename) { |f| f.write(self.data) }
+  end
+
+  def data_file=(file)
+    self.data = file.read
+  end
+
+  def license
+    return nil unless self.data
+
+    @license ||= Gitlab::License.import(self.data)
+  end
+
+  def method_missing(method_name, *arguments, &block)
+    if License.column_names.include?(method_name.to_s)
+      super
+    elsif license && license.respond_to?(method_name)
+      license.send(method_name, *arguments, &block)
+    else
+      super
+    end
+  end
+
+  def respond_to_missing?(method_name, include_private = false)
+    if License.column_names.include?(method_name.to_s)
+      super
+    elsif license && license.respond_to?(method_name)
+      true
+    else
+      super
+    end
+    (license && license.respond_to?(method_name)) || super
+  end
+
+  def active_user_restriction_exceeded?
+    return false unless self.restricted?(:active_user_count)
+
+    User.active.count > self.restrictions[:active_user_count]
+  end
+
+  private
+
+  def reset_current
+    self.class.reset_current
+  end
+
+  def reset_license
+    @license = nil
+  end
+
+  def valid_license
+    return if self.license && self.license.valid?
+
+    # TODO: Clearer message
+    self.errors.add(:license, "is invalid.")
+  end
+end
