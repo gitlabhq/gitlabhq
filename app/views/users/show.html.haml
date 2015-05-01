@@ -1,3 +1,6 @@
+- page_title    @user.name
+- header_title  @user.name, user_path(@user)
+
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")
 

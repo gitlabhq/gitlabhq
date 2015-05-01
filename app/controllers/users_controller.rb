@@ -12,9 +12,6 @@ class UsersController < ApplicationController
     # Collect only groups common for both users
     @groups = @user.groups & GroupsFinder.new.execute(current_user)
 
-    @title = @user.name
-    @title_url = user_path(@user)
-
     respond_to do |format|
       format.html
 
