@@ -27,6 +27,7 @@ v 7.11.0 (unreleased)
   - Move snippets UI to fluid layout
   - Improve UI for sidebar. Increase separation between navigation and content
   - Improve new project command options (Ben Bodenmiller)
+  - Add common method to force UTF-8 and use it to properly handle non-ascii OAuth user properties (Onur Küçük)
   - Prevent sending empty messages to HipChat (Chulki Lee)
   - Improve UI for mobile phones on dashboard and project pages
   - Add room notification and message color option for HipChat
