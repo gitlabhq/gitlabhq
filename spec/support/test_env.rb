@@ -35,6 +35,7 @@ module TestEnv
 
     # Create repository for FactoryGirl.create(:project)
     setup_factory_repo
+
     # Create repository for FactoryGirl.create(:forked_project_with_submodules)
     setup_forked_repo
   end
@@ -54,7 +55,7 @@ module TestEnv
     tmp_test_path = Rails.root.join('tmp', 'tests', '**')
 
     Dir[tmp_test_path].each do |entry|
-      unless File.basename(entry) =~ /\Agitlab-(shell|test)\z/
+      unless File.basename(entry) =~ /\Agitlab-(shell|test|test-fork)\z/
         FileUtils.rm_rf(entry)
       end
     end
