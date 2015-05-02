@@ -1,4 +1,5 @@
 class Groups::ApplicationController < ApplicationController
+  layout 'group'
 
   private
   
@@ -15,14 +16,6 @@ class Groups::ApplicationController < ApplicationController
   def authorize_admin_group!
     unless can?(current_user, :admin_group, group)
       return render_404
-    end
-  end
-
-  def determine_layout
-    if current_user
-      'group'
-    else
-      'public_group'
     end
   end
 end

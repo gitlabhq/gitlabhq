@@ -11,7 +11,6 @@ class GroupsController < Groups::ApplicationController
   # Load group projects
   before_action :load_projects, except: [:new, :create, :projects, :edit, :update]
   before_action :event_filter, only: :show
-  before_action :set_title, only: [:new, :create]
 
   layout :determine_layout
 
@@ -119,17 +118,11 @@ class GroupsController < Groups::ApplicationController
     end
   end
 
-  def set_title
-    @title = 'New Group'
-  end
-
   def determine_layout
     if [:new, :create].include?(action_name.to_sym)
-      'navless'
-    elsif current_user
-      'group'
+      'application'
     else
-      'public_group'
+      'group'
     end
   end
 

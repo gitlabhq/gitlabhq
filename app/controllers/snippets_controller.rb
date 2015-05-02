@@ -7,13 +7,10 @@ class SnippetsController < ApplicationController
   # Allow destroy snippet
   before_action :authorize_admin_snippet!, only: [:destroy]
 
-  before_action :set_title
-
   skip_before_action :authenticate_user!, only: [:index, :user_index, :show, :raw]
 
+  layout 'snippets'
   respond_to :html
-
-  layout :determine_layout
 
   def index
     if params[:username].present?
@@ -98,16 +95,7 @@ class SnippetsController < ApplicationController
     return render_404 unless can?(current_user, :admin_personal_snippet, @snippet)
   end
 
-  def set_title
-    @title = 'Snippets'
-    @title_url = snippets_path
-  end
-
   def snippet_params
     params.require(:personal_snippet).permit(:title, :content, :file_name, :private, :visibility_level)
-  end
-
-  def determine_layout
-    current_user ? 'snippets' : 'public_users'
   end
 end

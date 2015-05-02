@@ -1,6 +1,5 @@
-!!! 5
-%html{ lang: "en"}
-  = render "layouts/head", title: "Admin area"
-  %body{class: "#{app_theme}  admin", :'data-page' => body_data_page}
-    = render "layouts/head_panel", title: link_to("Admin area", admin_root_path)
-    = render 'layouts/page', sidebar: 'layouts/nav/admin'
+- page_title    "Admin area"
+- header_title  "Admin area", admin_root_path
+- sidebar       "admin"
+
+= render template: "layouts/application"
