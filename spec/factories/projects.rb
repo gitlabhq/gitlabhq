@@ -94,10 +94,26 @@ FactoryGirl.define do
           'new_issue_url' => 'http://redmine/projects/project_name_in_redmine/issues/new'
         }
       )
-    end
-    after :create do |project|
+
       project.issues_tracker = 'redmine'
       project.issues_tracker_id = 'project_name_in_redmine'
+    end
+  end
+
+  factory :jira_project, parent: :project do
+    after :create do |project|
+      project.create_jira_service(
+        active: true,
+        properties: {
+          'title'         => 'JIRA tracker',
+          'project_url'   => 'http://jira.example/issues/?jql=project=A',
+          'issues_url'    => 'http://jira.example/browse/:id',
+          'new_issue_url' => 'http://jira.example/secure/CreateIssue.jspa'
+        }
+      )
+
+      project.issues_tracker = 'jira'
+      project.issues_tracker_id = 'project_name_in_jira'
     end
   end
 end

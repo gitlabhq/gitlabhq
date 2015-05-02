@@ -43,17 +43,6 @@ module IssuesHelper
     end
   end
 
-  def title_for_issue(issue_iid, project = @project)
-    return '' if project.nil?
-
-    if project.default_issues_tracker?
-      issue = project.issues.where(iid: issue_iid).first
-      return issue.title if issue
-    end
-
-    ''
-  end
-
   def issue_timestamp(issue)
     # Shows the created at time and the updated at time if different
     ts = "#{time_ago_with_tooltip(issue.created_at, 'bottom', 'note_created_ago')}"
@@ -110,5 +99,5 @@ module IssuesHelper
   end
 
   # Required for Gitlab::Markdown::IssueReferenceFilter
-  module_function :url_for_issue, :title_for_issue
+  module_function :url_for_issue
 end
