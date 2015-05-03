@@ -41,7 +41,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :max_attachment_size,
       :default_project_visibility,
       :default_snippet_visibility,
-      restricted_visibility_levels: []
+      :restricted_signup_domains_raw,
+      restricted_visibility_levels: [],
     )
   end
 end
