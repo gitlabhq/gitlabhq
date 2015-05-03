@@ -21,7 +21,7 @@ v 7.11.0 (unreleased)
   -
   - Show Atom feed buttons everywhere where applicable.
   - Add project activity atom feed.
-  - Don't crash when an MR from a fork has a cross-reference comment from the target project on of its commits.
+  - Don't crash when an MR from a fork has a cross-reference comment from the target project on one of its commits.
   - Include commit comments in MR from a forked project.
   - Fix adding new group members from admin area
   - Add default project and snippet visibility settings to the admin web UI.
