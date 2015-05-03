@@ -15,6 +15,7 @@
 #  issues_events         :boolean          default(TRUE)
 #  merge_requests_events :boolean          default(TRUE)
 #  tag_push_events       :boolean          default(TRUE)
+#  note_events           :boolean          default(TRUE), not null
 #
 
 # To add new service you should build a class inherited from Service

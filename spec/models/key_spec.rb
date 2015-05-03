@@ -10,6 +10,7 @@
 #  title       :string(255)
 #  type        :string(255)
 #  fingerprint :string(255)
+#  public      :boolean          default(FALSE), not null
 #
 
 require 'spec_helper'
