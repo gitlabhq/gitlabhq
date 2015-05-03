@@ -6,17 +6,16 @@ class ProjectsController < ApplicationController
 
   # Authorize
   before_action :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer, :archive, :unarchive]
-  before_action :set_title, only: [:new, :create]
   before_action :event_filter, only: :show
 
-  layout 'navless', only: [:new, :create, :fork]
+  layout :determine_layout
 
   def new
     @project = Project.new
   end
 
   def edit
-    render 'edit', layout: 'project_settings'
+    render 'edit'
   end
 
   def create
@@ -46,7 +45,7 @@ class ProjectsController < ApplicationController
         end
         format.js
       else
-        format.html { render 'edit', layout: 'project_settings' }
+        format.html { render 'edit' }
         format.js
       end
     end
@@ -72,13 +71,13 @@ class ProjectsController < ApplicationController
       format.html do
         if @project.repository_exists?
           if @project.empty_repo?
-            render 'projects/empty', layout: user_layout
+            render 'projects/empty'
           else
             @last_push = current_user.recent_push(@project.id) if current_user
-            render :show, layout: user_layout
+            render :show
           end
         else
-          render 'projects/no_repo', layout: user_layout
+          render 'projects/no_repo'
         end
       end
 
@@ -160,12 +159,14 @@ class ProjectsController < ApplicationController
 
   private
 
-  def set_title
-    @title = 'New Project'
-  end
-
-  def user_layout
-    current_user ? 'projects' : 'public_projects'
+  def determine_layout
+    if [:new, :create].include?(action_name.to_sym)
+      'application'
+    elsif [:edit, :update].include?(action_name.to_sym)
+      'project_settings'
+    else
+      'project'
+    end
   end
 
   def load_events

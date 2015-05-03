@@ -1,0 +1,178 @@
+# GitLab Markdown
+
+This document is intended to be a comprehensive example of custom GitLab
+Markdown usage. It will be parsed and then tested for accuracy. Let's get
+started.
+
+## Markdown
+
+GitLab uses [Redcarpet](http://git.io/ld_NVQ) to parse all Markdown into
+HTML.
+
+It has some special features. Let's try 'em out!
+
+### No Intra Emphasis
+
+This string should have no emphasis: foo_bar_baz
+
+### Tables
+
+| Header   | Row  | Example |
+| :------: | ---: | :------ |
+| Foo      | Bar  | **Baz** |
+
+### Fenced Code Blocks
+
+```c
+#include<stdio.h>
+
+main()
+{
+    printf("Hello World");
+
+}
+```
+
+```python
+print "Hello, World!"
+```
+
+### Strikethrough
+
+This text says this, ~~and this text doesn't~~.
+
+### Superscript
+
+This is my 1^(st) time using superscript in Markdown. Now this is my
+2^(nd).
+
+### Next step
+
+After the Markdown has been turned into HTML, it gets passed through...
+
+## HTML::Pipeline
+
+### SanitizationFilter
+
+GitLab uses <a href="http://git.io/vfW8a" class="sanitize" id="sanitize-link">HTML::Pipeline::SanitizationFilter</a>
+to sanitize the generated HTML, stripping dangerous or unwanted tags.
+
+Its default whitelist is pretty permissive. Check it:
+
+<b id="manual-b">This text is bold</b> and <em id="manual-em">this text is emphasized</em>.
+
+<code id="manual-code">echo "Hello, world!"</code>
+
+Press <kbd>s</kbd> to search.
+
+<strike>Emoji</strike> Plain old images! <img
+src="http://www.emoji-cheat-sheet.com/graphics/emojis/smile.png" width="20"
+height="20" id="manual-img" />
+
+Here comes a line break:
+
+<br id="manual-br" />
+
+And a horizontal rule:
+
+<hr id="manual-hr" />
+
+As permissive as it is, we've allowed even more stuff:
+
+<span class="light" id="span-class-light">Span elements</span>
+
+<a href="#" rel="nofollow" id="a-rel-nofollow">This is a link with a defined rel attribute, which should be removed</a>
+
+<a href="javascript:alert('Hi')" id="a-href-javascript">This is a link trying to be sneaky. It gets its link removed entirely.</a>
+
+### Escaping
+
+The problem with SanitizationFilter is that it can be too aggressive.
+
+| Input       | Expected         | Actual    |
+| ----------- | ---------------- | --------- |
+| `1 < 3 & 5` | 1 &lt; 3 &amp; 5 | 1 < 3 & 5 |
+| `<foo>`     | &lt;foo&gt;      | <foo>     |
+
+### EmojiFilter
+
+Because life would be :zzz: without Emoji, right? :rocket:
+
+Get ready for the Emoji :bomb:: :+1::-1::ok_hand::wave::v::raised_hand::muscle:
+
+### TableOfContentsFilter
+
+All headers in this document should be linkable. Try it.
+
+### AutolinkFilter
+
+These are all plain text that should get turned into links:
+
+- http://about.gitlab.com/
+- https://google.com/
+- ftp://ftp.us.debian.org/debian/
+- smb://foo/bar/baz
+- irc://irc.freenode.net/git
+- http://localhost:3000
+
+But it shouldn't autolink text inside certain tags:
+
+- <code id="autolink-code">http://about.gitlab.com/</code>
+- <a id="autolink-a">http://about.gitlab.com/</a>
+- <kbd id="autolink-kbd">http://about.gitlab.com/</kbd>
+
+### Reference Filters (e.g., #<%= issue.iid %>)
+
+References should be parseable even inside _!<%= merge_request.iid %>_ emphasis.
+
+#### UserReferenceFilter
+
+- All: @all
+- User: @<%= user.username %>
+- Group: @<%= group.name %>
+- Ignores invalid: @fake_user
+- Ignored in code: `@<%= user.username %>`
+- Ignored in links: [Link to @<%= user.username %>](#user-link)
+
+#### IssueReferenceFilter
+
+- Issue: #<%= issue.iid %>
+- Issue in another project: <%= xref %>#<%= xissue.iid %>
+- Ignored in code: `#<%= issue.iid %>`
+- Ignored in links: [Link to #<%= issue.iid %>](#issue-link)
+
+#### MergeRequestReferenceFilter
+
+- Merge request: !<%= merge_request.iid %>
+- Merge request in another project: <%= xref %>!<%= xmerge_request.iid %>
+- Ignored in code: `!<%= merge_request.iid %>`
+- Ignored in links: [Link to !<%= merge_request.iid %>](#merge-request-link)
+
+#### SnippetReferenceFilter
+
+- Snippet: $<%= snippet.id %>
+- Snippet in another project: <%= xref %>$<%= xsnippet.id %>
+- Ignored in code: `$<%= snippet.id %>`
+- Ignored in links: [Link to $<%= snippet.id %>](#snippet-link)
+
+#### CommitRangeReferenceFilter
+
+- Range: <%= commit_range %>
+- Range in another project: <%= xref %>@<%= xcommit_range %>
+- Ignored in code: `<%= commit_range %>`
+- Ignored in links: [Link to <%= commit_range %>](#commit-range-link)
+
+#### CommitReferenceFilter
+
+- Commit: <%= commit.id %>
+- Commit in another project: <%= xref %>@<%= xcommit.id %>
+- Ignored in code: `<%= commit.id %>`
+- Ignored in links: [Link to <%= commit.id %>](#commit-link)
+
+#### LabelReferenceFilter
+
+- Label by ID: ~<%= simple_label.id %>
+- Label by name: ~<%= simple_label.name %>
+- Label by name in quotes: ~"<%= label.name %>"
+- Ignored in code: `~<%= simple_label.name %>`
+- Ignored in links: [Link to ~<%= simple_label.id %>](#label-link)

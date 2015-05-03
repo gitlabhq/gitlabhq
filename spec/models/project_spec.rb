@@ -129,6 +129,48 @@ describe Project do
     end
   end
 
+  describe '#get_issue' do
+    let(:project) { create(:empty_project) }
+    let(:issue)   { create(:issue, project: project) }
+
+    context 'with default issues tracker' do
+      it 'returns an issue' do
+        expect(project.get_issue(issue.iid)).to eq issue
+      end
+
+      it 'returns nil when no issue found' do
+        expect(project.get_issue(999)).to be_nil
+      end
+    end
+
+    context 'with external issues tracker' do
+      before do
+        allow(project).to receive(:default_issues_tracker?).and_return(false)
+      end
+
+      it 'returns an ExternalIssue' do
+        issue = project.get_issue('FOO-1234')
+        expect(issue).to be_kind_of(ExternalIssue)
+        expect(issue.iid).to eq 'FOO-1234'
+        expect(issue.project).to eq project
+      end
+    end
+  end
+
+  describe '#issue_exists?' do
+    let(:project) { create(:empty_project) }
+
+    it 'is truthy when issue exists' do
+      expect(project).to receive(:get_issue).and_return(double)
+      expect(project.issue_exists?(1)).to be_truthy
+    end
+
+    it 'is falsey when issue does not exist' do
+      expect(project).to receive(:get_issue).and_return(nil)
+      expect(project.issue_exists?(1)).to be_falsey
+    end
+  end
+
   describe :update_merge_requests do
     let(:project) { create(:project) }
     let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
@@ -177,25 +219,6 @@ describe Project do
 
     it 'should return valid repo' do
       expect(project.repository).to be_kind_of(Repository)
-    end
-  end
-
-  describe :issue_exists? do
-    let(:project) { create(:project) }
-    let(:existed_issue) { create(:issue, project: project) }
-    let(:not_existed_issue) { create(:issue) }
-    let(:ext_project) { create(:redmine_project) }
-
-    it 'should be true or if used internal tracker and issue exists' do
-      expect(project.issue_exists?(existed_issue.iid)).to be_truthy
-    end
-
-    it 'should be false or if used internal tracker and issue not exists' do
-      expect(project.issue_exists?(not_existed_issue.iid)).to be_falsey
-    end
-
-    it 'should always be true if used other tracker' do
-      expect(ext_project.issue_exists?(rand(100))).to be_truthy
     end
   end
 

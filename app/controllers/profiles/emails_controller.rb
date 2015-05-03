@@ -1,6 +1,4 @@
-class Profiles::EmailsController < ApplicationController
-  layout "profile"
-
+class Profiles::EmailsController < Profiles::ApplicationController
   def index
     @primary = current_user.email
     @public_email = current_user.public_email
