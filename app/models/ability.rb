@@ -78,7 +78,7 @@ class Ability
     def project_abilities(user, project)
       rules = []
       key = "/user/#{user.id}/project/#{project.id}"
-      rules = RequestStore.store[key] ||= begin
+      RequestStore.store[key] ||= begin
         team = project.team
 
         # Rules based on role in project

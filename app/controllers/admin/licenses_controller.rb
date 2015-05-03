@@ -5,7 +5,7 @@ class Admin::LicensesController < Admin::ApplicationController
   respond_to :html
 
   def show
-    @previous_licenses = License.all.to_a[0..-2].reverse
+    @previous_licenses = License.previous
   end
 
   def download
@@ -17,12 +17,11 @@ class Admin::LicensesController < Admin::ApplicationController
   end
 
   def create
-    @license = License.new
-    @license.data_file = license_params[:data_file]
+    @license = License.new(license_params)
 
     respond_with(@license, location: admin_license_path) do
       if @license.save
-        flash[:notice] = "The license was successfully uploaded."
+        flash[:notice] = "The license was successfully uploaded. You can see the details below."
       end
     end
   end
@@ -30,7 +29,9 @@ class Admin::LicensesController < Admin::ApplicationController
   def destroy
     license.destroy
 
-    redirect_to admin_license_path, notice: "The license was removed."
+    message = "The license was removed."
+
+    redirect_to admin_license_path, notice: message
   end
 
   private

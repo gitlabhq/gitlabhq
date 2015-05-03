@@ -7,6 +7,8 @@ class License < ActiveRecord::Base
   after_create :reset_current
   after_destroy :reset_current
 
+  scope :previous, -> { order(created_at: :desc).offset(1) }
+
   class << self
     def current
       return @current if @current
@@ -27,7 +29,8 @@ class License < ActiveRecord::Base
   end
 
   def data_filename
-    clean_company_name = self.licensee.values.first.gsub(/[^A-Za-z0-9]/, "")
+    company_name = self.licensee["Company"] || self.licensee.values.first
+    clean_company_name = company_name.gsub(/[^A-Za-z0-9]/, "")
     "#{clean_company_name}.gitlab-license"
   end
 
