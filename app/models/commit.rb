@@ -56,6 +56,10 @@ class Commit
     @raw.id
   end
 
+  def ==(other)
+    (self.class === other) && (raw == other.raw)
+  end
+
   def diff_line_count
     @diff_line_count ||= Commit::diff_line_count(self.diffs)
     @diff_line_count
