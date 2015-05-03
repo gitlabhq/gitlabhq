@@ -19,6 +19,7 @@
 #
 class CommitRange
   include ActiveModel::Conversion
+  include Referable
 
   attr_reader :sha_from, :notation, :sha_to
 
@@ -57,6 +58,14 @@ class CommitRange
 
   def to_s
     "#{sha_from[0..7]}#{notation}#{sha_to[0..7]}"
+  end
+
+  def to_reference(from_project = nil)
+    if cross_project_reference?(from_project)
+      "#{project.to_reference}@#{to_s}"
+    else
+      to_s
+    end
   end
 
   # Returns a String for use in a link's title attribute

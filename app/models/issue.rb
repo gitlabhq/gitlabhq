@@ -21,10 +21,11 @@ require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class Issue < ActiveRecord::Base
-  include Issuable
   include InternalId
-  include Taskable
+  include Issuable
+  include Referable
   include Sortable
+  include Taskable
 
   ActsAsTaggableOn.strict_case_match = true
 
@@ -49,14 +50,28 @@ class Issue < ActiveRecord::Base
     state :closed
   end
 
+  def self.reference_prefix
+    '#'
+  end
+
   def hook_attrs
     attributes
+  end
+
+  def to_reference(from_project = nil)
+    reference = "#{self.class.reference_prefix}#{iid}"
+
+    if cross_project_reference?(from_project)
+      reference = project.to_reference + reference
+    end
+
+    reference
   end
 
   # Mentionable overrides.
 
   def gfm_reference
-    "issue ##{iid}"
+    "issue #{to_reference}"
   end
 
   # Reset issue events cache

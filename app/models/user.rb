@@ -62,11 +62,13 @@ require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class User < ActiveRecord::Base
-  include Sortable
-  include Gitlab::ConfigHelper
-  include TokenAuthenticatable
   extend Gitlab::ConfigHelper
+
+  include Gitlab::ConfigHelper
   include Gitlab::CurrentSettings
+  include Referable
+  include Sortable
+  include TokenAuthenticatable
 
   default_value_for :admin, false
   default_value_for :can_create_group, gitlab_config.default_can_create_group
@@ -247,6 +249,10 @@ class User < ActiveRecord::Base
     def build_user(attrs = {})
       User.new(attrs)
     end
+
+    def reference_prefix
+      '@'
+    end
   end
 
   #
@@ -255,6 +261,10 @@ class User < ActiveRecord::Base
 
   def to_param
     username
+  end
+
+  def to_reference(_from_project = nil)
+    "#{self.class.reference_prefix}#{username}"
   end
 
   def notification

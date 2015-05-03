@@ -1,10 +1,16 @@
 class ExternalIssue
+  include Referable
+
   def initialize(issue_identifier, project)
     @issue_identifier, @project = issue_identifier, project
   end
 
   def to_s
     @issue_identifier.to_s
+  end
+
+  def to_reference(_from_project = nil)
+    id
   end
 
   def id

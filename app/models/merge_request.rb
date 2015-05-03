@@ -25,10 +25,11 @@ require Rails.root.join("app/models/commit")
 require Rails.root.join("lib/static_model")
 
 class MergeRequest < ActiveRecord::Base
-  include Issuable
-  include Taskable
   include InternalId
+  include Issuable
+  include Referable
   include Sortable
+  include Taskable
 
   belongs_to :target_project, foreign_key: :target_project_id, class_name: "Project"
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
@@ -134,6 +135,20 @@ class MergeRequest < ActiveRecord::Base
   # both merged and closed mr's
   scope :closed, -> { with_states(:closed, :merged) }
   scope :declined, -> { with_states(:closed) }
+
+  def self.reference_prefix
+    '!'
+  end
+
+  def to_reference(from_project = nil)
+    reference = "#{self.class.reference_prefix}#{iid}"
+
+    if cross_project_reference?(from_project)
+      reference = project.to_reference + reference
+    end
+
+    reference
+  end
 
   def validate_branches
     if target_project == source_project && target_branch == source_branch
@@ -291,7 +306,7 @@ class MergeRequest < ActiveRecord::Base
 
   # Mentionable override.
   def gfm_reference
-    "merge request !#{iid}"
+    "merge request #{to_reference}"
   end
 
   def target_project_path

@@ -24,7 +24,26 @@
 require 'spec_helper'
 
 describe MergeRequest do
-  describe "Validation" do
+  subject { create(:merge_request) }
+
+  describe 'modules' do
+    subject { described_class }
+
+    it { is_expected.to include_module(InternalId) }
+    it { is_expected.to include_module(Issuable) }
+    it { is_expected.to include_module(Referable) }
+    it { is_expected.to include_module(Sortable) }
+    it { is_expected.to include_module(Taskable) }
+  end
+
+  describe 'associations' do
+    it { is_expected.to belong_to(:target_project).with_foreign_key(:target_project_id).class_name('Project') }
+    it { is_expected.to belong_to(:source_project).with_foreign_key(:source_project_id).class_name('Project') }
+
+    it { is_expected.to have_one(:merge_request_diff).dependent(:destroy) }
+  end
+
+  describe 'validation' do
     it { is_expected.to validate_presence_of(:target_branch) }
     it { is_expected.to validate_presence_of(:source_branch) }
   end
@@ -38,8 +57,15 @@ describe MergeRequest do
     it { is_expected.to respond_to(:cannot_be_merged?) }
   end
 
-  describe 'modules' do
-    it { is_expected.to include_module(Issuable) }
+  describe '#to_reference' do
+    it 'returns a String reference to the object' do
+      expect(subject.to_reference).to eq "!#{subject.iid}"
+    end
+
+    it 'supports a cross-project reference' do
+      cross = double('project')
+      expect(subject.to_reference(cross)).to eq "#{subject.source_project.to_reference}!#{subject.iid}"
+    end
   end
 
   describe "#mr_and_commit_notes" do

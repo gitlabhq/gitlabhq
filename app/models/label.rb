@@ -11,6 +11,8 @@
 #
 
 class Label < ActiveRecord::Base
+  include Referable
+
   DEFAULT_COLOR = '#428BCA'
 
   default_value_for :color, DEFAULT_COLOR
@@ -33,6 +35,31 @@ class Label < ActiveRecord::Base
   default_scope { order(title: :asc) }
 
   alias_attribute :name, :title
+
+  def self.reference_prefix
+    '~'
+  end
+
+  # Returns the String necessary to reference this Label in Markdown
+  #
+  # format - Symbol format to use (default: :id, optional: :name)
+  #
+  # Note that its argument differs from other objects implementing Referable. If
+  # a non-Symbol argument is given (such as a Project), it will default to :id.
+  #
+  # Examples:
+  #
+  #   Label.first.to_reference        # => "~1"
+  #   Label.first.to_reference(:name) # => "~\"bug\""
+  #
+  # Returns a String
+  def to_reference(format = :id)
+    if format == :name
+      %(#{self.class.reference_prefix}"#{name}")
+    else
+      "#{self.class.reference_prefix}#{id}"
+    end
+  end
 
   def open_issues_count
     issues.opened.count

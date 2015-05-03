@@ -1,9 +1,11 @@
 class Commit
-  include ActiveModel::Conversion
-  include StaticModel
   extend ActiveModel::Naming
+
+  include ActiveModel::Conversion
   include Mentionable
   include Participable
+  include Referable
+  include StaticModel
 
   attr_mentionable :safe_message
   participant :author, :committer, :notes, :mentioned_users
@@ -58,6 +60,14 @@ class Commit
 
   def ==(other)
     (self.class === other) && (raw == other.raw)
+  end
+
+  def to_reference(from_project = nil)
+    if cross_project_reference?(from_project)
+      "#{project.to_reference}@#{id}"
+    else
+      id
+    end
   end
 
   def diff_line_count
@@ -132,7 +142,7 @@ class Commit
 
   # Mentionable override.
   def gfm_reference
-    "commit #{id}"
+    "commit #{to_reference}"
   end
 
   def author

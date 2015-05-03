@@ -16,10 +16,11 @@
 #
 
 class Snippet < ActiveRecord::Base
-  include Sortable
-  include Linguist::BlobHelper
   include Gitlab::VisibilityLevel
+  include Linguist::BlobHelper
   include Participable
+  include Referable
+  include Sortable
 
   default_value_for :visibility_level, Snippet::PRIVATE
 
@@ -49,6 +50,20 @@ class Snippet < ActiveRecord::Base
   scope :non_expired, -> { where(["expires_at IS NULL OR expires_at > ?", Time.current]) }
 
   participant :author, :notes
+
+  def self.reference_prefix
+    '$'
+  end
+
+  def to_reference(from_project = nil)
+    reference = "#{self.class.reference_prefix}#{id}"
+
+    if cross_project_reference?(from_project)
+      reference = project.to_reference + reference
+    end
+
+    reference
+  end
 
   def self.content_types
     [

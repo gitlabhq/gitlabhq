@@ -11,6 +11,29 @@ describe CommitRange do
     expect { described_class.new("Foo") }.to raise_error
   end
 
+  describe 'modules' do
+    subject { described_class }
+
+    it { is_expected.to include_module(Referable) }
+  end
+
+  describe '#to_reference' do
+    let(:project) { double('project', to_reference: 'namespace1/project') }
+
+    before do
+      range.project = project
+    end
+
+    it 'returns a String reference to the object' do
+      expect(range.to_reference).to eq range.to_s
+    end
+
+    it 'supports a cross-project reference' do
+      cross = double('project')
+      expect(range.to_reference(cross)).to eq "#{project.to_reference}@#{range.to_s}"
+    end
+  end
+
   describe '#to_s' do
     it 'is correct for three-dot syntax' do
       expect(range.to_s).to eq "#{sha_from[0..7]}...#{sha_to[0..7]}"
