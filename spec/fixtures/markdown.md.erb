@@ -127,61 +127,61 @@ But it shouldn't autolink text inside certain tags:
 - <a>http://about.gitlab.com/</a>
 - <kbd>http://about.gitlab.com/</kbd>
 
-### Reference Filters (e.g., #<%= issue.iid %>)
+### Reference Filters (e.g., <%= issue.to_reference %>)
 
-References should be parseable even inside _!<%= merge_request.iid %>_ emphasis.
+References should be parseable even inside _<%= merge_request.to_reference %>_ emphasis.
 
 #### UserReferenceFilter
 
 - All: @all
-- User: @<%= user.username %>
-- Group: @<%= group.name %>
-- Ignores invalid: @fake_user
-- Ignored in code: `@<%= user.username %>`
-- Ignored in links: [Link to @<%= user.username %>](#user-link)
+- User: <%= user.to_reference %>
+- Group: <%= group.to_reference %>
+- Ignores invalid: <%= User.reference_prefix %>fake_user
+- Ignored in code: `<%= user.to_reference %>`
+- Ignored in links: [Link to <%= user.to_reference %>](#user-link)
 
 #### IssueReferenceFilter
 
-- Issue: #<%= issue.iid %>
-- Issue in another project: <%= xref %>#<%= xissue.iid %>
-- Ignored in code: `#<%= issue.iid %>`
-- Ignored in links: [Link to #<%= issue.iid %>](#issue-link)
+- Issue: <%= issue.to_reference %>
+- Issue in another project: <%= xissue.to_reference(project) %>
+- Ignored in code: `<%= issue.to_reference %>`
+- Ignored in links: [Link to <%= issue.to_reference %>](#issue-link)
 
 #### MergeRequestReferenceFilter
 
-- Merge request: !<%= merge_request.iid %>
-- Merge request in another project: <%= xref %>!<%= xmerge_request.iid %>
-- Ignored in code: `!<%= merge_request.iid %>`
-- Ignored in links: [Link to !<%= merge_request.iid %>](#merge-request-link)
+- Merge request: <%= merge_request.to_reference %>
+- Merge request in another project: <%= xmerge_request.to_reference(project) %>
+- Ignored in code: `<%= merge_request.to_reference %>`
+- Ignored in links: [Link to <%= merge_request.to_reference %>](#merge-request-link)
 
 #### SnippetReferenceFilter
 
-- Snippet: $<%= snippet.id %>
-- Snippet in another project: <%= xref %>$<%= xsnippet.id %>
-- Ignored in code: `$<%= snippet.id %>`
-- Ignored in links: [Link to $<%= snippet.id %>](#snippet-link)
+- Snippet: <%= snippet.to_reference %>
+- Snippet in another project: <%= xsnippet.to_reference(project) %>
+- Ignored in code: `<%= snippet.to_reference %>`
+- Ignored in links: [Link to <%= snippet.to_reference %>](#snippet-link)
 
 #### CommitRangeReferenceFilter
 
-- Range: <%= commit_range %>
-- Range in another project: <%= xref %>@<%= xcommit_range %>
-- Ignored in code: `<%= commit_range %>`
-- Ignored in links: [Link to <%= commit_range %>](#commit-range-link)
+- Range: <%= commit_range.to_reference %>
+- Range in another project: <%= xcommit_range.to_reference(project) %>
+- Ignored in code: `<%= commit_range.to_reference %>`
+- Ignored in links: [Link to <%= commit_range.to_reference %>](#commit-range-link)
 
 #### CommitReferenceFilter
 
-- Commit: <%= commit.id %>
-- Commit in another project: <%= xref %>@<%= xcommit.id %>
-- Ignored in code: `<%= commit.id %>`
-- Ignored in links: [Link to <%= commit.id %>](#commit-link)
+- Commit: <%= commit.to_reference %>
+- Commit in another project: <%= xcommit.to_reference(project) %>
+- Ignored in code: `<%= commit.to_reference %>`
+- Ignored in links: [Link to <%= commit.to_reference %>](#commit-link)
 
 #### LabelReferenceFilter
 
-- Label by ID: ~<%= simple_label.id %>
-- Label by name: ~<%= simple_label.name %>
-- Label by name in quotes: ~"<%= label.name %>"
-- Ignored in code: `~<%= simple_label.name %>`
-- Ignored in links: [Link to ~<%= simple_label.id %>](#label-link)
+- Label by ID: <%= simple_label.to_reference %>
+- Label by name: <%= Label.reference_prefix %><%= simple_label.name %>
+- Label by name in quotes: <%= label.to_reference(:name) %>
+- Ignored in code: `<%= simple_label.to_reference %>`
+- Ignored in links: [Link to <%= simple_label.to_reference %>](#label-link)
 
 ### Task Lists
 
