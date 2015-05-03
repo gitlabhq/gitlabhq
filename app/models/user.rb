@@ -49,6 +49,7 @@
 #  password_automatically_set    :boolean          default(FALSE)
 #  bitbucket_access_token        :string(255)
 #  bitbucket_access_token_secret :string(255)
+#  location                      :string(255)
 #  public_email                  :string(255)      default(""), not null
 #
 

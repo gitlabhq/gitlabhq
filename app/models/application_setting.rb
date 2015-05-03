@@ -2,13 +2,11 @@
 #
 # Table name: application_settings
 #
-#  id                           :integer        not null, primary key
+#  id                           :integer          not null, primary key
 #  default_projects_limit       :integer
-#  default_branch_protection    :integer
 #  signup_enabled               :boolean
 #  signin_enabled               :boolean
 #  gravatar_enabled             :boolean
-#  twitter_sharing_enabled      :boolean
 #  sign_in_text                 :text
 #  created_at                   :datetime
 #  updated_at                   :datetime
@@ -16,8 +14,9 @@
 #  default_branch_protection    :integer          default(2)
 #  twitter_sharing_enabled      :boolean          default(TRUE)
 #  restricted_visibility_levels :text
-#  max_attachment_size          :integer          default(10)
+#  max_attachment_size          :integer          default(10), not null
 #  default_project_visibility   :integer
+#  default_snippet_visibility   :integer
 #  restricted_signup_domains    :text
 #
 
