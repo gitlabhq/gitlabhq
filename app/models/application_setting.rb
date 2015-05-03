@@ -18,11 +18,13 @@
 #  restricted_visibility_levels :text
 #  max_attachment_size          :integer          default(10)
 #  default_project_visibility   :integer
-#  default_snippet_visibility   :integer
+#  restricted_signup_domains    :text
 #
 
 class ApplicationSetting < ActiveRecord::Base
   serialize :restricted_visibility_levels
+  serialize :restricted_signup_domains, Array
+  attr_accessor :restricted_signup_domains_raw
 
   validates :home_page_url,
     allow_blank: true,
@@ -55,11 +57,29 @@ class ApplicationSetting < ActiveRecord::Base
       restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
       max_attachment_size: Settings.gitlab['max_attachment_size'],
       default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
-      default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level']
+      default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
+      restricted_signup_domains: Settings.gitlab['restricted_signup_domains']
     )
   end
 
   def home_page_url_column_exist
     ActiveRecord::Base.connection.column_exists?(:application_settings, :home_page_url)
   end
+
+  def restricted_signup_domains_raw
+    self.restricted_signup_domains.join("\n") unless self.restricted_signup_domains.nil?
+  end
+
+  def restricted_signup_domains_raw=(values)
+    self.restricted_signup_domains = []
+    self.restricted_signup_domains = values.split(
+        /\s*[,;]\s*     # comma or semicolon, optionally surrounded by whitespace
+        |               # or
+        \s              # any whitespace character
+        |               # or
+        [\r\n]          # any number of newline characters
+        /x)
+    self.restricted_signup_domains.reject! { |d| d.empty? }
+  end
+
 end

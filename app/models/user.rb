@@ -142,6 +142,7 @@ class User < ActiveRecord::Base
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :generate_password, on: :create
+  before_validation :restricted_signup_domains, on: :create
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: ->(user) { user.email_changed? }
   before_validation :set_public_email, if: ->(user) { user.public_email_changed? }
@@ -610,5 +611,28 @@ class User < ActiveRecord::Base
       reorder(project_id: :desc).
       select(:project_id).
       uniq.map(&:project_id)
+  end
+
+  def restricted_signup_domains
+    email_domains = current_application_settings.restricted_signup_domains
+
+    unless email_domains.blank?
+      match_found = email_domains.any? do |domain|
+        escaped = Regexp.escape(domain).gsub('\*','.*?')
+        regexp = Regexp.new "^#{escaped}$", Regexp::IGNORECASE
+        email_domain = Mail::Address.new(self.email).domain
+        email_domain =~ regexp
+      end
+
+      unless match_found
+        self.errors.add :email,
+                        'is not whitelisted. ' +
+                        'Email domains valid for registration are: ' +
+                        email_domains.join(', ')
+        return false
+      end
+    end
+
+    true
   end
 end
