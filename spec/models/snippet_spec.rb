@@ -30,22 +30,22 @@ describe Snippet do
 
   describe 'associations' do
     it { is_expected.to belong_to(:author).class_name('User') }
+    it { is_expected.to belong_to(:project) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
   end
 
-  describe "Mass assignment" do
-  end
-
-  describe "Validation" do
+  describe 'validation' do
     it { is_expected.to validate_presence_of(:author) }
 
     it { is_expected.to validate_presence_of(:title) }
     it { is_expected.to ensure_length_of(:title).is_within(0..255) }
 
     it { is_expected.to validate_presence_of(:file_name) }
-    it { is_expected.to ensure_length_of(:title).is_within(0..255) }
+    it { is_expected.to ensure_length_of(:file_name).is_within(0..255) }
 
     it { is_expected.to validate_presence_of(:content) }
+
+    it { is_expected.to validate_inclusion_of(:visibility_level).in_array(Gitlab::VisibilityLevel.values) }
   end
 
   describe '#to_reference' do

@@ -26,6 +26,13 @@ require 'spec_helper'
 describe MergeRequest do
   subject { create(:merge_request) }
 
+  describe 'associations' do
+    it { is_expected.to belong_to(:target_project).with_foreign_key(:target_project_id).class_name('Project') }
+    it { is_expected.to belong_to(:source_project).with_foreign_key(:source_project_id).class_name('Project') }
+
+    it { is_expected.to have_one(:merge_request_diff).dependent(:destroy) }
+  end
+
   describe 'modules' do
     subject { described_class }
 
@@ -36,22 +43,12 @@ describe MergeRequest do
     it { is_expected.to include_module(Taskable) }
   end
 
-  describe 'associations' do
-    it { is_expected.to belong_to(:target_project).with_foreign_key(:target_project_id).class_name('Project') }
-    it { is_expected.to belong_to(:source_project).with_foreign_key(:source_project_id).class_name('Project') }
-
-    it { is_expected.to have_one(:merge_request_diff).dependent(:destroy) }
-  end
-
   describe 'validation' do
     it { is_expected.to validate_presence_of(:target_branch) }
     it { is_expected.to validate_presence_of(:source_branch) }
   end
 
-  describe "Mass assignment" do
-  end
-
-  describe "Respond to" do
+  describe 'respond to' do
     it { is_expected.to respond_to(:unchecked?) }
     it { is_expected.to respond_to(:can_be_merged?) }
     it { is_expected.to respond_to(:cannot_be_merged?) }
@@ -82,8 +79,6 @@ describe MergeRequest do
       expect(merge_request.mr_and_commit_notes.count).to eq(2)
     end
   end
-
-  subject { create(:merge_request) }
 
   describe '#is_being_reassigned?' do
     it 'returns true if the merge_request assignee has changed' do

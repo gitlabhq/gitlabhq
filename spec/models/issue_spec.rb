@@ -60,11 +60,8 @@ describe Issue do
 
   describe '#is_being_reassigned?' do
     it 'returns issues assigned to user' do
-      user = create :user
-
-      2.times do
-        issue = create :issue, assignee: user
-      end
+      user = create(:user)
+      create_list(:issue, 2, assignee: user)
 
       expect(Issue.open_for(user).count).to eq 2
     end

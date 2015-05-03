@@ -89,9 +89,6 @@ describe User do
     it { is_expected.to have_many(:identities).dependent(:destroy) }
   end
 
-  describe "Mass assignment" do
-  end
-
   describe 'validations' do
     it { is_expected.to validate_presence_of(:username) }
     it { is_expected.to validate_presence_of(:projects_limit) }

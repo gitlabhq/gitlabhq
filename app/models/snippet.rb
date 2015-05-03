@@ -24,7 +24,8 @@ class Snippet < ActiveRecord::Base
 
   default_value_for :visibility_level, Snippet::PRIVATE
 
-  belongs_to :author, class_name: "User"
+  belongs_to :author, class_name: 'User'
+  belongs_to :project
 
   has_many :notes, as: :noteable, dependent: :destroy
 
