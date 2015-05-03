@@ -10,11 +10,13 @@ The pagination parameters `page` and `per_page` can be used to restrict the list
 GET /projects/:id/merge_requests
 GET /projects/:id/merge_requests?state=opened
 GET /projects/:id/merge_requests?state=all
+GET /projects/:id/merge_requests?iid=42
 ```
 
 Parameters:
 
 - `id` (required) - The ID of a project
+- `iid` (optional) - Return the request having the given `iid`
 - `state` (optional) - Return `all` requests or just those that are `merged`, `opened` or `closed`
 - `order_by` (optional) - Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`
 - `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
@@ -388,6 +390,6 @@ Parameters:
 ]
 ```
 
-## Comments on issues
+## Comments on merge requets
 
 Comments are done via the notes resource.

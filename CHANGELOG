@@ -26,6 +26,7 @@ v 7.11.0 (unreleased)
   - Include commit comments in MR from a forked project.
   - Fix adding new group members from admin area
   - Group milestones by title in the dashboard and all other issue views.
+  - Query issues, merge requests and milestones with their IID through API (Julien Bianchi)
   - Add default project and snippet visibility settings to the admin web UI.
   - Show incompatible projects in Google Code import status (Stan Hu)
   - Fix bug where commit data would not appear in some subdirectories (Stan Hu)
