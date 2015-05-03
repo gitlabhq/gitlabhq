@@ -25,6 +25,7 @@ v 7.11.0 (unreleased)
   - Don't crash when an MR from a fork has a cross-reference comment from the target project on of its commits.
   - Include commit comments in MR from a forked project.
   - Fix adding new group members from admin area
+  - Group milestones by title in the dashboard and all other issue views.
   - Add default project and snippet visibility settings to the admin web UI.
   - Show incompatible projects in Google Code import status (Stan Hu)
   - Fix bug where commit data would not appear in some subdirectories (Stan Hu)
