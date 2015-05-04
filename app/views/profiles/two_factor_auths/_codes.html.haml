@@ -1,12 +1,11 @@
 %p.slead
-  Please save this recovery codes so you can access your account if you lose your phone.
+  Should you ever lose your phone, each of these recovery codes can be used one
+  time each to regain access to your account. Please save them in a safe place.
 
 .codes.well
   %ul
     - @codes.each do |code|
       %li
-        %span.monospace
-          = code
+        %span.monospace= code
 
-= link_to profile_account_path, class: 'btn btn-success' do
-  I saved the codes
+= link_to 'Proceed', profile_account_path, class: 'btn btn-success'
