@@ -6,6 +6,7 @@ v 7.11.0 (unreleased)
   - Don't allow a merge request to be merged when its title starts with "WIP".
   - Add a page title to every page.
   - Allow primary email to be set to an email that you've already added.
+  - Fix Error 500 when searching Wiki pages (Stan Hu)
   - Get Gitorious importer to work again.
   - Fix clone URL field and X11 Primary selection (Dmitry Medvinsky)
   - Ignore invalid lines in .gitmodules

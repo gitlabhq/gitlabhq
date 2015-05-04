@@ -159,6 +159,11 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
     page.should have_content('History for')
   end
 
+  step 'I search for Wiki content' do
+    fill_in "Search in this project", with: "wiki_content"
+    click_button "Search"
+  end
+
   def wiki
     @project_wiki = ProjectWiki.new(project, current_user)
   end
