@@ -1,5 +1,5 @@
 class SessionsController < Devise::SessionsController
-  prepend_before_filter :two_factor_enabled?, only: :create
+  prepend_before_action :two_factor_enabled?, only: :create
 
   def new
     redirect_path =
