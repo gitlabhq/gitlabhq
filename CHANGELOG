@@ -30,6 +30,10 @@ v 7.10.0 (unreleased)
   - Include commit comments in MR from a forked project.
   - Fix adding new group members from admin area
   - Add default project and snippet visibility settings to the admin web UI.
+  - Show incompatible projects in Google Code import status (Stan Hu)
+  - Fix bug where commit data would not appear in some subdirectories (Stan Hu)
+  - Unescape branch names in compare commit (Stan Hu)
+  -
   - Fix bug where Slack service channel was not saved in admin template settings. (Stan Hu)
   - Move snippets UI to fluid layout
   - Improve UI for sidebar. Increase separation between navigation and content
