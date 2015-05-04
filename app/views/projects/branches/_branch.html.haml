@@ -1,7 +1,7 @@
 - commit = @repository.commit(branch.target)
 %li(class="js-branch-#{branch.name}")
   %h4
-    %strong= link_to branch.name, namespace_project_tree_path(@project.namespace, @project, branch.name), class: 'str-truncated'
+    %strong.str-truncated= link_to branch.name, namespace_project_tree_path(@project.namespace, @project, branch.name)
     - if branch.name == @repository.root_ref
       %span.label.label-info default
     - if @project.protected_branch? branch.name
