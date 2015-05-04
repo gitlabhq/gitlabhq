@@ -1,14 +1,13 @@
 - commit = @repository.commit(branch.target)
 %li(class="js-branch-#{branch.name}")
   %h4
-    = link_to namespace_project_tree_path(@project.namespace, @project, branch.name) do
-      %strong.str-truncated= branch.name
-      - if branch.name == @repository.root_ref
-        %span.label.label-info default
-      - if @project.protected_branch? branch.name
-        %span.label.label-success
-          %i.fa.fa-lock
-          protected
+    %strong= link_to branch.name, namespace_project_tree_path(@project.namespace, @project, branch.name), class: 'str-truncated'
+    - if branch.name == @repository.root_ref
+      %span.label.label-info default
+    - if @project.protected_branch? branch.name
+      %span.label.label-success
+        %i.fa.fa-lock
+        protected
     .pull-right
       - if can?(current_user, :download_code, @project)
         = render 'projects/repositories/download_archive', ref: branch.name, btn_class: 'btn-grouped btn-group-xs'
