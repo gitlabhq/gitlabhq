@@ -30,26 +30,28 @@
     %fieldset
       - if current_user.otp_required_for_login
         %legend.text-success
-          %i.fa.fa-check
-          Two-Factor Authentication enabled
+          = icon('check')
+          Two-factor Authentication enabled
         %div
           .pull-right
-            = link_to "Disable 2-Factor Authentication", profile_two_factor_auth_path, method: :delete, class: 'btn btn-close btn-sm'
+            = link_to "Disable Two-factor Authentication", profile_two_factor_auth_path, method: :delete, class: 'btn btn-close btn-sm',
+                data: { confirm: 'Are you sure?' }
           %p
-            If you lost your recovery codes - you can
+            If you lose your recovery codes, you can
             %strong
-              = link_to "generate new one", codes_profile_two_factor_auth_path, method: :post,
-                data: { confirm: 'After we generate new recovery codes - old codes will not be valid any more. Are you sure?' }
+              = succeed '.' do
+                = link_to "generate new ones", codes_profile_two_factor_auth_path, method: :post,
+                  data: { confirm: 'This will invalidate the old codes. Are you sure?' }
 
       - else
-        %legend Two-Factor Authentication
+        %legend Two-factor Authentication
         %div
           %p
             Keep your account secure by enabling two-factor authentication.
             %br
             Each time you log in, you’ll be required to provide your password plus a randomly generated access code.
           %div
-            = link_to "Enable 2-Factor Authentication", new_profile_two_factor_auth_path, class: 'btn btn-success'
+            = link_to "Enable Two-factor Authentication", new_profile_two_factor_auth_path, class: 'btn btn-success'
 
   - if show_profile_social_tab?
     %fieldset

@@ -1,7 +1,7 @@
 %div
   .login-box
     .login-heading
-      %h3 Two-Factor Authentication
+      %h3 Two-factor Authentication
     .login-body
       = form_for(resource, as: resource_name, url: session_path(resource_name), method: :post) do |f|
         - if @error
