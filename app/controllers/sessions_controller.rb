@@ -16,7 +16,7 @@ class SessionsController < Devise::SessionsController
 
     # Prevent a 'you are already signed in' message directly after signing:
     # we should never redirect to '/users/sign_in' after signing in successfully.
-    unless redirect_path == '/users/sign_in'
+    unless redirect_path == new_user_session_path
       store_location_for(:redirect, redirect_path)
     end
 
