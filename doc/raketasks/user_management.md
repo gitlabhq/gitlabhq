@@ -47,3 +47,12 @@ sudo gitlab-rake gitlab:import:all_users_to_all_groups
 # installation from source
 bundle exec rake gitlab:import:all_users_to_all_groups RAILS_ENV=production
 ```
+
+## Maintain tight control over the number of active users on your GitLab installation
+
+- Enable this setting to keep new users blocked until they have been cleared by the admin (default: false).
+
+
+```
+block_auto_created_users: false
+```
