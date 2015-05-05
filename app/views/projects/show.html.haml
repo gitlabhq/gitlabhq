@@ -7,25 +7,6 @@
   = render 'shared/no_password'
 
 = render "home_panel"
-- if @repository.changelog
-  %li.hidden-xs
-    = link_to changelog_url(@project) do
-      Changelog
-- if @repository.contribution_guide
-  %li.hidden-xs
-    = link_to contribution_guide_url(@project) do
-      Contribution guide
-- if @repository.license
-  %li
-    = link_to license_url(@project) do
-      License
-
-.project-home-links
-  - unless @project.empty_repo?
-    = link_to pluralize(number_with_delimiter(@repository.commit_count), 'commit'), namespace_project_commits_path(@project.namespace, @project, @ref || @repository.root_ref)
-    = link_to pluralize(number_with_delimiter(@repository.branch_names.count), 'branch'), namespace_project_branches_path(@project.namespace, @project)
-    = link_to pluralize(number_with_delimiter(@repository.tag_names.count), 'tag'), namespace_project_tags_path(@project.namespace, @project)
-    %span.light.prepend-left-20= repository_size
 
 = render 'shared/show_aside'
 
