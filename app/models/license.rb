@@ -2,6 +2,7 @@ class License < ActiveRecord::Base
   validates :data, presence: true
   validate :valid_license
   validate :active_user_count, unless: :persisted?
+  validate :not_expired, unless: :persisted?
 
   before_validation :reset_license, if: :data_changed?
 
@@ -106,13 +107,20 @@ class License < ActiveRecord::Base
   def active_user_count
     return unless self.license? && self.restricted?(:active_user_count)
 
-    restricted_user_count = @license.restrictions[:active_user_count]
+    restricted_user_count = self.restrictions[:active_user_count]
     active_user_count     = User.active.count
 
     return if active_user_count <= restricted_user_count
 
     message = "This license allows #{restricted_user_count} active users. "
-    message << "This GitLab installation currently has #{active_user_count}, i.e. #{active_user_count - restricted_user_count} too many."
+    message << "This GitLab installation currently has #{active_user_count}, "
+    message << "i.e. #{active_user_count - restricted_user_count} too many."
     self.errors.add(:base, message)
+  end
+
+  def not_expired
+    return unless self.license? && self.expired?
+
+    self.errors.add(:base, "This license has already expired.")
   end
 end
