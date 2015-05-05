@@ -1,4 +1,24 @@
 .clearfix
+  .append-bottom-20
+    = render "shared/clone_panel"
+
+  - unless @project.empty_repo?
+    .well
+      %h4 Repository
+      %ul.nav.nav-pills
+        %li= link_to pluralize(number_with_delimiter(@repository.commit_count), 'commit'), namespace_project_commits_path(@project.namespace, @project, @ref || @repository.root_ref)
+        %li= link_to pluralize(number_with_delimiter(@repository.branch_names.count), 'branch'), namespace_project_branches_path(@project.namespace, @project)
+        %li= link_to pluralize(number_with_delimiter(@repository.tag_names.count), 'tag'), namespace_project_tags_path(@project.namespace, @project)
+
+      %hr
+      = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-sm' do
+        %i.fa.fa-exchange
+        Compare code
+
+      - if can?(current_user, :download_code, @project)
+        &nbsp;
+        = render 'projects/repositories/download_archive', split_button: true, btn_class: 'btn-group-sm'
+
   - unless @project.empty_repo?
     .well
       %h4 Contribute
@@ -20,22 +40,7 @@
         %i.fa.fa-fw.fa-exclamation-circle
         New issue
 
-    .well
-      %h4 Repository
-      %ul.nav.nav-pills
-        %li= link_to pluralize(number_with_delimiter(@repository.commit_count), 'commit'), namespace_project_commits_path(@project.namespace, @project, @ref || @repository.root_ref)
-        %li= link_to pluralize(number_with_delimiter(@repository.branch_names.count), 'branch'), namespace_project_branches_path(@project.namespace, @project)
-        %li= link_to pluralize(number_with_delimiter(@repository.tag_names.count), 'tag'), namespace_project_tags_path(@project.namespace, @project)
-      %hr
-      = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-sm' do
-        %i.fa.fa-exchange
-        Compare code
-      - if can?(current_user, :download_code, @project)
-        &nbsp;
-        = render 'projects/repositories/download_archive', split_button: true, btn_class: 'btn-group-sm'
 
-  .append-bottom-20
-    = render "shared/clone_panel"
 
   - if @project.archived?
     .alert.alert-warning
@@ -51,24 +56,23 @@
       %br
       = link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)
 
-  -#- unless @project.empty_repo?
-    -#- if version = @repository.version
-      - detail_url = changelog_url(@project) || version_url(@project)
-      = link_to detail_url, class: 'btn btn-block' do
-        %i.fa.fa-file-text-o
-        Version:
-        %span.count
+
+- if version = @repository.version
+  .well
+    %h4
+      Version
+      .pull-right
+        = link_to version_url(@project) do
           = @repository.blob_by_oid(version.id).data
-
-
-.prepend-top-10
-  - @project.ci_services.each do |ci_service|
-    - if ci_service.active? && ci_service.respond_to?(:builds_path)
-      %hr
-      - if ci_service.respond_to?(:status_img_path)
-        = link_to ci_service.builds_path, :'data-no-turbolink' => 'data-no-turbolink' do
-          = image_tag ci_service.status_img_path, alt: "build status"
-      - else
-        %span.light CI provided by
-        = link_to ci_service.title, ci_service.builds_path, :'data-no-turbolink' => 'data-no-turbolink'
-
+.well
+  %h4
+    CI
+    .pull-right
+      - @project.ci_services.each do |ci_service|
+        - if ci_service.active? && ci_service.respond_to?(:builds_path)
+          - if ci_service.respond_to?(:status_img_path)
+            = link_to ci_service.builds_path, :'data-no-turbolink' => 'data-no-turbolink' do
+              = image_tag ci_service.status_img_path, alt: "build status"
+          - else
+            %span.light CI provided by
+            = link_to ci_service.title, ci_service.builds_path, :'data-no-turbolink' => 'data-no-turbolink'

@@ -12,6 +12,11 @@
 
     .navbar-collapse.collapse
       %ul.nav.navbar-nav
+
+        - if @project && @repository
+          %li
+            .project-home-dropdown
+              = render "projects/dropdown"
         %li.hidden-sm.hidden-xs
           = render 'layouts/search'
         %li.visible-sm.visible-xs

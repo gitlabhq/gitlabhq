@@ -35,9 +35,4 @@
             - else
               = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "Fork project", class: 'btn btn-sm btn-default' do
                 = link_to_toggle_fork
-
 %hr
-  -#.project-home-row.hidden-xs
-    - if current_user && !empty_repo
-      .project-home-dropdown
-        = render "dropdown"

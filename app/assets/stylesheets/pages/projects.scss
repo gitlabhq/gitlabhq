@@ -45,11 +45,6 @@
     }
   }
 
-  .project-home-dropdown {
-    margin-left: 10px;
-    float: right;
-  }
-
   .project-home-row {
     @extend .clearfix;
     margin-bottom: 15px;
@@ -81,7 +76,7 @@
     margin-top: -3px;
     position: absolute;
     right: 0;
-    width: 260px;
+    width: 265px;
     text-align: right;
 
     .btn {
@@ -316,4 +311,14 @@ table.table.protected-branches-list tr.no-border {
 .project-import .btn {
   float: left;
   margin-right: 10px;
+}
+
+.project-home-dropdown {
+  margin-top: 8px;
+
+  a {
+    padding: 4px 10px;
+    color: #888;
+    border-color: #ddd;
+  }
 }
