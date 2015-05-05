@@ -1,0 +1,8 @@
+- page_title    @project.name_with_namespace
+- header_title  project_title(@project)
+- sidebar       "project" unless sidebar
+
+- content_for :embedded_scripts do
+  = render "layouts/init_auto_complete" if current_user
+
+= render template: "layouts/application"

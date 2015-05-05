@@ -11,7 +11,7 @@
           = view_file_btn(@commit.parent_id, diff_file, project)
     - elsif diff_file.diff.submodule?
       - submodule_item = project.repository.blob_at(@commit.id, diff_file.file_path)
-      = submodule_link(submodule_item, @commit.id)
+      = submodule_link(submodule_item, @commit.id, project.repository)
     - else
       %span
         - if diff_file.renamed_file

@@ -19,24 +19,6 @@ module GroupsHelper
     end
   end
 
-  def group_head_title
-    title = @group.name
-
-    title = if current_action?(:issues)
-              "Issues - " + title
-            elsif current_action?(:merge_requests)
-              "Merge requests - " + title
-            elsif current_action?(:members)
-              "Members - " + title
-            elsif current_action?(:edit)
-              "Settings - " + title
-            else
-              title
-            end
-
-    title
-  end
-
   def group_settings_page?
     if current_controller?('groups')
       current_action?('edit') || current_action?('projects')

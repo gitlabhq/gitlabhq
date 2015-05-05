@@ -8,7 +8,6 @@ class Dispatcher
 
   initPageScripts: ->
     page = $('body').attr('data-page')
-    project_id = $('body').attr('data-project-id')
 
     unless page
       return false

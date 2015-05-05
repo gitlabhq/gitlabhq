@@ -6,6 +6,7 @@
 - [Session](session.md)
 - [Projects](projects.md)
 - [Project Snippets](project_snippets.md)
+- [Services](services.md)
 - [Repositories](repositories.md)
 - [Repository Files](repository_files.md)
 - [Commits](commits.md)

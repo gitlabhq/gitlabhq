@@ -40,7 +40,7 @@ module Gitlab
     end
 
     # Convenience method to get a space-separated String of all the theme
-    # classes that mighty be applied to the `body` element
+    # classes that might be applied to the `body` element
     #
     # Returns a String
     def self.body_classes

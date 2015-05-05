@@ -27,10 +27,10 @@ If you have local changes to your GitLab repository the script will stash them a
 Note: GitLab 7.9 adds `nodejs` as a dependency. GitLab 7.6 adds `libkrb5-dev` as a dependency (installed by default on Ubuntu and OSX). GitLab 7.2 adds `pkg-config` and `cmake` as dependency. Please check the dependencies in the [installation guide.](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md#1-packages-dependencies)
 
     cd /home/git/gitlab
-    sudo -u git -H ruby -Ilib -e 'require "gitlab/upgrader"' -e 'class Gitlab::Upgrader' -e 'def latest_version_raw' -e '"v7.10.0"' -e 'end' -e 'end' -e 'Gitlab::Upgrader.new.execute'
+    sudo -u git -H ruby -Ilib -e 'require "gitlab/upgrader"' -e 'class Gitlab::Upgrader' -e 'def latest_version_raw' -e '"v7.10.1"' -e 'end' -e 'end' -e 'Gitlab::Upgrader.new.execute'
 
     # to perform a non-interactive install (no user input required) you can add -y
-    # sudo -u git -H ruby -Ilib -e 'require "gitlab/upgrader"' -e 'class Gitlab::Upgrader' -e 'def latest_version_raw' -e '"v7.10.0"' -e 'end' -e 'end' -e 'Gitlab::Upgrader.new.execute' -- -y
+    # sudo -u git -H ruby -Ilib -e 'require "gitlab/upgrader"' -e 'class Gitlab::Upgrader' -e 'def latest_version_raw' -e '"v7.10.1"' -e 'end' -e 'end' -e 'Gitlab::Upgrader.new.execute' -- -y
 
 ## 3. Start application
 
@@ -65,7 +65,7 @@ Here is a one line command with step 1 to 5 for the next time you upgrade:
 cd /home/git/gitlab; \
   sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production; \
   sudo service gitlab stop; \
-  sudo -u git -H ruby -Ilib -e 'require "gitlab/upgrader"' -e 'class Gitlab::Upgrader' -e 'def latest_version_raw' -e '"v7.10.0"' -e 'end' -e 'end' -e 'Gitlab::Upgrader.new.execute' -- -y; \
+  sudo -u git -H ruby -Ilib -e 'require "gitlab/upgrader"' -e 'class Gitlab::Upgrader' -e 'def latest_version_raw' -e '"v7.10.1"' -e 'end' -e 'end' -e 'Gitlab::Upgrader.new.execute' -- -y; \
   cd /home/git/gitlab-shell; \
   sudo -u git -H git fetch; \
   sudo -u git -H git checkout v`cat /home/git/gitlab/GITLAB_SHELL_VERSION`; \

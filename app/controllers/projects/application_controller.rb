@@ -1,7 +1,7 @@
 class Projects::ApplicationController < ApplicationController
   before_action :project
   before_action :repository
-  layout :determine_layout
+  layout 'project'
 
   def authenticate_user!
     # Restrict access to Projects area only
@@ -15,14 +15,6 @@ class Projects::ApplicationController < ApplicationController
     end
 
     super
-  end
-
-  def determine_layout
-    if current_user
-      'projects'
-    else
-      'public_projects'
-    end
   end
 
   def require_branch_head

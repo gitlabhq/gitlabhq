@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150425173433) do
+ActiveRecord::Schema.define(version: 20150502064022) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(version: 20150425173433) do
     t.integer  "max_attachment_size",          default: 10,   null: false
     t.integer  "default_project_visibility"
     t.integer  "default_snippet_visibility"
+    t.text     "restricted_signup_domains"
   end
 
   create_table "audit_events", force: true do |t|
@@ -302,7 +303,7 @@ ActiveRecord::Schema.define(version: 20150425173433) do
   end
 
   add_index "namespaces", ["created_at", "id"], name: "index_namespaces_on_created_at_and_id", using: :btree
-  add_index "namespaces", ["name"], name: "index_namespaces_on_name", unique: true, using: :btree
+  add_index "namespaces", ["name"], name: "index_namespaces_on_name", using: :btree
   add_index "namespaces", ["owner_id"], name: "index_namespaces_on_owner_id", using: :btree
   add_index "namespaces", ["path"], name: "index_namespaces_on_path", unique: true, using: :btree
   add_index "namespaces", ["type"], name: "index_namespaces_on_type", using: :btree
@@ -410,11 +411,11 @@ ActiveRecord::Schema.define(version: 20150425173433) do
     t.string   "avatar"
     t.string   "import_status"
     t.float    "repository_size",               default: 0.0
-    t.text     "merge_requests_template"
     t.integer  "star_count",                    default: 0,        null: false
-    t.boolean  "merge_requests_rebase_enabled", default: false
     t.string   "import_type"
     t.string   "import_source"
+    t.text     "merge_requests_template"
+    t.boolean  "merge_requests_rebase_enabled", default: false
     t.boolean  "merge_requests_rebase_default", default: true
   end
 
@@ -494,12 +495,15 @@ ActiveRecord::Schema.define(version: 20150425173433) do
     t.datetime "created_at"
   end
 
-  add_index "taggings", ["tag_id"], name: "index_taggings_on_tag_id", using: :btree
+  add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true, using: :btree
   add_index "taggings", ["taggable_id", "taggable_type", "context"], name: "index_taggings_on_taggable_id_and_taggable_type_and_context", using: :btree
 
   create_table "tags", force: true do |t|
-    t.string "name"
+    t.string  "name"
+    t.integer "taggings_count", default: 0
   end
+
+  add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",                         default: "",    null: false
@@ -541,7 +545,6 @@ ActiveRecord::Schema.define(version: 20150425173433) do
     t.string   "unconfirmed_email"
     t.boolean  "hide_no_ssh_key",               default: false
     t.string   "website_url",                   default: "",    null: false
-    t.datetime "admin_email_unsubscribed_at"
     t.string   "github_access_token"
     t.string   "gitlab_access_token"
     t.string   "notification_email"
@@ -549,6 +552,7 @@ ActiveRecord::Schema.define(version: 20150425173433) do
     t.boolean  "password_automatically_set",    default: false
     t.string   "bitbucket_access_token"
     t.string   "bitbucket_access_token_secret"
+    t.datetime "admin_email_unsubscribed_at"
     t.string   "location"
     t.string   "public_email",                  default: "",    null: false
   end

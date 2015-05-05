@@ -1,4 +1,6 @@
 .search_box
   .search_glyph
-    %span.fa.fa-search
-  %h4 #{message}
+  %h4
+    = icon('search')
+    We couldn't find any results matching
+    %code #{@search_term}

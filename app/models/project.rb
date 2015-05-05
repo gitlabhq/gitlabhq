@@ -334,12 +334,16 @@ class Project < ActiveRecord::Base
     self.id
   end
 
-  def issue_exists?(issue_id)
+  def get_issue(issue_id)
     if default_issues_tracker?
-      self.issues.where(iid: issue_id).first.present?
+      issues.find_by(iid: issue_id)
     else
-      true
+      ExternalIssue.new(issue_id, self)
     end
+  end
+
+  def issue_exists?(issue_id)
+    get_issue(issue_id)
   end
 
   def default_issue_tracker
@@ -355,11 +359,7 @@ class Project < ActiveRecord::Base
   end
 
   def default_issues_tracker?
-    if external_issue_tracker
-      false
-    else
-      true
-    end
+    !external_issue_tracker
   end
 
   def external_issues_trackers
@@ -496,7 +496,7 @@ class Project < ActiveRecord::Base
 
   def execute_hooks(data, hooks_scope = :push_hooks)
     hooks.send(hooks_scope).each do |hook|
-      hook.async_execute(data, hooks_scope.to_s)
+      hook.async_execute(data)
     end
     if group
       group.hooks.send(hooks_scope).each do |hook|

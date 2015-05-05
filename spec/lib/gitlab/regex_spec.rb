@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'spec_helper'
 
 describe Gitlab::Regex do
@@ -16,6 +17,8 @@ describe Gitlab::Regex do
     it { expect('GitLab CE').to match(Gitlab::Regex.project_name_regex) }
     it { expect('100 lines').to match(Gitlab::Regex.project_name_regex) }
     it { expect('gitlab.git').to match(Gitlab::Regex.project_name_regex) }
+    it { expect('Český název').to match(Gitlab::Regex.project_name_regex) }
+    it { expect('Dash – is this').to match(Gitlab::Regex.project_name_regex) }
     it { expect('?gitlab').not_to match(Gitlab::Regex.project_name_regex) }
   end
 end

@@ -1,6 +1,4 @@
-class Profiles::AccountsController < ApplicationController
-  layout "profile"
-
+class Profiles::AccountsController < Profiles::ApplicationController
   def show
     @user = current_user
   end

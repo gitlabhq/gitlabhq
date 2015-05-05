@@ -1,22 +1,7 @@
-= form_tag search_path, method: :get, class: 'form-horizontal' do |f|
-  .search-holder.clearfix
-    .form-group
-      = label_tag :search, class: 'control-label' do
-        %span Looking for
-      .col-sm-6
-        = search_field_tag :search, params[:search], placeholder: "issue 143", class: "form-control search-text-input", id: "dashboard_search"
-      .col-sm-4
-        = button_tag 'Search', class: "btn btn-create"
-    .form-group
-      .col-sm-2
-      - unless params[:snippets].eql? 'true'
-        .col-sm-10
-          = render 'filter', f: f
-      = hidden_field_tag :project_id, params[:project_id]
-      = hidden_field_tag :group_id, params[:group_id]
-      = hidden_field_tag :snippets, params[:snippets]
-      = hidden_field_tag :scope, params[:scope]
-
-  .results.prepend-top-10
-    - if params[:search].present?
-      = render 'search/results'
+- page_title @search_term
+= render 'search/form'
+%hr
+- if @search_term
+  = render 'search/category'
+  %hr
+  = render 'search/results'

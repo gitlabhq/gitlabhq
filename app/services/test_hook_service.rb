@@ -1,7 +1,7 @@
 class TestHookService
   def execute(hook, current_user)
     data = Gitlab::PushDataBuilder.build_sample(project(hook), current_user)
-    hook.execute(data, 'push_hooks')
+    hook.execute(data)
   end
 
   private

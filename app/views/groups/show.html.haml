@@ -13,6 +13,9 @@
       .description
         = escaped_autolink(@group.description)
   %hr
+
+  = render 'shared/show_aside'
+
   .row
     %section.activities.col-md-8
       .hidden-xs
@@ -35,5 +38,3 @@
       = render "projects", projects: @projects
       %br
       = render "shared_projects", projects: @shared_projects
-    = link_to '#aside', class: 'show-aside' do
-      %i.fa.fa-angle-left
