@@ -16,7 +16,7 @@ require 'sidekiq/testing/inline'
 require_relative 'capybara'
 require_relative 'db_cleaner'
 
-%w(select2_helper test_env repo_helpers).each do |f|
+%w(select2_helper test_env repo_helpers license).each do |f|
   require Rails.root.join('spec', 'support', f)
 end
 
