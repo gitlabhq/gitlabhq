@@ -102,9 +102,8 @@ module Gitlab
     end
 
     def user_push_access_check(changes)
-      if ::License.block_changes?
-        message = ::LicenseHelper.license_message(signed_in: true, is_admin: (user && user.is_admin?))
-        return build_status_object(false, message)
+      unless user && user_allowed?
+        return build_status_object(false, "You don't have access")
       end
 
       if changes.blank?
@@ -113,6 +112,11 @@ module Gitlab
 
       unless project.repository.exists?
         return build_status_object(false, "Repository does not exist")
+      end
+      
+      if ::License.block_changes?
+        message = ::LicenseHelper.license_message(signed_in: true, is_admin: (user && user.is_admin?))
+        return build_status_object(false, message)
       end
 
       changes = changes.lines if changes.kind_of?(String)
