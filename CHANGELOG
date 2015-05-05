@@ -13,6 +13,7 @@ v 8.4.0 (unreleased)
   - Add link to merge request on build detail page
   - Revert back upvote and downvote button to the issue and MR pages
   - Swap position of Assignee and Author selector on Issuables (Zeger-Jan van de Weg)
+  - Add system hook messages for project rename and transfer (Steve Norman)
   - Fix version check image in Safari
 
 v 8.3.3 (unreleased)
