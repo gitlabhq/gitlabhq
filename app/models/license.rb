@@ -1,6 +1,7 @@
 class License < ActiveRecord::Base
   validates :data, presence: true
   validate :valid_license
+  validate :active_user_count, unless: :persisted?
 
   before_validation :reset_license, if: :data_changed?
 
@@ -50,6 +51,10 @@ class License < ActiveRecord::Base
     @license ||= Gitlab::License.import(self.data)
   end
 
+  def license?
+    self.license && self.license.valid?
+  end
+
   def method_missing(method_name, *arguments, &block)
     if License.column_names.include?(method_name.to_s)
       super
@@ -88,9 +93,20 @@ class License < ActiveRecord::Base
   end
 
   def valid_license
-    return if self.license && self.license.valid?
+    return if license?
 
     # TODO: Clearer message
     self.errors.add(:license, "is invalid.")
+  end
+
+  def active_user_count
+    return unless self.license? && self.restricted?(:active_user_count)
+
+    restricted_user_count = @license.restrictions[:active_user_count]
+    active_user_count     = User.active.count
+
+    return if active_user_count <= restricted_user_count
+
+    self.errors.add(:base, "This license allows #{restricted_user_count} active users. This GitLab installation currently has #{active_user_count}, i.e. #{active_user_count - restricted_user_count} too many.")
   end
 end
