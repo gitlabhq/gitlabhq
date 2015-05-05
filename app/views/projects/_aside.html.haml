@@ -59,17 +59,6 @@
         %span.count
           = @repository.blob_by_oid(version.id).data
 
-.prepend-top-10.append-bottom-10
-  %p
-    %span.light Created on
-    #{@project.created_at.stamp('Aug 22, 2013')}
-  %p
-    %span.light Owned by #{@project.group ? "the" : nil}
-    - if @project.group
-      #{link_to @project.group.name, @project.group} group
-    - else
-      #{link_to @project.owner_name, @project.owner}
-
 
 .prepend-top-10
   - @project.ci_services.each do |ci_service|
