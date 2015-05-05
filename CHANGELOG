@@ -45,6 +45,9 @@ v 7.11.0 (unreleased)
   - Add footnotes support to Markdown (Guillaume Delbergue)
   - Add current_sign_in_at to UserFull REST api.
 
+v 7.10.2
+  - Fix CI links on MR page
+
 v 7.10.0
   - Ignore submodules that are defined in .gitmodules but are checked in as directories.
   - Allow projects to be imported from Google Code.
