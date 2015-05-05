@@ -34,8 +34,9 @@
         &nbsp;
         = render 'projects/repositories/download_archive', split_button: true, btn_class: 'btn-group-sm'
 
-        -#%li
-          %span.light.prepend-left-20= repository_size
+  .append-bottom-20
+    = render "shared/clone_panel"
+
   - if @project.archived?
     .alert.alert-warning
       %h4
