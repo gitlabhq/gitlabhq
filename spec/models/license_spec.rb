@@ -1,8 +1,8 @@
 require "spec_helper"
 
 describe License do
-  let(:gl_license)  { Gitlab::License.new(issued_at: Date.today, licensee: { "Name" => "GitLab Test Env" }) }
-  let(:license)     { License.new(data: gl_license.export) }
+  let(:gl_license)  { build(:gitlab_license) }
+  let(:license)     { build(:license, data: gl_license.export) }
 
   describe "Validation" do
     describe "Valid license" do

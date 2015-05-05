@@ -1,5 +1,4 @@
 class License < ActiveRecord::Base
-  validates :data, presence: true
   validate :valid_license
   validate :active_user_count, unless: :persisted?
   validate :not_expired, unless: :persisted?
@@ -34,12 +33,6 @@ class License < ActiveRecord::Base
     company_name = self.licensee["Company"] || self.licensee.values.first
     clean_company_name = company_name.gsub(/[^A-Za-z0-9]/, "")
     "#{clean_company_name}.gitlab-license"
-  end
-
-  def data_file
-    return nil unless self.data
-
-    Tempfile.new(self.data_filename) { |f| f.write(self.data) }
   end
 
   def data_file=(file)

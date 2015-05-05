@@ -203,6 +203,10 @@ module SharedPaths
     visit admin_git_hooks_path
   end
 
+  step 'I visit admin license page' do
+    visit admin_license_path
+  end
+
   # ----------------------------------------
   # Generic Project
   # ----------------------------------------

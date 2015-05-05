@@ -53,9 +53,7 @@ module TestEnv
   def setup_license
     Gitlab::License.encryption_key = OpenSSL::PKey::RSA.generate(2048)
 
-    gl_license = Gitlab::License.new(issued_at: Date.today, licensee: { "Name" => "GitLab Test Env" })
-
-    License.create(data: gl_license.export)
+    FactoryGirl.create(:license)
   end
 
   # Clean /tmp/tests
