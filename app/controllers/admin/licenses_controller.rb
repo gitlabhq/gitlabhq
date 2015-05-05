@@ -17,6 +17,14 @@ class Admin::LicensesController < Admin::ApplicationController
   end
 
   def create
+    unless params[:license]
+      flash.now[:alert] = "No license was selected."
+
+      @license = License.new
+      render :new
+      return
+    end
+
     @license = License.new(license_params)
 
     respond_with(@license, location: admin_license_path) do
@@ -29,9 +37,7 @@ class Admin::LicensesController < Admin::ApplicationController
   def destroy
     license.destroy
 
-    message = "The license was removed."
-
-    redirect_to admin_license_path, notice: message
+    redirect_to admin_license_path, notice: "The license was removed."
   end
 
   private
