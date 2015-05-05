@@ -6,8 +6,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
   before_action :authorize_read_group!
   before_action :authorize_admin_group!, except: [:index, :leave]
 
-  layout :determine_layout
-
   def index
     @project = @group.projects.find(params[:project_id]) if params[:project_id]
     @members = @group.group_members

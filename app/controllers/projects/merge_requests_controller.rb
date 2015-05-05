@@ -124,13 +124,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @merge_request.check_if_can_be_merged
     end
 
-    render json: { merge_status: @merge_request.merge_status_name }
+    render json: { merge_status: @merge_request.automerge_status }
   end
 
   def automerge
     return access_denied! unless allowed_to_merge?
 
-    if @merge_request.open? && @merge_request.can_be_merged?
+    if @merge_request.automergeable?
       AutoMergeWorker.perform_async(@merge_request.id, current_user.id, params)
       @status = true
     else

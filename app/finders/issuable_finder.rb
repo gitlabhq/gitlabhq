@@ -113,8 +113,9 @@ class IssuableFinder
   end
 
   def by_milestone(items)
-    if params[:milestone_id].present?
-      items = items.where(milestone_id: (params[:milestone_id] == NONE ? nil : params[:milestone_id]))
+    if params[:milestone_title].present?
+      milestone_ids = (params[:milestone_title] == NONE ? nil : Milestone.where(title: params[:milestone_title]).pluck(:id))
+      items = items.where(milestone_id: milestone_ids)
     end
 
     items

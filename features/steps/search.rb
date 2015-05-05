@@ -18,6 +18,11 @@ class Spinach::Features::Search < Spinach::FeatureSteps
     click_button "Search"
   end
 
+  step 'I search for "Wiki content"' do
+    fill_in "dashboard_search", with: "content"
+    click_button "Search"
+  end
+
   step 'I click "Issues" link' do
     within '.search-filter' do
       click_link 'Issues'
@@ -33,6 +38,12 @@ class Spinach::Features::Search < Spinach::FeatureSteps
   step 'I click "Merge requests" link' do
     within '.search-filter' do
       click_link 'Merge requests'
+    end
+  end
+
+  step 'I click "Wiki" link' do
+    within '.search-filter' do
+      click_link 'Wiki'
     end
   end
 
@@ -65,5 +76,14 @@ class Spinach::Features::Search < Spinach::FeatureSteps
 
   step 'I should not see "Bar" link in the search results' do
     find(:css, '.search-results').should_not have_link 'Bar'
+  end
+
+  step 'I should see "test_wiki" link in the search results' do
+    find(:css, '.search-results').should have_link 'test_wiki.md'
+  end
+
+  step 'project has Wiki content' do
+    @wiki = ::ProjectWiki.new(project, current_user)
+    @wiki.create_page("test_wiki", "Some Wiki content", :markdown, "first commit")
   end
 end

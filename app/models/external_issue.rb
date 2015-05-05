@@ -15,6 +15,10 @@ class ExternalIssue
     @issue_identifier.to_s
   end
 
+  def title
+    "External Issue #{self}"
+  end
+
   def ==(other)
     other.is_a?(self.class) && (to_s == other.to_s)
   end

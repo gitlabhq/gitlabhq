@@ -1,31 +1,49 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.11.0 (unreleased)
+  - Make Reply-To config apply to change e-mail confirmation and other Devise notifications (Stan Hu)
+  - Add application setting to restrict user signups to e-mail domains (Stan Hu)
+  - Don't allow a merge request to be merged when its title starts with "WIP".
+  - Add a page title to every page.
+  - Allow primary email to be set to an email that you've already added.
+  - Fix Error 500 when searching Wiki pages (Stan Hu)
   - Get Gitorious importer to work again.
   - Fix clone URL field and X11 Primary selection (Dmitry Medvinsky)
   - Ignore invalid lines in .gitmodules
   - Fix "Cannot move project" error message from popping up after a successful transfer (Stan Hu)
   - Redirect to sign in page after signing out.
   - Fix "Hello @username." references not working by no longer allowing usernames to end in period.
+  - Fix "Revspec not found" errors when viewing diffs in a forked project with submodules (Stan Hu)
   -
+  - Fix broken file browsing with relative submodule in personal projects (Stan Hu)
+  - Fix DB error when trying to tag a repository (Stan Hu)
   - Add "Reply quoting selected text" shortcut key (`r`)
   - Fix bug causing `@whatever` inside an issue's first code block to be picked up as a user mention.
   - Fix bug causing `@whatever` inside an inline code snippet (backtick-style) to be picked up as a user mention.
-  - Added GitLab Event header for project hooks
   -
   - Show Atom feed buttons everywhere where applicable.
   - Add project activity atom feed.
-  - Don't crash when an MR from a fork has a cross-reference comment from the target project on of its commits.
+  - Don't crash when an MR from a fork has a cross-reference comment from the target project on one of its commits.
   - Include commit comments in MR from a forked project.
-  -
+  - Fix adding new group members from admin area
+  - Group milestones by title in the dashboard and all other issue views.
+  - Query issues, merge requests and milestones with their IID through API (Julien Bianchi)
   - Add default project and snippet visibility settings to the admin web UI.
+  - Show incompatible projects in Google Code import status (Stan Hu)
+  - Fix bug where commit data would not appear in some subdirectories (Stan Hu)
+  - Unescape branch names in compare commit (Stan Hu)
+  -
   - Fix bug where Slack service channel was not saved in admin template settings. (Stan Hu)
   - Move snippets UI to fluid layout
   - Improve UI for sidebar. Increase separation between navigation and content
   - Improve new project command options (Ben Bodenmiller)
+  - Add common method to force UTF-8 and use it to properly handle non-ascii OAuth user properties (Onur Küçük)
   - Prevent sending empty messages to HipChat (Chulki Lee)
   - Improve UI for mobile phones on dashboard and project pages
   - Add room notification and message color option for HipChat
+  - Allow to use non-ASCII letters and dashes in project and namespace name. (Jakub Jirutka)
+  - Add footnotes support to Markdown (Guillaume Delbergue)
+  - Add current_sign_in_at to UserFull REST api.
 
 v 7.10.0
   - Ignore submodules that are defined in .gitmodules but are checked in as directories.
@@ -111,7 +129,6 @@ v 7.9.0 (unreleased)
   - Fixed link paths for HTTP and SSH on the admin project view (Jeremy Maziarz)
   - Fix and improve help rendering (Sullivan Sénéchal)
   - Fix final line in EmailsOnPush email diff being rendered as error.
-  - Authometic setup GitLab CI project for forks if origin project has GitLab CI enabled
   - Prevent duplicate Buildkite service creation.
   - Fix git over ssh errors 'fatal: protocol error: bad line length character' 
   - Automatically setup GitLab CI project for forks if origin project has GitLab CI enabled

@@ -72,3 +72,10 @@ Feature: Project
     And I change "Pete" access level to master
     And I go to "Audit Events"
     Then I should see the audit event listed
+
+  Scenario: I tag a project
+    When I visit edit project "Shop" page
+    Then I should see project settings
+    And I add project tags
+    And I save project
+    Then I should see project tags

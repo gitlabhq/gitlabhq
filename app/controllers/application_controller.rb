@@ -3,6 +3,7 @@ require 'gon'
 class ApplicationController < ActionController::Base
   include Gitlab::CurrentSettings
   include GitlabRoutingHelper
+  include PageLayoutHelper
 
   PER_PAGE = 20
 
@@ -182,18 +183,6 @@ class ApplicationController < ActionController::Base
     response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
   end
 
-  def default_url_options
-    if !Rails.env.test?
-      port = Gitlab.config.gitlab.port unless Gitlab.config.gitlab_on_standard_port?
-      { host: Gitlab.config.gitlab.host,
-        protocol: Gitlab.config.gitlab.protocol,
-        port: port,
-        script_name: Gitlab.config.gitlab.relative_url_root }
-    else
-      super
-    end
-  end
-
   def default_headers
     headers['X-Frame-Options'] = 'DENY'
     headers['X-XSS-Protection'] = '1; mode=block'
@@ -304,40 +293,15 @@ class ApplicationController < ActionController::Base
     @filter_params
   end
 
-  def set_filter_values(collection)
-    assignee_id = @filter_params[:assignee_id]
-    author_id = @filter_params[:author_id]
-    milestone_id = @filter_params[:milestone_id]
-
-    @sort = @filter_params[:sort]
-    @assignees = User.where(id: collection.pluck(:assignee_id))
-    @authors = User.where(id: collection.pluck(:author_id))
-    @milestones = Milestone.where(id: collection.pluck(:milestone_id))
-
-    if assignee_id.present? && !assignee_id.to_i.zero?
-      @assignee = @assignees.find_by(id: assignee_id)
-    end
-
-    if author_id.present? && !author_id.to_i.zero?
-      @author = @authors.find_by(id: author_id)
-    end
-
-    if milestone_id.present? && !milestone_id.to_i.zero?
-      @milestone = @milestones.find_by(id: milestone_id)
-    end
-  end
-
   def get_issues_collection
     set_filters_params
     issues = IssuesFinder.new.execute(current_user, @filter_params)
-    set_filter_values(issues)
     issues
   end
 
   def get_merge_requests_collection
     set_filters_params
     merge_requests = MergeRequestsFinder.new.execute(current_user, @filter_params)
-    set_filter_values(merge_requests)
     merge_requests
   end
 

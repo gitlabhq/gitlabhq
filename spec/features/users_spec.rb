@@ -1,13 +1,6 @@
 require 'spec_helper'
 
 feature 'Users' do
-  around do |ex|
-    old_url_options = Rails.application.routes.default_url_options
-    Rails.application.routes.default_url_options = { host: 'example.foo' }
-    ex.run
-    Rails.application.routes.default_url_options = old_url_options
-  end
-
   scenario 'GET /users/sign_in creates a new user account' do
     visit new_user_session_path
     fill_in 'user_name', with: 'Name Surname'

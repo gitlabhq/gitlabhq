@@ -76,6 +76,14 @@ FactoryGirl.define do
     end
   end
 
+  factory :forked_project_with_submodules, parent: :empty_project do
+    path { 'forked-gitlabhq' }
+
+    after :create do |project|
+      TestEnv.copy_forked_repo_with_submodules(project)
+    end
+  end
+
   factory :redmine_project, parent: :project do
     after :create do |project|
       project.create_redmine_service(
@@ -86,8 +94,7 @@ FactoryGirl.define do
           'new_issue_url' => 'http://redmine/projects/project_name_in_redmine/issues/new'
         }
       )
-    end
-    after :create do |project|
+
       project.issues_tracker = 'redmine'
       project.issues_tracker_id = 'project_name_in_redmine'
     end

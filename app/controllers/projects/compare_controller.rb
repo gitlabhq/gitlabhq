@@ -1,3 +1,5 @@
+require 'addressable/uri'
+
 class Projects::CompareController < Projects::ApplicationController
   # Authorize
   before_action :require_non_empty_project
@@ -7,8 +9,8 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def show
-    base_ref = params[:from]
-    head_ref = params[:to]
+    base_ref = Addressable::URI.unescape(params[:from])
+    head_ref = Addressable::URI.unescape(params[:to])
 
     compare_result = CompareService.new.execute(
       current_user,

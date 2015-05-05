@@ -78,4 +78,24 @@ describe Projects::MergeRequestsController do
       end
     end
   end
+
+  context '#diffs with forked projects with submodules' do
+    render_views
+    let(:project) { create(:project) }
+    let(:fork_project) { create(:forked_project_with_submodules) }
+    let(:merge_request) { create(:merge_request_with_diffs, source_project: fork_project, source_branch: 'add-submodule-version-bump', target_branch: 'master', target_project: project) }
+
+    before do
+      fork_project.build_forked_project_link(forked_to_project_id: fork_project.id, forked_from_project_id: project.id)
+      fork_project.save
+      merge_request.reload
+    end
+
+    it '#diffs' do
+      get(:diffs, namespace_id: project.namespace.to_param,
+          project_id: project.to_param, id: merge_request.iid, format: 'json')
+      expect(response).to be_success
+      expect(response.body).to have_content('Subproject commit')
+    end
+  end
 end

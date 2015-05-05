@@ -24,6 +24,7 @@ module API
       #
       # Parameters:
       #   id (required) - The ID of a project
+      #   iid (optional) - Return the project MR having the given `iid`
       #   state (optional) - Return requests "merged", "opened" or "closed"
       #   order_by (optional) - Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`
       #   sort (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
@@ -36,10 +37,15 @@ module API
       #   GET /projects/:id/merge_requests?order_by=updated_at
       #   GET /projects/:id/merge_requests?sort=desc
       #   GET /projects/:id/merge_requests?sort=asc
+      #   GET /projects/:id/merge_requests?iid=42
       #
       get ":id/merge_requests" do
         authorize! :read_merge_request, user_project
         merge_requests = user_project.merge_requests
+
+        unless params[:iid].nil?
+          merge_requests = filter_by_iid(merge_requests, params[:iid])
+        end
 
         merge_requests =
           case params["state"]
@@ -169,8 +175,8 @@ module API
       # Merge MR
       #
       # Parameters:
-      #   id (required)               - The ID of a project
-      #   merge_request_id (required) - ID of MR
+      #   id (required)                   - The ID of a project
+      #   merge_request_id (required)     - ID of MR
       #   merge_commit_message (optional) - Custom merge commit message
       # Example:
       #   PUT /projects/:id/merge_request/:merge_request_id/merge
@@ -186,7 +192,7 @@ module API
             merge_request.check_if_can_be_merged
           end
 
-          if merge_request.open?
+          if merge_request.open? && !merge_request.work_in_progress?
             if merge_request.can_be_merged?
               merge_request.automerge!(current_user, params[:merge_commit_message] || merge_request.merge_commit_message)
               present merge_request, with: Entities::MergeRequest
@@ -195,7 +201,7 @@ module API
             end
           else
             # Merge request can not be merged
-            # because it is already closed/merged
+            # because it is already closed/merged or marked as WIP
             not_allowed!
           end
         else
@@ -209,7 +215,7 @@ module API
       # Get a merge request's comments
       #
       # Parameters:
-      #   id (required) - The ID of a project
+      #   id (required)               - The ID of a project
       #   merge_request_id (required) - ID of MR
       # Examples:
       #   GET /projects/:id/merge_request/:merge_request_id/comments
@@ -225,9 +231,9 @@ module API
       # Post comment to merge request
       #
       # Parameters:
-      #   id (required) - The ID of a project
+      #   id (required)               - The ID of a project
       #   merge_request_id (required) - ID of MR
-      #   note (required) - Text of comment
+      #   note (required)             - Text of comment
       # Examples:
       #   POST /projects/:id/merge_request/:merge_request_id/comments
       #

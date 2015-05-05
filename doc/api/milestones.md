@@ -6,6 +6,7 @@ Returns a list of project milestones.
 
 ```
 GET /projects/:id/milestones
+GET /projects/:id/milestones?iid=42
 ```
 
 ```json
@@ -27,6 +28,7 @@ GET /projects/:id/milestones
 Parameters:
 
 - `id` (required) - The ID of a project
+- `iid` (optional) - Return the milestone having the given `iid`
 
 ## Get single milestone
 

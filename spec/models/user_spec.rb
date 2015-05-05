@@ -49,11 +49,15 @@
 #  password_automatically_set    :boolean          default(FALSE)
 #  bitbucket_access_token        :string(255)
 #  bitbucket_access_token_secret :string(255)
+#  location                      :string(255)
+#  public_email                  :string(255)      default(""), not null
 #
 
 require 'spec_helper'
 
 describe User do
+  include Gitlab::CurrentSettings
+
   describe "Associations" do
     it { is_expected.to have_one(:namespace) }
     it { is_expected.to have_many(:snippets).class_name('Snippet').dependent(:destroy) }
@@ -111,6 +115,51 @@ describe User do
       it "rejects lol!'+=?><#$%^&*()@gmail.com" do
         user = build(:user, email: "lol!'+=?><#$%^&*()@gmail.com")
         expect(user).to be_invalid
+      end
+
+      context 'when no signup domains listed' do
+        before { allow(current_application_settings).to receive(:restricted_signup_domains).and_return([]) }
+        it 'accepts any email' do
+          user = build(:user, email: "info@example.com")
+          expect(user).to be_valid
+        end
+      end
+
+      context 'when a signup domain is listed and subdomains are allowed' do
+        before { allow(current_application_settings).to receive(:restricted_signup_domains).and_return(['example.com', '*.example.com']) }
+        it 'accepts info@example.com' do
+          user = build(:user, email: "info@example.com")
+          expect(user).to be_valid
+        end
+
+        it 'accepts info@test.example.com' do
+          user = build(:user, email: "info@test.example.com")
+          expect(user).to be_valid
+        end
+
+        it 'rejects example@test.com' do
+          user = build(:user, email: "example@test.com")
+          expect(user).to be_invalid
+        end
+      end
+
+      context 'when a signup domain is listed and subdomains are not allowed' do
+        before { allow(current_application_settings).to receive(:restricted_signup_domains).and_return(['example.com']) }
+
+        it 'accepts info@example.com' do
+          user = build(:user, email: "info@example.com")
+          expect(user).to be_valid
+        end
+
+        it 'rejects info@test.example.com' do
+          user = build(:user, email: "info@test.example.com")
+          expect(user).to be_invalid
+        end
+
+        it 'rejects example@test.com' do
+          user = build(:user, email: "example@test.com")
+          expect(user).to be_invalid
+        end
       end
     end
   end

@@ -1,8 +1,6 @@
-class Explore::ProjectsController < ApplicationController
+class Explore::ProjectsController < Explore::ApplicationController
   skip_before_action :authenticate_user!,
                      :reject_blocked
-
-  layout 'explore'
 
   def index
     @projects = ProjectsFinder.new.execute(current_user)

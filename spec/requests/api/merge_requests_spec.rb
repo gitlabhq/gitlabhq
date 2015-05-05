@@ -115,6 +115,14 @@ describe API::API, api: true  do
       expect(json_response['iid']).to eq(merge_request.iid)
     end
 
+    it 'should return merge_request by iid' do
+      url = "/projects/#{project.id}/merge_requests?iid=#{merge_request.iid}"
+      get api(url, user)
+      response.status.should == 200
+      json_response.first['title'].should == merge_request.title
+      json_response.first['id'].should == merge_request.id
+    end
+
     it "should return a 404 error if merge_request_id not found" do
       get api("/projects/#{project.id}/merge_request/999", user)
       expect(response.status).to eq(404)
@@ -307,6 +315,13 @@ describe API::API, api: true  do
 
     it "should return 405 if merge_request is not open" do
       merge_request.close
+      put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user)
+      expect(response.status).to eq(405)
+      expect(json_response['message']).to eq('405 Method Not Allowed')
+    end
+
+    it "should return 405 if merge_request is a work in progress" do
+      merge_request.update_attribute(:title, "WIP: #{merge_request.title}")
       put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user)
       expect(response.status).to eq(405)
       expect(json_response['message']).to eq('405 Method Not Allowed')

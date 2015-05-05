@@ -1,6 +1,9 @@
 class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
+  include PageLayoutHelper
+  
   before_action :authenticate_user!
-  layout "profile"
+
+  layout 'profile'
 
   def index
     head :forbidden and return

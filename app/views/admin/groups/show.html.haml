@@ -1,3 +1,4 @@
+- page_title @group.name, "Groups"
 %h3.page-title
   Group: #{@group.name}
 
@@ -87,7 +88,7 @@
 
         = form_tag members_update_admin_group_path(@group), id: "new_project_member", class: "bulk_import", method: :put  do
           %div
-            = users_select_tag(:user_ids, multiple: true, email_user: true, skip_ldap: @group.ldap_synced?)
+            = users_select_tag(:user_ids, multiple: true, email_user: true, skip_ldap: @group.ldap_synced?, scope: :all)
           %div.prepend-top-10
             = select_tag :access_level, options_for_select(GroupMember.access_level_roles), class: "project-access-select select2"
           %hr

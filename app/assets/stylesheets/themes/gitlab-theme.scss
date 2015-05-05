@@ -1,19 +1,17 @@
 @mixin gitlab-theme($color-light, $color, $color-darker, $color-dark) {
   header {
     &.navbar-gitlab {
-      .navbar-inner {
-        .app_logo {
-          background-color: $color-darker;
+      .app_logo {
+        background-color: $color-darker;
 
+        a {
+          color: $color-light;
+        }
+
+        &:hover {
+          background-color: $color-dark;
           a {
-            color: $color-light;
-          }
-
-          &:hover {
-            background-color: $color-dark;
-            a {
-              color: #FFF;
-            }
+            color: #FFF;
           }
         }
       }

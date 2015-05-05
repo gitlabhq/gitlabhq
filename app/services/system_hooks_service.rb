@@ -7,12 +7,12 @@ class SystemHooksService
 
   def execute_hooks(data)
     SystemHook.all.each do |sh|
-      async_execute_hook(sh, data, 'system_hooks')
+      async_execute_hook sh, data
     end
   end
 
-  def async_execute_hook(hook, data, hook_name)
-    Sidekiq::Client.enqueue(SystemHookWorker, hook.id, data, hook_name)
+  def async_execute_hook(hook, data)
+    Sidekiq::Client.enqueue(SystemHookWorker, hook.id, data)
   end
 
   def build_event_data(model, event)

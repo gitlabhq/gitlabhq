@@ -2,8 +2,12 @@ module SharedMarkdown
   include Spinach::DSL
 
   def header_should_have_correct_id_and_link(level, text, id, parent = ".wiki")
-    find(:css, "#{parent} h#{level}##{id}").text.should == text
-    find(:css, "#{parent} h#{level}##{id} > :last-child")[:href].should =~ /##{id}$/
+    node = find("#{parent} h#{level} a##{id}")
+    node[:href].should == "##{id}"
+
+    # Work around a weird Capybara behavior where calling `parent` on a node
+    # returns the whole document, not the node's actual parent element
+    find(:xpath, "#{node.path}/..").text.should == text
   end
 
   def create_taskable(type, title)
