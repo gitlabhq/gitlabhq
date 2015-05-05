@@ -99,11 +99,13 @@ GET /projects/:id/issues?labels=foo,bar
 GET /projects/:id/issues?labels=foo,bar&state=opened
 GET /projects/:id/issues?milestone=1.0.0
 GET /projects/:id/issues?milestone=1.0.0&state=opened
+GET /projects/:id/issues?iid=42
 ```
 
 Parameters:
 
 - `id` (required) - The ID of a project
+- `iid` (optional) - Return the issue having the given `iid`
 - `state` (optional) - Return `all` issues or just those that are `opened` or `closed`
 - `labels` (optional) - Comma-separated list of label names
 - `milestone` (optional) - Milestone title

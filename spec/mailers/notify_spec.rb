@@ -11,9 +11,8 @@ describe Notify do
   let(:recipient) { create(:user, email: 'recipient@example.com') }
   let(:project) { create(:project) }
 
-  around(:each) { ActionMailer::Base.deliveries.clear }
-
   before(:each) do
+    ActionMailer::Base.deliveries.clear
     email = recipient.emails.create(email: "notifications@example.com")
     recipient.update_attribute(:notification_email, email.email)
   end

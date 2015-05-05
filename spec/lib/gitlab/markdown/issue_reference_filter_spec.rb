@@ -27,7 +27,7 @@ module Gitlab::Markdown
       let(:reference) { "##{issue.iid}" }
 
       it 'ignores valid references when using non-default tracker' do
-        expect(project).to receive(:issue_exists?).with(issue.iid).and_return(false)
+        expect(project).to receive(:get_issue).with(issue.iid).and_return(nil)
 
         exp = act = "Issue ##{issue.iid}"
         expect(filter(act).to_html).to eq exp
@@ -48,7 +48,7 @@ module Gitlab::Markdown
       it 'ignores invalid issue IDs' do
         exp = act = "Fixed ##{issue.iid + 1}"
 
-        expect(project).to receive(:issue_exists?).with(issue.iid + 1)
+        expect(project).to receive(:get_issue).with(issue.iid + 1).and_return(nil)
         expect(filter(act).to_html).to eq exp
       end
 
@@ -98,8 +98,8 @@ module Gitlab::Markdown
         before { allow_cross_reference! }
 
         it 'ignores valid references when cross-reference project uses external tracker' do
-          expect_any_instance_of(Project).to receive(:issue_exists?).
-            with(issue.iid).and_return(false)
+          expect_any_instance_of(Project).to receive(:get_issue).
+            with(issue.iid).and_return(nil)
 
           exp = act = "Issue ##{issue.iid}"
           expect(filter(act).to_html).to eq exp

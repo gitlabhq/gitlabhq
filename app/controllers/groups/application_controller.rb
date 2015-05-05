@@ -1,4 +1,5 @@
 class Groups::ApplicationController < ApplicationController
+  layout 'group'
 
   private
 
@@ -20,13 +21,5 @@ class Groups::ApplicationController < ApplicationController
 
   def group
     @group ||= Group.find_by(path: params[:group_id])
-  end
-
-  def determine_layout
-    if current_user
-      'group'
-    else
-      'public_group'
-    end
   end
 end

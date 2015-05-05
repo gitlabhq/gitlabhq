@@ -1,7 +1,6 @@
 class UsersController < ApplicationController
   skip_before_action :authenticate_user!
   before_action :set_user
-  layout :determine_layout
 
   def show
     @contributed_projects = contributed_projects.joined(@user).
@@ -12,9 +11,6 @@ class UsersController < ApplicationController
 
     # Collect only groups common for both users
     @groups = @user.groups & GroupsFinder.new.execute(current_user)
-
-    @title = @user.name
-    @title_url = user_path(@user)
 
     respond_to do |format|
       format.html
@@ -49,14 +45,6 @@ class UsersController < ApplicationController
     end
 
     render 'calendar_activities', layout: false
-  end
-
-  def determine_layout
-    if current_user
-      'navless'
-    else
-      'public_users'
-    end
   end
 
   private

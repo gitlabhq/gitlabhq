@@ -107,8 +107,7 @@ describe GitlabMarkdownHelper do
       end
 
       it 'should not be confused by whitespace before bullets' do
-        rendered_text_asterisk = markdown(@source_text_asterisk,
-                                          parse_tasks: true)
+        rendered_text_asterisk = markdown(@source_text_asterisk, parse_tasks: true)
         rendered_text_dash = markdown(@source_text_dash, parse_tasks: true)
 
         expect(rendered_text_asterisk).to match(
@@ -207,78 +206,7 @@ describe GitlabMarkdownHelper do
   end
 
   describe "#markdown" do
-    # TODO (rspeicher) - This block tests multiple different contexts. Break this up!
-
-    it "should add ids and links to headers" do
-      # Test every rule except nested tags.
-      text = '..Ab_c-d. e..'
-      id = 'ab_c-d-e'
-      expect(markdown("# #{text}")).
-        to match(%r{<h1 id="#{id}">#{text}<a href="[^"]*##{id}"></a></h1>})
-      expect(markdown("# #{text}", {no_header_anchors:true})).
-      to eq("<h1>#{text}</h1>")
-
-      id = 'link-text'
-      expect(markdown("# [link text](url) ![img alt](url)")).to match(
-        %r{<h1 id="#{id}"><a href="[^"]*url">link text</a> <img[^>]*><a href="[^"]*##{id}"></a></h1>}
-      )
-    end
-
-    # REFERENCES (PART TWO: THE REVENGE) ---------------------------------------
-
-    it "should handle references in headers" do
-      actual = "\n# Working around ##{issue.iid}\n## Apply !#{merge_request.iid}"
-
-      expect(markdown(actual, no_header_anchors: true)).
-        to match(%r{<h1[^<]*>Working around <a.+>##{issue.iid}</a></h1>})
-      expect(markdown(actual, no_header_anchors: true)).
-        to match(%r{<h2[^<]*>Apply <a.+>!#{merge_request.iid}</a></h2>})
-    end
-
-    it "should handle references in <em>" do
-      actual = "Apply _!#{merge_request.iid}_ ASAP"
-
-      expect(markdown(actual)).
-        to match(%r{Apply <em><a.+>!#{merge_request.iid}</a></em>})
-    end
-
-    # CODE BLOCKS -------------------------------------------------------------
-
-    it "should leave code blocks untouched" do
-      allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:user_color_scheme_class).and_return(:white)
-
-      target_html = "<pre class=\"code highlight white plaintext\"><code>some code from $#{snippet.id}\nhere too\n</code></pre>\n"
-
-      expect(markdown("\n    some code from $#{snippet.id}\n    here too\n")).
-        to eq(target_html)
-      expect(markdown("\n```\nsome code from $#{snippet.id}\nhere too\n```\n")).
-        to eq(target_html)
-    end
-
-    it "should leave inline code untouched" do
-      expect(markdown("Don't use `$#{snippet.id}` here.")).
-        to eq "<p>Don't use <code>$#{snippet.id}</code> here.</p>\n"
-    end
-
-    # REF-LIKE AUTOLINKS? -----------------------------------------------------
-    # Basically: Don't parse references inside `<a>` tags.
-
-    it "should leave ref-like autolinks untouched" do
-      expect(markdown("look at http://example.tld/#!#{merge_request.iid}")).to eq("<p>look at <a href=\"http://example.tld/#!#{merge_request.iid}\">http://example.tld/#!#{merge_request.iid}</a></p>\n")
-    end
-
-    it "should leave ref-like href of 'manual' links untouched" do
-      expect(markdown("why not [inspect !#{merge_request.iid}](http://example.tld/#!#{merge_request.iid})")).to eq("<p>why not <a href=\"http://example.tld/#!#{merge_request.iid}\">inspect </a><a href=\"#{namespace_project_merge_request_path(project.namespace, project, merge_request)}\" title=\"Merge Request: #{merge_request.title}\" class=\"gfm gfm-merge_request\">!#{merge_request.iid}</a><a href=\"http://example.tld/#!#{merge_request.iid}\"></a></p>\n")
-    end
-
-    it "should leave ref-like src of images untouched" do
-      expect(markdown("screen shot: ![some image](http://example.tld/#!#{merge_request.iid})")).to eq("<p>screen shot: <img src=\"http://example.tld/#!#{merge_request.iid}\" alt=\"some image\"></p>\n")
-    end
-
-    # RELATIVE URLS -----------------------------------------------------------
     # TODO (rspeicher): These belong in a relative link filter spec
-
     context 'relative links' do
       context 'with a valid repository' do
         before do
@@ -333,11 +261,6 @@ describe GitlabMarkdownHelper do
           expected = ""
           expect(markdown(actual)).to match(expected)
         end
-
-        it 'should allow whitelisted HTML tags from the user' do
-          actual = '<dl><dt>Term</dt><dd>Definition</dd></dl>'
-          expect(markdown(actual)).to match(actual)
-        end
       end
 
       context 'with an empty repository' do
@@ -352,34 +275,6 @@ describe GitlabMarkdownHelper do
           expect(markdown(actual)).to match(expected)
         end
       end
-    end
-
-    # SANITIZATION ------------------------------------------------------------
-    # TODO (rspeicher): These are testing SanitizationFilter, not `markdown`
-
-    it 'should sanitize tags that are not whitelisted' do
-      actual = '<textarea>no inputs allowed</textarea> <blink>no blinks</blink>'
-      expected = 'no inputs allowed no blinks'
-      expect(markdown(actual)).to match(expected)
-      expect(markdown(actual)).not_to match('<.textarea>')
-      expect(markdown(actual)).not_to match('<.blink>')
-    end
-
-    it 'should allow whitelisted tag attributes from the user' do
-      actual = '<a class="custom">link text</a>'
-      expect(markdown(actual)).to match(actual)
-    end
-
-    it 'should sanitize tag attributes that are not whitelisted' do
-      actual = '<a href="http://example.com/bar.html" foo="bar">link text</a>'
-      expected = '<a href="http://example.com/bar.html">link text</a>'
-      expect(markdown(actual)).to match(expected)
-    end
-
-    it 'should sanitize javascript in attributes' do
-      actual = %q(<a href="javascript:alert('foo')">link text</a>)
-      expected = '<a>link text</a>'
-      expect(markdown(actual)).to match(expected)
     end
   end
 

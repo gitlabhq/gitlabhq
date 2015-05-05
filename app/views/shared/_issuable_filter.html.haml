@@ -15,7 +15,7 @@
           #{state_filters_text_for(:all, @project)}
 
   .issues-details-filters
-    = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_id, :label_name]), method: :get, class: 'filter-form' do
+    = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name]), method: :get, class: 'filter-form' do
       - if controller.controller_name == 'issues'
         .check-all-holder
           = check_box_tag "check_all_issues", nil, false,
@@ -31,7 +31,7 @@
             placeholder: 'Author', class: 'trigger-submit', any_user: true, first_user: true)
 
         .filter-item.inline.milestone-filter
-          = select_tag('milestone_id', projects_milestones_options, class: "select2 trigger-submit", prompt: 'Milestone')
+          = select_tag('milestone_title', projects_milestones_options, class: "select2 trigger-submit", prompt: 'Milestone')
 
         - if @project
           .filter-item.inline.labels-filter

@@ -2,8 +2,8 @@ module SubmoduleHelper
   include Gitlab::ShellAdapter
 
   # links to files listing for submodule if submodule is a project on this server
-  def submodule_links(submodule_item, ref = nil)
-    url = @repository.submodule_url_for(ref, submodule_item.path)
+  def submodule_links(submodule_item, ref = nil, repository = @repository)
+    url = repository.submodule_url_for(ref, submodule_item.path)
 
     return url, nil unless url =~ /([^\/:]+)\/([^\/]+\.git)\Z/
 
@@ -63,7 +63,7 @@ module SubmoduleHelper
     namespace = components.pop.gsub(/^\.\.$/, '')
 
     if namespace.empty?
-      namespace = @project.group.path
+      namespace = @project.namespace.name
     end
 
     [

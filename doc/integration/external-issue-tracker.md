@@ -36,4 +36,9 @@ In GitLab Admin section, navigate to `Service Templates` and choose the service 
 
 After the template is created, the template details will be pre-filled on the project service page.
 
+NOTE: For each project, you will still need to configure the issue tracking URLs by replacing `:issues_tracker_id` in the above screenshot
+with the ID used by your external issue tracker. Prior to GitLab v7.8, this ID was configured in the project settings, and GitLab would automatically
+update the URL configured in `gitlab.yml`. This behavior is now depecated, and all issue tracker URLs must be configured directly
+within the project's Services settings.
+
 Support to add your commits to the Jira ticket automatically is [available in GitLab EE](http://doc.gitlab.com/ee/integration/jira.html).

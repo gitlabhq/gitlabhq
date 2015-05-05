@@ -3,16 +3,19 @@ What is GitLab?
 
 GitLab offers git repository management, code reviews, issue tracking, activity feeds, wikis. It has LDAP/AD integration, handles 25,000 users on a single server but can also run on a highly available active/active cluster. A subscription gives you access to our support team and to GitLab Enterprise Edition that contains extra features aimed at larger organizations.
 
-<https://about.gitlab.com>
-
-![GitLab Logo](https://gitlab.com/uploads/appearance/logo/1/brand_logo-c37eb221b456bb4b472cc1084480991f.png)
+Learn more on [https://about.gitlab.com](https://about.gitlab.com)
 
 
-How to use these images
+How to build and use images yourself
 ======================
 
-At this moment GitLab doesn't have official Docker images. For convinience we will use suffix _xy where xy is current version of GitLab.
-Build your own based on the Omnibus packages with the following commands (it assumes you're in the GitLab repo root directory):
+At this moment GitLab doesn't have official Docker images.
+There are unofficial images at the bottom of this document.
+But in this section we'll build our own.
+For convinience we will use suffix _xy where xy is current version of GitLab.
+Build your own based on the Omnibus packages with the following commands.
+Run these from the GitLab repo root directory.
+People using boot2docker should run it without sudo.
 
 ```bash
 sudo docker build --tag gitlab_data_image docker/data/
@@ -42,10 +45,10 @@ sudo docker run --detach --name gitlab_app_xy --publish 8080:80 --publish 2222:2
 
 It might take a while before the docker container is responding to queries. You can follow the configuration process with `sudo docker logs -f gitlab_app_xy`.
 
-You can then go to `http://localhost:8080/` (or `http://192.168.59.103:8080/` if you use boot2docker).
+You can then go to [http://localhost:8080/](http://localhost:8080/) or [http://192.168.59.103:8080/](http://192.168.59.103:8080/) if you use boot2docker.
+
 You can login with username `root` and password `5iveL!fe`.
 Next time, you can just use `sudo docker start gitlab_app` and `sudo docker stop gitlab_app`.
-
 
 How to configure GitLab
 ========================
@@ -55,7 +58,7 @@ This container uses the official Omnibus GitLab distribution, so all configurati
 To access GitLab configuration, you can start an interactive command line in a new container using the shared data volume container, you will be able to browse the 3 directories and use your favorite text editor:
 
 ```bash
-sudo docker run -ti -e TERM=linux --rm --volumes-from gitlab_data ubuntu 
+sudo docker run -ti -e TERM=linux --rm --volumes-from gitlab_data ubuntu
 vi /etc/gitlab/gitlab.rb
 ```
 
@@ -86,3 +89,26 @@ sudo docker rmi gitlab_app_image_78
 Troubleshooting
 =========================
 Please see the [troubleshooting](troubleshooting.md) file in this directory.
+
+
+Publish the images to Dockerhub
+=========================
+Login to Dockerhub with `sudo docker login` and run the following (replace '7.9.2' with the version you're using and 'Sytse Sijbrandij' with your name):
+
+```bash
+sudo docker commit -m "Initial commit" -a "Sytse Sijbrandij" gitlab_app_xy sytse/gitlab-ce:7.9.2
+sudo docker push sytse/gitlab-ce:7.9.2
+sudo docker commit -m "Initial commit" -a "Sytse Sijbrandij" gitlab_data sytse/gitlab_data
+sudo docker push sytse/gitlab_data
+```
+
+Use images published to Dockerhub
+================================
+This examples uses the unofficial images made by GitLab CEO Sytse.
+
+```bash
+sudo docker pull sytse/gitlab_data
+sudo docker pull sytse/gitlab-ce:7.9.2
+sudo docker run --name gitlab_data_volume sytse/gitlab_data /bin/true
+sudo docker run --detach --name gitlab_app_7_9_2 --publish 8080:80 --publish 2222:22 --volumes-from gitlab_data_volume sytse/gitlab-ce:7.9.2
+```

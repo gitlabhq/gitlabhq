@@ -43,7 +43,7 @@ describe IssuesFinder do
       end
 
       it 'should filter by milestone id' do
-        params = { scope: "all", milestone_id: milestone.id, state: 'opened' }
+        params = { scope: "all", milestone_title: milestone.title, state: 'opened' }
         issues = IssuesFinder.new.execute(user, params)
         expect(issues).to eq([issue1])
       end

@@ -1,8 +1,12 @@
 class SearchController < ApplicationController
   include SearchHelper
 
+  layout 'search'
+
   def show
     return if params[:search].nil? || params[:search].blank?
+
+    @search_term = params[:search]
 
     if params[:project_id].present?
       @project = Project.find_by(id: params[:project_id])
@@ -10,14 +14,14 @@ class SearchController < ApplicationController
     end
 
     if params[:group_id].present?
-      @group = Group.find_by(id: params[:group_id]) 
+      @group = Group.find_by(id: params[:group_id])
       @group = nil unless can?(current_user, :read_group, @group)
     end
-    
+
     @scope = params[:scope]
     @show_snippets = params[:snippets].eql? 'true'
 
-    @search_results = 
+    @search_results =
       if @project
         unless %w(blobs notes issues merge_requests wiki_blobs).
           include?(@scope)
@@ -37,6 +41,7 @@ class SearchController < ApplicationController
         end
         Search::GlobalService.new(current_user, params).execute
       end
+
     @objects = @search_results.objects(@scope, params[:page])
   end
 

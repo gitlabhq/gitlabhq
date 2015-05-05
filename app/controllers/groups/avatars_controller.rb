@@ -1,6 +1,4 @@
 class Groups::AvatarsController < ApplicationController
-  layout "profile"
-
   def destroy
     @group = Group.find_by(path: params[:group_id])
     @group.remove_avatar!

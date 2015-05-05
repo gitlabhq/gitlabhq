@@ -1,9 +1,12 @@
+- page_title    @user.name
+- header_title  @user.name, user_path(@user)
+
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")
 
+= render 'shared/show_aside'
+
 .row
-  = link_to '#aside', class: 'show-aside' do
-    %i.fa.fa-angle-left
   %section.col-md-8
     .header-with-avatar
       = image_tag avatar_icon(@user.email, 90), class: "avatar avatar-tile s90", alt: ''
