@@ -14,7 +14,7 @@ v 7.11.0 (unreleased)
   - Redirect to sign in page after signing out.
   - Fix "Hello @username." references not working by no longer allowing usernames to end in period.
   - Fix "Revspec not found" errors when viewing diffs in a forked project with submodules (Stan Hu)
-  -
+  - Improve project page UI
   - Fix broken file browsing with relative submodule in personal projects (Stan Hu)
   - Fix DB error when trying to tag a repository (Stan Hu)
   - Add "Reply quoting selected text" shortcut key (`r`)
