@@ -79,13 +79,6 @@ class License < ActiveRecord::Base
     else
       super
     end
-    (license && license.respond_to?(method_name)) || super
-  end
-
-  def active_user_restriction_exceeded?
-    return false unless self.restricted?(:active_user_count)
-
-    User.active.count > self.restrictions[:active_user_count]
   end
 
   private
