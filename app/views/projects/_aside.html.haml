@@ -64,15 +64,15 @@
       .pull-right
         = link_to version_url(@project) do
           = @repository.blob_by_oid(version.id).data
-.well
-  %h4
-    CI
-    .pull-right
-      - @project.ci_services.each do |ci_service|
-        - if ci_service.active? && ci_service.respond_to?(:builds_path)
+
+- @project.ci_services.each do |ci_service|
+  - if ci_service.active? && ci_service.respond_to?(:builds_path)
+    .well
+      %h4
+        = ci_service.title
+        .pull-right
           - if ci_service.respond_to?(:status_img_path)
             = link_to ci_service.builds_path, :'data-no-turbolink' => 'data-no-turbolink' do
               = image_tag ci_service.status_img_path, alt: "build status"
           - else
-            %span.light CI provided by
-            = link_to ci_service.title, ci_service.builds_path, :'data-no-turbolink' => 'data-no-turbolink'
+            = link_to 'view builds', ci_service.builds_path, :'data-no-turbolink' => 'data-no-turbolink'
