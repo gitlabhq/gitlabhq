@@ -1,7 +1,8 @@
+- # page_title "Upload License"
 %h3.page-title Upload License
 
 %p.light
-  To #{License.current ? "continue" : "start"} using GitLab Enterprise Edition, upload the <code>.gitlab-license</code> file you have received from GitLab B.V.
+  To #{License.current ? "continue" : "start"} using GitLab Enterprise Edition, upload the <code>.gitlab-license</code> file you have received from GitLab B.V..
 
 %hr
 = form_for @license, url: admin_license_path, html: { multipart: true, class: 'form-horizontal fieldset-form' } do |f|
