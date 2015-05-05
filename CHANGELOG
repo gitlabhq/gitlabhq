@@ -27,6 +27,9 @@ v 7.10.0 (unreleased)
   - Improve UI for mobile phones on dashboard and project pages
   - Add room notification and message color option for HipChat
 
+v 7.10.2
+  - Fix CI links on MR page
+
 v 7.10.0
   - Ignore submodules that are defined in .gitmodules but are checked in as directories.
   - Allow projects to be imported from Google Code.
