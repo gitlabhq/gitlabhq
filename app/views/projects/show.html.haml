@@ -7,50 +7,30 @@
   = render 'shared/no_password'
 
 = render "home_panel"
-%ul.nav.nav-tabs
-  %li.active
-    = link_to '#tab-activity', 'data-toggle' => 'tab' do
-      Activity
-  - if @repository.readme
-    %li
-      = link_to '#tab-readme', 'data-toggle' => 'tab' do
-        Readme
-  - if @repository.changelog
-    %li.hidden-xs
-      = link_to changelog_url(@project) do
-        Changelog
-  - if @repository.contribution_guide
-    %li.hidden-xs
-      = link_to contribution_guide_url(@project) do
-        Contribution guide
-  - if @repository.license
-    %li
-      = link_to license_url(@project) do
-        License
+- if @repository.changelog
+  %li.hidden-xs
+    = link_to changelog_url(@project) do
+      Changelog
+- if @repository.contribution_guide
+  %li.hidden-xs
+    = link_to contribution_guide_url(@project) do
+      Contribution guide
+- if @repository.license
+  %li
+    = link_to license_url(@project) do
+      License
 
-  .project-home-links
-    - unless @project.empty_repo?
-      = link_to pluralize(number_with_delimiter(@repository.commit_count), 'commit'), namespace_project_commits_path(@project.namespace, @project, @ref || @repository.root_ref)
-      = link_to pluralize(number_with_delimiter(@repository.branch_names.count), 'branch'), namespace_project_branches_path(@project.namespace, @project)
-      = link_to pluralize(number_with_delimiter(@repository.tag_names.count), 'tag'), namespace_project_tags_path(@project.namespace, @project)
-      %span.light.prepend-left-20= repository_size
+.project-home-links
+  - unless @project.empty_repo?
+    = link_to pluralize(number_with_delimiter(@repository.commit_count), 'commit'), namespace_project_commits_path(@project.namespace, @project, @ref || @repository.root_ref)
+    = link_to pluralize(number_with_delimiter(@repository.branch_names.count), 'branch'), namespace_project_branches_path(@project.namespace, @project)
+    = link_to pluralize(number_with_delimiter(@repository.tag_names.count), 'tag'), namespace_project_tags_path(@project.namespace, @project)
+    %span.light.prepend-left-20= repository_size
 
-.tab-content
-  .tab-pane.active#tab-activity
-    = render 'shared/show_aside'
+= render 'shared/show_aside'
 
-    .row
-      %section.col-md-9
-        = render 'section'
-      %aside.col-md-3.project-side
-        = render 'aside'
-
-  - if readme = @repository.readme
-    .tab-pane#tab-readme
-      %article.readme-holder#README
-        = link_to namespace_project_blob_path(@project.namespace, @project, tree_join(@repository.root_ref, readme.name)) do
-          %h4.readme-file-title
-            %i.fa.fa-file
-            = readme.name
-        .wiki
-          = render_readme(readme)
+.row
+  %section.col-md-8
+    = render 'section'
+  %aside.col-md-4.project-side
+    = render 'aside'
