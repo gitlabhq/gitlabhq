@@ -29,7 +29,7 @@ class Admin::LicensesController < Admin::ApplicationController
 
     respond_with(@license, location: admin_license_path) do
       if @license.save
-        flash[:notice] = "The license was successfully uploaded. You can see the details below."
+        flash[:notice] = "The license was successfully uploaded and is now active. You can see the details below."
       end
     end
   end
@@ -37,7 +37,14 @@ class Admin::LicensesController < Admin::ApplicationController
   def destroy
     license.destroy
 
-    redirect_to admin_license_path, notice: "The license was removed."
+    message = "The license was removed. "
+    if License.current
+      flash[:notice] = "The license was removed. GitLab has fallen back on the previous license."
+    else
+      flash[:alert] = "The license was removed. GitLab now no longer has a valid license."
+    end
+
+    redirect_to admin_license_path
   end
 
   private
@@ -52,6 +59,7 @@ class Admin::LicensesController < Admin::ApplicationController
   def require_license
     return if license
 
+    flash.keep
     redirect_to new_admin_license_path
   end
 
