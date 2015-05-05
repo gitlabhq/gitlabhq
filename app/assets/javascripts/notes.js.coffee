@@ -1,3 +1,11 @@
+#= require autosave
+#= require bootstrap
+#= require dropzone
+#= require dropzone_input
+#= require gfm_auto_complete
+#= require jquery.atwho
+#= require task_list
+
 class @Notes
   @interval: null
 
@@ -487,12 +495,12 @@ class @Notes
       form.find('.js-note-target-reopen').text('Reopen')
       form.find('.js-note-target-close').text('Close')
 
-  enableTaskList: ->
-    $('.note .js-task-list-container').taskList('enable')
-
   initTaskList: ->
     @enableTaskList()
     $(document).on 'tasklist:changed', '.note .js-task-list-container', @updateTaskList
+
+  enableTaskList: ->
+    $('.note .js-task-list-container').taskList('enable')
 
   updateTaskList: ->
     $('form', this).submit()
