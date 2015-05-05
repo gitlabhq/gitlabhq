@@ -203,10 +203,15 @@ ul.nav.nav-projects-tabs {
   .well {
     h4 {
       font-weight: normal;
+      margin: 0;
     }
 
     .nav-pills a {
       padding: 10px;
+    }
+
+    .nav {
+      margin: 10px 0;
     }
   }
 }

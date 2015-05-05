@@ -10,14 +10,14 @@
         %li= link_to pluralize(number_with_delimiter(@repository.branch_names.count), 'branch'), namespace_project_branches_path(@project.namespace, @project)
         %li= link_to pluralize(number_with_delimiter(@repository.tag_names.count), 'tag'), namespace_project_tags_path(@project.namespace, @project)
 
-      %hr
-      = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-sm' do
-        %i.fa.fa-exchange
-        Compare code
+      .actions
+        = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-sm' do
+          %i.fa.fa-exchange
+          Compare code
 
-      - if can?(current_user, :download_code, @project)
-        &nbsp;
-        = render 'projects/repositories/download_archive', split_button: true, btn_class: 'btn-group-sm'
+        - if can?(current_user, :download_code, @project)
+          &nbsp;
+          = render 'projects/repositories/download_archive', split_button: true, btn_class: 'btn-group-sm'
 
   - unless @project.empty_repo?
     .well
@@ -35,10 +35,10 @@
           %li
             = link_to license_url(@project) do
               License
-      %hr
-      = link_to url_for_new_issue(@project, only_path: true), title: "New Issue", class: 'btn btn-sm' do
-        %i.fa.fa-fw.fa-exclamation-circle
-        New issue
+      .actions
+        = link_to url_for_new_issue(@project, only_path: true), title: "New Issue", class: 'btn btn-sm' do
+          %i.fa.fa-fw.fa-exclamation-circle
+          New issue
 
 
 
