@@ -68,7 +68,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
 
   step 'I should see project "Shop" version' do
     within '.project-side' do
-      page.should have_content 'Version: 6.7.0.pre'
+      page.should have_content '6.7.0.pre'
     end
   end
 
