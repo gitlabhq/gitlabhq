@@ -17,31 +17,25 @@
 .project-home-panel {
   margin-bottom: 20px;
   position: relative;
-  padding-left: 85px;
-
-  &.empty-project {
-    border-bottom: 0px;
-    padding-bottom: 15px;
-    margin-bottom: 0px;
-  }
+  padding-left: 65px;
+  border-bottom: 1px solid #DDD;
+  padding-bottom: 10px;
+  padding-top: 5px;
+  min-height: 50px;
 
   .project-identicon-holder {
     position: absolute;
     left: 0;
-    top: -20px;
+    top: -10px;
 
     .avatar {
-      width: 60px;
-      height: 60px;
+      width: 50px;
+      height: 50px;
     }
 
     .identicon {
-      font-size: 28px;
-      line-height: 60px;
-    }
-
-    .avatar, .identicon {
-      box-shadow: 0 1px 2px #ddd;
+      font-size: 26px;
+      line-height: 50px;
     }
   }
 
@@ -199,49 +193,21 @@ ul.nav.nav-projects-tabs {
 }
 
 .project-side {
-  .btn-block {
-    background-image: none;
-
-    .btn, &.btn {
-      white-space: normal;
-      text-align: left;
-      padding: 10px 15px;
-
-      &.dropdown-toggle {
-        text-align: center;
-      }
-
-      &:hover {
-        background-color: #eee;
-        border-color: #DDD;
-      }
-    }
-
-    .count {
-      float: right;
-      font-weight: 500;
-      text-shadow: 0 1px #FFF;
-    }
-
-    &.btn-group-justified {
-      .btn {
-        width: 100%;
-      }
-      .dropdown-toggle {
-        width: 30px;
-        padding: 10px;
-      }
-      ul {
-        width: 100%;
-      }
-    }
-  }
-
   .project-fork-icon {
     float: left;
     font-size: 26px;
     margin-right: 10px;
     line-height: 1.5;
+  }
+
+  .well {
+    h4 {
+      font-weight: normal;
+    }
+
+    .nav-pills a {
+      padding: 10px;
+    }
   }
 }
 
@@ -311,14 +277,4 @@ table.table.protected-branches-list tr.no-border {
 .project-import .btn {
   float: left;
   margin-right: 10px;
-}
-
-.project-home-dropdown {
-  margin-top: 8px;
-
-  a {
-    padding: 4px 10px;
-    color: #888;
-    border-color: #ddd;
-  }
 }
