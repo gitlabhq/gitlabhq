@@ -48,7 +48,12 @@ class License < ActiveRecord::Base
   def license
     return nil unless self.data
 
-    @license ||= Gitlab::License.import(self.data)
+    @license ||= 
+      begin
+        Gitlab::License.import(self.data)
+      rescue Gitlab::License::ImportError
+        nil
+      end
   end
 
   def license?
@@ -95,8 +100,7 @@ class License < ActiveRecord::Base
   def valid_license
     return if license?
 
-    # TODO: Clearer message
-    self.errors.add(:license, "is invalid.")
+    self.errors.add(:base, "The license file is invalid. Make sure it is exactly as you received it from GitLab B.V.")
   end
 
   def active_user_count
@@ -107,6 +111,8 @@ class License < ActiveRecord::Base
 
     return if active_user_count <= restricted_user_count
 
-    self.errors.add(:base, "This license allows #{restricted_user_count} active users. This GitLab installation currently has #{active_user_count}, i.e. #{active_user_count - restricted_user_count} too many.")
+    message = "This license allows #{restricted_user_count} active users. "
+    message << "This GitLab installation currently has #{active_user_count}, i.e. #{active_user_count - restricted_user_count} too many."
+    self.errors.add(:base, message)
   end
 end

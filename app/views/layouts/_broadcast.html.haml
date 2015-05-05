@@ -3,7 +3,7 @@
     = icon('bullhorn')
     = broadcast_message.message
 
-- if (message = license_message) && message.present?
+- if license_message.present?
   .broadcast-message
     = icon('bullhorn')
-    = message
+    = license_message

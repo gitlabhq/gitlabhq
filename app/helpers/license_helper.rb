@@ -1,10 +1,11 @@
 module LicenseHelper
   def license_message(signed_in: signed_in?, is_admin: (current_user && current_user.is_admin?))
-    if License.current
-      yes_license_message(signed_in, is_admin)
-    else
-      no_license_message(signed_in, is_admin)
-    end
+    @license_message ||=
+      if License.current
+        yes_license_message(signed_in, is_admin)
+      else
+        no_license_message(signed_in, is_admin)
+      end
   end
 
   private
