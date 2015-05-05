@@ -142,15 +142,14 @@ v 7.9.4
   - Fixed issue where only 25 commits would load in file listings
   - Fix LDAP identities  after config update
 
-v 7.9.3
-  - Contains no changes
+v 7.9.3 (GitLab-EE)
   - Add icons to Add dropdown items.
   - Allow admin to create public deploy keys that are accessible to any project.
   - Warn when gitlab-shell version doesn't match requirement.
   - Skip email confirmation when set by admin or via LDAP.
   - Only allow users to reference groups, projects, issues, MRs, commits they have access to.
 
-v 7.9.3
+v 7.9.3 (GitLab-CE, Gitlab-CI)
   - Contains no changes
 
 v 7.9.2
