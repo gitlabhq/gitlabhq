@@ -51,8 +51,6 @@
           = button_tag "Update issues", class: "btn update_selected_issues btn-save"
 
 :coffeescript
-  new UsersSelect()
-
   $('form.filter-form').on 'submit', (event) ->
     event.preventDefault()
     Turbolinks.visit @.action + '&' + $(@).serialize()
