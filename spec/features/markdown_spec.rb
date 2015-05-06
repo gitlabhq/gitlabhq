@@ -161,6 +161,19 @@ describe 'GitLab Markdown' do
       end
     end
 
+    describe 'Edge Cases' do
+      it 'allows markup inside link elements' do
+        expect(@doc.at_css('a[href="#link-emphasis"]').to_html).
+          to eq %{<a href="#link-emphasis"><em>text</em></a>}
+
+        expect(@doc.at_css('a[href="#link-strong"]').to_html).
+          to eq %{<a href="#link-strong"><strong>text</strong></a>}
+
+        expect(@doc.at_css('a[href="#link-code"]').to_html).
+          to eq %{<a href="#link-code"><code>text</code></a>}
+      end
+    end
+
     describe 'EmojiFilter' do
       it 'parses Emoji' do
         expect(@doc).to have_selector('img.emoji', count: 10)
