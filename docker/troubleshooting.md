@@ -62,6 +62,8 @@ free -m
 
 ```
 
+# Cleanup
+
 Remove ALL docker containers and images (also non GitLab ones):
 
 ```

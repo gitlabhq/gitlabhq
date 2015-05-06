@@ -55,9 +55,7 @@ sudo docker run --detach --name gitlab-ce --publish 8080:80 --publish 2222:22 sy
 Troubleshoot with:
 
 ```
-sudo docker run -ti -e TERM=linux --name gitlab-ce --publish 8080:80 --publish 2222:22 sytse/gitlab-ce:7.10.1 bash
-/opt/gitlab/embedded/bin/runsvdir-start & gitlab-ctl reconfigure
-gitlab-ctl start
+sudo docker run -ti -e TERM=linux --name gitlab-ce-troubleshoot --publish 8080:80 --publish 2222:22 sytse/gitlab-ce:7.10.1 bash /usr/local/bin/wrapper
 ```
 
 Build and use app and data images
