@@ -5,5 +5,5 @@ if Rails.env.development?
   Rack::MiniProfilerRails.initialize!(Rails.application)
   Rack::MiniProfiler.config.position = 'right'
   Rack::MiniProfiler.config.start_hidden = true
-  Rack::MiniProfiler.config.skip_paths << '/specs'
+  Rack::MiniProfiler.config.skip_paths << %w(/specs /teaspoon)
 end

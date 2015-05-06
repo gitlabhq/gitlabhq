@@ -300,12 +300,6 @@ GEM
     i18n (0.7.0)
     ice_cube (0.11.1)
     ice_nine (0.10.0)
-    jasmine-core (2.2.0)
-    jasmine-rails (0.10.8)
-      jasmine-core (>= 1.3, < 3.0)
-      phantomjs (>= 1.9)
-      railties (>= 3.2.0)
-      sprockets-rails
     jquery-atwho-rails (1.0.1)
     jquery-rails (3.1.0)
       railties (>= 3.0, < 5.0)
@@ -400,7 +394,6 @@ GEM
     parser (2.2.0.2)
       ast (>= 1.1, < 3.0)
     pg (0.15.1)
-    phantomjs (1.9.8.0)
     poltergeist (1.5.1)
       capybara (~> 2.1)
       cliver (~> 0.3.1)
@@ -594,6 +587,8 @@ GEM
       spring (>= 0.9.1)
     spring-commands-spinach (1.0.0)
       spring (>= 0.9.1)
+    spring-commands-teaspoon (0.0.2)
+      spring (>= 0.9.1)
     sprockets (2.11.0)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -608,6 +603,10 @@ GEM
     stringex (2.5.2)
     task_list (1.0.2)
       html-pipeline
+    teaspoon (1.0.2)
+      railties (>= 3.2.5, < 5)
+    teaspoon-jasmine (2.2.0)
+      teaspoon (>= 1.0.0)
     temple (0.6.7)
     term-ansicolor (1.2.2)
       tins (~> 0.8)
@@ -737,7 +736,6 @@ DEPENDENCIES
   hipchat (~> 1.5.0)
   html-pipeline (~> 1.11.0)
   httparty
-  jasmine-rails
   jquery-atwho-rails (~> 1.0.0)
   jquery-rails
   jquery-scrollto-rails
@@ -798,11 +796,14 @@ DEPENDENCIES
   slim
   spinach-rails
   spring (~> 1.3.1)
-  spring-commands-rspec (= 1.0.4)
-  spring-commands-spinach (= 1.0.0)
+  spring-commands-rspec (~> 1.0.0)
+  spring-commands-spinach (~> 1.0.0)
+  spring-commands-teaspoon (~> 0.0.2)
   stamp
   state_machine
   task_list (= 1.0.2)
+  teaspoon (~> 1.0.0)
+  teaspoon-jasmine
   test_after_commit
   thin
   tinder (~> 1.9.2)
