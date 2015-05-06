@@ -1,3 +1,5 @@
+#= require jquery.waitforimages
+
 class @Issue
   constructor: ->
     $('.edit-issue.inline-update input[type="submit"]').hide()
