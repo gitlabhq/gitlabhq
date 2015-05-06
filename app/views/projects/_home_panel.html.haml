@@ -1,5 +1,5 @@
 - empty_repo = @project.empty_repo?
-.project-home-panel{:class => ("empty-project" if empty_repo)}
+.project-home-panel.clearfix{:class => ("empty-project" if empty_repo)}
   .project-identicon-holder
     = project_icon(@project, alt: '', class: 'avatar project-avatar')
   .project-home-row.project-home-row-top
@@ -9,7 +9,7 @@
       - if can?(current_user, :admin_project, @project)
         &ndash;
         = link_to 'Edit', edit_namespace_project_path
-      - elsif !@project.empty_repo? && @repository.readme
+      - elsif !empty_repo && @repository.readme
         - readme = @repository.readme
         &ndash;
         = link_to namespace_project_blob_path(@project.namespace, @project, tree_join(@repository.root_ref, readme.name)) do
@@ -26,7 +26,7 @@
               Star
             %span.count
               = @project.star_count
-      - unless @project.empty_repo?
+      - unless empty_repo
         - if current_user && can?(current_user, :fork_project, @project) && @project.namespace != current_user.namespace
           .inline.fork-buttons.prepend-left-10
             - if current_user.already_forked?(@project) && current_user.manageable_namespaces.size < 2
@@ -35,9 +35,3 @@
             - else
               = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "Fork project", class: 'btn btn-sm btn-default' do
                 = link_to_toggle_fork
-
-  .project-home-row.hidden-xs
-    - if current_user && !empty_repo
-      .project-home-dropdown
-        = render "dropdown"
-    = render "shared/clone_panel"

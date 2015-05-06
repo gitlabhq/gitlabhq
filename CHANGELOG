@@ -14,7 +14,7 @@ v 7.11.0 (unreleased)
   - Redirect to sign in page after signing out.
   - Fix "Hello @username." references not working by no longer allowing usernames to end in period.
   - Fix "Revspec not found" errors when viewing diffs in a forked project with submodules (Stan Hu)
-  -
+  - Improve project page UI
   - Fix broken file browsing with relative submodule in personal projects (Stan Hu)
   - Fix DB error when trying to tag a repository (Stan Hu)
   - Add "Reply quoting selected text" shortcut key (`r`)
@@ -44,6 +44,9 @@ v 7.11.0 (unreleased)
   - Allow to use non-ASCII letters and dashes in project and namespace name. (Jakub Jirutka)
   - Add footnotes support to Markdown (Guillaume Delbergue)
   - Add current_sign_in_at to UserFull REST api.
+
+v 7.10.2
+  - Fix CI links on MR page
 
 v 7.10.0
   - Ignore submodules that are defined in .gitmodules but are checked in as directories.

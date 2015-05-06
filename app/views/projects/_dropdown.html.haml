@@ -1,6 +1,6 @@
 - if current_user
   .dropdown.pull-right
-    %a.dropdown-toggle.btn.btn-new{href: '#', "data-toggle" => "dropdown"}
+    %a.dropdown-toggle.btn.btn-sm{href: '#', "data-toggle" => "dropdown"}
       %i.fa.fa-bars
     %ul.dropdown-menu
       - if @project.issues_enabled && can?(current_user, :write_issue, @project)
