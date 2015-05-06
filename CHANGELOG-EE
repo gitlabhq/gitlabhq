@@ -1,4 +1,7 @@
-v 7.11.1
+v 7.11.0
+  - Skip git hooks commit validation when pushing new tag.
+
+v 7.10.1
   - Check if comment exists in Jira before sending a reference
 
 v 7.10.0
