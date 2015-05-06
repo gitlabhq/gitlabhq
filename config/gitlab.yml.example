@@ -80,6 +80,11 @@ production: &base
       wiki: true
       snippets: false
 
+      ## Default web hooks settings
+      # There are hooks which will be added to each created project (default: no hooks)
+      # auto_web_hooks:
+      #   - http://example.com/my-jira-hook
+
     ## Webhook settings
     # Number of seconds to wait for HTTP response after sending webhook HTTP POST request (default: 10)
     # webhook_timeout: 10

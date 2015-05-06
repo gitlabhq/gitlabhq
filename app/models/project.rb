@@ -56,6 +56,14 @@ class Project < ActiveRecord::Base
     update_column(:last_activity_at, self.created_at)
   end
 
+  # create default hooks if they are presented
+  after_create :create_default_web_hooks, if: -> { !!gitlab_config_features.auto_web_hooks }
+  def create_default_web_hooks
+    gitlab_config_features.auto_web_hooks.each do |web_hook_url|
+      hooks.create(url: web_hook_url)
+    end
+  end
+
   ActsAsTaggableOn.strict_case_match = true
   acts_as_taggable_on :tags
 
