@@ -234,5 +234,18 @@ describe GitPushService do
       expect(Issue.find(issue.id)).to be_opened
     end
   end
-end
 
+  describe "empty project" do
+    let(:project) { create(:project_empty_repo) }
+    let(:new_ref) { 'refs/heads/feature'}
+
+    before do
+      allow(project).to receive(:default_branch).and_return('feature')
+      expect(project).to receive(:change_head) { 'feature'}
+    end
+
+    it 'push to first branch updates HEAD' do
+      service.execute(project, user, @blankrev, @newrev, new_ref)
+    end
+  end
+end
