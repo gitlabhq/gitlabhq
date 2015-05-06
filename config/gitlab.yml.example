@@ -10,7 +10,7 @@
 # How to use:
 # 1. Copy file as gitlab.yml
 # 2. Update gitlab -> host with your fully qualified domain name
-# 3. Update outgoing_emails -> from
+# 3. Update gitlab -> email_from
 # 4. If you installed Git from source, change git -> bin_path to /usr/local/bin/git
 #    IMPORTANT: If Git was installed in a different location use that instead.
 #    You can check with `which git`. If a wrong path of Git is specified, it will
@@ -46,6 +46,16 @@ production: &base
     # To see all available zones, run `bundle exec rake time:zones:all RAILS_ENV=production`
     # time_zone: 'UTC'
 
+    ## Email settings
+    # Uncomment and set to false if you need to disable email sending from GitLab (default: true)
+    # email_enabled: true
+    # Email address used in the "From" field in mails sent by GitLab
+    email_from: example@example.com
+    email_display_name: GitLab
+    email_reply_to: noreply@example.com
+
+    # Email server smtp settings are in config/initializers/smtp_settings.rb.sample
+
     # default_can_create_group: false  # default: true
     # username_changing_enabled: false # default: true - User can change her username/namespace
     ## Default theme
@@ -78,57 +88,6 @@ production: &base
     # When a user clicks e.g. 'Download zip' on a project, a temporary zip file is created in the following directory.
     # The default is 'tmp/repositories' relative to the root of the Rails app.
     # repository_downloads_path: tmp/repositories
-
-  ## Settings for sending emails
-  outgoing_emails:
-
-    # Set to false if you need to disable email sending from GitLab (default: true).
-    enabled: true
-
-    # Email address and name used in the "From" field in mails sent by GitLab.
-    from: example@example.com
-    display_name: GitLab
-
-    # Email address used in "Reply-To" field in mails sent by GitLab.
-    reply_to: noreply@example.com
-
-    # Defines a delivery method. Possible values are:
-    #   :sendmail      - send emails using sendmail command (default).
-    #   :smtp          - send emails using SMTP server.
-    #   :letter_opener - open sent emails in browser.
-    #   :test          - save emails to ActionMailer::Base.deliveries array.
-    delivery_method: :sendmail
-
-    # Settings for the :sendmail delivery method.
-    sendmail_settings:
-      # The location of the sendmail executable (default: /usr/sbin/sendmail).
-      location: /usr/sbin/sendmail
-
-      # The command line arguments to be passed to sendmail (default: -i -t).
-      arguments: '-i -t'
-
-    # Settings for the :smtp delivery method.
-    smtp_settings:
-      # Hostname of the SMTP server used to send emails (default: localhost).
-      address: localhost
-
-      # Port of the SMTP server used to send emails (default: 25).
-      port: 25
-
-      # If your mail server requires authentication, you need to specify the
-      # authentication type here. Possible values are:
-      #   :plain    - send the password in the clear text.
-      #   :login    - send password Base64 encoded.
-      #   :cram_md5 - combines a Challenge/Response mechanism to exchange information and
-      #               a cryptographic Message Digest 5 algorithm to hash important information.
-      # authentication: :plain
-      # user_name: 'gitlab'
-      # password: '123456'
-
-      # Detects if STARTTLS is enabled in your SMTP server and starts to use it.
-      # Set this to false if there is a problem with your server certificate
-      # that you cannot resolve. It should be true for Gmail SMTP.
-      # enable_starttls_auto: true
 
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
@@ -336,8 +295,6 @@ production: &base
 
 development:
   <<: *base
-  outgoing_emails:
-    delivery_method: :letter_opener
 
 test:
   <<: *base
@@ -346,8 +303,6 @@ test:
   gitlab:
     host: localhost
     port: 80
-  outgoing_emails:
-    delivery_method: :test
 
     # When you run tests we clone and setup gitlab-shell
     # In order to setup it correctly you need to specify
