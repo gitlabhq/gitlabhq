@@ -51,10 +51,10 @@
 
   - if @project.forked_from_project
     .well
-      %i.fa.fa-code-fork.project-fork-icon
-      Forked from:
-      %br
-      = link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)
+      %h4
+        Forked from
+        .pull-right
+          = link_to @project.forked_from_project.namespace.try(:name), project_path(@project.forked_from_project)
 
 
 - if version = @repository.version
