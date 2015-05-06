@@ -32,7 +32,7 @@
       .issuable-context-title
         %label
           Subscription:
-      %button.btn.btn-block.subscribe-button
+      %button.btn.btn-block.subscribe-button{:type => 'button'}
         %i.fa.fa-eye
         %span= @issue.subscribed?(current_user) ? "Unsubscribe" : "Subscribe"
       - subscribtion_status = @issue.subscribed?(current_user) ? "subscribed" : "unsubscribed"
