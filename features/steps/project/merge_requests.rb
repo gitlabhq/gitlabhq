@@ -77,7 +77,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     select "feature", from: "merge_request_target_branch"
     click_button "Compare branches"
     fill_in "merge_request_title", with: "Wiki Feature"
-    click_button "Submit merge request"
+    click_button "Submit new merge request"
   end
 
   step 'project "Shop" have "Bug NS-04" open merge request' do

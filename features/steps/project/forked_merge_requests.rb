@@ -46,7 +46,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I submit the merge request' do
-    click_button "Submit merge request"
+    click_button "Submit new merge request"
   end
 
   step 'I follow the target commit link' do
