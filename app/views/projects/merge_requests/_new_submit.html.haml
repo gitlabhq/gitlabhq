@@ -7,7 +7,7 @@
   %strong.label-branch #{@merge_request.target_project_namespace}:#{@merge_request.target_branch}
 
   %span.pull-right
-    = link_to 'Change branches', new_namespace_project_merge_request_path(@project.namespace, @project)
+    = link_to 'Change branches', mr_change_branches_path(@merge_request)
 
 = form_for [@project.namespace.becomes(Namespace), @project, @merge_request], html: { class: "merge-request-form form-horizontal gfm-form" } do |f|
   .merge-request-form-info
