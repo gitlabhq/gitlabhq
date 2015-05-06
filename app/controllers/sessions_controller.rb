@@ -1,5 +1,5 @@
 class SessionsController < Devise::SessionsController
-  prepend_before_action :two_factor_enabled?, only: :create
+  prepend_before_action :authenticate_with_two_factor, only: :create
 
   def new
     redirect_path =
@@ -29,6 +29,9 @@ class SessionsController < Devise::SessionsController
 
   def create
     super do |resource|
+      # Remove any lingering user data from login
+      session.delete(:user)
+
       # User has successfully signed in, so clear any unused reset tokens
       if resource.reset_password_token.present?
         resource.update_attributes(reset_password_token: nil,
@@ -39,24 +42,38 @@ class SessionsController < Devise::SessionsController
 
   private
 
-  def two_factor_enabled?
-    user_params = params[:user]
+  def user_params
+    params.require(:user).permit(:login, :password, :remember_me, :otp_attempt)
+  end
+
+  def authenticate_with_two_factor
     @user = User.by_login(user_params[:login])
 
-    if user_params[:otp_attempt].present?
-      unless @user.valid_otp?(user_params[:otp_attempt]) ||
-        @user.recovery_code?(user_params[:otp_attempt])
+    if user_params[:otp_attempt].present? && session[:user]
+      if valid_otp_attempt?
+        # Insert the saved params from the session into the request parameters
+        # so they're available to Devise::Strategies::DatabaseAuthenticatable
+        request.params[:user].merge!(session[:user])
+      else
         @error = 'Invalid two-factor code'
         render :two_factor and return
       end
     else
-      if @user && @user.valid_password?(params[:user][:password])
+      if @user && @user.valid_password?(user_params[:password])
         self.resource = @user
 
         if resource.otp_required_for_login
+          # Login is valid, save the values to the session so we can prompt the
+          # user for a one-time password.
+          session[:user] = user_params
           render :two_factor and return
         end
       end
     end
+  end
+
+  def valid_otp_attempt?
+    @user.valid_otp?(user_params[:otp_attempt]) ||
+    @user.invalidate_otp_backup_code!(user_params[:otp_attempt])
   end
 end
