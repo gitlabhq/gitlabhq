@@ -303,7 +303,7 @@ ActiveRecord::Schema.define(version: 20150502064022) do
   end
 
   add_index "namespaces", ["created_at", "id"], name: "index_namespaces_on_created_at_and_id", using: :btree
-  add_index "namespaces", ["name"], name: "index_namespaces_on_name", using: :btree
+  add_index "namespaces", ["name"], name: "index_namespaces_on_name", unique: true, using: :btree
   add_index "namespaces", ["owner_id"], name: "index_namespaces_on_owner_id", using: :btree
   add_index "namespaces", ["path"], name: "index_namespaces_on_path", unique: true, using: :btree
   add_index "namespaces", ["type"], name: "index_namespaces_on_type", using: :btree
@@ -411,11 +411,11 @@ ActiveRecord::Schema.define(version: 20150502064022) do
     t.string   "avatar"
     t.string   "import_status"
     t.float    "repository_size",               default: 0.0
+    t.text     "merge_requests_template"
     t.integer  "star_count",                    default: 0,        null: false
+    t.boolean  "merge_requests_rebase_enabled", default: false
     t.string   "import_type"
     t.string   "import_source"
-    t.text     "merge_requests_template"
-    t.boolean  "merge_requests_rebase_enabled", default: false
     t.boolean  "merge_requests_rebase_default", default: true
   end
 
@@ -545,6 +545,7 @@ ActiveRecord::Schema.define(version: 20150502064022) do
     t.string   "unconfirmed_email"
     t.boolean  "hide_no_ssh_key",               default: false
     t.string   "website_url",                   default: "",    null: false
+    t.datetime "admin_email_unsubscribed_at"
     t.string   "github_access_token"
     t.string   "gitlab_access_token"
     t.string   "notification_email"
@@ -552,7 +553,6 @@ ActiveRecord::Schema.define(version: 20150502064022) do
     t.boolean  "password_automatically_set",    default: false
     t.string   "bitbucket_access_token"
     t.string   "bitbucket_access_token_secret"
-    t.datetime "admin_email_unsubscribed_at"
     t.string   "location"
     t.string   "public_email",                  default: "",    null: false
   end
