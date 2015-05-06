@@ -43,7 +43,7 @@ class GitlabCiService < CiService
   end
 
   def commit_status_path(sha, ref)
-    project_url + "/refs/#{ref}/commits/#{sha}/status.json?token=#{token}"
+    URI::encode(project_url + "/refs/#{ref}/commits/#{sha}/status.json?token=#{token}")
   end
 
   def get_ci_build(sha, ref)
@@ -90,7 +90,7 @@ class GitlabCiService < CiService
   end
 
   def build_page(sha, ref)
-    project_url + "/refs/#{ref}/commits/#{sha}"
+    URI::encode(project_url + "/refs/#{ref}/commits/#{sha}")
   end
 
   def builds_path

@@ -1,9 +1,21 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.11.0 (unreleased)
+  - Make Reply-To config apply to change e-mail confirmation and other Devise notifications (Stan Hu)
+  - Add application setting to restrict user signups to e-mail domains (Stan Hu)
+  - Don't allow a merge request to be merged when its title starts with "WIP".
+  - Add a page title to every page.
+  - Allow primary email to be set to an email that you've already added.
+  - Fix Error 500 when searching Wiki pages (Stan Hu)
+  - Get Gitorious importer to work again.
   - Fix clone URL field and X11 Primary selection (Dmitry Medvinsky)
   - Ignore invalid lines in .gitmodules
   -
+  - Fix broken file browsing with relative submodule in personal projects (Stan Hu)
+  - Fix DB error when trying to tag a repository (Stan Hu)
+  - Add "Reply quoting selected text" shortcut key (`r`)
+  - Fix bug causing `@whatever` inside an issue's first code block to be picked up as a user mention.
+  - Fix bug causing `@whatever` inside an inline code snippet (backtick-style) to be picked up as a user mention.
   -
   -
   -
@@ -12,6 +24,30 @@ v 7.11.0 (unreleased)
   -
 
 v 7.10.0 (unreleased)
+  - Show Atom feed buttons everywhere where applicable.
+  - Add project activity atom feed.
+  - Don't crash when an MR from a fork has a cross-reference comment from the target project on of its commits.
+  - Include commit comments in MR from a forked project.
+  - Fix adding new group members from admin area
+  - Add default project and snippet visibility settings to the admin web UI.
+  - Show incompatible projects in Google Code import status (Stan Hu)
+  - Fix bug where commit data would not appear in some subdirectories (Stan Hu)
+  - Unescape branch names in compare commit (Stan Hu)
+  -
+  -
+  - Fix bug where commit data would not appear in some subdirectories (Stan Hu)
+  - Fix bug where Slack service channel was not saved in admin template settings. (Stan Hu)
+  - Move snippets UI to fluid layout
+  - Improve UI for sidebar. Increase separation between navigation and content
+  - Improve new project command options (Ben Bodenmiller)
+  - Prevent sending empty messages to HipChat (Chulki Lee)
+  - Improve UI for mobile phones on dashboard and project pages
+  - Add room notification and message color option for HipChat
+
+v 7.10.2
+  - Fix CI links on MR page
+
+v 7.10.0
   - Ignore submodules that are defined in .gitmodules but are checked in as directories.
   - Allow projects to be imported from Google Code.
   - Remove access control for uploaded images to fix broken images in emails (Hannes Rosenögger)
