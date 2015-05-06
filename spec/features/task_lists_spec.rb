@@ -69,7 +69,7 @@ feature 'Task Lists' do
 
     it 'provides a summary on Issues#index' do
       visit namespace_project_issues_path(project.namespace, project)
-      expect(page).to have_content("6 tasks (2 done, 4 unfinished)")
+      expect(page).to have_content("6 tasks (2 completed, 4 remaining)")
     end
   end
 
@@ -145,7 +145,7 @@ feature 'Task Lists' do
 
     it 'provides a summary on MergeRequests#index' do
       visit namespace_project_merge_requests_path(project.namespace, project)
-      expect(page).to have_content("6 tasks (2 done, 4 unfinished)")
+      expect(page).to have_content("6 tasks (2 completed, 4 remaining)")
     end
   end
 end

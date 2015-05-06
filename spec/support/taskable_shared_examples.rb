@@ -15,8 +15,8 @@ shared_examples 'a Taskable' do
 
   it 'returns the correct task status' do
     expect(subject.task_status).to match('5 tasks')
-    expect(subject.task_status).to match('2 done')
-    expect(subject.task_status).to match('3 unfinished')
+    expect(subject.task_status).to match('2 completed')
+    expect(subject.task_status).to match('3 remaining')
   end
 
   describe '#tasks?' do

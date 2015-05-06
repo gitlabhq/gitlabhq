@@ -26,11 +26,11 @@ module Taskable
   end
 
   # Return a string that describes the current state of this Taskable's task
-  # list items, e.g. "20 tasks (12 done, 8 unfinished)"
+  # list items, e.g. "20 tasks (12 completed, 8 remaining)"
   def task_status
     return '' if description.blank?
 
     sum = tasks.summary
-    "#{sum.item_count} tasks (#{sum.complete_count} done, #{sum.incomplete_count} unfinished)"
+    "#{sum.item_count} tasks (#{sum.complete_count} completed, #{sum.incomplete_count} remaining)"
   end
 end
