@@ -1,4 +1,4 @@
-class Profiles::TwoFactorAuthsController < ApplicationController
+class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   def new
     unless current_user.otp_secret
       current_user.otp_secret = User.generate_otp_secret

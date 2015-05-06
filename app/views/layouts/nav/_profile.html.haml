@@ -4,7 +4,7 @@
       = icon('user fw')
       %span
         Profile
-  = nav_link(controller: :accounts) do
+  = nav_link(controller: [:accounts, :two_factor_auths]) do
     = link_to profile_account_path, title: 'Account', data: {placement: 'right'} do
       = icon('gear fw')
       %span
