@@ -1,5 +1,4 @@
-%h3.page-title Compare branches for new Merge Request
-%hr
+%p.lead Compare branches for new Merge Request
 
 = form_for [@project.namespace.becomes(Namespace), @project, @merge_request], url: new_namespace_project_merge_request_path(@project.namespace, @project), method: :get, html: { class: "merge-request-form form-inline" } do |f|
   .hide.alert.alert-danger.mr-compare-errors
@@ -52,8 +51,8 @@
               are the same.
 
 
-  %hr
-  = f.submit 'Compare branches', class: "btn btn-primary mr-compare-btn"
+  %div
+    = f.submit 'Compare branches', class: "btn btn-new mr-compare-btn"
 
 :javascript
   var source_branch = $("#merge_request_source_branch")

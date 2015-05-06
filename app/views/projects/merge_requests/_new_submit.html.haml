@@ -8,7 +8,7 @@
 
   %span.pull-right
     = link_to 'Change branches', mr_change_branches_path(@merge_request)
-
+%hr
 = form_for [@project.namespace.becomes(Namespace), @project, @merge_request], html: { class: 'merge-request-form form-horizontal gfm-form' } do |f|
   .merge-request-form-info
     = render 'projects/issuable_form', f: f, issuable: @merge_request

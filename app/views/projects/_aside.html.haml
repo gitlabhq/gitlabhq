@@ -39,6 +39,11 @@
         = link_to url_for_new_issue(@project, only_path: true), title: "New Issue", class: 'btn btn-sm' do
           %i.fa.fa-fw.fa-exclamation-circle
           New issue
+        - if can? current_user, :write_merge_request, @project
+          &nbsp;
+          = link_to new_namespace_project_merge_request_path(@project.namespace, @project), class: "btn btn-sm", title: "New Merge Request" do
+            %i.fa.fa-plus
+            New Merge Request
 
 
 
