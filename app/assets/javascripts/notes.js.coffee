@@ -1,3 +1,4 @@
+#= require jquery
 #= require autosave
 #= require bootstrap
 #= require dropzone

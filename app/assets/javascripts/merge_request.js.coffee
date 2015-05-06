@@ -1,3 +1,7 @@
+#= require jquery
+#= require bootstrap
+#= require task_list
+
 class @MergeRequest
   constructor: (@opts) ->
     @initContextWidget()

@@ -1,4 +1,6 @@
+#= require jquery
 #= require jquery.waitforimages
+#= require task_list
 
 class @Issue
   constructor: ->
