@@ -144,7 +144,7 @@ class Project < ActiveRecord::Base
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :avatar_type,
-    if: ->(project) { project.avatar && project.avatar_changed? }
+    if: ->(project) { project.avatar.present? && project.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   mount_uploader :avatar, AvatarUploader
