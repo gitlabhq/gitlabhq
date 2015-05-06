@@ -1,0 +1,16 @@
+#!/bin/bash
+
+function sigterm_handler() {
+    echo "SIGTERM signal received, try to gracefully shutdown all services..."
+    gitlab-ctl stop
+}
+
+trap "sigterm_handler; exit" TERM
+
+function entrypoint() {
+    /opt/gitlab/embedded/bin/runsvdir-start &
+    gitlab-ctl reconfigure # will also start everything
+    gitlab-ctl tail # tail all logs
+}
+
+entrypoint
