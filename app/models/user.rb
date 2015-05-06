@@ -73,8 +73,11 @@ class User < ActiveRecord::Base
   default_value_for :hide_no_password, false
   default_value_for :theme_id, gitlab_config.default_theme
 
-  devise :lockable, :async,
-         :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :confirmable, :registerable
+  devise :two_factor_authenticatable,
+         otp_secret_encryption_key: File.read(Rails.root.join('.secret')).chomp
+  devise :two_factor_backupable
+  devise :lockable, :async, :recoverable, :rememberable, :trackable,
+    :validatable, :omniauthable, :confirmable, :registerable
 
   attr_accessor :force_random_password
 
@@ -662,5 +665,10 @@ class User < ActiveRecord::Base
     end
 
     true
+  end
+
+  # Used to populate the hidden form field during Two-factor authentication
+  def login
+    username || email
   end
 end
