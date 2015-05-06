@@ -15,7 +15,7 @@ header {
       padding: 0;
 
       background: #FFF;
-      border-bottom: 1px solid #DDD;
+      border-bottom: 1px solid #EEE;
       filter: none;
 
       .title {
@@ -25,13 +25,13 @@ header {
         margin-left: 25px;
         font-size: 18px;
         line-height: 44px;
-        font-weight: normal;
-        color: #555;
+        font-weight: bold;
+        color: #444;
 
         @include str-truncated(37%);
 
         a {
-          color: #555;
+          color: #444;
           &:hover {
             text-decoration: underline;
           }
