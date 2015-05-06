@@ -9,11 +9,12 @@ describe 'Issue', ->
       @issue = new Issue()
 
     it 'modifies the Markdown field', ->
+      spyOn(jQuery, 'ajax').and.stub()
       $('input[type=checkbox]').attr('checked', true).trigger('change')
       expect($('.js-task-list-field').val()).toBe('- [x] Task List Item')
 
     it 'submits an ajax request on tasklist:changed', ->
-      spyOn($, 'ajax').and.callFake (req) ->
+      spyOn(jQuery, 'ajax').and.callFake (req) ->
         expect(req.type).toBe('PATCH')
         expect(req.url).toBe('/foo')
         expect(req.data.issue.description).not.toBe(null)
