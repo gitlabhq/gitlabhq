@@ -211,6 +211,10 @@ Gitlab::Application.routes.draw do
       resources :services
     end
 
+    resource :license, only: [:show, :new, :create, :destroy] do
+      get :download, on: :member
+    end
+
     root to: 'dashboard#index'
   end
 

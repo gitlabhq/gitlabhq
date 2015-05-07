@@ -231,6 +231,27 @@ describe Gitlab::GitAccess do
         end
       end
     end
+
+    context "when license blocks changes" do
+      before do
+        allow(License).to receive(:block_changes?).and_return(true)
+      end
+
+      permissions_matrix.keys.each do |role|
+        describe "#{role} access" do
+          before { protect_feature_branch }
+          before { project.team << [user, role] }
+
+          permissions_matrix[role].each do |action, allowed|
+            context action do
+              subject { access.push_access_check(changes[action]) }
+
+              it { expect(subject.allowed?).to be_falsey }
+            end
+          end
+        end
+      end
+    end
   end
 
   describe "git_hook_check" do

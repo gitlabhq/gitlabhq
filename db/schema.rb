@@ -211,6 +211,12 @@ ActiveRecord::Schema.define(version: 20150502064022) do
     t.string   "provider"
   end
 
+  create_table "licenses", force: true do |t|
+    t.text     "data",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "members", force: true do |t|
     t.integer  "access_level",       null: false
     t.integer  "source_id",          null: false

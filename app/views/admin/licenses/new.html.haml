@@ -1,0 +1,21 @@
+- page_title "Upload License"
+%h3.page-title Upload License
+
+%p.light
+  To #{License.current ? "continue" : "start"} using GitLab Enterprise Edition, upload the <code>.gitlab-license</code> file you have received from GitLab B.V..
+
+%hr
+= form_for @license, url: admin_license_path, html: { multipart: true, class: 'form-horizontal fieldset-form' } do |f|
+  - if @license.errors.any?
+    #error_explanation
+      .alert.alert-danger
+        - @license.errors.full_messages.each do |msg|
+          %p= msg
+
+  .form-group
+    = f.label :data_file, "License", class: 'control-label col-sm-2'
+    .col-sm-10
+      = f.file_field :data_file, accept: ".gitlab-license,.gitlab_license,.txt"
+
+  .form-actions
+    = f.submit 'Upload license', class: 'btn btn-primary'

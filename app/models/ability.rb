@@ -5,18 +5,34 @@ class Ability
       return [] unless user.kind_of?(User)
       return [] if user.blocked?
 
-      case subject.class.name
-      when "Project" then project_abilities(user, subject)
-      when "Issue" then issue_abilities(user, subject)
-      when "Note" then note_abilities(user, subject)
-      when "ProjectSnippet" then project_snippet_abilities(user, subject)
-      when "PersonalSnippet" then personal_snippet_abilities(user, subject)
-      when "MergeRequest" then merge_request_abilities(user, subject)
-      when "Group" then group_abilities(user, subject)
-      when "Namespace" then namespace_abilities(user, subject)
-      when "GroupMember" then group_member_abilities(user, subject)
-      else []
-      end.concat(global_abilities(user))
+      abilities = 
+        case subject.class.name
+        when "Project"          then project_abilities(user, subject)
+        when "Issue"            then issue_abilities(user, subject)
+        when "Note"             then note_abilities(user, subject)
+        when "ProjectSnippet"   then project_snippet_abilities(user, subject)
+        when "PersonalSnippet"  then personal_snippet_abilities(user, subject)
+        when "MergeRequest"     then merge_request_abilities(user, subject)
+        when "Group"            then group_abilities(user, subject)
+        when "Namespace"        then namespace_abilities(user, subject)
+        when "GroupMember"      then group_member_abilities(user, subject)
+        else []
+        end
+
+      abilities.concat(global_abilities(user))
+
+      abilities -= license_blocked_abilities if License.block_changes?
+
+      abilities
+    end
+
+    def license_blocked_abilities
+      [
+        :push_code,
+        :push_code_to_protected_branches,
+        :write_issue,
+        :write_merge_request
+      ]
     end
 
     # List of possible abilities

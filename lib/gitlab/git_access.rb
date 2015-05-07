@@ -113,6 +113,11 @@ module Gitlab
       unless project.repository.exists?
         return build_status_object(false, "Repository does not exist")
       end
+      
+      if ::License.block_changes?
+        message = ::LicenseHelper.license_message(signed_in: true, is_admin: (user && user.is_admin?))
+        return build_status_object(false, message)
+      end
 
       changes = changes.lines if changes.kind_of?(String)
 
