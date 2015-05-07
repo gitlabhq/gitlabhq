@@ -44,6 +44,7 @@ v 7.11.0 (unreleased)
   - Allow to use non-ASCII letters and dashes in project and namespace name. (Jakub Jirutka)
   - Add footnotes support to Markdown (Guillaume Delbergue)
   - Add current_sign_in_at to UserFull REST api.
+  - Allow to configure smtp and sendmail in gitlab.yml; deprecates `config/initializers/smtp_settings.rb`! (Jakub Jirutka)
 
 v 7.10.2
   - Fix CI links on MR page
