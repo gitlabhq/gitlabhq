@@ -31,6 +31,10 @@ class GitPushService
         # Initial push to the default branch. Take the full history of that branch as "newly pushed".
         @push_commits = project.repository.commits(newrev)
 
+        # Ensure HEAD points to the default branch in case it is not master
+        branch_name = Gitlab::Git.ref_name(ref)
+        project.change_head(branch_name)
+
         # Set protection on the default branch if configured
         if (current_application_settings.default_branch_protection != PROTECTION_NONE)
           developers_can_push = current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_PUSH ? true : false
