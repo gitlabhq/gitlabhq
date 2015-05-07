@@ -1,12 +1,24 @@
-What is GitLab?
-===============
+# GitLab Docker images
 
-GitLab offers git repository management, code reviews, issue tracking, activity feeds, wikis. It has LDAP/AD integration, handles 25,000 users on a single server but can also run on a highly available active/active cluster. A subscription gives you access to our support team and to GitLab Enterprise Edition that contains extra features aimed at larger organizations.
+## What is GitLab?
 
+GitLab offers git repository management, code reviews, issue tracking, activity feeds, wikis. It has LDAP/AD integration, handles 25,000 users on a single server but can also run on a highly available active/active cluster.
 Learn more on [https://about.gitlab.com](https://about.gitlab.com)
 
-Single and app and data images
-===================
+## How to build and use the docker images
+
+This guide will let you know how to build docker images yourself.
+Run the below commands from the GitLab repo root directory.
+People using boot2docker on OSX should run all the commands without sudo.
+
+After starting a container you can then go to [http://localhost:8080/](http://localhost:8080/) or [http://192.168.59.103:8080/](http://192.168.59.103:8080/) if you use boot2docker.
+It might take a while before the docker container is responding to queries.
+
+You can login to the web interface with username `root` and password `5iveL!fe`.
+
+Next time, you can just use docker start and stop to run the container.
+
+## Choosing between the single and the app and data images
 
 Normally docker uses a single image for one applications.
 But GitLab stores repositories and uploads in the filesystem.
@@ -15,11 +27,7 @@ That is why we recommend using separate app and data images.
 We'll first describe how to use a single image.
 After that we'll describe how to use the app and data images.
 
-Single image
-=================
-
-Run the below commands from the GitLab repo root directory.
-People using boot2docker should run the commands without sudo.
+## Single image
 
 Build the image with:
 
@@ -32,11 +40,6 @@ Run the image with:
 ```
 sudo docker run --detach --name gitlab-ce --publish 8080:80 --publish 2222:22 gitlab-ce
 ```
-
-You can then go to [http://localhost:8080/](http://localhost:8080/) or [http://192.168.59.103:8080/](http://192.168.59.103:8080/) if you use boot2docker.
-
-You can login with username `root` and password `5iveL!fe`.
-Next time, you can just use `sudo docker start gitlab-ce` and `sudo docker stop gitlab-ce`.
 
 Publish the image with:
 
@@ -55,18 +58,14 @@ sudo docker run --detach --name gitlab-ce --publish 8080:80 --publish 2222:22 sy
 Troubleshoot with:
 
 ```
+sudo docker logs -f gitlab-ce
 sudo docker run -ti -e TERM=linux --name gitlab-ce-troubleshoot --publish 8080:80 --publish 2222:22 sytse/gitlab-ce:7.10.1 bash /usr/local/bin/wrapper
 ```
 
-Build and use app and data images
-======================
+## Build and use app and data images
 
-At this moment GitLab doesn't have official Docker images.
-There are unofficial images at the bottom of this document.
 Build your own based on the Omnibus packages with the following commands.
-For convinience we will use suffix _xy where xy is current version of GitLab.
-Run the below commands from the GitLab repo root directory.
-People using boot2docker should run the commands without sudo.
+
 
 ```bash
 sudo docker build --tag gitlab-data docker/data/
@@ -94,17 +93,11 @@ After creating data container run GitLab container:
 sudo docker run --detach --name gitlab-app::7.10.1 --publish 8080:80 --publish 2222:22 --volumes-from gitlab-data gitlab-app:7.10.1
 ```
 
-It might take a while before the docker container is responding to queries. You can follow the configuration process with `sudo docker logs -f gitlab_app_xy`.
+You can follow the configuration process with `sudo docker logs -f gitlab-app`.
 
-You can then go to [http://localhost:8080/](http://localhost:8080/) or [http://192.168.59.103:8080/](http://192.168.59.103:8080/) if you use boot2docker.
+### Configure GitLab
 
-You can login with username `root` and password `5iveL!fe`.
-Next time, you can just use `sudo docker start gitlab_app` and `sudo docker stop gitlab_app`.
-
-Configure GitLab
-========================
-
-This container uses the official Omnibus GitLab distribution, so all configuration is done in the unique configuration file `/etc/gitlab/gitlab.rb`.
+These container uses the official Omnibus GitLab distribution, so all configuration is done in the unique configuration file `/etc/gitlab/gitlab.rb`.
 
 To access GitLab configuration, you can start an interactive command line in a new container using the shared data volume container, you will be able to browse the 3 directories and use your favorite text editor:
 
@@ -117,12 +110,11 @@ vi /etc/gitlab/gitlab.rb
 
 You can find all available options in [Omnibus GitLab documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#configuration).
 
-Upgrade GitLab with app and data images
-========================
+### Upgrade GitLab with app and data images
 
 To updgrade GitLab to new versions, stop running container, create new docker image and container from that image.
 
-It Assumes that you're upgrading from 7.8 to 7.9 and you're in the updated GitLab repo root directory:
+It Assumes that you're upgrading from 7.8.1 to 7.10.1 and you're in the updated GitLab repo root directory:
 
 ```bash
 sudo docker stop gitlab-app
@@ -137,8 +129,8 @@ On the first run GitLab will reconfigure and update itself. If everything runs O
 sudo docker rmi gitlab-app:7.8.1
 ```
 
-Publish app and data images to Dockerhub
-=========================
+### Publish app and data images to Dockerhub
+
 Login to Dockerhub with `sudo docker login` and run the following (replace '7.9.2' with the version you're using and 'Sytse Sijbrandij' with your name):
 
 ```bash
@@ -148,8 +140,8 @@ sudo docker commit -m "Initial commit" -a "Sytse Sijbrandij" gitlab_data sytse/g
 sudo docker push sytse/gitlab_data
 ```
 
-Use app and data images published to Dockerhub
-================================
+### Use app and data images published to Dockerhub
+
 This examples uses the unofficial images made by GitLab CEO Sytse.
 
 ```bash
@@ -159,6 +151,6 @@ sudo docker run --name gitlab-data sytse/gitlab-data /bin/true
 sudo docker run --detach --name gitlab_app --publish 8080:80 --publish 2222:22 --volumes-from gitlab_data sytse/gitlab-app:7.10.1
 ```
 
-Troubleshooting
-=========================
+## Troubleshooting
+
 Please see the [troubleshooting](troubleshooting.md) file in this directory.
