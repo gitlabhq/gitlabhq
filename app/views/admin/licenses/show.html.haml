@@ -49,19 +49,21 @@
           %span.light Active users:
           %strong
             - if @license.restricted?(:active_user_count)
-              - restricted_user_count = @license.restrictions[:active_user_count]
-              - active_user_count = User.active.count
-              #{restricted_user_count} users
+              - restricted = @license.restrictions[:active_user_count]
+              - current = User.active.count
+              - historical = @historical_active_user_count
 
-              - if active_user_count > restricted_user_count
-                %span.label.label-danger.pull-right
-                  %strong Exceeded by #{active_user_count - restricted_user_count} users
-              - elsif restricted_user_count > active_user_count
-                %span.label.label-success.pull-right
-                  %strong #{restricted_user_count - active_user_count} more allowed
-              - else
-                %span.label.label-info.pull-right
-                  %strong Right at the limit
+              #{restricted} users
+
+              - if historical && historical > restricted
+                %span.label.label-danger.pull-right.prepend-left-10
+                  %strong 
+                    Maximum during license life: #{historical} users
+
+              - label_class = current > restricted ? "danger" : restricted > current ? "success" : "info"
+              %span.label.pull-right{class: "label-#{label_class}"}
+                %strong 
+                  Current: #{current} users
 
             - else
               Unlimited

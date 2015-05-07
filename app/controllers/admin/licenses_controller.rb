@@ -5,6 +5,7 @@ class Admin::LicensesController < Admin::ApplicationController
   respond_to :html
 
   def show
+    @historical_active_user_count = HistoricalData.during(license.issued_at..Date.today).maximum(:active_user_count)
     @previous_licenses = License.previous
   end
 

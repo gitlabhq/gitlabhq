@@ -96,12 +96,26 @@ class License < ActiveRecord::Base
     restricted_user_count = self.restrictions[:active_user_count]
     active_user_count     = User.active.count
 
-    return if active_user_count <= restricted_user_count
+    if active_user_count > restricted_user_count
+      message = "This license allows #{restricted_user_count} active users. "
+      message << "This GitLab installation currently has #{active_user_count}, "
+      message << "i.e. #{active_user_count - restricted_user_count} too many."
 
-    message = "This license allows #{restricted_user_count} active users. "
-    message << "This GitLab installation currently has #{active_user_count}, "
-    message << "i.e. #{active_user_count - restricted_user_count} too many."
-    self.errors.add(:base, message)
+      self.errors.add(:base, message)
+      return
+    end
+
+    if License.current
+      historical_active_user_count = HistoricalData.during(License.current.issued_at..Date.today).maximum(:active_user_count)
+
+      if historical_active_user_count && historical_active_user_count > restricted_user_count
+        message = "This license allows #{restricted_user_count} active users. "
+        message << "At one point during the life of the previous license, this GitLab installation had "
+        message << "#{historical_active_user_count} active users, "
+        message << "i.e. #{historical_active_user_count - restricted_user_count} too many."
+        self.errors.add(:base, message)
+      end
+    end
   end
 
   def not_expired

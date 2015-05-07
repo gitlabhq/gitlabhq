@@ -24,6 +24,8 @@ describe License do
     end
 
     describe "Active user count" do
+      let(:active_user_count) { User.active.count }
+
       context "when there is no active user count restriction" do
         it "is valid" do
           expect(license).to be_valid
@@ -32,7 +34,7 @@ describe License do
 
       context "when the active user count restriction is exceeded" do
         before do
-          gl_license.restrictions = { active_user_count: User.active.count - 1 }
+          gl_license.restrictions = { active_user_count: active_user_count - 1 }
         end
 
         it "is invalid" do
@@ -42,7 +44,38 @@ describe License do
 
       context "when the active user count restriction is not exceeded" do
         before do
-          gl_license.restrictions = { active_user_count: User.active.count + 1 }
+          gl_license.restrictions = { active_user_count: active_user_count + 1 }
+        end
+
+        it "is valid" do
+          expect(license).to be_valid
+        end
+      end
+    end
+
+    describe "Historical active user count" do
+      let(:active_user_count) { User.active.count + 10 }
+      let!(:historical_data)  { HistoricalData.create!(date: License.current.issued_at, active_user_count: active_user_count) }
+
+      context "when there is no active user count restriction" do
+        it "is valid" do
+          expect(license).to be_valid
+        end
+      end
+
+      context "when the active user count restriction is exceeded" do
+        before do
+          gl_license.restrictions = { active_user_count: active_user_count - 1 }
+        end
+
+        it "is invalid" do
+          expect(license).to_not be_valid
+        end
+      end
+
+      context "when the active user count restriction is not exceeded" do
+        before do
+          gl_license.restrictions = { active_user_count: active_user_count + 1 }
         end
 
         it "is valid" do
