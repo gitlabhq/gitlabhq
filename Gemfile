@@ -202,6 +202,10 @@ gem 'request_store'
 gem "virtus"
 gem 'addressable'
 
+# Really fast deployer and server automation tool.
+# https://rubygems.org/gems/mina
+gem 'mina', '~> 0.3.4'
+
 group :development do
   gem 'brakeman', require: false
   gem "annotate", "~> 2.6.0.beta2"
