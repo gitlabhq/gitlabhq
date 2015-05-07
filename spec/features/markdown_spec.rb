@@ -62,7 +62,7 @@ describe 'GitLab Markdown' do
   # Given a header ID, goes to that element's parent (the header), then to its
   # second sibling (the body).
   def get_section(id)
-    @doc.at_css("##{id}").parent.next.next
+    @doc.at_css("##{id}").parent.next_element
   end
 
   # it 'writes to a file' do
@@ -189,7 +189,7 @@ describe 'GitLab Markdown' do
     end
 
     describe 'AutolinkFilter' do
-      let(:list) { get_section('autolinkfilter').parent.search('ul') }
+      let(:list) { get_section('autolinkfilter').next_element }
 
       def item(index)
         list.at_css("li:nth-child(#{index})")
