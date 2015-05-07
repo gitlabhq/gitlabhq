@@ -62,7 +62,7 @@ describe 'GitLab Markdown' do
   # Given a header ID, goes to that element's parent (the header), then to its
   # second sibling (the body).
   def get_section(id)
-    @doc.at_css("##{id}").parent.next.next
+    @doc.at_css("##{id}").parent.next_element
   end
 
   # it 'writes to a file' do
@@ -161,6 +161,19 @@ describe 'GitLab Markdown' do
       end
     end
 
+    describe 'Edge Cases' do
+      it 'allows markup inside link elements' do
+        expect(@doc.at_css('a[href="#link-emphasis"]').to_html).
+          to eq %{<a href="#link-emphasis"><em>text</em></a>}
+
+        expect(@doc.at_css('a[href="#link-strong"]').to_html).
+          to eq %{<a href="#link-strong"><strong>text</strong></a>}
+
+        expect(@doc.at_css('a[href="#link-code"]').to_html).
+          to eq %{<a href="#link-code"><code>text</code></a>}
+      end
+    end
+
     describe 'EmojiFilter' do
       it 'parses Emoji' do
         expect(@doc).to have_selector('img.emoji', count: 10)
@@ -176,7 +189,7 @@ describe 'GitLab Markdown' do
     end
 
     describe 'AutolinkFilter' do
-      let(:list) { get_section('autolinkfilter').parent.search('ul') }
+      let(:list) { get_section('autolinkfilter').next_element }
 
       def item(index)
         list.at_css("li:nth-child(#{index})")
