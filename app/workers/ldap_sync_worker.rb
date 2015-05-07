@@ -2,9 +2,7 @@ class LdapSyncWorker
   include Sidekiq::Worker
   include Sidetiq::Schedulable
 
-  # We check if we are in a Sidekiq server process because of a bug in Sidetiq
-  # 0.6.1 which was giving Unicorn trouble (throwing a Redis::InheritedError).
-  if Gitlab.config.ldap.enabled && Sidekiq.server?
+  if Gitlab.config.ldap.enabled
     HOUR = Gitlab.config.ldap.schedule_sync_hour
     MINUTE = Gitlab.config.ldap.schedule_sync_minute
 
