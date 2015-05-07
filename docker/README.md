@@ -5,14 +5,19 @@
 GitLab offers git repository management, code reviews, issue tracking, activity feeds, wikis. It has LDAP/AD integration, handles 25,000 users on a single server but can also run on a highly available active/active cluster.
 Learn more on [https://about.gitlab.com](https://about.gitlab.com)
 
-## How to build and use the docker images
+## After starting a container
 
 After starting a container you can go to [http://localhost:8080/](http://localhost:8080/) or [http://192.168.59.103:8080/](http://192.168.59.103:8080/) if you use boot2docker.
+
 It might take a while before the docker container is responding to queries.
+
+You can check the status with `sudo docker logs -f gitlab-ce`.
 
 You can login to the web interface with username `root` and password `5iveL!fe`.
 
 Next time, you can just use docker start and stop to run the container.
+
+## How to build the docker images
 
 This guide will also let you know how to build docker images yourself.
 Please run all the commands from the GitLab repo root directory.
@@ -41,6 +46,8 @@ Run the image:
 sudo docker run --detach --name gitlab-ce --publish 8080:80 --publish 2222:22 gitlab-ce
 ```
 
+After this you can login to the web interface as explained in 'After starting a container'
+
 Build the image:
 
 ```bash
@@ -57,7 +64,6 @@ sudo docker push sytse/gitlab-ce:7.10.1
 Troubleshoot:
 
 ```bash
-sudo docker logs -f gitlab-ce
 sudo docker run -ti -e TERM=linux --name gitlab-ce-troubleshoot --publish 8080:80 --publish 2222:22 sytse/gitlab-ce:7.10.1 bash /usr/local/bin/wrapper
 ```
 
@@ -70,14 +76,14 @@ sudo docker pull sytse/gitlab-data
 sudo docker pull sytse/gitlab-app:7.10.1
 ```
 
-### Run images
+### Run the images
 
 ```bash
 sudo docker run --name gitlab-data sytse/gitlab-data /bin/true
 sudo docker run --detach --name gitlab_app --publish 8080:80 --publish 2222:22 --volumes-from gitlab_data sytse/gitlab-app:7.10.1
 ```
 
-You can follow the configuration process with `sudo docker logs -f gitlab-app`.
+Now please refer to the section above 'After starting a container'.
 
 ### Build images
 
@@ -88,6 +94,8 @@ sudo docker build --tag gitlab-data docker/data/
 sudo docker build --tag gitlab-app:7.10.1 docker/app/
 ```
 
+After this run the images as described in the prepivous section.
+
 We assume using a data volume container, this will simplify migrations and backups.
 This empty container will exist to persist as volumes the 3 directories used by GitLab, so remember not to delete it.
 
@@ -96,8 +104,6 @@ The directories on data container are:
 - `/var/opt/gitlab` for application data
 - `/var/log/gitlab` for logs
 - `/etc/gitlab` for configuration
-
-After this run the images.
 
 ### Configure GitLab
 
@@ -127,7 +133,7 @@ sudo docker build --tag gitlab-app:7.10.1 docker/app/
 sudo docker run --detach --name gitlab-app --publish 8080:80 --publish 2222:22 --volumes-from gitlab_data gitlab-app:7.10.1
 ```
 
-On the first run GitLab will reconfigure and update itself. If everything runs OK don't forget to cleanup  image:
+On the first run GitLab will reconfigure and update itself. If everything runs OK don't forget to cleanup the app image:
 
 ```bash
 sudo docker rmi gitlab-app:7.8.1
