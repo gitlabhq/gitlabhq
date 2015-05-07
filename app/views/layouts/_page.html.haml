@@ -1,8 +1,8 @@
 .page-with-sidebar{ class: nav_sidebar_class }
   = render "layouts/broadcast"
   .sidebar-wrapper
-    - if defined?(sidebar)
-      = render(sidebar)
+    - if defined?(sidebar) && sidebar
+      = render "layouts/nav/#{sidebar}"
     - elsif current_user
       = render 'layouts/nav/dashboard'
     .collapse-nav

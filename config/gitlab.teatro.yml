@@ -7,8 +7,6 @@ production: &base
 
     user: root
 
-    email_from: example@example.com
-
     support_email: support@example.com
 
     default_projects_features:
@@ -18,6 +16,9 @@ production: &base
       wall: false
       snippets: false
       visibility_level: "private"  # can be "private" | "internal" | "public"
+
+  outgoing_emails:
+    from: example@example.com
 
   issues_tracker:
 
@@ -75,6 +76,8 @@ test:
   gitlab:
     host: localhost
     port: 80
+  outgoing_emails:
+    delivery_method: :test
   issues_tracker:
     redmine:
       title: "Redmine"

@@ -1,4 +1,4 @@
-class Dashboard::MilestonesController < ApplicationController
+class Dashboard::MilestonesController < Dashboard::ApplicationController
   before_action :load_projects
 
   def index

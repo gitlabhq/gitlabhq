@@ -1,5 +1,7 @@
 class Oauth::AuthorizedApplicationsController < Doorkeeper::AuthorizedApplicationsController
-  layout "profile"
+  include PageLayoutHelper
+
+  layout 'profile'
 
   def destroy
     Doorkeeper::AccessToken.revoke_all_for(params[:id], current_resource_owner)

@@ -47,7 +47,7 @@ module VisibilityLevelHelper
       haml_tag :span do
         case level
         when Gitlab::VisibilityLevel::PRIVATE
-          haml_concat "The snippet is visible only for me"
+          haml_concat "The snippet is visible only for me."
         when Gitlab::VisibilityLevel::INTERNAL
           haml_concat "The snippet is visible for any logged in user."
         when Gitlab::VisibilityLevel::PUBLIC

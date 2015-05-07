@@ -4,8 +4,6 @@ class InvitesController < ApplicationController
 
   respond_to :html
 
-  layout 'navless'
-
   def show
 
   end

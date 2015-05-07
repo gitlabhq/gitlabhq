@@ -1,14 +1,19 @@
+- page_title "Emails"
 %h3.page-title
   Email Settings
 %p.light
   Your
   %b Primary Email
   will be used for avatar detection and web based operations, such as edits and merges.
-  %br
+%p.light
   Your
   %b Notification Email
   will be used for account notifications.
-  %br
+%p.light
+  Your
+  %b Public Email
+  will be displayed on your public profile.
+%p.light
   All email addresses will be used to identify your commits.
 
 %hr
@@ -20,13 +25,17 @@
     %li
       %strong= @primary
       %span.label.label-success Primary Email
-      - if @primary === @public_email
+      - if @primary === current_user.public_email
         %span.label.label-info Public Email
+      - if @primary === current_user.notification_email
+        %span.label.label-info Notification Email
     - @emails.each do |email|
       %li
         %strong= email.email
-        - if email.email === @public_email
+        - if email.email === current_user.public_email
           %span.label.label-info Public Email
+        - if email.email === current_user.notification_email
+          %span.label.label-info Notification Email
         %span.cgray
           added #{time_ago_with_tooltip(email.created_at)}
         = link_to 'Remove', profile_email_path(email), data: { confirm: 'Are you sure?'}, method: :delete, class: 'btn btn-sm btn-remove pull-right'

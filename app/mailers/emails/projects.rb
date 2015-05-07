@@ -129,7 +129,7 @@ module Emails
         if send_from_committer_email && can_send_from_user_email?(@author)
           @author.email
         else
-          Gitlab.config.gitlab.email_reply_to
+          Gitlab.config.outgoing_emails.reply_to
         end
 
       mail(from:      sender(author_id, send_from_committer_email),

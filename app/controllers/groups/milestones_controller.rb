@@ -1,6 +1,4 @@
-class Groups::MilestonesController < ApplicationController
-  layout 'group'
-
+class Groups::MilestonesController < Groups::ApplicationController
   before_action :authorize_group_milestone!, only: :update
 
   def index

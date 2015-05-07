@@ -61,3 +61,13 @@ head /proc/sys/kernel/shmmax /proc/sys/kernel/shmall
 free -m
 
 ```
+
+# Cleanup
+
+Remove ALL docker containers and images (also non GitLab ones):
+
+```
+docker rm $(docker ps -a -q)
+docker rmi $(docker images -q)
+```
+

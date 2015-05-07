@@ -68,7 +68,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
 
   step 'I should see project "Shop" version' do
     within '.project-side' do
-      page.should have_content 'Version: 6.7.0.pre'
+      page.should have_content '6.7.0.pre'
     end
   end
 
@@ -93,5 +93,13 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   step 'I should see project "Shop" README' do
     page.should have_link 'README.md'
     page.should have_content 'testme'
+  end
+
+  step 'I add project tags' do
+    fill_in 'Tags', with: 'tag1, tag2'
+  end
+
+  step 'I should see project tags' do
+    expect(find_field('Tags').value).to eq 'tag1, tag2'
   end
 end

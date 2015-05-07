@@ -37,6 +37,6 @@ public/assets/
 public/uploads.*
 public/uploads/
 rails_best_practices_output.html
-tags
+/tags
 tmp/
 vendor/bundle/*

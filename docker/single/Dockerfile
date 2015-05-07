@@ -1,8 +1,10 @@
 FROM ubuntu:14.04
+MAINTAINER Sytse Sijbrandij
 
 # Install required packages
-RUN apt-get update -q \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -qy --no-install-recommends \
+RUN apt-get update
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get install -yq --no-install-recommends \
       ca-certificates \
       openssh-server \
       wget
@@ -11,7 +13,7 @@ RUN apt-get update -q \
 # If the Omnibus package version below is outdated please contribute a merge request to update it.
 # If you run GitLab Enterprise Edition point it to a location where you have downloaded it.
 RUN TMP_FILE=$(mktemp); \
-    wget -q -O $TMP_FILE https://downloads-packages.s3.amazonaws.com/ubuntu-14.04/gitlab-ce_7.10.0~omnibus.2-1_amd64.deb \
+    wget -q -O $TMP_FILE https://downloads-packages.s3.amazonaws.com/ubuntu-14.04/gitlab-ce_7.10.1~omnibus.2-1_amd64.deb \
     && dpkg -i $TMP_FILE \
     && rm -f $TMP_FILE
 

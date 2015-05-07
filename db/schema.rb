@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150429002313) do
+ActiveRecord::Schema.define(version: 20150502064022) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(version: 20150429002313) do
     t.integer  "max_attachment_size",          default: 10,   null: false
     t.integer  "default_project_visibility"
     t.integer  "default_snippet_visibility"
+    t.text     "restricted_signup_domains"
   end
 
   create_table "broadcast_messages", force: true do |t|
@@ -349,10 +350,10 @@ ActiveRecord::Schema.define(version: 20150429002313) do
     t.string   "import_url"
     t.integer  "visibility_level",       default: 0,        null: false
     t.boolean  "archived",               default: false,    null: false
+    t.string   "avatar"
     t.string   "import_status"
     t.float    "repository_size",        default: 0.0
     t.integer  "star_count",             default: 0,        null: false
-    t.string   "avatar"
     t.string   "import_type"
     t.string   "import_source"
   end
@@ -433,12 +434,15 @@ ActiveRecord::Schema.define(version: 20150429002313) do
     t.datetime "created_at"
   end
 
-  add_index "taggings", ["tag_id"], name: "index_taggings_on_tag_id", using: :btree
+  add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true, using: :btree
   add_index "taggings", ["taggable_id", "taggable_type", "context"], name: "index_taggings_on_taggable_id_and_taggable_type_and_context", using: :btree
 
   create_table "tags", force: true do |t|
-    t.string "name"
+    t.string  "name"
+    t.integer "taggings_count", default: 0
   end
+
+  add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",                         default: "",    null: false
@@ -472,6 +476,7 @@ ActiveRecord::Schema.define(version: 20150429002313) do
     t.integer  "notification_level",            default: 1,     null: false
     t.datetime "password_expires_at"
     t.integer  "created_by_id"
+    t.datetime "last_credential_check_at"
     t.string   "avatar"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
@@ -479,7 +484,6 @@ ActiveRecord::Schema.define(version: 20150429002313) do
     t.string   "unconfirmed_email"
     t.boolean  "hide_no_ssh_key",               default: false
     t.string   "website_url",                   default: "",    null: false
-    t.datetime "last_credential_check_at"
     t.string   "github_access_token"
     t.string   "gitlab_access_token"
     t.string   "notification_email"
@@ -500,30 +504,6 @@ ActiveRecord::Schema.define(version: 20150429002313) do
   add_index "users", ["name"], name: "index_users_on_name", using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["username"], name: "index_users_on_username", using: :btree
-
-  create_table "users_groups", force: true do |t|
-    t.integer  "group_access",                   null: false
-    t.integer  "group_id",                       null: false
-    t.integer  "user_id",                        null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "notification_level", default: 3, null: false
-  end
-
-  add_index "users_groups", ["user_id"], name: "index_users_groups_on_user_id", using: :btree
-
-  create_table "users_projects", force: true do |t|
-    t.integer  "user_id",                        null: false
-    t.integer  "project_id",                     null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "project_access",     default: 0, null: false
-    t.integer  "notification_level", default: 3, null: false
-  end
-
-  add_index "users_projects", ["project_access"], name: "index_users_projects_on_project_access", using: :btree
-  add_index "users_projects", ["project_id"], name: "index_users_projects_on_project_id", using: :btree
-  add_index "users_projects", ["user_id"], name: "index_users_projects_on_user_id", using: :btree
 
   create_table "users_star_projects", force: true do |t|
     t.integer  "project_id", null: false

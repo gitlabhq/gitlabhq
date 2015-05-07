@@ -4,7 +4,8 @@
       = link_to root_path, class: 'home', title: 'Dashboard', id: 'js-shortcuts-home', data: {toggle: 'tooltip', placement: 'bottom'} do
         = brand_header_logo
         %h3 GitLab
-    %h1.title= title
+    %h1.title
+      = title
 
     %button.navbar-toggle{type: 'button', data: {target: '.navbar-collapse', toggle: 'collapse'}}
       %span.sr-only Toggle navigation

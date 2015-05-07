@@ -7,78 +7,15 @@
   %strong.label-branch #{@merge_request.target_project_namespace}:#{@merge_request.target_branch}
 
   %span.pull-right
-    = link_to 'Change branches', new_namespace_project_merge_request_path(@project.namespace, @project)
-
-= form_for [@project.namespace.becomes(Namespace), @project, @merge_request], html: { class: "merge-request-form form-horizontal gfm-form" } do |f|
+    = link_to 'Change branches', mr_change_branches_path(@merge_request)
+%hr
+= form_for [@project.namespace.becomes(Namespace), @project, @merge_request], html: { class: 'merge-request-form form-horizontal gfm-form' } do |f|
   .merge-request-form-info
-    .form-group
-      = f.label :title, class: 'control-label' do
-        %strong Title *
-      .col-sm-10
-        = f.text_field :title, maxlength: 255, autofocus: true, class: 'form-control pad js-gfm-input', required: true
-    .form-group.issuable-description
-      = f.label :description, 'Description', class: 'control-label'
-      .col-sm-10
-        = render layout: 'projects/md_preview', locals: { preview_class: "wiki" } do
-          = render 'projects/zen', f: f, attr: :description, classes: 'description form-control'
-
-          .col-sm-12-hint
-            .pull-left
-              Parsed with
-              #{link_to 'Gitlab Flavored Markdown', help_page_path('markdown', 'markdown'), target: '_blank'}.
-            .pull-right
-              Attach files by dragging &amp; dropping
-              or #{link_to 'selecting them', '#', class: 'markdown-selector'}.
-
-          .clearfix
-          .error-alert
-    %hr
-    .form-group
-      .issue-assignee
-        = f.label :assignee_id, class: 'control-label' do
-          %i.fa.fa-user
-          Assign to
-      .col-sm-10
-        = users_select_tag('merge_request[assignee_id]', placeholder: 'Select a user', class: 'custom-form-control', selected: @merge_request.assignee_id, project_id: @merge_request.target_project_id)
-        &nbsp;
-        = link_to 'Assign to me', '#', class: 'btn assign-to-me-link'
-    .form-group
-      .issue-milestone
-        = f.label :milestone_id, class: 'control-label' do
-          %i.fa.fa-clock-o
-          Milestone
-        .col-sm-10
-          - if milestone_options(@merge_request).present?
-            = f.select(:milestone_id, milestone_options(@merge_request), {include_blank: 'Select milestone'}, {class: 'select2'})
-          - else
-            %span.light No open milestones available.
-          &nbsp;
-          - if can? current_user, :admin_milestone, @merge_request.target_project
-            = link_to 'Create new milestone', new_namespace_project_milestone_path(@merge_request.target_project.namespace, @merge_request.target_project), target: :blank
-    .form-group
-      = f.label :label_ids, class: 'control-label' do
-        %i.fa.fa-tag
-        Labels
-      .col-sm-10
-        - if @merge_request.target_project.labels.any?
-          = f.collection_select :label_ids, @merge_request.target_project.labels.all, :id, :name, {selected: @merge_request.label_ids}, multiple: true, class: 'select2'
-        - else
-          %span.light No labels yet.
-        &nbsp;
-        - if can? current_user, :admin_label, @merge_request.target_project
-          = link_to 'Create new label', new_namespace_project_label_path(@merge_request.target_project.namespace, @merge_request.target_project), target: :blank
-
-    .form-actions
-      - if guide_url = contribution_guide_url(@target_project)
-        %p
-          Please review the
-          %strong #{link_to 'guidelines for contribution', guide_url}
-          to this repository.
-      = f.hidden_field :source_project_id
-      = f.hidden_field :source_branch
-      = f.hidden_field :target_project_id
-      = f.hidden_field :target_branch
-      = f.submit 'Submit merge request', class: 'btn btn-create'
+    = render 'projects/issuable_form', f: f, issuable: @merge_request
+    = f.hidden_field :source_project_id
+    = f.hidden_field :source_branch
+    = f.hidden_field :target_project_id
+    = f.hidden_field :target_branch
 
 .mr-compare.merge-request
   %ul.nav.nav-tabs.merge-request-tabs

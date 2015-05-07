@@ -1,6 +1,8 @@
 class SearchController < ApplicationController
   include SearchHelper
 
+  layout 'search'
+
   def show
     return if params[:search].nil? || params[:search].blank?
 

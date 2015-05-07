@@ -49,4 +49,16 @@ module MergeRequestsHelper
   def issues_sentence(issues)
     issues.map { |i| "##{i.iid}" }.to_sentence
   end
+
+  def mr_change_branches_path(merge_request)
+    new_namespace_project_merge_request_path(
+      @project.namespace, @project,
+      merge_request: {
+        source_project_id: @merge_request.source_project_id,
+        target_project_id: @merge_request.target_project_id,
+        source_branch: @merge_request.source_branch,
+        target_branch: nil
+      }
+    )
+  end
 end
