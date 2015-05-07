@@ -40,3 +40,6 @@ rails_best_practices_output.html
 /tags
 tmp/
 vendor/bundle/*
+var-log-gitlab/
+var-opt-gitlab/
+etc-gitlab/
