@@ -11,7 +11,7 @@ After starting a container you can go to [http://localhost:8080/](http://localho
 
 It might take a while before the docker container is responding to queries.
 
-You can check the status with `sudo docker logs -f gitlab-ce`.
+You can check the status with something like `sudo docker logs -f 7c10172d7705`.
 
 You can login to the web interface with username `root` and password `5iveL!fe`.
 
@@ -43,10 +43,10 @@ sudo docker pull sytse/gitlab-ce:7.10.1
 Run the image:
 
 ```bash
-sudo docker run --detach --name gitlab-ce --publish 8080:80 --publish 2222:22 gitlab-ce
+sudo docker run --detach --publish 8080:80 --publish 2222:22 sytse/gitlab-ce:7.10.1
 ```
 
-After this you can login to the web interface as explained in 'After starting a container'
+After this you can login to the web interface as explained above in 'After starting a container'.
 
 Build the image:
 
@@ -63,7 +63,7 @@ sudo docker push sytse/gitlab-ce
 Diagnosing commands:
 
 ```bash
-docker run -i -t -v `pwd`/var-opt-gitlab:/var/opt/gitlab -v `pwd`/var-log-gitlab:/var/log/gitlab -v `pwd`/etc-gitlab:/etc/gitlab sytse/gitlab-ce:7.10.1
+sudo docker run -i -t sytse/gitlab-ce:7.10.1
 sudo docker run -ti -e TERM=linux --name gitlab-ce-troubleshoot --publish 8080:80 --publish 2222:22 sytse/gitlab-ce:7.10.1 bash /usr/local/bin/wrapper
 ```
 
@@ -83,7 +83,7 @@ sudo docker run --name gitlab-data sytse/gitlab-data /bin/true
 sudo docker run --detach --name gitlab_app --publish 8080:80 --publish 2222:22 --volumes-from gitlab_data sytse/gitlab-app:7.10.1
 ```
 
-Now please refer to the section above 'After starting a container'.
+After this you can login to the web interface as explained above in 'After starting a container'.
 
 ### Build images
 
