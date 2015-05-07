@@ -51,19 +51,19 @@ After this you can login to the web interface as explained in 'After starting a 
 Build the image:
 
 ```bash
-sudo docker build --tag gitlab-ce docker/single/
+sudo docker build --tag sytse/gitlab-ce:7.10.1 docker/single/
 ```
 
 Publish the image to Dockerhub:
 
 ```bash
-sudo docker commit -m "Initial commit" -a "Sytse Sijbrandij" gitlab-ce sytse/gitlab-ce:7.10.1
-sudo docker push sytse/gitlab-ce:7.10.1
+sudo docker push sytse/gitlab-ce
 ```
 
-Troubleshoot:
+Diagnosing commands:
 
 ```bash
+docker run -i -t -v `pwd`/var-opt-gitlab:/var/opt/gitlab -v `pwd`/var-log-gitlab:/var/log/gitlab -v `pwd`/etc-gitlab:/etc/gitlab sytse/gitlab-ce:7.10.1
 sudo docker run -ti -e TERM=linux --name gitlab-ce-troubleshoot --publish 8080:80 --publish 2222:22 sytse/gitlab-ce:7.10.1 bash /usr/local/bin/wrapper
 ```
 
