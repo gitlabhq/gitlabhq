@@ -7,16 +7,16 @@ Learn more on [https://about.gitlab.com](https://about.gitlab.com)
 
 ## How to build and use the docker images
 
-This guide will let you know how to build docker images yourself.
-Run the below commands from the GitLab repo root directory.
-People using boot2docker on OSX should run all the commands without sudo.
-
-After starting a container you can then go to [http://localhost:8080/](http://localhost:8080/) or [http://192.168.59.103:8080/](http://192.168.59.103:8080/) if you use boot2docker.
+After starting a container you can go to [http://localhost:8080/](http://localhost:8080/) or [http://192.168.59.103:8080/](http://192.168.59.103:8080/) if you use boot2docker.
 It might take a while before the docker container is responding to queries.
 
 You can login to the web interface with username `root` and password `5iveL!fe`.
 
 Next time, you can just use docker start and stop to run the container.
+
+This guide will also let you know how to build docker images yourself.
+Please run all the commands from the GitLab repo root directory.
+People using boot2docker should run all the commands without sudo.
 
 ## Choosing between the single and the app and data images
 
@@ -29,43 +29,59 @@ After that we'll describe how to use the app and data images.
 
 ## Single image
 
-Build the image with:
+Get a published image from Dockerhub:
 
-```
-sudo docker build --tag gitlab-ce docker/single/
+```bash
+sudo docker pull sytse/gitlab-ce:7.10.1
 ```
 
-Run the image with:
+Run the image:
 
-```
+```bash
 sudo docker run --detach --name gitlab-ce --publish 8080:80 --publish 2222:22 gitlab-ce
 ```
 
-Publish the image with:
+Build the image:
+
+```bash
+sudo docker build --tag gitlab-ce docker/single/
+```
+
+Publish the image to Dockerhub:
 
 ```bash
 sudo docker commit -m "Initial commit" -a "Sytse Sijbrandij" gitlab-ce sytse/gitlab-ce:7.10.1
 sudo docker push sytse/gitlab-ce:7.10.1
 ```
 
-Use the published image with:
+Troubleshoot:
 
 ```bash
-sudo docker pull sytse/gitlab-ce:7.10.1
-sudo docker run --detach --name gitlab-ce --publish 8080:80 --publish 2222:22 sytse/gitlab-ce:7.10.1
-```
-
-Troubleshoot with:
-
-```
 sudo docker logs -f gitlab-ce
 sudo docker run -ti -e TERM=linux --name gitlab-ce-troubleshoot --publish 8080:80 --publish 2222:22 sytse/gitlab-ce:7.10.1 bash /usr/local/bin/wrapper
 ```
 
-## Build and use app and data images
+## App and data images
+
+### Get published images from Dockerhub
+
+```bash
+sudo docker pull sytse/gitlab-data
+sudo docker pull sytse/gitlab-app:7.10.1
+```
+
+### Run images
+
+```bash
+sudo docker run --name gitlab-data sytse/gitlab-data /bin/true
+sudo docker run --detach --name gitlab_app --publish 8080:80 --publish 2222:22 --volumes-from gitlab_data sytse/gitlab-app:7.10.1
+```
+
+You can follow the configuration process with `sudo docker logs -f gitlab-app`.
+
+### Build images
 
 Build your own based on the Omnibus packages with the following commands.
-
 
 ```bash
 sudo docker build --tag gitlab-data docker/data/
@@ -81,19 +97,7 @@ The directories on data container are:
 - `/var/log/gitlab` for logs
 - `/etc/gitlab` for configuration
 
-Create the data container with:
-
-```bash
-sudo docker run --name gitlab-data gitlab-data /bin/true
-```
-
-After creating data container run GitLab container:
-
-```bash
-sudo docker run --detach --name gitlab-app::7.10.1 --publish 8080:80 --publish 2222:22 --volumes-from gitlab-data gitlab-app:7.10.1
-```
-
-You can follow the configuration process with `sudo docker logs -f gitlab-app`.
+After this run the images.
 
 ### Configure GitLab
 
@@ -129,7 +133,7 @@ On the first run GitLab will reconfigure and update itself. If everything runs O
 sudo docker rmi gitlab-app:7.8.1
 ```
 
-### Publish app and data images to Dockerhub
+### Publish images to Dockerhub
 
 Login to Dockerhub with `sudo docker login` and run the following (replace '7.9.2' with the version you're using and 'Sytse Sijbrandij' with your name):
 
@@ -138,17 +142,6 @@ sudo docker commit -m "Initial commit" -a "Sytse Sijbrandij" gitlab-app:7.10.1 s
 sudo docker push sytse/gitlab-app:7.10.1
 sudo docker commit -m "Initial commit" -a "Sytse Sijbrandij" gitlab_data sytse/gitlab_data
 sudo docker push sytse/gitlab_data
-```
-
-### Use app and data images published to Dockerhub
-
-This examples uses the unofficial images made by GitLab CEO Sytse.
-
-```bash
-sudo docker pull sytse/gitlab-data
-sudo docker pull sytse/gitlab-app:7.10.1
-sudo docker run --name gitlab-data sytse/gitlab-data /bin/true
-sudo docker run --detach --name gitlab_app --publish 8080:80 --publish 2222:22 --volumes-from gitlab_data sytse/gitlab-app:7.10.1
 ```
 
 ## Troubleshooting
