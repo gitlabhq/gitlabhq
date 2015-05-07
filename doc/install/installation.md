@@ -4,6 +4,12 @@
 
 Since an installation from source is a lot of work and error prone we strongly recommend the fast and reliable [Omnibus package installation](https://about.gitlab.com/downloads/) (deb/rpm).
 
+One reason the Omnibus package is more reliable is its use of Runit to restart any of the GitLab processes in case one crashes.
+On heavily used GitLab instances the memory usage of the Sidekiq background worker will grow over time.
+Omnibus packages solve this by [letting the Sidekiq terminate gracefully](http://doc.gitlab.com/ce/operations/sidekiq_memory_killer.html) if it uses too much memory.
+After this termination Runit will detect Sidekiq is not running and will start it.
+Since installations from source don't have Runit, Sidekiq can't be terminated and its memory usage will grow over time.
+
 ## Select Version to Install
 
 Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) from the tag (version) of GitLab you would like to install.
