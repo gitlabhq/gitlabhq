@@ -22,8 +22,8 @@
         "mode": "RW"
       },
       {
-        "containerPath": "/var/opt/gitlab",
-        "hostPath": "/var/opt/gitlab",
+        "containerPath": "/etc/gitlab",
+        "hostPath": "/etc/gitlab",
         "mode": "RW"
       }
     ]
