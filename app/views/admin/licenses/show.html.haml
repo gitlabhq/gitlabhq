@@ -55,7 +55,7 @@
 
               #{restricted} users
 
-              - if historical && historical > restricted
+              - if historical && historical > restricted && current < restricted
                 %span.label.label-danger.pull-right.prepend-left-10
                   %strong 
                     Maximum during license life: #{historical} users
