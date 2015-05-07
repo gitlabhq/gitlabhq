@@ -43,6 +43,10 @@ v 7.10.0 (unreleased)
   - Prevent sending empty messages to HipChat (Chulki Lee)
   - Improve UI for mobile phones on dashboard and project pages
   - Add room notification and message color option for HipChat
+  - Allow to use non-ASCII letters and dashes in project and namespace name. (Jakub Jirutka)
+  - Add footnotes support to Markdown (Guillaume Delbergue)
+  - Add current_sign_in_at to UserFull REST api.
+  - Make Sidekiq MemoryKiller shutdown signal configurable
 
 v 7.10.2
   - Fix CI links on MR page
