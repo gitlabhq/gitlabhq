@@ -62,6 +62,16 @@ ul.notes {
         word-wrap: break-word;
         @include md-typography;
 
+        // Reduce left padding of first ul element
+        ul.task-list:first-child {
+          padding-left: 10px;
+
+          // sub-lists should be padded normally
+          ul {
+            padding-left: 20px;
+          }
+        }
+
         hr {
           margin: 10px 0;
         }

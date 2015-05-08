@@ -1,3 +1,7 @@
+#= require jquery
+#= require bootstrap
+#= require task_list
+
 class @MergeRequest
   constructor: (@opts) ->
     @initContextWidget()
@@ -17,8 +21,11 @@ class @MergeRequest
 
     disableButtonIfEmptyField '#commit_message', '.accept_merge_request'
 
+    # Prevent duplicate event bindings
+    @disableTaskList()
+
     if $("a.btn-close").length
-      $("li.task-list-item input:checkbox").prop("disabled", false)
+      @initTaskList()
 
     $('.merge-request-details').waitForImages ->
       $('.issuable-affix').affix offset:
@@ -76,9 +83,6 @@ class @MergeRequest
       this.$('.remove_source_branch_widget').hide()
       this.$('.remove_source_branch_in_progress').hide()
       this.$('.remove_source_branch_widget.failed').show()
-
-    $('.task-list-item input:checkbox').off('change')
-    $('.task-list-item input:checkbox').change('merge_request', updateTaskState)
 
   activateTab: (action) ->
     this.$('.merge-request-tabs li').removeClass 'active'
@@ -156,3 +160,22 @@ class @MergeRequest
           else
             setTimeout(merge_request.mergeInProgress, 3000)
       dataType: 'json'
+
+  initTaskList: ->
+    $('.merge-request-details .js-task-list-container').taskList('enable')
+    $(document).on 'tasklist:changed', '.merge-request-details .js-task-list-container', @updateTaskList
+
+  disableTaskList: ->
+    $('.merge-request-details .js-task-list-container').taskList('disable')
+    $(document).off 'tasklist:changed', '.merge-request-details .js-task-list-container'
+
+  # TODO (rspeicher): Make the merge request description inline-editable like a
+  # note so that we can re-use its form here
+  updateTaskList: ->
+    patchData = {}
+    patchData['merge_request'] = {'description': $('.js-task-list-field', this).val()}
+
+    $.ajax
+      type: 'PATCH'
+      url: $('form.js-merge-request-update').attr('action')
+      data: patchData

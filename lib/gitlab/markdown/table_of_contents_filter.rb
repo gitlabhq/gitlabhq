@@ -31,7 +31,7 @@ module Gitlab
           id = text.downcase
           id.gsub!(PUNCTUATION_REGEXP, '') # remove punctuation
           id.gsub!(' ', '-') # replace spaces with dash
-          id.squeeze!(' -') # replace multiple spaces or dashes with one
+          id.squeeze!('-') # replace multiple dashes with one
 
           uniq = (headers[id] > 0) ? "-#{headers[id]}" : ''
           headers[id] += 1

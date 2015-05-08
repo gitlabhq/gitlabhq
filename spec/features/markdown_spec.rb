@@ -24,6 +24,7 @@ require 'erb'
 #               -> Rinku (http, https, ftp)
 #               -> Other schemes
 #             -> References
+#             -> TaskList
 #           -> `html_safe`
 #           -> Template
 #
@@ -279,6 +280,15 @@ describe 'GitLab Markdown' do
         expect(body).to have_selector('a.gfm.gfm-label', count: 3)
       end
     end
+
+    describe 'Task Lists' do
+      it 'generates task lists' do
+        body = get_section('task-lists')
+        expect(body).to have_selector('ul.task-list', count: 2)
+        expect(body).to have_selector('li.task-list-item', count: 7)
+        expect(body).to have_selector('input[checked]', count: 3)
+      end
+    end
   end
 end
 
@@ -289,9 +299,8 @@ end
 # once. Unfortunately RSpec will not let you access `let`s in a `before(:all)`
 # block, so we fake it by encapsulating all the shared setup in this class.
 #
-# The class contains the raw Markup used in the test, dynamically substituting
-# real objects, created from factories and setup on-demand, when referenced in
-# the Markdown.
+# The class renders `spec/fixtures/markdown.md.erb` using ERB, allowing for
+# reference to the factory-created objects.
 class MarkdownFeature
   include FactoryGirl::Syntax::Methods
 

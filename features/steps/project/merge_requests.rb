@@ -108,10 +108,6 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
            author: project.users.first)
   end
 
-  step 'project "Shop" has "MR-task-open" open MR with task markdown' do
-    create_taskable(:merge_request, 'MR-task-open')
-  end
-
   step 'I switch to the diff tab' do
     visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
   end

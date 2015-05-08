@@ -9,11 +9,6 @@
 # defaults to spec/javascripts
 spec_dir: spec/javascripts
 
-# list of file expressions to include as helpers into spec runner
-# relative path from spec_dir
-helpers:
-  - "helpers/**/*.{js.coffee,js,coffee}"
-
 # list of file expressions to include as specs into spec runner
 # relative path from spec_dir
 spec_files:

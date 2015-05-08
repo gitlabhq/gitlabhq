@@ -290,11 +290,6 @@ GEM
     i18n (0.7.0)
     ice_cube (0.11.1)
     ice_nine (0.10.0)
-    jasmine (2.2.0)
-      jasmine-core (~> 2.2)
-      phantomjs
-      rack (>= 1.2.1)
-      rake
     jasmine-core (2.2.0)
     jasmine-rails (0.10.8)
       jasmine-core (>= 1.3, < 3.0)
@@ -597,6 +592,8 @@ GEM
     stamp (0.5.0)
     state_machine (1.2.0)
     stringex (2.5.2)
+    task_list (1.0.2)
+      html-pipeline
     temple (0.6.7)
     term-ansicolor (1.2.2)
       tins (~> 0.8)
@@ -724,7 +721,6 @@ DEPENDENCIES
   hipchat (~> 1.5.0)
   html-pipeline (~> 1.11.0)
   httparty
-  jasmine (~> 2.2.0)
   jasmine-rails
   jquery-atwho-rails (~> 1.0.0)
   jquery-rails
@@ -789,6 +785,7 @@ DEPENDENCIES
   spring-commands-spinach (= 1.0.0)
   stamp
   state_machine
+  task_list (~> 1.0.0)
   test_after_commit
   thin
   tinder (~> 1.9.2)
