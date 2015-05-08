@@ -44,7 +44,7 @@ Create release tag and push to remotes:
 bundle exec rake release["x.x.x"]
 ```
 
-### Release
+## Release
 
 1. [Build new packages with the latest version](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/release.md)
 1. Apply the patch to GitLab.com and the private GitLab development server
@@ -53,3 +53,4 @@ bundle exec rake release["x.x.x"]
 1. Send tweets about the release from `@gitlab`, tweet should include the most important feature that the release is addressing and link to the blog post
 1. Note in the 'GitLab X.X regressions' issue that the patch was published (CE only)
 1. [Create new AMIs](https://dev.gitlab.org/gitlab/AMI/blob/master/README.md)
+1. Create a new patch release issue for the next potential release
