@@ -43,6 +43,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :default_snippet_visibility,
       :restricted_signup_domains_raw,
       restricted_visibility_levels: [],
+      :version_check_enabled
     )
   end
 end
