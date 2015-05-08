@@ -23,6 +23,7 @@ v 7.11.0 (unreleased)
   - Fix bug causing `@whatever` inside an inline code snippet (backtick-style) to be picked up as a user mention.
   - When use change branches link at MR form - save source branch selection instead of target one
   - Improve handling of large diffs
+  - Added GitLab Event header for project hooks
   -
   - Show Atom feed buttons everywhere where applicable.
   - Add project activity atom feed.
