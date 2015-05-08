@@ -483,7 +483,7 @@ class Project < ActiveRecord::Base
 
   def execute_hooks(data, hooks_scope = :push_hooks)
     hooks.send(hooks_scope).each do |hook|
-      hook.async_execute(data)
+      hook.async_execute(data, hooks_scope.to_s)
     end
   end
 

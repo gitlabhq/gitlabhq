@@ -12,6 +12,12 @@ If you send a web hook to an SSL endpoint [the certificate will not be verified]
 
 Triggered when you push to the repository except when pushing tags.
 
+**Request header**:
+
+```
+X-Gitlab-Event: Push Hook
+```
+
 **Request body:**
 
 ```json
@@ -63,6 +69,13 @@ Triggered when you push to the repository except when pushing tags.
 
 Triggered when you create (or delete) tags to the repository.
 
+**Request header**:
+
+```
+X-Gitlab-Event: Tag Push Hook
+```
+
+
 **Request body:**
 
 ```json
@@ -91,6 +104,12 @@ Triggered when you create (or delete) tags to the repository.
 ## Issues events
 
 Triggered when a new issue is created or an existing issue was updated/closed/reopened.
+
+**Request header**:
+
+```
+X-Gitlab-Event: Issue Hook
+```
 
 **Request body:**
 
@@ -125,6 +144,12 @@ Triggered when a new issue is created or an existing issue was updated/closed/re
 ## Merge request events
 
 Triggered when a new merge request is created or an existing merge request was updated/merged/closed.
+
+**Request header**:
+
+```
+X-Gitlab-Event: Merge Request Hook
+```
 
 **Request body:**
 
