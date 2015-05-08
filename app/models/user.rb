@@ -438,7 +438,7 @@ class User < ActiveRecord::Base
   end
 
   def project_deploy_keys
-    DeployKey.in_projects(self.authorized_projects.pluck(:id))
+    DeployKey.unscoped.in_projects(self.authorized_projects.pluck(:id)).distinct(:id)
   end
 
   def accessible_deploy_keys
