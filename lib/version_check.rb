@@ -12,6 +12,7 @@ class VersionCheck
     "#{host}?gitlab_info=#{encoded_data}"
   end
 
+  # FIXME: Replace with version.gitlab.com
   def host
     'http://localhost:9090/check.png'
   end
