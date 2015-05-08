@@ -10,8 +10,9 @@ module Gitlab
       def whitelist
         whitelist = HTML::Pipeline::SanitizationFilter::WHITELIST
 
-        # Allow `class` and `id` on all elements
-        whitelist[:attributes][:all].push('class', 'id')
+        # Allow code highlighting
+        whitelist[:attributes]['pre'] = %w(class)
+        whitelist[:attributes]['span'] = %w(class)
 
         # Allow table alignment
         whitelist[:attributes]['th'] = %w(style)
@@ -23,6 +24,9 @@ module Gitlab
         # Remove `rel` attribute from `a` elements
         whitelist[:transformers].push(remove_rel)
 
+        # Remove `class` attribute from non-highlight spans
+        whitelist[:transformers].push(clean_spans)
+
         whitelist
       end
 
@@ -30,6 +34,17 @@ module Gitlab
         lambda do |env|
           if env[:node_name] == 'a'
             env[:node].remove_attribute('rel')
+          end
+        end
+      end
+
+      def clean_spans
+        lambda do |env|
+          return unless env[:node_name] == 'span'
+          return unless env[:node].has_attribute?('class')
+
+          unless has_ancestor?(env[:node], 'pre')
+            env[:node].remove_attribute('class')
           end
         end
       end
