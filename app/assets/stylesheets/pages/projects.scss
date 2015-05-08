@@ -102,6 +102,15 @@
 
   .input-group-addon {
     background: #FAFAFA;
+
+    &.git-protocols {
+      padding: 0;
+      border: none;
+
+      .input-group-btn:last-child > .btn {
+        @include border-radius-right(0);
+      }
+    }
   }
 }
 
