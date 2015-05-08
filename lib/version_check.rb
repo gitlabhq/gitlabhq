@@ -1,27 +1,15 @@
-# This class is used to encrypt GitLab version and URL
-# with public key when we send it to version.gitlab.com to
+require "base64"
+
+# This class is used to build image URL to
 # check if it is a new version for update
 class VersionCheck
-  include SimpleEncrypt
-
-  def public_key
-    public_key_file = Rails.root.join('safe', 'public.pem').to_s
-    File.read(public_key_file)
-  end
-
   def data
-    {
-      version: Gitlab::VERSION,
-      url: Gitlab.config.gitlab.url
-    }
-  end
-
-  def encrypt(string)
-    encrypt_with_public_key(string, public_key)
+    { version: Gitlab::VERSION }
   end
 
   def url
-    "#{host}?gitlab_info=#{encrypt(data.to_json)}"
+    encoded_data = Base64.urlsafe_encode64(data.to_json)
+    "#{host}?gitlab_info=#{encoded_data}"
   end
 
   def host
