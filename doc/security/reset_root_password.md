@@ -13,7 +13,7 @@ Wait until the console has loaded.
 There are multiple ways to find your user. You can search for email or username.
 
 ```bash
-irb(main):001:0> u = User.where(id: 1).first
+user = User.where(id: 1).first
 ```
 
 or
@@ -25,8 +25,8 @@ user = User.find_by(email: 'admin@local.host')
 Now you can change your password:
 
 ```bash
-u.password = 'secret_pass'
-u.password_confirmation = 'secret_pass'
+user.password = 'secret_pass'
+user.password_confirmation = 'secret_pass'
 ```
 
 It's important that you change both password and password_confirmation to make it work.
@@ -34,7 +34,7 @@ It's important that you change both password and password_confirmation to make i
 Don't forget to save the changes.
 
 ```bash
-u.save!
+user.save!
 ```
 
 Exit the console and try to login with your new password.
