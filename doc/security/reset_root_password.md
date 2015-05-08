@@ -1,4 +1,4 @@
-# How to reset your root password:
+# How to reset your root password
 
 Log into your server with root privileges. Then start a Ruby on Rails console.
 
