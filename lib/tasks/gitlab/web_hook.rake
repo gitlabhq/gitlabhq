@@ -7,15 +7,14 @@ namespace :gitlab do
 
       projects = find_projects(namespace_path)
 
-      # Select projects which already have setting hook
-      ns_project_ids = projects.select(:id).reorder('').map(&:id)
-      project_ids_with_hook = ProjectHook.where(project_id: ns_project_ids, url: web_hook_url)
-      project_ids_with_hook = project_ids_with_hook.select(:project_id).reorder('').map(&:project_id).to_set
+      with_hook_scope = ProjectHook.where(url: web_hook_url)
+      with_hook_scope = with_hook_scope.where(project: projects) unless projects == Project # there is Rails bug
+      projects_ids_with_hook = with_hook_scope.pluck(:project_id)
 
       puts "Adding web hook '#{web_hook_url}' to:"
       projects.find_each(batch_size: 1000) do |project|
         print "- #{project.name} ... "
-        if project_ids_with_hook.include?(project.id)
+        if projects_ids_with_hook.include?(project.id)
           puts "skipped".yellow
         else
           web_hook = project.hooks.new(url: web_hook_url)
