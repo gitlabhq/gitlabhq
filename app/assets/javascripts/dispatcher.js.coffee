@@ -112,6 +112,13 @@ class Dispatcher
             new NamespaceSelect()
       when 'dashboard'
         shortcut_handler = new ShortcutsDashboardNavigation()
+        switch path[1]
+          when 'issues', 'merge_requests'
+            new UsersSelect()
+      when 'groups'
+        switch path[1]
+          when 'issues', 'merge_requests'
+            new UsersSelect()
       when 'profiles'
         new Profile()
       when 'projects'
