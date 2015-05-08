@@ -4,7 +4,9 @@
 
   - unless @project.empty_repo?
     .well
-      %h4 Repository
+      %h4.visibility-level-label
+        = visibility_level_icon(@project.visibility_level)
+        = "#{visibility_level_label(@project.visibility_level).capitalize} project"
       %ul.nav.nav-pills
         %li= link_to pluralize(number_with_delimiter(@repository.commit_count), 'commit'), namespace_project_commits_path(@project.namespace, @project, @ref || @repository.root_ref)
         %li= link_to pluralize(number_with_delimiter(@repository.branch_names.count), 'branch'), namespace_project_branches_path(@project.namespace, @project)
