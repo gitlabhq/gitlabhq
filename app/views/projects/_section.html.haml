@@ -1,10 +1,12 @@
 %ul.nav.nav-tabs
   %li.active
     = link_to '#tab-activity', 'data-toggle' => 'tab' do
+      = icon("tachometer")
       Activity
   - if @repository.readme
     %li
       = link_to '#tab-readme', 'data-toggle' => 'tab' do
+        = icon("file-text-o")
         Readme
 .tab-content
   .tab-pane.active#tab-activity
