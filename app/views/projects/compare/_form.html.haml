@@ -13,9 +13,10 @@
         = text_field_tag :to, params[:to], class: "form-control"
     &nbsp;
     = button_tag "Compare", class: "btn btn-create commits-compare-btn"
-    - if compare_to_mr_button?
-      = link_to compare_mr_path, class: 'prepend-left-10 btn' do
-        %strong Make a merge request
+    - if create_mr_button?
+      = link_to create_mr_path, class: 'prepend-left-10 btn' do
+        = icon("plus")
+        Create Merge Request
 
 
 :javascript

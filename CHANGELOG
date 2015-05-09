@@ -49,6 +49,7 @@ v 7.11.0 (unreleased)
   - Add footnotes support to Markdown (Guillaume Delbergue)
   - Add current_sign_in_at to UserFull REST api.
   - Make Sidekiq MemoryKiller shutdown signal configurable
+  - Add "Create Merge Request" buttons to commits page and push event.
 
 v 7.10.2
   - Fix CI links on MR page
