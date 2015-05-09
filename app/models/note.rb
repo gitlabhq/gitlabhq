@@ -99,7 +99,7 @@ class Note < ActiveRecord::Base
   end
 
   def cross_reference?
-    SystemNoteService.cross_reference?(note)
+    system && SystemNoteService.cross_reference?(note)
   end
 
   def max_attachment_size
