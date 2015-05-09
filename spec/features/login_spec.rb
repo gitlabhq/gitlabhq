@@ -1,16 +1,10 @@
 require 'spec_helper'
 
 feature 'Login' do
-  let(:user) { create(:user) }
-
   context 'with two-factor authentication' do
-    before do
-      user.otp_required_for_login = true
-      user.otp_secret = User.generate_otp_secret
-      user.save!
-    end
-
     context 'with valid username/password' do
+      let(:user) { create(:user, :two_factor) }
+
       before do
         login_with(user)
         expect(page).to have_content('Two-factor Authentication')
@@ -80,6 +74,8 @@ feature 'Login' do
   end
 
   context 'without two-factor authentication' do
+    let(:user) { create(:user) }
+
     it 'allows basic login' do
       login_with(user)
       expect(current_path).to eq root_path
