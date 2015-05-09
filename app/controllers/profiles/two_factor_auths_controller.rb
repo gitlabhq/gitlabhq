@@ -28,8 +28,13 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   def destroy
-    current_user.otp_required_for_login = false
-    current_user.save!
+    current_user.update_attributes({
+      otp_required_for_login:    false,
+      encrypted_otp_secret:      nil,
+      encrypted_otp_secret_iv:   nil,
+      encrypted_otp_secret_salt: nil,
+      otp_backup_codes:          nil
+    })
 
     redirect_to profile_account_path
   end
