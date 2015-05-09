@@ -23,155 +23,13 @@ describe SystemNoteService do
     end
   end
 
-  describe '.assignee_change' do
-    let(:assignee) { create(:user) }
-
-    subject { described_class.assignee_change(noteable, project, author, assignee) }
-
-    it_behaves_like 'a system note'
-
-    context 'when assignee added' do
-      it 'sets the note text' do
-        expect(subject.note).to eq "Reassigned to @#{assignee.username}"
-      end
-    end
-
-    context 'when assignee removed' do
-      let(:assignee) { nil }
-
-      it 'sets the note text' do
-        expect(subject.note).to eq 'Assignee removed'
-      end
-    end
-  end
-
-  describe '.cross_reference' do
-    let(:mentioner) { create(:issue, project: project) }
-
-    subject { described_class.cross_reference(noteable, mentioner, author) }
-
-    it_behaves_like 'a system note'
-
-    context 'when cross-reference disallowed' do
-      before do
-        expect(described_class).to receive(:cross_reference_disallowed?).and_return(true)
-      end
-
-      it 'returns nil' do
-        expect(subject).to be_nil
-      end
-    end
-
-    context 'when cross-reference allowed' do
-      before do
-        expect(described_class).to receive(:cross_reference_disallowed?).and_return(false)
-      end
-
-      describe 'note_body' do
-        context 'cross-project' do
-          let(:project2)  { create(:project) }
-          let(:mentioner) { create(:issue, project: project2) }
-
-          context 'from Commit' do
-            let(:mentioner) { project2.repository.commit }
-
-            it 'references the mentioning commit' do
-              expect(subject.note).to eq "mentioned in commit #{project2.path_with_namespace}@#{mentioner.id}"
-            end
-          end
-
-          context 'from non-Commit' do
-            it 'references the mentioning object' do
-              expect(subject.note).to eq "mentioned in issue #{project2.path_with_namespace}##{mentioner.iid}"
-            end
-          end
-        end
-
-        context 'same project' do
-          context 'from Commit' do
-            let(:mentioner) { project.repository.commit }
-
-            it 'references the mentioning commit' do
-              expect(subject.note).to eq "mentioned in commit #{mentioner.id}"
-            end
-          end
-
-          context 'from non-Commit' do
-            it 'references the mentioning object' do
-              expect(subject.note).to eq "mentioned in issue ##{mentioner.iid}"
-            end
-          end
-        end
-      end
-    end
-  end
-
-  describe '.label_change' do
-    let(:labels)  { create_list(:label, 2) }
-    let(:added)   { [] }
-    let(:removed) { [] }
-
-    subject { described_class.label_change(noteable, project, author, added, removed) }
-
-    it_behaves_like 'a system note'
-
-    context 'with added labels' do
-      let(:added)   { labels }
-      let(:removed) { [] }
-
-      it 'sets the note text' do
-        expect(subject.note).to eq "Added ~#{labels[0].id} ~#{labels[1].id} labels"
-      end
-    end
-
-    context 'with removed labels' do
-      let(:added)   { [] }
-      let(:removed) { labels }
-
-      it 'sets the note text' do
-        expect(subject.note).to eq "Removed ~#{labels[0].id} ~#{labels[1].id} labels"
-      end
-    end
-
-    context 'with added and removed labels' do
-      let(:added)   { [labels[0]] }
-      let(:removed) { [labels[1]] }
-
-      it 'sets the note text' do
-        expect(subject.note).to eq "Added ~#{labels[0].id} and removed ~#{labels[1].id} labels"
-      end
-    end
-  end
-
-  describe '.milestone_change' do
-    let(:milestone) { create(:milestone, project: project) }
-
-    subject { described_class.milestone_change(noteable, project, author, milestone) }
-
-    it_behaves_like 'a system note'
-
-    context 'when milestone added' do
-      it 'sets the note text' do
-        expect(subject.note).to eq "Milestone changed to #{milestone.title}"
-      end
-    end
-
-    context 'when milestone removed' do
-      let(:milestone) { nil }
-
-      it 'sets the note text' do
-        expect(subject.note).to eq 'Milestone removed'
-      end
-    end
-  end
-
-  describe '.commit_add' do
+  describe '.add_commits' do
     let(:noteable)    { create(:merge_request, source_project: project) }
     let(:new_commits) { noteable.commits }
     let(:old_commits) { [] }
     let(:oldrev)      { nil }
 
-    subject { described_class.commit_add(noteable, project, author, new_commits, old_commits, oldrev) }
+    subject { described_class.add_commits(noteable, project, author, new_commits, old_commits, oldrev) }
 
     it_behaves_like 'a system note'
 
@@ -241,11 +99,92 @@ describe SystemNoteService do
     end
   end
 
-  describe '.status_change' do
+  describe '.change_assignee' do
+    let(:assignee) { create(:user) }
+
+    subject { described_class.change_assignee(noteable, project, author, assignee) }
+
+    it_behaves_like 'a system note'
+
+    context 'when assignee added' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "Reassigned to @#{assignee.username}"
+      end
+    end
+
+    context 'when assignee removed' do
+      let(:assignee) { nil }
+
+      it 'sets the note text' do
+        expect(subject.note).to eq 'Assignee removed'
+      end
+    end
+  end
+
+  describe '.change_label' do
+    let(:labels)  { create_list(:label, 2) }
+    let(:added)   { [] }
+    let(:removed) { [] }
+
+    subject { described_class.change_label(noteable, project, author, added, removed) }
+
+    it_behaves_like 'a system note'
+
+    context 'with added labels' do
+      let(:added)   { labels }
+      let(:removed) { [] }
+
+      it 'sets the note text' do
+        expect(subject.note).to eq "Added ~#{labels[0].id} ~#{labels[1].id} labels"
+      end
+    end
+
+    context 'with removed labels' do
+      let(:added)   { [] }
+      let(:removed) { labels }
+
+      it 'sets the note text' do
+        expect(subject.note).to eq "Removed ~#{labels[0].id} ~#{labels[1].id} labels"
+      end
+    end
+
+    context 'with added and removed labels' do
+      let(:added)   { [labels[0]] }
+      let(:removed) { [labels[1]] }
+
+      it 'sets the note text' do
+        expect(subject.note).to eq "Added ~#{labels[0].id} and removed ~#{labels[1].id} labels"
+      end
+    end
+  end
+
+  describe '.change_milestone' do
+    let(:milestone) { create(:milestone, project: project) }
+
+    subject { described_class.change_milestone(noteable, project, author, milestone) }
+
+    it_behaves_like 'a system note'
+
+    context 'when milestone added' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "Milestone changed to #{milestone.title}"
+      end
+    end
+
+    context 'when milestone removed' do
+      let(:milestone) { nil }
+
+      it 'sets the note text' do
+        expect(subject.note).to eq 'Milestone removed'
+      end
+    end
+  end
+
+  describe '.change_status' do
     let(:status) { 'new_status' }
     let(:source) { nil }
 
-    subject { described_class.status_change(noteable, project, author, status, source) }
+    subject { described_class.change_status(noteable, project, author, status, source) }
 
     it_behaves_like 'a system note'
 
@@ -264,6 +203,67 @@ describe SystemNoteService do
     end
   end
 
+  describe '.cross_reference' do
+    let(:mentioner) { create(:issue, project: project) }
+
+    subject { described_class.cross_reference(noteable, mentioner, author) }
+
+    it_behaves_like 'a system note'
+
+    context 'when cross-reference disallowed' do
+      before do
+        expect(described_class).to receive(:cross_reference_disallowed?).and_return(true)
+      end
+
+      it 'returns nil' do
+        expect(subject).to be_nil
+      end
+    end
+
+    context 'when cross-reference allowed' do
+      before do
+        expect(described_class).to receive(:cross_reference_disallowed?).and_return(false)
+      end
+
+      describe 'note_body' do
+        context 'cross-project' do
+          let(:project2)  { create(:project) }
+          let(:mentioner) { create(:issue, project: project2) }
+
+          context 'from Commit' do
+            let(:mentioner) { project2.repository.commit }
+
+            it 'references the mentioning commit' do
+              expect(subject.note).to eq "mentioned in commit #{project2.path_with_namespace}@#{mentioner.id}"
+            end
+          end
+
+          context 'from non-Commit' do
+            it 'references the mentioning object' do
+              expect(subject.note).to eq "mentioned in issue #{project2.path_with_namespace}##{mentioner.iid}"
+            end
+          end
+        end
+
+        context 'same project' do
+          context 'from Commit' do
+            let(:mentioner) { project.repository.commit }
+
+            it 'references the mentioning commit' do
+              expect(subject.note).to eq "mentioned in commit #{mentioner.id}"
+            end
+          end
+
+          context 'from non-Commit' do
+            it 'references the mentioning object' do
+              expect(subject.note).to eq "mentioned in issue ##{mentioner.iid}"
+            end
+          end
+        end
+      end
+    end
+  end
+
   describe '.cross_reference?' do
     it 'is truthy when text begins with expected text' do
       expect(described_class.cross_reference?('mentioned in issue #1')).to be_truthy
@@ -274,6 +274,7 @@ describe SystemNoteService do
     end
   end
 
+  # TODO (rspeicher)
   describe '.cross_reference_disallowed?'
 
   describe '.cross_reference_exists?' do

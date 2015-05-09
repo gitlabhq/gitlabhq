@@ -14,7 +14,7 @@ module Issues
     private
 
     def create_note(issue)
-      SystemNoteService.status_change(issue, issue.project, current_user, issue.state, nil)
+      SystemNoteService.change_status(issue, issue.project, current_user, issue.state, nil)
     end
   end
 end

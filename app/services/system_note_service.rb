@@ -2,11 +2,30 @@
 #
 # Used for creating system notes (e.g., when a user references a merge request
 # from an issue, an issue's assignee changes, an issue is closed, etc.)
-#
-# All methods creating notes should be named using a singular noun and
-# present-tense verb (e.g., "assignee_change" not "assignee_changed",
-# "label_change" not "labels_change").
 class SystemNoteService
+  # Called when commits are added to a Merge Request
+  #
+  # noteable         - Noteable object
+  # project          - Project owning noteable
+  # author           - User performing the change
+  # new_commits      - Array of Commits added since last push
+  # existing_commits - Array of Commits added in a previous push
+  # oldrev           - TODO (rspeicher): I have no idea what this actually does
+  #
+  # See new_commit_summary and existing_commit_summary.
+  #
+  # Returns the created Note object
+  def self.add_commits(noteable, project, author, new_commits, existing_commits = [], oldrev = nil)
+    total_count  = new_commits.length + existing_commits.length
+    commits_text = "#{total_count} commit".pluralize(total_count)
+
+    body = "Added #{commits_text}:\n\n"
+    body << existing_commit_summary(noteable, existing_commits, oldrev)
+    body << new_commit_summary(new_commits).join("\n")
+
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
   # Called when the assignee of a Noteable is changed or removed
   #
   # noteable - Noteable object
@@ -21,8 +40,92 @@ class SystemNoteService
   #   "Reassigned to @rspeicher"
   #
   # Returns the created Note object
-  def self.assignee_change(noteable, project, author, assignee)
+  def self.change_assignee(noteable, project, author, assignee)
     body = assignee.nil? ? 'Assignee removed' : "Reassigned to @#{assignee.username}"
+
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
+  # Called when one or more labels on a Noteable are added and/or removed
+  #
+  # noteable       - Noteable object
+  # project        - Project owning noteable
+  # author         - User performing the change
+  # added_labels   - Array of Labels added
+  # removed_labels - Array of Labels removed
+  #
+  # Example Note text:
+  #
+  #   "Added ~1 and removed ~2 ~3 labels"
+  #
+  #   "Added ~4 label"
+  #
+  #   "Removed ~5 label"
+  #
+  # Returns the created Note object
+  def self.change_label(noteable, project, author, added_labels, removed_labels)
+    labels_count = added_labels.count + removed_labels.count
+
+    references     = ->(label) { "~#{label.id}" }
+    added_labels   = added_labels.map(&references).join(' ')
+    removed_labels = removed_labels.map(&references).join(' ')
+
+    body = ''
+
+    if added_labels.present?
+      body << "added #{added_labels}"
+      body << ' and ' if removed_labels.present?
+    end
+
+    if removed_labels.present?
+      body << "removed #{removed_labels}"
+    end
+
+    body << ' ' << 'label'.pluralize(labels_count)
+    body = "#{body.capitalize}"
+
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
+  # Called when the milestone of a Noteable is changed
+  #
+  # noteable  - Noteable object
+  # project   - Project owning noteable
+  # author    - User performing the change
+  # milestone - Milestone being assigned, or nil
+  #
+  # Example Note text:
+  #
+  #   "Milestone removed"
+  #
+  #   "Miletone changed to 7.11"
+  #
+  # Returns the created Note object
+  def self.change_milestone(noteable, project, author, milestone)
+    body = 'Milestone '
+    body += milestone.nil? ? 'removed' : "changed to #{milestone.title}"
+
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
+  # Called when the status of a Noteable is changed
+  #
+  # noteable - Noteable object
+  # project  - Project owning noteable
+  # author   - User performing the change
+  # status   - String status
+  # source   - Mentionable performing the change, or nil
+  #
+  # Example Note text:
+  #
+  #   "Status changed to merged"
+  #
+  #   "Status changed to closed by bc17db76"
+  #
+  # Returns the created Note object
+  def self.change_status(noteable, project, author, status, source)
+    body = "Status changed to #{status}"
+    body += " by #{source.gfm_reference}" if source
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
@@ -62,113 +165,6 @@ class SystemNoteService
     end
 
     create_note(note_options)
-  end
-
-  # Called when one or more labels on a Noteable are added and/or removed
-  #
-  # noteable       - Noteable object
-  # project        - Project owning noteable
-  # author         - User performing the change
-  # added_labels   - Array of Labels added
-  # removed_labels - Array of Labels removed
-  #
-  # Example Note text:
-  #
-  #   "Added ~1 and removed ~2 ~3 labels"
-  #
-  #   "Added ~4 label"
-  #
-  #   "Removed ~5 label"
-  #
-  # Returns the created Note object
-  def self.label_change(noteable, project, author, added_labels, removed_labels)
-    labels_count = added_labels.count + removed_labels.count
-
-    references     = ->(label) { "~#{label.id}" }
-    added_labels   = added_labels.map(&references).join(' ')
-    removed_labels = removed_labels.map(&references).join(' ')
-
-    body = ''
-
-    if added_labels.present?
-      body << "added #{added_labels}"
-      body << ' and ' if removed_labels.present?
-    end
-
-    if removed_labels.present?
-      body << "removed #{removed_labels}"
-    end
-
-    body << ' ' << 'label'.pluralize(labels_count)
-    body = "#{body.capitalize}"
-
-    create_note(noteable: noteable, project: project, author: author, note: body)
-  end
-
-  # Called when the milestone of a Noteable is changed
-  #
-  # noteable  - Noteable object
-  # project   - Project owning noteable
-  # author    - User performing the change
-  # milestone - Milestone being assigned, or nil
-  #
-  # Example Note text:
-  #
-  #   "Milestone removed"
-  #
-  #   "Miletone changed to 7.11"
-  #
-  # Returns the created Note object
-  def self.milestone_change(noteable, project, author, milestone)
-    body = 'Milestone '
-    body += milestone.nil? ? 'removed' : "changed to #{milestone.title}"
-
-    create_note(noteable: noteable, project: project, author: author, note: body)
-  end
-
-  # Called when commits are added to a Merge Request
-  #
-  # noteable         - Noteable object
-  # project          - Project owning noteable
-  # author           - User performing the change
-  # new_commits      - Array of Commits added since last push
-  # existing_commits - Array of Commits added in a previous push
-  # oldrev           - TODO (rspeicher): I have no idea what this actually does
-  #
-  # See new_commit_summary and existing_commit_summary.
-  #
-  # Returns the created Note object
-  def self.commit_add(noteable, project, author, new_commits, existing_commits = [], oldrev = nil)
-    total_count  = new_commits.length + existing_commits.length
-    commits_text = "#{total_count} commit".pluralize(total_count)
-
-    body = "Added #{commits_text}:\n\n"
-    body << existing_commit_summary(noteable, existing_commits, oldrev)
-    body << new_commit_summary(new_commits).join("\n")
-
-    create_note(noteable: noteable, project: project, author: author, note: body)
-  end
-
-  # Called when the status of a Noteable is changed
-  #
-  # noteable - Noteable object
-  # project  - Project owning noteable
-  # author   - User performing the change
-  # status   - String status
-  # source   - Mentionable performing the change, or nil
-  #
-  # Example Note text:
-  #
-  #   "Status changed to merged"
-  #
-  #   "Status changed to closed by bc17db76"
-  #
-  # Returns the created Note object
-  def self.status_change(noteable, project, author, status, source)
-    body = "Status changed to #{status}"
-    body += " by #{source.gfm_reference}" if source
-
-    create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
   def self.cross_reference?(note_text)
