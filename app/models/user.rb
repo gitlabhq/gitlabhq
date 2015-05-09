@@ -81,7 +81,7 @@ class User < ActiveRecord::Base
   devise :two_factor_authenticatable,
          otp_secret_encryption_key: File.read(Rails.root.join('.secret')).chomp
 
-  devise :two_factor_backupable
+  devise :two_factor_backupable, otp_number_of_backup_codes: 10
   serialize :otp_backup_codes, JSON
 
   devise :lockable, :async, :recoverable, :rememberable, :trackable,

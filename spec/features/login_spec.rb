@@ -39,7 +39,7 @@ feature 'Login' do
         let(:codes) { user.generate_otp_backup_codes! }
 
         before do
-          expect(codes.size).to eq 5
+          expect(codes.size).to eq 10
 
           # Ensure the generated codes get saved
           user.save
@@ -63,7 +63,7 @@ feature 'Login' do
             expect(user.invalidate_otp_backup_code!(code)).to eq true
 
             user.save!
-            expect(user.reload.otp_backup_codes.size).to eq 4
+            expect(user.reload.otp_backup_codes.size).to eq 9
 
             enter_code(code)
             expect(page).to have_content('Invalid two-factor code')
