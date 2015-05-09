@@ -8,5 +8,6 @@
           .alert.alert-danger
             = @error
         = f.text_field :otp_attempt, class: 'form-control', placeholder: 'Two-factor authentication code', required: true, autofocus: true
+        %p.help-block.hint If you've lost your phone, you may enter one of your recovery codes.
         .prepend-top-20
           = f.submit "Verify code", class: "btn btn-save"
