@@ -37,11 +37,11 @@
             = link_to "Disable Two-factor Authentication", profile_two_factor_auth_path, method: :delete, class: 'btn btn-close btn-sm',
                 data: { confirm: 'Are you sure?' }
           %p
-            If you lose your recovery codes, you can
+            If you lose your recovery codes you can
             %strong
-              = succeed '.' do
-                = link_to "generate new ones", codes_profile_two_factor_auth_path, method: :post,
-                  data: { confirm: 'This will invalidate the old codes. Are you sure?' }
+              = succeed ',' do
+                = link_to "generate new ones", codes_profile_two_factor_auth_path, method: :post, data: { confirm: 'Are you sure?' }
+            invalidating all previous codes.
 
       - else
         %legend Two-factor Authentication
