@@ -18,6 +18,6 @@
   .form-group
     = label_tag :pin_code, nil, class: "control-label"
     .col-sm-10
-      = text_field_tag :pin_code, nil, class: "form-control", required: true
+      = text_field_tag :pin_code, nil, class: "form-control", required: true, autofocus: true
   .form-actions
     = submit_tag 'Submit', class: 'btn btn-success'
