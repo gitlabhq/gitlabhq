@@ -6,11 +6,12 @@ class Projects::CompareController < Projects::ApplicationController
   before_action :authorize_download_code!
 
   def index
+    @ref = Addressable::URI.unescape(params[:to])
   end
 
   def show
     base_ref = Addressable::URI.unescape(params[:from])
-    head_ref = Addressable::URI.unescape(params[:to])
+    @ref = head_ref = Addressable::URI.unescape(params[:to])
 
     compare_result = CompareService.new.execute(
       current_user,
