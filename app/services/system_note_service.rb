@@ -196,7 +196,7 @@ class SystemNoteService
     end
 
     gfm_reference = mentioner_gfm_ref(noteable, mentioner, true)
-    notes = notes.where('note like ?', cross_reference_note_pattern(gfm_reference))
+    notes = notes.where(note: cross_reference_note_content(gfm_reference))
 
     notes.count > 0
   end
@@ -207,17 +207,14 @@ class SystemNoteService
     Note.create(args.merge(system: true))
   end
 
-  def self.cross_reference_note_prefix
-    'mentioned in '
-  end
-
   # Prepend the mentioner's namespaced project path to the GFM reference for
   # cross-project references.  For same-project references, return the
   # unmodified GFM reference.
   def self.mentioner_gfm_ref(noteable, mentioner, cross_reference = false)
-    if mentioner.is_a?(Commit) && cross_reference
-      return mentioner.gfm_reference.sub('commit ', 'commit %')
-    end
+    # FIXME (rspeicher): This was breaking things.
+    # if mentioner.is_a?(Commit) && cross_reference
+    #   return mentioner.gfm_reference.sub('commit ', 'commit %')
+    # end
 
     full_gfm_reference(mentioner.project, noteable.project, mentioner)
   end
@@ -243,13 +240,12 @@ class SystemNoteService
     end
   end
 
-  def self.cross_reference_note_content(gfm_reference)
-    cross_reference_note_prefix + "#{gfm_reference}"
+  def self.cross_reference_note_prefix
+    'mentioned in '
   end
 
-  def self.cross_reference_note_pattern(gfm_reference)
-    # Older cross reference notes contained underscores for emphasis
-    "%" + cross_reference_note_content(gfm_reference) + "%"
+  def self.cross_reference_note_content(gfm_reference)
+    "#{cross_reference_note_prefix}#{gfm_reference}"
   end
 
   # Build an Array of lines detailing each commit added in a merge request

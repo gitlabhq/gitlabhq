@@ -313,41 +313,5 @@ describe SystemNoteService do
           to be_falsey
       end
     end
-
-    context 'legacy note with Markdown emphasis' do
-      let(:mentioner) { create(:issue, project: project) }
-
-      before do
-        note = "_mentioned in issue ##{mentioner.iid}_"
-        create(:system_note, noteable: noteable, note: note, project: project)
-      end
-
-      it 'detects if a mentionable with emphasis has been mentioned' do
-        expect(described_class.cross_reference_exists?(noteable, mentioner)).
-          to be_truthy
-      end
-
-      context 'when referenced project has underscores' do
-        let(:project)  { create(:empty_project, path: 'first_project') }
-        let(:project2) { create(:empty_project, path: 'second_project') }
-
-        let(:issue)  { mentioner }
-        let(:issue2) { create(:issue, project: project2) }
-
-        before do
-          described_class.cross_reference(issue, issue2, author)
-        end
-
-        it 'is truthy when already mentioned' do
-          expect(described_class.cross_reference_exists?(issue, issue2)).
-            to be_truthy
-        end
-
-        it 'is falsey when not already mentioned' do
-          expect(described_class.cross_reference_exists?(issue2, issue)).
-            to be_falsey
-        end
-      end
-    end
   end
 end
