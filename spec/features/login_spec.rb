@@ -31,6 +31,14 @@ feature 'Login' do
           enter_code('foo')
           expect(page).to have_content('Invalid two-factor code')
         end
+
+        it 'allows login with invalid code, then valid code' do
+          enter_code('foo')
+          expect(page).to have_content('Invalid two-factor code')
+
+          enter_code(user.current_otp)
+          expect(current_path).to eq root_path
+        end
       end
 
       context 'using backup code' do
