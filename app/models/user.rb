@@ -674,9 +674,4 @@ class User < ActiveRecord::Base
 
     true
   end
-
-  # Used to populate the hidden form field during Two-factor authentication
-  def login
-    username || email
-  end
 end
