@@ -35,38 +35,45 @@
           %strong
             - if @license.will_expire?
               = time_ago_with_tooltip @license.expires_at
-              - if @license.expired?
-                %span.label.label-danger.pull-right
-                  %strong Expired
             - else
               Never
 
+          - if @license.expired?
+            %span.label.label-danger.pull-right
+              %strong Expired
+
     .panel.panel-default
       .panel-heading
-        Restrictions
+        Users
       %ul.well-list
         %li
-          %span.light Active users:
+          %span.light Licensed users:
           %strong
             - if @license.restricted?(:active_user_count)
               - restricted = @license.restrictions[:active_user_count]
-              - current = User.active.count
-              - historical = @historical_active_user_count
-
               #{restricted} users
-
-              - if historical && historical > restricted && current < restricted
-                %span.label.label-danger.pull-right.prepend-left-10
-                  %strong 
-                    Maximum during license life: #{historical} users
-
-              - label_class = current > restricted ? "danger" : restricted > current ? "success" : "info"
-              %span.label.pull-right{class: "label-#{label_class}"}
-                %strong 
-                  Current: #{current} users
-
             - else
               Unlimited
+        %li
+          %span.light Current active users:
+          %strong
+            - current = User.active.count
+            #{current} users
+
+          - if restricted && current > restricted
+            %span.label.label-danger.pull-right
+              %strong Exceeds license
+
+        - historical = HistoricalData.maximum(:active_user_count)
+        - if historical 
+          %li
+            %span.light Maximum active users:
+            %strong
+              #{historical} users
+
+            - if restricted && historical > restricted
+              %span.label.label-danger.pull-right
+                %strong Exceeds license
 
   .col-md-6
     .panel.panel-info
