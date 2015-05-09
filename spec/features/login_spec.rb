@@ -47,7 +47,7 @@ feature 'Login' do
         before do
           expect(codes.size).to eq 5
 
-          # Because `generate_otp_backup_codes!` doesn't actually do this...
+          # Ensure the generated codes get saved
           user.save
         end
 
@@ -58,20 +58,18 @@ feature 'Login' do
           end
 
           it 'invalidates the used code' do
-            # FIXME (rspeicher): Broken library is broken
-            expect { enter_code(codes.sample) }.to change { user.otp_backup_codes.size }.by(-1)
+            expect { enter_code(codes.sample) }.
+              to change { user.reload.otp_backup_codes.size }.by(-1)
           end
         end
 
         context 'with invalid code' do
           it 'blocks login' do
-            # FIXME (rspeicher): Broken library is broken
             code = codes.sample
             expect(user.invalidate_otp_backup_code!(code)).to eq true
-            expect(user.otp_backup_codes.size).to eq 4 # Passes
+
             user.save!
-            user.reload
-            expect(user.otp_backup_codes.size).to eq 4 # Fails... WAT?!
+            expect(user.reload.otp_backup_codes.size).to eq 4
 
             enter_code(code)
             expect(page).to have_content('Invalid two-factor code')
