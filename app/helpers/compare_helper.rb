@@ -1,12 +1,11 @@
 module CompareHelper
   def create_mr_button?(from = params[:from], to = params[:to], project = @project)
-    project.merge_requests_enabled &&
-      from.present? &&
+    from.present? &&
       to.present? &&
-      project.repository.branch_names.include?(from) &&
-      project.repository.branch_names.include?(to) &&
       from != to &&
-      !@refs_are_same
+      project.merge_requests_enabled &&
+      project.repository.branch_names.include?(from) &&
+      project.repository.branch_names.include?(to)
   end
 
   def create_mr_path(from = params[:from], to = params[:to], project = @project)
