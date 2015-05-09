@@ -15,6 +15,11 @@ feature 'Login' do
         click_button 'Verify code'
       end
 
+      it 'does not show a "You are already signed in." error message' do
+        enter_code(user.current_otp)
+        expect(page).not_to have_content('You are already signed in.')
+      end
+
       context 'using one-time code' do
         it 'allows login with valid code' do
           enter_code(user.current_otp)
@@ -66,7 +71,7 @@ feature 'Login' do
             expect(user.reload.otp_backup_codes.size).to eq 9
 
             enter_code(code)
-            expect(page).to have_content('Invalid two-factor code')
+            expect(page).to have_content('Invalid two-factor code.')
           end
         end
       end
@@ -79,6 +84,18 @@ feature 'Login' do
     it 'allows basic login' do
       login_with(user)
       expect(current_path).to eq root_path
+    end
+
+    it 'does not show a "You are already signed in." error message' do
+      login_with(user)
+      expect(page).not_to have_content('You are already signed in.')
+    end
+
+    it 'blocks invalid login' do
+      user = create(:user, password: 'not-the-default')
+
+      login_with(user)
+      expect(page).to have_content('Invalid email or password.')
     end
   end
 end

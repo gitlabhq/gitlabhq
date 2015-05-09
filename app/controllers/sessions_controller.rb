@@ -1,5 +1,11 @@
 class SessionsController < Devise::SessionsController
-  prepend_before_action :authenticate_with_two_factor, only: :create
+  prepend_before_action :authenticate_with_two_factor, only: [:create]
+
+  # This action comes from DeviseController, but because we call `sign_in`
+  # manually inside `authenticate_with_two_factor`, not skipping this action
+  # would cause a "You are already signed in." error message to be shown upon
+  # successful login.
+  skip_before_action :require_no_authentication, only: [:create]
 
   def new
     redirect_path =
@@ -61,7 +67,7 @@ class SessionsController < Devise::SessionsController
         # Remove any lingering user data from login
         session.delete(:otp_user_id)
 
-        sign_in(user)
+        sign_in(user) and return
       else
         flash.now[:alert] = 'Invalid two-factor code.'
         render :two_factor and return
