@@ -63,7 +63,7 @@ class SessionsController < Devise::SessionsController
 
         sign_in(user)
       else
-        @error = 'Invalid two-factor code'
+        flash.now[:alert] = 'Invalid two-factor code.'
         render :two_factor and return
       end
     else
