@@ -306,6 +306,7 @@ v 7.8.0
   - Upgrade Sidekiq gem to version 3.3.0
   - Stop git zombie creation during force push check
   - Show success/error messages for test setting button in services
+  - Disabled expansion of top/bottom blobs for new file diffs
   - Added Rubocop for code style checks
   - Fix commits pagination
   - Async load a branch information at the commit page
