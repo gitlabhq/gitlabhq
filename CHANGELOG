@@ -164,6 +164,10 @@ v 7.9.3
 
 v 7.9.2
   - Contains no changes
+  - Send EmailsOnPush email when branch or tag is created or deleted.
+  - Faster merge request processing for large repository
+  - Prevent doubling AJAX request with each commit visit via Turbolink
+  - Prevent unnecessary doubling of js events on import pages and user calendar
 
 v 7.9.1
   - Include missing events and fix save functionality in admin service template settings form (Stan Hu)
