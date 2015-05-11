@@ -17,15 +17,27 @@
       - few_commits.each do |commit|
         = render "events/commit", commit: commit, project: project
 
+      - create_mr = current_user == event.author && event.new_ref? && create_mr_button?(event.project.default_branch, event.ref_name, event.project)
       - if event.commits_count > 1
         %li.commits-stat
           - if event.commits_count > 2
             %span ... and #{event.commits_count - 2} more commits.
+
           - if event.md_ref?
             - from = event.commit_from
             - from_label = truncate_sha(from)
           - else
             - from = event.project.default_branch
             - from_label = from
+
           = link_to namespace_project_compare_path(event.project.namespace, event.project, from: from, to: event.commit_to) do
-            %strong Compare &rarr; #{from_label}...#{truncate_sha(event.commit_to)}
+            Compare #{from_label}...#{truncate_sha(event.commit_to)}
+
+          - if create_mr
+            or
+            = link_to create_mr_path(event.project.default_branch, event.ref_name, event.project) do
+              create a merge request
+      - elsif create_mr
+        %li.commits-stat
+          = link_to create_mr_path(event.project.default_branch, event.ref_name, event.project) do
+            Create Merge Request
