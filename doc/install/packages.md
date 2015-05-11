@@ -22,6 +22,26 @@ You can override this version check with the `--oldpackage` option:
 rpm -Uvh --oldpackage gitlab-7.5.3_ee.omnibus.5.2.1.ci-1.el7.x86_64.rpm
 ```
 
+### GitLab Enterprise Edition and GitLab CI 7.10.4
+
+- Ubuntu 12.04 64-bit [gitlab-ee_7.10.4~ee.omnibus-1_amd64.deb](https://downloads-packages.s3.amazonaws.com/1e903fc1ad5921018b5de398365cc225d9d09a7a/ubuntu-12.04/gitlab-ee_7.10.4~ee.omnibus-1_amd64.deb)
++ SHA256: 460b26df3c92611ec3af3410ff996316b6ebc49fe4b34d6ad21dd5cf6c218449
+
+- Ubuntu 14.04 64-bit [gitlab-ee_7.10.4~ee.omnibus-1_amd64.deb](https://downloads-packages.s3.amazonaws.com/f900f65fef2c2297888331eecedd5aab3f64aaaa/ubuntu-14.04/gitlab-ee_7.10.4~ee.omnibus-1_amd64.deb)
++ SHA256: 11548efb5448c7f3a2334d013830d5cca627ceb569daa19b01ae55737f9e7772
+
+- Debian 7 64-bit [gitlab-ee_7.10.4~ee.omnibus-1_amd64.deb](https://downloads-packages.s3.amazonaws.com/1a402f62db96078b6e2e61e492ebcf1d329a1e35/debian-7.8/gitlab-ee_7.10.4~ee.omnibus-1_amd64.deb)
++ SHA256: 8db7ecdaef10ec88b1424df184429166300a769d929105f7859bef0b9e321058
+
+- Debian 8 64-bit [gitlab-ee_7.10.4~ee.omnibus-1_amd64.deb](https://downloads-packages.s3.amazonaws.com/cb97094749d3a1c9dfd78a0e6d8ecaadcb7f22ed/debian-8.0/gitlab-ee_7.10.4~ee.omnibus-1_amd64.deb)
++ SHA256: e4d6102b852048a20df8dc1c88cd85853c4207324e85b3e1ec7426d460189733
+
+- CentOS 6 64-bit [gitlab-ee-7.10.1~ee.omnibus.2-1.x86_64.rpm](https://downloads-packages.s3.amazonaws.com/f5eca2792073a42509522e08c2119704f3555cd1/centos-6.6/gitlab-ee-7.10.4~ee.omnibus-1.x86_64.rpm)
++ SHA256: 1e073fa4cfe02c44c37fc3106072b6b93d1652a10c9d47ae04b9658086346ea4
+
+- CentOS 7 64-bit [gitlab-ee-7.10.1~ee.omnibus.2-1.x86_64.rpm](https://downloads-packages.s3.amazonaws.com/7b57f7943fe450e18c7493d15481ac2561494be7/centos-7.1.1503/gitlab-ee-7.10.4~ee.omnibus-1.x86_64.rpm)
++ SHA256: 138f2a76c00c719984b7584f59843bb74f19f5f2e73444ffc78830ab3692d4c4
+
 ### GitLab Enterprise Edition and GitLab CI 7.10.1
 
 - Ubuntu 14.04 64-bit [gitlab-ee_7.10.1~ee.omnibus.2-1_amd64.deb](https://downloads-packages.s3.amazonaws.com/d84881d017607cda9f1f7d86d30b20599f036534/ubuntu-14.04/gitlab-ee_7.10.1~ee.omnibus.2-1_amd64.deb)
