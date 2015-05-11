@@ -304,11 +304,6 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  # Mentionable override.
-  def gfm_reference
-    "merge request #{to_reference}"
-  end
-
   def target_project_path
     if target_project
       target_project.path_with_namespace

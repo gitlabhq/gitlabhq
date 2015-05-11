@@ -20,10 +20,15 @@ module Mentionable
     end
   end
 
-  # Generate a GFM back-reference that will construct a link back to this Mentionable when rendered. Must
-  # be overridden if this model object can be referenced directly by GFM notation.
+  # Returns the text used as the body of a Note when this object is referenced
+  #
+  # By default this will be the class name and the result of calling
+  # `to_reference` on the object.
   def gfm_reference
-    raise NotImplementedError.new("#{self.class} does not implement #gfm_reference")
+    # Convert "MergeRequest" to "merge request"
+    friendly_name = self.class.to_s.underscore.humanize.downcase
+
+    "#{friendly_name} #{to_reference}"
   end
 
   # Construct a String that contains possible GFM references.

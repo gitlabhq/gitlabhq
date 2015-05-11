@@ -68,12 +68,6 @@ class Issue < ActiveRecord::Base
     reference
   end
 
-  # Mentionable overrides.
-
-  def gfm_reference
-    "issue #{to_reference}"
-  end
-
   # Reset issue events cache
   #
   # Since we do cache @event we need to reset cache in special cases:

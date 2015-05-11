@@ -140,11 +140,6 @@ class Commit
     Gitlab::ClosingIssueExtractor.new(project, current_user).closed_by_message(safe_message)
   end
 
-  # Mentionable override.
-  def gfm_reference
-    "commit #{to_reference}"
-  end
-
   def author
     User.find_for_commit(author_email, author_name)
   end
