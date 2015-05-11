@@ -34,7 +34,7 @@ FactoryGirl.define do
     factory :system_note,                traits: [:system]
 
     trait :on_commit do
-      project factory: :project
+      project
       commit_id RepoHelpers.sample_commit.id
       noteable_type "Commit"
     end
@@ -44,7 +44,7 @@ FactoryGirl.define do
     end
 
     trait :on_merge_request do
-      project factory: :project
+      project
       noteable_id 1
       noteable_type "MergeRequest"
     end
