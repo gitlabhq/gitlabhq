@@ -171,13 +171,20 @@ class SystemNoteService
     note_text.start_with?(cross_reference_note_prefix)
   end
 
-  # Determine if cross reference note should be created.
-  # eg. mentioning a commit in MR comments which exists inside a MR
-  # should not create "mentioned in" note.
+  # Check if a cross-reference is disallowed
+  #
+  # This method prevents adding a "mentioned in !1" note on every single commit
+  # in a merge request.
+  #
+  # noteable  - Noteable object being referenced
+  # mentioner - Mentionable object
+  #
+  # Returns Boolean
   def self.cross_reference_disallowed?(noteable, mentioner)
-    if mentioner.kind_of?(MergeRequest)
-      mentioner.commits.map(&:id).include? noteable.id
-    end
+    return false unless MergeRequest === mentioner
+    return false unless Commit === noteable
+
+    mentioner.commits.include?(noteable)
   end
 
   def self.cross_reference_exists?(noteable, mentioner)
