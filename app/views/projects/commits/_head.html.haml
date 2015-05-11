@@ -1,6 +1,6 @@
 %ul.nav.nav-tabs
   = nav_link(controller: [:commit, :commits]) do
-    = link_to namespace_project_commits_path(@project.namespace, @project, @repository.root_ref) do
+    = link_to namespace_project_commits_path(@project.namespace, @project, @ref || @repository.root_ref) do
       Commits
       %span.badge= number_with_precision(@repository.commit_count, precision: 0, delimiter: ',')
   = nav_link(controller: :compare) do
