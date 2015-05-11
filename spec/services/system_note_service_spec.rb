@@ -6,6 +6,10 @@ describe SystemNoteService do
   let(:noteable) { create(:issue, project: project) }
 
   shared_examples_for 'a system note' do
+    it 'is valid' do
+      expect(subject).to be_valid
+    end
+
     it 'sets the noteable model' do
       expect(subject.noteable).to eq noteable
     end
@@ -24,12 +28,12 @@ describe SystemNoteService do
   end
 
   describe '.add_commits' do
+    subject { described_class.add_commits(noteable, project, author, new_commits, old_commits, oldrev) }
+
     let(:noteable)    { create(:merge_request, source_project: project) }
     let(:new_commits) { noteable.commits }
     let(:old_commits) { [] }
     let(:oldrev)      { nil }
-
-    subject { described_class.add_commits(noteable, project, author, new_commits, old_commits, oldrev) }
 
     it_behaves_like 'a system note'
 
@@ -100,9 +104,9 @@ describe SystemNoteService do
   end
 
   describe '.change_assignee' do
-    let(:assignee) { create(:user) }
-
     subject { described_class.change_assignee(noteable, project, author, assignee) }
+
+    let(:assignee) { create(:user) }
 
     it_behaves_like 'a system note'
 
@@ -122,11 +126,11 @@ describe SystemNoteService do
   end
 
   describe '.change_label' do
+    subject { described_class.change_label(noteable, project, author, added, removed) }
+
     let(:labels)  { create_list(:label, 2) }
     let(:added)   { [] }
     let(:removed) { [] }
-
-    subject { described_class.change_label(noteable, project, author, added, removed) }
 
     it_behaves_like 'a system note'
 
@@ -159,9 +163,9 @@ describe SystemNoteService do
   end
 
   describe '.change_milestone' do
-    let(:milestone) { create(:milestone, project: project) }
-
     subject { described_class.change_milestone(noteable, project, author, milestone) }
+
+    let(:milestone) { create(:milestone, project: project) }
 
     it_behaves_like 'a system note'
 
@@ -181,10 +185,10 @@ describe SystemNoteService do
   end
 
   describe '.change_status' do
+    subject { described_class.change_status(noteable, project, author, status, source) }
+
     let(:status) { 'new_status' }
     let(:source) { nil }
-
-    subject { described_class.change_status(noteable, project, author, status, source) }
 
     it_behaves_like 'a system note'
 
@@ -204,9 +208,9 @@ describe SystemNoteService do
   end
 
   describe '.cross_reference' do
-    let(:mentioner) { create(:issue, project: project) }
-
     subject { described_class.cross_reference(noteable, mentioner, author) }
+
+    let(:mentioner) { create(:issue, project: project) }
 
     it_behaves_like 'a system note'
 
@@ -245,7 +249,7 @@ describe SystemNoteService do
           end
         end
 
-        context 'same project' do
+        context 'within the same project' do
           context 'from Commit' do
             let(:mentioner) { project.repository.commit }
 
