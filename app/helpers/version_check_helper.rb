@@ -1,5 +1,7 @@
 module VersionCheckHelper
   def version_status_badge
-    image_tag VersionCheck.new.url
+    if Rails.env.production?
+      image_tag VersionCheck.new.url
+    end
   end
 end
