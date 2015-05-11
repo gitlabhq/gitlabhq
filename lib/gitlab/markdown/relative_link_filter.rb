@@ -1,3 +1,4 @@
+require 'html/pipeline/filter'
 require 'uri'
 
 module Gitlab
@@ -13,7 +14,7 @@ module Gitlab
     class RelativeLinkFilter < HTML::Pipeline::Filter
 
       def call
-        if !project_wiki && repository.try(:exists?) && !repository.empty?
+        if linkable_files?
           doc.search('a').each do |el|
             process_link_attr el.attribute('href')
           end
@@ -27,6 +28,10 @@ module Gitlab
       end
 
       protected
+
+      def linkable_files?
+        context[:project_wiki].nil? && repository.try(:exists?) && !repository.empty?
+      end
 
       def process_link_attr(html_attr)
         return if html_attr.blank?
@@ -42,7 +47,7 @@ module Gitlab
 
         uri.path = [
           relative_url_root,
-          project.path_with_namespace,
+          context[:project].path_with_namespace,
           path_type(file_path),
           ref || 'master',  # assume that if no ref exists we can point to master
           file_path
@@ -52,7 +57,7 @@ module Gitlab
       end
 
       def relative_file_path(path)
-        nested_path = build_nested_path(path, requested_path)
+        nested_path = build_nested_path(path, context[:requested_path])
         file_exists?(nested_path) ? nested_path : path
       end
 
@@ -89,28 +94,20 @@ module Gitlab
       end
 
       def current_sha
-        if commit
-          commit.id
-        elsif ref
-          repository.commit(ref).try(:sha)
-        else
-          repository.head_commit.sha
-        end
+        context[:commit].try(:id) ||
+          ref ? repository.commit(ref).try(:sha) : repository.head_commit.sha
       end
 
       def relative_url_root
         Gitlab.config.gitlab.relative_url_root.presence || '/'
       end
 
-      [:commit, :project, :project_wiki, :requested_path, :ref].each do |name|
-        define_method(name) do
-          context[name]
-        end
+      def ref
+        context[:ref]
       end
 
       def repository
-        return if project.nil?
-        project.repository
+        context[:project].try(:repository)
       end
     end
   end

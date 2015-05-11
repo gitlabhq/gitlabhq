@@ -98,7 +98,6 @@ module Gitlab
         Gitlab::Markdown::SanitizationFilter,
 
         Gitlab::Markdown::RelativeLinkFilter,
-
         Gitlab::Markdown::EmojiFilter,
         Gitlab::Markdown::TableOfContentsFilter,
         Gitlab::Markdown::AutolinkFilter,
