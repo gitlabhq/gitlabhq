@@ -274,8 +274,32 @@ describe SystemNoteService do
     end
   end
 
-  # TODO (rspeicher)
-  describe '.cross_reference_disallowed?'
+  describe '.cross_reference_disallowed?' do
+    context 'when mentioner is not a MergeRequest' do
+      it 'is falsey' do
+        mentioner = noteable.dup
+        expect(described_class.cross_reference_disallowed?(noteable, mentioner)).
+          to be_falsey
+      end
+    end
+
+    context 'when mentioner is a MergeRequest' do
+      let(:mentioner) { create(:merge_request, :simple, source_project: project) }
+      let(:noteable)  { project.commit }
+
+      it 'is truthy when noteable is in commits' do
+        expect(mentioner).to receive(:commits).and_return([noteable])
+        expect(described_class.cross_reference_disallowed?(noteable, mentioner)).
+          to be_truthy
+      end
+
+      it 'is falsey when noteable is not in commits' do
+        expect(mentioner).to receive(:commits).and_return([])
+        expect(described_class.cross_reference_disallowed?(noteable, mentioner)).
+          to be_falsey
+      end
+    end
+  end
 
   describe '.cross_reference_exists?' do
     let(:commit0) { project.commit }
