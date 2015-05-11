@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 feature 'Login' do
-  context 'with two-factor authentication' do
+  describe 'with two-factor authentication' do
     context 'with valid username/password' do
       let(:user) { create(:user, :two_factor) }
 
@@ -78,7 +78,7 @@ feature 'Login' do
     end
   end
 
-  context 'without two-factor authentication' do
+  describe 'without two-factor authentication' do
     let(:user) { create(:user) }
 
     it 'allows basic login' do
