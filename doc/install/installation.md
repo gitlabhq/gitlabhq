@@ -62,7 +62,13 @@ up-to-date and install it.
 
 Install the required packages (needed to compile Ruby and native extensions to Ruby gems):
 
-    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate python-docutils pkg-config cmake libkrb5-dev nodejs
+    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate python-docutils pkg-config cmake nodejs
+
+If you want to use Kerberos for user authentication, then install libkrb5-dev:
+
+    sudo apt-get install libkrb5-dev
+
+**Note:** If you don't know what Kerberos is, then you certainly don't need it.
 
 Make sure you have the right version of Git installed
 
@@ -276,10 +282,12 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 **Note:** As of bundler 1.5.2, you can invoke `bundle install -jN` (where `N` the number of your processor cores) and enjoy the parallel gems installation with measurable difference in completion time (~60% faster). Check the number of your cores with `nproc`. For more information check this [post](http://robots.thoughtbot.com/parallel-gem-installing-using-bundler). First make sure you have bundler >= 1.5.2 (run `bundle -v`) as it addresses some [issues](https://devcenter.heroku.com/changelog-items/411) that were [fixed](https://github.com/bundler/bundler/pull/2817) in 1.5.2.
 
     # For PostgreSQL (note, the option says "without ... mysql")
-    sudo -u git -H bundle install --deployment --without development test mysql aws
+    sudo -u git -H bundle install --deployment --without development test mysql aws kerberos
 
     # Or if you use MySQL (note, the option says "without ... postgres")
-    sudo -u git -H bundle install --deployment --without development test postgres aws
+    sudo -u git -H bundle install --deployment --without development test postgres aws kerberos
+
+**Note:** If you want to use Kerberos for user authentication, then omit `kerberos` in the `--without` option above.
 
 ### Install GitLab Shell
 
