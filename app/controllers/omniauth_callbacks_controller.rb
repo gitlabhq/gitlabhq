@@ -65,8 +65,15 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         redirect_to omniauth_error_path(oauth['provider'], error: error_message) and return
       end
     end
-  rescue Gitlab::OAuth::ForbiddenAction => e
-    flash[:notice] = e.message
+  rescue Gitlab::OAuth::SignupDisabledError => e
+    message = "Signing in using your #{oauth['provider']} account without a pre-existing GitLab account is not allowed."
+
+    if current_application_settings.signup_enabled?
+      message << " Create a GitLab account first, and then connect it to your #{oauth['provider']} account."
+    end
+
+    flash[:notice] = message
+    
     redirect_to new_user_session_path
   end
 
