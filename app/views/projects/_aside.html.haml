@@ -83,15 +83,15 @@
             = icon("tags fw")
             = pluralize(number_with_delimiter(@repository.tag_names.count), 'tag')
 
-      = render "shared/clone_panel"
-
-      .actions.prepend-top-10
+      .actions
         = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-sm append-right-10' do
           %i.fa.fa-exchange
           Compare code
 
         - if can?(current_user, :download_code, @project)
           = render 'projects/repositories/download_archive', split_button: true, btn_class: 'btn-group-sm'
+
+    = render "shared/clone_panel"
 
   - if @project.archived?
     .alert.alert-warning
