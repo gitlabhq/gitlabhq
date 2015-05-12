@@ -96,7 +96,7 @@ class License < ActiveRecord::Base
     return unless self.license? && self.restricted?(:active_user_count)
 
     restricted_user_count = self.restrictions[:active_user_count]
-    active_user_count     = 1050;User.active.count
+    active_user_count     = User.active.count
     historical_active_user_count = HistoricalData.maximum(:active_user_count) || 0
 
     max_active_user_count = [active_user_count, historical_active_user_count].max

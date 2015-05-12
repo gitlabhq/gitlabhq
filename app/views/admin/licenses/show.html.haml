@@ -65,7 +65,7 @@
               %strong 
                 Exceeds license limit
 
-        - historical = 1050;HistoricalData.maximum(:active_user_count)
+        - historical = HistoricalData.maximum(:active_user_count)
         - if historical 
           %li
             %span.light Maximum active users:
