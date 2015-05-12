@@ -261,12 +261,19 @@ describe ApplicationHelper do
     end
   end
 
-  describe 'markup_render' do
+  describe 'render_markup' do
     let(:content) { 'Noël' }
 
     it 'should preserve encoding' do
       expect(content.encoding.name).to eq('UTF-8')
       expect(render_markup('foo.rst', content).encoding.name).to eq('UTF-8')
+    end
+
+    it "should delegate to #asciidoc when file name corresponds to AsciiDoc" do
+      expect(self).to receive(:asciidoc?).with('foo.adoc').and_return(true)
+      expect(self).to receive(:asciidoc).and_return('NOEL')
+
+      expect(render_markup('foo.adoc', content)).to eq('NOEL')
     end
   end
 end

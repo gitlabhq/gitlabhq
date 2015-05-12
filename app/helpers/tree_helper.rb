@@ -27,6 +27,8 @@ module TreeHelper
   def render_readme(readme)
     if gitlab_markdown?(readme.name)
       preserve(markdown(readme.data))
+    elsif asciidoc?(readme.name)
+      asciidoc(readme.data)
     elsif markup?(readme.name)
       render_markup(readme.name, readme.data)
     else
