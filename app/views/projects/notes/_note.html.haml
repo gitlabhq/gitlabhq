@@ -9,22 +9,30 @@
     .timeline-content
       .note-header
         .note-actions
-          = link_to "##{dom_id(note)}", name: dom_id(note) do
-            = icon('link')
+          = link_to "##{dom_id(note)}", name: dom_id(note), title: "Link here" do
+            = icon('link fw')
             Link here
-          &nbsp;
+
           - if note_editable?(note)
             = link_to '#', title: 'Edit comment', class: 'js-note-edit' do
-              = icon('pencil-square-o')
+              = icon('pencil-square-o fw')
               Edit
-            &nbsp;
-            = link_to namespace_project_note_path(@project.namespace, @project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'danger js-note-delete' do
-              = icon('trash-o', class: 'cred')
+
+            = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'danger js-note-delete' do
+              = icon('trash-o fw', class: 'cred')
               Remove
+
+        - unless note.system
+          - member = note.project.team.find_member(note.author.id)
+          - if member
+            %span.note-role.label
+              = member.human_access
+              
         - if note.system
           = link_to user_path(note.author) do
             = image_tag avatar_icon(note.author_email), class: 'avatar s16', alt: ''
-        = link_to_member(@project, note.author, avatar: false)
+
+        = link_to_member(note.project, note.author, avatar: false)
         %span.author-username
           = '@' + note.author.username
         %span.note-last-update
@@ -65,7 +73,7 @@
             = link_to note.attachment.url, target: '_blank' do
               = icon('paperclip')
               = note.attachment_identifier
-              = link_to delete_attachment_namespace_project_note_path(@project.namespace, @project, note),
+              = link_to delete_attachment_namespace_project_note_path(note.project.namespace, note.project, note),
                 title: 'Delete this attachment', method: :delete, remote: true, data: { confirm: 'Are you sure you want to remove the attachment?' }, class: 'danger js-note-attachment-delete' do
                 = icon('trash-o', class: 'cred')
       .clear
