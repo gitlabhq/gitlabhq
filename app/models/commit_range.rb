@@ -61,11 +61,14 @@ class CommitRange
   end
 
   def to_reference(from_project = nil)
+    # Not using to_s because we want the full SHAs
+    reference = sha_from + notation + sha_to
+
     if cross_project_reference?(from_project)
-      "#{project.to_reference}@#{to_s}"
-    else
-      to_s
+      reference = project.to_reference + '@' + reference
     end
+
+    reference
   end
 
   # Returns a String for use in a link's title attribute

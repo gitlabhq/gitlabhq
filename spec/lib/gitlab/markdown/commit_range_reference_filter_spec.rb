@@ -9,8 +9,7 @@ module Gitlab::Markdown
     let(:commit2) { project.commit("HEAD~2") }
 
     it 'requires project context' do
-      expect { described_class.call('Commit Range 1c002d..d200c1', {}) }.
-        to raise_error(ArgumentError, /:project/)
+      expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
     end
 
     %w(pre code a style).each do |elem|
