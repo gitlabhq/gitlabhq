@@ -28,6 +28,13 @@ FactoryGirl.define do
       admin true
     end
 
+    trait :two_factor do
+      before(:create) do |user|
+        user.otp_required_for_login = true
+        user.otp_secret = User.generate_otp_secret
+      end
+    end
+
     factory :omniauth_user do
       ignore do
         extern_uid '123456'

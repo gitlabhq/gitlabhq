@@ -226,6 +226,11 @@ Gitlab::Application.routes.draw do
       resources :keys
       resources :emails, only: [:index, :create, :destroy]
       resource :avatar, only: [:destroy]
+      resource :two_factor_auth, only: [:new, :create, :destroy] do
+        member do
+          post :codes
+        end
+      end
     end
   end
 
