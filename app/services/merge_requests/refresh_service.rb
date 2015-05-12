@@ -82,8 +82,9 @@ module MergeRequests
           mr_commit_ids.include?(commit.id)
         end
 
-        Note.create_new_commits_note(merge_request, merge_request.project,
-                                     @current_user, new_commits, existing_commits, @oldrev)
+        SystemNoteService.add_commits(merge_request, merge_request.project,
+                                      @current_user, new_commits,
+                                      existing_commits, @oldrev)
       end
     end
 

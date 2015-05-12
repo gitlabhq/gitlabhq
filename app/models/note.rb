@@ -63,143 +63,9 @@ class Note < ActiveRecord::Base
   after_update :set_references
 
   class << self
-    def create_status_change_note(noteable, project, author, status, source)
-      body = "Status changed to #{status}#{' by ' + source.gfm_reference if source}"
-
-      create(
-        noteable: noteable,
-        project: project,
-        author: author,
-        note: body,
-        system: true
-      )
-    end
-
-    # +noteable+ was referenced from +mentioner+, by including GFM in either
-    # +mentioner+'s description or an associated Note.
-    # Create a system Note associated with +noteable+ with a GFM back-reference
-    # to +mentioner+.
-    def create_cross_reference_note(noteable, mentioner, author)
-      gfm_reference = mentioner_gfm_ref(noteable, mentioner)
-
-      note_options = {
-        project: noteable.project,
-        author: author,
-        note: cross_reference_note_content(gfm_reference),
-        system: true
-      }
-
-      if noteable.kind_of?(Commit)
-        note_options.merge!(noteable_type: 'Commit', commit_id: noteable.id)
-      else
-        note_options.merge!(noteable: noteable)
-      end
-
-      create(note_options) unless cross_reference_disallowed?(noteable, mentioner)
-    end
-
-    def create_milestone_change_note(noteable, project, author, milestone)
-      body = if milestone.nil?
-               'Milestone removed'
-             else
-               "Milestone changed to #{milestone.title}"
-             end
-
-      create(
-        noteable: noteable,
-        project: project,
-        author: author,
-        note: body,
-        system: true
-      )
-    end
-
-    def create_assignee_change_note(noteable, project, author, assignee)
-      body = assignee.nil? ? 'Assignee removed' : "Reassigned to @#{assignee.username}"
-
-      create({
-        noteable: noteable,
-        project: project,
-        author: author,
-        note: body,
-        system: true
-      })
-    end
-
-    def create_labels_change_note(noteable, project, author, added_labels, removed_labels)
-      labels_count = added_labels.count + removed_labels.count
-      added_labels = added_labels.map{ |label| "~#{label.id}" }.join(' ')
-      removed_labels = removed_labels.map{ |label| "~#{label.id}" }.join(' ')
-      message = ''
-
-      if added_labels.present?
-        message << "added #{added_labels}"
-      end
-
-      if added_labels.present? && removed_labels.present?
-        message << ' and '
-      end
-
-      if removed_labels.present?
-        message << "removed #{removed_labels}"
-      end
-
-      message << ' ' << 'label'.pluralize(labels_count)
-      body = "#{message.capitalize}"
-
-      create(
-        noteable: noteable,
-        project: project,
-        author: author,
-        note: body,
-        system: true
-      )
-    end
-
-    def create_new_commits_note(merge_request, project, author, new_commits, existing_commits = [], oldrev = nil)
-      total_count = new_commits.length + existing_commits.length
-      commits_text = ActionController::Base.helpers.pluralize(total_count, 'commit')
-      body = "Added #{commits_text}:\n\n"
-
-      if existing_commits.length > 0
-        commit_ids =
-          if existing_commits.length == 1
-            existing_commits.first.short_id
-          else
-            if oldrev
-              "#{Commit.truncate_sha(oldrev)}...#{existing_commits.last.short_id}"
-            else
-              "#{existing_commits.first.short_id}..#{existing_commits.last.short_id}"
-            end
-          end
-
-        commits_text = ActionController::Base.helpers.pluralize(existing_commits.length, 'commit')
-
-        branch =
-          if merge_request.for_fork?
-            "#{merge_request.target_project_namespace}:#{merge_request.target_branch}"
-          else
-            merge_request.target_branch
-          end
-
-        message = "* #{commit_ids} - #{commits_text} from branch `#{branch}`"
-        body << message
-        body << "\n"
-      end
-
-      new_commits.each do |commit|
-        message = "* #{commit.short_id} - #{commit.title}"
-        body << message
-        body << "\n"
-      end
-
-      create(
-        noteable: merge_request,
-        project: project,
-        author: author,
-        note: body,
-        system: true
-      )
+    # TODO (rspeicher): Update usages
+    def create_cross_reference_note(*args)
+      SystemNoteService.cross_reference(*args)
     end
 
     def discussions_from_notes(notes)
@@ -227,86 +93,17 @@ class Note < ActiveRecord::Base
       [:discussion, type.try(:underscore), id, line_code].join("-").to_sym
     end
 
-    # Determine if cross reference note should be created.
-    # eg. mentioning a commit in MR comments which exists inside a MR
-    # should not create "mentioned in" note.
-    def cross_reference_disallowed?(noteable, mentioner)
-      if mentioner.kind_of?(MergeRequest)
-        mentioner.commits.map(&:id).include? noteable.id
-      end
-    end
-
-    # Determine whether or not a cross-reference note already exists.
-    def cross_reference_exists?(noteable, mentioner)
-      gfm_reference = mentioner_gfm_ref(noteable, mentioner, true)
-      notes = if noteable.is_a?(Commit)
-                where(commit_id: noteable.id, noteable_type: 'Commit')
-              else
-                where(noteable_id: noteable.id, noteable_type: noteable.class)
-              end
-
-      notes.where('note like ?', cross_reference_note_pattern(gfm_reference)).
-        system.any?
-    end
-
     def search(query)
       where("note like :query", query: "%#{query}%")
     end
+  end
 
-    def cross_reference_note_prefix
-      'mentioned in '
-    end
-
-    private
-
-    def cross_reference_note_content(gfm_reference)
-      cross_reference_note_prefix + "#{gfm_reference}"
-    end
-
-    def cross_reference_note_pattern(gfm_reference)
-      # Older cross reference notes contained underscores for emphasis
-      "%" + cross_reference_note_content(gfm_reference) + "%"
-    end
-
-    # Prepend the mentioner's namespaced project path to the GFM reference for
-    # cross-project references.  For same-project references, return the
-    # unmodified GFM reference.
-    def mentioner_gfm_ref(noteable, mentioner, cross_reference = false)
-      if mentioner.is_a?(Commit) && cross_reference
-        return mentioner.gfm_reference.sub('commit ', 'commit %')
-      end
-      
-      full_gfm_reference(mentioner.project, noteable.project, mentioner)
-    end
-
-    # Return the +mentioner+ GFM reference.  If the mentioner and noteable
-    # projects are not the same, add the mentioning project's path to the
-    # returned value.
-    def full_gfm_reference(mentioning_project, noteable_project, mentioner)
-      if mentioning_project == noteable_project
-        mentioner.gfm_reference
-      else
-        if mentioner.is_a?(Commit)
-          mentioner.gfm_reference.sub(
-            /(commit )/,
-            "\\1#{mentioning_project.path_with_namespace}@"
-          )
-        else
-          mentioner.gfm_reference.sub(
-            /(issue |merge request )/,
-            "\\1#{mentioning_project.path_with_namespace}"
-          )
-        end
-      end
-    end
+  def cross_reference?
+    system && SystemNoteService.cross_reference?(note)
   end
 
   def max_attachment_size
     current_application_settings.max_attachment_size.megabytes.to_i
-  end
-
-  def cross_reference?
-    note.start_with?(self.class.cross_reference_note_prefix)
   end
 
   def find_diff
@@ -449,16 +246,6 @@ class Note < ActiveRecord::Base
     @discussion_id ||= Note.build_discussion_id(noteable_type, noteable_id || commit_id, line_code)
   end
 
-  # Returns true if this is a downvote note,
-  # otherwise false is returned
-  def downvote?
-    votable? && (note.start_with?('-1') ||
-                 note.start_with?(':-1:') ||
-                 note.start_with?(':thumbsdown:') ||
-                 note.start_with?(':thumbs_down_sign:')
-                )
-  end
-
   def for_commit?
     noteable_type == "Commit"
   end
@@ -500,14 +287,18 @@ class Note < ActiveRecord::Base
     nil
   end
 
-  # Returns true if this is an upvote note,
-  # otherwise false is returned
+  DOWNVOTES = %w(-1 :-1: :thumbsdown: :thumbs_down_sign:)
+
+  # Check if the note is a downvote
+  def downvote?
+    votable? && note.start_with?(*DOWNVOTES)
+  end
+
+  UPVOTES = %w(+1 :+1: :thumbsup: :thumbs_up_sign:)
+
+  # Check if the note is an upvote
   def upvote?
-    votable? && (note.start_with?('+1') ||
-                 note.start_with?(':+1:') ||
-                 note.start_with?(':thumbsup:') ||
-                 note.start_with?(':thumbs_up_sign:')
-                )
+    votable? && note.start_with?(*UPVOTES)
   end
 
   def superceded?(notes)
