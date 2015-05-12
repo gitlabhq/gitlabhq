@@ -1,5 +1,5 @@
 module Gitlab
-  module MarkdownHelper
+  module MarkupHelper
     module_function
 
     # Public: Determines if a given filename is compatible with GitHub::Markup.

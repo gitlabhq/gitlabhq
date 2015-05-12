@@ -233,15 +233,15 @@ module ApplicationHelper
   end
 
   def markup?(filename)
-    Gitlab::MarkdownHelper.markup?(filename)
+    Gitlab::MarkupHelper.markup?(filename)
   end
 
   def gitlab_markdown?(filename)
-    Gitlab::MarkdownHelper.gitlab_markdown?(filename)
+    Gitlab::MarkupHelper.gitlab_markdown?(filename)
   end
 
   def asciidoc?(filename)
-    Gitlab::MarkdownHelper.asciidoc?(filename)
+    Gitlab::MarkupHelper.asciidoc?(filename)
   end
 
   # Overrides ActionView::Helpers::UrlHelper#link_to to add `rel="nofollow"` to
