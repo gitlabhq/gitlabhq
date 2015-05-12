@@ -6,11 +6,10 @@ module Gitlab::Markdown
 
     let(:project)   { create(:empty_project) }
     let(:snippet)   { create(:project_snippet, project: project) }
-    let(:reference) { "$#{snippet.id}" }
+    let(:reference) { snippet.to_reference }
 
     it 'requires project context' do
-      expect { described_class.call('Snippet $123', {}) }.
-        to raise_error(ArgumentError, /:project/)
+      expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
     end
 
     %w(pre code a style).each do |elem|
@@ -34,7 +33,7 @@ module Gitlab::Markdown
       end
 
       it 'ignores invalid snippet IDs' do
-        exp = act = "Snippet $#{snippet.id + 1}"
+        exp = act = "Snippet #{invalidate_reference(reference)}"
 
         expect(filter(act).to_html).to eq exp
       end
@@ -79,7 +78,7 @@ module Gitlab::Markdown
       let(:namespace) { create(:namespace, name: 'cross-reference') }
       let(:project2)  { create(:empty_project, namespace: namespace) }
       let(:snippet)   { create(:project_snippet, project: project2) }
-      let(:reference) { "#{project2.path_with_namespace}$#{snippet.id}" }
+      let(:reference) { snippet.to_reference(project) }
 
       context 'when user can access reference' do
         before { allow_cross_reference! }
@@ -97,7 +96,7 @@ module Gitlab::Markdown
         end
 
         it 'ignores invalid snippet IDs on the referenced project' do
-          exp = act = "See #{project2.path_with_namespace}$#{snippet.id + 1}"
+          exp = act = "See #{invalidate_reference(reference)}"
 
           expect(filter(act).to_html).to eq exp
         end

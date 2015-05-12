@@ -10,9 +10,10 @@ module ReferenceFilterSpecHelper
     Rails.application.routes.url_helpers
   end
 
-  # Modify a reference to make it invalid
+  # Modify a String reference to make it invalid
   #
-  # Commit SHAs get reversed, IDs get incremented by 1
+  # Commit SHAs get reversed, IDs get incremented by 1, all other Strings get
+  # their word characters reversed.
   #
   # reference - String reference to modify
   #
@@ -25,7 +26,7 @@ module ReferenceFilterSpecHelper
       # SHA-based reference with optional prefix
       reference.gsub(/\h{6,40}\z/) { |v| v.reverse }
     else
-      reference
+      reference.gsub(/\w+\z/) { |v| v.reverse }
     end
   end
 

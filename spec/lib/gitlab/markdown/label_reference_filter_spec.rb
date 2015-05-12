@@ -7,11 +7,10 @@ module Gitlab::Markdown
 
     let(:project)   { create(:empty_project) }
     let(:label)     { create(:label, project: project) }
-    let(:reference) { "~#{label.id}" }
+    let(:reference) { label.to_reference }
 
     it 'requires project context' do
-      expect { described_class.call('Label ~123', {}) }.
-        to raise_error(ArgumentError, /:project/)
+      expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
     end
 
     %w(pre code a style).each do |elem|
@@ -36,7 +35,7 @@ module Gitlab::Markdown
       link = doc.css('a').first.attr('href')
 
       expect(link).not_to match %r(https?://)
-      expect(link).to eq urls.namespace_project_issues_url(project.namespace, project, label_name: label.name, only_path: true)
+      expect(link).to eq urls.namespace_project_issues_path(project.namespace, project, label_name: label.name)
     end
 
     it 'adds to the results hash' do
@@ -70,7 +69,7 @@ module Gitlab::Markdown
       end
 
       it 'ignores invalid label IDs' do
-        exp = act = "Label ~#{label.id + 1}"
+        exp = act = "Label #{invalidate_reference(reference)}"
 
         expect(filter(act).to_html).to eq exp
       end
@@ -78,7 +77,7 @@ module Gitlab::Markdown
 
     context 'String-based single-word references' do
       let(:label)     { create(:label, name: 'gfm', project: project) }
-      let(:reference) { "~#{label.name}" }
+      let(:reference) { "#{Label.reference_prefix}#{label.name}" }
 
       it 'links to a valid reference' do
         doc = filter("See #{reference}")
@@ -94,7 +93,7 @@ module Gitlab::Markdown
       end
 
       it 'ignores invalid label names' do
-        exp = act = "Label ~#{label.name.reverse}"
+        exp = act = "Label #{Label.reference_prefix}#{label.name.reverse}"
 
         expect(filter(act).to_html).to eq exp
       end
@@ -104,7 +103,7 @@ module Gitlab::Markdown
       let(:label) { create(:label, name: 'gfm references', project: project) }
 
       context 'in single quotes' do
-        let(:reference) { "~'#{label.name}'" }
+        let(:reference) { "#{Label.reference_prefix}'#{label.name}'" }
 
         it 'links to a valid reference' do
           doc = filter("See #{reference}")
@@ -120,14 +119,14 @@ module Gitlab::Markdown
         end
 
         it 'ignores invalid label names' do
-          exp = act = "Label ~'#{label.name.reverse}'"
+          exp = act = "Label #{Label.reference_prefix}'#{label.name.reverse}'"
 
           expect(filter(act).to_html).to eq exp
         end
       end
 
       context 'in double quotes' do
-        let(:reference) { %(~"#{label.name}") }
+        let(:reference) { %(#{Label.reference_prefix}"#{label.name}") }
 
         it 'links to a valid reference' do
           doc = filter("See #{reference}")
@@ -143,7 +142,7 @@ module Gitlab::Markdown
         end
 
         it 'ignores invalid label names' do
-          exp = act = %(Label ~"#{label.name.reverse}")
+          exp = act = %(Label #{Label.reference_prefix}"#{label.name.reverse}")
 
           expect(filter(act).to_html).to eq exp
         end

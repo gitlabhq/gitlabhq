@@ -12,24 +12,23 @@ module Gitlab::Markdown
     let(:issue)   { create(:issue, project: project) }
 
     it 'requires project context' do
-      expect { described_class.call('Issue #123', {}) }.
-        to raise_error(ArgumentError, /:project/)
+      expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
     end
 
     %w(pre code a style).each do |elem|
       it "ignores valid references contained inside '#{elem}' element" do
-        exp = act = "<#{elem}>Issue ##{issue.iid}</#{elem}>"
+        exp = act = "<#{elem}>Issue #{issue.to_reference}</#{elem}>"
         expect(filter(act).to_html).to eq exp
       end
     end
 
     context 'internal reference' do
-      let(:reference) { "##{issue.iid}" }
+      let(:reference) { issue.to_reference }
 
       it 'ignores valid references when using non-default tracker' do
         expect(project).to receive(:get_issue).with(issue.iid).and_return(nil)
 
-        exp = act = "Issue ##{issue.iid}"
+        exp = act = "Issue #{reference}"
         expect(filter(act).to_html).to eq exp
       end
 
@@ -46,9 +45,9 @@ module Gitlab::Markdown
       end
 
       it 'ignores invalid issue IDs' do
-        exp = act = "Fixed ##{issue.iid + 1}"
+        invalid = invalidate_reference(reference)
+        exp = act = "Fixed #{invalid}"
 
-        expect(project).to receive(:get_issue).with(issue.iid + 1).and_return(nil)
         expect(filter(act).to_html).to eq exp
       end
 
@@ -92,7 +91,7 @@ module Gitlab::Markdown
       let(:namespace) { create(:namespace, name: 'cross-reference') }
       let(:project2)  { create(:empty_project, namespace: namespace) }
       let(:issue)     { create(:issue, project: project2) }
-      let(:reference) { "#{project2.path_with_namespace}##{issue.iid}" }
+      let(:reference) { issue.to_reference(project) }
 
       context 'when user can access reference' do
         before { allow_cross_reference! }
@@ -101,7 +100,7 @@ module Gitlab::Markdown
           expect_any_instance_of(Project).to receive(:get_issue).
             with(issue.iid).and_return(nil)
 
-          exp = act = "Issue ##{issue.iid}"
+          exp = act = "Issue #{reference}"
           expect(filter(act).to_html).to eq exp
         end
 
@@ -118,7 +117,7 @@ module Gitlab::Markdown
         end
 
         it 'ignores invalid issue IDs on the referenced project' do
-          exp = act = "Fixed #{project2.path_with_namespace}##{issue.iid + 1}"
+          exp = act = "Fixed #{invalidate_reference(reference)}"
 
           expect(filter(act).to_html).to eq exp
         end
