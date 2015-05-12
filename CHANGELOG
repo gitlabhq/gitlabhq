@@ -54,6 +54,7 @@ v 7.11.0 (unreleased)
   - Make Sidekiq MemoryKiller shutdown signal configurable
   - Add "Create Merge Request" buttons to commits and branches pages and push event.
   - Show user roles by comments.
+  - Fix automatic blocking of auto-created users from Active Directory.
 
 v 7.10.2
   - Fix CI links on MR page
