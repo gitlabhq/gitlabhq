@@ -1,4 +1,6 @@
 class License < ActiveRecord::Base
+  include ActionView::Helpers::NumberHelper
+
   validate :valid_license
   validate :active_user_count, unless: :persisted?
   validate :not_expired, unless: :persisted?
@@ -87,32 +89,34 @@ class License < ActiveRecord::Base
   def valid_license
     return if license?
 
-    self.errors.add(:base, "The license file is invalid. Make sure it is exactly as you received it from GitLab B.V.")
+    self.errors.add(:base, "The license file is invalid. Make sure it is exactly as you received it from GitLab B.V..")
   end
 
   def active_user_count
     return unless self.license? && self.restricted?(:active_user_count)
 
     restricted_user_count = self.restrictions[:active_user_count]
-    active_user_count     = User.active.count
+    active_user_count     = 1050;User.active.count
     historical_active_user_count = HistoricalData.maximum(:active_user_count) || 0
 
     max_active_user_count = [active_user_count, historical_active_user_count].max
 
     return if max_active_user_count < restricted_user_count
 
-    too_many = max_active_user_count - restricted_user_count
+    overage = max_active_user_count - restricted_user_count
 
-    message = "This license allows #{restricted_user_count} active users. "
+    message = ""
     message << 
       if historical_active_user_count > active_user_count
         "At one point, this GitLab installation had "
       else
-        "Currently, this GitLab installation has "
+        "This GitLab installation has "
       end
-    message << "#{max_active_user_count} active users, "
-    message << "i.e. #{too_many} too many. "
-    message << "Please upload a license for at least #{max_active_user_count} users."
+    message << "#{number_with_delimiter max_active_user_count} active #{"user".pluralize(max_active_user_count)}, "
+    message << "exceeding this license's limit of #{number_with_delimiter restricted_user_count} by "
+    message << "#{number_with_delimiter overage} #{"user".pluralize(overage)}. "
+    message << "Please upload a license for at least "
+    message << "#{number_with_delimiter max_active_user_count} #{"user".pluralize(max_active_user_count)}."
 
     self.errors.add(:base, message)
   end

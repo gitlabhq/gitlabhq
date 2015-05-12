@@ -47,33 +47,35 @@
         Users
       %ul.well-list
         %li
-          %span.light Licensed users:
+          %span.light License limit:
           %strong
             - if @license.restricted?(:active_user_count)
               - restricted = @license.restrictions[:active_user_count]
-              #{restricted} users
+              #{number_with_delimiter restricted} #{"users".pluralize(restricted)}
             - else
               Unlimited
         %li
           %span.light Current active users:
           %strong
             - current = User.active.count
-            #{current} users
+            #{number_with_delimiter current} #{"users".pluralize(current)}
 
           - if restricted && current > restricted
             %span.label.label-danger.pull-right
-              %strong Exceeds license
+              %strong 
+                Exceeds license limit
 
-        - historical = HistoricalData.maximum(:active_user_count)
+        - historical = 1050;HistoricalData.maximum(:active_user_count)
         - if historical 
           %li
             %span.light Maximum active users:
             %strong
-              #{historical} users
+              #{number_with_delimiter historical} #{"users".pluralize(historical)}
 
             - if restricted && historical > restricted
               %span.label.label-danger.pull-right
-                %strong Exceeds licensed amount
+                %strong 
+                  Exceeds license limit
 
   .col-md-6
     .panel.panel-info
