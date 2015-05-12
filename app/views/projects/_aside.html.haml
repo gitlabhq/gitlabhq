@@ -1,85 +1,102 @@
 .clearfix
-  .append-bottom-20
-    = render "shared/clone_panel"
-
   - unless @project.empty_repo?
     .well
       %h4.visibility-level-label
         = visibility_level_icon(@project.visibility_level)
         = "#{visibility_level_label(@project.visibility_level).capitalize} project"
-      %ul.nav.nav-pills
-        %li= link_to pluralize(number_with_delimiter(@repository.commit_count), 'commit'), namespace_project_commits_path(@project.namespace, @project, @ref || @repository.root_ref)
-        %li= link_to pluralize(number_with_delimiter(@repository.branch_names.count), 'branch'), namespace_project_branches_path(@project.namespace, @project)
-        %li= link_to pluralize(number_with_delimiter(@repository.tag_names.count), 'tag'), namespace_project_tags_path(@project.namespace, @project)
+
+      - if @repository.changelog || @repository.license || @repository.contribution_guide
+        %ul.nav.nav-pills
+          - if @repository.changelog
+            %li.hidden-xs
+              = link_to changelog_url(@project) do
+                = icon("list-alt fw")
+                Changelog
+          - if @repository.license
+            %li
+              = link_to license_url(@project) do
+                = icon("check-circle-o fw")
+                License
+          - if @repository.contribution_guide
+            %li
+              = link_to contribution_guide_url(@project) do
+                = icon("info-circle fw")
+                Contribution guide
 
       .actions
-        = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-sm' do
+        - if can? current_user, :write_issue, @project
+          = link_to url_for_new_issue(@project, only_path: true), title: "New Issue", class: 'btn btn-sm append-right-10' do
+            = icon("exclamation-circle fw")
+            New Issue
+
+        - if can? current_user, :write_merge_request, @project
+          = link_to new_namespace_project_merge_request_path(@project.namespace, @project), class: "btn btn-sm", title: "New Merge Request" do
+            = icon("plus fw")
+            New Merge Request
+
+  - if forked_from_project = @project.forked_from_project
+    .well
+      %h4
+        = icon("code-fork fw")
+        Forked from
+        .pull-right
+          = link_to forked_from_project.namespace.try(:name), project_path(forked_from_project)
+
+  - if version = @repository.version
+    .well
+      %h4
+        = icon("clock-o fw")
+        Version
+        .pull-right
+          = link_to version_url(@project) do
+            = @repository.blob_by_oid(version.id).data
+
+  - @project.ci_services.each do |ci_service|
+    - if ci_service.active? && ci_service.respond_to?(:builds_path)
+      .well
+        %h4
+          = icon("check fw")
+          = ci_service.title
+          .pull-right
+            - if ci_service.respond_to?(:status_img_path)
+              = link_to ci_service.builds_path, :'data-no-turbolink' => 'data-no-turbolink' do
+                = image_tag ci_service.status_img_path, alt: "build status"
+            - else
+              = link_to 'view builds', ci_service.builds_path, :'data-no-turbolink' => 'data-no-turbolink'
+
+  - unless @project.empty_repo?
+    .well
+      %h4
+        = icon("archive fw")
+        Repository
+
+      %ul.nav.nav-pills
+        %li
+          = link_to namespace_project_commits_path(@project.namespace, @project, @ref || @repository.root_ref) do
+            = icon("history fw")
+            = pluralize(number_with_delimiter(@repository.commit_count), 'commit')
+        %li
+          = link_to namespace_project_branches_path(@project.namespace, @project) do
+            = icon("code-fork fw")
+            = pluralize(number_with_delimiter(@repository.branch_names.count), 'branch')
+        %li
+          = link_to namespace_project_tags_path(@project.namespace, @project) do
+            = icon("tags fw")
+            = pluralize(number_with_delimiter(@repository.tag_names.count), 'tag')
+
+      .actions
+        = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-sm append-right-10' do
           %i.fa.fa-exchange
           Compare code
 
         - if can?(current_user, :download_code, @project)
-          &nbsp;
           = render 'projects/repositories/download_archive', split_button: true, btn_class: 'btn-group-sm'
 
-  - unless @project.empty_repo?
-    .well
-      %h4 Contribute
-      %ul.nav.nav-pills
-        - if @repository.changelog
-          %li.hidden-xs
-            = link_to changelog_url(@project) do
-              Changelog
-        - if @repository.contribution_guide
-          %li.hidden-xs
-            = link_to contribution_guide_url(@project) do
-              Contribution guide
-        - if @repository.license
-          %li
-            = link_to license_url(@project) do
-              License
-      .actions
-        = link_to url_for_new_issue(@project, only_path: true), title: "New Issue", class: 'btn btn-sm' do
-          %i.fa.fa-fw.fa-exclamation-circle
-          New issue
-        - if can? current_user, :write_merge_request, @project
-          &nbsp;
-          = link_to new_namespace_project_merge_request_path(@project.namespace, @project), class: "btn btn-sm", title: "New Merge Request" do
-            %i.fa.fa-plus
-            New Merge Request
-
-
+    = render "shared/clone_panel"
 
   - if @project.archived?
     .alert.alert-warning
       %h4
-        %i.fa.fa-exclamation-triangle
+        = icon("exclamation-triangle fw")
         Archived project!
       %p Repository is read-only
-
-  - if @project.forked_from_project
-    .well
-      %h4
-        Forked from
-        .pull-right
-          = link_to @project.forked_from_project.namespace.try(:name), project_path(@project.forked_from_project)
-
-
-- if version = @repository.version
-  .well
-    %h4
-      Version
-      .pull-right
-        = link_to version_url(@project) do
-          = @repository.blob_by_oid(version.id).data
-
-- @project.ci_services.each do |ci_service|
-  - if ci_service.active? && ci_service.respond_to?(:builds_path)
-    .well
-      %h4
-        = ci_service.title
-        .pull-right
-          - if ci_service.respond_to?(:status_img_path)
-            = link_to ci_service.builds_path, :'data-no-turbolink' => 'data-no-turbolink' do
-              = image_tag ci_service.status_img_path, alt: "build status"
-          - else
-            = link_to 'view builds', ci_service.builds_path, :'data-no-turbolink' => 'data-no-turbolink'
