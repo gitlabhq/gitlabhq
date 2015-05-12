@@ -28,10 +28,19 @@
           = link_to url_for_new_issue(@project, only_path: true), title: "New Issue", class: 'btn btn-sm append-right-10' do
             = icon("exclamation-circle fw")
             New Issue
+
         - if can? current_user, :write_merge_request, @project
           = link_to new_namespace_project_merge_request_path(@project.namespace, @project), class: "btn btn-sm", title: "New Merge Request" do
             = icon("plus fw")
             New Merge Request
+
+  - if forked_from_project = @project.forked_from_project
+    .well
+      %h4
+        = icon("code-fork fw")
+        Forked from
+        .pull-right
+          = link_to forked_from_project.namespace.try(:name), project_path(forked_from_project)
 
   - if version = @repository.version
     .well
@@ -41,14 +50,6 @@
         .pull-right
           = link_to version_url(@project) do
             = @repository.blob_by_oid(version.id).data
-
-  - if forked_from_project = @project.forked_from_project
-    .well
-      %h4
-        = icon("code-fork fw")
-        Forked from
-        .pull-right
-          = link_to forked_from_project.namespace.try(:name), project_path(forked_from_project)
 
   - @project.ci_services.each do |ci_service|
     - if ci_service.active? && ci_service.respond_to?(:builds_path)
