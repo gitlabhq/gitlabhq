@@ -44,6 +44,14 @@ ul.notes {
     }
     .author-username {
     }
+
+    .note-role {
+      float: right;
+      margin-top: 2px;
+      border: 1px solid #bbb;
+      background-color: transparent;
+      color: #999;
+    }
   }
 
   .discussion {
@@ -136,6 +144,7 @@ ul.notes {
 .note {
   &.note:hover {
     .note-actions { display: block; }
+    .note-actions + .note-role { display: none; }
   }
   .discussion-header:hover {
     .discussion-actions { display: block; }
@@ -153,6 +162,8 @@ ul.notes {
     }
 
     a {
+      margin-left: 5px;
+
       @extend .cgray;
 
       &:hover {

@@ -53,6 +53,7 @@ v 7.11.0 (unreleased)
   - Add current_sign_in_at to UserFull REST api.
   - Make Sidekiq MemoryKiller shutdown signal configurable
   - Add "Create Merge Request" buttons to commits and branches pages and push event.
+  - Show user roles by comments.
 
 v 7.10.2
   - Fix CI links on MR page
