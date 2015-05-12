@@ -10,6 +10,25 @@ module ReferenceFilterSpecHelper
     Rails.application.routes.url_helpers
   end
 
+  # Modify a reference to make it invalid
+  #
+  # Commit SHAs get reversed, IDs get incremented by 1
+  #
+  # reference - String reference to modify
+  #
+  # Returns a String
+  def invalidate_reference(reference)
+    if reference =~ /\A(.+)?.\d+\z/
+      # Integer-based reference with optional project prefix
+      reference.gsub(/\d+\z/) { |i| i.to_i + 1 }
+    elsif reference =~ /\A(.+@)?(\h{6,40}\z)/
+      # SHA-based reference with optional prefix
+      reference.gsub(/\h{6,40}\z/) { |v| v.reverse }
+    else
+      reference
+    end
+  end
+
   # Perform `call` on the described class
   #
   # Automatically passes the current `project` value to the context if none is
