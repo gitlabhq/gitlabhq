@@ -40,3 +40,49 @@ be possible to downgrade in case of a vulnerability or bugs.
 
 In your migration, add a comment describing how the reversibility of the
 migration was tested.
+
+
+## Removing indices
+
+If you need to remove index, please add a condition like in following example:
+
+```
+remove_index :namespaces, column: :name if index_exists?(:namespaces, :name)
+```
+
+## Adding indices
+
+If you need to add an unique index please keep in mind there is possibility of existing duplicates. If it is possible write a separate migration for handling this situation. It can be just removing or removing with overwriting all references to these duplicates depend on situation.
+
+## Testing
+
+Make sure that your migration works with MySQL and PostgreSQL with data. An empty database does not guarantee that your migration is correct.
+
+Make sure your migration can be reversed.
+
+## Data migration
+
+Please prefer Arel and plain SQL over usual ActiveRecord syntax. In case of using plain SQL you need to quote all input manually with `quote_string` helper.
+
+Example with Arel:
+
+```
+users = Arel::Table.new(:users)
+users.group(users[:user_id]).having(users[:id].count.gt(5))
+
+#updtae other tables with this results
+```
+
+Example with plain SQL and `quote_string` helper:
+
+```
+select_all("SELECT name, COUNT(id) as cnt FROM tags GROUP BY name HAVING COUNT(id) > 1").each do |tag|
+  tag_name = quote_string(tag["name"])
+  duplicate_ids = select_all("SELECT id FROM tags WHERE name = '#{tag_name}'").map{|tag| tag["id"]}
+  origin_tag_id = duplicate_ids.first
+  duplicate_ids.delete origin_tag_id
+
+  execute("UPDATE taggings SET tag_id = #{origin_tag_id} WHERE tag_id IN(#{duplicate_ids.join(",")})")
+  execute("DELETE FROM tags WHERE id IN(#{duplicate_ids.join(",")})")
+end
+```
