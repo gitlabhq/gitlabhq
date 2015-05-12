@@ -222,7 +222,9 @@ module ApplicationHelper
   end
 
   def render_markup(file_name, file_content)
-    if asciidoc?(file_name)
+    if gitlab_markdown?(file_name)
+      Haml::Helpers.preserve(markdown(file_content))
+    elsif asciidoc?(file_name)
       asciidoc(file_content)
     else
       GitHub::Markup.render(file_name, file_content).

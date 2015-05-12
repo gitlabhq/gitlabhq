@@ -269,6 +269,13 @@ describe ApplicationHelper do
       expect(render_markup('foo.rst', content).encoding.name).to eq('UTF-8')
     end
 
+    it "should delegate to #markdown when file name corresponds to Markdown" do
+      expect(self).to receive(:gitlab_markdown?).with('foo.md').and_return(true)
+      expect(self).to receive(:markdown).and_return('NOEL')
+
+      expect(render_markup('foo.md', content)).to eq('NOEL')
+    end
+
     it "should delegate to #asciidoc when file name corresponds to AsciiDoc" do
       expect(self).to receive(:asciidoc?).with('foo.adoc').and_return(true)
       expect(self).to receive(:asciidoc).and_return('NOEL')

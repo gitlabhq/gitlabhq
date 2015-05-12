@@ -8,8 +8,10 @@ module Gitlab
     #
     # Returns boolean
     def markup?(filename)
-      filename.downcase.end_with?(*%w(.textile .rdoc .org .creole .wiki
-                                      .mediawiki .rst .adoc .ad .asciidoc))
+      gitlab_markdown?(filename) ||
+        asciidoc?(filename) ||
+        filename.downcase.end_with?(*%w(.textile .rdoc .org .creole .wiki
+                                        .mediawiki .rst))
     end
 
     # Public: Determines if a given filename is compatible with
@@ -32,7 +34,7 @@ module Gitlab
     end
 
     def previewable?(filename)
-      gitlab_markdown?(filename) || markup?(filename)
+      markup?(filename)
     end
   end
 end

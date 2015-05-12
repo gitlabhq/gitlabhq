@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::MarkupHelper do
   describe '#markup?' do
     %w(textile rdoc org creole wiki
-       mediawiki rst adoc ad asciidoc).each do |type|
+       mediawiki rst adoc ad asciidoc mdown md markdown).each do |type|
       it "returns true for #{type} files" do
         expect(Gitlab::MarkupHelper.markup?("README.#{type}")).to be_truthy
       end
