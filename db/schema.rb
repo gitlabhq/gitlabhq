@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150502064022) do
+ActiveRecord::Schema.define(version: 20150507194350) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -130,6 +130,13 @@ ActiveRecord::Schema.define(version: 20150502064022) do
     t.boolean  "member_check",         default: false, null: false
     t.string   "file_name_regex"
     t.boolean  "is_sample",            default: false
+  end
+
+  create_table "historical_data", force: true do |t|
+    t.date     "date",              null: false
+    t.integer  "active_user_count"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "identities", force: true do |t|

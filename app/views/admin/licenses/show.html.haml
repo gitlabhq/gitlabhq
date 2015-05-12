@@ -35,36 +35,47 @@
           %strong
             - if @license.will_expire?
               = time_ago_with_tooltip @license.expires_at
-              - if @license.expired?
-                %span.label.label-danger.pull-right
-                  %strong Expired
             - else
               Never
 
+          - if @license.expired?
+            %span.label.label-danger.pull-right
+              %strong Expired
+
     .panel.panel-default
       .panel-heading
-        Restrictions
+        Users
       %ul.well-list
         %li
-          %span.light Active users:
+          %span.light License limit:
           %strong
             - if @license.restricted?(:active_user_count)
-              - restricted_user_count = @license.restrictions[:active_user_count]
-              - active_user_count = User.active.count
-              #{restricted_user_count} users
-
-              - if active_user_count > restricted_user_count
-                %span.label.label-danger.pull-right
-                  %strong Exceeded by #{active_user_count - restricted_user_count} users
-              - elsif restricted_user_count > active_user_count
-                %span.label.label-success.pull-right
-                  %strong #{restricted_user_count - active_user_count} more allowed
-              - else
-                %span.label.label-info.pull-right
-                  %strong Right at the limit
-
+              - restricted = @license.restrictions[:active_user_count]
+              #{number_with_delimiter restricted} #{"users".pluralize(restricted)}
             - else
               Unlimited
+        %li
+          %span.light Current active users:
+          %strong
+            - current = User.active.count
+            #{number_with_delimiter current} #{"users".pluralize(current)}
+
+          - if restricted && current > restricted
+            %span.label.label-danger.pull-right
+              %strong 
+                Exceeds license limit
+
+        - historical = HistoricalData.maximum(:active_user_count)
+        - if historical 
+          %li
+            %span.light Maximum active users:
+            %strong
+              #{number_with_delimiter historical} #{"users".pluralize(historical)}
+
+            - if restricted && historical > restricted
+              %span.label.label-danger.pull-right
+                %strong 
+                  Exceeds license limit
 
   .col-md-6
     .panel.panel-info

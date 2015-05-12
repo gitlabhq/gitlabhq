@@ -1,0 +1,20 @@
+class HistoricalData < ActiveRecord::Base
+  validate :date, presence: true
+
+  # HistoricalData.during((Date.today - 1.year)..Date.today).average(:active_user_count)
+  scope :during, ->(range) { where(date: range) }
+
+  class << self
+    def track!
+      create!(
+        date:               Date.today,
+        active_user_count:  User.active.count
+      )
+    end
+
+    # HistoricalData.at(Date.new(2014, 1, 1)).active_user_count
+    def at(date)
+      find_by(date: date)
+    end
+  end
+end
