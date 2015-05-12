@@ -37,7 +37,7 @@ gem "rack-oauth2", "~> 1.0.5"
 # Two-factor authentication
 gem 'devise-two-factor'
 gem 'rqrcode-rails3'
-gem 'attr_encrypted', git: 'https://github.com/attr-encrypted/attr_encrypted.git', ref: '94d901df2ccbc579b981091d53dd641f9bed4c1d'
+gem 'attr_encrypted', '1.3.4'
 
 # Browser detection
 gem "browser"
