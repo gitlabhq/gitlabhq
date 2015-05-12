@@ -6,7 +6,7 @@ The source of GitLab Community Edition is [hosted on GitLab.com](https://gitlab.
 
 ## Open source software to collaborate on code
 
-![Animated screenshots](https://about.gitlab.com/images/animated/compiled.gif)
+To see how GitLab looks please see the [features page on our website](https://about.gitlab.com/features/).
 
 - Manage Git repositories with fine grained access controls that keep your code secure
 - Perform code reviews and enhance collaboration with merge requests
