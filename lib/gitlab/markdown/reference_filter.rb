@@ -1,5 +1,5 @@
 require 'active_support/core_ext/string/output_safety'
-require 'html/pipeline'
+require 'html/pipeline/filter'
 
 module Gitlab
   module Markdown
