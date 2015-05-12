@@ -42,7 +42,7 @@ GEM
     arel (5.0.1.20140414130214)
     asana (0.0.6)
       activeresource (>= 3.2.3)
-    asciidoctor (0.1.4)
+    asciidoctor (1.5.2)
     ast (2.0.0)
     astrolabe (1.3.0)
       parser (>= 2.2.0.pre.3, < 3.0)
@@ -683,7 +683,7 @@ DEPENDENCIES
   addressable
   annotate (~> 2.6.0.beta2)
   asana (~> 0.0.6)
-  asciidoctor (= 0.1.4)
+  asciidoctor (~> 1.5.2)
   attr_encrypted (= 1.3.4)
   awesome_print
   better_errors
