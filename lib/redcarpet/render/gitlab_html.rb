@@ -36,10 +36,6 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
   end
 
   def postprocess(full_document)
-    unless @template.instance_variable_get("@project_wiki") || @project.nil?
-      full_document = h.create_relative_links(full_document)
-    end
-
     h.gfm_with_options(full_document, @options)
   end
 end

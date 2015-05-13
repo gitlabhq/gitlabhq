@@ -15,6 +15,7 @@ module Gitlab
     autoload :IssueReferenceFilter,         'gitlab/markdown/issue_reference_filter'
     autoload :LabelReferenceFilter,         'gitlab/markdown/label_reference_filter'
     autoload :MergeRequestReferenceFilter,  'gitlab/markdown/merge_request_reference_filter'
+    autoload :RelativeLinkFilter,           'gitlab/markdown/relative_link_filter'
     autoload :SanitizationFilter,           'gitlab/markdown/sanitization_filter'
     autoload :SnippetReferenceFilter,       'gitlab/markdown/snippet_reference_filter'
     autoload :TableOfContentsFilter,        'gitlab/markdown/table_of_contents_filter'
@@ -64,7 +65,12 @@ module Gitlab
         current_user:    current_user,
         only_path:       options[:reference_only_path],
         project:         project,
-        reference_class: html_options[:class]
+        reference_class: html_options[:class],
+
+        # RelativeLinkFilter
+        ref: @ref,
+        requested_path: @path,
+        project_wiki: @project_wiki
       }
 
       result = pipeline.call(text, context)
@@ -91,6 +97,7 @@ module Gitlab
       [
         Gitlab::Markdown::SanitizationFilter,
 
+        Gitlab::Markdown::RelativeLinkFilter,
         Gitlab::Markdown::EmojiFilter,
         Gitlab::Markdown::TableOfContentsFilter,
         Gitlab::Markdown::AutolinkFilter,
