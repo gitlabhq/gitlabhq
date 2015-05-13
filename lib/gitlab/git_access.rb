@@ -136,7 +136,7 @@ module Gitlab
         end
 
       unless user.can?(action, project)
-        return
+        status =
           case action
           when :force_push_code_to_protected_branches
             build_status_object(false, "You are not allowed to force push code to a protected branch on this project.")
@@ -148,7 +148,8 @@ module Gitlab
             build_status_object(false, "You are not allowed to change existing tags on this project.")
           else # :push_code
             build_status_object(false, "You are not allowed to push code to this project.")
-          end
+          end 
+        return status
       end
 
       build_status_object(true)
