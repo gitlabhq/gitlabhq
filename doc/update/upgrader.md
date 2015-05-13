@@ -4,7 +4,7 @@
 
 If someone wants to make this script into a gem or otherwise improve it merge requests are welcome.
 
-*Make sure you view this [upgrade guide from the `master` branch](../../../master/doc/update/upgrader.md) for the most up to date instructions.*
+*Make sure you view this [upgrade guide from the 'master' branch](../../../master/doc/update/upgrader.md) for the most up to date instructions.*
 
 GitLab Upgrader - a ruby script that allows you easily upgrade GitLab to latest minor version.
 
