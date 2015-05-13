@@ -40,6 +40,7 @@ v 7.11.0 (unreleased)
   - Fix bug where commit data would not appear in some subdirectories (Stan Hu)
   - Unescape branch names in compare commit (Stan Hu)
   - Task lists are now usable in comments, and will show up in Markdown previews.
+  - Fix bug where avatar filenames were not actually deleted from the database during removal (Stan Hu)
   - Fix bug where Slack service channel was not saved in admin template settings. (Stan Hu)
   - Move snippets UI to fluid layout
   - Improve UI for sidebar. Increase separation between navigation and content

@@ -148,7 +148,7 @@ class User < ActiveRecord::Base
 
   validates :notification_level, inclusion: { in: Notification.notification_levels }, presence: true
   validate :namespace_uniq, if: ->(user) { user.username_changed? }
-  validate :avatar_type, if: ->(user) { user.avatar_changed? }
+  validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :unique_email, if: ->(user) { user.email_changed? }
   validate :owns_notification_email, if: ->(user) { user.notification_email_changed? }
   validate :owns_public_email, if: ->(user) { user.public_email_changed? }
@@ -309,7 +309,7 @@ class User < ActiveRecord::Base
     if primary_email_record
       primary_email_record.destroy
       self.emails.create(email: self.email_was)
-      
+
       self.update_secondary_emails!
     end
   end
