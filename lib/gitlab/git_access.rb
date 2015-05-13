@@ -31,8 +31,7 @@ module Gitlab
     def can_push_to_branch?(ref)
       return false unless user
 
-      if project.protected_branch?(ref)  &&
-          !(project.developers_can_push_to_protected_branch?(ref) && project.team.developer?(user))
+      if project.protected_branch?(ref) && !project.developers_can_push_to_protected_branch?(ref)
         user.can?(:push_code_to_protected_branches, project)
       else
         user.can?(:push_code, project)
@@ -50,13 +49,25 @@ module Gitlab
     end
 
     def check(cmd, changes = nil)
+      unless actor
+        return build_status_object(false, "No user or key was provided.")
+      end
+
+      if user && !user_allowed?
+        return build_status_object(false, "Your account has been blocked.")
+      end
+
+      unless project && can_read_project?
+        return build_status_object(false, 'The project you were looking for could not be found.')
+      end
+
       case cmd
       when *DOWNLOAD_COMMANDS
         download_access_check
       when *PUSH_COMMANDS
         push_access_check(changes)
       else
-        build_status_object(false, "Wrong command")
+        build_status_object(false, "The command you're trying to execute is not allowed.")
       end
     end
 
@@ -64,7 +75,7 @@ module Gitlab
       if user
         user_download_access_check
       elsif deploy_key
-        deploy_key_download_access_check
+        build_status_object(true)
       else
         raise 'Wrong actor'
       end
@@ -74,39 +85,27 @@ module Gitlab
       if user
         user_push_access_check(changes)
       elsif deploy_key
-        build_status_object(false, "Deploy key not allowed to push")
+        build_status_object(false, "Deploy keys are not allowed to push code.")
       else
         raise 'Wrong actor'
       end
     end
 
     def user_download_access_check
-      if user && user_allowed? && user.can?(:download_code, project)
-        build_status_object(true)
-      else
-        build_status_object(false, "You don't have access")
+      unless user.can?(:download_code, project)
+        return build_status_object(false, "You are not allowed to download code from this project.")
       end
-    end
 
-    def deploy_key_download_access_check
-      if can_read_project?
-        build_status_object(true)
-      else
-        build_status_object(false, "Deploy key not allowed to access this project")
-      end
+      build_status_object(true)
     end
 
     def user_push_access_check(changes)
-      unless user && user_allowed?
-        return build_status_object(false, "You don't have access")
-      end
-
       if changes.blank?
         return build_status_object(true)
       end
 
       unless project.repository.exists?
-        return build_status_object(false, "Repository does not exist")
+        return build_status_object(false, "A repository for this project does not exist yet.")
       end
 
       changes = changes.lines if changes.kind_of?(String)
@@ -136,11 +135,24 @@ module Gitlab
           :push_code
         end
 
-      if user.can?(action, project)
-        build_status_object(true)
-      else
-        build_status_object(false, "You don't have permission")
+      unless user.can?(action, project)
+        status =
+          case action
+          when :force_push_code_to_protected_branches
+            build_status_object(false, "You are not allowed to force push code to a protected branch on this project.")
+          when :remove_protected_branches
+            build_status_object(false, "You are not allowed to deleted protected branches from this project.")
+          when :push_code_to_protected_branches
+            build_status_object(false, "You are not allowed to push code to protected branches on this project.")
+          when :admin_project
+            build_status_object(false, "You are not allowed to change existing tags on this project.")
+          else # :push_code
+            build_status_object(false, "You are not allowed to push code to this project.")
+          end 
+        return status
       end
+
+      build_status_object(true)
     end
 
     def forced_push?(oldrev, newrev)

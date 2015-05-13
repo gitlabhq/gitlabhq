@@ -5,7 +5,7 @@
 #
 module Gitlab
   module OAuth
-    class ForbiddenAction < StandardError; end
+    class SignupDisabledError < StandardError; end
 
     class User
       attr_accessor :auth_hash, :gl_user
@@ -99,7 +99,7 @@ module Gitlab
       end
 
       def unauthorized_to_create
-        raise ForbiddenAction.new("Unauthorized to create user, signup disabled for #{auth_hash.provider}")
+        raise SignupDisabledError
       end
     end
   end
