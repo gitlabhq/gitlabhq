@@ -52,22 +52,26 @@ describe ProjectHook do
     end
 
     it "POSTs to the web hook URL" do
-      @project_hook.execute(@data)
-      expect(WebMock).to have_requested(:post, @project_hook.url).once
+      @project_hook.execute(@data, 'push_hooks')
+      expect(WebMock).to have_requested(:post, @project_hook.url).with(
+        headers: {'Content-Type'=>'application/json', 'X-Gitlab-Event'=>'Push Hook'}
+      ).once
     end
 
     it "POSTs the data as JSON" do
       json = @data.to_json
 
-      @project_hook.execute(@data)
-      expect(WebMock).to have_requested(:post, @project_hook.url).with(body: json).once
+      @project_hook.execute(@data, 'push_hooks')
+      expect(WebMock).to have_requested(:post, @project_hook.url).with(
+        headers: {'Content-Type'=>'application/json', 'X-Gitlab-Event'=>'Push Hook'}
+      ).once
     end
 
     it "catches exceptions" do
       expect(WebHook).to receive(:post).and_raise("Some HTTP Post error")
 
       expect {
-        @project_hook.execute(@data)
+        @project_hook.execute(@data, 'push_hooks')
       }.to raise_error
     end
   end

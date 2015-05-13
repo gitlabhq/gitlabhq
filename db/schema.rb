@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150507194350) do
+ActiveRecord::Schema.define(version: 20150509180749) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -567,6 +567,11 @@ ActiveRecord::Schema.define(version: 20150507194350) do
     t.string   "bitbucket_access_token"
     t.string   "bitbucket_access_token_secret"
     t.string   "location"
+    t.string   "encrypted_otp_secret"
+    t.string   "encrypted_otp_secret_iv"
+    t.string   "encrypted_otp_secret_salt"
+    t.boolean  "otp_required_for_login"
+    t.text     "otp_backup_codes"
     t.string   "public_email",                  default: "",    null: false
   end
 

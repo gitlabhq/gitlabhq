@@ -9,9 +9,10 @@ Feature: Project Deploy Keys
     Then I should see project deploy key
 
   Scenario: I should see project deploy keys
-    Given other project has deploy key
+    Given other projects have deploy keys
     When I visit project deploy keys page
-    Then I should see other project deploy key 
+    Then I should see other project deploy key
+    And I should only see the same deploy key once
 
   Scenario: I should see public deploy keys
     Given public deploy key exists
@@ -26,7 +27,7 @@ Feature: Project Deploy Keys
     And I should see newly created deploy key
 
   Scenario: I attach other project deploy key to project
-    Given other project has deploy key
+    Given other projects have deploy keys
     And I visit project deploy keys page
     When I click attach deploy key
     Then I should be on deploy keys page

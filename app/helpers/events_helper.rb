@@ -25,12 +25,16 @@ module EventsHelper
 
   def event_filter_link(key, tooltip)
     key = key.to_s
-    active = if @event_filter.active? key
-               'active'
-             end
+    active = 'active' if @event_filter.active?(key)
+    link_opts = {
+      class: 'event_filter_link',
+      id:    "#{key}_event_filter",
+      title: "Filter by #{tooltip.downcase}",
+      data:  { toggle: 'tooltip', placement: 'top' }
+    }
 
     content_tag :li, class: "filter_icon #{active}" do
-      link_to request.path, class: 'has_tooltip event_filter_link', id: "#{key}_event_filter", 'data-original-title' => 'Filter by ' + tooltip.downcase do
+      link_to request.path, link_opts do
         icon(icon_for_event[key]) + content_tag(:span, ' ' + tooltip)
       end
     end

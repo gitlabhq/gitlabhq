@@ -26,6 +26,33 @@
               %span You don`t have one yet. Click generate to fix it.
               = f.submit 'Generate', class: "btn success btn-build-token"
 
+  - unless current_user.ldap_user?
+    %fieldset
+      - if current_user.otp_required_for_login
+        %legend.text-success
+          = icon('check')
+          Two-factor Authentication enabled
+        %div
+          .pull-right
+            = link_to 'Disable Two-factor Authentication', profile_two_factor_auth_path, method: :delete, class: 'btn btn-close btn-sm',
+                data: { confirm: 'Are you sure?' }
+          %p
+            If you lose your recovery codes you can
+            %strong
+              = succeed ',' do
+                = link_to 'generate new ones', codes_profile_two_factor_auth_path, method: :post, data: { confirm: 'Are you sure?' }
+            invalidating all previous codes.
+
+      - else
+        %legend Two-factor Authentication
+        %div
+          %p
+            Increase your account's security by enabling two-factor authentication (2FA).
+          %p
+            Each time you log in you’ll be required to provide your username and
+            password as usual, plus a randomly-generated code from your phone.
+          %div
+            = link_to 'Enable Two-factor Authentication', new_profile_two_factor_auth_path, class: 'btn btn-success'
 
   - if show_profile_social_tab?
     %fieldset
@@ -38,7 +65,7 @@
               class: "btn btn-lg #{'active' if oauth_active?(provider)}"
             - if oauth_active?(provider)
               = link_to unlink_profile_account_path(provider: provider), method: :delete, class: 'btn btn-lg' do
-                %i.fa.fa-close
+                = icon('close')
 
   - if show_profile_username_tab?
     %fieldset.update-username
@@ -52,7 +79,7 @@
           &nbsp;
         .loading-gif.hide
           %p
-            %i.fa.fa-spinner.fa-spin
+            = icon('spinner spin')
             Saving new username
         %p.light
           = user_url(@user)

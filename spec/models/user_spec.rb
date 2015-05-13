@@ -50,6 +50,11 @@
 #  bitbucket_access_token        :string(255)
 #  bitbucket_access_token_secret :string(255)
 #  location                      :string(255)
+#  encrypted_otp_secret          :string(255)
+#  encrypted_otp_secret_iv       :string(255)
+#  encrypted_otp_secret_salt     :string(255)
+#  otp_required_for_login        :boolean
+#  otp_backup_codes              :text
 #  public_email                  :string(255)      default(""), not null
 #
 

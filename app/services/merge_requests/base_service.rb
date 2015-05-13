@@ -2,7 +2,7 @@ module MergeRequests
   class BaseService < ::IssuableBaseService
 
     def create_note(merge_request)
-      Note.create_status_change_note(merge_request, merge_request.target_project, current_user, merge_request.state, nil)
+      SystemNoteService.change_status(merge_request, merge_request.target_project, current_user, merge_request.state, nil)
     end
 
     def hook_data(merge_request, action)

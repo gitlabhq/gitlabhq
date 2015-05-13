@@ -12,7 +12,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I click atom feed link' do
-    click_link "Feed"
+    click_link "Commits Feed"
   end
 
   step 'I see commits atom feed' do

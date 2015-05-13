@@ -1,17 +1,22 @@
 %ul.nav.nav-tabs
   = nav_link(controller: [:commit, :commits]) do
-    = link_to namespace_project_commits_path(@project.namespace, @project, @repository.root_ref) do
+    = link_to namespace_project_commits_path(@project.namespace, @project, @ref || @repository.root_ref) do
+      = icon("history")
       Commits
       %span.badge= number_with_precision(@repository.commit_count, precision: 0, delimiter: ',')
   = nav_link(controller: :compare) do
-    = link_to 'Compare', namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: @ref || @repository.root_ref)
+    = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: @ref || @repository.root_ref) do
+      = icon("exchange")
+      Compare
 
   = nav_link(html_options: {class: branches_tab_class}) do
     = link_to namespace_project_branches_path(@project.namespace, @project) do
+      = icon("code-fork")
       Branches
       %span.badge.js-totalbranch-count= @repository.branches.size
 
   = nav_link(controller: :tags) do
     = link_to namespace_project_tags_path(@project.namespace, @project) do
+      = icon("tags")
       Tags
       %span.badge.js-totaltags-count= @repository.tags.length

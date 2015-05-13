@@ -102,6 +102,15 @@
 
   .input-group-addon {
     background: #FAFAFA;
+
+    &.git-protocols {
+      padding: 0;
+      border: none;
+
+      .input-group-btn:last-child > .btn {
+        @include border-radius-right(0);
+      }
+    }
   }
 }
 
@@ -201,9 +210,12 @@ ul.nav.nav-projects-tabs {
   }
 
   .well {
+    padding: 14px;
+
     h4 {
       font-weight: normal;
       margin: 0;
+      color: #555;
     }
 
     .nav-pills a {
@@ -237,7 +249,8 @@ ul.nav.nav-projects-tabs {
 }
 
 .breadcrumb.repo-breadcrumb {
-  padding: 2px 0;
+  padding: 0;
+  line-height: 34px;
   background: white;
   border: none;
   font-size: 16px;

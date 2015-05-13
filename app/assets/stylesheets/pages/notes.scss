@@ -44,6 +44,14 @@ ul.notes {
     }
     .author-username {
     }
+
+    .note-role {
+      float: right;
+      margin-top: 2px;
+      border: 1px solid #bbb;
+      background-color: transparent;
+      color: #999;
+    }
   }
 
   .discussion {
@@ -61,6 +69,16 @@ ul.notes {
         overflow: auto;
         word-wrap: break-word;
         @include md-typography;
+
+        // Reduce left padding of first ul element
+        ul.task-list:first-child {
+          padding-left: 10px;
+
+          // sub-lists should be padded normally
+          ul {
+            padding-left: 20px;
+          }
+        }
 
         hr {
           margin: 10px 0;
@@ -126,6 +144,7 @@ ul.notes {
 .note {
   &.note:hover {
     .note-actions { display: block; }
+    .note-actions + .note-role { display: none; }
   }
   .discussion-header:hover {
     .discussion-actions { display: block; }
@@ -143,6 +162,8 @@ ul.notes {
     }
 
     a {
+      margin-left: 5px;
+
       @extend .cgray;
 
       &:hover {

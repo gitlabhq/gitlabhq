@@ -24,7 +24,7 @@ class Group < Namespace
   has_many :ldap_group_links, foreign_key: 'group_id', dependent: :destroy
   has_many :hooks, dependent: :destroy, class_name: 'GroupHook'
 
-  validate :avatar_type, if: ->(user) { user.avatar_changed? }
+  validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   mount_uploader :avatar, AvatarUploader

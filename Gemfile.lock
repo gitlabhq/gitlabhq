@@ -46,6 +46,8 @@ GEM
     ast (2.0.0)
     astrolabe (1.3.0)
       parser (>= 2.2.0.pre.3, < 3.0)
+    attr_encrypted (1.3.4)
+      encryptor (>= 1.3.0)
     attr_required (1.0.0)
     autoprefixer-rails (5.1.11)
       execjs
@@ -136,6 +138,13 @@ GEM
       warden (~> 1.2.3)
     devise-async (0.9.0)
       devise (~> 3.2)
+    devise-two-factor (1.0.1)
+      activemodel
+      activesupport
+      attr_encrypted (~> 1.3.2)
+      devise (~> 3.2.4)
+      rails
+      rotp (~> 1.6.1)
     diff-lcs (1.2.5)
     diffy (3.0.3)
     docile (1.1.5)
@@ -147,6 +156,7 @@ GEM
     email_spec (1.5.0)
       launchy (~> 2.1)
       mail (~> 2.2)
+    encryptor (1.3.0)
     enumerize (0.7.0)
       activesupport (>= 3.2)
     equalizer (0.0.8)
@@ -216,7 +226,7 @@ GEM
       mime-types (~> 1.19)
     gitlab_emoji (0.1.0)
       gemojione (~> 2.0)
-    gitlab_git (7.1.10)
+    gitlab_git (7.1.11)
       activesupport (~> 4.0)
       charlock_holmes (~> 0.6)
       gitlab-linguist (~> 3.0)
@@ -291,11 +301,6 @@ GEM
     i18n (0.7.0)
     ice_cube (0.11.1)
     ice_nine (0.10.0)
-    jasmine (2.2.0)
-      jasmine-core (~> 2.2)
-      phantomjs
-      rack (>= 1.2.1)
-      rake
     jasmine-core (2.2.0)
     jasmine-rails (0.10.8)
       jasmine-core (>= 1.3, < 3.0)
@@ -488,7 +493,11 @@ GEM
     rest-client (1.6.7)
       mime-types (>= 1.16)
     rinku (1.7.3)
+    rotp (1.6.1)
     rouge (1.7.7)
+    rqrcode (0.4.2)
+    rqrcode-rails3 (0.1.7)
+      rqrcode (>= 0.4.2)
     rspec (2.99.0)
       rspec-core (~> 2.99.0)
       rspec-expectations (~> 2.99.0)
@@ -598,6 +607,8 @@ GEM
     stamp (0.5.0)
     state_machine (1.2.0)
     stringex (2.5.2)
+    task_list (1.0.2)
+      html-pipeline
     temple (0.6.7)
     term-ansicolor (1.2.2)
       tins (~> 0.8)
@@ -674,6 +685,7 @@ DEPENDENCIES
   annotate (~> 2.6.0.beta2)
   asana (~> 0.0.6)
   asciidoctor (= 0.1.4)
+  attr_encrypted (= 1.3.4)
   awesome_print
   better_errors
   binding_of_caller
@@ -695,6 +707,7 @@ DEPENDENCIES
   default_value_for (~> 3.0.0)
   devise (= 3.2.4)
   devise-async (= 0.9.0)
+  devise-two-factor
   diffy (~> 3.0.3)
   doorkeeper (= 2.1.3)
   dropzonejs-rails
@@ -712,7 +725,7 @@ DEPENDENCIES
   gitlab-license (~> 0.0.2)
   gitlab-linguist (~> 3.0.1)
   gitlab_emoji (~> 0.1)
-  gitlab_git (~> 7.1.10)
+  gitlab_git (~> 7.1.11)
   gitlab_meta (= 7.0)
   gitlab_omniauth-ldap (= 1.2.1)
   gollum-lib (~> 4.0.2)
@@ -726,7 +739,6 @@ DEPENDENCIES
   hipchat (~> 1.5.0)
   html-pipeline (~> 1.11.0)
   httparty
-  jasmine (~> 2.2.0)
   jasmine-rails
   jquery-atwho-rails (~> 1.0.0)
   jquery-rails
@@ -769,6 +781,7 @@ DEPENDENCIES
   redis-rails
   request_store
   rerun (~> 0.10.0)
+  rqrcode-rails3
   rspec-rails (= 2.99)
   rubocop (= 0.28.0)
   rugments
@@ -792,6 +805,7 @@ DEPENDENCIES
   spring-commands-spinach (= 1.0.0)
   stamp
   state_machine
+  task_list (~> 1.0.0)
   test_after_commit
   thin
   tinder (~> 1.9.2)

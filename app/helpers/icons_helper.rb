@@ -26,15 +26,15 @@ module IconsHelper
   end
 
   def public_icon
-    icon('globe')
+    icon('globe fw')
   end
 
   def internal_icon
-    icon('shield')
+    icon('shield fw')
   end
 
   def private_icon
-    icon('lock')
+    icon('lock fw')
   end
 
   def file_type_icon_class(type, mode, name)

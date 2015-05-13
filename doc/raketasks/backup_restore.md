@@ -9,6 +9,8 @@ This archive will be saved in backup_path (see `config/gitlab.yml`).
 The filename will be `[TIMESTAMP]_gitlab_backup.tar`. This timestamp can be used to restore an specific backup.
 You can only restore a backup to exactly the same version of GitLab that you created it on, for example 7.2.1.
 
+If you are interested in GitLab CI backup please follow to the [CI backup documentation](https://gitlab.com/gitlab-org/gitlab-ci/blob/master/doc/raketasks/backup_restore.md)*
+
 ```
 # use this command if you've installed GitLab with the Omnibus package
 sudo gitlab-rake gitlab:backup:create
@@ -150,11 +152,9 @@ If you have an installation from source, please consider backing up your `gitlab
 
 You can only restore a backup to exactly the same version of GitLab that you created it on, for example 7.2.1.
 
-```
-# Omnibus package installation
-sudo gitlab-rake gitlab:backup:restore
+### Installation from source
 
-# installation from source
+```
 bundle exec rake gitlab:backup:restore RAILS_ENV=production
 ```
 
@@ -196,11 +196,45 @@ Restoring repositories:
 Deleting tmp directories...[DONE]
 ```
 
+### Omnibus installations
+
+We will assume that you have installed GitLab from an omnibus package and run
+`sudo gitlab-ctl reconfigure` at least once.
+
+First make sure your backup tar file is in `/var/opt/gitlab/backups`.
+
+```shell
+sudo cp 1393513186_gitlab_backup.tar /var/opt/gitlab/backups/
+```
+
+Next, restore the backup by running the restore command. You need to specify the
+timestamp of the backup you are restoring.
+
+```shell
+# Stop processes that are connected to the database
+sudo gitlab-ctl stop unicorn
+sudo gitlab-ctl stop sidekiq
+
+# This command will overwrite the contents of your GitLab database!
+sudo gitlab-rake gitlab:backup:restore BACKUP=1393513186
+
+# Start GitLab
+sudo gitlab-ctl start
+
+# Create satellites
+sudo gitlab-rake gitlab:satellites:create
+
+# Check GitLab
+sudo gitlab-rake gitlab:check SANITIZE=true
+```
+
+If there is a GitLab version mismatch between your backup tar file and the installed
+version of GitLab, the restore command will abort with an error. Install a package for
+the [required version](https://www.gitlab.com/downloads/archives/) and try again.
+
 ## Configure cron to make daily backups
 
-For Omnibus package installations, see https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#scheduling-a-backup .
-
-For installation from source:
+### For installation from source:
 ```
 cd /home/git/gitlab
 sudo -u git -H editor config/gitlab.yml # Enable keep_time in the backup section to automatically delete old backups
@@ -216,6 +250,32 @@ Add the following lines at the bottom:
 
 The `CRON=1` environment setting tells the backup script to suppress all progress output if there are no errors.
 This is recommended to reduce cron spam.
+
+### For omnibus installations
+
+To schedule a cron job that backs up your repositories and GitLab metadata, use the root user:
+
+```
+sudo su -
+crontab -e
+```
+
+There, add the following line to schedule the backup for everyday at 2 AM:
+
+```
+0 2 * * * /opt/gitlab/bin/gitlab-rake gitlab:backup:create CRON=1
+```
+
+You may also want to set a limited lifetime for backups to prevent regular
+backups using all your disk space.  To do this add the following lines to
+`/etc/gitlab/gitlab.rb` and reconfigure:
+
+```
+# limit backup lifetime to 7 days - 604800 seconds
+gitlab_rails['backup_keep_time'] = 604800
+```
+
+NOTE: This cron job does not [backup your omnibus-gitlab configuration](#backup-and-restore-omnibus-gitlab-configuration) or [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
 
 ## Alternative backup strategies
 

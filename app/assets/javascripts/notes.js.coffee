@@ -1,3 +1,12 @@
+#= require jquery
+#= require autosave
+#= require bootstrap
+#= require dropzone
+#= require dropzone_input
+#= require gfm_auto_complete
+#= require jquery.atwho
+#= require task_list
+
 class @Notes
   @interval: null
 
@@ -11,6 +20,7 @@ class @Notes
     @setupMainTargetNoteForm()
     @cleanBinding()
     @addBinding()
+    @initTaskList()
 
   addBinding: ->
     # add note to UI after creation
@@ -81,6 +91,9 @@ class @Notes
     $(document).off "click", ".js-note-target-reopen"
     $(document).off "click", ".js-note-target-close"
 
+    $('.note .js-task-list-container').taskList('disable')
+    $(document).off 'tasklist:changed', '.note .js-task-list-container'
+
   initRefresh: ->
     clearInterval(Notes.interval)
     Notes.interval = setInterval =>
@@ -114,6 +127,7 @@ class @Notes
     if @isNewNote(note)
       @note_ids.push(note.id)
       $('ul.main-notes-list').append(note.html)
+      @initTaskList()
 
   ###
   Check if note does not exists on page
@@ -268,6 +282,8 @@ class @Notes
     note_li.replaceWith(note.html)
     note_li.find('.note-edit-form').hide()
     note_li.find('.note-body > .note-text').show()
+    note_li.find('js-task-list-container').taskList('enable')
+    @enableTaskList()
 
   ###
   Called in response to clicking the edit note link
@@ -479,3 +495,13 @@ class @Notes
     else
       form.find('.js-note-target-reopen').text('Reopen')
       form.find('.js-note-target-close').text('Close')
+
+  initTaskList: ->
+    @enableTaskList()
+    $(document).on 'tasklist:changed', '.note .js-task-list-container', @updateTaskList
+
+  enableTaskList: ->
+    $('.note .js-task-list-container').taskList('enable')
+
+  updateTaskList: ->
+    $('form', this).submit()

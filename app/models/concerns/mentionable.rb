@@ -39,7 +39,7 @@ module Mentionable
   # Determine whether or not a cross-reference Note has already been created between this Mentionable and
   # the specified target.
   def has_mentioned?(target)
-    Note.cross_reference_exists?(target, local_reference)
+    SystemNoteService.cross_reference_exists?(target, local_reference)
   end
 
   def mentioned_users(current_user = nil, p = project)

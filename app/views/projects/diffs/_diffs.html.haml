@@ -5,11 +5,13 @@
       = parallel_diff_btn
   = render 'projects/diffs/stats', diffs: diffs
 
-- if show_diff_size_warning?(diffs)
-  = render 'projects/diffs/warning', diffs: diffs
+- diff_files = safe_diff_files(diffs)
+
+- if diff_files.count < diffs.size
+  = render 'projects/diffs/warning', diffs: diffs, shown_files_count: diff_files.count
 
 .files
-  - safe_diff_files(diffs).each_with_index do |diff_file, index|
+  - diff_files.each_with_index do |diff_file, index|
     = render 'projects/diffs/file', diff_file: diff_file, i: index, project: project
 
 - if @diff_timeout

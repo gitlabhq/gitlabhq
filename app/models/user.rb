@@ -50,6 +50,11 @@
 #  bitbucket_access_token        :string(255)
 #  bitbucket_access_token_secret :string(255)
 #  location                      :string(255)
+#  encrypted_otp_secret          :string(255)
+#  encrypted_otp_secret_iv       :string(255)
+#  encrypted_otp_secret_salt     :string(255)
+#  otp_required_for_login        :boolean
+#  otp_backup_codes              :text
 #  public_email                  :string(255)      default(""), not null
 #
 
@@ -70,8 +75,14 @@ class User < ActiveRecord::Base
   default_value_for :hide_no_password, false
   default_value_for :theme_id, gitlab_config.default_theme
 
-  devise :database_authenticatable, :lockable, :async,
-         :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :confirmable, :registerable
+  devise :two_factor_authenticatable,
+         otp_secret_encryption_key: File.read(Rails.root.join('.secret')).chomp
+
+  devise :two_factor_backupable, otp_number_of_backup_codes: 10
+  serialize :otp_backup_codes, JSON
+
+  devise :lockable, :async, :recoverable, :rememberable, :trackable,
+    :validatable, :omniauthable, :confirmable, :registerable
 
   attr_accessor :force_random_password
 
@@ -137,7 +148,7 @@ class User < ActiveRecord::Base
 
   validates :notification_level, inclusion: { in: Notification.notification_levels }, presence: true
   validate :namespace_uniq, if: ->(user) { user.username_changed? }
-  validate :avatar_type, if: ->(user) { user.avatar_changed? }
+  validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :unique_email, if: ->(user) { user.email_changed? }
   validate :owns_notification_email, if: ->(user) { user.notification_email_changed? }
   validate :owns_public_email, if: ->(user) { user.public_email_changed? }
@@ -325,7 +336,7 @@ class User < ActiveRecord::Base
     if primary_email_record
       primary_email_record.destroy
       self.emails.create(email: self.email_was)
-      
+
       self.update_secondary_emails!
     end
   end
@@ -466,7 +477,7 @@ class User < ActiveRecord::Base
   end
 
   def project_deploy_keys
-    DeployKey.in_projects(self.authorized_projects.pluck(:id))
+    DeployKey.unscoped.in_projects(self.authorized_projects.pluck(:id)).distinct(:id)
   end
 
   def accessible_deploy_keys

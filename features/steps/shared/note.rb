@@ -122,20 +122,6 @@ module SharedNote
     end
   end
 
-  step 'I leave a comment with task markdown' do
-    within('.js-main-target-form') do
-      fill_in 'note[note]', with: '* [x] Task item'
-      click_button 'Add Comment'
-      sleep 0.05
-    end
-  end
-
-  step 'I should not see task checkboxes in the comment' do
-    expect(page).not_to have_selector(
-      'li.note div.timeline-content input[type="checkbox"]'
-    )
-  end
-
   step 'I edit the last comment with a +1' do
     find(".note").hover
     find('.js-note-edit').click

@@ -45,10 +45,20 @@ class Spinach::Features::ProjectDeployKeys < Spinach::FeatureSteps
     end
   end
 
-  step 'other project has deploy key' do
-    @second_project = create :project, namespace: create(:group)
+  step 'other projects have deploy keys' do
+    @second_project = create(:project, namespace: create(:group))
     @second_project.team << [current_user, :master]
     create(:deploy_keys_project, project: @second_project)
+
+    @third_project = create(:project, namespace: create(:group))
+    @third_project.team << [current_user, :master]
+    create(:deploy_keys_project, project: @third_project, deploy_key: @second_project.deploy_keys.first)
+  end
+
+  step 'I should only see the same deploy key once' do
+    within '.available-keys' do
+      page.should have_selector('ul li', count: 1)
+    end
   end
 
   step 'public deploy key exists' do
