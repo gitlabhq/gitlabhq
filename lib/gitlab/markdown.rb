@@ -68,9 +68,9 @@ module Gitlab
         reference_class: html_options[:class],
 
         # RelativeLinkFilter
-        ref: @ref,
+        ref:            @ref,
         requested_path: @path,
-        project_wiki: @project_wiki
+        project_wiki:   @project_wiki
       }
 
       result = pipeline.call(text, context)

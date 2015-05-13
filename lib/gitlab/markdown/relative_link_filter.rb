@@ -9,19 +9,18 @@ module Gitlab
     #   :commit
     #   :project
     #   :project_wiki
-    #   :requested_path
     #   :ref
+    #   :requested_path
     class RelativeLinkFilter < HTML::Pipeline::Filter
-
       def call
-        if linkable_files?
-          doc.search('a').each do |el|
-            process_link_attr el.attribute('href')
-          end
+        return doc unless linkable_files?
 
-          doc.search('img').each do |el|
-            process_link_attr el.attribute('src')
-          end
+        doc.search('a').each do |el|
+          process_link_attr el.attribute('href')
+        end
+
+        doc.search('img').each do |el|
+          process_link_attr el.attribute('src')
         end
 
         doc
@@ -40,6 +39,8 @@ module Gitlab
         if uri.relative? && uri.path.present?
           html_attr.value = rebuild_relative_uri(uri).to_s
         end
+      rescue URI::Error
+        # noop
       end
 
       def rebuild_relative_uri(uri)
@@ -85,12 +86,25 @@ module Gitlab
           repository.tree(current_sha, path).entries.any?
       end
 
-      # Check if the path is pointing to a directory(tree) or a file(blob)
-      # eg. doc/api is directory and doc/README.md is file.
+      # Get the type of the given path
+      #
+      # path - String path to check
+      #
+      # Examples:
+      #
+      #   path_type('doc/README.md') # => 'blob'
+      #   path_type('doc/logo.png')  # => 'raw'
+      #   path_type('doc/api')       # => 'tree'
+      #
+      # Returns a String
       def path_type(path)
-        return 'tree' if repository.tree(current_sha, path).entries.any?
-        return 'raw' if repository.blob_at(current_sha, path).try(:image?)
-        'blob'
+        if repository.tree(current_sha, path).entries.any?
+          'tree'
+        elsif repository.blob_at(current_sha, path).try(:image?)
+          'raw'
+        else
+          'blob'
+        end
       end
 
       def current_sha
