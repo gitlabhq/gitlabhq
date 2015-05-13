@@ -29,7 +29,6 @@ All steps from issue template are explained below
 ```
 Xth: (7 working days before the 22nd)
 
-- [ ] Code freeze
 - [ ] Update the CE changelog (#LINK)
 - [ ] Update the EE changelog (#LINK)
 - [ ] Update the CI changelog (#LINK)
@@ -78,10 +77,6 @@ Xth: (1 working day before the 22nd)
 ```
 
 - - -
-
-## Code Freeze
-
-Stop merging code in master, except for important bug fixes
 
 ## Update changelog
 
