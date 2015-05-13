@@ -56,6 +56,7 @@ v 7.11.0 (unreleased)
   - Add "Create Merge Request" buttons to commits and branches pages and push event.
   - Show user roles by comments.
   - Fix automatic blocking of auto-created users from Active Directory.
+  - Call merge request web hook for each new commits (Arthur Gautier)
 
 v 7.10.2
   - Fix CI links on MR page
