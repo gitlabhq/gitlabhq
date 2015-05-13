@@ -115,18 +115,10 @@ describe Gitlab::GitAccess do
       let(:actor) { key }
 
       context 'pull code' do
-        context 'allowed' do
-          before { key.projects << project }
-          subject { access.download_access_check }
+        before { key.projects << project }
+        subject { access.download_access_check }
 
-          it { expect(subject.allowed?).to be_truthy }
-        end
-
-        context 'denied' do
-          subject { access.download_access_check }
-
-          it { expect(subject.allowed?).to be_falsey }
-        end
+        it { expect(subject.allowed?).to be_truthy }
       end
     end
   end
