@@ -48,7 +48,8 @@
         = icon("clock-o fw")
         Version
         .pull-right
-          = link_to version_url(@project) do
+          - url = @repository.changelog ? changelog_url(@project) : version_url(@project)
+          = link_to url do
             = @repository.blob_by_oid(version.id).data
 
   - @project.ci_services.each do |ci_service|
