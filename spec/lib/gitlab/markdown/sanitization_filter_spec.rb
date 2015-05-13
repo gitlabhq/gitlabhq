@@ -29,17 +29,27 @@ module Gitlab::Markdown
         exp = act = "<dl>\n<dt>Term</dt>\n<dd>Definition</dd>\n</dl>"
         expect(filter(act).to_html).to eq exp
       end
+
+      it 'sanitizes `class` attribute on any element' do
+        act = %q{<strong class="foo">Strong</strong>}
+        expect(filter(act).to_html).to eq %q{<strong>Strong</strong>}
+      end
+
+      it 'sanitizes `id` attribute on any element' do
+        act = %q{<em id="foo">Emphasis</em>}
+        expect(filter(act).to_html).to eq %q{<em>Emphasis</em>}
+      end
     end
 
     describe 'custom whitelist' do
-      it 'allows `class` attribute on any element' do
-        exp = act = %q{<strong class="foo">Strong</strong>}
+      it 'allows syntax highlighting' do
+        exp = act = %q{<pre class="code highlight white c"><code><span class="k">def</span></code></pre>}
         expect(filter(act).to_html).to eq exp
       end
 
-      it 'allows `id` attribute on any element' do
-        exp = act = %q{<em id="foo">Emphasis</em>}
-        expect(filter(act).to_html).to eq exp
+      it 'sanitizes `class` attribute from non-highlight spans' do
+        act = %q{<span class="k">def</span>}
+        expect(filter(act).to_html).to eq %q{<span>def</span>}
       end
 
       it 'allows `style` attribute on table elements' do

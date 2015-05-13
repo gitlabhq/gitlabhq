@@ -1,10 +1,12 @@
 %ul.nav.nav-tabs
   %li.active
     = link_to '#tab-activity', 'data-toggle' => 'tab' do
+      = icon("tachometer")
       Activity
   - if @repository.readme
     %li
       = link_to '#tab-readme', 'data-toggle' => 'tab' do
+        = icon("file-text-o")
         Readme
 .tab-content
   .tab-pane.active#tab-activity
@@ -26,9 +28,10 @@
   - if readme = @repository.readme
     .tab-pane#tab-readme
       %article.readme-holder#README
-        = link_to namespace_project_blob_path(@project.namespace, @project, tree_join(@repository.root_ref, readme.name)) do
-          %h4.readme-file-title
-            %i.fa.fa-file
-            = readme.name
+        .clearfix
+          %small.pull-right
+            = link_to namespace_project_blob_path(@project.namespace, @project, tree_join(@repository.root_ref, readme.name)), class: 'light' do
+              %i.fa.fa-file
+              = readme.name
         .wiki
           = render_readme(readme)

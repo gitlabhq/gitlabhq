@@ -9,6 +9,10 @@ module NotesHelper
     hidden_field_tag(:target_id, note.noteable.id)
   end
 
+  def note_editable?(note)
+    note.editable? && can?(current_user, :admin_note, note)
+  end
+
   def link_to_commit_diff_line_note(note)
     if note.for_commit_diff_line?
       link_to(

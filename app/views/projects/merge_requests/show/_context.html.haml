@@ -1,4 +1,4 @@
-= form_for [@project.namespace.becomes(Namespace), @project, @merge_request], remote: true, html: {class: 'edit-merge_request inline-update'} do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @merge_request], remote: true, html: {class: 'edit-merge_request inline-update js-merge-request-update'} do |f|
   %div.prepend-top-20
     .issuable-context-title
       %label
@@ -19,13 +19,13 @@
         %span.back-to-milestone
           = link_to namespace_project_milestone_path(@project.namespace, @project, @merge_request.milestone) do
             %strong
-              %i.fa.fa-clock-o
+              = icon('clock-o')
               = @merge_request.milestone.title
       - else
         none
     .issuable-context-selectbox
       - if can?(current_user, :modify_merge_request, @merge_request)
-        = f.select(:milestone_id, milestone_options(@merge_request), { include_blank: "Select milestone" }, {class: 'select2 select2-compact js-select2 js-milestone'})
+        = f.select(:milestone_id, milestone_options(@merge_request), { include_blank: 'Select milestone' }, {class: 'select2 select2-compact js-select2 js-milestone'})
         = hidden_field_tag :merge_request_context
         = f.submit class: 'btn'
 
@@ -35,13 +35,13 @@
         %label
           Subscription:
       %button.btn.btn-block.subscribe-button{:type => 'button'}
-        %i.fa.fa-eye
-        %span= @merge_request.subscribed?(current_user) ? "Unsubscribe" : "Subscribe"
-      - subscribtion_status = @merge_request.subscribed?(current_user) ? "subscribed" : "unsubscribed"
-      .subscription-status{"data-status" => subscribtion_status}
-        .description-block.unsubscribed{class: ( "hidden" if @merge_request.subscribed?(current_user) )}
+        = icon('eye')
+        %span= @merge_request.subscribed?(current_user) ? 'Unsubscribe' : 'Subscribe'
+      - subscribtion_status = @merge_request.subscribed?(current_user) ? 'subscribed' : 'unsubscribed'
+      .subscription-status{data: {status: subscribtion_status}}
+        .description-block.unsubscribed{class: ( 'hidden' if @merge_request.subscribed?(current_user) )}
           You're not receiving notifications from this thread.
-        .description-block.subscribed{class: ( "hidden" unless @merge_request.subscribed?(current_user) )}
+        .description-block.subscribed{class: ( 'hidden' unless @merge_request.subscribed?(current_user) )}
           You're receiving notifications because you're subscribed to this thread.
 
 :coffeescript

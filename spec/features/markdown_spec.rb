@@ -24,6 +24,7 @@ require 'erb'
 #               -> Rinku (http, https, ftp)
 #               -> Other schemes
 #             -> References
+#             -> TaskList
 #           -> `html_safe`
 #           -> Template
 #
@@ -59,10 +60,10 @@ describe 'GitLab Markdown' do
     @feat.teardown
   end
 
-  # Given a header ID, goes to that element's parent (the header), then to its
-  # second sibling (the body).
+  # Given a header ID, goes to that element's parent (the header itself), then
+  # its next sibling element (the body).
   def get_section(id)
-    @doc.at_css("##{id}").parent.next.next
+    @doc.at_css("##{id}").parent.next_element
   end
 
   # it 'writes to a file' do
@@ -118,18 +119,18 @@ describe 'GitLab Markdown' do
   describe 'HTML::Pipeline' do
     describe 'SanitizationFilter' do
       it 'uses a permissive whitelist' do
-        expect(@doc).to have_selector('b#manual-b')
-        expect(@doc).to have_selector('em#manual-em')
-        expect(@doc).to have_selector("code#manual-code")
+        expect(@doc).to have_selector('b:contains("b tag")')
+        expect(@doc).to have_selector('em:contains("em tag")')
+        expect(@doc).to have_selector('code:contains("code tag")')
         expect(@doc).to have_selector('kbd:contains("s")')
         expect(@doc).to have_selector('strike:contains(Emoji)')
-        expect(@doc).to have_selector('img#manual-img')
-        expect(@doc).to have_selector('br#manual-br')
-        expect(@doc).to have_selector('hr#manual-hr')
+        expect(@doc).to have_selector('img[src*="smile.png"]')
+        expect(@doc).to have_selector('br')
+        expect(@doc).to have_selector('hr')
       end
 
       it 'permits span elements' do
-        expect(@doc).to have_selector('span#span-class-light.light')
+        expect(@doc).to have_selector('span:contains("span tag")')
       end
 
       it 'permits table alignment' do
@@ -143,13 +144,12 @@ describe 'GitLab Markdown' do
       end
 
       it 'removes `rel` attribute from links' do
-        expect(@doc).to have_selector('a#a-rel-nofollow')
-        expect(@doc).not_to have_selector('a#a-rel-nofollow[rel]')
+        body = get_section('sanitizationfilter')
+        expect(body).not_to have_selector('a[rel]')
       end
 
       it "removes `href` from `a` elements if it's fishy" do
-        expect(@doc).to have_selector('a#a-href-javascript')
-        expect(@doc).not_to have_selector('a#a-href-javascript[href]')
+        expect(@doc).not_to have_selector('a[href*="javascript"]')
       end
     end
 
@@ -158,6 +158,19 @@ describe 'GitLab Markdown' do
 
       it 'escapes non-tag angle brackets' do
         expect(table.at_xpath('.//tr[1]/td[3]').inner_html).to eq '1 &lt; 3 &amp; 5'
+      end
+    end
+
+    describe 'Edge Cases' do
+      it 'allows markup inside link elements' do
+        expect(@doc.at_css('a[href="#link-emphasis"]').to_html).
+          to eq %{<a href="#link-emphasis"><em>text</em></a>}
+
+        expect(@doc.at_css('a[href="#link-strong"]').to_html).
+          to eq %{<a href="#link-strong"><strong>text</strong></a>}
+
+        expect(@doc.at_css('a[href="#link-code"]').to_html).
+          to eq %{<a href="#link-code"><code>text</code></a>}
       end
     end
 
@@ -176,7 +189,7 @@ describe 'GitLab Markdown' do
     end
 
     describe 'AutolinkFilter' do
-      let(:list) { get_section('autolinkfilter').parent.search('ul') }
+      let(:list) { get_section('autolinkfilter').next_element }
 
       def item(index)
         list.at_css("li:nth-child(#{index})")
@@ -214,7 +227,8 @@ describe 'GitLab Markdown' do
 
       %w(code a kbd).each do |elem|
         it "ignores links inside '#{elem}' element" do
-          expect(@doc.at_css("#{elem}#autolink-#{elem}").child).to be_text
+          body = get_section('autolinkfilter')
+          expect(body).not_to have_selector("#{elem} a")
         end
       end
     end
@@ -266,6 +280,15 @@ describe 'GitLab Markdown' do
         expect(body).to have_selector('a.gfm.gfm-label', count: 3)
       end
     end
+
+    describe 'Task Lists' do
+      it 'generates task lists' do
+        body = get_section('task-lists')
+        expect(body).to have_selector('ul.task-list', count: 2)
+        expect(body).to have_selector('li.task-list-item', count: 7)
+        expect(body).to have_selector('input[checked]', count: 3)
+      end
+    end
   end
 end
 
@@ -276,9 +299,8 @@ end
 # once. Unfortunately RSpec will not let you access `let`s in a `before(:all)`
 # block, so we fake it by encapsulating all the shared setup in this class.
 #
-# The class contains the raw Markup used in the test, dynamically substituting
-# real objects, created from factories and setup on-demand, when referenced in
-# the Markdown.
+# The class renders `spec/fixtures/markdown.md.erb` using ERB, allowing for
+# reference to the factory-created objects.
 class MarkdownFeature
   include FactoryGirl::Syntax::Methods
 

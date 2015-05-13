@@ -1,4 +1,5 @@
 require 'html/pipeline'
+require 'task_list/filter'
 
 module Gitlab
   # Custom parser for GitLab-flavored Markdown
@@ -31,9 +32,9 @@ module Gitlab
     # Public: Parse the provided text with GitLab-Flavored Markdown
     #
     # text         - the source text
-    # options      - parse_tasks          - render tasks
-    #              - xhtml                - output XHTML instead of HTML
-    #              - reference_only_path  - Use relative path for reference links
+    # options      - A Hash of options used to customize output (default: {}):
+    #                :xhtml               - output XHTML instead of HTML
+    #                :reference_only_path - Use relative path for reference links
     # project      - the project
     # html_options - extra options for the reference links as given to link_to
     def gfm_with_options(text, options = {}, project = @project, html_options = {})
@@ -45,7 +46,6 @@ module Gitlab
       text = text.dup.to_str
 
       options.reverse_merge!(
-        parse_tasks:          false,
         xhtml:                false,
         reference_only_path:  true
       )
@@ -76,10 +76,6 @@ module Gitlab
 
       text = result[:output].to_html(save_with: save_options)
 
-      if options[:parse_tasks]
-        text = parse_tasks(text)
-      end
-
       text.html_safe
     end
 
@@ -106,28 +102,10 @@ module Gitlab
         Gitlab::Markdown::SnippetReferenceFilter,
         Gitlab::Markdown::CommitRangeReferenceFilter,
         Gitlab::Markdown::CommitReferenceFilter,
-        Gitlab::Markdown::LabelReferenceFilter
+        Gitlab::Markdown::LabelReferenceFilter,
+
+        TaskList::Filter
       ]
-    end
-
-    # Turn list items that start with "[ ]" into HTML checkbox inputs.
-    def parse_tasks(text)
-      li_tag = '<li class="task-list-item">'
-      unchecked_box = '<input type="checkbox" value="on" disabled />'
-      checked_box = unchecked_box.sub(/\/>$/, 'checked="checked" />')
-
-      # Regexp captures don't seem to work when +text+ is an
-      # ActiveSupport::SafeBuffer, hence the `String.new`
-      String.new(text).gsub(Taskable::TASK_PATTERN_HTML) do
-        checked = $LAST_MATCH_INFO[:checked].downcase == 'x'
-        p_tag = $LAST_MATCH_INFO[:p_tag]
-
-        if checked
-          "#{li_tag}#{p_tag}#{checked_box}"
-        else
-          "#{li_tag}#{p_tag}#{unchecked_box}"
-        end
-      end
     end
   end
 end

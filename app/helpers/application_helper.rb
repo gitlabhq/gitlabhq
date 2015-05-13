@@ -219,7 +219,7 @@ module ApplicationHelper
           data: { toggle: 'tooltip', placement: placement }
       else
         haml_tag :time, date.to_s,
-          class: html_class, datetime: date.getutc.iso8601, title: date.stamp('Aug 21, 2011 9:23pm'),
+          class: html_class, datetime: date.getutc.iso8601, title: date.in_time_zone.stamp('Aug 21, 2011 9:23pm'),
           data: { toggle: 'tooltip', placement: placement }
       end
 

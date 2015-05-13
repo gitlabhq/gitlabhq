@@ -52,14 +52,14 @@ class UploadsController < ApplicationController
 
   def upload_model
     upload_models = {
-      user: User,
-      project: Project,
-      note: Note,
-      group: Group,
-      appearance: Appearance
+      "user"    => User,
+      "project" => Project,
+      "note"    => Note,
+      "group"   => Group,
+      "appearance" => Appearance
     }
 
-    upload_models[params[:model].to_sym]
+    upload_models[params[:model]]
   end
 
   def upload_mount

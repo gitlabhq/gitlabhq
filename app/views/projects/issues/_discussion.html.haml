@@ -1,9 +1,9 @@
 - content_for :note_actions do
   - if can?(current_user, :modify_issue, @issue)
     - if @issue.closed?
-      = link_to 'Reopen Issue', issue_path(@issue, issue: {state_event: :reopen }, status_only: true), method: :put, class: "btn btn-grouped btn-reopen js-note-target-reopen", title: 'Reopen Issue'
+      = link_to 'Reopen Issue', issue_path(@issue, issue: {state_event: :reopen}, status_only: true), method: :put, class: 'btn btn-grouped btn-reopen js-note-target-reopen', title: 'Reopen Issue'
     - else
-      = link_to 'Close Issue', issue_path(@issue, issue: {state_event: :close }, status_only: true), method: :put, class: "btn btn-grouped btn-close js-note-target-close", title: "Close Issue"
+      = link_to 'Close Issue', issue_path(@issue, issue: {state_event: :close}, status_only: true), method: :put, class: 'btn btn-grouped btn-close js-note-target-close', title: 'Close Issue'
 
 = render 'shared/show_aside'
 
@@ -15,11 +15,11 @@
       %span= pluralize(@issue.participants(current_user).count, 'participant')
       - @issue.participants(current_user).each do |participant|
         = link_to_member(@project, participant, name: false, size: 24)
-    .voting_notes#notes= render "projects/notes/notes_with_form"
+    .voting_notes#notes= render 'projects/notes/notes_with_form'
   %aside.col-md-3
     .issuable-affix
       .clearfix
-        %span.slead.has_tooltip{:"data-original-title" => 'Cross-project reference'}
+        %span.slead.has_tooltip{title: 'Cross-project reference'}
           = cross_project_reference(@project, @issue)
       %hr
       .context

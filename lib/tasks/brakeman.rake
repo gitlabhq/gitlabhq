@@ -1,6 +1,8 @@
 desc 'Security check via brakeman'
 task :brakeman do
-  if system("brakeman --skip-files lib/backup/repository.rb -w3 -z")
+  # We get 0 warnings at level 'w3' but we would like to reach 'w2'. Merge
+  # requests are welcome!
+  if system(*%W(brakeman --skip-files lib/backup/repository.rb -w3 -z))
     puts 'Security check succeed'
   else
     puts 'Security check failed'

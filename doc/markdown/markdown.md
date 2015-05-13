@@ -172,7 +172,7 @@ GFM will turn that reference into a link so you can navigate between them easily
 GFM will recognize the following:
 
 | input                  | references                 |
-|-----------------------:|:---------------------------|
+|:-----------------------|:---------------------------|
 | `@user_name`           | specific user              |
 | `@group_name`          | specific group             |
 | `@all`                 | entire team                |
@@ -189,7 +189,7 @@ GFM will recognize the following:
 GFM also recognizes certain cross-project references:
 
 | input                                   | references              |
-|----------------------------------------:|:------------------------|
+|:----------------------------------------|:------------------------|
 | `namespace/project#123`                 | issue                   |
 | `namespace/project!123`                 | merge request           |
 | `namespace/project$123`                 | snippet                 |
@@ -198,15 +198,23 @@ GFM also recognizes certain cross-project references:
 
 ## Task Lists
 
-You can add task lists to merge request and issue descriptions to keep track of to-do items.  To create a task, add an unordered list to the description in an issue or merge request, formatted like so:
+You can add task lists to issues, merge requests and comments. To create a task list, add a specially-formatted Markdown list, like so:
 
 ```no-highlight
-* [x] Completed task
-* [ ] Unfinished task
-    * [x] Nested task
+- [x] Completed task
+- [ ] Incomplete task
+    - [ ] Sub-task 1
+    - [x] Sub-task 2
+    - [ ] Sub-task 3
 ```
 
-Task lists can only be created in descriptions, not in titles or comments.  Task item state can be managed by editing the description's Markdown or by clicking the rendered checkboxes.
+- [x] Completed task
+- [ ] Incomplete task
+    - [ ] Sub-task 1
+    - [x] Sub-task 2
+    - [ ] Sub-task 3
+
+Task lists can only be created in descriptions, not in titles. Task item state can be managed by editing the description's Markdown or by toggling the rendered check boxes.
 
 # Standard Markdown
 
@@ -246,51 +254,38 @@ Alt-H2
 
 ### Header IDs and links
 
-All markdown rendered headers automatically get IDs, except for comments.
+All Markdown-rendered headers automatically get IDs, except in comments.
 
 On hover a link to those IDs becomes visible to make it easier to copy the link to the header to give it to someone else.
 
 The IDs are generated from the content of the header according to the following rules:
 
-1. remove the heading hashes `#` and process the rest of the line as it would be processed if it were not a header
-2. from the result, remove all HTML tags, but keep their inner content
-3. convert all characters to lowercase
-4. convert all characters except `[a-z0-9_-]` into hyphens `-`
-5. transform multiple adjacent hyphens into a single hyphen
-6. remove trailing and heading hyphens
+1. All text is converted to lowercase
+1. All non-word text (e.g., punctuation, HTML) is removed
+1. All spaces are converted to hyphens
+1. Two or more hyphens in a row are converted to one
+1. If a header with the same ID has already been generated, a unique
+   incrementing number is appended.
 
 For example:
 
 ```
-###### ..Ab_c-d. e [anchor](URL) ![alt text](URL)..
+# This header has spaces in it
+## This header has a :thumbsup: in it
+# This header has Unicode in it: 한글
+## This header has spaces in it
+### This header has spaces in it
 ```
 
-which renders as:
+Would generate the following link IDs:
 
-###### ..Ab_c-d. e [anchor](URL) ![alt text](URL)..
+1. `this-header-has-spaces-in-it`
+1. `this-header-has-a-in-it`
+1. `this-header-has-unicode-in-it-한글`
+1. `this-header-has-spaces-in-it-1`
+1. `this-header-has-spaces-in-it-2`
 
-will first be converted by step 1) into a string like:
-
-```
-..Ab_c-d. e &lt;a href="URL">anchor&lt;/a> &lt;img src="URL" alt="alt text"/>..
-```
-
-After removing the tags in step 2) we get:
-
-```
-..Ab_c-d. e anchor ..
-```
-
-And applying all the other steps gives the id:
-
-```
-ab_c-d-e-anchor
-```
-
-Note in particular how:
-
-- for markdown anchors `[text](URL)`, only the `text` is used
-- markdown images `![alt](URL)` are completely ignored
+Note that the Emoji processing happens before the header IDs are generated, so the Emoji is converted to an image which then gets removed from the ID.
 
 ## Emphasis
 
@@ -322,8 +317,6 @@ Strikethrough uses two tildes. ~~Scratch this.~~
   1. Ordered sub-list
 4. And another item.
 
-   Some text that should be aligned with the above item.
-
 * Unordered list can use asterisks
 - Or minuses
 + Or pluses
@@ -335,8 +328,6 @@ Strikethrough uses two tildes. ~~Scratch this.~~
 1. Actual numbers don't matter, just that it's a number
   1. Ordered sub-list
 4. And another item.
-
-   Some text that should be aligned with the above item.
 
 * Unordered list can use asterisks
 - Or minuses
@@ -432,7 +423,7 @@ Quote break.
 
 You can also use raw HTML in your Markdown, and it'll mostly work pretty well.
 
-See the documentation for HTML::Pipeline's [SanitizationFilter](http://www.rubydoc.info/gems/html-pipeline/HTML/Pipeline/SanitizationFilter#WHITELIST-constant) class for the list of allowed HTML tags and attributes.  In addition to the default `SanitizationFilter` whitelist, GitLab allows the `class`, `id`, and `style` attributes.
+See the documentation for HTML::Pipeline's [SanitizationFilter](http://www.rubydoc.info/gems/html-pipeline/HTML/Pipeline/SanitizationFilter#WHITELIST-constant) class for the list of allowed HTML tags and attributes.  In addition to the default `SanitizationFilter` whitelist, GitLab allows `span` elements.
 
 ```no-highlight
 <dl>
@@ -535,6 +526,20 @@ Code above produces next output:
 **Note**
 
 The row of dashes between the table header and body must have at least three dashes in each column.
+
+By including colons in the header row, you can align the text within that column:
+
+```
+| Left Aligned | Centered | Right Aligned | Left Aligned | Centered | Right Aligned |
+| :----------- | :------: | ------------: | :----------- | :------: | ------------: |
+| Cell 1       | Cell 2   | Cell 3        | Cell 4       | Cell 5   | Cell 6        |
+| Cell 7       | Cell 8   | Cell 9        | Cell 10      | Cell 11  | Cell 12       |
+```
+
+| Left Aligned | Centered | Right Aligned | Left Aligned | Centered | Right Aligned |
+| :----------- | :------: | ------------: | :----------- | :------: | ------------: |
+| Cell 1       | Cell 2   | Cell 3        | Cell 4       | Cell 5   | Cell 6        |
+| Cell 7       | Cell 8   | Cell 9        | Cell 10      | Cell 11  | Cell 12       |
 
 ## References
 
