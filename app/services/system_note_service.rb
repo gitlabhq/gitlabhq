@@ -167,10 +167,8 @@ class SystemNoteService
     if noteable.is_a?(ExternalIssue)
       noteable.project.issues_tracker.create_cross_reference_note(noteable, mentioner, author)
     else
-      create(note_options)
+      create_note(note_options)
     end
-
-    create_note(note_options)
   end
 
   def self.cross_reference?(note_text)
