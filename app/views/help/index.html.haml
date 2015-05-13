@@ -3,6 +3,8 @@
     GitLab
     %span= Gitlab::VERSION
     %small= Gitlab::REVISION
+    - if current_application_settings.version_check_enabled
+      = version_status_badge
   %p.slead
     GitLab is open source software to collaborate on code.
     %br
