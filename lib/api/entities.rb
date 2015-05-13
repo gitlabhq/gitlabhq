@@ -5,7 +5,7 @@ module API
     end
 
     class UserBasic < UserSafe
-      expose :id, :state, :avatar_url
+      expose :id, :state, :avatar_url, :email
     end
 
     class User < UserBasic
