@@ -225,7 +225,7 @@ GEM
       mime-types (~> 1.19)
     gitlab_emoji (0.1.0)
       gemojione (~> 2.0)
-    gitlab_git (7.1.11)
+    gitlab_git (7.1.12)
       activesupport (~> 4.0)
       charlock_holmes (~> 0.6)
       gitlab-linguist (~> 3.0)
