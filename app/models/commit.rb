@@ -62,6 +62,19 @@ class Commit
     (self.class === other) && (raw == other.raw)
   end
 
+  def self.reference_prefix
+    '@'
+  end
+
+  # Pattern used to extract commit references from text
+  #
+  # The SHA can be between 6 and 40 hex characters.
+  #
+  # This pattern supports cross-project references.
+  def self.reference_pattern
+    %r{(?:#{Project.reference_pattern}#{reference_prefix})?(?<commit>\h{6,40})}
+  end
+
   def to_reference(from_project = nil)
     if cross_project_reference?(from_project)
       "#{project.to_reference}@#{id}"

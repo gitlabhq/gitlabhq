@@ -16,16 +16,13 @@ module Gitlab
       #
       # Returns a String replaced with the return of the block.
       def self.references_in(text)
-        text.gsub(USER_PATTERN) do |match|
+        text.gsub(User.reference_pattern) do |match|
           yield match, $~[:user]
         end
       end
 
-      # Pattern used to extract `@user` user references from text
-      USER_PATTERN = /@(?<user>#{Gitlab::Regex::NAMESPACE_REGEX_STR})/
-
       def call
-        replace_text_nodes_matching(USER_PATTERN) do |content|
+        replace_text_nodes_matching(User.reference_pattern) do |content|
           user_link_filter(content)
         end
       end

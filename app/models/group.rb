@@ -40,7 +40,11 @@ class Group < Namespace
     end
 
     def reference_prefix
-      '@'
+      User.reference_prefix
+    end
+
+    def reference_pattern
+      User.reference_pattern
     end
   end
 

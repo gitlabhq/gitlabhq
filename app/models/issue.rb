@@ -50,12 +50,22 @@ class Issue < ActiveRecord::Base
     state :closed
   end
 
+  def hook_attrs
+    attributes
+  end
+
   def self.reference_prefix
     '#'
   end
 
-  def hook_attrs
-    attributes
+  # Pattern used to extract `#123` issue references from text
+  #
+  # This pattern supports cross-project references.
+  def self.reference_pattern
+    %r{
+      #{Project.reference_pattern}?
+      #{Regexp.escape(reference_prefix)}(?<issue>\d+)
+    }x
   end
 
   def to_reference(from_project = nil)

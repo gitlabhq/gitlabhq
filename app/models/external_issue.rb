@@ -9,10 +9,6 @@ class ExternalIssue
     @issue_identifier.to_s
   end
 
-  def to_reference(_from_project = nil)
-    id
-  end
-
   def id
     @issue_identifier.to_s
   end
@@ -31,5 +27,14 @@ class ExternalIssue
 
   def project
     @project
+  end
+
+  # Pattern used to extract `JIRA-123` issue references from text
+  def self.reference_pattern
+    %r{(?<issue>([A-Z\-]+-)\d+)}
+  end
+
+  def to_reference(_from_project = nil)
+    id
   end
 end

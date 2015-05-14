@@ -29,9 +29,23 @@ class CommitRange
   # See `exclude_start?`
   attr_reader :exclude_start
 
-  # The beginning and ending SHA sums can be between 6 and 40 hex characters,
-  # and the range selection can be double- or triple-dot.
+  # The beginning and ending SHAs can be between 6 and 40 hex characters, and
+  # the range notation can be double- or triple-dot.
   PATTERN = /\h{6,40}\.{2,3}\h{6,40}/
+
+  def self.reference_prefix
+    '@'
+  end
+
+  # Pattern used to extract commit range references from text
+  #
+  # This pattern supports cross-project references.
+  def self.reference_pattern
+    %r{
+      (?:#{Project.reference_pattern}#{reference_prefix})?
+      (?<commit_range>#{PATTERN})
+    }x
+  end
 
   # Initialize a CommitRange
   #

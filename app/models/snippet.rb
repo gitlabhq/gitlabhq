@@ -56,6 +56,16 @@ class Snippet < ActiveRecord::Base
     '$'
   end
 
+  # Pattern used to extract `$123` snippet references from text
+  #
+  # This pattern supports cross-project references.
+  def self.reference_pattern
+    %r{
+      #{Project.reference_pattern}?
+      #{Regexp.escape(reference_prefix)}(?<snippet>\d+)
+    }x
+  end
+
   def to_reference(from_project = nil)
     reference = "#{self.class.reference_prefix}#{id}"
 

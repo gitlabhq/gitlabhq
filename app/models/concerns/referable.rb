@@ -35,6 +35,16 @@ module Referable
     def reference_prefix
       ''
     end
+
+    # Regexp pattern used to match references to this object
+    #
+    # This must be overridden by the including class.
+    #
+    # Returns Regexp
+    def reference_pattern
+      raise NotImplementedError,
+        %Q{#{self} does not implement "reference_pattern"}
+    end
   end
 
   private

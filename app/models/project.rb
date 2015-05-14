@@ -248,6 +248,11 @@ class Project < ActiveRecord::Base
         order_by(method)
       end
     end
+
+    def reference_pattern
+      name_pattern = Gitlab::Regex::NAMESPACE_REGEX_STR
+      %r{(?<project>#{name_pattern}/#{name_pattern})}
+    end
   end
 
   def team

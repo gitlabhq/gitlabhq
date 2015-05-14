@@ -140,6 +140,16 @@ class MergeRequest < ActiveRecord::Base
     '!'
   end
 
+  # Pattern used to extract `!123` merge request references from text
+  #
+  # This pattern supports cross-project references.
+  def self.reference_pattern
+    %r{
+      #{Project.reference_pattern}?
+      #{Regexp.escape(reference_prefix)}(?<merge_request>\d+)
+    }x
+  end
+
   def to_reference(from_project = nil)
     reference = "#{self.class.reference_prefix}#{iid}"
 
