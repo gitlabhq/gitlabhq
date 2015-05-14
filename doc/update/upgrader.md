@@ -2,7 +2,7 @@
 
 *DEPRECATED* We recommend to [switch to the Omnibus package and repository server](https://about.gitlab.com/update/) instead of using this script.
 
-If someone wants to make this script into a gem or otherwise improve it merge requests are welcome.
+Although deprecated, if someone wants to make this script into a gem or otherwise improve it merge requests are welcome.
 
 *Make sure you view this [upgrade guide from the 'master' branch](../../../master/doc/update/upgrader.md) for the most up to date instructions.*
 
