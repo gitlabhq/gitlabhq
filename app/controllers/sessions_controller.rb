@@ -1,11 +1,7 @@
 class SessionsController < Devise::SessionsController
-  prepend_before_action :authenticate_with_two_factor, only: [:create]
+  include AuthenticatesWithTwoFactor
 
-  # This action comes from DeviseController, but because we call `sign_in`
-  # manually inside `authenticate_with_two_factor`, not skipping this action
-  # would cause a "You are already signed in." error message to be shown upon
-  # successful login.
-  skip_before_action :require_no_authentication, only: [:create]
+  prepend_before_action :authenticate_with_two_factor, only: [:create]
 
   def new
     redirect_path =
@@ -74,9 +70,7 @@ class SessionsController < Devise::SessionsController
       end
     else
       if user && user.valid_password?(user_params[:password])
-        # Save the user's ID to session so we can ask for a one-time password
-        session[:otp_user_id] = user.id
-        render :two_factor and return
+        prompt_for_two_factor(user)
       end
     end
   end
