@@ -52,7 +52,7 @@ class PasswordsController < Devise::PasswordsController
 
       unless user.reset_password_period_valid?
         flash[:alert] = 'Your password reset token has expired.'
-        redirect_to(new_user_password_url)
+        redirect_to(new_user_password_url(user_email: user['email']))
       end
     end
   end
