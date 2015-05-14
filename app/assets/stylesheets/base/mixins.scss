@@ -73,6 +73,22 @@
     padding: 0;
   }
 
+  kbd {
+    display: inline-block;
+    padding: 3px 5px;
+    font-size: 11px;
+    line-height: 10px;
+    color: #555;
+    vertical-align: middle;
+    background-color: #FCFCFC;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #CCC #CCC #BBB;
+    border-image: none;
+    border-radius: 3px;
+    box-shadow: 0px -1px 0px #BBB inset;
+  }
+
   h1 {
     margin-top: 45px;
     font-size: 2.5em;
