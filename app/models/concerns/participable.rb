@@ -40,7 +40,7 @@ module Participable
       meth = method(attr)
 
       value = 
-        if meth.arity == 1
+        if meth.arity == 1 || meth.arity == -1
           meth.call(current_user)
         else
           meth.call
