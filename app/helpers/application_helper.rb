@@ -331,11 +331,10 @@ module ApplicationHelper
         project.merge_requests.send(entity).count
       end
 
-    html = ""
-    html += content_tag :span, entity_title
+    html = content_tag :span, entity_title
 
     if count.present?
-      html += "&nbsp;"
+      html += " "
       html += content_tag :span, number_with_delimiter(count), class: 'badge'
     end
 
