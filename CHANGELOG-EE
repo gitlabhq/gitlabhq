@@ -1,5 +1,6 @@
 v 7.11.0
   - Skip git hooks commit validation when pushing new tag.
+  - Add Two-factor authentication (2FA) for LDAP logins
 
 v 7.10.1
   - Check if comment exists in Jira before sending a reference
