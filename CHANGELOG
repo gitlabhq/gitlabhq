@@ -62,6 +62,7 @@ v 7.11.0 (unreleased)
   - Call merge request web hook for each new commits (Arthur Gautier)
   - Use SIGKILL by default in Sidekiq::MemoryKiller
   - Fix mentioning of private groups.
+  - Add style for <kbd> element in markdown
 
 v 7.10.2
   - Fix CI links on MR page
