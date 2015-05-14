@@ -40,7 +40,7 @@ module Referable
     #
     # This must be overridden by the including class.
     #
-    # Returns Regexp
+    # Returns a Regexp
     def reference_pattern
       raise NotImplementedError,
         %Q{#{self} does not implement "reference_pattern"}

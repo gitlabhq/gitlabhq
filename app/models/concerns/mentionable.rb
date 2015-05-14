@@ -25,7 +25,7 @@ module Mentionable
   # By default this will be the class name and the result of calling
   # `to_reference` on the object.
   def gfm_reference
-    # Convert "MergeRequest" to "merge request"
+    # "MergeRequest" > "merge_request" > "Merge request" > "merge request"
     friendly_name = self.class.to_s.underscore.humanize.downcase
 
     "#{friendly_name} #{to_reference}"
