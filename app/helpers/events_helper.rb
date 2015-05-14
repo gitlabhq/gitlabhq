@@ -168,8 +168,8 @@ module EventsHelper
     end
   end
 
-  def event_note(text)
-    text = first_line_in_markdown(text, 150)
+  def event_note(text, options = {})
+    text = first_line_in_markdown(text, 150, options)
     sanitize(text, tags: %w(a img b pre code p span))
   end
 

@@ -58,6 +58,7 @@ v 7.11.0 (unreleased)
   - Fix automatic blocking of auto-created users from Active Directory.
   - Call merge request web hook for each new commits (Arthur Gautier)
   - Use SIGKILL by default in Sidekiq::MemoryKiller
+  - Fix reference links in dashboard activity and ATOM feeds.
 
 v 7.10.2
   - Fix CI links on MR page
