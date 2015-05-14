@@ -1,5 +1,8 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
+  include AuthenticatesWithTwoFactor
+
   protect_from_forgery except: :kerberos
+
   Gitlab.config.omniauth.providers.each do |provider|
     define_method provider['name'] do
       handle_omniauth
@@ -26,7 +29,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
     # Do additional LDAP checks for the user filter and EE features
     if @user.allowed?
-      sign_in_and_redirect(gl_user)
+      if @user.otp_required_for_login?
+        prompt_for_two_factor(gl_user)
+      else
+        sign_in_and_redirect(gl_user)
+      end
     else
       flash[:alert] = "Access denied for your LDAP account."
       redirect_to new_user_session_path
