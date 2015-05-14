@@ -62,7 +62,7 @@
         - enabled_social_providers.each do |provider|
           .btn-group
             = link_to oauth_image_tag(provider), omniauth_authorize_path(User, provider),
-              class: "btn btn-lg #{'active' if oauth_active?(provider)}"
+              method: :post, class: "btn btn-lg #{'active' if oauth_active?(provider)}"
             - if oauth_active?(provider)
               = link_to unlink_profile_account_path(provider: provider), method: :delete, class: 'btn btn-lg' do
                 = icon('close')
