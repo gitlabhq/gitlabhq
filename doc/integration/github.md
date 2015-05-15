@@ -73,6 +73,8 @@ GitHub will generate an application ID and secret key for you to use.
 1.  Save the configuration file.
 
 1.  Restart GitLab for the changes to take effect.
+    - gitlab-ctl reconfigure
+    - gitlab-ctl restart
 
 On the sign in page there should now be a GitHub icon below the regular sign in form. 
 Click the icon to begin the authentication process. GitHub will ask the user to sign in and authorize the GitLab application. 
