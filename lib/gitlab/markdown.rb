@@ -15,6 +15,7 @@ module Gitlab
     autoload :IssueReferenceFilter,         'gitlab/markdown/issue_reference_filter'
     autoload :LabelReferenceFilter,         'gitlab/markdown/label_reference_filter'
     autoload :MergeRequestReferenceFilter,  'gitlab/markdown/merge_request_reference_filter'
+    autoload :RelativeLinkFilter,           'gitlab/markdown/relative_link_filter'
     autoload :SanitizationFilter,           'gitlab/markdown/sanitization_filter'
     autoload :SnippetReferenceFilter,       'gitlab/markdown/snippet_reference_filter'
     autoload :TableOfContentsFilter,        'gitlab/markdown/table_of_contents_filter'
@@ -23,10 +24,10 @@ module Gitlab
     # Public: Parse the provided text with GitLab-Flavored Markdown
     #
     # text         - the source text
-    # project      - the project
+    # options      - options
     # html_options - extra options for the reference links as given to link_to
-    def gfm(text, project = @project, html_options = {})
-      gfm_with_options(text, {}, project, html_options)
+    def gfm(text, options = {}, html_options = {})
+      gfm_with_options(text, options, html_options)
     end
 
     # Public: Parse the provided text with GitLab-Flavored Markdown
@@ -37,7 +38,7 @@ module Gitlab
     #                :reference_only_path - Use relative path for reference links
     # project      - the project
     # html_options - extra options for the reference links as given to link_to
-    def gfm_with_options(text, options = {}, project = @project, html_options = {})
+    def gfm_with_options(text, options = {}, html_options = {})
       return text if text.nil?
 
       # Duplicate the string so we don't alter the original, then call to_str
@@ -47,7 +48,9 @@ module Gitlab
 
       options.reverse_merge!(
         xhtml:                false,
-        reference_only_path:  true
+        reference_only_path:  true,
+        project:              @project,
+        current_user:         current_user
       )
 
       pipeline = HTML::Pipeline.new(filters)
@@ -61,10 +64,15 @@ module Gitlab
         no_header_anchors: options[:no_header_anchors],
 
         # ReferenceFilter
-        current_user:    current_user,
+        current_user:    options[:current_user],
         only_path:       options[:reference_only_path],
-        project:         project,
-        reference_class: html_options[:class]
+        project:         options[:project],
+        reference_class: html_options[:class],
+
+        # RelativeLinkFilter
+        ref:            @ref,
+        requested_path: @path,
+        project_wiki:   @project_wiki
       }
 
       result = pipeline.call(text, context)
@@ -91,6 +99,7 @@ module Gitlab
       [
         Gitlab::Markdown::SanitizationFilter,
 
+        Gitlab::Markdown::RelativeLinkFilter,
         Gitlab::Markdown::EmojiFilter,
         Gitlab::Markdown::TableOfContentsFilter,
         Gitlab::Markdown::AutolinkFilter,

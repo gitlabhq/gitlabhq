@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.11.0 (unreleased)
+  - Fix broken view when viewing history of a file that includes a path that used to be another file (Stan Hu)
   - Don't show duplicate deploy keys
   - Fix commit time being displayed in the wrong timezone in some cases (Hannes Rosenögger)
   - Make the first branch pushed to an empty repository the default HEAD (Stan Hu)
@@ -42,6 +43,9 @@ v 7.11.0 (unreleased)
   - Task lists are now usable in comments, and will show up in Markdown previews.
   - Fix bug where avatar filenames were not actually deleted from the database during removal (Stan Hu)
   - Fix bug where Slack service channel was not saved in admin template settings. (Stan Hu)
+  - Protect OmniAuth request phase against CSRF.
+  -
+  -
   - Move snippets UI to fluid layout
   - Improve UI for sidebar. Increase separation between navigation and content
   - Improve new project command options (Ben Bodenmiller)
@@ -56,6 +60,12 @@ v 7.11.0 (unreleased)
   - Add "Create Merge Request" buttons to commits and branches pages and push event.
   - Show user roles by comments.
   - Fix automatic blocking of auto-created users from Active Directory.
+  - Call merge request web hook for each new commits (Arthur Gautier)
+  - Use SIGKILL by default in Sidekiq::MemoryKiller
+  - Fix mentioning of private groups.
+  - Add style for <kbd> element in markdown
+  - Spin spinner icon next to "Checking for CI status..." on MR page.
+  - Fix reference links in dashboard activity and ATOM feeds.
 
 v 7.10.2
   - Fix CI links on MR page

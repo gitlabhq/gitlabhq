@@ -3,7 +3,7 @@
     = link_to namespace_project_commits_path(@project.namespace, @project, @ref || @repository.root_ref) do
       = icon("history")
       Commits
-      %span.badge= number_with_precision(@repository.commit_count, precision: 0, delimiter: ',')
+      %span.badge= number_with_delimiter(@repository.commit_count)
   = nav_link(controller: :compare) do
     = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: @ref || @repository.root_ref) do
       = icon("exchange")

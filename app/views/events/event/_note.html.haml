@@ -14,7 +14,7 @@
   .event-note
     .md
       %i.fa.fa-comment-o.event-note-icon
-      = event_note(event.target.note)
+      = event_note(event.target.note, project: event.project)
     - note = event.target
     - if note.attachment.url
       - if note.attachment.image?

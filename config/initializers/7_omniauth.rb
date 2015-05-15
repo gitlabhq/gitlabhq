@@ -13,3 +13,8 @@ if Gitlab::LDAP::Config.enabled?
     end
   end
 end
+
+OmniAuth.config.allowed_request_methods = [:post]
+OmniAuth.config.before_request_phase do |env|
+  OmniAuth::RequestForgeryProtection.new(env).call
+end

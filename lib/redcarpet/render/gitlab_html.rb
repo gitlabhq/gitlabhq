@@ -7,8 +7,11 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
   def initialize(template, color_scheme, options = {})
     @template = template
     @color_scheme = color_scheme
-    @project = @template.instance_variable_get("@project")
     @options = options.dup
+
+    @options.reverse_merge!(
+      project: @template.instance_variable_get("@project")
+    )
 
     super(options)
   end
@@ -36,10 +39,6 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
   end
 
   def postprocess(full_document)
-    unless @template.instance_variable_get("@project_wiki") || @project.nil?
-      full_document = h.create_relative_links(full_document)
-    end
-
     h.gfm_with_options(full_document, @options)
   end
 end

@@ -86,6 +86,15 @@ describe API::API, api: true  do
           expect(json_response).to be_an Array
           expect(json_response.first['id']).to eq(project3.id)
         end
+
+        it 'returns projects in the correct order when ci_enabled_first parameter is passed' do
+          [project, project2, project3].each{ |project| project.build_missing_services }
+          project2.gitlab_ci_service.update(active: true, token: "token", project_url: "url")
+          get api('/projects', user), { ci_enabled_first: 'true'}
+          expect(response.status).to eq(200)
+          expect(json_response).to be_an Array
+          expect(json_response.first['id']).to eq(project2.id)
+        end
       end
     end
   end
