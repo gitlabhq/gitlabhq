@@ -65,6 +65,7 @@ v 7.11.0 (unreleased)
   - Fix mentioning of private groups.
   - Add style for <kbd> element in markdown
   - Spin spinner icon next to "Checking for CI status..." on MR page.
+  - Fix reference links in dashboard activity and ATOM feeds.
 
 v 7.10.2
   - Fix CI links on MR page

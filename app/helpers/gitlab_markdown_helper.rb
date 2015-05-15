@@ -19,7 +19,7 @@ module GitlabMarkdownHelper
                      escape_once(body)
                    end
 
-    gfm_body = gfm(escaped_body, @project, html_options)
+    gfm_body = gfm(escaped_body, {}, html_options)
 
     gfm_body.gsub!(%r{<a.*?>.*?</a>}m) do |match|
       "</a>#{match}#{link_to("", url, html_options)[0..-5]}" # "</a>".length +1
@@ -32,11 +32,13 @@ module GitlabMarkdownHelper
     unless @markdown && options == @options
       @options = options
 
-      # see https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch
-      rend = Redcarpet::Render::GitlabHTML.new(self, user_color_scheme_class, {
+      options.merge!(
         # Handled further down the line by Gitlab::Markdown::SanitizationFilter
         escape_html: false
-      }.merge(options))
+      )
+
+      # see https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch
+      rend = Redcarpet::Render::GitlabHTML.new(self, user_color_scheme_class, options)
 
       # see https://github.com/vmg/redcarpet#and-its-like-really-simple-to-use
       @markdown = Redcarpet::Markdown.new(rend,
@@ -58,8 +60,8 @@ module GitlabMarkdownHelper
   # as Markdown.  HTML tags in the parsed output are not counted toward the
   # +max_chars+ limit.  If the length limit falls within a tag's contents, then
   # the tag contents are truncated without removing the closing tag.
-  def first_line_in_markdown(text, max_chars = nil)
-    md = markdown(text).strip
+  def first_line_in_markdown(text, max_chars = nil, options = {})
+    md = markdown(text, options).strip
 
     truncate_visible(md, max_chars || md.length) if md.present?
   end
