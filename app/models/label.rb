@@ -41,16 +41,14 @@ class Label < ActiveRecord::Base
   end
 
   # Pattern used to extract label references from text
-  #
-  # TODO (rspeicher): Limit to double quotes (meh) or disallow single quotes in label names (bad).
   def self.reference_pattern
     %r{
       #{reference_prefix}
       (?:
-        (?<label_id>\d+)   | # Integer-based label ID, or
+        (?<label_id>\d+) | # Integer-based label ID, or
         (?<label_name>
-          [A-Za-z0-9_-]+   | # String-based single-word label title
-          ['"][^&\?,]+['"]   # String-based multi-word label surrounded in quotes
+          [A-Za-z0-9_-]+ | # String-based single-word label title, or
+          "[^&\?,]+"       # String-based multi-word label surrounded in quotes
         )
       )
     }x
@@ -70,7 +68,7 @@ class Label < ActiveRecord::Base
   #
   # Returns a String
   def to_reference(format = :id)
-    if format == :name
+    if format == :name && !name.include?('"')
       %(#{self.class.reference_prefix}"#{name}")
     else
       "#{self.class.reference_prefix}#{id}"

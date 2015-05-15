@@ -100,52 +100,26 @@ module Gitlab::Markdown
     end
 
     context 'String-based multi-word references in quotes' do
-      let(:label) { create(:label, name: 'gfm references', project: project) }
+      let(:label)     { create(:label, name: 'gfm references', project: project) }
+      let(:reference) { label.to_reference(:name) }
 
-      context 'in single quotes' do
-        let(:reference) { "#{Label.reference_prefix}'#{label.name}'" }
+      it 'links to a valid reference' do
+        doc = filter("See #{reference}")
 
-        it 'links to a valid reference' do
-          doc = filter("See #{reference}")
-
-          expect(doc.css('a').first.attr('href')).to eq urls.
-            namespace_project_issues_url(project.namespace, project, label_name: label.name)
-          expect(doc.text).to eq 'See gfm references'
-        end
-
-        it 'links with adjacent text' do
-          doc = filter("Label (#{reference}.)")
-          expect(doc.to_html).to match(%r(\(<a.+><span.+>#{label.name}</span></a>\.\)))
-        end
-
-        it 'ignores invalid label names' do
-          exp = act = "Label #{Label.reference_prefix}'#{label.name.reverse}'"
-
-          expect(filter(act).to_html).to eq exp
-        end
+        expect(doc.css('a').first.attr('href')).to eq urls.
+          namespace_project_issues_url(project.namespace, project, label_name: label.name)
+        expect(doc.text).to eq 'See gfm references'
       end
 
-      context 'in double quotes' do
-        let(:reference) { %(#{Label.reference_prefix}"#{label.name}") }
+      it 'links with adjacent text' do
+        doc = filter("Label (#{reference}.)")
+        expect(doc.to_html).to match(%r(\(<a.+><span.+>#{label.name}</span></a>\.\)))
+      end
 
-        it 'links to a valid reference' do
-          doc = filter("See #{reference}")
+      it 'ignores invalid label names' do
+        exp = act = %(Label #{Label.reference_prefix}"#{label.name.reverse}")
 
-          expect(doc.css('a').first.attr('href')).to eq urls.
-            namespace_project_issues_url(project.namespace, project, label_name: label.name)
-          expect(doc.text).to eq 'See gfm references'
-        end
-
-        it 'links with adjacent text' do
-          doc = filter("Label (#{reference}.)")
-          expect(doc.to_html).to match(%r(\(<a.+><span.+>#{label.name}</span></a>\.\)))
-        end
-
-        it 'ignores invalid label names' do
-          exp = act = %(Label #{Label.reference_prefix}"#{label.name.reverse}")
-
-          expect(filter(act).to_html).to eq exp
-        end
+        expect(filter(act).to_html).to eq exp
       end
     end
 

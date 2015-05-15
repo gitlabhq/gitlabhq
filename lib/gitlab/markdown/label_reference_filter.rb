@@ -72,8 +72,7 @@ module Gitlab
       # Returns a Hash.
       def label_params(id, name)
         if name
-          # TODO (rspeicher): Don't strip single quotes if we decide to only use double quotes for surrounding.
-          { name: name.tr('\'"', '') }
+          { name: name.tr('"', '') }
         else
           { id: id }
         end

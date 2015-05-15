@@ -55,13 +55,22 @@ describe Label do
   end
 
   describe '#to_reference' do
-    it 'returns a String reference to the object' do
-      expect(label.to_reference).to eq "~#{label.id}"
-      expect(label.to_reference(double)).to eq "~#{label.id}"
+    context 'using id' do
+      it 'returns a String reference to the object' do
+        expect(label.to_reference).to eq "~#{label.id}"
+        expect(label.to_reference(double('project'))).to eq "~#{label.id}"
+      end
     end
 
-    it 'returns a String reference to the object using its name' do
-      expect(label.to_reference(:name)).to eq %(~"#{label.name}")
+    context 'using name' do
+      it 'returns a String reference to the object' do
+        expect(label.to_reference(:name)).to eq %(~"#{label.name}")
+      end
+
+      it 'uses id when name contains double quote' do
+        label = create(:label, name: %q{"irony"})
+        expect(label.to_reference(:name)).to eq "~#{label.id}"
+      end
     end
   end
 end
