@@ -66,6 +66,10 @@ describe 'GitLab Markdown' do
     @doc.at_css("##{id}").parent.next_element
   end
 
+  # Sometimes it can be useful to see the parsed output of the Markdown document
+  # for debugging. Uncomment this block to write the output to
+  # tmp/capybara/markdown_spec.html.
+  #
   # it 'writes to a file' do
   #   File.open(Rails.root.join('tmp/capybara/markdown_spec.html'), 'w') do |file|
   #     file.puts @md
