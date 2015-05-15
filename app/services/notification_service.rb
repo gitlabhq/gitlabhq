@@ -408,7 +408,7 @@ class NotificationService
         [target.author, target.assignee]
       end
 
-    recipients = add_project_watchers(recipients)
+    recipients = add_project_watchers(recipients, project)
     recipients = reject_mention_users(recipients, project)
     recipients = reject_muted_users(recipients, project)
 
