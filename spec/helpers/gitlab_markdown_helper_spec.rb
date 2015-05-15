@@ -21,7 +21,7 @@ describe GitlabMarkdownHelper do
 
   describe "#gfm" do
     it "should forward HTML options to links" do
-      expect(gfm("Fixed in #{commit.id}", @project, class: 'foo')).
+      expect(gfm("Fixed in #{commit.id}", { project: @project }, class: 'foo')).
         to have_selector('a.gfm.foo')
     end
 
