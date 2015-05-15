@@ -42,8 +42,7 @@ module Referable
     #
     # Returns a Regexp
     def reference_pattern
-      raise NotImplementedError,
-        %Q{#{self} does not implement "reference_pattern"}
+      raise NotImplementedError, "#{self} does not implement #{__method__}"
     end
   end
 
@@ -53,10 +52,10 @@ module Referable
   #
   # from_project - Refering Project object
   def cross_project_reference?(from_project)
-    if Project === self
+    if self.is_a?(Project)
       self != from_project
     else
-      from_project && project && project != from_project
+      from_project && self.project && self.project != from_project
     end
   end
 end
