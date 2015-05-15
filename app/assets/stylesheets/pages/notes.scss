@@ -33,7 +33,16 @@ ul.notes {
       &:before {
         content: "\00b7";
       }
+
       font-size: 13px;
+
+      a {
+        @extend .cgray;        
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
     }
     .author {
       color: #333;
@@ -47,7 +56,7 @@ ul.notes {
 
     .note-role {
       float: right;
-      margin-top: 2px;
+      margin-top: 1px;
       border: 1px solid #bbb;
       background-color: transparent;
       color: #999;
@@ -142,31 +151,23 @@ ul.notes {
 
 .discussion,
 .note {
-  &.note:hover {
-    .note-actions { display: block; }
-    .note-actions + .note-role { display: none; }
-  }
-  .discussion-header:hover {
-    .discussion-actions { display: block; }
-  }
-
   .discussion-actions,
   .note-actions {
-    display: none;
     float: right;
-
-    i.fa {
-      font-size: 16px;
-      line-height: 16px;
-      vertical-align: middle;
-    }
+    margin-left: 10px;
 
     a {
       margin-left: 5px;
 
-      @extend .cgray;
+      color: #999;
+
+      i.fa {
+        font-size: 16px;
+        line-height: 16px;
+      }
 
       &:hover {
+        @extend .cgray;
         &.danger { @extend .cred; }
       }
     }

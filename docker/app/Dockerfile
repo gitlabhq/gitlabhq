@@ -5,15 +5,14 @@ RUN apt-get update -q \
     && DEBIAN_FRONTEND=noninteractive apt-get install -qy --no-install-recommends \
       ca-certificates \
       openssh-server \
-      wget
+      wget \
+      apt-transport-https
 
 # Download & Install GitLab
-# If the Omnibus package version below is outdated please contribute a merge request to update it.
 # If you run GitLab Enterprise Edition point it to a location where you have downloaded it.
-RUN TMP_FILE=$(mktemp); \
-    wget -q -O $TMP_FILE https://downloads-packages.s3.amazonaws.com/ubuntu-14.04/gitlab-ce_7.10.1~omnibus.2-1_amd64.deb \
-    && dpkg -i $TMP_FILE \
-    && rm -f $TMP_FILE
+RUN echo "deb https://packages.gitlab.com/gitlab/gitlab-ce/ubuntu/ `lsb_release -cs` main" > /etc/apt/sources.list.d/gitlab_gitlab-ce.list
+RUN wget -q -O - https://packages.gitlab.com/gpg.key | apt-key add -
+RUN apt-get update && apt-get install -yq --no-install-recommends gitlab-ce
 
 # Manage SSHD through runit
 RUN mkdir -p /opt/gitlab/sv/sshd/supervise \

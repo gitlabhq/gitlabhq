@@ -226,7 +226,7 @@ GEM
       mime-types (~> 1.19)
     gitlab_emoji (0.1.0)
       gemojione (~> 2.0)
-    gitlab_git (7.1.11)
+    gitlab_git (7.1.12)
       activesupport (~> 4.0)
       charlock_holmes (~> 0.6)
       gitlab-linguist (~> 3.0)
@@ -363,9 +363,9 @@ GEM
       rack (~> 1.2)
     octokit (3.7.0)
       sawyer (~> 0.6.0, >= 0.5.3)
-    omniauth (1.1.4)
-      hashie (>= 1.2, < 3)
-      rack
+    omniauth (1.2.2)
+      hashie (>= 1.2, < 4)
+      rack (~> 1.0)
     omniauth-bitbucket (0.0.2)
       multi_json (~> 1.7)
       omniauth (~> 1.1)
@@ -725,7 +725,7 @@ DEPENDENCIES
   gitlab-license (~> 0.0.2)
   gitlab-linguist (~> 3.0.1)
   gitlab_emoji (~> 0.1)
-  gitlab_git (~> 7.1.11)
+  gitlab_git (~> 7.1.12)
   gitlab_meta (= 7.0)
   gitlab_omniauth-ldap (= 1.2.1)
   gollum-lib (~> 4.0.2)
@@ -754,7 +754,7 @@ DEPENDENCIES
   newrelic_rpm
   nprogress-rails
   octokit (= 3.7.0)
-  omniauth (~> 1.1.3)
+  omniauth (~> 1.2.2)
   omniauth-bitbucket
   omniauth-github
   omniauth-gitlab

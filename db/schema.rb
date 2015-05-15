@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(version: 20150509180749) do
     t.boolean  "twitter_sharing_enabled",      default: true
     t.text     "help_text"
     t.text     "restricted_visibility_levels"
+    t.boolean  "version_check_enabled",        default: true
     t.integer  "max_attachment_size",          default: 10,   null: false
     t.integer  "default_project_visibility"
     t.integer  "default_snippet_visibility"

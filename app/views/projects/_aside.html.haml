@@ -10,17 +10,14 @@
           - if @repository.changelog
             %li.hidden-xs
               = link_to changelog_url(@project) do
-                = icon("list-alt fw")
                 Changelog
           - if @repository.license
             %li
               = link_to license_url(@project) do
-                = icon("check-circle-o fw")
                 License
           - if @repository.contribution_guide
             %li
               = link_to contribution_guide_url(@project) do
-                = icon("info-circle fw")
                 Contribution guide
 
       .actions
@@ -73,15 +70,12 @@
       %ul.nav.nav-pills
         %li
           = link_to namespace_project_commits_path(@project.namespace, @project, @ref || @repository.root_ref) do
-            = icon("history fw")
             = pluralize(number_with_delimiter(@repository.commit_count), 'commit')
         %li
           = link_to namespace_project_branches_path(@project.namespace, @project) do
-            = icon("code-fork fw")
             = pluralize(number_with_delimiter(@repository.branch_names.count), 'branch')
         %li
           = link_to namespace_project_tags_path(@project.namespace, @project) do
-            = icon("tags fw")
             = pluralize(number_with_delimiter(@repository.tag_names.count), 'tag')
 
       .actions
