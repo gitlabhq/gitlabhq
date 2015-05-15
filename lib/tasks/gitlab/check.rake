@@ -320,7 +320,7 @@ namespace :gitlab do
 
       options = {
         "user.name"  => "GitLab",
-        "user.email" => Gitlab.config.gitlab.email_from,
+        "user.email" => Gitlab.config.outgoing_emails.from,
         "core.autocrlf" => "input"
       }
       correct_options = options.map do |name, value|
