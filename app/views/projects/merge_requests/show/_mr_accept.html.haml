@@ -6,7 +6,7 @@
     .automerge_widget.cannot_be_merged.hide
       %strong This request can't be merged automatically. Even if it could be merged, you don't have permission to do so.
     .automerge_widget.work_in_progress.hide
-      %strong This request can't be merged automatically because it is marked a Work In Progress. Even if it could be merged, you don't have permission to do so.
+      %strong This request can't be accepted because it is marked a Work In Progress. Even if it could be accepted, you don't have permission to do so.
     .automerge_widget.can_be_merged.hide
       %strong This request can be merged automatically, but you don't have permission to do so.
 
@@ -57,11 +57,11 @@
         %i.fa.fa-warning
         Accept Merge Request
       &nbsp;
-      This usually happens when git can not resolve conflicts between branches automatically.
+      This usually happens when Git can not resolve conflicts between branches automatically.
 
   .automerge_widget.work_in_progress.hide
     %h4
-      This request can't be merged because it is marked a <strong>Work In Progress</strong>.
+      This request can't be accepted because it is marked a <strong>Work In Progress</strong>.
 
     %p
       %button.btn.disabled{:type => 'button'}
@@ -69,7 +69,7 @@
         Accept Merge Request
       &nbsp;
 
-      When the merge request is ready, remove the "WIP" prefix from the title to allow it to be merged.
+      When the merge request is ready, remove the "WIP" prefix from the title to allow it to be accepted.
 
   .automerge_widget.unchecked
     %p
