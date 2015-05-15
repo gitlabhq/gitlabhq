@@ -66,6 +66,7 @@ v 7.11.0 (unreleased)
   - Add style for <kbd> element in markdown
   - Spin spinner icon next to "Checking for CI status..." on MR page.
   - Fix reference links in dashboard activity and ATOM feeds.
+  - Ensure that the first added admin performs repository imports
 
 v 7.10.2
   - Fix CI links on MR page
