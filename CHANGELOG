@@ -11,8 +11,6 @@ v 7.11.0 (unreleased)
   - Don't allow a merge request to be merged when its title starts with "WIP".
   - Add a page title to every page.
   - Allow primary email to be set to an email that you've already added.
-  - Fix Error 500 when searching Wiki pages (Stan Hu)
-  - Get Gitorious importer to work again.
   - Fix clone URL field and X11 Primary selection (Dmitry Medvinsky)
   - Ignore invalid lines in .gitmodules
   - Fix "Cannot move project" error message from popping up after a successful transfer (Stan Hu)
@@ -21,7 +19,6 @@ v 7.11.0 (unreleased)
   - Fix "Revspec not found" errors when viewing diffs in a forked project with submodules (Stan Hu)
   - Improve project page UI
   - Fix broken file browsing with relative submodule in personal projects (Stan Hu)
-  - Fix DB error when trying to tag a repository (Stan Hu)
   - Add "Reply quoting selected text" shortcut key (`r`)
   - Fix bug causing `@whatever` inside an issue's first code block to be picked up as a user mention.
   - Fix bug causing `@whatever` inside an inline code snippet (backtick-style) to be picked up as a user mention.
@@ -39,7 +36,6 @@ v 7.11.0 (unreleased)
   - Add default project and snippet visibility settings to the admin web UI.
   - Show incompatible projects in Google Code import status (Stan Hu)
   - Fix bug where commit data would not appear in some subdirectories (Stan Hu)
-  - Unescape branch names in compare commit (Stan Hu)
   - Task lists are now usable in comments, and will show up in Markdown previews.
   - Fix bug where avatar filenames were not actually deleted from the database during removal (Stan Hu)
   - Fix bug where Slack service channel was not saved in admin template settings. (Stan Hu)
@@ -64,6 +60,15 @@ v 7.11.0 (unreleased)
   - Use SIGKILL by default in Sidekiq::MemoryKiller
   - Fix mentioning of private groups.
   - Add style for <kbd> element in markdown
+
+v 7.10.4
+  - Fix migrations broken in 7.10.2
+  - Make tags for GitLab installations running on MySQL case sensitive
+  - Get Gitorious importer to work again.
+  - Fix adding new group members from admin area
+  - Fix DB error when trying to tag a repository (Stan Hu)
+  - Fix Error 500 when searching Wiki pages (Stan Hu)
+  - Unescape branch names in compare commit (Stan Hu)
 
 v 7.10.2
   - Fix CI links on MR page
