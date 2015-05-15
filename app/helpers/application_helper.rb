@@ -324,12 +324,20 @@ module ApplicationHelper
 
     count =
       if project.nil?
-        ""
+        nil
       elsif current_controller?(:issues)
-        " (#{project.issues.send(entity).count})"
+        project.issues.send(entity).count
       elsif current_controller?(:merge_requests)
-        " (#{project.merge_requests.send(entity).count})"
+        project.merge_requests.send(entity).count
       end
-    "#{entity_title}#{count}"
+
+    html = content_tag :span, entity_title
+
+    if count.present?
+      html += " "
+      html += content_tag :span, number_with_delimiter(count), class: 'badge'
+    end
+
+    html.html_safe
   end
 end
