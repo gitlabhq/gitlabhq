@@ -1,7 +1,7 @@
 - Gitlab::VisibilityLevel.values.each do |level|
   .radio
     - restricted = restricted_visibility_levels.include?(level)
-    = label model_method, level do
+    = form.label "#{model_method}_#{level}" do
       = form.radio_button model_method, level, checked: (selected_level == level), disabled: restricted
       = visibility_level_icon(level)
       .option-title
