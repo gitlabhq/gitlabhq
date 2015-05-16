@@ -102,7 +102,6 @@ require authentication. '
         [
           { type: 'select',
             name: 'package_mode',
-            label: 'Package Mode',
             choices:
             [
               ['Built-in: parse composer.json (default)', 'default'],
@@ -113,7 +112,6 @@ require authentication. '
           },
           { type: 'select',
             name: 'package_type',
-            label: 'Package Type',
             hint: 'Applicable only on project package mode.',
             choices:
             [
@@ -276,13 +274,11 @@ require authentication. '
       { type: 'fieldset', legend: 'Branches:', fields:
         [
           { type: 'checkbox',
-            name: 'export_branches',
-            label: 'Branch Listing'
+            name: 'export_branches'
           },
           { type: 'text',
             name: 'branch_filters',
-            label: 'Branch Filters',
-            placeholder: 'branches you wish to export comma seperated.',
+            placeholder: 'branches you wish to export comma separated.',
             hint: 'Separate branches with commas. '\
                   'Leave blank to export all branches.'
           }
@@ -291,13 +287,11 @@ require authentication. '
       { type: 'fieldset', legend: 'Tags:', fields:
         [
           { type: 'checkbox',
-            name: 'export_tags',
-            label: 'Tag Listing'
+            name: 'export_tags'
           },
           { type: 'text',
             name: 'tag_filters',
-            label: 'Tag Filters',
-            placeholder: 'tags you wish to export comma seperated.',
+            placeholder: 'tags you wish to export comma separated.',
             hint: 'Separate tags with commas. '\
                   'Leave blank to export all tags.'
           }
@@ -307,7 +301,6 @@ require authentication. '
         [
           { type: 'textarea',
             name: 'custom_json',
-            label: 'Custom JSON',
             placeholder: 'custom json to use for exporting this package.'
           }
         ]
