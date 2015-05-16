@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe Issues::CloseService do
-  let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:issue) { create(:issue, assignee: user2) }
+  let(:project) { issue.project }
 
   before do
     project.team << [user, :master]
