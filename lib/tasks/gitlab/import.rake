@@ -35,7 +35,7 @@ namespace :gitlab do
         if project
           puts " * #{project.name} (#{repo_path}) exists"
         else
-          user = User.admins.first
+          user = User.admins.reorder("id").first
 
           project_params = {
             name: name,
