@@ -140,8 +140,8 @@ $ ->
         # Place the logo tooltip on the right when collapsed, bottom when expanded
         $el.parents('header').hasClass('header-collapsed') and 'right' or 'bottom'
       else
-        # Otherwise use the data-placement attribute like normal
-        $el.data('placement')
+        # Otherwise use the data-placement attribute, or 'bottom' if undefined
+        $el.data('placement') or 'bottom'
   })
 
   # Form submitter
