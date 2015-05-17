@@ -10,7 +10,11 @@ module API
       get ":id/members" do
         group = find_group(params[:id])
         users = group.users
-        present users, with: Entities::GroupMember, group: group
+        if current_user.is_admin?
+          present users, with: Entities::GroupMemberForAdmin, group: group
+        else
+          present users, with: Entities::GroupMember, group: group
+        end
       end
 
       # Add a user to the list of group members

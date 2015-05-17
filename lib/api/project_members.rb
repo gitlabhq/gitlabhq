@@ -18,7 +18,11 @@ module API
         else
           @members = paginate user_project.users
         end
-        present @members, with: Entities::ProjectMember, project: user_project
+        if current_user.is_admin?
+          present @members, with: Entities::ProjectMemberForAdmin, project: user_project
+        else
+          present @members, with: Entities::ProjectMember, project: user_project
+        end
       end
 
       # Get a project team members
