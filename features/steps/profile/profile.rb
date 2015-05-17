@@ -51,7 +51,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I should see my gravatar' do
-    @user.avatar?.should be_false
+    expect(@user.avatar?).to be_falsey
   end
 
   step 'I should not see the "Remove avatar" button' do
@@ -67,7 +67,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I change my password' do
-    within '.update-password' do
+    page.within '.update-password' do
       fill_in "user_current_password", with: "12345678"
       fill_in "user_password", with: "22233344"
       fill_in "user_password_confirmation", with: "22233344"
@@ -85,11 +85,15 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step "I should see a missing password error message" do
-    page.should have_content "You must provide a valid current password"
+    within ".flash-container" do
+      expect(page).to have_content "You must provide a valid current password"
+    end
   end
 
   step "I should see a password error message" do
-    page.should have_content "Password confirmation doesn't match"
+    within ".flash_container" do
+      expect(page).to have_content "Password confirmation doesn't match"
+    end
   end
 
   step 'I reset my token' do
@@ -113,7 +117,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step "I change my application theme" do
-    within '.application-theme' do
+    page.within '.themes_opts' do
       choose "Violet"
     end
   end
@@ -139,7 +143,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
 
   step "I am not an ldap user" do
     current_user.identities.delete
-    current_user.ldap_user?.should be_false
+    expect(current_user.ldap_user?).to be_falsey
   end
 
   step 'I redirected to expired password page' do
@@ -231,7 +235,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I click to remove application' do
-    within '.oauth-applications' do
+    page.within '.oauth-applications' do
       click_on "Destroy"
     end
   end
