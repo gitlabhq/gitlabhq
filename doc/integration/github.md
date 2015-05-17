@@ -73,9 +73,20 @@ GitHub will generate an application ID and secret key for you to use.
 1.  Save the configuration file.
 
 1.  Restart GitLab for the changes to take effect.
+
+For omnibus package:
+
+```
     - gitlab-ctl reconfigure
     - gitlab-ctl restart
+```
 
+For installation from source:
+
+```
+    - sudo /etc/init.d/gitlab reconfigure
+    - sudo /etc/init.d/gitlab restart
+```
 On the sign in page there should now be a GitHub icon below the regular sign in form. 
 Click the icon to begin the authentication process. GitHub will ask the user to sign in and authorize the GitLab application. 
 If everything goes well the user will be returned to GitLab and will be signed in.
