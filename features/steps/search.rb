@@ -52,7 +52,9 @@ class Spinach::Features::Search < Spinach::FeatureSteps
   end
 
   step 'I should see code results for project "Shop"' do
-    page.should have_content 'Update capybara, rspec-rails, poltergeist to recent versions'
+    within('.results') do
+      page.should have_content 'Update capybara, rspec-rails, poltergeist to recent versions'
+    end
   end
 
   step 'I search for "Contibuting"' do
@@ -71,7 +73,9 @@ class Spinach::Features::Search < Spinach::FeatureSteps
   end
 
   step 'I should see "Foo" link in the search results' do
-    find(:css, '.search-results').should have_link 'Foo'
+    within('.results') do
+      find(:css, '.search-results').should have_link 'Foo'
+    end
   end
 
   step 'I should not see "Bar" link in the search results' do
@@ -79,7 +83,9 @@ class Spinach::Features::Search < Spinach::FeatureSteps
   end
 
   step 'I should see "test_wiki" link in the search results' do
-    find(:css, '.search-results').should have_link 'test_wiki.md'
+    within('.results') do
+      find(:css, '.search-results').should have_link 'test_wiki.md'
+    end
   end
 
   step 'project has Wiki content' do
