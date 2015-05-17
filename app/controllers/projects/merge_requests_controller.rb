@@ -19,7 +19,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def index
     terms = params['issue_search']
     @merge_requests = get_merge_requests_collection
-    @merge_requests = @merge_requests.full_search(terms) if terms.present?
+
+    if terms.present?
+      if terms =~ /\A[#!](\d+)\z/
+        @merge_requests = @merge_requests.where(iid: $1)
+      else
+        @merge_requests = @merge_requests.full_search(terms)
+      end
+    end
+    
     @merge_requests = @merge_requests.page(params[:page]).per(PER_PAGE)
 
     respond_to do |format|
