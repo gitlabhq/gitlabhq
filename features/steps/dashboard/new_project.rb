@@ -4,13 +4,13 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
   include SharedProject
 
   step 'I click "New project" link' do
-    within('.content') do
+    page.within('.content') do
       click_link "New project"
     end
   end
 
   step 'I see "New project" page' do
-    page.should have_content("Project path")
+    expect(page).to have_content('Project path')
   end
 
   step 'I click on "Import project from GitHub"' do
