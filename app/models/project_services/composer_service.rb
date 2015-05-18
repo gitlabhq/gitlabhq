@@ -318,6 +318,9 @@ require authentication. '
 
   def process_project
 
+    # do not process when service template
+    return if template?
+
     # delete the project repository file since it will be regenerated.
     File.delete(repo_path) if File.exists?(repo_path)
 
