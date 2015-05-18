@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe Issues::UpdateService do
-  let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:issue) { create(:issue) }
   let(:label) { create(:label) }
+  let(:project) { issue.project }
 
   before do
     project.team << [user, :master]

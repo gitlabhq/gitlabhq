@@ -51,11 +51,23 @@ module Gitlab
     end
 
     def issues
-      Issue.where(project_id: limit_project_ids).full_search(query).order('updated_at DESC')
+      issues = Issue.where(project_id: limit_project_ids)
+      if query =~ /#(\d+)\z/
+        issues = issues.where(iid: $1)
+      else
+        issues = issues.full_search(query)
+      end
+      issues.order('updated_at DESC')
     end
 
     def merge_requests
-      MergeRequest.in_projects(limit_project_ids).full_search(query).order('updated_at DESC')
+      merge_requests = MergeRequest.in_projects(limit_project_ids)
+      if query =~ /[#!](\d+)\z/
+        merge_requests = merge_requests.where(iid: $1)
+      else
+        merge_requests = merge_requests.full_search(query)
+      end
+      merge_requests.order('updated_at DESC')
     end
 
     def default_scope
