@@ -17,7 +17,7 @@ module Composer
         def load(project, ref, type = 'library')
           config = {
             'name'                => project.path_with_namespace.gsub(/\s/, '').downcase,
-            'description'         => project.description,
+            'description'         => project.description.nil? ? '' : project.description,
             'type'                => type,
             'homepage'            => project.web_url
           }
