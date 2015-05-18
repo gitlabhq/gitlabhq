@@ -49,10 +49,7 @@ class ComposerService < Service
             error = 'description key must not be empty'
           end
         end
-
-        if error
-          record.errors.add(attr, error)
-        end
+        record.errors.add(attr, error) if error
 
       rescue
         record.errors.add(attr, 'must be a valid JSON string')
@@ -70,9 +67,7 @@ class ComposerService < Service
   end
 
   def description
-    'This project will be publicly listed as a composer package,
-but usage of private and internal repositories will still
-require authentication.'
+    'List your project as a composer package'
   end
 
   def help
@@ -323,10 +318,8 @@ require authentication. '
 
   def process_project
 
-    # delete the project repository file since it will be regenerated
-    if File.exists?(repo_path)
-      File.delete(repo_path)
-    end
+    # delete the project repository file since it will be regenerated.
+    File.delete(repo_path) if File.exists?(repo_path)
 
     if activated?
       # process packages for all tags
@@ -339,11 +332,13 @@ require authentication. '
         process_commit(branch)
       end
 
+      # write the repository json file.
       repository.write
     end
+
+    # update the root json file to include/exlude this project.
     update_root_file
-  rescue
-    # skip on error
+
   end
 
   def process_commit(ref)
@@ -351,8 +346,10 @@ require authentication. '
       package = ref_package(ref)
       repository.add_package(package)
     end
-  rescue
-    # skip on error
+  rescue Exception => e
+    # These errors are non-critical and have an impact on the exported
+    # packages. These errors can be ignored and are logged for troubleshooting.
+    log(e.message)
   end
 
   def update_root_file
@@ -371,7 +368,10 @@ require authentication. '
 
     root_json.write({ packages: [], includes: includes })
   rescue Exception => e
-    Gitlab::AppLogger.error("ComposerService: #{e.message}")
+    # These errors are critical indicating that we can not process
+    # the root json file. Log and raise
+    log(e.message)
+    raise e
   end
 
   private
