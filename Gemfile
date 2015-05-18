@@ -94,7 +94,7 @@ gem "seed-fu"
 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 1.11.0'
-gem 'task_list',     '~> 1.0.0', require: 'task_list/railtie'
+gem 'task_list',     '1.0.2', require: 'task_list/railtie'
 gem 'github-markup'
 gem 'redcarpet',     '~> 3.2.3'
 gem 'RedCloth'
