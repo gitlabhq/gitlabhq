@@ -32,6 +32,7 @@ v 7.11.0 (unreleased)
   - Show Atom feed buttons everywhere where applicable.
   - Add project activity atom feed.
   - Don't crash when an MR from a fork has a cross-reference comment from the target project on one of its commits.
+  - Explain how to get a new password reset token in welcome emails
   - Include commit comments in MR from a forked project.
   - Fix adding new group members from admin area
   - Group milestones by title in the dashboard and all other issue views.
