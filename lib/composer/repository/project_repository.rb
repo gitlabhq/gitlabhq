@@ -39,7 +39,7 @@ module Composer
             data[package.pretty_name][package.pretty_version]['uid'] = "#{crc}" + (uid += 1).to_s
           end
         end
-        @file.write({ packages: data })
+        @file.write({ 'packages' => data })
       rescue Exception => e
         Gitlab::AppLogger.error("ProjectRepository: #{e.message}")
       end
