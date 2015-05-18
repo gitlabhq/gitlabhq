@@ -35,7 +35,7 @@ GEM
       tzinfo (~> 1.1)
     acts-as-taggable-on (3.5.0)
       activerecord (>= 3.2, < 5)
-    addressable (2.3.5)
+    addressable (2.3.8)
     annotate (2.6.0)
       activerecord (>= 2.3.0)
       rake (>= 0.8.7)
@@ -118,8 +118,8 @@ GEM
       simplecov (>= 0.7)
       term-ansicolor
       thor
-    crack (0.4.1)
-      safe_yaml (~> 0.9.0)
+    crack (0.4.2)
+      safe_yaml (~> 1.0.0)
     creole (0.3.8)
     d3_rails (3.5.5)
       railties (>= 3.1.0)
@@ -513,7 +513,7 @@ GEM
     rubypants (0.2.0)
     rugged (0.22.2)
     rugments (1.0.0.beta7)
-    safe_yaml (0.9.7)
+    safe_yaml (1.0.4)
     sanitize (2.1.0)
       nokogiri (>= 1.4.4)
     sass (3.2.19)
@@ -535,7 +535,7 @@ GEM
       thor (~> 0.14)
     settingslogic (2.0.9)
     sexp_processor (4.4.5)
-    shoulda-matchers (2.7.0)
+    shoulda-matchers (2.8.0)
       activesupport (>= 3.0.0)
     sidekiq (3.3.0)
       celluloid (>= 0.16.0)
@@ -652,8 +652,8 @@ GEM
       equalizer (~> 0.0.7)
     warden (1.2.3)
       rack (>= 1.0)
-    webmock (1.16.0)
-      addressable (>= 2.2.7)
+    webmock (1.21.0)
+      addressable (>= 2.3.6)
       crack (>= 0.3.2)
     websocket-driver (0.3.3)
     wikicloth (0.8.1)
@@ -772,7 +772,7 @@ DEPENDENCIES
   seed-fu
   select2-rails
   settingslogic
-  shoulda-matchers (~> 2.7.0)
+  shoulda-matchers (~> 2.8.0)
   sidekiq (~> 3.3)
   sidetiq (= 0.6.3)
   simplecov
@@ -801,5 +801,5 @@ DEPENDENCIES
   unicorn-worker-killer
   version_sorter
   virtus
-  webmock
+  webmock (~> 1.21.0)
   wikicloth (= 0.8.1)
