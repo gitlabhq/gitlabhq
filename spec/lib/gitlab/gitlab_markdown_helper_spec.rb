@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::MarkdownHelper do
   describe '#markup?' do
     %w(textile rdoc org creole wiki
-       mediawiki rst adoc asciidoc asc).each do |type|
+       mediawiki rst adoc ad asciidoc).each do |type|
       it "returns true for #{type} files" do
         expect(Gitlab::MarkdownHelper.markup?("README.#{type}")).to be_truthy
       end
@@ -23,6 +23,18 @@ describe Gitlab::MarkdownHelper do
 
     it 'returns false when given a non-markdown filename' do
       expect(Gitlab::MarkdownHelper.gitlab_markdown?('README.rb')).not_to be_truthy
+    end
+  end
+
+  describe '#asciidoc?' do
+    %w(adoc ad asciidoc ADOC).each do |type|
+      it "returns true for #{type} files" do
+        expect(Gitlab::MarkdownHelper.asciidoc?("README.#{type}")).to be_truthy
+      end
+    end
+
+    it 'returns false when given a non-asciidoc filename' do
+      expect(Gitlab::MarkdownHelper.asciidoc?('README.rb')).not_to be_truthy
     end
   end
 end

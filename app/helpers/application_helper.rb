@@ -222,8 +222,12 @@ module ApplicationHelper
   end
 
   def render_markup(file_name, file_content)
-    GitHub::Markup.render(file_name, file_content).
-      force_encoding(file_content.encoding).html_safe
+    if asciidoc?(file_name)
+      asciidoc(file_content)
+    else
+      GitHub::Markup.render(file_name, file_content).
+        force_encoding(file_content.encoding).html_safe
+    end
   rescue RuntimeError
     simple_format(file_content)
   end
@@ -234,6 +238,10 @@ module ApplicationHelper
 
   def gitlab_markdown?(filename)
     Gitlab::MarkdownHelper.gitlab_markdown?(filename)
+  end
+
+  def asciidoc?(filename)
+    Gitlab::MarkdownHelper.asciidoc?(filename)
   end
 
   # Overrides ActionView::Helpers::UrlHelper#link_to to add `rel="nofollow"` to

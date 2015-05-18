@@ -110,6 +110,14 @@ describe GitlabMarkdownHelper do
       helper.render_wiki_content(@wiki)
     end
 
+    it "should use Asciidoctor for asciidoc files" do
+      allow(@wiki).to receive(:format).and_return(:asciidoc)
+
+      expect(helper).to receive(:asciidoc).with('wiki content')
+
+      helper.render_wiki_content(@wiki)
+    end
+
     it "should use the Gollum renderer for all other file types" do
       allow(@wiki).to receive(:format).and_return(:rdoc)
       formatted_content_stub = double('formatted_content')
