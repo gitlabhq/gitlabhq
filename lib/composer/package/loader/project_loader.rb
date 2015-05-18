@@ -12,7 +12,9 @@ module Composer
         end
 
         # Load a project ref as a package
-        # Param:  string|JsonFile json A filename, json string or JsonFile instance to load the package from
+        # Param:  Project project The target gitlab project.
+        # Param:  Branch|Tag ref The target gitlab project branch/tag.
+        # Param:  Hash config A hash containing addional package configuration.
         # Returns: Composer::Package::Package
         def load(project, ref, config)
 

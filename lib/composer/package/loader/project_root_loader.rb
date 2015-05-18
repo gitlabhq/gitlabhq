@@ -5,7 +5,8 @@ module Composer
       class ProjectRootLoader < Composer::Package::Loader::ProjectLoader
 
         # Load a project ref
-        # Param:  string|JsonFile json A filename, json string or JsonFile instance to load the package from
+        # Param:  Project project The target gitlab project.
+        # Param:  Branch|Tag ref The target gitlab project branch/tag.
         # Returns: Composer::Package::Package
         def load(project, ref)
           blob = project.repository.blob_at(ref.target, 'composer.json')
