@@ -263,10 +263,10 @@ group :development, :test do
 end
 
 group :test do
-  gem "simplecov", require: false
-  gem "shoulda-matchers", "~> 2.7.0"
+  gem 'simplecov', require: false
+  gem 'shoulda-matchers', '~> 2.8.0'
   gem 'email_spec'
-  gem "webmock"
+  gem 'webmock', '~> 1.21.0'
   gem 'test_after_commit'
 end
 
