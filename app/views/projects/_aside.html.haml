@@ -57,7 +57,7 @@
           .pull-right
             - if ci_service.respond_to?(:status_img_path)
               = link_to ci_service.builds_path, :'data-no-turbolink' => 'data-no-turbolink' do
-                = image_tag ci_service.status_img_path, alt: "build status"
+                = image_tag ci_service.status_img_path, alt: "build status", class: 'ci-status-image'
             - else
               = link_to 'view builds', ci_service.builds_path, :'data-no-turbolink' => 'data-no-turbolink'
 

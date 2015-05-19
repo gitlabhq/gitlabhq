@@ -188,7 +188,7 @@ header {
       border: 1px solid #DDD;
       box-shadow: none;
       @include transition(all 0.15s ease-in 0s);
-      background-color: #f5f5f5;
+      background-color: #f9f9f9;
     }
   }
 }
@@ -197,6 +197,7 @@ header {
   width: 300px;
   &:focus {
     width: 330px;
+    background-color: #FFF;
   }
 }
 
