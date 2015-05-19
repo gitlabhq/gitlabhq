@@ -30,8 +30,8 @@ parameter by URL or header. If passed as a header, the header name must be
 **PRIVATE-TOKEN** (capital and with dash instead of underscore). You can find or
 reset your private token in your account page (`/profile/account`).
 
-If no, or an invalid, `private_token` is provided then an error message will be
-returned with status code `401`:
+If `private_token` is invalid or omitted, then an error message will be returned
+with status code `401`:
 
 ```json
 {
@@ -48,7 +48,7 @@ Example of a valid API request:
 GET https://example.com/api/v3/projects?private_token=QVy1PB7sTxfy4pqfZM1U
 ```
 
-Example for a valid API request using curl and authentication via header:
+Example of a valid API request using curl and authentication via header:
 
 ```shell
 curl --header "PRIVATE-TOKEN: QVy1PB7sTxfy4pqfZM1U" "https://example.com/api/v3/projects"
@@ -78,7 +78,7 @@ Read more about [GitLab as an OAuth2 client](oauth2.md).
 ## Status codes
 
 The API is designed to return different status codes according to context and
-action. In this way if a request results in an error, the caller is able to get
+action. This way if a request results in an error, the caller is able to get
 insight into what went wrong.
 
 The following table gives an overview of how the API functions generally behave.
@@ -88,7 +88,7 @@ The following table gives an overview of how the API functions generally behave.
 | `GET`   | Access one or more resources and return the result as JSON. |
 | `POST`  | Return `201 Created` if the resource is successfully created and return the newly created resource as JSON. |
 | `GET` / `PUT` / `DELETE` | Return `200 OK` if the resource is accessed, modified or deleted successfully. The (modified) result is returned as JSON. |
-| `DELETE` | Designed to be idempotent, meaning a request a resource still returns `200 OK` even it was deleted before or is not available. The reasoning behind it is the user is not really interested if the resource existed before or not. |
+| `DELETE` | Designed to be idempotent, meaning a request to a resource still returns `200 OK` even it was deleted before or is not available. The reasoning behind it is the user is not really interested if the resource existed before or not. |
 
 The following table shows the possible return codes for API requests.
 
@@ -109,7 +109,7 @@ The following table shows the possible return codes for API requests.
 
 All API requests support performing an API call as if you were another user,
 provided your private token is from an administration account. You need to pass
-the `sudo` parameter by URL or header with an id or username of the user you
+the `sudo` parameter by URL or header with an ID or username of the user you
 want to perform the operation as. If passed as a header, the header name must be
 **SUDO** (capitals).
 
@@ -142,7 +142,7 @@ GET https://example.com/api/v3/projects?private_token=QVy1PB7sTxfy4pqfZM1U&sudo=
 GET https://example.com/api/v3/projects?private_token=QVy1PB7sTxfy4pqfZM1U&sudo=23
 ```
 
-Example for a valid API request with sudo using curl and authentication via
+Example of a valid API request with sudo using curl and authentication via
 header:
 
 ```shell
@@ -163,7 +163,7 @@ resources you can pass the following parameters:
 | `page` |  Page number (default: `1`). |
 | `per_page` | Number of items to list per page (default: `20`, max: `100`). |
 
-[Link headers](http://www.w3.org/wiki/LinkHeader) are send back with each
+[Link headers](http://www.w3.org/wiki/LinkHeader) are sent back with each
 response. These have `rel` prev/next/first/last and contain the relevant URL.
 Please use these instead of generating your own URLs.
 
@@ -196,10 +196,9 @@ Such errors appear in two cases:
 
 When an attribute is missing, you will get something like:
 
-```json
+```
 HTTP/1.1 400 Bad Request
 Content-Type: application/json
-
 {
     "message":"400 (Bad request) \"title\" not given"
 }
@@ -208,10 +207,9 @@ Content-Type: application/json
 When a validation error occurs, error messages will be different. They will
 hold all details of validation errors:
 
-```json
+```
 HTTP/1.1 400 Bad Request
 Content-Type: application/json
-
 {
     "message": {
         "bio": [
@@ -245,6 +243,6 @@ follows:
 
 ## Clients
 
-There a lot of unofficial API Clients for GitLab, written in almost all well
-known languages. Visit the [GitLab website](https://about.gitlab.com/applications/#api-clients)
+There are many unofficial GitLab API Clients for most of the popular
+programming languages. Visit the [GitLab website](https://about.gitlab.com/applications/#api-clients)
 for a complete list.
