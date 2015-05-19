@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 7.12.0 (unreleased)
+- Allow to configure location of the `.gitlab_shell_secret` file. (Jakub Jirutka)
+
 v 7.11.0 (unreleased)
   - Fix broken view when viewing history of a file that includes a path that used to be another file (Stan Hu)
   - Don't show duplicate deploy keys
@@ -70,7 +73,6 @@ v 7.11.0 (unreleased)
   - Ensure that the first added admin performs repository imports
   - Update Asciidoctor gem to version 1.5.2. (Jakub Jirutka)
   - Fix resolving of relative links to repository files in AsciiDoc documents. (Jakub Jirutka)
-  - Allow to configure location of the `.gitlab_shell_secret` file. (Jakub Jirutka)
 
 v 7.10.2
   - Fix CI links on MR page
