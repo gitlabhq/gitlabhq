@@ -55,7 +55,7 @@ module BlobHelper
   end
 
   def editing_preview_title(filename)
-    if Gitlab::MarkdownHelper.previewable?(filename)
+    if Gitlab::MarkupHelper.previewable?(filename)
       'Preview'
     else
       'Preview changes'
