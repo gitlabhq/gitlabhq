@@ -50,7 +50,9 @@ module Gitlab
       end
 
       def member_dns
-        if entry.respond_to? :member
+        if (entry.respond_to? :member) && (entry.respond_to? :submember)
+          entry.member + entry.submember
+        elsif entry.respond_to? :member
           entry.member
         elsif entry.respond_to? :uniquemember
           entry.uniquemember
