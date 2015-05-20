@@ -13,7 +13,7 @@
         class: 'form-control pad js-gfm-input', required: true
 
     - if issuable.is_a?(MergeRequest)
-      %p.help-block.hint.col-sm-12
+      %p.help-block
         - if issuable.work_in_progress?
           This merge request is marked a <strong>Work In Progress</strong>.
           When it's ready, remove the <code>WIP</code> prefix from the title to allow it to be accepted.
