@@ -4,6 +4,7 @@ v 7.12.0 (unreleased)
 - Allow to configure location of the `.gitlab_shell_secret` file. (Jakub Jirutka)
 
 v 7.11.0 (unreleased)
+  - Fall back to Plaintext when Syntaxhighlighting doesn't work. Fixes some buggy lexers (Hannes Rosenögger)
   - Fix broken view when viewing history of a file that includes a path that used to be another file (Stan Hu)
   - Don't show duplicate deploy keys
   - Fix commit time being displayed in the wrong timezone in some cases (Hannes Rosenögger)
