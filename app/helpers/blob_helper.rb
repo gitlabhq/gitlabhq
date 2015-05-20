@@ -9,11 +9,13 @@ module BlobHelper
 
     begin
       lexer = Rugments::Lexer.guess(filename: blob_name, source: blob_content)
-    rescue Rugments::Lexer::AmbiguousGuess
+      result = formatter.format(lexer.lex(blob_content)).html_safe
+    rescue
       lexer = Rugments::Lexers::PlainText
+      result = formatter.format(lexer.lex(blob_content)).html_safe
     end
 
-    formatter.format(lexer.lex(blob_content)).html_safe
+    result
   end
 
   def no_highlight_files
