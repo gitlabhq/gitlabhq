@@ -3,5 +3,6 @@ begin
   load File.expand_path("../spring", __FILE__)
 rescue LoadError
 end
-require 'bundler/setup'
-load Gem.bin_path('rails', 'rails')
+APP_PATH = File.expand_path('../../config/application',  __FILE__)
+require_relative '../config/boot'
+require 'rails/commands'
