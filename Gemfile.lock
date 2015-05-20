@@ -589,7 +589,7 @@ GEM
       capybara (>= 2.0.0)
       railties (>= 3)
       spinach (>= 0.4)
-    spring (1.3.3)
+    spring (1.3.6)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
     spring-commands-spinach (1.0.0)
