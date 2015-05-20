@@ -12,13 +12,11 @@ Thank you for purchasing a GitLab subscription!
 
 For standard subscribers, please see **emergency contact info and other useful information** in [the Standard subscribers README](https://gitlab.com/standard/standard-subscriber-information/tree/master#README).
 
-If you would like to receive access to GitLab Enterprise Edition please create an account on https://gitlab.com/users/sign_up and send us the username. Note that your user will be visible to other Support Subscribers.
+GitLab Enterprise Edition repository:
+https://gitlab.com/gitlab-com/gitlab-ee
 
-Once your username is added, you can find the repository here:
-https://gitlab.com/subscribers/gitlab-ee
-
-Packages:
-https://gitlab.com/subscribers/gitlab-ee/blob/master/doc/install/packages.md
+Download GitLab Enterprise Edition:
+https://about.gitlab.com/download-ee
 
 Documentation:
 http://doc.gitlab.com/ee/
