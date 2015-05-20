@@ -312,6 +312,13 @@ class @Notes
     form.show()
     textarea = form.find("textarea")
     textarea.focus()
+
+    # HACK (rspeicher): Work around a Chrome 43 bug(?).
+    # The textarea has the correct value, Chrome just won't show it unless we
+    # modify it, so let's add a newline!
+    textarea.val (_, value) ->
+      "#{value}\n"
+
     disableButtonIfEmptyField textarea, form.find(".js-comment-button")
 
   ###
