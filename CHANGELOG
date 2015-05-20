@@ -5,6 +5,7 @@ v 7.12.0 (unreleased)
   - Disabled expansion of top/bottom blobs for new file diffs
   - Update Asciidoctor gem to version 1.5.2. (Jakub Jirutka)
   - Fix resolving of relative links to repository files in AsciiDoc documents. (Jakub Jirutka)
+  - Use the user list from the target project in a merge request (Stan Hu)
 
 v 7.11.0 (unreleased)
   - Fall back to Plaintext when Syntaxhighlighting doesn't work. Fixes some buggy lexers (Hannes Rosenögger)
