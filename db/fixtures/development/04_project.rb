@@ -23,7 +23,7 @@ Sidekiq::Testing.inline! do
           name: group_path.titleize,
           path: group_path
         )
-        group.description = Faker::Lorem.sentence
+        group.description = FFaker::Lorem.sentence
         group.save
 
         group.add_owner(User.first)
@@ -35,7 +35,7 @@ Sidekiq::Testing.inline! do
         import_url: url,
         namespace_id: group.id,
         name: project_path.titleize,
-        description: Faker::Lorem.sentence,
+        description: FFaker::Lorem.sentence,
         visibility_level: Gitlab::VisibilityLevel.values.sample
       }
 

@@ -165,7 +165,7 @@ describe API::API, api: true  do
     it "should assign attributes to project" do
       project = attributes_for(:project, {
         path: 'camelCasePath',
-        description: Faker::Lorem.sentence,
+        description: FFaker::Lorem.sentence,
         issues_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false
@@ -274,7 +274,7 @@ describe API::API, api: true  do
 
     it 'should assign attributes to project' do
       project = attributes_for(:project, {
-        description: Faker::Lorem.sentence,
+        description: FFaker::Lorem.sentence,
         issues_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false
