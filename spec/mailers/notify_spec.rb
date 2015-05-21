@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'email_spec'
 
 describe Notify do
   include EmailSpec::Helpers

@@ -1,7 +1,6 @@
 ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
-require 'email_spec'
 require 'sidekiq/testing/inline'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
