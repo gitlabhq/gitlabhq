@@ -301,14 +301,20 @@ describe API::API, api: true  do
 
   describe "PUT /projects/:id/merge_request/:merge_request_id/merge" do
     it "should return merge_request in case of success" do
-      MergeRequest.any_instance.stub(can_be_merged?: true, automerge!: true)
+      allow_any_instance_of(MergeRequest).
+        to receive_messages(can_be_merged?: true, automerge!: true)
+
       put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user)
+
       expect(response.status).to eq(200)
     end
 
     it "should return 405 if branch can't be merged" do
-      MergeRequest.any_instance.stub(can_be_merged?: false)
+      allow_any_instance_of(MergeRequest).
+        to receive(:can_be_merged?).and_return(false)
+
       put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user)
+
       expect(response.status).to eq(405)
       expect(json_response['message']).to eq('Branch cannot be merged')
     end

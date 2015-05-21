@@ -46,7 +46,7 @@ describe SlackService do
     let(:channel) { 'slack_channel' }
 
     before do
-      slack.stub(
+      allow(slack).to receive_messages(
         project: project,
         project_id: project.id,
         service_hook: true,
@@ -96,7 +96,7 @@ describe SlackService do
     end
 
     it 'should use the username as an option for slack when configured' do
-      slack.stub(username: username)
+      allow(slack).to receive(:username).and_return(username)
       expect(Slack::Notifier).to receive(:new).
        with(webhook_url, username: username).
        and_return(
@@ -106,7 +106,7 @@ describe SlackService do
     end
 
     it 'should use the channel as an option when it is configured' do
-      slack.stub(channel: channel)
+      allow(slack).to receive(:channel).and_return(channel)
       expect(Slack::Notifier).to receive(:new).
         with(webhook_url, channel: channel).
         and_return(
@@ -130,11 +130,11 @@ describe SlackService do
     let(:webhook_url) { 'https://hooks.slack.com/services/SVRWFV0VVAR97N/B02R25XN3/ZBqu7xMupaEEICInN685' }
 
     before do
-      slack.stub(
-          project: project,
-          project_id: project.id,
-          service_hook: true,
-          webhook: webhook_url
+      allow(slack).to receive_messages(
+        project: project,
+        project_id: project.id,
+        service_hook: true,
+        webhook: webhook_url
       )
 
       WebMock.stub_request(:post, webhook_url)

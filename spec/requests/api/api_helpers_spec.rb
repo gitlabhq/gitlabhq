@@ -47,7 +47,7 @@ describe API, api: true do
 
     it "should return nil for a user without access" do
       env[API::APIHelpers::PRIVATE_TOKEN_HEADER] = user.private_token
-      Gitlab::UserAccess.stub(allowed?: false)
+      allow(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
       expect(current_user).to be_nil
     end
 

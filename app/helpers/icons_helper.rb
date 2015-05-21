@@ -1,4 +1,6 @@
 module IconsHelper
+  include FontAwesome::Rails::IconHelper
+
   # Creates an icon tag given icon name(s) and possible icon modifiers.
   #
   # Right now this method simply delegates directly to `fa_icon` from the

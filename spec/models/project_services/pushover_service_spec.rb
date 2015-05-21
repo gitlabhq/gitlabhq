@@ -52,7 +52,7 @@ describe PushoverService do
     let(:api_url) { 'https://api.pushover.net/1/messages.json' }
 
     before do
-      pushover.stub(
+      allow(pushover).to receive_messages(
         project: project,
         project_id: project.id,
         service_hook: true,
