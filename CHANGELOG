@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.11.0 (unreleased)
   - Fall back to Plaintext when Syntaxhighlighting doesn't work. Fixes some buggy lexers (Hannes Rosenögger)
+  - Get editing comments to work in Chrome 43 again.
   - Fix broken view when viewing history of a file that includes a path that used to be another file (Stan Hu)
   - Don't show duplicate deploy keys
   - Fix commit time being displayed in the wrong timezone in some cases (Hannes Rosenögger)
@@ -67,6 +68,7 @@ v 7.11.0 (unreleased)
   - Add style for <kbd> element in markdown
   - Spin spinner icon next to "Checking for CI status..." on MR page.
   - Fix reference links in dashboard activity and ATOM feeds.
+  - Ensure that the first added admin performs repository imports
 
 v 7.10.2
   - Fix CI links on MR page
