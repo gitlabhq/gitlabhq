@@ -1,6 +1,9 @@
 require 'spec_helper'
+require_relative 'import_spec_helper'
 
 describe Import::GoogleCodeController do
+  include ImportSpecHelper
+
   let(:user) { create(:user) }
   let(:dump_file) { fixture_file_upload(Rails.root + 'spec/fixtures/GoogleCodeProjectHosting.json', 'application/json') }
 
@@ -21,13 +24,12 @@ describe Import::GoogleCodeController do
   describe "GET status" do
     before do
       @repo = OpenStruct.new(name: 'vim')
-      controller.stub_chain(:client, :valid?).and_return(true)
+      stub_client(valid?: true)
     end
 
     it "assigns variables" do
       @project = create(:project, import_type: 'google_code', creator_id: user.id)
-      controller.stub_chain(:client, :repos).and_return([@repo])
-      controller.stub_chain(:client, :incompatible_repos).and_return([])
+      stub_client(repos: [@repo], incompatible_repos: [])
 
       get :status
 
@@ -38,8 +40,7 @@ describe Import::GoogleCodeController do
 
     it "does not show already added project" do
       @project = create(:project, import_type: 'google_code', creator_id: user.id, import_source: 'vim')
-      controller.stub_chain(:client, :repos).and_return([@repo])
-      controller.stub_chain(:client, :incompatible_repos).and_return([])
+      stub_client(repos: [@repo], incompatible_repos: [])
 
       get :status
 
@@ -48,8 +49,7 @@ describe Import::GoogleCodeController do
     end
 
     it "does not show any invalid projects" do
-      controller.stub_chain(:client, :repos).and_return([])
-      controller.stub_chain(:client, :incompatible_repos).and_return([@repo])
+      stub_client(repos: [], incompatible_repos: [@repo])
 
       get :status
 
