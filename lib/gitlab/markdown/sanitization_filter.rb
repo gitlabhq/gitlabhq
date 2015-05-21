@@ -8,27 +8,32 @@ module Gitlab
     # Extends HTML::Pipeline::SanitizationFilter with a custom whitelist.
     class SanitizationFilter < HTML::Pipeline::SanitizationFilter
       def whitelist
-        whitelist = HTML::Pipeline::SanitizationFilter::WHITELIST
+        whitelist = super
 
-        # Allow code highlighting
-        whitelist[:attributes]['pre'] = %w(class)
-        whitelist[:attributes]['span'] = %w(class)
+        # Only push these customizations once
+        unless customized?(whitelist[:transformers])
+          # Allow code highlighting
+          whitelist[:attributes]['pre'] = %w(class)
+          whitelist[:attributes]['span'] = %w(class)
 
-        # Allow table alignment
-        whitelist[:attributes]['th'] = %w(style)
-        whitelist[:attributes]['td'] = %w(style)
+          # Allow table alignment
+          whitelist[:attributes]['th'] = %w(style)
+          whitelist[:attributes]['td'] = %w(style)
 
-        # Allow span elements
-        whitelist[:elements].push('span')
+          # Allow span elements
+          whitelist[:elements].push('span')
 
-        # Remove `rel` attribute from `a` elements
-        whitelist[:transformers].push(remove_rel)
+          # Remove `rel` attribute from `a` elements
+          whitelist[:transformers].push(remove_rel)
 
-        # Remove `class` attribute from non-highlight spans
-        whitelist[:transformers].push(clean_spans)
+          # Remove `class` attribute from non-highlight spans
+          whitelist[:transformers].push(clean_spans)
+        end
 
         whitelist
       end
+
+      private
 
       def remove_rel
         lambda do |env|
@@ -47,6 +52,10 @@ module Gitlab
             env[:node].remove_attribute('class')
           end
         end
+      end
+
+      def customized?(transformers)
+        transformers.last.source_location[0] == __FILE__
       end
     end
   end
