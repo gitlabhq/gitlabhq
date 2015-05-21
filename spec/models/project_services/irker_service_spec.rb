@@ -24,8 +24,8 @@ require 'json'
 
 describe IrkerService do
   describe 'Associations' do
-    it { should belong_to :project }
-    it { should have_one :service_hook }
+    it { is_expected.to belong_to :project }
+    it { is_expected.to have_one :service_hook }
   end
 
   describe 'Validations' do
@@ -43,7 +43,7 @@ describe IrkerService do
       let(:_recipients) { 'a b c d' }
       it 'should add an error if there is too many recipients' do
         subject.send :check_recipients_count
-        subject.errors.should_not be_blank
+        expect(subject.errors).not_to be_blank
       end
     end
 
@@ -51,7 +51,7 @@ describe IrkerService do
       let(:_recipients) { 'a b c' }
       it 'should not add an error if there is 3 recipients' do
         subject.send :check_recipients_count
-        subject.errors.should be_blank
+        expect(subject.errors).to be_blank
       end
     end
   end
@@ -66,7 +66,7 @@ describe IrkerService do
     let(:colorize_messages) { '1' }
 
     before do
-      irker.stub(
+      allow(irker).to receive_messages(
         active: true,
         project: project,
         project_id: project.id,
@@ -96,11 +96,11 @@ describe IrkerService do
       conn = @irker_server.accept
       conn.readlines.each do |line|
         msg = JSON.load(line.chomp("\n"))
-        msg.keys.should match_array(['to', 'privmsg'])
+        expect(msg.keys).to match_array(['to', 'privmsg'])
         if msg['to'].is_a?(String)
-          msg['to'].should == 'irc://chat.freenode.net/#commits'
+          expect(msg['to']).to == 'irc://chat.freenode.net/#commits'
         else
-          msg['to'].should match_array(['irc://chat.freenode.net/#commits'])
+          expect(msg['to']).to match_array(['irc://chat.freenode.net/#commits'])
         end
       end
       conn.close

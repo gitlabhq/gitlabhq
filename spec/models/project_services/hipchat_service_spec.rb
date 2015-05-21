@@ -34,7 +34,7 @@ describe HipchatService do
     let(:project_name) { project.name_with_namespace.gsub(/\s/, '') }
 
     before(:each) do
-      hipchat.stub(
+      allow(hipchat).to receive_messages(
         project_id: project.id,
         project: project,
         room: 123456,
@@ -222,12 +222,12 @@ describe HipchatService do
       end
 
       it "should set notfiy to true" do
-        hipchat.stub(notify: '1')
+        allow(hipchat).to receive(:notify).and_return('1')
         expect(hipchat.send(:message_options)).to eq({notify: true, color: 'yellow'})
       end
 
       it "should set the color" do
-        hipchat.stub(color: 'red')
+        allow(hipchat).to receive(:color).and_return('red')
         expect(hipchat.send(:message_options)).to eq({notify: false, color: 'red'})
       end
     end
