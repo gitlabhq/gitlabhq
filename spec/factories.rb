@@ -211,7 +211,7 @@ FactoryGirl.define do
   end
 
   factory :gitlab_license, class: "Gitlab::License" do
-    issued_at { Date.today - 1.month }
+    starts_at { Date.today - 1.month }
     licensee do 
       { "Name" => Faker::Name.name }
     end
