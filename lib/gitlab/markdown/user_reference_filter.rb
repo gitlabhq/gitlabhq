@@ -65,7 +65,8 @@ module Gitlab
         url = urls.namespace_project_url(project.namespace, project,
                                          only_path: context[:only_path])
 
-        %(<a href="#{url}" class="#{link_class}">@all</a>)
+        text = User.reference_prefix + 'all'
+        %(<a href="#{url}" class="#{link_class}">#{text}</a>)
       end
 
       def link_to_namespace(namespace)
@@ -83,7 +84,8 @@ module Gitlab
 
         url = urls.group_url(group, only_path: context[:only_path])
 
-        %(<a href="#{url}" class="#{link_class}">@#{group}</a>)
+        text = Group.reference_prefix + group
+        %(<a href="#{url}" class="#{link_class}">#{text}</a>)
       end
 
       def link_to_user(user, namespace)
@@ -91,7 +93,8 @@ module Gitlab
 
         url = urls.user_url(user, only_path: context[:only_path])
 
-        %(<a href="#{url}" class="#{link_class}">@#{user}</a>)
+        text = User.reference_prefix + user
+        %(<a href="#{url}" class="#{link_class}">#{text}</a>)
       end
 
       def user_can_reference_group?(group)

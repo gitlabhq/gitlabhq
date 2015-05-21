@@ -26,7 +26,7 @@ describe GitlabMarkdownHelper do
     end
 
     describe "referencing multiple objects" do
-      let(:actual) { "!#{merge_request.iid} -> #{commit.id} -> ##{issue.iid}" }
+      let(:actual) { "#{merge_request.to_reference} -> #{commit.to_reference} -> #{issue.to_reference}" }
 
       it "should link to the merge request" do
         expected = namespace_project_merge_request_path(project.namespace, project, merge_request)
@@ -50,7 +50,7 @@ describe GitlabMarkdownHelper do
     let(:issues)      { create_list(:issue, 2, project: project) }
 
     it 'should handle references nested in links with all the text' do
-      actual = link_to_gfm("This should finally fix ##{issues[0].iid} and ##{issues[1].iid} for real", commit_path)
+      actual = link_to_gfm("This should finally fix #{issues[0].to_reference} and #{issues[1].to_reference} for real", commit_path)
       doc = Nokogiri::HTML.parse(actual)
 
       # Make sure we didn't create invalid markup
@@ -63,7 +63,7 @@ describe GitlabMarkdownHelper do
       # First issue link
       expect(doc.css('a')[1].attr('href')).
         to eq namespace_project_issue_path(project.namespace, project, issues[0])
-      expect(doc.css('a')[1].text).to eq "##{issues[0].iid}"
+      expect(doc.css('a')[1].text).to eq issues[0].to_reference
 
       # Internal commit link
       expect(doc.css('a')[2].attr('href')).to eq commit_path
@@ -72,7 +72,7 @@ describe GitlabMarkdownHelper do
       # Second issue link
       expect(doc.css('a')[3].attr('href')).
         to eq namespace_project_issue_path(project.namespace, project, issues[1])
-      expect(doc.css('a')[3].text).to eq "##{issues[1].iid}"
+      expect(doc.css('a')[3].text).to eq issues[1].to_reference
 
       # Trailing commit link
       expect(doc.css('a')[4].attr('href')).to eq commit_path
@@ -90,7 +90,7 @@ describe GitlabMarkdownHelper do
     end
 
     it "escapes HTML passed in as the body" do
-      actual = "This is a <h1>test</h1> - see ##{issues[0].iid}"
+      actual = "This is a <h1>test</h1> - see #{issues[0].to_reference}"
       expect(link_to_gfm(actual, commit_path)).
         to match('&lt;h1&gt;test&lt;/h1&gt;')
     end

@@ -129,7 +129,7 @@ describe MergeRequest do
 
     it 'detects issues mentioned in the description' do
       issue2 = create(:issue, project: subject.project)
-      subject.description = "Closes ##{issue2.iid}"
+      subject.description = "Closes #{issue2.to_reference}"
       subject.project.stub(default_branch: subject.target_branch)
 
       expect(subject.closes_issues).to include(issue2)

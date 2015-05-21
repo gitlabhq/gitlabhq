@@ -48,7 +48,7 @@ module Gitlab
 
           %(<a href="#{url}"
                title="#{title}"
-               class="#{klass}">#{issue}</a>)
+               class="#{klass}">#{match}</a>)
         end
       end
 

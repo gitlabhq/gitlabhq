@@ -52,7 +52,7 @@ module Gitlab
 
             %(<a href="#{url}"
                  title="#{title}"
-                 class="#{klass}">#{project_ref}$#{id}</a>)
+                 class="#{klass}">#{match}</a>)
           else
             match
           end

@@ -238,13 +238,13 @@ describe SystemNoteService do
             let(:mentioner) { project2.repository.commit }
 
             it 'references the mentioning commit' do
-              expect(subject.note).to eq "mentioned in commit #{project2.path_with_namespace}@#{mentioner.id}"
+              expect(subject.note).to eq "mentioned in commit #{mentioner.to_reference(project)}"
             end
           end
 
           context 'from non-Commit' do
             it 'references the mentioning object' do
-              expect(subject.note).to eq "mentioned in issue #{project2.path_with_namespace}##{mentioner.iid}"
+              expect(subject.note).to eq "mentioned in issue #{mentioner.to_reference(project)}"
             end
           end
         end
@@ -254,13 +254,13 @@ describe SystemNoteService do
             let(:mentioner) { project.repository.commit }
 
             it 'references the mentioning commit' do
-              expect(subject.note).to eq "mentioned in commit #{mentioner.id}"
+              expect(subject.note).to eq "mentioned in commit #{mentioner.to_reference}"
             end
           end
 
           context 'from non-Commit' do
             it 'references the mentioning object' do
-              expect(subject.note).to eq "mentioned in issue ##{mentioner.iid}"
+              expect(subject.note).to eq "mentioned in issue #{mentioner.to_reference}"
             end
           end
         end
@@ -270,7 +270,7 @@ describe SystemNoteService do
 
   describe '.cross_reference?' do
     it 'is truthy when text begins with expected text' do
-      expect(described_class.cross_reference?('mentioned in issue #1')).to be_truthy
+      expect(described_class.cross_reference?('mentioned in something')).to be_truthy
     end
 
     it 'is falsey when text does not begin with expected text' do
