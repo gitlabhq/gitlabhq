@@ -65,7 +65,8 @@
               %strong 
                 Exceeds license limit
 
-        - historical = HistoricalData.up_until(@license.issued_at).maximum(:active_user_count)
+        - date_range = (Date.today - 1.year)..Date.today
+        - historical = HistoricalData.during(date_range).maximum(:active_user_count)
         - if historical 
           %li
             %span.light Maximum active users:

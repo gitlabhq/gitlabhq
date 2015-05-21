@@ -53,11 +53,19 @@ describe License do
           end
         end
 
-        context "before the license was issued" do
+        context "in the year before the license was issued" do
           let(:date) { License.current.issued_at - 6.months }
 
           it "is invalid" do
             expect(license).to_not be_valid
+          end
+        end
+
+        context "earlier than a year before the license was issued" do
+          let(:date) { License.current.issued_at - 2.years }
+
+          it "is valid" do
+            expect(license).to be_valid
           end
         end
       end
