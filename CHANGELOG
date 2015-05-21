@@ -1,7 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.12.0 (unreleased)
-- Allow to configure location of the `.gitlab_shell_secret` file. (Jakub Jirutka)
+  - Allow to configure location of the `.gitlab_shell_secret` file. (Jakub Jirutka)
+  - Disabled expansion of top/bottom blobs for new file diffs
+  - Update Asciidoctor gem to version 1.5.2. (Jakub Jirutka)
+  - Fix resolving of relative links to repository files in AsciiDoc documents. (Jakub Jirutka)
 
 v 7.11.0 (unreleased)
   - Fix broken view when viewing history of a file that includes a path that used to be another file (Stan Hu)
@@ -71,8 +74,6 @@ v 7.11.0 (unreleased)
   - Spin spinner icon next to "Checking for CI status..." on MR page.
   - Fix reference links in dashboard activity and ATOM feeds.
   - Ensure that the first added admin performs repository imports
-  - Update Asciidoctor gem to version 1.5.2. (Jakub Jirutka)
-  - Fix resolving of relative links to repository files in AsciiDoc documents. (Jakub Jirutka)
 
 v 7.10.2
   - Fix CI links on MR page

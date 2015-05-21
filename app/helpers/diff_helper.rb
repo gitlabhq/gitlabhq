@@ -101,6 +101,10 @@ module DiffHelper
     (bottom) ? 'js-unfold-bottom' : ''
   end
 
+  def unfold_class(unfold)
+    (unfold) ? 'unfold js-unfold' : ''
+  end
+
   def diff_line_content(line)
     if line.blank?
       " &nbsp;"
