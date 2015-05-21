@@ -106,6 +106,16 @@ describe DiffHelper do
     end
   end
 
+  describe 'unfold_class' do
+    it 'returns empty on false' do
+      expect(unfold_class(false)).to eq('')
+    end
+
+    it 'returns a class on true' do
+      expect(unfold_class(true)).to eq('unfold js-unfold')
+    end
+  end
+
   describe 'diff_line_content' do
 
     it 'should return non breaking space when line is empty' do

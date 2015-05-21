@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.12.0 (unreleased)
 - Allow to configure location of the `.gitlab_shell_secret` file. (Jakub Jirutka)
+  - Disabled expansion of top/bottom blobs for new file diffs
 
 v 7.11.0 (unreleased)
   - Fix broken view when viewing history of a file that includes a path that used to be another file (Stan Hu)
