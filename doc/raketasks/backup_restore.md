@@ -299,3 +299,6 @@ Example: LVM snapshots + rsync
 
 If you are running GitLab on a virtualized server you can possibly also create VM snapshots of the entire GitLab server.
 It is not uncommon however for a VM snapshot to require you to power down the server, so this approach is probably of limited practical use.
+
+### Note
+This documentation is for GitLab CE. Users can't create backups for gitlab.com.
