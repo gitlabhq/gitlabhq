@@ -23,39 +23,10 @@ describe License do
       end
     end
 
-    describe "Active user count" do
-      let(:active_user_count) { User.active.count }
-
-      context "when there is no active user count restriction" do
-        it "is valid" do
-          expect(license).to be_valid
-        end
-      end
-
-      context "when the active user count restriction is exceeded" do
-        before do
-          gl_license.restrictions = { active_user_count: active_user_count - 1 }
-        end
-
-        it "is invalid" do
-          expect(license).to_not be_valid
-        end
-      end
-
-      context "when the active user count restriction is not exceeded" do
-        before do
-          gl_license.restrictions = { active_user_count: active_user_count + 1 }
-        end
-
-        it "is valid" do
-          expect(license).to be_valid
-        end
-      end
-    end
-
     describe "Historical active user count" do
       let(:active_user_count) { User.active.count + 10 }
-      let!(:historical_data)  { HistoricalData.create!(date: License.current.issued_at, active_user_count: active_user_count) }
+      let(:date)              { License.current.issued_at }
+      let!(:historical_data)  { HistoricalData.create!(date: date, active_user_count: active_user_count) }
 
       context "when there is no active user count restriction" do
         it "is valid" do
@@ -68,8 +39,26 @@ describe License do
           gl_license.restrictions = { active_user_count: active_user_count - 1 }
         end
 
-        it "is invalid" do
-          expect(license).to_not be_valid
+        context "when the license was issued" do
+          it "is invalid" do
+            expect(license).to_not be_valid
+          end
+        end
+
+        context "after the license was issued" do
+          let(:date) { Date.today }
+
+          it "is valid" do
+            expect(license).to be_valid
+          end
+        end
+
+        context "before the license was issued" do
+          let(:date) { License.current.issued_at - 6.months }
+
+          it "is invalid" do
+            expect(license).to_not be_valid
+          end
         end
       end
 

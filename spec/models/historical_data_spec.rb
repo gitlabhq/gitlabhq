@@ -8,13 +8,19 @@ describe HistoricalData do
   end
 
   describe ".during" do
-    it "returns the historical data during the given period" do
+    it "returns the historical data during the specified period" do
       expect(HistoricalData.during(Date.new(2014, 1, 1)..Date.new(2014, 12, 31)).average(:active_user_count)).to eq(650)
     end
   end
 
+  describe ".up_until" do
+    it "returns the historical data up until the specified date" do
+      expect(HistoricalData.up_until(Date.new(2014, 6, 1)).average(:active_user_count)).to eq(350)
+    end
+  end
+
   describe ".at" do
-    it "returns the historical data at the given date" do
+    it "returns the historical data at the specified date" do
       expect(HistoricalData.at(Date.new(2014, 8, 1)).active_user_count).to eq(800)
     end
   end

@@ -96,27 +96,20 @@ class License < ActiveRecord::Base
     return unless self.license? && self.restricted?(:active_user_count)
 
     restricted_user_count = self.restrictions[:active_user_count]
-    active_user_count     = User.active.count
-    historical_active_user_count = HistoricalData.maximum(:active_user_count) || 0
+    
+    active_user_count = HistoricalData.up_until(self.issued_at).maximum(:active_user_count) || 0
 
-    max_active_user_count = [active_user_count, historical_active_user_count].max
+    return if active_user_count < restricted_user_count
 
-    return if max_active_user_count < restricted_user_count
-
-    overage = max_active_user_count - restricted_user_count
+    overage = active_user_count - restricted_user_count
 
     message = ""
-    message << 
-      if historical_active_user_count > active_user_count
-        "At one point, this GitLab installation had "
-      else
-        "This GitLab installation has "
-      end
-    message << "#{number_with_delimiter max_active_user_count} active #{"user".pluralize(max_active_user_count)}, "
+    message << "At one point, this GitLab installation had "
+    message << "#{number_with_delimiter active_user_count} active #{"user".pluralize(active_user_count)}, "
     message << "exceeding this license's limit of #{number_with_delimiter restricted_user_count} by "
     message << "#{number_with_delimiter overage} #{"user".pluralize(overage)}. "
     message << "Please upload a license for at least "
-    message << "#{number_with_delimiter max_active_user_count} #{"user".pluralize(max_active_user_count)}."
+    message << "#{number_with_delimiter active_user_count} #{"user".pluralize(active_user_count)}."
 
     self.errors.add(:base, message)
   end
