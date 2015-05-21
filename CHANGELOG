@@ -37,6 +37,9 @@ v 7.11.1
 v 7.11.0 
   - Fall back to Plaintext when Syntaxhighlighting doesn't work. Fixes some buggy lexers (Hannes Rosenögger)
   - Get editing comments to work in Chrome 43 again.
+  - Allow special character in users bio. I.e.: I <3 GitLab
+
+v 7.11.0 (unreleased)
   - Fix broken view when viewing history of a file that includes a path that used to be another file (Stan Hu)
   - Don't show duplicate deploy keys
   - Fix commit time being displayed in the wrong timezone in some cases (Hannes Rosenögger)
