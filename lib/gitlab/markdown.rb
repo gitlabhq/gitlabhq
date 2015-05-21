@@ -1,5 +1,4 @@
 require 'html/pipeline'
-require 'task_list/filter'
 
 module Gitlab
   # Custom parser for GitLab-flavored Markdown
@@ -19,6 +18,7 @@ module Gitlab
     autoload :SanitizationFilter,           'gitlab/markdown/sanitization_filter'
     autoload :SnippetReferenceFilter,       'gitlab/markdown/snippet_reference_filter'
     autoload :TableOfContentsFilter,        'gitlab/markdown/table_of_contents_filter'
+    autoload :TaskListFilter,               'gitlab/markdown/task_list_filter'
     autoload :UserReferenceFilter,          'gitlab/markdown/user_reference_filter'
 
     # Public: Parse the provided text with GitLab-Flavored Markdown
@@ -113,7 +113,7 @@ module Gitlab
         Gitlab::Markdown::CommitReferenceFilter,
         Gitlab::Markdown::LabelReferenceFilter,
 
-        TaskList::Filter
+        Gitlab::Markdown::TaskListFilter
       ]
     end
   end
