@@ -97,7 +97,7 @@ class License < ActiveRecord::Base
 
     restricted_user_count = self.restrictions[:active_user_count]
 
-    date_range = (self.issued_at - 1.year)..self.issued_at
+    date_range = (self.starts_at - 1.year)..self.starts_at
     active_user_count = HistoricalData.during(date_range).maximum(:active_user_count) || 0
     
     return unless active_user_count
@@ -107,7 +107,7 @@ class License < ActiveRecord::Base
     overage = active_user_count - restricted_user_count
 
     message = ""
-    message << "During the year before this license was issued, this GitLab installation had "
+    message << "During the year before this license started, this GitLab installation had "
     message << "#{number_with_delimiter active_user_count} active #{"user".pluralize(active_user_count)}, "
     message << "exceeding this license's limit of #{number_with_delimiter restricted_user_count} by "
     message << "#{number_with_delimiter overage} #{"user".pluralize(overage)}. "
