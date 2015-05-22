@@ -21,7 +21,7 @@ There are two editions of GitLab.
 *GitLab [Community Edition](https://about.gitlab.com/features/) (CE)* is available without any costs under an MIT license.
 
 *GitLab Enterprise Edition (EE)* includes [extra features](https://about.gitlab.com/features/#compare) that are most useful for organizations with more than 100 users.
-To get access to the EE and support please [become a subscriber](https://about.gitlab.com/pricing/).
+To use EE and get official support please [become a subscriber](https://about.gitlab.com/pricing/).
 
 ## Code status
 
