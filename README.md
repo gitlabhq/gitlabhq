@@ -16,7 +16,7 @@ GitLab Enterprise Edition repository:
 https://gitlab.com/gitlab-com/gitlab-ee
 
 Download GitLab Enterprise Edition:
-https://about.gitlab.com/download-ee
+https://about.gitlab.com/downloads-ee
 
 Documentation:
 http://doc.gitlab.com/ee/
