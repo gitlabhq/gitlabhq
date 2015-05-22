@@ -177,6 +177,9 @@ Settings['git'] ||= Settingslogic.new({})
 Settings.git['max_size']  ||= 20971520 # 20.megabytes
 Settings.git['bin_path']  ||= '/usr/bin/git'
 Settings.git['timeout']   ||= 10
+Settings.git['gc_interval_in_weeks']   ||= 2
+Settings.git['gc_day_of_week']   ||= 6
+Settings.git['gc_hour_of_day']   ||= 23
 
 Settings['satellites'] ||= Settingslogic.new({})
 Settings.satellites['path'] = File.expand_path(Settings.satellites['path'] || "tmp/repo_satellites/", Rails.root)
