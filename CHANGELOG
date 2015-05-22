@@ -6,7 +6,10 @@ v 7.12.0 (unreleased)
   - Update Asciidoctor gem to version 1.5.2. (Jakub Jirutka)
   - Fix resolving of relative links to repository files in AsciiDoc documents. (Jakub Jirutka)
 
-v 7.11.0 (unreleased)
+v 7.11.1
+  - no changes
+
+v 7.11.0 
   - Fall back to Plaintext when Syntaxhighlighting doesn't work. Fixes some buggy lexers (Hannes Rosenögger)
   - Get editing comments to work in Chrome 43 again.
   - Fix broken view when viewing history of a file that includes a path that used to be another file (Stan Hu)
