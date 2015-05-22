@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.12.0 (unreleased)
+  - Remove Rack Attack monkey patches and bump to version 4.3.0 (Stan Hu)
   - Allow to configure location of the `.gitlab_shell_secret` file. (Jakub Jirutka)
   - Disabled expansion of top/bottom blobs for new file diffs
   - Update Asciidoctor gem to version 1.5.2. (Jakub Jirutka)

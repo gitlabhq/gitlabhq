@@ -1,4 +1,3 @@
-require_relative 'rack_attack_helpers'
 require_relative 'shell_env'
 
 module Grack
