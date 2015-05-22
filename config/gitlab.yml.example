@@ -267,6 +267,12 @@ production: &base
     max_size: 20971520 # 20.megabytes
     # Git timeout to read a commit, in seconds
     timeout: 10
+    # Interval in weeks between garbage collections
+    gc_interval_in_weeks: 2
+    # Day of week to run garbage collection (e.g. 6 = Sat)
+    gc_day_of_week: 6
+    # Our of day to run garbage collection
+    gc_hour_of_day: 23
 
   #
   # 4. Extra customization
