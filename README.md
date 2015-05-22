@@ -2,7 +2,7 @@
 
 The source of GitLab Community Edition is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/) and there are mirrors to make [contributing](CONTRIBUTING.md) as easy as possible.
 
-The source of GitLab Enterprise Edition is [hosted on GitLab.com](https://gitlab.com/subscribers/gitlab-ee) and acessible only to [subscribers](https://about.gitlab.com/subscription/).
+The source of GitLab Enterprise Edition is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ee).
 
 # ![logo](https://about.gitlab.com/images/gitlab_logo.png) GitLab
 
@@ -21,10 +21,10 @@ https://about.gitlab.com/download-ee
 Documentation:
 http://doc.gitlab.com/ee/
 
-To upgrade from CE, just perform a normal upgrade, but make use of an EE package:
-https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/update.md#updating-from-gitlab-6-6-x-and-higher-to-the-latest-version
+To upgrade from CE, just perform a normal upgrade, but use an EE package:
+https://about.gitlab.com/update/#ee
 
-If you need help with your GitLab installation and for any technical questions please contact us at subscribers@gitlab.com.
+If you need help with your GitLab installation and for any technical questions please contact us at subscribers@gitlab.com
 
 For all other questions, contact us at sales@gitlab.com
 
