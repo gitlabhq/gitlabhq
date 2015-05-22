@@ -21,11 +21,11 @@
         Details
       %ul.well-list
         %li
-          %span.light Issued:
-          %strong= time_ago_with_tooltip @license.issued_at
-        %li
           %span.light Uploaded:
           %strong= time_ago_with_tooltip @license.created_at
+        %li
+          %span.light Started:
+          %strong= time_ago_with_tooltip @license.starts_at
         %li
           %span.light 
             - if @license.expired?
@@ -65,7 +65,8 @@
               %strong 
                 Exceeds license limit
 
-        - historical = HistoricalData.maximum(:active_user_count)
+        - date_range = (Date.today - 1.year)..Date.today
+        - historical = HistoricalData.during(date_range).maximum(:active_user_count)
         - if historical 
           %li
             %span.light Maximum active users:
@@ -106,8 +107,8 @@
         %tr
           - @license.licensee.keys.each do |label|
             %th= label
-          %th Issued at
           %th Uploaded at
+          %th Started at
           %th Expired at
           %th Active users
       %tbody
@@ -117,10 +118,10 @@
               %td= license.licensee[label]
             %td
               %span
-                = license.issued_at
+                = license.created_at
             %td
               %span
-                = license.created_at
+                = license.starts_at
             %td
               %span
                 = license.expires_at || "Never"
