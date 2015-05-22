@@ -2,4 +2,4 @@
 
 You can see GitLab's keyboard shortcuts by using 'shift + ?'
 
-!(shortcuts.png)
+![Shortcuts](shortcuts.png)
