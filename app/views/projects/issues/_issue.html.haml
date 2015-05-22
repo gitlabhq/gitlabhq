@@ -8,8 +8,7 @@
       = link_to_gfm issue.title, issue_path(issue), class: "row_title"
     .issue-labels
       - issue.labels.each do |label|
-        = link_to namespace_project_issues_path(issue.project.namespace, issue.project, label_name: label.name) do
-          = render_colored_label(label)
+        = link_to_label(label, project: issue.project)
     .pull-right.light
       - if issue.closed?
         %span
