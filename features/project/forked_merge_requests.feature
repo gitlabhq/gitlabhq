@@ -38,3 +38,15 @@ Feature: Project Forked Merge Requests
     Given I visit project "Forked Shop" merge requests page
     And I click link "New Merge Request"
     Then the target repository should be the original repository
+
+  @javascript
+  Scenario: I see the users in the target project for a new merge request
+    Given I logout
+    And I sign in as an admin
+    And I have a project forked off of "Shop" called "Forked Shop"
+    Then I visit project "Forked Shop" merge requests page
+    And I click link "New Merge Request"
+    And I fill out a "Merge Request On Forked Project" merge request
+    When I click "Assign to" dropdown"
+    Then I should see the target project ID in the input selector
+    And I should see the users from the target project ID
