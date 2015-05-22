@@ -2,12 +2,12 @@ require 'open4'
 
 class GitGc
 
-  def self.cleanup
+  def cleanup
     now = Time.now
     log_file = "#{Rails.root}/log/git_gc.log"
     File.delete(log_file) if File.exist?(log_file)
-    @@logger = Logger.new(log_file)
-    @@logger.info("Starting: git gc --auto")
+    @logger = Logger.new(log_file)
+    @logger.info("Starting: git gc --auto")
     repos = Dir.glob("#{Gitlab.config.gitlab_shell.repos_path}**/*.git/")
     repos.each do |repo|
       git_gc(repo)
@@ -22,7 +22,7 @@ class GitGc
 
   private
 
-  def self.git_gc(repo)
+  def git_gc(repo)
     t0 = Time.now
     `cd "#{repo}"`
     pid, stdin, stdout, stderr = Open4::popen4("#{Gitlab.config.git.bin_path} gc --auto")
@@ -30,10 +30,10 @@ class GitGc
     res = ''
     stderr.each { |line| res << line }
     if res[0]
-      @@logger.warn(res)
-      @@logger.warn("FAILED #{repo} elapsed time: #{elapsed} s")
+      @logger.warn(res)
+      @logger.warn("FAILED #{repo} elapsed time: #{elapsed} s")
     else
-      @@logger.info("OK #{repo} elapsed time: #{elapsed} s")
+      @logger.info("OK #{repo} elapsed time: #{elapsed} s")
     end
   end
 end

@@ -8,7 +8,7 @@ class GitGcWorker
   end
 
   def perform
-    GitGc.cleanup
+    GitGc.new.cleanup
   end
 
   def self.scheduled
