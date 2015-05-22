@@ -9,7 +9,7 @@
         none
     .issuable-context-selectbox
       - if can?(current_user, :modify_merge_request, @merge_request)
-        = users_select_tag('merge_request[assignee_id]', placeholder: 'Select assignee', class: 'custom-form-control js-select2 js-assignee', selected: @merge_request.assignee_id, null_user: true)
+        = users_select_tag('merge_request[assignee_id]', placeholder: 'Select assignee', class: 'custom-form-control js-select2 js-assignee', selected: @merge_request.assignee_id, project: @target_project, null_user: true)
 
   %div.prepend-top-20.clearfix
     .issuable-context-title

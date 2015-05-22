@@ -18,7 +18,7 @@
           This merge request is marked a <strong>Work In Progress</strong>.
           When it's ready, remove the <code>WIP</code> prefix from the title to allow it to be accepted.
         - else
-          To prevent this merge request from being accepted before it's ready, 
+          To prevent this merge request from being accepted before it's ready,
           mark it a <strong>Work In Progress</strong> by starting the title with <code>[WIP]</code> or <code>WIP:</code>.
 .form-group.issuable-description
   = f.label :description, 'Description', class: 'control-label'
@@ -46,7 +46,7 @@
     .col-sm-10
       = users_select_tag("#{issuable.class.model_name.param_key}[assignee_id]",
           placeholder: 'Select a user', class: 'custom-form-control', null_user: true,
-          selected: issuable.assignee_id)
+          selected: issuable.assignee_id, project: @target_project || @project)
       &nbsp;
       = link_to 'Assign to me', '#', class: 'btn assign-to-me-link'
 .form-group
