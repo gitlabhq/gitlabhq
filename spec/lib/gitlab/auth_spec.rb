@@ -36,7 +36,9 @@ describe Gitlab::Auth do
     end
 
     context "with ldap enabled" do
-      before { Gitlab::LDAP::Config.stub(enabled?: true) }
+      before do
+        allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
+      end
 
       it "tries to autheticate with db before ldap" do
         expect(Gitlab::LDAP::Authentication).not_to receive(:login)

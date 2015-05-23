@@ -8,30 +8,39 @@ describe Gitlab::LDAP::Access do
     subject { access.allowed? }
 
     context 'when the user cannot be found' do
-      before { Gitlab::LDAP::Person.stub(find_by_dn: nil) }
+      before do
+        allow(Gitlab::LDAP::Person).to receive(:find_by_dn).and_return(nil)
+      end
 
       it { is_expected.to be_falsey }
     end
 
     context 'when the user is found' do
-      before { Gitlab::LDAP::Person.stub(find_by_dn: :ldap_user) }
+      before do
+        allow(Gitlab::LDAP::Person).
+          to receive(:find_by_dn).and_return(:ldap_user)
+      end
 
       context 'and the user is disabled via active directory' do
-        before { Gitlab::LDAP::Person.stub(disabled_via_active_directory?: true) }
+        before do
+          allow(Gitlab::LDAP::Person).
+            to receive(:disabled_via_active_directory?).and_return(true)
+        end
 
         it { is_expected.to be_falsey }
 
         it "should block user in GitLab" do
           access.allowed?
-          user.should be_blocked
+          expect(user).to be_blocked
         end
       end
 
       context 'and has no disabled flag in active diretory' do
         before do
           user.block
-          
-          Gitlab::LDAP::Person.stub(disabled_via_active_directory?: false)
+
+          allow(Gitlab::LDAP::Person).
+            to receive(:disabled_via_active_directory?).and_return(false)
         end
 
         it { is_expected.to be_truthy }
@@ -39,32 +48,35 @@ describe Gitlab::LDAP::Access do
         context 'when auto-created users are blocked' do
 
           before do
-            Gitlab::LDAP::Config.any_instance.stub(block_auto_created_users: true)
+            allow_any_instance_of(Gitlab::LDAP::Config).
+              to receive(:block_auto_created_users).and_return(true)
           end
 
           it "does not unblock user in GitLab" do
             access.allowed?
-            user.should be_blocked
+            expect(user).to be_blocked
           end
         end
 
         context "when auto-created users are not blocked" do
 
           before do
-            Gitlab::LDAP::Config.any_instance.stub(block_auto_created_users: false)
+            allow_any_instance_of(Gitlab::LDAP::Config).
+              to receive(:block_auto_created_users).and_return(false)
           end
 
           it "should unblock user in GitLab" do
             access.allowed?
-            user.should_not be_blocked
+            expect(user).not_to be_blocked
           end
         end
       end
 
       context 'without ActiveDirectory enabled' do
         before do
-          Gitlab::LDAP::Config.stub(enabled?: true)
-          Gitlab::LDAP::Config.any_instance.stub(active_directory: false)
+          allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
+          allow_any_instance_of(Gitlab::LDAP::Config).
+            to receive(:active_directory).and_return(false)
         end
 
         it { is_expected.to be_truthy }
