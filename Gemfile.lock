@@ -301,7 +301,7 @@ GEM
     ice_cube (0.11.1)
     ice_nine (0.10.0)
     jquery-atwho-rails (1.0.1)
-    jquery-rails (3.1.0)
+    jquery-rails (3.1.2)
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
     jquery-scrollto-rails (1.4.3)
@@ -746,7 +746,7 @@ DEPENDENCIES
   html-pipeline (~> 1.11.0)
   httparty
   jquery-atwho-rails (~> 1.0.0)
-  jquery-rails
+  jquery-rails (= 3.1.2)
   jquery-scrollto-rails
   jquery-turbolinks
   jquery-ui-rails
