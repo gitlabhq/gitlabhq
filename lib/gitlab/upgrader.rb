@@ -43,10 +43,15 @@ module Gitlab
     end
 
     def latest_version_raw
+      git_tags = fetch_git_tags
+      git_tags = git_tags.select { |version| version =~ /v\d+\.\d+\.\d+\Z/ }
+      git_versions = git_tags.map { |tag| Gitlab::VersionInfo.parse(tag.match(/v\d+\.\d+\.\d+/).to_s) }
+      "v#{git_versions.sort.last.to_s}"
+    end
+
+    def fetch_git_tags
       remote_tags, _ = Gitlab::Popen.popen(%W(git ls-remote --tags https://gitlab.com/gitlab-org/gitlab-ce.git))
-      git_tags = remote_tags.split("\n").grep(/tags\/v#{current_version.major}/)
-      git_tags = git_tags.select { |version| version =~ /v\d\.\d\.\d\Z/ }
-      last_tag = git_tags.last.match(/v\d\.\d\.\d/).to_s
+      remote_tags.split("\n").grep(/tags\/v#{current_version.major}/)
     end
 
     def update_commands
