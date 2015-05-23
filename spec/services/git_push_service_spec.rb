@@ -124,7 +124,8 @@ describe GitPushService do
       end
 
       it "when pushing a branch for the first time with default branch protection disabled" do
-        ApplicationSetting.any_instance.stub(default_branch_protection: 0)
+        allow_any_instance_of(ApplicationSetting).
+          to receive(:default_branch_protection).and_return(0)
 
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
@@ -133,7 +134,8 @@ describe GitPushService do
       end
 
       it "when pushing a branch for the first time with default branch protection set to 'developers can push'" do
-        ApplicationSetting.any_instance.stub(default_branch_protection: 1)
+        allow_any_instance_of(ApplicationSetting).
+          to receive(:default_branch_protection).and_return(1)
 
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
@@ -154,13 +156,13 @@ describe GitPushService do
     let(:commit) { project.commit }
 
     before do
-      commit.stub({
+      allow(commit).to receive_messages(
         safe_message: "this commit \n mentions ##{issue.id}",
         references: [issue],
         author_name: commit_author.name,
         author_email: commit_author.email
-      })
-      project.repository.stub(commits_between: [commit])
+      )
+      allow(project.repository).to receive(:commits_between).and_return([commit])
     end
 
     it "creates a note if a pushed commit mentions an issue" do
@@ -178,7 +180,10 @@ describe GitPushService do
     end
 
     it "defaults to the pushing user if the commit's author is not known" do
-      commit.stub(author_name: 'unknown name', author_email: 'unknown@email.com')
+      allow(commit).to receive_messages(
+        author_name: 'unknown name',
+        author_email: 'unknown@email.com'
+      )
       expect(Note).to receive(:create_cross_reference_note).with(issue, commit, user)
 
       service.execute(project, user, @oldrev, @newrev, @ref)
@@ -201,14 +206,15 @@ describe GitPushService do
     let(:closing_commit) { project.commit }
 
     before do
-      closing_commit.stub({
+      allow(closing_commit).to receive_messages(
         issue_closing_regex: /^([Cc]loses|[Ff]ixes) #\d+/,
         safe_message: "this is some work.\n\ncloses ##{issue.iid}",
         author_name: commit_author.name,
         author_email: commit_author.email
-      })
+      )
 
-      project.repository.stub(commits_between: [closing_commit])
+      allow(project.repository).to receive(:commits_between).
+        and_return([closing_commit])
     end
 
     it "closes issues with commit messages" do
@@ -224,7 +230,7 @@ describe GitPushService do
     end
 
     it "doesn't close issues when pushed to non-default branches" do
-      project.stub(default_branch: 'durf')
+      allow(project).to receive(:default_branch).and_return('durf')
 
       # The push still shouldn't create cross-reference notes.
       expect {
