@@ -500,7 +500,11 @@ class User < ActiveRecord::Base
     if !Gitlab.config.ldap.enabled
       false
     elsif ldap_user?
-      !last_credential_check_at || (last_credential_check_at + 1.hour) < Time.now
+      if Gitlab.config.ldap.servers.main.check_cache
+         !last_credential_check_at || (last_credential_check_at + 1.hour) < Time.now
+      else
+         true
+      end
     else
       false
     end
