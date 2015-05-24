@@ -531,7 +531,7 @@ GEM
     rubyntlm (0.5.0)
     rubypants (0.2.0)
     rugged (0.22.2)
-    rugments (1.0.0.beta6)
+    rugments (1.0.0.beta7)
     safe_yaml (0.9.7)
     sanitize (2.1.0)
       nokogiri (>= 1.4.4)
@@ -781,7 +781,7 @@ DEPENDENCIES
   rqrcode-rails3
   rspec-rails (= 2.99)
   rubocop (= 0.28.0)
-  rugments
+  rugments (~> 1.0.0.beta7)
   sanitize (~> 2.0)
   sass-rails (~> 4.0.2)
   sdoc

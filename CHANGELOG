@@ -12,6 +12,7 @@ v 7.12.0 (unreleased)
   - Disable "New Issue" and "New Merge Request" buttons when features are disabled in project settings (Stan Hu)
   - Remove Rack Attack monkey patches and bump to version 4.3.0 (Stan Hu)
   - Fix clone URL losing selection after a single click in Safari and Chrome (Stan Hu)
+  - Fix git blame syntax highlighting when different commits break up lines (Stan Hu)
   - Allow to configure location of the `.gitlab_shell_secret` file. (Jakub Jirutka)
   - Disabled expansion of top/bottom blobs for new file diffs
   - Update Asciidoctor gem to version 1.5.2. (Jakub Jirutka)
