@@ -1,6 +1,6 @@
 # Changing your time zone
 
-GitLab defaults its time zone to UTC. It has a global timezone configuration parameter in config/application.rb. 
+GitLab defaults its time zone to UTC. It has a global timezone configuration parameter in /etc/gitlab/gitlab.rb 
 
 To update, add the time zone that best applies to your location. Here are two examples:
 ```
