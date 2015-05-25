@@ -102,4 +102,12 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   step 'I should see project tags' do
     expect(find_field('Tags').value).to eq 'tag1, tag2'
   end
+
+  step 'I should not see "New Issue" button' do
+    page.should_not have_link 'New Issue'
+  end
+
+  step 'I should not see "New Merge Request" button' do
+    page.should_not have_link 'New Merge Request'
+  end
 end
