@@ -19,8 +19,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     click_link "All"
   end
 
-  step 'I click link "Closed"' do
-    click_link "Closed"
+  step 'I click link "Rejected"' do
+    click_link "Rejected"
   end
 
   step 'I should see merge request "Wiki Feature"' do
@@ -32,7 +32,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'I should see closed merge request "Bug NS-04"' do
     merge_request = MergeRequest.find_by!(title: "Bug NS-04")
     merge_request.closed?.should be_true
-    page.should have_content "Closed by"
+    page.should have_content "Rejected by"
   end
 
   step 'I should see merge request "Bug NS-04"' do
@@ -202,7 +202,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see merged request' do
     within '.issue-box' do
-      page.should have_content "Merged"
+      page.should have_content "Accepted"
     end
   end
 
