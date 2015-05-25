@@ -109,6 +109,11 @@ class Ability
           rules -= named_abilities('merge_request')
         end
 
+        unless project.issues_enabled or project.merge_requests_enabled
+          rules -= named_abilities('label')
+          rules -= named_abilities('milestone')
+        end
+
         unless project.snippets_enabled
           rules -= named_abilities('snippet')
         end

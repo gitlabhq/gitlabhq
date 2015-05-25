@@ -148,7 +148,7 @@ module ProjectsHelper
       nav_tabs << [:files, :commits, :network, :graphs]
     end
 
-    if project.repo_exists? && project.merge_requests_enabled
+    if project.repo_exists? && can?(current_user, :read_merge_request, project)
       nav_tabs << :merge_requests
     end
 
@@ -156,11 +156,19 @@ module ProjectsHelper
       nav_tabs << :settings
     end
 
-    [:issues, :wiki, :snippets].each do |feature|
-      nav_tabs << feature if project.send :"#{feature}_enabled"
+    if can?(current_user, :read_issue, project)
+      nav_tabs << :issues
     end
 
-    if project.issues_enabled || project.merge_requests_enabled
+    if can?(current_user, :read_wiki, project)
+      nav_tabs << :wiki
+    end
+
+    if can?(current_user, :read_project_snippet, project)
+      nav_tabs << :snippets
+    end
+
+    if can?(current_user, :read_milestone, project)
       nav_tabs << [:milestones, :labels]
     end
 
