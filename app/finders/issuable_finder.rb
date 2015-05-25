@@ -75,6 +75,10 @@ class IssuableFinder
     case params[:state]
     when 'closed'
       items.closed
+    when 'rejected'
+      items.respond_to?(:rejected) ? items.rejected : items.closed
+    when 'merged'
+      items.respond_to?(:merged) ? items.merged : items.closed
     when 'all'
       items
     when 'opened'

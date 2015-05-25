@@ -7,6 +7,6 @@
       = link_to new_namespace_project_merge_request_path(@project.namespace, @project), class: "btn btn-new pull-left", title: "New Merge Request" do
         %i.fa.fa-plus
         New Merge Request
-  = render 'shared/issuable_filter'
+  = render 'shared/issuable_filter', type: :merge_requests
 .merge-requests-holder
   = render 'merge_requests'
