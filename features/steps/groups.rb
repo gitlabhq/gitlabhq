@@ -203,8 +203,8 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   step 'I should see group milestones index page with milestones' do
     page.should have_content('Version 7.2')
     page.should have_content('GL-113')
-    page.should have_link('2 Issues', href: group_milestone_path("owned", "version-7-2", title: "Version 7.2"))
-    page.should have_link('3 Merge Requests', href: group_milestone_path("owned", "gl-113", title: "GL-113"))
+    page.should have_link('2 Issues', href: issues_group_path("owned", milestone_title: "Version 7.2"))
+    page.should have_link('3 Merge Requests', href: merge_requests_group_path("owned", milestone_title: "GL-113"))
   end
 
   step 'I click on one group milestone' do
