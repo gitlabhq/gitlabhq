@@ -248,6 +248,7 @@ describe User do
     it { expect(@user.several_namespaces?).to be_truthy }
     it { expect(@user.authorized_groups).to eq([@group]) }
     it { expect(@user.owned_groups).to eq([@group]) }
+    it { expect(@user.namespaces).to match_array([@user.namespace, @group]) }
   end
 
   describe 'group multiple owners' do
@@ -270,6 +271,7 @@ describe User do
     end
 
     it { expect(@user.several_namespaces?).to be_falsey }
+    it { expect(@user.namespaces).to eq([@user.namespace]) }
   end
 
   describe 'blocking user' do
