@@ -23,7 +23,7 @@ module Gitlab
     end
 
     def issues
-      if project.default_issues_tracker?
+      if project.nil? || project.default_issues_tracker?
         result = pipeline_result(:issue)
       elsif project.jira_tracker?
         result = pipeline_result(:external_issue)
