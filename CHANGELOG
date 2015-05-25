@@ -47,7 +47,6 @@ v 7.11.0
   - Don't crash when an MR from a fork has a cross-reference comment from the target project on one of its commits.
   - Explain how to get a new password reset token in welcome emails
   - Include commit comments in MR from a forked project.
-  - Fix adding new group members from admin area
   - Group milestones by title in the dashboard and all other issue views.
   - Query issues, merge requests and milestones with their IID through API (Julien Bianchi)
   - Add default project and snippet visibility settings to the admin web UI.
