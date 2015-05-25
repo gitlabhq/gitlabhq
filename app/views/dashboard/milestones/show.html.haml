@@ -56,6 +56,9 @@
       Participants
       %span.badge= @dashboard_milestone.participants.count
 
+  .pull-right
+    = link_to 'Browse Issues', issues_dashboard_path(milestone_title: @dashboard_milestone.title), class: "btn  edit-milestone-link btn-grouped"
+
 .tab-content
   .tab-pane.active#tab-issues
     .row
