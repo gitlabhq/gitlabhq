@@ -26,7 +26,7 @@ describe "Admin::Hooks", feature: true do
 
   describe "New Hook" do
     before do
-      @url = Faker::Internet.uri("http")
+      @url = FFaker::Internet.uri("http")
       visit admin_hooks_path
       fill_in "hook_url", with: @url
       expect { click_button "Add System Hook" }.to change(SystemHook, :count).by(1)
