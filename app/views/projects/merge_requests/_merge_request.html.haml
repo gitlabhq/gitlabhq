@@ -4,8 +4,7 @@
       = link_to_gfm merge_request.title, merge_request_path(merge_request), class: "row_title"
     .merge-request-labels
       - merge_request.labels.each do |label|
-        = link_to namespace_project_merge_requests_path(merge_request.project.namespace, merge_request.project, label_name: label.name) do
-          = render_colored_label(label)
+        = link_to_label(label, project: merge_request.project)
     .pull-right.light
       - if merge_request.merged?
         %span
