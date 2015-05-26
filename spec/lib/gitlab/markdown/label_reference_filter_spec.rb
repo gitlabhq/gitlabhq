@@ -149,5 +149,12 @@ module Gitlab::Markdown
         end
       end
     end
+
+    describe 'edge cases' do
+      it 'gracefully handles non-references matching the pattern' do
+        exp = act = '(format nil "~0f" 3.0) ; 3.0'
+        expect(filter(act).to_html).to eq exp
+     end
+    end
   end
 end
