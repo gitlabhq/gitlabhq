@@ -29,11 +29,9 @@ You can also sign up on [CodeTriage](http://www.codetriage.com/gitlabhq/gitlabhq
 
 ## Issue tracker
 
-To get support for your particular problem please use the channels as detailed in the [getting help section of the readme](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#getting-help). Professional [support subscriptions](http://about.gitlab.com/subscription/) and [consulting services](http://about.gitlab.com/consultancy/) are available from [GitLab.com](http://about.gitlab.com/).
+To get support for your particular problem please use the [getting help channels](https://about.gitlab.com/getting-help/).
 
-The [issue tracker](https://gitlab.com/gitlab-org/gitlab-ce/issues) is only for obvious errors in the latest [stable or development release of GitLab](MAINTENANCE.md). If something is wrong but it is not a regression compared to older versions of GitLab please do not open an issue but a feature request. When submitting an issue please conform to the issue submission guidelines listed below. Not all issues will be addressed and your issue is more likely to be addressed if you submit a merge request which partially or fully addresses the issue.
-
-Issues can be filed either at [gitlab.com](https://gitlab.com/gitlab-org/gitlab-ce/issues) or [github.com](https://github.com/gitlabhq/gitlabhq/issues).
+The [GitLab CE issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/issues) is only for obvious errors in the latest [stable or development release of GitLab](MAINTENANCE.md). If something is wrong but it is not a regression compared to older versions of GitLab please do not open an issue but a feature request. When submitting an issue please conform to the issue submission guidelines listed below. Not all issues will be addressed and your issue is more likely to be addressed if you submit a merge request which partially or fully addresses the issue.
 
 Do not use the issue tracker for feature requests. We have a specific [feature request forum](http://feedback.gitlab.com) for this purpose. Please keep feature requests as small and simple as possible, complex ones might be edited to make them small and simple.
 
