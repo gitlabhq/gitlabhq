@@ -133,6 +133,16 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
     current_path.should include 'one/two/three'
   end
 
+  step 'I create a New page with an invalid name' do
+    click_on 'New Page'
+    fill_in 'Page slug', with: 'invalid name'
+    click_on 'Build'
+  end
+
+  step 'I should see an error message' do
+    expect(page).to have_content "The page slug is invalid"
+  end
+
   step 'I should see non-escaped link in the pages list' do
     page.should have_xpath("//a[@href='/#{project.path_with_namespace}/wikis/one/two/three']")
   end
