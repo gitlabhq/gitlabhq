@@ -14,6 +14,7 @@ v 7.12.0 (unreleased)
   - Use the user list from the target project in a merge request (Stan Hu)
   - Default extention for wiki pages is now .md instead of .markdown (Jeroen van Baarsen)
   - Add validation to wiki page creation (only [a-zA-Z0-9/_-] are allowed) (Jeroen van Baarsen)
+  - Fix new/empty milestones showing 100% completion value (Jonah Bishop)
 
 v 7.11.2
   - no changes
