@@ -172,7 +172,7 @@ gem "underscore-rails", "~> 1.4.4"
 gem "sanitize", '~> 2.0'
 
 # Protect against bruteforcing
-gem "rack-attack"
+gem "rack-attack", '~> 4.3.0'
 
 # Ace editor
 gem 'ace-rails-ap'
