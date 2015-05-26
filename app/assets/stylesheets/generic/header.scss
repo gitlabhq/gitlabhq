@@ -184,29 +184,17 @@ header {
       padding: 4px 6px;
       padding-left: 25px;
       font-size: 13px;
-      @include border-radius(3px);
-      border: 1px solid #DDD;
-      box-shadow: none;
-      @include transition(all 0.15s ease-in 0s);
-      background-color: #f9f9f9;
     }
   }
 }
 
 .search .search-input {
   width: 300px;
-  &:focus {
-    width: 330px;
-    background-color: #FFF;
-  }
 }
 
 @media (max-width: 1200px)  {
   .search .search-input {
     width: 200px;
-    &:focus {
-      width: 230px;
-    }
   }
 }
 
