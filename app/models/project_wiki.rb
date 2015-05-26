@@ -2,7 +2,7 @@ class ProjectWiki
   include Gitlab::ShellAdapter
 
   MARKUPS = {
-    'Markdown' => :markdown,
+    'Markdown' => :md,
     'RDoc'     => :rdoc,
     'AsciiDoc' => :asciidoc
   } unless defined?(MARKUPS)
