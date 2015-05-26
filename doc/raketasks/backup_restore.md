@@ -301,4 +301,5 @@ If you are running GitLab on a virtualized server you can possibly also create V
 It is not uncommon however for a VM snapshot to require you to power down the server, so this approach is probably of limited practical use.
 
 ### Note
-This documentation is for GitLab CE. Users can't create backups for gitlab.com.
+This documentation is for GitLab CE. 
+We backup GitLab.com and make sure your data is secure, but you can't use these methods to export / backup your data yourself from GitLab.com.
