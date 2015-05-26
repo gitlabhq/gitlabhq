@@ -45,6 +45,7 @@ module API
     mount ProjectHooks
     mount ProjectGitHook
     mount Ldap
+    mount LdapGroupLinks
     mount Services
     mount Files
     mount Commits

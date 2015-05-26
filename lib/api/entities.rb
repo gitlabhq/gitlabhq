@@ -71,13 +71,13 @@ module API
       end
     end
 
+    class LdapGroupLink < Grape::Entity
+      expose :cn, :group_access, :provider
+    end
+
     class Group < Grape::Entity
       expose :id, :name, :path, :ldap_cn, :ldap_access, :description
-      expose :ldap_group_links, if: ->(group, _) { group.ldap_group_links.any? } do |group, _|
-        group.ldap_group_links.map do |group_link|
-          group_link.slice(:cn, :group_access)
-        end
-      end
+      expose :ldap_group_links, using: Entities::LdapGroupLink, if: lambda{ | group, options | group.ldap_group_links.any? }
     end
 
     class GroupDetail < Group
