@@ -20,7 +20,7 @@ class Admin::ApplicationsController < Admin::ApplicationController
 
     if @application.save
       flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
-      redirect_to admin_application_url(@application)
+      redirect_to admin_application_path(@application)
     else
       render :new
     end
@@ -36,7 +36,7 @@ class Admin::ApplicationsController < Admin::ApplicationController
 
   def destroy
     @application.destroy
-    redirect_to admin_applications_url, notice: 'Application was successfully destroyed.'
+    redirect_to admin_applications_path, notice: 'Application was successfully destroyed.'
   end
 
   private

@@ -118,9 +118,9 @@ describe API::API, api: true  do
     it 'should return merge_request by iid' do
       url = "/projects/#{project.id}/merge_requests?iid=#{merge_request.iid}"
       get api(url, user)
-      response.status.should == 200
-      json_response.first['title'].should == merge_request.title
-      json_response.first['id'].should == merge_request.id
+      expect(response.status).to == 200
+      expect(json_response.first['title']).to == merge_request.title
+      expect(json_response.first['id']).to == merge_request.id
     end
 
     it "should return a 404 error if merge_request_id not found" do
@@ -301,14 +301,20 @@ describe API::API, api: true  do
 
   describe "PUT /projects/:id/merge_request/:merge_request_id/merge" do
     it "should return merge_request in case of success" do
-      MergeRequest.any_instance.stub(can_be_merged?: true, automerge!: true)
+      allow_any_instance_of(MergeRequest).
+        to receive_messages(can_be_merged?: true, automerge!: true)
+
       put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user)
+
       expect(response.status).to eq(200)
     end
 
     it "should return 405 if branch can't be merged" do
-      MergeRequest.any_instance.stub(can_be_merged?: false)
+      allow_any_instance_of(MergeRequest).
+        to receive(:can_be_merged?).and_return(false)
+
       put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user)
+
       expect(response.status).to eq(405)
       expect(json_response['message']).to eq('Branch cannot be merged')
     end

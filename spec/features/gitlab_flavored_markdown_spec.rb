@@ -11,7 +11,8 @@ describe "GitLab Flavored Markdown", feature: true do
   end
 
   before do
-    Commit.any_instance.stub(title: "fix ##{issue.iid}\n\nask @#{fred.username} for details")
+    allow_any_instance_of(Commit).to receive(:title).
+      and_return("fix ##{issue.iid}\n\nask @#{fred.username} for details")
   end
 
   let(:commit) { project.commit }

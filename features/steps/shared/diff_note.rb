@@ -162,6 +162,8 @@ module SharedDiffNote
   end
 
   def click_diff_line(code)
-    find("button[data-line-code='#{code}']").click
+    within(".diff-content") do
+      find("button[data-line-code='#{code}']").click
+    end
   end
 end

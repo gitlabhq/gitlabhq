@@ -227,8 +227,8 @@ group :development, :test do
   gem 'coveralls', require: false
   gem 'rubocop', '0.28.0', require: false
   gem 'spinach-rails'
-  gem "rspec-rails", '2.99'
-  gem 'capybara', '~> 2.2.1'
+  gem "rspec-rails", '3.0.0'
+  gem "capybara", '~> 2.3'
   gem 'capybara-screenshot', '~> 1.0.0'
   gem "pry-rails"
   gem "awesome_print"
@@ -251,7 +251,7 @@ group :development, :test do
   gem 'rb-inotify', require: linux_only('rb-inotify')
 
   # PhantomJS driver for Capybara
-  gem 'poltergeist', '~> 1.5.1'
+  gem 'poltergeist', '~> 1.6'
 
   gem 'jasmine-rails'
 
@@ -263,10 +263,10 @@ group :development, :test do
 end
 
 group :test do
-  gem "simplecov", require: false
-  gem "shoulda-matchers", "~> 2.7.0"
-  gem 'email_spec'
-  gem "webmock"
+  gem 'simplecov', require: false
+  gem 'shoulda-matchers', '~> 2.8.0'
+  gem 'email_spec', '~> 1.6.0'
+  gem 'webmock', '~> 1.21.0'
   gem 'test_after_commit'
 end
 

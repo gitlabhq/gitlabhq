@@ -1,18 +1,22 @@
 require 'spec_helper'
+require_relative 'import_spec_helper'
 
 describe Import::GitlabController do
+  include ImportSpecHelper
+
   let(:user) { create(:user, gitlab_access_token: 'asd123') }
 
   before do
     sign_in(user)
-    controller.stub(:gitlab_import_enabled?).and_return(true)
+    allow(controller).to receive(:gitlab_import_enabled?).and_return(true)
   end
 
   describe "GET callback" do
     it "updates access token" do
       token = "asdasd12345"
-      Gitlab::GitlabImport::Client.any_instance.stub_chain(:client, :auth_code, :get_token, :token).and_return(token)
-      Gitlab.config.omniauth.providers << OpenStruct.new(app_id: "asd123", app_secret: "asd123", name: "gitlab")
+      allow_any_instance_of(Gitlab::GitlabImport::Client).
+        to receive(:get_token).and_return(token)
+      stub_omniauth_provider('gitlab')
 
       get :callback
 
@@ -28,7 +32,7 @@ describe Import::GitlabController do
 
     it "assigns variables" do
       @project = create(:project, import_type: 'gitlab', creator_id: user.id)
-      controller.stub_chain(:client, :projects).and_return([@repo])
+      stub_client(projects: [@repo])
 
       get :status
 
@@ -38,7 +42,7 @@ describe Import::GitlabController do
 
     it "does not show already added project" do
       @project = create(:project, import_type: 'gitlab', creator_id: user.id, import_source: 'asd/vim')
-      controller.stub_chain(:client, :projects).and_return([@repo])
+      stub_client(projects: [@repo])
 
       get :status
 
@@ -66,8 +70,7 @@ describe Import::GitlabController do
     }
 
     before do
-      controller.stub_chain(:client, :user).and_return(gitlab_user)
-      controller.stub_chain(:client, :project).and_return(gitlab_repo)
+      stub_client(user: gitlab_user, project: gitlab_repo)
     end
 
     context "when the repository owner is the GitLab.com user" do

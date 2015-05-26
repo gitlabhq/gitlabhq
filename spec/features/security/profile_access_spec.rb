@@ -6,7 +6,7 @@ describe "Profile access", feature: true  do
   end
 
   describe "GET /login" do
-    it { expect(new_user_session_path).not_to be_404_for :visitor }
+    it { expect(new_user_session_path).not_to be_not_found_for :visitor }
   end
 
   describe "GET /profile/keys" do

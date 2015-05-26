@@ -89,7 +89,7 @@ describe User do
     it { is_expected.to allow_value(0).for(:projects_limit) }
     it { is_expected.not_to allow_value(-1).for(:projects_limit) }
 
-    it { is_expected.to ensure_length_of(:bio).is_within(0..255) }
+    it { is_expected.to validate_length_of(:bio).is_within(0..255) }
 
     describe 'email' do
       it 'accepts info@example.com' do
@@ -391,21 +391,25 @@ describe User do
 
     it 'is false when LDAP is disabled' do
       # Create a condition which would otherwise cause 'true' to be returned
-      user.stub(ldap_user?: true)
+      allow(user).to receive(:ldap_user?).and_return(true)
       user.last_credential_check_at = nil
       expect(user.requires_ldap_check?).to be_falsey
     end
 
     context 'when LDAP is enabled' do
-      before { Gitlab.config.ldap.stub(enabled: true) }
+      before do
+        allow(Gitlab.config.ldap).to receive(:enabled).and_return(true)
+      end
 
       it 'is false for non-LDAP users' do
-        user.stub(ldap_user?: false)
+        allow(user).to receive(:ldap_user?).and_return(false)
         expect(user.requires_ldap_check?).to be_falsey
       end
 
       context 'and when the user is an LDAP user' do
-        before { user.stub(ldap_user?: true) }
+        before do
+          allow(user).to receive(:ldap_user?).and_return(true)
+        end
 
         it 'is true when the user has never had an LDAP check before' do
           user.last_credential_check_at = nil

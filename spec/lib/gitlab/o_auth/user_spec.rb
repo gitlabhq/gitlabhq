@@ -18,13 +18,12 @@ describe Gitlab::OAuth::User do
     let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
 
     it "finds an existing user based on uid and provider (facebook)" do
-      auth = double(info: double(name: 'John'), uid: 'my-uid', provider: 'my-provider')
-      expect( oauth_user.persisted? ).to be_truthy
+      expect(oauth_user.persisted?).to be_truthy
     end
 
     it "returns false if use is not found in database" do
-      auth_hash.stub(uid: 'non-existing')
-      expect( oauth_user.persisted? ).to be_falsey
+      allow(auth_hash).to receive(:uid).and_return('non-existing')
+      expect(oauth_user.persisted?).to be_falsey
     end
   end
 
@@ -33,7 +32,10 @@ describe Gitlab::OAuth::User do
 
     describe 'signup' do
       context "with allow_single_sign_on enabled" do
-        before { Gitlab.config.omniauth.stub allow_single_sign_on: true }
+        before do
+          allow(Gitlab.config.omniauth).
+            to receive(:allow_single_sign_on).and_return(true)
+        end
 
         it "creates a user from Omniauth" do
           oauth_user.save
@@ -54,11 +56,17 @@ describe Gitlab::OAuth::User do
 
     describe 'blocking' do
       let(:provider) { 'twitter' }
-      before { Gitlab.config.omniauth.stub allow_single_sign_on: true }
+      before do
+        allow(Gitlab.config.omniauth).
+          to receive(:allow_single_sign_on).and_return(true)
+      end
 
       context 'signup' do
         context 'dont block on create' do
-          before { Gitlab.config.omniauth.stub block_auto_created_users: false }
+          before do
+            allow(Gitlab.config.omniauth).
+              to receive(:block_auto_created_users).and_return(false)
+          end
 
           it do
             oauth_user.save
@@ -68,7 +76,10 @@ describe Gitlab::OAuth::User do
         end
 
         context 'block on create' do
-          before { Gitlab.config.omniauth.stub block_auto_created_users: true }
+          before do
+            allow(Gitlab.config.omniauth).
+              to receive(:block_auto_created_users).and_return(true)
+          end
 
           it do
             oauth_user.save
@@ -85,7 +96,10 @@ describe Gitlab::OAuth::User do
         end
 
         context 'dont block on create' do
-          before { Gitlab.config.omniauth.stub block_auto_created_users: false }
+          before do
+            allow(Gitlab.config.omniauth).
+              to receive(:block_auto_created_users).and_return(false)
+          end
 
           it do
             oauth_user.save
@@ -95,7 +109,10 @@ describe Gitlab::OAuth::User do
         end
 
         context 'block on create' do
-          before { Gitlab.config.omniauth.stub block_auto_created_users: true }
+          before do
+            allow(Gitlab.config.omniauth).
+              to receive(:block_auto_created_users).and_return(true)
+          end
 
           it do
             oauth_user.save

@@ -1,6 +1,9 @@
 require 'spec_helper'
+require_relative 'import_spec_helper'
 
 describe Import::GitoriousController do
+  include ImportSpecHelper
+
   let(:user) { create(:user) }
 
   before do
@@ -30,7 +33,7 @@ describe Import::GitoriousController do
 
     it "assigns variables" do
       @project = create(:project, import_type: 'gitorious', creator_id: user.id)
-      controller.stub_chain(:client, :repos).and_return([@repo])
+      stub_client(repos: [@repo])
 
       get :status
 
@@ -40,7 +43,7 @@ describe Import::GitoriousController do
 
     it "does not show already added project" do
       @project = create(:project, import_type: 'gitorious', creator_id: user.id, import_source: 'asd/vim')
-      controller.stub_chain(:client, :repos).and_return([@repo])
+      stub_client(repos: [@repo])
 
       get :status
 
@@ -59,7 +62,7 @@ describe Import::GitoriousController do
       expect(Gitlab::GitoriousImport::ProjectCreator).
         to receive(:new).with(@repo, namespace, user).
         and_return(double(execute: true))
-      controller.stub_chain(:client, :repo).and_return(@repo)
+      stub_client(repo: @repo)
 
       post :create, format: :js
     end
