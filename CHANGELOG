@@ -1,6 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.12.0 (unreleased)
+  - Refactor permission checks with issues and merge requests project settings (Stan Hu)
+  - Add web hook support for note events (Stan Hu)
+  - Disable "New Issue" and "New Merge Request" buttons when features are disabled in project settings (Stan Hu)
+  - Remove Rack Attack monkey patches and bump to version 4.3.0 (Stan Hu)
   - Allow to configure location of the `.gitlab_shell_secret` file. (Jakub Jirutka)
   - Disabled expansion of top/bottom blobs for new file diffs
   - Update Asciidoctor gem to version 1.5.2. (Jakub Jirutka)
@@ -46,7 +50,6 @@ v 7.11.0
   - Don't crash when an MR from a fork has a cross-reference comment from the target project on one of its commits.
   - Explain how to get a new password reset token in welcome emails
   - Include commit comments in MR from a forked project.
-  - Fix adding new group members from admin area
   - Group milestones by title in the dashboard and all other issue views.
   - Query issues, merge requests and milestones with their IID through API (Julien Bianchi)
   - Add default project and snippet visibility settings to the admin web UI.

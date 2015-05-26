@@ -62,3 +62,9 @@ Feature: Project
     And I add project tags
     And I save project
     Then I should see project tags
+
+  Scenario: I should not see "New Issue" or "New Merge Request" buttons
+    Given I disable issues and merge requests in project
+    When I visit project "Shop" page
+    Then I should not see "New Issue" button
+    And I should not see "New Merge Request" button

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150509180749) do
+ActiveRecord::Schema.define(version: 20150516060434) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -533,6 +533,7 @@ ActiveRecord::Schema.define(version: 20150509180749) do
     t.boolean  "issues_events",         default: false,         null: false
     t.boolean  "merge_requests_events", default: false,         null: false
     t.boolean  "tag_push_events",       default: false
+    t.boolean  "note_events",           default: false,         null: false
   end
 
   add_index "web_hooks", ["created_at", "id"], name: "index_web_hooks_on_created_at_and_id", using: :btree

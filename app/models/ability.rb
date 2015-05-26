@@ -101,6 +101,27 @@ class Ability
           rules -= project_archived_rules
         end
 
+        unless project.issues_enabled
+          rules -= named_abilities('issue')
+        end
+
+        unless project.merge_requests_enabled
+          rules -= named_abilities('merge_request')
+        end
+
+        unless project.issues_enabled or project.merge_requests_enabled
+          rules -= named_abilities('label')
+          rules -= named_abilities('milestone')
+        end
+
+        unless project.snippets_enabled
+          rules -= named_abilities('snippet')
+        end
+
+        unless project.wiki_enabled
+          rules -= named_abilities('wiki')
+        end
+
         rules
       end
     end
@@ -271,6 +292,17 @@ class Ability
                        abilities << self
                        abilities
                      end
+    end
+
+    private
+
+    def named_abilities(name)
+      [
+        :"read_#{name}",
+        :"write_#{name}",
+        :"modify_#{name}",
+        :"admin_#{name}"
+      ]
     end
   end
 end

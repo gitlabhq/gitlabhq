@@ -61,11 +61,12 @@
       Participants
       %span.badge= @users.count
 
-  - if @project.issues_enabled
-    .pull-right
+  .pull-right
+    - if can?(current_user, :write_issue, @project)
       = link_to new_namespace_project_issue_path(@project.namespace, @project, issue: { milestone_id: @milestone.id }), class: "btn  btn-grouped", title: "New Issue" do
         %i.fa.fa-plus
         New Issue
+    - if can?(current_user, :read_issue, @project)
       = link_to 'Browse Issues', namespace_project_issues_path(@milestone.project.namespace, @milestone.project, milestone_id: @milestone.id), class: "btn  edit-milestone-link btn-grouped"
 
 .tab-content
