@@ -47,7 +47,7 @@ describe Milestone do
 
     it "should recover from dividing by zero" do
       expect(milestone.issues).to receive(:count).and_return(0)
-      expect(milestone.percent_complete).to eq(100)
+      expect(milestone.percent_complete).to eq(0)
     end
   end
 
