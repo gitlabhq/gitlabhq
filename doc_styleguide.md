@@ -2,13 +2,11 @@
 
 This styleguide recommends best practices to improve documentation and to keep it organized and easy to find. 
 
-## Text (when using markdown)
+## Text
 
 * Make sure that the documentation is added in the correct directory and that there's a link to it somewhere useful.
 
-* Add only one H1 or title, by adding '#' at the begining of it.
-
-* For subtitles, use '##', '###' and so on.
+* Add only one H1 or title in each document, by adding '#' at the begining of it (when using markdown). For subtitles, use '##', '###' and so on.
 
 * Do not duplicate information.
 
