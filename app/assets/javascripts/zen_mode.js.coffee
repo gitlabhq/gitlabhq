@@ -12,11 +12,11 @@ class @ZenMode
 
     $('body').on 'click', '.zen-enter-link', (e) =>
       e.preventDefault()
-      $(e.currentTarget).closest('.zennable').find('.zen-toggle-comment').prop('checked', true)
+      $(e.currentTarget).closest('.zennable').find('.zen-toggle-comment').prop('checked', true).change()
 
     $('body').on 'click', '.zen-leave-link', (e) =>
       e.preventDefault()
-      $(e.currentTarget).closest('.zennable').find('.zen-toggle-comment').prop('checked', false)
+      $(e.currentTarget).closest('.zennable').find('.zen-toggle-comment').prop('checked', false).change()
 
     $('body').on 'change', '.zen-toggle-comment', (e) =>
       checkbox = e.currentTarget
