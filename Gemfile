@@ -239,7 +239,7 @@ group :development, :test do
   gem 'minitest', '~> 5.3.0'
 
   # Generate Fake data
-  gem "ffaker"
+  gem 'ffaker', '~> 2.0.0'
 
   # Guard
   gem 'guard-rspec'

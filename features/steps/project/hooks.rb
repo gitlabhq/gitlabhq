@@ -23,7 +23,7 @@ class Spinach::Features::ProjectHooks < Spinach::FeatureSteps
   end
 
   step 'I submit new hook' do
-    @url = Faker::Internet.uri("http")
+    @url = FFaker::Internet.uri("http")
     fill_in "hook_url", with: @url
     expect { click_button "Add Web Hook" }.to change(ProjectHook, :count).by(1)
   end

@@ -1,8 +1,8 @@
 %li{id: dom_id(label)}
-  = render_colored_label(label)
+  = link_to_label(label)
   .pull-right
     %strong.append-right-20
-      = link_to namespace_project_issues_path(@project.namespace, @project, label_name: label.name) do
+      = link_to_label(label) do
         = pluralize label.open_issues_count, 'open issue'
 
     - if can? current_user, :admin_label, @project
