@@ -16,7 +16,7 @@ This styleguide recommends best practices to improve documentation and to keep i
 
 * To add images use
 ´´´
-!['NAME OF LINK']('WHERE THE LINK IS LOCATED') 
+'!['NAME OF LINK']('WHERE THE LINK IS LOCATED')'
 ´´´
 
 
@@ -26,4 +26,4 @@ This styleguide recommends best practices to improve documentation and to keep i
 
 * Images should have a specific, non-generic name that will differentiate them.
 
-* Keep all file names in lower case. 
+* Keep all file names in lower case.
