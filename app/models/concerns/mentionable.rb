@@ -24,11 +24,11 @@ module Mentionable
   #
   # By default this will be the class name and the result of calling
   # `to_reference` on the object.
-  def gfm_reference
+  def gfm_reference(from_project = nil)
     # "MergeRequest" > "merge_request" > "Merge request" > "merge request"
     friendly_name = self.class.to_s.underscore.humanize.downcase
 
-    "#{friendly_name} #{to_reference}"
+    "#{friendly_name} #{to_reference(from_project)}"
   end
 
   # Construct a String that contains possible GFM references.
