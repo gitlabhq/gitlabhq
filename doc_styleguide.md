@@ -14,11 +14,6 @@ This styleguide recommends best practices to improve documentation and to keep i
 
 * Be brief and clear.
 
-* To add images use
-´´´
-'!['NAME OF LINK']('WHERE THE LINK IS LOCATED')'
-´´´
-
 
 ## When adding images to a document
 
