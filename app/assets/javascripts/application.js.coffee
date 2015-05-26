@@ -49,8 +49,6 @@ window.slugify = (text) ->
 window.ajaxGet = (url) ->
   $.ajax({type: "GET", url: url, dataType: "script"})
 
-window.showAndHide = (selector) ->
-
 window.split = (val) ->
   return val.split( /,\s*/ )
 
@@ -92,15 +90,7 @@ window.disableButtonIfAnyEmptyField = (form, form_selector, button_selector) ->
 window.sanitize = (str) ->
   return str.replace(/<(?:.|\n)*?>/gm, '')
 
-window.linkify = (str) ->
-  exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
-  return str.replace(exp,"<a href='$1'>$1</a>")
-
-window.simpleFormat = (str) ->
-  linkify(sanitize(str).replace(/\n/g, '<br />'))
-
 window.unbindEvents = ->
-  $(document).unbind('scroll')
   $(document).off('scroll')
 
 window.shiftWindow = ->
