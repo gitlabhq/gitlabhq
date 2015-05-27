@@ -93,3 +93,17 @@
     }
   }
 }
+
+// Profile > Account > Two Factor Authentication
+.two-factor-new {
+  .manual-instructions {
+    h3 {
+      margin-top: 0;
+    }
+
+    // Slightly increase the size of the details so they're easier to read
+    dl {
+      font-size: 1.1em;
+    }
+  }
+}

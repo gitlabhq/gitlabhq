@@ -1,7 +1,7 @@
 class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   def new
     unless current_user.otp_secret
-      current_user.otp_secret = User.generate_otp_secret
+      current_user.otp_secret = User.generate_otp_secret(32)
       current_user.save!
     end
 
@@ -18,6 +18,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     else
       @error = 'Invalid pin code'
       @qr_code = build_qr_code
+
       render 'new'
     end
   end
