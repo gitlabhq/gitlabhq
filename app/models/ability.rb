@@ -115,7 +115,7 @@ class Ability
         end
 
         unless project.snippets_enabled
-          rules -= named_abilities('snippet')
+          rules -= named_abilities('project_snippet')
         end
 
         unless project.wiki_enabled

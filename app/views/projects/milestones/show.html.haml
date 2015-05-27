@@ -67,7 +67,7 @@
         %i.fa.fa-plus
         New Issue
     - if can?(current_user, :read_issue, @project)
-      = link_to 'Browse Issues', namespace_project_issues_path(@milestone.project.namespace, @milestone.project, milestone_id: @milestone.id), class: "btn  edit-milestone-link btn-grouped"
+      = link_to 'Browse Issues', namespace_project_issues_path(@milestone.project.namespace, @milestone.project, milestone_title: @milestone.title), class: "btn  edit-milestone-link btn-grouped"
 
 .tab-content
   .tab-pane.active#tab-issues

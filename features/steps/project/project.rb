@@ -110,4 +110,8 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   step 'I should not see "New Merge Request" button' do
     page.should_not have_link 'New Merge Request'
   end
+
+  step 'I should not see "Snippets" button' do
+    page.should_not have_link 'Snippets'
+  end
 end
