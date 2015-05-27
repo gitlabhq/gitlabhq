@@ -6,6 +6,8 @@ v 7.12.0 (unreleased)
   - Fix Zen Mode not closing with ESC key (Stan Hu)
   - Allow HipChat API version to be blank and default to v2 (Stan Hu)
   - Add file attachment support in Milestone description (Stan Hu)
+  - Fix milestone "Browse Issues" button.
+  - Set milestone on new issue when creating issue from index with milestone filter active.
   - Add web hook support for note events (Stan Hu)
   - Disable "New Issue" and "New Merge Request" buttons when features are disabled in project settings (Stan Hu)
   - Remove Rack Attack monkey patches and bump to version 4.3.0 (Stan Hu)

@@ -9,10 +9,10 @@
     = link_to_gfm truncate(milestone.title, length: 100), group_milestone_path(@group, milestone.safe_title, title: milestone.title)
   .row
     .col-sm-6
-      = link_to group_milestone_path(@group, milestone.safe_title, title: milestone.title) do
+      = link_to issues_group_path(@group, milestone_title: milestone.title) do
         = pluralize milestone.issue_count, 'Issue'
       &nbsp;
-      = link_to group_milestone_path(@group, milestone.safe_title, title: milestone.title) do
+      = link_to merge_requests_group_path(@group, milestone_title: milestone.title) do
         = pluralize milestone.merge_requests_count, 'Merge Request'
       &nbsp;
       %span.light #{milestone.percent_complete}% complete

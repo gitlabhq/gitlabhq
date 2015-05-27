@@ -289,14 +289,14 @@ class ApplicationController < ActionController::Base
 
   def get_issues_collection
     set_filters_params
-    issues = IssuesFinder.new.execute(current_user, @filter_params)
-    issues
+    @issuable_finder = IssuesFinder.new(current_user, @filter_params)
+    @issuable_finder.execute
   end
 
   def get_merge_requests_collection
     set_filters_params
-    merge_requests = MergeRequestsFinder.new.execute(current_user, @filter_params)
-    merge_requests
+    @issuable_finder = MergeRequestsFinder.new(current_user, @filter_params)
+    @issuable_finder.execute
   end
 
   def github_import_enabled?
