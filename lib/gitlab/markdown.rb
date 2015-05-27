@@ -11,6 +11,7 @@ module Gitlab
     autoload :CommitReferenceFilter,        'gitlab/markdown/commit_reference_filter'
     autoload :EmojiFilter,                  'gitlab/markdown/emoji_filter'
     autoload :ExternalIssueReferenceFilter, 'gitlab/markdown/external_issue_reference_filter'
+    autoload :ExternalLinkFilter,           'gitlab/markdown/external_link_filter'
     autoload :IssueReferenceFilter,         'gitlab/markdown/issue_reference_filter'
     autoload :LabelReferenceFilter,         'gitlab/markdown/label_reference_filter'
     autoload :MergeRequestReferenceFilter,  'gitlab/markdown/merge_request_reference_filter'
@@ -103,6 +104,7 @@ module Gitlab
         Gitlab::Markdown::EmojiFilter,
         Gitlab::Markdown::TableOfContentsFilter,
         Gitlab::Markdown::AutolinkFilter,
+        Gitlab::Markdown::ExternalLinkFilter,
 
         Gitlab::Markdown::UserReferenceFilter,
         Gitlab::Markdown::IssueReferenceFilter,
