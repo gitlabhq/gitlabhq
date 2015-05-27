@@ -16,6 +16,7 @@ v 7.12.0 (unreleased)
   - Default extention for wiki pages is now .md instead of .markdown (Jeroen van Baarsen)
   - Add validation to wiki page creation (only [a-zA-Z0-9/_-] are allowed) (Jeroen van Baarsen)
   - Fix new/empty milestones showing 100% completion value (Jonah Bishop)
+  - Add a note when an Issue or Merge Request's title changes
 
 v 7.11.2
   - no changes

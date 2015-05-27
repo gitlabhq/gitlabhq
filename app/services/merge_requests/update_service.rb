@@ -50,6 +50,10 @@ module MergeRequests
           notification_service.reassigned_merge_request(merge_request, current_user)
         end
 
+        if merge_request.previous_changes.include?('title')
+          create_title_change_note(merge_request, merge_request.previous_changes['title'].first)
+        end
+
         merge_request.notice_added_references(merge_request.project, current_user)
         execute_hooks(merge_request, 'update')
       end
