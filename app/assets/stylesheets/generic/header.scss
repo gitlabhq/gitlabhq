@@ -13,7 +13,7 @@ header {
     .container {
       width: 100% !important;
       padding: 0;
-
+      padding-right: 35px;
       background: #FFF;
       border-bottom: 1px solid #EEE;
       filter: none;
@@ -62,13 +62,21 @@ header {
       }
 
       .nav > li > a {
-        color: #666;
+        color: #888;
         font-size: 14px;
-        line-height: 32px;
-        padding: 6px 10px;
+        line-height: 19px;
+        padding: 0;
+        background-color: #f5f5f5;
+        margin: 9px 0;
+        margin-left: 10px;
+        border-radius: 40px;
+        height: 26px;
+        width: 26px;
+        line-height: 26px;
+        text-align: center;
 
         &:hover, &:focus, &:active {
-          background: none;
+          background-color: #EEE;
         }
       }
 
@@ -150,17 +158,6 @@ header {
     }
   }
 
-  .profile-pic {
-    padding: 0px !important;
-    width: 46px;
-    height: 46px;
-    margin-left: 5px;
-    img {
-      width: 46px;
-      height: 46px;
-    }
-  }
-
   /**
    *
    * Search box
@@ -184,6 +181,8 @@ header {
       padding: 4px 6px;
       padding-left: 25px;
       font-size: 13px;
+      background-color: #f5f5f5;
+      border-color: #f5f5f5;
     }
   }
 }
