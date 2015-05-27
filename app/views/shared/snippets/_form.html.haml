@@ -29,7 +29,7 @@
       - else
         = f.submit 'Save', class: "btn-save btn"
 
-      - if @snippet.respond_to?(:project)
+      - if @snippet.project_id
         = link_to "Cancel", namespace_project_snippets_path(@project.namespace, @project), class: "btn btn-cancel"
       - else
         = link_to "Cancel", snippets_path(@project), class: "btn btn-cancel"

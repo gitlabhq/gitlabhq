@@ -8,34 +8,36 @@ module Gitlab::Markdown
     let(:commit1) { project.commit }
     let(:commit2) { project.commit("HEAD~2") }
 
+    let(:range)  { CommitRange.new("#{commit1.id}...#{commit2.id}") }
+    let(:range2) { CommitRange.new("#{commit1.id}..#{commit2.id}") }
+
     it 'requires project context' do
-      expect { described_class.call('Commit Range 1c002d..d200c1', {}) }.
-        to raise_error(ArgumentError, /:project/)
+      expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
     end
 
     %w(pre code a style).each do |elem|
       it "ignores valid references contained inside '#{elem}' element" do
-        exp = act = "<#{elem}>Commit Range #{commit1.id}..#{commit2.id}</#{elem}>"
+        exp = act = "<#{elem}>Commit Range #{range.to_reference}</#{elem}>"
         expect(filter(act).to_html).to eq exp
       end
     end
 
     context 'internal reference' do
-      let(:reference) { "#{commit1.id}...#{commit2.id}" }
-      let(:reference2) { "#{commit1.id}..#{commit2.id}" }
+      let(:reference)  { range.to_reference }
+      let(:reference2) { range2.to_reference }
 
       it 'links to a valid two-dot reference' do
         doc = filter("See #{reference2}")
 
         expect(doc.css('a').first.attr('href')).
-          to eq urls.namespace_project_compare_url(project.namespace, project, from: "#{commit1.id}^", to: commit2.id)
+          to eq urls.namespace_project_compare_url(project.namespace, project, range2.to_param)
       end
 
       it 'links to a valid three-dot reference' do
         doc = filter("See #{reference}")
 
         expect(doc.css('a').first.attr('href')).
-          to eq urls.namespace_project_compare_url(project.namespace, project, from: commit1.id, to: commit2.id)
+          to eq urls.namespace_project_compare_url(project.namespace, project, range.to_param)
       end
 
       it 'links to a valid short ID' do
@@ -51,7 +53,7 @@ module Gitlab::Markdown
       it 'links with adjacent text' do
         doc = filter("See (#{reference}.)")
 
-        exp = Regexp.escape("#{commit1.short_id}...#{commit2.short_id}")
+        exp = Regexp.escape(range.to_s)
         expect(doc.to_html).to match(/\(<a.+>#{exp}<\/a>\.\)/)
       end
 
@@ -65,7 +67,7 @@ module Gitlab::Markdown
 
       it 'includes a title attribute' do
         doc = filter("See #{reference}")
-        expect(doc.css('a').first.attr('title')).to eq "Commits #{commit1.id} through #{commit2.id}"
+        expect(doc.css('a').first.attr('title')).to eq range.reference_title
       end
 
       it 'includes default classes' do
@@ -95,9 +97,11 @@ module Gitlab::Markdown
     context 'cross-project reference' do
       let(:namespace) { create(:namespace, name: 'cross-reference') }
       let(:project2)  { create(:project, namespace: namespace) }
-      let(:commit1)   { project.commit }
-      let(:commit2)   { project.commit("HEAD~2") }
-      let(:reference) { "#{project2.path_with_namespace}@#{commit1.id}...#{commit2.id}" }
+      let(:reference) { range.to_reference(project) }
+
+      before do
+        range.project = project2
+      end
 
       context 'when user can access reference' do
         before { allow_cross_reference! }
@@ -106,21 +110,21 @@ module Gitlab::Markdown
           doc = filter("See #{reference}")
 
           expect(doc.css('a').first.attr('href')).
-            to eq urls.namespace_project_compare_url(project2.namespace, project2, from: commit1.id, to: commit2.id)
+            to eq urls.namespace_project_compare_url(project2.namespace, project2, range.to_param)
         end
 
         it 'links with adjacent text' do
           doc = filter("Fixed (#{reference}.)")
 
-          exp = Regexp.escape("#{project2.path_with_namespace}@#{commit1.short_id}...#{commit2.short_id}")
+          exp = Regexp.escape("#{project2.to_reference}@#{range.to_s}")
           expect(doc.to_html).to match(/\(<a.+>#{exp}<\/a>\.\)/)
         end
 
         it 'ignores invalid commit IDs on the referenced project' do
-          exp = act = "Fixed #{project2.path_with_namespace}##{commit1.id.reverse}...#{commit2.id}"
+          exp = act = "Fixed #{project2.to_reference}@#{commit1.id.reverse}...#{commit2.id}"
           expect(filter(act).to_html).to eq exp
 
-          exp = act = "Fixed #{project2.path_with_namespace}##{commit1.id}...#{commit2.id.reverse}"
+          exp = act = "Fixed #{project2.to_reference}@#{commit1.id}...#{commit2.id.reverse}"
           expect(filter(act).to_html).to eq exp
         end
 

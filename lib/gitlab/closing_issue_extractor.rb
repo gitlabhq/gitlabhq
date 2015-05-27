@@ -8,7 +8,7 @@ module Gitlab
 
     def closed_by_message(message)
       return [] if message.nil?
-      
+
       closing_statements = message.scan(ISSUE_CLOSING_REGEX).
         map { |ref| ref[0] }.join(" ")
 

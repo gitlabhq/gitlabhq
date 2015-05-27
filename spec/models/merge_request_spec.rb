@@ -24,22 +24,45 @@
 require 'spec_helper'
 
 describe MergeRequest do
-  describe "Validation" do
+  subject { create(:merge_request) }
+
+  describe 'associations' do
+    it { is_expected.to belong_to(:target_project).with_foreign_key(:target_project_id).class_name('Project') }
+    it { is_expected.to belong_to(:source_project).with_foreign_key(:source_project_id).class_name('Project') }
+
+    it { is_expected.to have_one(:merge_request_diff).dependent(:destroy) }
+  end
+
+  describe 'modules' do
+    subject { described_class }
+
+    it { is_expected.to include_module(InternalId) }
+    it { is_expected.to include_module(Issuable) }
+    it { is_expected.to include_module(Referable) }
+    it { is_expected.to include_module(Sortable) }
+    it { is_expected.to include_module(Taskable) }
+  end
+
+  describe 'validation' do
     it { is_expected.to validate_presence_of(:target_branch) }
     it { is_expected.to validate_presence_of(:source_branch) }
   end
 
-  describe "Mass assignment" do
-  end
-
-  describe "Respond to" do
+  describe 'respond to' do
     it { is_expected.to respond_to(:unchecked?) }
     it { is_expected.to respond_to(:can_be_merged?) }
     it { is_expected.to respond_to(:cannot_be_merged?) }
   end
 
-  describe 'modules' do
-    it { is_expected.to include_module(Issuable) }
+  describe '#to_reference' do
+    it 'returns a String reference to the object' do
+      expect(subject.to_reference).to eq "!#{subject.iid}"
+    end
+
+    it 'supports a cross-project reference' do
+      cross = double('project')
+      expect(subject.to_reference(cross)).to eq "#{subject.source_project.to_reference}!#{subject.iid}"
+    end
   end
 
   describe "#mr_and_commit_notes" do
@@ -56,8 +79,6 @@ describe MergeRequest do
       expect(merge_request.mr_and_commit_notes.count).to eq(2)
     end
   end
-
-  subject { create(:merge_request) }
 
   describe '#is_being_reassigned?' do
     it 'returns true if the merge_request assignee has changed' do
@@ -108,7 +129,7 @@ describe MergeRequest do
 
     it 'detects issues mentioned in the description' do
       issue2 = create(:issue, project: subject.project)
-      subject.description = "Closes ##{issue2.iid}"
+      subject.description = "Closes #{issue2.to_reference}"
       subject.project.stub(default_branch: subject.target_branch)
 
       expect(subject.closes_issues).to include(issue2)

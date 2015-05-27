@@ -63,7 +63,17 @@ require 'spec_helper'
 describe User do
   include Gitlab::CurrentSettings
 
-  describe "Associations" do
+  describe 'modules' do
+    subject { described_class }
+
+    it { is_expected.to include_module(Gitlab::ConfigHelper) }
+    it { is_expected.to include_module(Gitlab::CurrentSettings) }
+    it { is_expected.to include_module(Referable) }
+    it { is_expected.to include_module(Sortable) }
+    it { is_expected.to include_module(TokenAuthenticatable) }
+  end
+
+  describe 'associations' do
     it { is_expected.to have_one(:namespace) }
     it { is_expected.to have_many(:snippets).class_name('Snippet').dependent(:destroy) }
     it { is_expected.to have_many(:project_members).dependent(:destroy) }
@@ -77,9 +87,6 @@ describe User do
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
     it { is_expected.to have_many(:assigned_merge_requests).dependent(:destroy) }
     it { is_expected.to have_many(:identities).dependent(:destroy) }
-  end
-
-  describe "Mass assignment" do
   end
 
   describe 'validations' do
@@ -173,6 +180,14 @@ describe User do
     it { is_expected.to respond_to(:is_admin?) }
     it { is_expected.to respond_to(:name) }
     it { is_expected.to respond_to(:private_token) }
+  end
+
+  describe '#to_reference' do
+    let(:user) { create(:user) }
+
+    it 'returns a String reference to the object' do
+      expect(user.to_reference).to eq "@#{user.username}"
+    end
   end
 
   describe '#generate_password' do

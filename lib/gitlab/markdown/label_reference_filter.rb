@@ -15,26 +15,13 @@ module Gitlab
       #
       # Returns a String replaced with the return of the block.
       def self.references_in(text)
-        text.gsub(LABEL_PATTERN) do |match|
+        text.gsub(Label.reference_pattern) do |match|
           yield match, $~[:label_id].to_i, $~[:label_name]
         end
       end
 
-      # Pattern used to extract label references from text
-      #
-      # TODO (rspeicher): Limit to double quotes (meh) or disallow single quotes in label names (bad).
-      LABEL_PATTERN = %r{
-        ~(
-          (?<label_id>\d+)   | # Integer-based label ID, or
-          (?<label_name>
-            [A-Za-z0-9_-]+   | # String-based single-word label title
-            ['"][^&\?,]+['"]   # String-based multi-word label surrounded in quotes
-          )
-        )
-      }x
-
       def call
-        replace_text_nodes_matching(LABEL_PATTERN) do |content|
+        replace_text_nodes_matching(Label.reference_pattern) do |content|
           label_link_filter(content)
         end
       end
@@ -85,8 +72,7 @@ module Gitlab
       # Returns a Hash.
       def label_params(id, name)
         if name
-          # TODO (rspeicher): Don't strip single quotes if we decide to only use double quotes for surrounding.
-          { name: name.tr('\'"', '') }
+          { name: name.tr('"', '') }
         else
           { id: id }
         end

@@ -20,18 +20,13 @@ module Gitlab
       #
       # Returns a String replaced with the return of the block.
       def self.references_in(text)
-        text.gsub(SNIPPET_PATTERN) do |match|
+        text.gsub(Snippet.reference_pattern) do |match|
           yield match, $~[:snippet].to_i, $~[:project]
         end
       end
 
-      # Pattern used to extract `$123` snippet references from text
-      #
-      # This pattern supports cross-project references.
-      SNIPPET_PATTERN = /#{PROJECT_PATTERN}?\$(?<snippet>\d+)/
-
       def call
-        replace_text_nodes_matching(SNIPPET_PATTERN) do |content|
+        replace_text_nodes_matching(Snippet.reference_pattern) do |content|
           snippet_link_filter(content)
         end
       end
@@ -57,7 +52,7 @@ module Gitlab
 
             %(<a href="#{url}"
                  title="#{title}"
-                 class="#{klass}">#{project_ref}$#{id}</a>)
+                 class="#{klass}">#{match}</a>)
           else
             match
           end

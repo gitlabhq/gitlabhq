@@ -17,6 +17,8 @@ require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class Group < Namespace
+  include Referable
+
   has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
   has_many :users, through: :group_members
 
@@ -36,6 +38,18 @@ class Group < Namespace
     def sort(method)
       order_by(method)
     end
+
+    def reference_prefix
+      User.reference_prefix
+    end
+
+    def reference_pattern
+      User.reference_pattern
+    end
+  end
+
+  def to_reference(_from_project = nil)
+    "#{self.class.reference_prefix}#{name}"
   end
 
   def human_name

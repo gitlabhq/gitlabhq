@@ -1,8 +1,28 @@
 require 'spec_helper'
 
 describe Commit do
-  let(:project) { create :project }
-  let(:commit) { project.commit }
+  let(:project) { create(:project) }
+  let(:commit)  { project.commit }
+
+  describe 'modules' do
+    subject { described_class }
+
+    it { is_expected.to include_module(Mentionable) }
+    it { is_expected.to include_module(Participable) }
+    it { is_expected.to include_module(Referable) }
+    it { is_expected.to include_module(StaticModel) }
+  end
+
+  describe '#to_reference' do
+    it 'returns a String reference to the object' do
+      expect(commit.to_reference).to eq commit.id
+    end
+
+    it 'supports a cross-project reference' do
+      cross = double('project')
+      expect(commit.to_reference(cross)).to eq "#{project.to_reference}@#{commit.id}"
+    end
+  end
 
   describe '#title' do
     it "returns no_commit_message when safe_message is blank" do
