@@ -20,6 +20,7 @@ v 7.12.0 (unreleased)
   - Consistently refer to MRs as either Accepted or Rejected.
   - Add Accepted and Rejected tabs to MR lists.
   - Prefix EmailsOnPush email subject with `[Git]`.
+  - Group project contributions by both name and email. 
 
 v 7.11.2
   - no changes
