@@ -116,7 +116,10 @@ window.addEventListener "hashchange", shiftWindow
 
 $ ->
   # Click a .js-select-on-focus field, select the contents
-  $(".js-select-on-focus").on "focusin", -> $(this).select()
+  $(".js-select-on-focus").on "focusin", ->
+    # Prevent a mouseup event from deselecting the input
+    $(this).select().one 'mouseup', (e) ->
+      e.preventDefault()
 
   $('.remove-row').bind 'ajax:success', ->
     $(this).closest('li').fadeOut()
