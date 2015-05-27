@@ -19,6 +19,7 @@ v 7.12.0 (unreleased)
   - Add a note when an Issue or Merge Request's title changes
   - Consistently refer to MRs as either Accepted or Rejected.
   - Add Accepted and Rejected tabs to MR lists.
+  - Prefix EmailsOnPush email subject with `[Git]`.
 
 v 7.11.2
   - no changes
