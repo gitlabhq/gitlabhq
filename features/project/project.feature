@@ -68,3 +68,8 @@ Feature: Project
     When I visit project "Shop" page
     Then I should not see "New Issue" button
     And I should not see "New Merge Request" button
+
+  Scenario: I should not see Project snippets
+    Given I disable snippets in project
+    When I visit project "Shop" page
+    Then I should not see "Snippets" button
