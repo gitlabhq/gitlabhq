@@ -14,6 +14,11 @@ module SharedProject
     @project.team << [@user, :master]
   end
 
+  step 'I disable snippets in project' do
+    @project.snippets_enabled = false
+    @project.save
+  end
+
   step 'I disable issues and merge requests in project' do
     @project.issues_enabled = false
     @project.merge_requests_enabled = false
