@@ -32,21 +32,44 @@ describe HipchatService do
     let(:project) { create(:project, name: 'project') }
     let(:api_url) { 'https://hipchat.example.com/v2/room/123456/notification?auth_token=verySecret' }
     let(:project_name) { project.name_with_namespace.gsub(/\s/, '') }
+    let(:token) { 'verySecret' }
+    let(:server_url) { 'https://hipchat.example.com'}
+    let(:push_sample_data) { Gitlab::PushDataBuilder.build_sample(project, user) }
 
     before(:each) do
       hipchat.stub(
         project_id: project.id,
         project: project,
         room: 123456,
-        server: 'https://hipchat.example.com',
-        token: 'verySecret'
+        server: server_url,
+        token: token
       )
       WebMock.stub_request(:post, api_url)
     end
 
-    context 'push events' do
-      let(:push_sample_data) { Gitlab::PushDataBuilder.build_sample(project, user) }
+    it 'should use v1 if version is provided' do
+      hipchat.stub(api_version: 'v1')
+      expect(HipChat::Client).to receive(:new).
+                                     with(token,
+                                          api_version: 'v1',
+                                          server_url: server_url).
+                                     and_return(
+                                         double(:hipchat_service).as_null_object)
+      hipchat.execute(push_sample_data)
+    end
 
+    it 'should use v2 as the version when nothing is provided' do
+      hipchat.stub(api_version: '')
+      expect(HipChat::Client).to receive(:new).
+                                     with(token,
+                                          api_version: 'v2',
+                                          server_url: server_url).
+                                     and_return(
+                                         double(:hipchat_service).as_null_object)
+      hipchat.execute(push_sample_data)
+    end
+
+    context 'push events' do
       it "should call Hipchat API for push events" do
         hipchat.execute(push_sample_data)
 
