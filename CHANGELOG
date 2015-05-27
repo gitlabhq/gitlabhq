@@ -17,6 +17,8 @@ v 7.12.0 (unreleased)
   - Add validation to wiki page creation (only [a-zA-Z0-9/_-] are allowed) (Jeroen van Baarsen)
   - Fix new/empty milestones showing 100% completion value (Jonah Bishop)
   - Add a note when an Issue or Merge Request's title changes
+  - Consistently refer to MRs as either Accepted or Rejected.
+  - Add Accepted and Rejected tabs to MR lists.
 
 v 7.11.2
   - no changes

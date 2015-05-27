@@ -134,7 +134,7 @@ class MergeRequest < ActiveRecord::Base
   # Closed scope for merge request should return
   # both merged and closed mr's
   scope :closed, -> { with_states(:closed, :merged) }
-  scope :declined, -> { with_states(:closed) }
+  scope :rejected, -> { with_states(:closed) }
 
   def self.reference_prefix
     '!'
