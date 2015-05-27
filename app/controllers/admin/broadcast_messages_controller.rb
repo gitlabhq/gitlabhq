@@ -7,8 +7,16 @@ class Admin::BroadcastMessagesController < Admin::ApplicationController
 
   def create
     @broadcast_message = BroadcastMessage.new(broadcast_message_params)
+    @broadcast_message.email = true if params[:broadcast_message][:email] == '1'
 
     if @broadcast_message.save
+      if params[:broadcast_message][:email] == '1'
+        AsynchronousNotify.broadcast_message_email(
+          current_user,
+          User.all,
+          @broadcast_message
+        )
+      end
       redirect_to admin_broadcast_messages_path, notice: 'Broadcast Message was successfully created.'
     else
       render :index
