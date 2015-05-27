@@ -207,6 +207,27 @@ describe SystemNoteService do
     end
   end
 
+  describe '.change_title' do
+    subject { described_class.change_title(noteable, project, author, 'Old title') }
+
+    context 'when noteable responds to `title`' do
+      it_behaves_like 'a system note'
+
+      it 'sets the note text' do
+        expect(subject.note).
+          to eq "Title changed from **Old title** to **#{noteable.title}**"
+      end
+    end
+
+    context 'when noteable does not respond to `title' do
+      let(:noteable) { double('noteable') }
+
+      it 'returns nil' do
+        expect(subject).to be_nil
+      end
+    end
+  end
+
   describe '.cross_reference' do
     subject { described_class.cross_reference(noteable, mentioner, author) }
 

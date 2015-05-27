@@ -130,6 +130,25 @@ class SystemNoteService
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
+  # Called when the title of a Noteable is changed
+  #
+  # noteable  - Noteable object that responds to `title`
+  # project   - Project owning noteable
+  # author    - User performing the change
+  # old_title - Previous String title
+  #
+  # Example Note text:
+  #
+  #   "Title changed from **Old** to **New**"
+  #
+  # Returns the created Note object
+  def self.change_title(noteable, project, author, old_title)
+    return unless noteable.respond_to?(:title)
+
+    body = "Title changed from **#{old_title}** to **#{noteable.title}**"
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
   # Called when a Mentionable references a Noteable
   #
   # noteable  - Noteable object being referenced
