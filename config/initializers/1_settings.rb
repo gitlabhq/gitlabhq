@@ -87,6 +87,8 @@ end
 
 Settings['omniauth'] ||= Settingslogic.new({})
 Settings.omniauth['enabled']      = false if Settings.omniauth['enabled'].nil?
+Settings.omniauth['auto_sign_in_with_provider'] = false if Settings.omniauth['auto_sign_in_with_provider'].nil?
+
 Settings.omniauth['providers']  ||= []
 
 Settings['issues_tracker']  ||= {}

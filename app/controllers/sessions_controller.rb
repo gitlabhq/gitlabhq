@@ -2,6 +2,7 @@ class SessionsController < Devise::SessionsController
   include AuthenticatesWithTwoFactor
 
   prepend_before_action :authenticate_with_two_factor, only: [:create]
+  before_action :auto_sign_in_with_provider, only: [:new]
 
   def new
     redirect_path =
@@ -73,6 +74,21 @@ class SessionsController < Devise::SessionsController
         prompt_for_two_factor(user)
       end
     end
+  end
+
+  def auto_sign_in_with_provider
+    provider = Gitlab.config.omniauth.auto_sign_in_with_provider
+    return unless provider.present?
+
+    # Auto sign in with an Omniauth provider only if the standard "you need to sign-in" alert is 
+    # registered or no alert at all. In case of another alert (such as a blocked user), it is safer  
+    # to do nothing to prevent redirection loops with certain Omniauth providers.
+    return unless flash[:alert].blank? || flash[:alert] == I18n.t('devise.failure.unauthenticated')
+    
+    # Prevent alert from popping up on the first page shown after authentication.
+    flash[:alert] = nil 
+    
+    redirect_to omniauth_authorize_path(:user, provider.to_sym)
   end
 
   def valid_otp_attempt?(user)
