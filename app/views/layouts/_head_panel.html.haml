@@ -30,13 +30,13 @@
         - if current_user.is_admin?
           %li
             = link_to admin_root_path, title: 'Admin area', data: {toggle: 'tooltip', placement: 'bottom'} do
-              = icon('cogs')
+              = icon('wrench')
         - if current_user.can_create_project?
           %li
             = link_to new_project_path, title: 'New project', data: {toggle: 'tooltip', placement: 'bottom'} do
               = icon('plus')
         %li
           = link_to profile_path, title: 'Profile settings', data: {toggle: 'tooltip', placement: 'bottom'} do
-            = icon('user')
+            = icon('cog')
 
 = render 'shared/outdated_browser'
