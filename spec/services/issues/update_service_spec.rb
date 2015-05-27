@@ -41,8 +41,8 @@ describe Issues::UpdateService do
       end
 
       def find_note(starting_with)
-        @issue.notes.find do |n|
-          n && n.note.start_with?(starting_with)
+        @issue.notes.find do |note|
+          note && note.note.start_with?(starting_with)
         end
       end
 

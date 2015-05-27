@@ -52,8 +52,8 @@ describe MergeRequests::UpdateService do
       end
 
       def find_note(starting_with)
-        @merge_request.notes.find do |n|
-          n && n.note.start_with?(starting_with)
+        @merge_request.notes.find do |note|
+          note && note.note.start_with?(starting_with)
         end
       end
 
