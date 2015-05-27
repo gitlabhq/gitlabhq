@@ -27,6 +27,7 @@ class Dispatcher
         new Milestone()
       when 'projects:milestones:new', 'projects:milestones:edit'
         new ZenMode()
+        new DropzoneInput($('.milestone-form'))
       when 'projects:compare:show'
         new Diff()
       when 'projects:issues:new','projects:issues:edit'
