@@ -346,3 +346,24 @@ Here, `sync_time` is set to `1800` seconds, meaning the LDAP cache will expire e
 For manual GitLab installations, simply uncomment the `sync_time` entry in your `gitlab.yml` and set it to the value you desire.
 
 Please note that changing the LDAP sync time can influence the performance of your GitLab instance.
+
+## What sort of queries can my LDAP server expect from GitLab EE?
+
+Active GitLab users trigger 'permission updates' by signing in or
+interacting with GitLab, and in addtion all GitLab users (active or not) get a
+permission update during the daily sweep. The number of permission updates per
+day depends on how many of your GitLab users are active and on how many
+LDAP-enabled GitLab users exist in your GitLab SQL database.
+
+During a 'permission update' for a user, GitLab does 1-2 queries for the
+specific user, and 1 queries for each LDAP group known to GitLab. GitLab
+fetches all available attributes of LDAP user and group objects on most
+queries. If you use Active Directory, GitLab performs additional
+'extensibleMatch' queries to check for nested group membership and whether the
+user is blocked, one of each per user and group.
+
+Note that usually not all user and group objects in an organization's LDAP tree
+will be known to GitLab. GitLab only queries LDAP user objects corresponding to
+users who use or have used GitLab. Similarly, GitLab only queries LDAP group
+objects that have been (manually) linked to a GitLab group by a GitLab user or
+administrator.
