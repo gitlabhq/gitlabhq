@@ -31,6 +31,7 @@ gem 'omniauth-shibboleth'
 gem 'omniauth-kerberos', group: :kerberos
 gem 'omniauth-gitlab'
 gem 'omniauth-bitbucket'
+gem 'omniauth-saml'
 gem 'doorkeeper', '2.1.3'
 gem "rack-oauth2", "~> 1.0.5"
 
