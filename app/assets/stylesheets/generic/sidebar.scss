@@ -127,6 +127,20 @@
       left: 0px;
       width: 52px;
     }
+
+    .sidebar-user {
+      .username {
+        display: none;
+      }
+
+      .avatar {
+        margin-bottom: 10px;
+      }
+
+      .logout-holder {
+        text-align: center;
+      }
+    }
   }
 }
 
@@ -168,5 +182,17 @@
 
   .page-sidebar-expanded {
     @include expanded-sidebar;
+  }
+}
+
+.sidebar-user {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 10px;
+  color: #fff;
+
+  .avatar {
+    margin-top: 5px;
   }
 }

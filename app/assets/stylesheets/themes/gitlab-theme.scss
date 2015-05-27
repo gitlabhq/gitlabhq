@@ -29,6 +29,12 @@
     .sidebar-wrapper {
       background: $color-darker;
       border-right: 1px solid $color-darker;
+
+      .sidebar-user {
+        a {
+          color: $color-light;
+        }
+      }
     }
 
     .nav-sidebar li {
