@@ -145,7 +145,7 @@ describe 'GitLab Markdown' do
 
       it 'removes `rel` attribute from links' do
         body = get_section('sanitizationfilter')
-        expect(body).not_to have_selector('a[rel]')
+        expect(body).not_to have_selector('a[rel="bookmark"]')
       end
 
       it "removes `href` from `a` elements if it's fishy" do
@@ -230,6 +230,18 @@ describe 'GitLab Markdown' do
           body = get_section('autolinkfilter')
           expect(body).not_to have_selector("#{elem} a")
         end
+      end
+    end
+
+    describe 'ExternalLinkFilter' do
+      let(:links) { get_section('externallinkfilter').next_element }
+
+      it 'adds nofollow to external link' do
+        expect(links.css('a').first.to_html).to match 'nofollow'
+      end
+
+      it 'ignores internal link' do
+        expect(links.css('a').last.to_html).not_to match 'nofollow'
       end
     end
 

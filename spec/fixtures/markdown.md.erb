@@ -79,7 +79,7 @@ As permissive as it is, we've allowed even more stuff:
 
 <span>span tag</span>
 
-<a href="#" rel="nofollow">This is a link with a defined rel attribute, which should be removed</a>
+<a href="#" rel="bookmark">This is a link with a defined rel attribute, which should be removed</a>
 
 <a href="javascript:alert('Hi')">This is a link trying to be sneaky. It gets its link removed entirely.</a>
 
@@ -126,6 +126,13 @@ But it shouldn't autolink text inside certain tags:
 - <code>http://about.gitlab.com/</code>
 - <a>http://about.gitlab.com/</a>
 - <kbd>http://about.gitlab.com/</kbd>
+
+### ExternalLinkFilter
+
+External links get a `rel="nofollow"` attribute:
+
+- [Google](https://google.com/)
+- [GitLab Root](<%= Gitlab.config.gitlab.url %>)
 
 ### Reference Filters (e.g., #<%= issue.iid %>)
 
