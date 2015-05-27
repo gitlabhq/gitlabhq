@@ -497,6 +497,12 @@ v 7.5.0
   - Fix raw view for public snippets
   - Use secret token with GitLab internal API.
   - Add missing timestamps to 'members' table
+  
+v 7.4.5
+  - Bump gitlab_git to 7.0.0.rc12 (includes Rugged 0.21.2)
+  
+v 7.4.4
+  - No changes
 
 v 7.4.3
   - Fix raw snippets view
