@@ -1,6 +1,12 @@
 v 7.12 (Unreleased)
   - Fix error when viewing merge request with a commit that includes "Closes #<issue id>".
 
+v 7.11.4
+  - no changes specific to EE
+
+v 7.11.3
+  - Fixed an issue with git annex
+
 v 7.11.2
   - Fixed license upload and verification mechanism
 
