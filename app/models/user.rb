@@ -689,4 +689,8 @@ class User < ActiveRecord::Base
 
     true
   end
+
+  def can_be_removed?
+    !solo_owned_groups.present?
+  end
 end

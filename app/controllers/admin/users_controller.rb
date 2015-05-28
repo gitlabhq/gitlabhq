@@ -86,11 +86,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def destroy
-    # 1. Remove groups where user is the only owner
-    user.solo_owned_groups.map(&:destroy)
-
-    # 2. Remove user with all authored content including personal projects
-    user.destroy
+    DeleteUserService.new.execute(user)
 
     respond_to do |format|
       format.html { redirect_to admin_users_path }

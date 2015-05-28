@@ -572,7 +572,6 @@ describe User do
   end
 
   describe "#contributed_projects_ids" do
-
     subject { create(:user) }
     let!(:project1) { create(:project) }
     let!(:project2) { create(:project, forked_from_project: project3) }
@@ -596,6 +595,23 @@ describe User do
 
     it "doesn't include IDs for unrelated projects" do
       expect(subject.contributed_projects_ids).not_to include(project2.id)
+    end
+  end
+
+  describe :can_be_removed? do
+    subject { create(:user) }
+
+    context 'no owned groups' do
+      it { expect(subject.can_be_removed?).to be_truthy }
+    end
+
+    context 'has owned groups' do
+      before do
+        group = create(:group)
+        group.add_owner(subject)
+      end
+
+      it { expect(subject.can_be_removed?).to be_falsey }
     end
   end
 end
