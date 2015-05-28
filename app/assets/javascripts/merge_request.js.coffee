@@ -3,15 +3,30 @@
 #= require task_list
 
 class @MergeRequest
+  # Initialize MergeRequest behavior
+  #
+  # Options:
+  #   action         - String, current controller action
+  #   diffs_loaded   - Boolean, have diffs been pre-rendered server-side?
+  #                    (default: true if `action` is 'diffs', otherwise false)
+  #   commits_loaded - Boolean, have commits been pre-rendered server-side?
+  #                    (default: false)
+  #
+  #   check_enable           - Boolean, whether to check automerge status
+  #   url_to_automerge_check - String, URL to use to check automerge status
+  #   current_status         - String, current automerge status
+  #   ci_enable              - Boolean, whether a CI service is enabled
+  #   url_to_ci_check        - String, URL to use to check CI status
+  #
   constructor: (@opts) ->
     @initContextWidget()
     this.$el = $('.merge-request')
-    @diffs_loaded = if @opts.action == 'diffs' then true else false
-    @commits_loaded = false
 
-    this.activateTab(@opts.action)
+    @diffs_loaded = @opts.diffs_loaded or @opts.action == 'diffs'
+    @commits_loaded = @opts.commits_loaded or false
 
     this.bindEvents()
+    this.activateTabFromHash()
 
     this.initMergeWidget()
     this.$('.show-all-commits').on 'click', =>
@@ -65,8 +80,21 @@ class @MergeRequest
       , 'json'
 
   bindEvents: ->
-    this.$('.merge-request-tabs').on 'click', 'li', (event) =>
-      this.activateTab($(event.currentTarget).data('action'))
+    this.$('.merge-request-tabs a[data-toggle="tab"]').on 'shown.bs.tab', (e) =>
+      $target = $(e.target)
+
+      # Nothing else to be done if we're on the first tab
+      return if $target.data('action') == 'notes'
+
+      # Persist current tab selection via URL
+      href = $target.attr('href')
+      if href.substr(0,1) == '#'
+        location.replace("#!#{href.substr(1)}")
+
+      # Lazy-load diffs
+      if $target.data('action') == 'diffs'
+        this.loadDiff() unless @diffs_loaded
+        $('.diff-header').trigger("sticky_kit:recalc")
 
     this.$('.accept_merge_request').on 'click', ->
       $('.automerge_widget.can_be_merged').hide()
@@ -84,21 +112,27 @@ class @MergeRequest
       this.$('.remove_source_branch_in_progress').hide()
       this.$('.remove_source_branch_widget.failed').show()
 
-  activateTab: (action) ->
-    this.$('.merge-request-tabs li').removeClass 'active'
-    this.$('.tab-content').hide()
-    switch action
-      when 'diffs'
-        this.$('.merge-request-tabs .diffs-tab').addClass 'active'
-        this.loadDiff() unless @diffs_loaded
-        this.$('.diffs').show()
-        $(".diff-header").trigger("sticky_kit:recalc")
-      when 'commits'
-        this.$('.merge-request-tabs .commits-tab').addClass 'active'
-        this.$('.commits').show()
-      else
-        this.$('.merge-request-tabs .notes-tab').addClass 'active'
-        this.$('.notes').show()
+  # Activates a tab section based on the `#!` URL hash
+  #
+  # If no hash value is present (i.e., on the initial page load), the first tab
+  # is selected by default.
+  #
+  # ... unless the current controller action is `diffs`, in which case that tab
+  # is selected instead. Fun, right?
+  #
+  # Note: We use a `#!` instead of a standard URL hash for two reasons:
+  #
+  # 1. Prevents the hash acting like an anchor and scrolling the page.
+  # 2. Prevents mutating browser history.
+  activateTabFromHash: ->
+    # Correct the hash if we came here directly via the `/diffs` path
+    if location.hash == '' and @opts.action == 'diffs'
+      location.replace('#!diffs')
+
+    if location.hash == ''
+      this.$('.merge-request-tabs a[data-toggle="tab"]:first').tab('show')
+    else if location.hash.substr(0,2) == '#!'
+      this.$(".merge-request-tabs a[href='##{location.hash.substr(2)}']").tab("show")
 
   showState: (state) ->
     $('.automerge_widget').hide()
@@ -127,7 +161,7 @@ class @MergeRequest
   loadDiff: (event) ->
     $.ajax
       type: 'GET'
-      url: this.$('.merge-request-tabs .diffs-tab a').attr('href') + ".json"
+      url: this.$('.merge-request-tabs .diffs-tab a').data('source') + ".json"
       beforeSend: =>
         this.$('.mr-loading-status .loading').show()
       complete: =>

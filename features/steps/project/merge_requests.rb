@@ -113,7 +113,10 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click on the Changes tab via Javascript' do
-    find('.diffs-tab').click
+    within '.merge-request-tabs' do
+      click_link 'Changes'
+    end
+
     sleep 2
   end
 
