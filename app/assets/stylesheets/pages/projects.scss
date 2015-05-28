@@ -209,13 +209,9 @@ ul.nav.nav-projects-tabs {
     line-height: 1.5;
   }
 
-  .well {
-    padding: 14px;
-
-    h4 {
-      font-weight: normal;
-      margin: 0;
-      color: #555;
+  .panel {
+    .panel-heading, .panel-footer {
+      background-color: #fcfcfc;
     }
 
     .actions {
@@ -224,10 +220,12 @@ ul.nav.nav-projects-tabs {
 
     .nav-pills a {
       padding: 10px;
+      font-weight: bold;
+      color: $gl-link-color;
     }
 
     .nav {
-      margin: 10px 0;
+      margin-bottom: 10px;
     }
   }
 
