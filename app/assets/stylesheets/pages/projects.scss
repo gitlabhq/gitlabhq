@@ -48,14 +48,16 @@
     }
 
     .project-home-desc {
+      color: $gray;
+      float: left;
       font-size: 16px;
       line-height: 1.3;
       margin-right: 250px;
-    }
 
-    .project-home-desc {
-      float: left;
-      color: $gray;
+      // Render Markdown-generated HTML inline for this block
+      p {
+        display: inline;
+      }
     }
   }
 
