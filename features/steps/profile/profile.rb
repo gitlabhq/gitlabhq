@@ -3,7 +3,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   include SharedPaths
 
   step 'I should see my profile info' do
-    page.should have_content "Profile Settings"
+    page.should have_content "This information will appear on your profile"
   end
 
   step 'I change my profile info' do
