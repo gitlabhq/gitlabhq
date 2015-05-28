@@ -22,7 +22,7 @@ require 'spec_helper'
 describe Note do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
-    it { is_expected.to belong_to(:noteable) }
+    it { is_expected.to belong_to(:noteable).touch(true) }
     it { is_expected.to belong_to(:author).class_name('User') }
   end
 
