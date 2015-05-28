@@ -1,4 +1,9 @@
 - page_title "Account"
+%h3.page-title
+  = page_title
+%p.light
+  Change your username and basic account settings.
+%hr
 - if current_user.ldap_user?
   .alert.alert-info
     Some options are unavailable for LDAP accounts
