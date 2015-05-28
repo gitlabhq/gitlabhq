@@ -24,9 +24,16 @@ v 7.12.0 (unreleased)
   - Consistently refer to MRs as either Accepted or Rejected.
   - Add Accepted and Rejected tabs to MR lists.
   - Prefix EmailsOnPush email subject with `[Git]`.
-  - Group project contributions by both name and email. 
+  - Group project contributions by both name and email.
   - Clarify navigation labels for Project Settings and Group Settings.
   - Move user avatar and logout button to sidebar
+
+v 7.11.4
+  - Fix missing bullets when creating lists
+  - Set rel="nofollow" on external links
+
+v 7.11.3
+  - no changes
 
 v 7.11.2
   - no changes
@@ -34,7 +41,7 @@ v 7.11.2
 v 7.11.1
   - no changes
 
-v 7.11.0 
+v 7.11.0
   - Fall back to Plaintext when Syntaxhighlighting doesn't work. Fixes some buggy lexers (Hannes Rosenögger)
   - Get editing comments to work in Chrome 43 again.
   - Fix broken view when viewing history of a file that includes a path that used to be another file (Stan Hu)
@@ -189,12 +196,12 @@ v 7.10.0
   - Ability to skip some items from backup (database, respositories or uploads)
   - Archive repositories in background worker.
   - Import GitHub, Bitbucket or GitLab.com projects owned by authenticated user into current namespace.
-  - Project labels are now available over the API under the "tag_list" field (Cristian Medina) 
+  - Project labels are now available over the API under the "tag_list" field (Cristian Medina)
   - Fixed link paths for HTTP and SSH on the admin project view (Jeremy Maziarz)
   - Fix and improve help rendering (Sullivan Sénéchal)
   - Fix final line in EmailsOnPush email diff being rendered as error.
   - Prevent duplicate Buildkite service creation.
-  - Fix git over ssh errors 'fatal: protocol error: bad line length character' 
+  - Fix git over ssh errors 'fatal: protocol error: bad line length character'
   - Automatically setup GitLab CI project for forks if origin project has GitLab CI enabled
   - Bust group page project list cache when namespace name or path changes.
   - Explicitly set image alt-attribute to prevent graphical glitches if gravatars could not be loaded
@@ -203,7 +210,7 @@ v 7.10.0
   - Fix stuck Merge Request merging events from old installations (Ben Bodenmiller)
   - Fix merge request comments on files with multiple commits
   - Fix Resource Owner Password Authentication Flow
-  
+
 v 7.9.4
   - Security: Fix project import URL regex to prevent arbitary local repos from being imported
   - Fixed issue where only 25 commits would load in file listings
@@ -507,10 +514,10 @@ v 7.5.0
   - Fix raw view for public snippets
   - Use secret token with GitLab internal API.
   - Add missing timestamps to 'members' table
-  
+
 v 7.4.5
   - Bump gitlab_git to 7.0.0.rc12 (includes Rugged 0.21.2)
-  
+
 v 7.4.4
   - No changes
 
