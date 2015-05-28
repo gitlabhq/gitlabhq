@@ -26,20 +26,23 @@
             - if current_user.private_token
               = text_field_tag "token", current_user.private_token, class: "form-control"
               %div
-                = f.submit 'Reset private token', data: { confirm: "Are you sure?" }, class: "btn btn-primary btn-build-token"
+                = f.submit 'Reset private token', data: { confirm: "Are you sure?" }, class: "btn btn-default btn-build-token"
             - else
               %span You don`t have one yet. Click generate to fix it.
-              = f.submit 'Generate', class: "btn success btn-build-token"
+              = f.submit 'Generate', class: "btn btn-default btn-build-token"
 
   - unless current_user.ldap_user?
-    - if current_user.otp_required_for_login
-      .panel.panel-success
-        .panel-heading
-          Two-factor Authentication enabled
-        .panel-body
+    .panel.panel-default
+      .panel-heading
+        Two-factor Authentication
+      .panel-body
+        - if current_user.otp_required_for_login
           .pull-right
             = link_to 'Disable Two-factor Authentication', profile_two_factor_auth_path, method: :delete, class: 'btn btn-close btn-sm',
                 data: { confirm: 'Are you sure?' }
+          %p.text-success
+            %strong
+              Two-factor Authentication is enabled
           %p
             If you lose your recovery codes you can
             %strong
@@ -47,11 +50,7 @@
                 = link_to 'generate new ones', codes_profile_two_factor_auth_path, method: :post, data: { confirm: 'Are you sure?' }
             invalidating all previous codes.
 
-    - else
-      .panel.panel-default
-        .panel-heading
-          Two-factor Authentication
-        .panel-body
+        - else
           %p
             Increase your account's security by enabling two-factor authentication (2FA).
           %p
