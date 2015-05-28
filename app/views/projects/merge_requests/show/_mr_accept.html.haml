@@ -1,14 +1,17 @@
 - unless @allowed_to_merge
   - if @project.archived?
     %p
-      %strong Archived projects cannot be committed to!
+      %strong Archived projects do not provide commit access.
   - else
     .automerge_widget.cannot_be_merged.hide
-      %strong This request can't be merged automatically. Even if it could be merged, you don't have permission to do so.
+      %strong This merge request contains merge conflicts that must be resolved.
+      Only those with write access to this repository can merge merge requests.
     .automerge_widget.work_in_progress.hide
-      %strong This request can't be accepted because it is marked a Work In Progress. Even if it could be accepted, you don't have permission to do so.
+      %strong This merge request is marked as Work In Progress.
+      Only those with write access to this repository can merge merge requests.
     .automerge_widget.can_be_merged.hide
-      %strong This request can be merged automatically, but you don't have permission to do so.
+      %strong This request can be merged automatically.
+      Only those with write access to this repository can merge merge requests.
 
 
 - if @show_merge_controls
@@ -34,7 +37,7 @@
 
         %br
         .light
-          If you still want to merge this request manually - use
+          If you want to merge this request manually, you can use the
           %strong
             = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
 
@@ -42,47 +45,45 @@
   .automerge_widget.no_satellite.hide
     %p
       %span
-        %strong This repository does not have satellite. Ask an administrator to fix this issue
+        %strong This repository does not have a satellite. Please ask an administrator to fix this issue!
 
   .automerge_widget.cannot_be_merged.hide
     %h4
-      This request can't be merged with GitLab.
-      You should do it manually with
+      This pull request contains merge conflicts that must be resolved.
+      You can try it manually on the
       %strong
-        = link_to "#modal_merge_info", class: "underlined-link how_to_merge_link", title: "How To Merge", "data-toggle" => "modal" do
-          command line
+        = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
 
     %p
       %button.btn.disabled{:type => 'button'}
         %i.fa.fa-warning
         Accept Merge Request
       &nbsp;
-      This usually happens when Git can not resolve conflicts between branches automatically.
+      This happens when Git is not able to automatically resolve conflicts between branches.
 
   .automerge_widget.work_in_progress.hide
     %h4
-      This request can't be accepted because it is marked a <strong>Work In Progress</strong>.
+      This request cannot be merged because it is marked as <strong>Work In Progress</strong>.
 
     %p
       %button.btn.disabled{:type => 'button'}
         %i.fa.fa-warning
         Accept Merge Request
       &nbsp;
-
-      When the merge request is ready, remove the "WIP" prefix from the title to allow it to be accepted.
+      When the merge request is ready, remove the "WIP" prefix from the title to allow merging.
 
   .automerge_widget.unchecked
     %p
       %strong
         %i.fa.fa-spinner.fa-spin
-        Checking for ability to automatically merge…
+        Checking automatic merge…
 
   .automerge_widget.already_cannot_be_merged.hide
     %p
-      %strong This merge request can not be merged. Try to reload the page.
+      %strong This merge request cannot be merged. Try to reload the page.
 
   .merge-in-progress.hide
     %p
       %i.fa.fa-spinner.fa-spin
       &nbsp;
-      Merge is in progress. Please wait. Page will be automatically reloaded. &nbsp;
+      Merge is in progress. Please wait… Page will be reloaded automatically. &nbsp;
