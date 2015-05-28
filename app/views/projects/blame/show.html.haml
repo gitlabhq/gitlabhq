@@ -32,5 +32,5 @@
                 %code
                   :erb
                     <% lines.each do |line| %>
-                      <%= highlight(@blob.name, line, true).html_safe %>
+                      <%= highlight(@blob.name, line, nowrap: true, continue: true).html_safe %>
                     <% end %>
