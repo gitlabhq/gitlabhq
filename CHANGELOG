@@ -28,6 +28,7 @@ v 7.12.0 (unreleased)
   - Group project contributions by both name and email. 
   - Clarify navigation labels for Project Settings and Group Settings.
   - Move user avatar and logout button to sidebar
+  - You can not remove user if he/she is an only owner of group
 
 v 7.11.2
   - no changes
