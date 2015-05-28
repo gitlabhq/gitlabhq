@@ -1,13 +1,18 @@
 - page_title "Account"
+%h3.page-title
+  = page_title
+%p.light
+  Change your username and basic account settings.
+%hr
 - if current_user.ldap_user?
   .alert.alert-info
     Some options are unavailable for LDAP accounts
 
 .account-page
-  %fieldset.update-token
-    %legend
+  .panel.panel-default.update-token
+    .panel-heading
       Reset Private token
-    %div
+    .panel-body
       = form_for @user, url: reset_private_token_profile_path, method: :put do |f|
         .data
           %p
@@ -27,12 +32,11 @@
               = f.submit 'Generate', class: "btn success btn-build-token"
 
   - unless current_user.ldap_user?
-    %fieldset
-      - if current_user.otp_required_for_login
-        %legend.text-success
-          = icon('check')
+    - if current_user.otp_required_for_login
+      .panel.panel-success
+        .panel-heading
           Two-factor Authentication enabled
-        %div
+        .panel-body
           .pull-right
             = link_to 'Disable Two-factor Authentication', profile_two_factor_auth_path, method: :delete, class: 'btn btn-close btn-sm',
                 data: { confirm: 'Are you sure?' }
@@ -43,9 +47,11 @@
                 = link_to 'generate new ones', codes_profile_two_factor_auth_path, method: :post, data: { confirm: 'Are you sure?' }
             invalidating all previous codes.
 
-      - else
-        %legend Two-factor Authentication
-        %div
+    - else
+      .panel.panel-default
+        .panel-heading
+          Two-factor Authentication
+        .panel-body
           %p
             Increase your account's security by enabling two-factor authentication (2FA).
           %p
@@ -55,42 +61,45 @@
             = link_to 'Enable Two-factor Authentication', new_profile_two_factor_auth_path, class: 'btn btn-success'
 
   - if show_profile_social_tab?
-    %fieldset
-      %legend Connected Accounts
-      .oauth-buttons.append-bottom-10
-        %p Click on icon to activate signin with one of the following services
-        - enabled_social_providers.each do |provider|
-          .btn-group
-            = link_to oauth_image_tag(provider), omniauth_authorize_path(User, provider),
-              method: :post, class: "btn btn-lg #{'active' if oauth_active?(provider)}"
-            - if oauth_active?(provider)
-              = link_to unlink_profile_account_path(provider: provider), method: :delete, class: 'btn btn-lg' do
-                = icon('close')
+    .panel.panel-default
+      .panel-heading
+        Connected Accounts
+      .panel-body
+        .oauth-buttons.append-bottom-10
+          %p Click on icon to activate signin with one of the following services
+          - enabled_social_providers.each do |provider|
+            .btn-group
+              = link_to oauth_image_tag(provider), omniauth_authorize_path(User, provider),
+                method: :post, class: "btn btn-lg #{'active' if oauth_active?(provider)}"
+              - if oauth_active?(provider)
+                = link_to unlink_profile_account_path(provider: provider), method: :delete, class: 'btn btn-lg' do
+                  = icon('close')
 
   - if show_profile_username_tab?
-    %fieldset.update-username
-      %legend
+    .panel.panel-warning.update-username
+      .panel-heading
         Change Username
-      = form_for @user, url: update_username_profile_path,  method: :put, remote: true do |f|
-        %p
-          Changing your username will change path to all personal projects!
-        %div
-          = f.text_field :username, required: true, class: 'form-control'
-          &nbsp;
-        .loading-gif.hide
+      .panel-body
+        = form_for @user, url: update_username_profile_path,  method: :put, remote: true do |f|
           %p
-            = icon('spinner spin')
-            Saving new username
-        %p.light
-          = user_url(@user)
-        %div
-          = f.submit 'Save username', class: "btn btn-warning"
+            Changing your username will change path to all personal projects!
+          %div
+            = f.text_field :username, required: true, class: 'form-control'
+            &nbsp;
+          .loading-gif.hide
+            %p
+              = icon('spinner spin')
+              Saving new username
+          %p.light
+            = user_url(@user)
+          %div
+            = f.submit 'Save username', class: "btn btn-warning"
 
   - if show_profile_remove_tab?
-    %fieldset.remove-account
-      %legend
+    .panel.panel-danger.remove-account
+      .panel-heading
         Remove account
-      %div
+      .panel-body
         - if @user.can_be_removed?
           %p Deleting an account has the following effects:
           %ul
@@ -106,4 +115,3 @@
               %strong #{@user.solo_owned_groups.map(&:name).join(', ')}
             %p
               You must transfer ownership or delete these groups before you can delete yur account.
-

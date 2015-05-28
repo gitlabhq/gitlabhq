@@ -1,12 +1,15 @@
 - page_title "Applications"
 %h3.page-title
-  Application Settings
+  = page_title
 %p.light
   OAuth2 protocol settings below.
+%hr
 
-%fieldset.oauth-applications
-  %legend Your applications
-  %p= link_to 'New Application', new_oauth_application_path, class: 'btn btn-success'
+.oauth-applications
+  %h3
+    Your applications
+    .pull-right
+      = link_to 'New Application', new_oauth_application_path, class: 'btn btn-success'
   - if @applications.any?
     %table.table.table-striped
       %thead
@@ -27,8 +30,9 @@
             %td= link_to 'Edit', edit_oauth_application_path(application), class: 'btn btn-link btn-sm'
             %td= render 'doorkeeper/applications/delete_form', application: application
 
-%fieldset.oauth-authorized-applications.prepend-top-20
-  %legend Authorized applications
+.oauth-authorized-applications.prepend-top-20
+  %h3
+    Authorized applications
 
   - if @authorized_tokens.any?
     %table.table.table-striped
