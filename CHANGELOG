@@ -34,6 +34,7 @@ v 7.12.0 (unreleased)
   - You can not remove user if he/she is an only owner of group
   - User should be able to leave group. If not - show him proper message
   - User has ability to leave project
+  - Add SAML support as an omniauth provider
 
 v 7.11.4
   - Fix missing bullets when creating lists
@@ -41,7 +42,6 @@ v 7.11.4
 
 v 7.11.3
   - no changes
-  - Add SAML support as an omniauth provider
 
 v 7.11.2
   - no changes
