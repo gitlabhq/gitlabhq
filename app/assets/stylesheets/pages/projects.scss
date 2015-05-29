@@ -210,8 +210,13 @@ ul.nav.nav-projects-tabs {
   }
 
   .panel {
+    @include border-radius(3px);
+
     .panel-heading, .panel-footer {
-      background-color: #fcfcfc;
+      font-weight: normal;
+      background-color: transparent;
+      color: #666;
+      border-color: #EEE;
     }
 
     .actions {
@@ -225,7 +230,7 @@ ul.nav.nav-projects-tabs {
     }
 
     .nav {
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
   }
 

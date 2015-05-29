@@ -20,23 +20,23 @@
             = icon('search')
         %li
           = link_to help_path, title: 'Help', data: {toggle: 'tooltip', placement: 'bottom'} do
-            = icon('question-circle')
+            = icon('question-circle fw')
         %li
           = link_to explore_root_path, title: 'Explore', data: {toggle: 'tooltip', placement: 'bottom'} do
-            = icon('globe')
+            = icon('globe fw')
         %li
           = link_to user_snippets_path(current_user), title: 'Your snippets', data: {toggle: 'tooltip', placement: 'bottom'} do
-            = icon('clipboard')
+            = icon('clipboard fw')
         - if current_user.is_admin?
           %li
             = link_to admin_root_path, title: 'Admin area', data: {toggle: 'tooltip', placement: 'bottom'} do
-              = icon('wrench')
+              = icon('wrench fw')
         - if current_user.can_create_project?
           %li
             = link_to new_project_path, title: 'New project', data: {toggle: 'tooltip', placement: 'bottom'} do
-              = icon('plus')
+              = icon('plus fw')
         %li
           = link_to profile_path, title: 'Profile settings', data: {toggle: 'tooltip', placement: 'bottom'} do
-            = icon('cog')
+            = icon('cog fw')
 
 = render 'shared/outdated_browser'
