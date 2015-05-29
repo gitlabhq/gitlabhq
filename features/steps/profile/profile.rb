@@ -7,21 +7,23 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I change my profile info' do
-    fill_in "user_skype", with: "testskype"
-    fill_in "user_linkedin", with: "testlinkedin"
-    fill_in "user_twitter", with: "testtwitter"
-    fill_in "user_website_url", with: "testurl"
-    fill_in "user_location", with: "Ukraine"
-    click_button "Save changes"
+    fill_in 'user_skype', with: 'testskype'
+    fill_in 'user_linkedin', with: 'testlinkedin'
+    fill_in 'user_twitter', with: 'testtwitter'
+    fill_in 'user_website_url', with: 'testurl'
+    fill_in 'user_location', with: 'Ukraine'
+    fill_in 'user_bio', with: 'I <3 GitLab'
+    click_button 'Save changes'
     @user.reload
   end
 
   step 'I should see new profile info' do
-    @user.skype.should == 'testskype'
-    @user.linkedin.should == 'testlinkedin'
-    @user.twitter.should == 'testtwitter'
-    @user.website_url.should == 'testurl'
-    find("#user_location").value.should == "Ukraine"
+    expect(@user.skype).to eq 'testskype'
+    expect(@user.linkedin).to eq 'testlinkedin'
+    expect(@user.twitter).to eq 'testtwitter'
+    expect(@user.website_url).to eq 'testurl'
+    expect(@user.bio).to eq 'I <3 GitLab'
+    find('#user_location').value.should == 'Ukraine'
   end
 
   step 'I change my avatar' do
