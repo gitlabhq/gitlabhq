@@ -36,6 +36,7 @@ v 7.11.4
 
 v 7.11.3
   - no changes
+  - Add SAML support as an omniauth provider
 
 v 7.11.2
   - no changes
