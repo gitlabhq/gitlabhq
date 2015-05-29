@@ -42,6 +42,13 @@ module Gitlab::Markdown
     end
 
     describe 'custom whitelist' do
+      it 'customizes the whitelist only once' do
+        instance = described_class.new('Foo')
+        3.times { instance.whitelist }
+
+        expect(instance.whitelist[:transformers].size).to eq 4
+      end
+
       it 'allows syntax highlighting' do
         exp = act = %q{<pre class="code highlight white c"><code><span class="k">def</span></code></pre>}
         expect(filter(act).to_html).to eq exp
@@ -85,6 +92,13 @@ module Gitlab::Markdown
 
         expect(doc.css('a').size).to eq 1
         expect(doc.at_css('a')['href']).to be_nil
+      end
+    end
+
+    context 'when pipeline is :description' do
+      it 'uses a stricter whitelist' do
+        doc = filter('<h1>My Project</h1>', pipeline: :description)
+        expect(doc.to_html.strip).to eq 'My Project'
       end
     end
   end

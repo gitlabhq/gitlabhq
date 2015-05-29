@@ -57,6 +57,9 @@ module Gitlab
       pipeline = HTML::Pipeline.new(filters)
 
       context = {
+        # SanitizationFilter
+        pipeline: options[:pipeline],
+
         # EmojiFilter
         asset_root: Gitlab.config.gitlab.url,
         asset_host: Gitlab::Application.config.asset_host,
