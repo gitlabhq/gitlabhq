@@ -30,6 +30,7 @@ v 7.12.0 (unreleased)
   - Clarify navigation labels for Project Settings and Group Settings.
   - Move user avatar and logout button to sidebar
   - You can not remove user if he/she is an only owner of group
+  - User has ability to leave project
 
 v 7.11.4
   - Fix missing bullets when creating lists
