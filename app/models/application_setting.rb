@@ -18,6 +18,7 @@
 #  default_project_visibility   :integer
 #  default_snippet_visibility   :integer
 #  restricted_signup_domains    :text
+#  user_oauth_applications      :bool             default(TRUE)
 #
 
 class ApplicationSetting < ActiveRecord::Base

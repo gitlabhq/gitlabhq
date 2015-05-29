@@ -1,6 +1,8 @@
 class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
+  include Gitlab::CurrentSettings
   include PageLayoutHelper
   
+  before_action :verify_user_oauth_applications_enabled
   before_action :authenticate_user!
 
   layout 'profile'
@@ -31,6 +33,12 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   end
 
   private
+
+  def verify_user_oauth_applications_enabled
+    return if current_application_settings.user_oauth_applications?
+
+    redirect_to applications_profile_url
+  end
 
   def set_application
     @application = current_user.oauth_applications.find(params[:id])

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150516060434) do
+ActiveRecord::Schema.define(version: 20150529111607) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(version: 20150516060434) do
     t.integer  "default_project_visibility"
     t.integer  "default_snippet_visibility"
     t.text     "restricted_signup_domains"
+    t.boolean  "user_oauth_applications",      default: true
   end
 
   create_table "broadcast_messages", force: true do |t|
