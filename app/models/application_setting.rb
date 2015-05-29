@@ -19,6 +19,7 @@
 #  default_snippet_visibility   :integer
 #  restricted_signup_domains    :text
 #  user_oauth_applications      :bool             default(TRUE)
+#  after_sign_out_path          :string(255)
 #
 
 class ApplicationSetting < ActiveRecord::Base
@@ -30,6 +31,10 @@ class ApplicationSetting < ActiveRecord::Base
     allow_blank: true,
     format: { with: /\A#{URI.regexp(%w(http https))}\z/, message: "should be a valid url" },
     if: :home_page_url_column_exist
+
+  validates :after_sign_out_path,
+    allow_blank: true,
+    format: { with: /\A#{URI.regexp(%w(http https))}\z/, message: "should be a valid url" }
 
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?
