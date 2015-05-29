@@ -66,7 +66,11 @@ class Groups::GroupMembersController < Groups::ApplicationController
       @group_member.destroy
       redirect_to(dashboard_groups_path, notice: "You left #{group.name} group.")
     else
-      return render_403
+      if @group.last_owner?(current_user)
+        redirect_to(dashboard_groups_path, alert: "You can not leave #{group.name} group because you're the last owner. Transfer or delete the group.")
+      else
+        return render_403
+      end
     end
   end
 
