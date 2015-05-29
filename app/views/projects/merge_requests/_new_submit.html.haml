@@ -20,12 +20,12 @@
 .mr-compare.merge-request
   %ul.nav.nav-tabs.merge-request-tabs
     %li.commits-tab
-      = link_to '#commits', data: {action: 'commits', toggle: 'tab'} do
+      = link_to url_for(params), data: {target: '#commits', action: 'commits', toggle: 'tab'} do
         = icon('history')
         Commits
         %span.badge= @commits.size
     %li.diffs-tab
-      = link_to '#diffs', data: {action: 'diffs', toggle: 'tab'} do
+      = link_to url_for(params), data: {target: '#diffs', action: 'diffs', toggle: 'tab'} do
         = icon('list-alt')
         Changes
         %span.badge= @diffs.size
@@ -56,7 +56,7 @@
 :javascript
   var merge_request
   merge_request = new MergeRequest({
-    action: 'diffs',
+    action: 'new',
     diffs_loaded: true,
     commits_loaded: true
   });

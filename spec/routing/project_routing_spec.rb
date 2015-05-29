@@ -208,21 +208,29 @@ describe Projects::RefsController, 'routing' do
   end
 end
 
-#           diffs_project_merge_request GET    /:project_id/merge_requests/:id/diffs(.:format)           projects/merge_requests#diffs
-#       automerge_project_merge_request POST   /:project_id/merge_requests/:id/automerge(.:format)       projects/merge_requests#automerge
-# automerge_check_project_merge_request GET    /:project_id/merge_requests/:id/automerge_check(.:format) projects/merge_requests#automerge_check
-#    branch_from_project_merge_requests GET    /:project_id/merge_requests/branch_from(.:format)         projects/merge_requests#branch_from
-#      branch_to_project_merge_requests GET    /:project_id/merge_requests/branch_to(.:format)           projects/merge_requests#branch_to
-#                project_merge_requests GET    /:project_id/merge_requests(.:format)                     projects/merge_requests#index
-#                                       POST   /:project_id/merge_requests(.:format)                     projects/merge_requests#create
-#             new_project_merge_request GET    /:project_id/merge_requests/new(.:format)                 projects/merge_requests#new
-#            edit_project_merge_request GET    /:project_id/merge_requests/:id/edit(.:format)            projects/merge_requests#edit
-#                 project_merge_request GET    /:project_id/merge_requests/:id(.:format)                 projects/merge_requests#show
-#                                       PUT    /:project_id/merge_requests/:id(.:format)                 projects/merge_requests#update
-#                                       DELETE /:project_id/merge_requests/:id(.:format)                 projects/merge_requests#destroy
+#               diffs_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id/diffs(.:format)               projects/merge_requests#diffs
+#             commits_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id/commits(.:format)             projects/merge_requests#commits
+#           automerge_namespace_project_merge_request POST     /:namespace_id/:project_id/merge_requests/:id/automerge(.:format)           projects/merge_requests#automerge
+#     automerge_check_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id/automerge_check(.:format)     projects/merge_requests#automerge_check
+#           ci_status_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id/ci_status(.:format)           projects/merge_requests#ci_status
+# toggle_subscription_namespace_project_merge_request POST     /:namespace_id/:project_id/merge_requests/:id/toggle_subscription(.:format) projects/merge_requests#toggle_subscription
+#        branch_from_namespace_project_merge_requests GET      /:namespace_id/:project_id/merge_requests/branch_from(.:format)             projects/merge_requests#branch_from
+#          branch_to_namespace_project_merge_requests GET      /:namespace_id/:project_id/merge_requests/branch_to(.:format)               projects/merge_requests#branch_to
+#    update_branches_namespace_project_merge_requests GET      /:namespace_id/:project_id/merge_requests/update_branches(.:format)         projects/merge_requests#update_branches
+#                    namespace_project_merge_requests GET      /:namespace_id/:project_id/merge_requests(.:format)                         projects/merge_requests#index
+#                                                     POST     /:namespace_id/:project_id/merge_requests(.:format)                         projects/merge_requests#create
+#                 new_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/new(.:format)                     projects/merge_requests#new
+#                edit_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id/edit(.:format)                projects/merge_requests#edit
+#                     namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id(.:format)                     projects/merge_requests#show
+#                                                     PATCH    /:namespace_id/:project_id/merge_requests/:id(.:format)                     projects/merge_requests#update
+#                                                     PUT      /:namespace_id/:project_id/merge_requests/:id(.:format)                     projects/merge_requests#update
 describe Projects::MergeRequestsController, 'routing' do
   it 'to #diffs' do
     expect(get('/gitlab/gitlabhq/merge_requests/1/diffs')).to route_to('projects/merge_requests#diffs', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
+  end
+
+  it 'to #commits' do
+    expect(get('/gitlab/gitlabhq/merge_requests/1/commits')).to route_to('projects/merge_requests#commits', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
   end
 
   it 'to #automerge' do
