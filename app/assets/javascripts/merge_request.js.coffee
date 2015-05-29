@@ -148,6 +148,9 @@ class @MergeRequest
     unless action == 'notes'
       new_state += "/#{action}"
 
+    # Ensure parameters and hash come along for the ride
+    new_state += location.search + location.hash
+
     # Replace the current history state with the new one without breaking
     # Turbolinks' history.
     #
