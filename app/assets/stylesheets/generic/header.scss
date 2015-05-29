@@ -183,6 +183,13 @@ header {
       font-size: 13px;
       background-color: #f5f5f5;
       border-color: #f5f5f5;
+
+      &:focus {
+        @include box-shadow(none);
+        outline: none;
+        border-color: #DDD;
+        background-color: #FFF;
+      }
     }
   }
 }
