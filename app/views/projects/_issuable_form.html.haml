@@ -15,11 +15,11 @@
     - if issuable.is_a?(MergeRequest)
       %p.help-block
         - if issuable.work_in_progress?
-          This merge request is marked a <strong>Work In Progress</strong>.
-          When it's ready, remove the <code>WIP</code> prefix from the title to allow it to be accepted.
+          Remove the <code>WIP</code> prefix from the title to allow this 
+          <strong>Work In Progress</strong> merge request to be accepted when it's ready.
         - else
-          To prevent this merge request from being accepted before it's ready,
-          mark it a <strong>Work In Progress</strong> by starting the title with <code>[WIP]</code> or <code>WIP:</code>.
+          Start the title with <code>[WIP]</code> or <code>WIP:</code> to prevent a 
+          <strong>Work In Progress</strong> merge request from being accepted before it's ready.
 .form-group.issuable-description
   = f.label :description, 'Description', class: 'control-label'
   .col-sm-10
