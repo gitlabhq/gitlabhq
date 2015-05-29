@@ -94,3 +94,15 @@
         = icon("exclamation-triangle fw")
         Archived project!
       %p Repository is read-only
+
+  - if current_user
+    - access = user_max_access_in_project(current_user, @project)
+    - if access
+      .light-well.light.prepend-top-20
+        %small
+          You have #{access} access to this project.
+          - if @project.project_member_by_id(current_user)
+            %br
+            = link_to leave_namespace_project_project_members_path(@project.namespace, @project),
+              data: { confirm: leave_project_message(@project) }, method: :delete, title: 'Leave project' do
+              Leave this project

@@ -294,4 +294,16 @@ module ProjectsHelper
       nil
     end
   end
+
+  def user_max_access_in_project(user, project)
+    level = project.team.max_member_access(user)
+
+    if level
+      Gitlab::Access.options_with_owner.key(level)
+    end
+  end
+
+  def leave_project_message(project)
+    "Are you sure you want to leave \"#{project.name}\" project?"
+  end
 end
