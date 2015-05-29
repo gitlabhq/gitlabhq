@@ -101,13 +101,13 @@ GEM
     coderay (1.1.0)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
-    coffee-rails (4.0.1)
+    coffee-rails (4.1.0)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0, < 5.0)
-    coffee-script (2.2.0)
+    coffee-script (2.4.1)
       coffee-script-source
       execjs
-    coffee-script-source (1.6.3)
+    coffee-script-source (1.9.1.1)
     colored (1.2)
     colorize (0.5.8)
     columnize (0.9.0)
@@ -418,7 +418,7 @@ GEM
     quiet_assets (1.0.2)
       railties (>= 3.1, < 5.0)
     racc (1.4.10)
-    rack (1.5.2)
+    rack (1.5.3)
     rack-accept (0.4.5)
       rack (>= 0.4)
     rack-attack (4.3.0)
@@ -633,7 +633,7 @@ GEM
       multi_json (~> 1.7)
       twitter-stream (~> 0.1)
     tins (0.13.1)
-    turbolinks (2.0.0)
+    turbolinks (2.5.3)
       coffee-rails
     twitter-stream (0.1.16)
       eventmachine (>= 0.12.8)
@@ -806,7 +806,7 @@ DEPENDENCIES
   test_after_commit
   thin
   tinder (~> 1.9.2)
-  turbolinks
+  turbolinks (~> 2.5.0)
   uglifier
   underscore-rails (~> 1.4.4)
   unf
