@@ -197,7 +197,6 @@ class MergeRequest < ActiveRecord::Base
   def update_merge_request_diff
     if source_branch_changed? || target_branch_changed?
       reload_code
-      mark_as_unchecked
     end
   end
 

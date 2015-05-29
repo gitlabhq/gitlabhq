@@ -79,6 +79,24 @@
     - if can? current_user, :admin_label, issuable.project
       = link_to 'Create new label', new_namespace_project_label_path(issuable.project.namespace, issuable.project), target: :blank
 
+- if issuable.is_a?(MergeRequest)
+  %hr
+    - unless @merge_request.persisted?
+      .form-group
+        = f.label :source_branch, class: 'control-label' do
+          %i.fa.fa-code-fork
+          Source Branch
+        .col-sm-10
+          = f.select(:source_branch, [@merge_request.source_branch], { }, { class: 'source_branch select2 span2', disabled: true })
+          %p.help-block
+          = link_to 'Change source branch', mr_change_branches_path(@merge_request)
+  .form-group
+    = f.label :target_branch, class: 'control-label' do
+      %i.fa.fa-code-fork
+      Target Branch
+    .col-sm-10
+      = f.select(:target_branch, @merge_request.target_branches, { include_blank: "Select branch" }, { class: 'target_branch select2 span2' })
+
 .form-actions
   - if !issuable.project.empty_repo? && (guide_url = contribution_guide_url(issuable.project)) && !issuable.persisted?
     %p

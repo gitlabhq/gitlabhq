@@ -305,6 +305,20 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     fill_in 'issue_search', with: "Fe"
   end
 
+  step 'I click the "Target branch" dropdown' do
+    first('.target_branch').click
+  end
+
+  step 'I select a new target branch' do
+    select "feature", from: "merge_request_target_branch"
+    click_button 'Save'
+  end
+
+  step 'I should see new target branch changes' do
+    page.should have_content 'From fix into feature'
+    page.should have_content 'Target branch changed from master to feature'
+  end
+
   def merge_request
     @merge_request ||= MergeRequest.find_by!(title: "Bug NS-05")
   end

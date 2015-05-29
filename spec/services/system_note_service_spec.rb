@@ -228,6 +228,20 @@ describe SystemNoteService do
     end
   end
 
+  describe '.change_branch' do
+    subject { described_class.change_branch(noteable, project, author, 'target', old_branch, new_branch) }
+    let(:old_branch) { 'old_branch'}
+    let(:new_branch) { 'new_branch'}
+
+    it_behaves_like 'a system note'
+
+    context 'when target branch name changed' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "Target branch changed from `#{old_branch}` to `#{new_branch}`"
+      end
+    end
+  end
+
   describe '.cross_reference' do
     subject { described_class.cross_reference(noteable, mentioner, author) }
 

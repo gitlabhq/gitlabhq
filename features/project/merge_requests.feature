@@ -207,3 +207,11 @@ Feature: Project Merge Requests
     Then I should see that I am subscribed
     When I click button "Unsubscribe"
     Then I should see that I am unsubscribed
+
+  @javascript
+  Scenario: I can change the target branch
+    Given I visit merge request page "Bug NS-04"
+    And I click link "Edit" for the merge request
+    When I click the "Target branch" dropdown
+    And I select a new target branch
+    Then I should see new target branch changes

@@ -149,6 +149,25 @@ class SystemNoteService
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
+  # Called when a branch in Noteable is changed
+  #
+  # noteable    - Noteable object
+  # project     - Project owning noteable
+  # author      - User performing the change
+  # branch_type - 'source' or 'target'
+  # old_branch  - old branch name
+  # new_branch  - new branch nmae
+  #
+  # Example Note text:
+  #
+  #   "Target branch changed from `Old` to `New`"
+  #
+  # Returns the created Note object
+  def self.change_branch(noteable, project, author, branch_type, old_branch, new_branch)
+    body = "#{branch_type} branch changed from `#{old_branch}` to `#{new_branch}`".capitalize
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
   # Called when a Mentionable references a Noteable
   #
   # noteable  - Noteable object being referenced

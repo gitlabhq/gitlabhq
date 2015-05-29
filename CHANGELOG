@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.12.0 (unreleased)
+  - Support editing target branch of merge request (Stan Hu)
   - Refactor permission checks with issues and merge requests project settings (Stan Hu)
   - Fix Markdown preview not working in Edit Milestone page (Stan Hu)
   - Fix Zen Mode not closing with ESC key (Stan Hu)

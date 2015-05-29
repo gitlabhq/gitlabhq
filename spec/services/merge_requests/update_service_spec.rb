@@ -20,7 +20,8 @@ describe MergeRequests::UpdateService do
           description: 'Also please fix',
           assignee_id: user2.id,
           state_event: 'close',
-          label_ids: [label.id]
+          label_ids: [label.id],
+          target_branch: 'target'
         }
       end
 
@@ -39,6 +40,7 @@ describe MergeRequests::UpdateService do
       it { expect(@merge_request).to be_closed }
       it { expect(@merge_request.labels.count).to eq(1) }
       it { expect(@merge_request.labels.first.title).to eq('Bug') }
+      it { expect(@merge_request.target_branch).to eq('target') }
 
       it 'should execute hooks with update action' do
         expect(service).to have_received(:execute_hooks).
@@ -76,6 +78,13 @@ describe MergeRequests::UpdateService do
 
         expect(note).not_to be_nil
         expect(note.note).to eq 'Title changed from **Old title** to **New title**'
+      end
+
+      it 'creates system note about branch change' do
+        note = find_note('Target')
+
+        expect(note).not_to be_nil
+        expect(note.note).to eq 'Target branch changed from `master` to `target`'
       end
     end
   end
