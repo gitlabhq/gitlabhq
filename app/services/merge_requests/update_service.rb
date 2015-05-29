@@ -5,10 +5,11 @@ require_relative 'close_service'
 module MergeRequests
   class UpdateService < MergeRequests::BaseService
     def execute(merge_request)
-      # We don't allow change of source/target projects
+      # We don't allow change of source/target projects and source branch
       # after merge request was created
       params.except!(:source_project_id)
       params.except!(:target_project_id)
+      params.except!(:source_branch)
 
       state = params[:state_event]
 

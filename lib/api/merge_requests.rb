@@ -137,7 +137,6 @@ module API
       # Parameters:
       #   id (required)               - The ID of a project
       #   merge_request_id (required) - ID of MR
-      #   source_branch               - The source branch
       #   target_branch               - The target branch
       #   assignee_id                 - Assignee user ID
       #   title                       - Title of MR
@@ -148,9 +147,14 @@ module API
       #   PUT /projects/:id/merge_request/:merge_request_id
       #
       put ":id/merge_request/:merge_request_id" do
-        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :state_event, :description]
+        attrs = attributes_for_keys [:target_branch, :assignee_id, :title, :state_event, :description]
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
         authorize! :modify_merge_request, merge_request
+
+        # Ensure source_branch is not specified
+        if params[:source_branch].present?
+          render_api_error!('Source branch cannot be changed', 400)
+        end
 
         # Validate label names in advance
         if (errors = validate_label_params(params)).any?
