@@ -38,17 +38,17 @@
   - if @commits.present?
     %ul.nav.nav-tabs.merge-request-tabs
       %li.notes-tab
-        = link_to '#notes', data: {action: 'notes', toggle: 'tab'} do
+        = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#notes', action: 'notes', toggle: 'tab'} do
           = icon('comments')
           Discussion
           %span.badge= @merge_request.mr_and_commit_notes.user.count
       %li.commits-tab
-        = link_to '#commits', data: {action: 'commits', toggle: 'tab'} do
+        = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#commits', action: 'commits', toggle: 'tab'} do
           = icon('history')
           Commits
           %span.badge= @commits.size
       %li.diffs-tab
-        = link_to '#diffs', data: {source: diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), action: 'diffs', toggle: 'tab'} do
+        = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#diffs', action: 'diffs', toggle: 'tab'} do
           = icon('list-alt')
           Changes
           %span.badge= @merge_request.diffs.size
