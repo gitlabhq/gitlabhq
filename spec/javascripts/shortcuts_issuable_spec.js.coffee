@@ -1,10 +1,10 @@
-#= require jquery
-#= require jasmine-fixture
-
 #= require shortcuts_issuable
 
 describe 'ShortcutsIssuable', ->
+  fixture.preload('issuable.html')
+
   beforeEach ->
+    fixture.load('issuable.html')
     @shortcut = new ShortcutsIssuable()
 
   describe '#replyWithSelectedText', ->
@@ -14,7 +14,6 @@ describe 'ShortcutsIssuable', ->
 
     beforeEach ->
       @selector = 'form.js-main-target-form textarea#note_note'
-      affix(@selector)
 
     describe 'with empty selection', ->
       it 'does nothing', ->

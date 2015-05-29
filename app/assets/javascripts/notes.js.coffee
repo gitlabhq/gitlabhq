@@ -1,6 +1,4 @@
-#= require jquery
 #= require autosave
-#= require bootstrap
 #= require dropzone
 #= require dropzone_input
 #= require gfm_auto_complete

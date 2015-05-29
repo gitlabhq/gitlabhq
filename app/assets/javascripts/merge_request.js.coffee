@@ -1,5 +1,4 @@
-#= require jquery
-#= require bootstrap
+#= require jquery.waitforimages
 #= require task_list
 
 class @MergeRequest
