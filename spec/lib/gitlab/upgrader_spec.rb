@@ -22,7 +22,7 @@ describe Gitlab::Upgrader do
     end
 
     it 'should get the latest version from tags' do
-      upgrader.stub(fetch_git_tags: [
+      allow(upgrader).to receive(:fetch_git_tags).and_return([
         '6f0733310546402c15d3ae6128a95052f6c8ea96  refs/tags/v7.1.1',
         'facfec4b242ce151af224e20715d58e628aa5e74  refs/tags/v7.1.1^{}',
         'f7068d99c79cf79befbd388030c051bb4b5e86d4  refs/tags/v7.10.4',
