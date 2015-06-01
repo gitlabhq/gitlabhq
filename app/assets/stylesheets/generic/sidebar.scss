@@ -102,13 +102,13 @@
   padding-left: 50px;
 
   .sidebar-wrapper {
-    width: 52px;
+    width: $sidebar_collapsed_width;
 
     .nav-sidebar {
       margin-top: 29px;
       position: fixed;
       top: 45px;
-      width: 52px;
+      width: $sidebar_collapsed_width;
 
       li a {
         padding-left: 18px;
@@ -125,7 +125,7 @@
 
     .collapse-nav a {
       left: 0px;
-      width: 52px;
+      width: $sidebar_collapsed_width;
     }
 
     .sidebar-user {

@@ -2,7 +2,13 @@
  *  Application Header
  *
  */
+$header-height: 46px;
+
 header {
+  &.empty-header .container {
+    border-bottom: 1px solid #EEE;
+  }
+
   &.navbar-gitlab {
     z-index: 100;
     margin-bottom: 0;
@@ -13,53 +19,8 @@ header {
     .container {
       width: 100% !important;
       padding: 0;
-      padding-right: 35px;
       background: #FFF;
-      border-bottom: 1px solid #EEE;
       filter: none;
-
-      .title {
-        position: relative;
-        float: left;
-        margin: 0;
-        margin-left: 25px;
-        font-size: 18px;
-        line-height: 44px;
-        font-weight: bold;
-        color: #444;
-
-        @include str-truncated(37%);
-
-        a {
-          color: #444;
-          &:hover {
-            text-decoration: underline;
-          }
-        }
-      }
-
-      .app_logo {
-        border-bottom: 1px solid transparent;
-        margin-bottom: -1px;
-
-        a {
-          padding: 5px 8px;
-
-          img {
-            float: left;
-          }
-
-          h3 {
-            width: 158px;
-            float: left;
-            margin: 0;
-            margin-left: 20px;
-            font-size: 18px;
-            line-height: 34px;
-            font-weight: normal;
-          }
-        }
-      }
 
       .nav > li > a {
         color: #888;
@@ -80,7 +41,6 @@ header {
         }
       }
 
-      /** NAV block with links and profile **/
       .nav {
         float: right;
         margin-right: 0;
@@ -96,73 +56,68 @@ header {
         }
       }
     }
-
-    .turbolink-spinner {
-      font-size: 20px;
-      margin-right: 10px;
-    }
-
-    @media (max-width: $screen-xs-max) {
-      border-width: 0;
-      font-size: 18px;
-
-      .title {
-        @include str-truncated(70%);
-      }
-
-      .navbar-collapse {
-        margin-top: 47px;
-      }
-
-      .navbar-nav {
-        margin: 5px 0;
-
-        .visible-xs, .visable-sm {
-          display: table-cell !important;
-        }
-      }
-
-      li {
-        display: table-cell;
-        width: 1%;
-
-        a {
-          text-align: center;
-          font-size: 18px !important;
-        }
-      }
-    }
   }
 
-  /**
-   *
-   * Logo holder
-   *
-   */
-  .app_logo {
+  .header-logo {
+    border-bottom: 1px solid transparent;
     float: left;
-    margin-right: 9px;
+    height: $header-height;
+    width: $sidebar_width;
 
     a {
       float: left;
-      height: 46px;
+      height: $header-height;
       width: 100%;
+      padding: 5px 8px;
+
+      h3 {
+        width: 158px;
+        float: left;
+        margin: 0;
+        margin-left: 20px;
+        font-size: 18px;
+        line-height: 34px;
+        font-weight: normal;
+      }
 
       img {
         width: 36px;
         height: 36px;
+        float: left;
       }
     }
+
     &:hover {
       background-color: #EEE;
     }
   }
 
-  /**
-   *
-   * Search box
-   *
-   */
+  .header-content {
+    border-bottom: 1px solid #EEE;
+    padding-right: 35px;
+    height: $header-height;
+
+    .title {
+      position: relative;
+      float: left;
+      margin: 0;
+      margin-left: 35px;
+      font-size: 18px;
+      line-height: 44px;
+      font-weight: bold;
+      color: #444;
+
+      @include str-truncated(37%);
+
+      a {
+        color: #444;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
   .search {
     margin-right: 10px;
     margin-left: 10px;
@@ -198,6 +153,22 @@ header {
   width: 300px;
 }
 
+@mixin collapsed-header {
+  .header-logo {
+    width: $sidebar_collapsed_width;
+
+    h3 {
+      display: none;
+    }
+  }
+
+  .header-content {
+    .title {
+      margin-left: 30px;
+    }
+  }
+}
+
 @media (max-width: 1200px)  {
   .search .search-input {
     width: 200px;
@@ -212,23 +183,48 @@ header {
 
 @media (max-width: $screen-md-max) {
   .header-collapsed, .header-expanded {
-    width: 52px;
-
-    h3 {
-      display: none;
-    }
+    @include collapsed-header;
   }
 }
 
 @media(min-width: $screen-md-max) {
   .header-collapsed {
-    width: 52px;
-
-    h3 {
-      display: none;
-    }
+    @include collapsed-header;
   }
 
   .header-expanded {
+  }
+}
+
+@media (max-width: $screen-xs-max) {
+  header .container {
+    border-width: 0;
+    font-size: 18px;
+
+    .title {
+      @include str-truncated(70%);
+    }
+
+    .navbar-collapse {
+      margin-top: 47px;
+    }
+
+    .navbar-nav {
+      margin: 5px 0;
+
+      .visible-xs, .visable-sm {
+        display: table-cell !important;
+      }
+    }
+
+    li {
+      display: table-cell;
+      width: 1%;
+
+      a {
+        text-align: center;
+        font-size: 18px !important;
+      }
+    }
   }
 }
