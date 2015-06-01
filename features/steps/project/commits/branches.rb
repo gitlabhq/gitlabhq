@@ -17,7 +17,7 @@ class Spinach::Features::ProjectCommitsBranches < Spinach::FeatureSteps
   end
 
   step 'I should see "Shop" protected branches list' do
-    within ".protected-branches-list" do
+    page.within ".protected-branches-list" do
       page.should have_content "stable"
       page.should_not have_content "master"
     end
@@ -73,7 +73,7 @@ class Spinach::Features::ProjectCommitsBranches < Spinach::FeatureSteps
   end
 
   step "I click branch 'improve/awesome' delete link" do
-    within '.js-branch-improve\/awesome' do
+    page.within '.js-branch-improve\/awesome' do
       find('.btn-remove').click
       sleep 0.05
     end

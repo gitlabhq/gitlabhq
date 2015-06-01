@@ -67,27 +67,27 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I click on link "empty" in the README' do
-    within('.readme-holder') do
+    page.within('.readme-holder') do
       click_link "empty"
     end
   end
 
   step 'I click on link "id" in the README' do
-    within('.readme-holder') do
+    page.within('.readme-holder') do
       click_link "#id"
     end
   end
 
   step 'I navigate to the doc/api/README' do
-    within '.tree-table' do
+    page.within '.tree-table' do
       click_link "doc"
     end
 
-    within '.tree-table' do
+    page.within '.tree-table' do
       click_link "api"
     end
 
-    within '.tree-table' do
+    page.within '.tree-table' do
       click_link "README.md"
     end
   end

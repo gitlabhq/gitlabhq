@@ -27,7 +27,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
   end
 
   step 'I fork to my namespace' do
-    within '.fork-namespaces' do
+    page.within '.fork-namespaces' do
       click_link current_user.name
     end
   end

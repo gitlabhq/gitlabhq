@@ -53,20 +53,20 @@ class Spinach::Features::ProjectCommitsTags < Spinach::FeatureSteps
   end
 
   step "I delete tag 'v1.1.0'" do
-    within '.tags' do
+    page.within '.tags' do
       first('.btn-remove').click
       sleep 0.05
     end
   end
 
   step "I should not see tag 'v1.1.0'" do
-    within '.tags' do
+    page.within '.tags' do
       all(visible: true).should_not have_content 'v1.1.0'
     end
   end
 
   step 'I delete all tags' do
-    within '.tags' do
+    page.within '.tags' do
       all('.btn-remove').each do |remove|
         remove.click
         sleep 0.05
@@ -75,7 +75,7 @@ class Spinach::Features::ProjectCommitsTags < Spinach::FeatureSteps
   end
 
   step 'I should see tags info message' do
-    within '.tags' do
+    page.within '.tags' do
       page.should have_content 'Repository has no tags yet.'
     end
   end

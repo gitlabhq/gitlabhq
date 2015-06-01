@@ -23,7 +23,7 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   end
 
   step 'See username error message' do
-    within "#error_explanation" do
+    page.within "#error_explanation" do
       page.should have_content "Username"
     end
   end

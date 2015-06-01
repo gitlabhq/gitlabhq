@@ -24,7 +24,7 @@ class Spinach::Features::ProjectNetworkGraph < Spinach::FeatureSteps
   end
 
   step 'page should have "master" on graph' do
-    within '.network-graph' do
+    page.within '.network-graph' do
       page.should have_content 'master'
     end
   end
@@ -45,13 +45,13 @@ class Spinach::Features::ProjectNetworkGraph < Spinach::FeatureSteps
   end
 
   step 'page should have content not containing "v1.0.0"' do
-    within '.network-graph' do
+    page.within '.network-graph' do
       page.should have_content 'Change some files'
     end
   end
 
   step 'page should not have content not containing "v1.0.0"' do
-    within '.network-graph' do
+    page.within '.network-graph' do
       page.should_not have_content 'Change some files'
     end
   end
@@ -65,13 +65,13 @@ class Spinach::Features::ProjectNetworkGraph < Spinach::FeatureSteps
   end
 
   step 'page should have "feature" on graph' do
-    within '.network-graph' do
+    page.within '.network-graph' do
       page.should have_content 'feature'
     end
   end
 
   When 'I looking for a commit by SHA of "v1.0.0"' do
-    within ".network-form" do
+    page.within ".network-form" do
       fill_in 'extended_sha1', with: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9'
       find('button').click
     end
@@ -79,13 +79,13 @@ class Spinach::Features::ProjectNetworkGraph < Spinach::FeatureSteps
   end
 
   step 'page should have "v1.0.0" on graph' do
-    within '.network-graph' do
+    page.within '.network-graph' do
       page.should have_content 'v1.0.0'
     end
   end
 
   When 'I look for a commit by ";"' do
-    within ".network-form" do
+    page.within ".network-form" do
       fill_in 'extended_sha1', with: ';'
       find('button').click
     end
