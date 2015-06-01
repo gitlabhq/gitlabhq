@@ -177,6 +177,10 @@ $ ->
     $(@).next('table').show()
     $(@).remove()
 
+  $('.navbar-toggle').on 'click', ->
+    $('.header-content .title').toggle()
+    $('.header-content .navbar-collapse').toggle()
+
   # Show/hide comments on diff
   $("body").on "click", ".js-toggle-diff-comments", (e) ->
     $(@).toggleClass('active')

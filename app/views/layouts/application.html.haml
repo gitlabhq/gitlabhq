@@ -3,8 +3,8 @@
   = render "layouts/head"
   %body{class: "#{app_theme}", :'data-page' => body_data_page}
     - if current_user
-      = render "layouts/head_panel", title: header_title
+      = render "layouts/header/default", title: header_title
     - else
-      = render "layouts/public_head_panel", title: header_title
+      = render "layouts/header/public", title: header_title
 
     = render 'layouts/page', sidebar: sidebar

@@ -1,8 +1,9 @@
 @mixin gitlab-theme($color-light, $color, $color-darker, $color-dark) {
   header {
     &.navbar-gitlab {
-      .app_logo {
+      .header-logo {
         background-color: $color-darker;
+        border-color: $color-darker;
 
         a {
           color: $color-light;
@@ -19,8 +20,6 @@
   }
 
   .page-with-sidebar {
-    background: $color-darker;
-
     .collapse-nav a {
       color: #FFF;
       background: $color;
