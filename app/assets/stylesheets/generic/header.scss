@@ -5,7 +5,8 @@
 $header-height: 46px;
 
 header {
-  &.empty-header .container {
+  &.navbar-empty {
+    background: #FFF;
     border-bottom: 1px solid #EEE;
   }
 
@@ -17,9 +18,9 @@ header {
     width: 100%;
 
     .container {
+      background: #FFF;
       width: 100% !important;
       padding: 0;
-      background: #FFF;
       filter: none;
 
       .nav > li > a {
@@ -96,6 +97,7 @@ header {
     border-bottom: 1px solid #EEE;
     padding-right: 35px;
     height: $header-height;
+    overflow: hidden;
 
     .title {
       position: relative;
