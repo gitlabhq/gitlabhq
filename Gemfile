@@ -57,6 +57,10 @@ gem 'gitlab_omniauth-ldap', '1.2.1', require: "omniauth-ldap"
 gem 'gollum-lib', '~> 4.0.2'
 
 # Language detection
+# Our fork of linguist does not require pygments/python dependency. 
+# New version of original gem also dropped pygments support but it has strict 
+# dependency to unstable rugged version. We have internal issue for replacing 
+# fork with original gem when we meet on same rugged version - https://dev.gitlab.org/gitlab/gitlabhq/issues/2052.
 gem "gitlab-linguist", "~> 3.0.1", require: "linguist"
 
 # API
