@@ -97,7 +97,6 @@ header {
     border-bottom: 1px solid #EEE;
     padding-right: 35px;
     height: $header-height;
-    overflow: hidden;
 
     .title {
       position: relative;
@@ -131,6 +130,7 @@ header {
     }
 
     .search-input {
+      width: 220px;
       background-image: image-url("icon-search.png");
       background-repeat: no-repeat;
       background-position: 10px;
@@ -151,10 +151,6 @@ header {
   }
 }
 
-.search .search-input {
-  width: 300px;
-}
-
 @mixin collapsed-header {
   .header-logo {
     width: $sidebar_collapsed_width;
@@ -171,19 +167,11 @@ header {
   }
 }
 
-@media (max-width: 1200px)  {
-  .search .search-input {
-    width: 200px;
-  }
-}
-
-@media (max-width: $screen-xs-max) {
-  #nprogress .spinner {
-    right: 35px !important;
-  }
-}
-
 @media (max-width: $screen-md-max) {
+  header .container .title {
+    max-width: 43%;
+  }
+
   .header-collapsed, .header-expanded {
     @include collapsed-header;
   }
@@ -200,15 +188,10 @@ header {
 
 @media (max-width: $screen-xs-max) {
   header .container {
-    border-width: 0;
     font-size: 18px;
 
     .title {
-      @include str-truncated(70%);
-    }
-
-    .navbar-collapse {
-      margin-top: 47px;
+      max-width: 70%;
     }
 
     .navbar-nav {
