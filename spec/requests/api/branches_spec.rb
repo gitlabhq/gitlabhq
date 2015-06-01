@@ -142,7 +142,7 @@ describe API::API, api: true  do
 
   describe "DELETE /projects/:id/repository/branches/:branch" do
     before do
-      allow(Repository.any_instance).to receive(:rm_branch).and_return(true)
+      allow_any_instance_of(Repository).to receive(:rm_branch).and_return(true)
     end
 
     it "should remove branch" do

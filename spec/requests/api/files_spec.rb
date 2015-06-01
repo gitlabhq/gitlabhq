@@ -135,7 +135,7 @@ describe API::API, api: true  do
     }
 
     it "should delete existing file in project repo" do
-      allow(Gitlab::Satellite::DeleteFileAction.any_instance).
+      allow_any_instance_of(Gitlab::Satellite::DeleteFileAction).
         to receive(:commit!).and_return(true)
 
       delete api("/projects/#{project.id}/repository/files", user), valid_params
@@ -149,7 +149,7 @@ describe API::API, api: true  do
     end
 
     it "should return a 400 if satellite fails to create file" do
-      allow(Gitlab::Satellite::DeleteFileAction.any_instance).
+      allow_any_instance_of(Gitlab::Satellite::DeleteFileAction).
         to receive(:commit!).and_return(false)
 
       delete api("/projects/#{project.id}/repository/files", user), valid_params
