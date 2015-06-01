@@ -29,6 +29,6 @@ module ApiHelpers
   end
 
   def json_response
-    JSON.parse(response.body)
+    @_json_response ||= JSON.parse(response.body)
   end
 end
