@@ -38,6 +38,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :twitter_sharing_enabled,
       :sign_in_text,
       :home_page_url,
+      :after_sign_out_path,
       :max_attachment_size,
       :default_project_visibility,
       :default_snippet_visibility,

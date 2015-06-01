@@ -35,6 +35,7 @@ v 7.12.0 (unreleased)
   - User should be able to leave group. If not - show him proper message
   - User has ability to leave project
   - Add SAML support as an omniauth provider
+  - Allow to configure a URL to show after sign out 
 
 v 7.11.4
   - Fix missing bullets when creating lists
