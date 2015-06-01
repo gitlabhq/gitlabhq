@@ -42,15 +42,12 @@ header {
         }
       }
 
-      .nav {
-        float: right;
-        margin-right: 0;
-      }
-
       .navbar-toggle {
         color: #666;
         margin: 0;
         border-radius: 0;
+        position: absolute;
+        right: 2px;
 
         &:hover {
           background-color: #EEE;
@@ -195,7 +192,8 @@ header {
     }
 
     .navbar-nav {
-      margin: 5px 0;
+      margin: 0px;
+      float: none !important;
 
       .visible-xs, .visable-sm {
         display: table-cell !important;
@@ -205,11 +203,6 @@ header {
     li {
       display: table-cell;
       width: 1%;
-
-      a {
-        text-align: center;
-        font-size: 18px !important;
-      }
     }
   }
 }

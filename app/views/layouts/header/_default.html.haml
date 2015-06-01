@@ -8,12 +8,12 @@
       %h1.title
         = title
 
-      %button.navbar-toggle{type: 'button', data: {target: '.navbar-collapse', toggle: 'collapse'}}
+      %button.navbar-toggle
         %span.sr-only Toggle navigation
         = icon('bars')
 
       .navbar-collapse.collapse
-        %ul.nav.navbar-nav
+        %ul.nav.navbar-nav.pull-right
           %li.hidden-sm.hidden-xs
             = render 'layouts/search'
           %li.visible-sm.visible-xs
