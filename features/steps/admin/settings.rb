@@ -45,7 +45,7 @@ class Spinach::Features::AdminSettings < Spinach::FeatureSteps
   end
 
   step 'I should see all checkboxes checked' do
-    all('input[type=checkbox]').each do |checkbox|
+    page.all('input[type=checkbox]').each do |checkbox|
       expect(checkbox).to be_checked
     end
   end

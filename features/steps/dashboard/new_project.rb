@@ -22,7 +22,7 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
     expect(github_modal).to be_visible
     expect(github_modal).to have_content "To enable importing projects from GitHub"
 
-    all('.modal-body').each do |element|
+    page.all('.modal-body').each do |element|
       expect(element).not_to be_visible unless element == github_modal
     end
   end

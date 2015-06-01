@@ -61,13 +61,13 @@ class Spinach::Features::ProjectCommitsTags < Spinach::FeatureSteps
 
   step "I should not see tag 'v1.1.0'" do
     page.within '.tags' do
-      expect(all(visible: true)).not_to have_content 'v1.1.0'
+      expect(page.all(visible: true)).not_to have_content 'v1.1.0'
     end
   end
 
   step 'I delete all tags' do
     page.within '.tags' do
-      all('.btn-remove').each do |remove|
+      page.all('.btn-remove').each do |remove|
         remove.click
         sleep 0.05
       end

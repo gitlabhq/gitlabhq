@@ -80,6 +80,6 @@ class Spinach::Features::ProjectCommitsBranches < Spinach::FeatureSteps
   end
 
   step "I should not see branch 'improve/awesome'" do
-    expect(all(visible: true)).not_to have_content 'improve/awesome'
+    expect(page.all(visible: true)).not_to have_content 'improve/awesome'
   end
 end

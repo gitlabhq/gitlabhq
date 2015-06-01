@@ -30,7 +30,7 @@ class Spinach::Features::ProjectSourceMultiselectBlob < Spinach::FeatureSteps
           ids = Array(range).map { |n| "LC#{n}" }
           extra = false
 
-          highlighted = all("#tree-content-holder .highlight .line.hll")
+          highlighted = page.all("#tree-content-holder .highlight .line.hll")
           highlighted.each do |element|
             extra ||= ids.delete(element[:id]).nil?
           end

@@ -121,7 +121,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see the proper Inline and Side-by-side links' do
-    buttons = all('#commit-diff-viewtype')
+    buttons = page.all('#commit-diff-viewtype')
     expect(buttons.count).to eq(2)
 
     buttons.each do |b|
