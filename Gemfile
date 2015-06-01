@@ -45,7 +45,7 @@ gem "browser"
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 7.1.13'
+gem "gitlab_git", '~> 7.2.0'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 # GitLab fork with a lot of changes (improved thread-safety, better memory usage etc)

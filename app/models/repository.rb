@@ -370,6 +370,31 @@ class Repository
     @root_ref ||= raw_repository.root_ref
   end
 
+  def commit_file(user, path, content, message, ref)
+    path[0] = '' if path[0] == '/'
+
+    author = {
+      email: user.email,
+      name: user.name,
+      time: Time.now
+    }
+
+    options = {}
+    options[:committer] = author
+    options[:author] = author
+    options[:commit] = {
+      message: message,
+      branch: ref
+    }
+
+    options[:file] = {
+      content: content,
+      path: path
+    }
+
+    Gitlab::Git::Blob.commit(raw_repository, options)
+  end
+
   private
 
   def cache

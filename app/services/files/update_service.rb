@@ -19,13 +19,23 @@ module Files
         return error("You can only edit text files")
       end
 
-      edit_file_action = Gitlab::Satellite::EditFileAction.new(current_user, project, ref, path)
-      edit_file_action.commit!(
-        params[:content],
-        params[:commit_message],
-        params[:encoding],
-        params[:new_branch]
-      )
+      if params[:encoding] == 'base64'
+        edit_file_action = Gitlab::Satellite::EditFileAction.new(current_user, project, ref, path)
+        edit_file_action.commit!(
+          params[:content],
+          params[:commit_message],
+          params[:encoding],
+          params[:new_branch]
+        )
+      else
+        repository.commit_file(
+          current_user,
+          path,
+          params[:content],
+          params[:commit_message],
+          params[:new_branch] || ref
+        )
+      end
 
       success
     rescue Gitlab::Satellite::CheckoutFailed => ex
