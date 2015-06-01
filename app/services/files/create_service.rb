@@ -42,7 +42,7 @@ module Files
           params[:new_branch]
         )
       else
-        created_successfull = repository.commit_file(
+        created_successfully = repository.commit_file(
           current_user,
           file_path,
           params[:content],
