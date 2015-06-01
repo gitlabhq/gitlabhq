@@ -48,16 +48,20 @@ gem "browser"
 gem "gitlab_git", '~> 7.1.13'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
+# GitLab fork with a lot of changes (improved thread-safety, better memory usage etc)
+# For full list of changes see https://github.com/SaitoWu/grack/compare/master...gitlabhq:master
 gem 'gitlab-grack', '~> 2.0.2', require: 'grack'
 
 # LDAP Auth
+# GitLab fork with several improvements to original library. For full list of changes 
+# see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
 gem 'gitlab_omniauth-ldap', '1.2.1', require: "omniauth-ldap"
 
 # Git Wiki
 gem 'gollum-lib', '~> 4.0.2'
 
 # Language detection
-# Our fork of linguist does not require pygments/python dependency. 
+# GitLab fork of linguist does not require pygments/python dependency. 
 # New version of original gem also dropped pygments support but it has strict 
 # dependency to unstable rugged version. We have internal issue for replacing 
 # fork with original gem when we meet on same rugged version - https://dev.gitlab.org/gitlab/gitlabhq/issues/2052.
