@@ -190,7 +190,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   step 'I see empty project details with ssh clone info' do
     project = Project.find_by(name: 'Empty Project')
-    all(:css, '.git-empty .clone').each do |element|
+    page.all(:css, '.git-empty .clone').each do |element|
       element.text.should include(project.url_to_repo)
     end
   end

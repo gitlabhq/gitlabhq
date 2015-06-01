@@ -83,7 +83,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'The diff links to both the previous and current image' do
-    links = all('.two-up span div a')
+    links = page.all('.two-up span div a')
     links[0]['href'].should =~ %r{blob/#{sample_image_commit.old_blob_id}}
     links[1]['href'].should =~ %r{blob/#{sample_image_commit.new_blob_id}}
   end

@@ -67,7 +67,7 @@ class Spinach::Features::ProjectCommitsTags < Spinach::FeatureSteps
 
   step 'I delete all tags' do
     page.within '.tags' do
-      all('.btn-remove').each do |remove|
+      page.all('.btn-remove').each do |remove|
         remove.click
         sleep 0.05
       end
