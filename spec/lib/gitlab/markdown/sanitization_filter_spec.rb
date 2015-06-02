@@ -2,9 +2,7 @@ require 'spec_helper'
 
 module Gitlab::Markdown
   describe SanitizationFilter do
-    def filter(html, options = {})
-      described_class.call(html, options)
-    end
+    include FilterSpecHelper
 
     describe 'default whitelist' do
       it 'sanitizes tags that are not whitelisted' do

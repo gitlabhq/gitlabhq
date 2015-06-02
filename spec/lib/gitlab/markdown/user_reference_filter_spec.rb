@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module Gitlab::Markdown
   describe UserReferenceFilter do
-    include ReferenceFilterSpecHelper
+    include FilterSpecHelper
 
     let(:project)   { create(:empty_project) }
     let(:user)      { create(:user) }

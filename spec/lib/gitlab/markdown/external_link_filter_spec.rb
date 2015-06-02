@@ -2,9 +2,7 @@ require 'spec_helper'
 
 module Gitlab::Markdown
   describe ExternalLinkFilter do
-    def filter(html, options = {})
-      described_class.call(html, options)
-    end
+    include FilterSpecHelper
 
     it 'ignores elements without an href attribute' do
       exp = act = %q(<a id="ignored">Ignore Me</a>)

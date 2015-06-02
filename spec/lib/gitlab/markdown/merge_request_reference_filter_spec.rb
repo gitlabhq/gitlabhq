@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module Gitlab::Markdown
   describe MergeRequestReferenceFilter do
-    include ReferenceFilterSpecHelper
+    include FilterSpecHelper
 
     let(:project) { create(:project) }
     let(:merge)   { create(:merge_request, source_project: project) }
