@@ -26,7 +26,7 @@ module Files
           params[:content]
         end
 
-      repository.commit_file(
+      sha = repository.commit_file(
         current_user,
         path,
         content,
@@ -34,6 +34,7 @@ module Files
         params[:new_branch] || ref
       )
 
+      after_commit(sha)
       success
     rescue Gitlab::Satellite::CheckoutFailed => ex
       error("Your changes could not be committed because ref '#{ref}' could not be checked out", 400)
