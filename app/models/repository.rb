@@ -373,15 +373,10 @@ class Repository
   def commit_file(user, path, content, message, ref)
     path[0] = '' if path[0] == '/'
 
-    author = {
-      email: user.email,
-      name: user.name,
-      time: Time.now
-    }
-
+    committer = user_to_comitter(user)
     options = {}
-    options[:committer] = author
-    options[:author] = author
+    options[:committer] = committer
+    options[:author] = committer
     options[:commit] = {
       message: message,
       branch: ref
@@ -395,7 +390,34 @@ class Repository
     Gitlab::Git::Blob.commit(raw_repository, options)
   end
 
+  def remove_file(user, path, message, ref)
+    path[0] = '' if path[0] == '/'
+
+    committer = user_to_comitter(user)
+    options = {}
+    options[:committer] = committer
+    options[:author] = committer
+    options[:commit] = {
+      message: message,
+      branch: ref
+    }
+
+    options[:file] = {
+      path: path
+    }
+
+    Gitlab::Git::Blob.remove(raw_repository, options)
+  end
+
   private
+
+  def user_to_comitter(user)
+    {
+      email: user.email,
+      name: user.name,
+      time: Time.now
+    }
+  end
 
   def cache
     @cache ||= RepositoryCache.new(path_with_namespace)
