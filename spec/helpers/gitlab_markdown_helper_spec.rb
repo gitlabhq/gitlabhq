@@ -94,6 +94,12 @@ describe GitlabMarkdownHelper do
       expect(link_to_gfm(actual, commit_path)).
         to match('&lt;h1&gt;test&lt;/h1&gt;')
     end
+
+    it 'ignores reference links when they are the entire body' do
+      text = issues[0].to_reference
+      act = link_to_gfm(text, '/foo')
+      expect(act).to eq %Q(<a href="/foo">#{issues[0].to_reference}</a>)
+    end
   end
 
   describe '#render_wiki_content' do
