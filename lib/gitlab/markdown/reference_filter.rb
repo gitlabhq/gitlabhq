@@ -25,12 +25,18 @@ module Gitlab
         ERB::Util.html_escape_once(html)
       end
 
-      # Don't look for references in text nodes that are children of these
-      # elements.
-      IGNORE_PARENTS = %w(pre code a style).to_set
+      def ignore_parents
+        @ignore_parents ||= begin
+          # Don't look for references in text nodes that are children of these
+          # elements.
+          parents = %w(pre code a style)
+          parents << 'blockquote' if context[:ignore_blockquotes]
+          parents.to_set
+        end
+      end
 
       def ignored_ancestry?(node)
-        has_ancestor?(node, IGNORE_PARENTS)
+        has_ancestor?(node, ignore_parents)
       end
 
       def project

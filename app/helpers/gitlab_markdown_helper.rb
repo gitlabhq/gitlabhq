@@ -41,29 +41,26 @@ module GitlabMarkdownHelper
     fragment.to_html.html_safe
   end
 
+  MARKDOWN_OPTIONS = {
+    no_intra_emphasis:   true,
+    tables:              true,
+    fenced_code_blocks:  true,
+    strikethrough:       true,
+    lax_spacing:         true,
+    space_after_headers: true,
+    superscript:         true,
+    footnotes:           true
+  }.freeze
+
   def markdown(text, options={})
     unless @markdown && options == @options
       @options = options
-
-      options.merge!(
-        # Handled further down the line by Gitlab::Markdown::SanitizationFilter
-        escape_html: false
-      )
 
       # see https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch
       rend = Redcarpet::Render::GitlabHTML.new(self, user_color_scheme_class, options)
 
       # see https://github.com/vmg/redcarpet#and-its-like-really-simple-to-use
-      @markdown = Redcarpet::Markdown.new(rend,
-        no_intra_emphasis:   true,
-        tables:              true,
-        fenced_code_blocks:  true,
-        strikethrough:       true,
-        lax_spacing:         true,
-        space_after_headers: true,
-        superscript:         true,
-        footnotes:           true
-      )
+      @markdown = Redcarpet::Markdown.new(rend, MARKDOWN_OPTIONS)
     end
 
     @markdown.render(text).html_safe

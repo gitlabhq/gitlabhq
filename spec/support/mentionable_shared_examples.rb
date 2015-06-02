@@ -107,17 +107,26 @@ shared_examples 'an editable mentionable' do
   it 'creates new cross-reference notes when the mentionable text is edited' do
     subject.save
 
-    new_text = <<-MSG
+    new_text = <<-MSG.strip_heredoc
       These references already existed:
-        Issue:  #{mentioned_issue.to_reference}
-        Commit: #{mentioned_commit.to_reference}
+
+      Issue:  #{mentioned_issue.to_reference}
+
+      Commit: #{mentioned_commit.to_reference}
+
+      ---
 
       This cross-project reference already existed:
-        Issue:  #{ext_issue.to_reference(project)}
+
+      Issue:  #{ext_issue.to_reference(project)}
+
+      ---
 
       These two references are introduced in an edit:
-        Issue: #{new_issues[0].to_reference}
-        Cross: #{new_issues[1].to_reference(project)}
+
+      Issue: #{new_issues[0].to_reference}
+
+      Cross: #{new_issues[1].to_reference(project)}
     MSG
 
     # These three objects were already referenced, and should not receive new
