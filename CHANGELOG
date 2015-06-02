@@ -39,6 +39,7 @@ v 7.12.0 (unreleased)
   - Allow to configure a URL to show after sign out 
   - Add an option to automatically sign-in with an Omniauth provider
   - Better performance for web editor (switched from satellites to rugged)
+  - GitLab CI service sends .gitlab-ci.yaml in each push call
 
 v 7.11.4
   - Fix missing bullets when creating lists
