@@ -182,6 +182,10 @@ production: &base
     # Allow login via Twitter, Google, etc. using OmniAuth providers
     enabled: false
 
+    # Uncomment this to automatically sign in with a specific omniauth provider's without
+    # showing GitLab's sign-in page (default: show the GitLab sign-in page)
+    # auto_sign_in_with_provider: saml
+
     # CAUTION!
     # This allows users to login without having a user account first (default: false).
     # User accounts will be created automatically when authentication was successful.
