@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.12.0 (unreleased)
+  - Don't notify users mentioned in code blocks or blockquotes.
   - Disable changing of the source branch in merge request update API (Stan Hu)
   - Shorten merge request WIP text.
   - Add option to disallow users from registering any application to use GitLab as an OAuth provider
