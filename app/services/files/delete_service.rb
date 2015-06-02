@@ -1,7 +1,7 @@
 require_relative "base_service"
 
 module Files
-  class DeleteService < BaseService
+  class DeleteService < Files::BaseService
     def execute
       allowed = ::Gitlab::GitAccess.new(current_user, project).can_push_to_branch?(ref)
 

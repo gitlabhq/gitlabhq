@@ -17,7 +17,8 @@ module Files
     def after_commit(sha)
       commit = repository.commit(sha)
       full_ref = 'refs/heads/' + (params[:new_branch] || ref)
-      GitPushService.new.execute(project, current_user, commit.parent_id, sha, full_ref)
+      old_sha = commit.parent_id || Gitlab::Git::BLANK_SHA
+      GitPushService.new.execute(project, current_user, old_sha, sha, full_ref)
     end
   end
 end
