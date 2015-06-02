@@ -1,7 +1,7 @@
 require_relative "base_service"
 
 module Files
-  class CreateService < BaseService
+  class CreateService < Files::BaseService
     def execute
       allowed = Gitlab::GitAccess.new(current_user, project).can_push_to_branch?(ref)
 
@@ -33,16 +33,24 @@ module Files
         end
       end
 
+      content =
+        if params[:encoding] == 'base64'
+          Base64.decode64(params[:content])
+        else
+          params[:content]
+        end
 
-      new_file_action = Gitlab::Satellite::NewFileAction.new(current_user, project, ref, file_path)
-      created_successfully = new_file_action.commit!(
-        params[:content],
+      sha = repository.commit_file(
+        current_user,
+        file_path,
+        content,
         params[:commit_message],
-        params[:encoding],
-        params[:new_branch]
+        params[:new_branch] || ref
       )
 
-      if created_successfully
+
+      if sha
+        after_commit(sha)
         success
       else
         error("Your changes could not be committed, because the file has been changed")

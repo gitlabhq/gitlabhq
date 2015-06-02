@@ -1,7 +1,7 @@
 require_relative "base_service"
 
 module Files
-  class DeleteService < BaseService
+  class DeleteService < Files::BaseService
     def execute
       allowed = ::Gitlab::GitAccess.new(current_user, project).can_push_to_branch?(ref)
 
@@ -19,14 +19,15 @@ module Files
         return error("You can only edit text files")
       end
 
-      delete_file_action = Gitlab::Satellite::DeleteFileAction.new(current_user, project, ref, path)
-
-      deleted_successfully = delete_file_action.commit!(
-        nil,
-        params[:commit_message]
+      sha = repository.remove_file(
+        current_user,
+        path,
+        params[:commit_message],
+        ref
       )
 
-      if deleted_successfully
+      if sha
+        after_commit(sha)
         success
       else
         error("Your changes could not be committed, because the file has been changed")
