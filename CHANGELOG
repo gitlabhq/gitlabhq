@@ -37,6 +37,7 @@ v 7.12.0 (unreleased)
   - User has ability to leave project
   - Add SAML support as an omniauth provider
   - Allow to configure a URL to show after sign out 
+  - Better performance for web editor (switched from satellites to rugged)
 
 v 7.11.4
   - Fix missing bullets when creating lists
