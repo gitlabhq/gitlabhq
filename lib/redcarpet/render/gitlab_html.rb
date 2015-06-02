@@ -11,7 +11,7 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
 
     @options.reverse_merge!(
       # Handled further down the line by Gitlab::Markdown::SanitizationFilter
-      escape_html: false
+      escape_html: false,
       project: @template.instance_variable_get("@project")
     )
 
