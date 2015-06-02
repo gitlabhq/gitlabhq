@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module Gitlab::Markdown
   describe CommitRangeReferenceFilter do
-    include ReferenceFilterSpecHelper
+    include FilterSpecHelper
 
     let(:project) { create(:project) }
     let(:commit1) { project.commit }

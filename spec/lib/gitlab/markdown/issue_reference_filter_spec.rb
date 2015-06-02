@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module Gitlab::Markdown
   describe IssueReferenceFilter do
-    include ReferenceFilterSpecHelper
+    include FilterSpecHelper
 
     def helper
       IssuesHelper

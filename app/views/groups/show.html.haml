@@ -11,7 +11,7 @@
       @#{@group.path}
     - if @group.description.present?
       .description
-        = escaped_autolink(@group.description)
+        = markdown(@group.description, pipeline: :description)
   %hr
 
   = render 'shared/show_aside'

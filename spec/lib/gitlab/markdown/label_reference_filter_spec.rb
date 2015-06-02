@@ -3,7 +3,7 @@ require 'html/pipeline'
 
 module Gitlab::Markdown
   describe LabelReferenceFilter do
-    include ReferenceFilterSpecHelper
+    include FilterSpecHelper
 
     let(:project)   { create(:empty_project) }
     let(:label)     { create(:label, project: project) }

@@ -2,11 +2,9 @@ require 'spec_helper'
 
 module Gitlab::Markdown
   describe AutolinkFilter do
-    let(:link) { 'http://about.gitlab.com/' }
+    include FilterSpecHelper
 
-    def filter(html, options = {})
-      described_class.call(html, options)
-    end
+    let(:link) { 'http://about.gitlab.com/' }
 
     it 'does nothing when :autolink is false' do
       exp = act = link

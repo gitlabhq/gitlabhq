@@ -18,11 +18,13 @@ require 'erb'
 #         -> `gfm_with_options` helper
 #           -> HTML::Pipeline
 #             -> Sanitize
+#             -> RelativeLink
 #             -> Emoji
 #             -> Table of Contents
 #             -> Autolinks
 #               -> Rinku (http, https, ftp)
 #               -> Other schemes
+#             -> ExternalLink
 #             -> References
 #             -> TaskList
 #           -> `html_safe`
