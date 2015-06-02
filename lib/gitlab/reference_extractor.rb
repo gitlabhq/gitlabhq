@@ -48,7 +48,8 @@ module Gitlab
         project: project,
         current_user: current_user,
         # We don't actually care about the links generated
-        only_path: true
+        only_path: true,
+        ignore_blockquotes: true
       }
 
       pipeline = HTML::Pipeline.new([filter], context)

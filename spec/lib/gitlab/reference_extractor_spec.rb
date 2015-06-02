@@ -32,6 +32,10 @@ describe Gitlab::ReferenceExtractor do
       ```
       @bar
       ```
+
+      Quote: 
+
+      > @offteam
     })
     expect(subject.users).to eq([])
   end
