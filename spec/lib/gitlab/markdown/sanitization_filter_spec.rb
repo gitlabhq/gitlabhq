@@ -95,8 +95,23 @@ module Gitlab::Markdown
 
     context 'when pipeline is :description' do
       it 'uses a stricter whitelist' do
-        doc = filter('<h1>My Project</h1>', pipeline: :description)
-        expect(doc.to_html.strip).to eq 'My Project'
+        doc = filter('<h1>Description</h1>', pipeline: :description)
+        expect(doc.to_html.strip).to eq 'Description'
+      end
+
+      %w(pre code img ol ul li).each do |elem|
+        it "removes '#{elem}' elements" do
+          act = "<#{elem}>Description</#{elem}>"
+          expect(filter(act, pipeline: :description).to_html.strip).
+            to eq 'Description'
+        end
+      end
+
+      %w(b i strong em a ins del sup sub p).each do |elem|
+        it "still allows '#{elem}' elements" do
+          exp = act = "<#{elem}>Description</#{elem}>"
+          expect(filter(act, pipeline: :description).to_html).to eq exp
+        end
       end
     end
   end

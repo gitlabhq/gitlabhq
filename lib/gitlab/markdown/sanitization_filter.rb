@@ -12,6 +12,7 @@ module Gitlab
         # See http://git.io/vkuAN
         if pipeline == :description
           whitelist = LIMITED
+          whitelist[:elements] -= %w(pre code img ol ul li)
         else
           whitelist = super
         end
