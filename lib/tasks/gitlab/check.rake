@@ -13,6 +13,7 @@ namespace :gitlab do
       warn_user_is_not_gitlab
       start_checking "GitLab"
 
+      check_git_config
       check_database_config_exists
       check_database_is_not_sqlite
       check_migrations_are_up
@@ -36,6 +37,36 @@ namespace :gitlab do
 
     # Checks
     ########################
+
+    def check_git_config
+      print "Git configured with autocrlf=input? ... "
+
+      options = {
+        "core.autocrlf" => "input"
+      }
+
+      correct_options = options.map do |name, value|
+        run(%W(#{Gitlab.config.git.bin_path} config --global --get #{name})).try(:squish) == value
+      end
+
+      if correct_options.all?
+        puts "yes".green
+      else
+        print "Trying to fix Git error automatically. ..."
+
+        if auto_fix_git_config(options)
+          puts "Success".green
+        else
+          puts "Failed".red
+          try_fixing_it(
+            sudo_gitlab("\"#{Gitlab.config.git.bin_path}\" config --global core.autocrlf \"#{options["core.autocrlf"]}\"")
+          )
+          for_more_information(
+            see_installation_guide_section "GitLab"
+          )
+       end
+      end
+    end
 
     def check_database_config_exists
       print "Database config exists? ... "

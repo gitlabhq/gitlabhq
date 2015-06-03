@@ -241,6 +241,9 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Copy the example Rack attack config
     sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
 
+    # Configure Git global settings for git user, used when editing via web editor
+    sudo -u git -H git config --global core.autocrlf input
+
     # Configure Redis connection settings
     sudo -u git -H cp config/resque.yml.example config/resque.yml
 
