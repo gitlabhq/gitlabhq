@@ -37,8 +37,11 @@
               = f.text_field :email, class: "form-control", required: true
             - if @user.unconfirmed_email.present?
               %span.help-block
-                Please click the link in the confirmation email before continuing, it was sent to
-                %strong #{@user.unconfirmed_email}
+                Please click the link in the confirmation email before continuing. It was sent to
+                = succeed "." do
+                  %strong #{@user.unconfirmed_email}
+                %p
+                = link_to "Resend confirmation e-mail", user_confirmation_path(user: { email: @user.unconfirmed_email }), method: :post
 
             - else
               %span.help-block We also use email for avatar detection if no avatar is uploaded.
