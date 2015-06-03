@@ -102,11 +102,15 @@ class Namespace < ActiveRecord::Base
     # Move namespace directory into trash.
     # We will remove it later async
     new_path = "#{path}+#{id}+deleted"
-    gitlab_shell.mv_namespace(path, new_path)
 
-    # Remove namespace directroy async with delay so
-    # GitLab has time to remove all projects first
-    GitlabShellWorker.perform_in(5.minutes, :rm_namespace, new_path)
+    if gitlab_shell.mv_namespace(path, new_path)
+      message = "Namespace directory \"#{path}\" moved to \"#{new_path}\""
+      Gitlab::AppLogger.info message
+
+      # Remove namespace directroy async with delay so
+      # GitLab has time to remove all projects first
+      GitlabShellWorker.perform_in(5.minutes, :rm_namespace, new_path)
+    end
   end
 
   def move_dir

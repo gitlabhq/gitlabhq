@@ -6,9 +6,10 @@ class DestroyGroupService
   end
 
   def execute
-    # TODO: Skip remove repository so Namespace#rm_dir works
     @group.projects.each do |project|
-      ::Projects::DestroyService.new(project, current_user, {}).execute
+      # Skip repository removal because we remove directory with namespace
+      # that contain all this repositories
+      ::Projects::DestroyService.new(project, current_user, skip_repo: true).execute
     end
 
     @group.destroy
