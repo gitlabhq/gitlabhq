@@ -36,9 +36,11 @@ module Projects
     private
 
     def remove_repository(path)
-      unless gitlab_shell.exists?(path + '.git')
-        return true
-      end
+      # Skip repository removal. We use this flag when remove user or group
+      return true if params[:skip_repo] == true
+
+      # There is a possibility project does not have repository or wiki
+      return true unless gitlab_shell.exists?(path + '.git')
 
       new_path = removal_path(path)
 

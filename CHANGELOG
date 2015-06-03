@@ -43,6 +43,7 @@ v 7.12.0 (unreleased)
   - Better performance for web editor (switched from satellites to rugged)
   - GitLab CI service sends .gitlab-ci.yaml in each push call
   - When remove project - move repository and schedule it removal
+  - Improve group removing logic
 
 v 7.11.4
   - Fix missing bullets when creating lists
