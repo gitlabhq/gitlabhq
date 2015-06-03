@@ -23,6 +23,13 @@ pre {
   font-family: $monospace_font;
 }
 
+code {
+  &.key-fingerprint {
+    background: $body-bg;
+    color: $text-color;
+  }
+}
+
 /**
  * Wiki typography
  *
