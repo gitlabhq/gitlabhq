@@ -72,7 +72,7 @@ class Namespace < ActiveRecord::Base
       path.gsub!(/[^a-zA-Z0-9_\-\.]/, "")
 
       # Users with the great usernames of "." or ".." would end up with a blank username.
-      # Work around that by setting their username to "blank", followed by a counter. 
+      # Work around that by setting their username to "blank", followed by a counter.
       path = "blank" if path.blank?
 
       counter = 0
@@ -99,7 +99,14 @@ class Namespace < ActiveRecord::Base
   end
 
   def rm_dir
-    gitlab_shell.rm_namespace(path)
+    # Move namespace directory into trash.
+    # We will remove it later async
+    new_path = "#{path}+#{id}+deleted"
+    gitlab_shell.mv_namespace(path, new_path)
+
+    # Remove namespace directroy async with delay so
+    # GitLab has time to remove all projects first
+    GitlabShellWorker.perform_in(5.minutes, :rm_namespace, new_path)
   end
 
   def move_dir
