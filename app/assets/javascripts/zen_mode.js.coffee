@@ -1,3 +1,7 @@
+#= require dropzone
+#= require mousetrap
+#= require mousetrap/pause
+
 class @ZenMode
   constructor: ->
     @active_zen_area = null
@@ -26,7 +30,7 @@ class @ZenMode
         @exitZenMode()
 
     $(document).on 'keydown', (e) =>
-      if e.keyCode is $.ui.keyCode.ESCAPE
+      if e.keyCode is 27 # Esc
         @exitZenMode()
         e.preventDefault()
 
@@ -42,7 +46,9 @@ class @ZenMode
       @active_checkbox.prop('checked', false)
       @active_zen_area = null
       @active_checkbox = null
-      window.location.hash = ''
-      window.scrollTo(window.pageXOffset, @scroll_position)
+      @restoreScroll(@scroll_position)
       # Enable dropzone when leaving ZEN mode
       Dropzone.forElement('.div-dropzone').enable()
+
+  restoreScroll: (y) ->
+    window.scrollTo(window.pageXOffset, y)

@@ -195,20 +195,20 @@ gem "uglifier"
 gem 'turbolinks', '~> 2.5.0'
 gem 'jquery-turbolinks'
 
-gem 'select2-rails'
-gem 'jquery-atwho-rails', '~> 1.0.0'
-gem "jquery-rails"
-gem "jquery-ui-rails"
-gem "jquery-scrollto-rails"
-gem "raphael-rails", "~> 2.1.2"
-gem 'bootstrap-sass', '~> 3.0'
-gem "font-awesome-rails", '~> 4.2'
-gem "gitlab_emoji", "~> 0.1"
-gem "gon", '~> 5.0.0'
-gem 'nprogress-rails'
-gem 'request_store'
-gem "virtus"
 gem 'addressable'
+gem 'bootstrap-sass',     '~> 3.0'
+gem 'font-awesome-rails', '~> 4.2'
+gem 'gitlab_emoji',       '~> 0.1'
+gem 'gon',                '~> 5.0.0'
+gem 'jquery-atwho-rails', '~> 1.0.0'
+gem 'jquery-rails',       '3.1.2'
+gem 'jquery-scrollto-rails'
+gem 'jquery-ui-rails'
+gem 'nprogress-rails'
+gem 'raphael-rails',      '~> 2.1.2'
+gem 'request_store'
+gem 'select2-rails'
+gem 'virtus'
 
 group :development do
   gem 'brakeman', require: false
