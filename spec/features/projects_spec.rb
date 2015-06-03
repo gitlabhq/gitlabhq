@@ -47,13 +47,6 @@ feature 'Project' do
     it 'should remove project' do
       expect { remove_project }.to change {Project.count}.by(-1)
     end
-
-    it 'should delete the project from disk' do
-      expect(GitlabShellWorker).to receive(:perform_async).
-        with(:remove_repository, /#{project.path_with_namespace}/).twice
-
-      remove_project
-    end
   end
 
   def remove_project
