@@ -14,17 +14,6 @@ class Spinach::Features::AdminDeployKeys < Spinach::FeatureSteps
     end
   end
 
-  step 'I click on first deploy key' do
-    click_link DeployKey.are_public.first.title
-  end
-
-  step 'I should see deploy key details' do
-    deploy_key = DeployKey.are_public.first
-    current_path.should == admin_deploy_key_path(deploy_key)
-    page.should have_content(deploy_key.title)
-    page.should have_content(deploy_key.key)
-  end
-
   step 'I visit admin deploy key page' do
     visit admin_deploy_key_path(deploy_key)
   end
