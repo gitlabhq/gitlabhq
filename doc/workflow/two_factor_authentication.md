@@ -14,10 +14,10 @@ is to know your username and password *and* have access to your phone.
 
 1. Log in to your GitLab account.
 1. Go to your **Profile Settings**.
-1. Go to **Acount**.
+1. Go to **Account**.
 1. Click **Enable Two-factor Authentication**.
 
-TODO: Insert screenshot of 2FA page (with the "Can't scan the code?" text)
+![Two-factor setup](2fa.png)
 
 **On your phone:**
 
@@ -53,7 +53,7 @@ Enter your username and password credentials as you normally would, and you'll
 be presented with a second prompt for an authentication code. Enter the pin from
 your phone's application or a recovery code to log in.
 
-TODO: Insert screenshot of 2FA login prompt?
+![Two-factor authentication on sign in](2fa_auth.png)
 
 ## Disabling 2FA
 
