@@ -244,6 +244,16 @@ module Gitlab
       end
     end
 
+    # Check if such directory exists in repositories.
+    #
+    # Usage:
+    #   exists?('gitlab')
+    #   exists?('gitlab/cookies.git')
+    #
+    def exists?(dir_name)
+      File.exists?(full_path(dir_name))
+    end
+
     protected
 
     def gitlab_shell_path
@@ -262,10 +272,6 @@ module Gitlab
       raise ArgumentError.new("Directory name can't be blank") if dir_name.blank?
 
       File.join(repos_path, dir_name)
-    end
-
-    def exists?(dir_name)
-      File.exists?(full_path(dir_name))
     end
 
     def gitlab_shell_projects_path
