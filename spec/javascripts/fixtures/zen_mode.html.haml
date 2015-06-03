@@ -1,0 +1,9 @@
+.zennable
+  %input#zen-toggle-comment.zen-toggle-comment{ tabindex: '-1', type: 'checkbox' }
+  .zen-backdrop
+    %textarea#note_note.js-gfm-input.markdown-area{placeholder: 'Leave a comment'}
+    %a.zen-enter-link{tabindex: '-1'}
+      %i.fa.fa-expand
+        Edit in fullscreen
+    %a.zen-leave-link
+      %i.fa.fa-compress

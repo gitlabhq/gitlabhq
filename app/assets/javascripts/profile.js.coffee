@@ -12,11 +12,11 @@ class @Profile
       $(this).find('.update-failed').hide()
 
     $('.update-username form').on 'ajax:complete', ->
-      $(this).find('.btn-save').enableButton()
+      $(this).find('.btn-save').enable()
       $(this).find('.loading-gif').hide()
 
     $('.update-notifications').on 'ajax:complete', ->
-      $(this).find('.btn-save').enableButton()
+      $(this).find('.btn-save').enable()
 
 
     $('.js-choose-user-avatar-button').bind "click", ->
