@@ -6,6 +6,13 @@ The first time a user signs in with LDAP credentials, GitLab will create a new G
 
 GitLab user attributes such as nickname and email will be copied from the LDAP user entry.
 
+## Security
+
+GitLab assumes that LDAP users are not able to change their LDAP 'mail', 'email' or 'userPrincipalName' attribute.
+An LDAP user who is allowed to change their email on the LDAP server can [take over any account](#enabling-ldap-sign-in-for-existing-gitlab-users) on your GitLab server.
+
+We recommend against using GitLab LDAP integration if your LDAP users are allowed to change their 'mail', 'email' or 'userPrincipalName'  attribute on the LDAP server.
+
 ## Configuring GitLab for LDAP integration
 
 To enable GitLab LDAP integration you need to add your LDAP server settings in `/etc/gitlab/gitlab.rb` or `/home/git/gitlab/config/gitlab.yml`.
