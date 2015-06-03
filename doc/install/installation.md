@@ -241,12 +241,6 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Copy the example Rack attack config
     sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
 
-    # Configure Git global settings for git user, useful when editing via web
-    # Edit user.email according to what is set in gitlab.yml
-    sudo -u git -H git config --global user.name "GitLab"
-    sudo -u git -H git config --global user.email "example@example.com"
-    sudo -u git -H git config --global core.autocrlf input
-
     # Configure Redis connection settings
     sudo -u git -H cp config/resque.yml.example config/resque.yml
 
