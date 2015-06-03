@@ -44,7 +44,7 @@ module Projects
 
       if gitlab_shell.mv_repository(path, new_path)
         log_info("Repository \"#{path}\" moved to \"#{new_path}\"")
-        GitlabShellWorker.perform_in(30.seconds, :remove_repository, new_path)
+        GitlabShellWorker.perform_in(5.minutes, :remove_repository, new_path)
       else
         false
       end
