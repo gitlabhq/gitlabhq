@@ -1,5 +1,7 @@
 v 7.12 (Unreleased)
   - Fix error when viewing merge request with a commit that includes "Closes #<issue id>".
+  - Enhance LDAP group synchronization to check also for member attributes that only contain "uid=<username>"
+  - Enhance LDAP group synchronization to check also for submember attributes
 
 v 7.11.4
   - no changes specific to EE
