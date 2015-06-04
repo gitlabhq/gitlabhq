@@ -161,7 +161,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see a discussion has started on diff' do
-    page.within(".notes") do
+    page.within(".notes .discussion") do
       page.should have_content "#{current_user.name} started a discussion"
       page.should have_content sample_commit.line_code_path
       page.should have_content "Line is wrong"
@@ -169,7 +169,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see a discussion has started on commit diff' do
-    page.within(".notes") do
+    page.within(".notes .discussion") do
       page.should have_content "#{current_user.name} started a discussion on commit"
       page.should have_content sample_commit.line_code_path
       page.should have_content "Line is wrong"
@@ -177,7 +177,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see a discussion has started on commit' do
-    page.within(".notes") do
+    page.within(".notes .discussion") do
       page.should have_content "#{current_user.name} started a discussion on commit"
       page.should have_content "One comment to rule them all"
     end
@@ -317,11 +317,11 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   def leave_comment(message)
-    page.within(".js-discussion-note-form") do
+    page.within(".js-discussion-note-form", visible: true) do
       fill_in "note_note", with: message
       click_button "Add Comment"
     end
-    page.within(".notes-holder") do
+    page.within(".notes_holder", visible: true) do
       page.should have_content message
     end
   end

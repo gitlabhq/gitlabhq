@@ -170,12 +170,10 @@ module SharedDiffNote
   end
 
   def diff_file_selector
-    ".diff-file:nth-of-type(1)"
+    '.diff-file:nth-of-type(1)'
   end
 
   def click_diff_line(code)
-    page.within(".diff-content") do
-      find("button[data-line-code='#{code}']").click
-    end
+    find("button[data-line-code='#{code}']").click
   end
 end
