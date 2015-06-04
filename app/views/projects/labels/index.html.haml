@@ -13,4 +13,7 @@
     = paginate @labels, theme: 'gitlab'
   - else
     .light-well
-      .nothing-here-block Create first label or #{link_to 'generate', generate_namespace_project_labels_path(@project.namespace, @project), method: :post} default set of labels
+      - if can? current_user, :admin_label, @project
+        .nothing-here-block Create first label or #{link_to 'generate', generate_namespace_project_labels_path(@project.namespace, @project), method: :post} default set of labels
+      - else
+        .nothing-here-block No labels created
