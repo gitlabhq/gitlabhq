@@ -161,9 +161,9 @@ If you have two LDAP group links, e.g. 'cn=Engineering' at level 'Developer' and
 
 ### Locking yourself out of your own group
 
-As an LDAP-enabled GitLab user, if you create a group and then set it to synchronize with an LDAP group you do not belong to, you will be removed from the grop as soon as the synchronization takes effect for you.
+As an LDAP-enabled GitLab user, if you create a group and then set it to synchronize with an LDAP group you do not belong to, you will be removed from the group as soon as the synchronization takes effect for you, unless you are the last owner of the group.
 
-If you accidentally lock yourself out of your own GitLab group, ask a GitLab administrator to change the LDAP synchronization settings for your group.
+If you accidentally lock yourself out of your own GitLab group, ask another owner of the group or a GitLab administrator to change the LDAP synchronization settings for your group.
 
 ### Non-LDAP GitLab users
 
