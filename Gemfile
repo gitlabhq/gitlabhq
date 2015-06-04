@@ -1,13 +1,5 @@
 source "https://rubygems.org"
 
-def darwin_only(require_as)
-  RUBY_PLATFORM.include?('darwin') && require_as
-end
-
-def linux_only(require_as)
-  RUBY_PLATFORM.include?('linux') && require_as
-end
-
 gem "rails", "~> 4.1.0"
 
 # Default values for AR models
@@ -246,15 +238,6 @@ group :development, :test do
 
   # Generate Fake data
   gem 'ffaker', '~> 2.0.0'
-
-  # Guard
-  gem 'guard-rspec'
-  gem 'guard-spinach'
-
-  # Notification
-  gem 'rb-fsevent', require: darwin_only('rb-fsevent')
-  gem 'growl',      require: darwin_only('growl')
-  gem 'rb-inotify', require: linux_only('rb-inotify')
 
   # PhantomJS driver for Capybara
   gem 'poltergeist', '~> 1.5.1'
