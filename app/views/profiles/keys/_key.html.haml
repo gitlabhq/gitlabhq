@@ -3,8 +3,7 @@
     = link_to path_to_key(key, is_admin) do
       %strong= key.title
   %td
-    %span
-      (#{key.fingerprint})
+    %code.key-fingerprint= key.fingerprint
   %td
     %span.cgray
       added #{time_ago_with_tooltip(key.created_at)}

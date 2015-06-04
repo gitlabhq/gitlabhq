@@ -172,7 +172,7 @@ end
 #                         DELETE /:project_id/deploy_keys/:id(.:format)      deploy_keys#destroy
 describe Projects::DeployKeysController, 'routing' do
   it_behaves_like 'RESTful project resources' do
-    let(:actions)    { [:index, :show, :new, :create] }
+    let(:actions)    { [:index, :new, :create] }
     let(:controller) { 'deploy_keys' }
   end
 end
