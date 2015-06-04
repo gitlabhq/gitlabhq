@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.12.0 (unreleased)
+  - Fix external issue tracker hook/test for HTTPS URLs (Daniel Gerhardt)
   - Don't notify users mentioned in code blocks or blockquotes.
   - Omit link to generate labels if user does not have access to create them (Stan Hu)
   - Disable changing of the source branch in merge request update API (Stan Hu)
