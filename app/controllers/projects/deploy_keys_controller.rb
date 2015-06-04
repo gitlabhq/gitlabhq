@@ -18,10 +18,6 @@ class Projects::DeployKeysController < Projects::ApplicationController
     @available_public_keys -= @available_project_keys
   end
 
-  def show
-    @key = @project.deploy_keys.find(params[:id])
-  end
-
   def new
     @key = @project.deploy_keys.new
 
