@@ -655,6 +655,12 @@ class User < ActiveRecord::Base
       end
   end
 
+  def namespaces
+    namespace_ids = groups.pluck(:id)
+    namespace_ids.push(namespace.id)
+    Namespace.where(id: namespace_ids)
+  end
+
   def oauth_authorized_tokens
     Doorkeeper::AccessToken.where(resource_owner_id: self.id, revoked_at: nil)
   end
