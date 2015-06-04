@@ -54,6 +54,7 @@ v 7.11.4
 
 v 7.11.3
   - no changes
+  - Fix upgrader script (Martins Polakovs)
 
 v 7.11.2
   - no changes
