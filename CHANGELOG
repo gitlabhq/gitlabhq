@@ -38,12 +38,13 @@ v 7.12.0 (unreleased)
   - User should be able to leave group. If not - show him proper message
   - User has ability to leave project
   - Add SAML support as an omniauth provider
-  - Allow to configure a URL to show after sign out 
+  - Allow to configure a URL to show after sign out
   - Add an option to automatically sign-in with an Omniauth provider
   - Better performance for web editor (switched from satellites to rugged)
   - GitLab CI service sends .gitlab-ci.yaml in each push call
   - When remove project - move repository and schedule it removal
   - Improve group removing logic
+  - Trigger create-hooks on backup restore task
 
 v 7.11.4
   - Fix missing bullets when creating lists
