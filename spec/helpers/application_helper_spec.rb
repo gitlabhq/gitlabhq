@@ -185,27 +185,6 @@ describe ApplicationHelper do
     end
   end
 
-  describe 'user_color_scheme_class' do
-    context 'with current_user is nil' do
-      it 'should return a string' do
-        allow(self).to receive(:current_user).and_return(nil)
-        expect(user_color_scheme_class).to be_kind_of(String)
-      end
-    end
-
-    context 'with a current_user' do
-      (1..5).each do |color_scheme_id|
-        context "with color_scheme_id == #{color_scheme_id}" do
-          it 'should return a string' do
-            current_user = double(:color_scheme_id => color_scheme_id)
-            allow(self).to receive(:current_user).and_return(current_user)
-            expect(user_color_scheme_class).to be_kind_of(String)
-          end
-        end
-      end
-    end
-  end
-
   describe 'simple_sanitize' do
     let(:a_tag) { '<a href="#">Foo</a>' }
 
