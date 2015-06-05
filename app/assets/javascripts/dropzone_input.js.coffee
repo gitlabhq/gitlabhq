@@ -15,11 +15,11 @@ class @DropzoneInput
 
     form_textarea = $(form).find("textarea.markdown-area")
     form_textarea.wrap "<div class=\"div-dropzone\"></div>"
-    form_textarea.bind 'paste', (event) =>
+    form_textarea.on 'paste', (event) =>
       handlePaste(event)
-    form_textarea.bind "input", ->
+    form_textarea.on "input", ->
       hideReferencedUsers()
-    form_textarea.bind "blur", ->
+    form_textarea.on "blur", ->
       renderMarkdown()
 
     form_dropzone = $(form).find('.div-dropzone')
@@ -130,11 +130,11 @@ class @DropzoneInput
     child = $(dropzone[0]).children("textarea")
 
     hideReferencedUsers = ->
-      referencedUsers = form.find(".js-referenced-users")
+      referencedUsers = form.find(".referenced-users")
       referencedUsers.hide()
 
     renderReferencedUsers = (users) ->
-      referencedUsers = form.find(".js-referenced-users")
+      referencedUsers = form.find(".referenced-users")
 
       if referencedUsers.length
         if users.length >= 10
