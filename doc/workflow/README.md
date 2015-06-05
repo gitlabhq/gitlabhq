@@ -16,3 +16,4 @@
 - [Change your time zone](timezone.md)
 - [Keyboard shortcuts](shortcuts.md)
 - [Web Editor](web_editor.md)
+- ["Work In Progress" Merge Requests](wip_merge_requests.md)
