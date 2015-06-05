@@ -61,16 +61,18 @@ module Gitlab
 
       def find_or_create_ldap_user
         return unless ldap_person
-        #If a corresponding person exists with same uid in a LDAP server,
-        #set up a Gitlab user with dual LDAP and Omniauth identities.
+
+        # If a corresponding person exists with same uid in a LDAP server,
+        # set up a Gitlab user with dual LDAP and Omniauth identities.
         if user = Gitlab::LDAP::User.find_by_uid_and_provider(ldap_person.dn.downcase, ldap_person.provider)
-          #case when a LDAP user already exists in Gitlab. Add the Omniauth identity to existing account.
+          # Case when a LDAP user already exists in Gitlab. Add the Omniauth identity to existing account.
           user.identities.build(extern_uid: auth_hash.uid, provider: auth_hash.provider)
         else
-          #no account in Gitlab yet: create it and add the LDAP identity
+          # No account in Gitlab yet: create it and add the LDAP identity
           user = build_new_user
           user.identities.new(provider: ldap_person.provider, extern_uid: ldap_person.dn)
         end
+
         user
       end
 
@@ -85,26 +87,20 @@ module Gitlab
       def ldap_person
         return @ldap_person if defined?(@ldap_person)
 
-        #looks for a corresponding person with same uid in any of the configured LDAP providers
-        Gitlab::LDAP::Config.providers.each do |provider|
+        # looks for a corresponding person with same uid in any of the configured LDAP providers
+        @ldap_person = Gitlab::LDAP::Config.providers.find do |provider|
           adapter = Gitlab::LDAP::Adapter.new(provider)
-          @ldap_person = Gitlab::LDAP::Person.find_by_uid(auth_hash.uid, adapter)
-          break if @ldap_person #exit on first person found
+
+          Gitlab::LDAP::Person.find_by_uid(auth_hash.uid, adapter)
         end
-        @ldap_person #may be nil if we could not find a match
       end
 
       def ldap_config
-        ldap_person && Gitlab::LDAP::Config.new(ldap_person.provider)
+        Gitlab::LDAP::Config.new(ldap_person.provider) if ldap_person
       end
 
       def needs_blocking?
-        return false unless new?
-        if creating_linked_ldap_user?
-          ldap_config.block_auto_created_users
-        else 
-          block_after_signup?
-        end
+        new? && block_after_signup?
       end
 
       def signup_enabled?
@@ -112,7 +108,11 @@ module Gitlab
       end
 
       def block_after_signup?
-        Gitlab.config.omniauth.block_auto_created_users
+        if creating_linked_ldap_user?
+          ldap_config.block_auto_created_users
+        else 
+          Gitlab.config.omniauth.block_auto_created_users
+        end
       end
 
       def auth_hash=(auth_hash)
@@ -133,12 +133,15 @@ module Gitlab
 
       def user_attributes
         # Give preference to LDAP for sensitive information when creating a linked account
-        username, email = if creating_linked_ldap_user?
-          [ ldap_person.username,  ldap_person.email.first ]
+        if creating_linked_ldap_user?
+          username = ldap_person.username
+          email = ldap_person.email.first
         else
-          [ auth_hash.username, auth_hash.email ]
+          username = auth_hash.username
+          email = auth_hash.email
         end
-        return {
+        
+        {
           name:                       auth_hash.name,
           username:                   ::Namespace.clean_path(username),
           email:                      email,
