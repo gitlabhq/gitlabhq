@@ -87,6 +87,7 @@
       = f.label :session_expire_seconds, 'Session duration (seconds)', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :session_expire_seconds, class: 'form-control'
+        %span.help-block#session_expire_seconds_help_block GitLab restart is required to apply changes        
     .form-group
       = f.label :restricted_signup_domains, 'Restricted domains for sign-ups', class: 'control-label col-sm-2'
       .col-sm-10
