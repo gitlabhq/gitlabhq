@@ -18,9 +18,9 @@ Feature: Profile Active Tab
     Then the active main tab should be SSH Keys
     And no other main tabs should be active
 
-  Scenario: On Profile Design
-    Given I visit profile design page
-    Then the active main tab should be Design
+  Scenario: On Profile Preferences
+    Given I visit profile preferences page
+    Then the active main tab should be Preferences
     And no other main tabs should be active
 
   Scenario: On Profile History

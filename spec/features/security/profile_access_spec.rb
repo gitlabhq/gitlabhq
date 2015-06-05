@@ -36,8 +36,8 @@ describe "Profile access", feature: true  do
     it { is_expected.to be_denied_for :visitor }
   end
 
-  describe "GET /profile/design" do
-    subject { design_profile_path }
+  describe "GET /profile/preferences" do
+    subject { profile_preferences_path }
 
     it { is_expected.to be_allowed_for @u1 }
     it { is_expected.to be_allowed_for :admin }

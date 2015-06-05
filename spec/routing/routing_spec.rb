@@ -102,7 +102,6 @@ end
 #               profile_token GET    /profile/token(.:format)               profile#token
 # profile_reset_private_token PUT    /profile/reset_private_token(.:format) profile#reset_private_token
 #                     profile GET    /profile(.:format)                     profile#show
-#              profile_design GET    /profile/design(.:format)              profile#design
 #              profile_update PUT    /profile/update(.:format)              profile#update
 describe ProfilesController, "routing" do
   it "to #account" do
@@ -120,9 +119,19 @@ describe ProfilesController, "routing" do
   it "to #show" do
     expect(get("/profile")).to route_to('profiles#show')
   end
+end
 
-  it "to #design" do
-    expect(get("/profile/design")).to route_to('profiles#design')
+# profile_preferences GET      /profile/preferences(.:format) profiles/preferences#show
+#                     PATCH    /profile/preferences(.:format) profiles/preferences#update
+#                     PUT      /profile/preferences(.:format) profiles/preferences#update
+describe Profiles::PreferencesController, 'routing' do
+  it 'to #show' do
+    expect(get('/profile/preferences')).to route_to('profiles/preferences#show')
+  end
+
+  it 'to #update' do
+    expect(put('/profile/preferences')).to   route_to('profiles/preferences#update')
+    expect(patch('/profile/preferences')).to route_to('profiles/preferences#update')
   end
 end
 
