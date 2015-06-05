@@ -4,7 +4,8 @@
       - blob.data.lines.to_a.size.times do |index|
         - offset = defined?(first_line_number) ? first_line_number : 1
         - i = index + offset
-        = link_to "#L#{i}", id: "L#{i}", rel: "#L#{i}" do
+        / We're not using `link_to` because it is too slow once we get to thousands of lines.
+        %a{href: "#L#{i}", id: "L#{i}", rel: "#L#{i}"}
           %i.fa.fa-link
           = i
   :preserve
