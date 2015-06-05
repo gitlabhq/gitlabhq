@@ -203,7 +203,6 @@ Gitlab::Application.routes.draw do
   resource :profile, only: [:show, :update] do
     member do
       get :history
-      get :design
       get :applications
 
       put :reset_private_token
