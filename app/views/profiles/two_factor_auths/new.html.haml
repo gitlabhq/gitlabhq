@@ -7,14 +7,30 @@
 
 %hr
 
-= form_tag profile_two_factor_auth_path, method: :post, class: 'form-horizontal' do |f|
+= form_tag profile_two_factor_auth_path, method: :post, class: 'form-horizontal two-factor-new' do |f|
   - if @error
     .alert.alert-danger
       = @error
   .form-group
     .col-sm-2
-    .col-sm-10
+    .col-sm-2
       = raw @qr_code
+    .col-sm-8.manual-instructions
+      %h3 Can't scan the code?
+
+      %p
+        To add the entry manually, provide the following details to the
+        application on your phone.
+
+      %dl
+        %dt Account
+        %dd= current_user.email
+      %dl
+        %dt Key
+        %dd= current_user.otp_secret.scan(/.{4}/).join(' ')
+      %dl
+        %dt Time based
+        %dd Yes
   .form-group
     = label_tag :pin_code, nil, class: "control-label"
     .col-sm-10

@@ -66,16 +66,26 @@ It is not reasonable to italicize just _part_ of a word, especially when you're 
     perform_complicated_task
     do_this_and_do_that_and_another_thing
 
-perform_complicated_task
+perform_complicated_task  
 do_this_and_do_that_and_another_thing
 
 ## URL auto-linking
 
-GFM will autolink standard URLs you copy and paste into your text. So if you want to link to a URL (instead of a textural link), you can simply put the URL in verbatim and it will be turned into a link to that URL.
+GFM will autolink almost any URL you copy and paste into your text.
 
-    http://www.google.com
+    * http://www.google.com
+    * https://google.com/
+    * ftp://ftp.us.debian.org/debian/
+    * smb://foo/bar/baz
+    * irc://irc.freenode.net/gitlab
+    * http://localhost:3000
 
-http://www.google.com
+* http://www.google.com
+* https://google.com/
+* ftp://ftp.us.debian.org/debian/
+* smb://foo/bar/baz
+* irc://irc.freenode.net/gitlab
+* http://localhost:3000
 
 ## Code and Syntax Highlighting
 

@@ -19,7 +19,7 @@ module Gitlab
       #
       # Returns a String replaced with the return of the block.
       def self.references_in(text)
-        text.gsub(COMMIT_RANGE_PATTERN) do |match|
+        text.gsub(CommitRange.reference_pattern) do |match|
           yield match, $~[:commit_range], $~[:project]
         end
       end
@@ -30,13 +30,8 @@ module Gitlab
         @commit_map = {}
       end
 
-      # Pattern used to extract commit range references from text
-      #
-      # This pattern supports cross-project references.
-      COMMIT_RANGE_PATTERN = /(#{PROJECT_PATTERN}@)?(?<commit_range>#{CommitRange::PATTERN})/
-
       def call
-        replace_text_nodes_matching(COMMIT_RANGE_PATTERN) do |content|
+        replace_text_nodes_matching(CommitRange.reference_pattern) do |content|
           commit_range_link_filter(content)
         end
       end

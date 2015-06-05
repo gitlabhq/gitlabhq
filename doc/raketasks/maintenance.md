@@ -47,7 +47,6 @@ Git:              /usr/bin/git
 
 Runs the following rake tasks:
 
-- `gitlab:env:check`
 - `gitlab:gitlab_shell:check`
 - `gitlab:sidekiq:check`
 - `gitlab:app:check`
@@ -147,7 +146,7 @@ Do you want to continue (yes/no)? yes
 
 ## Clear redis cache
 
-If for some reason the dashboard shows wrong information you might want to 
+If for some reason the dashboard shows wrong information you might want to
 clear Redis' cache.
 
 For Omnibus-packages:

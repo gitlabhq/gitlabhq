@@ -2,7 +2,6 @@ require 'sidekiq/web'
 require 'api/api'
 
 Gitlab::Application.routes.draw do
-  mount JasmineRails::Engine => '/specs' if defined?(JasmineRails)
   use_doorkeeper do
     controllers applications: 'oauth/applications',
                 authorized_applications: 'oauth/authorized_applications',
@@ -173,7 +172,7 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resources :deploy_keys, only: [:index, :show, :new, :create, :destroy]
+    resources :deploy_keys, only: [:index, :new, :create, :destroy]
 
     resources :hooks, only: [:index, :create, :destroy] do
       get :test
@@ -459,7 +458,7 @@ Gitlab::Application.routes.draw do
           end
         end
 
-        resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :show, :new, :create] do
+        resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create] do
           member do
             put :enable
             put :disable
@@ -487,6 +486,7 @@ Gitlab::Application.routes.draw do
         resources :merge_requests, constraints: { id: /\d+/ }, except: [:destroy] do
           member do
             get :diffs
+            get :commits
             post :automerge
             get :automerge_check
             get :ci_status

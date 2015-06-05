@@ -1,17 +1,6 @@
 source "https://rubygems.org"
 
-def darwin_only(require_as)
-  RUBY_PLATFORM.include?('darwin') && require_as
-end
-
-def linux_only(require_as)
-  RUBY_PLATFORM.include?('linux') && require_as
-end
-
 gem "rails", "~> 4.1.0"
-
-# Make links from text
-gem 'rails_autolink', '~> 1.1'
 
 # Default values for AR models
 gem "default_value_for", "~> 3.0.0"
@@ -31,6 +20,7 @@ gem 'omniauth-shibboleth'
 gem 'omniauth-kerberos', group: :kerberos
 gem 'omniauth-gitlab'
 gem 'omniauth-bitbucket'
+gem 'omniauth-saml'
 gem 'doorkeeper', '2.1.3'
 gem "rack-oauth2", "~> 1.0.5"
 
@@ -44,12 +34,16 @@ gem "browser"
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 7.1.12'
+gem "gitlab_git", '~> 7.2.2'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
+# GitLab fork with a lot of changes (improved thread-safety, better memory usage etc)
+# For full list of changes see https://github.com/SaitoWu/grack/compare/master...gitlabhq:master
 gem 'gitlab-grack', '~> 2.0.2', require: 'grack'
 
 # LDAP Auth
+# GitLab fork with several improvements to original library. For full list of changes 
+# see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
 gem 'gitlab_omniauth-ldap', '1.2.1', require: "omniauth-ldap"
 gem 'net-ldap'
 
@@ -57,6 +51,10 @@ gem 'net-ldap'
 gem 'gollum-lib', '~> 4.0.2'
 
 # Language detection
+# GitLab fork of linguist does not require pygments/python dependency. 
+# New version of original gem also dropped pygments support but it has strict 
+# dependency to unstable rugged version. We have internal issue for replacing 
+# fork with original gem when we meet on same rugged version - https://dev.gitlab.org/gitlab/gitlabhq/issues/2052.
 gem "gitlab-linguist", "~> 3.0.1", require: "linguist"
 
 # API
@@ -95,7 +93,7 @@ gem "seed-fu"
 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 1.11.0'
-gem 'task_list',     '~> 1.0.0', require: 'task_list/railtie'
+gem 'task_list',     '1.0.2', require: 'task_list/railtie'
 gem 'github-markup'
 gem 'redcarpet',     '~> 3.2.3'
 gem 'RedCloth'
@@ -103,7 +101,7 @@ gem 'rdoc',          '~>3.6'
 gem 'org-ruby',      '= 0.9.12'
 gem 'creole',        '~>0.3.6'
 gem 'wikicloth',     '=0.8.1'
-gem 'asciidoctor',   '= 0.1.4'
+gem 'asciidoctor',   '~> 1.5.2'
 
 # Diffs
 gem 'diffy', '~> 3.0.3'
@@ -173,7 +171,7 @@ gem "underscore-rails", "~> 1.4.4"
 gem "sanitize", '~> 2.0'
 
 # Protect against bruteforcing
-gem "rack-attack"
+gem "rack-attack", '~> 4.3.0'
 
 # Ace editor
 gem 'ace-rails-ap'
@@ -187,23 +185,23 @@ gem 'charlock_holmes'
 gem "sass-rails", '~> 4.0.2'
 gem "coffee-rails"
 gem "uglifier"
-gem 'turbolinks'
+gem 'turbolinks', '~> 2.5.0'
 gem 'jquery-turbolinks'
 
-gem 'select2-rails'
-gem 'jquery-atwho-rails', '~> 1.0.0'
-gem "jquery-rails"
-gem "jquery-ui-rails"
-gem "jquery-scrollto-rails"
-gem "raphael-rails", "~> 2.1.2"
-gem 'bootstrap-sass', '~> 3.0'
-gem "font-awesome-rails", '~> 4.2'
-gem "gitlab_emoji", "~> 0.1"
-gem "gon", '~> 5.0.0'
-gem 'nprogress-rails'
-gem 'request_store'
-gem "virtus"
 gem 'addressable'
+gem 'bootstrap-sass',     '~> 3.0'
+gem 'font-awesome-rails', '~> 4.2'
+gem 'gitlab_emoji',       '~> 0.1'
+gem 'gon',                '~> 5.0.0'
+gem 'jquery-atwho-rails', '~> 1.0.0'
+gem 'jquery-rails',       '3.1.2'
+gem 'jquery-scrollto-rails'
+gem 'jquery-ui-rails'
+gem 'nprogress-rails'
+gem 'raphael-rails',      '~> 2.1.2'
+gem 'request_store'
+gem 'select2-rails'
+gem 'virtus'
 
 gem "gitlab-license", "~> 0.0.2"
 
@@ -242,25 +240,18 @@ group :development, :test do
   gem 'minitest', '~> 5.3.0'
 
   # Generate Fake data
-  gem "ffaker"
-
-  # Guard
-  gem 'guard-rspec'
-  gem 'guard-spinach'
-
-  # Notification
-  gem 'rb-fsevent', require: darwin_only('rb-fsevent')
-  gem 'growl',      require: darwin_only('growl')
-  gem 'rb-inotify', require: linux_only('rb-inotify')
+  gem 'ffaker', '~> 2.0.0'
 
   # PhantomJS driver for Capybara
   gem 'poltergeist', '~> 1.5.1'
 
-  gem 'jasmine-rails'
+  gem 'teaspoon', '~> 1.0.0'
+  gem 'teaspoon-jasmine'
 
-  gem "spring", '~> 1.3.1'
-  gem "spring-commands-rspec", '1.0.4'
-  gem "spring-commands-spinach", '1.0.0'
+  gem 'spring', '~> 1.3.1'
+  gem 'spring-commands-rspec',    '~> 1.0.0'
+  gem 'spring-commands-spinach',  '~> 1.0.0'
+  gem 'spring-commands-teaspoon', '~> 0.0.2'
 
   gem "byebug"
 end
@@ -280,4 +271,4 @@ end
 gem "newrelic_rpm"
 
 gem 'octokit', '3.7.0'
-gem "rugments"
+gem "rugments", "~> 1.0.0.beta7"

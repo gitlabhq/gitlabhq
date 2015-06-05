@@ -47,7 +47,7 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def destroy
-    @group.destroy
+    DestroyGroupService.new(@group, current_user).execute
 
     redirect_to admin_groups_path, notice: 'Group was successfully deleted.'
   end

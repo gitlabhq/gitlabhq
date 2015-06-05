@@ -49,10 +49,6 @@ describe API::API, api: true  do
     }
 
     it "should create a new file in project repo" do
-      Gitlab::Satellite::NewFileAction.any_instance.stub(
-        commit!: true,
-      )
-
       post api("/projects/#{project.id}/repository/files", user), valid_params
       expect(response.status).to eq(201)
       expect(json_response['file_path']).to eq('newfile.rb')
@@ -63,9 +59,9 @@ describe API::API, api: true  do
       expect(response.status).to eq(400)
     end
 
-    it "should return a 400 if satellite fails to create file" do
-      Gitlab::Satellite::NewFileAction.any_instance.stub(
-        commit!: false,
+    it "should return a 400 if editor fails to create file" do
+      Repository.any_instance.stub(
+        commit_file: false,
       )
 
       post api("/projects/#{project.id}/repository/files", user), valid_params
@@ -84,10 +80,6 @@ describe API::API, api: true  do
     }
 
     it "should update existing file in project repo" do
-      Gitlab::Satellite::EditFileAction.any_instance.stub(
-        commit!: true,
-      )
-
       put api("/projects/#{project.id}/repository/files", user), valid_params
       expect(response.status).to eq(200)
       expect(json_response['file_path']).to eq(file_path)
@@ -96,35 +88,6 @@ describe API::API, api: true  do
     it "should return a 400 bad request if no params given" do
       put api("/projects/#{project.id}/repository/files", user)
       expect(response.status).to eq(400)
-    end
-
-    it 'should return a 400 if the checkout fails' do
-      Gitlab::Satellite::EditFileAction.any_instance.stub(:commit!)
-        .and_raise(Gitlab::Satellite::CheckoutFailed)
-
-      put api("/projects/#{project.id}/repository/files", user), valid_params
-      expect(response.status).to eq(400)
-
-      ref = valid_params[:branch_name]
-      expect(response.body).to match("ref '#{ref}' could not be checked out")
-    end
-
-    it 'should return a 409 if the file was not modified' do
-      Gitlab::Satellite::EditFileAction.any_instance.stub(:commit!)
-        .and_raise(Gitlab::Satellite::CommitFailed)
-
-      put api("/projects/#{project.id}/repository/files", user), valid_params
-      expect(response.status).to eq(409)
-      expect(response.body).to match("Maybe there was nothing to commit?")
-    end
-
-    it 'should return a 409 if the push fails' do
-      Gitlab::Satellite::EditFileAction.any_instance.stub(:commit!)
-        .and_raise(Gitlab::Satellite::PushFailed)
-
-      put api("/projects/#{project.id}/repository/files", user), valid_params
-      expect(response.status).to eq(409)
-      expect(response.body).to match("Maybe the file was changed by another process?")
     end
   end
 
@@ -138,10 +101,6 @@ describe API::API, api: true  do
     }
 
     it "should delete existing file in project repo" do
-      Gitlab::Satellite::DeleteFileAction.any_instance.stub(
-        commit!: true,
-      )
-
       delete api("/projects/#{project.id}/repository/files", user), valid_params
       expect(response.status).to eq(200)
       expect(json_response['file_path']).to eq(file_path)
@@ -153,8 +112,8 @@ describe API::API, api: true  do
     end
 
     it "should return a 400 if satellite fails to create file" do
-      Gitlab::Satellite::DeleteFileAction.any_instance.stub(
-        commit!: false,
+      Repository.any_instance.stub(
+        remove_file: false,
       )
 
       delete api("/projects/#{project.id}/repository/files", user), valid_params

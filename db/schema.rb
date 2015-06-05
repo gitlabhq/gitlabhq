@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150509180749) do
+ActiveRecord::Schema.define(version: 20150529150354) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,8 @@ ActiveRecord::Schema.define(version: 20150509180749) do
     t.integer  "default_project_visibility"
     t.integer  "default_snippet_visibility"
     t.text     "restricted_signup_domains"
+    t.boolean  "user_oauth_applications",      default: true
+    t.string   "after_sign_out_path"
   end
 
   create_table "audit_events", force: true do |t|
@@ -609,6 +611,7 @@ ActiveRecord::Schema.define(version: 20150509180749) do
     t.boolean  "merge_requests_events", default: false,         null: false
     t.boolean  "tag_push_events",       default: false
     t.integer  "group_id"
+    t.boolean  "note_events",           default: false,         null: false
   end
 
   add_index "web_hooks", ["created_at", "id"], name: "index_web_hooks_on_created_at_and_id", using: :btree

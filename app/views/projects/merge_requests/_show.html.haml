@@ -22,44 +22,44 @@
           %span into
           %strong.label-branch #{@merge_request.target_branch}
         - if @merge_request.open?
-          %span.pull-right
-            .btn-group
-              %a.btn.dropdown-toggle{ data: {toggle: :dropdown} }
-                %i.fa.fa-download
-                Download as
-                %span.caret
-              %ul.dropdown-menu
-                %li= link_to "Email Patches", merge_request_path(@merge_request, format: :patch)
-                %li= link_to "Plain Diff",    merge_request_path(@merge_request, format: :diff)
+          .btn-group.btn-group-sm.pull-right
+            %a.btn.btn-sm.dropdown-toggle{ data: {toggle: :dropdown} }
+              = icon('download')
+              Download as
+              %span.caret
+            %ul.dropdown-menu
+              %li= link_to "Email Patches", merge_request_path(@merge_request, format: :patch)
+              %li= link_to "Plain Diff",    merge_request_path(@merge_request, format: :diff)
 
     = render "projects/merge_requests/show/how_to_merge"
     = render "projects/merge_requests/show/state_widget"
 
   - if @commits.present?
     %ul.nav.nav-tabs.merge-request-tabs
-      %li.notes-tab{data: {action: 'notes', toggle: 'tab'}}
-        = link_to merge_request_path(@merge_request) do
-          %i.fa.fa-comments
+      %li.notes-tab
+        = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#notes', action: 'notes', toggle: 'tab'} do
+          = icon('comments')
           Discussion
           %span.badge= @merge_request.mr_and_commit_notes.user.count
-      %li.commits-tab{data: {action: 'commits', toggle: 'tab'}}
-        = link_to merge_request_path(@merge_request), title: 'Commits' do
-          %i.fa.fa-history
+      %li.commits-tab
+        = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#commits', action: 'commits', toggle: 'tab'} do
+          = icon('history')
           Commits
           %span.badge= @commits.size
-      %li.diffs-tab{data: {action: 'diffs', toggle: 'tab'}}
-        = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request) do
-          %i.fa.fa-list-alt
+      %li.diffs-tab
+        = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#diffs', action: 'diffs', toggle: 'tab'} do
+          = icon('list-alt')
           Changes
           %span.badge= @merge_request.diffs.size
 
-  .notes.tab-content.voting_notes#notes{ class: (controller.action_name == 'show') ? "" : "hide" }
-    = render "projects/merge_requests/discussion"
-  .commits.tab-content
-    = render "projects/merge_requests/show/commits"
-  .diffs.tab-content
-    - if current_page?(action: 'diffs')
-      = render "projects/merge_requests/show/diffs"
+  .tab-content
+    #notes.notes.tab-pane.voting_notes
+      = render "projects/merge_requests/discussion"
+    #commits.commits.tab-pane
+      = render "projects/merge_requests/show/commits"
+    #diffs.diffs.tab-pane
+      - if current_page?(action: 'diffs')
+        = render "projects/merge_requests/show/diffs"
 
   .mr-loading-status
     = spinner

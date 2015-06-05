@@ -35,13 +35,14 @@ pid_path="$app_root/tmp/pids"
 socket_path="$app_root/tmp/sockets"
 web_server_pid_path="$pid_path/unicorn.pid"
 sidekiq_pid_path="$pid_path/sidekiq.pid"
+shell_path="/bin/bash"
 
 # Read configuration variable file if it is present
 test -f /etc/default/gitlab && . /etc/default/gitlab
 
 # Switch to the app_user if it is not he/she who is running the script.
 if [ "$USER" != "$app_user" ]; then
-  eval su - "$app_user" -c $(echo \")$0 "$@"$(echo \"); exit;
+  eval su - "$app_user" -s $shell_path -c $(echo \")$0 "$@"$(echo \"); exit;
 fi
 
 # Switch to the gitlab path, exit on failure.

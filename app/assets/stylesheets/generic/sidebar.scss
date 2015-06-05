@@ -1,6 +1,4 @@
 .page-with-sidebar {
-  background: $background-color;
-
   .sidebar-wrapper {
     position: fixed;
     top: 0;
@@ -102,13 +100,13 @@
   padding-left: 50px;
 
   .sidebar-wrapper {
-    width: 52px;
+    width: $sidebar_collapsed_width;
 
     .nav-sidebar {
       margin-top: 29px;
       position: fixed;
       top: 45px;
-      width: 52px;
+      width: $sidebar_collapsed_width;
 
       li a {
         padding-left: 18px;
@@ -125,7 +123,21 @@
 
     .collapse-nav a {
       left: 0px;
-      width: 52px;
+      width: $sidebar_collapsed_width;
+    }
+
+    .sidebar-user {
+      .username {
+        display: none;
+      }
+
+      .avatar {
+        margin-bottom: 10px;
+      }
+
+      .logout-holder {
+        text-align: center;
+      }
     }
   }
 }
@@ -168,5 +180,17 @@
 
   .page-sidebar-expanded {
     @include expanded-sidebar;
+  }
+}
+
+.sidebar-user {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 10px;
+  color: #fff;
+
+  .avatar {
+    margin-top: 5px;
   }
 }

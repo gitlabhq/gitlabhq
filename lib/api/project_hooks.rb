@@ -43,7 +43,8 @@ module API
           :push_events,
           :issues_events,
           :merge_requests_events,
-          :tag_push_events
+          :tag_push_events,
+          :note_events
         ]
         @hook = user_project.hooks.new(attrs)
 
@@ -73,7 +74,8 @@ module API
           :push_events,
           :issues_events,
           :merge_requests_events,
-          :tag_push_events
+          :tag_push_events,
+          :note_events
         ]
 
         if @hook.update_attributes attrs

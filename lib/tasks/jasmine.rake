@@ -7,6 +7,6 @@ task jasmine: ['jasmine:ci']
 
 namespace :jasmine do
   task :ci do
-    Rake::Task['spec:javascript'].invoke
+    Rake::Task['teaspoon'].invoke
   end
 end

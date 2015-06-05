@@ -10,7 +10,7 @@ class SystemNoteService
   # author           - User performing the change
   # new_commits      - Array of Commits added since last push
   # existing_commits - Array of Commits added in a previous push
-  # oldrev           - TODO (rspeicher): I have no idea what this actually does
+  # oldrev           - Optional String SHA of a previous Commit
   #
   # See new_commit_summary and existing_commit_summary.
   #
@@ -130,6 +130,44 @@ class SystemNoteService
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
+  # Called when the title of a Noteable is changed
+  #
+  # noteable  - Noteable object that responds to `title`
+  # project   - Project owning noteable
+  # author    - User performing the change
+  # old_title - Previous String title
+  #
+  # Example Note text:
+  #
+  #   "Title changed from **Old** to **New**"
+  #
+  # Returns the created Note object
+  def self.change_title(noteable, project, author, old_title)
+    return unless noteable.respond_to?(:title)
+
+    body = "Title changed from **#{old_title}** to **#{noteable.title}**"
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
+  # Called when a branch in Noteable is changed
+  #
+  # noteable    - Noteable object
+  # project     - Project owning noteable
+  # author      - User performing the change
+  # branch_type - 'source' or 'target'
+  # old_branch  - old branch name
+  # new_branch  - new branch nmae
+  #
+  # Example Note text:
+  #
+  #   "Target branch changed from `Old` to `New`"
+  #
+  # Returns the created Note object
+  def self.change_branch(noteable, project, author, branch_type, old_branch, new_branch)
+    body = "#{branch_type} branch changed from `#{old_branch}` to `#{new_branch}`".capitalize
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
   # Called when a Mentionable references a Noteable
   #
   # noteable  - Noteable object being referenced
@@ -138,11 +176,11 @@ class SystemNoteService
   #
   # Example Note text:
   #
-  #   "Mentioned in #1"
+  #   "mentioned in #1"
   #
-  #   "Mentioned in !2"
+  #   "mentioned in !2"
   #
-  #   "Mentioned in 54f7727c"
+  #   "mentioned in 54f7727c"
   #
   # See cross_reference_note_content.
   #
@@ -150,7 +188,7 @@ class SystemNoteService
   def self.cross_reference(noteable, mentioner, author)
     return if cross_reference_disallowed?(noteable, mentioner)
 
-    gfm_reference = mentioner_gfm_ref(noteable, mentioner)
+    gfm_reference = mentioner.gfm_reference(noteable.project)
 
     note_options = {
       project: noteable.project,
@@ -185,12 +223,21 @@ class SystemNoteService
   #
   # Returns Boolean
   def self.cross_reference_disallowed?(noteable, mentioner)
-    return false unless MergeRequest === mentioner
-    return false unless Commit === noteable
+    return false unless mentioner.is_a?(MergeRequest)
+    return false unless noteable.is_a?(Commit)
 
     mentioner.commits.include?(noteable)
   end
 
+  # Check if a cross reference to a noteable from a mentioner already exists
+  #
+  # This method is used to prevent multiple notes being created for a mention
+  # when a issue is updated, for example.
+  #
+  # noteable  - Noteable object being referenced
+  # mentioner - Mentionable object
+  #
+  # Returns Boolean
   def self.cross_reference_exists?(noteable, mentioner)
     # Initial scope should be system notes of this noteable type
     notes = Note.system.where(noteable_type: noteable.class)
@@ -202,7 +249,7 @@ class SystemNoteService
       notes = notes.where(noteable_id: noteable.id)
     end
 
-    gfm_reference = mentioner_gfm_ref(noteable, mentioner, true)
+    gfm_reference = mentioner.gfm_reference(noteable.project)
     notes = notes.where(note: cross_reference_note_content(gfm_reference))
 
     notes.count > 0
@@ -212,39 +259,6 @@ class SystemNoteService
 
   def self.create_note(args = {})
     Note.create(args.merge(system: true))
-  end
-
-  # Prepend the mentioner's namespaced project path to the GFM reference for
-  # cross-project references.  For same-project references, return the
-  # unmodified GFM reference.
-  def self.mentioner_gfm_ref(noteable, mentioner, cross_reference = false)
-    # FIXME (rspeicher): This was breaking things.
-    # if mentioner.is_a?(Commit) && cross_reference
-    #   return mentioner.gfm_reference.sub('commit ', 'commit %')
-    # end
-
-    full_gfm_reference(mentioner.project, noteable.project, mentioner)
-  end
-
-  # Return the +mentioner+ GFM reference.  If the mentioner and noteable
-  # projects are not the same, add the mentioning project's path to the
-  # returned value.
-  def self.full_gfm_reference(mentioning_project, noteable_project, mentioner)
-    if mentioning_project == noteable_project
-      mentioner.gfm_reference
-    else
-      if mentioner.is_a?(Commit)
-        mentioner.gfm_reference.sub(
-          /(commit )/,
-          "\\1#{mentioning_project.path_with_namespace}@"
-        )
-      else
-        mentioner.gfm_reference.sub(
-          /(issue |merge request )/,
-          "\\1#{mentioning_project.path_with_namespace}"
-        )
-      end
-    end
   end
 
   def self.cross_reference_note_prefix
@@ -271,7 +285,7 @@ class SystemNoteService
   #
   # noteable         - MergeRequest object
   # existing_commits - Array of existing Commit objects
-  # oldrev           - Optional String SHA of ... TODO (rspeicher): I have no idea what this actually does.
+  # oldrev           - Optional String SHA of a previous Commit
   #
   # Examples:
   #

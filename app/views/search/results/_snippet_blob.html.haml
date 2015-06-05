@@ -13,16 +13,7 @@
       .file-title
         %i.fa.fa-file
         %strong= snippet_blob[:snippet_object].file_name
-      - if gitlab_markdown?(snippet_blob[:snippet_object].file_name)
-        .file-content.wiki
-          - snippet_blob[:snippet_chunks].each do |snippet|
-            - unless snippet[:data].empty?
-              = preserve do
-                = markdown(snippet[:data])
-            - else
-              .file-content.code
-                .nothing-here-block Empty file
-      - elsif markup?(snippet_blob[:snippet_object].file_name)
+      - if markup?(snippet_blob[:snippet_object].file_name)
         .file-content.wiki
           - snippet_blob[:snippet_chunks].each do |snippet|
             - unless snippet[:data].empty?

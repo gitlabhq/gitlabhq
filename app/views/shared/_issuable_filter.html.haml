@@ -3,15 +3,28 @@
     %ul.nav.nav-tabs
       %li{class: ("active" if params[:state] == 'opened')}
         = link_to page_filter_path(state: 'opened') do
-          %i.fa.fa-exclamation-circle
+          = icon('exclamation-circle')
           #{state_filters_text_for(:opened, @project)}
-      %li{class: ("active" if params[:state] == 'closed')}
-        = link_to page_filter_path(state: 'closed') do
-          %i.fa.fa-check-circle
-          #{state_filters_text_for(:closed, @project)}
+
+      - if defined?(type) && type == :merge_requests
+        %li{class: ("active" if params[:state] == 'merged')}
+          = link_to page_filter_path(state: 'merged') do
+            = icon('check-circle')
+            #{state_filters_text_for(:merged, @project)}
+
+        %li{class: ("active" if params[:state] == 'rejected')}
+          = link_to page_filter_path(state: 'rejected') do
+            = icon('ban')
+            #{state_filters_text_for(:rejected, @project)}
+      - else
+        %li{class: ("active" if params[:state] == 'closed')}
+          = link_to page_filter_path(state: 'closed') do
+            = icon('check-circle')
+            #{state_filters_text_for(:closed, @project)}
+
       %li{class: ("active" if params[:state] == 'all')}
         = link_to page_filter_path(state: 'all') do
-          %i.fa.fa-compass
+          = icon('compass')
           #{state_filters_text_for(:all, @project)}
 
   .issues-details-filters

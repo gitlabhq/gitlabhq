@@ -25,13 +25,7 @@ module TreeHelper
   end
 
   def render_readme(readme)
-    if gitlab_markdown?(readme.name)
-      preserve(markdown(readme.data))
-    elsif markup?(readme.name)
-      render_markup(readme.name, readme.data)
-    else
-      simple_format(readme.data)
-    end
+    render_markup(readme.name, readme.data)
   end
 
   # Return an image icon depending on the file type and mode

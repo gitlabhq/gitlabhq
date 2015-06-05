@@ -17,5 +17,5 @@
         = link_to issues_dashboard_url(format: :atom, private_token: current_user.private_token), class: 'btn' do
           %i.fa.fa-rss
 
-  = render 'shared/issuable_filter'
+  = render 'shared/issuable_filter', type: :issues
 = render 'shared/issues'
