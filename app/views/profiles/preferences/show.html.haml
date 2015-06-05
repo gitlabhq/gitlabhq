@@ -16,9 +16,9 @@
           = f.radio_button :theme_id, theme.id
           = theme.name
 
-  .panel.panel-default.code-preview-theme
+  .panel.panel-default.syntax-theme
     .panel-heading
-      Code preview theme
+      Syntax highlighting theme
     .panel-body
       - color_schemes.each do |color_scheme_id, color_scheme|
         = label_tag do

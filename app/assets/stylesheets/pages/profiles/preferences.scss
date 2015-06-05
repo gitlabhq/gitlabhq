@@ -37,22 +37,20 @@
   }
 }
 
-.code_highlight_opts {
-  margin-top: 10px;
-
+.syntax-theme {
   label {
     margin-right: 20px;
     text-align: center;
 
-    .prev {
-      width: 160px;
+    .preview {
       margin-bottom: 10px;
+      width: 160px;
 
       img {
-        max-width: 100%;
         @include border-radius(4px);
+
+        max-width: 100%;
       }
     }
   }
 }
-
