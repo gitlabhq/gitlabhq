@@ -1,5 +1,3 @@
-#= require jquery
-#= require jasmine-fixture
 #= require notes
 
 window.gon = {}
@@ -7,20 +5,17 @@ window.disableButtonIfEmptyField = -> null
 
 describe 'Notes', ->
   describe 'task lists', ->
-    selectors = {
-      container: 'li.note .js-task-list-container'
-      item:      '.note-text ul.task-list li.task-list-item input.task-list-item-checkbox[type=checkbox] {Task List Item}'
-      textarea:  '.note-edit-form form textarea.js-task-list-field{- [ ] Task List Item}'
-    }
+    fixture.preload('issue_note.html')
 
     beforeEach ->
-      $container = affix(selectors.container)
-
-      # These two elements are siblings inside the container
-      $container.find('.js-task-list-container').append(affix(selectors.item))
-      $container.find('.js-task-list-container').append(affix(selectors.textarea))
+      fixture.load('issue_note.html')
+      $('form').on 'submit', (e) -> e.preventDefault()
 
       @notes = new Notes()
+
+    it 'modifies the Markdown field', ->
+      $('input[type=checkbox]').attr('checked', true).trigger('change')
+      expect($('.js-task-list-field').val()).toBe('- [x] Task List Item')
 
     it 'submits the form on tasklist:changed', ->
       submitted = false

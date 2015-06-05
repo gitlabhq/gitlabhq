@@ -20,18 +20,13 @@ module Gitlab
       #
       # Returns a String replaced with the return of the block.
       def self.references_in(text)
-        text.gsub(ISSUE_PATTERN) do |match|
+        text.gsub(Issue.reference_pattern) do |match|
           yield match, $~[:issue].to_i, $~[:project]
         end
       end
 
-      # Pattern used to extract `#123` issue references from text
-      #
-      # This pattern supports cross-project references.
-      ISSUE_PATTERN = /#{PROJECT_PATTERN}?\#(?<issue>([a-zA-Z\-]+-)?\d+)/
-
       def call
-        replace_text_nodes_matching(ISSUE_PATTERN) do |content|
+        replace_text_nodes_matching(Issue.reference_pattern) do |content|
           issue_link_filter(content)
         end
       end
@@ -57,7 +52,7 @@ module Gitlab
 
             %(<a href="#{url}"
                  title="#{title}"
-                 class="#{klass}">#{project_ref}##{id}</a>)
+                 class="#{klass}">#{match}</a>)
           else
             match
           end

@@ -221,7 +221,7 @@ If an error occurs, an error number and a message explaining the reason is retur
 
 ## Update MR
 
-Updates an existing merge request. You can change branches, title, or even close the MR.
+Updates an existing merge request. You can change the target branch, title, or even close the MR.
 
 ```
 PUT /projects/:id/merge_request/:merge_request_id
@@ -231,7 +231,6 @@ Parameters:
 
 - `id` (required)               - The ID of a project
 - `merge_request_id` (required) - ID of MR
-- `source_branch`               - The source branch
 - `target_branch`               - The target branch
 - `assignee_id`                 - Assignee user ID
 - `title`                       - Title of MR
@@ -242,7 +241,6 @@ Parameters:
 {
   "id": 1,
   "target_branch": "master",
-  "source_branch": "test1",
   "project_id": 3,
   "title": "test1",
   "description": "description1",

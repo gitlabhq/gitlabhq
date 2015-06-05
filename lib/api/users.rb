@@ -197,7 +197,7 @@ module API
         user = User.find_by(id: params[:id])
 
         if user
-          user.destroy
+          DeleteUserService.new.execute(user)
         else
           not_found!('User')
         end

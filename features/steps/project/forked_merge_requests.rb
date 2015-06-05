@@ -128,6 +128,21 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
     page.should have_select("merge_request_target_project_id", selected: @project.path_with_namespace)
   end
 
+  step 'I click "Assign to" dropdown"' do
+    first('.ajax-users-select').click
+  end
+
+  step 'I should see the target project ID in the input selector' do
+    expect(page).to have_selector("input[data-project-id=\"#{@project.id}\"]")
+  end
+
+  step 'I should see the users from the target project ID' do
+    expect(page).to have_selector('.user-result', visible: true, count: 2)
+    users = page.all('.user-name')
+    users[0].text.should == 'Unassigned'
+    users[1].text.should == @project.users.first.name
+  end
+
   # Verify a link is generated against the correct project
   def verify_commit_link(container_div, container_project)
     # This should force a wait for the javascript to execute

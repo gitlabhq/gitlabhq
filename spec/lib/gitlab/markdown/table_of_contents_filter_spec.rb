@@ -4,9 +4,7 @@ require 'spec_helper'
 
 module Gitlab::Markdown
   describe TableOfContentsFilter do
-    def filter(html, options = {})
-      described_class.call(html, options)
-    end
+    include FilterSpecHelper
 
     def header(level, text)
       "<h#{level}>#{text}</h#{level}>\n"

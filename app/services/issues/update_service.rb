@@ -37,6 +37,10 @@ module Issues
           notification_service.reassigned_issue(issue, current_user)
         end
 
+        if issue.previous_changes.include?('title')
+          create_title_change_note(issue, issue.previous_changes['title'].first)
+        end
+
         issue.notice_added_references(issue.project, current_user)
         execute_hooks(issue, 'update')
       end

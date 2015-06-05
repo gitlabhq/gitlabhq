@@ -36,4 +36,24 @@ class PasswordsController < Devise::PasswordsController
       end
     end
   end
+
+  def edit
+    super
+    reset_password_token = Devise.token_generator.digest(
+      User,
+      :reset_password_token,
+      resource.reset_password_token
+    )
+
+    unless reset_password_token.nil?
+      user = User.where(
+        reset_password_token: reset_password_token
+      ).first_or_initialize
+
+      unless user.reset_password_period_valid?
+        flash[:alert] = 'Your password reset token has expired.'
+        redirect_to(new_user_password_url(user_email: user['email']))
+      end
+    end
+  end
 end

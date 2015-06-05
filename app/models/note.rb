@@ -326,8 +326,8 @@ class Note < ActiveRecord::Base
   end
 
   # Mentionable override.
-  def gfm_reference
-    noteable.gfm_reference
+  def gfm_reference(from_project = nil)
+    noteable.gfm_reference(from_project)
   end
 
   # Mentionable override.

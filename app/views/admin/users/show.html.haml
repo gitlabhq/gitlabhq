@@ -140,18 +140,22 @@
             .panel-heading
               Remove user
             .panel-body
-              %p Deleting a user has the following effects:
-              %ul
-                %li All user content like authored issues, snippets, comments will be removed
-                - rp = @user.personal_projects.count
-                - unless rp.zero?
-                  %li #{pluralize rp, 'personal project'} will be removed and cannot be restored
+              - if @user.can_be_removed?
+                %p Deleting a user has the following effects:
+                %ul
+                  %li All user content like authored issues, snippets, comments will be removed
+                  - rp = @user.personal_projects.count
+                  - unless rp.zero?
+                    %li #{pluralize rp, 'personal project'} will be removed and cannot be restored
+                %br
+                = link_to 'Remove user', [:admin, @user], data: { confirm: "USER #{@user.name} WILL BE REMOVED! Are you sure?" }, method: :delete, class: "btn btn-remove"
+              - else
                 - if @user.solo_owned_groups.present?
-                  %li
-                    Next groups with all content will be removed:
+                  %p
+                    This user is currently an owner in these groups:
                     %strong #{@user.solo_owned_groups.map(&:name).join(', ')}
-              %br
-              = link_to 'Remove user', [:admin, @user], data: { confirm: "USER #{@user.name} WILL BE REMOVED! Are you sure?" }, method: :delete, class: "btn btn-remove"
+                  %p
+                    You must transfer ownership or delete these groups before you can delete this user.
 
   #profile.tab-pane
     .row

@@ -48,14 +48,16 @@
     }
 
     .project-home-desc {
+      color: $gray;
+      float: left;
       font-size: 16px;
       line-height: 1.3;
       margin-right: 250px;
-    }
 
-    .project-home-desc {
-      float: left;
-      color: $gray;
+      // Render Markdown-generated HTML inline for this block
+      p {
+        display: inline;
+      }
     }
   }
 
@@ -129,7 +131,7 @@
     }
 
     .option-descr {
-      margin-left: 24px;
+      margin-left: 36px;
       color: $gray;
     }
   }
@@ -209,13 +211,14 @@ ul.nav.nav-projects-tabs {
     line-height: 1.5;
   }
 
-  .well {
-    padding: 14px;
+  .panel {
+    @include border-radius(3px);
 
-    h4 {
+    .panel-heading, .panel-footer {
       font-weight: normal;
-      margin: 0;
-      color: #555;
+      background-color: transparent;
+      color: #666;
+      border-color: #EEE;
     }
 
     .actions {
@@ -224,11 +227,17 @@ ul.nav.nav-projects-tabs {
 
     .nav-pills a {
       padding: 10px;
+      font-weight: bold;
+      color: $gl-link-color;
     }
 
     .nav {
-      margin: 10px 0;
+      margin-bottom: 15px;
     }
+  }
+
+  .ci-status-image {
+    max-height: 22px;
   }
 }
 

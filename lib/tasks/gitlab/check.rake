@@ -1,7 +1,6 @@
 namespace :gitlab do
   desc "GITLAB | Check the configuration of GitLab and its environment"
-  task check: %w{gitlab:env:check
-                 gitlab:gitlab_shell:check
+  task check: %w{gitlab:gitlab_shell:check
                  gitlab:sidekiq:check
                  gitlab:ldap:check
                  gitlab:app:check}
@@ -14,6 +13,7 @@ namespace :gitlab do
       warn_user_is_not_gitlab
       start_checking "GitLab"
 
+      check_git_config
       check_database_config_exists
       check_database_is_not_sqlite
       check_migrations_are_up
@@ -37,6 +37,36 @@ namespace :gitlab do
 
     # Checks
     ########################
+
+    def check_git_config
+      print "Git configured with autocrlf=input? ... "
+
+      options = {
+        "core.autocrlf" => "input"
+      }
+
+      correct_options = options.map do |name, value|
+        run(%W(#{Gitlab.config.git.bin_path} config --global --get #{name})).try(:squish) == value
+      end
+
+      if correct_options.all?
+        puts "yes".green
+      else
+        print "Trying to fix Git error automatically. ..."
+
+        if auto_fix_git_config(options)
+          puts "Success".green
+        else
+          puts "Failed".red
+          try_fixing_it(
+            sudo_gitlab("\"#{Gitlab.config.git.bin_path}\" config --global core.autocrlf \"#{options["core.autocrlf"]}\"")
+          )
+          for_more_information(
+            see_installation_guide_section "GitLab"
+          )
+       end
+      end
+    end
 
     def check_database_config_exists
       print "Database config exists? ... "
@@ -297,58 +327,6 @@ namespace :gitlab do
       end
     end
   end
-
-
-
-  namespace :env do
-    desc "GITLAB | Check the configuration of the environment"
-    task check: :environment  do
-      warn_user_is_not_gitlab
-      start_checking "Environment"
-
-      check_gitlab_git_config
-
-      finished_checking "Environment"
-    end
-
-
-    # Checks
-    ########################
-
-    def check_gitlab_git_config
-      print "Git configured for #{gitlab_user} user? ... "
-
-      options = {
-        "user.name"  => "GitLab",
-        "user.email" => Gitlab.config.gitlab.email_from,
-        "core.autocrlf" => "input"
-      }
-      correct_options = options.map do |name, value|
-        run(%W(#{Gitlab.config.git.bin_path} config --global --get #{name})).try(:squish) == value
-      end
-
-      if correct_options.all?
-        puts "yes".green
-      else
-        print "Trying to fix Git error automatically. ..."
-        if auto_fix_git_config(options)
-          puts "Success".green
-        else
-          puts "Failed".red
-          try_fixing_it(
-            sudo_gitlab("\"#{Gitlab.config.git.bin_path}\" config --global user.name  \"#{options["user.name"]}\""),
-            sudo_gitlab("\"#{Gitlab.config.git.bin_path}\" config --global user.email \"#{options["user.email"]}\""),
-            sudo_gitlab("\"#{Gitlab.config.git.bin_path}\" config --global core.autocrlf \"#{options["core.autocrlf"]}\"")
-          )
-          for_more_information(
-            see_installation_guide_section "GitLab"
-          )
-        end
-      end
-    end
-  end
-
-
 
   namespace :gitlab_shell do
     desc "GITLAB | Check the configuration of GitLab Shell"

@@ -19,7 +19,15 @@ class Projects::IssuesController < Projects::ApplicationController
   def index
     terms = params['issue_search']
     @issues = get_issues_collection
-    @issues = @issues.full_search(terms) if terms.present?
+
+    if terms.present?
+      if terms =~ /\A#(\d+)\z/
+        @issues = @issues.where(iid: $1)
+      else
+        @issues = @issues.full_search(terms)
+      end
+    end
+
     @issues = @issues.page(params[:page]).per(PER_PAGE)
 
     respond_to do |format|

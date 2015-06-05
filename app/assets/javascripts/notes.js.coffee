@@ -1,6 +1,4 @@
-#= require jquery
 #= require autosave
-#= require bootstrap
 #= require dropzone
 #= require dropzone_input
 #= require gfm_auto_complete
@@ -312,6 +310,14 @@ class @Notes
     form.show()
     textarea = form.find("textarea")
     textarea.focus()
+
+    # HACK (rspeicher/DouweM): Work around a Chrome 43 bug(?).
+    # The textarea has the correct value, Chrome just won't show it unless we
+    # modify it, so let's clear it and re-set it!
+    value = textarea.val()
+    textarea.val ""
+    textarea.val value
+
     disableButtonIfEmptyField textarea, form.find(".js-comment-button")
 
   ###

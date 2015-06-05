@@ -71,7 +71,7 @@ module API
       delete ":id" do
         group = find_group(params[:id])
         authorize! :admin_group, group
-        group.destroy
+        DestroyGroupService.new(group, current_user).execute
       end
 
       # Transfer a project to the Group namespace

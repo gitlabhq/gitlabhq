@@ -5,6 +5,8 @@ describe Notify do
   include EmailSpec::Matchers
   include RepoHelpers
 
+  new_user_address = 'newguy@example.com'
+
   let(:gitlab_sender_display_name) { Gitlab.config.gitlab.email_display_name }
   let(:gitlab_sender) { Gitlab.config.gitlab.email_from }
   let(:gitlab_sender_reply_to) { Gitlab.config.gitlab.email_reply_to }
@@ -55,18 +57,9 @@ describe Notify do
     end
   end
 
-  describe 'for new users, the email' do
-    let(:example_site_path) { root_path }
-    let(:new_user) { create(:user, email: 'newguy@example.com', created_by_id: 1) }
-
-    token = 'kETLwRaayvigPq_x3SNM'
-
-    subject { Notify.new_user_email(new_user.id, token) }
-
-    it_behaves_like 'an email sent from GitLab'
-
+  shared_examples 'a new user email' do |user_email, site_path|
     it 'is sent to the new user' do
-      is_expected.to deliver_to new_user.email
+      is_expected.to deliver_to user_email
     end
 
     it 'has the correct subject' do
@@ -74,8 +67,24 @@ describe Notify do
     end
 
     it 'contains the new user\'s login name' do
-      is_expected.to have_body_text /#{new_user.email}/
+      is_expected.to have_body_text /#{user_email}/
     end
+
+    it 'includes a link to the site' do
+      is_expected.to have_body_text /#{site_path}/
+    end
+  end
+
+  describe 'for new users, the email' do
+    let(:example_site_path) { root_path }
+    let(:new_user) { create(:user, email: new_user_address, created_by_id: 1) }
+
+    token = 'kETLwRaayvigPq_x3SNM'
+
+    subject { Notify.new_user_email(new_user.id, token) }
+
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'a new user email', new_user_address
 
     it 'contains the password text' do
       is_expected.to have_body_text /Click here to set your password/
@@ -88,38 +97,25 @@ describe Notify do
       )
     end
 
-    it 'includes a link to the site' do
-      is_expected.to have_body_text /#{example_site_path}/
+    it 'explains the reset link expiration' do
+      is_expected.to have_body_text(/This link is valid for \d+ (hours?|days?)/)
+      is_expected.to have_body_text(new_user_password_url)
+      is_expected.to have_body_text(/\?user_email=.*%40.*/)
     end
   end
 
 
   describe 'for users that signed up, the email' do
     let(:example_site_path) { root_path }
-    let(:new_user) { create(:user, email: 'newguy@example.com', password: "securePassword") }
+    let(:new_user) { create(:user, email: new_user_address, password: "securePassword") }
 
     subject { Notify.new_user_email(new_user.id) }
 
     it_behaves_like 'an email sent from GitLab'
-
-    it 'is sent to the new user' do
-      is_expected.to deliver_to new_user.email
-    end
-
-    it 'has the correct subject' do
-      is_expected.to have_subject /^Account was created for you$/i
-    end
-
-    it 'contains the new user\'s login name' do
-      is_expected.to have_body_text /#{new_user.email}/
-    end
+    it_behaves_like 'a new user email', new_user_address
 
     it 'should not contain the new user\'s password' do
       is_expected.not_to have_body_text /password/
-    end
-
-    it 'includes a link to the site' do
-      is_expected.to have_body_text /#{example_site_path}/
     end
   end
 
@@ -189,7 +185,7 @@ describe Notify do
 
       context 'for issues' do
         let(:issue) { create(:issue, author: current_user, assignee: assignee, project: project) }
-        let(:issue_with_description) { create(:issue, author: current_user, assignee: assignee, project: project, description: Faker::Lorem.sentence) }
+        let(:issue_with_description) { create(:issue, author: current_user, assignee: assignee, project: project, description: FFaker::Lorem.sentence) }
 
         describe 'that are new' do
           subject { Notify.new_issue_email(issue.assignee_id, issue.id) }
@@ -277,7 +273,7 @@ describe Notify do
       context 'for merge requests' do
         let(:merge_author) { create(:user) }
         let(:merge_request) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project) }
-        let(:merge_request_with_description) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project, description: Faker::Lorem.sentence) }
+        let(:merge_request_with_description) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project, description: FFaker::Lorem.sentence) }
 
         describe 'that are new' do
           subject { Notify.new_merge_request_email(merge_request.assignee_id, merge_request.id) }

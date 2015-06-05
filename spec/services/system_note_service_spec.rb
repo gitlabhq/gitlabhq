@@ -207,6 +207,41 @@ describe SystemNoteService do
     end
   end
 
+  describe '.change_title' do
+    subject { described_class.change_title(noteable, project, author, 'Old title') }
+
+    context 'when noteable responds to `title`' do
+      it_behaves_like 'a system note'
+
+      it 'sets the note text' do
+        expect(subject.note).
+          to eq "Title changed from **Old title** to **#{noteable.title}**"
+      end
+    end
+
+    context 'when noteable does not respond to `title' do
+      let(:noteable) { double('noteable') }
+
+      it 'returns nil' do
+        expect(subject).to be_nil
+      end
+    end
+  end
+
+  describe '.change_branch' do
+    subject { described_class.change_branch(noteable, project, author, 'target', old_branch, new_branch) }
+    let(:old_branch) { 'old_branch'}
+    let(:new_branch) { 'new_branch'}
+
+    it_behaves_like 'a system note'
+
+    context 'when target branch name changed' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "Target branch changed from `#{old_branch}` to `#{new_branch}`"
+      end
+    end
+  end
+
   describe '.cross_reference' do
     subject { described_class.cross_reference(noteable, mentioner, author) }
 
@@ -238,13 +273,13 @@ describe SystemNoteService do
             let(:mentioner) { project2.repository.commit }
 
             it 'references the mentioning commit' do
-              expect(subject.note).to eq "mentioned in commit #{project2.path_with_namespace}@#{mentioner.id}"
+              expect(subject.note).to eq "mentioned in commit #{mentioner.to_reference(project)}"
             end
           end
 
           context 'from non-Commit' do
             it 'references the mentioning object' do
-              expect(subject.note).to eq "mentioned in issue #{project2.path_with_namespace}##{mentioner.iid}"
+              expect(subject.note).to eq "mentioned in issue #{mentioner.to_reference(project)}"
             end
           end
         end
@@ -254,13 +289,13 @@ describe SystemNoteService do
             let(:mentioner) { project.repository.commit }
 
             it 'references the mentioning commit' do
-              expect(subject.note).to eq "mentioned in commit #{mentioner.id}"
+              expect(subject.note).to eq "mentioned in commit #{mentioner.to_reference}"
             end
           end
 
           context 'from non-Commit' do
             it 'references the mentioning object' do
-              expect(subject.note).to eq "mentioned in issue ##{mentioner.iid}"
+              expect(subject.note).to eq "mentioned in issue #{mentioner.to_reference}"
             end
           end
         end
@@ -270,7 +305,7 @@ describe SystemNoteService do
 
   describe '.cross_reference?' do
     it 'is truthy when text begins with expected text' do
-      expect(described_class.cross_reference?('mentioned in issue #1')).to be_truthy
+      expect(described_class.cross_reference?('mentioned in something')).to be_truthy
     end
 
     it 'is falsey when text does not begin with expected text' do

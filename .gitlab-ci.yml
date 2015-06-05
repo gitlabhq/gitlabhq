@@ -1,0 +1,39 @@
+before_script:
+  - export PATH=$HOME/bin:/usr/local/bin:/usr/bin:/bin
+  - ruby -v
+  - which ruby
+  - gem install bundler
+  - which bundle
+  - echo $PATH
+  - cp config/database.yml.mysql config/database.yml
+  - cp config/gitlab.yml.example config/gitlab.yml
+  - ! 'sed "s/username\:.*$/username\: runner/" -i config/database.yml'
+  - ! 'sed "s/password\:.*$/password\: ''password''/" -i config/database.yml'
+  - sed "s/gitlabhq_test/gitlabhq_test_$((RANDOM/5000))/" -i config/database.yml
+  - touch log/application.log
+  - touch log/test.log
+  - bundle install --without postgres production --jobs $(nproc)
+  - bundle exec rake db:create RAILS_ENV=test
+jobs:
+- script:
+  - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec
+  name: Rspec
+  runner: ruby,mysql
+- script:
+  - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach
+  name: Spinach
+  runner: ruby,mysql
+- script:
+  - RAILS_ENV=test SIMPLECOV=true bundle exec rake jasmine:ci
+  name: Jasmine
+  runner: ruby,mysql
+- script:
+  - bundle exec rubocop
+  name: Rubocop
+  runner: ruby,mysql
+- script:
+  - bundle exec rake brakeman
+  name: Brakeman
+  runner: ruby,mysql
+deploy_jobs: []
+skip_refs: ''

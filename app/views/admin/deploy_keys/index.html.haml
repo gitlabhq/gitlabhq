@@ -19,8 +19,7 @@
               = link_to admin_deploy_key_path(deploy_key) do
                 %strong= deploy_key.title
             %td
-              %span
-                (#{deploy_key.fingerprint})
+              %code.key-fingerprint= deploy_key.fingerprint
             %td
               %span.cgray
                 added #{time_ago_with_tooltip(deploy_key.created_at)}

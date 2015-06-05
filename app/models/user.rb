@@ -62,11 +62,13 @@ require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class User < ActiveRecord::Base
-  include Sortable
-  include Gitlab::ConfigHelper
-  include TokenAuthenticatable
   extend Gitlab::ConfigHelper
+
+  include Gitlab::ConfigHelper
   include Gitlab::CurrentSettings
+  include Referable
+  include Sortable
+  include TokenAuthenticatable
 
   default_value_for :admin, false
   default_value_for :can_create_group, gitlab_config.default_can_create_group
@@ -274,6 +276,18 @@ class User < ActiveRecord::Base
 
       username
     end
+
+    def reference_prefix
+      '@'
+    end
+
+    # Pattern used to extract `@user` user references from text
+    def reference_pattern
+      %r{
+        #{Regexp.escape(reference_prefix)}
+        (?<user>#{Gitlab::Regex::NAMESPACE_REGEX_STR})
+      }x
+    end
   end
 
   #
@@ -282,6 +296,10 @@ class User < ActiveRecord::Base
 
   def to_param
     username
+  end
+
+  def to_reference(_from_project = nil)
+    "#{self.class.reference_prefix}#{username}"
   end
 
   def notification
@@ -493,7 +511,7 @@ class User < ActiveRecord::Base
   end
 
   def sanitize_attrs
-    %w(name username skype linkedin twitter bio).each do |attr|
+    %w(name username skype linkedin twitter).each do |attr|
       value = self.send(attr)
       self.send("#{attr}=", Sanitize.clean(value)) if value.present?
     end
@@ -669,6 +687,12 @@ class User < ActiveRecord::Base
       end
   end
 
+  def namespaces
+    namespace_ids = groups.pluck(:id)
+    namespace_ids.push(namespace.id)
+    Namespace.where(id: namespace_ids)
+  end
+
   def oauth_authorized_tokens
     Doorkeeper::AccessToken.where(resource_owner_id: self.id, revoked_at: nil)
   end
@@ -702,5 +726,9 @@ class User < ActiveRecord::Base
     end
 
     true
+  end
+
+  def can_be_removed?
+    !solo_owned_groups.present?
   end
 end

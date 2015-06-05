@@ -48,6 +48,21 @@ describe GitlabCiService do
       it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://ci.gitlab.org/projects/2/refs/master/commits/2ab7834c")}
       it { expect(@service.build_page("issue#2", 'master')).to eq("http://ci.gitlab.org/projects/2/refs/master/commits/issue%232")}
     end
+
+    describe "execute" do
+      let(:user)    { create(:user, username: 'username') }
+      let(:project) { create(:project, name: 'project') }
+      let(:push_sample_data) { Gitlab::PushDataBuilder.build_sample(project, user) }
+
+      it "calls ci_yaml_file" do
+        service_hook = double
+        service_hook.should_receive(:execute)
+        @service.should_receive(:service_hook).and_return(service_hook)
+        @service.should_receive(:ci_yaml_file).with(push_sample_data)
+
+        @service.execute(push_sample_data)
+      end
+    end
   end
 
   describe "Fork registration" do

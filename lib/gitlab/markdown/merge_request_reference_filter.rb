@@ -20,18 +20,13 @@ module Gitlab
       #
       # Returns a String replaced with the return of the block.
       def self.references_in(text)
-        text.gsub(MERGE_REQUEST_PATTERN) do |match|
+        text.gsub(MergeRequest.reference_pattern) do |match|
           yield match, $~[:merge_request].to_i, $~[:project]
         end
       end
 
-      # Pattern used to extract `!123` merge request references from text
-      #
-      # This pattern supports cross-project references.
-      MERGE_REQUEST_PATTERN = /#{PROJECT_PATTERN}?!(?<merge_request>\d+)/
-
       def call
-        replace_text_nodes_matching(MERGE_REQUEST_PATTERN) do |content|
+        replace_text_nodes_matching(MergeRequest.reference_pattern) do |content|
           merge_request_link_filter(content)
         end
       end
@@ -57,7 +52,7 @@ module Gitlab
 
             %(<a href="#{url}"
                  title="#{title}"
-                 class="#{klass}">#{project_ref}!#{id}</a>)
+                 class="#{klass}">#{match}</a>)
           else
             match
           end

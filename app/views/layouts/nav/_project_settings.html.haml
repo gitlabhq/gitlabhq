@@ -12,7 +12,7 @@
       = link_to edit_project_path(@project), title: 'Project', class: 'stat-tab tab', data: {placement: 'right'} do
         = icon('pencil-square-o')
         %span
-          Project
+          Project Settings
     = nav_link(controller: [:project_members, :teams]) do
       = link_to namespace_project_project_members_path(@project.namespace, @project), title: 'Members', class: 'team-tab tab', data: {placement: 'right'} do
         = icon('users')

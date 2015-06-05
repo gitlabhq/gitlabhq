@@ -97,18 +97,15 @@ class ProjectsController < ApplicationController
     return access_denied! unless can?(current_user, :remove_project, @project)
 
     ::Projects::DestroyService.new(@project, current_user, {}).execute
+    flash[:alert] = 'Project deleted.'
 
-    respond_to do |format|
-      format.html do
-        flash[:alert] = 'Project deleted.'
-
-        if request.referer.include?('/admin')
-          redirect_to admin_namespaces_projects_path
-        else
-          redirect_to dashboard_path
-        end
-      end
+    if request.referer.include?('/admin')
+      redirect_to admin_namespaces_projects_path
+    else
+      redirect_to dashboard_path
     end
+  rescue Projects::DestroyService::DestroyError => ex
+    redirect_to edit_project_path(@project), alert: ex.message
   end
 
   def autocomplete_sources

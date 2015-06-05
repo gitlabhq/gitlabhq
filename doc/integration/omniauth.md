@@ -75,6 +75,7 @@ Now we can choose one or more of the Supported Providers below to continue confi
 - [Google](google.md)
 - [Shibboleth](shibboleth.md)
 - [Twitter](twitter.md)
+- [SAML](saml.md)
 
 ## Enable OmniAuth for an Existing User
 

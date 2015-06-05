@@ -9,7 +9,6 @@ end
 
 ENV['RAILS_ENV'] = 'test'
 require './config/environment'
-require 'rspec'
 require 'rspec/expectations'
 require 'sidekiq/testing/inline'
 

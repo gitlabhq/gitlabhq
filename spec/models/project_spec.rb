@@ -32,7 +32,7 @@
 require 'spec_helper'
 
 describe Project do
-  describe 'Associations' do
+  describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
     it { is_expected.to belong_to(:creator).class_name('User') }
@@ -54,10 +54,17 @@ describe Project do
     it { is_expected.to have_one(:asana_service).dependent(:destroy) }
   end
 
-  describe 'Mass assignment' do
+  describe 'modules' do
+    subject { described_class }
+
+    it { is_expected.to include_module(Gitlab::ConfigHelper) }
+    it { is_expected.to include_module(Gitlab::ShellAdapter) }
+    it { is_expected.to include_module(Gitlab::VisibilityLevel) }
+    it { is_expected.to include_module(Referable) }
+    it { is_expected.to include_module(Sortable) }
   end
 
-  describe 'Validation' do
+  describe 'validation' do
     let!(:project) { create(:project) }
 
     it { is_expected.to validate_presence_of(:name) }
@@ -89,6 +96,14 @@ describe Project do
     it { is_expected.to respond_to(:name_with_namespace) }
     it { is_expected.to respond_to(:owner) }
     it { is_expected.to respond_to(:path_with_namespace) }
+  end
+
+  describe '#to_reference' do
+    let(:project) { create(:empty_project) }
+
+    it 'returns a String reference to the object' do
+      expect(project.to_reference).to eq project.path_with_namespace
+    end
   end
 
   it 'should return valid url to repo' do
