@@ -9,6 +9,7 @@ describe API::API, api: true  do
   let!(:master) { create(:project_member, user: user, project: project, access_level: ProjectMember::MASTER) }
   let!(:guest) { create(:project_member, user: user2, project: project, access_level: ProjectMember::GUEST) }
   let!(:note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'a comment on a commit') }
+  let!(:another_note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'another comment on a commit') }
 
   before { project.team << [user, :reporter] }
 
@@ -89,7 +90,7 @@ describe API::API, api: true  do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user)
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
-        expect(json_response.length).to eq(1)
+        expect(json_response.length).to eq(2)
         expect(json_response.first['note']).to eq('a comment on a commit')
         expect(json_response.first['author']['id']).to eq(user.id)
       end

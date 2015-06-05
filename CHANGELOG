@@ -139,6 +139,7 @@ v 7.10.4
   - Fix DB error when trying to tag a repository (Stan Hu)
   - Fix Error 500 when searching Wiki pages (Stan Hu)
   - Unescape branch names in compare commit (Stan Hu)
+  - Order commit comments chronologically in API.
 
 v 7.10.2
   - Fix CI links on MR page
