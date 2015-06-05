@@ -287,6 +287,35 @@ objectclass: posixGroup
           change{ gitlab_group_1.members.where(user_id: user).any? }.from(true).to(false)
       end
     end
+
+    context "existing access as owner for group-1 with no other owner, not allowed" do
+      before do
+        gitlab_group_1.group_members.owners.create(user_id: user.id)
+        gitlab_group_1.ldap_group_links.create({
+          cn: 'ldap-group1', group_access: Gitlab::Access::OWNER, provider: 'ldapmain'})
+        access.stub(cns_with_access: ['ldap-group2'])
+      end
+
+      it "does not remove the user from gitlab_group_1 since it's the last owner" do
+        expect { access.update_ldap_group_links }.not_to \
+          change{ gitlab_group_1.has_owner?(user) }
+      end
+    end
+
+    context "existing access as owner for group-1 while other owners present, not allowed" do
+      before do
+        owner2 = create(:user) # a 2nd owner
+        gitlab_group_1.group_members.owners.create([ {user_id: user.id}, {user_id: owner2.id} ] )
+        gitlab_group_1.ldap_group_links.create({
+          cn: 'ldap-group1', group_access: Gitlab::Access::OWNER, provider: 'ldapmain'})
+        access.stub(cns_with_access: ['ldap-group2'])
+      end
+
+      it "removes user from gitlab_group_1" do
+        expect { access.update_ldap_group_links }.to \
+          change{ gitlab_group_1.members.where(user_id: user).any? }.from(true).to(false)
+      end
+    end
   end
 
   describe 'ldap_groups' do
