@@ -6,6 +6,6 @@ Gitlab::Application.config.session_store(
   key: '_gitlab_session',
   secure: Gitlab.config.gitlab.https,
   httponly: true,
-  expire_after: 1.week,
+  expire_after: ActiveRecord::Base.connected? && ActiveRecord::Base.connection.table_exists?('application_settings') ? ApplicationSetting.current.session_expire_seconds : Settings.gitlab['session_expire_seconds'],
   path: (Rails.application.config.relative_url_root.nil?) ? '/' : Rails.application.config.relative_url_root
 )

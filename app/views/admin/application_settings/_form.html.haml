@@ -84,6 +84,10 @@
       .col-sm-10
         = f.number_field :max_attachment_size, class: 'form-control'
     .form-group
+      = f.label :session_expire_seconds, 'Session duration (seconds)', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :session_expire_seconds, class: 'form-control'
+    .form-group
       = f.label :restricted_signup_domains, 'Restricted domains for sign-ups', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_area :restricted_signup_domains_raw, placeholder: 'domain.com', class: 'form-control'
