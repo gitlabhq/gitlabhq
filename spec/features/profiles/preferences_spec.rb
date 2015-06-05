@@ -15,6 +15,14 @@ describe 'Profile > Preferences' do
       visit profile_preferences_path
     end
 
+    it 'creates a flash message' do
+      choose "user_theme_id_#{theme.id}"
+
+      within('.flash-container') do
+        expect(page).to have_content('Preferences saved.')
+      end
+    end
+
     it 'reflects the changes immediately' do
       expect(page).to have_selector("body.#{default.css_class}")
 
