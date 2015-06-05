@@ -26,7 +26,6 @@ class ProfilesController < Profiles::ApplicationController
 
     respond_to do |format|
       format.html { redirect_to :back }
-      format.js
     end
   end
 
