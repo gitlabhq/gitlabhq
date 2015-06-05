@@ -4,6 +4,7 @@ v 7.12.0 (unreleased)
   - Fix timeout when rendering file with thousands of lines.
   - Don't notify users mentioned in code blocks or blockquotes.
   - Omit link to generate labels if user does not have access to create them (Stan Hu)
+  - Show warning when a comment will add 10 or more people to the discussion.
   - Disable changing of the source branch in merge request update API (Stan Hu)
   - Shorten merge request WIP text.
   - Add option to disallow users from registering any application to use GitLab as an OAuth provider
