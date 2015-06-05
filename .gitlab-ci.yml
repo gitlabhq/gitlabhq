@@ -18,32 +18,22 @@ jobs:
 - script:
   - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec
   name: Rspec
-  branches: true
-  tags: false
   runner: ruby,mysql
 - script:
   - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach
   name: Spinach
-  branches: true
-  tags: false
   runner: ruby,mysql
 - script:
   - RAILS_ENV=test SIMPLECOV=true bundle exec rake jasmine:ci
   name: Jasmine
-  branches: true
-  tags: false
   runner: ruby,mysql
 - script:
   - bundle exec rubocop
   name: Rubocop
-  branches: true
-  tags: false
   runner: ruby,mysql
 - script:
   - bundle exec rake brakeman
   name: Brakeman
-  branches: true
-  tags: false
   runner: ruby,mysql
 deploy_jobs: []
 skip_refs: ''
