@@ -35,7 +35,7 @@ ActiveRecord::Schema.define(version: 20150604202921) do
     t.text     "restricted_signup_domains"
     t.boolean  "user_oauth_applications",      default: true
     t.string   "after_sign_out_path"
-    t.integer  "session_expire_seconds",       default: 604800, null: false
+    t.integer  "session_expire_delay",       default: 10080, null: false
   end
 
   create_table "broadcast_messages", force: true do |t|
