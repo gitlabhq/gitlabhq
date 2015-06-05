@@ -48,5 +48,13 @@
       to be pushed.
       If this field is empty it allows any filenames.
 
+.form-group
+  = f.label :max_file_size, "Maximum file size (MB)", class: 'control-label'
+  .col-sm-10
+    = f.number_field :max_file_size, class: "form-control", min: 0
+    .help-block
+      Pushes that contain added or updated files that exceed this file size are rejected.
+      Set to 0 to allow files of any size.
+
 .form-actions
   = f.submit "Save Git hooks", class: "btn btn-create"
