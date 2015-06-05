@@ -52,6 +52,22 @@
   transition: opacity 200ms ease-in-out;
 }
 
+.md-area {
+  position: relative;
+}
+
+.md-header ul {
+  float: left;
+}
+
+.referenced-users {
+  padding: 10px 0;
+  color: #999;
+  margin-left: 10px;
+  margin-top: 1px;
+  margin-right: 130px;
+}
+
 .md-preview-holder {
   background: #FFF;
   border: 1px solid #ddd;
