@@ -77,11 +77,24 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def note_to_discussion_html(note)
+    if params[:view] == 'parallel'
+      template = "projects/notes/_diff_notes_with_reply_parallel"
+      locals =
+        if params[:line_type] == 'old'
+          { notes_left: [note], notes_right: [] }
+        else
+          { notes_left: [], notes_right: [note] }
+       end
+    else
+      template = "projects/notes/_diff_notes_with_reply"
+      locals = { notes: [note] }
+    end
+
     render_to_string(
-      "projects/notes/_diff_notes_with_reply",
+      template,
       layout: false,
       formats: [:html],
-      locals: { notes: [note] }
+      locals: locals
     )
   end
 

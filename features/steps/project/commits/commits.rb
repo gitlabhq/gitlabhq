@@ -2,6 +2,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
+  include SharedDiffNote
   include RepoHelpers
 
   step 'I see project commits' do
@@ -86,14 +87,6 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
     links = page.all('.two-up span div a')
     expect(links[0]['href']).to match %r{blob/#{sample_image_commit.old_blob_id}}
     expect(links[1]['href']).to match %r{blob/#{sample_image_commit.new_blob_id}}
-  end
-
-  step 'I click side-by-side diff button' do
-    click_link "Side-by-side"
-  end
-
-  step 'I see side-by-side diff button' do
-    expect(page).to have_content "Side-by-side"
   end
 
   step 'I see inline diff button' do
