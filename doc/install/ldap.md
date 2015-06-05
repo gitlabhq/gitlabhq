@@ -2,7 +2,7 @@
 You can link LDAP groups with GitLab groups.
 It gives you ability to automatically add/remove users from GitLab groups based on LDAP groups membership.
 
-How it works: 
+How it works:
 1. We retrieve user ldap groups
 2. We find corresponding GitLab groups
 3. We add user to GitLab groups
@@ -42,7 +42,7 @@ You need a non-LDAP admin user (such as the default admin@local.host), an LDAP u
 2. Log in as Mary.
 3. Verify that Mary is now a member of the Developers group in GitLab.
 
-If you get an error message when logging in as Mary, double-check your `group_base` setting in `config/gitlab.yml`. 
+If you get an error message when logging in as Mary, double-check your `group_base` setting in `config/gitlab.yml`.
 
 
 # Debug LDAP user filter with ldapsearch
@@ -55,6 +55,6 @@ The following query returns the login names of the users that will be allowed to
 ldapsearch -H ldaps://$host:$port -D "$bind_dn" -y bind_dn_password.txt  -b "$base" "(&(ObjectClass=User)($user_filter))" sAMAccountName
 ```
 
-- `$var` refers to a variable from the `ldap` section of your `config/gitlab.yml` https://gitlab.com/subscribers/gitlab-ee/blob/master/config/gitlab.yml.example#L100;
+- `$var` refers to a variable from the `ldap` section of your `config/gitlab.yml` https://gitlab.com/gitlab-org/gitlab-ee/blob/master/config/gitlab.yml.example#L100;
 - Replace `ldaps://` with `ldap://` if you are using the `plain` authentication method;
 - We are assuming the password for the `bind_dn` user is in `bind_dn_password.txt`.

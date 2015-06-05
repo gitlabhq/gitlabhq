@@ -111,4 +111,3 @@ Next, go to the services page and find JIRA.
 1. Save
 
 Now we should be able to interact with JIRA issues.
-
