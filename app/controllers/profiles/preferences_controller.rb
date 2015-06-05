@@ -24,6 +24,9 @@ class Profiles::PreferencesController < Profiles::ApplicationController
   end
 
   def preferences_params
-    params.require(:user).permit(:color_scheme_id, :theme_id)
+    params.require(:user).permit(
+      :color_scheme_id,
+      :theme_id
+    )
   end
 end
