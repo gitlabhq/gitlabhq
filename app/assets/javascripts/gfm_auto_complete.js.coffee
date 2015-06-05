@@ -10,7 +10,7 @@ GitLab.GfmAutoComplete =
 
   # Team Members
   Members:
-    template: '<li>${username} <small>${name}</small></li>'
+    template: '<li>${username} <small>${title}</small></li>'
 
   # Issues and MergeRequests
   Issues:
@@ -34,7 +34,13 @@ GitLab.GfmAutoComplete =
       searchKey: 'search'
       callbacks:
         beforeSave: (members) ->
-          $.map members, (m) -> name: m.name, username: m.username, search: "#{m.username} #{m.name}"
+          $.map members, (m) -> 
+            title = m.name
+            title += " (#{m.count})" if m.count
+
+            username: m.username
+            title:    sanitize(title)
+            search:   sanitize("#{m.username} #{m.name}")
 
     input.atwho
       at: '#'
@@ -44,7 +50,10 @@ GitLab.GfmAutoComplete =
       insertTpl: '${atwho-at}${id}'
       callbacks:
         beforeSave: (issues) ->
-          $.map issues, (i) -> id: i.iid, title: sanitize(i.title), search: "#{i.iid} #{i.title}"
+          $.map issues, (i) -> 
+            id:     i.iid
+            title:  sanitize(i.title)
+            search: "#{i.iid} #{i.title}"
 
     input.atwho
       at: '!'
@@ -54,7 +63,10 @@ GitLab.GfmAutoComplete =
       insertTpl: '${atwho-at}${id}'
       callbacks:
         beforeSave: (merges) ->
-          $.map merges, (m) -> id: m.iid, title: sanitize(m.title), search: "#{m.iid} #{m.title}"
+          $.map merges, (m) -> 
+            id:     m.iid
+            title:  sanitize(m.title)
+            search: "#{m.iid} #{m.title}"
 
     input.one 'focus', =>
       $.getJSON(@dataSource).done (data) ->

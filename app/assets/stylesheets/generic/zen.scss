@@ -1,6 +1,4 @@
 .zennable {
-  position: relative;
-
   .zen-toggle-comment {
     display: none;
   }
@@ -8,8 +6,9 @@
   .zen-enter-link {
     color: #888;
     position: absolute;
-    top: -26px;
+    top: 0px;
     right: 4px;
+    line-height: 40px;
   }
 
   .zen-leave-link {

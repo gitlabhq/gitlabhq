@@ -13,27 +13,20 @@ class Projects::BlobController < Projects::ApplicationController
   before_action :commit, except: [:new, :create]
   before_action :blob, except: [:new, :create]
   before_action :from_merge_request, only: [:edit, :update]
-  before_action :after_edit_path, only: [:edit, :update]
   before_action :require_branch_head, only: [:edit, :update]
+  before_action :editor_variables, except: [:show, :preview, :diff]
+  before_action :after_edit_path, only: [:edit, :update]
 
   def new
     commit unless @repository.empty?
   end
 
   def create
-    file_path = File.join(@path, File.basename(params[:file_name]))
-    result = Files::CreateService.new(
-      @project,
-      current_user,
-      params.merge(new_branch: sanitized_new_branch_name),
-      @ref,
-      file_path
-    ).execute
+    result = Files::CreateService.new(@project, current_user, @commit_params).execute
 
     if result[:status] == :success
       flash[:notice] = "Your changes have been successfully committed"
-      ref = sanitized_new_branch_name.presence || @ref
-      redirect_to namespace_project_blob_path(@project.namespace, @project, File.join(ref, file_path))
+      redirect_to namespace_project_blob_path(@project.namespace, @project, File.join(@target_branch, @file_path))
     else
       flash[:alert] = result[:message]
       render :new
@@ -48,22 +41,10 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def update
-    result = Files::UpdateService.
-      new(
-        @project,
-        current_user,
-        params.merge(new_branch: sanitized_new_branch_name),
-        @ref,
-        @path
-      ).execute
+    result = Files::UpdateService.new(@project, current_user, @commit_params).execute
 
     if result[:status] == :success
       flash[:notice] = "Your changes have been successfully committed"
-
-      if from_merge_request
-        from_merge_request.reload_code
-      end
-
       redirect_to after_edit_path
     else
       flash[:alert] = result[:message]
@@ -80,12 +61,11 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def destroy
-    result = Files::DeleteService.new(@project, current_user, params, @ref, @path).execute
+    result = Files::DeleteService.new(@project, current_user, @commit_params).execute
 
     if result[:status] == :success
       flash[:notice] = "Your changes have been successfully committed"
-      redirect_to namespace_project_tree_path(@project.namespace, @project,
-                                              @ref)
+      redirect_to namespace_project_tree_path(@project.namespace, @project, @target_branch)
     else
       flash[:alert] = result[:message]
       render :show
@@ -135,7 +115,6 @@ class Projects::BlobController < Projects::ApplicationController
     @id = params[:id]
     @ref, @path = extract_ref(@id)
 
-
   rescue InvalidPathError
     not_found!
   end
@@ -145,8 +124,8 @@ class Projects::BlobController < Projects::ApplicationController
       if from_merge_request
         diffs_namespace_project_merge_request_path(from_merge_request.target_project.namespace, from_merge_request.target_project, from_merge_request) +
           "#file-path-#{hexdigest(@path)}"
-      elsif sanitized_new_branch_name.present?
-        namespace_project_blob_path(@project.namespace, @project, File.join(sanitized_new_branch_name, @path))
+      elsif @target_branch.present?
+        namespace_project_blob_path(@project.namespace, @project, File.join(@target_branch, @path))
       else
         namespace_project_blob_path(@project.namespace, @project, @id)
       end
@@ -159,5 +138,26 @@ class Projects::BlobController < Projects::ApplicationController
 
   def sanitized_new_branch_name
     @new_branch ||= sanitize(strip_tags(params[:new_branch]))
+  end
+
+  def editor_variables
+    @current_branch = @ref
+    @target_branch = (sanitized_new_branch_name || @ref)
+
+    @file_path =
+      if action_name.to_s == 'create'
+        File.join(@path, File.basename(params[:file_name]))
+      else
+        @path
+      end
+
+    @commit_params = {
+      file_path: @file_path,
+      current_branch: @current_branch,
+      target_branch: @target_branch,
+      commit_message: params[:commit_message],
+      file_content: params[:content],
+      file_content_encoding: params[:encoding]
+    }
   end
 end

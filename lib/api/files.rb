@@ -3,6 +3,26 @@ module API
   class Files < Grape::API
     before { authenticate! }
 
+    helpers do
+      def commit_params(attrs)
+        {
+          file_path: attrs[:file_path],
+          current_branch: attrs[:branch_name],
+          target_branch: attrs[:branch_name],
+          commit_message: attrs[:commit_message],
+          file_content: attrs[:content],
+          file_content_encoding: attrs[:encoding]
+        }
+      end
+
+      def commit_response(attrs)
+        {
+          file_path: attrs[:file_path],
+          branch_name: attrs[:branch_name],
+        }
+      end
+    end
+
     resource :projects do
       # Get file from repository
       # File content is Base64 encoded
@@ -73,17 +93,11 @@ module API
 
         required_attributes! [:file_path, :branch_name, :content, :commit_message]
         attrs = attributes_for_keys [:file_path, :branch_name, :content, :commit_message, :encoding]
-        branch_name = attrs.delete(:branch_name)
-        file_path = attrs.delete(:file_path)
-        result = ::Files::CreateService.new(user_project, current_user, attrs, branch_name, file_path).execute
+        result = ::Files::CreateService.new(user_project, current_user, commit_params(attrs)).execute
 
         if result[:status] == :success
           status(201)
-
-          {
-            file_path: file_path,
-            branch_name: branch_name
-          }
+          commit_response(attrs)
         else
           render_api_error!(result[:message], 400)
         end
@@ -105,17 +119,11 @@ module API
 
         required_attributes! [:file_path, :branch_name, :content, :commit_message]
         attrs = attributes_for_keys [:file_path, :branch_name, :content, :commit_message, :encoding]
-        branch_name = attrs.delete(:branch_name)
-        file_path = attrs.delete(:file_path)
-        result = ::Files::UpdateService.new(user_project, current_user, attrs, branch_name, file_path).execute
+        result = ::Files::UpdateService.new(user_project, current_user, commit_params(attrs)).execute
 
         if result[:status] == :success
           status(200)
-
-          {
-            file_path: file_path,
-            branch_name: branch_name
-          }
+          commit_response(attrs)
         else
           http_status = result[:http_status] || 400
           render_api_error!(result[:message], http_status)
@@ -138,17 +146,11 @@ module API
 
         required_attributes! [:file_path, :branch_name, :commit_message]
         attrs = attributes_for_keys [:file_path, :branch_name, :commit_message]
-        branch_name = attrs.delete(:branch_name)
-        file_path = attrs.delete(:file_path)
-        result = ::Files::DeleteService.new(user_project, current_user, attrs, branch_name, file_path).execute
+        result = ::Files::DeleteService.new(user_project, current_user, commit_params(attrs)).execute
 
         if result[:status] == :success
           status(200)
-
-          {
-            file_path: file_path,
-            branch_name: branch_name
-          }
+          commit_response(attrs)
         else
           render_api_error!(result[:message], 400)
         end

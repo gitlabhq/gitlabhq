@@ -24,7 +24,7 @@
   = f.label :description, 'Description', class: 'control-label'
   .col-sm-10
 
-    = render layout: 'projects/md_preview', locals: { preview_class: "wiki" } do
+    = render layout: 'projects/md_preview', locals: { preview_class: "wiki", referenced_users: true } do
       = render 'projects/zen', f: f, attr: :description,
                                classes: 'description form-control'
       .col-sm-12.hint

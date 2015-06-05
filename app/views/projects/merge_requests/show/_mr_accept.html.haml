@@ -49,7 +49,7 @@
 
   .automerge_widget.cannot_be_merged.hide
     %h4
-      This pull request contains merge conflicts that must be resolved.
+      This merge request contains merge conflicts that must be resolved.
       You can try it manually on the
       %strong
         = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
@@ -63,14 +63,14 @@
 
   .automerge_widget.work_in_progress.hide
     %h4
-      This request cannot be merged because it is marked as <strong>Work In Progress</strong>.
+      This merge request cannot be accepted because it is marked as Work In Progress.
 
     %p
       %button.btn.disabled{:type => 'button'}
         %i.fa.fa-warning
         Accept Merge Request
       &nbsp;
-      When the merge request is ready, remove the "WIP" prefix from the title to allow merging.
+      When the merge request is ready, remove the "WIP" prefix from the title to allow it to be accepted.
 
   .automerge_widget.unchecked
     %p

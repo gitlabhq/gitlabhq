@@ -8,6 +8,11 @@ header {
   &.navbar-empty {
     background: #FFF;
     border-bottom: 1px solid #EEE;
+
+    .center-logo {
+      margin: 8px 0;
+      text-align: center;
+    }
   }
 
   &.navbar-gitlab {
