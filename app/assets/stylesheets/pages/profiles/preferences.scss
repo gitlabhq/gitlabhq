@@ -1,0 +1,57 @@
+.application-theme {
+  label {
+    margin-right: 20px;
+    text-align: center;
+
+    .application-theme-preview {
+      height: 80px;
+      width: 160px;
+      margin-bottom: 10px;
+      @include border-radius(4px);
+
+      &.ui_blue {
+        background: $theme-blue;
+      }
+
+      &.ui_charcoal {
+        background: $theme-charcoal;
+      }
+
+      &.ui_graphite {
+        background: $theme-graphite;
+      }
+
+      &.ui_gray {
+        background: $theme-gray;
+      }
+
+      &.ui_green {
+        background: $theme-green;
+      }
+
+      &.ui_violet {
+        background: $theme-violet;
+      }
+    }
+  }
+}
+
+.code_highlight_opts {
+  margin-top: 10px;
+
+  label {
+    margin-right: 20px;
+    text-align: center;
+
+    .prev {
+      width: 160px;
+      margin-bottom: 10px;
+
+      img {
+        max-width: 100%;
+        @include border-radius(4px);
+      }
+    }
+  }
+}
+
