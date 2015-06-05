@@ -3,11 +3,12 @@
     margin-right: 20px;
     text-align: center;
 
-    .application-theme-preview {
-      height: 80px;
-      width: 160px;
-      margin-bottom: 10px;
+    .preview {
       @include border-radius(4px);
+
+      height: 80px;
+      margin-bottom: 10px;
+      width: 160px;
 
       &.ui_blue {
         background: $theme-blue;

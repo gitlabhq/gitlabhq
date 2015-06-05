@@ -10,38 +10,11 @@
     .panel-heading
       Application theme
     .panel-body
-      .themes_opts
+      - Gitlab::Themes.each do |theme|
         = label_tag do
-          .prev.default
-          = f.radio_button :theme_id, 1
-          Graphite
-
-        = label_tag do
-          .prev.classic
-          = f.radio_button :theme_id, 2
-          Charcoal
-
-        = label_tag do
-          .prev.modern
-          = f.radio_button :theme_id, 3
-          Green
-
-        = label_tag do
-          .prev.gray
-          = f.radio_button :theme_id, 4
-          Gray
-
-        = label_tag do
-          .prev.violet
-          = f.radio_button :theme_id, 5
-          Violet
-
-        = label_tag do
-          .prev.blue
-          = f.radio_button :theme_id, 6
-          Blue
-      %br
-      .clearfix
+          .preview{class: theme.css_class}
+          = f.radio_button :theme_id, theme.id
+          = theme.name
 
   .panel.panel-default.code-preview-theme
     .panel-heading

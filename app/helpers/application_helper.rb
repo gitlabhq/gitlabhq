@@ -139,11 +139,8 @@ module ApplicationHelper
   end
 
   def app_theme
-    Gitlab::Theme.css_class_by_id(current_user.try(:theme_id))
-  end
-
-  def theme_type
-    Gitlab::Theme.type_css_class_by_id(current_user.try(:theme_id))
+    theme = Gitlab::Themes.by_id(current_user.try(:theme_id))
+    theme.css_class
   end
 
   def user_color_scheme_class
