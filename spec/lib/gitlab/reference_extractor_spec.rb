@@ -25,7 +25,7 @@ describe Gitlab::ReferenceExtractor do
     project.team << [@u_bar, :guest]
 
     subject.analyze(%Q{
-      Inline code: `@foo` 
+      Inline code: `@foo`
 
       Code block:
 
@@ -33,7 +33,7 @@ describe Gitlab::ReferenceExtractor do
       @bar
       ```
 
-      Quote: 
+      Quote:
 
       > @offteam
     })
