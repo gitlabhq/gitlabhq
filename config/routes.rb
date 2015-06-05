@@ -222,6 +222,7 @@ Gitlab::Application.routes.draw do
           put :reset
         end
       end
+      resource :preferences, only: [:show, :update]
       resources :keys
       resources :emails, only: [:index, :create, :destroy]
       resource :avatar, only: [:destroy]
