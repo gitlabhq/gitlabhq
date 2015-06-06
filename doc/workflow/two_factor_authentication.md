@@ -22,7 +22,7 @@ is to know your username and password *and* have access to your phone.
 **On your phone:**
 
 1. Install a compatible application. We recommend [Google Authenticator]
-\(properitary\) or [FreeOTP] \(FLOSS\).
+\(proprietary\) or [FreeOTP] \(open source\).
 1. In the application, add a new entry in one of two ways:
     * Scan the code with your phone's camera to add the entry automatically.
     * Enter the details provided to add the entry manually.
