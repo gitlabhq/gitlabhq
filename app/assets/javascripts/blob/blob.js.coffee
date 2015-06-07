@@ -1,73 +1,186 @@
+# BlobView
+#
+# Handles single- and multi-line selection and highlight for blob views.
+#
+#= require jquery.scrollTo
+#
+# ### Example Markup
+#
+#   <div id="tree-content-holder">
+#     <div class="file-content">
+#       <div class="line-numbers">
+#         <a href="#L1" id="L1" data-line-number="1">1</a>
+#         <a href="#L2" id="L2" data-line-number="2">2</a>
+#         <a href="#L3" id="L3" data-line-number="3">3</a>
+#         <a href="#L4" id="L4" data-line-number="4">4</a>
+#         <a href="#L5" id="L5" data-line-number="5">5</a>
+#       </div>
+#       <pre class="code highlight">
+#         <code>
+#           <span id="LC1" class="line">...</span>
+#           <span id="LC2" class="line">...</span>
+#           <span id="LC3" class="line">...</span>
+#           <span id="LC4" class="line">...</span>
+#           <span id="LC5" class="line">...</span>
+#         </code>
+#       </pre>
+#     </div>
+#   </div>
 class @BlobView
-  constructor: ->
-    # handle multi-line select
-    handleMultiSelect = (e) ->
-      [ first_line, last_line ] = parseSelectedLines()
-      [ line_number ] = parseSelectedLines($(this).attr("id"))
-      hash = "L#{line_number}"
+  # Internal copy of location.hash so we're not dependent on `location` in tests
+  @_hash = ''
 
-      if e.shiftKey and not isNaN(first_line) and not isNaN(line_number)
-        if line_number < first_line
-          last_line = first_line
-          first_line = line_number
-        else
-          last_line = line_number
+  # Initialize a BlobView object
+  #
+  # hash - String URL hash for dependency injection in tests
+  constructor: (hash = location.hash) ->
+    @_hash = hash
 
-        hash = if first_line == last_line then "L#{first_line}" else "L#{first_line}-#{last_line}"
+    @bindEvents()
 
-      setHash(hash)
-      e.preventDefault()
+    unless hash == ''
+      range = @hashToRange(hash)
 
-    # See if there are lines selected
-    # "#L12" and "#L34-56" supported
-    highlightBlobLines = (e) ->
-      [ first_line, last_line ] = parseSelectedLines()
+      unless isNaN(range[0])
+        @highlightRange(range)
 
-      unless isNaN first_line
-        $("#tree-content-holder .highlight .line").removeClass("hll")
-        $("#LC#{line}").addClass("hll") for line in [first_line..last_line]
-        $.scrollTo("#L#{first_line}", offset: -50) unless e?
+        # Scroll to the first highlighted line on initial load
+        # Offset -50 for the sticky top bar, and another -100 for some context
+        $.scrollTo("#L#{range[0]}", offset: -150)
 
-    # parse selected lines from hash
-    # always return first and last line (initialized to NaN)
-    parseSelectedLines = (str) ->
-      first_line = NaN
-      last_line = NaN
-      hash = str || window.location.hash
+  bindEvents: ->
+    $('#tree-content-holder').on 'mousedown', 'a[data-line-number]', @clickHandler
 
-      if hash isnt ""
-        matches = hash.match(/\#?L(\d+)(\-(\d+))?/)
-        first_line = parseInt(matches?[1])
-        last_line = parseInt(matches?[3])
-        last_line = first_line if isNaN(last_line)
+    # While it may seem odd to bind to the mousedown event and then throw away
+    # the click event, there is a method to our madness.
+    #
+    # If not done this way, the line number anchor will sometimes keep its
+    # active state even when the event is cancelled, resulting in an ugly border
+    # around the link and/or a persisted underline text decoration.
 
-      [ first_line, last_line ]
+    $('#tree-content-holder').on 'click', 'a[data-line-number]', (event) ->
+      event.preventDefault()
 
-    setHash = (hash) ->
-      hash = hash.replace(/^\#/, "")
-      nodes = $("#" + hash)
-      # if any nodes are using this id, they must be temporarily changed
-      # also, add a temporary div at the top of the screen to prevent scrolling
-      if nodes.length > 0
-        scroll_top = $(document).scrollTop()
-        nodes.attr("id", "")
-        tmp = $("<div></div>")
-          .css({ position: "absolute", visibility: "hidden", top: scroll_top + "px" })
-          .attr("id", hash)
-          .appendTo(document.body)
+  clickHandler: (event) =>
+    event.preventDefault()
 
-      window.location.hash = hash
+    lineNumber = $(event.target).data('line-number')
+    current = @hashToRange(@_hash)
 
-      # restore the nodes
-      if nodes.length > 0
-        tmp.remove()
-        nodes.attr("id", hash)
+    # Unhighlight previously highlighted lines
+    $('.hll').removeClass('hll')
 
-    # initialize multi-line select
-    $("#tree-content-holder .line-numbers a[id^=L]").on("click", handleMultiSelect)
+    if isNaN(current[0]) or !event.shiftKey
+      # If there's no current selection, or there is but Shift wasn't held,
+      # treat this like a single-line selection.
+      @setHash(lineNumber)
+      @highlightLine(lineNumber)
+    else if event.shiftKey
+      if lineNumber < current[0]
+        range = [lineNumber, current[0]]
+      else
+        range = [current[0], lineNumber]
 
-    # Highlight the correct lines on load
-    highlightBlobLines()
+      @setHash(range[0], range[1])
+      @highlightRange(range)
 
-    # Highlight the correct lines when the hash part of the URL changes
-    $(window).on("hashchange", highlightBlobLines)
+  # Convert a URL hash String into line numbers
+  #
+  # hash - Hash String
+  #
+  # Examples:
+  #
+  #   hashToRange('#L5')    # => [5, NaN]
+  #   hashToRange('#L5-15') # => [5, 15]
+  #   hashToRange('#foo')   # => [NaN, NaN]
+  #
+  # Returns an Array
+  hashToRange: (hash) ->
+    first = parseInt(hash.replace(/^#L(\d+)/, '$1'))
+    last  = parseInt(hash.replace(/^#L\d+-(\d+)/, '$1'))
+
+    [first, last]
+
+  # Highlight a single line
+  #
+  # lineNumber - Number to highlight. Must be parsable as an Integer.
+  #
+  # Returns undefined if lineNumber is not parsable as an Integer.
+  highlightLine: (lineNumber) ->
+    return if isNaN(parseInt(lineNumber))
+
+    $("#LC#{lineNumber}").addClass('hll')
+
+  # Highlight all lines within a range
+  #
+  # range - An Array of starting and ending line numbers.
+  #
+  # Examples:
+  #
+  #   # Highlight lines 5 through 15
+  #   highlightRange([5, 15])
+  #
+  #   # The first value is required, and must be a number
+  #   highlightRange(['foo', 15]) # Invalid, returns undefined
+  #   highlightRange([NaN, NaN])  # Invalid, returns undefined
+  #
+  #   # The second value is optional; if omitted, only highlights the first line
+  #   highlightRange([5, NaN]) # Valid
+  #
+  # Returns undefined if the first line is NaN.
+  highlightRange: (range) ->
+    return if isNaN(range[0])
+
+    if isNaN(range[1])
+      @highlightLine(range[0])
+    else
+      for lineNumber in [range[0]..range[1]]
+        @highlightLine(lineNumber)
+
+  setHash: (firstLineNumber, lastLineNumber) =>
+    return if isNaN(parseInt(firstLineNumber))
+
+    if isNaN(parseInt(lastLineNumber))
+      hash = "#L#{firstLineNumber}"
+    else
+      hash = "#L#{firstLineNumber}-#{lastLineNumber}"
+
+    @setHashWithoutScroll(hash)
+
+  # Prevents the page from scrolling when `location.hash` is set
+  #
+  # This is accomplished by removing the `id` attribute of the matching element,
+  # creating a temporary div at the top of the current viewport, setting the
+  # hash, and then removing the div and restoring the `id` attribute.
+  #
+  # See http://stackoverflow.com/a/1489802/223897
+  #
+  # FIXME (rspeicher): This is still super buggy for me.
+  setHashWithoutScroll: (hash) ->
+    @_hash = hash
+
+    # Extract the first ID, in case we were given a range
+    firstID = hash.replace(/-\d+$/, '')
+
+    $node = $(firstID)
+    $node.removeAttr('id')
+
+    $tmp = $('<div></div>')
+      .css(
+        position: 'absolute'
+        top: "#{$(window).scrollTop()}px"
+        visibility: 'hidden'
+      )
+      .attr('id', firstID)
+      .appendTo($('body'))
+
+    @__setLocationHash__(hash)
+
+    $tmp.remove()
+    $node.attr('id', firstID)
+
+  # Make the actual `location.hash` change
+  #
+  # This method is stubbed in tests.
+  __setLocationHash__: (value) ->
+    location.hash = value
