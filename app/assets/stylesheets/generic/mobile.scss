@@ -64,6 +64,21 @@
     margin-left: 15px !important;
     max-width: 70% !important;
   }
+
+  .issue-info, .merge-request-info {
+    display: none;
+  }
+
+  .issue-details {
+    .creator,
+    .page-title .btn-close {
+      display: none;
+    }
+  }
+
+  %ul.notes .note-role, .note-actions {
+    display: none;
+  }
 }
 
 @media (max-width: $screen-sm-max) {
