@@ -41,6 +41,3 @@
     - else
       = f.submit 'Create page', class: "btn-create btn"
       = link_to "Cancel", namespace_project_wiki_path(@project.namespace, @project, :home), class: "btn btn-cancel"
-
-:javascript
-  window.project_uploads_path = "#{namespace_project_uploads_path @project.namespace, @project}";

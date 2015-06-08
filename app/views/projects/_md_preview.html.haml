@@ -1,13 +1,24 @@
-%ul.nav.nav-tabs
-  %li.active
-    = link_to '#md-write-holder', class: 'js-md-write-button' do
-      Write
-  %li
-    = link_to '#md-preview-holder', class: 'js-md-preview-button',
-        data: { url: markdown_preview_namespace_project_path(@project.namespace, @project) } do
-      Preview
-%div
-  .md-write-holder
-    = yield
-  .md.md-preview-holder.hide
-    .js-md-preview{class: (preview_class if defined?(preview_class))}
+.md-area
+  .md-header.clearfix
+    %ul.nav.nav-tabs
+      %li.active
+        = link_to '#md-write-holder', class: 'js-md-write-button' do
+          Write
+      %li
+        = link_to '#md-preview-holder', class: 'js-md-preview-button' do
+          Preview
+
+    - if defined?(referenced_users) && referenced_users
+      %span.referenced-users.pull-left.hide
+        = icon('exclamation-triangle')
+        You are about to add
+        %strong
+          %span.js-referenced-users-count 0
+          people 
+        to the discussion. Proceed with caution.
+
+  %div
+    .md-write-holder
+      = yield
+    .md.md-preview-holder.hide
+      .js-md-preview{class: (preview_class if defined?(preview_class))}

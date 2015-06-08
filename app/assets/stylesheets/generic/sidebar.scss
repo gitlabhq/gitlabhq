@@ -86,7 +86,7 @@
     .nav-sidebar {
       margin-top: 29px;
       position: fixed;
-      top: 45px;
+      top: $header-height;
       width: $sidebar_width;
     }
   }
@@ -105,7 +105,7 @@
     .nav-sidebar {
       margin-top: 29px;
       position: fixed;
-      top: 45px;
+      top: $header-height;
       width: $sidebar_collapsed_width;
 
       li a {
@@ -144,7 +144,7 @@
 
 .collapse-nav a {
   position: fixed;
-  top: 46px;
+  top: $header-height;
   left: 198px;
   font-size: 13px;
   background: transparent;

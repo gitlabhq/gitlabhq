@@ -15,18 +15,16 @@
 }
 
 .project-home-panel {
-  margin-bottom: 20px;
+  margin-top: 10px;
+  margin-bottom: 15px;
   position: relative;
   padding-left: 65px;
-  border-bottom: 1px solid #DDD;
-  padding-bottom: 10px;
-  padding-top: 5px;
   min-height: 50px;
 
   .project-identicon-holder {
     position: absolute;
     left: 0;
-    top: -10px;
+    top: -14px;
 
     .avatar {
       width: 50px;

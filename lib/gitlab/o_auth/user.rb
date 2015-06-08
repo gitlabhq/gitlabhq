@@ -46,6 +46,10 @@ module Gitlab
       def gl_user
         @user ||= find_by_uid_and_provider
 
+        if auto_link_ldap_user?
+          @user ||= find_or_create_ldap_user
+        end
+
         if signup_enabled?
           @user ||= build_new_user
         end
@@ -54,6 +58,46 @@ module Gitlab
       end
 
       protected
+
+      def find_or_create_ldap_user
+        return unless ldap_person
+
+        # If a corresponding person exists with same uid in a LDAP server,
+        # set up a Gitlab user with dual LDAP and Omniauth identities.
+        if user = Gitlab::LDAP::User.find_by_uid_and_provider(ldap_person.dn.downcase, ldap_person.provider)
+          # Case when a LDAP user already exists in Gitlab. Add the Omniauth identity to existing account.
+          user.identities.build(extern_uid: auth_hash.uid, provider: auth_hash.provider)
+        else
+          # No account in Gitlab yet: create it and add the LDAP identity
+          user = build_new_user
+          user.identities.new(provider: ldap_person.provider, extern_uid: ldap_person.dn)
+        end
+
+        user
+      end
+
+      def auto_link_ldap_user?
+        Gitlab.config.omniauth.auto_link_ldap_user
+      end
+
+      def creating_linked_ldap_user?
+        auto_link_ldap_user? && ldap_person
+      end
+
+      def ldap_person
+        return @ldap_person if defined?(@ldap_person)
+
+        # looks for a corresponding person with same uid in any of the configured LDAP providers
+        @ldap_person = Gitlab::LDAP::Config.providers.find do |provider|
+          adapter = Gitlab::LDAP::Adapter.new(provider)
+
+          Gitlab::LDAP::Person.find_by_uid(auth_hash.uid, adapter)
+        end
+      end
+
+      def ldap_config
+        Gitlab::LDAP::Config.new(ldap_person.provider) if ldap_person
+      end
 
       def needs_blocking?
         new? && block_after_signup?
@@ -64,7 +108,11 @@ module Gitlab
       end
 
       def block_after_signup?
-        Gitlab.config.omniauth.block_auto_created_users
+        if creating_linked_ldap_user?
+          ldap_config.block_auto_created_users
+        else 
+          Gitlab.config.omniauth.block_auto_created_users
+        end
       end
 
       def auth_hash=(auth_hash)
@@ -84,10 +132,19 @@ module Gitlab
       end
 
       def user_attributes
+        # Give preference to LDAP for sensitive information when creating a linked account
+        if creating_linked_ldap_user?
+          username = ldap_person.username
+          email = ldap_person.email.first
+        else
+          username = auth_hash.username
+          email = auth_hash.email
+        end
+        
         {
           name:                       auth_hash.name,
-          username:                   ::Namespace.clean_path(auth_hash.username),
-          email:                      auth_hash.email,
+          username:                   ::Namespace.clean_path(username),
+          email:                      email,
           password:                   auth_hash.password,
           password_confirmation:      auth_hash.password,
           password_automatically_set: true

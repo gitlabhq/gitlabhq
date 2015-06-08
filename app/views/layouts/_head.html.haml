@@ -15,8 +15,10 @@
   %meta{name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1'}
   %meta{name: 'theme-color', content: '#474D57'}
 
-  = yield(:meta_tags)
+  = yield :meta_tags
 
   = render 'layouts/google_analytics' if extra_config.has_key?('google_analytics_id')
   = render 'layouts/piwik' if extra_config.has_key?('piwik_url') && extra_config.has_key?('piwik_site_id')
   = render 'layouts/bootlint' if Rails.env.development?
+
+  = yield :scripts_head
