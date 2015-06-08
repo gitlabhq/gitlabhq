@@ -71,7 +71,10 @@ Xth: (1 working day before the 22nd)
 - [ ] Update GitLab.com with the stable version (#LINK)
 - [ ] Update ci.gitLab.com with the stable version (#LINK)
 
-22nd:
+22nd before 12AM CET:
+
+Release before 12AM CET / 3AM PST, to make sure the majority of our users
+get the new version on the 22nd.
 
 - [ ] Release CE, EE and CI (#LINK)
 
