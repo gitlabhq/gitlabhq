@@ -8,7 +8,7 @@
 - [Labels](labels.md)
 - [GitLab Flow](gitlab_flow.md)
 - [Notifications](notifications.md)
-- [Importing to GitLab](doc/importing/README.md)
+- [Importing to GitLab](importing/README.md)
 - [Two-factor Authentication (2FA)](two_factor_authentication.md)
 - [Protected branches](protected_branches.md)
 - [Change your time zone](timezone.md)
