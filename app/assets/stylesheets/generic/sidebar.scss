@@ -130,14 +130,6 @@
       .username {
         display: none;
       }
-
-      .avatar {
-        margin-bottom: 10px;
-      }
-
-      .logout-holder {
-        text-align: center;
-      }
     }
   }
 }
@@ -188,9 +180,8 @@
   bottom: 0;
   width: 100%;
   padding: 10px;
-  color: #fff;
 
-  .avatar {
+  .username {
     margin-top: 5px;
   }
 }

@@ -39,5 +39,8 @@
           %li
             = link_to profile_path, title: 'Profile settings', data: {toggle: 'tooltip', placement: 'bottom'} do
               = icon('cog fw')
+          %li
+            = link_to destroy_user_session_path, class: 'logout', method: :delete, title: 'Sign out', data: {toggle: 'tooltip', placement: 'bottom'} do
+              = icon('sign-out')
 
 = render 'shared/outdated_browser'
