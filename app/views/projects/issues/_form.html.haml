@@ -10,5 +10,3 @@
     $('#issue_assignee_id').val("#{current_user.id}").trigger("change");
     e.preventDefault();
   });
-
-  window.project_uploads_path = "#{namespace_project_uploads_path @project.namespace, @project}";

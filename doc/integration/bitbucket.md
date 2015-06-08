@@ -68,6 +68,8 @@ Bitbucket will generate an application ID and secret key for you to use.
 
 1.  Save the configuration file.
 
+1.  If you're using the omnibus package, reconfigure GitLab (```gitlab-ctl reconfigure```).
+
 1.  Restart GitLab for the changes to take effect.
 
 On the sign in page there should now be a Bitbucket icon below the regular sign in form.
@@ -80,29 +82,7 @@ To allow projects to be imported directly into GitLab, Bitbucket requires two ex
 
 Bitbucket doesn't allow OAuth applications to clone repositories over HTTPS, and instead requires GitLab to use SSH and identify itself using your GitLab server's SSH key.
 
-### Step 1: Known hosts
-
-To allow GitLab to connect to Bitbucket over SSH, you need to add 'bitbucket.org' to your GitLab server's known SSH hosts. Take the following steps to do so:
-
-1. Manually connect to 'bitbucket.org' over SSH, while logged in as the `git` account that GitLab will use:
-
-    ```sh
-    ssh git@bitbucket.org
-    ```
-
-1.  Verify the RSA key fingerprint you'll see in the response matches the one in the [Bitbucket documentation](https://confluence.atlassian.com/display/BITBUCKET/Use+the+SSH+protocol+with+Bitbucket#UsetheSSHprotocolwithBitbucket-KnownhostorBitbucket'spublickeyfingerprints) (the specific IP address doesn't matter):
-
-    ```sh
-    The authenticity of host 'bitbucket.org (207.223.240.182)' can't be established.
-    RSA key fingerprint is 97:8c:1b:f2:6f:14:6b:5c:3b:ec:aa:46:46:74:7c:40.
-    Are you sure you want to continue connecting (yes/no)?
-    ```
-
-1. If the fingerprint matches, type `yes` to continue connecting and have 'bitbucket.org' be added to your known hosts.
-
-1. Your GitLab server is now able to connect to Bitbucket over SSH. Continue to step 2:
-
-### Step 2: Public key
+### Step 1: Public key
 
 To be able to access repositories on Bitbucket, GitLab will automatically register your public key with Bitbucket as a deploy key for the repositories to be imported. Your public key needs to be at `~/.ssh/bitbucket_rsa.pub`, which will expand to `/home/git/.ssh/bitbucket_rsa.pub` in most configurations.
 
@@ -117,6 +97,44 @@ If you have that file in place, you're all set and should see the "Import projec
     When asked `Enter file in which to save the key` specify the correct path, eg. `/home/git/.ssh/bitbucket_rsa`.
     Make sure to use an **empty passphrase**.
 
-2. Restart GitLab to allow it to find the new public key.
+1. Configure SSH client to use your new key:
+
+    Open the SSH configuration file of the git user.
+
+    ```sh
+      sudo editor /home/git/.ssh/config
+    ```
+
+    Add a host configuration for `bitbucket.org`.
+
+    ```sh
+    Host bitbucket.org
+      IdentityFile ~/.ssh/bitbucket_rsa
+      User git
+    ```
+
+### Step 2: Known hosts
+
+To allow GitLab to connect to Bitbucket over SSH, you need to add 'bitbucket.org' to your GitLab server's known SSH hosts. Take the following steps to do so:
+
+1. Manually connect to 'bitbucket.org' over SSH, while logged in as the `git` account that GitLab will use:
+
+    ```sh
+    sudo -u git -H ssh bitbucket.org
+    ```
+
+1.  Verify the RSA key fingerprint you'll see in the response matches the one in the [Bitbucket documentation](https://confluence.atlassian.com/display/BITBUCKET/Use+the+SSH+protocol+with+Bitbucket#UsetheSSHprotocolwithBitbucket-KnownhostorBitbucket'spublickeyfingerprints) (the specific IP address doesn't matter):
+
+    ```sh
+    The authenticity of host 'bitbucket.org (207.223.240.182)' can't be established.
+    RSA key fingerprint is 97:8c:1b:f2:6f:14:6b:5c:3b:ec:aa:46:46:74:7c:40.
+    Are you sure you want to continue connecting (yes/no)?
+    ```
+
+1. If the fingerprint matches, type `yes` to continue connecting and have 'bitbucket.org' be added to your known hosts.
+
+1. Your GitLab server is now able to connect to Bitbucket over SSH.
+
+1. Restart GitLab to allow it to find the new public key.
 
 You should now see the "Import projects from Bitbucket" option on the New Project page enabled.

@@ -122,7 +122,7 @@ You can find all available options in [Omnibus GitLab documentation](https://git
 
 ### Upgrade GitLab with app and data images
 
-To updgrade GitLab to new versions, stop running container, create new docker image and container from that image.
+To upgrade GitLab to new versions, stop running container, create new docker image and container from that image.
 
 It Assumes that you're upgrading from 7.8.1 to 7.10.1 and you're in the updated GitLab repo root directory:
 
@@ -141,10 +141,12 @@ sudo docker rmi gitlab-app:7.8.1
 
 ### Publish images to Dockerhub
 
-Login to Dockerhub with `sudo docker login` and run the following (replace '7.9.2' with the version you're using and 'Sytse Sijbrandij' with your name):
+- Ensure the containers are running
+- Login to Dockerhub with `sudo docker login`
+- Run the following (replace '7.9.2' with the version you're using and 'Sytse Sijbrandij' with your name):
 
 ```bash
-sudo docker commit -m "Initial commit" -a "Sytse Sijbrandij" gitlab-app:7.10.1 sytse/gitlab-app:7.10.1
+sudo docker commit -m "Initial commit" -a "Sytse Sijbrandij" gitlab-app sytse/gitlab-app:7.10.1
 sudo docker push sytse/gitlab-app:7.10.1
 sudo docker commit -m "Initial commit" -a "Sytse Sijbrandij" gitlab_data sytse/gitlab_data
 sudo docker push sytse/gitlab_data
