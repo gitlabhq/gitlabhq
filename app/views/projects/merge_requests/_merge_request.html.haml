@@ -1,6 +1,6 @@
 %li{ class: mr_css_classes(merge_request) }
   .merge-request-title
-    %span.str-truncated
+    %span.merge-request-title-text
       = link_to_gfm merge_request.title, merge_request_path(merge_request), class: "row_title"
     .merge-request-labels
       - merge_request.labels.each do |label|

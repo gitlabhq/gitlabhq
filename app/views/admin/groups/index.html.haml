@@ -11,7 +11,7 @@
 = form_tag admin_groups_path, method: :get, class: 'form-inline' do
   = hidden_field_tag :sort, @sort
   .form-group
-    = text_field_tag :name, params[:name], class: "form-control input-mn-300"
+    = text_field_tag :name, params[:name], class: "form-control"
   = button_tag "Search", class: "btn submit btn-primary"
 
   .pull-right
