@@ -168,7 +168,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I click on my profile picture' do
-    click_link 'sidebar-user'
+    find(:css, '.sidebar-user').click
   end
 
   step 'I should see my user page' do
