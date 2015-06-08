@@ -4,7 +4,7 @@
 
 - [API](api/README.md) Automate GitLab via a simple and powerful API.
 - [GitLab as OAuth2 authentication service provider](integration/oauth_provider.md). It allows you to login to other applications from GitLab.
-- [Importing to GitLab](doc/importing/README.md).
+- [Importing to GitLab](importing/README.md).
 - [Markdown](markdown/markdown.md) GitLab's advanced formatting system.
 - [Permissions](permissions/permissions.md) Learn what each role in a project (guest/reporter/developer/master/owner) can do.
 - [Project Services](project_services/project_services.md) Integrate a project with external services, such as CI and chat.
