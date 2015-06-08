@@ -1,5 +1,4 @@
 require 'html/pipeline'
-require 'task_list/filter'
 
 module Gitlab
   # Custom parser for GitLab-flavored Markdown
@@ -12,6 +11,7 @@ module Gitlab
     autoload :CommitReferenceFilter,        'gitlab/markdown/commit_reference_filter'
     autoload :EmojiFilter,                  'gitlab/markdown/emoji_filter'
     autoload :ExternalIssueReferenceFilter, 'gitlab/markdown/external_issue_reference_filter'
+    autoload :ExternalLinkFilter,           'gitlab/markdown/external_link_filter'
     autoload :IssueReferenceFilter,         'gitlab/markdown/issue_reference_filter'
     autoload :LabelReferenceFilter,         'gitlab/markdown/label_reference_filter'
     autoload :MergeRequestReferenceFilter,  'gitlab/markdown/merge_request_reference_filter'
@@ -19,6 +19,7 @@ module Gitlab
     autoload :SanitizationFilter,           'gitlab/markdown/sanitization_filter'
     autoload :SnippetReferenceFilter,       'gitlab/markdown/snippet_reference_filter'
     autoload :TableOfContentsFilter,        'gitlab/markdown/table_of_contents_filter'
+    autoload :TaskListFilter,               'gitlab/markdown/task_list_filter'
     autoload :UserReferenceFilter,          'gitlab/markdown/user_reference_filter'
 
     # Public: Parse the provided text with GitLab-Flavored Markdown
@@ -56,6 +57,9 @@ module Gitlab
       pipeline = HTML::Pipeline.new(filters)
 
       context = {
+        # SanitizationFilter
+        pipeline: options[:pipeline],
+
         # EmojiFilter
         asset_root: Gitlab.config.gitlab.url,
         asset_host: Gitlab::Application.config.asset_host,
@@ -103,6 +107,7 @@ module Gitlab
         Gitlab::Markdown::EmojiFilter,
         Gitlab::Markdown::TableOfContentsFilter,
         Gitlab::Markdown::AutolinkFilter,
+        Gitlab::Markdown::ExternalLinkFilter,
 
         Gitlab::Markdown::UserReferenceFilter,
         Gitlab::Markdown::IssueReferenceFilter,
@@ -113,7 +118,7 @@ module Gitlab
         Gitlab::Markdown::CommitReferenceFilter,
         Gitlab::Markdown::LabelReferenceFilter,
 
-        TaskList::Filter
+        Gitlab::Markdown::TaskListFilter
       ]
     end
   end

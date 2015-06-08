@@ -1,7 +1,7 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include AuthenticatesWithTwoFactor
 
-  protect_from_forgery except: :kerberos
+  protect_from_forgery except: [:kerberos, :saml]
 
   Gitlab.config.omniauth.providers.each do |provider|
     define_method provider['name'] do
@@ -81,7 +81,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
 
     flash[:notice] = message
-    
+
     redirect_to new_user_session_path
   end
 

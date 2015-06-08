@@ -2,10 +2,13 @@ require 'gitlab/satellite/satellite'
 
 class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
-  before_action :merge_request, only: [:edit, :update, :show, :diffs, :automerge, :automerge_check, :ci_status, :toggle_subscription]
-  before_action :closes_issues, only: [:edit, :update, :show, :diffs]
-  before_action :validates_merge_request, only: [:show, :diffs]
-  before_action :define_show_vars, only: [:show, :diffs]
+  before_action :merge_request, only: [
+    :edit, :update, :show, :diffs, :commits, :automerge, :automerge_check,
+    :ci_status, :toggle_subscription
+  ]
+  before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits]
+  before_action :validates_merge_request, only: [:show, :diffs, :commits]
+  before_action :define_show_vars, only: [:show, :diffs, :commits]
 
   # Allow read any merge_request
   before_action :authorize_read_merge_request!
@@ -19,7 +22,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def index
     terms = params['issue_search']
     @merge_requests = get_merge_requests_collection
-    @merge_requests = @merge_requests.full_search(terms) if terms.present?
+
+    if terms.present?
+      if terms =~ /\A[#!](\d+)\z/
+        @merge_requests = @merge_requests.where(iid: $1)
+      else
+        @merge_requests = @merge_requests.full_search(terms)
+      end
+    end
+
     @merge_requests = @merge_requests.page(params[:page]).per(PER_PAGE)
 
     respond_to do |format|
@@ -57,6 +68,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       format.html
       format.json { render json: { html: view_to_html_string("projects/merge_requests/show/_diffs") } }
     end
+  end
+
+  def commits
+    render 'show'
   end
 
   def new

@@ -23,10 +23,9 @@
               %i.fa.fa-cogs
               Settings
 
-          - if can?(current_user, :destroy_group_member, group_member)
-            = link_to leave_group_group_members_path(group), data: { confirm: leave_group_message(group.name) }, method: :delete, class: "btn-sm btn btn-grouped", title: 'Remove user from group' do
-              %i.fa.fa-sign-out
-              Leave
+          = link_to leave_group_group_members_path(group), data: { confirm: leave_group_message(group.name) }, method: :delete, class: "btn-sm btn btn-grouped", title: 'Leave this group' do
+            %i.fa.fa-sign-out
+            Leave
 
         = image_tag group_icon(group), class: "avatar s40 avatar-tile"
         = link_to group, class: 'group-name' do

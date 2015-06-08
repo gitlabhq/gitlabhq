@@ -23,6 +23,10 @@ module ApplicationSettingsHelper
     current_application_settings.help_text
   end
 
+  def user_oauth_applications?
+    current_application_settings.user_oauth_applications
+  end
+
   # Return a group of checkboxes that use Bootstrap's button plugin for a
   # toggle button effect.
   def restricted_level_checkboxes(help_block_id)

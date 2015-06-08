@@ -7,6 +7,13 @@ The first time a user signs in with LDAP credentials, GitLab will create a new G
 
 GitLab user attributes such as nickname and email will be copied from the LDAP user entry.
 
+## Security
+
+GitLab assumes that LDAP users are not able to change their LDAP 'mail', 'email' or 'userPrincipalName' attribute.
+An LDAP user who is allowed to change their email on the LDAP server can [take over any account](#enabling-ldap-sign-in-for-existing-gitlab-users) on your GitLab server.
+
+We recommend against using GitLab LDAP integration if your LDAP users are allowed to change their 'mail', 'email' or 'userPrincipalName'  attribute on the LDAP server.
+
 ## Configuring GitLab for LDAP integration
 
 To enable GitLab LDAP integration you need to add your LDAP server settings in `/etc/gitlab/gitlab.rb` or `/home/git/gitlab/config/gitlab.yml`.
@@ -161,9 +168,9 @@ If you have two LDAP group links, e.g. 'cn=Engineering' at level 'Developer' and
 
 ### Locking yourself out of your own group
 
-As an LDAP-enabled GitLab user, if you create a group and then set it to synchronize with an LDAP group you do not belong to, you will be removed from the grop as soon as the synchronization takes effect for you.
+As an LDAP-enabled GitLab user, if you create a group and then set it to synchronize with an LDAP group you do not belong to, you will be removed from the group as soon as the synchronization takes effect for you, unless you are the last owner of the group.
 
-If you accidentally lock yourself out of your own GitLab group, ask a GitLab administrator to change the LDAP synchronization settings for your group.
+If you accidentally lock yourself out of your own GitLab group, ask another owner of the group or a GitLab administrator to change the LDAP synchronization settings for your group.
 
 ### Non-LDAP GitLab users
 

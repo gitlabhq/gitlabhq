@@ -1,17 +1,31 @@
-#= require jquery
-#= require bootstrap
+#= require jquery.waitforimages
 #= require task_list
 
 class @MergeRequest
+  # Initialize MergeRequest behavior
+  #
+  # Options:
+  #   action         - String, current controller action
+  #   diffs_loaded   - Boolean, have diffs been pre-rendered server-side?
+  #                    (default: true if `action` is 'diffs', otherwise false)
+  #   commits_loaded - Boolean, have commits been pre-rendered server-side?
+  #                    (default: false)
+  #
+  #   check_enable           - Boolean, whether to check automerge status
+  #   url_to_automerge_check - String, URL to use to check automerge status
+  #   current_status         - String, current automerge status
+  #   ci_enable              - Boolean, whether a CI service is enabled
+  #   url_to_ci_check        - String, URL to use to check CI status
+  #
   constructor: (@opts) ->
     @initContextWidget()
     this.$el = $('.merge-request')
-    @diffs_loaded = if @opts.action == 'diffs' then true else false
-    @commits_loaded = false
 
-    this.activateTab(@opts.action)
+    @diffs_loaded = @opts.diffs_loaded or @opts.action == 'diffs'
+    @commits_loaded = @opts.commits_loaded or false
 
     this.bindEvents()
+    this.activateTabFromPath()
 
     this.initMergeWidget()
     this.$('.show-all-commits').on 'click', =>
@@ -65,8 +79,18 @@ class @MergeRequest
       , 'json'
 
   bindEvents: ->
-    this.$('.merge-request-tabs').on 'click', 'li', (event) =>
-      this.activateTab($(event.currentTarget).data('action'))
+    this.$('.merge-request-tabs a[data-toggle="tab"]').on 'shown.bs.tab', (e) =>
+      $target = $(e.target)
+      tab_action = $target.data('action')
+
+      # Lazy-load diffs
+      if tab_action == 'diffs'
+        this.loadDiff() unless @diffs_loaded
+        $('.diff-header').trigger('sticky_kit:recalc')
+
+      # Skip tab-persisting behavior on MergeRequests#new
+      unless @opts.action == 'new'
+        @setCurrentAction(tab_action)
 
     this.$('.accept_merge_request').on 'click', ->
       $('.automerge_widget.can_be_merged').hide()
@@ -84,21 +108,54 @@ class @MergeRequest
       this.$('.remove_source_branch_in_progress').hide()
       this.$('.remove_source_branch_widget.failed').show()
 
-  activateTab: (action) ->
-    this.$('.merge-request-tabs li').removeClass 'active'
-    this.$('.tab-content').hide()
-    switch action
-      when 'diffs'
-        this.$('.merge-request-tabs .diffs-tab').addClass 'active'
-        this.loadDiff() unless @diffs_loaded
-        this.$('.diffs').show()
-        $(".diff-header").trigger("sticky_kit:recalc")
-      when 'commits'
-        this.$('.merge-request-tabs .commits-tab').addClass 'active'
-        this.$('.commits').show()
-      else
-        this.$('.merge-request-tabs .notes-tab').addClass 'active'
-        this.$('.notes').show()
+  # Activate a tab based on the current URL path
+  #
+  # If the current action is 'show' or 'new' (i.e., initial page load),
+  # activates the first tab, otherwise activates the tab corresponding to the
+  # current action (diffs, commits).
+  activateTabFromPath: ->
+    if @opts.action == 'show' || @opts.action == 'new'
+      this.$('.merge-request-tabs a[data-toggle="tab"]:first').tab('show')
+    else
+      this.$(".merge-request-tabs a[data-action='#{@opts.action}']").tab('show')
+
+  # Replaces the current Merge Request-specific action in the URL with a new one
+  #
+  # If the action is "notes", the URL is reset to the standard
+  # `MergeRequests#show` route.
+  #
+  # Examples:
+  #
+  #   location.pathname # => "/namespace/project/merge_requests/1"
+  #   setCurrentAction('diffs')
+  #   location.pathname # => "/namespace/project/merge_requests/1/diffs"
+  #
+  #   location.pathname # => "/namespace/project/merge_requests/1/diffs"
+  #   setCurrentAction('notes')
+  #   location.pathname # => "/namespace/project/merge_requests/1"
+  #
+  #   location.pathname # => "/namespace/project/merge_requests/1/diffs"
+  #   setCurrentAction('commits')
+  #   location.pathname # => "/namespace/project/merge_requests/1/commits"
+  setCurrentAction: (action) ->
+    # Normalize action, just to be safe
+    action = 'notes' if action == 'show'
+
+    # Remove a trailing '/commits' or '/diffs'
+    new_state = location.pathname.replace(/\/(commits|diffs)\/?$/, '')
+
+    # Append the new action if we're on a tab other than 'notes'
+    unless action == 'notes'
+      new_state += "/#{action}"
+
+    # Ensure parameters and hash come along for the ride
+    new_state += location.search + location.hash
+
+    # Replace the current history state with the new one without breaking
+    # Turbolinks' history.
+    #
+    # See https://github.com/rails/turbolinks/issues/363
+    history.replaceState {turbolinks: true, url: new_state}, '', new_state
 
   showState: (state) ->
     $('.automerge_widget').hide()

@@ -10,8 +10,8 @@ Feature: Project Merge Requests
     Then I should see "Bug NS-04" in merge requests
     And I should not see "Feature NS-03" in merge requests
 
-  Scenario: I should see closed merge requests
-    Given I click link "Closed"
+  Scenario: I should see rejected merge requests
+    Given I click link "Rejected"
     Then I should see "Feature NS-03" in merge requests
     And I should not see "Bug NS-04" in merge requests
 
@@ -212,3 +212,11 @@ Feature: Project Merge Requests
     Then I should see that I am subscribed
     When I click button "Unsubscribe"
     Then I should see that I am unsubscribed
+
+  @javascript
+  Scenario: I can change the target branch
+    Given I visit merge request page "Bug NS-04"
+    And I click link "Edit" for the merge request
+    When I click the "Target branch" dropdown
+    And I select a new target branch
+    Then I should see new target branch changes

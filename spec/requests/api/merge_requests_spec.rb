@@ -349,10 +349,10 @@ describe API::API, api: true  do
       expect(json_response['description']).to eq('New description')
     end
 
-    it "should return 422 when source_branch and target_branch are renamed the same" do
+    it "should return 400 when source_branch is specified" do
       put api("/projects/#{project.id}/merge_request/#{merge_request.id}", user),
       source_branch: "master", target_branch: "master"
-      expect(response.status).to eq(422)
+      expect(response.status).to eq(400)
     end
 
     it "should return merge_request with renamed target_branch" do

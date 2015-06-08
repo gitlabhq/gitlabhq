@@ -15,4 +15,15 @@ class IssuableBaseService < BaseService
     SystemNoteService.change_label(
       issuable, issuable.project, current_user, added_labels, removed_labels)
   end
+
+  def create_title_change_note(issuable, old_title)
+    SystemNoteService.change_title(
+      issuable, issuable.project, current_user, old_title)
+  end
+
+  def create_branch_change_note(issuable, branch_type, old_branch, new_branch)
+    SystemNoteService.change_branch(
+      issuable, issuable.project, current_user, branch_type,
+      old_branch, new_branch)
+  end
 end

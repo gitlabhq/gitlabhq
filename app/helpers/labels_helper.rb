@@ -1,6 +1,44 @@
 module LabelsHelper
   include ActionView::Helpers::TagHelper
 
+  # Link to a Label
+  #
+  # label   - Label object to link to
+  # project - Project object which will be used as the context for the label's
+  #           link. If omitted, defaults to `@project`, or the label's own
+  #           project.
+  # block   - An optional block that will be passed to `link_to`, forming the
+  #           body of the link element. If omitted, defaults to
+  #           `render_colored_label`.
+  #
+  # Examples:
+  #
+  #   # Allow the generated link to use the label's own project
+  #   link_to_label(label)
+  #
+  #   # Force the generated link to use @project
+  #   @project = Project.first
+  #   link_to_label(label)
+  #
+  #   # Force the generated link to use a provided project
+  #   link_to_label(label, project: Project.last)
+  #
+  #   # Customize link body with a block
+  #   link_to_label(label) { "My Custom Label Text" }
+  #
+  # Returns a String
+  def link_to_label(label, project: nil, &block)
+    project ||= @project || label.project
+    link = namespace_project_issues_path(project.namespace, project,
+                                         label_name: label.name)
+
+    if block_given?
+      link_to link, &block
+    else
+      link_to render_colored_label(label), link
+    end
+  end
+
   def project_label_names
     @project.labels.pluck(:title)
   end

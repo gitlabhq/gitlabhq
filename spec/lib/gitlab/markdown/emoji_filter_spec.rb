@@ -2,9 +2,7 @@ require 'spec_helper'
 
 module Gitlab::Markdown
   describe EmojiFilter do
-    def filter(html, contexts = {})
-      described_class.call(html, contexts)
-    end
+    include FilterSpecHelper
 
     before do
       ActionController::Base.asset_host = 'https://foo.com'

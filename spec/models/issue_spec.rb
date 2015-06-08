@@ -24,14 +24,29 @@ describe Issue do
     it { is_expected.to belong_to(:milestone) }
   end
 
-  describe "Mass assignment" do
-  end
-
   describe 'modules' do
+    subject { described_class }
+
+    it { is_expected.to include_module(InternalId) }
     it { is_expected.to include_module(Issuable) }
+    it { is_expected.to include_module(Referable) }
+    it { is_expected.to include_module(Sortable) }
+    it { is_expected.to include_module(Taskable) }
   end
 
   subject { create(:issue) }
+
+  describe '#to_reference' do
+    it 'returns a String reference to the object' do
+      expect(subject.to_reference).to eq "##{subject.iid}"
+    end
+
+    it 'supports a cross-project reference' do
+      cross = double('project')
+      expect(subject.to_reference(cross)).
+        to eq "#{subject.project.to_reference}##{subject.iid}"
+    end
+  end
 
   describe '#is_being_reassigned?' do
     it 'returns true if the issue assignee has changed' do
@@ -45,11 +60,8 @@ describe Issue do
 
   describe '#is_being_reassigned?' do
     it 'returns issues assigned to user' do
-      user = create :user
-
-      2.times do
-        issue = create :issue, assignee: user
-      end
+      user = create(:user)
+      create_list(:issue, 2, assignee: user)
 
       expect(Issue.open_for(user).count).to eq 2
     end

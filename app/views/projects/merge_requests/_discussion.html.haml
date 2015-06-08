@@ -27,5 +27,4 @@
           %label Labels
         .merge-request-show-labels
           - @merge_request.labels.each do |label|
-            = link_to namespace_project_merge_requests_path(@project.namespace, @project, label_name: label.name) do
-              = render_colored_label(label)
+            = link_to_label(label)

@@ -11,7 +11,7 @@
       .col-sm-10= f.text_field :title, placeholder: "Example Snippet", class: 'form-control', required: true
 
     = render 'shared/visibility_level', f: f, visibility_level: visibility_level, can_change_visibility_level: true, form_model: @snippet
-    
+
     .form-group
       .file-editor
         = f.label :file_name, "File", class: 'control-label'
@@ -29,7 +29,7 @@
       - else
         = f.submit 'Save', class: "btn-save btn"
 
-      - if @snippet.respond_to?(:project)
+      - if @snippet.project_id
         = link_to "Cancel", namespace_project_snippets_path(@project.namespace, @project), class: "btn btn-cancel"
       - else
         = link_to "Cancel", snippets_path(@project), class: "btn btn-cancel"

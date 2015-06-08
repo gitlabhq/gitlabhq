@@ -84,7 +84,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def destroy
-    @group.destroy
+    DestroyGroupService.new(@group, current_user).execute
 
     redirect_to root_path, notice: 'Group was removed.'
   end

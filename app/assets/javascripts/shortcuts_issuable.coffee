@@ -1,6 +1,4 @@
-#= require jquery
 #= require mousetrap
-
 #= require shortcuts_navigation
 
 class @ShortcutsIssuable extends ShortcutsNavigation

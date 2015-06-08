@@ -31,7 +31,7 @@ module Notes
 
     def execute_hooks(note)
       note_data = hook_data(note)
-      # TODO: Support Webhooks
+      note.project.execute_hooks(note_data, :note_hooks)
       note.project.execute_services(note_data, :note_hooks)
     end
   end

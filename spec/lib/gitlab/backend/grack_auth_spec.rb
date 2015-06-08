@@ -156,7 +156,7 @@ describe Grack::Auth do
                   end
 
                   expect(attempt_login(true)).to eq(200)
-                  expect(Rack::Attack::Allow2Ban.send(:banned?, ip)).to eq(nil)
+                  expect(Rack::Attack::Allow2Ban.banned?(ip)).to be_falsey
 
                   for n in 0..maxretry do
                     expect(attempt_login(false)).to eq(401)

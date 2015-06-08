@@ -9,7 +9,8 @@ The new release manager should create overall issue to track the progress.
 
 ## Release Manager
 
-A release manager is selected that coordinates all releases the coming month, including the patch releases for previous releases.
+A release manager is selected that coordinates all releases the coming month,
+including the patch releases for previous releases.
 The release manager has to make sure all the steps below are done and delegated where necessary.
 This person should also make sure this document is kept up to date and issues are created and updated.
 
@@ -92,6 +93,8 @@ There are three changelogs that need to be updated: CE, EE and CI.
 ## Prepare CHANGELOG for next release
 
 Once the stable branches have been created, update the CHANGELOG in `master` with the upcoming version, usually X.X.X.pre.
+
+On creating the stable branches, notify the core team and developers.
 
 ## QA
 

@@ -11,8 +11,11 @@ describe Profiles::TwoFactorAuthsController do
   describe 'GET new' do
     let(:user) { create(:user) }
 
-    it 'generates otp_secret' do
-      expect { get :new }.to change { user.otp_secret }
+    it 'generates otp_secret for user' do
+      expect(User).to receive(:generate_otp_secret).with(32).and_return('secret').once
+
+      get :new
+      get :new # Second hit shouldn't re-generate it
     end
 
     it 'assigns qr_code' do

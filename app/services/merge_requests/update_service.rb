@@ -5,10 +5,11 @@ require_relative 'close_service'
 module MergeRequests
   class UpdateService < MergeRequests::BaseService
     def execute(merge_request)
-      # We dont allow change of source/target projects
+      # We don't allow change of source/target projects and source branch
       # after merge request was created
       params.except!(:source_project_id)
       params.except!(:target_project_id)
+      params.except!(:source_branch)
 
       state = params[:state_event]
 
@@ -41,6 +42,12 @@ module MergeRequests
           )
         end
 
+        if merge_request.previous_changes.include?('target_branch')
+          create_branch_change_note(merge_request, 'target',
+                                    merge_request.previous_changes['target_branch'].first,
+                                    merge_request.target_branch)
+        end
+
         if merge_request.previous_changes.include?('milestone_id')
           create_milestone_note(merge_request)
         end
@@ -48,6 +55,15 @@ module MergeRequests
         if merge_request.previous_changes.include?('assignee_id')
           create_assignee_note(merge_request)
           notification_service.reassigned_merge_request(merge_request, current_user)
+        end
+
+        if merge_request.previous_changes.include?('title')
+          create_title_change_note(merge_request, merge_request.previous_changes['title'].first)
+        end
+
+        if merge_request.previous_changes.include?('target_branch') ||
+            merge_request.previous_changes.include?('source_branch')
+          merge_request.mark_as_unchecked
         end
 
         merge_request.notice_added_references(merge_request.project, current_user)

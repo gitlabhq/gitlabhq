@@ -84,12 +84,27 @@
   }
 
   .btn {
-    line-height: 36px;
-    height: 56px;
+    line-height: 40px;
+    height: 42px;
+    padding: 0px 12px;
 
     img {
       width: 32px;
       height: 32px;
+    }
+  }
+}
+
+// Profile > Account > Two Factor Authentication
+.two-factor-new {
+  .manual-instructions {
+    h3 {
+      margin-top: 0;
+    }
+
+    // Slightly increase the size of the details so they're easier to read
+    dl {
+      font-size: 1.1em;
     }
   }
 }

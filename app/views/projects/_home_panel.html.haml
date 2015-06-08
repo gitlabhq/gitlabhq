@@ -5,7 +5,7 @@
   .project-home-row.project-home-row-top
     .project-home-desc
       - if @project.description.present?
-        = escaped_autolink(@project.description)
+        = markdown(@project.description, pipeline: :description)
       - if can?(current_user, :admin_project, @project)
         &ndash;
         = link_to 'Edit', edit_namespace_project_path

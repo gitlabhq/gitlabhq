@@ -11,6 +11,15 @@
   .col-sm-10
     = f.text_field :title, maxlength: 255, autofocus: true,
         class: 'form-control pad js-gfm-input', required: true
+
+    - if issuable.is_a?(MergeRequest)
+      %p.help-block
+        - if issuable.work_in_progress?
+          Remove the <code>WIP</code> prefix from the title to allow this 
+          <strong>Work In Progress</strong> merge request to be accepted when it's ready.
+        - else
+          Start the title with <code>[WIP]</code> or <code>WIP:</code> to prevent a 
+          <strong>Work In Progress</strong> merge request from being accepted before it's ready.
 .form-group.issuable-description
   = f.label :description, 'Description', class: 'control-label'
   .col-sm-10
@@ -37,7 +46,7 @@
     .col-sm-10
       = users_select_tag("#{issuable.class.model_name.param_key}[assignee_id]",
           placeholder: 'Select a user', class: 'custom-form-control', null_user: true,
-          selected: issuable.assignee_id)
+          selected: issuable.assignee_id, project: @target_project || @project)
       &nbsp;
       = link_to 'Assign to me', '#', class: 'btn assign-to-me-link'
 .form-group
@@ -69,6 +78,24 @@
     &nbsp;
     - if can? current_user, :admin_label, issuable.project
       = link_to 'Create new label', new_namespace_project_label_path(issuable.project.namespace, issuable.project), target: :blank
+
+- if issuable.is_a?(MergeRequest)
+  %hr
+    - unless @merge_request.persisted?
+      .form-group
+        = f.label :source_branch, class: 'control-label' do
+          %i.fa.fa-code-fork
+          Source Branch
+        .col-sm-10
+          = f.select(:source_branch, [@merge_request.source_branch], { }, { class: 'source_branch select2 span2', disabled: true })
+          %p.help-block
+          = link_to 'Change source branch', mr_change_branches_path(@merge_request)
+  .form-group
+    = f.label :target_branch, class: 'control-label' do
+      %i.fa.fa-code-fork
+      Target Branch
+    .col-sm-10
+      = f.select(:target_branch, @merge_request.target_branches, { include_blank: "Select branch" }, { class: 'target_branch select2 span2' })
 
 .form-actions
   - if !issuable.project.empty_repo? && (guide_url = contribution_guide_url(issuable.project)) && !issuable.persisted?

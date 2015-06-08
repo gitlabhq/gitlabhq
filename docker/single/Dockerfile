@@ -28,6 +28,7 @@ EXPOSE 80 22
 
 # Copy assets
 COPY assets/wrapper /usr/local/bin/
+COPY assets/gitlab.rb /etc/gitlab/
 
 # Wrapper to handle signal, trigger runit and reconfigure GitLab
 CMD ["/usr/local/bin/wrapper"]

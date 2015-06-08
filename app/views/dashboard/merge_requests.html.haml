@@ -7,5 +7,5 @@
   List all merge requests from all projects you have access to.
 %hr
 .append-bottom-20
-  = render 'shared/issuable_filter'
+  = render 'shared/issuable_filter', type: :merge_requests
 = render 'shared/merge_requests'

@@ -1,34 +1,44 @@
 - page_title "Applications"
 %h3.page-title
-  Application Settings
+  = page_title
 %p.light
-  OAuth2 protocol settings below.
+  - if user_oauth_applications?
+    Manage applications that can use GitLab as an OAuth provider, 
+    and applications that you've authorized to use your account.
+  - else
+    Manage applications that you've authorized to use your account.
+%hr
 
-%fieldset.oauth-applications
-  %legend Your applications
-  %p= link_to 'New Application', new_oauth_application_path, class: 'btn btn-success'
-  - if @applications.any?
-    %table.table.table-striped
-      %thead
-        %tr
-          %th Name
-          %th Callback URL
-          %th Clients
-          %th
-          %th
-      %tbody
-        - @applications.each do |application|
-          %tr{:id => "application_#{application.id}"}
-            %td= link_to application.name, oauth_application_path(application)
-            %td
-              - application.redirect_uri.split.each do |uri|
-                %div= uri
-            %td= application.access_tokens.count
-            %td= link_to 'Edit', edit_oauth_application_path(application), class: 'btn btn-link btn-sm'
-            %td= render 'doorkeeper/applications/delete_form', application: application
+- if user_oauth_applications?
+  .oauth-applications
+    %h3
+      Your applications
+      .pull-right
+        = link_to 'New Application', new_oauth_application_path, class: 'btn btn-success'
+    - if @applications.any?
+      %table.table.table-striped
+        %thead
+          %tr
+            %th Name
+            %th Callback URL
+            %th Clients
+            %th
+            %th
+        %tbody
+          - @applications.each do |application|
+            %tr{:id => "application_#{application.id}"}
+              %td= link_to application.name, oauth_application_path(application)
+              %td
+                - application.redirect_uri.split.each do |uri|
+                  %div= uri
+              %td= application.access_tokens.count
+              %td= link_to 'Edit', edit_oauth_application_path(application), class: 'btn btn-link btn-sm'
+              %td= render 'doorkeeper/applications/delete_form', application: application
 
-%fieldset.oauth-authorized-applications.prepend-top-20
-  %legend Authorized applications
+.oauth-authorized-applications.prepend-top-20
+  - if user_oauth_applications?
+    %h3
+      Authorized applications
 
   - if @authorized_tokens.any?
     %table.table.table-striped

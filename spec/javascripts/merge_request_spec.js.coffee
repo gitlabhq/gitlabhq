@@ -1,34 +1,23 @@
-#= require jquery
-#= require jasmine-fixture
 #= require merge_request
+
+window.disableButtonIfEmptyField = -> null
 
 describe 'MergeRequest', ->
   describe 'task lists', ->
-    selectors = {
-      container: '.merge-request-details .description.js-task-list-container'
-      item:      '.wiki ul.task-list li.task-list-item input.task-list-item-checkbox[type=checkbox] {Task List Item}'
-      textarea:  '.wiki textarea.js-task-list-field{- [ ] Task List Item}'
-      form:      'form.js-merge-request-update[action="/foo"]'
-      close:     'a.btn-close'
-    }
+    fixture.preload('merge_requests_show.html')
 
     beforeEach ->
-      $container = affix(selectors.container)
-
-      # # These two elements are siblings inside the container
-      $container.find('.js-task-list-container').append(affix(selectors.item))
-      $container.find('.js-task-list-container').append(affix(selectors.textarea))
-
-      # Task lists don't get initialized unless this button exists. Not ideal.
-      $container.append(affix(selectors.close))
-
-      # This form is used to get the `update` URL. Not ideal.
-      $container.append(affix(selectors.form))
-
+      fixture.load('merge_requests_show.html')
       @merge = new MergeRequest({})
 
+    it 'modifies the Markdown field', ->
+      spyOn(jQuery, 'ajax').and.stub()
+
+      $('input[type=checkbox]').attr('checked', true).trigger('change')
+      expect($('.js-task-list-field').val()).toBe('- [x] Task List Item')
+
     it 'submits an ajax request on tasklist:changed', ->
-      spyOn($, 'ajax').and.callFake (req) ->
+      spyOn(jQuery, 'ajax').and.callFake (req) ->
         expect(req.type).toBe('PATCH')
         expect(req.url).toBe('/foo')
         expect(req.data.merge_request.description).not.toBe(null)
