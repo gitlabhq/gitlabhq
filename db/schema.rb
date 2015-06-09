@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150529150354) do
+ActiveRecord::Schema.define(version: 20150609113337) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,6 +47,13 @@ ActiveRecord::Schema.define(version: 20150529150354) do
     t.text     "restricted_signup_domains"
     t.boolean  "user_oauth_applications",      default: true
     t.string   "after_sign_out_path"
+  end
+
+  create_table "approves", force: true do |t|
+    t.integer  "merge_request_id", null: false
+    t.integer  "user_id",          null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "audit_events", force: true do |t|
