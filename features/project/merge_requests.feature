@@ -223,6 +223,7 @@ Feature: Project Merge Requests
 
   Scenario: I approve merge request
     Given merge request 'Bug NS-04' must be approved
-    Given I click link "Bug NS-04"
-    And I click link "Approve"
+    And I click link "Bug NS-04"
+    And I should not see merge button
+    When I click link "Approve"
     Then I should see approved merge request "Bug NS-04"

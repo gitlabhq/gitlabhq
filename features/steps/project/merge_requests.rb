@@ -340,8 +340,16 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     click_button 'Approve Merge Request'
   end
 
+  step 'I should not see merge button' do
+    within '.can_be_merged' do
+      page.should_not have_button("Accept Merge Request")
+    end
+  end
+
   step 'I should see approved merge request "Bug NS-04"' do
-    page.should have_button("Accept Merge Request")
+    within '.can_be_merged' do
+      page.should have_button("Accept Merge Request")
+    end
   end
 
   def merge_request
