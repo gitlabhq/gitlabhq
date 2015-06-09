@@ -4,13 +4,20 @@ class @ProjectNew
       $('.project-edit-container').hide()
       $('.save-project-loader').show()
 
+    @toggleSettings()
     @initEvents()
 
 
   initEvents: ->
     disableButtonIfEmptyField '#project_name', '.project-submit'
 
-    $("#project_merge_requests_enabled").change ->
-      checked = $(this).prop("checked")
-      $("#project_merge_requests_template").prop "disabled", not checked
-      $("#project_merge_requests_rebase_enabled").prop "disabled", not checked
+    $("#project_merge_requests_enabled").change =>
+      @toggleSettings()
+
+  toggleSettings: ->
+    checked = $("#project_merge_requests_enabled").prop("checked")
+    if checked
+      $('.merge-request-feature').show()
+    else
+      $('.merge-request-feature').hide()
+
