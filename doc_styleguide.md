@@ -12,6 +12,7 @@ This styleguide recommends best practices to improve documentation and to keep i
 
 * Be brief and clear.
 
+* Whenever it applies, add documents in alphabetical order.
 
 ## When adding images to a document
 
