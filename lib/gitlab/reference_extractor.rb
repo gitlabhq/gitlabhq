@@ -15,11 +15,15 @@ module Gitlab
 
     %i(user label issue merge_request snippet commit commit_range).each do |type|
       define_method("#{type}s") do
-        if type == :issue && project.jira_tracker?
-          pipeline_result(:external_issue)
-        else
-          references[type]
-        end
+        references[type]
+      end
+    end
+
+    def issues
+      if project.jira_tracker?
+        references[:external_issue]
+      else
+        references[:issue]
       end
     end
 
