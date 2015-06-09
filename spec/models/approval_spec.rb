@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Approve do
-  subject { create(:approve) }
+describe Approval do
+  subject { create(:approval) }
 
   it { should be_valid }
 end

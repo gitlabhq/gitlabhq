@@ -35,7 +35,7 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
 
   has_one :merge_request_diff, dependent: :destroy
-  has_many :approves, class_name: 'Approve', dependent: :destroy
+  has_many :approvals, dependent: :destroy
 
   after_create :create_merge_request_diff
   after_update :update_merge_request_diff
@@ -408,5 +408,19 @@ class MergeRequest < ActiveRecord::Base
     return false unless locked?
 
     locked_at.nil? || locked_at < (Time.now - 1.day)
+  end
+
+  def approvals_left
+    approvals_required - approvals.count
+  end
+
+  def approvals_required
+    target_project.approvals_before_merge
+  end
+
+  def requires_approve?
+    return false if approvals_required.zero?
+
+    approvals_required > approvals.count
   end
 end
