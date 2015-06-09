@@ -3,6 +3,7 @@
 ## User documentation
 
 - [API](api/README.md) Automate GitLab via a simple and powerful API.
+- [Importing to GitLab](workflow/importing/README.md).
 - [Markdown](markdown/markdown.md) GitLab's advanced formatting system.
 - [Permissions](permissions/permissions.md) Learn what each role in a project (guest/reporter/developer/master/owner) can do.
 - [Project Services](project_services/project_services.md) Integrate a project with external services, such as CI and chat.

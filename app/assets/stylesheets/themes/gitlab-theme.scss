@@ -30,8 +30,12 @@
       border-right: 1px solid $color-darker;
 
       .sidebar-user {
-        a {
-          color: $color-light;
+        color: $color-light;
+
+        &:hover {
+          background-color: $color-dark;
+          color: #FFF;
+          text-decoration: none;
         }
       }
     }
