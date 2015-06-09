@@ -226,6 +226,17 @@ module Gitlab
                 end
               end
             end
+
+            if git_hook.max_file_size > 0
+              commit.diffs.each do |diff|
+                next if diff.deleted_file
+
+                blob = project.repository.blob_at(commit.id, diff.new_path)
+                if blob.size > git_hook.max_file_size.megabytes
+                  return build_status_object(false, "File #{diff.new_path.inspect} is larger than the allowed size of #{git_hook.max_file_size} MB")
+                end
+              end
+            end
           end
         end
       end

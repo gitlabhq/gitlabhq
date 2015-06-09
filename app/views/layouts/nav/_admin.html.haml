@@ -40,8 +40,8 @@
       %span
         Hooks
   = nav_link(controller: :git_hooks) do
-    = link_to admin_git_hooks_path, title: 'Git Hooks' do
-      %i.fa.fa-git-square
+    = link_to admin_git_hooks_path, title: 'Git Hooks', data: {placement: 'right'} do
+      = icon('git-square fw')
       %span
         Git Hooks
   = nav_link(controller: :background_jobs) do

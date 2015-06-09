@@ -20,7 +20,7 @@ class Admin::GitHooksController < Admin::ApplicationController
 
   def git_hook_params
     params.require(:git_hook).permit(:deny_delete_tag, :delete_branch_regex,
-      :commit_message_regex, :force_push_regex, :author_email_regex, :member_check, :file_name_regex)
+      :commit_message_regex, :force_push_regex, :author_email_regex, :member_check, :file_name_regex, :max_file_size)
   end
 
   def git_hook

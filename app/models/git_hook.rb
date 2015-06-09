@@ -16,6 +16,10 @@ class GitHook < ActiveRecord::Base
   end
 
   def commit_validation?
-    commit_message_regex.present? || author_email_regex.present? || member_check || file_name_regex.present?
+    commit_message_regex.present? || 
+      author_email_regex.present? || 
+      member_check || 
+      file_name_regex.present? || 
+      max_file_size > 0
   end
 end

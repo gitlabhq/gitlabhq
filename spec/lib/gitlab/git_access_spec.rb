@@ -294,5 +294,23 @@ describe Gitlab::GitAccess do
         access.git_hook_check(user, project, 'refs/heads/master', '913c66a37', '33f3729a4').allowed?.should be_truthy
       end
     end
+
+    describe "max file size check" do
+      before do
+        allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(1.5.megabytes.to_i)
+      end
+      
+      it "returns false when size is too large" do
+        project.create_git_hook
+        project.git_hook.update(max_file_size: 1)
+        access.git_hook_check(user, project, 'refs/heads/master', 'cfe32cf6', '913c66a37').allowed?.should be_falsey
+      end
+
+      it "returns true when size is allowed" do
+        project.create_git_hook
+        project.git_hook.update(max_file_size: 2)
+        access.git_hook_check(user, project, 'refs/heads/master', 'cfe32cf6', '913c66a37').allowed?.should be_truthy
+      end
+    end
   end
 end
