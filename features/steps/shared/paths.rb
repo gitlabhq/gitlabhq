@@ -227,6 +227,10 @@ module SharedPaths
     visit namespace_project_merge_requests_path(@project.namespace, @project)
   end
 
+  step "I visit my project's members page" do
+    visit namespace_project_project_members_path(@project.namespace, @project)
+  end
+
   step "I visit my project's wiki page" do
     visit namespace_project_wiki_path(@project.namespace, @project, :home)
   end

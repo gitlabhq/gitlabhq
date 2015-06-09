@@ -13,11 +13,6 @@
         = icon('pencil-square-o')
         %span
           Project Settings
-    = nav_link(controller: [:project_members, :teams]) do
-      = link_to namespace_project_project_members_path(@project.namespace, @project), title: 'Members', class: 'team-tab tab', data: {placement: 'right'} do
-        = icon('users')
-        %span
-          Members
     = nav_link(controller: :deploy_keys) do
       = link_to namespace_project_deploy_keys_path(@project.namespace, @project), title: 'Deploy Keys', data: {placement: 'right'} do
         = icon('key')
