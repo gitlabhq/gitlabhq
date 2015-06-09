@@ -47,7 +47,7 @@ module Backup
       directory = connection.directories.get(remote_directory)
 
       if directory.files.create(key: tar_file, body: File.open(tar_file), public: false,
-          multipart_chunk_size: GitlabCi.config.backup.upload.multipart_chunk_size)
+          multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size)
         $progress.puts "done".green
       else
         puts "uploading backup to #{remote_directory} failed".red
