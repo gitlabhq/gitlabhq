@@ -256,7 +256,6 @@ production: &base
     #   #  http://docs.aws.amazon.com/AmazonS3/latest/dev/uploadobjusingmpu.html
     #   multipart_chunk_size: 104857600
 
-
   ## GitLab Shell settings
   gitlab_shell:
     path: /home/git/gitlab-shell/
