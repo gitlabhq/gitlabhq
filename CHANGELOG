@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.12.0 (unreleased)
   - Fix timeout when rendering file with thousands of lines.
+  - Add "Remember me" checkbox to LDAP signin form.
   - Don't notify users mentioned in code blocks or blockquotes.
   - Omit link to generate labels if user does not have access to create them (Stan Hu)
   - Show warning when a comment will add 10 or more people to the discussion.
