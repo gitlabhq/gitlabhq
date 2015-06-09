@@ -4,7 +4,11 @@ module Gitlab
 
     def initialize(project_id, query, repository_ref = nil)
       @project = Project.find(project_id)
-      @repository_ref = repository_ref
+      @repository_ref = if repository_ref.present?
+                          repository_ref
+                        else
+                          nil
+                        end
       @query = Shellwords.shellescape(query) if query.present?
     end
 
