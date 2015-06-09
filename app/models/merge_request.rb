@@ -35,7 +35,7 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
 
   has_one :merge_request_diff, dependent: :destroy
-  has_many :approves, dependent: :destroy
+  has_many :approves, class_name: 'Approve', dependent: :destroy
 
   after_create :create_merge_request_diff
   after_update :update_merge_request_diff
