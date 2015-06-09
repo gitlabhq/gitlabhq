@@ -17,10 +17,8 @@
 - if @show_merge_controls
   .automerge_widget.can_be_merged.hide
     .clearfix
-      - if @merge_request.requires_approve?
-        = form_for [:approve, @project.namespace.becomes(Namespace), @project, @merge_request], method: :post do |f|
-          %p This merge request must be approved by #{pluralize(@merge_request.approvals_left, 'user')} before it can be merged
-          = f.submit "Approve Merge Request", class: "btn btn-reopen"
+      - if @merge_request.requires_approve? && !@merge_request.approved?
+        = render 'projects/merge_requests/show/approve'
       - else
         = form_for [:automerge, @project.namespace.becomes(Namespace), @project, @merge_request], remote: true, method: :post do |f|
           .accept-merge-holder.clearfix.js-toggle-container

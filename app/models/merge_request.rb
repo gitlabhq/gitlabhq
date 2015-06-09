@@ -419,8 +419,18 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def requires_approve?
-    return false if approvals_required.zero?
+    !approvals_required.zero?
+  end
 
-    approvals_required > approvals.count
+  def approved?
+    approvals.count >= approvals_required
+  end
+
+  def approved_by?(user)
+    approved_by_users.include?(user)
+  end
+
+  def approved_by_users
+    approvals.map(&:user)
   end
 end
