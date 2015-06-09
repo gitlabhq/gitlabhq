@@ -10,27 +10,27 @@
   %ul.project-settings-nav.sidebar-subnav
     = nav_link(path: 'projects#edit') do
       = link_to edit_project_path(@project), title: 'Project', class: 'stat-tab tab', data: {placement: 'right'} do
-        = icon('pencil-square-o')
+        = icon('pencil-square-o fw')
         %span
           Project Settings
     = nav_link(controller: :deploy_keys) do
       = link_to namespace_project_deploy_keys_path(@project.namespace, @project), title: 'Deploy Keys', data: {placement: 'right'} do
-        = icon('key')
+        = icon('key fw')
         %span
           Deploy Keys
     = nav_link(controller: :hooks) do
       = link_to namespace_project_hooks_path(@project.namespace, @project), title: 'Web Hooks', data: {placement: 'right'} do
-        = icon('link')
+        = icon('link fw')
         %span
           Web Hooks
     = nav_link(controller: :services) do
       = link_to namespace_project_services_path(@project.namespace, @project), title: 'Services', data: {placement: 'right'} do
-        = icon('cogs')
+        = icon('cogs fw')
         %span
           Services
     = nav_link(controller: :protected_branches) do
       = link_to namespace_project_protected_branches_path(@project.namespace, @project), title: 'Protected Branches', data: {placement: 'right'} do
-        = icon('lock')
+        = icon('lock fw')
         %span
           Protected branches
 
