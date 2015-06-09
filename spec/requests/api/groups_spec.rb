@@ -13,7 +13,7 @@ describe API::API, api: true  do
   before do
     group1.add_owner(user1)
     group2.add_owner(user2)
-    group1.ldap_group_links.create cn: 'ldap-group', group_access: Gitlab::Access::MASTER
+    group1.ldap_group_links.create cn: 'ldap-group', group_access: Gitlab::Access::MASTER, provider: 'ldap'
   end
 
   describe "GET /groups" do
@@ -39,6 +39,7 @@ describe API::API, api: true  do
         ldap_group_link = json_response.first['ldap_group_links'].first
         expect(ldap_group_link['cn']).to eq(group1.ldap_cn)
         expect(ldap_group_link['group_access']).to eq(group1.ldap_access)
+        expect(ldap_group_link['provider']).to eq('ldap')
       end
     end
 

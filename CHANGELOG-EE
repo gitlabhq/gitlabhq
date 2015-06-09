@@ -9,6 +9,8 @@ v 7.11.4
 
 v 7.11.3
   - Fixed an issue with git annex
+v 7.12.0 (unreleased)
+  - Add API support for adding and removing LDAP group links
 
 v 7.11.2
   - Fixed license upload and verification mechanism

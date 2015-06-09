@@ -176,3 +176,43 @@ Parameters:
 
 - `id` (required) - The ID or path of a user group
 - `user_id` (required) - The ID of a group member
+
+### Add LDAP group link
+
+Adds LDAP group link
+
+```
+POST /groups/:id/ldap_group_links
+```
+
+Parameters:
+
+- `id` (required) - The ID of a group
+- `cn` (required) - The CN of a LDAP group
+- `group_access` (required) - Minimum access level for members of the LDAP group
+- `provider` (optional) - LDAP provider for the LDAP group (when using several providers) 
+
+### Delete LDAP group link
+
+Deletes a LDAP group link
+
+```
+DELETE /groups/:id/ldap_group_links/:cn
+```
+
+Parameters:
+
+- `id` (required) - The ID of a group
+- `cn` (required) - The CN of a LDAP group
+
+Deletes a LDAP group link for a specific LDAP provider
+
+```
+DELETE /groups/:id/ldap_group_links/:provider/:cn
+```
+
+Parameters:
+
+- `id` (required) - The ID of a group
+- `cn` (required) - The CN of a LDAP group
+- `provider` (required) - Name of a LDAP provider
