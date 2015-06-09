@@ -75,6 +75,15 @@
                 = f.text_area :merge_requests_template, placeholder: "This MR should have: *", disabled: !@project.merge_requests_enabled, class: "form-control", rows: 3
 
             .form-group
+              = f.label :approvals_before_merge, class: 'control-label' do
+                Merge request approvals
+              .col-sm-10
+                = f.number_field :approvals_before_merge, disabled: !@project.merge_requests_enabled, class: "form-control"
+                .help-block
+                  How many users should approve merge request before it can be accepted. 0 - approval is disabled
+
+
+            .form-group
               = f.label :wiki_enabled, "Wiki", class: 'control-label'
               .col-sm-10
                 .checkbox

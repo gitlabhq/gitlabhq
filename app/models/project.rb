@@ -152,6 +152,7 @@ class Project < ActiveRecord::Base
   validate :avatar_type,
     if: ->(project) { project.avatar.present? && project.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
+  validates :approvals_before_merge, numericality: true, allow_blank: true
 
   mount_uploader :avatar, AvatarUploader
 

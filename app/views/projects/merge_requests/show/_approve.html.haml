@@ -2,7 +2,7 @@
   - unless @merge_request.approved_by?(current_user)
     .pull-left
       = form_for [:approve, @project.namespace.becomes(Namespace), @project, @merge_request], method: :post do |f|
-        = f.submit "Approve Merge Request", class: "btn btn-reopen"
+        = f.submit "Approve Merge Request", class: "btn btn-reopen approve-btn"
 
   - if @merge_request.approvals.any?
     .pull-left.approved-by-users

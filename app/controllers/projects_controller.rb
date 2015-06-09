@@ -151,7 +151,7 @@ class ProjectsController < ApplicationController
   end
 
   def markdown_preview
-    text = params[:text] 
+    text = params[:text]
 
     ext = Gitlab::ReferenceExtractor.new(@project, current_user)
     ext.analyze(text)
@@ -188,7 +188,8 @@ class ProjectsController < ApplicationController
       :name, :path, :description, :issues_tracker, :tag_list,
       :issues_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id, :default_branch,
       :wiki_enabled, :merge_requests_template, :visibility_level, :merge_requests_rebase_enabled,
-      :import_url, :last_activity_at, :namespace_id, :avatar, :merge_requests_rebase_default
+      :import_url, :last_activity_at, :namespace_id, :avatar, :merge_requests_rebase_default,
+      :approvals_before_merge
     )
   end
 
