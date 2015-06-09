@@ -3,6 +3,7 @@ v 7.12 (Unreleased)
   - Enhance LDAP group synchronization to check also for member attributes that only contain "uid=<username>"
   - Enhance LDAP group synchronization to check also for submember attributes
   - Prevent LDAP group sync from removing a group's last owner 
+  - Project setting: approve merge request by N users before accept
 
 v 7.11.4
   - no changes specific to EE
