@@ -26,6 +26,6 @@
     = f.label :approvals_before_merge, class: 'control-label' do
       Approvals required
     .col-sm-10
-      = f.number_field :approvals_before_merge, class: "form-control"
+      = f.number_field :approvals_before_merge, class: "form-control", min: 0
       .help-block
         How many users should approve merge request before it can be accepted. 0 - approval is disabled
