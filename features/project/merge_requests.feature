@@ -220,3 +220,9 @@ Feature: Project Merge Requests
     When I click the "Target branch" dropdown
     And I select a new target branch
     Then I should see new target branch changes
+
+  Scenario: I approve merge request
+    Given merge request 'Bug NS-04' must be approved
+    Given I click link "Bug NS-04"
+    And I click link "Approve"
+    Then I should see approved merge request "Bug NS-04"

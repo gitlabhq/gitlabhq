@@ -329,6 +329,21 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     page.should have_content 'Target branch changed from master to feature'
   end
 
+  step 'merge request \'Bug NS-04\' must be approved' do
+    merge_request = MergeRequest.find_by!(title: "Bug NS-04")
+    project = merge_request.target_project
+    project.approvals_before_merge = 1
+    project.save!
+  end
+
+  step 'I click link "Approve"' do
+    click_button 'Approve Merge Request'
+  end
+
+  step 'I should see approved merge request "Bug NS-04"' do
+    page.should have_button("Accept Merge Request")
+  end
+
   def merge_request
     @merge_request ||= MergeRequest.find_by!(title: "Bug NS-05")
   end

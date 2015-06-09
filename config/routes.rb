@@ -491,6 +491,7 @@ Gitlab::Application.routes.draw do
             get :automerge_check
             get :ci_status
             post :toggle_subscription
+            post :approve
           end
 
           collection do
