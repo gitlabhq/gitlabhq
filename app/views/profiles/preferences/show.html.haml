@@ -60,7 +60,7 @@
       Behavior
     .panel-body
       .form-group
-        = f.label :dashboard, class: 'control-label'
+        = f.label :dashboard, 'Default Dashboard', class: 'control-label'
         .col-sm-10
           = f.select :dashboard, dashboard_choices, {}, class: 'form-control'
           %p.help-block.hint
