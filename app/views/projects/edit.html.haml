@@ -6,7 +6,7 @@
         Project settings
       %hr
       .panel-body
-        = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit_project form-horizontal" }, authenticity_token: true do |f|
+        = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit_project form-horizontal fieldset-form" }, authenticity_token: true do |f|
 
           %fieldset
             .form-group.project_name_holder
@@ -41,32 +41,40 @@
             %legend
               Features:
             .form-group
-              = f.label :issues_enabled, "Issues", class: 'control-label'
-              .col-sm-10
+              .col-sm-offset-2.col-sm-10
                 .checkbox
-                  = f.check_box :issues_enabled
-                  %span.descr Lightweight issue tracking system for this project
+                  = f.label :issues_enabled do
+                    = f.check_box :issues_enabled
+                    %strong Issues
+                    %br
+                    %span.descr Lightweight issue tracking system for this project
 
             .form-group
-              = f.label :merge_requests_enabled, "Merge Requests", class: 'control-label'
-              .col-sm-10
+              .col-sm-offset-2.col-sm-10
                 .checkbox
-                  = f.check_box :merge_requests_enabled
-                  %span.descr Submit changes to be merged upstream.
+                  = f.label :merge_requests_enabled do
+                    = f.check_box :merge_requests_enabled
+                    %strong Merge Requests
+                    %br
+                    %span.descr Submit changes to be merged upstream.
 
             .form-group
-              = f.label :wiki_enabled, "Wiki", class: 'control-label'
-              .col-sm-10
+              .col-sm-offset-2.col-sm-10
                 .checkbox
-                  = f.check_box :wiki_enabled
-                  %span.descr Pages for project documentation
+                  = f.label :wiki_enabled do
+                    = f.check_box :wiki_enabled
+                    %strong Wiki
+                    %br
+                    %span.descr Pages for project documentation
 
             .form-group
-              = f.label :snippets_enabled, "Snippets", class: 'control-label'
-              .col-sm-10
+              .col-sm-offset-2.col-sm-10
                 .checkbox
-                  = f.check_box :snippets_enabled
-                  %span.descr Share code pastes with others out of git repository
+                  = f.label :snippets_enabled do
+                    = f.check_box :snippets_enabled
+                    %strong Snippets
+                    %br
+                    %span.descr Share code pastes with others out of git repository
 
           %fieldset.features
             %legend
