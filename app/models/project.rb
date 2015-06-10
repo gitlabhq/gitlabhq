@@ -244,7 +244,7 @@ class Project < ActiveRecord::Base
       ]
 
       token_sql = build_token_sql(columns)
-      records = joins(:namespace).where('projects.archived = ?', false)
+      records = joins(:namespace)
 
       if query.present?
         query.downcase.split(' ').each do |token|
@@ -252,7 +252,7 @@ class Project < ActiveRecord::Base
         end
 
         # returning an ActiveRelation of records
-        records
+        records.where('projects.archived = ?', false)
       else
         # returning an empty array
         # in case of a nil/empty query
