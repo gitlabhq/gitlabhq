@@ -2,6 +2,9 @@
 %html{ lang: "en"}
   = render "layouts/head"
   %body{class: "#{app_theme}", :'data-page' => body_data_page}
+    / Ideally this would be inside the head, but turbolinks only evaluates page-specific JS in the body.
+    = yield :scripts_body_top
+    
     - if current_user
       = render "layouts/header/default", title: header_title
     - else

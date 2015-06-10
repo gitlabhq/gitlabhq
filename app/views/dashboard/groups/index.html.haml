@@ -2,7 +2,7 @@
 %h3.page-title
   Group Membership
   - if current_user.can_create_group?
-    %span.pull-right
+    %span.pull-right.hidden-xs
       = link_to new_group_path, class: "btn btn-new" do
         %i.fa.fa-plus
         New Group
@@ -17,7 +17,7 @@
     - @group_members.each do |group_member|
       - group = group_member.group
       %li
-        .pull-right
+        .pull-right.hidden-xs
           - if can?(current_user, :admin_group, group)
             = link_to edit_group_path(group), class: "btn-sm btn btn-grouped" do
               %i.fa.fa-cogs
@@ -27,7 +27,7 @@
             %i.fa.fa-sign-out
             Leave
 
-        = image_tag group_icon(group), class: "avatar s40 avatar-tile"
+        = image_tag group_icon(group), class: "avatar s40 avatar-tile hidden-xs"
         = link_to group, class: 'group-name' do
           %strong= group.name
 

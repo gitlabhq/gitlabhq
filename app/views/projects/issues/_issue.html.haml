@@ -4,7 +4,7 @@
       = check_box_tag dom_id(issue,"selected"), nil, false, 'data-id' => issue.id, class: "selected_issue", disabled: !can?(current_user, :modify_issue, issue)
 
   .issue-title
-    %span.str-truncated
+    %span.issue-title-text
       = link_to_gfm issue.title, issue_path(issue), class: "row_title"
     .issue-labels
       - issue.labels.each do |label|

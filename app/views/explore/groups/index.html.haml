@@ -4,7 +4,7 @@
     = form_tag explore_groups_path, method: :get, class: 'form-inline form-tiny' do |f|
       = hidden_field_tag :sort, @sort
       .form-group
-        = search_field_tag :search, params[:search], placeholder: "Filter by name", class: "form-control search-text-input input-mn-300", id: "groups_search"
+        = search_field_tag :search, params[:search], placeholder: "Filter by name", class: "form-control search-text-input", id: "groups_search"
       .form-group
         = button_tag 'Search', class: "btn btn-primary wide"
 

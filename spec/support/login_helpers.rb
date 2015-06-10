@@ -21,8 +21,6 @@ module LoginHelpers
 
   # Requires Javascript driver.
   def logout
-    within '.logout-holder' do
-      find(:css, ".fa.fa-sign-out").click
-    end
+    find(:css, ".logout").click
   end
 end

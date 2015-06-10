@@ -202,9 +202,17 @@ header {
       }
     }
 
-    li {
-      display: table-cell;
-      width: 1%;
+    .navbar-collapse {
+      padding-left: 5px;
+
+      li {
+        display: table-cell;
+        width: 1%;
+
+        a {
+          margin-left: 8px !important;
+        }
+      }
     }
   }
 }

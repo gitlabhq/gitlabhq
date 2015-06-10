@@ -67,7 +67,13 @@ module Mentionable
 
   # Create a cross-reference Note for each GFM reference to another Mentionable found in +mentionable_text+.
   def create_cross_references!(p = project, a = author, without = [])
-    refs = references(p) - without
+    refs = references(p)
+
+    # We're using this method instead of Array diffing because that requires
+    # both of the object's `hash` values to be the same, which may not be the
+    # case for otherwise identical Commit objects.
+    refs.reject! { |ref| without.include?(ref) }
+
     refs.each do |ref|
       Note.create_cross_reference_note(ref, local_reference, a)
     end
