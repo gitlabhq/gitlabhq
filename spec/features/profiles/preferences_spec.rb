@@ -5,22 +5,25 @@ describe 'Profile > Preferences' do
 
   before do
     login_as(user)
+    visit profile_preferences_path
   end
 
   describe 'User changes their application theme', js: true do
     let(:default) { Gitlab::Themes.default }
     let(:theme)   { Gitlab::Themes.by_id(5) }
 
-    before do
-      visit profile_preferences_path
-    end
-
     it 'creates a flash message' do
       choose "user_theme_id_#{theme.id}"
 
-      within('.flash-container') do
-        expect(page).to have_content('Preferences saved.')
-      end
+      expect_preferences_saved_message
+    end
+
+    it 'updates their preference' do
+      choose "user_theme_id_#{theme.id}"
+
+      visit page.current_path
+
+      expect(page).to have_checked_field("user_theme_id_#{theme.id}")
     end
 
     it 'reflects the changes immediately' do
@@ -33,9 +36,45 @@ describe 'Profile > Preferences' do
     end
   end
 
-  describe 'User changes their syntax highlighting theme' do
-    before do
-      visit profile_preferences_path
+  describe 'User changes their syntax highlighting theme', js: true do
+    it 'creates a flash message' do
+      choose 'user_color_scheme_id_5'
+
+      expect_preferences_saved_message
+    end
+
+    it 'updates their preference' do
+      choose 'user_color_scheme_id_5'
+
+      visit page.current_path
+
+      expect(page).to have_checked_field('user_color_scheme_id_5')
+    end
+  end
+
+  describe 'User changes their default dashboard' do
+    it 'creates a flash message' do
+      select 'Starred Projects', from: 'user_dashboard'
+      click_button 'Save'
+
+      expect_preferences_saved_message
+    end
+
+    it 'updates their preference' do
+      select 'Starred Projects', from: 'user_dashboard'
+      click_button 'Save'
+
+      click_link 'Dashboard'
+      expect(page.current_path).to eq starred_dashboard_projects_path
+
+      click_link 'Your Projects'
+      expect(page.current_path).to eq dashboard_path
+    end
+  end
+
+  def expect_preferences_saved_message
+    within('.flash-container') do
+      expect(page).to have_content('Preferences saved.')
     end
   end
 end
