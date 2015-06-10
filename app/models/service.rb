@@ -135,6 +135,7 @@ class Service < ActiveRecord::Base
       gemnasium
       gitlab_ci
       hipchat
+      letschat
       irker
       jira
       pivotaltracker

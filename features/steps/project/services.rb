@@ -18,6 +18,7 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
     expect(page).to have_content 'JetBrains TeamCity'
     expect(page).to have_content 'Asana'
     expect(page).to have_content 'Irker (IRC gateway)'
+    expect(page).to have_content 'LetsChat'
   end
 
   step 'I click gitlab-ci service link' do
@@ -74,6 +75,22 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
 
   step 'I should see pivotaltracker service settings saved' do
     expect(find_field('Token').value).to eq 'verySecret'
+  end
+
+  step 'I click letschat service link' do
+    click_link 'LetsChat'
+  end
+
+  step 'I fill letschat settings' do
+    check 'Active'
+    fill_in 'Room', with: 'gitlab_custom'
+    fill_in 'Token', with: 'secretCustom'
+    fill_in 'Server', with: 'https://chat.example.com'
+    click_button 'Save'
+  end
+
+  step 'I should see letschat service settings saved' do
+    find_field('Server').value.should == 'https://chat.example.com'
   end
 
   step 'I click Flowdock service link' do

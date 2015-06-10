@@ -77,6 +77,7 @@ class Project < ActiveRecord::Base
   has_one :irker_service, dependent: :destroy
   has_one :pivotaltracker_service, dependent: :destroy
   has_one :hipchat_service, dependent: :destroy
+  has_one :letschat_service, dependent: :destroy
   has_one :flowdock_service, dependent: :destroy
   has_one :assembla_service, dependent: :destroy
   has_one :asana_service, dependent: :destroy
