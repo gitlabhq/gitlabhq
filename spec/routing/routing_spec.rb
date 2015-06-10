@@ -204,11 +204,9 @@ end
 #                dashboard GET    /dashboard(.:format)                dashboard#show
 #         dashboard_issues GET    /dashboard/issues(.:format)         dashboard#issues
 # dashboard_merge_requests GET    /dashboard/merge_requests(.:format) dashboard#merge_requests
-#                     root        /                                   dashboard#show
 describe DashboardController, "routing" do
   it "to #index" do
     expect(get("/dashboard")).to route_to('dashboard#show')
-    expect(get("/")).to route_to('dashboard#show')
   end
 
   it "to #issues" do
@@ -219,6 +217,14 @@ describe DashboardController, "routing" do
     expect(get("/dashboard/merge_requests")).to route_to('dashboard#merge_requests')
   end
 end
+
+#                     root        /                                   root#show
+describe RootController, 'routing' do
+  it 'to #show' do
+    expect(get('/')).to route_to('root#show')
+  end
+end
+
 
 #        new_user_session GET    /users/sign_in(.:format)               devise/sessions#new
 #            user_session POST   /users/sign_in(.:format)               devise/sessions#create
