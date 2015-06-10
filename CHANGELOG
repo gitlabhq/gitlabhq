@@ -54,6 +54,8 @@ v 7.12.0 (unreleased)
   - Improve group removing logic
   - Trigger create-hooks on backup restore task
   - Add option to automatically link omniauth and LDAP identities
+  - Rename "Design" profile settings page to "Preferences".
+  - Allow users to customize their default Dashboard page.
 
 v 7.11.4
   - Fix missing bullets when creating lists
