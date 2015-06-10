@@ -26,6 +26,7 @@ class Profiles::PreferencesController < Profiles::ApplicationController
   def preferences_params
     params.require(:user).permit(
       :color_scheme_id,
+      :dashboard,
       :theme_id
     )
   end
