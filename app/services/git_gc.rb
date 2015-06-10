@@ -16,8 +16,6 @@ class GitGc
       satellite = "#{Gitlab.config.satellites.path}" + '/' + path
       git_gc(satellite) if File.exists?(satellite)
     end
-    # Next round
-    GitGcWorker.schedule(now + 7 * 24 * 3600 * "#{Gitlab.config.git.gc_interval_in_weeks}".to_i)
   end
 
   private

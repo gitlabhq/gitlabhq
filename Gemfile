@@ -124,6 +124,7 @@ gem 'acts-as-taggable-on', '~> 3.4'
 gem 'slim'
 gem 'sinatra', require: nil
 gem 'sidekiq', '~> 3.3'
+gem 'whenever', :require => false
 
 # HTTP requests
 gem "httparty"

@@ -101,6 +101,7 @@ GEM
     celluloid (0.16.0)
       timers (~> 4.0.0)
     charlock_holmes (0.6.9.4)
+    chronic (0.10.2)
     cliver (0.3.2)
     coderay (1.1.0)
     coercible (1.0.0)
@@ -666,6 +667,8 @@ GEM
       addressable (>= 2.2.7)
       crack (>= 0.3.2)
     websocket-driver (0.3.3)
+    whenever (0.9.4)
+      chronic (>= 0.6.3)
     wikicloth (0.8.1)
       builder
       expression_parser
@@ -815,4 +818,5 @@ DEPENDENCIES
   version_sorter
   virtus
   webmock
+  whenever
   wikicloth (= 0.8.1)
