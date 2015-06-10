@@ -51,8 +51,24 @@ describe Profiles::PreferencesController do
       end
     end
 
-    context 'on unsuccessful update' do
-      # TODO (rspeicher): Can this happen?
+    context 'on failed update' do
+      it 'sets the flash' do
+        expect(user).to receive(:update_attributes).and_return(false)
+
+        go
+
+        expect(flash[:alert]).to eq('Failed to save preferences.')
+      end
+    end
+
+    context 'on invalid dashboard setting' do
+      it 'sets the flash' do
+        prefs = {dashboard: 'invalid'}
+
+        go params: prefs
+
+        expect(flash[:alert]).to match(/\AFailed to save preferences \(.+\)\.\z/)
+      end
     end
 
     context 'as js' do

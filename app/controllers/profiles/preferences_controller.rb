@@ -5,10 +5,15 @@ class Profiles::PreferencesController < Profiles::ApplicationController
   end
 
   def update
-    if @user.update_attributes(preferences_params)
-      flash[:notice] = 'Preferences saved.'
-    else
-      # TODO (rspeicher): There's no validation on these values, so can it fail?
+    begin
+      if @user.update_attributes(preferences_params)
+        flash[:notice] = 'Preferences saved.'
+      else
+        flash[:alert] = 'Failed to save preferences.'
+      end
+    rescue ArgumentError => e
+      # Raised when `dashboard` is given an invalid value.
+      flash[:alert] = "Failed to save preferences (#{e.message})."
     end
 
     respond_to do |format|
