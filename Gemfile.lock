@@ -75,7 +75,7 @@ GEM
       ruby_parser (~> 3.5.0)
       sass (~> 3.0)
       terminal-table (~> 1.4)
-    browser (0.7.2)
+    browser (0.8.0)
     builder (3.2.2)
     byebug (3.2.0)
       columnize (~> 0.8)
@@ -680,7 +680,7 @@ DEPENDENCIES
   binding_of_caller
   bootstrap-sass (~> 3.0)
   brakeman
-  browser
+  browser (~> 0.8.0)
   byebug
   cal-heatmap-rails (~> 0.0.1)
   capybara (~> 2.2.1)
