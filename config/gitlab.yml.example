@@ -252,6 +252,9 @@ production: &base
     #     aws_secret_access_key: 'secret123'
     #   # The remote 'directory' to store your backups. For S3, this would be the bucket name.
     #   remote_directory: 'my.s3.bucket'
+    #   # Use multipart uploads when file size reaches 100MB, see
+    #   #  http://docs.aws.amazon.com/AmazonS3/latest/dev/uploadobjusingmpu.html
+    #   multipart_chunk_size: 104857600
 
   ## GitLab Shell settings
   gitlab_shell:
