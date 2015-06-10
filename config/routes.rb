@@ -293,7 +293,7 @@ Gitlab::Application.routes.draw do
     get '/users/auth/:provider/omniauth_error' => 'omniauth_callbacks#omniauth_error', as: :omniauth_error
   end
 
-  root to: "dashboard#show"
+  root to: "root#show"
 
   #
   # Project Area
