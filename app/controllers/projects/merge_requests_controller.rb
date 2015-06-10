@@ -4,7 +4,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :automerge, :automerge_check,
-    :ci_status, :toggle_subscription
+    :ci_status, :toggle_subscription, :approve
   ]
   before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits]
   before_action :validates_merge_request, only: [:show, :diffs, :commits]
@@ -193,6 +193,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request.toggle_subscription(current_user)
 
     render nothing: true
+  end
+
+  def approve
+    @approval = @merge_request.approvals.new
+    @approval.user = current_user
+    @approval.save
+
+    redirect_to merge_request_path(@merge_request)
   end
 
   protected

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150605131047) do
+ActiveRecord::Schema.define(version: 20150609125332) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,6 +47,13 @@ ActiveRecord::Schema.define(version: 20150605131047) do
     t.text     "restricted_signup_domains"
     t.boolean  "user_oauth_applications",      default: true
     t.string   "after_sign_out_path"
+  end
+
+  create_table "approvals", force: true do |t|
+    t.integer  "merge_request_id", null: false
+    t.integer  "user_id",          null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "audit_events", force: true do |t|
@@ -434,6 +441,7 @@ ActiveRecord::Schema.define(version: 20150605131047) do
     t.string   "import_type"
     t.string   "import_source"
     t.boolean  "merge_requests_rebase_default", default: true
+    t.integer  "approvals_before_merge",        default: 0,        null: false
   end
 
   add_index "projects", ["created_at", "id"], name: "index_projects_on_created_at_and_id", using: :btree

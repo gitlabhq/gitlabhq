@@ -17,34 +17,37 @@
 - if @show_merge_controls
   .automerge_widget.can_be_merged.hide
     .clearfix
-      = form_for [:automerge, @project.namespace.becomes(Namespace), @project, @merge_request], remote: true, method: :post do |f|
-        .accept-merge-holder.clearfix.js-toggle-container
-          .accept-action
-            = f.submit "Accept Merge Request", class: "btn btn-create accept_merge_request"
-          - if can_remove_branch?(@merge_request.source_project, @merge_request.source_branch) && !@merge_request.for_fork?
-            .accept-control.checkbox
-              = label_tag :should_remove_source_branch, class: "remove_source_checkbox" do
-                = check_box_tag :should_remove_source_branch
-                Remove source-branch
-          - if @merge_request.target_project.merge_requests_rebase_enabled && can_rebase?(@merge_request.target_project, @merge_request.target_branch)
-            .accept-control.remove_branch_holder
-              = label_tag :should_rebase, class: "checkbox" do
-                = check_box_tag :should_rebase, "1", @project.merge_requests_rebase_default
-                Rebase before merge
-          .accept-control
-            = link_to "#", class: "modify-merge-commit-link js-toggle-button", title: "Modify merge commit message" do
-              %i.fa.fa-edit
-              Modify commit message
-          .js-toggle-content.hide.prepend-top-20
-            = render 'shared/commit_message_container', params: params,
-                text: @merge_request.merge_commit_message,
-                rows: 14, hint: true
+      - if @merge_request.requires_approve? && !@merge_request.approved?
+        = render 'projects/merge_requests/show/approve'
+      - else
+        = form_for [:automerge, @project.namespace.becomes(Namespace), @project, @merge_request], remote: true, method: :post do |f|
+          .accept-merge-holder.clearfix.js-toggle-container
+            .accept-action
+              = f.submit "Accept Merge Request", class: "btn btn-create accept_merge_request"
+            - if can_remove_branch?(@merge_request.source_project, @merge_request.source_branch) && !@merge_request.for_fork?
+              .accept-control.checkbox
+                = label_tag :should_remove_source_branch, class: "remove_source_checkbox" do
+                  = check_box_tag :should_remove_source_branch
+                  Remove source-branch
+            - if @merge_request.target_project.merge_requests_rebase_enabled && can_rebase?(@merge_request.target_project, @merge_request.target_branch)
+              .accept-control.remove_branch_holder
+                = label_tag :should_rebase, class: "checkbox" do
+                  = check_box_tag :should_rebase, "1", @project.merge_requests_rebase_default
+                  Rebase before merge
+            .accept-control
+              = link_to "#", class: "modify-merge-commit-link js-toggle-button", title: "Modify merge commit message" do
+                %i.fa.fa-edit
+                Modify commit message
+            .js-toggle-content.hide.prepend-top-20
+              = render 'shared/commit_message_container', params: params,
+                  text: @merge_request.merge_commit_message,
+                  rows: 14, hint: true
 
-        %br
-        .light
-          If you want to merge this request manually, you can use the
-          %strong
-            = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
+          %br
+          .light
+            If you want to merge this request manually, you can use the
+            %strong
+              = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
 
 
   .automerge_widget.no_satellite.hide

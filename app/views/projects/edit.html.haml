@@ -55,26 +55,6 @@
                   %span.descr Submit changes to be merged upstream.
 
             .form-group
-              = f.label :merge_requests_rebase_enabled, "Merge Requests Rebase", class: 'control-label'
-              .col-sm-10
-                .checkbox
-                  = f.check_box :merge_requests_rebase_enabled
-                  %span.descr Allows rebasing of merge requests before merging.
-
-              .rebase-default
-                .col-sm-10.col-sm-offset-3
-                  .checkbox
-                    = f.check_box :merge_requests_rebase_default
-                    %span.descr Enabled by default
-
-            .form-group
-              = f.label :merge_requests_template, class: 'control-label' do
-                Merge request template
-                %span.light (optional)
-              .col-sm-10
-                = f.text_area :merge_requests_template, placeholder: "This MR should have: *", disabled: !@project.merge_requests_enabled, class: "form-control", rows: 3
-
-            .form-group
               = f.label :wiki_enabled, "Wiki", class: 'control-label'
               .col-sm-10
                 .checkbox
@@ -87,6 +67,8 @@
                 .checkbox
                   = f.check_box :snippets_enabled
                   %span.descr Share code pastes with others out of git repository
+
+          = render 'merge_request_settings', f: f
 
           %fieldset.features
             %legend
