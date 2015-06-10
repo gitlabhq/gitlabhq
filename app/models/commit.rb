@@ -172,10 +172,8 @@ class Commit
     @raw.send(m, *args, &block)
   end
 
-  def respond_to?(method)
-    return true if @raw.respond_to?(method)
-
-    super
+  def respond_to_missing?(method, include_private = false)
+    @raw.respond_to?(method, include_private) || super
   end
 
   # Truncate sha to 8 characters

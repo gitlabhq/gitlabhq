@@ -1,7 +1,5 @@
 module Gitlab
   module GitoriousImport
-    GITORIOUS_HOST = "https://gitorious.org"
-
     class Client
       attr_reader :repo_list
 
