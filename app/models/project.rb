@@ -214,13 +214,50 @@ class Project < ActiveRecord::Base
       joins(:issues, :notes, :merge_requests).order('issues.created_at, notes.created_at, merge_requests.created_at DESC')
     end
 
+    def build_token_sql(columns)
+      columns.map do |column|
+        "LOWER(#{column}) LIKE :token"
+      end.join(' OR ')
+    end
+
+    # Example:
+    # Project.search("hello world") runs the following sql:
+    #
+    # SELECT "projects".* FROM "projects"
+    # INNER JOIN "namespaces"
+    # ON "namespaces"."id" = "projects"."namespace_id"
+    # WHERE (projects.archived = 'f')
+    # AND (LOWER(projects.name) LIKE '%hello%'
+    #   OR LOWER(projects.description) LIKE '%hello%'
+    #   OR LOWER(projects.path) LIKE '%hello%'
+    #   OR LOWER(namespaces.name) LIKE '%hello%')
+    # AND (LOWER(projects.name) LIKE '%world%'
+    #   OR LOWER(projects.description) LIKE '%world%'
+    #   OR LOWER(projects.path) LIKE '%world%'
+    #   OR LOWER(namespaces.name) LIKE '%world%')
     def search(query)
-      joins(:namespace).where('projects.archived = ?', false).
-        where('LOWER(projects.name) LIKE :query OR
-              LOWER(projects.path) LIKE :query OR
-              LOWER(namespaces.name) LIKE :query OR
-              LOWER(projects.description) LIKE :query',
-              query: "%#{query.try(:downcase)}%")
+      columns = [
+        :'projects.name',
+        :'projects.description',
+        :'projects.path',
+        :'namespaces.name'
+      ]
+
+      token_sql = build_token_sql(columns)
+      records = joins(:namespace).where('projects.archived = ?', false)
+
+      if query.present?
+        query.downcase.split(' ').each do |token|
+          records = records.where(token_sql, token: "%#{token}%")
+        end
+
+        # returning an ActiveRelation of records
+        records
+      else
+        # returning an empty array
+        # in case of a nil/empty query
+        Kaminari.paginate_array []
+      end
     end
 
     def search_by_title(query)
