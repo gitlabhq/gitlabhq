@@ -26,8 +26,8 @@ module PreferencesHelper
     orig = User.dashboards.keys
 
     choices = [
-      ['Projects (default)', orig[0]],
-      ['Starred Projects',   orig[1]]
+      ['Your Projects (default)', orig[0]],
+      ['Starred Projects',        orig[1]]
     ]
 
     if orig.size != choices.size

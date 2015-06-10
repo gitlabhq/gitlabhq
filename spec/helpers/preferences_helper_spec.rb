@@ -42,8 +42,8 @@ describe PreferencesHelper do
     it 'provides better option descriptions' do
       choices = dashboard_choices
 
-      expect(choices[0]).to eq ['Projects (default)', 'projects']
-      expect(choices[1]).to eq ['Starred Projects',   'stars']
+      expect(choices[0]).to eq ['Your Projects (default)', 'projects']
+      expect(choices[1]).to eq ['Starred Projects',        'stars']
     end
   end
 
