@@ -1,4 +1,4 @@
-- if @allowed_to_merge
+- if @merge_request.can_be_merged_by?(current_user)
   %h4
     This merge request contains merge conflicts that must be resolved.
     You can try it manually on the
