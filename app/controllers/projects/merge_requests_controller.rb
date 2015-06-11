@@ -142,8 +142,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @allowed_to_merge = allowed_to_merge?
     closes_issues
 
-    render partial: "projects/merge_requests/widget/show.html.haml",
-      layout: false
+    render partial: "projects/merge_requests/widget/show.html.haml", layout: false
   end
 
   def automerge
