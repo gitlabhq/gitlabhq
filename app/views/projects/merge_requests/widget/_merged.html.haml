@@ -24,3 +24,18 @@
           %i.fa.fa-spinner.fa-spin
           &nbsp;
           Removing source branch '#{@merge_request.source_branch}'. Please wait. Page will be automatically reloaded. &nbsp;
+
+        :coffeescript
+          $('.remove_source_branch').on 'click', ->
+            $('.remove_source_branch_widget').hide()
+            $('.remove_source_branch_in_progress').show()
+
+          $(".remove_source_branch").on "ajax:success", (e, data, status, xhr) ->
+            location.reload()
+
+          $(".remove_source_branch").on "ajax:error", (e, data, status, xhr) ->
+            $('.remove_source_branch_widget').hide()
+            $('.remove_source_branch_in_progress').hide()
+            $('.remove_source_branch_widget.failed').show()
+
+

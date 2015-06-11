@@ -155,10 +155,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     else
       @status = false
     end
-
-    respond_to do |format|
-      format.js
-    end
   end
 
   def branch_from

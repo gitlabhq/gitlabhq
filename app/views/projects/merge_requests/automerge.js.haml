@@ -1,6 +1,6 @@
 - if @status
   :plain
-    merge_request.getMergeStatus();
+    merge_request_widget.mergeInProgress();
 - else
   :plain
     $('.mr-widget-body').html("#{escape_javascript(render('projects/merge_requests/widget/open/reload'))}");
