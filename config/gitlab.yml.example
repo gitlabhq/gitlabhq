@@ -4,8 +4,12 @@
 #
 ###########################  NOTE  #####################################
 # This file should not receive new settings. All configuration options #
-# are being moved to ApplicationSetting model!                         #
+# that do not require application restart are being moved to           #
+# ApplicationSetting model!                                            #
+# If you change this file in a Merge Request, please also create       #
+# a MR on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests  #
 ########################################################################
+#
 #
 # How to use:
 # 1. Copy file as gitlab.yml
@@ -149,7 +153,7 @@ production: &base
         allow_username_or_email_login: false
 
         # To maintain tight control over the number of active users on your GitLab installation,
-        # enable this setting to keep new users blocked until they have been cleared by the admin 
+        # enable this setting to keep new users blocked until they have been cleared by the admin
         # (default: false).
         block_auto_created_users: false
 
