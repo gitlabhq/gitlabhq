@@ -6,15 +6,15 @@ It takes just a few steps to import your existing Bitbucket projects to GitLab. 
 
 * Click on "New project"
 
-![New project in GitLab](bitbucket_importer/bitbucket_import_new_project.jpg)
+![New project in GitLab](bitbucket_importer/bitbucket_import_new_project.png)
 
 * Click on the "Bitbucket" button
 
-![Bitbucket](bitbucket_importer/bitbucket_import_select_bitbucket.jpg)
+![Bitbucket](bitbucket_importer/bitbucket_import_select_bitbucket.png)
 
 * Grant GitLab access to your Bitbucket account
 
-![Grant access](bitbucket_importer/bitbucket_import_grant_access.jpg)
+![Grant access](bitbucket_importer/bitbucket_import_grant_access.png)
 
 * Click on the projects that you'd like to import or "Import all projects"
 
