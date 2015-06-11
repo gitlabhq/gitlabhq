@@ -139,7 +139,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @merge_request.check_if_can_be_merged
     end
 
-    render json: { merge_status: @merge_request.automerge_status }
+    @allowed_to_merge = allowed_to_merge?
+    closes_issues
+
+    render partial: "projects/merge_requests/widget/show.html.haml",
+      layout: false
   end
 
   def automerge
@@ -150,6 +154,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @status = true
     else
       @status = false
+    end
+
+    respond_to do |format|
+      format.js
     end
   end
 

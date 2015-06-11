@@ -5,7 +5,7 @@
       = render 'projects/merge_requests/widget/open/archived'
     - elsif !@project.satellite.exists?
       = render 'projects/merge_requests/widget/open/no_satellite'
-    - elsif @commits.blank?
+    - elsif @merge_request.commits.blank?
       = render 'projects/merge_requests/widget/open/nothing'
     - elsif @merge_request.branch_missing?
       = render 'projects/merge_requests/widget/open/missing_branch'

@@ -27,13 +27,10 @@ class @MergeRequest
     this.bindEvents()
     this.activateTabFromPath()
 
-    this.initMergeWidget()
     this.$('.show-all-commits').on 'click', =>
       this.showAllCommits()
 
     modal = $('#modal_merge_info').modal(show: false)
-
-    disableButtonIfEmptyField '#commit_message', '.accept_merge_request'
 
     # Prevent duplicate event bindings
     @disableTaskList()
@@ -63,14 +60,11 @@ class @MergeRequest
     $(".context .inline-update").on "change", "#merge_request_assignee_id", ->
       $(this).submit()
 
-  initMergeWidget: ->
-    this.showState( @opts.current_status )
+  getMergeStatus: ->
+    $.get @opts.url_to_automerge_check, (data) ->
+      $('.mr-state-widget').replaceWith(data)
 
-    if this.$('.automerge_widget').length and @opts.check_enable
-      $.get @opts.url_to_automerge_check, (data) =>
-        this.showState( data.merge_status )
-      , 'json'
-
+  getCiStatus: ->
     if @opts.ci_enable
       $.get @opts.url_to_ci_check, (data) =>
         this.showCiState data.status
@@ -91,10 +85,6 @@ class @MergeRequest
       # Skip tab-persisting behavior on MergeRequests#new
       unless @opts.action == 'new'
         @setCurrentAction(tab_action)
-
-    this.$('.accept_merge_request').on 'click', ->
-      $('.automerge_widget.can_be_merged').hide()
-      $('.merge-in-progress').show()
 
     this.$('.remove_source_branch').on 'click', ->
       $('.remove_source_branch_widget').hide()
@@ -157,10 +147,6 @@ class @MergeRequest
     # See https://github.com/rails/turbolinks/issues/363
     history.replaceState {turbolinks: true, url: new_state}, '', new_state
 
-  showState: (state) ->
-    $('.automerge_widget').hide()
-    $('.automerge_widget.' + state).show()
-
   showCiState: (state) ->
     $('.ci_widget').hide()
     allowed_states = ["failed", "canceled", "running", "pending", "success"]
@@ -197,11 +183,6 @@ class @MergeRequest
   showAllCommits: ->
     this.$('.first-commits').remove()
     this.$('.all-commits').removeClass 'hide'
-
-  alreadyOrCannotBeMerged: ->
-    this.$('.automerge_widget').hide()
-    this.$('.merge-in-progress').hide()
-    this.$('.automerge_widget.already_cannot_be_merged').show()
 
   setMergeButtonClass: (css_class) ->
     $('.accept_merge_request').removeClass("btn-create").addClass(css_class)

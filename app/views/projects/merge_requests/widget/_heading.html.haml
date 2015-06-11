@@ -32,3 +32,7 @@
     .ci_widget.ci-error{style: "display:none"}
       = icon("times")
       %span Cannot connect to the CI server. Please check your settings and try again.
+
+  :coffeescript
+    $ ->
+      merge_request.getCiStatus()

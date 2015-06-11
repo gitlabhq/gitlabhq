@@ -1,4 +1,5 @@
 = form_for [:automerge, @project.namespace.becomes(Namespace), @project, @merge_request], remote: true, method: :post do |f|
+  = hidden_field_tag :authenticity_token, form_authenticity_token
   .accept-merge-holder.clearfix.js-toggle-container
     .accept-action
       = f.submit "Accept Merge Request", class: "btn btn-create accept_merge_request"
@@ -22,3 +23,8 @@
     %strong
       = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
 
+  :coffeescript
+    disableButtonIfEmptyField '#commit_message', '.accept_merge_request'
+
+    $('.accept_merge_request').on 'click', ->
+      $('.mr-widget-body').html("#{escape_javascript(render('projects/merge_requests/widget/open/mip'))}")
