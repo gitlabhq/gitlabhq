@@ -1,14 +1,6 @@
 .clearfix
   - unless @merge_request.approved_by?(current_user)
-    .pull-left
+    .append-bottom-10
       = form_for [:approve, @project.namespace.becomes(Namespace), @project, @merge_request], method: :post do |f|
         = f.submit "Approve Merge Request", class: "btn btn-reopen approve-btn"
-
-  - if @merge_request.approvals.any?
-    .pull-left.approved-by-users
-      Approved by
-      - @merge_request.approved_by_users.each do |user|
-        = link_to_member(@project, user, name: false, size: 24)
-
-%br
 %p This merge request must be approved by #{pluralize(@merge_request.approvals_required, 'user')} before it can be merged
