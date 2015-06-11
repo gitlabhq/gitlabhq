@@ -198,7 +198,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       merge!: true,
     )
 
-    within '.can_be_merged' do
+    within '.mr-state-widget' do
       click_button "Accept Merge Request"
     end
   end
