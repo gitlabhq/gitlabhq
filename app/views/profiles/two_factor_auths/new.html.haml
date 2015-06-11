@@ -2,8 +2,10 @@
 
 %h2.page-title Two-Factor Authentication (2FA)
 %p
-  Download the Google Authenticator application from App Store for iOS or
-  Google Play for Android and scan this code.
+  Download the Google Authenticator application from App Store for iOS or Google
+  Play for Android and scan this code.
+
+  More information is available in the #{link_to('documentation', help_page_path('workflow', 'two_factor_authentication'))}.
 
 %hr
 
@@ -12,10 +14,9 @@
     .alert.alert-danger
       = @error
   .form-group
-    .col-sm-2
-    .col-sm-2
+    .col-lg-2.col-lg-offset-2
       = raw @qr_code
-    .col-sm-8.manual-instructions
+    .col-lg-7.col-lg-offset-1.manual-instructions
       %h3 Can't scan the code?
 
       %p
@@ -33,7 +34,7 @@
         %dd Yes
   .form-group
     = label_tag :pin_code, nil, class: "control-label"
-    .col-sm-10
+    .col-lg-10
       = text_field_tag :pin_code, nil, class: "form-control", required: true, autofocus: true
   .form-actions
     = submit_tag 'Submit', class: 'btn btn-success'

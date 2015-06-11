@@ -45,7 +45,7 @@ storage in a safe place. **Each code can be used only once** to log in to your
 account.
 
 If you lose the recovery codes or just want to generate new ones, you can do so
-from the **Profile Settings** > **Acount** page where you first enabled 2FA.
+from the **Profile Settings** > **Account** page where you first enabled 2FA.
 
 ## Logging in with 2FA Enabled
 
@@ -60,7 +60,7 @@ your phone's application or a recovery code to log in.
 
 1. Log in to your GitLab account.
 1. Go to your **Profile Settings**.
-1. Go to **Acount**.
+1. Go to **Account**.
 1. Click **Disable Two-factor Authentication**.
 
 [Google Authenticator]: https://support.google.com/accounts/answer/1066447?hl=en
