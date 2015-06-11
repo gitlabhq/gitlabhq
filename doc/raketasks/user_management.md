@@ -34,6 +34,16 @@ sudo gitlab-rake gitlab:import:user_to_groups[username@domain.tld]
 bundle exec rake gitlab:import:user_to_groups[username@domain.tld] RAILS_ENV=production
 ```
 
+## Add user as a guest to all groups
+
+```bash
+# omnibus-gitlab
+sudo gitlab-rake gitlab:import:user_to_groups_guest[username@domain.tld]
+
+# installation from source
+bundle exec rake gitlab:import:user_to_groups_guest[username@domain.tld] RAILS_ENV=production
+```
+
 ## Add all users to all groups
 
 Notes:
