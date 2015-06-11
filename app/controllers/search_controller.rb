@@ -4,7 +4,7 @@ class SearchController < ApplicationController
   layout 'search'
 
   def show
-    return if params[:search].nil? || params[:search].blank?
+    return if params[:search].blank?
 
     @search_term = params[:search]
 
