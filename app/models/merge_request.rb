@@ -405,4 +405,12 @@ class MergeRequest < ActiveRecord::Base
 
     locked_at.nil? || locked_at < (Time.now - 1.day)
   end
+
+  def has_ci?
+    source_project.ci_service && commits.any?
+  end
+
+  def branch_missing?
+    !source_branch_exists? || !target_branch_exists?
+  end
 end

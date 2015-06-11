@@ -1,0 +1,20 @@
+- if @show_merge_controls
+  .automerge_widget.can_be_merged.hide
+    .clearfix
+
+  .automerge_widget.cannot_be_merged.hide
+
+    %p
+      %button.btn.disabled{:type => 'button'}
+        %i.fa.fa-warning
+        Accept Merge Request
+      &nbsp;
+      This happens when Git is not able to automatically resolve conflicts between branches.
+
+
+  .automerge_widget.unchecked
+
+  .automerge_widget.already_cannot_be_merged.hide
+    %p
+      %strong This merge request cannot be merged. Try to reload the page.
+

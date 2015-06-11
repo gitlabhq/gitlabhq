@@ -32,7 +32,7 @@
               %li= link_to "Plain Diff",    merge_request_path(@merge_request, format: :diff)
 
     = render "projects/merge_requests/show/how_to_merge"
-    = render "projects/merge_requests/show/state_widget"
+    = render "projects/merge_requests/widget/show.html.haml"
 
   - if @commits.present?
     %ul.nav.nav-tabs.merge-request-tabs
