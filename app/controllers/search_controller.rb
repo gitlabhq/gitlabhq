@@ -4,6 +4,7 @@ class SearchController < ApplicationController
   layout 'search'
 
   def show
+    # See: http://api.rubyonrails.org/classes/Object.html#method-i-blank-3F
     return if params[:search].blank?
 
     @search_term = params[:search]
