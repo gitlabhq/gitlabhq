@@ -51,7 +51,7 @@ namespace :gitlab do
       git_base_path = Gitlab.config.gitlab_shell.repos_path
       all_dirs = Dir.glob(git_base_path + '/*')
 
-      global_projects = Project.where(namespace_id: nil).pluck(:path)
+      global_projects = Project.in_namespace(nil).pluck(:path)
 
       puts git_base_path.yellow
       puts "Looking for global repos to remove... "

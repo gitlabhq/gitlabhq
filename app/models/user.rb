@@ -352,9 +352,11 @@ class User < ActiveRecord::Base
   end
 
   def owned_projects
-    @owned_projects ||= begin
-                          Project.where(namespace_id: owned_groups.pluck(:id).push(namespace.id)).joins(:namespace)
-                        end
+    @owned_projects ||=
+      begin
+        namespace_ids = owned_groups.pluck(:id).push(namespace.id)
+        Project.in_namespace(namespace_ids).joins(:namespace)
+      end
   end
 
   # Team membership in authorized projects
