@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.12.0 (unreleased)
+  - Update oauth button logos for Twitter and Google to recommended assets
   - Update browser gem to version 0.8.0 for IE11 support (Stan Hu)
   - Fix timeout when rendering file with thousands of lines.
   - Add "Remember me" checkbox to LDAP signin form.
