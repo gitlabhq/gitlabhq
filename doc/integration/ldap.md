@@ -313,6 +313,12 @@ But because he is no longer active on the GitLab EE server (he cannot log in!), 
 
 > Now with GitLab 7.5 Enterprise Edition, within 24 hours of John being removed from the LDAP server, his user will also stop being listed as member of any GitLab groups.
 
+
+### Blocked users and Daily sync
+
+If you use Active directory and you block user in AD - user will be automatically blocked in GitLab during next LDAP Sync.
+
+
 ## LDAP Synchronization
 
 LDAP membership is checked for a GitLab user:
