@@ -255,6 +255,22 @@ class SystemNoteService
     notes.count > 0
   end
 
+  # Called when the merge request is approved by user
+  #
+  # noteable - Noteable object
+  # user     - User performing approve
+  #
+  # Example Note text:
+  #
+  #   "Approved by @rspeicher"
+  #
+  # Returns the created Note object
+  def self.approve_mr(noteable, user)
+    body = "Approved by @#{user.username}"
+
+    create_note(noteable: noteable, project: noteable.project, author: user, note: body)
+  end
+
   private
 
   def self.create_note(args = {})

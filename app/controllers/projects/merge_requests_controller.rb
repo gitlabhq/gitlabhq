@@ -200,7 +200,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def approve
     @approval = @merge_request.approvals.new
     @approval.user = current_user
-    @approval.save
+
+    if @approval.save
+      SystemNoteService.approve_mr(@merge_request, current_user)
+    end
 
     redirect_to merge_request_path(@merge_request)
   end
