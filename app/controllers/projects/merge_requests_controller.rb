@@ -139,11 +139,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @merge_request.check_if_can_be_merged
     end
 
-    render json: { merge_status: @merge_request.automerge_status }
+    closes_issues
+
+    render partial: "projects/merge_requests/widget/show.html.haml", layout: false
   end
 
   def automerge
-    return access_denied! unless allowed_to_merge?
+    return access_denied! unless @merge_request.can_be_merged_by?(current_user)
 
     if @merge_request.automergeable?
       AutoMergeWorker.perform_async(@merge_request.id, current_user.id, params)
@@ -252,8 +254,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @commits = @merge_request.commits
 
     @merge_request_diff = @merge_request.merge_request_diff
-    @allowed_to_merge = allowed_to_merge?
-    @show_merge_controls = @merge_request.open? && @commits.any? && @allowed_to_merge
     @source_branch = @merge_request.source_project.repository.find_branch(@merge_request.source_branch).try(:name)
 
     if @merge_request.locked_long_ago?
@@ -262,17 +262,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
-  def allowed_to_merge?
-    allowed_to_push_code?(project, @merge_request.target_branch)
-  end
-
   def invalid_mr
     # Render special view for MR with removed source or target branch
     render 'invalid'
-  end
-
-  def allowed_to_push_code?(project, branch)
-    ::Gitlab::GitAccess.new(current_user, project).can_push_to_branch?(branch)
   end
 
   def merge_request_params

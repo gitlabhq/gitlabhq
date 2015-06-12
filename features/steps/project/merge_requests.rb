@@ -190,6 +190,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'merge request "Bug NS-05" is mergeable' do
+    merge_request.project.satellite.create
     merge_request.mark_as_mergeable
   end
 
@@ -198,7 +199,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       merge!: true,
     )
 
-    within '.can_be_merged' do
+    within '.mr-state-widget' do
       click_button "Accept Merge Request"
     end
   end
