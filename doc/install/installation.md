@@ -88,8 +88,8 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # Download and compile from source
     cd /tmp
-    curl -L --progress https://www.kernel.org/pub/software/scm/git/git-2.1.2.tar.gz | tar xz
-    cd git-2.1.2/
+    curl -L --progress https://www.kernel.org/pub/software/scm/git/git-2.4.3.tar.gz | tar xz
+    cd git-2.4.3/
     ./configure
     make prefix=/usr/local all
 
@@ -195,9 +195,9 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-11-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-12-stable gitlab
 
-**Note:** You can change `7-11-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `7-12-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
