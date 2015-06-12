@@ -29,3 +29,9 @@
         Accepting this merge request will close #{@closes_issues.size == 1 ? 'issue' : 'issues'}
         = succeed '.' do
           != gfm(issues_sentence(@closes_issues))
+
+  - if @merge_request.approvals.any?
+    .mr-widget-footer.approved-by-users
+      Approved by
+      - @merge_request.approved_by_users.each do |user|
+        = link_to_member(@project, user, name: false, size: 24)

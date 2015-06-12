@@ -24,12 +24,6 @@
     %strong
       = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
 
-  - if @merge_request.approvals.any?
-    .approved-by-users
-      Approved by
-      - @merge_request.approved_by_users.each do |user|
-        = link_to_member(@project, user, name: false, size: 24)
-
   :coffeescript
     disableButtonIfEmptyField '#commit_message', '.accept_merge_request'
 
