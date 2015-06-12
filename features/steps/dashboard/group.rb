@@ -17,29 +17,29 @@ class Spinach::Features::DashboardGroup < Spinach::FeatureSteps
   end
 
   step 'I should not see the "Leave" button for group "Owned"' do
-    find(:css, 'li', text: "Owner").should_not have_selector(:css, 'i.fa.fa-sign-out')
+    expect(find(:css, 'li', text: "Owner")).not_to have_selector(:css, 'i.fa.fa-sign-out')
     # poltergeist always confirms popups.
   end
 
   step 'I should not see the "Leave" button for groupr "Guest"' do
-    find(:css, 'li', text: "Guest").should_not have_selector(:css,  'i.fa.fa-sign-out')
+    expect(find(:css, 'li', text: "Guest")).not_to have_selector(:css,  'i.fa.fa-sign-out')
     # poltergeist always confirms popups.
   end
 
   step 'I should see group "Owned" in group list' do
-    page.should have_content("Owned")
+    expect(page).to have_content("Owned")
   end
 
   step 'I should not see group "Owned" in group list' do
-    page.should_not have_content("Owned")
+    expect(page).not_to have_content("Owned")
   end
 
   step 'I should see group "Guest" in group list' do
-    page.should have_content("Guest")
+    expect(page).to have_content("Guest")
   end
 
   step 'I should not see group "Guest" in group list' do
-    page.should_not have_content("Guest")
+    expect(page).not_to have_content("Guest")
   end
 
   step 'I click new group link' do
@@ -53,15 +53,15 @@ class Spinach::Features::DashboardGroup < Spinach::FeatureSteps
   end
 
   step 'I should be redirected to group "Samurai" page' do
-    current_path.should == group_path(Group.find_by(name: 'Samurai'))
+    expect(current_path).to eq group_path(Group.find_by(name: 'Samurai'))
   end
 
   step 'I should see newly created group "Samurai"' do
-    page.should have_content "Samurai"
-    page.should have_content "Tokugawa Shogunate"
+    expect(page).to have_content "Samurai"
+    expect(page).to have_content "Tokugawa Shogunate"
   end
 
   step 'I should see the "Can not leave message"' do
-    page.should have_content "You can not leave Owned group because you're the last owner"
+    expect(page).to have_content "You can not leave Owned group because you're the last owner"
   end
 end

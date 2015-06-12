@@ -24,44 +24,44 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see merge request "Wiki Feature"' do
-    within '.merge-request' do
-      page.should have_content "Wiki Feature"
+    page.within '.merge-request' do
+      expect(page).to have_content "Wiki Feature"
     end
   end
 
   step 'I should see closed merge request "Bug NS-04"' do
     merge_request = MergeRequest.find_by!(title: "Bug NS-04")
-    merge_request.closed?.should be_true
-    page.should have_content "Rejected by"
+    expect(merge_request.closed?).to be_true
+    expect(page).to have_content "Rejected by"
   end
 
   step 'I should see merge request "Bug NS-04"' do
-    page.should have_content "Bug NS-04"
+    expect(page).to have_content "Bug NS-04"
   end
 
   step 'I should see "Bug NS-04" in merge requests' do
-    page.should have_content "Bug NS-04"
+    expect(page).to have_content "Bug NS-04"
   end
 
   step 'I should see "Feature NS-03" in merge requests' do
-    page.should have_content "Feature NS-03"
+    expect(page).to have_content "Feature NS-03"
   end
 
   step 'I should not see "Feature NS-03" in merge requests' do
-    page.should_not have_content "Feature NS-03"
+    expect(page).not_to have_content "Feature NS-03"
   end
 
 
   step 'I should not see "Bug NS-04" in merge requests' do
-    page.should_not have_content "Bug NS-04"
+    expect(page).not_to have_content "Bug NS-04"
   end
 
   step 'I should see that I am subscribed' do
-    find(".subscribe-button span").text.should == "Unsubscribe"
+    expect(find(".subscribe-button span").text).to eq "Unsubscribe"
   end
 
   step 'I should see that I am unsubscribed' do
-    find(".subscribe-button span").should have_content("Subscribe")
+    expect(find(".subscribe-button span")).to have_content("Subscribe")
   end
 
   step 'I click button "Unsubscribe"' do
@@ -113,7 +113,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click on the Changes tab via Javascript' do
-    within '.merge-request-tabs' do
+    page.within '.merge-request-tabs' do
       click_link 'Changes'
     end
 
@@ -121,11 +121,11 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see the proper Inline and Side-by-side links' do
-    buttons = all('#commit-diff-viewtype')
+    buttons = page.all('#commit-diff-viewtype')
     expect(buttons.count).to eq(2)
 
     buttons.each do |b|
-      expect(b['href']).should_not have_content('json')
+      expect(expect(b['href'])).not_to have_content('json')
     end
   end
 
@@ -134,11 +134,11 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click on the commit in the merge request' do
-    within '.merge-request-tabs' do
+    page.within '.merge-request-tabs' do
       click_link 'Commits'
     end
 
-    within '.commits' do
+    page.within '.commits' do
       click_link Commit.truncate_sha(sample_commit.id)
     end
   end
@@ -164,24 +164,24 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see a discussion has started on diff' do
-    page.should have_content "#{current_user.name} started a discussion"
-    page.should have_content sample_commit.line_code_path
-    page.should have_content "Line is wrong"
+    expect(page).to have_content "#{current_user.name} started a discussion"
+    expect(page).to have_content sample_commit.line_code_path
+    expect(page).to have_content "Line is wrong"
   end
 
   step 'I should see a discussion has started on commit diff' do
-    page.should have_content "#{current_user.name} started a discussion on commit"
-    page.should have_content sample_commit.line_code_path
-    page.should have_content "Line is wrong"
+    expect(page).to have_content "#{current_user.name} started a discussion on commit"
+    expect(page).to have_content sample_commit.line_code_path
+    expect(page).to have_content "Line is wrong"
   end
 
   step 'I should see a discussion has started on commit' do
-    page.should have_content "#{current_user.name} started a discussion on commit"
-    page.should have_content "One comment to rule them all"
+    expect(page).to have_content "#{current_user.name} started a discussion on commit"
+    expect(page).to have_content "One comment to rule them all"
   end
 
   step 'merge request is mergeable' do
-    page.should have_button 'Accept Merge Request'
+    expect(page).to have_button 'Accept Merge Request'
   end
 
   step 'I modify merge commit message' do
@@ -199,14 +199,14 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       merge!: true,
     )
 
-    within '.mr-state-widget' do
+    page.within '.mr-state-widget' do
       click_button "Accept Merge Request"
     end
   end
 
   step 'I should see merged request' do
-    within '.issue-box' do
-      page.should have_content "Accepted"
+    page.within '.issue-box' do
+      expect(page).to have_content "Accepted"
     end
   end
 
@@ -215,72 +215,72 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see reopened merge request "Bug NS-04"' do
-    within '.issue-box' do
-      page.should have_content "Open"
+    page.within '.issue-box' do
+      expect(page).to have_content "Open"
     end
   end
 
   step 'I click link "Hide inline discussion" of the second file' do
-    within '.files [id^=diff]:nth-child(2)' do
+    page.within '.files [id^=diff]:nth-child(2)' do
       find('.js-toggle-diff-comments').click
     end
   end
 
   step 'I click link "Show inline discussion" of the second file' do
-    within '.files [id^=diff]:nth-child(2)' do
+    page.within '.files [id^=diff]:nth-child(2)' do
       find('.js-toggle-diff-comments').click
     end
   end
 
   step 'I should not see a comment like "Line is wrong" in the second file' do
-    within '.files [id^=diff]:nth-child(2)' do
-      page.should_not have_visible_content "Line is wrong"
+    page.within '.files [id^=diff]:nth-child(2)' do
+      expect(page).not_to have_visible_content "Line is wrong"
     end
   end
 
   step 'I should see a comment like "Line is wrong" in the second file' do
-    within '.files [id^=diff]:nth-child(2) .note-body > .note-text' do
-      page.should have_visible_content "Line is wrong"
+    page.within '.files [id^=diff]:nth-child(2) .note-body > .note-text' do
+      expect(page).to have_visible_content "Line is wrong"
     end
   end
 
   step 'I should not see a comment like "Line is wrong here" in the second file' do
-    within '.files [id^=diff]:nth-child(2)' do
-      page.should_not have_visible_content "Line is wrong here"
+    page.within '.files [id^=diff]:nth-child(2)' do
+      expect(page).not_to have_visible_content "Line is wrong here"
     end
   end
 
   step 'I should see a comment like "Line is wrong here" in the second file' do
-    within '.files [id^=diff]:nth-child(2) .note-body > .note-text' do
-      page.should have_visible_content "Line is wrong here"
+    page.within '.files [id^=diff]:nth-child(2) .note-body > .note-text' do
+      expect(page).to have_visible_content "Line is wrong here"
     end
   end
 
   step 'I leave a comment like "Line is correct" on line 12 of the first file' do
     init_diff_note_first_file
 
-    within(".js-discussion-note-form") do
+    page.within(".js-discussion-note-form") do
       fill_in "note_note", with: "Line is correct"
       click_button "Add Comment"
     end
 
-    within ".files [id^=diff]:nth-child(1) .note-body > .note-text" do
-      page.should have_content "Line is correct"
+    page.within ".files [id^=diff]:nth-child(1) .note-body > .note-text" do
+      expect(page).to have_content "Line is correct"
     end
   end
 
   step 'I leave a comment like "Line is wrong" on line 39 of the second file' do
     init_diff_note_second_file
 
-    within(".js-discussion-note-form") do
+    page.within(".js-discussion-note-form") do
       fill_in "note_note", with: "Line is wrong on here"
       click_button "Add Comment"
     end
   end
 
   step 'I should still see a comment like "Line is correct" in the first file' do
-    within '.files [id^=diff]:nth-child(1) .note-body > .note-text' do
-      page.should have_visible_content "Line is correct"
+    page.within '.files [id^=diff]:nth-child(1) .note-body > .note-text' do
+      expect(page).to have_visible_content "Line is correct"
     end
   end
 
@@ -297,8 +297,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see comments on the side-by-side diff page' do
-    within '.files [id^=diff]:nth-child(1) .parallel .note-body > .note-text' do
-      page.should have_visible_content "Line is correct"
+    page.within '.files [id^=diff]:nth-child(1) .parallel .note-body > .note-text' do
+      expect(page).to have_visible_content "Line is correct"
     end
   end
 
@@ -316,8 +316,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see new target branch changes' do
-    page.should have_content 'From fix into feature'
-    page.should have_content 'Target branch changed from master to feature'
+    expect(page).to have_content 'From fix into feature'
+    expect(page).to have_content 'Target branch changed from master to feature'
   end
 
   def merge_request
@@ -329,12 +329,12 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   def leave_comment(message)
-    within(".js-discussion-note-form") do
+    page.within(".js-discussion-note-form") do
       fill_in "note_note", with: message
       click_button "Add Comment"
     end
 
-    page.should have_content message
+    expect(page).to have_content message
   end
 
   def init_diff_note_first_file

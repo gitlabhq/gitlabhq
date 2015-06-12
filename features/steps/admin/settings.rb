@@ -11,9 +11,9 @@ class Spinach::Features::AdminSettings < Spinach::FeatureSteps
   end
 
   step 'I should see application settings saved' do
-    current_application_settings.gravatar_enabled.should be_false
-    current_application_settings.home_page_url.should == 'https://about.gitlab.com/'
-    page.should have_content 'Application settings saved successfully'
+    expect(current_application_settings.gravatar_enabled).to be_false
+    expect(current_application_settings.home_page_url).to eq 'https://about.gitlab.com/'
+    expect(page).to have_content 'Application settings saved successfully'
   end
 
   step 'I click on "Service Templates"' do
@@ -41,18 +41,18 @@ class Spinach::Features::AdminSettings < Spinach::FeatureSteps
   end
 
   step 'I should see service template settings saved' do
-    page.should have_content 'Application settings saved successfully'
+    expect(page).to have_content 'Application settings saved successfully'
   end
 
   step 'I should see all checkboxes checked' do
-    all('input[type=checkbox]').each do |checkbox|
-      checkbox.should be_checked
+    page.all('input[type=checkbox]').each do |checkbox|
+      expect(checkbox).to be_checked
     end
   end
 
   step 'I should see Slack settings saved' do
-    find_field('Webhook').value.should eq 'http://localhost'
-    find_field('Username').value.should eq 'test_user'
-    find_field('Channel').value.should eq '#test_channel'
+    expect(find_field('Webhook').value).to eq 'http://localhost'
+    expect(find_field('Username').value).to eq 'test_user'
+    expect(find_field('Channel').value).to eq '#test_channel'
   end
 end

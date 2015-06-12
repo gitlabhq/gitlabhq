@@ -92,7 +92,7 @@ module SharedPaths
   end
 
   step 'I should be redirected to the dashboard groups page' do
-    current_path.should == dashboard_groups_path
+    expect(current_path).to eq dashboard_groups_path
   end
 
   step 'I visit dashboard starred projects page' do
@@ -292,11 +292,11 @@ module SharedPaths
   end
 
   step 'I am on the new file page' do
-    current_path.should eq(namespace_project_create_blob_path(@project.namespace, @project, root_ref))
+    expect(current_path).to eq(namespace_project_create_blob_path(@project.namespace, @project, root_ref))
   end
 
   step 'I am on the ".gitignore" edit file page' do
-    current_path.should eq(namespace_project_edit_blob_path(
+    expect(current_path).to eq(namespace_project_edit_blob_path(
       @project.namespace, @project, File.join(root_ref, '.gitignore')))
   end
 
@@ -459,6 +459,6 @@ module SharedPaths
   # ----------------------------------------
 
   step 'page status code should be 404' do
-    status_code.should == 404
+    expect(status_code).to eq 404
   end
 end

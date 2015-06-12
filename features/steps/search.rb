@@ -24,35 +24,35 @@ class Spinach::Features::Search < Spinach::FeatureSteps
   end
 
   step 'I click "Issues" link' do
-    within '.search-filter' do
+    page.within '.search-filter' do
       click_link 'Issues'
     end
   end
 
   step 'I click project "Shop" link' do
-    within '.project-filter' do
+    page.within '.project-filter' do
       click_link project.name_with_namespace
     end
   end
 
   step 'I click "Merge requests" link' do
-    within '.search-filter' do
+    page.within '.search-filter' do
       click_link 'Merge requests'
     end
   end
 
   step 'I click "Wiki" link' do
-    within '.search-filter' do
+    page.within '.search-filter' do
       click_link 'Wiki'
     end
   end
 
   step 'I should see "Shop" project link' do
-    page.should have_link "Shop"
+    expect(page).to have_link "Shop"
   end
 
   step 'I should see code results for project "Shop"' do
-    page.should have_content 'Update capybara, rspec-rails, poltergeist to recent versions'
+    expect(page).to have_content 'Update capybara, rspec-rails, poltergeist to recent versions'
   end
 
   step 'I search for "Contibuting"' do
@@ -71,15 +71,15 @@ class Spinach::Features::Search < Spinach::FeatureSteps
   end
 
   step 'I should see "Foo" link in the search results' do
-    find(:css, '.search-results').should have_link 'Foo'
+    expect(find(:css, '.search-results')).to have_link 'Foo'
   end
 
   step 'I should not see "Bar" link in the search results' do
-    find(:css, '.search-results').should_not have_link 'Bar'
+    expect(find(:css, '.search-results')).not_to have_link 'Bar'
   end
 
   step 'I should see "test_wiki" link in the search results' do
-    find(:css, '.search-results').should have_link 'test_wiki.md'
+    expect(find(:css, '.search-results')).to have_link 'test_wiki.md'
   end
 
   step 'project has Wiki content' do

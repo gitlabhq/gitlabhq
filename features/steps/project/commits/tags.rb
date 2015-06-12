@@ -4,8 +4,8 @@ class Spinach::Features::ProjectCommitsTags < Spinach::FeatureSteps
   include SharedPaths
 
   step 'I should see "Shop" all tags list' do
-    page.should have_content "Tags"
-    page.should have_content "v1.0.0"
+    expect(page).to have_content "Tags"
+    expect(page).to have_content "v1.0.0"
   end
 
   step 'I click new tag link' do
@@ -37,37 +37,37 @@ class Spinach::Features::ProjectCommitsTags < Spinach::FeatureSteps
   end
 
   step 'I should see new tag created' do
-    page.should have_content 'v7.0'
+    expect(page).to have_content 'v7.0'
   end
 
   step 'I should see new an error that tag is invalid' do
-    page.should have_content 'Tag name invalid'
+    expect(page).to have_content 'Tag name invalid'
   end
 
   step 'I should see new an error that tag ref is invalid' do
-    page.should have_content 'Invalid reference name'
+    expect(page).to have_content 'Invalid reference name'
   end
 
   step 'I should see new an error that tag already exists' do
-    page.should have_content 'Tag already exists'
+    expect(page).to have_content 'Tag already exists'
   end
 
   step "I delete tag 'v1.1.0'" do
-    within '.tags' do
+    page.within '.tags' do
       first('.btn-remove').click
       sleep 0.05
     end
   end
 
   step "I should not see tag 'v1.1.0'" do
-    within '.tags' do
-      all(visible: true).should_not have_content 'v1.1.0'
+    page.within '.tags' do
+      expect(page.all(visible: true)).not_to have_content 'v1.1.0'
     end
   end
 
   step 'I delete all tags' do
-    within '.tags' do
-      all('.btn-remove').each do |remove|
+    page.within '.tags' do
+      page.all('.btn-remove').each do |remove|
         remove.click
         sleep 0.05
       end
@@ -75,8 +75,8 @@ class Spinach::Features::ProjectCommitsTags < Spinach::FeatureSteps
   end
 
   step 'I should see tags info message' do
-    within '.tags' do
-      page.should have_content 'Repository has no tags yet.'
+    page.within '.tags' do
+      expect(page).to have_content 'Repository has no tags yet.'
     end
   end
 end
