@@ -1,7 +1,7 @@
 %div
   %h4
-    Requires #{pluralize(@merge_request.approvals_left, 'approval')}
-  %p Each merge request in this project must be approved by #{pluralize(@merge_request.approvals_required, 'user')} before it can be accepted
+    Requires #{pluralize(@merge_request.approvals_left, 'more approval')}
+  %p Each merge request in this project must be approved by #{pluralize(@merge_request.approvals_required, 'person')} before it can be accepted.
   - unless @merge_request.approved_by?(current_user)
     .append-bottom-10
       = form_for [:approve, @project.namespace.becomes(Namespace), @project, @merge_request], method: :post do |f|
