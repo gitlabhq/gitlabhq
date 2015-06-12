@@ -36,9 +36,7 @@ describe DeployKeysProject do
         it "doesn't destroy the deploy key" do
           subject.destroy
 
-          expect {
-            deploy_key.reload
-          }.not_to raise_error(ActiveRecord::RecordNotFound)
+          expect { deploy_key.reload }.not_to raise_error
         end
       end
 
@@ -63,9 +61,7 @@ describe DeployKeysProject do
       it "doesn't destroy the deploy key" do
         subject.destroy
 
-        expect {
-          deploy_key.reload
-        }.not_to raise_error(ActiveRecord::RecordNotFound)
+        expect { deploy_key.reload }.not_to raise_error
       end
     end
   end

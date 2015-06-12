@@ -69,14 +69,13 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I visit big commit page' do
-    Commit::DIFF_SAFE_FILES = 20
+    stub_const('Commit::DIFF_SAFE_FILES', 20)
     visit namespace_project_commit_path(@project.namespace, @project, sample_big_commit.id)
   end
 
   step 'I see big commit warning' do
     page.should have_content sample_big_commit.message
     page.should have_content "Too many changes"
-    Commit::DIFF_SAFE_FILES = 100
   end
 
   step 'I visit a commit with an image that changed' do

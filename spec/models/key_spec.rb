@@ -26,8 +26,8 @@ describe Key do
   describe "Validation" do
     it { is_expected.to validate_presence_of(:title) }
     it { is_expected.to validate_presence_of(:key) }
-    it { is_expected.to ensure_length_of(:title).is_within(0..255) }
-    it { is_expected.to ensure_length_of(:key).is_within(0..5000) }
+    it { is_expected.to validate_length_of(:title).is_within(0..255) }
+    it { is_expected.to validate_length_of(:key).is_within(0..5000) }
   end
 
   describe "Methods" do

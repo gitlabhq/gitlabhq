@@ -1,4 +1,5 @@
 require 'task_list'
+require 'task_list/filter'
 
 # Contains functionality for objects that can have task lists in their
 # descriptions.  Task list items can be added with Markdown like "* [x] Fix

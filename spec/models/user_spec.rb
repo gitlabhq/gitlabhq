@@ -96,7 +96,7 @@ describe User do
     it { is_expected.to allow_value(0).for(:projects_limit) }
     it { is_expected.not_to allow_value(-1).for(:projects_limit) }
 
-    it { is_expected.to ensure_length_of(:bio).is_within(0..255) }
+    it { is_expected.to validate_length_of(:bio).is_within(0..255) }
 
     describe 'email' do
       it 'accepts info@example.com' do

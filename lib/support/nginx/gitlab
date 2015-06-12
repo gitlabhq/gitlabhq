@@ -1,8 +1,14 @@
 ## GitLab
-## Contributors: randx, yin8086, sashkab, orkoden, axilleas, bbodenmiller, DouweM
 ##
 ## Lines starting with two hashes (##) are comments with information.
 ## Lines starting with one hash (#) are configuration parameters that can be uncommented.
+##
+##################################
+##        CONTRIBUTING          ##
+##################################
+##
+## If you change this file in a Merge Request, please also create
+## a Merge Request on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests
 ##
 ##################################
 ##        CHUNKED TRANSFER      ##

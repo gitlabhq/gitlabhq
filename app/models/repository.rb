@@ -163,10 +163,8 @@ class Repository
     end
   end
 
-  def respond_to?(method)
-    return true if raw_repository.respond_to?(method)
-
-    super
+  def respond_to_missing?(method, include_private = false)
+    raw_repository.respond_to?(method, include_private) || super
   end
 
   def blob_at(sha, path)

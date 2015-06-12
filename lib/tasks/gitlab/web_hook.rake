@@ -51,11 +51,11 @@ namespace :gitlab do
     if namespace_path.blank?
       Project
     elsif namespace_path == '/'
-      Project.where(namespace_id: nil)
+      Project.in_namespace(nil)
     else
       namespace = Namespace.where(path: namespace_path).first
       if namespace
-        Project.where(namespace_id: namespace.id)
+        Project.in_namespace(namespace.id)
       else
         puts "Namespace not found: #{namespace_path}".red
         exit 2

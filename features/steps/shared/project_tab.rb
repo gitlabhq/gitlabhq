@@ -28,6 +28,10 @@ module SharedProjectTab
     ensure_active_main_tab('Issues')
   end
 
+  step 'the active main tab should be Members' do
+    ensure_active_main_tab('Members')
+  end
+
   step 'the active main tab should be Merge Requests' do
     ensure_active_main_tab('Merge Requests')
   end

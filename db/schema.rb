@@ -40,11 +40,11 @@ ActiveRecord::Schema.define(version: 20150609125332) do
     t.boolean  "twitter_sharing_enabled",      default: true
     t.text     "help_text"
     t.text     "restricted_visibility_levels"
-    t.boolean  "version_check_enabled",        default: true
     t.integer  "max_attachment_size",          default: 10,   null: false
     t.integer  "default_project_visibility"
     t.integer  "default_snippet_visibility"
     t.text     "restricted_signup_domains"
+    t.boolean  "version_check_enabled",        default: true
     t.boolean  "user_oauth_applications",      default: true
     t.string   "after_sign_out_path"
   end
@@ -579,12 +579,12 @@ ActiveRecord::Schema.define(version: 20150609125332) do
     t.string   "bitbucket_access_token"
     t.string   "bitbucket_access_token_secret"
     t.string   "location"
+    t.string   "public_email",                  default: "",    null: false
     t.string   "encrypted_otp_secret"
     t.string   "encrypted_otp_secret_iv"
     t.string   "encrypted_otp_secret_salt"
     t.boolean  "otp_required_for_login"
     t.text     "otp_backup_codes"
-    t.string   "public_email",                  default: "",    null: false
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
