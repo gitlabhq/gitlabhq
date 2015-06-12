@@ -334,21 +334,24 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     merge_request = MergeRequest.find_by!(title: "Bug NS-04")
     project = merge_request.target_project
     project.approvals_before_merge = 1
+    project.ensure_satellite_exists
     project.save!
   end
 
   step 'I click link "Approve"' do
-    click_button 'Approve Merge Request'
+    within '.mr-state-widget' do
+      click_button 'Approve Merge Request'
+    end
   end
 
   step 'I should not see merge button' do
-    within '.can_be_merged' do
+    within '.mr-state-widget' do
       page.should_not have_button("Accept Merge Request")
     end
   end
 
   step 'I should see approved merge request "Bug NS-04"' do
-    within '.can_be_merged' do
+    within '.mr-state-widget' do
       page.should have_button("Accept Merge Request")
     end
   end

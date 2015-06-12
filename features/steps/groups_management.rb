@@ -24,7 +24,6 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
 
   step 'I go to "Open" project members page' do
     click_link 'Sourcing / Open'
-    click_link 'Settings'
     click_link 'Members'
   end
 
