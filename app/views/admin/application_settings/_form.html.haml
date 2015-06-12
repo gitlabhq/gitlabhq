@@ -84,6 +84,11 @@
       .col-sm-10
         = f.number_field :max_attachment_size, class: 'form-control'
     .form-group
+      = f.label :session_expire_delay, 'Session duration (minutes)', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :session_expire_delay, class: 'form-control'
+        %span.help-block#session_expire_delay_help_block GitLab restart is required to apply changes        
+    .form-group
       = f.label :restricted_signup_domains, 'Restricted domains for sign-ups', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_area :restricted_signup_domains_raw, placeholder: 'domain.com', class: 'form-control'

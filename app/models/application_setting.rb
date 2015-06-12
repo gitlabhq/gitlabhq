@@ -15,6 +15,7 @@
 #  twitter_sharing_enabled      :boolean          default(TRUE)
 #  restricted_visibility_levels :text
 #  max_attachment_size          :integer          default(10), not null
+#  session_expire_delay       :integer          default(10080), not null
 #  default_project_visibility   :integer
 #  default_snippet_visibility   :integer
 #  restricted_signup_domains    :text
@@ -26,6 +27,10 @@ class ApplicationSetting < ActiveRecord::Base
   serialize :restricted_visibility_levels
   serialize :restricted_signup_domains, Array
   attr_accessor :restricted_signup_domains_raw
+  
+  validates :session_expire_delay, 
+  	presence: true, 
+  	numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :home_page_url,
     allow_blank: true,
@@ -61,6 +66,7 @@ class ApplicationSetting < ActiveRecord::Base
       sign_in_text: Settings.extra['sign_in_text'],
       restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
       max_attachment_size: Settings.gitlab['max_attachment_size'],
+      session_expire_delay: Settings.gitlab['session_expire_delay'],
       default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       restricted_signup_domains: Settings.gitlab['restricted_signup_domains']

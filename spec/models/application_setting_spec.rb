@@ -15,6 +15,7 @@
 #  twitter_sharing_enabled      :boolean          default(TRUE)
 #  restricted_visibility_levels :text
 #  max_attachment_size          :integer          default(10), not null
+#  session_expire_delay       :integer          default(10080), not null
 #  default_project_visibility   :integer
 #  default_snippet_visibility   :integer
 #  restricted_signup_domains    :text
