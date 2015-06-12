@@ -7,7 +7,7 @@
   access the site.
 %hr
 
-= form_for @user, url: profile_preferences_path, remote: true, method: :put, html: {class: 'js-preferences-form'} do |f|
+= form_for @user, url: profile_preferences_path, remote: true, method: :put, html: {class: 'js-preferences-form form-horizontal'} do |f|
   .panel.panel-default.application-theme
     .panel-heading
       Application theme
@@ -60,7 +60,9 @@
       Behavior
     .panel-body
       .form-group
-        = f.label :dashboard, 'Default Dashboard', class: 'control-label'
+        = f.label :dashboard, class: 'control-label' do
+          Default Dashboard
+          = link_to('(?)', help_page_path('profile', 'preferences') + '#default-dashboard', target: '_blank')
         .col-sm-10
           = f.select :dashboard, dashboard_choices, {}, class: 'form-control'
           %p.help-block.hint
