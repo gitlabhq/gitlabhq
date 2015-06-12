@@ -23,19 +23,19 @@ class Spinach::Features::ProjectSourceMultiselectBlob < Spinach::FeatureSteps
         pluralization = range.kind_of?(Array) ? "s" : ""
 
         step "I should see \"#{fragment}\" as URI fragment" do
-          URI.parse(current_url).fragment.should == fragment
+          expect(URI.parse(current_url).fragment).to eq fragment
         end
 
         step "I should see line#{pluralization} #{fragment[1..-1]} highlighted" do
           ids = Array(range).map { |n| "LC#{n}" }
           extra = false
 
-          highlighted = all("#tree-content-holder .highlight .line.hll")
+          highlighted = page.all("#tree-content-holder .highlight .line.hll")
           highlighted.each do |element|
             extra ||= ids.delete(element[:id]).nil?
           end
 
-          extra.should be_false and ids.should be_empty
+          expect(extra).to be_false and ids.should be_empty
         end
       end
     end

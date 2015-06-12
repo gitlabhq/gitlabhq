@@ -433,4 +433,16 @@ class MergeRequest < ActiveRecord::Base
   def approved_by_users
     approvals.map(&:user)
   end
+
+  def has_ci?
+    source_project.ci_service && commits.any?
+  end
+
+  def branch_missing?
+    !source_branch_exists? || !target_branch_exists?
+  end
+
+  def can_be_merged_by?(user)
+    ::Gitlab::GitAccess.new(user, project).can_push_to_branch?(target_branch)
+  end
 end

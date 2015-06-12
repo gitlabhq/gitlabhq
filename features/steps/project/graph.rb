@@ -3,7 +3,7 @@ class Spinach::Features::ProjectGraph < Spinach::FeatureSteps
   include SharedProject
 
   step 'page should have graphs' do
-    page.should have_selector ".stat-graph"
+    expect(page).to have_selector ".stat-graph"
   end
 
   When 'I visit project "Shop" graph page' do
@@ -17,7 +17,7 @@ class Spinach::Features::ProjectGraph < Spinach::FeatureSteps
   end
 
   step 'page should have commits graphs' do
-    page.should have_content "Commit statistics for master"
-    page.should have_content "Commits per day of month"
+    expect(page).to have_content "Commit statistics for master"
+    expect(page).to have_content "Commits per day of month"
   end
 end

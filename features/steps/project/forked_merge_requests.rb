@@ -21,17 +21,17 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see merge request "Merge Request On Forked Project"' do
-    @project.merge_requests.size.should >= 1
+    expect(@project.merge_requests.size).to be >= 1
     @merge_request = @project.merge_requests.last
-    current_path.should == namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
-    @merge_request.title.should == "Merge Request On Forked Project"
-    @merge_request.source_project.should == @forked_project
-    @merge_request.source_branch.should == "fix"
-    @merge_request.target_branch.should == "master"
-    page.should have_content @forked_project.path_with_namespace
-    page.should have_content @project.path_with_namespace
-    page.should have_content @merge_request.source_branch
-    page.should have_content @merge_request.target_branch
+    expect(current_path).to eq namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
+    expect(@merge_request.title).to eq "Merge Request On Forked Project"
+    expect(@merge_request.source_project).to eq @forked_project
+    expect(@merge_request.source_branch).to eq "fix"
+    expect(@merge_request.target_branch).to eq "master"
+    expect(page).to have_content @forked_project.path_with_namespace
+    expect(page).to have_content @project.path_with_namespace
+    expect(page).to have_content @merge_request.source_branch
+    expect(page).to have_content @merge_request.target_branch
   end
 
   step 'I fill out a "Merge Request On Forked Project" merge request' do
@@ -56,7 +56,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
 
   step 'I should see the commit under the forked from project' do
     commit = @project.repository.commit
-    page.should have_content(commit.message)
+    expect(page).to have_content(commit.message)
   end
 
   step 'I click "Create Merge Request on fork" link' do
@@ -64,12 +64,12 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I see prefilled new Merge Request page for the forked project' do
-    current_path.should == new_namespace_project_merge_request_path(@forked_project.namespace, @forked_project)
-    find("#merge_request_source_project_id").value.should == @forked_project.id.to_s
-    find("#merge_request_target_project_id").value.should == @project.id.to_s
-    find("#merge_request_source_branch").value.should have_content "new_design"
-    find("#merge_request_target_branch").value.should have_content "master"
-    find("#merge_request_title").value.should == "New Design"
+    expect(current_path).to eq new_namespace_project_merge_request_path(@forked_project.namespace, @forked_project)
+    expect(find("#merge_request_source_project_id").value).to eq @forked_project.id.to_s
+    expect(find("#merge_request_target_project_id").value).to eq @project.id.to_s
+    expect(find("#merge_request_source_branch").value).to have_content "new_design"
+    expect(find("#merge_request_target_branch").value).to have_content "master"
+    expect(find("#merge_request_title").value).to eq "New Design"
     verify_commit_link(".mr_target_commit", @project)
     verify_commit_link(".mr_source_commit", @forked_project)
   end
@@ -83,22 +83,22 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see the edited merge request' do
-    page.should have_content "An Edited Forked Merge Request"
-    @project.merge_requests.size.should >= 1
+    expect(page).to have_content "An Edited Forked Merge Request"
+    expect(@project.merge_requests.size).to be >= 1
     @merge_request = @project.merge_requests.last
-    current_path.should == namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
-    @merge_request.source_project.should == @forked_project
-    @merge_request.source_branch.should == "fix"
-    @merge_request.target_branch.should == "master"
-    page.should have_content @forked_project.path_with_namespace
-    page.should have_content @project.path_with_namespace
-    page.should have_content @merge_request.source_branch
-    page.should have_content @merge_request.target_branch
+    expect(current_path).to eq namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
+    expect(@merge_request.source_project).to eq @forked_project
+    expect(@merge_request.source_branch).to eq "fix"
+    expect(@merge_request.target_branch).to eq "master"
+    expect(page).to have_content @forked_project.path_with_namespace
+    expect(page).to have_content @project.path_with_namespace
+    expect(page).to have_content @merge_request.source_branch
+    expect(page).to have_content @merge_request.target_branch
   end
 
   step 'I should see last push widget' do
-    page.should have_content "You pushed to new_design"
-    page.should have_link "Create Merge Request"
+    expect(page).to have_content "You pushed to new_design"
+    expect(page).to have_link "Create Merge Request"
   end
 
   step 'I click link edit "Merge Request On Forked Project"' do
@@ -106,26 +106,26 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I see the edit page prefilled for "Merge Request On Forked Project"' do
-    current_path.should == edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
-    page.should have_content "Edit merge request ##{@merge_request.id}"
-    find("#merge_request_title").value.should == "Merge Request On Forked Project"
+    expect(current_path).to eq edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
+    expect(page).to have_content "Edit merge request ##{@merge_request.id}"
+    expect(find("#merge_request_title").value).to eq "Merge Request On Forked Project"
   end
 
   step 'I fill out an invalid "Merge Request On Forked Project" merge request' do
     select "Select branch", from: "merge_request_target_branch"
-    find(:select, "merge_request_source_project_id", {}).value.should == @forked_project.id.to_s
-    find(:select, "merge_request_target_project_id", {}).value.should == @project.id.to_s
-    find(:select, "merge_request_source_branch", {}).value.should == ""
-    find(:select, "merge_request_target_branch", {}).value.should == ""
+    expect(find(:select, "merge_request_source_project_id", {}).value).to eq @forked_project.id.to_s
+    expect(find(:select, "merge_request_target_project_id", {}).value).to eq @project.id.to_s
+    expect(find(:select, "merge_request_source_branch", {}).value).to eq ""
+    expect(find(:select, "merge_request_target_branch", {}).value).to eq ""
     click_button "Compare branches"
   end
 
   step 'I should see validation errors' do
-    page.should have_content "You must select source and target branch"
+    expect(page).to have_content "You must select source and target branch"
   end
 
   step 'the target repository should be the original repository' do
-    page.should have_select("merge_request_target_project_id", selected: @project.path_with_namespace)
+    expect(page).to have_select("merge_request_target_project_id", selected: @project.path_with_namespace)
   end
 
   step 'I click "Assign to" dropdown"' do
@@ -139,13 +139,13 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   step 'I should see the users from the target project ID' do
     expect(page).to have_selector('.user-result', visible: true, count: 2)
     users = page.all('.user-name')
-    users[0].text.should == 'Unassigned'
-    users[1].text.should == @project.users.first.name
+    expect(users[0].text).to eq 'Unassigned'
+    expect(users[1].text).to eq @project.users.first.name
   end
 
   # Verify a link is generated against the correct project
   def verify_commit_link(container_div, container_project)
     # This should force a wait for the javascript to execute
-    find(:div,container_div).find(".commit_short_id")['href'].should have_content "#{container_project.path_with_namespace}/commit"
+    expect(find(:div,container_div).find(".commit_short_id")['href']).to have_content "#{container_project.path_with_namespace}/commit"
   end
 end

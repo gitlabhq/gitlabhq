@@ -9,7 +9,7 @@ module Search
     def execute
       group = Group.find_by(id: params[:group_id]) if params[:group_id].present?
       projects = ProjectsFinder.new.execute(current_user)
-      projects = projects.where(namespace_id: group.id) if group
+      projects = projects.in_namespace(group.id) if group
       project_ids = projects.pluck(:id)
 
       Gitlab::SearchResults.new(project_ids, params[:search])

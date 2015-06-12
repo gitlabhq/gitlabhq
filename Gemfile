@@ -30,7 +30,7 @@ gem 'rqrcode-rails3'
 gem 'attr_encrypted', '1.3.4'
 
 # Browser detection
-gem "browser"
+gem "browser", '~> 0.8.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
@@ -82,7 +82,7 @@ gem "carrierwave"
 gem 'dropzonejs-rails'
 
 # for aws storage
-gem "fog", "~> 1.14"
+gem "fog", "~> 1.25.0"
 gem "unf"
 
 # Authorization
@@ -257,10 +257,10 @@ group :development, :test do
 end
 
 group :test do
-  gem "simplecov", require: false
-  gem "shoulda-matchers", "~> 2.7.0"
+  gem 'simplecov', require: false
+  gem 'shoulda-matchers', '~> 2.8.0', require: false
   gem 'email_spec'
-  gem "webmock"
+  gem 'webmock', '~> 1.21.0'
   gem 'test_after_commit'
 end
 

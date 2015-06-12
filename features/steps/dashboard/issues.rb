@@ -46,11 +46,11 @@ class Spinach::Features::DashboardIssues < Spinach::FeatureSteps
   end
 
   def should_see(issue)
-    page.should have_content(issue.title[0..10])
+    expect(page).to have_content(issue.title[0..10])
   end
 
   def should_not_see(issue)
-    page.should_not have_content(issue.title[0..10])
+    expect(page).not_to have_content(issue.title[0..10])
   end
 
   def assigned_issue

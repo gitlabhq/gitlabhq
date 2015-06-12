@@ -32,7 +32,7 @@
               %li= link_to "Plain Diff",    merge_request_path(@merge_request, format: :diff)
 
     = render "projects/merge_requests/show/how_to_merge"
-    = render "projects/merge_requests/show/state_widget"
+    = render "projects/merge_requests/widget/show.html.haml"
 
   - if @commits.present?
     %ul.nav.nav-tabs.merge-request-tabs
@@ -69,10 +69,5 @@
   var merge_request;
 
   merge_request = new MergeRequest({
-    url_to_automerge_check: "#{automerge_check_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
-    check_enable: #{@merge_request.unchecked? ? "true" : "false"},
-    url_to_ci_check: "#{ci_status_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
-    ci_enable: #{@project.ci_service ? "true" : "false"},
-    current_status: "#{@merge_request.automerge_status}",
     action: "#{controller.action_name}"
   });

@@ -28,6 +28,10 @@ module SharedProjectTab
     ensure_active_main_tab('Issues')
   end
 
+  step 'the active main tab should be Members' do
+    ensure_active_main_tab('Members')
+  end
+
   step 'the active main tab should be Merge Requests' do
     ensure_active_main_tab('Merge Requests')
   end
@@ -41,8 +45,8 @@ module SharedProjectTab
   end
 
   step 'the active main tab should be Settings' do
-    within '.nav-sidebar' do
-      page.should have_content('Back to project')
+    page.within '.nav-sidebar' do
+      expect(page).to have_content('Back to project')
     end
   end
 end

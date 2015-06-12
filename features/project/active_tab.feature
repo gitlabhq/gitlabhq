@@ -35,6 +35,11 @@ Feature: Project Active Tab
     Then the active main tab should be Merge Requests
     And no other main tabs should be active
 
+  Scenario: On Project Members
+    Given I visit my project's members page
+    Then the active main tab should be Members
+    And no other main tabs should be active
+
   Scenario: On Project Wiki
     Given I visit my project's wiki page
     Then the active main tab should be Wiki
@@ -48,13 +53,6 @@ Feature: Project Active Tab
     And no other main tabs should be active
 
   # Sub Tabs: Settings
-
-  Scenario: On Project Settings/Team
-    Given I visit my project's settings page
-    And I click the "Team" tab
-    Then the active sub nav should be Team
-    And no other sub navs should be active
-    And the active main tab should be Settings
 
   Scenario: On Project Settings/Edit
     Given I visit my project's settings page
