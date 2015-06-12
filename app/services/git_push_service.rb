@@ -88,18 +88,24 @@ class GitPushService
         end
       end
 
-      # Create cross-reference notes for any other references. Omit any issues that were referenced in an
-      # issue-closing phrase, or have already been mentioned from this commit (probably from this commit
-      # being pushed to a different branch).
-      refs = commit.references(project, user) - issues_to_close
-      refs.reject! { |r| commit.has_mentioned?(r) }
+      if project.default_issues_tracker?
+        create_cross_reference_notes(commit, issues_to_close)
+      end
+    end
+  end
 
-      if refs.present?
-        author ||= commit_user(commit)
+  def create_cross_reference_notes(commit, issues_to_close)
+    # Create cross-reference notes for any other references. Omit any issues that were referenced in an
+    # issue-closing phrase, or have already been mentioned from this commit (probably from this commit
+    # being pushed to a different branch).
+    refs = commit.references(project, user) - issues_to_close
+    refs.reject! { |r| commit.has_mentioned?(r) }
 
-        refs.each do |r|
-          Note.create_cross_reference_note(r, commit, author)
-        end
+    if refs.present?
+      author ||= commit_user(commit)
+
+      refs.each do |r|
+        Note.create_cross_reference_note(r, commit, author)
       end
     end
   end
