@@ -8,6 +8,9 @@
 # See http://unicorn.bogomips.org/Unicorn/Configurator.html for complete
 # documentation.
 
+# Note: If you change this file in a Merge Request, please also create a
+# Merge Request on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests
+#
 # WARNING: See config/application.rb under "Relative url support" for the list of
 # other files that need to be changed for relative url support
 #
