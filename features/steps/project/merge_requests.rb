@@ -24,7 +24,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see merge request "Wiki Feature"' do
-    within '.merge-request' do
+    page.within '.merge-request' do
       expect(page).to have_content "Wiki Feature"
     end
   end
@@ -113,7 +113,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click on the Changes tab via Javascript' do
-    within '.merge-request-tabs' do
+    page.within '.merge-request-tabs' do
       click_link 'Changes'
     end
 
@@ -134,11 +134,11 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click on the commit in the merge request' do
-    within '.merge-request-tabs' do
+    page.within '.merge-request-tabs' do
       click_link 'Commits'
     end
 
-    within '.commits' do
+    page.within '.commits' do
       click_link Commit.truncate_sha(sample_commit.id)
     end
   end
@@ -199,13 +199,13 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       merge!: true,
     )
 
-    within '.mr-state-widget' do
+    page.within '.mr-state-widget' do
       click_button "Accept Merge Request"
     end
   end
 
   step 'I should see merged request' do
-    within '.issue-box' do
+    page.within '.issue-box' do
       expect(page).to have_content "Accepted"
     end
   end
@@ -215,43 +215,43 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see reopened merge request "Bug NS-04"' do
-    within '.issue-box' do
+    page.within '.issue-box' do
       expect(page).to have_content "Open"
     end
   end
 
   step 'I click link "Hide inline discussion" of the second file' do
-    within '.files [id^=diff]:nth-child(2)' do
+    page.within '.files [id^=diff]:nth-child(2)' do
       find('.js-toggle-diff-comments').click
     end
   end
 
   step 'I click link "Show inline discussion" of the second file' do
-    within '.files [id^=diff]:nth-child(2)' do
+    page.within '.files [id^=diff]:nth-child(2)' do
       find('.js-toggle-diff-comments').click
     end
   end
 
   step 'I should not see a comment like "Line is wrong" in the second file' do
-    within '.files [id^=diff]:nth-child(2)' do
+    page.within '.files [id^=diff]:nth-child(2)' do
       expect(page).not_to have_visible_content "Line is wrong"
     end
   end
 
   step 'I should see a comment like "Line is wrong" in the second file' do
-    within '.files [id^=diff]:nth-child(2) .note-body > .note-text' do
+    page.within '.files [id^=diff]:nth-child(2) .note-body > .note-text' do
       expect(page).to have_visible_content "Line is wrong"
     end
   end
 
   step 'I should not see a comment like "Line is wrong here" in the second file' do
-    within '.files [id^=diff]:nth-child(2)' do
+    page.within '.files [id^=diff]:nth-child(2)' do
       expect(page).not_to have_visible_content "Line is wrong here"
     end
   end
 
   step 'I should see a comment like "Line is wrong here" in the second file' do
-    within '.files [id^=diff]:nth-child(2) .note-body > .note-text' do
+    page.within '.files [id^=diff]:nth-child(2) .note-body > .note-text' do
       expect(page).to have_visible_content "Line is wrong here"
     end
   end
@@ -259,12 +259,12 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'I leave a comment like "Line is correct" on line 12 of the first file' do
     init_diff_note_first_file
 
-    within(".js-discussion-note-form") do
+    page.within(".js-discussion-note-form") do
       fill_in "note_note", with: "Line is correct"
       click_button "Add Comment"
     end
 
-    within ".files [id^=diff]:nth-child(1) .note-body > .note-text" do
+    page.within ".files [id^=diff]:nth-child(1) .note-body > .note-text" do
       expect(page).to have_content "Line is correct"
     end
   end
@@ -272,14 +272,14 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'I leave a comment like "Line is wrong" on line 39 of the second file' do
     init_diff_note_second_file
 
-    within(".js-discussion-note-form") do
+    page.within(".js-discussion-note-form") do
       fill_in "note_note", with: "Line is wrong on here"
       click_button "Add Comment"
     end
   end
 
   step 'I should still see a comment like "Line is correct" in the first file' do
-    within '.files [id^=diff]:nth-child(1) .note-body > .note-text' do
+    page.within '.files [id^=diff]:nth-child(1) .note-body > .note-text' do
       expect(page).to have_visible_content "Line is correct"
     end
   end
@@ -297,7 +297,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see comments on the side-by-side diff page' do
-    within '.files [id^=diff]:nth-child(1) .parallel .note-body > .note-text' do
+    page.within '.files [id^=diff]:nth-child(1) .parallel .note-body > .note-text' do
       expect(page).to have_visible_content "Line is correct"
     end
   end
@@ -329,7 +329,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   def leave_comment(message)
-    within(".js-discussion-note-form") do
+    page.within(".js-discussion-note-form") do
       fill_in "note_note", with: message
       click_button "Add Comment"
     end

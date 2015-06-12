@@ -22,7 +22,7 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
   step 'I select "Mike" as "Reporter"' do
     user = User.find_by(name: "Mike")
 
-    within ".users-project-form" do
+    page.within ".users-project-form" do
       select2(user.id, from: "#user_ids", multiple: true)
       select "Reporter", from: "access_level"
     end
@@ -30,13 +30,13 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   step 'I should see "Mike" in team list as "Reporter"' do
-    within ".access-reporter" do
+    page.within ".access-reporter" do
       expect(page).to have_content('Mike')
     end
   end
 
   step 'I select "sjobs@apple.com" as "Reporter"' do
-    within ".users-project-form" do
+    page.within ".users-project-form" do
       select2("sjobs@apple.com", from: "#user_ids", multiple: true)
       select "Reporter", from: "access_level"
     end
@@ -44,7 +44,7 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   step 'I should see "sjobs@apple.com" in team list as invited "Reporter"' do
-    within ".access-reporter" do
+    page.within ".access-reporter" do
       expect(page).to have_content('sjobs@apple.com')
       expect(page).to have_content('invited')
       expect(page).to have_content('Reporter')
@@ -52,7 +52,7 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   step 'I should see "Dmitriy" in team list as "Developer"' do
-    within ".access-developer" do
+    page.within ".access-developer" do
       expect(page).to have_content('Dmitriy')
     end
   end
@@ -61,7 +61,7 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
     project = Project.find_by(name: "Shop")
     user = User.find_by(name: 'Dmitriy')
     project_member = project.project_members.find_by(user_id: user.id)
-    within "#project_member_#{project_member.id}" do
+    page.within "#project_member_#{project_member.id}" do
       click_button "Edit access level"
       select "Reporter", from: "project_member_access_level"
       click_button "Save"
@@ -69,7 +69,7 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   step 'I should see "Dmitriy" in team list as "Reporter"' do
-    within ".access-reporter" do
+    page.within ".access-reporter" do
       expect(page).to have_content('Dmitriy')
     end
   end
@@ -123,7 +123,7 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
     project = Project.find_by(name: "Shop")
     user = User.find_by(name: 'Dmitriy')
     project_member = project.project_members.find_by(user_id: user.id)
-    within "#project_member_#{project_member.id}" do
+    page.within "#project_member_#{project_member.id}" do
       click_link('Remove user from team')
     end
   end

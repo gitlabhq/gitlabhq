@@ -38,14 +38,14 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
 
   When 'I select user "John Doe" from user list as "Reporter"' do
     select2(user_john.id, from: "#user_ids", multiple: true)
-    within "#new_project_member" do
+    page.within "#new_project_member" do
       select "Reporter", from: "access_level"
     end
     click_button "Add users to group"
   end
 
   step 'I should see "John Doe" in team list in every project as "Reporter"' do
-    within ".group-users-list" do
+    page.within ".group-users-list" do
       expect(page).to have_content "John Doe"
       expect(page).to have_content "Reporter"
     end
@@ -62,13 +62,13 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
   end
 
   step 'I remove user "John Doe" from group' do
-    within "#user_#{user_john.id}" do
+    page.within "#user_#{user_john.id}" do
       click_link 'Remove user from group'
     end
   end
 
   step 'I should not see "John Doe" in team list' do
-    within ".group-users-list" do
+    page.within ".group-users-list" do
       expect(page).not_to have_content "John Doe"
     end
   end

@@ -61,7 +61,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I try change my password w/o old one' do
-    within '.update-password' do
+    page.within '.update-password' do
       fill_in "user_password", with: "22233344"
       fill_in "user_password_confirmation", with: "22233344"
       click_button "Save"
@@ -69,7 +69,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I change my password' do
-    within '.update-password' do
+    page.within '.update-password' do
       fill_in "user_current_password", with: "12345678"
       fill_in "user_password", with: "22233344"
       fill_in "user_password_confirmation", with: "22233344"
@@ -78,7 +78,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I unsuccessfully change my password' do
-    within '.update-password' do
+    page.within '.update-password' do
       fill_in "user_current_password", with: "12345678"
       fill_in "user_password", with: "password"
       fill_in "user_password_confirmation", with: "confirmation"
@@ -95,7 +95,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I reset my token' do
-    within '.update-token' do
+    page.within '.update-token' do
       @old_token = @user.private_token
       click_button "Reset"
     end
@@ -115,13 +115,13 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step "I change my application theme" do
-    within '.application-theme' do
+    page.within '.application-theme' do
       choose "Violet"
     end
   end
 
   step "I change my code preview theme" do
-    within '.code-preview-theme' do
+    page.within '.code-preview-theme' do
       choose "Solarized dark"
     end
   end
@@ -174,7 +174,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   step 'I should see my user page' do
     expect(page).to have_content "User Activity"
 
-    within '.navbar-gitlab' do
+    page.within '.navbar-gitlab' do
       expect(page).to have_content current_user.name
     end
   end
@@ -233,7 +233,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I click to remove application' do
-    within '.oauth-applications' do
+    page.within '.oauth-applications' do
       click_on "Destroy"
     end
   end

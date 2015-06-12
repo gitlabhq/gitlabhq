@@ -44,7 +44,7 @@ class Spinach::Features::AdminApplications < Spinach::FeatureSteps
   end
 
   step 'I click to remove application' do
-    within '.oauth-applications' do
+    page.within '.oauth-applications' do
       click_on "Destroy"
     end
   end

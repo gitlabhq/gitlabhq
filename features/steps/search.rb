@@ -24,25 +24,25 @@ class Spinach::Features::Search < Spinach::FeatureSteps
   end
 
   step 'I click "Issues" link' do
-    within '.search-filter' do
+    page.within '.search-filter' do
       click_link 'Issues'
     end
   end
 
   step 'I click project "Shop" link' do
-    within '.project-filter' do
+    page.within '.project-filter' do
       click_link project.name_with_namespace
     end
   end
 
   step 'I click "Merge requests" link' do
-    within '.search-filter' do
+    page.within '.search-filter' do
       click_link 'Merge requests'
     end
   end
 
   step 'I click "Wiki" link' do
-    within '.search-filter' do
+    page.within '.search-filter' do
       click_link 'Wiki'
     end
   end

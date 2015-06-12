@@ -28,7 +28,7 @@ class Spinach::Features::User < Spinach::FeatureSteps
   end
 
   step 'I should see contributed projects' do
-    within '.contributed-projects' do
+    page.within '.contributed-projects' do
       expect(page).to have_content(@contributed_project.name)
     end
   end

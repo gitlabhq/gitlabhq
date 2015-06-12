@@ -87,7 +87,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I should see label \'bug\' with issue' do
-    within '.issue-show-labels' do
+    page.within '.issue-show-labels' do
       expect(page).to have_content 'bug'
     end
   end
@@ -201,7 +201,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I leave a comment with code block' do
-    within(".js-main-target-form") do
+    page.within(".js-main-target-form") do
       fill_in "note[note]", with: "```\nCommand [1]: /usr/local/bin/git , see [text](doc/text)\n```"
       click_button "Add Comment"
       sleep 0.05
@@ -209,7 +209,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I should see an error alert section within the comment form' do
-    within(".js-main-target-form") do
+    page.within(".js-main-target-form") do
       find(".error-alert")
     end
   end
@@ -257,7 +257,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I click label \'bug\'' do
-    within ".issues-list" do
+    page.within ".issues-list" do
       click_link 'bug'
     end
   end

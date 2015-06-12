@@ -6,7 +6,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   include WikiHelper
 
   step 'I click on the Cancel button' do
-    within(:css, ".form-actions") do
+    page.within(:css, ".form-actions") do
       click_on "Cancel"
     end
   end

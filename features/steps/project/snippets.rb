@@ -42,7 +42,7 @@ class Spinach::Features::ProjectSnippets < Spinach::FeatureSteps
   end
 
   step 'I click link "Edit"' do
-    within ".file-title" do
+    page.within ".file-title" do
       click_link "Edit"
     end
   end
@@ -54,7 +54,7 @@ class Spinach::Features::ProjectSnippets < Spinach::FeatureSteps
   step 'I submit new snippet "Snippet three"' do
     fill_in "project_snippet_title", :with => "Snippet three"
     fill_in "project_snippet_file_name", :with => "my_snippet.rb"
-    within('.file-editor') do
+    page.within('.file-editor') do
       find(:xpath, "//input[@id='project_snippet_content']").set 'Content of snippet three'
     end
     click_button "Create snippet"
@@ -75,7 +75,7 @@ class Spinach::Features::ProjectSnippets < Spinach::FeatureSteps
   end
 
   step 'I leave a comment like "Good snippet!"' do
-    within('.js-main-target-form') do
+    page.within('.js-main-target-form') do
       fill_in "note_note", with: "Good snippet!"
       click_button "Add Comment"
     end

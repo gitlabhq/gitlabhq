@@ -8,13 +8,13 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
   end
 
   step 'I remove label \'bug\'' do
-    within "#label_#{bug_label.id}" do
+    page.within "#label_#{bug_label.id}" do
       click_link 'Remove'
     end
   end
 
   step 'I delete all labels' do
-    within '.labels' do
+    page.within '.labels' do
       all('.btn-remove').each do |remove|
         remove.click
         sleep 0.05
@@ -23,7 +23,7 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
   end
 
   step 'I should see labels help message' do
-    within '.labels' do
+    page.within '.labels' do
       expect(page).to have_content 'Create first label or generate default set of '\
                                'labels'
     end
@@ -48,37 +48,37 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
   end
 
   step 'I should see label label exist error message' do
-    within '.label-form' do
+    page.within '.label-form' do
       expect(page).to have_content 'Title has already been taken'
     end
   end
 
   step 'I should see label color error message' do
-    within '.label-form' do
+    page.within '.label-form' do
       expect(page).to have_content 'Color is invalid'
     end
   end
 
   step 'I should see label \'feature\'' do
-    within '.manage-labels-list' do
+    page.within '.manage-labels-list' do
       expect(page).to have_content 'feature'
     end
   end
 
   step 'I should see label \'bug\'' do
-    within '.manage-labels-list' do
+    page.within '.manage-labels-list' do
       expect(page).to have_content 'bug'
     end
   end
 
   step 'I should not see label \'bug\'' do
-    within '.manage-labels-list' do
+    page.within '.manage-labels-list' do
       expect(page).not_to have_content 'bug'
     end
   end
 
   step 'I should see label \'support\'' do
-    within '.manage-labels-list' do
+    page.within '.manage-labels-list' do
       expect(page).to have_content 'support'
     end
   end
@@ -90,7 +90,7 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
   end
 
   step 'I should see label \'fix\'' do
-    within '.manage-labels-list' do
+    page.within '.manage-labels-list' do
       expect(page).to have_content 'fix'
     end
   end

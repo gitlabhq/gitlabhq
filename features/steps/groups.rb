@@ -16,7 +16,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   step 'I select "Mike" as "Reporter"' do
     user = User.find_by(name: "Mike")
 
-    within ".users-group-form" do
+    page.within ".users-group-form" do
       select2(user.id, from: "#user_ids", multiple: true)
       select "Reporter", from: "access_level"
     end
@@ -25,14 +25,14 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I should see "Mike" in team list as "Reporter"' do
-    within '.well-list' do
+    page.within '.well-list' do
       expect(page).to have_content('Mike')
       expect(page).to have_content('Reporter')
     end
   end
 
   step 'I select "sjobs@apple.com" as "Reporter"' do
-    within ".users-group-form" do
+    page.within ".users-group-form" do
       select2("sjobs@apple.com", from: "#user_ids", multiple: true)
       select "Reporter", from: "access_level"
     end
@@ -41,7 +41,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I should see "sjobs@apple.com" in team list as invited "Reporter"' do
-    within '.well-list' do
+    page.within '.well-list' do
       expect(page).to have_content('sjobs@apple.com')
       expect(page).to have_content('invited')
       expect(page).to have_content('Reporter')
@@ -73,7 +73,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   step 'I select user "Mary Jane" from list with role "Reporter"' do
     user = User.find_by(name: "Mary Jane") || create(:user, name: "Mary Jane")
     click_button 'Add members'
-    within ".users-group-form" do
+    page.within ".users-group-form" do
       select2(user.id, from: "#user_ids", multiple: true)
       select "Reporter", from: "access_level"
     end
@@ -122,7 +122,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I should see new group "Owned" name' do
-    within ".navbar-gitlab" do
+    page.within ".navbar-gitlab" do
       expect(page).to have_content "new-name"
     end
   end
@@ -182,7 +182,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I search for \'Mary\' member' do
-    within '.member-search-form' do
+    page.within '.member-search-form' do
       fill_in 'search', with: 'Mary'
       click_button 'Search'
     end

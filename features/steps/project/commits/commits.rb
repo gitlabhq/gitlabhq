@@ -45,7 +45,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I should see additional file lines' do
-    within @diff.parent do
+    page.within @diff.parent do
       expect(first('.new_line').text).not_to have_content "..."
     end
   end

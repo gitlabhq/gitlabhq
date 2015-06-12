@@ -35,13 +35,13 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
   end
 
   step 'I should see project "Community" home page' do
-    within '.navbar-gitlab .title' do
+    page.within '.navbar-gitlab .title' do
       expect(page).to have_content 'Community'
     end
   end
 
   step 'I should see project "Internal" home page' do
-    within '.navbar-gitlab .title' do
+    page.within '.navbar-gitlab .title' do
       expect(page).to have_content 'Internal'
     end
   end
