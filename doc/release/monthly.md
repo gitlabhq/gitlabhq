@@ -39,7 +39,7 @@ Xth: (6 working days before the 22nd)
 
 - [ ] Merge CE master in to EE master via merge request (#LINK)
 - [ ] Determine QA person and notify this person
-- [ ] Check the tasks in [how to rc1 guide](howto_rc1.md) and delegate tasks if necessary
+- [ ] Check the tasks in [how to rc1 guide](https://dev.gitlab.org/gitlab/gitlabhq/blob/master/doc/release/howto_rc1.md) and delegate tasks if necessary
 - [ ] Create CE, EE, CI RC1 versions (#LINK)
 
 Xth: (5 working days before the 22nd)
