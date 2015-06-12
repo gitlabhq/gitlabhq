@@ -94,7 +94,12 @@ sudo docker build --tag gitlab-data docker/data/
 sudo docker build --tag gitlab-app:7.10.1 docker/app/
 ```
 
-After this run the images as described in the previous section.
+After this run the images:
+
+```bash
+sudo docker run --name gitlab-data gitlab-data /bin/true
+sudo docker run --detach --name gitlab-app --publish 8080:80 --publish 2222:22 --volumes-from gitlab-data gitlab-app:7.10.1
+```
 
 We assume using a data volume container, this will simplify migrations and backups.
 This empty container will exist to persist as volumes the 3 directories used by GitLab, so remember not to delete it.

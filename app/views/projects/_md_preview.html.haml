@@ -2,10 +2,10 @@
   .md-header.clearfix
     %ul.nav.nav-tabs
       %li.active
-        = link_to '#md-write-holder', class: 'js-md-write-button' do
+        = link_to '#md-write-holder', class: 'js-md-write-button', tabindex: '-1' do
           Write
       %li
-        = link_to '#md-preview-holder', class: 'js-md-preview-button' do
+        = link_to '#md-preview-holder', class: 'js-md-preview-button', tabindex: '-1' do
           Preview
 
     - if defined?(referenced_users) && referenced_users
