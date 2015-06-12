@@ -40,7 +40,7 @@ module SharedNote
   end
 
   step 'I should not see a comment saying "XML attached"' do
-    page.should_not have_css(".note")
+    expect(page).not_to have_css(".note")
   end
 
   step 'I should not see the cancel comment button' do
@@ -70,13 +70,13 @@ module SharedNote
 
   step 'I should see a comment saying "XML attached"' do
     within(".note") do
-      page.should have_content("XML attached")
+      expect(page).to have_content("XML attached")
     end
   end
 
   step 'I should see an empty comment text field' do
     within(".js-main-target-form") do
-      page.should have_field("note[note]", with: "")
+      expect(page).to have_field("note[note]", with: "")
     end
   end
 
@@ -101,7 +101,7 @@ module SharedNote
 
   step 'I should see comment "XML attached"' do
     within(".note") do
-      page.should have_content("XML attached")
+      expect(page).to have_content("XML attached")
     end
   end
 
@@ -117,8 +117,8 @@ module SharedNote
 
   step 'The comment with the header should not have an ID' do
     within(".note-body > .note-text") do
-      page.should     have_content("Comment with a header")
-      page.should_not have_css("#comment-with-a-header")
+      expect(page).to     have_content("Comment with a header")
+      expect(page).not_to have_css("#comment-with-a-header")
     end
   end
 
@@ -135,7 +135,7 @@ module SharedNote
 
   step 'I should see +1 in the description' do
     within(".note") do
-      page.should have_content("+1 Awesome!")
+      expect(page).to have_content("+1 Awesome!")
     end
   end
 end

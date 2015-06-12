@@ -4,56 +4,56 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
   include SharedProject
 
   step 'I should see project "Empty Public Project"' do
-    page.should have_content "Empty Public Project"
+    expect(page).to have_content "Empty Public Project"
   end
 
   step 'I should see public project details' do
-    page.should have_content '32 branches'
-    page.should have_content '16 tags'
+    expect(page).to have_content '32 branches'
+    expect(page).to have_content '16 tags'
   end
 
   step 'I should see project readme' do
-    page.should have_content 'README.md'
+    expect(page).to have_content 'README.md'
   end
 
   step 'I should see empty public project details' do
-    page.should have_content 'Git global setup'
+    expect(page).to have_content 'Git global setup'
   end
 
   step 'I should see empty public project details with http clone info' do
     project = Project.find_by(name: 'Empty Public Project')
     all(:css, '.git-empty .clone').each do |element|
-      element.text.should include(project.http_url_to_repo)
+      expect(element.text).to include(project.http_url_to_repo)
     end
   end
 
   step 'I should see empty public project details with ssh clone info' do
     project = Project.find_by(name: 'Empty Public Project')
     all(:css, '.git-empty .clone').each do |element|
-      element.text.should include(project.url_to_repo)
+      expect(element.text).to include(project.url_to_repo)
     end
   end
 
   step 'I should see project "Community" home page' do
     within '.navbar-gitlab .title' do
-      page.should have_content 'Community'
+      expect(page).to have_content 'Community'
     end
   end
 
   step 'I should see project "Internal" home page' do
     within '.navbar-gitlab .title' do
-      page.should have_content 'Internal'
+      expect(page).to have_content 'Internal'
     end
   end
 
   step 'I should see an http link to the repository' do
     project = Project.find_by(name: 'Community')
-    page.should have_field('project_clone', with: project.http_url_to_repo)
+    expect(page).to have_field('project_clone', with: project.http_url_to_repo)
   end
 
   step 'I should see an ssh link to the repository' do
     project = Project.find_by(name: 'Community')
-    page.should have_field('project_clone', with: project.url_to_repo)
+    expect(page).to have_field('project_clone', with: project.url_to_repo)
   end
 
   step 'I visit "Community" issues page' do
@@ -70,9 +70,9 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
 
 
   step 'I should see list of issues for "Community" project' do
-    page.should have_content "Bug"
-    page.should have_content public_project.name
-    page.should have_content "New feature"
+    expect(page).to have_content "Bug"
+    expect(page).to have_content public_project.name
+    expect(page).to have_content "New feature"
   end
 
   step 'I visit "Internal" issues page' do
@@ -89,9 +89,9 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
 
 
   step 'I should see list of issues for "Internal" project' do
-    page.should have_content "Internal Bug"
-    page.should have_content internal_project.name
-    page.should have_content "New internal feature"
+    expect(page).to have_content "Internal Bug"
+    expect(page).to have_content internal_project.name
+    expect(page).to have_content "New internal feature"
   end
 
   step 'I visit "Community" merge requests page' do
@@ -107,8 +107,8 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
   end
 
   step 'I should see list of merge requests for "Community" project' do
-    page.should have_content public_project.name
-    page.should have_content public_merge_request.source_project.name
+    expect(page).to have_content public_project.name
+    expect(page).to have_content public_merge_request.source_project.name
   end
 
   step 'I visit "Internal" merge requests page' do
@@ -124,8 +124,8 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
   end
 
   step 'I should see list of merge requests for "Internal" project' do
-    page.should have_content internal_project.name
-    page.should have_content internal_merge_request.source_project.name
+    expect(page).to have_content internal_project.name
+    expect(page).to have_content internal_merge_request.source_project.name
   end
 
   def internal_project

@@ -4,7 +4,7 @@ class Spinach::Features::ProjectNetworkGraph < Spinach::FeatureSteps
   include SharedProject
 
   step 'page should have network graph' do
-    page.should have_selector ".network-graph"
+    expect(page).to have_selector ".network-graph"
   end
 
   When 'I visit project "Shop" network page' do
@@ -16,16 +16,16 @@ class Spinach::Features::ProjectNetworkGraph < Spinach::FeatureSteps
   end
 
   step 'page should select "master" in select box' do
-    page.should have_selector '.select2-chosen', text: "master"
+    expect(page).to have_selector '.select2-chosen', text: "master"
   end
 
   step 'page should select "v1.0.0" in select box' do
-    page.should have_selector '.select2-chosen', text: "v1.0.0"
+    expect(page).to have_selector '.select2-chosen', text: "v1.0.0"
   end
 
   step 'page should have "master" on graph' do
     within '.network-graph' do
-      page.should have_content 'master'
+      expect(page).to have_content 'master'
     end
   end
 
@@ -46,27 +46,27 @@ class Spinach::Features::ProjectNetworkGraph < Spinach::FeatureSteps
 
   step 'page should have content not containing "v1.0.0"' do
     within '.network-graph' do
-      page.should have_content 'Change some files'
+      expect(page).to have_content 'Change some files'
     end
   end
 
   step 'page should not have content not containing "v1.0.0"' do
     within '.network-graph' do
-      page.should_not have_content 'Change some files'
+      expect(page).not_to have_content 'Change some files'
     end
   end
 
   step 'page should select "feature" in select box' do
-    page.should have_selector '.select2-chosen', text: "feature"
+    expect(page).to have_selector '.select2-chosen', text: "feature"
   end
 
   step 'page should select "v1.0.0" in select box' do
-    page.should have_selector '.select2-chosen', text: "v1.0.0"
+    expect(page).to have_selector '.select2-chosen', text: "v1.0.0"
   end
 
   step 'page should have "feature" on graph' do
     within '.network-graph' do
-      page.should have_content 'feature'
+      expect(page).to have_content 'feature'
     end
   end
 
@@ -80,7 +80,7 @@ class Spinach::Features::ProjectNetworkGraph < Spinach::FeatureSteps
 
   step 'page should have "v1.0.0" on graph' do
     within '.network-graph' do
-      page.should have_content 'v1.0.0'
+      expect(page).to have_content 'v1.0.0'
     end
   end
 

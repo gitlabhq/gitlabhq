@@ -9,19 +9,19 @@ class Spinach::Features::ProjectDeployKeys < Spinach::FeatureSteps
 
   step 'I should see project deploy key' do
     within '.enabled-keys' do
-      page.should have_content deploy_key.title
+      expect(page).to have_content deploy_key.title
     end
   end
 
   step 'I should see other project deploy key' do
     within '.available-keys' do
-      page.should have_content other_deploy_key.title
+      expect(page).to have_content other_deploy_key.title
     end
   end
 
   step 'I should see public deploy key' do
     within '.available-keys' do
-      page.should have_content public_deploy_key.title
+      expect(page).to have_content public_deploy_key.title
     end
   end
 
@@ -36,12 +36,12 @@ class Spinach::Features::ProjectDeployKeys < Spinach::FeatureSteps
   end
 
   step 'I should be on deploy keys page' do
-    current_path.should == namespace_project_deploy_keys_path(@project.namespace, @project)
+    expect(current_path).to eq namespace_project_deploy_keys_path(@project.namespace, @project)
   end
 
   step 'I should see newly created deploy key' do
     within '.enabled-keys' do
-      page.should have_content(deploy_key.title)
+      expect(page).to have_content(deploy_key.title)
     end
   end
 
@@ -57,7 +57,7 @@ class Spinach::Features::ProjectDeployKeys < Spinach::FeatureSteps
 
   step 'I should only see the same deploy key once' do
     within '.available-keys' do
-      page.should have_selector('ul li', count: 1)
+      expect(page).to have_selector('ul li', count: 1)
     end
   end
 

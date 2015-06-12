@@ -29,12 +29,12 @@ class Spinach::Features::User < Spinach::FeatureSteps
 
   step 'I should see contributed projects' do
     within '.contributed-projects' do
-      page.should have_content(@contributed_project.name)
+      expect(page).to have_content(@contributed_project.name)
     end
   end
 
   step 'I should see contributions calendar' do
-    page.should have_css('.cal-heatmap-container')
+    expect(page).to have_css('.cal-heatmap-container')
   end
 
   def contributed_project

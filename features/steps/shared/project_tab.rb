@@ -46,7 +46,7 @@ module SharedProjectTab
 
   step 'the active main tab should be Settings' do
     within '.nav-sidebar' do
-      page.should have_content('Back to project')
+      expect(page).to have_content('Back to project')
     end
   end
 end

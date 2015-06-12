@@ -9,7 +9,7 @@ class Spinach::Features::Snippets < Spinach::FeatureSteps
   end
 
   step 'I should not see "Personal snippet one" in snippets' do
-    page.should_not have_content "Personal snippet one"
+    expect(page).not_to have_content "Personal snippet one"
   end
 
   step 'I click link "Edit"' do
@@ -32,8 +32,8 @@ class Spinach::Features::Snippets < Spinach::FeatureSteps
   end
 
   step 'I should see snippet "Personal snippet three"' do
-    page.should have_content "Personal snippet three"
-    page.should have_content "Content of snippet three"
+    expect(page).to have_content "Personal snippet three"
+    expect(page).to have_content "Content of snippet three"
   end
 
   step 'I submit new title "Personal snippet new title"' do
@@ -42,7 +42,7 @@ class Spinach::Features::Snippets < Spinach::FeatureSteps
   end
 
   step 'I should see "Personal snippet new title"' do
-    page.should have_content "Personal snippet new title"
+    expect(page).to have_content "Personal snippet new title"
   end
 
   step 'I uncheck "Private" checkbox' do
@@ -51,7 +51,7 @@ class Spinach::Features::Snippets < Spinach::FeatureSteps
   end
 
   step 'I should see "Personal snippet one" public' do
-    page.should have_no_xpath("//i[@class='public-snippet']")
+    expect(page).to have_no_xpath("//i[@class='public-snippet']")
   end
 
   step 'I visit snippet page "Personal snippet one"' do

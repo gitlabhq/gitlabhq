@@ -3,11 +3,11 @@ module SharedMarkdown
 
   def header_should_have_correct_id_and_link(level, text, id, parent = ".wiki")
     node = find("#{parent} h#{level} a##{id}")
-    node[:href].should == "##{id}"
+    expect(node[:href]).to eq "##{id}"
 
     # Work around a weird Capybara behavior where calling `parent` on a node
     # returns the whole document, not the node's actual parent element
-    find(:xpath, "#{node.path}/..").text.should == text
+    expect(find(:xpath, "#{node.path}/..").text).to eq text
   end
 
   step 'Header "Description header" should have correct id and link' do
