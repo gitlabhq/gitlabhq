@@ -233,6 +233,15 @@ describe GitPushService do
 
       expect(Issue.find(issue.id)).to be_opened
     end
+
+    it "doesn't close issues when external issue tracker is in use" do
+      allow(project).to receive(:default_issues_tracker?).and_return(false)
+
+      # The push still shouldn't create cross-reference notes.
+      expect {
+        service.execute(project, user, @oldrev, @newrev, 'refs/heads/hurf')
+      }.not_to change { Note.where(project_id: project.id, system: true).count }
+    end
   end
 
   describe "empty project" do
