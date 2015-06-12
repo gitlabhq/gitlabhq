@@ -10,7 +10,7 @@ class Spinach::Features::AdminDeployKeys < Spinach::FeatureSteps
 
   step 'I should see all public deploy keys' do
     DeployKey.are_public.each do |p|
-      page.should have_content p.title
+      expect(page).to have_content p.title
     end
   end
 
@@ -33,11 +33,11 @@ class Spinach::Features::AdminDeployKeys < Spinach::FeatureSteps
   end
 
   step 'I should be on admin deploy keys page' do
-    current_path.should == admin_deploy_keys_path
+    expect(current_path).to eq admin_deploy_keys_path
   end
 
   step 'I should see newly created deploy key' do
-    page.should have_content(deploy_key.title)
+    expect(page).to have_content(deploy_key.title)
   end
 
   def deploy_key

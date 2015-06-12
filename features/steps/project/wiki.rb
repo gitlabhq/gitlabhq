@@ -6,13 +6,13 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   include WikiHelper
 
   step 'I click on the Cancel button' do
-    within(:css, ".form-actions") do
+    page.within(:css, ".form-actions") do
       click_on "Cancel"
     end
   end
 
   step 'I should be redirected back to the Edit Home Wiki page' do
-    current_path.should == namespace_project_wiki_path(project.namespace, project, :home)
+    expect(current_path).to eq namespace_project_wiki_path(project.namespace, project, :home)
   end
 
   step 'I create the Wiki Home page' do
@@ -21,11 +21,11 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I should see the newly created wiki page' do
-    page.should have_content "Home"
-    page.should have_content "link test"
+    expect(page).to have_content "Home"
+    expect(page).to have_content "link test"
 
     click_link "link test"
-    page.should have_content "Editing"
+    expect(page).to have_content "Editing"
   end
 
   step 'I have an existing Wiki page' do
@@ -47,11 +47,11 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I should see the updated content' do
-    page.should have_content "Updated Wiki Content"
+    expect(page).to have_content "Updated Wiki Content"
   end
 
   step 'I should be redirected back to that Wiki page' do
-    current_path.should == namespace_project_wiki_path(project.namespace, project, @page)
+    expect(current_path).to eq namespace_project_wiki_path(project.namespace, project, @page)
   end
 
   step 'That page has two revisions' do
@@ -63,9 +63,9 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I should see both revisions' do
-    page.should have_content current_user.name
-    page.should have_content "first commit"
-    page.should have_content "second commit"
+    expect(page).to have_content current_user.name
+    expect(page).to have_content "first commit"
+    expect(page).to have_content "second commit"
   end
 
   step 'I click on the "Delete this page" button' do
@@ -73,7 +73,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'The page should be deleted' do
-    page.should have_content "Page was successfully deleted"
+    expect(page).to have_content "Page was successfully deleted"
   end
 
   step 'I click on the "Pages" button' do
@@ -81,8 +81,8 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I should see the existing page in the pages list' do
-    page.should have_content current_user.name
-    page.should have_content @page.title
+    expect(page).to have_content current_user.name
+    expect(page).to have_content @page.title
   end
 
   step 'I have an existing Wiki page with images linked on page' do
@@ -98,30 +98,30 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
     file = Gollum::File.new(wiki.wiki)
     Gollum::Wiki.any_instance.stub(:file).with("image.jpg", "master", true).and_return(file)
     Gollum::File.any_instance.stub(:mime_type).and_return("image/jpeg")
-    page.should have_link('image', href: "image.jpg")
+    expect(page).to have_link('image', href: "image.jpg")
     click_on "image"
   end
 
   step 'I should see the image from wiki repo' do
-    current_path.should match('wikis/image.jpg')
-    page.should_not have_xpath('/html') # Page should render the image which means there is no html involved
+    expect(current_path).to match('wikis/image.jpg')
+    expect(page).not_to have_xpath('/html') # Page should render the image which means there is no html involved
     Gollum::Wiki.any_instance.unstub(:file)
     Gollum::File.any_instance.unstub(:mime_type)
   end
 
   step 'Image should be shown on the page' do
-    page.should have_xpath("//img[@src=\"image.jpg\"]")
+    expect(page).to have_xpath("//img[@src=\"image.jpg\"]")
   end
 
   step 'I click on image link' do
-    page.should have_link('image', href: "image.jpg")
+    expect(page).to have_link('image', href: "image.jpg")
     click_on "image"
   end
 
   step 'I should see the new wiki page form' do
-    current_path.should match('wikis/image.jpg')
-    page.should have_content('New Wiki Page')
-    page.should have_content('Editing - image.jpg')
+    expect(current_path).to match('wikis/image.jpg')
+    expect(page).to have_content('New Wiki Page')
+    expect(page).to have_content('Editing - image.jpg')
   end
 
   step 'I create a New page with paths' do
@@ -130,7 +130,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
     click_on 'Build'
     fill_in "wiki_content", with: 'wiki content'
     click_on "Create page"
-    current_path.should include 'one/two/three'
+    expect(current_path).to include 'one/two/three'
   end
 
   step 'I create a New page with an invalid name' do
@@ -144,7 +144,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I should see non-escaped link in the pages list' do
-    page.should have_xpath("//a[@href='/#{project.path_with_namespace}/wikis/one/two/three']")
+    expect(page).to have_xpath("//a[@href='/#{project.path_with_namespace}/wikis/one/two/three']")
   end
 
   step 'I edit the Wiki page with a path' do
@@ -153,11 +153,11 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I should see a non-escaped path' do
-    current_path.should include 'one/two/three'
+    expect(current_path).to include 'one/two/three'
   end
 
   step 'I should see the Editing page' do
-    page.should have_content('Editing')
+    expect(page).to have_content('Editing')
   end
 
   step 'I view the page history of a Wiki page that has a path' do
@@ -166,7 +166,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I should see the page history' do
-    page.should have_content('History for')
+    expect(page).to have_content('History for')
   end
 
   step 'I search for Wiki content' do

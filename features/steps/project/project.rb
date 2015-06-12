@@ -13,7 +13,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should see project with new settings' do
-    find_field('project_name').value.should == 'NewName'
+    expect(find_field('project_name').value).to eq 'NewName'
   end
 
   step 'change project path settings' do
@@ -22,7 +22,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should see project with new path settings' do
-    project.path.should == 'new-path'
+    expect(project.path).to eq 'new-path'
   end
 
   step 'I change the project avatar' do
@@ -35,13 +35,13 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should see new project avatar' do
-    @project.avatar.should be_instance_of AvatarUploader
+    expect(@project.avatar).to be_instance_of AvatarUploader
     url = @project.avatar.url
-    url.should == "/uploads/project/avatar/#{ @project.id }/gitlab_logo.png"
+    expect(url).to eq "/uploads/project/avatar/#{ @project.id }/gitlab_logo.png"
   end
 
   step 'I should see the "Remove avatar" button' do
-    page.should have_link('Remove avatar')
+    expect(page).to have_link('Remove avatar')
   end
 
   step 'I have an project avatar' do
@@ -59,16 +59,16 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should see the default project avatar' do
-    @project.avatar?.should be_false
+    expect(@project.avatar?).to be_false
   end
 
   step 'I should not see the "Remove avatar" button' do
-    page.should_not have_link('Remove avatar')
+    expect(page).not_to have_link('Remove avatar')
   end
 
   step 'I should see project "Shop" version' do
-    within '.project-side' do
-      page.should have_content '6.7.0.pre'
+    page.within '.project-side' do
+      expect(page).to have_content '6.7.0.pre'
     end
   end
 
@@ -78,7 +78,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should see project default branch changed' do
-    find(:css, 'select#project_default_branch').value.should == 'fix'
+    expect(find(:css, 'select#project_default_branch').value).to eq 'fix'
   end
 
   step 'I select project "Forum" README tab' do
@@ -86,13 +86,13 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should see project "Forum" README' do
-    page.should have_link 'README.md'
-    page.should have_content 'Sample repo for testing gitlab features'
+    expect(page).to have_link 'README.md'
+    expect(page).to have_content 'Sample repo for testing gitlab features'
   end
 
   step 'I should see project "Shop" README' do
-    page.should have_link 'README.md'
-    page.should have_content 'testme'
+    expect(page).to have_link 'README.md'
+    expect(page).to have_content 'testme'
   end
 
   step 'I add project tags' do
@@ -104,14 +104,14 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should not see "New Issue" button' do
-    page.should_not have_link 'New Issue'
+    expect(page).not_to have_link 'New Issue'
   end
 
   step 'I should not see "New Merge Request" button' do
-    page.should_not have_link 'New Merge Request'
+    expect(page).not_to have_link 'New Merge Request'
   end
 
   step 'I should not see "Snippets" button' do
-    page.should_not have_link 'Snippets'
+    expect(page).not_to have_link 'Snippets'
   end
 end
