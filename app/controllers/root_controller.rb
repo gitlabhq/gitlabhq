@@ -7,12 +7,22 @@
 # For users who haven't customized the setting, we simply delegate to
 # `DashboardController#show`, which is the default.
 class RootController < DashboardController
+  before_action :redirect_to_custom_dashboard, only: [:show]
+
   def show
-    case current_user.try(:dashboard)
+    super
+  end
+
+  private
+
+  def redirect_to_custom_dashboard
+    return unless current_user
+
+    case current_user.dashboard
     when 'stars'
       redirect_to starred_dashboard_projects_path
     else
-      super
+      return
     end
   end
 end
