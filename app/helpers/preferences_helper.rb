@@ -20,22 +20,25 @@ module PreferencesHelper
     COLOR_SCHEMES.freeze
   end
 
-  # Populates the dashboard preference select field with more user-friendly
-  # values.
+  # Maps `dashboard` values to more user-friendly option text
+  DASHBOARD_CHOICES = {
+    projects: 'Your Projects (default)',
+    stars:    'Starred Projects'
+  }.with_indifferent_access.freeze
+
+  # Returns an Array usable by a select field for more user-friendly option text
   def dashboard_choices
-    orig = User.dashboards.keys
+    defined = User.dashboards
 
-    choices = [
-      ['Your Projects (default)', orig[0]],
-      ['Starred Projects',        orig[1]]
-    ]
-
-    if orig.size != choices.size
-      # Assure that anyone adding new options updates this method too
-      raise RuntimeError, "`User` defines #{orig.size} dashboard choices," +
-        " but #{__method__} defined #{choices.size}"
+    if defined.size != DASHBOARD_CHOICES.size
+      # Ensure that anyone adding new options updates this method too
+      raise RuntimeError, "`User` defines #{defined.size} dashboard choices," +
+        " but `DASHBOARD_CHOICES` defined #{DASHBOARD_CHOICES.size}."
     else
-      choices
+      defined.map do |key, _|
+        # Use `fetch` so `KeyError` gets raised when a key is missing
+        [DASHBOARD_CHOICES.fetch(key), key]
+      end
     end
   end
 
