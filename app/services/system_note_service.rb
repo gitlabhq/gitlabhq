@@ -262,11 +262,11 @@ class SystemNoteService
   #
   # Example Note text:
   #
-  #   "Approved by @rspeicher"
+  #   "Approved this merge request"
   #
   # Returns the created Note object
   def self.approve_mr(noteable, user)
-    body = "Approved by @#{user.username}"
+    body = "Approved this merge request"
 
     create_note(noteable: noteable, project: noteable.project, author: user, note: body)
   end

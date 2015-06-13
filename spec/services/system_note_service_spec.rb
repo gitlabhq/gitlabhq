@@ -449,9 +449,9 @@ describe SystemNoteService do
 
     it_behaves_like 'a system note'
 
-    context 'when assignee added' do
+    context 'when merge request approved' do
       it 'sets the note text' do
-        expect(subject.note).to eq "Approved by @#{author.username}"
+        expect(subject.note).to eq "Approved this merge request"
       end
     end
   end
