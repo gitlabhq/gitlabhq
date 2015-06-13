@@ -12,7 +12,7 @@ describe Projects::DestroyService do
       Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
     end
 
-    it { Project.all.should_not include(project) }
+    it { expect(Project.all).not_to include(project) }
     it { Dir.exists?(path).should be_falsey }
     it { Dir.exists?(remove_path).should be_falsey }
   end
@@ -23,7 +23,7 @@ describe Projects::DestroyService do
       Sidekiq::Testing.fake! { destroy_project(project, user, {}) }
     end
 
-    it { Project.all.should_not include(project) }
+    it { expect(Project.all).not_to include(project) }
     it { Dir.exists?(path).should be_falsey }
     it { Dir.exists?(remove_path).should be_truthy }
   end

@@ -12,8 +12,8 @@ describe DestroyGroupService do
       destroy_group(group, user)
     end
 
-    it { Group.all.should_not include(group) }
-    it { Project.all.should_not include(project) }
+    it { expect(Group.all).not_to include(group) }
+    it { expect(Project.all).not_to include(project) }
   end
 
   context 'file system' do

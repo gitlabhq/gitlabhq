@@ -56,7 +56,7 @@ describe Gitlab::LDAP::Access do
 
           it "should unblock user in GitLab" do
             access.allowed?
-            user.should_not be_blocked
+            expect(user).not_to be_blocked
           end
         end
       end

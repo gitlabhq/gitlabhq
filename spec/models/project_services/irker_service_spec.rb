@@ -43,7 +43,7 @@ describe IrkerService do
       let(:_recipients) { 'a b c d' }
       it 'should add an error if there is too many recipients' do
         subject.send :check_recipients_count
-        subject.errors.should_not be_blank
+        expect(subject.errors).not_to be_blank
       end
     end
 
