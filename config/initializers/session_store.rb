@@ -1,8 +1,8 @@
 # Be sure to restart your server when you modify this file.
 
-if ActiveRecord::Base.connection.active?  && ActiveRecord::Base.connection.table_exists?('application_settings')
-  Settings.gitlab['session_expire_delay'] = ApplicationSetting.current.session_expire_delay
-end
+require 'gitlab/current_settings'
+include Gitlab::CurrentSettings
+Settings.gitlab['session_expire_delay'] = current_application_settings.session_expire_delay
 
 Gitlab::Application.config.session_store(
   :redis_store, # Using the cookie_store would enable session replay attacks.
