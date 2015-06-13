@@ -23,7 +23,7 @@ describe Gitlab::LDAP::Access do
 
         it "should block user in GitLab" do
           access.allowed?
-          user.should be_blocked
+          expect(user).to be_blocked
         end
       end
 
@@ -44,7 +44,7 @@ describe Gitlab::LDAP::Access do
 
           it "does not unblock user in GitLab" do
             access.allowed?
-            user.should be_blocked
+            expect(user).to be_blocked
           end
         end
 

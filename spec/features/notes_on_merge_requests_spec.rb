@@ -90,7 +90,7 @@ describe 'Comments' do
           #within(".current-note-edit-form") do
             #fill_in "note[note]", with: "Some new content"
             #find(".btn-cancel").click
-            #find(".js-note-text", visible: false).text.should == note.note
+            #expect(find(".js-note-text", visible: false).text).to eq note.note
           #end
         #end
 
