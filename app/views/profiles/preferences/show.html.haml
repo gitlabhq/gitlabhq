@@ -65,7 +65,5 @@
           = link_to('(?)', help_page_path('profile', 'preferences') + '#default-dashboard', target: '_blank')
         .col-sm-10
           = f.select :dashboard, dashboard_choices, {}, class: 'form-control'
-          %p.help-block.hint
-            This setting allows you to customize the default Dashboard page.
     .panel-footer
       = f.submit 'Save', class: 'btn btn-save'
