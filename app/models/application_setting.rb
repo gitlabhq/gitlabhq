@@ -27,10 +27,10 @@ class ApplicationSetting < ActiveRecord::Base
   serialize :restricted_visibility_levels
   serialize :restricted_signup_domains, Array
   attr_accessor :restricted_signup_domains_raw
-  
-  validates :session_expire_delay, 
-  	presence: true, 
-  	numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validates :session_expire_delay,
+    presence: true,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :home_page_url,
     allow_blank: true,
