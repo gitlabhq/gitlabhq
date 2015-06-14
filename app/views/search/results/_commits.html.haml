@@ -1,0 +1,32 @@
+.search-result-row
+  .commits-row-title
+    %strong.str-truncated
+      = link_to commits.title, namespace_project_commit_path(@project.namespace, @project, commits.id), class: "commit_short_id"
+
+    .pull-right
+      = link_to commits.short_id, namespace_project_commit_path(@project.namespace, @project, commits.id), class: "commit_short_id"
+
+    .notes_count
+      - if @note_counts
+        - note_count = @note_counts.fetch(commits.id, 0)
+      - else
+        - notes = commits.notes
+        - note_count = notes.user.count
+
+      - if note_count > 0
+        %span.light
+          %i.fa.fa-comments
+          = note_count
+
+  - if commits.description?
+    .commits-row-description
+      %pre
+        = preserve(gfm(escape_once(commits.description)))
+
+  .commits-row-info
+    = commit_author_link(commits, avatar: true, size: 24)
+    authored
+    .committed_ago
+      #{time_ago_with_tooltip(commits.committed_date)} &nbsp;
+    = link_to_browse_code(@project, commits)
+  %br

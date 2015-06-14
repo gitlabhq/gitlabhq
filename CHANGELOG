@@ -208,6 +208,7 @@ v 8.0.0
   - Fix references to target project issues in Merge Requests markdown preview and textareas (Francesco Levorato)
   - Redirect from incorrectly cased group or project path to correct one (Francesco Levorato)
   - Removed API calls from CE to CI
+  - Include commit logs in project search
 
 v 7.14.3
   - No changes

@@ -87,6 +87,12 @@ class Repository
     commits
   end
 
+  def commits_with_log_matching(query)
+    list = Gitlab::Git::Commit.where(repo: raw_repository, limit: 1000)
+    list = Commit.decorate(list, @project) if list.present?
+    list.select! { |c| c.message.match /#{query}/i }
+  end
+
   def find_branch(name)
     branches.find { |branch| branch.name == name }
   end
