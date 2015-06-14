@@ -51,16 +51,17 @@ class JenkinsService < CiService
   end
 
   def build_page(sha, ref = nil)
-    project_url + "/scm/bySHA1/#{sha}"
+    base_url = ref.nil? || ref == 'master' ? project_url : "#{project_url}_#{ref}"
+    base_url + "/scm/bySHA1/#{sha}"
   end
 
   def commit_status(sha, ref = nil)
-    parsed_url = URI.parse(build_page(sha))
+    parsed_url = URI.parse(build_page(sha, ref))
 
     if parsed_url.userinfo.blank?
-      response = HTTParty.get(build_page(sha), verify: false)
+      response = HTTParty.get(build_page(sha, ref), verify: false)
     else
-      get_url = build_page(sha).gsub("#{parsed_url.userinfo}@", "")
+      get_url = build_page(sha, ref).gsub("#{parsed_url.userinfo}@", "")
       auth = {
           username: URI.decode(parsed_url.user),
           password: URI.decode(parsed_url.password),
