@@ -197,7 +197,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I should see application form' do
-    expect(page).to have_content "New application"
+    expect(page).to have_content "New Application"
   end
 
   step 'I fill application form out and submit' do
