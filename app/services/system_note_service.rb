@@ -212,13 +212,15 @@ class SystemNoteService
   # Check if a cross-reference is disallowed
   #
   # This method prevents adding a "mentioned in !1" note on every single commit
-  # in a merge request.
+  # in a merge request. Additionally, it prevents the creation of references to
+  # external issues (which would fail).
   #
   # noteable  - Noteable object being referenced
   # mentioner - Mentionable object
   #
   # Returns Boolean
   def self.cross_reference_disallowed?(noteable, mentioner)
+    return true if noteable.is_a?(ExternalIssue)
     return false unless mentioner.is_a?(MergeRequest)
     return false unless noteable.is_a?(Commit)
 
