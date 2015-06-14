@@ -22,20 +22,20 @@ describe 'Comments' do
         is_expected.to have_css('.js-main-target-form', visible: true, count: 1)
         expect(find('.js-main-target-form input[type=submit]').value).
           to eq('Add Comment')
-        within('.js-main-target-form') do
+        page.within('.js-main-target-form') do
           expect(page).not_to have_link('Cancel')
         end
       end
 
       describe 'with text' do
         before do
-          within('.js-main-target-form') do
+          page.within('.js-main-target-form') do
             fill_in 'note[note]', with: 'This is awesome'
           end
         end
 
         it 'should have enable submit button and preview button' do
-          within('.js-main-target-form') do
+          page.within('.js-main-target-form') do
             expect(page).not_to have_css('.js-comment-button[disabled]')
             expect(page).to have_css('.js-md-preview-button', visible: true)
           end
@@ -45,7 +45,7 @@ describe 'Comments' do
 
     describe 'when posting a note' do
       before do
-        within('.js-main-target-form') do
+        page.within('.js-main-target-form') do
           fill_in 'note[note]', with: 'This is awsome!'
           find('.js-md-preview-button').click
           click_button 'Add Comment'
@@ -54,11 +54,11 @@ describe 'Comments' do
 
       it 'should be added and form reset' do
         is_expected.to have_content('This is awsome!')
-        within('.js-main-target-form') do
+        page.within('.js-main-target-form') do
           expect(page).to have_no_field('note[note]', with: 'This is awesome!')
           expect(page).to have_css('.js-md-preview', visible: :hidden)
         end
-        within('.js-main-target-form') do
+        page.within('.js-main-target-form') do
           is_expected.to have_css('.js-note-text', visible: true)
         end
       end
@@ -66,7 +66,7 @@ describe 'Comments' do
 
     describe 'when editing a note', js: true do
       it 'should contain the hidden edit form' do
-        within("#note_#{note.id}") do
+        page.within("#note_#{note.id}") do
           is_expected.to have_css('.note-edit-form', visible: false)
         end
       end
@@ -78,7 +78,7 @@ describe 'Comments' do
         end
 
         it 'should show the note edit form and hide the note body' do
-          within("#note_#{note.id}") do
+          page.within("#note_#{note.id}") do
             expect(find('.current-note-edit-form', visible: true)).to be_visible
             expect(find('.note-edit-form', visible: true)).to be_visible
             expect(find(:css, '.note-body > .note-text', visible: false)).not_to be_visible
@@ -90,17 +90,17 @@ describe 'Comments' do
           #within(".current-note-edit-form") do
             #fill_in "note[note]", with: "Some new content"
             #find(".btn-cancel").click
-            #find(".js-note-text", visible: false).text.should == note.note
+            #expect(find(".js-note-text", visible: false).text).to eq note.note
           #end
         #end
 
         it 'appends the edited at time to the note' do
-          within('.current-note-edit-form') do
+          page.within('.current-note-edit-form') do
             fill_in 'note[note]', with: 'Some new content'
             find('.btn-save').click
           end
 
-          within("#note_#{note.id}") do
+          page.within("#note_#{note.id}") do
             is_expected.to have_css('.note_edited_ago')
             expect(find('.note_edited_ago').text).
               to match(/less than a minute ago/)
@@ -115,7 +115,7 @@ describe 'Comments' do
         end
 
         it 'shows the delete link' do
-          within('.note-attachment') do
+          page.within('.note-attachment') do
             is_expected.to have_css('.js-note-attachment-delete')
           end
         end
@@ -150,7 +150,7 @@ describe 'Comments' do
         it { is_expected.to have_css('.js-temp-notes-holder') }
 
         it 'has .new_note css class' do
-          within('.js-temp-notes-holder') do
+          page.within('.js-temp-notes-holder') do
             expect(subject).to have_css('.new_note')
           end
         end
@@ -166,7 +166,7 @@ describe 'Comments' do
         end
 
         it 'should be removed when canceled' do
-          within(".diff-file form[rel$='#{line_code}']") do
+          page.within(".diff-file form[rel$='#{line_code}']") do
             find('.js-close-discussion-note-form').trigger('click')
           end
 
@@ -186,11 +186,11 @@ describe 'Comments' do
       describe 'previewing them separately' do
         before do
           # add two separate texts and trigger previews on both
-          within("tr[id='#{line_code}'] + .js-temp-notes-holder") do
+          page.within("tr[id='#{line_code}'] + .js-temp-notes-holder") do
             fill_in 'note[note]', with: 'One comment on line 7'
             find('.js-md-preview-button').click
           end
-          within("tr[id='#{line_code_2}'] + .js-temp-notes-holder") do
+          page.within("tr[id='#{line_code_2}'] + .js-temp-notes-holder") do
             fill_in 'note[note]', with: 'Another comment on line 10'
             find('.js-md-preview-button').click
           end
@@ -199,7 +199,7 @@ describe 'Comments' do
 
       describe 'posting a note' do
         before do
-          within("tr[id='#{line_code_2}'] + .js-temp-notes-holder") do
+          page.within("tr[id='#{line_code_2}'] + .js-temp-notes-holder") do
             fill_in 'note[note]', with: 'Another comment on line 10'
             click_button('Add Comment')
           end
