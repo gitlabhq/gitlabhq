@@ -20,8 +20,7 @@ describe Projects::TransferService do
       @result = transfer_project(project, user, new_namespace_id: nil)
     end
 
-    it { expect(@result).not_to be_nil } # { result.should be_false } passes on nil
-    it { expect(@result).to be_falsey }
+    it { expect(@result).to eq false }
     it { expect(project.namespace).to eq(user.namespace) }
   end
 
@@ -30,8 +29,7 @@ describe Projects::TransferService do
       @result = transfer_project(project, user, new_namespace_id: group.id)
     end
 
-    it { expect(@result).not_to be_nil } # { result.should be_false } passes on nil
-    it { expect(@result).to be_falsey }
+    it { expect(@result).to eq false }
     it { expect(project.namespace).to eq(user.namespace) }
   end
 

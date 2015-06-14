@@ -12,7 +12,7 @@ describe "Admin::Hooks", feature: true do
   describe "GET /admin/hooks" do
     it "should be ok" do
       visit admin_root_path
-      within ".sidebar-wrapper" do
+      page.within ".sidebar-wrapper" do
         click_on "Hooks"
       end
       expect(current_path).to eq(admin_hooks_path)

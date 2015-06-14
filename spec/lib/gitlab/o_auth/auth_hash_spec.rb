@@ -80,31 +80,31 @@ describe Gitlab::OAuth::AuthHash do
 
   context 'auth_hash constructed with ASCII-8BIT encoding' do
     it 'forces utf8 encoding on uid' do
-      auth_hash.uid.encoding.should eql Encoding::UTF_8
+      expect(auth_hash.uid.encoding).to eql Encoding::UTF_8
     end
 
     it 'forces utf8 encoding on provider' do
-      auth_hash.provider.encoding.should eql Encoding::UTF_8
+      expect(auth_hash.provider.encoding).to eql Encoding::UTF_8
     end
 
     it 'forces utf8 encoding on name' do
-      auth_hash.name.encoding.should eql Encoding::UTF_8
+      expect(auth_hash.name.encoding).to eql Encoding::UTF_8
     end
 
     it 'forces utf8 encoding on full_name' do
-      auth_hash.full_name.encoding.should eql Encoding::UTF_8
+      expect(auth_hash.full_name.encoding).to eql Encoding::UTF_8
     end
 
     it 'forces utf8 encoding on username' do
-      auth_hash.username.encoding.should eql Encoding::UTF_8
+      expect(auth_hash.username.encoding).to eql Encoding::UTF_8
     end
 
     it 'forces utf8 encoding on email' do
-      auth_hash.email.encoding.should eql Encoding::UTF_8
+      expect(auth_hash.email.encoding).to eql Encoding::UTF_8
     end
 
     it 'forces utf8 encoding on password' do
-      auth_hash.password.encoding.should eql Encoding::UTF_8
+      expect(auth_hash.password.encoding).to eql Encoding::UTF_8
     end
   end
 end

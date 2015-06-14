@@ -52,7 +52,7 @@ describe ExternalWikiService do
 
       it 'should replace the wiki url' do
         wiki_path = get_project_wiki_path(project)
-        wiki_path.should match('https://gitlab.com')
+        expect(wiki_path).to match('https://gitlab.com')
       end
     end
   end
