@@ -4,7 +4,7 @@ GitLab provides a way to push update messages to an Irker server. When
 configured, pushes to a project will trigger the service to send data directly
 to the Irker server.
 
-See the project homepage for further info: http://www.catb.org/esr/irker/
+See the project homepage for further info: https://gitlab.com/esr/irker
 
 ## Needed setup
 
