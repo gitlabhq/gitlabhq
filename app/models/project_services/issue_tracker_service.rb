@@ -84,7 +84,7 @@ class IssueTrackerService < Service
       url = URI.parse(self.project_url)
 
       if url.host && url.port
-        http = Net::HTTP.start(url.host, url.port, { open_timeout: 5, read_timeout: 5 })
+        http = Net::HTTP.start(url.host, url.port, { open_timeout: 5, read_timeout: 5, use_ssl: url.scheme == 'https' })
         response = http.head("/")
 
         if response
