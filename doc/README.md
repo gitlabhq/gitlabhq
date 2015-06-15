@@ -7,6 +7,7 @@
 - [Importing to GitLab](workflow/importing/README.md).
 - [Markdown](markdown/markdown.md) GitLab's advanced formatting system.
 - [Permissions](permissions/permissions.md) Learn what each role in a project (guest/reporter/developer/master/owner) can do.
+- [Profile Settings](profile/README.md)
 - [Project Services](project_services/project_services.md) Integrate a project with external services, such as CI and chat.
 - [Public access](public_access/public_access.md) Learn how you can allow public and internal access to projects.
 - [SSH](ssh/README.md) Setup your ssh keys and deploy keys for secure access to your projects.

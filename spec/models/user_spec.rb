@@ -50,12 +50,13 @@
 #  bitbucket_access_token        :string(255)
 #  bitbucket_access_token_secret :string(255)
 #  location                      :string(255)
+#  public_email                  :string(255)      default(""), not null
 #  encrypted_otp_secret          :string(255)
 #  encrypted_otp_secret_iv       :string(255)
 #  encrypted_otp_secret_salt     :string(255)
 #  otp_required_for_login        :boolean
 #  otp_backup_codes              :text
-#  public_email                  :string(255)      default(""), not null
+#  dashboard                     :integer          default(0)
 #
 
 require 'spec_helper'
@@ -329,12 +330,12 @@ describe User do
     end
 
     describe 'with default overrides' do
-      let(:user) { User.new(projects_limit: 123, can_create_group: false, can_create_team: true, theme_id: Gitlab::Theme::BASIC) }
+      let(:user) { User.new(projects_limit: 123, can_create_group: false, can_create_team: true, theme_id: 1) }
 
       it "should apply defaults to user" do
         expect(user.projects_limit).to eq(123)
         expect(user.can_create_group).to be_falsey
-        expect(user.theme_id).to eq(Gitlab::Theme::BASIC)
+        expect(user.theme_id).to eq(1)
       end
     end
   end

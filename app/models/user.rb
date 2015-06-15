@@ -50,12 +50,13 @@
 #  bitbucket_access_token        :string(255)
 #  bitbucket_access_token_secret :string(255)
 #  location                      :string(255)
+#  public_email                  :string(255)      default(""), not null
 #  encrypted_otp_secret          :string(255)
 #  encrypted_otp_secret_iv       :string(255)
 #  encrypted_otp_secret_salt     :string(255)
 #  otp_required_for_login        :boolean
 #  otp_backup_codes              :text
-#  public_email                  :string(255)      default(""), not null
+#  dashboard                     :integer          default(0)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -701,4 +702,8 @@ class User < ActiveRecord::Base
   def can_be_removed?
     !solo_owned_groups.present?
   end
+
+  # User's Dashboard preference
+  # Note: When adding an option, it MUST go on the end of the array.
+  enum dashboard: [:projects, :stars]
 end

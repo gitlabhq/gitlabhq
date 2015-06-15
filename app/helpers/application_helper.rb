@@ -2,26 +2,6 @@ require 'digest/md5'
 require 'uri'
 
 module ApplicationHelper
-  COLOR_SCHEMES = {
-    1 => 'white',
-    2 => 'dark',
-    3 => 'solarized-light',
-    4 => 'solarized-dark',
-    5 => 'monokai',
-  }
-  COLOR_SCHEMES.default = 'white'
-
-  # Helper method to access the COLOR_SCHEMES
-  #
-  # The keys are the `color_scheme_ids`
-  # The values are the `name` of the scheme.
-  #
-  # The preview images are `name-scheme-preview.png`
-  # The stylesheets should use the css class `.name`
-  def color_schemes
-    COLOR_SCHEMES.freeze
-  end
-
   # Check if a particular controller is the current one
   #
   # args - One or more controller names to check
@@ -136,18 +116,6 @@ module ApplicationHelper
     # should be an array of strings
     # so to_s can be called, because it is sufficient and to_json is too slow
     Emoji.names.to_s
-  end
-
-  def app_theme
-    Gitlab::Theme.css_class_by_id(current_user.try(:theme_id))
-  end
-
-  def theme_type
-    Gitlab::Theme.type_css_class_by_id(current_user.try(:theme_id))
-  end
-
-  def user_color_scheme_class
-    COLOR_SCHEMES[current_user.try(:color_scheme_id)] if defined?(current_user)
   end
 
   # Define whenever show last push event
