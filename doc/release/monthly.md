@@ -142,7 +142,8 @@ Tweet about the RC release:
 
 ## Prepare the blog post
 
-1. Start with a complete copy of the [release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/release_blog_template.md) and fill it out.
+1. The blog post template for this release should already exist and might have comments that were added during the month.
+1. Fill out as much of the blog post template as you can.
 1. Make sure the blog post contains information about the GitLab CI release.
 1. Check the changelog of CE and EE for important changes.
 1. Also check the CI changelog
@@ -155,6 +156,7 @@ Tweet about the RC release:
 1. Create a merge request on [GitLab.com](https://gitlab.com/gitlab-com/www-gitlab-com/tree/master)
 1. Assign to one reviewer who will fix spelling issues by editing the branch (either with a git client or by using the online editor)
 1. Comment to the reviewer: '@person Please mention the whole team as soon as you are done (3 workdays before release at the latest)'
+1. Create a complete copy of the [release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/release_blog_template.md) for the release after this.
 
 ## Create CE, EE, CI stable versions
 
