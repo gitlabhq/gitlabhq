@@ -19,14 +19,6 @@ module GroupsHelper
     end
   end
 
-  def group_settings_page?
-    if current_controller?('groups')
-      current_action?('edit') || current_action?('projects')
-    else
-      false
-    end
-  end
-
   def group_icon(group)
     if group.is_a?(String)
       group = Group.find_by(path: group)
