@@ -64,11 +64,10 @@ class @BlobView
   clickHandler: (event) =>
     event.preventDefault()
 
+    @clearHighlight()
+
     lineNumber = $(event.target).data('line-number')
     current = @hashToRange(@_hash)
-
-    # Unhighlight previously highlighted lines
-    $('.hll').removeClass('hll')
 
     if isNaN(current[0]) or !event.shiftKey
       # If there's no current selection, or there is but Shift wasn't held,
@@ -83,6 +82,10 @@ class @BlobView
 
       @setHash(range[0], range[1])
       @highlightRange(range)
+
+  # Unhighlight previously highlighted lines
+  clearHighlight: ->
+    $('.hll').removeClass('hll')
 
   # Convert a URL hash String into line numbers
   #
@@ -145,42 +148,13 @@ class @BlobView
     else
       hash = "#L#{firstLineNumber}-#{lastLineNumber}"
 
-    @setHashWithoutScroll(hash)
-
-  # Prevents the page from scrolling when `location.hash` is set
-  #
-  # This is accomplished by removing the `id` attribute of the matching element,
-  # creating a temporary div at the top of the current viewport, setting the
-  # hash, and then removing the div and restoring the `id` attribute.
-  #
-  # See http://stackoverflow.com/a/1489802/223897
-  #
-  # FIXME (rspeicher): This is still super buggy for me.
-  setHashWithoutScroll: (hash) ->
     @_hash = hash
-
-    # Extract the first ID, in case we were given a range
-    firstID = hash.replace(/-\d+$/, '')
-
-    $node = $(firstID)
-    $node.removeAttr('id')
-
-    $tmp = $('<div></div>')
-      .css(
-        position: 'absolute'
-        top: "#{$(window).scrollTop()}px"
-        visibility: 'hidden'
-      )
-      .attr('id', firstID)
-      .appendTo($('body'))
-
     @__setLocationHash__(hash)
 
-    $tmp.remove()
-    $node.attr('id', firstID)
-
-  # Make the actual `location.hash` change
+  # Make the actual hash change in the browser
   #
   # This method is stubbed in tests.
   __setLocationHash__: (value) ->
-    location.hash = value
+    # We're using pushState instead of assigning location.hash directly to
+    # prevent the page from scrolling on the hashchange event
+    history.pushState({turbolinks: false, url: value}, document.title, value)
