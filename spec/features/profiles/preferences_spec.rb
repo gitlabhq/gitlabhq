@@ -21,9 +21,10 @@ describe 'Profile > Preferences' do
     it 'updates their preference' do
       choose "user_theme_id_#{theme.id}"
 
-      visit page.current_path
-
-      expect(page).to have_checked_field("user_theme_id_#{theme.id}")
+      allowing_for_delay do
+        visit page.current_path
+        expect(page).to have_checked_field("user_theme_id_#{theme.id}")
+      end
     end
 
     it 'reflects the changes immediately' do
@@ -46,9 +47,10 @@ describe 'Profile > Preferences' do
     it 'updates their preference' do
       choose 'user_color_scheme_id_5'
 
-      visit page.current_path
-
-      expect(page).to have_checked_field('user_color_scheme_id_5')
+      allowing_for_delay do
+        visit page.current_path
+        expect(page).to have_checked_field('user_color_scheme_id_5')
+      end
     end
   end
 
