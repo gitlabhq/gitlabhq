@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.13.0 (unreleased)
   - Remove project visibility icons from dashboard projects list
+  - Update ssl_ciphers in Nginx example to remove DHE settings. This will deny forward secrecy for Android 2.3.7, Java 6 and OpenSSL 0.9.8
 
 v 7.12.0 (unreleased)
   - Fix post-receive errors on a push when an external issue tracker is configured (Stan Hu)
