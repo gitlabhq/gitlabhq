@@ -1,4 +1,4 @@
-# BlobView
+# LineHighlighter
 #
 # Handles single- and multi-line selection and highlight for blob views.
 #
@@ -26,11 +26,11 @@
 #       </pre>
 #     </div>
 #   </div>
-class @BlobView
+class @LineHighlighter
   # Internal copy of location.hash so we're not dependent on `location` in tests
   @_hash = ''
 
-  # Initialize a BlobView object
+  # Initialize a LineHighlighter object
   #
   # hash - String URL hash for dependency injection in tests
   constructor: (hash = location.hash) ->

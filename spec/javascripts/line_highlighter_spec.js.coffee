@@ -1,7 +1,7 @@
-#= require blob/blob
+#= require line_highlighter
 
-describe 'BlobView', ->
-  fixture.preload('blob.html')
+describe 'LineHighlighter', ->
+  fixture.preload('line_highlighter.html')
 
   clickLine = (number, eventData = {}) ->
     if $.isEmptyObject(eventData)
@@ -11,25 +11,25 @@ describe 'BlobView', ->
       $("#L#{number}").trigger(e).click()
 
   beforeEach ->
-    fixture.load('blob.html')
-    @class = new BlobView()
+    fixture.load('line_highlighter.html')
+    @class = new LineHighlighter()
     @spies = {
       __setLocationHash__: spyOn(@class, '__setLocationHash__').and.callFake ->
     }
 
   describe 'behavior', ->
     it 'highlights one line given in the URL hash', ->
-      new BlobView('#L13')
+      new LineHighlighter('#L13')
       expect($('#LC13')).toHaveClass('hll')
 
     it 'highlights a range of lines given in the URL hash', ->
-      new BlobView('#L5-25')
+      new LineHighlighter('#L5-25')
       expect($('.hll').length).toBe(21)
       expect($("#LC#{line}")).toHaveClass('hll') for line in [5..25]
 
     it 'scrolls to the first highlighted line on initial load', ->
       spy = spyOn($, 'scrollTo')
-      new BlobView('#L5-25')
+      new LineHighlighter('#L5-25')
       expect(spy).toHaveBeenCalledWith('#L5', jasmine.anything())
 
     it 'discards click events', ->
@@ -38,7 +38,7 @@ describe 'BlobView', ->
       expect(spy).toHaveBeenPrevented()
 
     it 'handles garbage input from the hash', ->
-      func = -> new BlobView('#tree-content-holder')
+      func = -> new LineHighlighter('#tree-content-holder')
       expect(func).not.toThrow()
 
   describe '#clickHandler', ->
