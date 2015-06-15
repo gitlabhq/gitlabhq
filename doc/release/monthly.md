@@ -30,9 +30,6 @@ All steps from issue template are explained below
 ```
 Xth: (7 working days before the 22nd)
 
-- [ ] Update the CE changelog (#LINK)
-- [ ] Update the EE changelog (#LINK)
-- [ ] Update the CI changelog (#LINK)
 - [ ] Triage the omnibus-gitlab milestone
 
 Xth: (6 working days before the 22nd)
