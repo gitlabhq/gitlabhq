@@ -1,6 +1,6 @@
 - if issuable.errors.any?
   .row
-    .col-sm-10.col-sm-offset-2
+    .col-sm-offset-2.col-sm-10
       .alert.alert-danger
         - issuable.errors.full_messages.each do |msg|
           %span= msg

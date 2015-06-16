@@ -80,8 +80,7 @@
             %legend
               Project avatar:
             .form-group
-              .col-sm-2
-              .col-sm-10
+              .col-sm-offset-2.col-sm-10
                 - if @project.avatar?
                   = project_icon("#{@project.namespace.to_param}/#{@project.to_param}", alt: '', class: 'avatar project-avatar s160')
                 %p.light
