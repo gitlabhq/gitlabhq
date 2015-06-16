@@ -227,3 +227,11 @@ Feature: Project Merge Requests
     And I should not see merge button
     When I click link "Approve"
     Then I should see approved merge request "Bug NS-04"
+
+  Scenario: I should see rebase checkbox
+    Given project "Shop" have "Bug NS-05" open merge request with diffs inside
+    And rebase before merge enabled
+    And merge request "Bug NS-05" is mergeable
+    And I visit merge request page "Bug NS-05"
+    And merge request is mergeable
+    Then I should see rebase checkbox

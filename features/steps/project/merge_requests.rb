@@ -356,6 +356,16 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
+  step 'rebase before merge enabled' do
+    project = merge_request.target_project
+    project.merge_requests_rebase_enabled = true
+    project.save!
+  end
+
+  step 'I should see rebase checkbox' do
+    expect(page).to have_content 'Rebase before merge'
+  end
+
   def merge_request
     @merge_request ||= MergeRequest.find_by!(title: "Bug NS-05")
   end
