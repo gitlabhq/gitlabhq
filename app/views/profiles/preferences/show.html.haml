@@ -49,11 +49,12 @@
     .panel-heading
       Code preview theme
     .panel-body
-      - color_schemes.each do |color_scheme_id, color_scheme|
-        = label_tag do
-          .preview= image_tag "#{color_scheme}-scheme-preview.png"
-          = f.radio_button :color_scheme_id, color_scheme_id
-          = color_scheme.tr('-_', ' ').titleize
+      .code_highlight_opts
+        - color_schemes.each do |color_scheme_id, color_scheme|
+          = label_tag do
+            .prev= image_tag "#{color_scheme}-scheme-preview.png"
+            = f.radio_button :color_scheme_id, color_scheme_id
+            = color_scheme.tr('-_', ' ').titleize
 
   .panel.panel-default
     .panel-heading
