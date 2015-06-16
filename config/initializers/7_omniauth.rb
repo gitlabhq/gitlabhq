@@ -17,3 +17,11 @@ OmniAuth.config.allowed_request_methods << :get if Gitlab.config.omniauth.auto_s
 OmniAuth.config.before_request_phase do |env|
   OmniAuth::RequestForgeryProtection.new(env).call
 end
+
+if Gitlab.config.omniauth.enabled
+  Gitlab.config.omniauth.providers.each do |provider|
+    if provider['name'] == 'kerberos'
+      require 'omniauth-kerberos'
+    end
+  end
+end
