@@ -138,7 +138,7 @@ class User < ActiveRecord::Base
   #
   validates :name, presence: true
   # Note that a 'uniqueness' and presence check is provided by devise :validatable for email. We do not need to
-  # duplicate that here as the validation framework will have duplicate errors in the event of a failure
+  # duplicate that here as the validation framework will have duplicate errors in the event of a failure.
   validates :email, presence: true, email: { strict_mode: true }
   validates :notification_email, presence: true, email: { strict_mode: true }
   validates :public_email, presence: true, email: { strict_mode: true }, allow_blank: true, uniqueness: true
