@@ -1,10 +1,8 @@
 require 'spec_helper'
 
 describe 'Profile > Preferences' do
-  let(:user) { create(:user) }
-
   before do
-    login_as(user)
+    login_as(:user)
     visit profile_preferences_path
   end
 
@@ -13,27 +11,27 @@ describe 'Profile > Preferences' do
     let(:theme_5_class) { Gitlab::Theme.css_class_by_id(5) }
 
     it 'creates a flash message' do
-      choose "user_theme_id_#{theme.id}"
+      choose 'user_theme_id_5'
 
       expect_preferences_saved_message
     end
 
     it 'updates their preference' do
-      choose "user_theme_id_#{theme.id}"
+      choose 'user_theme_id_5'
 
       allowing_for_delay do
         visit page.current_path
-        expect(page).to have_checked_field("user_theme_id_#{theme.id}")
+        expect(page).to have_checked_field("user_theme_id_5")
       end
     end
 
     it 'reflects the changes immediately' do
-      expect(page).to have_selector("body.#{default.css_class}")
+      expect(page).to have_selector("body.#{default_class}")
 
-      choose "user_theme_id_#{theme.id}"
+      choose 'user_theme_id_5'
 
-      expect(page).not_to have_selector("body.#{default.css_class}")
-      expect(page).to have_selector("body.#{theme.css_class}")
+      expect(page).not_to have_selector("body.#{default_class}")
+      expect(page).to have_selector("body.#{theme_5_class}")
     end
   end
 
