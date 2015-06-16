@@ -20,7 +20,8 @@ end
 
 if Gitlab.config.omniauth.enabled
   Gitlab.config.omniauth.providers.each do |provider|
-    next unless provider['name'] == 'kerberos'
-    require 'omniauth-kerberos'
+    if provider['name'] == 'kerberos'
+      require 'omniauth-kerberos'
+    end
   end
 end
