@@ -98,16 +98,16 @@ header {
     height: $header-height;
 
     .title {
-      position: relative;
-      float: left;
       margin: 0;
-      margin-left: 35px;
+      padding: 0 15px 0 35px;
+      overflow: hidden;
       font-size: 18px;
       line-height: $header-height;
       font-weight: bold;
       color: #444;
-
-      @include str-truncated(37%);
+      text-overflow: ellipsis;
+      vertical-align: top;
+      white-space: nowrap;
 
       a {
         color: #444;
@@ -115,6 +115,10 @@ header {
           text-decoration: underline;
         }
       }
+    }
+
+    .navbar-collapse {
+      float: right;
     }
   }
 
@@ -167,10 +171,6 @@ header {
 }
 
 @media (max-width: $screen-md-max) {
-  header .container .title {
-    max-width: 43%;
-  }
-
   .header-collapsed, .header-expanded {
     @include collapsed-header;
   }
@@ -190,7 +190,6 @@ header {
     font-size: 18px;
 
     .title {
-      max-width: 70%;
     }
 
     .navbar-nav {
