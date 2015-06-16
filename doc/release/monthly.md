@@ -30,9 +30,6 @@ All steps from issue template are explained below
 ```
 Xth: (7 working days before the 22nd)
 
-- [ ] Update the CE changelog (#LINK)
-- [ ] Update the EE changelog (#LINK)
-- [ ] Update the CI changelog (#LINK)
 - [ ] Triage the omnibus-gitlab milestone
 
 Xth: (6 working days before the 22nd)
@@ -41,6 +38,7 @@ Xth: (6 working days before the 22nd)
 - [ ] Determine QA person and notify this person
 - [ ] Check the tasks in [how to rc1 guide](https://dev.gitlab.org/gitlab/gitlabhq/blob/master/doc/release/howto_rc1.md) and delegate tasks if necessary
 - [ ] Create CE, EE, CI RC1 versions (#LINK)
+- [ ] Build RC1 packages (EE first) (#LINK)
 
 Xth: (5 working days before the 22nd)
 
