@@ -8,11 +8,12 @@
 class @Notes
   @interval: null
 
-  constructor: (notes_url, note_ids, last_fetched_at) ->
+  constructor: (notes_url, note_ids, last_fetched_at, view) ->
     @notes_url = notes_url
     @notes_url = gon.relative_url_root + @notes_url if gon.relative_url_root?
     @note_ids = note_ids
     @last_fetched_at = last_fetched_at
+    @view = view
     @noteable_url = document.URL
     @initRefresh()
     @setupMainTargetNoteForm()
@@ -131,6 +132,8 @@ class @Notes
   isNewNote: (note) ->
     $.inArray(note.id, @note_ids) == -1
 
+  isParallelView: ->
+    @view == 'parallel'
 
   ###
   Render note in discussion area.
@@ -391,6 +394,7 @@ class @Notes
   setupDiscussionNoteForm: (dataHolder, form) =>
     # setup note target
     form.attr "rel", dataHolder.data("discussionId")
+    form.find("#line_type").val dataHolder.data("lineType")
     form.find("#note_commit_id").val dataHolder.data("commitId")
     form.find("#note_line_code").val dataHolder.data("lineCode")
     form.find("#note_noteable_type").val dataHolder.data("noteableType")
@@ -411,19 +415,40 @@ class @Notes
     form = $(".js-new-note-form")
     row = $(link).closest("tr")
     nextRow = row.next()
+    hasNotes = nextRow.is(".notes_holder")
+    addForm = false
+    targetContent = ".notes_content"
+    rowCssToAdd = "<tr class=\"notes_holder js-temp-notes-holder\"><td class=\"notes_line\" colspan=\"2\"></td><td class=\"notes_content\"></td></tr>"
 
-    # does it already have notes?
-    if nextRow.is(".notes_holder")
-      replyButton = nextRow.find(".js-discussion-reply-button")
-      if replyButton.length > 0
-        $.proxy(@replyToDiscussionNote, replyButton).call()
+    # In parallel view, look inside the correct left/right pane
+    if @isParallelView()
+      lineType = $(link).data("lineType")
+      targetContent += "." + lineType
+      rowCssToAdd = "<tr class=\"notes_holder js-temp-notes-holder\"><td class=\"notes_line\"></td><td class=\"notes_content parallel old\"></td><td class=\"notes_line\"></td><td class=\"notes_content parallel new\"></td></tr>"
+
+    if hasNotes
+      notesContent = nextRow.find(targetContent)
+      if notesContent.length
+        replyButton = notesContent.find(".js-discussion-reply-button:visible")
+        if replyButton.length
+          e.target = replyButton[0]
+          $.proxy(@replyToDiscussionNote, replyButton[0], e).call()
+        else
+          # In parallel view, the form may not be present in one of the panes
+          noteForm = notesContent.find(".js-discussion-note-form")
+          if noteForm.length == 0
+            addForm = true
     else
       # add a notes row and insert the form
-      row.after "<tr class=\"notes_holder js-temp-notes-holder\"><td class=\"notes_line\" colspan=\"2\"></td><td class=\"notes_content\"></td></tr>"
-      form.clone().appendTo row.next().find(".notes_content")
+      row.after rowCssToAdd
+      addForm = true
+
+    if addForm
+      newForm = form.clone()
+      newForm.appendTo row.next().find(targetContent)
 
       # show the form
-      @setupDiscussionNoteForm $(link), row.next().find("form")
+      @setupDiscussionNoteForm $(link), newForm
 
   ###
   Called in response to "cancel" on a diff note form.
