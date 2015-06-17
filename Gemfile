@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem "rails", "~> 4.1.0"
+gem 'rails', '4.1.11'
 
 # Default values for AR models
 gem "default_value_for", "~> 3.0.0"
