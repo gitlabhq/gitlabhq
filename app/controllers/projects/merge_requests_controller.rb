@@ -71,7 +71,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def commits
-    render 'show'
+    respond_to do |format|
+      format.html { render 'show' }
+      format.json { render json: { html: view_to_html_string('projects/merge_requests/show/_commits') } }
+    end
   end
 
   def new
