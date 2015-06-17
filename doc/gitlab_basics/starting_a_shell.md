@@ -2,15 +2,17 @@
 
 If you want to start using a shell and GitLab, make sure that you have created an account on [gitlab.com](https://about.gitlab.com/)
 
-## Open a shell in your computer
+## Open a shell
 
-* Depending on your operating system, find the shell of your preference in your computer. Here are some suggestions
+* Depending on your operating system, find the shell of your preference. Here are some suggestions
 
-[Terminal](http://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line) on  Mac OSX
-[GitBash](https://msysgit.github.io) on Windows
-[Linux Terminal](http://www.howtogeek.com/140679/beginner-geek-how-to-start-using-the-linux-terminal/) on Linux
+- [Terminal](http://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line) on  Mac OSX
 
-## Check if Git has already been installed in your computer
+- [GitBash](https://msysgit.github.io) on Windows
+
+- [Linux Terminal](http://www.howtogeek.com/140679/beginner-geek-how-to-start-using-the-linux-terminal/) on Linux
+
+## Check if Git has already been installed
 
 * Git is usually preinstalled on Mac and Linux
 
@@ -41,8 +43,6 @@ git config --global user.name ADD YOUR USERNAME
 ```	
 git config --global user.name
 ```
-
-* And you should get your username
 
 * To set your email address, type the following command
 
