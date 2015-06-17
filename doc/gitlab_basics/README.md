@@ -2,5 +2,6 @@
 
 Step-by-step guides on the basics of working with Git and GitLab.
 
-* [Starting a shell in your computer](starting_a_shell.md)
+* [Start using Git on the commandline](start_using_git.md)
+
 
