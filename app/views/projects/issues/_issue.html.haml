@@ -28,7 +28,7 @@
           = 0
 
   .issue-info
-    = "##{issue.iid} opened #{time_ago_with_tooltip(issue.created_at, 'bottom')} by #{link_to_member(@project, issue.author, avatar: false)}".html_safe
+    = "##{issue.iid} opened #{time_ago_with_tooltip(issue.created_at, placement: 'bottom')} by #{link_to_member(@project, issue.author, avatar: false)}".html_safe
     - if issue.votes_count > 0
       = render 'votes/votes_inline', votable: issue
     - if issue.milestone
@@ -41,4 +41,4 @@
         = issue.task_status
 
     .pull-right.issue-updated-at
-      %small updated #{time_ago_with_tooltip(issue.updated_at, 'bottom', 'issue_update_ago')}
+      %small updated #{time_ago_with_tooltip(issue.updated_at, placement: 'bottom', html_class: 'issue_update_ago')}

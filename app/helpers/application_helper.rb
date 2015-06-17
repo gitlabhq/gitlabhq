@@ -179,14 +179,33 @@ module ApplicationHelper
     BroadcastMessage.current
   end
 
-  def time_ago_with_tooltip(date, placement = 'top', html_class = 'time_ago')
-    capture_haml do
-      haml_tag :time, date.to_s,
-        class: html_class, datetime: date.getutc.iso8601, title: date.in_time_zone.stamp('Aug 21, 2011 9:23pm'),
-        data: { toggle: 'tooltip', placement: placement }
+  # Render a `time` element with Javascript-based relative date and tooltip
+  #
+  # time       - Time object
+  # placement  - Tooltip placement String (default: "top")
+  # html_class - Custom class for `time` element (default: "time_ago")
+  # skip_js    - When true, exclude the `script` tag (default: false)
+  #
+  # By default also includes a `script` element with Javascript necessary to
+  # initialize the `timeago` jQuery extension. If this method is called many
+  # times, for example rendering hundreds of commits, it's advisable to disable
+  # this behavior using the `skip_js` argument and re-initializing `timeago`
+  # manually once all of the elements have been rendered.
+  #
+  # A `js-timeago` class is always added to the element, even when a custom
+  # `html_class` argument is provided.
+  #
+  # Returns an HTML-safe String
+  def time_ago_with_tooltip(time, placement: 'top', html_class: 'time_ago', skip_js: false)
+    element = content_tag :time, time.to_s,
+      class: "#{html_class} js-timeago",
+      datetime: time.getutc.iso8601,
+      title: time.in_time_zone.stamp('Aug 21, 2011 9:23pm'),
+      data: { toggle: 'tooltip', placement: placement }
 
-      haml_tag :script, "$('." + html_class + "').timeago().tooltip()"
-    end.html_safe
+    element += javascript_tag "$('.js-timeago').timeago()" unless skip_js
+
+    element
   end
 
   def render_markup(file_name, file_content)

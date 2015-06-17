@@ -240,6 +240,54 @@ describe ApplicationHelper do
     end
   end
 
+  describe 'time_ago_with_tooltip' do
+    def element(*arguments)
+      time = Time.parse('2015-07-02 08:00')
+      element = time_ago_with_tooltip(time, *arguments)
+
+      Nokogiri::HTML::DocumentFragment.parse(element).first_element_child
+    end
+
+    it 'returns a time element' do
+      expect(element.name).to eq 'time'
+    end
+
+    it 'includes the date string' do
+      expect(element.text).to match %r{2015-07-02 \d{2}:\d{2}:\d{2}}
+    end
+
+    it 'has a datetime attribute' do
+      expect(element.attr('datetime')).to eq '2015-07-02T12:00:00Z'
+    end
+
+    it 'has a formatted title attribute' do
+      expect(element.attr('title')).to eq 'Jul 02, 2015 12:00pm'
+    end
+
+    it 'includes a default js-timeago class' do
+      expect(element.attr('class')).to eq 'time_ago js-timeago'
+    end
+
+    it 'accepts a custom html_class' do
+      expect(element(html_class: 'custom_class').attr('class')).to eq 'custom_class js-timeago'
+    end
+
+    it 'accepts a custom tooltip placement' do
+      expect(element(placement: 'bottom').attr('data-placement')).to eq 'bottom'
+    end
+
+    it 're-initializes timeago Javascript' do
+      el = element.next_element
+
+      expect(el.name).to eq 'script'
+      expect(el.text).to include "$('.js-timeago').timeago()"
+    end
+
+    it 'allows the script tag to be excluded' do
+      expect(element(skip_js: true)).not_to include 'script'
+    end
+  end
+
   describe 'render_markup' do
     let(:content) { 'Noël' }
 

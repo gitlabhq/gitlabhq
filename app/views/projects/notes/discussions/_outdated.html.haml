@@ -14,6 +14,6 @@
       last updated by
       = link_to_member(@project, last_note.author, avatar: false)
       %span.discussion-last-update
-        #{time_ago_with_tooltip(last_note.updated_at, 'bottom', 'discussion_updated_ago')}
+        #{time_ago_with_tooltip(last_note.updated_at, placement: 'bottom', html_class: 'discussion_updated_ago')}
   .discussion-body.js-toggle-content.hide
     = render "projects/notes/discussions/diff", discussion_notes: discussion_notes, note: note
