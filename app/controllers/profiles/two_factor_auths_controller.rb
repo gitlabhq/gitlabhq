@@ -43,8 +43,12 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   private
 
   def build_qr_code
-    issuer = "GitLab | #{current_user.email}"
+    issuer = "#{issuer_host} | #{current_user.email}"
     uri = current_user.otp_provisioning_uri(current_user.email, issuer: issuer)
     RQRCode::render_qrcode(uri, :svg, level: :m, unit: 3)
+  end
+
+  def issuer_host
+    Gitlab.config.gitlab.host
   end
 end
