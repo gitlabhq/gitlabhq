@@ -136,7 +136,7 @@ Assign the issue to the release manager and at mention all members of gitlab cor
 
 Tweet about the RC release:
 
-> GitLab x.x.0.rc1 is out. This release candidate is only suitable for testing. Please link regressions issues from LINK_TO_REGRESSION_ISSUE
+> GitLab x.x.0.rc1 is available https://packages.gitlab.com/gitlab/unstable Don't use in production. Please link regressions issues from LINK_TO_REGRESSION_ISSUE
 
 ## Prepare the blog post
 
