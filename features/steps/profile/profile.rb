@@ -114,27 +114,6 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
     expect(page).to have_content "#{current_user.name} closed issue"
   end
 
-  step "I change my application theme" do
-    page.within '.application-theme' do
-      choose "Violet"
-    end
-  end
-
-  step "I change my code preview theme" do
-    page.within '.code-preview-theme' do
-      choose "Solarized dark"
-    end
-  end
-
-  step "I should see the theme change immediately" do
-    expect(page).to have_selector('body.ui_color')
-    expect(page).not_to have_selector('body.ui_basic')
-  end
-
-  step "I should receive feedback that the changes were saved" do
-    expect(page).to have_content("saved")
-  end
-
   step 'my password is expired' do
     current_user.update_attributes(password_expires_at: Time.now - 1.hour)
   end
@@ -197,7 +176,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I should see application form' do
-    expect(page).to have_content "New application"
+    expect(page).to have_content "New Application"
   end
 
   step 'I fill application form out and submit' do

@@ -27,7 +27,7 @@ module Gitlab
 
         # Get latest 20 commits ASC
         commits_limited = commits.last(20)
-        
+
         # For performance purposes maximum 20 latest commits
         # will be passed as post receive hook data.
         commit_attrs = commits_limited.map(&:hook_attrs)
@@ -70,8 +70,11 @@ module Gitlab
       end
 
       def checkout_sha(repository, newrev, ref)
+        # Checkout sha is nil when we remove branch or tag
+        return if Gitlab::Git.blank_ref?(newrev)
+
         # Find sha for tag, except when it was deleted.
-        if Gitlab::Git.tag_ref?(ref) && !Gitlab::Git.blank_ref?(newrev)
+        if Gitlab::Git.tag_ref?(ref)
           tag_name = Gitlab::Git.ref_name(ref)
           tag = repository.find_tag(tag_name)
 

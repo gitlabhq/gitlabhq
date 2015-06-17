@@ -15,8 +15,8 @@ class Spinach::Features::ProfileActiveTab < Spinach::FeatureSteps
     ensure_active_main_tab('SSH Keys')
   end
 
-  step 'the active main tab should be Design' do
-    ensure_active_main_tab('Design')
+  step 'the active main tab should be Preferences' do
+    ensure_active_main_tab('Preferences')
   end
 
   step 'the active main tab should be History' do

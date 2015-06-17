@@ -58,7 +58,7 @@ describe GitlabCiService do
         service_hook = double
         service_hook.should_receive(:execute)
         @service.should_receive(:service_hook).and_return(service_hook)
-        @service.should_receive(:ci_yaml_file).with(push_sample_data)
+        @service.should_receive(:ci_yaml_file).with(push_sample_data[:checkout_sha])
 
         @service.execute(push_sample_data)
       end

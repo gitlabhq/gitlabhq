@@ -1,8 +1,0 @@
-/**
- * This file represent some UI that can be changed
- * during web app restyle or theme select.
- *
- */
-.ui_basic {
-  @include gitlab-theme(#CCCCCC, #888888, #777777, #666666);
-}

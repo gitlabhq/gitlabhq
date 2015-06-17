@@ -1,10 +1,22 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 7.13.0 (unreleased)
+  - Support commenting on diffs in side-by-side mode (Stan Hu)
+  - Fix JavaScript error when clicking on the comment button on a diff line that has a comment already (Stan Hu)
+  - Remove project visibility icons from dashboard projects list
+  - Rename "Design" profile settings page to "Preferences".
+  - Allow users to customize their default Dashboard page.
+  - Update ssl_ciphers in Nginx example to remove DHE settings. This will deny forward secrecy for Android 2.3.7, Java 6 and OpenSSL 0.9.8
+
 v 7.12.0 (unreleased)
+  - Fix post-receive errors on a push when an external issue tracker is configured (Stan Hu)
   - Update oauth button logos for Twitter and Google to recommended assets
+  - Fix hooks for web based events with external issue references (Daniel Gerhardt)
   - Update browser gem to version 0.8.0 for IE11 support (Stan Hu)
   - Fix timeout when rendering file with thousands of lines.
   - Add "Remember me" checkbox to LDAP signin form.
+  - Add session expiration delay configuration through UI application settings
+  - Fix external issue tracker hook/test for HTTPS URLs (Daniel Gerhardt)
   - Don't notify users mentioned in code blocks or blockquotes.
   - Omit link to generate labels if user does not have access to create them (Stan Hu)
   - Show warning when a comment will add 10 or more people to the discussion.

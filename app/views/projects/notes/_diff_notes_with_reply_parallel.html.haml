@@ -1,34 +1,34 @@
-- note1 = notes1.present? ? notes1.first : nil
-- note2 = notes2.present? ? notes2.first : nil
+- note1 = notes_left.present? ? notes_left.first : nil
+- note2 = notes_right.present? ? notes_right.first : nil
 
 %tr.notes_holder
   - if note1
-    %td.notes_line
+    %td.notes_line.old
       %span.btn.disabled
         %i.fa.fa-comment
-        = notes1.count
-    %td.notes_content.parallel
+        = notes_left.count
+    %td.notes_content.parallel.old
       %ul.notes{ rel: note1.discussion_id }
-        = render notes1
+        = render notes_left
 
       .discussion-reply-holder
-        = link_to_reply_diff(note1)
+        = link_to_reply_diff(note1, 'old')
   - else
-    %td= ""
-    %td= ""
+    %td.notes_line.old= ""
+    %td.notes_content.parallel.old= ""
 
   - if note2
-    %td.notes_line
+    %td.notes_line.new
       %span.btn.disabled
         %i.fa.fa-comment
-        = notes2.count
-    %td.notes_content.parallel
+        = notes_right.count
+    %td.notes_content.parallel.new
       %ul.notes{ rel: note2.discussion_id }
-        = render notes2
+        = render notes_right
 
       .discussion-reply-holder
-        = link_to_reply_diff(note2)
+        = link_to_reply_diff(note2, 'new')
   - else
-    %td= ""
-    %td= ""
+    %td.notes_line.new= ""
+    %td.notes_content.parallel.new= ""
 

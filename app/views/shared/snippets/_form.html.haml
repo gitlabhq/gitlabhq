@@ -12,8 +12,8 @@
 
     = render 'shared/visibility_level', f: f, visibility_level: visibility_level, can_change_visibility_level: true, form_model: @snippet
 
-    .form-group
-      .file-editor
+    .file-editor
+      .form-group
         = f.label :file_name, "File", class: 'control-label'
         .col-sm-10
           .file-holder.snippet

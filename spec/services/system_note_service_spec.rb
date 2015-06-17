@@ -338,6 +338,15 @@ describe SystemNoteService do
           to be_falsey
       end
     end
+
+    context 'when notable is an ExternalIssue' do
+      let(:noteable) { ExternalIssue.new('EXT-1234', project) }
+      it 'is truthy' do
+        mentioner = noteable.dup
+        expect(described_class.cross_reference_disallowed?(noteable, mentioner)).
+          to be_truthy
+      end
+    end
   end
 
   describe '.cross_reference_exists?' do

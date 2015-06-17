@@ -12,8 +12,7 @@
       = f.select :format, options_for_select(ProjectWiki::MARKUPS, {selected: @page.format}), {}, class: "form-control"
 
   .row
-    .col-sm-2
-    .col-sm-10
+    .col-sm-offset-2.col-sm-10
       %p.cgray
         To link to a (new) page you can just type
         %code [Link Title](page-slug)

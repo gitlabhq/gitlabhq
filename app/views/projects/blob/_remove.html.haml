@@ -1,4 +1,4 @@
-#modal-remove-blob.modal.hide
+#modal-remove-blob.modal
   .modal-dialog
     .modal-content
       .modal-header
@@ -13,8 +13,7 @@
           = render 'shared/commit_message_container', params: params,
                    placeholder: 'Removed this file because...'
           .form-group
-            .col-sm-2
-            .col-sm-10
+            .col-sm-offset-2.col-sm-10
               = button_tag 'Remove file', class: 'btn btn-remove btn-remove-file'
               = link_to "Cancel", '#', class: "btn btn-cancel", "data-dismiss" => "modal"
 
