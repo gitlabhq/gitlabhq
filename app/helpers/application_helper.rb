@@ -214,39 +214,6 @@ module ApplicationHelper
     Gitlab::MarkupHelper.asciidoc?(filename)
   end
 
-  # Overrides ActionView::Helpers::UrlHelper#link_to to add `rel="nofollow"` to
-  # external links
-  def link_to(name = nil, options = nil, html_options = {})
-    if options.kind_of?(String)
-      if !options.start_with?('#', '/')
-        html_options = add_nofollow(options, html_options)
-      end
-    end
-
-    super
-  end
-
-  # Add `"rel=nofollow"` to external links
-  #
-  # link         - String link to check
-  # html_options - Hash of `html_options` passed to `link_to`
-  #
-  # Returns `html_options`, adding `rel: nofollow` for external links
-  def add_nofollow(link, html_options = {})
-    begin
-      uri = URI(link)
-
-      if uri && uri.absolute? && uri.host != Gitlab.config.gitlab.host
-        rel = html_options.fetch(:rel, '')
-        html_options[:rel] = (rel + ' nofollow').strip
-      end
-    rescue URI::Error
-      # noop
-    end
-
-    html_options
-  end
-
   def promo_host
     'about.gitlab.com'
   end
