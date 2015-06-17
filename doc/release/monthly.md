@@ -51,7 +51,9 @@ Xth: (4 working days before the 22nd)
 - [ ] Update GitLab.com with rc1 (#LINK) (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#deploy-the-package)
 - [ ] Update ci.gitLab.com with rc1 (#LINK) (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#deploy-the-package)
 - [ ] Create regression issues (CE, CI) (#LINK)
-- [ ] Tweet about rc1 (#LINK)
+- [ ] Tweet about rc1 (#LINK), proposed text: 
+
+> GitLab x.x.0.rc1 is available https://packages.gitlab.com/gitlab/unstable Use at your own risk. Please link regressions issues from LINK_TO_REGRESSION_ISSUE
 
 Xth: (3 working days before the 22nd)
 
