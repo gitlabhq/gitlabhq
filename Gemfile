@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem "rails", "~> 4.1.0"
+gem 'rails', '4.1.11'
 
 # Default values for AR models
 gem "default_value_for", "~> 3.0.0"
@@ -193,7 +193,7 @@ gem 'font-awesome-rails', '~> 4.2'
 gem 'gitlab_emoji',       '~> 0.1'
 gem 'gon',                '~> 5.0.0'
 gem 'jquery-atwho-rails', '~> 1.0.0'
-gem 'jquery-rails',       '3.1.2'
+gem 'jquery-rails',       '3.1.3'
 gem 'jquery-scrollto-rails'
 gem 'jquery-ui-rails'
 gem 'nprogress-rails'
