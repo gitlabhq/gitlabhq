@@ -138,6 +138,7 @@ class Ability
         :read_project,
         :read_wiki,
         :read_issue,
+        :read_label,
         :read_milestone,
         :read_project_snippet,
         :read_project_member,
