@@ -75,7 +75,7 @@ module Mentionable
     refs.reject! { |ref| without.include?(ref) }
 
     refs.each do |ref|
-      Note.create_cross_reference_note(ref, local_reference, a)
+      SystemNoteService.cross_reference(ref, local_reference, a)
     end
   end
 
