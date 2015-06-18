@@ -227,7 +227,7 @@ group :development, :test do
   gem 'pry-rails'
 
   gem 'coveralls', require: false
-  gem 'database_cleaner'
+  gem 'database_cleaner', '~> 1.4.0'
   gem 'factory_girl_rails'
   gem 'rspec-rails', '~> 3.3.0'
   gem 'rubocop', '0.28.0', require: false
