@@ -61,7 +61,7 @@ Xth: (3 working days before the 22nd)
 
 Xth: (2 working days before the 22nd)
 
-- [ ] Check that everyone is mentioned on the blog post (the reviewer should have done this one working day ago)
+- [ ] Check that everyone is mentioned on the blog post using `@all` (the reviewer should have done this one working day ago)
 - [ ] Check that MVP is added to the mvp page (source/mvp/index.html in www-gitlab-com)
 
 Xth: (1 working day before the 22nd)
