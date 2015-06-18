@@ -14,6 +14,8 @@ module CapybaraHelpers
     tries = 0
 
     begin
+      sleep interval
+
       yield
     rescue Capybara::ExpectationNotMet => ex
       if tries <= retries
