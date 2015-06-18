@@ -1,11 +1,13 @@
-- page_title "Design"
+- page_title 'Preferences'
 %h3.page-title
   = page_title
 %p.light
-  Appearance settings will be saved to your profile and made available across all devices.
+  These settings allow you to customize the appearance and behavior of the site.
+  They are saved with your account and will persist to any device you use to
+  access the site.
 %hr
 
-= form_for @user, url: profile_path, remote: true, method: :put do |f|
+= form_for @user, url: profile_preferences_path, remote: true, method: :put, html: {class: 'js-preferences-form form-horizontal'} do |f|
   .panel.panel-default.application-theme
     .panel-heading
       Application theme
@@ -50,7 +52,19 @@
       .code_highlight_opts
         - color_schemes.each do |color_scheme_id, color_scheme|
           = label_tag do
-            .prev
-              = image_tag "#{color_scheme}-scheme-preview.png"
+            .prev= image_tag "#{color_scheme}-scheme-preview.png"
             = f.radio_button :color_scheme_id, color_scheme_id
-            = color_scheme.gsub(/[-_]+/, ' ').humanize
+            = color_scheme.tr('-_', ' ').titleize
+
+  .panel.panel-default
+    .panel-heading
+      Behavior
+    .panel-body
+      .form-group
+        = f.label :dashboard, class: 'control-label' do
+          Default Dashboard
+          = link_to('(?)', help_page_path('profile', 'preferences') + '#default-dashboard', target: '_blank')
+        .col-sm-10
+          = f.select :dashboard, dashboard_choices, {}, class: 'form-control'
+    .panel-footer
+      = f.submit 'Save', class: 'btn btn-save'

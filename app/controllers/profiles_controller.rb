@@ -8,9 +8,6 @@ class ProfilesController < Profiles::ApplicationController
   def show
   end
 
-  def design
-  end
-
   def applications
     @applications = current_user.oauth_applications
     @authorized_tokens = current_user.oauth_authorized_tokens
@@ -29,7 +26,6 @@ class ProfilesController < Profiles::ApplicationController
 
     respond_to do |format|
       format.html { redirect_to :back }
-      format.js
     end
   end
 
@@ -65,10 +61,21 @@ class ProfilesController < Profiles::ApplicationController
 
   def user_params
     params.require(:user).permit(
-      :email, :password, :password_confirmation, :bio, :name,
-      :username, :skype, :linkedin, :twitter, :website_url,
-      :color_scheme_id, :theme_id, :avatar, :hide_no_ssh_key,
-      :hide_no_password, :location, :public_email
+      :avatar,
+      :bio,
+      :email,
+      :hide_no_password,
+      :hide_no_ssh_key,
+      :linkedin,
+      :location,
+      :name,
+      :password,
+      :password_confirmation,
+      :public_email,
+      :skype,
+      :twitter,
+      :username,
+      :website_url
     )
   end
 end

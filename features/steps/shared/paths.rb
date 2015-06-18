@@ -123,8 +123,8 @@ module SharedPaths
     visit profile_keys_path
   end
 
-  step 'I visit profile design page' do
-    visit design_profile_path
+  step 'I visit profile preferences page' do
+    visit profile_preferences_path
   end
 
   step 'I visit profile history page' do

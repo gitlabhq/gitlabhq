@@ -1,3 +1,9 @@
 // Remove body class for any previous theme, re-add current one
 $('body').removeClass('<%= Gitlab::Theme.body_classes %>')
 $('body').addClass('<%= app_theme %> <%= theme_type %>')
+
+// Re-enable the "Save" button
+$('input[type=submit]').enable()
+
+// Show the notice flash message
+new Flash('<%= flash.discard(:notice) %>', 'notice')
