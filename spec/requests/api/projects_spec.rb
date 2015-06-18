@@ -155,7 +155,7 @@ describe API::API, api: true  do
     end
 
     it 'should not create new project without name and return 400' do
-      expect { post api('/projects', user) }.to_not change { Project.count }
+      expect { post api('/projects', user) }.not_to change { Project.count }
       expect(response.status).to eq(400)
     end
 
@@ -254,7 +254,7 @@ describe API::API, api: true  do
 
     it 'should respond with 400 on failure and not project' do
       expect { post api("/projects/user/#{user.id}", admin) }.
-        to_not change { Project.count }
+        not_to change { Project.count }
 
       expect(response.status).to eq(400)
       expect(json_response['message']['name']).to eq([

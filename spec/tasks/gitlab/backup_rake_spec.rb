@@ -150,7 +150,7 @@ describe 'gitlab:app namespace rake task' do
       expect(Rake::Task["gitlab:backup:db:restore"]).to receive :invoke
       expect(Rake::Task["gitlab:backup:repo:restore"]).not_to receive :invoke
       expect(Rake::Task["gitlab:shell:setup"]).to receive :invoke
-      expect { run_rake_task('gitlab:backup:restore') }.to_not raise_error
+      expect { run_rake_task('gitlab:backup:restore') }.not_to raise_error
     end
   end
 end # gitlab:app namespace

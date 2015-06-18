@@ -27,12 +27,12 @@ describe Gitlab::Auth do
 
     it "should not find user with invalid password" do
       password = 'wrong'
-      expect( gl_auth.find(username, password) ).to_not eql user
+      expect( gl_auth.find(username, password) ).not_to eql user
     end
 
     it "should not find user with invalid login" do
       user = 'wrong'
-      expect( gl_auth.find(username, password) ).to_not eql user
+      expect( gl_auth.find(username, password) ).not_to eql user
     end
 
     context "with ldap enabled" do

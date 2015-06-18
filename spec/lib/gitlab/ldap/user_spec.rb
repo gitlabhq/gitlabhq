@@ -35,12 +35,12 @@ describe Gitlab::LDAP::User do
     it "finds the user if already existing" do
       create(:omniauth_user, extern_uid: 'my-uid', provider: 'ldapmain')
 
-      expect{ ldap_user.save }.to_not change{ User.count }
+      expect{ ldap_user.save }.not_to change{ User.count }
     end
 
     it "connects to existing non-ldap user if the email matches" do
       existing_user = create(:omniauth_user, email: 'john@example.com', provider: "twitter")
-      expect{ ldap_user.save }.to_not change{ User.count }
+      expect{ ldap_user.save }.not_to change{ User.count }
 
       existing_user.reload
       expect(existing_user.ldap_identity.extern_uid).to eql 'my-uid'
