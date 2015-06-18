@@ -89,7 +89,7 @@
         = render('merge_requests', title: 'Rejected (closed)', merge_requests: @merge_requests.rejected, id: 'closed')
       .col-md-3
         .panel.panel-primary
-          .panel-heading Accepted
+          .panel-heading Merged
           %ul.well-list
             - @merge_requests.merged.each do |merge_request|
               = render 'merge_request', merge_request: merge_request
