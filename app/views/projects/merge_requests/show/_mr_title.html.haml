@@ -1,11 +1,6 @@
 %h4.page-title
   .issue-box{ class: issue_box_class(@merge_request) }
-    - if @merge_request.merged?
-      Accepted
-    - elsif @merge_request.closed?
-      Rejected
-    - else
-      Open
+    = @merge_request.state_human_name
   = "Merge Request ##{@merge_request.iid}"
   %small.creator
     &middot;

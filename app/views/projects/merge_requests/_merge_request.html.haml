@@ -9,11 +9,11 @@
       - if merge_request.merged?
         %span
           %i.fa.fa-check
-          ACCEPTED
+          MERGED
       - elsif merge_request.closed?
         %span
           %i.fa.fa-ban
-          REJECTED
+          CLOSED
       - else
         %span.hidden-xs.hidden-sm
           %span.label-branch<

@@ -327,10 +327,9 @@ module ApplicationHelper
 
   def state_filters_text_for(entity, project)
     titles = {
-      opened: "Open",
-      merged:  "Accepted"
+      opened: "Open"
     }
-    
+
     entity_title = titles[entity] || entity.to_s.humanize
 
     count =

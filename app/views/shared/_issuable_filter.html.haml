@@ -12,10 +12,10 @@
             = icon('check-circle')
             #{state_filters_text_for(:merged, @project)}
 
-        %li{class: ("active" if params[:state] == 'rejected')}
-          = link_to page_filter_path(state: 'rejected') do
+        %li{class: ("active" if params[:state] == 'closed')}
+          = link_to page_filter_path(state: 'closed') do
             = icon('ban')
-            #{state_filters_text_for(:rejected, @project)}
+            #{state_filters_text_for(:closed, @project)}
       - else
         %li{class: ("active" if params[:state] == 'closed')}
           = link_to page_filter_path(state: 'closed') do
