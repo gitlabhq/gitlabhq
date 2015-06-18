@@ -52,7 +52,7 @@ describe ServiceHook do
 
       expect {
         @service_hook.execute(@data)
-      }.to raise_error
+      }.to raise_error(RuntimeError)
     end
   end
 end
