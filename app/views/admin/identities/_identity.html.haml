@@ -1,0 +1,11 @@
+%tr
+  %td
+    = identity.provider
+  %td
+    = identity.extern_uid
+  %td
+    = link_to [:admin, @user, identity], method: :delete,
+      class: 'btn btn-xs btn-danger',
+      data: { confirm: "Are you sure you want to remove this identity" } do
+      %i.fa.fa-trash
+      Delete

@@ -23,6 +23,8 @@
     %a{"data-toggle" => "tab", href: "#projects"} Projects
   %li
     %a{"data-toggle" => "tab", href: "#ssh-keys"} SSH keys
+  %li
+    %a{"data-toggle" => "tab", href: "#identities"} Identities
 
 .tab-content
   #account.tab-pane.active
@@ -230,3 +232,15 @@
                           %i.fa.fa-times
   #ssh-keys.tab-pane
     = render 'profiles/keys/key_table', admin: true
+
+  #identities.tab-pane
+    - if @user.identities.present?
+      %table.table
+        %thead
+          %tr
+            %th Provider
+            %th Id
+            %th
+        = render @user.identities
+    - else
+      %h4 This user has no identities
