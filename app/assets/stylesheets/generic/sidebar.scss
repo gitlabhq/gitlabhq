@@ -4,12 +4,14 @@
     top: 0;
     left: 0;
     height: 100%;
+    transition-duration: .3s;
   }
 }
 
 .sidebar-wrapper {
   z-index: 99;
   background: $background-color;
+  transition-duration: .3s;
 }
 
 .content-wrapper {
@@ -19,8 +21,10 @@
 }
 
 .nav-sidebar {
+  transition-duration: .3s;
   margin: 0;
   list-style: none;
+  overflow: hidden;
 
   &.navbar-collapse {
     padding: 0px !important;
@@ -32,9 +36,6 @@
   background: #eee;
   padding: 0px 8px;
   @include border-radius(6px);
-}
-
-.nav-sidebar li {
 }
 
 .nav-sidebar li {
@@ -79,6 +80,7 @@
 
 @mixin expanded-sidebar {
   padding-left: $sidebar_width;
+  transition-duration: .3s;
 
   .sidebar-wrapper {
     width: $sidebar_width;
@@ -89,6 +91,10 @@
       top: $header-height;
       width: $sidebar_width;
     }
+
+    .nav-sidebar li a{
+      width: 230px;
+    }
   }
 
   .content-wrapper {
@@ -98,6 +104,7 @@
 
 @mixin folded-sidebar {
   padding-left: 50px;
+  transition-duration: .3s;
 
   .sidebar-wrapper {
     width: $sidebar_collapsed_width;
@@ -112,7 +119,7 @@
         padding-left: 18px;
         font-size: 14px;
         padding: 8px 15px;
-        text-align: center;
+        text-align: left;
 
 
         & > span {
@@ -144,6 +151,7 @@
   height: 28px;
   text-align: center;
   line-height: 28px;
+  transition-duration: .3s;
 }
 
 .collapse-nav a:hover {
@@ -180,8 +188,10 @@
   bottom: 0;
   width: 100%;
   padding: 10px;
+  overflow: hidden;
 
   .username {
     margin-top: 5px;
+    width: 230px;
   }
 }
