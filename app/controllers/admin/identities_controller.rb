@@ -1,13 +1,17 @@
 class Admin::IdentitiesController < Admin::ApplicationController
   before_action :user
-  before_action :identity
+  before_action :identity, except: :index
+
+  def index
+    @identities = @user.identities
+  end
 
   def edit
   end
 
   def update
     if @identity.update_attributes(identity_params)
-      redirect_to admin_user_path(@user), notice: 'User identity was successfully updated.'
+      redirect_to admin_user_identities_path(@user), notice: 'User identity was successfully updated.'
     else
       render :edit
     end
@@ -16,9 +20,9 @@ class Admin::IdentitiesController < Admin::ApplicationController
   def destroy
     respond_to do |format|
       if @identity.destroy
-        format.html { redirect_to [:admin, user], notice: 'User identity was successfully removed.' }
+        format.html { redirect_to admin_user_identities_path(@user), notice: 'User identity was successfully removed.' }
       else
-        format.html { redirect_to [:admin, user], alert: 'Failed to remove user identity.' }
+        format.html { redirect_to admin_user_identities_path(@user), alert: 'Failed to remove user identity.' }
       end
     end
   end
