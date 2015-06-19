@@ -36,7 +36,7 @@
       .panel-heading
         Two-factor Authentication
       .panel-body
-        - if current_user.otp_required_for_login
+        - if current_user.two_factor_enabled?
           .pull-right
             = link_to 'Disable Two-factor Authentication', profile_two_factor_auth_path, method: :delete, class: 'btn btn-close btn-sm',
                 data: { confirm: 'Are you sure?' }

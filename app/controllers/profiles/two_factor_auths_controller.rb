@@ -10,7 +10,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   def create
     if current_user.valid_otp?(params[:pin_code])
-      current_user.otp_required_for_login = true
+      current_user.two_factor_enabled = true
       @codes = current_user.generate_otp_backup_codes!
       current_user.save!
 
@@ -30,7 +30,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   def destroy
     current_user.update_attributes({
-      otp_required_for_login:    false,
+      two_factor_enabled:        false,
       encrypted_otp_secret:      nil,
       encrypted_otp_secret_iv:   nil,
       encrypted_otp_secret_salt: nil,
