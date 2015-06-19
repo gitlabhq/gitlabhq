@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.13.0 (unreleased)
+  - Update maintenance documentation to explain no need to recompile asssets for omnibus installations (Stan Hu)
   - Support commenting on diffs in side-by-side mode (Stan Hu)
   - Fix JavaScript error when clicking on the comment button on a diff line that has a comment already (Stan Hu)
   - Remove project visibility icons from dashboard projects list
