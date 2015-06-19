@@ -118,9 +118,9 @@ describe API::API, api: true  do
     it 'should return merge_request by iid' do
       url = "/projects/#{project.id}/merge_requests?iid=#{merge_request.iid}"
       get api(url, user)
-      response.status.should == 200
-      json_response.first['title'].should == merge_request.title
-      json_response.first['id'].should == merge_request.id
+      expect(response.status).to eq 200
+      expect(json_response.first['title']).to eq merge_request.title
+      expect(json_response.first['id']).to eq merge_request.id
     end
 
     it "should return a 404 error if merge_request_id not found" do

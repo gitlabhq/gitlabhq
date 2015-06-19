@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem "rails", "~> 4.1.0"
+gem 'rails', '4.1.11'
 
 # Default values for AR models
 gem "default_value_for", "~> 3.0.0"
@@ -95,7 +95,7 @@ gem "seed-fu"
 gem 'html-pipeline', '~> 1.11.0'
 gem 'task_list',     '1.0.2', require: 'task_list/railtie'
 gem 'github-markup'
-gem 'redcarpet',     '~> 3.2.3'
+gem 'redcarpet',     '~> 3.3.0'
 gem 'RedCloth'
 gem 'rdoc',          '~>3.6'
 gem 'org-ruby',      '= 0.9.12'
@@ -194,7 +194,7 @@ gem 'font-awesome-rails', '~> 4.2'
 gem 'gitlab_emoji',       '~> 0.1'
 gem 'gon',                '~> 5.0.0'
 gem 'jquery-atwho-rails', '~> 1.0.0'
-gem 'jquery-rails',       '3.1.2'
+gem 'jquery-rails',       '3.1.3'
 gem 'jquery-scrollto-rails'
 gem 'jquery-ui-rails'
 gem 'nprogress-rails'

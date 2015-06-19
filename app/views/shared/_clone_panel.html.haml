@@ -3,6 +3,7 @@
   .input-group-addon.git-protocols
     .input-group-btn
       %button{ |
+        type: 'button', |
         class: "btn btn-sm #{ 'active' if default_clone_protocol == 'ssh' }#{ ' has_tooltip' if current_user && current_user.require_ssh_key? }", |
         :"data-clone" => project.ssh_url_to_repo, |
         :"data-title" => "Add an SSH key to your profile<br> to pull or push via SSH",
@@ -11,6 +12,7 @@
         SSH
     .input-group-btn
       %button{ |
+        type: 'button', |
         class: "btn btn-sm #{ 'active' if default_clone_protocol == 'http' }#{ ' has_tooltip' if current_user && current_user.require_password? }", |
         :"data-clone" => project.http_url_to_repo, |
         :"data-title" => "Set a password on your account<br> to pull or push via #{gitlab_config.protocol.upcase}",

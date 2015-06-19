@@ -28,6 +28,22 @@ module SharedDiffNote
     end
   end
 
+  step 'I leave a diff comment in a parallel view on the left side like "Old comment"' do
+    click_parallel_diff_line(sample_commit.line_code, 'old')
+    page.within("#{diff_file_selector} form[rel$='#{sample_commit.line_code}']") do
+      fill_in "note[note]", with: "Old comment"
+      find(".js-comment-button").trigger("click")
+    end
+  end
+
+  step 'I leave a diff comment in a parallel view on the right side like "New comment"' do
+    click_parallel_diff_line(sample_commit.line_code, 'new')
+    page.within("#{diff_file_selector} form[rel$='#{sample_commit.line_code}']") do
+      fill_in "note[note]", with: "New comment"
+      find(".js-comment-button").trigger("click")
+    end
+  end
+
   step 'I preview a diff comment text like "Should fix it :smile:"' do
     click_diff_line(sample_commit.line_code)
     page.within("#{diff_file_selector} form[rel$='#{sample_commit.line_code}']") do
@@ -102,6 +118,18 @@ module SharedDiffNote
     end
   end
 
+  step 'I should see a diff comment on the left side saying "Old comment"' do
+    page.within("#{diff_file_selector} .notes_content.parallel.old") do
+      expect(page).to have_content("Old comment")
+    end
+  end
+
+  step 'I should see a diff comment on the right side saying "New comment"' do
+    page.within("#{diff_file_selector} .notes_content.parallel.new") do
+      expect(page).to have_content("New comment")
+    end
+  end
+
   step 'I should see a discussion reply button' do
     page.within(diff_file_selector) do
       expect(page).to have_button('Reply')
@@ -157,11 +185,23 @@ module SharedDiffNote
     end
   end
 
+  step 'I click side-by-side diff button' do
+    click_link "Side-by-side"
+  end
+
+  step 'I see side-by-side diff button' do
+    expect(page).to have_content "Side-by-side"
+  end
+
   def diff_file_selector
     ".diff-file:nth-of-type(1)"
   end
 
   def click_diff_line(code)
     find("button[data-line-code='#{code}']").click
+  end
+
+  def click_parallel_diff_line(code, line_type)
+    find("button[data-line-code='#{code}'][data-line-type='#{line_type}']").trigger('click')
   end
 end

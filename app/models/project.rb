@@ -752,4 +752,12 @@ class Project < ActiveRecord::Base
     errors.add(:base, 'Failed create wiki')
     false
   end
+
+  def reference_issue_tracker?
+    default_issues_tracker? || jira_tracker_active?
+  end
+
+  def jira_tracker_active?
+    jira_tracker? && jira_service.active
+  end
 end

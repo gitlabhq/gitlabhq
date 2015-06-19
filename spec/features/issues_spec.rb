@@ -311,10 +311,10 @@ describe 'Issues', feature: true do
   end
 
   def first_issue
-    all('ul.issues-list li').first.text
+    page.all('ul.issues-list li').first.text
   end
 
   def last_issue
-    all('ul.issues-list li').last.text
+    page.all('ul.issues-list li').last.text
   end
 end

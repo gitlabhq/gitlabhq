@@ -4,6 +4,9 @@ Sometimes it is useful to import the database from a production environment
 into a staging environment for testing. The procedure below assumes you have
 SSH+sudo access to both the production environment and the staging VM.
 
+**Destroy your staging VM** when you are done with it. It is important to avoid
+data leaks.
+
 On the staging VM, add the following line to `/etc/gitlab/gitlab.rb` to speed up
 large database imports.
 
@@ -12,6 +15,8 @@ large database imports.
 echo "postgresql['checkpoint_segments'] = 64" | sudo tee -a /etc/gitlab/gitlab.rb
 sudo touch /etc/gitlab/skip-auto-migrations
 sudo gitlab-ctl reconfigure
+sudo gitlab-ctl stop unicorn
+sudo gitlab-ctl stop sidekiq
 ```
 
 Next, we let the production environment stream a compressed SQL dump to our

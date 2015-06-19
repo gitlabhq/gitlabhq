@@ -223,7 +223,6 @@ Gitlab::Application.routes.draw do
   resource :profile, only: [:show, :update] do
     member do
       get :history
-      get :design
       get :applications
 
       put :reset_private_token
@@ -242,6 +241,7 @@ Gitlab::Application.routes.draw do
           put :reset
         end
       end
+      resource :preferences, only: [:show, :update]
       resources :keys
       resources :emails, only: [:index, :create, :destroy]
       resource :avatar, only: [:destroy]
@@ -330,7 +330,7 @@ Gitlab::Application.routes.draw do
     get '/users/auth/:provider/omniauth_error' => 'omniauth_callbacks#omniauth_error', as: :omniauth_error
   end
 
-  root to: "dashboard#show"
+  root to: "root#show"
 
   #
   # Project Area

@@ -1,7 +1,7 @@
 module Issues
   class CloseService < Issues::BaseService
     def execute(issue, commit = nil)
-      if issue.close
+      if project.default_issues_tracker? && issue.close
         event_service.close_issue(issue, current_user)
         create_note(issue, commit)
         notification_service.close_issue(issue, current_user)

@@ -60,9 +60,9 @@ describe API::API, api: true  do
 
       it 'should include the project labels as the tag_list' do
         get api('/projects', user)
-        response.status.should == 200
-        json_response.should be_an Array
-        json_response.first.keys.should include('tag_list')
+        expect(response.status).to eq 200
+        expect(json_response).to be_an Array
+        expect(json_response.first.keys).to include('tag_list')
       end
 
       context 'and using search' do
