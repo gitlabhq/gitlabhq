@@ -41,7 +41,7 @@ shell_path="/bin/bash"
 test -f /etc/default/gitlab && . /etc/default/gitlab
 
 # Switch to the app_user if it is not he/she who is running the script.
-if [ "$USER" != "$app_user" ]; then
+if [ `whoami` != "$app_user" ]; then
   eval su - "$app_user" -s $shell_path -c $(echo \")$0 "$@"$(echo \"); exit;
 fi
 
