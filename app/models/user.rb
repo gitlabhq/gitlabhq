@@ -300,6 +300,18 @@ class User < ActiveRecord::Base
     @reset_token
   end
 
+  # Check if the user has enabled Two-factor Authentication
+  def two_factor_enabled?
+    otp_required_for_login
+  end
+
+  # Set whether or not Two-factor Authentication is enabled for the current user
+  #
+  # setting - Boolean
+  def two_factor_enabled=(setting)
+    self.otp_required_for_login = setting
+  end
+
   def namespace_uniq
     namespace_name = self.username
     existing_namespace = Namespace.by_path(namespace_name)
