@@ -308,18 +308,44 @@ describe User do
     end
   end
 
-  describe 'filter' do
-    before do
-      User.delete_all
-      @user = create :user
-      @admin = create :user, admin: true
-      @blocked = create :user, state: :blocked
+  describe '.filter' do
+    let(:user) { double }
+
+    it 'filters by active users by default' do
+      expect(User).to receive(:active).and_return([user])
+
+      expect(User.filter(nil)).to include user
     end
 
-    it { expect(User.filter("admins")).to eq([@admin]) }
-    it { expect(User.filter("blocked")).to eq([@blocked]) }
-    it { expect(User.filter("wop")).to include(@user, @admin, @blocked) }
-    it { expect(User.filter(nil)).to include(@user, @admin) }
+    it 'filters by admins' do
+      expect(User).to receive(:admins).and_return([user])
+
+      expect(User.filter('admins')).to include user
+    end
+
+    it 'filters by blocked' do
+      expect(User).to receive(:blocked).and_return([user])
+
+      expect(User.filter('blocked')).to include user
+    end
+
+    it 'filters by two_factor_disabled' do
+      expect(User).to receive(:without_two_factor).and_return([user])
+
+      expect(User.filter('two_factor_disabled')).to include user
+    end
+
+    it 'filters by two_factor_enabled' do
+      expect(User).to receive(:with_two_factor).and_return([user])
+
+      expect(User.filter('two_factor_enabled')).to include user
+    end
+
+    it 'filters by wop' do
+      expect(User).to receive(:without_projects).and_return([user])
+
+      expect(User.filter('wop')).to include user
+    end
   end
 
   describe :not_in_project do

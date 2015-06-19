@@ -16,6 +16,46 @@ describe "Admin::Users", feature: true  do
       expect(page).to have_content(@user.email)
       expect(page).to have_content(@user.name)
     end
+
+    describe 'Two-factor Authentication filters' do
+      it 'counts users who have enabled 2FA' do
+        create(:user, two_factor_enabled: true)
+
+        visit admin_users_path
+
+        page.within('.filter-two-factor-enabled small') do
+          expect(page).to have_content('1')
+        end
+      end
+
+      it 'filters by users who have enabled 2FA' do
+        user = create(:user, two_factor_enabled: true)
+
+        visit admin_users_path
+        click_link '2FA Enabled'
+
+        expect(page).to have_content(user.email)
+      end
+
+      it 'counts users who have not enabled 2FA' do
+        create(:user, two_factor_enabled: false)
+
+        visit admin_users_path
+
+        page.within('.filter-two-factor-disabled small') do
+          expect(page).to have_content('2') # Including admin
+        end
+      end
+
+      it 'filters by users who have not enabled 2FA' do
+        user = create(:user, two_factor_enabled: false)
+
+        visit admin_users_path
+        click_link '2FA Disabled'
+
+        expect(page).to have_content(user.email)
+      end
+    end
   end
 
   describe "GET /admin/users/new" do

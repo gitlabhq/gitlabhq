@@ -193,11 +193,13 @@ class User < ActiveRecord::Base
   mount_uploader :avatar, AvatarUploader
 
   # Scopes
-  scope :admins, -> { where(admin:  true) }
+  scope :admins, -> { where(admin: true) }
   scope :blocked, -> { with_state(:blocked) }
   scope :active, -> { with_state(:active) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members)') }
+  scope :with_two_factor,    -> { where('otp_required_for_login IS true') }
+  scope :without_two_factor, -> { where('otp_required_for_login IS NOT true') }
 
   #
   # Class methods
@@ -231,9 +233,16 @@ class User < ActiveRecord::Base
 
     def filter(filter_name)
       case filter_name
-      when "admins"; self.admins
-      when "blocked"; self.blocked
-      when "wop"; self.without_projects
+      when 'admins'
+        self.admins
+      when 'blocked'
+        self.blocked
+      when 'two_factor_disabled'
+        self.without_two_factor
+      when 'two_factor_enabled'
+        self.with_two_factor
+      when 'wop'
+        self.without_projects
       else
         self.active
       end
