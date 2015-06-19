@@ -36,6 +36,6 @@ class Spinach::Features::AdminBroadcastMessages < Spinach::FeatureSteps
 
   step 'I should see a customized broadcast message' do
     expect(page).to have_content 'Application update from 4:00 CST to 5:00 CST'
-    expect(page).to have_selector %(div[style="background-color:#f2dede;color:#b94a48"])
+    expect(page).to have_selector %(div[style="background-color: #f2dede; color: #b94a48"])
   end
 end
