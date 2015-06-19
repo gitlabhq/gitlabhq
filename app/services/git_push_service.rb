@@ -92,7 +92,7 @@ class GitPushService
         end
       end
 
-      if project.default_issues_tracker?
+      if project.reference_issue_tracker?
         create_cross_reference_notes(commit, issues_to_close)
       end
     end
