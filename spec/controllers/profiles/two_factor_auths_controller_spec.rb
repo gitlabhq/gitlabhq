@@ -40,11 +40,11 @@ describe Profiles::TwoFactorAuthsController do
         expect(user).to receive(:valid_otp?).with(pin).and_return(true)
       end
 
-      it 'sets otp_required_for_login' do
+      it 'sets two_factor_enabled' do
         go
 
         user.reload
-        expect(user.otp_required_for_login).to eq true
+        expect(user).to be_two_factor_enabled
       end
 
       it 'presents plaintext codes for the user to save' do
@@ -109,13 +109,13 @@ describe Profiles::TwoFactorAuthsController do
     let!(:codes) { user.generate_otp_backup_codes! }
 
     it 'clears all 2FA-related fields' do
-      expect(user.otp_required_for_login).to eq true
+      expect(user).to be_two_factor_enabled
       expect(user.otp_backup_codes).not_to be_nil
       expect(user.encrypted_otp_secret).not_to be_nil
 
       delete :destroy
 
-      expect(user.otp_required_for_login).to eq false
+      expect(user).not_to be_two_factor_enabled
       expect(user.otp_backup_codes).to be_nil
       expect(user.encrypted_otp_secret).to be_nil
     end
