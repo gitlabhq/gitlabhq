@@ -1,11 +1,21 @@
 class Admin::IdentitiesController < Admin::ApplicationController
-  before_action :user, only: [:destroy]
+  before_action :user
+  before_action :identity
+
+  def edit
+  end
+
+  def update
+    if @identity.update_attributes(identity_params)
+      redirect_to admin_user_path(@user), notice: 'User identity was successfully updated.'
+    else
+      render :edit
+    end
+  end
 
   def destroy
-    identity = user.identities.find(params[:id])
-
     respond_to do |format|
-      if identity.destroy
+      if @identity.destroy
         format.html { redirect_to [:admin, user], notice: 'User identity was successfully removed.' }
       else
         format.html { redirect_to [:admin, user], alert: 'Failed to remove user identity.' }
@@ -17,5 +27,13 @@ class Admin::IdentitiesController < Admin::ApplicationController
 
   def user
     @user ||= User.find_by!(username: params[:user_id])
+  end
+
+  def identity
+    @identity ||= user.identities.find(params[:id])
+  end
+
+  def identity_params
+    params[:identity].permit(:provider, :extern_uid)
   end
 end

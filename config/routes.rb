@@ -149,7 +149,7 @@ Gitlab::Application.routes.draw do
   namespace :admin do
     resources :users, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ } do
       resources :keys, only: [:show, :destroy]
-      resources :identities, only: [:destroy]
+      resources :identities, only: [:edit, :update, :destroy]
 
       member do
         put :team_update
