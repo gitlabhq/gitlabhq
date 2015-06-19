@@ -13,6 +13,7 @@ describe 'LineHighlighter', ->
   beforeEach ->
     fixture.load('line_highlighter.html')
     @class = new LineHighlighter()
+    @css   = @class.highlightClass
     @spies = {
       __setLocationHash__: spyOn(@class, '__setLocationHash__').and.callFake ->
     }
@@ -20,12 +21,12 @@ describe 'LineHighlighter', ->
   describe 'behavior', ->
     it 'highlights one line given in the URL hash', ->
       new LineHighlighter('#L13')
-      expect($('#LC13')).toHaveClass('hll')
+      expect($('#LC13')).toHaveClass(@css)
 
     it 'highlights a range of lines given in the URL hash', ->
       new LineHighlighter('#L5-25')
-      expect($('.hll').length).toBe(21)
-      expect($("#LC#{line}")).toHaveClass('hll') for line in [5..25]
+      expect($(".#{@css}").length).toBe(21)
+      expect($("#LC#{line}")).toHaveClass(@css) for line in [5..25]
 
     it 'scrolls to the first highlighted line on initial load', ->
       spy = spyOn($, 'scrollTo')
@@ -50,14 +51,14 @@ describe 'LineHighlighter', ->
     describe 'without shiftKey', ->
       it 'highlights one line when clicked', ->
         clickLine(13)
-        expect($('#LC13')).toHaveClass('hll')
+        expect($('#LC13')).toHaveClass(@css)
 
       it 'unhighlights previously highlighted lines', ->
         clickLine(13)
         clickLine(20)
 
-        expect($('#LC13')).not.toHaveClass('hll')
-        expect($('#LC20')).toHaveClass('hll')
+        expect($('#LC13')).not.toHaveClass(@css)
+        expect($('#LC20')).toHaveClass(@css)
 
       it 'sets the hash', ->
         spy = spyOn(@class, 'setHash').and.callThrough()
@@ -75,8 +76,8 @@ describe 'LineHighlighter', ->
       describe 'without existing highlight', ->
         it 'highlights the clicked line', ->
           clickLine(13, shiftKey: true)
-          expect($('#LC13')).toHaveClass('hll')
-          expect($('.hll').length).toBe(1)
+          expect($('#LC13')).toHaveClass(@css)
+          expect($(".#{@css}").length).toBe(1)
 
         it 'sets the hash', ->
           spy = spyOn(@class, 'setHash')
@@ -87,14 +88,14 @@ describe 'LineHighlighter', ->
         it 'uses existing line as last line when target is lesser', ->
           clickLine(20)
           clickLine(15, shiftKey: true)
-          expect($('.hll').length).toBe(6)
-          expect($("#LC#{line}")).toHaveClass('hll') for line in [15..20]
+          expect($(".#{@css}").length).toBe(6)
+          expect($("#LC#{line}")).toHaveClass(@css) for line in [15..20]
 
         it 'uses existing line as first line when target is greater', ->
           clickLine(5)
           clickLine(10, shiftKey: true)
-          expect($('.hll').length).toBe(6)
-          expect($("#LC#{line}")).toHaveClass('hll') for line in [5..10]
+          expect($(".#{@css}").length).toBe(6)
+          expect($("#LC#{line}")).toHaveClass(@css) for line in [5..10]
 
       describe 'with existing multi-line highlight', ->
         beforeEach ->
@@ -103,26 +104,26 @@ describe 'LineHighlighter', ->
 
         it 'uses target as first line when it is less than existing first line', ->
           clickLine(5, shiftKey: true)
-          expect($('.hll').length).toBe(6)
-          expect($("#LC#{line}")).toHaveClass('hll') for line in [5..10]
+          expect($(".#{@css}").length).toBe(6)
+          expect($("#LC#{line}")).toHaveClass(@css) for line in [5..10]
 
         it 'uses target as last line when it is greater than existing first line', ->
           clickLine(15, shiftKey: true)
-          expect($('.hll').length).toBe(6)
-          expect($("#LC#{line}")).toHaveClass('hll') for line in [10..15]
+          expect($(".#{@css}").length).toBe(6)
+          expect($("#LC#{line}")).toHaveClass(@css) for line in [10..15]
 
   describe '#hashToRange', ->
     beforeEach ->
       @subject = @class.hashToRange
 
     it 'extracts a single line number from the hash', ->
-      expect(@subject('#L5')).toEqual([5, NaN])
+      expect(@subject('#L5')).toEqual([5, null])
 
     it 'extracts a range of line numbers from the hash', ->
       expect(@subject('#L5-15')).toEqual([5, 15])
 
-    it 'returns [NaN, NaN] when the hash is not a line number', ->
-      expect(@subject('#foo')).toEqual([NaN, NaN])
+    it 'returns [null, null] when the hash is not a line number', ->
+      expect(@subject('#foo')).toEqual([null, null])
 
   describe '#highlightLine', ->
     beforeEach ->
@@ -130,35 +131,15 @@ describe 'LineHighlighter', ->
 
     it 'highlights the specified line', ->
       @subject(13)
-      expect($('#LC13')).toHaveClass('hll')
+      expect($('#LC13')).toHaveClass(@css)
 
     it 'accepts a String-based number', ->
       @subject('13')
-      expect($('#LC13')).toHaveClass('hll')
-
-    it 'returns undefined when given NaN', ->
-      expect(@subject(NaN)).toBe(undefined)
-      expect(@subject('foo')).toBe(undefined)
-
-  describe '#highlightRange', ->
-    beforeEach ->
-      @subject = @class.highlightRange
-
-    it 'returns undefined when first line is NaN', ->
-      expect(@subject([NaN, 15])).toBe(undefined)
-      expect(@subject(['foo', 15])).toBe(undefined)
-
-    it 'returns undefined when given an invalid first line', ->
-      expect(@subject(['foo', 15])).toBe(undefined)
-      expect(@subject([NaN, NaN])).toBe(undefined)
-      expect(@subject('foo')).toBe(undefined)
+      expect($('#LC13')).toHaveClass(@css)
 
   describe '#setHash', ->
     beforeEach ->
       @subject = @class.setHash
-
-    it 'returns undefined when given an invalid first line', ->
-      expect(@subject('foo', 15)).toBe(undefined)
 
     it 'sets the location hash for a single line', ->
       @subject(5)

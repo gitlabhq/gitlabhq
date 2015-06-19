@@ -26,9 +26,13 @@
 #       </pre>
 #     </div>
 #   </div>
+#
 class @LineHighlighter
+  # CSS class applied to highlighted lines
+  highlightClass: 'hll'
+
   # Internal copy of location.hash so we're not dependent on `location` in tests
-  @_hash = ''
+  _hash: ''
 
   # Initialize a LineHighlighter object
   #
@@ -41,7 +45,7 @@ class @LineHighlighter
     unless hash == ''
       range = @hashToRange(hash)
 
-      unless isNaN(range[0])
+      if range[0]
         @highlightRange(range)
 
         # Scroll to the first highlighted line on initial load
@@ -69,7 +73,7 @@ class @LineHighlighter
     lineNumber = $(event.target).data('line-number')
     current = @hashToRange(@_hash)
 
-    if isNaN(current[0]) or !event.shiftKey
+    unless current[0] and event.shiftKey
       # If there's no current selection, or there is but Shift wasn't held,
       # treat this like a single-line selection.
       @setHash(lineNumber)
@@ -85,7 +89,7 @@ class @LineHighlighter
 
   # Unhighlight previously highlighted lines
   clearHighlight: ->
-    $('.hll').removeClass('hll')
+    $(".#{@highlightClass}").removeClass(@highlightClass)
 
   # Convert a URL hash String into line numbers
   #
@@ -93,60 +97,44 @@ class @LineHighlighter
   #
   # Examples:
   #
-  #   hashToRange('#L5')    # => [5, NaN]
+  #   hashToRange('#L5')    # => [5, null]
   #   hashToRange('#L5-15') # => [5, 15]
-  #   hashToRange('#foo')   # => [NaN, NaN]
+  #   hashToRange('#foo')   # => [null, null]
   #
   # Returns an Array
   hashToRange: (hash) ->
-    first = parseInt(hash.replace(/^#L(\d+)/, '$1'))
-    last  = parseInt(hash.replace(/^#L\d+-(\d+)/, '$1'))
+    matches = hash.match(/^#?L(\d+)(?:-(\d+))?$/)
 
-    [first, last]
+    if matches and matches.length
+      first = parseInt(matches[1])
+      last  = matches[2] and parseInt(matches[2]) or null
+
+      [first, last]
+    else
+      [null, null]
 
   # Highlight a single line
   #
-  # lineNumber - Number to highlight. Must be parsable as an Integer.
-  #
-  # Returns undefined if lineNumber is not parsable as an Integer.
-  highlightLine: (lineNumber) ->
-    return if isNaN(parseInt(lineNumber))
-
-    $("#LC#{lineNumber}").addClass('hll')
+  # lineNumber - Line number to highlight
+  highlightLine: (lineNumber) =>
+    $("#LC#{lineNumber}").addClass(@highlightClass)
 
   # Highlight all lines within a range
   #
-  # range - An Array of starting and ending line numbers.
-  #
-  # Examples:
-  #
-  #   # Highlight lines 5 through 15
-  #   highlightRange([5, 15])
-  #
-  #   # The first value is required, and must be a number
-  #   highlightRange(['foo', 15]) # Invalid, returns undefined
-  #   highlightRange([NaN, NaN])  # Invalid, returns undefined
-  #
-  #   # The second value is optional; if omitted, only highlights the first line
-  #   highlightRange([5, NaN]) # Valid
-  #
-  # Returns undefined if the first line is NaN.
+  # range - Array containing the starting and ending line numbers
   highlightRange: (range) ->
-    return if isNaN(range[0])
-
-    if isNaN(range[1])
-      @highlightLine(range[0])
-    else
+    if range[1]
       for lineNumber in [range[0]..range[1]]
         @highlightLine(lineNumber)
-
-  setHash: (firstLineNumber, lastLineNumber) =>
-    return if isNaN(parseInt(firstLineNumber))
-
-    if isNaN(parseInt(lastLineNumber))
-      hash = "#L#{firstLineNumber}"
     else
+      @highlightLine(range[0])
+
+  # Set the URL hash string
+  setHash: (firstLineNumber, lastLineNumber) =>
+    if lastLineNumber
       hash = "#L#{firstLineNumber}-#{lastLineNumber}"
+    else
+      hash = "#L#{firstLineNumber}"
 
     @_hash = hash
     @__setLocationHash__(hash)
