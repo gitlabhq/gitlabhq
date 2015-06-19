@@ -28,7 +28,7 @@ Feature: Admin Users
     When I submit modified user
     Then I see user attributes changed
 
-@javascript
+  @javascript
   Scenario: Remove users secondary email
     Given I visit admin users page
     And I view the user with secondary email
@@ -45,3 +45,20 @@ Feature: Admin Users
     Then I should see key details
     And I click on remove key
     Then I should see the key removed
+
+  Scenario: Show user identities
+    Given user "Pete" with twitter account
+    And I visit "Pete" identities page in admin
+    Then I should see twitter details
+
+  Scenario: Update user identities
+    Given user "Pete" with twitter account
+    And I visit "Pete" identities page in admin
+    And I modify twitter identity
+    Then I should see twitter details updated
+
+  Scenario: Remove user identities
+    Given user "Pete" with twitter account
+    And I visit "Pete" identities page in admin
+    And I remove twitter identity
+    Then I should not see twitter details
