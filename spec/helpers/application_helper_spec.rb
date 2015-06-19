@@ -242,7 +242,8 @@ describe ApplicationHelper do
 
   describe 'time_ago_with_tooltip' do
     def element(*arguments)
-      time = Time.parse('2015-07-02 08:00')
+      Time.zone = 'UTC'
+      time = Time.zone.parse('2015-07-02 08:00')
       element = time_ago_with_tooltip(time, *arguments)
 
       Nokogiri::HTML::DocumentFragment.parse(element).first_element_child
@@ -253,15 +254,15 @@ describe ApplicationHelper do
     end
 
     it 'includes the date string' do
-      expect(element.text).to match %r{2015-07-02 \d{2}:\d{2}:\d{2}}
+      expect(element.text).to eq '2015-07-02 08:00:00 UTC'
     end
 
     it 'has a datetime attribute' do
-      expect(element.attr('datetime')).to eq '2015-07-02T12:00:00Z'
+      expect(element.attr('datetime')).to eq '2015-07-02T08:00:00Z'
     end
 
     it 'has a formatted title attribute' do
-      expect(element.attr('title')).to eq 'Jul 02, 2015 12:00pm'
+      expect(element.attr('title')).to eq 'Jul 02, 2015 8:00am'
     end
 
     it 'includes a default js-timeago class' do
