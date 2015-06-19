@@ -8,6 +8,8 @@ v 7.13.0 (unreleased)
   - Rename "Design" profile settings page to "Preferences".
   - Allow users to customize their default Dashboard page.
   - Update ssl_ciphers in Nginx example to remove DHE settings. This will deny forward secrecy for Android 2.3.7, Java 6 and OpenSSL 0.9.8
+  - Allow Administrators to filter the user list by those with or without Two-factor Authentication enabled.
+  - Show a user's Two-factor Authentication status in the administration area.
 
 v 7.12.0 (unreleased)
   - Fix post-receive errors on a push when an external issue tracker is configured (Stan Hu)
