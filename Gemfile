@@ -240,7 +240,7 @@ group :development, :test do
   gem 'ffaker', '~> 2.0.0'
 
   # PhantomJS driver for Capybara
-  gem 'poltergeist', '~> 1.5.1'
+  gem 'poltergeist', '~> 1.6.0'
 
   gem 'teaspoon', '~> 1.0.0'
   gem 'teaspoon-jasmine'
