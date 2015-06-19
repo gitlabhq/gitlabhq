@@ -73,7 +73,7 @@ class @LineHighlighter
     lineNumber = $(event.target).data('line-number')
     current = @hashToRange(@_hash)
 
-    unless current[0] and event.shiftKey
+    unless current[0] && event.shiftKey
       # If there's no current selection, or there is but Shift wasn't held,
       # treat this like a single-line selection.
       @setHash(lineNumber)
@@ -105,9 +105,9 @@ class @LineHighlighter
   hashToRange: (hash) ->
     matches = hash.match(/^#?L(\d+)(?:-(\d+))?$/)
 
-    if matches and matches.length
+    if matches && matches.length
       first = parseInt(matches[1])
-      last  = matches[2] and parseInt(matches[2]) or null
+      last  = if matches[2] then parseInt(matches[2]) else null
 
       [first, last]
     else
