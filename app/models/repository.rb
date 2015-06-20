@@ -5,8 +5,13 @@ class Repository
 
   def initialize(path_with_namespace, default_branch = nil, project = nil)
     @path_with_namespace = path_with_namespace
-    @raw_repository = Gitlab::Git::Repository.new(path_to_repo) if path_with_namespace
     @project = project
+
+    if path_with_namespace
+      @raw_repository = Gitlab::Git::Repository.new(path_to_repo) 
+      @raw_repository.autocrlf = :input
+    end
+
   rescue Gitlab::Git::Repository::NoRepository
     nil
   end

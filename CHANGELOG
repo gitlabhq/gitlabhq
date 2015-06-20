@@ -8,6 +8,7 @@ v 7.13.0 (unreleased)
   - Rename "Design" profile settings page to "Preferences".
   - Allow users to customize their default Dashboard page.
   - Update ssl_ciphers in Nginx example to remove DHE settings. This will deny forward secrecy for Android 2.3.7, Java 6 and OpenSSL 0.9.8
+  - Convert CRLF newlines to LF when committing using the web editor.
 
 v 7.12.0 (unreleased)
   - Fix Error 500 when one user attempts to access a personal, internal snippet (Stan Hu)
