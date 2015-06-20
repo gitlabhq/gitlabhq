@@ -39,4 +39,9 @@ module LoginHelpers
   def logout
     find(:css, ".fa.fa-sign-out").click
   end
+
+  # Logout without JavaScript driver
+  def logout_direct
+    page.driver.submit :delete, '/users/sign_out', {}
+  end
 end
