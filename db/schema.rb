@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150610065936) do
+ActiveRecord::Schema.define(version: 20150620233230) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -499,7 +499,7 @@ ActiveRecord::Schema.define(version: 20150610065936) do
     t.string   "encrypted_otp_secret"
     t.string   "encrypted_otp_secret_iv"
     t.string   "encrypted_otp_secret_salt"
-    t.boolean  "otp_required_for_login"
+    t.boolean  "otp_required_for_login",        default: false, null: false
     t.text     "otp_backup_codes"
     t.string   "public_email",                  default: "",    null: false
     t.integer  "dashboard",                     default: 0

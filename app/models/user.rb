@@ -50,12 +50,12 @@
 #  bitbucket_access_token        :string(255)
 #  bitbucket_access_token_secret :string(255)
 #  location                      :string(255)
-#  public_email                  :string(255)      default(""), not null
 #  encrypted_otp_secret          :string(255)
 #  encrypted_otp_secret_iv       :string(255)
 #  encrypted_otp_secret_salt     :string(255)
-#  otp_required_for_login        :boolean
+#  otp_required_for_login        :boolean          default(FALSE), not null
 #  otp_backup_codes              :text
+#  public_email                  :string(255)      default(""), not null
 #  dashboard                     :integer          default(0)
 #
 
@@ -198,8 +198,8 @@ class User < ActiveRecord::Base
   scope :active, -> { with_state(:active) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members)') }
-  scope :with_two_factor,    -> { where('otp_required_for_login IS true') }
-  scope :without_two_factor, -> { where('otp_required_for_login IS NOT true') }
+  scope :with_two_factor,    -> { where(otp_required_for_login: true) }
+  scope :without_two_factor, -> { where(otp_required_for_login: false) }
 
   #
   # Class methods
