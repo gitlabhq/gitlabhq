@@ -10,7 +10,8 @@ describe ExtractsPath do
   before do
     @project = project
 
-    repo = double(ref_names: ['master', 'foo/bar/baz', 'v1.0.0', 'v2.0.0'])
+    repo = double(ref_names: ['master', 'foo/bar/baz', 'v1.0.0', 'v2.0.0',
+                              'release/app', 'release/app/v1.0.0'])
     allow(project).to receive(:repository).and_return(repo)
     allow(project).to receive(:path_with_namespace).
       and_return('gitlab/gitlab-ci')
@@ -54,11 +55,17 @@ describe ExtractsPath do
       it "falls back to a primitive split for an invalid ref" do
         expect(extract_ref('stable')).to eq(['stable', ''])
       end
+
+      it "extracts the longest matching ref" do
+        expect(extract_ref('release/app/v1.0.0/README.md')).to eq(
+          ['release/app/v1.0.0', 'README.md'])
+      end
     end
 
     context "with a path" do
       it "extracts a valid branch" do
-        expect(extract_ref('foo/bar/baz/CHANGELOG')).to eq(['foo/bar/baz', 'CHANGELOG'])
+        expect(extract_ref('foo/bar/baz/CHANGELOG')).to eq(
+          ['foo/bar/baz', 'CHANGELOG'])
       end
 
       it "extracts a valid tag" do
