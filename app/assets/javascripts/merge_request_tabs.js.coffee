@@ -18,11 +18,11 @@ class @MergeRequestTabs
     action = $target.data('action')
 
     # Lazy-load commits
-    if action == 'commits' and not @commitsLoaded
+    if action == 'commits' && !@commitsLoaded
       @loadCommits()
 
     # Lazy-load diffs
-    if action == 'diffs' and not @diffsLoaded
+    if action == 'diffs' && !@diffsLoaded
       @loadDiff()
 
     @setCurrentAction(action)
