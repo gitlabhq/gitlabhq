@@ -28,6 +28,10 @@ module SharedAuthentication
     logout
   end
 
+  step "I logout directly" do
+    logout_direct
+  end
+
   def current_user
     @user || User.first
   end
