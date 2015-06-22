@@ -3,9 +3,9 @@ require 'spec_helper'
 describe GitPushService do
   include RepoHelpers
 
-  let (:user)          { create :user }
-  let (:project)       { create :project }
-  let (:service) { GitPushService.new }
+  let(:user)          { create :user }
+  let(:project)       { create :project }
+  let(:service) { GitPushService.new }
 
   before do
     @blankrev = Gitlab::Git::BLANK_SHA

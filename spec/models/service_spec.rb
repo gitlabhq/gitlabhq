@@ -36,7 +36,7 @@ describe Service do
     end
 
     describe "Testable" do
-      let (:project) { create :project }
+      let(:project) { create :project }
 
       before do
         @service.stub(
@@ -51,7 +51,7 @@ describe Service do
     end
 
     describe "With commits" do
-      let (:project) { create :project }
+      let(:project) { create :project }
 
       before do
         @service.stub(

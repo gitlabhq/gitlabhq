@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'Gitlab::Popen', no_db: true do
-  let (:path) { Rails.root.join('tmp').to_s }
+  let(:path) { Rails.root.join('tmp').to_s }
 
   before do
     @klass = Class.new(Object)
