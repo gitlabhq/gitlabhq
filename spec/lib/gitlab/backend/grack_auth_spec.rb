@@ -6,13 +6,13 @@ describe Grack::Auth do
 
   let(:app)   { lambda { |env| [200, {}, "Success!"] } }
   let!(:auth) { Grack::Auth.new(app) }
-  let(:env) {
+  let(:env) do
     {
-      "rack.input" => "",
-      "REQUEST_METHOD" => "GET",
-      "QUERY_STRING" => "service=git-upload-pack"
+      'rack.input'     => '',
+      'REQUEST_METHOD' => 'GET',
+      'QUERY_STRING'   => 'service=git-upload-pack'
     }
-  }
+  end
   let(:status) { auth.call(env).first }
 
   describe "#call" do

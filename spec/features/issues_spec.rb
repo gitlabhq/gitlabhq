@@ -36,9 +36,7 @@ describe 'Issues', feature: true do
       end
 
       it 'does not change issue count' do
-        expect {
-          click_button 'Save changes'
-        }.to_not change { Issue.count }
+        expect { click_button 'Save changes' }.to_not change { Issue.count }
       end
 
       it 'should update issue fields' do

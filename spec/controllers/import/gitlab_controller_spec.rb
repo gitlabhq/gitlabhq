@@ -49,21 +49,17 @@ describe Import::GitlabController do
 
   describe "POST create" do
     let(:gitlab_username) { user.username }
-
-    let(:gitlab_user) {
-      {
-        username: gitlab_username
-      }.with_indifferent_access
-    }
-
-    let(:gitlab_repo) {
+    let(:gitlab_user) do
+      { username: gitlab_username }.with_indifferent_access
+    end
+    let(:gitlab_repo) do
       {
         path: 'vim',
         path_with_namespace: "#{gitlab_username}/vim",
         owner: { name: gitlab_username },
         namespace: { path: gitlab_username }
       }.with_indifferent_access
-    }
+    end
 
     before do
       controller.stub_chain(:client, :user).and_return(gitlab_user)

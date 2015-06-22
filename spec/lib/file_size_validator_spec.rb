@@ -22,8 +22,13 @@ describe 'Gitlab::FileSizeValidatorSpec' do
   end
 
   describe 'options uses a symbol' do
-    let(:options) { { maximum: :test,
-                      attributes: { attachment: attachment } } }
+    let(:options) do
+      {
+        maximum: :test,
+        attributes: { attachment: attachment }
+      }
+    end
+
     before do
       allow(note).to receive(:test) { 10 }
     end

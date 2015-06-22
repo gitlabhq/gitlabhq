@@ -50,9 +50,7 @@ describe ServiceHook do
     it "catches exceptions" do
       expect(WebHook).to receive(:post).and_raise("Some HTTP Post error")
 
-      expect {
-        @service_hook.execute(@data)
-      }.to raise_error
+      expect { @service_hook.execute(@data) }.to raise_error
     end
   end
 end

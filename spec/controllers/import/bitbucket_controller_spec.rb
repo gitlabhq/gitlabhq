@@ -12,7 +12,7 @@ describe Import::BitbucketController do
     before do
       session[:oauth_request_token] = {}
     end
-    
+
     it "updates access token" do
       token = "asdasd12345"
       secret = "sekrettt"
@@ -57,20 +57,13 @@ describe Import::BitbucketController do
   describe "POST create" do
     let(:bitbucket_username) { user.username }
 
-    let(:bitbucket_user) {
-      {
-        user: {
-          username: bitbucket_username
-        }
-      }.with_indifferent_access
-    }
+    let(:bitbucket_user) do
+      { user: { username: bitbucket_username } }.with_indifferent_access
+    end
 
-    let(:bitbucket_repo) {
-      {
-        slug: "vim",
-        owner: bitbucket_username
-      }.with_indifferent_access
-    }
+    let(:bitbucket_repo) do
+      { slug: "vim", owner: bitbucket_username }.with_indifferent_access
+    end
 
     before do
       allow(Gitlab::BitbucketImport::KeyAdder).

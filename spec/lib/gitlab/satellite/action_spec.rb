@@ -33,10 +33,10 @@ describe 'Gitlab::Satellite::Action' do
 
       #These must happen in the context of the satellite directory...
       satellite_action = Gitlab::Satellite::Action.new(user, project)
-      project.satellite.lock {
+      project.satellite.lock do
         #Now clean it up, use send to get around prepare_satellite! being protected
         satellite_action.send(:prepare_satellite!, repo)
-      }
+      end
 
       #verify it's clean
       heads = repo.heads.map(&:name)

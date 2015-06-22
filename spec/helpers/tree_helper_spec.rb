@@ -4,10 +4,9 @@ describe TreeHelper do
   describe 'flatten_tree' do
     let(:project) { create(:project) }
 
-    before {
-      @repository = project.repository
-      @commit = project.commit("e56497bb")
-    }
+    before do
+      @repository = project.repository @commit = project.commit("e56497bb")
+    end
 
     context "on a directory containing more than one file/directory" do
       let(:tree_item) { double(name: "files", path: "files") }

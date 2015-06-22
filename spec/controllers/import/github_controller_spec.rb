@@ -57,14 +57,14 @@ describe Import::GithubController do
 
   describe "POST create" do
     let(:github_username) { user.username }
-
-    let(:github_user) {
-      OpenStruct.new(login: github_username)
-    }
-
-    let(:github_repo) {
-      OpenStruct.new(name: 'vim', full_name: "#{github_username}/vim", owner: OpenStruct.new(login: github_username))
-    }
+    let(:github_user) { OpenStruct.new(login: github_username) }
+    let(:github_repo) do
+      OpenStruct.new(
+        name: 'vim',
+        full_name: "#{github_username}/vim",
+        owner: OpenStruct.new(login: github_username)
+      )
+    end
 
     before do
       controller.stub_chain(:client, :user).and_return(github_user)
