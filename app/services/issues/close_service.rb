@@ -3,7 +3,10 @@ module Issues
     def execute(issue, commit = nil)
       if project.jira_tracker? && project.jira_service.active
         project.jira_service.execute(commit, issue)
-      elsif project.default_issues_tracker? && issue.close
+        return issue
+      end
+
+      if project.default_issues_tracker? && issue.close
         event_service.close_issue(issue, current_user)
         create_note(issue, commit)
         notification_service.close_issue(issue, current_user)
