@@ -62,7 +62,7 @@ The recommended way to install GitLab is using the provided [Omnibus packages](h
 
 There are various other options to install GitLab, please refer to the [installation page on the GitLab website](https://about.gitlab.com/installation/) for more information.
 
-You can access a new installation with the login **`root`** and password **`5iveL!fe`**, after login you are required to set a unique password.
+You can access a new installation with the login **`root`** and password **`password`**, after login you are required to set a unique password.
 
 ## Third-party applications
 
