@@ -9,7 +9,8 @@
 .row
   %section.col-md-8
     .header-with-avatar
-      = image_tag avatar_icon(@user.email, 90), class: "avatar avatar-tile s90", alt: ''
+      = link_to avatar_icon(@user.email), target: '_blank' do
+        = image_tag avatar_icon(@user.email, 90), class: "avatar avatar-tile s90", alt: ''
       %h3
         = @user.name
         - if @user == current_user
