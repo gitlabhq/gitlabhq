@@ -50,7 +50,7 @@ module API
         merge_requests =
           case params["state"]
           when "opened" then merge_requests.opened
-          when "closed" then merge_requests.closed
+          when "closed" then merge_requests.closed_and_merged
           when "merged" then merge_requests.merged
           else merge_requests
           end
