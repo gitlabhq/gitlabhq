@@ -1,4 +1,10 @@
 class DeleteUserService
+  attr_accessor :current_user
+
+  def initialize(current_user)
+    @current_user = current_user
+  end
+
   def execute(user)
     if user.solo_owned_groups.present?
       user.errors[:base] << 'You must transfer ownership or delete groups before you can remove user'
