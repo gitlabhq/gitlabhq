@@ -295,7 +295,7 @@ describe 'Issues', feature: true do
         issue.save
       end
 
-      it 'allows user to remove assignee', :js => true do
+      it 'allows user to remove assignee', js: true do
         visit namespace_project_issue_path(project.namespace, project, issue)
         expect(page).to have_content "Assignee: #{user2.name}"
 
