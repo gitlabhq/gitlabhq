@@ -18,14 +18,12 @@ describe 'Gitlab::Satellite::Action' do
       expect(starting_remote_count).to be >= 1
       #kind of hookey way to add a second remote
       origin_uri = repo.git.remote({v: true}).split(" ")[1]
-    begin
+
       repo.git.remote({raise: true}, 'add', 'another-remote', origin_uri)
       repo.git.branch({raise: true}, 'a-new-branch')
 
       expect(repo.heads.size).to be > (starting_remote_count)
       expect(repo.git.remote().split(" ").size).to be > (starting_remote_count)
-    rescue
-    end
 
       repo.git.config({}, "user.name", "#{user.name} -- foo")
       repo.git.config({}, "user.email", "#{user.email} -- foo")

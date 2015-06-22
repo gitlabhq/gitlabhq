@@ -13,8 +13,8 @@ describe Projects::UpdateService do
       before do
        @created_private = @project.private?
 
-        @opts.merge!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
-        update_project(@project, @user, @opts)
+       @opts.merge!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+       update_project(@project, @user, @opts)
       end
 
       it { expect(@created_private).to be_truthy }
