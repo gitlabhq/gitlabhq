@@ -31,5 +31,15 @@ describe Issues::CloseService do
         expect(note.note).to include "Status changed to closed"
       end
     end
+
+    context "external issue tracker" do
+      before do
+        allow(project).to receive(:default_issues_tracker?).and_return(false)
+        @issue = Issues::CloseService.new(project, user, {}).execute(issue)
+      end
+
+      it { expect(@issue).to be_valid }
+      it { expect(@issue).to be_opened }
+    end
   end
 end
