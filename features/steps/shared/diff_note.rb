@@ -20,11 +20,14 @@ module SharedDiffNote
   end
 
   step 'I leave a diff comment like "Typo, please fix"' do
-    click_diff_line(sample_commit.line_code)
-    page.within("#{diff_file_selector} form[rel$='#{sample_commit.line_code}']") do
-      fill_in "note[note]", with: "Typo, please fix"
-      find(".js-comment-button").trigger("click")
-      sleep 0.05
+    page.within(diff_file_selector) do
+      click_diff_line(sample_commit.line_code)
+
+      page.within("form[rel$='#{sample_commit.line_code}']") do
+        fill_in "note[note]", with: "Typo, please fix"
+        find(".js-comment-button").trigger("click")
+        sleep 0.05
+      end
     end
   end
 
@@ -45,28 +48,37 @@ module SharedDiffNote
   end
 
   step 'I preview a diff comment text like "Should fix it :smile:"' do
-    click_diff_line(sample_commit.line_code)
-    page.within("#{diff_file_selector} form[rel$='#{sample_commit.line_code}']") do
-      fill_in "note[note]", with: "Should fix it :smile:"
-      find('.js-md-preview-button').click
+    page.within(diff_file_selector) do
+      click_diff_line(sample_commit.line_code)
+
+      page.within("form[rel$='#{sample_commit.line_code}']") do
+        fill_in "note[note]", with: "Should fix it :smile:"
+        find('.js-md-preview-button').click
+      end
     end
   end
 
   step 'I preview another diff comment text like "DRY this up"' do
-    click_diff_line(sample_commit.del_line_code)
+    page.within(diff_file_selector) do
+      click_diff_line(sample_commit.del_line_code)
 
-    page.within("#{diff_file_selector} form[rel$='#{sample_commit.del_line_code}']") do
-      fill_in "note[note]", with: "DRY this up"
-      find('.js-md-preview-button').click
+      page.within("form[rel$='#{sample_commit.del_line_code}']") do
+        fill_in "note[note]", with: "DRY this up"
+        find('.js-md-preview-button').click
+      end
     end
   end
 
   step 'I open a diff comment form' do
-    click_diff_line(sample_commit.line_code)
+    page.within(diff_file_selector) do
+      click_diff_line(sample_commit.line_code)
+    end
   end
 
   step 'I open another diff comment form' do
-    click_diff_line(sample_commit.del_line_code)
+    page.within(diff_file_selector) do
+      click_diff_line(sample_commit.del_line_code)
+    end
   end
 
   step 'I write a diff comment like ":-1: I don\'t like this"' do
@@ -194,7 +206,7 @@ module SharedDiffNote
   end
 
   def diff_file_selector
-    ".diff-file:nth-of-type(1)"
+    '.diff-file:nth-of-type(1)'
   end
 
   def click_diff_line(code)

@@ -19,7 +19,7 @@ describe ArchiveRepositoryService do
       it "raises an error" do
         expect {
           subject.execute(timeout: 0.0)
-        }.to raise_error
+        }.to raise_error(RuntimeError)
       end
     end
 

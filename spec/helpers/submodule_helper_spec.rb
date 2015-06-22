@@ -14,41 +14,41 @@ describe SubmoduleHelper do
 
     context 'submodule on self' do
       before do
-        Gitlab.config.gitlab.stub(protocol: 'http') # set this just to be sure
+        allow(Gitlab.config.gitlab).to receive(:protocol).and_return('http') # set this just to be sure
       end
 
       it 'should detect ssh on standard port' do
-        Gitlab.config.gitlab_shell.stub(ssh_port: 22) # set this just to be sure
-        Gitlab.config.gitlab_shell.stub(ssh_path_prefix: Settings.send(:build_gitlab_shell_ssh_path_prefix))
+        allow(Gitlab.config.gitlab_shell).to receive(:ssh_port).and_return(22) # set this just to be sure
+        allow(Gitlab.config.gitlab_shell).to receive(:ssh_path_prefix).and_return(Settings.send(:build_gitlab_shell_ssh_path_prefix))
         stub_url([ config.user, '@', config.host, ':gitlab-org/gitlab-ce.git' ].join(''))
         expect(submodule_links(submodule_item)).to eq([ namespace_project_path('gitlab-org', 'gitlab-ce'), namespace_project_tree_path('gitlab-org', 'gitlab-ce', 'hash') ])
       end
 
       it 'should detect ssh on non-standard port' do
-        Gitlab.config.gitlab_shell.stub(ssh_port: 2222)
-        Gitlab.config.gitlab_shell.stub(ssh_path_prefix: Settings.send(:build_gitlab_shell_ssh_path_prefix))
+        allow(Gitlab.config.gitlab_shell).to receive(:ssh_port).and_return(2222)
+        allow(Gitlab.config.gitlab_shell).to receive(:ssh_path_prefix).and_return(Settings.send(:build_gitlab_shell_ssh_path_prefix))
         stub_url([ 'ssh://', config.user, '@', config.host, ':2222/gitlab-org/gitlab-ce.git' ].join(''))
         expect(submodule_links(submodule_item)).to eq([ namespace_project_path('gitlab-org', 'gitlab-ce'), namespace_project_tree_path('gitlab-org', 'gitlab-ce', 'hash') ])
       end
 
       it 'should detect http on standard port' do
-        Gitlab.config.gitlab.stub(port: 80)
-        Gitlab.config.gitlab.stub(url: Settings.send(:build_gitlab_url))
+        allow(Gitlab.config.gitlab).to receive(:port).and_return(80)
+        allow(Gitlab.config.gitlab).to receive(:url).and_return(Settings.send(:build_gitlab_url))
         stub_url([ 'http://', config.host, '/gitlab-org/gitlab-ce.git' ].join(''))
         expect(submodule_links(submodule_item)).to eq([ namespace_project_path('gitlab-org', 'gitlab-ce'), namespace_project_tree_path('gitlab-org', 'gitlab-ce', 'hash') ])
       end
 
       it 'should detect http on non-standard port' do
-        Gitlab.config.gitlab.stub(port: 3000)
-        Gitlab.config.gitlab.stub(url: Settings.send(:build_gitlab_url))
+        allow(Gitlab.config.gitlab).to receive(:port).and_return(3000)
+        allow(Gitlab.config.gitlab).to receive(:url).and_return(Settings.send(:build_gitlab_url))
         stub_url([ 'http://', config.host, ':3000/gitlab-org/gitlab-ce.git' ].join(''))
         expect(submodule_links(submodule_item)).to eq([ namespace_project_path('gitlab-org', 'gitlab-ce'), namespace_project_tree_path('gitlab-org', 'gitlab-ce', 'hash') ])
       end
 
       it 'should work with relative_url_root' do
-        Gitlab.config.gitlab.stub(port: 80) # set this just to be sure
-        Gitlab.config.gitlab.stub(relative_url_root: '/gitlab/root')
-        Gitlab.config.gitlab.stub(url: Settings.send(:build_gitlab_url))
+        allow(Gitlab.config.gitlab).to receive(:port).and_return(80) # set this just to be sure
+        allow(Gitlab.config.gitlab).to receive(:relative_url_root).and_return('/gitlab/root')
+        allow(Gitlab.config.gitlab).to receive(:url).and_return(Settings.send(:build_gitlab_url))
         stub_url([ 'http://', config.host, '/gitlab/root/gitlab-org/gitlab-ce.git' ].join(''))
         expect(submodule_links(submodule_item)).to eq([ namespace_project_path('gitlab-org', 'gitlab-ce'), namespace_project_tree_path('gitlab-org', 'gitlab-ce', 'hash') ])
       end
@@ -156,6 +156,6 @@ describe SubmoduleHelper do
   end
 
   def stub_url(url)
-    repo.stub(submodule_url_for: url)
+    allow(repo).to receive(:submodule_url_for).and_return(url)
   end
 end

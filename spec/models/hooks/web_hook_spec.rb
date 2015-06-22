@@ -73,7 +73,7 @@ describe ProjectHook do
 
       expect {
         @project_hook.execute(@data, 'push_hooks')
-      }.to raise_error
+      }.to raise_error(RuntimeError)
     end
   end
 end

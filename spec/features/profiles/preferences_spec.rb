@@ -75,7 +75,7 @@ describe 'Profile > Preferences' do
   end
 
   def expect_preferences_saved_message
-    within('.flash-container') do
+    page.within('.flash-container') do
       expect(page).to have_content('Preferences saved.')
     end
   end

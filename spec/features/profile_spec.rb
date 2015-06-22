@@ -9,7 +9,8 @@ describe 'Profile account page', feature: true do
 
   describe 'when signup is enabled' do
     before do
-      ApplicationSetting.any_instance.stub(signup_enabled?: true)
+      allow_any_instance_of(ApplicationSetting).
+        to receive(:signup_enabled?).and_return(true)
       visit profile_account_path
     end
 
@@ -23,7 +24,8 @@ describe 'Profile account page', feature: true do
 
   describe 'when signup is disabled' do
     before do
-      ApplicationSetting.any_instance.stub(signup_enabled?: false)
+      allow_any_instance_of(ApplicationSetting).
+        to receive(:signup_enabled?).and_return(false)
       visit profile_account_path
     end
 

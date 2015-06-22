@@ -132,7 +132,7 @@ describe API::API, api: true  do
       delete api("/projects/#{project.id}/members/#{user3.id}", user)
       expect {
         delete api("/projects/#{project.id}/members/#{user3.id}", user)
-      }.to_not change { ProjectMember.count }
+      }.not_to change { ProjectMember.count }
     end
 
     it "should return 200 if team member already removed" do

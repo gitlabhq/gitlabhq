@@ -48,19 +48,19 @@ describe DiffHelper do
     end
 
     it 'should return only the first file if the diff line count in the 2nd file takes the total beyond safe limits' do
-      diffs[1].diff.stub(lines: [""] * 4999) #simulate 4999 lines
+      allow(diffs[1].diff).to receive(:lines).and_return([""] * 4999) #simulate 4999 lines
       expect(safe_diff_files(diffs).length).to eq(1)
     end
 
     it 'should return all files from a commit that is beyond safe limit for numbers of lines if force diff is true' do
       allow(controller).to receive(:params) { { force_show_diff: true } }
-      diffs[1].diff.stub(lines: [""] * 4999) #simulate 4999 lines
+      allow(diffs[1].diff).to receive(:lines).and_return([""] * 4999) #simulate 4999 lines
       expect(safe_diff_files(diffs).length).to eq(2)
     end
 
     it 'should return only the first file if the diff line count in the 2nd file takes the total beyond hard limits' do
       allow(controller).to receive(:params) { { force_show_diff: true } }
-      diffs[1].diff.stub(lines: [""] * 49999) #simulate 49999 lines
+      allow(diffs[1].diff).to receive(:lines).and_return([""] * 49999) #simulate 49999 lines
       expect(safe_diff_files(diffs).length).to eq(1)
     end
 

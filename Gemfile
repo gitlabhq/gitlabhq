@@ -222,16 +222,16 @@ group :development do
 end
 
 group :development, :test do
+  gem 'awesome_print'
+  gem 'byebug'
+  gem 'pry-rails'
+
   gem 'coveralls', require: false
+  gem 'database_cleaner', '~> 1.4.0'
+  gem 'factory_girl_rails'
+  gem 'rspec-rails', '~> 3.3.0'
   gem 'rubocop', '0.28.0', require: false
   gem 'spinach-rails'
-  gem "rspec-rails", '2.99'
-  gem 'capybara', '~> 2.2.1'
-  gem 'capybara-screenshot', '~> 1.0.0'
-  gem "pry-rails"
-  gem "awesome_print"
-  gem "database_cleaner"
-  gem 'factory_girl_rails'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.3.0'
@@ -239,8 +239,9 @@ group :development, :test do
   # Generate Fake data
   gem 'ffaker', '~> 2.0.0'
 
-  # PhantomJS driver for Capybara
-  gem 'poltergeist', '~> 1.5.1'
+  gem 'capybara',            '~> 2.3.0'
+  gem 'capybara-screenshot', '~> 1.0.0'
+  gem 'poltergeist',         '~> 1.6.0'
 
   gem 'teaspoon', '~> 1.0.0'
   gem 'teaspoon-jasmine'
@@ -249,14 +250,12 @@ group :development, :test do
   gem 'spring-commands-rspec',    '~> 1.0.0'
   gem 'spring-commands-spinach',  '~> 1.0.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
-
-  gem "byebug"
 end
 
 group :test do
   gem 'simplecov', require: false
   gem 'shoulda-matchers', '~> 2.8.0', require: false
-  gem 'email_spec'
+  gem 'email_spec', '~> 1.6.0'
   gem 'webmock', '~> 1.21.0'
   gem 'test_after_commit'
 end
