@@ -11,6 +11,6 @@
     #{merge_request.project.name_with_namespace}
   .pull-right
     - if merge_request.merged?
-      %span.label.label-primary Accepted
+      %span.label.label-primary Merged
     - elsif merge_request.closed?
-      %span.label.label-danger Rejected
+      %span.label.label-danger Closed
