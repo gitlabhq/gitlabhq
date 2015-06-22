@@ -8,11 +8,11 @@
   .form-group
     = f.label :provider, class: 'control-label'
     .col-sm-10
-      = f.text_field :provider, required: true, autocomplete: "off", class: 'form-control', required: true
+      = f.select :provider, Gitlab::OAuth::Provider.names, { allow_blank: false }, class: 'form-control'
   .form-group
-    = f.label :extern_uid, class: 'control-label'
+    = f.label :extern_uid, "Identifier", class: 'control-label'
     .col-sm-10
-      = f.text_field :extern_uid, required: true, autocomplete: "off", class: 'form-control', required: true
+      = f.text_field :extern_uid, required: true, class: 'form-control', required: true
 
   .form-actions
     = f.submit 'Save changes', class: "btn btn-save"
