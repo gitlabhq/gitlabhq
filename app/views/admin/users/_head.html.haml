@@ -9,7 +9,7 @@
     = link_to edit_admin_user_path(@user), class: "btn btn-grouped" do
       %i.fa.fa-pencil-square-o
       Edit
-
+%hr
 %ul.nav.nav-tabs
   = nav_link(path: 'users#show') do
     = link_to "Account", admin_user_path(@user)

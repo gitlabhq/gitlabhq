@@ -121,23 +121,27 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   end
 
   step 'I visit "Pete" identities page in admin' do
+    Gitlab::OAuth::Provider.stub!(names: %w(twitter twitter_updated))
     visit admin_user_identities_path(@user)
   end
 
   step 'I should see twitter details' do
-    expect(page).to have_content 'Identities for Pete'
+    expect(page).to have_content 'Pete'
     expect(page).to have_content 'twitter'
   end
 
   step 'I modify twitter identity' do
-    click_link 'Edit'
+    within '.table' do
+      click_link 'Edit'
+    end
+
     fill_in 'identity_extern_uid', with: '654321'
-    fill_in 'identity_provider', with: 'twitter_updated'
+    select 'twitter_updated', from: 'identity_provider'
     click_button 'Save changes'
   end
 
   step 'I should see twitter details updated' do
-    expect(page).to have_content 'Identities for Pete'
+    expect(page).to have_content 'Pete'
     expect(page).to have_content 'twitter_updated'
     expect(page).to have_content '654321'
   end
@@ -147,7 +151,11 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   end
 
   step 'I should not see twitter details' do
-    expect(page).to have_content 'Identities for Pete'
+    expect(page).to have_content 'Pete'
     expect(page).to_not have_content 'twitter'
+  end
+
+  step 'click on ssh keys tab' do
+    click_link 'SSH keys'
   end
 end

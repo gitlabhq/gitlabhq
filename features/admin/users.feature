@@ -40,6 +40,7 @@ Feature: Admin Users
     Given user "Pete" with ssh keys
     And I visit admin users page
     And click on user "Pete"
+    And click on ssh keys tab
     Then I should see key list
     And I click on the key title
     Then I should see key details
