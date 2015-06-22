@@ -6,6 +6,7 @@ v 7.13.0 (unreleased)
   - Fix invalid timestamps in RSS feeds (Rowan Wookey)
   - Fix error when deleting a user who has projects (Stan Hu)
   - Fix downloading of patches on public merge requests when user logged out (Stan Hu)
+  - The password for the default administrator (root) account has been changed from "5iveL!fe" to "password".
   - Update maintenance documentation to explain no need to recompile asssets for omnibus installations (Stan Hu)
   - Support commenting on diffs in side-by-side mode (Stan Hu)
   - Fix JavaScript error when clicking on the comment button on a diff line that has a comment already (Stan Hu)
