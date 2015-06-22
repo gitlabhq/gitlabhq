@@ -81,3 +81,17 @@ To enable this feature, navigate to group settings page, select `Member lock` an
 ![Checkbox for membership lock](groups/membership_lock.png)
 
 This will disable the option for all users who previously had permissions to operate project memberships so no new users can be added. Furthermore, any request to add new user to project through API will not be possible.
+
+## Namespaces in groups
+
+By default, groups only get 20 namespaces at a time because the API results are paginated.
+
+To get more (up to 100), pass the following as an argument to the API call:
+```
+/groups?per_page=100
+```
+
+And to switch pages add: 
+```
+/groups?per_page=100&page=2
+```
