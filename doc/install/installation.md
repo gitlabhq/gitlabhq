@@ -368,6 +368,9 @@ Make sure to edit the config file to match your setup:
 
     # Change YOUR_SERVER_FQDN to the fully-qualified
     # domain name of your host serving GitLab.
+    # If using Ubuntu default nginx install:
+    # either remove the default_server from the listen line
+    # or else rm -f /etc/sites-enabled/default
     sudo editor /etc/nginx/sites-available/gitlab
 
 **Note:** If you want to use HTTPS, replace the `gitlab` Nginx config with `gitlab-ssl`. See [Using HTTPS](#using-https) for HTTPS configuration details.
