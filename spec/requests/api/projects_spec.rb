@@ -81,7 +81,7 @@ describe API::API, api: true  do
         end
 
         it 'should return the correct order when sorted by id' do
-          get api('/projects', user), { order_by: 'id', sort: 'desc'}
+          get api('/projects', user), { order_by: 'id', sort: 'desc' }
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
           expect(json_response.first['id']).to eq(project3.id)
@@ -90,7 +90,7 @@ describe API::API, api: true  do
         it 'returns projects in the correct order when ci_enabled_first parameter is passed' do
           [project, project2, project3].each{ |project| project.build_missing_services }
           project2.gitlab_ci_service.update(active: true, token: "token", project_url: "url")
-          get api('/projects', user), { ci_enabled_first: 'true'}
+          get api('/projects', user), { ci_enabled_first: 'true' }
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
           expect(json_response.first['id']).to eq(project2.id)
@@ -123,13 +123,13 @@ describe API::API, api: true  do
         expect(json_response).to be_an Array
         project_name = project.name
 
-        expect(json_response.detect {
-          |project| project['name'] == project_name
-        }['name']).to eq(project_name)
+        expect(json_response.detect do |project|
+          project['name'] == project_name
+        end['name']).to eq(project_name)
 
-        expect(json_response.detect {
-          |project| project['owner']['username'] == user.username
-        }['owner']['username']).to eq(user.username)
+        expect(json_response.detect do |project|
+          project['owner']['username'] == user.username
+        end['owner']['username']).to eq(user.username)
       end
     end
   end
@@ -138,9 +138,9 @@ describe API::API, api: true  do
     context 'maximum number of projects reached' do
       it 'should not create new project and respond with 403' do
         allow_any_instance_of(User).to receive(:projects_limit_left).and_return(0)
-        expect {
+        expect do
           post api('/projects', user2), name: 'foo'
-        }.to change {Project.count}.by(0)
+        end.to change {Project.count}.by(0)
         expect(response.status).to eq(403)
       end
     end
@@ -474,9 +474,9 @@ describe API::API, api: true  do
     before { snippet }
 
     it 'should delete existing project snippet' do
-      expect {
+      expect do
         delete api("/projects/#{project.id}/snippets/#{snippet.id}", user)
-      }.to change { Snippet.count }.by(-1)
+      end.to change { Snippet.count }.by(-1)
       expect(response.status).to eq(200)
     end
 
@@ -548,9 +548,9 @@ describe API::API, api: true  do
 
       it 'should create new ssh key' do
         key_attrs = attributes_for :key
-        expect {
+        expect do
           post api("/projects/#{project.id}/keys", user), key_attrs
-        }.to change{ project.deploy_keys.count }.by(1)
+        end.to change{ project.deploy_keys.count }.by(1)
       end
     end
 
@@ -558,9 +558,9 @@ describe API::API, api: true  do
       before { deploy_key }
 
       it 'should delete existing key' do
-        expect {
+        expect do
           delete api("/projects/#{project.id}/keys/#{deploy_key.id}", user)
-        }.to change{ project.deploy_keys.count }.by(-1)
+        end.to change{ project.deploy_keys.count }.by(-1)
       end
 
       it 'should return 404 Not Found with invalid ID' do
