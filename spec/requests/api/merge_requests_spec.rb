@@ -49,9 +49,8 @@ describe API::API, api: true  do
         get api("/projects/#{project.id}/merge_requests?state=closed", user)
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
-        expect(json_response.length).to eq(2)
-        expect(json_response.second['title']).to eq(merge_request_closed.title)
-        expect(json_response.first['title']).to eq(merge_request_merged.title)
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['title']).to eq(merge_request_closed.title)
       end
 
       it "should return an array of merged merge_requests" do
