@@ -18,12 +18,10 @@ class Admin::IdentitiesController < Admin::ApplicationController
   end
 
   def destroy
-    respond_to do |format|
-      if @identity.destroy
-        format.html { redirect_to admin_user_identities_path(@user), notice: 'User identity was successfully removed.' }
-      else
-        format.html { redirect_to admin_user_identities_path(@user), alert: 'Failed to remove user identity.' }
-      end
+    if @identity.destroy
+      redirect_to admin_user_identities_path(@user), notice: 'User identity was successfully removed.'
+    else
+      redirect_to admin_user_identities_path(@user), alert: 'Failed to remove user identity.'
     end
   end
 
@@ -38,6 +36,6 @@ class Admin::IdentitiesController < Admin::ApplicationController
   end
 
   def identity_params
-    params[:identity].permit(:provider, :extern_uid)
+    params[:identity].require(:identity).permit(:provider, :extern_uid)
   end
 end
