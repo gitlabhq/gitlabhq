@@ -172,6 +172,9 @@ class User < ActiveRecord::Base
   after_create :post_create_hook
   after_destroy :post_destroy_hook
 
+  # User's Dashboard preference
+  # Note: When adding an option, it MUST go on the end of the array.
+  enum dashboard: [:projects, :stars]
 
   alias_attribute :private_token, :authentication_token
 
@@ -220,10 +223,26 @@ class User < ActiveRecord::Base
     end
 
     def find_for_commit(email, name)
-      # Prefer email match over name match
-      User.where(email: email).first ||
-        User.joins(:emails).where(emails: { email: email }).first ||
-        User.where(name: name).first
+      user_table = arel_table
+      email_table = Email.arel_table
+
+      # Use ARel to build a query:
+      query = user_table.
+        # SELECT "users".* FROM "users"
+        project(user_table[Arel.star]).
+        # LEFT OUTER JOIN "emails"
+        join(email_table, Arel::Nodes::OuterJoin).
+        # ON "users"."id" = "emails"."user_id"
+        on(user_table[:id].eq(email_table[:user_id])).
+        # WHERE ("user"."email" = '<email>' OR "user"."name" = '<name>')
+        # OR "emails"."email" = '<email>'
+        where(
+          user_table[:email].eq(email).
+          or(user_table[:name].eq(name)).
+          or(email_table[:email].eq(email))
+        )
+
+      find_by_sql(query.to_sql).first
     end
 
     def filter(filter_name)
@@ -295,6 +314,18 @@ class User < ActiveRecord::Base
     self.reset_password_sent_at = Time.now.utc
 
     @reset_token
+  end
+
+  # Check if the user has enabled Two-factor Authentication
+  def two_factor_enabled?
+    otp_required_for_login
+  end
+
+  # Set whether or not Two-factor Authentication is enabled for the current user
+  #
+  # setting - Boolean
+  def two_factor_enabled=(setting)
+    self.otp_required_for_login = setting
   end
 
   def namespace_uniq
@@ -704,8 +735,4 @@ class User < ActiveRecord::Base
   def can_be_removed?
     !solo_owned_groups.present?
   end
-
-  # User's Dashboard preference
-  # Note: When adding an option, it MUST go on the end of the array.
-  enum dashboard: [:projects, :stars]
 end

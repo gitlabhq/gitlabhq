@@ -24,8 +24,11 @@ describe GroupMember do
     describe "#after_create" do
       it "should send email to user" do
         membership = build(:group_member)
-        membership.stub(notification_service: double('NotificationService').as_null_object)
+
+        allow(membership).to receive(:notification_service).
+          and_return(double('NotificationService').as_null_object)
         expect(membership).to receive(:notification_service)
+
         membership.save
       end
     end
@@ -33,7 +36,8 @@ describe GroupMember do
     describe "#after_update" do
       before do
         @group_member = create :group_member
-        @group_member.stub(notification_service: double('NotificationService').as_null_object)
+        allow(@group_member).to receive(:notification_service).
+          and_return(double('NotificationService').as_null_object)
       end
 
       it "should send email to user" do

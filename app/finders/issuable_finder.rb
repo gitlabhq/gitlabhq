@@ -45,10 +45,10 @@ class IssuableFinder
   def group
     return @group if defined?(@group)
 
-    @group = 
+    @group =
       if params[:group_id].present?
         Group.find(params[:group_id])
-      else 
+      else
         nil
       end
   end
@@ -56,10 +56,10 @@ class IssuableFinder
   def project
     return @project if defined?(@project)
 
-    @project = 
+    @project =
       if params[:project_id].present?
         Project.find(params[:project_id])
-      else 
+      else
         nil
       end
   end
@@ -76,7 +76,7 @@ class IssuableFinder
     return @milestones if defined?(@milestones)
 
     @milestones =
-      if milestones? && params[:milestone_title] != NONE 
+      if milestones? && params[:milestone_title] != NONE
         Milestone.where(title: params[:milestone_title])
       else
         nil
@@ -90,7 +90,7 @@ class IssuableFinder
   def assignee
     return @assignee if defined?(@assignee)
 
-    @assignee = 
+    @assignee =
       if assignee? && params[:assignee_id] != NONE
         User.find(params[:assignee_id])
       else
@@ -105,7 +105,7 @@ class IssuableFinder
   def author
     return @author if defined?(@author)
 
-    @author = 
+    @author =
       if author? && params[:author_id] != NONE
         User.find(params[:author_id])
       else
@@ -148,8 +148,6 @@ class IssuableFinder
     case params[:state]
     when 'closed'
       items.closed
-    when 'rejected'
-      items.respond_to?(:rejected) ? items.rejected : items.closed
     when 'merged'
       items.respond_to?(:merged) ? items.merged : items.closed
     when 'all'

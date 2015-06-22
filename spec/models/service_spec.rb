@@ -39,9 +39,7 @@ describe Service do
       let (:project) { create :project }
 
       before do
-        @service.stub(
-          project: project
-        )
+        allow(@service).to receive(:project).and_return(project)
         @testable = @service.can_test?
       end
 
@@ -54,9 +52,7 @@ describe Service do
       let (:project) { create :project }
 
       before do
-        @service.stub(
-          project: project
-        )
+        allow(@service).to receive(:project).and_return(project)
         @testable = @service.can_test?
       end
 

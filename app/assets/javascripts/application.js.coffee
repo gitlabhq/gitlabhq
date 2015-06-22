@@ -141,8 +141,7 @@ $ ->
   $('.trigger-submit').on 'change', ->
     $(@).parents('form').submit()
 
-  $("abbr.timeago").timeago()
-  $('.js-timeago').timeago()
+  $('abbr.timeago, .js-timeago').timeago()
 
   # Flash
   if (flash = $(".flash-container")).length > 0

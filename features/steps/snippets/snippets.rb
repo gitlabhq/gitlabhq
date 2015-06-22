@@ -31,6 +31,18 @@ class Spinach::Features::Snippets < Spinach::FeatureSteps
     click_button "Create snippet"
   end
 
+  step 'I submit new internal snippet' do
+    fill_in "personal_snippet_title", :with => "Internal personal snippet one"
+    fill_in "personal_snippet_file_name", :with => "my_snippet.rb"
+    choose 'personal_snippet_visibility_level_10'
+
+    page.within('.file-editor') do
+     find(:xpath, "//input[@id='personal_snippet_content']").set 'Content of internal snippet'
+    end
+
+    click_button "Create snippet"
+  end
+
   step 'I should see snippet "Personal snippet three"' do
     expect(page).to have_content "Personal snippet three"
     expect(page).to have_content "Content of snippet three"
@@ -58,7 +70,15 @@ class Spinach::Features::Snippets < Spinach::FeatureSteps
     visit snippet_path(snippet)
   end
 
+  step 'I visit snippet page "Internal personal snippet one"' do
+    visit snippet_path(internal_snippet)
+  end
+
   def snippet
     @snippet ||= PersonalSnippet.find_by!(title: "Personal snippet one")
+  end
+
+  def internal_snippet
+    @snippet ||= PersonalSnippet.find_by!(title: "Internal personal snippet one")
   end
 end

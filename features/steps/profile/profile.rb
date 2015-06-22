@@ -53,7 +53,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I should see my gravatar' do
-    expect(@user.avatar?).to be_false
+    expect(@user.avatar?).to eq false
   end
 
   step 'I should not see the "Remove avatar" button' do
@@ -87,11 +87,15 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step "I should see a missing password error message" do
-    expect(page).to have_content "You must provide a valid current password"
+    page.within ".flash-container" do
+      expect(page).to have_content "You must provide a valid current password"
+    end
   end
 
   step "I should see a password error message" do
-    expect(page).to have_content "Password confirmation doesn't match"
+    page.within '.alert' do
+      expect(page).to have_content "Password confirmation doesn't match"
+    end
   end
 
   step 'I reset my token' do
@@ -120,7 +124,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
 
   step "I am not an ldap user" do
     current_user.identities.delete
-    expect(current_user.ldap_user?).to be_false
+    expect(current_user.ldap_user?).to eq false
   end
 
   step 'I redirected to expired password page' do

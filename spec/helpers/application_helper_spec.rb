@@ -76,8 +76,8 @@ describe ApplicationHelper do
     end
 
     it 'should return an url for the avatar with relative url' do
-      Gitlab.config.gitlab.stub(relative_url_root: '/gitlab')
-      Gitlab.config.gitlab.stub(url: Settings.send(:build_gitlab_url))
+      allow(Gitlab.config.gitlab).to receive(:relative_url_root).and_return('/gitlab')
+      allow(Gitlab.config.gitlab).to receive(:url).and_return(Settings.send(:build_gitlab_url))
 
       user = create(:user)
       user.avatar = File.open(avatar_file_path)
@@ -97,7 +97,7 @@ describe ApplicationHelper do
     let(:user_email) { 'user@email.com' }
 
     it 'should return a generic avatar path when Gravatar is disabled' do
-      ApplicationSetting.any_instance.stub(gravatar_enabled?: false)
+      allow_any_instance_of(ApplicationSetting).to receive(:gravatar_enabled?).and_return(false)
       expect(gravatar_icon(user_email)).to match('no_avatar.png')
     end
 
@@ -106,13 +106,13 @@ describe ApplicationHelper do
     end
 
     it 'should return default gravatar url' do
-      Gitlab.config.gitlab.stub(https: false)
+      allow(Gitlab.config.gitlab).to receive(:https).and_return(false)
       url = 'http://www.gravatar.com/avatar/b58c6f14d292556214bd64909bcdb118'
       expect(gravatar_icon(user_email)).to match(url)
     end
 
     it 'should use SSL when appropriate' do
-      Gitlab.config.gitlab.stub(https: true)
+      allow(Gitlab.config.gitlab).to receive(:https).and_return(true)
       expect(gravatar_icon(user_email)).to match('https://secure.gravatar.com')
     end
 
@@ -203,40 +203,52 @@ describe ApplicationHelper do
     end
   end
 
-  describe 'link_to' do
-    it 'should not include rel=nofollow for internal links' do
-      expect(link_to('Home', root_path)).to eq('<a href="/">Home</a>')
+  describe 'time_ago_with_tooltip' do
+    def element(*arguments)
+      Time.zone = 'UTC'
+      time = Time.zone.parse('2015-07-02 08:00')
+      element = time_ago_with_tooltip(time, *arguments)
+
+      Nokogiri::HTML::DocumentFragment.parse(element).first_element_child
     end
 
-    it 'should include rel=nofollow for external links' do
-      expect(link_to('Example', 'http://www.example.com')).
-        to eq '<a href="http://www.example.com" rel="nofollow">Example</a>'
+    it 'returns a time element' do
+      expect(element.name).to eq 'time'
     end
 
-    it 'should include rel=nofollow for external links and honor existing html_options' do
-      expect(link_to('Example', 'http://www.example.com', class: 'toggle', data: {toggle: 'dropdown'}))
-        .to eq '<a class="toggle" data-toggle="dropdown" href="http://www.example.com" rel="nofollow">Example</a>'
+    it 'includes the date string' do
+      expect(element.text).to eq '2015-07-02 08:00:00 UTC'
     end
 
-    it 'should include rel=nofollow for external links and preserve other rel values' do
-      expect(link_to('Example', 'http://www.example.com', rel: 'noreferrer'))
-        .to eq '<a href="http://www.example.com" rel="noreferrer nofollow">Example</a>'
+    it 'has a datetime attribute' do
+      expect(element.attr('datetime')).to eq '2015-07-02T08:00:00Z'
     end
 
-    it 'should not include rel=nofollow for external links on the same host as GitLab' do
-      expect(Gitlab.config.gitlab).to receive(:host).and_return('example.foo')
-      expect(link_to('Example', 'http://example.foo/bar')).
-        to eq '<a href="http://example.foo/bar">Example</a>'
+    it 'has a formatted title attribute' do
+      expect(element.attr('title')).to eq 'Jul 02, 2015 8:00am'
     end
 
-    it 'should not raise an error when given a bad URI' do
-      expect { link_to('default', 'if real=1 RANDOM; if real>1 IDLHS; if real>500 LHS') }.
-        not_to raise_error
+    it 'includes a default js-timeago class' do
+      expect(element.attr('class')).to eq 'time_ago js-timeago'
     end
 
-    it 'should not raise an error when given a bad mailto URL' do
-      expect { link_to('email', 'mailto://foo.bar@example.es?subject=Subject%20Line') }.
-        not_to raise_error
+    it 'accepts a custom html_class' do
+      expect(element(html_class: 'custom_class').attr('class')).to eq 'custom_class js-timeago'
+    end
+
+    it 'accepts a custom tooltip placement' do
+      expect(element(placement: 'bottom').attr('data-placement')).to eq 'bottom'
+    end
+
+    it 're-initializes timeago Javascript' do
+      el = element.next_element
+
+      expect(el.name).to eq 'script'
+      expect(el.text).to include "$('.js-timeago').timeago()"
+    end
+
+    it 'allows the script tag to be excluded' do
+      expect(element(skip_js: true)).not_to include 'script'
     end
   end
 

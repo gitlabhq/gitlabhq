@@ -9,11 +9,11 @@
       - if merge_request.merged?
         %span
           %i.fa.fa-check
-          ACCEPTED
+          MERGED
       - elsif merge_request.closed?
         %span
           %i.fa.fa-ban
-          REJECTED
+          CLOSED
       - else
         %span.hidden-xs.hidden-sm
           %span.label-branch<
@@ -35,7 +35,7 @@
           = 0
 
   .merge-request-info
-    = "##{merge_request.iid} opened #{time_ago_with_tooltip(merge_request.created_at, 'bottom')} by #{link_to_member(@project, merge_request.author, avatar: false)}".html_safe
+    = "##{merge_request.iid} opened #{time_ago_with_tooltip(merge_request.created_at, placement: 'bottom')} by #{link_to_member(@project, merge_request.author, avatar: false)}".html_safe
     - if merge_request.votes_count > 0
       = render 'votes/votes_inline', votable: merge_request
     - if merge_request.milestone_id?
@@ -48,4 +48,4 @@
         = merge_request.task_status
 
     .pull-right.hidden-xs
-      %small updated #{time_ago_with_tooltip(merge_request.updated_at, 'bottom', 'merge_request_updated_ago')}
+      %small updated #{time_ago_with_tooltip(merge_request.updated_at, placement: 'bottom', html_class: 'merge_request_updated_ago')}

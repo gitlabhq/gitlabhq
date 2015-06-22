@@ -210,6 +210,30 @@ describe User do
     end
   end
 
+  describe '#two_factor_enabled' do
+    it 'returns two-factor authentication status' do
+      enabled  = build_stubbed(:user, two_factor_enabled: true)
+      disabled = build_stubbed(:user)
+
+      expect(enabled).to be_two_factor_enabled
+      expect(disabled).not_to be_two_factor_enabled
+    end
+  end
+
+  describe '#two_factor_enabled=' do
+    it 'enables two-factor authentication' do
+      user = build_stubbed(:user, two_factor_enabled: false)
+      expect { user.two_factor_enabled = true }.
+        to change { user.two_factor_enabled? }.to(true)
+    end
+
+    it 'disables two-factor authentication' do
+      user = build_stubbed(:user, two_factor_enabled: true)
+      expect { user.two_factor_enabled = false }.
+        to change { user.two_factor_enabled? }.to(false)
+    end
+  end
+
   describe 'authentication token' do
     it "should have authentication token" do
       user = create(:user)
@@ -340,6 +364,31 @@ describe User do
     end
   end
 
+  describe '.find_for_commit' do
+    it 'finds by primary email' do
+      user = create(:user, email: 'foo@example.com')
+
+      expect(User.find_for_commit(user.email, '')).to eq user
+    end
+
+    it 'finds by secondary email' do
+      email = create(:email, email: 'foo@example.com')
+      user  = email.user
+
+      expect(User.find_for_commit(email.email, '')).to eq user
+    end
+
+    it 'finds by name' do
+      user = create(:user, name: 'Joey JoJo')
+
+      expect(User.find_for_commit('', 'Joey JoJo')).to eq user
+    end
+
+    it 'returns nil when nothing found' do
+      expect(User.find_for_commit('', '')).to be_nil
+    end
+  end
+
   describe 'search' do
     let(:user1) { create(:user, username: 'James', email: 'james@testing.com') }
     let(:user2) { create(:user, username: 'jameson', email: 'jameson@example.com') }
@@ -409,21 +458,25 @@ describe User do
 
     it 'is false when LDAP is disabled' do
       # Create a condition which would otherwise cause 'true' to be returned
-      user.stub(ldap_user?: true)
+      allow(user).to receive(:ldap_user?).and_return(true)
       user.last_credential_check_at = nil
       expect(user.requires_ldap_check?).to be_falsey
     end
 
     context 'when LDAP is enabled' do
-      before { Gitlab.config.ldap.stub(enabled: true) }
+      before do
+        allow(Gitlab.config.ldap).to receive(:enabled).and_return(true)
+      end
 
       it 'is false for non-LDAP users' do
-        user.stub(ldap_user?: false)
+        allow(user).to receive(:ldap_user?).and_return(false)
         expect(user.requires_ldap_check?).to be_falsey
       end
 
       context 'and when the user is an LDAP user' do
-        before { user.stub(ldap_user?: true) }
+        before do
+          allow(user).to receive(:ldap_user?).and_return(true)
+        end
 
         it 'is true when the user has never had an LDAP check before' do
           user.last_credential_check_at = nil

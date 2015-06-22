@@ -49,9 +49,8 @@ describe API::API, api: true  do
         get api("/projects/#{project.id}/merge_requests?state=closed", user)
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
-        expect(json_response.length).to eq(2)
-        expect(json_response.second['title']).to eq(merge_request_closed.title)
-        expect(json_response.first['title']).to eq(merge_request_merged.title)
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['title']).to eq(merge_request_closed.title)
       end
 
       it "should return an array of merged merge_requests" do
@@ -301,14 +300,20 @@ describe API::API, api: true  do
 
   describe "PUT /projects/:id/merge_request/:merge_request_id/merge" do
     it "should return merge_request in case of success" do
-      MergeRequest.any_instance.stub(can_be_merged?: true, automerge!: true)
+      allow_any_instance_of(MergeRequest).
+        to receive_messages(can_be_merged?: true, automerge!: true)
+
       put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user)
+
       expect(response.status).to eq(200)
     end
 
     it "should return 405 if branch can't be merged" do
-      MergeRequest.any_instance.stub(can_be_merged?: false)
+      allow_any_instance_of(MergeRequest).
+        to receive(:can_be_merged?).and_return(false)
+
       put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user)
+
       expect(response.status).to eq(405)
       expect(json_response['message']).to eq('Branch cannot be merged')
     end

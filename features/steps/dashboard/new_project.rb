@@ -10,7 +10,7 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
   end
 
   step 'I see "New project" page' do
-    expect(page).to have_content("Project path")
+    expect(page).to have_content('Project path')
   end
 
   step 'I click on "Import project from GitHub"' do

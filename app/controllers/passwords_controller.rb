@@ -24,7 +24,7 @@ class PasswordsController < Devise::PasswordsController
     super do |resource|
       # TODO (rspeicher): In Devise master (> 3.4.1), we can set
       # `Devise.sign_in_after_reset_password = false` and avoid this mess.
-      if resource.errors.empty? && resource.try(:otp_required_for_login?)
+      if resource.errors.empty? && resource.try(:two_factor_enabled?)
         resource.unlock_access! if unlockable?(resource)
 
         # Since we are not signing this user in, we use the :updated_not_active

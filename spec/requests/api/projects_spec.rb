@@ -121,15 +121,13 @@ describe API::API, api: true  do
         get api('/projects/all', admin)
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
-        project_name = project.name
 
-        expect(json_response.detect {
-          |project| project['name'] == project_name
-        }['name']).to eq(project_name)
-
-        expect(json_response.detect {
-          |project| project['owner']['username'] == user.username
-        }['owner']['username']).to eq(user.username)
+        expect(json_response).to satisfy do |response|
+          response.one? do |entry|
+            entry['name'] == project.name &&
+            entry['owner']['username'] == user.username
+          end
+        end
       end
     end
   end
@@ -138,9 +136,8 @@ describe API::API, api: true  do
     context 'maximum number of projects reached' do
       it 'should not create new project and respond with 403' do
         allow_any_instance_of(User).to receive(:projects_limit_left).and_return(0)
-        expect {
-          post api('/projects', user2), name: 'foo'
-        }.to change {Project.count}.by(0)
+        expect { post api('/projects', user2), name: 'foo' }.
+          to change {Project.count}.by(0)
         expect(response.status).to eq(403)
       end
     end
@@ -158,7 +155,7 @@ describe API::API, api: true  do
     end
 
     it 'should not create new project without name and return 400' do
-      expect { post api('/projects', user) }.to_not change { Project.count }
+      expect { post api('/projects', user) }.not_to change { Project.count }
       expect(response.status).to eq(400)
     end
 
@@ -257,7 +254,7 @@ describe API::API, api: true  do
 
     it 'should respond with 400 on failure and not project' do
       expect { post api("/projects/user/#{user.id}", admin) }.
-        to_not change { Project.count }
+        not_to change { Project.count }
 
       expect(response.status).to eq(400)
       expect(json_response['message']['name']).to eq([

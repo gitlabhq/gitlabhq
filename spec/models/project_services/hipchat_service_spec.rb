@@ -37,7 +37,7 @@ describe HipchatService do
     let(:push_sample_data) { Gitlab::PushDataBuilder.build_sample(project, user) }
 
     before(:each) do
-      hipchat.stub(
+      allow(hipchat).to receive_messages(
         project_id: project.id,
         project: project,
         room: 123456,
@@ -48,7 +48,7 @@ describe HipchatService do
     end
 
     it 'should use v1 if version is provided' do
-      hipchat.stub(api_version: 'v1')
+      allow(hipchat).to receive(:api_version).and_return('v1')
       expect(HipChat::Client).to receive(:new).
                                      with(token,
                                           api_version: 'v1',
@@ -59,7 +59,7 @@ describe HipchatService do
     end
 
     it 'should use v2 as the version when nothing is provided' do
-      hipchat.stub(api_version: '')
+      allow(hipchat).to receive(:api_version).and_return('')
       expect(HipChat::Client).to receive(:new).
                                      with(token,
                                           api_version: 'v2',
@@ -245,12 +245,12 @@ describe HipchatService do
       end
 
       it "should set notfiy to true" do
-        hipchat.stub(notify: '1')
+        allow(hipchat).to receive(:notify).and_return('1')
         expect(hipchat.send(:message_options)).to eq({notify: true, color: 'yellow'})
       end
 
       it "should set the color" do
-        hipchat.stub(color: 'red')
+        allow(hipchat).to receive(:color).and_return('red')
         expect(hipchat.send(:message_options)).to eq({notify: false, color: 'red'})
       end
     end

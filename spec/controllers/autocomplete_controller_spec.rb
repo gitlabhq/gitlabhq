@@ -16,7 +16,7 @@ describe AutocompleteController do
     let(:body) { JSON.parse(response.body) }
 
     it { expect(body).to be_kind_of(Array) }
-    it { expect(body.size).to eq(1) }
+    it { expect(body.size).to eq 1 }
     it { expect(body.first["username"]).to eq user.username }
   end
 
@@ -33,7 +33,7 @@ describe AutocompleteController do
     let(:body) { JSON.parse(response.body) }
 
     it { expect(body).to be_kind_of(Array) }
-    it { expect(body.size).to eq(1) }
+    it { expect(body.size).to eq 1 }
     it { expect(body.first["username"]).to eq user.username }
   end
 
@@ -46,6 +46,6 @@ describe AutocompleteController do
     let(:body) { JSON.parse(response.body) }
 
     it { expect(body).to be_kind_of(Array) }
-    it { expect(body.size).to eq(User.count) }
+    it { expect(body.size).to eq User.count }
   end
 end

@@ -141,7 +141,9 @@ describe API::API, api: true  do
   end
 
   describe "DELETE /projects/:id/repository/branches/:branch" do
-    before { Repository.any_instance.stub(rm_branch: true) }
+    before do
+      allow_any_instance_of(Repository).to receive(:rm_branch).and_return(true)
+    end
 
     it "should remove branch" do
       delete api("/projects/#{project.id}/repository/branches/#{branch_name}", user)

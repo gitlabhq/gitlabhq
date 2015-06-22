@@ -1,0 +1,22 @@
+%ul.nav.nav-tabs.merge-request-tabs
+  %li.notes-tab
+    %a{href: '/foo/bar/merge_requests/1', data: {target: '#notes', action: 'notes', toggle: 'tab'}}
+      Discussion
+  %li.commits-tab
+    %a{href: '/foo/bar/merge_requests/1/commits', data: {target: '#commits', action: 'commits', toggle: 'tab'}}
+      Commits
+  %li.diffs-tab
+    %a{href: '/foo/bar/merge_requests/1/diffs', data: {target: '#diffs', action: 'diffs', toggle: 'tab'}}
+      Diffs
+
+.tab-content
+  #notes.notes.tab-pane
+    Notes Content
+  #commits.commits.tab-pane
+    Commits Content
+  #diffs.diffs.tab-pane
+    Diffs Content
+
+.mr-loading-status
+  .loading
+    Loading Animation

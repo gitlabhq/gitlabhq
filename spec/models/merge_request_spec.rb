@@ -111,17 +111,18 @@ describe MergeRequest do
     let(:commit2) { double('commit2', closes_issues: [issue1]) }
 
     before do
-      subject.stub(commits: [commit0, commit1, commit2])
+      allow(subject).to receive(:commits).and_return([commit0, commit1, commit2])
     end
 
     it 'accesses the set of issues that will be closed on acceptance' do
-      subject.project.stub(default_branch: subject.target_branch)
+      allow(subject.project).to receive(:default_branch).
+        and_return(subject.target_branch)
 
       expect(subject.closes_issues).to eq([issue0, issue1].sort_by(&:id))
     end
 
     it 'only lists issues as to be closed if it targets the default branch' do
-      subject.project.stub(default_branch: 'master')
+      allow(subject.project).to receive(:default_branch).and_return('master')
       subject.target_branch = 'something-else'
 
       expect(subject.closes_issues).to be_empty
@@ -130,7 +131,8 @@ describe MergeRequest do
     it 'detects issues mentioned in the description' do
       issue2 = create(:issue, project: subject.project)
       subject.description = "Closes #{issue2.to_reference}"
-      subject.project.stub(default_branch: subject.target_branch)
+      allow(subject.project).to receive(:default_branch).
+        and_return(subject.target_branch)
 
       expect(subject.closes_issues).to include(issue2)
     end
@@ -163,10 +165,10 @@ describe MergeRequest do
   end
 
   it_behaves_like 'an editable mentionable' do
-    subject { create(:merge_request, source_project: project, target_project: project) }
+    subject { create(:merge_request, source_project: project) }
 
-    let(:backref_text) { "merge request !#{subject.iid}" }
-    let(:set_mentionable_text) { ->(txt){ subject.title = txt } }
+    let(:backref_text) { "merge request #{subject.to_reference}" }
+    let(:set_mentionable_text) { ->(txt){ subject.description = txt } }
   end
 
   it_behaves_like 'a Taskable' do

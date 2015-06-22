@@ -21,7 +21,7 @@ describe 'gitlab:mail_google_schema_whitelisting rake task' do
     end
 
     it 'should run the task without errors' do
-      expect { run_rake_task }.to_not raise_error
+      expect { run_rake_task }.not_to raise_error
     end
   end
 end
