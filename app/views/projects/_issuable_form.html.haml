@@ -15,10 +15,10 @@
     - if issuable.is_a?(MergeRequest)
       %p.help-block
         - if issuable.work_in_progress?
-          Remove the <code>WIP</code> prefix from the title to allow this 
+          Remove the <code>WIP</code> prefix from the title to allow this
           <strong>Work In Progress</strong> merge request to be accepted when it's ready.
         - else
-          Start the title with <code>[WIP]</code> or <code>WIP:</code> to prevent a 
+          Start the title with <code>[WIP]</code> or <code>WIP:</code> to prevent a
           <strong>Work In Progress</strong> merge request from being accepted before it's ready.
 .form-group.issuable-description
   = f.label :description, 'Description', class: 'control-label'
@@ -81,21 +81,22 @@
 
 - if issuable.is_a?(MergeRequest)
   %hr
-    - unless @merge_request.persisted?
+    - if @merge_request.new_record?
       .form-group
         = f.label :source_branch, class: 'control-label' do
           %i.fa.fa-code-fork
           Source Branch
         .col-sm-10
           = f.select(:source_branch, [@merge_request.source_branch], { }, { class: 'source_branch select2 span2', disabled: true })
-          %p.help-block
-          = link_to 'Change source branch', mr_change_branches_path(@merge_request)
   .form-group
     = f.label :target_branch, class: 'control-label' do
       %i.fa.fa-code-fork
       Target Branch
     .col-sm-10
-      = f.select(:target_branch, @merge_request.target_branches, { include_blank: "Select branch" }, { class: 'target_branch select2 span2' })
+      = f.select(:target_branch, @merge_request.target_branches, { include_blank: "Select branch" }, { class: 'target_branch select2 span2', disabled: @merge_request.new_record? })
+      - if @merge_request.new_record?
+        %p.help-block
+        = link_to 'Change branches', mr_change_branches_path(@merge_request)
 
 .form-actions
   - if !issuable.project.empty_repo? && (guide_url = contribution_guide_url(issuable.project)) && !issuable.persisted?
