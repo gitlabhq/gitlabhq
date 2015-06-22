@@ -5,7 +5,8 @@ describe TreeHelper do
     let(:project) { create(:project) }
 
     before do
-      @repository = project.repository @commit = project.commit("e56497bb")
+      @repository = project.repository
+      @commit = project.commit("e56497bb")
     end
 
     context "on a directory containing more than one file/directory" do
