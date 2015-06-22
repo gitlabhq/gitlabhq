@@ -223,10 +223,26 @@ class User < ActiveRecord::Base
     end
 
     def find_for_commit(email, name)
-      # Prefer email match over name match
-      User.where(email: email).first ||
-        User.joins(:emails).where(emails: { email: email }).first ||
-        User.where(name: name).first
+      user_table = arel_table
+      email_table = Email.arel_table
+
+      # Use ARel to build a query:
+      query = user_table.
+        # SELECT "users".* FROM "users"
+        project(user_table[Arel.star]).
+        # LEFT OUTER JOIN "emails"
+        join(email_table, Arel::Nodes::OuterJoin).
+        # ON "users"."id" = "emails"."user_id"
+        on(user_table[:id].eq(email_table[:user_id])).
+        # WHERE ("user"."email" = '<email>' OR "user"."name" = '<name>')
+        # OR "emails"."email" = '<email>'
+        where(
+          user_table[:email].eq(email).
+          or(user_table[:name].eq(name)).
+          or(email_table[:email].eq(email))
+        )
+
+      find_by_sql(query.to_sql).first
     end
 
     def filter(filter_name)
