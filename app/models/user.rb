@@ -172,6 +172,9 @@ class User < ActiveRecord::Base
   after_create :post_create_hook
   after_destroy :post_destroy_hook
 
+  # User's Dashboard preference
+  # Note: When adding an option, it MUST go on the end of the array.
+  enum dashboard: [:projects, :stars]
 
   alias_attribute :private_token, :authentication_token
 
@@ -295,6 +298,18 @@ class User < ActiveRecord::Base
     self.reset_password_sent_at = Time.now.utc
 
     @reset_token
+  end
+
+  # Check if the user has enabled Two-factor Authentication
+  def two_factor_enabled?
+    otp_required_for_login
+  end
+
+  # Set whether or not Two-factor Authentication is enabled for the current user
+  #
+  # setting - Boolean
+  def two_factor_enabled=(setting)
+    self.otp_required_for_login = setting
   end
 
   def namespace_uniq
@@ -704,8 +719,4 @@ class User < ActiveRecord::Base
   def can_be_removed?
     !solo_owned_groups.present?
   end
-
-  # User's Dashboard preference
-  # Note: When adding an option, it MUST go on the end of the array.
-  enum dashboard: [:projects, :stars]
 end

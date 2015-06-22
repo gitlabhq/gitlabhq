@@ -87,7 +87,7 @@ class Dispatcher
         new TreeView()
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:blob:show'
-        new BlobView()
+        new LineHighlighter()
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:labels:new', 'projects:labels:edit'
         new Labels()

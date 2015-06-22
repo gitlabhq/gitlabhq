@@ -210,6 +210,30 @@ describe User do
     end
   end
 
+  describe '#two_factor_enabled' do
+    it 'returns two-factor authentication status' do
+      enabled  = build_stubbed(:user, two_factor_enabled: true)
+      disabled = build_stubbed(:user)
+
+      expect(enabled).to be_two_factor_enabled
+      expect(disabled).not_to be_two_factor_enabled
+    end
+  end
+
+  describe '#two_factor_enabled=' do
+    it 'enables two-factor authentication' do
+      user = build_stubbed(:user, two_factor_enabled: false)
+      expect { user.two_factor_enabled = true }.
+        to change { user.two_factor_enabled? }.to(true)
+    end
+
+    it 'disables two-factor authentication' do
+      user = build_stubbed(:user, two_factor_enabled: true)
+      expect { user.two_factor_enabled = false }.
+        to change { user.two_factor_enabled? }.to(false)
+    end
+  end
+
   describe 'authentication token' do
     it "should have authentication token" do
       user = create(:user)

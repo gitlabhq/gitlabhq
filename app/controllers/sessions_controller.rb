@@ -57,7 +57,7 @@ class SessionsController < Devise::SessionsController
   def authenticate_with_two_factor
     user = self.resource = find_user
 
-    return unless user && user.otp_required_for_login
+    return unless user && user.two_factor_enabled?
 
     if user_params[:otp_attempt].present? && session[:otp_user_id]
       if valid_otp_attempt?(user)

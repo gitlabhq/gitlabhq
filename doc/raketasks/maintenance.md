@@ -165,13 +165,18 @@ sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
 Sometimes during version upgrades you might end up with some wrong CSS or
 missing some icons. In that case, try to precompile the assets again.
 
-For Omnibus-packages:
-```
-sudo gitlab-rake assets:precompile
-```
+Note that this only applies to source installations and does NOT apply to
+omnibus packages.
 
 For installations from source:
 ```
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
 ```
+
+For omnibus versions, the unoptimized assets (JavaScript, CSS) are frozen at
+the release of upstream GitLab. The omnibus version includes optimized versions
+of those assets. Unless you are modifying the JavaScript / CSS code on your
+production machine after installing the package, there should be no reason to redo
+rake assets:precompile on the production machine. If you suspect that assets
+have been corrupted, you should reinstall the omnibus package.
