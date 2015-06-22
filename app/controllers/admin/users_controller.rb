@@ -1,5 +1,5 @@
 class Admin::UsersController < Admin::ApplicationController
-  before_action :user, only: [:show, :edit, :update, :destroy]
+  before_action :user, except: [:index, :new, :create]
 
   def index
     @users = User.order_name_asc.filter(params[:filter])
@@ -9,8 +9,17 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def show
+  end
+
+  def projects
     @personal_projects = user.personal_projects
     @joined_projects = user.projects.joined(@user)
+  end
+
+  def groups
+  end
+
+  def keys
     @keys = user.keys
   end
 

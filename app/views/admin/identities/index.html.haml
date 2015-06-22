@@ -1,8 +1,6 @@
-%h3.page-title
-  Identities for
-  = link_to @user.name, [:admin, @user]
+- page_title "Identities", @user.name, "Users"
+= render 'admin/users/head'
 
-%hr
 - if @identities.present?
   %table.table
     %thead

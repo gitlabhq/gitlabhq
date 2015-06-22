@@ -152,6 +152,9 @@ Gitlab::Application.routes.draw do
       resources :identities, only: [:index, :edit, :update, :destroy]
 
       member do
+        get :projects
+        get :keys
+        get :groups
         put :team_update
         put :block
         put :unblock
