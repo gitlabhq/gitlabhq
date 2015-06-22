@@ -64,4 +64,3 @@ def fork_project(from_project, user)
   context.stub(gitlab_shell: shell)
   context.execute
 end
-

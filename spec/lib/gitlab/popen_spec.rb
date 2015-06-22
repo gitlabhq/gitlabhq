@@ -40,6 +40,4 @@ describe 'Gitlab::Popen', no_db: true do
     it { expect(@status).to be_zero }
     it { expect(@output).to include('spec') }
   end
-
 end
-

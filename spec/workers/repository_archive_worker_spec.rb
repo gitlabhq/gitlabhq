@@ -77,4 +77,3 @@ describe RepositoryArchiveWorker do
     end
   end
 end
-
