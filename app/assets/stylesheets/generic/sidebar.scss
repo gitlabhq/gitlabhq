@@ -49,7 +49,7 @@
     display: block;
     text-decoration: none;
     padding: 8px 15px;
-    font-size: 13px;
+    font-size: 14px;
     line-height: 20px;
     padding-left: 16px;
 
@@ -116,10 +116,10 @@
       width: $sidebar_collapsed_width;
 
       li a {
-        padding-left: 18px;
         font-size: 14px;
         padding: 8px 15px;
         text-align: left;
+        padding-left: 16px;
 
 
         & > span {
