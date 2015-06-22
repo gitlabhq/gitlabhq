@@ -2,7 +2,7 @@
   = render 'projects/merge_requests/widget/heading'
   .mr-widget-body
     %h4
-      Accepted
+      Merged
       - if @merge_request.merge_event
         by #{link_to_member(@project, @merge_request.merge_event.author, avatar: true)}
         #{time_ago_with_tooltip(@merge_request.merge_event.created_at)}

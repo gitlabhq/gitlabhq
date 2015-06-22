@@ -11,7 +11,7 @@ Feature: Project Merge Requests
     And I should not see "Feature NS-03" in merge requests
 
   Scenario: I should see rejected merge requests
-    Given I click link "Rejected"
+    Given I click link "Closed"
     Then I should see "Feature NS-03" in merge requests
     And I should not see "Bug NS-04" in merge requests
 
