@@ -8,7 +8,7 @@ describe Gitlab::GitlabImport::ProjectCreator do
     visibility_level: Gitlab::VisibilityLevel::PRIVATE,
     path_with_namespace: 'asd/vim',
     http_url_to_repo: "https://gitlab.com/asd/vim.git",
-    owner: {name: "john"}}.with_indifferent_access
+    owner: { name: "john" } }.with_indifferent_access
   }
   let(:namespace){ create(:group, owner: user) }
 

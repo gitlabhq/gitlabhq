@@ -241,17 +241,17 @@ describe HipchatService do
 
     context "#message_options" do
       it "should be set to the defaults" do
-        expect(hipchat.send(:message_options)).to eq({notify: false, color: 'yellow'})
+        expect(hipchat.send(:message_options)).to eq({ notify: false, color: 'yellow' })
       end
 
       it "should set notfiy to true" do
         hipchat.stub(notify: '1')
-        expect(hipchat.send(:message_options)).to eq({notify: true, color: 'yellow'})
+        expect(hipchat.send(:message_options)).to eq({ notify: true, color: 'yellow' })
       end
 
       it "should set the color" do
         hipchat.stub(color: 'red')
-        expect(hipchat.send(:message_options)).to eq({notify: false, color: 'red'})
+        expect(hipchat.send(:message_options)).to eq({ notify: false, color: 'red' })
       end
     end
   end

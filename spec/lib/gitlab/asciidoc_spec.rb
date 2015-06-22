@@ -22,7 +22,7 @@ module Gitlab
 
       context "with asciidoc_opts" do
 
-        let(:asciidoc_opts) { {safe: :safe, attributes: ['foo']} }
+        let(:asciidoc_opts) { { safe: :safe, attributes: ['foo'] } }
 
         it "should merge the options with default ones" do
           expected_asciidoc_opts = { safe: :safe, backend: :html5,
@@ -38,7 +38,7 @@ module Gitlab
 
     context "with project in context" do
 
-      let(:context) { {project: create(:project)} }
+      let(:context) { { project: create(:project) } }
 
       it "should filter converted input via HTML pipeline and return result" do
         filtered_html = '<b>ASCII</b>'

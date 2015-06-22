@@ -48,7 +48,7 @@ module Gitlab::Markdown
       end
 
       it 'accepts link_attr options' do
-        doc = filter("See #{link}", link_attr: {class: 'custom'})
+        doc = filter("See #{link}", link_attr: { class: 'custom' })
 
         expect(doc.at_css('a')['class']).to eq 'custom'
       end
@@ -89,7 +89,7 @@ module Gitlab::Markdown
       end
 
       it 'accepts link_attr options' do
-        doc = filter("See #{link}", link_attr: {class: 'custom'})
+        doc = filter("See #{link}", link_attr: { class: 'custom' })
         expect(doc.at_css('a')['class']).to eq 'custom'
       end
 

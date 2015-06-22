@@ -17,10 +17,10 @@ describe 'Gitlab::Satellite::Action' do
       starting_remote_count = repo.git.list_remotes.size
       expect(starting_remote_count).to be >= 1
       #kind of hookey way to add a second remote
-      origin_uri = repo.git.remote({v: true}).split(" ")[1]
+      origin_uri = repo.git.remote({ v: true }).split(" ")[1]
 
-      repo.git.remote({raise: true}, 'add', 'another-remote', origin_uri)
-      repo.git.branch({raise: true}, 'a-new-branch')
+      repo.git.remote({ raise: true }, 'add', 'another-remote', origin_uri)
+      repo.git.branch({ raise: true }, 'a-new-branch')
 
       expect(repo.heads.size).to be > (starting_remote_count)
       expect(repo.git.remote().split(" ").size).to be > (starting_remote_count)

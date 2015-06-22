@@ -6,7 +6,7 @@ describe Gitlab::BitbucketImport::ProjectCreator do
     name: 'Vim',
     slug: 'vim',
     is_private: true,
-    owner: "asd"}.with_indifferent_access
+    owner: "asd" }.with_indifferent_access
   }
   let(:namespace){ create(:group, owner: user) }
 

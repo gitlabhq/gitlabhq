@@ -35,14 +35,14 @@ describe 'gitlab:app namespace rake task' do
       let(:gitlab_version) { Gitlab::VERSION }
 
       it 'should fail on mismatch' do
-        YAML.stub load_file: {gitlab_version: "not #{gitlab_version}" }
+        YAML.stub load_file: { gitlab_version: "not #{gitlab_version}" }
         expect { run_rake_task('gitlab:backup:restore') }.to(
           raise_error SystemExit
         )
       end
 
       it 'should invoke restoration on mach' do
-        YAML.stub load_file: {gitlab_version: gitlab_version}
+        YAML.stub load_file: { gitlab_version: gitlab_version }
         expect(Rake::Task["gitlab:backup:db:restore"]).to receive :invoke
         expect(Rake::Task["gitlab:backup:repo:restore"]).to receive :invoke
         expect(Rake::Task["gitlab:shell:setup"]).to receive :invoke
