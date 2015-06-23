@@ -23,6 +23,12 @@
       = icon("spinner spin")
       Checking for CI status for #{@merge_request.last_commit_short_sha}
 
+    .ci_widget.ci-not_found{style: "display:none"}
+      = icon("times")
+      %span Can not find commit in the CI server
+      for #{@merge_request.last_commit_short_sha}.
+      
+
     .ci_widget.ci-canceled{style: "display:none"}
       = icon("times")
       %span CI build canceled
