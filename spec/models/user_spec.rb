@@ -50,12 +50,12 @@
 #  bitbucket_access_token        :string(255)
 #  bitbucket_access_token_secret :string(255)
 #  location                      :string(255)
-#  public_email                  :string(255)      default(""), not null
 #  encrypted_otp_secret          :string(255)
 #  encrypted_otp_secret_iv       :string(255)
 #  encrypted_otp_secret_salt     :string(255)
-#  otp_required_for_login        :boolean
+#  otp_required_for_login        :boolean          default(FALSE), not null
 #  otp_backup_codes              :text
+#  public_email                  :string(255)      default(""), not null
 #  dashboard                     :integer          default(0)
 #
 
@@ -210,30 +210,6 @@ describe User do
     end
   end
 
-  describe '#two_factor_enabled' do
-    it 'returns two-factor authentication status' do
-      enabled  = build_stubbed(:user, two_factor_enabled: true)
-      disabled = build_stubbed(:user)
-
-      expect(enabled).to be_two_factor_enabled
-      expect(disabled).not_to be_two_factor_enabled
-    end
-  end
-
-  describe '#two_factor_enabled=' do
-    it 'enables two-factor authentication' do
-      user = build_stubbed(:user, two_factor_enabled: false)
-      expect { user.two_factor_enabled = true }.
-        to change { user.two_factor_enabled? }.to(true)
-    end
-
-    it 'disables two-factor authentication' do
-      user = build_stubbed(:user, two_factor_enabled: true)
-      expect { user.two_factor_enabled = false }.
-        to change { user.two_factor_enabled? }.to(false)
-    end
-  end
-
   describe 'authentication token' do
     it "should have authentication token" do
       user = create(:user)
@@ -308,18 +284,44 @@ describe User do
     end
   end
 
-  describe 'filter' do
-    before do
-      User.delete_all
-      @user = create :user
-      @admin = create :user, admin: true
-      @blocked = create :user, state: :blocked
+  describe '.filter' do
+    let(:user) { double }
+
+    it 'filters by active users by default' do
+      expect(User).to receive(:active).and_return([user])
+
+      expect(User.filter(nil)).to include user
     end
 
-    it { expect(User.filter("admins")).to eq([@admin]) }
-    it { expect(User.filter("blocked")).to eq([@blocked]) }
-    it { expect(User.filter("wop")).to include(@user, @admin, @blocked) }
-    it { expect(User.filter(nil)).to include(@user, @admin) }
+    it 'filters by admins' do
+      expect(User).to receive(:admins).and_return([user])
+
+      expect(User.filter('admins')).to include user
+    end
+
+    it 'filters by blocked' do
+      expect(User).to receive(:blocked).and_return([user])
+
+      expect(User.filter('blocked')).to include user
+    end
+
+    it 'filters by two_factor_disabled' do
+      expect(User).to receive(:without_two_factor).and_return([user])
+
+      expect(User.filter('two_factor_disabled')).to include user
+    end
+
+    it 'filters by two_factor_enabled' do
+      expect(User).to receive(:with_two_factor).and_return([user])
+
+      expect(User.filter('two_factor_enabled')).to include user
+    end
+
+    it 'filters by wop' do
+      expect(User).to receive(:without_projects).and_return([user])
+
+      expect(User.filter('wop')).to include user
+    end
   end
 
   describe :not_in_project do

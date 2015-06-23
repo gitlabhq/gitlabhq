@@ -40,15 +40,15 @@ describe ApplicationHelper do
   end
 
   describe 'project_icon' do
-    avatar_file_path = File.join(Rails.root, 'public', 'gitlab_logo.png')
+    avatar_file_path = File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
 
     it 'should return an url for the avatar' do
       project = create(:project)
       project.avatar = File.open(avatar_file_path)
       project.save!
-      avatar_url = "http://localhost/uploads/project/avatar/#{ project.id }/gitlab_logo.png"
+      avatar_url = "http://localhost/uploads/project/avatar/#{ project.id }/banana_sample.gif"
       expect(project_icon("#{project.namespace.to_param}/#{project.to_param}").to_s).to eq(
-        "<img alt=\"Gitlab logo\" src=\"#{avatar_url}\" />"
+        "<img alt=\"Banana sample\" src=\"#{avatar_url}\" />"
       )
     end
 
@@ -65,14 +65,14 @@ describe ApplicationHelper do
   end
 
   describe 'avatar_icon' do
-    avatar_file_path = File.join(Rails.root, 'public', 'gitlab_logo.png')
+    avatar_file_path = File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
 
     it 'should return an url for the avatar' do
       user = create(:user)
       user.avatar = File.open(avatar_file_path)
       user.save!
       expect(avatar_icon(user.email).to_s).
-        to match("/uploads/user/avatar/#{ user.id }/gitlab_logo.png")
+        to match("/uploads/user/avatar/#{ user.id }/banana_sample.gif")
     end
 
     it 'should return an url for the avatar with relative url' do
@@ -83,7 +83,7 @@ describe ApplicationHelper do
       user.avatar = File.open(avatar_file_path)
       user.save!
       expect(avatar_icon(user.email).to_s).
-        to match("/gitlab/uploads/user/avatar/#{ user.id }/gitlab_logo.png")
+        to match("/gitlab/uploads/user/avatar/#{ user.id }/banana_sample.gif")
     end
 
     it 'should call gravatar_icon when no avatar is present' do

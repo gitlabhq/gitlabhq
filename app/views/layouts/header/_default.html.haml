@@ -3,7 +3,8 @@
     .header-logo
       = link_to root_path, class: 'home', title: 'Dashboard', id: 'js-shortcuts-home', data: {toggle: 'tooltip', placement: 'bottom'} do
         = brand_header_logo
-        %h3 GitLab
+        .gitlab-text-container
+          %h3 GitLab
     .header-content
       %button.navbar-toggle{type: 'button'}
         %span.sr-only Toggle navigation
