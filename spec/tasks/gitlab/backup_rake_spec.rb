@@ -37,7 +37,7 @@ describe 'gitlab:app namespace rake task' do
 
       it 'should fail on mismatch' do
         allow(YAML).to receive(:load_file).
-          and_return({gitlab_version: "not #{gitlab_version}" })
+          and_return({ gitlab_version: "not #{gitlab_version}" })
 
         expect { run_rake_task('gitlab:backup:restore') }.
           to raise_error(SystemExit)
@@ -45,7 +45,7 @@ describe 'gitlab:app namespace rake task' do
 
       it 'should invoke restoration on mach' do
         allow(YAML).to receive(:load_file).
-          and_return({gitlab_version: gitlab_version})
+          and_return({ gitlab_version: gitlab_version })
         expect(Rake::Task["gitlab:backup:db:restore"]).to receive(:invoke)
         expect(Rake::Task["gitlab:backup:repo:restore"]).to receive(:invoke)
         expect(Rake::Task["gitlab:shell:setup"]).to receive(:invoke)

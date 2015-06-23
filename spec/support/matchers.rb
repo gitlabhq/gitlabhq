@@ -9,11 +9,11 @@ end
 
 def emulate_user(user)
   user = case user
-        when :user then create(:user)
-        when :visitor then nil
-        when :admin then create(:admin)
-        else user
-        end
+         when :user then create(:user)
+         when :visitor then nil
+         when :admin then create(:admin)
+         else user
+         end
   login_with(user) if user
 end
 
