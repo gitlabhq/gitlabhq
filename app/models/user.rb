@@ -50,12 +50,12 @@
 #  bitbucket_access_token        :string(255)
 #  bitbucket_access_token_secret :string(255)
 #  location                      :string(255)
-#  public_email                  :string(255)      default(""), not null
 #  encrypted_otp_secret          :string(255)
 #  encrypted_otp_secret_iv       :string(255)
 #  encrypted_otp_secret_salt     :string(255)
-#  otp_required_for_login        :boolean
+#  otp_required_for_login        :boolean          default(FALSE), not null
 #  otp_backup_codes              :text
+#  public_email                  :string(255)      default(""), not null
 #  dashboard                     :integer          default(0)
 #
 
@@ -80,6 +80,7 @@ class User < ActiveRecord::Base
 
   devise :two_factor_authenticatable,
          otp_secret_encryption_key: File.read(Rails.root.join('.secret')).chomp
+  alias_attribute :two_factor_enabled, :otp_required_for_login
 
   devise :two_factor_backupable, otp_number_of_backup_codes: 10
   serialize :otp_backup_codes, JSON
@@ -193,11 +194,13 @@ class User < ActiveRecord::Base
   mount_uploader :avatar, AvatarUploader
 
   # Scopes
-  scope :admins, -> { where(admin:  true) }
+  scope :admins, -> { where(admin: true) }
   scope :blocked, -> { with_state(:blocked) }
   scope :active, -> { with_state(:active) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members)') }
+  scope :with_two_factor,    -> { where(two_factor_enabled: true) }
+  scope :without_two_factor, -> { where(two_factor_enabled: false) }
 
   #
   # Class methods
@@ -247,9 +250,16 @@ class User < ActiveRecord::Base
 
     def filter(filter_name)
       case filter_name
-      when "admins"; self.admins
-      when "blocked"; self.blocked
-      when "wop"; self.without_projects
+      when 'admins'
+        self.admins
+      when 'blocked'
+        self.blocked
+      when 'two_factor_disabled'
+        self.without_two_factor
+      when 'two_factor_enabled'
+        self.with_two_factor
+      when 'wop'
+        self.without_projects
       else
         self.active
       end
@@ -314,18 +324,6 @@ class User < ActiveRecord::Base
     self.reset_password_sent_at = Time.now.utc
 
     @reset_token
-  end
-
-  # Check if the user has enabled Two-factor Authentication
-  def two_factor_enabled?
-    otp_required_for_login
-  end
-
-  # Set whether or not Two-factor Authentication is enabled for the current user
-  #
-  # setting - Boolean
-  def two_factor_enabled=(setting)
-    self.otp_required_for_login = setting
   end
 
   def namespace_uniq
