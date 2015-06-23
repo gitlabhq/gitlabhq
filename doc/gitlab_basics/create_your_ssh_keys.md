@@ -34,3 +34,4 @@ You need to connect your computer to your GitLab account through SSH Keys. They 
 
 ![Paste SSH Key](basicsimages/key.png)
 
+* Now, you'll be able to use Git over SSH, instead of Git over HTTP.
