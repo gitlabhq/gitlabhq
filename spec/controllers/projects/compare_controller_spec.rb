@@ -12,8 +12,11 @@ describe Projects::CompareController do
   end
 
   it 'compare should show some diffs' do
-    get(:show, namespace_id: project.namespace.to_param,
-        project_id: project.to_param, from: ref_from, to: ref_to)
+    get(:show,
+        namespace_id: project.namespace.to_param,
+        project_id: project.to_param,
+        from: ref_from,
+        to: ref_to)
 
     expect(response).to be_success
     expect(assigns(:diffs).length).to be >= 1

@@ -63,8 +63,9 @@ describe API::API, api: true  do
     end
 
     it "should return a 201 status if user is already project member" do
-      post api("/projects/#{project.id}/members", user), user_id: user2.id,
-        access_level: ProjectMember::DEVELOPER
+      post api("/projects/#{project.id}/members", user),
+           user_id: user2.id,
+           access_level: ProjectMember::DEVELOPER
       expect do
         post api("/projects/#{project.id}/members", user), user_id: user2.id, access_level: ProjectMember::DEVELOPER
       end.not_to change { ProjectMember.count }
