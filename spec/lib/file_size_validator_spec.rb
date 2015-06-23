@@ -9,9 +9,9 @@ describe 'Gitlab::FileSizeValidatorSpec' do
     let(:options) { { maximum: 10, attributes: { attachment: attachment } } }
 
     it 'attachment exceeds maximum limit' do
-        allow(attachment).to receive(:size) { 100 }
-        validator.validate_each(note, :attachment, attachment)
-        expect(note.errors).to have_key(:attachment)
+      allow(attachment).to receive(:size) { 100 }
+      validator.validate_each(note, :attachment, attachment)
+      expect(note.errors).to have_key(:attachment)
     end
 
     it 'attachment under maximum limit' do

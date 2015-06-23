@@ -121,7 +121,7 @@ describe Grack::Auth do
 
               context "when the user isn't blocked" do
                 before do
-                 expect(Rack::Attack::Allow2Ban).to receive(:reset)
+                  expect(Rack::Attack::Allow2Ban).to receive(:reset)
                 end
 
                 it "responds with status 200" do
