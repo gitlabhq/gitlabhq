@@ -1,5 +1,5 @@
 namespace :cache do
-  desc "GITLAB | Clear redis cache"
+  desc "GitLab | Clear redis cache"
   task :clear => :environment do
     # Hack into Rails.cache until https://github.com/redis-store/redis-store/pull/225
     # is accepted (I hope) and we can update the redis-store gem.

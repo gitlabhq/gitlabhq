@@ -1,6 +1,6 @@
 namespace :gitlab do
   namespace :cleanup do
-    desc "GITLAB | Cleanup | Clean namespaces"
+    desc "GitLab | Cleanup | Clean namespaces"
     task dirs: :environment  do
       warn_user_is_not_gitlab
       remove_flag = ENV['REMOVE']
@@ -43,7 +43,7 @@ namespace :gitlab do
       end
     end
 
-    desc "GITLAB | Cleanup | Clean repositories"
+    desc "GitLab | Cleanup | Clean repositories"
     task repos: :environment  do
       warn_user_is_not_gitlab
       remove_flag = ENV['REMOVE']
@@ -85,7 +85,7 @@ namespace :gitlab do
       end
     end
 
-    desc "GITLAB | Cleanup | Block users that have been removed in LDAP"
+    desc "GitLab | Cleanup | Block users that have been removed in LDAP"
     task block_removed_ldap_users: :environment  do
       warn_user_is_not_gitlab
       block_flag = ENV['BLOCK']

@@ -9,35 +9,57 @@ before_script:
   - touch log/test.log
   - bundle install --without postgres production --jobs $(nproc)  "${FLAGS[@]}"
   - bundle exec rake db:create RAILS_ENV=test
-Rspec:
+
+spec:feature:
   script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:feature
   tags:
     - ruby
     - mysql
 
-Spinach:
+spec:api:
   script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:api
   tags:
     - ruby
     - mysql
 
-Jasmine:
+spec:other:
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:other
+  tags:
+    - ruby
+    - mysql
+
+spinach:project:
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project
+  tags:
+    - ruby
+    - mysql
+
+spinach:other:
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:other
+  tags:
+    - ruby
+    - mysql
+
+jasmine:ci:
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake jasmine:ci
   tags:
     - ruby
     - mysql
 
-Rubocop:
+rubocop:
   script:
     - bundle exec rubocop
   tags:
     - ruby
     - mysql
 
-Brakeman:
+brakeman:
   script:
     - bundle exec rake brakeman
   tags:

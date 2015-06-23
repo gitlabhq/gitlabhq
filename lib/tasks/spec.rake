@@ -1,7 +1,7 @@
 Rake::Task["spec"].clear if Rake::Task.task_defined?('spec')
 
 namespace :spec do
-  desc 'GITLAB | Run request specs'
+  desc 'GitLab | Rspec | Run request specs'
   task :api do
     cmds = [
       %W(rake gitlab:setup),
@@ -10,7 +10,7 @@ namespace :spec do
     run_commands(cmds)
   end
 
-  desc 'GITLAB | Run feature specs'
+  desc 'GitLab | Rspec | Run feature specs'
   task :feature do
     cmds = [
       %W(rake gitlab:setup),
@@ -19,7 +19,7 @@ namespace :spec do
     run_commands(cmds)
   end
 
-  desc 'GITLAB | Run other specs'
+  desc 'GitLab | Rspec | Run other specs'
   task :other do
     cmds = [
       %W(rake gitlab:setup),
@@ -29,7 +29,7 @@ namespace :spec do
   end
 end
 
-desc "GITLAB | Run specs"
+desc "GitLab | Run specs"
 task :spec do
   cmds = [
     %W(rake gitlab:setup),
