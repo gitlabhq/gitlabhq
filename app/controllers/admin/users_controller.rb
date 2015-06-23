@@ -86,7 +86,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def destroy
-    DeleteUserService.new.execute(user)
+    DeleteUserService.new(current_user).execute(user)
 
     respond_to do |format|
       format.html { redirect_to admin_users_path }
