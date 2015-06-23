@@ -114,4 +114,45 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   step 'I should see the key removed' do
     expect(page).not_to have_content 'ssh-rsa Key2'
   end
+
+  step 'user "Pete" with twitter account' do
+    @user = create(:user, name: 'Pete')
+    @user.identities.create!(extern_uid: '123456', provider: 'twitter')
+  end
+
+  step 'I visit "Pete" identities page in admin' do
+    allow(Gitlab::OAuth::Provider).to receive(:names).and_return(%w(twitter twitter_updated))
+    visit admin_user_identities_path(@user)
+  end
+
+  step 'I should see twitter details' do
+    expect(page).to have_content 'Pete'
+    expect(page).to have_content 'twitter'
+  end
+
+  step 'I modify twitter identity' do
+    find('.table').find(:link, 'Edit').click
+    fill_in 'identity_extern_uid', with: '654321'
+    select 'twitter_updated', from: 'identity_provider'
+    click_button 'Save changes'
+  end
+
+  step 'I should see twitter details updated' do
+    expect(page).to have_content 'Pete'
+    expect(page).to have_content 'twitter_updated'
+    expect(page).to have_content '654321'
+  end
+
+  step 'I remove twitter identity' do
+    click_link 'Delete'
+  end
+
+  step 'I should not see twitter details' do
+    expect(page).to have_content 'Pete'
+    expect(page).to_not have_content 'twitter'
+  end
+
+  step 'click on ssh keys tab' do
+    click_link 'SSH keys'
+  end
 end

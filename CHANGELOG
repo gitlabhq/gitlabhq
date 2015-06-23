@@ -10,6 +10,7 @@ v 7.13.0 (unreleased)
   - Rename "Design" profile settings page to "Preferences".
   - Allow users to customize their default Dashboard page.
   - Update ssl_ciphers in Nginx example to remove DHE settings. This will deny forward secrecy for Android 2.3.7, Java 6 and OpenSSL 0.9.8
+  - Admin can edit and remove user identities
   - Convert CRLF newlines to LF when committing using the web editor.
   - API request /projects/:project_id/merge_requests?state=closed will return only closed merge requests without merged one. If you need ones that were merged - use state=merged.  
   - Allow Administrators to filter the user list by those with or without Two-factor Authentication enabled.
