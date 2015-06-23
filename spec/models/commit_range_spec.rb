@@ -14,7 +14,7 @@ describe CommitRange do
   let(:range2) { described_class.new("#{sha_from}..#{sha_to}") }
 
   it 'raises ArgumentError when given an invalid range string' do
-    expect { described_class.new("Foo") }.to raise_error
+    expect { described_class.new("Foo") }.to raise_error(ArgumentError)
   end
 
   describe '#to_s' do

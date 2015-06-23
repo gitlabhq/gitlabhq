@@ -49,10 +49,10 @@ describe Projects::CommitController do
             project_id: project.to_param,
             id: commit.id, format: format)
 
-        expect(response.body).to_not include('&amp;')
-        expect(response.body).to_not include('&gt;')
-        expect(response.body).to_not include('&lt;')
-        expect(response.body).to_not include('&quot;')
+        expect(response.body).not_to include('&amp;')
+        expect(response.body).not_to include('&gt;')
+        expect(response.body).not_to include('&lt;')
+        expect(response.body).not_to include('&quot;')
       end
     end
 

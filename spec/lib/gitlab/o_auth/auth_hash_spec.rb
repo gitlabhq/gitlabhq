@@ -51,7 +51,7 @@ describe Gitlab::OAuth::AuthHash do
     it { expect(auth_hash.email).to eql email_utf8 }
     it { expect(auth_hash.username).to eql nickname_utf8 }
     it { expect(auth_hash.name).to eql name_utf8 }
-    it { expect(auth_hash.password).to_not be_empty }
+    it { expect(auth_hash.password).not_to be_empty }
   end
 
   context 'email not provided' do

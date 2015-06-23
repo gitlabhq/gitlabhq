@@ -60,9 +60,8 @@ describe API::API, api: true  do
     end
 
     it "should return a 400 if editor fails to create file" do
-      Repository.any_instance.stub(
-        commit_file: false,
-      )
+      allow_any_instance_of(Repository).to receive(:commit_file).
+        and_return(false)
 
       post api("/projects/#{project.id}/repository/files", user), valid_params
       expect(response.status).to eq(400)
@@ -112,9 +111,7 @@ describe API::API, api: true  do
     end
 
     it "should return a 400 if satellite fails to create file" do
-      Repository.any_instance.stub(
-        remove_file: false,
-      )
+      allow_any_instance_of(Repository).to receive(:remove_file).and_return(false)
 
       delete api("/projects/#{project.id}/repository/files", user), valid_params
       expect(response.status).to eq(400)

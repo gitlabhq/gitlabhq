@@ -28,7 +28,7 @@ describe 'Gitlab::Popen', no_db: true do
 
   context 'unsafe string command' do
     it 'raises an error when it gets called with a string argument' do
-      expect { @klass.new.popen('ls', path) }.to raise_error
+      expect { @klass.new.popen('ls', path) }.to raise_error(RuntimeError)
     end
   end
 

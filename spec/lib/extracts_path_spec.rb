@@ -9,8 +9,11 @@ describe ExtractsPath do
 
   before do
     @project = project
-    project.stub(repository: double(ref_names: ['master', 'foo/bar/baz', 'v1.0.0', 'v2.0.0']))
-    project.stub(path_with_namespace: 'gitlab/gitlab-ci')
+
+    repo = double(ref_names: ['master', 'foo/bar/baz', 'v1.0.0', 'v2.0.0'])
+    allow(project).to receive(:repository).and_return(repo)
+    allow(project).to receive(:path_with_namespace).
+      and_return('gitlab/gitlab-ci')
   end
 
   describe '#assign_ref' do

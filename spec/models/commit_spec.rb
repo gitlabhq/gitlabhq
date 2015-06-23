@@ -77,13 +77,13 @@ eos
     let(:other_issue) { create :issue, project: other_project }
 
     it 'detects issues that this commit is marked as closing' do
-      commit.stub(safe_message: "Fixes ##{issue.iid}")
+      allow(commit).to receive(:safe_message).and_return("Fixes ##{issue.iid}")
       expect(commit.closes_issues).to eq([issue])
     end
 
     it 'does not detect issues from other projects' do
       ext_ref = "#{other_project.path_with_namespace}##{other_issue.iid}"
-      commit.stub(safe_message: "Fixes #{ext_ref}")
+      allow(commit).to receive(:safe_message).and_return("Fixes #{ext_ref}")
       expect(commit.closes_issues).to be_empty
     end
   end
@@ -93,7 +93,9 @@ eos
 
     let(:author) { create(:user, email: commit.author_email) }
     let(:backref_text) { "commit #{subject.id}" }
-    let(:set_mentionable_text) { ->(txt){ subject.stub(safe_message: txt) } }
+    let(:set_mentionable_text) do
+      ->(txt) { allow(subject).to receive(:safe_message).and_return(txt) }
+    end
 
     # Include the subject in the repository stub.
     let(:extra_commits) { [subject] }

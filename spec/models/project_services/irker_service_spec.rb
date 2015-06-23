@@ -24,8 +24,8 @@ require 'json'
 
 describe IrkerService do
   describe 'Associations' do
-    it { should belong_to :project }
-    it { should have_one :service_hook }
+    it { is_expected.to belong_to :project }
+    it { is_expected.to have_one :service_hook }
   end
 
   describe 'Validations' do
@@ -66,7 +66,7 @@ describe IrkerService do
     let(:colorize_messages) { '1' }
 
     before do
-      irker.stub(
+      allow(irker).to receive_messages(
         active: true,
         project: project,
         project_id: project.id,

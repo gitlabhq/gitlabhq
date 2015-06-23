@@ -71,7 +71,7 @@ describe ProjectHook do
     it "catches exceptions" do
       expect(WebHook).to receive(:post).and_raise("Some HTTP Post error")
 
-      expect { @project_hook.execute(@data, 'push_hooks') }.to raise_error
+      expect { @project_hook.execute(@data, 'push_hooks') }.to raise_error(RuntimeError)
     end
   end
 end

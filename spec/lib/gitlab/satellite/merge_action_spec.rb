@@ -27,7 +27,7 @@ describe 'Gitlab::Satellite::MergeAction' do
 
     context 'between branches' do
       it 'should raise exception -- not expected to be used by non forks' do
-        expect { Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).commits_between }.to raise_error
+        expect { Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).commits_between }.to raise_error(RuntimeError)
       end
     end
   end
@@ -75,7 +75,7 @@ describe 'Gitlab::Satellite::MergeAction' do
 
     context 'between branches' do
       it 'should get proper diffs' do
-        expect{ Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).diffs_between_satellite }.to raise_error
+        expect{ Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).diffs_between_satellite }.to raise_error(RuntimeError)
       end
     end
   end

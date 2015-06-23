@@ -9,6 +9,7 @@ v 7.13.0 (unreleased)
   - Allow users to customize their default Dashboard page.
   - Update ssl_ciphers in Nginx example to remove DHE settings. This will deny forward secrecy for Android 2.3.7, Java 6 and OpenSSL 0.9.8
   - Convert CRLF newlines to LF when committing using the web editor.
+  - API request /projects/:project_id/merge_requests?state=closed will return only closed merge requests without merged one. If you need ones that were merged - use state=merged.  
 
 v 7.12.0 (unreleased)
   - Fix Error 500 when one user attempts to access a personal, internal snippet (Stan Hu)
@@ -51,8 +52,8 @@ v 7.12.0 (unreleased)
   - Add validation to wiki page creation (only [a-zA-Z0-9/_-] are allowed) (Jeroen van Baarsen)
   - Fix new/empty milestones showing 100% completion value (Jonah Bishop)
   - Add a note when an Issue or Merge Request's title changes
-  - Consistently refer to MRs as either Accepted or Rejected.
-  - Add Accepted and Rejected tabs to MR lists.
+  - Consistently refer to MRs as either Merged or Closed.
+  - Add Merged tab to MR lists.
   - Prefix EmailsOnPush email subject with `[Git]`.
   - Group project contributions by both name and email.
   - Clarify navigation labels for Project Settings and Group Settings.

@@ -40,15 +40,15 @@ describe ApplicationHelper do
   end
 
   describe 'project_icon' do
-    avatar_file_path = File.join(Rails.root, 'public', 'gitlab_logo.png')
+    avatar_file_path = File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
 
     it 'should return an url for the avatar' do
       project = create(:project)
       project.avatar = File.open(avatar_file_path)
       project.save!
-      avatar_url = "http://localhost/uploads/project/avatar/#{ project.id }/gitlab_logo.png"
+      avatar_url = "http://localhost/uploads/project/avatar/#{ project.id }/banana_sample.gif"
       expect(project_icon("#{project.namespace.to_param}/#{project.to_param}").to_s).to eq(
-        "<img alt=\"Gitlab logo\" src=\"#{avatar_url}\" />"
+        "<img alt=\"Banana sample\" src=\"#{avatar_url}\" />"
       )
     end
 
@@ -65,25 +65,25 @@ describe ApplicationHelper do
   end
 
   describe 'avatar_icon' do
-    avatar_file_path = File.join(Rails.root, 'public', 'gitlab_logo.png')
+    avatar_file_path = File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
 
     it 'should return an url for the avatar' do
       user = create(:user)
       user.avatar = File.open(avatar_file_path)
       user.save!
       expect(avatar_icon(user.email).to_s).
-        to match("/uploads/user/avatar/#{ user.id }/gitlab_logo.png")
+        to match("/uploads/user/avatar/#{ user.id }/banana_sample.gif")
     end
 
     it 'should return an url for the avatar with relative url' do
-      Gitlab.config.gitlab.stub(relative_url_root: '/gitlab')
-      Gitlab.config.gitlab.stub(url: Settings.send(:build_gitlab_url))
+      allow(Gitlab.config.gitlab).to receive(:relative_url_root).and_return('/gitlab')
+      allow(Gitlab.config.gitlab).to receive(:url).and_return(Settings.send(:build_gitlab_url))
 
       user = create(:user)
       user.avatar = File.open(avatar_file_path)
       user.save!
       expect(avatar_icon(user.email).to_s).
-        to match("/gitlab/uploads/user/avatar/#{ user.id }/gitlab_logo.png")
+        to match("/gitlab/uploads/user/avatar/#{ user.id }/banana_sample.gif")
     end
 
     it 'should call gravatar_icon when no avatar is present' do
@@ -97,7 +97,7 @@ describe ApplicationHelper do
     let(:user_email) { 'user@email.com' }
 
     it 'should return a generic avatar path when Gravatar is disabled' do
-      ApplicationSetting.any_instance.stub(gravatar_enabled?: false)
+      allow_any_instance_of(ApplicationSetting).to receive(:gravatar_enabled?).and_return(false)
       expect(gravatar_icon(user_email)).to match('no_avatar.png')
     end
 
@@ -106,13 +106,13 @@ describe ApplicationHelper do
     end
 
     it 'should return default gravatar url' do
-      Gitlab.config.gitlab.stub(https: false)
+      allow(Gitlab.config.gitlab).to receive(:https).and_return(false)
       url = 'http://www.gravatar.com/avatar/b58c6f14d292556214bd64909bcdb118'
       expect(gravatar_icon(user_email)).to match(url)
     end
 
     it 'should use SSL when appropriate' do
-      Gitlab.config.gitlab.stub(https: true)
+      allow(Gitlab.config.gitlab).to receive(:https).and_return(true)
       expect(gravatar_icon(user_email)).to match('https://secure.gravatar.com')
     end
 

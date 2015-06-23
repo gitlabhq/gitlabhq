@@ -32,7 +32,7 @@ describe FlowdockService do
 
     before do
       @flowdock_service = FlowdockService.new
-      @flowdock_service.stub(
+      allow(@flowdock_service).to receive_messages(
         project_id: project.id,
         project: project,
         service_hook: true,

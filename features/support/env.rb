@@ -25,6 +25,7 @@ WebMock.allow_net_connect!
 
 Spinach.hooks.before_run do
   include RSpec::Mocks::ExampleMethods
+  RSpec::Mocks.setup
   TestEnv.init(mailer: false)
 
   include FactoryGirl::Syntax::Methods

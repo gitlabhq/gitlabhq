@@ -80,7 +80,7 @@ shared_examples 'a mentionable' do
                          ext_issue, ext_mr, ext_commit]
 
     mentioned_objects.each do |referenced|
-      expect(Note).to receive(:create_cross_reference_note).
+      expect(SystemNoteService).to receive(:cross_reference).
         with(referenced, subject.local_reference, author)
     end
 
@@ -88,7 +88,7 @@ shared_examples 'a mentionable' do
   end
 
   it 'detects existing cross-references' do
-    Note.create_cross_reference_note(mentioned_issue, subject.local_reference, author)
+    SystemNoteService.cross_reference(mentioned_issue, subject.local_reference, author)
 
     expect(subject).to have_mentioned(mentioned_issue)
     expect(subject).not_to have_mentioned(mentioned_mr)
@@ -132,13 +132,13 @@ shared_examples 'an editable mentionable' do
     # These three objects were already referenced, and should not receive new
     # notes
     [mentioned_issue, mentioned_commit, ext_issue].each do |oldref|
-      expect(Note).not_to receive(:create_cross_reference_note).
+      expect(SystemNoteService).not_to receive(:cross_reference).
         with(oldref, any_args)
     end
 
     # These two issues are new and should receive reference notes
     new_issues.each do |newref|
-      expect(Note).to receive(:create_cross_reference_note).
+      expect(SystemNoteService).to receive(:cross_reference).
         with(newref, subject.local_reference, author)
     end
 
