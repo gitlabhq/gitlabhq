@@ -1,6 +1,6 @@
 RSpec::Matchers.define :be_valid_commit do
   match do |actual|
-    actual != nil
+    !actual.nil?
     actual.id == ValidCommit::ID
     actual.message == ValidCommit::MESSAGE
     actual.author_name == ValidCommit::AUTHOR_FULL_NAME
