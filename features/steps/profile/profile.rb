@@ -27,14 +27,14 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I change my avatar' do
-    attach_file(:user_avatar, File.join(Rails.root, 'public', 'gitlab_logo.png'))
+    attach_file(:user_avatar, File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif'))
     click_button "Save changes"
     @user.reload
   end
 
   step 'I should see new avatar' do
     expect(@user.avatar).to be_instance_of AvatarUploader
-    expect(@user.avatar.url).to eq "/uploads/user/avatar/#{ @user.id }/gitlab_logo.png"
+    expect(@user.avatar.url).to eq "/uploads/user/avatar/#{ @user.id }/banana_sample.gif"
   end
 
   step 'I should see the "Remove avatar" button' do
@@ -42,7 +42,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I have an avatar' do
-    attach_file(:user_avatar, File.join(Rails.root, 'public', 'gitlab_logo.png'))
+    attach_file(:user_avatar, File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif'))
     click_button "Save changes"
     @user.reload
   end
