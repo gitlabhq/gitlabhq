@@ -3,6 +3,8 @@
  *
  */
 header {
+  transition-duration: .3s;
+
   &.navbar-empty {
     background: #FFF;
     border-bottom: 1px solid #EEE;
@@ -67,27 +69,33 @@ header {
     float: left;
     height: $header-height;
     width: $sidebar_width;
+    transition-duration: .3s;
 
     a {
       float: left;
       height: $header-height;
       width: 100%;
       padding: ($header-height - 36 ) / 2 8px;
-
-      h3 {
-        width: 158px;
-        float: left;
-        margin: 0;
-        margin-left: 14px;
-        font-size: 18px;
-        line-height: $header-height - 14;
-        font-weight: normal;
-      }
+      overflow: hidden;
 
       img {
         width: 36px;
         height: 36px;
         float: left;
+      }
+
+      .gitlab-text-container {
+        width: 230px;
+
+        h3 {
+          width: 158px;
+          float: left;
+          margin: 0;
+          margin-left: 14px;
+          font-size: 18px;
+          line-height: $header-height - 14;
+          font-weight: normal;
+        }
       }
     }
 
