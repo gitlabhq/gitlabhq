@@ -121,7 +121,7 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   end
 
   step 'I visit "Pete" identities page in admin' do
-    Gitlab::OAuth::Provider.stub!(names: %w(twitter twitter_updated))
+    allow(Gitlab::OAuth::Provider).to receive(:names).and_return(%w(twitter twitter_updated))
     visit admin_user_identities_path(@user)
   end
 
@@ -131,10 +131,7 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   end
 
   step 'I modify twitter identity' do
-    within '.table' do
-      click_link 'Edit'
-    end
-
+    find('.table').find(:link, 'Edit').click
     fill_in 'identity_extern_uid', with: '654321'
     select 'twitter_updated', from: 'identity_provider'
     click_button 'Save changes'
