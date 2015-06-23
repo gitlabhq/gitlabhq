@@ -34,14 +34,3 @@ You need to connect your computer to your GitLab account through SSH Keys. They 
 
 ![Paste SSH Key](basicsimages/key.png)
 
-## Things to know when using your commandline
-	
-1. Don’t use capital letters. 
-
-1. You need to find out how your directory is structured. The structure is like a tree, so you won’t be able to access one subfolder unless you open the main folder where it is contained. Directories are folders or files in your system. 
-
-1. You can change multiple pages in one commit. A branch consists of multiple commits. 
-
-1. The terminal will add changes locally in your computer, that you later need to send to gitlab.com.
-
-1. You can add changes directly into your computer files after you tell the terminal: “git pull NAME OF DOC”, and then you can send those changes to GitLab through the terminal (changes like adding files, changing names, adding pictures to files, etc).
