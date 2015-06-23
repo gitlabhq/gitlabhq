@@ -41,6 +41,18 @@ Feature: Project Merge Requests
     And I submit new merge request "Wiki Feature"
     Then I should see merge request "Wiki Feature"
 
+  Scenario: I download a diff on a public merge request
+    Given public project "Community"
+    And "John Doe" owns public project "Community"
+    And project "Community" has "Bug CO-01" open merge request with diffs inside
+    Given I logout directly
+    And I visit merge request page "Bug CO-01"
+    And I click on "Email Patches"
+    Then I should see a patch diff
+    And I visit merge request page "Bug CO-01"
+    And I click on "Plain Diff"
+    Then I should see a patch diff
+
   @javascript
   Scenario: I comment on a merge request
     Given I visit merge request page "Bug NS-04"

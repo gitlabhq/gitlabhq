@@ -6,6 +6,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   include SharedPaths
   include SharedMarkdown
   include SharedDiffNote
+  include SharedUser
 
   step 'I click link "New Merge Request"' do
     click_link "New Merge Request"
@@ -103,6 +104,15 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'project "Shop" have "Feature NS-03" closed merge request' do
     create(:closed_merge_request,
            title: "Feature NS-03",
+           source_project: project,
+           target_project: project,
+           author: project.users.first)
+  end
+
+  step 'project "Community" has "Bug CO-01" open merge request with diffs inside' do
+    project = Project.find_by(name: "Community")
+    create(:merge_request_with_diffs,
+           title: "Bug CO-01",
            source_project: project,
            target_project: project,
            author: project.users.first)
@@ -324,6 +334,18 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'I should see new target branch changes' do
     expect(page).to have_content 'From fix into feature'
     expect(page).to have_content 'Target branch changed from master to feature'
+  end
+
+  step 'I click on "Email Patches"' do
+    click_link "Email Patches"
+  end
+
+  step 'I click on "Plain Diff"' do
+    click_link "Plain Diff"
+  end
+
+  step 'I should see a patch diff' do
+    expect(page).to have_content('diff --git')
   end
 
   def merge_request
