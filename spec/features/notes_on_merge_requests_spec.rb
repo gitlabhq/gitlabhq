@@ -86,13 +86,13 @@ describe 'Comments' do
         end
 
         # TODO: fix after 7.7 release
-        #it "should reset the edit note form textarea with the original content of the note if cancelled" do
-          #within(".current-note-edit-form") do
-            #fill_in "note[note]", with: "Some new content"
-            #find(".btn-cancel").click
-            #expect(find(".js-note-text", visible: false).text).to eq note.note
-          #end
-        #end
+        # it "should reset the edit note form textarea with the original content of the note if cancelled" do
+        #   within(".current-note-edit-form") do
+        #     fill_in "note[note]", with: "Some new content"
+        #     find(".btn-cancel").click
+        #     expect(find(".js-note-text", visible: false).text).to eq note.note
+        #   end
+        # end
 
         it 'appends the edited at time to the note' do
           page.within('.current-note-edit-form') do

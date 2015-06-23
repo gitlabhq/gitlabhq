@@ -13,8 +13,11 @@ describe Projects::MergeRequestsController do
   describe "#show" do
     shared_examples "export merge as" do |format|
       it "should generally work" do
-        get(:show, namespace_id: project.namespace.to_param,
-            project_id: project.to_param, id: merge_request.iid, format: format)
+        get(:show,
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            id: merge_request.iid,
+            format: format)
 
         expect(response).to be_success
       end
@@ -22,13 +25,19 @@ describe Projects::MergeRequestsController do
       it "should generate it" do
         expect_any_instance_of(MergeRequest).to receive(:"to_#{format}")
 
-        get(:show, namespace_id: project.namespace.to_param,
-            project_id: project.to_param, id: merge_request.iid, format: format)
+        get(:show,
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            id: merge_request.iid,
+            format: format)
       end
 
       it "should render it" do
-        get(:show, namespace_id: project.namespace.to_param,
-            project_id: project.to_param, id: merge_request.iid, format: format)
+        get(:show,
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            id: merge_request.iid,
+            format: format)
 
         expect(response.body).to eq((merge_request.send(:"to_#{format}",user)).to_s)
       end
@@ -37,8 +46,11 @@ describe Projects::MergeRequestsController do
         allow_any_instance_of(MergeRequest).to receive(:"to_#{format}").
           and_return('HTML entities &<>" ')
 
-        get(:show, namespace_id: project.namespace.to_param,
-            project_id: project.to_param, id: merge_request.iid, format: format)
+        get(:show,
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            id: merge_request.iid,
+            format: format)
 
         expect(response.body).not_to include('&amp;')
         expect(response.body).not_to include('&gt;')
@@ -52,8 +64,11 @@ describe Projects::MergeRequestsController do
       let(:format) { :diff }
 
       it "should really only be a git diff" do
-        get(:show, namespace_id: project.namespace.to_param,
-            project_id: project.to_param, id: merge_request.iid, format: format)
+        get(:show,
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            id: merge_request.iid,
+            format: format)
 
         expect(response.body).to start_with("diff --git")
       end
@@ -64,15 +79,20 @@ describe Projects::MergeRequestsController do
       let(:format) { :patch }
 
       it "should really be a git email patch with commit" do
-        get(:show, namespace_id: project.namespace.to_param,
-            project_id: project.to_param, id: merge_request.iid, format: format)
+        get(:show,
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            id: merge_request.iid, format: format)
 
         expect(response.body[0..100]).to start_with("From #{merge_request.commits.last.id}")
       end
 
       it "should contain git diffs" do
-        get(:show, namespace_id: project.namespace.to_param,
-            project_id: project.to_param, id: merge_request.iid, format: format)
+        get(:show,
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            id: merge_request.iid,
+            format: format)
 
         expect(response.body).to match(/^diff --git/)
       end
@@ -81,8 +101,11 @@ describe Projects::MergeRequestsController do
 
   describe 'GET diffs' do
     def go(format: 'html')
-      get :diffs, namespace_id: project.namespace.to_param,
-        project_id: project.to_param, id: merge_request.iid, format: format
+      get :diffs,
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param,
+          id: merge_request.iid,
+          format: format
     end
 
     context 'as html' do
@@ -126,8 +149,11 @@ describe Projects::MergeRequestsController do
 
   describe 'GET commits' do
     def go(format: 'html')
-      get :commits, namespace_id: project.namespace.to_param,
-        project_id: project.to_param, id: merge_request.iid, format: format
+      get :commits,
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param,
+          id: merge_request.iid,
+          format: format
     end
 
     context 'as html' do

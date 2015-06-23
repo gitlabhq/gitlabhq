@@ -28,7 +28,7 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
   end
 
   step 'user with name "John Doe" joined project "Shop"' do
-    user = create(:user, {name: "John Doe"})
+    user = create(:user, { name: "John Doe" })
     project.team << [user, :master]
     Event.create(
       project: project,

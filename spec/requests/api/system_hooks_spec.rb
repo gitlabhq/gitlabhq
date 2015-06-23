@@ -36,9 +36,9 @@ describe API::API, api: true  do
 
   describe "POST /hooks" do
     it "should create new hook" do
-      expect {
+      expect do
         post api("/hooks", admin), url: 'http://example.com'
-      }.to change { SystemHook.count }.by(1)
+      end.to change { SystemHook.count }.by(1)
     end
 
     it "should respond with 400 if url not given" do
@@ -47,9 +47,9 @@ describe API::API, api: true  do
     end
 
     it "should not create new hook without url" do
-      expect {
+      expect do
         post api("/hooks", admin)
-      }.not_to change { SystemHook.count }
+      end.to_not change { SystemHook.count }
     end
   end
 
@@ -68,9 +68,9 @@ describe API::API, api: true  do
 
   describe "DELETE /hooks/:id" do
     it "should delete a hook" do
-      expect {
+      expect do
         delete api("/hooks/#{hook.id}", admin)
-      }.to change { SystemHook.count }.by(-1)
+      end.to change { SystemHook.count }.by(-1)
     end
 
     it "should return success if hook id not found" do

@@ -23,8 +23,8 @@ class Spinach::Features::Snippets < Spinach::FeatureSteps
   end
 
   step 'I submit new snippet "Personal snippet three"' do
-    fill_in "personal_snippet_title", :with => "Personal snippet three"
-    fill_in "personal_snippet_file_name", :with => "my_snippet.rb"
+    fill_in "personal_snippet_title", with: "Personal snippet three"
+    fill_in "personal_snippet_file_name", with: "my_snippet.rb"
     page.within('.file-editor') do
       find(:xpath, "//input[@id='personal_snippet_content']").set 'Content of snippet three'
     end
@@ -32,12 +32,12 @@ class Spinach::Features::Snippets < Spinach::FeatureSteps
   end
 
   step 'I submit new internal snippet' do
-    fill_in "personal_snippet_title", :with => "Internal personal snippet one"
-    fill_in "personal_snippet_file_name", :with => "my_snippet.rb"
+    fill_in "personal_snippet_title", with: "Internal personal snippet one"
+    fill_in "personal_snippet_file_name", with: "my_snippet.rb"
     choose 'personal_snippet_visibility_level_10'
 
     page.within('.file-editor') do
-     find(:xpath, "//input[@id='personal_snippet_content']").set 'Content of internal snippet'
+      find(:xpath, "//input[@id='personal_snippet_content']").set 'Content of internal snippet'
     end
 
     click_button "Create snippet"
@@ -49,7 +49,7 @@ class Spinach::Features::Snippets < Spinach::FeatureSteps
   end
 
   step 'I submit new title "Personal snippet new title"' do
-    fill_in "personal_snippet_title", :with => "Personal snippet new title"
+    fill_in "personal_snippet_title", with: "Personal snippet new title"
     click_button "Save"
   end
 

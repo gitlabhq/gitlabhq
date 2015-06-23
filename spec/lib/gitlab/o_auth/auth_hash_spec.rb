@@ -11,9 +11,9 @@ describe Gitlab::OAuth::AuthHash do
     )
   end
 
-  let(:uid_raw) {
+  let(:uid_raw) do
     "CN=Onur K\xC3\xBC\xC3\xA7\xC3\xBCk,OU=Test,DC=example,DC=net"
-  }
+  end
   let(:email_raw) { "onur.k\xC3\xBC\xC3\xA7\xC3\xBCk@example.net" }
   let(:nickname_raw) { "ok\xC3\xBC\xC3\xA7\xC3\xBCk" }
   let(:first_name_raw) { 'Onur' }
@@ -34,16 +34,16 @@ describe Gitlab::OAuth::AuthHash do
   let(:nickname_utf8) { nickname_ascii.force_encoding(Encoding::UTF_8) }
   let(:name_utf8) { name_ascii.force_encoding(Encoding::UTF_8) }
 
-  let(:info_hash) {
+  let(:info_hash) do
     {
-      email: email_ascii,
+      email:      email_ascii,
       first_name: first_name_ascii,
-      last_name: last_name_ascii,
-      name: name_ascii,
-      nickname: nickname_ascii,
-      uid: uid_ascii
+      last_name:  last_name_ascii,
+      name:       name_ascii,
+      nickname:   nickname_ascii,
+      uid:        uid_ascii
     }
-  }
+  end
 
   context 'defaults' do
     it { expect(auth_hash.provider).to eql provider_utf8 }

@@ -18,7 +18,7 @@ describe ExtractsPath do
 
   describe '#assign_ref' do
     let(:ref) { sample_commit[:id] }
-    let(:params) { {path: sample_commit[:line_code_path], ref: ref} }
+    let(:params) { { path: sample_commit[:line_code_path], ref: ref } }
 
     before do
       @project = create(:project)

@@ -20,43 +20,43 @@ module SharedPaths
   # ----------------------------------------
 
   step 'I visit group "Owned" page' do
-    visit group_path(Group.find_by(name:"Owned"))
+    visit group_path(Group.find_by(name: "Owned"))
   end
 
   step 'I visit group "Owned" issues page' do
-    visit issues_group_path(Group.find_by(name:"Owned"))
+    visit issues_group_path(Group.find_by(name: "Owned"))
   end
 
   step 'I visit group "Owned" merge requests page' do
-    visit merge_requests_group_path(Group.find_by(name:"Owned"))
+    visit merge_requests_group_path(Group.find_by(name: "Owned"))
   end
 
   step 'I visit group "Owned" members page' do
-    visit group_group_members_path(Group.find_by(name:"Owned"))
+    visit group_group_members_path(Group.find_by(name: "Owned"))
   end
 
   step 'I visit group "Owned" settings page' do
-    visit edit_group_path(Group.find_by(name:"Owned"))
+    visit edit_group_path(Group.find_by(name: "Owned"))
   end
 
   step 'I visit group "Guest" page' do
-    visit group_path(Group.find_by(name:"Guest"))
+    visit group_path(Group.find_by(name: "Guest"))
   end
 
   step 'I visit group "Guest" issues page' do
-    visit issues_group_path(Group.find_by(name:"Guest"))
+    visit issues_group_path(Group.find_by(name: "Guest"))
   end
 
   step 'I visit group "Guest" merge requests page' do
-    visit merge_requests_group_path(Group.find_by(name:"Guest"))
+    visit merge_requests_group_path(Group.find_by(name: "Guest"))
   end
 
   step 'I visit group "Guest" members page' do
-    visit group_group_members_path(Group.find_by(name:"Guest"))
+    visit group_group_members_path(Group.find_by(name: "Guest"))
   end
 
   step 'I visit group "Guest" settings page' do
-    visit edit_group_path(Group.find_by(name:"Guest"))
+    visit edit_group_path(Group.find_by(name: "Guest"))
   end
 
   # ----------------------------------------
@@ -201,11 +201,11 @@ module SharedPaths
   end
 
   step "I visit my project's commits page" do
-    visit namespace_project_commits_path(@project.namespace, @project, root_ref, {limit: 5})
+    visit namespace_project_commits_path(@project.namespace, @project, root_ref, { limit: 5 })
   end
 
   step "I visit my project's commits page for a specific path" do
-    visit namespace_project_commits_path(@project.namespace, @project, root_ref + "/app/models/project.rb", {limit: 5})
+    visit namespace_project_commits_path(@project.namespace, @project, root_ref + "/app/models/project.rb", { limit: 5 })
   end
 
   step 'I visit my project\'s commits stats page' do
@@ -272,11 +272,11 @@ module SharedPaths
   end
 
   step 'I visit project commits page' do
-    visit namespace_project_commits_path(@project.namespace, @project, root_ref, {limit: 5})
+    visit namespace_project_commits_path(@project.namespace, @project, root_ref, { limit: 5 })
   end
 
   step 'I visit project commits page for stable branch' do
-    visit namespace_project_commits_path(@project.namespace, @project, 'stable', {limit: 5})
+    visit namespace_project_commits_path(@project.namespace, @project, 'stable', { limit: 5 })
   end
 
   step 'I visit project source page' do
@@ -418,13 +418,13 @@ module SharedPaths
     visit explore_projects_path
   end
 
-   step 'I visit the explore trending projects' do
-     visit trending_explore_projects_path
-   end
+  step 'I visit the explore trending projects' do
+    visit trending_explore_projects_path
+  end
 
-   step 'I visit the explore starred projects' do
-     visit starred_explore_projects_path
-   end
+  step 'I visit the explore starred projects' do
+    visit starred_explore_projects_path
+  end
 
   step 'I visit the public groups area' do
     visit explore_groups_path

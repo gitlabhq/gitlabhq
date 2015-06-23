@@ -993,8 +993,6 @@ Rails/Validation:
 AllCops:
   RunRailsCops: true
   Exclude:
-    - 'spec/**/*'
-    - 'features/**/*'
     - 'vendor/**/*'
     - 'db/**/*'
     - 'tmp/**/*'

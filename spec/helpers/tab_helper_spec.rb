@@ -37,8 +37,8 @@ describe TabHelper do
     end
 
     it "passes extra html options to the list element" do
-      expect(nav_link(action: :foo, html_options: {class: 'home'})).to match(/<li class="home active">/)
-      expect(nav_link(html_options: {class: 'active'})).to match(/<li class="active">/)
+      expect(nav_link(action: :foo, html_options: { class: 'home' })).to match(/<li class="home active">/)
+      expect(nav_link(html_options: { class: 'active' })).to match(/<li class="active">/)
     end
   end
 end

@@ -3,9 +3,9 @@ require 'spec_helper'
 describe GitPushService do
   include RepoHelpers
 
-  let (:user)          { create :user }
-  let (:project)       { create :project }
-  let (:service) { GitPushService.new }
+  let(:user)          { create :user }
+  let(:project)       { create :project }
+  let(:service) { GitPushService.new }
 
   before do
     @blankrev = Gitlab::Git::BLANK_SHA
@@ -226,18 +226,18 @@ describe GitPushService do
     end
 
     it "doesn't create cross-reference notes for a closing reference" do
-      expect {
+      expect do
         service.execute(project, user, @oldrev, @newrev, @ref)
-      }.not_to change { Note.where(project_id: project.id, system: true, commit_id: closing_commit.id).count }
+      end.not_to change { Note.where(project_id: project.id, system: true, commit_id: closing_commit.id).count }
     end
 
     it "doesn't close issues when pushed to non-default branches" do
       allow(project).to receive(:default_branch).and_return('durf')
 
       # The push still shouldn't create cross-reference notes.
-      expect {
+      expect do
         service.execute(project, user, @oldrev, @newrev, 'refs/heads/hurf')
-      }.not_to change { Note.where(project_id: project.id, system: true).count }
+      end.not_to change { Note.where(project_id: project.id, system: true).count }
 
       expect(Issue.find(issue.id)).to be_opened
     end
@@ -246,9 +246,9 @@ describe GitPushService do
       allow(project).to receive(:default_issues_tracker?).and_return(false)
 
       # The push still shouldn't create cross-reference notes.
-      expect {
+      expect do
         service.execute(project, user, @oldrev, @newrev, 'refs/heads/hurf')
-      }.not_to change { Note.where(project_id: project.id, system: true).count }
+      end.not_to change { Note.where(project_id: project.id, system: true).count }
     end
   end
 

@@ -17,13 +17,13 @@ describe Projects::BranchesController do
   describe "POST create" do
     render_views
 
-    before {
+    before do
       post :create,
         namespace_id: project.namespace.to_param,
         project_id: project.to_param,
         branch_name: branch,
         ref: ref
-    }
+    end
 
     context "valid branch name, valid source" do
       let(:branch) { "merge_branch" }

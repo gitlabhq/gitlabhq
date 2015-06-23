@@ -9,9 +9,9 @@ describe 'Gitlab::FileSizeValidatorSpec' do
     let(:options) { { maximum: 10, attributes: { attachment: attachment } } }
 
     it 'attachment exceeds maximum limit' do
-        allow(attachment).to receive(:size) { 100 }
-        validator.validate_each(note, :attachment, attachment)
-        expect(note.errors).to have_key(:attachment)
+      allow(attachment).to receive(:size) { 100 }
+      validator.validate_each(note, :attachment, attachment)
+      expect(note.errors).to have_key(:attachment)
     end
 
     it 'attachment under maximum limit' do
@@ -22,8 +22,13 @@ describe 'Gitlab::FileSizeValidatorSpec' do
   end
 
   describe 'options uses a symbol' do
-    let(:options) { { maximum: :test,
-                      attributes: { attachment: attachment } } }
+    let(:options) do
+      {
+        maximum: :test,
+        attributes: { attachment: attachment }
+      }
+    end
+
     before do
       allow(note).to receive(:test) { 10 }
     end

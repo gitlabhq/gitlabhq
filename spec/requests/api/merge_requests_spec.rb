@@ -8,9 +8,10 @@ describe API::API, api: true  do
   let!(:merge_request_closed) { create(:merge_request, state: "closed", author: user, assignee: user, source_project: project, target_project: project, title: "Closed test") }
   let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignee: user, source_project: project, target_project: project, title: "Merged test") }
   let!(:note) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
-  before {
+
+  before do
     project.team << [user, :reporters]
-  }
+  end
 
   describe "GET /projects/:id/merge_requests" do
     context "when unauthenticated" do

@@ -13,12 +13,14 @@ describe MergeRequests::RefreshService do
 
       @project = create(:project, namespace: group)
       @fork_project = Projects::ForkService.new(@project, @user).execute
-      @merge_request = create(:merge_request, source_project: @project,
+      @merge_request = create(:merge_request,
+                              source_project: @project,
                               source_branch: 'master',
                               target_branch: 'feature',
                               target_project: @project)
 
-      @fork_merge_request = create(:merge_request, source_project: @fork_project,
+      @fork_merge_request = create(:merge_request,
+                                   source_project: @fork_project,
                                    source_branch: 'master',
                                    target_branch: 'feature',
                                    target_project: @project)

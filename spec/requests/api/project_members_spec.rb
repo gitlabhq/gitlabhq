@@ -53,10 +53,9 @@ describe API::API, api: true  do
 
   describe "POST /projects/:id/members" do
     it "should add user to project team" do
-      expect {
-        post api("/projects/#{project.id}/members", user), user_id: user2.id,
-          access_level: ProjectMember::DEVELOPER
-      }.to change { ProjectMember.count }.by(1)
+      expect do
+        post api("/projects/#{project.id}/members", user), user_id: user2.id, access_level: ProjectMember::DEVELOPER
+      end.to change { ProjectMember.count }.by(1)
 
       expect(response.status).to eq(201)
       expect(json_response['username']).to eq(user2.username)
@@ -64,12 +63,12 @@ describe API::API, api: true  do
     end
 
     it "should return a 201 status if user is already project member" do
-      post api("/projects/#{project.id}/members", user), user_id: user2.id,
-        access_level: ProjectMember::DEVELOPER
-      expect {
-        post api("/projects/#{project.id}/members", user), user_id: user2.id,
-          access_level: ProjectMember::DEVELOPER
-      }.not_to change { ProjectMember.count }
+      post api("/projects/#{project.id}/members", user),
+           user_id: user2.id,
+           access_level: ProjectMember::DEVELOPER
+      expect do
+        post api("/projects/#{project.id}/members", user), user_id: user2.id, access_level: ProjectMember::DEVELOPER
+      end.not_to change { ProjectMember.count }
 
       expect(response.status).to eq(201)
       expect(json_response['username']).to eq(user2.username)
@@ -123,16 +122,16 @@ describe API::API, api: true  do
     before { project_member2 }
 
     it "should remove user from project team" do
-      expect {
+      expect do
         delete api("/projects/#{project.id}/members/#{user3.id}", user)
-      }.to change { ProjectMember.count }.by(-1)
+      end.to change { ProjectMember.count }.by(-1)
     end
 
     it "should return 200 if team member is not part of a project" do
       delete api("/projects/#{project.id}/members/#{user3.id}", user)
-      expect {
+      expect do
         delete api("/projects/#{project.id}/members/#{user3.id}", user)
-      }.not_to change { ProjectMember.count }
+      end.to_not change { ProjectMember.count }
     end
 
     it "should return 200 if team member already removed" do
@@ -142,9 +141,9 @@ describe API::API, api: true  do
     end
 
     it "should return 200 OK when the user was not member" do
-      expect {
+      expect do
         delete api("/projects/#{project.id}/members/1000000", user)
-      }.to change { ProjectMember.count }.by(0)
+      end.to change { ProjectMember.count }.by(0)
       expect(response.status).to eq(200)
       expect(json_response['message']).to eq("Access revoked")
       expect(json_response['id']).to eq(1000000)

@@ -60,11 +60,11 @@ describe CommitRange do
     end
 
     it 'includes the correct values for a three-dot range' do
-      expect(range.to_param).to eq({from: sha_from, to: sha_to})
+      expect(range.to_param).to eq({ from: sha_from, to: sha_to })
     end
 
     it 'includes the correct values for a two-dot range' do
-      expect(range2.to_param).to eq({from: sha_from + '^', to: sha_to})
+      expect(range2.to_param).to eq({ from: sha_from + '^', to: sha_to })
     end
   end
 

@@ -419,9 +419,7 @@ describe Notify do
     describe 'project access changed' do
       let(:project) { create(:project) }
       let(:user) { create(:user) }
-      let(:project_member) { create(:project_member,
-                                   project: project,
-                                   user: user) }
+      let(:project_member) { create(:project_member, project: project, user: user) }
       subject { Notify.project_access_granted_email(project_member.id) }
 
       it_behaves_like 'an email sent from GitLab'

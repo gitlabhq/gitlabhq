@@ -67,4 +67,3 @@ describe ProjectTeam do
     end
   end
 end
-

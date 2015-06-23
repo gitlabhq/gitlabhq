@@ -248,4 +248,3 @@ describe "Groups", "routing" do
     expect(get('/1')).to route_to('namespaces#show', id: '1')
   end
 end
-
