@@ -2,7 +2,7 @@
 
 The source of GitLab Community Edition is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/) and there are mirrors to make [contributing](CONTRIBUTING.md) as easy as possible.
 
-# ![logo](https://about.gitlab.com/images/logo.svg) GitLab
+# ![logo](https://about.gitlab.com/images/gitlab_logo.png) GitLab
 
 ## Open source software to collaborate on code
 
