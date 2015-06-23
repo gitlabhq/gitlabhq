@@ -10,10 +10,13 @@ v 7.13.0 (unreleased)
   - Update ssl_ciphers in Nginx example to remove DHE settings. This will deny forward secrecy for Android 2.3.7, Java 6 and OpenSSL 0.9.8
   - Convert CRLF newlines to LF when committing using the web editor.
 
-v 7.12.0 (unreleased)
+v 7.12.1 (unreleased)
+  - Fix error when deleting a user who has projects (Stan Hu)
+  - Fix post-receive errors on a push when an external issue tracker is configured (Stan Hu)
+
+v 7.12.0
   - Fix Error 500 when one user attempts to access a personal, internal snippet (Stan Hu)
   - Disable changing of target branch in new merge request page when a branch has already been specified (Stan Hu)
-  - Fix post-receive errors on a push when an external issue tracker is configured (Stan Hu)
   - Update oauth button logos for Twitter and Google to recommended assets
   - Fix hooks for web based events with external issue references (Daniel Gerhardt)
   - Update browser gem to version 0.8.0 for IE11 support (Stan Hu)
