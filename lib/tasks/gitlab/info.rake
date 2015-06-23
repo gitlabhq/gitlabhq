@@ -1,6 +1,6 @@
 namespace :gitlab do
   namespace :env do
-    desc "GITLAB | Show information about GitLab and its environment"
+    desc "GitLab | Show information about GitLab and its environment"
     task info: :environment  do
 
       # check if there is an RVM environment

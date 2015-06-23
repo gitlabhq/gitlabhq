@@ -9,7 +9,7 @@ namespace :gitlab do
     #  * The project owner will set to the first administator of the system
     #  * Existing projects will be skipped
     #
-    desc "GITLAB | Import bare repositories from gitlab_shell -> repos_path into GitLab project instance"
+    desc "GitLab | Import bare repositories from gitlab_shell -> repos_path into GitLab project instance"
     task repos: :environment do
 
       git_base_path = Gitlab.config.gitlab_shell.repos_path
