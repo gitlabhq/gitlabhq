@@ -1,34 +1,30 @@
 Rake::Task["spinach"].clear if Rake::Task.task_defined?('spinach')
 
-desc "GITLAB | Run spinach"
+namespace :spinach do
+  desc "GitLab | Spinach | Run project spinach features"
+  task :project do
+    cmds = [
+      %W(rake gitlab:setup),
+      %W(spinach --tags ~@admin,~@dashboard,~@profile,~@public,~@snippets),
+    ]
+    run_commands(cmds)
+  end
+
+  desc "GitLab | Spinach | Run other spinach features"
+  task :other do
+    cmds = [
+      %W(rake gitlab:setup),
+      %W(spinach --tags @admin,@dashboard,@profile,@public,@snippets),
+    ]
+    run_commands(cmds)
+  end
+end
+
+desc "GitLab | Run spinach"
 task :spinach do
-  tags = if ENV['SEMAPHORE']
-           '~@tricky'
-         else
-           '~@semaphore'
-         end
-
   cmds = [
     %W(rake gitlab:setup),
-    %W(spinach --tags #{tags}),
-  ]
-  run_commands(cmds)
-end
-
-desc "GITLAB | Run project spinach features"
-task :spinach_project do
-  cmds = [
-    %W(rake gitlab:setup),
-    %W(spinach --tags ~@admin,~@dashboard,~@profile,~@public,~@snippets),
-  ]
-  run_commands(cmds)
-end
-
-desc "GITLAB | Run other spinach features"
-task :spinach_other do
-  cmds = [
-    %W(rake gitlab:setup),
-    %W(spinach --tags @admin,@dashboard,@profile,@public,@snippets),
+    %W(spinach),
   ]
   run_commands(cmds)
 end
