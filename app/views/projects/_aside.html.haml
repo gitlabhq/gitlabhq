@@ -24,12 +24,10 @@
         .actions
           - if can? current_user, :write_issue, @project
             = link_to url_for_new_issue(@project, only_path: true), title: "New Issue", class: 'btn btn-sm append-right-10' do
-              = icon("exclamation-circle fw")
               New Issue
 
           - if can? current_user, :write_merge_request, @project
             = link_to new_namespace_project_merge_request_path(@project.namespace, @project), class: "btn btn-sm", title: "New Merge Request" do
-              = icon("plus fw")
               New Merge Request
 
       - if forked_from_project = @project.forked_from_project
