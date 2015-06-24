@@ -351,6 +351,8 @@ class User < ActiveRecord::Base
   end
 
   def owns_public_email
+    return if self.public_email.blank?
+
     self.errors.add(:public_email, "is not an email you own") unless self.all_emails.include?(self.public_email)
   end
 
@@ -531,7 +533,7 @@ class User < ActiveRecord::Base
 
   def set_public_email
     if self.public_email.blank? || !self.all_emails.include?(self.public_email)
-      self.public_email = nil
+      self.public_email = ''
     end
   end
 
