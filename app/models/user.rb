@@ -225,7 +225,8 @@ class User < ActiveRecord::Base
       end
     end
 
-    def find_for_commit(email, name)
+    # Find a User by their primary email or any associated secondary email
+    def find_by_any_email(email)
       user_table = arel_table
       email_table = Email.arel_table
 
@@ -237,13 +238,8 @@ class User < ActiveRecord::Base
         join(email_table, Arel::Nodes::OuterJoin).
         # ON "users"."id" = "emails"."user_id"
         on(user_table[:id].eq(email_table[:user_id])).
-        # WHERE ("user"."email" = '<email>' OR "user"."name" = '<name>')
-        # OR "emails"."email" = '<email>'
-        where(
-          user_table[:email].eq(email).
-          or(user_table[:name].eq(name)).
-          or(email_table[:email].eq(email))
-        )
+        # WHERE ("user"."email" = '<email>' OR "emails"."email" = '<email>')
+        where(user_table[:email].eq(email).or(email_table[:email].eq(email)))
 
       find_by_sql(query.to_sql).first
     end
