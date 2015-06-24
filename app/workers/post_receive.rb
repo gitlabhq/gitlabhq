@@ -28,17 +28,17 @@ class PostReceive
     changes.each do |change|
       oldrev, newrev, ref = change.strip.split(' ')
 
-      @user ||= identify(identifier, project, newrev)
+      user ||= identify(identifier, project, newrev)
 
-      unless @user
+      unless user
         log("Triggered hook for non-existing user \"#{identifier} \"")
         return false
       end
 
       if Gitlab::Git.tag_ref?(ref)
-        GitTagPushService.new.execute(project, @user, oldrev, newrev, ref)
+        GitTagPushService.new.execute(project, user, oldrev, newrev, ref)
       else
-        GitPushService.new.execute(project, @user, oldrev, newrev, ref)
+        GitPushService.new.execute(project, user, oldrev, newrev, ref)
       end
     end
   end
