@@ -76,7 +76,7 @@ class IssuableFinder
     return @milestones if defined?(@milestones)
 
     @milestones =
-      if milestones? && params[:milestone_title] != NONE
+      if milestones? && params[:milestone_title] != NoMilestone.title
         Milestone.where(title: params[:milestone_title])
       else
         nil
@@ -183,7 +183,12 @@ class IssuableFinder
 
   def by_milestone(items)
     if milestones?
-      items = items.where(milestone_id: milestones.try(:pluck, :id))
+      # `milestone_title` will still be present when "No Milestone" is selected
+      if params[:milestone_title] != NoMilestone.title
+        items = items.where(milestone_id: milestones.try(:pluck, :id))
+      else
+        items = items.where(milestone_id: NoMilestone.id)
+      end
     end
 
     items

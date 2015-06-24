@@ -43,11 +43,15 @@
             placeholder: 'Author', class: 'trigger-submit', any_user: true, first_user: true)
 
         .filter-item.inline.milestone-filter
-          = select_tag('milestone_title', projects_milestones_options, class: "select2 trigger-submit", prompt: 'Milestone')
+          = select_tag('milestone_title', projects_milestones_options,
+            class: 'select2 trigger-submit', include_blank: true,
+            data: {placeholder: 'Milestone'})
 
         - if @project
           .filter-item.inline.labels-filter
-            = select_tag('label_name', project_labels_options(@project), class: "select2 trigger-submit", prompt: 'Label')
+            = select_tag('label_name', project_labels_options(@project),
+              class: 'select2 trigger-submit', include_blank: true,
+              data: {placeholder: 'Label'})
 
         .pull-right
           = render 'shared/sort_dropdown'
