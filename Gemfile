@@ -203,7 +203,7 @@ gem 'jquery-ui-rails'
 gem 'nprogress-rails'
 gem 'raphael-rails',      '~> 2.1.2'
 gem 'request_store'
-gem 'select2-rails'
+gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus'
 
 group :development do

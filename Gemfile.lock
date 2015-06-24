@@ -598,7 +598,7 @@ GEM
     seed-fu (2.3.5)
       activerecord (>= 3.1, < 4.3)
       activesupport (>= 3.1, < 4.3)
-    select2-rails (3.5.2)
+    select2-rails (3.5.9.3)
       thor (~> 0.14)
     settingslogic (2.0.9)
     sexp_processor (4.4.5)
@@ -842,7 +842,7 @@ DEPENDENCIES
   sass-rails (~> 4.0.5)
   sdoc
   seed-fu
-  select2-rails
+  select2-rails (~> 3.5.9)
   settingslogic
   shoulda-matchers (~> 2.8.0)
   sidekiq (~> 3.3)
