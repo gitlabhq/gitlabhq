@@ -364,3 +364,12 @@ table {
     margin-top: 8px;
   }
 }
+
+.profiler-results {
+  top: 50px !important;
+
+  .profiler-button,
+  .profiler-controls {
+    border-color: #EEE !important;
+  }
+}
