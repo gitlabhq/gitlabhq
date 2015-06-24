@@ -24,6 +24,7 @@ module API
       expose :identities, using: Entities::Identity
       expose :can_create_group?, as: :can_create_group
       expose :can_create_project?, as: :can_create_project
+      expose :two_factor_enabled
     end
 
     class UserLogin < UserFull
