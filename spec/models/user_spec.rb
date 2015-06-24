@@ -366,28 +366,22 @@ describe User do
     end
   end
 
-  describe '.find_for_commit' do
+  describe '.find_by_any_email' do
     it 'finds by primary email' do
       user = create(:user, email: 'foo@example.com')
 
-      expect(User.find_for_commit(user.email, '')).to eq user
+      expect(User.find_by_any_email(user.email)).to eq user
     end
 
     it 'finds by secondary email' do
       email = create(:email, email: 'foo@example.com')
       user  = email.user
 
-      expect(User.find_for_commit(email.email, '')).to eq user
-    end
-
-    it 'finds by name' do
-      user = create(:user, name: 'Joey JoJo')
-
-      expect(User.find_for_commit('', 'Joey JoJo')).to eq user
+      expect(User.find_by_any_email(email.email)).to eq user
     end
 
     it 'returns nil when nothing found' do
-      expect(User.find_for_commit('', '')).to be_nil
+      expect(User.find_by_any_email('')).to be_nil
     end
   end
 
