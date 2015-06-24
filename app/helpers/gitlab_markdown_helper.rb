@@ -118,7 +118,7 @@ module GitlabMarkdownHelper
 
   # Returns a random markdown tip for use as a textarea placeholder
   def random_markdown_tip
-    MARKDOWN_TIPS.sample
+    "Tip: #{MARKDOWN_TIPS.sample}"
   end
 
   private
