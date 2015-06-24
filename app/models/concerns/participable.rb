@@ -14,7 +14,7 @@
 #
 #       participant :author, :assignee, :mentioned_users, :notes
 #     end
-#     
+#
 #     issue = Issue.last
 #     users = issue.participants
 #     # `users` will contain the issue's author, its assignee,
@@ -35,11 +35,13 @@ module Participable
     end
   end
 
+  # Be aware that this method makes a lot of sql queries.
+  # Save result into variable if you are going to reuse it inside same request
   def participants(current_user = self.author, project = self.project)
     participants = self.class.participant_attrs.flat_map do |attr|
       meth = method(attr)
 
-      value = 
+      value =
         if meth.arity == 1 || meth.arity == -1
           meth.call(current_user)
         else
@@ -59,7 +61,7 @@ module Participable
   end
 
   private
-  
+
   def participants_for(value, current_user = nil, project = nil)
     case value
     when User
