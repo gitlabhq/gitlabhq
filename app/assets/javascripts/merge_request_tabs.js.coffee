@@ -49,12 +49,12 @@ class @MergeRequestTabs
     # Store the `location` object, allowing for easier stubbing in tests
     @_location = location
 
-    @bindEvents()
-    @activateTab(@opts.action)
-
     switch @opts.action
       when 'commits' then @commitsLoaded = true
       when 'diffs'   then @diffsLoaded = true
+
+    @bindEvents()
+    @activateTab(@opts.action)
 
   bindEvents: ->
     $(document).on 'shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', @tabShown
