@@ -404,7 +404,7 @@ NOTE: Supply `SANITIZE=true` environment variable to `gitlab:check` to omit proj
 Visit YOUR_SERVER in your web browser for your first GitLab login. The setup has created a default admin account for you. You can use it to log in:
 
     root
-    5iveL!fe
+    password
 
 **Important Note:** On login you'll be prompted to change the password.
 

@@ -13,7 +13,7 @@ It might take a while before the docker container is responding to queries.
 
 You can check the status with something like `sudo docker logs -f 7c10172d7705`.
 
-You can login to the web interface with username `root` and password `5iveL!fe`.
+You can login to the web interface with username `root` and password `password`.
 
 Next time, you can just use docker start and stop to run the container.
 
