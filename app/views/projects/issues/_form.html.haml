@@ -3,7 +3,7 @@
   %hr
 
   = form_for [@project.namespace.becomes(Namespace), @project, @issue], html: { class: 'form-horizontal issue-form gfm-form' } do |f|
-    = render 'projects/issuable_form', f: f, issuable: @issue
+    = render 'shared/issuable/form', f: f, issuable: @issue
 
 :javascript
   $('.assign-to-me-link').on('click', function(e){

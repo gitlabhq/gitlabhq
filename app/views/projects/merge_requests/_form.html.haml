@@ -1,6 +1,6 @@
 = form_for [@project.namespace.becomes(Namespace), @project, @merge_request], html: { class: 'merge-request-form form-horizontal gfm-form' } do |f|
   .merge-request-form-info
-    = render 'projects/issuable_form', f: f, issuable: @merge_request
+    = render 'shared/issuable/form', f: f, issuable: @merge_request
 
 :javascript
   disableButtonIfEmptyField("#merge_request_title", ".btn-save");
