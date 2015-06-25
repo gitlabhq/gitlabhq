@@ -135,8 +135,6 @@ class Dispatcher
             new ProjectNew()
           when 'show'
             new ProjectShow()
-          when 'issues', 'merge_requests'
-            new UsersSelect()
           when 'wikis'
             new Wikis()
             shortcut_handler = new ShortcutsNavigation()

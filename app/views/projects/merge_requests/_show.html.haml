@@ -1,6 +1,6 @@
 - page_title "#{@merge_request.title} (##{@merge_request.iid})", "Merge Requests"
 .merge-request{'data-url' => merge_request_path(@merge_request)}
-  .merge-request-details
+  .merge-request-details.issuable-details
     = render "projects/merge_requests/show/mr_title"
     %hr
     = render "projects/merge_requests/show/mr_box"

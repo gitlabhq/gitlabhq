@@ -20,7 +20,7 @@
           = cross_project_reference(@project, @merge_request)
       %hr
       .context
-        = render partial: 'projects/merge_requests/show/context', locals: { merge_request: @merge_request }
+        = render 'shared/issuable/context', issuable: @merge_request
 
       - if @merge_request.labels.any?
         .issuable-context-title
