@@ -69,6 +69,7 @@ header {
     float: left;
     height: $header-height;
     width: $sidebar_width;
+    overflow: hidden;
     transition-duration: .3s;
 
     a {
@@ -169,10 +170,6 @@ header {
 @mixin collapsed-header {
   .header-logo {
     width: $sidebar_collapsed_width;
-
-    h3 {
-      display: none;
-    }
   }
 
   .header-content {
