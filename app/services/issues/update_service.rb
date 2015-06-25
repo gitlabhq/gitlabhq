@@ -17,6 +17,7 @@ module Issues
       params[:assignee_id]  = "" if params[:assignee_id] == IssuableFinder::NONE
       params[:milestone_id] = "" if params[:milestone_id] == IssuableFinder::NONE
 
+      filter_params
       old_labels = issue.labels.to_a
 
       if params.present? && issue.update_attributes(params.except(:state_event,

@@ -26,4 +26,18 @@ class IssuableBaseService < BaseService
       issuable, issuable.project, current_user, branch_type,
       old_branch, new_branch)
   end
+
+  def filter_params
+    unless can?(current_user, :set_milestone, project)
+      params.delete(:milestone_id)
+    end
+
+    unless can?(current_user, :set_label, project)
+      params.delete(:label_ids)
+    end
+
+    unless can?(current_user, :set_assignee, project)
+      params.delete(:assignee_id)
+    end
+  end
 end
