@@ -30,18 +30,19 @@
         = f.submit class: 'btn'
 
   - if current_user
+    - subscribed = @merge_request.subscribed?(current_user)
     %div.prepend-top-20.clearfix
       .issuable-context-title
         %label
           Subscription:
       %button.btn.btn-block.subscribe-button{:type => 'button'}
         = icon('eye')
-        %span= @merge_request.subscribed?(current_user) ? 'Unsubscribe' : 'Subscribe'
-      - subscribtion_status = @merge_request.subscribed?(current_user) ? 'subscribed' : 'unsubscribed'
+        %span= subscribed ? 'Unsubscribe' : 'Subscribe'
+      - subscribtion_status = subscribed ? 'subscribed' : 'unsubscribed'
       .subscription-status{data: {status: subscribtion_status}}
-        .description-block.unsubscribed{class: ( 'hidden' if @merge_request.subscribed?(current_user) )}
+        .description-block.unsubscribed{class: ( 'hidden' if subscribed )}
           You're not receiving notifications from this thread.
-        .description-block.subscribed{class: ( 'hidden' unless @merge_request.subscribed?(current_user) )}
+        .description-block.subscribed{class: ( 'hidden' unless subscribed )}
           You're receiving notifications because you're subscribed to this thread.
 
 :coffeescript

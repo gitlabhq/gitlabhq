@@ -12,8 +12,8 @@
     .votes-holder.pull-right
       #votes= render 'votes/votes_block', votable: @issue
     .participants
-      %span= pluralize(@issue.participants(current_user).count, 'participant')
-      - @issue.participants(current_user).each do |participant|
+      %span= pluralize(@participants.count, 'participant')
+      - @participants.each do |participant|
         = link_to_member(@project, participant, name: false, size: 24)
     .voting_notes#notes= render 'projects/notes/notes_with_form'
   %aside.col-md-3
