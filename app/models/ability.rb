@@ -154,6 +154,9 @@ class Ability
       project_guest_rules + [
         :download_code,
         :fork_project,
+        :set_assignee,
+        :set_milestone,
+        :set_label,
         :write_project_snippet
       ]
     end
