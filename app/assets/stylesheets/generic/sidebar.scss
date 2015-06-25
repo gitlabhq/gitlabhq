@@ -29,42 +29,44 @@
   &.navbar-collapse {
     padding: 0px !important;
   }
-}
 
-.nav-sidebar li a .count {
-  float: right;
-  background: #eee;
-  padding: 0px 8px;
-  @include border-radius(6px);
-}
+  li {
+    width: $sidebar_width;
 
-.nav-sidebar li {
-  &.separate-item {
-    padding-top: 10px;
-    margin-top: 10px;
-  }
-
-  a {
-    color: $gray;
-    display: block;
-    text-decoration: none;
-    padding: 8px 15px;
-    font-size: 14px;
-    line-height: 20px;
-    padding-left: 16px;
-
-    &:hover {
-      text-decoration: none;
+    &.separate-item {
+      padding-top: 10px;
+      margin-top: 10px;
     }
 
-    &:active, &:focus {
+    a {
+      color: $gray;
+      display: block;
       text-decoration: none;
-    }
+      padding: 8px 15px;
+      font-size: 14px;
+      line-height: 20px;
+      padding-left: 16px;
 
-    i {
-      width: 20px;
-      color: $gray-light;
-      margin-right: 23px;
+      &:hover {
+        text-decoration: none;
+      }
+
+      &:active, &:focus {
+        text-decoration: none;
+      }
+
+      i {
+        width: 20px;
+        color: $gray-light;
+        margin-right: 23px;
+      }
+
+      .count {
+        float: right;
+        background: #eee;
+        padding: 0px 8px;
+        @include border-radius(6px);
+      }
     }
   }
 }
@@ -116,11 +118,6 @@
         padding: 8px 15px;
         text-align: left;
         padding-left: 16px;
-
-
-        & > span {
-          display: none;
-        }
       }
     }
 
@@ -130,9 +127,7 @@
     }
 
     .sidebar-user {
-      .username {
-        display: none;
-      }
+      width: $sidebar_collapsed_width;
     }
   }
 }
@@ -182,12 +177,13 @@
 .sidebar-user {
   position: absolute;
   bottom: 0;
-  width: 100%;
+  width: $sidebar_width;
   padding: 10px;
   overflow: hidden;
+  transition-duration: .3s;
 
   .username {
     margin-top: 5px;
-    width: 230px;
+    width: $sidebar_width - 2 * 10px;
   }
 }
