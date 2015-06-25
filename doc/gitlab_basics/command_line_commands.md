@@ -2,9 +2,9 @@
 
 ## Start working on your project
 
-* You need to add a copy in your computer of all the contents in the project that you’d like to work on. To do it, go to your account in [gitlab.com](https://gitlab.com)
+* In Git, when you copy a project you say you "clone" it. You need to clone the contents in the project that you’d like to work on to your computer. To do it, go to your [gitlab.com](https://gitlab.com) account
 
-* When you are on your Dashboard, click on the project that you'd like to copy, which you'll find at the right side of your screen
+* When you are on your Dashboard, click on the project that you'd like to clone, which you'll find at the right side of your screen
 
 ![Select a project](basicsimages/select_project.png)
 
@@ -14,13 +14,13 @@
 
 ## In your Command Line or shell
 
-* To add a copy of the project's contents into your computer, go to your computer's shell and type the following command
+* To clone your project, go to your computer's shell and type the following command
 
 ```
 git clone PASTE HTTPS HERE
 ```
 
-* A copy of the project will be created in your computer. You'll be able to find it stored as a regular file
+* A clone of the project will be created in your computer. You'll be able to find it stored as a regular file
 
 ## Basic commands
 
