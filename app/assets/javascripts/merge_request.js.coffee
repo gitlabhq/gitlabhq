@@ -10,7 +10,6 @@ class @MergeRequest
   #   action - String, current controller action
   #
   constructor: (@opts) ->
-    @initContextWidget()
     this.$el = $('.merge-request')
 
     this.$('.show-all-commits').on 'click', =>
