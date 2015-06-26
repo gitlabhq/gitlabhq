@@ -88,7 +88,7 @@ class SnippetsController < ApplicationController
   end
 
   def authorize_modify_snippet!
-    return render_404 unless can?(current_user, :modify_personal_snippet, @snippet)
+    return render_404 unless can?(current_user, :update_personal_snippet, @snippet)
   end
 
   def authorize_admin_snippet!

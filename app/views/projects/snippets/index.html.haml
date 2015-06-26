@@ -1,7 +1,7 @@
 - page_title "Snippets"
 %h3.page-title
   Snippets
-  - if can? current_user, :write_project_snippet, @project
+  - if can? current_user, :create_project_snippet, @project
     = link_to new_namespace_project_snippet_path(@project.namespace, @project), class: "btn btn-new pull-right", title: "New Snippet" do
       Add new snippet
 

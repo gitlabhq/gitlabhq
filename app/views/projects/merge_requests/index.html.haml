@@ -3,7 +3,7 @@
   .pull-right
     = render 'shared/issuable/search_form', path: namespace_project_merge_requests_path(@project.namespace, @project)
 
-    - if can? current_user, :write_merge_request, @project
+    - if can? current_user, :create_merge_request, @project
       .pull-left.hidden-xs
         = link_to new_namespace_project_merge_request_path(@project.namespace, @project), class: "btn btn-new", title: "New Merge Request" do
           %i.fa.fa-plus

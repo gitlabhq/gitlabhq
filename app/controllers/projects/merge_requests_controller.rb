@@ -219,7 +219,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def authorize_modify_merge_request!
-    return render_404 unless can?(current_user, :modify_merge_request, @merge_request)
+    return render_404 unless can?(current_user, :update_merge_request, @merge_request)
   end
 
   def authorize_admin_merge_request!

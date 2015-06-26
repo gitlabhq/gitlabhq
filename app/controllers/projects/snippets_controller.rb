@@ -76,7 +76,7 @@ class Projects::SnippetsController < Projects::ApplicationController
   end
 
   def authorize_modify_project_snippet!
-    return render_404 unless can?(current_user, :modify_project_snippet, @snippet)
+    return render_404 unless can?(current_user, :update_project_snippet, @snippet)
   end
 
   def authorize_admin_project_snippet!

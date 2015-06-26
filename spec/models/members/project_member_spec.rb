@@ -43,7 +43,7 @@ describe ProjectMember do
       it { expect(@project_2.users).to include(@user_1) }
       it { expect(@project_2.users).to include(@user_2) }
 
-      it { expect(@abilities.allowed?(@user_1, :write_project, @project_2)).to be_truthy }
+      it { expect(@abilities.allowed?(@user_1, :create_project, @project_2)).to be_truthy }
       it { expect(@abilities.allowed?(@user_2, :read_project, @project_2)).to be_truthy }
     end
 

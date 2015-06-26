@@ -109,7 +109,7 @@ module API
       #   POST /projects/:id/merge_requests
       #
       post ":id/merge_requests" do
-        authorize! :write_merge_request, user_project
+        authorize! :create_merge_request, user_project
         required_attributes! [:source_branch, :target_branch, :title]
         attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :target_project_id, :description]
 
@@ -149,7 +149,7 @@ module API
       put ":id/merge_request/:merge_request_id" do
         attrs = attributes_for_keys [:target_branch, :assignee_id, :title, :state_event, :description]
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
-        authorize! :modify_merge_request, merge_request
+        authorize! :update_merge_request, merge_request
 
         # Ensure source_branch is not specified
         if params[:source_branch].present?

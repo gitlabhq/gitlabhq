@@ -123,7 +123,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def authorize_modify_issue!
-    return render_404 unless can?(current_user, :modify_issue, @issue)
+    return render_404 unless can?(current_user, :update_issue, @issue)
   end
 
   def authorize_admin_issues!

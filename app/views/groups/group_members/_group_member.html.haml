@@ -32,7 +32,7 @@
     %span.pull-right
       %strong= member.human_access
       - if show_controls
-        - if can?(current_user, :modify_group_member, member)
+        - if can?(current_user, :update_group_member, member)
           = button_tag class: "btn-xs btn js-toggle-button",
                        title: 'Edit access level', type: 'button' do
             %i.fa.fa-pencil-square-o

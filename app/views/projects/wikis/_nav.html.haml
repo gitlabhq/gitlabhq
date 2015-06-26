@@ -10,7 +10,7 @@
       %i.fa.fa-download
       Git Access
 
-  - if can?(current_user, :write_wiki, @project)
+  - if can?(current_user, :create_wiki, @project)
     .pull-right
       = link_to '#modal-new-wiki', class: "add-new-wiki btn btn-new", "data-toggle" => "modal" do
         %i.fa.fa-plus

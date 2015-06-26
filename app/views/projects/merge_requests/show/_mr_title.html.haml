@@ -7,7 +7,7 @@
     created by #{link_to_member(@project, @merge_request.author)} #{time_ago_with_tooltip(@merge_request.created_at)}
 
   .issue-btn-group.pull-right
-    - if can?(current_user, :modify_merge_request, @merge_request)
+    - if can?(current_user, :update_merge_request, @merge_request)
       - if @merge_request.open?
         = link_to 'Close', merge_request_path(@merge_request, merge_request: { state_event: :close }), method: :put, class: "btn btn-grouped btn-close", title: "Close merge request"
         = link_to edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: "btn btn-grouped issuable-edit", id: "edit_merge_request" do

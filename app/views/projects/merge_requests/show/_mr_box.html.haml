@@ -3,7 +3,7 @@
 
 %div
   - if @merge_request.description.present?
-    .description{class: can?(current_user, :modify_merge_request, @merge_request) ? 'js-task-list-container' : ''}
+    .description{class: can?(current_user, :update_merge_request, @merge_request) ? 'js-task-list-container' : ''}
       .wiki
         = preserve do
           = markdown(@merge_request.description)

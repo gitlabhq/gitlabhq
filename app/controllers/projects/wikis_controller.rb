@@ -28,7 +28,7 @@ class Projects::WikisController < Projects::ApplicationController
         )
       end
     else
-      return render('empty') unless can?(current_user, :write_wiki, @project)
+      return render('empty') unless can?(current_user, :create_wiki, @project)
       @page = WikiPage.new(@project_wiki)
       @page.title = params[:id]
 
@@ -43,7 +43,7 @@ class Projects::WikisController < Projects::ApplicationController
   def update
     @page = @project_wiki.find_page(params[:id])
 
-    return render('empty') unless can?(current_user, :write_wiki, @project)
+    return render('empty') unless can?(current_user, :create_wiki, @project)
 
     if @page.update(content, format, message)
       redirect_to(
