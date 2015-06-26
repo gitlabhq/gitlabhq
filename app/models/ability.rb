@@ -185,7 +185,6 @@ class Ability
         :modify_issue,
         :modify_project_snippet,
         :modify_merge_request,
-        :admin_issue,
         :admin_milestone,
         :admin_project_snippet,
         :admin_project_member,

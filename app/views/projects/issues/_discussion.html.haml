@@ -23,7 +23,7 @@
           = cross_project_reference(@project, @issue)
       %hr
       .context
-        = render partial: 'issue_context', locals: { issue: @issue }
+        = render 'shared/issuable/context', issuable: @issue
 
       - if @issue.labels.any?
         .issuable-context-title

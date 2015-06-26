@@ -1,5 +1,9 @@
 class @IssuableForm
   constructor: (@form) ->
+    GitLab.GfmAutoComplete.setup()
+    new UsersSelect()
+    new ZenMode()
+
     @titleField       = @form.find("input[name*='[title]']")
     @descriptionField = @form.find("textarea[name*='[description]']")
 

@@ -21,6 +21,7 @@ v 7.13.0 (unreleased)
   - Show a user's Two-factor Authentication status in the administration area.
   - Explicit error when commit not found in the CI
   - Improve performance for issue and merge request pages 
+  - Users with guest access level can not set assignee, labels or milestones for issue and merge request
 
 v 7.12.0 (unreleased)
   - Fix Error 500 when one user attempts to access a personal, internal snippet (Stan Hu)
