@@ -17,6 +17,7 @@ module Issuable
     has_many :label_links, as: :target, dependent: :destroy
     has_many :labels, through: :label_links
     has_many :subscriptions, dependent: :destroy, as: :subscribable
+    # has_many :participants, dependent: :destroy, as: :target
 
     validates :author, presence: true
     validates :title, presence: true, length: { within: 0..255 }
