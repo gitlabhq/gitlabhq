@@ -157,7 +157,7 @@ module API
         if issue.valid?
           # Find or create labels and attach to issue. Labels are valid because
           # we already checked its name, so there can't be an error here
-          unless params[:labels].nil?
+          if params[:labels] && can?(current_user, :admin_issue, user_project)
             issue.remove_labels
             # Create and add labels to the new created issue
             issue.add_labels_by_names(params[:labels].split(','))
