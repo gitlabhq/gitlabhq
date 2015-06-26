@@ -9,10 +9,6 @@
 #
 #     class Issue < ActiveRecord::Base
 #       include Participable
-#
-#       # ...
-#
-#       participant :author, :assignee, :mentioned_users, :notes
 #     end
 #
 #     issue = Issue.last
@@ -23,53 +19,14 @@
 #     # since Note implements Participable as well.
 #
 module Participable
-  extend ActiveSupport::Concern
+  def participants
+    @participants ||=
+      begin
+        user_ids = Participant.
+          where(target_id: id.to_s, target_type: self.class.name).
+          pluck(:user_id)
 
-  module ClassMethods
-    def participant(*attrs)
-      participant_attrs.concat(attrs.map(&:to_s))
-    end
-
-    def participant_attrs
-      @participant_attrs ||= []
-    end
-  end
-
-  # Be aware that this method makes a lot of sql queries.
-  # Save result into variable if you are going to reuse it inside same request
-  def participants(current_user = self.author, project = self.project)
-    participants = self.class.participant_attrs.flat_map do |attr|
-      meth = method(attr)
-
-      value =
-        if meth.arity == 1 || meth.arity == -1
-          meth.call(current_user)
-        else
-          meth.call
-        end
-
-      participants_for(value, current_user, project)
-    end.compact.uniq
-
-    if project
-      participants.select! do |user|
-        user.can?(:read_project, project)
+        User.where(id: user_ids)
       end
-    end
-
-    participants
-  end
-
-  private
-
-  def participants_for(value, current_user = nil, project = nil)
-    case value
-    when User
-      [value]
-    when Enumerable, ActiveRecord::Relation
-      value.flat_map { |v| participants_for(v, current_user, project) }
-    when Participable
-      value.participants(current_user, project)
-    end
   end
 end

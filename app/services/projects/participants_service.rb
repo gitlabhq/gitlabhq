@@ -13,7 +13,7 @@ module Projects
     end
 
     def participants_in(type, id)
-      target = 
+      target =
         case type
         when "Issue"
           project.issues.find_by_iid(id)
@@ -22,21 +22,21 @@ module Projects
         when "Commit"
           project.commit(id)
         end
-        
+
       return [] unless target
 
-      users = target.participants(current_user)
+      users = target.participants
       sorted(users)
     end
 
     def sorted(users)
-      users.uniq.to_a.compact.sort_by(&:username).map do |user| 
+      users.uniq.to_a.compact.sort_by(&:username).map do |user|
         { username: user.username, name: user.name }
       end
     end
 
     def groups
-      current_user.authorized_groups.sort_by(&:path).map do |group| 
+      current_user.authorized_groups.sort_by(&:path).map do |group|
         count = group.users.count
         { username: group.path, name: group.name, count: count }
       end

@@ -246,7 +246,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def define_show_vars
-    @participants = @merge_request.participants(current_user, @project)
+    @participants = @merge_request.participants
 
     # Build a note object for comment form
     @note = @project.notes.new(noteable: @merge_request)

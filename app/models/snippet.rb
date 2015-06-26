@@ -49,8 +49,6 @@ class Snippet < ActiveRecord::Base
   scope :expired, -> { where(["expires_at IS NOT NULL AND expires_at < ?", Time.current]) }
   scope :non_expired, -> { where(["expires_at IS NULL OR expires_at > ?", Time.current]) }
 
-  participant :author, :notes
-
   def self.reference_prefix
     '$'
   end

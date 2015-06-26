@@ -132,9 +132,9 @@ class NotificationService
     recipients = []
 
     # Add all users participating in the thread (author, assignee, comment authors)
-    participants = 
+    participants =
       if target.respond_to?(:participants)
-        target.participants(note.author)
+        target.participants
       else
         note.mentioned_users
       end
@@ -344,7 +344,7 @@ class NotificationService
 
   def reject_unsubscribed_users(recipients, target)
     return recipients unless target.respond_to? :subscriptions
-    
+
     recipients.reject do |user|
       subscription = target.subscriptions.find_by_user_id(user.id)
       subscription && !subscription.subscribed
@@ -362,7 +362,7 @@ class NotificationService
       recipients
     end
   end
-  
+
   def new_resource_email(target, project, method)
     recipients = build_recipients(target, project)
     recipients.delete(target.author)

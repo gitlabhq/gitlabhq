@@ -17,7 +17,6 @@ module Issuable
     has_many :label_links, as: :target, dependent: :destroy
     has_many :labels, through: :label_links
     has_many :subscriptions, dependent: :destroy, as: :subscribable
-    # has_many :participants, dependent: :destroy, as: :target
 
     validates :author, presence: true
     validates :title, presence: true, length: { within: 0..255 }
@@ -47,7 +46,6 @@ module Issuable
              prefix: true
 
     attr_mentionable :title, :description
-    participant :author, :assignee, :notes, :mentioned_users
   end
 
   module ClassMethods
@@ -127,7 +125,7 @@ module Issuable
       return subscription.subscribed
     end
 
-    participants(user).include?(user)
+    participants.include?(user)
   end
 
   def toggle_subscription(user)

@@ -331,7 +331,7 @@ ActiveRecord::Schema.define(version: 20150625153454) do
   add_index "oauth_applications", ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
 
   create_table "participants", force: true do |t|
-    t.integer  "target_id",   null: false
+    t.string   "target_id",   null: false
     t.string   "target_type", null: false
     t.integer  "user_id",     null: false
     t.datetime "created_at"
@@ -504,12 +504,12 @@ ActiveRecord::Schema.define(version: 20150625153454) do
     t.string   "bitbucket_access_token"
     t.string   "bitbucket_access_token_secret"
     t.string   "location"
+    t.string   "public_email",                  default: "",    null: false
     t.string   "encrypted_otp_secret"
     t.string   "encrypted_otp_secret_iv"
     t.string   "encrypted_otp_secret_salt"
     t.boolean  "otp_required_for_login",        default: false, null: false
     t.text     "otp_backup_codes"
-    t.string   "public_email",                  default: "",    null: false
     t.integer  "dashboard",                     default: 0
   end
 

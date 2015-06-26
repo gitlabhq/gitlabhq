@@ -8,7 +8,6 @@ class Commit
   include StaticModel
 
   attr_mentionable :safe_message
-  participant :author, :committer, :notes, :mentioned_users
 
   attr_accessor :project
 

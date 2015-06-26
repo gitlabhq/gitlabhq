@@ -21,7 +21,7 @@
           - if member
             %span.note-role.label
               = member.human_access
-              
+
         - if note.system
           = link_to user_path(note.author) do
             = image_tag avatar_icon(note.author_email), class: 'avatar s16', alt: ''
