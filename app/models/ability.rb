@@ -68,6 +68,7 @@ class Ability
     def project_abilities(user, project)
       rules = []
       key = "/user/#{user.id}/project/#{project.id}"
+
       RequestStore.store[key] ||= begin
         team = project.team
 
@@ -182,7 +183,6 @@ class Ability
     def project_master_rules
       project_dev_rules + [
         :push_code_to_protected_branches,
-        :update_issue,
         :update_project_snippet,
         :update_merge_request,
         :admin_milestone,
@@ -244,26 +244,40 @@ class Ability
       rules.flatten
     end
 
-    [:issue, :note, :project_snippet, :personal_snippet, :merge_request].each do |name|
+
+    [:issue, :merge_request].each do |name|
       define_method "#{name}_abilities" do |user, subject|
-        if user.is_admin?
-          [
+        rules = []
+
+        if subject.author == user || (subject.respond_to?(:assignee) && subject.assignee == user)
+          rules += [
+            :"read_#{name}",
+            :"update_#{name}",
+          ]
+        end
+
+        rules += project_abilities(user, subject.project)
+        rules
+      end
+    end
+
+    [:note, :project_snippet, :personal_snippet].each do |name|
+      define_method "#{name}_abilities" do |user, subject|
+        rules = []
+
+        if subject.author == user
+          rules += [
             :"read_#{name}",
             :"update_#{name}",
             :"admin_#{name}"
           ]
-        elsif subject.author == user || (subject.respond_to?(:assignee) && subject.assignee == user)
-          [
-            :"read_#{name}",
-            :"update_#{name}",
-          ]
-        else
-          if subject.respond_to?(:project) && subject.project
-            project_abilities(user, subject.project)
-          else
-            []
-          end
         end
+
+        if subject.respond_to?(:project) && subject.project
+          rules += project_abilities(user, subject.project)
+        end
+
+        rules
       end
     end
 
@@ -272,13 +286,16 @@ class Ability
       target_user = subject.user
       group = subject.group
       can_manage = group_abilities(user, group).include?(:admin_group)
+
       if can_manage && (user != target_user)
         rules << :update_group_member
         rules << :destroy_group_member
       end
+
       if !group.last_owner?(user) && (can_manage || (user == target_user))
         rules << :destroy_group_member
       end
+
       rules
     end
 
