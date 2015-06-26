@@ -23,8 +23,11 @@ RUN mkdir -p /opt/gitlab/sv/sshd/supervise \
     && ln -s /opt/gitlab/sv/sshd /opt/gitlab/service \
     && mkdir -p /var/run/sshd
 
-# Expose web & ssh
-EXPOSE 80 22
+# Expose https & http & ssh
+EXPOSE 443 80 22
+
+# Define data volumes
+VOLUME ["/etc/gitlab", "/var/opt/gitlab", "/var/log/gitlab"]
 
 # Copy assets
 COPY assets/wrapper /usr/local/bin/
