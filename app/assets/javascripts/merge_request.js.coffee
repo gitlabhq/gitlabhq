@@ -49,5 +49,5 @@ class @MergeRequest
 
     $.ajax
       type: 'PATCH'
-      url: $('form.js-merge-request-update').attr('action')
+      url: $('form.js-issuable-update').attr('action')
       data: patchData

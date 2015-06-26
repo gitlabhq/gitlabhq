@@ -25,5 +25,5 @@ class @Issue
 
     $.ajax
       type: 'PATCH'
-      url: $('form.js-issue-update').attr('action')
+      url: $('form.js-issuable-update').attr('action')
       data: patchData
