@@ -144,7 +144,7 @@ module API
       #   PUT /projects/:id/issues/:issue_id
       put ":id/issues/:issue_id" do
         issue = user_project.issues.find(params[:issue_id])
-        authorize! :modify_issue, issue
+        authorize! :update_issue, issue
         attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id, :state_event]
 
         # Validate label names in advance

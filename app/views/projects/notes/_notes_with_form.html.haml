@@ -3,7 +3,7 @@
 .js-notes-busy
 
 .js-main-target-form
-- if can? current_user, :write_note, @project
+- if can? current_user, :create_note, @project
   = render "projects/notes/form", view: params[:view]
 
 :javascript

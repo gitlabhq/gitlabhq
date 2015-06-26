@@ -14,10 +14,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :authorize_read_merge_request!
 
   # Allow write(create) merge_request
-  before_action :authorize_write_merge_request!, only: [:new, :create]
+  before_action :authorize_create_merge_request!, only: [:new, :create]
 
   # Allow modify merge_request
-  before_action :authorize_modify_merge_request!, only: [:close, :edit, :update, :sort]
+  before_action :authorize_update_merge_request!, only: [:close, :edit, :update, :sort]
 
   def index
     terms = params['issue_search']
@@ -218,8 +218,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @closes_issues ||= @merge_request.closes_issues
   end
 
-  def authorize_modify_merge_request!
-    return render_404 unless can?(current_user, :modify_merge_request, @merge_request)
+  def authorize_update_merge_request!
+    return render_404 unless can?(current_user, :update_merge_request, @merge_request)
   end
 
   def authorize_admin_merge_request!

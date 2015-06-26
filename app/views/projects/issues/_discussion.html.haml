@@ -1,5 +1,5 @@
 - content_for :note_actions do
-  - if can?(current_user, :modify_issue, @issue)
+  - if can?(current_user, :update_issue, @issue)
     - if @issue.closed?
       = link_to 'Reopen Issue', issue_path(@issue, issue: {state_event: :reopen}, status_only: true), method: :put, class: 'btn btn-grouped btn-reopen js-note-target-reopen', title: 'Reopen Issue'
     - else

@@ -22,11 +22,11 @@
                   Contribution guide
 
         .actions
-          - if can? current_user, :write_issue, @project
+          - if can? current_user, :create_issue, @project
             = link_to url_for_new_issue(@project, only_path: true), title: "New Issue", class: 'btn btn-sm append-right-10' do
               New Issue
 
-          - if can? current_user, :write_merge_request, @project
+          - if can? current_user, :create_merge_request, @project
             = link_to new_namespace_project_merge_request_path(@project.namespace, @project), class: "btn btn-sm", title: "New Merge Request" do
               New Merge Request
 
