@@ -223,8 +223,7 @@ describe 'Comments' do
     sample_compare.changes.last[:line_code]
   end
 
-  def click_diff_line(data = nil)
-    data ||= line_code
-    find("button[data-line-code=\"#{data}\"]").click
+  def click_diff_line(data = line_code)
+    page.find(%Q{button[data-line-code="#{data}"]}, visible: false).click
   end
 end

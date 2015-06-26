@@ -49,12 +49,14 @@ class @MergeRequestTabs
     # Store the `location` object, allowing for easier stubbing in tests
     @_location = location
 
+    switch @opts.action
+      when 'commits'
+        @commitsLoaded = true
+      when 'diffs'
+        @diffsLoaded = true
+
     @bindEvents()
     @activateTab(@opts.action)
-
-    switch @opts.action
-      when 'commits' then @commitsLoaded = true
-      when 'diffs'   then @diffsLoaded = true
 
   bindEvents: ->
     $(document).on 'shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', @tabShown
@@ -67,6 +69,7 @@ class @MergeRequestTabs
       @loadCommits($target.attr('href'))
     else if action == 'diffs'
       @loadDiff($target.attr('href'))
+      @stickyDiffHeaders()
 
     @setCurrentAction(action)
 
@@ -134,11 +137,14 @@ class @MergeRequestTabs
       url: "#{source}.json"
       success: (data) =>
         document.getElementById('diffs').innerHTML = data.html
-        $('.diff-header').trigger('sticky_kit:recalc')
+        @stickyDiffHeaders()
         @diffsLoaded = true
 
   toggleLoading: ->
     $('.mr-loading-status .loading').toggle()
+
+  stickyDiffHeaders: ->
+    $('.diff-header').trigger('sticky_kit:recalc')
 
   _get: (options) ->
     defaults = {
