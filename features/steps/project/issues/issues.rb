@@ -263,19 +263,19 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I should not see labels field' do
-    within '.issue-form' do
+    page.within '.issue-form' do
       expect(page).not_to have_content("Labels")
     end
   end
 
   step 'I should not see milestone field' do
-    within '.issue-form' do
+    page.within '.issue-form' do
       expect(page).not_to have_content("Milestone")
     end
   end
 
   step 'I should not see assignee field' do
-    within '.issue-form' do
+    page.within '.issue-form' do
       expect(page).not_to have_content("Assign to")
     end
   end
