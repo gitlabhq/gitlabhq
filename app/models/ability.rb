@@ -246,20 +246,16 @@ class Ability
 
     [:issue, :note, :project_snippet, :personal_snippet, :merge_request].each do |name|
       define_method "#{name}_abilities" do |user, subject|
-        if subject.author == user || user.is_admin?
-          rules = [
-            :"read_#{name}",
-            :"write_#{name}",
-            :"modify_#{name}",
-            :"admin_#{name}"
-          ]
-          rules.push(:change_visibility_level) if subject.is_a?(Snippet)
-          rules
-        elsif subject.respond_to?(:assignee) && subject.assignee == user
+        if user.is_admin?
           [
             :"read_#{name}",
-            :"write_#{name}",
-            :"modify_#{name}",
+            :"update_#{name}",
+            :"admin_#{name}"
+          ]
+        elsif subject.author == user || (subject.respond_to?(:assignee) && subject.assignee == user)
+          [
+            :"read_#{name}",
+            :"update_#{name}",
           ]
         else
           if subject.respond_to?(:project) && subject.project
@@ -299,8 +295,8 @@ class Ability
     def named_abilities(name)
       [
         :"read_#{name}",
-        :"write_#{name}",
-        :"modify_#{name}",
+        :"create_#{name}",
+        :"update_#{name}",
         :"admin_#{name}"
       ]
     end
