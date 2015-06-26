@@ -28,15 +28,9 @@ class IssuableBaseService < BaseService
   end
 
   def filter_params
-    unless can?(current_user, :set_milestone, project)
+    unless can?(current_user, :admin_issue, project)
       params.delete(:milestone_id)
-    end
-
-    unless can?(current_user, :set_label, project)
       params.delete(:label_ids)
-    end
-
-    unless can?(current_user, :set_assignee, project)
       params.delete(:assignee_id)
     end
   end

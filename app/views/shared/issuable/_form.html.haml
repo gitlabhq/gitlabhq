@@ -38,7 +38,7 @@
       .clearfix
       .error-alert
   %hr
-- if can?(current_user, :set_assignee, @project)
+- if can?(current_user, :admin_issue, @project)
   .form-group
     .issue-assignee
       = f.label :assignee_id, class: 'control-label' do
@@ -50,7 +50,6 @@
             selected: issuable.assignee_id, project: @target_project || @project)
         &nbsp;
         = link_to 'Assign to me', '#', class: 'btn assign-to-me-link'
-- if can?(current_user, :set_milestone, @project)
   .form-group
     .issue-milestone
       = f.label :milestone_id, class: 'control-label' do
@@ -66,7 +65,6 @@
         &nbsp;
         - if can? current_user, :admin_milestone, issuable.project
           = link_to 'Create new milestone', new_namespace_project_milestone_path(issuable.project.namespace, issuable.project), target: :blank
-- if can?(current_user, :set_label, @project)
   .form-group
     = f.label :label_ids, class: 'control-label' do
       %i.fa.fa-tag
