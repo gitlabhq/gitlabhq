@@ -242,6 +242,9 @@ GEM
       dotenv (>= 0.7)
       thor (>= 0.13.6)
     formatador (0.2.5)
+    fuubar (2.0.0)
+      rspec (~> 3.0)
+      ruby-progressbar (~> 1.4)
     gemnasium-gitlab-service (0.2.6)
       rugged (~> 0.21)
     gemojione (2.0.0)
@@ -530,6 +533,10 @@ GEM
     rqrcode (0.4.2)
     rqrcode-rails3 (0.1.7)
       rqrcode (>= 0.4.2)
+    rspec (3.3.0)
+      rspec-core (~> 3.3.0)
+      rspec-expectations (~> 3.3.0)
+      rspec-mocks (~> 3.3.0)
     rspec-core (3.3.1)
       rspec-support (~> 3.3.0)
     rspec-expectations (3.3.0)
@@ -763,6 +770,7 @@ DEPENDENCIES
   fog (~> 1.25.0)
   font-awesome-rails (~> 4.2)
   foreman
+  fuubar (~> 2.0.0)
   gemnasium-gitlab-service (~> 0.2)
   github-markup
   gitlab-flowdock-git-hook (~> 0.4.2)
@@ -861,4 +869,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.10.3
+   1.10.4

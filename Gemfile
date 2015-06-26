@@ -224,6 +224,7 @@ end
 group :development, :test do
   gem 'awesome_print'
   gem 'byebug'
+  gem 'fuubar', '~> 2.0.0'
   gem 'pry-rails'
 
   gem 'coveralls', require: false
