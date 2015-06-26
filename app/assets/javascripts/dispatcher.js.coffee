@@ -31,20 +31,14 @@ class Dispatcher
       when 'projects:compare:show'
         new Diff()
       when 'projects:issues:new','projects:issues:edit'
-        GitLab.GfmAutoComplete.setup()
         shortcut_handler = new ShortcutsNavigation()
-        new ZenMode()
         new DropzoneInput($('.issue-form'))
-        if page == 'projects:issues:new'
-          new IssuableForm($('.issue-form'))
+        new IssuableForm($('.issue-form'))
       when 'projects:merge_requests:new', 'projects:merge_requests:edit'
-        GitLab.GfmAutoComplete.setup()
         new Diff()
         shortcut_handler = new ShortcutsNavigation()
-        new ZenMode()
         new DropzoneInput($('.merge-request-form'))
-        if page == 'projects:merge_requests:new'
-          new IssuableForm($('.merge-request-form'))
+        new IssuableForm($('.merge-request-form'))
       when 'projects:merge_requests:show'
         new Diff()
         shortcut_handler = new ShortcutsIssuable()
@@ -113,13 +107,6 @@ class Dispatcher
             new NamespaceSelect()
       when 'dashboard'
         shortcut_handler = new ShortcutsDashboardNavigation()
-        switch path[1]
-          when 'issues', 'merge_requests'
-            new UsersSelect()
-      when 'groups'
-        switch path[1]
-          when 'issues', 'merge_requests'
-            new UsersSelect()
       when 'profiles'
         new Profile()
       when 'projects'
@@ -135,8 +122,6 @@ class Dispatcher
             new ProjectNew()
           when 'show'
             new ProjectShow()
-          when 'issues', 'merge_requests'
-            new UsersSelect()
           when 'wikis'
             new Wikis()
             shortcut_handler = new ShortcutsNavigation()

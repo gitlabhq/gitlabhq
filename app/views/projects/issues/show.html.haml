@@ -1,6 +1,6 @@
 - page_title "#{@issue.title} (##{@issue.iid})", "Issues"
 .issue
-  .issue-details
+  .issue-details.issuable-details
     %h4.page-title
       .issue-box{ class: issue_box_class(@issue) }
         - if @issue.closed?

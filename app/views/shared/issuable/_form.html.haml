@@ -37,47 +37,48 @@
 
       .clearfix
       .error-alert
-%hr
-.form-group
-  .issue-assignee
-    = f.label :assignee_id, class: 'control-label' do
-      %i.fa.fa-user
-      Assign to
+  %hr
+- if can?(current_user, :admin_issue, @project)
+  .form-group
+    .issue-assignee
+      = f.label :assignee_id, class: 'control-label' do
+        %i.fa.fa-user
+        Assign to
+      .col-sm-10
+        = users_select_tag("#{issuable.class.model_name.param_key}[assignee_id]",
+            placeholder: 'Select a user', class: 'custom-form-control', null_user: true,
+            selected: issuable.assignee_id, project: @target_project || @project)
+        &nbsp;
+        = link_to 'Assign to me', '#', class: 'btn assign-to-me-link'
+  .form-group
+    .issue-milestone
+      = f.label :milestone_id, class: 'control-label' do
+        %i.fa.fa-clock-o
+        Milestone
+      .col-sm-10
+        - if milestone_options(issuable).present?
+          = f.select(:milestone_id, milestone_options(issuable),
+            { include_blank: 'Select milestone' }, { class: 'select2' })
+        - else
+          .prepend-top-10
+          %span.light No open milestones available.
+        &nbsp;
+        - if can? current_user, :admin_milestone, issuable.project
+          = link_to 'Create new milestone', new_namespace_project_milestone_path(issuable.project.namespace, issuable.project), target: :blank
+  .form-group
+    = f.label :label_ids, class: 'control-label' do
+      %i.fa.fa-tag
+      Labels
     .col-sm-10
-      = users_select_tag("#{issuable.class.model_name.param_key}[assignee_id]",
-          placeholder: 'Select a user', class: 'custom-form-control', null_user: true,
-          selected: issuable.assignee_id, project: @target_project || @project)
-      &nbsp;
-      = link_to 'Assign to me', '#', class: 'btn assign-to-me-link'
-.form-group
-  .issue-milestone
-    = f.label :milestone_id, class: 'control-label' do
-      %i.fa.fa-clock-o
-      Milestone
-    .col-sm-10
-      - if milestone_options(issuable).present?
-        = f.select(:milestone_id, milestone_options(issuable),
-          { include_blank: 'Select milestone' }, { class: 'select2' })
+      - if issuable.project.labels.any?
+        = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
+          { selected: issuable.label_ids }, multiple: true, class: 'select2'
       - else
         .prepend-top-10
-        %span.light No open milestones available.
+        %span.light No labels yet.
       &nbsp;
-      - if can? current_user, :admin_milestone, issuable.project
-        = link_to 'Create new milestone', new_namespace_project_milestone_path(issuable.project.namespace, issuable.project), target: :blank
-.form-group
-  = f.label :label_ids, class: 'control-label' do
-    %i.fa.fa-tag
-    Labels
-  .col-sm-10
-    - if issuable.project.labels.any?
-      = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
-        { selected: issuable.label_ids }, multiple: true, class: 'select2'
-    - else
-      .prepend-top-10
-      %span.light No labels yet.
-    &nbsp;
-    - if can? current_user, :admin_label, issuable.project
-      = link_to 'Create new label', new_namespace_project_label_path(issuable.project.namespace, issuable.project), target: :blank
+      - if can? current_user, :admin_label, issuable.project
+        = link_to 'Create new label', new_namespace_project_label_path(issuable.project.namespace, issuable.project), target: :blank
 
 - if issuable.is_a?(MergeRequest)
   %hr

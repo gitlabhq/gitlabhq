@@ -29,11 +29,10 @@
 
   .issues-details-filters
     = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name]), method: :get, class: 'filter-form' do
-      - if controller.controller_name == 'issues'
+      - if controller.controller_name == 'issues' && can?(current_user, :admin_issue, @project)
         .check-all-holder
           = check_box_tag "check_all_issues", nil, false,
-            class: "check_all_issues left",
-            disabled: !can?(current_user, :modify_issue, @project)
+            class: "check_all_issues left"
       .issues-other-filters
         .filter-item.inline
           = users_select_tag(:assignee_id, selected: params[:assignee_id],
@@ -64,6 +63,8 @@
           = button_tag "Update issues", class: "btn update_selected_issues btn-save"
 
 :coffeescript
+  new UsersSelect()
+
   $('form.filter-form').on 'submit', (event) ->
     event.preventDefault()
     Turbolinks.visit @.action + '&' + $(@).serialize()

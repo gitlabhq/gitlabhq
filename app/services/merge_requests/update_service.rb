@@ -27,6 +27,7 @@ module MergeRequests
       params[:assignee_id]  = "" if params[:assignee_id] == IssuableFinder::NONE
       params[:milestone_id] = "" if params[:milestone_id] == IssuableFinder::NONE
 
+      filter_params
       old_labels = merge_request.labels.to_a
 
       if params.present? && merge_request.update_attributes(

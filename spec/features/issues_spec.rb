@@ -218,7 +218,7 @@ describe 'Issues', feature: true do
       it 'with dropdown menu' do
         visit namespace_project_issue_path(project.namespace, project, issue)
 
-        find('.edit-issue.inline-update #issue_assignee_id').
+        find('.context #issue_assignee_id').
           set project.team.members.first.id
         click_button 'Update Issue'
 
@@ -257,7 +257,7 @@ describe 'Issues', feature: true do
       it 'with dropdown menu' do
         visit namespace_project_issue_path(project.namespace, project, issue)
 
-        find('.edit-issue.inline-update').
+        find('.context').
           select(milestone.title, from: 'issue_milestone_id')
         click_button 'Update Issue'
 

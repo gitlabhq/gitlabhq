@@ -184,3 +184,15 @@ Feature: Project Issues
     Then I should see that I am subscribed
     When I click button "Unsubscribe"
     Then I should see that I am unsubscribed
+
+  Scenario: I submit new unassigned issue as guest
+    Given I logout
+    Given public project "Community"
+    When I visit project "Community" page
+    And I click link "New Issue"
+    And I should not see assignee field
+    And I should not see milestone field
+    And I should not see labels field
+    And I submit new issue "500 error on profile"
+    Then I should see issue "500 error on profile"
+
