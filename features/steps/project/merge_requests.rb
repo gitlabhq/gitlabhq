@@ -118,25 +118,17 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
            author: project.users.first)
   end
 
-  step 'I switch to the diff tab' do
-    visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
-  end
-
-  step 'I click on the Changes tab via Javascript' do
+  step 'I click on the Changes tab' do
     page.within '.merge-request-tabs' do
       click_link 'Changes'
     end
 
-    sleep 2
+    # Waits for load
+    expect(page).to have_css('.tab-content #diffs.active')
   end
 
   step 'I should see the proper Inline and Side-by-side links' do
-    buttons = page.all('#commit-diff-viewtype')
-    expect(buttons.count).to eq(2)
-
-    buttons.each do |b|
-      expect(b['href']).not_to have_content('json')
-    end
+    expect(page).to have_css('#commit-diff-viewtype', count: 2)
   end
 
   step 'I switch to the merge request\'s comments tab' do
@@ -301,6 +293,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I unfold diff' do
+    expect(page).to have_css('.js-unfold')
+
     first('.js-unfold').click
   end
 
