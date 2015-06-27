@@ -1,7 +1,7 @@
 - page_title "New File", @ref
 %h3.page-title New file
 .file-editor
-  = form_tag(namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post, class: 'form-horizontal form-new-file') do
+  = form_tag(namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post, class: 'form-horizontal form-new-file js-requires-input') do
     = render 'projects/blob/editor', ref: @ref
     = render 'shared/commit_message_container', params: params,
              placeholder: 'Add new file'

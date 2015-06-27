@@ -11,10 +11,9 @@
         %i.fa.fa-eye
         = editing_preview_title(@blob.name)
 
-  = form_tag(namespace_project_update_blob_path(@project.namespace, @project, @id), method: :put, class: "form-horizontal") do
+  = form_tag(namespace_project_update_blob_path(@project.namespace, @project, @id), method: :put, class: 'form-horizontal js-requires-input') do
     = render 'projects/blob/editor', ref: @ref, path: @path, blob_data: @blob.data
-    = render 'shared/commit_message_container', params: params,
-             placeholder: "Update #{@blob.name}"
+    = render 'shared/commit_message_container', params: params, placeholder: "Update #{@blob.name}"
 
     .form-group.branch
       = label_tag 'branch', class: 'control-label' do
@@ -25,8 +24,7 @@
     = hidden_field_tag 'last_commit', @last_commit
     = hidden_field_tag 'content', '', id: "file-content"
     = hidden_field_tag 'from_merge_request_id', params[:from_merge_request_id]
-    = render 'projects/commit_button', ref: @ref,
-              cancel_path: @after_edit_path
+    = render 'projects/commit_button', ref: @ref, cancel_path: @after_edit_path
 
 :javascript
   blob = new EditBlob(gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}", "#{@blob.language.try(:ace_mode)}")
