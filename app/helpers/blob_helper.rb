@@ -8,7 +8,7 @@ module BlobHelper
     )
 
     begin
-      @lexer ||= Rouge::Lexer.guess(filename: blob_name, source: blob_content)
+      @lexer ||= Rouge::Lexer.guess(filename: blob_name, source: blob_content).new
       result = @formatter.format(@lexer.lex(blob_content, continue: continue)).html_safe
     rescue
       @lexer = Rouge::Lexers::PlainText
