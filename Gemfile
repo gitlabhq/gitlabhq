@@ -267,4 +267,4 @@ end
 gem "newrelic_rpm"
 
 gem 'octokit', '3.7.0'
-gem "rugments", "~> 1.0.0.beta7"
+gem "rugments", "~> 1.0.0.beta8"
