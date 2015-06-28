@@ -13,7 +13,7 @@ feature 'Issue filtering by Milestone' do
     create(:issue, project: project)
 
     visit_issues
-    filter_by_milestone(NoMilestone.title)
+    filter_by_milestone(Milestone::None.title)
 
     expect(page).to have_css('.issue-title', count: 1)
   end

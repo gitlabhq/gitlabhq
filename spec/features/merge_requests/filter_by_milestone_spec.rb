@@ -13,7 +13,7 @@ feature 'Merge Request filtering by Milestone' do
     create(:merge_request, :simple, source_project: project)
 
     visit_merge_requests
-    filter_by_milestone(NoMilestone.title)
+    filter_by_milestone(Milestone::None.title)
 
     expect(page).to have_css('.merge-request-title', count: 1)
   end

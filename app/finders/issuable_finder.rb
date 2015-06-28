@@ -10,7 +10,7 @@
 #     state: 'open' or 'closed' or 'all'
 #     group_id: integer
 #     project_id: integer
-#     milestone_id: integer
+#     milestone_title: string
 #     assignee_id: integer
 #     search: string
 #     label_name: string
@@ -76,7 +76,7 @@ class IssuableFinder
     return @milestones if defined?(@milestones)
 
     @milestones =
-      if milestones? && params[:milestone_title] != NoMilestone.title
+      if milestones? && params[:milestone_title] != Milestone::None.title
         Milestone.where(title: params[:milestone_title])
       else
         nil
@@ -183,12 +183,7 @@ class IssuableFinder
 
   def by_milestone(items)
     if milestones?
-      # `milestone_title` will still be present when "No Milestone" is selected
-      if params[:milestone_title] != NoMilestone.title
-        items = items.where(milestone_id: milestones.try(:pluck, :id))
-      else
-        items = items.where(milestone_id: NoMilestone.id)
-      end
+      items = items.where(milestone_id: milestones.try(:pluck, :id))
     end
 
     items
