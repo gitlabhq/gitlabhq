@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-feature 'Issue filtering by Milestone' do
+feature 'Issue filtering by Milestone', feature: true do
   include Select2Helper
 
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   before do
     login_as(:admin)

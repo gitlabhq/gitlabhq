@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Merge Request filtering by Milestone' do
+feature 'Merge Request filtering by Milestone', feature: true do
   include Select2Helper
 
   let(:project) { create(:project) }

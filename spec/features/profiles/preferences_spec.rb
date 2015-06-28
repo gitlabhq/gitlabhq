@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Profile > Preferences' do
+describe 'Profile > Preferences', feature: true do
   let(:user) { create(:user) }
 
   before do

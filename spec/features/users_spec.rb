@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Users' do
+feature 'Users', feature: true do
   scenario 'GET /users/sign_in creates a new user account' do
     visit new_user_session_path
     fill_in 'user_name', with: 'Name Surname'
