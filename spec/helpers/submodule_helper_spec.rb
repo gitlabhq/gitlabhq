@@ -115,7 +115,7 @@ describe SubmoduleHelper do
     end
 
     context 'submodules with relative links' do
-      let(:group) { create(:group) }
+      let(:group) { create(:group, name: "Master Project", path: "master-project") }
       let(:project) { create(:project, group: group) }
       let(:commit_id) { sample_commit[:id] }
 
