@@ -45,9 +45,9 @@ spinach:other:
     - ruby
     - mysql
 
-jasmine:ci:
+teaspoon:
   script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake jasmine:ci
+    - RAILS_ENV=test bundle exec teaspoon
   tags:
     - ruby
     - mysql
