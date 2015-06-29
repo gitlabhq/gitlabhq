@@ -1,6 +1,6 @@
 %p.lead Compare branches for new Merge Request
 
-= form_for [@project.namespace.becomes(Namespace), @project, @merge_request], url: new_namespace_project_merge_request_path(@project.namespace, @project), method: :get, html: { class: "merge-request-form form-inline" } do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @merge_request], url: new_namespace_project_merge_request_path(@project.namespace, @project), method: :get, html: { class: "merge-request-form form-inline js-requires-input" } do |f|
   .hide.alert.alert-danger.mr-compare-errors
   .merge-request-branches.row
     .col-md-6
@@ -8,9 +8,9 @@
         .panel-heading
           %strong Source branch
         .panel-body
-          = f.select(:source_project_id, [[@merge_request.source_project_path,@merge_request.source_project.id]] , {}, { class: 'source_project select2 span3', disabled: @merge_request.persisted? })
+          = f.select(:source_project_id, [[@merge_request.source_project_path,@merge_request.source_project.id]] , {}, { class: 'source_project select2 span3', disabled: @merge_request.persisted?, required: true })
           &nbsp;
-          = f.select(:source_branch, @merge_request.source_branches, { include_blank: "Select branch" }, {class: 'source_branch select2 span2'})
+          = f.select(:source_branch, @merge_request.source_branches, { include_blank: "Select branch" }, {class: 'source_branch select2 span2', required: true})
         .panel-footer
           .mr_source_commit
 
@@ -20,9 +20,9 @@
           %strong Target branch
         .panel-body
           - projects =  @project.forked_from_project.nil? ? [@project] : [@project, @project.forked_from_project]
-          = f.select(:target_project_id, options_from_collection_for_select(projects, 'id', 'path_with_namespace', f.object.target_project_id), {}, { class: 'target_project select2 span3', disabled: @merge_request.persisted? })
+          = f.select(:target_project_id, options_from_collection_for_select(projects, 'id', 'path_with_namespace', f.object.target_project_id), {}, { class: 'target_project select2 span3', disabled: @merge_request.persisted?, required: true })
           &nbsp;
-          = f.select(:target_branch, @merge_request.target_branches, { include_blank: "Select branch" }, {class: 'target_branch select2 span2'})
+          = f.select(:target_branch, @merge_request.target_branches, { include_blank: "Select branch" }, {class: 'target_branch select2 span2', required: true})
         .panel-footer
           .mr_target_commit
 
