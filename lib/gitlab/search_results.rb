@@ -7,7 +7,7 @@ module Gitlab
     attr_reader :limit_project_ids
 
     def initialize(limit_project_ids, query)
-      @limit_project_ids = limit_project_ids || Project.all
+      @limit_project_ids = limit_project_ids || Project.pluck(:id)
       @query = Shellwords.shellescape(query) if query.present?
     end
 
