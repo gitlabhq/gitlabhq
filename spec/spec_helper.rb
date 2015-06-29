@@ -16,6 +16,7 @@ RSpec.configure do |config|
   config.include Devise::TestHelpers, type: :controller
   config.include LoginHelpers,        type: :feature
   config.include LoginHelpers,        type: :request
+  config.include StubConfiguration
   config.include TestEnv
 
   config.infer_spec_type_from_file_location!
