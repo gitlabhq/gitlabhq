@@ -15,11 +15,7 @@
           Project Settings
     = nav_link(controller: :group_links) do
       = link_to namespace_project_group_links_path(@project.namespace, @project) do
-<<<<<<< Updated upstream
-        =icon('share-square fw')
-=======
         = icon('share-square-o fw')
->>>>>>> Stashed changes
         %span
           Groups
     = nav_link(controller: :deploy_keys) do
@@ -49,10 +45,6 @@
           Protected branches
     = nav_link(controller: :audit_events) do
       = link_to namespace_project_audit_events_path(@project.namespace, @project) do
-<<<<<<< Updated upstream
-        = icon('file-text fw')
-=======
         = icon('file-text-o fw')
->>>>>>> Stashed changes
         %span
           Audit Events
