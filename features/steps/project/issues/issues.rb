@@ -19,12 +19,11 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I should see that I am subscribed' do
-    expect(find(".subscribe-button span").text).to eq "Unsubscribe"
+    expect(find('.subscribe-button span')).to have_content 'Unsubscribe'
   end
 
   step 'I should see that I am unsubscribed' do
-    sleep 0.2
-    expect(find(".subscribe-button span").text).to eq "Subscribe"
+    expect(find('.subscribe-button span')).to have_content 'Subscribe'
   end
 
   step 'I click link "Closed"' do
