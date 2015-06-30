@@ -8,7 +8,7 @@
 
 ![Select a project](basicsimages/select_project.png)
 
-* To work in the project, you can copy a link to the Git repository through a SSH or a HTTPS protocol. SSH is easier to use after it's been [set up](create-your-ssh-keys.md). When you're in the project, click on the HTTPS or SSH button at the right side of your screen. Then copy the link (you'll have to paste it on your shell in the next step)
+* To work in the project, you can copy a link to the Git repository through a SSH or a HTTPS protocol. SSH is easier to use after it's been [setup](create-your-ssh-keys.md). When you're in the project, click on the HTTPS or SSH button at the right side of your screen. Then copy the link (you'll have to paste it on your shell in the next step)
 
 ![Copy the HTTPS](basicsimages/https.png)
 
