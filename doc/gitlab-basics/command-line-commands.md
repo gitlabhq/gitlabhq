@@ -19,9 +19,7 @@
 git clone PASTE HTTPS OR SSH HERE
 ```
 
-A clone of the project will be created in your computer
-
-It's important to know some basic commands to work on your shell
+* A clone of the project will be created in your computer
 
 * Go into a project, directory or file to work in it
 ```
