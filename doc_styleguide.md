@@ -1,6 +1,6 @@
 # Documentation styleguide
 
-This styleguide recommends best practices to improve documentation and to keep it organized and easy to find. 
+This styleguide recommends best practices to improve documentation and to keep it organized and easy to find.
 
 ## Text
 

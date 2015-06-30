@@ -110,6 +110,10 @@ group :unicorn do
   gem "unicorn", '~> 4.6.3'
   gem 'unicorn-worker-killer'
 end
+group :puma do
+  gem 'puma'
+  gem 'puma_worker_killer'
+end
 
 # State machine
 gem "state_machine"
