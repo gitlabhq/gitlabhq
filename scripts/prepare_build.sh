@@ -4,7 +4,7 @@ if [ -f /.dockerinit ]; then
     dpkg -i phantomjs_1.9.0-1+b1_amd64.deb
 
     apt-get update -qq
-    apt-get install -y -qq libicu-dev libkrb5-dev cmake nodejs
+    apt-get install -y -qq libicu-dev libkrb5-dev cmake nodejs postgresql-client mysql-client
 
     cp config/database.yml.mysql config/database.yml
     sed -i 's/username:.*/username: root/g' config/database.yml
