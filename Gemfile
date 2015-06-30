@@ -278,3 +278,5 @@ gem "newrelic_rpm"
 
 gem 'octokit', '3.7.0'
 gem "rugments"
+
+NOTE: The authentication gem used in GitLab is called 'Devise'
