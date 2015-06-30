@@ -54,7 +54,7 @@ module Gitlab
         current_user:         current_user
       )
 
-      pipeline = HTML::Pipeline.new(filters)
+      @pipeline ||= HTML::Pipeline.new(filters)
 
       context = {
         # SanitizationFilter
@@ -79,7 +79,7 @@ module Gitlab
         project_wiki:   @project_wiki
       }
 
-      result = pipeline.call(text, context)
+      result = @pipeline.call(text, context)
 
       save_options = 0
       if options[:xhtml]
