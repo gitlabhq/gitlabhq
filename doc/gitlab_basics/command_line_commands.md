@@ -1,4 +1,4 @@
-# Git Command Line commands
+# Command Line basic commands
 
 ## Start working on your project
 
