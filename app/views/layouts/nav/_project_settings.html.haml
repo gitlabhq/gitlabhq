@@ -15,7 +15,7 @@
           Project Settings
     = nav_link(controller: :group_links) do
       = link_to namespace_project_group_links_path(@project.namespace, @project) do
-        %i.fa.fa-share-square-o
+        = icon('share-square-o fw')
         %span
           Groups
     = nav_link(controller: :deploy_keys) do
@@ -30,7 +30,7 @@
           Web Hooks
     = nav_link(controller: :git_hooks) do
       = link_to namespace_project_git_hooks_path(@project.namespace, @project) do
-        %i.fa.fa-git-square
+        = icon('git-square fw')
         %span
           Git Hooks
     = nav_link(controller: :services) do
@@ -45,6 +45,6 @@
           Protected branches
     = nav_link(controller: :audit_events) do
       = link_to namespace_project_audit_events_path(@project.namespace, @project) do
-        %i.fa.fa-file-text-o
+        = icon('file-text-o fw')
         %span
           Audit Events
