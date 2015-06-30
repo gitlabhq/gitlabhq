@@ -2,10 +2,10 @@
 
 Step-by-step guides on the basics of working with Git and GitLab.
 
-* [Start using Git on the commandline](start_using_git.md)
+* [Start using Git on the commandline](start-using-git.md)
 
-* [Create and add your SSH Keys](create_your_ssh_keys.md)
+* [Create and add your SSH Keys](create-your-ssh-keys.md)
 
-* [Command Line basic commands](command_line_commands.md)
+* [Command Line basic commands](command-line-commands.md)
 
-* [Basic Git commands](basic_git_commands.md)
+* [Basic Git commands](basic-git-commands.md)
