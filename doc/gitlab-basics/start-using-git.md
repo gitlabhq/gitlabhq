@@ -40,7 +40,7 @@ git config --global user.name ADD YOUR USERNAME
 
 * Then verify that you have the correct username
 
-```	
+```
 git config --global user.name
 ```
 
@@ -52,7 +52,7 @@ git config --global user.email ADD YOUR EMAIL
 
 * To verify that you entered your email correctly, type
 
-```		
+```
 git config --global user.email
 ```
 
@@ -62,6 +62,6 @@ git config --global user.email
 
 * To view the information that you entered, type
 
-```		
+```
 git config --global --list
 ```
