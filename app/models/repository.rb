@@ -8,7 +8,7 @@ class Repository
     @project = project
 
     if path_with_namespace
-      @raw_repository = Gitlab::Git::Repository.new(path_to_repo) 
+      @raw_repository = Gitlab::Git::Repository.new(path_to_repo)
       @raw_repository.autocrlf = :input
     end
 
@@ -173,7 +173,9 @@ class Repository
   end
 
   def blob_at(sha, path)
-    Gitlab::Git::Blob.find(self, sha, path)
+    unless Gitlab::Git.blank_ref?(sha)
+      Gitlab::Git::Blob.find(self, sha, path)
+    end
   end
 
   def blob_by_oid(oid)
