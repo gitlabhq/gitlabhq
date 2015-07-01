@@ -9,7 +9,7 @@ gem "default_value_for", "~> 3.0.0"
 gem "mysql2", group: :mysql
 gem "pg", group: :postgres
 
-# Auth
+# Authentication libraries
 gem "devise", '3.2.4'
 gem "devise-async", '0.9.0'
 gem 'omniauth', "~> 1.2.2"
