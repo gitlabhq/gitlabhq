@@ -124,9 +124,7 @@ describe GitPushService do
       end
 
       it "when pushing a branch for the first time with default branch protection disabled" do
-        allow(ApplicationSetting.current_application_settings).
-          to receive(:default_branch_protection).
-          and_return(Gitlab::Access::PROTECTION_NONE)
+        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
 
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
@@ -135,9 +133,7 @@ describe GitPushService do
       end
 
       it "when pushing a branch for the first time with default branch protection set to 'developers can push'" do
-        allow(ApplicationSetting.current_application_settings).
-          to receive(:default_branch_protection).
-          and_return(Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
+        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
 
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")

@@ -47,9 +47,7 @@ describe Projects::UpdateService do
 
     context 'respect configured visibility restrictions setting' do
       before(:each) do
-        allow_any_instance_of(ApplicationSetting).to(
-          receive(:restricted_visibility_levels).and_return([20])
-        )
+        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
       end
 
       context 'should be private when updated to private' do

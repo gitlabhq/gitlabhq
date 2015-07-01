@@ -14,11 +14,7 @@ describe UpdateSnippetService do
 
   context 'When public visibility is restricted' do
     before do
-      allow_any_instance_of(ApplicationSetting).to(
-        receive(:restricted_visibility_levels).and_return(
-          [Gitlab::VisibilityLevel::PUBLIC]
-        )
-      )
+      stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
 
       @snippet = create_snippet(@project, @user, @opts)
       @opts.merge!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
