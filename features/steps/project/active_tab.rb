@@ -20,8 +20,8 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
   end
 
   step 'I click the "Edit" tab' do
-    page.within '.project-settings-nav' do
-      click_link('Project')
+    page.within '.sidebar-subnav' do
+      click_link('Project Settings')
     end
   end
 

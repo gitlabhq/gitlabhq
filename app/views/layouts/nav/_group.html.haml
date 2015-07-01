@@ -29,25 +29,9 @@
       = icon('users fw')
       %span
         Members
-
   - if can?(current_user, :admin_group, @group)
-    = nav_link(html_options: { class: "#{"active" if group_settings_page?} separate-item" }) do
-      = link_to edit_group_path(@group), title: 'Settings', class: 'tab no-highlight', data: {placement: 'right'} do
+    = nav_link(html_options: { class: "separate-item" }) do
+      = link_to edit_group_path(@group), title: 'Settings', data: {placement: 'right'} do
         = icon ('cogs fw')
         %span
           Settings
-          = icon ('angle-down fw')
-
-  - if group_settings_page?
-    %ul.sidebar-subnav
-      = nav_link(path: 'groups#edit') do
-        = link_to edit_group_path(@group), title: 'Group', data: {placement: 'right'} do
-          = icon('pencil-square-o')
-          %span
-            Group Settings
-      = nav_link(path: 'groups#projects') do
-        = link_to projects_group_path(@group), title: 'Projects', data: {placement: 'right'} do
-          = icon('folder')
-          %span
-            Projects
-
