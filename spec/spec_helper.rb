@@ -13,12 +13,12 @@ RSpec.configure do |config|
   config.use_instantiated_fixtures  = false
   config.mock_with :rspec
 
-  config.include LoginHelpers, type: :feature
-  config.include LoginHelpers, type: :request
-  config.include FactoryGirl::Syntax::Methods
   config.include Devise::TestHelpers, type: :controller
-
+  config.include LoginHelpers,        type: :feature
+  config.include LoginHelpers,        type: :request
+  config.include StubConfiguration
   config.include TestEnv
+
   config.infer_spec_type_from_file_location!
   config.raise_errors_for_deprecations!
 
