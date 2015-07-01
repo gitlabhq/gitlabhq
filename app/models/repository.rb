@@ -414,8 +414,6 @@ class Repository
     Gitlab::Git::Blob.remove(raw_repository, options)
   end
 
-  private
-
   def user_to_comitter(user)
     {
       email: user.email,
@@ -423,6 +421,8 @@ class Repository
       time: Time.now
     }
   end
+
+  private
 
   def cache
     @cache ||= RepositoryCache.new(path_with_namespace)
