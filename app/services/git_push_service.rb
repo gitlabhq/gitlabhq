@@ -84,11 +84,7 @@ class GitPushService
         author ||= commit_user(commit)
 
         issues_to_close.each do |issue|
-          if project.jira_tracker? && project.jira_service.active
-            project.jira_service.execute(commit, issue)
-          else
-            Issues::CloseService.new(project, author, {}).execute(issue, commit)
-          end
+          Issues::CloseService.new(project, author, {}).execute(issue, commit)
         end
       end
 

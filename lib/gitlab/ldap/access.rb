@@ -108,7 +108,7 @@ module Gitlab
         ldap_email = ldap_user.email.last.to_s.downcase
 
         return false if user.email == ldap_email
-        
+
         user.skip_reconfirmation!
         user.update(email: ldap_email)
       end
@@ -131,6 +131,10 @@ module Gitlab
       end
 
       # Loop throug all ldap conneted groups, and update the users link with it
+      #
+      # We documented what sort of queries an LDAP server can expect from
+      # GitLab EE in doc/integration/ldap.md. Please remember to update that
+      # documentation if you change the algorithm below.
       def update_ldap_group_links
         gitlab_groups_with_ldap_link.each do |group|
           active_group_links = group.ldap_group_links.where(cn: cns_with_access)
