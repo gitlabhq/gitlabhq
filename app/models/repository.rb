@@ -422,6 +422,15 @@ class Repository
     }
   end
 
+  def can_be_merged?(source_branch, target_branch)
+    our_commit = rugged.branches[target_branch].target
+    their_commit = rugged.branches[source_branch].target
+
+    if our_commit && their_commit
+      !rugged.merge_commits(our_commit, their_commit).conflicts?
+    end
+  end
+
   private
 
   def cache
