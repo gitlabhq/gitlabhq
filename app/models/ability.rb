@@ -155,7 +155,10 @@ class Ability
       project_guest_rules + [
         :download_code,
         :fork_project,
-        :create_project_snippet
+        :create_project_snippet,
+        :update_issue,
+        :admin_issue,
+        :admin_label,
       ]
     end
 
@@ -163,9 +166,6 @@ class Ability
       project_report_rules + [
         :create_merge_request,
         :create_wiki,
-        :update_issue,
-        :admin_issue,
-        :admin_label,
         :push_code
       ]
     end
