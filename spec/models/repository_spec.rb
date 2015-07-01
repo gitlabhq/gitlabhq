@@ -25,4 +25,12 @@ describe Repository do
 
     it { is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8') }
   end
+
+  describe :blob_at do
+    context 'blank sha' do
+      subject { repository.blob_at(Gitlab::Git::BLANK_SHA, '.gitignore') }
+
+      it { is_expected.to be_nil }
+    end
+  end
 end
