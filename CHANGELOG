@@ -28,6 +28,7 @@ v 7.13.0 (unreleased)
   - Users with guest access level can not set assignee, labels or milestones for issue and merge request
   - Reporter role can manage issue tracker now: edit any issue, set assignee or milestone and manage labels
   - Better performance for pages with events list, issues list and commits list
+  - Faster automerge check and merge itself when source and target branches are in same repository 
 
 v 7.12.1
   - Fix error when deleting a user who has projects (Stan Hu)
