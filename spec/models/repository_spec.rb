@@ -33,4 +33,18 @@ describe Repository do
       it { is_expected.to be_nil }
     end
   end
+
+  describe :can_be_merged? do
+    context 'mergeable branches' do
+      subject { repository.can_be_merged?('feature', 'master') }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'non-mergeable branches' do
+      subject { repository.can_be_merged?('feature_conflict', 'feature') }
+
+      it { is_expected.to be_falsey }
+    end
+  end
 end
