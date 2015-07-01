@@ -94,7 +94,7 @@ gem "seed-fu"
 gem 'html-pipeline', '~> 1.11.0'
 gem 'task_list',     '1.0.2', require: 'task_list/railtie'
 gem 'github-markup'
-gem 'redcarpet',     '~> 3.3.0'
+gem 'redcarpet',     '~> 3.3.2'
 gem 'RedCloth'
 gem 'rdoc',          '~>3.6'
 gem 'org-ruby',      '= 0.9.12'

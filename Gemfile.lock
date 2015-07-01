@@ -502,7 +502,7 @@ GEM
       trollop
     rdoc (3.12.2)
       json (~> 1.4)
-    redcarpet (3.3.1)
+    redcarpet (3.3.2)
     redis (3.1.0)
     redis-actionpack (4.0.0)
       actionpack (~> 4)
@@ -822,7 +822,7 @@ DEPENDENCIES
   rails (= 4.1.11)
   raphael-rails (~> 2.1.2)
   rdoc (~> 3.6)
-  redcarpet (~> 3.3.0)
+  redcarpet (~> 3.3.2)
   redis-rails
   request_store
   rerun (~> 0.10.0)
