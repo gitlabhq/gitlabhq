@@ -3,42 +3,43 @@
     .issue-check
       = check_box_tag dom_id(issue,"selected"), nil, false, 'data-id' => issue.id, class: "selected_issue"
 
-  .issue-title
-    %span.issue-title-text
-      = link_to_gfm issue.title, issue_path(issue), class: "row_title"
-    .issue-labels
-      - issue.labels.each do |label|
-        = link_to_label(label, project: issue.project)
-    .pull-right.light
-      - if issue.closed?
-        %span
-          CLOSED
-      - if issue.assignee
-        = link_to_member(@project, issue.assignee, name: false)
-      - note_count = issue.notes.user.count
-      - if note_count > 0
+  = cache issue do
+    .issue-title
+      %span.issue-title-text
+        = link_to_gfm issue.title, issue_path(issue), class: "row_title"
+      .issue-labels
+        - issue.labels.each do |label|
+          = link_to_label(label, project: issue.project)
+      .pull-right.light
+        - if issue.closed?
+          %span
+            CLOSED
+        - if issue.assignee
+          = link_to_member(@project, issue.assignee, name: false)
+        - note_count = issue.notes.user.count
+        - if note_count > 0
+          &nbsp;
+          %span
+            %i.fa.fa-comments
+            = note_count
+        - else
+          &nbsp;
+          %span.issue-no-comments
+            %i.fa.fa-comments
+            = 0
+
+    .issue-info
+      = "#{issue.to_reference} opened #{time_ago_with_tooltip(issue.created_at, placement: 'bottom')} by #{link_to_member(@project, issue.author, avatar: false)}".html_safe
+      - if issue.votes_count > 0
+        = render 'votes/votes_inline', votable: issue
+      - if issue.milestone
         &nbsp;
         %span
-          %i.fa.fa-comments
-          = note_count
-      - else
-        &nbsp;
-        %span.issue-no-comments
-          %i.fa.fa-comments
-          = 0
+          %i.fa.fa-clock-o
+          = issue.milestone.title
+      - if issue.tasks?
+        %span.task-status
+          = issue.task_status
 
-  .issue-info
-    = "##{issue.iid} opened #{time_ago_with_tooltip(issue.created_at, placement: 'bottom')} by #{link_to_member(@project, issue.author, avatar: false)}".html_safe
-    - if issue.votes_count > 0
-      = render 'votes/votes_inline', votable: issue
-    - if issue.milestone
-      &nbsp;
-      %span
-        %i.fa.fa-clock-o
-        = issue.milestone.title
-    - if issue.tasks?
-      %span.task-status
-        = issue.task_status
-
-    .pull-right.issue-updated-at
-      %small updated #{time_ago_with_tooltip(issue.updated_at, placement: 'bottom', html_class: 'issue_update_ago')}
+      .pull-right.issue-updated-at
+        %small updated #{time_ago_with_tooltip(issue.updated_at, placement: 'bottom', html_class: 'issue_update_ago')}
