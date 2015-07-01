@@ -10,9 +10,14 @@ v 7.13.0 (unreleased)
   - Update ssl_ciphers in Nginx example to remove DHE settings. This will deny forward secrecy for Android 2.3.7, Java 6 and OpenSSL 0.9.8
   - Convert CRLF newlines to LF when committing using the web editor.
 
-v 7.12.1 (unreleased)
+v 7.12.1
   - Fix error when deleting a user who has projects (Stan Hu)
   - Fix post-receive errors on a push when an external issue tracker is configured (Stan Hu)
+  - Add SAML to list of social_provider (Matt Firtion)
+  - Fix merge requests API scope to keep compatibility in 7.12.x patch release (Dmitriy Zaporozhets)
+  - Fix closed merge request scope at milestone page (Dmitriy Zaporozhets)
+  - Revert merge request states renaming 
+  - Fix hooks for web based events with external issue references (Daniel Gerhardt)
 
 v 7.12.0
   - Fix Error 500 when one user attempts to access a personal, internal snippet (Stan Hu)
