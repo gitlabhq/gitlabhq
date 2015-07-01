@@ -19,6 +19,12 @@ Feature: Project Services
     And I fill hipchat settings
     Then I should see hipchat service settings saved
 
+  Scenario: Activate letschat service
+    When I visit project "Shop" services page
+    And I click letschat service link
+    And I fill letschat settings
+    Then I should see letschat service settings saved
+
   Scenario: Activate hipchat service with custom server
     When I visit project "Shop" services page
     And I click hipchat service link
