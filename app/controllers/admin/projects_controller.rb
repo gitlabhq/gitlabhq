@@ -23,7 +23,8 @@ class Admin::ProjectsController < Admin::ApplicationController
   end
 
   def transfer
-    ::Projects::TransferService.new(@project, current_user, params.dup).execute
+    namespace = Namespace.find_by(id: params[:new_namespace_id])
+    ::Projects::TransferService.new(@project, current_user, params.dup).execute(namespace)
 
     @project.reload
     redirect_to admin_namespace_project_path(@project.namespace, @project)
