@@ -182,59 +182,63 @@ module Gitlab
           return build_status_object(false, "You can not delete tag")
         end
       else
-        # Check commit messages unless its branch removal
-        if git_hook.commit_validation? && !Gitlab::Git.blank_ref?(newrev)
-          if Gitlab::Git.blank_ref?(oldrev)
-            oldrev = project.default_branch
+        return build_status_object(true) unless git_hook.commit_validation?
+        return build_status_object(true) if Gitlab::Git.blank_ref?(newrev)
+
+        oldrev = project.default_branch if Gitlab::Git.blank_ref?(oldrev)
+
+        commits = 
+          if oldrev
+            project.repository.commits_between(oldrev, newrev)
+          else
+            project.repository.commits(newrev)
           end
 
-          commits = project.repository.commits_between(oldrev, newrev)
-          commits.each do |commit|
-            if git_hook.commit_message_regex.present?
-              unless commit.safe_message =~ Regexp.new(git_hook.commit_message_regex)
-                return build_status_object(false, "Commit message does not follow the pattern")
-              end
+        commits.each do |commit|
+          if git_hook.commit_message_regex.present?
+            unless commit.safe_message =~ Regexp.new(git_hook.commit_message_regex)
+              return build_status_object(false, "Commit message does not follow the pattern")
+            end
+          end
+
+          if git_hook.author_email_regex.present?
+            unless commit.committer_email =~ Regexp.new(git_hook.author_email_regex)
+              return build_status_object(false, "Commiter's email does not follow the pattern")
             end
 
-            if git_hook.author_email_regex.present?
-              unless commit.committer_email =~ Regexp.new(git_hook.author_email_regex)
-                return build_status_object(false, "Commiter's email does not follow the pattern")
-              end
+            unless commit.author_email =~ Regexp.new(git_hook.author_email_regex)
+              return build_status_object(false, "Author's email does not follow the pattern")
+            end
+          end
 
-              unless commit.author_email =~ Regexp.new(git_hook.author_email_regex)
-                return build_status_object(false, "Author's email does not follow the pattern")
-              end
+          # Check whether author is a GitLab member
+          if git_hook.member_check
+            unless User.existing_member?(commit.author_email)
+              return build_status_object(false, "Author is not a member of team")
             end
 
-            # Check whether author is a GitLab member
-            if git_hook.member_check
-              unless User.existing_member?(commit.author_email)
-                return build_status_object(false, "Author is not a member of team")
-              end
-
-              if commit.author_email != commit.committer_email
-                unless User.existing_member?(commit.committer_email)
-                  return build_status_object(false, "Commiter is not a member of team")
-                end
+            if commit.author_email != commit.committer_email
+              unless User.existing_member?(commit.committer_email)
+                return build_status_object(false, "Commiter is not a member of team")
               end
             end
+          end
 
-            if git_hook.file_name_regex.present?
-              commit.diffs.each do |diff|
-                if (diff.renamed_file || diff.new_file) && diff.new_path =~ Regexp.new(git_hook.file_name_regex)
-                  return build_status_object(false, "File name #{diff.new_path.inspect} does not follow the pattern")
-                end
+          if git_hook.file_name_regex.present?
+            commit.diffs.each do |diff|
+              if (diff.renamed_file || diff.new_file) && diff.new_path =~ Regexp.new(git_hook.file_name_regex)
+                return build_status_object(false, "File name #{diff.new_path.inspect} does not follow the pattern")
               end
             end
+          end
 
-            if git_hook.max_file_size > 0
-              commit.diffs.each do |diff|
-                next if diff.deleted_file
+          if git_hook.max_file_size > 0
+            commit.diffs.each do |diff|
+              next if diff.deleted_file
 
-                blob = project.repository.blob_at(commit.id, diff.new_path)
-                if blob.size > git_hook.max_file_size.megabytes
-                  return build_status_object(false, "File #{diff.new_path.inspect} is larger than the allowed size of #{git_hook.max_file_size} MB")
-                end
+              blob = project.repository.blob_at(commit.id, diff.new_path)
+              if blob.size > git_hook.max_file_size.megabytes
+                return build_status_object(false, "File #{diff.new_path.inspect} is larger than the allowed size of #{git_hook.max_file_size} MB")
               end
             end
           end

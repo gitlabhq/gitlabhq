@@ -1,4 +1,7 @@
-v 7.12 (Unreleased)
+v 7.13 (Unrelease)
+  - Fix git hook validation on initial push to master branch.
+
+v 7.12
   - Fix error when viewing merge request with a commit that includes "Closes #<issue id>".
   - Enhance LDAP group synchronization to check also for member attributes that only contain "uid=<username>"
   - Enhance LDAP group synchronization to check also for submember attributes
