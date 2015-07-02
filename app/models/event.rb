@@ -44,7 +44,7 @@ class Event < ActiveRecord::Base
   after_create :reset_project_activity
 
   # Scopes
-  scope :recent, -> { order("created_at DESC") }
+  scope :recent, -> { order(created_at: :desc) }
   scope :code_push, -> { where(action: PUSHED) }
   scope :in_projects, ->(project_ids) { where(project_id: project_ids).recent }
   scope :with_associations, -> { includes(project: :namespace) }
