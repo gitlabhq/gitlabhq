@@ -5,8 +5,10 @@ describe Projects::ForkService do
     before do
       @from_namespace = create(:namespace)
       @from_user = create(:user, namespace: @from_namespace )
-      @from_project = create(:project, creator_id: @from_user.id,
-                             namespace: @from_namespace, star_count: 107,
+      @from_project = create(:project,
+                             creator_id: @from_user.id,
+                             namespace: @from_namespace,
+                             star_count: 107,
                              description: 'wow such project')
       @to_namespace = create(:namespace)
       @to_user = create(:user, namespace: @to_namespace)

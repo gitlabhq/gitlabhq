@@ -39,14 +39,14 @@ describe API::API, api: true  do
   end
 
   describe "POST /projects/:id/repository/files" do
-    let(:valid_params) {
+    let(:valid_params) do
       {
         file_path: 'newfile.rb',
         branch_name: 'master',
         content: 'puts 8',
         commit_message: 'Added newfile'
       }
-    }
+    end
 
     it "should create a new file in project repo" do
       post api("/projects/#{project.id}/repository/files", user), valid_params
@@ -60,9 +60,8 @@ describe API::API, api: true  do
     end
 
     it "should return a 400 if editor fails to create file" do
-      Repository.any_instance.stub(
-        commit_file: false,
-      )
+      allow_any_instance_of(Repository).to receive(:commit_file).
+        and_return(false)
 
       post api("/projects/#{project.id}/repository/files", user), valid_params
       expect(response.status).to eq(400)
@@ -70,14 +69,14 @@ describe API::API, api: true  do
   end
 
   describe "PUT /projects/:id/repository/files" do
-    let(:valid_params) {
+    let(:valid_params) do
       {
         file_path: file_path,
         branch_name: 'master',
         content: 'puts 8',
         commit_message: 'Changed file'
       }
-    }
+    end
 
     it "should update existing file in project repo" do
       put api("/projects/#{project.id}/repository/files", user), valid_params
@@ -92,13 +91,13 @@ describe API::API, api: true  do
   end
 
   describe "DELETE /projects/:id/repository/files" do
-    let(:valid_params) {
+    let(:valid_params) do
       {
         file_path: file_path,
         branch_name: 'master',
         commit_message: 'Changed file'
       }
-    }
+    end
 
     it "should delete existing file in project repo" do
       delete api("/projects/#{project.id}/repository/files", user), valid_params
@@ -112,9 +111,7 @@ describe API::API, api: true  do
     end
 
     it "should return a 400 if satellite fails to create file" do
-      Repository.any_instance.stub(
-        remove_file: false,
-      )
+      allow_any_instance_of(Repository).to receive(:remove_file).and_return(false)
 
       delete api("/projects/#{project.id}/repository/files", user), valid_params
       expect(response.status).to eq(400)

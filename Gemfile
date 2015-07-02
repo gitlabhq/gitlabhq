@@ -2,6 +2,10 @@ source "https://rubygems.org"
 
 gem 'rails', '4.1.11'
 
+# Specify a sprockets version due to security issue
+# See https://groups.google.com/forum/#!topic/rubyonrails-security/doAVp0YaTqY
+gem 'sprockets', '~> 2.12.3'
+
 # Default values for AR models
 gem "default_value_for", "~> 3.0.0"
 
@@ -9,7 +13,7 @@ gem "default_value_for", "~> 3.0.0"
 gem "mysql2", group: :mysql
 gem "pg", group: :postgres
 
-# Auth
+# Authentication libraries
 gem "devise", '3.2.4'
 gem "devise-async", '0.9.0'
 gem 'omniauth', "~> 1.2.2"
@@ -34,7 +38,7 @@ gem "browser", '~> 0.8.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 7.2.3'
+gem "gitlab_git", '~> 7.2.5'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 # GitLab fork with a lot of changes (improved thread-safety, better memory usage etc)
@@ -95,7 +99,7 @@ gem "seed-fu"
 gem 'html-pipeline', '~> 1.11.0'
 gem 'task_list',     '1.0.2', require: 'task_list/railtie'
 gem 'github-markup'
-gem 'redcarpet',     '~> 3.3.0'
+gem 'redcarpet',     '~> 3.3.2'
 gem 'RedCloth'
 gem 'rdoc',          '~>3.6'
 gem 'org-ruby',      '= 0.9.12'
@@ -182,7 +186,7 @@ gem 'mousetrap-rails'
 # Detect and convert string character encoding
 gem 'charlock_holmes'
 
-gem "sass-rails", '~> 4.0.2'
+gem "sass-rails", '~> 4.0.5'
 gem "coffee-rails"
 gem "uglifier"
 gem 'turbolinks', '~> 2.5.0'
@@ -225,16 +229,23 @@ group :development do
 end
 
 group :development, :test do
+  gem 'awesome_print'
+  gem 'byebug'
+  gem 'fuubar', '~> 2.0.0'
+  gem 'pry-rails'
+
   gem 'coveralls', require: false
+  gem 'database_cleaner', '~> 1.4.0'
+  gem 'factory_girl_rails'
+  gem 'rspec-rails', '~> 3.3.0'
   gem 'rubocop', '0.28.0', require: false
   gem 'spinach-rails'
-  gem "rspec-rails", '2.99'
-  gem 'capybara', '~> 2.2.1'
-  gem 'capybara-screenshot', '~> 1.0.0'
-  gem "pry-rails"
-  gem "awesome_print"
-  gem "database_cleaner"
-  gem 'factory_girl_rails'
+
+  # rest-client is a coveralls dependency and not used directly in GitLab, but
+  # we specify a version here to pick up some security fixes.
+  # See https://github.com/rest-client/rest-client/issues/369
+  # and http://www.osvdb.org/show/osvdb/117461
+  gem 'rest-client', '~> 1.8.0'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.3.0'
@@ -242,8 +253,9 @@ group :development, :test do
   # Generate Fake data
   gem 'ffaker', '~> 2.0.0'
 
-  # PhantomJS driver for Capybara
-  gem 'poltergeist', '~> 1.5.1'
+  gem 'capybara',            '~> 2.3.0'
+  gem 'capybara-screenshot', '~> 1.0.0'
+  gem 'poltergeist',         '~> 1.6.0'
 
   gem 'teaspoon', '~> 1.0.0'
   gem 'teaspoon-jasmine'
@@ -252,14 +264,12 @@ group :development, :test do
   gem 'spring-commands-rspec',    '~> 1.0.0'
   gem 'spring-commands-spinach',  '~> 1.0.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
-
-  gem "byebug"
 end
 
 group :test do
   gem 'simplecov', require: false
   gem 'shoulda-matchers', '~> 2.8.0', require: false
-  gem 'email_spec'
+  gem 'email_spec', '~> 1.6.0'
   gem 'webmock', '~> 1.21.0'
   gem 'test_after_commit'
 end
@@ -271,4 +281,4 @@ end
 gem "newrelic_rpm"
 
 gem 'octokit', '3.7.0'
-gem "rugments", "~> 1.0.0.beta7"
+gem "rugments", "~> 1.0.0.beta8"

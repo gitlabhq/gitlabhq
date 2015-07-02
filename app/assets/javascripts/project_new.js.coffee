@@ -3,16 +3,8 @@ class @ProjectNew
     $('.project-edit-container').on 'ajax:before', =>
       $('.project-edit-container').hide()
       $('.save-project-loader').show()
-
     @toggleSettings()
-    @initEvents()
 
-
-  initEvents: ->
-    disableButtonIfEmptyField '#project_name', '.project-submit'
-
-    $("#project_merge_requests_enabled").change =>
-      @toggleSettings()
 
   toggleSettings: ->
     checked = $("#project_merge_requests_enabled").prop("checked")
@@ -20,4 +12,3 @@ class @ProjectNew
       $('.merge-request-feature').show()
     else
       $('.merge-request-feature').hide()
-

@@ -51,7 +51,9 @@ Xth: (4 working days before the 22nd)
 - [ ] Update GitLab.com with rc1 (#LINK) (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#deploy-the-package)
 - [ ] Update ci.gitLab.com with rc1 (#LINK) (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#deploy-the-package)
 - [ ] Create regression issues (CE, CI) (#LINK)
-- [ ] Tweet about rc1 (#LINK)
+- [ ] Tweet about rc1 (#LINK), proposed text: 
+
+> GitLab x.x.0.rc1 is available https://packages.gitlab.com/gitlab/unstable Use at your own risk. Please link regressions issues from LINK_TO_REGRESSION_ISSUE
 
 Xth: (3 working days before the 22nd)
 
@@ -59,7 +61,7 @@ Xth: (3 working days before the 22nd)
 
 Xth: (2 working days before the 22nd)
 
-- [ ] Check that everyone is mentioned on the blog post (the reviewer should have done this one working day ago)
+- [ ] Check that everyone is mentioned on the blog post using `@all` (the reviewer should have done this one working day ago)
 - [ ] Check that MVP is added to the mvp page (source/mvp/index.html in www-gitlab-com)
 
 Xth: (1 working day before the 22nd)

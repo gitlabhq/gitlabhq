@@ -6,10 +6,10 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_read_issue!
 
   # Allow write(create) issue
-  before_action :authorize_write_issue!, only: [:new, :create]
+  before_action :authorize_create_issue!, only: [:new, :create]
 
   # Allow modify issue
-  before_action :authorize_modify_issue!, only: [:edit, :update]
+  before_action :authorize_update_issue!, only: [:edit, :update]
 
   # Allow issues bulk update
   before_action :authorize_admin_issues!, only: [:bulk_update]
@@ -55,6 +55,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def show
+    @participants = @issue.participants(current_user, @project)
     @note = @project.notes.new(noteable: @issue)
     @notes = @issue.notes.inc_author.fresh
     @noteable = @issue
@@ -121,8 +122,8 @@ class Projects::IssuesController < Projects::ApplicationController
                end
   end
 
-  def authorize_modify_issue!
-    return render_404 unless can?(current_user, :modify_issue, @issue)
+  def authorize_update_issue!
+    return render_404 unless can?(current_user, :update_issue, @issue)
   end
 
   def authorize_admin_issues!

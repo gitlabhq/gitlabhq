@@ -21,7 +21,7 @@
           - if member
             %span.note-role.label
               = member.human_access
-              
+
         - if note.system
           = link_to user_path(note.author) do
             = image_tag avatar_icon(note.author_email), class: 'avatar s16', alt: ''
@@ -56,9 +56,10 @@
 
 
       .note-body{class: note_editable?(note) ? 'js-task-list-container' : ''}
-        .note-text
-          = preserve do
-            = markdown(note.note, {no_header_anchors: true})
+        = cache [note, 'markdown'] do
+          .note-text
+            = preserve do
+              = markdown(note.note, {no_header_anchors: true})
         = render 'projects/notes/edit_form', note: note
 
       - if note.attachment.url

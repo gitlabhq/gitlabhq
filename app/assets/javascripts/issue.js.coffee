@@ -3,28 +3,11 @@
 
 class @Issue
   constructor: ->
-    $('.edit-issue.inline-update input[type="submit"]').hide()
-    $(".context .inline-update").on "change", "select", ->
-      $(this).submit()
-    $(".context .inline-update").on "change", "#issue_assignee_id", ->
-      $(this).submit()
-
     # Prevent duplicate event bindings
     @disableTaskList()
 
     if $("a.btn-close").length
       @initTaskList()
-
-    $('.issue-details').waitForImages ->
-      $('.issuable-affix').affix offset:
-        top: ->
-          @top = ($('.issuable-affix').offset().top - 70)
-        bottom: ->
-          @bottom = $('.footer').outerHeight(true)
-      $('.issuable-affix').on 'affix.bs.affix', ->
-        $(@).width($(@).outerWidth())
-      .on 'affixed-top.bs.affix affixed-bottom.bs.affix', ->
-        $(@).width('')
 
   initTaskList: ->
     $('.issue-details .js-task-list-container').taskList('enable')
@@ -42,5 +25,5 @@ class @Issue
 
     $.ajax
       type: 'PATCH'
-      url: $('form.js-issue-update').attr('action')
+      url: $('form.js-issuable-update').attr('action')
       data: patchData

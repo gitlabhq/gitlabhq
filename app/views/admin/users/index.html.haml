@@ -13,6 +13,14 @@
           = link_to admin_users_path(filter: "admins") do
             Admins
             %small.pull-right= User.admins.count
+        %li.filter-two-factor-enabled{class: "#{'active' if params[:filter] == 'two_factor_enabled'}"}
+          = link_to admin_users_path(filter: 'two_factor_enabled') do
+            2FA Enabled
+            %small.pull-right= User.with_two_factor.count
+        %li.filter-two-factor-disabled{class: "#{'active' if params[:filter] == 'two_factor_disabled'}"}
+          = link_to admin_users_path(filter: 'two_factor_disabled') do
+            2FA Disabled
+            %small.pull-right= User.without_two_factor.count
         %li{class: "#{'active' if params[:filter] == "blocked"}"}
           = link_to admin_users_path(filter: "blocked") do
             Blocked
@@ -86,6 +94,8 @@
                   = link_to 'Unblock', unblock_admin_user_path(user), method: :put, class: "btn btn-xs btn-success"
                 - else
                   = link_to 'Block', block_admin_user_path(user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: "btn btn-xs btn-warning"
+                - if user.access_locked?
+                  = link_to 'Unlock', unlock_admin_user_path(user), method: :put, class: "btn btn-xs btn-success", data: { confirm: 'Are you sure?' }
                 - if user.can_be_removed?
                   = link_to 'Destroy', [:admin, user], data: { confirm: "USER #{user.name} WILL BE REMOVED! All tickets linked to this user will also be removed! Maybe block the user instead? Are you sure?" }, method: :delete, class: "btn btn-xs btn-remove"
     = paginate @users, theme: "gitlab"

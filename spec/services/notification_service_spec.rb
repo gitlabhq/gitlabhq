@@ -58,7 +58,7 @@ describe NotificationService do
         end
 
         it 'filters out "mentioned in" notes' do
-          mentioned_note = Note.create_cross_reference_note(mentioned_issue, issue, issue.author)
+          mentioned_note = SystemNoteService.cross_reference(mentioned_issue, issue, issue.author)
 
           expect(Notify).not_to receive(:note_issue_email)
           notification.new_note(mentioned_note)
@@ -130,7 +130,7 @@ describe NotificationService do
         end
 
         it 'filters out "mentioned in" notes' do
-          mentioned_note = Note.create_cross_reference_note(mentioned_issue, issue, issue.author)
+          mentioned_note = SystemNoteService.cross_reference(mentioned_issue, issue, issue.author)
 
           expect(Notify).not_to receive(:note_issue_email)
           notification.new_note(mentioned_note)

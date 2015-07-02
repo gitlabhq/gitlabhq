@@ -81,8 +81,8 @@ describe ProjectTeam do
       group.add_user(reporter, Gitlab::Access::REPORTER)
     end
 
-    it { project.team.max_invited_level(master.id).should == Gitlab::Access::DEVELOPER }
-    it { project.team.max_invited_level(reporter.id).should == Gitlab::Access::REPORTER }
-    it { project.team.max_invited_level(nonmember.id).should be_nil }
+    it { expect(project.team.max_invited_level(master.id)).to eq(Gitlab::Access::DEVELOPER) }
+    it { expect(project.team.max_invited_level(reporter.id)).to eq(Gitlab::Access::REPORTER) }
+    it { expect(project.team.max_invited_level(nonmember.id)).to be_nil }
   end
 end

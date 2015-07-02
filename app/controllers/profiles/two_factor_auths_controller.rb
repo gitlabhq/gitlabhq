@@ -10,7 +10,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   def create
     if current_user.valid_otp?(params[:pin_code])
-      current_user.otp_required_for_login = true
+      current_user.two_factor_enabled = true
       @codes = current_user.generate_otp_backup_codes!
       current_user.save!
 
@@ -30,7 +30,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   def destroy
     current_user.update_attributes({
-      otp_required_for_login:    false,
+      two_factor_enabled:        false,
       encrypted_otp_secret:      nil,
       encrypted_otp_secret_iv:   nil,
       encrypted_otp_secret_salt: nil,
@@ -43,8 +43,12 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   private
 
   def build_qr_code
-    issuer = "GitLab | #{current_user.email}"
+    issuer = "#{issuer_host} | #{current_user.email}"
     uri = current_user.otp_provisioning_uri(current_user.email, issuer: issuer)
     RQRCode::render_qrcode(uri, :svg, level: :m, unit: 3)
+  end
+
+  def issuer_host
+    Gitlab.config.gitlab.host
   end
 end

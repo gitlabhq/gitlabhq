@@ -1,6 +1,6 @@
 namespace :gitlab do
   namespace :shell do
-    desc "GITLAB | Install or upgrade gitlab-shell"
+    desc "GitLab | Install or upgrade gitlab-shell"
     task :install, [:tag, :repo] => :environment do |t, args|
       warn_user_is_not_gitlab
 
@@ -75,12 +75,12 @@ namespace :gitlab do
       end
     end
 
-    desc "GITLAB | Setup gitlab-shell"
+    desc "GitLab | Setup gitlab-shell"
     task setup: :environment do
       setup
     end
 
-    desc "GITLAB | Build missing projects"
+    desc "GitLab | Build missing projects"
     task build_missing_projects: :environment do
       Project.find_each(batch_size: 1000) do |project|
         path_to_repo = project.repository.path_to_repo

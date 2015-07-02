@@ -75,3 +75,8 @@ At a minimum the IdP *must* provide a claim containing the user's email address,
 
 On the sign in page there should now be a SAML button below the regular sign in form. Click the icon to begin the authentication process. If everything goes well the user will be returned to GitLab and will be signed in.
 
+## Troubleshooting
+
+If you see a "500 error" in GitLab when you are redirected back from the SAML sign in page, this likely indicates that GitLab could not get the email address for the SAML user.
+
+Make sure the IdP provides a claim containing the user's email address, using claim name 'email' or 'mail'. The email will be used to automatically generate the GitLab username.

@@ -10,7 +10,7 @@ module Issues
 
       issues = Issue.where(id: issues_ids)
       issues.each do |issue|
-        next unless can?(current_user, :modify_issue, issue)
+        next unless can?(current_user, :update_issue, issue)
 
         Issues::UpdateService.new(issue.project, current_user, issue_params).execute(issue)
       end

@@ -16,31 +16,31 @@ describe Gitlab::LDAP::User do
 
   describe :changed? do
     it "marks existing ldap user as changed" do
-      existing_user = create(:omniauth_user, extern_uid: 'my-uid', provider: 'ldapmain')
+      create(:omniauth_user, extern_uid: 'my-uid', provider: 'ldapmain')
       expect(ldap_user.changed?).to be_truthy
     end
 
     it "marks existing non-ldap user if the email matches as changed" do
-      existing_user = create(:user, email: 'john@example.com')
+      create(:user, email: 'john@example.com')
       expect(ldap_user.changed?).to be_truthy
     end
 
     it "dont marks existing ldap user as changed" do
-      existing_user = create(:omniauth_user, email: 'john@example.com', extern_uid: 'my-uid', provider: 'ldapmain')
+      create(:omniauth_user, email: 'john@example.com', extern_uid: 'my-uid', provider: 'ldapmain')
       expect(ldap_user.changed?).to be_falsey
     end
   end
 
   describe :find_or_create do
     it "finds the user if already existing" do
-      existing_user = create(:omniauth_user, extern_uid: 'my-uid', provider: 'ldapmain')
+      create(:omniauth_user, extern_uid: 'my-uid', provider: 'ldapmain')
 
-      expect{ ldap_user.save }.to_not change{ User.count }
+      expect{ ldap_user.save }.not_to change{ User.count }
     end
 
     it "connects to existing non-ldap user if the email matches" do
       existing_user = create(:omniauth_user, email: 'john@example.com', provider: "twitter")
-      expect{ ldap_user.save }.to_not change{ User.count }
+      expect{ ldap_user.save }.not_to change{ User.count }
 
       existing_user.reload
       expect(existing_user.ldap_identity.extern_uid).to eql 'my-uid'
@@ -52,11 +52,15 @@ describe Gitlab::LDAP::User do
     end
   end
 
-
   describe 'blocking' do
+    def configure_block(value)
+      allow_any_instance_of(Gitlab::LDAP::Config).
+        to receive(:block_auto_created_users).and_return(value)
+    end
+
     context 'signup' do
       context 'dont block on create' do
-        before { Gitlab::LDAP::Config.any_instance.stub block_auto_created_users: false }
+        before { configure_block(false) }
 
         it do
           ldap_user.save
@@ -66,7 +70,7 @@ describe Gitlab::LDAP::User do
       end
 
       context 'block on create' do
-        before { Gitlab::LDAP::Config.any_instance.stub block_auto_created_users: true }
+        before { configure_block(true) }
 
         it do
           ldap_user.save
@@ -83,7 +87,7 @@ describe Gitlab::LDAP::User do
       end
 
       context 'dont block on create' do
-        before { Gitlab::LDAP::Config.any_instance.stub block_auto_created_users: false }
+        before { configure_block(false) }
 
         it do
           ldap_user.save
@@ -93,7 +97,7 @@ describe Gitlab::LDAP::User do
       end
 
       context 'block on create' do
-        before { Gitlab::LDAP::Config.any_instance.stub block_auto_created_users: true }
+        before { configure_block(true) }
 
         it do
           ldap_user.save

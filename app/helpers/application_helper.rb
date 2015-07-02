@@ -179,20 +179,33 @@ module ApplicationHelper
     BroadcastMessage.current
   end
 
-  def time_ago_with_tooltip(date, placement = 'top', html_class = 'time_ago')
-    capture_haml do
-      if date.is_a?(Date)
-        haml_tag :time, date.to_s,
-          class: html_class, datetime: date.iso8601, title: date.stamp('Aug 21, 2011'),
-          data: { toggle: 'tooltip', placement: placement }
-      else
-        haml_tag :time, date.to_s,
-          class: html_class, datetime: date.getutc.iso8601, title: date.in_time_zone.stamp('Aug 21, 2011 9:23pm'),
-          data: { toggle: 'tooltip', placement: placement }
-      end
+  # Render a `time` element with Javascript-based relative date and tooltip
+  #
+  # time       - Time object
+  # placement  - Tooltip placement String (default: "top")
+  # html_class - Custom class for `time` element (default: "time_ago")
+  # skip_js    - When true, exclude the `script` tag (default: false)
+  #
+  # By default also includes a `script` element with Javascript necessary to
+  # initialize the `timeago` jQuery extension. If this method is called many
+  # times, for example rendering hundreds of commits, it's advisable to disable
+  # this behavior using the `skip_js` argument and re-initializing `timeago`
+  # manually once all of the elements have been rendered.
+  #
+  # A `js-timeago` class is always added to the element, even when a custom
+  # `html_class` argument is provided.
+  #
+  # Returns an HTML-safe String
+  def time_ago_with_tooltip(time, placement: 'top', html_class: 'time_ago', skip_js: false)
+    element = content_tag :time, time.to_s,
+      class: "#{html_class} js-timeago",
+      datetime: time.getutc.iso8601,
+      title: time.in_time_zone.stamp('Aug 21, 2011 9:23pm'),
+      data: { toggle: 'tooltip', placement: placement }
 
-      haml_tag :script, "$('." + html_class + "').timeago().tooltip()"
-    end.html_safe
+    element += javascript_tag "$('.js-timeago').timeago()" unless skip_js
+
+    element
   end
 
   def render_markup(file_name, file_content)
@@ -218,39 +231,6 @@ module ApplicationHelper
 
   def asciidoc?(filename)
     Gitlab::MarkupHelper.asciidoc?(filename)
-  end
-
-  # Overrides ActionView::Helpers::UrlHelper#link_to to add `rel="nofollow"` to
-  # external links
-  def link_to(name = nil, options = nil, html_options = {})
-    if options.kind_of?(String)
-      if !options.start_with?('#', '/')
-        html_options = add_nofollow(options, html_options)
-      end
-    end
-
-    super
-  end
-
-  # Add `"rel=nofollow"` to external links
-  #
-  # link         - String link to check
-  # html_options - Hash of `html_options` passed to `link_to`
-  #
-  # Returns `html_options`, adding `rel: nofollow` for external links
-  def add_nofollow(link, html_options = {})
-    begin
-      uri = URI(link)
-
-      if uri && uri.absolute? && uri.host != Gitlab.config.gitlab.host
-        rel = html_options.fetch(:rel, '')
-        html_options[:rel] = (rel + ' nofollow').strip
-      end
-    rescue URI::Error
-      # noop
-    end
-
-    html_options
   end
 
   def promo_host
@@ -301,10 +281,9 @@ module ApplicationHelper
 
   def state_filters_text_for(entity, project)
     titles = {
-      opened: "Open",
-      merged:  "Accepted"
+      opened: "Open"
     }
-    
+
     entity_title = titles[entity] || entity.to_s.humanize
 
     count =

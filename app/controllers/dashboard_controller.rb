@@ -1,7 +1,7 @@
 class DashboardController < Dashboard::ApplicationController
-  before_action :load_projects, except: [:projects]
+  before_action :load_projects
   before_action :event_filter, only: :show
-  
+
   respond_to :html
 
   def show

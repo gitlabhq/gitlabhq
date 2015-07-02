@@ -157,11 +157,11 @@ class Commit
   end
 
   def author
-    User.find_for_commit(author_email, author_name)
+    @author ||= User.find_by_any_email(author_email)
   end
 
   def committer
-    User.find_for_commit(committer_email, committer_name)
+    @committer ||= User.find_by_any_email(committer_email)
   end
 
   def notes

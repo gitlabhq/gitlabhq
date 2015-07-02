@@ -189,7 +189,7 @@ module EventsHelper
         xml.id      "tag:#{request.host},#{event.created_at.strftime("%Y-%m-%d")}:#{event.id}"
         xml.link    href: event_link
         xml.title   truncate(event_title, length: 80)
-        xml.updated event.created_at.strftime("%Y-%m-%dT%H:%M:%S%Z")
+        xml.updated event.created_at.xmlschema
         xml.media   :thumbnail, width: "40", height: "40", url: avatar_icon(event.author_email)
         xml.author do |author|
           xml.name event.author_name

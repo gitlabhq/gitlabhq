@@ -2,8 +2,10 @@ module SharedNote
   include Spinach::DSL
 
   step 'I delete a comment' do
-    find('.note').hover
-    find(".js-note-delete").click
+    page.within('.notes') do
+      find('.note').hover
+      find(".js-note-delete").click
+    end
   end
 
   step 'I haven\'t written any comment text' do
@@ -16,7 +18,6 @@ module SharedNote
     page.within(".js-main-target-form") do
       fill_in "note[note]", with: "XML attached"
       click_button "Add Comment"
-      sleep 0.05
     end
   end
 
@@ -123,13 +124,14 @@ module SharedNote
   end
 
   step 'I edit the last comment with a +1' do
-    find(".note").hover
-    find('.js-note-edit').click
+    page.within(".notes") do
+      find(".note").hover
+      find('.js-note-edit').click
+    end
 
     page.within(".current-note-edit-form") do
       fill_in 'note[note]', with: '+1 Awesome!'
       click_button 'Save Comment'
-      sleep 0.05
     end
   end
 

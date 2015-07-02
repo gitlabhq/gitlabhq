@@ -16,4 +16,3 @@ module SharedAdmin
     end
   end
 end
-

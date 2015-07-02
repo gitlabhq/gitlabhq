@@ -32,7 +32,7 @@ describe AssemblaService, models: true do
 
     before do
       @assembla_service = AssemblaService.new
-      @assembla_service.stub(
+      allow(@assembla_service).to receive_messages(
         project_id: project.id,
         project: project,
         service_hook: true,

@@ -62,7 +62,7 @@
       %span.badge= @users.count
 
   .pull-right
-    - if can?(current_user, :write_issue, @project)
+    - if can?(current_user, :create_issue, @project)
       = link_to new_namespace_project_issue_path(@project.namespace, @project, issue: { milestone_id: @milestone.id }), class: "btn  btn-grouped", title: "New Issue" do
         %i.fa.fa-plus
         New Issue
@@ -86,10 +86,10 @@
       .col-md-3
         = render('merge_requests', title: 'Waiting for merge (open and assigned)', merge_requests: @merge_requests.opened.assigned, id: 'ongoing')
       .col-md-3
-        = render('merge_requests', title: 'Rejected (closed)', merge_requests: @merge_requests.rejected, id: 'closed')
+        = render('merge_requests', title: 'Rejected (closed)', merge_requests: @merge_requests.closed, id: 'closed')
       .col-md-3
         .panel.panel-primary
-          .panel-heading Accepted
+          .panel-heading Merged
           %ul.well-list
             - @merge_requests.merged.each do |merge_request|
               = render 'merge_request', merge_request: merge_request

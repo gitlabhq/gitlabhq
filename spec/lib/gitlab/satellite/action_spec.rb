@@ -17,15 +17,13 @@ describe 'Gitlab::Satellite::Action' do
       starting_remote_count = repo.git.list_remotes.size
       expect(starting_remote_count).to be >= 1
       #kind of hookey way to add a second remote
-      origin_uri = repo.git.remote({v: true}).split(" ")[1]
-    begin
-      repo.git.remote({raise: true}, 'add', 'another-remote', origin_uri)
-      repo.git.branch({raise: true}, 'a-new-branch')
+      origin_uri = repo.git.remote({ v: true }).split(" ")[1]
+
+      repo.git.remote({ raise: true }, 'add', 'another-remote', origin_uri)
+      repo.git.branch({ raise: true }, 'a-new-branch')
 
       expect(repo.heads.size).to be > (starting_remote_count)
       expect(repo.git.remote().split(" ").size).to be > (starting_remote_count)
-    rescue
-    end
 
       repo.git.config({}, "user.name", "#{user.name} -- foo")
       repo.git.config({}, "user.email", "#{user.email} -- foo")
@@ -35,10 +33,10 @@ describe 'Gitlab::Satellite::Action' do
 
       #These must happen in the context of the satellite directory...
       satellite_action = Gitlab::Satellite::Action.new(user, project)
-      project.satellite.lock {
+      project.satellite.lock do
         #Now clean it up, use send to get around prepare_satellite! being protected
         satellite_action.send(:prepare_satellite!, repo)
-      }
+      end
 
       #verify it's clean
       heads = repo.heads.map(&:name)
@@ -100,16 +98,16 @@ describe 'Gitlab::Satellite::Action' do
       def flocked?(&block)
         status = flock LOCK_EX|LOCK_NB
         case status
-          when false
-            return true
-          when 0
-            begin
-              block ? block.call : false
-            ensure
-              flock LOCK_UN
-            end
-          else
-            raise SystemCallError, status
+        when false
+          return true
+        when 0
+          begin
+            block ? block.call : false
+          ensure
+            flock LOCK_UN
+          end
+        else
+          raise SystemCallError, status
         end
       end
     end

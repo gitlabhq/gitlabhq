@@ -18,7 +18,7 @@
         - elsif type_left ==  'old' || type_left.nil?
           %td.old_line{id: line_code_left, class: "#{type_left}"}
             = link_to raw(line_number_left), "##{line_code_left}", id: line_code_left
-            - if @comments_allowed && can?(current_user, :write_note, @project)
+            - if @comments_allowed && can?(current_user, :create_note, @project)
               = link_to_new_diff_note(line_code_left, 'old')
             %td.line_content{class: "parallel noteable_line #{type_left} #{line_code_left}", "line_code" => line_code_left }= raw line_content_left
 
@@ -31,7 +31,7 @@
 
           %td.new_line{id: new_line_code, class: "#{new_line_class}", data: { linenumber: line_number_right }}
             = link_to raw(line_number_right), "##{new_line_code}", id: new_line_code
-            - if @comments_allowed && can?(current_user, :write_note, @project)
+            - if @comments_allowed && can?(current_user, :create_note, @project)
               = link_to_new_diff_note(line_code_right, 'new')
             %td.line_content.parallel{class: "noteable_line #{new_line_class} #{new_line_code}", "line_code" => new_line_code}= raw line_content_right
 

@@ -211,7 +211,7 @@ module ProjectsHelper
 
   def project_last_activity(project)
     if project.last_activity_at
-      time_ago_with_tooltip(project.last_activity_at, 'bottom', 'last_activity_time_ago')
+      time_ago_with_tooltip(project.last_activity_at, placement: 'bottom', html_class: 'last_activity_time_ago')
     else
       "Never"
     end

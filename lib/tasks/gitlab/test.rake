@@ -1,5 +1,5 @@
 namespace :gitlab do
-  desc "GITLAB | Run all tests"
+  desc "GitLab | Run all tests"
   task :test do
     cmds = [
       %W(rake brakeman),

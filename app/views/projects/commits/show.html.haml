@@ -15,9 +15,8 @@
       Create Merge Request
 
   - if current_user && current_user.private_token
-    = link_to namespace_project_commits_path(@project.namespace, @project, @ref, {format: :atom, private_token: current_user.private_token}), title: "Feed", class: 'prepend-left-10 btn' do
+    = link_to namespace_project_commits_path(@project.namespace, @project, @ref, {format: :atom, private_token: current_user.private_token}), title: "Commits Feed", class: 'prepend-left-10 btn' do
       = icon("rss")
-      Commits Feed
 
 
 %ul.breadcrumb.repo-breadcrumb

@@ -1,5 +1,5 @@
 class Admin::UsersController < Admin::ApplicationController
-  before_action :user, only: [:show, :edit, :update, :destroy]
+  before_action :user, except: [:index, :new, :create]
 
   def index
     @users = User.order_name_asc.filter(params[:filter])
@@ -9,8 +9,17 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def show
+  end
+
+  def projects
     @personal_projects = user.personal_projects
     @joined_projects = user.projects.joined(@user)
+  end
+
+  def groups
+  end
+
+  def keys
     @keys = user.keys
   end
 
@@ -35,6 +44,14 @@ class Admin::UsersController < Admin::ApplicationController
       redirect_to :back, notice: "Successfully unblocked"
     else
       redirect_to :back, alert: "Error occurred. User was not unblocked"
+    end
+  end
+
+  def unlock
+    if user.unlock_access!
+      redirect_to :back, alert: "Successfully unlocked"
+    else
+      redirect_to :back, alert: "Error occurred. User was not unlocked"
     end
   end
 
@@ -86,7 +103,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def destroy
-    DeleteUserService.new.execute(user)
+    DeleteUserService.new(current_user).execute(user)
 
     respond_to do |format|
       format.html { redirect_to admin_users_path }

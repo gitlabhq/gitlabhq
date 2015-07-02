@@ -4,16 +4,15 @@ describe Gitlab::GoogleCodeImport::Importer do
   let(:mapped_user) { create(:user, username: "thilo123") }
   let(:raw_data) { JSON.parse(File.read(Rails.root.join("spec/fixtures/GoogleCodeProjectHosting.json"))) }
   let(:client) { Gitlab::GoogleCodeImport::Client.new(raw_data) }
-  let(:import_data) { 
+  let(:import_data) do
     {
-      "repo"      => client.repo("tint2").raw_data,
-      "user_map"  => {
-        "thilo..." => "@#{mapped_user.username}"
-      }
-    } 
-  }
+      'repo' => client.repo('tint2').raw_data,
+      'user_map' => { 'thilo...' => "@#{mapped_user.username}" }
+    }
+  end
   let(:project) { create(:project) }
-  subject       { described_class.new(project) }
+
+  subject { described_class.new(project) }
 
   before do
     project.create_import_data(data: import_data)
@@ -25,7 +24,7 @@ describe Gitlab::GoogleCodeImport::Importer do
       subject.execute
 
       %w(New NeedInfo Accepted Wishlist Started Fixed Invalid Duplicate WontFix Incomplete).each do |status|
-        expect(project.labels.find_by(name: "Status: #{status}")).to_not be_nil
+        expect(project.labels.find_by(name: "Status: #{status}")).not_to be_nil
       end
     end
 
@@ -39,7 +38,7 @@ describe Gitlab::GoogleCodeImport::Importer do
         Component-Systray Component-Clock Component-Launcher Component-Tint2conf Component-Docs Component-New
       ).each do |label|
         label.sub!("-", ": ")
-        expect(project.labels.find_by(name: label)).to_not be_nil
+        expect(project.labels.find_by(name: label)).not_to be_nil
       end
     end
 
@@ -47,7 +46,7 @@ describe Gitlab::GoogleCodeImport::Importer do
       subject.execute
 
       issue = project.issues.first
-      expect(issue).to_not be_nil
+      expect(issue).not_to be_nil
       expect(issue.iid).to eq(169)
       expect(issue.author).to eq(project.creator)
       expect(issue.assignee).to eq(mapped_user)
@@ -72,7 +71,7 @@ describe Gitlab::GoogleCodeImport::Importer do
       subject.execute
 
       note = project.issues.first.notes.first
-      expect(note).to_not be_nil
+      expect(note).not_to be_nil
       expect(note.note).to include("Comment 1")
       expect(note.note).to include("@#{mapped_user.username}")
       expect(note.note).to include("November 18, 2009 05:14")

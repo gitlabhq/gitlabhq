@@ -119,18 +119,18 @@ describe API::API, api: true  do
       end
 
       it "should not create group, duplicate" do
-        post api("/groups", user3), {name: 'Duplicate Test', path: group2.path}
+        post api("/groups", user3), { name: 'Duplicate Test', path: group2.path }
         expect(response.status).to eq(400)
         expect(response.message).to eq("Bad Request")
       end
 
       it "should return 400 bad request error if name not given" do
-        post api("/groups", user3), {path: group2.path}
+        post api("/groups", user3), { path: group2.path }
         expect(response.status).to eq(400)
       end
 
       it "should return 400 bad request error if path not given" do
-        post api("/groups", user3), {name: 'test'}
+        post api("/groups", user3), { name: 'test' }
         expect(response.status).to eq(400)
       end
 
@@ -184,7 +184,8 @@ describe API::API, api: true  do
   describe "POST /groups/:id/projects/:project_id" do
     let(:project) { create(:project) }
     before(:each) do
-      Projects::TransferService.any_instance.stub(execute: true)
+      allow_any_instance_of(Projects::TransferService).
+        to receive(:execute).and_return(true)
       allow(Project).to receive(:find).and_return(project)
     end
 

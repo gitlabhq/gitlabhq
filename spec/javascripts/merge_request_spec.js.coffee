@@ -1,7 +1,5 @@
 #= require merge_request
 
-window.disableButtonIfEmptyField = -> null
-
 describe 'MergeRequest', ->
   describe 'task lists', ->
     fixture.preload('merge_requests_show.html')

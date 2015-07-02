@@ -121,10 +121,10 @@ end
 
 describe Admin::EmailsController, "routing" do
   it "to #show" do
-    get("/admin/email").should route_to('admin/emails#show')
+    expect(get("/admin/email")).to route_to('admin/emails#show')
   end
 
   it "to #create" do
-    post("/admin/email").should route_to('admin/emails#create')
+    expect(post("/admin/email")).to route_to('admin/emails#create')
   end
 end

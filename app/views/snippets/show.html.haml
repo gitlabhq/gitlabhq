@@ -36,7 +36,7 @@
       = @snippet.file_name
     .file-actions
       .btn-group
-        - if can?(current_user, :modify_personal_snippet, @snippet)
+        - if can?(current_user, :update_personal_snippet, @snippet)
           = link_to "edit", edit_snippet_path(@snippet), class: "btn btn-sm", title: 'Edit Snippet'
         = link_to "raw", raw_snippet_path(@snippet), class: "btn btn-sm", target: "_blank"
       - if can?(current_user, :admin_personal_snippet, @snippet)

@@ -50,12 +50,12 @@
 #  bitbucket_access_token        :string(255)
 #  bitbucket_access_token_secret :string(255)
 #  location                      :string(255)
-#  public_email                  :string(255)      default(""), not null
 #  encrypted_otp_secret          :string(255)
 #  encrypted_otp_secret_iv       :string(255)
 #  encrypted_otp_secret_salt     :string(255)
-#  otp_required_for_login        :boolean
+#  otp_required_for_login        :boolean          default(FALSE), not null
 #  otp_backup_codes              :text
+#  public_email                  :string(255)      default(""), not null
 #  dashboard                     :integer          default(0)
 #
 
@@ -297,18 +297,44 @@ describe User do
     end
   end
 
-  describe 'filter' do
-    before do
-      User.delete_all
-      @user = create :user
-      @admin = create :user, admin: true
-      @blocked = create :user, state: :blocked
+  describe '.filter' do
+    let(:user) { double }
+
+    it 'filters by active users by default' do
+      expect(User).to receive(:active).and_return([user])
+
+      expect(User.filter(nil)).to include user
     end
 
-    it { expect(User.filter("admins")).to eq([@admin]) }
-    it { expect(User.filter("blocked")).to eq([@blocked]) }
-    it { expect(User.filter("wop")).to include(@user, @admin, @blocked) }
-    it { expect(User.filter(nil)).to include(@user, @admin) }
+    it 'filters by admins' do
+      expect(User).to receive(:admins).and_return([user])
+
+      expect(User.filter('admins')).to include user
+    end
+
+    it 'filters by blocked' do
+      expect(User).to receive(:blocked).and_return([user])
+
+      expect(User.filter('blocked')).to include user
+    end
+
+    it 'filters by two_factor_disabled' do
+      expect(User).to receive(:without_two_factor).and_return([user])
+
+      expect(User.filter('two_factor_disabled')).to include user
+    end
+
+    it 'filters by two_factor_enabled' do
+      expect(User).to receive(:with_two_factor).and_return([user])
+
+      expect(User.filter('two_factor_enabled')).to include user
+    end
+
+    it 'filters by wop' do
+      expect(User).to receive(:without_projects).and_return([user])
+
+      expect(User.filter('wop')).to include user
+    end
   end
 
   describe :not_in_project do
@@ -350,6 +376,25 @@ describe User do
         expect(user.can_create_group).to be_falsey
         expect(user.theme_id).to eq(1)
       end
+    end
+  end
+
+  describe '.find_by_any_email' do
+    it 'finds by primary email' do
+      user = create(:user, email: 'foo@example.com')
+
+      expect(User.find_by_any_email(user.email)).to eq user
+    end
+
+    it 'finds by secondary email' do
+      email = create(:email, email: 'foo@example.com')
+      user  = email.user
+
+      expect(User.find_by_any_email(email.email)).to eq user
+    end
+
+    it 'returns nil when nothing found' do
+      expect(User.find_by_any_email('')).to be_nil
     end
   end
 
@@ -422,21 +467,25 @@ describe User do
 
     it 'is false when LDAP is disabled' do
       # Create a condition which would otherwise cause 'true' to be returned
-      user.stub(ldap_user?: true)
+      allow(user).to receive(:ldap_user?).and_return(true)
       user.last_credential_check_at = nil
       expect(user.requires_ldap_check?).to be_falsey
     end
 
     context 'when LDAP is enabled' do
-      before { Gitlab.config.ldap.stub(enabled: true) }
+      before do
+        allow(Gitlab.config.ldap).to receive(:enabled).and_return(true)
+      end
 
       it 'is false for non-LDAP users' do
-        user.stub(ldap_user?: false)
+        allow(user).to receive(:ldap_user?).and_return(false)
         expect(user.requires_ldap_check?).to be_falsey
       end
 
       context 'and when the user is an LDAP user' do
-        before { user.stub(ldap_user?: true) }
+        before do
+          allow(user).to receive(:ldap_user?).and_return(true)
+        end
 
         it 'is true when the user has never had an LDAP check before' do
           user.last_credential_check_at = nil

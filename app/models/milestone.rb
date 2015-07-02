@@ -56,7 +56,7 @@ class Milestone < ActiveRecord::Base
   end
 
   def closed_items_count
-    self.issues.closed.count + self.merge_requests.closed.count
+    self.issues.closed.count + self.merge_requests.closed_and_merged.count
   end
 
   def total_items_count

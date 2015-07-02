@@ -42,7 +42,7 @@ describe AsanaService, models: true do
 
     before do
       @asana = AsanaService.new
-      @asana.stub(
+      allow(@asana).to receive_messages(
         project: project,
         project_id: project.id,
         service_hook: true,

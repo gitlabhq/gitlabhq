@@ -11,15 +11,20 @@ describe Projects::RefsController do
 
   describe 'GET #logs_tree' do
     def default_get(format = :html)
-      get :logs_tree, namespace_id: project.namespace.to_param,
-        project_id: project.to_param, id: 'master',
-        path: 'foo/bar/baz.html', format: format
+      get :logs_tree,
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param,
+          id: 'master',
+          path: 'foo/bar/baz.html',
+          format: format
     end
 
     def xhr_get(format = :html)
-      xhr :get, :logs_tree, namespace_id: project.namespace.to_param,
-        project_id: project.to_param, id: 'master',
-        path: 'foo/bar/baz.html', format: format
+      xhr :get,
+          :logs_tree,
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param, id: 'master',
+          path: 'foo/bar/baz.html', format: format
     end
 
     it 'never throws MissingTemplate' do

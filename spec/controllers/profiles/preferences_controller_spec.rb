@@ -63,7 +63,7 @@ describe Profiles::PreferencesController do
 
     context 'on invalid dashboard setting' do
       it 'sets the flash' do
-        prefs = {dashboard: 'invalid'}
+        prefs = { dashboard: 'invalid' }
 
         go params: prefs
 

@@ -127,7 +127,7 @@ module Gitlab::Markdown
       it 'gracefully handles non-references matching the pattern' do
         exp = act = '(format nil "~0f" 3.0) ; 3.0'
         expect(filter(act).to_html).to eq exp
-     end
+      end
     end
   end
 end

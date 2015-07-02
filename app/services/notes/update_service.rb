@@ -13,7 +13,7 @@ module Notes
           # Create a cross-reference note if this Note contains GFM that
           # names an issue, merge request, or commit.
           note.references.each do |mentioned|
-            Note.create_cross_reference_note(mentioned, note.noteable, note.author)
+            SystemNoteService.cross_reference(mentioned, note.noteable, note.author)
           end
         end
       end

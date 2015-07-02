@@ -3,7 +3,7 @@ require 'spec_helper'
 describe SlackService::PushMessage do
   subject { SlackService::PushMessage.new(args) }
 
-  let(:args) {
+  let(:args) do
     {
       after: 'after',
       before: 'before',
@@ -12,7 +12,7 @@ describe SlackService::PushMessage do
       user_name: 'user_name',
       project_url: 'url'
     }
-  }
+  end
 
   let(:color) { '#345' }
 
@@ -40,16 +40,16 @@ describe SlackService::PushMessage do
   end
 
   context 'tag push' do
-    let(:args) {
+    let(:args) do
       {
-          after: 'after',
-          before: Gitlab::Git::BLANK_SHA,
-          project_name: 'project_name',
-          ref: 'refs/tags/new_tag',
-          user_name: 'user_name',
-          project_url: 'url'
+        after: 'after',
+        before: Gitlab::Git::BLANK_SHA,
+        project_name: 'project_name',
+        ref: 'refs/tags/new_tag',
+        user_name: 'user_name',
+        project_url: 'url'
       }
-    }
+    end
 
     it 'returns a message regarding pushes' do
       expect(subject.pretext).to eq('user_name pushed new tag ' \

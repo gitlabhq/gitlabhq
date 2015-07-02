@@ -7,7 +7,6 @@ describe TestHookService do
   let (:project_hook){ create :project_hook, project: project }
   let (:group_hook)  { create :group_hook, group: group }
 
-
   describe :execute do
     it "should successfully execute the project hook" do
       stub_request(:post, project_hook.url).to_return(status: 200)

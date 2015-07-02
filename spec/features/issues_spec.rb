@@ -36,9 +36,7 @@ describe 'Issues', feature: true do
       end
 
       it 'does not change issue count' do
-        expect {
-          click_button 'Save changes'
-        }.to_not change { Issue.count }
+        expect { click_button 'Save changes' }.to_not change { Issue.count }
       end
 
       it 'should update issue fields' do
@@ -220,7 +218,7 @@ describe 'Issues', feature: true do
       it 'with dropdown menu' do
         visit namespace_project_issue_path(project.namespace, project, issue)
 
-        find('.edit-issue.inline-update #issue_assignee_id').
+        find('.context #issue_assignee_id').
           set project.team.members.first.id
         click_button 'Update Issue'
 
@@ -259,7 +257,7 @@ describe 'Issues', feature: true do
       it 'with dropdown menu' do
         visit namespace_project_issue_path(project.namespace, project, issue)
 
-        find('.edit-issue.inline-update').
+        find('.context').
           select(milestone.title, from: 'issue_milestone_id')
         click_button 'Update Issue'
 
@@ -295,7 +293,7 @@ describe 'Issues', feature: true do
         issue.save
       end
 
-      it 'allows user to remove assignee', :js => true do
+      it 'allows user to remove assignee', js: true do
         visit namespace_project_issue_path(project.namespace, project, issue)
         expect(page).to have_content "Assignee: #{user2.name}"
 

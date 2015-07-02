@@ -368,6 +368,9 @@ Make sure to edit the config file to match your setup:
 
     # Change YOUR_SERVER_FQDN to the fully-qualified
     # domain name of your host serving GitLab.
+    # If using Ubuntu default nginx install:
+    # either remove the default_server from the listen line
+    # or else rm -f /etc/sites-enabled/default
     sudo editor /etc/nginx/sites-available/gitlab
 
 **Note:** If you want to use HTTPS, replace the `gitlab` Nginx config with `gitlab-ssl`. See [Using HTTPS](#using-https) for HTTPS configuration details.
@@ -401,7 +404,7 @@ NOTE: Supply `SANITIZE=true` environment variable to `gitlab:check` to omit proj
 Visit YOUR_SERVER in your web browser for your first GitLab login. The setup has created a default admin account for you. You can use it to log in:
 
     root
-    5iveL!fe
+    password
 
 **Important Note:** On login you'll be prompted to change the password.
 

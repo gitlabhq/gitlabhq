@@ -19,8 +19,10 @@ describe Projects::TreeController do
     render_views
 
     before do
-      get(:show, namespace_id: project.namespace.to_param,
-          project_id: project.to_param, id: id)
+      get(:show,
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param,
+          id: id)
     end
 
     context "valid branch, no path" do
@@ -48,8 +50,10 @@ describe Projects::TreeController do
     render_views
 
     before do
-      get(:show, namespace_id: project.namespace.to_param,
-          project_id: project.to_param, id: id)
+      get(:show,
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param,
+          id: id)
     end
 
     context 'redirect to blob' do

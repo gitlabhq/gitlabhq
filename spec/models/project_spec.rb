@@ -127,7 +127,7 @@ describe Project do
 
     describe 'last_activity' do
       it 'should alias last_activity to last_event' do
-        project.stub(last_event: last_event)
+        allow(project).to receive(:last_event).and_return(last_event)
         expect(project.last_activity).to eq(last_event)
       end
     end
