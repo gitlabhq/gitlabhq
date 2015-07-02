@@ -1,6 +1,6 @@
 # Start using Git on the commandline
 
-If you want to start using a Git and GitLab, make sure that you have created an account on [gitlab.com](https://about.gitlab.com/)
+If you want to start using a Git and GitLab, make sure that you have created an account on [GitLab.com](https://about.gitlab.com/)
 
 ## Open a shell
 
