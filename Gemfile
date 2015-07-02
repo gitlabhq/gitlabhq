@@ -2,6 +2,10 @@ source "https://rubygems.org"
 
 gem 'rails', '4.1.11'
 
+# Specify a sprockets version due to security issue
+# See https://groups.google.com/forum/#!topic/rubyonrails-security/doAVp0YaTqY
+gem 'sprockets', '~> 2.12.3'
+
 # Default values for AR models
 gem "default_value_for", "~> 3.0.0"
 
@@ -181,7 +185,7 @@ gem 'mousetrap-rails'
 # Detect and convert string character encoding
 gem 'charlock_holmes'
 
-gem "sass-rails", '~> 4.0.2'
+gem "sass-rails", '~> 4.0.5'
 gem "coffee-rails"
 gem "uglifier"
 gem 'turbolinks', '~> 2.5.0'
@@ -233,6 +237,12 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.3.0'
   gem 'rubocop', '0.28.0', require: false
   gem 'spinach-rails'
+
+  # rest-client is a coveralls dependency and not used directly in GitLab, but
+  # we specify a version here to pick up some security fixes.
+  # See https://github.com/rest-client/rest-client/issues/369
+  # and http://www.osvdb.org/show/osvdb/117461
+  gem 'rest-client', '~> 1.8.0'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.3.0'

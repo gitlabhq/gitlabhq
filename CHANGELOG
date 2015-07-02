@@ -1,6 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.13.0 (unreleased)
+  - Fix external issue tracker hook/test for HTTPS URLs (Daniel Gerhardt)
+  - Remove link leading to a 404 error in Deploy Keys page (Stan Hu)
+  - Add support for unlocking users in admin settings (Stan Hu)
   - Fix order of issues imported form GitHub (Hiroyuki Sato)
   - Bump rugments to 1.0.0beta8 to fix C prototype function highlighting (Jonathon Reinhart)
   - Fix Merge Request webhook to properly fire "merge" action when accepted from the web UI
@@ -29,6 +32,8 @@ v 7.13.0 (unreleased)
   - Reporter role can manage issue tracker now: edit any issue, set assignee or milestone and manage labels
   - Better performance for pages with events list, issues list and commits list
   - Faster automerge check and merge itself when source and target branches are in same repository 
+  - Correctly show anonymous authorized applications under Profile > Applications.
+  - Query Optimization in MySQL.
 
 v 7.12.1
   - Fix error when deleting a user who has projects (Stan Hu)
@@ -44,12 +49,10 @@ v 7.12.0
   - Disable changing of target branch in new merge request page when a branch has already been specified (Stan Hu)
   - Fix post-receive errors on a push when an external issue tracker is configured (Stan Hu)
   - Update oauth button logos for Twitter and Google to recommended assets
-  - Fix hooks for web based events with external issue references (Daniel Gerhardt)
   - Update browser gem to version 0.8.0 for IE11 support (Stan Hu)
   - Fix timeout when rendering file with thousands of lines.
   - Add "Remember me" checkbox to LDAP signin form.
   - Add session expiration delay configuration through UI application settings
-  - Fix external issue tracker hook/test for HTTPS URLs (Daniel Gerhardt)
   - Don't notify users mentioned in code blocks or blockquotes.
   - Omit link to generate labels if user does not have access to create them (Stan Hu)
   - Show warning when a comment will add 10 or more people to the discussion.

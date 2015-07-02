@@ -47,6 +47,14 @@ class Admin::UsersController < Admin::ApplicationController
     end
   end
 
+  def unlock
+    if user.unlock_access!
+      redirect_to :back, alert: "Successfully unlocked"
+    else
+      redirect_to :back, alert: "Error occurred. User was not unlocked"
+    end
+  end
+
   def create
     opts = {
       force_random_password: true,
