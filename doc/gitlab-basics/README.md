@@ -11,3 +11,5 @@ Step-by-step guides on the basics of working with Git and GitLab.
 * [Basic Git commands](basic-git-commands.md)
 
 * [Create a project](create-project.md)
+
+* [Create a group](create-group.md)
