@@ -78,7 +78,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should see project "Shop" README link' do
-    within '.project-side' do
+    page.within '.project-side' do
       expect(page).to have_content "README.md"
     end
   end
@@ -134,7 +134,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
     user = User.find_by(name: "Pete")
     project_member = @project.project_members.find_by(user_id: user)
 
-    within "#project_member_#{project_member.id}" do
+    page.within "#project_member_#{project_member.id}" do
       click_button "Edit access level"
       select "Master", from: "project_member_access_level"
       click_button "Save"
@@ -148,7 +148,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should see the audit event listed' do
-    within ('table#audits') do
+    page.within('table#audits') do
       expect(page).to have_content "Change access level from developer to master"
       expect(page).to have_content(project.owner.name)
       expect(page).to have_content('Pete')

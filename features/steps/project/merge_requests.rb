@@ -347,19 +347,19 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "Approve"' do
-    within '.mr-state-widget' do
+    page.within '.mr-state-widget' do
       click_button 'Approve Merge Request'
     end
   end
 
   step 'I should not see merge button' do
-    within '.mr-state-widget' do
+    page.within '.mr-state-widget' do
       expect(page).not_to have_button("Accept Merge Request")
     end
   end
 
   step 'I should see approved merge request "Bug NS-04"' do
-    within '.mr-state-widget' do
+    page.within '.mr-state-widget' do
       expect(page).to have_button("Accept Merge Request")
     end
   end

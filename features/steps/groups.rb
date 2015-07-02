@@ -104,9 +104,9 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     user = User.find_by(name: "Mary Jane")
     member = Group.find_by(name: "Owned").members.where(user_id: user.id).first
 
-    within "#group_member_#{member.id}" do
+    page.within "#group_member_#{member.id}" do
       find(".js-toggle-button").click
-      within "#edit_group_member_#{member.id}" do
+      page.within "#edit_group_member_#{member.id}" do
         select 'Developer', from: 'group_member_access_level'
         click_on 'Save'
       end
@@ -118,7 +118,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I should see the audit event listed' do
-    within ('table#audits') do
+    page.within('table#audits') do
       expect(page).to have_content 'Add user access as reporter'
       expect(page).to have_content 'Change access level from reporter to developer'
       expect(page).to have_content 'Remove user access'
@@ -147,7 +147,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   And 'I change group name' do
-    within '#tab-edit' do
+    page.within '#tab-edit' do
       fill_in 'group_name', with: 'new-name'
       click_button "Save group"
     end
@@ -345,7 +345,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I add a new LDAP synchronization' do
-    within('form#new_ldap_group_link') do
+    page.within('form#new_ldap_group_link') do
       find('#ldap_group_link_cn', visible: false).set('my-group-cn')
       # fill_in('LDAP Group cn', with: 'my-group-cn', visible: false)
       select 'Developer', from: "ldap_group_link_group_access"
