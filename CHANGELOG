@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.13.0 (unreleased)
   - Fix external issue tracker hook/test for HTTPS URLs (Daniel Gerhardt)
+  - Remove link leading to a 404 error in Deploy Keys page (Stan Hu)
   - Fix order of issues imported form GitHub (Hiroyuki Sato)
   - Bump rugments to 1.0.0beta8 to fix C prototype function highlighting (Jonathon Reinhart)
   - Fix Merge Request webhook to properly fire "merge" action when accepted from the web UI
