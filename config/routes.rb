@@ -158,6 +158,7 @@ Gitlab::Application.routes.draw do
         put :team_update
         put :block
         put :unblock
+        put :unlock
         delete 'remove/:email_id', action: 'remove_email', as: 'remove_email'
       end
     end

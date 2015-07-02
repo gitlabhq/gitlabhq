@@ -131,6 +131,14 @@
               %li Owned groups will be left
             %br
             = link_to 'Block user', block_admin_user_path(@user), data: { confirm: 'USER WILL BE BLOCKED! Are you sure?' }, method: :put, class: "btn btn-warning"
+      - if @user.access_locked?
+        .panel.panel-info
+          .panel-heading
+            This account has been locked
+          .panel-body
+            %p This user has been temporarily locked due to excessive number of failed logins. You may manually unlock the account.
+            %br
+            = link_to 'Unlock user', unlock_admin_user_path(@user), method: :put, class: "btn btn-info", data: { confirm: 'Are you sure?' }
 
       .panel.panel-danger
         .panel-heading
