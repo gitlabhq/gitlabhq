@@ -11,7 +11,8 @@ class ProfilesController < Profiles::ApplicationController
   def applications
     @applications = current_user.oauth_applications
     @authorized_tokens = current_user.oauth_authorized_tokens
-    @authorized_apps = @authorized_tokens.map(&:application).uniq
+    @authorized_anonymous_tokens = @authorized_tokens.reject(&:application)
+    @authorized_apps = @authorized_tokens.map(&:application).uniq - [nil]
   end
 
   def update
