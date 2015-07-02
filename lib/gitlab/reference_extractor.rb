@@ -20,7 +20,7 @@ module Gitlab
     end
 
     def issues
-      if project.jira_tracker?
+      if project && project.jira_tracker?
         references[:external_issue]
       else
         references[:issue]
