@@ -56,5 +56,14 @@
             %td= token.created_at
             %td= token.scopes
             %td= render 'doorkeeper/authorized_applications/delete_form', application: app
+        - @authorized_anonymous_tokens.each do |token|
+          %tr
+            %td
+              Anonymous
+              %div.help-block
+                %em Authorization was granted by entering your username and password in the application.
+            %td= token.created_at
+            %td= token.scopes
+            %td= render 'doorkeeper/authorized_applications/delete_form', token: token
   - else
     %p.light You dont have any authorized applications
