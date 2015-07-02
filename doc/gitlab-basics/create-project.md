@@ -6,7 +6,7 @@
 
 * Go to your Dashboard and click on "new project" on the right side of your screen
 
-![Create a project](simple_guide_images/new_project.png)
+![Create a project](basicsimages/new_project.png)
 
 * Fill out the required information
 
@@ -20,4 +20,4 @@
 
 1. Click on "create project"
 
-!![Project information](simple_guide_images/project_info.png)
+!![Project information](basicsimages/project_info.png)
