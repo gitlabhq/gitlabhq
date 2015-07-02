@@ -6,7 +6,7 @@ You need to connect your computer to your GitLab account through SSH Keys. They 
 
 * Create an account on GitLab. Sign up and check your email for your confirmation link
 
-* After you confirm, go to [gitlab.com](https://about.gitlab.com/) and sign in to your account
+* After you confirm, go to [GitLab.com](https://about.gitlab.com/) and sign in to your account
 
 ## Add your SSH Key
 
@@ -28,7 +28,7 @@ You need to connect your computer to your GitLab account through SSH Keys. They 
 
 ## To generate an SSH Key on your commandline
 
-* Go to your [commandline](start-using-git.md) and follow the [instructions](https://gitlab.com/help/ssh/README) to generate it 
+* Go to your [commandline](start-using-git.md) and follow the [instructions](https://gitlab.com/help/ssh/README) to generate it
 
 * Copy the SSH Key that your commandline created and paste it on the "Key" box on the GitLab page. The title will be added automatically
 

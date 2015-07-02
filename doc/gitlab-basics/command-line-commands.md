@@ -2,7 +2,7 @@
 
 ## Start working on your project
 
-* In Git, when you copy a project you say you "clone" it. To work on a git project locally (from your own computer), you will need to clone it. To do this, start by signing in at GitLab.com.. To do it, go to your [gitlab.com](https://gitlab.com) account
+* In Git, when you copy a project you say you "clone" it. To work on a git project locally (from your own computer), you will need to clone it. To do this, start by signing in at GitLab.com.. To do it, go to your [GitLab.com](https://gitlab.com) account
 
 * When you are on your Dashboard, click on the project that you'd like to clone, which you'll find at the right side of your screen
 
