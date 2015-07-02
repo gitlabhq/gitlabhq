@@ -109,13 +109,17 @@ describe 'Gitlab::Satellite::MergeAction' do
         merge_request.stub(:should_rebase).and_return(true)
       end
 
-      it { Gitlab::Satellite::MergeAction.new(
-        merge_request_fork.author,
-        merge_request_fork).merge!.should be_truthy }
+      it do
+        Gitlab::Satellite::MergeAction.new(
+          merge_request_fork.author,
+          merge_request_fork).merge!.should be_truthy
+      end
 
-      it { Gitlab::Satellite::MergeAction.new(
-        merge_request_fork_with_conflict.author,
-        merge_request_fork_with_conflict).merge!.should be_falsey }
+      it do
+        Gitlab::Satellite::MergeAction.new(
+          merge_request_fork_with_conflict.author,
+          merge_request_fork_with_conflict).merge!.should be_falsey
+      end
     end
 
     context 'between branches' do
@@ -123,14 +127,17 @@ describe 'Gitlab::Satellite::MergeAction' do
         merge_request.stub(:should_rebase).and_return(true)
       end
 
-      it { Gitlab::Satellite::MergeAction.new(
-        merge_request.author,
-        merge_request).merge!.should be_truthy }
+      it do
+        Gitlab::Satellite::MergeAction.new(
+          merge_request.author,
+          merge_request).merge!.should be_truthy
+      end
 
-      it { Gitlab::Satellite::MergeAction.new(
-        merge_request_with_conflict.author,
-        merge_request_with_conflict).merge!.should be_falsey }
+      it do
+        Gitlab::Satellite::MergeAction.new(
+          merge_request_with_conflict.author,
+          merge_request_with_conflict).merge!.should be_falsey
+      end
     end
   end
 end
-

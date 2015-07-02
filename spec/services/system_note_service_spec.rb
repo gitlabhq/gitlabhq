@@ -411,8 +411,7 @@ describe SystemNoteService do
 
       describe "new reference" do
         before do
-          WebMock.stub_request(:get, jira_api_comment_url).
-            to_return(:body => jira_issue_comments)
+          WebMock.stub_request(:get, jira_api_comment_url).to_return(body: jira_issue_comments)
         end
 
         subject { Note.create_cross_reference_note(jira_issue, commit, author) }
@@ -423,8 +422,7 @@ describe SystemNoteService do
       describe "existing reference" do
         before do
           message = "[#{author.name}|http://localhost/u/#{author.username}] mentioned this issue in [a commit of #{project.path_with_namespace}|http://localhost/#{project.path_with_namespace}/commit/#{commit.id}]."
-          WebMock.stub_request(:get, jira_api_comment_url).
-            to_return(:body => "{\"comments\":[{\"body\":\"#{message}\"}]}")
+          WebMock.stub_request(:get, jira_api_comment_url).to_return(body: "{\"comments\":[{\"body\":\"#{message}\"}]}")
         end
 
         subject { Note.create_cross_reference_note(jira_issue, commit, author) }
@@ -437,8 +435,7 @@ describe SystemNoteService do
         before do
           jira_service_settings
           WebMock.stub_request(:post, jira_api_comment_url)
-          WebMock.stub_request(:get, jira_api_comment_url).
-            to_return(:body => jira_issue_comments)
+          WebMock.stub_request(:get, jira_api_comment_url).to_return(body: jira_issue_comments)
         end
 
         after do

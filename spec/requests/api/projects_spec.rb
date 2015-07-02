@@ -638,10 +638,9 @@ describe API::API, api: true  do
     let(:group) { create(:group) }
 
     it "should share project with group" do
-      expect {
-        post api("/projects/#{project.id}/share", user), group_id: group.id,
-          group_access: Gitlab::Access::DEVELOPER
-      }.to change { ProjectGroupLink.count }.by(1)
+      expect do
+        post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: Gitlab::Access::DEVELOPER
+      end.to change { ProjectGroupLink.count }.by(1)
 
       response.status.should == 201
       json_response['group_id'].should == group.id

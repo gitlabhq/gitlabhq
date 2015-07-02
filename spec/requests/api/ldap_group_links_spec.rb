@@ -29,10 +29,10 @@ describe API::API, api: true  do
 
     context "when a less priviledged user" do
       it "should not allow less priviledged user to add LDAP group link" do
-        expect {
+        expect do
           post api("/groups/#{group_with_ldap_links.id}/ldap_group_links", user),
           cn: 'ldap-group4', group_access: GroupMember::GUEST
-        }.not_to change { group_with_ldap_links.ldap_group_links.count }
+        end.not_to change { group_with_ldap_links.ldap_group_links.count }
 
         expect(response.status).to eq(403)
       end
@@ -40,10 +40,10 @@ describe API::API, api: true  do
 
     context "when owner of the group" do
       it "should return ok and add ldap group link" do
-        expect {
+        expect do
           post api("/groups/#{group_with_ldap_links.id}/ldap_group_links", owner),
           cn: 'ldap-group3', group_access: GroupMember::GUEST, provider: 'ldap3'
-        }.to change { group_with_ldap_links.ldap_group_links.count }.by(1)
+        end.to change { group_with_ldap_links.ldap_group_links.count }.by(1)
 
         expect(response.status).to eq(201)
         expect(json_response['cn']).to eq('ldap-group3')
@@ -52,10 +52,10 @@ describe API::API, api: true  do
       end
 
       it "should return ok and add ldap group link even if no provider specified" do
-        expect {
+        expect do
           post api("/groups/#{group_with_ldap_links.id}/ldap_group_links", owner),
           cn: 'ldap-group3', group_access: GroupMember::GUEST
-        }.to change { group_with_ldap_links.ldap_group_links.count }.by(1)
+        end.to change { group_with_ldap_links.ldap_group_links.count }.by(1)
 
         expect(response.status).to eq(201)
         expect(json_response['cn']).to eq('ldap-group3')
@@ -95,9 +95,9 @@ describe API::API, api: true  do
 
     context "when a less priviledged user" do
       it "should not remove the LDAP group link" do
-        expect {
+        expect do
           delete api("/groups/#{group_with_ldap_links.id}/ldap_group_links/ldap-group1", user)
-        }.not_to change { group_with_ldap_links.ldap_group_links.count }
+        end.not_to change { group_with_ldap_links.ldap_group_links.count }
 
         expect(response.status).to eq(403)
       end
@@ -105,17 +105,17 @@ describe API::API, api: true  do
 
     context "when owner of the group" do
       it "should remove ldap group link" do
-        expect {
+        expect do
           delete api("/groups/#{group_with_ldap_links.id}/ldap_group_links/ldap-group1", owner)
-        }.to change { group_with_ldap_links.ldap_group_links.count }.by(-1)
+        end.to change { group_with_ldap_links.ldap_group_links.count }.by(-1)
 
         expect(response.status).to eq(200)
       end
 
       it "should return 404 if LDAP group cn not used for a LDAP group link" do
-        expect {
+        expect do
           delete api("/groups/#{group_with_ldap_links.id}/ldap_group_links/ldap-group1356", owner)
-        }.not_to change { group_with_ldap_links.ldap_group_links.count }
+        end.not_to change { group_with_ldap_links.ldap_group_links.count }
 
         expect(response.status).to eq(404)
       end
@@ -132,9 +132,9 @@ describe API::API, api: true  do
 
     context "when a less priviledged user" do
       it "should not remove the LDAP group link" do
-        expect {
+        expect do
           delete api("/groups/#{group_with_ldap_links.id}/ldap_group_links/ldap2/ldap-group2", user)
-        }.not_to change { group_with_ldap_links.ldap_group_links.count }
+        end.not_to change { group_with_ldap_links.ldap_group_links.count }
 
         expect(response.status).to eq(403)
       end
@@ -142,17 +142,17 @@ describe API::API, api: true  do
 
     context "when owner of the group" do
       it "should return 404 if LDAP group cn not used for a LDAP group link for the specified provider" do
-        expect {
+        expect do
           delete api("/groups/#{group_with_ldap_links.id}/ldap_group_links/ldap1/ldap-group2", owner)
-        }.not_to change { group_with_ldap_links.ldap_group_links.count }
+        end.not_to change { group_with_ldap_links.ldap_group_links.count }
 
         expect(response.status).to eq(404)
       end
-      
+
       it "should remove ldap group link" do
-        expect {
+        expect do
           delete api("/groups/#{group_with_ldap_links.id}/ldap_group_links/ldap2/ldap-group2", owner)
-        }.to change { group_with_ldap_links.ldap_group_links.count }.by(-1)
+        end.to change { group_with_ldap_links.ldap_group_links.count }.by(-1)
 
         expect(response.status).to eq(200)
       end

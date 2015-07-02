@@ -262,8 +262,7 @@ describe GitPushService do
 
         WebMock.stub_request(:post, jira_api_transition_url)
         WebMock.stub_request(:post, jira_api_comment_url)
-        WebMock.stub_request(:get, jira_api_comment_url).
-            to_return(:body => jira_issue_comments)
+        WebMock.stub_request(:get, jira_api_comment_url).to_return(body: jira_issue_comments)
         WebMock.stub_request(:get, jira_api_project_url)
 
         closing_commit.stub({
@@ -281,7 +280,7 @@ describe GitPushService do
       end
 
       it "should initiate one api call to jira server to close the issue" do
-         message = {
+        message = {
           update: {
             comment: [{
               add: {

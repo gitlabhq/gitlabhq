@@ -120,8 +120,9 @@ describe Gitlab::LDAP::Access do
   describe :update_ssh_keys do
     let(:ssh_key) { "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCrSQHff6a1rMqBdHFt+FwIbytMZ+hJKN3KLkTtOWtSvNIriGhnTdn4rs+tjD/w+z+revytyWnMDM9dS7J8vQi006B16+hc9Xf82crqRoPRDnBytgAFFQY1G/55ql2zdfsC5yvpDOFzuwIJq5dNGsojS82t6HNmmKPq130fzsenFnj5v1pl3OJvk513oduUyKiZBGTroWTn7H/eOPtu7s9MD7pAdEjqYKFLeaKmyidiLmLqQlCRj3Tl2U9oyFg4PYNc0bL5FZJ/Z6t0Ds3i/a2RanQiKxrvgu3GSnUKMx7WIX373baL4jeM7cprRGiOY/1NcS+1cAjfJ8oaxQF/1dYj" }
     let(:ssh_key_attribute_name) { 'altSecurityIdentities' }
-    let(:entry) {
-      Net::LDAP::Entry.from_single_ldif_string("dn: cn=foo, dc=bar, dc=com\n#{ssh_key_attribute_name}: SSHKey:#{ssh_key}\n#{ssh_key_attribute_name}: KerberosKey:bogus") }
+    let(:entry) do
+      Net::LDAP::Entry.from_single_ldif_string("dn: cn=foo, dc=bar, dc=com\n#{ssh_key_attribute_name}: SSHKey:#{ssh_key}\n#{ssh_key_attribute_name}: KerberosKey:bogus")
+    end
 
     before do
       Gitlab::LDAP::Config.any_instance.stub(sync_ssh_keys: ssh_key_attribute_name)
@@ -289,8 +290,7 @@ objectclass: posixGroup
     context "existing access as master for group-1, not allowed" do
       before do
         gitlab_group_1.group_members.masters.create(user_id: user.id)
-        gitlab_group_1.ldap_group_links.create({
-          cn: 'ldap-group1', group_access: Gitlab::Access::MASTER, provider: 'ldapmain'})
+        gitlab_group_1.ldap_group_links.create(cn: 'ldap-group1', group_access: Gitlab::Access::MASTER, provider: 'ldapmain')
         access.stub(cns_with_access: ['ldap-group2'])
       end
 
@@ -303,8 +303,7 @@ objectclass: posixGroup
     context "existing access as owner for group-1 with no other owner, not allowed" do
       before do
         gitlab_group_1.group_members.owners.create(user_id: user.id)
-        gitlab_group_1.ldap_group_links.create({
-          cn: 'ldap-group1', group_access: Gitlab::Access::OWNER, provider: 'ldapmain'})
+        gitlab_group_1.ldap_group_links.create(cn: 'ldap-group1', group_access: Gitlab::Access::OWNER, provider: 'ldapmain')
         access.stub(cns_with_access: ['ldap-group2'])
       end
 
@@ -317,9 +316,8 @@ objectclass: posixGroup
     context "existing access as owner for group-1 while other owners present, not allowed" do
       before do
         owner2 = create(:user) # a 2nd owner
-        gitlab_group_1.group_members.owners.create([ {user_id: user.id}, {user_id: owner2.id} ] )
-        gitlab_group_1.ldap_group_links.create({
-          cn: 'ldap-group1', group_access: Gitlab::Access::OWNER, provider: 'ldapmain'})
+        gitlab_group_1.group_members.owners.create([{ user_id: user.id }, { user_id: owner2.id }])
+        gitlab_group_1.ldap_group_links.create(cn: 'ldap-group1', group_access: Gitlab::Access::OWNER, provider: 'ldapmain')
         access.stub(cns_with_access: ['ldap-group2'])
       end
 
