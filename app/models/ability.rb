@@ -28,10 +28,10 @@ class Ability
 
     def license_blocked_abilities
       [
+        :create_issue,
+        :create_merge_request,
         :push_code,
-        :push_code_to_protected_branches,
-        :write_issue,
-        :write_merge_request
+        :push_code_to_protected_branches
       ]
     end
 
