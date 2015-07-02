@@ -167,24 +167,24 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see a discussion has started on diff' do
     page.within(".notes .discussion") do
-      page.should have_content "#{current_user.name} started a discussion"
-      page.should have_content sample_commit.line_code_path
-      page.should have_content "Line is wrong"
+      expect(page).to have_content "#{current_user.name} started a discussion"
+      expect(page).to have_content sample_commit.line_code_path
+      expect(page).to have_content "Line is wrong"
     end
   end
 
   step 'I should see a discussion has started on commit diff' do
     page.within(".notes .discussion") do
-      page.should have_content "#{current_user.name} started a discussion on commit"
-      page.should have_content sample_commit.line_code_path
-      page.should have_content "Line is wrong"
+      expect(page).to have_content "#{current_user.name} started a discussion on commit"
+      expect(page).to have_content sample_commit.line_code_path
+      expect(page).to have_content "Line is wrong"
     end
   end
 
   step 'I should see a discussion has started on commit' do
     page.within(".notes .discussion") do
-      page.should have_content "#{current_user.name} started a discussion on commit"
-      page.should have_content "One comment to rule them all"
+      expect(page).to have_content "#{current_user.name} started a discussion on commit"
+      expect(page).to have_content "One comment to rule them all"
     end
   end
 
@@ -203,9 +203,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I accept this merge request' do
-    Gitlab::Satellite::MergeAction.any_instance.stub(
-      merge!: true,
-    )
+    allow_any_instance_of(Gitlab::Satellite::MergeAction).to receive(:merge!).and_return(true)
 
     page.within '.mr-state-widget' do
       click_button "Accept Merge Request"
@@ -299,7 +297,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see description field pre-filled' do
-    find_field('merge_request_description').value.should == 'This merge request should contain the following.'
+    expect(find_field('merge_request_description').value).to eq 'This merge request should contain the following.'
   end
 
   step 'I unfold diff' do
@@ -356,13 +354,13 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should not see merge button' do
     within '.mr-state-widget' do
-      page.should_not have_button("Accept Merge Request")
+      expect(page).not_to have_button("Accept Merge Request")
     end
   end
 
   step 'I should see approved merge request "Bug NS-04"' do
     within '.mr-state-widget' do
-      page.should have_button("Accept Merge Request")
+      expect(page).to have_button("Accept Merge Request")
     end
   end
 

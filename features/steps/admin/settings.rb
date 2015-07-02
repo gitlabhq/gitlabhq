@@ -22,7 +22,7 @@ class Spinach::Features::AdminSettings < Spinach::FeatureSteps
   end
 
   step 'I should see the help text' do
-    page.should have_content help_text
+    expect(page).to have_content help_text
   end
 
   step 'I go to help page' do

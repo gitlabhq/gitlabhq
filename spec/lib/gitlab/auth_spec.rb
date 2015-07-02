@@ -36,12 +36,14 @@ describe Gitlab::Auth do
     end
 
     context "with kerberos" do
-      before { Devise.stub(omniauth_providers: [:kerberos]) }
+      before do
+        allow(Devise).to receive_messages(omniauth_providers: [:kerberos])
+      end
 
       it "finds user" do
-        Gitlab::Kerberos::Authentication.stub(valid?: true)
-        Gitlab::Kerberos::Authentication.stub(email: user.email)
-        
+        allow(Gitlab::Kerberos::Authentication).to receive_messages(valid?: true)
+        allow(Gitlab::Kerberos::Authentication).to receive_messages(email: user.email)
+
         expect( gl_auth.find(username, password) ).to eql user
       end
     end

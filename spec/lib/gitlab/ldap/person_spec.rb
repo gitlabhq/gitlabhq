@@ -13,7 +13,7 @@ describe Gitlab::LDAP::Person do
     subject { Gitlab::LDAP::Person.new(entry, 'ldapmain') }
 
     before do
-      Gitlab::LDAP::Config.any_instance.stub(sync_ssh_keys: ssh_key_attribute_name)
+      allow_any_instance_of(Gitlab::LDAP::Config).to receive_messages(sync_ssh_keys: ssh_key_attribute_name)
     end
 
     context "when the SSH key is literal" do

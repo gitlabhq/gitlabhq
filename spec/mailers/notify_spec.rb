@@ -808,8 +808,8 @@ describe Notify do
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
-      sender.display_name.should eq("GitLab")
-      sender.address.should eq(gitlab_sender)
+      expect(sender.display_name).to eq("GitLab")
+      expect(sender.address).to eq(gitlab_sender)
     end
 
     it 'is sent to recipient' do

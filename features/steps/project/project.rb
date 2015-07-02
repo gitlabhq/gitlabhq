@@ -15,7 +15,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
 
   step 'I should see project with new settings' do
     expect(find_field('project_name').value).to eq 'NewName'
-    expect(find('#project_issues_enabled')).to_not be_checked
+    expect(find('#project_issues_enabled')).not_to be_checked
     expect(find('#project_merge_requests_enabled')).to be_checked
   end
 
@@ -74,12 +74,12 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should see project with merge request template saved' do
-    find_field('project_merge_requests_template').value.should == 'This merge request should contain the following.'
+    expect(find_field('project_merge_requests_template').value).to eq 'This merge request should contain the following.'
   end
 
   step 'I should see project "Shop" README link' do
     within '.project-side' do
-      page.should have_content "README.md"
+      expect(page).to have_content "README.md"
     end
   end
 
@@ -149,9 +149,9 @@ class Spinach::Features::Project < Spinach::FeatureSteps
 
   step 'I should see the audit event listed' do
     within ('table#audits') do
-      page.should have_content "Change access level from developer to master"
-      page.should have_content(project.owner.name)
-      page.should have_content('Pete')
+      expect(page).to have_content "Change access level from developer to master"
+      expect(page).to have_content(project.owner.name)
+      expect(page).to have_content('Pete')
     end
   end
 

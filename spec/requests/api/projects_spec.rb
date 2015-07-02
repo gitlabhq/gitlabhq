@@ -642,25 +642,25 @@ describe API::API, api: true  do
         post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: Gitlab::Access::DEVELOPER
       end.to change { ProjectGroupLink.count }.by(1)
 
-      response.status.should == 201
-      json_response['group_id'].should == group.id
-      json_response['group_access'].should == Gitlab::Access::DEVELOPER
+      expect(response.status).to eq 201
+      expect(json_response['group_id']).to eq group.id
+      expect(json_response['group_access']).to eq Gitlab::Access::DEVELOPER
     end
 
     it "should return a 400 error when group id is not given" do
       post api("/projects/#{project.id}/share", user), group_access: Gitlab::Access::DEVELOPER
-      response.status.should == 400
+      expect(response.status).to eq 400
     end
 
     it "should return a 400 error when access level is not given" do
       post api("/projects/#{project.id}/share", user), group_id: group.id
-      response.status.should == 400
+      expect(response.status).to eq 400
     end
 
     it "should return a 409 error when wrong params passed" do
       post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: 1234
-      response.status.should == 409
-      json_response['message'].should == 'Group access is not included in the list'
+      expect(response.status).to eq 409
+      expect(json_response['message']).to eq 'Group access is not included in the list'
     end
   end
 

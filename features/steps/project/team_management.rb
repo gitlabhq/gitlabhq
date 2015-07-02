@@ -142,8 +142,8 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   step 'I should see "Opensource" group user listing' do
-    page.should have_content("Shared with OpenSource group, members with Master role (2)")
-    page.should have_content(@os_user1.name)
-    page.should have_content(@os_user2.name)
+    expect(page).to have_content("Shared with OpenSource group, members with Master role (2)")
+    expect(page).to have_content(@os_user1.name)
+    expect(page).to have_content(@os_user2.name)
   end
 end

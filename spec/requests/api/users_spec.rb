@@ -44,10 +44,10 @@ describe API::API, api: true  do
         User.delete_all
         create :omniauth_user, provider: "ldapserver1"
         get api("/users", user), skip_ldap: "true"
-        response.status.should == 200
-        json_response.should be_an Array
+        expect(response.status).to eq 200
+        expect(json_response).to be_an Array
         username = user.username
-        json_response.first["username"].should == username
+        expect(json_response.first["username"]).to eq username
       end
     end
   end

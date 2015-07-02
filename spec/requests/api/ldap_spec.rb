@@ -10,26 +10,24 @@ describe API::API do
       OpenStruct.new(cn: 'students')
     ]
 
-    Gitlab::LDAP::Adapter.any_instance.stub(
-      groups: groups
-    )
+    allow_any_instance_of(Gitlab::LDAP::Adapter).to receive_messages(groups: groups)
   end
 
   describe "GET /ldap/groups" do
     context "when unauthenticated" do
       it "should return authentication error" do
         get api("/ldap/groups")
-        response.status.should == 401
+        expect(response.status).to eq 401
       end
     end
 
     context "when authenticated as user" do
       it "should return an array of ldap groups" do
         get api("/ldap/groups", user)
-        response.status.should == 200
-        json_response.should be_an Array
-        json_response.length.should == 2
-        json_response.first['cn'].should == 'developers'
+        expect(response.status).to eq 200
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq 2
+        expect(json_response.first['cn']).to eq 'developers'
       end
     end
   end
@@ -38,17 +36,17 @@ describe API::API do
     context "when unauthenticated" do
       it "should return authentication error" do
         get api("/ldap/ldapmain/groups")
-        response.status.should == 401
+        expect(response.status).to eq 401
       end
     end
 
     context "when authenticated as user" do
       it "should return an array of ldap groups" do
         get api("/ldap/ldapmain/groups", user)
-        response.status.should == 200
-        json_response.should be_an Array
-        json_response.length.should == 2
-        json_response.first['cn'].should == 'developers'
+        expect(response.status).to eq 200
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq 2
+        expect(json_response.first['cn']).to eq 'developers'
       end
     end
   end

@@ -18,10 +18,10 @@ class Spinach::Features::AuditEvent < Spinach::FeatureSteps
   end
 
   step 'I see remove deploy key event' do
-    page.should have_content("Remove deploy key")
+    expect(page).to have_content("Remove deploy key")
   end
 
   step 'I see deploy key event' do
-    page.should have_content("Add deploy key")
+    expect(page).to have_content("Add deploy key")
   end
 end

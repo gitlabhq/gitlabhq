@@ -7,8 +7,8 @@ describe Mentionable do
     let(:project) { create(:project) }
 
     it 'excludes JIRA references' do
-      project.stub(jira_tracker?: true)
-      references(project, 'JIRA-123').should be_empty
+      allow(project).to receive_messages(jira_tracker?: true)
+      expect(references(project, 'JIRA-123')).to be_empty
     end
   end
 end

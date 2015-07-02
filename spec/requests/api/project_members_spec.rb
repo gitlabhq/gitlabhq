@@ -98,7 +98,7 @@ describe API::API, api: true  do
       end
 
       it 'should return a 405 method not allowed error when group membership lock is enabled' do
-        response.status.should == 405
+        expect(response.status).to eq 405
       end
     end
   end
@@ -143,7 +143,7 @@ describe API::API, api: true  do
       delete api("/projects/#{project.id}/members/#{user3.id}", user)
       expect do
         delete api("/projects/#{project.id}/members/#{user3.id}", user)
-      end.to_not change { ProjectMember.count }
+      end.not_to change { ProjectMember.count }
     end
 
     it "should return 200 if team member already removed" do

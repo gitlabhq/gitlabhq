@@ -185,8 +185,8 @@ describe User do
       create :omniauth_user, provider: "gitlub"
 
       users = User.non_ldap
-      users.count.should == 2
-      users.detect{ |user| user.username == ldap_user.username }.should be_nil
+      expect(users.count).to eq 2
+      expect(users.detect { |user| user.username == ldap_user.username }).to be_nil
     end
   end
 

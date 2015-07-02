@@ -142,9 +142,9 @@ describe MergeRequest do
       let(:issue1) { JiraIssue.new('FOOBAR-4567', subject.project) }
 
       it 'returns sorted JiraIssues' do
-        subject.project.stub(default_branch: subject.target_branch)
+        allow(subject.project).to receive_messages(default_branch: subject.target_branch)
 
-        subject.closes_issues.should eq([issue1, issue0])
+        expect(subject.closes_issues).to eq([issue1, issue0])
       end
     end
   end

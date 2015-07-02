@@ -68,8 +68,8 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
   end
 
   step 'I should see project shared with group' do
-    page.should have_content(shared_project.name_with_namespace)
-    page.should have_content "Projects shared with"
+    expect(page).to have_content(shared_project.name_with_namespace)
+    expect(page).to have_content "Projects shared with"
   end
 
   step 'we have user "John Doe" in group' do

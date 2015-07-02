@@ -7,16 +7,16 @@ describe MergeRequestsHelper do
   let(:last_commit) { Commit.new({}, project) }
 
   before do
-    merge_request.stub(:source_project) { project }
-    merge_request.stub(:last_commit) { last_commit }
-    project.stub(:ci_service) { ci_service }
-    last_commit.stub(:sha) { '12d65c' }
+    allow(merge_request).to receive(:source_project) { project }
+    allow(merge_request).to receive(:last_commit) { last_commit }
+    allow(project).to receive(:ci_service) { ci_service }
+    allow(last_commit).to receive(:sha) { '12d65c' }
   end
 
   describe 'ci_build_details_path' do
     it 'does not include api credentials in a link' do
-      ci_service.stub(:build_page) { "http://secretuser:secretpass@jenkins.example.com:8888/job/test1/scm/bySHA1/12d65c" }
-      expect(ci_build_details_path(merge_request)).to_not match("secret")
+      allow(ci_service).to receive(:build_page) { "http://secretuser:secretpass@jenkins.example.com:8888/job/test1/scm/bySHA1/12d65c" }
+      expect(ci_build_details_path(merge_request)).not_to match("secret")
     end
   end
 

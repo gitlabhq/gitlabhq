@@ -119,11 +119,11 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   step 'I should see the audit event listed' do
     within ('table#audits') do
-      page.should have_content 'Add user access as reporter'
-      page.should have_content 'Change access level from reporter to developer'
-      page.should have_content 'Remove user access'
-      page.should have_content('John Doe', count: 3)
-      page.should have_content('Mary Jane', count: 3)
+      expect(page).to have_content 'Add user access as reporter'
+      expect(page).to have_content 'Change access level from reporter to developer'
+      expect(page).to have_content 'Remove user access'
+      expect(page).to have_content('John Doe', count: 3)
+      expect(page).to have_content('Mary Jane', count: 3)
     end
   end
 
@@ -143,7 +143,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   Then 'I should be redirected to group page' do
-    current_path.should == group_path(Group.last)
+    expect(current_path).to eq group_path(Group.last)
   end
 
   And 'I change group name' do

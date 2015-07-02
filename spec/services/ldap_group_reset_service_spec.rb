@@ -18,9 +18,9 @@ describe LdapGroupResetService do
     context 'initiated by ldap user' do
       before { LdapGroupResetService.new.execute(group, ldap_user) }
 
-      it { member_access(ldap_user).should == Gitlab::Access::OWNER }
-      it { member_access(ldap_user_2).should == Gitlab::Access::GUEST }
-      it { member_access(user).should == Gitlab::Access::OWNER }
+      it { expect(member_access(ldap_user)).to eq Gitlab::Access::OWNER }
+      it { expect(member_access(ldap_user_2)).to eq Gitlab::Access::GUEST }
+      it { expect(member_access(user)).to eq Gitlab::Access::OWNER }
       it { expect(ldap_user.reload.last_credential_check_at).to be_nil }
       it { expect(ldap_user_2.reload.last_credential_check_at).to be_nil }
     end
@@ -28,9 +28,9 @@ describe LdapGroupResetService do
     context 'initiated by regular user' do
       before { LdapGroupResetService.new.execute(group, user) }
 
-      it { member_access(ldap_user).should == Gitlab::Access::GUEST }
-      it { member_access(ldap_user_2).should == Gitlab::Access::GUEST }
-      it { member_access(user).should == Gitlab::Access::OWNER }
+      it { expect(member_access(ldap_user)).to eq Gitlab::Access::GUEST }
+      it { expect(member_access(ldap_user_2)).to eq Gitlab::Access::GUEST }
+      it { expect(member_access(user)).to eq Gitlab::Access::OWNER }
       it { expect(ldap_user.reload.last_credential_check_at).to be_nil }
       it { expect(ldap_user_2.reload.last_credential_check_at).to be_nil }
     end

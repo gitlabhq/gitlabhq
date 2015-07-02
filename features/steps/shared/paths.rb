@@ -242,7 +242,7 @@ module SharedPaths
 
   step "I visit my project's network page" do
     # Stub Graph max_size to speed up test (10 commits vs. 650)
-    Network::Graph.stub(max_count: 10)
+    allow(Network::Graph).to receive(:max_count).and_return(10)
 
     visit namespace_project_network_path(@project.namespace, @project, root_ref)
   end

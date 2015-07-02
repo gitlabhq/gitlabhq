@@ -414,7 +414,7 @@ describe SystemNoteService do
           WebMock.stub_request(:get, jira_api_comment_url).to_return(body: jira_issue_comments)
         end
 
-        subject { Note.create_cross_reference_note(jira_issue, commit, author) }
+        subject { described_class.cross_reference(jira_issue, commit, author) }
 
         it { is_expected.to eq(jira_status_message) }
       end
@@ -425,7 +425,7 @@ describe SystemNoteService do
           WebMock.stub_request(:get, jira_api_comment_url).to_return(body: "{\"comments\":[{\"body\":\"#{message}\"}]}")
         end
 
-        subject { Note.create_cross_reference_note(jira_issue, commit, author) }
+        subject { described_class.cross_reference(jira_issue, commit, author) }
         it { is_expected.not_to eq(jira_status_message) }
       end
     end
@@ -442,7 +442,7 @@ describe SystemNoteService do
           jira_tracker.destroy!
         end
 
-        subject { Note.create_cross_reference_note(jira_issue, issue, author) }
+        subject { described_class.cross_reference(jira_issue, issue, author) }
 
         it { is_expected.to eq(jira_status_message) }
       end

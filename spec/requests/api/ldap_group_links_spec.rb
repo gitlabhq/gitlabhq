@@ -23,7 +23,7 @@ describe API::API, api: true  do
     context "when unauthenticated" do
       it "should return authentication error" do
         post api("/groups/#{group_with_ldap_links.id}/ldap_group_links")
-        response.status.should == 401
+        expect(response.status).to eq 401
       end
     end
 
@@ -89,7 +89,7 @@ describe API::API, api: true  do
     context "when unauthenticated" do
       it "should return authentication error" do
         delete api("/groups/#{group_with_ldap_links.id}/ldap_group_links/ldap-group1")
-        response.status.should == 401
+        expect(response.status).to eq 401
       end
     end
 
@@ -126,7 +126,7 @@ describe API::API, api: true  do
     context "when unauthenticated" do
       it "should return authentication error" do
         delete api("/groups/#{group_with_ldap_links.id}/ldap_group_links/ldap2/ldap-group2")
-        response.status.should == 401
+        expect(response.status).to eq 401
       end
     end
 

@@ -265,14 +265,14 @@ describe GitPushService do
         WebMock.stub_request(:get, jira_api_comment_url).to_return(body: jira_issue_comments)
         WebMock.stub_request(:get, jira_api_project_url)
 
-        closing_commit.stub({
+        allow(closing_commit).to receive_messages({
           issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
           safe_message: "this is some work.\n\ncloses JIRA-1",
           author_name: commit_author.name,
           author_email: commit_author.email
         })
 
-        project.repository.stub(commits_between: [closing_commit])
+        allow(project.repository).to receive_messages(commits_between: [closing_commit])
       end
 
       after do
@@ -294,7 +294,7 @@ describe GitPushService do
         }.to_json
 
         service.execute(project, user, @oldrev, @newrev, @ref)
-        WebMock.should have_requested(:post, jira_api_transition_url).with(
+        expect(WebMock).to have_requested(:post, jira_api_transition_url).with(
           body: message
         ).once
       end
@@ -302,7 +302,7 @@ describe GitPushService do
       it "should initiate one api call to jira server to mention the issue" do
         service.execute(project, user, @oldrev, @newrev, @ref)
 
-        WebMock.should have_requested(:post, jira_api_comment_url).with(
+        expect(WebMock).to have_requested(:post, jira_api_comment_url).with(
           body: /mentioned this issue in/
         ).once
       end

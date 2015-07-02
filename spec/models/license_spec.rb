@@ -18,7 +18,7 @@ describe License do
         end
 
         it "is invalid" do
-          expect(license).to_not be_valid
+          expect(license).not_to be_valid
         end
       end
     end
@@ -41,7 +41,7 @@ describe License do
 
         context "when the license started" do
           it "is invalid" do
-            expect(license).to_not be_valid
+            expect(license).not_to be_valid
           end
         end
 
@@ -57,7 +57,7 @@ describe License do
           let(:date) { License.current.starts_at - 6.months }
 
           it "is invalid" do
-            expect(license).to_not be_valid
+            expect(license).not_to be_valid
           end
         end
 
@@ -94,7 +94,7 @@ describe License do
         end
 
         it "is valid" do
-          expect(license).to_not be_valid
+          expect(license).not_to be_valid
         end
 
       end
@@ -197,7 +197,7 @@ describe License do
 
     context "when valid license data is provided" do
       it "returns the license" do
-        expect(license.license).to_not be_nil
+        expect(license.license).not_to be_nil
       end
     end
   end

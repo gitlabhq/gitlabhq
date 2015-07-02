@@ -198,10 +198,10 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   end
 
   step 'I should see jira service settings saved' do
-    find_field('Project url').value.should == 'http://jira.example'
-    find_field('Username').value.should == 'gitlab'
-    find_field('Password').value.should_not == 'gitlab'
-    find_field('Api version').value.should == '2'
+    expect(find_field('Project url').value).to eq 'http://jira.example'
+    expect(find_field('Username').value).to eq 'gitlab'
+    expect(find_field('Password').value).not_to eq 'gitlab'
+    expect(find_field('Api version').value).to eq '2'
   end
 
   step 'I click Atlassian Bamboo CI service link' do
