@@ -1,9 +1,11 @@
 - page_title "Commit statistics"
+.tree-ref-holder
+  = render 'shared/ref_switcher', destination: 'graphs_commits'
 = render 'head'
 
 %p.lead
   Commit statistics for
-  %strong #{@repository.root_ref}
+  %strong #{@ref}
   #{@commits_graph.start_date.strftime('%b %d')} - #{@commits_graph.end_date.strftime('%b %d')}
 
 .row
