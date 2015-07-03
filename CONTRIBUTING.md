@@ -67,7 +67,7 @@ To start with GitLab download the [GitLab Development Kit](https://gitlab.com/gi
 
 If you can, please submit a merge request with the fix or improvements including tests. If you don't know how to fix the issue but can write a test that exposes the issue we will accept that as well. In general bug fixes that include a regression test are merged quickly while new features without proper tests are least likely to receive timely feedback. The workflow to make a merge request is as follows:
 
-1. Fork the project on GitLab Cloud
+1. Fork the project into your personal space on GitLab.com
 1. Create a feature branch
 1. Write [tests](https://gitlab.com/gitlab-org/gitlab-development-kit#running-the-tests) and code
 1. Add your changes to the [CHANGELOG](CHANGELOG)

@@ -56,7 +56,7 @@ class ApplicationController < ActionController::Base
   def authenticate_user!(*args)
     # If user is not signed-in and tries to access root_path - redirect him to landing page
     if current_application_settings.home_page_url.present?
-      if current_user.nil? && controller_name == 'dashboard' && action_name == 'show'
+      if current_user.nil? && root_path == request.path
         redirect_to current_application_settings.home_page_url and return
       end
     end
