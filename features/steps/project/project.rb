@@ -144,7 +144,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I go to "Audit Events"' do
-    click_link 'Audit Events'
+    find(:link, 'Audit Events').trigger('click')
   end
 
   step 'I should see the audit event listed' do
