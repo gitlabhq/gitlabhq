@@ -37,6 +37,9 @@ v 7.13.0 (unreleased)
   - Query Optimization in MySQL.
   - Allow users to be blocked and unblocked via the API
 
+v 7.12.2
+  - Correctly show anonymous authorized applications under Profile > Applications.
+
 v 7.12.1
   - Fix error when deleting a user who has projects (Stan Hu)
   - Fix post-receive errors on a push when an external issue tracker is configured (Stan Hu)
