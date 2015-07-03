@@ -36,12 +36,10 @@ describe Service do
     end
 
     describe "Testable" do
-      let (:project) { create :project }
+      let(:project) { create :project }
 
       before do
-        @service.stub(
-          project: project
-        )
+        allow(@service).to receive(:project).and_return(project)
         @testable = @service.can_test?
       end
 
@@ -51,12 +49,10 @@ describe Service do
     end
 
     describe "With commits" do
-      let (:project) { create :project }
+      let(:project) { create :project }
 
       before do
-        @service.stub(
-          project: project
-        )
+        allow(@service).to receive(:project).and_return(project)
         @testable = @service.can_test?
       end
 
@@ -72,9 +68,16 @@ describe Service do
 
   describe "Template" do
     describe "for pushover service" do
-      let(:service_template) {
-        PushoverService.create(template: true, properties: {device: 'MyDevice', sound: 'mic', priority: 4, api_key: '123456789'})
-      }
+      let(:service_template) do
+        PushoverService.create(
+          template: true,
+          properties: {
+            device: 'MyDevice',
+            sound: 'mic',
+            priority: 4,
+            api_key: '123456789'
+          })
+      end
       let(:project) { create(:project) }
 
       describe 'should be prefilled for projects pushover service' do

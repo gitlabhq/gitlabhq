@@ -1,6 +1,6 @@
 - page_title "#{@merge_request.title} (##{@merge_request.iid})", "Merge Requests"
 .merge-request{'data-url' => merge_request_path(@merge_request)}
-  .merge-request-details
+  .merge-request-details.issuable-details
     = render "projects/merge_requests/show/mr_title"
     %hr
     = render "projects/merge_requests/show/mr_box"
@@ -56,14 +56,14 @@
     #notes.notes.tab-pane.voting_notes
       = render "projects/merge_requests/discussion"
     #commits.commits.tab-pane
-      = render "projects/merge_requests/show/commits"
+      - if current_page?(action: 'commits')
+        = render "projects/merge_requests/show/commits"
     #diffs.diffs.tab-pane
       - if current_page?(action: 'diffs')
         = render "projects/merge_requests/show/diffs"
 
   .mr-loading-status
     = spinner
-
 
 :javascript
   var merge_request;

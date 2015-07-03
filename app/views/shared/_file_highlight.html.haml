@@ -1,11 +1,11 @@
 .file-content.code{class: user_color_scheme_class}
   .line-numbers
     - if blob.data.present?
-      - blob.data.lines.to_a.size.times do |index|
+      - blob.data.lines.each_index do |index|
         - offset = defined?(first_line_number) ? first_line_number : 1
         - i = index + offset
-        / We're not using `link_to` because it is too slow once we get to thousands of lines.
-        %a{href: "#L#{i}", id: "L#{i}", rel: "#L#{i}"}
+        -# We're not using `link_to` because it is too slow once we get to thousands of lines.
+        %a{href: "#L#{i}", id: "L#{i}", 'data-line-number' => i}
           %i.fa.fa-link
           = i
   :preserve

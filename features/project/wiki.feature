@@ -69,7 +69,7 @@ Feature: Project Wiki
     And I click on the "Pages" button
     Then I should see non-escaped link in the pages list
 
-  @javascript @focus
+  @javascript
   Scenario: Creating an invalid new page
     Given I create a New page with an invalid name
     Then I should see an error message

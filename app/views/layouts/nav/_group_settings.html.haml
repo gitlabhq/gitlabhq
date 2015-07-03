@@ -1,0 +1,36 @@
+%ul.nav.nav-sidebar
+  = nav_link do
+    = link_to group_path(@group), title: 'Back to group', data: {placement: 'right'} do
+      = icon('caret-square-o-left fw')
+      %span
+        Back to group
+
+  %li.separate-item
+
+  %ul.sidebar-subnav
+    = nav_link(path: 'groups#edit') do
+      = link_to edit_group_path(@group), title: 'Group Settings', data: {placement: 'right'} do
+        = icon ('pencil-square-o fw')
+        %span
+          Group Settings
+    = nav_link(path: 'groups#projects') do
+      = link_to projects_group_path(@group), title: 'Projects', data: {placement: 'right'} do
+        = icon('folder fw')
+        %span
+          Projects
+    - if ldap_enabled?
+      = nav_link(controller: :ldap_group_links) do
+        = link_to group_ldap_group_links_path(@group) do
+          %i.fa.fa-exchange
+          %span
+            LDAP Groups
+    = nav_link(controller: :hooks) do
+      = link_to group_hooks_path(@group) do
+        %i.fa.fa-link
+        %span
+          Web Hooks
+    = nav_link(controller: :audit_events) do
+      = link_to group_audit_events_path(@group) do
+        %i.fa.fa-file-text-o
+        %span
+          Audit Events

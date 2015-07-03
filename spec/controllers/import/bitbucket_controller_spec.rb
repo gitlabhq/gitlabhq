@@ -1,24 +1,28 @@
 require 'spec_helper'
+require_relative 'import_spec_helper'
 
 describe Import::BitbucketController do
+  include ImportSpecHelper
+
   let(:user) { create(:user, bitbucket_access_token: 'asd123', bitbucket_access_token_secret: "sekret") }
 
   before do
     sign_in(user)
-    controller.stub(:bitbucket_import_enabled?).and_return(true)
+    allow(controller).to receive(:bitbucket_import_enabled?).and_return(true)
   end
 
   describe "GET callback" do
     before do
       session[:oauth_request_token] = {}
     end
-    
+
     it "updates access token" do
       token = "asdasd12345"
       secret = "sekrettt"
       access_token = double(token: token, secret: secret)
-      Gitlab::BitbucketImport::Client.any_instance.stub(:get_token).and_return(access_token)
-      Gitlab.config.omniauth.providers << OpenStruct.new(app_id: "asd123", app_secret: "asd123", name: "bitbucket")
+      allow_any_instance_of(Gitlab::BitbucketImport::Client).
+        to receive(:get_token).and_return(access_token)
+      stub_omniauth_provider('bitbucket')
 
       get :callback
 
@@ -35,7 +39,7 @@ describe Import::BitbucketController do
 
     it "assigns variables" do
       @project = create(:project, import_type: 'bitbucket', creator_id: user.id)
-      controller.stub_chain(:client, :projects).and_return([@repo])
+      stub_client(projects: [@repo])
 
       get :status
 
@@ -45,7 +49,7 @@ describe Import::BitbucketController do
 
     it "does not show already added project" do
       @project = create(:project, import_type: 'bitbucket', creator_id: user.id, import_source: 'asd/vim')
-      controller.stub_chain(:client, :projects).and_return([@repo])
+      stub_client(projects: [@repo])
 
       get :status
 
@@ -57,28 +61,20 @@ describe Import::BitbucketController do
   describe "POST create" do
     let(:bitbucket_username) { user.username }
 
-    let(:bitbucket_user) {
-      {
-        user: {
-          username: bitbucket_username
-        }
-      }.with_indifferent_access
-    }
+    let(:bitbucket_user) do
+      { user: { username: bitbucket_username } }.with_indifferent_access
+    end
 
-    let(:bitbucket_repo) {
-      {
-        slug: "vim",
-        owner: bitbucket_username
-      }.with_indifferent_access
-    }
+    let(:bitbucket_repo) do
+      { slug: "vim", owner: bitbucket_username }.with_indifferent_access
+    end
 
     before do
       allow(Gitlab::BitbucketImport::KeyAdder).
         to receive(:new).with(bitbucket_repo, user).
         and_return(double(execute: true))
 
-      controller.stub_chain(:client, :user).and_return(bitbucket_user)
-      controller.stub_chain(:client, :project).and_return(bitbucket_repo)
+      stub_client(user: bitbucket_user, project: bitbucket_repo)
     end
 
     context "when the repository owner is the Bitbucket user" do

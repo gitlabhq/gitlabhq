@@ -28,7 +28,7 @@ describe JenkinsService do
   describe 'commits methods' do
     before do
       @service = JenkinsService.new
-      @service.stub(
+      allow(@service).to receive_messages(
         service_hook: true,
         project_url: 'http://jenkins.gitlab.org/projects/2',
         token: 'verySecret'

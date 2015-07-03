@@ -6,7 +6,9 @@ module Gitlab
 
     def set_env(user)
       # Set GL_ID env variable
-      ENV['GL_ID'] = "user-#{user.id}"
+      if user
+        ENV['GL_ID'] = "user-#{user.id}"
+      end
     end
 
     def reset_env

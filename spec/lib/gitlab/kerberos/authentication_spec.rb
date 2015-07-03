@@ -8,13 +8,12 @@ describe Gitlab::Kerberos::Authentication do
 
   describe :login do
     before do
-      Devise.stub(omniauth_providers: [:kerberos])
+      allow(Devise).to receive_messages(omniauth_providers: [:kerberos])
     end
 
     it "finds the user if authentication is successful" do
       kerberos_realm = user.email.sub(/.*@/, '')
-      ::Krb5Auth::Krb5.any_instance.stub(get_init_creds_password: true)
-      ::Krb5Auth::Krb5.any_instance.stub(get_default_realm: kerberos_realm)
+      allow_any_instance_of(::Krb5Auth::Krb5).to receive_messages(get_init_creds_password: true, get_default_realm: kerberos_realm)
 
       expect(klass.login('gitlab', password)).to be_truthy
     end
@@ -22,8 +21,7 @@ describe Gitlab::Kerberos::Authentication do
     it "returns false if there is no such user in kerberos" do
       kerberos_login = "some-login"
       kerberos_realm = user.email.sub(/.*@/, '')
-      ::Krb5Auth::Krb5.any_instance.stub(get_init_creds_password: true)
-      ::Krb5Auth::Krb5.any_instance.stub(get_default_realm: kerberos_realm)
+      allow_any_instance_of(::Krb5Auth::Krb5).to receive_messages(get_init_creds_password: true, get_default_realm: kerberos_realm)
 
       expect(klass.login(kerberos_login, password)).to be_falsy
     end

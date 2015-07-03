@@ -1,4 +1,4 @@
-%ul.project-navigation.nav.nav-sidebar
+%ul.nav.nav-sidebar
   = nav_link(path: 'projects#show', html_options: {class: 'home'}) do
     = link_to project_path(@project), title: 'Project', class: 'shortcuts-project', data: {placement: 'right'} do
       = icon('dashboard fw')
@@ -86,7 +86,7 @@
 
   - if project_nav_tab? :settings
     = nav_link(html_options: {class: "#{project_tab_class} separate-item"}) do
-      = link_to edit_project_path(@project), title: 'Settings', class: 'stat-tab tab no-highlight', data: {placement: 'right'} do
+      = link_to edit_project_path(@project), title: 'Settings', data: {placement: 'right'} do
         = icon('cogs fw')
         %span
           Settings

@@ -52,7 +52,7 @@ class Spinach::Features::EventFilters < Spinach::FeatureSteps
   end
 
   step 'this project has new member event' do
-    user = create(:user, {name: "John Doe"})
+    user = create(:user, { name: "John Doe" })
     Event.create(
       project: @project,
       author_id: user.id,

@@ -28,7 +28,7 @@
       = @snippet.file_name
     .file-actions
       .btn-group
-        - if can?(current_user, :modify_project_snippet, @snippet)
+        - if can?(current_user, :update_project_snippet, @snippet)
           = link_to "edit", edit_namespace_project_snippet_path(@project.namespace, @project, @snippet), class: "btn btn-sm", title: 'Edit Snippet'
         = link_to "raw", raw_namespace_project_snippet_path(@project.namespace, @project, @snippet), class: "btn btn-sm", target: "_blank"
       - if can?(current_user, :admin_project_snippet, @snippet)

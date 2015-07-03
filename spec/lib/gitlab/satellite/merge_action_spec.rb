@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Gitlab::Satellite::MergeAction' do
+describe Gitlab::Satellite::MergeAction do
   include RepoHelpers
 
   let(:project) { create(:project, namespace: create(:group)) }
@@ -20,14 +20,14 @@ describe 'Gitlab::Satellite::MergeAction' do
 
     context 'on fork' do
       it 'should get proper commits between' do
-        commits = Gitlab::Satellite::MergeAction.new(merge_request_fork.author, merge_request_fork).commits_between
+        commits = described_class.new(merge_request_fork.author, merge_request_fork).commits_between
         verify_commits(commits, sample_compare.commits.first, sample_compare.commits.last)
       end
     end
 
     context 'between branches' do
       it 'should raise exception -- not expected to be used by non forks' do
-        expect { Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).commits_between }.to raise_error
+        expect { described_class.new(merge_request.author, merge_request).commits_between }.to raise_error(RuntimeError)
       end
     end
   end
@@ -41,14 +41,14 @@ describe 'Gitlab::Satellite::MergeAction' do
 
     context 'on fork' do
       it 'should build a format patch' do
-        patch = Gitlab::Satellite::MergeAction.new(merge_request_fork.author, merge_request_fork).format_patch
+        patch = described_class.new(merge_request_fork.author, merge_request_fork).format_patch
         verify_content(patch)
       end
     end
 
     context 'between branches' do
       it 'should build a format patch' do
-        patch = Gitlab::Satellite::MergeAction.new(merge_request_fork.author, merge_request).format_patch
+        patch = described_class.new(merge_request_fork.author, merge_request).format_patch
         verify_content(patch)
       end
     end
@@ -67,38 +67,38 @@ describe 'Gitlab::Satellite::MergeAction' do
 
     context 'on fork' do
       it 'should get proper diffs' do
-        diffs = Gitlab::Satellite::MergeAction.new(merge_request_fork.author, merge_request_fork).diffs_between_satellite
-        diff = Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request_fork).diff_in_satellite
+        diffs = described_class.new(merge_request_fork.author, merge_request_fork).diffs_between_satellite
+        diff = described_class.new(merge_request.author, merge_request_fork).diff_in_satellite
         is_a_matching_diff(diff, diffs)
       end
     end
 
     context 'between branches' do
       it 'should get proper diffs' do
-        expect{ Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).diffs_between_satellite }.to raise_error
+        expect { described_class.new(merge_request.author, merge_request).diffs_between_satellite }.to raise_error(RuntimeError)
       end
     end
   end
 
   describe '#can_be_merged?' do
     context 'on fork' do
-      it { expect(Gitlab::Satellite::MergeAction.new(
-        merge_request_fork.author,
-        merge_request_fork).can_be_merged?).to be_truthy }
+      it do
+        expect(described_class.new(merge_request_fork.author, merge_request_fork).can_be_merged?).to be_truthy
+      end
 
-      it { expect(Gitlab::Satellite::MergeAction.new(
-        merge_request_fork_with_conflict.author,
-        merge_request_fork_with_conflict).can_be_merged?).to be_falsey }
+      it do
+        expect(described_class.new(merge_request_fork_with_conflict.author, merge_request_fork_with_conflict).can_be_merged?).to be_falsey
+      end
     end
 
     context 'between branches' do
-      it { expect(Gitlab::Satellite::MergeAction.new(
-        merge_request.author,
-        merge_request).can_be_merged?).to be_truthy }
+      it do
+        expect(described_class.new(merge_request.author, merge_request).can_be_merged?).to be_truthy
+      end
 
-      it { expect(Gitlab::Satellite::MergeAction.new(
-        merge_request_with_conflict.author,
-        merge_request_with_conflict).can_be_merged?).to be_falsey }
+      it do
+        expect(described_class.new(merge_request_with_conflict.author, merge_request_with_conflict).can_be_merged?).to be_falsey
+      end
     end
   end
 
@@ -106,31 +106,34 @@ describe 'Gitlab::Satellite::MergeAction' do
   describe '#can_be_rebased?' do
     context 'on fork' do
       before(:each) do
-        merge_request.stub(:should_rebase).and_return(true)
+        allow(merge_request).to receive(:should_rebase).and_return(true)
       end
 
-      it { Gitlab::Satellite::MergeAction.new(
-        merge_request_fork.author,
-        merge_request_fork).merge!.should be_truthy }
+      it do
+        result = described_class.new(merge_request_fork.author, merge_request_fork).merge!
+        expect(result).to be_truthy
+      end
 
-      it { Gitlab::Satellite::MergeAction.new(
-        merge_request_fork_with_conflict.author,
-        merge_request_fork_with_conflict).merge!.should be_falsey }
+      it do
+        result = described_class.new(merge_request_fork_with_conflict.author, merge_request_fork_with_conflict).merge!
+        expect(result).to be_falsey
+      end
     end
 
     context 'between branches' do
       before(:each) do
-        merge_request.stub(:should_rebase).and_return(true)
+        allow(merge_request).to receive(:should_rebase).and_return(true)
       end
 
-      it { Gitlab::Satellite::MergeAction.new(
-        merge_request.author,
-        merge_request).merge!.should be_truthy }
+      it do
+        result = described_class.new(merge_request.author, merge_request).merge!
+        expect(result).to be_truthy
+      end
 
-      it { Gitlab::Satellite::MergeAction.new(
-        merge_request_with_conflict.author,
-        merge_request_with_conflict).merge!.should be_falsey }
+      it do
+        result = described_class.new(merge_request_with_conflict.author, merge_request_with_conflict).merge!
+        expect(result).to be_falsey
+      end
     end
   end
 end
-

@@ -1,0 +1,18 @@
+%form.js-requires-input
+  %input{type: 'text', id: 'required1', required: 'required'}
+  %input{type: 'text', id: 'required2', required: 'required'}
+  %input{type: 'text', id: 'required3', required: 'required', value: 'Pre-filled'}
+  %input{type: 'text', id: 'optional1'}
+
+  %textarea{id: 'required4', required: 'required'}
+  %textarea{id: 'optional2'}
+
+  %select{id: 'required5', required: 'required'}
+    %option Zero
+    %option{value: '1'} One
+  %select{id: 'optional3', required: 'required'}
+    %option Zero
+    %option{value: '1'} One
+
+  %button.submit{type: 'submit', value: 'Submit'}
+  %input.submit{type: 'submit', value: 'Submit'}

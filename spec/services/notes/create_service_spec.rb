@@ -25,4 +25,3 @@ describe Notes::CreateService do
     end
   end
 end
-

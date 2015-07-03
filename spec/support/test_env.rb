@@ -41,11 +41,13 @@ module TestEnv
   end
 
   def disable_mailer
-    NotificationService.any_instance.stub(mailer: double.as_null_object)
+    allow_any_instance_of(NotificationService).to receive(:mailer).
+      and_return(double.as_null_object)
   end
 
   def enable_mailer
-    allow_any_instance_of(NotificationService).to receive(:mailer).and_call_original
+    allow_any_instance_of(NotificationService).to receive(:mailer).
+      and_call_original
   end
 
   # Clean /tmp/tests

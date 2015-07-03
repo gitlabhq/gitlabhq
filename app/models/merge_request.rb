@@ -129,16 +129,14 @@ class MergeRequest < ActiveRecord::Base
   validate :validate_fork
 
   scope :of_group, ->(group) { where("source_project_id in (:group_project_ids) OR target_project_id in (:group_project_ids)", group_project_ids: group.project_ids) }
-  scope :merged, -> { with_state(:merged) }
   scope :by_branch, ->(branch_name) { where("(source_branch LIKE :branch) OR (target_branch LIKE :branch)", branch: branch_name) }
   scope :cared, ->(user) { where('assignee_id = :user OR author_id = :user', user: user.id) }
   scope :by_milestone, ->(milestone) { where(milestone_id: milestone) }
   scope :in_projects, ->(project_ids) { where("source_project_id in (:project_ids) OR target_project_id in (:project_ids)", project_ids: project_ids) }
   scope :of_projects, ->(ids) { where(target_project_id: ids) }
-  # Closed scope for merge request should return
-  # both merged and closed mr's
-  scope :closed, -> { with_states(:closed, :merged) }
-  scope :rejected, -> { with_states(:closed) }
+  scope :merged, -> { with_state(:merged) }
+  scope :closed, -> { with_state(:closed) }
+  scope :closed_and_merged, -> { with_states(:closed, :merged) }
 
   def self.reference_prefix
     '!'
@@ -211,7 +209,14 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def check_if_can_be_merged
-    if Gitlab::Satellite::MergeAction.new(self.author, self).can_be_merged?
+    can_be_merged =
+      if for_fork?
+        Gitlab::Satellite::MergeAction.new(self.author, self).can_be_merged?
+      else
+        project.repository.can_be_merged?(source_branch, target_branch)
+      end
+
+    if can_be_merged
       mark_as_mergeable
     else
       mark_as_unmergeable
@@ -444,5 +449,15 @@ class MergeRequest < ActiveRecord::Base
 
   def can_be_merged_by?(user)
     ::Gitlab::GitAccess.new(user, project).can_push_to_branch?(target_branch)
+  end
+
+  def state_human_name
+    if merged?
+      "Merged"
+    elsif closed?
+      "Closed"
+    else
+      "Open"
+    end
   end
 end

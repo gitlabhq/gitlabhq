@@ -6,7 +6,7 @@
 %h3.page-title
   %i.fa.fa-code-fork
   New branch
-= form_tag namespace_project_branches_path, method: :post, id: "new-branch-form", class: "form-horizontal" do
+= form_tag namespace_project_branches_path, method: :post, id: "new-branch-form", class: "form-horizontal js-requires-input" do
   .form-group
     = label_tag :branch_name, 'Name for new branch', class: 'control-label'
     .col-sm-10
@@ -20,7 +20,6 @@
     = link_to 'Cancel', namespace_project_branches_path(@project.namespace, @project), class: 'btn btn-cancel'
 
 :javascript
-  disableButtonIfAnyEmptyField($("#new-branch-form"), ".form-control", ".btn-create");
   var availableTags = #{@project.repository.ref_names.to_json};
 
   $("#ref").autocomplete({

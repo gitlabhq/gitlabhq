@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'email_spec'
 
 describe Notify do
   include EmailSpec::Helpers
@@ -418,9 +419,7 @@ describe Notify do
     describe 'project access changed' do
       let(:project) { create(:project) }
       let(:user) { create(:user) }
-      let(:project_member) { create(:project_member,
-                                   project: project,
-                                   user: user) }
+      let(:project_member) { create(:project_member, project: project, user: user) }
       subject { Notify.project_access_granted_email(project_member.id) }
 
       it_behaves_like 'an email sent from GitLab'
@@ -809,8 +808,8 @@ describe Notify do
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
-      sender.display_name.should eq("GitLab")
-      sender.address.should eq(gitlab_sender)
+      expect(sender.display_name).to eq("GitLab")
+      expect(sender.address).to eq(gitlab_sender)
     end
 
     it 'is sent to recipient' do

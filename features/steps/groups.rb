@@ -104,9 +104,9 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     user = User.find_by(name: "Mary Jane")
     member = Group.find_by(name: "Owned").members.where(user_id: user.id).first
 
-    within "#group_member_#{member.id}" do
+    page.within "#group_member_#{member.id}" do
       find(".js-toggle-button").click
-      within "#edit_group_member_#{member.id}" do
+      page.within "#edit_group_member_#{member.id}" do
         select 'Developer', from: 'group_member_access_level'
         click_on 'Save'
       end
@@ -114,16 +114,16 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I go to "Audit Events"' do
-    click_link 'Audit Events'
+    find(:link, 'Audit Events').trigger('click')
   end
 
   step 'I should see the audit event listed' do
-    within ('table#audits') do
-      page.should have_content 'Add user access as reporter'
-      page.should have_content 'Change access level from reporter to developer'
-      page.should have_content 'Remove user access'
-      page.should have_content('John Doe', count: 3)
-      page.should have_content('Mary Jane', count: 3)
+    page.within('table#audits') do
+      expect(page).to have_content 'Add user access as reporter'
+      expect(page).to have_content 'Change access level from reporter to developer'
+      expect(page).to have_content 'Remove user access'
+      expect(page).to have_content('John Doe', count: 3)
+      expect(page).to have_content('Mary Jane', count: 3)
     end
   end
 
@@ -143,11 +143,11 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   Then 'I should be redirected to group page' do
-    current_path.should == group_path(Group.last)
+    expect(current_path).to eq group_path(Group.last)
   end
 
   And 'I change group name' do
-    within '#tab-edit' do
+    page.within '#tab-edit' do
       fill_in 'group_name', with: 'new-name'
       click_button "Save group"
     end
@@ -166,14 +166,14 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I change group "Owned" avatar' do
-    attach_file(:group_avatar, File.join(Rails.root, 'public', 'gitlab_logo.png'))
+    attach_file(:group_avatar, File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif'))
     click_button "Save group"
     Group.find_by(name: "Owned").reload
   end
 
   step 'I should see new group "Owned" avatar' do
     expect(Group.find_by(name: "Owned").avatar).to be_instance_of AvatarUploader
-    expect(Group.find_by(name: "Owned").avatar.url).to eq "/uploads/group/avatar/#{ Group.find_by(name:"Owned").id }/gitlab_logo.png"
+    expect(Group.find_by(name: "Owned").avatar.url).to eq "/uploads/group/avatar/#{ Group.find_by(name:"Owned").id }/banana_sample.gif"
   end
 
   step 'I should see the "Remove avatar" button' do
@@ -181,7 +181,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I have group "Owned" avatar' do
-    attach_file(:group_avatar, File.join(Rails.root, 'public', 'gitlab_logo.png'))
+    attach_file(:group_avatar, File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif'))
     click_button "Save group"
     Group.find_by(name: "Owned").reload
   end
@@ -192,7 +192,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I should not see group "Owned" avatar' do
-    expect(Group.find_by(name: "Owned").avatar?).to be_false
+    expect(Group.find_by(name: "Owned").avatar?).to eq false
   end
 
   step 'I should not see the "Remove avatar" button' do
@@ -337,15 +337,15 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'LDAP enabled' do
-    Settings.ldap['enabled'] = true
+    allow(Gitlab.config.ldap).to receive(:enabled).and_return(true)
   end
 
   step 'LDAP disabled' do
-    Settings.ldap['enabled'] = false
+    allow(Gitlab.config.ldap).to receive(:enabled).and_return(false)
   end
 
   step 'I add a new LDAP synchronization' do
-    within('form#new_ldap_group_link') do
+    page.within('form#new_ldap_group_link') do
       find('#ldap_group_link_cn', visible: false).set('my-group-cn')
       # fill_in('LDAP Group cn', with: 'my-group-cn', visible: false)
       select 'Developer', from: "ldap_group_link_group_access"

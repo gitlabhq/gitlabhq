@@ -5,14 +5,14 @@ class Spinach::Features::ProjectGroupLinks < Spinach::FeatureSteps
   include Select2Helper
 
   step 'I should see project already shared with group "Ops"' do
-    within '.enabled-groups' do
-      page.should have_content "Ops"
+    page.within '.enabled-groups' do
+      expect(page).to have_content "Ops"
     end
   end
 
   step 'I should see project is not shared with group "Market"' do
-    within '.enabled-groups' do
-      page.should_not have_content "Market"
+    page.within '.enabled-groups' do
+      expect(page).not_to have_content "Market"
     end
   end
 
@@ -24,8 +24,8 @@ class Spinach::Features::ProjectGroupLinks < Spinach::FeatureSteps
   end
 
   step 'I should see project is shared with group "Market"' do
-    within '.enabled-groups' do
-      page.should have_content "Market"
+    page.within '.enabled-groups' do
+      expect(page).to have_content "Market"
     end
   end
 

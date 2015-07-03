@@ -21,7 +21,7 @@ module OauthHelper
 
   def enabled_social_providers
     enabled_oauth_providers.select do |name|
-      [:twitter, :gitlab, :github, :bitbucket, :google_oauth2, :kerberos].include?(name.to_sym)
+      [:saml, :twitter, :gitlab, :github, :bitbucket, :google_oauth2, :kerberos].include?(name.to_sym)
     end
   end
 

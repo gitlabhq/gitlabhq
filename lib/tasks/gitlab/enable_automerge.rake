@@ -1,6 +1,6 @@
 namespace :gitlab do
   namespace :satellites do
-    desc "GITLAB | Create satellite repos"
+    desc "GitLab | Create satellite repos"
     task create: :environment do
       create_satellites
     end

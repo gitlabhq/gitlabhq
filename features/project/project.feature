@@ -63,17 +63,6 @@ Feature: Project
     And I visit project "Shop" page
     Then I should see project "Shop" README
 
-  @javascript
-  Scenario: I should see audit events
-    And gitlab user "Pete"
-    And "Pete" is "Shop" developer
-    When I visit project "Shop" page
-    And I go to "Members"
-    And I change "Pete" access level to master
-    And I visit project "Shop" settings page
-    And I go to "Audit Events"
-    Then I should see the audit event listed
-
   Scenario: I tag a project
     When I visit edit project "Shop" page
     Then I should see project settings

@@ -1,11 +1,14 @@
 require 'spec_helper'
+require_relative 'import_spec_helper'
 
 describe Import::GithubController do
+  include ImportSpecHelper
+
   let(:user) { create(:user, github_access_token: 'asd123') }
 
   before do
     sign_in(user)
-    controller.stub(:github_import_enabled?).and_return(true)
+    allow(controller).to receive(:github_import_enabled?).and_return(true)
   end
 
   describe "GET callback" do
@@ -15,9 +18,8 @@ describe Import::GithubController do
         to receive(:get_token).and_return(token)
       allow_any_instance_of(Gitlab::GithubImport::Client).
         to receive(:github_options).and_return({})
-      Gitlab.config.omniauth.providers << OpenStruct.new(app_id: 'asd123',
-                                                         app_secret: 'asd123',
-                                                         name: 'github')
+      stub_omniauth_provider('github')
+
       get :callback
 
       expect(user.reload.github_access_token).to eq(token)
@@ -34,9 +36,7 @@ describe Import::GithubController do
 
     it "assigns variables" do
       @project = create(:project, import_type: 'github', creator_id: user.id)
-      controller.stub_chain(:client, :repos).and_return([@repo])
-      controller.stub_chain(:client, :orgs).and_return([@org])
-      controller.stub_chain(:client, :org_repos).with(@org.login).and_return([@org_repo])
+      stub_client(repos: [@repo], orgs: [@org], org_repos: [@org_repo])
 
       get :status
 
@@ -46,8 +46,7 @@ describe Import::GithubController do
 
     it "does not show already added project" do
       @project = create(:project, import_type: 'github', creator_id: user.id, import_source: 'asd/vim')
-      controller.stub_chain(:client, :repos).and_return([@repo])
-      controller.stub_chain(:client, :orgs).and_return([])
+      stub_client(repos: [@repo], orgs: [])
 
       get :status
 
@@ -58,18 +57,17 @@ describe Import::GithubController do
 
   describe "POST create" do
     let(:github_username) { user.username }
-
-    let(:github_user) {
-      OpenStruct.new(login: github_username)
-    }
-
-    let(:github_repo) {
-      OpenStruct.new(name: 'vim', full_name: "#{github_username}/vim", owner: OpenStruct.new(login: github_username))
-    }
+    let(:github_user) { OpenStruct.new(login: github_username) }
+    let(:github_repo) do
+      OpenStruct.new(
+        name: 'vim',
+        full_name: "#{github_username}/vim",
+        owner: OpenStruct.new(login: github_username)
+      )
+    end
 
     before do
-      controller.stub_chain(:client, :user).and_return(github_user)
-      controller.stub_chain(:client, :repo).and_return(github_repo)
+      stub_client(user: github_user, repo: github_repo)
     end
 
     context "when the repository owner is the GitHub user" do

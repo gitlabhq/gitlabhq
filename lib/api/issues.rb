@@ -144,7 +144,7 @@ module API
       #   PUT /projects/:id/issues/:issue_id
       put ":id/issues/:issue_id" do
         issue = user_project.issues.find(params[:issue_id])
-        authorize! :modify_issue, issue
+        authorize! :update_issue, issue
         attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id, :state_event]
 
         # Validate label names in advance
@@ -157,7 +157,7 @@ module API
         if issue.valid?
           # Find or create labels and attach to issue. Labels are valid because
           # we already checked its name, so there can't be an error here
-          unless params[:labels].nil?
+          if params[:labels] && can?(current_user, :admin_issue, user_project)
             issue.remove_labels
             # Create and add labels to the new created issue
             issue.add_labels_by_names(params[:labels].split(','))

@@ -34,7 +34,7 @@ describe JiraService do
 
     before do
       @jira_service = JiraService.new
-      @jira_service.stub(
+      allow(@jira_service).to receive_messages(
         project_id: project.id,
         project: project,
         service_hook: true,
@@ -52,7 +52,7 @@ describe JiraService do
 
     it "should call JIRA API" do
       @jira_service.execute(sample_commit, JiraIssue.new("JIRA-123", project))
-      WebMock.should have_requested(:post, @api_url).with(
+      expect(WebMock).to have_requested(:post, @api_url).with(
         body: /Issue solved with/
       ).once
     end
@@ -60,7 +60,7 @@ describe JiraService do
     it "calls the api with jira_issue_transition_id" do
       @jira_service.jira_issue_transition_id = 'this-is-a-custom-id'
       @jira_service.execute(sample_commit, JiraIssue.new("JIRA-123", project))
-      WebMock.should have_requested(:post, @api_url).with(
+      expect(WebMock).to have_requested(:post, @api_url).with(
         body: /this-is-a-custom-id/
       ).once
     end

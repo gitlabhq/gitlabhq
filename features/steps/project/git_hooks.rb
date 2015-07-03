@@ -10,9 +10,9 @@ class Spinach::Features::GitHooks < Spinach::FeatureSteps
 
   
   step 'I should see git hook form' do
-    page.should have_selector('input#git_hook_commit_message_regex')
-    page.should have_content "Commit message"
-    page.should have_content "Commit author's email"
+    expect(page).to have_selector('input#git_hook_commit_message_regex')
+    expect(page).to have_content "Commit message"
+    expect(page).to have_content "Commit author's email"
   end
 
  

@@ -81,7 +81,7 @@ describe API::API, api: true  do
         end
 
         it 'should return the correct order when sorted by id' do
-          get api('/projects', user), { order_by: 'id', sort: 'desc'}
+          get api('/projects', user), { order_by: 'id', sort: 'desc' }
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
           expect(json_response.first['id']).to eq(project3.id)
@@ -90,7 +90,7 @@ describe API::API, api: true  do
         it 'returns projects in the correct order when ci_enabled_first parameter is passed' do
           [project, project2, project3].each{ |project| project.build_missing_services }
           project2.gitlab_ci_service.update(active: true, token: "token", project_url: "url")
-          get api('/projects', user), { ci_enabled_first: 'true'}
+          get api('/projects', user), { ci_enabled_first: 'true' }
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
           expect(json_response.first['id']).to eq(project2.id)
@@ -121,15 +121,13 @@ describe API::API, api: true  do
         get api('/projects/all', admin)
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
-        project_name = project.name
 
-        expect(json_response.detect {
-          |project| project['name'] == project_name
-        }['name']).to eq(project_name)
-
-        expect(json_response.detect {
-          |project| project['owner']['username'] == user.username
-        }['owner']['username']).to eq(user.username)
+        expect(json_response).to satisfy do |response|
+          response.one? do |entry|
+            entry['name'] == project.name &&
+              entry['owner']['username'] == user.username
+          end
+        end
       end
     end
   end
@@ -138,9 +136,8 @@ describe API::API, api: true  do
     context 'maximum number of projects reached' do
       it 'should not create new project and respond with 403' do
         allow_any_instance_of(User).to receive(:projects_limit_left).and_return(0)
-        expect {
-          post api('/projects', user2), name: 'foo'
-        }.to change {Project.count}.by(0)
+        expect { post api('/projects', user2), name: 'foo' }.
+          to change {Project.count}.by(0)
         expect(response.status).to eq(403)
       end
     end
@@ -158,7 +155,7 @@ describe API::API, api: true  do
     end
 
     it 'should not create new project without name and return 400' do
-      expect { post api('/projects', user) }.to_not change { Project.count }
+      expect { post api('/projects', user) }.not_to change { Project.count }
       expect(response.status).to eq(400)
     end
 
@@ -257,7 +254,7 @@ describe API::API, api: true  do
 
     it 'should respond with 400 on failure and not project' do
       expect { post api("/projects/user/#{user.id}", admin) }.
-        to_not change { Project.count }
+        not_to change { Project.count }
 
       expect(response.status).to eq(400)
       expect(json_response['message']['name']).to eq([
@@ -474,9 +471,9 @@ describe API::API, api: true  do
     before { snippet }
 
     it 'should delete existing project snippet' do
-      expect {
+      expect do
         delete api("/projects/#{project.id}/snippets/#{snippet.id}", user)
-      }.to change { Snippet.count }.by(-1)
+      end.to change { Snippet.count }.by(-1)
       expect(response.status).to eq(200)
     end
 
@@ -548,9 +545,9 @@ describe API::API, api: true  do
 
       it 'should create new ssh key' do
         key_attrs = attributes_for :key
-        expect {
+        expect do
           post api("/projects/#{project.id}/keys", user), key_attrs
-        }.to change{ project.deploy_keys.count }.by(1)
+        end.to change{ project.deploy_keys.count }.by(1)
       end
     end
 
@@ -558,9 +555,9 @@ describe API::API, api: true  do
       before { deploy_key }
 
       it 'should delete existing key' do
-        expect {
+        expect do
           delete api("/projects/#{project.id}/keys/#{deploy_key.id}", user)
-        }.to change{ project.deploy_keys.count }.by(-1)
+        end.to change{ project.deploy_keys.count }.by(-1)
       end
 
       it 'should return 404 Not Found with invalid ID' do
@@ -641,30 +638,29 @@ describe API::API, api: true  do
     let(:group) { create(:group) }
 
     it "should share project with group" do
-      expect {
-        post api("/projects/#{project.id}/share", user), group_id: group.id,
-          group_access: Gitlab::Access::DEVELOPER
-      }.to change { ProjectGroupLink.count }.by(1)
+      expect do
+        post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: Gitlab::Access::DEVELOPER
+      end.to change { ProjectGroupLink.count }.by(1)
 
-      response.status.should == 201
-      json_response['group_id'].should == group.id
-      json_response['group_access'].should == Gitlab::Access::DEVELOPER
+      expect(response.status).to eq 201
+      expect(json_response['group_id']).to eq group.id
+      expect(json_response['group_access']).to eq Gitlab::Access::DEVELOPER
     end
 
     it "should return a 400 error when group id is not given" do
       post api("/projects/#{project.id}/share", user), group_access: Gitlab::Access::DEVELOPER
-      response.status.should == 400
+      expect(response.status).to eq 400
     end
 
     it "should return a 400 error when access level is not given" do
       post api("/projects/#{project.id}/share", user), group_id: group.id
-      response.status.should == 400
+      expect(response.status).to eq 400
     end
 
     it "should return a 409 error when wrong params passed" do
       post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: 1234
-      response.status.should == 409
-      json_response['message'].should == 'Group access is not included in the list'
+      expect(response.status).to eq 409
+      expect(json_response['message']).to eq 'Group access is not included in the list'
     end
   end
 

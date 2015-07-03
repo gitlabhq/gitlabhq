@@ -10,7 +10,7 @@ describe Gitlab::Upgrader do
 
   describe 'latest_version?' do
     it 'should be true if newest version' do
-      upgrader.stub(latest_version_raw: current_version)
+      allow(upgrader).to receive(:latest_version_raw).and_return(current_version)
       expect(upgrader.latest_version?).to be_truthy
     end
   end

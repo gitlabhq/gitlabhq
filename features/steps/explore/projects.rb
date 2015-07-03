@@ -145,4 +145,3 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
     @public_merge_request ||= MergeRequest.find_by!(title: 'Bug fix for public project')
   end
 end
-

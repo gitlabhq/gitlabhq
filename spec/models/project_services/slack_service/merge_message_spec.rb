@@ -3,7 +3,7 @@ require 'spec_helper'
 describe SlackService::MergeMessage do
   subject { SlackService::MergeMessage.new(args) }
 
-  let(:args) {
+  let(:args) do
     {
       user: {
           name: 'Test User',
@@ -24,7 +24,7 @@ describe SlackService::MergeMessage do
         target_branch: 'target_branch',
       }
     }
-  }
+  end
 
   let(:color) { '#345' }
 

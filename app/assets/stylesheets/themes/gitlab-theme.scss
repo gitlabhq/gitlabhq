@@ -72,7 +72,7 @@
 
       &.active a {
         color: #FFF;
-        font-weight: bold;
+        background: $color-dark;
 
         &.no-highlight {
           border: none;

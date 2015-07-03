@@ -9,14 +9,14 @@ class Spinach::Features::AdminAppearance < Spinach::FeatureSteps
   end
 
   step 'I should be redirected to admin appearance page' do
-    current_path.should == admin_appearances_path
-    page.should have_content 'Appearance settings'
+    expect(current_path).to eq admin_appearances_path
+    expect(page).to have_content 'Appearance settings'
   end
 
   step 'I should see newly created appearance' do
-    page.should have_field('appearance_title', with: 'MyCompany')
-    page.should have_field('appearance_description', with: 'dev server')
-    page.should have_content 'Last edit'
+    expect(page).to have_field('appearance_title', with: 'MyCompany')
+    expect(page).to have_field('appearance_description', with: 'dev server')
+    expect(page).to have_content 'Last edit'
   end
 
   step 'I click preview button' do
@@ -28,26 +28,26 @@ class Spinach::Features::AdminAppearance < Spinach::FeatureSteps
   end
 
   step 'I should see a customized appearance' do
-    page.should have_content appearance.title
-    page.should have_content appearance.description
+    expect(page).to have_content appearance.title
+    expect(page).to have_content appearance.description
   end
 
   step 'I attach a logo' do
-    attach_file(:appearance_logo, File.join(Rails.root, 'public', 'gitlab_logo.png'))
+    attach_file(:appearance_logo, Rails.root.join('spec', 'fixtures', 'dk.png'))
     click_button 'Save'
   end
 
   step 'I attach header logos' do
-    attach_file(:appearance_light_logo, File.join(Rails.root, 'public', 'header_logo_light.png'))
+    attach_file(:appearance_light_logo, Rails.root.join('spec', 'fixtures', 'dk.png'))
     click_button 'Save'
   end
 
   step 'I should see a logo' do
-    page.should have_xpath('//img[@src="/uploads/appearance/logo/1/gitlab_logo.png"]')
+    expect(page).to have_xpath('//img[@src="/uploads/appearance/logo/1/dk.png"]')
   end
 
   step 'I should see header logos' do
-    page.should have_xpath('//img[@src="/uploads/appearance/light_logo/1/header_logo_light.png"]')
+    expect(page).to have_xpath('//img[@src="/uploads/appearance/light_logo/1/dk.png"]')
   end
 
   step 'I remove the logo' do
@@ -59,11 +59,11 @@ class Spinach::Features::AdminAppearance < Spinach::FeatureSteps
   end
 
   step 'I should see logo removed' do
-    page.should_not have_xpath('//img[@src="/uploads/appearance/logo/1/gitlab_logo.png"]')
+    expect(page).not_to have_xpath('//img[@src="/uploads/appearance/logo/1/gitlab_logo.png"]')
   end
 
   step 'I should see header logos removed' do
-    page.should_not have_xpath('//img[@src="/uploads/appearance/light_logo/1/header_logo_light.png"]')
+    expect(page).not_to have_xpath('//img[@src="/uploads/appearance/light_logo/1/header_logo_light.png"]')
   end
 
   def appearance

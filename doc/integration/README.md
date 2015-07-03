@@ -7,8 +7,9 @@ See the documentation below for details on how to configure these services.
 - [Jira](jira.md) Integrate with the JIRA issue tracker
 - [External issue tracker](external-issue-tracker.md) Redmine, bugzilla, etc.
 - [LDAP](ldap.md) Set up sign in via LDAP
-- [OmniAuth](omniauth.md) Sign in via Twitter, GitHub, and Google via OAuth.
 - [Jenkins](jenkins.md) Integrate with the Jenkins CI
+- [OmniAuth](omniauth.md) Sign in via Twitter, GitHub, GitLab, and Google via OAuth.
+- [SAML](saml.md) Configure GitLab as a SAML 2.0 Service Provider
 - [Slack](slack.md) Integrate with the Slack chat service
 - [Kerberos](kerberos.md) Integrate with Kerberos
 - [OAuth2 provider](oauth_provider.md) OAuth2 application creation

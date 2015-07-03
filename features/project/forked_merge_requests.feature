@@ -26,7 +26,6 @@ Feature: Project Forked Merge Requests
     #And I save the merge request
     #Then I should see the edited merge request
 
-  @javascript
   Scenario: I cannot submit an invalid merge request
     Given I visit project "Forked Shop" merge requests page
     And I click link "New Merge Request"

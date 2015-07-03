@@ -6,13 +6,13 @@ describe Grack::Auth do
 
   let(:app)   { lambda { |env| [200, {}, "Success!"] } }
   let!(:auth) { Grack::Auth.new(app) }
-  let(:env) {
+  let(:env) do
     {
-      "rack.input" => "",
-      "REQUEST_METHOD" => "GET",
-      "QUERY_STRING" => "service=git-upload-pack"
+      'rack.input'     => '',
+      'REQUEST_METHOD' => 'GET',
+      'QUERY_STRING'   => 'service=git-upload-pack'
     }
-  }
+  end
   let(:status) { auth.call(env).first }
 
   describe "#call" do
@@ -121,7 +121,7 @@ describe Grack::Auth do
 
               context "when the user isn't blocked" do
                 before do
-                 expect(Rack::Attack::Allow2Ban).to receive(:reset)
+                  expect(Rack::Attack::Allow2Ban).to receive(:reset)
                 end
 
                 it "responds with status 200" do

@@ -44,9 +44,7 @@ describe DeployKeysProject do
         it "destroys the deploy key" do
           subject.destroy
 
-          expect {
-            deploy_key.reload
-          }.to raise_error(ActiveRecord::RecordNotFound)
+          expect { deploy_key.reload }.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
     end

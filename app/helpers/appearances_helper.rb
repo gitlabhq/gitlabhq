@@ -27,7 +27,7 @@ module AppearancesHelper
     if brand_item && brand_item.light_logo?
       image_tag brand_item.light_logo
     else
-      image_tag 'logo-white.png'
+      image_tag 'logo.svg'
     end
   end
 end

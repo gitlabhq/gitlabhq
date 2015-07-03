@@ -1,22 +1,58 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.13.0 (unreleased)
+  - Fix external issue tracker hook/test for HTTPS URLs (Daniel Gerhardt)
+  - Remove link leading to a 404 error in Deploy Keys page (Stan Hu)
+  - Add support for unlocking users in admin settings (Stan Hu)
+  - Fix order of issues imported form GitHub (Hiroyuki Sato)
+  - Bump rugments to 1.0.0beta8 to fix C prototype function highlighting (Jonathon Reinhart)
+  - Fix Merge Request webhook to properly fire "merge" action when accepted from the web UI
+  - Add `two_factor_enabled` field to admin user API (Stan Hu)
+  - Fix invalid timestamps in RSS feeds (Rowan Wookey)
+  - Fix error when deleting a user who has projects (Stan Hu)
+  - Fix downloading of patches on public merge requests when user logged out (Stan Hu)
+  - The password for the default administrator (root) account has been changed from "5iveL!fe" to "password".
+  - Fix Error 500 when relative submodule resolves to a namespace that has a different name from its path (Stan Hu)
+  - Extract the longest-matching ref from a commit path when multiple matches occur (Stan Hu)
+  - Update maintenance documentation to explain no need to recompile asssets for omnibus installations (Stan Hu)
   - Support commenting on diffs in side-by-side mode (Stan Hu)
   - Fix JavaScript error when clicking on the comment button on a diff line that has a comment already (Stan Hu)
   - Remove project visibility icons from dashboard projects list
   - Rename "Design" profile settings page to "Preferences".
   - Allow users to customize their default Dashboard page.
   - Update ssl_ciphers in Nginx example to remove DHE settings. This will deny forward secrecy for Android 2.3.7, Java 6 and OpenSSL 0.9.8
+  - Admin can edit and remove user identities
+  - Convert CRLF newlines to LF when committing using the web editor.
+  - API request /projects/:project_id/merge_requests?state=closed will return only closed merge requests without merged one. If you need ones that were merged - use state=merged.  
+  - Allow Administrators to filter the user list by those with or without Two-factor Authentication enabled.
+  - Show a user's Two-factor Authentication status in the administration area.
+  - Explicit error when commit not found in the CI
+  - Improve performance for issue and merge request pages 
+  - Users with guest access level can not set assignee, labels or milestones for issue and merge request
+  - Reporter role can manage issue tracker now: edit any issue, set assignee or milestone and manage labels
+  - Better performance for pages with events list, issues list and commits list
+  - Faster automerge check and merge itself when source and target branches are in same repository 
+  - Correctly show anonymous authorized applications under Profile > Applications.
+  - Query Optimization in MySQL.
 
-v 7.12.0 (unreleased)
+v 7.12.1
+  - Fix error when deleting a user who has projects (Stan Hu)
+  - Fix post-receive errors on a push when an external issue tracker is configured (Stan Hu)
+  - Add SAML to list of social_provider (Matt Firtion)
+  - Fix merge requests API scope to keep compatibility in 7.12.x patch release (Dmitriy Zaporozhets)
+  - Fix closed merge request scope at milestone page (Dmitriy Zaporozhets)
+  - Revert merge request states renaming 
+  - Fix hooks for web based events with external issue references (Daniel Gerhardt)
+
+v 7.12.0
+  - Fix Error 500 when one user attempts to access a personal, internal snippet (Stan Hu)
+  - Disable changing of target branch in new merge request page when a branch has already been specified (Stan Hu)
   - Fix post-receive errors on a push when an external issue tracker is configured (Stan Hu)
   - Update oauth button logos for Twitter and Google to recommended assets
-  - Fix hooks for web based events with external issue references (Daniel Gerhardt)
   - Update browser gem to version 0.8.0 for IE11 support (Stan Hu)
   - Fix timeout when rendering file with thousands of lines.
   - Add "Remember me" checkbox to LDAP signin form.
   - Add session expiration delay configuration through UI application settings
-  - Fix external issue tracker hook/test for HTTPS URLs (Daniel Gerhardt)
   - Don't notify users mentioned in code blocks or blockquotes.
   - Omit link to generate labels if user does not have access to create them (Stan Hu)
   - Show warning when a comment will add 10 or more people to the discussion.
@@ -47,8 +83,8 @@ v 7.12.0 (unreleased)
   - Add validation to wiki page creation (only [a-zA-Z0-9/_-] are allowed) (Jeroen van Baarsen)
   - Fix new/empty milestones showing 100% completion value (Jonah Bishop)
   - Add a note when an Issue or Merge Request's title changes
-  - Consistently refer to MRs as either Accepted or Rejected.
-  - Add Accepted and Rejected tabs to MR lists.
+  - Consistently refer to MRs as either Merged or Closed.
+  - Add Merged tab to MR lists.
   - Prefix EmailsOnPush email subject with `[Git]`.
   - Group project contributions by both name and email.
   - Clarify navigation labels for Project Settings and Group Settings.
@@ -60,7 +96,7 @@ v 7.12.0 (unreleased)
   - Allow to configure a URL to show after sign out
   - Add an option to automatically sign-in with an Omniauth provider
   - Better performance for web editor (switched from satellites to rugged)
-  - GitLab CI service sends .gitlab-ci.yaml in each push call
+  - GitLab CI service sends .gitlab-ci.yml in each push call
   - When remove project - move repository and schedule it removal
   - Improve group removing logic
   - Trigger create-hooks on backup restore task

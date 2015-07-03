@@ -12,7 +12,7 @@ class Spinach::Features::AdminEmail < Spinach::FeatureSteps
       @selected_group.add_user(create(:user), Gitlab::Access::DEVELOPER)
     end
 
-    within('form#new-admin-email') do
+    page.within('form#new-admin-email') do
       fill_in :subject, with: 'my subject'
       fill_in :body, with: @email_text
 
@@ -50,7 +50,7 @@ class Spinach::Features::AdminEmail < Spinach::FeatureSteps
   end
 
   step 'I get redirected to the sign in path' do
-    current_path.should == root_path
+    expect(current_path).to eq root_path
   end
 
   step 'unsubscribed email is sent' do

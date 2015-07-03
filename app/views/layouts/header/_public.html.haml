@@ -3,7 +3,8 @@
     .header-logo
       = link_to explore_root_path, class: "home" do
         = brand_header_logo
-        %h3 GitLab
+        .gitlab-text-container
+          %h3 GitLab
     .header-content
       - unless current_controller?('sessions')
         .pull-right

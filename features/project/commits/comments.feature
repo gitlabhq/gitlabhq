@@ -39,6 +39,7 @@ Feature: Project Commits Comments
   @javascript
   Scenario: I can delete a comment
     Given I leave a comment like "XML attached"
+    Then I should see a comment saying "XML attached"
     And I delete a comment
     Then I should not see a comment saying "XML attached"
 

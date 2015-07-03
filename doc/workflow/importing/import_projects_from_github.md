@@ -4,6 +4,8 @@ You can import your existing GitHub Enterprise projects following these steps.
 
 * First, you need to [enable GitHub Enterprise support](http://doc.gitlab.com/ee/integration/github.html) on your GitLab instance.
 
+If you want to import from a GitHub Enterprise instance, you need to use GitLab Enterprise; please see the [EE docs for the GitHub integration](http://doc.gitlab.com/ee/integration/github.html).
+
 * Sign in to GitLab.com and go to your dashboard.
 
 * To get to the importer page, you need to go to the "New project" page.

@@ -1,5 +1,5 @@
 namespace :gitlab do
-  desc "GITLAB | Check the configuration of GitLab and its environment"
+  desc "GitLab | Check the configuration of GitLab and its environment"
   task check: %w{gitlab:gitlab_shell:check
                  gitlab:sidekiq:check
                  gitlab:ldap:check
@@ -8,7 +8,7 @@ namespace :gitlab do
 
 
   namespace :app do
-    desc "GITLAB | Check the configuration of the GitLab Rails app"
+    desc "GitLab | Check the configuration of the GitLab Rails app"
     task check: :environment  do
       warn_user_is_not_gitlab
       start_checking "GitLab"
@@ -329,7 +329,7 @@ namespace :gitlab do
   end
 
   namespace :gitlab_shell do
-    desc "GITLAB | Check the configuration of GitLab Shell"
+    desc "GitLab | Check the configuration of GitLab Shell"
     task check: :environment  do
       warn_user_is_not_gitlab
       start_checking "GitLab Shell"
@@ -574,7 +574,7 @@ namespace :gitlab do
 
 
   namespace :sidekiq do
-    desc "GITLAB | Check the configuration of Sidekiq"
+    desc "GitLab | Check the configuration of Sidekiq"
     task check: :environment  do
       warn_user_is_not_gitlab
       start_checking "Sidekiq"
@@ -667,7 +667,7 @@ namespace :gitlab do
   end
 
   namespace :repo do
-    desc "GITLAB | Check the integrity of the repositories managed by GitLab"
+    desc "GitLab | Check the integrity of the repositories managed by GitLab"
     task check: :environment do
       namespace_dirs = Dir.glob(
         File.join(Gitlab.config.gitlab_shell.repos_path, '*')

@@ -27,27 +27,31 @@ describe Gitlab::Auth do
 
     it "should not find user with invalid password" do
       password = 'wrong'
-      expect( gl_auth.find(username, password) ).to_not eql user
+      expect( gl_auth.find(username, password) ).not_to eql user
     end
 
     it "should not find user with invalid login" do
       user = 'wrong'
-      expect( gl_auth.find(username, password) ).to_not eql user
+      expect( gl_auth.find(username, password) ).not_to eql user
     end
 
     context "with kerberos" do
-      before { Devise.stub(omniauth_providers: [:kerberos]) }
+      before do
+        allow(Devise).to receive_messages(omniauth_providers: [:kerberos])
+      end
 
       it "finds user" do
-        Gitlab::Kerberos::Authentication.stub(valid?: true)
-        Gitlab::Kerberos::Authentication.stub(email: user.email)
-        
+        allow(Gitlab::Kerberos::Authentication).to receive_messages(valid?: true)
+        allow(Gitlab::Kerberos::Authentication).to receive_messages(email: user.email)
+
         expect( gl_auth.find(username, password) ).to eql user
       end
     end
 
     context "with ldap enabled" do
-      before { Gitlab::LDAP::Config.stub(enabled?: true) }
+      before do
+        allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
+      end
 
       it "tries to autheticate with db before ldap" do
         expect(Gitlab::LDAP::Authentication).not_to receive(:login)

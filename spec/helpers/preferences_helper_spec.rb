@@ -61,7 +61,7 @@ describe PreferencesHelper do
       (1..5).each do |color_scheme_id|
         context "with color_scheme_id == #{color_scheme_id}" do
           it 'should return a string' do
-            current_user = double(:color_scheme_id => color_scheme_id)
+            current_user = double(color_scheme_id: color_scheme_id)
             allow(self).to receive(:current_user).and_return(current_user)
             expect(user_color_scheme_class).to be_kind_of(String)
           end

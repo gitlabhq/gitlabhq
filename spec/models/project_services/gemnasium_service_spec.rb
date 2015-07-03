@@ -32,7 +32,7 @@ describe GemnasiumService do
 
     before do
       @gemnasium_service = GemnasiumService.new
-      @gemnasium_service.stub(
+      allow(@gemnasium_service).to receive_messages(
         project_id: project.id,
         project: project,
         service_hook: true,

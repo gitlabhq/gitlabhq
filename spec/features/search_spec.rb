@@ -17,4 +17,3 @@ describe "Search", feature: true  do
     expect(page).to have_content @project.name
   end
 end
-

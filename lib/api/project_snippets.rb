@@ -46,7 +46,7 @@ module API
       # Example Request:
       #   POST /projects/:id/snippets
       post ":id/snippets" do
-        authorize! :write_project_snippet, user_project
+        authorize! :create_project_snippet, user_project
         required_attributes! [:title, :file_name, :code, :visibility_level]
 
         attrs = attributes_for_keys [:title, :file_name, :visibility_level]
@@ -74,7 +74,7 @@ module API
       #   PUT /projects/:id/snippets/:snippet_id
       put ":id/snippets/:snippet_id" do
         @snippet = user_project.snippets.find(params[:snippet_id])
-        authorize! :modify_project_snippet, @snippet
+        authorize! :update_project_snippet, @snippet
 
         attrs = attributes_for_keys [:title, :file_name, :visibility_level]
         attrs[:content] = params[:code] if params[:code].present?
@@ -98,7 +98,7 @@ module API
       delete ":id/snippets/:snippet_id" do
         begin
           @snippet = user_project.snippets.find(params[:snippet_id])
-          authorize! :modify_project_snippet, @snippet
+          authorize! :update_project_snippet, @snippet
           @snippet.destroy
         rescue
           not_found!('Snippet')

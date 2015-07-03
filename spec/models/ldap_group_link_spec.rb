@@ -11,7 +11,7 @@ describe LdapGroupLink do
 
         group_link = build(:ldap_group_link,
           cn: 'group1', group_id: 1, provider: 'ldapmain')
-        expect(group_link).to_not be_valid
+        expect(group_link).not_to be_valid
 
         group_link.group_id = 2
         expect(group_link).to be_valid

@@ -11,7 +11,10 @@ describe Issue, "Issuable" do
   end
 
   describe "Validation" do
-    before { subject.stub(set_iid: false) }
+    before do
+      allow(subject).to receive(:set_iid).and_return(false)
+    end
+
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:iid) }
     it { is_expected.to validate_presence_of(:author) }

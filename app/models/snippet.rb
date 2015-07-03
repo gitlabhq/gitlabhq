@@ -34,7 +34,6 @@ class Snippet < ActiveRecord::Base
   validates :author, presence: true
   validates :title, presence: true, length: { within: 0..255 }
   validates :file_name,
-    presence: true,
     length: { within: 0..255 },
     format: { with: Gitlab::Regex.file_name_regex,
               message: Gitlab::Regex.file_name_regex_message }

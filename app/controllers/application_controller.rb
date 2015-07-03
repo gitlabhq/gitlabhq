@@ -89,7 +89,7 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_out_path_for(resource)
-    current_application_settings.after_sign_out_path || new_user_session_path 
+    current_application_settings.after_sign_out_path || new_user_session_path
   end
 
   def abilities
@@ -138,11 +138,6 @@ class ApplicationController < ActionController::Base
 
   def authorize_project!(action)
     return access_denied! unless can?(current_user, action, project)
-  end
-
-  def authorize_labels!
-    # Labels should be accessible for issues and/or merge requests
-    authorize_read_issue! || authorize_read_merge_request!
   end
 
   def access_denied!

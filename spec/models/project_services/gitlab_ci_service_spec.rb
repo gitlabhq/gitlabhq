@@ -21,18 +21,15 @@
 require 'spec_helper'
 
 describe GitlabCiService do
-  describe "Associations" do
-    it { is_expected.to belong_to :project }
-    it { is_expected.to have_one :service_hook }
-  end
-
-  describe "Mass assignment" do
+  describe 'associations' do
+    it { is_expected.to belong_to(:project) }
+    it { is_expected.to have_one(:service_hook) }
   end
 
   describe 'commits methods' do
     before do
       @service = GitlabCiService.new
-      @service.stub(
+      allow(@service).to receive_messages(
         service_hook: true,
         project_url: 'http://ci.gitlab.org/projects/2',
         token: 'verySecret'
@@ -56,9 +53,9 @@ describe GitlabCiService do
 
       it "calls ci_yaml_file" do
         service_hook = double
-        service_hook.should_receive(:execute)
-        @service.should_receive(:service_hook).and_return(service_hook)
-        @service.should_receive(:ci_yaml_file).with(push_sample_data[:checkout_sha])
+        expect(service_hook).to receive(:execute)
+        expect(@service).to receive(:service_hook).and_return(service_hook)
+        expect(@service).to receive(:ci_yaml_file).with(push_sample_data[:checkout_sha])
 
         @service.execute(push_sample_data)
       end
@@ -72,7 +69,7 @@ describe GitlabCiService do
       @user = create(:user)
 
       @service = GitlabCiService.new
-      @service.stub(
+      allow(@service).to receive_messages(
         service_hook: true,
         project_url: 'http://ci.gitlab.org/projects/2',
         token: 'verySecret',
