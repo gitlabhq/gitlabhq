@@ -396,3 +396,31 @@ Parameters:
 - `id` (required)  - SSH key ID
 
 Will return `200 OK` on success, or `404 Not found` if either user or key cannot be found.
+
+## Block user
+
+Blocks the specified user.  Available only for admin.
+
+```
+PUT /users/:uid/block
+```
+
+Parameters:
+
+- `uid` (required) - id of specified user
+
+Will return `200 OK` on success, or `404 User Not Found` is user cannot be found.
+
+## Unblock user
+
+Unblocks the specified user.  Available only for admin.
+
+```
+PUT /users/:uid/unblock
+```
+
+Parameters:
+
+- `uid` (required) - id of specified user
+
+Will return `200 OK` on success, or `404 User Not Found` is user cannot be found.
