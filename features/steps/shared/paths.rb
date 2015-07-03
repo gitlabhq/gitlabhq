@@ -127,8 +127,8 @@ module SharedPaths
     visit profile_preferences_path
   end
 
-  step 'I visit profile history page' do
-    visit history_profile_path
+  step 'I visit Audit Log page' do
+    visit audit_log_profile_path
   end
 
   # ----------------------------------------

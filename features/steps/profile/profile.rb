@@ -115,7 +115,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I should see my activity' do
-    expect(page).to have_content "#{current_user.name} closed issue"
+    expect(page).to have_content "Signed in with standard authentication"
   end
 
   step 'my password is expired' do
