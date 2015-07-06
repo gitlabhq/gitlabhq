@@ -44,8 +44,8 @@
       = icon('image fw')
       %span
         Preferences
-  = nav_link(path: 'profiles#history') do
-    = link_to history_profile_path, title: 'History', data: {placement: 'right'} do
+  = nav_link(path: 'profiles#audit_log') do
+    = link_to audit_log_profile_path, title: 'Audit Log', data: {placement: 'right'} do
       = icon('history fw')
       %span
-        History
+        Audit Log
