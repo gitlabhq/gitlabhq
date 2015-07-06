@@ -1,0 +1,16 @@
+%table.table#audits
+  %thead
+    %tr
+      %th Action
+      %th When
+
+  %tbody
+    - events.each do |event|
+      %tr
+        %td
+          %span
+            Signed in with 
+            %b= event.details[:with]
+            authentication
+        %td #{time_ago_in_words event.created_at} ago
+= paginate events, theme: "gitlab"

@@ -5,6 +5,7 @@ v 7.13.0 (unreleased)
   - Fix external issue tracker hook/test for HTTPS URLs (Daniel Gerhardt)
   - Remove link leading to a 404 error in Deploy Keys page (Stan Hu)
   - Add support for unlocking users in admin settings (Stan Hu)
+  - Add Irker service configuration options (Stan Hu)
   - Fix order of issues imported form GitHub (Hiroyuki Sato)
   - Bump rugments to 1.0.0beta8 to fix C prototype function highlighting (Jonathon Reinhart)
   - Fix Merge Request webhook to properly fire "merge" action when accepted from the web UI
@@ -39,6 +40,8 @@ v 7.13.0 (unreleased)
 
 v 7.12.2
   - Correctly show anonymous authorized applications under Profile > Applications.
+  - Faster automerge check and merge itself when source and target branches are in same repository
+  - Audit log for user authentication
 
 v 7.12.1
   - Fix error when deleting a user who has projects (Stan Hu)
