@@ -22,7 +22,7 @@ Next time, you can just use docker start and stop to run the container.
 Run the image:
 ```bash
 sudo docker run --detach \
-	--publish 80443:443 --publish 8080:80 --publish 2222:22 \
+	--publish 8443:443 --publish 8080:80 --publish 2222:22 \
 	--name gitlab \
 	--restart always \
 	--volume /srv/gitlab/config:/etc/gitlab \
