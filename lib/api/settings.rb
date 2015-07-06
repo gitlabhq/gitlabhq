@@ -1,7 +1,6 @@
 module API
   class Settings < Grape::API
-    before { authenticate! }
-    before { authorize_admin_project }
+    before { authenticated_as_admin! }
 
     helpers do
       def current_settings
