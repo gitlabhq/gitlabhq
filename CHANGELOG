@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.13.0 (unreleased)
   - Fix redirection to home page URL for unauthorized users (Daniel Gerhardt)
+  - Add branch switching support for graphs (Daniel Gerhardt)
   - Fix external issue tracker hook/test for HTTPS URLs (Daniel Gerhardt)
   - Remove link leading to a 404 error in Deploy Keys page (Stan Hu)
   - Add support for unlocking users in admin settings (Stan Hu)
