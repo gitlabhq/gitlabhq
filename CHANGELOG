@@ -20,6 +20,7 @@ v 7.13.0 (unreleased)
   - Update maintenance documentation to explain no need to recompile asssets for omnibus installations (Stan Hu)
   - Support commenting on diffs in side-by-side mode (Stan Hu)
   - Fix JavaScript error when clicking on the comment button on a diff line that has a comment already (Stan Hu)
+  - Return 40x error codes if branch could not be deleted in UI (Stan Hu)
   - Remove project visibility icons from dashboard projects list
   - Rename "Design" profile settings page to "Preferences".
   - Allow users to customize their default Dashboard page.
