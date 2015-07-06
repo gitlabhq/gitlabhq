@@ -31,21 +31,11 @@ sudo docker run --detach \
 	gitlab/gitlab-ce:latest
 ```
 
-This will start GitLab CE container and expose ports needed to access SSH, HTTP and HTTPS.
+This will download and start GitLab CE container and publish ports needed to access SSH, HTTP and HTTPS.
 All GitLab data will be stored as subdirectories of `/srv/gitlab/`.
 The container will automatically `restart` after system reboot.
 
 After this you can login to the web interface as explained above in 'After starting a container'.
-
-## Build and publish the image
-
-This guide will also let you know how to build docker image yourself.
-Please run all the commands from the GitLab repo root directory.
-People using boot2docker should run all the commands without sudo.
-
-```bash
-sudo docker build --tag gitlab/gitlab-ce:latest
-```
 
 ## Where is the data stored?
 
@@ -151,7 +141,17 @@ sudo docker run --detach \
 
 You can then access GitLab instance at http://1.1.1.1/ and https://1.1.1.1/.
 
-### Publish images to Dockerhub
+### Build the image
+
+This guide will also let you know how to build docker image yourself.
+Please run the command from the GitLab repo root directory.
+People using boot2docker should run all the commands without sudo.
+
+```bash
+sudo docker build --tag gitlab/gitlab-ce:latest docker/
+```
+
+### Publish the image to Dockerhub
 
 - Ensure the containers are running
 - Login to Dockerhub with `sudo docker login`
