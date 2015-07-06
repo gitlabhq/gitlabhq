@@ -512,7 +512,7 @@ class Project < ActiveRecord::Base
     end
     if group
       group.hooks.send(hooks_scope).each do |hook|
-        hook.async_execute(data)
+        hook.async_execute(data, hooks_scope.to_s)
       end
     end
   end
