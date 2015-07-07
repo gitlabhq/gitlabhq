@@ -62,6 +62,8 @@ sudo docker exec -it gitlab vi /etc/gitlab/gitlab.rb
 
 **You should set the `external_url` to point to a valid URL.**
 
+**You may also be interesting in [Enabling HTTPS](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/nginx.md#enable-https).**
+
 **To receive e-mails from GitLab you have to configure the [SMTP settings](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/smtp.md),
 because Docker image doesn't have a SMTP server.**
 
