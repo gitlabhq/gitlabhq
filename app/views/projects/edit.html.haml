@@ -176,7 +176,7 @@
               .form-group
                 = label_tag :new_namespace_id, nil, class: 'control-label' do
                   %span Namespace
-                .col-sm-10
+                .col-sm-9
                   .form-group
                     = select_tag :new_namespace_id, namespaces_options(@project.namespace_id), { prompt: 'Choose a project namespace', class: 'select2' }
                   %ul
