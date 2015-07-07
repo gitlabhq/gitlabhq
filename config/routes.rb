@@ -507,6 +507,7 @@ Gitlab::Application.routes.draw do
             get :branch_to
             get :update_branches
           end
+          resources :approvers, only: :destroy
         end
 
         resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
@@ -569,6 +570,8 @@ Gitlab::Application.routes.draw do
             get ":secret/:filename", action: :show, as: :show, constraints: { filename: /[^\/]+/ }
           end
         end
+
+        resources :approvers, only: :destroy
       end
 
       get "/audit_events" => "audit_events#project_log"

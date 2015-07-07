@@ -149,6 +149,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def automerge
     return access_denied! unless @merge_request.can_be_merged_by?(current_user)
+    return render_404 unless @merge_request.approved?
 
     if @merge_request.automergeable?
       AutoMergeWorker.perform_async(@merge_request.id, current_user.id, params)
@@ -201,6 +202,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def approve
+    unless @merge_request.can_approve?(current_user)
+      return render_404
+    end
+
     @approval = @merge_request.approvals.new
     @approval.user = current_user
 
@@ -286,7 +291,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def merge_request_params
     params.require(:merge_request).permit(
       :title, :assignee_id, :source_project_id, :source_branch,
-      :target_project_id, :target_branch, :milestone_id,
+      :target_project_id, :target_branch, :milestone_id, :approver_ids,
       :state_event, :description, :task_num, label_ids: []
     )
   end

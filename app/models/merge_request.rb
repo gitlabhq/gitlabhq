@@ -36,6 +36,7 @@ class MergeRequest < ActiveRecord::Base
 
   has_one :merge_request_diff, dependent: :destroy
   has_many :approvals, dependent: :destroy
+  has_many :approvers, as: :target, dependent: :destroy
 
   after_create :create_merge_request_diff
   after_update :update_merge_request_diff
@@ -419,16 +420,29 @@ class MergeRequest < ActiveRecord::Base
     approvals_required - approvals.count
   end
 
+  def approvers_left
+    user_ids = overall_approvers.map(&:user_id) - approvals.map(&:user_id)
+    User.where id: user_ids
+  end
+
   def approvals_required
     target_project.approvals_before_merge
   end
 
   def requires_approve?
-    !approvals_required.zero?
+    approvals_required.nonzero?
+  end
+
+  def overall_approvers
+    if approvers.any?
+      approvers
+    else
+      target_project.approvers
+    end
   end
 
   def approved?
-    approvals.count >= approvals_required
+    approvals_left.zero?
   end
 
   def approved_by?(user)
@@ -437,6 +451,15 @@ class MergeRequest < ActiveRecord::Base
 
   def approved_by_users
     approvals.map(&:user)
+  end
+
+  def can_approve?(user)
+    approvers_left.include?(user) ||
+    (any_approver_allowed? && !approved_by?(user))
+  end
+
+  def any_approver_allowed?
+    approvals_left > approvers_left.count
   end
 
   def has_ci?
@@ -458,6 +481,12 @@ class MergeRequest < ActiveRecord::Base
       "Closed"
     else
       "Open"
+    end
+  end
+
+  def approver_ids=(value)
+    value.split(",").map(&:strip).each do |user_id|
+      approvers.find_or_create_by(user_id: user_id, target_id: id)
     end
   end
 end

@@ -36,3 +36,31 @@
         = f.label :reset_approvers_on_push do
           = f.check_box :reset_approvers_on_push
           %span.descr Reset approvers on push
+
+  .form-group
+    = f.label :approver_ids, class: 'control-label' do
+      Approvers
+    .col-sm-10
+      = users_select_tag("project[approver_ids]", multiple: true, class: 'input-large', scope: :all, email_user: true)
+      .help-block
+        Default approvers for each merge request.
+
+      .panel.panel-default.prepend-top-10
+        .panel-heading
+          Approvers
+          %small
+            (#{@project.approvers.count(:all)})
+        %ul.well-list
+          - @project.approvers.each do |approver|
+            %li
+              = link_to approver.user.name, approver.user
+              .pull-right
+                = link_to namespace_project_approver_path(@project.namespace, @project, approver), data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove approver' do
+                  = icon("sign-out")
+                  Remove
+          - if @project.approvers.empty?
+            %li There are no approvers
+
+
+:coffeescript
+  new UsersSelect()
