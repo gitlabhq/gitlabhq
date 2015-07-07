@@ -108,7 +108,7 @@ sudo docker pull gitlab/gitlab-ce:latest
 1. create the container once again with previously specified options.
 ```bash
 sudo docker run --detach \
-	--publish 80443:443 --publish 8080:80 --publish 2222:22 \
+	--publish 8443:443 --publish 8080:80 --publish 2222:22 \
 	--name gitlab \
 	--restart always \
 	--volume /srv/gitlab/config:/etc/gitlab \
