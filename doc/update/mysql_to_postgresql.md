@@ -57,12 +57,15 @@ sudo -u git -H git clone https://github.com/gitlabhq/mysql-postgresql-converter.
 sudo -u git -H mkdir db
 sudo -u git -H python mysql-postgresql-converter/db_converter.py gitlabhq_production.mysql db/database.sql
 
+# Compress database backup
+sudo -u git -H gzip db/database.sql
+
 # Replace the MySQL dump in TIMESTAMP_gitlab_backup.tar.
 
 # Warning: if you forget to replace TIMESTAMP below, tar will create a new file
 # 'TIMESTAMP_gitlab_backup.tar' without giving an error.
 
-sudo -u git -H tar rf TIMESTAMP_gitlab_backup.tar db/database.sql
+sudo -u git -H tar rf TIMESTAMP_gitlab_backup.tar db/database.sql.gz
 
 # Done! TIMESTAMP_gitlab_backup.tar can now be restored into a Postgres GitLab
 # installation. Remember to recreate the indexes after the import.
