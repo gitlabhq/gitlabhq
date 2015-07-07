@@ -8,7 +8,7 @@ To create a new group, sign in to [GitLab.com](https://gitlab.com)
 
 When you are on your Dashboard, click on "Groups" on the left side of your screen
 
-![Go to groups](basicsimages/select-group.png)
+![Go to groups](basicsimages/select-group2.png)
 
 Click on "New group" on the top right side of your screen
 
@@ -24,7 +24,7 @@ Click on "New group" on the top right side of your screen
 
 ![Group information](basicsimages/group_info.png)
 
-## Add a project to a group
+## Add a group to a project
 
 There are 2 ways of adding a group to a new project
 
