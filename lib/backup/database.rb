@@ -18,7 +18,8 @@ module Backup
       when "postgresql" then
         $progress.print "Dumping PostgreSQL database #{config['database']} ... "
         pg_env
-        system('pg_dump', config['database'], out: db_file_name)
+        # Pass '--clean' to include 'DROP TABLE' statements in the DB dump.
+        system('pg_dump', '--clean', config['database'], out: db_file_name)
       end
       report_success(success)
       abort 'Backup failed' unless success
@@ -41,10 +42,6 @@ module Backup
         system('mysql', *mysql_args, config['database'], in: db_file_name)
       when "postgresql" then
         $progress.print "Restoring PostgreSQL database #{config['database']} ... "
-        # Drop all tables because PostgreSQL DB dumps do not contain DROP TABLE
-        # statements like MySQL.
-        Rake::Task["gitlab:db:drop_all_tables"].invoke
-        Rake::Task["gitlab:db:drop_all_postgres_sequences"].invoke
         pg_env
         system('psql', config['database'], '-f', db_file_name)
       end

@@ -39,6 +39,7 @@ v 7.13.0 (unreleased)
   - Correctly show anonymous authorized applications under Profile > Applications.
   - Query Optimization in MySQL.
   - Allow users to be blocked and unblocked via the API
+  - Use native Postgres database cleaning during backup restore
 
 v 7.12.2
   - Correctly show anonymous authorized applications under Profile > Applications.
