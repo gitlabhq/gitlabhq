@@ -6,7 +6,7 @@ class ProjectsController < ApplicationController
 
   # Authorize
   before_action :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer, :archive, :unarchive]
-  before_action :event_filter, only: :show
+  before_action :event_filter, only: [:show, :activity]
 
   layout :determine_layout
 
@@ -59,6 +59,16 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def activity
+    respond_to do |format|
+      format.html
+      format.json do
+        load_events
+        pager_json('events/_events', @events.count)
+      end
+    end
+  end
+
   def show
     if @project.import_in_progress?
       redirect_to namespace_project_import_path(@project.namespace, @project)
@@ -79,11 +89,6 @@ class ProjectsController < ApplicationController
         else
           render 'projects/no_repo'
         end
-      end
-
-      format.json do
-        load_events
-        pager_json('events/_events', @events.count)
       end
 
       format.atom do
@@ -151,7 +156,7 @@ class ProjectsController < ApplicationController
   end
 
   def markdown_preview
-    text = params[:text] 
+    text = params[:text]
 
     ext = Gitlab::ReferenceExtractor.new(@project, current_user)
     ext.analyze(text)

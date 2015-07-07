@@ -314,6 +314,7 @@ Gitlab::Application.routes.draw do
         post :toggle_star
         post :markdown_preview
         get :autocomplete_sources
+        get :activity
       end
 
       scope module: :projects do

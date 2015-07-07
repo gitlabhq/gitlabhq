@@ -7,6 +7,7 @@
   = render 'shared/no_password'
 
 = render "home_panel"
+
 .project-stats
   %ul.nav.nav-pills
     %li
@@ -31,6 +32,12 @@
         = link_to contribution_guide_url(@project) do
           Contribution guide
 
+- if @project.archived?
+  .text-warning.center.prepend-top-20
+    %p
+      = icon("exclamation-triangle fw")
+      Archived project! Repository is read-only
+
 %hr
 %section
   - if readme = @repository.readme
@@ -43,4 +50,19 @@
       .wiki
         = render_readme(readme)
   - else
-    %h4 Add README to this repository
+    %h4
+      Please
+      = link_to "add README", namespace_project_new_blob_path(@project.namespace, @project, tree_join(@repository.root_ref), file_name: 'README.md')
+      file to this repository
+
+
+- if current_user
+  - access = user_max_access_in_project(current_user, @project)
+  - if access
+    %hr
+    %p.light
+      You have #{access} access to this project.
+      - if @project.project_member_by_id(current_user)
+        = link_to leave_namespace_project_project_members_path(@project.namespace, @project),
+          data: { confirm: leave_project_message(@project) }, method: :delete, title: 'Leave project', class: 'cred' do
+          Leave this project

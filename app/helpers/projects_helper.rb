@@ -85,7 +85,7 @@ module ProjectsHelper
   end
 
   def link_to_toggle_star(title, starred)
-    cls = 'star-btn btn btn-sm btn-default'
+    cls = 'star-btn btn'
 
     toggle_text =
       if starred

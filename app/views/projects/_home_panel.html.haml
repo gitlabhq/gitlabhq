@@ -23,10 +23,15 @@
       - if current_user && can?(current_user, :fork_project, @project) && @project.namespace != current_user.namespace
         .inline.fork-buttons.prepend-left-10
           - if current_user.already_forked?(@project) && current_user.manageable_namespaces.size < 2
-            = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: 'Go to your fork', class: 'btn btn-sm btn-default' do
+            = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: 'Go to your fork', class: 'btn' do
               = link_to_toggle_fork
           - else
-            = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "Fork project", class: 'btn btn-sm btn-default' do
+            = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "Fork project", class: 'btn' do
               = link_to_toggle_fork
+      - elsif forked_from_project = @project.forked_from_project
+        = link_to project_path(forked_from_project), class: 'btn' do
+          = icon("code-fork fw")
+          Forked from
+          = forked_from_project.namespace.try(:name)
 
   = render "shared/clone_panel"
