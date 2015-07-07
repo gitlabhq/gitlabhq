@@ -34,7 +34,7 @@ need to follow the firsts steps of the next section.
 in the `Server host` field on the Web page
 1. Enter the server port of `irkerd` (e.g. defaults to 6659) in the
 `Server port` field on the Web page.
-1. Optional: if `Default irc uri` is set, it has to be in the format
+1. Optional: if `Default IRC URI` is set, it has to be in the format
 `irc[s]://domain.name` and will be prepend to each and every channel provided
 by the user which is not a full URI.
 1. Specify the recipients (e.g. #channel1, user1, etc.)
