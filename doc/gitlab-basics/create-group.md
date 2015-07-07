@@ -28,12 +28,12 @@ Click on "New group" on the top right side of your screen
 
 There are 2 ways of adding a group to a new project
 
-1. Go into a group
+* Go into a group
 
-Click on "New project" on the right side of your screen and [create your project](create-project.md)
+Click on "New project" on the right side of your screen and [create a project](create-project.md)
 
 ![New project](basicsimages/new_project.png)
 
-2. If you'd like to select a group for a new project, when you [create your project](create-project.md), click on "create a group" on the bottom right side of your screen
+* If you'd like to select a group for a new project, when you [create a project](create-project.md), click on "create a group" on the bottom right side of your screen
 
 ![Create a group](basicsimages/create_group.png)
