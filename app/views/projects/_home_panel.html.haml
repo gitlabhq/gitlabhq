@@ -33,5 +33,9 @@
           = icon("code-fork fw")
           Forked from
           = forked_from_project.namespace.try(:name)
+      - if can? current_user, :download_code, @project
+        .inline.prepend-left-10
+          = link_to archive_namespace_project_repository_path(@project.namespace, @project, ref: @ref, format: 'zip'), class: 'btn', rel: 'nofollow' do
+            %i.fa.fa-download
 
   = render "shared/clone_panel"
