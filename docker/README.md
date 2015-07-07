@@ -124,7 +124,7 @@ On the first run GitLab will reconfigure and update itself.
 ### Run GitLab CE on public IP address
 
 You can make Docker to use your IP address and forward all traffic to the GitLab CE container.
-You can do that by modifying the `--publish` ((Binding container ports to the host)[https://docs.docker.com/articles/networking/#binding-ports]):
+You can do that by modifying the `--publish` ([Binding container ports to the host](https://docs.docker.com/articles/networking/#binding-ports)):
 
 > --publish=[] : Publish a container᾿s port or a range of ports to the host format: ip:hostPort:containerPort | ip::containerPort | hostPort:containerPort | containerPort
 
