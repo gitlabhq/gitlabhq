@@ -6,13 +6,13 @@ When you create a group in GitLab.com, you can add projects and users
 
 To create a new group, sign in to [GitLab.com](https://gitlab.com)
 
-* Click on "new project" on the right side of your screen
+When you are on your Dashboard, click on "Groups" on the left side of your screen
 
-![Create a project](basicsimages/new_project.png)
+![Go to groups](basicsimages/select-group.png)
 
-* Click on "create a group" on the bottom left side of your screen
+Click on "New group" on the top right side of your screen
 
-![Create a group](basicsimages/create_group.png)
+![New group](basicsimages/click-on-new-group.png)
 
 1. Add a group path or group name (you can't add spaces, so you can use hyphens or underscores)
 
@@ -24,20 +24,16 @@ To create a new group, sign in to [GitLab.com](https://gitlab.com)
 
 ![Group information](basicsimages/group_info.png)
 
-## Add a group to a project
+## Add a project to a group
 
-* Select a project on the right side of your screen
+There are 2 ways of adding a group to a new project
 
-![Select a project](basicsimages/select_project.png)
+1. Go into a group
 
-* Click on "settings" on the left side of your screen
+Click on "New project" on the right side of your screen and [create your project](create-project.md)
 
-![Settings](basicsimages/settings.png)
+![New project](basicsimages/new_project.png)
 
-* Click on "groups" on the left side of your screen
+2. If you'd like to select a group for a new project, when you [create your project](create-project.md), click on "create a group" on the bottom right side of your screen
 
-![Groups](basicsimages/groups.png)
-
-* Find the group and click on "share"
-
-![Find a group](basicsimages/find_group.png)
+![Create a group](basicsimages/create_group.png)
