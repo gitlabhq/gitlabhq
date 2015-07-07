@@ -57,6 +57,7 @@ If you have enough RAM memory and a recent CPU the speed of GitLab is mainly lim
 - 16 cores supports up to 10,000 users
 - 32 cores supports up to 20,000 users
 - 64 cores supports up to 40,000 users
+- More users? Run it on [multiple application servers](https://about.gitlab.com/high-availability/)
 
 ### Memory
 
@@ -71,6 +72,7 @@ With less memory GitLab will give strange errors during the reconfigure run and 
 - 16GB RAM supports up to 10,000 users
 - 32GB RAM supports up to 20,000 users
 - 64GB RAM supports up to 40,000 users
+- More users? Run it on [multiple application servers](https://about.gitlab.com/high-availability/)
 
 Notice: The 25 workers of Sidekiq will show up as separate processes in your process overview (such as top or htop) but they share the same RAM allocation since Sidekiq is a multithreaded application.
 
