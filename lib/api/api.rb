@@ -49,5 +49,6 @@ module API
     mount Namespaces
     mount Branches
     mount Labels
+    mount Settings
   end
 end

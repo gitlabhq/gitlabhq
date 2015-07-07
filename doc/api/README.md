@@ -20,6 +20,7 @@
 - [System Hooks](system_hooks.md)
 - [Groups](groups.md)
 - [Namespaces](namespaces.md)
+- [Settings](settings.md)
 
 ## Clients
 

@@ -277,5 +277,27 @@ module API
     class BroadcastMessage < Grape::Entity
       expose :message, :starts_at, :ends_at, :color, :font
     end
+
+    class ApplicationSetting < Grape::Entity
+      expose :id
+      expose :default_projects_limit
+      expose :signup_enabled
+      expose :signin_enabled
+      expose :gravatar_enabled
+      expose :sign_in_text
+      expose :created_at
+      expose :updated_at
+      expose :home_page_url
+      expose :default_branch_protection
+      expose :twitter_sharing_enabled
+      expose :restricted_visibility_levels
+      expose :max_attachment_size
+      expose :session_expire_delay
+      expose :default_project_visibility
+      expose :default_snippet_visibility
+      expose :restricted_signup_domains
+      expose :user_oauth_applications
+      expose :after_sign_out_path
+    end
   end
 end

@@ -22,9 +22,19 @@ module Backup
       end
       report_success(success)
       abort 'Backup failed' unless success
+
+      $progress.print 'Compressing database ... '
+      success = system('gzip', db_file_name)
+      report_success(success)
+      abort 'Backup failed: compress error' unless success
     end
 
     def restore
+      $progress.print 'Decompressing database ... '
+      success = system('gzip', '-d', db_file_name_gz)
+      report_success(success)
+      abort 'Restore failed: decompress error' unless success
+
       success = case config["adapter"]
       when /^mysql/ then
         $progress.print "Restoring MySQL database #{config['database']} ... "
@@ -46,6 +56,10 @@ module Backup
 
     def db_file_name
       File.join(db_dir, 'database.sql')
+    end
+
+    def db_file_name_gz
+      File.join(db_dir, 'database.sql.gz')
     end
 
     def mysql_args
