@@ -3,9 +3,12 @@ require 'rails_helper'
 feature 'Merge Request filtering by Milestone', feature: true do
   include Select2Helper
 
+  let(:project)   { create(:project, :public) }
+  let(:milestone) { create(:milestone, project: project) }
+
   scenario 'filters by no Milestone', js: true do
-    project = create(:project, :public)
     create(:merge_request, :with_diffs, source_project: project)
+    create(:merge_request, :simple, source_project: project, milestone: milestone)
 
     visit_merge_requests(project)
     filter_by_milestone(Milestone::None.title)
@@ -14,9 +17,8 @@ feature 'Merge Request filtering by Milestone', feature: true do
   end
 
   scenario 'filters by a specific Milestone', js: true do
-    project = create(:project, :public)
-    milestone = create(:milestone, project: project)
     create(:merge_request, :with_diffs, source_project: project, milestone: milestone)
+    create(:merge_request, :simple, source_project: project)
 
     visit_merge_requests(project)
     filter_by_milestone(milestone.title)

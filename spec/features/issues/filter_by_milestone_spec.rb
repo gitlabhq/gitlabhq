@@ -3,9 +3,12 @@ require 'rails_helper'
 feature 'Issue filtering by Milestone', feature: true do
   include Select2Helper
 
+  let(:project)   { create(:project, :public) }
+  let(:milestone) { create(:milestone, project: project) }
+
   scenario 'filters by no Milestone', js: true do
-    project = create(:project, :public)
     create(:issue, project: project)
+    create(:issue, project: project, milestone: milestone)
 
     visit_issues(project)
     filter_by_milestone(Milestone::None.title)
@@ -14,9 +17,8 @@ feature 'Issue filtering by Milestone', feature: true do
   end
 
   scenario 'filters by a specific Milestone', js: true do
-    project = create(:project, :public)
-    milestone = create(:milestone, project: project)
     create(:issue, project: project, milestone: milestone)
+    create(:issue, project: project)
 
     visit_issues(project)
     filter_by_milestone(milestone.title)
