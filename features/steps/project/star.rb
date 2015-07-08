@@ -5,7 +5,7 @@ class Spinach::Features::ProjectStar < Spinach::FeatureSteps
   include SharedUser
 
   step "The project has no stars" do
-    expect(page).not_to have_content '.star-buttons'
+    expect(page).not_to have_content '.toggle-star'
   end
 
   step "The project has 0 stars" do

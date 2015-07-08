@@ -251,6 +251,10 @@ module SharedPaths
     visit namespace_project_path(project.namespace, project)
   end
 
+  step 'I visit project "Shop" activity page' do
+    visit activity_namespace_project_path(project.namespace, project)
+  end
+
   step 'I visit project "Forked Shop" merge requests page' do
     visit namespace_project_merge_requests_path(@forked_project.namespace, @forked_project)
   end
