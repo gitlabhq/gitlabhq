@@ -1,9 +1,7 @@
 module Issues
   class UpdateService < Issues::BaseService
     def execute(issue)
-      state = params[:state_event]
-
-      case state
+      case params.delete(:state_event)
       when 'reopen'
         Issues::ReopenService.new(project, current_user, {}).execute(issue)
       when 'close'
@@ -16,7 +14,7 @@ module Issues
       filter_params
       old_labels = issue.labels.to_a
 
-      if params.present? && issue.update_attributes(params.except(:state_event))
+      if params.present? && issue.update_attributes(params)
         issue.reset_events_cache
 
         if issue.labels != old_labels
