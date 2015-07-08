@@ -53,6 +53,5 @@ Feature: Project Shortcuts
 
   @javascript
   Scenario: Navigate to project feed
-    Given I visit my project's files page
     Given I press "g" and "e"
     Then the active main tab should be Activity

@@ -189,6 +189,7 @@ Feature: Project Issues
     Given I logout
     Given public project "Community"
     When I visit project "Community" page
+    And I visit project "Community" issues page
     And I click link "New Issue"
     And I should not see assignee field
     And I should not see milestone field
