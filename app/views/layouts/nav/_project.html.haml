@@ -4,8 +4,8 @@
       = icon('home fw')
       %span
         Project
-  = nav_link(path: 'projects#activity', html_options: {class: 'activity'}) do
-    = link_to activity_project_path(@project), title: 'Project', data: {placement: 'right'} do
+  = nav_link(path: 'projects#activity') do
+    = link_to activity_project_path(@project), title: 'Project Activity', class: 'shortcuts-project-activity', data: {placement: 'right'} do
       = icon('dashboard fw')
       %span
         Activity

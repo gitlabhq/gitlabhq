@@ -46,7 +46,13 @@ Feature: Project Shortcuts
     Then the active main tab should be Wiki
 
   @javascript
-  Scenario: Navigate to project feed
+  Scenario: Navigate to project home
     Given I visit my project's files page
     Given I press "g" and "p"
     Then the active main tab should be Home
+
+  @javascript
+  Scenario: Navigate to project feed
+    Given I visit my project's files page
+    Given I press "g" and "e"
+    Then the active main tab should be Activity
