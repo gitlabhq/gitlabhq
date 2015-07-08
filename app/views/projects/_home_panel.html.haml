@@ -2,7 +2,7 @@
 .project-home-panel.clearfix{:class => ("empty-project" if empty_repo)}
   .project-identicon-holder
     = project_icon(@project, alt: '', class: 'project-avatar avatar s90')
-  .lead
+  .project-home-desc.lead
     - if @project.description.present?
       = markdown(@project.description, pipeline: :description)
 
