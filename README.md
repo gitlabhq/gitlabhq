@@ -74,7 +74,7 @@ Since 2011 a minor or major version of GitLab is released on the 22nd of every m
 
 ## Upgrading
 
-For updating the Omnibus installation please see the [update documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/update.md). For installations from source there is an [upgrader script](doc/update/upgrader.md) and there are [upgrade guides](doc/update) detailing all necessary commands to migrate to the next version.
+For upgrading information please see our [update page](https://about.gitlab.com/update/).
 
 ## Install a development environment
 
