@@ -1,9 +1,14 @@
 %ul.nav.nav-sidebar
   = nav_link(path: 'projects#show', html_options: {class: 'home'}) do
     = link_to project_path(@project), title: 'Project', class: 'shortcuts-project', data: {placement: 'right'} do
-      = icon('dashboard fw')
+      = icon('home fw')
       %span
         Project
+  = nav_link(path: 'projects#activity') do
+    = link_to activity_project_path(@project), title: 'Project Activity', class: 'shortcuts-project-activity', data: {placement: 'right'} do
+      = icon('dashboard fw')
+      %span
+        Activity
   - if project_nav_tab? :files
     = nav_link(controller: %w(tree blob blame edit_tree new_tree)) do
       = link_to namespace_project_tree_path(@project.namespace, @project, @ref || @repository.root_ref), title: 'Files',  class: 'shortcuts-tree', data: {placement: 'right'} do
