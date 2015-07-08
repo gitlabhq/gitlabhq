@@ -97,6 +97,9 @@ describe 'gitlab:app namespace rake task' do
           Rake::Task["gitlab:backup:repo:create"].reenable
           Rake::Task["gitlab:backup:uploads:create"].reenable
           create_backup
+          Rake::Task["gitlab:backup:db:create"].reenable
+          Rake::Task["gitlab:backup:repo:create"].reenable
+          Rake::Task["gitlab:backup:uploads:create"].reenable
         end
 
         it 'uses the custom permissions' do
