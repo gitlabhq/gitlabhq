@@ -3,7 +3,7 @@ Feature: Project Shortcuts
   Background:
     Given I sign in as a user
     And I own a project
-    And I visit my project's home page
+    And I visit my project's commits page
 
   @javascript
   Scenario: Navigate to files tab
@@ -12,6 +12,7 @@ Feature: Project Shortcuts
 
   @javascript
   Scenario: Navigate to commits tab
+    Given I visit my project's files page
     Given I press "g" and "c"
     Then the active main tab should be Commits
 
@@ -47,7 +48,6 @@ Feature: Project Shortcuts
 
   @javascript
   Scenario: Navigate to project home
-    Given I visit my project's files page
     Given I press "g" and "p"
     Then the active main tab should be Home
 
