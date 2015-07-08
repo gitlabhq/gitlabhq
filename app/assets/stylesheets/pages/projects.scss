@@ -52,8 +52,11 @@
   .project-repo-buttons {
     margin-top: 25px;
     margin-bottom: 25px;
+
     .btn {
       @extend .btn-info;
+
+      margin-left: 10px;
       font-weight: bold;
       font-size: 14px;
       line-height: 16px;

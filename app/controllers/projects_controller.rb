@@ -75,8 +75,6 @@ class ProjectsController < ApplicationController
       return
     end
 
-    @show_star = !(current_user && current_user.starred?(@project))
-
     respond_to do |format|
       format.html do
         if @project.repository_exists?
@@ -152,7 +150,10 @@ class ProjectsController < ApplicationController
   def toggle_star
     current_user.toggle_star(@project)
     @project.reload
-    render json: { star_count: @project.star_count }
+
+    render json: {
+      html: view_to_html_string("projects/buttons/_star")
+    }
   end
 
   def markdown_preview
