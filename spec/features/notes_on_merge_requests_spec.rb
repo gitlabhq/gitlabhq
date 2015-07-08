@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Comments' do
+describe 'Comments', feature: true do
   include RepoHelpers
 
   describe 'On a merge request', js: true, feature: true do
