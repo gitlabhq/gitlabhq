@@ -265,6 +265,7 @@ class ApplicationController < ActionController::Base
     params[:scope] = 'all' if params[:scope].blank?
     params[:state] = 'opened' if params[:state].blank?
 
+    @sort = params[:sort]
     @filter_params = params.dup
 
     if @project
