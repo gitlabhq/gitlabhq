@@ -259,4 +259,11 @@ module ProjectsHelper
   def leave_project_message(project)
     "Are you sure you want to leave \"#{project.name}\" project?"
   end
+
+  def new_readme_path
+    ref = @repository.root_ref if @repository
+    ref ||= 'master'
+
+    namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'README.md')
+  end
 end

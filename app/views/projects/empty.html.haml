@@ -8,11 +8,13 @@
   %h3.page-title
     The repository for this project is empty
   %p
-    You can
-    = link_to namespace_project_new_blob_path(@project.namespace, @project, 'master'), class: 'btn btn-new' do
-      add a file
-    &nbsp;or do a push via the command line.
+    If you already have files you can push them using command line instructions below.
+    %br
+    Otherwise you can start with
+    = link_to "adding README", new_readme_path, class: 'underlined-link'
+    file to this project.
 
+.prepend-top-20
 %h3.page-title
   Command line instructions
 %div.git-empty
