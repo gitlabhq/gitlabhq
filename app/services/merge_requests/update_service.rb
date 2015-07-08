@@ -18,10 +18,6 @@ module MergeRequests
         MergeRequests::ReopenService.new(project, current_user, {}).execute(merge_request)
       when 'close'
         MergeRequests::CloseService.new(project, current_user, {}).execute(merge_request)
-      when 'task_check'
-        merge_request.update_nth_task(params[:task_num].to_i, true)
-      when 'task_uncheck'
-        merge_request.update_nth_task(params[:task_num].to_i, false)
       end
 
       params[:assignee_id]  = "" if params[:assignee_id] == IssuableFinder::NONE
@@ -31,7 +27,7 @@ module MergeRequests
       old_labels = merge_request.labels.to_a
 
       if params.present? && merge_request.update_attributes(
-        params.except(:state_event, :task_num)
+        params.except(:state_event)
       )
         merge_request.reset_events_cache
 
