@@ -28,7 +28,7 @@ You need to connect your computer to your GitLab account through SSH Keys. They 
 
 ## To generate an SSH Key on your commandline
 
-* Go to your [commandline](start-using-git.md) and follow the [instructions](https://gitlab.com/help/ssh/README) to generate it
+* Go to your [commandline](start-using-git.md) and follow the [instructions](../ssh/README.md) to generate it
 
 * Copy the SSH Key that your commandline created and paste it on the "Key" box on the GitLab page. The title will be added automatically
 
