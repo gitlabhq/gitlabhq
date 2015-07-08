@@ -1,34 +1,30 @@
-require 'spec_helper'
+require 'rails_helper'
 
 feature 'Merge Request filtering by Milestone', feature: true do
   include Select2Helper
 
-  let(:project) { create(:project) }
+  scenario 'filters by no Milestone', js: true do
+    project = create(:project, :public)
+    create(:merge_request, :with_diffs, source_project: project)
 
-  before do
-    login_as(:admin)
-  end
-
-  scenario 'User filters by Merge Requests without a Milestone', js: true do
-    create(:merge_request, :simple, source_project: project)
-
-    visit_merge_requests
+    visit_merge_requests(project)
     filter_by_milestone(Milestone::None.title)
 
     expect(page).to have_css('.merge-request-title', count: 1)
   end
 
-  scenario 'User filters by Merge Requests with a specific Milestone', js: true do
+  scenario 'filters by a specific Milestone', js: true do
+    project = create(:project, :public)
     milestone = create(:milestone, project: project)
-    create(:merge_request, :simple, source_project: project, milestone: milestone)
+    create(:merge_request, :with_diffs, source_project: project, milestone: milestone)
 
-    visit_merge_requests
+    visit_merge_requests(project)
     filter_by_milestone(milestone.title)
 
     expect(page).to have_css('.merge-request-title', count: 1)
   end
 
-  def visit_merge_requests
+  def visit_merge_requests(project)
     visit namespace_project_merge_requests_path(project.namespace, project)
   end
 
