@@ -50,7 +50,8 @@
             = link_to namespace_project_edit_blob_path(@project.namespace, @project, tree_join(@repository.root_ref, readme.name)), class: 'light' do
               %i.fa.fa-pencil
       .wiki
-        = render_readme(readme)
+        = cache(readme_cache_key) do
+          = render_readme(readme)
   - else
     %h3.page-title
       This project does not have README yet
