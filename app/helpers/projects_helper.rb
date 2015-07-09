@@ -272,4 +272,8 @@ module ProjectsHelper
       current_user.recent_push(@project.id)
     end
   end
+
+  def readme_cache_key
+    [@project.id, @project.commit.sha, "readme"].join('-')
+  end
 end
