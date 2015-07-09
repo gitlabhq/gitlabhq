@@ -190,9 +190,6 @@ module API
       expose :attachment_identifier, as: :attachment
       expose :author, using: Entities::UserBasic
       expose :created_at
-      expose :system
-      expose :upvote?, as: :upvote
-      expose :downvote?, as: :downvote
     end
 
     class MRNote < Grape::Entity
