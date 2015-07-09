@@ -1,5 +1,6 @@
 - if current_user
   = link_to toggle_star_namespace_project_path(@project.namespace, @project), class: 'btn star-btn toggle-star', method: :post, remote: true do
+    = icon('star')
     - if current_user.starred?(@project)
       Unstar
     - else
