@@ -33,6 +33,16 @@ module Gitlab
       filename.downcase.end_with?(*%w(.adoc .ad .asciidoc))
     end
 
+    # Public: Determines if the given filename is plain text.
+    #
+    # filename - Filename string to check
+    #
+    # Returns boolean
+    def plain?(filename)
+      filename.downcase.end_with?('.txt') ||
+        filename.downcase == 'readme'
+    end
+
     def previewable?(filename)
       markup?(filename)
     end
