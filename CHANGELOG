@@ -40,6 +40,7 @@ v 7.13.0 (unreleased)
   - Query Optimization in MySQL.
   - Allow users to be blocked and unblocked via the API
   - Use native Postgres database cleaning during backup restore
+  - Redesign project page. Show README as default instead of activity. Move project activity to separate page
 
 v 7.12.2
   - Correctly show anonymous authorized applications under Profile > Applications.
