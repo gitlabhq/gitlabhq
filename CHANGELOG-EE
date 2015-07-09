@@ -1,5 +1,6 @@
 v 7.13 (Unrelease)
   - Fix git hook validation on initial push to master branch.
+  - Reset approvals on push
 
 v 7.12.2
   - Fixed the alignment of project settings icons

@@ -29,3 +29,10 @@
       = f.number_field :approvals_before_merge, class: "form-control", min: 0
       .help-block
         How many users should approve merge request before it can be accepted. 0 - approval is disabled
+
+  .form-group.reset-approvers-on-push
+    .col-sm-offset-2.col-sm-10
+      .checkbox
+        = f.label :reset_approvers_on_push do
+          = f.check_box :reset_approvers_on_push
+          %span.descr Reset approvers on push
