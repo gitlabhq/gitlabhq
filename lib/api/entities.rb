@@ -171,6 +171,7 @@ module API
       expose :source_project_id, :target_project_id
       expose :label_names, as: :labels
       expose :description
+      expose :work_in_progress?, as: :work_in_progress
       expose :milestone, using: Entities::Milestone
     end
 
