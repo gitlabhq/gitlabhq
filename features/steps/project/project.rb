@@ -86,7 +86,6 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should see project "Forum" README' do
-    expect(page).to have_link 'README.md'
     expect(page).to have_content 'Sample repo for testing gitlab features'
   end
 
