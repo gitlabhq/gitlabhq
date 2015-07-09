@@ -81,7 +81,6 @@ class ProjectsController < ApplicationController
           if @project.empty_repo?
             render 'projects/empty'
           else
-            @last_push = current_user.recent_push(@project.id) if current_user
             render :show
           end
         else
