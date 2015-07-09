@@ -266,4 +266,10 @@ module ProjectsHelper
 
     namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'README.md')
   end
+
+  def last_push_event
+    if current_user
+      current_user.recent_push(@project.id)
+    end
+  end
 end
