@@ -213,12 +213,20 @@ module ApplicationHelper
       Haml::Helpers.preserve(markdown(file_content))
     elsif asciidoc?(file_name)
       asciidoc(file_content)
+    elsif plain?(file_name)
+      content_tag :pre, class: 'plain-readme' do
+        file_content
+      end
     else
       GitHub::Markup.render(file_name, file_content).
         force_encoding(file_content.encoding).html_safe
     end
   rescue RuntimeError
     simple_format(file_content)
+  end
+
+  def plain?(filename)
+    Gitlab::MarkupHelper.plain?(filename)
   end
 
   def markup?(filename)
