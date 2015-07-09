@@ -73,6 +73,12 @@ describe 'gitlab:app namespace rake task' do
       @backup_tar = (tars_glob - existing_tars).first
     end
 
+    def reenable_backup_sub_tasks
+      Rake::Task["gitlab:backup:db:create"].reenable
+      Rake::Task["gitlab:backup:repo:create"].reenable
+      Rake::Task["gitlab:backup:uploads:create"].reenable
+    end
+
     before :all do
       create_backup
     end
@@ -93,13 +99,9 @@ describe 'gitlab:app namespace rake task' do
           # We created a backup in a before(:all) so it got the default permissions.
           # We now need to do some work to create a _new_ backup file using our stub.
           FileUtils.rm(@backup_tar)
-          Rake::Task["gitlab:backup:db:create"].reenable
-          Rake::Task["gitlab:backup:repo:create"].reenable
-          Rake::Task["gitlab:backup:uploads:create"].reenable
+          reenable_backup_sub_tasks
           create_backup
-          Rake::Task["gitlab:backup:db:create"].reenable
-          Rake::Task["gitlab:backup:repo:create"].reenable
-          Rake::Task["gitlab:backup:uploads:create"].reenable
+          reenable_backup_sub_tasks
         end
 
         it 'uses the custom permissions' do
