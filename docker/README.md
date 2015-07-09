@@ -11,150 +11,156 @@ After starting a container you can go to [http://localhost:8080/](http://localho
 
 It might take a while before the docker container is responding to queries.
 
-You can check the status with something like `sudo docker logs -f 7c10172d7705`.
+You can check the status with something like `sudo docker logs -f gitlab`.
 
 You can login to the web interface with username `root` and password `password`.
 
 Next time, you can just use docker start and stop to run the container.
 
-## How to build the docker images
-
-This guide will also let you know how to build docker images yourself.
-Please run all the commands from the GitLab repo root directory.
-People using boot2docker should run all the commands without sudo.
-
-## Choosing between the single and the app and data images
-
-Normally docker uses a single image for one applications.
-But GitLab stores repositories and uploads in the filesystem.
-This means that upgrades of a single image are hard.
-That is why we recommend using separate app and data images.
-We'll first describe how to use a single image.
-After that we'll describe how to use the app and data images.
-
-## Single image
-
-Get a published image from Dockerhub:
-
-```bash
-sudo docker pull sytse/gitlab-ce:7.10.1
-```
+## Run the image
 
 Run the image:
-
 ```bash
-sudo docker run --detach --publish 8080:80 --publish 2222:22 sytse/gitlab-ce:7.10.1
+sudo docker run --detach \
+	--publish 8443:443 --publish 8080:80 --publish 2222:22 \
+	--name gitlab \
+	--restart always \
+	--volume /srv/gitlab/config:/etc/gitlab \
+	--volume /srv/gitlab/logs:/var/log/gitlab \
+	--volume /srv/gitlab/data:/var/opt/gitlab \
+	gitlab/gitlab-ce:latest
 ```
+
+This will download and start GitLab CE container and publish ports needed to access SSH, HTTP and HTTPS.
+All GitLab data will be stored as subdirectories of `/srv/gitlab/`.
+The container will automatically `restart` after system reboot.
 
 After this you can login to the web interface as explained above in 'After starting a container'.
 
-Build the image:
+## Where is the data stored?
 
-```bash
-sudo docker build --tag sytse/gitlab-ce:7.10.1 docker/single/
-```
+The GitLab container uses host mounted volumes to store persistent data:
+- `/srv/gitlab/data` mounted as `/var/opt/gitlab` in the container is used for storing *application data*
+- `/srv/gitlab/logs` mounted as `/var/log/gitlab` in the container is used for storing *logs*
+- `/srv/gitlab/config` mounted as `/etc/gitlab` in the container is used for storing *configuration*
 
-Publish the image to Dockerhub:
-
-```bash
-sudo docker push sytse/gitlab-ce
-```
-
-Diagnosing commands:
-
-```bash
-sudo docker run -i -t sytse/gitlab-ce:7.10.1
-sudo docker run -ti -e TERM=linux --name gitlab-ce-troubleshoot --publish 8080:80 --publish 2222:22 sytse/gitlab-ce:7.10.1 bash /usr/local/bin/wrapper
-```
-
-## App and data images
-
-### Get published images from Dockerhub
-
-```bash
-sudo docker pull sytse/gitlab-data
-sudo docker pull sytse/gitlab-app:7.10.1
-```
-
-### Run the images
-
-```bash
-sudo docker run --name gitlab-data sytse/gitlab-data /bin/true
-sudo docker run --detach --name gitlab-app --publish 8080:80 --publish 2222:22 --volumes-from gitlab-data sytse/gitlab-app:7.10.1
-```
-
-After this you can login to the web interface as explained above in 'After starting a container'.
-
-### Build images
-
-Build your own based on the Omnibus packages with the following commands.
-
-```bash
-sudo docker build --tag gitlab-data docker/data/
-sudo docker build --tag gitlab-app:7.10.1 docker/app/
-```
-
-After this run the images:
-
-```bash
-sudo docker run --name gitlab-data gitlab-data /bin/true
-sudo docker run --detach --name gitlab-app --publish 8080:80 --publish 2222:22 --volumes-from gitlab-data gitlab-app:7.10.1
-```
-
-We assume using a data volume container, this will simplify migrations and backups.
-This empty container will exist to persist as volumes the 3 directories used by GitLab, so remember not to delete it.
-
-The directories on data container are:
-
-- `/var/opt/gitlab` for application data
-- `/var/log/gitlab` for logs
-- `/etc/gitlab` for configuration
+You can fine tune these directories to meet your requirements.
 
 ### Configure GitLab
 
 This container uses the official Omnibus GitLab distribution, so all configuration is done in the unique configuration file `/etc/gitlab/gitlab.rb`.
 
-To access GitLab configuration, you can start an interactive command line in a new container using the shared data volume container, you will be able to browse the 3 directories and use your favorite text editor:
-
+To access GitLab configuration, you can start an bash in a new the context of running container, you will be able to browse all directories and use your favorite text editor:
 ```bash
-sudo docker run -ti -e TERM=linux --rm --volumes-from gitlab-data ubuntu
-vi /etc/gitlab/gitlab.rb
+sudo docker exec -it gitlab /bin/bash
 ```
 
-**Note** that GitLab will reconfigure itself **at each container start.** You will need to restart the container to reconfigure your GitLab.
-
-You can find all available options in [Omnibus GitLab documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#configuration).
-
-### Upgrade GitLab with app and data images
-
-To upgrade GitLab to new versions, stop running container, create new docker image and container from that image.
-
-It Assumes that you're upgrading from 7.8.1 to 7.10.1 and you're in the updated GitLab repo root directory:
-
+You can also edit just `/etc/gitlab/gitlab.rb`:
 ```bash
-sudo docker stop gitlab-app
-sudo docker rm gitlab-app
-sudo docker build --tag gitlab-app:7.10.1 docker/app/
-sudo docker run --detach --name gitlab-app --publish 8080:80 --publish 2222:22 --volumes-from gitlab-data gitlab-app:7.10.1
+sudo docker exec -it gitlab vi /etc/gitlab/gitlab.rb
 ```
 
-On the first run GitLab will reconfigure and update itself. If everything runs OK don't forget to cleanup the app image:
+**You should set the `external_url` to point to a valid URL.**
+
+**You may also be interesting in [Enabling HTTPS](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/nginx.md#enable-https).**
+
+**To receive e-mails from GitLab you have to configure the [SMTP settings](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/smtp.md),
+because Docker image doesn't have a SMTP server.**
+
+**Note** that GitLab will reconfigure itself **at each container start.** You will need to restart the container to reconfigure your GitLab:
 
 ```bash
-sudo docker rmi gitlab-app:7.8.1
+sudo docker restart gitlab
 ```
 
-### Publish images to Dockerhub
+For more options for configuring the container please check [Omnibus GitLab documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#configuration).
+
+## Diagnose potential problems
+
+Read container logs:
+```bash
+sudo docker logs gitlab
+```
+
+Enter running container:
+```bash
+sudo docker exec -it gitlab /bin/bash
+```
+
+From within container you can administrer GitLab container as you would normally administer Omnibus installation: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md.
+
+### Upgrade GitLab to newer version
+
+To upgrade GitLab to new version you have to do:
+1. pull new image,
+```bash
+sudo docker stop gitlab
+```
+
+1. stop running container, 
+```bash
+sudo docker rm gitlab
+```
+
+1. remove existing container, 
+```bash
+sudo docker pull gitlab/gitlab-ce:latest
+```
+
+1. create the container once again with previously specified options.
+```bash
+sudo docker run --detach \
+	--publish 8443:443 --publish 8080:80 --publish 2222:22 \
+	--name gitlab \
+	--restart always \
+	--volume /srv/gitlab/config:/etc/gitlab \
+	--volume /srv/gitlab/logs:/var/log/gitlab \
+	--volume /srv/gitlab/data:/var/opt/gitlab \
+	gitlab/gitlab-ce:latest
+```
+
+On the first run GitLab will reconfigure and update itself.
+
+### Run GitLab CE on public IP address
+
+You can make Docker to use your IP address and forward all traffic to the GitLab CE container.
+You can do that by modifying the `--publish` ([Binding container ports to the host](https://docs.docker.com/articles/networking/#binding-ports)):
+
+> --publish=[] : Publish a container᾿s port or a range of ports to the host format: ip:hostPort:containerPort | ip::containerPort | hostPort:containerPort | containerPort
+
+To expose GitLab CE on IP 1.1.1.1:
+
+```bash
+sudo docker run --detach \
+	--publish 1.1.1.1:443:443 --publish 1.1.1.1:80:80 --publish 1.1.1.1:22:22 \
+	--name gitlab \
+	--restart always \
+	--volume /srv/gitlab/config:/etc/gitlab \
+	--volume /srv/gitlab/logs:/var/log/gitlab \
+	--volume /srv/gitlab/data:/var/opt/gitlab \
+	gitlab/gitlab-ce:latest
+```
+
+You can then access GitLab instance at http://1.1.1.1/ and https://1.1.1.1/.
+
+### Build the image
+
+This guide will also let you know how to build docker image yourself.
+Please run the command from the GitLab repo root directory.
+People using boot2docker should run all the commands without sudo.
+
+```bash
+sudo docker build --tag gitlab/gitlab-ce:latest docker/
+```
+
+### Publish the image to Dockerhub
 
 - Ensure the containers are running
 - Login to Dockerhub with `sudo docker login`
-- Run the following (replace '7.10.1' with the version you're using and 'Sytse Sijbrandij' with your name):
 
 ```bash
-sudo docker commit -m "Initial commit" -a "Sytse Sijbrandij" gitlab-app sytse/gitlab-app:7.10.1
-sudo docker push sytse/gitlab-app:7.10.1
-sudo docker commit -m "Initial commit" -a "Sytse Sijbrandij" gitlab-data sytse/gitlab-data
-sudo docker push sytse/gitlab-data
+sudo docker login
+sudo docker push gitlab/gitlab-ce:latest
 ```
 
 ## Troubleshooting

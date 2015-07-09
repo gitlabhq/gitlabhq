@@ -7,7 +7,9 @@ RUN apt-get update -q \
       ca-certificates \
       openssh-server \
       wget \
-      apt-transport-https
+      apt-transport-https \
+      vim \
+      nano
 
 # Download & Install GitLab
 # If you run GitLab Enterprise Edition point it to a location where you have downloaded it.
@@ -23,12 +25,21 @@ RUN mkdir -p /opt/gitlab/sv/sshd/supervise \
     && ln -s /opt/gitlab/sv/sshd /opt/gitlab/service \
     && mkdir -p /var/run/sshd
 
+# Prepare default configuration
+RUN ( \
+  echo "" && \
+  echo "# Docker options" && \
+  echo "# Prevent Postgres from trying to allocate 25% of total memory" && \
+  echo "postgresql['shared_buffers'] = '1MB'" ) >> /etc/gitlab/gitlab.rb
+
 # Expose web & ssh
-EXPOSE 80 22
+EXPOSE 443 80 22
+
+# Define data volumes
+VOLUME ["/etc/gitlab", "/var/opt/gitlab", "/var/log/gitlab"]
 
 # Copy assets
 COPY assets/wrapper /usr/local/bin/
-COPY assets/gitlab.rb /etc/gitlab/
 
 # Wrapper to handle signal, trigger runit and reconfigure GitLab
 CMD ["/usr/local/bin/wrapper"]
