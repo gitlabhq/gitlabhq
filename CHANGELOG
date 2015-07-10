@@ -42,6 +42,7 @@ v 7.13.0 (unreleased)
   - Use native Postgres database cleaning during backup restore
   - Redesign project page. Show README as default instead of activity. Move project activity to separate page
   - Make left menu more hierarchical and less contextual by adding back item at top
+  - A fork can’t have a visibility level that is greater than the original project.
 
 v 7.12.2
   - Correctly show anonymous authorized applications under Profile > Applications.

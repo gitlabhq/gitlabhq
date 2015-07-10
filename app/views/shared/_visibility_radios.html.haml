@@ -1,4 +1,5 @@
 - Gitlab::VisibilityLevel.values.each do |level|
+  - next if skip_level?(form_model, level)
   .radio
     - restricted = restricted_visibility_levels.include?(level)
     = form.label "#{model_method}_#{level}" do
