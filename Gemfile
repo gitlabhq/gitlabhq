@@ -231,18 +231,12 @@ group :development, :test do
   gem 'fuubar', '~> 2.0.0'
   gem 'pry-rails'
 
-  gem 'coveralls', require: false
+  gem 'coveralls',        '~> 0.8.2', require: false
   gem 'database_cleaner', '~> 1.4.0'
   gem 'factory_girl_rails'
-  gem 'rspec-rails', '~> 3.3.0'
-  gem 'rubocop', '0.28.0', require: false
+  gem 'rspec-rails',      '~> 3.3.0'
+  gem 'rubocop',          '0.28.0',   require: false
   gem 'spinach-rails'
-
-  # rest-client is a coveralls dependency and not used directly in GitLab, but
-  # we specify a version here to pick up some security fixes.
-  # See https://github.com/rest-client/rest-client/issues/369
-  # and http://www.osvdb.org/show/osvdb/117461
-  gem 'rest-client', '~> 1.8.0'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.3.0'
