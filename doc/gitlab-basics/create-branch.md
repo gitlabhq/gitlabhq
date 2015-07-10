@@ -1,10 +1,11 @@
 # How to create a branch
 
-To add changes to your project in GitLab, you should create a branch.
+A branch is an independent line of development.
+New commits are recorded in the history for the current branch, which results in taking the source from someone’s repository (the place where the history of your work is stored) at certain point in time, and apply your own changes to it in the history of the project.
 
-To create a new branch, sign in to [gitlab.com](https://gitlab.com).
+To add changes to your GitLab project, you should create a branch. You can do it in your shell or in  [GitLab.com](https://gitlab.com).
 
-Select a project on the right side of your screen:
+To create a new branch in [GitLab.com](https://gitlab.com), sign in and then select a project on the right side of your screen:
 
 ![Select a project](basicsimages/select_project.png)
 
@@ -24,7 +25,7 @@ Fill out the information required:
 
 1. Add a name for your new branch (you can't add spaces, so you can use hyphens or underscores)
 
-1. On the "create from" space, add the word: master or the name of the master branch
+1. On the "create from" space, add the the name of the branch you want to branch off from
 
 1. Click on the button "create branch"
 
