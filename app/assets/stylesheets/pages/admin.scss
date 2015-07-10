@@ -61,16 +61,3 @@
   @extend .broadcast-message;
   margin-bottom: 20px;
 }
-
-.btn-visibility {
-  .btn-primary {
-    color: black;
-    background-color: white;
-    border-color: black;
-  }
-  .btn-primary.active {
-    color: black;
-    background-color: #d3d3d3;
-    border-color: black;
-  }
-}
