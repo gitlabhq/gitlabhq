@@ -36,4 +36,32 @@ describe Admin::UsersController do
       expect(user.access_locked?).to be_falsey
     end
   end
+
+  describe 'PATCH disable_two_factor' do
+    let(:user) { create(:user) }
+
+    it 'disables 2FA for the user' do
+      expect(user).to receive(:disable_two_factor!)
+      allow(subject).to receive(:user).and_return(user)
+
+      go
+    end
+
+    it 'redirects back' do
+      go
+
+      expect(response).to redirect_to(admin_user_path(user))
+    end
+
+    it 'displays an alert' do
+      go
+
+      expect(flash[:notice]).
+        to eq 'Two-factor Authentication has been disabled for this user'
+    end
+
+    def go
+      patch :disable_two_factor, id: user.to_param
+    end
+  end
 end
