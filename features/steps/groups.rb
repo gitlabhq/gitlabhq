@@ -5,6 +5,10 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   include SharedUser
   include Select2Helper
 
+  step 'I should see back to dashboard button' do
+    expect(page).to have_content 'Back to Dashboard'
+  end
+
   step 'gitlab user "Mike"' do
     create(:user, name: "Mike")
   end

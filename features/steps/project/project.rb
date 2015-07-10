@@ -116,4 +116,18 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   step 'I should not see "Snippets" button' do
     expect(page).not_to have_link 'Snippets'
   end
+
+  step 'project "Shop" belongs to group' do
+    group = create(:group)
+    @project.namespace = group
+    @project.save!
+  end
+
+  step 'I should see back to dashboard button' do
+    expect(page).to have_content 'Back to Dashboard'
+  end
+
+  step 'I should see back to group button' do
+    expect(page).to have_content 'Back to Group'
+  end
 end

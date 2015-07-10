@@ -1,9 +1,17 @@
 %ul.nav.nav-sidebar
+  = nav_link do
+    = link_to root_path, title: 'Back to dashboard', data: {placement: 'right'} do
+      = icon('caret-square-o-left fw')
+      %span
+        Back to Dashboard
+
+  %li.separate-item
+
   = nav_link(path: 'groups#show', html_options: {class: 'home'}) do
     = link_to group_path(@group), title: 'Home', data: {placement: 'right'} do
       = icon('dashboard fw')
       %span
-        Activity
+        Group
   - if current_user
     = nav_link(controller: [:group, :milestones]) do
       = link_to group_milestones_path(@group), title: 'Milestones', data: {placement: 'right'} do
