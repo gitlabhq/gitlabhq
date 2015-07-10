@@ -87,3 +87,5 @@ Parameters:
 
 - `id` (required) - The ID of a project
 - `milestone_id` (required) - The ID of a project milestone
+
+You can close multiple issues with one Merge Request by following the [issue closing pattern documentation](http://doc.gitlab.com/ce/customization/issue_closing.html).
