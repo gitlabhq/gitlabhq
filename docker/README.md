@@ -1,6 +1,9 @@
 # GitLab Docker images
 
-The GitLab docker image is [available on Docker Hub](https://registry.hub.docker.com/u/gitlab/gitlab-ce/).
+## What is GitLab?
+
+GitLab offers git repository management, code reviews, issue tracking, activity feeds, wikis. It has LDAP/AD integration, handles 25,000 users on a single server but can also run on a highly available active/active cluster.
+Learn more on [https://about.gitlab.com](https://about.gitlab.com)
 
 ## After starting a container
 
