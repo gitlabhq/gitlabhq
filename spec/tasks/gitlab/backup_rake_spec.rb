@@ -74,9 +74,9 @@ describe 'gitlab:app namespace rake task' do
     end
 
     def reenable_backup_sub_tasks
-      Rake::Task["gitlab:backup:db:create"].reenable
-      Rake::Task["gitlab:backup:repo:create"].reenable
-      Rake::Task["gitlab:backup:uploads:create"].reenable
+      %w{db repo uploads}.each do |subtask|
+        Rake::Task["gitlab:backup:#{subtask}:create"].reenable
+      end
     end
 
     before :all do
