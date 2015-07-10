@@ -94,12 +94,12 @@ To upgrade GitLab to new version you have to do:
 sudo docker stop gitlab
 ```
 
-1. stop running container, 
+1. stop running container,
 ```bash
 sudo docker rm gitlab
 ```
 
-1. remove existing container, 
+1. remove existing container,
 ```bash
 sudo docker pull gitlab/gitlab-ce:latest
 ```
@@ -163,3 +163,5 @@ sudo docker push gitlab/gitlab-ce:latest
 ## Troubleshooting
 
 Please see the [troubleshooting](troubleshooting.md) file in this directory.
+
+Note: We use `fig.yml` to have compatibility with fig and because docker-compose also supports it.
