@@ -72,12 +72,27 @@ ul.notes {
   .note {
     display: block;
     position:relative;
+
     .note-body {
       overflow: auto;
+
       .note-text {
         overflow: auto;
         word-wrap: break-word;
         @include md-typography;
+
+        // Reset ul style types since we're nested inside a ul already
+        & > ul {
+          list-style-type: disc;
+
+          ul {
+            list-style-type: circle;
+
+            ul {
+              list-style-type: square;
+            }
+          }
+        }
 
         // Reduce left padding of first task list ul element
         ul.task-list:first-child {
@@ -94,6 +109,7 @@ ul.notes {
         }
       }
     }
+
     .note-header {
       padding-bottom: 3px;
     }
