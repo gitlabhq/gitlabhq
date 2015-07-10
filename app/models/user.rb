@@ -322,6 +322,16 @@ class User < ActiveRecord::Base
     @reset_token
   end
 
+  def disable_two_factor!
+    update_attributes(
+      two_factor_enabled:        false,
+      encrypted_otp_secret:      nil,
+      encrypted_otp_secret_iv:   nil,
+      encrypted_otp_secret_salt: nil,
+      otp_backup_codes:          nil
+    )
+  end
+
   def namespace_uniq
     namespace_name = self.username
     existing_namespace = Namespace.by_path(namespace_name)
