@@ -48,4 +48,28 @@ describe AutocompleteController do
     it { expect(body).to be_kind_of(Array) }
     it { expect(body.size).to eq User.count }
   end
+
+  context 'unauthenticated user' do
+    let(:project) { create(:project, :public) }
+    let(:body) { JSON.parse(response.body) }
+
+    describe 'GET #users with public project' do
+      before do
+        project.team << [user, :guest]
+        get(:users, project_id: project.id)
+      end
+
+      it { expect(body).to be_kind_of(Array) }
+      it { expect(body.size).to eq 1 }
+    end
+
+    describe 'GET #users with no project' do
+      before do
+        get(:users)
+      end
+
+      it { expect(body).to be_kind_of(Array) }
+      it { expect(body.size).to eq 0 }
+    end
+  end
 end

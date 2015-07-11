@@ -1,4 +1,6 @@
 class AutocompleteController < ApplicationController
+  skip_before_action :authenticate_user!, only: [:users]
+
   def users
     @users =
       if params[:project_id].present?
@@ -13,8 +15,10 @@ class AutocompleteController < ApplicationController
         if can?(current_user, :read_group, group)
           group.users
         end
-      else
+      elsif current_user
         User.all
+      else
+        User.none
       end
 
     @users = @users.search(params[:search]) if params[:search].present?

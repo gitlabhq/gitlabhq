@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.13.0 (unreleased)
+  - Fix user autocomplete for unauthenticated users accessing public projects (Stan Hu)
   - Fix redirection to home page URL for unauthorized users (Daniel Gerhardt)
   - Add branch switching support for graphs (Daniel Gerhardt)
   - Fix external issue tracker hook/test for HTTPS URLs (Daniel Gerhardt)
