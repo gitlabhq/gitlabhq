@@ -8,12 +8,11 @@ v 7.13.0 (unreleased)
   - Remove link leading to a 404 error in Deploy Keys page (Stan Hu)
   - Add support for unlocking users in admin settings (Stan Hu)
   - Add Irker service configuration options (Stan Hu)
-  - Fix order of issues imported form GitHub (Hiroyuki Sato)
+  - Fix order of issues imported from GitHub (Hiroyuki Sato)
   - Bump rugments to 1.0.0beta8 to fix C prototype function highlighting (Jonathon Reinhart)
   - Fix Merge Request webhook to properly fire "merge" action when accepted from the web UI
   - Add `two_factor_enabled` field to admin user API (Stan Hu)
   - Fix invalid timestamps in RSS feeds (Rowan Wookey)
-  - Fix error when deleting a user who has projects (Stan Hu)
   - Fix downloading of patches on public merge requests when user logged out (Stan Hu)
   - The password for the default administrator (root) account has been changed from "5iveL!fe" to "password".
   - Fix Error 500 when relative submodule resolves to a namespace that has a different name from its path (Stan Hu)
