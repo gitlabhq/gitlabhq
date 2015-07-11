@@ -76,7 +76,7 @@ module API
         authenticated_as_admin!
         group = Group.find(params[:id])
         project = Project.find(params[:project_id])
-        result = ::Projects::TransferService.new(project, current_user, namespace_id: group.id).execute
+        result = ::Projects::TransferService.new(project, current_user, new_namespace_id: group.id).execute
 
         if result
           present group

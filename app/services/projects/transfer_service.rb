@@ -4,7 +4,7 @@
 #
 # Ex.
 #   # Move projects to namespace with ID 17 by user
-#   Projects::TransferService.new(project, user, namespace_id: 17).execute
+#   Projects::TransferService.new(project, user, new_namespace_id: 17).execute
 #
 module Projects
   class TransferService < BaseService
