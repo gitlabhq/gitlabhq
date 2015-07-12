@@ -431,6 +431,40 @@ class Repository
     end
   end
 
+  def search_files(query, ref)
+    offset = 2
+    args = %W(git grep -i -n --before-context #{offset} --after-context #{offset} #{query} #{ref || root_ref})
+    Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
+  end
+
+  def parse_search_result(result)
+    ref = nil
+    filename = nil
+    startline = 0
+
+    lines = result.lines
+    lines.each_with_index do |line, index|
+      if line =~ /^.*:.*:\d+:/
+        ref, filename, startline = line.split(':')
+        startline = startline.to_i - index
+        break
+      end
+    end
+
+    data = lines.map do |line|
+      line.sub(ref, '').sub(filename, '').sub(/^:-\d+-/, '').sub(/^::\d+:/, '')
+    end
+
+    data = data.join("")
+
+    OpenStruct.new(
+      filename: filename,
+      ref: ref,
+      startline: startline,
+      data: data
+    )
+  end
+
   private
 
   def cache

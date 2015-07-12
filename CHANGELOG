@@ -1,18 +1,18 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.13.0 (unreleased)
+  - Fix user autocomplete for unauthenticated users accessing public projects (Stan Hu)
   - Fix redirection to home page URL for unauthorized users (Daniel Gerhardt)
   - Add branch switching support for graphs (Daniel Gerhardt)
   - Fix external issue tracker hook/test for HTTPS URLs (Daniel Gerhardt)
   - Remove link leading to a 404 error in Deploy Keys page (Stan Hu)
   - Add support for unlocking users in admin settings (Stan Hu)
   - Add Irker service configuration options (Stan Hu)
-  - Fix order of issues imported form GitHub (Hiroyuki Sato)
+  - Fix order of issues imported from GitHub (Hiroyuki Sato)
   - Bump rugments to 1.0.0beta8 to fix C prototype function highlighting (Jonathon Reinhart)
   - Fix Merge Request webhook to properly fire "merge" action when accepted from the web UI
   - Add `two_factor_enabled` field to admin user API (Stan Hu)
   - Fix invalid timestamps in RSS feeds (Rowan Wookey)
-  - Fix error when deleting a user who has projects (Stan Hu)
   - Fix downloading of patches on public merge requests when user logged out (Stan Hu)
   - The password for the default administrator (root) account has been changed from "5iveL!fe" to "password".
   - Fix Error 500 when relative submodule resolves to a namespace that has a different name from its path (Stan Hu)
@@ -43,6 +43,7 @@ v 7.13.0 (unreleased)
   - Redesign project page. Show README as default instead of activity. Move project activity to separate page
   - Make left menu more hierarchical and less contextual by adding back item at top
   - A fork can’t have a visibility level that is greater than the original project.
+  - Faster code search in repository and wiki. Fixes search page timeout for big repositories 
 
 v 7.12.2
   - Correctly show anonymous authorized applications under Profile > Applications.
