@@ -8,6 +8,10 @@ module API
       expose :id, :state, :avatar_url
     end
 
+    class UserBasicForAdmin < UserBasic
+      expose :email
+    end
+
     class User < UserBasic
       expose :created_at
       expose :is_admin?, as: :is_admin
@@ -67,6 +71,12 @@ module API
       end
     end
 
+    class ProjectMemberForAdmin < UserBasicForAdmin
+      expose :access_level do |user, options|
+        options[:project].project_members.find_by(user_id: user.id).access_level
+      end
+    end
+
     class Group < Grape::Entity
       expose :id, :name, :path, :description
     end
@@ -76,6 +86,12 @@ module API
     end
 
     class GroupMember < UserBasic
+      expose :access_level do |user, options|
+        options[:group].group_members.find_by(user_id: user.id).access_level
+      end
+    end
+
+    class GroupMemberForAdmin < UserBasicForAdmin
       expose :access_level do |user, options|
         options[:group].group_members.find_by(user_id: user.id).access_level
       end
