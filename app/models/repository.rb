@@ -442,7 +442,7 @@ class Repository
     filename = nil
     startline = 0
 
-    lines = result.lstrip.lines
+    lines = result.lines
     lines.each_with_index do |line, index|
       if line =~ /^.*:.*:\d+:/
         ref, filename, startline = line.split(':')
