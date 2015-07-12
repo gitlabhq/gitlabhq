@@ -437,7 +437,7 @@ class Repository
     Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
   end
 
-  def search_to_blob(result)
+  def parse_search_result(result)
     ref = nil
     filename = nil
     startline = 0
