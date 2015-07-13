@@ -442,8 +442,7 @@ class Repository
     filename = nil
     startline = 0
 
-    lines = result.lines
-    lines.each_with_index do |line, index|
+    result.each_line.each_with_index do |line, index|
       if line =~ /^.*:.*:\d+:/
         ref, filename, startline = line.split(':')
         startline = startline.to_i - index
@@ -451,11 +450,11 @@ class Repository
       end
     end
 
-    data = lines.map do |line|
-      line.sub(ref, '').sub(filename, '').sub(/^:-\d+-/, '').sub(/^::\d+:/, '')
-    end
+    data = ""
 
-    data = data.join("")
+    result.each_line do |line|
+      data << line.sub(ref, '').sub(filename, '').sub(/^:-\d+-/, '').sub(/^::\d+:/, '')
+    end
 
     OpenStruct.new(
       filename: filename,
