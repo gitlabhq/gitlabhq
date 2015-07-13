@@ -7,13 +7,28 @@
   %title= page_title
 
   = favicon_link_tag 'favicon.ico'
-  = stylesheet_link_tag    "application", :media => "all"
-  = stylesheet_link_tag    "print", :media => "print"
+
+  = stylesheet_link_tag "application", media: "all"
+  = stylesheet_link_tag "print",       media: "print"
+
   = javascript_include_tag "application"
+
   = csrf_meta_tags
+
   = include_gon
+
   %meta{name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1'}
   %meta{name: 'theme-color', content: '#474D57'}
+
+  -# Apple Safari/iOS home screen icons
+  = favicon_link_tag 'touch-icon-iphone.png',        rel: 'apple-touch-icon'
+  = favicon_link_tag 'touch-icon-ipad.png',          rel: 'apple-touch-icon', sizes: '76x76'
+  = favicon_link_tag 'touch-icon-iphone-retina.png', rel: 'apple-touch-icon', sizes: '120x120'
+  = favicon_link_tag 'touch-icon-ipad-retina.png',   rel: 'apple-touch-icon', sizes: '152x152'
+
+  -# Windows 8 pinned site tile
+  %meta{name: 'msapplication-TileImage', content: image_url('msapplication-tile.png')}
+  %meta{name: 'msapplication-TileColor', content: '#30353E'}
 
   = yield :meta_tags
 
