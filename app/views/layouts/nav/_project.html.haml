@@ -1,13 +1,13 @@
 %ul.nav.nav-sidebar
   - if @project.group
     = nav_link do
-      = link_to group_path(@project.group), title: 'Back to group', data: {placement: 'right'} do
+      = link_to group_path(@project.group), title: 'Back to group', data: {placement: 'right'}, class: 'back-link' do
         = icon('caret-square-o-left fw')
         %span
           Back to Group
   - else
     = nav_link do
-      = link_to root_path, title: 'Back to dashboard', data: {placement: 'right'} do
+      = link_to root_path, title: 'Back to dashboard', data: {placement: 'right'}, class: 'back-link' do
         = icon('caret-square-o-left fw')
         %span
           Back to Dashboard

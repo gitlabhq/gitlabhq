@@ -96,6 +96,12 @@
 
     .nav-sidebar li a{
       width: 230px;
+
+      &.back-link {
+        i {
+          visibility: hidden;
+        }
+      }
     }
   }
 }
