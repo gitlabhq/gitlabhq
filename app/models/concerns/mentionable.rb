@@ -79,9 +79,9 @@ module Mentionable
     end
   end
 
-  # If the mentionable_text field is about to change, locate any *added* references and create cross references for
-  # them. Invoke from an observer's #before_save implementation.
-  def notice_added_references(p = project, a = author)
+  # When a mentionable field is changed, creates cross-reference notes that
+  # don't already exist
+  def create_new_cross_references!(p = project, a = author)
     changes = detect_mentionable_changes
 
     return if changes.empty?
