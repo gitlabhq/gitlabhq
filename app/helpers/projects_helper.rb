@@ -248,16 +248,6 @@ module ProjectsHelper
     end
   end
 
-  def service_field_value(type, value)
-    return value unless type == 'password'
-
-    if value.present?
-      "***********"
-    else
-      nil
-    end
-  end
-
   def user_max_access_in_project(user, project)
     level = project.team.max_member_access(user)
 
