@@ -55,6 +55,12 @@ class Admin::UsersController < Admin::ApplicationController
     end
   end
 
+  def disable_two_factor
+    user.disable_two_factor!
+    redirect_to admin_user_path(user),
+      notice: 'Two-factor Authentication has been disabled for this user'
+  end
+
   def create
     opts = {
       force_random_password: true,

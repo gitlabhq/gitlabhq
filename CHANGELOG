@@ -45,6 +45,7 @@ v 7.13.0 (unreleased)
   - Make left menu more hierarchical and less contextual by adding back item at top
   - A fork can’t have a visibility level that is greater than the original project.
   - Faster code search in repository and wiki. Fixes search page timeout for big repositories 
+  - Allow administrators to disable 2FA for a specific user
 
 v 7.12.2
   - Correctly show anonymous authorized applications under Profile > Applications.
