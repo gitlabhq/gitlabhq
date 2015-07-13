@@ -1,7 +1,7 @@
 - if current_user
   %span.dropdown
     %a.dropdown-toggle.btn.btn-new{href: '#', "data-toggle" => "dropdown"}
-      %i.fa.fa-bars
+      %i.fa.fa-plus
     %ul.dropdown-menu
       - if @project.issues_enabled && can?(current_user, :create_issue, @project)
         %li
@@ -26,7 +26,6 @@
             New git branch
         %li
           = link_to new_namespace_project_tag_path(@project.namespace, @project) do
-            %i.fa.fa-tag
             New git tag
 
 
