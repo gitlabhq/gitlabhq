@@ -2,6 +2,8 @@
   .sidebar-wrapper {
     position: fixed;
     top: 0;
+    bottom: 0;
+    overflow-y: scroll;
     left: 0;
     height: 100%;
     transition-duration: .3s;
@@ -21,8 +23,9 @@
 }
 
 .nav-sidebar {
+  margin-top: 29 + $header-height;
+  margin-bottom: 50px;
   transition-duration: .3s;
-  margin: 0;
   list-style: none;
   overflow: hidden;
 
@@ -39,7 +42,7 @@
     }
 
     a {
-      padding: 7px 15px;
+      padding: 8px 15px;
       font-size: 13px;
       line-height: 18px;
       color: $gray;
@@ -88,9 +91,6 @@
     width: $sidebar_width;
 
     .nav-sidebar {
-      margin-top: 29px;
-      position: fixed;
-      top: $header-height;
       width: $sidebar_width;
     }
 
@@ -114,9 +114,6 @@
     width: $sidebar_collapsed_width;
 
     .nav-sidebar {
-      margin-top: 29px;
-      position: fixed;
-      top: $header-height;
       width: $sidebar_collapsed_width;
 
       li a {
@@ -178,7 +175,7 @@
 }
 
 .sidebar-user {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   width: $sidebar_width;
   padding: 10px;
