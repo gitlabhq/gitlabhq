@@ -23,4 +23,6 @@
         = link_to archive_namespace_project_repository_path(@project.namespace, @project, ref: @ref, format: 'zip'), class: 'btn', rel: 'nofollow' do
           %i.fa.fa-download
 
+    = render 'projects/dropdown'
+
   = render "shared/clone_panel"
