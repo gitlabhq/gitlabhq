@@ -81,21 +81,13 @@ $pagination-disabled-border:           transparent;
 //
 //## Define colors for form feedback states and, by default, alerts.
 
-$state-success-text:             #fff;
-$state-success-bg:               $brand-success;
-$state-success-border:           $brand-success;
+$state-success-text:             $brand-success;
 
-$state-info-text:                #fff;
-$state-info-bg:                  $brand-info;
-$state-info-border:              $brand-info;
+$state-info-text:                $brand-info;
 
-$state-warning-text:             #fff;
-$state-warning-bg:               $brand-warning;
-$state-warning-border:           $brand-warning;
+$state-warning-text:             $brand-warning;
 
-$state-danger-text:              #fff;
-$state-danger-bg:                $brand-danger;
-$state-danger-border:            $brand-danger;
+$state-danger-text:              $brand-danger;
 
 
 //== Alerts
@@ -104,6 +96,21 @@ $state-danger-border:            $brand-danger;
 
 $alert-border-radius:            0;
 
+$alert-success-text:             #fff;
+$alert-success-bg:               $brand-success;
+$alert-success-border:           $brand-success;
+
+$alert-info-text:                #fff;
+$alert-info-bg:                  $brand-info;
+$alert-info-border:              $brand-info;
+
+$alert-warning-text:             #fff;
+$alert-warning-bg:               $brand-warning;
+$alert-warning-border:           $brand-warning;
+
+$alert-danger-text:              #fff;
+$alert-danger-bg:                $brand-danger;
+$alert-danger-border:            $brand-danger;
 
 //== Panels
 //

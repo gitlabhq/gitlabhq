@@ -59,13 +59,12 @@
           Read more about project permissions
           %strong= link_to "here", help_page_path("permissions", "permissions"), class: "vlink"
 
-        = form_tag members_update_admin_group_path(@group), id: "new_project_member", class: "bulk_import", method: :put  do
-          %div
+        = bootstrap_form_tag url: members_update_admin_group_path(@group), id: 'new_project_member', class: 'bulk_import', method: :put do |f|
+          = f.form_group do
             = users_select_tag(:user_ids, multiple: true, email_user: true, scope: :all)
-          %div.prepend-top-10
-            = select_tag :access_level, options_for_select(GroupMember.access_level_roles), class: "project-access-select select2"
+          = f.select :access_level, options_for_select(GroupMember.access_level_roles), hide_label: true, class: 'project-access-select select2'
           %hr
-          = button_tag 'Add users to group', class: "btn btn-create"
+          = f.submit 'Add users to group', class: "btn btn-create"
     .panel.panel-default
       .panel-heading
         %h3.panel-title

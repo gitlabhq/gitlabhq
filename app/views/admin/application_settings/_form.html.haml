@@ -1,16 +1,9 @@
-= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
-  - if @application_setting.errors.any?
-    #error_explanation
-      .alert.alert-danger
-        - @application_setting.errors.full_messages.each do |msg|
-          %p= msg
+= bootstrap_form_for @application_setting, url: admin_application_settings_path, layout: :horizontal, html: { class: 'fieldset-form' } do |f|
+  = f.alert_message 'Please check your form for possible errors.'
 
   %fieldset
     %legend Visibility and Access Controls
-    .form-group
-      = f.label :default_branch_protection, class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.select :default_branch_protection, options_for_select(Gitlab::Access.protection_options, @application_setting.default_branch_protection), {}, class: 'form-control'
+    = f.select :default_branch_protection, options_for_select(Gitlab::Access.protection_options, @application_setting.default_branch_protection)
     .form-group.project-visibility-level-holder
       = f.label :default_project_visibility, class: 'control-label col-sm-2'
       .col-sm-10
@@ -27,83 +20,33 @@
           - restricted_level_checkboxes('restricted-visibility-help').each do |level|
             = level
         %span.help-block#restricted-visibility-help Selected levels cannot be used by non-admin users for projects or snippets
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          = f.label :version_check_enabled do
-            = f.check_box :version_check_enabled
-            Version check enabled
+    = f.form_group :version_check_enabled do
+      = f.check_box :version_check_enabled
 
   %fieldset
     %legend Account and Limit Settings
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          = f.label :gravatar_enabled do
-            = f.check_box :gravatar_enabled
-            Gravatar enabled
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          = f.label :twitter_sharing_enabled do
-            = f.check_box :twitter_sharing_enabled, :'aria-describedby' => 'twitter_help_block'
-            Twitter enabled
-          %span.help-block#twitter_help_block Show users a button to share their newly created public or internal projects on twitter
-    .form-group
-      = f.label :default_projects_limit, class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.number_field :default_projects_limit, class: 'form-control'
-    .form-group
-      = f.label :max_attachment_size, 'Maximum attachment size (MB)', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.number_field :max_attachment_size, class: 'form-control'
-    .form-group
-      = f.label :session_expire_delay, 'Session duration (minutes)', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.number_field :session_expire_delay, class: 'form-control'
-        %span.help-block#session_expire_delay_help_block GitLab restart is required to apply changes
-    .form-group
-      = f.label :user_oauth_applications, 'User OAuth applications', class: 'control-label col-sm-2'
-      .col-sm-10
-        .checkbox
-          = f.label :user_oauth_applications do
-            = f.check_box :user_oauth_applications
-            Allow users to register any application to use GitLab as an OAuth provider
+    = f.form_group :gravatar_enabled do
+      = f.check_box :gravatar_enabled
+    = f.form_group :twitter_sharing_enabled, help: 'Show users a button to share their newly created public or internal projects on twitter' do
+      = f.check_box :twitter_sharing_enabled, label: 'Twitter enabled'
+    = f.number_field :default_projects_limit
+    = f.number_field :max_attachment_size, label: 'Maximum attachment size (MB)'
+    = f.number_field :session_expire_delay, label: 'Session duration (minutes)', help: 'GitLab restart is required to apply changes'
+    = f.form_group :user_oauth_applications, help: 'Allow users to register any application to use GitLab as an OAuth provider' do
+      = f.check_box :user_oauth_applications, label: 'User OAuth applications'
 
   %fieldset
     %legend Sign-in Restrictions
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          = f.label :signup_enabled do
-            = f.check_box :signup_enabled
-            Sign-up enabled
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          = f.label :signin_enabled do
-            = f.check_box :signin_enabled
-            Sign-in enabled
-    .form-group
-      = f.label :restricted_signup_domains, 'Restricted domains for sign-ups', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.text_area :restricted_signup_domains_raw, placeholder: 'domain.com', class: 'form-control'
-        .help-block Only users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com
-    .form-group
-      = f.label :home_page_url, class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.text_field :home_page_url, class: 'form-control', placeholder: 'http://company.example.com', :'aria-describedby' => 'home_help_block'
-        %span.help-block#home_help_block We will redirect non-logged in users to this page
-    .form-group
-      = f.label :after_sign_out_path, class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.text_field :after_sign_out_path, class: 'form-control', placeholder: 'http://company.example.com', :'aria-describedby' => 'after_sign_out_path_help_block'
-        %span.help-block#after_sign_out_path_help_block We will redirect users to this page after they sign out
-    .form-group
-      = f.label :sign_in_text, class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.text_area :sign_in_text, class: 'form-control', rows: 4
-        .help-block Markdown enabled
+    = f.form_group :signup_enabled do
+      = f.check_box :signup_enabled, label: 'Sign-up enabled'
+    = f.form_group :signin_enabled do
+      = f.check_box :signin_enabled, label: 'Sign-in enabled'
+    = f.text_area :restricted_signup_domains_raw, placeholder: 'domain.com',
+    label: 'Restricted domains for sign-ups',
+    help: 'Only users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com'
+    = f.text_field :home_page_url, placeholder: 'http://company.example.com', help: 'We will redirect non-logged in users to this page'
+    = f.text_field :after_sign_out_path, placeholder: 'http://company.example.com', help: 'We will redirect users to this page after they sign out'
+    = f.text_area :sign_in_text, rows: 4, help: 'Markdown enabled'
 
   .form-actions
-    = f.submit 'Save', class: 'btn btn-primary'
+    = f.primary 'Save'

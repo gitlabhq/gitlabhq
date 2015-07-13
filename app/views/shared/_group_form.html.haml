@@ -1,29 +1,15 @@
 - if @group.persisted?
-  .form-group
-    = f.label :name, class: 'control-label' do
-      Group name
-    .col-sm-10
-      = f.text_field :name, placeholder: 'open-source', class: 'form-control'
+  = f.text_field :name, label: 'Group name', placeholder: 'open-source'
 
-.form-group
-  = f.label :path, class: 'control-label' do
-    Group path
-  .col-sm-10
-    .input-group
-      .input-group-addon
-        = root_url
-      = f.text_field :path, placeholder: 'open-source', class: 'form-control',
-          autofocus: local_assigns[:autofocus] || false
-    - if @group.persisted?
-      .alert.alert-warning.prepend-top-10
-        %ul
-          %li Changing group path can have unintended side effects.
-          %li Renaming group path will rename directory for all related projects
-          %li It will change web url for access group and group projects.
-          %li It will change the git path to repositories under this group.
+= f.text_field :path, label: 'Group path', placeholder: 'open-source', prepend: root_url, autofocus: local_assigns[:autofocus] || false
 
-.form-group.group-description-holder
-  = f.label :description, 'Details', class: 'control-label'
-  .col-sm-10
-    = f.text_area :description, maxlength: 250,
-        class: 'form-control js-gfm-input', rows: 4
+- if @group.persisted?
+  = f.form_group do
+    .alert.alert-warning.prepend-top-10
+      %ul
+        %li Changing group path can have unintended side effects.
+        %li Renaming group path will rename directory for all related projects
+        %li It will change web url for access group and group projects.
+        %li It will change the git path to repositories under this group.
+
+= f.text_area :description, label: 'Details', maxlength: 250, class: 'js-gfm-input', rows: 4

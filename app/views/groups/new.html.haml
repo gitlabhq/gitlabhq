@@ -1,20 +1,15 @@
 - page_title    'New Group'
 - header_title  'New Group'
-= form_for @group, html: { class: 'group-form form-horizontal' } do |f|
-  - if @group.errors.any?
-    .alert.alert-danger
-      %span= @group.errors.full_messages.first
+= bootstrap_form_for @group, layout: :horizontal do |f|
+  = f.alert_message 'Please check your form for possible errors.'
 
   = render 'shared/group_form', f: f, autofocus: true
 
-  .form-group.group-description-holder
-    = f.label :avatar, "Group avatar", class: 'control-label'
-    .col-sm-10
-      = render 'shared/choose_group_avatar_button', f: f
+  = f.form_group :avatar, label: { text: 'Group avatar' } do
+    = render 'shared/choose_group_avatar_button', f: f
 
-  .form-group
-    .col-sm-offset-2.col-sm-10
-      = render 'shared/group_tips'
+  = f.static_control label: 'Group tips', hide_label: true do
+    = render 'shared/group_tips'
 
   .form-actions
-    = f.submit 'Create group', class: "btn btn-create", tabindex: 3
+    = f.submit 'Create group', class: 'btn btn-create'

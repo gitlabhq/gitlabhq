@@ -66,6 +66,7 @@ GEM
     bootstrap-sass (3.3.4.1)
       autoprefixer-rails (>= 5.0.0.1)
       sass (>= 3.2.19)
+    bootstrap_form (2.3.0)
     brakeman (3.0.1)
       erubis (~> 2.6)
       fastercsv (~> 1.5)
@@ -749,6 +750,7 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   bootstrap-sass (~> 3.0)
+  bootstrap_form
   brakeman
   browser (~> 0.8.0)
   byebug
@@ -875,6 +877,3 @@ DEPENDENCIES
   virtus
   webmock (~> 1.21.0)
   wikicloth (= 0.8.1)
-
-BUNDLED WITH
-   1.10.5

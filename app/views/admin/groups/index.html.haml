@@ -8,15 +8,14 @@
   Use groups for uniting related projects.
 
 %hr
-= form_tag admin_groups_path, method: :get, class: 'form-inline' do
-  = hidden_field_tag :sort, @sort
-  .form-group
-    = text_field_tag :name, params[:name], class: "form-control"
-  = button_tag "Search", class: "btn submit btn-primary"
+= bootstrap_form_tag url: admin_groups_path, method: :get, layout: :inline do |f|
+  = f.hidden_field :sort, value: @sort
+  = f.text_field :name, value: params[:name], hide_label: true
+  = f.primary 'Search'
 
   .pull-right
     .dropdown.inline
-      %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+      %a.dropdown-toggle.btn{href: '#', 'data-toggle' => 'dropdown'}
         %span.light sort:
         - if @sort.present?
           = sort_options_hash[@sort]

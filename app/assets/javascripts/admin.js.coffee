@@ -10,7 +10,7 @@ class @Admin
 
     $('body').on 'click', '.js-toggle-colors-link', (e) ->
       e.preventDefault()
-      $('.js-toggle-colors-link').hide()
+      $('.js-toggle-colors-link').parents('.form-group').hide()
       $('.js-toggle-colors-container').show()
 
     $('input#broadcast_message_color').on 'input', ->
