@@ -217,6 +217,24 @@ describe User do
     end
   end
 
+  describe '#disable_two_factor!' do
+    it 'clears all 2FA-related fields' do
+      user = create(:user, :two_factor)
+
+      expect(user).to be_two_factor_enabled
+      expect(user.encrypted_otp_secret).not_to be_nil
+      expect(user.otp_backup_codes).not_to be_nil
+
+      user.disable_two_factor!
+
+      expect(user).not_to be_two_factor_enabled
+      expect(user.encrypted_otp_secret).to be_nil
+      expect(user.encrypted_otp_secret_iv).to be_nil
+      expect(user.encrypted_otp_secret_salt).to be_nil
+      expect(user.otp_backup_codes).to be_nil
+    end
+  end
+
   describe 'projects' do
     before do
       @user = create :user

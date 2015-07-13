@@ -105,19 +105,12 @@ describe Profiles::TwoFactorAuthsController do
   end
 
   describe 'DELETE destroy' do
-    let(:user)   { create(:user, :two_factor) }
-    let!(:codes) { user.generate_otp_backup_codes! }
+    let(:user) { create(:user, :two_factor) }
 
-    it 'clears all 2FA-related fields' do
-      expect(user).to be_two_factor_enabled
-      expect(user.otp_backup_codes).not_to be_nil
-      expect(user.encrypted_otp_secret).not_to be_nil
+    it 'disables two factor' do
+      expect(user).to receive(:disable_two_factor!)
 
       delete :destroy
-
-      expect(user).not_to be_two_factor_enabled
-      expect(user.otp_backup_codes).to be_nil
-      expect(user.encrypted_otp_secret).to be_nil
     end
 
     it 'redirects to profile_account_path' do

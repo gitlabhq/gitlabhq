@@ -29,13 +29,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   def destroy
-    current_user.update_attributes({
-      two_factor_enabled:        false,
-      encrypted_otp_secret:      nil,
-      encrypted_otp_secret_iv:   nil,
-      encrypted_otp_secret_salt: nil,
-      otp_backup_codes:          nil
-    })
+    current_user.disable_two_factor!
 
     redirect_to profile_account_path
   end
