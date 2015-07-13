@@ -50,6 +50,7 @@ v 7.12.2
   - Correctly show anonymous authorized applications under Profile > Applications.
   - Faster automerge check and merge itself when source and target branches are in same repository
   - Audit log for user authentication
+  - Fix transferring of project to another group using the API.
 
 v 7.12.1
   - Fix error when deleting a user who has projects (Stan Hu)
