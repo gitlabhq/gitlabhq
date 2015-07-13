@@ -51,11 +51,6 @@ git checkout .
 git clean -f
 ```
 
-### Remove all the changes that you don't want to send to gitlab.com
-```
-git add NAME-OF-FILE -all
-```
-
 ### Merge created branch with master branch
 You need to be in the created branch.
 ```

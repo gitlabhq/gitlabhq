@@ -3,9 +3,9 @@
 A branch is an independent line of development.
 New commits are recorded in the history for the current branch, which results in taking the source from someone’s repository (the place where the history of your work is stored) at certain point in time, and apply your own changes to it in the history of the project.
 
-To add changes to your GitLab project, you should create a branch. You can do it in your shell or in  [GitLab.com](https://gitlab.com).
+To add changes to your GitLab project, you should create a branch. You can do it in your [shell](basic-git-commands.md) or in  [GitLab](https://gitlab.com).
 
-To create a new branch in [GitLab.com](https://gitlab.com), sign in and then select a project on the right side of your screen:
+To create a new branch in GitLab, sign in and then select a project on the right side of your screen:
 
 ![Select a project](basicsimages/select_project.png)
 
