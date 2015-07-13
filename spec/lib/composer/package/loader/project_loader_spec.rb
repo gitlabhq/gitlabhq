@@ -63,9 +63,7 @@ describe Composer::Package::Loader::ProjectLoader do
   end
 
   it '#load fails on unamed' do
-    expect {
-      @loader.load(@project, @branch, {})
-    }.to raise_error(Composer::UnexpectedValueError)
+    expect { @loader.load(@project, @branch, {}) }.to raise_error(Composer::UnexpectedValueError)
   end
 
 end

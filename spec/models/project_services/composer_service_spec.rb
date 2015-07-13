@@ -44,7 +44,7 @@ describe ComposerService, models: true do
 
     before do
       @service = ComposerService.new
-      @service.stub(
+      allow(@service).to receive_messages(
         project: project,
         project_id: project.id,
         service_hook: true,
