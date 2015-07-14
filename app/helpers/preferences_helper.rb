@@ -42,6 +42,13 @@ module PreferencesHelper
     end
   end
 
+  def project_view_choices
+    [
+      ['Readme (default)', :readme],
+      ['Activity view', :activity]
+    ]
+  end
+
   def user_application_theme
     theme = Gitlab::Themes.by_id(current_user.try(:theme_id))
     theme.css_class
@@ -49,5 +56,10 @@ module PreferencesHelper
 
   def user_color_scheme_class
     COLOR_SCHEMES[current_user.try(:color_scheme_id)] if defined?(current_user)
+  end
+
+  def prefer_readme?
+    !current_user ||
+      current_user.project_view == 'readme'
   end
 end
