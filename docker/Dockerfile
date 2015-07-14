@@ -30,7 +30,9 @@ RUN ( \
   echo "" && \
   echo "# Docker options" && \
   echo "# Prevent Postgres from trying to allocate 25% of total memory" && \
-  echo "postgresql['shared_buffers'] = '1MB'" ) >> /etc/gitlab/gitlab.rb
+  echo "postgresql['shared_buffers'] = '1MB'" ) >> /etc/gitlab/gitlab.rb && \
+  mkdir -p /assets/ && \
+  cp /etc/gitlab/gitlab.rb /assets/gitlab.rb
 
 # Expose web & ssh
 EXPOSE 443 80 22
