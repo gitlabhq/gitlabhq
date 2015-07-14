@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Password reset' do
+feature 'Password reset', feature: true do
   def forgot_password
     click_on 'Forgot your password?'
     fill_in 'Email', with: user.email

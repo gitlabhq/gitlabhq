@@ -16,7 +16,6 @@
 #= require jquery.scrollTo
 #= require jquery.blockUI
 #= require jquery.turbolinks
-#= require jquery.sticky-kit.min
 #= require turbolinks
 #= require autosave
 #= require bootstrap
@@ -41,6 +40,7 @@
 #= require shortcuts_issuable
 #= require shortcuts_network
 #= require cal-heatmap
+#= require jquery.nicescroll.min
 #= require_tree .
 
 window.slugify = (text) ->
@@ -107,6 +107,8 @@ window.addEventListener "hashchange", shiftWindow
 $.timeago.settings.allowFuture = true
 
 $ ->
+  $(".nicescroll").niceScroll(cursoropacitymax: '0.4', cursorcolor: '#FFF', cursorborder: "1px solid #FFF")
+
   # Click a .js-select-on-focus field, select the contents
   $(".js-select-on-focus").on "focusin", ->
     # Prevent a mouseup event from deselecting the input

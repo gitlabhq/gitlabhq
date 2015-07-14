@@ -79,22 +79,36 @@ module Mentionable
     end
   end
 
-  # If the mentionable_text field is about to change, locate any *added* references and create cross references for
-  # them. Invoke from an observer's #before_save implementation.
-  def notice_added_references(p = project, a = author)
-    ch = changed_attributes
-    original, mentionable_changed = "", false
-    self.class.mentionable_attrs.each do |attr|
-      if ch[attr]
-        original << ch[attr]
-        mentionable_changed = true
-      end
-    end
+  # When a mentionable field is changed, creates cross-reference notes that
+  # don't already exist
+  def create_new_cross_references!(p = project, a = author)
+    changes = detect_mentionable_changes
 
-    # Only proceed if the saved changes actually include a chance to an attr_mentionable field.
-    return unless mentionable_changed
+    return if changes.empty?
 
-    preexisting = references(p, self.author, original)
+    original_text = changes.collect { |_, vals| vals.first }.join(' ')
+
+    preexisting = references(p, self.author, original_text)
     create_cross_references!(p, a, preexisting)
+  end
+
+  private
+
+  # Returns a Hash of changed mentionable fields
+  #
+  # Preference is given to the `changes` Hash, but falls back to
+  # `previous_changes` if it's empty (i.e., the changes have already been
+  # persisted).
+  #
+  # See ActiveModel::Dirty.
+  #
+  # Returns a Hash.
+  def detect_mentionable_changes
+    source = (changes.present? ? changes : previous_changes).dup
+
+    mentionable = self.class.mentionable_attrs
+
+    # Only include changed fields that are mentionable
+    source.select { |key, val| mentionable.include?(key) }
   end
 end

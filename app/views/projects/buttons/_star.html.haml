@@ -1,0 +1,22 @@
+- if current_user
+  = link_to toggle_star_namespace_project_path(@project.namespace, @project), class: 'btn star-btn toggle-star', method: :post, remote: true do
+    = icon('star')
+    - if current_user.starred?(@project)
+      Unstar
+    - else
+      Star
+    %span.count
+      = @project.star_count
+
+  :coffeescript
+    $('.project-home-panel .toggle-star').on 'ajax:success', (e, data, status, xhr) ->
+      $(@).replaceWith(data.html)
+    .on 'ajax:error', (e, xhr, status, error) ->
+      new Flash('Star toggle failed. Try again later.', 'alert')
+
+- else
+  = link_to new_user_session_path, class: 'btn has_tooltip star-btn', title: 'You must sign in to star a project' do
+    = icon('star')
+    Star
+    %span.count
+      = @project.star_count

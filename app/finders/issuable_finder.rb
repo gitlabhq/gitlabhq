@@ -10,7 +10,7 @@
 #     state: 'open' or 'closed' or 'all'
 #     group_id: integer
 #     project_id: integer
-#     milestone_id: integer
+#     milestone_title: string
 #     assignee_id: integer
 #     search: string
 #     label_name: string
@@ -76,7 +76,7 @@ class IssuableFinder
     return @milestones if defined?(@milestones)
 
     @milestones =
-      if milestones? && params[:milestone_title] != NONE
+      if milestones? && params[:milestone_title] != Milestone::None.title
         Milestone.where(title: params[:milestone_title])
       else
         nil

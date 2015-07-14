@@ -1,6 +1,6 @@
 - name = field[:name]
 - title = field[:title] || name.humanize
-- value = service_field_value(field[:type], @service.send(name))
+- value = @service.send(name)
 - type = field[:type]
 - placeholder = field[:placeholder]
 - choices = field[:choices]
@@ -19,6 +19,6 @@
     - elsif type == 'select'
       = form.select name, options_for_select(choices, value ? value : default_choice), {}, { class: "form-control" }
     - elsif type == 'password'
-      = form.password_field name, placeholder: value, class: 'form-control'
+      = form.password_field name, value: value, class: 'form-control'
     - if help
       %span.help-block= help

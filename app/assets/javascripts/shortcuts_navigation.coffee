@@ -4,6 +4,7 @@ class @ShortcutsNavigation extends Shortcuts
   constructor: ->
     super()
     Mousetrap.bind('g p', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-project'))
+    Mousetrap.bind('g e', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-project-activity'))
     Mousetrap.bind('g f', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-tree'))
     Mousetrap.bind('g c', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-commits'))
     Mousetrap.bind('g n', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-network'))

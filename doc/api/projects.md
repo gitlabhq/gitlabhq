@@ -4,16 +4,16 @@
 ### Project visibility level
 
 Project in GitLab has be either private, internal or public.
-You can determine it by `visibility_level` field in project. 
+You can determine it by `visibility_level` field in project.
 
 Constants for project visibility levels are next:
 
-* Private. `visibility_level` is `0`. 
+* Private. `visibility_level` is `0`.
   Project access must be granted explicitly for each user.
 
 * Internal. `visibility_level` is `10`.
   The project can be cloned by any logged in user.
- 
+
 * Public. `visibility_level` is `20`.
   The project can be cloned without any authentication.
 
@@ -362,7 +362,7 @@ Parameters:
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
 
-On success, method returns 200 with the updated project. If parameters are 
+On success, method returns 200 with the updated project. If parameters are
 invalid, 400 is returned.
 
 ### Fork project
@@ -478,6 +478,9 @@ Please note that the returned JSON currently differs slightly. Thus you should n
 rely on the returned JSON structure.
 
 ## Hooks
+
+Also called Project Hooks and Webhooks.
+These are different for [System Hooks](system_hooks.md) that are system wide.
 
 ### List project hooks
 

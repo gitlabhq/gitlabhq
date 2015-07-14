@@ -63,7 +63,7 @@ Feature: Profile
 
   Scenario: I visit history tab
     Given I have activity
-    When I visit profile history page
+    When I visit Audit Log page
     Then I should see my activity
 
   Scenario: I visit my user page

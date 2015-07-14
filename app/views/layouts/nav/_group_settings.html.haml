@@ -1,6 +1,6 @@
 %ul.nav.nav-sidebar
   = nav_link do
-    = link_to group_path(@group), title: 'Back to group', data: {placement: 'right'} do
+    = link_to group_path(@group), title: 'Back to group', data: {placement: 'right'}, class: 'back-link' do
       = icon('caret-square-o-left fw')
       %span
         Back to group

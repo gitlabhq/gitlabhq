@@ -45,8 +45,8 @@ describe "Profile access", feature: true  do
     it { is_expected.to be_denied_for :visitor }
   end
 
-  describe "GET /profile/history" do
-    subject { history_profile_path }
+  describe "GET /profile/audit_log" do
+    subject { audit_log_profile_path }
 
     it { is_expected.to be_allowed_for @u1 }
     it { is_expected.to be_allowed_for :admin }

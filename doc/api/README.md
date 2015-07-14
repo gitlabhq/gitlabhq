@@ -4,7 +4,7 @@
 
 - [Users](users.md)
 - [Session](session.md)
-- [Projects](projects.md)
+- [Projects](projects.md) including setting Webhooks
 - [Project Snippets](project_snippets.md)
 - [Services](services.md)
 - [Repositories](repositories.md)
@@ -20,6 +20,7 @@
 - [System Hooks](system_hooks.md)
 - [Groups](groups.md)
 - [Namespaces](namespaces.md)
+- [Settings](settings.md)
 
 ## Clients
 

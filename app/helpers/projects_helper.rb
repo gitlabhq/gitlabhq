@@ -84,58 +84,21 @@ module ProjectsHelper
     @project.milestones.active.order("due_date, title ASC")
   end
 
-  def link_to_toggle_star(title, starred)
-    cls = 'star-btn btn btn-sm btn-default'
-
-    toggle_text =
-      if starred
-        ' Unstar'
-      else
-        ' Star'
-      end
-
-    toggle_html = content_tag('span', class: 'toggle') do
-      icon('star') + toggle_text
-    end
-
-    count_html = content_tag('span', class: 'count') do
-      @project.star_count.to_s
-    end
-
-    link_opts = {
-      title: title,
-      class: cls,
-      method: :post,
-      remote: true,
-      data: { type: 'json' }
-    }
-
-    path = toggle_star_namespace_project_path(@project.namespace, @project)
-
-    content_tag 'span', class: starred ? 'turn-on' : 'turn-off' do
-      link_to(path, link_opts) do
-        toggle_html + ' ' + count_html
-      end
-    end
-  end
-
-  def link_to_toggle_fork
-    html = content_tag('span') do
-      icon('code-fork') + ' Fork'
-    end
-
-    count_html = content_tag(:span, class: 'count') do
-      @project.forks_count.to_s
-    end
-
-    html + count_html
-  end
-
   def project_for_deploy_key(deploy_key)
     if deploy_key.projects.include?(@project)
       @project
     else
       deploy_key.projects.find { |project| can?(current_user, :read_project, project) }
+    end
+  end
+
+  def can_change_visibility_level?(project, current_user)
+    return false unless can?(current_user, :change_visibility_level, project)
+
+    if project.forked?
+      project.forked_from_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE
+    else
+      true
     end
   end
 
@@ -285,29 +248,11 @@ module ProjectsHelper
     end
   end
 
-  def github_import_enabled?
-    enabled_oauth_providers.include?(:github)
-  end
-
-  def gitlab_import_enabled?
-    enabled_oauth_providers.include?(:gitlab)
-  end
-
   def membership_locked?
     if @project.group && @project.group.membership_lock
       true
     else
       false
-    end
-  end
-
-  def service_field_value(type, value)
-    return value unless type == 'password'
-
-    if value.present?
-      "***********"
-    else
-      nil
     end
   end
 
@@ -321,5 +266,22 @@ module ProjectsHelper
 
   def leave_project_message(project)
     "Are you sure you want to leave \"#{project.name}\" project?"
+  end
+
+  def new_readme_path
+    ref = @repository.root_ref if @repository
+    ref ||= 'master'
+
+    namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'README.md')
+  end
+
+  def last_push_event
+    if current_user
+      current_user.recent_push(@project.id)
+    end
+  end
+
+  def readme_cache_key
+    [@project.id, @project.commit.sha, "readme"].join('-')
   end
 end

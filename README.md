@@ -49,7 +49,7 @@ To use EE and get official support please [become a subscriber](https://about.gi
 
 ## Code status
 
-- [![build status](https://ci.gitlab.org/projects/1/status.png?ref=master)](https://ci.gitlab.org/projects/1?ref=master) on ci.gitlab.org (master branch)
+- [![build status](https://ci.gitlab.com/projects/1/status.png?ref=master)](https://ci.gitlab.com/projects/1?ref=master) on ci.gitlab.com (master branch)
 
 - [![Build Status](https://semaphoreapp.com/api/v1/projects/2f1a5809-418b-4cc2-a1f4-819607579fe7/243338/badge.png)](https://semaphoreapp.com/gitlabhq/gitlabhq)
 
@@ -98,7 +98,7 @@ Since 2011 a minor or major version of GitLab is released on the 22nd of every m
 
 ## Upgrading
 
-For updating the Omnibus installation please see the [update documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/update.md). For installations from source there is an [upgrader script](doc/update/upgrader.md) and there are [upgrade guides](doc/update) detailing all necessary commands to migrate to the next version.
+For upgrading information please see our [update page](https://about.gitlab.com/update/).
 
 ## Install a development environment
 

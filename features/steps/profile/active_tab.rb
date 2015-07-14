@@ -19,7 +19,7 @@ class Spinach::Features::ProfileActiveTab < Spinach::FeatureSteps
     ensure_active_main_tab('Preferences')
   end
 
-  step 'the active main tab should be History' do
-    ensure_active_main_tab('History')
+  step 'the active main tab should be Audit Log' do
+    ensure_active_main_tab('Audit Log')
   end
 end

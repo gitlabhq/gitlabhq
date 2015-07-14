@@ -38,8 +38,11 @@ class ProfilesController < Profiles::ApplicationController
     redirect_to profile_account_path
   end
 
-  def history
-    @events = current_user.recent_events.page(params[:page]).per(PER_PAGE)
+  def audit_log
+    @events = AuditEvent.where(entity_type: "User", entity_id: current_user.id).
+      order("created_at DESC").
+      page(params[:page]).
+      per(PER_PAGE)
   end
 
   def update_username

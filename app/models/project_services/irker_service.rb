@@ -21,26 +21,11 @@
 require 'uri'
 
 class IrkerService < Service
+  prop_accessor :server_host, :server_port, :default_irc_uri
   prop_accessor :colorize_messages, :recipients, :channels
   validates :recipients, presence: true, if: :activated?
-  validate :check_recipients_count, if: :activated?
 
   before_validation :get_channels
-  after_initialize :initialize_settings
-
-  # Writer for RSpec tests
-  attr_writer :settings
-
-  def initialize_settings
-    # See the documentation (doc/project_services/irker.md) for possible values
-    # here
-    @settings ||= {
-      server_ip: 'localhost',
-      server_port: 6659,
-      max_channels: 3,
-      default_irc_uri: nil
-    }
-  end
 
   def title
     'Irker (IRC gateway)'
@@ -49,20 +34,6 @@ class IrkerService < Service
   def description
     'Send IRC messages, on update, to a list of recipients through an Irker '\
     'gateway.'
-  end
-
-  def help
-    msg = 'Recipients have to be specified with a full URI: '\
-    'irc[s]://irc.network.net[:port]/#channel. Special cases: if you want '\
-    'the channel to be a nickname instead, append ",isnick" to the channel '\
-    'name; if the channel is protected by a secret password, append '\
-    '"?key=secretpassword" to the URI.'
-
-    unless @settings[:default_irc].nil?
-      msg += ' Note that a default IRC URI is provided by this service\'s '\
-      "administrator: #{default_irc}. You can thus just give a channel name."
-    end
-    msg
   end
 
   def to_param
@@ -77,30 +48,45 @@ class IrkerService < Service
     return unless supported_events.include?(data[:object_kind])
 
     IrkerWorker.perform_async(project_id, channels,
-                              colorize_messages, data, @settings)
+                              colorize_messages, data, settings)
+  end
+
+  def settings
+    { server_host: server_host.present? ? server_host : 'localhost',
+      server_port: server_port.present? ? server_port : 6659
+    }
   end
 
   def fields
     [
+      { type: 'text', name: 'server_host', placeholder: 'localhost',
+        help: 'Irker daemon hostname (defaults to localhost)' },
+      { type: 'text', name: 'server_port', placeholder: 6659,
+        help: 'Irker daemon port (defaults to 6659)' },
+      { type: 'text', name: 'default_irc_uri', title: 'Default IRC URI',
+        help: 'A default IRC URI to prepend before each recipient (optional)',
+        placeholder: 'irc://irc.network.net:6697/' },
       { type: 'textarea', name: 'recipients',
-        placeholder: 'Recipients/channels separated by whitespaces' },
+        placeholder: 'Recipients/channels separated by whitespaces',
+        help: 'Recipients have to be specified with a full URI: '\
+        'irc[s]://irc.network.net[:port]/#channel. Special cases: if '\
+        'you want the channel to be a nickname instead, append ",isnick" to ' \
+        'the channel name; if the channel is protected by a secret password, ' \
+        ' append "?key=secretpassword" to the URI. Note that if you specify a ' \
+        ' default IRC URI to prepend before each recipient, you can just give ' \
+        ' a channel name.'  },
       { type: 'checkbox', name: 'colorize_messages' },
     ]
   end
 
+  def help
+    ' NOTE: Irker does NOT have built-in authentication, which makes it' \
+    ' vulnerable to spamming IRC channels if it is hosted outside of a ' \
+    ' firewall. Please make sure you run the daemon within a secured network ' \
+    ' to prevent abuse. For more details, read: http://www.catb.org/~esr/irker/security.html.'
+  end
+
   private
-
-  def check_recipients_count
-    return true if recipients.nil? || recipients.empty?
-
-    if recipients.split(/\s+/).count > max_chans
-      errors.add(:recipients, "are limited to #{max_chans}")
-    end
-  end
-
-  def max_chans
-    @settings[:max_channels]
-  end
 
   def get_channels
     return true unless :activated?
@@ -114,40 +100,35 @@ class IrkerService < Service
 
   def map_recipients
     self.channels = recipients.split(/\s+/).map do |recipient|
-      format_channel default_irc_uri, recipient
+      format_channel(recipient)
     end
     channels.reject! &:nil?
   end
 
-  def default_irc_uri
-    default_irc = @settings[:default_irc_uri]
-    if !(default_irc.nil? || default_irc[-1] == '/')
-      default_irc += '/'
-    end
-    default_irc
-  end
-
-  def format_channel(default_irc, recipient)
-    cnt = 0
-    url = nil
+  def format_channel(recipient)
+    uri = nil
 
     # Try to parse the chan as a full URI
     begin
-      uri = URI.parse(recipient)
-      raise URI::InvalidURIError if uri.scheme.nil? && cnt == 0
+      uri = consider_uri(URI.parse(recipient))
     rescue URI::InvalidURIError
-      unless default_irc.nil?
-        cnt += 1
-        recipient = "#{default_irc}#{recipient}"
-        retry if cnt == 1
-      end
-    else
-      url = consider_uri uri
     end
-    url
+
+    unless uri.present? and default_irc_uri.nil?
+      begin
+        new_recipient = URI.join(default_irc_uri, '/', recipient).to_s
+        uri = consider_uri(URI.parse(new_recipient))
+      rescue
+        Rails.logger.error("Unable to create a valid URL from #{default_irc_uri} and #{recipient}")
+      end
+    end
+
+    uri
   end
 
   def consider_uri(uri)
+    return nil if uri.scheme.nil?
+
     # Authorize both irc://domain.com/#chan and irc://domain.com/chan
     if uri.is_a?(URI) && uri.scheme[/^ircs?\z/] && !uri.path.nil?
       # Do not authorize irc://domain.com/

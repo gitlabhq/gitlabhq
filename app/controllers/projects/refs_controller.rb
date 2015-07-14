@@ -8,17 +8,21 @@ class Projects::RefsController < Projects::ApplicationController
   def switch
     respond_to do |format|
       format.html do
-        new_path = if params[:destination] == "tree"
-                     namespace_project_tree_path(@project.namespace, @project,
-                                                 (@id))
-                   elsif params[:destination] == "blob"
-                     namespace_project_blob_path(@project.namespace, @project,
-                                                 (@id))
-                   elsif params[:destination] == "graph"
-                     namespace_project_network_path(@project.namespace, @project, @id, @options)
-                   else
-                     namespace_project_commits_path(@project.namespace, @project, @id)
-                   end
+        new_path =
+          case params[:destination]
+          when "tree"
+            namespace_project_tree_path(@project.namespace, @project, @id)
+          when "blob"
+            namespace_project_blob_path(@project.namespace, @project, @id)
+          when "graph"
+            namespace_project_network_path(@project.namespace, @project, @id, @options)
+          when "graphs"
+            namespace_project_graph_path(@project.namespace, @project, @id)
+          when "graphs_commits"
+            commits_namespace_project_graph_path(@project.namespace, @project, @id)
+          else
+            namespace_project_commits_path(@project.namespace, @project, @id)
+          end
 
         redirect_to new_path
       end

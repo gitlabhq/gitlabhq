@@ -37,6 +37,8 @@ class SessionsController < Devise::SessionsController
         resource.update_attributes(reset_password_token: nil,
                                    reset_password_sent_at: nil)
       end
+      authenticated_with = user_params[:otp_attempt] ? "two-factor" : "standard"
+      log_audit_event(current_user, with: authenticated_with)
     end
   end
 
@@ -94,5 +96,10 @@ class SessionsController < Devise::SessionsController
   def valid_otp_attempt?(user)
     user.valid_otp?(user_params[:otp_attempt]) ||
     user.invalidate_otp_backup_code!(user_params[:otp_attempt])
+  end
+
+  def log_audit_event(user, options = {})
+    AuditEventService.new(user, user, options).
+      for_authentication.security_event
   end
 end

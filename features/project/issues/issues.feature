@@ -188,6 +188,7 @@ Feature: Project Issues
   Scenario: I submit new unassigned issue as guest
     Given public project "Community"
     When I visit project "Community" page
+    And I visit project "Community" issues page
     And I click link "New Issue"
     And I should not see assignee field
     And I should not see milestone field

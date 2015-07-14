@@ -11,19 +11,16 @@ module Projects
     include Gitlab::ShellAdapter
     class TransferError < StandardError; end
 
-    def execute
-      namespace_id = params[:new_namespace_id]
-      namespace = Namespace.find_by(id: namespace_id)
-
-      if allowed_transfer?(current_user, project, namespace)
-        transfer(project, namespace)
+    def execute(new_namespace)
+      if allowed_transfer?(current_user, project, new_namespace)
+        transfer(project, new_namespace)
       else
-        project.errors.add(:namespace, 'is invalid')
+        project.errors.add(:new_namespace, 'is invalid')
         false
       end
     rescue Projects::TransferService::TransferError => ex
       project.reload
-      project.errors.add(:namespace_id, ex.message)
+      project.errors.add(:new_namespace, ex.message)
       false
     end
 

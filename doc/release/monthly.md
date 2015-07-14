@@ -66,10 +66,11 @@ Xth: (2 working days before the 22nd)
 
 Xth: (1 working day before the 22nd)
 
-- [ ] Create CE, EE, CI stable versions (#LINK)
-- [ ] Create Omnibus tags and build packages
-- [ ] Update GitLab.com with the stable version (#LINK)
-- [ ] Update ci.gitLab.com with the stable version (#LINK)
+- [ ] Merge CE stable into EE stable
+- [ ] Create (hopefully final) CE, EE, CI release candidates (#LINK)
+- [ ] Create Omnibus tags and build packages for the latest release candidates
+- [ ] Update GitLab.com with the latest RC (#LINK)
+- [ ] Update ci.gitLab.com with the latest RC (#LINK)
 
 22nd before 12AM CET:
 
@@ -77,7 +78,11 @@ Release before 12AM CET / 3AM PST, to make sure the majority of our users
 get the new version on the 22nd and there is sufficient time in the European
 workday to quickly fix any issues.
 
-- [ ] Release CE, EE and CI (#LINK)
+- [ ] Merge CE stable into EE stable (#LINK)
+- [ ] Create the 'x.y.0' tag with the [release tools](https://dev.gitlab.org/gitlab/release-tools) (#LINK)
+- [ ] BEFORE 11AM CET Create and push omnibus tags for x.y.0 (will auto-release the packages) (#LINK)
+- [ ] BEFORE 12AM CET Publish the release blog post (#LINK)
+- [ ] Tweet about the release (blog post) (#LINK)
 - [ ] Schedule a second tweet of the release announcement at 6PM CET / 9AM PST
 
 ```

@@ -1,6 +1,6 @@
 .alert.alert-warning
   %h4
-    Too many changes.
+    Too many changes to show.
     .pull-right
       - unless diff_hard_limit_enabled?
         = link_to "Reload with full diff", url_for(params.merge(force_show_diff: true)), class: "btn btn-sm btn-warning"

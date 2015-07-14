@@ -220,9 +220,7 @@ describe API::API, api: true  do
     context 'when a visibility level is restricted' do
       before do
         @project = attributes_for(:project, { public: true })
-        allow_any_instance_of(ApplicationSetting).to(
-          receive(:restricted_visibility_levels).and_return([20])
-        )
+        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
       end
 
       it 'should not allow a non-admin to use a restricted visibility level' do

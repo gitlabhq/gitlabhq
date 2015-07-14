@@ -139,8 +139,8 @@ module SharedPaths
     visit profile_preferences_path
   end
 
-  step 'I visit profile history page' do
-    visit history_profile_path
+  step 'I visit Audit Log page' do
+    visit audit_log_profile_path
   end
 
   # ----------------------------------------
@@ -285,6 +285,10 @@ module SharedPaths
 
   step 'I visit project "Shop" page' do
     visit namespace_project_path(project.namespace, project)
+  end
+
+  step 'I visit project "Shop" activity page' do
+    visit activity_namespace_project_path(project.namespace, project)
   end
 
   step 'I visit project "Forked Shop" merge requests page' do
