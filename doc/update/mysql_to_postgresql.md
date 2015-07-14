@@ -57,7 +57,7 @@ sudo -u git -H git clone https://github.com/gitlabhq/mysql-postgresql-converter.
 # Convert gitlabhq_production.mysql
 sudo -u git -H mkdir db
 sudo -u git -H python mysql-postgresql-converter/db_converter.py gitlabhq_production.mysql db/database.sql
-sudo -u git -H ed -s db/database.sql < move_drop_indexes.ed
+sudo -u git -H ed -s db/database.sql < mysql-postgresql-converter/move_drop_indexes.ed
 
 # Compress database backup
 sudo -u git -H gzip db/database.sql
