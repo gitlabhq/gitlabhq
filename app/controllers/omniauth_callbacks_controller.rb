@@ -32,6 +32,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       if @user.otp_required_for_login?
         prompt_for_two_factor(gl_user)
       else
+        log_audit_event(gl_user, with: :ldap)
         sign_in_and_redirect(gl_user)
       end
     else
@@ -52,6 +53,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     if current_user
       # Add new authentication method
       current_user.identities.find_or_create_by(extern_uid: oauth['uid'], provider: oauth['provider'])
+      log_audit_event(current_user, with: oauth['provider'])
       redirect_to profile_account_path, notice: 'Authentication method updated'
     else
       @user = Gitlab::OAuth::User.new(oauth)
@@ -59,6 +61,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       # Only allow properly saved users to login.
       if @user.persisted? && @user.valid?
+        log_audit_event(@user.gl_user, with: oauth['provider'])
         sign_in_and_redirect(@user.gl_user)
       else
         error_message =
@@ -87,5 +90,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def oauth
     @oauth ||= request.env['omniauth.auth']
+  end
+
+  def log_audit_event(user, options = {})
+    AuditEventService.new(user, user, options).
+      for_authentication.security_event
   end
 end

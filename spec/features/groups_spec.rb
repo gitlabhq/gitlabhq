@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Group' do
+feature 'Group', feature: true do
   describe 'description' do
     let(:group) { create(:group) }
     let(:path)  { group_path(group) }

@@ -1,0 +1,31 @@
+{
+  "id": "/gitlab",
+  "ports": [0,0],
+  "cpus": 2,
+  "mem": 2048.0,
+  "disk": 10240.0,
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "network": "HOST",
+      "image": "gitlab/gitlab-ce:latest"
+    },
+    "volumes": [
+      {
+          "containerPath": "/etc/gitlab",
+          "hostPath": "/var/data/etc/gitlab",
+          "mode": "RW"
+      },
+      {
+          "containerPath": "/var/opt/gitlab",
+          "hostPath": "/var/data/opt/gitlab",
+          "mode": "RW"
+      },
+      {
+          "containerPath": "/var/log/gitlab",
+          "hostPath": "/var/data/log/gitlab",
+          "mode": "RW"
+      }
+    ]
+  }
+}

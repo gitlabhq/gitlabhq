@@ -1,6 +1,9 @@
 class Projects::GraphsController < Projects::ApplicationController
+  include ExtractsPath
+
   # Authorize
   before_action :require_non_empty_project
+  before_action :assign_ref_vars
   before_action :authorize_download_code!
 
   def show
@@ -13,7 +16,7 @@ class Projects::GraphsController < Projects::ApplicationController
   end
 
   def commits
-    @commits = @project.repository.commits(nil, nil, 2000, 0, true)
+    @commits = @project.repository.commits(@ref, nil, 2000, 0, true)
     @commits_graph = Gitlab::Graphs::Commits.new(@commits)
     @commits_per_week_days = @commits_graph.commits_per_week_days
     @commits_per_time = @commits_graph.commits_per_time
@@ -23,7 +26,7 @@ class Projects::GraphsController < Projects::ApplicationController
   private
 
   def fetch_graph
-    @commits = @project.repository.commits(nil, nil, 6000, 0, true)
+    @commits = @project.repository.commits(@ref, nil, 6000, 0, true)
     @log = []
 
     @commits.each do |commit|

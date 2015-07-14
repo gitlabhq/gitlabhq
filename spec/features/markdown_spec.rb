@@ -32,7 +32,7 @@ require 'erb'
 #
 # See the MarkdownFeature class for setup details.
 
-describe 'GitLab Markdown' do
+describe 'GitLab Markdown', feature: true do
   include ActionView::Helpers::TagHelper
   include ActionView::Helpers::UrlHelper
   include Capybara::Node::Matchers

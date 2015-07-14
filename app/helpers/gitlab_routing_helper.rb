@@ -17,6 +17,10 @@ module GitlabRoutingHelper
     namespace_project_path(project.namespace, project, *args)
   end
 
+  def activity_project_path(project, *args)
+    activity_namespace_project_path(project.namespace, project, *args)
+  end
+
   def edit_project_path(project, *args)
     edit_namespace_project_path(project.namespace, project, *args)
   end

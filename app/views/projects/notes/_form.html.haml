@@ -12,8 +12,14 @@
       classes: 'note_text js-note-text'
 
     .comment-hints.clearfix
-      .pull-left Comments are parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"),{ target: '_blank', tabindex: -1 }}
-      .pull-right Attach files by dragging &amp; dropping or #{link_to "selecting them", '#', class: 'markdown-selector', tabindex: -1 }.
+      .pull-left
+        = link_to "Markdown ", help_page_path("markdown", "markdown"),{ target: '_blank', tabindex: -1 }
+        tip:
+        = random_markdown_tip
+      .pull-right
+        = link_to '#', class: 'markdown-selector', tabindex: -1 do
+          Attach a file
+          = icon('paperclip')
     .error-alert
 
   .note-form-actions

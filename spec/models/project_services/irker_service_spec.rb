@@ -38,22 +38,6 @@ describe IrkerService do
       let(:_recipients) { nil }
       it { should validate_presence_of :recipients }
     end
-
-    context 'too many recipients' do
-      let(:_recipients) { 'a b c d' }
-      it 'should add an error if there is too many recipients' do
-        subject.send :check_recipients_count
-        expect(subject.errors).not_to be_blank
-      end
-    end
-
-    context '3 recipients' do
-      let(:_recipients) { 'a b c' }
-      it 'should not add an error if there is 3 recipients' do
-        subject.send :check_recipients_count
-        expect(subject.errors).to be_blank
-      end
-    end
   end
 
   describe 'Execute' do
@@ -62,7 +46,7 @@ describe IrkerService do
     let(:project) { create(:project) }
     let(:sample_data) { Gitlab::PushDataBuilder.build_sample(project, user) }
 
-    let(:recipients) { '#commits' }
+    let(:recipients) { '#commits irc://test.net/#test ftp://bad' }
     let(:colorize_messages) { '1' }
 
     before do
@@ -71,17 +55,12 @@ describe IrkerService do
         project: project,
         project_id: project.id,
         service_hook: true,
-        properties: {
-          'recipients' => recipients,
-          'colorize_messages' => colorize_messages
-        }
-      )
-      irker.settings = {
-        server_ip: 'localhost',
+        server_host: 'localhost',
         server_port: 6659,
-        max_channels: 3,
-        default_irc_uri: 'irc://chat.freenode.net/'
-      }
+        default_irc_uri: 'irc://chat.freenode.net/',
+        recipients: recipients,
+        colorize_messages: colorize_messages)
+
       irker.valid?
       @irker_server = TCPServer.new 'localhost', 6659
     end
@@ -97,11 +76,8 @@ describe IrkerService do
       conn.readlines.each do |line|
         msg = JSON.load(line.chomp("\n"))
         expect(msg.keys).to match_array(['to', 'privmsg'])
-        if msg['to'].is_a?(String)
-          expect(msg['to']).to eq 'irc://chat.freenode.net/#commits'
-        else
-          expect(msg['to']).to match_array(['irc://chat.freenode.net/#commits'])
-        end
+        expect(msg['to']).to match_array(["irc://chat.freenode.net/#commits",
+                                          "irc://test.net/#test"])
       end
       conn.close
     end

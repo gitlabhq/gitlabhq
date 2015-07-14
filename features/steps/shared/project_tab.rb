@@ -49,4 +49,8 @@ module SharedProjectTab
       expect(page).to have_content('Back to project')
     end
   end
+
+  step 'the active main tab should be Activity' do
+    ensure_active_main_tab('Activity')
+  end
 end

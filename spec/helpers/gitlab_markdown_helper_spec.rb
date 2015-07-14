@@ -137,7 +137,7 @@ describe GitlabMarkdownHelper do
   describe 'random_markdown_tip' do
     it 'returns a random Markdown tip' do
       stub_const("#{described_class}::MARKDOWN_TIPS", ['Random tip'])
-      expect(random_markdown_tip).to eq 'Tip: Random tip'
+      expect(random_markdown_tip).to eq 'Random tip'
     end
   end
 end

@@ -86,4 +86,10 @@ module VisibilityLevelHelper
   def default_snippet_visibility
     current_application_settings.default_snippet_visibility
   end
+
+  def skip_level?(form_model, level)
+    form_model.is_a?(Project) &&
+    form_model.forked? &&
+    !Gitlab::VisibilityLevel.allowed_fork_levels(form_model.forked_from_project.visibility_level).include?(level)
+  end
 end

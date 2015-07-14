@@ -64,6 +64,17 @@ class AuditEventService
     self
   end
 
+  def for_authentication
+    @details = {
+      with: @details[:with],
+      target_id: @author.id,
+      target_type: "User",
+      target_details: @author.name,
+    }
+
+    self
+  end
+
   def security_event
     SecurityEvent.create(
       author_id: @author.id,

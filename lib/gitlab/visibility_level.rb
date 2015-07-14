@@ -47,6 +47,10 @@ module Gitlab
       def valid_level?(level)
         options.has_value?(level)
       end
+
+      def allowed_fork_levels(origin_level)
+        [PRIVATE, INTERNAL, PUBLIC].select{ |level| level <= origin_level }
+      end
     end
 
     def private?

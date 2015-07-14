@@ -33,4 +33,9 @@ class Spinach::Features::ProjectShortcuts < Spinach::FeatureSteps
     find('body').native.send_key('g')
     find('body').native.send_key('w')
   end
+
+  step 'I press "g" and "e"' do
+    find('body').native.send_key('g')
+    find('body').native.send_key('e')
+  end
 end

@@ -38,5 +38,13 @@
           = link_to('(?)', help_page_path('profile', 'preferences') + '#default-dashboard', target: '_blank')
         .col-sm-10
           = f.select :dashboard, dashboard_choices, {}, class: 'form-control'
+      .form-group
+        = f.label :project_view, class: 'control-label' do
+          Project view
+          = link_to('(?)', help_page_path('profile', 'preferences') + '#default-project-view', target: '_blank')
+        .col-sm-10
+          = f.select :project_view, project_view_choices, {}, class: 'form-control'
+          .help-block
+            Choose what content you want to see when visit project page
     .panel-footer
       = f.submit 'Save', class: 'btn btn-save'

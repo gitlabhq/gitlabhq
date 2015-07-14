@@ -187,7 +187,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click on "add a file" link' do
-    click_link 'add a file'
+    click_link 'adding README'
 
     # Remove pre-receive hook so we can push without auth
     FileUtils.rm_f(File.join(@project.repository.path, 'hooks', 'pre-receive'))

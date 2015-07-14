@@ -30,3 +30,9 @@ will be. Setting it to **Starred Projects** will make that Dashboard view the
 default when signing in or clicking the application logo in the upper left.
 
 The default is **Your Projects**.
+
+### Default Project view
+
+It allows user to choose what content he or she want to see on project page.
+
+The default is **Readme**.

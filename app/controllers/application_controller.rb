@@ -56,7 +56,7 @@ class ApplicationController < ActionController::Base
   def authenticate_user!(*args)
     # If user is not signed-in and tries to access root_path - redirect him to landing page
     if current_application_settings.home_page_url.present?
-      if current_user.nil? && controller_name == 'dashboard' && action_name == 'show'
+      if current_user.nil? && root_path == request.path
         redirect_to current_application_settings.home_page_url and return
       end
     end
@@ -183,7 +183,10 @@ class ApplicationController < ActionController::Base
     headers['X-XSS-Protection'] = '1; mode=block'
     headers['X-UA-Compatible'] = 'IE=edge'
     headers['X-Content-Type-Options'] = 'nosniff'
-    headers['Strict-Transport-Security'] = 'max-age=31536000' if Gitlab.config.gitlab.https
+    # Enabling HSTS for non-standard ports would send clients to the wrong port
+    if Gitlab.config.gitlab.https and Gitlab.config.gitlab.port == 443
+      headers['Strict-Transport-Security'] = 'max-age=31536000'
+    end
   end
 
   def add_gon_variables
@@ -271,6 +274,7 @@ class ApplicationController < ActionController::Base
     params[:scope] = 'all' if params[:scope].blank?
     params[:state] = 'opened' if params[:state].blank?
 
+    @sort = params[:sort]
     @filter_params = params.dup
 
     if @project
