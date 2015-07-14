@@ -40,6 +40,7 @@
 #= require shortcuts_issuable
 #= require shortcuts_network
 #= require cal-heatmap
+#= require jquery.nicescroll.min
 #= require_tree .
 
 window.slugify = (text) ->
@@ -104,6 +105,8 @@ if location.hash
 window.addEventListener "hashchange", shiftWindow
 
 $ ->
+  $(".nicescroll").niceScroll(cursoropacitymax: '0.4', cursorcolor: '#FFF', cursorborder: "1px solid #FFF")
+
   # Click a .js-select-on-focus field, select the contents
   $(".js-select-on-focus").on "focusin", ->
     # Prevent a mouseup event from deselecting the input
