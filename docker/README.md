@@ -10,7 +10,7 @@ It might take a while before the docker container is responding to queries.
 
 You can check the status with something like `sudo docker logs -f gitlab`.
 
-You can login to the web interface with username `root` and password `password`.
+You can login to the web interface with username `root` and password `5iveL!fe`.
 
 Next time, you can just use docker start and stop to run the container.
 

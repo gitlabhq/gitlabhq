@@ -1,5 +1,5 @@
 if ENV['GITLAB_ROOT_PASSWORD'].blank?
-  password = 'password'
+  password = '5iveL!fe'
   expire_time = Time.now
 else
   password = ENV['GITLAB_ROOT_PASSWORD']
