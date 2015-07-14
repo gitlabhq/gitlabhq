@@ -60,6 +60,8 @@ class AuditEventService
           target_details: key_title,
         }
       end
+
+    self
   end
 
   def for_authentication
