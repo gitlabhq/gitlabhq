@@ -15,7 +15,6 @@ v 7.13.0 (unreleased)
   - Add `two_factor_enabled` field to admin user API (Stan Hu)
   - Fix invalid timestamps in RSS feeds (Rowan Wookey)
   - Fix downloading of patches on public merge requests when user logged out (Stan Hu)
-  - The password for the default administrator (root) account has been changed from "5iveL!fe" to "password".
   - Fix Error 500 when relative submodule resolves to a namespace that has a different name from its path (Stan Hu)
   - Extract the longest-matching ref from a commit path when multiple matches occur (Stan Hu)
   - Update maintenance documentation to explain no need to recompile asssets for omnibus installations (Stan Hu)
