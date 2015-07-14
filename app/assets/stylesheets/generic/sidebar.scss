@@ -3,7 +3,8 @@
     position: fixed;
     top: 0;
     bottom: 0;
-    overflow-y: scroll;
+    overflow-y: auto;
+    overflow-x: hidden;
     left: 0;
     height: 100%;
     transition-duration: .3s;
