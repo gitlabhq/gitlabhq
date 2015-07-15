@@ -437,4 +437,12 @@ class MergeRequest < ActiveRecord::Base
   def source_sha
     commits.first.sha
   end
+
+  def fetch_ref
+    target_project.repository.fetch_ref(
+      source_project.repository.path_to_repo,
+      "refs/heads/#{source_branch}",
+      "refs/merge-requests/#{id}/head"
+    )
+  end
 end

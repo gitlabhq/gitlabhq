@@ -428,6 +428,8 @@ class Repository
 
     if our_commit && their_commit
       !rugged.merge_commits(our_commit, their_commit).conflicts?
+    else
+      false
     end
   end
 

@@ -162,20 +162,18 @@ class MergeRequestDiff < ActiveRecord::Base
   def compare_result
     @compare_result ||=
       begin
+        # Update ref if merge request is from fork
+        merge_request.fetch_ref if merge_request.for_fork?
+
+        # Get latest sha of branch from source project
         source_sha = merge_request.source_project.commit(source_branch).sha
 
-        merge_request.target_project.repository.fetch_ref(
-          merge_request.source_project.repository.path_to_repo,
-          "refs/heads/#{merge_request.source_branch}",
-          "refs/merge-requests/#{merge_request.id}/head"
-        )
-
-        CompareService.new.execute(
-          merge_request.author,
-          merge_request.target_project,
-          source_sha,
-          merge_request.target_project,
-          merge_request.target_branch,
+        Gitlab::CompareResult.new(
+          Gitlab::Git::Compare.new(
+            merge_request.target_project.repository.raw_repository,
+            merge_request.target_branch,
+            source_sha,
+          )
         )
       end
   end

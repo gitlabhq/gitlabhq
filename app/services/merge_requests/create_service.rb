@@ -9,15 +9,6 @@ module MergeRequests
       merge_request.author = current_user
 
       if merge_request.save
-        # Fetch fork branch into hidden ref of target repository
-        if merge_request.for_fork?
-          merge_request.target_project.repository.fetch_ref(
-            merge_request.source_project.repository.path_to_repo,
-            "refs/heads/#{merge_request.source_branch}",
-            "refs/merge-requests/#{merge_request.id}/head"
-          )
-        end
-
         merge_request.update_attributes(label_ids: label_params)
         event_service.open_mr(merge_request, current_user)
         notification_service.new_merge_request(merge_request, current_user)

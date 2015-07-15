@@ -149,8 +149,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     return access_denied! unless @merge_request.can_be_merged_by?(current_user)
 
     if @merge_request.automergeable?
-      #AutoMergeWorker.perform_async(@merge_request.id, current_user.id, params)
-      @merge_request.automerge!(current_user, params[:commit_message])
+      AutoMergeWorker.perform_async(@merge_request.id, current_user.id, params)
       @status = true
     else
       @status = false

@@ -17,7 +17,6 @@ module MergeRequests
       end
 
       compare_result = CompareService.new.execute(
-        current_user,
         merge_request.source_project,
         merge_request.source_branch,
         merge_request.target_project,
