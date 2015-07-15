@@ -31,12 +31,8 @@ module MergeRequests
     end
 
     def merge!
-      if merge_request.for_fork?
-        raise 'Implement me'
-      else
-        if sha = commit
-          after_commit(sha, merge_request.target_branch)
-        end
+      if sha = commit
+        after_commit(sha, merge_request.target_branch)
       end
     end
 
@@ -49,7 +45,7 @@ module MergeRequests
         committer: committer
       }
 
-      repository.merge(merge_request.source_branch, merge_request.target_branch, options)
+      repository.merge(merge_request.source_sha, merge_request.target_branch, options)
     end
 
     def after_commit(sha, branch)

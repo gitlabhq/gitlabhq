@@ -206,11 +206,7 @@ class MergeRequest < ActiveRecord::Base
 
   def check_if_can_be_merged
     can_be_merged =
-      if for_fork?
-        raise 'Implement me'
-      else
-        project.repository.can_be_merged?(source_branch, target_branch)
-      end
+      project.repository.can_be_merged?(source_sha, target_branch)
 
     if can_be_merged
       mark_as_mergeable
@@ -274,14 +270,14 @@ class MergeRequest < ActiveRecord::Base
   #
   # see "git diff"
   def to_diff(current_user)
-    raise 'Implement me'
+    target_project.repository.diff_text(target_branch, source_sha)
   end
 
   # Returns the commit as a series of email patches.
   #
   # see "git format-patch"
   def to_patch(current_user)
-    raise 'Implement me'
+    target_project.repository.format_patch(target_branch, source_sha)
   end
 
   def hook_attrs
@@ -431,5 +427,14 @@ class MergeRequest < ActiveRecord::Base
     else
       "Open"
     end
+  end
+
+  def target_sha
+    @target_sha ||= target_project.
+      repository.commit(target_branch).sha
+  end
+
+  def source_sha
+    commits.first.sha
   end
 end
