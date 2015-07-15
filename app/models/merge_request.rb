@@ -207,7 +207,7 @@ class MergeRequest < ActiveRecord::Base
   def check_if_can_be_merged
     can_be_merged =
       if for_fork?
-        Gitlab::Satellite::MergeAction.new(self.author, self).can_be_merged?
+        raise 'Implement me'
       else
         project.repository.can_be_merged?(source_branch, target_branch)
       end
@@ -274,14 +274,14 @@ class MergeRequest < ActiveRecord::Base
   #
   # see "git diff"
   def to_diff(current_user)
-    Gitlab::Satellite::MergeAction.new(current_user, self).diff_in_satellite
+    raise 'Implement me'
   end
 
   # Returns the commit as a series of email patches.
   #
   # see "git format-patch"
   def to_patch(current_user)
-    Gitlab::Satellite::MergeAction.new(current_user, self).format_patch
+    raise 'Implement me'
   end
 
   def hook_attrs

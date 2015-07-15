@@ -1,7 +1,7 @@
 module MergeRequests
   # AutoMergeService class
   #
-  # Do git merge in satellite and in case of success
+  # Do git merge and in case of success
   # mark merge request as merged and execute all hooks and notifications
   # Called when you do merge via GitLab UI
   class AutoMergeService < BaseMergeService
@@ -32,9 +32,8 @@ module MergeRequests
 
     def merge!
       if merge_request.for_fork?
-        Gitlab::Satellite::MergeAction.new(current_user, merge_request).merge!(commit_message)
+        raise 'Implement me'
       else
-        # Merge local branches using rugged instead of satellites
         if sha = commit
           after_commit(sha, merge_request.target_branch)
         end

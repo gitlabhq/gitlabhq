@@ -3,9 +3,6 @@
 class CompareService
   def execute(current_user, source_project, source_branch, target_project, target_branch)
     # Try to compare branches to get commits list and diffs
-    #
-    # Note: Use satellite only when need to compare between two repos
-    # because satellites are slower than operations on bare repo
     if target_project == source_project
       Gitlab::CompareResult.new(
         Gitlab::Git::Compare.new(
@@ -15,13 +12,7 @@ class CompareService
         )
       )
     else
-      Gitlab::Satellite::CompareAction.new(
-        current_user,
-        target_project,
-        target_branch,
-        source_project,
-        source_branch
-      ).result
+      raise 'Implement me'
     end
   end
 end

@@ -58,7 +58,7 @@ A typical install of GitLab will be on GNU/Linux. It uses Nginx or Apache as a w
 
 The GitLab web app uses MySQL or PostgreSQL for persistent database information (e.g. users, permissions, issues, other meta data). GitLab stores the bare git repositories it serves in `/home/git/repositories` by default. It also keeps default branch and hook information with the bare repository. `/home/git/gitlab-satellites` keeps checked out repositories when performing actions such as a merge request, editing files in the web interface, etc.
 
-The satellite repository is used by the web interface for editing repositories and the wiki which is also a git repository. When serving repositories over HTTP/HTTPS GitLab utilizes the GitLab API to resolve authorization and access as well as serving git objects.
+[DEPRECATED] The satellite repository is used by the web interface for editing repositories and the wiki which is also a git repository. When serving repositories over HTTP/HTTPS GitLab utilizes the GitLab API to resolve authorization and access as well as serving git objects.
 
 The add-on component gitlab-shell serves repositories over SSH. It manages the SSH keys within `/home/git/.ssh/authorized_keys` which should not be manually edited. gitlab-shell accesses the bare repositories directly to serve git objects and communicates with redis to submit jobs to Sidekiq for GitLab to process. gitlab-shell queries the GitLab API to determine authorization and access.
 

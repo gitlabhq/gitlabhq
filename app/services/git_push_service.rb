@@ -10,16 +10,14 @@ class GitPushService
   #
   # Next, this method:
   #  1. Creates the push event
-  #  2. Ensures that the project satellite exists
-  #  3. Updates merge requests
-  #  4. Recognizes cross-references from commit messages
-  #  5. Executes the project's web hooks
-  #  6. Executes the project's services
+  #  2. Updates merge requests
+  #  3. Recognizes cross-references from commit messages
+  #  4. Executes the project's web hooks
+  #  5. Executes the project's services
   #
   def execute(project, user, oldrev, newrev, ref)
     @project, @user = project, user
 
-    project.ensure_satellite_exists
     project.repository.expire_cache
     project.update_repository_size
 

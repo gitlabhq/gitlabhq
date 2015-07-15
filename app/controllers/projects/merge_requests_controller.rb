@@ -1,5 +1,3 @@
-require 'gitlab/satellite/satellite'
-
 class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [

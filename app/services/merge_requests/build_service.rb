@@ -40,7 +40,6 @@ module MergeRequests
           merge_request.compare_diffs = diffs
 
         elsif diffs == false
-          # satellite timeout return false
           merge_request.can_be_created = false
           merge_request.compare_failed = true
         end
@@ -59,9 +58,6 @@ module MergeRequests
       end
 
       merge_request
-
-    rescue Gitlab::Satellite::BranchesWithoutParent
-      return build_failed(merge_request, "Selected branches have no common commit so they cannot be merged.")
     end
 
     def build_failed(merge_request, message)
