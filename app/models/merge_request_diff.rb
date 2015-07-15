@@ -160,14 +160,23 @@ class MergeRequestDiff < ActiveRecord::Base
   private
 
   def compare_result
-    source_sha = merge_request.source_project.commit(source_branch).sha
+    @compare_result ||=
+      begin
+        source_sha = merge_request.source_project.commit(source_branch).sha
 
-    @compare_result ||= CompareService.new.execute(
-      merge_request.author,
-      merge_request.target_project,
-      source_sha,
-      merge_request.target_project,
-      merge_request.target_branch,
-    )
+        merge_request.target_project.repository.fetch_ref(
+          merge_request.source_project.repository.path_to_repo,
+          "refs/heads/#{merge_request.source_branch}",
+          "refs/merge-requests/#{merge_request.id}/head"
+        )
+
+        CompareService.new.execute(
+          merge_request.author,
+          merge_request.target_project,
+          source_sha,
+          merge_request.target_project,
+          merge_request.target_branch,
+        )
+      end
   end
 end
