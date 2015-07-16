@@ -336,14 +336,6 @@ Parameters:
 
 ```json
 {
-  "author": {
-    "id": 1,
-    "username": "admin",
-    "email": "admin@example.com",
-    "name": "Administrator",
-    "blocked": false,
-    "created_at": "2012-04-29T08:46:00Z"
-  },
   "note": "text1"
 }
 ```
