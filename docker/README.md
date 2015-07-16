@@ -1,9 +1,6 @@
 # GitLab Docker images
 
-## What is GitLab?
-
-GitLab offers git repository management, code reviews, issue tracking, activity feeds, wikis. It has LDAP/AD integration, handles 25,000 users on a single server but can also run on a highly available active/active cluster.
-Learn more on [https://about.gitlab.com](https://about.gitlab.com)
+The GitLab docker image is [available on Docker Hub](https://registry.hub.docker.com/u/gitlab/gitlab-ce/).
 
 ## After starting a container
 
@@ -13,7 +10,7 @@ It might take a while before the docker container is responding to queries.
 
 You can check the status with something like `sudo docker logs -f gitlab`.
 
-You can login to the web interface with username `root` and password `password`.
+You can login to the web interface with username `root` and password `5iveL!fe`.
 
 Next time, you can just use docker start and stop to run the container.
 
@@ -97,12 +94,12 @@ To upgrade GitLab to new version you have to do:
 sudo docker stop gitlab
 ```
 
-1. stop running container, 
+1. stop running container,
 ```bash
 sudo docker rm gitlab
 ```
 
-1. remove existing container, 
+1. remove existing container,
 ```bash
 sudo docker pull gitlab/gitlab-ce:latest
 ```
@@ -166,3 +163,5 @@ sudo docker push gitlab/gitlab-ce:latest
 ## Troubleshooting
 
 Please see the [troubleshooting](troubleshooting.md) file in this directory.
+
+Note: We use `fig.yml` to have compatibility with fig and because docker-compose also supports it.

@@ -92,6 +92,16 @@ module ProjectsHelper
     end
   end
 
+  def can_change_visibility_level?(project, current_user)
+    return false unless can?(current_user, :change_visibility_level, project)
+
+    if project.forked?
+      project.forked_from_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE
+    else
+      true
+    end
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)
@@ -235,16 +245,6 @@ module ProjectsHelper
       "danger"
     when "finished"
       "success"
-    end
-  end
-
-  def service_field_value(type, value)
-    return value unless type == 'password'
-
-    if value.present?
-      "***********"
-    else
-      nil
     end
   end
 

@@ -31,10 +31,7 @@ Parameters:
       "state": "active",
       "created_at": "2013-09-30T13:46:01Z"
     },
-    "created_at": "2013-10-02T09:22:45Z",
-    "system": true,
-    "upvote": false,
-    "downvote": false
+    "created_at": "2013-10-02T09:22:45Z"
   },
   {
     "id": 305,
@@ -48,10 +45,7 @@ Parameters:
       "state": "active",
       "created_at": "2013-09-30T13:46:01Z"
     },
-    "created_at": "2013-10-02T09:56:03Z",
-    "system": false,
-    "upvote": false,
-    "downvote": false
+    "created_at": "2013-10-02T09:56:03Z"
   }
 ]
 ```

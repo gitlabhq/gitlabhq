@@ -16,6 +16,7 @@ git clone https://github.com/gitlabhq/mysql-postgresql-converter.git -b gitlab
 cd mysql-postgresql-converter
 mysqldump --compatible=postgresql --default-character-set=utf8 -r gitlabhq_production.mysql -u root gitlabhq_production -p
 python db_converter.py gitlabhq_production.mysql gitlabhq_production.psql
+ed -s gitlabhq_production.psql < move_drop_indexes.ed
 
 # Import the database dump as the application database user
 sudo -u git psql -f gitlabhq_production.psql -d gitlabhq_production
@@ -56,6 +57,7 @@ sudo -u git -H git clone https://github.com/gitlabhq/mysql-postgresql-converter.
 # Convert gitlabhq_production.mysql
 sudo -u git -H mkdir db
 sudo -u git -H python mysql-postgresql-converter/db_converter.py gitlabhq_production.mysql db/database.sql
+sudo -u git -H ed -s db/database.sql < mysql-postgresql-converter/move_drop_indexes.ed
 
 # Compress database backup
 sudo -u git -H gzip db/database.sql

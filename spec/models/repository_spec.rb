@@ -47,4 +47,28 @@ describe Repository do
       it { is_expected.to be_falsey }
     end
   end
+
+  describe "search_files" do
+    let(:results) { repository.search_files('feature', 'master') }
+    subject { results }
+
+    it { is_expected.to be_an Array }
+
+    describe 'result' do
+      subject { results.first }
+
+      it { is_expected.to be_an String }
+      it { expect(subject.lines[2]).to eq("master:CHANGELOG:188:  - Feature: Replace teams with group membership\n") }
+    end
+
+    describe 'parsing result' do
+      subject { repository.parse_search_result(results.first) }
+
+      it { is_expected.to be_an OpenStruct }
+      it { expect(subject.filename).to eq('CHANGELOG') }
+      it { expect(subject.ref).to eq('master') }
+      it { expect(subject.startline).to eq(186) }
+      it { expect(subject.data.lines[2]).to eq("  - Feature: Replace teams with group membership\n") }
+    end
+  end
 end

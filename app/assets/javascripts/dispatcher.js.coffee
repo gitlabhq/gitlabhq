@@ -63,7 +63,6 @@ class Dispatcher
       when 'projects:commits:show'
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:activity'
-        new Activities()
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:show'
         shortcut_handler = new ShortcutsNavigation()

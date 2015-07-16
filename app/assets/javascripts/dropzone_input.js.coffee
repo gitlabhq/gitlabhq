@@ -25,10 +25,10 @@ class @DropzoneInput
     form_dropzone = $(form).find('.div-dropzone')
     form_dropzone.parent().addClass "div-dropzone-wrapper"
     form_dropzone.append divHover
-    $(".div-dropzone-hover").append iconPaperclip
+    form_dropzone.find(".div-dropzone-hover").append iconPaperclip
     form_dropzone.append divSpinner
-    $(".div-dropzone-spinner").append iconSpinner
-    $(".div-dropzone-spinner").css
+    form_dropzone.find(".div-dropzone-spinner").append iconSpinner
+    form_dropzone.find(".div-dropzone-spinner").css
       "opacity": 0
       "display": "none"
 

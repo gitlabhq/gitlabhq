@@ -25,7 +25,7 @@ To use EE and get official support please [become a subscriber](https://about.gi
 
 ## Code status
 
-- [![build status](https://ci.gitlab.org/projects/1/status.png?ref=master)](https://ci.gitlab.org/projects/1?ref=master) on ci.gitlab.org (master branch)
+- [![build status](https://ci.gitlab.com/projects/1/status.png?ref=master)](https://ci.gitlab.com/projects/1?ref=master) on ci.gitlab.com (master branch)
 
 - [![Build Status](https://semaphoreapp.com/api/v1/projects/2f1a5809-418b-4cc2-a1f4-819607579fe7/243338/badge.png)](https://semaphoreapp.com/gitlabhq/gitlabhq)
 
@@ -62,7 +62,7 @@ The recommended way to install GitLab is using the provided [Omnibus packages](h
 
 There are various other options to install GitLab, please refer to the [installation page on the GitLab website](https://about.gitlab.com/installation/) for more information.
 
-You can access a new installation with the login **`root`** and password **`password`**, after login you are required to set a unique password.
+You can access a new installation with the login **`root`** and password **`5iveL!fe`**, after login you are required to set a unique password.
 
 ## Third-party applications
 

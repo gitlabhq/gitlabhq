@@ -52,10 +52,11 @@ class ProjectsController < ApplicationController
   end
 
   def transfer
-    transfer_params = params.permit(:new_namespace_id)
-    ::Projects::TransferService.new(project, current_user, transfer_params).execute
-    if @project.errors[:namespace_id].present?
-      flash[:alert] = @project.errors[:namespace_id].first
+    namespace = Namespace.find_by(id: params[:new_namespace_id])
+    ::Projects::TransferService.new(project, current_user).execute(namespace)
+
+    if @project.errors[:new_namespace].present?
+      flash[:alert] = @project.errors[:new_namespace].first
     end
   end
 

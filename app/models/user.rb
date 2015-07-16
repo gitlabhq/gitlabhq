@@ -177,6 +177,10 @@ class User < ActiveRecord::Base
   # Note: When adding an option, it MUST go on the end of the array.
   enum dashboard: [:projects, :stars]
 
+  # User's Project preference
+  # Note: When adding an option, it MUST go on the end of the array.
+  enum project_view: [:readme, :activity]
+
   alias_attribute :private_token, :authentication_token
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
@@ -320,6 +324,16 @@ class User < ActiveRecord::Base
     self.reset_password_sent_at = Time.now.utc
 
     @reset_token
+  end
+
+  def disable_two_factor!
+    update_attributes(
+      two_factor_enabled:        false,
+      encrypted_otp_secret:      nil,
+      encrypted_otp_secret_iv:   nil,
+      encrypted_otp_secret_salt: nil,
+      otp_backup_codes:          nil
+    )
   end
 
   def namespace_uniq

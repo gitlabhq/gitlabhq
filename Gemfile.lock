@@ -703,7 +703,7 @@ GEM
     underscore-rails (1.4.4)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.6)
+    unf_ext (0.0.7.1)
     unicorn (4.6.3)
       kgio (~> 2.6)
       rack
@@ -759,7 +759,7 @@ DEPENDENCIES
   charlock_holmes
   coffee-rails
   colored
-  coveralls
+  coveralls (~> 0.8.2)
   creole (~> 0.3.6)
   d3_rails (~> 3.5.5)
   database_cleaner (~> 1.4.0)
@@ -833,7 +833,6 @@ DEPENDENCIES
   redis-rails
   request_store
   rerun (~> 0.10.0)
-  rest-client (~> 1.8.0)
   rqrcode-rails3
   rspec-rails (~> 3.3.0)
   rubocop (= 0.28.0)

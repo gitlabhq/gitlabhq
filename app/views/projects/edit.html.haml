@@ -29,7 +29,7 @@
                 .col-sm-10= f.select(:default_branch, @repository.branch_names, {}, {class: 'select2 select-wide'})
 
 
-          = render 'shared/visibility_level', f: f, visibility_level: @project.visibility_level, can_change_visibility_level: can?(current_user, :change_visibility_level, @project), form_model: @project
+          = render 'shared/visibility_level', f: f, visibility_level: @project.visibility_level, can_change_visibility_level: can_change_visibility_level?(@project, current_user), form_model: @project
 
           .form-group
             = f.label :tag_list, "Tags", class: 'control-label'

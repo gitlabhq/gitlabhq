@@ -12,7 +12,7 @@
     @loading.show()
     $.ajax
       type: "GET"
-      url: location.href
+      url: $(".content_list").data('href') || location.href
       data: "limit=" + @limit + "&offset=" + @offset
       complete: =>
         @loading.hide()
