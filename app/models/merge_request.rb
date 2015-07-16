@@ -41,8 +41,6 @@ class MergeRequest < ActiveRecord::Base
 
   delegate :commits, :diffs, :last_commit, :last_commit_short_sha, to: :merge_request_diff, prefix: nil
 
-  attr_accessor :should_remove_source_branch
-
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
   attr_accessor :allow_broken
@@ -57,7 +55,7 @@ class MergeRequest < ActiveRecord::Base
       transition [:reopened, :opened] => :closed
     end
 
-    event :merge do
+    event :mark_as_merged do
       transition [:reopened, :opened, :locked] => :merged
     end
 
@@ -223,14 +221,6 @@ class MergeRequest < ActiveRecord::Base
     self.target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::CLOSED).last
   end
 
-  def automerge!(current_user, commit_message = nil)
-    return unless automergeable?
-
-    MergeRequests::AutoMergeService.
-      new(target_project, current_user).
-      execute(self, commit_message)
-  end
-
   def open?
     opened? || reopened?
   end
@@ -239,11 +229,11 @@ class MergeRequest < ActiveRecord::Base
     title =~ /\A\[?WIP\]?:? /i
   end
 
-  def automergeable?
+  def mergeable?
     open? && !work_in_progress? && can_be_merged?
   end
 
-  def automerge_status
+  def gitlab_merge_status
     if work_in_progress?
       "work_in_progress"
     else
@@ -444,5 +434,14 @@ class MergeRequest < ActiveRecord::Base
       "refs/heads/#{source_branch}",
       "refs/merge-requests/#{id}/head"
     )
+  end
+
+  def in_locked_state
+    begin
+      lock_mr
+      yield
+    ensure
+      unlock_mr if locked?
+    end
   end
 end
