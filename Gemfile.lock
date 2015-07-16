@@ -307,7 +307,7 @@ GEM
     grape-entity (0.4.2)
       activesupport
       multi_json (>= 1.3.2)
-    haml (4.0.5)
+    haml (4.0.7)
       tilt
     haml-rails (0.5.3)
       actionpack (>= 4.0.1)
