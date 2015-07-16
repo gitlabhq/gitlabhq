@@ -33,7 +33,7 @@ module MergeRequests
 
 
       merge_requests.uniq.select(&:source_project).each do |merge_request|
-        MergeRequests::PostMergeService
+        MergeRequests::PostMergeService.
           new(merge_request.target_project, @current_user).
           execute(merge_request)
       end
