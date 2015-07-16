@@ -16,9 +16,8 @@ require Rails.root.join("app/models/commit")
 class MergeRequestDiff < ActiveRecord::Base
   include Sortable
 
-  # Prevent store of diff
-  # if commits amount more then 200
-  COMMITS_SAFE_SIZE = 200
+  # Prevent store of diff if commits amount more then 500
+  COMMITS_SAFE_SIZE = 500
 
   attr_reader :commits, :diffs
 
@@ -124,12 +123,12 @@ class MergeRequestDiff < ActiveRecord::Base
     if new_diffs.any?
       if new_diffs.size > Commit::DIFF_HARD_LIMIT_FILES
         self.state = :overflow_diff_files_limit
-        new_diffs = []
+        new_diffs = new_diffs.first[Commit::DIFF_HARD_LIMIT_LINES]
       end
 
       if new_diffs.sum { |diff| diff.diff.lines.count } > Commit::DIFF_HARD_LIMIT_LINES
         self.state = :overflow_diff_lines_limit
-        new_diffs = []
+        new_diffs = new_diffs.first[Commit::DIFF_HARD_LIMIT_LINES]
       end
     end
 
