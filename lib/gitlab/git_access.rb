@@ -213,12 +213,12 @@ module Gitlab
 
           # Check whether author is a GitLab member
           if git_hook.member_check
-            unless User.existing_member?(commit.author_email)
+            unless User.existing_member?(commit.author_email.downcase)
               return build_status_object(false, "Author is not a member of team")
             end
 
-            if commit.author_email != commit.committer_email
-              unless User.existing_member?(commit.committer_email)
+            if commit.author_email.downcase != commit.committer_email.downcase
+              unless User.existing_member?(commit.committer_email.downcase)
                 return build_status_object(false, "Commiter is not a member of team")
               end
             end
