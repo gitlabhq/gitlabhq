@@ -165,3 +165,5 @@ sudo docker push gitlab/gitlab-ce:latest
 Please see the [troubleshooting](troubleshooting.md) file in this directory.
 
 Note: We use `fig.yml` to have compatibility with fig and because docker-compose also supports it.
+
+Our docker image runs chef at every start to generate GitLab configuration.
