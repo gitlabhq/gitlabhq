@@ -13,7 +13,7 @@
   %ul.nav.nav-pills
     %li
       = link_to namespace_project_commits_path(@project.namespace, @project, @ref || @repository.root_ref) do
-        = pluralize(number_with_delimiter(@repository.commit_count), 'commit')
+        = pluralize(number_with_delimiter(@project.commit_count), 'commit')
     %li
       = link_to namespace_project_branches_path(@project.namespace, @project) do
         = pluralize(number_with_delimiter(@repository.branch_names.count), 'branch')
