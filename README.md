@@ -41,14 +41,6 @@ On [about.gitlab.com](https://about.gitlab.com/) you can find more information a
 
 ## Requirements
 
-GitLab requires the following software:
-
-- Ubuntu/Debian/CentOS/RHEL
-- Ruby (MRI) 2.0 or 2.1
-- Git 1.7.10+
-- Redis 2.0+
-- MySQL or PostgreSQL
-
 Please see the [requirements documentation](doc/install/requirements.md) for system requirements and more information about the supported operating systems.
 
 ## Installation
@@ -58,6 +50,28 @@ The recommended way to install GitLab is using the provided [Omnibus packages](h
 There are various other options to install GitLab, please refer to the [installation page on the GitLab website](https://about.gitlab.com/installation/) for more information.
 
 You can access a new installation with the login **`root`** and password **`5iveL!fe`**, after login you are required to set a unique password.
+
+## Install a development environment
+
+To work on GitLab itself, we recommend setting up your development environment with [the GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit).
+If you do not use the GitLab Development Kit you need to install and setup all the dependencies yourself, this is a lot of work and error prone.
+One small thing you also have to do when installing it yourself is to copy the example development unicorn configuration file:
+
+    cp config/unicorn.rb.example.development config/unicorn.rb
+
+Instructions on how to start GitLab and how to run the tests can be found in the [development section of the GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit#development).
+
+## Software stack
+
+GitLab is a Ruby on Rails application that runs on the following software:
+
+- Ubuntu/Debian/CentOS/RHEL
+- Ruby (MRI) 2.0 or 2.1
+- Git 1.7.10+
+- Redis 2.0+
+- MySQL or PostgreSQL
+
+For more information please see the [architecture documentation](http://doc.gitlab.com/ce/development/architecture.html).
 
 ## Third-party applications
 
@@ -70,16 +84,6 @@ Since 2011 a minor or major version of GitLab is released on the 22nd of every m
 ## Upgrading
 
 For upgrading information please see our [update page](https://about.gitlab.com/update/).
-
-## Install a development environment
-
-To work on GitLab itself, we recommend setting up your development environment with [the GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit).
-If you do not use the GitLab Development Kit you need to install and setup all the dependencies yourself, this is a lot of work and error prone.
-One small thing you also have to do when installing it yourself is to copy the example development unicorn configuration file:
-
-    cp config/unicorn.rb.example.development config/unicorn.rb
-
-Instructions on how to start GitLab and how to run the tests can be found in the [development section of the GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit#development).
 
 ## Documentation
 
