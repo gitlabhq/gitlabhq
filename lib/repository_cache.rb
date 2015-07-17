@@ -20,6 +20,10 @@ class RepositoryCache
   end
 
   def exist?(key)
-    backend.exist?(key)
+    backend.exist?(cache_key(key))
+  end
+
+  def read(key)
+    backend.read(cache_key(key))
   end
 end

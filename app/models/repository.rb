@@ -94,18 +94,6 @@ class Repository
     gitlab_shell.rm_tag(path_with_namespace, tag_name)
   end
 
-  def round_commit_count
-    if commit_count > 10000
-      '10000+'
-    elsif commit_count > 5000
-      '5000+'
-    elsif commit_count > 1000
-      '1000+'
-    else
-      commit_count
-    end
-  end
-
   def branch_names
     cache.fetch(:branch_names) { raw_repository.branch_names }
   end
