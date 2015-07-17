@@ -26,7 +26,7 @@ describe GitlabCiService do
     it { is_expected.to have_one(:service_hook) }
   end
 
- describe 'validations' do
+  describe 'validations' do
     context 'active' do
       before { allow(subject).to receive(:activated?).and_return(true) }
 
