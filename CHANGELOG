@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.14.0 (unreleased)
   - Expire Rails cache entries after two weeks to prevent endless Redis growth
+  - Add support for destroying project milestones (Stan Hu)
 
 v 7.13.0 (unreleased)
   - Only enable HSTS header for HTTPS and port 443 (Stan Hu)
