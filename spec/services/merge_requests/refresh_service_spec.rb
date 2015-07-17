@@ -11,7 +11,7 @@ describe MergeRequests::RefreshService do
       group = create(:group)
       group.add_owner(@user)
 
-      @project = create(:project, namespace: group, approvals_before_merge: 1, reset_approvers_on_push: true)
+      @project = create(:project, namespace: group, approvals_before_merge: 1, reset_approvals_on_push: true)
       @fork_project = Projects::ForkService.new(@project, @user).execute
       @merge_request = create(:merge_request,
                               source_project: @project,
@@ -130,8 +130,8 @@ describe MergeRequests::RefreshService do
         expect(@merge_request.approvals).not_to be_empty
       end
 
-      it "does not reset approvals if reset_approvers_on_push si disabled" do
-        @project.update(reset_approvers_on_push: false)
+      it "does not reset approvals if reset_approvals_on_push si disabled" do
+        @project.update(reset_approvals_on_push: false)
         refresh_service = service.new(@project, @user)
         allow(refresh_service).to receive(:execute_hooks)
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')

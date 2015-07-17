@@ -30,12 +30,12 @@
       .help-block
         How many users should approve merge request before it can be accepted. 0 - approval is disabled
 
-  .form-group.reset-approvers-on-push
+  .form-group.reset-approvals-on-push
     .col-sm-offset-2.col-sm-10
       .checkbox
-        = f.label :reset_approvers_on_push do
-          = f.check_box :reset_approvers_on_push
-          %span.descr Reset approvers on push
+        = f.label :reset_approvals_on_push do
+          = f.check_box :reset_approvals_on_push
+          %span.descr Reset approvals on push
 
   .form-group
     = f.label :approver_ids, class: 'control-label' do
