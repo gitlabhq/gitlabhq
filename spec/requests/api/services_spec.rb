@@ -17,6 +17,18 @@ describe API::API, api: true  do
 
       expect(response.status).to eq(400)
     end
+
+    it "should return if the format of token is invalid" do
+      put api("/projects/#{project.id}/services/gitlab-ci", user), token: 'token-with dashes and spaces%', project_url: "http://ci.example.com/projects/1", active: true
+
+      expect(response.status).to eq(404)
+    end
+
+    it "should return if the format of token is invalid" do
+      put api("/projects/#{project.id}/services/gitlab-ci", user), token: 'token-with dashes and spaces%', project_url: "ftp://ci.example/projects/1", active: true
+
+      expect(response.status).to eq(404)
+    end
   end
 
   describe "DELETE /projects/:id/services/gitlab-ci" do
