@@ -18,4 +18,8 @@ class RepositoryCache
   def fetch(key, &block)
     backend.fetch(cache_key(key), &block)
   end
+
+  def exist?(key)
+    backend.exist?(key)
+  end
 end

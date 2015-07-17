@@ -61,6 +61,7 @@ class GitPushService
     EventCreateService.new.push(project, user, @push_data)
     project.execute_hooks(@push_data.dup, :push_hooks)
     project.execute_services(@push_data.dup, :push_hooks)
+    ProjectCacheWorker.perform_async(project.id)
   end
 
   protected
