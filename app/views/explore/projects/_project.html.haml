@@ -14,7 +14,7 @@
 
     .repo-info
       - unless project.empty_repo?
-        = link_to pluralize(project.repository.round_commit_count, 'commit'), namespace_project_commits_path(project.namespace, project, project.default_branch)
+        = link_to pluralize(round_commit_count(project), 'commit'), namespace_project_commits_path(project.namespace, project, project.default_branch)
         &middot;
         = link_to pluralize(project.repository.branch_names.count, 'branch'), namespace_project_branches_path(project.namespace, project)
         &middot;
