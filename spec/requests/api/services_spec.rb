@@ -7,7 +7,7 @@ describe API::API, api: true  do
 
   describe "POST /projects/:id/services/gitlab-ci" do
     it "should update gitlab-ci settings" do
-      put api("/projects/#{project.id}/services/gitlab-ci", user), token: 'secret-token', project_url: "http://ci.example.com/projects/1"
+      put api("/projects/#{project.id}/services/gitlab-ci", user), token: 'secrettoken', project_url: "http://ci.example.com/projects/1"
 
       expect(response.status).to eq(200)
     end
