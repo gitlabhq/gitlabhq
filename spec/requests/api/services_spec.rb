@@ -7,7 +7,7 @@ describe API::API, api: true  do
 
   describe "POST /projects/:id/services/gitlab-ci" do
     it "should update gitlab-ci settings" do
-      put api("/projects/#{project.id}/services/gitlab-ci", user), token: 'secret-token', project_url: "http://ci.example.com/projects/1"
+      put api("/projects/#{project.id}/services/gitlab-ci", user), token: 'secrettoken', project_url: "http://ci.example.com/projects/1"
 
       expect(response.status).to eq(200)
     end
@@ -16,6 +16,18 @@ describe API::API, api: true  do
       put api("/projects/#{project.id}/services/gitlab-ci", user), project_url: "http://ci.example.com/projects/1", active: true
 
       expect(response.status).to eq(400)
+    end
+
+    it "should return if the format of token is invalid" do
+      put api("/projects/#{project.id}/services/gitlab-ci", user), token: 'token-with dashes and spaces%', project_url: "http://ci.example.com/projects/1", active: true
+
+      expect(response.status).to eq(404)
+    end
+
+    it "should return if the format of token is invalid" do
+      put api("/projects/#{project.id}/services/gitlab-ci", user), token: 'token-with dashes and spaces%', project_url: "ftp://ci.example/projects/1", active: true
+
+      expect(response.status).to eq(404)
     end
   end
 

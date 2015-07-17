@@ -26,6 +26,33 @@ describe GitlabCiService do
     it { is_expected.to have_one(:service_hook) }
   end
 
+  describe 'validations' do
+    context 'active' do
+      before { allow(subject).to receive(:activated?).and_return(true) }
+
+      it { is_expected.to validate_presence_of(:token) }
+      it { is_expected.to validate_presence_of(:project_url) }
+      it { is_expected.to allow_value('ewf9843kdnfdfs89234n').for(:token) }
+      it { is_expected.to allow_value('http://ci.example.com/project/1').for(:project_url) }
+      it { is_expected.not_to allow_value('token with spaces').for(:token) }
+      it { is_expected.not_to allow_value('token/with%spaces').for(:token) }
+      it { is_expected.not_to allow_value('this is not url').for(:project_url) }
+      it { is_expected.not_to allow_value('http//noturl').for(:project_url) }
+      it { is_expected.not_to allow_value('ftp://ci.example.com/projects/3').for(:project_url) }
+    end
+
+    context 'inactive' do
+      before { allow(subject).to receive(:activated?).and_return(false) }
+
+      it { is_expected.not_to validate_presence_of(:token) }
+      it { is_expected.not_to validate_presence_of(:project_url) }
+      it { is_expected.to allow_value('ewf9843kdnfdfs89234n').for(:token) }
+      it { is_expected.to allow_value('http://ci.example.com/project/1').for(:project_url) }
+      it { is_expected.to allow_value('token with spaces').for(:token) }
+      it { is_expected.to allow_value('ftp://ci.example.com/projects/3').for(:project_url) }
+    end
+  end
+
   describe 'commits methods' do
     before do
       @service = GitlabCiService.new
