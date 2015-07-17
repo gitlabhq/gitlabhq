@@ -24,7 +24,7 @@ users to approve the merge request.
 
 ### Reset approvals on push
 
-With this setting turned on, any done approvals are reset when new a new push
+With this setting turned on, approvals are reset when a new push
 is done to the merge request branch.
 
 Turn "Reset approvals on push" off if you want approvals to persist,
