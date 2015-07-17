@@ -49,6 +49,8 @@ v 7.13.0 (unreleased)
   - Faster code search in repository and wiki. Fixes search page timeout for big repositories 
   - Allow administrators to disable 2FA for a specific user
   - Add error message for SSH key linebreaks
+  - Store commits count in database (will populate with valid values only after first push)
+  - Rebuild cache after push to repository in background job
 
 v 7.12.2
   - Correctly show anonymous authorized applications under Profile > Applications.
