@@ -2,7 +2,9 @@
   .file-content
     .line-numbers
       - 1.upto(25) do |i|
-        %a{href: "#L#{i}", id: "L#{i}", 'data-line-number' => i}= i
+        %a{href: "#L#{i}", id: "L#{i}", 'data-line-number' => i}
+          %i.fa.fa-link
+          = i
     %pre.code.highlight
       %code
         - 1.upto(25) do |i|
