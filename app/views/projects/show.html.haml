@@ -6,7 +6,9 @@
   = render 'shared/no_ssh'
   = render 'shared/no_password'
 
-= render 'projects/last_push'
+- if prefer_readme?
+  = render 'projects/last_push'
+
 = render "home_panel"
 
 .project-stats
