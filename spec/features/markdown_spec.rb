@@ -195,45 +195,41 @@ describe 'GitLab Markdown', feature: true do
     end
 
     describe 'AutolinkFilter' do
-      let(:list) { get_section('autolinkfilter').next_element }
+      def body
+        get_section('autolinkfilter').next_element
+      end
 
-      def item(index)
-        list.at_css("li:nth-child(#{index})")
+      # Override Capybara's `have_link` matcher to simplify our use case
+      def have_link(link)
+        super(link, href: link)
       end
 
       it 'autolinks http://' do
-        expect(item(1).children.first.name).to eq 'a'
-        expect(item(1).children.first['href']).to eq 'http://about.gitlab.com/'
+        expect(body).to have_link('http://about.gitlab.com/')
       end
 
       it 'autolinks https://' do
-        expect(item(2).children.first.name).to eq 'a'
-        expect(item(2).children.first['href']).to eq 'https://google.com/'
+        expect(body).to have_link('https://google.com/')
       end
 
       it 'autolinks ftp://' do
-        expect(item(3).children.first.name).to eq 'a'
-        expect(item(3).children.first['href']).to eq 'ftp://ftp.us.debian.org/debian/'
+        expect(body).to have_link('ftp://ftp.us.debian.org/debian/')
       end
 
       it 'autolinks smb://' do
-        expect(item(4).children.first.name).to eq 'a'
-        expect(item(4).children.first['href']).to eq 'smb://foo/bar/baz'
+        expect(body).to have_link('smb://foo/bar/baz')
       end
 
       it 'autolinks irc://' do
-        expect(item(5).children.first.name).to eq 'a'
-        expect(item(5).children.first['href']).to eq 'irc://irc.freenode.net/git'
+        expect(body).to have_link('irc://irc.freenode.net/git')
       end
 
       it 'autolinks short, invalid URLs' do
-        expect(item(6).children.first.name).to eq 'a'
-        expect(item(6).children.first['href']).to eq 'http://localhost:3000'
+        expect(body).to have_link('http://localhost:3000')
       end
 
       %w(code a kbd).each do |elem|
         it "ignores links inside '#{elem}' element" do
-          body = get_section('autolinkfilter')
           expect(body).not_to have_selector("#{elem} a")
         end
       end
