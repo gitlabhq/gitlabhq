@@ -131,8 +131,12 @@ module ProjectsHelper
       nav_tabs << :snippets
     end
 
+    if can?(current_user, :read_label, project)
+      nav_tabs << :labels
+    end
+
     if can?(current_user, :read_milestone, project)
-      nav_tabs << [:milestones, :labels]
+      nav_tabs << :milestones
     end
 
     nav_tabs.flatten
