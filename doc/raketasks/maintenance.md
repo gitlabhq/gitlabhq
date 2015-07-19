@@ -117,6 +117,12 @@ This will create satellite repositories for all your projects.
 
 If necessary, remove the `repo_satellites` directory and rerun the commands below.
 
+For Omnibus-packages:
+```
+sudo gitlab-rake gitlab:satellites:create
+```
+
+For installations from source:
 ```
 sudo -u git -H mkdir -p /home/git/gitlab-satellites
 sudo -u git -H bundle exec rake gitlab:satellites:create RAILS_ENV=production
