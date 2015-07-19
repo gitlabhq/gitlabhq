@@ -346,6 +346,24 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     project.save!
   end
 
+  step 'merge request \'Bug NS-04\' must be approved by current user' do
+    merge_request = MergeRequest.find_by!(title: "Bug NS-04")
+    project = merge_request.target_project
+    project.approvals_before_merge = 1
+    project.approvers.create(user_id: current_user.id)
+    project.ensure_satellite_exists
+    project.save!
+  end
+
+  step 'merge request \'Bug NS-04\' must be approved by some user' do
+    merge_request = MergeRequest.find_by!(title: "Bug NS-04")
+    project = merge_request.target_project
+    project.approvals_before_merge = 1
+    project.approvers.create(user_id: create(:user).id)
+    project.ensure_satellite_exists
+    project.save!
+  end
+
   step 'I click link "Approve"' do
     page.within '.mr-state-widget' do
       click_button 'Approve Merge Request'
@@ -358,9 +376,27 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
+  step 'I should not see Approve button' do
+    page.within '.mr-state-widget' do
+      expect(page).not_to have_button("Approve")
+    end
+  end
+
   step 'I should see approved merge request "Bug NS-04"' do
     page.within '.mr-state-widget' do
       expect(page).to have_button("Accept Merge Request")
+    end
+  end
+
+  step 'I should see message that MR require an approval from me' do
+    page.within '.mr-state-widget' do
+      expect(page).to have_content("Requires one more approval (from #{current_user.name})")
+    end
+  end
+
+  step 'I should see message that MR require an approval' do
+    page.within '.mr-state-widget' do
+      expect(page).to have_content("Requires one more approval")
     end
   end
 

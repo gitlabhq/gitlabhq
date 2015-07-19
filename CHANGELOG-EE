@@ -2,6 +2,7 @@ v 7.13 (Unrelease)
   - Fix git hook validation on initial push to master branch.
   - Reset approvals on push
   - Fix 500 error when the source project of an MR is deleted 
+  - Ability to define merge request approvers
 
 v 7.12.2
   - Fixed the alignment of project settings icons

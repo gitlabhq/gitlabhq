@@ -175,6 +175,30 @@ describe MergeRequest do
     end
   end
 
+  describe "approvers_left" do
+    let(:merge_request) {create :merge_request}
+
+    it "returns correct value" do
+      user = create(:user)
+      user1 = create(:user)
+      merge_request.target_project.approvers.create(user_id: user.id)
+      merge_request.target_project.approvers.create(user_id: user1.id)
+      merge_request.approvals.create(user_id: user1.id)
+
+      expect(merge_request.approvers_left).to eq [user]
+    end
+  end
+
+  describe "approvals_required" do
+    let(:merge_request) {create :merge_request}
+
+    it "takes approvals_before_merge" do
+      merge_request.target_project.update(approvals_before_merge: 2)
+      
+      expect(merge_request.approvals_required).to eq 2
+    end
+  end
+
   it_behaves_like 'an editable mentionable' do
     subject { create(:merge_request, source_project: project) }
 

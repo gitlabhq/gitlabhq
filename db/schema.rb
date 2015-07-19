@@ -57,6 +57,17 @@ ActiveRecord::Schema.define(version: 20150713160110) do
     t.datetime "updated_at"
   end
 
+  create_table "approvers", force: true do |t|
+    t.integer  "target_id",   null: false
+    t.string   "target_type"
+    t.integer  "user_id",     null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "approvers", ["target_id", "target_type"], name: "index_approvers_on_target_id_and_target_type", using: :btree
+  add_index "approvers", ["user_id"], name: "index_approvers_on_user_id", using: :btree
+
   create_table "audit_events", force: true do |t|
     t.integer  "author_id",   null: false
     t.string   "type",        null: false

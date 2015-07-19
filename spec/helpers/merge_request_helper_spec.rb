@@ -40,4 +40,61 @@ describe MergeRequestsHelper do
       it { is_expected.to eq('#JIRA-123, #JIRA-456, and #FOOBAR-7890') }
     end
   end
+
+  describe 'render_items_list' do
+    it "returns one item in the list" do
+      expect(render_items_list(["user"])).to eq("user")
+    end
+
+    it "returns two items in the list" do
+      expect(render_items_list(["user", "user1"])).to eq("user and user1")
+    end
+
+    it "returns three items in the list" do
+      expect(render_items_list(["user", "user1", "user2"])).to eq("user, user1 and user2")
+    end
+  end
+
+  describe 'render_require_section' do
+    it "returns correct value in case - one approval" do
+      project.update(approvals_before_merge: 1)
+      merge_request = create(:merge_request, target_project: project, source_project: project)
+      expect(render_require_section(merge_request)).to eq("Requires one more approval")
+    end
+
+    it "returns correct value in case - two approval" do
+      project.update(approvals_before_merge: 2)
+      merge_request = create(:merge_request, target_project: project, source_project: project)
+      expect(render_require_section(merge_request)).to eq("Requires 2 more approvals")
+    end
+
+    it "returns correct value in case - one approver" do
+      project.update(approvals_before_merge: 1)
+      merge_request = create(:merge_request, target_project: project, source_project: project)
+      user = create :user
+      merge_request.approvers.create(user_id: user.id)
+
+      expect(render_require_section(merge_request)).to eq("Requires one more approval (from #{user.name})")
+    end
+
+    it "returns correct value in case - one approver and one more" do
+      project.update(approvals_before_merge: 2)
+      merge_request = create(:merge_request, target_project: project, source_project: project)
+      user = create :user
+      merge_request.approvers.create(user_id: user.id)
+
+      expect(render_require_section(merge_request)).to eq("Requires 2 more approvals (from #{user.name} and 1 more)")
+    end
+
+    it "returns correct value in case - two approver and one more" do
+      project.update(approvals_before_merge: 3)
+      merge_request = create(:merge_request, target_project: project, source_project: project)
+      user = create :user
+      user1 = create :user
+      merge_request.approvers.create(user_id: user.id)
+      merge_request.approvers.create(user_id: user1.id)
+
+      expect(render_require_section(merge_request)).to eq("Requires 3 more approvals (from #{user1.name}, #{user.name} and 1 more)")
+    end
+  end
 end
