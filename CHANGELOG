@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.14.0 (unreleased)
+  - Remove repository graph log to fix slow cache updates after push event (Stan Hu)
   - Fix label read access for unauthenticated users (Daniel Gerhardt)
   - Fix OAuth provider bug where GitLab would not go return to the redirect_uri after sign-in (Stan Hu)
   - Fix file upload dialog for comment editing (Daniel Gerhardt)
