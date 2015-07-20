@@ -8,4 +8,4 @@ Before accepting a merge request, select `rebase before merge`.
 ![Merge request widget](merge_request_widget.png)
 
 GitLab will attempt to cleanly rebase before merging branches. If clean rebase is not possible, regular merge will be performed.
-If clean rebase is possible and history of the traget branch will be altered with the the merge.
+If clean rebase is possible and history of the target branch will be altered with the merge.
