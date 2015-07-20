@@ -119,7 +119,7 @@ class Repository
   end
 
   def cache_keys
-    %i(size branch_names tag_names commit_count graph_log
+    %i(size branch_names tag_names commit_count
        readme version contribution_guide changelog license)
   end
 
@@ -141,24 +141,6 @@ class Repository
     cache_keys.each do |key|
       cache.expire(key)
       send(key)
-    end
-  end
-
-  def graph_log
-    cache.fetch(:graph_log) do
-      commits = raw_repository.log(limit: 6000, skip_merges: true,
-                                   ref: root_ref)
-
-      commits.map do |rugged_commit|
-        commit = Gitlab::Git::Commit.new(rugged_commit)
-
-        {
-          author_name: commit.author_name,
-          author_email: commit.author_email,
-          additions: commit.stats.additions,
-          deletions: commit.stats.deletions,
-        }
-      end
     end
   end
 
