@@ -28,7 +28,7 @@
     .col-sm-10
       = f.number_field :approvals_before_merge, class: "form-control", min: 0
       .help-block
-        How many users should approve merge request before it can be accepted. 0 - approval is disabled
+        Number of users to approve a merge request before it can be accepted. 0 - approving is disabled
 
   .form-group.reset-approvals-on-push
     .col-sm-offset-2.col-sm-10
@@ -36,6 +36,7 @@
         = f.label :reset_approvals_on_push do
           = f.check_box :reset_approvals_on_push
           %span.descr Reset approvals on push
+          .help-block Approvals are reset when new data is pushed to the merge request
 
   .form-group
     = f.label :approver_ids, class: 'control-label' do
@@ -43,7 +44,7 @@
     .col-sm-10
       = users_select_tag("project[approver_ids]", multiple: true, class: 'input-large', scope: :all, email_user: true)
       .help-block
-        Default approvers for each merge request.
+        Add an approver suggestion for each merge request
 
       .panel.panel-default.prepend-top-10
         .panel-heading

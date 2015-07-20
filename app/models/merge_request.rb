@@ -486,7 +486,7 @@ class MergeRequest < ActiveRecord::Base
 
   def approver_ids=(value)
     value.split(",").map(&:strip).each do |user_id|
-      approvers.find_or_create_by(user_id: user_id, target_id: id)
+      approvers.find_or_initialize_by(user_id: user_id, target_id: id)
     end
   end
 end

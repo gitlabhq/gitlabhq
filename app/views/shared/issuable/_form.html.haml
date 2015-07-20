@@ -90,7 +90,7 @@
         .help-block
           Merge Request should be approved by these users. 
           - if @project.approvers.any?
-            By default: #{render_items_list(@project.approvers.map{ |approver| approver.user.name})}.
+            Suggested approver(s): #{render_items_list(@project.approvers.map{ |approver| approver.user.name})}.
             You can override the project settings by setting your own list of approvers.
         
         .panel.panel-default.prepend-top-10
