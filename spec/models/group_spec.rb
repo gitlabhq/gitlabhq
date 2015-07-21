@@ -51,7 +51,7 @@ describe Group do
     it { expect(group.human_name).to eq(group.name) }
   end
 
-  describe :add_users do
+  describe :add_user do
     let(:user) { create(:user) }
     before { group.add_user(user, GroupMember::MASTER) }
 
