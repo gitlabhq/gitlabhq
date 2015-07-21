@@ -1,7 +1,6 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.14.0 (unreleased)
-  - Remove repository graph log to fix slow cache updates after push event (Stan Hu)
   - Fix label read access for unauthenticated users (Daniel Gerhardt)
   - Fix access to disabled features for unauthenticated users (Daniel Gerhardt)
   - Fix OAuth provider bug where GitLab would not go return to the redirect_uri after sign-in (Stan Hu)
@@ -12,6 +11,7 @@ v 7.14.0 (unreleased)
   - Add fetch command to the MR page.
 
 v 7.13.0 (unreleased)
+  - Remove repository graph log to fix slow cache updates after push event (Stan Hu)
   - Only enable HSTS header for HTTPS and port 443 (Stan Hu)
   - Fix user autocomplete for unauthenticated users accessing public projects (Stan Hu)
   - Fix redirection to home page URL for unauthorized users (Daniel Gerhardt)
