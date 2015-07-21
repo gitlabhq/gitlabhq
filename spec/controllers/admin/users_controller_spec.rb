@@ -32,8 +32,7 @@ describe Admin::UsersController do
 
     it 'unlocks user' do
       put :unlock, id: user.username
-      user.reload
-      expect(user.access_locked?).to be_falsey
+      expect(user.reload.access_locked?).to be_falsey
     end
   end
 

@@ -43,8 +43,7 @@ describe Profiles::TwoFactorAuthsController do
       it 'sets two_factor_enabled' do
         go
 
-        user.reload
-        expect(user).to be_two_factor_enabled
+        expect(user.reload).to be_two_factor_enabled
       end
 
       it 'presents plaintext codes for the user to save' do
@@ -99,8 +98,7 @@ describe Profiles::TwoFactorAuthsController do
     it 'persists the generated codes' do
       post :codes
 
-      user.reload
-      expect(user.otp_backup_codes).not_to be_empty
+      expect(user.reload.otp_backup_codes).not_to be_empty
     end
   end
 
