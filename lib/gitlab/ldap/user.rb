@@ -44,9 +44,13 @@ module Gitlab
         gl_user.skip_reconfirmation!
         gl_user.email = auth_hash.email
 
-        # Build new identity only if we dont have have same one
-        gl_user.identities.find_or_initialize_by(provider: auth_hash.provider,
-                                                 extern_uid: auth_hash.uid)
+        # If we don't have an identity for this provider yet, create one
+        if gl_user.identities.find_by(provider: auth_hash.provider).nil?
+          gl_user.identities.new(extern_uid: auth_hash.uid, provider: auth_hash.provider)
+        else # Update the UID attribute for this provider in case it has changed
+          identity = gl_user.identities.select { |identity|  identity.provider == auth_hash.provider }
+          identity.first.extern_uid = auth_hash.uid
+        end
 
         gl_user
       end
