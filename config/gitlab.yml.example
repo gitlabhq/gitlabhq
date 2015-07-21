@@ -361,7 +361,6 @@ test:
         user_filter: ''
         group_base: 'ou=groups,dc=example,dc=com'
         admin_group: ''
-        sync_ssh_keys: false
 
 staging:
   <<: *base
