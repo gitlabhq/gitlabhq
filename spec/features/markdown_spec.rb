@@ -33,39 +33,31 @@ require 'erb'
 # See the MarkdownFeature class for setup details.
 
 describe 'GitLab Markdown', feature: true do
-  include ActionView::Helpers::TagHelper
-  include ActionView::Helpers::UrlHelper
   include Capybara::Node::Matchers
   include GitlabMarkdownHelper
-
-  # `markdown` calls these two methods
-  def current_user
-    @feat.user
-  end
-
-  def user_color_scheme_class
-    :white
-  end
 
   # Let's only parse this thing once
   before(:all) do
     @feat = MarkdownFeature.new
 
-    # `markdown` expects a `@project` variable
+    # `gfm_with_options` depends on a `@project` variable
     @project = @feat.project
 
-    @md = markdown(@feat.raw_markdown)
-    @doc = Nokogiri::HTML::DocumentFragment.parse(@md)
+    @html = markdown(@feat.raw_markdown)
   end
 
   after(:all) do
     @feat.teardown
   end
 
+  def doc
+    @doc ||= Nokogiri::HTML::DocumentFragment.parse(@html)
+  end
+
   # Given a header ID, goes to that element's parent (the header itself), then
   # its next sibling element (the body).
   def get_section(id)
-    @doc.at_css("##{id}").parent.next_element
+    doc.at_css("##{id}").parent.next_element
   end
 
   # Sometimes it can be useful to see the parsed output of the Markdown document
@@ -74,11 +66,11 @@ describe 'GitLab Markdown', feature: true do
   #
   # it 'writes to a file' do
   #   File.open(Rails.root.join('tmp/capybara/markdown_spec.html'), 'w') do |file|
-  #     file.puts @md
+  #     file.puts @html
   #   end
   # end
 
-  describe 'Markdown' do
+  describe 'Redcarpet extensions' do
     describe 'No Intra Emphasis' do
       it 'does not parse emphasis inside of words' do
         body = get_section('no-intra-emphasis')
@@ -95,21 +87,21 @@ describe 'GitLab Markdown', feature: true do
       end
 
       it 'allows Markdown in tables' do
-        expect(@doc.at_css('td:contains("Baz")').children.to_html).
+        expect(doc.at_css('td:contains("Baz")').children.to_html).
           to eq '<strong>Baz</strong>'
       end
     end
 
     describe 'Fenced Code Blocks' do
       it 'parses fenced code blocks' do
-        expect(@doc).to have_selector('pre.code.highlight.white.c')
-        expect(@doc).to have_selector('pre.code.highlight.white.python')
+        expect(doc).to have_selector('pre.code.highlight.white.c')
+        expect(doc).to have_selector('pre.code.highlight.white.python')
       end
     end
 
     describe 'Strikethrough' do
       it 'parses strikethroughs' do
-        expect(@doc).to have_selector(%{del:contains("and this text doesn't")})
+        expect(doc).to have_selector(%{del:contains("and this text doesn't")})
       end
     end
 
@@ -125,28 +117,28 @@ describe 'GitLab Markdown', feature: true do
   describe 'HTML::Pipeline' do
     describe 'SanitizationFilter' do
       it 'uses a permissive whitelist' do
-        expect(@doc).to have_selector('b:contains("b tag")')
-        expect(@doc).to have_selector('em:contains("em tag")')
-        expect(@doc).to have_selector('code:contains("code tag")')
-        expect(@doc).to have_selector('kbd:contains("s")')
-        expect(@doc).to have_selector('strike:contains(Emoji)')
-        expect(@doc).to have_selector('img[src*="smile.png"]')
-        expect(@doc).to have_selector('br')
-        expect(@doc).to have_selector('hr')
+        expect(doc).to have_selector('b:contains("b tag")')
+        expect(doc).to have_selector('em:contains("em tag")')
+        expect(doc).to have_selector('code:contains("code tag")')
+        expect(doc).to have_selector('kbd:contains("s")')
+        expect(doc).to have_selector('strike:contains(Emoji)')
+        expect(doc).to have_selector('img[src*="smile.png"]')
+        expect(doc).to have_selector('br')
+        expect(doc).to have_selector('hr')
       end
 
       it 'permits span elements' do
-        expect(@doc).to have_selector('span:contains("span tag")')
+        expect(doc).to have_selector('span:contains("span tag")')
       end
 
       it 'permits table alignment' do
-        expect(@doc.at_css('th:contains("Header")')['style']).to eq 'text-align: center'
-        expect(@doc.at_css('th:contains("Row")')['style']).to eq 'text-align: right'
-        expect(@doc.at_css('th:contains("Example")')['style']).to eq 'text-align: left'
+        expect(doc.at_css('th:contains("Header")')['style']).to eq 'text-align: center'
+        expect(doc.at_css('th:contains("Row")')['style']).to eq 'text-align: right'
+        expect(doc.at_css('th:contains("Example")')['style']).to eq 'text-align: left'
 
-        expect(@doc.at_css('td:contains("Foo")')['style']).to eq 'text-align: center'
-        expect(@doc.at_css('td:contains("Bar")')['style']).to eq 'text-align: right'
-        expect(@doc.at_css('td:contains("Baz")')['style']).to eq 'text-align: left'
+        expect(doc.at_css('td:contains("Foo")')['style']).to eq 'text-align: center'
+        expect(doc.at_css('td:contains("Bar")')['style']).to eq 'text-align: right'
+        expect(doc.at_css('td:contains("Baz")')['style']).to eq 'text-align: left'
       end
 
       it 'removes `rel` attribute from links' do
@@ -155,12 +147,12 @@ describe 'GitLab Markdown', feature: true do
       end
 
       it "removes `href` from `a` elements if it's fishy" do
-        expect(@doc).not_to have_selector('a[href*="javascript"]')
+        expect(doc).not_to have_selector('a[href*="javascript"]')
       end
     end
 
     describe 'Escaping' do
-      let(:table) { @doc.css('table').last.at_css('tbody') }
+      let(:table) { doc.css('table').last.at_css('tbody') }
 
       it 'escapes non-tag angle brackets' do
         expect(table.at_xpath('.//tr[1]/td[3]').inner_html).to eq '1 &lt; 3 &amp; 5'
@@ -169,28 +161,28 @@ describe 'GitLab Markdown', feature: true do
 
     describe 'Edge Cases' do
       it 'allows markup inside link elements' do
-        expect(@doc.at_css('a[href="#link-emphasis"]').to_html).
+        expect(doc.at_css('a[href="#link-emphasis"]').to_html).
           to eq %{<a href="#link-emphasis"><em>text</em></a>}
 
-        expect(@doc.at_css('a[href="#link-strong"]').to_html).
+        expect(doc.at_css('a[href="#link-strong"]').to_html).
           to eq %{<a href="#link-strong"><strong>text</strong></a>}
 
-        expect(@doc.at_css('a[href="#link-code"]').to_html).
+        expect(doc.at_css('a[href="#link-code"]').to_html).
           to eq %{<a href="#link-code"><code>text</code></a>}
       end
     end
 
     describe 'EmojiFilter' do
       it 'parses Emoji' do
-        expect(@doc).to have_selector('img.emoji', count: 10)
+        expect(doc).to have_selector('img.emoji', count: 10)
       end
     end
 
     describe 'TableOfContentsFilter' do
       it 'creates anchors inside header elements' do
-        expect(@doc).to have_selector('h1 a#gitlab-markdown')
-        expect(@doc).to have_selector('h2 a#markdown')
-        expect(@doc).to have_selector('h3 a#autolinkfilter')
+        expect(doc).to have_selector('h1 a#gitlab-markdown')
+        expect(doc).to have_selector('h2 a#markdown')
+        expect(doc).to have_selector('h3 a#autolinkfilter')
       end
     end
 
@@ -249,7 +241,7 @@ describe 'GitLab Markdown', feature: true do
 
     describe 'ReferenceFilter' do
       it 'handles references in headers' do
-        header = @doc.at_css('#reference-filters-eg-1').parent
+        header = doc.at_css('#reference-filters-eg-1').parent
 
         expect(header.css('a').size).to eq 2
       end
@@ -303,6 +295,15 @@ describe 'GitLab Markdown', feature: true do
         expect(body).to have_selector('input[checked]', count: 3)
       end
     end
+  end
+
+  # `markdown` calls these two methods
+  def current_user
+    @feat.user
+  end
+
+  def user_color_scheme_class
+    :white
   end
 end
 
