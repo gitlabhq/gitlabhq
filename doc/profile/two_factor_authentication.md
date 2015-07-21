@@ -63,5 +63,10 @@ your phone's application or a recovery code to log in.
 1. Go to **Account**.
 1. Click **Disable Two-factor Authentication**.
 
+## Note to GitLab administrators
+
+You need to take special care to that 2FA keeps working after
+[restoring a GitLab backup](../raketasks/backup_restore.md).
+
 [Google Authenticator]: https://support.google.com/accounts/answer/1066447?hl=en
 [FreeOTP]: https://fedorahosted.org/freeotp/
