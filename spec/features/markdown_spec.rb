@@ -81,9 +81,12 @@ describe 'GitLab Markdown', feature: true do
     describe 'Tables' do
       it 'parses table Markdown' do
         body = get_section('tables')
-        expect(body).to have_selector('th:contains("Header")')
-        expect(body).to have_selector('th:contains("Row")')
-        expect(body).to have_selector('th:contains("Example")')
+
+        aggregate_failures do
+          expect(body).to have_selector('th:contains("Header")')
+          expect(body).to have_selector('th:contains("Row")')
+          expect(body).to have_selector('th:contains("Example")')
+        end
       end
 
       it 'allows Markdown in tables' do
@@ -94,8 +97,10 @@ describe 'GitLab Markdown', feature: true do
 
     describe 'Fenced Code Blocks' do
       it 'parses fenced code blocks' do
-        expect(doc).to have_selector('pre.code.highlight.white.c')
-        expect(doc).to have_selector('pre.code.highlight.white.python')
+        aggregate_failures do
+          expect(doc).to have_selector('pre.code.highlight.white.c')
+          expect(doc).to have_selector('pre.code.highlight.white.python')
+        end
       end
     end
 
@@ -108,8 +113,11 @@ describe 'GitLab Markdown', feature: true do
     describe 'Superscript' do
       it 'parses superscript' do
         body = get_section('superscript')
-        expect(body.to_html).to match('1<sup>st</sup>')
-        expect(body.to_html).to match('2<sup>nd</sup>')
+
+        aggregate_failures do
+          expect(body.to_html).to match('1<sup>st</sup>')
+          expect(body.to_html).to match('2<sup>nd</sup>')
+        end
       end
     end
   end
@@ -117,14 +125,16 @@ describe 'GitLab Markdown', feature: true do
   describe 'HTML::Pipeline' do
     describe 'SanitizationFilter' do
       it 'uses a permissive whitelist' do
-        expect(doc).to have_selector('b:contains("b tag")')
-        expect(doc).to have_selector('em:contains("em tag")')
-        expect(doc).to have_selector('code:contains("code tag")')
-        expect(doc).to have_selector('kbd:contains("s")')
-        expect(doc).to have_selector('strike:contains(Emoji)')
-        expect(doc).to have_selector('img[src*="smile.png"]')
-        expect(doc).to have_selector('br')
-        expect(doc).to have_selector('hr')
+        aggregate_failures do
+          expect(doc).to have_selector('b:contains("b tag")')
+          expect(doc).to have_selector('em:contains("em tag")')
+          expect(doc).to have_selector('code:contains("code tag")')
+          expect(doc).to have_selector('kbd:contains("s")')
+          expect(doc).to have_selector('strike:contains(Emoji)')
+          expect(doc).to have_selector('img[src*="smile.png"]')
+          expect(doc).to have_selector('br')
+          expect(doc).to have_selector('hr')
+        end
       end
 
       it 'permits span elements' do
@@ -132,13 +142,15 @@ describe 'GitLab Markdown', feature: true do
       end
 
       it 'permits table alignment' do
-        expect(doc.at_css('th:contains("Header")')['style']).to eq 'text-align: center'
-        expect(doc.at_css('th:contains("Row")')['style']).to eq 'text-align: right'
-        expect(doc.at_css('th:contains("Example")')['style']).to eq 'text-align: left'
+        aggregate_failures do
+          expect(doc.at_css('th:contains("Header")')['style']).to eq 'text-align: center'
+          expect(doc.at_css('th:contains("Row")')['style']).to eq 'text-align: right'
+          expect(doc.at_css('th:contains("Example")')['style']).to eq 'text-align: left'
 
-        expect(doc.at_css('td:contains("Foo")')['style']).to eq 'text-align: center'
-        expect(doc.at_css('td:contains("Bar")')['style']).to eq 'text-align: right'
-        expect(doc.at_css('td:contains("Baz")')['style']).to eq 'text-align: left'
+          expect(doc.at_css('td:contains("Foo")')['style']).to eq 'text-align: center'
+          expect(doc.at_css('td:contains("Bar")')['style']).to eq 'text-align: right'
+          expect(doc.at_css('td:contains("Baz")')['style']).to eq 'text-align: left'
+        end
       end
 
       it 'removes `rel` attribute from links' do
@@ -161,14 +173,16 @@ describe 'GitLab Markdown', feature: true do
 
     describe 'Edge Cases' do
       it 'allows markup inside link elements' do
-        expect(doc.at_css('a[href="#link-emphasis"]').to_html).
-          to eq %{<a href="#link-emphasis"><em>text</em></a>}
+        aggregate_failures do
+          expect(doc.at_css('a[href="#link-emphasis"]').to_html).
+            to eq %{<a href="#link-emphasis"><em>text</em></a>}
 
-        expect(doc.at_css('a[href="#link-strong"]').to_html).
-          to eq %{<a href="#link-strong"><strong>text</strong></a>}
+          expect(doc.at_css('a[href="#link-strong"]').to_html).
+            to eq %{<a href="#link-strong"><strong>text</strong></a>}
 
-        expect(doc.at_css('a[href="#link-code"]').to_html).
-          to eq %{<a href="#link-code"><code>text</code></a>}
+          expect(doc.at_css('a[href="#link-code"]').to_html).
+            to eq %{<a href="#link-code"><code>text</code></a>}
+        end
       end
     end
 
@@ -180,9 +194,11 @@ describe 'GitLab Markdown', feature: true do
 
     describe 'TableOfContentsFilter' do
       it 'creates anchors inside header elements' do
-        expect(doc).to have_selector('h1 a#gitlab-markdown')
-        expect(doc).to have_selector('h2 a#markdown')
-        expect(doc).to have_selector('h3 a#autolinkfilter')
+        aggregate_failures do
+          expect(doc).to have_selector('h1 a#gitlab-markdown')
+          expect(doc).to have_selector('h2 a#markdown')
+          expect(doc).to have_selector('h3 a#autolinkfilter')
+        end
       end
     end
 
@@ -290,9 +306,12 @@ describe 'GitLab Markdown', feature: true do
     describe 'Task Lists' do
       it 'generates task lists' do
         body = get_section('task-lists')
-        expect(body).to have_selector('ul.task-list', count: 2)
-        expect(body).to have_selector('li.task-list-item', count: 7)
-        expect(body).to have_selector('input[checked]', count: 3)
+
+        aggregate_failures do
+          expect(body).to have_selector('ul.task-list', count: 2)
+          expect(body).to have_selector('li.task-list-item', count: 7)
+          expect(body).to have_selector('input[checked]', count: 3)
+        end
       end
     end
   end
