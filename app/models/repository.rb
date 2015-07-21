@@ -146,10 +146,27 @@ class Repository
   def size
     cache.fetch(:size) { raw_repository.size }
   end
+  
+  def diverging_commit_counts(branch)
+    branch_cache_key = ('diverging_commit_counts_' + branch.name).to_sym
+    cache.fetch(branch_cache_key) do
+      number_commits_behind = commits_between(branch.name, root_ref).size
+      number_commits_ahead = commits_between(root_ref, branch.name).size
+      
+      { behind: number_commits_behind, ahead: number_commits_ahead }
+    end
+  end
 
   def cache_keys
-    %i(size branch_names tag_names commit_count
-       readme version contribution_guide changelog license)
+    %i(size branch_names tag_names commit_count readme
+       contribution_guide changelog license)
+  end
+  
+  def branch_cache_keys
+    branches.map do
+      |branch|
+      ('diverging_commit_counts_' + branch.name).to_sym
+    end
   end
 
   def build_cache
@@ -158,11 +175,27 @@ class Repository
         send(key)
       end
     end
+    
+    branches.each do |branch|
+      unless cache.exist?(('diverging_commit_counts_' + branch.name).to_sym)
+        send(:diverging_commit_counts, branch)
+      end
+    end
   end
 
   def expire_cache
     cache_keys.each do |key|
       cache.expire(key)
+    end
+    
+    branches.each do |branch|
+      cache.expire(('diverging_commit_counts_' + branch.name).to_sym)
+    end
+  end
+  
+  def expire_branch_cache
+    branches.each do |branch|
+      cache.expire(('diverging_commit_counts_' + branch.name).to_sym)
     end
   end
 
@@ -170,6 +203,11 @@ class Repository
     cache_keys.each do |key|
       cache.expire(key)
       send(key)
+    end
+    
+    branches.each do |branch|
+      cache.expire(('diverging_commit_counts_' + branch.name).to_sym)
+      send(:diverging_commit_counts, branch)
     end
   end
 
