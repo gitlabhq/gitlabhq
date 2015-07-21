@@ -14,6 +14,6 @@ Select a project on the right side of your screen:
 
 Click on the "fork" button on the right side of your screen:
 
-![Fork](simple_guide_images/fork.png)
+![Fork](basicsimages/fork.png)
 
 Click on the user or group to where you'd like to add the forked project.
