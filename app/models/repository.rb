@@ -94,18 +94,6 @@ class Repository
     gitlab_shell.rm_tag(path_with_namespace, tag_name)
   end
 
-  def round_commit_count
-    if commit_count > 10000
-      '10000+'
-    elsif commit_count > 5000
-      '5000+'
-    elsif commit_count > 1000
-      '1000+'
-    else
-      commit_count
-    end
-  end
-
   def branch_names
     cache.fetch(:branch_names) { raw_repository.branch_names }
   end
@@ -130,10 +118,29 @@ class Repository
     cache.fetch(:size) { raw_repository.size }
   end
 
-  def expire_cache
+  def cache_keys
     %i(size branch_names tag_names commit_count graph_log
-       readme version contribution_guide changelog license).each do |key|
+       readme version contribution_guide changelog license)
+  end
+
+  def build_cache
+    cache_keys.each do |key|
+      unless cache.exist?(key)
+        send(key)
+      end
+    end
+  end
+
+  def expire_cache
+    cache_keys.each do |key|
       cache.expire(key)
+    end
+  end
+
+  def rebuild_cache
+    cache_keys.each do |key|
+      cache.expire(key)
+      send(key)
     end
   end
 
