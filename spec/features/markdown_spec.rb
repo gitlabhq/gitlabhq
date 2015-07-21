@@ -124,29 +124,52 @@ describe 'GitLab Markdown', feature: true do
 
   describe 'HTML::Pipeline' do
     describe 'SanitizationFilter' do
-      it 'uses a permissive whitelist' do
-        aggregate_failures do
-          expect(doc).to have_selector('b:contains("b tag")')
-          expect(doc).to have_selector('em:contains("em tag")')
-          expect(doc).to have_selector('code:contains("code tag")')
-          expect(doc).to have_selector('kbd:contains("s")')
-          expect(doc).to have_selector('strike:contains(Emoji)')
-          expect(doc).to have_selector('img[src*="smile.png"]')
-          expect(doc).to have_selector('br')
-          expect(doc).to have_selector('hr')
-        end
+      it 'permits b elements' do
+        expect(doc).to have_selector('b:contains("b tag")')
+      end
+
+      it 'permits em elements' do
+        expect(doc).to have_selector('em:contains("em tag")')
+      end
+
+      it 'permits code elements' do
+        expect(doc).to have_selector('code:contains("code tag")')
+      end
+
+      it 'permits kbd elements' do
+        expect(doc).to have_selector('kbd:contains("s")')
+      end
+
+      it 'permits strike elements' do
+        expect(doc).to have_selector('strike:contains(Emoji)')
+      end
+
+      it 'permits img elements' do
+        expect(doc).to have_selector('img[src*="smile.png"]')
+      end
+
+      it 'permits br elements' do
+        expect(doc).to have_selector('br')
+      end
+
+      it 'permits hr elements' do
+        expect(doc).to have_selector('hr')
       end
 
       it 'permits span elements' do
         expect(doc).to have_selector('span:contains("span tag")')
       end
 
-      it 'permits table alignment' do
+      it 'permits style attribute in th elements' do
         aggregate_failures do
           expect(doc.at_css('th:contains("Header")')['style']).to eq 'text-align: center'
           expect(doc.at_css('th:contains("Row")')['style']).to eq 'text-align: right'
           expect(doc.at_css('th:contains("Example")')['style']).to eq 'text-align: left'
+        end
+      end
 
+      it 'permits style attribute in td elements' do
+        aggregate_failures do
           expect(doc.at_css('td:contains("Foo")')['style']).to eq 'text-align: center'
           expect(doc.at_css('td:contains("Bar")')['style']).to eq 'text-align: right'
           expect(doc.at_css('td:contains("Baz")')['style']).to eq 'text-align: left'
@@ -154,8 +177,7 @@ describe 'GitLab Markdown', feature: true do
       end
 
       it 'removes `rel` attribute from links' do
-        body = get_section('sanitizationfilter')
-        expect(body).not_to have_selector('a[rel="bookmark"]')
+        expect(doc).not_to have_selector('a[rel="bookmark"]')
       end
 
       it "removes `href` from `a` elements if it's fishy" do
@@ -164,9 +186,8 @@ describe 'GitLab Markdown', feature: true do
     end
 
     describe 'Escaping' do
-      let(:table) { doc.css('table').last.at_css('tbody') }
-
       it 'escapes non-tag angle brackets' do
+        table = doc.css('table').last.at_css('tbody')
         expect(table.at_xpath('.//tr[1]/td[3]').inner_html).to eq '1 &lt; 3 &amp; 5'
       end
     end
