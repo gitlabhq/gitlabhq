@@ -2,6 +2,8 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.14.0 (unreleased)
   - Fix full screen mode for snippet comments (Daniel Gerhardt)
+  - Fix 404 error in files view after deleting the last file in a repository (Stan Hu)
+  - Remove repository graph log to fix slow cache updates after push event (Stan Hu)
   - Fix label read access for unauthenticated users (Daniel Gerhardt)
   - Fix access to disabled features for unauthenticated users (Daniel Gerhardt)
   - Fix OAuth provider bug where GitLab would not go return to the redirect_uri after sign-in (Stan Hu)
