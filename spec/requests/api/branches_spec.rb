@@ -13,13 +13,9 @@ describe API::API, api: true  do
   let!(:branch_sha) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
 
   describe "GET /projects/:id/repository/branches" do
-    before do
-      # Ensure that repository.branch_names is cleared from the cache at start to ensure
-      # the list matches reality
-      Rails.cache.clear
-    end
-
     it "should return an array of project branches" do
+      project.repository.expire_cache
+
       get api("/projects/#{project.id}/repository/branches", user)
       expect(response.status).to eq(200)
       expect(json_response).to be_an Array
