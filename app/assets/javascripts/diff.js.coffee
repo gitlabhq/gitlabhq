@@ -31,6 +31,10 @@ class @Diff
         bottom: unfoldBottom
         offset: offset
         unfold: unfold
+        # indent is used to compensate for single space indent to fit
+        # '+' and '-' prepended to diff lines,
+        # see https://gitlab.com/gitlab-org/gitlab-ce/issues/707
+        indent: 1
 
       $.get(link, params, (response) =>
         target.parent().replaceWith(response)
