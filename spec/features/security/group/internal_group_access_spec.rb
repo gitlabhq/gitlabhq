@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe "Group with internal project access", feature: true  do
+  include AccessMatchers
+
   describe "Group" do
     let(:group) { create(:group) }
 

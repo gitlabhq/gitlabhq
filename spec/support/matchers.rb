@@ -1,37 +1,3 @@
-def emulate_user(user)
-  user = case user
-         when :user then create(:user)
-         when :visitor then nil
-         when :admin then create(:admin)
-         else user
-         end
-  login_with(user) if user
-end
-
-RSpec::Matchers.define :be_allowed_for do |user|
-  match do |url|
-    emulate_user(user)
-    visit url
-    status_code != 404 && current_path != new_user_session_path
-  end
-end
-
-RSpec::Matchers.define :be_denied_for do |user|
-  match do |url|
-    emulate_user(user)
-    visit url
-    status_code == 404 || current_path == new_user_session_path
-  end
-end
-
-RSpec::Matchers.define :be_not_found_for do |user|
-  match do |url|
-    emulate_user(user)
-    visit url
-    status_code == 404
-  end
-end
-
 RSpec::Matchers.define :include_module do |expected|
   match do
     described_class.included_modules.include?(expected)

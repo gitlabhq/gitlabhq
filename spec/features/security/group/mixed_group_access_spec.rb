@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe "Group access", feature: true  do
+  include AccessMatchers
+
   describe "Group" do
     let(:group) { create(:group) }
 

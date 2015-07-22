@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe "Profile access", feature: true  do
+  include AccessMatchers
+
   before do
     @u1 = create(:user)
   end

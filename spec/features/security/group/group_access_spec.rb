@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe "Group access", feature: true  do
+  include AccessMatchers
+
   describe "GET /projects/new" do
     it { expect(new_group_path).to be_allowed_for :admin }
     it { expect(new_group_path).to be_allowed_for :user }
