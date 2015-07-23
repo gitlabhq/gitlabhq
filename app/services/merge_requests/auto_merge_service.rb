@@ -41,6 +41,10 @@ module MergeRequests
           if merge_request.remove_source_branch?
             DeleteBranchService.new(merge_request.source_project, current_user).execute(merge_request.source_branch)
           end
+
+          true
+        else
+          false
         end
       end
     end
