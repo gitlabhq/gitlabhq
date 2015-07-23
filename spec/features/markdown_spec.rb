@@ -17,16 +17,8 @@ require 'erb'
 #       -> Post-process HTML
 #         -> `gfm_with_options` helper
 #           -> HTML::Pipeline
-#             -> Sanitize
-#             -> RelativeLink
-#             -> Emoji
-#             -> Table of Contents
-#             -> Autolinks
-#               -> Rinku (http, https, ftp)
-#               -> Other schemes
-#             -> ExternalLink
-#             -> References
-#             -> TaskList
+#             -> SanitizationFilter
+#             -> Other filters, depending on pipeline
 #           -> `html_safe`
 #           -> Template
 #
@@ -35,6 +27,7 @@ require 'erb'
 describe 'GitLab Markdown', feature: true do
   include Capybara::Node::Matchers
   include GitlabMarkdownHelper
+  include MarkdownMatchers
 
   # Let's only parse this thing once
   before(:all) do
@@ -42,50 +35,37 @@ describe 'GitLab Markdown', feature: true do
 
     # `gfm_with_options` depends on a `@project` variable
     @project = @feat.project
-
-    @html = markdown(@feat.raw_markdown)
   end
 
   after(:all) do
     @feat.teardown
   end
 
-  def doc
-    @doc ||= Nokogiri::HTML::DocumentFragment.parse(@html)
-  end
-
-  # Given a header ID, goes to that element's parent (the header itself), then
-  # its next sibling element (the body).
-  def get_section(id)
-    doc.at_css("##{id}").parent.next_element
+  def doc(html = @html)
+    Nokogiri::HTML::DocumentFragment.parse(html)
   end
 
   # Sometimes it can be useful to see the parsed output of the Markdown document
-  # for debugging. Uncomment this block to write the output to
-  # tmp/capybara/markdown_spec.html.
-  #
-  # it 'writes to a file' do
-  #   File.open(Rails.root.join('tmp/capybara/markdown_spec.html'), 'w') do |file|
-  #     file.puts @html
-  #   end
-  # end
-
-  describe 'Redcarpet extensions' do
-    describe 'No Intra Emphasis' do
-      it 'does not parse emphasis inside of words' do
-        body = get_section('no-intra-emphasis')
-        expect(body.to_html).not_to match('foo<em>bar</em>baz')
-      end
+  # for debugging. Call this method to write the output to
+  # `tmp/capybara/<filename>.html`.
+  def write_markdown(filename = 'markdown_spec')
+    File.open(Rails.root.join("tmp/capybara/#{filename}.html"), 'w') do |file|
+      file.puts @html
     end
+  end
 
-    describe 'Tables' do
+  # Shared behavior that all pipelines should exhibit
+  shared_examples 'all pipelines' do
+    describe 'Redcarpet extensions' do
+      it 'does not parse emphasis inside of words' do
+        expect(doc.to_html).not_to match('foo<em>bar</em>baz')
+      end
+
       it 'parses table Markdown' do
-        body = get_section('tables')
-
         aggregate_failures do
-          expect(body).to have_selector('th:contains("Header")')
-          expect(body).to have_selector('th:contains("Row")')
-          expect(body).to have_selector('th:contains("Example")')
+          expect(doc).to have_selector('th:contains("Header")')
+          expect(doc).to have_selector('th:contains("Row")')
+          expect(doc).to have_selector('th:contains("Example")')
         end
       end
 
@@ -93,36 +73,23 @@ describe 'GitLab Markdown', feature: true do
         expect(doc.at_css('td:contains("Baz")').children.to_html).
           to eq '<strong>Baz</strong>'
       end
-    end
 
-    describe 'Fenced Code Blocks' do
       it 'parses fenced code blocks' do
         aggregate_failures do
           expect(doc).to have_selector('pre.code.highlight.white.c')
           expect(doc).to have_selector('pre.code.highlight.white.python')
         end
       end
-    end
 
-    describe 'Strikethrough' do
       it 'parses strikethroughs' do
         expect(doc).to have_selector(%{del:contains("and this text doesn't")})
       end
-    end
 
-    describe 'Superscript' do
       it 'parses superscript' do
-        body = get_section('superscript')
-
-        aggregate_failures do
-          expect(body.to_html).to match('1<sup>st</sup>')
-          expect(body.to_html).to match('2<sup>nd</sup>')
-        end
+        expect(doc).to have_selector('sup', count: 2)
       end
     end
-  end
 
-  describe 'HTML::Pipeline' do
     describe 'SanitizationFilter' do
       it 'permits b elements' do
         expect(doc).to have_selector('b:contains("b tag")')
@@ -207,133 +174,56 @@ describe 'GitLab Markdown', feature: true do
       end
     end
 
-    describe 'EmojiFilter' do
-      it 'parses Emoji' do
-        expect(doc).to have_selector('img.emoji', count: 10)
-      end
-    end
-
-    describe 'TableOfContentsFilter' do
-      it 'creates anchors inside header elements' do
-        aggregate_failures do
-          expect(doc).to have_selector('h1 a#gitlab-markdown')
-          expect(doc).to have_selector('h2 a#markdown')
-          expect(doc).to have_selector('h3 a#autolinkfilter')
-        end
-      end
-    end
-
-    describe 'AutolinkFilter' do
-      def body
-        get_section('autolinkfilter').next_element
-      end
-
-      # Override Capybara's `have_link` matcher to simplify our use case
-      def have_link(link)
-        super(link, href: link)
-      end
-
-      it 'autolinks http://' do
-        expect(body).to have_link('http://about.gitlab.com/')
-      end
-
-      it 'autolinks https://' do
-        expect(body).to have_link('https://google.com/')
-      end
-
-      it 'autolinks ftp://' do
-        expect(body).to have_link('ftp://ftp.us.debian.org/debian/')
-      end
-
-      it 'autolinks smb://' do
-        expect(body).to have_link('smb://foo/bar/baz')
-      end
-
-      it 'autolinks irc://' do
-        expect(body).to have_link('irc://irc.freenode.net/git')
-      end
-
-      it 'autolinks short, invalid URLs' do
-        expect(body).to have_link('http://localhost:3000')
-      end
-
-      %w(code a kbd).each do |elem|
-        it "ignores links inside '#{elem}' element" do
-          expect(body).not_to have_selector("#{elem} a")
-        end
-      end
-    end
-
     describe 'ExternalLinkFilter' do
-      let(:links) { get_section('externallinkfilter').next_element }
-
       it 'adds nofollow to external link' do
-        expect(links.css('a').first.to_html).to match 'nofollow'
+        link = doc.at_css('a:contains("Google")')
+        expect(link.attr('rel')).to match 'nofollow'
       end
 
       it 'ignores internal link' do
-        expect(links.css('a').last.to_html).not_to match 'nofollow'
+        link = doc.at_css('a:contains("GitLab Root")')
+        expect(link.attr('rel')).not_to match 'nofollow'
+      end
+    end
+  end
+
+  context 'default pipeline' do
+    before(:all) do
+      @html = markdown(@feat.raw_markdown)
+    end
+
+    it_behaves_like 'all pipelines'
+
+    it 'includes RelativeLinkFilter' do
+      expect(doc).to parse_relative_links
+    end
+
+    it 'includes EmojiFilter' do
+      expect(doc).to parse_emoji
+    end
+
+    it 'includes TableOfContentsFilter' do
+      expect(doc).to create_header_links
+    end
+
+    it 'includes AutolinkFilter' do
+      expect(doc).to create_autolinks
+    end
+
+    it 'includes all reference filters' do
+      aggregate_failures do
+        expect(doc).to reference_users
+        expect(doc).to reference_issues
+        expect(doc).to reference_merge_requests
+        expect(doc).to reference_snippets
+        expect(doc).to reference_commit_ranges
+        expect(doc).to reference_commits
+        expect(doc).to reference_labels
       end
     end
 
-    describe 'ReferenceFilter' do
-      it 'handles references in headers' do
-        header = doc.at_css('#reference-filters-eg-1').parent
-
-        expect(header.css('a').size).to eq 2
-      end
-
-      it "handles references in Markdown" do
-        body = get_section('reference-filters-eg-1')
-        expect(body).to have_selector('em a.gfm-merge_request', count: 1)
-      end
-
-      it 'parses user references' do
-        body = get_section('userreferencefilter')
-        expect(body).to have_selector('a.gfm.gfm-project_member', count: 3)
-      end
-
-      it 'parses issue references' do
-        body = get_section('issuereferencefilter')
-        expect(body).to have_selector('a.gfm.gfm-issue', count: 2)
-      end
-
-      it 'parses merge request references' do
-        body = get_section('mergerequestreferencefilter')
-        expect(body).to have_selector('a.gfm.gfm-merge_request', count: 2)
-      end
-
-      it 'parses snippet references' do
-        body = get_section('snippetreferencefilter')
-        expect(body).to have_selector('a.gfm.gfm-snippet', count: 2)
-      end
-
-      it 'parses commit range references' do
-        body = get_section('commitrangereferencefilter')
-        expect(body).to have_selector('a.gfm.gfm-commit_range', count: 2)
-      end
-
-      it 'parses commit references' do
-        body = get_section('commitreferencefilter')
-        expect(body).to have_selector('a.gfm.gfm-commit', count: 2)
-      end
-
-      it 'parses label references' do
-        body = get_section('labelreferencefilter')
-        expect(body).to have_selector('a.gfm.gfm-label', count: 3)
-      end
-    end
-
-    describe 'Task Lists' do
-      it 'generates task lists' do
-        body = get_section('task-lists')
-
-        aggregate_failures do
-          expect(body).to have_selector('ul.task-list', count: 2)
-          expect(body).to have_selector('li.task-list-item', count: 7)
-          expect(body).to have_selector('input[checked]', count: 3)
-        end
-      end
+    it 'includes TaskListFilter' do
+      expect(doc).to parse_task_lists
     end
   end
 
