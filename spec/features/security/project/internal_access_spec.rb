@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe "Internal Project Access", feature: true  do
+  include AccessMatchers
+
   let(:project) { create(:project, :internal) }
 
   let(:master) { create(:user) }

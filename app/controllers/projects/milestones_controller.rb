@@ -64,7 +64,12 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def destroy
-    return access_denied! unless can?(current_user, :admin_milestone, @milestone)
+    return access_denied! unless can?(current_user, :admin_milestone, @project)
+
+    update_params = { milestone: nil }
+    @milestone.issues.each do |issue|
+      Issues::UpdateService.new(@project, current_user, update_params).execute(issue)
+    end
 
     @milestone.destroy
 

@@ -8,9 +8,6 @@ describe Projects::TreeController do
     sign_in(user)
 
     project.team << [user, :master]
-
-    allow(project).to receive(:branches).and_return(['master', 'foo/bar/baz'])
-    allow(project).to receive(:tags).and_return(['v1.0.0', 'v2.0.0'])
     controller.instance_variable_set(:@project, project)
   end
 
@@ -44,6 +41,32 @@ describe Projects::TreeController do
       let(:id) { 'invalid-branch/encoding/' }
       it { is_expected.to respond_with(:not_found) }
     end
+
+    context "valid empty branch, invalid path" do
+      let(:id) { 'empty-branch/invalid-path/' }
+      it { is_expected.to respond_with(:not_found) }
+    end
+
+    context "valid empty branch" do
+      let(:id) { 'empty-branch' }
+      it { is_expected.to respond_with(:success) }
+    end
+
+    context "invalid SHA commit ID" do
+      let(:id) { 'ff39438/.gitignore' }
+      it { is_expected.to respond_with(:not_found) }
+    end
+
+    context "valid SHA commit ID" do
+      let(:id) { '6d39438' }
+      it { is_expected.to respond_with(:success) }
+    end
+
+    context "valid SHA commit ID with path" do
+      let(:id) { '6d39438/.gitignore' }
+      it { expect(response.status).to eq(302) }
+    end
+
   end
 
   describe 'GET show with blob path' do

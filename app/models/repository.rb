@@ -94,18 +94,6 @@ class Repository
     gitlab_shell.rm_tag(path_with_namespace, tag_name)
   end
 
-  def round_commit_count
-    if commit_count > 10000
-      '10000+'
-    elsif commit_count > 5000
-      '5000+'
-    elsif commit_count > 1000
-      '1000+'
-    else
-      commit_count
-    end
-  end
-
   def branch_names
     cache.fetch(:branch_names) { raw_repository.branch_names }
   end
@@ -130,28 +118,29 @@ class Repository
     cache.fetch(:size) { raw_repository.size }
   end
 
+  def cache_keys
+    %i(size branch_names tag_names commit_count
+       readme version contribution_guide changelog license)
+  end
+
+  def build_cache
+    cache_keys.each do |key|
+      unless cache.exist?(key)
+        send(key)
+      end
+    end
+  end
+
   def expire_cache
-    %i(size branch_names tag_names commit_count graph_log
-       readme version contribution_guide changelog license).each do |key|
+    cache_keys.each do |key|
       cache.expire(key)
     end
   end
 
-  def graph_log
-    cache.fetch(:graph_log) do
-      commits = raw_repository.log(limit: 6000, skip_merges: true,
-                                   ref: root_ref)
-
-      commits.map do |rugged_commit|
-        commit = Gitlab::Git::Commit.new(rugged_commit)
-
-        {
-          author_name: commit.author_name,
-          author_email: commit.author_email,
-          additions: commit.stats.additions,
-          deletions: commit.stats.deletions,
-        }
-      end
+  def rebuild_cache
+    cache_keys.each do |key|
+      cache.expire(key)
+      send(key)
     end
   end
 
@@ -442,8 +431,7 @@ class Repository
     filename = nil
     startline = 0
 
-    lines = result.lines
-    lines.each_with_index do |line, index|
+    result.each_line.each_with_index do |line, index|
       if line =~ /^.*:.*:\d+:/
         ref, filename, startline = line.split(':')
         startline = startline.to_i - index
@@ -451,11 +439,11 @@ class Repository
       end
     end
 
-    data = lines.map do |line|
-      line.sub(ref, '').sub(filename, '').sub(/^:-\d+-/, '').sub(/^::\d+:/, '')
-    end
+    data = ""
 
-    data = data.join("")
+    result.each_line do |line|
+      data << line.sub(ref, '').sub(filename, '').sub(/^:-\d+-/, '').sub(/^::\d+:/, '')
+    end
 
     OpenStruct.new(
       filename: filename,

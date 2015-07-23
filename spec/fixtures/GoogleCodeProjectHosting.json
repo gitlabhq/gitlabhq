@@ -382,6 +382,11 @@
               "fileName" : "screenshot.png",
               "fileSize" : 0,
               "mimetype" : "image/png"
+            }, {
+              "attachmentId" : "001",
+              "fileName" : "screenshot1.PNG",
+              "fileSize" : 0,
+              "mimetype" : "image/x-png"
             } ]
           }, {
             "id" : 1,
