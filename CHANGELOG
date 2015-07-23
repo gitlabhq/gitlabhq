@@ -1,5 +1,13 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 7.13.1
+  - Fix: Label modifications are not reflected in existing notes and in the issue list
+  - Fix: Label not shown in the Issue list, although it's set through web interface
+  - Fix: Group/project references are linked incorrectly
+  - Improve documentation
+  - Fix of migration: Check if session_expire_delay column exists before adding the column
+  - Fix: ActionView::Template::Error
+
 v 7.13.0
   - Remove repository graph log to fix slow cache updates after push event (Stan Hu)
   - Only enable HSTS header for HTTPS and port 443 (Stan Hu)
