@@ -8,22 +8,9 @@ v 7.13.1
   - Fix of migration: Check if session_expire_delay column exists before adding the column
   - Fix: ActionView::Template::Error
   - Fix: "Create Merge Request" isn't always shown in event for newly pushed branch
-
-v 7.13.0
-v 7.14.0 (unreleased)
-  - Fix full screen mode for snippet comments (Daniel Gerhardt)
-  - Fix 404 error in files view after deleting the last file in a repository (Stan Hu)
-  - Fix label read access for unauthenticated users (Daniel Gerhardt)
-  - Fix access to disabled features for unauthenticated users (Daniel Gerhardt)
-  - Fix OAuth provider bug where GitLab would not go return to the redirect_uri after sign-in (Stan Hu)
-  - Fix file upload dialog for comment editing (Daniel Gerhardt)
-  - Set OmniAuth full_host parameter to ensure redirect URIs are correct (Stan Hu)
-  - Expire Rails cache entries after two weeks to prevent endless Redis growth
-  - Add support for destroying project milestones (Stan Hu)
-  - Add fetch command to the MR page.
   - Fix bug causing "Remove source-branch" option not to work for merge requests from the same project.
 
-v 7.13.0 (unreleased)
+v 7.13.0
   - Remove repository graph log to fix slow cache updates after push event (Stan Hu)
   - Only enable HSTS header for HTTPS and port 443 (Stan Hu)
   - Fix user autocomplete for unauthenticated users accessing public projects (Stan Hu)
