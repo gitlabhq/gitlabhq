@@ -50,7 +50,7 @@ class UsersController < ApplicationController
   private
 
   def set_user
-    @user = User.find_by!('lower(username) = ?', params[:username].downcase)
+    @user = User.find_by_username!(params[:username])
 
     unless current_user || @user.public_profile?
       return authenticate_user!
