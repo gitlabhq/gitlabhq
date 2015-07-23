@@ -703,6 +703,10 @@ class Project < ActiveRecord::Base
     update_attribute(:repository_size, repository.size)
   end
 
+  def update_commit_count
+    update_attribute(:commit_count, repository.commit_count)
+  end
+
   def forks_count
     ForkedProjectLink.where(forked_from_project_id: self.id).count
   end

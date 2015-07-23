@@ -56,10 +56,9 @@
 
 
       .note-body{class: note_editable?(note) ? 'js-task-list-container' : ''}
-        = cache [note, 'markdown'] do
-          .note-text
-            = preserve do
-              = markdown(note.note, {no_header_anchors: true})
+        .note-text
+          = preserve do
+            = markdown(note.note, {no_header_anchors: true})
         = render 'projects/notes/edit_form', note: note
 
       - if note.attachment.url

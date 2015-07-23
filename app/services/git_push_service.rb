@@ -21,7 +21,6 @@ class GitPushService
 
     project.ensure_satellite_exists
     project.repository.expire_cache
-    project.update_repository_size
 
     if push_remove_branch?(ref, newrev)
       @push_commits = []
@@ -61,6 +60,7 @@ class GitPushService
     EventCreateService.new.push(project, user, @push_data)
     project.execute_hooks(@push_data.dup, :push_hooks)
     project.execute_services(@push_data.dup, :push_hooks)
+    ProjectCacheWorker.perform_async(project.id)
   end
 
   protected

@@ -48,6 +48,14 @@ describe 'LineHighlighter', ->
       clickLine(13)
       expect(spy).toHaveBeenPrevented()
 
+    it 'handles clicking on a child icon element', ->
+      spy = spyOn(@class, 'setHash').and.callThrough()
+
+      $('#L13 i').mousedown().click()
+
+      expect(spy).toHaveBeenCalledWith(13)
+      expect($('#LC13')).toHaveClass(@css)
+
     describe 'without shiftKey', ->
       it 'highlights one line when clicked', ->
         clickLine(13)

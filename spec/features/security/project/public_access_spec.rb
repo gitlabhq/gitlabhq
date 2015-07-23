@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe "Public Project Access", feature: true  do
+  include AccessMatchers
+
   let(:project) { create(:project) }
 
   let(:master) { create(:user) }
@@ -17,7 +19,6 @@ describe "Public Project Access", feature: true  do
 
     # readonly
     project.team << [reporter, :reporter]
-
   end
 
   describe "Project should be public" do

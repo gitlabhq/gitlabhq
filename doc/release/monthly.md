@@ -6,6 +6,7 @@ It starts 7 working days before the release.
 The release manager doesn't have to perform all the work but must ensure someone is assigned.
 The current release manager must schedule the appointment of the next release manager.
 The new release manager should create overall issue to track the progress.
+The release manager should be the only person pushing/merging commits to the x-y-stable branches.
 
 ## Release Manager
 

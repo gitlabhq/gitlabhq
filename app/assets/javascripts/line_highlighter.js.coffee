@@ -70,7 +70,7 @@ class @LineHighlighter
 
     @clearHighlight()
 
-    lineNumber = $(event.target).data('line-number')
+    lineNumber = $(event.target).closest('a').data('line-number')
     current = @hashToRange(@_hash)
 
     unless current[0] && event.shiftKey
