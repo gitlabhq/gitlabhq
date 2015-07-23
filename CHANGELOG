@@ -11,6 +11,7 @@ v 7.14.0 (unreleased)
   - Expire Rails cache entries after two weeks to prevent endless Redis growth
   - Add support for destroying project milestones (Stan Hu)
   - Add fetch command to the MR page.
+  - Fix bug causing "Remove source-branch" option not to work for merge requests from the same project.
 
 v 7.13.1
   - Revert issue caching
