@@ -14,6 +14,7 @@ v 7.14.0 (unreleased)
 
 v 7.13.1
   - Revert issue caching
+  - Reverted cache for events
 
 v 7.13.0 (unreleased)
   - Remove repository graph log to fix slow cache updates after push event (Stan Hu)
