@@ -14,6 +14,8 @@ describe API::API, api: true  do
 
   describe "GET /projects/:id/repository/branches" do
     it "should return an array of project branches" do
+      project.repository.expire_cache
+
       get api("/projects/#{project.id}/repository/branches", user)
       expect(response.status).to eq(200)
       expect(json_response).to be_an Array
