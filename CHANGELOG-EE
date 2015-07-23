@@ -1,4 +1,8 @@
-v 7.13 (Unrelease)
+v7.13.1
+  - Merge community edition changes for version 7.13.1
+  - Fix: "Rebase before merge" doesn't work when source branch is in the same project
+
+v 7.13
   - Fix git hook validation on initial push to master branch.
   - Reset approvals on push
   - Fix 500 error when the source project of an MR is deleted 
