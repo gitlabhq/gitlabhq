@@ -7,6 +7,8 @@ v 7.13.1
   - Improve documentation
   - Fix of migration: Check if session_expire_delay column exists before adding the column
   - Fix: ActionView::Template::Error
+  - Fix: "Create Merge Request" isn't always shown in event for newly pushed branch
+  - Fix bug causing "Remove source-branch" option not to work for merge requests from the same project.
 
 v 7.13.0
   - Remove repository graph log to fix slow cache updates after push event (Stan Hu)
