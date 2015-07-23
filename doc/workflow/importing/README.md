@@ -7,3 +7,5 @@
 
 ### Note
 * If you'd like to migrate from a self-hosted GitLab instance to GitLab.com, you can copy your repos by changing the remote and pushing to the new server; but issues and merge requests can't be imported.
+
+* When you migrate repositories to GitLab, there is no restriction on maximum size. They are imported via HTTP, but if the repository is too large, it can timeout.
