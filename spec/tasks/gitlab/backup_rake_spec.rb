@@ -67,8 +67,7 @@ describe 'gitlab:app namespace rake task' do
     end
 
     def create_backup
-      # Record the existing backup tars so we don't touch them
-      existing_tars = tars_glob
+      FileUtils.rm tars_glob
 
       # Redirect STDOUT and run the rake task
       orig_stdout = $stdout
@@ -78,7 +77,7 @@ describe 'gitlab:app namespace rake task' do
       reenable_backup_sub_tasks
       $stdout = orig_stdout
 
-      @backup_tar = (tars_glob - existing_tars).first
+      @backup_tar = tars_glob.first
     end
 
     before do
@@ -140,8 +139,7 @@ describe 'gitlab:app namespace rake task' do
 
       reenable_backup_sub_tasks
 
-      # Record the existing backup tars so we don't touch them
-      existing_tars = tars_glob
+      FileUtils.rm tars_glob
 
       # Redirect STDOUT and run the rake task
       orig_stdout = $stdout
@@ -150,7 +148,7 @@ describe 'gitlab:app namespace rake task' do
       run_rake_task('gitlab:backup:create')
       $stdout = orig_stdout
 
-      @backup_tar = (tars_glob - existing_tars).first
+      @backup_tar = tars_glob.first
     end
 
     after :all do

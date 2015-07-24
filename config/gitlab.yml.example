@@ -339,6 +339,8 @@ test:
     # user: YOUR_USERNAME
   satellites:
     path: tmp/tests/gitlab-satellites/
+  backup:[B
+    path: tmp/tests/backups
   gitlab_shell:
     path: tmp/tests/gitlab-shell/
     repos_path: tmp/tests/repositories/
