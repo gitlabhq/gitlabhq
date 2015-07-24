@@ -299,14 +299,14 @@ class ApplicationController < ActionController::Base
   end
 
   def github_import_enabled?
-    OauthHelper.enabled_oauth_providers.include?(:github)
+    Gitlab::OAuth::Provider.enabled?(:github)
   end
 
   def gitlab_import_enabled?
-    OauthHelper.enabled_oauth_providers.include?(:gitlab)
+    Gitlab::OAuth::Provider.enabled?(:gitlab)
   end
 
   def bitbucket_import_enabled?
-    OauthHelper.enabled_oauth_providers.include?(:bitbucket) && Gitlab::BitbucketImport.public_key.present?
+    Gitlab::OAuth::Provider.enabled?(:bitbucket) && Gitlab::BitbucketImport.public_key.present?
   end
 end
