@@ -705,14 +705,14 @@ class Project < ActiveRecord::Base
         ensure_satellite_exists
         true
       else
-        errors.add(:base, 'Failed to fork repository')
+        errors.add(:base, 'Failed to fork repository via gitlab-shell')
         false
       end
     else
       if gitlab_shell.add_repository(path_with_namespace)
         true
       else
-        errors.add(:base, 'Failed to create repository')
+        errors.add(:base, 'Failed to create repository via gitlab-shell')
         false
       end
     end
