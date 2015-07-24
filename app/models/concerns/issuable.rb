@@ -159,6 +159,16 @@ module Issuable
     end
   end
 
+  # Convert this Issuable class name to a format usable by Ability definitions
+  #
+  # Examples:
+  #
+  #   issuable.class           # => MergeRequest
+  #   issuable.to_ability_name # => "merge_request"
+  def to_ability_name
+    self.class.to_s.underscore
+  end
+
   private
 
   def filter_superceded_votes(votes, notes)
