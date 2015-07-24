@@ -11,7 +11,7 @@ How it works:
 In order to use LDAP groups feature:
 
 1. Edit gitlab.yml config LDAP sections.
-2. Visti group settings -> LDAP tab
+2. Visit group settings -> LDAP tab
 3. Edit LDAP cn and access level for gitlab group
 4. Setup LDAP group members
 
