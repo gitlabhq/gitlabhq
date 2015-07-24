@@ -274,6 +274,10 @@ class User < ActiveRecord::Base
             value: login.to_s.downcase).first
     end
 
+    def find_by_username!(username)
+      find_by!('lower(username) = ?', username.downcase)
+    end
+
     def by_username_or_id(name_or_id)
       where('users.username = ? OR users.id = ?', name_or_id.to_s, name_or_id.to_i).first
     end
