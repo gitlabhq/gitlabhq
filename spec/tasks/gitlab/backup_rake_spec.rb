@@ -15,6 +15,12 @@ describe 'gitlab:app namespace rake task' do
     Rake.application.invoke_task task_name
   end
 
+  def reenable_backup_sub_tasks
+    %w{db repo uploads}.each do |subtask|
+      Rake::Task["gitlab:backup:#{subtask}:create"].reenable
+    end
+  end
+
   describe 'backup_restore' do
     before do
       # avoid writing task output to spec progress
@@ -67,23 +73,19 @@ describe 'gitlab:app namespace rake task' do
       # Redirect STDOUT and run the rake task
       orig_stdout = $stdout
       $stdout = StringIO.new
+      reenable_backup_sub_tasks
       run_rake_task('gitlab:backup:create')
+      reenable_backup_sub_tasks
       $stdout = orig_stdout
 
       @backup_tar = (tars_glob - existing_tars).first
     end
 
-    def reenable_backup_sub_tasks
-      %w{db repo uploads}.each do |subtask|
-        Rake::Task["gitlab:backup:#{subtask}:create"].reenable
-      end
-    end
-
-    before :all do
+    before do
       create_backup
     end
 
-    after :all do
+    after do
       FileUtils.rm(@backup_tar)
     end
 
@@ -99,9 +101,7 @@ describe 'gitlab:app namespace rake task' do
           # We created a backup in a before(:all) so it got the default permissions.
           # We now need to do some work to create a _new_ backup file using our stub.
           FileUtils.rm(@backup_tar)
-          reenable_backup_sub_tasks
           create_backup
-          reenable_backup_sub_tasks
         end
 
         it 'uses the custom permissions' do
@@ -138,9 +138,7 @@ describe 'gitlab:app namespace rake task' do
     before :all do
       @origin_cd = Dir.pwd
 
-      Rake::Task["gitlab:backup:db:create"].reenable
-      Rake::Task["gitlab:backup:repo:create"].reenable
-      Rake::Task["gitlab:backup:uploads:create"].reenable
+      reenable_backup_sub_tasks
 
       # Record the existing backup tars so we don't touch them
       existing_tars = tars_glob
