@@ -27,8 +27,10 @@ class IssuableBaseService < BaseService
       old_branch, new_branch)
   end
 
-  def filter_params
-    unless can?(current_user, :admin_issue, project)
+  def filter_params(issuable_ability_name = :issue)
+    ability = :"admin_#{issuable_ability_name}"
+
+    unless can?(current_user, ability, project)
       params.delete(:milestone_id)
       params.delete(:label_ids)
       params.delete(:assignee_id)
