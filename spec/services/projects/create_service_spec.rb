@@ -10,6 +10,13 @@ describe Projects::CreateService do
       }
     end
 
+    it 'creates services on Project creation' do
+      project = create_project(@user, @opts)
+      project.reload
+
+      expect(project.services).not_to be_empty
+    end
+
     context 'user namespace' do
       before do
         @project = create_project(@user, @opts)
