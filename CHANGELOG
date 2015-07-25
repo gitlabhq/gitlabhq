@@ -18,6 +18,7 @@ v 7.14.0 (unreleased)
   - Add support for destroying project milestones (Stan Hu)
   - Add fetch command to the MR page
   - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
+  - Disabled autocapitalize and autocorrect on login field (Daryl Chan)
 
 v 7.13.1
   - Fix: Label modifications are not reflected in existing notes and in the issue list
