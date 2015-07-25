@@ -195,14 +195,12 @@ describe Project do
 
     it 'should close merge request if last commit from source branch was pushed to target branch' do
       project.update_merge_requests(prev_commit_id, commit_id, "refs/heads/#{merge_request.target_branch}", key.user)
-      merge_request.reload
-      expect(merge_request.merged?).to be_truthy
+      expect(merge_request.reload.merged?).to be_truthy
     end
 
     it 'should update merge request commits with new one if pushed to source branch' do
       project.update_merge_requests(prev_commit_id, commit_id, "refs/heads/#{merge_request.source_branch}", key.user)
-      merge_request.reload
-      expect(merge_request.last_commit.id).to eq(commit_id)
+      expect(merge_request.reload.last_commit.id).to eq(commit_id)
     end
   end
 
@@ -294,15 +292,12 @@ describe Project do
       expect(project.reload.star_count).to eq(1)
 
       user2.toggle_star(project)
-      project.reload
       expect(project.reload.star_count).to eq(2)
 
       user1.toggle_star(project)
-      project.reload
       expect(project.reload.star_count).to eq(1)
 
       user2.toggle_star(project)
-      project.reload
       expect(project.reload.star_count).to eq(0)
     end
 
@@ -315,39 +310,29 @@ describe Project do
       expect(project2.star_count).to eq(0)
 
       user.toggle_star(project1)
-      project1.reload
-      project2.reload
-      expect(project1.star_count).to eq(1)
-      expect(project2.star_count).to eq(0)
+      expect(project1.reload.star_count).to eq(1)
+      expect(project2.reload.star_count).to eq(0)
 
       user.toggle_star(project1)
-      project1.reload
-      project2.reload
-      expect(project1.star_count).to eq(0)
-      expect(project2.star_count).to eq(0)
+      expect(project1.reload.star_count).to eq(0)
+      expect(project2.reload.star_count).to eq(0)
 
       user.toggle_star(project2)
-      project1.reload
-      project2.reload
-      expect(project1.star_count).to eq(0)
-      expect(project2.star_count).to eq(1)
+      expect(project1.reload.star_count).to eq(0)
+      expect(project2.reload.star_count).to eq(1)
 
       user.toggle_star(project2)
-      project1.reload
-      project2.reload
-      expect(project1.star_count).to eq(0)
-      expect(project2.star_count).to eq(0)
+      expect(project1.reload.star_count).to eq(0)
+      expect(project2.reload.star_count).to eq(0)
     end
 
     it 'is decremented when an upvoter account is deleted' do
       user = create :user
       project = create :project, :public
       user.toggle_star(project)
-      project.reload
-      expect(project.star_count).to eq(1)
+      expect(project.reload.star_count).to eq(1)
       user.destroy
-      project.reload
-      expect(project.star_count).to eq(0)
+      expect(project.reload.star_count).to eq(0)
     end
   end
 
