@@ -10,7 +10,6 @@ class @Notes
 
   constructor: (notes_url, note_ids, last_fetched_at, view) ->
     @notes_url = notes_url
-    @notes_url = gon.relative_url_root + @notes_url if gon.relative_url_root?
     @note_ids = note_ids
     @last_fetched_at = last_fetched_at
     @view = view
