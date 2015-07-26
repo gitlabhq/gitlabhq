@@ -3,10 +3,7 @@
     = note_target_fields(note)
     = render layout: 'projects/md_preview', locals: { preview_class: 'note-text' } do
       = render 'projects/zen', f: f, attr: :note, classes: 'note_text js-note-text js-task-list-field'
-
-      .comment-hints.clearfix
-        .pull-left #{link_to 'Markdown ', help_page_path('markdown', 'markdown'),{ target: '_blank', tabindex: -1 }}
-        .pull-right #{link_to 'Attach a file', '#', class: 'markdown-selector', tabindex: -1 }
+      = render 'projects/notes/hints'
 
     .note-form-actions
       .buttons
