@@ -8,13 +8,13 @@ Select a project on the right side of your screen:
 
 ![Select a project](basicsimages/select_project.png)
 
-[Create a branch](create-branch.md).
+It's a good idea to [create a branch](create-branch.md), but it's not necessary.
 
 Go to the directory where you'd like to add the file and click on the "+" sign next to the name of the project and directory:
 
 ![Create a file](basicsimages/create_file.png)
 
-Add a name to your file, use .md or .html at the end, depending on which markup language you'd like to use (you can't add spaces, so you can use hyphens or underscores):
+Name your file (you can't add spaces, so you can use hyphens or underscores). Don't forget to include the markup language you'd like to use :
 
 ![File name](basicsimages/file_name.png)
 
