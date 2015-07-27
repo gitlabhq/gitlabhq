@@ -356,7 +356,7 @@ class Note < ActiveRecord::Base
   end
 
   def set_references
-    notice_added_references(project, author)
+    create_new_cross_references!(project, author)
   end
 
   def editable?

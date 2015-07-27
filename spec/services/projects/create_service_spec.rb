@@ -58,9 +58,7 @@ describe Projects::CreateService do
 
     context 'restricted visibility level' do
       before do
-        allow_any_instance_of(ApplicationSetting).to(
-          receive(:restricted_visibility_levels).and_return([20])
-        )
+        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
 
         @opts.merge!(
           visibility_level: Gitlab::VisibilityLevel.options['Public']

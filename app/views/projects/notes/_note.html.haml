@@ -56,7 +56,7 @@
 
 
       .note-body{class: note_editable?(note) ? 'js-task-list-container' : ''}
-        = cache [note, 'markdown'] do
+        = cache [note, 'markdown', user_color_scheme_class] do
           .note-text
             = preserve do
               = markdown(note.note, {no_header_anchors: true})

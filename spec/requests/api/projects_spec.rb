@@ -89,7 +89,7 @@ describe API::API, api: true  do
 
         it 'returns projects in the correct order when ci_enabled_first parameter is passed' do
           [project, project2, project3].each{ |project| project.build_missing_services }
-          project2.gitlab_ci_service.update(active: true, token: "token", project_url: "url")
+          project2.gitlab_ci_service.update(active: true, token: "token", project_url: "http://ci.example.com/projects/1")
           get api('/projects', user), { ci_enabled_first: 'true' }
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
@@ -220,9 +220,7 @@ describe API::API, api: true  do
     context 'when a visibility level is restricted' do
       before do
         @project = attributes_for(:project, { public: true })
-        allow_any_instance_of(ApplicationSetting).to(
-          receive(:restricted_visibility_levels).and_return([20])
-        )
+        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
       end
 
       it 'should not allow a non-admin to use a restricted visibility level' do

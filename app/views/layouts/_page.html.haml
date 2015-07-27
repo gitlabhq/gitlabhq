@@ -1,6 +1,6 @@
 .page-with-sidebar{ class: nav_sidebar_class }
   = render "layouts/broadcast"
-  .sidebar-wrapper
+  .sidebar-wrapper.nicescroll
     - if defined?(sidebar) && sidebar
       = render "layouts/nav/#{sidebar}"
     - elsif current_user

@@ -17,6 +17,14 @@ pre {
     background: #333;
     color: $background-color;
   }
+
+  &.plain-readme {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+  }
 }
 
 .monospace {

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project' do
+feature 'Project', feature: true do
   describe 'description' do
     let(:project) { create(:project) }
     let(:path)    { namespace_project_path(project.namespace, project) }

@@ -1,4 +1,5 @@
 - page_title "Merge Requests"
+= render 'projects/last_push'
 .append-bottom-10
   .pull-right
     = render 'shared/issuable/search_form', path: namespace_project_merge_requests_path(@project.namespace, @project)

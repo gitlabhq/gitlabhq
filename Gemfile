@@ -46,7 +46,7 @@ gem "gitlab_git", '~> 7.2.5'
 gem 'gitlab-grack', '~> 2.0.2', require: 'grack'
 
 # LDAP Auth
-# GitLab fork with several improvements to original library. For full list of changes 
+# GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
 gem 'gitlab_omniauth-ldap', '1.2.1', require: "omniauth-ldap"
 
@@ -54,9 +54,9 @@ gem 'gitlab_omniauth-ldap', '1.2.1', require: "omniauth-ldap"
 gem 'gollum-lib', '~> 4.0.2'
 
 # Language detection
-# GitLab fork of linguist does not require pygments/python dependency. 
-# New version of original gem also dropped pygments support but it has strict 
-# dependency to unstable rugged version. We have internal issue for replacing 
+# GitLab fork of linguist does not require pygments/python dependency.
+# New version of original gem also dropped pygments support but it has strict
+# dependency to unstable rugged version. We have internal issue for replacing
 # fork with original gem when we meet on same rugged version - https://dev.gitlab.org/gitlab/gitlabhq/issues/2052.
 gem "gitlab-linguist", "~> 3.0.1", require: "linguist"
 
@@ -203,7 +203,7 @@ gem 'jquery-ui-rails'
 gem 'nprogress-rails'
 gem 'raphael-rails',      '~> 2.1.2'
 gem 'request_store'
-gem 'select2-rails'
+gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus'
 
 group :development do
@@ -227,22 +227,16 @@ end
 
 group :development, :test do
   gem 'awesome_print'
-  gem 'byebug'
+  gem 'byebug', platform: :mri
   gem 'fuubar', '~> 2.0.0'
   gem 'pry-rails'
 
-  gem 'coveralls', require: false
+  gem 'coveralls',        '~> 0.8.2', require: false
   gem 'database_cleaner', '~> 1.4.0'
   gem 'factory_girl_rails'
-  gem 'rspec-rails', '~> 3.3.0'
-  gem 'rubocop', '0.28.0', require: false
+  gem 'rspec-rails',      '~> 3.3.0'
+  gem 'rubocop',          '0.28.0',   require: false
   gem 'spinach-rails'
-
-  # rest-client is a coveralls dependency and not used directly in GitLab, but
-  # we specify a version here to pick up some security fixes.
-  # See https://github.com/rest-client/rest-client/issues/369
-  # and http://www.osvdb.org/show/osvdb/117461
-  gem 'rest-client', '~> 1.8.0'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.3.0'
@@ -250,7 +244,7 @@ group :development, :test do
   # Generate Fake data
   gem 'ffaker', '~> 2.0.0'
 
-  gem 'capybara',            '~> 2.3.0'
+  gem 'capybara',            '~> 2.4.0'
   gem 'capybara-screenshot', '~> 1.0.0'
   gem 'poltergeist',         '~> 1.6.0'
 

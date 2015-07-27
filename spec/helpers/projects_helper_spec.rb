@@ -8,4 +8,48 @@ describe ProjectsHelper do
       expect(project_status_css_class("finished")).to eq("success")
     end
   end
+
+  describe "can_change_visibility_level?" do
+    let(:project) { create(:project) }
+
+    let(:fork_project) do
+      fork_project = create(:forked_project_with_submodules)
+      fork_project.build_forked_project_link(forked_to_project_id: fork_project.id, forked_from_project_id: project.id)
+      fork_project.save
+
+      fork_project
+    end
+
+    let(:user) { create(:user) }
+
+    it "returns false if there are no approipriate permissions" do
+      allow(helper).to receive(:can?) { false }
+
+      expect(helper.can_change_visibility_level?(project, user)).to be_falsey
+    end
+
+    it "returns true if there are permissions and it is not fork" do
+      allow(helper).to receive(:can?) { true }
+
+      expect(helper.can_change_visibility_level?(project, user)).to be_truthy
+    end
+
+    context "forks" do
+      it "returns false if there are permissions and origin project is PRIVATE" do
+        allow(helper).to receive(:can?) { true }
+
+        project.update visibility_level:  Gitlab::VisibilityLevel::PRIVATE
+
+        expect(helper.can_change_visibility_level?(fork_project, user)).to be_falsey
+      end
+
+      it "returns true if there are permissions and origin project is INTERNAL" do
+        allow(helper).to receive(:can?) { true }
+
+        project.update visibility_level:  Gitlab::VisibilityLevel::INTERNAL
+
+        expect(helper.can_change_visibility_level?(fork_project, user)).to be_truthy
+      end
+    end
+  end
 end

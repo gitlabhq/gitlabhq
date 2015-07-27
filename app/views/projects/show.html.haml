@@ -6,11 +6,56 @@
   = render 'shared/no_ssh'
   = render 'shared/no_password'
 
-= render "home_panel"
-= render 'shared/show_aside'
+- if prefer_readme?
+  = render 'projects/last_push'
 
-.row
-  %section.col-md-8
-    = render 'section'
-  %aside.col-md-4.project-side
-    = render 'aside'
+= render "home_panel"
+
+.project-stats
+  %ul.nav.nav-pills
+    %li
+      = link_to namespace_project_commits_path(@project.namespace, @project, @ref || @repository.root_ref) do
+        = pluralize(number_with_delimiter(@project.commit_count), 'commit')
+    %li
+      = link_to namespace_project_branches_path(@project.namespace, @project) do
+        = pluralize(number_with_delimiter(@repository.branch_names.count), 'branch')
+    %li
+      = link_to namespace_project_tags_path(@project.namespace, @project) do
+        = pluralize(number_with_delimiter(@repository.tag_names.count), 'tag')
+    - if @repository.changelog
+      %li
+        = link_to changelog_url(@project) do
+          Changelog
+    - if @repository.license
+      %li
+        = link_to license_url(@project) do
+          License
+    - if @repository.contribution_guide
+      %li
+        = link_to contribution_guide_url(@project) do
+          Contribution guide
+
+- if @project.archived?
+  .text-warning.center.prepend-top-20
+    %p
+      = icon("exclamation-triangle fw")
+      Archived project! Repository is read-only
+
+%hr
+%section
+  - if prefer_readme?
+    = render 'projects/readme'
+  - else
+    = render 'projects/activity'
+
+
+- if current_user
+  - access = user_max_access_in_project(current_user, @project)
+  - if access
+    %hr
+    %p.light
+      You have #{access} access to this project.
+      - if @project.project_member_by_id(current_user)
+        = link_to leave_namespace_project_project_members_path(@project.namespace, @project),
+          data: { confirm: leave_project_message(@project) }, method: :delete, title: 'Leave project', class: 'cred' do
+          Leave this project

@@ -32,7 +32,7 @@ class Projects::BranchesController < Projects::ApplicationController
   end
 
   def destroy
-    DeleteBranchService.new(project, current_user).execute(params[:id])
+    status = DeleteBranchService.new(project, current_user).execute(params[:id])
     @branch_name = params[:id]
 
     respond_to do |format|
@@ -40,7 +40,7 @@ class Projects::BranchesController < Projects::ApplicationController
         redirect_to namespace_project_branches_path(@project.namespace,
                                                     @project)
       end
-      format.js
+      format.js { render status: status[:return_code] }
     end
   end
 end

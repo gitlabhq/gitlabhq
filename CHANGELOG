@@ -1,24 +1,39 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 7.14.0 (unreleased)
+  - Fix full screen mode for snippet comments (Daniel Gerhardt)
+  - Fix 404 error in files view after deleting the last file in a repository (Stan Hu)
+  - Fix label read access for unauthenticated users (Daniel Gerhardt)
+  - Fix access to disabled features for unauthenticated users (Daniel Gerhardt)
+  - Fix OAuth provider bug where GitLab would not go return to the redirect_uri after sign-in (Stan Hu)
+  - Fix file upload dialog for comment editing (Daniel Gerhardt)
+  - Set OmniAuth full_host parameter to ensure redirect URIs are correct (Stan Hu)
+  - Expire Rails cache entries after two weeks to prevent endless Redis growth
+  - Add support for destroying project milestones (Stan Hu)
+  - Add fetch command to the MR page.
+
 v 7.13.0 (unreleased)
+  - Remove repository graph log to fix slow cache updates after push event (Stan Hu)
+  - Only enable HSTS header for HTTPS and port 443 (Stan Hu)
+  - Fix user autocomplete for unauthenticated users accessing public projects (Stan Hu)
   - Fix redirection to home page URL for unauthorized users (Daniel Gerhardt)
+  - Add branch switching support for graphs (Daniel Gerhardt)
   - Fix external issue tracker hook/test for HTTPS URLs (Daniel Gerhardt)
   - Remove link leading to a 404 error in Deploy Keys page (Stan Hu)
   - Add support for unlocking users in admin settings (Stan Hu)
   - Add Irker service configuration options (Stan Hu)
-  - Fix order of issues imported form GitHub (Hiroyuki Sato)
+  - Fix order of issues imported from GitHub (Hiroyuki Sato)
   - Bump rugments to 1.0.0beta8 to fix C prototype function highlighting (Jonathon Reinhart)
   - Fix Merge Request webhook to properly fire "merge" action when accepted from the web UI
   - Add `two_factor_enabled` field to admin user API (Stan Hu)
   - Fix invalid timestamps in RSS feeds (Rowan Wookey)
-  - Fix error when deleting a user who has projects (Stan Hu)
   - Fix downloading of patches on public merge requests when user logged out (Stan Hu)
-  - The password for the default administrator (root) account has been changed from "5iveL!fe" to "password".
   - Fix Error 500 when relative submodule resolves to a namespace that has a different name from its path (Stan Hu)
   - Extract the longest-matching ref from a commit path when multiple matches occur (Stan Hu)
   - Update maintenance documentation to explain no need to recompile asssets for omnibus installations (Stan Hu)
   - Support commenting on diffs in side-by-side mode (Stan Hu)
   - Fix JavaScript error when clicking on the comment button on a diff line that has a comment already (Stan Hu)
+  - Return 40x error codes if branch could not be deleted in UI (Stan Hu)
   - Remove project visibility icons from dashboard projects list
   - Rename "Design" profile settings page to "Preferences".
   - Allow users to customize their default Dashboard page.
@@ -38,11 +53,21 @@ v 7.13.0 (unreleased)
   - Query Optimization in MySQL.
   - Allow users to be blocked and unblocked via the API
   - Allow custom backup archive permissions
+  - Use native Postgres database cleaning during backup restore
+  - Redesign project page. Show README as default instead of activity. Move project activity to separate page
+  - Make left menu more hierarchical and less contextual by adding back item at top
+  - A fork can’t have a visibility level that is greater than the original project.
+  - Faster code search in repository and wiki. Fixes search page timeout for big repositories 
+  - Allow administrators to disable 2FA for a specific user
+  - Add error message for SSH key linebreaks
+  - Store commits count in database (will populate with valid values only after first push)
+  - Rebuild cache after push to repository in background job
 
 v 7.12.2
   - Correctly show anonymous authorized applications under Profile > Applications.
   - Faster automerge check and merge itself when source and target branches are in same repository
   - Audit log for user authentication
+  - Fix transferring of project to another group using the API.
 
 v 7.12.1
   - Fix error when deleting a user who has projects (Stan Hu)
@@ -52,6 +77,8 @@ v 7.12.1
   - Fix closed merge request scope at milestone page (Dmitriy Zaporozhets)
   - Revert merge request states renaming 
   - Fix hooks for web based events with external issue references (Daniel Gerhardt)
+  - Improve performance for issue and merge request pages
+  - Compress database dumps to reduce backup size
 
 v 7.12.0
   - Fix Error 500 when one user attempts to access a personal, internal snippet (Stan Hu)
@@ -110,6 +137,7 @@ v 7.12.0
   - Improve group removing logic
   - Trigger create-hooks on backup restore task
   - Add option to automatically link omniauth and LDAP identities
+  - Allow special character in users bio. I.e.: I <3 GitLab
 
 v 7.11.4
   - Fix missing bullets when creating lists
@@ -128,9 +156,6 @@ v 7.11.1
 v 7.11.0
   - Fall back to Plaintext when Syntaxhighlighting doesn't work. Fixes some buggy lexers (Hannes Rosenögger)
   - Get editing comments to work in Chrome 43 again.
-  - Allow special character in users bio. I.e.: I <3 GitLab
-
-v 7.11.0
   - Fix broken view when viewing history of a file that includes a path that used to be another file (Stan Hu)
   - Don't show duplicate deploy keys
   - Fix commit time being displayed in the wrong timezone in some cases (Hannes Rosenögger)

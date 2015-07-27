@@ -14,6 +14,10 @@
 #
 
 class Milestone < ActiveRecord::Base
+  # Represents a "No Milestone" state used for filtering Issues and Merge
+  # Requests that have no milestone assigned.
+  None = Struct.new(:title).new('No Milestone')
+
   include InternalId
   include Sortable
 

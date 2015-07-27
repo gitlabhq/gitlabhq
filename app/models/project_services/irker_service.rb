@@ -63,7 +63,7 @@ class IrkerService < Service
         help: 'Irker daemon hostname (defaults to localhost)' },
       { type: 'text', name: 'server_port', placeholder: 6659,
         help: 'Irker daemon port (defaults to 6659)' },
-      { type: 'text', name: 'default_irc_uri',
+      { type: 'text', name: 'default_irc_uri', title: 'Default IRC URI',
         help: 'A default IRC URI to prepend before each recipient (optional)',
         placeholder: 'irc://irc.network.net:6697/' },
       { type: 'textarea', name: 'recipients',

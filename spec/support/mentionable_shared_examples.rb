@@ -143,6 +143,6 @@ shared_examples 'an editable mentionable' do
     end
 
     set_mentionable_text.call(new_text)
-    subject.notice_added_references(project, author)
+    subject.create_new_cross_references!(project, author)
   end
 end

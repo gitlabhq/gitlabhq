@@ -44,20 +44,18 @@
   .project-home-panel {
     padding-left: 0 !important;
 
-    .project-home-row {
-      .project-home-desc {
-        margin-right: 0 !important;
-        float: none !important;
-      }
-
-      .project-repo-buttons {
-        position: static;
-        margin-top: 15px;
-        width: 100%;
-        float: none;
-        text-align: left;
-      }
+    .project-avatar {
+      display: block;
     }
+
+    .project-repo-buttons,
+    .git-clone-holder {
+      display: none;
+    }
+  }
+
+  .project-stats {
+    display: none;
   }
 
   .container .title {

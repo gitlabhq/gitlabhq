@@ -4,30 +4,30 @@
 
 = render "home_panel"
 
-.center.well
-  %h3
+.center.light-well
+  %h3.page-title
     The repository for this project is empty
-  %h4
-    You can
-    = link_to namespace_project_new_blob_path(@project.namespace, @project, 'master'), class: 'btn btn-new btn-lg' do
-      add a file
-    &nbsp;or do a push via the command line.
+  %p
+    If you already have files you can push them using command line instructions below.
+    %br
+    Otherwise you can start with
+    = link_to "adding README", new_readme_path, class: 'underlined-link'
+    file to this project.
 
-.well
-  = render "shared/clone_panel"
-%h4
-  %strong Command line instructions
+.prepend-top-20
+%h3.page-title
+  Command line instructions
 %div.git-empty
   %fieldset
-    %legend Git global setup
-    %pre.dark
+    %h5 Git global setup
+    %pre.light-well
       :preserve
         git config --global user.name "#{git_user_name}"
         git config --global user.email "#{git_user_email}"
 
   %fieldset
-    %legend Create a new repository
-    %pre.dark
+    %h5 Create a new repository
+    %pre.light-well
       :preserve
         git clone #{ content_tag(:span, default_url_to_repo, class: 'clone')}
         cd #{@project.path}
@@ -37,8 +37,8 @@
         git push -u origin master
 
   %fieldset
-    %legend Existing folder or Git repository
-    %pre.dark
+    %h5 Existing folder or Git repository
+    %pre.light-well
       :preserve
         cd existing_folder
         git init

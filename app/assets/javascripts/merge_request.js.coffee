@@ -15,9 +15,7 @@ class @MergeRequest
     this.$('.show-all-commits').on 'click', =>
       this.showAllCommits()
 
-    # `MergeRequests#new` has no tab-persisting or lazy-loading behavior
-    unless @opts.action == 'new'
-      new MergeRequestTabs(@opts)
+    @initTabs()
 
     # Prevent duplicate event bindings
     @disableTaskList()
@@ -28,6 +26,14 @@ class @MergeRequest
   # Local jQuery finder
   $: (selector) ->
     this.$el.find(selector)
+
+  initTabs: ->
+    if @opts.action != 'new'
+      # `MergeRequests#new` has no tab-persisting or lazy-loading behavior
+      new MergeRequestTabs(@opts)
+    else
+      # Show the first tab (Commits)
+      $('.merge-request-tabs a[data-toggle="tab"]:first').tab('show')
 
   showAllCommits: ->
     this.$('.first-commits').remove()

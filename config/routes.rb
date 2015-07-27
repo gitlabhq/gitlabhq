@@ -159,6 +159,7 @@ Gitlab::Application.routes.draw do
         put :block
         put :unblock
         put :unlock
+        patch :disable_two_factor
         delete 'remove/:email_id', action: 'remove_email', as: 'remove_email'
       end
     end
@@ -314,6 +315,7 @@ Gitlab::Application.routes.draw do
         post :toggle_star
         post :markdown_preview
         get :autocomplete_sources
+        get :activity
       end
 
       scope module: :projects do
@@ -479,7 +481,7 @@ Gitlab::Application.routes.draw do
           end
         end
 
-        resources :milestones, except: [:destroy], constraints: { id: /\d+/ } do
+        resources :milestones, constraints: { id: /\d+/ } do
           member do
             put :sort_issues
             put :sort_merge_requests
