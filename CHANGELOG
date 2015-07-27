@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.14.0 (unreleased)
+  - Fix the image file that contains non-ascii character is not displayed(Hiroyuki Sato)
   - Fix URL used for refreshing notes if relative_url is present (Bartłomiej Święcki)
   - Fix Error 500 when browsing projects with no HEAD (Stan Hu)
   - Fix full screen mode for snippet comments (Daniel Gerhardt)
