@@ -21,6 +21,8 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   def create
+    return render_403 unless can?(current_user, :admin_group_member, @group)
+
     @group.add_users(params[:user_ids].split(','), params[:access_level], current_user)
 
     redirect_to group_group_members_path(@group), notice: 'Users were successfully added.'
@@ -28,6 +30,9 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   def update
     @member = @group.group_members.find(params[:id])
+
+    return render_403 unless can?(current_user, :update_group_member, @member)
+
     @member.update_attributes(member_params)
   end
 
@@ -46,6 +51,8 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   def resend_invite
+    return render_403 unless can?(current_user, :admin_group_member, @group)
+
     redirect_path = group_group_members_path(@group)
 
     @group_member = @group.group_members.find(params[:id])

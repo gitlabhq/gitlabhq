@@ -24,7 +24,7 @@
           = link_to member.created_by.name, user_path(member.created_by)
         = time_ago_with_tooltip(member.created_at)
 
-      - if show_controls && can?(current_user, :admin_group, @group)
+      - if show_controls && can?(current_user, :admin_group_member, member)
         = link_to resend_invite_group_group_member_path(@group, member), method: :post, class: "btn-xs btn", title: 'Resend invite' do
           Resend invite
 

@@ -233,7 +233,8 @@ class Ability
       if group.has_owner?(user) || user.admin?
         rules.push(*[
           :admin_group,
-          :admin_namespace
+          :admin_namespace,
+          :admin_group_member
         ])
       end
 
@@ -295,7 +296,7 @@ class Ability
       rules = []
       target_user = subject.user
       group = subject.group
-      can_manage = group_abilities(user, group).include?(:admin_group)
+      can_manage = group_abilities(user, group).include?(:admin_group_member)
 
       if can_manage && (user != target_user)
         rules << :update_group_member
