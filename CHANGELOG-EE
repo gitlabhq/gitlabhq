@@ -1,3 +1,6 @@
+v 7.14
+  - Disable adding, updating and removing members from a group that is synced with LDAP
+
 v 7.13.2
   - Fix group web hook
 

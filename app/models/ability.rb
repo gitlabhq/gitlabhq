@@ -250,6 +250,10 @@ class Ability
           :admin_group,
           :admin_namespace
         ])
+
+        unless group.ldap_synced?
+          rules << :admin_group_member
+        end
       end
 
       rules.flatten
@@ -310,7 +314,7 @@ class Ability
       rules = []
       target_user = subject.user
       group = subject.group
-      can_manage = group_abilities(user, group).include?(:admin_group)
+      can_manage = group_abilities(user, group).include?(:admin_group_member)
 
       if can_manage && (user != target_user)
         rules << :update_group_member
