@@ -181,8 +181,8 @@ describe MergeRequest do
     it "returns correct value" do
       user = create(:user)
       user1 = create(:user)
-      merge_request.target_project.approvers.create(user_id: user.id)
-      merge_request.target_project.approvers.create(user_id: user1.id)
+      merge_request.approvers.create(user_id: user.id)
+      merge_request.approvers.create(user_id: user1.id)
       merge_request.approvals.create(user_id: user1.id)
 
       expect(merge_request.approvers_left).to eq [user]

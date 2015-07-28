@@ -255,6 +255,13 @@ Feature: Project Merge Requests
     When I should not see Approve button
     And I should see message that MR require an approval
 
+  Scenario: I see suggested approvers on new merge request form
+    Given project settings contain list of approvers
+    When I click link "New Merge Request"
+    And I select "fix" as source
+    Then I see suggested approver
+    
+
   Scenario: I should see rebase checkbox
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And rebase before merge enabled
