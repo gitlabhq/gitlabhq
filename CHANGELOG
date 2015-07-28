@@ -9,6 +9,18 @@ v 7.13.2
   - Show the first tab automatically on MergeRequests#new
   - Add rake task 'gitlab:update_commit_count' (Daniel Gerhardt)
   - Fix Gmail Actions
+  - Fix full screen mode for snippet comments (Daniel Gerhardt)
+  - Fix 404 error in files view after deleting the last file in a repository (Stan Hu)
+  - Fix the "Reload with full diff" URL button (Stan Hu)
+  - Fix label read access for unauthenticated users (Daniel Gerhardt)
+  - Fix access to disabled features for unauthenticated users (Daniel Gerhardt)
+  - Fix OAuth provider bug where GitLab would not go return to the redirect_uri after sign-in (Stan Hu)
+  - Fix file upload dialog for comment editing (Daniel Gerhardt)
+  - Set OmniAuth full_host parameter to ensure redirect URIs are correct (Stan Hu)
+  - Expire Rails cache entries after two weeks to prevent endless Redis growth
+  - Add support for destroying project milestones (Stan Hu)
+  - Add fetch command to the MR page
+  - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
 
 v 7.13.1
   - Fix: Label modifications are not reflected in existing notes and in the issue list
