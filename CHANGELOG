@@ -1,19 +1,14 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 7.14.0 (unreleased)
+v 7.13.2
+  - Fix randomly failed spec
+  - Create project services on Project creation
+  - Add admin_merge_request ability to Developer level and up
   - Fix Error 500 when browsing projects with no HEAD (Stan Hu)
+  - Fix labels / assignee / milestone for the merge requests when issues are disabled
+  - Show the first tab automatically on MergeRequests#new
   - Add rake task 'gitlab:update_commit_count' (Daniel Gerhardt)
-  - Fix full screen mode for snippet comments (Daniel Gerhardt)
-  - Fix 404 error in files view after deleting the last file in a repository (Stan Hu)
-  - Fix label read access for unauthenticated users (Daniel Gerhardt)
-  - Fix access to disabled features for unauthenticated users (Daniel Gerhardt)
-  - Fix OAuth provider bug where GitLab would not go return to the redirect_uri after sign-in (Stan Hu)
-  - Fix file upload dialog for comment editing (Daniel Gerhardt)
-  - Set OmniAuth full_host parameter to ensure redirect URIs are correct (Stan Hu)
-  - Expire Rails cache entries after two weeks to prevent endless Redis growth
-  - Add support for destroying project milestones (Stan Hu)
-  - Add fetch command to the MR page.
-  - Fix bug causing "Remove source-branch" option not to work for merge requests from the same project.
+  - Fix Gmail Actions
 
 v 7.13.1
   - Fix: Label modifications are not reflected in existing notes and in the issue list
@@ -24,6 +19,7 @@ v 7.13.1
   - Fix: ActionView::Template::Error
   - Fix: "Create Merge Request" isn't always shown in event for newly pushed branch
   - Fix bug causing "Remove source-branch" option not to work for merge requests from the same project.
+  - Render Note field hints consistently for "new" and "edit" forms
 
 v 7.13.0
   - Remove repository graph log to fix slow cache updates after push event (Stan Hu)
