@@ -30,7 +30,6 @@ v 7.13.1
 
 v 7.13.0
   - Remove repository graph log to fix slow cache updates after push event (Stan Hu)
-v 7.13.0 (unreleased)
   - Return comments in created order in merge request API (Stan Hu)
   - Only enable HSTS header for HTTPS and port 443 (Stan Hu)
   - Fix user autocomplete for unauthenticated users accessing public projects (Stan Hu)
