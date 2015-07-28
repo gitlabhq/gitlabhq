@@ -28,7 +28,7 @@ module Grack
       if project && authorized_request?
         if ENV['GITLAB_GRACK_AUTH_ONLY'] == '1'
           # Tell gitlab-git-http-server the request is OK, and what the GL_ID is
-          [200, { "Content-Type" => "text/plain" }, [Gitlab::ShellEnv.gl_id(@user)]]
+          render_grack_auth_ok
         else
           @app.call(env)
         end
@@ -177,6 +177,15 @@ module Grack
         path_with_namespace[0] = '' if path_with_namespace.start_with?('/')
         Project.find_with_namespace(path_with_namespace)
       end
+    end
+
+    def render_grack_auth_ok
+      if @user.present?
+        body = Gitlab::ShellEnv.gl_id(@user)
+      else
+        body = ''
+      end
+      [200, { "Content-Type" => "text/plain" }, [body]]
     end
 
     def render_not_found
