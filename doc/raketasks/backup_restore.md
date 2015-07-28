@@ -9,6 +9,13 @@ This archive will be saved in backup_path (see `config/gitlab.yml`).
 The filename will be `[TIMESTAMP]_gitlab_backup.tar`. This timestamp can be used to restore an specific backup.
 You can only restore a backup to exactly the same version of GitLab that you created it on, for example 7.2.1.
 
+You need to keep a separate copy of `/etc/gitlab/gitlab-secrets.json`
+(for omnibus packages) or `/home/git/gitlab/.secret` (for installations
+from source). This file contains the database encryption key used
+for two-factor authentication. If you restore a GitLab backup without
+restoring the database encryption key, users who have two-factor
+authentication enabled will loose access to your GitLab server.
+
 If you are interested in GitLab CI backup please follow to the [CI backup documentation](https://gitlab.com/gitlab-org/gitlab-ci/blob/master/doc/raketasks/backup_restore.md)*
 
 ```
@@ -143,14 +150,38 @@ with the name of your bucket:
 
 ## Storing configuration files
 
-Please be informed that a backup does not store your configuration files.
+Please be informed that a backup does not store your configuration
+files.  One reason for this is that your database contains encrypted
+information for two-factor authentication.  Storing encrypted
+information along with its key in the same place defeats the purpose
+of using encryption in the first place!
+
 If you use an Omnibus package please see the [instructions in the readme to backup your configuration](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#backup-and-restore-omnibus-gitlab-configuration).
 If you have a cookbook installation there should be a copy of your configuration in Chef.
-If you have an installation from source, please consider backing up your `gitlab.yml` file, any SSL keys and certificates, and your [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
+If you have an installation from source, please consider backing up your `.secret` file, `gitlab.yml` file, any SSL keys and certificates, and your [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
+
+At the very **minimum** you should backup `/etc/gitlab/gitlab-secrets.json`
+(Omnibus) or `/home/git/gitlab/.secret` (source) to preserve your
+database encryption key.
 
 ## Restore a previously created backup
 
 You can only restore a backup to exactly the same version of GitLab that you created it on, for example 7.2.1.
+
+### Prerequisites
+
+You need to have a working GitLab installation before you can perform
+a restore. This is mainly because the system user performing the
+restore actions ('git') is usually not allowed to create or delete
+the SQL database it needs to import data into ('gitlabhq_production').
+All existing data will be either erased (SQL) or moved to a separate
+directory (repositories, uploads).
+
+If some or all of your GitLab users are using two-factor authentication
+(2FA) then you must also make sure to restore
+`/etc/gitlab/gitlab-secrets.json` (Omnibus) or `/home/git/gitlab/.secret`
+(installations from source). Note that you need to run `gitlab-ctl
+reconfigure` after changing `gitlab-secrets.json`.
 
 ### Installation from source
 

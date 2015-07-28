@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150713160110) do
+ActiveRecord::Schema.define(version: 20150717155058) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,6 +56,17 @@ ActiveRecord::Schema.define(version: 20150713160110) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "approvers", force: true do |t|
+    t.integer  "target_id",   null: false
+    t.string   "target_type"
+    t.integer  "user_id",     null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "approvers", ["target_id", "target_type"], name: "index_approvers_on_target_id_and_target_type", using: :btree
+  add_index "approvers", ["user_id"], name: "index_approvers_on_user_id", using: :btree
 
   create_table "audit_events", force: true do |t|
     t.integer  "author_id",   null: false
@@ -443,7 +454,8 @@ ActiveRecord::Schema.define(version: 20150713160110) do
     t.string   "import_source"
     t.boolean  "merge_requests_rebase_default", default: true
     t.integer  "approvals_before_merge",        default: 0,        null: false
-    t.boolean  "reset_approvers_on_push",       default: true
+    t.boolean  "reset_approvals_on_push",       default: true
+    t.integer  "commit_count",                  default: 0
   end
 
   add_index "projects", ["created_at", "id"], name: "index_projects_on_created_at_and_id", using: :btree

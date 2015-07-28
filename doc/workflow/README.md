@@ -1,6 +1,5 @@
 # Workflow
 
-- [Approval for merge requests](approval_for_merge_requests.md)
 - [Authorization for merge requests](authorization_for_merge_requests.md)
 - [Change your time zone](timezone.md)
 - [Feature branch workflow](workflow.md)
@@ -10,7 +9,8 @@
 - [Keyboard shortcuts](shortcuts.md)
 - [Labels](labels.md)
 - [Manage large binaries with git annex](git_annex.md)
-- [Notifications](notifications.md)
+- [Merge Request Approvals](merge_request_approvals.md)
+- [Notification emails](notifications.md)
 - [Project Features](project_features.md)
 - [Project forking workflow](forking_workflow.md)
 - [Protected branches](protected_branches.md)

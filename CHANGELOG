@@ -1,6 +1,24 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 7.14.0 (unreleased)
+  - Fix full screen mode for snippet comments (Daniel Gerhardt)
+  - Fix 404 error in files view after deleting the last file in a repository (Stan Hu)
+  - Fix label read access for unauthenticated users (Daniel Gerhardt)
+  - Fix access to disabled features for unauthenticated users (Daniel Gerhardt)
+  - Fix OAuth provider bug where GitLab would not go return to the redirect_uri after sign-in (Stan Hu)
+  - Fix file upload dialog for comment editing (Daniel Gerhardt)
+  - Set OmniAuth full_host parameter to ensure redirect URIs are correct (Stan Hu)
+  - Expire Rails cache entries after two weeks to prevent endless Redis growth
+  - Add support for destroying project milestones (Stan Hu)
+  - Add fetch command to the MR page.
+  - Fix bug causing "Remove source-branch" option not to work for merge requests from the same project.
+
+v 7.13.1
+  - Revert issue caching
+  - Reverted cache for events
+
 v 7.13.0 (unreleased)
+  - Remove repository graph log to fix slow cache updates after push event (Stan Hu)
   - Only enable HSTS header for HTTPS and port 443 (Stan Hu)
   - Fix user autocomplete for unauthenticated users accessing public projects (Stan Hu)
   - Fix redirection to home page URL for unauthorized users (Daniel Gerhardt)
@@ -15,7 +33,6 @@ v 7.13.0 (unreleased)
   - Add `two_factor_enabled` field to admin user API (Stan Hu)
   - Fix invalid timestamps in RSS feeds (Rowan Wookey)
   - Fix downloading of patches on public merge requests when user logged out (Stan Hu)
-  - The password for the default administrator (root) account has been changed from "5iveL!fe" to "password".
   - Fix Error 500 when relative submodule resolves to a namespace that has a different name from its path (Stan Hu)
   - Extract the longest-matching ref from a commit path when multiple matches occur (Stan Hu)
   - Update maintenance documentation to explain no need to recompile asssets for omnibus installations (Stan Hu)
@@ -47,6 +64,8 @@ v 7.13.0 (unreleased)
   - Faster code search in repository and wiki. Fixes search page timeout for big repositories 
   - Allow administrators to disable 2FA for a specific user
   - Add error message for SSH key linebreaks
+  - Store commits count in database (will populate with valid values only after first push)
+  - Rebuild cache after push to repository in background job
 
 v 7.12.2
   - Correctly show anonymous authorized applications under Profile > Applications.
@@ -122,6 +141,7 @@ v 7.12.0
   - Improve group removing logic
   - Trigger create-hooks on backup restore task
   - Add option to automatically link omniauth and LDAP identities
+  - Allow special character in users bio. I.e.: I <3 GitLab
 
 v 7.11.4
   - Fix missing bullets when creating lists
@@ -140,9 +160,6 @@ v 7.11.1
 v 7.11.0
   - Fall back to Plaintext when Syntaxhighlighting doesn't work. Fixes some buggy lexers (Hannes Rosenögger)
   - Get editing comments to work in Chrome 43 again.
-  - Allow special character in users bio. I.e.: I <3 GitLab
-
-v 7.11.0
   - Fix broken view when viewing history of a file that includes a path that used to be another file (Stan Hu)
   - Don't show duplicate deploy keys
   - Fix commit time being displayed in the wrong timezone in some cases (Hannes Rosenögger)

@@ -298,7 +298,7 @@ class @Notes
     note.find(".note-header").hide()
     base_form = note.find(".note-edit-form")
     form = base_form.clone().insertAfter(base_form)
-    form.addClass('current-note-edit-form')
+    form.addClass('current-note-edit-form gfm-form')
     form.find('.div-dropzone').remove()
 
     # Show the attachment delete link

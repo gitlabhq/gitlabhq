@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
-  prepend_before_action :render_go_import, only: [:show]
-  skip_before_action :authenticate_user!, only: [:show]
+  prepend_before_filter :render_go_import, only: [:show]
+  skip_before_action :authenticate_user!, only: [:show, :activity]
   before_action :project, except: [:new, :create]
   before_action :repository, except: [:new, :create]
 
@@ -195,7 +195,7 @@ class ProjectsController < ApplicationController
       :issues_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id, :default_branch,
       :wiki_enabled, :merge_requests_template, :visibility_level, :merge_requests_rebase_enabled,
       :import_url, :last_activity_at, :namespace_id, :avatar, :merge_requests_rebase_default,
-      :approvals_before_merge
+      :approvals_before_merge, :approver_ids
     )
   end
 

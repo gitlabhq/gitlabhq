@@ -13,4 +13,9 @@ function entrypoint() {
     gitlab-ctl tail # tail all logs
 }
 
+if [[ ! -e /etc/gitlab/gitlab.rb ]]; then
+	cp /assets/gitlab.rb /etc/gitlab/gitlab.rb
+	chmod 0600 /etc/gitlab/gitlab.rb
+fi
+
 entrypoint

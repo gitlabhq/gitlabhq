@@ -74,7 +74,7 @@ module MergeRequests
     # Reset approvals for merge request
     # Note: we should reset approvals for merge requests from forks too
     def reset_approvals_for_merge_requests
-      if @project.approvals_before_merge.nonzero? && @project.reset_approvers_on_push
+      if @project.approvals_before_merge.nonzero? && @project.reset_approvals_on_push
         merge_requests = @project.merge_requests.opened.where(source_branch: @branch_name).to_a
         merge_requests += @fork_merge_requests.where(source_branch: @branch_name).to_a
         merge_requests = filter_merge_requests(merge_requests)

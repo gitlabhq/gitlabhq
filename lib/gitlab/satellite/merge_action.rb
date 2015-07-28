@@ -187,7 +187,7 @@ module Gitlab
       end
 
       def remove_source_branch(repo)
-        if merge_request.should_remove_source_branch && !project.root_ref?(merge_request.source_branch) && !merge_request.for_fork?
+        if merge_request.remove_source_branch?
           # will raise CommandFailed when push fails
           repo.git.push(default_options, :origin, ":#{merge_request.source_branch}")
         end

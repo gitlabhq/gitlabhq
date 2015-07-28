@@ -7,13 +7,15 @@ class Projects::TreeController < Projects::ApplicationController
   before_action :authorize_download_code!
 
   def show
+    return not_found! unless @repository.commit(@ref)
+
     if tree.entries.empty?
       if @repository.blob_at(@commit.id, @path)
         redirect_to(
           namespace_project_blob_path(@project.namespace, @project,
                                       File.join(@ref, @path))
         ) and return
-      else
+      elsif @path.present?
         return not_found!
       end
     end

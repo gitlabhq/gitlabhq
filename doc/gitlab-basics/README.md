@@ -13,3 +13,7 @@ Step-by-step guides on the basics of working with Git and GitLab.
 * [Create a project](create-project.md)
 
 * [Create a group](create-group.md)
+
+* [Create a branch](create-branch.md)
+
+* [Fork a project](fork-project.md)

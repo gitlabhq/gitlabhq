@@ -240,6 +240,21 @@ Feature: Project Merge Requests
     When I click link "Approve"
     Then I should see approved merge request "Bug NS-04"
 
+  Scenario: I approve merge request if I am an approver
+    Given merge request 'Bug NS-04' must be approved by current user
+    And I click link "Bug NS-04"
+    And I should not see merge button
+    And I should see message that MR require an approval from me
+    When I click link "Approve"
+    Then I should see approved merge request "Bug NS-04"
+
+  Scenario: I can not approve merge request if I am not an approver
+    Given merge request 'Bug NS-04' must be approved by some user
+    And I click link "Bug NS-04"
+    And I should not see merge button
+    When I should not see Approve button
+    And I should see message that MR require an approval
+
   Scenario: I should see rebase checkbox
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And rebase before merge enabled

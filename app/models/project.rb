@@ -117,6 +117,7 @@ class Project < ActiveRecord::Base
   has_many :deploy_keys, through: :deploy_keys_projects
   has_many :users_star_projects, dependent: :destroy
   has_many :starrers, through: :users_star_projects, source: :user
+  has_many :approvers, as: :target, dependent: :destroy
 
   has_many :project_group_links, dependent: :destroy
   has_many :invited_groups, through: :project_group_links, source: :group
@@ -511,7 +512,7 @@ class Project < ActiveRecord::Base
     end
     if group
       group.hooks.send(hooks_scope).each do |hook|
-        hook.async_execute(data)
+        hook.async_execute(data, hooks_scope.to_s)
       end
     end
   end
@@ -702,6 +703,10 @@ class Project < ActiveRecord::Base
     update_attribute(:repository_size, repository.size)
   end
 
+  def update_commit_count
+    update_attribute(:commit_count, repository.commit_count)
+  end
+
   def forks_count
     ForkedProjectLink.where(forked_from_project_id: self.id).count
   end
@@ -759,5 +764,11 @@ class Project < ActiveRecord::Base
 
   def jira_tracker_active?
     jira_tracker? && jira_service.active
+  end
+
+  def approver_ids=(value)
+    value.split(",").map(&:strip).each do |user_id|
+      approvers.find_or_create_by(user_id: user_id, target_id: id)
+    end
   end
 end
