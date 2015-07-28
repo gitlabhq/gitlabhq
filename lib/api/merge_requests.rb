@@ -229,7 +229,7 @@ module API
 
         authorize! :read_merge_request, merge_request
 
-        present paginate(merge_request.notes), with: Entities::MRNote
+        present paginate(merge_request.notes.fresh), with: Entities::MRNote
       end
 
       # Post comment to merge request
