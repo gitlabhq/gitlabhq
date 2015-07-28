@@ -16,6 +16,8 @@ describe AdminEmailsWorker do
 
     it "sends email to subscribed users" do
       AdminEmailsWorker.new.perform(recipient_id, 'subject', 'body')
+      expect(Sidekiq::Extensions::DelayedMailer.jobs.count).to eql 2
+      Sidekiq::Extensions::DelayedMailer.drain
       expect(ActionMailer::Base.deliveries.count).to eql 2
     end
   end
