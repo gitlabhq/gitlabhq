@@ -12,6 +12,8 @@ v 7.14.0 (unreleased)
   - Add support for destroying project milestones (Stan Hu)
   - Add fetch command to the MR page.
   - Fix bug causing "Remove source-branch" option not to work for merge requests from the same project.
+  - Fix approvals for forks. Now you can change approvals settings on the new merge request form
+  - Suggested approvers are shown on the new merge request form
 
 v 7.13.1
   - Revert issue caching
