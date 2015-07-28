@@ -180,13 +180,7 @@ module Grack
     end
 
     def render_grack_auth_ok
-      if @user.present?
-        gl_id = Gitlab::ShellEnv.gl_id(@user)
-      else
-        gl_id = ''
-      end
-
-      [200, { "Content-Type" => "application/json" }, [JSON.dump({'GL_ID' => gl_id})]]
+      [200, { "Content-Type" => "application/json" }, [JSON.dump({ 'GL_ID' => Gitlab::ShellEnv.gl_id(@user) })]]
     end
 
     def render_not_found

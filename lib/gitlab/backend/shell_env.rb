@@ -17,7 +17,12 @@ module Gitlab
     end
 
     def gl_id(user)
-      "user-#{user.id}"
+      if user.present?
+        "user-#{user.id}"
+      else
+        # This empty string is used in the render_grack_auth_ok method
+        ""
+      end
     end
   end
 end
