@@ -79,11 +79,7 @@ class ProjectsController < ApplicationController
     respond_to do |format|
       format.html do
         if @project.repository_exists?
-          if @project.empty_repo?
-            render 'projects/empty'
-          else
-            render :show
-          end
+          @project.empty_repo? ? render 'projects/empty' : render :show
         else
           render 'projects/no_repo'
         end
