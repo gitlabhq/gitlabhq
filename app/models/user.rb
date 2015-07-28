@@ -637,6 +637,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def web_url
+    [gitlab_config.url, "u", self.username].join('/')
+  end
+
   def all_emails
     [self.email, *self.emails.map(&:email)]
   end

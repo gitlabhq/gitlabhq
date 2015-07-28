@@ -17,6 +17,7 @@ require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class Group < Namespace
+  include Gitlab::ConfigHelper
   include Referable
 
   has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
@@ -54,6 +55,16 @@ class Group < Namespace
 
   def human_name
     name
+  end
+
+  def avatar_url(size = nil)
+    if avatar.present?
+      [gitlab_config.url, avatar.url].join
+    end
+  end
+
+  def web_url
+    [gitlab_config.url, "groups", self.path].join('/')
   end
 
   def owners

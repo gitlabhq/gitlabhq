@@ -5,7 +5,7 @@ module API
     end
 
     class UserBasic < UserSafe
-      expose :id, :state, :avatar_url
+      expose :id, :state, :avatar_url, :web_url
     end
 
     class User < UserBasic
@@ -59,6 +59,7 @@ module API
       expose :namespace
       expose :forked_from_project, using: Entities::ForkedFromProject, if: lambda{ | project, options | project.forked? }
       expose :avatar_url
+      expose :star_count, :forks_count
     end
 
     class ProjectMember < UserBasic
@@ -69,6 +70,7 @@ module API
 
     class Group < Grape::Entity
       expose :id, :name, :path, :description
+      expose :avatar_url, :web_url
     end
 
     class GroupDetail < Group
