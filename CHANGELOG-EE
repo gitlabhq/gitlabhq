@@ -1,5 +1,6 @@
 v 7.13.2
   - Fix group web hook
+  - Don't resend admin email to everyone if one delivery fails
 
 v 7.13.1
   - Merge community edition changes for version 7.13.1
