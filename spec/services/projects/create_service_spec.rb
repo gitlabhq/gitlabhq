@@ -4,11 +4,17 @@ describe Projects::CreateService do
   describe :create_by_user do
     before do
       @user = create :user
-      @admin = create :user, admin: true
       @opts = {
         name: "GitLab",
         namespace: @user.namespace
       }
+    end
+
+    it 'creates services on Project creation' do
+      project = create_project(@user, @opts)
+      project.reload
+
+      expect(project.services).not_to be_empty
     end
 
     context 'user namespace' do
@@ -75,7 +81,9 @@ describe Projects::CreateService do
       end
 
       it 'should allow a restricted visibility level for admins' do
-        project = create_project(@admin, @opts)
+        admin = create(:admin)
+        project = create_project(admin, @opts)
+
         expect(project.errors.any?).to be(false)
         expect(project.saved?).to be(true)
       end

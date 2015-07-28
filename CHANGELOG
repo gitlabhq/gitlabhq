@@ -1,5 +1,15 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 7.13.2
+  - Fix randomly failed spec
+  - Create project services on Project creation
+  - Add admin_merge_request ability to Developer level and up
+  - Fix Error 500 when browsing projects with no HEAD (Stan Hu)
+  - Fix labels / assignee / milestone for the merge requests when issues are disabled
+  - Show the first tab automatically on MergeRequests#new
+  - Add rake task 'gitlab:update_commit_count' (Daniel Gerhardt)
+  - Fix Gmail Actions
+
 v 7.13.1
   - Fix: Label modifications are not reflected in existing notes and in the issue list
   - Fix: Label not shown in the Issue list, although it's set through web interface
@@ -9,6 +19,7 @@ v 7.13.1
   - Fix: ActionView::Template::Error
   - Fix: "Create Merge Request" isn't always shown in event for newly pushed branch
   - Fix bug causing "Remove source-branch" option not to work for merge requests from the same project.
+  - Render Note field hints consistently for "new" and "edit" forms
 
 v 7.13.0
   - Remove repository graph log to fix slow cache updates after push event (Stan Hu)

@@ -22,7 +22,7 @@ describe ProjectsHelper do
 
     let(:user) { create(:user) }
 
-    it "returns false if there are no approipriate permissions" do
+    it "returns false if there are no appropriate permissions" do
       allow(helper).to receive(:can?) { false }
 
       expect(helper.can_change_visibility_level?(project, user)).to be_falsey
@@ -50,6 +50,24 @@ describe ProjectsHelper do
 
         expect(helper.can_change_visibility_level?(fork_project, user)).to be_truthy
       end
+    end
+  end
+
+  describe "readme_cache_key" do
+    let(:project) { create(:project) }
+
+    before do
+      helper.instance_variable_set(:@project, project)
+    end
+
+    it "returns a valid cach key" do
+      expect(helper.send(:readme_cache_key)).to eq("#{project.id}-#{project.commit.id}-readme")
+    end
+
+    it "returns a valid cache key if HEAD does not exist" do
+      allow(project).to receive(:commit) { nil }
+
+      expect(helper.send(:readme_cache_key)).to eq("#{project.id}-nil-readme")
     end
   end
 end
