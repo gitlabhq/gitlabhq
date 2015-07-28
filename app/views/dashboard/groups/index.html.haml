@@ -23,7 +23,7 @@
               %i.fa.fa-cogs
               Settings
 
-          - if can?(current_user, :destroy_group_member, group_member)
+          - if can?(current_user, :admin_group_member, group)
             = link_to leave_group_group_members_path(group), data: { confirm: leave_group_message(group.name) }, method: :delete, class: "btn-sm btn btn-grouped", title: 'Leave this group' do
               %i.fa.fa-sign-out
               Leave
