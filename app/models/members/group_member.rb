@@ -47,33 +47,33 @@ class GroupMember < Member
   private
 
   def send_invite
-    notification_service.invite_group_member(self, @raw_invite_token)
+    notification_service.invite_group_member(self, @raw_invite_token) unless @skip_notification
 
     super
   end
 
   def post_create_hook
-    notification_service.new_group_member(self)
+    notification_service.new_group_member(self) unless @skip_notification
 
     super
   end
 
   def post_update_hook
     if access_level_changed?
-      notification_service.update_group_member(self)
+      notification_service.update_group_member(self) unless @skip_notification
     end
 
     super
   end
 
   def after_accept_invite
-    notification_service.accept_group_invite(self)
+    notification_service.accept_group_invite(self) unless @skip_notification
 
     super
   end
 
   def after_decline_invite
-    notification_service.decline_group_invite(self)
+    notification_service.decline_group_invite(self) unless @skip_notification
 
     super
   end

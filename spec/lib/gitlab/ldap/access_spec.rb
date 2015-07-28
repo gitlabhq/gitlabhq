@@ -258,6 +258,12 @@ objectclass: posixGroup
         access.update_ldap_group_links
         expect( gitlab_group_1.has_master?(user) ).to be_truthy
       end
+
+      it "doesn't send a notification email" do
+        expect { 
+          access.update_ldap_group_links
+        }.not_to change { ActionMailer::Base.deliveries }
+      end
     end
 
     context "existing access as guest for group-1, allowed via ldap-group1 as DEVELOPER" do
@@ -271,6 +277,12 @@ objectclass: posixGroup
         expect { access.update_ldap_group_links }.to \
           change{ gitlab_group_1.has_master?(user) }.from(false).to(true)
       end
+
+      it "doesn't send a notification email" do
+        expect { 
+          access.update_ldap_group_links
+        }.not_to change { ActionMailer::Base.deliveries }
+      end
     end
 
     context "existing access as MASTER for group-1, allowed via ldap-group1 as DEVELOPER" do
@@ -283,6 +295,12 @@ objectclass: posixGroup
       it "keeps the users master access for group 1" do
         expect { access.update_ldap_group_links }.not_to \
           change{ gitlab_group_1.has_master?(user) }
+      end
+
+      it "doesn't send a notification email" do
+        expect { 
+          access.update_ldap_group_links
+        }.not_to change { ActionMailer::Base.deliveries }
       end
     end
 

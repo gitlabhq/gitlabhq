@@ -140,7 +140,7 @@ module Gitlab
           active_group_links = group.ldap_group_links.where(cn: cns_with_access)
 
           if active_group_links.any?
-            group.add_users([user.id], fetch_group_access(group, user, active_group_links))
+            group.add_users([user.id], fetch_group_access(group, user, active_group_links), skip_notification: true)
           elsif group.last_owner?(user)
             Rails.logger.warn "#{self.class.name}: LDAP group sync cannot remove #{user.name} (#{user.id}) from group #{group.name} (#{group.id}) as this is the group's last owner"
           else
