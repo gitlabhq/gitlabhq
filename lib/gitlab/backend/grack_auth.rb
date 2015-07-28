@@ -26,7 +26,12 @@ module Grack
       auth!
 
       if project && authorized_request?
-        @app.call(env)
+        if ENV['GITLAB_GRACK_AUTH_ONLY'] == '1'
+          # Tell gitlab-git-http-server the request is OK, and what the GL_ID is
+          [200, { "Content-Type" => "text/plain" }, [Gitlab::ShellEnv.gl_id(@user)]]
+        else
+          @app.call(env)
+        end
       elsif @user.nil? && !@gitlab_ci
         unauthorized
       else
