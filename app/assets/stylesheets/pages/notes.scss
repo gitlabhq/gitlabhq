@@ -37,7 +37,7 @@ ul.notes {
       font-size: 13px;
 
       a {
-        @extend .cgray;        
+        @extend .cgray;
 
         &:hover {
           text-decoration: underline;
@@ -105,6 +105,8 @@ ul.notes {
         }
 
         hr {
+          // Darken 'whitesmoke' a bit to make it more visible in note bodies
+          border-color: darken(#F5F5F5, 8%);
           margin: 10px 0;
         }
       }
