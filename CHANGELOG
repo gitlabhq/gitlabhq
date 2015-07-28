@@ -16,6 +16,7 @@ v 7.14.0 (unreleased)
   - Expire Rails cache entries after two weeks to prevent endless Redis growth
   - Add support for destroying project milestones (Stan Hu)
   - Add fetch command to the MR page
+  - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
 
 v 7.13.1
   - Fix: Label modifications are not reflected in existing notes and in the issue list
