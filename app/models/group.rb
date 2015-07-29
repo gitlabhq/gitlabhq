@@ -64,18 +64,18 @@ class Group < Namespace
     @owners ||= group_members.owners.map(&:user)
   end
 
-  def add_users(user_ids, access_level, current_user = nil)
+  def add_users(user_ids, access_level, current_user = nil, skip_notification: false)
     user_ids.each do |user_id|
-      Member.add_user(self.group_members, user_id, access_level, current_user)
+      Member.add_user(self.group_members, user_id, access_level, current_user, skip_notification: skip_notification)
     end
   end
 
-  def add_user(user, access_level, current_user = nil)
-    add_users([user], access_level, current_user)
+  def add_user(user, access_level, current_user = nil, skip_notification: false)
+    add_users([user], access_level, current_user, skip_notification: skip_notification)
   end
 
-  def add_owner(user, current_user = nil)
-    self.add_user(user, Gitlab::Access::OWNER, current_user)
+  def add_owner(user, current_user = nil, skip_notification: false)
+    self.add_user(user, Gitlab::Access::OWNER, current_user, skip_notification: skip_notification)
   end
 
   def has_owner?(user)
