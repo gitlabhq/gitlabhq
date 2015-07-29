@@ -1,6 +1,8 @@
 module Gitlab
   module BitbucketImport
     class Client
+      class Unauthorized < StandardError; end
+
       attr_reader :consumer, :api
 
       def initialize(access_token = nil, access_token_secret = nil)
@@ -46,23 +48,23 @@ module Gitlab
       end
 
       def user
-        JSON.parse(api.get("/api/1.0/user").body)
+        JSON.parse(get("/api/1.0/user").body)
       end
 
       def issues(project_identifier)
-        JSON.parse(api.get("/api/1.0/repositories/#{project_identifier}/issues").body)
+        JSON.parse(get("/api/1.0/repositories/#{project_identifier}/issues").body)
       end
 
       def issue_comments(project_identifier, issue_id)
-        JSON.parse(api.get("/api/1.0/repositories/#{project_identifier}/issues/#{issue_id}/comments").body)
+        JSON.parse(get("/api/1.0/repositories/#{project_identifier}/issues/#{issue_id}/comments").body)
       end
 
       def project(project_identifier)
-        JSON.parse(api.get("/api/1.0/repositories/#{project_identifier}").body)
+        JSON.parse(get("/api/1.0/repositories/#{project_identifier}").body)
       end
 
       def find_deploy_key(project_identifier, key)
-        JSON.parse(api.get("/api/1.0/repositories/#{project_identifier}/deploy-keys").body).find do |deploy_key|
+        JSON.parse(get("/api/1.0/repositories/#{project_identifier}/deploy-keys").body).find do |deploy_key|
           deploy_key["key"].chomp == key.chomp
         end
       end
@@ -82,10 +84,17 @@ module Gitlab
       end
 
       def projects
-        JSON.parse(api.get("/api/1.0/user/repositories").body).select { |repo| repo["scm"] == "git" }
+        JSON.parse(get("/api/1.0/user/repositories").body).select { |repo| repo["scm"] == "git" }
       end
 
       private
+
+      def get(url)
+        response = api.get(url)
+        raise Unauthorized if (400..499).include?(response.code.to_i)
+
+        response
+      end
 
       def config
         Gitlab.config.omniauth.providers.find { |provider| provider.name == "bitbucket"}

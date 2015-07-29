@@ -2,7 +2,7 @@
 
 Step-by-step guides on the basics of working with Git and GitLab.
 
-* [Start using Git on the commandline](start-using-git.md)
+* [Start using Git on the command line](start-using-git.md)
 
 * [Create and add your SSH Keys](create-your-ssh-keys.md)
 
@@ -17,3 +17,5 @@ Step-by-step guides on the basics of working with Git and GitLab.
 * [Create a branch](create-branch.md)
 
 * [Fork a project](fork-project.md)
+
+* [Add a file](add-file.md)

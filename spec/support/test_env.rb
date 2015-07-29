@@ -12,7 +12,8 @@ module TestEnv
     'fix'              => '12d65c8',
     'improve/awesome'  => '5937ac0',
     'markdown'         => '0ed8c6c',
-    'master'           => '5937ac0'
+    'master'           => '5937ac0',
+    "'test'"           => 'e56497b',
   }
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily

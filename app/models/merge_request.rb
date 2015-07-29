@@ -235,6 +235,10 @@ class MergeRequest < ActiveRecord::Base
       execute(self, commit_message)
   end
 
+  def remove_source_branch?
+    self.should_remove_source_branch && !self.source_project.root_ref?(self.source_branch) && !self.for_fork?
+  end
+
   def open?
     opened? || reopened?
   end

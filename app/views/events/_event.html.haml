@@ -8,11 +8,10 @@
         = image_tag avatar_icon(event.author_email, 24), class: "avatar s24", alt:''
         = render "events/event/created_project", event: event
     - else
-      = cache event do
-        = image_tag avatar_icon(event.author_email, 24), class: "avatar s24", alt:''
-        - if event.push?
-          = render "events/event/push", event: event
-        - elsif event.commented?
-          = render "events/event/note", event: event
-        - else
-          = render "events/event/common", event: event
+      = image_tag avatar_icon(event.author_email, 24), class: "avatar s24", alt:''
+      - if event.push?
+        = render "events/event/push", event: event
+      - elsif event.commented?
+        = render "events/event/note", event: event
+      - else
+        = render "events/event/common", event: event

@@ -193,6 +193,23 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     FileUtils.rm_f(File.join(@project.repository.path, 'hooks', 'pre-receive'))
   end
 
+  step "I switch ref to 'test'" do
+    select "'test'", from: 'ref'
+  end
+
+  step "I see the ref 'test' has been selected" do
+    expect(page).to have_selector '.select2-chosen', text: "'test'"
+  end
+
+  step "I visit the 'test' tree" do
+    visit namespace_project_tree_path(@project.namespace, @project, "'test'")
+  end
+
+  step 'I see the commit data' do
+    expect(page).to have_css('.tree-commit-link', visible: true)
+    expect(page).not_to have_content('Loading commit data...')
+  end
+
   private
 
   def set_new_content

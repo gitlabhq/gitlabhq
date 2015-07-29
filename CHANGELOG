@@ -1,8 +1,14 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.14.0 (unreleased)
+  - Upgrade gitlab_git to version 7.2.6 to fix Error 500 when creating network graphs (Stan Hu)
+  - Fix URL used for refreshing notes if relative_url is present (Bartłomiej Święcki)
+  - Fix commit data retrieval when branch name has single quotes (Stan Hu)
+  - Fix Error 500 when browsing projects with no HEAD (Stan Hu)
+  - Add rake task 'gitlab:update_commit_count' (Daniel Gerhardt)
   - Fix full screen mode for snippet comments (Daniel Gerhardt)
   - Fix 404 error in files view after deleting the last file in a repository (Stan Hu)
+  - Fix the "Reload with full diff" URL button (Stan Hu)
   - Fix label read access for unauthenticated users (Daniel Gerhardt)
   - Fix access to disabled features for unauthenticated users (Daniel Gerhardt)
   - Fix OAuth provider bug where GitLab would not go return to the redirect_uri after sign-in (Stan Hu)
@@ -14,7 +20,22 @@ v 7.14.0 (unreleased)
   - Allow custom backup archive permissions
 
 v 7.13.0 (unreleased)
+  - Add fetch command to the MR page
+  - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
+
+v 7.13.1
+  - Fix: Label modifications are not reflected in existing notes and in the issue list
+  - Fix: Label not shown in the Issue list, although it's set through web interface
+  - Fix: Group/project references are linked incorrectly
+  - Improve documentation
+  - Fix of migration: Check if session_expire_delay column exists before adding the column
+  - Fix: ActionView::Template::Error
+  - Fix: "Create Merge Request" isn't always shown in event for newly pushed branch
+  - Fix bug causing "Remove source-branch" option not to work for merge requests from the same project.
+
+v 7.13.0
   - Remove repository graph log to fix slow cache updates after push event (Stan Hu)
+  - Return comments in created order in merge request API (Stan Hu)
   - Only enable HSTS header for HTTPS and port 443 (Stan Hu)
   - Fix user autocomplete for unauthenticated users accessing public projects (Stan Hu)
   - Fix redirection to home page URL for unauthorized users (Daniel Gerhardt)
@@ -68,6 +89,7 @@ v 7.12.2
   - Faster automerge check and merge itself when source and target branches are in same repository
   - Audit log for user authentication
   - Fix transferring of project to another group using the API.
+  - Allow custom label to be set for authentication providers.
 
 v 7.12.1
   - Fix error when deleting a user who has projects (Stan Hu)

@@ -51,6 +51,12 @@ describe 'MergeRequestTabs', ->
       expect(@subject('notes')).toBe('/foo/bar/merge_requests/1')
       expect(@subject('commits')).toBe('/foo/bar/merge_requests/1/commits')
 
+    it 'changes from diffs.html', ->
+      @class._location = stubLocation(pathname: '/foo/bar/merge_requests/1/diffs.html')
+
+      expect(@subject('notes')).toBe('/foo/bar/merge_requests/1')
+      expect(@subject('commits')).toBe('/foo/bar/merge_requests/1/commits')
+
     it 'changes from notes', ->
       @class._location = stubLocation(pathname: '/foo/bar/merge_requests/1')
 

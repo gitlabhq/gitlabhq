@@ -442,6 +442,18 @@ describe User do
     end
   end
 
+  describe '.find_by_username!' do
+    it 'raises RecordNotFound' do
+      expect { described_class.find_by_username!('JohnDoe') }.
+        to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it 'is case-insensitive' do
+      user = create(:user, username: 'JohnDoe')
+      expect(described_class.find_by_username!('JOHNDOE')).to eq user
+    end
+  end
+
   describe 'all_ssh_keys' do
     it { is_expected.to have_many(:keys).dependent(:destroy) }
 
