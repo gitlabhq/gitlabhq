@@ -3,7 +3,7 @@ class AdminEmailsWorker
 
   def perform(recipient_id, subject, body)
     recipient_list(recipient_id).pluck(:id).each do |user_id|
-      Notify.send_admin_notification(user_id, subject, body).deliver
+      Notify.delay.send_admin_notification(user_id, subject, body)
     end
   end
 
