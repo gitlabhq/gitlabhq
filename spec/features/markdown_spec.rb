@@ -29,22 +29,6 @@ describe 'GitLab Markdown', feature: true do
   include GitlabMarkdownHelper
   include MarkdownMatchers
 
-  # Let's only parse this thing once
-  before(:all) do
-    @feat = MarkdownFeature.new
-
-    # `gfm_with_options` depends on a `@project` variable
-    @project = @feat.project
-  end
-
-  after(:all) do
-    @feat.teardown
-  end
-
-  def doc(html = @html)
-    Nokogiri::HTML::DocumentFragment.parse(html)
-  end
-
   # Sometimes it can be useful to see the parsed output of the Markdown document
   # for debugging. Call this method to write the output to
   # `tmp/capybara/<filename>.html`.
@@ -52,6 +36,10 @@ describe 'GitLab Markdown', feature: true do
     File.open(Rails.root.join("tmp/capybara/#{filename}.html"), 'w') do |file|
       file.puts @html
     end
+  end
+
+  def doc(html = @html)
+    Nokogiri::HTML::DocumentFragment.parse(html)
   end
 
   # Shared behavior that all pipelines should exhibit
@@ -189,6 +177,11 @@ describe 'GitLab Markdown', feature: true do
 
   context 'default pipeline' do
     before(:all) do
+      @feat = MarkdownFeature.new
+
+      # `gfm_with_options` depends on a `@project` variable
+      @project = @feat.project
+
       @html = markdown(@feat.raw_markdown)
     end
 

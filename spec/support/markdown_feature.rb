@@ -10,14 +10,6 @@
 class MarkdownFeature
   include FactoryGirl::Syntax::Methods
 
-  def initialize
-    DatabaseCleaner.start
-  end
-
-  def teardown
-    DatabaseCleaner.clean
-  end
-
   def user
     @user ||= create(:user)
   end
