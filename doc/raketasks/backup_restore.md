@@ -148,6 +148,23 @@ with the name of your bucket:
 }
 ```
 
+## Backup archive permissions
+
+The backup archives created by GitLab (123456_gitlab_backup.tar) will have owner/group git:git and 0600 permissions by default.
+This is meant to avoid other system users reading GitLab's data.
+If you need the backup archives to have different permissions you can use the 'archive_permissions' setting.
+
+```
+# In /etc/gitlab/gitlab.rb, for omnibus packages
+gitlab_rails['backup_archive_permissions'] = 0644 # Makes the backup archives world-readable
+```
+
+```
+# In gitlab.yml, for installations from source:
+  backup:
+    archive_permissions: 0644 # Makes the backup archives world-readable
+```
+
 ## Storing configuration files
 
 Please be informed that a backup does not store your configuration
