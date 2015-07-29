@@ -1,10 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.14.0 (unreleased)
+  - Upgrade gitlab_git to version 7.2.6 to fix Error 500 when creating network graphs (Stan Hu)
   - Fix URL used for refreshing notes if relative_url is present (Bartłomiej Święcki)
   - Fix commit data retrieval when branch name has single quotes (Stan Hu)
-  - Fix Error 500 when browsing projects with no HEAD (Stan Hu)
-  - Add rake task 'gitlab:update_commit_count' (Daniel Gerhardt)
   - Fix full screen mode for snippet comments (Daniel Gerhardt)
   - Fix 404 error in files view after deleting the last file in a repository (Stan Hu)
   - Fix the "Reload with full diff" URL button (Stan Hu)
@@ -17,6 +16,18 @@ v 7.14.0 (unreleased)
   - Add support for destroying project milestones (Stan Hu)
   - Add fetch command to the MR page
   - Add project star and fork count, group avatar URL and user/group web URL attributes to API
+  - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
+  - Add fetch command to the MR page.
+
+v 7.13.2
+  - Fix randomly failed spec
+  - Create project services on Project creation
+  - Add admin_merge_request ability to Developer level and up
+  - Fix Error 500 when browsing projects with no HEAD (Stan Hu)
+  - Fix labels / assignee / milestone for the merge requests when issues are disabled
+  - Show the first tab automatically on MergeRequests#new
+  - Add rake task 'gitlab:update_commit_count' (Daniel Gerhardt)
+  - Fix Gmail Actions
 
 v 7.13.1
   - Fix: Label modifications are not reflected in existing notes and in the issue list
@@ -27,10 +38,10 @@ v 7.13.1
   - Fix: ActionView::Template::Error
   - Fix: "Create Merge Request" isn't always shown in event for newly pushed branch
   - Fix bug causing "Remove source-branch" option not to work for merge requests from the same project.
+  - Render Note field hints consistently for "new" and "edit" forms
 
 v 7.13.0
   - Remove repository graph log to fix slow cache updates after push event (Stan Hu)
-v 7.13.0 (unreleased)
   - Return comments in created order in merge request API (Stan Hu)
   - Only enable HSTS header for HTTPS and port 443 (Stan Hu)
   - Fix user autocomplete for unauthenticated users accessing public projects (Stan Hu)
