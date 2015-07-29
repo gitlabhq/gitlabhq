@@ -11,6 +11,11 @@ Feature: Project Network Graph
     And page should have "master" on graph
 
   @javascript
+  Scenario: I should see project network with 'test' branch
+    When I visit project network page on branch 'test'
+    Then page should have 'test' on graph
+
+  @javascript
   Scenario: I should switch "branch" and "tag"
     When I switch ref to "feature"
     Then page should select "feature" in select box
