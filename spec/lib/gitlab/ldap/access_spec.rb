@@ -260,9 +260,8 @@ objectclass: posixGroup
       end
 
       it "doesn't send a notification email" do
-        expect { 
-          access.update_ldap_group_links
-        }.not_to change { ActionMailer::Base.deliveries }
+        expect { access.update_ldap_group_links }.not_to \
+          change { ActionMailer::Base.deliveries }
       end
     end
 
@@ -279,9 +278,8 @@ objectclass: posixGroup
       end
 
       it "doesn't send a notification email" do
-        expect { 
-          access.update_ldap_group_links
-        }.not_to change { ActionMailer::Base.deliveries }
+        expect { access.update_ldap_group_links }.not_to \
+          change { ActionMailer::Base.deliveries }
       end
     end
 
@@ -298,9 +296,8 @@ objectclass: posixGroup
       end
 
       it "doesn't send a notification email" do
-        expect { 
-          access.update_ldap_group_links
-        }.not_to change { ActionMailer::Base.deliveries }
+        expect { access.update_ldap_group_links }.not_to \
+          change { ActionMailer::Base.deliveries }
       end
     end
 
