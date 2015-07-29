@@ -8,18 +8,8 @@
   = f.hidden_field :noteable_type
 
   = render layout: 'projects/md_preview', locals: { preview_class: "note-text", referenced_users: true } do
-    = render 'projects/zen', f: f, attr: :note,
-      classes: 'note_text js-note-text'
-
-    .comment-hints.clearfix
-      .pull-left
-        = link_to "Markdown ", help_page_path("markdown", "markdown"),{ target: '_blank', tabindex: -1 }
-        tip:
-        = random_markdown_tip
-      .pull-right
-        = link_to '#', class: 'markdown-selector', tabindex: -1 do
-          Attach a file
-          = icon('paperclip')
+    = render 'projects/zen', f: f, attr: :note, classes: 'note_text js-note-text'
+    = render 'projects/notes/hints'
     .error-alert
 
   .note-form-actions

@@ -1,6 +1,7 @@
 - too_big = diff_file.diff_lines.count > Commit::DIFF_SAFE_LINES
 - if too_big
-  %a.supp_diff_link Changes suppressed. Click to show
+  .suppressed-container
+    %a.show-suppressed-diff.js-show-suppressed-diff Changes suppressed. Click to show.
 
 %table.text-file{class: "#{'hide' if too_big}"}
   - last_line = 0

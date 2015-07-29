@@ -1,5 +1,6 @@
 class Projects::RefsController < Projects::ApplicationController
   include ExtractsPath
+  include TreeHelper
 
   before_action :require_non_empty_project
   before_action :assign_ref_vars
@@ -58,6 +59,11 @@ class Projects::RefsController < Projects::ApplicationController
         file_name: content.name,
         commit: last_commit
       }
+    end
+
+    if @logs.present?
+      @log_url = namespace_project_tree_url(@project.namespace, @project, tree_join(@ref, @path || '/'))
+      @more_log_url = logs_file_namespace_project_ref_path(@project.namespace, @project, @ref, @path || '', offset: (@offset +  @limit))
     end
 
     respond_to do |format|

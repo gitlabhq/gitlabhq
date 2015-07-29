@@ -37,6 +37,14 @@ module MergeRequests
         # Merge local branches using rugged instead of satellites
         if sha = commit
           after_commit(sha, merge_request.target_branch)
+
+          if merge_request.remove_source_branch?
+            DeleteBranchService.new(merge_request.source_project, current_user).execute(merge_request.source_branch)
+          end
+
+          true
+        else
+          false
         end
       end
     end
@@ -55,7 +63,7 @@ module MergeRequests
 
     def after_commit(sha, branch)
       commit = repository.commit(sha)
-      full_ref = 'refs/heads/' + branch
+      full_ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}#{branch}"
       old_sha = commit.parent_id || Gitlab::Git::BLANK_SHA
       GitPushService.new.execute(project, current_user, old_sha, sha, full_ref)
     end

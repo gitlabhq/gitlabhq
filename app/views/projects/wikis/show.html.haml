@@ -3,6 +3,10 @@
 %h3.page-title
   = @page.title
   = render 'main_links'
+
+.wiki-last-edit-by
+  Last edited by #{@page.commit.author.name} #{time_ago_with_tooltip(@page.commit.authored_date)}
+
 - if @page.historical?
   .warning_message
     This is an old version of this page.
@@ -16,6 +20,6 @@
       = render_wiki_content(@page)
 
 %hr
-
 .wiki-last-edit-by
   Last edited by #{@page.commit.author.name} #{time_ago_with_tooltip(@page.commit.authored_date)}
+
