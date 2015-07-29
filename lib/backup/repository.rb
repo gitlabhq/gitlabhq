@@ -130,7 +130,7 @@ module Backup
 
     def prepare
       FileUtils.rm_rf(backup_repos_path)
-      FileUtils.mkdir_p(backup_repos_path)
+      FileUtils.mkdir_p(backup_repos_path, mode: 0700)
     end
 
     def silent
