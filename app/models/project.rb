@@ -316,7 +316,7 @@ class Project < ActiveRecord::Base
   end
 
   def web_url
-    [gitlab_config.url, path_with_namespace].join('/')
+    namespace_project_url(self.namespace, self)
   end
 
   def web_url_without_protocol

@@ -67,6 +67,7 @@ class User < ActiveRecord::Base
 
   include Gitlab::ConfigHelper
   include Gitlab::CurrentSettings
+  include Rails.application.routes.url_helpers
   include Referable
   include Sortable
   include TokenAuthenticatable
@@ -638,7 +639,7 @@ class User < ActiveRecord::Base
   end
 
   def web_url
-    [gitlab_config.url, "u", self.username].join('/')
+    user_url(self)
   end
 
   def all_emails
