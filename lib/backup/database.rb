@@ -7,7 +7,11 @@ module Backup
     def initialize
       @config = YAML.load_file(File.join(Rails.root,'config','database.yml'))[Rails.env]
       @db_dir = File.join(Gitlab.config.backup.path, 'db')
-      FileUtils.mkdir_p(@db_dir, mode: 0700)unless Dir.exists?(@db_dir)
+      FileUtils.rm_rf(@db_dir)
+      # Ensure the parent dir of @db_dir exists
+      FileUtils.mkdir_p(Gitlab.config.backup.path)
+      # Fail if somebody raced to create @db_dir before us
+      FileUtils.mkdir(@db_dir, mode: 0700)
     end
 
     def dump
@@ -25,7 +29,6 @@ module Backup
       abort 'Backup failed' unless success
 
       $progress.print 'Compressing database ... '
-      FileUtils.rm_f db_file_name_gz
       success = system('gzip', db_file_name)
       report_success(success)
       abort 'Backup failed: compress error' unless success
