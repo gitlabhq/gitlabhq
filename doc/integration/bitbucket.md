@@ -92,7 +92,7 @@ Bitbucket doesn't allow OAuth applications to clone repositories over HTTPS, and
 
 ### Step 1: Public key
 
-To be able to access repositories on Bitbucket, GitLab will automatically register your public key with Bitbucket as a deploy key for the repositories to be imported. Your public key needs to be at `~/.ssh/bitbucket_rsa.pub`, which will expand to `/home/git/.ssh/bitbucket_rsa.pub` in most configurations.
+To be able to access repositories on Bitbucket, GitLab will automatically register your public key with Bitbucket as a deploy key for the repositories to be imported. Your public key needs to be at `~/.ssh/bitbucket_rsa.pub`, which will expand to `/var/opt/gitlab/.ssh/bitbucket_rsa` for omnibus package and to `/home/git/.ssh/bitbucket_rsa.pub` for installations from source.
 
 If you have that file in place, you're all set and should see the "Import projects from Bitbucket" option enabled. If you don't, do the following:
 
@@ -102,12 +102,20 @@ If you have that file in place, you're all set and should see the "Import projec
     sudo -u git -H ssh-keygen
     ```
 
-    When asked `Enter file in which to save the key` specify the correct path, eg. `/home/git/.ssh/bitbucket_rsa`.
+    When asked `Enter file in which to save the key` specify the correct path, eg. `/var/opt/gitlab/.ssh/bitbucket_rsa` or `/home/git/.ssh/bitbucket_rsa`.
     Make sure to use an **empty passphrase**.
 
 1. Configure SSH client to use your new key:
 
     Open the SSH configuration file of the git user.
+    
+    For omnibus package:
+    
+    ```sh
+      sudo editor /var/opt/gitlab/.ssh/config
+    ```
+    
+    For installations from source:    
 
     ```sh
       sudo editor /home/git/.ssh/config
