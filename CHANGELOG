@@ -29,6 +29,7 @@ v 7.14.0 (unreleased)
   - Disabled autocapitalize and autocorrect on login field (Daryl Chan)
   - Mention group and project name in creation, update and deletion notices (Achilleas Pipinellis)
   - Remove redis-store TTL monkey patch
+  - Add support for CI skipped status
 
 v 7.13.2
   - Fix randomly failed spec
