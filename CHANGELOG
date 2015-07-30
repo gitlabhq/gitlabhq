@@ -19,6 +19,7 @@ v 7.14.0 (unreleased)
   - Add fetch command to the MR page
   - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
   - Add fetch command to the MR page.
+  - Show buttons to add license, changelog and contribution guide if they're missing.
 
 v 7.13.2
   - Fix randomly failed spec
