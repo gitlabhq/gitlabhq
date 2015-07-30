@@ -434,9 +434,9 @@ Parameters:
 
 - `uid` (required) - id of specified user
 
-## Single SSH key
+## Single email
 
-Get a single key.
+Get a single email.
 
 ```
 GET /user/emails/:id
@@ -444,7 +444,7 @@ GET /user/emails/:id
 
 Parameters:
 
-- `id` (required) - The ID of an SSH key
+- `id` (required) - email ID
 
 ```json
 {
@@ -472,7 +472,7 @@ Parameters:
 }
 ```
 
-Will return created key with status `201 Created` on success. If an
+Will return created email with status `201 Created` on success. If an
 error occurs a `400 Bad Request` is returned with a message explaining the error:
 
 ```json
@@ -498,7 +498,7 @@ Parameters:
 - `id` (required)    - id of specified user
 - `email` (required) - email address
 
-Will return created key with status `201 Created` on success, or `404 Not found` on fail.
+Will return created email with status `201 Created` on success, or `404 Not found` on fail.
 
 ## Delete email for current user
 
@@ -527,7 +527,7 @@ Parameters:
 - `uid` (required) - id of specified user
 - `id` (required)  - email ID
 
-Will return `200 OK` on success, or `404 Not found` if either user or key cannot be found.
+Will return `200 OK` on success, or `404 Not found` if either user or email cannot be found.
 
 ## Block user
 

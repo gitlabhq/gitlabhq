@@ -389,7 +389,7 @@ describe API::API, api: true  do
     before { admin }
 
     it "should not create invalid email" do
-      post api("/users/#{user.id}/emails", admin), { }
+      post api("/users/#{user.id}/emails", admin), {}
       expect(response.status).to eq(400)
       expect(json_response['message']).to eq('400 (Bad request) "email" not given')
     end
