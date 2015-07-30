@@ -66,6 +66,8 @@ v 7.13.3
   - Allow users to send abuse reports
   - Remove satellites 
   - Link username to profile on Group Members page (Tom Webster)
+  - Add fetch command to the MR page.
+  - Hide wiki edit button when user is already on edit view (Daryl Chan)
 
 v 7.13.2
   - Fix randomly failed spec
