@@ -5,7 +5,11 @@ module API
     end
 
     class UserBasic < UserSafe
-      expose :id, :state, :avatar_url, :web_url
+      expose :id, :state, :avatar_url
+
+      expose :web_url do |user, options|
+        Rails.application.routes.url_helpers.user_url(user)
+      end
     end
 
     class User < UserBasic
@@ -70,7 +74,11 @@ module API
 
     class Group < Grape::Entity
       expose :id, :name, :path, :description
-      expose :avatar_url, :web_url
+      expose :avatar_url
+
+      expose :web_url do |group, options|
+        Rails.application.routes.url_helpers.group_url(group)
+      end
     end
 
     class GroupDetail < Group

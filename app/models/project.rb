@@ -36,7 +36,6 @@ class Project < ActiveRecord::Base
   include Gitlab::ConfigHelper
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
-  include Rails.application.routes.url_helpers
   include Referable
   include Sortable
 
@@ -316,7 +315,7 @@ class Project < ActiveRecord::Base
   end
 
   def web_url
-    namespace_project_url(self.namespace, self)
+    Rails.application.routes.url_helpers.namespace_project_url(self.namespace, self)
   end
 
   def web_url_without_protocol

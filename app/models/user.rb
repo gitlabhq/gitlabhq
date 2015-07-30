@@ -67,7 +67,6 @@ class User < ActiveRecord::Base
 
   include Gitlab::ConfigHelper
   include Gitlab::CurrentSettings
-  include Rails.application.routes.url_helpers
   include Referable
   include Sortable
   include TokenAuthenticatable
@@ -636,10 +635,6 @@ class User < ActiveRecord::Base
     else
       GravatarService.new.execute(email, size)
     end
-  end
-
-  def web_url
-    user_url(self)
   end
 
   def all_emails

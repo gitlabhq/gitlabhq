@@ -17,7 +17,6 @@ require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class Group < Namespace
-  include Rails.application.routes.url_helpers
   include Referable
 
   has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
@@ -61,10 +60,6 @@ class Group < Namespace
     if avatar.present?
       [gitlab_config.url, avatar.url].join
     end
-  end
-
-  def web_url
-    group_url(self)
   end
 
   def owners
