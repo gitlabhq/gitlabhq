@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 7.14.0 (unreleased)
   - Fix network graph when branch name has single quotes (Stan Hu)
   - Upgrade gitlab_git to version 7.2.6 to fix Error 500 when creating network graphs (Stan Hu)
+  - Fix the image file that contains non-ascii character is not displayed(Hiroyuki Sato)
   - Fix URL used for refreshing notes if relative_url is present (Bartłomiej Święcki)
   - Fix commit data retrieval when branch name has single quotes (Stan Hu)
   - Check that project was actually created rather than just validated in import:repos task (Stan Hu)

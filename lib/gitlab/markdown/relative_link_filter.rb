@@ -98,9 +98,10 @@ module Gitlab
       #
       # Returns a String
       def path_type(path)
-        if repository.tree(current_sha, path).entries.any?
+        unescaped_path = Addressable::URI.unescape(path)
+        if repository.tree(current_sha, unescaped_path).entries.any?
           'tree'
-        elsif repository.blob_at(current_sha, path).try(:image?)
+        elsif repository.blob_at(current_sha, unescaped_path).try(:image?)
           'raw'
         else
           'blob'
