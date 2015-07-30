@@ -432,7 +432,7 @@ class Project < ActiveRecord::Base
     if avatar.present?
       [gitlab_config.url, avatar.url].join
     elsif avatar_in_git
-      [gitlab_config.url, namespace_project_avatar_path(namespace, self)].join
+      Rails.application.routes.url_helpers.namespace_project_avatar_url(namespace, self)
     end
   end
 
