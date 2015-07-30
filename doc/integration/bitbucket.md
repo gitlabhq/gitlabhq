@@ -7,7 +7,7 @@ Bitbucket will generate an application ID and secret key for you to use.
 
 1.  Sign in to Bitbucket.
 
-1.  Navigate to your individual user settings or a team's settings, depending on how you want the application registered. It does not matter if the application is registered as an individual or a team - that is entirely up to you.
+1.  Navigate to your individual user settings (Manage account) or a team's settings (Manage team), depending on how you want the application registered. It does not matter if the application is registered as an individual or a team - that is entirely up to you.
 
 1.  Select "OAuth" in the left menu.
 
@@ -16,8 +16,16 @@ Bitbucket will generate an application ID and secret key for you to use.
 1.  Provide the required details.
     - Name: This can be anything. Consider something like `<Organization>'s GitLab` or `<Your Name>'s GitLab` or something else descriptive.
     - Application description: Fill this in if you wish.
+    - Callback URL: leave blank.
     - URL: The URL to your GitLab installation. 'https://gitlab.company.com'
+
+1.  Grant at least the following permissions.
+    - Account: Email
+    - Repositories: Read
+    
 1.  Select "Save".
+
+1.  Select your newly created OAuth consumer.
 
 1.  You should now see a Key and Secret in the list of OAuth customers.
     Keep this page open as you continue configuration.
@@ -62,7 +70,7 @@ Bitbucket will generate an application ID and secret key for you to use.
         app_secret: 'YOUR_APP_SECRET' }
     ```
 
-1.  Change 'YOUR_APP_ID' to the key from the Bitbucket application page from step 7.
+1.  Change 'YOUR_KEY' to the key from the Bitbucket application page from step 7.
 
 1.  Change 'YOUR_APP_SECRET' to the secret from the Bitbucket application page from step 7.
 
