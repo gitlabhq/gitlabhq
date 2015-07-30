@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150717130904) do
+ActiveRecord::Schema.define(version: 20150730122406) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -128,12 +128,13 @@ ActiveRecord::Schema.define(version: 20150717130904) do
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "position",     default: 0
+    t.integer  "position",      default: 0
     t.string   "branch_name"
     t.text     "description"
     t.integer  "milestone_id"
     t.string   "state"
     t.integer  "iid"
+    t.integer  "updated_by_id"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -230,6 +231,7 @@ ActiveRecord::Schema.define(version: 20150717130904) do
     t.text     "description"
     t.integer  "position",          default: 0
     t.datetime "locked_at"
+    t.integer  "updated_by_id"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -289,6 +291,7 @@ ActiveRecord::Schema.define(version: 20150717130904) do
     t.integer  "noteable_id"
     t.boolean  "system",        default: false, null: false
     t.text     "st_diff"
+    t.integer  "updated_by_id"
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree

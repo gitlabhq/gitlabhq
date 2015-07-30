@@ -1,10 +1,16 @@
 %h4.page-title
   .issue-box{ class: issue_box_class(@merge_request) }
     = @merge_request.state_human_name
-  = "Merge Request ##{@merge_request.iid}"
+  Merge Request ##{@merge_request.iid}
   %small.creator
     &middot;
-    created by #{link_to_member(@project, @merge_request.author)} #{time_ago_with_tooltip(@merge_request.created_at)}
+    created by #{link_to_member(@project, @merge_request.author)}
+    = time_ago_with_tooltip(@merge_request.created_at)
+    - if @merge_request.updated_at != @merge_request.created_at
+      %span
+        &middot;
+        = icon('edit', title: 'edited')
+        = time_ago_with_tooltip(@merge_request.updated_at, placement: 'bottom')
 
   .issue-btn-group.pull-right
     - if can?(current_user, :update_merge_request, @merge_request)
