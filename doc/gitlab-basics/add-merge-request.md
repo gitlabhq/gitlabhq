@@ -36,6 +36,7 @@ Your Merge Request will be ready to be approved and published.
 
 ### Note
 
-After you created a new branch, you'll be able to find a "create a Merge Request" button at the top of your screen.
+After you created a new branch, you'll immediately find a "create a Merge Request" button at the top of your screen.
 You may automatically create a Merge Request from your recently created branch when clicking on this button:
- 
+
+![Automatic MR button](basicsimages/button-create-mr.png)
