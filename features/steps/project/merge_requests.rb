@@ -343,10 +343,36 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     project.approvers.create(user_id: current_user.id)
   end
 
+  step 'there is one auto-suggested approver' do
+    @user = create :user
+    allow_any_instance_of(Gitlab::AuthorityAnalyzer).to receive(:calculate).and_return([@user])
+  end
+
   step 'I see suggested approver' do
-    page.within '.project-approvers' do
+    page.within 'ul .project-approvers' do
       expect(page).to have_content(current_user.name)
     end
+  end
+
+  step 'I see auto-suggested approver' do
+    page.within '.suggested-approvers' do
+      expect(page).to have_content(@user.name)
+    end
+  end
+
+  step 'I can add it to approver list' do
+    click_link @user.name
+
+    page.within 'ul.approver-list' do
+      expect(page).to have_content(@user.name)
+    end
+
+    click_button "Submit new merge request"
+    click_link "Edit"
+
+    page.within 'ul.approver-list' do
+      expect(page).to have_content(@user.name)
+    end    
   end
 
   step 'merge request \'Bug NS-04\' must be approved' do
