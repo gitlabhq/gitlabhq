@@ -6,8 +6,8 @@ If a user is both in a project group and in the project itself, the highest perm
 
 If a user is a GitLab administrator they receive all permissions.
 
-To add or import a user or member, you can follow the [Project users and members
-documentation](workflow/add-user/add-user.md).
+To add or import a user or member, you can follow the [project users and members
+documentation](doc/workflow/add-user/add-user.md).
 
 ## Project
 
