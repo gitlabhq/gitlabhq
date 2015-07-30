@@ -31,7 +31,7 @@ We think there is still room for improvement and will detail a set of practices 
 
 ## Git flow and its problems
 
-[![Git Flow timeline by Vincent Driessen, used with permission](gitdashflow.png)
+![Git Flow timeline by Vincent Driessen, used with permission](gitdashflow.png)
 
 Git flow was one of the first proposals to use git branches and it has gotten a lot of attention.
 It advocates a master branch and a separate develop branch as well as supporting branches for features, releases and hotfixes.
@@ -54,7 +54,7 @@ And doing releases doesn't automatically mean also doing hotfixes.
 
 ![Master branch with feature branches merged in](github_flow.png)
 
- In reaction to git flow a simpler alternative was detailed, [GitHub flow](https://guides.github.com/introduction/flow/index.html).
+In reaction to git flow a simpler alternative was detailed, [GitHub flow](https://guides.github.com/introduction/flow/index.html).
 This flow has only feature branches and a master branch.
 This is very simple and clean, many organizations have adopted it with great success.
 Atlassian recommends [a similar strategy](http://blogs.atlassian.com/2014/01/simple-git-workflow-simple/) although they rebase feature branches.
@@ -131,7 +131,7 @@ When you feel comfortable with it to be merged you assign it to the person that 
 There is room for more feedback and after the assigned person feels comfortable with the result the branch is merged.
 If the assigned person does not feel comfortable they can close the merge request without merging.
 
-In GitLab it is common to protect the long-lived branches (e.g. the master branch) so that normal developers [can't modify these protected branches](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/permissions/permissions.md).
+In GitLab it is common to protect the long-lived branches (e.g. the master branch) so that normal developers [can't modify these protected branches](http://doc.gitlab.com/ce/permissions/permissions.html).
 So if you want to merge it into a protected branch you assign it to someone with master authorizations.
 
 ## Issues with GitLab flow
@@ -216,7 +216,7 @@ This prevents creating a merge commit when merging master into your feature bran
 However, just like with squashing you should never rebase commits you have pushed to a remote server.
 This makes it impossible to rebase work in progress that you already shared with your team which is something we recommend.
 When using rebase to keep your feature branch updated you [need to resolve similar conflicts again and again](http://blogs.atlassian.com/2013/10/git-team-workflows-merge-or-rebase/).
-You can reuse recorded resolutions (rerere) sometimes, but with without rebasing you only have to solve the conflicts one time and you’re set.
+You can reuse recorded resolutions (rerere) sometimes, but without rebasing you only have to solve the conflicts one time and you’re set.
 There has to be a better way to avoid many merge commits.
 
 The way to prevent creating many merge commits is to not frequently merge master into the feature branch.
