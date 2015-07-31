@@ -62,11 +62,11 @@ namespace :gitlab do
 
           project = Projects::CreateService.new(user, project_params).execute
 
-          if project.valid?
+          if project.persisted?
             puts " * Created #{project.name} (#{repo_path})".green
           else
             puts " * Failed trying to create #{project.name} (#{repo_path})".red
-            puts "   Validation Errors: #{project.errors.messages}".red
+            puts "   Errors: #{project.errors.messages}".red
           end
         end
       end

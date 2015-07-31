@@ -1,9 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.14.0 (unreleased)
+  - Fix network graph when branch name has single quotes (Stan Hu)
   - Upgrade gitlab_git to version 7.2.6 to fix Error 500 when creating network graphs (Stan Hu)
+  - Add support for Unicode filenames in relative links (Hiroyuki Sato)
   - Fix URL used for refreshing notes if relative_url is present (Bartłomiej Święcki)
   - Fix commit data retrieval when branch name has single quotes (Stan Hu)
+  - Check that project was actually created rather than just validated in import:repos task (Stan Hu)
   - Fix full screen mode for snippet comments (Daniel Gerhardt)
   - Fix 404 error in files view after deleting the last file in a repository (Stan Hu)
   - Fix the "Reload with full diff" URL button (Stan Hu)
@@ -15,9 +18,11 @@ v 7.14.0 (unreleased)
   - Expire Rails cache entries after two weeks to prevent endless Redis growth
   - Add support for destroying project milestones (Stan Hu)
   - Add fetch command to the MR page
+  - Add project star and fork count, group avatar URL and user/group web URL attributes to API
   - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
   - Add fetch command to the MR page.
   - Add ability to manage user email addresses via the API.
+  - Disabled autocapitalize and autocorrect on login field (Daryl Chan)
 
 v 7.13.2
   - Fix randomly failed spec

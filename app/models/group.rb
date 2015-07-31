@@ -56,6 +56,12 @@ class Group < Namespace
     name
   end
 
+  def avatar_url(size = nil)
+    if avatar.present?
+      [gitlab_config.url, avatar.url].join
+    end
+  end
+
   def owners
     @owners ||= group_members.owners.map(&:user)
   end
