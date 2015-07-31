@@ -5,6 +5,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   # Authorize
   before_action :authorize_read_group!
   before_action :authorize_admin_group!, except: [:index, :leave]
+  before_action :authorize_admin_group_member!, only: [:create, :resend_invite]
 
   def index
     @project = @group.projects.find(params[:project_id]) if params[:project_id]
@@ -21,8 +22,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   def create
-    return render_403 unless can?(current_user, :admin_group_member, @group)
-
     @group.add_users(params[:user_ids].split(','), params[:access_level], current_user)
 
     redirect_to group_group_members_path(@group), notice: 'Users were successfully added.'
@@ -51,8 +50,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   def resend_invite
-    return render_403 unless can?(current_user, :admin_group_member, @group)
-
     redirect_path = group_group_members_path(@group)
 
     @group_member = @group.group_members.find(params[:id])
