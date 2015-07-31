@@ -11,8 +11,12 @@ class Spinach::Features::ProjectNetworkGraph < Spinach::FeatureSteps
     # Stub Graph max_size to speed up test (10 commits vs. 650)
     Network::Graph.stub(max_count: 10)
 
-    project = Project.find_by(name: "Shop")
-    visit namespace_project_network_path(project.namespace, project, "master")
+    @project = Project.find_by(name: "Shop")
+    visit namespace_project_network_path(@project.namespace, @project, "master")
+  end
+
+  step "I visit project network page on branch 'test'" do
+    visit namespace_project_network_path(@project.namespace, @project, "'test'")
   end
 
   step 'page should select "master" in select box' do
@@ -26,6 +30,12 @@ class Spinach::Features::ProjectNetworkGraph < Spinach::FeatureSteps
   step 'page should have "master" on graph' do
     page.within '.network-graph' do
       expect(page).to have_content 'master'
+    end
+  end
+
+  step "page should have 'test' on graph" do
+    page.within '.network-graph' do
+      expect(page).to have_content "'test'"
     end
   end
 

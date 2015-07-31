@@ -130,7 +130,10 @@ module Backup
 
     def prepare
       FileUtils.rm_rf(backup_repos_path)
-      FileUtils.mkdir_p(backup_repos_path)
+      # Ensure the parent dir of backup_repos_path exists
+      FileUtils.mkdir_p(Gitlab.config.backup.path)
+      # Fail if somebody raced to create backup_repos_path before us
+      FileUtils.mkdir(backup_repos_path, mode: 0700)
     end
 
     def silent
