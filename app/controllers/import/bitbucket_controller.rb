@@ -3,6 +3,7 @@ class Import::BitbucketController < Import::BaseController
   before_action :bitbucket_auth, except: :callback
 
   rescue_from OAuth::Error, with: :bitbucket_unauthorized
+  rescue_from Gitlab::BitbucketImport::Client::Unauthorized, with: :bitbucket_unauthorized
 
   def callback
     request_token = session.delete(:oauth_request_token)

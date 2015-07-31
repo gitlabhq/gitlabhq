@@ -1,25 +1,38 @@
 require 'spec_helper'
 
 describe UsersController do
-  let(:user)    { create(:user, username: 'user1', name: 'User 1', email: 'user1@gitlab.com') }
-
-  before do
-    sign_in(user)
-  end
+  let(:user) { create(:user) }
 
   describe 'GET #show' do
-    render_views
+    it 'is case-insensitive' do
+      user = create(:user, username: 'CamelCaseUser')
+      sign_in(user)
 
-    it 'renders the show template' do
-      get :show, username: user.username
-      expect(response.status).to eq(200)
-      expect(response).to render_template('show')
+      get :show, username: user.username.downcase
+
+      expect(response).to be_success
+    end
+
+    context 'with rendered views' do
+      render_views
+
+      it 'renders the show template' do
+        sign_in(user)
+
+        get :show, username: user.username
+
+        expect(response).to be_success
+        expect(response).to render_template('show')
+      end
     end
   end
 
   describe 'GET #calendar' do
     it 'renders calendar' do
+      sign_in(user)
+
       get :calendar, username: user.username
+
       expect(response).to render_template('calendar')
     end
   end
@@ -30,6 +43,8 @@ describe UsersController do
 
     before do
       allow_any_instance_of(User).to receive(:contributed_projects_ids).and_return([project.id])
+
+      sign_in(user)
       project.team << [user, :developer]
     end
 

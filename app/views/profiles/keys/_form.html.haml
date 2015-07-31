@@ -7,13 +7,12 @@
             %li= msg
 
     .form-group
-      = f.label :title, class: 'control-label'
-      .col-sm-10= f.text_field :title, class: "form-control"
-    .form-group
       = f.label :key, class: 'control-label'
       .col-sm-10
         = f.text_area :key, class: "form-control", rows: 8
-
+    .form-group
+      = f.label :title, class: 'control-label'
+      .col-sm-10= f.text_field :title, class: "form-control"
 
     .form-actions
       = f.submit 'Add key', class: "btn btn-create"

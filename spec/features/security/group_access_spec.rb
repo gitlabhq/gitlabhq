@@ -36,7 +36,7 @@ describe 'Group access', feature: true do
     subject { group_path(group) }
 
     context 'with public projects' do
-      before(:all) { create_project(:public) }
+      let!(:project) { create_project(:public) }
 
       it { is_expected.to be_allowed_for group_member(:owner) }
       it { is_expected.to be_allowed_for group_member(:master) }
@@ -48,7 +48,7 @@ describe 'Group access', feature: true do
     end
 
     context 'with mixed projects' do
-      before(:all) { create_project(:mixed) }
+      let!(:project) { create_project(:mixed) }
 
       it { is_expected.to be_allowed_for group_member(:owner) }
       it { is_expected.to be_allowed_for group_member(:master) }
@@ -60,7 +60,7 @@ describe 'Group access', feature: true do
     end
 
     context 'with internal projects' do
-      before(:all) { create_project(:internal) }
+      let!(:project) { create_project(:internal) }
 
       it { is_expected.to be_allowed_for group_member(:owner) }
       it { is_expected.to be_allowed_for group_member(:master) }
@@ -86,7 +86,7 @@ describe 'Group access', feature: true do
     subject { issues_group_path(group) }
 
     context 'with public projects' do
-      before(:all) { create_project(:public) }
+      let!(:project) { create_project(:public) }
 
       it { is_expected.to be_allowed_for group_member(:owner) }
       it { is_expected.to be_allowed_for group_member(:master) }
@@ -98,7 +98,7 @@ describe 'Group access', feature: true do
     end
 
     context 'with mixed projects' do
-      before(:all) { create_project(:mixed) }
+      let!(:project) { create_project(:mixed) }
 
       it { is_expected.to be_allowed_for group_member(:owner) }
       it { is_expected.to be_allowed_for group_member(:master) }
@@ -110,7 +110,7 @@ describe 'Group access', feature: true do
     end
 
     context 'with internal projects' do
-      before(:all) { create_project(:internal) }
+      let!(:project) { create_project(:internal) }
 
       it { is_expected.to be_allowed_for group_member(:owner) }
       it { is_expected.to be_allowed_for group_member(:master) }
@@ -136,7 +136,7 @@ describe 'Group access', feature: true do
     subject { merge_requests_group_path(group) }
 
     context 'with public projects' do
-      before(:all) { create_project(:public) }
+      let!(:project) { create_project(:public) }
 
       it { is_expected.to be_allowed_for group_member(:owner) }
       it { is_expected.to be_allowed_for group_member(:master) }
@@ -148,7 +148,7 @@ describe 'Group access', feature: true do
     end
 
     context 'with mixed projects' do
-      before(:all) { create_project(:mixed) }
+      let!(:project) { create_project(:mixed) }
 
       it { is_expected.to be_allowed_for group_member(:owner) }
       it { is_expected.to be_allowed_for group_member(:master) }
@@ -160,7 +160,7 @@ describe 'Group access', feature: true do
     end
 
     context 'with internal projects' do
-      before(:all) { create_project(:internal) }
+      let!(:project) { create_project(:internal) }
 
       it { is_expected.to be_allowed_for group_member(:owner) }
       it { is_expected.to be_allowed_for group_member(:master) }
@@ -186,7 +186,7 @@ describe 'Group access', feature: true do
     subject { group_group_members_path(group) }
 
     context 'with public projects' do
-      before(:all) { create_project(:public) }
+      let!(:project) { create_project(:public) }
 
       it { is_expected.to be_allowed_for group_member(:owner) }
       it { is_expected.to be_allowed_for group_member(:master) }
@@ -198,7 +198,7 @@ describe 'Group access', feature: true do
     end
 
     context 'with mixed projects' do
-      before(:all) { create_project(:mixed) }
+      let!(:project) { create_project(:mixed) }
 
       it { is_expected.to be_allowed_for group_member(:owner) }
       it { is_expected.to be_allowed_for group_member(:master) }
@@ -210,7 +210,7 @@ describe 'Group access', feature: true do
     end
 
     context 'with internal projects' do
-      before(:all) { create_project(:internal) }
+      let!(:project) { create_project(:internal) }
 
       it { is_expected.to be_allowed_for group_member(:owner) }
       it { is_expected.to be_allowed_for group_member(:master) }
@@ -236,7 +236,7 @@ describe 'Group access', feature: true do
     subject { edit_group_path(group) }
 
     context 'with public projects' do
-      before(:all) { create_project(:public) }
+      let!(:project) { create_project(:public) }
 
       it { is_expected.to be_allowed_for group_member(:owner) }
       it { is_expected.to be_denied_for group_member(:master) }
@@ -248,7 +248,7 @@ describe 'Group access', feature: true do
     end
 
     context 'with mixed projects' do
-      before(:all) { create_project(:mixed) }
+      let!(:project) { create_project(:mixed) }
 
       it { is_expected.to be_allowed_for group_member(:owner) }
       it { is_expected.to be_denied_for group_member(:master) }
@@ -260,7 +260,7 @@ describe 'Group access', feature: true do
     end
 
     context 'with internal projects' do
-      before(:all) { create_project(:internal) }
+      let!(:project) { create_project(:internal) }
 
       it { is_expected.to be_allowed_for group_member(:owner) }
       it { is_expected.to be_denied_for group_member(:master) }

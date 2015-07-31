@@ -111,14 +111,20 @@ describe Project do
     expect(project.url_to_repo).to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + 'somewhere.git')
   end
 
-  it 'returns the full web URL for this repo' do
-    project = Project.new(path: 'somewhere')
-    expect(project.web_url).to eq("#{Gitlab.config.gitlab.url}/somewhere")
+  describe "#web_url" do
+    let(:project) { create(:empty_project, path: "somewhere") }
+
+    it 'returns the full web URL for this repo' do
+      expect(project.web_url).to eq("#{Gitlab.config.gitlab.url}/#{project.namespace.path}/somewhere")
+    end
   end
 
-  it 'returns the web URL without the protocol for this repo' do
-    project = Project.new(path: 'somewhere')
-    expect(project.web_url_without_protocol).to eq("#{Gitlab.config.gitlab.url.split('://')[1]}/somewhere")
+  describe "#web_url_without_protocol" do
+    let(:project) { create(:empty_project, path: "somewhere") }
+
+    it 'returns the web URL without the protocol for this repo' do
+      expect(project.web_url_without_protocol).to eq("#{Gitlab.config.gitlab.url.split('://')[1]}/#{project.namespace.path}/somewhere")
+    end
   end
 
   describe 'last_activity methods' do
