@@ -8,6 +8,7 @@ describe API::API, api: true  do
   let!(:merge_request_closed) { create(:merge_request, state: "closed", author: user, assignee: user, source_project: project, target_project: project, title: "Closed test") }
   let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignee: user, source_project: project, target_project: project, title: "Merged test") }
   let!(:note) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
+  let!(:note2) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "another comment on a MR") }
 
   before do
     project.team << [user, :reporters]
@@ -397,13 +398,14 @@ describe API::API, api: true  do
   end
 
   describe "GET :id/merge_request/:merge_request_id/comments" do
-    it "should return merge_request comments" do
+    it "should return merge_request comments ordered by created_at" do
       get api("/projects/#{project.id}/merge_request/#{merge_request.id}/comments", user)
       expect(response.status).to eq(200)
       expect(json_response).to be_an Array
-      expect(json_response.length).to eq(1)
+      expect(json_response.length).to eq(2)
       expect(json_response.first['note']).to eq("a comment on a MR")
       expect(json_response.first['author']['id']).to eq(user.id)
+      expect(json_response.last['note']).to eq("another comment on a MR")
     end
 
     it "should return a 404 error if merge_request_id not found" do

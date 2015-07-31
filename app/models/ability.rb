@@ -156,12 +156,13 @@ class Ability
         :create_project_snippet,
         :update_issue,
         :admin_issue,
-        :admin_label,
+        :admin_label
       ]
     end
 
     def project_dev_rules
       project_report_rules + [
+        :admin_merge_request,
         :create_merge_request,
         :create_wiki,
         :push_code
@@ -248,7 +249,8 @@ class Ability
       if group.has_owner?(user) || user.admin?
         rules.push(*[
           :admin_group,
-          :admin_namespace
+          :admin_namespace,
+          :admin_group_member
         ])
 
         unless group.ldap_synced?

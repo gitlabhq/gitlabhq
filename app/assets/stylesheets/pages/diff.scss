@@ -65,6 +65,17 @@
       color: #777;
     }
 
+    .suppressed-container {
+      padding: ($padding-base-vertical + 5px) $padding-base-horizontal;
+      text-align: center;
+
+      // "Changes suppressed. Click to show." link
+      .show-suppressed-diff {
+        font-size: 110%;
+        font-weight: bold;
+      }
+    }
+
     table {
       width: 100%;
       font-family: $monospace_font;

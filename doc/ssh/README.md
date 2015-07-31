@@ -105,3 +105,6 @@ IdentityFile ~/my-ssh-key-directory/company-com-private-key-filename
 Note in the gitlab.com example above a username was specified to override the default chosen by OpenSSH (your local username). This is only required if your local and remote usernames differ.
 
 Due to the wide variety of SSH clients and their very large number of configuration options, further explanation of these topics is beyond the scope of this document.
+
+Public SSH keys need to be unique, as they will bind to your account. Your SSH key is the only identifier you'll
+have when pushing code via SSH. That's why it needs to uniquely map to a single user.
