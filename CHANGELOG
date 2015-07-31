@@ -22,6 +22,7 @@ v 7.14.0 (unreleased)
   - Add project star and fork count, group avatar URL and user/group web URL attributes to API
   - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
   - Add fetch command to the MR page.
+  - Add ability to manage user email addresses via the API.
   - Disabled autocapitalize and autocorrect on login field (Daryl Chan)
   - Mention group and project name in creation, update and deletion notices (Achilleas Pipinellis)
 
