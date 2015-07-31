@@ -463,7 +463,7 @@ GEM
     rack-attack (4.3.0)
       rack
     rack-cors (0.2.9)
-    rack-mini-profiler (0.9.0)
+    rack-mini-profiler (0.9.6)
       rack (>= 1.1.3)
     rack-mount (0.8.3)
       rack (>= 1.0.0)
@@ -873,6 +873,3 @@ DEPENDENCIES
   virtus
   webmock (~> 1.21.0)
   wikicloth (= 0.8.1)
-
-BUNDLED WITH
-   1.10.5
