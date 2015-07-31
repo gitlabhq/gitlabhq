@@ -131,11 +131,11 @@ module API
       # Add ssh key to a specified user. Only available to admin users.
       #
       # Parameters:
-      # id (required) - The ID of a user
-      # key (required) - New SSH Key
-      # title (required) - New SSH Key's title
+      #   id (required) - The ID of a user
+      #   key (required) - New SSH Key
+      #   title (required) - New SSH Key's title
       # Example Request:
-      # POST /users/:id/keys
+      #   POST /users/:id/keys
       post ":id/keys" do
         authenticated_as_admin!
         required_attributes! [:title, :key]
@@ -153,9 +153,9 @@ module API
       # Get ssh keys of a specified user. Only available to admin users.
       #
       # Parameters:
-      # uid (required) - The ID of a user
+      #   uid (required) - The ID of a user
       # Example Request:
-      # GET /users/:uid/keys
+      #   GET /users/:uid/keys
       get ':uid/keys' do
         authenticated_as_admin!
         user = User.find_by(id: params[:uid])
@@ -188,10 +188,10 @@ module API
       # Add email to a specified user. Only available to admin users.
       #
       # Parameters:
-      # id (required) - The ID of a user
-      # email (required) - Email address
+      #   id (required) - The ID of a user
+      #   email (required) - Email address
       # Example Request:
-      # POST /users/:id/emails
+      #   POST /users/:id/emails
       post ":id/emails" do
         authenticated_as_admin!
         required_attributes! [:email]
@@ -210,9 +210,9 @@ module API
       # Get emails of a specified user. Only available to admin users.
       #
       # Parameters:
-      # uid (required) - The ID of a user
+      #   uid (required) - The ID of a user
       # Example Request:
-      # GET /users/:uid/emails
+      #   GET /users/:uid/emails
       get ':uid/emails' do
         authenticated_as_admin!
         user = User.find_by(id: params[:uid])
