@@ -5,7 +5,7 @@ module Notes
 
       note.update_attributes(params.merge(updated_by: current_user))
 
-      project.reset_events_cache
+      note.reset_events_cache
 
       note
     end
