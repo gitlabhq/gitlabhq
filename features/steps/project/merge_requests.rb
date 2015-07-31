@@ -325,6 +325,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click the "Target branch" dropdown' do
+    sleep 0.5
     first('.target_branch').click
   end
 
