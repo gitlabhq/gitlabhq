@@ -338,6 +338,17 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     expect(page).to have_content 'Target branch changed from master to feature'
   end
 
+  step 'project settings contain list of approvers' do
+    project.update(approvals_before_merge: 1)
+    project.approvers.create(user_id: current_user.id)
+  end
+
+  step 'I see suggested approver' do
+    page.within '.project-approvers' do
+      expect(page).to have_content(current_user.name)
+    end
+  end
+
   step 'merge request \'Bug NS-04\' must be approved' do
     merge_request = MergeRequest.find_by!(title: "Bug NS-04")
     project = merge_request.target_project
@@ -350,7 +361,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     merge_request = MergeRequest.find_by!(title: "Bug NS-04")
     project = merge_request.target_project
     project.approvals_before_merge = 1
-    project.approvers.create(user_id: current_user.id)
+    merge_request.approvers.create(user_id: current_user.id)
     project.ensure_satellite_exists
     project.save!
   end
@@ -359,7 +370,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     merge_request = MergeRequest.find_by!(title: "Bug NS-04")
     project = merge_request.target_project
     project.approvals_before_merge = 1
-    project.approvers.create(user_id: create(:user).id)
+    merge_request.approvers.create(user_id: create(:user).id)
     project.ensure_satellite_exists
     project.save!
   end

@@ -1,8 +1,10 @@
 v 7.14
   - Disable adding, updating and removing members from a group that is synced with LDAP
+  - Don't send "Added to group" notifications when group is LDAP synched
 
 v 7.13.2
   - Fix group web hook
+  - Don't resend admin email to everyone if one delivery fails
 
 v 7.13.1
   - Merge community edition changes for version 7.13.1
