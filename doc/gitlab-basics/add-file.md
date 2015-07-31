@@ -2,7 +2,7 @@
 
 You can create a file in your [shell](command-line-commands.md) or in GitLab.
 
-To create a file in GitLab, sign in to [GitLab.com](https://gitlab.com).
+To create a file in GitLab, sign in to GitLab.
 
 Select a project on the right side of your screen:
 

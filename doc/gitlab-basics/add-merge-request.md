@@ -2,9 +2,9 @@
 
 Merge Requests are useful to integrate separate changes that you've made to a project, on different branches.
 
-To create a new Merge Request, sign in to [GitLab.com](https://gitlab.com).
+To create a new Merge Request, sign in to GitLab.
 
-Select a project on the right side of your screen:
+Go to the project where you'd like to merge your changes:
 
 ![Select a project](basicsimages/select_project.png)
 

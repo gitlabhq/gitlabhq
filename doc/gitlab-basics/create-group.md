@@ -2,7 +2,7 @@
 
 ## Create a group
 
-Your projects in [GitLab.com](https://gitlab.com) can be organized in 2 different ways:
+Your projects in GitLab can be organized in 2 different ways:
 under your own namespace for single projects, such as ´your-name/project-1'; or under groups.
 If you organize your projects under a group, it works like a folder. You can manage your group members' permissions and access to the projects.
 

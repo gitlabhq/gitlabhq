@@ -6,7 +6,7 @@ publishing or not, without affecting your original project.
 
 It takes just a few steps to fork a project in GitLab.
 
-Sign in to [gitlab.com](https://gitlab.com).
+Sign in to GitLab.
 
 Select a project on the right side of your screen:
 
