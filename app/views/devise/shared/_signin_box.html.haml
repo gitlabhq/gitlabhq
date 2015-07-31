@@ -6,7 +6,7 @@
     .login-heading
       %h3 Sign in
   .login-body
-    - if ldap_enabled?
+    - if form_based_providers.any?
       %ul.nav.nav-tabs
         - @ldap_servers.each_with_index do |server, i|
           %li{class: (:active if i.zero?)}

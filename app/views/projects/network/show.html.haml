@@ -17,9 +17,9 @@
 
 :javascript
   network_graph = new Network({
-    url: '#{namespace_project_network_path(@project.namespace, @project, @ref, @options.merge(format: :json))}',
-    commit_url: '#{namespace_project_commit_path(@project.namespace, @project, 'ae45ca32').gsub("ae45ca32", "%s")}',
-    ref: '#{@ref}',
+    url: "#{escape_javascript(@url)}",
+    commit_url: "#{escape_javascript(@commit_url)}",
+    ref: "#{escape_javascript(@ref)}",
     commit_id: '#{@commit.id}'
   })
   new ShortcutsNetwork(network_graph.branch_graph)

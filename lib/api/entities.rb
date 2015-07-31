@@ -6,6 +6,10 @@ module API
 
     class UserBasic < UserSafe
       expose :id, :state, :avatar_url
+
+      expose :web_url do |user, options|
+        Rails.application.routes.url_helpers.user_url(user)
+      end
     end
 
     class User < UserBasic
@@ -64,6 +68,7 @@ module API
       expose :namespace
       expose :forked_from_project, using: Entities::ForkedFromProject, if: lambda{ | project, options | project.forked? }
       expose :avatar_url
+      expose :star_count, :forks_count
     end
 
     class ProjectMember < UserBasic
@@ -79,6 +84,11 @@ module API
     class Group < Grape::Entity
       expose :id, :name, :path, :ldap_cn, :ldap_access, :description
       expose :ldap_group_links, using: Entities::LdapGroupLink, if: lambda{ | group, options | group.ldap_group_links.any? }
+      expose :avatar_url
+
+      expose :web_url do |group, options|
+        Rails.application.routes.url_helpers.group_url(group)
+      end
     end
 
     class GroupDetail < Group

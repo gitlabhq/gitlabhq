@@ -3,6 +3,10 @@ class Groups::ApplicationController < ApplicationController
 
   private
 
+  def group
+    @group ||= Group.find_by(path: params[:group_id])
+  end
+
   def authorize_read_group!
     unless @group and can?(current_user, :read_group, @group)
       if current_user.nil?
@@ -19,7 +23,9 @@ class Groups::ApplicationController < ApplicationController
     end
   end
 
-  def group
-    @group ||= Group.find_by(path: params[:group_id])
+  def authorize_admin_group_member!
+    unless can?(current_user, :admin_group_member, group)
+      return render_403
+    end
   end
 end

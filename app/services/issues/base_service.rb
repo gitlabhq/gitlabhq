@@ -10,6 +10,10 @@ module Issues
 
     private
 
+    def filter_params
+      super(:issue)
+    end
+
     def execute_hooks(issue, action = 'open')
       issue_data = hook_data(issue, action)
       issue.project.execute_hooks(issue_data, :issue_hooks)
