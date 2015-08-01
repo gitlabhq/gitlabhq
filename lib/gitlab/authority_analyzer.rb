@@ -1,62 +1,44 @@
 module Gitlab
   class AuthorityAnalyzer
-    COMMITS_TO_CONSIDERATION = 5
+    COMMITS_TO_CONSIDER = 5
 
-    def initialize(data, current_user)
-      @source_branch = data[:source_branch]
-      @source_project = data[:source_project]
-      @target_branch = data[:target_branch]
-      @target_project = data[:target_project]
+    def initialize(merge_request, current_user)
+      @merge_request = merge_request
       @current_user = current_user
-      @users = {}
+      @users = Hash.new(0)
     end
 
     def calculate(number_of_approvers)
       involved_users
 
       # Picks most active users from hash like: {user1: 2, user2: 6}
-      @users.to_a.sort{|a, b| b.last <=> a.last }[0..number_of_approvers].map(&:first)
+      @users.sort_by { |user, count| count }.map(&:first).take(number_of_approvers)
     end
 
     private
 
     def involved_users
-      @repo = @target_project.repository
+      @repo = @merge_request.target_project.repository
 
       list_of_involved_files.each do |path|
-        @repo.commits(@target_branch, path, COMMITS_TO_CONSIDERATION).each do |commit|
-          add_user_to_list(commit.author) unless commit.author.nil?
+        @repo.commits(@merge_request.target_branch, path, COMMITS_TO_CONSIDER).each do |commit|
+          @users[commit.author] += 1 if commit.author
         end
       end
-    end
-
-    def add_user_to_list(user)
-      @users[user] = @users[user].nil? ? 1 : (@users[user] + 1)
     end
 
     def list_of_involved_files
-      compare_result = CompareService.new.execute(
-        @current_user,
-        @source_project,
-        @source_branch,
-        @target_project,
-        @target_branch,
-      )
+      compare_diffs = @merge_request.compare_diffs || @merge_request.diffs
 
-      commits = compare_result.commits
-
-      if commits.present? && compare_result.diffs.present?
-        return compare_result.diffs.map do |diff|
-          case true
-          when diff.deleted_file, diff.renamed_file
-            diff.old_path
-          else
-            diff.new_path
-          end
+      return [] unless compare_diffs.present?
+      
+      compare_diffs.map do |diff|
+        if diff.deleted_file || diff.renamed_file
+          diff.old_path
+        else
+          diff.new_path
         end
       end
-
-      []
     end
   end
 end
