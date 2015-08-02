@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.14.0 (unreleased)
+  - Fix "Network" and "Graphs" pages for branches with encoded slashes (Stan Hu)
   - Fix errors deleting and creating branches with encoded slashes (Stan Hu)
   - Fix multi-line syntax highlighting (Stan Hu)
   - Fix network graph when branch name has single quotes (Stan Hu)
