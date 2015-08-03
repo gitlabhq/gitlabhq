@@ -25,6 +25,7 @@ v 7.14.0 (unreleased)
   - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
   - Add fetch command to the MR page.
   - Add ability to manage user email addresses via the API.
+  - Show buttons to add license, changelog and contribution guide if they're missing.
   - Disabled autocapitalize and autocorrect on login field (Daryl Chan)
   - Mention group and project name in creation, update and deletion notices (Achilleas Pipinellis)
   - Remove redis-store TTL monkey patch

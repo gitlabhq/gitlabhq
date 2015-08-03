@@ -100,7 +100,7 @@
         = link_to 'Change branches', mr_change_branches_path(@merge_request)
 
 .form-actions
-  - if !issuable.project.empty_repo? && (guide_url = contribution_guide_url(issuable.project)) && !issuable.persisted?
+  - if !issuable.project.empty_repo? && (guide_url = contribution_guide_path(issuable.project)) && !issuable.persisted?
     %p
       Please review the
       %strong #{link_to 'guidelines for contribution', guide_url}
