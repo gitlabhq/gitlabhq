@@ -21,12 +21,13 @@
 #  import_url             :string(255)
 #  visibility_level       :integer          default(0), not null
 #  archived               :boolean          default(FALSE), not null
+#  avatar                 :string(255)
 #  import_status          :string(255)
 #  repository_size        :float            default(0.0)
 #  star_count             :integer          default(0), not null
 #  import_type            :string(255)
 #  import_source          :string(255)
-#  avatar                 :string(255)
+#  commit_count           :integer          default(0)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -36,7 +37,6 @@ class Project < ActiveRecord::Base
   include Gitlab::ConfigHelper
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
-  include Rails.application.routes.url_helpers
   include Referable
   include Sortable
 
@@ -316,7 +316,7 @@ class Project < ActiveRecord::Base
   end
 
   def web_url
-    [gitlab_config.url, path_with_namespace].join('/')
+    Rails.application.routes.url_helpers.namespace_project_url(self.namespace, self)
   end
 
   def web_url_without_protocol
@@ -433,7 +433,7 @@ class Project < ActiveRecord::Base
     if avatar.present?
       [gitlab_config.url, avatar.url].join
     elsif avatar_in_git
-      [gitlab_config.url, namespace_project_avatar_path(namespace, self)].join
+      Rails.application.routes.url_helpers.namespace_project_avatar_url(namespace, self)
     end
   end
 
@@ -571,7 +571,7 @@ class Project < ActiveRecord::Base
   end
 
   def http_url_to_repo
-    [gitlab_config.url, '/', path_with_namespace, '.git'].join('')
+    "#{web_url}.git"
   end
 
   # Check if current branch name is marked as protected in the system
@@ -705,14 +705,14 @@ class Project < ActiveRecord::Base
         ensure_satellite_exists
         true
       else
-        errors.add(:base, 'Failed to fork repository')
+        errors.add(:base, 'Failed to fork repository via gitlab-shell')
         false
       end
     else
       if gitlab_shell.add_repository(path_with_namespace)
         true
       else
-        errors.add(:base, 'Failed to create repository')
+        errors.add(:base, 'Failed to create repository via gitlab-shell')
         false
       end
     end

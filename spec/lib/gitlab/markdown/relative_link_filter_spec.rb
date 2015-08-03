@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'spec_helper'
 
 module Gitlab::Markdown
@@ -99,6 +101,20 @@ module Gitlab::Markdown
       it 'does not modify absolute URL' do
         doc = filter(link('http://example.com'))
         expect(doc.at_css('a')['href']).to eq 'http://example.com'
+      end
+
+      it 'supports Unicode filenames' do
+        path = 'files/images/한글.png'
+        escaped = Addressable::URI.escape(path)
+
+        # Stub these methods so the file doesn't actually need to be in the repo
+        allow_any_instance_of(described_class).to receive(:file_exists?).
+          and_return(true)
+        allow_any_instance_of(described_class).
+          to receive(:image?).with(path).and_return(true)
+
+        doc = filter(image(escaped))
+        expect(doc.at_css('img')['src']).to match '/raw/'
       end
 
       context 'when requested path is a file in the repo' do

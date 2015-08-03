@@ -131,11 +131,11 @@ module API
       # Add ssh key to a specified user. Only available to admin users.
       #
       # Parameters:
-      # id (required) - The ID of a user
-      # key (required) - New SSH Key
-      # title (required) - New SSH Key's title
+      #   id (required) - The ID of a user
+      #   key (required) - New SSH Key
+      #   title (required) - New SSH Key's title
       # Example Request:
-      # POST /users/:id/keys
+      #   POST /users/:id/keys
       post ":id/keys" do
         authenticated_as_admin!
         required_attributes! [:title, :key]
@@ -153,9 +153,9 @@ module API
       # Get ssh keys of a specified user. Only available to admin users.
       #
       # Parameters:
-      # uid (required) - The ID of a user
+      #   uid (required) - The ID of a user
       # Example Request:
-      # GET /users/:uid/keys
+      #   GET /users/:uid/keys
       get ':uid/keys' do
         authenticated_as_admin!
         user = User.find_by(id: params[:uid])
@@ -182,6 +182,65 @@ module API
           key.destroy
         rescue ActiveRecord::RecordNotFound
           not_found!('Key')
+        end
+      end
+
+      # Add email to a specified user. Only available to admin users.
+      #
+      # Parameters:
+      #   id (required) - The ID of a user
+      #   email (required) - Email address
+      # Example Request:
+      #   POST /users/:id/emails
+      post ":id/emails" do
+        authenticated_as_admin!
+        required_attributes! [:email]
+
+        user = User.find(params[:id])
+        attrs = attributes_for_keys [:email]
+        email = user.emails.new attrs
+        if email.save
+          NotificationService.new.new_email(email)
+          present email, with: Entities::Email
+        else
+          render_validation_error!(email)
+        end
+      end
+
+      # Get emails of a specified user. Only available to admin users.
+      #
+      # Parameters:
+      #   uid (required) - The ID of a user
+      # Example Request:
+      #   GET /users/:uid/emails
+      get ':uid/emails' do
+        authenticated_as_admin!
+        user = User.find_by(id: params[:uid])
+        not_found!('User') unless user
+
+        present user.emails, with: Entities::Email
+      end
+
+      # Delete existing email of a specified user. Only available to admin
+      # users.
+      #
+      # Parameters:
+      #   uid (required) - The ID of a user
+      #   id (required) - Email ID
+      # Example Request:
+      #   DELETE /users/:uid/emails/:id
+      delete ':uid/emails/:id' do
+        authenticated_as_admin!
+        user = User.find_by(id: params[:uid])
+        not_found!('User') unless user
+
+        begin
+          email = user.emails.find params[:id]
+          email.destroy
+
+          user.update_secondary_emails!
+        rescue ActiveRecord::RecordNotFound
+          not_found!('Email')
         end
       end
 
@@ -286,6 +345,58 @@ module API
         begin
           key = current_user.keys.find params[:id]
           key.destroy
+        rescue
+        end
+      end
+
+      # Get currently authenticated user's emails
+      #
+      # Example Request:
+      #   GET /user/emails
+      get "emails" do
+        present current_user.emails, with: Entities::Email
+      end
+
+      # Get single email owned by currently authenticated user
+      #
+      # Example Request:
+      #   GET /user/emails/:id
+      get "emails/:id" do
+        email = current_user.emails.find params[:id]
+        present email, with: Entities::Email
+      end
+
+      # Add new email to currently authenticated user
+      #
+      # Parameters:
+      #   email (required) - Email address
+      # Example Request:
+      #   POST /user/emails
+      post "emails" do
+        required_attributes! [:email]
+
+        attrs = attributes_for_keys [:email]
+        email = current_user.emails.new attrs
+        if email.save
+          NotificationService.new.new_email(email)
+          present email, with: Entities::Email
+        else
+          render_validation_error!(email)
+        end
+      end
+
+      # Delete existing email of currently authenticated user
+      #
+      # Parameters:
+      #   id (required) - EMail ID
+      # Example Request:
+      #   DELETE /user/emails/:id
+      delete "emails/:id" do
+        begin
+          email = current_user.emails.find params[:id]
+          email.destroy
+
+          current_user.update_secondary_emails!
         rescue
         end
       end

@@ -16,8 +16,6 @@ module Backup
           file << s.to_yaml.gsub(/^---\n/,'')
         end
 
-        FileUtils.chmod(0700, folders_to_backup)
-
         # create archive
         $progress.print "Creating backup archive: #{tar_file} ... "
         # Set file permissions on open to prevent chmod races.

@@ -397,6 +397,138 @@ Parameters:
 
 Will return `200 OK` on success, or `404 Not found` if either user or key cannot be found.
 
+## List emails
+
+Get a list of currently authenticated user's emails.
+
+```
+GET /user/emails
+```
+
+```json
+[
+  {
+    "id": 1,
+    "email": "email@example.com"
+  },
+  {
+    "id": 3,
+    "email": "email2@example.com"
+  }
+]
+```
+
+Parameters:
+
+- **none**
+
+## List emails for user
+
+Get a list of a specified user's emails. Available only for admin
+
+```
+GET /users/:uid/emails
+```
+
+Parameters:
+
+- `uid` (required) - id of specified user
+
+## Single email
+
+Get a single email.
+
+```
+GET /user/emails/:id
+```
+
+Parameters:
+
+- `id` (required) - email ID
+
+```json
+{
+  "id": 1,
+  "email": "email@example.com"
+}
+```
+
+## Add email
+
+Creates a new email owned by the currently authenticated user.
+
+```
+POST /user/emails
+```
+
+Parameters:
+
+- `email` (required) - email address
+
+```json
+{
+  "id": 4,
+  "email": "email@example.com"
+}
+```
+
+Will return created email with status `201 Created` on success. If an
+error occurs a `400 Bad Request` is returned with a message explaining the error:
+
+```json
+{
+  "message": {
+    "email": [
+      "has already been taken"
+    ]
+  }
+}
+```
+
+## Add email for user
+
+Create new email owned by specified user. Available only for admin
+
+```
+POST /users/:id/emails
+```
+
+Parameters:
+
+- `id` (required)    - id of specified user
+- `email` (required) - email address
+
+Will return created email with status `201 Created` on success, or `404 Not found` on fail.
+
+## Delete email for current user
+
+Deletes email owned by currently authenticated user.
+This is an idempotent function and calling it on a email that is already deleted
+or not available results in `200 OK`.
+
+```
+DELETE /user/emails/:id
+```
+
+Parameters:
+
+- `id` (required) - email ID
+
+## Delete email for given user
+
+Deletes email owned by a specified user. Available only for admin.
+
+```
+DELETE /users/:uid/emails/:id
+```
+
+Parameters:
+
+- `uid` (required) - id of specified user
+- `id` (required)  - email ID
+
+Will return `200 OK` on success, or `404 Not found` if either user or email cannot be found.
+
 ## Block user
 
 Blocks the specified user.  Available only for admin.
