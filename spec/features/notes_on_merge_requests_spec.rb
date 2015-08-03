@@ -65,16 +65,10 @@ describe 'Comments', feature: true do
     end
 
     describe 'when editing a note', js: true do
-      it 'should contain the hidden edit form' do
-        page.within("#note_#{note.id}") do
-          is_expected.to have_css('.note-edit-form', visible: false)
-        end
-      end
-
       describe 'editing the note' do
         before do
           find('.note').hover
-          find(".js-note-edit").click
+          find(".note-edit").click
         end
 
         it 'should show the note edit form and hide the note body' do
@@ -111,7 +105,7 @@ describe 'Comments', feature: true do
       describe 'deleting an attachment' do
         before do
           find('.note').hover
-          find('.js-note-edit').click
+          find('.note-edit').click
         end
 
         it 'shows the delete link' do

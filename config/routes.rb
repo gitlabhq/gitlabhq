@@ -518,7 +518,7 @@ Gitlab::Application.routes.draw do
           end
         end
 
-        resources :notes, only: [:index, :create, :destroy, :update], constraints: { id: /\d+/ } do
+        resources :notes, only: [:index, :create, :edit, :destroy, :update], constraints: { id: /\d+/ } do
           member do
             delete :delete_attachment
           end
