@@ -1,13 +1,13 @@
-# Project users and members
+# Project users
 
-You can add or import users to your projects. You can also give them different access
-levels.
+You can manage the groups and users and their access levels in all of your projects. You can also personalize the access level you give each user, per project.
 
-You should have 'master' or 'owner' permissions to add or import a new user to your
-project.
+Here's how to add or import users to your projects.
 
-To add or import a user, go to your project and click on "Members" on the left side
-of your screen:
+You should have 'master' or 'owner' permissions to add or import a new user
+to your project.
+
+To add or import a user, go to your project and click on "Members" on the left side of your screen:
 
 ![Members](images/members.png)
 
