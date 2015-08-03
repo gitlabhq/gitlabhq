@@ -94,12 +94,16 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @diffs = @merge_request.compare_diffs
     @note_counts = Note.where(commit_id: @commits.map(&:id)).
       group(:commit_id).count
+
+    set_suggested_approvers
   end
 
   def edit
     @source_project = @merge_request.source_project
     @target_project = @merge_request.target_project
     @target_branches = @merge_request.target_project.repository.branch_names
+
+    set_suggested_approvers
   end
 
   def create
@@ -286,6 +290,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def invalid_mr
     # Render special view for MR with removed source or target branch
     render 'invalid'
+  end
+
+  def set_suggested_approvers
+    if @merge_request.requires_approve?
+      @suggested_approvers = Gitlab::AuthorityAnalyzer.new(
+        @merge_request,
+        current_user
+      ).calculate(@merge_request.approvals_required)
+    end
   end
 
   def merge_request_params

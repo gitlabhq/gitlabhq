@@ -260,6 +260,15 @@ Feature: Project Merge Requests
     When I click link "New Merge Request"
     And I select "fix" as source
     Then I see suggested approver
+
+  @javascript
+  Scenario: I see auto-suggested approvers on new merge request form
+    Given project settings contain list of approvers
+    And there is one auto-suggested approver
+    When I click link "New Merge Request"
+    And I select "fix" as source
+    Then I see auto-suggested approver
+    And I can add it to approver list
     
 
   Scenario: I should see rebase checkbox
