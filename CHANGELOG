@@ -27,6 +27,7 @@ v 7.14.0 (unreleased)
   - Add ability to manage user email addresses via the API.
   - Disabled autocapitalize and autocorrect on login field (Daryl Chan)
   - Mention group and project name in creation, update and deletion notices (Achilleas Pipinellis)
+  - Remove redis-store TTL monkey patch
 
 v 7.13.2
   - Fix randomly failed spec
