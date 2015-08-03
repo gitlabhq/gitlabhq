@@ -54,7 +54,7 @@ Add the commit:
 git commit -m “DESCRIBE COMMIT IN A FEW WORDS”
 ```
 
-Send your changes to GitLab.com:
+Now you can push (send) your changes (in the branch NAME-OF-BRANCH) to GitLab (the git remote named 'origin'):
 ```
 git push origin NAME-OF-BRANCH
 ```
