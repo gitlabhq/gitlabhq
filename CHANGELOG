@@ -47,6 +47,7 @@ v 7.14.1
   - Only include base URL in OmniAuth full_host parameter (Stan Hu)
   - Fix Error 500 in API when accessing a group that has an avatar (Stan Hu)
   - Ability to enable SSL verification for Webhooks
+  - Add FogBugz project import (Jared Szechy)
 
 v 7.14.0
   - Fix bug where non-project members of the target project could set labels on new merge requests.

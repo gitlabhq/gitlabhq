@@ -43,6 +43,8 @@ class Project < ActiveRecord::Base
   extend Gitlab::ConfigHelper
   extend Enumerize
 
+  UNKNOWN_IMPORT_URL = 'http://unknown.git'
+
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
   default_value_for :issues_enabled, gitlab_config_features.issues
