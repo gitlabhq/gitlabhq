@@ -1,8 +1,8 @@
 class @Project
   constructor: ->
     # Git clone panel switcher
-    cloneHolder = $ '.git-clone-holder'
-    if cloneHolder.length > 0
+    cloneHolder = $('.git-clone-holder')
+    if cloneHolder.length
       $('a, button', cloneHolder).click ->
         $('a, button', cloneHolder).removeClass 'active'
         $(@).addClass 'active'
@@ -28,4 +28,4 @@ class @Project
     $('.js-toggle-clone-holder').on 'click', (e) ->
       cloneHolder.toggle()
 
-    cloneHolder.hide()
+    cloneHolder.hide() unless $('.empty-project').length
