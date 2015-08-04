@@ -249,7 +249,7 @@ Deleting tmp directories...[DONE]
 We will assume that you have installed GitLab from an omnibus package and run
 `sudo gitlab-ctl reconfigure` at least once.
 
-First make sure your backup tar file is in `/var/opt/gitlab/backups`.
+First make sure your backup tar file is in `/var/opt/gitlab/backups` (or wherever `gitlab_rails['backup_path']` points to).
 
 ```shell
 sudo cp 1393513186_gitlab_backup.tar /var/opt/gitlab/backups/
