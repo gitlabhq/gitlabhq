@@ -185,6 +185,9 @@ gem 'mousetrap-rails'
 # Detect and convert string character encoding
 gem 'charlock_holmes'
 
+# Automatical linking
+gem 'rinku'
+
 gem "sass-rails", '~> 4.0.5'
 gem "coffee-rails"
 gem "uglifier"
