@@ -200,7 +200,7 @@ module API
             if merge_request.can_be_merged?
               commit_message = params[:merge_commit_message] || merge_request.merge_commit_message
 
-              MergeRequests::MergeService.new(merge_request.target_project, current_user).
+              ::MergeRequests::MergeService.new(merge_request.target_project, current_user).
                 execute(merge_request, commit_message)
 
               present merge_request, with: Entities::MergeRequest
