@@ -9,7 +9,7 @@ namespace :gitlab do
     #  * The project owner will set to the first administator of the system
     #  * Existing projects will be skipped
     #
-    desc "GITLAB | Import bare repositories from gitlab_shell -> repos_path into GitLab project instance"
+    desc "GitLab | Import bare repositories from gitlab_shell -> repos_path into GitLab project instance"
     task repos: :environment do
 
       git_base_path = Gitlab.config.gitlab_shell.repos_path
@@ -35,7 +35,7 @@ namespace :gitlab do
         if project
           puts " * #{project.name} (#{repo_path}) exists"
         else
-          user = User.admins.first
+          user = User.admins.reorder("id").first
 
           project_params = {
             name: name,
@@ -62,11 +62,11 @@ namespace :gitlab do
 
           project = Projects::CreateService.new(user, project_params).execute
 
-          if project.valid?
+          if project.persisted?
             puts " * Created #{project.name} (#{repo_path})".green
           else
             puts " * Failed trying to create #{project.name} (#{repo_path})".red
-            puts "   Validation Errors: #{project.errors.messages}".red
+            puts "   Errors: #{project.errors.messages}".red
           end
         end
       end

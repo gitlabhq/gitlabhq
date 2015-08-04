@@ -1,5 +1,4 @@
 #= require d3
-#= require jquery
 #= require stat_graph_contributors_util
 
 class @ContributorsStatGraph

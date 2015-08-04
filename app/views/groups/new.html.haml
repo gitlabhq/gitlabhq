@@ -1,3 +1,5 @@
+- page_title    'New Group'
+- header_title  'New Group'
 = form_for @group, html: { class: 'group-form form-horizontal' } do |f|
   - if @group.errors.any?
     .alert.alert-danger
@@ -11,8 +13,7 @@
       = render 'shared/choose_group_avatar_button', f: f
 
   .form-group
-    .col-sm-2
-    .col-sm-10
+    .col-sm-offset-2.col-sm-10
       = render 'shared/group_tips'
 
   .form-actions

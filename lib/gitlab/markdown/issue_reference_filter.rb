@@ -20,18 +20,13 @@ module Gitlab
       #
       # Returns a String replaced with the return of the block.
       def self.references_in(text)
-        text.gsub(ISSUE_PATTERN) do |match|
+        text.gsub(Issue.reference_pattern) do |match|
           yield match, $~[:issue].to_i, $~[:project]
         end
       end
 
-      # Pattern used to extract `#123` issue references from text
-      #
-      # This pattern supports cross-project references.
-      ISSUE_PATTERN = /#{PROJECT_PATTERN}?\#(?<issue>([a-zA-Z\-]+-)?\d+)/
-
       def call
-        replace_text_nodes_matching(ISSUE_PATTERN) do |content|
+        replace_text_nodes_matching(Issue.reference_pattern) do |content|
           issue_link_filter(content)
         end
       end
@@ -44,21 +39,20 @@ module Gitlab
       # Returns a String with `#123` references replaced with links. All links
       # have `gfm` and `gfm-issue` class names attached for styling.
       def issue_link_filter(text)
-        self.class.references_in(text) do |match, issue, project_ref|
+        self.class.references_in(text) do |match, id, project_ref|
           project = self.project_from_ref(project_ref)
 
-          if project && project.issue_exists?(issue)
-            # FIXME (rspeicher): Law of Demeter
-            push_result(:issue, project.issues.where(iid: issue).first)
+          if project && issue = project.get_issue(id)
+            push_result(:issue, issue)
 
-            url = url_for_issue(issue, project, only_path: context[:only_path])
+            url = url_for_issue(id, project, only_path: context[:only_path])
 
-            title = escape_once("Issue: #{title_for_issue(issue, project)}")
+            title = escape_once("Issue: #{issue.title}")
             klass = reference_class(:issue)
 
             %(<a href="#{url}"
                  title="#{title}"
-                 class="#{klass}">#{project_ref}##{issue}</a>)
+                 class="#{klass}">#{match}</a>)
           else
             match
           end
@@ -67,10 +61,6 @@ module Gitlab
 
       def url_for_issue(*args)
         IssuesHelper.url_for_issue(*args)
-      end
-
-      def title_for_issue(*args)
-        IssuesHelper.title_for_issue(*args)
       end
     end
   end

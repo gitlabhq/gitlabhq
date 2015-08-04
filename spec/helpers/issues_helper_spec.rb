@@ -5,24 +5,6 @@ describe IssuesHelper do
   let(:issue) { create :issue, project: project }
   let(:ext_project) { create :redmine_project }
 
-  describe "title_for_issue" do
-    it "should return issue title if used internal tracker" do
-      @project = project
-      expect(title_for_issue(issue.iid)).to eq issue.title
-    end
-
-    it "should always return empty string if used external tracker" do
-      @project = ext_project
-      expect(title_for_issue(rand(100))).to eq ""
-    end
-
-    it "should always return empty string if project nil" do
-      @project = nil
-
-      expect(title_for_issue(rand(100))).to eq ""
-    end
-  end
-
   describe "url_for_project_issues" do
     let(:project_url) { ext_project.external_issue_tracker.project_url }
     let(:ext_expected) do

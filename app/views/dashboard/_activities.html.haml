@@ -6,7 +6,6 @@
       %li.pull-right
         = link_to dashboard_path(:atom, { private_token: current_user.private_token }), class: 'rss-btn' do
           %i.fa.fa-rss
-          Activity Feed
 
   = render 'shared/event_filter'
   %hr

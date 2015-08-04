@@ -13,19 +13,19 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I should see files from repository in markdown' do
-    current_path.should == namespace_project_tree_path(@project.namespace, @project, "markdown")
-    page.should have_content "README.md"
-    page.should have_content "CHANGELOG"
+    expect(current_path).to eq namespace_project_tree_path(@project.namespace, @project, "markdown")
+    expect(page).to have_content "README.md"
+    expect(page).to have_content "CHANGELOG"
   end
 
   step 'I should see rendered README which contains correct links' do
-    page.should have_content "Welcome to GitLab GitLab is a free project and repository management application"
-    page.should have_link "GitLab API doc"
-    page.should have_link "GitLab API website"
-    page.should have_link "Rake tasks"
-    page.should have_link "backup and restore procedure"
-    page.should have_link "GitLab API doc directory"
-    page.should have_link "Maintenance"
+    expect(page).to have_content "Welcome to GitLab GitLab is a free project and repository management application"
+    expect(page).to have_link "GitLab API doc"
+    expect(page).to have_link "GitLab API website"
+    expect(page).to have_link "Rake tasks"
+    expect(page).to have_link "backup and restore procedure"
+    expect(page).to have_link "GitLab API doc directory"
+    expect(page).to have_link "Maintenance"
   end
 
   step 'I click on Gitlab API in README' do
@@ -33,8 +33,8 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I should see correct document rendered' do
-    current_path.should == namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/README.md")
-    page.should have_content "All API requests require authentication"
+    expect(current_path).to eq namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/README.md")
+    expect(page).to have_content "All API requests require authentication"
   end
 
   step 'I click on Rake tasks in README' do
@@ -42,9 +42,9 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I should see correct directory rendered' do
-    current_path.should == namespace_project_tree_path(@project.namespace, @project, "markdown/doc/raketasks")
-    page.should have_content "backup_restore.md"
-    page.should have_content "maintenance.md"
+    expect(current_path).to eq namespace_project_tree_path(@project.namespace, @project, "markdown/doc/raketasks")
+    expect(page).to have_content "backup_restore.md"
+    expect(page).to have_content "maintenance.md"
   end
 
   step 'I click on GitLab API doc directory in README' do
@@ -52,9 +52,9 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I should see correct doc/api directory rendered' do
-    current_path.should == namespace_project_tree_path(@project.namespace, @project, "markdown/doc/api")
-    page.should have_content "README.md"
-    page.should have_content "users.md"
+    expect(current_path).to eq namespace_project_tree_path(@project.namespace, @project, "markdown/doc/api")
+    expect(page).to have_content "README.md"
+    expect(page).to have_content "users.md"
   end
 
   step 'I click on Maintenance in README' do
@@ -62,41 +62,41 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I should see correct maintenance file rendered' do
-    current_path.should == namespace_project_blob_path(@project.namespace, @project, "markdown/doc/raketasks/maintenance.md")
-    page.should have_content "bundle exec rake gitlab:env:info RAILS_ENV=production"
+    expect(current_path).to eq namespace_project_blob_path(@project.namespace, @project, "markdown/doc/raketasks/maintenance.md")
+    expect(page).to have_content "bundle exec rake gitlab:env:info RAILS_ENV=production"
   end
 
   step 'I click on link "empty" in the README' do
-    within('.readme-holder') do
+    page.within('.readme-holder') do
       click_link "empty"
     end
   end
 
   step 'I click on link "id" in the README' do
-    within('.readme-holder') do
+    page.within('.readme-holder') do
       click_link "#id"
     end
   end
 
   step 'I navigate to the doc/api/README' do
-    within '.tree-table' do
+    page.within '.tree-table' do
       click_link "doc"
     end
 
-    within '.tree-table' do
+    page.within '.tree-table' do
       click_link "api"
     end
 
-    within '.tree-table' do
+    page.within '.tree-table' do
       click_link "README.md"
     end
   end
 
   step 'I see correct file rendered' do
-    current_path.should == namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/README.md")
-    page.should have_content "Contents"
-    page.should have_link "Users"
-    page.should have_link "Rake tasks"
+    expect(current_path).to eq namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/README.md")
+    expect(page).to have_content "Contents"
+    expect(page).to have_link "Users"
+    expect(page).to have_link "Rake tasks"
   end
 
   step 'I click on users in doc/api/README' do
@@ -104,8 +104,8 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I should see the correct document file' do
-    current_path.should == namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/users.md")
-    page.should have_content "Get a list of users."
+    expect(current_path).to eq namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/users.md")
+    expect(page).to have_content "Get a list of users."
   end
 
   step 'I click on raketasks in doc/api/README' do
@@ -131,32 +131,32 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I should see files from repository in markdown branch' do
-    current_path.should == namespace_project_tree_path(@project.namespace, @project, "markdown")
-    page.should have_content "README.md"
-    page.should have_content "CHANGELOG"
+    expect(current_path).to eq namespace_project_tree_path(@project.namespace, @project, "markdown")
+    expect(page).to have_content "README.md"
+    expect(page).to have_content "CHANGELOG"
   end
 
   step 'I see correct file rendered in markdown branch' do
-    current_path.should == namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/README.md")
-    page.should have_content "Contents"
-    page.should have_link "Users"
-    page.should have_link "Rake tasks"
+    expect(current_path).to eq namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/README.md")
+    expect(page).to have_content "Contents"
+    expect(page).to have_link "Users"
+    expect(page).to have_link "Rake tasks"
   end
 
   step 'I should see correct document rendered for markdown branch' do
-    current_path.should == namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/README.md")
-    page.should have_content "All API requests require authentication"
+    expect(current_path).to eq namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/README.md")
+    expect(page).to have_content "All API requests require authentication"
   end
 
   step 'I should see correct directory rendered for markdown branch' do
-    current_path.should == namespace_project_tree_path(@project.namespace, @project, "markdown/doc/raketasks")
-    page.should have_content "backup_restore.md"
-    page.should have_content "maintenance.md"
+    expect(current_path).to eq namespace_project_tree_path(@project.namespace, @project, "markdown/doc/raketasks")
+    expect(page).to have_content "backup_restore.md"
+    expect(page).to have_content "maintenance.md"
   end
 
   step 'I should see the users document file in markdown branch' do
-    current_path.should == namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/users.md")
-    page.should have_content "Get a list of users."
+    expect(current_path).to eq namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/users.md")
+    expect(page).to have_content "Get a list of users."
   end
 
   # Expected link contents
@@ -208,7 +208,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
 
   step 'I go to wiki page' do
     click_link "Wiki"
-    current_path.should == namespace_project_wiki_path(@project.namespace, @project, "home")
+    expect(current_path).to eq namespace_project_wiki_path(@project.namespace, @project, "home")
   end
 
   step 'I add various links to the wiki page' do
@@ -218,8 +218,8 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'Wiki page should have added links' do
-    current_path.should == namespace_project_wiki_path(@project.namespace, @project, "home")
-    page.should have_content "test GitLab API doc Rake tasks"
+    expect(current_path).to eq namespace_project_wiki_path(@project.namespace, @project, "home")
+    expect(page).to have_content "test GitLab API doc Rake tasks"
   end
 
   step 'I add a header to the wiki page' do
@@ -237,13 +237,13 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I see new wiki page named test' do
-    current_path.should ==  namespace_project_wiki_path(@project.namespace, @project, "test")
-    page.should have_content "Editing"
+    expect(current_path).to eq  namespace_project_wiki_path(@project.namespace, @project, "test")
+    expect(page).to have_content "Editing"
   end
 
   When 'I go back to wiki page home' do
     visit namespace_project_wiki_path(@project.namespace, @project, "home")
-    current_path.should == namespace_project_wiki_path(@project.namespace, @project, "home")
+    expect(current_path).to eq namespace_project_wiki_path(@project.namespace, @project, "home")
   end
 
   step 'I click on GitLab API doc link' do
@@ -251,8 +251,8 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I see Gitlab API document' do
-    current_path.should == namespace_project_wiki_path(@project.namespace, @project, "api")
-    page.should have_content "Editing"
+    expect(current_path).to eq namespace_project_wiki_path(@project.namespace, @project, "api")
+    expect(page).to have_content "Editing"
   end
 
   step 'I click on Rake tasks link' do
@@ -260,13 +260,13 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I see Rake tasks directory' do
-    current_path.should == namespace_project_wiki_path(@project.namespace, @project, "raketasks")
-    page.should have_content "Editing"
+    expect(current_path).to eq namespace_project_wiki_path(@project.namespace, @project, "raketasks")
+    expect(page).to have_content "Editing"
   end
 
   step 'I go directory which contains README file' do
     visit namespace_project_tree_path(@project.namespace, @project, "markdown/doc/api")
-    current_path.should == namespace_project_tree_path(@project.namespace, @project, "markdown/doc/api")
+    expect(current_path).to eq namespace_project_tree_path(@project.namespace, @project, "markdown/doc/api")
   end
 
   step 'I click on a relative link in README' do
@@ -274,8 +274,8 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'I should see the correct markdown' do
-    current_path.should == namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/users.md")
-    page.should have_content "List users"
+    expect(current_path).to eq namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/users.md")
+    expect(page).to have_content "List users"
   end
 
   step 'Header "Application details" should have correct id and link' do

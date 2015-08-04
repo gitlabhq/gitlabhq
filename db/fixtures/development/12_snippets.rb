@@ -28,8 +28,8 @@ eos
     PersonalSnippet.seed(:id, [{
       id: i,
       author_id: user.id,
-      title: Faker::Lorem.sentence(3),
-      file_name:  Faker::Internet.domain_word + '.rb',
+      title: FFaker::Lorem.sentence(3),
+      file_name:  FFaker::Internet.domain_word + '.rb',
       visibility_level: Gitlab::VisibilityLevel.values.sample,
       content: content,
     }])

@@ -10,6 +10,7 @@ module SelectsHelper
     any_user = opts[:any_user] || false
     email_user = opts[:email_user] || false
     first_user = opts[:first_user] && current_user ? current_user.username : false
+    project = opts[:project] || @project
 
     html = {
       class: css_class,
@@ -21,8 +22,8 @@ module SelectsHelper
     }
 
     unless opts[:scope] == :all
-      if @project
-        html['data-project-id'] = @project.id
+      if project
+        html['data-project-id'] = project.id
       elsif @group
         html['data-group-id'] = @group.id
       end

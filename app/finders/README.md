@@ -16,7 +16,7 @@ issues = project.issues_for_user_filtered_by(user, params)
 Better use this:
 
 ```ruby
-issues = IssuesFinder.new.execute(project, user, filter)
+issues = IssuesFinder.new(project, user, filter).execute
 ```
 
 It will help keep models thiner.

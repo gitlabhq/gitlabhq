@@ -1,6 +1,7 @@
 # 1. Rename this file to rack_attack.rb
 # 2. Review the paths_to_be_protected and add any other path you need protecting
 #
+# If you change this file in a Merge Request, please also create a Merge Request on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests
 
 paths_to_be_protected = [
   "#{Rails.application.config.relative_url_root}/users/password",

@@ -13,12 +13,14 @@ describe MergeRequests::RefreshService do
 
       @project = create(:project, namespace: group)
       @fork_project = Projects::ForkService.new(@project, @user).execute
-      @merge_request = create(:merge_request, source_project: @project,
+      @merge_request = create(:merge_request,
+                              source_project: @project,
                               source_branch: 'master',
                               target_branch: 'feature',
                               target_project: @project)
 
-      @fork_merge_request = create(:merge_request, source_project: @fork_project,
+      @fork_merge_request = create(:merge_request,
+                                   source_project: @fork_project,
                                    source_branch: 'master',
                                    target_branch: 'feature',
                                    target_project: @project)
@@ -30,9 +32,16 @@ describe MergeRequests::RefreshService do
     end
 
     context 'push to origin repo source branch' do
+      let(:refresh_service) { service.new(@project, @user) }
       before do
-        service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/master')
+        allow(refresh_service).to receive(:execute_hooks)
+        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
         reload_mrs
+      end
+
+      it 'should execute hooks with update action' do
+        expect(refresh_service).to have_received(:execute_hooks).
+          with(@merge_request, 'update')
       end
 
       it { expect(@merge_request.notes).not_to be_empty }
@@ -54,9 +63,16 @@ describe MergeRequests::RefreshService do
     end
 
     context 'push to fork repo source branch' do
+      let(:refresh_service) { service.new(@fork_project, @user) }
       before do
-        service.new(@fork_project, @user).execute(@oldrev, @newrev, 'refs/heads/master')
+        allow(refresh_service).to receive(:execute_hooks)
+        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
         reload_mrs
+      end
+
+      it 'should execute hooks with update action' do
+        expect(refresh_service).to have_received(:execute_hooks).
+          with(@fork_merge_request, 'update')
       end
 
       it { expect(@merge_request.notes).to be_empty }

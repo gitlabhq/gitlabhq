@@ -72,6 +72,7 @@ class Import::GoogleCodeController < Import::BaseController
     end
 
     @repos = client.repos
+    @incompatible_repos = client.incompatible_repos
 
     @already_added_projects = current_user.created_projects.where(import_type: "google_code")
     already_added_projects_names = @already_added_projects.pluck(:import_source)

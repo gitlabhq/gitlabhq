@@ -5,7 +5,7 @@ class Admin::ProjectsController < Admin::ApplicationController
 
   def index
     @projects = Project.all
-    @projects = @projects.where(namespace_id: params[:namespace_id]) if params[:namespace_id].present?
+    @projects = @projects.in_namespace(params[:namespace_id]) if params[:namespace_id].present?
     @projects = @projects.where("visibility_level IN (?)", params[:visibility_levels]) if params[:visibility_levels].present?
     @projects = @projects.with_push if params[:with_push].present?
     @projects = @projects.abandoned if params[:abandoned].present?
@@ -23,7 +23,8 @@ class Admin::ProjectsController < Admin::ApplicationController
   end
 
   def transfer
-    ::Projects::TransferService.new(@project, current_user, params.dup).execute
+    namespace = Namespace.find_by(id: params[:new_namespace_id])
+    ::Projects::TransferService.new(@project, current_user, params.dup).execute(namespace)
 
     @project.reload
     redirect_to admin_namespace_project_path(@project.namespace, @project)

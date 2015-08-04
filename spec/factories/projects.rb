@@ -21,12 +21,13 @@
 #  import_url             :string(255)
 #  visibility_level       :integer          default(0), not null
 #  archived               :boolean          default(FALSE), not null
+#  avatar                 :string(255)
 #  import_status          :string(255)
 #  repository_size        :float            default(0.0)
 #  star_count             :integer          default(0), not null
 #  import_type            :string(255)
 #  import_source          :string(255)
-#  avatar                 :string(255)
+#  commit_count           :integer          default(0)
 #
 
 FactoryGirl.define do
@@ -76,6 +77,14 @@ FactoryGirl.define do
     end
   end
 
+  factory :forked_project_with_submodules, parent: :empty_project do
+    path { 'forked-gitlabhq' }
+
+    after :create do |project|
+      TestEnv.copy_forked_repo_with_submodules(project)
+    end
+  end
+
   factory :redmine_project, parent: :project do
     after :create do |project|
       project.create_redmine_service(
@@ -86,10 +95,26 @@ FactoryGirl.define do
           'new_issue_url' => 'http://redmine/projects/project_name_in_redmine/issues/new'
         }
       )
-    end
-    after :create do |project|
+
       project.issues_tracker = 'redmine'
       project.issues_tracker_id = 'project_name_in_redmine'
+    end
+  end
+
+  factory :jira_project, parent: :project do
+    after :create do |project|
+      project.create_jira_service(
+        active: true,
+        properties: {
+          'title'         => 'JIRA tracker',
+          'project_url'   => 'http://jira.example/issues/?jql=project=A',
+          'issues_url'    => 'http://jira.example/browse/:id',
+          'new_issue_url' => 'http://jira.example/secure/CreateIssue.jspa'
+        }
+      )
+
+      project.issues_tracker = 'jira'
+      project.issues_tracker_id = 'project_name_in_jira'
     end
   end
 end

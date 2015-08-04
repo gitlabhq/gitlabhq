@@ -10,11 +10,13 @@ The pagination parameters `page` and `per_page` can be used to restrict the list
 GET /projects/:id/merge_requests
 GET /projects/:id/merge_requests?state=opened
 GET /projects/:id/merge_requests?state=all
+GET /projects/:id/merge_requests?iid=42
 ```
 
 Parameters:
 
 - `id` (required) - The ID of a project
+- `iid` (optional) - Return the request having the given `iid`
 - `state` (optional) - Return `all` requests or just those that are `merged`, `opened` or `closed`
 - `order_by` (optional) - Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`
 - `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
@@ -47,7 +49,8 @@ Parameters:
       "state": "active",
       "created_at": "2012-04-29T08:46:00Z"
     },
-    "description":"fixed login page css paddings"
+    "description":"fixed login page css paddings",
+    "work_in_progress": false
   }
 ]
 ```
@@ -92,7 +95,8 @@ Parameters:
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
   },
-  "description":"fixed login page css paddings"
+  "description":"fixed login page css paddings",
+  "work_in_progress": false
 }
 ```
 
@@ -116,6 +120,7 @@ Parameters:
   "project_id": 4,
   "title": "Blanditiis beatae suscipit hic assumenda et molestias nisi asperiores repellat et.",
   "description": "Qui voluptatibus placeat ipsa alias quasi. Deleniti rem ut sint. Optio velit qui distinctio.",
+  "work_in_progress": false,
   "state": "reopened",
   "created_at": "2015-02-02T19:49:39.159Z",
   "updated_at": "2015-02-02T20:08:49.959Z",
@@ -219,7 +224,7 @@ If an error occurs, an error number and a message explaining the reason is retur
 
 ## Update MR
 
-Updates an existing merge request. You can change branches, title, or even close the MR.
+Updates an existing merge request. You can change the target branch, title, or even close the MR.
 
 ```
 PUT /projects/:id/merge_request/:merge_request_id
@@ -229,7 +234,6 @@ Parameters:
 
 - `id` (required)               - The ID of a project
 - `merge_request_id` (required) - ID of MR
-- `source_branch`               - The source branch
 - `target_branch`               - The target branch
 - `assignee_id`                 - Assignee user ID
 - `title`                       - Title of MR
@@ -240,7 +244,6 @@ Parameters:
 {
   "id": 1,
   "target_branch": "master",
-  "source_branch": "test1",
   "project_id": 3,
   "title": "test1",
   "description": "description1",
@@ -336,14 +339,6 @@ Parameters:
 
 ```json
 {
-  "author": {
-    "id": 1,
-    "username": "admin",
-    "email": "admin@example.com",
-    "name": "Administrator",
-    "blocked": false,
-    "created_at": "2012-04-29T08:46:00Z"
-  },
   "note": "text1"
 }
 ```
@@ -388,6 +383,6 @@ Parameters:
 ]
 ```
 
-## Comments on issues
+## Comments on merge requets
 
 Comments are done via the notes resource.

@@ -2,14 +2,13 @@ require 'spec_helper'
 
 module Gitlab::Markdown
   describe CommitReferenceFilter do
-    include ReferenceFilterSpecHelper
+    include FilterSpecHelper
 
     let(:project) { create(:project) }
     let(:commit)  { project.commit }
 
     it 'requires project context' do
-      expect { described_class.call('Commit 1c002d', {}) }.
-        to raise_error(ArgumentError, /:project/)
+      expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
     end
 
     %w(pre code a style).each do |elem|
@@ -47,10 +46,11 @@ module Gitlab::Markdown
       end
 
       it 'ignores invalid commit IDs' do
-        exp = act = "See #{reference.reverse}"
+        invalid = invalidate_reference(reference)
+        exp = act = "See #{invalid}"
 
         expect(project).to receive(:valid_repo?).and_return(true)
-        expect(project.repository).to receive(:commit).with(reference.reverse)
+        expect(project.repository).to receive(:commit).with(invalid)
         expect(filter(act).to_html).to eq exp
       end
 
@@ -93,8 +93,8 @@ module Gitlab::Markdown
     context 'cross-project reference' do
       let(:namespace) { create(:namespace, name: 'cross-reference') }
       let(:project2)  { create(:project, namespace: namespace) }
-      let(:commit)    { project.commit }
-      let(:reference) { "#{project2.path_with_namespace}@#{commit.id}" }
+      let(:commit)    { project2.commit }
+      let(:reference) { commit.to_reference(project) }
 
       context 'when user can access reference' do
         before { allow_cross_reference! }
@@ -109,12 +109,12 @@ module Gitlab::Markdown
         it 'links with adjacent text' do
           doc = filter("Fixed (#{reference}.)")
 
-          exp = Regexp.escape(project2.path_with_namespace)
+          exp = Regexp.escape(project2.to_reference)
           expect(doc.to_html).to match(/\(<a.+>#{exp}@#{commit.short_id}<\/a>\.\)/)
         end
 
         it 'ignores invalid commit IDs on the referenced project' do
-          exp = act = "Committed #{project2.path_with_namespace}##{commit.id.reverse}"
+          exp = act = "Committed #{invalidate_reference(reference)}"
           expect(filter(act).to_html).to eq exp
         end
 

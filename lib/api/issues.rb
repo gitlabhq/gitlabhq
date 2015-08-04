@@ -51,6 +51,7 @@ module API
       #
       # Parameters:
       #   id (required) - The ID of a project
+      #   iid (optional) - Return the project issue having the given `iid`
       #   state (optional) - Return "opened" or "closed" issues
       #   labels (optional) - Comma-separated list of label names
       #   milestone (optional) - Milestone title
@@ -66,10 +67,12 @@ module API
       #   GET /projects/:id/issues?labels=foo,bar&state=opened
       #   GET /projects/:id/issues?milestone=1.0.0
       #   GET /projects/:id/issues?milestone=1.0.0&state=closed
+      #   GET /issues?iid=42
       get ":id/issues" do
         issues = user_project.issues
         issues = filter_issues_state(issues, params[:state]) unless params[:state].nil?
         issues = filter_issues_labels(issues, params[:labels]) unless params[:labels].nil?
+        issues = filter_by_iid(issues, params[:iid]) unless params[:iid].nil?
 
         unless params[:milestone].nil?
           issues = filter_issues_milestone(issues, params[:milestone])
@@ -141,7 +144,7 @@ module API
       #   PUT /projects/:id/issues/:issue_id
       put ":id/issues/:issue_id" do
         issue = user_project.issues.find(params[:issue_id])
-        authorize! :modify_issue, issue
+        authorize! :update_issue, issue
         attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id, :state_event]
 
         # Validate label names in advance
@@ -154,7 +157,7 @@ module API
         if issue.valid?
           # Find or create labels and attach to issue. Labels are valid because
           # we already checked its name, so there can't be an error here
-          unless params[:labels].nil?
+          if params[:labels] && can?(current_user, :admin_issue, user_project)
             issue.remove_labels
             # Create and add labels to the new created issue
             issue.add_labels_by_names(params[:labels].split(','))

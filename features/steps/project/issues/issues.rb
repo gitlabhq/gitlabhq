@@ -7,24 +7,23 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   include SharedMarkdown
 
   step 'I should see "Release 0.4" in issues' do
-    page.should have_content "Release 0.4"
+    expect(page).to have_content "Release 0.4"
   end
 
   step 'I should not see "Release 0.3" in issues' do
-    page.should_not have_content "Release 0.3"
+    expect(page).not_to have_content "Release 0.3"
   end
 
   step 'I should not see "Tweet control" in issues' do
-    page.should_not have_content "Tweet control"
+    expect(page).not_to have_content "Tweet control"
   end
 
   step 'I should see that I am subscribed' do
-    find(".subscribe-button span").text.should == "Unsubscribe"
+    expect(find('.subscribe-button span')).to have_content 'Unsubscribe'
   end
 
   step 'I should see that I am unsubscribed' do
-    sleep 0.2
-    find(".subscribe-button span").text.should == "Subscribe"
+    expect(find('.subscribe-button span')).to have_content 'Subscribe'
   end
 
   step 'I click link "Closed"' do
@@ -36,11 +35,11 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I should see "Release 0.3" in issues' do
-    page.should have_content "Release 0.3"
+    expect(page).to have_content "Release 0.3"
   end
 
   step 'I should not see "Release 0.4" in issues' do
-    page.should_not have_content "Release 0.4"
+    expect(page).not_to have_content "Release 0.4"
   end
 
   step 'I click link "All"' do
@@ -52,7 +51,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I should see issue "Release 0.4"' do
-    page.should have_content "Release 0.4"
+    expect(page).to have_content "Release 0.4"
   end
 
   step 'I click link "New Issue"' do
@@ -66,9 +65,9 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   step 'I see current user as the first user' do
     expect(page).to have_selector('.user-result', visible: true, count: 4)
     users = page.all('.user-name')
-    users[0].text.should == 'Any'
-    users[1].text.should == 'Unassigned'
-    users[2].text.should == current_user.name
+    expect(users[0].text).to eq 'Any'
+    expect(users[1].text).to eq 'Unassigned'
+    expect(users[2].text).to eq current_user.name
   end
 
   step 'I submit new issue "500 error on profile"' do
@@ -87,16 +86,16 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I should see label \'bug\' with issue' do
-    within '.issue-show-labels' do
-      page.should have_content 'bug'
+    page.within '.issue-show-labels' do
+      expect(page).to have_content 'bug'
     end
   end
 
   step 'I should see issue "500 error on profile"' do
     issue = Issue.find_by(title: "500 error on profile")
-    page.should have_content issue.title
-    page.should have_content issue.author_name
-    page.should have_content issue.project.name
+    expect(page).to have_content issue.title
+    expect(page).to have_content issue.author_name
+    expect(page).to have_content issue.project.name
   end
 
   step 'I fill in issue search with "Re"' do
@@ -139,7 +138,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   step 'I should see selected milestone with title "v3.0"' do
     issues_milestone_selector = "#issue_milestone_id_chzn > a"
-    find(issues_milestone_selector).should have_content("v3.0")
+    expect(find(issues_milestone_selector)).to have_content("v3.0")
   end
 
   When 'I select first assignee from "Shop" project' do
@@ -152,7 +151,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
     issues_assignee_selector = "#issue_assignee_id_chzn > a"
 
     assignee_name = project.users.first.name
-    find(issues_assignee_selector).should have_content(assignee_name)
+    expect(find(issues_assignee_selector)).to have_content(assignee_name)
   end
 
   step 'project "Shop" have "Release 0.4" open issue' do
@@ -179,14 +178,6 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
            author: project.users.first)
   end
 
-  step 'project "Shop" has "Tasks-open" open issue with task markdown' do
-    create_taskable(:issue, 'Tasks-open')
-  end
-
-  step 'project "Shop" has "Tasks-closed" closed issue with task markdown' do
-    create_taskable(:closed_issue, 'Tasks-closed')
-  end
-
   step 'empty project "Empty Project"' do
     create :empty_project, name: 'Empty Project', namespace: @user.namespace
   end
@@ -198,9 +189,14 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   step 'I see empty project details with ssh clone info' do
     project = Project.find_by(name: 'Empty Project')
-    all(:css, '.git-empty .clone').each do |element|
-      element.text.should include(project.url_to_repo)
+    page.all(:css, '.git-empty .clone').each do |element|
+      expect(element.text).to include(project.url_to_repo)
     end
+  end
+
+  When "I visit project \"Community\" issues page" do
+    project = Project.find_by(name: 'Community')
+    visit namespace_project_issues_path(project.namespace, project)
   end
 
   When "I visit empty project's issues page" do
@@ -209,7 +205,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I leave a comment with code block' do
-    within(".js-main-target-form") do
+    page.within(".js-main-target-form") do
       fill_in "note[note]", with: "```\nCommand [1]: /usr/local/bin/git , see [text](doc/text)\n```"
       click_button "Add Comment"
       sleep 0.05
@@ -217,13 +213,13 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I should see an error alert section within the comment form' do
-    within(".js-main-target-form") do
+    page.within(".js-main-target-form") do
       find(".error-alert")
     end
   end
 
   step 'The code block should be unchanged' do
-    page.should have_content("```\nCommand [1]: /usr/local/bin/git , see [text](doc/text)\n```")
+    expect(page).to have_content("```\nCommand [1]: /usr/local/bin/git , see [text](doc/text)\n```")
   end
 
   step 'project \'Shop\' has issue \'Bugfix1\' with description: \'Description for issue1\'' do
@@ -247,15 +243,15 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I should see \'Bugfix1\' in issues' do
-    page.should have_content 'Bugfix1'
+    expect(page).to have_content 'Bugfix1'
   end
 
   step 'I should see \'Feature1\' in issues' do
-    page.should have_content 'Feature1'
+    expect(page).to have_content 'Feature1'
   end
 
   step 'I should not see \'Bugfix1\' in issues' do
-    page.should_not have_content 'Bugfix1'
+    expect(page).not_to have_content 'Bugfix1'
   end
 
   step 'issue \'Release 0.4\' has label \'bug\'' do
@@ -265,8 +261,26 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I click label \'bug\'' do
-    within ".issues-list" do
+    page.within ".issues-list" do
       click_link 'bug'
+    end
+  end
+
+  step 'I should not see labels field' do
+    page.within '.issue-form' do
+      expect(page).not_to have_content("Labels")
+    end
+  end
+
+  step 'I should not see milestone field' do
+    page.within '.issue-form' do
+      expect(page).not_to have_content("Milestone")
+    end
+  end
+
+  step 'I should not see assignee field' do
+    page.within '.issue-form' do
+      expect(page).not_to have_content("Assign to")
     end
   end
 

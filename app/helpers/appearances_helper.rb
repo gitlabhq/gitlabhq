@@ -16,6 +16,6 @@ module AppearancesHelper
   end
 
   def brand_header_logo
-    image_tag 'logo-white.png'
+    image_tag 'logo.svg'
   end
 end

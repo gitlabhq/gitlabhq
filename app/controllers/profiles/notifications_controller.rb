@@ -1,6 +1,4 @@
-class Profiles::NotificationsController < ApplicationController
-  layout 'profile'
-
+class Profiles::NotificationsController < Profiles::ApplicationController
   def show
     @user = current_user
     @notification = current_user.notification

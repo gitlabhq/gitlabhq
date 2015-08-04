@@ -10,12 +10,12 @@ def common_mentionable_setup
 
   let(:mentioned_issue)  { create(:issue, project: project) }
   let(:mentioned_mr)     { create(:merge_request, :simple, source_project: project) }
-  let(:mentioned_commit) { project.repository.commit }
+  let(:mentioned_commit) { project.commit }
 
   let(:ext_proj)   { create(:project, :public) }
   let(:ext_issue)  { create(:issue, project: ext_proj) }
   let(:ext_mr)     { create(:merge_request, :simple, source_project: ext_proj) }
-  let(:ext_commit) { ext_proj.repository.commit }
+  let(:ext_commit) { ext_proj.commit }
 
   # Override to add known commits to the repository stub.
   let(:extra_commits) { [] }
@@ -23,21 +23,19 @@ def common_mentionable_setup
   # A string that mentions each of the +mentioned_.*+ objects above. Mentionables should add a self-reference
   # to this string and place it in their +mentionable_text+.
   let(:ref_string) do
-    cross = ext_proj.path_with_namespace
-
     <<-MSG.strip_heredoc
       These references are new:
-        Issue:  ##{mentioned_issue.iid}
-        Merge:  !#{mentioned_mr.iid}
-        Commit: #{mentioned_commit.id}
+        Issue:  #{mentioned_issue.to_reference}
+        Merge:  #{mentioned_mr.to_reference}
+        Commit: #{mentioned_commit.to_reference}
 
       This reference is a repeat and should only be mentioned once:
-        Repeat: ##{mentioned_issue.iid}
+        Repeat: #{mentioned_issue.to_reference}
 
       These references are cross-referenced:
-        Issue:  #{cross}##{ext_issue.iid}
-        Merge:  #{cross}!#{ext_mr.iid}
-        Commit: #{cross}@#{ext_commit.short_id}
+        Issue:  #{ext_issue.to_reference(project)}
+        Merge:  #{ext_mr.to_reference(project)}
+        Commit: #{ext_commit.to_reference(project)}
 
       This is a self-reference and should not be mentioned at all:
         Self: #{backref_text}
@@ -82,7 +80,7 @@ shared_examples 'a mentionable' do
                          ext_issue, ext_mr, ext_commit]
 
     mentioned_objects.each do |referenced|
-      expect(Note).to receive(:create_cross_reference_note).
+      expect(SystemNoteService).to receive(:cross_reference).
         with(referenced, subject.local_reference, author)
     end
 
@@ -90,7 +88,7 @@ shared_examples 'a mentionable' do
   end
 
   it 'detects existing cross-references' do
-    Note.create_cross_reference_note(mentioned_issue, subject.local_reference, author)
+    SystemNoteService.cross_reference(mentioned_issue, subject.local_reference, author)
 
     expect(subject).to have_mentioned(mentioned_issue)
     expect(subject).not_to have_mentioned(mentioned_mr)
@@ -109,35 +107,42 @@ shared_examples 'an editable mentionable' do
   it 'creates new cross-reference notes when the mentionable text is edited' do
     subject.save
 
-    cross = ext_proj.path_with_namespace
-
-    new_text = <<-MSG
+    new_text = <<-MSG.strip_heredoc
       These references already existed:
-        Issue:  ##{mentioned_issue.iid}
-        Commit: #{mentioned_commit.id}
+
+      Issue:  #{mentioned_issue.to_reference}
+
+      Commit: #{mentioned_commit.to_reference}
+
+      ---
 
       This cross-project reference already existed:
-        Issue:  #{cross}##{ext_issue.iid}
+
+      Issue:  #{ext_issue.to_reference(project)}
+
+      ---
 
       These two references are introduced in an edit:
-        Issue: ##{new_issues[0].iid}
-        Cross: #{cross}##{new_issues[1].iid}
+
+      Issue: #{new_issues[0].to_reference}
+
+      Cross: #{new_issues[1].to_reference(project)}
     MSG
 
     # These three objects were already referenced, and should not receive new
     # notes
     [mentioned_issue, mentioned_commit, ext_issue].each do |oldref|
-      expect(Note).not_to receive(:create_cross_reference_note).
+      expect(SystemNoteService).not_to receive(:cross_reference).
         with(oldref, any_args)
     end
 
     # These two issues are new and should receive reference notes
     new_issues.each do |newref|
-      expect(Note).to receive(:create_cross_reference_note).
+      expect(SystemNoteService).to receive(:cross_reference).
         with(newref, subject.local_reference, author)
     end
 
     set_mentionable_text.call(new_text)
-    subject.notice_added_references(project, author)
+    subject.create_new_cross_references!(project, author)
   end
 end

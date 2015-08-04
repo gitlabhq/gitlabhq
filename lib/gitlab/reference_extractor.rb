@@ -1,7 +1,7 @@
 module Gitlab
   # Extract possible GFM references from an arbitrary String for further processing.
   class ReferenceExtractor
-    attr_accessor :project, :current_user, :references
+    attr_accessor :project, :current_user
 
     def initialize(project, current_user = nil)
       @project = project
@@ -9,47 +9,30 @@ module Gitlab
     end
 
     def analyze(text)
-      @_text = text.dup
+      references.clear
+      @text = markdown.render(text.dup)
     end
 
-    def users
-      result = pipeline_result(:user)
-      result.uniq
-    end
-
-    def labels
-      result = pipeline_result(:label)
-      result.uniq
-    end
-
-    def issues
-      # TODO (rspeicher): What about external issues?
-
-      result = pipeline_result(:issue)
-      result.uniq
-    end
-
-    def merge_requests
-      result = pipeline_result(:merge_request)
-      result.uniq
-    end
-
-    def snippets
-      result = pipeline_result(:snippet)
-      result.uniq
-    end
-
-    def commits
-      result = pipeline_result(:commit)
-      result.uniq
-    end
-
-    def commit_ranges
-      result = pipeline_result(:commit_range)
-      result.uniq
+    %i(user label issue merge_request snippet commit commit_range).each do |type|
+      define_method("#{type}s") do
+        references[type]
+      end
     end
 
     private
+
+    def markdown
+      @markdown ||= Redcarpet::Markdown.new(Redcarpet::Render::HTML, GitlabMarkdownHelper::MARKDOWN_OPTIONS)
+    end
+
+    def references
+      @references ||= Hash.new do |references, type|
+        type = type.to_sym
+        return references[type] if references.has_key?(type)
+
+        references[type] = pipeline_result(type).uniq
+      end
+    end
 
     # Instantiate and call HTML::Pipeline with a single reference filter type,
     # returning the result
@@ -65,11 +48,12 @@ module Gitlab
         project: project,
         current_user: current_user,
         # We don't actually care about the links generated
-        only_path: true
+        only_path: true,
+        ignore_blockquotes: true
       }
 
       pipeline = HTML::Pipeline.new([filter], context)
-      result = pipeline.call(@_text)
+      result = pipeline.call(@text)
 
       result[:references][filter_type]
     end

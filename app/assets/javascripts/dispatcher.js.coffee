@@ -8,7 +8,6 @@ class Dispatcher
 
   initPageScripts: ->
     page = $('body').attr('data-page')
-    project_id = $('body').attr('data-project-id')
 
     unless page
       return false
@@ -28,23 +27,18 @@ class Dispatcher
         new Milestone()
       when 'projects:milestones:new', 'projects:milestones:edit'
         new ZenMode()
+        new DropzoneInput($('.milestone-form'))
       when 'projects:compare:show'
         new Diff()
       when 'projects:issues:new','projects:issues:edit'
-        GitLab.GfmAutoComplete.setup()
         shortcut_handler = new ShortcutsNavigation()
-        new ZenMode()
         new DropzoneInput($('.issue-form'))
-        if page == 'projects:issues:new'
-          new IssuableForm($('.issue-form'))
+        new IssuableForm($('.issue-form'))
       when 'projects:merge_requests:new', 'projects:merge_requests:edit'
-        GitLab.GfmAutoComplete.setup()
         new Diff()
         shortcut_handler = new ShortcutsNavigation()
-        new ZenMode()
         new DropzoneInput($('.merge-request-form'))
-        if page == 'projects:merge_requests:new'
-          new IssuableForm($('.merge-request-form'))
+        new IssuableForm($('.merge-request-form'))
       when 'projects:merge_requests:show'
         new Diff()
         shortcut_handler = new ShortcutsIssuable()
@@ -55,7 +49,7 @@ class Dispatcher
       when 'projects:merge_requests:index'
         shortcut_handler = new ShortcutsNavigation()
         MergeRequests.init()
-      when 'dashboard:show'
+      when 'dashboard:show', 'root:show'
         new Dashboard()
         new Activities()
       when 'dashboard:projects:starred'
@@ -68,8 +62,9 @@ class Dispatcher
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:commits:show'
         shortcut_handler = new ShortcutsNavigation()
+      when 'projects:activity'
+        shortcut_handler = new ShortcutsNavigation()
       when 'projects:show'
-        new Activities()
         shortcut_handler = new ShortcutsNavigation()
       when 'groups:show'
         new Activities()
@@ -87,7 +82,7 @@ class Dispatcher
         new TreeView()
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:blob:show'
-        new BlobView()
+        new LineHighlighter()
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:labels:new', 'projects:labels:edit'
         new Labels()
@@ -128,14 +123,15 @@ class Dispatcher
             new ProjectNew()
           when 'show'
             new ProjectShow()
-          when 'issues', 'merge_requests'
-            new UsersSelect()
           when 'wikis'
             new Wikis()
             shortcut_handler = new ShortcutsNavigation()
             new ZenMode()
             new DropzoneInput($('.wiki-form'))
-          when 'snippets', 'labels', 'graphs'
+          when 'snippets'
+            shortcut_handler = new ShortcutsNavigation()
+            new ZenMode() if path[2] == 'show'
+          when 'labels', 'graphs'
             shortcut_handler = new ShortcutsNavigation()
           when 'project_members', 'deploy_keys', 'hooks', 'services', 'protected_branches'
             shortcut_handler = new ShortcutsNavigation()

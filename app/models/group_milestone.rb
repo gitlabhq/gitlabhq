@@ -44,7 +44,7 @@ class GroupMilestone
   def percent_complete
     ((closed_items_count * 100) / total_items_count).abs
   rescue ZeroDivisionError
-    100
+    0
   end
 
   def state

@@ -118,4 +118,3 @@ describe Admin::DashboardController, "routing" do
     expect(get("/admin")).to route_to('admin/dashboard#index')
   end
 end
-

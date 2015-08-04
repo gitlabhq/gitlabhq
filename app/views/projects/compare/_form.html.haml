@@ -1,21 +1,22 @@
-= form_tag namespace_project_compare_index_path(@project.namespace, @project), method: :post, class: 'form-inline' do
+= form_tag namespace_project_compare_index_path(@project.namespace, @project), method: :post, class: 'form-inline js-requires-input' do
   .clearfix.append-bottom-20
     - if params[:to] && params[:from]
       = link_to 'switch', {from: params[:to], to: params[:from]}, {class: 'commits-compare-switch has_tooltip', title: 'Switch base of comparison'}
     .form-group
       .input-group.inline-input-group
         %span.input-group-addon from
-        = text_field_tag :from, params[:from], class: "form-control"
+        = text_field_tag :from, params[:from], class: "form-control", required: true
     = "..."
     .form-group
       .input-group.inline-input-group
         %span.input-group-addon to
-        = text_field_tag :to, params[:to], class: "form-control"
+        = text_field_tag :to, params[:to], class: "form-control", required: true
     &nbsp;
     = button_tag "Compare", class: "btn btn-create commits-compare-btn"
-    - if compare_to_mr_button?
-      = link_to compare_mr_path, class: 'prepend-left-10 btn' do
-        %strong Make a merge request
+    - if create_mr_button?
+      = link_to create_mr_path, class: 'prepend-left-10 btn' do
+        = icon("plus")
+        Create Merge Request
 
 
 :javascript
@@ -25,5 +26,3 @@
     source: availableTags,
     minLength: 1
   });
-
-  disableButtonIfEmptyField('#to', '.commits-compare-btn');

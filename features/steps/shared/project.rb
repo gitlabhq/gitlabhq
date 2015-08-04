@@ -14,6 +14,17 @@ module SharedProject
     @project.team << [@user, :master]
   end
 
+  step 'I disable snippets in project' do
+    @project.snippets_enabled = false
+    @project.save
+  end
+
+  step 'I disable issues and merge requests in project' do
+    @project.issues_enabled = false
+    @project.merge_requests_enabled = false
+    @project.save
+  end
+
   # Add another user to project "Shop"
   step 'I add a user to project "Shop"' do
     @project = Project.find_by(name: "Shop")
@@ -68,13 +79,13 @@ module SharedProject
 
   step 'I should see project "Shop" activity feed' do
     project = Project.find_by(name: "Shop")
-    page.should have_content "#{@user.name} pushed new branch fix at #{project.name_with_namespace}"
+    expect(page).to have_content "#{@user.name} pushed new branch fix at #{project.name_with_namespace}"
   end
 
   step 'I should see project settings' do
-    current_path.should == edit_namespace_project_path(@project.namespace, @project)
-    page.should have_content("Project name")
-    page.should have_content("Features:")
+    expect(current_path).to eq edit_namespace_project_path(@project.namespace, @project)
+    expect(page).to have_content("Project name")
+    expect(page).to have_content("Features:")
   end
 
   def current_project
@@ -90,11 +101,11 @@ module SharedProject
   end
 
   step 'I should see project "Enterprise"' do
-    page.should have_content "Enterprise"
+    expect(page).to have_content "Enterprise"
   end
 
   step 'I should not see project "Enterprise"' do
-    page.should_not have_content "Enterprise"
+    expect(page).not_to have_content "Enterprise"
   end
 
   step 'internal project "Internal"' do
@@ -102,11 +113,11 @@ module SharedProject
   end
 
   step 'I should see project "Internal"' do
-    page.should have_content "Internal"
+    expect(page).to have_content "Internal"
   end
 
   step 'I should not see project "Internal"' do
-    page.should_not have_content "Internal"
+    expect(page).not_to have_content "Internal"
   end
 
   step 'public project "Community"' do
@@ -114,11 +125,11 @@ module SharedProject
   end
 
   step 'I should see project "Community"' do
-    page.should have_content "Community"
+    expect(page).to have_content "Community"
   end
 
   step 'I should not see project "Community"' do
-    page.should_not have_content "Community"
+    expect(page).not_to have_content "Community"
   end
 
   step '"John Doe" owns private project "Enterprise"' do

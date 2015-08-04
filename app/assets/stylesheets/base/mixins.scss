@@ -21,6 +21,10 @@
   @include border-radius($radius 0 0 $radius)
 }
 
+@mixin border-radius-right($radius) {
+  @include border-radius(0 0 $radius $radius)
+}
+
 @mixin linear-gradient($from, $to) {
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from($from), to($to));
   background-image: -webkit-linear-gradient($from, $to);
@@ -66,7 +70,23 @@
     font-family: $monospace_font;
     white-space: pre;
     word-wrap: normal;
-    padding: 0;
+    padding: 1px 2px;
+  }
+
+  kbd {
+    display: inline-block;
+    padding: 3px 5px;
+    font-size: 11px;
+    line-height: 10px;
+    color: #555;
+    vertical-align: middle;
+    background-color: #FCFCFC;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #CCC #CCC #BBB;
+    border-image: none;
+    border-radius: 3px;
+    box-shadow: 0px -1px 0px #BBB inset;
   }
 
   h1 {
@@ -89,7 +109,7 @@
     font-size: 1.2em;
   }
 
-  blockquote p {
+  blockquote {
     color: #888;
     font-size: 15px;
     line-height: 1.5;

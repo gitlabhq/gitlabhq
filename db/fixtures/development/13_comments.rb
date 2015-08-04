@@ -6,7 +6,7 @@ Gitlab::Seeder.quiet do
       note_params = {
         noteable_type: 'Issue',
         noteable_id: issue.id,
-        note: Faker::Lorem.sentence,
+        note: FFaker::Lorem.sentence,
       }
 
       Notes::CreateService.new(project, user, note_params).execute
@@ -21,7 +21,7 @@ Gitlab::Seeder.quiet do
       note_params = {
         noteable_type: 'MergeRequest',
         noteable_id: mr.id,
-        note: Faker::Lorem.sentence,
+        note: FFaker::Lorem.sentence,
       }
 
       Notes::CreateService.new(project, user, note_params).execute

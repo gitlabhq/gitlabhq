@@ -177,3 +177,33 @@ File.open(full_path) do # Etc.
 ```
 
 A check like this could have avoided CVE-2013-4583.
+
+## Properly anchor regular expressions to the start and end of strings
+
+When using regular expressions to validate user input that is passed as an argument to a shell command, make sure to use the `\A` and `\z` anchors that designate the start and end of the string, rather than `^` and `$`, or no anchors at all. 
+
+If you don't, an attacker could use this to execute commands with potentially harmful effect.
+
+For example, when a project's `import_url` is validated like below, the user could trick GitLab into cloning from a Git repository on the local filesystem.
+
+```ruby
+validates :import_url, format: { with: URI.regexp(%w(ssh git http https)) }
+# URI.regexp(%w(ssh git http https)) roughly evaluates to /(ssh|git|http|https):(something_that_looks_like_a_url)/ 
+```
+
+Suppose the user submits the following as their import URL:
+
+```
+file://git:/tmp/lol
+```
+
+Since there are no anchors in the used regular expression, the `git:/tmp/lol` in the value would match, and the validation would pass.
+
+When importing, GitLab would execute the following command, passing the `import_url` as an argument:
+
+
+```sh
+git clone file://git:/tmp/lol
+```
+
+Git would simply ignore the `git:` part, interpret the path as `file:///tmp/lol` and import the repository into the new project, in turn potentially giving the attacker access to any repository in the system, whether private or not.

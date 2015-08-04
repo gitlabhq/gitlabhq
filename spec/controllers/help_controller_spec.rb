@@ -35,8 +35,10 @@ describe HelpController do
     context 'for image formats' do
       context 'when requested file exists' do
         it 'renders the raw file' do
-          get :show, category: 'workflow/protected_branches',
-            file: 'protected_branches1', format: :png
+          get :show,
+              category: 'workflow/protected_branches',
+              file: 'protected_branches1',
+              format: :png
           expect(response).to be_success
           expect(response.content_type).to eq 'image/png'
           expect(response.headers['Content-Disposition']).to match(/^inline;/)
@@ -45,7 +47,10 @@ describe HelpController do
 
       context 'when requested file is missing' do
         it 'renders not found' do
-          get :show, category: 'foo', file: 'bar', format: :png
+          get :show,
+              category: 'foo',
+              file: 'bar',
+              format: :png
           expect(response).to be_not_found
         end
       end
@@ -53,7 +58,10 @@ describe HelpController do
 
     context 'for other formats' do
       it 'always renders not found' do
-        get :show, category: 'ssh', file: 'README', format: :foo
+        get :show,
+            category: 'ssh',
+            file: 'README',
+            format: :foo
         expect(response).to be_not_found
       end
     end

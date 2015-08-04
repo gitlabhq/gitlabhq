@@ -75,6 +75,7 @@ Now we can choose one or more of the Supported Providers below to continue confi
 - [Google](google.md)
 - [Shibboleth](shibboleth.md)
 - [Twitter](twitter.md)
+- [SAML](saml.md)
 
 ## Enable OmniAuth for an Existing User
 
@@ -83,7 +84,7 @@ Existing users can enable OmniAuth for specific providers after the account is c
 1. Sign in normally - whether standard sign in, LDAP, or another OmniAuth provider.
 1. Go to profile settings (the silhouette icon in the top right corner).
 1. Select the "Account" tab.
-1. Under "Social Accounts" select the desired OmniAuth provider, such as Twitter.
+1. Under "Connected Accounts" select the desired OmniAuth provider, such as Twitter.
 1. The user will be redirected to the provider. Once the user authorized GitLab they will be redirected back to GitLab.
 
 The chosen OmniAuth provider is now active and can be used to sign in to GitLab from then on.

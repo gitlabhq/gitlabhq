@@ -1,7 +1,7 @@
 class Projects::LabelsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :label, only: [:edit, :update, :destroy]
-  before_action :authorize_labels!
+  before_action :authorize_read_label!
   before_action :authorize_admin_labels!, except: [:index]
 
   respond_to :js, :html

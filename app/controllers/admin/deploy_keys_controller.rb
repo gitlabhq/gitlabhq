@@ -1,13 +1,8 @@
 class Admin::DeployKeysController < Admin::ApplicationController
   before_action :deploy_keys, only: [:index]
-  before_action :deploy_key, only: [:show, :destroy]
+  before_action :deploy_key, only: [:destroy]
 
   def index
-
-  end
-
-  def show
-
   end
 
   def new

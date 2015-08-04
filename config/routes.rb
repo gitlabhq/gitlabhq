@@ -2,7 +2,6 @@ require 'sidekiq/web'
 require 'api/api'
 
 Gitlab::Application.routes.draw do
-  mount JasmineRails::Engine => '/specs' if defined?(JasmineRails)
   use_doorkeeper do
     controllers applications: 'oauth/applications',
                 authorized_applications: 'oauth/authorized_applications',
@@ -150,10 +149,17 @@ Gitlab::Application.routes.draw do
   namespace :admin do
     resources :users, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ } do
       resources :keys, only: [:show, :destroy]
+      resources :identities, only: [:index, :edit, :update, :destroy]
+
       member do
+        get :projects
+        get :keys
+        get :groups
         put :team_update
         put :block
         put :unblock
+        put :unlock
+        patch :disable_two_factor
         delete 'remove/:email_id', action: 'remove_email', as: 'remove_email'
       end
     end
@@ -166,7 +172,7 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resources :deploy_keys, only: [:index, :show, :new, :create, :destroy]
+    resources :deploy_keys, only: [:index, :new, :create, :destroy]
 
     resources :hooks, only: [:index, :create, :destroy] do
       get :test
@@ -203,8 +209,7 @@ Gitlab::Application.routes.draw do
   #
   resource :profile, only: [:show, :update] do
     member do
-      get :history
-      get :design
+      get :audit_log
       get :applications
 
       put :reset_private_token
@@ -223,9 +228,15 @@ Gitlab::Application.routes.draw do
           put :reset
         end
       end
+      resource :preferences, only: [:show, :update]
       resources :keys
       resources :emails, only: [:index, :create, :destroy]
       resource :avatar, only: [:destroy]
+      resource :two_factor_auth, only: [:new, :create, :destroy] do
+        member do
+          post :codes
+        end
+      end
     end
   end
 
@@ -289,7 +300,7 @@ Gitlab::Application.routes.draw do
     get '/users/auth/:provider/omniauth_error' => 'omniauth_callbacks#omniauth_error', as: :omniauth_error
   end
 
-  root to: "dashboard#show"
+  root to: "root#show"
 
   #
   # Project Area
@@ -304,6 +315,7 @@ Gitlab::Application.routes.draw do
         post :toggle_star
         post :markdown_preview
         get :autocomplete_sources
+        get :activity
       end
 
       scope module: :projects do
@@ -417,7 +429,7 @@ Gitlab::Application.routes.draw do
           end
         end
 
-        resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :show, :new, :create] do
+        resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create] do
           member do
             put :enable
             put :disable
@@ -445,6 +457,7 @@ Gitlab::Application.routes.draw do
         resources :merge_requests, constraints: { id: /\d+/ }, except: [:destroy] do
           member do
             get :diffs
+            get :commits
             post :automerge
             get :automerge_check
             get :ci_status
@@ -468,7 +481,7 @@ Gitlab::Application.routes.draw do
           end
         end
 
-        resources :milestones, except: [:destroy], constraints: { id: /\d+/ } do
+        resources :milestones, constraints: { id: /\d+/ } do
           member do
             put :sort_issues
             put :sort_merge_requests

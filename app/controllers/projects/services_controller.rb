@@ -7,7 +7,8 @@ class Projects::ServicesController < Projects::ApplicationController
                     :colorize_messages, :channels,
                     :push_events, :issues_events, :merge_requests_events, :tag_push_events,
                     :note_events, :send_from_committer_email, :disable_diffs, :external_wiki_url,
-                    :notify, :color]
+                    :notify, :color,
+                    :server_host, :server_port, :default_irc_uri]
   # Authorize
   before_action :authorize_admin_project!
   before_action :service, only: [:edit, :update, :test]

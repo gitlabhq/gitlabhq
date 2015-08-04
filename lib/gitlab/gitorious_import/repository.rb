@@ -1,7 +1,5 @@
 module Gitlab
   module GitoriousImport
-    GITORIOUS_HOST = "https://gitorious.org"
-    
     Repository = Struct.new(:full_name) do
       def id
         Digest::SHA1.hexdigest(full_name)

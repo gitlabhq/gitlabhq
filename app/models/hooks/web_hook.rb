@@ -13,6 +13,7 @@
 #  issues_events         :boolean          default(FALSE), not null
 #  merge_requests_events :boolean          default(FALSE), not null
 #  tag_push_events       :boolean          default(FALSE)
+#  note_events           :boolean          default(FALSE), not null
 #
 
 class WebHook < ActiveRecord::Base
@@ -21,6 +22,7 @@ class WebHook < ActiveRecord::Base
 
   default_value_for :push_events, true
   default_value_for :issues_events, false
+  default_value_for :note_events, false
   default_value_for :merge_requests_events, false
   default_value_for :tag_push_events, false
 
@@ -30,12 +32,15 @@ class WebHook < ActiveRecord::Base
   validates :url, presence: true,
                   format: { with: /\A#{URI.regexp(%w(http https))}\z/, message: "should be a valid url" }
 
-  def execute(data)
+  def execute(data, hook_name)
     parsed_url = URI.parse(url)
     if parsed_url.userinfo.blank?
       WebHook.post(url,
                    body: data.to_json,
-                   headers: { "Content-Type" => "application/json" },
+                   headers: {
+                     "Content-Type" => "application/json",
+                     "X-Gitlab-Event" => hook_name.singularize.titleize
+                   },
                    verify: false)
     else
       post_url = url.gsub("#{parsed_url.userinfo}@", "")
@@ -45,7 +50,10 @@ class WebHook < ActiveRecord::Base
       }
       WebHook.post(post_url,
                    body: data.to_json,
-                   headers: { "Content-Type" => "application/json" },
+                   headers: {
+                     "Content-Type" => "application/json",
+                     "X-Gitlab-Event" => hook_name.singularize.titleize
+                   },
                    verify: false,
                    basic_auth: auth)
     end
@@ -54,7 +62,7 @@ class WebHook < ActiveRecord::Base
     false
   end
 
-  def async_execute(data)
-    Sidekiq::Client.enqueue(ProjectWebHookWorker, id, data)
+  def async_execute(data, hook_name)
+    Sidekiq::Client.enqueue(ProjectWebHookWorker, id, data, hook_name)
   end
 end

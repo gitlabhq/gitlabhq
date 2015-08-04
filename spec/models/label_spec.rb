@@ -14,30 +14,63 @@ require 'spec_helper'
 
 describe Label do
   let(:label) { create(:label) }
-  it { expect(label).to be_valid }
 
-  it { is_expected.to belong_to(:project) }
+  describe 'associations' do
+    it { is_expected.to belong_to(:project) }
+    it { is_expected.to have_many(:label_links).dependent(:destroy) }
+    it { is_expected.to have_many(:issues).through(:label_links).source(:target) }
+  end
 
-  describe 'Validation' do
+  describe 'modules' do
+    subject { described_class }
+
+    it { is_expected.to include_module(Referable) }
+  end
+
+  describe 'validation' do
+    it { is_expected.to validate_presence_of(:project) }
+
     it 'should validate color code' do
-      expect(build(:label, color: 'G-ITLAB')).not_to be_valid
-      expect(build(:label, color: 'AABBCC')).not_to be_valid
-      expect(build(:label, color: '#AABBCCEE')).not_to be_valid
-      expect(build(:label, color: '#GGHHII')).not_to be_valid
-      expect(build(:label, color: '#')).not_to be_valid
-      expect(build(:label, color: '')).not_to be_valid
+      expect(label).not_to allow_value('G-ITLAB').for(:color)
+      expect(label).not_to allow_value('AABBCC').for(:color)
+      expect(label).not_to allow_value('#AABBCCEE').for(:color)
+      expect(label).not_to allow_value('GGHHII').for(:color)
+      expect(label).not_to allow_value('#').for(:color)
+      expect(label).not_to allow_value('').for(:color)
 
-      expect(build(:label, color: '#AABBCC')).to be_valid
+      expect(label).to allow_value('#AABBCC').for(:color)
+      expect(label).to allow_value('#abcdef').for(:color)
     end
 
     it 'should validate title' do
-      expect(build(:label, title: 'G,ITLAB')).not_to be_valid
-      expect(build(:label, title: 'G?ITLAB')).not_to be_valid
-      expect(build(:label, title: 'G&ITLAB')).not_to be_valid
-      expect(build(:label, title: '')).not_to be_valid
+      expect(label).not_to allow_value('G,ITLAB').for(:title)
+      expect(label).not_to allow_value('G?ITLAB').for(:title)
+      expect(label).not_to allow_value('G&ITLAB').for(:title)
+      expect(label).not_to allow_value('').for(:title)
 
-      expect(build(:label, title: 'GITLAB')).to be_valid
-      expect(build(:label, title: 'gitlab')).to be_valid
+      expect(label).to allow_value('GITLAB').for(:title)
+      expect(label).to allow_value('gitlab').for(:title)
+      expect(label).to allow_value("customer's request").for(:title)
+    end
+  end
+
+  describe '#to_reference' do
+    context 'using id' do
+      it 'returns a String reference to the object' do
+        expect(label.to_reference).to eq "~#{label.id}"
+        expect(label.to_reference(double('project'))).to eq "~#{label.id}"
+      end
+    end
+
+    context 'using name' do
+      it 'returns a String reference to the object' do
+        expect(label.to_reference(:name)).to eq %(~"#{label.name}")
+      end
+
+      it 'uses id when name contains double quote' do
+        label = create(:label, name: %q{"irony"})
+        expect(label.to_reference(:name)).to eq "~#{label.id}"
+      end
     end
   end
 end

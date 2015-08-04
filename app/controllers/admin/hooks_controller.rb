@@ -33,7 +33,7 @@ class Admin::HooksController < Admin::ApplicationController
       owner_name: "Someone",
       owner_email: "example@gitlabhq.com"
     }
-    @hook.execute(data)
+    @hook.execute(data, 'system_hooks')
 
     redirect_to :back
   end

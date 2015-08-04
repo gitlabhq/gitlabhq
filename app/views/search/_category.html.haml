@@ -1,0 +1,77 @@
+%ul.nav.nav-pills.search-filter
+  - if @project
+    %li{class: ("active" if @scope == 'blobs')}
+      = link_to search_filter_path(scope: 'blobs') do
+        = icon('code fw')
+        %span
+          Code
+          %span.badge
+            = @search_results.blobs_count
+    %li{class: ("active" if @scope == 'issues')}
+      = link_to search_filter_path(scope: 'issues') do
+        = icon('exclamation-circle fw')
+        %span
+          Issues
+          %span.badge
+            = @search_results.issues_count
+    %li{class: ("active" if @scope == 'merge_requests')}
+      = link_to search_filter_path(scope: 'merge_requests') do
+        = icon('tasks fw')
+        %span
+          Merge requests
+          %span.badge
+            = @search_results.merge_requests_count
+    %li{class: ("active" if @scope == 'notes')}
+      = link_to search_filter_path(scope: 'notes') do
+        = icon('comments fw')
+        %span
+          Comments
+          %span.badge
+            = @search_results.notes_count
+    %li{class: ("active" if @scope == 'wiki_blobs')}
+      = link_to search_filter_path(scope: 'wiki_blobs') do
+        = icon('book fw')
+        %span
+          Wiki
+          %span.badge
+            = @search_results.wiki_blobs_count
+
+  - elsif @show_snippets
+    %li{class: ("active" if @scope == 'snippet_blobs')}
+      = link_to search_filter_path(scope: 'snippet_blobs', snippets: true, group_id: nil, project_id: nil) do
+        = icon('code fw')
+        %span
+          Snippet Contents
+          %span.badge
+            = @search_results.snippet_blobs_count
+    %li{class: ("active" if @scope == 'snippet_titles')}
+      = link_to search_filter_path(scope: 'snippet_titles', snippets: true, group_id: nil, project_id: nil) do
+        = icon('book fw')
+        %span
+          Titles and Filenames
+          %span.badge
+            = @search_results.snippet_titles_count
+
+  - else
+    %li{class: ("active" if @scope == 'projects')}
+      = link_to search_filter_path(scope: 'projects') do
+        = icon('bookmark fw')
+        %span
+          Projects
+          %span.badge
+            = @search_results.projects_count
+    %li{class: ("active" if @scope == 'issues')}
+      = link_to search_filter_path(scope: 'issues') do
+        = icon('exclamation-circle fw')
+        %span
+          Issues
+          %span.badge
+            = @search_results.issues_count
+    %li{class: ("active" if @scope == 'merge_requests')}
+      = link_to search_filter_path(scope: 'merge_requests') do
+        = icon('tasks fw')
+        %span
+          Merge requests
+          %span.badge
+            = @search_results.merge_requests_count
+

@@ -194,6 +194,14 @@ describe API::API, api: true  do
       expect(json_response['iid']).to eq(issue.iid)
     end
 
+    it 'should return a project issue by iid' do
+      get api("/projects/#{project.id}/issues?iid=#{issue.iid}", user)
+      expect(response.status).to eq 200
+      expect(json_response.first['title']).to eq issue.title
+      expect(json_response.first['id']).to eq issue.id
+      expect(json_response.first['iid']).to eq issue.iid
+    end
+
     it "should return 404 if issue id not found" do
       get api("/projects/#{project.id}/issues/54321", user)
       expect(response.status).to eq(404)

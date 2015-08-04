@@ -47,7 +47,7 @@ describe API, api: true do
 
     it "should return nil for a user without access" do
       env[API::APIHelpers::PRIVATE_TOKEN_HEADER] = user.private_token
-      Gitlab::UserAccess.stub(allowed?: false)
+      allow(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
       expect(current_user).to be_nil
     end
 
@@ -72,13 +72,13 @@ describe API, api: true do
 
     it "should throw an error when the current user is not an admin and attempting to sudo" do
       set_env(user, admin.id)
-      expect { current_user }.to raise_error
+      expect { current_user }.to raise_error(Exception)
       set_param(user, admin.id)
-      expect { current_user }.to raise_error
+      expect { current_user }.to raise_error(Exception)
       set_env(user, admin.username)
-      expect { current_user }.to raise_error
+      expect { current_user }.to raise_error(Exception)
       set_param(user, admin.username)
-      expect { current_user }.to raise_error
+      expect { current_user }.to raise_error(Exception)
     end
 
     it "should throw an error when the user cannot be found for a given id" do
@@ -86,10 +86,10 @@ describe API, api: true do
       expect(user.id).not_to eq(id)
       expect(admin.id).not_to eq(id)
       set_env(admin, id)
-      expect { current_user }.to raise_error
+      expect { current_user }.to raise_error(Exception)
 
       set_param(admin, id)
-      expect { current_user }.to raise_error
+      expect { current_user }.to raise_error(Exception)
     end
 
     it "should throw an error when the user cannot be found for a given username" do
@@ -97,10 +97,10 @@ describe API, api: true do
       expect(user.username).not_to eq(username)
       expect(admin.username).not_to eq(username)
       set_env(admin, username)
-      expect { current_user }.to raise_error
+      expect { current_user }.to raise_error(Exception)
 
       set_param(admin, username)
-      expect { current_user }.to raise_error
+      expect { current_user }.to raise_error(Exception)
     end
 
     it "should handle sudo's to oneself" do

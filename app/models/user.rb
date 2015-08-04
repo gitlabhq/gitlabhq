@@ -49,18 +49,28 @@
 #  password_automatically_set    :boolean          default(FALSE)
 #  bitbucket_access_token        :string(255)
 #  bitbucket_access_token_secret :string(255)
+#  location                      :string(255)
+#  encrypted_otp_secret          :string(255)
+#  encrypted_otp_secret_iv       :string(255)
+#  encrypted_otp_secret_salt     :string(255)
+#  otp_required_for_login        :boolean          default(FALSE), not null
+#  otp_backup_codes              :text
 #  public_email                  :string(255)      default(""), not null
+#  dashboard                     :integer          default(0)
+#  project_view                  :integer          default(0)
 #
 
 require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class User < ActiveRecord::Base
-  include Sortable
-  include Gitlab::ConfigHelper
-  include TokenAuthenticatable
   extend Gitlab::ConfigHelper
+
+  include Gitlab::ConfigHelper
   include Gitlab::CurrentSettings
+  include Referable
+  include Sortable
+  include TokenAuthenticatable
 
   default_value_for :admin, false
   default_value_for :can_create_group, gitlab_config.default_can_create_group
@@ -69,8 +79,15 @@ class User < ActiveRecord::Base
   default_value_for :hide_no_password, false
   default_value_for :theme_id, gitlab_config.default_theme
 
-  devise :database_authenticatable, :lockable, :async,
-         :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :confirmable, :registerable
+  devise :two_factor_authenticatable,
+         otp_secret_encryption_key: File.read(Rails.root.join('.secret')).chomp
+  alias_attribute :two_factor_enabled, :otp_required_for_login
+
+  devise :two_factor_backupable, otp_number_of_backup_codes: 10
+  serialize :otp_backup_codes, JSON
+
+  devise :lockable, :async, :recoverable, :rememberable, :trackable,
+    :validatable, :omniauthable, :confirmable, :registerable
 
   attr_accessor :force_random_password
 
@@ -122,7 +139,9 @@ class User < ActiveRecord::Base
   # Validations
   #
   validates :name, presence: true
-  validates :email, presence: true, email: { strict_mode: true }, uniqueness: true
+  # Note that a 'uniqueness' and presence check is provided by devise :validatable for email. We do not need to
+  # duplicate that here as the validation framework will have duplicate errors in the event of a failure.
+  validates :email, presence: true, email: { strict_mode: true }
   validates :notification_email, presence: true, email: { strict_mode: true }
   validates :public_email, presence: true, email: { strict_mode: true }, allow_blank: true, uniqueness: true
   validates :bio, length: { maximum: 255 }, allow_blank: true
@@ -136,22 +155,32 @@ class User < ActiveRecord::Base
 
   validates :notification_level, inclusion: { in: Notification.notification_levels }, presence: true
   validate :namespace_uniq, if: ->(user) { user.username_changed? }
-  validate :avatar_type, if: ->(user) { user.avatar_changed? }
+  validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :unique_email, if: ->(user) { user.email_changed? }
   validate :owns_notification_email, if: ->(user) { user.notification_email_changed? }
+  validate :owns_public_email, if: ->(user) { user.public_email_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :generate_password, on: :create
+  before_validation :restricted_signup_domains, on: :create
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: ->(user) { user.email_changed? }
   before_validation :set_public_email, if: ->(user) { user.public_email_changed? }
 
+  after_update :update_emails_with_primary_email, if: ->(user) { user.email_changed? }
   before_save :ensure_authentication_token
   after_save :ensure_namespace_correct
   after_initialize :set_projects_limit
   after_create :post_create_hook
   after_destroy :post_destroy_hook
 
+  # User's Dashboard preference
+  # Note: When adding an option, it MUST go on the end of the array.
+  enum dashboard: [:projects, :stars]
+
+  # User's Project preference
+  # Note: When adding an option, it MUST go on the end of the array.
+  enum project_view: [:readme, :activity]
 
   alias_attribute :private_token, :authentication_token
 
@@ -170,11 +199,13 @@ class User < ActiveRecord::Base
   mount_uploader :avatar, AvatarUploader
 
   # Scopes
-  scope :admins, -> { where(admin:  true) }
+  scope :admins, -> { where(admin: true) }
   scope :blocked, -> { with_state(:blocked) }
   scope :active, -> { with_state(:active) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members)') }
+  scope :with_two_factor,    -> { where(two_factor_enabled: true) }
+  scope :without_two_factor, -> { where(two_factor_enabled: false) }
 
   #
   # Class methods
@@ -199,18 +230,37 @@ class User < ActiveRecord::Base
       end
     end
 
-    def find_for_commit(email, name)
-      # Prefer email match over name match
-      User.where(email: email).first ||
-        User.joins(:emails).where(emails: { email: email }).first ||
-        User.where(name: name).first
+    # Find a User by their primary email or any associated secondary email
+    def find_by_any_email(email)
+      user_table = arel_table
+      email_table = Email.arel_table
+
+      # Use ARel to build a query:
+      query = user_table.
+        # SELECT "users".* FROM "users"
+        project(user_table[Arel.star]).
+        # LEFT OUTER JOIN "emails"
+        join(email_table, Arel::Nodes::OuterJoin).
+        # ON "users"."id" = "emails"."user_id"
+        on(user_table[:id].eq(email_table[:user_id])).
+        # WHERE ("user"."email" = '<email>' OR "emails"."email" = '<email>')
+        where(user_table[:email].eq(email).or(email_table[:email].eq(email)))
+
+      find_by_sql(query.to_sql).first
     end
 
     def filter(filter_name)
       case filter_name
-      when "admins"; self.admins
-      when "blocked"; self.blocked
-      when "wop"; self.without_projects
+      when 'admins'
+        self.admins
+      when 'blocked'
+        self.blocked
+      when 'two_factor_disabled'
+        self.without_two_factor
+      when 'two_factor_enabled'
+        self.with_two_factor
+      when 'wop'
+        self.without_projects
       else
         self.active
       end
@@ -225,12 +275,28 @@ class User < ActiveRecord::Base
             value: login.to_s.downcase).first
     end
 
+    def find_by_username!(username)
+      find_by!('lower(username) = ?', username.downcase)
+    end
+
     def by_username_or_id(name_or_id)
       where('users.username = ? OR users.id = ?', name_or_id.to_s, name_or_id.to_i).first
     end
 
     def build_user(attrs = {})
       User.new(attrs)
+    end
+
+    def reference_prefix
+      '@'
+    end
+
+    # Pattern used to extract `@user` user references from text
+    def reference_pattern
+      %r{
+        #{Regexp.escape(reference_prefix)}
+        (?<user>#{Gitlab::Regex::NAMESPACE_REGEX_STR})
+      }x
     end
   end
 
@@ -240,6 +306,10 @@ class User < ActiveRecord::Base
 
   def to_param
     username
+  end
+
+  def to_reference(_from_project = nil)
+    "#{self.class.reference_prefix}#{username}"
   end
 
   def notification
@@ -261,6 +331,16 @@ class User < ActiveRecord::Base
     @reset_token
   end
 
+  def disable_two_factor!
+    update_attributes(
+      two_factor_enabled:        false,
+      encrypted_otp_secret:      nil,
+      encrypted_otp_secret_iv:   nil,
+      encrypted_otp_secret_salt: nil,
+      otp_backup_codes:          nil
+    )
+  end
+
   def namespace_uniq
     namespace_name = self.username
     existing_namespace = Namespace.by_path(namespace_name)
@@ -276,11 +356,29 @@ class User < ActiveRecord::Base
   end
 
   def unique_email
-    self.errors.add(:email, 'has already been taken') if Email.exists?(email: self.email)
+    if !self.emails.exists?(email: self.email) && Email.exists?(email: self.email)
+      self.errors.add(:email, 'has already been taken')
+    end
   end
 
   def owns_notification_email
     self.errors.add(:notification_email, "is not an email you own") unless self.all_emails.include?(self.notification_email)
+  end
+
+  def owns_public_email
+    return if self.public_email.blank?
+
+    self.errors.add(:public_email, "is not an email you own") unless self.all_emails.include?(self.public_email)
+  end
+
+  def update_emails_with_primary_email
+    primary_email_record = self.emails.find_by(email: self.email)
+    if primary_email_record
+      primary_email_record.destroy
+      self.emails.create(email: self.email_was)
+
+      self.update_secondary_emails!
+    end
   end
 
   # Groups user has access to
@@ -303,9 +401,11 @@ class User < ActiveRecord::Base
   end
 
   def owned_projects
-    @owned_projects ||= begin
-                          Project.where(namespace_id: owned_groups.pluck(:id).push(namespace.id)).joins(:namespace)
-                        end
+    @owned_projects ||=
+      begin
+        namespace_ids = owned_groups.pluck(:id).push(namespace.id)
+        Project.in_namespace(namespace_ids).joins(:namespace)
+      end
   end
 
   # Team membership in authorized projects
@@ -418,7 +518,7 @@ class User < ActiveRecord::Base
   end
 
   def project_deploy_keys
-    DeployKey.in_projects(self.authorized_projects.pluck(:id))
+    DeployKey.unscoped.in_projects(self.authorized_projects.pluck(:id)).distinct(:id)
   end
 
   def accessible_deploy_keys
@@ -434,7 +534,7 @@ class User < ActiveRecord::Base
   end
 
   def sanitize_attrs
-    %w(name username skype linkedin twitter bio).each do |attr|
+    %w(name username skype linkedin twitter).each do |attr|
       value = self.send(attr)
       self.send("#{attr}=", Sanitize.clean(value)) if value.present?
     end
@@ -450,6 +550,12 @@ class User < ActiveRecord::Base
     if self.public_email.blank? || !self.all_emails.include?(self.public_email)
       self.public_email = ''
     end
+  end
+
+  def update_secondary_emails!
+    self.set_notification_email
+    self.set_public_email
+    self.save if self.notification_email_changed? || self.public_email_changed?
   end
 
   def set_projects_limit
@@ -600,6 +706,12 @@ class User < ActiveRecord::Base
       end
   end
 
+  def namespaces
+    namespace_ids = groups.pluck(:id)
+    namespace_ids.push(namespace.id)
+    Namespace.where(id: namespace_ids)
+  end
+
   def oauth_authorized_tokens
     Doorkeeper::AccessToken.where(resource_owner_id: self.id, revoked_at: nil)
   end
@@ -610,5 +722,32 @@ class User < ActiveRecord::Base
       reorder(project_id: :desc).
       select(:project_id).
       uniq.map(&:project_id)
+  end
+
+  def restricted_signup_domains
+    email_domains = current_application_settings.restricted_signup_domains
+
+    unless email_domains.blank?
+      match_found = email_domains.any? do |domain|
+        escaped = Regexp.escape(domain).gsub('\*','.*?')
+        regexp = Regexp.new "^#{escaped}$", Regexp::IGNORECASE
+        email_domain = Mail::Address.new(self.email).domain
+        email_domain =~ regexp
+      end
+
+      unless match_found
+        self.errors.add :email,
+                        'is not whitelisted. ' +
+                        'Email domains valid for registration are: ' +
+                        email_domains.join(', ')
+        return false
+      end
+    end
+
+    true
+  end
+
+  def can_be_removed?
+    !solo_owned_groups.present?
   end
 end

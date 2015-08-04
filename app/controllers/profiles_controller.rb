@@ -1,22 +1,18 @@
-class ProfilesController < ApplicationController
+class ProfilesController < Profiles::ApplicationController
   include ActionView::Helpers::SanitizeHelper
 
   before_action :user
   before_action :authorize_change_username!, only: :update_username
   skip_before_action :require_email, only: [:show, :update]
 
-  layout 'profile'
-
   def show
-  end
-
-  def design
   end
 
   def applications
     @applications = current_user.oauth_applications
     @authorized_tokens = current_user.oauth_authorized_tokens
-    @authorized_apps = @authorized_tokens.map(&:application).uniq
+    @authorized_anonymous_tokens = @authorized_tokens.reject(&:application)
+    @authorized_apps = @authorized_tokens.map(&:application).uniq - [nil]
   end
 
   def update
@@ -31,7 +27,6 @@ class ProfilesController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to :back }
-      format.js
     end
   end
 
@@ -43,8 +38,11 @@ class ProfilesController < ApplicationController
     redirect_to profile_account_path
   end
 
-  def history
-    @events = current_user.recent_events.page(params[:page]).per(PER_PAGE)
+  def audit_log
+    @events = AuditEvent.where(entity_type: "User", entity_id: current_user.id).
+      order("created_at DESC").
+      page(params[:page]).
+      per(PER_PAGE)
   end
 
   def update_username
@@ -67,10 +65,21 @@ class ProfilesController < ApplicationController
 
   def user_params
     params.require(:user).permit(
-      :email, :password, :password_confirmation, :bio, :name,
-      :username, :skype, :linkedin, :twitter, :website_url,
-      :color_scheme_id, :theme_id, :avatar, :hide_no_ssh_key,
-      :hide_no_password, :location, :public_email
+      :avatar,
+      :bio,
+      :email,
+      :hide_no_password,
+      :hide_no_ssh_key,
+      :linkedin,
+      :location,
+      :name,
+      :password,
+      :password_confirmation,
+      :public_email,
+      :skype,
+      :twitter,
+      :username,
+      :website_url
     )
   end
 end

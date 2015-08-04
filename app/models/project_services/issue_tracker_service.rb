@@ -81,18 +81,13 @@ class IssueTrackerService < Service
     result = false
 
     begin
-      url = URI.parse(self.project_url)
+      response = HTTParty.head(self.project_url, verify: true)
 
-      if url.host && url.port
-        http = Net::HTTP.start(url.host, url.port, { open_timeout: 5, read_timeout: 5 })
-        response = http.head("/")
-
-        if response
-          message = "#{self.type} received response #{response.code} when attempting to connect to #{self.project_url}"
-          result = true
-        end
+      if response
+        message = "#{self.type} received response #{response.code} when attempting to connect to #{self.project_url}"
+        result = true
       end
-    rescue Timeout::Error, SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED => error
+    rescue HTTParty::Error, Timeout::Error, SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED => error
       message = "#{self.type} had an error when trying to connect to #{self.project_url}: #{error.message}"
     end
     Rails.logger.info(message)

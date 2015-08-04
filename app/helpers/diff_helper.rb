@@ -7,14 +7,23 @@ module DiffHelper
     end
   end
 
-  def safe_diff_files(diffs)
-    diffs.first(allowed_diff_size).map do |diff|
-      Gitlab::Diff::File.new(diff)
+  def allowed_diff_lines
+    if diff_hard_limit_enabled?
+      Commit::DIFF_HARD_LIMIT_LINES
+    else
+      Commit::DIFF_SAFE_LINES
     end
   end
 
-  def show_diff_size_warning?(diffs)
-    diffs.size > allowed_diff_size
+  def safe_diff_files(diffs)
+    lines = 0
+    safe_files = []
+    diffs.first(allowed_diff_size).each do |diff|
+      lines += diff.diff.lines.count
+      break if lines > allowed_diff_lines
+      safe_files << Gitlab::Diff::File.new(diff)
+    end
+    safe_files
   end
 
   def diff_hard_limit_enabled?
@@ -92,6 +101,10 @@ module DiffHelper
     (bottom) ? 'js-unfold-bottom' : ''
   end
 
+  def unfold_class(unfold)
+    (unfold) ? 'unfold js-unfold' : ''
+  end
+
   def diff_line_content(line)
     if line.blank?
       " &nbsp;"
@@ -140,8 +153,8 @@ module DiffHelper
     end
   end
 
-  def submodule_link(blob, ref)
-    tree, commit = submodule_links(blob, ref)
+  def submodule_link(blob, ref, repository = @repository)
+    tree, commit = submodule_links(blob, ref, repository)
     commit_id = if commit.nil?
                   blob.id[0..10]
                 else

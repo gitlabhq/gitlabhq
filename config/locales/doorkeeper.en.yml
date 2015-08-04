@@ -31,7 +31,7 @@ en:
       messages:
         # Common error messages
         invalid_request: 'The request is missing a required parameter, includes an unsupported parameter value, or is otherwise malformed.'
-        invalid_redirect_uri: 'The redirect uri included is not valid.'
+        invalid_redirect_uri: 'The redirect URI included is not valid.'
         unauthorized_client: 'The client is not authorized to perform this request using this method.'
         access_denied: 'The resource owner or authorization server denied the request.'
         invalid_scope: 'The requested scope is invalid, unknown, or malformed.'
@@ -63,11 +63,11 @@ en:
     flash:
       applications:
         create:
-          notice: 'Application created.'
+          notice: 'The application was created successfully.'
         destroy:
-          notice: 'Application deleted.'
+          notice: 'The application was deleted successfully.'
         update:
-          notice: 'Application updated.'
+          notice: 'The application was updated successfully.'
       authorized_applications:
         destroy:
-          notice: 'Application revoked.'
+          notice: 'The application was revoked access.'

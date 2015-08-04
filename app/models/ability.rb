@@ -31,10 +31,11 @@ class Ability
                 end
 
       if project && project.public?
-        [
+        rules = [
           :read_project,
           :read_wiki,
           :read_issue,
+          :read_label,
           :read_milestone,
           :read_project_snippet,
           :read_project_member,
@@ -42,6 +43,8 @@ class Ability
           :read_note,
           :download_code
         ]
+
+        rules - project_disabled_features_rules(project)
       else
         group = if subject.kind_of?(Group)
                   subject
@@ -68,6 +71,7 @@ class Ability
     def project_abilities(user, project)
       rules = []
       key = "/user/#{user.id}/project/#{project.id}"
+
       RequestStore.store[key] ||= begin
         team = project.team
 
@@ -101,7 +105,7 @@ class Ability
           rules -= project_archived_rules
         end
 
-        rules
+        rules - project_disabled_features_rules(project)
       end
     end
 
@@ -117,14 +121,15 @@ class Ability
         :read_project,
         :read_wiki,
         :read_issue,
+        :read_label,
         :read_milestone,
         :read_project_snippet,
         :read_project_member,
         :read_merge_request,
         :read_note,
-        :write_project,
-        :write_issue,
-        :write_note
+        :create_project,
+        :create_issue,
+        :create_note
       ]
     end
 
@@ -132,27 +137,28 @@ class Ability
       project_guest_rules + [
         :download_code,
         :fork_project,
-        :write_project_snippet
+        :create_project_snippet,
+        :update_issue,
+        :admin_issue,
+        :admin_label
       ]
     end
 
     def project_dev_rules
       project_report_rules + [
-        :write_merge_request,
-        :write_wiki,
-        :modify_issue,
-        :admin_issue,
-        :admin_label,
+        :admin_merge_request,
+        :create_merge_request,
+        :create_wiki,
         :push_code
       ]
     end
 
     def project_archived_rules
       [
-        :write_merge_request,
+        :create_merge_request,
         :push_code,
         :push_code_to_protected_branches,
-        :modify_merge_request,
+        :update_merge_request,
         :admin_merge_request
       ]
     end
@@ -160,10 +166,8 @@ class Ability
     def project_master_rules
       project_dev_rules + [
         :push_code_to_protected_branches,
-        :modify_issue,
-        :modify_project_snippet,
-        :modify_merge_request,
-        :admin_issue,
+        :update_project_snippet,
+        :update_merge_request,
         :admin_milestone,
         :admin_project_snippet,
         :admin_project_member,
@@ -184,6 +188,33 @@ class Ability
       ]
     end
 
+    def project_disabled_features_rules(project)
+      rules = []
+
+      unless project.issues_enabled
+        rules += named_abilities('issue')
+      end
+
+      unless project.merge_requests_enabled
+        rules += named_abilities('merge_request')
+      end
+
+      unless project.issues_enabled or project.merge_requests_enabled
+        rules += named_abilities('label')
+        rules += named_abilities('milestone')
+      end
+
+      unless project.snippets_enabled
+        rules += named_abilities('project_snippet')
+      end
+
+      unless project.wiki_enabled
+        rules += named_abilities('wiki')
+      end
+
+      rules
+    end
+
     def group_abilities(user, group)
       rules = []
 
@@ -202,7 +233,8 @@ class Ability
       if group.has_owner?(user) || user.admin?
         rules.push(*[
           :admin_group,
-          :admin_namespace
+          :admin_namespace,
+          :admin_group_member
         ])
       end
 
@@ -223,30 +255,40 @@ class Ability
       rules.flatten
     end
 
-    [:issue, :note, :project_snippet, :personal_snippet, :merge_request].each do |name|
+
+    [:issue, :merge_request].each do |name|
       define_method "#{name}_abilities" do |user, subject|
-        if subject.author == user || user.is_admin?
-          rules = [
+        rules = []
+
+        if subject.author == user || (subject.respond_to?(:assignee) && subject.assignee == user)
+          rules += [
             :"read_#{name}",
-            :"write_#{name}",
-            :"modify_#{name}",
+            :"update_#{name}",
+          ]
+        end
+
+        rules += project_abilities(user, subject.project)
+        rules
+      end
+    end
+
+    [:note, :project_snippet, :personal_snippet].each do |name|
+      define_method "#{name}_abilities" do |user, subject|
+        rules = []
+
+        if subject.author == user
+          rules += [
+            :"read_#{name}",
+            :"update_#{name}",
             :"admin_#{name}"
           ]
-          rules.push(:change_visibility_level) if subject.is_a?(Snippet)
-          rules
-        elsif subject.respond_to?(:assignee) && subject.assignee == user
-          [
-            :"read_#{name}",
-            :"write_#{name}",
-            :"modify_#{name}",
-          ]
-        else
-          if subject.respond_to?(:project)
-            project_abilities(user, subject.project)
-          else
-            []
-          end
         end
+
+        if subject.respond_to?(:project) && subject.project
+          rules += project_abilities(user, subject.project)
+        end
+
+        rules
       end
     end
 
@@ -254,14 +296,17 @@ class Ability
       rules = []
       target_user = subject.user
       group = subject.group
-      can_manage = group_abilities(user, group).include?(:admin_group)
+      can_manage = group_abilities(user, group).include?(:admin_group_member)
+
       if can_manage && (user != target_user)
-        rules << :modify_group_member
+        rules << :update_group_member
         rules << :destroy_group_member
       end
+
       if !group.last_owner?(user) && (can_manage || (user == target_user))
         rules << :destroy_group_member
       end
+
       rules
     end
 
@@ -271,6 +316,17 @@ class Ability
                        abilities << self
                        abilities
                      end
+    end
+
+    private
+
+    def named_abilities(name)
+      [
+        :"read_#{name}",
+        :"create_#{name}",
+        :"update_#{name}",
+        :"admin_#{name}"
+      ]
     end
   end
 end

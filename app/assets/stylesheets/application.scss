@@ -36,25 +36,25 @@
 @import "font-awesome";
 
 /**
+ * UI themes:
+ */
+@import "themes/**/*";
+
+/**
  * Generic css (forms, nav etc):
  */
-@import "generic/*";
+@import "generic/**/*";
 
 /**
  * Page specific styles (issues, projects etc):
  */
 
-@import "pages/*";
+@import "pages/**/*";
 
 /**
  * Code highlight
  */
-@import "highlight/*";
-
-/**
- * UI themes:
- */
-@import "themes/*";
+@import "highlight/**/*";
 
 /**
  * Styles for JS behaviors.

@@ -93,7 +93,8 @@ module Emails
           "pushed to"
         end
 
-      @subject = "[#{@project.path_with_namespace}]"
+      @subject = "[Git]"
+      @subject << "[#{@project.path_with_namespace}]"
       @subject << "[#{@ref_name}]" if action == :push
       @subject << " "
 

@@ -1,11 +1,11 @@
 class Tree
-  include Gitlab::MarkdownHelper
+  include Gitlab::MarkupHelper
 
   attr_accessor :repository, :sha, :path, :entries
 
   def initialize(repository, sha, path = '/')
     path = '/' if path.blank?
-    
+
     @repository = repository
     @sha = sha
     @path = path
@@ -20,7 +20,7 @@ class Tree
     available_readmes = blobs.select(&:readme?)
 
     if available_readmes.count == 0
-      return @readme = nil 
+      return @readme = nil
     end
 
     # Take the first previewable readme, or the first available readme, if we

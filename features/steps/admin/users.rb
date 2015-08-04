@@ -3,9 +3,17 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   include SharedPaths
   include SharedAdmin
 
+  before do
+    allow(Devise).to receive(:omniauth_providers).and_return([:twitter, :twitter_updated])
+  end
+
+  after do
+    allow(Devise).to receive(:omniauth_providers).and_call_original
+  end
+
   step 'I should see all users' do
     User.all.each do |user|
-      page.should have_content user.name
+      expect(page).to have_content user.name
     end
   end
 
@@ -23,13 +31,13 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   end
 
   step 'See username error message' do
-    within "#error_explanation" do
-      page.should have_content "Username"
+    page.within "#error_explanation" do
+      expect(page).to have_content "Username"
     end
   end
 
   step 'Not changed form action url' do
-    page.should have_selector %(form[action="/admin/users/#{@user.username}"])
+    expect(page).to have_selector %(form[action="/admin/users/#{@user.username}"])
   end
 
   step 'I submit modified user' do
@@ -38,7 +46,7 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   end
 
   step 'I see user attributes changed' do
-    page.should have_content 'Can create groups: Yes'
+    expect(page).to have_content 'Can create groups: Yes'
   end
 
   step 'click edit on my user' do
@@ -53,7 +61,7 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   end
 
   step 'I see the secondary email' do
-    page.should have_content "Secondary email: #{@user_with_secondary_email.emails.last.email}"
+    expect(page).to have_content "Secondary email: #{@user_with_secondary_email.emails.last.email}"
   end
 
   step 'I click remove secondary email' do
@@ -61,7 +69,7 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   end
 
   step 'I should not see secondary email anymore' do
-    page.should_not have_content "Secondary email:"
+    expect(page).not_to have_content "Secondary email:"
   end
 
   step 'user "Mike" with groups and projects' do
@@ -79,8 +87,8 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   end
 
   step 'I should see user "Mike" details' do
-    page.should have_content 'Account'
-    page.should have_content 'Personal projects limit'
+    expect(page).to have_content 'Account'
+    expect(page).to have_content 'Personal projects limit'
   end
 
   step 'user "Pete" with ssh keys' do
@@ -94,8 +102,8 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   end
 
   step 'I should see key list' do
-    page.should have_content 'ssh-rsa Key2'
-    page.should have_content 'ssh-rsa Key1'
+    expect(page).to have_content 'ssh-rsa Key2'
+    expect(page).to have_content 'ssh-rsa Key1'
   end
 
   step 'I click on the key title' do
@@ -103,8 +111,8 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   end
 
   step 'I should see key details' do
-    page.should have_content 'ssh-rsa Key2'
-    page.should have_content 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQSTWXhJAX/He+nG78MiRRRn7m0Pb0XbcgTxE0etArgoFoh9WtvDf36HG6tOSg/0UUNcp0dICsNAmhBKdncp6cIyPaXJTURPRAGvhI0/VDk4bi27bRnccGbJ/hDaUxZMLhhrzY0r22mjVf8PF6dvv5QUIQVm1/LeaWYsHHvLgiIjwrXirUZPnFrZw6VLREoBKG8uWvfSXw1L5eapmstqfsME8099oi+vWLR8MgEysZQmD28M73fgW4zek6LDQzKQyJx9nB+hJkKUDvcuziZjGmRFlNgSA2mguERwL1OXonD8WYUrBDGKroIvBT39zS5d9tQDnidEJZ9Y8gv5ViYP7x Key2'
+    expect(page).to have_content 'ssh-rsa Key2'
+    expect(page).to have_content 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQSTWXhJAX/He+nG78MiRRRn7m0Pb0XbcgTxE0etArgoFoh9WtvDf36HG6tOSg/0UUNcp0dICsNAmhBKdncp6cIyPaXJTURPRAGvhI0/VDk4bi27bRnccGbJ/hDaUxZMLhhrzY0r22mjVf8PF6dvv5QUIQVm1/LeaWYsHHvLgiIjwrXirUZPnFrZw6VLREoBKG8uWvfSXw1L5eapmstqfsME8099oi+vWLR8MgEysZQmD28M73fgW4zek6LDQzKQyJx9nB+hJkKUDvcuziZjGmRFlNgSA2mguERwL1OXonD8WYUrBDGKroIvBT39zS5d9tQDnidEJZ9Y8gv5ViYP7x Key2'
   end
 
   step 'I click on remove key' do
@@ -112,6 +120,46 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   end
 
   step 'I should see the key removed' do
-    page.should_not have_content 'ssh-rsa Key2'
+    expect(page).not_to have_content 'ssh-rsa Key2'
+  end
+
+  step 'user "Pete" with twitter account' do
+    @user = create(:user, name: 'Pete')
+    @user.identities.create!(extern_uid: '123456', provider: 'twitter')
+  end
+
+  step 'I visit "Pete" identities page in admin' do
+    visit admin_user_identities_path(@user)
+  end
+
+  step 'I should see twitter details' do
+    expect(page).to have_content 'Pete'
+    expect(page).to have_content 'twitter'
+  end
+
+  step 'I modify twitter identity' do
+    find('.table').find(:link, 'Edit').click
+    fill_in 'identity_extern_uid', with: '654321'
+    select 'twitter_updated', from: 'identity_provider'
+    click_button 'Save changes'
+  end
+
+  step 'I should see twitter details updated' do
+    expect(page).to have_content 'Pete'
+    expect(page).to have_content 'twitter_updated'
+    expect(page).to have_content '654321'
+  end
+
+  step 'I remove twitter identity' do
+    click_link 'Delete'
+  end
+
+  step 'I should not see twitter details' do
+    expect(page).to have_content 'Pete'
+    expect(page).to_not have_content 'twitter'
+  end
+
+  step 'click on ssh keys tab' do
+    click_link 'SSH keys'
   end
 end

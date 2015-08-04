@@ -9,15 +9,27 @@ describe AutocompleteController do
     before do
       sign_in(user)
       project.team << [user, :master]
-
-      get(:users, project_id: project.id)
     end
 
     let(:body) { JSON.parse(response.body) }
 
-    it { body.should be_kind_of(Array) }
-    it { body.size.should eq(1) }
-    it { body.first["username"].should == user.username }
+    describe 'GET #users with project ID' do
+      before do
+        get(:users, project_id: project.id)
+      end
+
+      it { expect(body).to be_kind_of(Array) }
+      it { expect(body.size).to eq 1 }
+      it { expect(body.first["username"]).to eq user.username }
+    end
+
+    describe 'GET #users with unknown project' do
+      before do
+        get(:users, project_id: 'unknown')
+      end
+
+      it { expect(response.status).to eq(404) }
+    end
   end
 
   context 'group members' do
@@ -26,15 +38,27 @@ describe AutocompleteController do
     before do
       sign_in(user)
       group.add_owner(user)
-
-      get(:users, group_id: group.id)
     end
 
     let(:body) { JSON.parse(response.body) }
 
-    it { body.should be_kind_of(Array) }
-    it { body.size.should eq(1) }
-    it { body.first["username"].should == user.username }
+    describe 'GET #users with group ID' do
+      before do
+        get(:users, group_id: group.id)
+      end
+
+      it { expect(body).to be_kind_of(Array) }
+      it { expect(body.size).to eq 1 }
+      it { expect(body.first["username"]).to eq user.username }
+    end
+
+    describe 'GET #users with unknown group ID' do
+      before do
+        get(:users, group_id: 'unknown')
+      end
+
+      it { expect(response.status).to eq(404) }
+    end
   end
 
   context 'all users' do
@@ -45,7 +69,55 @@ describe AutocompleteController do
 
     let(:body) { JSON.parse(response.body) }
 
-    it { body.should be_kind_of(Array) }
-    it { body.size.should eq(User.count) }
+    it { expect(body).to be_kind_of(Array) }
+    it { expect(body.size).to eq User.count }
+  end
+
+  context 'unauthenticated user' do
+    let(:public_project) { create(:project, :public) }
+    let(:body) { JSON.parse(response.body) }
+
+    describe 'GET #users with public project' do
+      before do
+        public_project.team << [user, :guest]
+        get(:users, project_id: public_project.id)
+      end
+
+      it { expect(body).to be_kind_of(Array) }
+      it { expect(body.size).to eq 1 }
+    end
+
+    describe 'GET #users with project' do
+      before do
+        get(:users, project_id: project.id)
+      end
+
+      it { expect(response.status).to eq(302) }
+    end
+
+    describe 'GET #users with unknown project' do
+      before do
+        get(:users, project_id: 'unknown')
+      end
+
+      it { expect(response.status).to eq(302) }
+    end
+
+    describe 'GET #users with inaccessible group' do
+      before do
+        project.team << [user, :guest]
+        get(:users, group_id: user.namespace.id)
+      end
+
+      it { expect(response.status).to eq(302) }
+    end
+
+    describe 'GET #users with no project' do
+      before do
+        get(:users)
+      end
+
+      it { expect(response.status).to eq(302) }
+    end
   end
 end

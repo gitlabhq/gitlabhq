@@ -1,8 +1,15 @@
 class Oauth::AuthorizedApplicationsController < Doorkeeper::AuthorizedApplicationsController
-  layout "profile"
+  include PageLayoutHelper
+
+  layout 'profile'
 
   def destroy
-    Doorkeeper::AccessToken.revoke_all_for(params[:id], current_resource_owner)
+    if params[:token_id].present?
+      current_resource_owner.oauth_authorized_tokens.find(params[:token_id]).revoke
+    else
+      Doorkeeper::AccessToken.revoke_all_for(params[:id], current_resource_owner)
+    end
+
     redirect_to applications_profile_url, notice: I18n.t(:notice, scope: [:doorkeeper, :flash, :authorized_applications, :destroy])
   end
 end

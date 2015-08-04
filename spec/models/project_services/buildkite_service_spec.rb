@@ -15,6 +15,7 @@
 #  issues_events         :boolean          default(TRUE)
 #  merge_requests_events :boolean          default(TRUE)
 #  tag_push_events       :boolean          default(TRUE)
+#  note_events           :boolean          default(TRUE), not null
 #
 
 require 'spec_helper'
@@ -28,12 +29,10 @@ describe BuildkiteService do
   describe 'commits methods' do
     before do
       @project = Project.new
-      @project.stub(
-        default_branch: 'default-brancho'
-      )
+      allow(@project).to receive(:default_branch).and_return('default-brancho')
 
       @service = BuildkiteService.new
-      @service.stub(
+      allow(@service).to receive_messages(
         project: @project,
         service_hook: true,
         project_url: 'https://buildkite.com/account-name/example-project',

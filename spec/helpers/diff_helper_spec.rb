@@ -5,7 +5,8 @@ describe DiffHelper do
 
   let(:project) { create(:project) }
   let(:commit) { project.commit(sample_commit.id) }
-  let(:diff) { commit.diffs.first }
+  let(:diffs) { commit.diffs }
+  let(:diff) { diffs.first }
   let(:diff_file) { Gitlab::Diff::File.new(diff) }
 
   describe 'diff_hard_limit_enabled?' do
@@ -30,6 +31,57 @@ describe DiffHelper do
     end
   end
 
+  describe 'allowed_diff_lines' do
+    it 'should return hard limit for number of lines in a diff if force diff is true' do
+      allow(controller).to receive(:params) { { force_show_diff: true } }
+      expect(allowed_diff_lines).to eq(50000)
+    end
+
+    it 'should return safe limit for numbers of lines a diff if force diff is false' do
+      expect(allowed_diff_lines).to eq(5000)
+    end
+  end
+
+  describe 'safe_diff_files' do
+    it 'should return all files from a commit that is smaller than safe limits' do
+      expect(safe_diff_files(diffs).length).to eq(2)
+    end
+
+    it 'should return only the first file if the diff line count in the 2nd file takes the total beyond safe limits' do
+      allow(diffs[1].diff).to receive(:lines).and_return([""] * 4999) #simulate 4999 lines
+      expect(safe_diff_files(diffs).length).to eq(1)
+    end
+
+    it 'should return all files from a commit that is beyond safe limit for numbers of lines if force diff is true' do
+      allow(controller).to receive(:params) { { force_show_diff: true } }
+      allow(diffs[1].diff).to receive(:lines).and_return([""] * 4999) #simulate 4999 lines
+      expect(safe_diff_files(diffs).length).to eq(2)
+    end
+
+    it 'should return only the first file if the diff line count in the 2nd file takes the total beyond hard limits' do
+      allow(controller).to receive(:params) { { force_show_diff: true } }
+      allow(diffs[1].diff).to receive(:lines).and_return([""] * 49999) #simulate 49999 lines
+      expect(safe_diff_files(diffs).length).to eq(1)
+    end
+
+    it 'should return only a safe number of file diffs if a commit touches more files than the safe limits' do
+      large_diffs = diffs * 100 #simulate 200 diffs
+      expect(safe_diff_files(large_diffs).length).to eq(100)
+    end
+
+    it 'should return all file diffs if a commit touches more files than the safe limits but force diff is true' do
+      allow(controller).to receive(:params) { { force_show_diff: true } }
+      large_diffs = diffs * 100 #simulate 200 diffs
+      expect(safe_diff_files(large_diffs).length).to eq(200)
+    end
+
+    it 'should return a limited file diffs if a commit touches more files than the hard limits and force diff is true' do
+      allow(controller).to receive(:params) { { force_show_diff: true } }
+      very_large_diffs = diffs * 1000 #simulate 2000 diffs
+      expect(safe_diff_files(very_large_diffs).length).to eq(1000)
+    end
+  end
+
   describe 'parallel_diff' do
     it 'should return an array of arrays containing the parsed diff' do
       expect(parallel_diff(diff_file, 0)).
@@ -51,6 +103,16 @@ describe DiffHelper do
 
     it 'should return js class when bottom lines should be unfolded' do
       expect(unfold_bottom_class(true)).to eq('js-unfold-bottom')
+    end
+  end
+
+  describe 'unfold_class' do
+    it 'returns empty on false' do
+      expect(unfold_class(false)).to eq('')
+    end
+
+    it 'returns a class on true' do
+      expect(unfold_class(true)).to eq('unfold js-unfold')
     end
   end
 

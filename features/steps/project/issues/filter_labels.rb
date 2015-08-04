@@ -5,26 +5,26 @@ class Spinach::Features::ProjectIssuesFilterLabels < Spinach::FeatureSteps
   include Select2Helper
 
   step 'I should see "Bugfix1" in issues list' do
-    within ".issues-list" do
-      page.should have_content "Bugfix1"
+    page.within ".issues-list" do
+      expect(page).to have_content "Bugfix1"
     end
   end
 
   step 'I should see "Bugfix2" in issues list' do
-    within ".issues-list" do
-      page.should have_content "Bugfix2"
+    page.within ".issues-list" do
+      expect(page).to have_content "Bugfix2"
     end
   end
 
   step 'I should not see "Bugfix2" in issues list' do
-    within ".issues-list" do
-      page.should_not have_content "Bugfix2"
+    page.within ".issues-list" do
+      expect(page).not_to have_content "Bugfix2"
     end
   end
 
   step 'I should not see "Feature1" in issues list' do
-    within ".issues-list" do
-      page.should_not have_content "Feature1"
+    page.within ".issues-list" do
+      expect(page).not_to have_content "Feature1"
     end
   end
 
@@ -33,7 +33,7 @@ class Spinach::Features::ProjectIssuesFilterLabels < Spinach::FeatureSteps
   end
 
   step 'I click link "feature"' do
-    within ".labels-filter" do
+    page.within ".labels-filter" do
       click_link "feature"
     end
   end

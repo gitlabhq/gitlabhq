@@ -31,7 +31,7 @@ module Gitlab
     config.encoding = "utf-8"
 
     # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters.push(:password, :password_confirmation, :private_token)
+    config.filter_parameters.push(:password, :password_confirmation, :private_token, :otp_attempt)
 
     # Enable escaping HTML in JSON.
     config.active_support.escape_html_entities_in_json = true
@@ -96,6 +96,7 @@ module Gitlab
     end
 
     redis_config_hash[:namespace] = 'cache:gitlab'
+    redis_config_hash[:expires_in] = 2.weeks # Cache should not grow forever
     config.cache_store = :redis_store, redis_config_hash
 
     # This is needed for gitlab-shell

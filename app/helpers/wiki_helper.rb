@@ -6,6 +6,8 @@ module WikiHelper
         case wiki_page
         when Symbol
           wiki_page
+        when String
+          wiki_page
         else
           wiki_page.slug
         end

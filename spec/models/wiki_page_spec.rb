@@ -43,7 +43,7 @@ describe WikiPage do
 
   describe "validations" do
     before do
-      subject.attributes = {title: 'title', content: 'content'}
+      subject.attributes = { title: 'title', content: 'content' }
     end
 
     it "validates presence of title" do
@@ -58,7 +58,7 @@ describe WikiPage do
   end
 
   before do
-    @wiki_attr = {title: "Index", content: "Home Page", format: "markdown"}
+    @wiki_attr = { title: "Index", content: "Home Page", format: "markdown" }
   end
 
   describe "#create" do
@@ -82,7 +82,7 @@ describe WikiPage do
     let(:title) { 'Index v1.2.3' }
 
     before do
-      @wiki_attr = {title: title, content: "Home Page", format: "markdown"}
+      @wiki_attr = { title: title, content: "Home Page", format: "markdown" }
     end
 
     describe "#create" do
@@ -196,7 +196,7 @@ describe WikiPage do
   end
 
   def commit_details
-    commit = {name: user.name, email: user.email, message: "test commit"}
+    commit = { name: user.name, email: user.email, message: "test commit" }
   end
 
   def create_page(name, content)

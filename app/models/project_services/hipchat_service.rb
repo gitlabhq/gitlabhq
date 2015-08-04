@@ -15,6 +15,7 @@
 #  issues_events         :boolean          default(TRUE)
 #  merge_requests_events :boolean          default(TRUE)
 #  tag_push_events       :boolean          default(TRUE)
+#  note_events           :boolean          default(TRUE), not null
 #
 
 class HipchatService < Service
@@ -62,7 +63,7 @@ class HipchatService < Service
   private
 
   def gate
-    options = { api_version: api_version || 'v2' }
+    options = { api_version: api_version.present? ? api_version : 'v2' }
     options[:server_url] = server unless server.blank?
     @gate ||= HipChat::Client.new(token, options)
   end

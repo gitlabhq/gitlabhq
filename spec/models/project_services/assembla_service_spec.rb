@@ -15,6 +15,7 @@
 #  issues_events         :boolean          default(TRUE)
 #  merge_requests_events :boolean          default(TRUE)
 #  tag_push_events       :boolean          default(TRUE)
+#  note_events           :boolean          default(TRUE), not null
 #
 
 require 'spec_helper'
@@ -31,7 +32,7 @@ describe AssemblaService, models: true do
 
     before do
       @assembla_service = AssemblaService.new
-      @assembla_service.stub(
+      allow(@assembla_service).to receive_messages(
         project_id: project.id,
         project: project,
         service_hook: true,

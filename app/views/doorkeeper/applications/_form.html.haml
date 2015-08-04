@@ -1,17 +1,22 @@
 = form_for application, url: doorkeeper_submit_path(application), html: {class: 'form-horizontal', role: 'form'} do |f|
   - if application.errors.any?
-    .alert.alert-danger{"data-alert" => ""}
-      %p Whoops! Check your form for possible errors
-  = content_tag :div, class: "form-group#{' has-error' if application.errors[:name].present?}" do
-    = f.label :name, class: 'col-sm-2 control-label'
+    .alert.alert-danger
+      %ul
+        - application.errors.full_messages.each do |msg|
+          %li= msg
+
+  .form-group
+    = f.label :name, class: 'control-label'
+
     .col-sm-10
-      = f.text_field :name, class: 'form-control'
-      = doorkeeper_errors_for application, :name
-  = content_tag :div, class: "form-group#{' has-error' if application.errors[:redirect_uri].present?}" do
-    = f.label :redirect_uri, class: 'col-sm-2 control-label'
+      = f.text_field :name, class: 'form-control', required: true
+
+  .form-group
+    = f.label :redirect_uri, class: 'control-label'
+
     .col-sm-10
-      = f.text_area :redirect_uri, class: 'form-control'
-      = doorkeeper_errors_for application, :redirect_uri
+      = f.text_area :redirect_uri, class: 'form-control', required: true
+
       %span.help-block
         Use one line per URI
       - if Doorkeeper.configuration.native_redirect_uri
@@ -19,6 +24,7 @@
           Use
           %code= Doorkeeper.configuration.native_redirect_uri
           for local tests
+
   .form-actions
-    = f.submit 'Submit', class: "btn btn-primary wide"
-    = link_to "Cancel", applications_profile_path, class: "btn btn-default"
+    = f.submit 'Submit', class: "btn btn-create"
+    = link_to "Cancel", applications_profile_path, class: "btn btn-cancel"

@@ -15,6 +15,8 @@ describe Notes::CreateService do
           noteable_id: issue.id
         }
 
+        expect(project).to receive(:execute_hooks)
+        expect(project).to receive(:execute_services)
         @note = Notes::CreateService.new(project, user, opts).execute
       end
 
@@ -23,4 +25,3 @@ describe Notes::CreateService do
     end
   end
 end
-

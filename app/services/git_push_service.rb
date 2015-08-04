@@ -21,7 +21,6 @@ class GitPushService
 
     project.ensure_satellite_exists
     project.repository.expire_cache
-    project.update_repository_size
 
     if push_remove_branch?(ref, newrev)
       @push_commits = []
@@ -30,6 +29,10 @@ class GitPushService
       if is_default_branch?(ref)
         # Initial push to the default branch. Take the full history of that branch as "newly pushed".
         @push_commits = project.repository.commits(newrev)
+
+        # Ensure HEAD points to the default branch in case it is not master
+        branch_name = Gitlab::Git.ref_name(ref)
+        project.change_head(branch_name)
 
         # Set protection on the default branch if configured
         if (current_application_settings.default_branch_protection != PROTECTION_NONE)
@@ -57,6 +60,7 @@ class GitPushService
     EventCreateService.new.push(project, user, @push_data)
     project.execute_hooks(@push_data.dup, :push_hooks)
     project.execute_services(@push_data.dup, :push_hooks)
+    ProjectCacheWorker.perform_async(project.id)
   end
 
   protected
@@ -84,18 +88,24 @@ class GitPushService
         end
       end
 
-      # Create cross-reference notes for any other references. Omit any issues that were referenced in an
-      # issue-closing phrase, or have already been mentioned from this commit (probably from this commit
-      # being pushed to a different branch).
-      refs = commit.references(project, user) - issues_to_close
-      refs.reject! { |r| commit.has_mentioned?(r) }
+      if project.default_issues_tracker?
+        create_cross_reference_notes(commit, issues_to_close)
+      end
+    end
+  end
 
-      if refs.present?
-        author ||= commit_user(commit)
+  def create_cross_reference_notes(commit, issues_to_close)
+    # Create cross-reference notes for any other references. Omit any issues that were referenced in an
+    # issue-closing phrase, or have already been mentioned from this commit (probably from this commit
+    # being pushed to a different branch).
+    refs = commit.references(project, user) - issues_to_close
+    refs.reject! { |r| commit.has_mentioned?(r) }
 
-        refs.each do |r|
-          Note.create_cross_reference_note(r, commit, author)
-        end
+    if refs.present?
+      author ||= commit_user(commit)
+
+      refs.each do |r|
+        SystemNoteService.cross_reference(r, commit, author)
       end
     end
   end
@@ -123,7 +133,8 @@ class GitPushService
   end
 
   def is_default_branch?(ref)
-    Gitlab::Git.branch_ref?(ref) && Gitlab::Git.ref_name(ref) == project.default_branch
+    Gitlab::Git.branch_ref?(ref) &&
+      (Gitlab::Git.ref_name(ref) == project.default_branch || project.default_branch.nil?)
   end
 
   def commit_user(commit)

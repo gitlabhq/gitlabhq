@@ -16,7 +16,6 @@
 #= require jquery.scrollTo
 #= require jquery.blockUI
 #= require jquery.turbolinks
-#= require jquery.sticky-kit.min
 #= require turbolinks
 #= require autosave
 #= require bootstrap
@@ -41,6 +40,7 @@
 #= require shortcuts_issuable
 #= require shortcuts_network
 #= require cal-heatmap
+#= require jquery.nicescroll.min
 #= require_tree .
 
 window.slugify = (text) ->
@@ -48,8 +48,6 @@ window.slugify = (text) ->
 
 window.ajaxGet = (url) ->
   $.ajax({type: "GET", url: url, dataType: "script"})
-
-window.showAndHide = (selector) ->
 
 window.split = (val) ->
   return val.split( /,\s*/ )
@@ -92,15 +90,7 @@ window.disableButtonIfAnyEmptyField = (form, form_selector, button_selector) ->
 window.sanitize = (str) ->
   return str.replace(/<(?:.|\n)*?>/gm, '')
 
-window.linkify = (str) ->
-  exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
-  return str.replace(exp,"<a href='$1'>$1</a>")
-
-window.simpleFormat = (str) ->
-  linkify(sanitize(str).replace(/\n/g, '<br />'))
-
 window.unbindEvents = ->
-  $(document).unbind('scroll')
   $(document).off('scroll')
 
 window.shiftWindow = ->
@@ -115,8 +105,13 @@ if location.hash
 window.addEventListener "hashchange", shiftWindow
 
 $ ->
+  $(".nicescroll").niceScroll(cursoropacitymax: '0.4', cursorcolor: '#FFF', cursorborder: "1px solid #FFF")
+
   # Click a .js-select-on-focus field, select the contents
-  $(".js-select-on-focus").on "focusin", -> $(this).select()
+  $(".js-select-on-focus").on "focusin", ->
+    # Prevent a mouseup event from deselecting the input
+    $(this).select().one 'mouseup', (e) ->
+      e.preventDefault()
 
   $('.remove-row').bind 'ajax:success', ->
     $(this).closest('li').fadeOut()
@@ -140,16 +135,15 @@ $ ->
         # Place the logo tooltip on the right when collapsed, bottom when expanded
         $el.parents('header').hasClass('header-collapsed') and 'right' or 'bottom'
       else
-        # Otherwise use the data-placement attribute like normal
-        $el.data('placement')
+        # Otherwise use the data-placement attribute, or 'bottom' if undefined
+        $el.data('placement') or 'bottom'
   })
 
   # Form submitter
   $('.trigger-submit').on 'change', ->
     $(@).parents('form').submit()
 
-  $("abbr.timeago").timeago()
-  $('.js-timeago').timeago()
+  $('abbr.timeago, .js-timeago').timeago()
 
   # Flash
   if (flash = $(".flash-container")).length > 0
@@ -170,9 +164,14 @@ $ ->
   $('.account-box').hover -> $(@).toggleClass('hover')
 
   # Commit show suppressed diff
-  $(".diff-content").on "click", ".supp_diff_link", ->
-    $(@).next('table').show()
-    $(@).remove()
+  $(document).on 'click', '.diff-content .js-show-suppressed-diff', ->
+    $container = $(@).parent()
+    $container.next('table').show()
+    $container.remove()
+
+  $('.navbar-toggle').on 'click', ->
+    $('.header-content .title').toggle()
+    $('.header-content .navbar-collapse').toggle()
 
   # Show/hide comments on diff
   $("body").on "click", ".js-toggle-diff-comments", (e) ->
@@ -189,14 +188,3 @@ $ ->
     new ConfirmDangerModal(form, text)
 
   new Aside()
-
-(($) ->
-  # Disable an element and add the 'disabled' Bootstrap class
-  $.fn.extend disable: ->
-    $(@).attr('disabled', 'disabled').addClass('disabled')
-
-  # Enable an element and remove the 'disabled' Bootstrap class
-  $.fn.extend enable: ->
-    $(@).removeAttr('disabled').removeClass('disabled')
-
-)(jQuery)

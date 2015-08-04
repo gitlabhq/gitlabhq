@@ -38,10 +38,15 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :twitter_sharing_enabled,
       :sign_in_text,
       :home_page_url,
+      :after_sign_out_path,
       :max_attachment_size,
+      :session_expire_delay,
       :default_project_visibility,
       :default_snippet_visibility,
-      restricted_visibility_levels: []
+      :restricted_signup_domains_raw,
+      :version_check_enabled,
+      :user_oauth_applications,
+      restricted_visibility_levels: [],
     )
   end
 end

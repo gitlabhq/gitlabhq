@@ -1,8 +1,14 @@
 ## GitLab
-## Contributors: randx, yin8086, sashkab, orkoden, axilleas, bbodenmiller, DouweM
 ##
 ## Lines starting with two hashes (##) are comments with information.
 ## Lines starting with one hash (#) are configuration parameters that can be uncommented.
+##
+##################################
+##        CONTRIBUTING          ##
+##################################
+##
+## If you change this file in a Merge Request, please also create
+## a Merge Request on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests
 ##
 ##################################
 ##        CHUNKED TRANSFER      ##
@@ -32,8 +38,17 @@ upstream gitlab {
   server unix:/home/git/gitlab/tmp/sockets/gitlab.socket fail_timeout=0;
 }
 
+## Experimental: gitlab-git-http-server
+# upstream gitlab-git-http-server {
+#   server localhost:8181;
+# }
+
 ## Normal HTTP host
 server {
+  ## Either remove "default_server" from the listen line below, 
+  ## or delete the /etc/nginx/sites-enabled/default file. This will cause gitlab
+  ## to be served if you visit any address that your server responds to, eg.
+  ## the ip address of the server (http://x.x.x.x/)n 0.0.0.0:80 default_server;
   listen 0.0.0.0:80 default_server;
   listen [::]:80 default_server;
   server_name YOUR_SERVER_FQDN; ## Replace this with something like gitlab.example.com
@@ -98,6 +113,26 @@ server {
 
     proxy_pass http://gitlab;
   }
+
+  ## Experimental: send Git HTTP traffic to gitlab-git-http-server instead of Unicorn
+  # location ~ [-\/\w\.]+\.git\/ {
+  #   ## If you use HTTPS make sure you disable gzip compression
+  #   ## to be safe against BREACH attack.
+  #   # gzip off;
+
+  #   ## https://github.com/gitlabhq/gitlabhq/issues/694
+  #   ## Some requests take more than 30 seconds.
+  #   proxy_read_timeout      300;
+  #   proxy_connect_timeout   300;
+  #   proxy_redirect          off;
+
+  #   proxy_set_header    Host                $http_host;
+  #   proxy_set_header    X-Real-IP           $remote_addr;
+  #   proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
+  #   proxy_set_header    X-Forwarded-Proto   $scheme;
+
+  #   proxy_pass http://gitlab-git-http-server;
+  # }
 
   ## Enable gzip compression as per rails guide:
   ## http://guides.rubyonrails.org/asset_pipeline.html#gzip-compression

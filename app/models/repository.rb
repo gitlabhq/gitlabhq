@@ -5,8 +5,13 @@ class Repository
 
   def initialize(path_with_namespace, default_branch = nil, project = nil)
     @path_with_namespace = path_with_namespace
-    @raw_repository = Gitlab::Git::Repository.new(path_to_repo) if path_with_namespace
     @project = project
+
+    if path_with_namespace
+      @raw_repository = Gitlab::Git::Repository.new(path_to_repo)
+      @raw_repository.autocrlf = :input
+    end
+
   rescue Gitlab::Git::Repository::NoRepository
     nil
   end
@@ -89,18 +94,6 @@ class Repository
     gitlab_shell.rm_tag(path_with_namespace, tag_name)
   end
 
-  def round_commit_count
-    if commit_count > 10000
-      '10000+'
-    elsif commit_count > 5000
-      '5000+'
-    elsif commit_count > 1000
-      '1000+'
-    else
-      commit_count
-    end
-  end
-
   def branch_names
     cache.fetch(:branch_names) { raw_repository.branch_names }
   end
@@ -125,28 +118,29 @@ class Repository
     cache.fetch(:size) { raw_repository.size }
   end
 
+  def cache_keys
+    %i(size branch_names tag_names commit_count
+       readme version contribution_guide changelog license)
+  end
+
+  def build_cache
+    cache_keys.each do |key|
+      unless cache.exist?(key)
+        send(key)
+      end
+    end
+  end
+
   def expire_cache
-    %i(size branch_names tag_names commit_count graph_log
-       readme version contribution_guide changelog license).each do |key|
+    cache_keys.each do |key|
       cache.expire(key)
     end
   end
 
-  def graph_log
-    cache.fetch(:graph_log) do
-      commits = raw_repository.log(limit: 6000, skip_merges: true,
-                                   ref: root_ref)
-
-      commits.map do |rugged_commit|
-        commit = Gitlab::Git::Commit.new(rugged_commit)
-
-        {
-          author_name: commit.author_name,
-          author_email: commit.author_email,
-          additions: commit.stats.additions,
-          deletions: commit.stats.deletions,
-        }
-      end
+  def rebuild_cache
+    cache_keys.each do |key|
+      cache.expire(key)
+      send(key)
     end
   end
 
@@ -163,14 +157,14 @@ class Repository
     end
   end
 
-  def respond_to?(method)
-    return true if raw_repository.respond_to?(method)
-
-    super
+  def respond_to_missing?(method, include_private = false)
+    raw_repository.respond_to?(method, include_private) || super
   end
 
   def blob_at(sha, path)
-    Gitlab::Git::Blob.find(self, sha, path)
+    unless Gitlab::Git.blank_ref?(sha)
+      Gitlab::Git::Blob.find(self, sha, path)
+    end
   end
 
   def blob_by_oid(oid)
@@ -368,6 +362,95 @@ class Repository
 
   def root_ref
     @root_ref ||= raw_repository.root_ref
+  end
+
+  def commit_file(user, path, content, message, ref)
+    path[0] = '' if path[0] == '/'
+
+    committer = user_to_comitter(user)
+    options = {}
+    options[:committer] = committer
+    options[:author] = committer
+    options[:commit] = {
+      message: message,
+      branch: ref
+    }
+
+    options[:file] = {
+      content: content,
+      path: path
+    }
+
+    Gitlab::Git::Blob.commit(raw_repository, options)
+  end
+
+  def remove_file(user, path, message, ref)
+    path[0] = '' if path[0] == '/'
+
+    committer = user_to_comitter(user)
+    options = {}
+    options[:committer] = committer
+    options[:author] = committer
+    options[:commit] = {
+      message: message,
+      branch: ref
+    }
+
+    options[:file] = {
+      path: path
+    }
+
+    Gitlab::Git::Blob.remove(raw_repository, options)
+  end
+
+  def user_to_comitter(user)
+    {
+      email: user.email,
+      name: user.name,
+      time: Time.now
+    }
+  end
+
+  def can_be_merged?(source_branch, target_branch)
+    our_commit = rugged.branches[target_branch].target
+    their_commit = rugged.branches[source_branch].target
+
+    if our_commit && their_commit
+      !rugged.merge_commits(our_commit, their_commit).conflicts?
+    end
+  end
+
+  def search_files(query, ref)
+    offset = 2
+    args = %W(git grep -i -n --before-context #{offset} --after-context #{offset} #{query} #{ref || root_ref})
+    Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
+  end
+
+  def parse_search_result(result)
+    ref = nil
+    filename = nil
+    startline = 0
+
+    result.each_line.each_with_index do |line, index|
+      if line =~ /^.*:.*:\d+:/
+        ref, filename, startline = line.split(':')
+        startline = startline.to_i - index
+        break
+      end
+    end
+
+    data = ""
+
+    result.each_line do |line|
+      data << line.sub(ref, '').sub(filename, '').sub(/^:-\d+-/, '').sub(/^::\d+:/, '')
+    end
+
+    OpenStruct.new(
+      filename: filename,
+      ref: ref,
+      startline: startline,
+      data: data
+    )
   end
 
   private

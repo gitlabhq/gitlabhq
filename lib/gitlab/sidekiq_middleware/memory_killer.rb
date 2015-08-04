@@ -7,6 +7,7 @@ module Gitlab
       GRACE_TIME = (ENV['SIDEKIQ_MEMORY_KILLER_GRACE_TIME'] || 15 * 60).to_s.to_i
       # Wait 30 seconds for running jobs to finish during graceful shutdown
       SHUTDOWN_WAIT = (ENV['SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT'] || 30).to_s.to_i
+      SHUTDOWN_SIGNAL = (ENV['SIDEKIQ_MEMORY_KILLER_SHUTDOWN_SIGNAL'] || 'SIGKILL').to_s
 
       # Create a mutex used to ensure there will be only one thread waiting to
       # shut Sidekiq down
@@ -24,19 +25,19 @@ module Gitlab
 
           Sidekiq.logger.warn "current RSS #{current_rss} exceeds maximum RSS "\
             "#{MAX_RSS}"
-          Sidekiq.logger.warn "spawned thread that will shut down PID "\
-            "#{Process.pid} in #{GRACE_TIME} seconds"
+          Sidekiq.logger.warn "this thread will shut down PID #{Process.pid} "\
+            "in #{GRACE_TIME} seconds"
           sleep(GRACE_TIME)
 
           Sidekiq.logger.warn "sending SIGUSR1 to PID #{Process.pid}"
           Process.kill('SIGUSR1', Process.pid)
 
           Sidekiq.logger.warn "waiting #{SHUTDOWN_WAIT} seconds before sending "\
-            "SIGTERM to PID #{Process.pid}"
+            "#{SHUTDOWN_SIGNAL} to PID #{Process.pid}"
           sleep(SHUTDOWN_WAIT)
 
-          Sidekiq.logger.warn "sending SIGTERM to PID #{Process.pid}"
-          Process.kill('SIGTERM', Process.pid)
+          Sidekiq.logger.warn "sending #{SHUTDOWN_SIGNAL} to PID #{Process.pid}"
+          Process.kill(SHUTDOWN_SIGNAL, Process.pid)
         end
       end
 

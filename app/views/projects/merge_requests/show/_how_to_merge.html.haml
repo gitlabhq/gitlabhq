@@ -1,4 +1,4 @@
-%div#modal_merge_info.modal.hide
+%div#modal_merge_info.modal
   .modal-dialog
     .modal-content
       .modal-header
@@ -39,7 +39,6 @@
               git checkout #{@merge_request.target_branch}
               git merge --no-ff #{@merge_request.source_branch}
               git push origin #{@merge_request.target_branch}
-
 
 :javascript
   $(function(){

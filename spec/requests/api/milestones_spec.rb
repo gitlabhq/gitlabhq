@@ -30,6 +30,13 @@ describe API::API, api: true  do
       expect(json_response['iid']).to eq(milestone.iid)
     end
 
+    it 'should return a project milestone by iid' do
+      get api("/projects/#{project.id}/milestones?iid=#{milestone.iid}", user)
+      expect(response.status).to eq 200
+      expect(json_response.first['title']).to eq milestone.title
+      expect(json_response.first['id']).to eq milestone.id
+    end
+
     it 'should return 401 error if user not authenticated' do
       get api("/projects/#{project.id}/milestones/#{milestone.id}")
       expect(response.status).to eq(401)

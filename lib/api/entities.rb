@@ -6,6 +6,10 @@ module API
 
     class UserBasic < UserSafe
       expose :id, :state, :avatar_url
+
+      expose :web_url do |user, options|
+        Rails.application.routes.url_helpers.user_url(user)
+      end
     end
 
     class User < UserBasic
@@ -20,14 +24,19 @@ module API
 
     class UserFull < User
       expose :email
-      expose :theme_id, :color_scheme_id, :projects_limit
+      expose :theme_id, :color_scheme_id, :projects_limit, :current_sign_in_at
       expose :identities, using: Entities::Identity
       expose :can_create_group?, as: :can_create_group
       expose :can_create_project?, as: :can_create_project
+      expose :two_factor_enabled
     end
 
     class UserLogin < UserFull
       expose :private_token
+    end
+
+    class Email < Grape::Entity
+      expose :id, :email
     end
 
     class Hook < Grape::Entity
@@ -58,6 +67,7 @@ module API
       expose :namespace
       expose :forked_from_project, using: Entities::ForkedFromProject, if: lambda{ | project, options | project.forked? }
       expose :avatar_url
+      expose :star_count, :forks_count
     end
 
     class ProjectMember < UserBasic
@@ -68,6 +78,11 @@ module API
 
     class Group < Grape::Entity
       expose :id, :name, :path, :description
+      expose :avatar_url
+
+      expose :web_url do |group, options|
+        Rails.application.routes.url_helpers.group_url(group)
+      end
     end
 
     class GroupDetail < Group
@@ -170,6 +185,7 @@ module API
       expose :source_project_id, :target_project_id
       expose :label_names, as: :labels
       expose :description
+      expose :work_in_progress?, as: :work_in_progress
       expose :milestone, using: Entities::Milestone
     end
 
@@ -275,6 +291,28 @@ module API
 
     class BroadcastMessage < Grape::Entity
       expose :message, :starts_at, :ends_at, :color, :font
+    end
+
+    class ApplicationSetting < Grape::Entity
+      expose :id
+      expose :default_projects_limit
+      expose :signup_enabled
+      expose :signin_enabled
+      expose :gravatar_enabled
+      expose :sign_in_text
+      expose :created_at
+      expose :updated_at
+      expose :home_page_url
+      expose :default_branch_protection
+      expose :twitter_sharing_enabled
+      expose :restricted_visibility_levels
+      expose :max_attachment_size
+      expose :session_expire_delay
+      expose :default_project_visibility
+      expose :default_snippet_visibility
+      expose :restricted_signup_domains
+      expose :user_oauth_applications
+      expose :after_sign_out_path
     end
   end
 end

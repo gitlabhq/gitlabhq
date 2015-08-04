@@ -12,8 +12,8 @@
         \/
         = text_field_tag 'file_name', params[:file_name], placeholder: "File name",
           required: true, class: 'form-control new-file-name'
-        .pull-right
-          = select_tag :encoding, options_for_select([ "base64", "text" ], "text"), class: 'form-control'
+      .pull-right
+        = select_tag :encoding, options_for_select([ "base64", "text" ], "text"), class: 'form-control'
 
   .file-content.code
     %pre.js-edit-mode-pane#editor

@@ -1,0 +1,43 @@
+- page_title "Projects", @user.name, "Users"
+= render 'admin/users/head'
+
+- if @user.groups.any?
+  .panel.panel-default
+    .panel-heading Group projects
+    %ul.well-list
+      - @user.groups.each do |group|
+        %li
+          %strong= group.name
+          &ndash; access to
+          #{pluralize(group.projects.count, 'project')}
+
+.row
+  .col-md-6
+    - if @personal_projects.present?
+      = render 'users/projects', projects: @personal_projects
+    - else
+      .nothing-here-block This user has no personal projects.
+
+
+  .col-md-6
+    .panel.panel-default
+      .panel-heading Joined projects (#{@joined_projects.count})
+      %ul.well-list
+        - @joined_projects.sort_by(&:name_with_namespace).each do |project|
+          - member = project.team.find_member(@user.id)
+          %li.project_member
+            .list-item-name
+              = link_to admin_namespace_project_path(project.namespace, project), class: dom_class(project) do
+                = project.name_with_namespace
+
+            - if member
+              .pull-right
+                - if member.owner?
+                  %span.light Owner
+                - else
+                  %span.light= member.human_access
+
+                  - if member.respond_to? :project
+                    = link_to namespace_project_project_member_path(project.namespace, project, member), data: { confirm: remove_from_project_team_message(project, member) }, remote: true, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove user from project' do
+                      %i.fa.fa-times
+

@@ -1,6 +1,15 @@
 !!! 5
 %html{ lang: "en"}
-  = render "layouts/head", title: "Dashboard"
-  %body{class: "#{app_theme}  application", :'data-page' => body_data_page }
-    = render "layouts/head_panel", title: link_to("Dashboard", root_path)
-    = render 'layouts/page', sidebar: 'layouts/nav/dashboard'
+  = render "layouts/head"
+  %body{class: "#{user_application_theme}", 'data-page' => body_data_page}
+    -# Ideally this would be inside the head, but turbolinks only evaluates page-specific JS in the body.
+    = yield :scripts_body_top
+
+    - if current_user
+      = render "layouts/header/default", title: header_title
+    - else
+      = render "layouts/header/public", title: header_title
+
+    = render 'layouts/page', sidebar: sidebar
+
+    = yield :scripts_body

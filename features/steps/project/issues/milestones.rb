@@ -6,9 +6,9 @@ class Spinach::Features::ProjectIssuesMilestones < Spinach::FeatureSteps
 
   step 'I should see milestone "v2.2"' do
     milestone = @project.milestones.find_by(title: "v2.2")
-    page.should have_content(milestone.title[0..10])
-    page.should have_content(milestone.expires_at)
-    page.should have_content("Issues")
+    expect(page).to have_content(milestone.title[0..10])
+    expect(page).to have_content(milestone.expires_at)
+    expect(page).to have_content("Issues")
   end
 
   step 'I click link "v2.2"' do
@@ -26,9 +26,9 @@ class Spinach::Features::ProjectIssuesMilestones < Spinach::FeatureSteps
 
   step 'I should see milestone "v2.3"' do
     milestone = @project.milestones.find_by(title: "v2.3")
-    page.should have_content(milestone.title[0..10])
-    page.should have_content(milestone.expires_at)
-    page.should have_content("Issues")
+    expect(page).to have_content(milestone.title[0..10])
+    expect(page).to have_content(milestone.expires_at)
+    expect(page).to have_content("Issues")
   end
 
   step 'project "Shop" has milestone "v2.2"' do
@@ -54,6 +54,14 @@ class Spinach::Features::ProjectIssuesMilestones < Spinach::FeatureSteps
   end
 
   step 'I should see 3 issues' do
-    page.should have_selector('#tab-issues li.issue-row', count: 4)
+    expect(page).to have_selector('#tab-issues li.issue-row', count: 4)
+  end
+
+  step 'I click link to remove milestone "v2.2"' do
+    click_link 'Remove'
+  end
+
+  step 'I should see no milestones' do
+    expect(page).to have_content('No milestones to show')
   end
 end

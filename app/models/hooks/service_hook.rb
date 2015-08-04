@@ -13,8 +13,13 @@
 #  issues_events         :boolean          default(FALSE), not null
 #  merge_requests_events :boolean          default(FALSE), not null
 #  tag_push_events       :boolean          default(FALSE)
+#  note_events           :boolean          default(FALSE), not null
 #
 
 class ServiceHook < WebHook
   belongs_to :service
+
+  def execute(data)
+    super(data, 'service_hook')
+  end
 end

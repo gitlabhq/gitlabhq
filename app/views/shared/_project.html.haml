@@ -3,8 +3,6 @@
     - if avatar
       .dash-project-avatar
         = project_icon(project, alt: '', class: 'avatar project-avatar s40')
-    .dash-project-access-icon
-      = visibility_level_icon(project.visibility_level)
     %span.str-truncated
       %span.namespace-name
         - if project.namespace
@@ -16,6 +14,3 @@
       %span.pull-right.light
         %i.fa.fa-star
         = project.star_count
-    - else
-      %span.arrow
-        %i.fa.fa-angle-right

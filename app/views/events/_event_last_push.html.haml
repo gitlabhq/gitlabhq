@@ -4,7 +4,7 @@
       %span You pushed to
       = link_to namespace_project_commits_path(event.project.namespace, event.project, event.ref_name) do
         %strong= event.ref_name
-      at
+      %span at
       %strong= link_to_project event.project
       #{time_ago_with_tooltip(event.created_at)}
 

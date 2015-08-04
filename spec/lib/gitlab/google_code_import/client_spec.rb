@@ -15,7 +15,7 @@ describe Gitlab::GoogleCodeImport::Client do
       let(:raw_data) { "No clue" }
 
       it "returns true" do
-        expect(subject).to_not be_valid
+        expect(subject).not_to be_valid
       end
     end
   end
@@ -23,6 +23,7 @@ describe Gitlab::GoogleCodeImport::Client do
   describe "#repos" do
     it "returns only Git repositories" do
       expect(subject.repos.length).to eq(1)
+      expect(subject.incompatible_repos.length).to eq(1)
     end
   end
 

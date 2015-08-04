@@ -63,7 +63,7 @@ Feature: Profile
 
   Scenario: I visit history tab
     Given I have activity
-    When I visit profile history page
+    When I visit Audit Log page
     Then I should see my activity
 
   Scenario: I visit my user page
@@ -84,16 +84,3 @@ Feature: Profile
     Then I visit profile applications page
     And I click to remove application
     Then I see that application is removed
-
-  @javascript
-  Scenario: I change my application theme
-    Given I visit profile design page
-    When I change my application theme
-    Then I should see the theme change immediately
-    And I should receive feedback that the changes were saved
-
-  @javascript
-  Scenario: I change my code preview theme
-    Given I visit profile design page
-    When I change my code preview theme
-    Then I should receive feedback that the changes were saved

@@ -4,11 +4,11 @@ class Spinach::Features::PublicSnippets < Spinach::FeatureSteps
   include SharedSnippet
 
   step 'I should see snippet "Personal snippet one"' do
-    page.should have_no_xpath("//i[@class='public-snippet']")
+    expect(page).to have_no_xpath("//i[@class='public-snippet']")
   end
 
   step 'I should see raw snippet "Personal snippet one"' do
-    page.should have_text(snippet.content)
+    expect(page).to have_text(snippet.content)
   end
 
   step 'I visit snippet page "Personal snippet one"' do

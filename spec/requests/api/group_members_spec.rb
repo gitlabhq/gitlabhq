@@ -61,10 +61,9 @@ describe API::API, api: true  do
       it "should return ok and add new member" do
         new_user = create(:user)
 
-        expect {
-          post api("/groups/#{group_no_members.id}/members", owner),
-          user_id: new_user.id, access_level: GroupMember::MASTER
-        }.to change { group_no_members.members.count }.by(1)
+        expect do
+          post api("/groups/#{group_no_members.id}/members", owner), user_id: new_user.id, access_level: GroupMember::MASTER
+        end.to change { group_no_members.members.count }.by(1)
 
         expect(response.status).to eq(201)
         expect(json_response['name']).to eq(new_user.name)
@@ -74,10 +73,9 @@ describe API::API, api: true  do
       it "should not allow guest to modify group members" do
         new_user = create(:user)
 
-        expect {
-          post api("/groups/#{group_with_members.id}/members", guest),
-          user_id: new_user.id, access_level: GroupMember::MASTER
-        }.not_to change { group_with_members.members.count }
+        expect do
+          post api("/groups/#{group_with_members.id}/members", guest), user_id: new_user.id, access_level: GroupMember::MASTER
+        end.not_to change { group_with_members.members.count }
 
         expect(response.status).to eq(403)
       end
@@ -178,9 +176,9 @@ describe API::API, api: true  do
 
     context "when a member of the group" do
       it "should delete guest's membership of group" do
-        expect {
+        expect do
           delete api("/groups/#{group_with_members.id}/members/#{guest.id}", owner)
-        }.to change { group_with_members.members.count }.by(-1)
+        end.to change { group_with_members.members.count }.by(-1)
 
         expect(response.status).to eq(200)
       end

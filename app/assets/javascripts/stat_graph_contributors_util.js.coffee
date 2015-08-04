@@ -2,11 +2,15 @@ window.ContributorsStatGraphUtil =
   parse_log: (log) ->
     total = {}
     by_author = {}
+    by_email = {}
     for entry in log
       @add_date(entry.date, total) unless total[entry.date]?
-      @add_author(entry, by_author) unless by_author[entry.author_name]?
-      @add_date(entry.date, by_author[entry.author_name]) unless by_author[entry.author_name][entry.date]
-      @store_data(entry, total[entry.date], by_author[entry.author_name][entry.date])
+
+      data = by_author[entry.author_name] #|| by_email[entry.author_email]      
+      data ?= @add_author(entry, by_author, by_email)
+
+      @add_date(entry.date, data) unless data[entry.date]
+      @store_data(entry, total[entry.date], data[entry.date])
     total = _.toArray(total)
     by_author = _.toArray(by_author)
     total: total, by_author: by_author
@@ -15,10 +19,12 @@ window.ContributorsStatGraphUtil =
     collection[date] = {}
     collection[date].date = date
 
-  add_author: (author, by_author) ->
-    by_author[author.author_name] = {}
-    by_author[author.author_name].author_name = author.author_name
-    by_author[author.author_name].author_email = author.author_email
+  add_author: (author, by_author, by_email) ->
+    data = {}
+    data.author_name = author.author_name
+    data.author_email = author.author_email
+    by_author[author.author_name] = data
+    by_email[author.author_email] = data
 
   store_data: (entry, total, by_author) ->
     @store_commits(total, by_author)

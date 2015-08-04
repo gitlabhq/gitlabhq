@@ -1,15 +1,17 @@
+- page_title    'New Project'
+- header_title  'New Project'
 .project-edit-container
   .project-edit-errors
     = render 'projects/errors'
   .project-edit-content
 
-    = form_for @project, html: { class: 'new_project form-horizontal' } do |f|
+    = form_for @project, html: { class: 'new_project form-horizontal js-requires-input' } do |f|
       .form-group.project-name-holder
         = f.label :path, class: 'control-label' do
           %strong Project path
         .col-sm-10
           .input-group
-            = f.text_field :path, placeholder: "my-awesome-project", class: "form-control", tabindex: 1, autofocus: true
+            = f.text_field :path, placeholder: "my-awesome-project", class: "form-control", tabindex: 1, autofocus: true, required: true
             .input-group-addon
               \.git
 
@@ -83,7 +85,7 @@
                   %li
                     The import will time out after 4 minutes. For big repositories, use a clone/push combination.
                   %li
-                    To migrate an SVN repository, check out #{link_to "this document", "http://doc.gitlab.com/ce/workflow/migrating_from_svn.html"}.
+                    To migrate an SVN repository, check out #{link_to "this document", "http://doc.gitlab.com/ce/workflow/importing/migrating_from_svn.html"}.
 
       %hr.prepend-botton-10
 

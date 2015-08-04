@@ -3,7 +3,7 @@ require 'spec_helper'
 describe SlackService::IssueMessage do
   subject { SlackService::IssueMessage.new(args) }
 
-  let(:args) {
+  let(:args) do
     {
       user: {
         name: 'Test User',
@@ -23,7 +23,7 @@ describe SlackService::IssueMessage do
         description: 'issue description'
       }
     }
-  }
+  end
 
   let(:color) { '#345' }
 

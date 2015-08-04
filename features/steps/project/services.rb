@@ -8,16 +8,16 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   end
 
   step 'I should see list of available services' do
-    page.should have_content 'Project services'
-    page.should have_content 'Campfire'
-    page.should have_content 'HipChat'
-    page.should have_content 'GitLab CI'
-    page.should have_content 'Assembla'
-    page.should have_content 'Pushover'
-    page.should have_content 'Atlassian Bamboo'
-    page.should have_content 'JetBrains TeamCity'
-    page.should have_content 'Asana'
-    page.should have_content 'Irker (IRC gateway)'
+    expect(page).to have_content 'Project services'
+    expect(page).to have_content 'Campfire'
+    expect(page).to have_content 'HipChat'
+    expect(page).to have_content 'GitLab CI'
+    expect(page).to have_content 'Assembla'
+    expect(page).to have_content 'Pushover'
+    expect(page).to have_content 'Atlassian Bamboo'
+    expect(page).to have_content 'JetBrains TeamCity'
+    expect(page).to have_content 'Asana'
+    expect(page).to have_content 'Irker (IRC gateway)'
   end
 
   step 'I click gitlab-ci service link' do
@@ -32,7 +32,7 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   end
 
   step 'I should see service settings saved' do
-    find_field('Project url').value.should == 'http://ci.gitlab.org/projects/3'
+    expect(find_field('Project url').value).to eq 'http://ci.gitlab.org/projects/3'
   end
 
   step 'I click hipchat service link' do
@@ -47,7 +47,7 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   end
 
   step 'I should see hipchat service settings saved' do
-    find_field('Room').value.should == 'gitlab'
+    expect(find_field('Room').value).to eq 'gitlab'
   end
 
   step 'I fill hipchat settings with custom server' do
@@ -59,7 +59,7 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   end
 
   step 'I should see hipchat service settings with custom server saved' do
-    find_field('Server').value.should == 'https://chat.example.com'
+    expect(find_field('Server').value).to eq 'https://chat.example.com'
   end
 
   step 'I click pivotaltracker service link' do
@@ -73,7 +73,7 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   end
 
   step 'I should see pivotaltracker service settings saved' do
-    find_field('Token').value.should == 'verySecret'
+    expect(find_field('Token').value).to eq 'verySecret'
   end
 
   step 'I click Flowdock service link' do
@@ -87,7 +87,7 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   end
 
   step 'I should see Flowdock service settings saved' do
-    find_field('Token').value.should == 'verySecret'
+    expect(find_field('Token').value).to eq 'verySecret'
   end
 
   step 'I click Assembla service link' do
@@ -101,7 +101,7 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   end
 
   step 'I should see Assembla service settings saved' do
-    find_field('Token').value.should == 'verySecret'
+    expect(find_field('Token').value).to eq 'verySecret'
   end
 
   step 'I click Asana service link' do
@@ -116,8 +116,8 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   end
 
   step 'I should see Asana service settings saved' do
-    find_field('Api key').value.should == 'verySecret'
-    find_field('Restrict to branch').value.should == 'master'
+    expect(find_field('Api key').value).to eq 'verySecret'
+    expect(find_field('Restrict to branch').value).to eq 'master'
   end
 
   step 'I click email on push service link' do
@@ -130,7 +130,7 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   end
 
   step 'I should see email on push service settings saved' do
-    find_field('Recipients').value.should == 'qa@company.name'
+    expect(find_field('Recipients').value).to eq 'qa@company.name'
   end
 
   step 'I click Irker service link' do
@@ -145,8 +145,8 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   end
 
   step 'I should see Irker service settings saved' do
-    find_field('Recipients').value.should == 'irc://chat.freenode.net/#commits'
-    find_field('Colorize messages').value.should == '1'
+    expect(find_field('Recipients').value).to eq 'irc://chat.freenode.net/#commits'
+    expect(find_field('Colorize messages').value).to eq '1'
   end
 
   step 'I click Slack service link' do
@@ -160,7 +160,7 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   end
 
   step 'I should see Slack service settings saved' do
-    find_field('Webhook').value.should == 'https://hooks.slack.com/services/SVRWFV0VVAR97N/B02R25XN3/ZBqu7xMupaEEICInN685'
+    expect(find_field('Webhook').value).to eq 'https://hooks.slack.com/services/SVRWFV0VVAR97N/B02R25XN3/ZBqu7xMupaEEICInN685'
   end
 
   step 'I click Pushover service link' do
@@ -178,11 +178,11 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   end
 
   step 'I should see Pushover service settings saved' do
-    find_field('Api key').value.should == 'verySecret'
-    find_field('User key').value.should == 'verySecret'
-    find_field('Device').value.should == 'myDevice'
-    find_field('Priority').find('option[selected]').value.should == '1'
-    find_field('Sound').find('option[selected]').value.should == 'bike'
+    expect(find_field('Api key').value).to eq 'verySecret'
+    expect(find_field('User key').value).to eq 'verySecret'
+    expect(find_field('Device').value).to eq 'myDevice'
+    expect(find_field('Priority').find('option[selected]').value).to eq '1'
+    expect(find_field('Sound').find('option[selected]').value).to eq 'bike'
   end
 
   step 'I click Atlassian Bamboo CI service link' do
@@ -199,9 +199,9 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   end
 
   step 'I should see Atlassian Bamboo CI service settings saved' do
-    find_field('Bamboo url').value.should == 'http://bamboo.example.com'
-    find_field('Build key').value.should == 'KEY'
-    find_field('Username').value.should == 'user'
+    expect(find_field('Bamboo url').value).to eq 'http://bamboo.example.com'
+    expect(find_field('Build key').value).to eq 'KEY'
+    expect(find_field('Username').value).to eq 'user'
   end
 
   step 'I click JetBrains TeamCity CI service link' do
@@ -218,8 +218,8 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   end
 
   step 'I should see JetBrains TeamCity CI service settings saved' do
-    find_field('Teamcity url').value.should == 'http://teamcity.example.com'
-    find_field('Build type').value.should == 'GitlabTest_Build'
-    find_field('Username').value.should == 'user'
+    expect(find_field('Teamcity url').value).to eq 'http://teamcity.example.com'
+    expect(find_field('Build type').value).to eq 'GitlabTest_Build'
+    expect(find_field('Username').value).to eq 'user'
   end
 end

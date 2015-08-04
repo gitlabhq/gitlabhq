@@ -11,8 +11,11 @@
       @#{@group.path}
     - if @group.description.present?
       .description
-        = escaped_autolink(@group.description)
+        = markdown(@group.description, pipeline: :description)
   %hr
+
+  = render 'shared/show_aside'
+
   .row
     %section.activities.col-md-8
       .hidden-xs
@@ -24,7 +27,6 @@
               %li
                 = link_to group_path(@group, { format: :atom, private_token: current_user.private_token }), title: "Feed", class: 'rss-btn' do
                   %i.fa.fa-rss
-                  Activity Feed
 
           = render 'shared/event_filter'
           %hr
@@ -33,5 +35,3 @@
       = spinner
     %aside.side.col-md-4
       = render "projects", projects: @projects
-    = link_to '#aside', class: 'show-aside' do
-      %i.fa.fa-angle-left

@@ -20,10 +20,15 @@ module Mentionable
     end
   end
 
-  # Generate a GFM back-reference that will construct a link back to this Mentionable when rendered. Must
-  # be overridden if this model object can be referenced directly by GFM notation.
-  def gfm_reference
-    raise NotImplementedError.new("#{self.class} does not implement #gfm_reference")
+  # Returns the text used as the body of a Note when this object is referenced
+  #
+  # By default this will be the class name and the result of calling
+  # `to_reference` on the object.
+  def gfm_reference(from_project = nil)
+    # "MergeRequest" > "merge_request" > "Merge request" > "merge request"
+    friendly_name = self.class.to_s.underscore.humanize.downcase
+
+    "#{friendly_name} #{to_reference(from_project)}"
   end
 
   # Construct a String that contains possible GFM references.
@@ -39,13 +44,13 @@ module Mentionable
   # Determine whether or not a cross-reference Note has already been created between this Mentionable and
   # the specified target.
   def has_mentioned?(target)
-    Note.cross_reference_exists?(target, local_reference)
+    SystemNoteService.cross_reference_exists?(target, local_reference)
   end
 
-  def mentioned_users(current_user = nil, p = project)
+  def mentioned_users(current_user = nil)
     return [] if mentionable_text.blank?
 
-    ext = Gitlab::ReferenceExtractor.new(p, current_user)
+    ext = Gitlab::ReferenceExtractor.new(self.project, current_user)
     ext.analyze(mentionable_text)
     ext.users.uniq
   end
@@ -62,28 +67,48 @@ module Mentionable
 
   # Create a cross-reference Note for each GFM reference to another Mentionable found in +mentionable_text+.
   def create_cross_references!(p = project, a = author, without = [])
-    refs = references(p) - without
+    refs = references(p)
+
+    # We're using this method instead of Array diffing because that requires
+    # both of the object's `hash` values to be the same, which may not be the
+    # case for otherwise identical Commit objects.
+    refs.reject! { |ref| without.include?(ref) }
+
     refs.each do |ref|
-      Note.create_cross_reference_note(ref, local_reference, a)
+      SystemNoteService.cross_reference(ref, local_reference, a)
     end
   end
 
-  # If the mentionable_text field is about to change, locate any *added* references and create cross references for
-  # them. Invoke from an observer's #before_save implementation.
-  def notice_added_references(p = project, a = author)
-    ch = changed_attributes
-    original, mentionable_changed = "", false
-    self.class.mentionable_attrs.each do |attr|
-      if ch[attr]
-        original << ch[attr]
-        mentionable_changed = true
-      end
-    end
+  # When a mentionable field is changed, creates cross-reference notes that
+  # don't already exist
+  def create_new_cross_references!(p = project, a = author)
+    changes = detect_mentionable_changes
 
-    # Only proceed if the saved changes actually include a chance to an attr_mentionable field.
-    return unless mentionable_changed
+    return if changes.empty?
 
-    preexisting = references(p, self.author, original)
+    original_text = changes.collect { |_, vals| vals.first }.join(' ')
+
+    preexisting = references(p, self.author, original_text)
     create_cross_references!(p, a, preexisting)
+  end
+
+  private
+
+  # Returns a Hash of changed mentionable fields
+  #
+  # Preference is given to the `changes` Hash, but falls back to
+  # `previous_changes` if it's empty (i.e., the changes have already been
+  # persisted).
+  #
+  # See ActiveModel::Dirty.
+  #
+  # Returns a Hash.
+  def detect_mentionable_changes
+    source = (changes.present? ? changes : previous_changes).dup
+
+    mentionable = self.class.mentionable_attrs
+
+    # Only include changed fields that are mentionable
+    source.select { |key, val| mentionable.include?(key) }
   end
 end

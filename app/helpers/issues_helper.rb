@@ -43,26 +43,15 @@ module IssuesHelper
     end
   end
 
-  def title_for_issue(issue_iid, project = @project)
-    return '' if project.nil?
-
-    if project.default_issues_tracker?
-      issue = project.issues.where(iid: issue_iid).first
-      return issue.title if issue
-    end
-
-    ''
-  end
-
   def issue_timestamp(issue)
     # Shows the created at time and the updated at time if different
-    ts = "#{time_ago_with_tooltip(issue.created_at, 'bottom', 'note_created_ago')}"
+    ts = time_ago_with_tooltip(issue.created_at, placement: 'bottom', html_class: 'note_created_ago')
     if issue.updated_at != issue.created_at
       ts << capture_haml do
         haml_tag :span do
           haml_concat '&middot;'
           haml_concat icon('edit', title: 'edited')
-          haml_concat time_ago_with_tooltip(issue.updated_at, 'bottom', 'issue_edited_ago')
+          haml_concat time_ago_with_tooltip(issue.updated_at, placement: 'bottom', html_class: 'issue_edited_ago')
         end
       end
     end
@@ -110,5 +99,5 @@ module IssuesHelper
   end
 
   # Required for Gitlab::Markdown::IssueReferenceFilter
-  module_function :url_for_issue, :title_for_issue
+  module_function :url_for_issue
 end

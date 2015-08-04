@@ -4,8 +4,8 @@ class Spinach::Features::AdminLogs < Spinach::FeatureSteps
   include SharedAdmin
 
   step 'I should see tabs with available logs' do
-    page.should have_content 'production.log'
-    page.should have_content 'githost.log'
-    page.should have_content 'application.log'
+    expect(page).to have_content 'production.log'
+    expect(page).to have_content 'githost.log'
+    expect(page).to have_content 'application.log'
   end
 end

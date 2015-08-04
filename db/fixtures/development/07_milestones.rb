@@ -3,7 +3,7 @@ Gitlab::Seeder.quiet do
     (1..5).each  do |i|
       milestone_params = {
         title: "v#{i}.0",
-        description: Faker::Lorem.sentence,
+        description: FFaker::Lorem.sentence,
         state: ['opened', 'closed'].sample,
       }
 

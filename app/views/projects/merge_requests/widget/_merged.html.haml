@@ -1,0 +1,41 @@
+.mr-state-widget
+  = render 'projects/merge_requests/widget/heading'
+  .mr-widget-body
+    %h4
+      Merged
+      - if @merge_request.merge_event
+        by #{link_to_member(@project, @merge_request.merge_event.author, avatar: true)}
+        #{time_ago_with_tooltip(@merge_request.merge_event.created_at)}
+    %div
+      - if @source_branch.blank?
+        Source branch has been removed
+
+      - elsif can_remove_branch?(@merge_request.source_project, @merge_request.source_branch) && @merge_request.merged?
+        .remove_source_branch_widget
+          %p Changes merged into #{@merge_request.target_branch}. You can remove source branch now
+          = link_to namespace_project_branch_path(@merge_request.source_project.namespace, @merge_request.source_project, @source_branch), remote: true, method: :delete, class: "btn btn-primary btn-sm remove_source_branch" do
+            %i.fa.fa-times
+            Remove Source Branch
+
+        .remove_source_branch_widget.failed.hide
+          Failed to remove source branch '#{@merge_request.source_branch}'
+
+        .remove_source_branch_in_progress.hide
+          %i.fa.fa-spinner.fa-spin
+          &nbsp;
+          Removing source branch '#{@merge_request.source_branch}'. Please wait. Page will be automatically reloaded. &nbsp;
+
+        :coffeescript
+          $('.remove_source_branch').on 'click', ->
+            $('.remove_source_branch_widget').hide()
+            $('.remove_source_branch_in_progress').show()
+
+          $(".remove_source_branch").on "ajax:success", (e, data, status, xhr) ->
+            location.reload()
+
+          $(".remove_source_branch").on "ajax:error", (e, data, status, xhr) ->
+            $('.remove_source_branch_widget').hide()
+            $('.remove_source_branch_in_progress').hide()
+            $('.remove_source_branch_widget.failed').show()
+
+

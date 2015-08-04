@@ -61,10 +61,9 @@ describe API::API, 'ProjectHooks', api: true  do
 
   describe "POST /projects/:id/hooks" do
     it "should add hook to project" do
-      expect {
-        post api("/projects/#{project.id}/hooks", user),
-          url: "http://example.com", issues_events: true
-      }.to change {project.hooks.count}.by(1)
+      expect do
+        post api("/projects/#{project.id}/hooks", user), url: "http://example.com", issues_events: true
+      end.to change {project.hooks.count}.by(1)
       expect(response.status).to eq(201)
     end
 
@@ -105,9 +104,9 @@ describe API::API, 'ProjectHooks', api: true  do
 
   describe "DELETE /projects/:id/hooks/:hook_id" do
     it "should delete hook from project" do
-      expect {
+      expect do
         delete api("/projects/#{project.id}/hooks/#{hook.id}", user)
-      }.to change {project.hooks.count}.by(-1)
+      end.to change {project.hooks.count}.by(-1)
       expect(response.status).to eq(200)
     end
 

@@ -1,26 +1,20 @@
 module Issues
   class UpdateService < Issues::BaseService
     def execute(issue)
-      state = params[:state_event]
-
-      case state
+      case params.delete(:state_event)
       when 'reopen'
         Issues::ReopenService.new(project, current_user, {}).execute(issue)
       when 'close'
         Issues::CloseService.new(project, current_user, {}).execute(issue)
-      when 'task_check'
-        issue.update_nth_task(params[:task_num].to_i, true)
-      when 'task_uncheck'
-        issue.update_nth_task(params[:task_num].to_i, false)
       end
 
       params[:assignee_id]  = "" if params[:assignee_id] == IssuableFinder::NONE
       params[:milestone_id] = "" if params[:milestone_id] == IssuableFinder::NONE
 
+      filter_params
       old_labels = issue.labels.to_a
 
-      if params.present? && issue.update_attributes(params.except(:state_event,
-                                                                  :task_num))
+      if params.present? && issue.update_attributes(params)
         issue.reset_events_cache
 
         if issue.labels != old_labels
@@ -37,7 +31,11 @@ module Issues
           notification_service.reassigned_issue(issue, current_user)
         end
 
-        issue.notice_added_references(issue.project, current_user)
+        if issue.previous_changes.include?('title')
+          create_title_change_note(issue, issue.previous_changes['title'].first)
+        end
+
+        issue.create_new_cross_references!(issue.project, current_user)
         execute_hooks(issue, 'update')
       end
 

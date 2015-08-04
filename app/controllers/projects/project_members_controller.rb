@@ -2,8 +2,6 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   # Authorize
   before_action :authorize_admin_project!, except: :leave
 
-  layout "project_settings"
-
   def index
     @project_members = @project.project_members
     @project_members = @project_members.non_invite unless can?(current_user, :admin_project, @project)
@@ -73,10 +71,14 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   def leave
+    if @project.namespace == current_user.namespace
+      return redirect_to(:back, alert: 'You can not leave your own project. Transfer or delete the project.')
+    end
+
     @project.project_members.find_by(user_id: current_user).destroy
 
     respond_to do |format|
-      format.html { redirect_to :back }
+      format.html { redirect_to dashboard_path }
       format.js { render nothing: true }
     end
   end

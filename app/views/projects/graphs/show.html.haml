@@ -1,4 +1,8 @@
+- page_title "Contributor statistics"
+.tree-ref-holder
+  = render 'shared/ref_switcher', destination: 'graphs'
 = render 'head'
+
 .loading-graph
   .center
     %h3.page-title
@@ -10,7 +14,7 @@
   .header.clearfix
     %h3#date_header.page-title
     %p.light
-      Commits to #{@project.default_branch}, excluding merge commits. Limited by 6,000 commits
+      Commits to #{@ref}, excluding merge commits. Limited by 6,000 commits
     %input#brush_change{:type => "hidden"}
   .graphs
     #contributors-master
@@ -34,4 +38,3 @@
       $(".stat-graph").fadeIn();
       $(".loading-graph").hide();
     dataType: "json"
-

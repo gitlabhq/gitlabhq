@@ -1,19 +1,26 @@
+/**
+ * Styles the GitLab application with a specific color theme
+ *
+ * $color-light  -
+ * $color        -
+ * $color-darker -
+ * $color-dark   -
+ */
 @mixin gitlab-theme($color-light, $color, $color-darker, $color-dark) {
   header {
     &.navbar-gitlab {
-      .navbar-inner {
-        .app_logo {
-          background-color: $color-darker;
+      .header-logo {
+        background-color: $color-darker;
+        border-color: $color-darker;
 
+        a {
+          color: $color-light;
+        }
+
+        &:hover {
+          background-color: $color-dark;
           a {
-            color: $color-light;
-          }
-
-          &:hover {
-            background-color: $color-dark;
-            a {
-              color: #FFF;
-            }
+            color: #FFF;
           }
         }
       }
@@ -21,8 +28,6 @@
   }
 
   .page-with-sidebar {
-    background: $color-darker;
-
     .collapse-nav a {
       color: #FFF;
       background: $color;
@@ -30,7 +35,17 @@
 
     .sidebar-wrapper {
       background: $color-darker;
-      border-right: 1px solid $color-darker;
+
+      .sidebar-user {
+        background: $color-darker;
+        color: $color-light;
+
+        &:hover {
+          background-color: $color-dark;
+          color: #FFF;
+          text-decoration: none;
+        }
+      }
     }
 
     .nav-sidebar li {
@@ -57,7 +72,7 @@
 
       &.active a {
         color: #FFF;
-        font-weight: bold;
+        background: $color-dark;
 
         &.no-highlight {
           border: none;
@@ -68,5 +83,38 @@
         }
       }
     }
+  }
+}
+
+$theme-blue: #2980B9;
+$theme-charcoal: #474D57;
+$theme-graphite: #888888;
+$theme-gray: #373737;
+$theme-green: #019875;
+$theme-violet: #554488;
+
+body {
+  &.ui_blue {
+    @include gitlab-theme(#BECDE9, $theme-blue, #1970A9, #096099);
+  }
+
+  &.ui_charcoal {
+    @include gitlab-theme(#979DA7, $theme-charcoal, #373D47, #24272D);
+  }
+
+  &.ui_graphite {
+    @include gitlab-theme(#CCCCCC, $theme-graphite, #777777, #666666);
+  }
+
+  &.ui_gray {
+    @include gitlab-theme(#979797, $theme-gray, #272727, #222222);
+  }
+
+  &.ui_green {
+    @include gitlab-theme(#AADDCC, $theme-green, #018865, #017855);
+  }
+
+  &.ui_violet {
+    @include gitlab-theme(#9988CC, $theme-violet, #443366, #332255);
   }
 }

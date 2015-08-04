@@ -2,24 +2,20 @@
   .pull-right
     - if @available_keys.include?(deploy_key)
       = link_to enable_namespace_project_deploy_key_path(@project.namespace, @project, deploy_key), class: 'btn btn-sm', method: :put do
-        %i.fa.fa-plus
+        = icon('plus')
         Enable
     - else
       - if deploy_key.destroyed_when_orphaned? && deploy_key.almost_orphaned?
         = link_to 'Remove', disable_namespace_project_deploy_key_path(@project.namespace, @project, deploy_key), data: { confirm: 'You are going to remove deploy key. Are you sure?'}, method: :put, class: "btn btn-remove delete-key btn-sm pull-right"
       - else
         = link_to disable_namespace_project_deploy_key_path(@project.namespace, @project, deploy_key), class: 'btn btn-sm', method: :put do
-          %i.fa.fa-power-off
+          = icon('power-off')
           Disable
 
-  - if project = project_for_deploy_key(deploy_key)
-    = link_to namespace_project_deploy_key_path(project.namespace, project, deploy_key) do
-      %i.fa.fa-key
-      %strong= deploy_key.title
-  - else
-    %i.fa.fa-key
-    %strong= deploy_key.title
-
+  = icon('key')
+  %strong= deploy_key.title
+  %br
+  %code.key-fingerprint= deploy_key.fingerprint
 
   %p.light.prepend-top-10
     - if deploy_key.public?

@@ -9,7 +9,7 @@ describe 'Profile account page', feature: true do
 
   describe 'when signup is enabled' do
     before do
-      ApplicationSetting.any_instance.stub(signup_enabled?: true)
+      stub_application_setting(signup_enabled: true)
       visit profile_account_path
     end
 
@@ -23,7 +23,7 @@ describe 'Profile account page', feature: true do
 
   describe 'when signup is disabled' do
     before do
-      ApplicationSetting.any_instance.stub(signup_enabled?: false)
+      stub_application_setting(signup_enabled: false)
       visit profile_account_path
     end
 

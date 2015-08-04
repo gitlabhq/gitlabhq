@@ -24,7 +24,8 @@ Feature: Dashboard Group
     When I visit dashboard groups page
     Then I should see group "Owned" in group list
     Then I should see group "Guest" in group list
-    Then I should not see the "Leave" button for group "Owned"
+    When I click on the "Leave" button for group "Owned"
+    Then I should see the "Can not leave message"
 
   @javascript
   Scenario: Guest should be able to leave from group

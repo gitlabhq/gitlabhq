@@ -1,3 +1,4 @@
+- page_title "Members"
 - show_roles = should_user_see_group_roles?(current_user, @group)
 
 %h3.page-title
@@ -13,10 +14,10 @@
 .clearfix.js-toggle-container
   = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form'  do
     .form-group
-      = search_field_tag :search, params[:search], { placeholder: 'Find existing member by name', class: 'form-control search-text-input input-mn-300' }
+      = search_field_tag :search, params[:search], { placeholder: 'Find existing member by name', class: 'form-control search-text-input' }
     = button_tag 'Search', class: 'btn'
 
-  - if current_user && current_user.can?(:admin_group, @group)
+  - if current_user && current_user.can?(:admin_group_member, @group)
     .pull-right
       = button_tag class: 'btn btn-new js-toggle-button', type: 'button' do
         Add members

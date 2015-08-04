@@ -4,7 +4,7 @@ html {
   &.touch .tooltip { display: none !important; }
 
   body {
-    padding-top: 46px;
+    padding-top: $header-height;
   }
 }
 

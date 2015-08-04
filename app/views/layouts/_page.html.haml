@@ -1,17 +1,20 @@
 .page-with-sidebar{ class: nav_sidebar_class }
   = render "layouts/broadcast"
-  .sidebar-wrapper
-    - if defined?(sidebar)
-      = render(sidebar)
+  .sidebar-wrapper.nicescroll
+    - if defined?(sidebar) && sidebar
+      = render "layouts/nav/#{sidebar}"
     - elsif current_user
       = render 'layouts/nav/dashboard'
     .collapse-nav
       = render partial: 'layouts/collapse_button'
+    - if current_user
+      = link_to current_user, class: 'sidebar-user' do
+        = image_tag avatar_icon(current_user.email, 60), alt: 'User activity', class: 'avatar avatar s32'
+        .username
+          = current_user.username
   .content-wrapper
     .container-fluid
       .content
         = render "layouts/flash"
         .clearfix
           = yield
-
-= yield :embedded_scripts

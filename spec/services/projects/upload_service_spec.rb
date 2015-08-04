@@ -22,7 +22,7 @@ describe Projects::UploadService do
       it { expect(@link_to_file['url']).to match('banana_sample.gif') }
     end
 
-     context 'for valid png file' do
+    context 'for valid png file' do
       before do
         png = fixture_file_upload(Rails.root + 'spec/fixtures/dk.png',
           'image/png')
@@ -38,7 +38,7 @@ describe Projects::UploadService do
       it { expect(@link_to_file['url']).to match('dk.png') }
     end
 
-     context 'for valid jpg file' do
+    context 'for valid jpg file' do
       before do
         jpg = fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg')
         @link_to_file = upload_file(@project.repository, jpg)

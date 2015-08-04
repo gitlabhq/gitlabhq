@@ -1,3 +1,4 @@
+- page_title @group_milestone.title, "Milestones"
 %h4.page-title
   .issue-box{ class: "issue-box-#{@group_milestone.closed? ? 'closed' : 'open'}" }
     - if @group_milestone.closed?
@@ -60,6 +61,9 @@
     = link_to '#tab-participants', 'data-toggle' => 'tab' do
       Participants
       %span.badge= @group_milestone.participants.count
+
+  .pull-right
+    = link_to 'Browse Issues', issues_group_path(@group, milestone_title: @group_milestone.title), class: "btn  edit-milestone-link btn-grouped"
 
 .tab-content
   .tab-pane.active#tab-issues

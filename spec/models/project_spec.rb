@@ -21,18 +21,19 @@
 #  import_url             :string(255)
 #  visibility_level       :integer          default(0), not null
 #  archived               :boolean          default(FALSE), not null
+#  avatar                 :string(255)
 #  import_status          :string(255)
 #  repository_size        :float            default(0.0)
 #  star_count             :integer          default(0), not null
 #  import_type            :string(255)
 #  import_source          :string(255)
-#  avatar                 :string(255)
+#  commit_count           :integer          default(0)
 #
 
 require 'spec_helper'
 
 describe Project do
-  describe 'Associations' do
+  describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
     it { is_expected.to belong_to(:creator).class_name('User') }
@@ -54,22 +55,29 @@ describe Project do
     it { is_expected.to have_one(:asana_service).dependent(:destroy) }
   end
 
-  describe 'Mass assignment' do
+  describe 'modules' do
+    subject { described_class }
+
+    it { is_expected.to include_module(Gitlab::ConfigHelper) }
+    it { is_expected.to include_module(Gitlab::ShellAdapter) }
+    it { is_expected.to include_module(Gitlab::VisibilityLevel) }
+    it { is_expected.to include_module(Referable) }
+    it { is_expected.to include_module(Sortable) }
   end
 
-  describe 'Validation' do
+  describe 'validation' do
     let!(:project) { create(:project) }
 
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_uniqueness_of(:name).scoped_to(:namespace_id) }
-    it { is_expected.to ensure_length_of(:name).is_within(0..255) }
+    it { is_expected.to validate_length_of(:name).is_within(0..255) }
 
     it { is_expected.to validate_presence_of(:path) }
     it { is_expected.to validate_uniqueness_of(:path).scoped_to(:namespace_id) }
-    it { is_expected.to ensure_length_of(:path).is_within(0..255) }
-    it { is_expected.to ensure_length_of(:description).is_within(0..2000) }
+    it { is_expected.to validate_length_of(:path).is_within(0..255) }
+    it { is_expected.to validate_length_of(:description).is_within(0..2000) }
     it { is_expected.to validate_presence_of(:creator) }
-    it { is_expected.to ensure_length_of(:issues_tracker_id).is_within(0..255) }
+    it { is_expected.to validate_length_of(:issues_tracker_id).is_within(0..255) }
     it { is_expected.to validate_presence_of(:namespace) }
 
     it 'should not allow new projects beyond user limits' do
@@ -91,19 +99,33 @@ describe Project do
     it { is_expected.to respond_to(:path_with_namespace) }
   end
 
+  describe '#to_reference' do
+    let(:project) { create(:empty_project) }
+
+    it 'returns a String reference to the object' do
+      expect(project.to_reference).to eq project.path_with_namespace
+    end
+  end
+
   it 'should return valid url to repo' do
     project = Project.new(path: 'somewhere')
     expect(project.url_to_repo).to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + 'somewhere.git')
   end
 
-  it 'returns the full web URL for this repo' do
-    project = Project.new(path: 'somewhere')
-    expect(project.web_url).to eq("#{Gitlab.config.gitlab.url}/somewhere")
+  describe "#web_url" do
+    let(:project) { create(:empty_project, path: "somewhere") }
+
+    it 'returns the full web URL for this repo' do
+      expect(project.web_url).to eq("#{Gitlab.config.gitlab.url}/#{project.namespace.path}/somewhere")
+    end
   end
 
-  it 'returns the web URL without the protocol for this repo' do
-    project = Project.new(path: 'somewhere')
-    expect(project.web_url_without_protocol).to eq("#{Gitlab.config.gitlab.url.split('://')[1]}/somewhere")
+  describe "#web_url_without_protocol" do
+    let(:project) { create(:empty_project, path: "somewhere") }
+
+    it 'returns the web URL without the protocol for this repo' do
+      expect(project.web_url_without_protocol).to eq("#{Gitlab.config.gitlab.url.split('://')[1]}/#{project.namespace.path}/somewhere")
+    end
   end
 
   describe 'last_activity methods' do
@@ -112,7 +134,7 @@ describe Project do
 
     describe 'last_activity' do
       it 'should alias last_activity to last_event' do
-        project.stub(last_event: last_event)
+        allow(project).to receive(:last_event).and_return(last_event)
         expect(project.last_activity).to eq(last_event)
       end
     end
@@ -126,6 +148,48 @@ describe Project do
       it 'returns the project\'s last update date if it has no events' do
         expect(project.last_activity_date).to eq(project.updated_at)
       end
+    end
+  end
+
+  describe '#get_issue' do
+    let(:project) { create(:empty_project) }
+    let(:issue)   { create(:issue, project: project) }
+
+    context 'with default issues tracker' do
+      it 'returns an issue' do
+        expect(project.get_issue(issue.iid)).to eq issue
+      end
+
+      it 'returns nil when no issue found' do
+        expect(project.get_issue(999)).to be_nil
+      end
+    end
+
+    context 'with external issues tracker' do
+      before do
+        allow(project).to receive(:default_issues_tracker?).and_return(false)
+      end
+
+      it 'returns an ExternalIssue' do
+        issue = project.get_issue('FOO-1234')
+        expect(issue).to be_kind_of(ExternalIssue)
+        expect(issue.iid).to eq 'FOO-1234'
+        expect(issue.project).to eq project
+      end
+    end
+  end
+
+  describe '#issue_exists?' do
+    let(:project) { create(:empty_project) }
+
+    it 'is truthy when issue exists' do
+      expect(project).to receive(:get_issue).and_return(double)
+      expect(project.issue_exists?(1)).to be_truthy
+    end
+
+    it 'is falsey when issue does not exist' do
+      expect(project).to receive(:get_issue).and_return(nil)
+      expect(project.issue_exists?(1)).to be_falsey
     end
   end
 
@@ -177,25 +241,6 @@ describe Project do
 
     it 'should return valid repo' do
       expect(project.repository).to be_kind_of(Repository)
-    end
-  end
-
-  describe :issue_exists? do
-    let(:project) { create(:project) }
-    let(:existed_issue) { create(:issue, project: project) }
-    let(:not_existed_issue) { create(:issue) }
-    let(:ext_project) { create(:redmine_project) }
-
-    it 'should be true or if used internal tracker and issue exists' do
-      expect(project.issue_exists?(existed_issue.iid)).to be_truthy
-    end
-
-    it 'should be false or if used internal tracker and issue not exists' do
-      expect(project.issue_exists?(not_existed_issue.iid)).to be_falsey
-    end
-
-    it 'should always be true if used other tracker' do
-      expect(ext_project.issue_exists?(rand(100))).to be_truthy
     end
   end
 

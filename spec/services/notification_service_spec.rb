@@ -31,7 +31,8 @@ describe NotificationService do
 
   describe 'Notes' do
     context 'issue note' do
-      let(:issue) { create(:issue, assignee: create(:user)) }
+      let(:project) { create(:empty_project, :public) }
+      let(:issue) { create(:issue, project: project, assignee: create(:user)) }
       let(:mentioned_issue) { create(:issue, assignee: issue.assignee) }
       let(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@mention referenced') }
 
@@ -57,7 +58,7 @@ describe NotificationService do
         end
 
         it 'filters out "mentioned in" notes' do
-          mentioned_note = Note.create_cross_reference_note(mentioned_issue, issue, issue.author)
+          mentioned_note = SystemNoteService.cross_reference(mentioned_issue, issue, issue.author)
 
           expect(Notify).not_to receive(:note_issue_email)
           notification.new_note(mentioned_note)
@@ -101,7 +102,8 @@ describe NotificationService do
     end
 
     context 'issue note mention' do
-      let(:issue) { create(:issue, assignee: create(:user)) }
+      let(:project) { create(:empty_project, :public) }
+      let(:issue) { create(:issue, project: project, assignee: create(:user)) }
       let(:mentioned_issue) { create(:issue, assignee: issue.assignee) }
       let(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@all mentioned') }
 
@@ -128,7 +130,7 @@ describe NotificationService do
         end
 
         it 'filters out "mentioned in" notes' do
-          mentioned_note = Note.create_cross_reference_note(mentioned_issue, issue, issue.author)
+          mentioned_note = SystemNoteService.cross_reference(mentioned_issue, issue, issue.author)
 
           expect(Notify).not_to receive(:note_issue_email)
           notification.new_note(mentioned_note)
@@ -145,7 +147,8 @@ describe NotificationService do
     end
 
     context 'commit note' do
-      let(:note) { create(:note_on_commit) }
+      let(:project) { create(:project, :public) }
+      let(:note) { create(:note_on_commit, project: project) }
 
       before do
         build_team(note.project)
@@ -192,7 +195,8 @@ describe NotificationService do
   end
 
   describe 'Issues' do
-    let(:issue) { create :issue, assignee: create(:user), description: 'cc @participant' }
+    let(:project) { create(:empty_project, :public) }
+    let(:issue) { create :issue, project: project, assignee: create(:user), description: 'cc @participant' }
 
     before do
       build_team(issue.project)
@@ -295,7 +299,8 @@ describe NotificationService do
   end
 
   describe 'Merge Requests' do
-    let(:merge_request) { create :merge_request, assignee: create(:user) }
+    let(:project) { create(:project, :public) }
+    let(:merge_request) { create :merge_request, source_project: project, assignee: create(:user) }
 
     before do
       build_team(merge_request.target_project)

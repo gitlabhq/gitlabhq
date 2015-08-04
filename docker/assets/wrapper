@@ -8,10 +8,14 @@ function sigterm_handler() {
 trap "sigterm_handler; exit" TERM
 
 function entrypoint() {
-    # Default is to run runit and reconfigure GitLab
-    gitlab-ctl reconfigure &
     /opt/gitlab/embedded/bin/runsvdir-start &
-    wait
+    gitlab-ctl reconfigure # will also start everything
+    gitlab-ctl tail # tail all logs
 }
+
+if [[ ! -e /etc/gitlab/gitlab.rb ]]; then
+	cp /assets/gitlab.rb /etc/gitlab/gitlab.rb
+	chmod 0600 /etc/gitlab/gitlab.rb
+fi
 
 entrypoint

@@ -9,4 +9,3 @@ module SharedAdmin
     2.times { create(:user) }
   end
 end
-

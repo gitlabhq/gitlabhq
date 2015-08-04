@@ -1,6 +1,5 @@
-!!! 5
-%html{ lang: "en"}
-  = render "layouts/head", title: "Dashboard"
-  %body{class: "#{app_theme}  application", :'data-page' => body_data_page }
-    = render "layouts/head_panel", title: link_to("Snippets", snippets_path)
-    = render 'layouts/page', sidebar: 'layouts/nav/snippets'
+- page_title    'Snippets'
+- header_title  'Snippets', snippets_path
+- sidebar       "snippets"
+
+= render template: "layouts/application"

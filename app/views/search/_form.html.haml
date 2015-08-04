@@ -1,0 +1,12 @@
+= form_tag search_path, method: :get, class: 'form-inline' do |f|
+  = hidden_field_tag :project_id, params[:project_id]
+  = hidden_field_tag :group_id, params[:group_id]
+  = hidden_field_tag :snippets, params[:snippets]
+  = hidden_field_tag :scope, params[:scope]
+  .search-holder.clearfix
+    .form-group
+      = search_field_tag :search, params[:search], placeholder: "Search for projects, issues etc", class: "form-control search-text-input", id: "dashboard_search", autofocus: true
+      = button_tag 'Search', class: "btn btn-primary"
+    - unless params[:snippets].eql? 'true'
+      .pull-right
+        = render 'filter'

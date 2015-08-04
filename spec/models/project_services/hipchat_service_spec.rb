@@ -5,15 +5,17 @@
 #  id                    :integer          not null, primary key
 #  type                  :string(255)
 #  title                 :string(255)
-#  project_id            :integer          not null
+#  project_id            :integer
 #  created_at            :datetime
 #  updated_at            :datetime
 #  active                :boolean          default(FALSE), not null
 #  properties            :text
+#  template              :boolean          default(FALSE)
 #  push_events           :boolean          default(TRUE)
 #  issues_events         :boolean          default(TRUE)
 #  merge_requests_events :boolean          default(TRUE)
 #  tag_push_events       :boolean          default(TRUE)
+#  note_events           :boolean          default(TRUE), not null
 #
 
 require 'spec_helper'
@@ -30,21 +32,44 @@ describe HipchatService do
     let(:project) { create(:project, name: 'project') }
     let(:api_url) { 'https://hipchat.example.com/v2/room/123456/notification?auth_token=verySecret' }
     let(:project_name) { project.name_with_namespace.gsub(/\s/, '') }
+    let(:token) { 'verySecret' }
+    let(:server_url) { 'https://hipchat.example.com'}
+    let(:push_sample_data) { Gitlab::PushDataBuilder.build_sample(project, user) }
 
     before(:each) do
-      hipchat.stub(
+      allow(hipchat).to receive_messages(
         project_id: project.id,
         project: project,
         room: 123456,
-        server: 'https://hipchat.example.com',
-        token: 'verySecret'
+        server: server_url,
+        token: token
       )
       WebMock.stub_request(:post, api_url)
     end
 
-    context 'push events' do
-      let(:push_sample_data) { Gitlab::PushDataBuilder.build_sample(project, user) }
+    it 'should use v1 if version is provided' do
+      allow(hipchat).to receive(:api_version).and_return('v1')
+      expect(HipChat::Client).to receive(:new).
+                                     with(token,
+                                          api_version: 'v1',
+                                          server_url: server_url).
+                                     and_return(
+                                         double(:hipchat_service).as_null_object)
+      hipchat.execute(push_sample_data)
+    end
 
+    it 'should use v2 as the version when nothing is provided' do
+      allow(hipchat).to receive(:api_version).and_return('')
+      expect(HipChat::Client).to receive(:new).
+                                     with(token,
+                                          api_version: 'v2',
+                                          server_url: server_url).
+                                     and_return(
+                                         double(:hipchat_service).as_null_object)
+      hipchat.execute(push_sample_data)
+    end
+
+    context 'push events' do
       it "should call Hipchat API for push events" do
         hipchat.execute(push_sample_data)
 
@@ -216,17 +241,17 @@ describe HipchatService do
 
     context "#message_options" do
       it "should be set to the defaults" do
-        expect(hipchat.send(:message_options)).to eq({notify: false, color: 'yellow'})
+        expect(hipchat.send(:message_options)).to eq({ notify: false, color: 'yellow' })
       end
 
       it "should set notfiy to true" do
-        hipchat.stub(notify: '1')
-        expect(hipchat.send(:message_options)).to eq({notify: true, color: 'yellow'})
+        allow(hipchat).to receive(:notify).and_return('1')
+        expect(hipchat.send(:message_options)).to eq({ notify: true, color: 'yellow' })
       end
 
       it "should set the color" do
-        hipchat.stub(color: 'red')
-        expect(hipchat.send(:message_options)).to eq({notify: false, color: 'red'})
+        allow(hipchat).to receive(:color).and_return('red')
+        expect(hipchat.send(:message_options)).to eq({ notify: false, color: 'red' })
       end
     end
   end

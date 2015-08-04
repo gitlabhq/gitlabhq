@@ -1,10 +1,8 @@
 class @Profile
   constructor: ->
-    $('.edit_user .application-theme input, .edit_user .code-preview-theme input').click ->
-      # Submit the form
-      $('.edit_user').submit()
-
-      new Flash("Appearance settings saved", "notice")
+    # Automatically submit the Preferences form when any of its radio buttons change
+    $('.js-preferences-form').on 'change.preference', 'input[type=radio]', ->
+      $(this).parents('form').submit()
 
     $('.update-username form').on 'ajax:before', ->
       $('.loading-gif').show()
@@ -12,12 +10,11 @@ class @Profile
       $(this).find('.update-failed').hide()
 
     $('.update-username form').on 'ajax:complete', ->
-      $(this).find('.btn-save').enableButton()
+      $(this).find('.btn-save').enable()
       $(this).find('.loading-gif').hide()
 
     $('.update-notifications').on 'ajax:complete', ->
-      $(this).find('.btn-save').enableButton()
-
+      $(this).find('.btn-save').enable()
 
     $('.js-choose-user-avatar-button').bind "click", ->
       form = $(this).closest("form")

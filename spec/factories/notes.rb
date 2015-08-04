@@ -25,15 +25,16 @@ FactoryGirl.define do
     note "Note"
     author
 
-    factory :note_on_commit, traits: [:on_commit]
-    factory :note_on_commit_diff, traits: [:on_commit, :on_diff]
-    factory :note_on_issue, traits: [:on_issue], aliases: [:votable_note]
-    factory :note_on_merge_request, traits: [:on_merge_request]
+    factory :note_on_commit,             traits: [:on_commit]
+    factory :note_on_commit_diff,        traits: [:on_commit, :on_diff]
+    factory :note_on_issue,              traits: [:on_issue], aliases: [:votable_note]
+    factory :note_on_merge_request,      traits: [:on_merge_request]
     factory :note_on_merge_request_diff, traits: [:on_merge_request, :on_diff]
-    factory :note_on_project_snippet, traits: [:on_project_snippet]
+    factory :note_on_project_snippet,    traits: [:on_project_snippet]
+    factory :system_note,                traits: [:system]
 
     trait :on_commit do
-      project factory: :project
+      project
       commit_id RepoHelpers.sample_commit.id
       noteable_type "Commit"
     end
@@ -43,7 +44,7 @@ FactoryGirl.define do
     end
 
     trait :on_merge_request do
-      project factory: :project
+      project
       noteable_id 1
       noteable_type "MergeRequest"
     end
@@ -56,6 +57,10 @@ FactoryGirl.define do
     trait :on_project_snippet do
       noteable_id 1
       noteable_type "Snippet"
+    end
+
+    trait :system do
+      system true
     end
 
     trait :with_attachment do

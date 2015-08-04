@@ -1,7 +1,6 @@
 namespace :gitlab do
-  desc "GITLAB | Check the configuration of GitLab and its environment"
-  task check: %w{gitlab:env:check
-                 gitlab:gitlab_shell:check
+  desc "GitLab | Check the configuration of GitLab and its environment"
+  task check: %w{gitlab:gitlab_shell:check
                  gitlab:sidekiq:check
                  gitlab:ldap:check
                  gitlab:app:check}
@@ -9,11 +8,12 @@ namespace :gitlab do
 
 
   namespace :app do
-    desc "GITLAB | Check the configuration of the GitLab Rails app"
+    desc "GitLab | Check the configuration of the GitLab Rails app"
     task check: :environment  do
       warn_user_is_not_gitlab
       start_checking "GitLab"
 
+      check_git_config
       check_database_config_exists
       check_database_is_not_sqlite
       check_migrations_are_up
@@ -37,6 +37,36 @@ namespace :gitlab do
 
     # Checks
     ########################
+
+    def check_git_config
+      print "Git configured with autocrlf=input? ... "
+
+      options = {
+        "core.autocrlf" => "input"
+      }
+
+      correct_options = options.map do |name, value|
+        run(%W(#{Gitlab.config.git.bin_path} config --global --get #{name})).try(:squish) == value
+      end
+
+      if correct_options.all?
+        puts "yes".green
+      else
+        print "Trying to fix Git error automatically. ..."
+
+        if auto_fix_git_config(options)
+          puts "Success".green
+        else
+          puts "Failed".red
+          try_fixing_it(
+            sudo_gitlab("\"#{Gitlab.config.git.bin_path}\" config --global core.autocrlf \"#{options["core.autocrlf"]}\"")
+          )
+          for_more_information(
+            see_installation_guide_section "GitLab"
+          )
+       end
+      end
+    end
 
     def check_database_config_exists
       print "Database config exists? ... "
@@ -298,60 +328,8 @@ namespace :gitlab do
     end
   end
 
-
-
-  namespace :env do
-    desc "GITLAB | Check the configuration of the environment"
-    task check: :environment  do
-      warn_user_is_not_gitlab
-      start_checking "Environment"
-
-      check_gitlab_git_config
-
-      finished_checking "Environment"
-    end
-
-
-    # Checks
-    ########################
-
-    def check_gitlab_git_config
-      print "Git configured for #{gitlab_user} user? ... "
-
-      options = {
-        "user.name"  => "GitLab",
-        "user.email" => Gitlab.config.gitlab.email_from,
-        "core.autocrlf" => "input"
-      }
-      correct_options = options.map do |name, value|
-        run(%W(#{Gitlab.config.git.bin_path} config --global --get #{name})).try(:squish) == value
-      end
-
-      if correct_options.all?
-        puts "yes".green
-      else
-        print "Trying to fix Git error automatically. ..."
-        if auto_fix_git_config(options)
-          puts "Success".green
-        else
-          puts "Failed".red
-          try_fixing_it(
-            sudo_gitlab("\"#{Gitlab.config.git.bin_path}\" config --global user.name  \"#{options["user.name"]}\""),
-            sudo_gitlab("\"#{Gitlab.config.git.bin_path}\" config --global user.email \"#{options["user.email"]}\""),
-            sudo_gitlab("\"#{Gitlab.config.git.bin_path}\" config --global core.autocrlf \"#{options["core.autocrlf"]}\"")
-          )
-          for_more_information(
-            see_installation_guide_section "GitLab"
-          )
-        end
-      end
-    end
-  end
-
-
-
   namespace :gitlab_shell do
-    desc "GITLAB | Check the configuration of GitLab Shell"
+    desc "GitLab | Check the configuration of GitLab Shell"
     task check: :environment  do
       warn_user_is_not_gitlab
       start_checking "GitLab Shell"
@@ -507,7 +485,8 @@ namespace :gitlab do
 
         if project.empty_repo?
           puts "repository is empty".magenta
-        elsif File.realpath(project_hook_directory) == File.realpath(gitlab_shell_hooks_path)
+        elsif File.directory?(project_hook_directory) && File.directory?(gitlab_shell_hooks_path) &&
+            (File.realpath(project_hook_directory) == File.realpath(gitlab_shell_hooks_path))
           puts 'ok'.green
         else
           puts "wrong or missing hooks".red
@@ -596,7 +575,7 @@ namespace :gitlab do
 
 
   namespace :sidekiq do
-    desc "GITLAB | Check the configuration of Sidekiq"
+    desc "GitLab | Check the configuration of Sidekiq"
     task check: :environment  do
       warn_user_is_not_gitlab
       start_checking "Sidekiq"
@@ -689,7 +668,7 @@ namespace :gitlab do
   end
 
   namespace :repo do
-    desc "GITLAB | Check the integrity of the repositories managed by GitLab"
+    desc "GitLab | Check the integrity of the repositories managed by GitLab"
     task check: :environment do
       namespace_dirs = Dir.glob(
         File.join(Gitlab.config.gitlab_shell.repos_path, '*')
@@ -776,7 +755,7 @@ namespace :gitlab do
     print "Ruby version >= #{required_version} ? ... "
 
     if current_version.valid? && required_version <= current_version
-        puts "yes (#{current_version})".green
+      puts "yes (#{current_version})".green
     else
       puts "no".red
       try_fixing_it(
@@ -794,7 +773,7 @@ namespace :gitlab do
     print "Git version >= #{required_version} ? ... "
 
     if current_version.valid? && required_version <= current_version
-        puts "yes (#{current_version})".green
+      puts "yes (#{current_version})".green
     else
       puts "no".red
       try_fixing_it(
@@ -828,4 +807,3 @@ namespace :gitlab do
     end
   end
 end
-

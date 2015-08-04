@@ -27,7 +27,7 @@ describe 'Gitlab::Satellite::MergeAction' do
 
     context 'between branches' do
       it 'should raise exception -- not expected to be used by non forks' do
-        expect { Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).commits_between }.to raise_error
+        expect { Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).commits_between }.to raise_error(RuntimeError)
       end
     end
   end
@@ -75,30 +75,30 @@ describe 'Gitlab::Satellite::MergeAction' do
 
     context 'between branches' do
       it 'should get proper diffs' do
-        expect{ Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).diffs_between_satellite }.to raise_error
+        expect{ Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).diffs_between_satellite }.to raise_error(RuntimeError)
       end
     end
   end
 
   describe '#can_be_merged?' do
     context 'on fork' do
-      it { expect(Gitlab::Satellite::MergeAction.new(
-        merge_request_fork.author,
-        merge_request_fork).can_be_merged?).to be_truthy }
+      it do
+        expect(Gitlab::Satellite::MergeAction.new(merge_request_fork.author, merge_request_fork).can_be_merged?).to be_truthy
+      end
 
-      it { expect(Gitlab::Satellite::MergeAction.new(
-        merge_request_fork_with_conflict.author,
-        merge_request_fork_with_conflict).can_be_merged?).to be_falsey }
+      it do
+        expect(Gitlab::Satellite::MergeAction.new(merge_request_fork_with_conflict.author, merge_request_fork_with_conflict).can_be_merged?).to be_falsey
+      end
     end
 
     context 'between branches' do
-      it { expect(Gitlab::Satellite::MergeAction.new(
-        merge_request.author,
-        merge_request).can_be_merged?).to be_truthy }
+      it do
+        expect(Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).can_be_merged?).to be_truthy
+      end
 
-      it { expect(Gitlab::Satellite::MergeAction.new(
-        merge_request_with_conflict.author,
-        merge_request_with_conflict).can_be_merged?).to be_falsey }
+      it do
+        expect(Gitlab::Satellite::MergeAction.new(merge_request_with_conflict.author, merge_request_with_conflict).can_be_merged?).to be_falsey
+      end
     end
   end
 end

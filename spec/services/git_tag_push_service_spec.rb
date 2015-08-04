@@ -3,9 +3,9 @@ require 'spec_helper'
 describe GitTagPushService do
   include RepoHelpers
 
-  let (:user) { create :user }
-  let (:project) { create :project }
-  let (:service) { GitTagPushService.new }
+  let(:user) { create :user }
+  let(:project) { create :project }
+  let(:service) { GitTagPushService.new }
 
   before do
     @oldrev = Gitlab::Git::BLANK_SHA

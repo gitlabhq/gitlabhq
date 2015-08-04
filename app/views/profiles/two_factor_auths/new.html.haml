@@ -1,0 +1,40 @@
+- page_title 'Two-factor Authentication', 'Account'
+
+%h2.page-title Two-Factor Authentication (2FA)
+%p
+  Download the Google Authenticator application from App Store for iOS or Google
+  Play for Android and scan this code.
+
+  More information is available in the #{link_to('documentation', help_page_path('profile', 'two_factor_authentication'))}.
+
+%hr
+
+= form_tag profile_two_factor_auth_path, method: :post, class: 'form-horizontal two-factor-new' do |f|
+  - if @error
+    .alert.alert-danger
+      = @error
+  .form-group
+    .col-lg-2.col-lg-offset-2
+      = raw @qr_code
+    .col-lg-7.col-lg-offset-1.manual-instructions
+      %h3 Can't scan the code?
+
+      %p
+        To add the entry manually, provide the following details to the
+        application on your phone.
+
+      %dl
+        %dt Account
+        %dd= current_user.email
+      %dl
+        %dt Key
+        %dd= current_user.otp_secret.scan(/.{4}/).join(' ')
+      %dl
+        %dt Time based
+        %dd Yes
+  .form-group
+    = label_tag :pin_code, nil, class: "control-label"
+    .col-lg-10
+      = text_field_tag :pin_code, nil, class: "form-control", required: true, autofocus: true
+  .form-actions
+    = submit_tag 'Submit', class: 'btn btn-success'

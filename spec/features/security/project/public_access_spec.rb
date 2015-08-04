@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe "Public Project Access", feature: true  do
+  include AccessMatchers
+
   let(:project) { create(:project) }
 
   let(:master) { create(:user) }
@@ -17,7 +19,6 @@ describe "Public Project Access", feature: true  do
 
     # readonly
     project.team << [reporter, :reporter]
-
   end
 
   describe "Project should be public" do
@@ -141,6 +142,18 @@ describe "Public Project Access", feature: true  do
     it { is_expected.to be_allowed_for guest }
     it { is_expected.to be_allowed_for :user }
     it { is_expected.to be_allowed_for :visitor }
+  end
+
+  describe "GET /:project_path/issues/:id/edit" do
+    let(:issue) { create(:issue, project: project) }
+    subject { edit_namespace_project_issue_path(project.namespace, project, issue) }
+
+    it { is_expected.to be_allowed_for master }
+    it { is_expected.to be_allowed_for reporter }
+    it { is_expected.to be_allowed_for :admin }
+    it { is_expected.to be_denied_for guest }
+    it { is_expected.to be_denied_for :user }
+    it { is_expected.to be_denied_for :visitor }
   end
 
   describe "GET /:project_path/snippets" do

@@ -24,10 +24,6 @@ module API
             User.find_by(id: params[:user_id])
           end
 
-        unless actor
-          return Gitlab::GitAccessStatus.new(false, 'No such user or key')
-        end
-
         project_path = params[:project]
         
         # Check for *.wiki repositories.
@@ -39,22 +35,14 @@ module API
 
         project = Project.find_with_namespace(project_path)
 
-        if project
-          access =
-            if wiki
-              Gitlab::GitAccessWiki.new(actor, project)
-            else
-              Gitlab::GitAccess.new(actor, project)
-            end
+        access =
+          if wiki
+            Gitlab::GitAccessWiki.new(actor, project)
+          else
+            Gitlab::GitAccess.new(actor, project)
+          end
 
-          status = access.check(params[:action], params[:changes])
-        end
-
-        if project && access.can_read_project?
-          status
-        else
-          Gitlab::GitAccessStatus.new(false, 'No such project')
-        end
+        access.check(params[:action], params[:changes])
       end
 
       #

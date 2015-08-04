@@ -6,10 +6,12 @@ It starts 7 working days before the release.
 The release manager doesn't have to perform all the work but must ensure someone is assigned.
 The current release manager must schedule the appointment of the next release manager.
 The new release manager should create overall issue to track the progress.
+The release manager should be the only person pushing/merging commits to the x-y-stable branches.
 
 ## Release Manager
 
-A release manager is selected that coordinates all releases the coming month, including the patch releases for previous releases.
+A release manager is selected that coordinates all releases the coming month,
+including the patch releases for previous releases.
 The release manager has to make sure all the steps below are done and delegated where necessary.
 This person should also make sure this document is kept up to date and issues are created and updated.
 
@@ -29,18 +31,15 @@ All steps from issue template are explained below
 ```
 Xth: (7 working days before the 22nd)
 
-- [ ] Code freeze
-- [ ] Update the CE changelog (#LINK)
-- [ ] Update the EE changelog (#LINK)
-- [ ] Update the CI changelog (#LINK)
 - [ ] Triage the omnibus-gitlab milestone
 
 Xth: (6 working days before the 22nd)
 
 - [ ] Merge CE master in to EE master via merge request (#LINK)
 - [ ] Determine QA person and notify this person
-- [ ] Check the tasks in [how to rc1 guide](howto_rc1.md) and delegate tasks if necessary
+- [ ] Check the tasks in [how to rc1 guide](https://dev.gitlab.org/gitlab/gitlabhq/blob/master/doc/release/howto_rc1.md) and delegate tasks if necessary
 - [ ] Create CE, EE, CI RC1 versions (#LINK)
+- [ ] Build RC1 packages (EE first) (#LINK)
 
 Xth: (5 working days before the 22nd)
 
@@ -53,7 +52,9 @@ Xth: (4 working days before the 22nd)
 - [ ] Update GitLab.com with rc1 (#LINK) (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#deploy-the-package)
 - [ ] Update ci.gitLab.com with rc1 (#LINK) (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#deploy-the-package)
 - [ ] Create regression issues (CE, CI) (#LINK)
-- [ ] Tweet about rc1 (#LINK)
+- [ ] Tweet about rc1 (#LINK), proposed text: 
+
+> GitLab x.x.0.rc1 is available https://packages.gitlab.com/gitlab/unstable Use at your own risk. Please link regressions issues from LINK_TO_REGRESSION_ISSUE
 
 Xth: (3 working days before the 22nd)
 
@@ -61,27 +62,33 @@ Xth: (3 working days before the 22nd)
 
 Xth: (2 working days before the 22nd)
 
-- [ ] Check that everyone is mentioned on the blog post (the reviewer should have done this one working day ago)
+- [ ] Check that everyone is mentioned on the blog post using `@all` (the reviewer should have done this one working day ago)
 - [ ] Check that MVP is added to the mvp page (source/mvp/index.html in www-gitlab-com)
 
 Xth: (1 working day before the 22nd)
 
-- [ ] Create CE, EE, CI stable versions (#LINK)
-- [ ] Create Omnibus tags and build packages
-- [ ] Update GitLab.com with the stable version (#LINK)
-- [ ] Update ci.gitLab.com with the stable version (#LINK)
+- [ ] Merge CE stable into EE stable
+- [ ] Create CE, EE, CI release candidates (#LINK) (hopefully final ones with the same commit as the release tomorrow) 
+- [ ] Create Omnibus tags and build packages for the latest release candidates
+- [ ] Update GitLab.com with the latest RC (#LINK)
+- [ ] Update ci.gitLab.com with the latest RC (#LINK)
 
-22nd:
+22nd before 12AM CET:
 
-- [ ] Release CE, EE and CI (#LINK)
+Release before 12AM CET / 3AM PST, to make sure the majority of our users
+get the new version on the 22nd and there is sufficient time in the European
+workday to quickly fix any issues.
+
+- [ ] Merge CE stable into EE stable (#LINK)
+- [ ] Create the 'x.y.0' tag with the [release tools](https://dev.gitlab.org/gitlab/release-tools) (#LINK)
+- [ ] Try to do before 11AM CET: Create and push omnibus tags for x.y.0 (will auto-release the packages) (#LINK)
+- [ ] Try to do before 12AM CET: Publish the release blog post (#LINK)
+- [ ] Tweet about the release (blog post) (#LINK)
+- [ ] Schedule a second tweet of the release announcement with the same text at 6PM CET / 9AM PST
 
 ```
 
 - - -
-
-## Code Freeze
-
-Stop merging code in master, except for important bug fixes
 
 ## Update changelog
 
@@ -97,6 +104,8 @@ There are three changelogs that need to be updated: CE, EE and CI.
 ## Prepare CHANGELOG for next release
 
 Once the stable branches have been created, update the CHANGELOG in `master` with the upcoming version, usually X.X.X.pre.
+
+On creating the stable branches, notify the core team and developers.
 
 ## QA
 
@@ -139,7 +148,8 @@ Tweet about the RC release:
 
 ## Prepare the blog post
 
-1. Start with a complete copy of the [release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/release_blog_template.md) and fill it out.
+1. The blog post template for this release should already exist and might have comments that were added during the month.
+1. Fill out as much of the blog post template as you can.
 1. Make sure the blog post contains information about the GitLab CI release.
 1. Check the changelog of CE and EE for important changes.
 1. Also check the CI changelog
@@ -152,6 +162,7 @@ Tweet about the RC release:
 1. Create a merge request on [GitLab.com](https://gitlab.com/gitlab-com/www-gitlab-com/tree/master)
 1. Assign to one reviewer who will fix spelling issues by editing the branch (either with a git client or by using the online editor)
 1. Comment to the reviewer: '@person Please mention the whole team as soon as you are done (3 workdays before release at the latest)'
+1. Create a complete copy of the [release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/release_blog_template.md) for the release after this.
 
 ## Create CE, EE, CI stable versions
 

@@ -15,6 +15,7 @@
 #  issues_events         :boolean          default(TRUE)
 #  merge_requests_events :boolean          default(TRUE)
 #  tag_push_events       :boolean          default(TRUE)
+#  note_events           :boolean          default(TRUE), not null
 #
 
 require 'spec_helper'
@@ -41,7 +42,7 @@ describe AsanaService, models: true do
 
     before do
       @asana = AsanaService.new
-      @asana.stub(
+      allow(@asana).to receive_messages(
         project: project,
         project_id: project.id,
         service_hook: true,

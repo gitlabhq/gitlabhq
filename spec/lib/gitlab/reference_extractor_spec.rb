@@ -16,11 +16,35 @@ describe Gitlab::ReferenceExtractor do
     expect(subject.users).to eq([@u_foo, @u_bar, @u_offteam])
   end
 
+  it 'ignores user mentions inside specific elements' do
+    @u_foo = create(:user, username: 'foo')
+    @u_bar = create(:user, username: 'bar')
+    @u_offteam = create(:user, username: 'offteam')
+
+    project.team << [@u_foo, :reporter]
+    project.team << [@u_bar, :guest]
+
+    subject.analyze(%Q{
+      Inline code: `@foo` 
+
+      Code block:
+
+      ```
+      @bar
+      ```
+
+      Quote: 
+
+      > @offteam
+    })
+    expect(subject.users).to eq([])
+  end
+
   it 'accesses valid issue objects' do
     @i0 = create(:issue, project: project)
     @i1 = create(:issue, project: project)
 
-    subject.analyze("##{@i0.iid}, ##{@i1.iid}, and #999.")
+    subject.analyze("#{@i0.to_reference}, #{@i1.to_reference}, and #{Issue.reference_prefix}999.")
     expect(subject.issues).to eq([@i0, @i1])
   end
 
@@ -82,7 +106,7 @@ describe Gitlab::ReferenceExtractor do
     end
 
     it 'handles project issue references' do
-      subject.analyze("this refers issue #{other_project.path_with_namespace}##{issue.iid}")
+      subject.analyze("this refers issue #{issue.to_reference(project)}")
       extracted = subject.issues
       expect(extracted.size).to eq(1)
       expect(extracted).to eq([issue])

@@ -22,11 +22,11 @@ module SharedGroup
   end
 
   step 'I should see group "TestGroup"' do
-    page.should have_content "TestGroup"
+    expect(page).to have_content "TestGroup"
   end
 
   step 'I should not see group "TestGroup"' do
-    page.should_not have_content "TestGroup"
+    expect(page).not_to have_content "TestGroup"
   end
 
   protected

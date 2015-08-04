@@ -1,0 +1,208 @@
+# GitLab Markdown
+
+This document is intended to be a comprehensive example of custom GitLab
+Markdown usage. It will be parsed and then tested for accuracy. Let's get
+started.
+
+## Markdown
+
+GitLab uses [Redcarpet](http://git.io/ld_NVQ) to parse all Markdown into
+HTML.
+
+It has some special features. Let's try 'em out!
+
+### No Intra Emphasis
+
+This string should have no emphasis: foo_bar_baz
+
+### Tables
+
+| Header   | Row  | Example |
+| :------: | ---: | :------ |
+| Foo      | Bar  | **Baz** |
+
+### Fenced Code Blocks
+
+```c
+#include<stdio.h>
+
+main()
+{
+    printf("Hello World");
+
+}
+```
+
+```python
+print "Hello, World!"
+```
+
+### Strikethrough
+
+This text says this, ~~and this text doesn't~~.
+
+### Superscript
+
+This is my 1^(st) time using superscript in Markdown. Now this is my
+2^(nd).
+
+### Next step
+
+After the Markdown has been turned into HTML, it gets passed through...
+
+## HTML::Pipeline
+
+### SanitizationFilter
+
+GitLab uses <a href="http://git.io/vfW8a">HTML::Pipeline::SanitizationFilter</a>
+to sanitize the generated HTML, stripping dangerous or unwanted tags.
+
+Its default whitelist is pretty permissive. Check it:
+
+<b>b tag</b> and <em>em tag</em>.
+
+<code>code tag</code>
+
+Press <kbd>s</kbd> to search.
+
+<strike>Emoji</strike> Plain old images! <img src="http://www.emoji-cheat-sheet.com/graphics/emojis/smile.png" width="20" height="20" />
+
+Here comes a line break:
+
+<br />
+
+And a horizontal rule:
+
+<hr />
+
+As permissive as it is, we've allowed even more stuff:
+
+<span>span tag</span>
+
+<a href="#" rel="bookmark">This is a link with a defined rel attribute, which should be removed</a>
+
+<a href="javascript:alert('Hi')">This is a link trying to be sneaky. It gets its link removed entirely.</a>
+
+### Escaping
+
+The problem with SanitizationFilter is that it can be too aggressive.
+
+| Input       | Expected         | Actual    |
+| ----------- | ---------------- | --------- |
+| `1 < 3 & 5` | 1 &lt; 3 &amp; 5 | 1 < 3 & 5 |
+| `<foo>`     | &lt;foo&gt;      | <foo>     |
+
+### Edge Cases
+
+Markdown should be usable inside a link. Let's try!
+
+- [_text_](#link-emphasis)
+- [**text**](#link-strong)
+- [`text`](#link-code)
+
+### RelativeLinkFilter
+
+Linking to a file relative to this project's repository should work.
+
+[Relative Link](doc/README.md)
+![Relative Image](app/assets/images/touch-icon-ipad.png)
+
+### EmojiFilter
+
+Because life would be :zzz: without Emoji, right? :rocket:
+
+Get ready for the Emoji :bomb:: :+1::-1::ok_hand::wave::v::raised_hand::muscle:
+
+### TableOfContentsFilter
+
+All headers in this document should be linkable. Try it.
+
+### AutolinkFilter
+
+These are all plain text that should get turned into links:
+
+- http://about.gitlab.com/
+- https://google.com/
+- ftp://ftp.us.debian.org/debian/
+- smb://foo/bar/baz
+- irc://irc.freenode.net/git
+- http://localhost:3000
+
+But it shouldn't autolink text inside certain tags:
+
+- <code>http://code.gitlab.com/</code>
+- <a>http://a.gitlab.com/</a>
+- <kbd>http://kbd.gitlab.com/</kbd>
+
+### ExternalLinkFilter
+
+External links get a `rel="nofollow"` attribute:
+
+- [Google](https://google.com/)
+- [GitLab Root](<%= Gitlab.config.gitlab.url %>)
+
+### Reference Filters (e.g., <%= issue.to_reference %>)
+
+References should be parseable even inside _<%= merge_request.to_reference %>_ emphasis.
+
+#### UserReferenceFilter
+
+- All: @all
+- User: <%= user.to_reference %>
+- Group: <%= group.to_reference %>
+- Ignores invalid: <%= User.reference_prefix %>fake_user
+- Ignored in code: `<%= user.to_reference %>`
+- Ignored in links: [Link to <%= user.to_reference %>](#user-link)
+
+#### IssueReferenceFilter
+
+- Issue: <%= issue.to_reference %>
+- Issue in another project: <%= xissue.to_reference(project) %>
+- Ignored in code: `<%= issue.to_reference %>`
+- Ignored in links: [Link to <%= issue.to_reference %>](#issue-link)
+
+#### MergeRequestReferenceFilter
+
+- Merge request: <%= merge_request.to_reference %>
+- Merge request in another project: <%= xmerge_request.to_reference(project) %>
+- Ignored in code: `<%= merge_request.to_reference %>`
+- Ignored in links: [Link to <%= merge_request.to_reference %>](#merge-request-link)
+
+#### SnippetReferenceFilter
+
+- Snippet: <%= snippet.to_reference %>
+- Snippet in another project: <%= xsnippet.to_reference(project) %>
+- Ignored in code: `<%= snippet.to_reference %>`
+- Ignored in links: [Link to <%= snippet.to_reference %>](#snippet-link)
+
+#### CommitRangeReferenceFilter
+
+- Range: <%= commit_range.to_reference %>
+- Range in another project: <%= xcommit_range.to_reference(project) %>
+- Ignored in code: `<%= commit_range.to_reference %>`
+- Ignored in links: [Link to <%= commit_range.to_reference %>](#commit-range-link)
+
+#### CommitReferenceFilter
+
+- Commit: <%= commit.to_reference %>
+- Commit in another project: <%= xcommit.to_reference(project) %>
+- Ignored in code: `<%= commit.to_reference %>`
+- Ignored in links: [Link to <%= commit.to_reference %>](#commit-link)
+
+#### LabelReferenceFilter
+
+- Label by ID: <%= simple_label.to_reference %>
+- Label by name: <%= Label.reference_prefix %><%= simple_label.name %>
+- Label by name in quotes: <%= label.to_reference(:name) %>
+- Ignored in code: `<%= simple_label.to_reference %>`
+- Ignored in links: [Link to <%= simple_label.to_reference %>](#label-link)
+
+### Task Lists
+
+- [ ] Incomplete task 1
+- [x] Complete task 1
+- [ ] Incomplete task 2
+  - [ ] Incomplete sub-task 1
+  - [ ] Incomplete sub-task 2
+  - [x] Complete sub-task 1
+- [X] Complete task 2

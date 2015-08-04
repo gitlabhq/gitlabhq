@@ -1,33 +1,34 @@
-%li.commit.js-toggle-container
-  .commit-row-title
-    %strong.str-truncated
-      = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit.id), class: "commit-row-message"
-      - if commit.description?
-        %a.text-expander.js-toggle-button ...
+- if @note_counts
+  - note_count = @note_counts.fetch(commit.id, 0)
+- else
+  - notes = commit.notes
+  - note_count = notes.user.count
 
-    .pull-right
-      = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id"
+= cache [project.id, commit.id, note_count] do
+  %li.commit.js-toggle-container
+    .commit-row-title
+      %strong.str-truncated
+        = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit.id), class: "commit-row-message"
+        - if commit.description?
+          %a.text-expander.js-toggle-button ...
 
-    .notes_count
-      - if @note_counts
-        - note_count = @note_counts.fetch(commit.id, 0)
-      - else
-        - notes = commit.notes
-        - note_count = notes.user.count
+      .pull-right
+        = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id"
 
-      - if note_count > 0
-        %span.light
-          %i.fa.fa-comments
-          = note_count
+      .notes_count
+        - if note_count > 0
+          %span.light
+            %i.fa.fa-comments
+            = note_count
 
-  - if commit.description?
-    .commit-row-description.js-toggle-content
-      %pre
-        = preserve(gfm(escape_once(commit.description)))
+    - if commit.description?
+      .commit-row-description.js-toggle-content
+        %pre
+          = preserve(gfm(escape_once(commit.description)))
 
-  .commit-row-info
-    = commit_author_link(commit, avatar: true, size: 24)
-    authored
-    .committed_ago
-      #{time_ago_with_tooltip(commit.committed_date)} &nbsp;
-    = link_to_browse_code(project, commit)
+    .commit-row-info
+      = commit_author_link(commit, avatar: true, size: 24)
+      authored
+      .committed_ago
+        #{time_ago_with_tooltip(commit.committed_date, skip_js: true)} &nbsp;
+      = link_to_browse_code(project, commit)

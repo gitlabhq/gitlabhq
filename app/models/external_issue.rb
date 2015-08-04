@@ -1,4 +1,6 @@
 class ExternalIssue
+  include Referable
+
   def initialize(issue_identifier, project)
     @issue_identifier, @project = issue_identifier, project
   end
@@ -15,11 +17,24 @@ class ExternalIssue
     @issue_identifier.to_s
   end
 
+  def title
+    "External Issue #{self}"
+  end
+
   def ==(other)
     other.is_a?(self.class) && (to_s == other.to_s)
   end
 
   def project
     @project
+  end
+
+  # Pattern used to extract `JIRA-123` issue references from text
+  def self.reference_pattern
+    %r{(?<issue>([A-Z\-]+-)\d+)}
+  end
+
+  def to_reference(_from_project = nil)
+    id
   end
 end

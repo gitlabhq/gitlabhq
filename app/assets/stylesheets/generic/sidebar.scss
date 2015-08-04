@@ -1,71 +1,76 @@
 .page-with-sidebar {
-  background: $background-color;
-
   .sidebar-wrapper {
     position: fixed;
     top: 0;
+    bottom: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
     left: 0;
     height: 100%;
+    transition-duration: .3s;
   }
 }
 
 .sidebar-wrapper {
   z-index: 99;
   background: $background-color;
+  transition-duration: .3s;
 }
 
 .content-wrapper {
   width: 100%;
-  padding: 15px;
+  padding: 20px;
   background: #FFF;
 }
 
 .nav-sidebar {
-  margin: 0;
+  margin-top: 29 + $header-height;
+  margin-bottom: 50px;
+  transition-duration: .3s;
   list-style: none;
+  overflow: hidden;
 
   &.navbar-collapse {
     padding: 0px !important;
   }
-}
 
-.nav-sidebar li a .count {
-  float: right;
-  background: #eee;
-  padding: 0px 8px;
-  @include border-radius(6px);
-}
+  li {
+    width: $sidebar_width;
 
-.nav-sidebar li {
-}
-
-.nav-sidebar li {
-  &.separate-item {
-    padding-top: 10px;
-    margin-top: 10px;
-  }
-
-  a {
-    color: $gray;
-    display: block;
-    text-decoration: none;
-    padding: 8px 15px;
-    font-size: 13px;
-    line-height: 20px;
-    padding-left: 16px;
-
-    &:hover {
-      text-decoration: none;
+    &.separate-item {
+      padding-top: 10px;
+      margin-top: 10px;
     }
 
-    &:active, &:focus {
+    a {
+      padding: 8px 15px;
+      font-size: 13px;
+      line-height: 18px;
+      color: $gray;
+      display: block;
       text-decoration: none;
-    }
+      padding-left: 16px;
 
-    i {
-      width: 20px;
-      color: $gray-light;
-      margin-right: 23px;
+      &:hover {
+        text-decoration: none;
+      }
+
+      &:active, &:focus {
+        text-decoration: none;
+      }
+
+      i {
+        width: 20px;
+        color: $gray-light;
+        margin-right: 23px;
+      }
+
+      .count {
+        float: right;
+        background: #eee;
+        padding: 0px 8px;
+        @include border-radius(6px);
+      }
     }
   }
 }
@@ -81,58 +86,56 @@
 
 @mixin expanded-sidebar {
   padding-left: $sidebar_width;
+  transition-duration: .3s;
 
   .sidebar-wrapper {
     width: $sidebar_width;
 
     .nav-sidebar {
-      margin-top: 29px;
-      position: fixed;
-      top: 45px;
       width: $sidebar_width;
     }
-  }
 
-  .content-wrapper {
-    padding: 20px;
+    .nav-sidebar li a{
+      width: 230px;
+
+      &.back-link {
+        i {
+          visibility: hidden;
+        }
+      }
+    }
   }
 }
 
 @mixin folded-sidebar {
   padding-left: 50px;
+  transition-duration: .3s;
 
   .sidebar-wrapper {
-    width: 52px;
+    width: $sidebar_collapsed_width;
 
     .nav-sidebar {
-      margin-top: 29px;
-      position: fixed;
-      top: 45px;
-      width: 52px;
+      width: $sidebar_collapsed_width;
 
       li a {
-        padding-left: 18px;
-        font-size: 14px;
-        padding: 8px 15px;
-        text-align: center;
-
-
-        & > span {
-          display: none;
-        }
+        padding-left: 16px;
       }
     }
 
     .collapse-nav a {
       left: 0px;
-      width: 52px;
+      width: $sidebar_collapsed_width;
+    }
+
+    .sidebar-user {
+      width: $sidebar_collapsed_width;
     }
   }
 }
 
 .collapse-nav a {
   position: fixed;
-  top: 46px;
+  top: $header-height;
   left: 198px;
   font-size: 13px;
   background: transparent;
@@ -140,6 +143,7 @@
   height: 28px;
   text-align: center;
   line-height: 28px;
+  transition-duration: .3s;
 }
 
 .collapse-nav a:hover {
@@ -168,5 +172,19 @@
 
   .page-sidebar-expanded {
     @include expanded-sidebar;
+  }
+}
+
+.sidebar-user {
+  position: fixed;
+  bottom: 0;
+  width: $sidebar_width;
+  padding: 10px;
+  overflow: hidden;
+  transition-duration: .3s;
+
+  .username {
+    margin-top: 5px;
+    width: $sidebar_width - 2 * 10px;
   }
 }

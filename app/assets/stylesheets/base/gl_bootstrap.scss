@@ -137,6 +137,12 @@
   color: #666;
 }
 
+.nav-pills > .active > a > span > .badge {
+  background-color: #fff;
+  color: $gl-primary;
+}
+
+
 /**
  * fix to keep tooltips position in top navigation bar
  *

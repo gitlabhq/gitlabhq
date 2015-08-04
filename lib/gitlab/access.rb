@@ -51,9 +51,9 @@ module Gitlab
 
       def protection_options
         {
-          "Not protected, developers and masters can (force) push and delete the branch" => PROTECTION_NONE,
-          "Partially protected, developers can also push but prevent all force pushes and deletion" => PROTECTION_DEV_CAN_PUSH,
-          "Fully protected, only masters can push and prevent all force pushes and deletion" => PROTECTION_FULL,
+          "Not protected: Both developers and masters can push new commits, force push, or delete the branch." => PROTECTION_NONE,
+          "Partially protected: Developers can push new commits, but cannot force push or delete the branch. Masters can do all of those." => PROTECTION_DEV_CAN_PUSH,
+          "Fully protected: Developers cannot push new commits, force push, or delete the branch. Only masters can do any of those." => PROTECTION_FULL,
         }
       end
 

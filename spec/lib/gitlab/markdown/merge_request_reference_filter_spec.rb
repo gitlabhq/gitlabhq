@@ -2,25 +2,24 @@ require 'spec_helper'
 
 module Gitlab::Markdown
   describe MergeRequestReferenceFilter do
-    include ReferenceFilterSpecHelper
+    include FilterSpecHelper
 
     let(:project) { create(:project) }
     let(:merge)   { create(:merge_request, source_project: project) }
 
     it 'requires project context' do
-      expect { described_class.call('MergeRequest !123', {}) }.
-        to raise_error(ArgumentError, /:project/)
+      expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
     end
 
     %w(pre code a style).each do |elem|
       it "ignores valid references contained inside '#{elem}' element" do
-        exp = act = "<#{elem}>Merge !#{merge.iid}</#{elem}>"
+        exp = act = "<#{elem}>Merge #{merge.to_reference}</#{elem}>"
         expect(filter(act).to_html).to eq exp
       end
     end
 
     context 'internal reference' do
-      let(:reference) { "!#{merge.iid}" }
+      let(:reference) { merge.to_reference }
 
       it 'links to a valid reference' do
         doc = filter("See #{reference}")
@@ -35,7 +34,7 @@ module Gitlab::Markdown
       end
 
       it 'ignores invalid merge IDs' do
-        exp = act = "Merge !#{merge.iid + 1}"
+        exp = act = "Merge #{invalidate_reference(reference)}"
 
         expect(filter(act).to_html).to eq exp
       end
@@ -80,7 +79,7 @@ module Gitlab::Markdown
       let(:namespace) { create(:namespace, name: 'cross-reference') }
       let(:project2)  { create(:project, namespace: namespace) }
       let(:merge)     { create(:merge_request, source_project: project2) }
-      let(:reference) { "#{project2.path_with_namespace}!#{merge.iid}" }
+      let(:reference) { merge.to_reference(project) }
 
       context 'when user can access reference' do
         before { allow_cross_reference! }
@@ -99,7 +98,7 @@ module Gitlab::Markdown
         end
 
         it 'ignores invalid merge IDs on the referenced project' do
-          exp = act = "Merge #{project2.path_with_namespace}!#{merge.iid + 1}"
+          exp = act = "Merge #{invalidate_reference(reference)}"
 
           expect(filter(act).to_html).to eq exp
         end

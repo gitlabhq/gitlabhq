@@ -179,7 +179,10 @@ describe Issue, 'Votes' do
 
   def add_note(text, author = issue.author)
     created_at = Time.now - 1.hour + Note.count.seconds
-    issue.notes << create(:note, note: text, project: issue.project,
-                          author_id: author.id, created_at: created_at)
+    issue.notes << create(:note,
+                          note: text,
+                          project: issue.project,
+                          author_id: author.id,
+                          created_at: created_at)
   end
 end

@@ -1,7 +1,6 @@
 class @Labels
   constructor: ->
     form = $('.label-form')
-    @setupLabelForm(form)
     @cleanBinding()
     @addBinding()
     @updateColorPreview()
@@ -13,10 +12,6 @@ class @Labels
   cleanBinding: ->
     $(document).off 'click', '.suggest-colors a'
     $(document).off 'input', 'input#label_color'
-
-  # Initializes the form to disable the save button if no color or title is entered
-  setupLabelForm: (form) ->
-    disableButtonIfAnyEmptyField form, '.form-control', form.find('.js-save-button')
 
   # Updates the the preview color with the hex-color input
   updateColorPreview: =>

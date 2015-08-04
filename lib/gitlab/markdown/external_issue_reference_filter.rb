@@ -16,19 +16,16 @@ module Gitlab
       #
       # Returns a String replaced with the return of the block.
       def self.references_in(text)
-        text.gsub(ISSUE_PATTERN) do |match|
+        text.gsub(ExternalIssue.reference_pattern) do |match|
           yield match, $~[:issue]
         end
       end
-
-      # Pattern used to extract `JIRA-123` issue references from text
-      ISSUE_PATTERN = /(?<issue>([A-Z\-]+-)\d+)/
 
       def call
         # Early return if the project isn't using an external tracker
         return doc if project.nil? || project.default_issues_tracker?
 
-        replace_text_nodes_matching(ISSUE_PATTERN) do |content|
+        replace_text_nodes_matching(ExternalIssue.reference_pattern) do |content|
           issue_link_filter(content)
         end
       end
@@ -51,7 +48,7 @@ module Gitlab
 
           %(<a href="#{url}"
                title="#{title}"
-               class="#{klass}">#{issue}</a>)
+               class="#{klass}">#{match}</a>)
         end
       end
 

@@ -6,14 +6,14 @@
 #  access_level       :integer          not null
 #  source_id          :integer          not null
 #  source_type        :string(255)      not null
-#  user_id            :integer          not null
+#  user_id            :integer
 #  notification_level :integer          not null
 #  type               :string(255)
 #  created_at         :datetime
 #  updated_at         :datetime
 #  created_by_id      :integer
-#  invite_email       :string
-#  invite_token       :string
+#  invite_email       :string(255)
+#  invite_token       :string(255)
 #  invite_accepted_at :datetime
 #
 

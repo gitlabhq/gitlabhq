@@ -25,4 +25,50 @@ describe Repository do
 
     it { is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8') }
   end
+
+  describe :blob_at do
+    context 'blank sha' do
+      subject { repository.blob_at(Gitlab::Git::BLANK_SHA, '.gitignore') }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe :can_be_merged? do
+    context 'mergeable branches' do
+      subject { repository.can_be_merged?('feature', 'master') }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'non-mergeable branches' do
+      subject { repository.can_be_merged?('feature_conflict', 'feature') }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe "search_files" do
+    let(:results) { repository.search_files('feature', 'master') }
+    subject { results }
+
+    it { is_expected.to be_an Array }
+
+    describe 'result' do
+      subject { results.first }
+
+      it { is_expected.to be_an String }
+      it { expect(subject.lines[2]).to eq("master:CHANGELOG:188:  - Feature: Replace teams with group membership\n") }
+    end
+
+    describe 'parsing result' do
+      subject { repository.parse_search_result(results.first) }
+
+      it { is_expected.to be_an OpenStruct }
+      it { expect(subject.filename).to eq('CHANGELOG') }
+      it { expect(subject.ref).to eq('master') }
+      it { expect(subject.startline).to eq(186) }
+      it { expect(subject.data.lines[2]).to eq("  - Feature: Replace teams with group membership\n") }
+    end
+  end
 end

@@ -3,13 +3,13 @@
     = auto_discovery_link_tag(:atom, dashboard_url(format: :atom, private_token: current_user.private_token), title: "All activity")
 
 - if @projects.any?
+  = render 'shared/show_aside'
+
   .dashboard.row
     %section.activities.col-md-8
       = render 'activities'
     %aside.col-md-4
       = render 'sidebar'
-    = link_to '#aside', class: 'show-aside' do
-      %i.fa.fa-angle-left
 
 - else
   = render "zero_authorized_projects"

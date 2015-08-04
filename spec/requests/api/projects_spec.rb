@@ -57,14 +57,14 @@ describe API::API, api: true  do
         expect(json_response.first['name']).to eq(project.name)
         expect(json_response.first['owner']['username']).to eq(user.username)
       end
-      
+
       it 'should include the project labels as the tag_list' do
         get api('/projects', user)
-        response.status.should == 200
-        json_response.should be_an Array
-        json_response.first.keys.should include('tag_list')
+        expect(response.status).to eq 200
+        expect(json_response).to be_an Array
+        expect(json_response.first.keys).to include('tag_list')
       end
-      
+
       context 'and using search' do
         it 'should return searched project' do
           get api('/projects', user), { search: project.name }
@@ -81,10 +81,19 @@ describe API::API, api: true  do
         end
 
         it 'should return the correct order when sorted by id' do
-          get api('/projects', user), { order_by: 'id', sort: 'desc'}
+          get api('/projects', user), { order_by: 'id', sort: 'desc' }
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
           expect(json_response.first['id']).to eq(project3.id)
+        end
+
+        it 'returns projects in the correct order when ci_enabled_first parameter is passed' do
+          [project, project2, project3].each{ |project| project.build_missing_services }
+          project2.gitlab_ci_service.update(active: true, token: "token", project_url: "http://ci.example.com/projects/1")
+          get api('/projects', user), { ci_enabled_first: 'true' }
+          expect(response.status).to eq(200)
+          expect(json_response).to be_an Array
+          expect(json_response.first['id']).to eq(project2.id)
         end
       end
     end
@@ -112,15 +121,13 @@ describe API::API, api: true  do
         get api('/projects/all', admin)
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
-        project_name = project.name
 
-        expect(json_response.detect {
-          |project| project['name'] == project_name
-        }['name']).to eq(project_name)
-
-        expect(json_response.detect {
-          |project| project['owner']['username'] == user.username
-        }['owner']['username']).to eq(user.username)
+        expect(json_response).to satisfy do |response|
+          response.one? do |entry|
+            entry['name'] == project.name &&
+              entry['owner']['username'] == user.username
+          end
+        end
       end
     end
   end
@@ -129,9 +136,8 @@ describe API::API, api: true  do
     context 'maximum number of projects reached' do
       it 'should not create new project and respond with 403' do
         allow_any_instance_of(User).to receive(:projects_limit_left).and_return(0)
-        expect {
-          post api('/projects', user2), name: 'foo'
-        }.to change {Project.count}.by(0)
+        expect { post api('/projects', user2), name: 'foo' }.
+          to change {Project.count}.by(0)
         expect(response.status).to eq(403)
       end
     end
@@ -149,14 +155,14 @@ describe API::API, api: true  do
     end
 
     it 'should not create new project without name and return 400' do
-      expect { post api('/projects', user) }.to_not change { Project.count }
+      expect { post api('/projects', user) }.not_to change { Project.count }
       expect(response.status).to eq(400)
     end
 
     it "should assign attributes to project" do
       project = attributes_for(:project, {
         path: 'camelCasePath',
-        description: Faker::Lorem.sentence,
+        description: FFaker::Lorem.sentence,
         issues_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false
@@ -214,9 +220,7 @@ describe API::API, api: true  do
     context 'when a visibility level is restricted' do
       before do
         @project = attributes_for(:project, { public: true })
-        allow_any_instance_of(ApplicationSetting).to(
-          receive(:restricted_visibility_levels).and_return([20])
-        )
+        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
       end
 
       it 'should not allow a non-admin to use a restricted visibility level' do
@@ -248,7 +252,7 @@ describe API::API, api: true  do
 
     it 'should respond with 400 on failure and not project' do
       expect { post api("/projects/user/#{user.id}", admin) }.
-        to_not change { Project.count }
+        not_to change { Project.count }
 
       expect(response.status).to eq(400)
       expect(json_response['message']['name']).to eq([
@@ -265,7 +269,7 @@ describe API::API, api: true  do
 
     it 'should assign attributes to project' do
       project = attributes_for(:project, {
-        description: Faker::Lorem.sentence,
+        description: FFaker::Lorem.sentence,
         issues_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false
@@ -465,9 +469,9 @@ describe API::API, api: true  do
     before { snippet }
 
     it 'should delete existing project snippet' do
-      expect {
+      expect do
         delete api("/projects/#{project.id}/snippets/#{snippet.id}", user)
-      }.to change { Snippet.count }.by(-1)
+      end.to change { Snippet.count }.by(-1)
       expect(response.status).to eq(200)
     end
 
@@ -539,9 +543,9 @@ describe API::API, api: true  do
 
       it 'should create new ssh key' do
         key_attrs = attributes_for :key
-        expect {
+        expect do
           post api("/projects/#{project.id}/keys", user), key_attrs
-        }.to change{ project.deploy_keys.count }.by(1)
+        end.to change{ project.deploy_keys.count }.by(1)
       end
     end
 
@@ -549,9 +553,9 @@ describe API::API, api: true  do
       before { deploy_key }
 
       it 'should delete existing key' do
-        expect {
+        expect do
           delete api("/projects/#{project.id}/keys/#{deploy_key.id}", user)
-        }.to change{ project.deploy_keys.count }.by(-1)
+        end.to change{ project.deploy_keys.count }.by(-1)
       end
 
       it 'should return 404 Not Found with invalid ID' do
@@ -783,11 +787,6 @@ describe API::API, api: true  do
   describe 'DELETE /projects/:id' do
     context 'when authenticated as user' do
       it 'should remove project' do
-        expect(GitlabShellWorker).to(
-          receive(:perform_async).with(:remove_repository,
-                                       /#{project.path_with_namespace}/)
-        ).twice
-
         delete api("/projects/#{project.id}", user)
         expect(response.status).to eq(200)
       end

@@ -1,11 +1,10 @@
-class Profiles::PasswordsController < ApplicationController
-  layout :determine_layout
-
+class Profiles::PasswordsController < Profiles::ApplicationController
   skip_before_action :check_password_expiration, only: [:new, :create]
 
   before_action :set_user
-  before_action :set_title
   before_action :authorize_change_password!
+
+  layout :determine_layout
 
   def new
   end
@@ -66,13 +65,9 @@ class Profiles::PasswordsController < ApplicationController
     @user = current_user
   end
 
-  def set_title
-    @title = "New password"
-  end
-
   def determine_layout
     if [:new, :create].include?(action_name.to_sym)
-      'navless'
+      'application'
     else
       'profile'
     end

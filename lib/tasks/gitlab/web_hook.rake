@@ -1,6 +1,6 @@
 namespace :gitlab do
   namespace :web_hook do
-    desc "GITLAB | Adds a web hook to the projects"
+    desc "GitLab | Adds a web hook to the projects"
     task :add => :environment do
       web_hook_url = ENV['URL']
       namespace_path = ENV['NAMESPACE']
@@ -20,7 +20,7 @@ namespace :gitlab do
       end
     end
 
-    desc "GITLAB | Remove a web hook from the projects"
+    desc "GitLab | Remove a web hook from the projects"
     task :rm => :environment do
       web_hook_url = ENV['URL']
       namespace_path = ENV['NAMESPACE']
@@ -33,7 +33,7 @@ namespace :gitlab do
       puts "#{count} web hooks were removed."
     end
 
-    desc "GITLAB | List web hooks"
+    desc "GitLab | List web hooks"
     task :list => :environment do
       namespace_path = ENV['NAMESPACE']
 
@@ -51,11 +51,11 @@ namespace :gitlab do
     if namespace_path.blank?
       Project
     elsif namespace_path == '/'
-      Project.where(namespace_id: nil)
+      Project.in_namespace(nil)
     else
       namespace = Namespace.where(path: namespace_path).first
       if namespace
-        Project.where(namespace_id: namespace.id)
+        Project.in_namespace(namespace.id)
       else
         puts "Namespace not found: #{namespace_path}".red
         exit 2

@@ -1,9 +1,17 @@
 class @Wikis
   constructor: ->
-    $('.build-new-wiki').bind "click", ->
+    $('.build-new-wiki').bind "click", (e) ->
+      $('[data-error~=slug]').addClass("hidden")
+      $('p.hint').show()
       field = $('#new_wiki_path')
-      slug = field.val()
-      path = field.attr('data-wikis-path')
+      valid_slug_pattern = /^[\w\/-]+$/
 
-      if(slug.length > 0)
-        location.href = path + "/" + slug
+      slug = field.val()
+      if slug.match valid_slug_pattern
+        path = field.attr('data-wikis-path')
+        if(slug.length > 0)
+          location.href = path + "/" + slug
+      else
+        e.preventDefault()
+        $('p.hint').hide()
+        $('[data-error~=slug]').removeClass("hidden")

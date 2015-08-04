@@ -1,9 +1,7 @@
 require 'spec_helper'
 
 describe Issues::BulkUpdateService do
-  let(:issue) {
-    create(:issue, project: @project)
-  }
+  let(:issue) { create(:issue, project: @project) }
 
   before do
     @user = create :user
@@ -26,14 +24,14 @@ describe Issues::BulkUpdateService do
       }
     end
 
-    it {
+    it do
       result = Issues::BulkUpdateService.new(@project, @user, @params).execute
       expect(result[:success]).to be_truthy
       expect(result[:count]).to eq(@issues.count)
 
       expect(@project.issues.opened).to be_empty
       expect(@project.issues.closed).not_to be_empty
-    }
+    end
 
   end
 
@@ -49,14 +47,14 @@ describe Issues::BulkUpdateService do
       }
     end
 
-    it {
+    it do
       result = Issues::BulkUpdateService.new(@project, @user, @params).execute
       expect(result[:success]).to be_truthy
       expect(result[:count]).to eq(@issues.count)
 
       expect(@project.issues.closed).to be_empty
       expect(@project.issues.opened).not_to be_empty
-    }
+    end
 
   end
 
@@ -70,13 +68,13 @@ describe Issues::BulkUpdateService do
       }
     end
 
-    it {
+    it do
       result = Issues::BulkUpdateService.new(@project, @user, @params).execute
       expect(result[:success]).to be_truthy
       expect(result[:count]).to eq(1)
 
       expect(@project.issues.first.assignee).to eq(@new_assignee)
-    }
+    end
 
     it 'allows mass-unassigning' do
       @project.issues.first.update_attribute(:assignee, @new_assignee)
@@ -109,13 +107,13 @@ describe Issues::BulkUpdateService do
       }
     end
 
-    it {
+    it do
       result = Issues::BulkUpdateService.new(@project, @user, @params).execute
       expect(result[:success]).to be_truthy
       expect(result[:count]).to eq(1)
 
       expect(@project.issues.first.milestone).to eq(@milestone)
-    }
+    end
   end
 
 end

@@ -1,13 +1,16 @@
+- page_title @path.presence || "Files", @ref
 = content_for :meta_tags do
   - if current_user
     = auto_discovery_link_tag(:atom, namespace_project_commits_url(@project.namespace, @project, @ref, format: :atom, private_token: current_user.private_token), title: "#{@project.name}:#{@ref} commits")
-  
+
+= render 'projects/last_push'
+
 .tree-ref-holder
   = render 'shared/ref_switcher', destination: 'tree', path: @path
 
 - if can? current_user, :download_code, @project
   .tree-download-holder
-    = render 'projects/repositories/download_archive', ref: @ref, btn_class: 'btn-group-sm pull-right hidden-xs hidden-sm', split_button: true
+    = render 'projects/repositories/download_archive', ref: @ref, btn_class: 'btn-group pull-right hidden-xs hidden-sm', split_button: true
 
 #tree-holder.tree-holder.clearfix
   = render "tree", tree: @tree

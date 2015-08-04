@@ -18,30 +18,43 @@ class Spinach::Features::Search < Spinach::FeatureSteps
     click_button "Search"
   end
 
+  step 'I search for "Wiki content"' do
+    fill_in "dashboard_search", with: "content"
+    click_button "Search"
+  end
+
   step 'I click "Issues" link' do
-    within '.search-filter' do
+    page.within '.search-filter' do
       click_link 'Issues'
     end
   end
 
   step 'I click project "Shop" link' do
-    within '.project-filter' do
+    page.within '.project-filter' do
       click_link project.name_with_namespace
     end
   end
 
   step 'I click "Merge requests" link' do
-    within '.search-filter' do
+    page.within '.search-filter' do
       click_link 'Merge requests'
     end
   end
 
+  step 'I click "Wiki" link' do
+    page.within '.search-filter' do
+      click_link 'Wiki'
+    end
+  end
+
   step 'I should see "Shop" project link' do
-    page.should have_link "Shop"
+    expect(page).to have_link "Shop"
   end
 
   step 'I should see code results for project "Shop"' do
-    page.should have_content 'Update capybara, rspec-rails, poltergeist to recent versions'
+    page.within('.results') do
+      page.should have_content 'Update capybara, rspec-rails, poltergeist to recent versions'
+    end
   end
 
   step 'I search for "Contibuting"' do
@@ -60,10 +73,23 @@ class Spinach::Features::Search < Spinach::FeatureSteps
   end
 
   step 'I should see "Foo" link in the search results' do
-    find(:css, '.search-results').should have_link 'Foo'
+    page.within('.results') do
+      find(:css, '.search-results').should have_link 'Foo'
+    end
   end
 
   step 'I should not see "Bar" link in the search results' do
-    find(:css, '.search-results').should_not have_link 'Bar'
+    expect(find(:css, '.search-results')).not_to have_link 'Bar'
+  end
+
+  step 'I should see "test_wiki" link in the search results' do
+    page.within('.results') do
+      find(:css, '.search-results').should have_link 'test_wiki.md'
+    end
+  end
+
+  step 'project has Wiki content' do
+    @wiki = ::ProjectWiki.new(project, current_user)
+    @wiki.create_page("test_wiki", "Some Wiki content", :markdown, "first commit")
   end
 end

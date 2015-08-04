@@ -21,11 +21,15 @@ module SharedAuthentication
   end
 
   step 'I should be redirected to sign in page' do
-    current_path.should == new_user_session_path
+    expect(current_path).to eq new_user_session_path
   end
 
   step "I logout" do
     logout
+  end
+
+  step "I logout directly" do
+    logout_direct
   end
 
   def current_user

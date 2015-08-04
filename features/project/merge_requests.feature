@@ -10,7 +10,7 @@ Feature: Project Merge Requests
     Then I should see "Bug NS-04" in merge requests
     And I should not see "Feature NS-03" in merge requests
 
-  Scenario: I should see closed merge requests
+  Scenario: I should see rejected merge requests
     Given I click link "Closed"
     Then I should see "Feature NS-03" in merge requests
     And I should not see "Bug NS-04" in merge requests
@@ -41,6 +41,18 @@ Feature: Project Merge Requests
     And I submit new merge request "Wiki Feature"
     Then I should see merge request "Wiki Feature"
 
+  Scenario: I download a diff on a public merge request
+    Given public project "Community"
+    And "John Doe" owns public project "Community"
+    And project "Community" has "Bug CO-01" open merge request with diffs inside
+    Given I logout directly
+    And I visit merge request page "Bug CO-01"
+    And I click on "Email Patches"
+    Then I should see a patch diff
+    And I visit merge request page "Bug CO-01"
+    And I click on "Plain Diff"
+    Then I should see a patch diff
+
   @javascript
   Scenario: I comment on a merge request
     Given I visit merge request page "Bug NS-04"
@@ -51,7 +63,7 @@ Feature: Project Merge Requests
   Scenario: I comment on a merge request diff
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"
-    And I switch to the diff tab
+    And I click on the Changes tab
     And I leave a comment like "Line is wrong" on diff
     And I switch to the merge request's comments tab
     Then I should see a discussion has started on diff
@@ -96,23 +108,13 @@ Feature: Project Merge Requests
     And I leave a comment with a header containing "Comment with a header"
     Then The comment with the header should not have an ID
 
-  Scenario: Merge request description should render task checkboxes
-    Given project "Shop" has "MR-task-open" open MR with task markdown
-    When I visit merge request page "MR-task-open"
-    Then I should see task checkboxes in the description
-
-  Scenario: Merge request notes should not render task checkboxes
-    Given project "Shop" has "MR-task-open" open MR with task markdown
-    When I visit merge request page "MR-task-open"
-    Then I should not see task checkboxes in the comment
-
   # Toggling inline comments
 
   @javascript
   Scenario: I hide comments on a merge request diff with comments in a single file
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"
-    And I switch to the diff tab
+    And I click on the Changes tab
     And I leave a comment like "Line is wrong" on line 39 of the second file
     And I click link "Hide inline discussion" of the second file
     Then I should not see a comment like "Line is wrong here" in the second file
@@ -121,7 +123,7 @@ Feature: Project Merge Requests
   Scenario: I show comments on a merge request diff with comments in a single file
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"
-    And I switch to the diff tab
+    And I click on the Changes tab
     And I leave a comment like "Line is wrong" on line 39 of the second file
     Then I should see a comment like "Line is wrong" in the second file
 
@@ -129,7 +131,7 @@ Feature: Project Merge Requests
   Scenario: I hide comments on a merge request diff with comments in multiple files
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"
-    And I switch to the diff tab
+    And I click on the Changes tab
     And I leave a comment like "Line is correct" on line 12 of the first file
     And I leave a comment like "Line is wrong" on line 39 of the second file
     And I click link "Hide inline discussion" of the second file
@@ -140,7 +142,7 @@ Feature: Project Merge Requests
   Scenario: I show comments on a merge request diff with comments in multiple files
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"
-    And I switch to the diff tab
+    And I click on the Changes tab
     And I leave a comment like "Line is correct" on line 12 of the first file
     And I leave a comment like "Line is wrong" on line 39 of the second file
     And I click link "Hide inline discussion" of the second file
@@ -152,7 +154,7 @@ Feature: Project Merge Requests
   Scenario: I unfold diff
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"
-    And I switch to the diff tab
+    And I click on the Changes tab
     And I unfold diff
     Then I should see additional file lines
 
@@ -160,7 +162,7 @@ Feature: Project Merge Requests
   Scenario: I show comments on a merge request side-by-side diff with comments in multiple files
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"
-    And I switch to the diff tab
+    And I click on the Changes tab
     And I leave a comment like "Line is correct" on line 12 of the first file
     And I leave a comment like "Line is wrong" on line 39 of the second file
     And I click Side-by-side Diff tab
@@ -170,30 +172,8 @@ Feature: Project Merge Requests
   Scenario: I view diffs on a merge request
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"
-    And I click on the Changes tab via Javascript
+    And I click on the Changes tab
     Then I should see the proper Inline and Side-by-side links
-
-  # Task status in issues list
-
-  Scenario: Merge requests list should display task status
-    Given project "Shop" has "MR-task-open" open MR with task markdown
-    When I visit project "Shop" merge requests page
-    Then I should see the task status for the Taskable
-
-  # Toggling task items
-
-  @javascript
-  Scenario: Task checkboxes should be enabled for an open merge request
-    Given project "Shop" has "MR-task-open" open MR with task markdown
-    When I visit merge request page "MR-task-open"
-    Then Task checkboxes should be enabled
-
-  @javascript
-  Scenario: Task checkboxes should be disabled for a closed merge request
-    Given project "Shop" has "MR-task-open" open MR with task markdown
-    And I visit merge request page "MR-task-open"
-    And I click link "Close"
-    Then Task checkboxes should be disabled
 
   # Description preview
 
@@ -239,3 +219,11 @@ Feature: Project Merge Requests
     Then I should see that I am subscribed
     When I click button "Unsubscribe"
     Then I should see that I am unsubscribed
+
+  @javascript
+  Scenario: I can change the target branch
+    Given I visit merge request page "Bug NS-04"
+    And I click link "Edit" for the merge request
+    When I click the "Target branch" dropdown
+    And I select a new target branch
+    Then I should see new target branch changes

@@ -6,9 +6,9 @@ class Spinach::Features::ProfileEmails < Spinach::FeatureSteps
   end
 
   step 'I should see my emails' do
-    page.should have_content(@user.email)
+    expect(page).to have_content(@user.email)
     @user.emails.each do |email|
-      page.should have_content(email.email)
+      expect(page).to have_content(email.email)
     end
   end
 
@@ -19,14 +19,14 @@ class Spinach::Features::ProfileEmails < Spinach::FeatureSteps
 
   step 'I should see new email "my@email.com"' do
     email = @user.emails.find_by(email: "my@email.com")
-    email.should_not be_nil
-    page.should have_content("my@email.com")
+    expect(email).not_to be_nil
+    expect(page).to have_content("my@email.com")
   end
 
   step 'I should not see email "my@email.com"' do
     email = @user.emails.find_by(email: "my@email.com")
-    email.should be_nil
-    page.should_not have_content("my@email.com")
+    expect(email).to be_nil
+    expect(page).not_to have_content("my@email.com")
   end
   
   step 'I click link "Remove" for "my@email.com"' do
@@ -43,6 +43,6 @@ class Spinach::Features::ProfileEmails < Spinach::FeatureSteps
 
   step 'I should not have @user.email added' do
     email = @user.emails.find_by(email: @user.email)
-    email.should be_nil
+    expect(email).to be_nil
   end
 end

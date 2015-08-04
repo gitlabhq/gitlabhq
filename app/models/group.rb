@@ -17,10 +17,12 @@ require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class Group < Namespace
+  include Referable
+
   has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
   has_many :users, through: :group_members
 
-  validate :avatar_type, if: ->(user) { user.avatar_changed? }
+  validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   mount_uploader :avatar, AvatarUploader
@@ -36,10 +38,28 @@ class Group < Namespace
     def sort(method)
       order_by(method)
     end
+
+    def reference_prefix
+      User.reference_prefix
+    end
+
+    def reference_pattern
+      User.reference_pattern
+    end
+  end
+
+  def to_reference(_from_project = nil)
+    "#{self.class.reference_prefix}#{name}"
   end
 
   def human_name
     name
+  end
+
+  def avatar_url(size = nil)
+    if avatar.present?
+      [gitlab_config.url, avatar.url].join
+    end
   end
 
   def owners
@@ -87,10 +107,14 @@ class Group < Namespace
   end
 
   def post_create_hook
+    Gitlab::AppLogger.info("Group \"#{name}\" was created")
+
     system_hook_service.execute_hooks_for(self, :create)
   end
 
   def post_destroy_hook
+    Gitlab::AppLogger.info("Group \"#{name}\" was removed")
+
     system_hook_service.execute_hooks_for(self, :destroy)
   end
 

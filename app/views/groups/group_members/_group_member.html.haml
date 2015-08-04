@@ -24,7 +24,7 @@
           = link_to member.created_by.name, user_path(member.created_by)
         = time_ago_with_tooltip(member.created_at)
 
-      - if show_controls && can?(current_user, :admin_group, @group)
+      - if show_controls && can?(current_user, :admin_group_member, member)
         = link_to resend_invite_group_group_member_path(@group, member), method: :post, class: "btn-xs btn", title: 'Resend invite' do
           Resend invite
 
@@ -32,7 +32,7 @@
     %span.pull-right
       %strong= member.human_access
       - if show_controls
-        - if can?(current_user, :modify_group_member, member)
+        - if can?(current_user, :update_group_member, member)
           = button_tag class: "btn-xs btn js-toggle-button",
                        title: 'Edit access level', type: 'button' do
             %i.fa.fa-pencil-square-o
@@ -40,7 +40,8 @@
           &nbsp;
           - if current_user == user
             = link_to leave_group_group_members_path(@group), data: { confirm: leave_group_message(@group.name)}, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove user from group' do
-              %i.fa.fa-minus.fa-inverse
+              = icon("sign-out")
+              Leave
           - else
             = link_to group_group_member_path(@group, member), data: { confirm: remove_user_from_group_message(@group, member) }, method: :delete, remote: true, class: "btn-xs btn btn-remove", title: 'Remove user from group' do
               %i.fa.fa-minus.fa-inverse

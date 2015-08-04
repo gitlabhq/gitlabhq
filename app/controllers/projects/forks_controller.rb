@@ -18,7 +18,6 @@ class Projects::ForksController < Projects::ApplicationController
         notice: 'Project was successfully forked.'
       )
     else
-      @title = 'Fork project'
       render :error
     end
   end

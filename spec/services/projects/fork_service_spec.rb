@@ -5,8 +5,10 @@ describe Projects::ForkService do
     before do
       @from_namespace = create(:namespace)
       @from_user = create(:user, namespace: @from_namespace )
-      @from_project = create(:project, creator_id: @from_user.id,
-                             namespace: @from_namespace, star_count: 107,
+      @from_project = create(:project,
+                             creator_id: @from_user.id,
+                             namespace: @from_namespace,
+                             star_count: 107,
                              description: 'wow such project')
       @to_namespace = create(:namespace)
       @to_user = create(:user, namespace: @to_namespace)
@@ -27,7 +29,7 @@ describe Projects::ForkService do
       it "fails due to transaction failure" do
         @to_project = fork_project(@from_project, @to_user, false)
         expect(@to_project.errors).not_to be_empty
-        expect(@to_project.errors[:base]).to include("Failed to fork repository")
+        expect(@to_project.errors[:base]).to include("Failed to fork repository via gitlab-shell")
       end
     end
 

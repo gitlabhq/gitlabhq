@@ -102,15 +102,14 @@ end
 #               profile_token GET    /profile/token(.:format)               profile#token
 # profile_reset_private_token PUT    /profile/reset_private_token(.:format) profile#reset_private_token
 #                     profile GET    /profile(.:format)                     profile#show
-#              profile_design GET    /profile/design(.:format)              profile#design
 #              profile_update PUT    /profile/update(.:format)              profile#update
 describe ProfilesController, "routing" do
   it "to #account" do
     expect(get("/profile/account")).to route_to('profiles/accounts#show')
   end
 
-  it "to #history" do
-    expect(get("/profile/history")).to route_to('profiles#history')
+  it "to #audit_log" do
+    expect(get("/profile/audit_log")).to route_to('profiles#audit_log')
   end
 
   it "to #reset_private_token" do
@@ -120,9 +119,19 @@ describe ProfilesController, "routing" do
   it "to #show" do
     expect(get("/profile")).to route_to('profiles#show')
   end
+end
 
-  it "to #design" do
-    expect(get("/profile/design")).to route_to('profiles#design')
+# profile_preferences GET      /profile/preferences(.:format) profiles/preferences#show
+#                     PATCH    /profile/preferences(.:format) profiles/preferences#update
+#                     PUT      /profile/preferences(.:format) profiles/preferences#update
+describe Profiles::PreferencesController, 'routing' do
+  it 'to #show' do
+    expect(get('/profile/preferences')).to route_to('profiles/preferences#show')
+  end
+
+  it 'to #update' do
+    expect(put('/profile/preferences')).to   route_to('profiles/preferences#update')
+    expect(patch('/profile/preferences')).to route_to('profiles/preferences#update')
   end
 end
 
@@ -195,11 +204,9 @@ end
 #                dashboard GET    /dashboard(.:format)                dashboard#show
 #         dashboard_issues GET    /dashboard/issues(.:format)         dashboard#issues
 # dashboard_merge_requests GET    /dashboard/merge_requests(.:format) dashboard#merge_requests
-#                     root        /                                   dashboard#show
 describe DashboardController, "routing" do
   it "to #index" do
     expect(get("/dashboard")).to route_to('dashboard#show')
-    expect(get("/")).to route_to('dashboard#show')
   end
 
   it "to #issues" do
@@ -210,6 +217,14 @@ describe DashboardController, "routing" do
     expect(get("/dashboard/merge_requests")).to route_to('dashboard#merge_requests')
   end
 end
+
+#                     root        /                                   root#show
+describe RootController, 'routing' do
+  it 'to #show' do
+    expect(get('/')).to route_to('root#show')
+  end
+end
+
 
 #        new_user_session GET    /users/sign_in(.:format)               devise/sessions#new
 #            user_session POST   /users/sign_in(.:format)               devise/sessions#create
@@ -233,4 +248,3 @@ describe "Groups", "routing" do
     expect(get('/1')).to route_to('namespaces#show', id: '1')
   end
 end
-

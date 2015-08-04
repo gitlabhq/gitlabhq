@@ -10,8 +10,8 @@ Gitlab::Seeder.quiet do
       params = {
         source_branch: source_branch,
         target_branch: target_branch,
-        title: Faker::Lorem.sentence(6),
-        description: Faker::Lorem.sentences(3).join(" "),
+        title: FFaker::Lorem.sentence(6),
+        description: FFaker::Lorem.sentences(3).join(" "),
         milestone: project.milestones.sample,
         assignee: project.team.users.sample
       }

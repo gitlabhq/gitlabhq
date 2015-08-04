@@ -1,0 +1,75 @@
+- if @service.errors.any?
+  #error_explanation
+    .alert.alert-danger
+      %ul
+        - @service.errors.full_messages.each do |msg|
+          %li= msg
+
+- if @service.help.present?
+  .well
+    = preserve do
+      = markdown @service.help
+
+.form-group
+  = form.label :active, "Active", class: "control-label"
+  .col-sm-10
+    = form.check_box :active
+
+- if @service.supported_events.length > 1
+  .form-group
+    = form.label :url, "Trigger", class: 'control-label'
+    .col-sm-10
+      - if @service.supported_events.include?("push")
+        %div
+          = form.check_box :push_events, class: 'pull-left'
+          .prepend-left-20
+            = form.label :push_events, class: 'list-label' do
+              %strong Push events
+            %p.light
+              This url will be triggered by a push to the repository
+      - if @service.supported_events.include?("tag_push")
+        %div
+          = form.check_box :tag_push_events, class: 'pull-left'
+          .prepend-left-20
+            = form.label :tag_push_events, class: 'list-label' do
+              %strong Tag push events
+            %p.light
+              This url will be triggered when a new tag is pushed to the repository
+      - if @service.supported_events.include?("note")
+        %div
+          = form.check_box :note_events, class: 'pull-left'
+          .prepend-left-20
+            = form.label :note_events, class: 'list-label' do
+              %strong Comments
+            %p.light
+              This url will be triggered when someone adds a comment
+      - if @service.supported_events.include?("issue")
+        %div
+          = form.check_box :issues_events, class: 'pull-left'
+          .prepend-left-20
+            = form.label :issues_events, class: 'list-label' do
+              %strong Issues events
+            %p.light
+              This url will be triggered when an issue is created
+      - if @service.supported_events.include?("merge_request")
+        %div
+          = form.check_box :merge_requests_events, class: 'pull-left'
+          .prepend-left-20
+            = form.label :merge_requests_events, class: 'list-label' do
+              %strong Merge Request events
+            %p.light
+              This url will be triggered when a merge request is created
+
+- @service.fields.each do |field|
+  - type = field[:type]
+
+  - if type == 'fieldset'
+    - fields = field[:fields]
+    - legend = field[:legend]
+
+    %fieldset
+      %legend= legend
+      - fields.each do |subfield|
+        = render 'shared/field', form: form, field: subfield
+  - else
+    = render 'shared/field', form: form, field: field

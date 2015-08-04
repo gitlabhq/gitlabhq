@@ -7,10 +7,10 @@
 #  created_at  :datetime
 #  updated_at  :datetime
 #  key         :text
-#  public      :boolean          default(FALSE)
 #  title       :string(255)
 #  type        :string(255)
 #  fingerprint :string(255)
+#  public      :boolean          default(FALSE), not null
 #
 
 class DeployKey < Key

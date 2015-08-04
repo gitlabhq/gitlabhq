@@ -1,6 +1,7 @@
 module MergeRequests
   class CreateService < MergeRequests::BaseService
     def execute
+      filter_params
       label_params = params[:label_ids]
       merge_request = MergeRequest.new(params.except(:label_ids))
       merge_request.source_project = project

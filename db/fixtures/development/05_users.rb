@@ -2,9 +2,9 @@ Gitlab::Seeder.quiet do
   (2..20).each  do |i|
     begin
       User.create!(
-        username: Faker::Internet.user_name,
-        name: Faker::Name.name,
-        email: Faker::Internet.email,
+        username: FFaker::Internet.user_name,
+        name: FFaker::Name.name,
+        email: FFaker::Internet.email,
         confirmed_at: DateTime.now,
         password: '12345678'
       )

@@ -1,6 +1,6 @@
-# GitLab Notifications
+# GitLab Notification Emails
 
-GitLab has notifications system in place to notify a user of events important for the workflow.
+GitLab has a notification system in place to notify a user of events that are important for the workflow.
 
 ## Notification settings
 
@@ -67,5 +67,3 @@ Below is the table of events users can be notified of:
 | Reopen merge request         | Project members [1]                                               | [1] higher than participating |
 | Merge merge request          | MR author [1], MR assignee [2], project members [3]               | [1] [2] not disabled, [3] higher than participating |
 | New comment                  | Mentioned users [1], users participating [2], project members [3] | [1] [2] not disabled, [3] higher than participating |
-
-

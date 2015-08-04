@@ -9,11 +9,11 @@ class Spinach::Features::ProjectSourceSearchCode < Spinach::FeatureSteps
   end
 
   step 'I should see files from repository containing "coffee"' do
-    page.should have_content 'coffee'
-    page.should have_content 'CONTRIBUTING.md'
+    expect(page).to have_content 'coffee'
+    expect(page).to have_content 'CONTRIBUTING.md'
   end
 
   step 'I should see empty result' do
-    page.should have_content "We couldn't find any matching"
+    expect(page).to have_content "We couldn't find any"
   end
 end

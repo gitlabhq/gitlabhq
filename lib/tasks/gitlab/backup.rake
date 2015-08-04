@@ -3,7 +3,7 @@ require 'active_record/fixtures'
 namespace :gitlab do
   namespace :backup do
     # Create backup of GitLab system
-    desc "GITLAB | Create a backup of the GitLab system"
+    desc "GitLab | Create a backup of the GitLab system"
     task create: :environment do
       warn_user_is_not_gitlab
       configure_cron_mode
@@ -19,7 +19,7 @@ namespace :gitlab do
     end
 
     # Restore backup of GitLab system
-    desc "GITLAB | Restore a previously created backup"
+    desc "GitLab | Restore a previously created backup"
     task restore: :environment do
       warn_user_is_not_gitlab
       configure_cron_mode

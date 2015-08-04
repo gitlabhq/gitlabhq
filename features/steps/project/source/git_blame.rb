@@ -12,8 +12,8 @@ class Spinach::Features::ProjectSourceGitBlame < Spinach::FeatureSteps
   end
 
   step 'I should see git file blame' do
-    page.should have_content "*.rb"
-    page.should have_content "Dmitriy Zaporozhets"
-    page.should have_content "Initial commit"
+    expect(page).to have_content "*.rb"
+    expect(page).to have_content "Dmitriy Zaporozhets"
+    expect(page).to have_content "Initial commit"
   end
 end

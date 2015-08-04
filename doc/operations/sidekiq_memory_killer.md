@@ -36,3 +36,5 @@ The MemoryKiller is controlled using environment variables.
   Existing jobs get 30 seconds to finish. After that, the MemoryKiller tells
   Sidekiq to shut down, and an external supervision mechanism (e.g. Runit) must
   restart Sidekiq.
+- `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_SIGNAL`: defaults to 'SIGTERM'. The name of
+  the final signal sent to the Sidekiq process when we want it to shut down.

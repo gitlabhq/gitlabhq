@@ -8,11 +8,6 @@ Feature: Admin Deploy Keys
     When I visit admin deploy keys page
     Then I should see all public deploy keys
 
-  Scenario: Deploy Keys show
-    When I visit admin deploy keys page
-    And I click on first deploy key
-    Then I should see deploy key details
-
   Scenario: Deploy Keys new
     When I visit admin deploy keys page
     And I click 'New Deploy Key'

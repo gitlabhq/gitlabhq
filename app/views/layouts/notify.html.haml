@@ -27,13 +27,13 @@
     }
     .file-stats .deleted-file {
       color: #B00;
-    }}
+    }
   %body
     %div.content
       = yield
     %div.footer{style: "margin-top: 10px;"}
       %p
-        \—
+        &mdash;
         %br
         - if @target_url
           #{link_to "View it on GitLab", @target_url}

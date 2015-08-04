@@ -49,12 +49,33 @@
 #  password_automatically_set    :boolean          default(FALSE)
 #  bitbucket_access_token        :string(255)
 #  bitbucket_access_token_secret :string(255)
+#  location                      :string(255)
+#  encrypted_otp_secret          :string(255)
+#  encrypted_otp_secret_iv       :string(255)
+#  encrypted_otp_secret_salt     :string(255)
+#  otp_required_for_login        :boolean          default(FALSE), not null
+#  otp_backup_codes              :text
+#  public_email                  :string(255)      default(""), not null
+#  dashboard                     :integer          default(0)
+#  project_view                  :integer          default(0)
 #
 
 require 'spec_helper'
 
 describe User do
-  describe "Associations" do
+  include Gitlab::CurrentSettings
+
+  describe 'modules' do
+    subject { described_class }
+
+    it { is_expected.to include_module(Gitlab::ConfigHelper) }
+    it { is_expected.to include_module(Gitlab::CurrentSettings) }
+    it { is_expected.to include_module(Referable) }
+    it { is_expected.to include_module(Sortable) }
+    it { is_expected.to include_module(TokenAuthenticatable) }
+  end
+
+  describe 'associations' do
     it { is_expected.to have_one(:namespace) }
     it { is_expected.to have_many(:snippets).class_name('Snippet').dependent(:destroy) }
     it { is_expected.to have_many(:project_members).dependent(:destroy) }
@@ -70,9 +91,6 @@ describe User do
     it { is_expected.to have_many(:identities).dependent(:destroy) }
   end
 
-  describe "Mass assignment" do
-  end
-
   describe 'validations' do
     it { is_expected.to validate_presence_of(:username) }
     it { is_expected.to validate_presence_of(:projects_limit) }
@@ -80,7 +98,7 @@ describe User do
     it { is_expected.to allow_value(0).for(:projects_limit) }
     it { is_expected.not_to allow_value(-1).for(:projects_limit) }
 
-    it { is_expected.to ensure_length_of(:bio).is_within(0..255) }
+    it { is_expected.to validate_length_of(:bio).is_within(0..255) }
 
     describe 'email' do
       it 'accepts info@example.com' do
@@ -112,6 +130,51 @@ describe User do
         user = build(:user, email: "lol!'+=?><#$%^&*()@gmail.com")
         expect(user).to be_invalid
       end
+
+      context 'when no signup domains listed' do
+        before { allow(current_application_settings).to receive(:restricted_signup_domains).and_return([]) }
+        it 'accepts any email' do
+          user = build(:user, email: "info@example.com")
+          expect(user).to be_valid
+        end
+      end
+
+      context 'when a signup domain is listed and subdomains are allowed' do
+        before { allow(current_application_settings).to receive(:restricted_signup_domains).and_return(['example.com', '*.example.com']) }
+        it 'accepts info@example.com' do
+          user = build(:user, email: "info@example.com")
+          expect(user).to be_valid
+        end
+
+        it 'accepts info@test.example.com' do
+          user = build(:user, email: "info@test.example.com")
+          expect(user).to be_valid
+        end
+
+        it 'rejects example@test.com' do
+          user = build(:user, email: "example@test.com")
+          expect(user).to be_invalid
+        end
+      end
+
+      context 'when a signup domain is listed and subdomains are not allowed' do
+        before { allow(current_application_settings).to receive(:restricted_signup_domains).and_return(['example.com']) }
+
+        it 'accepts info@example.com' do
+          user = build(:user, email: "info@example.com")
+          expect(user).to be_valid
+        end
+
+        it 'rejects info@test.example.com' do
+          user = build(:user, email: "info@test.example.com")
+          expect(user).to be_invalid
+        end
+
+        it 'rejects example@test.com' do
+          user = build(:user, email: "example@test.com")
+          expect(user).to be_invalid
+        end
+      end
     end
   end
 
@@ -119,6 +182,14 @@ describe User do
     it { is_expected.to respond_to(:is_admin?) }
     it { is_expected.to respond_to(:name) }
     it { is_expected.to respond_to(:private_token) }
+  end
+
+  describe '#to_reference' do
+    let(:user) { create(:user) }
+
+    it 'returns a String reference to the object' do
+      expect(user.to_reference).to eq "@#{user.username}"
+    end
   end
 
   describe '#generate_password' do
@@ -144,6 +215,24 @@ describe User do
     it "should have authentication token" do
       user = create(:user)
       expect(user.authentication_token).not_to be_blank
+    end
+  end
+
+  describe '#disable_two_factor!' do
+    it 'clears all 2FA-related fields' do
+      user = create(:user, :two_factor)
+
+      expect(user).to be_two_factor_enabled
+      expect(user.encrypted_otp_secret).not_to be_nil
+      expect(user.otp_backup_codes).not_to be_nil
+
+      user.disable_two_factor!
+
+      expect(user).not_to be_two_factor_enabled
+      expect(user.encrypted_otp_secret).to be_nil
+      expect(user.encrypted_otp_secret_iv).to be_nil
+      expect(user.encrypted_otp_secret_salt).to be_nil
+      expect(user.otp_backup_codes).to be_nil
     end
   end
 
@@ -179,6 +268,7 @@ describe User do
     it { expect(@user.several_namespaces?).to be_truthy }
     it { expect(@user.authorized_groups).to eq([@group]) }
     it { expect(@user.owned_groups).to eq([@group]) }
+    it { expect(@user.namespaces).to match_array([@user.namespace, @group]) }
   end
 
   describe 'group multiple owners' do
@@ -201,6 +291,7 @@ describe User do
     end
 
     it { expect(@user.several_namespaces?).to be_falsey }
+    it { expect(@user.namespaces).to eq([@user.namespace]) }
   end
 
   describe 'blocking user' do
@@ -212,18 +303,44 @@ describe User do
     end
   end
 
-  describe 'filter' do
-    before do
-      User.delete_all
-      @user = create :user
-      @admin = create :user, admin: true
-      @blocked = create :user, state: :blocked
+  describe '.filter' do
+    let(:user) { double }
+
+    it 'filters by active users by default' do
+      expect(User).to receive(:active).and_return([user])
+
+      expect(User.filter(nil)).to include user
     end
 
-    it { expect(User.filter("admins")).to eq([@admin]) }
-    it { expect(User.filter("blocked")).to eq([@blocked]) }
-    it { expect(User.filter("wop")).to include(@user, @admin, @blocked) }
-    it { expect(User.filter(nil)).to include(@user, @admin) }
+    it 'filters by admins' do
+      expect(User).to receive(:admins).and_return([user])
+
+      expect(User.filter('admins')).to include user
+    end
+
+    it 'filters by blocked' do
+      expect(User).to receive(:blocked).and_return([user])
+
+      expect(User.filter('blocked')).to include user
+    end
+
+    it 'filters by two_factor_disabled' do
+      expect(User).to receive(:without_two_factor).and_return([user])
+
+      expect(User.filter('two_factor_disabled')).to include user
+    end
+
+    it 'filters by two_factor_enabled' do
+      expect(User).to receive(:with_two_factor).and_return([user])
+
+      expect(User.filter('two_factor_enabled')).to include user
+    end
+
+    it 'filters by wop' do
+      expect(User).to receive(:without_projects).and_return([user])
+
+      expect(User.filter('wop')).to include user
+    end
   end
 
   describe :not_in_project do
@@ -258,13 +375,32 @@ describe User do
     end
 
     describe 'with default overrides' do
-      let(:user) { User.new(projects_limit: 123, can_create_group: false, can_create_team: true, theme_id: Gitlab::Theme::BASIC) }
+      let(:user) { User.new(projects_limit: 123, can_create_group: false, can_create_team: true, theme_id: 1) }
 
       it "should apply defaults to user" do
         expect(user.projects_limit).to eq(123)
         expect(user.can_create_group).to be_falsey
-        expect(user.theme_id).to eq(Gitlab::Theme::BASIC)
+        expect(user.theme_id).to eq(1)
       end
+    end
+  end
+
+  describe '.find_by_any_email' do
+    it 'finds by primary email' do
+      user = create(:user, email: 'foo@example.com')
+
+      expect(User.find_by_any_email(user.email)).to eq user
+    end
+
+    it 'finds by secondary email' do
+      email = create(:email, email: 'foo@example.com')
+      user  = email.user
+
+      expect(User.find_by_any_email(email.email)).to eq user
+    end
+
+    it 'returns nil when nothing found' do
+      expect(User.find_by_any_email('')).to be_nil
     end
   end
 
@@ -307,6 +443,18 @@ describe User do
     end
   end
 
+  describe '.find_by_username!' do
+    it 'raises RecordNotFound' do
+      expect { described_class.find_by_username!('JohnDoe') }.
+        to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it 'is case-insensitive' do
+      user = create(:user, username: 'JohnDoe')
+      expect(described_class.find_by_username!('JOHNDOE')).to eq user
+    end
+  end
+
   describe 'all_ssh_keys' do
     it { is_expected.to have_many(:keys).dependent(:destroy) }
 
@@ -337,21 +485,25 @@ describe User do
 
     it 'is false when LDAP is disabled' do
       # Create a condition which would otherwise cause 'true' to be returned
-      user.stub(ldap_user?: true)
+      allow(user).to receive(:ldap_user?).and_return(true)
       user.last_credential_check_at = nil
       expect(user.requires_ldap_check?).to be_falsey
     end
 
     context 'when LDAP is enabled' do
-      before { Gitlab.config.ldap.stub(enabled: true) }
+      before do
+        allow(Gitlab.config.ldap).to receive(:enabled).and_return(true)
+      end
 
       it 'is false for non-LDAP users' do
-        user.stub(ldap_user?: false)
+        allow(user).to receive(:ldap_user?).and_return(false)
         expect(user.requires_ldap_check?).to be_falsey
       end
 
       context 'and when the user is an LDAP user' do
-        before { user.stub(ldap_user?: true) }
+        before do
+          allow(user).to receive(:ldap_user?).and_return(true)
+        end
 
         it 'is true when the user has never had an LDAP check before' do
           user.last_credential_check_at = nil
@@ -503,7 +655,6 @@ describe User do
   end
 
   describe "#contributed_projects_ids" do
-
     subject { create(:user) }
     let!(:project1) { create(:project) }
     let!(:project2) { create(:project, forked_from_project: project3) }
@@ -527,6 +678,23 @@ describe User do
 
     it "doesn't include IDs for unrelated projects" do
       expect(subject.contributed_projects_ids).not_to include(project2.id)
+    end
+  end
+
+  describe :can_be_removed? do
+    subject { create(:user) }
+
+    context 'no owned groups' do
+      it { expect(subject.can_be_removed?).to be_truthy }
+    end
+
+    context 'has owned groups' do
+      before do
+        group = create(:group)
+        group.add_owner(subject)
+      end
+
+      it { expect(subject.can_be_removed?).to be_falsey }
     end
   end
 end

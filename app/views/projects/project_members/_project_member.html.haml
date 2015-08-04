@@ -38,8 +38,9 @@
 
         &nbsp;
         - if current_user == user
-          = link_to leave_namespace_project_project_members_path(@project.namespace, @project), data: { confirm: "Leave project?"}, method: :delete, class: "btn-xs btn btn-remove", title: 'Leave project' do
-            %i.fa.fa-minus.fa-inverse
+          = link_to leave_namespace_project_project_members_path(@project.namespace, @project), data: { confirm: leave_project_message(@project) }, method: :delete, class: "btn-xs btn btn-remove", title: 'Leave project' do
+            = icon("sign-out")
+            Leave
         - else
           = link_to namespace_project_project_member_path(@project.namespace, @project, member), data: { confirm: remove_from_project_team_message(@project, member) }, method: :delete, remote: true, class: "btn-xs btn btn-remove", title: 'Remove user from team' do
             %i.fa.fa-minus.fa-inverse

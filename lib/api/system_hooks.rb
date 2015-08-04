@@ -47,7 +47,7 @@ module API
           owner_name: "Someone",
           owner_email: "example@gitlabhq.com"
         }
-        @hook.execute(data)
+        @hook.execute(data, 'system_hooks')
         data
       end
 

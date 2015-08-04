@@ -1,6 +1,4 @@
 class Projects::UploadsController < Projects::ApplicationController
-  layout 'project'
-
   skip_before_action :authenticate_user!, :reject_blocked!, :project,
     :repository, if: -> { action_name == 'show' && image? }
 

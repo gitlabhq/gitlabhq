@@ -2,43 +2,25 @@ require 'spec_helper'
 
 module Gitlab::Markdown
   describe ExternalIssueReferenceFilter do
-    include ReferenceFilterSpecHelper
+    include FilterSpecHelper
 
     def helper
       IssuesHelper
     end
 
-    let(:project) { create(:empty_project) }
-    let(:issue)   { double('issue', iid: 123) }
+    let(:project) { create(:jira_project) }
 
     context 'JIRA issue references' do
-      let(:reference) { "JIRA-#{issue.iid}" }
-
-      before do
-        jira = project.create_jira_service
-
-        props = {
-          'title'         => 'JIRA tracker',
-          'project_url'   => 'http://jira.example/issues/?jql=project=A',
-          'issues_url'    => 'http://jira.example/browse/:id',
-          'new_issue_url' => 'http://jira.example/secure/CreateIssue.jspa'
-        }
-
-        jira.update_attributes(properties: props, active: true)
-      end
-
-      after do
-        project.jira_service.destroy
-      end
+      let(:issue)     { ExternalIssue.new('JIRA-123', project) }
+      let(:reference) { issue.to_reference }
 
       it 'requires project context' do
-        expect { described_class.call('Issue JIRA-123', {}) }.
-          to raise_error(ArgumentError, /:project/)
+        expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
       end
 
       %w(pre code a style).each do |elem|
         it "ignores valid references contained inside '#{elem}' element" do
-          exp = act = "<#{elem}>Issue JIRA-#{issue.iid}</#{elem}>"
+          exp = act = "<#{elem}>Issue #{reference}</#{elem}>"
           expect(filter(act).to_html).to eq exp
         end
       end
@@ -48,13 +30,6 @@ module Gitlab::Markdown
 
         exp = act = "Issue #{reference}"
         expect(filter(act).to_html).to eq exp
-      end
-
-      %w(pre code a style).each do |elem|
-        it "ignores references contained inside '#{elem}' element" do
-          exp = act = "<#{elem}>Issue #{reference}</#{elem}>"
-          expect(filter(act).to_html).to eq exp
-        end
       end
 
       it 'links to a valid reference' do

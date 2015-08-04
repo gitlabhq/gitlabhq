@@ -30,7 +30,7 @@ describe PostReceive do
     end
 
     it "asks the project to trigger all hooks" do
-      Project.stub(find_with_namespace: project)
+      allow(Project).to receive(:find_with_namespace).and_return(project)
       expect(project).to receive(:execute_hooks).twice
       expect(project).to receive(:execute_services).twice
       expect(project).to receive(:update_merge_requests)

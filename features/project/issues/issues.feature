@@ -134,47 +134,14 @@ Feature: Project Issues
     And I should see "Release 0.4" in issues
     And I should not see "Tweet control" in issues
 
-  Scenario: Issue description should render task checkboxes
-    Given project "Shop" has "Tasks-open" open issue with task markdown
-    When I visit issue page "Tasks-open"
-    Then I should see task checkboxes in the description
-
-  @javascript
-  Scenario: Issue notes should not render task checkboxes
-    Given project "Shop" has "Tasks-open" open issue with task markdown
-    When I visit issue page "Tasks-open"
-    And I leave a comment with task markdown
-    Then I should not see task checkboxes in the comment
-
   @javascript
   Scenario: Issue notes should be editable with +1
-    Given project "Shop" has "Tasks-open" open issue with task markdown
-    When I visit issue page "Tasks-open"
+    Given project "Shop" have "Release 0.4" open issue
+    When I visit issue page "Release 0.4"
     And I leave a comment with a header containing "Comment with a header"
     Then The comment with the header should not have an ID
     And I edit the last comment with a +1
     Then I should see +1 in the description
-
-  # Task status in issues list
-
-  Scenario: Issues list should display task status
-    Given project "Shop" has "Tasks-open" open issue with task markdown
-    When I visit project "Shop" issues page
-    Then I should see the task status for the Taskable
-
-  # Toggling task items
-
-  @javascript
-  Scenario: Task checkboxes should be enabled for an open issue
-    Given project "Shop" has "Tasks-open" open issue with task markdown
-    When I visit issue page "Tasks-open"
-    Then Task checkboxes should be enabled
-
-  @javascript
-  Scenario: Task checkboxes should be disabled for a closed issue
-    Given project "Shop" has "Tasks-closed" closed issue with task markdown
-    When I visit issue page "Tasks-closed"
-    Then Task checkboxes should be disabled
 
   # Issue description preview
 
@@ -212,8 +179,21 @@ Feature: Project Issues
 
   @javascript
   Scenario: I can unsubscribe from issue
-    Given project "Shop" has "Tasks-open" open issue with task markdown
-    When I visit issue page "Tasks-open"
+    Given project "Shop" have "Release 0.4" open issue
+    When I visit issue page "Release 0.4"
     Then I should see that I am subscribed
     When I click button "Unsubscribe"
     Then I should see that I am unsubscribed
+
+  Scenario: I submit new unassigned issue as guest
+    Given I logout
+    Given public project "Community"
+    When I visit project "Community" page
+    And I visit project "Community" issues page
+    And I click link "New Issue"
+    And I should not see assignee field
+    And I should not see milestone field
+    And I should not see labels field
+    And I submit new issue "500 error on profile"
+    Then I should see issue "500 error on profile"
+

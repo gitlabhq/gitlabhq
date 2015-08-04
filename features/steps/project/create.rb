@@ -8,20 +8,20 @@ class Spinach::Features::ProjectCreate < Spinach::FeatureSteps
   end
 
   step 'I should see project page' do
-    page.should have_content "Empty"
-    current_path.should == namespace_project_path(Project.last.namespace, Project.last)
+    expect(page).to have_content "Empty"
+    expect(current_path).to eq namespace_project_path(Project.last.namespace, Project.last)
   end
 
   step 'I should see empty project instuctions' do
-    page.should have_content "git init"
-    page.should have_content "git remote"
-    page.should have_content Project.last.url_to_repo
+    expect(page).to have_content "git init"
+    expect(page).to have_content "git remote"
+    expect(page).to have_content Project.last.url_to_repo
   end
 
   step 'I see empty project instuctions' do
-    page.should have_content "git init"
-    page.should have_content "git remote"
-    page.should have_content Project.last.url_to_repo
+    expect(page).to have_content "git init"
+    expect(page).to have_content "git remote"
+    expect(page).to have_content Project.last.url_to_repo
   end
 
   step 'I click on HTTP' do
@@ -29,7 +29,7 @@ class Spinach::Features::ProjectCreate < Spinach::FeatureSteps
   end
 
   step 'Remote url should update to http link' do
-    page.should have_content "git remote add origin #{Project.last.http_url_to_repo}"
+    expect(page).to have_content "git remote add origin #{Project.last.http_url_to_repo}"
   end
 
   step 'If I click on SSH' do
@@ -37,6 +37,6 @@ class Spinach::Features::ProjectCreate < Spinach::FeatureSteps
   end
 
   step 'Remote url should update to ssh link' do
-    page.should have_content "git remote add origin #{Project.last.url_to_repo}"
+    expect(page).to have_content "git remote add origin #{Project.last.url_to_repo}"
   end
 end

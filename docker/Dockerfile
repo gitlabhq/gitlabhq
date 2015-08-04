@@ -1,19 +1,21 @@
 FROM ubuntu:14.04
+MAINTAINER Sytse Sijbrandij
 
 # Install required packages
 RUN apt-get update -q \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -qy --no-install-recommends \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
       ca-certificates \
       openssh-server \
-      wget
+      wget \
+      apt-transport-https \
+      vim \
+      nano
 
 # Download & Install GitLab
-# If the Omnibus package version below is outdated please contribute a merge request to update it.
 # If you run GitLab Enterprise Edition point it to a location where you have downloaded it.
-RUN TMP_FILE=$(mktemp); \
-    wget -q -O $TMP_FILE https://downloads-packages.s3.amazonaws.com/ubuntu-14.04/gitlab-ce_7.10.0~omnibus.2-1_amd64.deb \
-    && dpkg -i $TMP_FILE \
-    && rm -f $TMP_FILE
+RUN echo "deb https://packages.gitlab.com/gitlab/gitlab-ce/ubuntu/ `lsb_release -cs` main" > /etc/apt/sources.list.d/gitlab_gitlab-ce.list
+RUN wget -q -O - https://packages.gitlab.com/gpg.key | apt-key add -
+RUN apt-get update && apt-get install -yq --no-install-recommends gitlab-ce
 
 # Manage SSHD through runit
 RUN mkdir -p /opt/gitlab/sv/sshd/supervise \
@@ -23,8 +25,20 @@ RUN mkdir -p /opt/gitlab/sv/sshd/supervise \
     && ln -s /opt/gitlab/sv/sshd /opt/gitlab/service \
     && mkdir -p /var/run/sshd
 
+# Prepare default configuration
+RUN ( \
+  echo "" && \
+  echo "# Docker options" && \
+  echo "# Prevent Postgres from trying to allocate 25% of total memory" && \
+  echo "postgresql['shared_buffers'] = '1MB'" ) >> /etc/gitlab/gitlab.rb && \
+  mkdir -p /assets/ && \
+  cp /etc/gitlab/gitlab.rb /assets/gitlab.rb
+
 # Expose web & ssh
-EXPOSE 80 22
+EXPOSE 443 80 22
+
+# Define data volumes
+VOLUME ["/etc/gitlab", "/var/opt/gitlab", "/var/log/gitlab"]
 
 # Copy assets
 COPY assets/wrapper /usr/local/bin/

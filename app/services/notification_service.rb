@@ -91,10 +91,14 @@ class NotificationService
   #  * project team members with notification level higher then Participating
   #
   def merge_mr(merge_request, current_user)
-    recipients = reject_muted_users([merge_request.author, merge_request.assignee], merge_request.target_project)
+    recipients = [merge_request.author, merge_request.assignee]
+
+    recipients = add_project_watchers(recipients, merge_request.target_project)
+    recipients = reject_muted_users(recipients, merge_request.target_project)
+
     recipients = add_subscribed_users(recipients, merge_request)
     recipients = reject_unsubscribed_users(recipients, merge_request)
-    recipients = recipients.concat(project_watchers(merge_request.target_project)).uniq
+
     recipients.delete(current_user)
 
     recipients.each do |recipient|
@@ -137,20 +141,17 @@ class NotificationService
     recipients = recipients.concat(participants)
 
     # Merge project watchers
-    recipients = recipients.concat(project_watchers(note.project)).compact.uniq
+    recipients = add_project_watchers(recipients, note.project)
 
     # Reject users with Mention notification level, except those mentioned in _this_ note.
     recipients = reject_mention_users(recipients - note.mentioned_users, note.project)
     recipients = recipients + note.mentioned_users
 
-    # Reject mutes users
     recipients = reject_muted_users(recipients, note.project)
 
     recipients = add_subscribed_users(recipients, note.noteable)
-    
     recipients = reject_unsubscribed_users(recipients, note.noteable)
 
-    # Reject author
     recipients.delete(note.author)
 
     # build notify method like 'note_commit_email'
@@ -287,6 +288,10 @@ class NotificationService
     users
   end
 
+  def add_project_watchers(recipients, project)
+    recipients.concat(project_watchers(project)).compact.uniq
+  end
+
   # Remove users with disabled notifications from array
   # Also remove duplications and nil recipients
   def reject_muted_users(users, project = nil)
@@ -403,11 +408,13 @@ class NotificationService
         [target.author, target.assignee]
       end
 
-    recipients = reject_muted_users(recipients, project)
+    recipients = add_project_watchers(recipients, project)
     recipients = reject_mention_users(recipients, project)
+    recipients = reject_muted_users(recipients, project)
+
     recipients = add_subscribed_users(recipients, target)
-    recipients = recipients.concat(project_watchers(project)).uniq
     recipients = reject_unsubscribed_users(recipients, target)
+
     recipients
   end
 

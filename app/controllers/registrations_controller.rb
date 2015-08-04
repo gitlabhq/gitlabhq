@@ -6,7 +6,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def destroy
-    current_user.destroy
+    DeleteUserService.new(current_user).execute(current_user)
 
     respond_to do |format|
       format.html { redirect_to new_user_session_path, notice: "Account successfully removed." }

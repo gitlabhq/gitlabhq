@@ -1,6 +1,0 @@
-!!! 5
-%html{ lang: "en"}
-  = render "layouts/head", title: group_head_title
-  %body{class: "#{app_theme}  application", :'data-page' => body_data_page}
-    = render "layouts/public_head_panel", title: link_to(@group.name, group_path(@group))
-    = render 'layouts/page', sidebar: 'layouts/nav/group'

@@ -28,7 +28,7 @@ FactoryGirl.define do
     source_project factory: :project
     target_project { source_project }
 
-    # → git log --pretty=oneline feature..master
+    # $ git log --pretty=oneline feature..master
     # 5937ac0a7beb003549fc5fd26fc247adbce4a52e Add submodule from gitlab.com
     # 570e7b2abdd848b95f2f578043fc23bd6f6fd24d Change some files
     # 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 More submodules

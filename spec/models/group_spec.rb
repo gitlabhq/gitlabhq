@@ -18,16 +18,30 @@ require 'spec_helper'
 describe Group do
   let!(:group) { create(:group) }
 
-  describe "Associations" do
+  describe 'associations' do
     it { is_expected.to have_many :projects }
     it { is_expected.to have_many :group_members }
   end
 
-  it { is_expected.to validate_presence_of :name }
-  it { is_expected.to validate_uniqueness_of(:name) }
-  it { is_expected.to validate_presence_of :path }
-  it { is_expected.to validate_uniqueness_of(:path) }
-  it { is_expected.not_to validate_presence_of :owner }
+  describe 'modules' do
+    subject { described_class }
+
+    it { is_expected.to include_module(Referable) }
+  end
+
+  describe 'validations' do
+    it { is_expected.to validate_presence_of :name }
+    it { is_expected.to validate_uniqueness_of(:name) }
+    it { is_expected.to validate_presence_of :path }
+    it { is_expected.to validate_uniqueness_of(:path) }
+    it { is_expected.not_to validate_presence_of :owner }
+  end
+
+  describe '#to_reference' do
+    it 'returns a String reference to the object' do
+      expect(group.to_reference).to eq "@#{group.name}"
+    end
+  end
 
   describe :users do
     it { expect(group.users).to eq(group.owners) }

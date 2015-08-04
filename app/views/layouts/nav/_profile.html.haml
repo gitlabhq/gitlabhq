@@ -1,15 +1,23 @@
 %ul.nav.nav-sidebar
+  = nav_link do
+    = link_to root_path, title: 'Back to dashboard', data: {placement: 'right'}, class: 'back-link' do
+      = icon('caret-square-o-left fw')
+      %span
+        Back to Dashboard
+
+  %li.separate-item
+
   = nav_link(path: 'profiles#show', html_options: {class: 'home'}) do
     = link_to profile_path, title: 'Profile', data: {placement: 'right'} do
       = icon('user fw')
       %span
         Profile
-  = nav_link(controller: :accounts) do
+  = nav_link(controller: [:accounts, :two_factor_auths]) do
     = link_to profile_account_path, title: 'Account', data: {placement: 'right'} do
       = icon('gear fw')
       %span
         Account
-  = nav_link(path: ['profiles#applications', 'applications#edit', 'applications#show', 'applications#new']) do
+  = nav_link(path: ['profiles#applications', 'applications#edit', 'applications#show', 'applications#new', 'applications#create']) do
     = link_to applications_profile_path, title: 'Applications', data: {placement: 'right'} do
       = icon('cloud fw')
       %span
@@ -38,13 +46,14 @@
       %span
         SSH Keys
         %span.count= current_user.keys.count
-  = nav_link(path: 'profiles#design') do
-    = link_to design_profile_path, title: 'Design', data: {placement: 'right'} do
+  = nav_link(controller: :preferences) do
+    = link_to profile_preferences_path, title: 'Preferences', data: {placement: 'right'} do
+      -# TODO (rspeicher): Better icon?
       = icon('image fw')
       %span
-        Design
-  = nav_link(path: 'profiles#history') do
-    = link_to history_profile_path, title: 'History', data: {placement: 'right'} do
+        Preferences
+  = nav_link(path: 'profiles#audit_log') do
+    = link_to audit_log_profile_path, title: 'Audit Log', data: {placement: 'right'} do
       = icon('history fw')
       %span
-        History
+        Audit Log

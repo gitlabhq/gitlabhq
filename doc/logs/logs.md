@@ -5,7 +5,7 @@ In addition to system log files, GitLab Enterprise Edition comes with Audit Even
 System log files are typically plain text in a standard log file format. This guide talks about how to read and use these system log files.
 
 #### production.log
-This file lives in `/var/log/gitlab/gitlab-rails/production.log` for omnibus package or in `/home/git/gitlab/logs/production.log` for installations from the source.
+This file lives in `/var/log/gitlab/gitlab-rails/production.log` for omnibus package or in `/home/git/gitlab/log/production.log` for installations from the source.
 
 This file contains information about all performed requests. You can see url and type of request, IP address and what exactly parts of code were involved to service this particular request. Also you can see all SQL request that have been performed and how much time it took.
 This task is more useful for GitLab contributors and developers. Use part of this log file when you are going to report bug.
@@ -30,7 +30,7 @@ Completed 200 OK in 166ms (Views: 117.4ms | ActiveRecord: 27.2ms)
 In this example we can see that server processed HTTP request with url `/gitlabhq/yaml_db/tree/master` from IP 168.111.56.1 at 2015-02-12 19:34:53 +0200. Also we can see that request was processed by Projects::TreeController.
 
 #### application.log
-This file lives in `/var/log/gitlab/gitlab-rails/application.log` for omnibus package or in `/home/git/gitlab/logs/application.log` for installations from the source.
+This file lives in `/var/log/gitlab/gitlab-rails/application.log` for omnibus package or in `/home/git/gitlab/log/application.log` for installations from the source.
 
 This log file helps you discover events happening in your instance such as user creation, project removing and so on.
 
@@ -42,7 +42,7 @@ October 07, 2014 11:25: User "Claudie Hodkiewicz" (nasir_stehr@olson.co.uk)  was
 October 07, 2014 11:25: Project "project133" was removed
 ```
 #### githost.log
-This file lives in `/var/log/gitlab/gitlab-rails/githost.log` for omnibus package or in `/home/git/gitlab/logs/githost.log` for installations from the source.
+This file lives in `/var/log/gitlab/gitlab-rails/githost.log` for omnibus package or in `/home/git/gitlab/log/githost.log` for installations from the source.
 
 The GitLab has to interact with git repositories but in some rare cases something can go wrong and in this case you will know what exactly happened. This log file contains all failed requests from GitLab to git repository. In majority of cases this file will be useful for developers only.
 ```
@@ -52,7 +52,7 @@ error: failed to push some refs to '/Users/vsizov/gitlab-development-kit/reposit
 ```
 
 #### satellites.log
-This file lives in `/var/log/gitlab/gitlab-rails/satellites.log` for omnibus package or in `/home/git/gitlab/logs/satellites.log` for installations from the source.
+This file lives in `/var/log/gitlab/gitlab-rails/satellites.log` for omnibus package or in `/home/git/gitlab/log/satellites.log` for installations from the source.
 
 In some cases GitLab should perform write actions to git repository, for example when it is needed to merge the merge request or edit a file with online editor. If something went wrong you can look into this file to find out what exactly happened.
 ```
@@ -62,7 +62,7 @@ October 07, 2014 11:36: PID: 1872: -> fatal: repository '/Users/vsizov/gitlab-de
 ```
 
 #### sidekiq.log
-This file lives in `/var/log/gitlab/gitlab-rails/sidekiq.log` for omnibus package or in `/home/git/gitlab/logs/sidekiq.log` for installations from the source.
+This file lives in `/var/log/gitlab/gitlab-rails/sidekiq.log` for omnibus package or in `/home/git/gitlab/log/sidekiq.log` for installations from the source.
 
 GitLab uses background jobs for processing tasks which can take a long time. All information about processing these jobs are writing down to this file.
 ```
@@ -71,7 +71,7 @@ GitLab uses background jobs for processing tasks which can take a long time. All
 ```
 
 #### gitlab-shell.log
-This file lives in `/var/log/gitlab/gitlab-shell/gitlab-shell.log` for omnibus package or in `/home/git/gitlab-shell/logs/sidekiq.log` for installations from the source.
+This file lives in `/var/log/gitlab/gitlab-shell/gitlab-shell.log` for omnibus package or in `/home/git/gitlab-shell/gitlab-shell.log` for installations from the source.
 
 gitlab-shell is using by Gitlab for executing git commands and provide ssh access to git repositories.
 
@@ -81,7 +81,7 @@ I, [2015-02-13T06:17:00.679433 #9291]  INFO -- : Moving existing hooks directory
 ```
 
 #### unicorn_stderr.log
-This file lives in `/var/log/gitlab/unicorn/unicorn_stderr.log` for omnibus package or in `/home/git/gitlab/logs/unicorn_stderr.log` for installations from the source.
+This file lives in `/var/log/gitlab/unicorn/unicorn_stderr.log` for omnibus package or in `/home/git/gitlab/log/unicorn_stderr.log` for installations from the source.
 
 Unicorn is a high-performance forking Web server which is used for serving GitLab application. You can look at this log, for example, if your application does not respond. This log cantains all information about state of unicorn processes at any given time.
 

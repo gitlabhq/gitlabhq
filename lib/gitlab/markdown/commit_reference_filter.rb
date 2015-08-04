@@ -19,20 +19,13 @@ module Gitlab
       #
       # Returns a String replaced with the return of the block.
       def self.references_in(text)
-        text.gsub(COMMIT_PATTERN) do |match|
+        text.gsub(Commit.reference_pattern) do |match|
           yield match, $~[:commit], $~[:project]
         end
       end
 
-      # Pattern used to extract commit references from text
-      #
-      # The SHA1 sum can be between 6 and 40 hex characters.
-      #
-      # This pattern supports cross-project references.
-      COMMIT_PATTERN = /(#{PROJECT_PATTERN}@)?(?<commit>\h{6,40})/
-
       def call
-        replace_text_nodes_matching(COMMIT_PATTERN) do |content|
+        replace_text_nodes_matching(Commit.reference_pattern) do |content|
           commit_link_filter(content)
         end
       end

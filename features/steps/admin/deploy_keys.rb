@@ -10,19 +10,8 @@ class Spinach::Features::AdminDeployKeys < Spinach::FeatureSteps
 
   step 'I should see all public deploy keys' do
     DeployKey.are_public.each do |p|
-      page.should have_content p.title
+      expect(page).to have_content p.title
     end
-  end
-
-  step 'I click on first deploy key' do
-    click_link DeployKey.are_public.first.title
-  end
-
-  step 'I should see deploy key details' do
-    deploy_key = DeployKey.are_public.first
-    current_path.should == admin_deploy_key_path(deploy_key)
-    page.should have_content(deploy_key.title)
-    page.should have_content(deploy_key.key)
   end
 
   step 'I visit admin deploy key page' do
@@ -44,11 +33,11 @@ class Spinach::Features::AdminDeployKeys < Spinach::FeatureSteps
   end
 
   step 'I should be on admin deploy keys page' do
-    current_path.should == admin_deploy_keys_path
+    expect(current_path).to eq admin_deploy_keys_path
   end
 
   step 'I should see newly created deploy key' do
-    page.should have_content(deploy_key.title)
+    expect(page).to have_content(deploy_key.title)
   end
 
   def deploy_key

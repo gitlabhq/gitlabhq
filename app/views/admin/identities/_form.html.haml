@@ -1,0 +1,20 @@
+= form_for [:admin, @user, @identity], html: { class: 'form-horizontal fieldset-form' } do |f|
+  - if @identity.errors.any?
+    #error_explanation
+      .alert.alert-danger
+        - @identity.errors.full_messages.each do |msg|
+          %p= msg
+
+  .form-group
+    = f.label :provider, class: 'control-label'
+    .col-sm-10
+      - values = Gitlab::OAuth::Provider.providers.map { |name| ["#{Gitlab::OAuth::Provider.label_for(name)} (#{name})", name] }
+      = f.select :provider, values, { allow_blank: false }, class: 'form-control'
+  .form-group
+    = f.label :extern_uid, "Identifier", class: 'control-label'
+    .col-sm-10
+      = f.text_field :extern_uid, class: 'form-control', required: true
+
+  .form-actions
+    = f.submit 'Save changes', class: "btn btn-save"
+

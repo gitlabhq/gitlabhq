@@ -1,6 +1,9 @@
 require 'spec_helper'
+require_relative 'import_spec_helper'
 
 describe Import::GoogleCodeController do
+  include ImportSpecHelper
+
   let(:user) { create(:user) }
   let(:dump_file) { fixture_file_upload(Rails.root + 'spec/fixtures/GoogleCodeProjectHosting.json', 'application/json') }
 
@@ -21,27 +24,37 @@ describe Import::GoogleCodeController do
   describe "GET status" do
     before do
       @repo = OpenStruct.new(name: 'vim')
-      controller.stub_chain(:client, :valid?).and_return(true)
+      stub_client(valid?: true)
     end
 
     it "assigns variables" do
       @project = create(:project, import_type: 'google_code', creator_id: user.id)
-      controller.stub_chain(:client, :repos).and_return([@repo])
+      stub_client(repos: [@repo], incompatible_repos: [])
 
       get :status
 
       expect(assigns(:already_added_projects)).to eq([@project])
       expect(assigns(:repos)).to eq([@repo])
+      expect(assigns(:incompatible_repos)).to eq([])
     end
 
     it "does not show already added project" do
       @project = create(:project, import_type: 'google_code', creator_id: user.id, import_source: 'vim')
-      controller.stub_chain(:client, :repos).and_return([@repo])
+      stub_client(repos: [@repo], incompatible_repos: [])
 
       get :status
 
       expect(assigns(:already_added_projects)).to eq([@project])
       expect(assigns(:repos)).to eq([])
+    end
+
+    it "does not show any invalid projects" do
+      stub_client(repos: [], incompatible_repos: [@repo])
+
+      get :status
+
+      expect(assigns(:repos)).to be_empty
+      expect(assigns(:incompatible_repos)).to eq([@repo])
     end
   end
 end

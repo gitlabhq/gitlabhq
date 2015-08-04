@@ -66,4 +66,3 @@ describe 'Gitlab::VersionInfo', no_db: true do
     it { expect(@unknown.to_s).to eq("Unknown") }
   end
 end
-

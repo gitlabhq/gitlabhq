@@ -4,8 +4,8 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
   include SharedProject
 
   step 'I click link "Fork"' do
-    page.should have_content "Shop"
-    page.should have_content "Fork"
+    expect(page).to have_content "Shop"
+    expect(page).to have_content "Fork"
     click_link "Fork"
   end
 
@@ -15,7 +15,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
   end
 
   step 'I should see the forked project page' do
-    page.should have_content "Project was successfully forked."
+    expect(page).to have_content "Project was successfully forked."
   end
 
   step 'I already have a project named "Shop" in my namespace' do
@@ -23,11 +23,11 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
   end
 
   step 'I should see a "Name has already been taken" warning' do
-    page.should have_content "Name has already been taken"
+    expect(page).to have_content "Name has already been taken"
   end
 
   step 'I fork to my namespace' do
-    within '.fork-namespaces' do
+    page.within '.fork-namespaces' do
       click_link current_user.name
     end
   end

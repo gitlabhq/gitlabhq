@@ -2,29 +2,38 @@ include ActionDispatch::TestProcess
 
 FactoryGirl.define do
   sequence :sentence, aliases: [:title, :content] do
-    Faker::Lorem.sentence
+    FFaker::Lorem.sentence
   end
 
   sequence :name do
-    Faker::Name.name
+    FFaker::Name.name
   end
 
   sequence :file_name do
-    Faker::Internet.user_name
+    FFaker::Internet.user_name
   end
 
-  sequence(:url) { Faker::Internet.uri('http') }
+  sequence(:url) { FFaker::Internet.uri('http') }
 
   factory :user, aliases: [:author, :assignee, :owner, :creator] do
-    email { Faker::Internet.email }
+    email { FFaker::Internet.email }
     name
-    sequence(:username) { |n| "#{Faker::Internet.user_name}#{n}" }
+    sequence(:username) { |n| "#{FFaker::Internet.user_name}#{n}" }
     password "12345678"
     confirmed_at { Time.now }
     confirmation_token { nil }
+    can_create_group true
 
     trait :admin do
       admin true
+    end
+
+    trait :two_factor do
+      before(:create) do |user|
+        user.two_factor_enabled = true
+        user.otp_secret = User.generate_otp_secret(32)
+        user.generate_otp_backup_codes!
+      end
     end
 
     factory :omniauth_user do
@@ -114,12 +123,12 @@ FactoryGirl.define do
   factory :email do
     user
     email do
-      Faker::Internet.email('alias')
+      FFaker::Internet.email('alias')
     end
 
     factory :another_email do
       email do
-        Faker::Internet.email('another.alias')
+        FFaker::Internet.email('another.alias')
       end
     end
   end

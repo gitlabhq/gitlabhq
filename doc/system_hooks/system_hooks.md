@@ -6,6 +6,12 @@ System hooks can be used, e.g. for logging or changing information in a LDAP ser
 
 ## Hooks request example
 
+**Request header**:
+
+```
+X-Gitlab-Event: System Hook
+```
+
 **Project created:**
 
 ```json

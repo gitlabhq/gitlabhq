@@ -10,7 +10,7 @@
 #     state: 'open' or 'closed' or 'all'
 #     group_id: integer
 #     project_id: integer
-#     milestone_id: integer
+#     milestone_title: string
 #     assignee_id: integer
 #     search: string
 #     label_name: string
@@ -23,10 +23,12 @@ class IssuableFinder
 
   attr_accessor :current_user, :params
 
-  def execute(current_user, params)
+  def initialize(current_user, params)
     @current_user = current_user
     @params = params
+  end
 
+  def execute
     items = init_collection
     items = by_scope(items)
     items = by_state(items)
@@ -38,6 +40,77 @@ class IssuableFinder
     items = by_author(items)
     items = by_label(items)
     items = sort(items)
+  end
+
+  def group
+    return @group if defined?(@group)
+
+    @group =
+      if params[:group_id].present?
+        Group.find(params[:group_id])
+      else
+        nil
+      end
+  end
+
+  def project
+    return @project if defined?(@project)
+
+    @project =
+      if params[:project_id].present?
+        Project.find(params[:project_id])
+      else
+        nil
+      end
+  end
+
+  def search
+    params[:search].presence
+  end
+
+  def milestones?
+    params[:milestone_title].present?
+  end
+
+  def milestones
+    return @milestones if defined?(@milestones)
+
+    @milestones =
+      if milestones? && params[:milestone_title] != Milestone::None.title
+        Milestone.where(title: params[:milestone_title])
+      else
+        nil
+      end
+  end
+
+  def assignee?
+    params[:assignee_id].present?
+  end
+
+  def assignee
+    return @assignee if defined?(@assignee)
+
+    @assignee =
+      if assignee? && params[:assignee_id] != NONE
+        User.find(params[:assignee_id])
+      else
+        nil
+      end
+  end
+
+  def author?
+    params[:author_id].present?
+  end
+
+  def author
+    return @author if defined?(@author)
+
+    @author =
+      if author? && params[:author_id] != NONE
+        User.find(params[:author_id])
+      else
+        nil
+      end
   end
 
   private
@@ -75,6 +148,8 @@ class IssuableFinder
     case params[:state]
     when 'closed'
       items.closed
+    when 'merged'
+      items.respond_to?(:merged) ? items.merged : items.closed
     when 'all'
       items
     when 'opened'
@@ -85,25 +160,19 @@ class IssuableFinder
   end
 
   def by_group(items)
-    if params[:group_id].present?
-      items = items.of_group(Group.find(params[:group_id]))
-    end
+    items = items.of_group(group) if group
 
     items
   end
 
   def by_project(items)
-    if params[:project_id].present?
-      items = items.of_projects(params[:project_id])
-    end
+    items = items.of_projects(project.id) if project
 
     items
   end
 
   def by_search(items)
-    if params[:search].present?
-      items = items.search(params[:search])
-    end
+    items = items.search(search) if search
 
     items
   end
@@ -113,24 +182,24 @@ class IssuableFinder
   end
 
   def by_milestone(items)
-    if params[:milestone_id].present?
-      items = items.where(milestone_id: (params[:milestone_id] == NONE ? nil : params[:milestone_id]))
+    if milestones?
+      items = items.where(milestone_id: milestones.try(:pluck, :id))
     end
 
     items
   end
 
   def by_assignee(items)
-    if params[:assignee_id].present?
-      items = items.where(assignee_id: (params[:assignee_id] == NONE ? nil : params[:assignee_id]))
+    if assignee?
+      items = items.where(assignee_id: assignee.try(:id))
     end
 
     items
   end
 
   def by_author(items)
-    if params[:author_id].present?
-      items = items.where(author_id: (params[:author_id] == NONE ? nil : params[:author_id]))
+    if author?
+      items = items.where(author_id: author.try(:id))
     end
 
     items
@@ -148,10 +217,6 @@ class IssuableFinder
     end
 
     items
-  end
-
-  def project
-    Project.where(id: params[:project_id]).first if params[:project_id].present?
   end
 
   def current_user_related?

@@ -31,3 +31,32 @@ git remote add gl git@gitlab.com:gitlab-org/gitlab-ce.git
 gpa
 ```
 
+# Yanking packages from packages.gitlab.com
+
+In case something went wrong with the release and there is a need to remove the packages you can yank the packages by following the
+procedure described in [package cloud documentation](https://packagecloud.io/docs#yank_pkg).
+
+You need to have:
+
+1. `package_cloud` gem installed (sudo gem install package_cloud)
+1. Email and password for packages.gitlab.com
+1. Make sure that you are supplying the url to packages.gitlab.com (default is packagecloud.io)
+
+Example of yanking a package:
+
+```bash
+package_cloud yank --url https://packages.gitlab.com gitlab/gitlab-ce/el/6 gitlab-ce-7.10.2~omnibus-1.x86_64.rpm
+```
+
+If you are attempting this for the first time the output will look something like:
+
+```bash
+Looking for repository at gitlab/gitlab-ce... No config file exists at /Users/marin/.packagecloud. Login to create one.
+Email:
+marin@gitlab.com
+Password:
+
+Got your token. Writing a config file to /Users/marin/.packagecloud... success!
+success!
+Attempting to yank package at gitlab/gitlab-ce/el/6/gitlab-ce-7.10.2~omnibus-1.x86_64.rpm...done!
+```

@@ -44,3 +44,9 @@ Feature: Search
     Then I should see "Foo" link in the search results
     And I should not see "Bar" link in the search results
 
+  Scenario: I should see Wiki blobs
+    And project has Wiki content
+    When I click project "Shop" link
+    And I search for "Wiki content"
+    And I click "Wiki" link
+    Then I should see "test_wiki" link in the search results

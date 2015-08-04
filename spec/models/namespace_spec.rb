@@ -53,7 +53,7 @@ describe Namespace do
   describe :move_dir do
     before do
       @namespace = create :namespace
-      @namespace.stub(path_changed?: true)
+      allow(@namespace).to receive(:path_changed?).and_return(true)
     end
 
     it "should raise error when directory exists" do
@@ -62,8 +62,8 @@ describe Namespace do
 
     it "should move dir if path changed" do
       new_path = @namespace.path + "_new"
-      @namespace.stub(path_was: @namespace.path)
-      @namespace.stub(path: new_path)
+      allow(@namespace).to receive(:path_was).and_return(@namespace.path)
+      allow(@namespace).to receive(:path).and_return(new_path)
       expect(@namespace.move_dir).to be_truthy
     end
   end

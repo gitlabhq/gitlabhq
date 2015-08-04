@@ -6,15 +6,14 @@ describe API::API, api: true  do
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
   let(:admin) { create(:admin) }
-  let(:project)       {
-    create(:project,        creator_id:   user.id,
-                            namespace:    user.namespace)
-  }
-  let(:project_user2) {
-    create(:project_member, user:         user2,
-                            project:      project,
-                            access_level: ProjectMember::GUEST)
-  }
+
+  let(:project) do
+    create(:project, creator_id: user.id, namespace: user.namespace)
+  end
+
+  let(:project_user2) do
+    create(:project_member, user: user2, project: project, access_level: ProjectMember::GUEST)
+  end
 
   describe 'POST /projects/fork/:id' do
     before { project_user2 }

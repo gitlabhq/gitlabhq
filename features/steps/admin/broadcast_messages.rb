@@ -8,7 +8,7 @@ class Spinach::Features::AdminBroadcastMessages < Spinach::FeatureSteps
   end
 
   step 'I should be all broadcast messages' do
-    page.should have_content "Migration to new server"
+    expect(page).to have_content "Migration to new server"
   end
 
   step 'submit form with new broadcast message' do
@@ -18,11 +18,11 @@ class Spinach::Features::AdminBroadcastMessages < Spinach::FeatureSteps
   end
 
   step 'I should be redirected to admin messages page' do
-    current_path.should == admin_broadcast_messages_path
+    expect(current_path).to eq admin_broadcast_messages_path
   end
 
   step 'I should see newly created broadcast message' do
-    page.should have_content 'Application update from 4:00 CST to 5:00 CST'
+    expect(page).to have_content 'Application update from 4:00 CST to 5:00 CST'
   end
 
   step 'submit form with new customized broadcast message' do
@@ -35,7 +35,7 @@ class Spinach::Features::AdminBroadcastMessages < Spinach::FeatureSteps
   end
 
   step 'I should see a customized broadcast message' do
-    page.should have_content 'Application update from 4:00 CST to 5:00 CST'
-    page.should have_selector %(div[style="background-color:#f2dede;color:#b94a48"])
+    expect(page).to have_content 'Application update from 4:00 CST to 5:00 CST'
+    expect(page).to have_selector %(div[style="background-color: #f2dede; color: #b94a48"])
   end
 end

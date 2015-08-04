@@ -19,11 +19,11 @@ class Spinach::Features::ProjectArchived < Spinach::FeatureSteps
   end
 
   step 'I should not see "Archived"' do
-    page.should_not have_content "Archived"
+    expect(page).not_to have_content "Archived"
   end
 
   step 'I should see "Archived"' do
-    page.should have_content "Archived"
+    expect(page).to have_content "Archived"
   end
 
   When 'I set project archived' do

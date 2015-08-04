@@ -1,0 +1,14 @@
+- page_title    @project.name_with_namespace
+- header_title  project_title(@project)
+- sidebar       "project" unless sidebar
+
+- content_for :scripts_body_top do
+  - if current_user
+    :javascript
+      window.project_uploads_path = "#{namespace_project_uploads_path @project.namespace, @project}";
+      window.markdown_preview_path = "#{markdown_preview_namespace_project_path(@project.namespace, @project)}";
+
+- content_for :scripts_body do
+  = render "layouts/init_auto_complete" if current_user
+
+= render template: "layouts/application"

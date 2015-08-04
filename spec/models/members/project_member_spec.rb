@@ -6,11 +6,15 @@
 #  access_level       :integer          not null
 #  source_id          :integer          not null
 #  source_type        :string(255)      not null
-#  user_id            :integer          not null
+#  user_id            :integer
 #  notification_level :integer          not null
 #  type               :string(255)
 #  created_at         :datetime
 #  updated_at         :datetime
+#  created_by_id      :integer
+#  invite_email       :string(255)
+#  invite_token       :string(255)
+#  invite_accepted_at :datetime
 #
 
 require 'spec_helper'
@@ -39,7 +43,7 @@ describe ProjectMember do
       it { expect(@project_2.users).to include(@user_1) }
       it { expect(@project_2.users).to include(@user_2) }
 
-      it { expect(@abilities.allowed?(@user_1, :write_project, @project_2)).to be_truthy }
+      it { expect(@abilities.allowed?(@user_1, :create_project, @project_2)).to be_truthy }
       it { expect(@abilities.allowed?(@user_2, :read_project, @project_2)).to be_truthy }
     end
 

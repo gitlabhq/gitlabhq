@@ -11,7 +11,9 @@ module Gitlab
 
       def execute
         #Issues && Comments
-        client.list_issues(project.import_source, state: :all).each do |issue|
+        client.list_issues(project.import_source, state: :all,
+                                                  sort: :created,
+                                                  direction: :asc).each do |issue|
           if issue.pull_request.nil?
 
             body = @formatter.author_line(issue.user.login, issue.body)

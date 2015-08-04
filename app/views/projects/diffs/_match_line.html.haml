@@ -1,7 +1,7 @@
-%td.old_line.diff-line-num.unfold.js-unfold{data: {linenumber: line_old},
- class: unfold_bottom_class(bottom)}
+%td.old_line.diff-line-num{data: {linenumber: line_old},
+ class: [unfold_bottom_class(bottom), unfold_class(!new_file)]}
   \...
-%td.new_line.diff-line-num.unfold.js-unfold{data: {linenumber: line_new},
- class: unfold_bottom_class(bottom)}
+%td.new_line.diff-line-num{data: {linenumber: line_new},
+ class: [unfold_bottom_class(bottom), unfold_class(!new_file)]}
   \...
 %td.line_content.matched= line

@@ -5,8 +5,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   # Authorize
   before_action :authorize_read_group!
   before_action :authorize_admin_group!, except: [:index, :leave]
-
-  layout :determine_layout
+  before_action :authorize_admin_group_member!, only: [:create, :resend_invite]
 
   def index
     @project = @group.projects.find(params[:project_id]) if params[:project_id]
@@ -30,6 +29,9 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   def update
     @member = @group.group_members.find(params[:id])
+
+    return render_403 unless can?(current_user, :update_group_member, @member)
+
     @member.update_attributes(member_params)
   end
 
@@ -68,7 +70,11 @@ class Groups::GroupMembersController < Groups::ApplicationController
       @group_member.destroy
       redirect_to(dashboard_groups_path, notice: "You left #{group.name} group.")
     else
-      return render_403
+      if @group.last_owner?(current_user)
+        redirect_to(dashboard_groups_path, alert: "You can not leave #{group.name} group because you're the last owner. Transfer or delete the group.")
+      else
+        return render_403
+      end
     end
   end
 

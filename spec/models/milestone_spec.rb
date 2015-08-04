@@ -21,11 +21,11 @@ describe Milestone do
     it { is_expected.to have_many(:issues) }
   end
 
-  describe "Mass assignment" do
-  end
-
   describe "Validation" do
-    before { subject.stub(set_iid: false) }
+    before do
+      allow(subject).to receive(:set_iid).and_return(false)
+    end
+
     it { is_expected.to validate_presence_of(:title) }
     it { is_expected.to validate_presence_of(:project) }
   end
@@ -47,7 +47,7 @@ describe Milestone do
 
     it "should recover from dividing by zero" do
       expect(milestone.issues).to receive(:count).and_return(0)
-      expect(milestone.percent_complete).to eq(100)
+      expect(milestone.percent_complete).to eq(0)
     end
   end
 
@@ -66,7 +66,7 @@ describe Milestone do
   describe :expired? do
     context "expired" do
       before do
-        milestone.stub(due_date: Date.today.prev_year)
+        allow(milestone).to receive(:due_date).and_return(Date.today.prev_year)
       end
 
       it { expect(milestone.expired?).to be_truthy }
@@ -74,7 +74,7 @@ describe Milestone do
 
     context "not expired" do
       before do
-        milestone.stub(due_date: Date.today.next_year)
+        allow(milestone).to receive(:due_date).and_return(Date.today.next_year)
       end
 
       it { expect(milestone.expired?).to be_falsey }
@@ -83,7 +83,7 @@ describe Milestone do
 
   describe :percent_complete do
     before do
-      milestone.stub(
+      allow(milestone).to receive_messages(
         closed_items_count: 3,
         total_items_count: 4
       )

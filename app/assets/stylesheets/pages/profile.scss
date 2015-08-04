@@ -17,79 +17,33 @@
   }
 }
 
-/*
- * Appearance settings
- *
- */
-.themes_opts {
-  label {
-    margin-right: 20px;
-    text-align: center;
-
-    .prev {
-      height: 80px;
-      width: 160px;
-      margin-bottom: 10px;
-      @include border-radius(4px);
-
-      &.classic {
-        background: #31363e;
-      }
-
-      &.default {
-        background: #888888;
-      }
-
-      &.modern {
-        background: #009871;
-      }
-
-      &.gray {
-        background: #373737;
-      }
-
-      &.violet {
-        background: #548;
-      }
-
-      &.blue {
-        background: #2980b9;
-      }
-    }
-  }
-}
-
-.code_highlight_opts {
-  margin-top: 10px;
-
-  label {
-    margin-right: 20px;
-    text-align: center;
-
-    .prev {
-      width: 160px;
-      margin-bottom: 10px;
-
-      img {
-        max-width: 100%;
-        @include border-radius(4px);
-      }
-    }
-  }
-}
-
 .oauth-buttons {
   .btn-group {
     margin-right: 10px;
   }
 
   .btn {
-    line-height: 36px;
-    height: 56px;
+    line-height: 40px;
+    height: 42px;
+    padding: 0px 12px;
 
     img {
       width: 32px;
       height: 32px;
+    }
+  }
+}
+
+// Profile > Account > Two Factor Authentication
+.two-factor-new {
+  .manual-instructions {
+    h3 {
+      margin-top: 0;
+    }
+
+    // Slightly increase the size of the details so they're easier to read
+    dl {
+      font-size: 1.1em;
     }
   }
 }

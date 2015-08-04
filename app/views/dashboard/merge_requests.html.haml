@@ -1,3 +1,4 @@
+- page_title "Merge Requests"
 %h3.page-title
   Merge Requests
 
@@ -6,5 +7,5 @@
   List all merge requests from all projects you have access to.
 %hr
 .append-bottom-20
-  = render 'shared/issuable_filter'
+  = render 'shared/issuable/filter', type: :merge_requests
 = render 'shared/merge_requests'

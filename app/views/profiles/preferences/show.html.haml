@@ -1,0 +1,50 @@
+- page_title 'Preferences'
+%h3.page-title
+  = page_title
+%p.light
+  These settings allow you to customize the appearance and behavior of the site.
+  They are saved with your account and will persist to any device you use to
+  access the site.
+%hr
+
+= form_for @user, url: profile_preferences_path, remote: true, method: :put, html: {class: 'js-preferences-form form-horizontal'} do |f|
+  .panel.panel-default.application-theme
+    .panel-heading
+      Application theme
+    .panel-body
+      - Gitlab::Themes.each do |theme|
+        = label_tag do
+          .preview{class: theme.css_class}
+          = f.radio_button :theme_id, theme.id
+          = theme.name
+
+  .panel.panel-default.syntax-theme
+    .panel-heading
+      Syntax highlighting theme
+    .panel-body
+      - color_schemes.each do |color_scheme_id, color_scheme|
+        = label_tag do
+          .preview= image_tag "#{color_scheme}-scheme-preview.png"
+          = f.radio_button :color_scheme_id, color_scheme_id
+          = color_scheme.tr('-_', ' ').titleize
+
+  .panel.panel-default
+    .panel-heading
+      Behavior
+    .panel-body
+      .form-group
+        = f.label :dashboard, class: 'control-label' do
+          Default Dashboard
+          = link_to('(?)', help_page_path('profile', 'preferences') + '#default-dashboard', target: '_blank')
+        .col-sm-10
+          = f.select :dashboard, dashboard_choices, {}, class: 'form-control'
+      .form-group
+        = f.label :project_view, class: 'control-label' do
+          Project view
+          = link_to('(?)', help_page_path('profile', 'preferences') + '#default-project-view', target: '_blank')
+        .col-sm-10
+          = f.select :project_view, project_view_choices, {}, class: 'form-control'
+          .help-block
+            Choose what content you want to see when visit project page
+    .panel-footer
+      = f.submit 'Save', class: 'btn btn-save'

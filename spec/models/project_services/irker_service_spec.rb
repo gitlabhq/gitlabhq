@@ -15,6 +15,7 @@
 #  issues_events         :boolean          default(TRUE)
 #  merge_requests_events :boolean          default(TRUE)
 #  tag_push_events       :boolean          default(TRUE)
+#  note_events           :boolean          default(TRUE), not null
 #
 
 require 'spec_helper'
@@ -23,8 +24,8 @@ require 'json'
 
 describe IrkerService do
   describe 'Associations' do
-    it { should belong_to :project }
-    it { should have_one :service_hook }
+    it { is_expected.to belong_to :project }
+    it { is_expected.to have_one :service_hook }
   end
 
   describe 'Validations' do
@@ -37,22 +38,6 @@ describe IrkerService do
       let(:_recipients) { nil }
       it { should validate_presence_of :recipients }
     end
-
-    context 'too many recipients' do
-      let(:_recipients) { 'a b c d' }
-      it 'should add an error if there is too many recipients' do
-        subject.send :check_recipients_count
-        subject.errors.should_not be_blank
-      end
-    end
-
-    context '3 recipients' do
-      let(:_recipients) { 'a b c' }
-      it 'should not add an error if there is 3 recipients' do
-        subject.send :check_recipients_count
-        subject.errors.should be_blank
-      end
-    end
   end
 
   describe 'Execute' do
@@ -61,26 +46,21 @@ describe IrkerService do
     let(:project) { create(:project) }
     let(:sample_data) { Gitlab::PushDataBuilder.build_sample(project, user) }
 
-    let(:recipients) { '#commits' }
+    let(:recipients) { '#commits irc://test.net/#test ftp://bad' }
     let(:colorize_messages) { '1' }
 
     before do
-      irker.stub(
+      allow(irker).to receive_messages(
         active: true,
         project: project,
         project_id: project.id,
         service_hook: true,
-        properties: {
-          'recipients' => recipients,
-          'colorize_messages' => colorize_messages
-        }
-      )
-      irker.settings = {
-        server_ip: 'localhost',
+        server_host: 'localhost',
         server_port: 6659,
-        max_channels: 3,
-        default_irc_uri: 'irc://chat.freenode.net/'
-      }
+        default_irc_uri: 'irc://chat.freenode.net/',
+        recipients: recipients,
+        colorize_messages: colorize_messages)
+
       irker.valid?
       @irker_server = TCPServer.new 'localhost', 6659
     end
@@ -95,12 +75,9 @@ describe IrkerService do
       conn = @irker_server.accept
       conn.readlines.each do |line|
         msg = JSON.load(line.chomp("\n"))
-        msg.keys.should match_array(['to', 'privmsg'])
-        if msg['to'].is_a?(String)
-          msg['to'].should == 'irc://chat.freenode.net/#commits'
-        else
-          msg['to'].should match_array(['irc://chat.freenode.net/#commits'])
-        end
+        expect(msg.keys).to match_array(['to', 'privmsg'])
+        expect(msg['to']).to match_array(["irc://chat.freenode.net/#commits",
+                                          "irc://test.net/#test"])
       end
       conn.close
     end

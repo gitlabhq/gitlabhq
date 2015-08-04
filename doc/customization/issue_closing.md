@@ -1,5 +1,7 @@
 # Issue closing pattern
 
+Here's how to close multiple issues in one commit message:
+
 If a commit message matches the regular expression below, all issues referenced from
 the matched text will be closed. This happens when the commit is pushed or merged
 into the default branch of a project.

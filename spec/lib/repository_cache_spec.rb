@@ -1,4 +1,3 @@
-require 'rspec'
 require_relative '../../lib/repository_cache'
 
 describe RepositoryCache do

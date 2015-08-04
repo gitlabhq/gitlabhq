@@ -1,5 +1,4 @@
-class Profiles::KeysController < ApplicationController
-  layout "profile"
+class Profiles::KeysController < Profiles::ApplicationController
   skip_before_action :authenticate_user!, only: [:get_keys]
 
   def index

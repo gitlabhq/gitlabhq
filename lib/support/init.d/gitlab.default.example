@@ -29,3 +29,8 @@ web_server_pid_path="$pid_path/unicorn.pid"
 # sidekiq_pid_path defines the path in which to create the pid file for sidekiq
 # The default is "$pid_path/sidekiq.pid"
 sidekiq_pid_path="$pid_path/sidekiq.pid"
+
+# shell_path defines the path of shell for "$app_user" in case you are using
+# shell other than "bash"
+# The default is "/bin/bash"
+shell_path="/bin/bash"

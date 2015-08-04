@@ -39,8 +39,10 @@ module Gitlab
       def prepare_satellite!(repo)
         project.satellite.clear_and_update!
 
-        repo.config['user.name'] = user.name
-        repo.config['user.email'] = user.email
+        if user
+          repo.config['user.name'] = user.name
+          repo.config['user.email'] = user.email
+        end
       end
 
       def default_options(options = {})

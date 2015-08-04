@@ -19,6 +19,10 @@
     }
   }
 
+  .referenced-users {
+    margin-right: 0;
+  }
+
   .issues-filters,
   .dash-projects-filters,
   .check-all-holder {
@@ -40,25 +44,37 @@
   .project-home-panel {
     padding-left: 0 !important;
 
-    .project-home-row {
-      .project-home-desc {
-        margin-right: 0 !important;
-        float: none !important;
-      }
+    .project-avatar {
+      display: block;
+    }
 
-      .project-repo-buttons {
-        position: static;
-        margin-top: 15px;
-        width: 100%;
-        float: none;
-        text-align: left;
-      }
+    .project-repo-buttons,
+    .git-clone-holder {
+      display: none;
     }
   }
 
-  .navbar-inner .title {
-    margin-left: 6px !important;
-    max-width: 70% !important;
+  .project-stats {
+    display: none;
+  }
+
+  .container .title {
+    padding-left: 15px !important;
+  }
+
+  .issue-info, .merge-request-info {
+    display: none;
+  }
+
+  .issue-details {
+    .creator,
+    .page-title .btn-close {
+      display: none;
+    }
+  }
+
+  %ul.notes .note-role, .note-actions {
+    display: none;
   }
 }
 

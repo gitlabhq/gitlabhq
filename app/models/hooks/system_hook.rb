@@ -13,6 +13,7 @@
 #  issues_events         :boolean          default(FALSE), not null
 #  merge_requests_events :boolean          default(FALSE), not null
 #  tag_push_events       :boolean          default(FALSE)
+#  note_events           :boolean          default(FALSE), not null
 #
 
 class SystemHook < WebHook

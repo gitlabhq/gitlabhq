@@ -8,7 +8,7 @@ describe Projects::TransferService do
   context 'namespace -> namespace' do
     before do
       group.add_owner(user)
-      @result = transfer_project(project, user, new_namespace_id: group.id)
+      @result = transfer_project(project, user, group)
     end
 
     it { expect(@result).to be_truthy }
@@ -17,25 +17,23 @@ describe Projects::TransferService do
 
   context 'namespace -> no namespace' do
     before do
-      @result = transfer_project(project, user, new_namespace_id: nil)
+      @result = transfer_project(project, user, nil)
     end
 
-    it { expect(@result).not_to be_nil } # { result.should be_false } passes on nil
-    it { expect(@result).to be_falsey }
+    it { expect(@result).to eq false }
     it { expect(project.namespace).to eq(user.namespace) }
   end
 
   context 'namespace -> not allowed namespace' do
     before do
-      @result = transfer_project(project, user, new_namespace_id: group.id)
+      @result = transfer_project(project, user, group)
     end
 
-    it { expect(@result).not_to be_nil } # { result.should be_false } passes on nil
-    it { expect(@result).to be_falsey }
+    it { expect(@result).to eq false }
     it { expect(project.namespace).to eq(user.namespace) }
   end
 
-  def transfer_project(project, user, params)
-    Projects::TransferService.new(project, user, params).execute
+  def transfer_project(project, user, new_namespace)
+    Projects::TransferService.new(project, user).execute(new_namespace)
   end
 end

@@ -1,6 +1,8 @@
-class @ZenMode
-  @fullscreen_prefix = 'fullscreen_'
+#= require dropzone
+#= require mousetrap
+#= require mousetrap/pause
 
+class @ZenMode
   constructor: ->
     @active_zen_area = null
     @active_checkbox = null
@@ -12,34 +14,31 @@ class @ZenMode
 
     $('body').on 'click', '.zen-enter-link', (e) =>
       e.preventDefault()
-      $(e.currentTarget).closest('.zennable').find('.zen-toggle-comment').prop('checked', true)
+      $(e.currentTarget).closest('.zennable').find('.zen-toggle-comment').prop('checked', true).change()
 
     $('body').on 'click', '.zen-leave-link', (e) =>
       e.preventDefault()
-      $(e.currentTarget).closest('.zennable').find('.zen-toggle-comment').prop('checked', false)
+      $(e.currentTarget).closest('.zennable').find('.zen-toggle-comment').prop('checked', false).change()
 
     $('body').on 'change', '.zen-toggle-comment', (e) =>
       checkbox = e.currentTarget
       if checkbox.checked
         # Disable other keyboard shortcuts in ZEN mode
         Mousetrap.pause()
-        @udpateActiveZenArea(checkbox)
+        @updateActiveZenArea(checkbox)
       else
         @exitZenMode()
 
     $(document).on 'keydown', (e) =>
-      if e.keyCode is $.ui.keyCode.ESCAPE
+      if e.keyCode is 27 # Esc
         @exitZenMode()
         e.preventDefault()
 
-    $(window).on 'hashchange', @updateZenModeFromLocationHash
-
-  udpateActiveZenArea: (checkbox) =>
+  updateActiveZenArea: (checkbox) =>
     @active_checkbox = $(checkbox)
     @active_checkbox.prop('checked', true)
     @active_zen_area = @active_checkbox.parent().find('textarea')
     @active_zen_area.focus()
-    window.location.hash = ZenMode.fullscreen_prefix + @active_checkbox.prop('id')
 
   exitZenMode: =>
     if @active_zen_area isnt null
@@ -47,21 +46,9 @@ class @ZenMode
       @active_checkbox.prop('checked', false)
       @active_zen_area = null
       @active_checkbox = null
-      window.location.hash = ''
-      window.scrollTo(window.pageXOffset, @scroll_position)
+      @restoreScroll(@scroll_position)
       # Enable dropzone when leaving ZEN mode
       Dropzone.forElement('.div-dropzone').enable()
 
-  checkboxFromLocationHash: (e) ->
-    id = $.trim(window.location.hash.replace('#' + ZenMode.fullscreen_prefix, ''))
-    if id
-      return $('.zennable input[type=checkbox]#' + id)[0]
-    else
-      return null
-
-  updateZenModeFromLocationHash: (e) =>
-    checkbox = @checkboxFromLocationHash()
-    if checkbox
-      @udpateActiveZenArea(checkbox)
-    else
-      @exitZenMode()
+  restoreScroll: (y) ->
+    window.scrollTo(window.pageXOffset, y)

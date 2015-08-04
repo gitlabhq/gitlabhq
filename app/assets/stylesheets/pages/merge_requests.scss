@@ -3,7 +3,7 @@
    * MR -> show: Automerge widget
  *
  */
-.automerge_widget {
+.mr-state-widget {
   form {
     margin-bottom: 0;
     .clearfix {
@@ -123,38 +123,31 @@
 
 .mr-state-widget {
   font-size: 13px;
-  background: #F9F9F9;
+  background: #FAFAFA;
   margin-bottom: 20px;
   color: #666;
-  border: 1px solid #EEE;
-  @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.09));
+  border: 1px solid #e5e5e5;
+  @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.05));
+  @include border-radius(3px);
 
   .ci_widget {
     padding: 10px 15px;
     font-size: 15px;
-    border-bottom: 1px solid #BBB;
-    color: #777;
-    background-color: $background-color;
+    border-bottom: 1px solid #EEE;
 
     &.ci-success {
       color: $gl-success;
-      border-color: $gl-success;
-      background-color: #F1FAF1;
     }
 
     &.ci-pending,
     &.ci-running {
       color: $gl-warning;
-      border-color: $gl-warning;
-      background-color: #FAF5F1;
     }
 
     &.ci-failed,
     &.ci-canceled,
     &.ci-error {
       color: $gl-danger;
-      border-color: $gl-danger;
-      background-color: #FAF1F1;
     }
   }
 
@@ -162,7 +155,8 @@
     padding: 10px 15px;
 
     h4 {
-      font-weight: normal;
+      font-weight: bold;
+      margin: 5px 0;
     }
 
     p:last-child {

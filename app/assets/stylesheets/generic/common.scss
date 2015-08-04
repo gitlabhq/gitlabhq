@@ -184,7 +184,7 @@ li.note {
   }
 }
 
-.supp_diff_link,
+.show-suppressed-diff,
 .show-all-commits {
   cursor: pointer;
 }
@@ -307,7 +307,7 @@ table {
 }
 
 .btn-sign-in {
-  margin-top: 5px;
+  margin-top: 7px;
   text-shadow: none;
 }
 
@@ -333,17 +333,8 @@ table {
 }
 
 .search_box {
-  position: relative;
-  padding: 30px;
+  @extend .well;
   text-align: center;
-  background-color: #F9F9F9;
-  border: 1px solid #DDDDDD;
-  border-radius: 0px;
-}
-
-.search_glyph {
-  color: #555;
-  font-size: 42px;
 }
 
 .task-status {
@@ -351,9 +342,8 @@ table {
 }
 
 #nprogress .spinner {
-  top: auto !important;
-  bottom: 20px !important;
-  left: 20px !important;
+  top: 15px !important;
+  right: 10px !important;
 }
 
 .header-with-avatar {
@@ -372,5 +362,14 @@ table {
     font-size: 16px;
     color: #666;
     margin-top: 8px;
+  }
+}
+
+.profiler-results {
+  top: 50px !important;
+
+  .profiler-button,
+  .profiler-controls {
+    border-color: #EEE !important;
   }
 }

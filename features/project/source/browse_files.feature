@@ -45,7 +45,7 @@ Feature: Project Source Browse Files
     Then I am redirected to the new file on new branch
     And I should see its new content
 
-  @javascript @tricky
+  @javascript
   Scenario: I can create file in empty repo
     Given I own an empty project
     And I visit my empty project page
@@ -158,3 +158,10 @@ Feature: Project Source Browse Files
     Given I visit project source page for "6d394385cf567f80a8fd85055db1ab4c5295806f"
     And I click on ".gitignore" file in repo
     Then I don't see the permalink link
+
+  @javascript
+  Scenario: I browse code with single quotes in the ref
+    Given I switch ref to 'test'
+    And I see the ref 'test' has been selected
+    And I visit the 'test' tree
+    Then I see the commit data

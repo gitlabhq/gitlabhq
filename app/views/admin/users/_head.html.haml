@@ -1,0 +1,23 @@
+%h3.page-title
+  = @user.name
+  - if @user.blocked?
+    %span.cred (Blocked)
+  - if @user.admin
+    %span.cred (Admin)
+
+  .pull-right
+    = link_to edit_admin_user_path(@user), class: "btn btn-grouped" do
+      %i.fa.fa-pencil-square-o
+      Edit
+%hr
+%ul.nav.nav-tabs
+  = nav_link(path: 'users#show') do
+    = link_to "Account", admin_user_path(@user)
+  = nav_link(path: 'users#groups') do
+    = link_to "Groups", groups_admin_user_path(@user)
+  = nav_link(path: 'users#projects') do
+    = link_to "Projects", projects_admin_user_path(@user)
+  = nav_link(path: 'users#keys') do
+    = link_to "SSH keys", keys_admin_user_path(@user)
+  = nav_link(controller: :identities) do
+    = link_to "Identities", admin_user_identities_path(@user)

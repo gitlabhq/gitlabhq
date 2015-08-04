@@ -1,6 +1,4 @@
 class Projects::AvatarsController < Projects::ApplicationController
-  layout 'project'
-
   before_action :project
 
   def show

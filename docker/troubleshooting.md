@@ -9,24 +9,19 @@ postgresql['log_directory'] = '/var/log/gitlab/postgresql'
 # Commands
 
 ```bash
-sudo docker build --tag gitlab_image docker/
+sudo docker build --tag gitlab/gitlab-ce:latest docker/
 
-sudo docker rm -f gitlab_app
-sudo docker rm -f gitlab_data
+sudo docker rm -f gitlab
 
-sudo docker run --name gitlab_data gitlab_image /bin/true
+sudo docker exec -it gitlab vim /etc/gitlab/gitlab.rb
 
-sudo docker run -ti --rm --volumes-from gitlab_data ubuntu apt-get update && sudo apt-get install -y vim && sudo vim /etc/gitlab/gitlab.rb
+sudo docker exec gitlab tail -f /var/log/gitlab/reconfigure.log
 
-sudo docker run --detach --name gitlab_app --publish 8080:80 --publish 2222:22 --volumes-from gitlab_data gitlab_image
+sudo docker exec gitlab tail -f /var/log/gitlab/postgresql/current
 
-sudo docker run -t --rm --volumes-from gitlab_data ubuntu tail -f /var/log/gitlab/reconfigure.log
+sudo docker exec gitlab cat /var/opt/gitlab/postgresql/data/postgresql.conf | grep shared_buffers
 
-sudo docker run -t --rm --volumes-from gitlab_data ubuntu tail -f /var/log/gitlab/postgresql/current
-
-sudo docker run -t --rm --volumes-from gitlab_data ubuntu cat /var/opt/gitlab/postgresql/data/postgresql.conf | grep shared_buffers
-
-sudo docker run -t --rm --volumes-from gitlab_data ubuntu cat /etc/gitlab/gitlab.rb
+sudo docker exec gitlab cat /etc/gitlab/gitlab.rb
 ```
 
 # Interactively
@@ -37,7 +32,16 @@ sudo docker run -t --rm --volumes-from gitlab_data ubuntu cat /etc/gitlab/gitlab
 # - we run interactively (-t -i)
 # - we define TERM=linux because it allows to use arrow keys in vi (!!!)
 # - we choose another startup command (bash)
-sudo docker run -ti -e TERM=linux --name gitlab_app --publish 8080:80 --publish 2222:22 --volumes-from gitlab_data gitlab_image bash
+sudo docker run --ti \
+    -e TERM=linux
+	--publish 80443:443 --publish 8080:80 --publish 2222:22 \
+	--name gitlab \
+	--restart always \
+	--volume /srv/gitlab/config:/etc/gitlab \
+	--volume /srv/gitlab/logs:/var/log/gitlab \
+	--volume /srv/gitlab/data:/var/opt/gitlab \
+	gitlab/gitlab-ce:latest \
+	bash
 
 # Configure GitLab to redirect PostgreSQL logs
 echo "postgresql['log_directory'] = '/var/log/gitlab/postgresql'" >> /etc/gitlab/gitlab.rb
@@ -61,3 +65,20 @@ head /proc/sys/kernel/shmmax /proc/sys/kernel/shmall
 free -m
 
 ```
+
+# Cleanup
+
+Remove ALL docker containers and images (also non GitLab ones).
+**Be careful, because the `-v` also removes volumes attached to the images.**
+
+```bash
+# Remove all containers with attached volumes
+docker rm -v $(docker ps -a -q)
+
+# Remove all images
+docker rmi $(docker images -q)
+
+# Remove GitLab persistent data
+rm -rf /srv/gitlab
+```
+

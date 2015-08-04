@@ -1,5 +1,18 @@
 # Project snippets
 
+### Snippet visibility level
+
+Snippets in GitLab can be either private, internal or public.
+You can set it with the `visibility_level` field in the snippet.
+
+Constants for snippet visibility levels are:
+
+| Visibility | visibility_level | Description |
+| ---------- | ---------------- | ----------- |
+| Private    | `0`  | The snippet is visible only the snippet creator |
+| Internal   | `10` | The snippet is visible for any logged in user |
+| Public     | `20` | The snippet can be accessed without any authentication |
+
 ## List snippets
 
 Get a list of project snippets.
@@ -58,6 +71,7 @@ Parameters:
 - `title` (required) - The title of a snippet
 - `file_name` (required) - The name of a snippet file
 - `code` (required) - The content of a snippet
+- `visibility_level` (required) - The snippet's visibility
 
 ## Update snippet
 
@@ -74,6 +88,7 @@ Parameters:
 - `title` (optional) - The title of a snippet
 - `file_name` (optional) - The name of a snippet file
 - `code` (optional) - The content of a snippet
+- `visibility_level` (optional) - The snippet's visibility
 
 ## Delete snippet
 

@@ -5,7 +5,7 @@ describe Gitlab::Shell do
   let(:gitlab_shell) { Gitlab::Shell.new }
 
   before do
-    Project.stub(find: project)
+    allow(Project).to receive(:find).and_return(project)
   end
 
   it { is_expected.to respond_to :add_key }

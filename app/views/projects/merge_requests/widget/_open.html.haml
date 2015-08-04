@@ -1,0 +1,29 @@
+.mr-state-widget
+  = render 'projects/merge_requests/widget/heading'
+  .mr-widget-body
+    - if @project.archived?
+      = render 'projects/merge_requests/widget/open/archived'
+    - elsif !@project.satellite.exists?
+      = render 'projects/merge_requests/widget/open/no_satellite'
+    - elsif @merge_request.commits.blank?
+      = render 'projects/merge_requests/widget/open/nothing'
+    - elsif @merge_request.branch_missing?
+      = render 'projects/merge_requests/widget/open/missing_branch'
+    - elsif @merge_request.unchecked?
+      = render 'projects/merge_requests/widget/open/check'
+    - elsif @merge_request.cannot_be_merged?
+      = render 'projects/merge_requests/widget/open/conflicts'
+    - elsif @merge_request.work_in_progress?
+      = render 'projects/merge_requests/widget/open/wip'
+    - elsif !@merge_request.can_be_merged_by?(current_user)
+      = render 'projects/merge_requests/widget/open/not_allowed'
+    - elsif @merge_request.can_be_merged?
+      = render 'projects/merge_requests/widget/open/accept'
+
+  - if @closes_issues.present?
+    .mr-widget-footer
+      %span
+        %i.fa.fa-check
+        Accepting this merge request will close #{@closes_issues.size == 1 ? 'issue' : 'issues'}
+        = succeed '.' do
+          != gfm(issues_sentence(@closes_issues))

@@ -1,5 +1,5 @@
 class Admin::UsersController < Admin::ApplicationController
-  before_action :user, only: [:show, :edit, :update, :destroy]
+  before_action :user, except: [:index, :new, :create]
 
   def index
     @users = User.order_name_asc.filter(params[:filter])
@@ -9,8 +9,17 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def show
+  end
+
+  def projects
     @personal_projects = user.personal_projects
     @joined_projects = user.projects.joined(@user)
+  end
+
+  def groups
+  end
+
+  def keys
     @keys = user.keys
   end
 
@@ -36,6 +45,20 @@ class Admin::UsersController < Admin::ApplicationController
     else
       redirect_to :back, alert: "Error occurred. User was not unblocked"
     end
+  end
+
+  def unlock
+    if user.unlock_access!
+      redirect_to :back, alert: "Successfully unlocked"
+    else
+      redirect_to :back, alert: "Error occurred. User was not unlocked"
+    end
+  end
+
+  def disable_two_factor
+    user.disable_two_factor!
+    redirect_to admin_user_path(user),
+      notice: 'Two-factor Authentication has been disabled for this user'
   end
 
   def create
@@ -86,11 +109,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def destroy
-    # 1. Remove groups where user is the only owner
-    user.solo_owned_groups.map(&:destroy)
-
-    # 2. Remove user with all authored content including personal projects
-    user.destroy
+    DeleteUserService.new(current_user).execute(user)
 
     respond_to do |format|
       format.html { redirect_to admin_users_path }
@@ -102,8 +121,7 @@ class Admin::UsersController < Admin::ApplicationController
     email = user.emails.find(params[:email_id])
     email.destroy
 
-    user.set_notification_email
-    user.save if user.notification_email_changed?
+    user.update_secondary_emails!
 
     respond_to do |format|
       format.html { redirect_to :back, notice: "Successfully removed email." }

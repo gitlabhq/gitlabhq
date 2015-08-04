@@ -3,7 +3,7 @@ class Spinach::Features::ProfileSshKeys < Spinach::FeatureSteps
 
   step 'I should see my ssh keys' do
     @user.keys.each do |key|
-      page.should have_content(key.title)
+      expect(page).to have_content(key.title)
     end
   end
 
@@ -19,9 +19,9 @@ class Spinach::Features::ProfileSshKeys < Spinach::FeatureSteps
 
   step 'I should see new ssh key "Laptop"' do
     key = Key.find_by(title: "Laptop")
-    page.should have_content(key.title)
-    page.should have_content(key.key)
-    current_path.should == profile_key_path(key)
+    expect(page).to have_content(key.title)
+    expect(page).to have_content(key.key)
+    expect(current_path).to eq profile_key_path(key)
   end
 
   step 'I click link "Work"' do
@@ -37,7 +37,7 @@ class Spinach::Features::ProfileSshKeys < Spinach::FeatureSteps
   end
 
   step 'I should not see "Work" ssh key' do
-    page.should_not have_content "Work"
+    expect(page).not_to have_content "Work"
   end
 
   step 'I have ssh key "ssh-rsa Work"' do

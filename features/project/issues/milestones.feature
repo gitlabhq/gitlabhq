@@ -17,6 +17,10 @@ Feature: Project Issues Milestones
     And I submit new milestone "v2.3"
     Then I should see milestone "v2.3"
 
+  Scenario: I delete new milestone
+    Given I click link to remove milestone "v2.2"
+    And I should see no milestones
+
   @javascript
   Scenario: Listing closed issues
     Given the milestone has open and closed issues

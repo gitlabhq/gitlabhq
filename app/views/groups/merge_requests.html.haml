@@ -1,3 +1,4 @@
+- page_title "Merge Requests"
 %h3.page-title
   Merge Requests
 
@@ -9,5 +10,5 @@
     To see all merge requests you should visit #{link_to 'dashboard', merge_requests_dashboard_path} page.
 %hr
 .append-bottom-20
-  = render 'shared/issuable_filter'
+  = render 'shared/issuable/filter', type: :merge_requests
 = render 'shared/merge_requests'

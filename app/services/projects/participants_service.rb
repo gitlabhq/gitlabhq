@@ -38,13 +38,13 @@ module Projects
     def groups
       current_user.authorized_groups.sort_by(&:path).map do |group| 
         count = group.users.count
-        { username: group.path, name: "#{group.name} (#{count})" }
+        { username: group.path, name: group.name, count: count }
       end
     end
 
     def all_members
       count = project.team.members.flatten.count
-      [{ username: "all", name: "All Project and Group Members (#{count})" }]
+      [{ username: "all", name: "All Project and Group Members", count: count }]
     end
   end
 end

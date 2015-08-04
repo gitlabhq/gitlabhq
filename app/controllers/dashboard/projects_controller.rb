@@ -1,4 +1,4 @@
-class Dashboard::ProjectsController < ApplicationController
+class Dashboard::ProjectsController < Dashboard::ApplicationController
   before_action :event_filter
 
   def starred

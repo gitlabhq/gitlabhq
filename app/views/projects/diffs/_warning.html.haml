@@ -1,9 +1,9 @@
 .alert.alert-warning
   %h4
-    Too many changes.
+    Too many changes to show.
     .pull-right
       - unless diff_hard_limit_enabled?
-        = link_to "Reload with full diff", url_for(params.merge(force_show_diff: true)), class: "btn btn-sm btn-warning"
+        = link_to "Reload with full diff", url_for(params.merge(force_show_diff: true, format: :html)), class: "btn btn-sm btn-warning"
 
       - if current_controller?(:commit) or current_controller?(:merge_requests)
         - if current_controller?(:commit)
@@ -14,6 +14,6 @@
           = link_to "Email patch", merge_request_path(@merge_request, format: :patch), class: "btn btn-warning btn-sm"
   %p
     To preserve performance only
-    %strong #{allowed_diff_size} of #{diffs.size}
+    %strong #{shown_files_count} of #{diffs.size}
     files are displayed.
 
