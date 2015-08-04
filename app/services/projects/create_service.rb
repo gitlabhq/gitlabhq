@@ -85,6 +85,8 @@ module Projects
 
       @project.create_wiki if @project.wiki_enabled?
 
+      @project.build_missing_services
+
       event_service.create_project(@project, current_user)
       system_hook_service.execute_hooks_for(@project, :create)
 

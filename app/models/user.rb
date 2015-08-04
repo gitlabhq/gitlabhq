@@ -57,6 +57,7 @@
 #  otp_backup_codes              :text
 #  public_email                  :string(255)      default(""), not null
 #  dashboard                     :integer          default(0)
+#  project_view                  :integer          default(0)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -272,6 +273,10 @@ class User < ActiveRecord::Base
     def by_login(login)
       where('lower(username) = :value OR lower(email) = :value',
             value: login.to_s.downcase).first
+    end
+
+    def find_by_username!(username)
+      find_by!('lower(username) = ?', username.downcase)
     end
 
     def by_username_or_id(name_or_id)

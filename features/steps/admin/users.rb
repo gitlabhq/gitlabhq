@@ -3,6 +3,14 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   include SharedPaths
   include SharedAdmin
 
+  before do
+    allow(Devise).to receive(:omniauth_providers).and_return([:twitter, :twitter_updated])
+  end
+
+  after do
+    allow(Devise).to receive(:omniauth_providers).and_call_original
+  end
+
   step 'I should see all users' do
     User.all.each do |user|
       expect(page).to have_content user.name
@@ -121,7 +129,6 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   end
 
   step 'I visit "Pete" identities page in admin' do
-    allow(Gitlab::OAuth::Provider).to receive(:names).and_return(%w(twitter twitter_updated))
     visit admin_user_identities_path(@user)
   end
 

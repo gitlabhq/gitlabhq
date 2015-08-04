@@ -11,9 +11,11 @@
 - if @logs.present?
   :plain
     var current_url = location.href.replace(/\/?$/, '/');
-    var log_url = '#{namespace_project_tree_url(@project.namespace, @project, tree_join(@ref, @path || '/'))}'.replace(/\/?$/, '/');
+    var log_url = "#{escape_javascript(@log_url)}".replace(/\/?$/, '/');
+
     if(current_url == log_url) {
-      // Load 10 more commit log for each file in tree
+      // Load more commit logs for each file in tree
       // if we still on the same page
-      ajaxGet('#{logs_file_namespace_project_ref_path(@project.namespace, @project, @ref, @path || '', offset: (@offset +  @limit))}');
+      var url = "#{escape_javascript(@more_log_url)}";
+      ajaxGet(url);
     }

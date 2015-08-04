@@ -65,6 +65,7 @@ describe Gitlab::GoogleCodeImport::Importer do
       expect(issue.description).to include('all the best!')
       expect(issue.description).to include('[tint2_task_scrolling.diff](https://storage.googleapis.com/google-code-attachments/tint2/issue-169/comment-0/tint2_task_scrolling.diff)')
       expect(issue.description).to include('![screenshot.png](https://storage.googleapis.com/google-code-attachments/tint2/issue-169/comment-0/screenshot.png)')
+      expect(issue.description).to include('![screenshot1.PNG](https://storage.googleapis.com/google-code-attachments/tint2/issue-169/comment-0/screenshot1.PNG)')
     end
 
     it "imports issue comments" do

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe "Admin::Projects", feature: true  do
+  include AccessMatchers
+
   describe "GET /admin/projects" do
     subject { admin_namespaces_projects_path }
 

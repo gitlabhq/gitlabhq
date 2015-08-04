@@ -6,6 +6,7 @@ describe API::API, api: true  do
   let(:user)  { create(:user) }
   let(:admin) { create(:admin) }
   let(:key)   { create(:key, user: user) }
+  let(:email)   { create(:email, user: user) }
 
   describe "GET /users" do
     context "when unauthenticated" do
@@ -384,6 +385,87 @@ describe API::API, api: true  do
     end
   end
 
+  describe "POST /users/:id/emails" do
+    before { admin }
+
+    it "should not create invalid email" do
+      post api("/users/#{user.id}/emails", admin), {}
+      expect(response.status).to eq(400)
+      expect(json_response['message']).to eq('400 (Bad request) "email" not given')
+    end
+
+    it "should create email" do
+      email_attrs = attributes_for :email
+      expect do
+        post api("/users/#{user.id}/emails", admin), email_attrs
+      end.to change{ user.emails.count }.by(1)
+    end
+  end
+
+  describe 'GET /user/:uid/emails' do
+    before { admin }
+
+    context 'when unauthenticated' do
+      it 'should return authentication error' do
+        get api("/users/#{user.id}/emails")
+        expect(response.status).to eq(401)
+      end
+    end
+
+    context 'when authenticated' do
+      it 'should return 404 for non-existing user' do
+        get api('/users/999999/emails', admin)
+        expect(response.status).to eq(404)
+        expect(json_response['message']).to eq('404 User Not Found')
+      end
+
+      it 'should return array of emails' do
+        user.emails << email
+        user.save
+        get api("/users/#{user.id}/emails", admin)
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first['email']).to eq(email.email)
+      end
+    end
+  end
+
+  describe 'DELETE /user/:uid/emails/:id' do
+    before { admin }
+
+    context 'when unauthenticated' do
+      it 'should return authentication error' do
+        delete api("/users/#{user.id}/emails/42")
+        expect(response.status).to eq(401)
+      end
+    end
+
+    context 'when authenticated' do
+      it 'should delete existing email' do
+        user.emails << email
+        user.save
+        expect do
+          delete api("/users/#{user.id}/emails/#{email.id}", admin)
+        end.to change { user.emails.count }.by(-1)
+        expect(response.status).to eq(200)
+      end
+
+      it 'should return 404 error if user not found' do
+        user.emails << email
+        user.save
+        delete api("/users/999999/emails/#{email.id}", admin)
+        expect(response.status).to eq(404)
+        expect(json_response['message']).to eq('404 User Not Found')
+      end
+
+      it 'should return 404 error if email not foud' do
+        delete api("/users/#{user.id}/emails/42", admin)
+        expect(response.status).to eq(404)
+        expect(json_response['message']).to eq('404 Email Not Found')
+      end
+    end
+  end
+
   describe "DELETE /users/:id" do
     before { admin }
 
@@ -524,6 +606,95 @@ describe API::API, api: true  do
       user.keys << key
       user.save
       delete api("/user/keys/#{key.id}")
+      expect(response.status).to eq(401)
+    end
+  end
+
+  describe "GET /user/emails" do
+    context "when unauthenticated" do
+      it "should return authentication error" do
+        get api("/user/emails")
+        expect(response.status).to eq(401)
+      end
+    end
+
+    context "when authenticated" do
+      it "should return array of emails" do
+        user.emails << email
+        user.save
+        get api("/user/emails", user)
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first["email"]).to eq(email.email)
+      end
+    end
+  end
+
+  describe "GET /user/emails/:id" do
+    it "should return single email" do
+      user.emails << email
+      user.save
+      get api("/user/emails/#{email.id}", user)
+      expect(response.status).to eq(200)
+      expect(json_response["email"]).to eq(email.email)
+    end
+
+    it "should return 404 Not Found within invalid ID" do
+      get api("/user/emails/42", user)
+      expect(response.status).to eq(404)
+      expect(json_response['message']).to eq('404 Not found')
+    end
+
+    it "should return 404 error if admin accesses user's email" do
+      user.emails << email
+      user.save
+      admin
+      get api("/user/emails/#{email.id}", admin)
+      expect(response.status).to eq(404)
+      expect(json_response['message']).to eq('404 Not found')
+    end
+  end
+
+  describe "POST /user/emails" do
+    it "should create email" do
+      email_attrs = attributes_for :email
+      expect do
+        post api("/user/emails", user), email_attrs
+      end.to change{ user.emails.count }.by(1)
+      expect(response.status).to eq(201)
+    end
+
+    it "should return a 401 error if unauthorized" do
+      post api("/user/emails"), email: 'some email'
+      expect(response.status).to eq(401)
+    end
+
+    it "should not create email with invalid email" do
+      post api("/user/emails", user), {}
+      expect(response.status).to eq(400)
+      expect(json_response['message']).to eq('400 (Bad request) "email" not given')
+    end
+  end
+
+  describe "DELETE /user/emails/:id" do
+    it "should delete existed email" do
+      user.emails << email
+      user.save
+      expect do
+        delete api("/user/emails/#{email.id}", user)
+      end.to change{user.emails.count}.by(-1)
+      expect(response.status).to eq(200)
+    end
+
+    it "should return success if email ID not found" do
+      delete api("/user/emails/42", user)
+      expect(response.status).to eq(200)
+    end
+
+    it "should return 401 error if unauthorized" do
+      user.emails << email
+      user.save
+      delete api("/user/emails/#{email.id}")
       expect(response.status).to eq(401)
     end
   end

@@ -57,6 +57,7 @@
 #  otp_backup_codes              :text
 #  public_email                  :string(255)      default(""), not null
 #  dashboard                     :integer          default(0)
+#  project_view                  :integer          default(0)
 #
 
 require 'spec_helper'
@@ -439,6 +440,18 @@ describe User do
       expect(User.by_login(username)).to eq user
       expect(User.by_login(nil)).to be_nil
       expect(User.by_login('')).to be_nil
+    end
+  end
+
+  describe '.find_by_username!' do
+    it 'raises RecordNotFound' do
+      expect { described_class.find_by_username!('JohnDoe') }.
+        to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it 'is case-insensitive' do
+      user = create(:user, username: 'JohnDoe')
+      expect(described_class.find_by_username!('JOHNDOE')).to eq user
     end
   end
 

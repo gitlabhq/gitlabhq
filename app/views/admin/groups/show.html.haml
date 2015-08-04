@@ -51,21 +51,22 @@
         = paginate @projects, param_name: 'projects_page', theme: 'gitlab'
 
   .col-md-6
-    .panel.panel-default
-      .panel-heading
-        Add user(s) to the group:
-      .panel-body.form-holder
-        %p.light
-          Read more about project permissions
-          %strong= link_to "here", help_page_path("permissions", "permissions"), class: "vlink"
+    - if can?(current_user, :admin_group_member, @group)
+      .panel.panel-default
+        .panel-heading
+          Add user(s) to the group:
+        .panel-body.form-holder
+          %p.light
+            Read more about project permissions
+            %strong= link_to "here", help_page_path("permissions", "permissions"), class: "vlink"
 
-        = form_tag members_update_admin_group_path(@group), id: "new_project_member", class: "bulk_import", method: :put  do
-          %div
-            = users_select_tag(:user_ids, multiple: true, email_user: true, scope: :all)
-          %div.prepend-top-10
-            = select_tag :access_level, options_for_select(GroupMember.access_level_roles), class: "project-access-select select2"
-          %hr
-          = button_tag 'Add users to group', class: "btn btn-create"
+          = form_tag members_update_admin_group_path(@group), id: "new_project_member", class: "bulk_import", method: :put  do
+            %div
+              = users_select_tag(:user_ids, multiple: true, email_user: true, scope: :all)
+            %div.prepend-top-10
+              = select_tag :access_level, options_for_select(GroupMember.access_level_roles), class: "project-access-select select2"
+            %hr
+            = button_tag 'Add users to group', class: "btn btn-create"
     .panel.panel-default
       .panel-heading
         %h3.panel-title
@@ -86,7 +87,8 @@
                 (invited)
             %span.pull-right.light
               = member.human_access
-              = link_to group_group_member_path(@group, member), data: { confirm: remove_user_from_group_message(@group, member) }, method: :delete, remote: true, class: "btn-xs btn btn-remove", title: 'Remove user from group' do
-                %i.fa.fa-minus.fa-inverse
+              - if can?(current_user, :destroy_group_member, member)
+                = link_to group_group_member_path(@group, member), data: { confirm: remove_user_from_group_message(@group, member) }, method: :delete, remote: true, class: "btn-xs btn btn-remove", title: 'Remove user from group' do
+                  %i.fa.fa-minus.fa-inverse
       .panel-footer
         = paginate @members, param_name: 'members_page', theme: 'gitlab'

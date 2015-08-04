@@ -1,14 +1,12 @@
 # How to create a project in GitLab
 
-## Create a project
+To create a new project, sign in to GitLab.
 
-* Sign in to [GitLab.com](https://gitlab.com)
-
-* Go to your Dashboard and click on "new project" on the right side of your screen
+Go to your Dashboard and click on "new project" on the right side of your screen.
 
 ![Create a project](basicsimages/new_project.png)
 
-* Fill out the required information
+Fill out the required information:
 
 1. Project path or the name of your project (you can't add spaces, so you can use hyphens or underscores)
 

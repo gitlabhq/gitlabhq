@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
   prepend_before_filter :render_go_import, only: [:show]
-  skip_before_action :authenticate_user!, only: [:show]
+  skip_before_action :authenticate_user!, only: [:show, :activity]
   before_action :project, except: [:new, :create]
   before_action :repository, except: [:new, :create]
 
@@ -24,7 +24,7 @@ class ProjectsController < ApplicationController
     if @project.saved?
       redirect_to(
         project_path(@project),
-        notice: 'Project was successfully created.'
+        notice: "Project '#{@project.name}' was successfully created."
       )
     else
       render 'new'
@@ -36,11 +36,11 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       if status
-        flash[:notice] = 'Project was successfully updated.'
+        flash[:notice] = "Project '#{@project.name}' was successfully updated."
         format.html do
           redirect_to(
             edit_project_path(@project),
-            notice: 'Project was successfully updated.'
+            notice: "Project '#{@project.name}' was successfully updated."
           )
         end
         format.js
@@ -100,7 +100,7 @@ class ProjectsController < ApplicationController
     return access_denied! unless can?(current_user, :remove_project, @project)
 
     ::Projects::DestroyService.new(@project, current_user, {}).execute
-    flash[:alert] = 'Project deleted.'
+    flash[:alert] = "Project '#{@project.name}' was deleted."
 
     if request.referer.include?('/admin')
       redirect_to admin_namespaces_projects_path

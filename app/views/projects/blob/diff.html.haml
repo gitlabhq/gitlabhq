@@ -11,7 +11,7 @@
       %td.old_line.diff-line-num{data: {linenumber: line_old}}
         = link_to raw(line_old), "#"
       %td.new_line= link_to raw(line_new) , "#"
-      %td.line_content.noteable_line= line
+      %td.line_content.noteable_line= ' ' * @form.indent + line
 
   - if @form.unfold? && @form.bottom? && @form.to < @blob.loc
     %tr.line_holder{ id: @form.to }

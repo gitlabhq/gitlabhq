@@ -38,7 +38,7 @@ gem "browser", '~> 0.8.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 7.2.5'
+gem "gitlab_git", '~> 7.2.6'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 # GitLab fork with a lot of changes (improved thread-safety, better memory usage etc)
@@ -46,7 +46,7 @@ gem "gitlab_git", '~> 7.2.5'
 gem 'gitlab-grack', '~> 2.0.2', require: 'grack'
 
 # LDAP Auth
-# GitLab fork with several improvements to original library. For full list of changes 
+# GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
 gem 'gitlab_omniauth-ldap', '1.2.1', require: "omniauth-ldap"
 
@@ -54,9 +54,9 @@ gem 'gitlab_omniauth-ldap', '1.2.1', require: "omniauth-ldap"
 gem 'gollum-lib', '~> 4.0.2'
 
 # Language detection
-# GitLab fork of linguist does not require pygments/python dependency. 
-# New version of original gem also dropped pygments support but it has strict 
-# dependency to unstable rugged version. We have internal issue for replacing 
+# GitLab fork of linguist does not require pygments/python dependency.
+# New version of original gem also dropped pygments support but it has strict
+# dependency to unstable rugged version. We have internal issue for replacing
 # fork with original gem when we meet on same rugged version - https://dev.gitlab.org/gitlab/gitlabhq/issues/2052.
 gem "gitlab-linguist", "~> 3.0.1", require: "linguist"
 
@@ -227,7 +227,7 @@ end
 
 group :development, :test do
   gem 'awesome_print'
-  gem 'byebug'
+  gem 'byebug', platform: :mri
   gem 'fuubar', '~> 2.0.0'
   gem 'pry-rails'
 
@@ -272,4 +272,3 @@ end
 gem "newrelic_rpm"
 
 gem 'octokit', '3.7.0'
-gem "rugments", "~> 1.0.0.beta8"

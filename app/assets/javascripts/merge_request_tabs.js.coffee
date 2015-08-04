@@ -49,12 +49,6 @@ class @MergeRequestTabs
     # Store the `location` object, allowing for easier stubbing in tests
     @_location = location
 
-    switch @opts.action
-      when 'commits'
-        @commitsLoaded = true
-      when 'diffs'
-        @diffsLoaded = true
-
     @bindEvents()
     @activateTab(@opts.action)
 
@@ -102,7 +96,7 @@ class @MergeRequestTabs
     action = 'notes' if action == 'show'
 
     # Remove a trailing '/commits' or '/diffs'
-    new_state = @_location.pathname.replace(/\/(commits|diffs)\/?$/, '')
+    new_state = @_location.pathname.replace(/\/(commits|diffs)(\.html)?\/?$/, '')
 
     # Append the new action if we're on a tab other than 'notes'
     unless action == 'notes'
@@ -133,7 +127,7 @@ class @MergeRequestTabs
     return if @diffsLoaded
 
     @_get
-      url: "#{source}.json"
+      url: "#{source}.json" + @_location.search
       success: (data) =>
         document.getElementById('diffs').innerHTML = data.html
         @diffsLoaded = true

@@ -6,6 +6,10 @@ module API
 
     class UserBasic < UserSafe
       expose :id, :state, :avatar_url
+
+      expose :web_url do |user, options|
+        Rails.application.routes.url_helpers.user_url(user)
+      end
     end
 
     class User < UserBasic
@@ -29,6 +33,10 @@ module API
 
     class UserLogin < UserFull
       expose :private_token
+    end
+
+    class Email < Grape::Entity
+      expose :id, :email
     end
 
     class Hook < Grape::Entity
@@ -59,6 +67,7 @@ module API
       expose :namespace
       expose :forked_from_project, using: Entities::ForkedFromProject, if: lambda{ | project, options | project.forked? }
       expose :avatar_url
+      expose :star_count, :forks_count
     end
 
     class ProjectMember < UserBasic
@@ -69,6 +78,11 @@ module API
 
     class Group < Grape::Entity
       expose :id, :name, :path, :description
+      expose :avatar_url
+
+      expose :web_url do |group, options|
+        Rails.application.routes.url_helpers.group_url(group)
+      end
     end
 
     class GroupDetail < Group
@@ -171,6 +185,7 @@ module API
       expose :source_project_id, :target_project_id
       expose :label_names, as: :labels
       expose :description
+      expose :work_in_progress?, as: :work_in_progress
       expose :milestone, using: Entities::Milestone
     end
 

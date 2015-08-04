@@ -1,6 +1,6 @@
 module BlobHelper
   def highlight(blob_name, blob_content, nowrap: false, continue: false)
-    @formatter ||= Rugments::Formatters::HTML.new(
+    @formatter ||= Rouge::Formatters::HTMLGitlab.new(
       nowrap: nowrap,
       cssclass: 'code highlight',
       lineanchors: true,
@@ -8,11 +8,11 @@ module BlobHelper
     )
 
     begin
-      @lexer ||= Rugments::Lexer.guess(filename: blob_name, source: blob_content).new
+      @lexer ||= Rouge::Lexer.guess(filename: blob_name, source: blob_content).new
       result = @formatter.format(@lexer.lex(blob_content, continue: continue)).html_safe
     rescue
-      lexer = Rugments::Lexers::PlainText
-      result = @formatter.format(lexer.lex(blob_content)).html_safe
+      @lexer = Rouge::Lexers::PlainText
+      result = @formatter.format(@lexer.lex(blob_content)).html_safe
     end
 
     result

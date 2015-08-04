@@ -20,5 +20,11 @@ module MergeRequests
         merge_request.project.execute_services(merge_data, :merge_request_hooks)
       end
     end
+
+    private
+
+    def filter_params
+      super(:merge_request)
+    end
   end
 end

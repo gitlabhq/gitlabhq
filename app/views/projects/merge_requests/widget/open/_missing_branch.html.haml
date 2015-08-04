@@ -6,9 +6,11 @@
     %span.label.label-inverse= @merge_request.source_branch
     does not exist in
     %span.label.label-info= @merge_request.source_project_path
+    %br
+    %strong Please close this merge request and open a new merge request to change source branches.
   - else
     %span.label.label-inverse= @merge_request.target_branch
     does not exist in
     %span.label.label-info= @merge_request.target_project_path
-  %br
-  %strong Please close this merge request or change branches with existing one
+    %br
+    %strong Please close this merge request or change to another target branch.

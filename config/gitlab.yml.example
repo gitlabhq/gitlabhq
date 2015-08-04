@@ -209,20 +209,29 @@ production: &base
     # arguments, followed by optional 'args' which can be either a hash or an array.
     # Documentation for this is available at http://doc.gitlab.com/ce/integration/omniauth.html
     providers:
-      # - { name: 'google_oauth2', app_id: 'YOUR_APP_ID',
+      # - { name: 'google_oauth2', 
+      #     label: 'Google',
+      #     app_id: 'YOUR_APP_ID', 
       #     app_secret: 'YOUR_APP_SECRET',
       #     args: { access_type: 'offline', approval_prompt: '' } }
-      # - { name: 'twitter', app_id: 'YOUR_APP_ID',
-      #     app_secret: 'YOUR_APP_SECRET'}
-      # - { name: 'github', app_id: 'YOUR_APP_ID',
+      # - { name: 'twitter', 
+      #     app_id: 'YOUR_APP_ID', 
+      #     app_secret: 'YOUR_APP_SECRET' }
+      # - { name: 'github', 
+      #     label: 'GitHub',
+      #     app_id: 'YOUR_APP_ID', 
       #     app_secret: 'YOUR_APP_SECRET',
       #     args: { scope: 'user:email' } }
-      # - { name: 'gitlab', app_id: 'YOUR_APP_ID',
+      # - { name: 'gitlab', 
+      #     label: 'GitLab.com',
+      #     app_id: 'YOUR_APP_ID', 
       #     app_secret: 'YOUR_APP_SECRET',
       #     args: { scope: 'api' } }
-      # - { name: 'bitbucket', app_id: 'YOUR_APP_ID',
-      #     app_secret: 'YOUR_APP_SECRET'}
-      # - { name: 'saml',
+      # - { name: 'bitbucket', 
+      #     app_id: 'YOUR_APP_ID', 
+      #     app_secret: 'YOUR_APP_SECRET' }
+      # - { name: 'saml', 
+      #     label: 'Our SAML Provider',
       #     args: {
       #             assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
       #             idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
@@ -247,6 +256,7 @@ production: &base
   ## Backup settings
   backup:
     path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
+    # archive_permissions: 0640 # Permissions for the resulting backup.tar file (default: 0600)
     # keep_time: 604800   # default: 0 (forever) (in seconds)
     # upload:
     #   # Fog storage connection settings, see http://fog.io/storage/ .
@@ -338,6 +348,8 @@ test:
     # user: YOUR_USERNAME
   satellites:
     path: tmp/tests/gitlab-satellites/
+  backup:
+    path: tmp/tests/backups
   gitlab_shell:
     path: tmp/tests/gitlab-shell/
     repos_path: tmp/tests/repositories/

@@ -4,34 +4,34 @@ You need to connect your computer to your GitLab account through SSH Keys. They 
 
 ## Generate your SSH Key
 
-* Create an account on GitLab. Sign up and check your email for your confirmation link
+Create an account on GitLab. Sign up and check your email for your confirmation link.
 
-* After you confirm, go to [GitLab.com](https://about.gitlab.com/) and sign in to your account
+After you confirm, go to GitLab and sign in to your account.
 
 ## Add your SSH Key
 
-* At the top right corner, click on "profile settings"
+At the top right corner, click on "profile settings":
 
 ![profile settings](basicsimages/profile_settings.png)
 
-* On the left side menu click on "SSH Keys"
+On the left side menu click on "SSH Keys":
 
 ![SSH Keys](basicsimages/shh_keys.png)
 
-* Then click on the green button "Add SSH Key"
+Then click on the green button "Add SSH Key":
 
 ![Add SSH Key](basicsimages/add_sshkey.png)
 
-* There, you should paste the SSH Key that your commandline will generate for you. Below you'll find the steps to generate it
+There, you should paste the SSH Key that your command line will generate for you. Below you'll find the steps to generate it:
 
 ![Paste SSH Key](basicsimages/paste_sshkey.png)
 
-## To generate an SSH Key on your commandline
+## To generate an SSH Key on your command line
 
-* Go to your [commandline](start-using-git.md) and follow the [instructions](https://gitlab.com/help/ssh/README) to generate it
+Go to your [command line](start-using-git.md) and follow the [instructions](../ssh/README.md) to generate it.
 
-* Copy the SSH Key that your commandline created and paste it on the "Key" box on the GitLab page. The title will be added automatically
+Copy the SSH Key that your command line created and paste it on the "Key" box on the GitLab page. The title will be added automatically.
 
 ![Paste SSH Key](basicsimages/key.png)
 
-* Now, you'll be able to use Git over SSH, instead of Git over HTTP.
+Now, you'll be able to use Git over SSH, instead of Git over HTTP.

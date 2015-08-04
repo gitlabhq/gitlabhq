@@ -31,6 +31,16 @@
               %li= link_to "Email Patches", merge_request_path(@merge_request, format: :patch)
               %li= link_to "Plain Diff",    merge_request_path(@merge_request, format: :diff)
 
+    - if @merge_request.open? and @merge_request.source_branch_exists?
+      .append-bottom-20
+        .slead
+          %span
+            Fetch the branch with
+            %strong.label-branch<
+              git fetch
+              \ #{@merge_request.source_project.http_url_to_repo}
+              \ #{@merge_request.source_branch}
+
     = render "projects/merge_requests/show/how_to_merge"
     = render "projects/merge_requests/widget/show.html.haml"
 
@@ -56,11 +66,9 @@
     #notes.notes.tab-pane.voting_notes
       = render "projects/merge_requests/discussion"
     #commits.commits.tab-pane
-      - if current_page?(action: 'commits')
-        = render "projects/merge_requests/show/commits"
+      - # This tab is always loaded via AJAX
     #diffs.diffs.tab-pane
-      - if current_page?(action: 'diffs')
-        = render "projects/merge_requests/show/diffs"
+      - # This tab is always loaded via AJAX
 
   .mr-loading-status
     = spinner
