@@ -7,7 +7,7 @@
 A backup creates an archive file that contains the database, all repositories and all attachments.
 This archive will be saved in backup_path (see `config/gitlab.yml`).
 The filename will be `[TIMESTAMP]_gitlab_backup.tar`. This timestamp can be used to restore an specific backup.
-You can only restore a backup to exactly the same version of GitLab that you created it on, for example 7.2.1.
+You can only restore a backup to exactly the same version of GitLab that you created it on, for example 7.2.1. The best way to migrate your repositories from one server to another is through backup restore.
 
 You need to keep a separate copy of `/etc/gitlab/gitlab-secrets.json`
 (for omnibus packages) or `/home/git/gitlab/.secret` (for installations
