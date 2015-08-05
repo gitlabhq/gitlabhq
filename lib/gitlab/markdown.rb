@@ -41,6 +41,7 @@ module Gitlab
     autoload :IssueReferenceFilter,         'gitlab/markdown/issue_reference_filter'
     autoload :LabelReferenceFilter,         'gitlab/markdown/label_reference_filter'
     autoload :MergeRequestReferenceFilter,  'gitlab/markdown/merge_request_reference_filter'
+    autoload :RedactorFilter,               'gitlab/markdown/redactor_filter'
     autoload :RelativeLinkFilter,           'gitlab/markdown/relative_link_filter'
     autoload :SanitizationFilter,           'gitlab/markdown/sanitization_filter'
     autoload :SnippetReferenceFilter,       'gitlab/markdown/snippet_reference_filter'
