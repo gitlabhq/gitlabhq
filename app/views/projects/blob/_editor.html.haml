@@ -17,7 +17,10 @@
 
   .file-content.code
     %pre.js-edit-mode-pane#editor
-      = params[:content] || local_assigns[:blob_data]
+      - content = params[:content] || local_assigns[:blob_data]
+      = content
+      - if content.length && 0 === content[content.length-1].index(/[\r\n]/)
+        != "\n"
     - if local_assigns[:path]
       .js-edit-mode-pane#preview.hide
         .center
