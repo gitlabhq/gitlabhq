@@ -9,7 +9,6 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
     @project = Project.find_by(name: "Shop")
     @project ||= create(:project, name: "Shop")
     @project.team << [@user, :reporter]
-    @project.ensure_satellite_exists
   end
 
   step 'I have a project forked off of "Shop" called "Forked Shop"' do

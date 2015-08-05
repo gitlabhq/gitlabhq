@@ -25,7 +25,7 @@ describe Gitlab::ReferenceExtractor do
     project.team << [@u_bar, :guest]
 
     subject.analyze(%Q{
-      Inline code: `@foo` 
+      Inline code: `@foo`
 
       Code block:
 
@@ -33,7 +33,7 @@ describe Gitlab::ReferenceExtractor do
       @bar
       ```
 
-      Quote: 
+      Quote:
 
       > @offteam
     })
@@ -49,8 +49,8 @@ describe Gitlab::ReferenceExtractor do
   end
 
   it 'accesses valid merge requests' do
-    @m0 = create(:merge_request, source_project: project, target_project: project, source_branch: 'aaa')
-    @m1 = create(:merge_request, source_project: project, target_project: project, source_branch: 'bbb')
+    @m0 = create(:merge_request, source_project: project, target_project: project, source_branch: 'markdown')
+    @m1 = create(:merge_request, source_project: project, target_project: project, source_branch: 'feature_conflict')
 
     subject.analyze("!999, !#{@m1.iid}, and !#{@m0.iid}.")
     expect(subject.merge_requests).to eq([@m1, @m0])
