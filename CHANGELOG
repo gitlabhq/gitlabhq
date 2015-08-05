@@ -30,6 +30,9 @@ v 7.14.0 (unreleased)
   - Mention group and project name in creation, update and deletion notices (Achilleas Pipinellis)
   - Remove redis-store TTL monkey patch
 
+v 7.13.3
+  - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
+
 v 7.13.2
   - Fix randomly failed spec
   - Create project services on Project creation
