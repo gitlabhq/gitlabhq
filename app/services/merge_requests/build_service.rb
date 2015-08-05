@@ -12,8 +12,13 @@ module MergeRequests
       merge_request.target_project ||= (project.forked_from_project || project)
       merge_request.target_branch ||= merge_request.target_project.default_branch
 
-      unless merge_request.target_branch && merge_request.source_branch
-        return build_failed(merge_request, nil)
+      if merge_request.target_branch.blank? || merge_request.source_branch.blank?
+        message =
+          if params[:source_branch] || params[:target_branch]
+            "You must select source and target branch"
+          end
+
+        return build_failed(merge_request, message)
       end
 
       compare_result = CompareService.new.execute(
