@@ -36,7 +36,6 @@ describe 'Gitlab::NoteDataBuilder' do
     let(:note) { create(:note_on_issue, noteable_id: issue.id) }
 
     it 'returns the note and issue-specific data' do
-      data[:issue]["updated_at"] = fixed_time
       expect(data).to have_key(:issue)
       expect(data[:issue]).to eq(issue.hook_attrs)
     end
@@ -47,7 +46,6 @@ describe 'Gitlab::NoteDataBuilder' do
     let(:note) { create(:note_on_merge_request, noteable_id: merge_request.id) }
 
     it 'returns the note and merge request data' do
-      data[:merge_request]["updated_at"] = fixed_time
       expect(data).to have_key(:merge_request)
       expect(data[:merge_request]).to eq(merge_request.hook_attrs)
     end
@@ -58,7 +56,6 @@ describe 'Gitlab::NoteDataBuilder' do
     let(:note) { create(:note_on_merge_request_diff, noteable_id: merge_request.id) }
 
     it 'returns the note and merge request diff data' do
-      data[:merge_request]["updated_at"] = fixed_time
       expect(data).to have_key(:merge_request)
       expect(data[:merge_request]).to eq(merge_request.hook_attrs)
     end
@@ -69,7 +66,6 @@ describe 'Gitlab::NoteDataBuilder' do
     let!(:note) { create(:note_on_project_snippet, noteable_id: snippet.id) }
 
     it 'returns the note and project snippet data' do
-      data[:snippet]["updated_at"] = fixed_time
       expect(data).to have_key(:snippet)
       expect(data[:snippet]).to eq(snippet.hook_attrs)
     end
