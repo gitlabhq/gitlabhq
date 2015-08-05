@@ -52,5 +52,6 @@ bundle exec rake release["x.x.x"]
 1. Create and publish a blog post, see [patch release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/patch_release_blog_template.md)
 1. Send tweets about the release from `@gitlab`, tweet should include the most important feature that the release is addressing and link to the blog post
 1. Note in the 'GitLab X.X regressions' issue that the patch was published (CE only)
+1. Create the 'x.y.0' version on version.gitlab.com
 1. [Create new AMIs](https://dev.gitlab.org/gitlab/AMI/blob/master/README.md)
 1. Create a new patch release issue for the next potential release
