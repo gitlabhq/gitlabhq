@@ -36,7 +36,7 @@ class @MergeRequestWidget
 
   showCiState: (state) ->
     $('.ci_widget').hide()
-    allowed_states = ["failed", "canceled", "running", "pending", "success", "not_found"]
+    allowed_states = ["failed", "canceled", "running", "pending", "success", "skipped", "not_found"]
     if state in allowed_states
       $('.ci_widget.ci-' + state).show()
       switch state

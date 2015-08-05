@@ -6,6 +6,12 @@
       for #{@merge_request.last_commit_short_sha}.
       = link_to "View build page", ci_build_details_path(@merge_request), :"data-no-turbolink" => "data-no-turbolink"
 
+    .ci_widget.ci-skipped{style: "display:none"}
+      = icon("check")
+      %span CI build skipped
+      for #{@merge_request.last_commit_short_sha}.
+      = link_to "View build page", ci_build_details_path(@merge_request), :"data-no-turbolink" => "data-no-turbolink"
+
     .ci_widget.ci-failed{style: "display:none"}
       = icon("times")
       %span CI build failed
