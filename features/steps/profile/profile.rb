@@ -59,6 +59,10 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   step 'I should not see the "Remove avatar" button' do
     expect(page).not_to have_link("Remove avatar")
   end
+  
+  step 'I should see the gravatar host link' do
+    expect(page).to have_link("gravatar.com")
+  end
 
   step 'I try change my password w/o old one' do
     page.within '.update-password' do

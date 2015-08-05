@@ -28,6 +28,7 @@ v 7.14.0 (unreleased)
   - Show buttons to add license, changelog and contribution guide if they're missing.
   - Disabled autocapitalize and autocorrect on login field (Daryl Chan)
   - Mention group and project name in creation, update and deletion notices (Achilleas Pipinellis)
+  - Update gravatar link on profile page to link to configured gravatar host (Ben Bodenmiller)
   - Remove redis-store TTL monkey patch
 
 v 7.13.2
