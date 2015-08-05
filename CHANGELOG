@@ -34,6 +34,7 @@ v 7.14.0 (unreleased)
   - Add support for CI skipped status
   - Fetch code from forks to refs/merge-requests/:id/head when merge request created
   - Remove satellites 
+  - Link username to profile on Group Members page (Tom Webster)
 
 v 7.13.2
   - Fix randomly failed spec
