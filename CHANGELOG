@@ -29,6 +29,8 @@ v 7.14.0 (unreleased)
   - Disabled autocapitalize and autocorrect on login field (Daryl Chan)
   - Mention group and project name in creation, update and deletion notices (Achilleas Pipinellis)
   - Remove redis-store TTL monkey patch
+  - Fetch code from forks to refs/merge-requests/:id/head when merge request created
+  - Remove satellites 
 
 v 7.13.2
   - Fix randomly failed spec
