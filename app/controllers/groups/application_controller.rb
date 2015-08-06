@@ -18,4 +18,10 @@ class Groups::ApplicationController < ApplicationController
       return render_404
     end
   end
+  
+  def authorize_admin_group_member!
+    unless can?(current_user, :admin_group_member, group)
+      return render_403
+    end
+  end
 end

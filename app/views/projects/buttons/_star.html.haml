@@ -1,6 +1,6 @@
 - if current_user
   = link_to toggle_star_namespace_project_path(@project.namespace, @project), class: 'btn star-btn toggle-star', method: :post, remote: true do
-    = icon('star')
+    = icon('star fw')
     - if current_user.starred?(@project)
       Unstar
     - else
@@ -16,7 +16,7 @@
 
 - else
   = link_to new_user_session_path, class: 'btn has_tooltip star-btn', title: 'You must sign in to star a project' do
-    = icon('star')
+    = icon('star fw')
     Star
     %span.count
       = @project.star_count

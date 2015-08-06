@@ -25,7 +25,6 @@ namespace :gitlab do
       check_init_script_exists
       check_init_script_up_to_date
       check_projects_have_namespace
-      check_satellites_exist
       check_redis_version
       check_ruby_version
       check_git_version
@@ -238,37 +237,6 @@ namespace :gitlab do
       end
     end
 
-    def check_satellites_exist
-      print "Projects have satellites? ... "
-
-      unless Project.count > 0
-        puts "can't check, you have no projects".magenta
-        return
-      end
-      puts ""
-
-      Project.find_each(batch_size: 100) do |project|
-        print sanitized_message(project)
-
-        if project.satellite.exists?
-          puts "yes".green
-        elsif project.empty_repo?
-          puts "can't create, repository is empty".magenta
-        else
-          puts "no".red
-          try_fixing_it(
-            sudo_gitlab("bundle exec rake gitlab:satellites:create RAILS_ENV=production"),
-            "If necessary, remove the tmp/repo_satellites directory ...",
-            "... and rerun the above command"
-          )
-          for_more_information(
-            "doc/raketasks/maintenance.md "
-          )
-          fix_and_rerun
-        end
-      end
-    end
-
     def check_log_writable
       print "Log directory writable? ... "
 
@@ -339,7 +307,6 @@ namespace :gitlab do
       check_repo_base_is_not_symlink
       check_repo_base_user_and_group
       check_repo_base_permissions
-      check_satellites_permissions
       check_repos_hooks_directory_is_link
       check_gitlab_shell_self_test
 
@@ -417,29 +384,6 @@ namespace :gitlab do
       end
     end
 
-    def check_satellites_permissions
-      print "Satellites access is drwxr-x---? ... "
-
-      satellites_path = Gitlab.config.satellites.path
-      unless File.exists?(satellites_path)
-        puts "can't check because of previous errors".magenta
-        return
-      end
-
-      if File.stat(satellites_path).mode.to_s(8).ends_with?("0750")
-        puts "yes".green
-      else
-        puts "no".red
-        try_fixing_it(
-          "sudo chmod u+rwx,g=rx,o-rwx #{satellites_path}",
-        )
-        for_more_information(
-          see_installation_guide_section "GitLab"
-        )
-        fix_and_rerun
-      end
-    end
-
     def check_repo_base_user_and_group
       gitlab_shell_ssh_user = Gitlab.config.gitlab_shell.ssh_user
       gitlab_shell_owner_group = Gitlab.config.gitlab_shell.owner_group
@@ -485,7 +429,8 @@ namespace :gitlab do
 
         if project.empty_repo?
           puts "repository is empty".magenta
-        elsif File.realpath(project_hook_directory) == File.realpath(gitlab_shell_hooks_path)
+        elsif File.directory?(project_hook_directory) && File.directory?(gitlab_shell_hooks_path) &&
+            (File.realpath(project_hook_directory) == File.realpath(gitlab_shell_hooks_path))
           puts 'ok'.green
         else
           puts "wrong or missing hooks".red
@@ -754,7 +699,7 @@ namespace :gitlab do
     print "Ruby version >= #{required_version} ? ... "
 
     if current_version.valid? && required_version <= current_version
-        puts "yes (#{current_version})".green
+      puts "yes (#{current_version})".green
     else
       puts "no".red
       try_fixing_it(
@@ -772,7 +717,7 @@ namespace :gitlab do
     print "Git version >= #{required_version} ? ... "
 
     if current_version.valid? && required_version <= current_version
-        puts "yes (#{current_version})".green
+      puts "yes (#{current_version})".green
     else
       puts "no".red
       try_fixing_it(
@@ -806,4 +751,3 @@ namespace :gitlab do
     end
   end
 end
-

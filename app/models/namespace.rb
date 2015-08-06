@@ -115,12 +115,11 @@ class Namespace < ActiveRecord::Base
 
   def move_dir
     if gitlab_shell.mv_namespace(path_was, path)
-      # If repositories moved successfully we need to remove old satellites
-      # and send update instructions to users.
+      # If repositories moved successfully we need to
+      # send update instructions to users.
       # However we cannot allow rollback since we moved namespace dir
       # So we basically we mute exceptions in next actions
       begin
-        gitlab_shell.rm_satellites(path_was)
         send_update_instructions
       rescue
         # Returning false does not rollback after_* transaction but gives

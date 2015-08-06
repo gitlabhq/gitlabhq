@@ -21,12 +21,13 @@
 #  import_url             :string(255)
 #  visibility_level       :integer          default(0), not null
 #  archived               :boolean          default(FALSE), not null
+#  avatar                 :string(255)
 #  import_status          :string(255)
 #  repository_size        :float            default(0.0)
 #  star_count             :integer          default(0), not null
 #  import_type            :string(255)
 #  import_source          :string(255)
-#  avatar                 :string(255)
+#  commit_count           :integer          default(0)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -36,7 +37,6 @@ class Project < ActiveRecord::Base
   include Gitlab::ConfigHelper
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
-  include Rails.application.routes.url_helpers
   include Referable
   include Sortable
 
@@ -316,7 +316,7 @@ class Project < ActiveRecord::Base
   end
 
   def web_url
-    [gitlab_config.url, path_with_namespace].join('/')
+    Rails.application.routes.url_helpers.namespace_project_url(self.namespace, self)
   end
 
   def web_url_without_protocol
@@ -433,7 +433,7 @@ class Project < ActiveRecord::Base
     if avatar.present?
       [gitlab_config.url, avatar.url].join
     elsif avatar_in_git
-      [gitlab_config.url, namespace_project_avatar_path(namespace, self)].join
+      Rails.application.routes.url_helpers.namespace_project_avatar_url(namespace, self)
     end
   end
 
@@ -520,14 +520,6 @@ class Project < ActiveRecord::Base
     !repository.exists? || repository.empty?
   end
 
-  def ensure_satellite_exists
-    self.satellite.create unless self.satellite.exists?
-  end
-
-  def satellite
-    @satellite ||= Gitlab::Satellite::Satellite.new(self)
-  end
-
   def repo
     repository.raw
   end
@@ -571,7 +563,7 @@ class Project < ActiveRecord::Base
   end
 
   def http_url_to_repo
-    [gitlab_config.url, '/', path_with_namespace, '.git'].join('')
+    "#{web_url}.git"
   end
 
   # Check if current branch name is marked as protected in the system
@@ -597,14 +589,11 @@ class Project < ActiveRecord::Base
     new_path_with_namespace = File.join(namespace_dir, path)
 
     if gitlab_shell.mv_repository(old_path_with_namespace, new_path_with_namespace)
-      # If repository moved successfully we need to remove old satellite
-      # and send update instructions to users.
+      # If repository moved successfully we need to send update instructions to users.
       # However we cannot allow rollback since we moved repository
       # So we basically we mute exceptions in next actions
       begin
         gitlab_shell.mv_repository("#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
-        gitlab_shell.rm_satellites(old_path_with_namespace)
-        ensure_satellite_exists
         send_move_instructions
         reset_events_cache
       rescue
@@ -702,7 +691,6 @@ class Project < ActiveRecord::Base
   def create_repository
     if forked?
       if gitlab_shell.fork_repository(forked_from_project.path_with_namespace, self.namespace.path)
-        ensure_satellite_exists
         true
       else
         errors.add(:base, 'Failed to fork repository via gitlab-shell')

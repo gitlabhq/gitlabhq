@@ -54,6 +54,13 @@ describe Projects::BranchesController do
       let(:ref) { "<script>alert('ref');</script>" }
       it { is_expected.to render_template('new') }
     end
+
+    context "valid branch name with encoded slashes" do
+      let(:branch) { "feature%2Ftest" }
+      let(:ref) { "<script>alert('ref');</script>" }
+      it { is_expected.to render_template('new') }
+      it { project.repository.branch_names.include?('feature/test')}
+    end
   end
 
   describe "POST destroy" do
@@ -74,6 +81,19 @@ describe Projects::BranchesController do
       it { expect(subject).to render_template('destroy') }
     end
 
+    context "valid branch name with unencoded slashes" do
+      let(:branch) { "improve/awesome" }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject).to render_template('destroy') }
+    end
+
+    context "valid branch name with encoded slashes" do
+      let(:branch) { "improve%2Fawesome" }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject).to render_template('destroy') }
+    end
     context "invalid branch name, valid ref" do
       let(:branch) { "no-branch" }
 

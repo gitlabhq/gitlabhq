@@ -184,7 +184,43 @@ module ProjectsHelper
     end
   end
 
-  def contribution_guide_url(project)
+  def add_contribution_guide_path(project)
+    if project && !project.repository.contribution_guide
+      namespace_project_new_blob_path(
+        project.namespace,
+        project,
+        project.default_branch,
+        file_name:      "CONTRIBUTING.md",
+        commit_message: "Add contribution guide"
+      )
+    end
+  end
+
+  def add_changelog_path(project)
+    if project && !project.repository.changelog
+      namespace_project_new_blob_path(
+        project.namespace,
+        project,
+        project.default_branch,
+        file_name:      "CHANGELOG",
+        commit_message: "Add changelog"
+      )
+    end
+  end
+
+  def add_license_path(project)
+    if project && !project.repository.license
+      namespace_project_new_blob_path(
+        project.namespace,
+        project,
+        project.default_branch,
+        file_name:      "LICENSE",
+        commit_message: "Add license"
+      )
+    end
+  end
+
+  def contribution_guide_path(project)
     if project && contribution_guide = project.repository.contribution_guide
       namespace_project_blob_path(
         project.namespace,
@@ -195,7 +231,7 @@ module ProjectsHelper
     end
   end
 
-  def changelog_url(project)
+  def changelog_path(project)
     if project && changelog = project.repository.changelog
       namespace_project_blob_path(
         project.namespace,
@@ -206,7 +242,7 @@ module ProjectsHelper
     end
   end
 
-  def license_url(project)
+  def license_path(project)
     if project && license = project.repository.license
       namespace_project_blob_path(
         project.namespace,
@@ -217,7 +253,7 @@ module ProjectsHelper
     end
   end
 
-  def version_url(project)
+  def version_path(project)
     if project && version = project.repository.version
       namespace_project_blob_path(
         project.namespace,

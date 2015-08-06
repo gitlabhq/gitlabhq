@@ -1,8 +1,13 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.14.0 (unreleased)
+  - Fix "Network" and "Graphs" pages for branches with encoded slashes (Stan Hu)
+  - Fix errors deleting and creating branches with encoded slashes (Stan Hu)
+  - Fix multi-line syntax highlighting (Stan Hu)
   - Fix network graph when branch name has single quotes (Stan Hu)
+  - Add "Confirm user" button in user admin page (Stan Hu)
   - Upgrade gitlab_git to version 7.2.6 to fix Error 500 when creating network graphs (Stan Hu)
+  - Add support for Unicode filenames in relative links (Hiroyuki Sato)
   - Fix URL used for refreshing notes if relative_url is present (Bartłomiej Święcki)
   - Fix commit data retrieval when branch name has single quotes (Stan Hu)
   - Check that project was actually created rather than just validated in import:repos task (Stan Hu)
@@ -16,10 +21,23 @@ v 7.14.0 (unreleased)
   - Set OmniAuth full_host parameter to ensure redirect URIs are correct (Stan Hu)
   - Expire Rails cache entries after two weeks to prevent endless Redis growth
   - Add support for destroying project milestones (Stan Hu)
+  - Add fetch command to the MR page.
+  - Allow custom backup archive permissions
   - Add fetch command to the MR page
+  - Add project star and fork count, group avatar URL and user/group web URL attributes to API
   - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
   - Add fetch command to the MR page.
   - Send notification to all participants when MR is merged.
+  - Add ability to manage user email addresses via the API.
+  - Show buttons to add license, changelog and contribution guide if they're missing.
+  - Tweak project page buttons.
+  - Disabled autocapitalize and autocorrect on login field (Daryl Chan)
+  - Mention group and project name in creation, update and deletion notices (Achilleas Pipinellis)
+  - Remove redis-store TTL monkey patch
+  - Add support for CI skipped status
+  - Fetch code from forks to refs/merge-requests/:id/head when merge request created
+  - Remove satellites 
+  - Remove comments and email addresses when publicly exposing ssh keys (Zeger-Jan van de Weg)
 
 v 7.13.2
   - Fix randomly failed spec
@@ -30,7 +48,6 @@ v 7.13.2
   - Show the first tab automatically on MergeRequests#new
   - Add rake task 'gitlab:update_commit_count' (Daniel Gerhardt)
   - Fix Gmail Actions
-  - Disabled autocapitalize and autocorrect on login field (Daryl Chan)
 
 v 7.13.1
   - Fix: Label modifications are not reflected in existing notes and in the issue list
@@ -46,6 +63,8 @@ v 7.13.1
 v 7.13.0
   - Remove repository graph log to fix slow cache updates after push event (Stan Hu)
   - Return comments in created order in merge request API (Stan Hu)
+
+v 7.13.0 (unreleased)
   - Only enable HSTS header for HTTPS and port 443 (Stan Hu)
   - Fix user autocomplete for unauthenticated users accessing public projects (Stan Hu)
   - Fix redirection to home page URL for unauthorized users (Daniel Gerhardt)
@@ -72,15 +91,15 @@ v 7.13.0
   - Update ssl_ciphers in Nginx example to remove DHE settings. This will deny forward secrecy for Android 2.3.7, Java 6 and OpenSSL 0.9.8
   - Admin can edit and remove user identities
   - Convert CRLF newlines to LF when committing using the web editor.
-  - API request /projects/:project_id/merge_requests?state=closed will return only closed merge requests without merged one. If you need ones that were merged - use state=merged.  
+  - API request /projects/:project_id/merge_requests?state=closed will return only closed merge requests without merged one. If you need ones that were merged - use state=merged.
   - Allow Administrators to filter the user list by those with or without Two-factor Authentication enabled.
   - Show a user's Two-factor Authentication status in the administration area.
   - Explicit error when commit not found in the CI
-  - Improve performance for issue and merge request pages 
+  - Improve performance for issue and merge request pages
   - Users with guest access level can not set assignee, labels or milestones for issue and merge request
   - Reporter role can manage issue tracker now: edit any issue, set assignee or milestone and manage labels
   - Better performance for pages with events list, issues list and commits list
-  - Faster automerge check and merge itself when source and target branches are in same repository 
+  - Faster automerge check and merge itself when source and target branches are in same repository
   - Correctly show anonymous authorized applications under Profile > Applications.
   - Query Optimization in MySQL.
   - Allow users to be blocked and unblocked via the API
@@ -88,7 +107,7 @@ v 7.13.0
   - Redesign project page. Show README as default instead of activity. Move project activity to separate page
   - Make left menu more hierarchical and less contextual by adding back item at top
   - A fork can’t have a visibility level that is greater than the original project.
-  - Faster code search in repository and wiki. Fixes search page timeout for big repositories 
+  - Faster code search in repository and wiki. Fixes search page timeout for big repositories
   - Allow administrators to disable 2FA for a specific user
   - Add error message for SSH key linebreaks
   - Store commits count in database (will populate with valid values only after first push)
@@ -107,7 +126,7 @@ v 7.12.1
   - Add SAML to list of social_provider (Matt Firtion)
   - Fix merge requests API scope to keep compatibility in 7.12.x patch release (Dmitriy Zaporozhets)
   - Fix closed merge request scope at milestone page (Dmitriy Zaporozhets)
-  - Revert merge request states renaming 
+  - Revert merge request states renaming
   - Fix hooks for web based events with external issue references (Daniel Gerhardt)
   - Improve performance for issue and merge request pages
   - Compress database dumps to reduce backup size

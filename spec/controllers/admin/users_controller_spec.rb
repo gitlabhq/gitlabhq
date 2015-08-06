@@ -37,6 +37,20 @@ describe Admin::UsersController do
     end
   end
 
+  describe 'PUT confirm/:id' do
+    let(:user) { create(:user, confirmed_at: nil) }
+
+    before do
+      request.env["HTTP_REFERER"] = "/"
+    end
+
+    it 'confirms user' do
+      put :confirm, id: user.username
+      user.reload
+      expect(user.confirmed?).to be_truthy
+    end
+  end
+
   describe 'PATCH disable_two_factor' do
     let(:user) { create(:user) }
 

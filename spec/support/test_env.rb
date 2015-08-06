@@ -35,6 +35,7 @@ module TestEnv
     clean_test_path
 
     FileUtils.mkdir_p(repos_path)
+    FileUtils.mkdir_p(backup_path)
 
     # Setup GitLab shell for test instance
     setup_gitlab_shell
@@ -125,6 +126,10 @@ module TestEnv
 
   def repos_path
     Gitlab.config.gitlab_shell.repos_path
+  end
+
+  def backup_path
+    Gitlab.config.backup.path
   end
 
   def copy_forked_repo_with_submodules(project)
