@@ -12,18 +12,19 @@
     .diff-content
       %table
         - note.truncated_diff_lines.each do |line|
+          - type = line.type
           - line_code = generate_line_code(note.file_path, line)
-          %tr.line_holder{ id: line_code }
-            - if line.type == "match"
+          %tr.line_holder{ id: line_code, class: "#{type}" }
+            - if type == "match"
               %td.old_line= "..."
               %td.new_line= "..."
               %td.line_content.matched= line.text
             - else
-              %td.old_line{class: line.type == "new" ? "new" : "old"}
-                = raw(line.type == "new" ? "&nbsp;" : line.old_pos)
-              %td.new_line{class: line.type == "new" ? "new" : "old"}
-                = raw(line.type == "old" ? "&nbsp;" : line.new_pos)
-              %td.line_content{class: "noteable_line #{line.type} #{line_code}", "line_code" => line_code}= raw diff_line_content(line.text)
+              %td.old_line
+                = raw(type == "new" ? "&nbsp;" : line.old_pos)
+              %td.new_line
+                = raw(type == "old" ? "&nbsp;" : line.new_pos)
+              %td.line_content{class: "noteable_line #{type} #{line_code}", "line_code" => line_code}= raw diff_line_content(line.text)
 
               - if line_code == note.line_code
                 = render "projects/notes/diff_notes_with_reply", notes: discussion_notes
