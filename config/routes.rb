@@ -168,6 +168,7 @@ Gitlab::Application.routes.draw do
       end
     end
 
+    resources :abuse_reports, only: [:index, :destroy]
     resources :applications
 
     resources :groups, constraints: { id: /[^\/]+/ } do
