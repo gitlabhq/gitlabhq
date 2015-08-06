@@ -13,5 +13,3 @@ class Spinach::Features::AdminAbuseReports < Spinach::FeatureSteps
     create(:abuse_report)
   end
 end
-
-
