@@ -33,6 +33,8 @@ class AutocompleteController < ApplicationController
     @users = @users.search(params[:search]) if params[:search].present?
     @users = @users.active
     @users = @users.page(params[:page]).per(PER_PAGE)
+    # Always include current user if available to filter by "Me"
+    @users = User.find(@users.pluck(:id) + [current_user.id]).uniq if current_user
     render json: @users, only: [:name, :username, :id], methods: [:avatar_url]
   end
 
