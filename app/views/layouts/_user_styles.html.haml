@@ -7,8 +7,16 @@
     display: block !important;
   }
 
+  [data-user-is="#{current_user.try(:id)}"][data-display="inline"] {
+    display: inline !important;
+  }
+
   [data-user-is-not] {
     display: block !important;
+  }
+
+  [data-user-is-not][data-display="inline"] {
+    display: inline !important;
   }
 
   [data-user-is-not="#{current_user.try(:id)}"] {

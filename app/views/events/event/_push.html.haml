@@ -34,7 +34,7 @@
             Compare #{from_label}...#{truncate_sha(event.commit_to)}
 
           - if create_mr
-            %span{"data-user-is" => event.author_id}
+            %span{"data-user-is" => event.author_id, "data-display" => "inline"}
               or
               = link_to create_mr_path(event.project.default_branch, event.ref_name, event.project) do
                 create a merge request
