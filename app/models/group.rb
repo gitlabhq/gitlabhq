@@ -124,7 +124,7 @@ class Group < Namespace
   end
 
   def ldap_synced?
-    ldap_cn.present?
+    Gitlab.config.ldap.enabled && ldap_cn.present?
   end
 
   def post_create_hook
