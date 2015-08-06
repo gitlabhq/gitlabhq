@@ -27,7 +27,6 @@ class RepositoryImportWorker
 
     project.import_finish
     project.save
-    project.satellite.create unless project.satellite.exists?
     ProjectCacheWorker.perform_async(project.id)
     Gitlab::BitbucketImport::KeyDeleter.new(project).execute if project.import_type == 'bitbucket'
   end

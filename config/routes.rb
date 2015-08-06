@@ -159,6 +159,7 @@ Gitlab::Application.routes.draw do
         put :block
         put :unblock
         put :unlock
+        put :confirm
         patch :disable_two_factor
         delete 'remove/:email_id', action: 'remove_email', as: 'remove_email'
       end
@@ -458,8 +459,8 @@ Gitlab::Application.routes.draw do
           member do
             get :diffs
             get :commits
-            post :automerge
-            get :automerge_check
+            post :merge
+            get :merge_check
             get :ci_status
             post :toggle_subscription
           end

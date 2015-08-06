@@ -21,12 +21,13 @@
 #  import_url             :string(255)
 #  visibility_level       :integer          default(0), not null
 #  archived               :boolean          default(FALSE), not null
+#  avatar                 :string(255)
 #  import_status          :string(255)
 #  repository_size        :float            default(0.0)
 #  star_count             :integer          default(0), not null
 #  import_type            :string(255)
 #  import_source          :string(255)
-#  avatar                 :string(255)
+#  commit_count           :integer          default(0)
 #
 
 FactoryGirl.define do

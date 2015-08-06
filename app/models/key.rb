@@ -39,6 +39,11 @@ class Key < ActiveRecord::Base
     self.key = key.strip unless key.blank?
   end
 
+  def publishable_key
+    #Removes anything beyond the keytype and key itself
+    self.key.split[0..1].join(' ')
+  end
+
   # projects that has this key
   def projects
     user.authorized_projects

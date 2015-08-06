@@ -24,7 +24,7 @@ class GroupsController < Groups::ApplicationController
 
     if @group.save
       @group.add_owner(current_user)
-      redirect_to @group, notice: 'Group was successfully created.'
+      redirect_to @group, notice: "Group '#{@group.name}' was successfully created."
     else
       render action: "new"
     end
@@ -75,7 +75,7 @@ class GroupsController < Groups::ApplicationController
 
   def update
     if @group.update_attributes(group_params)
-      redirect_to edit_group_path(@group), notice: 'Group was successfully updated.'
+      redirect_to edit_group_path(@group), notice: "Group '#{@group.name}' was successfully updated."
     else
       render action: "edit"
     end
@@ -84,7 +84,7 @@ class GroupsController < Groups::ApplicationController
   def destroy
     DestroyGroupService.new(@group, current_user).execute
 
-    redirect_to root_path, notice: 'Group was removed.'
+    redirect_to root_path, alert: "Group '#{@group.name} was deleted."
   end
 
   protected

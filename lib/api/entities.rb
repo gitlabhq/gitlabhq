@@ -35,6 +35,10 @@ module API
       expose :private_token
     end
 
+    class Email < Grape::Entity
+      expose :id, :email
+    end
+
     class Hook < Grape::Entity
       expose :id, :url, :created_at
     end

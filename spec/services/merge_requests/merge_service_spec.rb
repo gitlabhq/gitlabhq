@@ -24,11 +24,6 @@ describe MergeRequests::MergeService do
       it { expect(merge_request).to be_valid }
       it { expect(merge_request).to be_merged }
 
-      it 'should execute hooks with merge action' do
-        expect(service).to have_received(:execute_hooks).
-                               with(merge_request, 'merge')
-      end
-
       it 'should send email to user2 about merge of new merge_request' do
         email = ActionMailer::Base.deliveries.last
         expect(email.to.first).to eq(user2.email)

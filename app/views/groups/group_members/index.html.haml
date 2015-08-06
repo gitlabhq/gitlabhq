@@ -17,7 +17,7 @@
       = search_field_tag :search, params[:search], { placeholder: 'Find existing member by name', class: 'form-control search-text-input' }
     = button_tag 'Search', class: 'btn'
 
-  - if current_user && current_user.can?(:admin_group, @group)
+  - if current_user && current_user.can?(:admin_group_member, @group)
     .pull-right
       = button_tag class: 'btn btn-new js-toggle-button', type: 'button' do
         Add members

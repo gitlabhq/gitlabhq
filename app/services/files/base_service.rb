@@ -33,15 +33,8 @@ module Files
 
     private
 
-    def repository
-      project.repository
-    end
-
     def after_commit(sha, branch)
-      commit = repository.commit(sha)
-      full_ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}#{branch}"
-      old_sha = commit.parent_id || Gitlab::Git::BLANK_SHA
-      GitPushService.new.execute(project, current_user, old_sha, sha, full_ref)
+      PostCommitService.new(project, current_user).execute(sha, branch)
     end
 
     def current_branch

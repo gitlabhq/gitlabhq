@@ -32,6 +32,13 @@ describe Key do
 
   describe "Methods" do
     it { is_expected.to respond_to :projects }
+    it { is_expected.to respond_to :publishable_key }
+
+    describe "#publishable_keys" do
+      it 'strips all personal information' do
+        expect(build(:key).publishable_key).not_to match(/dummy@gitlab/)
+      end
+    end
   end
 
   context "validation of uniqueness" do

@@ -6,7 +6,7 @@ You need to connect your computer to your GitLab account through SSH Keys. They 
 
 Create an account on GitLab. Sign up and check your email for your confirmation link.
 
-After you confirm, go to [GitLab.com](https://about.gitlab.com/) and sign in to your account.
+After you confirm, go to GitLab and sign in to your account.
 
 ## Add your SSH Key
 

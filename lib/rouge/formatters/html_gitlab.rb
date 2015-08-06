@@ -47,7 +47,7 @@ module Rouge
         @lineanchors = lineanchors
         @lineanchorsid = lineanchorsid
         @anchorlinenos = anchorlinenos
-        @inline_theme = Theme.find(@inline_theme).new if @inline_theme.is_a?(String)
+        @inline_theme = Theme.find(inline_theme).new if inline_theme.is_a?(String)
       end
 
       def render(tokens)
@@ -148,6 +148,12 @@ module Rouge
         end
       end
 
+      def wrap_values(val, element)
+        lines = val.split("\n")
+        lines = lines.map{ |x| "<span #{element}>#{x}</span>" }
+        lines.join("\n")
+      end
+
       def span(tok, val)
         # http://stackoverflow.com/a/1600584/2587286
         val = CGI.escapeHTML(val)
@@ -155,11 +161,13 @@ module Rouge
         if tok.shortname.empty?
           val
         else
+          # In the case of multi-line values (e.g. comments), we need to apply
+          # styling to each line since span elements are inline.
           if @inline_theme
             rules = @inline_theme.style_for(tok).rendered_rules
-            "<span style=\"#{rules.to_a.join(';')}\">#{val}</span>"
+            wrap_values(val, "style=\"#{rules.to_a.join(';')}\"")
           else
-            "<span class=\"#{tok.shortname}\">#{val}</span>"
+            wrap_values(val, "class=\"#{tok.shortname}\"")
           end
         end
       end
