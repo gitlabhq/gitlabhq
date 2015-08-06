@@ -9,7 +9,8 @@ class AbuseReportsController < ApplicationController
     @abuse_report.reporter = current_user
 
     if @abuse_report.save
-      redirect_to root_path, notice: 'Thank you for report. GitLab administrator will be able to see it'
+      message = "Thank you for your report. A GitLab administrator will look into it shortly."
+      redirect_to root_path, notice: message
     else
       render :new
     end
