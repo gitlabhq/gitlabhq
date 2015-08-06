@@ -9,7 +9,7 @@ def common_mentionable_setup
   let(:author)  { subject.author }
 
   let(:mentioned_issue)  { create(:issue, project: project) }
-  let(:mentioned_mr)     { create(:merge_request, :simple, source_project: project) }
+  let!(:mentioned_mr)     { create(:merge_request, :simple, source_project: project) }
   let(:mentioned_commit) { project.commit }
 
   let(:ext_proj)   { create(:project, :public) }

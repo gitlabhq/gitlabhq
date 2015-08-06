@@ -184,6 +184,19 @@ describe User do
     it { is_expected.to respond_to(:private_token) }
   end
 
+  describe '#confirm' do
+    let(:user) { create(:user, confirmed_at: nil, unconfirmed_email: 'test@gitlab.com') }
+
+    it 'returns unconfirmed' do
+      expect(user.confirmed?).to be_falsey
+    end
+
+    it 'confirms a user' do
+      user.confirm!
+      expect(user.confirmed?).to be_truthy
+    end
+  end
+
   describe '#to_reference' do
     let(:user) { create(:user) }
 

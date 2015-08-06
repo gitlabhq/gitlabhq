@@ -10,6 +10,7 @@
 - [Notification emails](notifications.md)
 - [Project Features](project_features.md)
 - [Project forking workflow](forking_workflow.md)
+- [Project users](add-user/add-user.md)
 - [Protected branches](protected_branches.md)
 - [Web Editor](web_editor.md)
 - ["Work In Progress" Merge Requests](wip_merge_requests.md)

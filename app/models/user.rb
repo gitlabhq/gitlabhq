@@ -619,7 +619,7 @@ class User < ActiveRecord::Base
   end
 
   def all_ssh_keys
-    keys.map(&:key)
+    keys.map(&:publishable_key)
   end
 
   def temp_oauth_email?

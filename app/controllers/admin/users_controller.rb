@@ -55,6 +55,14 @@ class Admin::UsersController < Admin::ApplicationController
     end
   end
 
+  def confirm
+    if user.confirm!
+      redirect_to :back, notice: "Successfully confirmed"
+    else
+      redirect_to :back, alert: "Error occurred. User was not confirmed"
+    end
+  end
+
   def disable_two_factor
     user.disable_two_factor!
     redirect_to admin_user_path(user),

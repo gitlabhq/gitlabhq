@@ -81,6 +81,7 @@ workday to quickly fix any issues.
 
 - [ ] Merge CE stable into EE stable (#LINK)
 - [ ] Create the 'x.y.0' tag with the [release tools](https://dev.gitlab.org/gitlab/release-tools) (#LINK)
+- [ ] Create the 'x.y.0' version on version.gitlab.com
 - [ ] Try to do before 11AM CET: Create and push omnibus tags for x.y.0 (will auto-release the packages) (#LINK)
 - [ ] Try to do before 12AM CET: Publish the release blog post (#LINK)
 - [ ] Tweet about the release (blog post) (#LINK)
