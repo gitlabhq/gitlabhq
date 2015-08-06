@@ -11,8 +11,8 @@
   .form-group
     = f.label :user_id, class: 'control-label'
     .col-sm-10
-      = users_select_tag("abuse_reports[user_id]", placeholder: 'Select user to report abuse',
-        class: 'custom-form-control js-select2', selected: @abuse_report.user_id, scope: :all)
+      - name = "#{@abuse_report.user.name} (@#{@abuse_report.user.username})"
+      = text_field_tag :user_name, name, class: "form-control", readonly: true
   .form-group
     = f.label :message, class: 'control-label'
     .col-sm-10
@@ -24,6 +24,3 @@
 
   .form-actions
     = f.submit "Send report", class: "btn btn-create"
-
-:coffeescript
-  new UsersSelect()
