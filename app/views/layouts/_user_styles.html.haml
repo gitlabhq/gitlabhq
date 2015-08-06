@@ -1,0 +1,16 @@
+:css
+  [data-user-is] {
+    display: none !important;
+  }
+
+  [data-user-is="#{current_user.try(:id)}"] {
+    display: block !important;
+  }
+
+  [data-user-is-not] {
+    display: block !important;
+  }
+
+  [data-user-is-not="#{current_user.try(:id)}"] {
+    display: none !important;
+  }
