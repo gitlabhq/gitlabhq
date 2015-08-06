@@ -1,0 +1,29 @@
+- page_title "Report abuse"
+%h3.page-title Report abuse
+%p Please use this form if user makes spam or inappropriate content
+%hr
+= form_for @abuse_report, html: { class: 'form-horizontal'} do |f|
+  = f.hidden_field :user_id
+  - if @abuse_report.errors.any?
+    .alert.alert-danger
+      - @abuse_report.errors.full_messages.each do |msg|
+        %p= msg
+  .form-group
+    = f.label :user_id, class: 'control-label'
+    .col-sm-10
+      = users_select_tag("abuse_reports[user_id]", placeholder: 'Select user to report abuse',
+        class: 'custom-form-control js-select2', selected: @abuse_report.user_id, scope: :all)
+  .form-group
+    = f.label :message, class: 'control-label'
+    .col-sm-10
+      = f.text_area :message, class: "form-control", rows: 2, required: true
+      .help-block
+        Explain the problem with this account.
+        %br
+        If user sends spam please provide a link to spam issue or comment
+
+  .form-actions
+    = f.submit "Send report", class: "btn btn-create"
+
+:coffeescript
+  new UsersSelect()

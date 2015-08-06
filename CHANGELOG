@@ -1,6 +1,17 @@
 Please view this file on the master branch, on stable branches it's out of date.
 v 7.13.3
   - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
+  - Add fetch command to the MR page.
+  - Add ability to manage user email addresses via the API.
+  - Show buttons to add license, changelog and contribution guide if they're missing.
+  - Tweak project page buttons.
+  - Disabled autocapitalize and autocorrect on login field (Daryl Chan)
+  - Mention group and project name in creation, update and deletion notices (Achilleas Pipinellis)
+  - Remove redis-store TTL monkey patch
+  - Add support for CI skipped status
+  - Fetch code from forks to refs/merge-requests/:id/head when merge request created
+  - Remove satellites 
+  - Allow users to send abuse reports
 
 v 7.13.2
   - Fix randomly failed spec
