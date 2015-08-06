@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.14.0 (unreleased)
+  - Always add current user to autocomplete controller to support filter by "Me" (Stan Hu)
   - Fix multi-line syntax highlighting (Stan Hu)
   - Fix network graph when branch name has single quotes (Stan Hu)
   - Add "Confirm user" button in user admin page (Stan Hu)
