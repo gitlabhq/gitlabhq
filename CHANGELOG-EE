@@ -2,6 +2,12 @@ v 7.14
   - Don't send "Added to group" notifications when group is LDAP synched
   - Automatic approver suggestions (based on an authority of the code)  
 
+v7.13.3
+  - Merge community edition changes for version 7.13.3
+  - Improved validation for an approver
+  - Don't resend admin email to everyone if one delivery fails
+  - Added migration for removing of invalid approvers
+
 v 7.13.2
   - Fix group web hook
   - Don't resend admin email to everyone if one delivery fails
