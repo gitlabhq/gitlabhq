@@ -77,7 +77,7 @@ module Gitlab::Markdown
 
       context 'that the current user can read' do
         before do
-          group.add_user(user, Gitlab::Access::DEVELOPER)
+          group.add_developer(user)
         end
 
         it 'links to the Group' do

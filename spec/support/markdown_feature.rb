@@ -17,7 +17,7 @@ class MarkdownFeature
   def group
     unless @group
       @group = create(:group)
-      @group.add_user(user, Gitlab::Access::DEVELOPER)
+      @group.add_developer(user)
     end
 
     @group

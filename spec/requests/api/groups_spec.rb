@@ -135,7 +135,7 @@ describe API::API, api: true  do
 
       it "should not remove a group if not an owner" do
         user4 = create(:user)
-        group1.add_user(user4, Gitlab::Access::MASTER)
+        group1.add_master(user4)
         delete api("/groups/#{group1.id}", user3)
         expect(response.status).to eq(403)
       end
