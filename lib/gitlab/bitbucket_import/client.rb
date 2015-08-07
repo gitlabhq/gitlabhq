@@ -87,6 +87,10 @@ module Gitlab
         JSON.parse(get("/api/1.0/user/repositories").body).select { |repo| repo["scm"] == "git" }
       end
 
+      def incompatible_projects
+        JSON.parse(get("/api/1.0/user/repositories").body).reject { |repo| repo["scm"] == "git" }
+      end
+
       private
 
       def get(url)
