@@ -20,14 +20,6 @@
     - elsif @merge_request.can_be_merged?
       = render 'projects/merge_requests/widget/open/accept'
 
-  - unless @merge_request.branch_missing?
-    .mr-widget-footer
-      = icon('info-circle')
-      &nbsp;
-      If you want to try or merge this request manually, you can use the
-      %strong
-        = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
-
   - if @closes_issues.present?
     .mr-widget-footer
       %span
