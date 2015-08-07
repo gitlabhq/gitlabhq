@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.14.0 (unreleased)
+  - Show incompatible projects in Bitbucket import status (Stan Hu)
   - Fix coloring of diffs on MR Discussion-tab (Gert Goet)
   - Fix "Network" and "Graphs" pages for branches with encoded slashes (Stan Hu)
   - Fix errors deleting and creating branches with encoded slashes (Stan Hu)
