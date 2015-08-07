@@ -114,6 +114,9 @@ class Namespace < ActiveRecord::Base
   end
 
   def move_dir
+    # Ensure old directory exists before moving it
+    gitlab_shell.add_namespace(path_was)
+
     if gitlab_shell.mv_namespace(path_was, path)
       # If repositories moved successfully we need to
       # send update instructions to users.

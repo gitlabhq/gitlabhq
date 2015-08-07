@@ -3,6 +3,7 @@
   .project-identicon-holder
     = project_icon(@project, alt: '', class: 'project-avatar avatar s90')
   .project-home-desc.lead
+    %h1= @project.name
     - if @project.description.present?
       = markdown(@project.description, pipeline: :description)
 

@@ -1,8 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.14.0 (unreleased)
+  - Fix coloring of diffs on MR Discussion-tab (Gert Goet)
   - Fix "Network" and "Graphs" pages for branches with encoded slashes (Stan Hu)
   - Fix errors deleting and creating branches with encoded slashes (Stan Hu)
+  - Always add current user to autocomplete controller to support filter by "Me" (Stan Hu)
   - Fix multi-line syntax highlighting (Stan Hu)
   - Fix network graph when branch name has single quotes (Stan Hu)
   - Add "Confirm user" button in user admin page (Stan Hu)
@@ -38,6 +40,10 @@ v 7.14.0 (unreleased)
   - Fetch code from forks to refs/merge-requests/:id/head when merge request created
   - Remove satellites 
   - Remove comments and email addresses when publicly exposing ssh keys (Zeger-Jan van de Weg)
+
+v 7.13.3
+  - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
+  - Allow users to send abuse reports
 
 v 7.13.2
   - Fix randomly failed spec
