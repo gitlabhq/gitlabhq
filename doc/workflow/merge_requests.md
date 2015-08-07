@@ -4,7 +4,6 @@ Merge requests allow you to exchange changes you made to source code
 
 ## Checkout merge requests locally
 
-
 Locate the section for your GitLab remote in the `.git/config` file. It looks like this:
 
 ```
