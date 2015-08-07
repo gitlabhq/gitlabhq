@@ -65,6 +65,9 @@ Gitlab::Application.routes.draw do
     end
   end
 
+  # Spam reports
+  resources :abuse_reports, only: [:new, :create]
+
   #
   # Import
   #
@@ -164,6 +167,7 @@ Gitlab::Application.routes.draw do
       end
     end
 
+    resources :abuse_reports, only: [:index, :destroy]
     resources :applications
 
     resources :groups, constraints: { id: /[^\/]+/ } do
