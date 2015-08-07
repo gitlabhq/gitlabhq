@@ -1,5 +1,6 @@
 v 7.14
   - Don't send "Added to group" notifications when group is LDAP synched
+  - Fix importing projects from GitHub Enterprise Edition.
 
 v 7.13.2
   - Fix group web hook
