@@ -161,8 +161,8 @@ class MergeRequestDiff < ActiveRecord::Base
   def compare_result
     @compare_result ||=
       begin
-        # Update ref if merge request is from fork
-        merge_request.fetch_ref if merge_request.for_fork?
+        # Update ref for merge request
+        merge_request.fetch_ref
 
         # Get latest sha of branch from source project
         source_sha = merge_request.source_project.commit(source_branch).sha
