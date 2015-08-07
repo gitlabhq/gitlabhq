@@ -1,9 +1,15 @@
-
-  /**
-   * MR -> show: Automerge widget
+/**
+ * MR -> show: Automerge widget
  *
  */
 .mr-state-widget {
+  background: #FAFAFA;
+  margin-bottom: 20px;
+  color: #666;
+  border: 1px solid #e5e5e5;
+  @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.05));
+  @include border-radius(3px);
+
   form {
     margin-bottom: 0;
     .clearfix {
@@ -20,15 +26,66 @@
       display: inline-block;
       margin: 0;
       margin-left: 20px;
-      padding: 10px 0;
+      padding: 5px;
       line-height: 20px;
-      font-weight: bold;
 
       .remove_source_checkbox {
         margin: 0;
-        font-weight: bold;
       }
     }
+  }
+
+  .ci_widget {
+    border-bottom: 1px solid #EEE;
+
+    i {
+      margin-right: 4px;
+    }
+
+    &.ci-success {
+      color: $gl-success;
+    }
+
+    &.ci-skipped {
+      background-color: #eee;
+      color: #888;
+    }
+
+    &.ci-pending,
+    &.ci-running {
+      color: $gl-warning;
+    }
+
+    &.ci-failed,
+    &.ci-canceled,
+    &.ci-error {
+      color: $gl-danger;
+    }
+  }
+
+  .mr-widget-body,
+  .ci_widget,
+  .mr-widget-footer {
+    padding: 15px;
+  }
+
+  .mr-widget-body {
+    h4 {
+      font-weight: bold;
+      margin: 5px 0;
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .mr-widget-footer {
+    border-top: 1px solid #EEE;
+  }
+
+  .ci-coverage {
+    float: right;
   }
 }
 
@@ -109,64 +166,6 @@
 .diff-file .close-mr-link,
 .diff-file .reopen-mr-link {
   display: none;
-}
-
-.mr-state-widget {
-  font-size: 13px;
-  background: #FAFAFA;
-  margin-bottom: 20px;
-  color: #666;
-  border: 1px solid #e5e5e5;
-  @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.05));
-  @include border-radius(3px);
-
-  .ci_widget {
-    padding: 10px 15px;
-    font-size: 15px;
-    border-bottom: 1px solid #EEE;
-
-    &.ci-success {
-      color: $gl-success;
-    }
-
-    &.ci-skipped {
-      background-color: #eee;
-      color: #888;
-    }
-
-    &.ci-pending,
-    &.ci-running {
-      color: $gl-warning;
-    }
-
-    &.ci-failed,
-    &.ci-canceled,
-    &.ci-error {
-      color: $gl-danger;
-    }
-  }
-
-  .mr-widget-body {
-    padding: 10px 15px;
-
-    h4 {
-      font-weight: bold;
-      margin: 5px 0;
-    }
-
-    p:last-child {
-      margin-bottom: 0;
-    }
-  }
-
-  .mr-widget-footer {
-    padding: 10px 15px;
-    border-top: 1px solid #EEE;
-  }
-
-  .ci-coverage {
-    float: right;
-  }
 }
 
 .merge-request-show-labels {

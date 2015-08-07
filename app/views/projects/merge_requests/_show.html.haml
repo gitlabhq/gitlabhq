@@ -26,16 +26,6 @@
             If you want to try or merge this request manually, you can use the
             = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
 
-    - if @merge_request.open? and @merge_request.source_branch_exists?
-      .append-bottom-20
-        .slead
-          %span
-            Fetch the branch with
-            %strong.label-branch<
-              git fetch
-              \ #{@merge_request.source_project.http_url_to_repo}
-              \ #{@merge_request.source_branch}
-
     = render "projects/merge_requests/show/how_to_merge"
     = render "projects/merge_requests/widget/show.html.haml"
 
