@@ -61,23 +61,10 @@
 }
 
 .label-branch {
-  @include border-radius(4px);
-  padding: 3px 4px;
-  border: none;
-  background: $hover;
-  color: #333;
+  color: #222;
   font-family: $monospace_font;
-  font-weight: normal;
+  font-weight: bold;
   overflow: hidden;
-
-  .label-project {
-    @include border-radius-left(4px);
-    padding: 3px 4px;
-    background: #279;
-    position: relative;
-    left: -4px;
-    letter-spacing: -1px;
-  }
 }
 
 .mr-list {
