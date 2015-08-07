@@ -5,9 +5,7 @@ class Import::GitlabController < Import::BaseController
   rescue_from OAuth2::Error, with: :gitlab_unauthorized
 
   def callback
-    token = client.get_token(params[:code], callback_import_gitlab_url)
-    current_user.gitlab_access_token = token
-    current_user.save
+    session[:gitlab_access_token] = client.get_token(params[:code], callback_import_gitlab_url)
     redirect_to status_import_gitlab_url
   end
 
@@ -36,13 +34,13 @@ class Import::GitlabController < Import::BaseController
 
     namespace = get_or_create_namespace || (render and return)
 
-    @project = Gitlab::GitlabImport::ProjectCreator.new(repo, namespace, current_user).execute
+    @project = Gitlab::GitlabImport::ProjectCreator.new(repo, namespace, current_user, access_params).execute
   end
 
   private
 
   def client
-    @client ||= Gitlab::GitlabImport::Client.new(current_user.gitlab_access_token)
+    @client ||= Gitlab::GitlabImport::Client.new(session[:gitlab_access_token])
   end
 
   def verify_gitlab_import_enabled
@@ -50,7 +48,7 @@ class Import::GitlabController < Import::BaseController
   end
 
   def gitlab_auth
-    if current_user.gitlab_access_token.blank?
+    if session[:gitlab_access_token].blank?
       go_to_gitlab_for_permissions
     end
   end
@@ -61,5 +59,11 @@ class Import::GitlabController < Import::BaseController
 
   def gitlab_unauthorized
     go_to_gitlab_for_permissions
+  end
+
+  private
+
+  def access_params
+    { gitlab_access_token: session[:gitlab_access_token] }
   end
 end

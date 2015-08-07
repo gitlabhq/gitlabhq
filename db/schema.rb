@@ -526,13 +526,9 @@ ActiveRecord::Schema.define(version: 20150818213832) do
     t.string   "unconfirmed_email"
     t.boolean  "hide_no_ssh_key",               default: false
     t.string   "website_url",                   default: "",    null: false
-    t.string   "github_access_token"
-    t.string   "gitlab_access_token"
     t.string   "notification_email"
     t.boolean  "hide_no_password",              default: false
     t.boolean  "password_automatically_set",    default: false
-    t.string   "bitbucket_access_token"
-    t.string   "bitbucket_access_token_secret"
     t.string   "location"
     t.string   "encrypted_otp_secret"
     t.string   "encrypted_otp_secret_iv"
