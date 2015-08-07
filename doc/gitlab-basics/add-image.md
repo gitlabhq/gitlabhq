@@ -59,4 +59,5 @@ Now you can push (send) your changes (in the branch NAME-OF-BRANCH) to GitLab (t
 git push origin NAME-OF-BRANCH
 ```
 
-Your image should've been added to your repository in GitLab.
+Your image will be added to your branch in your repository in GitLab. Create a [Merge Request](add-merge-request.md)
+to integrate your changes to your project.
