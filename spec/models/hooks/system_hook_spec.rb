@@ -101,7 +101,7 @@ describe SystemHook do
     it 'group member create hook' do
       group = create(:group)
       user = create(:user)
-      group.add_user(user, Gitlab::Access::MASTER)
+      group.add_master(user)
       expect(WebMock).to have_requested(:post, @system_hook.url).with(
         body: /user_add_to_group/,
         headers: { 'Content-Type'=>'application/json', 'X-Gitlab-Event'=>'System Hook' }
@@ -111,7 +111,7 @@ describe SystemHook do
     it 'group member destroy hook' do
       group = create(:group)
       user = create(:user)
-      group.add_user(user, Gitlab::Access::MASTER)
+      group.add_master(user)
       group.group_members.destroy_all
       expect(WebMock).to have_requested(:post, @system_hook.url).with(
         body: /user_remove_from_group/,
