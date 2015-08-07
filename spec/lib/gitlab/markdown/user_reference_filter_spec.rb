@@ -64,6 +64,14 @@ module Gitlab::Markdown
         expect(doc.css('a').length).to eq 1
       end
 
+      it 'includes a data-user-id attribute' do
+        doc = filter("Hey #{reference}")
+        link = doc.css('a').first
+
+        expect(link).to have_attribute('data-user-id')
+        expect(link.attr('data-user-id')).to eq user.namespace.owner_id.to_s
+      end
+
       it 'adds to the results hash' do
         result = pipeline_result("Hey #{reference}")
         expect(result[:references][:user]).to eq [user]
@@ -83,6 +91,14 @@ module Gitlab::Markdown
         it 'links to the Group' do
           doc = filter("Hey #{reference}", current_user: user)
           expect(doc.css('a').first.attr('href')).to eq urls.group_url(group)
+        end
+
+        it 'includes a data-group-id attribute' do
+          doc = filter("Hey #{reference}", current_user: user)
+          link = doc.css('a').first
+
+          expect(link).to have_attribute('data-group-id')
+          expect(link.attr('data-group-id')).to eq group.id.to_s
         end
 
         it 'adds to the results hash' do
