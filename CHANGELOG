@@ -29,6 +29,7 @@ v 7.14.0 (unreleased)
   - Add project star and fork count, group avatar URL and user/group web URL attributes to API
   - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
   - Add fetch command to the MR page.
+  - Show who last edited a comment if it wasn't the original author
   - Add ability to manage user email addresses via the API.
   - Show buttons to add license, changelog and contribution guide if they're missing.
   - Tweak project page buttons.
