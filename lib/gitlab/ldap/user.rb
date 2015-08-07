@@ -44,13 +44,14 @@ module Gitlab
         gl_user.skip_reconfirmation!
         gl_user.email = auth_hash.email
 
-        # If we don't have an identity for this provider yet, create one
-        if gl_user.identities.find_by(provider: auth_hash.provider).nil?
-          gl_user.identities.new(extern_uid: auth_hash.uid, provider: auth_hash.provider)
-        else # Update the UID attribute for this provider in case it has changed
-          identity = gl_user.identities.select { |identity|  identity.provider == auth_hash.provider }
-          identity.first.extern_uid = auth_hash.uid
-        end
+        # find_or_initialize_by doesn't update `gl_user.identities`, and isn't autosaved.
+        identity = gl_user.identities.find { |identity|  identity.provider == auth_hash.provider }
+        identity ||= gl_user.identities.build(provider: auth_hash.provider)
+        
+        # For a new user set extern_uid to the LDAP DN
+        # For an existing user with matching email but changed DN, update the DN.
+        # For an existing user with no change in DN, this line changes nothing.
+        identity.extern_uid = auth_hash.uid
 
         gl_user
       end
