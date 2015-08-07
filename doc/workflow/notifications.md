@@ -67,3 +67,5 @@ Below is the table of events users can be notified of:
 | Reopen merge request         | Project members [1]                                               | [1] higher than participating |
 | Merge merge request          | MR author [1], MR assignee [2], project members [3]               | [1] [2] not disabled, [3] higher than participating |
 | New comment                  | Mentioned users [1], users participating [2], project members [3] | [1] [2] not disabled, [3] higher than participating |
+
+You won't receive notifications for Issues, Merge Requests or Milestones created by yourself. You will only receive automatic notifications when somebody else creates one and they mention you. Also, when somebody comments or adds changes to the ones that you've created. 
