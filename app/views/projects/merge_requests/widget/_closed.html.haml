@@ -6,4 +6,5 @@
       - if @merge_request.closed_event
         by #{link_to_member(@project, @merge_request.closed_event.author, avatar: true)}
         #{time_ago_with_tooltip(@merge_request.closed_event.created_at)}
-    %p Changes were not merged into target branch
+    %p 
+      The changes were not merged into the target branch.
