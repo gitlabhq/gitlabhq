@@ -13,6 +13,10 @@
       = link_to "#", class: "modify-merge-commit-link js-toggle-button", title: "Modify merge commit message" do
         %i.fa.fa-edit
         Modify commit message
+    .accept-control
+      = link_to "#modal_merge_info", class: "how_to_merge_link vlink", "data-toggle" => "modal" do
+        = icon('terminal')
+        Merge manually...
     .js-toggle-content.hide.prepend-top-20
       = render 'shared/commit_message_container', params: params,
           text: @merge_request.merge_commit_message,
