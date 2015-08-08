@@ -7,4 +7,6 @@
         by #{link_to_member(@project, @merge_request.closed_event.author, avatar: true)}
         #{time_ago_with_tooltip(@merge_request.closed_event.created_at)}
     %p 
-      The changes were not merged into the target branch.
+      = succeed '.' do
+        The changes were not merged into
+        %span.label-branch= @merge_request.target_branch
