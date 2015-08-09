@@ -41,6 +41,7 @@ v 7.14.0 (unreleased)
   - Remove satellites
   - Remove comments and email addresses when publicly exposing ssh keys (Zeger-Jan van de Weg)
   - Add "Merge manually..." option to MR accept widget
+  - Cache all events
 
 v 7.13.3
   - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.

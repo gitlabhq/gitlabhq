@@ -27,7 +27,7 @@
   = favicon_link_tag 'touch-icon-ipad-retina.png',   rel: 'apple-touch-icon', sizes: '152x152'
 
   -# Windows 8 pinned site tile
-  %meta{name: 'msapplication-TileImage', content: image_url('msapplication-tile.png')}
+  %meta{name: 'msapplication-TileImage', content: image_path('msapplication-tile.png')}
   %meta{name: 'msapplication-TileColor', content: '#30353E'}
 
   = yield :meta_tags
@@ -35,3 +35,5 @@
   = render 'layouts/google_analytics' if extra_config.has_key?('google_analytics_id')
   = render 'layouts/piwik' if extra_config.has_key?('piwik_url') && extra_config.has_key?('piwik_site_id')
   = render 'layouts/bootlint' if Rails.env.development?
+
+  = render 'layouts/user_styles'
