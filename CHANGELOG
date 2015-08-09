@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.14.0 (unreleased)
+  - Fix corrupted binary files when using API files endpoint (Stan Hu)
   - Show incompatible projects in Bitbucket import status (Stan Hu)
   - Fix coloring of diffs on MR Discussion-tab (Gert Goet)
   - Fix "Network" and "Graphs" pages for branches with encoded slashes (Stan Hu)
@@ -44,6 +45,9 @@ v 7.14.0 (unreleased)
   - Remove satellites
   - Remove comments and email addresses when publicly exposing ssh keys (Zeger-Jan van de Weg)
   - Cache all events
+  - Order commits by date when comparing branches
+  - Fix bug causing error when the target branch of a symbolic ref was deleted
+  - Include branch/tag name in archive file and directory name
 
 v 7.13.3
   - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
