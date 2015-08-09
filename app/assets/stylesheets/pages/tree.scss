@@ -60,7 +60,11 @@
   }
 
   .tree_author {
-    padding-left: 8px;
+    padding-right: 8px;
+
+    .commit-author-name {
+      color: gray;
+    }
   }
 
   .tree_commit {
