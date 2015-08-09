@@ -252,6 +252,10 @@ class Ability
           :admin_namespace,
           :admin_group_member
         ])
+
+        unless group.ldap_synced?
+          rules << :admin_group_member
+        end
       end
 
       rules.flatten
