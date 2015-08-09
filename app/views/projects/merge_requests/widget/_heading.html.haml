@@ -3,6 +3,7 @@
     - [:success, :skipped, :canceled, :failed, :running, :pending].each do |status|
       .ci_widget{class: "ci-#{status}", style: "display:none"}
         - if status == :success
+          - status = "passed"
           = icon("check-circle")
         - else
           = icon("circle")
@@ -13,15 +14,15 @@
 
     .ci_widget
       = icon("spinner spin")
-      Checking CI status for #{@merge_request.last_commit_short_sha}
+      Checking CI status for #{@merge_request.last_commit_short_sha}&hellip;
 
     .ci_widget.ci-not_found{style: "display:none"}
       = icon("times-circle")
-      %span Cannot find status on the CI server for #{@merge_request.last_commit_short_sha}.
+      Could not find CI status for #{@merge_request.last_commit_short_sha}.
 
     .ci_widget.ci-error{style: "display:none"}
       = icon("times-circle")
-      %span Cannot connect to the CI server. Please check your settings and try again.
+      Could not connect to the CI server. Please check your settings and try again.
 
   :coffeescript
     $ ->
