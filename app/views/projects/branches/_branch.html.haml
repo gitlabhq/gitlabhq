@@ -5,6 +5,11 @@
       %strong.str-truncated= branch.name
       - if branch.name == @repository.root_ref
         %span.label.label-info default
+      - elsif @repository.merged_to_root_ref? branch.name
+        %span.label.label-primary.has_tooltip(title="Merged into #{@repository.root_ref}")
+          %i.fa.fa-check
+          merged
+
       - if @project.protected_branch? branch.name
         %span.label.label-success
           %i.fa.fa-lock

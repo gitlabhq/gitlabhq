@@ -34,6 +34,26 @@ describe Repository do
     end
   end
 
+  describe :merged_to_root_ref? do
+    context 'merged branch' do
+      subject { repository.merged_to_root_ref?('improve/awesome') }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'non merged branch' do
+      subject { repository.merged_to_root_ref?('fix') }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'non existent branch' do
+      subject { repository.merged_to_root_ref?('non_existent_branch') }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe "search_files" do
     let(:results) { repository.search_files('feature', 'master') }
     subject { results }
