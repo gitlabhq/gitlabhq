@@ -8,8 +8,8 @@
   - else
     = event.project_name
 
-- if current_user == event.author && !event.project.private? && twitter_sharing_enabled?
-  .event-body
+- if !event.project.private? && twitter_sharing_enabled?
+  .event-body{"data-user-is" => event.author_id}
     .event-note
       .md
         %p
