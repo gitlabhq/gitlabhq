@@ -82,12 +82,12 @@
                 You can change your avatar here
                 - if Gitlab.config.gravatar.enabled
                   %br
-                  or remove the current avatar to revert to #{link_to "gravatar.com", "http://gravatar.com"}
+                  or remove the current avatar to revert to #{link_to Gitlab.config.gravatar.host, "http://" + Gitlab.config.gravatar.host}
               - else
                 You can upload an avatar here
                 - if Gitlab.config.gravatar.enabled
                   %br
-                  or change it at #{link_to "gravatar.com", "http://gravatar.com"}
+                  or change it at #{link_to Gitlab.config.gravatar.host, "http://" + Gitlab.config.gravatar.host}
             %hr
             %a.choose-btn.btn.btn-sm.js-choose-user-avatar-button
               %i.fa.fa-paperclip
