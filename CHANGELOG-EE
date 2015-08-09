@@ -1,6 +1,7 @@
 v 7.14
   - Disable adding, updating and removing members from a group that is synced with LDAP
   - Don't send "Added to group" notifications when group is LDAP synched
+  - Fix importing projects from GitHub Enterprise Edition.
   - Automatic approver suggestions (based on an authority of the code)  
 
 v7.13.3
