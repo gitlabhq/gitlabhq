@@ -19,7 +19,7 @@ class @MergeRequestWidget
           when 'merged'
             location.reload()
           else
-            setTimeout(merge_request_widget.mergeInProgress, 3000)
+            setTimeout(merge_request_widget.mergeInProgress, 2000)
       dataType: 'json'
 
   getMergeStatus: ->
@@ -36,7 +36,7 @@ class @MergeRequestWidget
 
   showCiState: (state) ->
     $('.ci_widget').hide()
-    allowed_states = ["failed", "canceled", "running", "pending", "success", "not_found"]
+    allowed_states = ["failed", "canceled", "running", "pending", "success", "skipped", "not_found"]
     if state in allowed_states
       $('.ci_widget.ci-' + state).show()
       switch state
@@ -49,10 +49,8 @@ class @MergeRequestWidget
       @setMergeButtonClass('btn-danger')
 
   showCiCoverage: (coverage) ->
-    cov_html = $('<span>')
-    cov_html.addClass('ci-coverage')
-    cov_html.text('Coverage ' + coverage + '%')
-    $('.ci_widget:visible').append(cov_html)
+    text = 'Coverage ' + coverage + '%'
+    $('.ci_widget:visible .ci-coverage').text(text)
 
   setMergeButtonClass: (css_class) ->
     $('.accept_merge_request').removeClass("btn-create").addClass(css_class)

@@ -9,8 +9,8 @@
 
   .project-info
     - if project.description.present?
-      %p.project-description.str-truncated
-        = project.description
+      .project-description.str-truncated
+        = markdown(project.description, pipeline: :description)
 
     .repo-info
       - unless project.empty_repo?

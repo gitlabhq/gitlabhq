@@ -1,12 +1,12 @@
 class @Project
   constructor: ->
     # Git clone panel switcher
-    scope = $ '.git-clone-holder'
-    if scope.length > 0
-      $('a, button', scope).click ->
-        $('a, button', scope).removeClass 'active'
+    cloneHolder = $('.git-clone-holder')
+    if cloneHolder.length
+      $('a, button', cloneHolder).click ->
+        $('a, button', cloneHolder).removeClass 'active'
         $(@).addClass 'active'
-        $('#project_clone', scope).val $(@).data 'clone'
+        $('#project_clone', cloneHolder).val $(@).data 'clone'
         $(".clone").text("").append $(@).data 'clone'
 
     # Ref switcher
@@ -24,3 +24,8 @@ class @Project
       $.cookie('hide_no_password_message', 'false', { path: path })
       $(@).parents('.no-password-message').remove()
       e.preventDefault()
+
+    $('.js-toggle-clone-holder').on 'click', (e) ->
+      cloneHolder.toggle()
+
+    cloneHolder.hide() unless $('.empty-project').length

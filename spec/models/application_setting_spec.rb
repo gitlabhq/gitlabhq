@@ -14,11 +14,14 @@
 #  default_branch_protection    :integer          default(2)
 #  twitter_sharing_enabled      :boolean          default(TRUE)
 #  restricted_visibility_levels :text
+#  version_check_enabled        :boolean          default(TRUE)
 #  max_attachment_size          :integer          default(10), not null
-#  session_expire_delay       :integer          default(10080), not null
 #  default_project_visibility   :integer
 #  default_snippet_visibility   :integer
 #  restricted_signup_domains    :text
+#  user_oauth_applications      :boolean          default(TRUE)
+#  after_sign_out_path          :string(255)
+#  session_expire_delay         :integer          default(10080), not null
 #
 
 require 'spec_helper'

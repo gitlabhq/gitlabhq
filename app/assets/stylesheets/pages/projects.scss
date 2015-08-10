@@ -16,7 +16,6 @@
 
 .project-home-panel {
   text-align: center;
-  margin-bottom: 20px;
 
   .project-identicon-holder {
     margin-bottom: 15px;
@@ -31,7 +30,13 @@
     }
   }
 
-  .lead {
+  .project-home-desc {
+    h1 {
+      margin: 0;
+      margin-bottom: 10px;
+      font-size: 26px;
+    }
+
     p {
       display: inline;
     }
@@ -39,7 +44,7 @@
 
   .git-clone-holder {
     max-width: 600px;
-    margin: 0 auto;
+    margin: 20px auto;
   }
 
   .visibility-level-label {
@@ -297,6 +302,15 @@ table.table.protected-branches-list tr.no-border {
   ul.nav-pills { display:inline-block; }
   li { display:inline; }
   a { float:left; }
+
+  li.missing a {
+    color: #bbb;
+    border: 1px dashed #ccc;
+
+    &:hover {
+      background-color: #FAFAFA;
+    }
+  }
 }
 
 pre.light-well {

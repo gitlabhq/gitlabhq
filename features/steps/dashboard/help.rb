@@ -16,6 +16,6 @@ class Spinach::Features::DashboardHelp < Spinach::FeatureSteps
   end
 
   step 'Header "Rebuild project satellites" should have correct ids and links' do
-    header_should_have_correct_id_and_link(2, '(Re-)Create satellite repositories', 're-create-satellite-repositories', '.documentation')
+    header_should_have_correct_id_and_link(2, 'Check GitLab configuration', 'check-gitlab-configuration', '.documentation')
   end
 end

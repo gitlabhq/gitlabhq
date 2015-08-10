@@ -151,6 +151,10 @@ module SharedPaths
     visit admin_root_path
   end
 
+  step 'I visit abuse reports page' do
+    visit admin_abuse_reports_path
+  end
+
   step 'I visit admin projects page' do
     visit admin_namespaces_projects_path
   end

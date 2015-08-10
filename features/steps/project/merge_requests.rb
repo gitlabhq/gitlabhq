@@ -198,13 +198,10 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'merge request "Bug NS-05" is mergeable' do
-    merge_request.project.satellite.create
     merge_request.mark_as_mergeable
   end
 
   step 'I accept this merge request' do
-    allow_any_instance_of(Gitlab::Satellite::MergeAction).to receive(:merge!).and_return(true)
-
     page.within '.mr-state-widget' do
       click_button "Accept Merge Request"
     end
@@ -373,7 +370,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
     page.within 'ul.approver-list' do
       expect(page).to have_content(@user.name)
-    end    
+    end
   end
 
   step 'merge request \'Bug NS-04\' must be approved' do

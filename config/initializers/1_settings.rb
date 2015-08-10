@@ -8,6 +8,15 @@ class Settings < Settingslogic
     def gitlab_on_standard_port?
       gitlab.port.to_i == (gitlab.https ? 443 : 80)
     end
+    
+    # get host without www, thanks to http://stackoverflow.com/a/6674363/1233435
+    def get_host_without_www(url)
+      url = URI.encode(url)
+      uri = URI.parse(url)
+      uri = URI.parse("http://#{url}") if uri.scheme.nil?
+      host = uri.host.downcase
+      host.start_with?('www.') ? host[4..-1] : host
+    end
 
     private
 
@@ -176,6 +185,7 @@ Settings['gravatar'] ||= Settingslogic.new({})
 Settings.gravatar['enabled']      = true if Settings.gravatar['enabled'].nil?
 Settings.gravatar['plain_url']  ||= 'http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
 Settings.gravatar['ssl_url']    ||= 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
+Settings.gravatar['host']         = Settings.get_host_without_www(Settings.gravatar['plain_url'])
 
 #
 # GitLab Shell
@@ -199,6 +209,7 @@ Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.send(:build_gitlab_shell_s
 Settings['backup'] ||= Settingslogic.new({})
 Settings.backup['keep_time']  ||= 0
 Settings.backup['path']         = File.expand_path(Settings.backup['path'] || "tmp/backups/", Rails.root)
+Settings.backup['archive_permissions']          ||= 0600
 Settings.backup['upload'] ||= Settingslogic.new({ 'remote_directory' => nil, 'connection' => nil })
 # Convert upload connection settings to use symbol keys, to make Fog happy
 if Settings.backup['upload']['connection']

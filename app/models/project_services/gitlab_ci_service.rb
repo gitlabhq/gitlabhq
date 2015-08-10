@@ -74,6 +74,8 @@ class GitlabCiService < CiService
     else
       :error
     end
+  rescue Errno::ECONNREFUSED
+    :error
   end
 
   def fork_registration(new_project, private_token)
@@ -103,6 +105,8 @@ class GitlabCiService < CiService
     if response.code == 200 and response["coverage"]
       response["coverage"]
     end
+  rescue Errno::ECONNREFUSED
+    nil
   end
 
   def build_page(sha, ref)

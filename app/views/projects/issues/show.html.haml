@@ -9,7 +9,13 @@
           Open
       Issue ##{@issue.iid}
       %small.creator
-        &middot; created by #{link_to_member(@project, @issue.author)} #{issue_timestamp(@issue)}
+        &middot; created by #{link_to_member(@project, @issue.author)}
+        = time_ago_with_tooltip(@issue.created_at, placement: 'bottom', html_class: 'issue_created_ago')
+        - if @issue.updated_at != @issue.created_at
+          %span
+            &middot;
+            = icon('edit', title: 'edited')
+            = time_ago_with_tooltip(@issue.updated_at, placement: 'bottom', html_class: 'issue_edited_ago')
 
       .pull-right
         - if can?(current_user, :create_issue, @project)

@@ -106,4 +106,14 @@ module MergeRequestsHelper
 
     str
   end
+
+  def source_branch_with_namespace(merge_request)
+    if merge_request.for_fork?
+      namespace = link_to(merge_request.source_project_namespace,
+        project_path(merge_request.source_project))
+      namespace + ":#{merge_request.source_branch}"
+    else
+      merge_request.source_branch
+    end
+  end
 end
