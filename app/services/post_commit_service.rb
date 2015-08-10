@@ -1,36 +1,37 @@
 class PostCommitService < BaseService
   include Gitlab::Popen
 
-  attr_reader :changes
+  attr_reader :changes, :repo_path
 
   def execute(sha, branch)
     commit = repository.commit(sha)
-    full_ref = 'refs/heads/' + branch
+    full_ref = Gitlab::Git::BRANCH_REF_PREFIX + branch
     old_sha = commit.parent_id || Gitlab::Git::BLANK_SHA
-
     @changes = "#{old_sha} #{sha} #{full_ref}"
-    post_receive(@changes, repository.path_to_repo)
+    @repo_path = repository.path_to_repo
+
+    post_receive
   end
 
   private
 
-  def post_receive(changes, repo_path)
+  def post_receive
     hook = hook_file('post-receive', repo_path)
     return true if hook.nil?
-    call_receive_hook(hook, changes) ? true : false
+    call_receive_hook(hook)
   end
 
-  def call_receive_hook(hook, changes)
+  def call_receive_hook(hook)
     # function  will return true if succesful
     exit_status = false
 
     vars = {
       'GL_ID' => Gitlab::ShellEnv.gl_id(current_user),
-      'PWD' => repository.path_to_repo
+      'PWD' => repo_path
     }
 
     options = {
-      chdir: repository.path_to_repo
+      chdir: repo_path
     }
 
     # we combine both stdout and stderr as we don't know what stream
@@ -45,7 +46,7 @@ class PostCommitService < BaseService
       begin
         # inject all the changes as stdin to the hook
         changes.lines do |line|
-          stdin.puts (line)
+          stdin.puts line
         end
       rescue Errno::EPIPE
       end
@@ -56,7 +57,6 @@ class PostCommitService < BaseService
       # only output stdut_stderr if scripts doesn't return 0
       unless wait_thr.value == 0
         exit_status = false
-        stdout_stderr.each_line { |line| puts line }
       end
     end
 
