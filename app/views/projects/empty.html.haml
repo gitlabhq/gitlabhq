@@ -43,6 +43,8 @@
         cd existing_folder
         git init
         git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
+        git add .
+        git commit
         git push -u origin master
 
 - if can? current_user, :remove_project, @project
