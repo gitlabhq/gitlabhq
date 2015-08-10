@@ -40,6 +40,15 @@
       font-size: inherit;
     }
 
+    .div-dropzone-progress {
+      position: absolute;
+      top: 7px;
+      left: -40px;
+      width: 35px;
+      font-size: 13px;
+      text-align: right;
+    }
+
     .dz-preview {
       display: none;
     }
