@@ -51,6 +51,7 @@ v 7.14.0 (unreleased)
   - Order commits by date when comparing branches
   - Fix bug causing error when the target branch of a symbolic ref was deleted
   - Include branch/tag name in archive file and directory name
+  - Add dropzone upload progress
 
 v 7.13.3
   - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
