@@ -97,4 +97,4 @@ In all of the below cases, the notification will be sent to:
 You won't receive notifications for Issues, Merge Requests or Milestones
 created by yourself. You will only receive automatic notifications when
 somebody else comments or adds changes to the ones that you've created or
-mentions you. 
+mentions you.
