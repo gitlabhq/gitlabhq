@@ -93,7 +93,7 @@ To change the Unicorn workers when you have the Omnibus package please see [the 
 
 ## Database
 
-If you want to run the database separately, the **recommended** database size is **1 MB per user**.
+If you want to run the database separately expect a size of about 1 MB per user.
 
 ## Redis and Sidekiq
 
