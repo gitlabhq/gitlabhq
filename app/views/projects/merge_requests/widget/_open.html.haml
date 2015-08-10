@@ -24,6 +24,6 @@
     .mr-widget-footer
       %span
         %i.fa.fa-check
-        Accepting this merge request will close #{@closes_issues.size == 1 ? 'issue' : 'issues'}
+        Accepting this merge request will close #{"issue".pluralize(@closes_issues.size)}
         = succeed '.' do
           != gfm(issues_sentence(@closes_issues))
