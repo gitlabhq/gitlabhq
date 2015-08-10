@@ -55,16 +55,7 @@ Below is the table of events users can be notified of:
 | User added to project        | User                                                              | Sent when user is added to project |
 | Project access level changed | User                                                              | Sent when user project access level is changed |
 | User added to group          | User                                                              | Sent when user is added to group |
-| Group access level changed   | User                                                              | Sent when user group access level is changed |
-| Close issue                  | Issue author [1], issue assignee [2], project members [3]         | [1] [2] not disabled, [3] higher than participating |
-| Reassign issue               | New issue assignee [1], old issue assignee [2]                    | [1] [2] not disabled |
-| Reopen issue                 | Project members [1]                                               | [1] higher than participating |
-| New merge request            | MR assignee [1]                                                   | [1] not disabled |
-| Reassign merge request       | New MR assignee [1], old MR assignee [2]                          | [1] [2] not disabled |
-| Close merge request          | MR author [1], MR assignee [2], project members [3]               | [1] [2] not disabled, [3] higher than participating |
-| Reopen merge request         | Project members [1]                                               | [1] higher than participating |
-| Merge merge request          | MR author [1], MR assignee [2], project members [3]               | [1] [2] not disabled, [3] higher than participating |
-| New comment                  | Mentioned users [1], users participating [2], project members [3] | [1] [2] not disabled, [3] higher than participating |
+| Group access level changed   | User                                                              | Sent when user group access level is changed | 
 | Project moved                | Project members [1]                                               | [1] not disabled |
 
 ### Issue / Merge Request events
