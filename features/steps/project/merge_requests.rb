@@ -377,7 +377,6 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     merge_request = MergeRequest.find_by!(title: "Bug NS-04")
     project = merge_request.target_project
     project.approvals_before_merge = 1
-    project.ensure_satellite_exists
     project.save!
   end
 
@@ -386,7 +385,6 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     project = merge_request.target_project
     project.approvals_before_merge = 1
     merge_request.approvers.create(user_id: current_user.id)
-    project.ensure_satellite_exists
     project.save!
   end
 
@@ -395,7 +393,6 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     project = merge_request.target_project
     project.approvals_before_merge = 1
     merge_request.approvers.create(user_id: create(:user).id)
-    project.ensure_satellite_exists
     project.save!
   end
 
