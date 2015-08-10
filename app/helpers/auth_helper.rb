@@ -7,7 +7,7 @@ module AuthHelper
   end
 
   def kerberos_enabled?
-    enabled_oauth_providers.include?(:kerberos)
+    auth_providers.include?(:kerberos)
   end
 
   def provider_has_icon?(name)
