@@ -1,11 +1,10 @@
 %h4
-  This merge request contains merge conflicts that must be resolved.
+  = icon("exclamation-triangle")
+  This merge request contains merge conflicts
 
-- if @merge_request.can_be_merged_by?(current_user)
-  %p
-    You can merge it manually using the
-    %strong
-      = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
-- else
-  %p
-    Only those with write access to this repository can merge merge requests.
+%p
+  Please resolve these conflicts or 
+  - if @merge_request.can_be_merged_by?(current_user)
+    #{link_to "merge this request manually", "#modal_merge_info", class: "how_to_merge_link vlink", "data-toggle" => "modal"}.
+  - else
+    ask someone with write access to this repository to merge this request manually.

@@ -47,10 +47,11 @@ module Gitlab
 
             title = escape_once("Snippet: #{snippet.title}")
             klass = reference_class(:snippet)
+            data  = data_attribute(project.id)
 
             url = url_for_snippet(snippet, project)
 
-            %(<a href="#{url}"
+            %(<a href="#{url}" #{data}
                  title="#{title}"
                  class="#{klass}">#{match}</a>)
           else
