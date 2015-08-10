@@ -12,25 +12,26 @@
         = render "projects/blob/actions"
     .file-content.blame.highlight
       %table
-        - @blame.each do |commit, lines, since|
-          - commit = Commit.new(commit, @project)
+        - current_line = 1
+        - @blame.each do |raw_commit, line|
           %tr
             %td.blame-commit
               %span.commit
-                = link_to commit.short_id, namespace_project_commit_path(@project.namespace, @project, commit), class: "commit_short_id"
-                &nbsp;
-                = commit_author_link(commit, avatar: true, size: 16)
-                &nbsp;
-                = link_to_gfm truncate(commit.title, length: 20), namespace_project_commit_path(@project.namespace, @project, commit.id), class: "row_title"
+                - unless @prev_commit && @prev_commit.sha == raw_commit.sha
+                  - commit = Commit.new(raw_commit, @project)
+                  = link_to commit.short_id, namespace_project_commit_path(@project.namespace, @project, commit), class: "commit_short_id"
+                  &nbsp;
+                  = commit_author_link(commit, avatar: true, size: 16)
+                  &nbsp;
+                  = link_to_gfm truncate(commit.title, length: 20), namespace_project_commit_path(@project.namespace, @project, commit.id), class: "row_title"
+                - @prev_commit = raw_commit
             %td.lines.blame-numbers
               %pre
-                - (since...(since + lines.count)).each do |i|
-                  = i
-                  \
+                = current_line
+                - current_line += 1
             %td.lines
               %pre{class: 'code highlight white'}
                 %code
                   :erb
-                    <% lines.each do |line| %>
-                      <%= highlight(@blob.name, line, nowrap: true, continue: true).html_safe %>
-                    <% end %>
+                    <%= highlight(@blob.name, line, nowrap: true, continue: true).html_safe %>
+                    
