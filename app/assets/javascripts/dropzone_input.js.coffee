@@ -8,6 +8,7 @@ class @DropzoneInput
     divAlert = "<div class=\"" + alertClass + "\"></div>"
     iconPaperclip = "<i class=\"fa fa-paperclip div-dropzone-icon\"></i>"
     iconSpinner = "<i class=\"fa fa-spinner fa-spin div-dropzone-icon\"></i>"
+    uploadProgress = $("<div class=\"div-dropzone-progress\"></div>")
     btnAlert = "<button type=\"button\"" + alertAttr + ">&times;</button>"
     project_uploads_path = window.project_uploads_path or null
     markdown_preview_path = window.markdown_preview_path or null
@@ -28,6 +29,7 @@ class @DropzoneInput
     form_dropzone.find(".div-dropzone-hover").append iconPaperclip
     form_dropzone.append divSpinner
     form_dropzone.find(".div-dropzone-spinner").append iconSpinner
+    form_dropzone.find(".div-dropzone-spinner").append uploadProgress
     form_dropzone.find(".div-dropzone-spinner").css
       "opacity": 0
       "display": "none"
@@ -112,13 +114,18 @@ class @DropzoneInput
           $(".div-dropzone-alert").append btnAlert + errorMessage
         return
 
+      totaluploadprogress: (totalUploadProgress) ->
+        uploadProgress.text Math.round(totalUploadProgress) + "%"
+        return
+
       sending: ->
         form_dropzone.find(".div-dropzone-spinner").css
           "opacity": 0.7
           "display": "inherit"
         return
 
-      complete: ->
+      queuecomplete: ->
+        uploadProgress.text ""
         $(".dz-preview").remove()
         $(".markdown-area").trigger "input"
         $(".div-dropzone-spinner").css

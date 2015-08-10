@@ -73,6 +73,14 @@ module Gitlab::Markdown
         expect(doc.css('a').first.attr('class')).to include 'custom'
       end
 
+      it 'includes a data-project-id attribute' do
+        doc = filter("Issue #{reference}")
+        link = doc.css('a').first
+
+        expect(link).to have_attribute('data-project-id')
+        expect(link.attr('data-project-id')).to eq project.id.to_s
+      end
+
       it 'supports an :only_path context' do
         doc = filter("Issue #{reference}", only_path: true)
         link = doc.css('a').first.attr('href')

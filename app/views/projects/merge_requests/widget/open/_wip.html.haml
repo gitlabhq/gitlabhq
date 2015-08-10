@@ -1,13 +1,5 @@
-- if @merge_request.can_be_merged_by?(current_user)
-  %h4
-    This merge request cannot be accepted because it is marked as Work In Progress.
+%h4
+  This merge request is currently a Work In Progress
 
-  %p
-    %button.btn.disabled{:type => 'button'}
-      %i.fa.fa-warning
-      Accept Merge Request
-    &nbsp;
-    When the merge request is ready, remove the "WIP" prefix from the title to allow it to be accepted.
-- else
-  %strong This merge request is marked as Work In Progress.
-  Only those with write access to this repository can merge merge requests.
+%p
+  When this merge request is ready, remove the "WIP" prefix from the title to allow it to be merged.

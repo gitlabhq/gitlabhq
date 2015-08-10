@@ -1,6 +1,6 @@
 - page_title "Report abuse"
 %h3.page-title Report abuse
-%p Please use this form to report users who create spam issues or comments or who otherwise behave inappropriately.
+%p Please use this form to report users who create spam issues, comments or behave inappropriately.
 %hr
 = form_for @abuse_report, html: { class: 'form-horizontal'} do |f|
   = f.hidden_field :user_id

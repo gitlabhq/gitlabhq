@@ -91,8 +91,6 @@
 
 @media(min-width: $screen-sm-max) {
   .merge-request .merge-request-tabs{
-    margin: 20px 0;
-
     li {
       a {
         padding: 15px 40px;
@@ -100,6 +98,11 @@
       }
     }
   }
+}
+
+.merge-request .merge-request-tabs{
+  margin-top: 30px;
+  margin-bottom: 20px;
 }
 
 .mr_source_commit,
@@ -178,4 +181,8 @@
 
 .merge-request-form .select2-container {
   width: 250px !important;
+}
+
+#modal_merge_info .modal-dialog {
+  width: 600px;
 }
