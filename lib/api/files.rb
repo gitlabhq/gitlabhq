@@ -67,7 +67,7 @@ module API
             file_path: blob.path,
             size: blob.size,
             encoding: "base64",
-            content: Base64.encode64(blob.data),
+            content: Base64.strict_encode64(blob.data),
             ref: ref,
             blob_id: blob.id,
             commit_id: commit.id,
