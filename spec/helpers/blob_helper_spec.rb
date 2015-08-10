@@ -47,5 +47,21 @@ describe BlobHelper do
       expect(lines[1].text).to eq('        This is line 2.')
       expect(lines[2].text).to eq('        """')
     end
+
+    context 'diff highlighting' do
+      let(:blob_name) { 'test.diff' }
+      let(:blob_content) { "+aaa\n+bbb\n- ccc\n ddd\n"}
+      let(:expected) do
+        %q(<span id="LC1" class="line"><span class="gi">+aaa</span></span>
+<span id="LC2" class="line"><span class="gi">+bbb</span></span>
+<span id="LC3" class="line"><span class="gd">- ccc</span></span>
+<span id="LC4" class="line"> ddd</span>)
+      end
+
+      it 'should highlight each line properly' do
+        result = highlight(blob_name, blob_content, nowrap: true, continue: false)
+        expect(result).to eq(expected)
+      end
+    end
   end
 end
