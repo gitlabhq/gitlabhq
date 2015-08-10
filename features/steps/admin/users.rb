@@ -79,7 +79,7 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
     project.team << [user, :developer]
 
     group = create(:group)
-    group.add_user(user, Gitlab::Access::DEVELOPER)
+    group.add_developer(user)
   end
 
   step 'click on "Mike" link' do

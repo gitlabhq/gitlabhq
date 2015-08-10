@@ -4,6 +4,7 @@ describe AutocompleteController do
   let!(:project) { create(:project) }
   let!(:user)    { create(:user) }
   let!(:user2)   { create(:user) }
+  let!(:non_member)   { create(:user) }
 
   context 'project members' do
     before do
@@ -58,6 +59,27 @@ describe AutocompleteController do
       end
 
       it { expect(response.status).to eq(404) }
+    end
+  end
+
+  context 'non-member login for public project' do
+    let!(:project) { create(:project, :public) }
+
+    before do
+      sign_in(non_member)
+      project.team << [user, :master]
+    end
+
+    let(:body) { JSON.parse(response.body) }
+
+    describe 'GET #users with project ID' do
+      before do
+        get(:users, project_id: project.id)
+      end
+
+      it { expect(body).to be_kind_of(Array) }
+      it { expect(body.size).to eq 2 }
+      it { expect(body.map { |u| u['username'] }).to match_array([user.username, non_member.username]) }
     end
   end
 

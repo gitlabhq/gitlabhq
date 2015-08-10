@@ -198,13 +198,10 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'merge request "Bug NS-05" is mergeable' do
-    merge_request.project.satellite.create
     merge_request.mark_as_mergeable
   end
 
   step 'I accept this merge request' do
-    allow_any_instance_of(Gitlab::Satellite::MergeAction).to receive(:merge!).and_return(true)
-
     page.within '.mr-state-widget' do
       click_button "Accept Merge Request"
     end
@@ -373,14 +370,13 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
     page.within 'ul.approver-list' do
       expect(page).to have_content(@user.name)
-    end    
+    end
   end
 
   step 'merge request \'Bug NS-04\' must be approved' do
     merge_request = MergeRequest.find_by!(title: "Bug NS-04")
     project = merge_request.target_project
     project.approvals_before_merge = 1
-    project.ensure_satellite_exists
     project.save!
   end
 
@@ -389,7 +385,6 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     project = merge_request.target_project
     project.approvals_before_merge = 1
     merge_request.approvers.create(user_id: current_user.id)
-    project.ensure_satellite_exists
     project.save!
   end
 
@@ -398,7 +393,6 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     project = merge_request.target_project
     project.approvals_before_merge = 1
     merge_request.approvers.create(user_id: create(:user).id)
-    project.ensure_satellite_exists
     project.save!
   end
 

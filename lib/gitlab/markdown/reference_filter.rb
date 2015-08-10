@@ -21,6 +21,22 @@ module Gitlab
         result[:references] = Hash.new { |hash, type| hash[type] = [] }
       end
 
+      # Returns a data attribute String to attach to a reference link
+      #
+      # id   - Object ID
+      # type - Object type (default: :project)
+      #
+      # Examples:
+      #
+      #   data_attribute(1)         # => "data-project-id=\"1\""
+      #   data_attribute(2, :user)  # => "data-user-id=\"2\""
+      #   data_attribute(3, :group) # => "data-group-id=\"3\""
+      #
+      # Returns a String
+      def data_attribute(id, type = :project)
+        %Q(data-#{type}-id="#{id}")
+      end
+
       def escape_once(html)
         ERB::Util.html_escape_once(html)
       end

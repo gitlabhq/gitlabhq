@@ -73,7 +73,7 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
   end
 
   step 'we have user "John Doe" in group' do
-    current_group.add_user(user_john, Gitlab::Access::REPORTER)
+    current_group.add_reporter(user_john)
   end
 
   step 'I remove user "John Doe" from group' do

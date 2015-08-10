@@ -47,7 +47,7 @@ module Rouge
         @lineanchors = lineanchors
         @lineanchorsid = lineanchorsid
         @anchorlinenos = anchorlinenos
-        @inline_theme = Theme.find(@inline_theme).new if @inline_theme.is_a?(String)
+        @inline_theme = Theme.find(inline_theme).new if inline_theme.is_a?(String)
       end
 
       def render(tokens)

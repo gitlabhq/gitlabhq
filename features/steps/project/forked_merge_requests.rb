@@ -9,7 +9,6 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
     @project = Project.find_by(name: "Shop")
     @project ||= create(:project, name: "Shop")
     @project.team << [@user, :reporter]
-    @project.ensure_satellite_exists
   end
 
   step 'I have a project forked off of "Shop" called "Forked Shop"' do
@@ -138,10 +137,11 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see the users from the target project ID' do
-    expect(page).to have_selector('.user-result', visible: true, count: 2)
+    expect(page).to have_selector('.user-result', visible: true, count: 3)
     users = page.all('.user-name')
     expect(users[0].text).to eq 'Unassigned'
-    expect(users[1].text).to eq @project.users.first.name
+    expect(users[1].text).to eq current_user.name
+    expect(users[2].text).to eq @project.users.first.name
   end
 
   # Verify a link is generated against the correct project

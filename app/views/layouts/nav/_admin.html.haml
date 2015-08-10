@@ -67,6 +67,13 @@
       %span
         Service Templates
 
+  = nav_link(controller: :abuse_reports) do
+    = link_to admin_abuse_reports_path, title: "Abuse reports" do
+      = icon('exclamation-circle fw')
+      %span
+        Abuse Reports
+        %span.count= AbuseReport.count(:all)
+
   = nav_link(controller: :application_settings, html_options: { class: 'separate-item'}) do
     = link_to admin_application_settings_path, title: 'Settings', data: {placement: 'right'} do
       = icon('cogs fw')

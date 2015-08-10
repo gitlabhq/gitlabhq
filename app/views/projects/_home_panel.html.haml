@@ -3,6 +3,7 @@
   .project-identicon-holder
     = project_icon(@project, alt: '', class: 'project-avatar avatar s90')
   .project-home-desc.lead
+    %h1= @project.name
     - if @project.description.present?
       = markdown(@project.description, pipeline: :description)
 
@@ -20,8 +21,14 @@
           = forked_from_project.namespace.try(:name)
 
       - if can? current_user, :download_code, @project
+        = link_to "#", class: 'btn js-toggle-clone-holder' do
+          = icon('cloud-download fw')
+          Clone
+
+      - if can? current_user, :download_code, @project
         = link_to archive_namespace_project_repository_path(@project.namespace, @project, ref: @ref, format: 'zip'), class: 'btn', rel: 'nofollow' do
-          %i.fa.fa-download
+          = icon('download fw')
+          Download
 
     = render 'projects/buttons/dropdown'
 

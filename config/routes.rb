@@ -65,6 +65,9 @@ Gitlab::Application.routes.draw do
     end
   end
 
+  # Spam reports
+  resources :abuse_reports, only: [:new, :create]
+
   #
   # Import
   #
@@ -164,13 +167,14 @@ Gitlab::Application.routes.draw do
         put :block
         put :unblock
         put :unlock
+        put :confirm
         patch :disable_two_factor
         delete 'remove/:email_id', action: 'remove_email', as: 'remove_email'
       end
     end
 
     resources :git_hooks, only: [:index, :update]
-
+    resources :abuse_reports, only: [:index, :destroy]
     resources :applications
 
     resources :groups, constraints: { id: /[^\/]+/ } do
@@ -495,8 +499,8 @@ Gitlab::Application.routes.draw do
           member do
             get :diffs
             get :commits
-            post :automerge
-            get :automerge_check
+            post :merge
+            get :merge_check
             get :ci_status
             post :toggle_subscription
             post :approve

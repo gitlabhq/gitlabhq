@@ -33,7 +33,14 @@
 
         %span.note-last-update
           = link_to "##{dom_id(note)}", name: dom_id(note), title: "Link here" do
-            = note_timestamp(note)
+            = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note_created_ago')
+          - if note.updated_at != note.created_at
+            %span
+              &middot;
+              = icon('edit', title: 'edited')
+              = time_ago_with_tooltip(note.updated_at, placement: 'bottom', html_class: 'note_edited_ago')
+              - if note.updated_by && note.updated_by != note.author
+                by #{link_to_member(note.project, note.updated_by, avatar: false, author_class: nil)}
 
         - if note.superceded?(@notes)
           - if note.upvote?

@@ -1,43 +1,28 @@
 - if @merge_request.has_ci?
   .mr-widget-heading
-    .ci_widget.ci-success{style: "display:none"}
-      = icon("check")
-      %span CI build passed
-      for #{@merge_request.last_commit_short_sha}.
-      = link_to "View build page", ci_build_details_path(@merge_request), :"data-no-turbolink" => "data-no-turbolink"
-
-    .ci_widget.ci-failed{style: "display:none"}
-      = icon("times")
-      %span CI build failed
-      for #{@merge_request.last_commit_short_sha}.
-      = link_to "View build page", ci_build_details_path(@merge_request), :"data-no-turbolink" => "data-no-turbolink"
-
-    - [:running, :pending].each do |status|
+    - [:success, :skipped, :canceled, :failed, :running, :pending].each do |status|
       .ci_widget{class: "ci-#{status}", style: "display:none"}
-        = icon("clock-o")
+        - if status == :success
+          - status = "passed"
+          = icon("check-circle")
+        - else
+          = icon("circle")
         %span CI build #{status}
         for #{@merge_request.last_commit_short_sha}.
-        = link_to "View build page", ci_build_details_path(@merge_request), :"data-no-turbolink" => "data-no-turbolink"
+        %span.ci-coverage
+        = link_to "View build details", ci_build_details_path(@merge_request), :"data-no-turbolink" => "data-no-turbolink"
 
     .ci_widget
       = icon("spinner spin")
-      Checking for CI status for #{@merge_request.last_commit_short_sha}
+      Checking CI status for #{@merge_request.last_commit_short_sha}&hellip;
 
     .ci_widget.ci-not_found{style: "display:none"}
-      = icon("times")
-      %span Can not find commit in the CI server
-      for #{@merge_request.last_commit_short_sha}.
-      
-
-    .ci_widget.ci-canceled{style: "display:none"}
-      = icon("times")
-      %span CI build canceled
-      for #{@merge_request.last_commit_short_sha}.
-      = link_to "View build page", ci_build_details_path(@merge_request), :"data-no-turbolink" => "data-no-turbolink"
+      = icon("times-circle")
+      Could not find CI status for #{@merge_request.last_commit_short_sha}.
 
     .ci_widget.ci-error{style: "display:none"}
-      = icon("times")
-      %span Cannot connect to the CI server. Please check your settings and try again.
+      = icon("times-circle")
+      Could not connect to the CI server. Please check your settings and try again.
 
   :coffeescript
     $ ->

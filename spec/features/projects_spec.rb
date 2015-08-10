@@ -22,9 +22,9 @@ feature 'Project', feature: true do
     end
 
     it 'sanitizes unwanted tags' do
-      project.update_attribute(:description, '# Project Description')
+      project.update_attribute(:description, "```\ncode\n```")
       visit path
-      expect(page).not_to have_css('.project-home-desc h1')
+      expect(page).not_to have_css('.project-home-desc code')
     end
 
     it 'permits `rel` attribute on links' do

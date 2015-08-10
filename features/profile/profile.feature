@@ -35,6 +35,7 @@ Feature: Profile
     Then I change my avatar
     And I should see new avatar
     And I should see the "Remove avatar" button
+    And I should see the gravatar host link
 
   Scenario: I remove my avatar
     Given I visit profile page
@@ -42,6 +43,7 @@ Feature: Profile
     When I remove my avatar
     Then I should see my gravatar
     And I should not see the "Remove avatar" button
+    And I should see the gravatar host link
 
   Scenario: My password is expired
     Given my password is expired

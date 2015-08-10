@@ -51,16 +51,6 @@ December 03, 2014 13:20 -> ERROR -> Command failed [1]: /usr/bin/git --git-dir=/
 error: failed to push some refs to '/Users/vsizov/gitlab-development-kit/repositories/gitlabhq/gitlab_git.git'
 ```
 
-#### satellites.log
-This file lives in `/var/log/gitlab/gitlab-rails/satellites.log` for omnibus package or in `/home/git/gitlab/log/satellites.log` for installations from the source.
-
-In some cases GitLab should perform write actions to git repository, for example when it is needed to merge the merge request or edit a file with online editor. If something went wrong you can look into this file to find out what exactly happened.
-```
-October 07, 2014 11:36: Failed to create satellite for Chesley Weimann III / project1817
-October 07, 2014 11:36: PID: 1872: git clone /Users/vsizov/gitlab-development-kit/gitlab/tmp/tests/repositories/conrad6841/gitlabhq.git /Users/vsizov/gitlab-development-kit/gitlab/tmp/tests/gitlab-satellites/conrad6841/gitlabhq
-October 07, 2014 11:36: PID: 1872: -> fatal: repository '/Users/vsizov/gitlab-development-kit/gitlab/tmp/tests/repositories/conrad6841/gitlabhq.git' does not exist
-```
-
 #### sidekiq.log
 This file lives in `/var/log/gitlab/gitlab-rails/sidekiq.log` for omnibus package or in `/home/git/gitlab/log/sidekiq.log` for installations from the source.
 

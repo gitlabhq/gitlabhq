@@ -43,11 +43,6 @@ class MergeRequest < ActiveRecord::Base
 
   delegate :commits, :diffs, :last_commit, :last_commit_short_sha, to: :merge_request_diff, prefix: nil
 
-  attr_accessor :should_remove_source_branch
-
-  # If true, merge request should rebase before merging
-  attr_accessor :should_rebase
-
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
   attr_accessor :allow_broken
@@ -62,7 +57,7 @@ class MergeRequest < ActiveRecord::Base
       transition [:reopened, :opened] => :closed
     end
 
-    event :merge do
+    event :mark_as_merged do
       transition [:reopened, :opened, :locked] => :merged
     end
 
@@ -211,11 +206,7 @@ class MergeRequest < ActiveRecord::Base
 
   def check_if_can_be_merged
     can_be_merged =
-      if for_fork?
-        Gitlab::Satellite::MergeAction.new(self.author, self).can_be_merged?
-      else
-        project.repository.can_be_merged?(source_branch, target_branch)
-      end
+      project.repository.can_be_merged?(source_sha, target_branch)
 
     if can_be_merged
       mark_as_mergeable
@@ -232,18 +223,6 @@ class MergeRequest < ActiveRecord::Base
     self.target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::CLOSED).last
   end
 
-  def automerge!(current_user, commit_message = nil)
-    return unless automergeable?
-
-    MergeRequests::AutoMergeService.
-      new(target_project, current_user).
-      execute(self, commit_message)
-  end
-
-  def remove_source_branch?
-    self.should_remove_source_branch && !self.source_project.root_ref?(self.source_branch) && !self.for_fork?
-  end
-
   def open?
     opened? || reopened?
   end
@@ -252,11 +231,11 @@ class MergeRequest < ActiveRecord::Base
     title =~ /\A\[?WIP\]?:? /i
   end
 
-  def automergeable?
+  def mergeable?
     open? && !work_in_progress? && can_be_merged?
   end
 
-  def automerge_status
+  def gitlab_merge_status
     if work_in_progress?
       "work_in_progress"
     else
@@ -283,14 +262,14 @@ class MergeRequest < ActiveRecord::Base
   #
   # see "git diff"
   def to_diff(current_user)
-    Gitlab::Satellite::MergeAction.new(current_user, self).diff_in_satellite
+    target_project.repository.diff_text(target_branch, source_sha)
   end
 
   # Returns the commit as a series of email patches.
   #
   # see "git format-patch"
   def to_patch(current_user)
-    Gitlab::Satellite::MergeAction.new(current_user, self).format_patch
+    target_project.repository.format_patch(target_branch, source_sha)
   end
 
   def hook_attrs
@@ -491,6 +470,32 @@ class MergeRequest < ActiveRecord::Base
   def approver_ids=(value)
     value.split(",").map(&:strip).each do |user_id|
       approvers.find_or_initialize_by(user_id: user_id, target_id: id)
+    end
+  end
+
+  def target_sha
+    @target_sha ||= target_project.
+      repository.commit(target_branch).sha
+  end
+
+  def source_sha
+    commits.first.sha
+  end
+
+  def fetch_ref
+    target_project.repository.fetch_ref(
+      source_project.repository.path_to_repo,
+      "refs/heads/#{source_branch}",
+      "refs/merge-requests/#{iid}/head"
+    )
+  end
+
+  def in_locked_state
+    begin
+      lock_mr
+      yield
+    ensure
+      unlock_mr if locked?
     end
   end
 end

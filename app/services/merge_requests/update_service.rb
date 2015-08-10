@@ -24,7 +24,7 @@ module MergeRequests
       filter_params
       old_labels = merge_request.labels.to_a
 
-      if params.present? && merge_request.update_attributes(params)
+      if params.present? && merge_request.update_attributes(params.merge(updated_by: current_user))
         merge_request.reset_events_cache
 
         if merge_request.labels != old_labels

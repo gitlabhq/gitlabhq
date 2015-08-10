@@ -48,6 +48,17 @@ describe Profiles::KeysController do
 
         expect(response.body).not_to eq("")
         expect(response.body).to eq(user.all_ssh_keys.join("\n"))
+
+        # Unique part of key 1
+        expect(response.body).to match(/PWx6WM4lhHNedGfBpPJNPpZ/)
+        # Key 2
+        expect(response.body).to match(/AQDmTillFzNTrrGgwaCKaSj/)
+      end
+
+      it "should not render the comment of the key" do
+        get :get_keys, username: user.username
+
+        expect(response.body).not_to match(/dummy@gitlab.com/)
       end
 
       it "should respond with text/plain content type" do

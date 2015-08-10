@@ -300,7 +300,7 @@ describe NotificationService do
 
   describe 'Merge Requests' do
     let(:project) { create(:project, :public) }
-    let(:merge_request) { create :merge_request, source_project: project, assignee: create(:user) }
+    let(:merge_request) { create :merge_request, source_project: project, assignee: create(:user), description: 'cc @participant' }
 
     before do
       build_team(merge_request.target_project)
@@ -311,6 +311,7 @@ describe NotificationService do
       it do
         should_email(merge_request.assignee_id)
         should_email(@u_watcher.id)
+        should_email(@u_participant_mentioned.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
         notification.new_merge_request(merge_request, @u_disabled)
@@ -329,6 +330,7 @@ describe NotificationService do
       it do
         should_email(merge_request.assignee_id)
         should_email(@u_watcher.id)
+        should_email(@u_participant_mentioned.id)
         should_email(@subscriber.id)
         should_not_email(@unsubscriber.id)
         should_not_email(@u_participating.id)
@@ -349,6 +351,7 @@ describe NotificationService do
       it do
         should_email(merge_request.assignee_id)
         should_email(@u_watcher.id)
+        should_email(@u_participant_mentioned.id)
         should_email(@subscriber.id)
         should_not_email(@unsubscriber.id)
         should_not_email(@u_participating.id)
@@ -369,6 +372,7 @@ describe NotificationService do
       it do
         should_email(merge_request.assignee_id)
         should_email(@u_watcher.id)
+        should_email(@u_participant_mentioned.id)
         should_email(@subscriber.id)
         should_not_email(@unsubscriber.id)
         should_not_email(@u_participating.id)
@@ -389,6 +393,7 @@ describe NotificationService do
       it do
         should_email(merge_request.assignee_id)
         should_email(@u_watcher.id)
+        should_email(@u_participant_mentioned.id)
         should_email(@subscriber.id)
         should_not_email(@unsubscriber.id)
         should_not_email(@u_participating.id)

@@ -57,6 +57,7 @@
 #  otp_backup_codes              :text
 #  public_email                  :string(255)      default(""), not null
 #  dashboard                     :integer          default(0)
+#  project_view                  :integer          default(0)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -647,7 +648,7 @@ class User < ActiveRecord::Base
   end
 
   def all_ssh_keys
-    keys.map(&:key)
+    keys.map(&:publishable_key)
   end
 
   def temp_oauth_email?

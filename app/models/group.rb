@@ -84,6 +84,22 @@ class Group < Namespace
     self.add_user(user, Gitlab::Access::OWNER, current_user, skip_notification: skip_notification)
   end
 
+  def add_guest(user, current_user = nil)
+    add_user(user, Gitlab::Access::GUEST, current_user)
+  end
+
+  def add_reporter(user, current_user = nil)
+    add_user(user, Gitlab::Access::REPORTER, current_user)
+  end
+
+  def add_developer(user, current_user = nil)
+    add_user(user, Gitlab::Access::DEVELOPER, current_user)
+  end
+
+  def add_master(user, current_user = nil)
+    add_user(user, Gitlab::Access::MASTER, current_user)
+  end
+
   def has_owner?(user)
     owners.include?(user)
   end

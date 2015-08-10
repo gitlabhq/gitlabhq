@@ -37,9 +37,9 @@ describe ProjectTeam do
     let(:project) { create(:empty_project, group: group) }
 
     before do
-      group.add_user(master, Gitlab::Access::MASTER)
-      group.add_user(reporter, Gitlab::Access::REPORTER)
-      group.add_user(guest, Gitlab::Access::GUEST)
+      group.add_master(master)
+      group.add_reporter(reporter)
+      group.add_guest(guest)
 
       # If user is a group and a project member - GitLab uses highest permission
       # So we add group guest as master and add group master as guest

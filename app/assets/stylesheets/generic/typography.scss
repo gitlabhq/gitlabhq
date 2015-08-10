@@ -38,6 +38,10 @@ code {
   }
 }
 
+a > code {
+  color: $link-color;
+}
+
 /**
  * Wiki typography
  *

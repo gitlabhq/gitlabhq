@@ -66,7 +66,7 @@ class Spinach::Features::DashboardMergeRequests < Spinach::FeatureSteps
 
   def authored_merge_request
     @authored_merge_request ||= create :merge_request,
-                                  source_branch: 'simple_merge_request',
+                                  source_branch: 'markdown',
                                   author: current_user,
                                   target_project: project,
                                   source_project: project
@@ -74,14 +74,14 @@ class Spinach::Features::DashboardMergeRequests < Spinach::FeatureSteps
 
   def other_merge_request
     @other_merge_request ||= create :merge_request,
-                              source_branch: '2_3_notes_fix',
+                              source_branch: 'fix',
                               target_project: project,
                               source_project: project
   end
 
   def authored_merge_request_from_fork
     @authored_merge_request_from_fork ||= create :merge_request,
-                                            source_branch: 'basic_page',
+                                            source_branch: 'feature_conflict',
                                             author: current_user,
                                             target_project: public_project,
                                             source_project: forked_project
@@ -89,7 +89,7 @@ class Spinach::Features::DashboardMergeRequests < Spinach::FeatureSteps
 
   def assigned_merge_request_from_fork
     @assigned_merge_request_from_fork ||= create :merge_request,
-                                            source_branch: 'basic_page_fix',
+                                            source_branch: 'markdown',
                                             assignee: current_user,
                                             target_project: public_project,
                                             source_project: forked_project

@@ -22,6 +22,7 @@ sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```bash
 cd /home/git/gitlab
 sudo -u git -H git fetch --all
+sudo -u git -H git checkout -- Gemfile.lock db/schema.rb
 sudo -u git -H git checkout LATEST_TAG
 ```
 
