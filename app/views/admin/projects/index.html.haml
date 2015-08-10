@@ -23,6 +23,10 @@
             = label_tag :abandoned do
               = check_box_tag :abandoned, 1, params[:abandoned]
               %span No activity over 6 month
+          .checkbox
+            = label_tag :with_archived do
+              = check_box_tag :with_archived, 1, params[:with_archived]
+              %span Show archived projects
 
         %fieldset
           %strong Visibility level:
