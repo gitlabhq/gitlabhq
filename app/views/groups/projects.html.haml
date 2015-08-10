@@ -14,9 +14,11 @@
         .list-item-name
           = visibility_level_icon(project.visibility_level)
           %strong= link_to project.name_with_namespace, project
+        .pull-right
+          - if project.archived
+            %span.label.label-warning archived
           %span.label.label-gray
             = repository_size(project)
-        .pull-right
           = link_to 'Members', namespace_project_project_members_path(project.namespace, project), id: "edit_#{dom_id(project)}", class: "btn btn-sm"
           = link_to 'Edit', edit_namespace_project_path(project.namespace, project), id: "edit_#{dom_id(project)}", class: "btn btn-sm"
           = link_to 'Remove', project, data: { confirm: remove_project_message(project)}, method: :delete, class: "btn btn-sm btn-remove"
