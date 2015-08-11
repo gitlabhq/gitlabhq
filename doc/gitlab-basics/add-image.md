@@ -11,8 +11,7 @@ like to add the image. There, paste the image.
 
 Go to your [shell](command-line-commands.md), and add the following commands:
 
-To find the correct file, add this command for every file that you'd like to open until
-you reach the file where you added your image:
+Add this command for every directory that you'd like to open:
 ```
 cd NAME-OF-FILE-YOU'D-LIKE-TO-OPEN
 ```
