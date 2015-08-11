@@ -1,6 +1,6 @@
 # Use Libravatar service with GitLab
 
-GitLab by default supports [Gravatar](gravatar.com) avatar service.
+GitLab by default supports [Gravatar](https://gravatar.com) avatar service.
 Libravatar is a service which delivers your avatar (profile picture) to other websites and their API is
 [heavily based on gravatar](http://wiki.libravatar.org/api/).
 
