@@ -110,7 +110,7 @@ describe API::API, api: true  do
       expect(response.status).to eq(400)
     end
 
-    it "should return a 400 if fails to create file" do
+    it "should return a 400 if satellite fails to create file" do
       allow_any_instance_of(Repository).to receive(:remove_file).and_return(false)
 
       delete api("/projects/#{project.id}/repository/files", user), valid_params

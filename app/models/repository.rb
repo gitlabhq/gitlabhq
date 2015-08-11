@@ -411,34 +411,13 @@ class Repository
     }
   end
 
-  def can_be_merged?(source_sha, target_branch)
+  def can_be_merged?(source_branch, target_branch)
     our_commit = rugged.branches[target_branch].target
-    their_commit = rugged.lookup(source_sha)
+    their_commit = rugged.branches[source_branch].target
 
     if our_commit && their_commit
       !rugged.merge_commits(our_commit, their_commit).conflicts?
-    else
-      false
     end
-  end
-
-  def merge(source_sha, target_branch, options = {})
-    our_commit = rugged.branches[target_branch].target
-    their_commit = rugged.lookup(source_sha)
-
-    raise "Invalid merge target" if our_commit.nil?
-    raise "Invalid merge source" if their_commit.nil?
-
-    merge_index = rugged.merge_commits(our_commit, their_commit)
-    return false if merge_index.conflicts?
-
-    actual_options = options.merge(
-      parents: [our_commit, their_commit],
-      tree: merge_index.write_tree(rugged),
-      update_ref: "refs/heads/#{target_branch}"
-    )
-
-    Rugged::Commit.create(rugged, actual_options)
   end
 
   def search_files(query, ref)
@@ -472,11 +451,6 @@ class Repository
       startline: startline,
       data: data
     )
-  end
-
-  def fetch_ref(source_path, source_ref, target_ref)
-    args = %W(git fetch #{source_path} #{source_ref}:#{target_ref})
-    Gitlab::Popen.popen(args, path_to_repo)
   end
 
   private
