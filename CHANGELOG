@@ -5,13 +5,12 @@ v 8.0.0 (unreleased)
   - Better performance for web editor (switched from satellites to rugged)
   - Faster merge
   - Ability to fetch merge requests from refs/merge-requests/:id
-  - Improve MR merge widget text and UI consistency.
-  - Improve text in MR "How To Merge" modal.
 
 v 7.14.0 (unreleased)
   - Disable turbolinks when linking to Bitbucket import status (Stan Hu)
   - Fix broken code import and display error messages if something went wrong with creating project (Stan Hu)
   - Fix corrupted binary files when using API files endpoint (Stan Hu)
+  - Bump Haml to 4.0.7 to speed up textarea rendering (Stan Hu)
   - Show incompatible projects in Bitbucket import status (Stan Hu)
   - Fix coloring of diffs on MR Discussion-tab (Gert Goet)
   - Fix "Network" and "Graphs" pages for branches with encoded slashes (Stan Hu)
@@ -54,6 +53,9 @@ v 7.14.0 (unreleased)
   - Add support for CI skipped status
   - Fetch code from forks to refs/merge-requests/:id/head when merge request created
   - Remove comments and email addresses when publicly exposing ssh keys (Zeger-Jan van de Weg)
+  - Add "Check out branch" button to the MR page.
+  - Improve MR merge widget text and UI consistency.
+  - Improve text in MR "How To Merge" modal.
   - Cache all events
   - Order commits by date when comparing branches
   - Fix bug causing error when the target branch of a symbolic ref was deleted
@@ -63,6 +65,8 @@ v 7.14.0 (unreleased)
 v 7.13.3
   - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
   - Allow users to send abuse reports
+  - Remove satellites 
+  - Link username to profile on Group Members page (Tom Webster)
 
 v 7.13.2
   - Fix randomly failed spec
