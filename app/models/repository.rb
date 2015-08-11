@@ -403,6 +403,8 @@ class Repository
     Gitlab::Git::Blob.remove(raw_repository, options)
   end
 
+  private
+
   def user_to_comitter(user)
     {
       email: user.email,
