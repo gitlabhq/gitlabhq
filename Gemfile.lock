@@ -783,19 +783,7 @@ DEPENDENCIES
   gitlab-grack (~> 2.0.2)
   gitlab-linguist (~> 3.0.1)
   gitlab_emoji (~> 0.1)
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   gitlab_git (~> 7.2.6)
-=======
-  gitlab_git (~> 7.2.2)
->>>>>>> parent of dfccb06... Refactor web editor
-=======
-  gitlab_git (~> 7.2.0)
->>>>>>> parent of 27a1585... Fix adding new file to empty repo
-=======
-  gitlab_git (~> 7.1.13)
->>>>>>> parent of 734a4ba... Create and edit files in web editor via rugged
   gitlab_meta (= 7.0)
   gitlab_omniauth-ldap (= 1.2.1)
   gollum-lib (~> 4.0.2)
