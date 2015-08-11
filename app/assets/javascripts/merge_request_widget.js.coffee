@@ -49,8 +49,10 @@ class @MergeRequestWidget
       @setMergeButtonClass('btn-danger')
 
   showCiCoverage: (coverage) ->
-    text = 'Coverage ' + coverage + '%'
-    $('.ci_widget:visible .ci-coverage').text(text)
+    cov_html = $('<span>')
+    cov_html.addClass('ci-coverage')
+    cov_html.text('Coverage ' + coverage + '%')
+    $('.ci_widget:visible').append(cov_html)
 
   setMergeButtonClass: (css_class) ->
     $('.accept_merge_request').removeClass("btn-create").addClass(css_class)

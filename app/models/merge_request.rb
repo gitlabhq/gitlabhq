@@ -432,7 +432,7 @@ class MergeRequest < ActiveRecord::Base
     target_project.repository.fetch_ref(
       source_project.repository.path_to_repo,
       "refs/heads/#{source_branch}",
-      "refs/merge-requests/#{iid}/head"
+      "refs/merge-requests/#{id}/head"
     )
   end
 
