@@ -133,8 +133,7 @@ class GitPushService
   end
 
   def is_default_branch?(ref)
-    Gitlab::Git.branch_ref?(ref) &&
-      (Gitlab::Git.ref_name(ref) == project.default_branch || project.default_branch.nil?)
+    Gitlab::Git.branch_ref?(ref) && Gitlab::Git.ref_name(ref) == project.default_branch
   end
 
   def commit_user(commit)
