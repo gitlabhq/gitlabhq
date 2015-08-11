@@ -19,15 +19,14 @@ module Files
         return error("You can only edit text files")
       end
 
-      sha = repository.remove_file(
-        current_user,
-        path,
-        params[:commit_message],
-        ref
+      delete_file_action = Gitlab::Satellite::DeleteFileAction.new(current_user, project, ref, path)
+
+      deleted_successfully = delete_file_action.commit!(
+        nil,
+        params[:commit_message]
       )
 
-      if sha
-        after_commit(sha)
+      if deleted_successfully
         success
       else
         error("Your changes could not be committed, because the file has been changed")
