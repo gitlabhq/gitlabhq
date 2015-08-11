@@ -39,6 +39,6 @@ class Admin::HooksController < Admin::ApplicationController
   end
 
   def hook_params
-    params.require(:hook).permit(:url)
+    params.require(:hook).permit(:url, :enable_ssl_verification)
   end
 end

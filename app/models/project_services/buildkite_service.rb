@@ -23,7 +23,7 @@ require "addressable/uri"
 class BuildkiteService < CiService
   ENDPOINT = "https://buildkite.com"
 
-  prop_accessor :project_url, :token
+  prop_accessor :project_url, :token, :enable_ssl_verification
 
   validates :project_url, presence: true, if: :activated?
   validates :token, presence: true, if: :activated?
@@ -37,6 +37,7 @@ class BuildkiteService < CiService
   def compose_service_hook
     hook = service_hook || build_service_hook
     hook.url = webhook_url
+    hook.enable_ssl_verification = enable_ssl_verification
     hook.save
   end
 
@@ -96,7 +97,11 @@ class BuildkiteService < CiService
 
       { type: 'text',
         name: 'project_url',
-        placeholder: "#{ENDPOINT}/example/project" }
+        placeholder: "#{ENDPOINT}/example/project" },
+      
+      { type: 'checkbox',
+        name: 'enable_ssl_verification',
+        title: "Enable SSL verification" }
     ]
   end
 

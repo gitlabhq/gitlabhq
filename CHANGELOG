@@ -12,6 +12,7 @@ v 8.0.0 (unreleased)
   - Search for comments should be case insensetive
   - Create cross-reference for closing references on commits pushed to non-default branches (Maël Valais)
   - Ability to search milestones
+  - Ability to enable SSL verification for Webhooks
 
 v 7.14.0
   - Fix bug where non-project members of the target project could set labels on new merge requests.
