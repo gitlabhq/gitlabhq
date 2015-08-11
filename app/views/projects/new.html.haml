@@ -40,7 +40,7 @@
 
 
             - if bitbucket_import_enabled?
-              = link_to status_import_bitbucket_path, class: 'btn' do
+              = link_to status_import_bitbucket_path, class: 'btn', "data-no-turbolink" => "true" do
                 %i.fa.fa-bitbucket
                 Bitbucket
             - else

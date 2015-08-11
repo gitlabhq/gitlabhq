@@ -40,7 +40,7 @@ We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/) but GitLab 
 
 ### Storage
 
-The necessary hard drive space largely depends on the size of the repos you want to store in GitLab but as a *rule of thumb* you should have at least as much free space as all your repos combined take up. 
+The necessary hard drive space largely depends on the size of the repos you want to store in GitLab but as a *rule of thumb* you should have at least twice as much free space as all your repos combined take up. You need twice the storage because [GitLab satellites](structure.md) contain an extra copy of each repo.
 
 If you want to be flexible about growing your hard drive space in the future consider mounting it using LVM so you can add more hard drives when you need them.
 
@@ -93,7 +93,7 @@ To change the Unicorn workers when you have the Omnibus package please see [the 
 
 ## Database
 
-If you want to run the database separately, the **recommended** database size is **1 MB per user**.
+If you want to run the database separately expect a size of about 1 MB per user.
 
 ## Redis and Sidekiq
 
