@@ -55,6 +55,8 @@ v 7.14.0 (unreleased)
 v 7.13.3
   - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
   - Allow users to send abuse reports
+  - Remove satellites 
+  - Link username to profile on Group Members page (Tom Webster)
 
 v 7.13.2
   - Fix randomly failed spec
