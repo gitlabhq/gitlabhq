@@ -80,7 +80,7 @@ describe API::API, api: true  do
       end
 
       it "should return a 422 error when group access is not known" do
-        post api("//groups/#{group_with_ldap_links.id}/ldap_group_links", owner), cn: 'ldap-group3', group_access: 11
+        post api("//groups/#{group_with_ldap_links.id}/ldap_group_links", owner), cn: 'ldap-group3', group_access: 11, provider: 'ldap1'
         expect(response.status).to eq(422)
       end
     end
