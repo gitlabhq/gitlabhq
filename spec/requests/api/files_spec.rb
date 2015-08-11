@@ -117,4 +117,35 @@ describe API::API, api: true  do
       expect(response.status).to eq(400)
     end
   end
+
+  describe "POST /projects/:id/repository/files with binary file" do
+    let(:file_path) { 'test.bin' }
+    let(:put_params) do
+      {
+        file_path: file_path,
+        branch_name: 'master',
+        content: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII=',
+        commit_message: 'Binary file with a \n should not be touched',
+        encoding: 'base64'
+      }
+    end
+    let(:get_params) do
+      {
+        file_path: file_path,
+        ref: 'master',
+      }
+    end
+
+    before do
+      post api("/projects/#{project.id}/repository/files", user), put_params
+    end
+
+    it "remains unchanged" do
+      get api("/projects/#{project.id}/repository/files", user), get_params
+      expect(response.status).to eq(200)
+      expect(json_response['file_path']).to eq(file_path)
+      expect(json_response['file_name']).to eq(file_path)
+      expect(json_response['content']).to eq(put_params[:content])
+    end
+  end
 end
