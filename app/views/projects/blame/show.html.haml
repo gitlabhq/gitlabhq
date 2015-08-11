@@ -16,14 +16,19 @@
         - @blame.each do |raw_commit, line|
           %tr
             %td.blame-commit
-              %span.commit
+              .commit
                 - unless @prev_commit && @prev_commit.sha == raw_commit.sha
                   - commit = Commit.new(raw_commit, @project)
-                  = link_to commit.short_id, namespace_project_commit_path(@project.namespace, @project, commit), class: "commit_short_id"
-                  &nbsp;
-                  = commit_author_link(commit, avatar: true, size: 16)
-                  &nbsp;
-                  = link_to_gfm truncate(commit.title, length: 20), namespace_project_commit_path(@project.namespace, @project, commit.id), class: "row_title"
+                  .commit-row-title
+                    %strong
+                      = link_to_gfm truncate(commit.title, length: 35), namespace_project_commit_path(@project.namespace, @project, commit.id), class: "cdark"
+                    .pull-right
+                      = link_to commit.short_id, namespace_project_commit_path(@project.namespace, @project, commit), class: "monospace"
+                    &nbsp;
+                  .light
+                    = commit_author_link(commit, avatar: false)
+                    authored
+                    #{time_ago_with_tooltip(commit.committed_date)}
                 - @prev_commit = raw_commit
             %td.lines.blame-numbers
               %pre
@@ -34,4 +39,4 @@
                 %code
                   :erb
                     <%= highlight(@blob.name, line, nowrap: true, continue: true).html_safe %>
-                    
+
