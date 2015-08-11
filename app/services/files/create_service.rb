@@ -33,20 +33,23 @@ module Files
         end
       end
 
-      content =
-        if params[:encoding] == 'base64'
-          Base64.decode64(params[:content])
-        else
-          params[:content]
-        end
-
-      created_successfully = repository.commit_file(
-        current_user,
-        file_path,
-        content,
-        params[:commit_message],
-        params[:new_branch] || ref
-      )
+      if params[:encoding] == 'base64'
+        new_file_action = Gitlab::Satellite::NewFileAction.new(current_user, project, ref, file_path)
+        created_successfully = new_file_action.commit!(
+          params[:content],
+          params[:commit_message],
+          params[:encoding],
+          params[:new_branch]
+        )
+      else
+        created_successfully = repository.commit_file(
+          current_user,
+          file_path,
+          params[:content],
+          params[:commit_message],
+          params[:new_branch] || ref
+        )
+      end
 
 
       if created_successfully
