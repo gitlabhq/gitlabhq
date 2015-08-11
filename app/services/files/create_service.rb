@@ -40,7 +40,7 @@ module Files
           params[:content]
         end
 
-      sha = repository.commit_file(
+      created_successfully = repository.commit_file(
         current_user,
         file_path,
         content,
@@ -49,8 +49,7 @@ module Files
       )
 
 
-      if sha
-        after_commit(sha)
+      if created_successfully
         success
       else
         error("Your changes could not be committed, because the file has been changed")
