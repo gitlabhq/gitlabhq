@@ -47,6 +47,7 @@ v 7.14.0 (unreleased)
   - Add support for CI skipped status
   - Fetch code from forks to refs/merge-requests/:id/head when merge request created
   - Remove comments and email addresses when publicly exposing ssh keys (Zeger-Jan van de Weg)
+  - Add "Check out branch" button to the MR page.
   - Improve MR merge widget text and UI consistency.
   - Improve text in MR "How To Merge" modal.
   - Cache all events
