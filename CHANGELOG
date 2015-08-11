@@ -2,6 +2,51 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 7.13.4
   - Allow users to send abuse reports
 
+v 7.14.0 (unreleased)
+  - Show incompatible projects in Bitbucket import status (Stan Hu)
+  - Fix coloring of diffs on MR Discussion-tab (Gert Goet)
+  - Fix "Network" and "Graphs" pages for branches with encoded slashes (Stan Hu)
+  - Fix errors deleting and creating branches with encoded slashes (Stan Hu)
+  - Always add current user to autocomplete controller to support filter by "Me" (Stan Hu)
+  - Fix multi-line syntax highlighting (Stan Hu)
+  - Fix network graph when branch name has single quotes (Stan Hu)
+  - Add "Confirm user" button in user admin page (Stan Hu)
+  - Upgrade gitlab_git to version 7.2.6 to fix Error 500 when creating network graphs (Stan Hu)
+  - Add support for Unicode filenames in relative links (Hiroyuki Sato)
+  - Fix URL used for refreshing notes if relative_url is present (Bartłomiej Święcki)
+  - Fix commit data retrieval when branch name has single quotes (Stan Hu)
+  - Check that project was actually created rather than just validated in import:repos task (Stan Hu)
+  - Fix full screen mode for snippet comments (Daniel Gerhardt)
+  - Fix 404 error in files view after deleting the last file in a repository (Stan Hu)
+  - Fix the "Reload with full diff" URL button (Stan Hu)
+  - Fix label read access for unauthenticated users (Daniel Gerhardt)
+  - Fix access to disabled features for unauthenticated users (Daniel Gerhardt)
+  - Fix OAuth provider bug where GitLab would not go return to the redirect_uri after sign-in (Stan Hu)
+  - Fix file upload dialog for comment editing (Daniel Gerhardt)
+  - Set OmniAuth full_host parameter to ensure redirect URIs are correct (Stan Hu)
+  - Return comments in created order in merge request API (Stan Hu)
+  - Expire Rails cache entries after two weeks to prevent endless Redis growth
+  - Add support for destroying project milestones (Stan Hu)
+  - Add fetch command to the MR page.
+  - Allow custom backup archive permissions
+  - Add fetch command to the MR page
+  - Add project star and fork count, group avatar URL and user/group web URL attributes to API
+  - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
+  - Add fetch command to the MR page.
+  - Show who last edited a comment if it wasn't the original author
+  - Send notification to all participants when MR is merged.
+  - Add ability to manage user email addresses via the API.
+  - Show buttons to add license, changelog and contribution guide if they're missing.
+  - Tweak project page buttons.
+  - Disabled autocapitalize and autocorrect on login field (Daryl Chan)
+  - Mention group and project name in creation, update and deletion notices (Achilleas Pipinellis)
+  - Update gravatar link on profile page to link to configured gravatar host (Ben Bodenmiller)
+  - Remove redis-store TTL monkey patch
+  - Add support for CI skipped status
+  - Fetch code from forks to refs/merge-requests/:id/head when merge request created
+  - Remove comments and email addresses when publicly exposing ssh keys (Zeger-Jan van de Weg)
+  - Cache all events
+
 v 7.13.3
   - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
 
@@ -142,7 +187,6 @@ v 7.12.0
   - Add SAML support as an omniauth provider
   - Allow to configure a URL to show after sign out
   - Add an option to automatically sign-in with an Omniauth provider
-  - Better performance for web editor (switched from satellites to rugged)
   - GitLab CI service sends .gitlab-ci.yml in each push call
   - When remove project - move repository and schedule it removal
   - Improve group removing logic
