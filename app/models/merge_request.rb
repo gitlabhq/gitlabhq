@@ -209,7 +209,13 @@ class MergeRequest < ActiveRecord::Base
       if for_fork?
         Gitlab::Satellite::MergeAction.new(self.author, self).can_be_merged?
       else
-        project.repository.can_be_merged?(source_branch, target_branch)
+        rugged = project.repository.rugged
+        our_commit = rugged.branches[target_branch].target
+        their_commit = rugged.branches[source_branch].target
+
+        if our_commit && their_commit
+          !rugged.merge_commits(our_commit, their_commit).conflicts?
+        end
       end
 
     if can_be_merged
