@@ -13,8 +13,13 @@ class Projects::CompareController < Projects::ApplicationController
     base_ref = Addressable::URI.unescape(params[:from])
     @ref = head_ref = Addressable::URI.unescape(params[:to])
 
-    compare_result = CompareService.new.
-      execute(@project, head_ref, @project, base_ref)
+    compare_result = CompareService.new.execute(
+      current_user,
+      @project,
+      head_ref,
+      @project,
+      base_ref
+    )
 
     @commits = compare_result.commits
     @diffs = compare_result.diffs

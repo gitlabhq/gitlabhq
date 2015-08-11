@@ -198,11 +198,7 @@ module API
 
           if merge_request.open? && !merge_request.work_in_progress?
             if merge_request.can_be_merged?
-              commit_message = params[:merge_commit_message] || merge_request.merge_commit_message
-
-              ::MergeRequests::MergeService.new(merge_request.target_project, current_user).
-                execute(merge_request, commit_message)
-
+              merge_request.automerge!(current_user, params[:merge_commit_message] || merge_request.merge_commit_message)
               present merge_request, with: Entities::MergeRequest
             else
               render_api_error!('Branch cannot be merged', 405)

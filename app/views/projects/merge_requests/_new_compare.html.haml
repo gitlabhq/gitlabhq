@@ -35,7 +35,7 @@
     - if @merge_request.compare_failed
       .alert.alert-danger
         %h4 Compare failed
-        %p We can't compare selected branches. It may be because of huge diff. Please try again or select different branches.
+        %p We can't compare selected branches. It may be because of huge diff or satellite timeout. Please try again or select different branches.
     - else
       .light-well
         .center

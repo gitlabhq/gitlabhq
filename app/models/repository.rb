@@ -364,83 +364,6 @@ class Repository
     @root_ref ||= raw_repository.root_ref
   end
 
-  def commit_file(user, path, content, message, ref)
-    path[0] = '' if path[0] == '/'
-
-    committer = user_to_comitter(user)
-    options = {}
-    options[:committer] = committer
-    options[:author] = committer
-    options[:commit] = {
-      message: message,
-      branch: ref
-    }
-
-    options[:file] = {
-      content: content,
-      path: path
-    }
-
-    Gitlab::Git::Blob.commit(raw_repository, options)
-  end
-
-  def remove_file(user, path, message, ref)
-    path[0] = '' if path[0] == '/'
-
-    committer = user_to_comitter(user)
-    options = {}
-    options[:committer] = committer
-    options[:author] = committer
-    options[:commit] = {
-      message: message,
-      branch: ref
-    }
-
-    options[:file] = {
-      path: path
-    }
-
-    Gitlab::Git::Blob.remove(raw_repository, options)
-  end
-
-  def user_to_comitter(user)
-    {
-      email: user.email,
-      name: user.name,
-      time: Time.now
-    }
-  end
-
-  def can_be_merged?(source_sha, target_branch)
-    our_commit = rugged.branches[target_branch].target
-    their_commit = rugged.lookup(source_sha)
-
-    if our_commit && their_commit
-      !rugged.merge_commits(our_commit, their_commit).conflicts?
-    else
-      false
-    end
-  end
-
-  def merge(source_sha, target_branch, options = {})
-    our_commit = rugged.branches[target_branch].target
-    their_commit = rugged.lookup(source_sha)
-
-    raise "Invalid merge target" if our_commit.nil?
-    raise "Invalid merge source" if their_commit.nil?
-
-    merge_index = rugged.merge_commits(our_commit, their_commit)
-    return false if merge_index.conflicts?
-
-    actual_options = options.merge(
-      parents: [our_commit, their_commit],
-      tree: merge_index.write_tree(rugged),
-      update_ref: "refs/heads/#{target_branch}"
-    )
-
-    Rugged::Commit.create(rugged, actual_options)
-  end
-
   def search_files(query, ref)
     offset = 2
     args = %W(git grep -i -n --before-context #{offset} --after-context #{offset} #{query} #{ref || root_ref})
@@ -472,11 +395,6 @@ class Repository
       startline: startline,
       data: data
     )
-  end
-
-  def fetch_ref(source_path, source_ref, target_ref)
-    args = %W(git fetch #{source_path} #{source_ref}:#{target_ref})
-    Gitlab::Popen.popen(args, path_to_repo)
   end
 
   private
