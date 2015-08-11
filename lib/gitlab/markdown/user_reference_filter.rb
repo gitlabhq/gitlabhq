@@ -80,8 +80,6 @@ module Gitlab
       end
 
       def link_to_group(group, namespace)
-        return unless user_can_reference_group?(namespace)
-
         push_result(:user, *namespace.users)
 
         url = urls.group_url(group, only_path: context[:only_path])
@@ -99,10 +97,6 @@ module Gitlab
 
         text = User.reference_prefix + user
         %(<a href="#{url}" #{data} class="#{link_class}">#{text}</a>)
-      end
-
-      def user_can_reference_group?(group)
-        Ability.abilities.allowed?(context[:current_user], :read_group, group)
       end
     end
   end

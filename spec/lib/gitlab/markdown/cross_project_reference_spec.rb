@@ -35,19 +35,7 @@ module Gitlab::Markdown
 
         context 'and the user has permission to read it' do
           it 'returns the referenced project' do
-            expect(self).to receive(:user_can_reference_project?).
-              with(project2).and_return(true)
-
             expect(project_from_ref('cross/reference')).to eq project2
-          end
-        end
-
-        context 'and the user does not have permission to read it' do
-          it 'returns nil' do
-            expect(self).to receive(:user_can_reference_project?).
-              with(project2).and_return(false)
-
-            expect(project_from_ref('cross/reference')).to be_nil
           end
         end
       end

@@ -83,40 +83,26 @@ module Gitlab::Markdown
       let(:user)      { create(:user) }
       let(:reference) { group.to_reference }
 
-      context 'that the current user can read' do
-        before do
-          group.add_developer(user)
-        end
-
-        it 'links to the Group' do
-          doc = filter("Hey #{reference}", current_user: user)
-          expect(doc.css('a').first.attr('href')).to eq urls.group_url(group)
-        end
-
-        it 'includes a data-group-id attribute' do
-          doc = filter("Hey #{reference}", current_user: user)
-          link = doc.css('a').first
-
-          expect(link).to have_attribute('data-group-id')
-          expect(link.attr('data-group-id')).to eq group.id.to_s
-        end
-
-        it 'adds to the results hash' do
-          result = pipeline_result("Hey #{reference}", current_user: user)
-          expect(result[:references][:user]).to eq group.users
-        end
+      before do
+        group.add_developer(user)
       end
 
-      context 'that the current user cannot read' do
-        it 'ignores references to the Group' do
-          doc = filter("Hey #{reference}", current_user: user)
-          expect(doc.to_html).to eq "Hey #{reference}"
-        end
+      it 'links to the Group' do
+        doc = filter("Hey #{reference}", current_user: user)
+        expect(doc.css('a').first.attr('href')).to eq urls.group_url(group)
+      end
 
-        it 'does not add to the results hash' do
-          result = pipeline_result("Hey #{reference}", current_user: user)
-          expect(result[:references][:user]).to eq []
-        end
+      it 'includes a data-group-id attribute' do
+        doc = filter("Hey #{reference}", current_user: user)
+        link = doc.css('a').first
+
+        expect(link).to have_attribute('data-group-id')
+        expect(link.attr('data-group-id')).to eq group.id.to_s
+      end
+
+      it 'adds to the results hash' do
+        result = pipeline_result("Hey #{reference}", current_user: user)
+        expect(result[:references][:user]).to eq group.users
       end
     end
 

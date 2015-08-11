@@ -106,45 +106,31 @@ module Gitlab::Markdown
         range.project = project2
       end
 
-      context 'when user can access reference' do
-        before { allow_cross_reference! }
+      it 'links to a valid reference' do
+        doc = filter("See #{reference}")
 
-        it 'links to a valid reference' do
-          doc = filter("See #{reference}")
-
-          expect(doc.css('a').first.attr('href')).
-            to eq urls.namespace_project_compare_url(project2.namespace, project2, range.to_param)
-        end
-
-        it 'links with adjacent text' do
-          doc = filter("Fixed (#{reference}.)")
-
-          exp = Regexp.escape("#{project2.to_reference}@#{range.to_s}")
-          expect(doc.to_html).to match(/\(<a.+>#{exp}<\/a>\.\)/)
-        end
-
-        it 'ignores invalid commit IDs on the referenced project' do
-          exp = act = "Fixed #{project2.to_reference}@#{commit1.id.reverse}...#{commit2.id}"
-          expect(filter(act).to_html).to eq exp
-
-          exp = act = "Fixed #{project2.to_reference}@#{commit1.id}...#{commit2.id.reverse}"
-          expect(filter(act).to_html).to eq exp
-        end
-
-        it 'adds to the results hash' do
-          result = pipeline_result("See #{reference}")
-          expect(result[:references][:commit_range]).not_to be_empty
-        end
+        expect(doc.css('a').first.attr('href')).
+          to eq urls.namespace_project_compare_url(project2.namespace, project2, range.to_param)
       end
 
-      context 'when user cannot access reference' do
-        before { disallow_cross_reference! }
+      it 'links with adjacent text' do
+        doc = filter("Fixed (#{reference}.)")
 
-        it 'ignores valid references' do
-          exp = act = "See #{reference}"
+        exp = Regexp.escape("#{project2.to_reference}@#{range.to_s}")
+        expect(doc.to_html).to match(/\(<a.+>#{exp}<\/a>\.\)/)
+      end
 
-          expect(filter(act).to_html).to eq exp
-        end
+      it 'ignores invalid commit IDs on the referenced project' do
+        exp = act = "Fixed #{project2.to_reference}@#{commit1.id.reverse}...#{commit2.id}"
+        expect(filter(act).to_html).to eq exp
+
+        exp = act = "Fixed #{project2.to_reference}@#{commit1.id}...#{commit2.id.reverse}"
+        expect(filter(act).to_html).to eq exp
+      end
+
+      it 'adds to the results hash' do
+        result = pipeline_result("See #{reference}")
+        expect(result[:references][:commit_range]).not_to be_empty
       end
     end
   end

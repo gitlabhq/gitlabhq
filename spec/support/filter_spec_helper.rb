@@ -55,20 +55,6 @@ module FilterSpecHelper
     end
   end
 
-  # Stub CrossProjectReference#user_can_reference_project? to return true for
-  # the current test
-  def allow_cross_reference!
-    allow_any_instance_of(described_class).
-      to receive(:user_can_reference_project?).and_return(true)
-  end
-
-  # Stub CrossProjectReference#user_can_reference_project? to return false for
-  # the current test
-  def disallow_cross_reference!
-    allow_any_instance_of(described_class).
-      to receive(:user_can_reference_project?).and_return(false)
-  end
-
   # Shortcut to Rails' auto-generated routes helpers, to avoid including the
   # module
   def urls

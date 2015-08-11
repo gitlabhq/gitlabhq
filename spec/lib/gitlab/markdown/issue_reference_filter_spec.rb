@@ -96,49 +96,35 @@ module Gitlab::Markdown
       let(:issue)     { create(:issue, project: project2) }
       let(:reference) { issue.to_reference(project) }
 
-      context 'when user can access reference' do
-        before { allow_cross_reference! }
+      it 'ignores valid references when cross-reference project uses external tracker' do
+        expect_any_instance_of(Project).to receive(:get_issue).
+          with(issue.iid).and_return(nil)
 
-        it 'ignores valid references when cross-reference project uses external tracker' do
-          expect_any_instance_of(Project).to receive(:get_issue).
-            with(issue.iid).and_return(nil)
-
-          exp = act = "Issue #{reference}"
-          expect(filter(act).to_html).to eq exp
-        end
-
-        it 'links to a valid reference' do
-          doc = filter("See #{reference}")
-
-          expect(doc.css('a').first.attr('href')).
-            to eq helper.url_for_issue(issue.iid, project2)
-        end
-
-        it 'links with adjacent text' do
-          doc = filter("Fixed (#{reference}.)")
-          expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
-        end
-
-        it 'ignores invalid issue IDs on the referenced project' do
-          exp = act = "Fixed #{invalidate_reference(reference)}"
-
-          expect(filter(act).to_html).to eq exp
-        end
-
-        it 'adds to the results hash' do
-          result = pipeline_result("Fixed #{reference}")
-          expect(result[:references][:issue]).to eq [issue]
-        end
+        exp = act = "Issue #{reference}"
+        expect(filter(act).to_html).to eq exp
       end
 
-      context 'when user cannot access reference' do
-        before { disallow_cross_reference! }
+      it 'links to a valid reference' do
+        doc = filter("See #{reference}")
 
-        it 'ignores valid references' do
-          exp = act = "See #{reference}"
+        expect(doc.css('a').first.attr('href')).
+          to eq helper.url_for_issue(issue.iid, project2)
+      end
 
-          expect(filter(act).to_html).to eq exp
-        end
+      it 'links with adjacent text' do
+        doc = filter("Fixed (#{reference}.)")
+        expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
+      end
+
+      it 'ignores invalid issue IDs on the referenced project' do
+        exp = act = "Fixed #{invalidate_reference(reference)}"
+
+        expect(filter(act).to_html).to eq exp
+      end
+
+      it 'adds to the results hash' do
+        result = pipeline_result("Fixed #{reference}")
+        expect(result[:references][:issue]).to eq [issue]
       end
     end
   end
