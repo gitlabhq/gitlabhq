@@ -91,7 +91,6 @@ describe Project do
   describe 'Respond to' do
     it { is_expected.to respond_to(:url_to_repo) }
     it { is_expected.to respond_to(:repo_exists?) }
-    it { is_expected.to respond_to(:satellite) }
     it { is_expected.to respond_to(:update_merge_requests) }
     it { is_expected.to respond_to(:execute_hooks) }
     it { is_expected.to respond_to(:name_with_namespace) }

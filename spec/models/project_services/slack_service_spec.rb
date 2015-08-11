@@ -67,7 +67,7 @@ describe SlackService do
       opts = {
         title: 'Awesome merge_request',
         description: 'please fix',
-        source_branch: 'stable',
+        source_branch: 'feature',
         target_branch: 'master'
       }
       merge_service = MergeRequests::CreateService.new(project,

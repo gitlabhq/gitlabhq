@@ -34,6 +34,20 @@ describe Repository do
     end
   end
 
+  describe :can_be_merged? do
+    context 'mergeable branches' do
+      subject { repository.can_be_merged?('0b4bc9a49b562e85de7cc9e834518ea6828729b9', 'master') }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'non-mergeable branches' do
+      subject { repository.can_be_merged?('bb5206fee213d983da88c47f9cf4cc6caf9c66dc', 'feature') }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe "search_files" do
     let(:results) { repository.search_files('feature', 'master') }
     subject { results }

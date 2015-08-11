@@ -45,7 +45,10 @@ v 7.14.0 (unreleased)
   - Remove redis-store TTL monkey patch
   - Add support for CI skipped status
   - Fetch code from forks to refs/merge-requests/:id/head when merge request created
+  - Remove satellites
   - Remove comments and email addresses when publicly exposing ssh keys (Zeger-Jan van de Weg)
+  - Improve MR merge widget text and UI consistency.
+  - Improve text in MR "How To Merge" modal.
   - Cache all events
   - Order commits by date when comparing branches
   - Fix bug causing error when the target branch of a symbolic ref was deleted
@@ -196,6 +199,7 @@ v 7.12.0
   - Add SAML support as an omniauth provider
   - Allow to configure a URL to show after sign out
   - Add an option to automatically sign-in with an Omniauth provider
+  - Better performance for web editor (switched from satellites to rugged)
   - GitLab CI service sends .gitlab-ci.yml in each push call
   - When remove project - move repository and schedule it removal
   - Improve group removing logic

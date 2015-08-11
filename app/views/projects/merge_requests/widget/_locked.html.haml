@@ -2,7 +2,8 @@
   = render 'projects/merge_requests/widget/heading'
   .mr-widget-body
     %h4
-      Merge in progress...
+      = icon("spinner spin")
+      Merge in progress&hellip;
     %p
-      Merging is in progress. While merging this request is locked and cannot be closed.
+      This merge request is in the process of being merged, during which time it is locked and cannot be closed.
 
