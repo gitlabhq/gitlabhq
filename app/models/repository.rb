@@ -364,62 +364,6 @@ class Repository
     @root_ref ||= raw_repository.root_ref
   end
 
-  def commit_file(user, path, content, message, ref)
-    path[0] = '' if path[0] == '/'
-
-    committer = user_to_comitter(user)
-    options = {}
-    options[:committer] = committer
-    options[:author] = committer
-    options[:commit] = {
-      message: message,
-      branch: ref
-    }
-
-    options[:file] = {
-      content: content,
-      path: path
-    }
-
-    Gitlab::Git::Blob.commit(raw_repository, options)
-  end
-
-  def remove_file(user, path, message, ref)
-    path[0] = '' if path[0] == '/'
-
-    committer = user_to_comitter(user)
-    options = {}
-    options[:committer] = committer
-    options[:author] = committer
-    options[:commit] = {
-      message: message,
-      branch: ref
-    }
-
-    options[:file] = {
-      path: path
-    }
-
-    Gitlab::Git::Blob.remove(raw_repository, options)
-  end
-
-  def user_to_comitter(user)
-    {
-      email: user.email,
-      name: user.name,
-      time: Time.now
-    }
-  end
-
-  def can_be_merged?(source_branch, target_branch)
-    our_commit = rugged.branches[target_branch].target
-    their_commit = rugged.branches[source_branch].target
-
-    if our_commit && their_commit
-      !rugged.merge_commits(our_commit, their_commit).conflicts?
-    end
-  end
-
   def search_files(query, ref)
     offset = 2
     args = %W(git grep -i -n --before-context #{offset} --after-context #{offset} #{query} #{ref || root_ref})

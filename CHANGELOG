@@ -1,4 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
+
+v 7.13.5
+  - Satellites reverted
+
 v 7.13.4
   - Allow users to send abuse reports
 
@@ -142,7 +146,6 @@ v 7.12.0
   - Add SAML support as an omniauth provider
   - Allow to configure a URL to show after sign out
   - Add an option to automatically sign-in with an Omniauth provider
-  - Better performance for web editor (switched from satellites to rugged)
   - GitLab CI service sends .gitlab-ci.yml in each push call
   - When remove project - move repository and schedule it removal
   - Improve group removing logic
