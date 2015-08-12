@@ -28,7 +28,7 @@ ls
 
 You should see the name of the image in the list shown.
 
-Go back one directory:
+Move up the hierarchy through directories:
 ```
 cd ../
 ```
