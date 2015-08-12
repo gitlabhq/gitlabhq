@@ -56,6 +56,7 @@ v 7.14.0 (unreleased)
   - Include branch/tag name in archive file and directory name
   - Add dropzone upload progress
   - Add a label for merged branches on branches page (Florent Baldino)
+  - Detect .mkd and .mkdn files as markdown (Ben Boeckel)
 
 v 7.13.3
   - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
