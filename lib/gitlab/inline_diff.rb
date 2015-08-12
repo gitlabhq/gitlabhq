@@ -46,8 +46,11 @@ module Gitlab
           end
           last_the_same_symbols += 1
           last_token = first_line[last_the_same_symbols..-1]
-          diff_arr[index+1].sub!(/#{Regexp.escape(last_token)}$/, FINISH + last_token)
-          diff_arr[index+2].sub!(/#{Regexp.escape(last_token)}$/, FINISH + last_token)
+          # This is tricky: escape backslashes so that `sub` doesn't interpret them
+          # as backreferences. Regexp.escape does NOT do the right thing.
+          replace_token = FINISH + last_token.gsub(/\\/, '\&\&')
+          diff_arr[index+1].sub!(/#{Regexp.escape(last_token)}$/, replace_token)
+          diff_arr[index+2].sub!(/#{Regexp.escape(last_token)}$/, replace_token)
         end
         diff_arr
       end
