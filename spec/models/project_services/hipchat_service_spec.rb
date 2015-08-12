@@ -47,6 +47,14 @@ describe HipchatService do
       WebMock.stub_request(:post, api_url)
     end
 
+    it 'should test and return errors' do
+      allow(hipchat).to receive(:execute).and_raise(StandardError, 'no such room')
+      result = hipchat.test(push_sample_data)
+
+      expect(result[:success]).to be_falsey
+      expect(result[:result].to_s).to eq('no such room')
+    end
+
     it 'should use v1 if version is provided' do
       allow(hipchat).to receive(:api_version).and_return('v1')
       expect(HipChat::Client).to receive(:new).
