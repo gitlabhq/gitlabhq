@@ -28,6 +28,20 @@
             = level
         %span.help-block#restricted-visibility-help Selected levels cannot be used by non-admin users for projects or snippets
     .form-group
+      = f.label :import_sources, class: 'control-label col-sm-2'
+      .col-sm-10
+        - data_attrs = { toggle: 'buttons' }
+        .btn-group{ data: data_attrs }
+          - import_sources_checkboxes('import-sources-help').each do |source|
+            = source
+        %span.help-block#import-sources-help
+          Enabled sources for code import during project creation. OmniAuth must be configured for GitHub
+          = link_to "(?)", help_page_path("integration", "github")
+          , Bitbucket
+          = link_to "(?)", help_page_path("integration", "bitbucket")
+          and GitLab.com
+          = link_to "(?)", help_page_path("integration", "gitlab")
+    .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
           = f.label :version_check_enabled do

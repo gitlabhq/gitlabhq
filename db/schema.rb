@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150806104937) do
+ActiveRecord::Schema.define(version: 20150812080800) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 20150806104937) do
     t.boolean  "user_oauth_applications",      default: true
     t.string   "after_sign_out_path"
     t.integer  "session_expire_delay",         default: 10080, null: false
+    t.text     "import_sources"
   end
 
   create_table "audit_events", force: true do |t|

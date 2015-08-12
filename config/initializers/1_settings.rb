@@ -148,6 +148,7 @@ Settings.gitlab.default_projects_features['snippets']       = false if Settings.
 Settings.gitlab.default_projects_features['visibility_level']    = Settings.send(:verify_constant, Gitlab::VisibilityLevel, Settings.gitlab.default_projects_features['visibility_level'], Gitlab::VisibilityLevel::PRIVATE)
 Settings.gitlab['repository_downloads_path'] = File.absolute_path(Settings.gitlab['repository_downloads_path'] || 'tmp/repositories', Rails.root)
 Settings.gitlab['restricted_signup_domains'] ||= []
+Settings.gitlab['import_sources'] ||= ['github','bitbucket','gitlab','gitorious','google_code','git']
 
 #
 # Gravatar
