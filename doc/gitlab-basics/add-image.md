@@ -21,14 +21,14 @@ Create a new branch:
 git checkout -b NAME-OF-BRANCH
 ```
 
-Check if your image was correctly added to the file:
+Check if your image was correctly added to the directory:
 ```
 ls
 ```
 
 You should see the name of the image in the list shown.
 
-Go back one file:
+Go back one directory:
 ```
 cd ../
 ```
