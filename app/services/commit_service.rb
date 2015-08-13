@@ -1,29 +1,41 @@
 require 'securerandom'
 
 class CommitService
+  class PreReceiveError < StandardError; end
+  class CommitError < StandardError; end
+
   def self.transaction(project, current_user, ref)
     repository = project.repository
     path_to_repo = repository.path_to_repo
+    empty_repo = repository.empty?
 
     # Create temporary ref
     random_string = SecureRandom.hex
     tmp_ref = "refs/tmp/#{random_string}/head"
-    target = repository.find_branch(ref).target
-    repository.rugged.references.create(tmp_ref, target)
+
+    unless empty_repo
+      target = repository.find_branch(ref).target
+      repository.rugged.references.create(tmp_ref, target)
+    end
 
     # Make commit in tmp ref
     sha = yield(tmp_ref)
 
     unless sha
-      raise 'Failed to create commit'
+      raise CommitError.new('Failed to create commit')
     end
 
     # Run GitLab pre-receive hook
     status = PreCommitService.new(project, current_user).execute(sha, ref)
 
     if status
-      # Update head
-      repository.rugged.references.update(Gitlab::Git::BRANCH_REF_PREFIX + ref, sha)
+      if empty_repo
+        # Create branch
+        repository.rugged.references.create(Gitlab::Git::BRANCH_REF_PREFIX + ref, sha)
+      else
+        # Update head
+        repository.rugged.references.update(Gitlab::Git::BRANCH_REF_PREFIX + ref, sha)
+      end
 
       # Run GitLab post receive hook
       PostCommitService.new(project, current_user).execute(sha, ref)
@@ -31,7 +43,7 @@ class CommitService
       # Remove tmp ref and return error to user
       repository.rugged.references.delete(tmp_ref)
 
-      raise 'Commit was rejected by pre-reveive hook'
+      raise PreReceiveError.new('Commit was rejected by pre-reveive hook')
     end
   end
 end

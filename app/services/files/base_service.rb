@@ -26,7 +26,7 @@ module Files
       else
         error("Something went wrong. Your changes were not committed")
       end
-    rescue ValidationError => ex
+    rescue CommitService::CommitError, CommitService::PreReceiveError, ValidationError => ex
       error(ex.message)
     end
 
