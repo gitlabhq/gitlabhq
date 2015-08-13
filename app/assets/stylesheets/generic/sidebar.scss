@@ -165,10 +165,6 @@
   }
 }
 
-.page-sidebar-expanded data {
-  display: none;
-}
-
 @media(min-width: $screen-md-max) {
   .page-sidebar-collapsed {
     @include folded-sidebar;
@@ -180,14 +176,13 @@
 }
 
 .page-sidebar-collapsed {
-  .nav-sidebar li {
-    width: 52px;
-  }
-}
-
-.page-sidebar-collapsed {
-  .nav-sidebar span {
-    display: none;
+  .nav-sidebar {
+    li {
+      width: 52px;
+    }
+    span {
+      display: none;
+    }
   }
 }
 
