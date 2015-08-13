@@ -1,6 +1,6 @@
 %ul.nav.nav-sidebar
   = nav_link do
-    = link_to project_path(@project), title: 'Back to project', data: {placement: 'right'}, class: 'back-link' do
+    = link_to project_path(@project), title: 'Back to project', data: {toggle: 'tooltip', placement: 'right', container: 'body'}, class: 'back-link' do
       = icon('caret-square-o-left fw')
       %span
         Back to project
@@ -9,27 +9,27 @@
 
   %ul.sidebar-subnav
     = nav_link(path: 'projects#edit') do
-      = link_to edit_project_path(@project), title: 'Project Settings', data: {placement: 'right'} do
+      = link_to edit_project_path(@project), title: 'Project Settings', data: {toggle: 'tooltip', placement: 'right', container: 'body'} do
         = icon('pencil-square-o fw')
         %span
           Project Settings
     = nav_link(controller: :deploy_keys) do
-      = link_to namespace_project_deploy_keys_path(@project.namespace, @project), title: 'Deploy Keys', data: {placement: 'right'} do
+      = link_to namespace_project_deploy_keys_path(@project.namespace, @project), title: 'Deploy Keys', data: {toggle: 'tooltip', placement: 'right', container: 'body'} do
         = icon('key fw')
         %span
           Deploy Keys
     = nav_link(controller: :hooks) do
-      = link_to namespace_project_hooks_path(@project.namespace, @project), title: 'Web Hooks', data: {placement: 'right'} do
+      = link_to namespace_project_hooks_path(@project.namespace, @project), title: 'Web Hooks', data: {toggle: 'tooltip', placement: 'right', container: 'body'} do
         = icon('link fw')
         %span
           Web Hooks
     = nav_link(controller: :services) do
-      = link_to namespace_project_services_path(@project.namespace, @project), title: 'Services', data: {placement: 'right'} do
+      = link_to namespace_project_services_path(@project.namespace, @project), title: 'Services', data: {toggle: 'tooltip', placement: 'right', container: 'body'} do
         = icon('cogs fw')
         %span
           Services
     = nav_link(controller: :protected_branches) do
-      = link_to namespace_project_protected_branches_path(@project.namespace, @project), title: 'Protected Branches', data: {placement: 'right'} do
+      = link_to namespace_project_protected_branches_path(@project.namespace, @project), title: 'Protected Branches', data: {toggle: 'tooltip', placement: 'right', container: 'body'} do
         = icon('lock fw')
         %span
           Protected Branches
