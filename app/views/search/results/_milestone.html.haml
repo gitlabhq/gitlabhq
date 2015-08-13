@@ -1,0 +1,9 @@
+.search-result-row
+  %h4
+    = link_to [milestone.project.namespace.becomes(Namespace), milestone.project, milestone] do
+      %span.term.str-truncated= milestone.title
+
+  - if milestone.description.present?
+    .description.term
+      = preserve do
+        = search_md_sanitize(markdown(milestone.description))

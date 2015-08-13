@@ -11,6 +11,7 @@ v 8.0.0 (unreleased)
   - Allow configuration of import sources for new projects (Artem Sidorenko)
   - Search for comments should be case insensetive
   - Create cross-reference for closing references on commits pushed to non-default branches (Maël Valais)
+  - Ability to search milestones
 
 v 7.14.0
   - Fix bug where non-project members of the target project could set labels on new merge requests.

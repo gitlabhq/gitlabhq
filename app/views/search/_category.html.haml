@@ -21,6 +21,13 @@
           Merge requests
           %span.badge
             = @search_results.merge_requests_count
+    %li{class: ("active" if @scope == 'milestones')}
+      = link_to search_filter_path(scope: 'milestones') do
+        = icon('clock-o fw')
+        %span
+          Milestones
+          %span.badge
+            = @search_results.milestones_count
     %li{class: ("active" if @scope == 'notes')}
       = link_to search_filter_path(scope: 'notes') do
         = icon('comments fw')
@@ -74,4 +81,11 @@
           Merge requests
           %span.badge
             = @search_results.merge_requests_count
+    %li{class: ("active" if @scope == 'milestones')}
+      = link_to search_filter_path(scope: 'milestones') do
+        = icon('clock-o fw')
+        %span
+          Milestones
+          %span.badge
+            = @search_results.milestones_count
 

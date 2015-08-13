@@ -41,6 +41,12 @@ class Spinach::Features::Search < Spinach::FeatureSteps
     end
   end
 
+  step 'I click "Milestones" link' do
+    page.within '.search-filter' do
+      click_link 'Milestones'
+    end
+  end
+
   step 'I click "Wiki" link' do
     page.within '.search-filter' do
       click_link 'Wiki'
@@ -70,6 +76,11 @@ class Spinach::Features::Search < Spinach::FeatureSteps
   step 'project has merge requests' do
     create(:merge_request, title: "Foo", source_project: project, target_project: project)
     create(:merge_request, :simple, title: "Bar", source_project: project, target_project: project)
+  end
+
+  step 'project has milestones' do
+    create(:milestone, title: "Foo", project: project)
+    create(:milestone, title: "Bar", project: project)
   end
 
   step 'I should see "Foo" link in the search results' do
