@@ -55,6 +55,7 @@ v 7.14.0 (unreleased)
   - Add dropzone upload progress
   - Add a label for merged branches on branches page (Florent Baldino)
   - Detect .mkd and .mkdn files as markdown (Ben Boeckel)
+  - Fix: User search feature in admin area does not respect filters
 
 v 7.13.5
   - Satellites reverted
