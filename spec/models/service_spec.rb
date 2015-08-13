@@ -46,6 +46,16 @@ describe Service do
       describe :can_test do
         it { expect(@testable).to eq(true) }
       end
+
+      describe :test do
+        let(:data) { 'test' }
+
+        it 'test runs execute' do
+          expect(@service).to receive(:execute).with(data)
+
+          @service.test(data)
+        end
+      end
     end
 
     describe "With commits" do
