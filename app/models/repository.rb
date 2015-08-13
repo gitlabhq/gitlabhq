@@ -373,7 +373,7 @@ class Repository
     options[:author] = committer
     options[:commit] = {
       message: message,
-      branch: ref
+      branch: ref,
     }
 
     options[:file] = {

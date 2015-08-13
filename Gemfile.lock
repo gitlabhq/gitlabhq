@@ -271,7 +271,7 @@ GEM
       mime-types (~> 1.19)
     gitlab_emoji (0.1.0)
       gemojione (~> 2.0)
-    gitlab_git (7.2.12)
+    gitlab_git (7.2.13)
       activesupport (~> 4.0)
       charlock_holmes (~> 0.6)
       gitlab-linguist (~> 3.0)
@@ -783,7 +783,7 @@ DEPENDENCIES
   gitlab-grack (~> 2.0.2)
   gitlab-linguist (~> 3.0.1)
   gitlab_emoji (~> 0.1)
-  gitlab_git (~> 7.2.12)
+  gitlab_git (~> 7.2.13)
   gitlab_meta (= 7.0)
   gitlab_omniauth-ldap (= 1.2.1)
   gollum-lib (~> 4.0.2)
@@ -875,4 +875,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.10.4
+   1.10.6

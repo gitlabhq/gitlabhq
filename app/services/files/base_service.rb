@@ -22,7 +22,6 @@ module Files
       end
 
       if sha = commit
-        after_commit(sha, @target_branch)
         success
       else
         error("Something went wrong. Your changes were not committed")
@@ -32,10 +31,6 @@ module Files
     end
 
     private
-
-    def after_commit(sha, branch)
-      PostCommitService.new(project, current_user).execute(sha, branch)
-    end
 
     def current_branch
       @current_branch ||= params[:current_branch]
