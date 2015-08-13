@@ -55,6 +55,12 @@ v 7.14.0 (unreleased)
   - Add a label for merged branches on branches page (Florent Baldino)
   - Detect .mkd and .mkdn files as markdown (Ben Boeckel)
 
+v 7.13.5
+  - Satellites reverted
+
+v 7.13.4
+  - Allow users to send abuse reports
+
 v 7.13.3
   - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
   - Allow users to send abuse reports
