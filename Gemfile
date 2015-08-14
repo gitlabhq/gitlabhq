@@ -150,7 +150,7 @@ gem 'tinder', '~> 1.9.2'
 gem 'hipchat', '~> 1.5.0'
 
 # Flowdock integration
-gem "gitlab-flowdock-git-hook", "~> 0.4.2"
+gem "gitlab-flowdock-git-hook", "~> 1.0.1"
 
 # Gemnasium integration
 gem "gemnasium-gitlab-service", "~> 0.2"
