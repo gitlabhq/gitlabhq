@@ -38,7 +38,7 @@ class FlowdockService < Service
 
   def fields
     [
-      { type: 'text', name: 'token',     placeholder: '' }
+      { type: 'text', name: 'token', placeholder: 'Flowdock Git source token' }
     ]
   end
 
