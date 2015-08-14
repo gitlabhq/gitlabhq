@@ -1,4 +1,5 @@
 class Import::GoogleCodeController < Import::BaseController
+  before_action :verify_google_code_import_enabled
   before_action :user_map, only: [:new_user_map, :create_user_map]
 
   def new
@@ -102,6 +103,10 @@ class Import::GoogleCodeController < Import::BaseController
 
   def client
     @client ||= Gitlab::GoogleCodeImport::Client.new(session[:google_code_dump])
+  end
+
+  def verify_google_code_import_enabled
+    not_found! unless google_code_import_enabled?
   end
 
   def user_map
