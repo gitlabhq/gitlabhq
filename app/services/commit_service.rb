@@ -34,7 +34,14 @@ class CommitService
         repository.rugged.references.create(Gitlab::Git::BRANCH_REF_PREFIX + ref, sha)
       else
         # Update head
-        repository.rugged.references.update(Gitlab::Git::BRANCH_REF_PREFIX + ref, sha)
+        current_target = repository.find_branch(ref).target
+
+        # Make sure target branch was not changed during pre-receive hook
+        if current_target == target
+          repository.rugged.references.update(Gitlab::Git::BRANCH_REF_PREFIX + ref, sha)
+        else
+          raise CommitError.new('Commit was rejected because branch received new push')
+        end
       end
 
       # Run GitLab post receive hook
