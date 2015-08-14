@@ -392,7 +392,7 @@ class Repository
   end
 
   def remove_file(user, path, message, branch)
-    commit_with_hooks(user, branch) do |branch|
+    commit_with_hooks(user, branch) do |ref|
       path[0] = '' if path[0] == '/'
 
       committer = user_to_comitter(user)
@@ -431,7 +431,7 @@ class Repository
     end
   end
 
-  def merge(source_sha, target_branch, options = {})
+  def merge(user, source_sha, target_branch, options = {})
     our_commit = rugged.branches[target_branch].target
     their_commit = rugged.lookup(source_sha)
 
@@ -441,13 +441,15 @@ class Repository
     merge_index = rugged.merge_commits(our_commit, their_commit)
     return false if merge_index.conflicts?
 
-    actual_options = options.merge(
-      parents: [our_commit, their_commit],
-      tree: merge_index.write_tree(rugged),
-      update_ref: "refs/heads/#{target_branch}"
-    )
+    commit_with_hooks(user, target_branch) do |ref|
+      actual_options = options.merge(
+        parents: [our_commit, their_commit],
+        tree: merge_index.write_tree(rugged),
+        update_ref: ref
+      )
 
-    Rugged::Commit.create(rugged, actual_options)
+      Rugged::Commit.create(rugged, actual_options)
+    end
   end
 
   def search_files(query, ref)
