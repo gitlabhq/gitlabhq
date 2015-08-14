@@ -58,7 +58,7 @@ module TestEnv
   end
 
   def disable_pre_receive
-    allow_any_instance_of(PreCommitService).to receive(:execute).and_return(true)
+    allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return(true)
   end
 
   # Clean /tmp/tests

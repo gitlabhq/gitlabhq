@@ -4,48 +4,53 @@ class CommitService
   class PreReceiveError < StandardError; end
   class CommitError < StandardError; end
 
-  def self.transaction(project, current_user, ref)
+  def self.transaction(project, current_user, branch)
     repository = project.repository
     path_to_repo = repository.path_to_repo
     empty_repo = repository.empty?
+    oldrev = Gitlab::Git::BLANK_SHA
+    ref = Gitlab::Git::BRANCH_REF_PREFIX + branch
+    gl_id = Gitlab::ShellEnv.gl_id(current_user)
 
     # Create temporary ref
     random_string = SecureRandom.hex
     tmp_ref = "refs/tmp/#{random_string}/head"
 
     unless empty_repo
-      target = repository.find_branch(ref).target
-      repository.rugged.references.create(tmp_ref, target)
+      oldrev = repository.find_branch(branch).target
+      repository.rugged.references.create(tmp_ref, oldrev)
     end
 
     # Make commit in tmp ref
-    sha = yield(tmp_ref)
+    newrev = yield(tmp_ref)
 
-    unless sha
+    unless newrev
       raise CommitError.new('Failed to create commit')
     end
 
     # Run GitLab pre-receive hook
-    status = PreCommitService.new(project, current_user).execute(sha, ref)
+    pre_receive_hook = Gitlab::Git::Hook.new('pre-receive', path_to_repo)
+    status = pre_receive_hook.trigger(gl_id, oldrev, newrev, ref)
 
     if status
       if empty_repo
         # Create branch
-        repository.rugged.references.create(Gitlab::Git::BRANCH_REF_PREFIX + ref, sha)
+        repository.rugged.references.create(ref, newrev)
       else
         # Update head
-        current_target = repository.find_branch(ref).target
+        current_head = repository.find_branch(branch).target
 
         # Make sure target branch was not changed during pre-receive hook
-        if current_target == target
-          repository.rugged.references.update(Gitlab::Git::BRANCH_REF_PREFIX + ref, sha)
+        if current_head == oldrev
+          repository.rugged.references.update(ref, newrev)
         else
           raise CommitError.new('Commit was rejected because branch received new push')
         end
       end
 
       # Run GitLab post receive hook
-      PostCommitService.new(project, current_user).execute(sha, ref)
+      post_receive_hook = Gitlab::Git::Hook.new('post-receive', path_to_repo)
+      status = post_receive_hook.trigger(gl_id, oldrev, newrev, ref)
     else
       # Remove tmp ref and return error to user
       repository.rugged.references.delete(tmp_ref)
