@@ -40,6 +40,9 @@ module TestEnv
     # Setup GitLab shell for test instance
     setup_gitlab_shell
 
+    # Skip pre-receive check so we can use web editor
+    disable_pre_receive
+
     # Create repository for FactoryGirl.create(:project)
     setup_factory_repo
 
@@ -55,6 +58,10 @@ module TestEnv
   def enable_mailer
     allow_any_instance_of(NotificationService).to receive(:mailer).
       and_call_original
+  end
+
+  def disable_pre_receive
+    allow_any_instance_of(PreCommitService).to receive(:execute).and_return(true)
   end
 
   # Clean /tmp/tests
