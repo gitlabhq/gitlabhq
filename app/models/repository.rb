@@ -148,6 +148,10 @@ class Repository
     @lookup_cache ||= {}
   end
 
+  def expire_branch_names
+    cache.expire(:branch_names)
+  end
+
   def method_missing(m, *args, &block)
     if m == :lookup && !block_given?
       lookup_cache[m] ||= {}

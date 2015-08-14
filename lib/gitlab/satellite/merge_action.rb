@@ -36,6 +36,7 @@ module Gitlab
             if merge_request.remove_source_branch?
               # will raise CommandFailed when push fails
               merge_repo.git.push(default_options, :origin, ":#{merge_request.source_branch}")
+              merge_request.source_project.repository.expire_branch_names
             end
             # merge, push and branch removal successful
             true
