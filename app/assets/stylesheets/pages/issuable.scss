@@ -45,3 +45,9 @@
 
   .btn { font-size: 13px; }
 }
+
+.issuable-details {
+  .description {
+    max-width: $readable-width;
+  }
+}

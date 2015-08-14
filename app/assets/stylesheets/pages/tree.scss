@@ -116,6 +116,9 @@
 }
 
 .readme-holder {
+  margin: 0 auto;
+  max-width: $readable-width;
+
   .readme-file-title {
     font-size: 14px;
     font-weight: bold;
