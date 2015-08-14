@@ -28,6 +28,7 @@ v 7.14.0 (unreleased)
   - Fix file upload dialog for comment editing (Daniel Gerhardt)
   - Set OmniAuth full_host parameter to ensure redirect URIs are correct (Stan Hu)
   - Return comments in created order in merge request API (Stan Hu)
+  - Disable internal issue tracker controller if external tracker is used (Stan Hu)
   - Expire Rails cache entries after two weeks to prevent endless Redis growth
   - Add support for destroying project milestones (Stan Hu)
   - Allow custom backup archive permissions
