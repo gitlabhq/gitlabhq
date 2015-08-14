@@ -55,6 +55,7 @@ v 7.14.0 (unreleased)
   - Add a label for merged branches on branches page (Florent Baldino)
   - Detect .mkd and .mkdn files as markdown (Ben Boeckel)
   - Fix: User search feature in admin area does not respect filters
+  - Set max-width for README, issue and merge request description for easier read on big screens
 
 v 7.13.5
   - Satellites reverted
