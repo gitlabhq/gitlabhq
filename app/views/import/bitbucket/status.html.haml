@@ -3,11 +3,16 @@
   %i.fa.fa-bitbucket
   Import projects from Bitbucket
 
-%p.light
-  Select projects you want to import.
-%hr
-%p
-  = button_tag 'Import all projects', class: "btn btn-success js-import-all"
+- if @repos.any?
+  %p.light
+    Select projects you want to import.
+  %hr
+  %p
+  - if @incompatible_repos.any?
+    = button_tag 'Import all compatible projects', class: "btn btn-success js-import-all"
+  - else
+    = button_tag 'Import all projects', class: "btn btn-success js-import-all"
+
 
 %table.table.import-jobs
   %thead
@@ -41,6 +46,24 @@
           = "#{repo["owner"]}/#{repo["slug"]}"
         %td.import-actions.job-status
           = button_tag "Import", class: "btn js-add-to-import"
+    - @incompatible_repos.each do |repo|
+      %tr{id: "repo_#{repo["owner"]}___#{repo["slug"]}"}
+        %td
+          = link_to "#{repo["owner"]}/#{repo["slug"]}", "https://bitbucket.org/#{repo["owner"]}/#{repo["slug"]}", target: "_blank"
+        %td.import-target
+        %td.import-actions-job-status
+          = label_tag "Incompatible Project", nil, class: "label label-danger"
+
+- if @incompatible_repos.any?
+  %p
+    One or more of your Bitbucket projects cannot be imported into GitLab
+    directly because they use Subversion or Mercurial for version control,
+    rather than Git. Please convert
+    = link_to "them to Git,", "https://www.atlassian.com/git/tutorials/migrating-overview"
+    and go through the
+    = link_to "import flow", status_import_bitbucket_path, "data-no-turbolink" => "true"
+    again.
+
 
 :coffeescript
   new ImporterStatus("#{jobs_import_bitbucket_path}", "#{import_bitbucket_path}")

@@ -6,7 +6,8 @@
   %span{class: ("list-item-name" if show_controls)}
     - if member.user
       = image_tag avatar_icon(user.email, 16), class: "avatar s16", alt: ''
-      %strong= user.name
+      %strong
+        = link_to user.name, user_path(user)
       %span.cgray= user.username
       - if user == current_user
         %span.label.label-success It's you

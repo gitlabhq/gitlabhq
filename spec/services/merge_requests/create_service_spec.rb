@@ -10,7 +10,7 @@ describe MergeRequests::CreateService do
         {
           title: 'Awesome merge_request',
           description: 'please fix',
-          source_branch: 'feature',
+          source_branch: 'stable',
           target_branch: 'master'
         }
       end

@@ -6,7 +6,7 @@ class Spinach::Features::Invites < Spinach::FeatureSteps
   step '"John Doe" has invited "user@example.com" to group "Owned"' do
     user = User.find_by(name: "John Doe")
     group = Group.find_by(name: "Owned")
-    group.add_user("user@example.com", Gitlab::Access::DEVELOPER, user)
+    group.add_developer("user@example.com", user)
   end
 
   step 'I visit the invitation page' do

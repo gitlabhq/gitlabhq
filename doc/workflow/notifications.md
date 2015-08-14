@@ -52,18 +52,40 @@ Below is the table of events users can be notified of:
 | New SSH key added            | User                                                              | Security email, always sent. |
 | New email added              | User                                                              | Security email, always sent. |
 | New user created             | User                                                              | Sent on user creation, except for omniauth (LDAP)|
-| New issue created            | Issue assignee [1], project members [2]                           | [1] not disabled, [2] higher than participating |
 | User added to project        | User                                                              | Sent when user is added to project |
 | Project access level changed | User                                                              | Sent when user project access level is changed |
 | User added to group          | User                                                              | Sent when user is added to group |
+| Group access level changed   | User                                                              | Sent when user group access level is changed | 
 | Project moved                | Project members [1]                                               | [1] not disabled |
-| Group access level changed   | User                                                              | Sent when user group access level is changed |
-| Close issue                  | Issue author [1], issue assignee [2], project members [3]         | [1] [2] not disabled, [3] higher than participating |
-| Reassign issue               | New issue assignee [1], old issue assignee [2]                    | [1] [2] not disabled |
-| Reopen issue                 | Project members [1]                                               | [1] higher than participating |
-| New merge request            | MR assignee [1]                                                   | [1] not disabled |
-| Reassign merge request       | New MR assignee [1], old MR assignee [2]                          | [1] [2] not disabled |
-| Close merge request          | MR author [1], MR assignee [2], project members [3]               | [1] [2] not disabled, [3] higher than participating |
-| Reopen merge request         | Project members [1]                                               | [1] higher than participating |
-| Merge merge request          | MR author [1], MR assignee [2], project members [3]               | [1] [2] not disabled, [3] higher than participating |
-| New comment                  | Mentioned users [1], users participating [2], project members [3] | [1] [2] not disabled, [3] higher than participating |
+
+### Issue / Merge Request events
+
+In all of the below cases, the notification will be sent to:
+- Participants:
+  - the author and assignee of the issue/merge request
+  - authors of comments on the issue/merge request
+  - anyone mentioned by `@username` in the issue/merge request description
+  - anyone mentioned by `@username` in any of the comments on the issue/merge request
+
+    ...with notification level "Participating" or higher
+
+- Watchers: project members with notification level "Watch"
+- Subscribers: anyone who manually subscribed to the issue/merge request
+
+| Event                  | Sent to |
+|------------------------|---------|
+| New issue              | |
+| Close issue            | |
+| Reassign issue         | The above, plus the old assignee |
+| Reopen issue           | |
+| New merge request      | |
+| Reassign merge request | The above, plus the old assignee |
+| Close merge request    | |
+| Reopen merge request   | |
+| Merge merge request    | |
+| New comment            | The above, plus anyone mentioned by `@username` in the comment, with notification level "Mention" or higher |
+
+You won't receive notifications for Issues, Merge Requests or Milestones
+created by yourself. You will only receive automatic notifications when
+somebody else comments or adds changes to the ones that you've created or
+mentions you.

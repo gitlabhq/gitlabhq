@@ -39,12 +39,14 @@ describe Import::BitbucketController do
 
     it "assigns variables" do
       @project = create(:project, import_type: 'bitbucket', creator_id: user.id)
-      stub_client(projects: [@repo])
+      client = stub_client(projects: [@repo])
+      allow(client).to receive(:incompatible_projects).and_return([])
 
       get :status
 
       expect(assigns(:already_added_projects)).to eq([@project])
       expect(assigns(:repos)).to eq([@repo])
+      expect(assigns(:incompatible_repos)).to eq([])
     end
 
     it "does not show already added project" do

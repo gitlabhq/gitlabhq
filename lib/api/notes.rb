@@ -78,17 +78,15 @@ module API
         put ":id/#{noteables_str}/:#{noteable_id_str}/notes/:note_id" do
           required_attributes! [:body]
 
-          authorize! :admin_note, user_project.notes.find(params[:note_id])
+          note = user_project.notes.find(params[:note_id])
+
+          authorize! :admin_note, note
 
           opts = {
-            note: params[:body],
-            note_id: params[:note_id],
-            noteable_type: noteables_str.classify,
-            noteable_id: params[noteable_id_str]
+            note: params[:body]
           }
 
-          @note = ::Notes::UpdateService.new(user_project, current_user,
-                                             opts).execute
+          @note = ::Notes::UpdateService.new(user_project, current_user, opts).execute(note)
 
           if @note.valid?
             present @note, with: Entities::Note

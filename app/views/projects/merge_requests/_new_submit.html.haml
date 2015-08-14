@@ -24,7 +24,7 @@
         = icon('history')
         Commits
         %span.badge= @commits.size
-    %li.diffs-tab.active
+    %li.diffs-tab
       = link_to url_for(params), data: {target: '#diffs', action: 'diffs', toggle: 'tab'} do
         = icon('list-alt')
         Changes
@@ -33,7 +33,7 @@
   .tab-content
     #commits.commits.tab-pane
       = render "projects/commits/commits", project: @project
-    #diffs.diffs.tab-pane.active
+    #diffs.diffs.tab-pane
       - if @diffs.present?
         = render "projects/diffs/diffs", diffs: @diffs, project: @project
       - elsif @commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE

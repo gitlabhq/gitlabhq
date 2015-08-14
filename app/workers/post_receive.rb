@@ -45,7 +45,7 @@ class PostReceive
 
   def utf8_encode_changes(changes)
     changes = changes.dup
-    
+
     changes.force_encoding("UTF-8")
     return changes if changes.valid_encoding?
 

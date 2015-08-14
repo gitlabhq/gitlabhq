@@ -30,13 +30,10 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def update
-    if note.editable?
-      note.update_attributes(note_params)
-      note.reset_events_cache
-    end
+    @note = Notes::UpdateService.new(project, current_user, note_params).execute(note)
 
     respond_to do |format|
-      format.json { render_note_json(note) }
+      format.json { render_note_json(@note) }
       format.html { redirect_to :back }
     end
   end

@@ -216,6 +216,10 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     sudo chmod -R u+rwX,go-w log/
     sudo chmod -R u+rwX tmp/
 
+    # Create directory for satellites
+    sudo -u git -H mkdir /home/git/gitlab-satellites
+    sudo chmod u+rwx,g=rx,o-rwx /home/git/gitlab-satellites
+
     # Make sure GitLab can write to the tmp/pids/ and tmp/sockets/ directories
     sudo chmod -R u+rwX tmp/pids/
     sudo chmod -R u+rwX tmp/sockets/

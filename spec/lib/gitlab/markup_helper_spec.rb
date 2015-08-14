@@ -15,7 +15,7 @@ describe Gitlab::MarkupHelper do
   end
 
   describe '#gitlab_markdown?' do
-    %w(mdown md markdown).each do |type|
+    %w(mdown mkd mkdn md markdown).each do |type|
       it "returns true for #{type} files" do
         expect(Gitlab::MarkupHelper.gitlab_markdown?("README.#{type}")).to be_truthy
       end

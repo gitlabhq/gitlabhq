@@ -1,6 +1,2 @@
 %span.str-truncated
   = link_to_gfm commit.title, namespace_project_commit_path(@project.namespace, @project, commit.id), class: "tree-commit-link"
-  %span.tree_author
-    [
-    commit_author_link(commit, avatar: false)
-    ]

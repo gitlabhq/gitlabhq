@@ -17,7 +17,7 @@
       - few_commits.each do |commit|
         = render "events/commit", commit: commit, project: project
 
-      - create_mr = current_user == event.author && event.new_ref? && create_mr_button?(event.project.default_branch, event.ref_name, event.project)
+      - create_mr = event.new_ref? && create_mr_button?(event.project.default_branch, event.ref_name, event.project)
       - if event.commits_count > 1
         %li.commits-stat
           - if event.commits_count > 2
@@ -34,10 +34,11 @@
             Compare #{from_label}...#{truncate_sha(event.commit_to)}
 
           - if create_mr
-            or
-            = link_to create_mr_path(event.project.default_branch, event.ref_name, event.project) do
-              create a merge request
+            %span{"data-user-is" => event.author_id, "data-display" => "inline"}
+              or
+              = link_to create_mr_path(event.project.default_branch, event.ref_name, event.project) do
+                create a merge request
       - elsif create_mr
-        %li.commits-stat
+        %li.commits-stat{"data-user-is" => event.author_id}
           = link_to create_mr_path(event.project.default_branch, event.ref_name, event.project) do
             Create Merge Request

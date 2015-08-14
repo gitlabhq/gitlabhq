@@ -1,22 +1,11 @@
 module Notes
   class UpdateService < BaseService
-    def execute
-      note = project.notes.find(params[:note_id])
-      note.note = params[:note]
-      if note.save
-        notification_service.new_note(note)
+    def execute(note)
+      return note unless note.editable?
 
-        # Skip system notes, like status changes and cross-references.
-        unless note.system
-          event_service.leave_note(note, note.author)
+      note.update_attributes(params.merge(updated_by: current_user))
 
-          # Create a cross-reference note if this Note contains GFM that
-          # names an issue, merge request, or commit.
-          note.references.each do |mentioned|
-            SystemNoteService.cross_reference(mentioned, note.noteable, note.author)
-          end
-        end
-      end
+      note.reset_events_cache
 
       note
     end

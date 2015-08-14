@@ -33,6 +33,7 @@
       = form_tag admin_users_path, method: :get, class: 'form-inline' do
         .form-group
           = search_field_tag :name, params[:name], placeholder: 'Name, email or username', class: 'form-control'
+          = hidden_field_tag "filter", params[:filter]
         = button_tag class: 'btn btn-primary' do
           %i.fa.fa-search
       %hr

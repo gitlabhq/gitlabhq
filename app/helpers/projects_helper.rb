@@ -21,7 +21,7 @@ module ProjectsHelper
   end
 
   def link_to_member(project, author, opts = {})
-    default_opts = { avatar: true, name: true, size: 16 }
+    default_opts = { avatar: true, name: true, size: 16, author_class: 'author' }
     opts = default_opts.merge(opts)
 
     return "(deleted)" unless author
@@ -32,7 +32,7 @@ module ProjectsHelper
     author_html << image_tag(avatar_icon(author.try(:email), opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}", alt:'') if opts[:avatar]
 
     # Build name span tag
-    author_html << content_tag(:span, sanitize(author.name), class: 'author') if opts[:name]
+    author_html << content_tag(:span, sanitize(author.name), class: opts[:author_class]) if opts[:name]
 
     author_html = author_html.html_safe
 
@@ -231,37 +231,20 @@ module ProjectsHelper
     end
   end
 
+  def readme_path(project)
+    filename_path(project, :readme)
+  end
+
   def changelog_path(project)
-    if project && changelog = project.repository.changelog
-      namespace_project_blob_path(
-        project.namespace,
-        project,
-        tree_join(project.default_branch,
-                  changelog.name)
-      )
-    end
+    filename_path(project, :changelog)
   end
 
   def license_path(project)
-    if project && license = project.repository.license
-      namespace_project_blob_path(
-        project.namespace,
-        project,
-        tree_join(project.default_branch,
-                  license.name)
-      )
-    end
+    filename_path(project, :license)
   end
 
   def version_path(project)
-    if project && version = project.repository.version
-      namespace_project_blob_path(
-        project.namespace,
-        project,
-        tree_join(project.default_branch,
-                  version.name)
-      )
-    end
+    filename_path(project, :version)
   end
 
   def hidden_pass_url(original_url)
@@ -329,6 +312,19 @@ module ProjectsHelper
       '1000+'
     else
       count
+    end
+  end
+
+  private
+
+  def filename_path(project, filename)
+    if project && blob = project.repository.send(filename)
+      namespace_project_blob_path(
+          project.namespace,
+          project,
+          tree_join(project.default_branch,
+                    blob.name)
+      )
     end
   end
 end

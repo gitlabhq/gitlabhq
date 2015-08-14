@@ -1,8 +1,16 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.14.0 (unreleased)
+  - Provide more feedback what went wrong if HipChat service failed test (Stan Hu)
+  - Disable turbolinks when linking to Bitbucket import status (Stan Hu)
+  - Fix broken code import and display error messages if something went wrong with creating project (Stan Hu)
+  - Fix corrupted binary files when using API files endpoint (Stan Hu)
+  - Bump Haml to 4.0.7 to speed up textarea rendering (Stan Hu)
+  - Show incompatible projects in Bitbucket import status (Stan Hu)
+  - Fix coloring of diffs on MR Discussion-tab (Gert Goet)
   - Fix "Network" and "Graphs" pages for branches with encoded slashes (Stan Hu)
   - Fix errors deleting and creating branches with encoded slashes (Stan Hu)
+  - Always add current user to autocomplete controller to support filter by "Me" (Stan Hu)
   - Fix multi-line syntax highlighting (Stan Hu)
   - Fix network graph when branch name has single quotes (Stan Hu)
   - Add "Confirm user" button in user admin page (Stan Hu)
@@ -19,27 +27,47 @@ v 7.14.0 (unreleased)
   - Fix OAuth provider bug where GitLab would not go return to the redirect_uri after sign-in (Stan Hu)
   - Fix file upload dialog for comment editing (Daniel Gerhardt)
   - Set OmniAuth full_host parameter to ensure redirect URIs are correct (Stan Hu)
+  - Return comments in created order in merge request API (Stan Hu)
   - Expire Rails cache entries after two weeks to prevent endless Redis growth
   - Add support for destroying project milestones (Stan Hu)
-  - Add fetch command to the MR page.
   - Allow custom backup archive permissions
-  - Add fetch command to the MR page
   - Add project star and fork count, group avatar URL and user/group web URL attributes to API
-  - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
-  - Add fetch command to the MR page.
+  - Show who last edited a comment if it wasn't the original author
+  - Send notification to all participants when MR is merged.
   - Add ability to manage user email addresses via the API.
   - Show buttons to add license, changelog and contribution guide if they're missing.
   - Tweak project page buttons.
   - Disabled autocapitalize and autocorrect on login field (Daryl Chan)
   - Mention group and project name in creation, update and deletion notices (Achilleas Pipinellis)
+  - Update gravatar link on profile page to link to configured gravatar host (Ben Bodenmiller)
   - Remove redis-store TTL monkey patch
   - Add support for CI skipped status
   - Fetch code from forks to refs/merge-requests/:id/head when merge request created
-  - Remove satellites 
   - Remove comments and email addresses when publicly exposing ssh keys (Zeger-Jan van de Weg)
+  - Add "Check out branch" button to the MR page.
+  - Improve MR merge widget text and UI consistency.
+  - Improve text in MR "How To Merge" modal.
+  - Cache all events
+  - Order commits by date when comparing branches
+  - Fix bug causing error when the target branch of a symbolic ref was deleted
+  - Include branch/tag name in archive file and directory name
+  - Add dropzone upload progress
+  - Add a label for merged branches on branches page (Florent Baldino)
+  - Detect .mkd and .mkdn files as markdown (Ben Boeckel)
+  - Fix: User search feature in admin area does not respect filters
+  - Set max-width for README, issue and merge request description for easier read on big screens
+
+v 7.13.5
+  - Satellites reverted
+
+v 7.13.4
+  - Allow users to send abuse reports
 
 v 7.13.3
   - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
+  - Allow users to send abuse reports
+  - Remove satellites 
+  - Link username to profile on Group Members page (Tom Webster)
 
 v 7.13.2
   - Fix randomly failed spec
@@ -64,9 +92,6 @@ v 7.13.1
 
 v 7.13.0
   - Remove repository graph log to fix slow cache updates after push event (Stan Hu)
-  - Return comments in created order in merge request API (Stan Hu)
-
-v 7.13.0 (unreleased)
   - Only enable HSTS header for HTTPS and port 443 (Stan Hu)
   - Fix user autocomplete for unauthenticated users accessing public projects (Stan Hu)
   - Fix redirection to home page URL for unauthorized users (Daniel Gerhardt)
@@ -114,12 +139,12 @@ v 7.13.0 (unreleased)
   - Add error message for SSH key linebreaks
   - Store commits count in database (will populate with valid values only after first push)
   - Rebuild cache after push to repository in background job
+  - Fix transferring of project to another group using the API.
 
 v 7.12.2
   - Correctly show anonymous authorized applications under Profile > Applications.
   - Faster automerge check and merge itself when source and target branches are in same repository
   - Audit log for user authentication
-  - Fix transferring of project to another group using the API.
   - Allow custom label to be set for authentication providers.
 
 v 7.12.1
@@ -184,7 +209,6 @@ v 7.12.0
   - Add SAML support as an omniauth provider
   - Allow to configure a URL to show after sign out
   - Add an option to automatically sign-in with an Omniauth provider
-  - Better performance for web editor (switched from satellites to rugged)
   - GitLab CI service sends .gitlab-ci.yml in each push call
   - When remove project - move repository and schedule it removal
   - Improve group removing logic

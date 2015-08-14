@@ -19,7 +19,7 @@ class Spinach::Features::ExploreGroups < Spinach::FeatureSteps
   step '"John Doe" is owner of group "TestGroup"' do
     group = Group.find_by(name: "TestGroup") || create(:group, name: "TestGroup")
     user = create(:user, name: "John Doe")
-    group.add_user(user, Gitlab::Access::OWNER)
+    group.add_owner(user)
   end
 
   step 'I visit group "TestGroup" page' do

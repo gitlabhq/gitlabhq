@@ -70,12 +70,6 @@ class NotificationService
     reassign_resource_email(merge_request, merge_request.target_project, current_user, 'reassigned_merge_request_email')
   end
 
-  # When we close a merge request we should send next emails:
-  #
-  #  * merge_request author if their notification level is not Disabled
-  #  * merge_request assignee if their notification level is not Disabled
-  #  * project team members with notification level higher then Participating
-  #
   def close_mr(merge_request, current_user)
     close_resource_email(merge_request, merge_request.target_project, current_user, 'closed_merge_request_email')
   end
@@ -84,26 +78,8 @@ class NotificationService
     reopen_resource_email(issue, issue.project, current_user, 'issue_status_changed_email', 'reopened')
   end
 
-  # When we merge a merge request we should send next emails:
-  #
-  #  * merge_request author if their notification level is not Disabled
-  #  * merge_request assignee if their notification level is not Disabled
-  #  * project team members with notification level higher then Participating
-  #
   def merge_mr(merge_request, current_user)
-    recipients = [merge_request.author, merge_request.assignee]
-
-    recipients = add_project_watchers(recipients, merge_request.target_project)
-    recipients = reject_muted_users(recipients, merge_request.target_project)
-
-    recipients = add_subscribed_users(recipients, merge_request)
-    recipients = reject_unsubscribed_users(recipients, merge_request)
-
-    recipients.delete(current_user)
-
-    recipients.each do |recipient|
-      mailer.merged_merge_request_email(recipient.id, merge_request.id, current_user.id)
-    end
+    close_resource_email(merge_request, merge_request.target_project, current_user, 'merged_merge_request_email')
   end
 
   def reopen_mr(merge_request, current_user)
@@ -364,8 +340,7 @@ class NotificationService
   end
   
   def new_resource_email(target, project, method)
-    recipients = build_recipients(target, project)
-    recipients.delete(target.author)
+    recipients = build_recipients(target, project, target.author)
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id)
@@ -373,8 +348,7 @@ class NotificationService
   end
 
   def close_resource_email(target, project, current_user, method)
-    recipients = build_recipients(target, project)
-    recipients.delete(current_user)
+    recipients = build_recipients(target, project, current_user)
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id, current_user.id)
@@ -383,8 +357,7 @@ class NotificationService
 
   def reassign_resource_email(target, project, current_user, method)
     assignee_id_was = previous_record(target, "assignee_id")
-    recipients = build_recipients(target, project)
-    recipients.delete(current_user)
+    recipients = build_recipients(target, project, current_user)
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id, assignee_id_was, current_user.id)
@@ -392,21 +365,15 @@ class NotificationService
   end
 
   def reopen_resource_email(target, project, current_user, method, status)
-    recipients = build_recipients(target, project)
-    recipients.delete(current_user)
+    recipients = build_recipients(target, project, current_user)
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id, status, current_user.id)
     end
   end
 
-  def build_recipients(target, project)
-    recipients =
-      if target.respond_to?(:participants)
-        target.participants
-      else
-        [target.author, target.assignee]
-      end
+  def build_recipients(target, project, current_user)
+    recipients = target.participants(current_user)
 
     recipients = add_project_watchers(recipients, project)
     recipients = reject_mention_users(recipients, project)
@@ -414,6 +381,8 @@ class NotificationService
 
     recipients = add_subscribed_users(recipients, target)
     recipients = reject_unsubscribed_users(recipients, target)
+
+    recipients.delete(current_user)
 
     recipients
   end
