@@ -6,6 +6,7 @@ v 8.0.0 (unreleased)
   - Faster merge
   - Ability to fetch merge requests from refs/merge-requests/:id
   - Allow displaying of archived projects in the admin interface (Artem Sidorenko)
+  - Gracefully handle SMTP user input errors (e.g. incorrect email addresses) to prevent Sidekiq retries (Stan Hu)
 
 v 7.14.0 (unreleased)
   - Update default robots.txt rules to disallow crawling of irrelevant pages (Ben Bodenmiller)
