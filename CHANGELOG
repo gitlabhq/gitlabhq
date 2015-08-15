@@ -58,6 +58,7 @@ v 7.14.0 (unreleased)
   - Fix: User search feature in admin area does not respect filters
   - Set max-width for README, issue and merge request description for easier read on big screens
   - Update Flowdock integration to support new Flowdock API (Boyan Tabakov)
+  - Remove author from files view (Sven Strickroth)
 
 v 7.13.5
   - Satellites reverted
