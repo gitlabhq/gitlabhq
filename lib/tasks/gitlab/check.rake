@@ -749,7 +749,7 @@ namespace :gitlab do
   end
 
   def check_ruby_version
-    required_version = Gitlab::VersionInfo.new(2, 0, 0)
+    required_version = Gitlab::VersionInfo.new(2, 1, 0)
     current_version = Gitlab::VersionInfo.parse(run(%W(ruby --version)))
 
     print "Ruby version >= #{required_version} ? ... "
