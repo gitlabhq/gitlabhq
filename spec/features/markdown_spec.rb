@@ -15,7 +15,7 @@ require 'erb'
 #   -> `markdown` helper
 #     -> Redcarpet::Render::GitlabHTML converts Markdown to HTML
 #       -> Post-process HTML
-#         -> `gfm_with_options` helper
+#         -> `gfm` helper
 #           -> HTML::Pipeline
 #             -> SanitizationFilter
 #             -> Other filters, depending on pipeline
@@ -179,7 +179,7 @@ describe 'GitLab Markdown', feature: true do
     before(:all) do
       @feat = MarkdownFeature.new
 
-      # `gfm_with_options` depends on a `@project` variable
+      # `gfm` helper depends on a `@project` variable
       @project = @feat.project
 
       @html = markdown(@feat.raw_markdown)
