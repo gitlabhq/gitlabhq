@@ -21,11 +21,6 @@
           = forked_from_project.namespace.try(:name)
 
       - if can? current_user, :download_code, @project
-        = link_to "#", class: 'btn js-toggle-clone-holder' do
-          = icon('cloud-download fw')
-          Clone
-
-      - if can? current_user, :download_code, @project
         = link_to archive_namespace_project_repository_path(@project.namespace, @project, ref: @ref, format: 'zip'), class: 'btn', rel: 'nofollow' do
           = icon('download fw')
           Download

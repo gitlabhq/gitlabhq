@@ -20,4 +20,6 @@ Step-by-step guides on the basics of working with Git and GitLab.
 
 * [Add a file](add-file.md)
 
+* [Add an image](add-image.md)
+
 * [Create a Merge Request](add-merge-request.md)

@@ -20,5 +20,4 @@
 - [Share projects with other groups](share_projects_with_other_groups.md)
 - [Two-factor Authentication (2FA)](two_factor_authentication.md)
 - [Web Editor](web_editor.md)
-- [Merge Requests](merge_requests.md)
 - ["Work In Progress" Merge Requests](wip_merge_requests.md)

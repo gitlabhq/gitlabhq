@@ -24,8 +24,3 @@ class @Project
       $.cookie('hide_no_password_message', 'false', { path: path })
       $(@).parents('.no-password-message').remove()
       e.preventDefault()
-
-    $('.js-toggle-clone-holder').on 'click', (e) ->
-      cloneHolder.toggle()
-
-    cloneHolder.hide() unless $('.empty-project').length

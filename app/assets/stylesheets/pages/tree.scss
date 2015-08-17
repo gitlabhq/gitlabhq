@@ -89,6 +89,10 @@
     td.blame-commit {
       background: #f9f9f9;
       min-width: 350px;
+
+      .commit-author-link {
+        color: #888;
+      }
     }
     td.blame-numbers {
       pre {
@@ -112,6 +116,9 @@
 }
 
 .readme-holder {
+  margin: 0 auto;
+  max-width: $readable-width;
+
   .readme-file-title {
     font-size: 14px;
     font-weight: bold;
