@@ -2,27 +2,10 @@ class SessionsController < Devise::SessionsController
   include AuthenticatesWithTwoFactor
 
   prepend_before_action :authenticate_with_two_factor, only: [:create]
+  prepend_before_action :store_redirect_path, only: [:new]
   before_action :auto_sign_in_with_provider, only: [:new]
 
   def new
-    redirect_path =
-      if request.referer.present? && (params['redirect_to_referer'] == 'yes')
-        referer_uri = URI(request.referer)
-        if referer_uri.host == Gitlab.config.gitlab.host
-          referer_uri.path
-        else
-          request.fullpath
-        end
-      else
-        request.fullpath
-      end
-
-    # Prevent a 'you are already signed in' message directly after signing:
-    # we should never redirect to '/users/sign_in' after signing in successfully.
-    unless redirect_path == new_user_session_path
-      store_location_for(:redirect, redirect_path)
-    end
-
     if Gitlab.config.ldap.enabled
       @ldap_servers = Gitlab::LDAP::Config.servers
     end
@@ -53,6 +36,26 @@ class SessionsController < Devise::SessionsController
       User.by_login(user_params[:login])
     elsif user_params[:otp_attempt] && session[:otp_user_id]
       User.find(session[:otp_user_id])
+    end
+  end
+  
+  def store_redirect_path
+    redirect_path =
+      if request.referer.present? && (params['redirect_to_referer'] == 'yes')
+        referer_uri = URI(request.referer)
+        if referer_uri.host == Gitlab.config.gitlab.host
+          referer_uri.path
+        else
+          request.fullpath
+        end
+      else
+        request.fullpath
+      end
+
+    # Prevent a 'you are already signed in' message directly after signing:
+    # we should never redirect to '/users/sign_in' after signing in successfully.
+    unless redirect_path == new_user_session_path
+      store_location_for(:redirect, redirect_path)
     end
   end
 

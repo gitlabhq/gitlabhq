@@ -1,6 +1,11 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.14.0 (unreleased)
+  - Provide more feedback what went wrong if HipChat service failed test (Stan Hu)
+  - Disable turbolinks when linking to Bitbucket import status (Stan Hu)
+  - Fix broken code import and display error messages if something went wrong with creating project (Stan Hu)
+  - Fix corrupted binary files when using API files endpoint (Stan Hu)
+  - Bump Haml to 4.0.7 to speed up textarea rendering (Stan Hu)
   - Show incompatible projects in Bitbucket import status (Stan Hu)
   - Fix coloring of diffs on MR Discussion-tab (Gert Goet)
   - Fix "Network" and "Graphs" pages for branches with encoded slashes (Stan Hu)
@@ -24,11 +29,10 @@ v 7.14.0 (unreleased)
   - Fix file upload dialog for comment editing (Daniel Gerhardt)
   - Set OmniAuth full_host parameter to ensure redirect URIs are correct (Stan Hu)
   - Return comments in created order in merge request API (Stan Hu)
+  - Disable internal issue tracker controller if external tracker is used (Stan Hu)
   - Expire Rails cache entries after two weeks to prevent endless Redis growth
   - Add support for destroying project milestones (Stan Hu)
-  - Add fetch command to the MR page.
   - Allow custom backup archive permissions
-  - Add fetch command to the MR page
   - Add project star and fork count, group avatar URL and user/group web URL attributes to API
   - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
   - Add fetch command to the MR page.
@@ -46,15 +50,34 @@ v 7.14.0 (unreleased)
   - Remove redis-store TTL monkey patch
   - Add support for CI skipped status
   - Fetch code from forks to refs/merge-requests/:id/head when merge request created
-  - Remove satellites
   - Remove comments and email addresses when publicly exposing ssh keys (Zeger-Jan van de Weg)
+  - Add "Check out branch" button to the MR page.
   - Improve MR merge widget text and UI consistency.
   - Improve text in MR "How To Merge" modal.
   - Cache all events
+  - Order commits by date when comparing branches
+  - Fix bug causing error when the target branch of a symbolic ref was deleted
+  - Include branch/tag name in archive file and directory name
+  - Add dropzone upload progress
+  - Add a label for merged branches on branches page (Florent Baldino)
+  - Detect .mkd and .mkdn files as markdown (Ben Boeckel)
+  - Fix: User search feature in admin area does not respect filters
+  - Set max-width for README, issue and merge request description for easier read on big screens
+  - Update Flowdock integration to support new Flowdock API (Boyan Tabakov)
+  - Remove author from files view (Sven Strickroth)
+
+v 7.13.5
+  - Satellites reverted
+
+v 7.13.4
+  - Allow users to send abuse reports
+  - Fix redirection after sign in when using auto_sign_in_with_provider
 
 v 7.13.3
   - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
   - Allow users to send abuse reports
+  - Remove satellites 
+  - Link username to profile on Group Members page (Tom Webster)
 
 v 7.13.2
   - Fix randomly failed spec
@@ -196,7 +219,6 @@ v 7.12.0
   - Add SAML support as an omniauth provider
   - Allow to configure a URL to show after sign out
   - Add an option to automatically sign-in with an Omniauth provider
-  - Better performance for web editor (switched from satellites to rugged)
   - GitLab CI service sends .gitlab-ci.yml in each push call
   - When remove project - move repository and schedule it removal
   - Improve group removing logic

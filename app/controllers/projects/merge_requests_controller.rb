@@ -1,7 +1,9 @@
+require 'gitlab/satellite/satellite'
+
 class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
-    :edit, :update, :show, :diffs, :commits, :merge, :merge_check,
+    :edit, :update, :show, :diffs, :commits, :automerge, :automerge_check,
     :ci_status, :toggle_subscription, :approve
   ]
   before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits]
@@ -139,7 +141,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
-  def merge_check
+  def automerge_check
     if @merge_request.unchecked?
       @merge_request.check_if_can_be_merged
     end
@@ -149,12 +151,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     render partial: "projects/merge_requests/widget/show.html.haml", layout: false
   end
 
-  def merge
+  def automerge
     return access_denied! unless @merge_request.can_be_merged_by?(current_user)
     return render_404 unless @merge_request.approved?
 
-    if @merge_request.mergeable?
-      MergeWorker.perform_async(@merge_request.id, current_user.id, params)
+    if @merge_request.automergeable?
+      AutoMergeWorker.perform_async(@merge_request.id, current_user.id, params)
       @status = true
     else
       @status = false

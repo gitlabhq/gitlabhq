@@ -360,6 +360,10 @@ class Note < ActiveRecord::Base
     create_new_cross_references!(project, author)
   end
 
+  def system?
+    read_attribute(:system)
+  end
+
   def editable?
     !read_attribute(:system)
   end

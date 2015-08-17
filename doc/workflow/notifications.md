@@ -55,7 +55,7 @@ Below is the table of events users can be notified of:
 | User added to project        | User                                                              | Sent when user is added to project |
 | Project access level changed | User                                                              | Sent when user project access level is changed |
 | User added to group          | User                                                              | Sent when user is added to group |
-| Group access level changed   | User                                                              | Sent when user group access level is changed |
+| Group access level changed   | User                                                              | Sent when user group access level is changed | 
 | Project moved                | Project members [1]                                               | [1] not disabled |
 
 ### Issue / Merge Request events
@@ -84,3 +84,8 @@ In all of the below cases, the notification will be sent to:
 | Reopen merge request   | |
 | Merge merge request    | |
 | New comment            | The above, plus anyone mentioned by `@username` in the comment, with notification level "Mention" or higher |
+
+You won't receive notifications for Issues, Merge Requests or Milestones
+created by yourself. You will only receive automatic notifications when
+somebody else comments or adds changes to the ones that you've created or
+mentions you.

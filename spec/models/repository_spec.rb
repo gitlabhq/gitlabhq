@@ -34,17 +34,23 @@ describe Repository do
     end
   end
 
-  describe :can_be_merged? do
-    context 'mergeable branches' do
-      subject { repository.can_be_merged?('0b4bc9a49b562e85de7cc9e834518ea6828729b9', 'master') }
+  describe :merged_to_root_ref? do
+    context 'merged branch' do
+      subject { repository.merged_to_root_ref?('improve/awesome') }
 
       it { is_expected.to be_truthy }
     end
 
-    context 'non-mergeable branches' do
-      subject { repository.can_be_merged?('bb5206fee213d983da88c47f9cf4cc6caf9c66dc', 'feature') }
+    context 'non merged branch' do
+      subject { repository.merged_to_root_ref?('fix') }
 
       it { is_expected.to be_falsey }
+    end
+
+    context 'non existent branch' do
+      subject { repository.merged_to_root_ref?('non_existent_branch') }
+
+      it { is_expected.to be_nil }
     end
   end
 
