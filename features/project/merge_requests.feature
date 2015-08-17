@@ -2,6 +2,7 @@ Feature: Project Merge Requests
   Background:
     Given I sign in as a user
     And I own project "Shop"
+    And project has satellites
     And project "Shop" have "Bug NS-04" open merge request
     And project "Shop" have "Feature NS-03" closed merge request
     And I visit project "Shop" merge requests page
@@ -269,7 +270,7 @@ Feature: Project Merge Requests
     And I select "fix" as source
     Then I see auto-suggested approver
     And I can add it to approver list
-    
+
 
   Scenario: I should see rebase checkbox
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
