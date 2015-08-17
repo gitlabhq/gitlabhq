@@ -494,12 +494,13 @@ class Repository
     oldrev = Gitlab::Git::BLANK_SHA
     ref = Gitlab::Git::BRANCH_REF_PREFIX + branch
     gl_id = Gitlab::ShellEnv.gl_id(current_user)
+    was_empty = empty?
 
     # Create temporary ref
     random_string = SecureRandom.hex
     tmp_ref = "refs/tmp/#{random_string}/head"
 
-    unless empty?
+    unless was_empty
       oldrev = find_branch(branch).target
       rugged.references.create(tmp_ref, oldrev)
     end
@@ -516,7 +517,7 @@ class Repository
     status = pre_receive_hook.trigger(gl_id, oldrev, newrev, ref)
 
     if status
-      if empty?
+      if was_empty
         # Create branch
         rugged.references.create(ref, newrev)
       else
