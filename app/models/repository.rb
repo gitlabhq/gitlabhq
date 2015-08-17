@@ -539,7 +539,7 @@ class Repository
       # Remove tmp ref and return error to user
       rugged.references.delete(tmp_ref)
 
-      raise PreReceiveError.new('Commit was rejected by pre-reveive hook')
+      raise PreReceiveError.new('Commit was rejected by pre-receive hook')
     end
   end
 
