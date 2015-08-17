@@ -17,7 +17,7 @@ module MergeRequests
       end
 
       merge_request.in_locked_state do
-        if merge_changes
+        if commit
           after_merge
           success
         else
@@ -28,12 +28,6 @@ module MergeRequests
 
     private
 
-    def merge_changes
-      if sha = commit
-        after_commit(sha, merge_request.target_branch)
-      end
-    end
-
     def commit
       committer = repository.user_to_comitter(current_user)
 
@@ -43,11 +37,7 @@ module MergeRequests
         committer: committer
       }
 
-      repository.merge(merge_request.source_sha, merge_request.target_branch, options)
-    end
-
-    def after_commit(sha, branch)
-      PostCommitService.new(project, current_user).execute(sha, branch)
+      repository.merge(current_user, merge_request.source_sha, merge_request.target_branch, options)
     end
 
     def after_merge
