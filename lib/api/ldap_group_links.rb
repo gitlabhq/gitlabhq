@@ -11,14 +11,14 @@ module API
       #   id (required) - The ID of a group
       #   cn (required) - The CN of a LDAP group
       #   group_access (required) - Level of permissions for the linked LDAP group
-      #   provider (optional) - the LDAP provider for this LDAP group
+      #   provider (required) - the LDAP provider for this LDAP group
       #
       # Example Request:
       #   POST /groups/:id/ldap_group_links
       post ":id/ldap_group_links" do
         group = find_group(params[:id])
         authorize! :admin_group, group
-        required_attributes! [:cn, :group_access]
+        required_attributes! [:cn, :group_access, :provider]
         unless validate_access_level?(params[:group_access])
           render_api_error!("Wrong group access level", 422)
         end

@@ -190,7 +190,7 @@ Parameters:
 - `id` (required) - The ID of a group
 - `cn` (required) - The CN of a LDAP group
 - `group_access` (required) - Minimum access level for members of the LDAP group
-- `provider` (optional) - LDAP provider for the LDAP group (when using several providers) 
+- `provider` (required) - LDAP provider for the LDAP group (when using several providers) 
 
 ### Delete LDAP group link
 
