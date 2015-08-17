@@ -131,7 +131,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def module_enabled
-    return render_404 unless @project.issues_enabled
+    return render_404 unless @project.issues_enabled && @project.default_issues_tracker?
   end
 
   # Since iids are implemented only in 6.1

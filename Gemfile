@@ -24,7 +24,7 @@ gem 'omniauth-shibboleth'
 gem 'omniauth-kerberos', group: :kerberos
 gem 'omniauth-gitlab'
 gem 'omniauth-bitbucket'
-gem 'omniauth-saml'
+gem 'omniauth-saml', '~> 1.4.0'
 gem 'doorkeeper', '2.1.3'
 gem "rack-oauth2", "~> 1.0.5"
 
@@ -150,7 +150,7 @@ gem 'tinder', '~> 1.9.2'
 gem 'hipchat', '~> 1.5.0'
 
 # Flowdock integration
-gem "gitlab-flowdock-git-hook", "~> 0.4.2"
+gem "gitlab-flowdock-git-hook", "~> 1.0.1"
 
 # Gemnasium integration
 gem "gemnasium-gitlab-service", "~> 0.2"

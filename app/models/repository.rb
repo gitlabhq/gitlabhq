@@ -452,6 +452,17 @@ class Repository
     end
   end
 
+  def merged_to_root_ref?(branch_name)
+    branch_commit = commit(branch_name)
+    root_ref_commit = commit(root_ref)
+
+    if branch_commit
+      rugged.merge_base(root_ref_commit.id, branch_commit.id) == branch_commit.id
+    else
+      nil
+    end
+  end
+
   def search_files(query, ref)
     offset = 2
     args = %W(git grep -i -n --before-context #{offset} --after-context #{offset} #{query} #{ref || root_ref})
