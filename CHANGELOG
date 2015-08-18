@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.14.0 (unreleased)
+  - Update default robots.txt rules to disallow crawling of irrelevant pages (Ben Bodenmiller)
   - Upgrade gitlab_git to 7.2.14 to ignore CRLFs in .gitmodules (Stan Hu)
   - Provide more feedback what went wrong if HipChat service failed test (Stan Hu)
   - Fix bug where backslashes in inline diffs could be dropped (Stan Hu)
