@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/DouweM/mail_room.git
-  revision: e1795b807f492533ad40afcb80abf870f1baddb5
+  revision: b9deb6430ca13b2d44676827c45476d76966922c
   branch: sidekiq
   specs:
     mail_room (0.3.1)
