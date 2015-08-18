@@ -73,7 +73,7 @@ class JenkinsService < CiService
       src = Nokogiri.parse(response).css('img.build-caption-status-icon,.build-caption>img').first.attributes['src'].value
       if src =~ /blue\.png$/
         'success'
-      elsif src =~ /(red\.png|aborted\.png)$/
+      elsif src =~ /(red|aborted|yellow)\.png$/
         'failed'
       elsif src =~ /anime\.gif$/
         'running'
