@@ -101,4 +101,18 @@ describe 'Gitlab::Satellite::MergeAction' do
       end
     end
   end
+
+  describe '#merge!' do
+    let(:merge_request) { create(:merge_request, source_project: project, target_project: project, source_branch: "markdown", should_remove_source_branch: true) }
+    let(:merge_action) { Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request) }
+
+    it 'clears cache of source repo after removing source branch' do
+      project.repository.expire_branch_names
+      expect(project.repository.branch_names).to include('markdown')
+
+      merge_action.merge!
+
+      expect(project.repository.branch_names).not_to include('markdown')
+    end
+  end
 end

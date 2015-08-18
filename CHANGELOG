@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 7.14.0 (unreleased)
   - Fix redirection after sign in when using auto_sign_in_with_provider
   - Upgrade gitlab_git to 7.2.14 to ignore CRLFs in .gitmodules (Stan Hu)
+  - Clear cache to prevent listing deleted branches after MR removes source branch (Stan Hu)
   - Provide more feedback what went wrong if HipChat service failed test (Stan Hu)
   - Fix bug where backslashes in inline diffs could be dropped (Stan Hu)
   - Disable turbolinks when linking to Bitbucket import status (Stan Hu)
