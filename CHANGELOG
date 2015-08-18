@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.14.0 (unreleased)
+  - Fix redirection after sign in when using auto_sign_in_with_provider
   - Upgrade gitlab_git to 7.2.14 to ignore CRLFs in .gitmodules (Stan Hu)
   - Provide more feedback what went wrong if HipChat service failed test (Stan Hu)
   - Fix bug where backslashes in inline diffs could be dropped (Stan Hu)
@@ -67,7 +68,6 @@ v 7.13.5
 
 v 7.13.4
   - Allow users to send abuse reports
-  - Fix redirection after sign in when using auto_sign_in_with_provider
 
 v 7.13.3
   - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
