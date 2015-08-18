@@ -197,29 +197,29 @@ module Gitlab
         commits.each do |commit|
           if git_hook.commit_message_regex.present?
             unless commit.safe_message =~ Regexp.new(git_hook.commit_message_regex)
-              return build_status_object(false, "Commit message does not follow the pattern")
+              return build_status_object(false, "Commit message does not follow the pattern '#{git_hook.commit_message_regex}'")
             end
           end
 
           if git_hook.author_email_regex.present?
             unless commit.committer_email =~ Regexp.new(git_hook.author_email_regex)
-              return build_status_object(false, "Commiter's email does not follow the pattern")
+              return build_status_object(false, "Committer's email '#{commit.committer_email}' does not follow the pattern '#{git_hook.author_email_regex}'")
             end
 
             unless commit.author_email =~ Regexp.new(git_hook.author_email_regex)
-              return build_status_object(false, "Author's email does not follow the pattern")
+              return build_status_object(false, "Author's email '#{commit.author_email}' does not follow the pattern '#{git_hook.author_email_regex}'")
             end
           end
 
           # Check whether author is a GitLab member
           if git_hook.member_check
             unless User.existing_member?(commit.author_email)
-              return build_status_object(false, "Author is not a member of team")
+              return build_status_object(false, "Author '#{commit.author_email}' is not a member of team")
             end
 
             if commit.author_email != commit.committer_email
               unless User.existing_member?(commit.committer_email)
-                return build_status_object(false, "Commiter is not a member of team")
+                return build_status_object(false, "Committer '#{commit.committer_email}' is not a member of team")
               end
             end
           end
@@ -227,7 +227,7 @@ module Gitlab
           if git_hook.file_name_regex.present?
             commit.diffs.each do |diff|
               if (diff.renamed_file || diff.new_file) && diff.new_path =~ Regexp.new(git_hook.file_name_regex)
-                return build_status_object(false, "File name #{diff.new_path.inspect} does not follow the pattern")
+                return build_status_object(false, "File name #{diff.new_path.inspect} does not follow the pattern '#{git_hook.file_name_regex}'")
               end
             end
           end
