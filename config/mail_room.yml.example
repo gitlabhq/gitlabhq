@@ -1,0 +1,14 @@
+:mailboxes:
+  # -
+  #   :host: "imap.gmail.com"
+  #   :port: 993
+  #   :ssl: true
+  #   :email: "replies@gitlab.example.com"
+  #   :password: "password"
+  #   :name: "inbox"
+  #   :delivery_method: sidekiq
+  #   :delivery_options:
+  #     :redis_url: redis://localhost:6379
+  #     :namespace: resque:gitlab
+  #     :queue: incoming_email
+  #     :worker: EmailReceiverWorker

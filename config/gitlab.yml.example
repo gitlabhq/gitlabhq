@@ -94,6 +94,11 @@ production: &base
     # The default is 'tmp/repositories' relative to the root of the Rails app.
     # repository_downloads_path: tmp/repositories
 
+  ## Reply by email
+  reply_by_email:
+    enabled: false
+    address: "replies+%{reply_key}@gitlab.example.com"
+
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
   gravatar:

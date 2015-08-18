@@ -10,6 +10,8 @@ module Emails
                       from: sender(@merge_request.author_id),
                       to: recipient(recipient_id),
                       subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
+
+      sent_notification!(@merge_request, recipient_id)
     end
 
     def reassigned_merge_request_email(recipient_id, merge_request_id, previous_assignee_id, updated_by_user_id)
@@ -23,6 +25,8 @@ module Emails
                          from: sender(updated_by_user_id),
                          to: recipient(recipient_id),
                          subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
+
+      sent_notification!(@merge_request, recipient_id)
     end
 
     def closed_merge_request_email(recipient_id, merge_request_id, updated_by_user_id)
@@ -36,6 +40,8 @@ module Emails
                          from: sender(updated_by_user_id),
                          to: recipient(recipient_id),
                          subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
+
+      sent_notification!(@merge_request, recipient_id)
     end
 
     def merged_merge_request_email(recipient_id, merge_request_id, updated_by_user_id)
@@ -48,6 +54,8 @@ module Emails
                          from: sender(updated_by_user_id),
                          to: recipient(recipient_id),
                          subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
+
+      sent_notification!(@merge_request, recipient_id)
     end
 
     def merge_request_status_email(recipient_id, merge_request_id, status, updated_by_user_id)
@@ -58,11 +66,12 @@ module Emails
       @target_url = namespace_project_merge_request_url(@project.namespace,
                                                         @project,
                                                         @merge_request)
-      set_reference("merge_request_#{merge_request_id}")
       mail_answer_thread(@merge_request,
                          from: sender(updated_by_user_id),
                          to: recipient(recipient_id),
                          subject: subject("#{@merge_request.title} (##{@merge_request.iid}) #{@mr_status}"))
+
+      sent_notification!(@merge_request, recipient_id)
     end
   end
 

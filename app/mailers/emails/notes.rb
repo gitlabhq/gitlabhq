@@ -11,6 +11,8 @@ module Emails
                          from: sender(@note.author_id),
                          to: recipient(recipient_id),
                          subject: subject("#{@commit.title} (#{@commit.short_id})"))
+
+      sent_notification!(@commit, recipient_id)
     end
 
     def note_issue_email(recipient_id, note_id)
@@ -24,6 +26,8 @@ module Emails
                          from: sender(@note.author_id),
                          to: recipient(recipient_id),
                          subject: subject("#{@issue.title} (##{@issue.iid})"))
+
+      sent_notification!(@issue, recipient_id)
     end
 
     def note_merge_request_email(recipient_id, note_id)
@@ -38,6 +42,8 @@ module Emails
                          from: sender(@note.author_id),
                          to: recipient(recipient_id),
                          subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
+
+      sent_notification!(@merge_request, recipient_id)
     end
   end
 end

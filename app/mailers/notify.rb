@@ -46,6 +46,17 @@ class Notify < ActionMailer::Base
     allowed_domains
   end
 
+  def sent_notification!(noteable, recipient_id)
+    return unless reply_key
+
+    SentNotification.create(
+      project: noteable.project,
+      noteable: noteable,
+      recipient_id: recipient_id,
+      reply_key: reply_key
+    )
+  end
+
   private
 
   # The default email address to send emails from
@@ -85,14 +96,6 @@ class Notify < ActionMailer::Base
     @current_user.notification_email
   end
 
-  # Set the References header field
-  #
-  # local_part - The local part of the referenced message ID
-  #
-  def set_reference(local_part)
-    headers["References"] = "<#{local_part}@#{Gitlab.config.gitlab.host}>"
-  end
-
   # Formats arguments into a String suitable for use as an email subject
   #
   # extra - Extra Strings to be inserted into the subject
@@ -130,10 +133,23 @@ class Notify < ActionMailer::Base
   # with headers suitable for grouping by thread in email clients.
   #
   # See: mail_answer_thread
-  def mail_new_thread(model, headers = {}, &block)
+  def mail_new_thread(model, headers = {})
+    if @project
+      headers['X-GitLab-Project'] = @project.name 
+      headers['X-GitLab-Project-Id'] = @project.id
+      headers['X-GitLab-Project-Path'] = @project.path_with_namespace
+    end
+
+    headers["X-GitLab-#{model.class.name}-ID"] = model.id
+
     headers['Message-ID'] = message_id(model)
-    headers['X-GitLab-Project'] = "#{@project.name} | " if @project
-    mail(headers, &block)
+
+    if reply_key
+      headers['X-GitLab-Reply-Key'] = reply_key
+      headers['Reply-To'] = Gitlab.config.reply_by_email.address.gsub('%{reply_key}', reply_key)
+    end
+
+    mail(headers)
   end
 
   # Send an email that responds to an existing conversation thread,
@@ -144,19 +160,21 @@ class Notify < ActionMailer::Base
   #  * have a subject that begin by 'Re: '
   #  * have a 'In-Reply-To' or 'References' header that references the original 'Message-ID'
   #
-  def mail_answer_thread(model, headers = {}, &block)
+  def mail_answer_thread(model, headers = {})
+    headers['Message-ID'] = SecureRandom.hex
     headers['In-Reply-To'] = message_id(model)
     headers['References'] = message_id(model)
-    headers['X-GitLab-Project'] = "#{@project.name} | " if @project
 
-    if headers[:subject]
-      headers[:subject].prepend('Re: ')
-    end
-
-    mail(headers, &block)
+    mail_new_thread(model, headers)
   end
 
   def can?
     Ability.abilities.allowed?(user, action, subject)
+  end
+
+  def reply_key
+    return nil unless Gitlab.config.reply_by_email.enabled
+
+    @reply_key ||= SecureRandom.hex(16)
   end
 end

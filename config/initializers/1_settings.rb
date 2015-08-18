@@ -150,6 +150,12 @@ Settings.gitlab['repository_downloads_path'] = File.absolute_path(Settings.gitla
 Settings.gitlab['restricted_signup_domains'] ||= []
 
 #
+# Reply by email
+#
+Settings['reply_by_email'] ||= Settingslogic.new({})
+Settings.reply_by_email['enabled'] = false if Settings.gravatar['enabled'].nil?
+
+#
 # Gravatar
 #
 Settings['gravatar'] ||= Settingslogic.new({})

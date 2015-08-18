@@ -1,3 +1,10 @@
+GIT
+  remote: git://github.com/DouweM/mail_room.git
+  revision: e1795b807f492533ad40afcb80abf870f1baddb5
+  branch: sidekiq
+  specs:
+    mail_room (0.3.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -805,6 +812,7 @@ DEPENDENCIES
   jquery-ui-rails
   kaminari (~> 0.15.1)
   letter_opener
+  mail_room!
   minitest (~> 5.3.0)
   mousetrap-rails
   mysql2
