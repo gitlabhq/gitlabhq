@@ -64,6 +64,7 @@ v 7.14.0 (unreleased)
   - Set max-width for README, issue and merge request description for easier read on big screens
   - Update Flowdock integration to support new Flowdock API (Boyan Tabakov)
   - Remove author from files view (Sven Strickroth)
+  - Fix infinite loop when SAML was incorrectly configured.
 
 v 7.13.5
   - Satellites reverted
