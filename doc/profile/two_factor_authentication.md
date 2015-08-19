@@ -8,6 +8,10 @@ your phone.
 By enabling 2FA, the only way someone other than you can log into your account
 is to know your username and password *and* have access to your phone.
 
+#### Note
+When you enable 2FA, don't forget to back up your recovery codes. For your safety, if you
+lose your codes for GitLab.com, we can't disable or recover them.  
+
 ## Enabling 2FA
 
 **In GitLab:**
