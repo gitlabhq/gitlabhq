@@ -2,7 +2,6 @@ Feature: Project Merge Requests
   Background:
     Given I sign in as a user
     And I own project "Shop"
-    And project has satellites
     And project "Shop" have "Bug NS-04" open merge request
     And project "Shop" have "Feature NS-03" closed merge request
     And I visit project "Shop" merge requests page

@@ -8,10 +8,6 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   include SharedDiffNote
   include SharedUser
 
-  step 'project has satellites' do
-    project.ensure_satellite_exists
-  end
-
   step 'I click link "New Merge Request"' do
     click_link "New Merge Request"
   end
@@ -202,15 +198,10 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'merge request "Bug NS-05" is mergeable' do
-    merge_request.project.satellite.create
     merge_request.mark_as_mergeable
   end
 
   step 'I accept this merge request' do
-    Gitlab::Satellite::MergeAction.any_instance.stub(
-      merge!: true,
-    )
-
     page.within '.mr-state-widget' do
       click_button "Accept Merge Request"
     end

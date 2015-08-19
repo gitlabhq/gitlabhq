@@ -200,7 +200,7 @@ describe MergeRequest do
   end
 
   it_behaves_like 'an editable mentionable' do
-    subject { create(:merge_request, source_project: project) }
+    subject { create(:merge_request) }
 
     let(:backref_text) { "merge request #{subject.to_reference}" }
     let(:set_mentionable_text) { ->(txt){ subject.description = txt } }

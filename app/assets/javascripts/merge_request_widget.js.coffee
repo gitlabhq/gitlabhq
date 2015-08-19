@@ -19,7 +19,7 @@ class @MergeRequestWidget
           when 'merged'
             location.reload()
           else
-            setTimeout(merge_request_widget.mergeInProgress, 3000)
+            setTimeout(merge_request_widget.mergeInProgress, 2000)
       dataType: 'json'
 
   getMergeStatus: ->

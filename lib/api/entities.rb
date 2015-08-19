@@ -231,6 +231,7 @@ module API
       expose(:line) { |note| note.diff_new_line }
       expose(:line_type) { |note| note.diff_line_type }
       expose :author, using: Entities::UserBasic
+      expose :created_at
     end
 
     class Event < Grape::Entity

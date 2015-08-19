@@ -6,11 +6,12 @@
     = render 'shared/commit_message_container', params: params,
              placeholder: 'Add new file'
 
-    .form-group.branch
-      = label_tag 'branch', class: 'control-label' do
-        Branch
-      .col-sm-10
-        = text_field_tag 'new_branch', @ref, class: "form-control"
+    - unless @project.empty_repo?
+      .form-group.branch
+        = label_tag 'branch', class: 'control-label' do
+          Branch
+        .col-sm-10
+          = text_field_tag 'new_branch', @ref, class: "form-control"
 
     = hidden_field_tag 'content', '', id: 'file-content'
     = render 'projects/commit_button', ref: @ref,

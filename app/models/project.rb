@@ -540,14 +540,6 @@ class Project < ActiveRecord::Base
     !repository.exists? || repository.empty?
   end
 
-  def ensure_satellite_exists
-    self.satellite.create unless self.satellite.exists?
-  end
-
-  def satellite
-    @satellite ||= Gitlab::Satellite::Satellite.new(self)
-  end
-
   def repo
     repository.raw
   end
@@ -617,14 +609,11 @@ class Project < ActiveRecord::Base
     new_path_with_namespace = File.join(namespace_dir, path)
 
     if gitlab_shell.mv_repository(old_path_with_namespace, new_path_with_namespace)
-      # If repository moved successfully we need to remove old satellite
-      # and send update instructions to users.
+      # If repository moved successfully we need to send update instructions to users.
       # However we cannot allow rollback since we moved repository
       # So we basically we mute exceptions in next actions
       begin
         gitlab_shell.mv_repository("#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
-        gitlab_shell.rm_satellites(old_path_with_namespace)
-        ensure_satellite_exists
         send_move_instructions
         reset_events_cache
       rescue
@@ -730,7 +719,6 @@ class Project < ActiveRecord::Base
   def create_repository
     if forked?
       if gitlab_shell.fork_repository(forked_from_project.path_with_namespace, self.namespace.path)
-        ensure_satellite_exists
         true
       else
         errors.add(:base, 'Failed to fork repository via gitlab-shell')

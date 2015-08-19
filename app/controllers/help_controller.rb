@@ -10,7 +10,8 @@ class HelpController < ApplicationController
 
     respond_to do |format|
       format.any(:markdown, :md, :html) do
-        path = Rails.root.join('doc', @category, "#{@file}.md")
+        # Note: We are purposefully NOT using `Rails.root.join`
+        path = File.join(Rails.root, 'doc', @category, "#{@file}.md")
 
         if File.exist?(path)
           @markdown = File.read(path)
@@ -24,7 +25,8 @@ class HelpController < ApplicationController
 
       # Allow access to images in the doc folder
       format.any(:png, :gif, :jpeg) do
-        path = Rails.root.join('doc', @category, "#{@file}.#{params[:format]}")
+        # Note: We are purposefully NOT using `Rails.root.join`
+        path = File.join(Rails.root, 'doc', @category, "#{@file}.#{params[:format]}")
 
         if File.exist?(path)
           send_file(path, disposition: 'inline')

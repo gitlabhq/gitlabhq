@@ -499,8 +499,8 @@ Gitlab::Application.routes.draw do
           member do
             get :diffs
             get :commits
-            post :automerge
-            get :automerge_check
+            post :merge
+            get :merge_check
             get :ci_status
             post :toggle_subscription
             post :approve
