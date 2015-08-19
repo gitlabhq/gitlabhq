@@ -39,6 +39,10 @@ module SharedPaths
     visit edit_group_path(Group.find_by(name: "Owned"))
   end
 
+  step 'I visit group "Owned" projects page' do
+    visit projects_group_path(Group.find_by(name: "Owned"))
+  end
+
   step 'I visit group "Guest" page' do
     visit group_path(Group.find_by(name: "Guest"))
   end

@@ -93,6 +93,29 @@ module SharedProject
   end
 
   # ----------------------------------------
+  # Visibility of archived project
+  # ----------------------------------------
+
+  step 'archived project "Archive"' do
+    create :project, :public, archived: true, name: 'Archive'
+  end
+
+  step 'I should not see project "Archive"' do
+    project = Project.find_by(name: "Archive")
+    expect(page).not_to have_content project.name_with_namespace
+  end
+
+  step 'I should see project "Archive"' do
+    project = Project.find_by(name: "Archive")
+    expect(page).to have_content project.name_with_namespace
+  end
+
+  step 'project "Archive" has comments' do
+    project = Project.find_by(name: "Archive")
+    2.times { create(:note_on_issue, project: project) }
+  end
+
+  # ----------------------------------------
   # Visibility level
   # ----------------------------------------
 
