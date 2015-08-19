@@ -95,6 +95,8 @@ production: &base
     # repository_downloads_path: tmp/repositories
 
   ## Reply by email
+  # Allow users to comment on issues and merge requests by replying to notification emails.
+  # For documentation on how to set this up, see http://doc.gitlab.com/ce/reply_by_email/README.md
   reply_by_email:
     enabled: false
     address: "replies+%{reply_key}@gitlab.example.com"
