@@ -40,6 +40,10 @@ module Gitlab
 
       body = parse_body(message)
 
+      upload_attachments.each do |link|
+        body << "\n\n#{link}"
+      end
+
       note = Notes::CreateService.new(
         project,
         author,
@@ -151,6 +155,35 @@ module Gitlab
       end
 
       lines[0..range_end].join.strip
+    end
+
+    def upload_attachments
+      attachments = []
+
+      message.attachments.each do |attachment|
+        tmp = Tempfile.new("gitlab-email-attachment")
+        begin
+          File.open(tmp.path, "w+b") { |f| f.write attachment.body.decoded }
+
+          file = {
+            tempfile:     tmp,
+            filename:     attachment.filename,
+            content_type: attachment.content_type
+          }
+
+          link = ::Projects::UploadService.new(sent_notification.project, file).execute
+          if link
+            text = "[#{link[:alt]}](#{link[:url]})"
+            text.prepend("!") if link[:is_image]
+
+            attachments << text
+          end
+        ensure
+          tmp.close!
+        end
+      end
+
+      attachments
     end
   end
 end
