@@ -85,7 +85,7 @@ check_pids(){
 wait_for_pids(){
   # We are sleeping a bit here mostly because sidekiq is slow at writing it's pid
   i=0;
-  while [ ! -f $web_server_pid_path -o ! -f $sidekiq_pid_path -o [ "$mail_room_enabled" = true && ! -f $mail_room_pid_path ] ]; do
+  while [ ! -f $web_server_pid_path ] || [ ! -f $sidekiq_pid_path ] || { [ "$mail_room_enabled" = true ] && [ ! -f $mail_room_pid_path ] }; do
     sleep 0.1;
     i=$((i+1))
     if [ $((i%10)) = 0 ]; then
@@ -120,13 +120,15 @@ check_status(){
   else
     sidekiq_status="-1"
   fi
-  if [ "$mail_room_enabled" = true && $mpid -ne 0 ]; then
-    kill -0 "$mpid" 2>/dev/null
-    mail_room_status="$?"
-  else
-    mail_room_status="-1"
+  if [ "$mail_room_enabled" = true ]; then
+    if [ $mpid -ne 0 ]; then
+      kill -0 "$mpid" 2>/dev/null
+      mail_room_status="$?"
+    else
+      mail_room_status="-1"
+    fi
   fi
-  if [ $web_status = 0 -a $sidekiq_status = 0 -a [ "$mail_room_enabled" != true || $mail_room_status = 0 ] ]; then
+  if [ $web_status = 0 ] && [ $sidekiq_status = 0 ] && { [ "$mail_room_enabled" != true ] || [ $mail_room_status = 0 ] }; then
     gitlab_status=0
   else
     # http://refspecs.linuxbase.org/LSB_4.1.0/LSB-Core-generic/LSB-Core-generic/iniscrptact.html
@@ -140,21 +142,21 @@ check_stale_pids(){
   check_status
   # If there is a pid it is something else than 0, the service is running if
   # *_status is == 0.
-  if [ "$wpid" != "0" -a "$web_status" != "0" ]; then
+  if [ "$wpid" != "0" ] && [ "$web_status" != "0" ]; then
     echo "Removing stale Unicorn web server pid. This is most likely caused by the web server crashing the last time it ran."
     if ! rm "$web_server_pid_path"; then
       echo "Unable to remove stale pid, exiting."
       exit 1
     fi
   fi
-  if [ "$spid" != "0" -a "$sidekiq_status" != "0" ]; then
+  if [ "$spid" != "0" ] && [ "$sidekiq_status" != "0" ]; then
     echo "Removing stale Sidekiq job dispatcher pid. This is most likely caused by Sidekiq crashing the last time it ran."
     if ! rm "$sidekiq_pid_path"; then
       echo "Unable to remove stale pid, exiting"
       exit 1
     fi
   fi
-  if [ "$mail_room_enabled" = true && "$mpid" != "0" -a "$mail_room_status" != "0" ]; then
+  if [ "$mail_room_enabled" = true ] && [ "$mpid" != "0" ] && [ "$mail_room_status" != "0" ]; then
     echo "Removing stale MailRoom job dispatcher pid. This is most likely caused by MailRoom crashing the last time it ran."
     if ! rm "$mail_room_pid_path"; then
       echo "Unable to remove stale pid, exiting"
@@ -166,7 +168,7 @@ check_stale_pids(){
 ## If no parts of the service is running, bail out.
 exit_if_not_running(){
   check_stale_pids
-  if [ "$web_status" != "0" -a "$sidekiq_status" != "0" -a [ "$mail_room_enabled" = true && "$mail_room_status" != "0" ] ]; then
+  if [ "$web_status" != "0" ] && [ "$sidekiq_status" != "0" ] && { [ "$mail_room_enabled" != true ] || [ "$mail_room_status" != "0" ] }; then
     echo "GitLab is not running."
     exit
   fi
@@ -182,7 +184,7 @@ start_gitlab() {
   if [ "$sidekiq_status" != "0" ]; then
     echo -n "Starting GitLab Sidekiq"
   fi
-  if [ "$mail_room_enabled" = true && "$mail_room_status" != "0" ]; then
+  if [ "$mail_room_enabled" = true ] && [ "$mail_room_status" != "0" ]; then
     echo -n "Starting GitLab MailRoom"
   fi
 
@@ -206,7 +208,7 @@ start_gitlab() {
   if [ "$mail_room_enabled" = true ]; then
     # If MailRoom is already running, don't start it again.
     if [ "$mail_room_status" = "0" ]; then
-      echo "The MailRoom email processor is already running with pid $spid, not restarting"
+      echo "The MailRoom email processor is already running with pid $mpid, not restarting"
     else
       RAILS_ENV=$RAILS_ENV bin/mail_room start &
     fi
@@ -228,7 +230,7 @@ stop_gitlab() {
   if [ "$sidekiq_status" = "0" ]; then
     echo -n "Shutting down GitLab Sidekiq"
   fi
-  if [ "$mail_room_enabled" = true && "$mail_room_status" = "0" ]; then
+  if [ "$mail_room_enabled" = true ] && [ "$mail_room_status" = "0" ]; then
     echo -n "Shutting down GitLab MailRoom"
   fi
 
@@ -241,16 +243,16 @@ stop_gitlab() {
     RAILS_ENV=$RAILS_ENV bin/background_jobs stop
   fi
   # And do the same thing for the MailRoom.
-  if [ "$mail_room_enabled" = true && "$mail_room_status" = "0" ]; then
+  if [ "$mail_room_enabled" = true ] && [ "$mail_room_status" = "0" ]; then
     RAILS_ENV=$RAILS_ENV bin/mail_room stop
   fi
 
   # If something needs to be stopped, lets wait for it to stop. Never use SIGKILL in a script.
-  while [ "$web_status" = "0" -o "$sidekiq_status" = "0" -o [ "$mail_room_enabled" = true && "$mail_room_status" = "0" ] ]; do
+  while [ "$web_status" = "0" ] || [ "$sidekiq_status" = "0" ] || { [ "$mail_room_enabled" = true ] && [ "$mail_room_status" = "0" ] }; do
     sleep 1
     check_status
     printf "."
-    if [ "$web_status" != "0" -a "$sidekiq_status" != "0" -a [ "$mail_room_enabled" != true || "$mail_room_status" != "0" ] ]; then
+    if [ "$web_status" != "0" ] && [ "$sidekiq_status" != "0" ] && { [ "$mail_room_enabled" != true ] || [ "$mail_room_status" != "0" ] }; then
       printf "\n"
       break
     fi
@@ -270,7 +272,7 @@ stop_gitlab() {
 ## Prints the status of GitLab and it's components.
 print_status() {
   check_status
-  if [ "$web_status" != "0" -a "$sidekiq_status" != "0" -a [ "$mail_room_enabled" != true || "$mail_room_status" != "0" ] ]; then
+  if [ "$web_status" != "0" ] && [ "$sidekiq_status" != "0" ] && { [ "$mail_room_enabled" != true ] || [ "$mail_room_status" != "0" ] }; then
     echo "GitLab is not running."
     return
   fi
@@ -291,7 +293,7 @@ print_status() {
         printf "The GitLab MailRoom email processor is \033[31mnot running\033[0m.\n"
     fi
     end
-  if [ "$web_status" = "0" -a "$sidekiq_status" = "0" -a [ "$mail_room_enabled" != true || "$mail_room_status" = "0" ] ]; then
+  if [ "$web_status" = "0" ] && [ "$sidekiq_status" = "0" ] && { [ "$mail_room_enabled" != true ] || [ "$mail_room_status" = "0" ] }; then
     printf "GitLab and all its components are \033[32mup and running\033[0m.\n"
   fi
 }
@@ -322,7 +324,7 @@ reload_gitlab(){
 ## Restarts Sidekiq and Unicorn.
 restart_gitlab(){
   check_status
-  if [ "$web_status" = "0" -o "$sidekiq_status" = "0" -o [ "$mail_room_enabled" = true && "$mail_room_status" = "0" ] ]; then
+  if [ "$web_status" = "0" ] || [ "$sidekiq_status" = "0" ] || { [ "$mail_room_enabled" = true ] && [ "$mail_room_status" = "0" ] }; then
     stop_gitlab
   fi
   start_gitlab
