@@ -129,11 +129,7 @@ class Notify < ActionMailer::Base
     "<#{model_name}_#{model.id}@#{Gitlab.config.gitlab.host}>"
   end
 
-  # Send an email that starts a new conversation thread,
-  # with headers suitable for grouping by thread in email clients.
-  #
-  # See: mail_answer_thread
-  def mail_new_thread(model, headers = {})
+  def mail_thread(model, headers = {})
     if @project
       headers['X-GitLab-Project'] = @project.name 
       headers['X-GitLab-Project-Id'] = @project.id
@@ -142,14 +138,22 @@ class Notify < ActionMailer::Base
 
     headers["X-GitLab-#{model.class.name}-ID"] = model.id
 
-    headers['Message-ID'] = message_id(model)
-
     if reply_key
       headers['X-GitLab-Reply-Key'] = reply_key
       headers['Reply-To'] = Gitlab::ReplyByEmail.reply_address(reply_key)
     end
 
     mail(headers)
+  end
+
+  # Send an email that starts a new conversation thread,
+  # with headers suitable for grouping by thread in email clients.
+  #
+  # See: mail_answer_thread
+  def mail_new_thread(model, headers = {})
+    headers['Message-ID'] = message_id(model)
+
+    mail_thread(model, headers)
   end
 
   # Send an email that responds to an existing conversation thread,
@@ -165,11 +169,9 @@ class Notify < ActionMailer::Base
     headers['In-Reply-To'] = message_id(model)
     headers['References'] = message_id(model)
 
-    if headers[:subject]
-      headers[:subject].prepend('Re: ')
-    end
+    headers[:subject].prepend('Re: ') if headers[:subject]
 
-    mail_new_thread(model, headers)
+    mail_thread(model, headers)
   end
 
   def can?
