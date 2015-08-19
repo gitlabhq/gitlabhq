@@ -1,4 +1,4 @@
-class EmailRejectionMailer < ActionMailer::Base
+class BaseMailer < ActionMailer::Base
   add_template_helper ApplicationHelper
   add_template_helper GitlabMarkdownHelper
 
@@ -10,24 +10,6 @@ class EmailRejectionMailer < ActionMailer::Base
 
   def self.delay
     delay_for(2.seconds)
-  end
-
-  def rejection(reason, original_raw, can_retry = false)
-    @reason = reason
-    @original_message = Mail::Message.new(original_raw)
-
-    headers = {
-      to: @original_message.from,
-      subject: "[Rejected] #{@original_message.subject}"
-    }
-
-    headers['Message-ID'] = SecureRandom.hex
-    headers['In-Reply-To'] = @original_message.message_id
-    headers['References'] = @original_message.message_id
-
-    headers['Reply-To'] = @original_message.to.first if can_retry
-
-    mail(headers)
   end
 
   def can?
