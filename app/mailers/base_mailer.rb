@@ -13,7 +13,7 @@ class BaseMailer < ActionMailer::Base
   end
 
   def can?
-    Ability.abilities.allowed?(user, action, subject)
+    Ability.abilities.allowed?(current_user, action, subject)
   end
 
   private
