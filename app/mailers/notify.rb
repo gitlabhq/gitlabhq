@@ -1,4 +1,4 @@
-class Notify < ActionMailer::Base
+class Notify < BaseMailer
   include ActionDispatch::Routing::PolymorphicRoutes
 
   include Emails::Issues
@@ -8,21 +8,8 @@ class Notify < ActionMailer::Base
   include Emails::Profile
   include Emails::Groups
 
-  add_template_helper ApplicationHelper
-  add_template_helper GitlabMarkdownHelper
   add_template_helper MergeRequestsHelper
   add_template_helper EmailsHelper
-
-  attr_accessor :current_user
-  helper_method :current_user, :can?
-
-  default from: Proc.new { default_sender_address.format }
-  default reply_to: Proc.new { default_reply_to_address.format }
-
-  # Just send email with 2 seconds delay
-  def self.delay
-    delay_for(2.seconds)
-  end
 
   def test_email(recipient_email, subject, body)
     mail(to: recipient_email,
@@ -68,20 +55,6 @@ class Notify < ActionMailer::Base
   end
 
   private
-
-  # The default email address to send emails from
-  def default_sender_address
-    address = Mail::Address.new(Gitlab.config.gitlab.email_from)
-    address.display_name = Gitlab.config.gitlab.email_display_name
-    address
-  end
-
-  # The default email address to send emails from
-  def default_reply_to_address
-    address = Mail::Address.new(Gitlab.config.gitlab.email_reply_to)
-    address.display_name = Gitlab.config.gitlab.email_display_name
-    address
-  end
 
   def can_send_from_user_email?(sender)
     sender_domain = sender.email.split("@").last
@@ -195,10 +168,6 @@ class Notify < ActionMailer::Base
     headers[:subject].prepend('Re: ') if headers[:subject]
 
     mail_thread(model, headers)
-  end
-
-  def can?
-    Ability.abilities.allowed?(user, action, subject)
   end
 
   def reply_key
