@@ -45,7 +45,7 @@ eos
     end
 
     describe :commit_status do
-      statuses = {'blue.png' => 'success', 'yellow.png' => 'failed', 'red.png' => 'failed', 'aborted.png' => 'failed', 'blue-anime.gif' => 'running', 'grey.png' => 'pending'}
+      statuses = { 'blue.png' => 'success', 'yellow.png' => 'failed', 'red.png' => 'failed', 'aborted.png' => 'failed', 'blue-anime.gif' => 'running', 'grey.png' => 'pending' }
       statuses.each do |icon, state|
         it "should have a status of #{state} when the icon #{icon} exists." do
           stub_request(:get, "http://jenkins.gitlab.org/projects/2/scm/bySHA1/2ab7834c").to_return(status: 200, body: status_body_for_icon(icon), headers: {})
