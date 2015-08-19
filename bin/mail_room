@@ -4,6 +4,7 @@ cd $(dirname $0)/..
 app_root=$(pwd)
 
 mail_room_pidfile="$app_root/tmp/pids/mail_room.pid"
+mail_room_logfile="$app_root/log/mail_room.log"
 mail_room_config="$app_root/config/mail_room.yml"
 
 get_mail_room_pid()
@@ -18,7 +19,7 @@ get_mail_room_pid()
 
 start()
 {
-  bundle exec mail_room -q -c $mail_room_config
+  bundle exec mail_room -q -c $mail_room_config >> $mail_room_logfile 2>&1 &
   PID=$!
   echo $PID > $mail_room_pidfile
 }
@@ -26,13 +27,13 @@ start()
 stop()
 {
   get_mail_room_pid
-  kill -QUIT $mail_room_pid
+  kill -TERM $mail_room_pid
 }
 
-reload()
+restart()
 {
-  get_mail_room_pid
-  kill -USR2 $mail_room_pid
+  stop
+  start
 }
 
 case "$1" in
@@ -42,10 +43,10 @@ case "$1" in
   stop)
     stop
     ;;
-  reload)
-    reload
+  restart)
+    restart
     ;;
   *)
-    echo "Usage: $0 {start|stop|reload}"
+    echo "Usage: $0 {start|stop|restart}"
     ;;
 esac
