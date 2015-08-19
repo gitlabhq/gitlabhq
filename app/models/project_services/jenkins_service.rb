@@ -72,7 +72,7 @@ class JenkinsService < CiService
     if response.code == 200
       # img.build-caption-status-icon for old jenkins version
       src = Nokogiri.parse(response).css('img.build-caption-status-icon,.build-caption>img').first.attributes['src'].value
-      if src =~ /blue\.png$/
+      if src =~ /(blue\.png|yellow\.png)$/
         'success'
       elsif src =~ /(red|aborted|yellow)\.png$/
         'failed'

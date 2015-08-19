@@ -2,7 +2,8 @@ v 7.14
   - Disable adding, updating and removing members from a group that is synced with LDAP
   - Don't send "Added to group" notifications when group is LDAP synched
   - Fix importing projects from GitHub Enterprise Edition.
-  - Automatic approver suggestions (based on an authority of the code)  
+  - Automatic approver suggestions (based on an authority of the code)
+  - Add support for Jenkins unstable status
 
 v7.13.3
   - Merge community edition changes for version 7.13.3
@@ -21,7 +22,7 @@ v 7.13.1
 v 7.13
   - Fix git hook validation on initial push to master branch.
   - Reset approvals on push
-  - Fix 500 error when the source project of an MR is deleted 
+  - Fix 500 error when the source project of an MR is deleted
   - Ability to define merge request approvers
 
 v 7.12.2
