@@ -49,11 +49,21 @@ class Notify < ActionMailer::Base
   def sent_notification!(noteable, recipient_id)
     return unless reply_key
 
+    noteable_id = nil
+    commit_id = nil
+    if noteable.is_a?(Commit)
+      commit_id = noteable.id
+    else
+      noteable_id = noteable.id
+    end
+
     SentNotification.create(
-      project: noteable.project,
-      noteable: noteable,
-      recipient_id: recipient_id,
-      reply_key: reply_key
+      project:        noteable.project,
+      noteable_type:  noteable.class.name,
+      noteable_id:    noteable_id,
+      commit_id:      commit_id,
+      recipient_id:   recipient_id,
+      reply_key:      reply_key
     )
   end
 
