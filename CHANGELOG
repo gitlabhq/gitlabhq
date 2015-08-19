@@ -5,6 +5,7 @@ v 8.0.0 (unreleased)
   - Better performance for web editor (switched from satellites to rugged)
   - Faster merge
   - Ability to fetch merge requests from refs/merge-requests/:id
+  - Search for comments should be case insensetive
 
 v 7.14.0 (unreleased)
   - Update default robots.txt rules to disallow crawling of irrelevant pages (Ben Bodenmiller)
