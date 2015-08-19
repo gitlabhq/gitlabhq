@@ -4,7 +4,7 @@ class EmailReceiverWorker
   sidekiq_options queue: :incoming_email
 
   def perform(raw)
-    return unless Gitlab.config.reply_by_email.enabled
+    return unless Gitlab::ReplyByEmail.enabled?
 
     # begin
       Gitlab::EmailReceiver.new(raw).process

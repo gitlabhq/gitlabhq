@@ -6,8 +6,8 @@ class SentNotification < ActiveRecord::Base
   validate :project, :recipient, :reply_key, presence: true
   validate :reply_key, uniqueness: true
 
-  validates :noteable_id, presence: true, if: ->(n) { n.noteable_type.present? && n.noteable_type != 'Commit' }
-  validates :commit_id, presence: true, if: ->(n) { n.noteable_type == 'Commit' }
+  validates :noteable_id, presence: true, unless: :for_commit?
+  validates :commit_id, presence: true, if: :for_commit?
 
   def self.for(reply_key)
     find_by(reply_key: reply_key)
@@ -19,11 +19,9 @@ class SentNotification < ActiveRecord::Base
 
   def noteable
     if for_commit?
-      project.commit(commit_id)
+      project.commit(commit_id) rescue nil
     else
       super
     end
-  rescue
-    nil
   end
 end

@@ -153,7 +153,7 @@ Settings.gitlab['restricted_signup_domains'] ||= []
 # Reply by email
 #
 Settings['reply_by_email'] ||= Settingslogic.new({})
-Settings.reply_by_email['enabled'] = false if Settings.gravatar['enabled'].nil?
+Settings.reply_by_email['enabled'] = false if Settings.reply_by_email['enabled'].nil?
 
 #
 # Gravatar

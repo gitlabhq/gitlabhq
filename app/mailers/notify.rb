@@ -146,7 +146,7 @@ class Notify < ActionMailer::Base
 
     if reply_key
       headers['X-GitLab-Reply-Key'] = reply_key
-      headers['Reply-To'] = Gitlab.config.reply_by_email.address.gsub('%{reply_key}', reply_key)
+      headers['Reply-To'] = Gitlab::ReplyByEmail.reply_address(reply_key)
     end
 
     mail(headers)
@@ -165,6 +165,10 @@ class Notify < ActionMailer::Base
     headers['In-Reply-To'] = message_id(model)
     headers['References'] = message_id(model)
 
+    if headers[:subject]
+      headers[:subject].prepend('Re: ')
+    end
+
     mail_new_thread(model, headers)
   end
 
@@ -173,8 +177,6 @@ class Notify < ActionMailer::Base
   end
 
   def reply_key
-    return nil unless Gitlab.config.reply_by_email.enabled
-
-    @reply_key ||= SecureRandom.hex(16)
+    @reply_key ||= Gitlab::ReplyByEmail.reply_key
   end
 end
