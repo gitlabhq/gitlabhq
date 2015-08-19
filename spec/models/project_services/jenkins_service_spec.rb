@@ -51,5 +51,9 @@ eos
     describe :build_page do
       it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://jenkins.gitlab.org/projects/2/scm/bySHA1/2ab7834c") }
     end
+
+    describe :build_page_with_branch do
+      it { expect(@service.build_page("2ab7834c", 'test_branch')).to eq("http://jenkins.gitlab.org/projects/2_test_branch/scm/bySHA1/2ab7834c") }
+    end
   end
 end
