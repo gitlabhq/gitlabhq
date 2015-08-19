@@ -90,7 +90,7 @@
         = f.text_area :restricted_signup_domains_raw, placeholder: 'domain.com', class: 'form-control'
         .help-block Only users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com
     .form-group
-      = f.label :home_page_url, class: 'control-label col-sm-2'
+      = f.label :home_page_url, 'Home page URL', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_field :home_page_url, class: 'form-control', placeholder: 'http://company.example.com', :'aria-describedby' => 'home_help_block'
         %span.help-block#home_help_block We will redirect non-logged in users to this page

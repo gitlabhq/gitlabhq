@@ -41,6 +41,6 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
   end
 
   def postprocess(full_document)
-    h.gfm_with_options(full_document, @options)
+    h.gfm(full_document, @options)
   end
 end

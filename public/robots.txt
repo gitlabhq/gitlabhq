@@ -1,5 +1,66 @@
-# See http://www.robotstxt.org/wc/norobots.html for documentation on how to use the robots.txt file
+# See http://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
 #
 # To ban all spiders from the entire site uncomment the next two lines:
 # User-Agent: *
 # Disallow: /
+
+User-Agent: *
+
+# Add a 1 second delay between successive requests to the same server, limits resources used by crawler
+# Only some crawlers respect this setting, e.g. Googlebot does not
+# Crawl-delay: 1
+
+# Based on details in https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/routes.rb, https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/routing, and using application
+Disallow: /autocomplete/users
+Disallow: /search
+Disallow: /api
+Disallow: /admin
+Disallow: /profile
+Disallow: /dashboard
+Disallow: /projects/new
+Disallow: /groups/new
+Disallow: /groups/*/edit
+Disallow: /users
+
+# Global snippets
+Disallow: /s
+Disallow: /snippets/new
+Disallow: /snippets/*/edit
+Disallow: /snippets/*/raw
+
+# Project details
+Disallow: /*/*.git
+Disallow: /*/*/fork/new
+Disallow: /*/*/repository/archive*
+Disallow: /*/*/activity
+Disallow: /*/*/new
+Disallow: /*/*/edit
+Disallow: /*/*/raw
+Disallow: /*/*/blame
+Disallow: /*/*/commits/*/*
+Disallow: /*/*/commit
+Disallow: /*/*/compare
+Disallow: /*/*/branches/new
+Disallow: /*/*/tags/new
+Disallow: /*/*/network
+Disallow: /*/*/graphs
+Disallow: /*/*/milestones/new
+Disallow: /*/*/milestones/*/edit
+Disallow: /*/*/issues/new
+Disallow: /*/*/issues/*/edit
+Disallow: /*/*/merge_requests/new
+Disallow: /*/*/merge_requests/*.patch
+Disallow: /*/*/merge_requests/*.diff
+Disallow: /*/*/merge_requests/*/edit
+Disallow: /*/*/merge_requests/*/diffs
+Disallow: /*/*/project_members/import
+Disallow: /*/*/labels/new
+Disallow: /*/*/labels/*/edit
+Disallow: /*/*/wikis/*/edit
+Disallow: /*/*/snippets/new
+Disallow: /*/*/snippets/*/edit
+Disallow: /*/*/snippets/*/raw
+Disallow: /*/*/deploy_keys
+Disallow: /*/*/hooks
+Disallow: /*/*/services
+Disallow: /*/*/protected_branches

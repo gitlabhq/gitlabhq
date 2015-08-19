@@ -29,5 +29,9 @@ Spinach.hooks.before_run do
   TestEnv.init(mailer: false)
   TestLicense.init
 
+  # skip pre-receive hook check so we can use
+  # web editor and merge
+  TestEnv.disable_pre_receive
+
   include FactoryGirl::Syntax::Methods
 end

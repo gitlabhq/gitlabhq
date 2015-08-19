@@ -91,10 +91,6 @@ describe Gitlab::OAuth::AuthHash do
       expect(auth_hash.name.encoding).to eql Encoding::UTF_8
     end
 
-    it 'forces utf8 encoding on full_name' do
-      expect(auth_hash.full_name.encoding).to eql Encoding::UTF_8
-    end
-
     it 'forces utf8 encoding on username' do
       expect(auth_hash.username.encoding).to eql Encoding::UTF_8
     end

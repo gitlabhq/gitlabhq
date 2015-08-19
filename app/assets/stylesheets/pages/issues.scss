@@ -4,25 +4,14 @@
     position: relative;
 
     .issue-title {
-      font-size: $list-font-size;
       margin-bottom: 5px;
+      font-size: $list-font-size;
       font-weight: bold;
-      float: left;
-      width: 97.7%;
-    }
-    
-    @media screen and (max-width: 1100px) {
-      .issues-list .issue .issue-title { 
-        width: 97%;
-      }
     }
 
     .issue-info {
       color: #999;
       font-size: 13px;
-      display: inline-block;
-      width: 100%;
-      padding: 0 0 0 20px;
     }
 
     .issue-check {

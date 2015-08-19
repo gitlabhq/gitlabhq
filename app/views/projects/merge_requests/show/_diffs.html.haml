@@ -1,5 +1,5 @@
 - if @merge_request_diff.collected?
-  = render "projects/diffs/diffs", diffs: @merge_request.diffs, project: @merge_request.source_project
+  = render "projects/diffs/diffs", diffs: @merge_request.diffs, project: @merge_request.project
 - elsif @merge_request_diff.empty?
   .nothing-here-block Nothing to merge from #{@merge_request.source_branch} into #{@merge_request.target_branch}
 - else
