@@ -8,10 +8,6 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   include SharedDiffNote
   include SharedUser
 
-  step 'project has satellites' do
-    project.ensure_satellite_exists
-  end
-
   step 'I click link "New Merge Request"' do
     click_link "New Merge Request"
   end
