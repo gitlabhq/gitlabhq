@@ -26,6 +26,15 @@ describe JenkinsService do
   end
 
   describe 'commits methods' do
+    def status_body_for_icon(state)
+      body =<<eos
+        <h1 class="build-caption page-headline"><img style="width: 48px; height: 48px; " alt="Success" class="icon-#{state} icon-xlg" src="/static/855d7c3c/images/48x48/#{state}" tooltip="Success" title="Success">
+                Build #188
+              (Oct 15, 2014 9:45:21 PM)
+                    </h1>
+eos
+    end
+
     before do
       @service = JenkinsService.new
       allow(@service).to receive_messages(
@@ -33,19 +42,16 @@ describe JenkinsService do
         project_url: 'http://jenkins.gitlab.org/projects/2',
         token: 'verySecret'
       )
-
-      body =<<eos
-        <h1 class="build-caption page-headline"><img style="width: 48px; height: 48px; " alt="Success" class="icon-blue icon-xlg" src="/static/855d7c3c/images/48x48/blue.png" tooltip="Success" title="Success">
-                Build #188
-              (Oct 15, 2014 9:45:21 PM)
-                    </h1>
-eos
-      stub_request(:get, "http://jenkins.gitlab.org/projects/2/scm/bySHA1/2ab7834c").
-        to_return(status: 200, body: body, headers: {})
     end
 
     describe :commit_status do
-      it { expect(@service.commit_status("2ab7834c", 'master')).to eq("success") }
+      statuses = { 'blue.png' => 'success', 'yellow.png' => 'failed', 'red.png' => 'failed', 'aborted.png' => 'failed', 'blue-anime.gif' => 'running', 'grey.png' => 'pending' }
+      statuses.each do |icon, state|
+        it "should have a status of #{state} when the icon #{icon} exists." do
+          stub_request(:get, "http://jenkins.gitlab.org/projects/2/scm/bySHA1/2ab7834c").to_return(status: 200, body: status_body_for_icon(icon), headers: {})
+          expect(@service.commit_status("2ab7834c", 'master')).to eq(state)
+        end
+      end
     end
 
     describe :build_page do
