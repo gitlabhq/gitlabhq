@@ -12,7 +12,7 @@ module Emails
                          to: recipient(recipient_id),
                          subject: subject("#{@commit.title} (#{@commit.short_id})"))
 
-      sent_notification!(@commit, recipient_id)
+      SentNotification.record(@commit, recipient_id, reply_key)
     end
 
     def note_issue_email(recipient_id, note_id)
@@ -27,7 +27,7 @@ module Emails
                          to: recipient(recipient_id),
                          subject: subject("#{@issue.title} (##{@issue.iid})"))
 
-      sent_notification!(@issue, recipient_id)
+      SentNotification.record(@issue, recipient_id, reply_key)
     end
 
     def note_merge_request_email(recipient_id, note_id)
@@ -43,7 +43,7 @@ module Emails
                          to: recipient(recipient_id),
                          subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
 
-      sent_notification!(@merge_request, recipient_id)
+      SentNotification.record(@merge_request, recipient_id, reply_key)
     end
   end
 end

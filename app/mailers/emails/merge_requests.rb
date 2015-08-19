@@ -11,7 +11,7 @@ module Emails
                       to: recipient(recipient_id),
                       subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
 
-      sent_notification!(@merge_request, recipient_id)
+      SentNotification.record(@merge_request, recipient_id, reply_key)
     end
 
     def reassigned_merge_request_email(recipient_id, merge_request_id, previous_assignee_id, updated_by_user_id)
@@ -26,7 +26,7 @@ module Emails
                          to: recipient(recipient_id),
                          subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
 
-      sent_notification!(@merge_request, recipient_id)
+      SentNotification.record(@merge_request, recipient_id, reply_key)
     end
 
     def closed_merge_request_email(recipient_id, merge_request_id, updated_by_user_id)
@@ -41,7 +41,7 @@ module Emails
                          to: recipient(recipient_id),
                          subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
 
-      sent_notification!(@merge_request, recipient_id)
+      SentNotification.record(@merge_request, recipient_id, reply_key)
     end
 
     def merged_merge_request_email(recipient_id, merge_request_id, updated_by_user_id)
@@ -55,7 +55,7 @@ module Emails
                          to: recipient(recipient_id),
                          subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
 
-      sent_notification!(@merge_request, recipient_id)
+      SentNotification.record(@merge_request, recipient_id, reply_key)
     end
 
     def merge_request_status_email(recipient_id, merge_request_id, status, updated_by_user_id)
@@ -71,7 +71,7 @@ module Emails
                          to: recipient(recipient_id),
                          subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
 
-      sent_notification!(@merge_request, recipient_id)
+      SentNotification.record(@merge_request, recipient_id, reply_key)
     end
   end
 end

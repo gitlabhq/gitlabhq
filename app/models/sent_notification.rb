@@ -9,8 +9,31 @@ class SentNotification < ActiveRecord::Base
   validates :noteable_id, presence: true, unless: :for_commit?
   validates :commit_id, presence: true, if: :for_commit?
 
-  def self.for(reply_key)
-    find_by(reply_key: reply_key)
+  class << self
+    def for(reply_key)
+      find_by(reply_key: reply_key)
+    end
+
+    def record(noteable, recipient_id, reply_key)
+      return unless reply_key
+
+      noteable_id = nil
+      commit_id = nil
+      if noteable.is_a?(Commit)
+        commit_id = noteable.id
+      else
+        noteable_id = noteable.id
+      end
+
+      create(
+        project:        noteable.project,
+        noteable_type:  noteable.class.name,
+        noteable_id:    noteable_id,
+        commit_id:      commit_id,
+        recipient_id:   recipient_id,
+        reply_key:      reply_key
+      )
+    end
   end
 
   def for_commit?
