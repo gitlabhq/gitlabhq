@@ -17,7 +17,7 @@ class Notify < ActionMailer::Base
   helper_method :current_user, :can?
 
   default from: Proc.new { default_sender_address.format }
-  default reply_to: Gitlab.config.gitlab.email_reply_to
+  default reply_to: Proc.new { default_reply_to_address.format }
 
   # Just send email with 2 seconds delay
   def self.delay
@@ -62,6 +62,13 @@ class Notify < ActionMailer::Base
   # The default email address to send emails from
   def default_sender_address
     address = Mail::Address.new(Gitlab.config.gitlab.email_from)
+    address.display_name = Gitlab.config.gitlab.email_display_name
+    address
+  end
+
+  # The default email address to send emails from
+  def default_reply_to_address
+    address = Mail::Address.new(Gitlab.config.gitlab.email_reply_to)
     address.display_name = Gitlab.config.gitlab.email_display_name
     address
   end
@@ -140,7 +147,13 @@ class Notify < ActionMailer::Base
 
     if reply_key
       headers['X-GitLab-Reply-Key'] = reply_key
-      headers['Reply-To'] = Gitlab::ReplyByEmail.reply_address(reply_key)
+
+      address = Mail::Address.new(Gitlab::ReplyByEmail.reply_address(reply_key))
+      address.display_name = @project.name_with_namespace
+
+      headers['Reply-To'] = address
+
+      @reply_by_email = true
     end
 
     mail(headers)
