@@ -34,148 +34,160 @@ describe Gitlab::Email::ReplyParser do
 
     it "handles multiple paragraphs" do
       expect(test_parse_body(fixture_file("emails/paragraphs.eml"))).
-          to eq(
-"Is there any reason the *old* candy can't be be kept in silos while the new candy
-is imported into *new* silos?
+        to eq(
+          <<-BODY.strip_heredoc.chomp
+            Is there any reason the *old* candy can't be be kept in silos while the new candy
+            is imported into *new* silos?
 
-The thing about candy is it stays delicious for a long time -- we can just keep
-it there without worrying about it too much, imo.
+            The thing about candy is it stays delicious for a long time -- we can just keep
+            it there without worrying about it too much, imo.
 
-Thanks for listening."
-      )
+            Thanks for listening.
+          BODY
+        )
     end
 
     it "handles multiple paragraphs when parsing html" do
       expect(test_parse_body(fixture_file("emails/html_paragraphs.eml"))).
-          to eq(
-"Awesome!
+        to eq(
+          <<-BODY.strip_heredoc.chomp
+            Awesome!
 
-Pleasure to have you here!
+            Pleasure to have you here!
 
-:boom:"
-      )
+            :boom:
+          BODY
+        )
     end
 
     it "handles newlines" do
       expect(test_parse_body(fixture_file("emails/newlines.eml"))).
-          to eq(
-"This is my reply.
-It is my best reply.
-It will also be my *only* reply."
-      )
+        to eq(
+          <<-BODY.strip_heredoc.chomp
+            This is my reply.
+            It is my best reply.
+            It will also be my *only* reply.
+          BODY
+        )
     end
 
     it "handles inline reply" do
       expect(test_parse_body(fixture_file("emails/inline_reply.eml"))).
-          to eq(
-"On Wed, Oct 8, 2014 at 11:12 AM, techAPJ <info@unconfigured.discourse.org> wrote:
+        to eq(
+          <<-BODY.strip_heredoc.chomp
+            On Wed, Oct 8, 2014 at 11:12 AM, techAPJ <info@unconfigured.discourse.org> wrote:
 
->     techAPJ <https://meta.discourse.org/users/techapj>
-> November 28
->
-> Test reply.
->
-> First paragraph.
->
-> Second paragraph.
->
-> To respond, reply to this email or visit
-> https://meta.discourse.org/t/testing-default-email-replies/22638/3 in
-> your browser.
->  ------------------------------
-> Previous Replies    codinghorror
-> <https://meta.discourse.org/users/codinghorror>
-> November 28
->
-> We're testing the latest GitHub email processing library which we are
-> integrating now.
->
-> https://github.com/github/email_reply_parser
->
-> Go ahead and reply to this topic and I'll reply from various email clients
-> for testing.
->   ------------------------------
->
-> To respond, reply to this email or visit
-> https://meta.discourse.org/t/testing-default-email-replies/22638/3 in
-> your browser.
->
-> To unsubscribe from these emails, visit your user preferences
-> <https://meta.discourse.org/my/preferences>.
->
+            >     techAPJ <https://meta.discourse.org/users/techapj>
+            > November 28
+            >
+            > Test reply.
+            >
+            > First paragraph.
+            >
+            > Second paragraph.
+            >
+            > To respond, reply to this email or visit
+            > https://meta.discourse.org/t/testing-default-email-replies/22638/3 in
+            > your browser.
+            >  ------------------------------
+            > Previous Replies    codinghorror
+            > <https://meta.discourse.org/users/codinghorror>
+            > November 28
+            >
+            > We're testing the latest GitHub email processing library which we are
+            > integrating now.
+            >
+            > https://github.com/github/email_reply_parser
+            >
+            > Go ahead and reply to this topic and I'll reply from various email clients
+            > for testing.
+            >   ------------------------------
+            >
+            > To respond, reply to this email or visit
+            > https://meta.discourse.org/t/testing-default-email-replies/22638/3 in
+            > your browser.
+            >
+            > To unsubscribe from these emails, visit your user preferences
+            > <https://meta.discourse.org/my/preferences>.
+            >
 
-The quick brown fox jumps over the lazy dog. The quick brown fox jumps over
-the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown
-fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
-The quick brown fox jumps over the lazy dog. The quick brown fox jumps over
-the lazy dog. The quick brown fox jumps over the lazy dog."
-      )
-    end
-
-    it "strips iPhone signature" do
-      expect(test_parse_body(fixture_file("emails/iphone_signature.eml"))).not_to match /Sent from my iPhone/
+            The quick brown fox jumps over the lazy dog. The quick brown fox jumps over
+            the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown
+            fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+            The quick brown fox jumps over the lazy dog. The quick brown fox jumps over
+            the lazy dog. The quick brown fox jumps over the lazy dog.
+          BODY
+        )
     end
 
     it "properly renders email reply from gmail web client" do
       expect(test_parse_body(fixture_file("emails/gmail_web.eml"))).
-          to eq(
-"### This is a reply from standard GMail in Google Chrome.
+        to eq(
+          <<-BODY.strip_heredoc.chomp
+            ### This is a reply from standard GMail in Google Chrome.
 
-The quick brown fox jumps over the lazy dog. The quick brown fox jumps over
-the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown
-fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
-The quick brown fox jumps over the lazy dog. The quick brown fox jumps over
-the lazy dog. The quick brown fox jumps over the lazy dog.
+            The quick brown fox jumps over the lazy dog. The quick brown fox jumps over
+            the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown
+            fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+            The quick brown fox jumps over the lazy dog. The quick brown fox jumps over
+            the lazy dog. The quick brown fox jumps over the lazy dog.
 
-Here's some **bold** text in Markdown.
+            Here's some **bold** text in Markdown.
 
-Here's a link http://example.com"
-      )
+            Here's a link http://example.com
+          BODY
+        )
     end
 
     it "properly renders email reply from iOS default mail client" do
       expect(test_parse_body(fixture_file("emails/ios_default.eml"))).
-          to eq(
-"### this is a reply from iOS default mail
+        to eq(
+          <<-BODY.strip_heredoc.chomp
+            ### this is a reply from iOS default mail
 
-The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+            The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
 
-Here's some **bold** markdown text.
+            Here's some **bold** markdown text.
 
-Here's a link http://example.com"
-      )
+            Here's a link http://example.com
+          BODY
+        )
     end
 
     it "properly renders email reply from Android 5 gmail client" do
       expect(test_parse_body(fixture_file("emails/android_gmail.eml"))).
-          to eq(
-"### this is a reply from Android 5 gmail
+        to eq(
+          <<-BODY.strip_heredoc.chomp
+            ### this is a reply from Android 5 gmail
 
-The quick brown fox jumps over the lazy dog. The quick brown fox jumps over
-the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown
-fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
-The quick brown fox jumps over the lazy dog.
+            The quick brown fox jumps over the lazy dog. The quick brown fox jumps over
+            the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown
+            fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+            The quick brown fox jumps over the lazy dog.
 
-This is **bold** in Markdown.
+            This is **bold** in Markdown.
 
-This is a link to http://example.com"
-      )
+            This is a link to http://example.com
+          BODY
+        )
     end
 
     it "properly renders email reply from Windows 8.1 Metro default mail client" do
       expect(test_parse_body(fixture_file("emails/windows_8_metro.eml"))).
-          to eq(
-"### reply from default mail client in Windows 8.1 Metro
+        to eq(
+          <<-BODY.strip_heredoc.chomp
+            ### reply from default mail client in Windows 8.1 Metro
 
 
-The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+            The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
 
 
-This is a **bold** word in Markdown
+            This is a **bold** word in Markdown
 
 
-This is a link http://example.com"
-      )
+            This is a link http://example.com
+          BODY
+        )
     end
 
     it "properly renders email reply from MS Outlook client" do
