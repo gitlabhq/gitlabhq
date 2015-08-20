@@ -1,16 +1,13 @@
 - page_title "Groups"
 = render 'dashboard/groups_head'
 
-%h3.page-title
-  Group Membership
+.slead
+  Group members have access to all group projects.
   - if current_user.can_create_group?
     %span.pull-right.hidden-xs
-      = link_to new_group_path, class: "btn btn-new" do
+      = link_to new_group_path, class: "btn btn-new btn-sm" do
         %i.fa.fa-plus
         New Group
-%p.light
-  Group members have access to all group projects.
-%hr
 .panel.panel-default
   .panel-heading
     %strong Groups
