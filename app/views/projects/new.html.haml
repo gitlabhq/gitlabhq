@@ -22,70 +22,75 @@
           .col-sm-10
             = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user), {}, {class: 'select2', tabindex: 2}
 
-      %hr
+      - if import_sources_enabled?
+        %hr
 
-      .project-import.js-toggle-container
-        .form-group
-          %label.control-label Import project from
-          .col-sm-10
-            - if github_import_enabled?
-              = link_to status_import_github_path, class: 'btn' do
-                %i.fa.fa-github
-                GitHub
-            - else
-              = link_to '#', class: 'how_to_import_link light btn' do
-                %i.fa.fa-github
-                GitHub
-              = render 'github_import_modal'
-
-
-            - if bitbucket_import_enabled?
-              = link_to status_import_bitbucket_path, class: 'btn', "data-no-turbolink" => "true" do
-                %i.fa.fa-bitbucket
-                Bitbucket
-            - else
-              = link_to '#', class: 'how_to_import_link light btn' do
-                %i.fa.fa-bitbucket
-                Bitbucket
-              = render 'bitbucket_import_modal'
-
-            - unless request.host == 'gitlab.com'
-              - if gitlab_import_enabled?
-                = link_to status_import_gitlab_path, class: 'btn' do
-                  %i.fa.fa-heart
-                  GitLab.com
-              - else
-                = link_to '#', class: 'how_to_import_link light btn' do
-                  %i.fa.fa-heart
-                  GitLab.com
-                = render 'gitlab_import_modal'
-
-            = link_to new_import_gitorious_path, class: 'btn' do
-              %i.icon-gitorious.icon-gitorious-small
-              Gitorious.org
-
-            = link_to new_import_google_code_path, class: 'btn' do
-              %i.fa.fa-google
-              Google Code
-
-            = link_to "#", class: 'btn js-toggle-button' do
-              %i.fa.fa-git
-              %span Any repo by URL
-
-        .js-toggle-content.hide
-          .form-group.import-url-data
-            = f.label :import_url, class: 'control-label' do
-              %span Git repository URL
+        .project-import.js-toggle-container
+          .form-group
+            %label.control-label Import project from
             .col-sm-10
-              = f.text_field :import_url, class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git'
-              .well.prepend-top-20
-                %ul
-                  %li
-                    The repository must be accessible over HTTP(S). If it is not publicly accessible, you can add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>.
-                  %li
-                    The import will time out after 4 minutes. For big repositories, use a clone/push combination.
-                  %li
-                    To migrate an SVN repository, check out #{link_to "this document", "http://doc.gitlab.com/ce/workflow/importing/migrating_from_svn.html"}.
+              - if github_import_enabled?
+                - if github_import_configured?
+                  = link_to status_import_github_path, class: 'btn import_github' do
+                    %i.fa.fa-github
+                    GitHub
+                - else
+                  = link_to '#', class: 'how_to_import_link light btn import_github' do
+                    %i.fa.fa-github
+                    GitHub
+                  = render 'github_import_modal'
+
+              - if bitbucket_import_enabled?
+                - if bitbucket_import_configured?
+                  = link_to status_import_bitbucket_path, class: 'btn import_bitbucket', "data-no-turbolink" => "true" do
+                    %i.fa.fa-bitbucket
+                    Bitbucket
+                - else
+                  = link_to status_import_bitbucket_path, class: 'how_to_import_link light btn import_bitbucket', "data-no-turbolink" => "true" do
+                    %i.fa.fa-bitbucket
+                    Bitbucket
+                  = render 'bitbucket_import_modal'
+
+              - if gitlab_import_enabled?
+                - if gitlab_import_configured?
+                  = link_to status_import_gitlab_path, class: 'btn import_gitlab' do
+                    %i.fa.fa-heart
+                    GitLab.com
+                - else
+                  = link_to status_import_gitlab_path, class: 'how_to_import_link light btn import_gitlab' do
+                    %i.fa.fa-heart
+                    GitLab.com
+                  = render 'gitlab_import_modal'
+
+              - if gitorious_import_enabled?
+                = link_to new_import_gitorious_path, class: 'btn import_gitorious' do
+                  %i.icon-gitorious.icon-gitorious-small
+                  Gitorious.org
+
+              - if google_code_import_enabled?
+                = link_to new_import_google_code_path, class: 'btn import_google_code' do
+                  %i.fa.fa-google
+                  Google Code
+
+              - if git_import_enabled?
+                = link_to "#", class: 'btn js-toggle-button import_git' do
+                  %i.fa.fa-git
+                  %span Any repo by URL
+
+          .js-toggle-content.hide
+            .form-group.import-url-data
+              = f.label :import_url, class: 'control-label' do
+                %span Git repository URL
+              .col-sm-10
+                = f.text_field :import_url, class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git'
+                .well.prepend-top-20
+                  %ul
+                    %li
+                      The repository must be accessible over HTTP(S). If it is not publicly accessible, you can add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>.
+                    %li
+                      The import will time out after 4 minutes. For big repositories, use a clone/push combination.
+                    %li
+                      To migrate an SVN repository, check out #{link_to "this document", "http://doc.gitlab.com/ce/workflow/importing/migrating_from_svn.html"}.
 
       %hr.prepend-botton-10
 
