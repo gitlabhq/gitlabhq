@@ -2,12 +2,6 @@ require "spec_helper"
 
 # Inspired in great part by Discourse's Email::Receiver
 describe Gitlab::Email::ReplyParser do
-  def fixture_file(filename)
-    return '' if filename.blank?
-    file_path = File.expand_path(Rails.root + 'spec/fixtures/' + filename)
-    File.read(file_path)
-  end
-
   describe '#execute' do
     def test_parse_body(mail_string)
       described_class.new(Mail::Message.new(mail_string)).execute

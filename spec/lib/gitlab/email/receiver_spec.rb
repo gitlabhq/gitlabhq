@@ -1,12 +1,6 @@
 require "spec_helper"
 
 describe Gitlab::Email::Receiver do
-  def fixture_file(filename)
-    return '' if filename.blank?
-    file_path = File.expand_path(Rails.root + 'spec/fixtures/' + filename)
-    File.read(file_path)
-  end
-
   before do
     allow(Gitlab.config.reply_by_email).to receive(:enabled).and_return(true)
     allow(Gitlab.config.reply_by_email).to receive(:address).and_return("reply+%{reply_key}@appmail.adventuretime.ooo")

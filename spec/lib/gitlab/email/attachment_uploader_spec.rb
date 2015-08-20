@@ -1,18 +1,12 @@
 require "spec_helper"
 
 describe Gitlab::Email::AttachmentUploader do
-  def fixture_file(filename)
-    return '' if filename.blank?
-    file_path = File.expand_path(Rails.root + 'spec/fixtures/' + filename)
-    File.read(file_path)
-  end
-
   describe "#execute" do
     let(:project) { build(:project) }
     let(:message_raw) { fixture_file("emails/attachment.eml") }
     let(:message) { Mail::Message.new(message_raw) }
 
-    it "creates a post with an attachment" do
+    it "uploads all attachments and returns their links" do
       links = described_class.new(message).execute(project)
       link = links.first
 

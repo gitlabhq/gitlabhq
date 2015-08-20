@@ -1,12 +1,6 @@
 require "spec_helper"
 
 describe EmailReceiverWorker do
-  def fixture_file(filename)
-    return '' if filename.blank?
-    file_path = File.expand_path(Rails.root + 'spec/fixtures/' + filename)
-    File.read(file_path)
-  end
-
   let(:raw_message) { fixture_file('emails/valid_reply.eml') }
 
   context "when reply by email is enabled" do
