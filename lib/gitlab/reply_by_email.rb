@@ -21,9 +21,10 @@ module Gitlab
       end
 
       def reply_key_from_address(address)
-        return unless address_regex
+        regex = address_regex
+        return unless regex
 
-        match = address.match(address_regex)
+        match = address.match(regex)
         return unless match
 
         match[1]
