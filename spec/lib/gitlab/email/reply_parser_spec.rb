@@ -8,7 +8,7 @@ describe Gitlab::Email::ReplyParser do
     File.read(file_path)
   end
 
-  describe 'self.parse_body' do
+  describe '#execute' do
     def test_parse_body(mail_string)
       described_class.new(Mail::Message.new(mail_string)).execute
     end
