@@ -23,6 +23,10 @@
       = link_to namespace_project_tags_path(@project.namespace, @project) do
         = pluralize(number_with_delimiter(@repository.tag_names.count), 'tag')
 
+    %li
+      = link_to namespace_project_path(@project.namespace, @project) do
+        = repository_size
+
     - if !prefer_readme? && @repository.readme
       %li
         = link_to 'Readme', readme_path(@project)
