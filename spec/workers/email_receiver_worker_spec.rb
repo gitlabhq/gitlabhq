@@ -7,7 +7,7 @@ describe EmailReceiverWorker do
     File.read(file_path)
   end
 
-  let(:raw_message) { fixture_file('emails/valid_incoming.eml') }
+  let(:raw_message) { fixture_file('emails/valid_reply.eml') }
 
   context "when reply by email is enabled" do
     before do
@@ -31,7 +31,7 @@ describe EmailReceiverWorker do
 
         email = ActionMailer::Base.deliveries.last
         expect(email).not_to be_nil
-        expect(email.to).to eq(["from@example.com"])
+        expect(email.to).to eq(["jake@adventuretime.ooo"])
         expect(email.subject).to include("Rejected")
       end
     end
