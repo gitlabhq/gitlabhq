@@ -1,0 +1,10 @@
+%ul.center-top-menu
+  = nav_link(path: ['dashboard#show', 'root#show']) do
+    = link_to dashboard_path, title: 'Home', class: 'shortcuts-activity', data: {placement: 'right'} do
+      Your Projects
+  = nav_link(page: starred_dashboard_projects_path) do
+    = link_to starred_dashboard_projects_path, title: 'Starred Projects', data: {placement: 'right'} do
+      Starred Projects
+  = nav_link(page: [explore_root_path, trending_explore_projects_path, starred_explore_projects_path, explore_projects_path]) do
+    = link_to explore_root_path, title: 'Explore', data: {toggle: 'tooltip', placement: 'bottom'} do
+      Explore Projects

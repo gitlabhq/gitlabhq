@@ -1,8 +1,9 @@
 - page_title "Projects"
+- if current_user
+  = render 'dashboard/projects_head'
 .clearfix
   = render 'filter'
-
-%hr
+%br
 .public-projects
   %ul.bordered-list.top-list
     = render @projects
