@@ -7,7 +7,7 @@ module Gitlab
 
       def address_formatted_correctly?
         config.address &&
-        config.address.include?("%{reply_key}")
+          config.address.include?("%{reply_key}")
       end
 
       def reply_key

@@ -9,6 +9,7 @@
 # reference to the factory-created objects.
 class MarkdownFeature
   include FactoryGirl::Syntax::Methods
+  include FixtureHelpers
 
   def user
     @user ||= create(:user)
