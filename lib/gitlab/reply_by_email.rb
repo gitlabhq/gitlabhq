@@ -36,14 +36,12 @@ module Gitlab
       end
 
       def address_regex
-        @address_regex ||= begin
-          wildcard_address = config.address
-          return nil unless wildcard_address
+        wildcard_address = config.address
+        return nil unless wildcard_address
 
-          regex = Regexp.escape(wildcard_address)
-          regex = regex.gsub(Regexp.escape('%{reply_key}'), "(.+)")
-          Regexp.new(regex).freeze
-        end
+        regex = Regexp.escape(wildcard_address)
+        regex = regex.gsub(Regexp.escape('%{reply_key}'), "(.+)")
+        Regexp.new(regex).freeze
       end
     end
   end
