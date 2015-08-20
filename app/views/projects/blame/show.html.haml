@@ -13,30 +13,32 @@
     .file-content.blame.highlight
       %table
         - current_line = 1
-        - @blame.each do |raw_commit, line|
+        - @blame.each do |blame_group|
           %tr
             %td.blame-commit
               .commit
-                - unless @prev_commit && @prev_commit.sha == raw_commit.sha
-                  - commit = Commit.new(raw_commit, @project)
-                  .commit-row-title
-                    %strong
-                      = link_to_gfm truncate(commit.title, length: 35), namespace_project_commit_path(@project.namespace, @project, commit.id), class: "cdark"
-                    .pull-right
-                      = link_to commit.short_id, namespace_project_commit_path(@project.namespace, @project, commit), class: "monospace"
-                    &nbsp;
-                  .light
-                    = commit_author_link(commit, avatar: false)
-                    authored
-                    #{time_ago_with_tooltip(commit.committed_date)}
-                - @prev_commit = raw_commit
+                - commit = Commit.new(blame_group[:commit], @project)
+                .commit-row-title
+                  %strong
+                    = link_to_gfm truncate(commit.title, length: 35), namespace_project_commit_path(@project.namespace, @project, commit.id), class: "cdark"
+                  .pull-right
+                    = link_to commit.short_id, namespace_project_commit_path(@project.namespace, @project, commit), class: "monospace"
+                  &nbsp;
+                .light
+                  = commit_author_link(commit, avatar: false)
+                  authored
+                  #{time_ago_with_tooltip(commit.committed_date)}
             %td.lines.blame-numbers
               %pre
-                = current_line
-                - current_line += 1
+                - line_count = blame_group[:lines].count
+                - (current_line...(current_line + line_count)).each do |i|
+                  = i
+                  \
+                - current_line += line_count
             %td.lines
               %pre{class: 'code highlight white'}
                 %code
-                  :erb
-                    <%= highlight(@blob.name, line, nowrap: true, continue: true).html_safe %>
+                  - blame_group[:lines].each do |line|
+                    :erb
+                      <%= highlight(@blob.name, line, nowrap: true, continue: true).html_safe %>
 
