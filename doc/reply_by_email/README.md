@@ -93,6 +93,12 @@ In this example, we'll use the Gmail address `gitlab-replies@gmail.com`. If you'
     sudo service gitlab restart
     ```
 
+7. Check if everything is configured correctly
+
+    ```sh
+    sudo bundle exec rake gitlab:reply_by_email:check RAILS_ENV=production
+    ```
+
 8. Reply by email should now be working.
 
 Note: If you're running GitLab in development mode and using `foreman`, make sure to also uncomment the `mail_room` line in your `Procfile`.

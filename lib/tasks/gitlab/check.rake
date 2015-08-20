@@ -2,6 +2,7 @@ namespace :gitlab do
   desc "GitLab | Check the configuration of GitLab and its environment"
   task check: %w{gitlab:gitlab_shell:check
                  gitlab:sidekiq:check
+                 gitlab:reply_by_email:check
                  gitlab:ldap:check
                  gitlab:app:check}
 
@@ -574,6 +575,150 @@ namespace :gitlab do
     def sidekiq_process_count
       ps_ux, _ = Gitlab::Popen.popen(%W(ps ux))
       ps_ux.scan(/sidekiq \d+\.\d+\.\d+/).count
+    end
+  end
+
+
+  namespace :reply_by_email do
+    desc "GitLab | Check the configuration of Reply by email"
+    task check: :environment  do
+      warn_user_is_not_gitlab
+      start_checking "Reply by email"
+
+      if Gitlab.config.reply_by_email.enabled
+        check_address_formatted_correctly
+        check_mail_room_config_exists
+        check_imap_authentication
+        check_initd_configured_correctly
+        check_mail_room_running
+      else
+        puts 'Reply by email is disabled in config/gitlab.yml'
+      end
+
+      finished_checking "Reply by email"
+    end
+
+
+    # Checks
+    ########################
+
+    def check_address_formatted_correctly
+      print "Address formatted correctly? ... "
+
+      if Gitlab::ReplyByEmail.address_formatted_correctly?
+        puts "yes".green
+      else
+        puts "no".red
+        try_fixing_it(
+          "Make sure that the address in config/gitlab.yml includes the '%{reply_key}' placeholder."
+        )
+        fix_and_rerun
+      end
+    end
+
+    def check_initd_configured_correctly
+      print "Init.d configured correctly? ... "
+
+      path = "/etc/default/gitlab"
+
+      if File.exist?(path) && File.read(path).include?("mail_room_enabled=true")
+        puts "yes".green
+      else
+        puts "no".red
+        try_fixing_it(
+          "Enable mail_room in the init.d configuration."
+        )
+        for_more_information(
+          "doc/reply_by_email/README.md"
+        )
+        fix_and_rerun
+      end
+    end
+
+    def check_mail_room_running
+      print "MailRoom running? ... "
+
+      path = "/etc/default/gitlab"
+
+      unless File.exist?(path) && File.read(path).include?("mail_room_enabled=true")
+        puts "can't check because of previous errors".magenta
+        return
+      end
+
+      if mail_room_process_count > 0
+        puts "yes".green
+      else
+        puts "no".red
+        try_fixing_it(
+          sudo_gitlab("RAILS_ENV=production bin/mail_room start")
+        )
+        for_more_information(
+          see_installation_guide_section("Install Init Script"),
+          "see log/mail_room.log for possible errors"
+        )
+        fix_and_rerun
+      end
+    end
+
+    def check_mail_room_config_exists
+      print "MailRoom config exists? ... "
+
+      mail_room_config_file = Rails.root.join("config", "mail_room.yml")
+
+      if File.exists?(mail_room_config_file)
+        puts "yes".green
+      else
+        puts "no".red
+        try_fixing_it(
+          "Copy config/mail_room.yml.example to config/mail_room.yml",
+          "Check that the information in config/mail_room.yml is correct"
+        )
+        for_more_information(
+          "doc/reply_by_email/README.md"
+        )
+        fix_and_rerun
+      end
+    end
+
+    def check_imap_authentication
+      print "IMAP server credentials are correct? ... "
+
+      mail_room_config_file = Rails.root.join("config", "mail_room.yml")
+
+      unless File.exists?(mail_room_config_file)
+        puts "can't check because of previous errors".magenta
+        return
+      end
+
+      config = YAML.load_file(mail_room_config_file)[:mailboxes].first rescue nil
+
+      if config
+        begin
+          imap = Net::IMAP.new(config[:host], port: config[:port], ssl: config[:ssl])
+          imap.login(config[:email], config[:password])
+          connected = true
+        rescue
+          connected = false
+        end
+      end
+
+      if connected
+        puts "yes".green
+      else
+        puts "no".red
+        try_fixing_it(
+          "Check that the information in config/mail_room.yml is correct"
+        )
+        for_more_information(
+          "doc/reply_by_email/README.md"
+        )
+        fix_and_rerun
+      end
+    end
+
+    def mail_room_process_count
+      ps_ux, _ = Gitlab::Popen.popen(%W(ps ux))
+      ps_ux.scan(/mail_room \d+\.\d+\.\d+/).count
     end
   end
 
