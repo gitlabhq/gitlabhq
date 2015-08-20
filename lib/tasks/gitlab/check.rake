@@ -645,7 +645,7 @@ namespace :gitlab do
         return
       end
 
-      if mail_room_process_count > 0
+      if mail_room_running?
         puts "yes".green
       else
         puts "no".red
@@ -716,9 +716,9 @@ namespace :gitlab do
       end
     end
 
-    def mail_room_process_count
+    def mail_room_running?
       ps_ux, _ = Gitlab::Popen.popen(%W(ps ux))
-      ps_ux.scan(/mail_room \d+\.\d+\.\d+/).count
+      ps_ux.include?("mail_room")
     end
   end
 
