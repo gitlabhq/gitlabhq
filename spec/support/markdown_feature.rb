@@ -9,7 +9,6 @@
 # reference to the factory-created objects.
 class MarkdownFeature
   include FactoryGirl::Syntax::Methods
-  include FixtureHelpers
 
   def user
     @user ||= create(:user)
@@ -101,7 +100,7 @@ class MarkdownFeature
   end
 
   def raw_markdown
-    markdown = fixture_file('markdown.md.erb')
+    markdown = File.read(Rails.root.join('spec/fixtures/markdown.md.erb'))
     ERB.new(markdown).result(binding)
   end
 end
