@@ -1,5 +1,7 @@
 - page_title "Groups"
-.clearfix
+- if current_user
+  = render 'dashboard/groups_head'
+.clearfix.append-bottom-10
   .pull-left
     = form_tag explore_groups_path, method: :get, class: 'form-inline form-tiny' do |f|
       = hidden_field_tag :sort, @sort
@@ -28,15 +30,12 @@
           = link_to explore_groups_path(sort: sort_value_oldest_updated) do
             = sort_title_oldest_updated
 
-%hr
-
 %ul.bordered-list
   - @groups.each do |group|
     %li
       .clearfix
         %h4
           = link_to group_path(id: group.path) do
-            %i.fa.fa-users
             = group.name
       .clearfix
         %p

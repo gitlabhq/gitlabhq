@@ -1,9 +1,12 @@
 - page_title "Starred Projects"
+- if current_user
+  = render 'dashboard/projects_head'
 .explore-trending-block
-  %p.lead
+  .lead
     %i.fa.fa-star
     See most starred projects
-  %hr
+    .pull-right
+      = render 'explore/projects/dropdown'
   .public-projects
     %ul.bordered-list
       = render @starred_projects

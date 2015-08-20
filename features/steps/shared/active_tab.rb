@@ -26,7 +26,7 @@ module SharedActiveTab
   end
 
   step 'the active main tab should be Home' do
-    ensure_active_main_tab('Your Projects')
+    ensure_active_main_tab('Projects')
   end
 
   step 'the active main tab should be Projects' do

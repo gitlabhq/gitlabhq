@@ -1,17 +1,9 @@
 - page_title "Public Snippets"
-%h3.page-title
-  Public snippets
+- if current_user
+  = render 'head'
 
-  .pull-right
-    - if current_user
-      = link_to new_snippet_path, class: "btn btn-new btn-grouped", title: "New Snippet" do
-        Add new snippet
-      = link_to user_snippets_path(current_user), class: "btn btn-grouped"  do
-        Your snippets
-
-%p.light
+.slead
   Public snippets created by you and other users are listed here
 
-%hr
 = render 'snippets'
 
