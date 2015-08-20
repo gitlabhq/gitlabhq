@@ -11,10 +11,10 @@
   var merge_request_widget;
 
   merge_request_widget = new MergeRequestWidget({
-    url_to_automerge_check: "#{automerge_check_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
+    url_to_automerge_check: "#{merge_check_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
     check_enable: #{@merge_request.unchecked? ? "true" : "false"},
     url_to_ci_check: "#{ci_status_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
     ci_enable: #{@project.ci_service ? "true" : "false"},
-    current_status: "#{@merge_request.automerge_status}",
+    current_status: "#{@merge_request.gitlab_merge_status}",
   });
 

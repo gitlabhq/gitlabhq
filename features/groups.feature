@@ -152,3 +152,10 @@ Feature: Groups
     And I click on one group milestone
     Then I should see group milestone with descriptions and expiry date
     And I should see group milestone with all issues and MRs assigned to that milestone
+
+  # Group projects in settings
+  Scenario: I should see all projects in the project list in settings
+    Given Group "Owned" has archived project
+    When I visit group "Owned" projects page
+    Then I should see group "Owned" projects list
+    And I should see "archived" label

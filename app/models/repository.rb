@@ -1,4 +1,9 @@
+require 'securerandom'
+
 class Repository
+  class PreReceiveError < StandardError; end
+  class CommitError < StandardError; end
+
   include Gitlab::ShellAdapter
 
   attr_accessor :raw_repository, :path_with_namespace, :project
@@ -368,6 +373,89 @@ class Repository
     @root_ref ||= raw_repository.root_ref
   end
 
+  def commit_file(user, path, content, message, branch)
+    commit_with_hooks(user, branch) do |ref|
+      path[0] = '' if path[0] == '/'
+
+      committer = user_to_comitter(user)
+      options = {}
+      options[:committer] = committer
+      options[:author] = committer
+      options[:commit] = {
+        message: message,
+        branch: ref,
+      }
+
+      options[:file] = {
+        content: content,
+        path: path
+      }
+
+      Gitlab::Git::Blob.commit(raw_repository, options)
+    end
+  end
+
+  def remove_file(user, path, message, branch)
+    commit_with_hooks(user, branch) do |ref|
+      path[0] = '' if path[0] == '/'
+
+      committer = user_to_comitter(user)
+      options = {}
+      options[:committer] = committer
+      options[:author] = committer
+      options[:commit] = {
+        message: message,
+        branch: ref
+      }
+
+      options[:file] = {
+        path: path
+      }
+
+      Gitlab::Git::Blob.remove(raw_repository, options)
+    end
+  end
+
+  def user_to_comitter(user)
+    {
+      email: user.email,
+      name: user.name,
+      time: Time.now
+    }
+  end
+
+  def can_be_merged?(source_sha, target_branch)
+    our_commit = rugged.branches[target_branch].target
+    their_commit = rugged.lookup(source_sha)
+
+    if our_commit && their_commit
+      !rugged.merge_commits(our_commit, their_commit).conflicts?
+    else
+      false
+    end
+  end
+
+  def merge(user, source_sha, target_branch, options = {})
+    our_commit = rugged.branches[target_branch].target
+    their_commit = rugged.lookup(source_sha)
+
+    raise "Invalid merge target" if our_commit.nil?
+    raise "Invalid merge source" if their_commit.nil?
+
+    merge_index = rugged.merge_commits(our_commit, their_commit)
+    return false if merge_index.conflicts?
+
+    commit_with_hooks(user, target_branch) do |ref|
+      actual_options = options.merge(
+        parents: [our_commit, their_commit],
+        tree: merge_index.write_tree(rugged),
+        update_ref: ref
+      )
+
+      Rugged::Commit.create(rugged, actual_options)
+    end
+  end
+
   def merged_to_root_ref?(branch_name)
     branch_commit = commit(branch_name)
     root_ref_commit = commit(root_ref)
@@ -410,6 +498,64 @@ class Repository
       startline: startline,
       data: data
     )
+  end
+
+  def fetch_ref(source_path, source_ref, target_ref)
+    args = %W(git fetch #{source_path} #{source_ref}:#{target_ref})
+    Gitlab::Popen.popen(args, path_to_repo)
+  end
+
+  def commit_with_hooks(current_user, branch)
+    oldrev = Gitlab::Git::BLANK_SHA
+    ref = Gitlab::Git::BRANCH_REF_PREFIX + branch
+    gl_id = Gitlab::ShellEnv.gl_id(current_user)
+    was_empty = empty?
+
+    # Create temporary ref
+    random_string = SecureRandom.hex
+    tmp_ref = "refs/tmp/#{random_string}/head"
+
+    unless was_empty
+      oldrev = find_branch(branch).target
+      rugged.references.create(tmp_ref, oldrev)
+    end
+
+    # Make commit in tmp ref
+    newrev = yield(tmp_ref)
+
+    unless newrev
+      raise CommitError.new('Failed to create commit')
+    end
+
+    # Run GitLab pre-receive hook
+    pre_receive_hook = Gitlab::Git::Hook.new('pre-receive', path_to_repo)
+    status = pre_receive_hook.trigger(gl_id, oldrev, newrev, ref)
+
+    if status
+      if was_empty
+        # Create branch
+        rugged.references.create(ref, newrev)
+      else
+        # Update head
+        current_head = find_branch(branch).target
+
+        # Make sure target branch was not changed during pre-receive hook
+        if current_head == oldrev
+          rugged.references.update(ref, newrev)
+        else
+          raise CommitError.new('Commit was rejected because branch received new push')
+        end
+      end
+
+      # Run GitLab post receive hook
+      post_receive_hook = Gitlab::Git::Hook.new('post-receive', path_to_repo)
+      status = post_receive_hook.trigger(gl_id, oldrev, newrev, ref)
+    else
+      # Remove tmp ref and return error to user
+      rugged.references.delete(tmp_ref)
+
+      raise PreReceiveError.new('Commit was rejected by pre-receive hook')
+    end
   end
 
   private

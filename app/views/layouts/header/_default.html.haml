@@ -17,13 +17,13 @@
           %li.visible-sm.visible-xs
             = link_to search_path, title: 'Search', data: {toggle: 'tooltip', placement: 'bottom'} do
               = icon('search')
-          %li.hidden-xs
+          -#%li.hidden-xs
             = link_to help_path, title: 'Help', data: {toggle: 'tooltip', placement: 'bottom'} do
               = icon('question-circle fw')
-          %li
+          -#%li
             = link_to explore_root_path, title: 'Explore', data: {toggle: 'tooltip', placement: 'bottom'} do
               = icon('globe fw')
-          %li
+          -#%li
             = link_to user_snippets_path(current_user), title: 'Your snippets', data: {toggle: 'tooltip', placement: 'bottom'} do
               = icon('clipboard fw')
           - if current_user.is_admin?
@@ -34,7 +34,7 @@
             %li.hidden-xs
               = link_to new_project_path, title: 'New project', data: {toggle: 'tooltip', placement: 'bottom'} do
                 = icon('plus fw')
-          %li
+          -#%li
             = link_to profile_path, title: 'Profile settings', data: {toggle: 'tooltip', placement: 'bottom'} do
               = icon('cog fw')
           %li

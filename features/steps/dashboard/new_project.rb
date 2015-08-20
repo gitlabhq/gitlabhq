@@ -13,8 +13,17 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
     expect(page).to have_content('Project path')
   end
 
+  step 'I see all possible import optios' do
+    expect(page).to have_link('GitHub')
+    expect(page).to have_link('Bitbucket')
+    expect(page).to have_link('GitLab.com')
+    expect(page).to have_link('Gitorious.org')
+    expect(page).to have_link('Google Code')
+    expect(page).to have_link('Any repo by URL')
+  end
+
   step 'I click on "Import project from GitHub"' do
-    first('.how_to_import_link').click
+    first('.import_github').click
   end
 
   step 'I see instructions on how to import from GitHub' do
@@ -26,4 +35,24 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
       expect(element).not_to be_visible unless element == github_modal
     end
   end
+
+  step 'I click on "Any repo by URL"' do
+    first('.import_git').click
+  end
+
+  step 'I see instructions on how to import from Git URL' do
+    git_import_instructions = first('.js-toggle-content')
+    expect(git_import_instructions).to be_visible
+    expect(git_import_instructions).to have_content "Git repository URL"
+    expect(git_import_instructions).to have_content "The repository must be accessible over HTTP(S). If it is not publicly accessible, you can add authentication information to the URL:"
+  end
+
+  step 'I click on "Google Code"' do
+    first('.import_google_code').click
+  end
+
+  step 'I redirected to Google Code import page' do
+    expect(current_path).to eq new_import_google_code_path
+  end
+
 end

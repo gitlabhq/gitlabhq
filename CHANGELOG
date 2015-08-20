@@ -1,5 +1,13 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.0.0 (unreleased)
+  - Remove satellites
+  - Better performance for web editor (switched from satellites to rugged)
+  - Faster merge
+  - Ability to fetch merge requests from refs/merge-requests/:id
+  - Allow displaying of archived projects in the admin interface (Artem Sidorenko)
+  - Allow configuration of import sources for new projects (Artem Sidorenko)
+
 v 7.14.0 (unreleased)
   - Update default robots.txt rules to disallow crawling of irrelevant pages (Ben Bodenmiller)
   - Fix redirection after sign in when using auto_sign_in_with_provider

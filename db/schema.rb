@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 20150818213832) do
     t.boolean  "user_oauth_applications",      default: true
     t.string   "after_sign_out_path"
     t.integer  "session_expire_delay",         default: 10080, null: false
+    t.text     "import_sources"
   end
 
   create_table "audit_events", force: true do |t|

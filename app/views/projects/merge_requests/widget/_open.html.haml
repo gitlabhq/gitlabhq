@@ -3,8 +3,6 @@
   .mr-widget-body
     - if @project.archived?
       = render 'projects/merge_requests/widget/open/archived'
-    - elsif !@project.satellite.exists?
-      = render 'projects/merge_requests/widget/open/no_satellite'
     - elsif @merge_request.commits.blank?
       = render 'projects/merge_requests/widget/open/nothing'
     - elsif @merge_request.branch_missing?

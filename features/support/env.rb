@@ -28,5 +28,9 @@ Spinach.hooks.before_run do
   RSpec::Mocks.setup
   TestEnv.init(mailer: false)
 
+  # skip pre-receive hook check so we can use
+  # web editor and merge
+  TestEnv.disable_pre_receive
+
   include FactoryGirl::Syntax::Methods
 end

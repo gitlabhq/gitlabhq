@@ -148,7 +148,7 @@ describe API::API, api: true  do
       it "should return merge_request" do
         post api("/projects/#{project.id}/merge_requests", user),
              title: 'Test merge_request',
-             source_branch: 'stable',
+             source_branch: 'feature_conflict',
              target_branch: 'master',
              author: user,
              labels: 'label, label2'
@@ -171,20 +171,20 @@ describe API::API, api: true  do
 
       it "should return 400 when target_branch is missing" do
         post api("/projects/#{project.id}/merge_requests", user),
-        title: "Test merge_request", source_branch: "stable", author: user
+        title: "Test merge_request", source_branch: "markdown", author: user
         expect(response.status).to eq(400)
       end
 
       it "should return 400 when title is missing" do
         post api("/projects/#{project.id}/merge_requests", user),
-        target_branch: 'master', source_branch: 'stable'
+        target_branch: 'master', source_branch: 'markdown'
         expect(response.status).to eq(400)
       end
 
       it 'should return 400 on invalid label names' do
         post api("/projects/#{project.id}/merge_requests", user),
              title: 'Test merge_request',
-             source_branch: 'stable',
+             source_branch: 'markdown',
              target_branch: 'master',
              author: user,
              labels: 'label, ?'
@@ -198,7 +198,7 @@ describe API::API, api: true  do
         before do
           post api("/projects/#{project.id}/merge_requests", user),
                title: 'Test merge_request',
-               source_branch: 'stable',
+               source_branch: 'feature_conflict',
                target_branch: 'master',
                author: user
           @mr = MergeRequest.all.last
@@ -208,7 +208,7 @@ describe API::API, api: true  do
           expect do
             post api("/projects/#{project.id}/merge_requests", user),
                  title: 'New test merge_request',
-                 source_branch: 'stable',
+                 source_branch: 'feature_conflict',
                  target_branch: 'master',
                  author: user
           end.to change { MergeRequest.count }.by(0)
@@ -228,7 +228,8 @@ describe API::API, api: true  do
 
       it "should return merge_request" do
         post api("/projects/#{fork_project.id}/merge_requests", user2),
-        title: 'Test merge_request', source_branch: "stable", target_branch: "master", author: user2, target_project_id: project.id, description: 'Test description for Test merge_request'
+          title: 'Test merge_request', source_branch: "feature_conflict", target_branch: "master",
+          author: user2, target_project_id: project.id, description: 'Test description for Test merge_request'
         expect(response.status).to eq(201)
         expect(json_response['title']).to eq('Test merge_request')
         expect(json_response['description']).to eq('Test description for Test merge_request')
@@ -258,7 +259,7 @@ describe API::API, api: true  do
 
       it "should return 400 when title is missing" do
         post api("/projects/#{fork_project.id}/merge_requests", user2),
-        target_branch: 'master', source_branch: 'stable', author: user2, target_project_id: project.id
+        target_branch: 'master', source_branch: 'markdown', author: user2, target_project_id: project.id
         expect(response.status).to eq(400)
       end
 
@@ -267,7 +268,7 @@ describe API::API, api: true  do
           post api("/projects/#{project.id}/merge_requests", user),
                title: 'Test merge_request',
                target_branch: 'master',
-               source_branch: 'stable',
+               source_branch: 'markdown',
                author: user,
                target_project_id: fork_project.id
           expect(response.status).to eq(422)
@@ -277,7 +278,7 @@ describe API::API, api: true  do
           post api("/projects/#{fork_project.id}/merge_requests", user2),
                title: 'Test merge_request',
                target_branch: 'master',
-               source_branch: 'stable',
+               source_branch: 'markdown',
                author: user2,
                target_project_id: unrelated_project.id
           expect(response.status).to eq(422)
@@ -286,7 +287,7 @@ describe API::API, api: true  do
 
       it "should return 201 when target_branch is specified and for the same project" do
         post api("/projects/#{fork_project.id}/merge_requests", user2),
-        title: 'Test merge_request', target_branch: 'master', source_branch: 'stable', author: user2, target_project_id: fork_project.id
+        title: 'Test merge_request', target_branch: 'master', source_branch: 'markdown', author: user2, target_project_id: fork_project.id
         expect(response.status).to eq(201)
       end
     end
@@ -302,9 +303,6 @@ describe API::API, api: true  do
 
   describe "PUT /projects/:id/merge_request/:merge_request_id/merge" do
     it "should return merge_request in case of success" do
-      allow_any_instance_of(MergeRequest).
-        to receive_messages(can_be_merged?: true, automerge!: true)
-
       put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user)
 
       expect(response.status).to eq(200)

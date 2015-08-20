@@ -40,6 +40,20 @@ describe Repository do
 
       it { is_expected.to be_truthy }
     end
+  end
+
+  describe :can_be_merged? do
+    context 'mergeable branches' do
+      subject { repository.can_be_merged?('0b4bc9a49b562e85de7cc9e834518ea6828729b9', 'master') }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'non-mergeable branches' do
+      subject { repository.can_be_merged?('bb5206fee213d983da88c47f9cf4cc6caf9c66dc', 'feature') }
+
+      it { is_expected.to be_falsey }
+    end
 
     context 'non merged branch' do
       subject { repository.merged_to_root_ref?('fix') }
