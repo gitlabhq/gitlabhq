@@ -22,7 +22,7 @@ class EmailReceiverWorker
     reason = nil
 
     case e
-    when Gitlab::Email::Receiver::SentNotificationNotFound
+    when Gitlab::Email::Receiver::SentNotificationNotFoundError
       reason = "We couldn't figure out what the email is in reply to. Please create your comment through the web interface."
     when Gitlab::Email::Receiver::EmptyEmailError
       can_retry = true
@@ -35,7 +35,7 @@ class EmailReceiverWorker
       reason = "You are not allowed to respond to the thread you are replying to. If you believe this is in error, contact a staff member."
     when Gitlab::Email::Receiver::NoteableNotFoundError
       reason = "The thread you are replying to no longer exists, perhaps it was deleted? If you believe this is in error, contact a staff member."
-    when Gitlab::Email::Receiver::InvalidNote
+    when Gitlab::Email::Receiver::InvalidNoteError
       can_retry = true
       reason = e.message
     else
