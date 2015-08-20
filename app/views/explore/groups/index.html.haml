@@ -1,4 +1,6 @@
 - page_title "Groups"
+- if current_user
+  = render 'dashboard/groups_head'
 .clearfix
   .pull-left
     = form_tag explore_groups_path, method: :get, class: 'form-inline form-tiny' do |f|

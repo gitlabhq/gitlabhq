@@ -9,7 +9,7 @@ class SnippetsController < ApplicationController
 
   skip_before_action :authenticate_user!, only: [:index, :user_index, :show, :raw]
 
-  layout 'dashboard'
+  layout 'snippets'
   respond_to :html
 
   def index

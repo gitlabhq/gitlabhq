@@ -1,5 +1,6 @@
 - page_title "Public Snippets"
-= render 'head'
+- if current_user
+  = render 'head'
 %h3.page-title
   Public snippets
 
