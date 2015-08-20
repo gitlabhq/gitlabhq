@@ -2,8 +2,7 @@ require "spec_helper"
 
 describe Gitlab::Email::Receiver do
   before do
-    allow(Gitlab.config.reply_by_email).to receive(:enabled).and_return(true)
-    allow(Gitlab.config.reply_by_email).to receive(:address).and_return("reply+%{reply_key}@appmail.adventuretime.ooo")
+    stub_reply_by_email_setting(enabled: true, address: "reply+%{reply_key}@appmail.adventuretime.ooo")
   end
 
   let(:reply_key) { "59d8df8370b7e95c5a49fbf86aeb2c93" }

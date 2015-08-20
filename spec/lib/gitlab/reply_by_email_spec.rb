@@ -4,12 +4,12 @@ describe Gitlab::ReplyByEmail do
   describe "self.enabled?" do
     context "when reply by email is enabled" do
       before do
-        allow(Gitlab.config.reply_by_email).to receive(:enabled).and_return(true)
+        stub_reply_by_email_setting(enabled: true)
       end
 
       context "when the address is valid" do
         before do
-          allow(Gitlab.config.reply_by_email).to receive(:address).and_return("replies+%{reply_key}@example.com")
+          stub_reply_by_email_setting(address: "replies+%{reply_key}@example.com")
         end
 
         it "returns true" do
@@ -19,7 +19,7 @@ describe Gitlab::ReplyByEmail do
 
       context "when the address is invalid" do
         before do
-          allow(Gitlab.config.reply_by_email).to receive(:address).and_return("replies@example.com")
+          stub_reply_by_email_setting(address: "replies@example.com")
         end
 
         it "returns false" do
@@ -30,7 +30,7 @@ describe Gitlab::ReplyByEmail do
 
     context "when reply by email is disabled" do
       before do
-        allow(Gitlab.config.reply_by_email).to receive(:enabled).and_return(false)
+        stub_reply_by_email_setting(enabled: false)
       end
 
       it "returns false" do
@@ -66,7 +66,7 @@ describe Gitlab::ReplyByEmail do
 
   context "self.reply_address" do
     before do
-      allow(Gitlab.config.reply_by_email).to receive(:address).and_return("replies+%{reply_key}@example.com")
+      stub_reply_by_email_setting(address: "replies+%{reply_key}@example.com")
     end
 
     it "returns the address with an interpolated reply key" do
@@ -76,7 +76,7 @@ describe Gitlab::ReplyByEmail do
 
   context "self.reply_key_from_address" do
     before do
-      allow(Gitlab.config.reply_by_email).to receive(:address).and_return("replies+%{reply_key}@example.com")
+      stub_reply_by_email_setting(address: "replies+%{reply_key}@example.com")
     end
 
     it "returns reply key" do
