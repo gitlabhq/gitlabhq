@@ -76,7 +76,7 @@ module Gitlab
       end
 
       def add_attachments(reply)
-        attachments = AttachmentUploader.new(message).execute(project)
+        attachments = Email::AttachmentUploader.new(message).execute(sent_notification.project)
 
         attachments.each do |link|
           text = "[#{link[:alt]}](#{link[:url]})"
@@ -84,6 +84,8 @@ module Gitlab
 
           reply << "\n\n#{text}"
         end
+
+        reply
       end
 
       def create_note(reply)

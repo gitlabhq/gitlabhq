@@ -1,6 +1,6 @@
 module Gitlab
   module Email
-    module AttachmentUploader
+    class AttachmentUploader
       attr_accessor :message
 
       def initialize(message)
