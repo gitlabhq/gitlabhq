@@ -273,6 +273,6 @@ gem "newrelic_rpm"
 
 gem 'octokit', '3.7.0'
 
-gem "mail_room", github: "DouweM/mail_room", branch: "sidekiq"
+gem "mail_room", "~> 0.4.0"
 
 gem 'email_reply_parser'
