@@ -20,7 +20,7 @@ module IconsHelper
   end
 
   def boolean_to_icon(value)
-    if value.to_s == "true"
+    if value
       icon('circle', class: 'cgreen')
     else
       icon('power-off', class: 'clgray')
