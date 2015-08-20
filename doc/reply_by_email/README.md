@@ -10,8 +10,17 @@ In this example, we'll use the Gmail address `gitlab-replies@gmail.com`. If you'
 
 ### Installations from source
 
+1. Go to the GitLab installation directory:
+
+    ```sh
+    cd /home/git/gitlab
+    ```
 
 1. Find the `reply_by_email` section in `config/gitlab.yml`, enable the feature and enter the email address including a placeholder for the `reply_key`:
+
+    ```sh
+    sudo editor config/gitlab.yml
+    ```
     
     ```yaml
     reply_by_email:
@@ -24,10 +33,14 @@ In this example, we'll use the Gmail address `gitlab-replies@gmail.com`. If you'
 2. Find `config/mail_room.yml.example` and copy it to `config/mail_room.yml`:
     
     ```sh
-    cp config/mail_room.yml.example config/mail_room.yml
+    sudo cp config/mail_room.yml.example config/mail_room.yml
     ```
 
 3. Uncomment the configuration options in `config/mail_room.yml` and fill in the details for your specific IMAP server and email account:
+
+    ```sh
+    sudo editor config/mail_room.yml
+    ```
 
     ```yaml
     :mailboxes:
@@ -66,6 +79,10 @@ In this example, we'll use the Gmail address `gitlab-replies@gmail.com`. If you'
 
 5. Edit `/etc/default/gitlab` to enable `mail_room`:
 
+    ```sh
+    sudo editor /etc/default/gitlab
+    ```
+    
     ```sh
     mail_room_enabled=true
     ```
