@@ -31,7 +31,7 @@ describe Gitlab::Email::Receiver do
   end
 
   context "when no sent notificiation for the reply key could be found" do
-    let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub(reply_key, "nope") }
+    let(:email_raw) { fixture_file('emails/wrong_reply_key.eml') }
 
     it "raises a SentNotificationNotFoundError" do
       expect { receiver.execute }.to raise_error(Gitlab::Email::Receiver::SentNotificationNotFoundError)
