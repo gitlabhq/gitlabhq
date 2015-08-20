@@ -62,6 +62,21 @@ module Gitlab
       end
     end
 
+    def parse_body(message)
+      body = select_body(message)
+
+      encoding = body.encoding
+      raise EmptyEmailError if body.strip.blank?
+
+      body = discourse_email_trimmer(body)
+      raise EmptyEmailError if body.strip.blank?
+
+      body = EmailReplyParser.parse_reply(body)
+      raise EmptyEmailError if body.strip.blank?
+
+      body.force_encoding(encoding).encode("UTF-8")
+    end
+
     private
 
     def reply_key
@@ -78,21 +93,6 @@ module Gitlab
       return nil unless reply_key
       
       SentNotification.for(reply_key)
-    end
-
-    def parse_body(message)
-      body = select_body(message)
-
-      encoding = body.encoding
-      raise EmptyEmailError if body.strip.blank?
-
-      body = discourse_email_trimmer(body)
-      raise EmptyEmailError if body.strip.blank?
-
-      body = EmailReplyParser.parse_reply(body)
-      raise EmptyEmailError if body.strip.blank?
-
-      body.force_encoding(encoding).encode("UTF-8")
     end
 
     def select_body(message)
@@ -144,10 +144,9 @@ module Gitlab
       range_end = 0
 
       lines.each_with_index do |l, idx|
-        break if l =~ /\A\s*\-{3,80}\s*\z/ ||
-                 # This one might be controversial but so many reply lines have years, times and end with a colon.
-                 # Let's try it and see how well it works.
-                 (l =~ /\d{4}/ && l =~ /\d:\d\d/ && l =~ /\:$/) ||
+        # This one might be controversial but so many reply lines have years, times and end with a colon.
+       # Let's try it and see how well it works.
+       break if (l =~ /\d{4}/ && l =~ /\d:\d\d/ && l =~ /\:$/) ||
                  (l =~ /On \w+ \d+,? \d+,?.*wrote:/)
 
         # Headers on subsequent lines
