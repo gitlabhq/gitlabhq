@@ -72,8 +72,8 @@ module Gitlab
 
         lines.each_with_index do |l, idx|
           # This one might be controversial but so many reply lines have years, times and end with a colon.
-         # Let's try it and see how well it works.
-         break if (l =~ /\d{4}/ && l =~ /\d:\d\d/ && l =~ /\:$/) ||
+          # Let's try it and see how well it works.
+          break if (l =~ /\d{4}/ && l =~ /\d:\d\d/ && l =~ /\:$/) ||
                    (l =~ /On \w+ \d+,? \d+,?.*wrote:/)
 
           # Headers on subsequent lines
