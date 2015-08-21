@@ -22,6 +22,7 @@ namespace :gitlab do
       check_gitlab_config_not_outdated
       check_log_writable
       check_tmp_writable
+      check_uploads
       check_init_script_exists
       check_init_script_up_to_date
       check_projects_have_namespace
@@ -269,6 +270,57 @@ namespace :gitlab do
         try_fixing_it(
           "sudo chown -R gitlab #{tmp_path}",
           "sudo chmod -R u+rwX #{tmp_path}"
+        )
+        for_more_information(
+          see_installation_guide_section "GitLab"
+        )
+        fix_and_rerun
+      end
+    end
+    
+    def check_uploads
+      print "Uploads directory setup correctly? ... "
+
+      unless File.directory?(Rails.root.join('public/uploads'))
+        puts "no".red
+        try_fixing_it(
+          "sudo -u #{gitlab_user} mkdir -m 750 #{Rails.root}/public/uploads"
+        )
+        for_more_information(
+          see_installation_guide_section "GitLab"
+        )
+        fix_and_rerun
+        return
+      end
+
+      upload_path = File.realpath(Rails.root.join('public/uploads'))
+      upload_path_tmp = File.join(upload_path, 'tmp')
+
+      if File.stat(upload_path).mode == 040750
+        unless Dir.exists?(upload_path_tmp)
+          puts 'skipped (no tmp uploads folder yet)'.magenta
+          return
+        end
+
+        # if tmp upload dir has incorrect permissions, assume others do as well
+        if File.stat(upload_path_tmp).mode == 040755 && File.owned?(upload_path_tmp) # verify drwxr-xr-x permissions
+          puts "yes".green
+        else
+          puts "no".red
+          try_fixing_it(
+            "sudo chown -R #{gitlab_user} #{upload_path}",
+            "sudo find #{upload_path} -type f -exec chmod 0644 {} \\;",
+            "sudo find #{upload_path} -type d -not -path #{upload_path} -exec chmod 0755 {} \\;"
+          )
+          for_more_information(
+            see_installation_guide_section "GitLab"
+          )
+          fix_and_rerun
+        end
+      else
+        puts "no".red
+        try_fixing_it(
+          "sudo chmod 0750 #{upload_path}",
         )
         for_more_information(
           see_installation_guide_section "GitLab"
