@@ -58,6 +58,16 @@ describe Gitlab::Email::Receiver do
     end
   end
 
+  context "when the user has been blocked" do
+    before do
+      user.block
+    end
+
+    it "raises a UserBlockedError" do
+      expect { receiver.execute }.to raise_error(Gitlab::Email::Receiver::UserBlockedError)
+    end
+  end
+
   context "when the user is not authorized to create a note" do
     before do
       project.update_attribute(:visibility_level, Project::PRIVATE)

@@ -31,6 +31,8 @@ class EmailReceiverWorker
       reason = "The email was marked as 'auto generated', which we can't accept. Please create your comment through the web interface."
     when Gitlab::Email::Receiver::UserNotFoundError
       reason = "We couldn't figure out what user corresponds to the email. Please create your comment through the web interface."
+    when Gitlab::Email::Receiver::UserBlockedError
+      reason = "Your account has been blocked. If you believe this is in error, contact a staff member."
     when Gitlab::Email::Receiver::UserNotAuthorizedError
       reason = "You are not allowed to respond to the thread you are replying to. If you believe this is in error, contact a staff member."
     when Gitlab::Email::Receiver::NoteableNotFoundError
