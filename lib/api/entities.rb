@@ -24,6 +24,7 @@ module API
 
     class UserFull < User
       expose :email
+      expose :notification_email
       expose :theme_id, :color_scheme_id, :projects_limit, :current_sign_in_at
       expose :identities, using: Entities::Identity
       expose :can_create_group?, as: :can_create_group
