@@ -47,7 +47,8 @@
       .col-sm-10
         = users_select_tag("#{issuable.class.model_name.param_key}[assignee_id]",
             placeholder: 'Select a user', class: 'custom-form-control', null_user: true,
-            selected: issuable.assignee_id, project: @target_project || @project)
+            selected: issuable.assignee_id, project: @target_project || @project,
+            first_user: true, current_user: true)
         &nbsp;
         = link_to 'Assign to me', '#', class: 'btn assign-to-me-link'
   .form-group

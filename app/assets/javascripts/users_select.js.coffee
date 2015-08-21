@@ -6,6 +6,7 @@ class @UsersSelect
     $('.ajax-users-select').each (i, select) =>
       @projectId = $(select).data('project-id')
       @groupId = $(select).data('group-id')
+      @showCurrentUser = $(select).data('current-user')
       showNullUser = $(select).data('null-user')
       showAnyUser = $(select).data('any-user')
       showEmailUser = $(select).data('email-user')
@@ -108,6 +109,7 @@ class @UsersSelect
         active: true
         project_id: @projectId
         group_id: @groupId
+        current_user: @showCurrentUser
       dataType: "json"
     ).done (users) ->
       callback(users)
