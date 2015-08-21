@@ -26,12 +26,13 @@ module Grack
       auth!
 
       if project && authorized_request?
-        response = if ENV['GITLAB_GRACK_AUTH_ONLY'] == '1'
-          # Tell gitlab-git-http-server the request is OK, and what the GL_ID is
-          render_grack_auth_ok
-        else
-          @app.call(env)
-        end
+        response = 
+          if ENV['GITLAB_GRACK_AUTH_ONLY'] == '1'
+            # Tell gitlab-git-http-server the request is OK, and what the GL_ID is
+            render_grack_auth_ok
+          else
+            @app.call(env)
+          end
         apply_negotiate_final_leg(response)
       elsif @user.nil? && !@gitlab_ci
         unauthorized
@@ -74,7 +75,8 @@ module Grack
       # the response even if it's not a 401 status
       status, headers, body = response
       headers['WWW-Authenticate'] = spnego_challenge
-      return [status, headers, body]
+
+      [status, headers, body]
     end
 
     def valid_auth_method?
@@ -253,11 +255,12 @@ module Grack
         gss = GSSAPI::Simple.new(nil, nil, Gitlab.config.kerberos.keytab)
         # the GSSAPI::Simple constructor transforms a nil service name into a default value, so
         # pass service name to acquire_credentials explicitly to support the special meaning of nil         
-        gss_service_name = if Gitlab.config.kerberos.service_principal_name.present?
-          gss.import_name(Gitlab.config.kerberos.service_principal_name)
-        else           
-          nil # accept any valid service principal name from keytab
-        end
+        gss_service_name = 
+          if Gitlab.config.kerberos.service_principal_name.present?
+            gss.import_name(Gitlab.config.kerberos.service_principal_name)
+          else           
+            nil # accept any valid service principal name from keytab
+          end
         gss.acquire_credentials(gss_service_name) # grab credentials from keytab
         
         # Decode token
