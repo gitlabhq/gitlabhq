@@ -230,6 +230,17 @@ Settings.satellites['path'] = File.expand_path(Settings.satellites['path'] || "t
 Settings.satellites['timeout'] ||= 30
 
 #
+# Kerberos
+#
+Settings['kerberos'] ||= Settingslogic.new({})
+Settings.kerberos['enabled'] = false if Settings.kerberos['enabled'].nil?
+Settings.kerberos['keytab'] = nil if Settings.kerberos['keytab'].blank? #nil means use default keytab
+Settings.kerberos['service_principal_name'] = nil if Settings.kerberos['service_principal_name'].blank? #nil means any SPN in keytab
+Settings.kerberos['use_dedicated_port'] = false if Settings.kerberos['use_dedicated_port'].nil? 
+Settings.kerberos['https'] = Settings.gitlab.https if Settings.kerberos['https'].nil?
+Settings.kerberos['port'] ||= Settings.kerberos.https ? 8443 : 8088
+
+#
 # Extra customization
 #
 Settings['extra'] ||= Settingslogic.new({})
