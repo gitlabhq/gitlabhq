@@ -7,6 +7,7 @@ v 8.0.0 (unreleased)
   - Ability to fetch merge requests from refs/merge-requests/:id
   - Allow displaying of archived projects in the admin interface (Artem Sidorenko)
   - Allow configuration of import sources for new projects (Artem Sidorenko)
+  - Add `notification_email` field to admin user API (Ben Bodenmiller)
 
 v 7.14.0 (unreleased)
   - Update default robots.txt rules to disallow crawling of irrelevant pages (Ben Bodenmiller)
