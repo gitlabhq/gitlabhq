@@ -589,7 +589,7 @@ namespace :gitlab do
         check_address_formatted_correctly
         check_mail_room_config_exists
         check_imap_authentication
-        
+
         if Rails.env.production?
           check_initd_configured_correctly
           check_mail_room_running
@@ -645,7 +645,7 @@ namespace :gitlab do
 
       path = Rails.root.join("Procfile")
 
-      if File.exist?(path) && File.read(path) =~ /mail_room:/
+      if File.exist?(path) && File.read(path) =~ /^mail_room:/
         puts "yes".green
       else
         puts "no".red
