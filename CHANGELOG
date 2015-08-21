@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.14.0 (unreleased)
+  - Fix bug where non-project members of the target project could set labels on new merge requests.
   - Update default robots.txt rules to disallow crawling of irrelevant pages (Ben Bodenmiller)
   - Fix redirection after sign in when using auto_sign_in_with_provider
   - Upgrade gitlab_git to 7.2.14 to ignore CRLFs in .gitmodules (Stan Hu)
