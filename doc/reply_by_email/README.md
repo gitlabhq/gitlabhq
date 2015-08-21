@@ -87,13 +87,13 @@ In this example, we'll use the Gmail address `gitlab-replies@gmail.com`. If you'
     mail_room_enabled=true
     ```
 
-6. Restart GitLab
+6. Restart GitLab:
     
     ```sh
     sudo service gitlab restart
     ```
 
-7. Check if everything is configured correctly
+7. Check if everything is configured correctly:
 
     ```sh
     sudo bundle exec rake gitlab:reply_by_email:check RAILS_ENV=production

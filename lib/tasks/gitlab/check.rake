@@ -589,8 +589,13 @@ namespace :gitlab do
         check_address_formatted_correctly
         check_mail_room_config_exists
         check_imap_authentication
-        check_initd_configured_correctly
-        check_mail_room_running
+        
+        if Rails.env.production?
+          check_initd_configured_correctly
+          check_mail_room_running
+        else
+          check_foreman_configured_correctly
+        end
       else
         puts 'Reply by email is disabled in config/gitlab.yml'
       end
@@ -627,6 +632,25 @@ namespace :gitlab do
         puts "no".red
         try_fixing_it(
           "Enable mail_room in the init.d configuration."
+        )
+        for_more_information(
+          "doc/reply_by_email/README.md"
+        )
+        fix_and_rerun
+      end
+    end
+
+    def check_foreman_configured_correctly
+      print "Foreman configured correctly? ... "
+
+      path = Rails.root.join("Procfile")
+
+      if File.exist?(path) && File.read(path) =~ /mail_room:/
+        puts "yes".green
+      else
+        puts "no".red
+        try_fixing_it(
+          "Enable mail_room in your Procfile."
         )
         for_more_information(
           "doc/reply_by_email/README.md"
