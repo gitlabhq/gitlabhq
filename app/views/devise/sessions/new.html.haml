@@ -4,7 +4,7 @@
     = render 'devise/shared/signin_box'
 
   -# Omniauth fits between signin/ldap signin and signup and does not have a surrounding box
-  - if Gitlab.config.omniauth.enabled && devise_mapping.omniauthable?
+  - if Gitlab.config.omniauth.enabled && devise_mapping.omniauthable? && button_based_providers.any?
     .clearfix.prepend-top-20
       = render 'devise/shared/omniauth_box'
 
