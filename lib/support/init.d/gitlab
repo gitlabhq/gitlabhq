@@ -35,7 +35,7 @@ pid_path="$app_root/tmp/pids"
 socket_path="$app_root/tmp/sockets"
 web_server_pid_path="$pid_path/unicorn.pid"
 sidekiq_pid_path="$pid_path/sidekiq.pid"
-shell_path="/bin/bash"
+shell_path="$SHELL"
 
 # Read configuration variable file if it is present
 test -f /etc/default/gitlab && . /etc/default/gitlab
