@@ -101,8 +101,76 @@ In this example, we'll use the Gmail address `gitlab-replies@gmail.com`. If you'
 
 8. Reply by email should now be working.
 
-Note: If you're running GitLab in development mode and using `foreman`, make sure to also uncomment the `mail_room` line in your `Procfile`.
-
 ### Omnibus package installations
 
 TODO
+
+### Development
+
+1. Go to the GitLab installation directory.
+
+1. Find the `reply_by_email` section in `config/gitlab.yml`, enable the feature and enter the email address including a placeholder for the `reply_key`:
+    
+    ```yaml
+    reply_by_email:
+      enabled: true
+      address: "gitlab-replies+%{reply_key}@gmail.com"
+    ```
+
+    As mentioned, the part after `+` is ignored, and this will end up in the mailbox for `gitlab-replies@gmail.com`.
+
+2. Find `config/mail_room.yml.example` and copy it to `config/mail_room.yml`:
+    
+    ```sh
+    sudo cp config/mail_room.yml.example config/mail_room.yml
+    ```
+
+3. Uncomment the configuration options in `config/mail_room.yml` and fill in the details for your specific IMAP server and email account:
+
+    ```yaml
+    :mailboxes:
+      -
+        # IMAP server host
+        :host: "imap.gmail.com"
+        # IMAP server port
+        :port: 993
+        # Whether the IMAP server uses SSL
+        :ssl: true
+        # Email account username. Usually the full email address.
+        :email: "gitlab-replies@gmail.com"
+        # Email account password
+        :password: "[REDACTED]"
+        # The name of the mailbox where incoming mail will end up. Usually "inbox".
+        :name: "inbox"
+        # Always "sidekiq".
+        :delivery_method: sidekiq
+        :delivery_options:
+          # The URL to the Redis server used by Sidekiq. Should match the URL in config/resque.yml.
+          :redis_url: redis://localhost:6379
+          # Always "resque:gitlab".
+          :namespace: resque:gitlab
+          # Always "incoming_email".
+          :queue: incoming_email
+          # Always "EmailReceiverWorker"
+          :worker: EmailReceiverWorker
+    ```
+
+4. Uncomment the `mail_room` line in your `Procfile`:
+
+    ```yaml
+    mail_room: bundle exec mail_room -q -c config/mail_room.yml
+    ```
+
+6. Restart GitLab:
+    
+    ```sh
+    bundle exec foreman start
+    ```
+
+7. Check if everything is configured correctly:
+
+    ```sh
+    bundle exec rake gitlab:reply_by_email:check RAILS_ENV=development
+    ```
+
+8. Reply by email should now be working.
