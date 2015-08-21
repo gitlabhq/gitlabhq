@@ -87,8 +87,14 @@ module Gitlab
 
       def autolink_filter(text)
         text.gsub(LINK_PATTERN) do |match|
+          # Remove any trailing HTML entities and store them for appending
+          # outside the link element. The entity must be marked HTML safe in
+          # order to be output literally rather than escaped.
+          match.gsub!(/((?:&[\w#]+;)+)\z/, '')
+          dropped = ($1 || '').html_safe
+
           options = link_options.merge(href: match)
-          content_tag(:a, match, options)
+          content_tag(:a, match, options) + dropped
         end
       end
 
