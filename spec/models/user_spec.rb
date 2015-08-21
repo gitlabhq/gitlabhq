@@ -710,4 +710,33 @@ describe User do
       it { expect(subject.can_be_removed?).to be_falsey }
     end
   end
+
+  describe "#recent_push" do
+    subject { create(:user) }
+    let!(:project1) { create(:project) }
+    let!(:project2) { create(:project, forked_from_project: project1) }
+    let!(:push_data) { Gitlab::PushDataBuilder.build_sample(project2, subject) }
+    let!(:push_event) { create(:event, action: Event::PUSHED, project: project2, target: project1, author: subject, data: push_data) }
+
+    before do
+      project1.team << [subject, :master]
+      project2.team << [subject, :master]
+    end
+
+    it "includes push event" do
+      expect(subject.recent_push).to eq(push_event)
+    end
+
+    it "excludes push event if branch has been deleted" do
+      allow_any_instance_of(Repository).to receive(:branch_names).and_return(['foo'])
+
+      expect(subject.recent_push).to eq(nil)
+    end
+
+    it "excludes push event if MR is opened for it" do
+      create(:merge_request, source_project: project2, target_project: project1, source_branch: project2.default_branch, target_branch: 'fix', author: subject)
+
+      expect(subject.recent_push).to eq(nil)
+    end
+  end
 end
