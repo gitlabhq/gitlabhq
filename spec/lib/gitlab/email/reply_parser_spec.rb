@@ -19,9 +19,22 @@ describe Gitlab::Email::ReplyParser do
       expect(test_parse_body(fixture_file("emails/no_content_reply.eml"))).to eq("")
     end
 
-    it "can parse the html section" do
-      expect(test_parse_body(fixture_file("emails/html_only.eml"))).to eq("The EC2 instance - I've seen that there tends to be odd and " +
-          "unrecommended settings on the Bitnami installs that I've checked out.")
+    it "properly renders plaintext-only email" do
+      expect(test_parse_body(fixture_file("emails/plaintext_only.eml"))).
+        to eq(
+          <<-BODY.strip_heredoc.chomp
+            ### reply from default mail client in Windows 8.1 Metro
+
+
+            The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+
+
+            This is a **bold** word in Markdown
+
+
+            This is a link http://example.com
+          BODY
+        )
     end
 
     it "supports a Dutch reply" do

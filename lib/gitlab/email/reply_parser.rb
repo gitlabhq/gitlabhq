@@ -23,31 +23,19 @@ module Gitlab
       private
 
       def select_body(message)
-        html = nil
-        text = nil
+        text    = message.text_part if message.multipart?
+        text  ||= message           if message.content_type !~ /text\/html/
 
-        if message.multipart?
-          html = fix_charset(message.html_part)
-          text = fix_charset(message.text_part)
-        elsif message.content_type =~ /text\/html/
-          html = fix_charset(message)
-        end
+        return "" unless text
 
-        # prefer plain text
-        return text if text
-
-        if html
-          body = HtmlCleaner.new(html).output_html
-        else
-          body = fix_charset(message)
-        end
+        text = fix_charset(text)
 
         # Certain trigger phrases that means we didn't parse correctly
-        if body =~ /(Content\-Type\:|multipart\/alternative|text\/plain)/
+        if text =~ /(Content\-Type\:|multipart\/alternative|text\/plain)/
           return ""
         end
 
-        body
+        text
       end
 
       # Force encoding to UTF-8 on a Mail::Message or Mail::Part
