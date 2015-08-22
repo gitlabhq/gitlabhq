@@ -197,7 +197,7 @@ describe GitPushService do
     end
   end
 
-  describe "closing issues from pushed commits" do
+  describe "closing issues from pushed commits containing a closing reference" do
     let(:issue) { create :issue, project: project }
     let(:other_issue) { create :issue, project: project }
     let(:commit_author) { create :user }
@@ -215,36 +215,47 @@ describe GitPushService do
         and_return([closing_commit])
     end
 
-    it "closes issues with commit messages" do
-      service.execute(project, user, @oldrev, @newrev, @ref)
-
-      expect(Issue.find(issue.id)).to be_closed
-    end
-
-    it "doesn't create cross-reference notes for a closing reference" do
-      expect do
+    context "to default branches" do
+      it "closes issues" do
         service.execute(project, user, @oldrev, @newrev, @ref)
-      end.not_to change { Note.where(project_id: project.id, system: true, commit_id: closing_commit.id).count }
+        expect(Issue.find(issue.id)).to be_closed
+      end
+
+      it "adds a note indicating that the issue is now closed" do
+        expect(SystemNoteService).to receive(:change_status).with(issue, project, commit_author, "closed", closing_commit)
+        service.execute(project, user, @oldrev, @newrev, @ref)
+      end
+
+      it "doesn't create additional cross-reference notes" do
+        expect(SystemNoteService).not_to receive(:cross_reference)
+        service.execute(project, user, @oldrev, @newrev, @ref)
+      end
+
+      it "doesn't close issues when external issue tracker is in use" do
+        allow(project).to receive(:default_issues_tracker?).and_return(false)
+
+        # The push still shouldn't create cross-reference notes.
+        expect do
+          service.execute(project, user, @oldrev, @newrev, 'refs/heads/hurf')
+        end.not_to change { Note.where(project_id: project.id, system: true).count }
+      end
     end
 
-    it "doesn't close issues when pushed to non-default branches" do
-      allow(project).to receive(:default_branch).and_return('durf')
+    context "to non-default branches" do
+      before do
+        # Make sure the "default" branch is different
+        allow(project).to receive(:default_branch).and_return('not-master')
+      end
 
-      # The push still shouldn't create cross-reference notes.
-      expect do
-        service.execute(project, user, @oldrev, @newrev, 'refs/heads/hurf')
-      end.not_to change { Note.where(project_id: project.id, system: true).count }
+      it "creates cross-reference notes" do
+        expect(SystemNoteService).to receive(:cross_reference).with(issue, closing_commit, commit_author)
+        service.execute(project, user, @oldrev, @newrev, @ref)
+      end
 
-      expect(Issue.find(issue.id)).to be_opened
-    end
-
-    it "doesn't close issues when external issue tracker is in use" do
-      allow(project).to receive(:default_issues_tracker?).and_return(false)
-
-      # The push still shouldn't create cross-reference notes.
-      expect do
-        service.execute(project, user, @oldrev, @newrev, 'refs/heads/hurf')
-      end.not_to change { Note.where(project_id: project.id, system: true).count }
+      it "doesn't close issues" do
+        service.execute(project, user, @oldrev, @newrev, @ref)
+        expect(Issue.find(issue.id)).to be_opened
+      end
     end
   end
 
