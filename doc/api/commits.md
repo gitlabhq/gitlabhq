@@ -12,6 +12,7 @@ Parameters:
 
 - `id` (required) - The ID of a project
 - `ref_name` (optional) - The name of a repository branch or tag or if not given the default branch
+- `path` (optional) - Full path to file. Ex. lib/class.rb
 
 ```json
 [
