@@ -151,6 +151,12 @@ Settings.gitlab['restricted_signup_domains'] ||= []
 Settings.gitlab['import_sources'] ||= ['github','bitbucket','gitlab','gitorious','google_code','git']
 
 #
+# Reply by email
+#
+Settings['reply_by_email'] ||= Settingslogic.new({})
+Settings.reply_by_email['enabled'] = false if Settings.reply_by_email['enabled'].nil?
+
+#
 # Gravatar
 #
 Settings['gravatar'] ||= Settingslogic.new({})

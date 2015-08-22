@@ -100,7 +100,7 @@ class MarkdownFeature
   end
 
   def raw_markdown
-    fixture = Rails.root.join('spec/fixtures/markdown.md.erb')
-    ERB.new(File.read(fixture)).result(binding)
+    markdown = File.read(Rails.root.join('spec/fixtures/markdown.md.erb'))
+    ERB.new(markdown).result(binding)
   end
 end
