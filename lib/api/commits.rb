@@ -12,7 +12,7 @@ module API
       # Parameters:
       #   id (required) - The ID of a project
       #   ref_name (optional) - The name of a repository branch or tag, if not given the default branch is used
-      #   path(optional) - path
+      #   path(optional) - Full path to file. Ex. lib/class.rb
       # Example Request:
       #   GET /projects/:id/repository/commits
       get ":id/repository/commits" do
