@@ -4,7 +4,13 @@ require_relative 'import_spec_helper'
 describe Import::GitlabController do
   include ImportSpecHelper
 
-  let(:user) { create(:user, gitlab_access_token: 'asd123') }
+  let(:user) { create(:user) }
+  let(:token) { "asdasd12345" }
+  let(:access_params) { { gitlab_access_token: token } }
+
+  def assign_session_token
+    session[:gitlab_access_token] = token
+  end
 
   before do
     sign_in(user)
@@ -13,14 +19,13 @@ describe Import::GitlabController do
 
   describe "GET callback" do
     it "updates access token" do
-      token = "asdasd12345"
       allow_any_instance_of(Gitlab::GitlabImport::Client).
         to receive(:get_token).and_return(token)
       stub_omniauth_provider('gitlab')
 
       get :callback
 
-      expect(user.reload.gitlab_access_token).to eq(token)
+      expect(session[:gitlab_access_token]).to eq(token)
       expect(controller).to redirect_to(status_import_gitlab_url)
     end
   end
@@ -28,6 +33,7 @@ describe Import::GitlabController do
   describe "GET status" do
     before do
       @repo = OpenStruct.new(path: 'vim', path_with_namespace: 'asd/vim')
+      assign_session_token
     end
 
     it "assigns variables" do
@@ -67,13 +73,14 @@ describe Import::GitlabController do
 
     before do
       stub_client(user: gitlab_user, project: gitlab_repo)
+      assign_session_token
     end
 
     context "when the repository owner is the GitLab.com user" do
       context "when the GitLab.com user and GitLab server user's usernames match" do
         it "takes the current user's namespace" do
           expect(Gitlab::GitlabImport::ProjectCreator).
-            to receive(:new).with(gitlab_repo, user.namespace, user).
+            to receive(:new).with(gitlab_repo, user.namespace, user, access_params).
             and_return(double(execute: true))
 
           post :create, format: :js
@@ -85,7 +92,7 @@ describe Import::GitlabController do
 
         it "takes the current user's namespace" do
           expect(Gitlab::GitlabImport::ProjectCreator).
-            to receive(:new).with(gitlab_repo, user.namespace, user).
+            to receive(:new).with(gitlab_repo, user.namespace, user, access_params).
             and_return(double(execute: true))
 
           post :create, format: :js
@@ -98,6 +105,7 @@ describe Import::GitlabController do
 
       before do
         gitlab_repo["namespace"]["path"] = other_username
+        assign_session_token
       end
 
       context "when a namespace with the GitLab.com user's username already exists" do
@@ -106,7 +114,7 @@ describe Import::GitlabController do
         context "when the namespace is owned by the GitLab server user" do
           it "takes the existing namespace" do
             expect(Gitlab::GitlabImport::ProjectCreator).
-              to receive(:new).with(gitlab_repo, existing_namespace, user).
+              to receive(:new).with(gitlab_repo, existing_namespace, user, access_params).
               and_return(double(execute: true))
 
             post :create, format: :js
@@ -140,7 +148,7 @@ describe Import::GitlabController do
 
         it "takes the new namespace" do
           expect(Gitlab::GitlabImport::ProjectCreator).
-            to receive(:new).with(gitlab_repo, an_instance_of(Group), user).
+            to receive(:new).with(gitlab_repo, an_instance_of(Group), user, access_params).
             and_return(double(execute: true))
 
           post :create, format: :js

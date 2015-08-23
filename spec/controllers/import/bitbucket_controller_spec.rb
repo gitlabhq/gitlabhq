@@ -4,7 +4,15 @@ require_relative 'import_spec_helper'
 describe Import::BitbucketController do
   include ImportSpecHelper
 
-  let(:user) { create(:user, bitbucket_access_token: 'asd123', bitbucket_access_token_secret: "sekret") }
+  let(:user) { create(:user) }
+  let(:token) { "asdasd12345" }
+  let(:secret) { "sekrettt" }
+  let(:access_params) { { bitbucket_access_token: token, bitbucket_access_token_secret: secret } }
+
+  def assign_session_tokens
+    session[:bitbucket_access_token] = token
+    session[:bitbucket_access_token_secret] = secret
+  end
 
   before do
     sign_in(user)
@@ -17,8 +25,6 @@ describe Import::BitbucketController do
     end
 
     it "updates access token" do
-      token = "asdasd12345"
-      secret = "sekrettt"
       access_token = double(token: token, secret: secret)
       allow_any_instance_of(Gitlab::BitbucketImport::Client).
         to receive(:get_token).and_return(access_token)
@@ -26,8 +32,8 @@ describe Import::BitbucketController do
 
       get :callback
 
-      expect(user.reload.bitbucket_access_token).to eq(token)
-      expect(user.reload.bitbucket_access_token_secret).to eq(secret)
+      expect(session[:bitbucket_access_token]).to eq(token)
+      expect(session[:bitbucket_access_token_secret]).to eq(secret)
       expect(controller).to redirect_to(status_import_bitbucket_url)
     end
   end
@@ -35,6 +41,7 @@ describe Import::BitbucketController do
   describe "GET status" do
     before do
       @repo = OpenStruct.new(slug: 'vim', owner: 'asd')
+      assign_session_tokens
     end
 
     it "assigns variables" do
@@ -73,17 +80,18 @@ describe Import::BitbucketController do
 
     before do
       allow(Gitlab::BitbucketImport::KeyAdder).
-        to receive(:new).with(bitbucket_repo, user).
+        to receive(:new).with(bitbucket_repo, user, access_params).
         and_return(double(execute: true))
 
       stub_client(user: bitbucket_user, project: bitbucket_repo)
+      assign_session_tokens
     end
 
     context "when the repository owner is the Bitbucket user" do
       context "when the Bitbucket user and GitLab user's usernames match" do
         it "takes the current user's namespace" do
           expect(Gitlab::BitbucketImport::ProjectCreator).
-            to receive(:new).with(bitbucket_repo, user.namespace, user).
+            to receive(:new).with(bitbucket_repo, user.namespace, user, access_params).
             and_return(double(execute: true))
 
           post :create, format: :js
@@ -95,7 +103,7 @@ describe Import::BitbucketController do
 
         it "takes the current user's namespace" do
           expect(Gitlab::BitbucketImport::ProjectCreator).
-            to receive(:new).with(bitbucket_repo, user.namespace, user).
+            to receive(:new).with(bitbucket_repo, user.namespace, user, access_params).
             and_return(double(execute: true))
 
           post :create, format: :js
@@ -116,7 +124,7 @@ describe Import::BitbucketController do
         context "when the namespace is owned by the GitLab user" do
           it "takes the existing namespace" do
             expect(Gitlab::BitbucketImport::ProjectCreator).
-              to receive(:new).with(bitbucket_repo, existing_namespace, user).
+              to receive(:new).with(bitbucket_repo, existing_namespace, user, access_params).
               and_return(double(execute: true))
 
             post :create, format: :js
@@ -150,7 +158,7 @@ describe Import::BitbucketController do
 
         it "takes the new namespace" do
           expect(Gitlab::BitbucketImport::ProjectCreator).
-            to receive(:new).with(bitbucket_repo, an_instance_of(Group), user).
+            to receive(:new).with(bitbucket_repo, an_instance_of(Group), user, access_params).
             and_return(double(execute: true))
 
           post :create, format: :js
