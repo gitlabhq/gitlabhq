@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.0.0 (unreleased)
+  - Only include base URL in OmniAuth full_host parameter (Stan Hu)
   - Only show recent push event if the branch still exists or a recent merge request has not been created (Stan Hu)
   - Remove satellites
   - Better performance for web editor (switched from satellites to rugged)
