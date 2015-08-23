@@ -1,6 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 7.14.0 (unreleased)
+v 7.14.1 (unreleased)
+  - Only include base URL in OmniAuth full_host parameter (Stan Hu)
+
+v 7.14.0
   - Fix bug where non-project members of the target project could set labels on new merge requests.
   - Update default robots.txt rules to disallow crawling of irrelevant pages (Ben Bodenmiller)
   - Fix redirection after sign in when using auto_sign_in_with_provider
