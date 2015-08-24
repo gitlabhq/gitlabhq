@@ -2,11 +2,13 @@
 
 GitLab can be set up to allow users to comment on issues and merge requests by replying to notification emails.
 
-In order to do this, you need access to an IMAP-enabled email account, with a provider or server that supports [email sub-addressing](https://en.wikipedia.org/wiki/Email_address#Sub-addressing). Sub-addressing is a feature where any email to `user+some_arbitrary_tag@example.com` will end up in the mailbox for `user@example.com`, and is supported by providers such as Gmail, Yahoo! Mail, Outlook.com and iCloud, as well as the [Postfix](http://www.postfix.org/) mail server which you can run on-premises.
+## Get a mailbox
 
-If you want to use a Gmail with Reply by email, make sure you have [IMAP access enabled](https://support.google.com/mail/troubleshooter/1668960?hl=en#ts=1665018) and [allow less secure apps to access the account](https://support.google.com/accounts/answer/6010255).
+Reply by email requires an IMAP-enabled email account, with a provider or server that supports [email sub-addressing](https://en.wikipedia.org/wiki/Email_address#Sub-addressing). Sub-addressing is a feature where any email to `user+some_arbitrary_tag@example.com` will end up in the mailbox for `user@example.com`, and is supported by providers such as Gmail, Yahoo! Mail, Outlook.com and iCloud, as well as the Postfix mail server which you can run on-premises.
 
-To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these instructions](https://help.ubuntu.com/community/PostfixBasicSetupHowto).
+If you want to use Gmail with Reply by email, make sure you have [IMAP access enabled](https://support.google.com/mail/troubleshooter/1668960?hl=en#ts=1665018) and [allow less secure apps to access the account](https://support.google.com/accounts/answer/6010255).
+
+To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these instructions](./postfix.md).
 
 ## Set it up
 
