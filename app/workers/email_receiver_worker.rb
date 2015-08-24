@@ -18,6 +18,8 @@ class EmailReceiverWorker
   def handle_failure(raw, e)
     Rails.logger.warn("Email can not be processed: #{e}\n\n#{raw}")
 
+    return unless raw.present?
+
     can_retry = false
     reason = nil
 
