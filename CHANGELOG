@@ -3,7 +3,6 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.0.0 (unreleased)
   - Fix Error 500 in API when accessing a group that has an avatar (Stan Hu)
   - Remove user OAuth tokens from the database and request new tokens each session (Stan Hu)
-  - Only include base URL in OmniAuth full_host parameter (Stan Hu)
   - Only show recent push event if the branch still exists or a recent merge request has not been created (Stan Hu)
   - Remove satellites
   - Better performance for web editor (switched from satellites to rugged)
@@ -14,6 +13,9 @@ v 8.0.0 (unreleased)
   - Search for comments should be case insensetive
   - Create cross-reference for closing references on commits pushed to non-default branches (Maël Valais)
   - Ability to search milestones
+
+v 7.14.1 (unreleased)
+  - Only include base URL in OmniAuth full_host parameter (Stan Hu)
 
 v 7.14.0
   - Fix bug where non-project members of the target project could set labels on new merge requests.
