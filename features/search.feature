@@ -23,6 +23,13 @@ Feature: Search
     Then I should see "Foo" link in the search results
     And I should not see "Bar" link in the search results
 
+  Scenario: I should see milestones I am looking for
+    And project has milestones
+    When I search for "Foo"
+    When I click "Milestones" link
+    Then I should see "Foo" link in the search results
+    And I should not see "Bar" link in the search results
+
   Scenario: I should see project code I am looking for
     When I click project "Shop" link
     And I search for "rspec"
@@ -41,6 +48,14 @@ Feature: Search
     When I click project "Shop" link
     And I search for "Foo"
     And I click "Merge requests" link
+    Then I should see "Foo" link in the search results
+    And I should not see "Bar" link in the search results
+
+  Scenario: I should see project milestones
+    And project has milestones
+    When I click project "Shop" link
+    And I search for "Foo"
+    And I click "Milestones" link
     Then I should see "Foo" link in the search results
     And I should not see "Bar" link in the search results
 
