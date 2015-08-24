@@ -8,7 +8,7 @@ class Settings < Settingslogic
     def gitlab_on_standard_port?
       gitlab.port.to_i == (gitlab.https ? 443 : 80)
     end
-    
+
     # get host without www, thanks to http://stackoverflow.com/a/6674363/1233435
     def get_host_without_www(url)
       url = URI.encode(url)
@@ -32,14 +32,12 @@ class Settings < Settingslogic
       end
     end
 
+    def build_base_gitlab_url
+      base_gitlab_url.join('')
+    end
+
     def build_gitlab_url
-      custom_port = gitlab_on_standard_port? ? nil : ":#{gitlab.port}"
-      [ gitlab.protocol,
-        "://",
-        gitlab.host,
-        custom_port,
-        gitlab.relative_url_root
-      ].join('')
+      (base_gitlab_url + [gitlab.relative_url_root]).join('')
     end
 
     # check that values in `current` (string or integer) is a contant in `modul`.
@@ -63,6 +61,17 @@ class Settings < Settingslogic
         value = modul.const_get(current.upcase) rescue default
       end
       value
+    end
+
+    private
+
+    def base_gitlab_url
+      custom_port = gitlab_on_standard_port? ? nil : ":#{gitlab.port}"
+      [ gitlab.protocol,
+        "://",
+        gitlab.host,
+        custom_port
+      ]
     end
   end
 end
@@ -123,6 +132,7 @@ Settings.gitlab['email_enabled'] ||= true if Settings.gitlab['email_enabled'].ni
 Settings.gitlab['email_from'] ||= "gitlab@#{Settings.gitlab.host}"
 Settings.gitlab['email_display_name'] ||= "GitLab"
 Settings.gitlab['email_reply_to'] ||= "noreply@#{Settings.gitlab.host}"
+Settings.gitlab['base_url']   ||= Settings.send(:build_base_gitlab_url)
 Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
 Settings.gitlab['user']       ||= 'git'
 Settings.gitlab['user_home']  ||= begin
