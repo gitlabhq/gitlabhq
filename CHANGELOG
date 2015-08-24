@@ -6,7 +6,7 @@ v 8.0.0 (unreleased)
   - Faster merge
   - Ability to fetch merge requests from refs/merge-requests/:id
 
-v 7.14.0 (unreleased)
+v 7.14.0
   - Update default robots.txt rules to disallow crawling of irrelevant pages (Ben Bodenmiller)
   - Fix redirection after sign in when using auto_sign_in_with_provider
   - Upgrade gitlab_git to 7.2.14 to ignore CRLFs in .gitmodules (Stan Hu)
