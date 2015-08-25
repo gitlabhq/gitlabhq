@@ -34,7 +34,7 @@ gem 'rqrcode-rails3'
 gem 'attr_encrypted', '1.3.4'
 
 # Browser detection
-gem "browser", '~> 0.8.0'
+gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
