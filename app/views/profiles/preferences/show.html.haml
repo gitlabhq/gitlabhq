@@ -22,11 +22,11 @@
     .panel-heading
       Syntax highlighting theme
     .panel-body
-      - color_schemes.each do |color_scheme_id, color_scheme|
+      - Gitlab::ColorSchemes.each do |scheme|
         = label_tag do
-          .preview= image_tag "#{color_scheme}-scheme-preview.png"
-          = f.radio_button :color_scheme_id, color_scheme_id
-          = color_scheme.tr('-_', ' ').titleize
+          .preview= image_tag "#{scheme.css_class}-scheme-preview.png"
+          = f.radio_button :color_scheme_id, scheme.id
+          = scheme.name
 
   .panel.panel-default
     .panel-heading
