@@ -2,9 +2,5 @@
   - if current_user
     = auto_discovery_link_tag(:atom, dashboard_url(format: :atom, private_token: current_user.private_token), title: "All activity")
 
-= render 'dashboard/projects_head'
-
-- if @projects.any?
-  = render 'sidebar'
-- else
-  = render "zero_authorized_projects"
+%section.activities
+  = render 'activities'

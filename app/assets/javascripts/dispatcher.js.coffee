@@ -51,6 +51,7 @@ class Dispatcher
         MergeRequests.init()
       when 'dashboard:show', 'root:show'
         new Dashboard()
+      when 'dashboard:activity'
         new Activities()
       when 'dashboard:projects:starred'
         new Activities()
