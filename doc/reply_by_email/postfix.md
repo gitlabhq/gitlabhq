@@ -100,7 +100,7 @@ The instructions make the assumption that you will be using the email address `r
 1. Check if the `replies` user received the email:
     
     ```sh
-    sh - replies
+    su - replies
     mail
     ```
 
@@ -137,7 +137,7 @@ Courier, which we will install later to add IMAP authentication, requiers mailbo
 1. Restart Postfix:
     
     ```sh
-    sudo postfix restart
+    sudo /etc/init.d/postfix restart
     ```
 
 1. Test the new setup:
@@ -146,7 +146,7 @@ Courier, which we will install later to add IMAP authentication, requiers mailbo
     2. Check if the `replies` user received the email:
     
         ```sh
-        sh - replies
+        su - replies
         MAIL=/home/replies/Maildir
         mail
         ```
@@ -197,13 +197,25 @@ Courier, which we will install later to add IMAP authentication, requiers mailbo
 1. Configure Postfix to receive mail on all interfaces, which includes the internet:
     
     ```sh
-    sudo postconf -e "init_interfaces = all"
+    sudo postconf -e "inet_interfaces = all"
     ```
 
 1. Configure Postfix to receive mail on both IPv4 and IPv6 protocols:
     
     ```sh
     sudo postconf -e "inet_protocols = all"
+    ```
+
+1. Configure Postfix to use the `+` delimiter for sub-addressing:
+    
+    ```sh
+    sudo postconf -e "recipient_delimiter = +"
+    ```
+
+1. Restart Postfix:
+    
+    ```sh
+    sudo /etc/init.d/postfix restart
     ```
 
 ## Test the final setup
@@ -246,7 +258,7 @@ Courier, which we will install later to add IMAP authentication, requiers mailbo
     1. Check if the `replies` user received the email:
     
         ```sh
-        sh - replies
+        su - replies
         MAIL=/home/replies/Maildir
         mail
         ```
