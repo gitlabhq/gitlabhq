@@ -36,7 +36,7 @@ In this example, we'll use the Gmail address `gitlab-replies@gmail.com`.
 
     As mentioned, the part after `+` is ignored, and this will end up in the mailbox for `gitlab-replies@gmail.com`.
 
-2. Find `config/mail_room.yml.example` and copy it to `config/mail_room.yml`:
+2. Copy `config/mail_room.yml.example` to `config/mail_room.yml`:
     
     ```sh
     sudo cp config/mail_room.yml.example config/mail_room.yml
@@ -77,10 +77,10 @@ In this example, we'll use the Gmail address `gitlab-replies@gmail.com`.
     ```
 
 
-4.  Find `lib/support/init.d/gitlab.default.example` and copy it to `/etc/default/gitlab`:
+4.  Copy `lib/support/init.d/gitlab.default.example` to `/etc/default/gitlab`, if that does not already exist:
     
     ```sh
-    sudo cp lib/support/init.d/gitlab.default.example /etc/default/gitlab
+    [ -f /etc/default/gitlab ] || sudo cp lib/support/init.d/gitlab.default.example /etc/default/gitlab
     ```
 
 5. Edit `/etc/default/gitlab` to enable `mail_room`:
@@ -89,6 +89,8 @@ In this example, we'll use the Gmail address `gitlab-replies@gmail.com`.
     sudo editor /etc/default/gitlab
     ```
     
+    Either change `mail_room_enabled=false` to the below, or add it at the bottom of the file:
+
     ```sh
     mail_room_enabled=true
     ```
@@ -125,7 +127,7 @@ TODO
 
     As mentioned, the part after `+` is ignored, and this will end up in the mailbox for `gitlab-replies@gmail.com`.
 
-2. Find `config/mail_room.yml.example` and copy it to `config/mail_room.yml`:
+2. Copy `config/mail_room.yml.example` to `config/mail_room.yml`:
     
     ```sh
     sudo cp config/mail_room.yml.example config/mail_room.yml
