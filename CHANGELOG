@@ -16,6 +16,7 @@ v 8.0.0 (unreleased)
   - Ability to search milestones
   - Gracefully handle SMTP user input errors (e.g. incorrect email addresses) to prevent Sidekiq retries (Stan Hu)
   - Improve abuse reports management from admin area
+  - Move dashboard activity to separate page
 
 v 7.14.1 (unreleased)
   - Only include base URL in OmniAuth full_host parameter (Stan Hu)

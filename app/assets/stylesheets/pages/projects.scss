@@ -316,3 +316,34 @@ table.table.protected-branches-list tr.no-border {
 pre.light-well {
   border-color: #f1f1f1;
 }
+
+.projects-search-form {
+  max-width: 600px;
+  margin: 0 auto;
+  margin-bottom: 20px;
+
+  input {
+    border-color: #BBB;
+  }
+}
+
+.project-row {
+  .project-full-name {
+    font-weight: bold;
+    font-size: 15px;
+  }
+
+  .project-description {
+    color: #888;
+    font-size: 13px;
+
+    p {
+      margin-bottom: 0;
+      color: #888;
+    }
+  }
+}
+
+.my-projects .project-row {
+  padding: 10px 0;
+}

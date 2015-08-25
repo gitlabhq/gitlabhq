@@ -4,14 +4,10 @@
 
 = render 'dashboard/projects_head'
 
+- if @last_push
+  = render "events/event_last_push", event: @last_push
+
 - if @projects.any?
-  = render 'shared/show_aside'
-
-  .dashboard.row
-    %section.activities.col-md-8
-      = render 'activities'
-    %aside.col-md-4
-      = render 'sidebar'
-
+  = render 'projects'
 - else
   = render "zero_authorized_projects"
