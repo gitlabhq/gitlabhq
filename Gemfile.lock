@@ -462,7 +462,7 @@ GEM
     pyu-ruby-sasl (0.0.3.3)
     quiet_assets (1.0.2)
       railties (>= 3.1, < 5.0)
-    racc (1.4.10)
+    racc (1.4.12)
     rack (1.5.5)
     rack-accept (0.4.5)
       rack (>= 0.4)
