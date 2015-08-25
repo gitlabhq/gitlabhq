@@ -13,6 +13,7 @@ v 8.0.0 (unreleased)
   - Search for comments should be case insensetive
   - Create cross-reference for closing references on commits pushed to non-default branches (Maël Valais)
   - Ability to search milestones
+  - Gracefully handle SMTP user input errors (e.g. incorrect email addresses) to prevent Sidekiq retries (Stan Hu)
 
 v 7.14.1 (unreleased)
   - Only include base URL in OmniAuth full_host parameter (Stan Hu)
