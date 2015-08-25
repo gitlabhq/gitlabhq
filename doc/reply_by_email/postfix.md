@@ -4,21 +4,10 @@ This document will take you through the steps of setting up a basic Postfix mail
 
 The instructions make the assumption that you will be using the email address `replies@gitlab.example.com`, that is, username `replies` on host `gitlab.example.com`. Don't forget to change it to your actual host when executing the example code snippets.
 
-## Configure your server DNS
+## Configure your server firewall
 
-1. Add an MX record pointing from `gitlab.example.com` to your server IP.
-1. Add an A record pointing from `mail.gitlab.example.com` to your server IP.
-1. Verify that the changes have propagated:
-
-    ```sh
-    dig mx gitlab.example.com
-    ```
-
-    ```sh
-    dig a mail.gitlab.example.com
-    ```
-
-    You should see an `ANSWER SECTION` with the expected result in the output for both.
+1. Open up port 25 on your server so that people can send email into the server over SMTP.
+2. If the mail server is different from the server running GitLab, open up port 143 on your server so that GitLab can read email from the server over IMAP.
 
 ## Install packages
 
@@ -183,7 +172,7 @@ Courier, which we will install later to add IMAP authentication, requiers mailbo
 1. Let Postfix know about the domains that it should consider local:
     
     ```sh
-    sudo postconf -e "mydestination = mail.gitlab.example.com, localhost.localdomain, localhost, gitlab.example.com"
+    sudo postconf -e "mydestination = gitlab.example.com, localhost.localdomain, localhost"
     ```
 
 1. Let Postfix know about the IPs that it should consider part of the LAN:
@@ -200,12 +189,6 @@ Courier, which we will install later to add IMAP authentication, requiers mailbo
     sudo postconf -e "inet_interfaces = all"
     ```
 
-1. Configure Postfix to receive mail on both IPv4 and IPv6 protocols:
-    
-    ```sh
-    sudo postconf -e "inet_protocols = all"
-    ```
-
 1. Configure Postfix to use the `+` delimiter for sub-addressing:
     
     ```sh
@@ -215,7 +198,7 @@ Courier, which we will install later to add IMAP authentication, requiers mailbo
 1. Restart Postfix:
     
     ```sh
-    sudo /etc/init.d/postfix restart
+    sudo service postfix restart
     ```
 
 ## Test the final setup
@@ -225,14 +208,14 @@ Courier, which we will install later to add IMAP authentication, requiers mailbo
     1. Connect to the SMTP server:
         
         ```sh
-        telnet mail.gitlab.example.com 25
+        telnet gitlab.example.com 25
         ```
 
         You should see a prompt like this:
 
         ```sh
         Trying 123.123.123.123...
-        Connected to mail.gitlab.example.com.
+        Connected to gitlab.example.com.
         Escape character is '^]'.
         220 gitlab.example.com ESMTP Postfix (Ubuntu)
         ```
@@ -287,7 +270,7 @@ Courier, which we will install later to add IMAP authentication, requiers mailbo
     1. Connect to the IMAP server:
         
         ```sh
-        telnet mail.gitlab.example.com 143
+        telnet gitlab.example.com 143
         ```
 
         You should see a prompt like this:
