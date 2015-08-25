@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.0.0 (unreleased)
   - Upgrade browser gem to 1.0.0 to avoid warning in IE11 compatibilty mode (Stan Hu)
+  - Fix "Reload with full diff" URL button in compare branch view (Stan Hu)
   - Remove user OAuth tokens from the database and request new tokens each session (Stan Hu)
   - Only show recent push event if the branch still exists or a recent merge request has not been created (Stan Hu)
   - Remove satellites
