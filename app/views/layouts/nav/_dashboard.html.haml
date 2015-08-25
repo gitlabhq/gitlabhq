@@ -34,7 +34,7 @@
           %span.count= current_user.assigned_merge_requests.opened.count
   = nav_link(controller: :snippets) do
     = link_to (current_user ? user_snippets_path(current_user) : snippets_path), title: 'Your snippets', data: {placement: 'right'} do
-      = icon('dashboard fw')
+      = icon('clipboard fw')
       %span
         Snippets
   - if current_user

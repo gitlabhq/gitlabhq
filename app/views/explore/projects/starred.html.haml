@@ -7,8 +7,5 @@
     See most starred projects
     .pull-right
       = render 'explore/projects/dropdown'
-  .public-projects
-    %ul.bordered-list
-      = render @starred_projects
-
+  = render 'projects', projects: @starred_projects
   = paginate @starred_projects, theme: 'gitlab'

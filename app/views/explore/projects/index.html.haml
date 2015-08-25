@@ -4,10 +4,5 @@
 .clearfix
   = render 'filter'
 %br
-.public-projects
-  %ul.bordered-list.top-list
-    = render @projects
-    - unless @projects.present?
-      .nothing-here-block No public projects
-
-  = paginate @projects, theme: "gitlab"
+= render 'projects', projects: @projects
+= paginate @projects, theme: "gitlab"
