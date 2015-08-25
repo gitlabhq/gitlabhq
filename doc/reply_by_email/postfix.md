@@ -120,7 +120,6 @@ Courier, which we will install later to add IMAP authentication, requiers mailbo
     
     ```sh
     sudo postconf -e "home_mailbox = Maildir/"
-    sudo postconf -e "mailbox_command = "
     ```
 
 1. Restart Postfix:
