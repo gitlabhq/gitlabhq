@@ -33,10 +33,6 @@ module PreferencesHelper
     Gitlab::Themes.by_id(current_user.try(:theme_id)).css_class
   end
 
-  def user_color_scheme_class
-    Gitlab::ColorSchemes.by_id(current_user.try(:color_scheme_id)).css_class
-  end
-
   def prefer_readme?
     !current_user ||
       current_user.project_view == 'readme'

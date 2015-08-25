@@ -58,7 +58,7 @@ module GitlabMarkdownHelper
       @options = options
 
       # see https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch
-      rend = Redcarpet::Render::GitlabHTML.new(self, user_color_scheme_class, options)
+      rend = Redcarpet::Render::GitlabHTML.new(self, options)
 
       # see https://github.com/vmg/redcarpet#and-its-like-really-simple-to-use
       @markdown = Redcarpet::Markdown.new(rend, MARKDOWN_OPTIONS)

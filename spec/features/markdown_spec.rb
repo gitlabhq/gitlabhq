@@ -224,8 +224,4 @@ describe 'GitLab Markdown', feature: true do
   def current_user
     @feat.user
   end
-
-  def user_color_scheme_class
-    :white
-  end
 end
