@@ -64,8 +64,8 @@ describe 'GitLab Markdown', feature: true do
 
       it 'parses fenced code blocks' do
         aggregate_failures do
-          expect(doc).to have_selector('pre.code.highlight.white.c')
-          expect(doc).to have_selector('pre.code.highlight.white.python')
+          expect(doc).to have_selector('pre.code.highlight.js-syntax-highlight.c')
+          expect(doc).to have_selector('pre.code.highlight.js-syntax-highlight.python')
         end
       end
 
