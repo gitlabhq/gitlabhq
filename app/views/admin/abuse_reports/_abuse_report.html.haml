@@ -22,5 +22,5 @@
 
   %td
     - if user
-      = link_to 'Block user', block_admin_user_path(user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: "btn btn-xs btn-warning"
-    = link_to 'Remove report', [:admin, abuse_report], method: :delete, class: "btn btn-xs btn-close"
+      = link_to 'Block user', block_admin_user_path(user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: "btn btn-xs"
+    = link_to 'Remove report', [:admin, abuse_report], remote: true, method: :delete, class: "btn btn-xs btn-close js-remove-tr"
