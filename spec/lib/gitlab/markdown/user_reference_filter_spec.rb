@@ -121,7 +121,6 @@ module Gitlab::Markdown
     end
 
     it 'links with adjacent text' do
-      skip "TODO (rspeicher): Re-enable when usernames can't end in periods."
       doc = filter("Mention me (#{reference}.)")
       expect(doc.to_html).to match(/\(<a.+>#{reference}<\/a>\.\)/)
     end
