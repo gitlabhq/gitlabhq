@@ -51,6 +51,19 @@ module Gitlab
       THEMES.each(&block)
     end
 
+    # Get the Theme for the specified user, or the default
+    #
+    # user - User record
+    #
+    # Returns a Theme
+    def self.for_user(user)
+      if user
+        by_id(user.theme_id)
+      else
+        default
+      end
+    end
+
     private
 
     def self.default_id
