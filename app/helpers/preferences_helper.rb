@@ -30,7 +30,11 @@ module PreferencesHelper
   end
 
   def user_application_theme
-    Gitlab::Themes.by_id(current_user.try(:theme_id)).css_class
+    Gitlab::Themes.for_user(current_user).css_class
+  end
+
+  def user_color_scheme
+    Gitlab::ColorSchemes.for_user(current_user).css_class
   end
 
   def prefer_readme?
