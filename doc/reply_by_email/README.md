@@ -76,23 +76,11 @@ In this example, we'll use the Gmail address `gitlab-replies@gmail.com`.
           :worker: EmailReceiverWorker
     ```
 
-
-4.  Copy `lib/support/init.d/gitlab.default.example` to `/etc/default/gitlab`, if that does not already exist:
-    
-    ```sh
-    [ -f /etc/default/gitlab ] || sudo cp lib/support/init.d/gitlab.default.example /etc/default/gitlab
-    ```
-
-5. Edit `/etc/default/gitlab` to enable `mail_room`:
+5. Edit the init script configuration at `/etc/default/gitlab` to enable `mail_room`:
 
     ```sh
-    sudo editor /etc/default/gitlab
-    ```
-    
-    Either change `mail_room_enabled=false` to the below, or add it at the bottom of the file:
-
-    ```sh
-    mail_room_enabled=true
+    sudo mkdir -p /etc/default
+    echo 'mail_room_enabled=true' | sudo tee -a /etc/default/gitlab
     ```
 
 6. Restart GitLab:
