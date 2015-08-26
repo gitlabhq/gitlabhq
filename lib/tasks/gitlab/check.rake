@@ -595,7 +595,7 @@ namespace :gitlab do
       else
         puts "no".red
         try_fixing_it(
-          sudo_gitlab("RAILS_ENV=production sudo -u git -H bin/background_jobs start")
+          sudo_gitlab("bin/background_jobs start", "RAILS_ENV=production")
         )
         for_more_information(
           see_installation_guide_section("Install Init Script"),
@@ -726,7 +726,7 @@ namespace :gitlab do
       else
         puts "no".red
         try_fixing_it(
-          sudo_gitlab("RAILS_ENV=production sudo -u git -H bin/mail_room start")
+          sudo_gitlab("bin/mail_room start", "RAILS_ENV=production")
         )
         for_more_information(
           see_installation_guide_section("Install Init Script"),
@@ -879,8 +879,10 @@ namespace :gitlab do
     "doc/install/installation.md in section \"#{section}\""
   end
 
-  def sudo_gitlab(command)
-    "sudo -u #{gitlab_user} -H #{command}"
+  def sudo_gitlab(command, env = nil)
+    cmd = "sudo -u #{gitlab_user} -H #{command}"
+    cmd.prepend "#{env} " if env
+    cmd
   end
 
   def gitlab_user

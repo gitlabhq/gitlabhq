@@ -92,7 +92,7 @@ In this example, we'll use the Gmail address `gitlab-replies@gmail.com`.
 7. Check if everything is configured correctly:
 
     ```sh
-    sudo bundle exec rake gitlab:reply_by_email:check RAILS_ENV=production
+    sudo -u git -H bundle exec rake gitlab:reply_by_email:check RAILS_ENV=production
     ```
 
 8. Reply by email should now be working.
