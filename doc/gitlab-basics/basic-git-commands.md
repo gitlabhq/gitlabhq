@@ -34,8 +34,6 @@ You'll see your changes in red when you type "git status".
 ```
 git add CHANGES IN RED
 git commit -m "DESCRIBE THE INTENTION OF THE COMMIT"
-or
-git commit -am "DESCRIBE THE INTENTION OF THE COMMIT WITH AN ADDITIONAL MESSAGE"
 ```
 
 ### Send changes to gitlab.com
