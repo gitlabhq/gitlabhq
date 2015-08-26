@@ -1,0 +1,44 @@
+/**
+ * General Colors
+ */
+$primary_color: #2FA0BB;
+$link_color: #3A89A3;
+$style_color: #246;
+$bg_style_color: #246;
+$hover: #D9EDF7;
+
+/*
+ * Success colors (green)
+ */
+$border_success: #019875;
+$bg_success: #019875;
+
+/*
+ * Danger colors (red)
+ */
+$border_danger: #d43f3a;
+$bg_danger: #d9534f;
+
+/*
+ * Primary colors (blue)
+ */
+$border_primary: #246;
+$bg_primary: #246;
+
+/*
+ * Warning colors (yellow)
+ */
+$bg_warning: #EB9532;
+$border_warning: #EB9532;
+
+/**
+ * Twitter bootstrap variables
+ */
+$font-size-base: 13px !default;
+$nav-pills-active-link-hover-bg: $bg_style_color;
+$pagination-active-bg: $bg_style_color;
+
+/**
+ * Avatar variables
+ */
+$avatar_radius: 50%;

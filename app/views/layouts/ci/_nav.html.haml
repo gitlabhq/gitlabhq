@@ -1,0 +1,32 @@
+.navbar.navbar-static-top.navbar-ci
+  .container
+    .navbar-header
+      %button.navbar-toggle{"data-target" => ".navbar-collapse", "data-toggle" => "collapse", type: "button"}
+        %span.sr-only Toggle navigation
+        %i.fa-reorder
+
+      = link_to 'GitLab CI', ci_root_path, class: "navbar-brand"
+
+    .collapse.navbar-collapse
+      %ul.nav.navbar-nav
+        - if current_user && current_user.is_admin
+          %li
+            = link_to ci_admin_projects_path do
+              Admin
+        %li
+          = link_to 'Help', ci_help_path
+
+      %ul.nav.navbar-nav.pull-right
+        - if current_user
+          %li
+            = link_to ci_user_sessions_path do
+              .profile-holder
+                = image_tag user_avatar_url(current_user, 64), class: 'avatar s32', alt: ''
+                %span= current_user.name
+          %li
+            = link_to ci_user_sessions_path, class: "logout", method: :delete do
+              %i.fa-signout
+              Logout
+        - else
+          %li
+            = link_to "Login with GitLab", auth_ci_user_sessions_path, no_turbolink.merge(class: 'btn btn-success btn-login')

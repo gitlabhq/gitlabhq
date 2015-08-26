@@ -1,0 +1,20 @@
+.welcome-block
+  %h1
+    Welcome to GitLab CI
+  %p
+    GitLab CI integrates with your GitLab installation and runs tests for your projects.
+
+  %h3 You need only 2 steps to set it up
+
+  %ol
+    %li
+      In the GitLab admin area under OAuth applications create a new entry. The redirect url should be
+      %code= callback_ci_user_sessions_url
+    %li
+      Update the GitLab CI config with the application id and the application secret from GitLab.
+    %li
+      Restart your GitLab CI instance
+    %li
+      Refresh this page when GitLab CI has started again
+
+

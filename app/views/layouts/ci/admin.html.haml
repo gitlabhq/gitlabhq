@@ -1,0 +1,17 @@
+!!! 5
+%html{ lang: "en"}
+  = render 'layouts/ci/head'
+  %body{ :'data-page' => body_data_page }
+    = render 'layouts/ci/nav'
+    = render 'layouts/ci/info'
+    - if content_for?(:title)
+      .container.container-title
+        = yield(:title)
+      %hr
+
+    .container
+      .row
+        .col-md-2.append-bottom-20
+          = render 'layouts/ci/nav_admin'
+        .col-md-10
+          = yield

@@ -1,0 +1,15 @@
+- @gl_projects.sort_by(&:name_with_namespace).each do |project|
+  %tr.light
+    %td
+      = project.name_with_namespace
+    %td
+      %small Not added to CI
+    %td
+    %td
+      - if Ci::Project.already_added?(project)
+        %strong.cgreen
+          Added
+      - else
+        = form_tag ci_projects_path do
+          = hidden_field_tag :project, project.to_h.to_json
+          = submit_tag 'Add project to CI', class: 'btn btn-default btn-sm'

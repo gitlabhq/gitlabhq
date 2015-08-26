@@ -1,0 +1,14 @@
+%table.table
+  %thead
+    %tr
+      %th ID
+      %th Name
+      %th Last build
+      %th Access
+      %th Builds
+      %th
+
+  = render @projects
+
+= paginate @projects
+

@@ -49,7 +49,7 @@ module Gitlab
       private
 
       def urls
-        Rails.application.routes.url_helpers
+        Gitlab::Application.routes.url_helpers
       end
 
       def link_class

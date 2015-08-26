@@ -316,7 +316,7 @@ class Project < ActiveRecord::Base
   end
 
   def web_url
-    Rails.application.routes.url_helpers.namespace_project_url(self.namespace, self)
+    Gitlab::Application.routes.url_helpers.namespace_project_url(self.namespace, self)
   end
 
   def web_url_without_protocol
@@ -433,7 +433,7 @@ class Project < ActiveRecord::Base
     if avatar.present?
       [gitlab_config.url, avatar.url].join
     elsif avatar_in_git
-      Rails.application.routes.url_helpers.namespace_project_avatar_url(namespace, self)
+      Gitlab::Application.routes.url_helpers.namespace_project_avatar_url(namespace, self)
     end
   end
 

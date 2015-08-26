@@ -1,0 +1,36 @@
+--- !ruby/object:OpenStruct
+table:
+  :id: 189
+  :description: Website at http://api.gitlab.org/
+  :default_branch: master
+  :public: false
+  :visibility_level: 0
+  :ssh_url_to_repo: dzaporozhets@localhost:gitlab/api-gitlab-org.git
+  :http_url_to_repo: http://localhost:3000/gitlab/api-gitlab-org.git
+  :web_url: http://localhost:3000/gitlab/api-gitlab-org
+  :owner:
+    id: 1
+    name: GitLab
+    created_at: '2012-10-03T09:59:57.000Z'
+  :name: api.gitlab.org
+  :name_with_namespace: GitLab / api.gitlab.org
+  :path: api-gitlab-org
+  :path_with_namespace: gitlab/api-gitlab-org
+  :issues_enabled: true
+  :merge_requests_enabled: true
+  :wall_enabled: false
+  :wiki_enabled: false
+  :snippets_enabled: false
+  :created_at: '2013-06-06T12:29:39.000Z'
+  :last_activity_at: '2013-12-06T20:29:42.000Z'
+  :namespace:
+    id: 1
+    name: GitLab
+    path: gitlab
+    owner_id: 1
+    created_at: '2012-10-03T09:59:57.000Z'
+    updated_at: '2014-01-28T08:49:53.000Z'
+    description: Self hosted Git management software
+    avatar:
+      url: /uploads/group/avatar/1/0-vader-profile.jpg
+

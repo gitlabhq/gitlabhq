@@ -1,0 +1,19 @@
+development:
+  gitlab_server:
+    url: 'http://gitlab.dev' 
+    app_id: 'cfda7ec2551af42d06acc6dbda9087dbdc8d45b7e2bc240f498fad3f84ff4044'
+    app_secret: 'd1802d55db9c1aedc950812a9489e2659fa1430dc488babde949bc9c409cc01b'
+
+  gitlab_ci:
+    host: 'http://ci.gitlab.dev'
+    port: 80
+    https: false
+test:
+  gitlab_server:
+    url: 'http://demo.gitlab.com/' 
+    app_id: ''
+    app_secret: ''
+  gitlab_ci:
+    host: localhost
+    port: 80
+    https: false

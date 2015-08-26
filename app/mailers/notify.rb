@@ -8,8 +8,8 @@ class Notify < BaseMailer
   include Emails::Profile
   include Emails::Groups
 
-  add_template_helper MergeRequestsHelper
-  add_template_helper EmailsHelper
+  add_template_helper Gitlab::MergeRequestsHelper
+  add_template_helper Gitlab::EmailsHelper
 
   def test_email(recipient_email, subject, body)
     mail(to: recipient_email,

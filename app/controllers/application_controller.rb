@@ -1,9 +1,13 @@
 require 'gon'
 
 class ApplicationController < ActionController::Base
+  def self.railtie_helpers_paths
+    "app/helpers/gitlab"
+  end
+
   include Gitlab::CurrentSettings
-  include GitlabRoutingHelper
-  include PageLayoutHelper
+  include Gitlab::GitlabRoutingHelper
+  include Gitlab::PageLayoutHelper
 
   PER_PAGE = 20
 
@@ -131,9 +135,6 @@ class ApplicationController < ActionController::Base
 
   def repository
     @repository ||= project.repository
-  rescue Grit::NoSuchPathError => e
-    log_exception(e)
-    nil
   end
 
   def authorize_project!(action)

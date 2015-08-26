@@ -1,0 +1,15 @@
+= image_tag user_avatar_url(current_user, 90), class: 'avatar avatar-inline avatar-tile s90', alt: ''
+%h3
+  Hi, #{@user.name}
+
+  - if @user.is_admin
+    %span.label.label-success Admin
+
+.profile-block
+  %p
+    %span.light Email:
+    %strong= @user.email
+
+  %p
+    %span.light GitLab profile:
+    %strong= link_to @user.username, GitlabCi.config.gitlab_server.url + '/u/' + @user.username, target: "_blank"

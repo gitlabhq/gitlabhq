@@ -1,0 +1,35 @@
+- if @offset == 0
+  .clearfix.light
+    .pull-left.fetch-status
+      Fetched from GitLab (#{link_to GitlabCi.config.gitlab_server.url, GitlabCi.config.gitlab_server.url, no_turbolink})
+      - if params[:search].present?
+        by keyword: "#{params[:search]}",
+      #{time_ago_in_words(current_user.sync_at)} ago.
+      = link_to gitlab_ci_projects_path(reset_cache: true, search: params[:search]), class: 'sync-now btn btn-sm btn-default reset-cache' do
+        %i.fa-refresh
+        Sync now
+      %br
+
+    .pull-right
+      #{@total_count} projects, #{@projects.size} of them added to CI
+  %br
+
+  %table.table.projects-table.content-list
+    %thead
+      %tr
+        %th Project Name
+        %th Last commit
+        %th Access
+        %th Commits
+
+    = render @projects
+
+    = render "gl_projects"
+
+  %p.text-center.hide.loading
+    %i.fa-refresh.fa-spin
+
+- else
+  = render @projects
+
+  = render "gl_projects"

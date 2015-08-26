@@ -1,6 +1,6 @@
 class BaseMailer < ActionMailer::Base
-  add_template_helper ApplicationHelper
-  add_template_helper GitlabMarkdownHelper
+  add_template_helper Gitlab::ApplicationHelper
+  add_template_helper Gitlab::GitlabMarkdownHelper
 
   attr_accessor :current_user
   helper_method :current_user, :can?

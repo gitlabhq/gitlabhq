@@ -1,0 +1,46 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require_self
+ */
+
+@import "main/variables.scss";
+@import "main/mixins.scss";
+@import "main/fonts.scss";
+@import "main/layout.scss";
+
+/**
+ * Twitter bootstrap
+ */
+@import 'bootstrap';
+
+/**
+ * Font icons
+ *
+ */
+@import "font-awesome";
+
+/**
+ * Generic css (forms, nav etc):
+ */
+@import "generic/*";
+
+/**
+ * Page specific styles (issues, projects etc):
+ */
+
+@import "sections/*";
+
+/*
+ * NProgress
+ */
+$nprogress-color: #9BC;
+@import 'nprogress';
+@import 'nprogress-bootstrap';
