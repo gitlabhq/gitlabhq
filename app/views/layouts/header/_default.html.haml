@@ -1,10 +1,5 @@
 %header.navbar.navbar-fixed-top.navbar-gitlab{ class: nav_header_class }
-  .container
-    .header-logo
-      = link_to root_path, class: 'home', title: 'Dashboard', id: 'js-shortcuts-home', data: {toggle: 'tooltip', placement: 'bottom'} do
-        = brand_header_logo
-        .gitlab-text-container
-          %h3 GitLab
+  %div{ class: fluid_layout ? "container-fluid" : "container-fluid container-limited" }
     .header-content
       %button.navbar-toggle{type: 'button'}
         %span.sr-only Toggle navigation
