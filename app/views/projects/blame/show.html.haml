@@ -27,7 +27,7 @@
                 .light
                   = commit_author_link(commit, avatar: false)
                   authored
-                  #{time_ago_with_tooltip(commit.committed_date)}
+                  #{time_ago_with_tooltip(commit.committed_date, skip_js: true)}
             %td.lines.blame-numbers
               %pre
                 - line_count = blame_group[:lines].count
