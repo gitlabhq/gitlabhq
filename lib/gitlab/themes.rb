@@ -37,6 +37,11 @@ module Gitlab
       THEMES.detect { |t| t.id == id } || default
     end
 
+    # Returns the number of defined Themes
+    def self.count
+      THEMES.size
+    end
+
     # Get the default Theme
     #
     # Returns a Theme

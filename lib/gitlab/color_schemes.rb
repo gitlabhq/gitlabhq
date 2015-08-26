@@ -32,6 +32,11 @@ module Gitlab
       SCHEMES.detect { |s| s.id == id } || default
     end
 
+    # Returns the number of defined Schemes
+    def self.count
+      SCHEMES.size
+    end
+
     # Get the default Scheme
     #
     # Returns a Scheme
