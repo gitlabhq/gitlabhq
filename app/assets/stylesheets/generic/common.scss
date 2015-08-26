@@ -375,7 +375,6 @@ table {
 }
 
 .center-top-menu {
-  border-bottom: 1px solid #EEE;
   list-style: none;
   text-align: center;
   padding-bottom: 15px;
@@ -385,7 +384,7 @@ table {
     display: inline-block;
 
     a {
-      padding: 10px;
+      padding: 15px;
     }
 
     &.active a {
