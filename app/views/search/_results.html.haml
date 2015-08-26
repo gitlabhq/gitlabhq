@@ -1,7 +1,7 @@
 - if @search_results.empty?
   = render partial: "search/results/empty"
 - else
-  .light
+  %p.light
     Search results for
     %code
       = @search_term
@@ -11,7 +11,6 @@
       - elsif @group
         in group #{link_to @group.name, @group}
 
-  %br
   .results.prepend-top-10
     .search-results
       - if @scope == 'projects'
