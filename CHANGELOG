@@ -18,6 +18,8 @@ v 8.0.0 (unreleased)
   - Gracefully handle SMTP user input errors (e.g. incorrect email addresses) to prevent Sidekiq retries (Stan Hu)
   - Improve abuse reports management from admin area
   - Move dashboard activity to separate page
+  - Improve performance of git blame
+  - Limit content width to 1200px for most of pages to improve readability on big screens
 
 v 7.14.1 (unreleased)
   - Only include base URL in OmniAuth full_host parameter (Stan Hu)
@@ -307,6 +309,7 @@ v 7.11.0
   - Protect OmniAuth request phase against CSRF.
   - Don't send notifications to mentioned users that don't have access to the project in question.
   - Add search issues/MR by number
+  - Change plots to bar graphs in commit statistics screen
   - Move snippets UI to fluid layout
   - Improve UI for sidebar. Increase separation between navigation and content
   - Improve new project command options (Ben Bodenmiller)
