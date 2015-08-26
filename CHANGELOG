@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.0.0 (unreleased)
+  - Prevent too many redirects upon login when home page URL is set to external_url (Stan Hu)
   - Improve dropdown positioning on the project home page (Hannes Rosenögger)
   - Upgrade browser gem to 1.0.0 to avoid warning in IE11 compatibilty mode (Stan Hu)
   - Fix "Reload with full diff" URL button in compare branch view (Stan Hu)
