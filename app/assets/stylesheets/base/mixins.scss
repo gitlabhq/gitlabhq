@@ -164,6 +164,7 @@
 @mixin basic-list {
   margin: 5px 0px;
   padding: 0px;
+  list-style: none;
 
   li {
     padding: 10px 0;
