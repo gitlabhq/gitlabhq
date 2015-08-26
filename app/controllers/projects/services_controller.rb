@@ -2,7 +2,7 @@ class Projects::ServicesController < Projects::ApplicationController
   ALLOWED_PARAMS = [:title, :token, :type, :active, :api_key, :api_version, :subdomain,
                     :room, :recipients, :project_url, :webhook,
                     :user_key, :device, :priority, :sound, :bamboo_url, :username, :password,
-                    :build_key, :server, :teamcity_url, :build_type,
+                    :build_key, :server, :teamcity_url, :drone_url, :build_type,
                     :description, :issues_url, :new_issue_url, :restrict_to_branch, :channel,
                     :colorize_messages, :channels,
                     :push_events, :issues_events, :merge_requests_events, :tag_push_events,
