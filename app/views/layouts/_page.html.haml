@@ -13,7 +13,7 @@
         .username
           = current_user.username
   .content-wrapper
-    .container-fluid
+    %div{ class: fluid_layout ? "container-fluid" : "container-fluid container-limited" }
       .content
         = render "layouts/flash"
         .clearfix
