@@ -20,16 +20,16 @@ header {
   }
 
   &.navbar-gitlab {
+    padding: 0 20px;
     z-index: 100;
     margin-bottom: 0;
     min-height: $header-height;
     border: none;
-    width: 100%;
+    border-bottom: 1px solid #EEE;
 
-    .container {
+    .container-fluid {
       background: #FFF;
       width: 100% !important;
-      padding: 0;
       filter: none;
 
       .nav > li > a {
@@ -64,55 +64,11 @@ header {
     }
   }
 
-  .header-logo {
-    border-bottom: 1px solid transparent;
-    float: left;
-    height: $header-height;
-    width: $sidebar_width;
-    overflow: hidden;
-    transition-duration: .3s;
-
-    a {
-      float: left;
-      height: $header-height;
-      width: 100%;
-      padding: ($header-height - 36 ) / 2 8px;
-      overflow: hidden;
-
-      img {
-        width: 36px;
-        height: 36px;
-        float: left;
-      }
-
-      .gitlab-text-container {
-        width: 230px;
-
-        h3 {
-          width: 158px;
-          float: left;
-          margin: 0;
-          margin-left: 14px;
-          font-size: 18px;
-          line-height: $header-height - 14;
-          font-weight: normal;
-        }
-      }
-    }
-
-    &:hover {
-      background-color: #EEE;
-    }
-  }
-
   .header-content {
-    border-bottom: 1px solid #EEE;
-    padding-right: 35px;
     height: $header-height;
 
     .title {
       margin: 0;
-      padding: 0 15px 0 35px;
       overflow: hidden;
       font-size: 18px;
       line-height: $header-height;
@@ -168,15 +124,7 @@ header {
 }
 
 @mixin collapsed-header {
-  .header-logo {
-    width: $sidebar_collapsed_width;
-  }
-
-  .header-content {
-    .title {
-      margin-left: 30px;
-    }
-  }
+  margin-left: $sidebar_collapsed_width;
 }
 
 @media (max-width: $screen-md-max) {
@@ -191,15 +139,13 @@ header {
   }
 
   .header-expanded {
+    margin-left: $sidebar_width;
   }
 }
 
 @media (max-width: $screen-xs-max) {
-  header .container {
+  header .container-fluid {
     font-size: 18px;
-
-    .title {
-    }
 
     .navbar-nav {
       margin: 0px;

@@ -19,6 +19,7 @@ v 8.0.0 (unreleased)
   - Improve abuse reports management from admin area
   - Move dashboard activity to separate page
   - Improve performance of git blame
+  - Limit content width to 1200px for most of pages to improve readability on big screens
 
 v 7.14.1 (unreleased)
   - Only include base URL in OmniAuth full_host parameter (Stan Hu)
