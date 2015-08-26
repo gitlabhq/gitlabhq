@@ -55,7 +55,9 @@ class ApplicationController < ActionController::Base
 
   def authenticate_user!(*args)
     # If user is not signed-in and tries to access root_path - redirect him to landing page
-    if current_application_settings.home_page_url.present?
+    # Don't redirect to the default URL to prevent endless redirections
+    if current_application_settings.home_page_url.present? &&
+        current_application_settings.home_page_url.chomp('/') != Gitlab.config.gitlab['url'].chomp('/')
       if current_user.nil? && root_path == request.path
         redirect_to current_application_settings.home_page_url and return
       end
