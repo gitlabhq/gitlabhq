@@ -7,14 +7,15 @@ module Backup
     def initialize
       @config = YAML.load_file(File.join(Rails.root,'config','database.yml'))[Rails.env]
       @db_dir = File.join(Gitlab.config.backup.path, 'db')
+    end
+
+    def dump
       FileUtils.rm_rf(@db_dir)
       # Ensure the parent dir of @db_dir exists
       FileUtils.mkdir_p(Gitlab.config.backup.path)
       # Fail if somebody raced to create @db_dir before us
       FileUtils.mkdir(@db_dir, mode: 0700)
-    end
 
-    def dump
       success = case config["adapter"]
       when /^mysql/ then
         $progress.print "Dumping MySQL database #{config['database']} ... "

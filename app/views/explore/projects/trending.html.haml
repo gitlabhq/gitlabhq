@@ -1,4 +1,6 @@
 - page_title "Trending Projects"
+- if current_user
+  = render 'dashboard/projects_head'
 .explore-title
   %h3
     Explore GitLab
@@ -6,10 +8,9 @@
     Discover projects and groups. Share your projects with others
 %hr
 .explore-trending-block
-  %p.lead
+  .lead
     %i.fa.fa-comments-o
     See most discussed projects for last month
-  %hr
-  .public-projects
-    %ul.bordered-list
-      = render @trending_projects
+    .pull-right
+      = render 'explore/projects/dropdown'
+  = render 'projects', projects: @trending_projects

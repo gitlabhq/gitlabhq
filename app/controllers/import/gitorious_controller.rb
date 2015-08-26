@@ -1,4 +1,5 @@
 class Import::GitoriousController < Import::BaseController
+  before_action :verify_gitorious_import_enabled
 
   def new
     redirect_to client.authorize_url(callback_import_gitorious_url)
@@ -38,6 +39,10 @@ class Import::GitoriousController < Import::BaseController
 
   def client
     @client ||= Gitlab::GitoriousImport::Client.new(session[:gitorious_repos])
+  end
+
+  def verify_gitorious_import_enabled
+    not_found! unless gitorious_import_enabled?
   end
 
 end

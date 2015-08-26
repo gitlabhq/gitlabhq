@@ -10,7 +10,7 @@ module ExploreHelper
 
     options = exist_opts.merge(options)
 
-    path = request.path
+    path = explore_projects_path
     path << "?#{options.to_param}"
     path
   end

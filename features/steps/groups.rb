@@ -264,6 +264,15 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     expect(page).to have_link(@mr3.title, href: namespace_project_merge_request_path(@project3.namespace, @project3, @mr3))
   end
 
+  step 'Group "Owned" has archived project' do
+    group = Group.find_by(name: 'Owned')
+    create(:project, namespace: group, archived: true, path: "archived-project")
+  end
+
+  step 'I should see "archived" label' do
+    expect(page).to have_xpath("//span[@class='label label-warning']", text: 'archived')
+  end
+
   protected
 
   def assigned_to_me(key)

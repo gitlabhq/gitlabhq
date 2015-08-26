@@ -50,39 +50,42 @@
     datasets : [{
       fillColor : "rgba(220,220,220,0.5)",
       strokeColor : "rgba(220,220,220,1)",
-      pointColor : "rgba(220,220,220,1)",
-      pointStrokeColor : "#EEE",
+      barStrokeWidth: 1,
+      barValueSpacing: 1,
+      barDatasetSpacing: 1,
       data : #{@commits_per_time.values.to_json}
     }]
   }
 
   ctx = $("#hour-chart").get(0).getContext("2d");
-  new Chart(ctx).Line(data,{"scaleOverlay": true, responsive: true, pointHitDetectionRadius: 2})
+  new Chart(ctx).Bar(data,{"scaleOverlay": true, responsive: true, pointHitDetectionRadius: 2})
 
   data = {
     labels : #{@commits_per_week_days.keys.to_json},
     datasets : [{
       fillColor : "rgba(220,220,220,0.5)",
       strokeColor : "rgba(220,220,220,1)",
-      pointColor : "rgba(220,220,220,1)",
-      pointStrokeColor : "#EEE",
+      barStrokeWidth: 1,
+      barValueSpacing: 1,
+      barDatasetSpacing: 1,
       data : #{@commits_per_week_days.values.to_json}
     }]
   }
 
   ctx = $("#weekday-chart").get(0).getContext("2d");
-  new Chart(ctx).Line(data,{"scaleOverlay": true, responsive: true, pointHitDetectionRadius: 2})
+  new Chart(ctx).Bar(data,{"scaleOverlay": true, responsive: true, pointHitDetectionRadius: 2})
 
   data = {
     labels : #{@commits_per_month.keys.to_json},
     datasets : [{
       fillColor : "rgba(220,220,220,0.5)",
       strokeColor : "rgba(220,220,220,1)",
-      pointColor : "rgba(220,220,220,1)",
-      pointStrokeColor : "#EEE",
+      barStrokeWidth: 1,
+      barValueSpacing: 1,
+      barDatasetSpacing: 1,
       data : #{@commits_per_month.values.to_json}
     }]
   }
 
   ctx = $("#month-chart").get(0).getContext("2d");
-  new Chart(ctx).Line(data, {"scaleOverlay": true, responsive: true, pointHitDetectionRadius: 2})
+  new Chart(ctx).Bar(data, {"scaleOverlay": true, responsive: true, pointHitDetectionRadius: 2})

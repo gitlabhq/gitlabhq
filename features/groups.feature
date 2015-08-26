@@ -170,3 +170,10 @@ Feature: Groups
     When I visit group "Owned" settings page
     And I go to "Audit Events"
     Then I should see the audit event listed
+
+    # Group projects in settings
+  Scenario: I should see all projects in the project list in settings
+    Given Group "Owned" has archived project
+    When I visit group "Owned" projects page
+    Then I should see group "Owned" projects list
+    And I should see "archived" label

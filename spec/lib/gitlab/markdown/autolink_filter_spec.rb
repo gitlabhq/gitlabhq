@@ -86,6 +86,16 @@ module Gitlab::Markdown
 
         doc = filter("See #{link}, ok?")
         expect(doc.at_css('a').text).to eq link
+
+        doc = filter("See #{link}...")
+        expect(doc.at_css('a').text).to eq link
+      end
+
+      it 'does not include trailing HTML entities' do
+        doc = filter("See &lt;&lt;&lt;#{link}&gt;&gt;&gt;")
+
+        expect(doc.at_css('a')['href']).to eq link
+        expect(doc.text).to eq "See <<<#{link}>>>"
       end
 
       it 'accepts link_attr options' do

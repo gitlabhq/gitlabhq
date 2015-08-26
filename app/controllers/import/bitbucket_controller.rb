@@ -13,10 +13,9 @@ class Import::BitbucketController < Import::BaseController
 
     access_token = client.get_token(request_token, params[:oauth_verifier], callback_import_bitbucket_url)
 
-    current_user.bitbucket_access_token = access_token.token
-    current_user.bitbucket_access_token_secret = access_token.secret
+    session[:bitbucket_access_token] = access_token.token
+    session[:bitbucket_access_token_secret] = access_token.secret
 
-    current_user.save
     redirect_to status_import_bitbucket_url
   end
 
@@ -46,19 +45,20 @@ class Import::BitbucketController < Import::BaseController
 
     namespace = get_or_create_namespace || (render and return)
 
-    unless Gitlab::BitbucketImport::KeyAdder.new(repo, current_user).execute
+    unless Gitlab::BitbucketImport::KeyAdder.new(repo, current_user, access_params).execute
       @access_denied = true
       render
       return
     end
 
-    @project = Gitlab::BitbucketImport::ProjectCreator.new(repo, namespace, current_user).execute
+    @project = Gitlab::BitbucketImport::ProjectCreator.new(repo, namespace, current_user, access_params).execute
   end
 
   private
 
   def client
-    @client ||= Gitlab::BitbucketImport::Client.new(current_user.bitbucket_access_token, current_user.bitbucket_access_token_secret)
+    @client ||= Gitlab::BitbucketImport::Client.new(session[:bitbucket_access_token],
+                                                    session[:bitbucket_access_token_secret])
   end
 
   def verify_bitbucket_import_enabled
@@ -66,7 +66,7 @@ class Import::BitbucketController < Import::BaseController
   end
 
   def bitbucket_auth
-    if current_user.bitbucket_access_token.blank?
+    if session[:bitbucket_access_token].blank?
       go_to_bitbucket_for_permissions
     end
   end
@@ -80,5 +80,14 @@ class Import::BitbucketController < Import::BaseController
 
   def bitbucket_unauthorized
     go_to_bitbucket_for_permissions
+  end
+
+  private
+
+  def access_params
+    {
+      bitbucket_access_token: session[:bitbucket_access_token],
+      bitbucket_access_token_secret: session[:bitbucket_access_token_secret]
+    }
   end
 end

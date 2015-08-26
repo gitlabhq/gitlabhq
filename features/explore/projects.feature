@@ -6,10 +6,12 @@ Feature: Explore Projects
     And private project "Enterprise"
 
   Scenario: I visit public area
+    Given archived project "Archive"
     When I visit the public projects area
     Then I should see project "Community"
     And I should not see project "Internal"
     And I should not see project "Enterprise"
+    And I should not see project "Archive"
 
   Scenario: I visit public project page
     When I visit project "Community" page
@@ -37,11 +39,13 @@ Feature: Explore Projects
     And I should see empty public project details with ssh clone info
 
   Scenario: I visit public area as user
-    Given I sign in as a user
+    Given archived project "Archive"
+    And I sign in as a user
     When I visit the public projects area
     Then I should see project "Community"
     And I should see project "Internal"
     And I should not see project "Enterprise"
+    And I should not see project "Archive"
 
   Scenario: I visit internal project page as user
     Given I sign in as a user
@@ -102,15 +106,20 @@ Feature: Explore Projects
     Then I should see list of merge requests for "Internal" project
 
   Scenario: Trending page
-    Given I sign in as a user
+    Given archived project "Archive"
+    And project "Archive" has comments
+    And I sign in as a user
     And project "Community" has comments
     When I visit the explore trending projects
     Then I should see project "Community"
     And I should not see project "Internal"
     And I should not see project "Enterprise"
+    And I should not see project "Archive"
 
   Scenario: Most starred page
-    Given I sign in as a user
+    Given archived project "Archive"
+    And I sign in as a user
     When I visit the explore starred projects
     Then I should see project "Community"
     And I should see project "Internal"
+    And I should see project "Archive"

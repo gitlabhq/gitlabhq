@@ -1,5 +1,5 @@
-.panel.panel-default
-  .panel-heading.clearfix
+.projects-list-holder
+  .projects-search-form
     .input-group
       = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control'
       - if current_user.can_create_project?
@@ -7,4 +7,7 @@
           = link_to new_project_path, class: 'btn btn-success' do
             New project
 
-  = render 'shared/projects_list', projects: @projects, projects_limit: 20
+  %ul.projects-list.bordered-list.my-projects
+    - @projects.each do |project|
+      %li.project-row
+        = render partial: 'shared/project', locals: { project: project, avatar: true, stars: true }

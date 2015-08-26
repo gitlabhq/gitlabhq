@@ -1,8 +1,9 @@
 # Monthly Release
 
-NOTE: This is a guide used by the GitLab B.V. developers.
+NOTE: This is a guide used by the GitLab the company to release GitLab.
+As an end user you do not need to use this guide.
 
-It starts 7 working days before the release.
+The process starts 7 working days before the release.
 The release manager doesn't have to perform all the work but must ensure someone is assigned.
 The current release manager must schedule the appointment of the next release manager.
 The new release manager should create overall issue to track the progress.
@@ -164,7 +165,7 @@ Tweet about the RC release:
 1. Create a merge request on [GitLab.com](https://gitlab.com/gitlab-com/www-gitlab-com/tree/master)
 1. Assign to one reviewer who will fix spelling issues by editing the branch (either with a git client or by using the online editor)
 1. Comment to the reviewer: '@person Please mention the whole team as soon as you are done (3 workdays before release at the latest)'
-1. Create a complete copy of the [release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/release_blog_template.md) for the release after this.
+1. Create a new merge request with complete copy of the [release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/release_blog_template.md) for the next release using the branch name `release-x-x-x`.
 
 ## Create CE, EE, CI stable versions
 

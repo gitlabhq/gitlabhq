@@ -22,7 +22,8 @@ module Gitlab
         sign_in_text: Settings.extra['sign_in_text'],
         restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
         max_attachment_size: Settings.gitlab['max_attachment_size'],
-        session_expire_delay: Settings.gitlab['session_expire_delay']
+        session_expire_delay: Settings.gitlab['session_expire_delay'],
+        import_sources: Settings.gitlab['import_sources']
       )
     end
   end

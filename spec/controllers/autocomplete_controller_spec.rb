@@ -74,7 +74,7 @@ describe AutocompleteController do
 
     describe 'GET #users with project ID' do
       before do
-        get(:users, project_id: project.id)
+        get(:users, project_id: project.id, current_user: true)
       end
 
       it { expect(body).to be_kind_of(Array) }

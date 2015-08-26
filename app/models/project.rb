@@ -222,7 +222,7 @@ class Project < ActiveRecord::Base
     end
 
     def search(query)
-      joins(:namespace).where('projects.archived = ?', false).
+      joins(:namespace).
         where('LOWER(projects.name) LIKE :query OR
               LOWER(projects.path) LIKE :query OR
               LOWER(namespaces.name) LIKE :query OR

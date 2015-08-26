@@ -7,6 +7,7 @@ class @UsersSelect
       @skipLdap = $(select).hasClass('skip_ldap')
       @projectId = $(select).data('project-id')
       @groupId = $(select).data('group-id')
+      @showCurrentUser = $(select).data('current-user')
       showNullUser = $(select).data('null-user')
       showAnyUser = $(select).data('any-user')
       showEmailUser = $(select).data('email-user')
@@ -110,6 +111,7 @@ class @UsersSelect
         project_id: @projectId
         group_id: @groupId
         skip_ldap: @skipLdap
+        current_user: @showCurrentUser
       dataType: "json"
     ).done (users) ->
       callback(users)

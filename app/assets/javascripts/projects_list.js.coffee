@@ -8,7 +8,7 @@ class @ProjectsList
 
     $(".projects-list-filter").keyup ->
       terms = $(this).val()
-      uiBox = $(this).closest('.panel')
+      uiBox = $(this).closest('.projects-list-holder')
       if terms == "" || terms == undefined
         uiBox.find(".projects-list li").show()
       else

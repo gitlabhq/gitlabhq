@@ -1,5 +1,8 @@
 - page_title    'Snippets'
-- header_title  'Snippets', snippets_path
-- sidebar       "snippets"
+- if current_user
+  - header_title  "Dashboard", root_path
+- else
+  - header_title  'Snippets', snippets_path
+- sidebar       "dashboard"
 
 = render template: "layouts/application"
