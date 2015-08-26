@@ -17,7 +17,7 @@
   = render 'shared/show_aside'
 
   .row
-    %section.activities.col-md-8
+    %section.activities.col-md-7
       .hidden-xs
         - if current_user
           = render "events/event_last_push", event: @last_push
@@ -33,5 +33,5 @@
 
       .content_list
       = spinner
-    %aside.side.col-md-4
+    %aside.side.col-md-5
       = render "projects", projects: @projects
