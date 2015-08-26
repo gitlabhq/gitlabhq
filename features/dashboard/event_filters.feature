@@ -6,7 +6,7 @@ Feature: Event Filters
     And this project has push event
     And this project has new member event
     And this project has merge request event
-    And I visit dashboard page
+    And I visit dashboard activity page
 
   @javascript
   Scenario: I should see all events
@@ -16,7 +16,7 @@ Feature: Event Filters
 
   @javascript
   Scenario: I should see only pushed events
-    When I click "push" event filter 
+    When I click "push" event filter
     Then I should see push event
     And I should not see new member event
     And I should not see merge request event
@@ -38,11 +38,11 @@ Feature: Event Filters
   @javascript
   Scenario: I should see only selected events while page reloaded
     When I click "push" event filter
-    And I visit dashboard page
+    And I visit dashboard activity page
     Then I should see push event
     And I should not see new member event
     When I click "team" event filter
-    And I visit dashboard page
+    And I visit dashboard activity page
     Then I should see push event
     And I should see new member event
     And I should not see merge request event

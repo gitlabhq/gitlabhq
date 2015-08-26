@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   helper_method :abilities, :can?, :current_application_settings
-  helper_method :github_import_enabled?, :gitlab_import_enabled?, :bitbucket_import_enabled?
+  helper_method :import_sources_enabled?, :github_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :gitorious_import_enabled?, :google_code_import_enabled?, :git_import_enabled?
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -304,15 +304,43 @@ class ApplicationController < ActionController::Base
     @issuable_finder.execute
   end
 
+  def import_sources_enabled?
+    !current_application_settings.import_sources.empty?
+  end
+
   def github_import_enabled?
+    current_application_settings.import_sources.include?('github')
+  end
+
+  def github_import_configured?
     Gitlab::OAuth::Provider.enabled?(:github)
   end
 
   def gitlab_import_enabled?
+    request.host != 'gitlab.com' && current_application_settings.import_sources.include?('gitlab')
+  end
+
+  def gitlab_import_configured?
     Gitlab::OAuth::Provider.enabled?(:gitlab)
   end
 
   def bitbucket_import_enabled?
+    current_application_settings.import_sources.include?('bitbucket')
+  end
+
+  def bitbucket_import_configured?
     Gitlab::OAuth::Provider.enabled?(:bitbucket) && Gitlab::BitbucketImport.public_key.present?
+  end
+
+  def gitorious_import_enabled?
+    current_application_settings.import_sources.include?('gitorious')
+  end
+
+  def google_code_import_enabled?
+    current_application_settings.import_sources.include?('google_code')
+  end
+
+  def git_import_enabled?
+    current_application_settings.import_sources.include?('git')
   end
 end

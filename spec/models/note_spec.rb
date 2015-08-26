@@ -198,4 +198,10 @@ describe Note do
     let(:backref_text) { issue.gfm_reference }
     let(:set_mentionable_text) { ->(txt) { subject.note = txt } }
   end
+
+  describe :search do
+    let!(:note) { create(:note, note: "WoW") }
+
+    it { expect(Note.search('wow')).to include(note) }
+  end
 end

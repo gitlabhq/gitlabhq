@@ -1,10 +1,5 @@
 %header.navbar.navbar-fixed-top.navbar-gitlab{ class: nav_header_class }
-  .container
-    .header-logo
-      = link_to explore_root_path, class: "home" do
-        = brand_header_logo
-        .gitlab-text-container
-          %h3 GitLab
+  %div{ class: fluid_layout ? "container-fluid" : "container-fluid container-limited" }
     .header-content
       - unless current_controller?('sessions')
         .pull-right

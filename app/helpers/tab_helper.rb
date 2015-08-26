@@ -67,6 +67,14 @@ module TabHelper
       path.any? do |single_path|
         current_path?(single_path)
       end
+    elsif page = options.delete(:page)
+      unless page.respond_to?(:each)
+        page = [page]
+      end
+
+      page.any? do |single_page|
+        current_page?(single_page)
+      end
     else
       c = options.delete(:controller)
       a = options.delete(:action)

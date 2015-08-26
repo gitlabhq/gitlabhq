@@ -47,6 +47,10 @@ module SharedPaths
     visit group_ldap_group_links_path(Group.find_by(name:"Owned"))
   end
 
+  step 'I visit group "Owned" projects page' do
+    visit projects_group_path(Group.find_by(name: "Owned"))
+  end
+
   step 'I visit group "Guest" page' do
     visit group_path(Group.find_by(name: "Guest"))
   end
@@ -77,6 +81,10 @@ module SharedPaths
 
   step 'I visit dashboard page' do
     visit dashboard_path
+  end
+
+  step 'I visit dashboard activity page' do
+    visit activity_dashboard_path
   end
 
   step 'I visit dashboard projects page' do

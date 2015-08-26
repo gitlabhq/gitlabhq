@@ -19,13 +19,15 @@ module Gitlab
         issues.page(page).per(per_page)
       when 'merge_requests'
         merge_requests.page(page).per(per_page)
+      when 'milestones'
+        milestones.page(page).per(per_page)
       else
         Kaminari.paginate_array([]).page(page).per(per_page)
       end
     end
 
     def total_count
-      @total_count ||= projects_count + issues_count + merge_requests_count
+      @total_count ||= projects_count + issues_count + merge_requests_count + milestones_count
     end
 
     def projects_count
@@ -38,6 +40,10 @@ module Gitlab
 
     def merge_requests_count
       @merge_requests_count ||= merge_requests.count
+    end
+
+    def milestones_count
+      @milestones_count ||= milestones.count
     end
 
     def empty?
@@ -58,6 +64,12 @@ module Gitlab
         issues = issues.full_search(query)
       end
       issues.order('updated_at DESC')
+    end
+
+    def milestones
+      milestones = Milestone.where(project_id: limit_project_ids)
+      milestones = milestones.search(query)
+      milestones.order('updated_at DESC')
     end
 
     def merge_requests

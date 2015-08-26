@@ -382,3 +382,23 @@ table {
     border-color: #EEE !important;
   }
 }
+
+.center-top-menu {
+  border-bottom: 1px solid #EEE;
+  list-style: none;
+  text-align: center;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+
+  li {
+    display: inline-block;
+
+    a {
+      padding: 10px;
+    }
+
+    &.active a {
+      color: #666;
+    }
+  }
+}

@@ -13,9 +13,9 @@ module Projects
       filename = uploader.image? ? uploader.file.basename : uploader.file.filename
 
       {
-        'alt'       => filename,
-        'url'       => uploader.secure_url,
-        'is_image'  => uploader.image?
+        alt:      filename,
+        url:      uploader.secure_url,
+        is_image: uploader.image?
       }
     end
 

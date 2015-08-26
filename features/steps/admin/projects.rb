@@ -2,11 +2,27 @@ class Spinach::Features::AdminProjects < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedAdmin
+  include SharedProject
+
+  step 'I should see all non-archived projects' do
+    Project.non_archived.each do |p|
+      expect(page).to have_content p.name_with_namespace
+    end
+  end
 
   step 'I should see all projects' do
     Project.all.each do |p|
       expect(page).to have_content p.name_with_namespace
     end
+  end
+
+  step 'I check "Show archived projects"' do
+    page.check 'Show archived projects'
+    click_button "Search"
+  end
+
+  step 'I should see "archived" label' do
+    expect(page).to have_xpath("//span[@class='label label-warning']", text: 'archived')
   end
 
   step 'I click on first project' do

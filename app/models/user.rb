@@ -500,8 +500,19 @@ class User < ActiveRecord::Base
     events = recent_events.code_push.where("created_at > ?", Time.now - 2.hours)
     events = events.where(project_id: project_id) if project_id
 
-    # Take only latest one
-    events = events.recent.limit(1).first
+    # Use the latest event that has not been pushed or merged recently
+    events.recent.find do |event|
+      project = Project.find_by_id(event.project_id)
+      next unless project
+      repo = project.repository
+
+      if repo.branch_names.include?(event.branch_name)
+        merge_requests = MergeRequest.where("created_at >= ?", event.created_at).
+            where(source_project_id: project.id,
+                  source_branch: event.branch_name)
+        merge_requests.empty?
+      end
+    end
   end
 
   def projects_sorted_by_activity

@@ -25,9 +25,10 @@ class RepositoryImportWorker
                           end
     return project.import_fail unless data_import_result
 
+    Gitlab::BitbucketImport::KeyDeleter.new(project).execute if project.import_type == 'bitbucket'
+
     project.import_finish
     project.save
     ProjectCacheWorker.perform_async(project.id)
-    Gitlab::BitbucketImport::KeyDeleter.new(project).execute if project.import_type == 'bitbucket'
   end
 end

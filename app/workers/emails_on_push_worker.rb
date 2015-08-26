@@ -4,7 +4,7 @@ class EmailsOnPushWorker
   def perform(project_id, recipients, push_data, options = {})
     options.symbolize_keys!
     options.reverse_merge!(
-      send_from_committer_email:  false, 
+      send_from_committer_email:  false,
       disable_diffs:              false
     )
     send_from_committer_email = options[:send_from_committer_email]
@@ -16,9 +16,9 @@ class EmailsOnPushWorker
     ref = push_data["ref"]
     author_id = push_data["user_id"]
 
-    action = 
+    action =
       if Gitlab::Git.blank_ref?(before_sha)
-        :create 
+        :create
       elsif Gitlab::Git.blank_ref?(after_sha)
         :delete
       else
@@ -42,17 +42,22 @@ class EmailsOnPushWorker
     end
 
     recipients.split(" ").each do |recipient|
-      Notify.repository_push_email(
-        project_id, 
-        recipient, 
-        author_id:                  author_id, 
-        ref:                        ref, 
-        action:                     action,
-        compare:                    compare, 
-        reverse_compare:            reverse_compare,
-        send_from_committer_email:  send_from_committer_email,
-        disable_diffs:              disable_diffs
-      ).deliver
+      begin
+        Notify.repository_push_email(
+          project_id,
+          recipient,
+          author_id:                  author_id,
+          ref:                        ref,
+          action:                     action,
+          compare:                    compare,
+          reverse_compare:            reverse_compare,
+          send_from_committer_email:  send_from_committer_email,
+          disable_diffs:              disable_diffs
+        ).deliver
+      # These are input errors and won't be corrected even if Sidekiq retries
+      rescue Net::SMTPFatalError, Net::SMTPSyntaxError => e
+        logger.info("Failed to send e-mail for project '#{project.name_with_namespace}' to #{recipient}: #{e}")
+      end
     end
   ensure
     compare = nil

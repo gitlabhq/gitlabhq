@@ -7,7 +7,7 @@
 = render 'shared/show_aside'
 
 .row
-  %section.col-md-8
+  %section.col-md-7
     .header-with-avatar
       = link_to avatar_icon(@user.email, 400), target: '_blank' do
         = image_tag avatar_icon(@user.email, 90), class: "avatar avatar-tile s90", alt: ''
@@ -59,7 +59,7 @@
 
     .content_list
     = spinner
-  %aside.col-md-4
+  %aside.col-md-5
     = render 'profile', user: @user
     = render 'projects', projects: @projects, contributed_projects: @contributed_projects
 

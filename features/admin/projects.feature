@@ -4,9 +4,18 @@ Feature: Admin Projects
     Given I sign in as an admin
     And there are projects in system
 
-  Scenario: Projects list
+  Scenario: I should see non-archived projects in the list
+    Given archived project "Archive"
     When I visit admin projects page
+    Then I should see all non-archived projects
+    And I should not see project "Archive"
+
+  Scenario: I should see all projects in the list
+    Given archived project "Archive"
+    When I visit admin projects page
+    And I check "Show archived projects"
     Then I should see all projects
+    And I should see "archived" label
 
   Scenario: Projects show
     When I visit admin projects page

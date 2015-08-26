@@ -1,0 +1,27 @@
+.dropdown.inline
+  %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
+    %span.light sort:
+    - if @sort.present?
+      = sort_options_hash[@sort]
+    - elsif current_page?(trending_explore_projects_path) || current_page?(explore_root_path)
+      Trending projects
+    - elsif current_page?(starred_explore_projects_path)
+      Most stars
+    - else
+      = sort_title_recently_created
+    %b.caret
+  %ul.dropdown-menu
+    %li
+      = link_to trending_explore_projects_path do
+        Trending projects
+      = link_to starred_explore_projects_path do
+        Most stars
+      = link_to explore_projects_filter_path(sort: sort_value_recently_created) do
+        = sort_title_recently_created
+      = link_to explore_projects_filter_path(sort: sort_value_oldest_created) do
+        = sort_title_oldest_created
+      = link_to explore_projects_filter_path(sort: sort_value_recently_updated) do
+        = sort_title_recently_updated
+      = link_to explore_projects_filter_path(sort: sort_value_oldest_updated) do
+        = sort_title_oldest_updated
+

@@ -47,6 +47,13 @@ class Milestone < ActiveRecord::Base
     state :active
   end
 
+  class << self
+    def search(query)
+      query = "%#{query}%"
+      where("title like ? or description like ?", query, query)
+    end
+  end
+
   def expired?
     if due_date
       due_date.past?
@@ -54,7 +61,7 @@ class Milestone < ActiveRecord::Base
       false
     end
   end
-
+  
   def open_items_count
     self.issues.opened.count + self.merge_requests.opened.count
   end

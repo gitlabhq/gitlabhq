@@ -90,7 +90,7 @@ class Note < ActiveRecord::Base
     end
 
     def search(query)
-      where("note like :query", query: "%#{query}%")
+      where("LOWER(note) like :query", query: "%#{query.downcase}%")
     end
   end
 
