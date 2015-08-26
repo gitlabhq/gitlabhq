@@ -3,7 +3,6 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.0.0 (unreleased)
   - Improve dropdown positioning on the project home page (Hannes Rosenögger)
   - Upgrade browser gem to 1.0.0 to avoid warning in IE11 compatibilty mode (Stan Hu)
-  - Fix "Reload with full diff" URL button in compare branch view (Stan Hu)
   - Remove user OAuth tokens from the database and request new tokens each session (Stan Hu)
   - Only show recent push event if the branch still exists or a recent merge request has not been created (Stan Hu)
   - Remove satellites
@@ -16,11 +15,12 @@ v 8.0.0 (unreleased)
   - Create cross-reference for closing references on commits pushed to non-default branches (Maël Valais)
   - Ability to search milestones
   - Gracefully handle SMTP user input errors (e.g. incorrect email addresses) to prevent Sidekiq retries (Stan Hu)
-  - Improve abuse reports management from admin area
   - Move dashboard activity to separate page
   - Improve performance of git blame
 
-v 7.14.1 (unreleased)
+v 7.14.1
+  - Improve abuse reports management from admin area
+  - Fix "Reload with full diff" URL button in compare branch view (Stan Hu)
   - Only include base URL in OmniAuth full_host parameter (Stan Hu)
   - Fix Error 500 in API when accessing a group that has an avatar (Stan Hu)
 
