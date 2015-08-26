@@ -157,3 +157,40 @@
   white-space: nowrap;
   max-width: $max_width;
 }
+
+/*
+ * Base mixin for lists in GitLab
+ */
+@mixin basic-list {
+  margin: 5px 0px;
+  padding: 0px;
+
+  li {
+    padding: 10px 0;
+    border-bottom: 1px solid #EEE;
+    overflow: hidden;
+    display: block;
+    margin: 0px;
+
+    &:last-child {
+      border:none
+    }
+
+    &.active {
+      background: #f9f9f9;
+      a {
+        font-weight: bold;
+      }
+    }
+
+    &.hide {
+      display: none;
+    }
+
+    &.light {
+      a {
+        color: #777;
+      }
+    }
+  }
+}

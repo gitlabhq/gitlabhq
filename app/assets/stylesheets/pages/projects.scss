@@ -334,23 +334,32 @@ pre.light-well {
   }
 }
 
-.project-row {
-  .project-full-name {
-    font-weight: bold;
-    font-size: 15px;
-  }
+/*
+ * Projects list rendered on dashboard and user page
+ */
+.projects-list {
+  @include basic-list;
 
-  .project-description {
-    color: #888;
-    font-size: 13px;
+  .project-row {
+    .project-full-name {
+      @include str-truncated;
+      font-weight: bold;
+      font-size: 15px;
+    }
 
-    p {
-      margin-bottom: 0;
+    .project-description {
       color: #888;
+      font-size: 13px;
+
+      p {
+        @include str-truncated;
+        margin-bottom: 0;
+        color: #888;
+      }
     }
   }
 }
 
-.my-projects .project-row {
-  padding: 10px 0;
+.panel .projects-list li {
+  padding: 10px 15px;
 }
