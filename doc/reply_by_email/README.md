@@ -59,6 +59,8 @@ In this example, we'll use the Gmail address `gitlab-replies@gmail.com`. If you'
         :name: "inbox"
         # Always "sidekiq".
         :delivery_method: sidekiq
+        # Always true.
+        :delete_after_delivery: true
         :delivery_options:
           # The URL to the Redis server used by Sidekiq. Should match the URL in config/resque.yml.
           :redis_url: redis://localhost:6379
@@ -144,6 +146,8 @@ TODO
         :name: "inbox"
         # Always "sidekiq".
         :delivery_method: sidekiq
+        # Always true.
+        :delete_after_delivery: true
         :delivery_options:
           # The URL to the Redis server used by Sidekiq. Should match the URL in config/resque.yml.
           :redis_url: redis://localhost:6379

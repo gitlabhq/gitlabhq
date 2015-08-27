@@ -21,7 +21,6 @@ config/aws.yml
 config/database.yml
 config/gitlab.yml
 config/gitlab_ci.yml
-config/initializers/omniauth.rb
 config/initializers/rack_attack.rb
 config/initializers/smtp_settings.rb
 config/resque.yml

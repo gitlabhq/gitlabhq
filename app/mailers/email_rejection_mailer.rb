@@ -3,6 +3,8 @@ class EmailRejectionMailer < BaseMailer
     @reason = reason
     @original_message = Mail::Message.new(original_raw)
 
+    return unless @original_message.from
+
     headers = {
       to: @original_message.from,
       subject: "[Rejected] #{@original_message.subject}"

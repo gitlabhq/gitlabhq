@@ -1,6 +1,11 @@
 .page-with-sidebar{ class: nav_sidebar_class }
   = render "layouts/broadcast"
   .sidebar-wrapper.nicescroll
+    .header-logo
+      = link_to root_path, class: 'home', title: 'Dashboard', id: 'js-shortcuts-home', data: {toggle: 'tooltip', placement: 'bottom'} do
+        = brand_header_logo
+        .gitlab-text-container
+          %h3 GitLab
     - if defined?(sidebar) && sidebar
       = render "layouts/nav/#{sidebar}"
     - elsif current_user
@@ -13,7 +18,7 @@
         .username
           = current_user.username
   .content-wrapper
-    .container-fluid
+    %div{ class: fluid_layout ? "container-fluid" : "container-fluid container-limited" }
       .content
         = render "layouts/flash"
         .clearfix

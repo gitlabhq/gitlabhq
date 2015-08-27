@@ -821,14 +821,14 @@ ActiveRecord::Schema.define(version: 20150826001931) do
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "type",                  default: "ProjectHook"
+    t.string   "type",                    default: "ProjectHook"
     t.integer  "service_id"
-    t.boolean  "push_events",           default: true,          null: false
-    t.boolean  "issues_events",         default: false,         null: false
-    t.boolean  "merge_requests_events", default: false,         null: false
-    t.boolean  "tag_push_events",       default: false
-    t.integer  "group_id"
-    t.boolean  "note_events",           default: false,         null: false
+    t.boolean  "push_events",             default: true,          null: false
+    t.boolean  "issues_events",           default: false,         null: false
+    t.boolean  "merge_requests_events",   default: false,         null: false
+    t.boolean  "tag_push_events",         default: false
+    t.boolean  "note_events",             default: false,         null: false
+    t.boolean  "enable_ssl_verification", default: false
   end
 
   add_index "web_hooks", ["created_at", "id"], name: "index_web_hooks_on_created_at_and_id", using: :btree

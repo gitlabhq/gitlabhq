@@ -13,6 +13,4 @@
     See most discussed projects for last month
     .pull-right
       = render 'explore/projects/dropdown'
-  .public-projects
-    %ul.bordered-list
-      = render @trending_projects
+  = render 'projects', projects: @trending_projects

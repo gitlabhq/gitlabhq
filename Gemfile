@@ -42,7 +42,7 @@ gem 'rqrcode-rails3', '~> 0.1.7'
 gem 'attr_encrypted', '~> 1.3.4'
 
 # Browser detection
-gem "browser", '~> 0.8.0'
+gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
@@ -285,7 +285,7 @@ gem "newrelic_rpm", '~> 3.9.4.245'
 
 gem 'octokit', '~> 3.7.0'
 
-gem "mail_room", "~> 0.4.0"
+gem "mail_room", "~> 0.4.1"
 
 gem 'email_reply_parser', '~> 0.5.8'
 

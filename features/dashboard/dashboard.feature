@@ -10,6 +10,10 @@ Feature: Dashboard
   Scenario: I should see projects list
     Then I should see "New Project" link
     Then I should see "Shop" project link
+
+  @javascript
+  Scenario: I should see activity list
+    And I visit dashboard activity page
     Then I should see project "Shop" activity feed
 
   Scenario: I should see groups list
@@ -26,12 +30,12 @@ Feature: Dashboard
   @javascript
   Scenario: I should see User joined Project event
     Given user with name "John Doe" joined project "Shop"
-    When I visit dashboard page
+    When I visit dashboard activity page
     Then I should see "John Doe joined project Shop" event
 
   @javascript
   Scenario: I should see User left Project event
     Given user with name "John Doe" joined project "Shop"
     And user with name "John Doe" left project "Shop"
-    When I visit dashboard page
+    When I visit dashboard activity page
     Then I should see "John Doe left project Shop" event

@@ -71,6 +71,10 @@ module SharedPaths
     visit dashboard_path
   end
 
+  step 'I visit dashboard activity page' do
+    visit activity_dashboard_path
+  end
+
   step 'I visit dashboard projects page' do
     visit projects_dashboard_path
   end
