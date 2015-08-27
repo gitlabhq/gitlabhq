@@ -58,6 +58,12 @@ module GitlabMarkdownHelper
     Gitlab::Markdown.render(text, context)
   end
 
+  # TODO (rspeicher): Remove all usages of this helper and just call `markdown`
+  # with a custom pipeline depending on the content being rendered
+  def gfm(text, options = {})
+    markdown(text, options)
+  end
+
   def asciidoc(text)
     Gitlab::Asciidoc.render(text, {
       commit: @commit,
