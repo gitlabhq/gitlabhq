@@ -5,6 +5,13 @@
   .form-group
     .col-sm-offset-2.col-sm-10
       .checkbox
+        = f.label :merge_requests_ff_only_enabled do
+          = f.check_box :merge_requests_ff_only_enabled
+          %span.descr Accept merge request button will do only fast-forward merges
+
+  .form-group
+    .col-sm-offset-2.col-sm-10
+      .checkbox
         = f.label :merge_requests_rebase_enabled do
           = f.check_box :merge_requests_rebase_enabled
           %span.descr Allows rebasing of merge requests before merging.
