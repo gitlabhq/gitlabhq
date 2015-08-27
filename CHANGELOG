@@ -23,6 +23,7 @@ v 8.0.0 (unreleased)
   - Fix 500 error when submit project snippet without body
   - Improve search page usability
   - Bring more UI consistency in way how projects, snippets and groups lists are rendered
+  - Make all profiles public
 
 v 7.14.1
   - Improve abuse reports management from admin area

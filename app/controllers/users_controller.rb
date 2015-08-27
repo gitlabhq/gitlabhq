@@ -51,10 +51,6 @@ class UsersController < ApplicationController
 
   def set_user
     @user = User.find_by_username!(params[:username])
-
-    unless current_user || @user.public_profile?
-      return authenticate_user!
-    end
   end
 
   def authorized_projects_ids
