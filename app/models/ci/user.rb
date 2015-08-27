@@ -68,7 +68,7 @@ module Ci
 
     def authorized_runners
       Ci::Runner.specific.includes(:runner_projects).
-        where(runner_projects: { project_id: authorized_projects } )
+        where(Ci::RunnerProject.table_name => { project_id: authorized_projects } )
     end
 
     def authorized_projects

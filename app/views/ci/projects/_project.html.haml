@@ -1,7 +1,7 @@
 - last_commit = project.last_commit
 %tr.alert{class: commit_status_alert_class(last_commit) }
   %td
-    = link_to project do
+    = link_to [:ci, project] do
       %strong= project.name
   %td
     - if last_commit
@@ -13,10 +13,10 @@
       No builds yet
   %td
     - if project.public
-      %i.fa-globe
+      %i.fa.fa-globe
       Public
     - else
-      %i.fa-lock
+      %i.fa.fa-lock
       Private
   %td
     = project.commits.count

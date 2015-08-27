@@ -3,7 +3,7 @@
     .navbar-header
       %button.navbar-toggle{"data-target" => ".navbar-collapse", "data-toggle" => "collapse", type: "button"}
         %span.sr-only Toggle navigation
-        %i.fa-reorder
+        %i.fa.fa-reorder
 
       = link_to 'GitLab CI', ci_root_path, class: "navbar-brand"
 
@@ -25,7 +25,7 @@
                 %span= current_user.name
           %li
             = link_to ci_user_sessions_path, class: "logout", method: :delete do
-              %i.fa-signout
+              %i.fa.fa-signout
               Logout
         - else
           %li

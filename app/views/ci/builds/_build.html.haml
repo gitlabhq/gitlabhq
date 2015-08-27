@@ -39,7 +39,7 @@
       .pull-right
         - if build.active?
           = link_to cancel_ci_project_build_path(build.project, build, return_to: request.original_url), title: 'Cancel build' do
-            %i.fa-remove.cred
+            %i.fa.fa-remove.cred
         - elsif build.commands.present?
           = link_to retry_ci_project_build_path(build.project, build, return_to: request.original_url), method: :post, title: 'Retry build' do
-            %i.fa-repeat
+            %i.fa.fa-repeat

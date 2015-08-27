@@ -7,7 +7,7 @@
 
   .projects
     %p.fetch-status.light
-      %i.fa-refresh.fa-spin
+      %i.fa.fa-refresh.fa-spin
       Please wait while we fetch from GitLab (#{GitlabCi.config.gitlab_server.url})
   :coffeescript
     $.get '#{gitlab_ci_projects_path}', (data) ->

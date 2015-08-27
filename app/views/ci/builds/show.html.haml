@@ -25,7 +25,7 @@
         %a
           Build ##{@build.id}
           &middot;
-          %i.fa-warning-sign
+          %i.fa.fa-warning-sign
           This build was retried.
 
 .row
@@ -46,7 +46,7 @@
         - if @build.duration
           .pull-right
             %span
-              %i.fa-time
+              %i.fa.fa-time
               #{duration_in_words(@build.finished_at, @build.started_at)}
 
       .clearfix
@@ -63,9 +63,9 @@
         .clearfix
     .scroll-controls
       = link_to '#up-build-trace', class: 'btn' do
-        %i.fa-angle-up
+        %i.fa.fa-angle-up
       = link_to '#down-build-trace', class: 'btn' do
-        %i.fa-angle-down
+        %i.fa.fa-angle-down
 
     %pre.trace#build-trace
       %code.bash

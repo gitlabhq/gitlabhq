@@ -1,21 +1,21 @@
 %ul.nav.nav-pills.nav-stacked.admin-menu
   = nav_link path: 'projects' do
     = link_to ci_admin_projects_path do
-      %i.fa-list-alt
+      %i.fa.fa-list-alt
       Projects
   = nav_link path: 'events' do
     = link_to ci_admin_events_path do
-      %i.fa-book
+      %i.fa.fa-book
       Events
   = nav_link path: 'runners#index' do
     = link_to ci_admin_runners_path do
-      %i.fa-cog
+      %i.fa.fa-cog
       Runners
       %small.pull-right
         = Ci::Runner.count(:all)
   = nav_link path: 'builds' do
     = link_to ci_admin_builds_path do
-      %i.fa-link
+      %i.fa.fa-link
       Builds
       %small.pull-right
         = Ci::Build.count(:all)
@@ -23,6 +23,6 @@
     %hr
   = nav_link(controller: :application_settings, html_options: { class: 'separate-item'}) do
     = link_to ci_admin_application_settings_path do
-      %i.fa-cogs
+      %i.fa.fa-cogs
       %span
         Settings

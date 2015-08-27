@@ -1,40 +1,40 @@
 %ul.nav.nav-pills.nav-stacked.project-menu
   = nav_link path: 'projects#show' do
     = link_to ci_project_path(@project) do
-      %i.fa-list-alt
+      %i.fa.fa-list-alt
       Commits
       %small.pull-right= @project.commits.count
   = nav_link path: 'charts#show' do
     = link_to ci_project_charts_path(@project) do
-      %i.fa-bar-chart
+      %i.fa.fa-bar-chart
       Charts
   = nav_link path: ['runners#index', 'runners#show'] do
     = link_to ci_project_runners_path(@project) do
-      %i.fa-cog
+      %i.fa.fa-cog
       Runners
-  = nav_link path: 'variables#index' do
+  = nav_link path: 'variables#show' do
     = link_to ci_project_variables_path(@project) do
-      %i.fa-code
+      %i.fa.fa-code
       Variables
   = nav_link path: 'web_hooks#index' do
     = link_to ci_project_web_hooks_path(@project) do
-      %i.fa-link
+      %i.fa.fa-link
       Web Hooks
   = nav_link path: 'triggers#index' do
     = link_to ci_project_triggers_path(@project) do
-      %i.fa-retweet
+      %i.fa.fa-retweet
       Triggers
   = nav_link path: 'services#index' do
     = link_to ci_project_services_path(@project) do
-      %i.fa-share
+      %i.fa.fa-share
       Services
   = nav_link path: 'events#index' do
     = link_to ci_project_events_path(@project) do
-      %i.fa-book
+      %i.fa.fa-book
       Events
   %li
     %hr
   = nav_link path: 'projects#edit' do
     = link_to edit_ci_project_path(@project) do
-      %i.fa-cogs
+      %i.fa.fa-cogs
       Settings

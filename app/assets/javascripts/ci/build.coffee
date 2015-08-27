@@ -29,7 +29,7 @@ class CiBuild
             success: (build) =>
               if build.status == "running"
                 $('#build-trace code').html build.trace_html
-                $('#build-trace code').append '<i class="fa-refresh fa-spin"/>'
+                $('#build-trace code').append '<i class="fa fa-refresh fa-spin"/>'
                 @checkAutoscroll()
               else
                 Turbolinks.visit build_url

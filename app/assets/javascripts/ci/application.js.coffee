@@ -41,7 +41,7 @@ $(document).on 'click', '.edit-runner-link', (event) ->
     descr.removeClass('hide')
 
 $(document).on 'click', '.assign-all-runner', ->
-  $(this).replaceWith('<i class="fa-refresh fa-spin"></i> Assign in progress..')
+  $(this).replaceWith('<i class="fa fa-refresh fa-spin"></i> Assign in progress..')
 
 window.unbindEvents = ->
   $(document).unbind('scroll')

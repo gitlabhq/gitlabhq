@@ -11,7 +11,7 @@ module Ci
     def index
       @runners = @project.runners.order('id DESC')
       @specific_runners = current_user.authorized_runners.
-        where.not(id:  @runners).order('runners.id DESC').page(params[:page]).per(20)
+        where.not(id:  @runners).order("#{Ci::Runner.table_name}.id DESC").page(params[:page]).per(20)
       @shared_runners = Ci::Runner.shared.active
       @shared_runners_count = @shared_runners.count(:all)
     end
