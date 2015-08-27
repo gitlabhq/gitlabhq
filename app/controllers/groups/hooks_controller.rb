@@ -5,7 +5,7 @@ class Groups::HooksController < Groups::ApplicationController
 
   respond_to :html
 
-  layout "group"
+  layout 'group_settings'
 
   def index
     @hooks = @group.hooks
