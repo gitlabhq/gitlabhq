@@ -25,12 +25,17 @@ class ComposerService < Service
   prop_accessor :package_mode, :package_type, :export_branches, :branch_filters,
                 :export_tags, :tag_filters, :custom_json
 
-  validates :package_mode, :package_type, presence: true, if: :activated?
+  validates :package_mode,
+    presence: true,
+    inclusion: { in: ['default', 'project', 'advanced'] },
+    if: :activated?
+
+  validates :package_type, presence: true, if: :activated?
 
   validates_each :custom_json,
     if: :allow_custom_json_validation? do |record, attr, value|
       begin
-        name_re = /([A-Za-z0-9&_-]+\/[A-Za-z0-9&_-]+)/
+        name_regex = /\A([A-Za-z0-9&_-]+\/[A-Za-z0-9&_-]+)\z/
 
         if value.empty?
           error = 'must be specified'
@@ -41,7 +46,7 @@ class ComposerService < Service
             error = 'must have a name key specified'
           elsif cjson['name'].empty?
             error = 'name key must not be empty'
-          elsif cjson['name'] != (name_re.match(cjson['name']) || [])[0]
+          elsif cjson['name'] !~ name_regex
             error = 'name key must be formatted as "namespace/project"'
           elsif !cjson['description']
             error = 'must have a description key specified'
@@ -74,13 +79,14 @@ class ComposerService < Service
     out = 'This project will be publicly listed as a composer package,
 but usage of private and internal repositories will still
 require authentication. '
-    if package_mode == 'default'
+    case package_mode
+    when 'default'
       out += 'The package is exported using the project\'s composer.json. '\
       'Additional settings are ignored.'
-    elsif package_mode == 'project'
+    when 'project'
       out += 'The package is exported using the project\'s attributes '\
       'The following settings are applied.'
-    elsif package_mode == 'advanced'
+    when 'advanced'
       out += 'The package is exported using the custom json specified '\
       'in the configuration.'
     end
@@ -407,9 +413,10 @@ require authentication. '
   end
 
   def ref_exported?(ref)
-    if ref.instance_of?(Gitlab::Git::Branch)
+    case ref
+    when Gitlab::Git::Branch
       branch_exported?(ref)
-    elsif ref.instance_of?(Gitlab::Git::Tag)
+    when Gitlab::Git::Tag
       tag_exported?(ref)
     else
       false
@@ -418,8 +425,7 @@ require authentication. '
 
   def branch_exported?(branch)
     if branch_filters
-      filters = branch_filters.strip! || branch_filters
-      filters = filters.gsub(' ', '').split(',')
+      filters = branch_filters.split(',').map(&:strip)
     else
       filters = []
     end
@@ -432,8 +438,7 @@ require authentication. '
 
   def tag_exported?(tag)
     if tag_filters
-      filters = tag_filters.strip! || tag_filters
-      filters = filters.gsub(' ', '').split(',')
+      filters = tag_filters.split(',').map(&:strip)
     else
       filters = []
     end
