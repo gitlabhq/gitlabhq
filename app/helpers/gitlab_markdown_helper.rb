@@ -1,7 +1,6 @@
 require 'nokogiri'
 
 module GitlabMarkdownHelper
-  include Gitlab::Markdown
   include PreferencesHelper
 
   # Use this in places where you would normally use link_to(gfm(...), ...).
@@ -22,7 +21,7 @@ module GitlabMarkdownHelper
                      escape_once(body)
                    end
 
-    gfm_body = gfm(escaped_body, {}, html_options)
+    gfm_body = Gitlab::Markdown.gfm(escaped_body, project: @project, current_user: current_user)
 
     fragment = Nokogiri::XML::DocumentFragment.parse(gfm_body)
     if fragment.children.size == 1 && fragment.children[0].name == 'a'
@@ -42,29 +41,16 @@ module GitlabMarkdownHelper
     fragment.to_html.html_safe
   end
 
-  MARKDOWN_OPTIONS = {
-    no_intra_emphasis:   true,
-    tables:              true,
-    fenced_code_blocks:  true,
-    strikethrough:       true,
-    lax_spacing:         true,
-    space_after_headers: true,
-    superscript:         true,
-    footnotes:           true
-  }.freeze
+  def markdown(text, context = {})
+    context.merge!(
+      current_user:   current_user,
+      project:        @project,
+      project_wiki:   @project_wiki,
+      ref:            @ref,
+      requested_path: @path
+    )
 
-  def markdown(text, options={})
-    unless @markdown && options == @options
-      @options = options
-
-      # see https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch
-      rend = Redcarpet::Render::GitlabHTML.new(self, options)
-
-      # see https://github.com/vmg/redcarpet#and-its-like-really-simple-to-use
-      @markdown = Redcarpet::Markdown.new(rend, MARKDOWN_OPTIONS)
-    end
-
-    @markdown.render(text).html_safe
+    Gitlab::Markdown.render(text, context)
   end
 
   def asciidoc(text)

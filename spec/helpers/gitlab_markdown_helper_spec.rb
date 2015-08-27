@@ -19,10 +19,10 @@ describe GitlabMarkdownHelper do
     @project = project
   end
 
-  describe "#gfm" do
+  describe "#markdown" do
     it "should forward HTML options to links" do
-      expect(gfm("Fixed in #{commit.id}", { project: @project }, class: 'foo')).
-        to have_selector('a.gfm.foo')
+      expect(markdown("Fixed in #{commit.id}", project: @project)).
+        to have_selector('a.gfm')
     end
 
     describe "referencing multiple objects" do
@@ -30,17 +30,17 @@ describe GitlabMarkdownHelper do
 
       it "should link to the merge request" do
         expected = namespace_project_merge_request_path(project.namespace, project, merge_request)
-        expect(gfm(actual)).to match(expected)
+        expect(markdown(actual)).to match(expected)
       end
 
       it "should link to the commit" do
         expected = namespace_project_commit_path(project.namespace, project, commit)
-        expect(gfm(actual)).to match(expected)
+        expect(markdown(actual)).to match(expected)
       end
 
       it "should link to the issue" do
         expected = namespace_project_issue_path(project.namespace, project, issue)
-        expect(gfm(actual)).to match(expected)
+        expect(markdown(actual)).to match(expected)
       end
     end
   end
@@ -77,16 +77,6 @@ describe GitlabMarkdownHelper do
       # Trailing commit link
       expect(doc.css('a')[4].attr('href')).to eq commit_path
       expect(doc.css('a')[4].text).to eq ' for real'
-    end
-
-    it 'should forward HTML options' do
-      actual = link_to_gfm("Fixed in #{commit.id}", commit_path, class: 'foo')
-      doc = Nokogiri::HTML.parse(actual)
-
-      expect(doc.css('a')).to satisfy do |v|
-        # 'foo' gets added to all links
-        v.all? { |a| a.attr('class').match(/foo$/) }
-      end
     end
 
     it "escapes HTML passed in as the body" do
