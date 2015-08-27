@@ -13,6 +13,7 @@ v 8.4.0 (unreleased)
   - Revert back upvote and downvote button to the issue and MR pages
   - Swap position of Assignee and Author selector on Issuables (Zeger-Jan van de Weg)
   - Fix version check image in Safari
+  - Fix API project lookups when querying with a namespace with dots (Stan Hu)
 
 v 8.3.3 (unreleased)
   - Fix project transfer e-mail sending incorrect paths in e-mail notification (Stan Hu)
