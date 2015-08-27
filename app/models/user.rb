@@ -637,10 +637,6 @@ class User < ActiveRecord::Base
     email.start_with?('temp-email-for-oauth')
   end
 
-  def public_profile?
-    authorized_projects.public_only.any?
-  end
-
   def avatar_url(size = nil)
     if avatar.present?
       [gitlab_config.url, avatar.url].join
