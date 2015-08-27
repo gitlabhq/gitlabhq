@@ -12,7 +12,7 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
 
 ## Set it up
 
-In this example, we'll use the Gmail address `gitlab-replies@gmail.com`. 
+In this example, we'll use the Gmail address `gitlab-replies@gmail.com`.
 
 ### Installations from source
 
@@ -27,7 +27,7 @@ In this example, we'll use the Gmail address `gitlab-replies@gmail.com`.
     ```sh
     sudo editor config/gitlab.yml
     ```
-    
+
     ```yaml
     reply_by_email:
       enabled: true
@@ -37,7 +37,7 @@ In this example, we'll use the Gmail address `gitlab-replies@gmail.com`.
     As mentioned, the part after `+` is ignored, and this will end up in the mailbox for `gitlab-replies@gmail.com`.
 
 2. Copy `config/mail_room.yml.example` to `config/mail_room.yml`:
-    
+
     ```sh
     sudo cp config/mail_room.yml.example config/mail_room.yml
     ```
@@ -84,7 +84,7 @@ In this example, we'll use the Gmail address `gitlab-replies@gmail.com`.
     ```
 
 6. Restart GitLab:
-    
+
     ```sh
     sudo service gitlab restart
     ```
@@ -99,14 +99,37 @@ In this example, we'll use the Gmail address `gitlab-replies@gmail.com`.
 
 ### Omnibus package installations
 
-TODO
+In `/etc/gitlab/gitlab.rb`:
+
+```ruby
+
+gitlab_rails['reply_by_email_enabled'] = true
+gitlab_rails['reply_by_email_address'] = "gitlab-replies+%{reply_key}@gmail.com"
+gitlab_rails['reply_by_email_host'] = "imap.gmail.com" # IMAP server host
+gitlab_rails['reply_by_email_port'] = 993 # IMAP server port
+gitlab_rails['reply_by_email_ssl'] = true # Whether the IMAP server uses SSL
+gitlab_rails['reply_by_email_email'] = "gitlab-replies@gmail.com"  # Email account username. Usually the full email address.
+gitlab_rails['reply_by_email_password'] = "password" # Email account password
+gitlab_rails['reply_by_email_mailbox_name'] = "inbox" # The name of the mailbox where incoming mail will end up.
+```
+
+and run `sudo gitlab-ctl reconfigure` for changes to take effect.
+
+After reconfigure run has been successfully completed you will have the following commands available:
+
+```bash
+sudo gitlab-ctl status mailroom
+sudo gitlab-ctl stop mailroom
+sudo gitlab-ctl start mailroom
+sudo gitlab-ctl restart mailroom
+```
 
 ### Development
 
 1. Go to the GitLab installation directory.
 
 1. Find the `reply_by_email` section in `config/gitlab.yml`, enable the feature and enter the email address including a placeholder for the `reply_key`:
-    
+
     ```yaml
     reply_by_email:
       enabled: true
@@ -116,7 +139,7 @@ TODO
     As mentioned, the part after `+` is ignored, and this will end up in the mailbox for `gitlab-replies@gmail.com`.
 
 2. Copy `config/mail_room.yml.example` to `config/mail_room.yml`:
-    
+
     ```sh
     sudo cp config/mail_room.yml.example config/mail_room.yml
     ```
@@ -158,7 +181,7 @@ TODO
     ```
 
 6. Restart GitLab:
-    
+
     ```sh
     bundle exec foreman start
     ```
