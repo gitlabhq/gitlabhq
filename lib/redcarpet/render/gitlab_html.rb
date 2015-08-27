@@ -4,9 +4,8 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
   attr_reader :template
   alias_method :h, :template
 
-  def initialize(template, color_scheme, options = {})
+  def initialize(template, options = {})
     @template = template
-    @color_scheme = color_scheme
     @options = options.dup
 
     @options.reverse_merge!(
@@ -35,7 +34,7 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
     end
 
     formatter = Rouge::Formatters::HTMLGitlab.new(
-      cssclass: "code highlight #{@color_scheme} #{lexer.tag}"
+      cssclass: "code highlight js-syntax-highlight #{lexer.tag}"
     )
     formatter.format(lexer.lex(code))
   end
