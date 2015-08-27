@@ -595,7 +595,7 @@ namespace :gitlab do
       else
         puts "no".red
         try_fixing_it(
-          sudo_gitlab("bin/background_jobs start", "RAILS_ENV=production")
+          sudo_gitlab("RAILS_ENV=production bin/background_jobs start")
         )
         for_more_information(
           see_installation_guide_section("Install Init Script"),
@@ -726,7 +726,7 @@ namespace :gitlab do
       else
         puts "no".red
         try_fixing_it(
-          sudo_gitlab("bin/mail_room start", "RAILS_ENV=production")
+          sudo_gitlab("RAILS_ENV=production bin/mail_room start")
         )
         for_more_information(
           see_installation_guide_section("Install Init Script"),
