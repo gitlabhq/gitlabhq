@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+# daemon_with_pidfile
+#
+# Daemonize, write a pidfile, and exec the remainder of the command line.
+
+def main(pidfile, cmd)
+  if middle_pid = Process.fork
+    # outer process
+    # Do not exit the outer process before the middle process finishes
+    Process.waitpid(middle_pid)
+    exit $?.exitstatus
+  end
+
+  if final_pid = Process.fork
+    # middle process
+    open(pidfile, 'w') { |f| f.puts final_pid }
+    exit
+  end
+
+  # Standard daemon things: become session leader, ignore SIGHUP, close stdin.
+  Signal.trap("HUP", "IGNORE")
+  Process.setsid
+  IO.new(0).close
+
+  exec(*cmd)
+end
+
+if ARGV.count < 2
+  abort "Usage: #$0 pidfile command [args...]"
+end
+
+pidfile = ARGV.shift
+main(pidfile, ARGV)

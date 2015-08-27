@@ -19,9 +19,7 @@ get_mail_room_pid()
 
 start()
 {
-  bundle exec mail_room -q -c $mail_room_config >> $mail_room_logfile 2>&1 &
-  PID=$!
-  echo $PID > $mail_room_pidfile
+  bin/daemon_with_pidfile $mail_room_pidfile bundle exec mail_room -q -c $mail_room_config >> $mail_room_logfile 2>&1
 }
 
 stop()
