@@ -213,16 +213,3 @@
 
 
 = render 'shared/confirm_modal', phrase: @project.path
-
-:coffeescript
-  $ ->
-    mergeRequestsRebaseVisibilityCheck = ->
-      is_rebase_enabled = $("input#project_merge_requests_rebase_enabled").prop("checked")
-      $(".rebase-default").toggle(is_rebase_enabled)
-
-    mergeRequestsRebaseVisibilityCheck()
-
-    $("input#project_merge_requests_rebase_enabled").change ->
-      mergeRequestsRebaseVisibilityCheck()
-
-

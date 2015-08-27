@@ -7,21 +7,18 @@
       .checkbox
         = f.label :merge_requests_ff_only_enabled do
           = f.check_box :merge_requests_ff_only_enabled
+          %strong Only fast-forward merge
+          %br
           %span.descr Accept merge request button will do only fast-forward merges
 
-  .form-group
+  .form-group.rebase-feature
     .col-sm-offset-2.col-sm-10
       .checkbox
         = f.label :merge_requests_rebase_enabled do
           = f.check_box :merge_requests_rebase_enabled
-          %span.descr Allows rebasing of merge requests before merging.
-
-  .form-group.rebase-default
-    .col-sm-offset-2.col-sm-10
-      .checkbox
-        = f.label :merge_requests_rebase_default do
-          = f.check_box :merge_requests_rebase_default
-          %span.descr Rebase enabled by default
+          %strong Rebase button
+          %br
+          %span.descr Allows rebasing of merge requests before fast-forward merge.
 
   .form-group
     = f.label :merge_requests_template, class: 'control-label' do
@@ -72,3 +69,12 @@
 
 :coffeescript
   new UsersSelect()
+
+  mergeRequestsRebaseVisibilityCheck = ->
+    is_rebase_enabled = $("input#project_merge_requests_ff_only_enabled").prop("checked")
+    $(".rebase-feature").toggle(is_rebase_enabled)
+
+  mergeRequestsRebaseVisibilityCheck()
+
+  $("input#project_merge_requests_ff_only_enabled").change ->
+    mergeRequestsRebaseVisibilityCheck()
