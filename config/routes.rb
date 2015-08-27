@@ -505,6 +505,8 @@ Gitlab::Application.routes.draw do
             get :ci_status
             post :toggle_subscription
             post :approve
+            post :rebase
+            post :ff_merge
           end
 
           collection do

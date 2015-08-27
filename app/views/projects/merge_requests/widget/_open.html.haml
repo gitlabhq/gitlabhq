@@ -17,6 +17,8 @@
       = render 'projects/merge_requests/widget/open/not_allowed'
     - elsif @merge_request.requires_approve? && !@merge_request.approved?
       = render 'projects/merge_requests/widget/open/approve'
+    - elsif @project.merge_requests_ff_only_enabled
+      = render 'projects/merge_requests/widget/open/ff_accept'
     - elsif @merge_request.can_be_merged?
       = render 'projects/merge_requests/widget/open/accept'
 
