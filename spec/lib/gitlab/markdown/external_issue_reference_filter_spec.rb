@@ -68,11 +68,6 @@ module Gitlab::Markdown
         expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue'
       end
 
-      it 'includes an optional custom class' do
-        doc = filter("Issue #{reference}", reference_class: 'custom')
-        expect(doc.css('a').first.attr('class')).to include 'custom'
-      end
-
       it 'supports an :only_path context' do
         doc = filter("Issue #{reference}", only_path: true)
         link = doc.css('a').first.attr('href')

@@ -67,7 +67,6 @@ module Gitlab
     # options      - A Hash of options used to customize output (default: {}):
     #                :xhtml               - output XHTML instead of HTML
     #                :reference_only_path - Use relative path for reference links
-    # html_options - extra options for the reference links as given to link_to
     def self.gfm(text, options = {})
       return text if text.nil?
 
