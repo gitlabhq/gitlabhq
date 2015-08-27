@@ -17,8 +17,8 @@
         .accept-action
           = f.button class: "btn btn-reopen rebase-mr" do
             Rebase from #{@merge_request.target_branch}
-        .accept-control
-          Fast-forward merge is not possible. Branch must be rebased first
+      .accept-control
+        Fast-forward merge is not possible. Branch must be rebased first
 
 :coffeescript
   $('.accept-mr-form').on 'ajax:before', ->
