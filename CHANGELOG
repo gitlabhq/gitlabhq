@@ -19,6 +19,7 @@ v 8.0.0 (unreleased)
   - Move dashboard activity to separate page
   - Improve performance of git blame
   - Limit content width to 1200px for most of pages to improve readability on big screens
+  - Don't notify users without access to the project when they are (accidentally) mentioned in a note.
 
 v 7.14.1
   - Improve abuse reports management from admin area
