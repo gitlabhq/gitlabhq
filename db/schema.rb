@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150827121444) do
+ActiveRecord::Schema.define(version: 20150827144737) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -464,7 +464,6 @@ ActiveRecord::Schema.define(version: 20150827121444) do
     t.boolean  "merge_requests_rebase_enabled",  default: false
     t.string   "import_type"
     t.string   "import_source"
-    t.boolean  "merge_requests_rebase_default",  default: true
     t.integer  "approvals_before_merge",         default: 0,        null: false
     t.boolean  "reset_approvals_on_push",        default: true
     t.integer  "commit_count",                   default: 0
