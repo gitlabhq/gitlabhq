@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 7.14.2
+  - Upgrade gitlab_git to 7.2.15 to fix `git blame` errors with ISO-encoded files (Stan Hu)
 
 v 7.14.1
   - Only include base URL in OmniAuth full_host parameter (Stan Hu)
