@@ -162,78 +162,6 @@ ul.nav.nav-projects-tabs {
   margin: 0px;
 }
 
-.my-projects,
-.public-projects {
-  li {
-    .project-info {
-      margin-bottom: 10px;
-      overflow: hidden;
-    }
-
-    .access-icon {
-      color: #AAA;
-      margin-left: 10px;
-      i {
-        color: #AAA;
-      }
-    }
-  }
-}
-
-.public-clone {
-  background: #EEE;
-  color: #777;
-  padding: 6px 10px;
-  margin: 1px;
-  font-weight: normal;
-}
-
-.public-projects .repo-info {
-  color: #777;
-
-  a {
-    color: #777;
-  }
-}
-
-.project-side {
-  .project-fork-icon {
-    float: left;
-    font-size: 26px;
-    margin-right: 10px;
-    line-height: 1.5;
-  }
-
-  .panel {
-    @include border-radius(3px);
-
-    .panel-heading, .panel-footer {
-      font-weight: normal;
-      background-color: transparent;
-      color: #666;
-      border-color: #EEE;
-    }
-
-    .actions {
-      margin-top: 10px;
-    }
-
-    .nav-pills a {
-      padding: 10px;
-      font-weight: bold;
-      color: $gl-link-color;
-    }
-
-    .nav {
-      margin-bottom: 15px;
-    }
-  }
-
-  .ci-status-image {
-    max-height: 22px;
-  }
-}
-
 .transfer-project .select2-container {
   min-width: 200px;
 }
@@ -334,23 +262,32 @@ pre.light-well {
   }
 }
 
-.project-row {
-  .project-full-name {
-    font-weight: bold;
-    font-size: 15px;
-  }
+/*
+ * Projects list rendered on dashboard and user page
+ */
+.projects-list {
+  @include basic-list;
 
-  .project-description {
-    color: #888;
-    font-size: 13px;
+  .project-row {
+    .project-full-name {
+      @include str-truncated;
+      font-weight: bold;
+      font-size: 15px;
+    }
 
-    p {
-      margin-bottom: 0;
+    .project-description {
       color: #888;
+      font-size: 13px;
+
+      p {
+        @include str-truncated;
+        margin-bottom: 0;
+        color: #888;
+      }
     }
   }
 }
 
-.my-projects .project-row {
-  padding: 10px 0;
+.panel .projects-list li {
+  padding: 10px 15px;
 }

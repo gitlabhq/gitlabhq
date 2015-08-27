@@ -1,6 +1,0 @@
-.search-result-row
-  %h4
-    = link_to [project.namespace.becomes(Namespace), project] do
-      %span.term= project.name_with_namespace
-  - if project.description.present?
-    %span.light.term= project.description

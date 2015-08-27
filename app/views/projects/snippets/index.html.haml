@@ -8,9 +8,8 @@
 %p.light
   Share code pastes with others out of git repository
 
-%hr
 %ul.bordered-list
-  = render partial: "projects/snippets/snippet", collection: @snippets
+  = render partial: "shared/snippets/snippet", collection: @snippets
   - if @snippets.empty?
     %li
       .nothing-here-block Nothing here.

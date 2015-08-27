@@ -19,6 +19,9 @@ v 8.0.0 (unreleased)
   - Move dashboard activity to separate page
   - Improve performance of git blame
   - Limit content width to 1200px for most of pages to improve readability on big screens
+  - Fix 500 error when submit project snippet without body
+  - Improve search page usability
+  - Bring more UI consistency in way how projects, snippets and groups lists are rendered
 
 v 7.14.1
   - Improve abuse reports management from admin area

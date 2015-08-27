@@ -32,17 +32,7 @@
 
 %ul.bordered-list
   - @groups.each do |group|
-    %li
-      .clearfix
-        %h4
-          = link_to group_path(id: group.path) do
-            = group.name
-      .clearfix
-        %p
-          = truncate group.description, length: 150
-      .clearfix
-        %p.light
-          #{pluralize(group.members.size, 'member')}, #{pluralize(group.projects.count, 'project')}
+    = render 'shared/groups/group', group: group
   - unless @groups.present?
     .nothing-here-block No public groups
 

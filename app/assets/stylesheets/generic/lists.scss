@@ -93,28 +93,12 @@ ol, ul {
 
 /** light list with border-bottom between li **/
 ul.bordered-list {
-  margin: 5px 0px;
-  padding: 0px;
-  li {
-    padding: 5px 0;
-    border-bottom: 1px solid #EEE;
-    overflow: hidden;
-    display: block;
-    margin: 0px;
-    &:last-child { border:none }
-    &.active {
-      background: #f9f9f9;
-      a { font-weight: bold; }
-    }
-
-    &.light {
-      a { color: #777; }
-    }
-  }
+  @include basic-list;
 
   &.top-list {
     li:first-child {
       padding-top: 0;
+
       h4, h5 {
         margin-top: 0;
       }
