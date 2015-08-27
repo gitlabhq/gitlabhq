@@ -29,7 +29,7 @@ class AuditEventsController < ApplicationController
     if @project
       'project_settings'
     elsif @group
-      'group'
+      'group_settings'
     end
   end
 

@@ -3,7 +3,7 @@ class Groups::LdapGroupLinksController < Groups::ApplicationController
   before_action :require_ldap_enabled
   before_action :authorize_admin_group!
 
-  layout 'group'
+  layout 'group_settings'
 
   def index
   end
