@@ -38,6 +38,11 @@ module GitlabMarkdownHelper
       end
     end
 
+    # Add any custom CSS classes to the GFM-generated reference links
+    if html_options[:class]
+      fragment.css('a.gfm').add_class(html_options[:class])
+    end
+
     fragment.to_html.html_safe
   end
 

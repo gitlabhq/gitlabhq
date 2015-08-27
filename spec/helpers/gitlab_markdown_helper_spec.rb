@@ -79,6 +79,16 @@ describe GitlabMarkdownHelper do
       expect(doc.css('a')[4].text).to eq ' for real'
     end
 
+    it 'should forward HTML options' do
+      actual = link_to_gfm("Fixed in #{commit.id}", commit_path, class: 'foo')
+      doc = Nokogiri::HTML.parse(actual)
+
+      expect(doc.css('a')).to satisfy do |v|
+        # 'foo' gets added to all links
+        v.all? { |a| a.attr('class').match(/foo$/) }
+      end
+    end
+
     it "escapes HTML passed in as the body" do
       actual = "This is a <h1>test</h1> - see #{issues[0].to_reference}"
       expect(link_to_gfm(actual, commit_path)).
