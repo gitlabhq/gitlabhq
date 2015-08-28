@@ -89,7 +89,7 @@ Usage of private and internal repositories will still require authentication.</p
     when 'default'
       out += 'The package is exported using the project\'s composer.json. '\
       'Project and advanced packaging mode settings are ignored.'
-    when 'project'
+    when 'attributes'
       out += 'The package is exported using the project\'s attributes. '\
       'The project packaging mode settings are applied.'
     when 'advanced'
