@@ -369,7 +369,7 @@ require authentication. '
   end
 
   def update_root_file
-    root_json = Composer::Json::JsonFile.new(root_path)
+    root_json = ::Composer::Json::JsonFile.new(root_path)
     root = root_json.read
     key = "p/#{repo_filename}"
     includes = root['includes'] || {}
@@ -395,20 +395,20 @@ require authentication. '
   def ref_package(ref)
     case package_mode
     when 'default'
-      loader = Composer::Package::Loader::ProjectRootLoader.new
+      loader = Gitlab::Composer::Package::Loader::ProjectRootLoader.new
       loader.load(project, ref)
     when 'attributes'
-      loader = Composer::Package::Loader::ProjectAttributesLoader.new
+      loader = Gitlab::Composer::Package::Loader::ProjectAttributesLoader.new
       loader.load(project, ref, package_type)
     when 'advanced'
-      loader = Composer::Package::Loader::ProjectLoader.new
+      loader = Gitlab::Composer::Package::Loader::ProjectLoader.new
       loader.load(project, ref, ActiveSupport::JSON.decode(custom_json))
     end
   end
 
   def repository
-    @repository ||= Composer::Repository::ProjectRepository.new(
-      Composer::Json::JsonFile.new(repo_path)
+    @repository ||= Gitlab::Composer::Repository::ProjectRepository.new(
+      ::Composer::Json::JsonFile.new(repo_path)
     )
   end
 
