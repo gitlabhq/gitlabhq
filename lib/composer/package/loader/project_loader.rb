@@ -24,7 +24,7 @@ module Composer
           # this works only on public repositories since composer can't handle gitlab oAuth yet.
           if project.public?
             config['dist'] = {
-              'url'  => [project.web_url, 'repository', 'archive.zip?ref=' + ref.name].join('/'),
+              'url' => Rails.application.routes.url_helpers.archive_namespace_project_repository_url(project.namespace, project, ref: ref.name, format: 'zip'),
               'type' => 'zip',
               'reference' => ref.target
             }
