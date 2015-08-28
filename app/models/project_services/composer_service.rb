@@ -78,23 +78,23 @@ class ComposerService < Service
   end
 
   def description
-    'List your project as a composer package'
+    'List this project as a composer package'
   end
 
   def help
-    out = 'This project will be publicly listed as a composer package,
-but usage of private and internal repositories will still
-require authentication. '
+    out = 'This project will be publicly listed as a composer package, exposing project metadata
+such as name, description, homepage, version, keywords and source url to the public.
+Usage of private and internal repositories will still require authentication.</p><p>'
     case package_mode
     when 'default'
       out += 'The package is exported using the project\'s composer.json. '\
-      'Additional settings are ignored.'
+      'Project and advanced packaging mode settings are ignored.'
     when 'project'
-      out += 'The package is exported using the project\'s attributes '\
-      'The following settings are applied.'
+      out += 'The package is exported using the project\'s attributes. '\
+      'The project packaging mode settings are applied.'
     when 'advanced'
       out += 'The package is exported using the custom json specified '\
-      'in the configuration.'
+      'in the advanced packaging mode settings.'
     end
     out
   end
@@ -105,11 +105,14 @@ require authentication. '
 
   def fields
     [
-      { type: 'fieldset', legend: 'Packaging:', fields:
+      { type: 'fieldset',
+        legend: 'Packaging Controls',
+        fields:
         [
           { type: 'select',
             name: 'package_mode',
             title: 'Package Mode',
+            help: 'This option controls the method used to generate the composer package.',
             choices:
             [
               ['Built-in: parse composer.json (default)', 'default'],
@@ -117,11 +120,19 @@ require authentication. '
               ['Advanced: use custom JSON', 'advanced']
             ],
             default_choice: 'default'
-          },
+          }
+        ]
+       },
+      { type: 'fieldset',
+        legend: 'Project Packaging Mode Settings',
+        fields:
+        [
           { type: 'select',
             name: 'package_type',
             title: 'Package Type',
-            hint: 'Applicable only on project package mode.',
+            help: 'Select among a list of predefined package types as defined in composer installers project. '\
+                  'In order to use the custom package type please select "Custom" from the top of this list '\
+                  'and define your custom package type below.',
             choices:
             [
               ['( custom )', 'custom'],
@@ -282,13 +293,24 @@ require authentication. '
           { type: 'text',
             name: 'custom_package_type',
             title: 'Custom Package Type',
-            placeholder: 'custom package type to use.',
-            help: 'In order to use the custom type please select package type "Custom" '\
-                  'and define your custom package type here. '\
+            help: 'A customized package type to use.'
           }
         ]
       },
-      { type: 'fieldset', legend: 'Branches:', fields:
+      { type: 'fieldset',
+        legend: 'Advanced Packaging Mode Settings',
+        fields:
+        [
+          { type: 'textarea',
+            name: 'custom_json',
+            title: 'Custom JSON',
+            help: 'The custom json to used to export this project as a composer package.'
+          }
+        ]
+      },
+      { type: 'fieldset',
+        legend: 'Branch Selection',
+        fields:
         [
           { type: 'checkbox',
             name: 'export_branches',
@@ -297,13 +319,14 @@ require authentication. '
           { type: 'text',
             name: 'branch_filters',
             title: 'Filters',
-            placeholder: 'branches you wish to export comma separated.',
-            hint: 'Separate branches with commas. '\
+            help: 'Separate branches with commas. '\
                   'Leave blank to export all branches.'
           }
         ]
       },
-      { type: 'fieldset', legend: 'Tags:', fields:
+      { type: 'fieldset',
+        legend: 'Tag Selection',
+        fields:
         [
           { type: 'checkbox',
             name: 'export_tags',
@@ -312,18 +335,8 @@ require authentication. '
           { type: 'text',
             name: 'tag_filters',
             title: 'Filters',
-            placeholder: 'tags you wish to export comma separated.',
-            hint: 'Separate tags with commas. '\
+            help: 'Separate tags with commas. '\
                   'Leave blank to export all tags.'
-          }
-        ]
-      },
-      { type: 'fieldset', legend: 'Advanced:', fields:
-        [
-          { type: 'textarea',
-            name: 'custom_json',
-            title: 'Custom JSON',
-            placeholder: 'custom json to use for exporting this package.'
           }
         ]
       }
