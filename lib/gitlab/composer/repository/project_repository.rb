@@ -9,11 +9,11 @@ module Gitlab
         # @param [Composer::Json::JsonFile] repository_file The repository json file
         def initialize(repository_file)
           unless repository_file
-            raise ArgumentError,
+            raise ::Composer::ArgumentError,
                   'repository_file must be specified'
           end
           unless repository_file.is_a?(::Composer::Json::JsonFile)
-            raise TypeError,
+            raise ::Composer::TypeError,
                   'repository_file type must be a \
                   Composer::Json::JsonFile or superclass'
           end
@@ -55,16 +55,16 @@ module Gitlab
           begin
             data = @file.read
             unless data.is_a?(Hash)
-              raise UnexpectedValueError,
+              raise ::Composer::UnexpectedValueError,
                     'Could not parse package list from the repository'
             end
             unless data['packages'].is_a?(Hash)
-              raise UnexpectedValueError,
+              raise ::Composer::UnexpectedValueError,
                     'Could not parse package list from the repository'
             end
             packages = data['packages']
           rescue Exception => e
-            raise InvalidRepositoryError,
+            raise ::Composer::InvalidRepositoryError,
                   "Invalid repository data in #{@file.path}, \
                   packages could not be loaded: \
                   [#{e.class}] #{e.message}"

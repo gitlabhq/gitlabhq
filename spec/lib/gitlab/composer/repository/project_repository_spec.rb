@@ -2,12 +2,12 @@ require 'spec_helper'
 require 'composer'
 require 'digest/crc32'
 
-describe Composer::Repository::ProjectRepository do
+describe Gitlab::Composer::Repository::ProjectRepository do
 
-  ProjectRepository = Composer::Repository::ProjectRepository
+  ProjectRepository = Gitlab::Composer::Repository::ProjectRepository
 
   it '#read succeeds' do
-    json = double(Composer::Json::JsonFile)
+    json = double(::Composer::Json::JsonFile)
     allow(json).to receive(:is_a?).once.and_return( true )
 
     repo = ProjectRepository.new(json)
@@ -35,7 +35,7 @@ describe Composer::Repository::ProjectRepository do
   end
 
   it '#packages with corrupted repository file' do
-    json = double(Composer::Json::JsonFile)
+    json = double(::Composer::Json::JsonFile)
     allow(json).to receive(:is_a?).once.and_return( true )
 
     repo = ProjectRepository.new(json)
@@ -43,11 +43,11 @@ describe Composer::Repository::ProjectRepository do
     expect(json).to receive(:exists?).once.and_return( true )
     expect(json).to receive(:path).once.and_return( 'test\path' )
 
-    expect { repo.packages }.to raise_error(Composer::InvalidRepositoryError)
+    expect { repo.packages }.to raise_error(::Composer::InvalidRepositoryError)
   end
 
   it '#packages with non-existent repository file' do
-    json = double(Composer::Json::JsonFile)
+    json = double(::Composer::Json::JsonFile)
     allow(json).to receive(:is_a?).once.and_return( true )
 
     repo = ProjectRepository.new(json)
@@ -56,7 +56,7 @@ describe Composer::Repository::ProjectRepository do
   end
 
   it '#write succeeds' do
-    json = double(Composer::Json::JsonFile)
+    json = double(::Composer::Json::JsonFile)
     allow(json).to receive(:is_a?).once.and_return( true )
 
     repo = ProjectRepository.new(json)
@@ -79,7 +79,7 @@ describe Composer::Repository::ProjectRepository do
     })
 
     repo.add_package(
-      Composer::Package::Package.new(
+      ::Composer::Package::Package.new(
         'mypkg',
         '0.1.10.0',
         '0.1.10'
@@ -91,7 +91,7 @@ describe Composer::Repository::ProjectRepository do
 
   it '#reload succeeds' do
 
-    json = double(Composer::Json::JsonFile)
+    json = double(::Composer::Json::JsonFile)
     allow(json).to receive(:is_a?).once.and_return( true )
     repo = ProjectRepository.new(json)
 

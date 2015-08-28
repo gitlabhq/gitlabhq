@@ -2,11 +2,11 @@ require 'spec_helper'
 require 'composer'
 require 'digest/crc32'
 
-describe Composer::Package::Loader::ProjectLoader do
+describe Gitlab::Composer::Package::Loader::ProjectLoader do
   let(:project) { create(:project) }
 
   before do
-    @loader = Composer::Package::Loader::ProjectLoader.new
+    @loader = Gitlab::Composer::Package::Loader::ProjectLoader.new
     @project = project
     @branch = project.repository.find_branch('master')
     @config = {
@@ -63,7 +63,7 @@ describe Composer::Package::Loader::ProjectLoader do
   end
 
   it '#load fails on unamed' do
-    expect { @loader.load(@project, @branch, {}) }.to raise_error(Composer::UnexpectedValueError)
+    expect { @loader.load(@project, @branch, {}) }.to raise_error(::Composer::UnexpectedValueError)
   end
 
 end
