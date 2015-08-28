@@ -18,7 +18,7 @@ module Composer
         # Returns: Composer::Package::Package
         def load(project, ref, type = 'library')
           config = {
-            'name'                => project.path_with_namespace.gsub(/\s/, '').downcase,
+            'name'                => project.path_with_namespace.downcase,
             'description'         => project.description || '',
             'type'                => type,
             'homepage'            => project.web_url
