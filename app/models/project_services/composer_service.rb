@@ -22,15 +22,17 @@ require 'digest'
 require 'composer'
 
 class ComposerService < Service
-  prop_accessor :package_mode, :package_type, :export_branches, :branch_filters,
+  prop_accessor :package_mode, :package_type, :custom_package_type, :export_branches, :branch_filters,
                 :export_tags, :tag_filters, :custom_json
 
   validates :package_mode,
     presence: true,
-    inclusion: { in: ['default', 'project', 'advanced'] },
+    inclusion: { in: ['default', 'attributes', 'advanced'] },
     if: :activated?
 
   validates :package_type, presence: true, if: :activated?
+
+  validates :custom_package_type, presence: true, if: :validate_custom_package_type?
 
   validates_each :custom_json,
     if: :allow_custom_json_validation? do |record, attr, value|
@@ -65,6 +67,10 @@ class ComposerService < Service
 
   def allow_custom_json_validation?
     activated? && package_mode == 'advanced'
+  end
+
+  def validate_custom_package_type?
+    activated? && package_type == 'custom'
   end
 
   def title
@@ -118,6 +124,7 @@ require authentication. '
             hint: 'Applicable only on project package mode.',
             choices:
             [
+              ['( custom )', 'custom'],
               ['AGL Module', 'agl-module'],
               ['AnnotateCms Component', 'annotatecms-component'],
               ['AnnotateCms Module', 'annotatecms-module'],
@@ -271,6 +278,13 @@ require authentication. '
               ['Zikula Theme', 'zikula-theme']
             ],
             default_choice: 'library'
+          },
+          { type: 'text',
+            name: 'custom_package_type',
+            title: 'Custom Package Type',
+            placeholder: 'custom package type to use.',
+            help: 'In order to use the custom type please select package type "Custom" '\
+                  'and define your custom package type here. '\
           }
         ]
       },
@@ -399,7 +413,12 @@ require authentication. '
       loader.load(project, ref)
     when 'attributes'
       loader = Gitlab::Composer::Package::Loader::ProjectAttributesLoader.new
-      loader.load(project, ref, package_type)
+      case package_type
+      when 'custom'
+        loader.load(project, ref, custom_package_type)
+      else
+        loader.load(project, ref, package_type)
+      end
     when 'advanced'
       loader = Gitlab::Composer::Package::Loader::ProjectLoader.new
       loader.load(project, ref, ActiveSupport::JSON.decode(custom_json))
