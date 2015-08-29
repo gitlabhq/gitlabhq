@@ -199,6 +199,10 @@ module API
       expose :id, :title, :key, :created_at
     end
 
+    class SSHKeyWithUser < SSHKey
+      expose :user, using: Entities::UserFull
+    end
+
     class Note < Grape::Entity
       expose :id
       expose :note, as: :body
