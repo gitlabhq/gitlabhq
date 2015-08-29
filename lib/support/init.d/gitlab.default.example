@@ -30,6 +30,15 @@ web_server_pid_path="$pid_path/unicorn.pid"
 # The default is "$pid_path/sidekiq.pid"
 sidekiq_pid_path="$pid_path/sidekiq.pid"
 
+# mail_room_enabled specifies whether mail_room, which is used to process incoming email, is enabled.
+# This is required for the Reply by email feature.
+# The default is "false"
+mail_room_enabled=false
+
+# mail_room_pid_path defines the path in which to create the pid file for mail_room
+# The default is "$pid_path/mail_room.pid"
+mail_room_pid_path="$pid_path/mail_room.pid"
+
 # shell_path defines the path of shell for "$app_user" in case you are using
 # shell other than "bash"
 # The default is "/bin/bash"

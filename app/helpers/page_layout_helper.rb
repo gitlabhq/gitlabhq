@@ -23,4 +23,12 @@ module PageLayoutHelper
       @sidebar
     end
   end
+
+  def fluid_layout(enabled = false)
+    if @fluid_layout.nil?
+      @fluid_layout = enabled
+    else
+      @fluid_layout
+    end
+  end
 end

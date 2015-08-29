@@ -21,6 +21,11 @@ pre.code.highlight.solarized-light,
     background-color: #ddd8c5 !important;
   }
 
+  // Search result highlight
+  span.highlight_word {
+    background: #eee8d5;
+  }
+
   /* Solarized Light
 
   For use with Jekyll and Pygments

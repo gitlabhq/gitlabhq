@@ -30,9 +30,14 @@ class Projects::SnippetsController < Projects::ApplicationController
   def create
     @snippet = CreateSnippetService.new(@project, current_user,
                                         snippet_params).execute
-    respond_with(@snippet,
-                 location: namespace_project_snippet_path(@project.namespace,
-                                                          @project, @snippet))
+
+    if @snippet.valid?
+      respond_with(@snippet,
+                   location: namespace_project_snippet_path(@project.namespace,
+                                                            @project, @snippet))
+    else
+      render :new
+    end
   end
 
   def edit

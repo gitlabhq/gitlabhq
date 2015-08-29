@@ -1,7 +1,19 @@
 .search-results {
   .search-result-row {
-    border-bottom: 1px solid #EEE;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
+    border-bottom: 1px solid #DDD;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
   }
 }
+
+.search-holder {
+  max-width: 600px;
+  margin: 0 auto;
+  margin-bottom: 20px;
+
+  input {
+    border-color: #BBB;
+    font-weight: bold;
+  }
+}
+

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150817163600) do
+ActiveRecord::Schema.define(version: 20150824002011) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -405,6 +405,17 @@ ActiveRecord::Schema.define(version: 20150817163600) do
 
   add_index "protected_branches", ["project_id"], name: "index_protected_branches_on_project_id", using: :btree
 
+  create_table "sent_notifications", force: true do |t|
+    t.integer "project_id"
+    t.integer "noteable_id"
+    t.string  "noteable_type"
+    t.integer "recipient_id"
+    t.string  "commit_id"
+    t.string  "reply_key",     null: false
+  end
+
+  add_index "sent_notifications", ["reply_key"], name: "index_sent_notifications_on_reply_key", unique: true, using: :btree
+
   create_table "services", force: true do |t|
     t.string   "type"
     t.string   "title"
@@ -515,13 +526,9 @@ ActiveRecord::Schema.define(version: 20150817163600) do
     t.string   "unconfirmed_email"
     t.boolean  "hide_no_ssh_key",               default: false
     t.string   "website_url",                   default: "",    null: false
-    t.string   "github_access_token"
-    t.string   "gitlab_access_token"
     t.string   "notification_email"
     t.boolean  "hide_no_password",              default: false
     t.boolean  "password_automatically_set",    default: false
-    t.string   "bitbucket_access_token"
-    t.string   "bitbucket_access_token_secret"
     t.string   "location"
     t.string   "encrypted_otp_secret"
     t.string   "encrypted_otp_secret_iv"
@@ -559,13 +566,14 @@ ActiveRecord::Schema.define(version: 20150817163600) do
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "type",                  default: "ProjectHook"
+    t.string   "type",                    default: "ProjectHook"
     t.integer  "service_id"
-    t.boolean  "push_events",           default: true,          null: false
-    t.boolean  "issues_events",         default: false,         null: false
-    t.boolean  "merge_requests_events", default: false,         null: false
-    t.boolean  "tag_push_events",       default: false
-    t.boolean  "note_events",           default: false,         null: false
+    t.boolean  "push_events",             default: true,          null: false
+    t.boolean  "issues_events",           default: false,         null: false
+    t.boolean  "merge_requests_events",   default: false,         null: false
+    t.boolean  "tag_push_events",         default: false
+    t.boolean  "note_events",             default: false,         null: false
+    t.boolean  "enable_ssl_verification", default: false
   end
 
   add_index "web_hooks", ["created_at", "id"], name: "index_web_hooks_on_created_at_and_id", using: :btree

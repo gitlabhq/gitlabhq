@@ -1,6 +1,6 @@
 class DashboardController < Dashboard::ApplicationController
   before_action :load_projects
-  before_action :event_filter, only: :show
+  before_action :event_filter, only: :activity
 
   respond_to :html
 
@@ -10,13 +10,8 @@ class DashboardController < Dashboard::ApplicationController
 
     respond_to do |format|
       format.html
-
-      format.json do
-        load_events
-        pager_json("events/_events", @events.count)
-      end
-
       format.atom do
+        event_filter
         load_events
         render layout: false
       end
@@ -37,6 +32,19 @@ class DashboardController < Dashboard::ApplicationController
     respond_to do |format|
       format.html
       format.atom { render layout: false }
+    end
+  end
+
+  def activity
+    @last_push = current_user.recent_push
+
+    respond_to do |format|
+      format.html
+
+      format.json do
+        load_events
+        pager_json("events/_events", @events.count)
+      end
     end
   end
 

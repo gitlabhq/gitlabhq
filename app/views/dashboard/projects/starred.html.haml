@@ -5,10 +5,10 @@
   = render 'shared/show_aside'
 
   .dashboard.row
-    %section.activities.col-md-8
+    %section.activities.col-md-7
       = render 'dashboard/activities'
-    %aside.col-md-4
-      .panel.panel-default
+    %aside.col-md-5
+      .panel.panel-default.projects-list-holder
         .panel-heading.clearfix
           .input-group
             = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control'
@@ -17,8 +17,7 @@
                 = link_to new_project_path, class: 'btn btn-success' do
                   New project
 
-        = render 'shared/projects_list', projects: @projects,
-          projects_limit: 20, stars: true, avatar: false
+        = render 'shared/projects/list', projects: @projects, projects_limit: 20
 
 - else
   %h3 You don't have starred projects yet

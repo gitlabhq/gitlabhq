@@ -23,7 +23,7 @@ class SearchController < ApplicationController
 
     @search_results =
       if @project
-        unless %w(blobs notes issues merge_requests wiki_blobs).
+        unless %w(blobs notes issues merge_requests milestones wiki_blobs).
           include?(@scope)
           @scope = 'blobs'
         end
@@ -36,7 +36,7 @@ class SearchController < ApplicationController
 
         Search::SnippetService.new(current_user, params).execute
       else
-        unless %w(projects issues merge_requests).include?(@scope)
+        unless %w(projects issues merge_requests milestones).include?(@scope)
           @scope = 'projects'
         end
         Search::GlobalService.new(current_user, params).execute

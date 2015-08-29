@@ -132,10 +132,6 @@ p.time {
   text-shadow: none;
 }
 
-.highlight_word {
-  background: #fafe3d;
-}
-
 .thin_area{
   height: 150px;
 }
@@ -375,9 +371,9 @@ table {
 }
 
 .center-top-menu {
-  border-bottom: 1px solid #EEE;
   list-style: none;
   text-align: center;
+  margin-top: 5px;
   padding-bottom: 15px;
   margin-bottom: 15px;
 
@@ -385,7 +381,7 @@ table {
     display: inline-block;
 
     a {
-      padding: 10px;
+      padding: 15px;
     }
 
     &.active a {

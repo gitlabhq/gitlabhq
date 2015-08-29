@@ -34,11 +34,11 @@ gem 'rqrcode-rails3'
 gem 'attr_encrypted', '1.3.4'
 
 # Browser detection
-gem "browser", '~> 0.8.0'
+gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 7.2.14'
+gem "gitlab_git", '~> 7.2.15'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 # GitLab fork with a lot of changes (improved thread-safety, better memory usage etc)
@@ -272,3 +272,7 @@ end
 gem "newrelic_rpm"
 
 gem 'octokit', '3.7.0'
+
+gem "mail_room", "~> 0.4.1"
+
+gem 'email_reply_parser'

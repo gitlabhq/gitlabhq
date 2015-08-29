@@ -4,7 +4,13 @@ require_relative 'import_spec_helper'
 describe Import::GithubController do
   include ImportSpecHelper
 
-  let(:user) { create(:user, github_access_token: 'asd123') }
+  let(:user) { create(:user) }
+  let(:token) { "asdasd12345" }
+  let(:access_params) { { github_access_token: token } }
+
+  def assign_session_token
+    session[:github_access_token] = token
+  end
 
   before do
     sign_in(user)
@@ -20,7 +26,7 @@ describe Import::GithubController do
 
       get :callback
 
-      expect(user.reload.github_access_token).to eq(token)
+      expect(session[:github_access_token]).to eq(token)
       expect(controller).to redirect_to(status_import_github_url)
     end
   end
@@ -30,6 +36,7 @@ describe Import::GithubController do
       @repo = OpenStruct.new(login: 'vim', full_name: 'asd/vim')
       @org = OpenStruct.new(login: 'company')
       @org_repo = OpenStruct.new(login: 'company', full_name: 'company/repo')
+      assign_session_token
     end
 
     it "assigns variables" do
@@ -66,13 +73,14 @@ describe Import::GithubController do
 
     before do
       stub_client(user: github_user, repo: github_repo)
+      assign_session_token
     end
 
     context "when the repository owner is the GitHub user" do
       context "when the GitHub user and GitLab user's usernames match" do
         it "takes the current user's namespace" do
           expect(Gitlab::GithubImport::ProjectCreator).
-            to receive(:new).with(github_repo, user.namespace, user).
+            to receive(:new).with(github_repo, user.namespace, user, access_params).
             and_return(double(execute: true))
 
           post :create, format: :js
@@ -84,7 +92,7 @@ describe Import::GithubController do
 
         it "takes the current user's namespace" do
           expect(Gitlab::GithubImport::ProjectCreator).
-            to receive(:new).with(github_repo, user.namespace, user).
+            to receive(:new).with(github_repo, user.namespace, user, access_params).
             and_return(double(execute: true))
 
           post :create, format: :js
@@ -97,6 +105,7 @@ describe Import::GithubController do
 
       before do
         github_repo.owner = OpenStruct.new(login: other_username)
+        assign_session_token
       end
 
       context "when a namespace with the GitHub user's username already exists" do
@@ -105,7 +114,7 @@ describe Import::GithubController do
         context "when the namespace is owned by the GitLab user" do
           it "takes the existing namespace" do
             expect(Gitlab::GithubImport::ProjectCreator).
-              to receive(:new).with(github_repo, existing_namespace, user).
+              to receive(:new).with(github_repo, existing_namespace, user, access_params).
               and_return(double(execute: true))
 
             post :create, format: :js
@@ -139,7 +148,7 @@ describe Import::GithubController do
 
         it "takes the new namespace" do
           expect(Gitlab::GithubImport::ProjectCreator).
-            to receive(:new).with(github_repo, an_instance_of(Group), user).
+            to receive(:new).with(github_repo, an_instance_of(Group), user, access_params).
             and_return(double(execute: true))
 
           post :create, format: :js

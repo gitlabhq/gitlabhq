@@ -8,6 +8,8 @@ module Emails
                       from: sender(@issue.author_id),
                       to: recipient(recipient_id),
                       subject: subject("#{@issue.title} (##{@issue.iid})"))
+
+      SentNotification.record(@issue, recipient_id, reply_key)
     end
 
     def reassigned_issue_email(recipient_id, issue_id, previous_assignee_id, updated_by_user_id)
@@ -19,6 +21,8 @@ module Emails
                          from: sender(updated_by_user_id),
                          to: recipient(recipient_id),
                          subject: subject("#{@issue.title} (##{@issue.iid})"))
+
+      SentNotification.record(@issue, recipient_id, reply_key)
     end
 
     def closed_issue_email(recipient_id, issue_id, updated_by_user_id)
@@ -30,6 +34,8 @@ module Emails
                          from: sender(updated_by_user_id),
                          to: recipient(recipient_id),
                          subject: subject("#{@issue.title} (##{@issue.iid})"))
+
+      SentNotification.record(@issue, recipient_id, reply_key)
     end
 
     def issue_status_changed_email(recipient_id, issue_id, status, updated_by_user_id)
@@ -42,6 +48,8 @@ module Emails
                          from: sender(updated_by_user_id),
                          to: recipient(recipient_id),
                          subject: subject("#{@issue.title} (##{@issue.iid})"))
+
+      SentNotification.record(@issue, recipient_id, reply_key)
     end
   end
 end

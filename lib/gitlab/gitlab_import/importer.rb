@@ -5,7 +5,9 @@ module Gitlab
 
       def initialize(project)
         @project = project
-        @client = Client.new(project.creator.gitlab_access_token)
+        import_data = project.import_data.try(:data)
+        gitlab_session = import_data["gitlab_session"] if import_data
+        @client = Client.new(gitlab_session["gitlab_access_token"])
         @formatter = Gitlab::ImportFormatter.new
       end
 
@@ -14,12 +16,12 @@ module Gitlab
 
         #Issues && Comments
         issues = client.issues(project_identifier)
-        
+
         issues.each do |issue|
           body = @formatter.author_line(issue["author"]["name"], issue["description"])
-          
+
           comments = client.issue_comments(project_identifier, issue["id"])
-          
+
           if comments.any?
             body += @formatter.comments_header
           end
@@ -29,13 +31,13 @@ module Gitlab
           end
 
           project.issues.create!(
-            description: body, 
+            description: body,
             title: issue["title"],
             state: issue["state"],
             author_id: gl_user_id(project, issue["author"]["id"])
           )
         end
-        
+
         true
       end
 

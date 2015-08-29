@@ -27,3 +27,9 @@ Feature: Admin Groups
     When I visit admin group page
     And I remove user "John Doe" from group
     Then I should not see "John Doe" in team list
+
+  @javascript
+  Scenario: Invite user to a group by e-mail
+    When I visit admin group page
+    When I select user "johndoe@gitlab.com" from user list as "Reporter"
+    Then I should see "johndoe@gitlab.com" in team list in every project as "Reporter"

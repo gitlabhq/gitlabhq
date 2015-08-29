@@ -44,9 +44,24 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
     click_button "Add users to group"
   end
 
+  When 'I select user "johndoe@gitlab.com" from user list as "Reporter"' do
+    select2('johndoe@gitlab.com', from: "#user_ids", multiple: true)
+    page.within "#new_project_member" do
+      select "Reporter", from: "access_level"
+    end
+    click_button "Add users to group"
+  end
+
   step 'I should see "John Doe" in team list in every project as "Reporter"' do
     page.within ".group-users-list" do
       expect(page).to have_content "John Doe"
+      expect(page).to have_content "Reporter"
+    end
+  end
+
+  step 'I should see "johndoe@gitlab.com" in team list in every project as "Reporter"' do
+    page.within ".group-users-list" do
+      expect(page).to have_content "johndoe@gitlab.com (invited)"
       expect(page).to have_content "Reporter"
     end
   end

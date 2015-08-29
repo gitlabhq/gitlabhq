@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe Gitlab::GoogleCodeImport::Importer do
   let(:mapped_user) { create(:user, username: "thilo123") }
-  let(:raw_data) { JSON.parse(File.read(Rails.root.join("spec/fixtures/GoogleCodeProjectHosting.json"))) }
+  let(:raw_data) { JSON.parse(fixture_file("GoogleCodeProjectHosting.json")) }
   let(:client) { Gitlab::GoogleCodeImport::Client.new(raw_data) }
   let(:import_data) do
     {

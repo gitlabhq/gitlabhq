@@ -28,8 +28,7 @@ describe EventsHelper do
 
   it 'should display the first line of a code block' do
     input = "```\nCode block\nwith two lines\n```"
-    expected = '<pre class="code highlight white plaintext"><code>' \
-               'Code block...</code></pre>'
+    expected = %r{<pre.+><code>Code block\.\.\.</code></pre>}
 
     expect(event_note(input)).to match(expected)
   end
@@ -55,7 +54,7 @@ describe EventsHelper do
 
   it 'should preserve code color scheme' do
     input = "```ruby\ndef test\n  'hello world'\nend\n```"
-    expected = '<pre class="code highlight white ruby">' \
+    expected = '<pre class="code highlight js-syntax-highlight ruby">' \
       "<code><span class=\"k\">def</span> <span class=\"nf\">test</span>\n" \
       "  <span class=\"s1\">\'hello world\'</span>\n" \
       "<span class=\"k\">end</span>" \

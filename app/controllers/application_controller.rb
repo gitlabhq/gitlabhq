@@ -55,7 +55,9 @@ class ApplicationController < ActionController::Base
 
   def authenticate_user!(*args)
     # If user is not signed-in and tries to access root_path - redirect him to landing page
-    if current_application_settings.home_page_url.present?
+    # Don't redirect to the default URL to prevent endless redirections
+    if current_application_settings.home_page_url.present? &&
+        current_application_settings.home_page_url.chomp('/') != Gitlab.config.gitlab['url'].chomp('/')
       if current_user.nil? && root_path == request.path
         redirect_to current_application_settings.home_page_url and return
       end
@@ -190,11 +192,12 @@ class ApplicationController < ActionController::Base
   end
 
   def add_gon_variables
+    gon.api_version            = API::API.version
+    gon.default_avatar_url     = URI::join(Gitlab.config.gitlab.url, ActionController::Base.helpers.image_path('no_avatar.png')).to_s
     gon.default_issues_tracker = Project.new.default_issue_tracker.to_param
-    gon.api_version = API::API.version
-    gon.relative_url_root = Gitlab.config.gitlab.relative_url_root
-    gon.default_avatar_url = URI::join(Gitlab.config.gitlab.url, ActionController::Base.helpers.image_path('no_avatar.png')).to_s
-    gon.max_file_size = current_application_settings.max_attachment_size;
+    gon.max_file_size          = current_application_settings.max_attachment_size
+    gon.relative_url_root      = Gitlab.config.gitlab.relative_url_root
+    gon.user_color_scheme      = Gitlab::ColorSchemes.for_user(current_user).css_class
 
     if current_user
       gon.current_user_id = current_user.id
