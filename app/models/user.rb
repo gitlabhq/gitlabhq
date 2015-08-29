@@ -104,7 +104,7 @@ class User < ActiveRecord::Base
   # Profile
   has_many :keys, dependent: :destroy
   has_many :emails, dependent: :destroy
-  has_many :identities, dependent: :destroy
+  has_many :identities, dependent: :destroy, autosave: true
 
   # Groups
   has_many :members, dependent: :destroy
