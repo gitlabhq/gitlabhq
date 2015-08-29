@@ -1,17 +1,18 @@
 # Documentation styleguide
 
-This styleguide recommends best practices to improve documentation and to keep it organized and easy to find. 
+This styleguide recommends best practices to improve documentation and to keep it organized and easy to find.
 
 ## Text
 
 - Split up long lines, this makes it much easier to review and edit. Only
-double line breaks are shown as a full line break in markdown. 80 characters
-is a good line length.
+  double line breaks are shown as a full line break in markdown. 80 characters
+  is a good line length.
 - For subtitles, make sure to start with the largest and go down, meaning:
-`#` for the title, `##` for subtitles and `###` for subtitles of the subtitles, etc.
-- Make sure that the documentation is added in the correct directory and that there's a link to it somewhere useful.
-- Add only one H1 or title in each document, by adding '#' at the begining of it (when using markdown). 
-For subtitles, use '##', '###' and so on.
+  `#` for the title, `##` for subtitles and `###` for subtitles of the subtitles, etc.
+- Make sure that the documentation is added in the correct directory and that
+  there's a link to it somewhere useful.
+- Add only one H1 or title in each document, by adding '#' at the begining of
+  it (when using markdown). For subtitles, use '##', '###' and so on.
 - Do not duplicate information.
 - Be brief and clear.
 - Whenever it applies, add documents in alphabetical order.
@@ -20,7 +21,68 @@ For subtitles, use '##', '###' and so on.
 
 ## Images
 
-- Create a directory to store the images with the specific name of the document where the images belong. 
-It could be in the same directory where the .md document that you're working on is located.
+- Create a directory to store the images with the specific name of the document
+  where the images belong. It could be in the same directory where the `.md`
+  document that you're working on is located.
 - Images should have a specific, non-generic name that will differentiate them.
 - Keep all file names in lower case.
+
+## API
+
+Here is a list of must have items. Further explanation is given below.
+
+- Every method must have the REST request. For example:
+
+    ```
+    GET /projects/:id/repository/branches
+    ```
+
+- Every method must have a curl example.
+- Every method must have a response body (in json format).
+
+### Method description
+
+Use the following table headers to describe the methods. Attributes should
+always be in code blocks using backticks (`).
+
+```
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+```
+
+Rendered example:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user`  | string | yes | The GitLab username |
+
+### cURL commands
+
+- Use `https://gitlab.example.com/api/v3/` as an endpoint.
+- Wherever needed use this private token: `9koXpg98eAheJpvBs5tK`.
+- Always put the request first. `GET` is the default so you don't have to
+  include it.
+- Use double quotes to the url when it includes additional parameters.
+- Prefer to use examples using the private token and don't pass data of username
+  and password.
+
+| Methods | Description |
+| ------- | ----------- |
+| `-H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK"` | Use this method as is, whenever authentication needed |
+| `-X POST`   | Use this method when creating new objects |
+| `-X PUT`    | Use this method when updating existing objects |
+| `-X DELETE` | Use this method when removing existing objects |
+
+#### Examples
+
+Get the details of a group:
+
+```
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/gitlab-org
+```
+
+Create a new project under the authenticated user's namespace:
+
+```
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects?name=foo"
+```
