@@ -25,6 +25,7 @@ v 8.0.0 (unreleased)
   - Bring more UI consistency in way how projects, snippets and groups lists are rendered
   - Make all profiles public
   - Fixed login failure when extern_uid changes (Joel Koglin)
+  - Don't notify users without access to the project when they are (accidentally) mentioned in a note.
 
 v 7.14.1
   - Improve abuse reports management from admin area
