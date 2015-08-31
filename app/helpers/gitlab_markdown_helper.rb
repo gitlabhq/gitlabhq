@@ -48,11 +48,11 @@ module GitlabMarkdownHelper
 
   def markdown(text, context = {})
     context.merge!(
-      current_user:   current_user,
-      project:        @project,
-      project_wiki:   @project_wiki,
-      ref:            @ref,
-      requested_path: @path
+      current_user: current_user,
+      path:         @path,
+      project:      @project,
+      project_wiki: @project_wiki,
+      ref:          @ref,
     )
 
     Gitlab::Markdown.render(text, context)
