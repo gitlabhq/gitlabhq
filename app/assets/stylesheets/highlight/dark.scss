@@ -21,6 +21,12 @@ pre.code.highlight.dark,
     background-color: #557 !important;
   }
 
+  // Search result highlight
+  span.highlight_word {
+    background: #ffe792;
+    color: #000000;
+  }
+
   .hll { background-color: #373b41 }
   .c { color: #969896 } /* Comment */
   .err { color: #cc6666 } /* Error */

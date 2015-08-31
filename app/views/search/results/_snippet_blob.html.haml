@@ -23,7 +23,7 @@
                 .nothing-here-block Empty file
       - else
         .file-content.code
-          %div.highlighted-data{class: user_color_scheme_class}
+          %div.highlighted-data{ class: user_color_scheme }
             .line-numbers
               - snippet_blob[:snippet_chunks].each do |snippet|
                 - unless snippet[:data].empty?

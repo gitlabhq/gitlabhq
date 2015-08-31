@@ -21,6 +21,11 @@ pre.code.highlight.solarized-dark,
     background-color: #174652 !important;
   }
 
+  // Search result highlight
+  span.highlight_word {
+    background: #094554;
+  }
+
   /* Solarized Dark
 
   For use with Jekyll and Pygments

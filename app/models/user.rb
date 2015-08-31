@@ -104,7 +104,7 @@ class User < ActiveRecord::Base
   # Profile
   has_many :keys, dependent: :destroy
   has_many :emails, dependent: :destroy
-  has_many :identities, dependent: :destroy
+  has_many :identities, dependent: :destroy, autosave: true
 
   # Groups
   has_many :members, dependent: :destroy
@@ -635,10 +635,6 @@ class User < ActiveRecord::Base
 
   def temp_oauth_email?
     email.start_with?('temp-email-for-oauth')
-  end
-
-  def public_profile?
-    authorized_projects.public_only.any?
   end
 
   def avatar_url(size = nil)

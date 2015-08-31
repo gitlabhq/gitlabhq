@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.0.0 (unreleased)
+  - Upgrade gitlab_git to 7.2.15 to fix `git blame` errors with ISO-encoded files (Stan Hu)
   - Prevent too many redirects upon login when home page URL is set to external_url (Stan Hu)
   - Improve dropdown positioning on the project home page (Hannes Rosenögger)
   - Upgrade browser gem to 1.0.0 to avoid warning in IE11 compatibilty mode (Stan Hu)
@@ -22,6 +23,9 @@ v 8.0.0 (unreleased)
   - Fix 500 error when submit project snippet without body
   - Improve search page usability
   - Bring more UI consistency in way how projects, snippets and groups lists are rendered
+  - Make all profiles public
+  - Fixed login failure when extern_uid changes (Joel Koglin)
+  - Don't notify users without access to the project when they are (accidentally) mentioned in a note.
 
 v 7.14.1
   - Improve abuse reports management from admin area

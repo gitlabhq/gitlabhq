@@ -4,7 +4,7 @@ module Gitlab
       key = :current_application_settings
 
       RequestStore.store[key] ||= begin
-        if ActiveRecord::Base.connected? && ActiveRecord::Base.connection.table_exists?('application_settings')
+        if ActiveRecord::Base.connection.active? && ActiveRecord::Base.connection.table_exists?('application_settings')
           ApplicationSetting.current || ApplicationSetting.create_from_defaults
         else
           fake_application_settings
