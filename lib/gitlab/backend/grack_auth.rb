@@ -26,12 +26,8 @@ module Grack
       auth!
 
       if project && authorized_request?
-        if ENV['GITLAB_GRACK_AUTH_ONLY'] == '1'
-          # Tell gitlab-git-http-server the request is OK, and what the GL_ID is
-          render_grack_auth_ok
-        else
-          @app.call(env)
-        end
+        # Tell gitlab-git-http-server the request is OK, and what the GL_ID is
+        render_grack_auth_ok
       elsif @user.nil? && !@gitlab_ci
         unauthorized
       else
@@ -132,7 +128,9 @@ module Grack
 
       case git_cmd
       when *Gitlab::GitAccess::DOWNLOAD_COMMANDS
-        if user
+        if !Gitlab.config.gitlab_shell.upload_pack
+          false
+        elsif user
           Gitlab::GitAccess.new(user, project).download_access_check.allowed?
         elsif project.public?
           # Allow clone/fetch for public projects
@@ -141,7 +139,9 @@ module Grack
           false
         end
       when *Gitlab::GitAccess::PUSH_COMMANDS
-        if user
+        if !Gitlab.config.gitlab_shell.receive_pack
+          false
+        elsif user
           # Skip user authorization on upload request.
           # It will be done by the pre-receive hook in the repository.
           true

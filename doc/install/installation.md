@@ -125,13 +125,25 @@ Install the Bundler Gem:
 
     sudo gem install bundler --no-ri --no-rdoc
 
-## 3. System Users
+## 3. Go
+
+Since GitLab 8.0, Git HTTP requests are handled by gitlab-git-http-server.
+This is a small daemon written in Go.
+To install gitlab-git-http-server we need a Go compiler.
+
+    curl -O --progress https://storage.googleapis.com/golang/go1.5.linux-amd64.tar.gz
+    echo '5817fa4b2252afdb02e11e8b9dc1d9173ef3bd5a  go1.5.linux-amd64.tar.gz' | shasum -c - && \
+      sudo tar -C /usr/local -xzf go1.5.linux-amd64.tar.gz
+    sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
+    rm go1.5.linux-amd64.tar.gz
+
+## 4. System Users
 
 Create a `git` user for GitLab:
 
     sudo adduser --disabled-login --gecos 'GitLab' git
 
-## 4. Database
+## 5. Database
 
 We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](database_mysql.md). *Note*: because we need to make use of extensions you need at least pgsql 9.1.
 
@@ -157,7 +169,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Quit the database session
     gitlabhq_production> \q
 
-## 5. Redis
+## 6. Redis
 
     sudo apt-get install redis-server
 
@@ -187,7 +199,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Add git to the redis group
     sudo usermod -aG redis git
 
-## 6. GitLab
+## 7. GitLab
 
     # We'll install GitLab into home directory of the user "git"
     cd /home/git
@@ -297,6 +309,13 @@ GitLab Shell is an SSH access and repository management software developed speci
 
 **Note:** Make sure your hostname can be resolved on the machine itself by either a proper DNS record or an additional line in /etc/hosts ("127.0.0.1  hostname"). This might be necessary for example if you set up gitlab behind a reverse proxy. If the hostname cannot be resolved, the final installation check will fail with "Check GitLab API access: FAILED. code: 401" and pushing commits will be rejected with "[remote rejected] master -> master (hook declined)".
 
+### Install gitlab-git-http-server
+
+    cd /home/git
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-git-http-server.git
+    cd gitlab-git-http-server
+    sudo -u git -H make
+
 ### Initialize Database and Activate Advanced Features
 
     sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
@@ -345,7 +364,7 @@ Check if GitLab and its environment are configured correctly:
     # or
     sudo /etc/init.d/gitlab restart
 
-## 7. Nginx
+## 8. Nginx
 
 **Note:** Nginx is the officially supported web server for GitLab. If you cannot or do not want to use Nginx as your web server, have a look at the [GitLab recipes](https://gitlab.com/gitlab-org/gitlab-recipes/).
 
