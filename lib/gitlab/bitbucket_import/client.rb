@@ -52,7 +52,7 @@ module Gitlab
       end
 
       def issues(project_identifier)
-        JSON.parse(get("/api/1.0/repositories/#{project_identifier}/issues").body)
+        JSON.parse(get("/api/1.0/repositories/#{project_identifier}/issues?sort=utc_created_on").body)
       end
 
       def issue_comments(project_identifier, issue_id)
