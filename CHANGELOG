@@ -34,6 +34,7 @@ v 8.0.0 (unreleased)
   - Added Drone CI integration (Kirill Zaitsev)
   - Refactored service API and added automatically service docs generator (Kirill Zaitsev) 
   - Added web_url key project hook_attrs (Kirill Zaitsev)
+  - Add support for Crowd
 
 v 7.14.1
   - Improve abuse reports management from admin area
