@@ -270,7 +270,7 @@ stop_gitlab() {
   fi
   if [ "$gitlab_git_http_server_status" = "0" ]; then
     echo "Shutting down gitlab-git-http-server"
-    kill $(cat $gitlab_git_http_server_pid_path)
+    kill -- $(cat $gitlab_git_http_server_pid_path)
   fi
   if [ "$mail_room_enabled" = true ] && [ "$mail_room_status" = "0" ]; then
     echo "Shutting down GitLab MailRoom"
