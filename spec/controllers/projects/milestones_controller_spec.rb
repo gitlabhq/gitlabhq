@@ -15,8 +15,12 @@ describe Projects::MilestonesController do
   describe "#destroy" do
     it "should remove milestone" do
       expect(issue.milestone_id).to eq(milestone.id)
+
       delete :destroy, namespace_id: project.namespace.id, project_id: project.id, id: milestone.id, format: :js
       expect(response).to be_success
+
+      expect(Event.first.action).to eq(Event::DESTROYED)
+
       expect { Milestone.find(milestone.id) }.to raise_exception(ActiveRecord::RecordNotFound)
       issue.reload
       expect(issue.milestone_id).to eq(nil)
