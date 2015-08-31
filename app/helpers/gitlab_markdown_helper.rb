@@ -52,7 +52,7 @@ module GitlabMarkdownHelper
       path:         @path,
       project:      @project,
       project_wiki: @project_wiki,
-      ref:          @ref,
+      ref:          @ref
     )
 
     Gitlab::Markdown.render(text, context)
@@ -61,6 +61,14 @@ module GitlabMarkdownHelper
   # TODO (rspeicher): Remove all usages of this helper and just call `markdown`
   # with a custom pipeline depending on the content being rendered
   def gfm(text, options = {})
+    options.merge!(
+      current_user: current_user,
+      path:         @path,
+      project:      @project,
+      project_wiki: @project_wiki,
+      ref:          @ref
+    )
+
     Gitlab::Markdown.gfm(text, options)
   end
 
