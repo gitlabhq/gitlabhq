@@ -20,11 +20,6 @@ describe GitlabMarkdownHelper do
   end
 
   describe "#markdown" do
-    it "should forward HTML options to links" do
-      expect(markdown("Fixed in #{commit.id}", project: @project)).
-        to have_selector('a.gfm')
-    end
-
     describe "referencing multiple objects" do
       let(:actual) { "#{merge_request.to_reference} -> #{commit.to_reference} -> #{issue.to_reference}" }
 
