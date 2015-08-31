@@ -70,7 +70,7 @@ module Gitlab
       end
 
       def reference_class(type)
-        "gfm gfm-#{type}".strip
+        "gfm gfm-#{type}"
       end
 
       # Iterate through the document's text nodes, yielding the current node's
