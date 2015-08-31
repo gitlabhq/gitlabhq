@@ -5,18 +5,6 @@ module Gitlab
   #
   # See the files in `lib/gitlab/markdown/` for specific processing information.
   module Markdown
-    # https://github.com/vmg/redcarpet#and-its-like-really-simple-to-use
-    REDCARPET_OPTIONS = {
-      no_intra_emphasis:   true,
-      tables:              true,
-      fenced_code_blocks:  true,
-      strikethrough:       true,
-      lax_spacing:         true,
-      space_after_headers: true,
-      superscript:         true,
-      footnotes:           true
-    }.freeze
-
     # Convert a Markdown String into an HTML-safe String of HTML
     #
     # markdown - Markdown String
@@ -40,7 +28,7 @@ module Gitlab
     #
     # Returns a String
     def self.render_without_gfm(markdown)
-      self.renderer.render(markdown)
+      renderer.render(markdown)
     end
 
     # Provide autoload paths for filters to prevent a circular dependency error
@@ -123,8 +111,22 @@ module Gitlab
     def self.renderer
       @markdown ||= begin
         renderer = Redcarpet::Render::HTML.new
-        Redcarpet::Markdown.new(renderer, REDCARPET_OPTIONS)
+        Redcarpet::Markdown.new(renderer, redcarpet_options)
       end
+    end
+
+    def self.redcarpet_options
+      # https://github.com/vmg/redcarpet#and-its-like-really-simple-to-use
+      @redcarpet_options ||= {
+        fenced_code_blocks:  true,
+        footnotes:           true,
+        lax_spacing:         true,
+        no_intra_emphasis:   true,
+        space_after_headers: true,
+        strikethrough:       true,
+        superscript:         true,
+        tables:              true
+      }.freeze
     end
 
     # Filters used in our pipeline
