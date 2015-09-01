@@ -27,7 +27,7 @@ module Gitlab
         elsif node.has_attribute?('data-user-id')
           user_can_reference_user?(node.attr('data-user-id'))
         else
-          false
+          true
         end
       end
 
