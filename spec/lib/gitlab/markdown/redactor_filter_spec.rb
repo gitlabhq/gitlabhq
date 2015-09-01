@@ -37,6 +37,12 @@ module Gitlab::Markdown
 
         expect(doc.css('a').length).to eq 1
       end
+
+      it 'handles invalid Group references' do
+        link = reference_link(group_id: 12345)
+
+        expect { filter(link) }.not_to raise_error
+      end
     end
 
     context 'with data-project-id' do
@@ -59,6 +65,12 @@ module Gitlab::Markdown
         doc = filter(link, current_user: user)
 
         expect(doc.css('a').length).to eq 1
+      end
+
+      it 'handles invalid Project references' do
+        link = reference_link(project_id: 12345)
+
+        expect { filter(link) }.not_to raise_error
       end
     end
 
