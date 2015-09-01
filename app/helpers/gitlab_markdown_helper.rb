@@ -46,7 +46,6 @@ module GitlabMarkdownHelper
 
   def markdown(text, context = {})
     context.merge!(
-      current_user: current_user,
       path:         @path,
       project:      @project,
       project_wiki: @project_wiki,
@@ -60,7 +59,6 @@ module GitlabMarkdownHelper
   # with a custom pipeline depending on the content being rendered
   def gfm(text, options = {})
     options.merge!(
-      current_user: current_user,
       path:         @path,
       project:      @project,
       project_wiki: @project_wiki,

@@ -85,7 +85,6 @@ module Gitlab
         no_header_anchors: options[:no_header_anchors],
 
         # ReferenceFilter
-        current_user:    options[:current_user],
         only_path:       options[:reference_only_path],
         project:         options[:project],
 
