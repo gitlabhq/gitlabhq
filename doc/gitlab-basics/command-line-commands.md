@@ -77,6 +77,3 @@ sudo
 ```
 pwd
 ```
-
-### Open new command line window
-Press `command + t` on your keyboard.
