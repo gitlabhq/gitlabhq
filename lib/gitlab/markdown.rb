@@ -31,6 +31,24 @@ module Gitlab
       renderer.render(markdown)
     end
 
+    # Perform post-processing on an HTML String
+    #
+    # This method is used to perform state-dependent changes to a String of
+    # HTML, such as removing references that the current user doesn't have
+    # permission to make (`RedactorFilter`).
+    #
+    # html     - String to process
+    # for_user - User state
+    #
+    # Returns an HTML-safe String
+    def self.post_process(html, for_user)
+      result = post_processor.call(html, current_user: for_user)
+
+      result[:output].
+        to_html.
+        html_safe
+    end
+
     # Provide autoload paths for filters to prevent a circular dependency error
     autoload :AutolinkFilter,               'gitlab/markdown/autolink_filter'
     autoload :CommitRangeReferenceFilter,   'gitlab/markdown/commit_range_reference_filter'
@@ -113,6 +131,10 @@ module Gitlab
         renderer = Redcarpet::Render::HTML.new
         Redcarpet::Markdown.new(renderer, redcarpet_options)
       end
+    end
+
+    def self.post_processor
+      @post_processor ||= HTML::Pipeline.new([Gitlab::Markdown::RedactorFilter])
     end
 
     def self.redcarpet_options

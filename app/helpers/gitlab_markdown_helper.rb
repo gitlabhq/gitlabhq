@@ -52,7 +52,8 @@ module GitlabMarkdownHelper
       ref:          @ref
     )
 
-    Gitlab::Markdown.render(text, context)
+    html = Gitlab::Markdown.render(text, context)
+    Gitlab::Markdown.post_process(html, current_user)
   end
 
   # TODO (rspeicher): Remove all usages of this helper and just call `markdown`
@@ -65,7 +66,8 @@ module GitlabMarkdownHelper
       ref:          @ref
     )
 
-    Gitlab::Markdown.gfm(text, options)
+    html = Gitlab::Markdown.gfm(text, options)
+    Gitlab::Markdown.post_process(html, current_user)
   end
 
   def asciidoc(text)
