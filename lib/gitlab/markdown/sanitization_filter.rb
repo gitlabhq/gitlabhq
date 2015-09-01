@@ -1,3 +1,4 @@
+require 'gitlab/markdown'
 require 'html/pipeline/filter'
 require 'html/pipeline/sanitization_filter'
 

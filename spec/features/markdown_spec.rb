@@ -179,7 +179,7 @@ describe 'GitLab Markdown', feature: true do
     before(:all) do
       @feat = MarkdownFeature.new
 
-      # `gfm` helper depends on a `@project` variable
+      # `markdown` helper expects a `@project` variable
       @project = @feat.project
 
       @html = markdown(@feat.raw_markdown)
