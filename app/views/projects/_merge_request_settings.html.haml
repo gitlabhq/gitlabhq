@@ -7,9 +7,9 @@
       .checkbox
         = f.label :merge_requests_ff_only_enabled do
           = f.check_box :merge_requests_ff_only_enabled
-          %strong Only fast-forward merge
+          %strong Only fast-forward merging
           %br
-          %span.descr Accept merge request button will do only fast-forward merges
+          %span.descr The accept merge request button will only show when a merge without a merge commit is possible.
 
   .form-group.rebase-feature
     .col-sm-offset-2.col-sm-10
