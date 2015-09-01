@@ -1,5 +1,7 @@
 v 8.0.0 (unreleased)
   - Fix navigation issue when viewing Group Settings pages
+  - Add fast-forward merge option in project settings 
+  - Separate rebase & fast-forward merge features
 
 v 7.14.0
   - Disable adding, updating and removing members from a group that is synced with LDAP
