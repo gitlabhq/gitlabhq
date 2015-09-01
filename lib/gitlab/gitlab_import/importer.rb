@@ -18,7 +18,8 @@ module Gitlab
         issues = client.issues(project_identifier)
 
         issues.each do |issue|
-          body = @formatter.author_line(issue["author"]["name"], issue["description"])
+          body = @formatter.author_line(issue["author"]["name"])
+          body += issue["description"]
 
           comments = client.issue_comments(project_identifier, issue["id"])
 
