@@ -30,12 +30,7 @@ Gitlab::Application.routes.draw do
   end
 
   # Enable Grack support
-  mount Grack::Bundle.new({
-    git_path:     Gitlab.config.git.bin_path,
-    project_root: Gitlab.config.gitlab_shell.repos_path,
-    upload_pack:  Gitlab.config.gitlab_shell.upload_pack,
-    receive_pack: Gitlab.config.gitlab_shell.receive_pack
-  }), at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post]
+  mount Grack::Auth.new({}), at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post]
 
   # Help
   get 'help'                  => 'help#index'

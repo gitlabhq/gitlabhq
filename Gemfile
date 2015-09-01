@@ -40,11 +40,6 @@ gem "browser", '~> 1.0.0'
 # Provide access to Gitlab::Git library
 gem "gitlab_git", '~> 7.2.15'
 
-# Ruby/Rack Git Smart-HTTP Server Handler
-# GitLab fork with a lot of changes (improved thread-safety, better memory usage etc)
-# For full list of changes see https://github.com/SaitoWu/grack/compare/master...gitlabhq:master
-gem 'gitlab-grack', '~> 2.0.2', require: 'grack'
-
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
