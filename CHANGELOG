@@ -2,6 +2,8 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.0.0 (unreleased)
   - Prevent anchors from being hidden by header (Stan Hu)
+  - Fix bug where only the first 15 Bitbucket issues would be imported (Stan Hu)
+  - Sort issues by creation date in Bitbucket importer (Stan Hu)
   - Upgrade gitlab_git to 7.2.15 to fix `git blame` errors with ISO-encoded files (Stan Hu)
   - Prevent too many redirects upon login when home page URL is set to external_url (Stan Hu)
   - Improve dropdown positioning on the project home page (Hannes Rosenögger)
