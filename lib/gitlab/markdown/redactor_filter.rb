@@ -35,12 +35,16 @@ module Gitlab
         group = Group.find(id)
 
         group && can?(:read_group, group)
+      rescue ActiveRecord::RecordNotFound
+        false
       end
 
       def user_can_reference_project?(id)
         project = Project.find(id)
 
         project && can?(:read_project, project)
+      rescue ActiveRecord::RecordNotFound
+        false
       end
 
       def user_can_reference_user?(id)
