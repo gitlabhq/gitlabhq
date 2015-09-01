@@ -1,8 +1,6 @@
 require 'nokogiri'
 
 module GitlabMarkdownHelper
-  include PreferencesHelper
-
   # Use this in places where you would normally use link_to(gfm(...), ...).
   #
   # It solves a problem occurring with nested links (i.e.
