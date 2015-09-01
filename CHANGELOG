@@ -30,6 +30,7 @@ v 8.0.0 (unreleased)
   - Fixed login failure when extern_uid changes (Joel Koglin)
   - Don't notify users without access to the project when they are (accidentally) mentioned in a note.
   - Retrieving oauth token with LDAP credentials
+  - Load Application settings from running database unless env var USE_DB=false
 
 v 7.14.1
   - Improve abuse reports management from admin area
@@ -114,7 +115,7 @@ v 7.13.4
 v 7.13.3
   - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
   - Allow users to send abuse reports
-  - Remove satellites 
+  - Remove satellites
   - Link username to profile on Group Members page (Tom Webster)
 
 v 7.13.2
