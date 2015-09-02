@@ -30,7 +30,7 @@ Gitlab::Application.routes.draw do
   end
 
   # Enable Grack support
-  mount Grack::Auth.new({}), at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post]
+  mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post]
 
   # Help
   get 'help'                  => 'help#index'

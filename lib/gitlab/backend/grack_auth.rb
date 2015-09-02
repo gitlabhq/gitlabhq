@@ -1,6 +1,14 @@
 require_relative 'shell_env'
 
 module Grack
+  class AuthSpawner
+    def self.call(env)
+      # Avoid issues with instance variables in Grack::Auth persisting across
+      # requests by creating a new instance for each request.
+      Auth.new({}).call(env)
+    end
+  end
+
   class Auth < Rack::Auth::Basic
 
     attr_accessor :user, :project, :env
