@@ -138,7 +138,6 @@
 
     .collapse-nav a {
       left: 0px;
-      opacity: 0.6;
       width: $sidebar_collapsed_width;
     }
 
@@ -150,15 +149,14 @@
 }
 
 .collapse-nav a {
+  width: $sidebar_width;
   position: fixed;
-  top: 0;
-  left: 202px;
+  bottom: 0;
   font-size: 13px;
   background: transparent;
-  width: 28px;
-  height: 28px;
+  height: 40px;
   text-align: center;
-  line-height: 28px;
+  line-height: 40px;
   transition-duration: .3s;
 }
 
@@ -194,7 +192,7 @@
 .sidebar-user {
   padding: 12px 22px;
   position: fixed;
-  bottom: 0;
+  bottom: 40px;
   width: $sidebar_width;
   overflow: hidden;
   transition-duration: .3s;
