@@ -73,6 +73,14 @@ module API
           )
         end
       end
+
+      # Get Slack service settings
+      #
+      # Example Request:
+      #  GET /projects/:id/services/slack
+      get ':id/services/slack' do
+        present user_project.slack_service
+      end
     end
   end
 end
