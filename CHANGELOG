@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.0.0 (unreleased)
+  - Omit filename in Content-Disposition header in raw file download to avoid RFC 6266 encoding issues (Stan HU)
   - Prevent anchors from being hidden by header (Stan Hu)
   - Fix bug where only the first 15 Bitbucket issues would be imported (Stan Hu)
   - Sort issues by creation date in Bitbucket importer (Stan Hu)

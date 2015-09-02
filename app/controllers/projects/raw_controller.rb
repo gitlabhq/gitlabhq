@@ -17,8 +17,7 @@ class Projects::RawController < Projects::ApplicationController
       send_data(
         @blob.data,
         type: type,
-        disposition: 'inline',
-        filename: @blob.name
+        disposition: 'inline'
       )
     else
       not_found!
