@@ -124,20 +124,26 @@
   .sidebar-wrapper {
     width: $sidebar_collapsed_width;
 
+    .header-logo a {
+      padding-left: 7px;
+    }
+
     .nav-sidebar {
       width: $sidebar_collapsed_width;
 
-      li a {
-        padding-left: 16px;
+      li a i {
+        margin-right: 20px;
       }
     }
 
     .collapse-nav a {
       left: 0px;
+      opacity: 0.6;
       width: $sidebar_collapsed_width;
     }
 
     .sidebar-user {
+      padding-left: 7px;
       width: $sidebar_collapsed_width;
     }
   }
