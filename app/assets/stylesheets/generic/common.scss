@@ -362,7 +362,7 @@ table {
 }
 
 .profiler-results {
-  top: 50px !important;
+  top: 73px !important;
 
   .profiler-button,
   .profiler-controls {
@@ -374,18 +374,28 @@ table {
   list-style: none;
   text-align: center;
   margin-top: 5px;
-  padding-bottom: 15px;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
+  height: 60px;
+  margin-top: -15px;
+  padding-top: 15px;
 
   li {
     display: inline-block;
 
     a {
       padding: 15px;
+      font-size: 20px;
+      color: #7f8fa4;
+      border-bottom: 2px solid transparent;
+
+      &:hover, &:active, &:focus {
+        text-decoration: none;
+      }
     }
 
     &.active a {
-      color: #666;
+      color: #4c4e54;
+      border-bottom: 2px solid #1cacfc;
     }
   }
 }

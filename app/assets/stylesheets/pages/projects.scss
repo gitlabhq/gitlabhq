@@ -253,12 +253,22 @@ pre.light-well {
 }
 
 .projects-search-form {
-  max-width: 600px;
-  margin: 0 auto;
-  margin-bottom: 20px;
+  margin: -15px;
+  background-color: #f8fafc;
+  padding: 18px;
+  margin-bottom: 10px;
+  border-top: 1px solid #e7e9ed;
+  border-bottom: 1px solid #e7e9ed;
 
-  input {
-    border-color: #BBB;
+
+  .projects-list-filter {
+    @include input-big;
+    padding: 5px 18px;
+  }
+
+  .btn {
+    @include btn-big;
+    padding: 5px 18px;
   }
 }
 
@@ -269,20 +279,36 @@ pre.light-well {
   @include basic-list;
 
   .project-row {
+    padding: 18px;
+    border-color: #f1f2f4;
+    margin: 0 -15px;
+
+    &.no-description {
+      .project {
+        line-height: 38px;
+      }
+    }
+
     .project-full-name {
       @include str-truncated;
-      font-weight: bold;
-      font-size: 15px;
+      font-weight: 500;
+      font-size: 16px;
+      color: #4c4e54;
+    }
+
+    .pull-right.light {
+      line-height: 38px;
+      color: #7f8fa4;
     }
 
     .project-description {
-      color: #888;
-      font-size: 13px;
+      color: #7f8fa4;
+      font-size: 16px;
 
       p {
         @include str-truncated;
         margin-bottom: 0;
-        color: #888;
+        color: #7f8fa4;
       }
     }
   }
@@ -290,4 +316,5 @@ pre.light-well {
 
 .panel .projects-list li {
   padding: 10px 15px;
+  margin: 0;
 }

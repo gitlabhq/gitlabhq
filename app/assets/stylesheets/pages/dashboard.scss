@@ -38,7 +38,7 @@
   float: left;
 
   .avatar {
-    @include border-radius(0px);
+    @include border-radius(50%);
   }
 
   .identicon {
