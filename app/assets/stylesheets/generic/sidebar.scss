@@ -118,21 +118,31 @@
 }
 
 @mixin folded-sidebar {
-  padding-left: 50px;
+  padding-left: 60px;
   transition-duration: .3s;
 
   .sidebar-wrapper {
     width: $sidebar_collapsed_width;
 
-    .header-logo a {
-      padding-left: 7px;
+    .header-logo {
+      width: $sidebar_collapsed_width;
+
+      a {
+        padding-left: 7px;
+
+        .gitlab-text-container {
+          display: none;
+        }
+      }
     }
 
     .nav-sidebar {
       width: $sidebar_collapsed_width;
 
-      li a i {
-        margin-right: 20px;
+      li a {
+        span {
+          display: none;
+        }
       }
     }
 
