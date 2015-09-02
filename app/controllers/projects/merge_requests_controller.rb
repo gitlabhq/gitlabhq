@@ -2,7 +2,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :merge, :merge_check,
-    :ci_status, :toggle_subscription, :approve, :ff_merge
+    :ci_status, :toggle_subscription, :approve, :ff_merge, :rebase
   ]
   before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits]
   before_action :validates_merge_request, only: [:show, :diffs, :commits]
@@ -229,6 +229,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     else
       @status = false
     end
+  end
+
+  def rebase
+    return access_denied! unless @merge_request.can_be_merged_by?(current_user)
+    return render_404 unless @merge_request.approved?
+
+    MergeRequests::RebaseService.new(merge_request.target_project, current_user).
+      execute(merge_request)
   end
 
   protected
