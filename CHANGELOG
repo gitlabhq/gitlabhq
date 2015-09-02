@@ -21,7 +21,7 @@ v 8.0.0 (unreleased)
   - Create cross-reference for closing references on commits pushed to non-default branches (Maël Valais)
   - Ability to search milestones
   - Gracefully handle SMTP user input errors (e.g. incorrect email addresses) to prevent Sidekiq retries (Stan Hu)
-  - Move dashboard activity to separate page
+  - Move dashboard activity to separate page (for your projects and starred projects)
   - Improve performance of git blame
   - Limit content width to 1200px for most of pages to improve readability on big screens
   - Fix 500 error when submit project snippet without body
