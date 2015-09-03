@@ -18,13 +18,22 @@
 }
 
 .content-wrapper {
+  min-height: 100vh;
   width: 100%;
   padding: 20px;
-  background: #FFF;
+  background: #f1f4f8;
+
+  .container-fluid {
+    background: #FFF;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border: 1px solid #e7e9ed;
+    min-height: 90vh;
+  }
 }
 
 .nav-sidebar {
-  margin-top: 29 + $header-height;
+  margin-top: 14 + $header-height;
   margin-bottom: 50px;
   transition-duration: .3s;
   list-style: none;
@@ -44,12 +53,13 @@
 
     a {
       padding: 8px 15px;
-      font-size: 13px;
-      line-height: 18px;
+      font-size: 16px;
+      line-height: 24px;
       color: $gray;
       display: block;
       text-decoration: none;
-      padding-left: 16px;
+      padding-left: 22px;
+      font-weight: normal;
 
       &:hover {
         text-decoration: none;
@@ -60,9 +70,9 @@
       }
 
       i {
-        width: 20px;
+        width: 16px;
         color: $gray-light;
-        margin-right: 23px;
+        margin-right: 13px;
       }
 
       .count {
@@ -108,17 +118,31 @@
 }
 
 @mixin folded-sidebar {
-  padding-left: 50px;
+  padding-left: 60px;
   transition-duration: .3s;
 
   .sidebar-wrapper {
     width: $sidebar_collapsed_width;
 
+    .header-logo {
+      width: $sidebar_collapsed_width;
+
+      a {
+        padding-left: 7px;
+
+        .gitlab-text-container {
+          display: none;
+        }
+      }
+    }
+
     .nav-sidebar {
       width: $sidebar_collapsed_width;
 
       li a {
-        padding-left: 16px;
+        span {
+          display: none;
+        }
       }
     }
 
@@ -128,21 +152,21 @@
     }
 
     .sidebar-user {
+      padding-left: 7px;
       width: $sidebar_collapsed_width;
     }
   }
 }
 
 .collapse-nav a {
+  width: $sidebar_width;
   position: fixed;
-  top: $header-height;
-  left: 198px;
+  bottom: 0;
   font-size: 13px;
   background: transparent;
-  width: 32px;
-  height: 28px;
+  height: 40px;
   text-align: center;
-  line-height: 28px;
+  line-height: 40px;
   transition-duration: .3s;
 }
 
@@ -176,16 +200,18 @@
 }
 
 .sidebar-user {
+  padding: 12px 22px;
   position: fixed;
-  bottom: 0;
+  bottom: 40px;
   width: $sidebar_width;
-  padding: 10px;
   overflow: hidden;
   transition-duration: .3s;
 
   .username {
-    margin-top: 5px;
+    margin-left: 10px;
     width: $sidebar_width - 2 * 10px;
+    font-size: 16px;
+    line-height: 49px;
   }
 }
 
@@ -202,12 +228,12 @@
       float: left;
       height: $header-height;
       width: 100%;
-      padding: ($header-height - 36 ) / 2 8px;
+      padding: 12px 22px;
       overflow: hidden;
 
       img {
-        width: 36px;
-        height: 36px;
+        width: 48px;
+        height: 48px;
         float: left;
       }
 
@@ -219,8 +245,8 @@
           float: left;
           margin: 0;
           margin-left: 14px;
-          font-size: 18px;
-          line-height: $header-height - 14;
+          font-size: 20px;
+          line-height: 49px;
           font-weight: normal;
         }
       }

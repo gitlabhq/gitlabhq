@@ -195,3 +195,20 @@
     }
   }
 }
+
+@mixin input-big {
+  height: 36px;
+  padding: 5px 10px;
+  font-size: 16px;
+  line-height: 24px;
+  color: #7f8fa4;
+  background-color: #fff;
+  border-color: #e7e9ed;
+}
+
+@mixin btn-big {
+  height: 36px;
+  padding: 5px 10px;
+  font-size: 16px;
+  line-height: 24px;
+}

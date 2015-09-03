@@ -1,6 +1,7 @@
 - avatar = true unless local_assigns[:avatar] == false
 - stars = true unless local_assigns[:stars] == false
-- css_class = nil unless local_assigns[:css_class]
+- css_class = '' unless local_assigns[:css_class]
+- css_class += " no-description" unless project.description.present?
 %li.project-row{ class: css_class }
   = cache [project.namespace, project, controller.controller_name, controller.action_name, 'v2'] do
     = link_to project_path(project), class: dom_class(project) do
