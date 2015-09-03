@@ -128,7 +128,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see the proper Inline and Side-by-side links' do
-    expect(page).to have_css('#commit-diff-viewtype', count: 2)
+    expect(page).to have_css('#parallel-diff-btn', count: 1)
+    expect(page).to have_css('#inline-diff-btn', count: 1)
   end
 
   step 'I switch to the merge request\'s comments tab' do
