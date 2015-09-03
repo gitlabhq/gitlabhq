@@ -80,20 +80,15 @@ module Gitlab::Markdown
 
     context 'mentioning a group' do
       let(:group)     { create(:group) }
-      let(:user)      { create(:user) }
       let(:reference) { group.to_reference }
 
-      before do
-        group.add_developer(user)
-      end
-
       it 'links to the Group' do
-        doc = filter("Hey #{reference}", current_user: user)
+        doc = filter("Hey #{reference}")
         expect(doc.css('a').first.attr('href')).to eq urls.group_url(group)
       end
 
       it 'includes a data-group-id attribute' do
-        doc = filter("Hey #{reference}", current_user: user)
+        doc = filter("Hey #{reference}")
         link = doc.css('a').first
 
         expect(link).to have_attribute('data-group-id')
@@ -101,7 +96,7 @@ module Gitlab::Markdown
       end
 
       it 'adds to the results hash' do
-        result = pipeline_result("Hey #{reference}", current_user: user)
+        result = pipeline_result("Hey #{reference}")
         expect(result[:references][:user]).to eq group.users
       end
     end

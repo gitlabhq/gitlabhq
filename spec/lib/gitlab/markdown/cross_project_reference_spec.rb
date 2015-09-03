@@ -2,20 +2,16 @@ require 'spec_helper'
 
 module Gitlab::Markdown
   describe CrossProjectReference do
-    # context in the html-pipeline sense, not in the rspec sense
-    let(:context) do
-      {
-        current_user: double('user'),
-        project: double('project')
-      }
-    end
-
     include described_class
 
     describe '#project_from_ref' do
       context 'when no project was referenced' do
         it 'returns the project from context' do
-          expect(project_from_ref(nil)).to eq context[:project]
+          project = double
+
+          allow(self).to receive(:context).and_return({ project: project })
+
+          expect(project_from_ref(nil)).to eq project
         end
       end
 
@@ -26,17 +22,13 @@ module Gitlab::Markdown
       end
 
       context 'when referenced project exists' do
-        let(:project2) { double('referenced project') }
+        it 'returns the referenced project' do
+          project2 = double('referenced project')
 
-        before do
           expect(Project).to receive(:find_with_namespace).
             with('cross/reference').and_return(project2)
-        end
 
-        context 'and the user has permission to read it' do
-          it 'returns the referenced project' do
-            expect(project_from_ref('cross/reference')).to eq project2
-          end
+          expect(project_from_ref('cross/reference')).to eq project2
         end
       end
     end
