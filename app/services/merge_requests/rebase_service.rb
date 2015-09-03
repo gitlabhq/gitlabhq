@@ -25,14 +25,30 @@ module MergeRequests
 
       # Clone
       output, status = popen(%W(git clone -b #{merge_request.source_branch} -- #{source_project.repository.path_to_repo} #{tree_path}))
-      raise 'Failed to clone repo' unless status.zero?
+
+      unless status.zero?
+        log('Failed to clone repository for rebase:')
+        log(output)
+        return false
+      end
 
       # Rebase
       output, status = popen(%W(git pull --rebase #{target_project.repository.path_to_repo} #{merge_request.target_branch}), tree_path)
-      raise 'Failed to rebase' unless status.zero?
 
+      unless status.zero?
+        log('Failed to rebase branch:')
+        log(output)
+        return false
+      end
+
+      # Push
       output, status = popen(%W(git push -f origin #{merge_request.source_branch}), tree_path)
-      raise 'Failed to push' unless status.zero?
+
+      unless status.zero?
+        log('Failed to push rebased branch:')
+        log(output)
+        return false
+      end
 
       true
     ensure
@@ -49,6 +65,10 @@ module MergeRequests
 
     def tree_path
       @tree_path ||= Rails.root.join('tmp', 'rebase', source_project.id.to_s, SecureRandom.hex).to_s
+    end
+
+    def log(message)
+      Gitlab::GitLogger.error(message)
     end
   end
 end

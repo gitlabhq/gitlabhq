@@ -235,8 +235,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     return access_denied! unless @merge_request.can_be_merged_by?(current_user)
     return render_404 unless @merge_request.approved?
 
-    MergeRequests::RebaseService.new(merge_request.target_project, current_user).
-      execute(merge_request)
+    RebaseWorker.perform_async(@merge_request.id, current_user.id)
+
+    redirect_to merge_request_path(@merge_request), notice: 'Rebase started. It will take some time'
   end
 
   protected
