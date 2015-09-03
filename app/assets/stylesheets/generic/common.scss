@@ -1,5 +1,5 @@
 /** COLORS **/
-.cgray { color: gray }
+.cgray { color: $gl-gray; }
 .clgray { color: #BBB }
 .cred { color: #D12F19 }
 .cgreen { color: #4a2 }
@@ -20,7 +20,7 @@
 
 .underlined-link { text-decoration: underline; }
 .hint { font-style: italic; color: #999; }
-.light { color: #888 }
+.light { color: $gl-gray; }
 
 .slead {
   color: #666;
@@ -376,10 +376,10 @@ table {
   list-style: none;
   text-align: center;
   margin-top: 5px;
-  margin-bottom: 12px;
+  margin-bottom: 19px;
   height: 60px;
-  margin-top: -15px;
-  padding-top: 15px;
+  margin-top: -18px;
+  padding-top: 18px;
 
   li {
     display: inline-block;
