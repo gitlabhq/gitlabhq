@@ -128,7 +128,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see the proper Inline and Side-by-side links' do
-    expect(page).to have_css('#commit-diff-viewtype', count: 2)
+    expect(page).to have_css('#parallel-diff-btn', count: 1)
+    expect(page).to have_css('#inline-diff-btn', count: 1)
   end
 
   step 'I switch to the merge request\'s comments tab' do
@@ -225,13 +226,13 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I click link "Hide inline discussion" of the second file' do
     page.within '.files [id^=diff]:nth-child(2)' do
-      find('.js-toggle-diff-comments').click
+      find('.js-toggle-diff-comments').trigger('click')
     end
   end
 
   step 'I click link "Show inline discussion" of the second file' do
     page.within '.files [id^=diff]:nth-child(2)' do
-      find('.js-toggle-diff-comments').click
+      find('.js-toggle-diff-comments').trigger('click')
     end
   end
 

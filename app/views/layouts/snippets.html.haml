@@ -1,6 +1,6 @@
 - page_title    'Snippets'
 - if current_user
-  - header_title  "Dashboard", root_path
+  - header_title  "Snippets", user_snippets_path(current_user)
 - else
   - header_title  'Snippets', snippets_path
 - sidebar       "dashboard"

@@ -1,14 +1,15 @@
 - page_title "Your Snippets"
 = render 'head'
 
-.slead
-  Share code pastes with others out of git repository
-
+.gray-content-block
   .pull-right
-    = link_to new_snippet_path, class: "btn btn-new btn-sm", title: "New Snippet" do
+    = link_to new_snippet_path, class: "btn btn-new", title: "New Snippet" do
       Add new snippet
 
-%ul.nav.nav-tabs
+  .oneline
+    Share code pastes with others out of git repository
+
+%ul.nav.nav-tabs.prepend-top-20
   = nav_tab :scope, nil do
     = link_to user_snippets_path(@user) do
       All
