@@ -29,6 +29,8 @@ class Projects::RawController < Projects::ApplicationController
   def get_blob_type
     if @blob.text?
       'text/plain; charset=utf-8'
+    elsif @blob.image?
+      @blob.content_type
     else
       'application/octet-stream'
     end
