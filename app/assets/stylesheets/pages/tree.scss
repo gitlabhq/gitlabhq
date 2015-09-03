@@ -63,15 +63,15 @@
     padding-right: 8px;
 
     .commit-author-name {
-      color: gray;
+      color: $gl-gray;
     }
   }
 
   .tree_commit {
-    color: gray;
+    color: $gl-gray;
 
     .tree-commit-link {
-      color: gray;
+      color: $gl-gray;
 
       &:hover {
         text-decoration: underline;

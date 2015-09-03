@@ -1,14 +1,16 @@
 - page_title "Groups"
 = render 'dashboard/groups_head'
 
-.slead
-  Group members have access to all group projects.
+.gray-content-block
   - if current_user.can_create_group?
     %span.pull-right.hidden-xs
-      = link_to new_group_path, class: "btn btn-new btn-sm" do
+      = link_to new_group_path, class: "btn btn-new" do
         %i.fa.fa-plus
         New Group
-%ul.bordered-list
+  .title Welcome to the groups!
+  Group members have access to all group projects.
+
+%ul.content-list
   - @group_members.each do |group_member|
     - group = group_member.group
     = render 'shared/groups/group', group: group, group_member: group_member
