@@ -47,15 +47,16 @@ module GitlabMarkdownHelper
   def markdown(text, context = {})
     return unless text.present?
 
-    context.merge!(
+    context.reverse_merge!(
       path:         @path,
+      pipeline:     :default,
       project:      @project,
       project_wiki: @project_wiki,
       ref:          @ref
     )
 
     html = Gitlab::Markdown.render(text, context)
-    Gitlab::Markdown.post_process(html, current_user)
+    Gitlab::Markdown.post_process(html, pipeline: context[:pipeline], user: current_user)
   end
 
   # TODO (rspeicher): Remove all usages of this helper and just call `markdown`
@@ -63,15 +64,16 @@ module GitlabMarkdownHelper
   def gfm(text, options = {})
     return unless text.present?
 
-    options.merge!(
+    options.reverse_merge!(
       path:         @path,
+      pipeline:     :default,
       project:      @project,
       project_wiki: @project_wiki,
       ref:          @ref
     )
 
     html = Gitlab::Markdown.gfm(text, options)
-    Gitlab::Markdown.post_process(html, current_user)
+    Gitlab::Markdown.post_process(html, pipeline: options[:pipeline], user: current_user)
   end
 
   def asciidoc(text)
