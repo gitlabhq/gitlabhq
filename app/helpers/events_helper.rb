@@ -30,7 +30,6 @@ module EventsHelper
       class: "event-filter-link btn btn-default #{active}",
       id:    "#{key}_event_filter",
       title: "Filter by #{tooltip.downcase}",
-      data:  { toggle: 'tooltip', placement: 'top' }
     }
 
     link_to request.path, link_opts do
