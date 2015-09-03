@@ -3,7 +3,7 @@
     .header-content
       - unless current_controller?('sessions')
         .pull-right
-          = link_to "Sign in", new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in btn-success btn-sm'
+          = link_to "Sign in", new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in btn-success'
 
       %h1.title= title
 

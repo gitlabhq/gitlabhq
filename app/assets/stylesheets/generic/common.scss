@@ -1,5 +1,5 @@
 /** COLORS **/
-.cgray { color: gray }
+.cgray { color: $gl-gray; }
 .clgray { color: #BBB }
 .cred { color: #D12F19 }
 .cgreen { color: #4a2 }
@@ -20,10 +20,10 @@
 
 .underlined-link { text-decoration: underline; }
 .hint { font-style: italic; color: #999; }
-.light { color: #888 }
+.light { color: $gl-gray; }
 
 .slead {
-  color: #666;
+  color: $gl-gray;
   font-size: 15px;
   margin-bottom: 12px;
   font-weight: normal;
@@ -73,8 +73,6 @@ pre {
 .author_link {
   color: $gl-link-color;
 }
-
-.help li { color:$style_color; }
 
 .back-link {
   font-size: 14px;
@@ -303,7 +301,7 @@ table {
 }
 
 .btn-sign-in {
-  margin-top: 7px;
+  margin-top: 15px;
   text-shadow: none;
 }
 
@@ -376,10 +374,10 @@ table {
   list-style: none;
   text-align: center;
   margin-top: 5px;
-  margin-bottom: 12px;
+  margin-bottom: 18px;
   height: 60px;
-  margin-top: -15px;
-  padding-top: 15px;
+  margin-top: -18px;
+  padding-top: 18px;
 
   li {
     display: inline-block;

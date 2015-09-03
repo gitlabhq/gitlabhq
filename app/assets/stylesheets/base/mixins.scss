@@ -55,8 +55,11 @@
 }
 
 @mixin md-typography {
-  font-size: 15px;
-  line-height: 1.5;
+  color: #444;
+
+  a {
+    color: #3084bb;
+  }
 
   img {
     max-width: 100%;
@@ -190,7 +193,7 @@
 
     &.light {
       a {
-        color: #777;
+        color: $gl-gray;
       }
     }
   }

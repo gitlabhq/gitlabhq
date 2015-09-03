@@ -184,7 +184,7 @@ ul.nav.nav-projects-tabs {
 
 .breadcrumb.repo-breadcrumb {
   padding: 0;
-  line-height: 34px;
+  line-height: 42px;
   background: white;
   border: none;
   font-size: 16px;
@@ -253,23 +253,12 @@ pre.light-well {
 }
 
 .projects-search-form {
-  margin: -15px;
+  margin: -18px;
   background-color: #f8fafc;
   padding: 18px;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
   border-top: 1px solid #e7e9ed;
   border-bottom: 1px solid #e7e9ed;
-
-
-  .projects-list-filter {
-    @include input-big;
-    padding: 5px 18px;
-  }
-
-  .btn {
-    @include btn-big;
-    padding: 5px 18px;
-  }
 }
 
 /*
@@ -281,7 +270,7 @@ pre.light-well {
   .project-row {
     padding: 18px;
     border-color: #f1f2f4;
-    margin: 0 -15px;
+    margin: 0 -18px;
 
     &.no-description {
       .project {

@@ -9,6 +9,11 @@
   margin-bottom: 5px;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  color: $gl-header-color;
+  font-weight: 500;
+}
+
 /** CODE **/
 pre {
   font-family: $monospace_font;
