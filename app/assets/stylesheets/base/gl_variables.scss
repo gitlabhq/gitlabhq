@@ -43,8 +43,9 @@ $font-size-base:         $gl-font-size;
 //## Define common padding and border radius sizes and more. Values based on 14px text and 1.428 line-height (~20px to start).
 
 $padding-base-vertical:     6px;
-$padding-base-horizontal:   14px;
-
+$padding-base-horizontal:   18px;
+$component-active-color:    #fff;
+$component-active-bg:       $brand-info;
 
 //== Forms
 //
@@ -131,3 +132,10 @@ $code-bg:                     #f9f2f4;
 
 $kbd-color:                   #fff;
 $kbd-bg:                      #333;
+
+//== Buttons
+//
+//##
+$btn-default-color:              #7f8fa4;
+$btn-default-bg:                 #fff;
+$btn-default-border:             #e7e9ed;

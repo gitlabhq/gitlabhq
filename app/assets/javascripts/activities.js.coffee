@@ -1,7 +1,7 @@
 class @Activities
   constructor: ->
     Pager.init 20, true
-    $(".event_filter_link").bind "click", (event) =>
+    $(".event-filter .btn").bind "click", (event) =>
       event.preventDefault()
       @toggleFilter($(event.currentTarget))
       @reloadActivities()
