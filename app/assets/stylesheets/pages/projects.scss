@@ -259,17 +259,6 @@ pre.light-well {
   margin-bottom: 0px;
   border-top: 1px solid #e7e9ed;
   border-bottom: 1px solid #e7e9ed;
-
-
-  .projects-list-filter {
-    @include input-big;
-    padding: 5px 18px;
-  }
-
-  .btn {
-    @include btn-big;
-    padding: 5px 18px;
-  }
 }
 
 /*
