@@ -49,8 +49,6 @@
       }
     }
 
-    .author { color: #999; }
-
     .list-item-name {
       float: left;
       position: relative;
@@ -70,15 +68,6 @@
     .well-title {
       font-size: $list-font-size;
       line-height: 18px;
-    }
-
-    .row_title {
-      color: $gray-dark;
-
-      &:hover {
-        color: $text-color;
-        text-decoration: underline;
-      }
     }
   }
 }

@@ -55,6 +55,12 @@
 }
 
 @mixin md-typography {
+  color: #444;
+
+  a {
+    color: #3084bb;
+  }
+
   img {
     max-width: 100%;
   }
