@@ -1,4 +1,3 @@
-
 class Admin::LabelsController < Admin::ApplicationController
   before_action :set_label, only: [:show, :edit, :update, :destroy]
 
