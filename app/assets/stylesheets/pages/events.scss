@@ -34,8 +34,6 @@
 
   .event-title {
     @include str-truncated(calc(100% - 174px));
-
-    max-width: 70%;
     font-weight: 500;
 
     .author_name {
