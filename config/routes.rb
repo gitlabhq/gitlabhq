@@ -201,6 +201,8 @@ Gitlab::Application.routes.draw do
       resources :services
     end
 
+    resources :labels
+
     root to: 'dashboard#index'
   end
 
