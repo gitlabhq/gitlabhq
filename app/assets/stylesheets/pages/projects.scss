@@ -41,7 +41,7 @@
   .project-home-desc {
     h1 {
       margin: 0;
-      margin-bottom: 5px;
+      margin-bottom: 10px;
       font-size: 23px;
       font-weight: normal;
     }
@@ -55,6 +55,10 @@
   .git-clone-holder {
     max-width: 600px;
     margin: 20px auto;
+
+    .form-control {
+      background: #FFF;
+    }
   }
 
   .visibility-level-label {
@@ -65,7 +69,7 @@
   }
 
   .project-repo-buttons {
-    margin-top: 25px;
+    margin-top: $gl-padding;
     margin-bottom: 25px;
 
     .btn {
@@ -74,7 +78,7 @@
       text-transform: uppercase;
       font-size: 15px;
       line-height: 20px;
-      padding: 10px 16px;
+      padding: 8px 14px;
       border-radius: 3px;
       margin-left: 10px;
 

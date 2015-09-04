@@ -127,7 +127,7 @@
       width: $sidebar_collapsed_width;
 
       a {
-        padding-left: 10px;
+        padding-left: 12px;
 
         .gitlab-text-container {
           display: none;
@@ -151,7 +151,7 @@
     }
 
     .sidebar-user {
-      padding-left: 10px;
+      padding-left: 12px;
       width: $sidebar_collapsed_width;
 
       .username {
@@ -214,7 +214,7 @@
     margin-left: 10px;
     width: $sidebar_width - 2 * 10px;
     font-size: 16px;
-    line-height: 36px;
+    line-height: 34px;
   }
 }
 
@@ -235,8 +235,8 @@
       overflow: hidden;
 
       img {
-        width: 40px;
-        height: 40px;
+        width: 36px;
+        height: 36px;
         float: left;
       }
 
