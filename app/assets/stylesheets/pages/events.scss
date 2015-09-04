@@ -4,8 +4,9 @@
  */
 .event-item {
   font-size: 16px;
-  padding: 18px;
-  margin: 0 -18px;
+  padding: $gl-padding;
+  margin-left: -$gl-padding;
+  margin-right: -$gl-padding;
   border-bottom: 1px solid #f1f2f4;
   color: #7f8fa4;
 
