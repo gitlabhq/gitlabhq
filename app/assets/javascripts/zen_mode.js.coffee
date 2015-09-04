@@ -38,6 +38,8 @@ class @ZenMode
     @active_checkbox = $(checkbox)
     @active_checkbox.prop('checked', true)
     @active_zen_area = @active_checkbox.parent().find('textarea')
+    # Prevent a user-resized textarea from persisting to fullscreen
+    @active_zen_area.removeAttr('style')
     @active_zen_area.focus()
 
   exitZenMode: =>
