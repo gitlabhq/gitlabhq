@@ -19,5 +19,19 @@ describe Projects::RawController do
             to eq("inline")
       end
     end
+
+    context 'image header' do
+      let(:id) { 'master/files/images/6049019_460s.jpg' }
+
+      it 'set image content type header' do
+        get(:show,
+            namespace_id: public_project.namespace.to_param,
+            project_id: public_project.to_param,
+            id: id)
+
+        expect(response.status).to eq(200)
+        expect(response.header['Content-Type']).to eq('image/jpeg')
+      end
+    end
   end
 end
