@@ -3,7 +3,7 @@
  *
  */
 .event-item {
-  font-size: 16px;
+  font-size: $gl-font-size;
   padding: $gl-padding;
   margin-left: -$gl-padding;
   margin-right: -$gl-padding;
@@ -35,7 +35,7 @@
 
   .event-title {
     @include str-truncated(calc(100% - 174px));
-    font-weight: 500;
+    font-weight: 600;
 
     .author_name {
       color: #333;
@@ -51,7 +51,8 @@
       word-wrap: break-word;
 
       .md {
-        font-size: 16px;
+        color: #7f8fa4;
+        font-size: $gl-font-size;
 
         iframe.twitter-share-button {
           vertical-align: bottom;
@@ -81,7 +82,7 @@
     .event-note-icon {
       color: #777;
       float: left;
-      font-size: 16px;
+      font-size: $gl-font-size;
       line-height: 16px;
       margin-right: 5px;
     }
@@ -112,7 +113,7 @@
         padding-left: 0;
         border: none;
         .commit-row-title {
-          font-size: 16px;
+          font-size: $gl-font-size;
         }
       }
 

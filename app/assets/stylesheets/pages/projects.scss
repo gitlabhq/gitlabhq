@@ -274,7 +274,7 @@ pre.light-well {
 
     &.no-description {
       .project {
-        line-height: 38px;
+        line-height: 44px;
       }
     }
 
@@ -298,6 +298,11 @@ pre.light-well {
         color: #7f8fa4;
       }
     }
+  }
+
+  .bottom {
+    padding-top: $gl-padding;
+    padding-bottom: 0;
   }
 }
 
