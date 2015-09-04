@@ -374,17 +374,17 @@ table {
   list-style: none;
   text-align: center;
   margin-top: 5px;
-  margin-bottom: 18px;
-  height: 60px;
-  margin-top: -18px;
-  padding-top: 18px;
+  margin-bottom: $gl-padding;
+  height: 56px;
+  margin-top: -$gl-padding;
+  padding-top: $gl-padding;
 
   li {
     display: inline-block;
 
     a {
-      padding: 15px;
-      font-size: 20px;
+      padding: 14px;
+      font-size: 17px;
       line-height: 28px;
       color: #7f8fa4;
       border-bottom: 2px solid transparent;
