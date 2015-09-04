@@ -198,7 +198,7 @@ module SharedDiffNote
   end
 
   step 'I click side-by-side diff button' do
-    find('#parallel-diff-btn').trigger('click')
+    find('#parallel-diff-btn').click
   end
 
   step 'I see side-by-side diff button' do
