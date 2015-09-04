@@ -187,7 +187,6 @@ ul.nav.nav-projects-tabs {
   line-height: 42px;
   background: white;
   border: none;
-  font-size: 16px;
 
   > li + li:before {
     padding: 0 3px;
@@ -253,9 +252,9 @@ pre.light-well {
 }
 
 .projects-search-form {
-  margin: -18px;
+  margin: -$gl-padding;
   background-color: #f8fafc;
-  padding: 18px;
+  padding: $gl-padding;
   margin-bottom: 0px;
   border-top: 1px solid #e7e9ed;
   border-bottom: 1px solid #e7e9ed;
@@ -268,9 +267,10 @@ pre.light-well {
   @include basic-list;
 
   .project-row {
-    padding: 18px;
+    padding: $gl-padding;
     border-color: #f1f2f4;
-    margin: 0 -18px;
+    margin-left: -$gl-padding;
+    margin-right: -$gl-padding;
 
     &.no-description {
       .project {
@@ -280,8 +280,7 @@ pre.light-well {
 
     .project-full-name {
       @include str-truncated;
-      font-weight: 500;
-      font-size: 16px;
+      font-weight: 600;
       color: #4c4e54;
     }
 
@@ -292,7 +291,6 @@ pre.light-well {
 
     .project-description {
       color: #7f8fa4;
-      font-size: 16px;
 
       p {
         @include str-truncated;

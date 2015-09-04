@@ -3,8 +3,8 @@ $gl-text-color: #54565b;
 $gl-header-color: #4c4e54;
 $gl-link-color: #333c48;
 $nprogress-color: #c0392b;
-$gl-font-size: 16px;
-$list-font-size: 16px;
+$gl-font-size: 15px;
+$list-font-size: 15px;
 $sidebar_collapsed_width: 62px;
 $sidebar_width: 230px;
 $avatar_radius: 50%;
@@ -12,9 +12,11 @@ $code_font_size: 13px;
 $code_line_height: 1.5;
 $border-color: #E7E9ED;
 $background-color: #F8FAFC;
-$header-height: 73px;
+$header-height: 67px;
 $fixed-layout-width: 1200px;
 $gl-gray: #7f8fa4;
+$gl-padding: 16px;
+$gl-avatar-size: 46px;
 
 
 /*
@@ -36,4 +38,4 @@ $deleted: #f77;
  * Fonts
  */
 $monospace_font: 'Menlo', 'Liberation Mono', 'Consolas', 'DejaVu Sans Mono', 'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console', monospace;
-$regular_font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+$regular_font: 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif;

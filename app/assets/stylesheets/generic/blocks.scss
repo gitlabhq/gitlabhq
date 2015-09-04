@@ -19,9 +19,9 @@
 }
 
 .gray-content-block {
-  margin: -18px;
+  margin: -$gl-padding;
   background-color: #f8fafc;
-  padding: 18px;
+  padding: $gl-padding;
   margin-bottom: 0px;
   border-top: 1px solid #e7e9ed;
   border-bottom: 1px solid #e7e9ed;

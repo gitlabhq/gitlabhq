@@ -25,7 +25,7 @@
 
   .container-fluid {
     background: #FFF;
-    padding: 18px;
+    padding: $gl-padding;
     border: 1px solid #e7e9ed;
     min-height: 90vh;
   }
@@ -51,8 +51,8 @@
     }
 
     a {
-      padding: 8px 15px;
-      font-size: 16px;
+      padding: 7px 15px;
+      font-size: $gl-font-size;
       line-height: 24px;
       color: $gray;
       display: block;
@@ -199,7 +199,7 @@
 }
 
 .sidebar-user {
-  padding: 12px 22px;
+  padding: 9px 22px;
   position: fixed;
   bottom: 40px;
   width: $sidebar_width;
@@ -210,7 +210,7 @@
     margin-left: 10px;
     width: $sidebar_width - 2 * 10px;
     font-size: 16px;
-    line-height: 49px;
+    line-height: 44px;
   }
 }
 
@@ -227,12 +227,12 @@
       float: left;
       height: $header-height;
       width: 100%;
-      padding: 12px 22px;
+      padding: 10px 22px;
       overflow: hidden;
 
       img {
-        width: 48px;
-        height: 48px;
+        width: $gl-avatar-size;
+        height: $gl-avatar-size;
         float: left;
       }
 
@@ -244,7 +244,7 @@
           float: left;
           margin: 0;
           margin-left: 14px;
-          font-size: 20px;
+          font-size: 19px;
           line-height: 49px;
           font-weight: normal;
         }
