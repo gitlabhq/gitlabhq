@@ -11,7 +11,7 @@
 
 = render "home_panel"
 
-.project-stats
+.project-stats.gray-content-block
   %ul.nav.nav-pills
     %li
       = link_to namespace_project_commits_path(@project.namespace, @project, @ref || @repository.root_ref) do
@@ -63,7 +63,6 @@
       = icon("exclamation-triangle fw")
       Archived project! Repository is read-only
 
-%hr
 %section
   - if prefer_readme?
     = render 'projects/readme'
@@ -74,10 +73,10 @@
 - if current_user
   - access = user_max_access_in_project(current_user, @project)
   - if access
-    %hr
-    %p.light
-      You have #{access} access to this project.
-      - if @project.project_member_by_id(current_user)
-        = link_to leave_namespace_project_project_members_path(@project.namespace, @project),
-          data: { confirm: leave_project_message(@project) }, method: :delete, title: 'Leave project', class: 'cred' do
-          Leave this project
+    .prepend-top-20
+      .gray-content-block.footer-block.center
+        You have #{access} access to this project.
+        - if @project.project_member_by_id(current_user)
+          = link_to leave_namespace_project_project_members_path(@project.namespace, @project),
+            data: { confirm: leave_project_message(@project) }, method: :delete, title: 'Leave project', class: 'cred' do
+            Leave this project

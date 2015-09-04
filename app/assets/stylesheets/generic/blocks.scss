@@ -27,6 +27,11 @@
   border-bottom: 1px solid #e7e9ed;
   color: $gl-gray;
 
+  &.footer-block {
+    margin-top: 0;
+    margin-bottom: -$gl-padding;
+  }
+
   .title {
     color: $gl-text-color;
   }

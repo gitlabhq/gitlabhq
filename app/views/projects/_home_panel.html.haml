@@ -1,7 +1,7 @@
 - empty_repo = @project.empty_repo?
 .project-home-panel.clearfix{:class => ("empty-project" if empty_repo)}
   .project-identicon-holder
-    = project_icon(@project, alt: '', class: 'project-avatar avatar s90')
+    = project_icon(@project, alt: '', class: 'project-avatar avatar s140')
   .project-home-desc
     %h1= @project.name
     - if @project.description.present?
