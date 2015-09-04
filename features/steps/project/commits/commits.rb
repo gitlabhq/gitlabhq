@@ -98,4 +98,8 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   step 'I see inline diff button' do
     expect(page).to have_content "Inline"
   end
+
+  step 'I click side-by-side diff button' do
+    find('#parallel-diff-btn').click
+  end
 end
