@@ -8,8 +8,8 @@
 .append-bottom-20
   .pull-right
     - if current_user
-      .hidden-xs.pull-left
-        = link_to issues_dashboard_url(format: :atom, private_token: current_user.private_token), class: 'btn' do
+      .hidden-xs.pull-left.prepend-top-20
+        = link_to issues_dashboard_url(format: :atom, private_token: current_user.private_token), class: '' do
           %i.fa.fa-rss
 
   = render 'shared/issuable/filter', type: :issues
