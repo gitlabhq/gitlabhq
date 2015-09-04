@@ -16,6 +16,10 @@
 
 .project-home-panel {
   text-align: center;
+  background: #f7f8fa;
+  margin: -$gl-padding;
+  padding: $gl-padding;
+  padding-top: 40px;
 
   .project-identicon-holder {
     margin-bottom: 15px;
@@ -38,13 +42,12 @@
     h1 {
       margin: 0;
       margin-bottom: 10px;
-      font-size: 26px;
-      font-weight: bold;
+      font-size: 23px;
+      font-weight: normal;
     }
 
     p {
-      font-size: 18px;
-      color: #666;
+      color: #7f8fa4;
       display: inline;
     }
   }
@@ -52,6 +55,10 @@
   .git-clone-holder {
     max-width: 600px;
     margin: 20px auto;
+
+    .form-control {
+      background: #FFF;
+    }
   }
 
   .visibility-level-label {
@@ -62,17 +69,18 @@
   }
 
   .project-repo-buttons {
-    margin-top: 25px;
+    margin-top: $gl-padding;
     margin-bottom: 25px;
 
     .btn {
       @extend .btn-info;
 
+      text-transform: uppercase;
+      font-size: 15px;
+      line-height: 20px;
+      padding: 8px 14px;
+      border-radius: 3px;
       margin-left: 10px;
-      font-weight: bold;
-      font-size: 14px;
-      line-height: 16px;
-      padding: 8px 12px;
 
       .count {
         padding-left: 7px;
@@ -232,10 +240,23 @@ table.table.protected-branches-list tr.no-border {
 
 .project-stats {
   text-align: center;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 5px;
+  padding-bottom: 0;
 
-  ul.nav-pills { display:inline-block; }
-  li { display:inline; }
-  a { float:left; }
+  ul.nav-pills {
+    display:inline-block;
+  }
+
+  li {
+    display:inline;
+  }
+
+  a {
+    float:left;
+    font-size: 17px;
+  }
 
   li.missing a {
     color: #bbb;
