@@ -44,11 +44,11 @@ DELETE /projects/:id/services/<%= service[:dashed_name] %>
 ERB
 
 namespace :services do
-  task :doc do
+  task doc: :environment do
     services = Service.available_services_names.map do |s|
       service_start = Time.now
       klass = "#{s}_service".classify.constantize
-     
+
       service = klass.new
 
       service_hash = {}
@@ -62,7 +62,7 @@ namespace :services do
 
         param_hash[:name] = p[:name]
         param_hash[:description] = p[:placeholder] || p[:title]
-        param_hash[:required] = klass.validators_on(p[:name].to_sym).any? do |v| 
+        param_hash[:required] = klass.validators_on(p[:name].to_sym).any? do |v|
           v.class == ActiveRecord::Validations::PresenceValidator
         end
 
