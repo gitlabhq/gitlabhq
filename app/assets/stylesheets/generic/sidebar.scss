@@ -127,7 +127,7 @@
       width: $sidebar_collapsed_width;
 
       a {
-        padding-left: 7px;
+        padding-left: 10px;
 
         .gitlab-text-container {
           display: none;
@@ -151,8 +151,12 @@
     }
 
     .sidebar-user {
-      padding-left: 7px;
+      padding-left: 10px;
       width: $sidebar_collapsed_width;
+
+      .username {
+        display: none;
+      }
     }
   }
 }
@@ -210,7 +214,7 @@
     margin-left: 10px;
     width: $sidebar_width - 2 * 10px;
     font-size: 16px;
-    line-height: 44px;
+    line-height: 36px;
   }
 }
 
@@ -231,8 +235,8 @@
       overflow: hidden;
 
       img {
-        width: $gl-avatar-size;
-        height: $gl-avatar-size;
+        width: 40px;
+        height: 40px;
         float: left;
       }
 
@@ -245,7 +249,7 @@
           margin: 0;
           margin-left: 14px;
           font-size: 19px;
-          line-height: 49px;
+          line-height: 41px;
           font-weight: normal;
         }
       }
