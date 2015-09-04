@@ -4,8 +4,6 @@
   - if current_user
     = auto_discovery_link_tag(:atom, issues_dashboard_url(format: :atom, private_token: current_user.private_token), title: "#{current_user.name} issues")
 
-%p.light
-  List all issues from all projects you have access to.
 
 .append-bottom-20
   .pull-right
@@ -15,4 +13,5 @@
           %i.fa.fa-rss
 
   = render 'shared/issuable/filter', type: :issues
+
 = render 'shared/issues'
