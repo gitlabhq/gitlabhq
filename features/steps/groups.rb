@@ -17,6 +17,26 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     find(:css, 'button.btn-new').click
   end
 
+  step 'I should see group "Owned"' do
+    expect(page).to have_content '@owned'
+  end
+
+  step 'I am a signed out user' do
+    logout
+  end
+
+  step 'Group "Owned" has a public project "Public-project"' do
+    group = Group.find_by(name: "Owned")
+
+    @project = create :empty_project, :public,
+                 group: group,
+                 name: "Public-project"
+  end
+
+  step 'I should see project "Public-project"' do
+    expect(page).to have_content 'Public-project'
+  end
+
   step 'I select "Mike" as "Reporter"' do
     user = User.find_by(name: "Mike")
 

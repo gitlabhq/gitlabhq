@@ -29,7 +29,7 @@ v 8.0.0 (unreleased)
   - Fix 500 error when submit project snippet without body
   - Improve search page usability
   - Bring more UI consistency in way how projects, snippets and groups lists are rendered
-  - Make all profiles public
+  - Make all profiles and group public
   - Fixed login failure when extern_uid changes (Joel Koglin)
   - Don't notify users without access to the project when they are (accidentally) mentioned in a note.
   - Retrieving oauth token with LDAP credentials
