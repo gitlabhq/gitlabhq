@@ -44,7 +44,7 @@ On [about.gitlab.com](https://about.gitlab.com/) you can find more information a
 GitLab requires the following software:
 
 - Ubuntu/Debian/CentOS/RHEL
-- Ruby (MRI) 2.0 or 2.1
+- Ruby (MRI) 2.1
 - Git 1.7.10+
 - Redis 2.0+
 - MySQL or PostgreSQL
