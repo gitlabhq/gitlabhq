@@ -1,5 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 7.14.2
+
 v 7.14.1
   - Only include base URL in OmniAuth full_host parameter (Stan Hu)
   - Fix Error 500 in API when accessing a group that has an avatar (Stan Hu)
