@@ -278,7 +278,7 @@ namespace :gitlab do
         fix_and_rerun
       end
     end
-    
+
     def check_uploads
       print "Uploads directory setup correctly? ... "
 
@@ -488,7 +488,7 @@ namespace :gitlab do
         else
           puts "wrong or missing hooks".red
           try_fixing_it(
-            sudo_gitlab("#{gitlab_shell_path}/bin/create-hooks"),
+            sudo_gitlab("#{File.join(gitlab_shell_path, 'bin/create-hooks')}"),
             'Check the hooks_path in config/gitlab.yml',
             'Check your gitlab-shell installation'
           )
