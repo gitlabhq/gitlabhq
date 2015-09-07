@@ -1,6 +1,7 @@
 require 'gitlab/markdown'
 require 'html/pipeline/filter'
 require 'uri'
+require 'rinku'
 
 module Gitlab
   module Markdown
