@@ -65,8 +65,11 @@
   position: relative;
 }
 
-.md-header ul {
-  float: left;
+.md-header {
+  ul {
+    float: left;
+    margin-bottom: 1px;
+  }
 }
 
 .referenced-users {
