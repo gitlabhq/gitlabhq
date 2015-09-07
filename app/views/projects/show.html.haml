@@ -65,9 +65,11 @@
 
 %section
   - if prefer_readme?
-    = render 'projects/readme'
+    .project-show-readme
+      = render 'projects/readme'
   - else
-    = render 'projects/activity'
+    .project-show-activity
+      = render 'projects/activity'
 
 
 - if current_user
