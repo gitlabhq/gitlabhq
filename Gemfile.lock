@@ -434,6 +434,10 @@ GEM
     omniauth-twitter (1.0.1)
       multi_json (~> 1.3)
       omniauth-oauth (~> 1.0)
+    omniauth_crowd (2.2.3)
+      activesupport
+      nokogiri (>= 1.4.4)
+      omniauth (~> 1.0)
     opennebula (4.12.1)
       json
       nokogiri
@@ -821,6 +825,7 @@ DEPENDENCIES
   omniauth-saml (~> 1.4.0)
   omniauth-shibboleth
   omniauth-twitter
+  omniauth_crowd
   org-ruby (= 0.9.12)
   pg
   poltergeist (~> 1.6.0)
