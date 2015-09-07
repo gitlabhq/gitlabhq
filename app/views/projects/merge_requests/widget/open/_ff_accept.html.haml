@@ -14,9 +14,12 @@
     = hidden_field_tag :authenticity_token, form_authenticity_token
     .accept-merge-holder.clearfix.js-toggle-container
       - if @merge_request.target_project.merge_requests_rebase_enabled && can_rebase?(@merge_request.target_project, @merge_request.target_branch)
-        .accept-action
-          = f.button class: "btn btn-reopen rebase-mr" do
-            Rebase from #{@merge_request.target_branch}
+        - if @merge_request.rebase_in_progress?
+          %h4 Rebase in progress... It can take a while. Reload at will.
+        - else
+          .accept-action
+            = f.button class: "btn btn-reopen rebase-mr" do
+              Rebase from #{@merge_request.target_branch}
       .accept-control
         Fast-forward merge is not possible. Branch must be rebased first
 

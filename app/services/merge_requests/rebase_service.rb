@@ -52,6 +52,7 @@ module MergeRequests
 
       true
     ensure
+      clean_dir
       Gitlab::ShellEnv.reset_env
     end
 
@@ -64,11 +65,15 @@ module MergeRequests
     end
 
     def tree_path
-      @tree_path ||= Rails.root.join('tmp', 'rebase', source_project.id.to_s, SecureRandom.hex).to_s
+      @tree_path ||= merge_request.rebase_dir_path
     end
 
     def log(message)
       Gitlab::GitLogger.error(message)
+    end
+
+    def clean_dir
+      FileUtils.rm_rf(tree_path) if File.exist?(tree_path)
     end
   end
 end
