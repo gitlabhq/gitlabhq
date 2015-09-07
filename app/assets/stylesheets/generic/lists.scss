@@ -105,7 +105,7 @@ ul.content-list {
   margin: 0;
   padding: 0;
 
-  li {
+  > li {
     padding: $gl-padding;
     border-color: #f1f2f4;
     margin-left: -$gl-padding;
