@@ -2,9 +2,11 @@ require 'spec_helper'
 
 describe MergeRequests::RebaseService do
   let(:user) { create(:user) }
-  let(:merge_request) { create(:merge_request,
-                               source_branch: 'feature_conflict',
-                               target_branch: 'master')}
+  let(:merge_request) do
+    create(:merge_request,
+           source_branch: 'feature_conflict',
+           target_branch: 'master')
+  end
   let(:project) { merge_request.project }
 
   before do
@@ -27,5 +29,3 @@ describe MergeRequests::RebaseService do
     end
   end
 end
-
-

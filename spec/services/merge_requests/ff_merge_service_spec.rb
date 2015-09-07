@@ -3,10 +3,12 @@ require 'spec_helper'
 describe MergeRequests::FfMergeService do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
-  let(:merge_request) { create(:merge_request,
-                               source_branch: 'flatten-dir',
-                               target_branch: 'improve/awesome',
-                               assignee: user2) }
+  let(:merge_request) do
+    create(:merge_request,
+           source_branch: 'flatten-dir',
+           target_branch: 'improve/awesome',
+           assignee: user2)
+  end
   let(:project) { merge_request.project }
 
   before do
@@ -46,4 +48,3 @@ describe MergeRequests::FfMergeService do
     end
   end
 end
-
