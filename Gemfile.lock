@@ -837,6 +837,7 @@ DEPENDENCIES
   redis-rails
   request_store
   rerun (~> 0.10.0)
+  rinku
   rqrcode-rails3
   rspec-rails (~> 3.3.0)
   rubocop (= 0.28.0)
