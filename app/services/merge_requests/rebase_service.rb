@@ -51,6 +51,9 @@ module MergeRequests
       end
 
       true
+    rescue => ex
+      log('Failed to rebase branch:')
+      log(ex.message)
     ensure
       clean_dir
       Gitlab::ShellEnv.reset_env

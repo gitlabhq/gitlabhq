@@ -15,6 +15,8 @@ Feature: Project Ff Merge Requests
     Given rebase before merge enabled
     When I visit merge request page "Bug NS-05"
     Then I should see rebase button
+    When I press rebase button
+    Then I should see rebase in progress message
 
   Scenario: I should do rebase before ff-only merge
     When I visit merge request page "Bug NS-05"

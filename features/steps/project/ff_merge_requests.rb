@@ -72,16 +72,12 @@ class Spinach::Features::ProjectFfMergeRequests < Spinach::FeatureSteps
     project.save!
   end
 
-  step 'I click on "Email Patches"' do
-    click_link "Email Patches"
+  step 'I press rebase button' do
+    click_button "Rebase"
   end
 
-  step 'I click on "Plain Diff"' do
-    click_link "Plain Diff"
-  end
-
-  step 'I should see a patch diff' do
-    expect(page).to have_content('diff --git')
+  step "I should see rebase in progress message" do
+    expect(page).to have_content("Rebase started. It will take some time")
   end
 
   def merge_request
