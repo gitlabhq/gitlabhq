@@ -7,18 +7,21 @@
 
 = render 'shared/show_aside'
 
+.gray-content-block.second-block
+  .row
+    .col-md-9
+      .votes-holder.pull-right
+        #votes= render 'votes/votes_block', votable: @merge_request
+      = render "projects/merge_requests/show/participants"
+    .col-md-3
+      %span.slead.has_tooltip{:"data-original-title" => 'Cross-project reference'}
+        = cross_project_reference(@project, @merge_request)
+
 .row
   %section.col-md-9
-    .votes-holder.pull-right
-      #votes= render 'votes/votes_block', votable: @merge_request
-    = render "projects/merge_requests/show/participants"
     = render "projects/notes/notes_with_form"
   %aside.col-md-3
     .issuable-affix
-      .clearfix
-        %span.slead.has_tooltip{:"data-original-title" => 'Cross-project reference'}
-          = cross_project_reference(@project, @merge_request)
-      %hr
       .context
         = render 'shared/issuable/context', issuable: @merge_request
 
