@@ -23,6 +23,11 @@ module MergeRequests
     def rebase
       Gitlab::ShellEnv.set_env(current_user)
 
+      if merge_request.rebase_in_progress?
+        log('Rebase task canceled: Another rebase is already in progress')
+        return false
+      end
+
       # Clone
       output, status = popen(%W(git clone -b #{merge_request.source_branch} -- #{source_project.repository.path_to_repo} #{tree_path}))
 
