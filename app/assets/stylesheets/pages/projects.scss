@@ -193,8 +193,9 @@ ul.nav.nav-projects-tabs {
 .breadcrumb.repo-breadcrumb {
   padding: 0;
   line-height: 42px;
-  background: white;
+  background: transparent;
   border: none;
+  margin: 0;
 
   > li + li:before {
     padding: 0 3px;
