@@ -206,7 +206,7 @@ end
 # dashboard_merge_requests GET    /dashboard/merge_requests(.:format) dashboard#merge_requests
 describe DashboardController, "routing" do
   it "to #index" do
-    expect(get("/dashboard")).to route_to('dashboard#show')
+    expect(get("/dashboard")).to route_to('dashboard/projects#index')
   end
 
   it "to #issues" do
@@ -220,8 +220,8 @@ end
 
 #                     root        /                                   root#show
 describe RootController, 'routing' do
-  it 'to #show' do
-    expect(get('/')).to route_to('root#show')
+  it 'to #index' do
+    expect(get('/')).to route_to('root#index')
   end
 end
 

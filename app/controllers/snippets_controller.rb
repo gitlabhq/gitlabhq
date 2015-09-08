@@ -26,7 +26,7 @@ class SnippetsController < ApplicationController
 
       render 'index'
     else
-      redirect_to (current_user ? dashboard_snippets_path : explore_snippets_path)
+      redirect_to(current_user ? dashboard_snippets_path : explore_snippets_path)
     end
   end
 

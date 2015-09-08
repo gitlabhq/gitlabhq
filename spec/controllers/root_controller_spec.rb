@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe RootController do
-  describe 'GET show' do
+  describe 'GET index' do
     context 'with a user' do
       let(:user) { create(:user) }
 
@@ -16,15 +16,15 @@ describe RootController do
         end
 
         it 'redirects to their specified dashboard' do
-          get :show
+          get :index
           expect(response).to redirect_to starred_dashboard_projects_path
         end
       end
 
       context 'who uses the default dashboard setting' do
         it 'renders the default dashboard' do
-          get :show
-          expect(response).to render_template 'dashboard/show'
+          get :index
+          expect(response).to render_template 'dashboard/projects/index'
         end
       end
     end
