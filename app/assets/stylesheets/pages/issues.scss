@@ -1,6 +1,6 @@
 .issues-list {
   .issue {
-    padding: 10px 15px;
+    padding: 10px $gl-padding;
     position: relative;
 
     .issue-title {
@@ -11,7 +11,6 @@
 
     .issue-info {
       color: $gl-gray;
-      font-size: 13px;
     }
 
     .issue-check {

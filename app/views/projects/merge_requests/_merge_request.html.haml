@@ -43,4 +43,4 @@
         = merge_request.task_status
 
     .pull-right.hidden-xs
-      %small updated #{time_ago_with_tooltip(merge_request.updated_at, placement: 'bottom', html_class: 'merge_request_updated_ago')}
+      %span updated #{time_ago_with_tooltip(merge_request.updated_at, placement: 'bottom', html_class: 'merge_request_updated_ago')}
