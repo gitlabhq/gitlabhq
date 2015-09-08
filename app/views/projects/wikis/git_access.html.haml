@@ -1,15 +1,16 @@
 - page_title "Git Access", "Wiki"
 = render 'nav'
-.row
-  .col-sm-6
-    %h3.page-title
-      Git access for
-      %strong= @project_wiki.path_with_namespace
+.gray-content-block
+  .row
+    .col-sm-6
+      %h3.page-title
+        Git access for
+        %strong= @project_wiki.path_with_namespace
 
-  .col-sm-6
-    = render "shared/clone_panel", project: @project_wiki
+    .col-sm-6
+      = render "shared/clone_panel", project: @project_wiki
 
-.git-empty
+.git-empty.prepend-top-default
   %fieldset
     %legend Install Gollum:
     %pre.dark
