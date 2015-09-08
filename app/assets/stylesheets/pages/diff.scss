@@ -367,3 +367,10 @@
   white-space: pre-wrap;
 }
 
+@media(min-width: $screen-lg-min) {
+  .files.parallel {
+    position: absolute;
+    left: 30px;
+    right: 30px;
+  }
+}

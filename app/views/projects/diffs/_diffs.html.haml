@@ -13,7 +13,7 @@
 - if diff_files.count < diffs.size
   = render 'projects/diffs/warning', diffs: diffs, shown_files_count: diff_files.count
 
-.files
+.files{class: params[:view]}
   - diff_files.each_with_index do |diff_file, index|
     = render 'projects/diffs/file', diff_file: diff_file, i: index, project: project
 
