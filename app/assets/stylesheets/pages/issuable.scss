@@ -66,4 +66,16 @@
       color: $gl-text-color;
     }
   }
+
+  .issue-title {
+    margin: 0;
+  }
+
+  .description {
+    margin-top: 6px;
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
 }

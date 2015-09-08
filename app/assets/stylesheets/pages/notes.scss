@@ -59,7 +59,7 @@ ul.notes {
       margin-top: 1px;
       border: 1px solid #bbb;
       background-color: transparent;
-      color: #999;
+      color: $gl-gray;
     }
   }
 
@@ -176,8 +176,7 @@ ul.notes {
 
     a {
       margin-left: 5px;
-
-      color: #999;
+      color: $gl-gray;
 
       i.fa {
         font-size: 16px;
