@@ -85,14 +85,14 @@
 // Labels
 .label {
   padding: 2px 4px;
-  font-size: 12px;
+  font-size: 13px;
   font-style: normal;
   font-weight: normal;
   display: inline-block;
 
   &.label-gray {
-    background-color: #eee;
-    color: #999;
+    background-color: #f8fafc;
+    color: $gl-gray;
     text-shadow: none;
   }
 
