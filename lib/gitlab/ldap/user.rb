@@ -68,12 +68,13 @@ module Gitlab
         Gitlab::LDAP::Access.allowed?(gl_user)
       end
 
-      def ldap_config
-        Gitlab::LDAP::Config.new(auth_hash.provider)
+      def ldap_config(provider = auth_hash.provider)
+        Gitlab::LDAP::Config.new(provider)
       end
 
       def auth_hash=(auth_hash)
-        @auth_hash = Gitlab::LDAP::AuthHash.new(auth_hash, ldap_config)
+        config = ldap_config(auth_hash.provider)
+        @auth_hash = Gitlab::LDAP::AuthHash.new(auth_hash, config)
       end
     end
   end
