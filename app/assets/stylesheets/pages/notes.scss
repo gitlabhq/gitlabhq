@@ -34,10 +34,8 @@ ul.notes {
         content: "\00b7";
       }
 
-      font-size: 13px;
-
       a {
-        @extend .cgray;
+        color: $gl-gray;
 
         &:hover {
           text-decoration: underline;
@@ -45,8 +43,9 @@ ul.notes {
       }
     }
     .author {
-      color: #333;
-      font-weight: bold;
+      color: #4c4e54;
+      margin-right: 3px;
+
       &:hover {
         color: $gl-link-color;
       }

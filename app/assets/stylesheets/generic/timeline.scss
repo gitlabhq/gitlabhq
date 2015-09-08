@@ -28,39 +28,9 @@
     }
   }
 
-  .system-note .timeline-entry-inner {
-    .timeline-icon {
-      float: left;
-      margin-left: 12px;
-      margin-top: 8px;
-      @include box-shadow(none);
-
-      span {
-        margin: 0 2px;
-        font-size: 16px;
-        color: #eeeeee;
-      }
-    }
-
-    .timeline-content {
-      background: none;
-      margin-left: 45px;
-      padding: 0px 15px;
-
-      &:after { border: 0; }
-
-      .note-header {
-        span { font-size: 12px; }
-
-        .avatar {
-          margin-right: 5px;
-        }
-      }
-
-      .note-text {
-        font-size: 12px;
-        margin-left: 20px;
-      }
+  .system-note {
+    .note-text {
+      color: $gl-gray !important;
     }
   }
 }
