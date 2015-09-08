@@ -11,12 +11,12 @@
         %pre.dark
           - if @merge_request.for_fork?
             :preserve
-              git fetch #{@merge_request.source_project.http_url_to_repo} #{@merge_request.source_branch}
-              git checkout -b #{@merge_request.source_project_path}-#{@merge_request.source_branch} FETCH_HEAD
+              git fetch #{h @merge_request.source_project.http_url_to_repo} #{h @merge_request.source_branch}
+              git checkout -b #{h @merge_request.source_project_path}-#{h @merge_request.source_branch} FETCH_HEAD
           - else
             :preserve
               git fetch origin
-              git checkout -b #{@merge_request.source_branch} origin/#{@merge_request.source_branch}
+              git checkout -b #{h @merge_request.source_branch} origin/#{h @merge_request.source_branch}
         %p
           %strong Step 2.
           Review the changes locally
@@ -27,18 +27,18 @@
         %pre.dark
           - if @merge_request.for_fork?
             :preserve
-              git checkout #{@merge_request.target_branch}
-              git merge --no-ff #{@merge_request.source_project_path}-#{@merge_request.source_branch}
+              git checkout #{h @merge_request.target_branch}
+              git merge --no-ff #{h @merge_request.source_project_path}-#{h @merge_request.source_branch}
           - else
             :preserve
-              git checkout #{@merge_request.target_branch}
-              git merge --no-ff #{@merge_request.source_branch}
+              git checkout #{h @merge_request.target_branch}
+              git merge --no-ff #{h @merge_request.source_branch}
         %p
           %strong Step 4.
           Push the result of the merge to GitLab
         %pre.dark
           :preserve
-            git push origin #{@merge_request.target_branch}
+            git push origin #{h @merge_request.target_branch}
         - unless @merge_request.can_be_merged_by?(current_user)
           %p
             Note that pushing to GitLab requires write access to this repository.

@@ -20,7 +20,7 @@
     %pre.dark
       :preserve
         git clone #{ content_tag(:span, default_url_to_repo(@project_wiki), class: 'clone')}
-        cd #{@project_wiki.path}
+        cd #{h @project_wiki.path}
 
     %legend Start Gollum And Edit Locally:
     %pre.dark
