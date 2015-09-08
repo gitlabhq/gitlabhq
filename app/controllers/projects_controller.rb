@@ -10,6 +10,10 @@ class ProjectsController < ApplicationController
 
   layout :determine_layout
 
+  def index
+    redirect_to (current_user ? root_path : explore_root_path)
+  end
+
   def new
     @project = Project.new
   end

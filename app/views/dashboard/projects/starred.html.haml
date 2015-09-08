@@ -1,9 +1,10 @@
 - page_title "Starred Projects"
-- header_title "Projects", (current_user ? root_path : explore_root_path)
+- header_title "Projects", projects_path
+
 = render 'dashboard/projects_head'
 
 - if @projects.any?
-  = render 'dashboard/projects'
+  = render 'projects'
 - else
   %h3 You don't have starred projects yet
   %p.slead Visit project page and press on star icon and it will appear on this page.

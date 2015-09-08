@@ -14,6 +14,10 @@ class GroupsController < Groups::ApplicationController
 
   layout :determine_layout
 
+  def index
+    redirect_to (current_user ? dashboard_groups_path : explore_groups_path)
+  end
+
   def new
     @group = Group.new
   end
