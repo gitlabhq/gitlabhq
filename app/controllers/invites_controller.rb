@@ -24,7 +24,7 @@ class InvitesController < ApplicationController
 
       path =
         if current_user
-          dashboard_path
+          dashboard_projects_path
         else
           new_user_session_path
         end
@@ -73,7 +73,7 @@ class InvitesController < ApplicationController
       path = group_path(group)
     else
       label = "who knows what"
-      path = dashboard_path
+      path = dashboard_projects_path
     end
 
     [label, path]

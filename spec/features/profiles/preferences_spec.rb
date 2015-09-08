@@ -70,7 +70,7 @@ describe 'Profile > Preferences', feature: true do
       expect(page.current_path).to eq starred_dashboard_projects_path
 
       click_link 'Your Projects'
-      expect(page.current_path).to eq dashboard_path
+      expect(page.current_path).to eq dashboard_projects_path
     end
   end
 
