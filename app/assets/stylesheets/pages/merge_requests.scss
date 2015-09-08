@@ -89,20 +89,11 @@
   }
 }
 
-@media(min-width: $screen-sm-max) {
-  .merge-request .merge-request-tabs{
-    li {
-      a {
-        padding: 15px 40px;
-        font-size: 14px;
-      }
-    }
-  }
-}
-
 .merge-request .merge-request-tabs{
-  margin-top: 30px;
-  margin-bottom: 20px;
+  @include nav-menu;
+  margin-bottom: -15px;
+  margin-top: 26px;
+  text-align: left;
 }
 
 .mr_source_commit,
@@ -137,7 +128,6 @@
 
     .merge-request-info {
       color: $gl-gray;
-      font-size: 13px;
     }
 
   }

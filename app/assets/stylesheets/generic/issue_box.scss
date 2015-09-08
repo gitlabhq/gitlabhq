@@ -5,10 +5,13 @@
  */
 
 .issue-box {
+  @include border-radius(3px);
+
   display: inline-block;
-  padding: 4px 13px;
+  padding: 10px $gl-padding;
   font-weight: normal;
-  margin-right: 5px;
+  margin-right: 10px;
+  font-size: $gl-font-size;
 
   &.issue-box-closed {
     background-color: $gl-danger;
@@ -21,7 +24,7 @@
   }
 
   &.issue-box-open {
-    background-color: $gl-success;
+    background-color: #019875;
     color: #FFF;
   }
 

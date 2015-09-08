@@ -72,9 +72,13 @@
 
 .common-note-form {
   margin: 0;
-  background: #F9F9F9;
-  padding: 5px;
-  border: 1px solid #DDD;
+  background: #f8fafc;
+  padding: $gl-padding;
+  margin-left: -$gl-padding;
+  margin-right: -$gl-padding;
+  border-right: 1px solid #f1f2f4;
+  border-top: 1px solid #f1f2f4;
+  margin-bottom: -$gl-padding;
 }
 
 .note-form-actions {
