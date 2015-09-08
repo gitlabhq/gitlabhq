@@ -1,6 +1,8 @@
 .diff-file {
-  border: 1px solid $border-color;
-  margin-bottom: 1em;
+  margin-left: -16px;
+  margin-right: -16px;
+  border: none;
+  border-bottom: 1px solid #E7E9EE;
 
   .diff-header {
     position: relative;
@@ -367,3 +369,7 @@
   white-space: pre-wrap;
 }
 
+.inline-parallel-buttons {
+  float: right;
+  margin-top: -5px;
+}
