@@ -7,6 +7,7 @@
 - Ubuntu
 - Debian
 - CentOS
+- FreeBSD
 - Red Hat Enterprise Linux (please use the CentOS packages and instructions)
 - Scientific Linux (please use the CentOS packages and instructions)
 - Oracle Linux (please use the CentOS packages and instructions)
@@ -19,7 +20,6 @@ For the installations options please see [the installation page on the GitLab we
 - Arch Linux
 - Fedora
 - Gentoo
-- FreeBSD
 
 On the above unsupported distributions is still possible to install GitLab yourself.
 Please see the [installation from source guide](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md) and the [unofficial installation guides](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Unofficial-Installation-Guides) on the public wiki for more information.
