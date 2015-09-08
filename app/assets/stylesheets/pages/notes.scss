@@ -14,6 +14,19 @@ ul.notes {
   margin: 0px;
   padding: 0px;
 
+  .system-note {
+    font-size: 14px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: #f8fafc;
+
+    .timeline-icon {
+      .avatar {
+        visibility: hidden;
+      }
+    }
+  }
+
   .discussion-header,
   .note-header {
     @extend .cgray;
