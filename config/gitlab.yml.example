@@ -144,6 +144,21 @@ production: &base
         bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
         password: '_the_password_of_the_bind_user'
 
+        # LDAP attributes that GitLab will use to create an account for the LDAP user.
+        # Can be either the name of an attribute as a string (e.g. 'mail'),
+        # or an array of names of attributes to try in order (e.g. ['mail', 'email']).
+        # The default values are listed.
+        attributes:
+          # username: ['uid', 'userid', 'sAMAccountName']
+          # name:     'cn' # Also falls back to a combination of first_name and last_name, see below
+          # email:    ['mail', 'email', 'userPrincipalName']
+
+          # If no full name could be found at the attribute specified for `name`,
+          # the full name is determined as `<first_name> <last_name>`, using the 
+          # attributes specified below.
+          # first_name: 'givenName'
+          # last_name:  'sn'
+          
         # This setting specifies if LDAP server is Active Directory LDAP server.
         # For non AD servers it skips the AD specific queries.
         # If your LDAP server is not AD, set this to false.
