@@ -460,7 +460,7 @@ module SharedPaths
   end
 
   step 'I visit snippets page' do
-    visit snippets_path
+    visit explore_snippets_path
   end
 
   step 'I visit new snippet page' do
