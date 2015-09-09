@@ -157,6 +157,9 @@ gem "slack-notifier", "~> 1.0.0"
 # Asana integration
 gem 'asana', '~> 0.0.6'
 
+# FogBugz integration
+gem 'ruby-fogbugz'
+
 # d3
 gem 'd3_rails', '~> 3.5.5'
 
@@ -259,6 +262,7 @@ group :test do
   gem 'email_spec', '~> 1.6.0'
   gem 'webmock', '~> 1.21.0'
   gem 'test_after_commit'
+  gem 'sham_rack'
 end
 
 group :production do
