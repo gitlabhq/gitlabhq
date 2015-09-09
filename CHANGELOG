@@ -40,6 +40,7 @@ v 8.0.0 (unreleased)
   - Add ability to get user information by ID of an SSH key via the API
   - Fix bug which IE cannot show image at markdown when the image is raw file	of gitlab  
   - Add support for Crowd
+  - Allow configuration of LDAP attributes GitLab will use for the new user account.
 
 v 7.14.1
   - Improve abuse reports management from admin area
