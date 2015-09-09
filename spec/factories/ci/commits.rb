@@ -17,7 +17,7 @@
 
 # Read about factories at https://github.com/thoughtbot/factory_girl
 FactoryGirl.define do
-  factory :commit do
+  factory :ci_commit, class: Ci::Commit do
     ref 'master'
     before_sha '76de212e80737a608d939f648d959671fb0a0142'
     sha '97de212e80737a608d939f648d959671fb0a0142'
@@ -51,21 +51,21 @@ FactoryGirl.define do
       }
     end
 
-    factory :commit_without_jobs do
+    factory :ci_commit_without_jobs do
       after(:create) do |commit, evaluator|
         commit.push_data[:ci_yaml_file] = YAML.dump({})
         commit.save
       end
     end
 
-    factory :commit_with_one_job do
+    factory :ci_commit_with_one_job do
       after(:create) do |commit, evaluator|
         commit.push_data[:ci_yaml_file] = YAML.dump({rspec: { script: "ls" }})
         commit.save
       end
     end
 
-    factory :commit_with_two_jobs do
+    factory :ci_commit_with_two_jobs do
       after(:create) do |commit, evaluator|
         commit.push_data[:ci_yaml_file] = YAML.dump({rspec: { script: "ls" }, spinach: { script: "ls" }})
         commit.save

@@ -12,7 +12,7 @@
 # Read about factories at https://github.com/thoughtbot/factory_girl
 
 FactoryGirl.define do
-  factory :runner_project do
+  factory :ci_runner_project, class: Ci::RunnerProject do
     runner_id 1
     project_id 1
   end

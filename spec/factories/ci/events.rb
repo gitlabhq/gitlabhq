@@ -12,7 +12,7 @@
 #
 
 FactoryGirl.define do
-  factory :event, class: Event do
+  factory :ci_event, class: Ci::Event do
     sequence :description do |n|
       "updated project settings#{n}"
     end

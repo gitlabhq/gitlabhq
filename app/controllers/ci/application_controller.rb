@@ -8,7 +8,7 @@ module Ci
 
     rescue_from Ci::Network::UnauthorizedError, with: :invalid_token
     before_filter :default_headers
-    before_filter :check_config
+    #before_filter :check_config
 
     protect_from_forgery
 

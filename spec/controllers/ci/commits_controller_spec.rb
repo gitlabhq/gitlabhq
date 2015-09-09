@@ -1,13 +1,13 @@
 require "spec_helper"
 
-describe CommitsController do
+describe Ci::CommitsController do
   before do
-    @project = FactoryGirl.create :project
+    @project = FactoryGirl.create :ci_project
   end
 
   describe "GET /status" do
     it "returns status of commit" do
-      commit = FactoryGirl.create :commit, project: @project
+      commit = FactoryGirl.create :ci_commit, project: @project
       get :status, id: commit.sha, ref_id: commit.ref, project_id: @project.id
 
       expect(response).to be_success
@@ -16,7 +16,7 @@ describe CommitsController do
     end
 
     it "returns not_found status" do
-      commit = FactoryGirl.create :commit, project: @project
+      commit = FactoryGirl.create :ci_commit, project: @project
       get :status, id: commit.sha, ref_id: "deploy", project_id: @project.id
 
       expect(response).to be_success

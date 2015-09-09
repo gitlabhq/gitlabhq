@@ -28,7 +28,7 @@
 # Read about factories at https://github.com/thoughtbot/factory_girl
 
 FactoryGirl.define do
-  factory :project_without_token, class: Project do
+  factory :ci_project_without_token, class: Ci::Project do
     sequence :name do |n|
       "GitLab / gitlab-shell#{n}"
     end
@@ -45,11 +45,11 @@ FactoryGirl.define do
 
     sequence :gitlab_id
 
-    factory :project do
+    factory :ci_project do
       token 'iPWx6WM4lhHNedGfBpPJNP'
     end
 
-    factory :public_project do
+    factory :ci_public_project do
       public true
     end
   end

@@ -20,7 +20,7 @@
 # Read about factories at https://github.com/thoughtbot/factory_girl
 
 FactoryGirl.define do
-  factory :runner do
+  factory :ci_runner, class: Ci::Runner do
     sequence :description do |n|
       "My runner#{n}"
     end
