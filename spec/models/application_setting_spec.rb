@@ -22,6 +22,7 @@
 #  user_oauth_applications      :boolean          default(TRUE)
 #  after_sign_out_path          :string(255)
 #  session_expire_delay         :integer          default(10080), not null
+#  import_sources               :text
 #
 
 require 'spec_helper'

@@ -1,7 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.0.0 (unreleased)
+  - Fix URL construction for merge requests, issues, notes, and commits for relative URL config (Stan Hu)
   - Omit filename in Content-Disposition header in raw file download to avoid RFC 6266 encoding issues (Stan HU)
+  - Fix broken Wiki Page History (Stan Hu)
   - Prevent anchors from being hidden by header (Stan Hu)
   - Fix bug where only the first 15 Bitbucket issues would be imported (Stan Hu)
   - Sort issues by creation date in Bitbucket importer (Stan Hu)
@@ -37,6 +39,7 @@ v 8.0.0 (unreleased)
   - Added web_url key project hook_attrs (Kirill Zaitsev)
   - Add ability to get user information by ID of an SSH key via the API
   - Fix bug which IE cannot show image at markdown when the image is raw file	of gitlab  
+  - Add support for Crowd
 
 v 7.14.1
   - Improve abuse reports management from admin area
@@ -44,6 +47,7 @@ v 7.14.1
   - Only include base URL in OmniAuth full_host parameter (Stan Hu)
   - Fix Error 500 in API when accessing a group that has an avatar (Stan Hu)
   - Ability to enable SSL verification for Webhooks
+  - Add FogBugz project import (Jared Szechy)
 
 v 7.14.0
   - Fix bug where non-project members of the target project could set labels on new merge requests.

@@ -52,7 +52,6 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I see compared refs' do
-    expect(page).to have_content "Compare View"
     expect(page).to have_content "Commits (1)"
     expect(page).to have_content "Showing 2 changed files"
   end

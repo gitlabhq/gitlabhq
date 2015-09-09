@@ -10,7 +10,7 @@
         and
         %strong.cred #{@commit.stats.deletions} deletions
   .file-stats.js-toggle-content.hide
-    %ul.bordered-list
+    %ul
       - diffs.each_with_index do |diff, i|
         %li
           - if diff.deleted_file

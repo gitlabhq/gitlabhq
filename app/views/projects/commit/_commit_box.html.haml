@@ -41,7 +41,7 @@
 .commit-info-row.branches
   %i.fa.fa-spinner.fa-spin
 
-.commit-box
+.commit-box.gray-content-block.middle-block
   %h3.commit-title
     = gfm escape_once(@commit.title)
   - if @commit.description.present?

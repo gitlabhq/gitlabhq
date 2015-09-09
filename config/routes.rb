@@ -99,6 +99,15 @@ Gitlab::Application.routes.draw do
       get   :new_user_map,    path: :user_map
       post  :create_user_map, path: :user_map
     end
+
+    resource :fogbugz, only: [:create, :new], controller: :fogbugz do
+      get :status
+      post :callback
+      get :jobs
+
+      get   :new_user_map,    path: :user_map
+      post  :create_user_map, path: :user_map
+    end
   end
 
   #
@@ -406,16 +415,20 @@ Gitlab::Application.routes.draw do
           end
         end
 
-        resources :wikis, only: [:show, :edit, :destroy, :create], constraints: { id: /[a-zA-Z.0-9_\-\/]+/ } do
-          collection do
-            get :pages
-            put ':id' => 'wikis#update'
-            get :git_access
-          end
+        WIKI_SLUG_ID = { id: /[a-zA-Z.0-9_\-\/]+/ } unless defined? WIKI_SLUG_ID
 
-          member do
-            get 'history'
-          end
+        scope do
+          # Order matters to give priority to these matches
+          get '/wikis/git_access', to: 'wikis#git_access'
+          get '/wikis/pages', to: 'wikis#pages', as: 'wiki_pages'
+          post '/wikis', to: 'wikis#create'
+
+          get '/wikis/*id/history', to: 'wikis#history', as: 'wiki_history', constraints: WIKI_SLUG_ID
+          get '/wikis/*id/edit', to: 'wikis#edit', as: 'wiki_edit', constraints: WIKI_SLUG_ID
+
+          get '/wikis/*id', to: 'wikis#show', as: 'wiki', constraints: WIKI_SLUG_ID
+          delete '/wikis/*id', to: 'wikis#destroy', constraints: WIKI_SLUG_ID
+          put '/wikis/*id', to: 'wikis#update', constraints: WIKI_SLUG_ID
         end
 
         resource :repository, only: [:show, :create] do

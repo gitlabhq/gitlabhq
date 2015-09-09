@@ -5,5 +5,8 @@
 #
 #   <div class="js-syntax-highlight"></div>
 #
+$.fn.syntaxHighlight = ->
+  $(this).addClass(gon.user_color_scheme)
+
 $(document).on 'ready page:load', ->
-  $('.js-syntax-highlight').addClass(gon.user_color_scheme)
+  $('.js-syntax-highlight').syntaxHighlight()

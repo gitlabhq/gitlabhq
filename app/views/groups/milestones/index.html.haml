@@ -1,23 +1,17 @@
 - page_title "Milestones"
-%h3.page-title
-  Milestones
-  %span.pull-right #{@group_milestones.count} milestones
+- header_title group_title(@group, "Milestones", group_milestones_path(@group))
 
-%p.light
+= render 'shared/milestones_filter'
+.gray-content-block
   Only milestones from
   %strong #{@group.name}
   group are listed here.
-
-%hr
-
-= render 'shared/milestones_filter'
 .milestones
-  .panel.panel-default
-    %ul.well-list
-      - if @group_milestones.blank?
-        %li
-          .nothing-here-block No milestones to show
-      - else
-        - @group_milestones.each do |milestone|
-          = render 'milestone', milestone: milestone
+  %ul.content-list
+    - if @group_milestones.blank?
+      %li
+        .nothing-here-block No milestones to show
+    - else
+      - @group_milestones.each do |milestone|
+        = render 'milestone', milestone: milestone
   = paginate @group_milestones, theme: "gitlab"
