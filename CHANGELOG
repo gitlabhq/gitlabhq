@@ -46,6 +46,9 @@ v 8.0.0 (unreleased)
 v 7.14.1
   - Improve abuse reports management from admin area
   - Fix "Reload with full diff" URL button in compare branch view (Stan Hu)
+  - Disabled DNS lookups for SSH in docker image (Rowan Wookey)
+
+v 7.14.1 (unreleased)
   - Only include base URL in OmniAuth full_host parameter (Stan Hu)
   - Fix Error 500 in API when accessing a group that has an avatar (Stan Hu)
   - Ability to enable SSL verification for Webhooks
