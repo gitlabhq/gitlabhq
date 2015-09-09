@@ -99,6 +99,15 @@ Gitlab::Application.routes.draw do
       get   :new_user_map,    path: :user_map
       post  :create_user_map, path: :user_map
     end
+
+    resource :fogbugz, only: [:create, :new], controller: :fogbugz do
+      get :status
+      post :callback
+      get :jobs
+
+      get   :new_user_map,    path: :user_map
+      post  :create_user_map, path: :user_map
+    end
   end
 
   #
