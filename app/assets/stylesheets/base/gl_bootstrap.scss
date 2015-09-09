@@ -157,8 +157,10 @@
  *
  */
 .panel {
+  box-shadow: none;
   .panel-heading {
-    font-weight: bold;
+    font-size: 17px;
+    line-height: 38px;
 
     .panel-head-actions {
       position: relative;
@@ -181,6 +183,10 @@
   .panel-footer {
     .pagination {
       margin: 0;
+    }
+
+    .btn {
+      min-width: 124px;
     }
   }
 
@@ -207,6 +213,12 @@
     color: #fff;
     text-decoration: underline;
   }
+}
+
+.alert-help {
+  background-color: $background-color;
+  border: 1px solid $border-color;
+  color: $gl-gray;
 }
 
 // Typography =================================================================

@@ -28,6 +28,12 @@
     padding: $gl-padding;
     border: 1px solid #e7e9ed;
     min-height: 90vh;
+
+    &.container-blank {
+      background: none;
+      padding: 0;
+      border: none;
+    }
   }
 }
 
