@@ -5,7 +5,7 @@ module Ci
     before_filter :project
     before_filter :authorize_access_project!, except: [:status, :show]
     before_filter :authorize_manage_project!, except: [:status, :show, :retry, :cancel]
-    before_filter :authorize_project_developer!, only: [:retry, :cancel]
+    before_filter :authorize_manage_builds!, only: [:retry, :cancel]
     before_filter :build, except: [:show]
 
     def show

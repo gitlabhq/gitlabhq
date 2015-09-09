@@ -7,7 +7,7 @@
 
 
   %td.build-link
-    = link_to ci_project_ref_commit_path(commit.project, commit.ref, commit.sha) do
+    = link_to ci_project_ref_commits_path(commit.project, commit.ref, commit.sha) do
       %strong #{commit.short_sha}
 
   %td.build-message

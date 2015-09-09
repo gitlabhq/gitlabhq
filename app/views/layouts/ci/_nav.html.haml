@@ -9,7 +9,7 @@
 
     .collapse.navbar-collapse
       %ul.nav.navbar-nav
-        - if current_user && current_user.is_admin
+        - if current_user && current_user.is_admin?
           %li
             = link_to ci_admin_projects_path do
               Admin
@@ -19,12 +19,12 @@
       %ul.nav.navbar-nav.pull-right
         - if current_user
           %li
-            = link_to ci_user_sessions_path do
+            = link_to new_user_session_path do
               .profile-holder
                 = image_tag user_avatar_url(current_user, 64), class: 'avatar s32', alt: ''
                 %span= current_user.name
           %li
-            = link_to ci_user_sessions_path, class: "logout", method: :delete do
+            = link_to destroy_user_session_path, class: "logout", method: :delete do
               %i.fa.fa-signout
               Logout
         - else

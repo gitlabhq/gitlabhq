@@ -1,6 +1,6 @@
 = render 'ci/shared/guide' unless @project.setup_finished?
 
-- if current_user && current_user.can_manage_project?(@project.gitlab_id) && !@project.any_runners?
+- if current_user && can?(current_user, :manage_project, gl_project) && !@project.any_runners?
   .alert.alert-danger
     Builds for this project wont be served unless you configure runners on
     = link_to "Runners page", ci_project_runners_path(@project)

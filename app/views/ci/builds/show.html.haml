@@ -1,10 +1,10 @@
 %h4.page-title
-  = link_to @project.name, @project
+  = link_to ci_project_path(@project)
   @
   = @commit.short_sha
   
 %p
-  = link_to ci_project_ref_commit_path(@project, @commit.ref, @commit.sha) do
+  = link_to ci_project_ref_commits_path(@project, @commit.ref, @commit.sha) do
     &larr; Back to project commit
 %hr
 #up-build-trace
@@ -12,7 +12,7 @@
   %ul.nav.nav-tabs.append-bottom-10
     - @commit.builds_without_retry_sorted.each do |build|
       %li{class: ('active' if build == @build) }
-        = link_to ci_build_url(build) do
+        = link_to ci_project_build_url(@project, build) do
           %i{class: build_icon_css_class(build)}
           %span
             Build ##{build.id}
@@ -84,7 +84,7 @@
     .build-widget
       %h4.title
         Build
-        - if current_user && current_user.has_developer_access?(@project.gitlab_id)
+        - if current_user && can?(current_user, :manage_builds, gl_project)
           .pull-right
             - if @build.active?
               = link_to "Cancel", cancel_ci_project_build_path(@project, @build), class: 'btn btn-sm btn-danger'
@@ -161,7 +161,7 @@
           - @builds.each_with_index do |build, i|
             %tr.build.alert{class: build_status_alert_class(build)}
               %td
-                = link_to ci_build_url(build) do
+                = link_to ci_project_build_url(@project, build) do
                   %span ##{build.id}
               %td
                 - if build.name
@@ -173,4 +173,4 @@
 
 
 :javascript
-  new CiBuild("#{ci_build_url(@build)}", "#{@build.status}")
+  new CiBuild("#{ci_project_build_url(@project, @build)}", "#{@build.status}")

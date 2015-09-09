@@ -2,7 +2,7 @@
 %h3
   Hi, #{@user.name}
 
-  - if @user.is_admin
+  - if @user.is_admin?
     %span.label.label-success Admin
 
 .profile-block

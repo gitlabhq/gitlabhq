@@ -39,43 +39,13 @@ module Ci
       @sync_at = Time.now
     end
 
-    def can_access_project?(project_gitlab_id)
-      !!project_info(project_gitlab_id)
-    end
-
-    # Indicate if user has developer access or higher
-    def has_developer_access?(project_gitlab_id)
-      data = project_info(project_gitlab_id)
-
-      return false unless data && data["permissions"]
-
-      permissions = data["permissions"]
-
-      if permissions["project_access"] && permissions["project_access"]["access_level"] >= DEVELOPER_ACCESS
-        return true
-      end
-
-      if permissions["group_access"] && permissions["group_access"]["access_level"] >= DEVELOPER_ACCESS
-        return true
-      end
-    end
-
-    def can_manage_project?(project_gitlab_id)
-      Rails.cache.fetch(cache_key('manage', project_gitlab_id, sync_at)) do
-        !!Ci::Network.new.project_hooks(authenticate_options, project_gitlab_id)
-      end
-    end
-
     def authorized_runners
       Ci::Runner.specific.includes(:runner_projects).
         where(Ci::RunnerProject.table_name => { project_id: authorized_projects } )
     end
 
     def authorized_projects
-      Ci::Project.where(gitlab_id: gitlab_projects.map(&:id)).select do |project|
-        # This is slow: it makes request to GitLab for each project to verify manage permission
-        can_manage_project?(project.gitlab_id)
-      end
+      Ci::Project.where(gitlab_id: current_user.authorized_projects.map(&:id))
     end
 
     def authenticate_options

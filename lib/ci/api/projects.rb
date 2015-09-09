@@ -66,7 +66,7 @@ module Ci
         get ":id" do
           project = Ci::Project.find(params[:id])
 
-          unauthorized! unless current_user.can_access_project?(project.gitlab_id)
+          unauthorized! unless can?(current_user, :read_project, gl_project)
 
           present project, with: Entities::Project
         end
@@ -118,7 +118,7 @@ module Ci
         put ":id" do
           project = Ci::Project.find(params[:id])
 
-          unauthorized! unless current_user.can_manage_project?(project.gitlab_id)
+          unauthorized! unless can?(current_user, :manage_project, gl_project)
 
           attrs = attributes_for_keys [:name, :gitlab_id, :path, :gitlab_url, :default_ref, :ssh_url_to_repo]
 
@@ -144,7 +144,7 @@ module Ci
         delete ":id" do
           project = Ci::Project.find(params[:id])
 
-          unauthorized! unless current_user.can_manage_project?(project.gitlab_id)
+          unauthorized! unless can?(current_user, :manage_project, gl_project)
 
           project.destroy
         end
@@ -160,7 +160,7 @@ module Ci
           project = Ci::Project.find(params[:id])
           runner  = Ci::Runner.find(params[:runner_id])
 
-          unauthorized! unless current_user.can_manage_project?(project.gitlab_id)
+          unauthorized! unless can?(current_user, :manage_project, gl_project)
 
           options = {
             project_id: project.id,
@@ -188,7 +188,7 @@ module Ci
           project = Ci::Project.find(params[:id])
           runner  = Ci::Runner.find(params[:runner_id])
 
-          unauthorized! unless current_user.can_manage_project?(project.gitlab_id)
+          unauthorized! unless can?(current_user, :manage_project, gl_project)
 
           options = {
             project_id: project.id,

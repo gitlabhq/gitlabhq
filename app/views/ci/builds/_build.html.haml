@@ -35,7 +35,7 @@
         #{build.coverage}%
 
   %td
-    - if defined?(controls) && current_user && current_user.has_developer_access?(@project.gitlab_id)
+    - if defined?(controls) && current_user && can?(current_user, :manage_builds, gl_project)
       .pull-right
         - if build.active?
           = link_to cancel_ci_project_build_path(build.project, build, return_to: request.original_url), title: 'Cancel build' do

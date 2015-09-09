@@ -33,10 +33,10 @@
           %span.attr-name Created at:
           #{@commit.created_at.to_s(:short)}
 
-- if current_user && current_user.has_developer_access?(@project.gitlab_id)
+- if current_user && can?(current_user, :manage_builds, gl_project)
   .pull-right
     - if @commit.builds.running_or_pending.any?
-      = link_to "Cancel", cancel_ci_project_ref_commit_path(@project, @commit.ref, @commit.sha), class: 'btn btn-sm btn-danger'
+      = link_to "Cancel", cancel_ci_project_ref_commits_path(@project, @commit.ref, @commit.sha), class: 'btn btn-sm btn-danger'
 
 
 - if @commit.yaml_errors.present?

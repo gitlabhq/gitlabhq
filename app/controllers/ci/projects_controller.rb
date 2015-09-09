@@ -21,12 +21,15 @@ module Ci
       @limit, @offset = (params[:limit] || PROJECTS_BATCH).to_i, (params[:offset] || 0).to_i
       @page = @offset == 0 ? 1 : (@offset / @limit + 1)
 
-      current_user.reset_cache if params[:reset_cache]
+      @gl_projects = current_user.authorized_projects
+      @gl_projects = @gl_projects.where("name LIKE %?%", params[:search]) if params[:search]
+      @gl_projects = @gl_projects.page(@page).per(@limit)
 
-      @gl_projects = current_user.gitlab_projects(params[:search], @page, @limit)
       @projects = Ci::Project.where(gitlab_id: @gl_projects.map(&:id)).ordered_by_last_commit_date
       @total_count = @gl_projects.size
-      @gl_projects.reject! { |gl_project| @projects.map(&:gitlab_id).include?(gl_project.id) }
+      
+      @gl_projects = @gl_projects.where.not(id: @projects.map(&:gitlab_id))
+
       respond_to do |format|
         format.json do
           pager_json("ci/projects/gitlab", @total_count)
@@ -52,7 +55,7 @@ module Ci
     def create
       project_data = OpenStruct.new(JSON.parse(params["project"]))
 
-      unless current_user.can_manage_project?(project_data.id)
+      unless can?(current_user, :manage_project, ::Project.find(project_data.id))
         return redirect_to ci_root_path, alert: 'You have to have at least master role to enable CI for this project'
       end
 

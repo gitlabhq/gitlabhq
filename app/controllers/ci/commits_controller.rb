@@ -4,7 +4,7 @@ module Ci
     before_filter :authenticate_public_page!, only: :show
     before_filter :project
     before_filter :authorize_access_project!, except: [:status, :show, :cancel]
-    before_filter :authorize_project_developer!, only: [:cancel]
+    before_filter :authorize_manage_builds!, only: [:cancel]
     before_filter :commit, only: :show
 
     def show
