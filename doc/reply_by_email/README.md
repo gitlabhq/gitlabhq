@@ -34,7 +34,7 @@ In this example, we'll use the Gmail address `gitlab-replies@gmail.com`.
       address: "gitlab-replies+%{reply_key}@gmail.com"
     ```
 
-    As mentioned, the part after `+` is ignored, and this will end up in the mailbox for `gitlab-replies@gmail.com`.
+    As mentioned, the part after `+` in the address is ignored, and any email sent here will end up in the mailbox for `gitlab-replies@gmail.com`.
 
 2. Copy `config/mail_room.yml.example` to `config/mail_room.yml`:
 
@@ -91,7 +91,7 @@ In this example, we'll use the Gmail address `gitlab-replies@gmail.com`.
     sudo service gitlab restart
     ```
 
-7. Check if everything is configured correctly:
+7. Verify that everything is configured correctly:
 
     ```sh
     sudo -u git -H bundle exec rake gitlab:reply_by_email:check RAILS_ENV=production
@@ -101,30 +101,34 @@ In this example, we'll use the Gmail address `gitlab-replies@gmail.com`.
 
 ### Omnibus package installations
 
-In `/etc/gitlab/gitlab.rb`:
+1. Find the `reply_by_email` section in `/etc/gitlab/gitlab.rb`, enable the feature, enter the email address including a placeholder for the `reply_key` and fill in the details for your specific IMAP server and email account:
 
-```ruby
+    ```ruby
+    gitlab_rails['reply_by_email_enabled'] = true
+    gitlab_rails['reply_by_email_address'] = "gitlab-replies+%{reply_key}@gmail.com"
+    gitlab_rails['reply_by_email_host'] = "imap.gmail.com" # IMAP server host
+    gitlab_rails['reply_by_email_port'] = 993 # IMAP server port
+    gitlab_rails['reply_by_email_ssl'] = true # Whether the IMAP server uses SSL
+    gitlab_rails['reply_by_email_email'] = "gitlab-replies@gmail.com"  # Email account username. Usually the full email address.
+    gitlab_rails['reply_by_email_password'] = "password" # Email account password
+    gitlab_rails['reply_by_email_mailbox_name'] = "inbox" # The name of the mailbox where incoming mail will end up. Usually "inbox".
+    ```
 
-gitlab_rails['reply_by_email_enabled'] = true
-gitlab_rails['reply_by_email_address'] = "gitlab-replies+%{reply_key}@gmail.com"
-gitlab_rails['reply_by_email_host'] = "imap.gmail.com" # IMAP server host
-gitlab_rails['reply_by_email_port'] = 993 # IMAP server port
-gitlab_rails['reply_by_email_ssl'] = true # Whether the IMAP server uses SSL
-gitlab_rails['reply_by_email_email'] = "gitlab-replies@gmail.com"  # Email account username. Usually the full email address.
-gitlab_rails['reply_by_email_password'] = "password" # Email account password
-gitlab_rails['reply_by_email_mailbox_name'] = "inbox" # The name of the mailbox where incoming mail will end up.
-```
+    As mentioned, the part after `+` in the address is ignored, and any email sent here will end up in the mailbox for `gitlab-replies@gmail.com`.
 
-and run `sudo gitlab-ctl reconfigure` for changes to take effect.
+1. Reconfigure GitLab for the changes to take effect:
 
-After reconfigure run has been successfully completed you will have the following commands available:
+    ```sh
+    sudo gitlab-ctl reconfigure
+    ```
 
-```bash
-sudo gitlab-ctl status mailroom
-sudo gitlab-ctl stop mailroom
-sudo gitlab-ctl start mailroom
-sudo gitlab-ctl restart mailroom
-```
+1. Verify that everything is configured correctly:
+
+    ```sh
+    sudo gitlab-rake gitlab:reply_by_email:check
+    ```
+
+1. Reply by email should now be working.
 
 ### Development
 
@@ -190,7 +194,7 @@ sudo gitlab-ctl restart mailroom
     bundle exec foreman start
     ```
 
-7. Check if everything is configured correctly:
+7. Verify that everything is configured correctly:
 
     ```sh
     bundle exec rake gitlab:reply_by_email:check RAILS_ENV=development
