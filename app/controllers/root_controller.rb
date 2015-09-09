@@ -7,7 +7,7 @@
 # For users who haven't customized the setting, we simply delegate to
 # `DashboardController#show`, which is the default.
 class RootController < Dashboard::ProjectsController
-  before_action :redirect_to_custom_dashboard, only: [:show]
+  before_action :redirect_to_custom_dashboard, only: [:index]
 
   def index
     super
