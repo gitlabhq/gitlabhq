@@ -4,13 +4,18 @@
   margin: 0;
   padding: 0;
 
-  > li {
+  .timeline-entry {
     padding: $gl-padding;
     border-color: #f1f2f4;
     margin-left: -$gl-padding;
     margin-right: -$gl-padding;
     color: $gl-gray;
+    border-bottom: 1px solid #f1f2f4;
     border-right: 1px solid #f1f2f4;
+
+    &:last-child {
+      border-bottom: none;
+    }
 
     .avatar {
       margin-right: 15px;
@@ -33,6 +38,13 @@
       color: $gl-gray !important;
     }
   }
+
+  .diff-file {
+    border: 1px solid $border-color;
+    border-bottom: none;
+    margin-left: 0;
+    margin-right: 0;
+  }
 }
 
 @media (max-width: $screen-xs-max) {
@@ -50,4 +62,9 @@
       }
     }
   }
+}
+
+.discussion .timeline-entry {
+  margin: 0;
+  border-right: none;
 }
