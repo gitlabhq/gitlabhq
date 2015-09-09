@@ -27,3 +27,9 @@ You can find results under the `doc/code` directory.
 ```
 bundle exec rake gitlab:generate_docs
 ```
+
+## Generate API documentation for project services (e.g. Slack)
+
+```
+bundle exec rake services:doc
+```

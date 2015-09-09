@@ -135,6 +135,7 @@ class Service < ActiveRecord::Base
       buildkite
       campfire
       custom_issue_tracker
+      drone_ci
       emails_on_push
       external_wiki
       flowdock

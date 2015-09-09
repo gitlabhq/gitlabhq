@@ -7,21 +7,24 @@
 
 = render 'shared/show_aside'
 
+.gray-content-block.second-block
+  .row
+    .col-md-9
+      .votes-holder.pull-right
+        #votes= render 'votes/votes_block', votable: @issue
+      .participants
+        %span= pluralize(@participants.count, 'participant')
+        - @participants.each do |participant|
+          = link_to_member(@project, participant, name: false, size: 24)
+    .col-md-3
+      %span.slead.has_tooltip{title: 'Cross-project reference'}
+        = cross_project_reference(@project, @issue)
+
 .row
   %section.col-md-9
-    .votes-holder.pull-right
-      #votes= render 'votes/votes_block', votable: @issue
-    .participants
-      %span= pluralize(@participants.count, 'participant')
-      - @participants.each do |participant|
-        = link_to_member(@project, participant, name: false, size: 24)
     .voting_notes#notes= render 'projects/notes/notes_with_form'
   %aside.col-md-3
     .issuable-affix
-      .clearfix
-        %span.slead.has_tooltip{title: 'Cross-project reference'}
-          = cross_project_reference(@project, @issue)
-      %hr
       .context
         = render 'shared/issuable/context', issuable: @issue
 

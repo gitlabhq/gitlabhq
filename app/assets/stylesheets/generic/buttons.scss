@@ -72,3 +72,19 @@
     }
   }
 }
+
+.btn-group-next {
+  .btn {
+    padding: 9px 0px;
+    font-size: 15px;
+    color: #7f8fa4;
+    border-color: #e7e9ed;
+    width: 140px;
+
+    &.active {
+      border-color: $gl-info;
+      background: $gl-info;
+      color: #fff;
+    }
+  }
+}

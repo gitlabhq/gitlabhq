@@ -1,9 +1,7 @@
 - page_title "Compare"
 = render "projects/commits/head"
 
-%h3.page-title
-  Compare View
-%p.slead
+.gray-content-block
   Compare branches, tags or commit ranges.
   %br
   Fill input field with commit id like
@@ -14,4 +12,5 @@
   %br
   Changes are shown <b>from</b> the version in the first field <b>to</b> the version in the second field.
 
-= render "form"
+.prepend-top-20
+  = render "form"

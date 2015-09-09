@@ -1,8 +1,15 @@
 %span.pull-right
+  - if can?(current_user, :create_wiki, @project)
+    = link_to '#modal-new-wiki', class: "add-new-wiki btn btn-new btn-grouped", "data-toggle" => "modal" do
+      %i.fa.fa-plus
+      New Page
+
   - if (@page && @page.persisted?)
-    = link_to history_namespace_project_wiki_path(@project.namespace, @project, @page), class: "btn btn-grouped" do
+    = link_to namespace_project_wiki_history_path(@project.namespace, @project, @page), class: "btn btn-grouped" do
       Page History
     - if can?(current_user, :create_wiki, @project)
-      = link_to edit_namespace_project_wiki_path(@project.namespace, @project, @page), class: "btn btn-grouped" do
+      = link_to namespace_project_wiki_edit_path(@project.namespace, @project, @page), class: "btn btn-grouped" do
         %i.fa.fa-pencil-square-o
         Edit
+
+= render 'projects/wikis/new'

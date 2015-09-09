@@ -1,5 +1,5 @@
 class DashboardController < Dashboard::ApplicationController
-  before_action :load_projects
+  before_action :load_projects, except: :activity
   before_action :event_filter, only: :activity
 
   respond_to :html
@@ -55,7 +55,14 @@ class DashboardController < Dashboard::ApplicationController
   end
 
   def load_events
-    @events = Event.in_projects(current_user.authorized_projects.pluck(:id))
+    project_ids =
+      if params[:filter] == "starred"
+        current_user.starred_projects
+      else
+        current_user.authorized_projects
+      end.pluck(:id)
+
+    @events = Event.in_projects(project_ids)
     @events = @event_filter.apply_filter(@events).with_associations
     @events = @events.limit(20).offset(params[:offset] || 0)
   end

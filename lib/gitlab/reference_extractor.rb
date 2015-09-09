@@ -1,3 +1,5 @@
+require 'gitlab/markdown'
+
 module Gitlab
   # Extract possible GFM references from an arbitrary String for further processing.
   class ReferenceExtractor
@@ -10,7 +12,7 @@ module Gitlab
 
     def analyze(text)
       references.clear
-      @text = markdown.render(text.dup)
+      @text = Gitlab::Markdown.render_without_gfm(text)
     end
 
     %i(user label issue merge_request snippet commit commit_range).each do |type|
@@ -20,10 +22,6 @@ module Gitlab
     end
 
     private
-
-    def markdown
-      @markdown ||= Redcarpet::Markdown.new(Redcarpet::Render::HTML, GitlabMarkdownHelper::MARKDOWN_OPTIONS)
-    end
 
     def references
       @references ||= Hash.new do |references, type|
@@ -42,7 +40,7 @@ module Gitlab
     # Returns the results Array for the requested filter type
     def pipeline_result(filter_type)
       klass  = filter_type.to_s.camelize + 'ReferenceFilter'
-      filter = "Gitlab::Markdown::#{klass}".constantize
+      filter = Gitlab::Markdown.const_get(klass)
 
       context = {
         project: project,

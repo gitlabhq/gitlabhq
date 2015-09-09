@@ -17,4 +17,4 @@ If you want to import from a GitHub Enterprise instance, you need to use GitLab 
 * To import a project, you can simple click "Add". The importer will import your repository and issues. Once the importer is done, a new GitLab project will be created with your imported data.
 
 ### Note
-When you import your projects from GitHub, it is not possible to keep your labels and milestones and issue numbers won't match. We are working on improving this in the near future.
+When you import your projects from GitHub, it is not possible to keep your labels and milestones. We are working on improving this in the near future.

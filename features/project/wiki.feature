@@ -91,3 +91,15 @@ Feature: Project Wiki
     And I view the page history of a Wiki page that has a path
     Then I should see a non-escaped path
     And I should see the page history
+
+  @javascript
+  Scenario: View an old page version of a Wiki page
+    Given I create a New page with paths
+    And I click on the "Pages" button
+    And I edit the Wiki page with a path
+    Then I should see a non-escaped path
+    And I should see the Editing page
+    And I change the content
+    Then I click on Page History
+    And I should see the page history
+    And I should see a link with a version ID

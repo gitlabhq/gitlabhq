@@ -1,6 +1,14 @@
 require_relative 'shell_env'
 
 module Grack
+  class AuthSpawner
+    def self.call(env)
+      # Avoid issues with instance variables in Grack::Auth persisting across
+      # requests by creating a new instance for each request.
+      Auth.new({}).call(env)
+    end
+  end
+
   class Auth < Rack::Auth::Basic
 
     attr_accessor :user, :project, :env
@@ -10,7 +18,7 @@ module Grack
       @request = Rack::Request.new(env)
       @auth = Request.new(env)
 
-      @gitlab_ci = false
+      @ci = false
 
       # Need this patch due to the rails mount
       # Need this if under RELATIVE_URL_ROOT
@@ -26,13 +34,9 @@ module Grack
       auth!
 
       if project && authorized_request?
-        if ENV['GITLAB_GRACK_AUTH_ONLY'] == '1'
-          # Tell gitlab-git-http-server the request is OK, and what the GL_ID is
-          render_grack_auth_ok
-        else
-          @app.call(env)
-        end
-      elsif @user.nil? && !@gitlab_ci
+        # Tell gitlab-git-http-server the request is OK, and what the GL_ID is
+        render_grack_auth_ok
+      elsif @user.nil? && !@ci
         unauthorized
       else
         render_not_found
@@ -51,8 +55,8 @@ module Grack
 
       # Allow authentication for GitLab CI service
       # if valid token passed
-      if gitlab_ci_request?(login, password)
-        @gitlab_ci = true
+      if ci_request?(login, password)
+        @ci = true
         return
       end
 
@@ -64,12 +68,17 @@ module Grack
       end
     end
 
-    def gitlab_ci_request?(login, password)
-      if login == "gitlab-ci-token" && project && project.gitlab_ci?
-        token = project.gitlab_ci_service.token
+    def ci_request?(login, password)
+      matched_login = /(?<s>^[a-zA-Z]*-ci)-token$/.match(login)
 
-        if token.present? && token == password && git_cmd == 'git-upload-pack'
-          return true
+      if project && matched_login.present? && git_cmd == 'git-upload-pack'
+        underscored_service = matched_login['s'].underscore 
+
+        if Service.available_services_names.include?(underscored_service)
+          service_method = "#{underscored_service}_service"
+          service = project.send(service_method)
+
+          return service && service.activated? && service.valid_token?(password)
         end
       end
 
@@ -128,11 +137,13 @@ module Grack
     end
 
     def authorized_request?
-      return true if @gitlab_ci
+      return true if @ci
 
       case git_cmd
       when *Gitlab::GitAccess::DOWNLOAD_COMMANDS
-        if user
+        if !Gitlab.config.gitlab_shell.upload_pack
+          false
+        elsif user
           Gitlab::GitAccess.new(user, project).download_access_check.allowed?
         elsif project.public?
           # Allow clone/fetch for public projects
@@ -141,7 +152,9 @@ module Grack
           false
         end
       when *Gitlab::GitAccess::PUSH_COMMANDS
-        if user
+        if !Gitlab.config.gitlab_shell.receive_pack
+          false
+        elsif user
           # Skip user authorization on upload request.
           # It will be done by the pre-receive hook in the repository.
           true

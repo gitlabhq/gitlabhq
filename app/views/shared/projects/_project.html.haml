@@ -1,0 +1,24 @@
+- avatar = true unless local_assigns[:avatar] == false
+- stars = true unless local_assigns[:stars] == false
+- css_class = '' unless local_assigns[:css_class]
+- css_class += " no-description" unless project.description.present?
+%li.project-row{ class: css_class }
+  = cache [project.namespace, project, controller.controller_name, controller.action_name, 'v2.1'] do
+    = link_to project_path(project), class: dom_class(project) do
+      - if avatar
+        .dash-project-avatar
+          = project_icon(project, alt: '', class: 'avatar project-avatar s46')
+      %span.project-full-name
+        %span.namespace-name
+          - if project.namespace
+            = project.namespace.human_name
+            \/
+        %span.project-name.filter-title
+          = project.name
+      - if stars
+        %span.pull-right.light
+          %i.fa.fa-star
+          = project.star_count
+    - if project.description.present?
+      .project-description
+        = markdown(project.description, pipeline: :description)

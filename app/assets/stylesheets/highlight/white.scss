@@ -21,6 +21,11 @@ pre.code.highlight.white,
     background-color: #f8eec7 !important;
   }
 
+  // Search result highlight
+  span.highlight_word {
+    background: #fafe3d;
+  }
+
   .hll { background-color: #f8f8f8 }
   .c { color: #999988; font-style: italic; }
   .err { color: #a61717; background-color: #e3d2d2; }

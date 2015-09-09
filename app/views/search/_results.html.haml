@@ -1,7 +1,7 @@
 - if @search_results.empty?
   = render partial: "search/results/empty"
 - else
-  .light
+  %p.light
     Search results for
     %code
       = @search_term
@@ -11,10 +11,13 @@
       - elsif @group
         in group #{link_to @group.name, @group}
 
-  %br
   .results.prepend-top-10
     .search-results
-      = render partial: "search/results/#{@scope.singularize}", collection: @objects
+      - if @scope == 'projects'
+        .term
+          = render 'shared/projects/list', projects: @objects
+      - else
+        = render partial: "search/results/#{@scope.singularize}", collection: @objects
       = paginate @objects, theme: 'gitlab'
 
 :javascript

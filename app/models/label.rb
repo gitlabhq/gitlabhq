@@ -24,7 +24,7 @@ class Label < ActiveRecord::Base
   validates :color,
             format: { with: /\A#[0-9A-Fa-f]{6}\Z/ },
             allow_blank: false
-  validates :project, presence: true
+  validates :project, presence: true, unless: Proc.new { |service| service.template? }
 
   # Don't allow '?', '&', and ',' for label titles
   validates :title,
@@ -33,6 +33,8 @@ class Label < ActiveRecord::Base
             uniqueness: { scope: :project_id }
 
   default_scope { order(title: :asc) }
+
+  scope :templates, ->  { where(template: true) }
 
   alias_attribute :name, :title
 
@@ -77,5 +79,9 @@ class Label < ActiveRecord::Base
 
   def open_issues_count
     issues.opened.count
+  end
+
+  def template?
+    template
   end
 end

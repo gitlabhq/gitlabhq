@@ -18,15 +18,13 @@
     = f.hidden_field :target_branch
 
 .mr-compare.merge-request
-  %ul.nav.nav-tabs.merge-request-tabs
+  %ul.merge-request-tabs
     %li.commits-tab
       = link_to url_for(params), data: {target: '#commits', action: 'commits', toggle: 'tab'} do
-        = icon('history')
         Commits
         %span.badge= @commits.size
     %li.diffs-tab.active
       = link_to url_for(params), data: {target: '#diffs', action: 'diffs', toggle: 'tab'} do
-        = icon('list-alt')
         Changes
         %span.badge= @diffs.size
 

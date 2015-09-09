@@ -1,3 +1,4 @@
+require 'gitlab/markdown'
 require 'task_list/filter'
 
 module Gitlab

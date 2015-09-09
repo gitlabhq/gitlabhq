@@ -34,6 +34,7 @@ gem 'omniauth-gitlab', '~> 1.0.0'
 gem 'omniauth-bitbucket', '~> 0.0.2'
 gem 'omniauth-saml', '~> 1.4.0'
 gem 'doorkeeper', '~> 2.1.3'
+gem 'omniauth_crowd'
 gem "rack-oauth2", "~> 1.0.5"
 
 # Two-factor authentication
@@ -46,12 +47,7 @@ gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 7.2.14'
-
-# Ruby/Rack Git Smart-HTTP Server Handler
-# GitLab fork with a lot of changes (improved thread-safety, better memory usage etc)
-# For full list of changes see https://github.com/SaitoWu/grack/compare/master...gitlabhq:master
-gem 'gitlab-grack', '~> 2.0.2', require: 'grack'
+gem "gitlab_git", '~> 7.2.15'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -169,6 +165,9 @@ gem "slack-notifier", "~> 1.0.0"
 # Asana integration
 gem 'asana', '~> 0.0.6'
 
+# FogBugz integration
+gem 'ruby-fogbugz'
+
 # d3
 gem 'd3_rails', '~> 3.5.5'
 
@@ -275,6 +274,7 @@ group :test do
   gem 'email_spec', '~> 1.6.0'
   gem 'webmock', '~> 1.21.0'
   gem 'test_after_commit', '~> 0.2.2'
+  gem 'sham_rack'
 end
 
 group :production do
@@ -285,7 +285,7 @@ gem "newrelic_rpm", '~> 3.9.4.245'
 
 gem 'octokit', '~> 3.7.0'
 
-gem "mail_room", "~> 0.4.1"
+gem "mail_room", "~> 0.4.2"
 
 gem 'email_reply_parser', '~> 0.5.8'
 

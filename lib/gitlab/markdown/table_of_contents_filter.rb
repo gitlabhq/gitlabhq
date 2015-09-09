@@ -1,3 +1,4 @@
+require 'gitlab/markdown'
 require 'html/pipeline/filter'
 
 module Gitlab

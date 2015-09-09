@@ -43,6 +43,8 @@ class Project < ActiveRecord::Base
   extend Gitlab::ConfigHelper
   extend Enumerize
 
+  UNKNOWN_IMPORT_URL = 'http://unknown.git'
+
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
   default_value_for :issues_enabled, gitlab_config_features.issues
@@ -73,6 +75,7 @@ class Project < ActiveRecord::Base
   has_many :services
   has_one :gitlab_ci_service, dependent: :destroy
   has_one :campfire_service, dependent: :destroy
+  has_one :drone_ci_service, dependent: :destroy
   has_one :emails_on_push_service, dependent: :destroy
   has_one :irker_service, dependent: :destroy
   has_one :pivotaltracker_service, dependent: :destroy
@@ -400,6 +403,15 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def create_labels
+    Label.templates.each do |label|
+      label = label.dup
+      label.template = nil
+      label.project_id = self.id
+      label.save
+    end
+  end
+
   def find_service(list, name)
     list.find { |service| service.to_param == name }
   end
@@ -613,6 +625,7 @@ class Project < ActiveRecord::Base
       name: name,
       ssh_url: ssh_url_to_repo,
       http_url: http_url_to_repo,
+      web_url: web_url,
       namespace: namespace.name,
       visibility_level: visibility_level
     }

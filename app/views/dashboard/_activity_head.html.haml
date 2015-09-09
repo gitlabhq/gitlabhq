@@ -1,0 +1,7 @@
+%ul.center-top-menu
+  %li{ class: ("active" unless params[:filter]) }
+    = link_to activity_dashboard_path, class: 'shortcuts-activity', data: {placement: 'right'} do
+      Your Projects
+  %li{ class: ("active" if params[:filter] == 'starred') }
+    = link_to activity_dashboard_path(filter: 'starred'), data: {placement: 'right'} do
+      Starred Projects
