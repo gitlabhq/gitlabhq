@@ -156,12 +156,16 @@
  * Add some extra stuff to panels
  *
  */
+
+.container-blank .panel .panel-heading {
+  font-size: 17px;
+  line-height: 38px;
+}
+
 .panel {
   box-shadow: none;
-  .panel-heading {
-    font-size: 17px;
-    line-height: 38px;
 
+  .panel-heading {
     .panel-head-actions {
       position: relative;
       top: -5px;
