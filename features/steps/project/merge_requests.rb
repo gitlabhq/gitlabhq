@@ -420,6 +420,12 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
+  step 'I should see message that merge request can be merged' do
+    page.within '.mr-state-widget' do
+      expect(page).to have_content("Ready to be merged automatically")
+    end
+  end
+
   step 'I should see message that MR require an approval from me' do
     page.within '.mr-state-widget' do
       expect(page).to have_content("Requires one more approval (from #{current_user.name})")
@@ -452,6 +458,15 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see a patch diff' do
     expect(page).to have_content('diff --git')
+  end
+
+  step 'I am a "Shop" reporter' do
+    user = create(:user, name: "Mike")
+    project = Project.find_by(name: "Shop")
+    project.team << [user, :reporter]
+
+    logout
+    login_with user
   end
 
   def merge_request
