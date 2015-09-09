@@ -143,21 +143,6 @@ production: &base
         method: 'plain' # "tls" or "ssl" or "plain"
         bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
         password: '_the_password_of_the_bind_user'
-
-        # LDAP attributes that GitLab will use to create an account for the LDAP user.
-        # Can be either the name of an attribute as a string (e.g. 'mail'),
-        # or an array of names of attributes to try in order (e.g. ['mail', 'email']).
-        # The default values are listed.
-        attributes:
-          # username: ['uid', 'userid', 'sAMAccountName']
-          # name:     'cn' # Also falls back to a combination of first_name and last_name, see below
-          # email:    ['mail', 'email', 'userPrincipalName']
-
-          # If no full name could be found at the attribute specified for `name`,
-          # the full name is determined as `<first_name> <last_name>`, using the 
-          # attributes specified below.
-          # first_name: 'givenName'
-          # last_name:  'sn'
           
         # This setting specifies if LDAP server is Active Directory LDAP server.
         # For non AD servers it skips the AD specific queries.
@@ -194,6 +179,26 @@ production: &base
         #   Note: GitLab does not support omniauth-ldap's custom filter syntax.
         #
         user_filter: ''
+
+        # LDAP attributes that GitLab will use to create an account for the LDAP user.
+        # Can be either the name of an attribute as a string (e.g. 'mail'),
+        # or an array of names of attributes to try in order (e.g. ['mail', 'email']).
+        # Note that the user's LDAP login will always be the attribute specified as `uid` above.
+        attributes:
+          # The username will be used in paths for the user's own projects
+          # (like `gitlab.example.com/username/project`) and when mentioning
+          # them in issues, merge request and comments (like `@username`).
+          # If the attribute specified for `username` contains an email address, 
+          # the GitLab username will be the part of the email address before the '@'.
+          username: ['uid', 'userid', 'sAMAccountName']
+          email:    ['mail', 'email', 'userPrincipalName']
+
+          # If no full name could be found at the attribute specified for `name`,
+          # the full name is determined using the attributes specified for 
+          # `first_name` and `last_name`.
+          name:       'cn'
+          first_name: 'givenName'
+          last_name:  'sn'
 
       # GitLab EE only: add more LDAP servers
       # Choose an ID made of a-z and 0-9 . This ID will be stored in the database
