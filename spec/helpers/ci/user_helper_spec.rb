@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UserHelper do
+describe Ci::UserHelper do
   describe :user_avatar_url do
     let (:user) { User.new({'avatar_url' => avatar_url}) }
 

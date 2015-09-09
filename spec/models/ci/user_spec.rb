@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe User do
+describe Ci::User do
 
   describe "has_developer_access?" do
     before do

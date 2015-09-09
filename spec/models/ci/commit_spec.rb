@@ -17,10 +17,10 @@
 
 require 'spec_helper'
 
-describe Commit do
-  let(:project) { FactoryGirl.create :project }
-  let(:commit) { FactoryGirl.create :commit, project: project }
-  let(:commit_with_project) { FactoryGirl.create :commit, project: project }
+describe Ci::Commit do
+  let(:project) { FactoryGirl.create :ci_project }
+  let(:commit) { FactoryGirl.create :ci_commit, project: project }
+  let(:commit_with_project) { FactoryGirl.create :ci_commit, project: project }
   let(:config_processor) { GitlabCiYamlProcessor.new(gitlab_ci_yaml) }
 
   it { should belong_to(:project) }
@@ -37,18 +37,18 @@ describe Commit do
   describe :last_build do
     subject { commit.last_build }
     before do
-      @first = FactoryGirl.create :build, commit: commit, created_at: Date.yesterday
-      @second = FactoryGirl.create :build, commit: commit
+      @first = FactoryGirl.create :ci_build, commit: commit, created_at: Date.yesterday
+      @second = FactoryGirl.create :ci_build, commit: commit
     end
 
-    it { should be_a(Build) }
+    it { should be_a(Ci::Build) }
     it('returns with the most recently created build') { should eq(@second) }
   end
 
   describe :retry do
     before do
-      @first = FactoryGirl.create :build, commit: commit, created_at: Date.yesterday
-      @second = FactoryGirl.create :build, commit: commit
+      @first = FactoryGirl.create :ci_build, commit: commit, created_at: Date.yesterday
+      @second = FactoryGirl.create :ci_build, commit: commit
     end
 
     it "creates new build" do
@@ -62,38 +62,38 @@ describe Commit do
 
     context 'always sending notification' do
       it 'should return commit_pusher_email as only recipient when no additional recipients are given' do
-        project = FactoryGirl.create :project,
+        project = FactoryGirl.create :ci_project,
           email_add_pusher: true,
           email_recipients: ''
-        commit =  FactoryGirl.create :commit, project: project
+        commit =  FactoryGirl.create :ci_commit, project: project
         expected = 'commit_pusher_email'
         commit.stub(:push_data) { { user_email: expected } }
         commit.project_recipients.should == [expected]
       end
 
       it 'should return commit_pusher_email and additional recipients' do
-        project = FactoryGirl.create :project,
+        project = FactoryGirl.create :ci_project,
           email_add_pusher: true,
           email_recipients: 'rec1 rec2'
-        commit = FactoryGirl.create :commit, project: project
+        commit = FactoryGirl.create :ci_commit, project: project
         expected = 'commit_pusher_email'
         commit.stub(:push_data) { { user_email: expected } }
         commit.project_recipients.should == ['rec1', 'rec2', expected]
       end
 
       it 'should return recipients' do
-        project = FactoryGirl.create :project,
+        project = FactoryGirl.create :ci_project,
           email_add_pusher: false,
           email_recipients: 'rec1 rec2'
-        commit = FactoryGirl.create :commit, project: project
+        commit = FactoryGirl.create :ci_commit, project: project
         commit.project_recipients.should == ['rec1', 'rec2']
       end
 
       it 'should return unique recipients only' do
-        project = FactoryGirl.create :project,
+        project = FactoryGirl.create :ci_project,
           email_add_pusher: true,
           email_recipients: 'rec1 rec1 rec2'
-        commit = FactoryGirl.create :commit, project: project
+        commit = FactoryGirl.create :ci_commit, project: project
         expected = 'rec2'
         commit.stub(:push_data) { { user_email: expected } }
         commit.project_recipients.should == ['rec1', 'rec2']
@@ -168,8 +168,8 @@ describe Commit do
     end
 
     context 'for build triggers' do
-      let(:trigger) { FactoryGirl.create :trigger, project: project }
-      let(:trigger_request) { FactoryGirl.create :trigger_request, commit: commit, trigger: trigger }
+      let(:trigger) { FactoryGirl.create :ci_trigger, project: project }
+      let(:trigger_request) { FactoryGirl.create :ci_trigger_request, commit: commit, trigger: trigger }
 
       it 'creates builds' do
         commit.create_builds(trigger_request).should be_true
@@ -215,49 +215,49 @@ describe Commit do
   end
 
   describe "#finished_at" do
-    let(:project) { FactoryGirl.create :project }
-    let(:commit) { FactoryGirl.create :commit, project: project }
+    let(:project) { FactoryGirl.create :ci_project }
+    let(:commit) { FactoryGirl.create :ci_commit, project: project }
 
     it "returns finished_at of latest build" do
-      build = FactoryGirl.create :build, commit: commit, finished_at: Time.now - 60
-      build1 = FactoryGirl.create :build, commit: commit, finished_at: Time.now - 120
+      build = FactoryGirl.create :ci_build, commit: commit, finished_at: Time.now - 60
+      build1 = FactoryGirl.create :ci_build, commit: commit, finished_at: Time.now - 120
 
       commit.finished_at.to_i.should == build.finished_at.to_i
     end
 
     it "returns nil if there is no finished build" do
-      build = FactoryGirl.create :not_started_build, commit: commit
+      build = FactoryGirl.create :ci_not_started_build, commit: commit
 
       commit.finished_at.should be_nil
     end
   end
 
   describe "coverage" do
-    let(:project) { FactoryGirl.create :project, coverage_regex: "/.*/" }
-    let(:commit) { FactoryGirl.create :commit, project: project }
+    let(:project) { FactoryGirl.create :ci_project, coverage_regex: "/.*/" }
+    let(:commit) { FactoryGirl.create :ci_commit, project: project }
 
     it "calculates average when there are two builds with coverage" do
-      FactoryGirl.create :build, name: "rspec", coverage: 30, commit: commit
-      FactoryGirl.create :build, name: "rubocop", coverage: 40, commit: commit
+      FactoryGirl.create :ci_build, name: "rspec", coverage: 30, commit: commit
+      FactoryGirl.create :ci_build, name: "rubocop", coverage: 40, commit: commit
       commit.coverage.should == "35.00"
     end
 
     it "calculates average when there are two builds with coverage and one with nil" do
-      FactoryGirl.create :build, name: "rspec", coverage: 30, commit: commit
-      FactoryGirl.create :build, name: "rubocop", coverage: 40, commit: commit
-      FactoryGirl.create :build, commit: commit
+      FactoryGirl.create :ci_build, name: "rspec", coverage: 30, commit: commit
+      FactoryGirl.create :ci_build, name: "rubocop", coverage: 40, commit: commit
+      FactoryGirl.create :ci_build, commit: commit
       commit.coverage.should == "35.00"
     end
 
     it "calculates average when there are two builds with coverage and one is retried" do
-      FactoryGirl.create :build, name: "rspec", coverage: 30, commit: commit
-      FactoryGirl.create :build, name: "rubocop", coverage: 30, commit: commit
-      FactoryGirl.create :build, name: "rubocop", coverage: 40, commit: commit
+      FactoryGirl.create :ci_build, name: "rspec", coverage: 30, commit: commit
+      FactoryGirl.create :ci_build, name: "rubocop", coverage: 30, commit: commit
+      FactoryGirl.create :ci_build, name: "rubocop", coverage: 40, commit: commit
       commit.coverage.should == "35.00"
     end
 
     it "calculates average when there is one build without coverage" do
-      FactoryGirl.create :build, commit: commit
+      FactoryGirl.create :ci_build, commit: commit
       commit.coverage.should be_nil
     end
   end

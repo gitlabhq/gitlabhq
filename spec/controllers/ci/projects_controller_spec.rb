@@ -1,8 +1,8 @@
 require "spec_helper"
 
-describe ProjectsController do
+describe Ci::ProjectsController do
   before do
-    @project = FactoryGirl.create :project
+    @project = FactoryGirl.create :ci_project
   end
 
   describe "POST #build" do
@@ -55,25 +55,25 @@ describe ProjectsController do
     end
 
     let(:user) do
-      User.new(user_data)
+      Ci::User.new(user_data)
     end
 
     it "creates project" do
       allow(controller).to receive(:reset_cache) { true }
       allow(controller).to receive(:current_user) { user }
-      Network.any_instance.stub(:enable_ci).and_return(true)
-      Network.any_instance.stub(:project_hooks).and_return(true)
+      allow_any_instance_of(Ci::Network).to receive(:enable_ci).and_return(true)
+      allow_any_instance_of(Ci::Network).to receive(:project_hooks).and_return(true)
 
       post :create, { project: JSON.dump(project_dump.to_h) }.with_indifferent_access
 
       expect(response.code).to eq('302')
-      expect(assigns(:project)).not_to be_a_new(Project)
+      expect(assigns(:project)).not_to be_a_new(Ci::Project)
     end
 
     it "shows error" do
       allow(controller).to receive(:reset_cache) { true }
       allow(controller).to receive(:current_user) { user }
-      User.any_instance.stub(:can_manage_project?).and_return(false)
+      allow_any_instance_of(Ci::User).to receive(:can_manage_project?).and_return(false)
 
       post :create, { project: JSON.dump(project_dump.to_h) }.with_indifferent_access
 
@@ -91,13 +91,13 @@ describe ProjectsController do
     end
 
     let(:user) do
-      User.new(user_data)
+      Ci::User.new(user_data)
     end
 
     it "searches projects" do
       allow(controller).to receive(:reset_cache) { true }
       allow(controller).to receive(:current_user) { user }
-      Network.any_instance.should_receive(:projects).with(hash_including(search: 'str'), :authorized)
+      allow_any_instance_of(Ci::Network).to receive(:projects).with(hash_including(search: 'str'), :authorized)
 
       xhr :get, :gitlab, { search: "str", format: "js" }.with_indifferent_access
 

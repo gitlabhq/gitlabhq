@@ -13,7 +13,7 @@
 
 require 'spec_helper'
 
-describe Variable do
+describe Ci::Variable do
   subject { Variable.new }
 
   let(:secret_value) { 'secret' }

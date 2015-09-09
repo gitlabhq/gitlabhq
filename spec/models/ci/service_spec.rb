@@ -14,7 +14,7 @@
 
 require 'spec_helper'
 
-describe Service do
+describe Ci::Service do
 
   describe "Associations" do
     it { should belong_to :project }

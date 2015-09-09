@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe HipChatMessage do
+describe Ci::HipChatMessage do
   subject { HipChatMessage.new(build) }
 
   let(:project) { FactoryGirl.create(:project) }
@@ -8,7 +8,7 @@ describe HipChatMessage do
   context "One build" do
     let(:commit) { FactoryGirl.create(:commit_with_one_job, project: project) }
 
-    let(:build) do 
+    let(:build) do
       commit.create_builds
       commit.builds.first
     end
@@ -16,7 +16,7 @@ describe HipChatMessage do
     context 'when build succeeds' do
       it 'returns a successful message' do
         build.update(status: "success")
-        
+
         expect( subject.status_color ).to eq 'green'
         expect( subject.notify? ).to be_false
         expect( subject.to_s ).to match(/Build '[^']+' #\d+/)
@@ -39,7 +39,7 @@ describe HipChatMessage do
   context "Several builds" do
     let(:commit) { FactoryGirl.create(:commit_with_two_jobs, project: project) }
 
-    let(:build) do 
+    let(:build) do
       commit.builds.first
     end
 
@@ -63,7 +63,7 @@ describe HipChatMessage do
         second_build = commit.builds.last
         first_build.update(status: "success")
         second_build.update(status: "failed")
-        
+
         expect( subject.status_color ).to eq 'red'
         expect( subject.notify? ).to be_true
         expect( subject.to_s ).to match(/Commit #\d+/)

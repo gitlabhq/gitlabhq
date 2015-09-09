@@ -25,10 +25,10 @@
 
 require 'spec_helper'
 
-describe Build do
-  let(:project) { FactoryGirl.create :project }
-  let(:commit) { FactoryGirl.create :commit, project: project }
-  let(:build) { FactoryGirl.create :build, commit: commit }
+describe Ci::Build do
+  let(:project) { FactoryGirl.create :ci_project }
+  let(:commit) { FactoryGirl.create :ci_commit, project: project }
+  let(:build) { FactoryGirl.create :ci_build, commit: commit }
 
   it { should belong_to(:commit) }
   it { should validate_presence_of :status }
@@ -40,12 +40,12 @@ describe Build do
   it { should respond_to :trace_html }
 
   describe :first_pending do
-    let(:first) { FactoryGirl.create :build, commit: commit, status: 'pending', created_at: Date.yesterday }
-    let(:second) { FactoryGirl.create :build, commit: commit, status: 'pending' }
+    let(:first) { FactoryGirl.create :ci_build, commit: commit, status: 'pending', created_at: Date.yesterday }
+    let(:second) { FactoryGirl.create :ci_build, commit: commit, status: 'pending' }
     before { first; second }
-    subject { Build.first_pending }
+    subject { Ci::Build.first_pending }
 
-    it { should be_a(Build) }
+    it { should be_a(Ci::Build) }
     it('returns with the first pending build') { should eq(first) }
   end
 
@@ -54,12 +54,12 @@ describe Build do
       build.status = 'success'
       build.save
     end
-    let(:create_from_build) { Build.create_from build }
+    let(:create_from_build) { Ci::Build.create_from build }
 
     it ('there should be a pending task') do
-      expect(Build.pending.count(:all)).to eq 0
+      expect(Ci::Build.pending.count(:all)).to eq 0
       create_from_build
-      expect(Build.pending.count(:all)).to be > 0
+      expect(Ci::Build.pending.count(:all)).to be > 0
     end
   end
 
@@ -69,14 +69,14 @@ describe Build do
     context 'without started_at' do
       before { build.started_at = nil }
 
-      it { should be_false }
+      it { should be_falsey }
     end
 
     %w(running success failed).each do |status|
       context "if build status is #{status}" do
         before { build.status = status }
 
-        it { should be_true }
+        it { should be_truthy }
       end
     end
 
@@ -84,7 +84,7 @@ describe Build do
       context "if build status is #{status}" do
         before { build.status = status }
 
-        it { should be_false }
+        it { should be_falsey }
       end
     end
   end
@@ -96,7 +96,7 @@ describe Build do
       context "if build.status is #{state}" do
         before { build.status = state }
 
-        it { should be_true }
+        it { should be_truthy }
       end
     end
 
@@ -104,7 +104,7 @@ describe Build do
       context "if build.status is #{state}" do
         before { build.status = state }
 
-        it { should be_false }
+        it { should be_falsey }
       end
     end
   end
@@ -116,7 +116,7 @@ describe Build do
       context "if build.status is #{state}" do
         before { build.status = state }
 
-        it { should be_true }
+        it { should be_truthy }
       end
     end
 
@@ -124,7 +124,7 @@ describe Build do
       context "if build.status is #{state}" do
         before { build.status = state }
 
-        it { should be_false }
+        it { should be_falsey }
       end
     end
   end
@@ -138,13 +138,13 @@ describe Build do
       context 'and build.status is success' do
         before { build.status = 'success' }
 
-        it { should be_false }
+        it { should be_falsey }
       end
 
       context 'and build.status is failed' do
         before { build.status = 'failed' }
 
-        it { should be_false }
+        it { should be_falsey }
       end
     end
 
@@ -154,13 +154,13 @@ describe Build do
       context 'and build.status is success' do
         before { build.status = 'success' }
 
-        it { should be_false }
+        it { should be_falsey }
       end
 
       context 'and build.status is failed' do
         before { build.status = 'failed' }
 
-        it { should be_true }
+        it { should be_truthy }
       end
     end
   end
@@ -324,14 +324,14 @@ describe Build do
         }
 
         before do
-          build.project.variables << Variable.new(key: 'SECRET_KEY', value: 'secret_value')
+          build.project.variables << Ci::Variable.new(key: 'SECRET_KEY', value: 'secret_value')
         end
 
         it { should eq(variables + secure_variables) }
 
         context 'and trigger variables' do
-          let(:trigger) { FactoryGirl.create :trigger, project: project }
-          let(:trigger_request) { FactoryGirl.create :trigger_request_with_variables, commit: commit, trigger: trigger }
+          let(:trigger) { FactoryGirl.create :ci_trigger, project: project }
+          let(:trigger_request) { FactoryGirl.create :ci_trigger_request_with_variables, commit: commit, trigger: trigger }
           let(:trigger_variables) {
             [
               {key: :TRIGGER_KEY, value: 'TRIGGER_VALUE', public: false}

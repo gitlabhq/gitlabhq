@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Trigger do
+describe Ci::Trigger do
   let(:project) { FactoryGirl.create :project }
 
   describe 'before_validation' do

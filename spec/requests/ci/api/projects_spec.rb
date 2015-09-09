@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::API do
+describe Ci::API::API do
   include ApiHelpers
 
   let(:gitlab_url) { GitlabCi.config.gitlab_server.url }
@@ -12,11 +12,11 @@ describe API::API do
       url: gitlab_url
     }
   }
-  
+
   before {
     stub_gitlab_calls
   }
-  
+
   context "requests for scoped projects" do
     # NOTE: These ids are tied to the actual projects on demo.gitlab.com
     describe "GET /projects" do
@@ -45,7 +45,7 @@ describe API::API do
       end
     end
   end
-  
+
   describe "POST /projects/:project_id/webhooks" do
     let!(:project) { FactoryGirl.create(:project) }
 

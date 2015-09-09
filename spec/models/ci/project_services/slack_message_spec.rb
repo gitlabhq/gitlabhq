@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SlackMessage do
+describe Ci::SlackMessage do
   subject { SlackMessage.new(commit) }
 
   let(:project) { FactoryGirl.create :project }
@@ -8,7 +8,7 @@ describe SlackMessage do
   context "One build" do
     let(:commit) { FactoryGirl.create(:commit_with_one_job, project: project) }
 
-    let(:build) do 
+    let(:build) do
       commit.create_builds
       commit.builds.first
     end
@@ -70,7 +70,7 @@ describe SlackMessage do
         second_build = commit.builds.last
         first_build.update(status: "success")
         second_build.update(status: "failed")
-        
+
         subject.color.should == color
         subject.fallback.should include('Commit')
         subject.fallback.should include("\##{commit.id}")

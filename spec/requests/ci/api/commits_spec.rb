@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::API, 'Commits' do
+describe Ci::API::API, 'Commits' do
   include ApiHelpers
 
   let(:project) { FactoryGirl.create(:project) }

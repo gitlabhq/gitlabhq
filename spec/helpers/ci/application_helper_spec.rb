@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ApplicationHelper do
+describe Ci::ApplicationHelper do
   describe "#duration_in_words" do
     it "returns minutes and seconds" do
       intervals_in_words = {

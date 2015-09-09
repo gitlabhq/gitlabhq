@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UserSessionsHelper do
+describe Ci::UserSessionsHelper do
   describe :generate_oauth_hmac do
     let (:salt) { 'a' }
     let (:salt2) { 'b' }
