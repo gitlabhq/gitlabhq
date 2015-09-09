@@ -42,6 +42,7 @@ v 8.0.0 (unreleased)
   - Fix bug which IE cannot show image at markdown when the image is raw file	of gitlab  
   - Add support for Crowd
   - Global Labels that are available to all projects
+  - Fix highlighting of deleted lines in diffs.
 
 v 7.14.1
   - Improve abuse reports management from admin area
