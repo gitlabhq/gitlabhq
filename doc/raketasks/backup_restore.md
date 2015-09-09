@@ -374,4 +374,6 @@ This documentation is for GitLab CE.
 We backup GitLab.com and make sure your data is secure, but you can't use these methods to export / backup your data yourself from GitLab.com.
 
 To migrate your repositories from one server to another with an up-to-date version of
-GitLab, you can use [rake tasks](import.md) to do a mass import of the repository.
+GitLab, you can use the [import rake task](import.md) to do a mass import of the
+repository. Note that if you do an import rake task, rather than a backup restore, you
+will have all your repositories, but not any other data.
