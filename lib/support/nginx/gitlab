@@ -124,6 +124,15 @@ server {
     proxy_connect_timeout   300;
     proxy_redirect          off;
 
+    # Do not buffer Git HTTP responses
+    proxy_buffering off;
+
+    # The following settings only work with NGINX 1.7.11 or newer
+    #
+    # # Pass chunked request bodies to gitlab-git-http-server as-is
+    # proxy_request_buffering off;
+    # proxy_http_version 1.1;
+
     proxy_set_header    Host                $http_host;
     proxy_set_header    X-Real-IP           $remote_addr;
     proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
