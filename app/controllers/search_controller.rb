@@ -1,5 +1,5 @@
 class SearchController < ApplicationController
-  include Gitlab::SearchHelper
+  include SearchHelper
 
   layout 'search'
 

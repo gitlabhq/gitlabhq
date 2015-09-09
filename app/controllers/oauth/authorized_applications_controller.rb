@@ -1,5 +1,5 @@
 class Oauth::AuthorizedApplicationsController < Doorkeeper::AuthorizedApplicationsController
-  include Gitlab::PageLayoutHelper
+  include PageLayoutHelper
 
   layout 'profile'
 

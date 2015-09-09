@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ansi2html do
+describe Ci::Ansi2html do
 
   it "prints non-ansi as-is" do
     Ansi2html::convert("Hello").should == 'Hello'

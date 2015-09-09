@@ -1,6 +1,6 @@
 class Projects::RefsController < Projects::ApplicationController
   include ExtractsPath
-  include Gitlab::TreeHelper
+  include TreeHelper
 
   before_action :require_non_empty_project
   before_action :assign_ref_vars

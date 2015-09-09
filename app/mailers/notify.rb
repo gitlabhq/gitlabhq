@@ -8,8 +8,8 @@ class Notify < BaseMailer
   include Emails::Profile
   include Emails::Groups
 
-  add_template_helper Gitlab::MergeRequestsHelper
-  add_template_helper Gitlab::EmailsHelper
+  add_template_helper MergeRequestsHelper
+  add_template_helper EmailsHelper
 
   def test_email(recipient_email, subject, body)
     mail(to: recipient_email,
@@ -100,7 +100,7 @@ class Notify < BaseMailer
 
   def mail_thread(model, headers = {})
     if @project
-      headers['X-GitLab-Project'] = @project.name 
+      headers['X-GitLab-Project'] = @project.name
       headers['X-GitLab-Project-Id'] = @project.id
       headers['X-GitLab-Project-Path'] = @project.path_with_namespace
     end

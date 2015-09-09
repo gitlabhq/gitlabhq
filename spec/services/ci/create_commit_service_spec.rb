@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe CreateCommitService do
+describe Ci::CreateCommitService do
   let(:service) { CreateCommitService.new }
   let(:project) { FactoryGirl.create(:project) }
-  
+
   describe :execute do
     context 'valid params' do
-      let(:commit) do 
+      let(:commit) do
         service.execute(project,
           ref: 'refs/heads/master',
           before: '00000000',
@@ -73,7 +73,7 @@ describe CreateCommitService do
           commits: commits,
           ci_yaml_file: gitlab_ci_yaml
         )
-        
+
         commit.builds.first.name.should == "staging"
       end
 

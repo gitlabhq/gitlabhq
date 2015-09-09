@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe GitlabCiYamlProcessor do
-  
+describe Ci::GitlabCiYamlProcessor do
+
   describe "#builds_for_ref" do
     let (:type) { 'test' }
 

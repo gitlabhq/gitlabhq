@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CreateTriggerRequestService do
+describe Ci::CreateTriggerRequestService do
   let(:service) { CreateTriggerRequestService.new }
   let(:project) { FactoryGirl.create :project }
   let(:trigger) { FactoryGirl.create :trigger, project: project }

@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe EventService do
+describe Ci::EventService do
   let (:project) { FactoryGirl.create :project, name: "GitLab / gitlab-shell" }
   let (:user)   { double(username: "root", id: 1) }
 
   before do
     Event.destroy_all
   end
-  
+
   describe :remove_project do
     it "creates event" do
       EventService.new.remove_project(user, project)

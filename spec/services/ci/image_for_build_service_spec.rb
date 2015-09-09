@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ImageForBuildService do
+describe Ci::ImageForBuildService do
   let(:service) { ImageForBuildService.new }
   let(:project) { FactoryGirl.create(:project) }
   let(:commit) { FactoryGirl.create(:commit, project: project, ref: 'master') }

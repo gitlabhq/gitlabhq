@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CreateProjectService do
+describe Ci::CreateProjectService do
   let(:service) { CreateProjectService.new }
   let(:current_user) { double.as_null_object }
   let(:project_dump) { YAML.load File.read(Rails.root.join('spec/support/gitlab_stubs/raw_project.yml')) }

@@ -1,13 +1,9 @@
 require 'gon'
 
 class ApplicationController < ActionController::Base
-  def self.railtie_helpers_paths
-    "app/helpers/gitlab"
-  end
-
   include Gitlab::CurrentSettings
-  include Gitlab::GitlabRoutingHelper
-  include Gitlab::PageLayoutHelper
+  include GitlabRoutingHelper
+  include PageLayoutHelper
 
   PER_PAGE = 20
 

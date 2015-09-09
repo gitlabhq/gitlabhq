@@ -1,6 +1,6 @@
 class Projects::NetworkController < Projects::ApplicationController
   include ExtractsPath
-  include Gitlab::ApplicationHelper
+  include ApplicationHelper
 
   before_action :require_non_empty_project
   before_action :assign_ref_vars
