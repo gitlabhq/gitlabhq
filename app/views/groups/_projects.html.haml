@@ -1,4 +1,4 @@
-.panel.panel-default
+.panel.panel-default.projects-list-holder
   .panel-heading.clearfix
     .input-group
       = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control'
@@ -7,4 +7,4 @@
           = link_to new_project_path(namespace_id: @group.id), class: 'btn btn-success' do
             New project
 
-  = render 'shared/projects_list', projects: @projects, projects_limit: 20
+  = render 'shared/projects/list', projects: @projects, projects_limit: 20, stars: false

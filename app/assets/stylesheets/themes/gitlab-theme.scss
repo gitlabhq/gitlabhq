@@ -7,27 +7,27 @@
  * $color-dark   -
  */
 @mixin gitlab-theme($color-light, $color, $color-darker, $color-dark) {
-  header {
-    &.navbar-gitlab {
-      .header-logo {
-        background-color: $color-darker;
-        border-color: $color-darker;
+  .page-with-sidebar {
+    .header-logo {
+      background-color: $color;
+      border-color: $color;
 
-        a {
+      a {
+        color: $color-light;
+
+        h3 {
           color: $color-light;
         }
+      }
 
-        &:hover {
-          background-color: $color-dark;
-          a {
-            color: #FFF;
-          }
+      &:hover {
+        background-color: $color-darker;
+        a {
+          color: #FFF;
         }
       }
     }
-  }
 
-  .page-with-sidebar {
     .collapse-nav a {
       color: #FFF;
       background: $color;
@@ -87,7 +87,7 @@
 }
 
 $theme-blue: #2980B9;
-$theme-charcoal: #474D57;
+$theme-charcoal: #333c47;
 $theme-graphite: #888888;
 $theme-gray: #373737;
 $theme-green: #019875;
@@ -99,7 +99,7 @@ body {
   }
 
   &.ui_charcoal {
-    @include gitlab-theme(#979DA7, $theme-charcoal, #373D47, #24272D);
+    @include gitlab-theme(#c5d0de, $theme-charcoal, #2b333d, #24272D);
   }
 
   &.ui_graphite {

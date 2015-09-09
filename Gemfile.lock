@@ -76,7 +76,7 @@ GEM
       ruby_parser (~> 3.5.0)
       sass (~> 3.0)
       terminal-table (~> 1.4)
-    browser (0.8.0)
+    browser (1.0.0)
     builder (3.2.2)
     byebug (3.2.0)
       columnize (~> 0.8)
@@ -263,8 +263,6 @@ GEM
       flowdock (~> 0.7)
       gitlab-grit (>= 2.4.1)
       multi_json
-    gitlab-grack (2.0.2)
-      rack (~> 1.5.1)
     gitlab-grit (2.7.2)
       charlock_holmes (~> 0.6)
       diff-lcs (~> 1.1)
@@ -276,7 +274,7 @@ GEM
       mime-types (~> 1.19)
     gitlab_emoji (0.1.0)
       gemojione (~> 2.0)
-    gitlab_git (7.2.14)
+    gitlab_git (7.2.15)
       activesupport (~> 4.0)
       charlock_holmes (~> 0.6)
       gitlab-linguist (~> 3.0)
@@ -372,7 +370,7 @@ GEM
       systemu (~> 2.6.2)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
-    mail_room (0.4.0)
+    mail_room (0.4.2)
     method_source (0.8.2)
     mime-types (1.25.1)
     mimemagic (0.3.0)
@@ -436,6 +434,10 @@ GEM
     omniauth-twitter (1.0.1)
       multi_json (~> 1.3)
       omniauth-oauth (~> 1.0)
+    omniauth_crowd (2.2.3)
+      activesupport
+      nokogiri (>= 1.4.4)
+      omniauth (~> 1.0)
     opennebula (4.12.1)
       json
       nokogiri
@@ -462,7 +464,7 @@ GEM
     pyu-ruby-sasl (0.0.3.3)
     quiet_assets (1.0.2)
       railties (>= 3.1, < 5.0)
-    racc (1.4.10)
+    racc (1.4.12)
     rack (1.5.5)
     rack-accept (0.4.5)
       rack (>= 0.4)
@@ -755,7 +757,7 @@ DEPENDENCIES
   binding_of_caller
   bootstrap-sass (~> 3.0)
   brakeman
-  browser (~> 0.8.0)
+  browser (~> 1.0.0)
   byebug
   cal-heatmap-rails (~> 0.0.1)
   capybara (~> 2.4.0)
@@ -787,10 +789,9 @@ DEPENDENCIES
   gemnasium-gitlab-service (~> 0.2)
   github-markup
   gitlab-flowdock-git-hook (~> 1.0.1)
-  gitlab-grack (~> 2.0.2)
   gitlab-linguist (~> 3.0.1)
   gitlab_emoji (~> 0.1)
-  gitlab_git (~> 7.2.14)
+  gitlab_git (~> 7.2.15)
   gitlab_meta (= 7.0)
   gitlab_omniauth-ldap (= 1.2.1)
   gollum-lib (~> 4.0.2)
@@ -808,7 +809,7 @@ DEPENDENCIES
   jquery-ui-rails
   kaminari (~> 0.15.1)
   letter_opener
-  mail_room (~> 0.4.0)
+  mail_room (~> 0.4.2)
   minitest (~> 5.3.0)
   mousetrap-rails
   mysql2
@@ -824,6 +825,7 @@ DEPENDENCIES
   omniauth-saml (~> 1.4.0)
   omniauth-shibboleth
   omniauth-twitter
+  omniauth_crowd
   org-ruby (= 0.9.12)
   pg
   poltergeist (~> 1.6.0)
@@ -883,4 +885,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.10.6
+   1.10.5

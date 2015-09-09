@@ -49,8 +49,6 @@
       }
     }
 
-    .author { color: #999; }
-
     .list-item-name {
       float: left;
       position: relative;
@@ -71,15 +69,6 @@
       font-size: $list-font-size;
       line-height: 18px;
     }
-
-    .row_title {
-      color: $gray-dark;
-
-      &:hover {
-        color: $text-color;
-        text-decoration: underline;
-      }
-    }
   }
 }
 
@@ -93,28 +82,12 @@ ol, ul {
 
 /** light list with border-bottom between li **/
 ul.bordered-list {
-  margin: 5px 0px;
-  padding: 0px;
-  li {
-    padding: 5px 0;
-    border-bottom: 1px solid #EEE;
-    overflow: hidden;
-    display: block;
-    margin: 0px;
-    &:last-child { border:none }
-    &.active {
-      background: #f9f9f9;
-      a { font-weight: bold; }
-    }
-
-    &.light {
-      a { color: #777; }
-    }
-  }
+  @include basic-list;
 
   &.top-list {
     li:first-child {
       padding-top: 0;
+
       h4, h5 {
         margin-top: 0;
       }
@@ -125,3 +98,28 @@ ul.bordered-list {
 li.task-list-item {
   list-style-type: none;
 }
+
+ul.content-list {
+  @include basic-list;
+
+  margin: 0;
+  padding: 0;
+
+  > li {
+    padding: $gl-padding;
+    border-color: #f1f2f4;
+    margin-left: -$gl-padding;
+    margin-right: -$gl-padding;
+    color: $gl-gray;
+
+    .avatar {
+      margin-right: 15px;
+    }
+
+    .controls {
+      padding-top: 10px;
+      float: right;
+    }
+  }
+}
+

@@ -56,11 +56,6 @@ module Gitlab::Markdown
         expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-merge_request'
       end
 
-      it 'includes an optional custom class' do
-        doc = filter("Merge #{reference}", reference_class: 'custom')
-        expect(doc.css('a').first.attr('class')).to include 'custom'
-      end
-
       it 'includes a data-project-id attribute' do
         doc = filter("Merge #{reference}")
         link = doc.css('a').first

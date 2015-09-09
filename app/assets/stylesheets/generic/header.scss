@@ -20,33 +20,32 @@ header {
   }
 
   &.navbar-gitlab {
+    padding: 0 20px;
     z-index: 100;
     margin-bottom: 0;
     min-height: $header-height;
+    background-color: #fff;
     border: none;
-    width: 100%;
+    border-bottom: 1px solid #EEE;
 
-    .container {
-      background: #FFF;
+    .container-fluid {
       width: 100% !important;
-      padding: 0;
       filter: none;
+      padding: 0;
 
       .nav > li > a {
-        color: #888;
-        font-size: 14px;
+        color: #7f8fa4;
+        font-size: 18px;
         padding: 0;
-        background-color: #f5f5f5;
         margin: ($header-height - 28) / 2 0;
         margin-left: 10px;
-        border-radius: 40px;
         height: 28px;
         width: 28px;
         line-height: 28px;
         text-align: center;
 
         &:hover, &:focus, &:active {
-          background-color: #EEE;
+          background-color: #FFF;
         }
       }
 
@@ -56,6 +55,7 @@ header {
         border-radius: 0;
         position: absolute;
         right: 2px;
+        top: 15px;
 
         &:hover {
           background-color: #EEE;
@@ -64,66 +64,22 @@ header {
     }
   }
 
-  .header-logo {
-    border-bottom: 1px solid transparent;
-    float: left;
-    height: $header-height;
-    width: $sidebar_width;
-    overflow: hidden;
-    transition-duration: .3s;
-
-    a {
-      float: left;
-      height: $header-height;
-      width: 100%;
-      padding: ($header-height - 36 ) / 2 8px;
-      overflow: hidden;
-
-      img {
-        width: 36px;
-        height: 36px;
-        float: left;
-      }
-
-      .gitlab-text-container {
-        width: 230px;
-
-        h3 {
-          width: 158px;
-          float: left;
-          margin: 0;
-          margin-left: 14px;
-          font-size: 18px;
-          line-height: $header-height - 14;
-          font-weight: normal;
-        }
-      }
-    }
-
-    &:hover {
-      background-color: #EEE;
-    }
-  }
-
   .header-content {
-    border-bottom: 1px solid #EEE;
-    padding-right: 35px;
     height: $header-height;
 
     .title {
       margin: 0;
-      padding: 0 15px 0 35px;
       overflow: hidden;
-      font-size: 18px;
+      font-size: 19px;
       line-height: $header-height;
-      font-weight: bold;
-      color: #444;
+      font-weight: normal;
+      color: #4c4e54;
       text-overflow: ellipsis;
       vertical-align: top;
       white-space: nowrap;
 
       a {
-        color: #444;
+        color: #4c4e54;
         &:hover {
           text-decoration: underline;
         }
@@ -138,7 +94,7 @@ header {
   .search {
     margin-right: 10px;
     margin-left: 10px;
-    margin-top: ($header-height - 28) / 2;
+    margin-top: ($header-height - 36) / 2;
 
     form {
       margin: 0;
@@ -149,13 +105,8 @@ header {
       width: 220px;
       background-image: image-url("icon-search.png");
       background-repeat: no-repeat;
-      background-position: 10px;
-      height: inherit;
-      padding: 4px 6px;
-      padding-left: 25px;
-      font-size: 13px;
-      background-color: #f5f5f5;
-      border-color: #f5f5f5;
+      background-position: 195px;
+      @include input-big;
 
       &:focus {
         @include box-shadow(none);
@@ -168,15 +119,7 @@ header {
 }
 
 @mixin collapsed-header {
-  .header-logo {
-    width: $sidebar_collapsed_width;
-  }
-
-  .header-content {
-    .title {
-      margin-left: 30px;
-    }
-  }
+  margin-left: $sidebar_collapsed_width;
 }
 
 @media (max-width: $screen-md-max) {
@@ -191,15 +134,13 @@ header {
   }
 
   .header-expanded {
+    margin-left: $sidebar_width;
   }
 }
 
 @media (max-width: $screen-xs-max) {
-  header .container {
+  header .container-fluid {
     font-size: 18px;
-
-    .title {
-    }
 
     .navbar-nav {
       margin: 0px;

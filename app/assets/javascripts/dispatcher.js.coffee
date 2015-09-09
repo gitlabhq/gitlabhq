@@ -51,10 +51,10 @@ class Dispatcher
         MergeRequests.init()
       when 'dashboard:show', 'root:show'
         new Dashboard()
+      when 'dashboard:activity'
         new Activities()
       when 'dashboard:projects:starred'
         new Activities()
-        new ProjectsList()
       when 'projects:commit:show'
         new Commit()
         new Diff()
@@ -69,7 +69,6 @@ class Dispatcher
       when 'groups:show'
         new Activities()
         shortcut_handler = new ShortcutsNavigation()
-        new ProjectsList()
       when 'groups:group_members:index'
         new GroupMembers()
         new UsersSelect()
@@ -95,8 +94,6 @@ class Dispatcher
       when 'users:show'
         new User()
         new Activities()
-      when 'admin:users:show'
-        new ProjectsList()
 
     switch path.first()
       when 'admin'

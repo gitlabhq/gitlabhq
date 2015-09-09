@@ -27,16 +27,13 @@ module EventsHelper
     key = key.to_s
     active = 'active' if @event_filter.active?(key)
     link_opts = {
-      class: 'event_filter_link',
+      class: "event-filter-link btn btn-default #{active}",
       id:    "#{key}_event_filter",
       title: "Filter by #{tooltip.downcase}",
-      data:  { toggle: 'tooltip', placement: 'top' }
     }
 
-    content_tag :li, class: "filter_icon #{active}" do
-      link_to request.path, link_opts do
-        icon(icon_for_event[key]) + content_tag(:span, ' ' + tooltip)
-      end
+    link_to request.path, link_opts do
+      content_tag(:span, ' ' + tooltip)
     end
   end
 
@@ -66,7 +63,7 @@ module EventsHelper
       end
       words << "at"
     elsif event.target
-      words << "##{event.target_iid}:" 
+      words << "##{event.target_iid}:"
       words << event.target.title if event.target.respond_to?(:title)
       words << "at"
     end

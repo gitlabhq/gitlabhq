@@ -1,6 +1,6 @@
 class DashboardController < Dashboard::ApplicationController
-  before_action :load_projects
-  before_action :event_filter, only: :show
+  before_action :load_projects, except: :activity
+  before_action :event_filter, only: :activity
 
   respond_to :html
 
@@ -10,13 +10,8 @@ class DashboardController < Dashboard::ApplicationController
 
     respond_to do |format|
       format.html
-
-      format.json do
-        load_events
-        pager_json("events/_events", @events.count)
-      end
-
       format.atom do
+        event_filter
         load_events
         render layout: false
       end
@@ -40,6 +35,19 @@ class DashboardController < Dashboard::ApplicationController
     end
   end
 
+  def activity
+    @last_push = current_user.recent_push
+
+    respond_to do |format|
+      format.html
+
+      format.json do
+        load_events
+        pager_json("events/_events", @events.count)
+      end
+    end
+  end
+
   protected
 
   def load_projects
@@ -47,7 +55,14 @@ class DashboardController < Dashboard::ApplicationController
   end
 
   def load_events
-    @events = Event.in_projects(current_user.authorized_projects.pluck(:id))
+    project_ids =
+      if params[:filter] == "starred"
+        current_user.starred_projects
+      else
+        current_user.authorized_projects
+      end.pluck(:id)
+
+    @events = Event.in_projects(project_ids)
     @events = @event_filter.apply_filter(@events).with_associations
     @events = @events.limit(20).offset(params[:offset] || 0)
   end

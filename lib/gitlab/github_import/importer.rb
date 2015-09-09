@@ -18,7 +18,8 @@ module Gitlab
                                                   direction: :asc).each do |issue|
           if issue.pull_request.nil?
 
-            body = @formatter.author_line(issue.user.login, issue.body)
+            body = @formatter.author_line(issue.user.login)
+            body += issue.body
 
             if issue.comments > 0
               body += @formatter.comments_header

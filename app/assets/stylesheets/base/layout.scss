@@ -20,3 +20,7 @@ html {
 .navless-container {
   margin-top: 30px;
 }
+
+.container-limited {
+  max-width: $fixed-layout-width;
+}

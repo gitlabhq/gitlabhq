@@ -73,6 +73,7 @@ class Project < ActiveRecord::Base
   has_many :services
   has_one :gitlab_ci_service, dependent: :destroy
   has_one :campfire_service, dependent: :destroy
+  has_one :drone_ci_service, dependent: :destroy
   has_one :emails_on_push_service, dependent: :destroy
   has_one :irker_service, dependent: :destroy
   has_one :pivotaltracker_service, dependent: :destroy
@@ -613,6 +614,7 @@ class Project < ActiveRecord::Base
       name: name,
       ssh_url: ssh_url_to_repo,
       http_url: http_url_to_repo,
+      web_url: web_url,
       namespace: namespace.name,
       visibility_level: visibility_level
     }

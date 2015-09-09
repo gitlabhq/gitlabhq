@@ -1,6 +1,7 @@
+require 'action_controller'
+require 'gitlab/markdown'
 require 'gitlab_emoji'
 require 'html/pipeline/filter'
-require 'action_controller'
 
 module Gitlab
   module Markdown

@@ -1,70 +1,58 @@
 /**
- * Events labels
- *
- */
-.event_label {
-  &.pushed {
-    padding: 0 2px;
-  }
-
-  &.opened {
-    padding: 0 2px;
-  }
-
-  &.closed {
-    padding: 0 2px;
-  }
-
-  &.merged {
-    padding: 0 2px;
-  }
-
-  &.left,
-  &.joined {
-    padding: 0 2px;
-    float: none;
-  }
-}
-
-/**
  * Dashboard events feed
  *
  */
 .event-item {
-  &:first-child {
-    padding-top: 0;
-  }
+  font-size: $gl-font-size;
+  padding: $gl-padding;
+  margin-left: -$gl-padding;
+  margin-right: -$gl-padding;
+  border-bottom: 1px solid #f1f2f4;
+  color: #7f8fa4;
 
   &.event-inline {
     .avatar {
       position: relative;
       top: -2px;
     }
+
+    .event-title {
+      line-height: 44px;
+    }
+
+    .event-item-timestamp {
+      line-height: 44px;
+    }
   }
 
-  padding: 12px 0px;
-  border-bottom: 1px solid #eee;
+  a {
+    color: #4c4e54;
+  }
+
+  .avatar {
+    margin-right: 15px;
+  }
+
   .event-title {
-    max-width: 70%;
     @include str-truncated(calc(100% - 174px));
-    font-weight: 500;
-    font-size: 14px;
+    font-weight: 600;
+
     .author_name {
       color: #333;
     }
   }
+
   .event-body {
-    font-size: 13px;
-    margin-left: 35px;
+    margin-left: 63px;
     margin-right: 80px;
-    color: #777;
 
     .event-note {
       margin-top: 5px;
       word-wrap: break-word;
 
       .md {
-        font-size: 13px;
+        color: #7f8fa4;
+        font-size: $gl-font-size;
 
         iframe.twitter-share-button {
           vertical-align: bottom;
@@ -94,7 +82,7 @@
     .event-note-icon {
       color: #777;
       float: left;
-      font-size: 16px;
+      font-size: $gl-font-size;
       line-height: 16px;
       margin-right: 5px;
     }
@@ -116,7 +104,7 @@
   &:last-child { border:none }
 
   .event_commits {
-    margin-top: 5px;
+    margin-top: 9px;
 
     li {
       &.commit {
@@ -125,10 +113,12 @@
         padding-left: 0;
         border: none;
         .commit-row-title {
-          font-size: 12px;
+          font-size: $gl-font-size;
         }
       }
+
       &.commits-stat {
+        margin-top: 3px;
         display: block;
         padding: 3px;
         padding-left: 0;
@@ -142,7 +132,6 @@
 
   .event-item-timestamp {
     float: right;
-    color: #999;
     line-height: 22px;
   }
 }
@@ -184,14 +173,5 @@
     .event-item-timestamp {
       display: none;
     }
-  }
-}
-
-.event_filter {
-  li a {
-    font-size: 13px;
-    padding: 5px 10px;
-    background: $background-color;
-    margin-left: 4px;
   }
 }

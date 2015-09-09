@@ -46,8 +46,13 @@
   .btn { font-size: 13px; }
 }
 
-.issuable-details {
-  .description {
-    max-width: $readable-width;
+.project-issuable-filter {
+  .controls {
+    float: right;
+    margin-top: 7px;
+  }
+
+  .center-top-menu {
+    text-align: left;
   }
 }

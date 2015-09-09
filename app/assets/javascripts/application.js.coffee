@@ -94,15 +94,17 @@ window.unbindEvents = ->
   $(document).off('scroll')
 
 window.shiftWindow = ->
-  scrollBy 0, -50
+  scrollBy 0, -100
 
 document.addEventListener("page:fetch", unbindEvents)
 
-# Scroll the window to avoid the topnav bar
-# https://github.com/twitter/bootstrap/issues/1768
-if location.hash
-  setTimeout shiftWindow, 1
 window.addEventListener "hashchange", shiftWindow
+
+window.onload = ->
+  # Scroll the window to avoid the topnav bar
+  # https://github.com/twitter/bootstrap/issues/1768
+  if location.hash
+    setTimeout shiftWindow, 100
 
 $ ->
   $(".nicescroll").niceScroll(cursoropacitymax: '0.4', cursorcolor: '#FFF', cursorborder: "1px solid #FFF")
@@ -115,6 +117,12 @@ $ ->
 
   $('.remove-row').bind 'ajax:success', ->
     $(this).closest('li').fadeOut()
+
+  $('.js-remove-tr').bind 'ajax:before', ->
+    $(this).hide()
+
+  $('.js-remove-tr').bind 'ajax:success', ->
+    $(this).closest('tr').fadeOut()
 
   # Initialize select2 selects
   $('select.select2').select2(width: 'resolve', dropdownAutoWidth: true)

@@ -121,7 +121,6 @@ module Gitlab::Markdown
     end
 
     it 'links with adjacent text' do
-      skip "TODO (rspeicher): Re-enable when usernames can't end in periods."
       doc = filter("Mention me (#{reference}.)")
       expect(doc.to_html).to match(/\(<a.+>#{reference}<\/a>\.\)/)
     end
@@ -129,11 +128,6 @@ module Gitlab::Markdown
     it 'includes default classes' do
       doc = filter("Hey #{reference}")
       expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-project_member'
-    end
-
-    it 'includes an optional custom class' do
-      doc = filter("Hey #{reference}", reference_class: 'custom')
-      expect(doc.css('a').first.attr('class')).to include 'custom'
     end
 
     it 'supports an :only_path context' do

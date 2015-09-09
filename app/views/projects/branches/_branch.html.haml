@@ -1,20 +1,20 @@
 - commit = @repository.commit(branch.target)
 %li(class="js-branch-#{branch.name}")
-  %h4
+  %div
     = link_to namespace_project_tree_path(@project.namespace, @project, branch.name) do
       %strong.str-truncated= branch.name
+      &nbsp;
       - if branch.name == @repository.root_ref
-        %span.label.label-info default
+        %span.label.label-primary default
       - elsif @repository.merged_to_root_ref? branch.name
-        %span.label.label-primary.has_tooltip(title="Merged into #{@repository.root_ref}")
-          %i.fa.fa-check
+        %span.label.label-info.has_tooltip(title="Merged into #{@repository.root_ref}")
           merged
 
       - if @project.protected_branch? branch.name
         %span.label.label-success
           %i.fa.fa-lock
           protected
-    .pull-right
+    .controls.hidden-xs
       - if create_mr_button?(@repository.root_ref, branch.name)
         = link_to create_mr_path(@repository.root_ref, branch.name), class: 'btn btn-grouped btn-xs' do
           = icon('plus')
@@ -30,8 +30,7 @@
           = icon("trash-o")
 
   - if commit
-    %ul.list-unstyled
-      = render 'projects/commits/inline_commit', commit: commit, project: @project
+    = render 'projects/branches/commit', commit: commit, project: @project
   - else
     %p
       Cant find HEAD commit for this branch

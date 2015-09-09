@@ -1,0 +1,6 @@
+- if projects.any?
+  .public-projects
+    = render 'shared/projects/list', projects: projects
+- else
+  .nothing-here-block
+    No such projects

@@ -1,13 +1,14 @@
 - commit = @repository.commit(tag.target)
 %li
-  %h4
+  %div
     = link_to namespace_project_commits_path(@project.namespace, @project, tag.name), class: "" do
-      %i.fa.fa-tag
-      = tag.name
+      %strong
+        %i.fa.fa-tag
+        = tag.name
     - if tag.message.present?
       &nbsp;
       = strip_gpg_signature(tag.message)
-    .pull-right
+    .controls
       - if can? current_user, :download_code, @project
         = render 'projects/repositories/download_archive', ref: tag.name, btn_class: 'btn-grouped btn-group-xs'
       - if can?(current_user, :admin_project, @project)
@@ -15,8 +16,7 @@
           %i.fa.fa-trash-o
 
   - if commit
-    %ul.list-unstyled
-      = render 'projects/commits/inline_commit', commit: commit, project: @project
+    = render 'projects/branches/commit', commit: commit, project: @project
   - else
     %p
       Cant find HEAD commit for this tag

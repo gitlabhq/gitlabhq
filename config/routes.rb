@@ -30,12 +30,7 @@ Gitlab::Application.routes.draw do
   end
 
   # Enable Grack support
-  mount Grack::Bundle.new({
-    git_path:     Gitlab.config.git.bin_path,
-    project_root: Gitlab.config.gitlab_shell.repos_path,
-    upload_pack:  Gitlab.config.gitlab_shell.upload_pack,
-    receive_pack: Gitlab.config.gitlab_shell.receive_pack
-  }), at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post]
+  mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post]
 
   # Help
   get 'help'                  => 'help#index'
@@ -261,6 +256,7 @@ Gitlab::Application.routes.draw do
     member do
       get :issues
       get :merge_requests
+      get :activity
     end
 
     scope module: :dashboard do
@@ -410,16 +406,20 @@ Gitlab::Application.routes.draw do
           end
         end
 
-        resources :wikis, only: [:show, :edit, :destroy, :create], constraints: { id: /[a-zA-Z.0-9_\-\/]+/ } do
-          collection do
-            get :pages
-            put ':id' => 'wikis#update'
-            get :git_access
-          end
+        WIKI_SLUG_ID = { id: /[a-zA-Z.0-9_\-\/]+/ } unless defined? WIKI_SLUG_ID
 
-          member do
-            get 'history'
-          end
+        scope do
+          # Order matters to give priority to these matches
+          get '/wikis/git_access', to: 'wikis#git_access'
+          get '/wikis/pages', to: 'wikis#pages', as: 'wiki_pages'
+          post '/wikis', to: 'wikis#create'
+
+          get '/wikis/*id/history', to: 'wikis#history', as: 'wiki_history', constraints: WIKI_SLUG_ID
+          get '/wikis/*id/edit', to: 'wikis#edit', as: 'wiki_edit', constraints: WIKI_SLUG_ID
+
+          get '/wikis/*id', to: 'wikis#show', as: 'wiki', constraints: WIKI_SLUG_ID
+          delete '/wikis/*id', to: 'wikis#destroy', constraints: WIKI_SLUG_ID
+          put '/wikis/*id', to: 'wikis#update', constraints: WIKI_SLUG_ID
         end
 
         resource :repository, only: [:show, :create] do

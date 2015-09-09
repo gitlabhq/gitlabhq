@@ -25,6 +25,7 @@ gem 'omniauth-kerberos', group: :kerberos
 gem 'omniauth-gitlab'
 gem 'omniauth-bitbucket'
 gem 'omniauth-saml', '~> 1.4.0'
+gem 'omniauth_crowd'
 gem 'doorkeeper', '2.1.3'
 gem "rack-oauth2", "~> 1.0.5"
 
@@ -34,16 +35,11 @@ gem 'rqrcode-rails3'
 gem 'attr_encrypted', '1.3.4'
 
 # Browser detection
-gem "browser", '~> 0.8.0'
+gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 7.2.14'
-
-# Ruby/Rack Git Smart-HTTP Server Handler
-# GitLab fork with a lot of changes (improved thread-safety, better memory usage etc)
-# For full list of changes see https://github.com/SaitoWu/grack/compare/master...gitlabhq:master
-gem 'gitlab-grack', '~> 2.0.2', require: 'grack'
+gem "gitlab_git", '~> 7.2.15'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -273,6 +269,6 @@ gem "newrelic_rpm"
 
 gem 'octokit', '3.7.0'
 
-gem "mail_room", "~> 0.4.0"
+gem "mail_room", "~> 0.4.2"
 
 gem 'email_reply_parser'

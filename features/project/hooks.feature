@@ -13,6 +13,11 @@ Feature: Project Hooks
     When I submit new hook
     Then I should see newly created hook
 
+  Scenario: I add new hook with SSL verification enabled
+    Given I visit project hooks page
+    When I submit new hook with SSL verification enabled
+    Then I should see newly created hook with SSL verification enabled
+
   Scenario: I test hook
     Given project has hook
     And I visit project hooks page

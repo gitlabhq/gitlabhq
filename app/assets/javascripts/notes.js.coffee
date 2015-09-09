@@ -123,6 +123,7 @@ class @Notes
     if @isNewNote(note)
       @note_ids.push(note.id)
       $('ul.main-notes-list').append(note.html)
+      $('.js-syntax-highlight').syntaxHighlight()
       @initTaskList()
 
   ###

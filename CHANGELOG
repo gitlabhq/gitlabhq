@@ -1,7 +1,16 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.0.0 (unreleased)
-  - Fix Error 500 in API when accessing a group that has an avatar (Stan Hu)
+  - Fix URL construction for merge requests, issues, notes, and commits for relative URL config (Stan Hu)
+  - Omit filename in Content-Disposition header in raw file download to avoid RFC 6266 encoding issues (Stan HU)
+  - Fix broken Wiki Page History (Stan Hu)
+  - Prevent anchors from being hidden by header (Stan Hu)
+  - Fix bug where only the first 15 Bitbucket issues would be imported (Stan Hu)
+  - Sort issues by creation date in Bitbucket importer (Stan Hu)
+  - Upgrade gitlab_git to 7.2.15 to fix `git blame` errors with ISO-encoded files (Stan Hu)
+  - Prevent too many redirects upon login when home page URL is set to external_url (Stan Hu)
+  - Improve dropdown positioning on the project home page (Hannes Rosenögger)
+  - Upgrade browser gem to 1.0.0 to avoid warning in IE11 compatibilty mode (Stan Hu)
   - Remove user OAuth tokens from the database and request new tokens each session (Stan Hu)
   - Only show recent push event if the branch still exists or a recent merge request has not been created (Stan Hu)
   - Remove satellites
@@ -13,6 +22,31 @@ v 8.0.0 (unreleased)
   - Search for comments should be case insensetive
   - Create cross-reference for closing references on commits pushed to non-default branches (Maël Valais)
   - Ability to search milestones
+  - Gracefully handle SMTP user input errors (e.g. incorrect email addresses) to prevent Sidekiq retries (Stan Hu)
+  - Move dashboard activity to separate page (for your projects and starred projects)
+  - Improve performance of git blame
+  - Limit content width to 1200px for most of pages to improve readability on big screens
+  - Fix 500 error when submit project snippet without body
+  - Improve search page usability
+  - Bring more UI consistency in way how projects, snippets and groups lists are rendered
+  - Make all profiles public
+  - Fixed login failure when extern_uid changes (Joel Koglin)
+  - Don't notify users without access to the project when they are (accidentally) mentioned in a note.
+  - Retrieving oauth token with LDAP credentials
+  - Load Application settings from running database unless env var USE_DB=false
+  - Added Drone CI integration (Kirill Zaitsev)
+  - Refactored service API and added automatically service docs generator (Kirill Zaitsev) 
+  - Added web_url key project hook_attrs (Kirill Zaitsev)
+  - Add ability to get user information by ID of an SSH key via the API
+  - Fix bug which IE cannot show image at markdown when the image is raw file	of gitlab  
+  - Add support for Crowd
+
+v 7.14.1
+  - Improve abuse reports management from admin area
+  - Fix "Reload with full diff" URL button in compare branch view (Stan Hu)
+  - Only include base URL in OmniAuth full_host parameter (Stan Hu)
+  - Fix Error 500 in API when accessing a group that has an avatar (Stan Hu)
+  - Ability to enable SSL verification for Webhooks
 
 v 7.14.0
   - Fix bug where non-project members of the target project could set labels on new merge requests.
@@ -90,7 +124,7 @@ v 7.13.4
 v 7.13.3
   - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
   - Allow users to send abuse reports
-  - Remove satellites 
+  - Remove satellites
   - Link username to profile on Group Members page (Tom Webster)
 
 v 7.13.2
@@ -298,6 +332,7 @@ v 7.11.0
   - Protect OmniAuth request phase against CSRF.
   - Don't send notifications to mentioned users that don't have access to the project in question.
   - Add search issues/MR by number
+  - Change plots to bar graphs in commit statistics screen
   - Move snippets UI to fluid layout
   - Improve UI for sidebar. Increase separation between navigation and content
   - Improve new project command options (Ben Bodenmiller)

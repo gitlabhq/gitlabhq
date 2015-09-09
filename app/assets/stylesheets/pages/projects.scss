@@ -16,6 +16,10 @@
 
 .project-home-panel {
   text-align: center;
+  background: #f7f8fa;
+  margin: -$gl-padding;
+  padding: $gl-padding;
+  padding-top: 40px;
 
   .project-identicon-holder {
     margin-bottom: 15px;
@@ -30,14 +34,20 @@
     }
   }
 
+  .project-home-dropdown {
+    margin: 11px 3px 0;
+  }
+
   .project-home-desc {
     h1 {
       margin: 0;
       margin-bottom: 10px;
-      font-size: 26px;
+      font-size: 23px;
+      font-weight: normal;
     }
 
     p {
+      color: #7f8fa4;
       display: inline;
     }
   }
@@ -45,6 +55,10 @@
   .git-clone-holder {
     max-width: 600px;
     margin: 20px auto;
+
+    .form-control {
+      background: #FFF;
+    }
   }
 
   .visibility-level-label {
@@ -55,17 +69,18 @@
   }
 
   .project-repo-buttons {
-    margin-top: 25px;
+    margin-top: $gl-padding;
     margin-bottom: 25px;
 
     .btn {
       @extend .btn-info;
 
+      text-transform: uppercase;
+      font-size: 15px;
+      line-height: 20px;
+      padding: 8px 14px;
+      border-radius: 3px;
       margin-left: 10px;
-      font-weight: bold;
-      font-size: 14px;
-      line-height: 16px;
-      padding: 8px 12px;
 
       .count {
         padding-left: 7px;
@@ -155,78 +170,6 @@ ul.nav.nav-projects-tabs {
   margin: 0px;
 }
 
-.my-projects,
-.public-projects {
-  li {
-    .project-info {
-      margin-bottom: 10px;
-      overflow: hidden;
-    }
-
-    .access-icon {
-      color: #AAA;
-      margin-left: 10px;
-      i {
-        color: #AAA;
-      }
-    }
-  }
-}
-
-.public-clone {
-  background: #EEE;
-  color: #777;
-  padding: 6px 10px;
-  margin: 1px;
-  font-weight: normal;
-}
-
-.public-projects .repo-info {
-  color: #777;
-
-  a {
-    color: #777;
-  }
-}
-
-.project-side {
-  .project-fork-icon {
-    float: left;
-    font-size: 26px;
-    margin-right: 10px;
-    line-height: 1.5;
-  }
-
-  .panel {
-    @include border-radius(3px);
-
-    .panel-heading, .panel-footer {
-      font-weight: normal;
-      background-color: transparent;
-      color: #666;
-      border-color: #EEE;
-    }
-
-    .actions {
-      margin-top: 10px;
-    }
-
-    .nav-pills a {
-      padding: 10px;
-      font-weight: bold;
-      color: $gl-link-color;
-    }
-
-    .nav {
-      margin-bottom: 15px;
-    }
-  }
-
-  .ci-status-image {
-    max-height: 22px;
-  }
-}
-
 .transfer-project .select2-container {
   min-width: 200px;
 }
@@ -249,10 +192,10 @@ ul.nav.nav-projects-tabs {
 
 .breadcrumb.repo-breadcrumb {
   padding: 0;
-  line-height: 34px;
-  background: white;
+  line-height: 42px;
+  background: transparent;
   border: none;
-  font-size: 16px;
+  margin: 0;
 
   > li + li:before {
     padding: 0 3px;
@@ -298,10 +241,23 @@ table.table.protected-branches-list tr.no-border {
 
 .project-stats {
   text-align: center;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 5px;
+  padding-bottom: 0;
 
-  ul.nav-pills { display:inline-block; }
-  li { display:inline; }
-  a { float:left; }
+  ul.nav-pills {
+    display:inline-block;
+  }
+
+  li {
+    display:inline;
+  }
+
+  a {
+    float:left;
+    font-size: 17px;
+  }
 
   li.missing a {
     color: #bbb;
@@ -315,4 +271,70 @@ table.table.protected-branches-list tr.no-border {
 
 pre.light-well {
   border-color: #f1f1f1;
+}
+
+.projects-search-form {
+  margin: -$gl-padding;
+  background-color: #f8fafc;
+  padding: $gl-padding;
+  margin-bottom: 0px;
+  border-top: 1px solid #e7e9ed;
+  border-bottom: 1px solid #e7e9ed;
+}
+
+/*
+ * Projects list rendered on dashboard and user page
+ */
+.projects-list {
+  @include basic-list;
+
+  .project-row {
+    padding: $gl-padding;
+    border-color: #f1f2f4;
+    margin-left: -$gl-padding;
+    margin-right: -$gl-padding;
+
+    &.no-description {
+      .project {
+        line-height: 44px;
+      }
+    }
+
+    .project-full-name {
+      @include str-truncated;
+      font-weight: 600;
+      color: #4c4e54;
+    }
+
+    .pull-right.light {
+      line-height: 45px;
+      color: #7f8fa4;
+    }
+
+    .project-description {
+      color: #7f8fa4;
+
+      p {
+        @include str-truncated;
+        margin-bottom: 0;
+        color: #7f8fa4;
+      }
+    }
+  }
+
+  .bottom {
+    padding-top: $gl-padding;
+    padding-bottom: 0;
+  }
+}
+
+.panel .projects-list li {
+  padding: 10px 15px;
+  margin: 0;
+}
+
+.project-show-activity {
+  .activity-filter-block {
+    margin-top: -1px;
+  }
 }

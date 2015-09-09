@@ -21,6 +21,7 @@
 - [Groups](groups.md)
 - [Namespaces](namespaces.md)
 - [Settings](settings.md)
+- [Keys](keys.md)
 
 ## Clients
 

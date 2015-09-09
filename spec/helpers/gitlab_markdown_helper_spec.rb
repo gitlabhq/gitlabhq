@@ -19,28 +19,23 @@ describe GitlabMarkdownHelper do
     @project = project
   end
 
-  describe "#gfm" do
-    it "should forward HTML options to links" do
-      expect(gfm("Fixed in #{commit.id}", { project: @project }, class: 'foo')).
-        to have_selector('a.gfm.foo')
-    end
-
+  describe "#markdown" do
     describe "referencing multiple objects" do
       let(:actual) { "#{merge_request.to_reference} -> #{commit.to_reference} -> #{issue.to_reference}" }
 
       it "should link to the merge request" do
         expected = namespace_project_merge_request_path(project.namespace, project, merge_request)
-        expect(gfm(actual)).to match(expected)
+        expect(markdown(actual)).to match(expected)
       end
 
       it "should link to the commit" do
         expected = namespace_project_commit_path(project.namespace, project, commit)
-        expect(gfm(actual)).to match(expected)
+        expect(markdown(actual)).to match(expected)
       end
 
       it "should link to the issue" do
         expected = namespace_project_issue_path(project.namespace, project, issue)
-        expect(gfm(actual)).to match(expected)
+        expect(markdown(actual)).to match(expected)
       end
     end
   end

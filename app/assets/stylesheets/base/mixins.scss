@@ -55,8 +55,11 @@
 }
 
 @mixin md-typography {
-  font-size: 15px;
-  line-height: 1.5;
+  color: #444;
+
+  a {
+    color: #3084bb;
+  }
 
   img {
     max-width: 100%;
@@ -156,4 +159,59 @@
   vertical-align: top;
   white-space: nowrap;
   max-width: $max_width;
+}
+
+/*
+ * Base mixin for lists in GitLab
+ */
+@mixin basic-list {
+  margin: 5px 0px;
+  padding: 0px;
+  list-style: none;
+
+  > li {
+    padding: 10px 0;
+    border-bottom: 1px solid #EEE;
+    overflow: hidden;
+    display: block;
+    margin: 0px;
+
+    &:last-child {
+      border:none
+    }
+
+    &.active {
+      background: #f9f9f9;
+      a {
+        font-weight: bold;
+      }
+    }
+
+    &.hide {
+      display: none;
+    }
+
+    &.light {
+      a {
+        color: $gl-gray;
+      }
+    }
+  }
+}
+
+@mixin input-big {
+  height: 36px;
+  padding: 5px 10px;
+  font-size: 16px;
+  line-height: 24px;
+  color: #7f8fa4;
+  background-color: #fff;
+  border-color: #e7e9ed;
+}
+
+@mixin btn-big {
+  height: 36px;
+  padding: 5px 10px;
+  font-size: 16px;
+  line-height: 24px;
 }

@@ -2,7 +2,7 @@
   .side {
     .panel {
       .panel-heading {
-        background: #EEE;
+        background: $background-color;
         border-top-left-radius: 0;
       }
       border-top-left-radius: 0;
@@ -23,41 +23,6 @@
   }
 }
 
-.project-row, .group-row {
-  padding: 0 !important;
-  font-size: 14px;
-  line-height: 24px;
-
-  a {
-    display: block;
-    padding: 8px 15px;
-  }
-
-  .project-name, .group-name {
-    font-weight: 500;
-  }
-
-  .arrow {
-    float: right;
-    margin: 0;
-    font-size: 20px;
-  }
-
-  .last-activity {
-    float: right;
-    font-size: 12px;
-    color: #AAA;
-    display: block;
-    .date {
-      color: #777;
-    }
-  }
-}
-
-.project-description {
-  overflow: hidden;
-}
-
 .project-access-icon {
   margin-left: 10px;
   float: left;
@@ -73,12 +38,11 @@
   float: left;
 
   .avatar {
-    margin-top: -8px;
-    margin-left: -15px;
-    @include border-radius(0px);
+    @include border-radius(50%);
   }
+
   .identicon {
-    line-height: 40px;
+    line-height: 46px;
   }
 }
 

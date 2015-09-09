@@ -137,7 +137,7 @@ module DiffHelper
     # Always use HTML to handle case where JSON diff rendered this button
     params_copy.delete(:format)
 
-    link_to url_for(params_copy), id: "commit-diff-viewtype", class: (params[:view] != 'parallel' ? 'btn btn-sm active' : 'btn btn-sm') do
+    link_to url_for(params_copy), id: "inline-diff-btn", class: (params[:view] != 'parallel' ? 'btn btn-sm active' : 'btn btn-sm') do
       'Inline'
     end
   end
@@ -148,7 +148,7 @@ module DiffHelper
     # Always use HTML to handle case where JSON diff rendered this button
     params_copy.delete(:format)
 
-    link_to url_for(params_copy), id: "commit-diff-viewtype", class: (params[:view] == 'parallel' ? 'btn active btn-sm' : 'btn btn-sm') do
+    link_to url_for(params_copy), id: "parallel-diff-btn", class: (params[:view] == 'parallel' ? 'btn active btn-sm' : 'btn btn-sm') do
       'Side-by-side'
     end
   end

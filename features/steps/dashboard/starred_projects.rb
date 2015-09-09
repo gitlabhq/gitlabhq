@@ -8,7 +8,7 @@ class Spinach::Features::DashboardStarredProjects < Spinach::FeatureSteps
   end
 
   step 'I should not see project "Shop"' do
-    page.within 'aside' do
+    page.within '.projects-list' do
       expect(page).not_to have_content('Shop')
     end
   end
