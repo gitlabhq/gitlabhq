@@ -8,7 +8,7 @@ class LimitsToMysql < ActiveRecord::Migration
     change_column :notes, :st_diff, :text, limit: 2147483647
 
     # CI
-    change_column :builds, :trace, :text, limit: 1073741823
-    change_column :commits, :push_data, :text, limit: 16777215
+    change_column :ci_builds, :trace, :text, limit: 1073741823
+    change_column :ci_commits, :push_data, :text, limit: 16777215
   end
 end
