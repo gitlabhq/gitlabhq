@@ -116,7 +116,7 @@ GEM
       execjs
     coffee-script-source (1.9.1.1)
     colored (1.2)
-    colorize (0.7.7)
+    colorize (0.5.8)
     connection_pool (2.2.0)
     coveralls (0.8.2)
       json (~> 1.8)
@@ -801,6 +801,7 @@ DEPENDENCIES
   charlock_holmes (~> 0.6.9.4)
   coffee-rails (~> 4.1.0)
   colored (~> 1.2)
+  colorize (~> 0.5.8)
   coveralls (~> 0.8.2)
   creole (~> 0.3.6)
   d3_rails (~> 3.5.5)
