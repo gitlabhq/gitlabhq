@@ -181,8 +181,8 @@ production: &base
         user_filter: ''
 
         # LDAP attributes that GitLab will use to create an account for the LDAP user.
-        # Can be either the name of an attribute as a string (e.g. 'mail'),
-        # or an array of names of attributes to try in order (e.g. ['mail', 'email']).
+        # The specified attribute can either be the attribute name as a string (e.g. 'mail'),
+        # or an array of attribute names to try in order (e.g. ['mail', 'email']).
         # Note that the user's LDAP login will always be the attribute specified as `uid` above.
         attributes:
           # The username will be used in paths for the user's own projects
