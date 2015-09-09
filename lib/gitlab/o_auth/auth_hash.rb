@@ -39,8 +39,6 @@ module Gitlab
       end
 
       def get_info(key)
-        key = :nickname if key == :username
-
         value = info[key]
         Gitlab::Utils.force_utf8(value) if value
         value
@@ -48,7 +46,7 @@ module Gitlab
 
       def username_and_email
         @username_and_email ||= begin
-          username  = get_info(:username)
+          username  = get_info(:username) || get_info(:nickname)
           email     = get_info(:email)
 
           username ||= generate_username(email)             if email

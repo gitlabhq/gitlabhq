@@ -3,17 +3,10 @@
 module Gitlab
   module LDAP
     class AuthHash < Gitlab::OAuth::AuthHash
-      attr_accessor :config
-
-      def initialize(auth_hash, config)
-        super(auth_hash)
-        @config = config
-      end
-
       private
 
       def get_info(key)
-        raw_key = config.attributes[key]
+        raw_key = ldap_config.attributes[key]
         return super unless raw_key
 
         value =
@@ -34,6 +27,10 @@ module Gitlab
 
       def get_raw(key)
         auth_hash.extra[:raw_info][key]
+      end
+
+      def ldap_config
+        @ldap_config ||= Gitlab::LDAP::Config.new(self.provider)
       end
     end
   end
