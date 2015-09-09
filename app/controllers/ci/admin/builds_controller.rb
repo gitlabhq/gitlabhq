@@ -4,9 +4,15 @@ module Ci
       @scope = params[:scope]
       @builds = Ci::Build.order('created_at DESC').page(params[:page]).per(30)
 
-      if ["pending", "running"].include? @scope
-        @builds = @builds.send(@scope)
-      end
+      @builds =
+        case @scope
+        when "pending"
+          @builds.pending
+        when "running"
+          @builds.running
+        else
+          @builds
+        end
     end
   end
 end
