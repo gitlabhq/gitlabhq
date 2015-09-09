@@ -40,6 +40,7 @@ v 8.0.0 (unreleased)
   - Add ability to get user information by ID of an SSH key via the API
   - Fix bug which IE cannot show image at markdown when the image is raw file	of gitlab  
   - Add support for Crowd
+  - Fix highlighting of deleted lines in diffs.
 
 v 7.14.1
   - Improve abuse reports management from admin area
