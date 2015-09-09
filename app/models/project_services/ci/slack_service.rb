@@ -13,7 +13,7 @@
 #
 
 module Ci
-  class SlackService < Service
+  class SlackService < Ci::Service
     prop_accessor :webhook
     boolean_accessor :notify_only_broken_builds
     validates :webhook, presence: true, if: :activated?

@@ -13,7 +13,7 @@
 #
 
 module Ci
-  class HipChatService < Service
+  class HipChatService < Ci::Service
     prop_accessor :hipchat_token, :hipchat_room, :hipchat_server
     boolean_accessor :notify_only_broken_builds
     validates :hipchat_token, presence: true, if: :activated?

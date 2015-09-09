@@ -13,7 +13,7 @@
 #
 
 module Ci
-  class MailService < Service
+  class MailService < Ci::Service
     delegate :email_recipients, :email_recipients=,
              :email_add_pusher, :email_add_pusher=,
              :email_only_broken_builds, :email_only_broken_builds=, to: :project, prefix: false
