@@ -403,6 +403,15 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def create_labels
+    Label.templates.each do |label|
+      label = label.dup
+      label.template = nil
+      label.project_id = self.id
+      label.save
+    end
+  end
+
   def find_service(list, name)
     list.find { |service| service.to_param == name }
   end
