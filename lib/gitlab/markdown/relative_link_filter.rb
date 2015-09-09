@@ -37,7 +37,7 @@ module Gitlab
         return if html_attr.blank?
 
         uri = URI(html_attr.value)
-        if uri.relative? && uri.path.present?
+        if uri.relative? && uri.path.present? && !uri.path.start_with?('/')
           html_attr.value = rebuild_relative_uri(uri).to_s
         end
       rescue URI::Error
