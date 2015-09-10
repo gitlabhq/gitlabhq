@@ -19,7 +19,7 @@
         - else
           .accept-action
             = f.button class: "btn btn-reopen rebase-mr" do
-              Rebase from #{@merge_request.target_branch}
+              Rebase onto #{@merge_request.target_branch}
       .accept-control
         Fast-forward merge is not possible. Branch must be rebased first
 
