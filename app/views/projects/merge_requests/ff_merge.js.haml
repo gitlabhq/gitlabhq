@@ -1,0 +1,6 @@
+- if @status
+  :plain
+    location.reload()
+- else
+  :plain
+    $('.mr-widget-body').html("#{escape_javascript(render('projects/merge_requests/widget/open/reload'))}");

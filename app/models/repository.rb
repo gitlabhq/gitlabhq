@@ -435,6 +435,18 @@ class Repository
     end
   end
 
+  def ff_merge(user, source_sha, target_branch, options = {})
+    our_commit = rugged.branches[target_branch].target
+    their_commit = rugged.lookup(source_sha)
+
+    raise "Invalid merge target" if our_commit.nil?
+    raise "Invalid merge source" if their_commit.nil?
+
+    commit_with_hooks(user, target_branch) do |ref|
+      source_sha
+    end
+  end
+
   def merge(user, source_sha, target_branch, options = {})
     our_commit = rugged.branches[target_branch].target
     their_commit = rugged.lookup(source_sha)

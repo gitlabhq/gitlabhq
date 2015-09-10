@@ -498,4 +498,20 @@ class MergeRequest < ActiveRecord::Base
       unlock_mr if locked?
     end
   end
+
+  def source_sha_parent
+    source_project.repository.commit(source_sha).parents.first.sha
+  end
+
+  def ff_merge_possible?
+    target_sha == source_sha_parent
+  end
+
+  def rebase_dir_path
+    Rails.root.join('tmp', 'rebase', source_project.id.to_s, id.to_s).to_s
+  end
+
+  def rebase_in_progress?
+    File.exist?(rebase_dir_path)
+  end
 end
