@@ -14,6 +14,6 @@ describe "Admin Projects" do
       visit admin_projects_path
     end
 
-    it { page.should have_content "Projects" }
+    it { expect(page).to have_content "Projects" }
   end
 end

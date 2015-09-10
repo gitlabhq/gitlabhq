@@ -16,8 +16,8 @@ describe "Admin Builds" do
       visit admin_builds_path
     end
 
-    it { page.should have_content "All builds" }
-    it { page.should have_content build.short_sha }
+    it { expect(page).to have_content "All builds" }
+    it { expect(page).to have_content build.short_sha }
   end
 
   describe "Tabs" do
@@ -29,7 +29,7 @@ describe "Admin Builds" do
 
       visit admin_builds_path
 
-      page.all(".build-link").size.should == 4
+      expect(page.all(".build-link").size).to eq(4)
     end
 
     it "shows pending builds" do
@@ -44,10 +44,10 @@ describe "Admin Builds" do
         click_on "Pending"
       end
 
-      page.find(".build-link").should have_content(build.id)
-      page.find(".build-link").should_not have_content(build1.id)
-      page.find(".build-link").should_not have_content(build2.id)
-      page.find(".build-link").should_not have_content(build3.id)
+      expect(page.find(".build-link")).to have_content(build.id)
+      expect(page.find(".build-link")).not_to have_content(build1.id)
+      expect(page.find(".build-link")).not_to have_content(build2.id)
+      expect(page.find(".build-link")).not_to have_content(build3.id)
     end
 
     it "shows running builds" do
@@ -62,10 +62,10 @@ describe "Admin Builds" do
         click_on "Running"
       end
 
-      page.find(".build-link").should have_content(build1.id)
-      page.find(".build-link").should_not have_content(build.id)
-      page.find(".build-link").should_not have_content(build2.id)
-      page.find(".build-link").should_not have_content(build3.id)
+      expect(page.find(".build-link")).to have_content(build1.id)
+      expect(page.find(".build-link")).not_to have_content(build.id)
+      expect(page.find(".build-link")).not_to have_content(build2.id)
+      expect(page.find(".build-link")).not_to have_content(build3.id)
     end
   end
 end

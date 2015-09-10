@@ -12,7 +12,7 @@ describe "Runners" do
       stub_js_gitlab_calls
 
       # all projects should be authorized for user
-      Network.any_instance.stub(:projects).and_return([
+      allow_any_instance_of(Network).to receive(:projects).and_return([
         OpenStruct.new({id: @project.gitlab_id}),
         OpenStruct.new({id: @project2.gitlab_id})
       ])
@@ -26,9 +26,9 @@ describe "Runners" do
 
     it "places runners in right places" do
       visit project_runners_path(@project)
-      page.find(".available-specific-runners").should have_content(@specific_runner2.display_name)
-      page.find(".activated-specific-runners").should have_content(@specific_runner.display_name)
-      page.find(".available-shared-runners").should have_content(@shared_runner.display_name)
+      expect(page.find(".available-specific-runners")).to have_content(@specific_runner2.display_name)
+      expect(page.find(".activated-specific-runners")).to have_content(@specific_runner.display_name)
+      expect(page.find(".available-shared-runners")).to have_content(@shared_runner.display_name)
     end
 
     it "enables specific runner for project" do
@@ -38,7 +38,7 @@ describe "Runners" do
         click_on "Enable for this project"
       end
 
-      page.find(".activated-specific-runners").should have_content(@specific_runner2.display_name)
+      expect(page.find(".activated-specific-runners")).to have_content(@specific_runner2.display_name)
     end
 
     it "disables specific runner for project" do
@@ -50,7 +50,7 @@ describe "Runners" do
         click_on "Disable for this project"
       end
 
-      page.find(".available-specific-runners").should have_content(@specific_runner.display_name)
+      expect(page.find(".available-specific-runners")).to have_content(@specific_runner.display_name)
     end
 
     it "removes specific runner for project if this is last project for that runners" do
@@ -60,7 +60,7 @@ describe "Runners" do
         click_on "Remove runner"
       end
 
-      Runner.exists?(id: @specific_runner).should be_false
+      expect(Runner.exists?(id: @specific_runner)).to be_falsey
     end
   end
 
@@ -75,7 +75,7 @@ describe "Runners" do
 
       click_on "Enable shared runners"
 
-      @project.reload.shared_runners_enabled.should be_true
+      expect(@project.reload.shared_runners_enabled).to be_truthy
     end
   end
 
@@ -92,7 +92,7 @@ describe "Runners" do
 
       click_on @specific_runner.short_sha
 
-      page.should have_content(@specific_runner.platform)
+      expect(page).to have_content(@specific_runner.platform)
     end
   end
 end

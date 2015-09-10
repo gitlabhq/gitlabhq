@@ -14,7 +14,7 @@ describe "Admin Events" do
       visit admin_events_path
     end
 
-    it { page.should have_content "Events" }
-    it { page.should have_content event.description }
+    it { expect(page).to have_content "Events" }
+    it { expect(page).to have_content event.description }
   end
 end

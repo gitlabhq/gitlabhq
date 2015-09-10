@@ -11,10 +11,10 @@ describe "Lint" do
     fill_in "content", with: content
     click_on "Validate"
     within "table" do
-      page.should have_content("Job - rspec")
-      page.should have_content("Job - spinach")
-      page.should have_content("Deploy Job - staging")
-      page.should have_content("Deploy Job - production")
+      expect(page).to have_content("Job - rspec")
+      expect(page).to have_content("Job - spinach")
+      expect(page).to have_content("Deploy Job - staging")
+      expect(page).to have_content("Deploy Job - production")
     end
   end
 
@@ -22,7 +22,7 @@ describe "Lint" do
     visit lint_path
     fill_in "content", with: ""
     click_on "Validate"
-    page.should have_content("Status: syntax is incorrect")
-    page.should have_content("Error: Please provide content of .gitlab-ci.yml")
+    expect(page).to have_content("Status: syntax is incorrect")
+    expect(page).to have_content("Error: Please provide content of .gitlab-ci.yml")
   end
 end

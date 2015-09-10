@@ -11,16 +11,16 @@ describe 'Variables' do
   context 'create a trigger' do
     before do
       click_on 'Add Trigger'
-      @project.triggers.count.should == 1
+      expect(@project.triggers.count).to eq(1)
     end
 
     it 'contains trigger token' do
-      page.should have_content(@project.triggers.first.token)
+      expect(page).to have_content(@project.triggers.first.token)
     end
 
     it 'revokes the trigger' do
       click_on 'Revoke'
-      @project.triggers.count.should == 0
+      expect(@project.triggers.count).to eq(0)
     end
   end
 end

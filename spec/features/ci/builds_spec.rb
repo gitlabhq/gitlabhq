@@ -13,9 +13,9 @@ describe "Builds" do
       visit project_build_path(@project, @build)
     end
 
-    it { page.should have_content @commit.sha[0..7] }
-    it { page.should have_content @commit.git_commit_message }
-    it { page.should have_content @commit.git_author_name }
+    it { expect(page).to have_content @commit.sha[0..7] }
+    it { expect(page).to have_content @commit.git_commit_message }
+    it { expect(page).to have_content @commit.git_author_name }
   end
 
   describe "GET /:project/builds/:id/cancel" do
@@ -25,8 +25,8 @@ describe "Builds" do
       visit cancel_project_build_path(@project, @build)
     end
 
-    it { page.should have_content 'canceled' }
-    it { page.should have_content 'Retry' }
+    it { expect(page).to have_content 'canceled' }
+    it { expect(page).to have_content 'Retry' }
   end
 
   describe "POST /:project/builds/:id/retry" do
@@ -37,8 +37,8 @@ describe "Builds" do
       click_link 'Retry'
     end
 
-    it { page.should have_content 'pending' }
-    it { page.should have_content 'Cancel' }
+    it { expect(page).to have_content 'pending' }
+    it { expect(page).to have_content 'Cancel' }
   end
 
   describe "Show page public accessible" do
@@ -52,6 +52,6 @@ describe "Builds" do
       visit project_build_path(@project, @build)
     end
 
-    it { page.should have_content @commit.sha[0..7] }
+    it { expect(page).to have_content @commit.sha[0..7] }
   end
 end

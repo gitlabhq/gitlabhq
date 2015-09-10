@@ -10,7 +10,7 @@ module StubGitlabCalls
   end
 
   def stub_js_gitlab_calls
-    Network.any_instance.stub(:projects) { project_hash_array }
+    allow_any_instance_of(Network).to receive(:projects) { project_hash_array }
   end
 
   private
@@ -42,12 +42,12 @@ module StubGitlabCalls
 
   def stub_project_8
     data = File.read(Rails.root.join('spec/support/gitlab_stubs/project_8.json'))
-    Network.any_instance.stub(:project).and_return(JSON.parse(data))
+    allow_any_instance_of(Network).to receive(:project).and_return(JSON.parse(data))
   end
 
   def stub_project_8_hooks
     data = File.read(Rails.root.join('spec/support/gitlab_stubs/project_8_hooks.json'))
-    Network.any_instance.stub(:project_hooks).and_return(JSON.parse(data))
+    allow_any_instance_of(Network).to receive(:project_hooks).and_return(JSON.parse(data))
   end
 
   def stub_projects

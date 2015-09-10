@@ -12,8 +12,8 @@ describe "Projects" do
       visit projects_path
     end
 
-    it { page.should have_content "GitLab / gitlab-shell" }
-    it { page.should have_selector ".search input#search" }
+    it { expect(page).to have_content "GitLab / gitlab-shell" }
+    it { expect(page).to have_selector ".search input#search" }
   end
 
   describe "GET /projects/:id" do
@@ -21,8 +21,8 @@ describe "Projects" do
       visit project_path(@project)
     end
 
-    it { page.should have_content @project.name }
-    it { page.should have_content 'All commits' }
+    it { expect(page).to have_content @project.name }
+    it { expect(page).to have_content 'All commits' }
   end
 
   describe "GET /projects/:id/edit" do
@@ -30,16 +30,16 @@ describe "Projects" do
       visit edit_project_path(@project)
     end
 
-    it { page.should have_content @project.name }
-    it { page.should have_content 'Build Schedule' }
+    it { expect(page).to have_content @project.name }
+    it { expect(page).to have_content 'Build Schedule' }
 
     it "updates configuration" do
       fill_in 'Timeout', with: '70'
       click_button 'Save changes'
 
-      page.should have_content 'was successfully updated'
+      expect(page).to have_content 'was successfully updated'
 
-      find_field('Timeout').value.should eq '70'
+      expect(find_field('Timeout').value).to eq '70'
     end
   end
 
@@ -48,10 +48,10 @@ describe "Projects" do
       visit project_charts_path(@project)
     end
 
-    it { page.should have_content 'Overall' }
-    it { page.should have_content 'Builds chart for last week' }
-    it { page.should have_content 'Builds chart for last month' }
-    it { page.should have_content 'Builds chart for last year' }
-    it { page.should have_content 'Commit duration in minutes for last 30 commits' }
+    it { expect(page).to have_content 'Overall' }
+    it { expect(page).to have_content 'Builds chart for last week' }
+    it { expect(page).to have_content 'Builds chart for last month' }
+    it { expect(page).to have_content 'Builds chart for last year' }
+    it { expect(page).to have_content 'Commit duration in minutes for last 30 commits' }
   end
 end

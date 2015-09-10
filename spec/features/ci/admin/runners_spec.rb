@@ -27,8 +27,8 @@ describe "Admin Runners" do
         click_button 'Search'
       end
 
-      it { page.should have_content("foo") }
-      it { page.should_not have_content("bar") }
+      it { expect(page).to have_content("foo") }
+      it { expect(page).not_to have_content("bar") }
     end
   end
 
@@ -42,12 +42,12 @@ describe "Admin Runners" do
     end
 
     describe 'runner info' do
-      it { find_field('runner_token').value.should eq runner.token }
+      it { expect(find_field('runner_token').value).to eq runner.token }
     end
 
     describe 'projects' do
-      it { page.should have_content("foo") }
-      it { page.should have_content("bar") }
+      it { expect(page).to have_content("foo") }
+      it { expect(page).to have_content("bar") }
     end
 
     describe 'search' do
@@ -56,8 +56,8 @@ describe "Admin Runners" do
         click_button 'Search'
       end
 
-      it { page.should have_content("foo") }
-      it { page.should_not have_content("bar") }
+      it { expect(page).to have_content("foo") }
+      it { expect(page).not_to have_content("bar") }
     end
   end
 end

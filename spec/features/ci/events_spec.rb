@@ -14,7 +14,7 @@ describe "Events" do
       visit project_events_path(project)
     end
 
-    it { page.should have_content "Events" }
-    it { page.should have_content event.description }
+    it { expect(page).to have_content "Events" }
+    it { expect(page).to have_content event.description }
   end
 end
