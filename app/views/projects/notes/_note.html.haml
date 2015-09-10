@@ -1,11 +1,8 @@
 %li.timeline-entry{ id: dom_id(note), class: [dom_class(note), "note-row-#{note.id}", ('system-note' if note.system)], data: { discussion: note.discussion_id } }
   .timeline-entry-inner
     .timeline-icon
-      - if note.system
-        %span= icon('circle')
-      - else
-        = link_to user_path(note.author) do
-          = image_tag avatar_icon(note.author_email), class: 'avatar s40', alt: ''
+      = link_to user_path(note.author) do
+        = image_tag avatar_icon(note.author_email), class: 'avatar s40', alt: ''
     .timeline-content
       .note-header
         - if note_editable?(note)
@@ -21,10 +18,6 @@
           - if member
             %span.note-role.label
               = member.human_access
-
-        - if note.system
-          = link_to user_path(note.author) do
-            = image_tag avatar_icon(note.author_email), class: 'avatar s16', alt: ''
 
         = link_to_member(note.project, note.author, avatar: false)
 

@@ -28,6 +28,7 @@ RSpec.configure do |config|
   config.include LoginHelpers,        type: :feature
   config.include LoginHelpers,        type: :request
   config.include StubConfiguration
+  config.include RelativeUrl,         type: feature
   config.include TestEnv
 
   config.infer_spec_type_from_file_location!

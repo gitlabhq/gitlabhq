@@ -43,6 +43,8 @@ class Project < ActiveRecord::Base
   extend Gitlab::ConfigHelper
   extend Enumerize
 
+  UNKNOWN_IMPORT_URL = 'http://unknown.git'
+
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
   default_value_for :issues_enabled, gitlab_config_features.issues
@@ -398,6 +400,15 @@ class Project < ActiveRecord::Base
           Service.create_from_template(self.id, template)
         end
       end
+    end
+  end
+
+  def create_labels
+    Label.templates.each do |label|
+      label = label.dup
+      label.template = nil
+      label.project_id = self.id
+      label.save
     end
   end
 

@@ -28,12 +28,18 @@
     padding: $gl-padding;
     border: 1px solid #e7e9ed;
     min-height: 90vh;
+
+    &.container-blank {
+      background: none;
+      padding: 0;
+      border: none;
+    }
   }
 }
 
 .nav-sidebar {
   margin-top: 14 + $header-height;
-  margin-bottom: 50px;
+  margin-bottom: 100px;
   transition-duration: .3s;
   list-style: none;
   overflow: hidden;

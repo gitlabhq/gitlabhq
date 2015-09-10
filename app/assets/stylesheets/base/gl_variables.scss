@@ -22,6 +22,10 @@ $brand-info:     $gl-info;
 $brand-warning:  $gl-warning;
 $brand-danger:   $gl-danger;
 
+$border-radius-base:        3px !default;
+$border-radius-large:       5px !default;
+$border-radius-small:       2px !default;
+
 
 //== Scaffolding
 //
@@ -110,11 +114,12 @@ $alert-border-radius:            0;
 //
 //##
 
-$panel-border-radius:            0;
-$panel-default-text:          $text-color;
-$panel-default-border:        #E7E9ED;
-$panel-default-heading-bg:    #F8FAFC;
-
+$panel-border-radius:         2px;
+$panel-default-text:       $text-color;
+$panel-default-border:     $border-color;
+$panel-default-heading-bg: $background-color;
+$panel-footer-bg:          $background-color;
+$panel-inner-border:       $border-color;
 
 //== Wells
 //
@@ -144,3 +149,10 @@ $btn-default-border:             #e7e9ed;
 //
 //##
 $nav-link-padding: 13px $gl-padding;
+
+//== Code
+//
+//##
+$pre-bg:           #f8fafc !default;
+$pre-color:        $gl-gray !default;
+$pre-border-color: #e7e9ed;

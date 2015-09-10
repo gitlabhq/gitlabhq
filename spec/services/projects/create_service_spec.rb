@@ -17,6 +17,14 @@ describe Projects::CreateService do
       expect(project.services).not_to be_empty
     end
 
+    it 'creates labels on Project creation if there are templates' do
+      Label.create(title: "bug", template: true)
+      project = create_project(@user, @opts)
+      project.reload
+
+      expect(project.labels).not_to be_empty
+    end
+
     context 'user namespace' do
       before do
         @project = create_project(@user, @opts)

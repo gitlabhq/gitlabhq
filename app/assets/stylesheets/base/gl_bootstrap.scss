@@ -85,14 +85,14 @@
 // Labels
 .label {
   padding: 2px 4px;
-  font-size: 12px;
+  font-size: 13px;
   font-style: normal;
   font-weight: normal;
   display: inline-block;
 
   &.label-gray {
-    background-color: #eee;
-    color: #999;
+    background-color: #f8fafc;
+    color: $gl-gray;
     text-shadow: none;
   }
 
@@ -156,10 +156,16 @@
  * Add some extra stuff to panels
  *
  */
-.panel {
-  .panel-heading {
-    font-weight: bold;
 
+.container-blank .panel .panel-heading {
+  font-size: 17px;
+  line-height: 38px;
+}
+
+.panel {
+  box-shadow: none;
+
+  .panel-heading {
     .panel-head-actions {
       position: relative;
       top: -5px;
@@ -181,6 +187,10 @@
   .panel-footer {
     .pagination {
       margin: 0;
+    }
+
+    .btn {
+      min-width: 124px;
     }
   }
 
@@ -207,6 +217,12 @@
     color: #fff;
     text-decoration: underline;
   }
+}
+
+.alert-help {
+  background-color: $background-color;
+  border: 1px solid $border-color;
+  color: $gl-gray;
 }
 
 // Typography =================================================================

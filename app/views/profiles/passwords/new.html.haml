@@ -12,7 +12,7 @@
       %ul
         - @user.errors.full_messages.each do |msg|
           %li= msg
-  
+
   - unless @user.password_automatically_set?
     .form-group
       = f.label :current_password, class: 'control-label'

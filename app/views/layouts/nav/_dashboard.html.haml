@@ -36,13 +36,13 @@
       = icon('clipboard fw')
       %span
         Snippets
-  = nav_link(controller: :profile) do
-    = link_to profile_path, title: 'Profile settings', data: {placement: 'bottom'} do
-      = icon('user fw')
-      %span
-        Profile Settings
   = nav_link(controller: :help) do
     = link_to help_path, title: 'Help', data: {placement: 'right'} do
       = icon('question-circle fw')
       %span
         Help
+  = nav_link(controller: :profile) do
+    = link_to profile_path, title: 'Profile settings', data: {placement: 'bottom'} do
+      = icon('user fw')
+      %span
+        Profile Settings

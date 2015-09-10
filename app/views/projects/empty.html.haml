@@ -22,15 +22,15 @@
     %h5 Git global setup
     %pre.light-well
       :preserve
-        git config --global user.name "#{git_user_name}"
-        git config --global user.email "#{git_user_email}"
+        git config --global user.name "#{h git_user_name}"
+        git config --global user.email "#{h git_user_email}"
 
   %fieldset
     %h5 Create a new repository
     %pre.light-well
       :preserve
         git clone #{ content_tag(:span, default_url_to_repo, class: 'clone')}
-        cd #{@project.path}
+        cd #{h @project.path}
         touch README.md
         git add README.md
         git commit -m "add README"
