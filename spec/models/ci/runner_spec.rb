@@ -27,7 +27,7 @@ describe Ci::Runner do
     end
 
     it 'should return the token if it does not have a description' do
-      runner = FactoryGirl.create(:runner)
+      runner = FactoryGirl.create(:ci_runner)
       expect(runner.display_name).to eq runner.description
     end
 
@@ -38,8 +38,8 @@ describe Ci::Runner do
   end
 
   describe :assign_to do
-    let!(:project) { FactoryGirl.create :project }
-    let!(:shared_runner) { FactoryGirl.create(:shared_runner) }
+    let!(:project) { FactoryGirl.create :ci_project }
+    let!(:shared_runner) { FactoryGirl.create(:ci_shared_runner) }
 
     before { shared_runner.assign_to(project) }
 
@@ -50,9 +50,9 @@ describe Ci::Runner do
 
   describe "belongs_to_one_project?" do
     it "returns false if there are two projects runner assigned to" do
-      runner = FactoryGirl.create(:specific_runner)
-      project = FactoryGirl.create(:project)
-      project1 = FactoryGirl.create(:project)
+      runner = FactoryGirl.create(:ci_specific_runner)
+      project = FactoryGirl.create(:ci_project)
+      project1 = FactoryGirl.create(:ci_project)
       project.runners << runner
       project1.runners << runner
 
@@ -60,8 +60,8 @@ describe Ci::Runner do
     end
 
     it "returns true" do
-      runner = FactoryGirl.create(:specific_runner)
-      project = FactoryGirl.create(:project)
+      runner = FactoryGirl.create(:ci_specific_runner)
+      project = FactoryGirl.create(:ci_project)
       project.runners << runner
 
       runner.belongs_to_one_project?.should be_true

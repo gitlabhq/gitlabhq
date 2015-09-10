@@ -12,10 +12,10 @@
 module Ci
   class WebHook < ActiveRecord::Base
     extend Ci::Model
-    
+
     include HTTParty
 
-    belongs_to :project, class_name: 'Ci::WebHook'
+    belongs_to :project, class_name: 'Ci::Project'
 
     # HTTParty timeout
     default_timeout 10

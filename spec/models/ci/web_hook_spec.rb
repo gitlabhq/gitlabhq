@@ -34,7 +34,7 @@ describe Ci::WebHook do
 
   describe "execute" do
     before(:each) do
-      @web_hook = FactoryGirl.create(:web_hook)
+      @web_hook = FactoryGirl.create(:ci_web_hook)
       @project = @web_hook.project
       @data = { before: 'oldrev', after: 'newrev', ref: 'ref'}
 

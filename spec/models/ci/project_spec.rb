@@ -28,7 +28,7 @@
 require 'spec_helper'
 
 describe Project do
-  subject { FactoryGirl.build :project }
+  subject { FactoryGirl.build :ci_project }
 
   it { should have_many(:commits) }
 
@@ -38,36 +38,36 @@ describe Project do
 
   describe 'before_validation' do
     it 'should set an random token if none provided' do
-      project = FactoryGirl.create :project_without_token
+      project = FactoryGirl.create :ci_project_without_token
       project.token.should_not == ""
     end
 
     it 'should not set an random toke if one provided' do
-      project = FactoryGirl.create :project
+      project = FactoryGirl.create :ci_project
       project.token.should == "iPWx6WM4lhHNedGfBpPJNP"
     end
   end
 
   describe "ordered_by_last_commit_date" do
     it "returns ordered projects" do
-      newest_project = FactoryGirl.create :project
-      oldest_project = FactoryGirl.create :project
-      project_without_commits = FactoryGirl.create :project
+      newest_project = FactoryGirl.create :ci_project
+      oldest_project = FactoryGirl.create :ci_project
+      project_without_commits = FactoryGirl.create :ci_project
 
-      FactoryGirl.create :commit, committed_at: 1.hour.ago, project: newest_project
-      FactoryGirl.create :commit, committed_at: 2.hour.ago, project: oldest_project
+      FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, project: newest_project
+      FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, project: oldest_project
 
       Project.ordered_by_last_commit_date.should == [newest_project, oldest_project, project_without_commits]
     end
   end
 
   context :valid_project do
-    let(:project) { FactoryGirl.create :project }
+    let(:project) { FactoryGirl.create :ci_project }
 
     context :project_with_commit_and_builds do
       before do
-        commit = FactoryGirl.create(:commit, project: project)
-        FactoryGirl.create(:build, commit: commit)
+        commit = FactoryGirl.create(:ci_commit, project: project)
+        FactoryGirl.create(:ci_build, commit: commit)
       end
 
       it { project.status.should == 'pending' }
@@ -78,45 +78,45 @@ describe Project do
 
   describe '#email_notification?' do
     it do
-      project = FactoryGirl.create :project, email_add_pusher: true
+      project = FactoryGirl.create :ci_project, email_add_pusher: true
       project.email_notification?.should == true
     end
 
     it do
-      project = FactoryGirl.create :project, email_add_pusher: false, email_recipients: 'test tesft'
+      project = FactoryGirl.create :ci_project, email_add_pusher: false, email_recipients: 'test tesft'
       project.email_notification?.should == true
     end
 
     it do
-      project = FactoryGirl.create :project, email_add_pusher: false, email_recipients: ''
+      project = FactoryGirl.create :ci_project, email_add_pusher: false, email_recipients: ''
       project.email_notification?.should == false
     end
   end
 
   describe '#broken_or_success?' do
     it {
-      project = FactoryGirl.create :project, email_add_pusher: true
+      project = FactoryGirl.create :ci_project, email_add_pusher: true
       project.stub(:broken?).and_return(true)
       project.stub(:success?).and_return(true)
       project.broken_or_success?.should == true
     }
 
     it {
-      project = FactoryGirl.create :project, email_add_pusher: true
+      project = FactoryGirl.create :ci_project, email_add_pusher: true
       project.stub(:broken?).and_return(true)
       project.stub(:success?).and_return(false)
       project.broken_or_success?.should == true
     }
 
     it {
-      project = FactoryGirl.create :project, email_add_pusher: true
+      project = FactoryGirl.create :ci_project, email_add_pusher: true
       project.stub(:broken?).and_return(false)
       project.stub(:success?).and_return(true)
       project.broken_or_success?.should == true
     }
 
     it {
-      project = FactoryGirl.create :project, email_add_pusher: true
+      project = FactoryGirl.create :ci_project, email_add_pusher: true
       project.stub(:broken?).and_return(false)
       project.stub(:success?).and_return(false)
       project.broken_or_success?.should == false
@@ -127,7 +127,7 @@ describe Project do
     let(:project_dump) { YAML.load File.read(Rails.root.join('spec/support/gitlab_stubs/raw_project.yml')) }
     let(:parsed_project) { Project.parse(project_dump) }
 
-    
+
     it { parsed_project.should be_valid }
     it { parsed_project.should be_kind_of(Project) }
     it { parsed_project.name.should eq("GitLab / api.gitlab.org") }
@@ -140,7 +140,7 @@ describe Project do
   end
 
   describe :repo_url_with_auth do
-    let(:project) { FactoryGirl.create :project }
+    let(:project) { FactoryGirl.create :ci_project }
     subject { project.repo_url_with_auth }
 
     it { should be_a(String) }
@@ -152,7 +152,7 @@ describe Project do
   end
 
   describe :search do
-    let!(:project) { FactoryGirl.create(:project, name: "foo") }
+    let!(:project) { FactoryGirl.create(:ci_project, name: "foo") }
 
     it { Project.search('fo').should include(project) }
     it { Project.search('bar').should be_empty }
@@ -160,25 +160,25 @@ describe Project do
 
   describe :any_runners do
     it "there are no runners available" do
-      project = FactoryGirl.create(:project)
+      project = FactoryGirl.create(:ci_project)
       project.any_runners?.should be_false
     end
 
     it "there is a specific runner" do
-      project = FactoryGirl.create(:project)
-      project.runners << FactoryGirl.create(:specific_runner)
+      project = FactoryGirl.create(:ci_project)
+      project.runners << FactoryGirl.create(:ci_specific_runner)
       project.any_runners?.should be_true
     end
 
     it "there is a shared runner" do
-      project = FactoryGirl.create(:project, shared_runners_enabled: true)
-      FactoryGirl.create(:shared_runner)
+      project = FactoryGirl.create(:ci_project, shared_runners_enabled: true)
+      FactoryGirl.create(:ci_shared_runner)
       project.any_runners?.should be_true
     end
 
     it "there is a shared runner, but they are prohibited to use" do
-      project = FactoryGirl.create(:project)
-      FactoryGirl.create(:shared_runner)
+      project = FactoryGirl.create(:ci_project)
+      FactoryGirl.create(:ci_shared_runner)
       project.any_runners?.should be_false
     end
   end

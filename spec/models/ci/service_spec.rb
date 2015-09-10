@@ -29,9 +29,9 @@ describe Ci::Service do
     end
 
     describe "Testable" do
-      let (:project) { FactoryGirl.create :project }
-      let (:commit) { FactoryGirl.create :commit, project: project }
-      let (:build) { FactoryGirl.create :build, commit: commit }
+      let (:project) { FactoryGirl.create :ci_project }
+      let (:commit) { FactoryGirl.create :ci_commit, project: project }
+      let (:build) { FactoryGirl.create :ci_build, commit: commit }
 
       before do
         @service.stub(
