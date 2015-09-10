@@ -19,8 +19,8 @@ module Ci
 
     def self.create_from_defaults
       create(
-        all_broken_builds: Ci::Settings.gitlab_ci['all_broken_builds'],
-        add_pusher: Ci::Settings.gitlab_ci['add_pusher'],
+        all_broken_builds: Settings.gitlab_ci['all_broken_builds'],
+        add_pusher: Settings.gitlab_ci['add_pusher'],
       )
     end
   end

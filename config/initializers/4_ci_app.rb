@@ -5,6 +5,6 @@ module GitlabCi
   REGISTRATION_TOKEN = SecureRandom.hex(10)
 
   def self.config
-    Ci::Settings
+    Settings
   end
 end

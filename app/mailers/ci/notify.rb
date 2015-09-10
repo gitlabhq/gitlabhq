@@ -5,10 +5,10 @@ module Ci
     add_template_helper Ci::ApplicationHelper
     add_template_helper Ci::GitlabHelper
 
-    default_url_options[:host]     = GitlabCi.config.gitlab_ci.host
-    default_url_options[:protocol] = GitlabCi.config.gitlab_ci.protocol
-    default_url_options[:port]     = GitlabCi.config.gitlab_ci.port if GitlabCi.config.gitlab_ci_on_non_standard_port?
-    default_url_options[:script_name] = GitlabCi.config.gitlab_ci.relative_url_root
+    default_url_options[:host]     = Gitlab.config.gitlab.host
+    default_url_options[:protocol] = Gitlab.config.gitlab.protocol
+    default_url_options[:port]     = Gitlab.config.gitlab.port unless Gitlab.config.gitlab_on_standard_port?
+    default_url_options[:script_name] = Gitlab.config.gitlab.relative_url_root
 
     default from: GitlabCi.config.gitlab_ci.email_from
 

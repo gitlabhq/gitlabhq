@@ -8,14 +8,9 @@
   .projects
     %p.fetch-status.light
       %i.fa.fa-refresh.fa-spin
-      Please wait while we fetch from GitLab (#{GitlabCi.config.gitlab_server.url})
   :coffeescript
     $.get '#{gitlab_ci_projects_path}', (data) ->
       $(".projects").html data.html
-    $('.projects').on 'click', '.reset-cache', ->
-      $.get '#{gitlab_ci_projects_path}', { reset_cache: true }, (data) ->
-        $(".projects").html data.html
-      false
     CiPager.init "#{gitlab_ci_projects_path}", #{Ci::ProjectsController::PROJECTS_BATCH}, false
     
 - else

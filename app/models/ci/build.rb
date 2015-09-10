@@ -244,7 +244,7 @@ module Ci
 
     def dir_to_trace
       File.join(
-        Ci::Settings.gitlab_ci.builds_path,
+        Settings.gitlab_ci.builds_path,
         created_at.utc.strftime("%Y_%m"),
         project.id.to_s
       )

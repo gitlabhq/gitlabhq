@@ -211,7 +211,7 @@ module Ci
     end
 
     def gitlab_url
-      File.join(GitlabCi.config.gitlab_server.url, path)
+      File.join(Gitlab.config.gitlab.url, path)
     end
 
     def setup_finished?

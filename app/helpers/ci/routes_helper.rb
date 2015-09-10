@@ -5,9 +5,9 @@ module Ci
 
       def default_url_options
         {
-          host: Ci::Settings.gitlab_ci['host'],
-          protocol: Ci::Settings.gitlab_ci['https'] ? "https" : "http",
-          port: Ci::Settings.gitlab_ci['port']
+          host: Settings.gitlab['host'],
+          protocol: Settings.gitlab['https'] ? "https" : "http",
+          port: Settings.gitlab['port']
         }
       end
     end
