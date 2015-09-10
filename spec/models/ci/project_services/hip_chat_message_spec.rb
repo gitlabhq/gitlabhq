@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 describe Ci::HipChatMessage do
-  subject { HipChatMessage.new(build) }
+  subject { Ci::HipChatMessage.new(build) }
 
-  let(:project) { FactoryGirl.create(:project) }
+  let(:project) { FactoryGirl.create(:ci_project) }
 
   context "One build" do
-    let(:commit) { FactoryGirl.create(:commit_with_one_job, project: project) }
+    let(:commit) { FactoryGirl.create(:ci_commit_with_one_job, project: project) }
 
     let(:build) do
       commit.create_builds
@@ -37,7 +37,7 @@ describe Ci::HipChatMessage do
   end
 
   context "Several builds" do
-    let(:commit) { FactoryGirl.create(:commit_with_two_jobs, project: project) }
+    let(:commit) { FactoryGirl.create(:ci_commit_with_two_jobs, project: project) }
 
     let(:build) do
       commit.builds.first

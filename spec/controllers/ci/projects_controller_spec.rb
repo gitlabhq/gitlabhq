@@ -55,7 +55,7 @@ describe Ci::ProjectsController do
     end
 
     let(:user) do
-      Ci::User.new(user_data)
+      create(:user)
     end
 
     it "creates project" do
@@ -73,7 +73,7 @@ describe Ci::ProjectsController do
     it "shows error" do
       allow(controller).to receive(:reset_cache) { true }
       allow(controller).to receive(:current_user) { user }
-      allow_any_instance_of(Ci::User).to receive(:can_manage_project?).and_return(false)
+      allow_any_instance_of(User).to receive(:can_manage_project?).and_return(false)
 
       post :create, { project: JSON.dump(project_dump.to_h) }.with_indifferent_access
 
@@ -91,7 +91,7 @@ describe Ci::ProjectsController do
     end
 
     let(:user) do
-      Ci::User.new(user_data)
+      create(:user)
     end
 
     it "searches projects" do
