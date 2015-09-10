@@ -9,9 +9,10 @@
         = yield(:title)
       %hr
 
-    .container
-      .row
-        .col-md-2.append-bottom-20
-          = render 'layouts/ci/nav_admin'
-        .col-md-10
-          = yield
+    .container.container-body
+      .content
+        .row
+          .col-md-2.append-bottom-20
+            = render 'layouts/ci/nav_admin'
+          .col-md-10
+            = yield
