@@ -4,9 +4,6 @@ module Gitlab::Markdown
   describe SyntaxHighlightFilter do
     include FilterSpecHelper
 
-    let(:project)   { create(:empty_project) }
-    let(:reference) { snippet.to_reference }
-
     it 'highlights valid code blocks' do
       result = filter('<pre><code>def fun end</code>')
       expect(result.to_html).to eq("<pre class=\"code highlight js-syntax-highlight plaintext\"><code>def fun end</code></pre>\n")
