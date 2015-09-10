@@ -4,11 +4,13 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   include SharedAdmin
 
   before do
-    allow(Devise).to receive(:omniauth_providers).and_return([:twitter, :twitter_updated])
+    allow(Gitlab::OAuth::Provider).to receive(:providers).and_return([:twitter, :twitter_updated])
+    allow_any_instance_of(ApplicationHelper).to receive(:user_omniauth_authorize_path).and_return(root_path)
   end
 
   after do
-    allow(Devise).to receive(:omniauth_providers).and_call_original
+    allow(Gitlab::OAuth::Provider).to receive(:providers).and_call_original
+    allow_any_instance_of(ApplicationHelper).to receive(:user_omniauth_authorize_path).and_call_original
   end
 
   step 'I should see all users' do
