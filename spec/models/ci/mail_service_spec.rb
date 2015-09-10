@@ -16,7 +16,7 @@ require 'spec_helper'
 
 describe Ci::MailService do
   describe "Associations" do
-    it { should belong_to :project }
+    it { is_expected.to belong_to :project }
   end
 
   describe "Validations" do
@@ -36,7 +36,7 @@ describe Ci::MailService do
       let(:build) { FactoryGirl.create(:ci_build, status: :failed, commit: commit) }
 
       before do
-        mail.stub(
+        allow(mail).to receive_messages(
           project: project
         )
       end
@@ -47,8 +47,8 @@ describe Ci::MailService do
       end
 
       def should_email(email)
-        Notify.should_receive(:build_fail_email).with(build.id, email)
-        Notify.should_not_receive(:build_success_email).with(build.id, email)
+        expect(Notify).to receive(:build_fail_email).with(build.id, email)
+        expect(Notify).not_to receive(:build_success_email).with(build.id, email)
       end
     end
 
@@ -58,7 +58,7 @@ describe Ci::MailService do
       let(:build) { FactoryGirl.create(:ci_build, status: :success, commit: commit) }
 
       before do
-        mail.stub(
+        allow(mail).to receive_messages(
           project: project
         )
       end
@@ -69,8 +69,8 @@ describe Ci::MailService do
       end
 
       def should_email(email)
-        Notify.should_receive(:build_success_email).with(build.id, email)
-        Notify.should_not_receive(:build_fail_email).with(build.id, email)
+        expect(Notify).to receive(:build_success_email).with(build.id, email)
+        expect(Notify).not_to receive(:build_fail_email).with(build.id, email)
       end
     end
 
@@ -85,7 +85,7 @@ describe Ci::MailService do
       let(:build) { FactoryGirl.create(:ci_build, status: :success, commit: commit) }
 
       before do
-        mail.stub(
+        allow(mail).to receive_messages(
           project: project
         )
       end
@@ -97,8 +97,8 @@ describe Ci::MailService do
       end
 
       def should_email(email)
-        Notify.should_receive(:build_success_email).with(build.id, email)
-        Notify.should_not_receive(:build_fail_email).with(build.id, email)
+        expect(Notify).to receive(:build_success_email).with(build.id, email)
+        expect(Notify).not_to receive(:build_fail_email).with(build.id, email)
       end
     end
 
@@ -113,7 +113,7 @@ describe Ci::MailService do
       let(:build) { FactoryGirl.create(:ci_build, status: :success, commit: commit) }
 
       before do
-        mail.stub(
+        allow(mail).to receive_messages(
           project: project
         )
       end
@@ -125,8 +125,8 @@ describe Ci::MailService do
       end
 
       def should_email(email)
-        Notify.should_not_receive(:build_success_email).with(build.id, email)
-        Notify.should_not_receive(:build_fail_email).with(build.id, email)
+        expect(Notify).not_to receive(:build_success_email).with(build.id, email)
+        expect(Notify).not_to receive(:build_fail_email).with(build.id, email)
       end
     end
 
@@ -141,14 +141,14 @@ describe Ci::MailService do
       let(:build) { FactoryGirl.create(:ci_build, status: :success, commit: commit) }
 
       before do
-        mail.stub(
+        allow(mail).to receive_messages(
           project: project
         )
         build
       end
 
       it do
-        mail.can_test?.should == true
+        expect(mail.can_test?).to eq(true)
       end
     end
 
@@ -163,7 +163,7 @@ describe Ci::MailService do
       let(:build) { FactoryGirl.create(:ci_build, status: :failed, commit: commit) }
 
       before do
-        mail.stub(
+        allow(mail).to receive_messages(
           project: project
         )
       end
@@ -176,8 +176,8 @@ describe Ci::MailService do
       end
 
       def should_email(email)
-        Notify.should_not_receive(:build_success_email).with(build.id, email)
-        Notify.should_not_receive(:build_fail_email).with(build.id, email)
+        expect(Notify).not_to receive(:build_success_email).with(build.id, email)
+        expect(Notify).not_to receive(:build_fail_email).with(build.id, email)
       end
     end
   end

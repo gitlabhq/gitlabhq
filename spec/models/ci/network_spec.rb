@@ -9,21 +9,21 @@ describe Network do
     context 'on success' do
       before do
         response = double
-        response.stub(:code) { 200 }
-        network.class.stub(:put) { response }
+        allow(response).to receive(:code) { 200 }
+        allow(network.class).to receive(:put) { response }
       end
 
-      it { should be_true }
+      it { is_expected.to be_truthy }
     end
 
     context 'on failure' do
       before do
         response = double
-        response.stub(:code) { 404 }
-        network.class.stub(:put) { response }
+        allow(response).to receive(:code) { 404 }
+        allow(network.class).to receive(:put) { response }
       end
 
-      it { should be_nil }
+      it { is_expected.to be_nil }
     end
   end
 
@@ -34,21 +34,21 @@ describe Network do
     context 'on success' do
       let(:parsed_response) { 'parsed' }
       before do
-        response.stub(:code) { 200 }
-        response.stub(:parsed_response) { parsed_response }
-        network.class.stub(:delete) { response }
+        allow(response).to receive(:code) { 200 }
+        allow(response).to receive(:parsed_response) { parsed_response }
+        allow(network.class).to receive(:delete) { response }
       end
 
-      it { should equal(parsed_response) }
+      it { is_expected.to equal(parsed_response) }
     end
 
     context 'on failure' do
       before do
-        response.stub(:code) { 404 }
-        network.class.stub(:delete) { response }
+        allow(response).to receive(:code) { 404 }
+        allow(network.class).to receive(:delete) { response }
       end
 
-      it { should be_nil }
+      it { is_expected.to be_nil }
     end
   end
 end

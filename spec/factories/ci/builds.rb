@@ -37,7 +37,7 @@ FactoryGirl.define do
       }
     end
 
-    factory :not_started_build do
+    factory :ci_not_started_build do
       started_at nil
       finished_at nil
     end

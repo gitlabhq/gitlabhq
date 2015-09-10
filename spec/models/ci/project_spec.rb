@@ -30,21 +30,21 @@ require 'spec_helper'
 describe Project do
   subject { FactoryGirl.build :ci_project }
 
-  it { should have_many(:commits) }
+  it { is_expected.to have_many(:commits) }
 
-  it { should validate_presence_of :name }
-  it { should validate_presence_of :timeout }
-  it { should validate_presence_of :default_ref }
+  it { is_expected.to validate_presence_of :name }
+  it { is_expected.to validate_presence_of :timeout }
+  it { is_expected.to validate_presence_of :default_ref }
 
   describe 'before_validation' do
     it 'should set an random token if none provided' do
       project = FactoryGirl.create :ci_project_without_token
-      project.token.should_not == ""
+      expect(project.token).not_to eq("")
     end
 
     it 'should not set an random toke if one provided' do
       project = FactoryGirl.create :ci_project
-      project.token.should == "iPWx6WM4lhHNedGfBpPJNP"
+      expect(project.token).to eq("iPWx6WM4lhHNedGfBpPJNP")
     end
   end
 
@@ -57,7 +57,7 @@ describe Project do
       FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, project: newest_project
       FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, project: oldest_project
 
-      Project.ordered_by_last_commit_date.should == [newest_project, oldest_project, project_without_commits]
+      expect(Project.ordered_by_last_commit_date).to eq([newest_project, oldest_project, project_without_commits])
     end
   end
 
@@ -70,56 +70,56 @@ describe Project do
         FactoryGirl.create(:ci_build, commit: commit)
       end
 
-      it { project.status.should == 'pending' }
-      it { project.last_commit.should be_kind_of(Commit)  }
-      it { project.human_status.should == 'pending' }
+      it { expect(project.status).to eq('pending') }
+      it { expect(project.last_commit).to be_kind_of(Commit)  }
+      it { expect(project.human_status).to eq('pending') }
     end
   end
 
   describe '#email_notification?' do
     it do
       project = FactoryGirl.create :ci_project, email_add_pusher: true
-      project.email_notification?.should == true
+      expect(project.email_notification?).to eq(true)
     end
 
     it do
       project = FactoryGirl.create :ci_project, email_add_pusher: false, email_recipients: 'test tesft'
-      project.email_notification?.should == true
+      expect(project.email_notification?).to eq(true)
     end
 
     it do
       project = FactoryGirl.create :ci_project, email_add_pusher: false, email_recipients: ''
-      project.email_notification?.should == false
+      expect(project.email_notification?).to eq(false)
     end
   end
 
   describe '#broken_or_success?' do
     it {
       project = FactoryGirl.create :ci_project, email_add_pusher: true
-      project.stub(:broken?).and_return(true)
-      project.stub(:success?).and_return(true)
-      project.broken_or_success?.should == true
+      allow(project).to receive(:broken?).and_return(true)
+      allow(project).to receive(:success?).and_return(true)
+      expect(project.broken_or_success?).to eq(true)
     }
 
     it {
       project = FactoryGirl.create :ci_project, email_add_pusher: true
-      project.stub(:broken?).and_return(true)
-      project.stub(:success?).and_return(false)
-      project.broken_or_success?.should == true
+      allow(project).to receive(:broken?).and_return(true)
+      allow(project).to receive(:success?).and_return(false)
+      expect(project.broken_or_success?).to eq(true)
     }
 
     it {
       project = FactoryGirl.create :ci_project, email_add_pusher: true
-      project.stub(:broken?).and_return(false)
-      project.stub(:success?).and_return(true)
-      project.broken_or_success?.should == true
+      allow(project).to receive(:broken?).and_return(false)
+      allow(project).to receive(:success?).and_return(true)
+      expect(project.broken_or_success?).to eq(true)
     }
 
     it {
       project = FactoryGirl.create :ci_project, email_add_pusher: true
-      project.stub(:broken?).and_return(false)
-      project.stub(:success?).and_return(false)
-      project.broken_or_success?.should == false
+      allow(project).to receive(:broken?).and_return(false)
+      allow(project).to receive(:success?).and_return(false)
+      expect(project.broken_or_success?).to eq(false)
     }
   end
 
@@ -128,14 +128,14 @@ describe Project do
     let(:parsed_project) { Project.parse(project_dump) }
 
 
-    it { parsed_project.should be_valid }
-    it { parsed_project.should be_kind_of(Project) }
-    it { parsed_project.name.should eq("GitLab / api.gitlab.org") }
-    it { parsed_project.gitlab_id.should eq(189) }
-    it { parsed_project.gitlab_url.should eq("http://demo.gitlab.com/gitlab/api-gitlab-org") }
+    it { expect(parsed_project).to be_valid }
+    it { expect(parsed_project).to be_kind_of(Project) }
+    it { expect(parsed_project.name).to eq("GitLab / api.gitlab.org") }
+    it { expect(parsed_project.gitlab_id).to eq(189) }
+    it { expect(parsed_project.gitlab_url).to eq("http://demo.gitlab.com/gitlab/api-gitlab-org") }
 
     it "parses plain hash" do
-      Project.parse(project_dump).name.should eq("GitLab / api.gitlab.org")
+      expect(Project.parse(project_dump).name).to eq("GitLab / api.gitlab.org")
     end
   end
 
@@ -143,43 +143,43 @@ describe Project do
     let(:project) { FactoryGirl.create :ci_project }
     subject { project.repo_url_with_auth }
 
-    it { should be_a(String) }
-    it { should end_with(".git") }
-    it { should start_with(project.gitlab_url[0..6]) }
-    it { should include(project.token) }
-    it { should include('gitlab-ci-token') }
-    it { should include(project.gitlab_url[7..-1]) }
+    it { is_expected.to be_a(String) }
+    it { is_expected.to end_with(".git") }
+    it { is_expected.to start_with(project.gitlab_url[0..6]) }
+    it { is_expected.to include(project.token) }
+    it { is_expected.to include('gitlab-ci-token') }
+    it { is_expected.to include(project.gitlab_url[7..-1]) }
   end
 
   describe :search do
     let!(:project) { FactoryGirl.create(:ci_project, name: "foo") }
 
-    it { Project.search('fo').should include(project) }
-    it { Project.search('bar').should be_empty }
+    it { expect(Project.search('fo')).to include(project) }
+    it { expect(Project.search('bar')).to be_empty }
   end
 
   describe :any_runners do
     it "there are no runners available" do
       project = FactoryGirl.create(:ci_project)
-      project.any_runners?.should be_false
+      expect(project.any_runners?).to be_falsey
     end
 
     it "there is a specific runner" do
       project = FactoryGirl.create(:ci_project)
       project.runners << FactoryGirl.create(:ci_specific_runner)
-      project.any_runners?.should be_true
+      expect(project.any_runners?).to be_truthy
     end
 
     it "there is a shared runner" do
       project = FactoryGirl.create(:ci_project, shared_runners_enabled: true)
       FactoryGirl.create(:ci_shared_runner)
-      project.any_runners?.should be_true
+      expect(project.any_runners?).to be_truthy
     end
 
     it "there is a shared runner, but they are prohibited to use" do
       project = FactoryGirl.create(:ci_project)
       FactoryGirl.create(:ci_shared_runner)
-      project.any_runners?.should be_false
+      expect(project.any_runners?).to be_falsey
     end
   end
 end

@@ -18,7 +18,7 @@ describe Ci::HipChatMessage do
         build.update(status: "success")
 
         expect( subject.status_color ).to eq 'green'
-        expect( subject.notify? ).to be_false
+        expect( subject.notify? ).to be_falsey
         expect( subject.to_s ).to match(/Build '[^']+' #\d+/)
         expect( subject.to_s ).to match(/Successful in \d+ second\(s\)\./)
       end
@@ -29,7 +29,7 @@ describe Ci::HipChatMessage do
         build.update(status: "failed")
 
         expect( subject.status_color ).to eq 'red'
-        expect( subject.notify? ).to be_true
+        expect( subject.notify? ).to be_truthy
         expect( subject.to_s ).to match(/Build '[^']+' #\d+/)
         expect( subject.to_s ).to match(/Failed in \d+ second\(s\)\./)
       end
@@ -50,7 +50,7 @@ describe Ci::HipChatMessage do
         commit.reload
 
         expect( subject.status_color ).to eq 'green'
-        expect( subject.notify? ).to be_false
+        expect( subject.notify? ).to be_falsey
         expect( subject.to_s ).to match(/Commit #\d+/)
         expect( subject.to_s ).to match(/Successful in \d+ second\(s\)\./)
       end
@@ -65,7 +65,7 @@ describe Ci::HipChatMessage do
         second_build.update(status: "failed")
 
         expect( subject.status_color ).to eq 'red'
-        expect( subject.notify? ).to be_true
+        expect( subject.notify? ).to be_truthy
         expect( subject.to_s ).to match(/Commit #\d+/)
         expect( subject.to_s ).to match(/Failed in \d+ second\(s\)\./)
       end

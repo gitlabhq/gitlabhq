@@ -21,18 +21,18 @@ describe Ci::Commit do
   let(:project) { FactoryGirl.create :ci_project }
   let(:commit) { FactoryGirl.create :ci_commit, project: project }
   let(:commit_with_project) { FactoryGirl.create :ci_commit, project: project }
-  let(:config_processor) { GitlabCiYamlProcessor.new(gitlab_ci_yaml) }
+  let(:config_processor) { Ci::GitlabCiYamlProcessor.new(gitlab_ci_yaml) }
 
-  it { should belong_to(:project) }
-  it { should have_many(:builds) }
-  it { should validate_presence_of :before_sha }
-  it { should validate_presence_of :sha }
-  it { should validate_presence_of :ref }
-  it { should validate_presence_of :push_data }
+  it { is_expected.to belong_to(:project) }
+  it { is_expected.to have_many(:builds) }
+  it { is_expected.to validate_presence_of :before_sha }
+  it { is_expected.to validate_presence_of :sha }
+  it { is_expected.to validate_presence_of :ref }
+  it { is_expected.to validate_presence_of :push_data }
 
-  it { should respond_to :git_author_name }
-  it { should respond_to :git_author_email }
-  it { should respond_to :short_sha }
+  it { is_expected.to respond_to :git_author_name }
+  it { is_expected.to respond_to :git_author_email }
+  it { is_expected.to respond_to :short_sha }
 
   describe :last_build do
     subject { commit.last_build }
@@ -41,8 +41,8 @@ describe Ci::Commit do
       @second = FactoryGirl.create :ci_build, commit: commit
     end
 
-    it { should be_a(Ci::Build) }
-    it('returns with the most recently created build') { should eq(@second) }
+    it { is_expected.to be_a(Ci::Build) }
+    it('returns with the most recently created build') { is_expected.to eq(@second) }
   end
 
   describe :retry do
@@ -67,8 +67,8 @@ describe Ci::Commit do
           email_recipients: ''
         commit =  FactoryGirl.create :ci_commit, project: project
         expected = 'commit_pusher_email'
-        commit.stub(:push_data) { { user_email: expected } }
-        commit.project_recipients.should == [expected]
+        allow(commit).to receive(:push_data) { { user_email: expected } }
+        expect(commit.project_recipients).to eq([expected])
       end
 
       it 'should return commit_pusher_email and additional recipients' do
@@ -77,8 +77,8 @@ describe Ci::Commit do
           email_recipients: 'rec1 rec2'
         commit = FactoryGirl.create :ci_commit, project: project
         expected = 'commit_pusher_email'
-        commit.stub(:push_data) { { user_email: expected } }
-        commit.project_recipients.should == ['rec1', 'rec2', expected]
+        allow(commit).to receive(:push_data) { { user_email: expected } }
+        expect(commit.project_recipients).to eq(['rec1', 'rec2', expected])
       end
 
       it 'should return recipients' do
@@ -86,7 +86,7 @@ describe Ci::Commit do
           email_add_pusher: false,
           email_recipients: 'rec1 rec2'
         commit = FactoryGirl.create :ci_commit, project: project
-        commit.project_recipients.should == ['rec1', 'rec2']
+        expect(commit.project_recipients).to eq(['rec1', 'rec2'])
       end
 
       it 'should return unique recipients only' do
@@ -95,8 +95,8 @@ describe Ci::Commit do
           email_recipients: 'rec1 rec1 rec2'
         commit = FactoryGirl.create :ci_commit, project: project
         expected = 'rec2'
-        commit.stub(:push_data) { { user_email: expected } }
-        commit.project_recipients.should == ['rec1', 'rec2']
+        allow(commit).to receive(:push_data) { { user_email: expected } }
+        expect(commit.project_recipients).to eq(['rec1', 'rec2'])
       end
     end
   end
@@ -108,7 +108,7 @@ describe Ci::Commit do
         commit.valid_commit_sha
       end
 
-      it('commit errors should not be empty') { commit.errors.should_not be_empty }
+      it('commit errors should not be empty') { expect(commit.errors).not_to be_empty }
     end
   end
 
@@ -116,55 +116,59 @@ describe Ci::Commit do
     subject { commit_with_project.compare? }
 
     context 'if commit.before_sha are not nil' do
-      it { should be_true }
+      it { is_expected.to be_truthy }
     end
   end
 
   describe :short_sha do
     subject { commit.short_before_sha }
 
-    it { should have(8).items }
-    it { commit.before_sha.should start_with(subject) }
+    it 'has 8 items' do
+      expect(subject.size).to eq(8)
+    end
+    it { expect(commit.before_sha).to start_with(subject) }
   end
 
   describe :short_sha do
     subject { commit.short_sha }
 
-    it { should have(8).items }
-    it { commit.sha.should start_with(subject) }
+    it 'has 8 items' do
+      expect(subject.size).to eq(8)
+    end
+    it { expect(commit.sha).to start_with(subject) }
   end
 
   describe :create_next_builds do
     before do
-      commit.stub(:config_processor).and_return(config_processor)
+      allow(commit).to receive(:config_processor).and_return(config_processor)
     end
 
     it "creates builds for next type" do
-      commit.create_builds.should be_true
+      expect(commit.create_builds).to be_truthy
       commit.builds.reload
-      commit.builds.size.should == 2
+      expect(commit.builds.size).to eq(2)
 
-      commit.create_next_builds(nil).should be_true
+      expect(commit.create_next_builds(nil)).to be_truthy
       commit.builds.reload
-      commit.builds.size.should == 4
+      expect(commit.builds.size).to eq(4)
 
-      commit.create_next_builds(nil).should be_true
+      expect(commit.create_next_builds(nil)).to be_truthy
       commit.builds.reload
-      commit.builds.size.should == 5
+      expect(commit.builds.size).to eq(5)
 
-      commit.create_next_builds(nil).should be_false
+      expect(commit.create_next_builds(nil)).to be_falsey
     end
   end
 
   describe :create_builds do
     before do
-      commit.stub(:config_processor).and_return(config_processor)
+      allow(commit).to receive(:config_processor).and_return(config_processor)
     end
 
     it 'creates builds' do
-      commit.create_builds.should be_true
+      expect(commit.create_builds).to be_truthy
       commit.builds.reload
-      commit.builds.size.should == 2
+      expect(commit.builds.size).to eq(2)
     end
 
     context 'for build triggers' do
@@ -172,29 +176,29 @@ describe Ci::Commit do
       let(:trigger_request) { FactoryGirl.create :ci_trigger_request, commit: commit, trigger: trigger }
 
       it 'creates builds' do
-        commit.create_builds(trigger_request).should be_true
+        expect(commit.create_builds(trigger_request)).to be_truthy
         commit.builds.reload
-        commit.builds.size.should == 2
+        expect(commit.builds.size).to eq(2)
       end
 
       it 'rebuilds commit' do
-        commit.create_builds.should be_true
+        expect(commit.create_builds).to be_truthy
         commit.builds.reload
-        commit.builds.size.should == 2
+        expect(commit.builds.size).to eq(2)
 
-        commit.create_builds(trigger_request).should be_true
+        expect(commit.create_builds(trigger_request)).to be_truthy
         commit.builds.reload
-        commit.builds.size.should == 4
+        expect(commit.builds.size).to eq(4)
       end
 
       it 'creates next builds' do
-        commit.create_builds(trigger_request).should be_true
+        expect(commit.create_builds(trigger_request)).to be_truthy
         commit.builds.reload
-        commit.builds.size.should == 2
+        expect(commit.builds.size).to eq(2)
 
-        commit.create_next_builds(trigger_request).should be_true
+        expect(commit.create_next_builds(trigger_request)).to be_truthy
         commit.builds.reload
-        commit.builds.size.should == 4
+        expect(commit.builds.size).to eq(4)
       end
 
       context 'for [ci skip]' do
@@ -204,11 +208,11 @@ describe Ci::Commit do
         end
 
         it 'rebuilds commit' do
-          commit.status.should == 'skipped'
-          commit.create_builds(trigger_request).should be_true
+          expect(commit.status).to eq('skipped')
+          expect(commit.create_builds(trigger_request)).to be_truthy
           commit.builds.reload
-          commit.builds.size.should == 2
-          commit.status.should == 'pending'
+          expect(commit.builds.size).to eq(2)
+          expect(commit.status).to eq('pending')
         end
       end
     end
@@ -222,13 +226,13 @@ describe Ci::Commit do
       build = FactoryGirl.create :ci_build, commit: commit, finished_at: Time.now - 60
       build1 = FactoryGirl.create :ci_build, commit: commit, finished_at: Time.now - 120
 
-      commit.finished_at.to_i.should == build.finished_at.to_i
+      expect(commit.finished_at.to_i).to eq(build.finished_at.to_i)
     end
 
     it "returns nil if there is no finished build" do
       build = FactoryGirl.create :ci_not_started_build, commit: commit
 
-      commit.finished_at.should be_nil
+      expect(commit.finished_at).to be_nil
     end
   end
 
@@ -239,26 +243,26 @@ describe Ci::Commit do
     it "calculates average when there are two builds with coverage" do
       FactoryGirl.create :ci_build, name: "rspec", coverage: 30, commit: commit
       FactoryGirl.create :ci_build, name: "rubocop", coverage: 40, commit: commit
-      commit.coverage.should == "35.00"
+      expect(commit.coverage).to eq("35.00")
     end
 
     it "calculates average when there are two builds with coverage and one with nil" do
       FactoryGirl.create :ci_build, name: "rspec", coverage: 30, commit: commit
       FactoryGirl.create :ci_build, name: "rubocop", coverage: 40, commit: commit
       FactoryGirl.create :ci_build, commit: commit
-      commit.coverage.should == "35.00"
+      expect(commit.coverage).to eq("35.00")
     end
 
     it "calculates average when there are two builds with coverage and one is retried" do
       FactoryGirl.create :ci_build, name: "rspec", coverage: 30, commit: commit
       FactoryGirl.create :ci_build, name: "rubocop", coverage: 30, commit: commit
       FactoryGirl.create :ci_build, name: "rubocop", coverage: 40, commit: commit
-      commit.coverage.should == "35.00"
+      expect(commit.coverage).to eq("35.00")
     end
 
     it "calculates average when there is one build without coverage" do
       FactoryGirl.create :ci_build, commit: commit
-      commit.coverage.should be_nil
+      expect(commit.coverage).to be_nil
     end
   end
 end

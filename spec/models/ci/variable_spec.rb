@@ -14,7 +14,7 @@
 require 'spec_helper'
 
 describe Ci::Variable do
-  subject { Variable.new }
+  subject { Ci::Variable.new }
 
   let(:secret_value) { 'secret' }
 
@@ -24,15 +24,15 @@ describe Ci::Variable do
 
   describe :value do
     it 'stores the encrypted value' do
-      subject.encrypted_value.should_not be_nil
+      expect(subject.encrypted_value).not_to be_nil
     end
 
     it 'stores an iv for value' do
-      subject.encrypted_value_iv.should_not be_nil
+      expect(subject.encrypted_value_iv).not_to be_nil
     end
 
     it 'stores a salt for value' do
-      subject.encrypted_value_salt.should_not be_nil
+      expect(subject.encrypted_value_salt).not_to be_nil
     end
 
     it 'fails to decrypt if iv is incorrect' do

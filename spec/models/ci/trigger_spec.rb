@@ -6,12 +6,12 @@ describe Ci::Trigger do
   describe 'before_validation' do
     it 'should set an random token if none provided' do
       trigger = FactoryGirl.create :ci_trigger_without_token, project: project
-      trigger.token.should_not be_nil
+      expect(trigger.token).not_to be_nil
     end
 
     it 'should not set an random token if one provided' do
       trigger = FactoryGirl.create :ci_trigger, project: project
-      trigger.token.should == 'token'
+      expect(trigger.token).to eq('token')
     end
   end
 end

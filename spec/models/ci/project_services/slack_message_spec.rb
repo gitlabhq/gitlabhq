@@ -19,11 +19,11 @@ describe Ci::SlackMessage do
       it 'returns a message with succeeded build' do
         build.update(status: "success")
 
-        subject.color.should == color
-        subject.fallback.should include('Build')
-        subject.fallback.should include("\##{build.id}")
-        subject.fallback.should include('succeeded')
-        subject.attachments.first[:fields].should be_empty
+        expect(subject.color).to eq(color)
+        expect(subject.fallback).to include('Build')
+        expect(subject.fallback).to include("\##{build.id}")
+        expect(subject.fallback).to include('succeeded')
+        expect(subject.attachments.first[:fields]).to be_empty
       end
     end
 
@@ -33,11 +33,11 @@ describe Ci::SlackMessage do
       it 'returns a message with failed build' do
         build.update(status: "failed")
 
-        subject.color.should == color
-        subject.fallback.should include('Build')
-        subject.fallback.should include("\##{build.id}")
-        subject.fallback.should include('failed')
-        subject.attachments.first[:fields].should be_empty
+        expect(subject.color).to eq(color)
+        expect(subject.fallback).to include('Build')
+        expect(subject.fallback).to include("\##{build.id}")
+        expect(subject.fallback).to include('failed')
+        expect(subject.attachments.first[:fields]).to be_empty
       end
     end
   end
@@ -53,11 +53,11 @@ describe Ci::SlackMessage do
         commit.builds.update_all(status: "success")
         commit.reload
 
-        subject.color.should == color
-        subject.fallback.should include('Commit')
-        subject.fallback.should include("\##{commit.id}")
-        subject.fallback.should include('succeeded')
-        subject.attachments.first[:fields].should be_empty
+        expect(subject.color).to eq(color)
+        expect(subject.fallback).to include('Commit')
+        expect(subject.fallback).to include("\##{commit.id}")
+        expect(subject.fallback).to include('succeeded')
+        expect(subject.attachments.first[:fields]).to be_empty
       end
     end
 
@@ -71,13 +71,13 @@ describe Ci::SlackMessage do
         first_build.update(status: "success")
         second_build.update(status: "failed")
 
-        subject.color.should == color
-        subject.fallback.should include('Commit')
-        subject.fallback.should include("\##{commit.id}")
-        subject.fallback.should include('failed')
-        subject.attachments.first[:fields].size.should == 1
-        subject.attachments.first[:fields].first[:title].should == second_build.name
-        subject.attachments.first[:fields].first[:value].should include("\##{second_build.id}")
+        expect(subject.color).to eq(color)
+        expect(subject.fallback).to include('Commit')
+        expect(subject.fallback).to include("\##{commit.id}")
+        expect(subject.fallback).to include('failed')
+        expect(subject.attachments.first[:fields].size).to eq(1)
+        expect(subject.attachments.first[:fields].first[:title]).to eq(second_build.name)
+        expect(subject.attachments.first[:fields].first[:value]).to include("\##{second_build.id}")
       end
     end
   end

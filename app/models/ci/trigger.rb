@@ -13,10 +13,10 @@
 module Ci
   class Trigger < ActiveRecord::Base
     extend Ci::Model
-    
+
     acts_as_paranoid
 
-    belongs_to :project, class_name: 'Ci::Trigger'
+    belongs_to :project, class_name: 'Ci::Project'
     has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest'
 
     validates_presence_of :token
