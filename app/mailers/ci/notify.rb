@@ -10,7 +10,7 @@ module Ci
     default_url_options[:port]     = Gitlab.config.gitlab.port unless Gitlab.config.gitlab_on_standard_port?
     default_url_options[:script_name] = Gitlab.config.gitlab.relative_url_root
 
-    default from: GitlabCi.config.gitlab_ci.email_from
+    default from: Gitlab.config.gitlab.email_from
 
     # Just send email with 3 seconds delay
     def self.delay

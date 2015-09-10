@@ -47,5 +47,6 @@
       %th Last contact
       %th
 
-  = render @runners
+  - @runners.each do |runner|
+    = render "ci/admin/runners/runner", runner: runner
 = paginate @runners

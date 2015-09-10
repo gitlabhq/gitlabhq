@@ -3,7 +3,7 @@
     = runner_status_icon(runner)
     %span.monospace
       - if @runners.include?(runner)
-        = link_to runner.short_sha, [:ci, @project, runner]
+        = link_to runner.short_sha, ci_project_runner_path(@project, runner)
         %small
           =link_to edit_ci_project_runner_path(@project, runner) do
             %i.fa.fa-edit.btn
