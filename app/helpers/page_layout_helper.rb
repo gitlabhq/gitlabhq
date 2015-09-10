@@ -43,7 +43,7 @@ module PageLayoutHelper
   def container_class
     css_class = "container-fluid"
 
-    if fluid_layout
+    unless fluid_layout
       css_class += " container-limited"
     end
 
