@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe "Builds" do
   before do
-    @project = FactoryGirl.create :project
-    @commit = FactoryGirl.create :commit, project: @project
-    @build = FactoryGirl.create :build, commit: @commit
+    @project = FactoryGirl.create :ci_project
+    @commit = FactoryGirl.create :ci_commit, project: @project
+    @build = FactoryGirl.create :ci_build, commit: @commit
   end
 
   describe "GET /:project/builds/:id/status.json" do
@@ -12,7 +12,7 @@ describe "Builds" do
       get status_project_build_path(@project, @build), format: :json
     end
 
-    it { response.status.should == 200 }
-    it { response.body.should include(@build.sha) }
+    it { expect(response.status).to eq(200) }
+    it { expect(response.body).to include(@build.sha) }
   end
 end

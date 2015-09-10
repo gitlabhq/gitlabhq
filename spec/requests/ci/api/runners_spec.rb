@@ -19,15 +19,15 @@ describe Ci::API::API do
     }
 
     before do
-      5.times { FactoryGirl.create(:runner) }
+      5.times { FactoryGirl.create(:ci_runner) }
     end
 
     it "should retrieve a list of all runners" do
       get api("/runners"), options
-      response.status.should == 200
-      json_response.count.should == 5
-      json_response.last.should have_key("id")
-      json_response.last.should have_key("token")
+      expect(response.status).to eq(200)
+      expect(json_response.count).to eq(5)
+      expect(json_response.last).to have_key("id")
+      expect(json_response.last).to have_key("token")
     end
   end
 
@@ -35,49 +35,49 @@ describe Ci::API::API do
     describe "should create a runner if token provided" do
       before { post api("/runners/register"), token: GitlabCi::REGISTRATION_TOKEN }
 
-      it { response.status.should == 201 }
+      it { expect(response.status).to eq(201) }
     end
 
     describe "should create a runner with description" do
       before { post api("/runners/register"), token: GitlabCi::REGISTRATION_TOKEN, description: "server.hostname" }
 
-      it { response.status.should == 201 }
-      it { Runner.first.description.should == "server.hostname" }
+      it { expect(response.status).to eq(201) }
+      it { expect(Runner.first.description).to eq("server.hostname") }
     end
 
     describe "should create a runner with tags" do
       before { post api("/runners/register"), token: GitlabCi::REGISTRATION_TOKEN, tag_list: "tag1, tag2" }
 
-      it { response.status.should == 201 }
-      it { Runner.first.tag_list.sort.should == ["tag1", "tag2"] }
+      it { expect(response.status).to eq(201) }
+      it { expect(Runner.first.tag_list.sort).to eq(["tag1", "tag2"]) }
     end
 
     describe "should create a runner if project token provided" do
-      let(:project) { FactoryGirl.create(:project) }
+      let(:project) { FactoryGirl.create(:ci_project) }
       before { post api("/runners/register"), token: project.token }
 
-      it { response.status.should == 201 }
-      it { project.runners.size.should == 1 }
+      it { expect(response.status).to eq(201) }
+      it { expect(project.runners.size).to eq(1) }
     end
 
     it "should return 403 error if token is invalid" do
       post api("/runners/register"), token: 'invalid'
 
-      response.status.should == 403
+      expect(response.status).to eq(403)
     end
 
     it "should return 400 error if no token" do
       post api("/runners/register")
 
-      response.status.should == 400
+      expect(response.status).to eq(400)
     end
   end
 
   describe "DELETE /runners/delete" do
-    let!(:runner) { FactoryGirl.create(:runner) }
+    let!(:runner) { FactoryGirl.create(:ci_runner) }
     before { delete api("/runners/delete"), token: runner.token }
 
-    it { response.status.should == 200 }
-    it { Runner.count.should == 0 }
+    it { expect(response.status).to eq(200) }
+    it { expect(Runner.count).to eq(0) }
   end
 end

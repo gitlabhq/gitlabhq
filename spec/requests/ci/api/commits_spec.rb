@@ -3,8 +3,8 @@ require 'spec_helper'
 describe Ci::API::API, 'Commits' do
   include ApiHelpers
 
-  let(:project) { FactoryGirl.create(:project) }
-  let(:commit) { FactoryGirl.create(:commit, project: project) }
+  let(:project) { FactoryGirl.create(:ci_project) }
+  let(:commit) { FactoryGirl.create(:ci_commit, project: project) }
 
   let(:options) {
     {
@@ -19,10 +19,10 @@ describe Ci::API::API, 'Commits' do
     it "should return commits per project" do
       get api("/commits"), options
 
-      response.status.should == 200
-      json_response.count.should == 1
-      json_response.first["project_id"].should == project.id
-      json_response.first["sha"].should == commit.sha
+      expect(response.status).to eq(200)
+      expect(json_response.count).to eq(1)
+      expect(json_response.first["project_id"]).to eq(project.id)
+      expect(json_response.first["sha"]).to eq(commit.sha)
     end
   end
 
@@ -51,15 +51,15 @@ describe Ci::API::API, 'Commits' do
     it "should create a build" do
       post api("/commits"), options.merge(data: data)
 
-      response.status.should == 201
-      json_response['sha'].should == "da1560886d4f094c3e6c9ef40349f7d38b5d27d7"
+      expect(response.status).to eq(201)
+      expect(json_response['sha']).to eq("da1560886d4f094c3e6c9ef40349f7d38b5d27d7")
     end
 
     it "should return 400 error if no data passed" do
       post api("/commits"), options
 
-      response.status.should == 400
-      json_response['message'].should == "400 (Bad request) \"data\" not given"
+      expect(response.status).to eq(400)
+      expect(json_response['message']).to eq("400 (Bad request) \"data\" not given")
     end
   end
 end

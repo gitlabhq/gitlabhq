@@ -16,7 +16,7 @@ module StubGitlabCalls
   private
 
   def gitlab_url
-    GitlabCi.config.gitlab_server.url
+    Gitlab.config.gitlab.url
   end
 
   def stub_session
@@ -52,7 +52,7 @@ module StubGitlabCalls
 
   def stub_projects
     f = File.read(Rails.root.join('spec/support/gitlab_stubs/projects.json'))
-   
+
     stub_request(:get, "#{gitlab_url}api/v3/projects.json?archived=false&ci_enabled_first=true&private_token=Wvjy2Krpb7y8xi93owUz").
       with(:headers => {'Content-Type'=>'application/json'}).
       to_return(:status => 200, :body => f, :headers => {'Content-Type'=>'application/json'})

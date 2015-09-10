@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Ci::API::API do
   include ApiHelpers
 
-  let(:project) { FactoryGirl.create(:project) }
+  let(:project) { FactoryGirl.create(:ci_project) }
   let(:gitlab_url) { GitlabCi.config.gitlab_server.url }
   let(:private_token) { Network.new.authenticate(access_token: "some_token")["private_token"] }
 
@@ -41,8 +41,8 @@ describe Ci::API::API do
 
       it "should create a project with valid data" do
         post api("/forks"), options
-        response.status.should == 201
-        json_response['name'].should == "Gitlab.org / Underscore"
+        expect(response.status).to eq(201)
+        expect(json_response['name']).to eq("Gitlab.org / Underscore")
       end
     end
 
@@ -53,7 +53,7 @@ describe Ci::API::API do
 
       it "should error with invalid data" do
         post api("/forks"), options
-        response.status.should == 400
+        expect(response.status).to eq(400)
       end
     end
   end
