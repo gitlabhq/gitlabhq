@@ -27,11 +27,11 @@ FactoryGirl.define do
 
     platform "darwin"
 
-    factory :shared_runner do
+    factory :ci_shared_runner do
       is_shared true
     end
 
-    factory :specific_runner do
+    factory :ci_specific_runner do
       is_shared false
     end
   end

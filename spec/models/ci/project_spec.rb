@@ -27,7 +27,7 @@
 
 require 'spec_helper'
 
-describe Project do
+describe Ci::Project do
   subject { FactoryGirl.build :ci_project }
 
   it { is_expected.to have_many(:commits) }
@@ -57,7 +57,7 @@ describe Project do
       FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, project: newest_project
       FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, project: oldest_project
 
-      expect(Project.ordered_by_last_commit_date).to eq([newest_project, oldest_project, project_without_commits])
+      expect(Ci::Project.ordered_by_last_commit_date).to eq([newest_project, oldest_project, project_without_commits])
     end
   end
 
@@ -71,7 +71,7 @@ describe Project do
       end
 
       it { expect(project.status).to eq('pending') }
-      it { expect(project.last_commit).to be_kind_of(Commit)  }
+      it { expect(project.last_commit).to be_kind_of(Ci::Commit)  }
       it { expect(project.human_status).to eq('pending') }
     end
   end
@@ -125,17 +125,17 @@ describe Project do
 
   describe 'Project.parse' do
     let(:project_dump) { YAML.load File.read(Rails.root.join('spec/support/gitlab_stubs/raw_project.yml')) }
-    let(:parsed_project) { Project.parse(project_dump) }
+    let(:parsed_project) { Ci::Project.parse(project_dump) }
 
 
     it { expect(parsed_project).to be_valid }
-    it { expect(parsed_project).to be_kind_of(Project) }
+    it { expect(parsed_project).to be_kind_of(Ci::Project) }
     it { expect(parsed_project.name).to eq("GitLab / api.gitlab.org") }
     it { expect(parsed_project.gitlab_id).to eq(189) }
     it { expect(parsed_project.gitlab_url).to eq("http://demo.gitlab.com/gitlab/api-gitlab-org") }
 
     it "parses plain hash" do
-      expect(Project.parse(project_dump).name).to eq("GitLab / api.gitlab.org")
+      expect(Ci::Project.parse(project_dump).name).to eq("GitLab / api.gitlab.org")
     end
   end
 
@@ -154,8 +154,8 @@ describe Project do
   describe :search do
     let!(:project) { FactoryGirl.create(:ci_project, name: "foo") }
 
-    it { expect(Project.search('fo')).to include(project) }
-    it { expect(Project.search('bar')).to be_empty }
+    it { expect(Ci::Project.search('fo')).to include(project) }
+    it { expect(Ci::Project.search('bar')).to be_empty }
   end
 
   describe :any_runners do
