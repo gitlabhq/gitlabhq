@@ -78,36 +78,6 @@
       }
     }
   }
-
-  .blame {
-    img.avatar {
-      border: 0 none;
-      float: none;
-      margin: 0;
-      padding: 0;
-    }
-    td.blame-commit {
-      background: #f9f9f9;
-      min-width: 350px;
-
-      .commit-author-link {
-        color: #888;
-      }
-    }
-    td.blame-numbers {
-      pre {
-        color: #AAA;
-        white-space: pre;
-      }
-      background: #f1f1f1;
-      border-left: 1px solid #DDD;
-    }
-    td.lines {
-      code {
-        font-family: $monospace_font;
-      }
-    }
-  }
 }
 
 .tree-ref-holder {
