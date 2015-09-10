@@ -8,7 +8,6 @@ module Ci
 
     rescue_from Ci::Network::UnauthorizedError, with: :invalid_token
     before_filter :default_headers
-    #before_filter :check_config
     helper_method :gl_project
 
     protect_from_forgery
@@ -38,7 +37,7 @@ module Ci
     end
 
     def authorize_manage_builds!
-      unless can?(current_user, :manage_builds, gl_project)
+      unless can?(current_user, :admin_project, gl_project)
         return page_404
       end
     end
@@ -48,7 +47,7 @@ module Ci
     end
 
     def authorize_manage_project!
-      unless can?(current_user, :manage_project, gl_project)
+      unless can?(current_user, :admin_project, gl_project)
         return page_404
       end
     end

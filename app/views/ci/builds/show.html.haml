@@ -2,7 +2,7 @@
   = link_to ci_project_path(@project)
   @
   = @commit.short_sha
-  
+
 %p
   = link_to ci_project_ref_commits_path(@project, @commit.ref, @commit.sha) do
     &larr; Back to project commit
@@ -104,7 +104,7 @@
           #{time_ago_in_words(@build.finished_at)} ago
       %p
         %span.attr-name Runner:
-        - if @build.runner && current_user && current_user.is_admin
+        - if @build.runner && current_user && current_user.admin
           \#{link_to "##{@build.runner.id}", ci_admin_runner_path(@build.runner.id)}
         - elsif @build.runner
           \##{@build.runner.id}

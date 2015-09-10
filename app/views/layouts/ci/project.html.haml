@@ -17,7 +17,7 @@
     %hr
     .container.container-body
       .content
-        - if current_user && can?(current_user, :manage_project, gl_project)
+        - if current_user && can?(current_user, :admin_project, gl_project)
           .row
             .col-md-2.append-bottom-20
               = render 'layouts/ci/nav_project'
