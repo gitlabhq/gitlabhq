@@ -356,6 +356,16 @@ Gitlab::Application.routes.draw do
             to: 'blob#destroy',
             constraints: { id: /.+/, format: false }
           )
+          put(
+            '/blob/*id',
+            to: 'blob#update',
+            constraints: { id: /.+/, format: false }
+          )
+          post(
+            '/blob/*id',
+            to: 'blob#create',
+            constraints: { id: /.+/, format: false }
+          )
         end
 
         scope do

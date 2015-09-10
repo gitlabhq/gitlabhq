@@ -116,3 +116,15 @@
 }
 
 #modal-remove-blob > .modal-dialog { width: 850px; }
+
+.blob-upload-dropzone-previews {
+  text-align: center;
+  border: 2px;
+  border-style: dashed;
+  min-height: 200px;
+}
+
+.upload-link {
+  font-weight: normal;
+  color: #0000EE;
+}

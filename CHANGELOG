@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.0.0 (unreleased)
   - Gracefully handle errors in syntax highlighting by leaving the block unformatted (Stan Hu)
+  - Add "replace" and "upload" functionalities to allow user replace existing file and upload new file into current repository
   - Fix URL construction for merge requests, issues, notes, and commits for relative URL config (Stan Hu)
   - Fix emoji URLs in Markdown when relative_url_root is used (Stan Hu)
   - Omit filename in Content-Disposition header in raw file download to avoid RFC 6266 encoding issues (Stan HU)
