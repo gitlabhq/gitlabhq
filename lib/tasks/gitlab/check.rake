@@ -882,10 +882,8 @@ namespace :gitlab do
     "doc/install/installation.md in section \"#{section}\""
   end
 
-  def sudo_gitlab(command, env = nil)
-    cmd = "sudo -u #{gitlab_user} -H #{command}"
-    cmd.prepend "#{env} " if env
-    cmd
+  def sudo_gitlab(command)
+    "sudo -u #{gitlab_user} -H #{command}"
   end
 
   def gitlab_user
