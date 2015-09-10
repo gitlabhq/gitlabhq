@@ -13,7 +13,7 @@ module Ci
           project_url: project_route.gsub(":project_id", @project.id.to_s),
         }
 
-        unless Ci::Network.new.enable_ci(@project.gitlab_id, data, current_user.authenticate_options)
+        unless Ci::Network.new.enable_ci(@project.gitlab_id, data, {private_token: current_user.private_token})
           raise ActiveRecord::Rollback
         end
       end

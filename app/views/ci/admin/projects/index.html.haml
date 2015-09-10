@@ -8,7 +8,8 @@
       %th Builds
       %th
 
-  = render @projects
+  - @projects.each do |project|
+    = render "ci/admin/projects/project", project: @projects
 
 = paginate @projects
 

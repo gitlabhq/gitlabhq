@@ -99,7 +99,7 @@ module Ci
     private
 
     def url
-      GitlabCi.config.gitlab_server.url
+      Gitlab.config.gitlab.url
     end
 
     def default_opts

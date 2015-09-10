@@ -55,7 +55,7 @@ module Ci
     def create
       project_data = OpenStruct.new(JSON.parse(params["project"]))
 
-      unless can?(current_user, :manage_project, ::Project.find(project_data.id))
+      unless can?(current_user, :admin_project, ::Project.find(project_data.id))
         return redirect_to ci_root_path, alert: 'You have to have at least master role to enable CI for this project'
       end
 
