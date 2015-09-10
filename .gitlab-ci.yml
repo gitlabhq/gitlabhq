@@ -5,7 +5,6 @@ before_script:
   - which ruby
   - gem install bundler --no-ri --no-rdoc
   - cp config/gitlab.yml.example config/gitlab.yml
-  - cp config/gitlab_ci.yml.example config/gitlab_ci.yml
   - touch log/application.log
   - touch log/test.log
   - bundle install --without postgres production --jobs $(nproc)  "${FLAGS[@]}"
