@@ -76,7 +76,7 @@ module Gitlab
             node.remove_attribute('class')
           end
 
-          {node_whitelist: [node]}
+          { node_whitelist: [node] }
         end
       end
     end
