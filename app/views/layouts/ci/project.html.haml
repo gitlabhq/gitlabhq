@@ -15,12 +15,13 @@
         .pull-right
           = link_to 'View on GitLab', @project.gitlab_url, no_turbolink.merge( class: 'btn btn-sm' )
     %hr
-    .container
-      - if current_user && can?(current_user, :manage_project, gl_project)
-        .row
-          .col-md-2.append-bottom-20
-            = render 'layouts/ci/nav_project'
-          .col-md-10
-            = yield
-      - else
-        = yield
+    .container.container-body
+      .content
+        - if current_user && can?(current_user, :manage_project, gl_project)
+          .row
+            .col-md-2.append-bottom-20
+              = render 'layouts/ci/nav_project'
+            .col-md-10
+              = yield
+        - else
+          = yield

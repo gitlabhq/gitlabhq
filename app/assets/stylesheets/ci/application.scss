@@ -11,15 +11,19 @@
  *= require_self
  */
 
-@import "main/variables.scss";
-@import "main/mixins.scss";
-@import "main/fonts.scss";
-@import "main/layout.scss";
+@import "../base/fonts";
+@import "../base/variables";
+@import "../base/mixins";
+@import "../base/layout";
+@import "../base/gl_variables";
+@import "../base/gl_bootstrap";
 
 /**
- * Twitter bootstrap
+ * Customized Twitter bootstrap
  */
-@import 'bootstrap';
+@import '../base/gl_variables';
+@import '../base/gl_bootstrap';
+
 
 /**
  * Font icons
@@ -30,12 +34,13 @@
 /**
  * Generic css (forms, nav etc):
  */
-@import "generic/*";
+@import "../generic/**/*";
 
 /**
  * Page specific styles (issues, projects etc):
  */
 
+@import "xterm";
 @import "sections/*";
 
 /*
@@ -44,3 +49,7 @@
 $nprogress-color: #9BC;
 @import 'nprogress';
 @import 'nprogress-bootstrap';
+
+body {
+  padding-top: 0 !important;
+}

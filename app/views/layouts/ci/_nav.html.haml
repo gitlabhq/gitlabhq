@@ -19,7 +19,7 @@
       %ul.nav.navbar-nav.pull-right
         - if current_user
           %li
-            = link_to new_user_session_path do
+            = link_to "/profile", no_turbolink do
               .profile-holder
                 = image_tag user_avatar_url(current_user, 64), class: 'avatar s32', alt: ''
                 %span= current_user.name
