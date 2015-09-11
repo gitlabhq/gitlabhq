@@ -9,7 +9,7 @@
       %th
 
   - @projects.each do |project|
-    = render "ci/admin/projects/project", project: @projects
+    = render "ci/admin/projects/project", project: project
 
 = paginate @projects
 
