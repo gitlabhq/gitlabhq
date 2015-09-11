@@ -22,6 +22,7 @@
       %th Duration
       %th Finished at
 
-  = render @builds
+  - @builds.each do |build|
+    = render "ci/admin/builds/build", build: build
 
 = paginate @builds
