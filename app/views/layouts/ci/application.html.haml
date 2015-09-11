@@ -1,14 +1,11 @@
 !!! 5
 %html{ lang: "en"}
-  = render 'layouts/ci/head'
-  %body{ :'data-page' => body_data_page }
-    = render 'layouts/ci/nav'
-    = render 'layouts/ci/info'
-    - if content_for?(:title)
-      .container.container-title
-        = yield(:title)
-      %hr
+  = render 'layouts/head'
+  %body{class: "ci-body #{user_application_theme}", 'data-page' => body_data_page}
+    - header_title = "Projects"
+    - if current_user
+      = render "layouts/header/default", title: header_title
+    - else
+      = render "layouts/header/public", title: header_title
 
-    .container.container-body
-      .content
-        = yield
+    = render 'layouts/ci/page', sidebar: 'nav_dashboard'
