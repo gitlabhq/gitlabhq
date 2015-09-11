@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Issue, "Issuable" do
   let(:issue) { create(:issue) }
+  let(:user) { create(:user) }
 
   describe "Associations" do
     it { is_expected.to belong_to(:project) }
@@ -64,6 +65,21 @@ describe Issue, "Issuable" do
       allow(issue).to receive(:today?).and_return(true)
       issue.touch
       expect(issue.new?).to be_falsey
+    end
+  end
+
+
+  describe "#to_hook_data" do
+    let(:hook_data) { issue.to_hook_data(user) }
+
+    it "returns correct hook data" do
+      expect(hook_data[:object_kind]).to eq("issue")
+      expect(hook_data[:user]).to eq(user.hook_attrs)
+      expect(hook_data[:repository][:name]).to eq(issue.project.name)
+      expect(hook_data[:repository][:url]).to eq(issue.project.url_to_repo)
+      expect(hook_data[:repository][:description]).to eq(issue.project.description)
+      expect(hook_data[:repository][:homepage]).to eq(issue.project.web_url)
+      expect(hook_data[:object_attributes]).to eq(issue.hook_attrs)
     end
   end
 end
