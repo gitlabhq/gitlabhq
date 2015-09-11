@@ -28,8 +28,10 @@
 module Ci
   class Project < ActiveRecord::Base
     extend Ci::Model
-    
+
     include Ci::ProjectStatus
+
+    belongs_to :gl_project, class_name: 'Project', foreign_key: :gitlab_id
 
     has_many :commits, ->() { order(:committed_at) }, dependent: :destroy, class_name: 'Ci::Commit'
     has_many :builds, through: :commits, dependent: :destroy, class_name: 'Ci::Build'
