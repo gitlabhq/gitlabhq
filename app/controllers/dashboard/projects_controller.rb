@@ -1,6 +1,21 @@
 class Dashboard::ProjectsController < Dashboard::ApplicationController
   before_action :event_filter
 
+  def index
+    @projects = current_user.authorized_projects.sorted_by_activity.non_archived
+    @projects = @projects.includes(:namespace)
+    @last_push = current_user.recent_push
+
+    respond_to do |format|
+      format.html
+      format.atom do
+        event_filter
+        load_events
+        render layout: false
+      end
+    end
+  end
+
   def starred
     @projects = current_user.starred_projects
     @projects = @projects.includes(:namespace, :forked_from_project, :tags)

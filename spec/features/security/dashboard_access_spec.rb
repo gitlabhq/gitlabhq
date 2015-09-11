@@ -4,7 +4,7 @@ describe "Dashboard access", feature: true  do
   include AccessMatchers
 
   describe "GET /dashboard" do
-    subject { dashboard_path }
+    subject { dashboard_projects_path }
 
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_allowed_for :user }
@@ -40,7 +40,7 @@ describe "Dashboard access", feature: true  do
 
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_allowed_for :user }
-    it { is_expected.to be_denied_for :visitor }
+    it { is_expected.to be_allowed_for :visitor }
   end
 
   describe "GET /projects/new" do

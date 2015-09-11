@@ -6,10 +6,14 @@
         = brand_header_logo
         .gitlab-text-container
           %h3 GitLab
+          
     - if defined?(sidebar) && sidebar
       = render "layouts/nav/#{sidebar}"
     - elsif current_user
       = render 'layouts/nav/dashboard'
+    - else
+      = render 'layouts/nav/explore'
+
     .collapse-nav
       = render partial: 'layouts/collapse_button'
     - if current_user
