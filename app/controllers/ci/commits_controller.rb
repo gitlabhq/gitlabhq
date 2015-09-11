@@ -21,7 +21,7 @@ module Ci
     def cancel
       commit.builds.running_or_pending.each(&:cancel)
 
-      redirect_to ci_project_ref_commit_path(project, commit.ref, commit.sha)
+      redirect_to ci_project_ref_commits_path(project, commit.ref, commit.sha)
     end
 
     private

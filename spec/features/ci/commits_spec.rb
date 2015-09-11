@@ -1,17 +1,20 @@
 require 'spec_helper'
 
 describe "Commits" do
+  include Ci::CommitsHelper
+
   context "Authenticated user" do
     before do
-      login_as :user
       @project = FactoryGirl.create :ci_project
       @commit = FactoryGirl.create :ci_commit, project: @project
       @build = FactoryGirl.create :ci_build, commit: @commit
+      login_as :user
+      @project.gl_project.team << [@user, :master]
     end
 
     describe "GET /:project/commits/:sha" do
       before do
-        visit ci_project_ref_commit_path(@project, @commit.ref, @commit.sha)
+        visit ci_commit_path(@commit)
       end
 
       it { expect(page).to have_content @commit.sha[0..7] }
@@ -21,7 +24,7 @@ describe "Commits" do
 
     describe "Cancel commit" do
       it "cancels commit" do
-        visit ci_project_ref_commit_path(@project, @commit.ref, @commit.sha)
+        visit ci_commit_path(@commit)
         click_on "Cancel"
 
         expect(page).to have_content "canceled"
@@ -30,7 +33,7 @@ describe "Commits" do
 
     describe ".gitlab-ci.yml not found warning" do
       it "does not show warning" do
-        visit ci_project_ref_commit_path(@project, @commit.ref, @commit.sha)
+        visit ci_commit_path(@commit)
 
         expect(page).not_to have_content ".gitlab-ci.yml not found in this commit"
       end
@@ -39,7 +42,7 @@ describe "Commits" do
         @commit.push_data[:ci_yaml_file] = nil
         @commit.save
 
-        visit ci_project_ref_commit_path(@project, @commit.ref, @commit.sha)
+        visit ci_commit_path(@commit)
 
         expect(page).to have_content ".gitlab-ci.yml not found in this commit"
       end
@@ -55,7 +58,7 @@ describe "Commits" do
 
     describe "GET /:project/commits/:sha" do
       before do
-        visit ci_project_ref_commit_path(@project, @commit.ref, @commit.sha)
+        visit ci_commit_path(@commit)
       end
 
       it { expect(page).to have_content @commit.sha[0..7] }

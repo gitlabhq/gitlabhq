@@ -15,8 +15,12 @@ module Ci
       end
     end
 
+    def ci_commit_path(commit)
+      ci_project_ref_commits_path(commit.project, commit.ref, commit.sha)
+    end
+
     def commit_link(commit)
-      link_to(commit.short_sha, ci_project_ref_commits_path(commit.project, commit.ref, commit.sha))
+      link_to(commit.short_sha, ci_commit_path(commit))
     end
 
     def truncate_first_line(message, length = 50)

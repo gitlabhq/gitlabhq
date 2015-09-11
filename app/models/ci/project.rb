@@ -28,8 +28,10 @@
 module Ci
   class Project < ActiveRecord::Base
     extend Ci::Model
-    
+
     include Ci::ProjectStatus
+
+    belongs_to :gl_project, class_name: '::Project', foreign_key: :gitlab_id
 
     has_many :commits, ->() { order(:committed_at) }, dependent: :destroy, class_name: 'Ci::Commit'
     has_many :builds, through: :commits, dependent: :destroy, class_name: 'Ci::Build'
@@ -90,11 +92,13 @@ module Ci
         project
       end
 
+      # TODO: remove
       def from_gitlab(user, scope = :owned, options)
         opts = user.authenticate_options
         opts.merge! options
 
-        projects = Ci::Network.new.projects(opts.compact, scope)
+        raise 'Implement me of fix'
+        #projects = Ci::Network.new.projects(opts.compact, scope)
 
         if projects
           projects.map { |pr| OpenStruct.new(pr) }

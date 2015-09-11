@@ -18,7 +18,7 @@ module Ci
           project = Ci::Project.find(params[:project_id])
 
           unauthorized! unless current_user.can_manage_project?(project.gitlab_id)
-          
+
           web_hook = project.web_hooks.new({ url: params[:web_hook] })
 
           if web_hook.save

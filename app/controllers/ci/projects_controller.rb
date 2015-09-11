@@ -27,7 +27,7 @@ module Ci
 
       @projects = Ci::Project.where(gitlab_id: @gl_projects.map(&:id)).ordered_by_last_commit_date
       @total_count = @gl_projects.size
-      
+
       @gl_projects = @gl_projects.where.not(id: @projects.map(&:gitlab_id))
 
       respond_to do |format|
@@ -35,8 +35,6 @@ module Ci
           pager_json("ci/projects/gitlab", @total_count)
         end
       end
-    rescue Ci::Network::UnauthorizedError
-      raise
     rescue
       @error = 'Failed to fetch GitLab projects'
     end
@@ -82,8 +80,8 @@ module Ci
     end
 
     def destroy
+      project.gl_project.gitlab_ci_service.update_attributes(active: false)
       project.destroy
-      Ci::Network.new.disable_ci(project.gitlab_id, current_user.authenticate_options)
 
       Ci::EventService.new.remove_project(current_user, project)
 

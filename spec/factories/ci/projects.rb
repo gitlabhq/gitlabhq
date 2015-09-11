@@ -43,7 +43,7 @@ FactoryGirl.define do
       "git@demo.gitlab.com:gitlab/gitlab-shell#{n}.git"
     end
 
-    sequence :gitlab_id
+    gl_project factory: :project
 
     factory :ci_project do
       token 'iPWx6WM4lhHNedGfBpPJNP'
