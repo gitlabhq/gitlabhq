@@ -25,6 +25,9 @@ RUN mkdir -p /opt/gitlab/sv/sshd/supervise \
     && ln -s /opt/gitlab/sv/sshd /opt/gitlab/service \
     && mkdir -p /var/run/sshd
 
+# Disabling use DNS in ssh since it tends to slow connecting
+RUN echo "UseDNS no" >> /etc/ssh/sshd_config
+
 # Prepare default configuration
 RUN ( \
   echo "" && \
