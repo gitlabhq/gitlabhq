@@ -13,9 +13,9 @@ module Ci
           project_url: project_route.gsub(":project_id", @project.id.to_s),
         }
 
-        unless Ci::Network.new.enable_ci(@project.gitlab_id, data, {private_token: current_user.private_token})
-          raise ActiveRecord::Rollback
-        end
+        gl_project = ::Project.find(@project.gitlab_id)
+        gl_project.build_missing_services
+        gl_project.gitlab_ci_service.update_attributes(data.merge(active: true))
       end
 
       if forked_project
