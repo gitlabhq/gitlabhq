@@ -2,7 +2,7 @@
 %html{ lang: "en"}
   = render 'layouts/head'
   %body{class: "ci-body #{user_application_theme}", 'data-page' => body_data_page}
-    - header_title = "Projects"
+    - header_title = "CI Projects"
     - if current_user
       = render "layouts/header/default", title: header_title
     - else

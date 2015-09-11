@@ -22,7 +22,7 @@ module Ci
       @page = @offset == 0 ? 1 : (@offset / @limit + 1)
 
       @gl_projects = current_user.authorized_projects
-      @gl_projects = @gl_projects.where("name LIKE %?%", params[:search]) if params[:search]
+      @gl_projects = @gl_projects.where("name LIKE ?", "%#{params[:search]}%") if params[:search]
       @gl_projects = @gl_projects.page(@page).per(@limit)
 
       @projects = Ci::Project.where(gitlab_id: @gl_projects.map(&:id)).ordered_by_last_commit_date

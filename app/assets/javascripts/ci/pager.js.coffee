@@ -16,7 +16,7 @@
       complete: =>
         $(".loading").hide()
       success: (data) =>
-        Pager.append(data.count, data.html)
+        CiPager.append(data.count, data.html)
       dataType: "json"
 
   append: (count, html) ->
@@ -34,9 +34,9 @@
       fireDelay: 1000
       fireOnce: true
       ceaseFire: ->
-        Pager.disable
+        CiPager.disable
 
       callback: (i) =>
         unless $(".loading").is(':visible')
           $(".loading").show()
-          Pager.getItems()
+          CiPager.getItems()
