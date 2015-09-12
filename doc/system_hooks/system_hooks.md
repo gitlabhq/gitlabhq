@@ -48,16 +48,17 @@ X-Gitlab-Event: System Hook
 
 ```json
 {
-         "created_at": "2012-07-21T07:30:56Z",
-         "event_name": "user_add_to_team",
-     "project_access": "Master",
-         "project_id": 74,
-       "project_name": "StoreCloud",
-       "project_path": "storecloud",
-         "user_email": "johnsmith@gmail.com",
-          "user_name": "John Smith",
-            "user_id": 41,
- "project_visibility": "private",
+                  "created_at": "2012-07-21T07:30:56Z",
+                  "event_name": "user_add_to_team",
+              "project_access": "Master",
+                  "project_id": 74,
+                "project_name": "StoreCloud",
+                "project_path": "storecloud",
+ "project_path_with_namespace": "jsmith/storecloud",
+                  "user_email": "johnsmith@gmail.com",
+                   "user_name": "John Smith",
+                     "user_id": 41,
+          "project_visibility": "private",
 }
 ```
 
@@ -65,16 +66,17 @@ X-Gitlab-Event: System Hook
 
 ```json
 {
-         "created_at": "2012-07-21T07:30:56Z",
-         "event_name": "user_remove_from_team",
-     "project_access": "Master",
-         "project_id": 74,
-       "project_name": "StoreCloud",
-       "project_path": "storecloud",
-         "user_email": "johnsmith@gmail.com",
-          "user_name": "John Smith",
-            "user_id": 41,
- "project_visibility": "private",
+                  "created_at": "2012-07-21T07:30:56Z",
+                  "event_name": "user_remove_from_team",
+              "project_access": "Master",
+                  "project_id": 74,
+                "project_name": "StoreCloud",
+                "project_path": "storecloud",
+ "project_path_with_namespace": "jsmith/storecloud",
+                  "user_email": "johnsmith@gmail.com",
+                   "user_name": "John Smith",
+                     "user_id": 41,
+          "project_visibility": "private",
 }
 ```
 
