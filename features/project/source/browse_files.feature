@@ -320,3 +320,13 @@ Feature: Project Source Browse Files
     Then I should see download link and object size
     And I should not see lfs pointer details
     And I should see buttons for allowed commands
+
+  @javascript
+  Scenario: I preview an SVG file
+    Given I click on "Upload file" link in repo
+    And I upload a new SVG file
+    And I fill the upload file commit message
+    And I fill the new branch name
+    And I click on "Upload file"
+    Given I visit the SVG file
+    Then I can see the new rendered SVG image

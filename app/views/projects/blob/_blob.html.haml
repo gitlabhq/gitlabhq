@@ -35,7 +35,10 @@
     - if blob.lfs_pointer?
       = render "download", blob: blob
     - elsif blob.text?
-      = render "text", blob: blob
+      - if blob_svg?(blob)
+        = render "image", blob: sanitize_svg(blob)
+      - else
+        = render "text", blob: blob
     - elsif blob.image?
       = render "image", blob: blob
     - else
