@@ -146,7 +146,6 @@
     }
 
     .collapse-nav a {
-      left: 0px;
       width: $sidebar_collapsed_width;
     }
 
@@ -165,6 +164,7 @@
   width: $sidebar_width;
   position: fixed;
   bottom: 0;
+  left: 0;
   font-size: 13px;
   background: transparent;
   height: 40px;

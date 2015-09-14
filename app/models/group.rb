@@ -119,6 +119,10 @@ class Group < Namespace
     end
   end
 
+  def public_profile?
+    projects.public_only.any?
+  end
+
   def post_create_hook
     Gitlab::AppLogger.info("Group \"#{name}\" was created")
 

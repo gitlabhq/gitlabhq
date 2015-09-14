@@ -54,7 +54,7 @@ class Ability
                   nil
                 end
 
-        if group
+        if group && group.public_profile?
           [:read_group]
         else
           []
