@@ -1,5 +1,10 @@
 %ul.nav.nav-sidebar
-  = nav_link path: 'projects#show' do
+  = nav_link do
+    = link_to defined?(back_url) ? back_url : ci_root_path, title: defined?(back_title) ? back_title : 'Back to Dashboard', data: {placement: 'right'}, class: 'back-link' do
+      = icon('caret-square-o-left fw')
+      %span= defined?(back_title) ? back_title : 'Back to Dashboard'
+  %li.separate-item
+  = nav_link path: ['projects#show', 'commits#show', 'builds#show'] do
     = link_to ci_project_path(@project) do
       %i.fa.fa-list-alt
       %span
@@ -10,7 +15,7 @@
       %i.fa.fa-bar-chart
       %span
         Charts
-  = nav_link path: ['runners#index', 'runners#show'] do
+  = nav_link path: ['runners#index', 'runners#show', 'runners#edit'] do
     = link_to ci_project_runners_path(@project) do
       %i.fa.fa-cog
       %span
@@ -30,7 +35,7 @@
       %i.fa.fa-retweet
       %span
         Triggers
-  = nav_link path: 'services#index' do
+  = nav_link path: ['services#index', 'services#edit'] do
     = link_to ci_project_services_path(@project) do
       %i.fa.fa-share
       %span

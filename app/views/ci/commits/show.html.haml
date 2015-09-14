@@ -1,11 +1,3 @@
-%h4.page-title
-  = @project.name
-  @
-  #{gitlab_commit_link(@project, @commit.sha)}
-%p
-  = link_to ci_project_path(@project) do
-    &larr; Back to project commits
-%hr
 .commit-info
   %pre.commit-message
     #{@commit.git_commit_message}

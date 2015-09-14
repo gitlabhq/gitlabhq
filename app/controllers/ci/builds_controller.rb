@@ -7,7 +7,7 @@ module Ci
     before_action :authorize_manage_project!, except: [:status, :show, :retry, :cancel]
     before_action :authorize_manage_builds!, only: [:retry, :cancel]
     before_action :build, except: [:show]
-    layout 'ci/project'
+    layout 'ci/build'
 
     def show
       if params[:id] =~ /\A\d+\Z/

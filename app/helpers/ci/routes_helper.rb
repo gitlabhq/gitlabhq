@@ -13,11 +13,11 @@ module Ci
     end
 
     def url_helpers
-      @url_helpers ||= Ci::Base.new
+      @url_helpers ||= Base.new
     end
 
     def self.method_missing(method, *args, &block)
-      @url_helpers ||= Ci::Base.new
+      @url_helpers ||= Base.new
 
       if @url_helpers.respond_to?(method)
         @url_helpers.send(method, *args, &block)
