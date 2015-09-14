@@ -7,20 +7,20 @@ describe Ci::API::API do
   let(:gitlab_url) { GitlabCi.config.gitlab_server.url }
   let(:private_token) { Network.new.authenticate(access_token: "some_token")["private_token"] }
 
-  let(:options) {
+  let(:options) do
     {
       private_token: private_token,
       url: gitlab_url
     }
-  }
+  end
 
-  before {
+  before do
     stub_gitlab_calls
-  }
+  end
 
 
   describe "POST /forks" do
-    let(:project_info) {
+    let(:project_info) do
       {
         project_id: project.gitlab_id,
         project_token: project.token,
@@ -32,7 +32,7 @@ describe Ci::API::API do
           ssh_url_to_repo:     "git@example.com:gitlab-org/underscore"
         }
       }
-    }
+    end
 
     context "with valid info" do
       before do

@@ -1,11 +1,11 @@
 module Ci
   class CommitsController < Ci::ApplicationController
-    before_filter :authenticate_user!, except: [:status, :show]
-    before_filter :authenticate_public_page!, only: :show
-    before_filter :project
-    before_filter :authorize_access_project!, except: [:status, :show, :cancel]
-    before_filter :authorize_manage_builds!, only: [:cancel]
-    before_filter :commit, only: :show
+    before_action :authenticate_user!, except: [:status, :show]
+    before_action :authenticate_public_page!, only: :show
+    before_action :project
+    before_action :authorize_access_project!, except: [:status, :show, :cancel]
+    before_action :authorize_manage_builds!, only: [:cancel]
+    before_action :commit, only: :show
     layout 'ci/commit'
 
     def show

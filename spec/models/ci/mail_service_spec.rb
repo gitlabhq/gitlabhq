@@ -75,12 +75,12 @@ describe Ci::MailService do
     end
 
     describe 'successfull build and project has email_recipients' do
-      let(:project) {
+      let(:project) do
         FactoryGirl.create(:ci_project,
                            email_add_pusher: true,
                            email_only_broken_builds: false,
                            email_recipients: "jeroen@example.com")
-      }
+      end
       let(:commit) { FactoryGirl.create(:ci_commit, project: project) }
       let(:build) { FactoryGirl.create(:ci_build, status: :success, commit: commit) }
 
@@ -103,12 +103,12 @@ describe Ci::MailService do
     end
 
     describe 'successful build and notify only broken builds' do
-      let(:project) {
+      let(:project) do
         FactoryGirl.create(:ci_project,
                            email_add_pusher: true,
                            email_only_broken_builds: true,
                            email_recipients: "jeroen@example.com")
-      }
+      end
       let(:commit) { FactoryGirl.create(:ci_commit, project: project) }
       let(:build) { FactoryGirl.create(:ci_build, status: :success, commit: commit) }
 
@@ -131,12 +131,12 @@ describe Ci::MailService do
     end
 
     describe 'successful build and can test service' do
-      let(:project) {
+      let(:project) do
         FactoryGirl.create(:ci_project,
                            email_add_pusher: true,
                            email_only_broken_builds: false,
                            email_recipients: "jeroen@example.com")
-      }
+      end
       let(:commit) { FactoryGirl.create(:ci_commit, project: project) }
       let(:build) { FactoryGirl.create(:ci_build, status: :success, commit: commit) }
 
@@ -153,12 +153,12 @@ describe Ci::MailService do
     end
 
     describe 'retried build should not receive email' do
-      let(:project) {
+      let(:project) do
         FactoryGirl.create(:ci_project,
                            email_add_pusher: true,
                            email_only_broken_builds: true,
                            email_recipients: "jeroen@example.com")
-      }
+      end
       let(:commit) { FactoryGirl.create(:ci_commit, project: project) }
       let(:build) { FactoryGirl.create(:ci_build, status: :failed, commit: commit) }
 

@@ -1,9 +1,9 @@
 module Ci
   class VariablesController < Ci::ApplicationController
-    before_filter :authenticate_user!
-    before_filter :project
-    before_filter :authorize_access_project!
-    before_filter :authorize_manage_project!
+    before_action :authenticate_user!
+    before_action :project
+    before_action :authorize_access_project!
+    before_action :authorize_manage_project!
 
     layout 'ci/project'
 

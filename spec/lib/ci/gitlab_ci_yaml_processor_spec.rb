@@ -131,7 +131,7 @@ describe Ci::GitlabCiYamlProcessor do
                            image: "ruby:2.1",
                            services: ["mysql"],
                            before_script: ["pwd"],
-                           rspec: {image: "ruby:2.5", services: ["postgresql"], script: "rspec"}
+                           rspec: { image: "ruby:2.5", services: ["postgresql"], script: "rspec" }
                          })
 
       config_processor = GitlabCiYamlProcessor.new(config)
@@ -176,133 +176,133 @@ describe Ci::GitlabCiYamlProcessor do
     end
 
     it "returns errors if tags parameter is invalid" do
-      config = YAML.dump({rspec: {script: "test", tags: "mysql"}})
+      config = YAML.dump({ rspec: { script: "test", tags: "mysql" } })
       expect do
         GitlabCiYamlProcessor.new(config)
       end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: tags parameter should be an array of strings")
     end
 
     it "returns errors if before_script parameter is invalid" do
-      config = YAML.dump({before_script: "bundle update", rspec: {script: "test"}})
+      config = YAML.dump({ before_script: "bundle update", rspec: { script: "test" } })
       expect do
         GitlabCiYamlProcessor.new(config)
       end.to raise_error(GitlabCiYamlProcessor::ValidationError, "before_script should be an array of strings")
     end
 
     it "returns errors if image parameter is invalid" do
-      config = YAML.dump({image: ["test"], rspec: {script: "test"}})
+      config = YAML.dump({ image: ["test"], rspec: { script: "test" } })
       expect do
         GitlabCiYamlProcessor.new(config)
       end.to raise_error(GitlabCiYamlProcessor::ValidationError, "image should be a string")
     end
 
     it "returns errors if job image parameter is invalid" do
-      config = YAML.dump({rspec: {script: "test", image: ["test"]}})
+      config = YAML.dump({rspec: { script: "test", image: ["test"] } })
       expect do
         GitlabCiYamlProcessor.new(config)
       end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: image should be a string")
     end
 
     it "returns errors if services parameter is not an array" do
-      config = YAML.dump({services: "test", rspec: {script: "test"}})
+      config = YAML.dump({ services: "test", rspec: { script: "test" } })
       expect do
         GitlabCiYamlProcessor.new(config)
       end.to raise_error(GitlabCiYamlProcessor::ValidationError, "services should be an array of strings")
     end
 
     it "returns errors if services parameter is not an array of strings" do
-      config = YAML.dump({services: [10, "test"], rspec: {script: "test"}})
+      config = YAML.dump({ services: [10, "test"], rspec: { script: "test" } })
       expect do
         GitlabCiYamlProcessor.new(config)
       end.to raise_error(GitlabCiYamlProcessor::ValidationError, "services should be an array of strings")
     end
 
     it "returns errors if job services parameter is not an array" do
-      config = YAML.dump({rspec: {script: "test", services: "test"}})
+      config = YAML.dump({ rspec: { script: "test", services: "test" } })
       expect do
         GitlabCiYamlProcessor.new(config)
       end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: services should be an array of strings")
     end
 
     it "returns errors if job services parameter is not an array of strings" do
-      config = YAML.dump({rspec: {script: "test", services: [10, "test"]}})
+      config = YAML.dump({ rspec: { script: "test", services: [10, "test"] } })
       expect do
         GitlabCiYamlProcessor.new(config)
       end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: services should be an array of strings")
     end
 
     it "returns errors if there are unknown parameters" do
-      config = YAML.dump({extra: "bundle update"})
+      config = YAML.dump({ extra: "bundle update" })
       expect do
         GitlabCiYamlProcessor.new(config)
       end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Unknown parameter: extra")
     end
 
     it "returns errors if there are unknown parameters that are hashes, but doesn't have a script" do
-      config = YAML.dump({extra: {services: "test"}})
+      config = YAML.dump({ extra: {services: "test" } })
       expect do
         GitlabCiYamlProcessor.new(config)
       end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Unknown parameter: extra")
     end
 
     it "returns errors if there is no any jobs defined" do
-      config = YAML.dump({before_script: ["bundle update"]})
+      config = YAML.dump({ before_script: ["bundle update"] })
       expect do
         GitlabCiYamlProcessor.new(config)
       end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Please define at least one job")
     end
 
     it "returns errors if job allow_failure parameter is not an boolean" do
-      config = YAML.dump({rspec: {script: "test", allow_failure: "string"}})
+      config = YAML.dump({ rspec: { script: "test", allow_failure: "string" } })
       expect do
         GitlabCiYamlProcessor.new(config)
       end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: allow_failure parameter should be an boolean")
     end
 
     it "returns errors if job stage is not a string" do
-      config = YAML.dump({rspec: {script: "test", type: 1, allow_failure: "string"}})
+      config = YAML.dump({ rspec: { script: "test", type: 1, allow_failure: "string" } })
       expect do
         GitlabCiYamlProcessor.new(config)
       end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: stage parameter should be build, test, deploy")
     end
 
     it "returns errors if job stage is not a pre-defined stage" do
-      config = YAML.dump({rspec: {script: "test", type: "acceptance", allow_failure: "string"}})
+      config = YAML.dump({rspec: { script: "test", type: "acceptance", allow_failure: "string" } })
       expect do
         GitlabCiYamlProcessor.new(config)
       end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: stage parameter should be build, test, deploy")
     end
 
     it "returns errors if job stage is not a defined stage" do
-      config = YAML.dump({types: ["build", "test"], rspec: {script: "test", type: "acceptance", allow_failure: "string"}})
+      config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", type: "acceptance", allow_failure: "string" } })
       expect do
         GitlabCiYamlProcessor.new(config)
       end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: stage parameter should be build, test")
     end
 
     it "returns errors if stages is not an array" do
-      config = YAML.dump({types: "test", rspec: {script: "test"}})
+      config = YAML.dump({ types: "test", rspec: { script: "test" } })
       expect do
         GitlabCiYamlProcessor.new(config)
       end.to raise_error(GitlabCiYamlProcessor::ValidationError, "stages should be an array of strings")
     end
 
     it "returns errors if stages is not an array of strings" do
-      config = YAML.dump({types: [true, "test"], rspec: {script: "test"}})
+      config = YAML.dump({ types: [true, "test"], rspec: { script: "test" } })
       expect do
         GitlabCiYamlProcessor.new(config)
       end.to raise_error(GitlabCiYamlProcessor::ValidationError, "stages should be an array of strings")
     end
 
     it "returns errors if variables is not a map" do
-      config = YAML.dump({variables: "test", rspec: {script: "test"}})
+      config = YAML.dump({ variables: "test", rspec: { script: "test" } })
       expect do
         GitlabCiYamlProcessor.new(config)
       end.to raise_error(GitlabCiYamlProcessor::ValidationError, "variables should be a map of key-valued strings")
     end
 
     it "returns errors if variables is not a map of key-valued strings" do
-      config = YAML.dump({variables: {test: false}, rspec: {script: "test"}})
+      config = YAML.dump({ variables: { test: false }, rspec: { script: "test" } })
       expect do
         GitlabCiYamlProcessor.new(config)
       end.to raise_error(GitlabCiYamlProcessor::ValidationError, "variables should be a map of key-valued strings")

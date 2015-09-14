@@ -36,7 +36,7 @@ describe Ci::CreateCommitService do
       end
 
       it "creates commit if there is no appropriate job but deploy job has right ref setting" do
-        config = YAML.dump({deploy: {deploy: "ls", only: ["0_1"]}})
+        config = YAML.dump({ deploy: { deploy: "ls", only: ["0_1"] } })
 
         result = service.execute(project,
           ref: 'refs/heads/0_1',
@@ -51,7 +51,7 @@ describe Ci::CreateCommitService do
 
     describe :ci_skip? do
       it "skips builds creation if there is [ci skip] tag in commit message" do
-        commits = [{message: "some message[ci skip]"}]
+        commits = [{ message: "some message[ci skip]" }]
         commit = service.execute(project,
           ref: 'refs/tags/0_1',
           before: '00000000',
@@ -64,7 +64,7 @@ describe Ci::CreateCommitService do
       end
 
       it "does not skips builds creation if there is no [ci skip] tag in commit message" do
-        commits = [{message: "some message"}]
+        commits = [{ message: "some message" }]
 
         commit = service.execute(project,
           ref: 'refs/tags/0_1',
@@ -78,7 +78,7 @@ describe Ci::CreateCommitService do
       end
 
       it "skips builds creation if there is [ci skip] tag in commit message and yaml is invalid" do
-        commits = [{message: "some message[ci skip]"}]
+        commits = [{ message: "some message[ci skip]" }]
         commit = service.execute(project,
                                  ref: 'refs/tags/0_1',
                                  before: '00000000',
@@ -92,7 +92,7 @@ describe Ci::CreateCommitService do
     end
 
     it "skips build creation if there are already builds" do
-      commits = [{message: "message"}]
+      commits = [{ message: "message" }]
       commit = service.execute(project,
         ref: 'refs/heads/master',
         before: '00000000',
@@ -113,7 +113,7 @@ describe Ci::CreateCommitService do
     end
 
     it "creates commit with failed status if yaml is invalid" do
-      commits = [{message: "some message"}]
+      commits = [{ message: "some message" }]
 
       commit = service.execute(project,
                                ref: 'refs/tags/0_1',

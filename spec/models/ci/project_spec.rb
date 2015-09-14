@@ -94,33 +94,33 @@ describe Ci::Project do
   end
 
   describe '#broken_or_success?' do
-    it {
+    it do
       project = FactoryGirl.create :ci_project, email_add_pusher: true
       allow(project).to receive(:broken?).and_return(true)
       allow(project).to receive(:success?).and_return(true)
       expect(project.broken_or_success?).to eq(true)
-    }
+    end
 
-    it {
+    it do
       project = FactoryGirl.create :ci_project, email_add_pusher: true
       allow(project).to receive(:broken?).and_return(true)
       allow(project).to receive(:success?).and_return(false)
       expect(project.broken_or_success?).to eq(true)
-    }
+    end
 
-    it {
+    it do
       project = FactoryGirl.create :ci_project, email_add_pusher: true
       allow(project).to receive(:broken?).and_return(false)
       allow(project).to receive(:success?).and_return(true)
       expect(project.broken_or_success?).to eq(true)
-    }
+    end
 
-    it {
+    it do
       project = FactoryGirl.create :ci_project, email_add_pusher: true
       allow(project).to receive(:broken?).and_return(false)
       allow(project).to receive(:success?).and_return(false)
       expect(project.broken_or_success?).to eq(false)
-    }
+    end
   end
 
   describe 'Project.parse' do

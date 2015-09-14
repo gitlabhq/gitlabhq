@@ -4,19 +4,19 @@ describe Ci::API::API do
   include ApiHelpers
   include StubGitlabCalls
 
-  before {
+  before do
     stub_gitlab_calls
-  }
+  end
 
   describe "GET /runners" do
     let(:gitlab_url) { GitlabCi.config.gitlab_server.url }
     let(:private_token) { Network.new.authenticate(access_token: "some_token")["private_token"] }
-    let(:options) {
+    let(:options) do
       {
-        :private_token => private_token,
-        :url => gitlab_url
+        private_token: private_token,
+        url: gitlab_url
       }
-    }
+    end
 
     before do
       5.times { FactoryGirl.create(:ci_runner) }

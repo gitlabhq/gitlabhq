@@ -50,9 +50,9 @@ describe Ci::API::API do
       end
 
       context 'Validates variables' do
-        let(:variables) {
-          {'TRIGGER_KEY' => 'TRIGGER_VALUE'}
-        }
+        let(:variables) do
+          { 'TRIGGER_KEY' => 'TRIGGER_VALUE' }
+        end
 
         it 'should validate variables to be a hash' do
           post api("/projects/#{project.id}/refs/master/trigger"), options.merge(variables: 'value')
@@ -61,7 +61,7 @@ describe Ci::API::API do
         end
 
         it 'should validate variables needs to be a map of key-valued strings' do
-          post api("/projects/#{project.id}/refs/master/trigger"), options.merge(variables: {key: %w(1 2)})
+          post api("/projects/#{project.id}/refs/master/trigger"), options.merge(variables: { key: %w(1 2) })
           expect(response.status).to eq(400)
           expect(json_response['message']).to eq('variables needs to be a map of key-valued strings')
         end

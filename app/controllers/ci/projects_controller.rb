@@ -2,13 +2,13 @@ module Ci
   class ProjectsController < Ci::ApplicationController
     PROJECTS_BATCH = 100
 
-    before_filter :authenticate_user!, except: [:build, :badge, :index, :show]
-    before_filter :authenticate_public_page!, only: :show
-    before_filter :project, only: [:build, :integration, :show, :badge, :edit, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
-    before_filter :authorize_access_project!, except: [:build, :gitlab, :badge, :index, :show, :new, :create]
-    before_filter :authorize_manage_project!, only: [:edit, :integration, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
-    before_filter :authenticate_token!, only: [:build]
-    before_filter :no_cache, only: [:badge]
+    before_action :authenticate_user!, except: [:build, :badge, :index, :show]
+    before_action :authenticate_public_page!, only: :show
+    before_action :project, only: [:build, :integration, :show, :badge, :edit, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
+    before_action :authorize_access_project!, except: [:build, :gitlab, :badge, :index, :show, :new, :create]
+    before_action :authorize_manage_project!, only: [:edit, :integration, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
+    before_action :authenticate_token!, only: [:build]
+    before_action :no_cache, only: [:badge]
     protect_from_forgery except: :build
 
     layout 'ci/project', except: [:index, :gitlab]

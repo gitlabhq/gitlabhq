@@ -1,12 +1,12 @@
 module Ci
   class BuildsController < Ci::ApplicationController
-    before_filter :authenticate_user!, except: [:status, :show]
-    before_filter :authenticate_public_page!, only: :show
-    before_filter :project
-    before_filter :authorize_access_project!, except: [:status, :show]
-    before_filter :authorize_manage_project!, except: [:status, :show, :retry, :cancel]
-    before_filter :authorize_manage_builds!, only: [:retry, :cancel]
-    before_filter :build, except: [:show]
+    before_action :authenticate_user!, except: [:status, :show]
+    before_action :authenticate_public_page!, only: :show
+    before_action :project
+    before_action :authorize_access_project!, except: [:status, :show]
+    before_action :authorize_manage_project!, except: [:status, :show, :retry, :cancel]
+    before_action :authorize_manage_builds!, only: [:retry, :cancel]
+    before_action :build, except: [:show]
     layout 'ci/build'
 
     def show
