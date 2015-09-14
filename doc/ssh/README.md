@@ -72,6 +72,9 @@ access can happen through being a direct member of the project, or through
 a group. See `def accessible_deploy_keys` in `app/models/user.rb` for more
 information.
 
+Deploy keys are added by project. It is not possible yet to have default 
+or global deploy keys.
+
 ## Applications
 
 ### Eclipse
