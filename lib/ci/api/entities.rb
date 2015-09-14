@@ -12,8 +12,12 @@ module Ci
       end
 
       class Build < Grape::Entity
-        expose :id, :commands, :path, :ref, :sha, :project_id, :repo_url,
-          :before_sha, :timeout, :allow_git_fetch, :project_name, :options
+        expose :id, :commands, :ref, :sha, :project_id, :repo_url,
+          :before_sha, :allow_git_fetch, :project_name, :options
+
+        expose :timeout do |model|
+          model.timeout
+        end
 
         expose :variables
       end
