@@ -1,5 +1,5 @@
 %ul.nav.nav-sidebar
-  = nav_link path: 'projects#show' do
+  = nav_link path: ['projects#show', 'commits#show', 'builds#show'] do
     = link_to ci_project_path(@project) do
       %i.fa.fa-list-alt
       %span
