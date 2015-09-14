@@ -10,20 +10,10 @@
 # WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 # GO AFTER THE REQUIRES BELOW.
 #
-#= require jquery
-#= require bootstrap
-#= require jquery_ujs
-#= require turbolinks
-#= require jquery.turbolinks
-#= require jquery.endless-scroll
 #= require pager
-#= require nprogress
-#= require nprogress-turbolinks
 #= require jquery_nested_form
 #= require_tree .
 #
-#
-
 $(document).on 'click', '.edit-runner-link', (event) ->
   event.preventDefault()
 

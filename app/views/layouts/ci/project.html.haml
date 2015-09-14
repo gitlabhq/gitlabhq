@@ -1,27 +1,11 @@
 !!! 5
 %html{ lang: "en"}
-  = render 'layouts/ci/head'
-  %body{ :'data-page' => body_data_page }
-    = render 'layouts/ci/nav'
-    = render 'layouts/ci/info'
-    .container
-      %h3.project-title
-        = @project.name
-        - if @project.public
-          %small
-            %i.fa.fa-globe
-            Public
+  = render 'layouts/head'
+  %body{class: "ci-body #{user_application_theme}", 'data-page' => body_data_page}
+    - header_title = @project.name
+    - if current_user
+      = render "layouts/header/default", title: header_title
+    - else
+      = render "layouts/header/public", title: header_title
 
-        .pull-right
-          = link_to 'View on GitLab', @project.gitlab_url, no_turbolink.merge( class: 'btn btn-sm' )
-    %hr
-    .container.container-body
-      .content
-        - if current_user && can?(current_user, :admin_project, gl_project)
-          .row
-            .col-md-2.append-bottom-20
-              = render 'layouts/ci/nav_project'
-            .col-md-10
-              = yield
-        - else
-          = yield
+    = render 'layouts/ci/page', sidebar: 'nav_project'

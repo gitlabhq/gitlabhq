@@ -21,7 +21,13 @@ module Gitlab
         language = node.attr('class')
         code     = node.text
 
-        highlighted = block_code(code, language)
+        begin
+          highlighted = block_code(code, language)
+        rescue
+          # Gracefully handle syntax highlighter bugs/errors to ensure
+          # users can still access an issue/comment/etc.
+          highlighted = "<pre>#{code}</pre>"
+        end
 
         # Replace the parent `pre` element with the entire highlighted block
         node.parent.replace(highlighted)

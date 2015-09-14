@@ -1,5 +1,5 @@
 %h4.page-title
-  = link_to ci_project_path(@project)
+  = link_to @project.name, ci_project_path(@project)
   @
   = @commit.short_sha
 

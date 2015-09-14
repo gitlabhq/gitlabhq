@@ -1,10 +1,5 @@
 - if current_user
-  = content_for :title do
-    %h3.project-title
-      Dashboard
-      .pull-right
-        = render "search"
-
+  = render "search"
   .projects
     %p.fetch-status.light
       %i.fa.fa-refresh.fa-spin
@@ -12,6 +7,6 @@
     $.get '#{gitlab_ci_projects_path}', (data) ->
       $(".projects").html data.html
     CiPager.init "#{gitlab_ci_projects_path}", #{Ci::ProjectsController::PROJECTS_BATCH}, false
-    
+
 - else
   = render 'public'

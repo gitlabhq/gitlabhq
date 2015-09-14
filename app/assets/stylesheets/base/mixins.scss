@@ -55,10 +55,10 @@
 }
 
 @mixin md-typography {
-  color: #444;
+  color: $md-text-color;
 
   a {
-    color: #3084bb;
+    color: $md-link-color;
   }
 
   img {
