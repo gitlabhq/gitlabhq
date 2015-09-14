@@ -96,6 +96,17 @@ describe Projects::CreateService do
         expect(project.saved?).to be(true)
       end
     end
+
+    context 'repository creation' do
+      it 'should synchronously create the repository' do
+        expect_any_instance_of(Project).to receive(:create_repository)
+
+        project = create_project(@user, @opts)
+        expect(project).to be_valid
+        expect(project.owner).to eq(@user)
+        expect(project.namespace).to eq(@user.namespace)
+      end
+    end
   end
 
   def create_project(user, opts)

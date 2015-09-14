@@ -15,7 +15,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
   end
 
   step 'I should see the forked project page' do
-    expect(page).to have_content "Project was successfully forked."
+    expect(page).to have_content "Forked from"
   end
 
   step 'I already have a project named "Shop" in my namespace' do

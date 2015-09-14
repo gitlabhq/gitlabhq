@@ -55,9 +55,7 @@ module Projects
         @project.save
 
         if @project.persisted? && !@project.import?
-          unless @project.create_repository
-            raise 'Failed to create repository'
-          end
+          raise 'Failed to create repository' unless @project.create_repository
         end
       end
 
