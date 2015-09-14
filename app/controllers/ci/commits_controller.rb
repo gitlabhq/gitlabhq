@@ -6,7 +6,7 @@ module Ci
     before_filter :authorize_access_project!, except: [:status, :show, :cancel]
     before_filter :authorize_manage_builds!, only: [:cancel]
     before_filter :commit, only: :show
-    layout 'ci/project'
+    layout 'ci/commit'
 
     def show
       @builds = @commit.builds

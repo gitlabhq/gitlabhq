@@ -1,12 +1,3 @@
-%h4.page-title
-  = link_to @project.name, ci_project_path(@project)
-  @
-  = @commit.short_sha
-
-%p
-  = link_to ci_project_ref_commits_path(@project, @commit.ref, @commit.sha) do
-    &larr; Back to project commit
-%hr
 #up-build-trace
 - if @commit.matrix?
   %ul.nav.nav-tabs.append-bottom-10
