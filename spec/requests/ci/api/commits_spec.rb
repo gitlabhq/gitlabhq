@@ -6,12 +6,12 @@ describe Ci::API::API, 'Commits' do
   let(:project) { FactoryGirl.create(:ci_project) }
   let(:commit) { FactoryGirl.create(:ci_commit, project: project) }
 
-  let(:options) {
+  let(:options) do
     {
       project_token: project.token,
       project_id: project.id
     }
-  }
+  end
 
   describe "GET /commits" do
     before { commit }
@@ -27,7 +27,7 @@ describe Ci::API::API, 'Commits' do
   end
 
   describe "POST /commits" do
-    let(:data) {
+    let(:data) do
       {
         "before" => "95790bf891e76fee5e1747ab589903a6a1f80f22",
         "after" => "da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
@@ -46,7 +46,7 @@ describe Ci::API::API, 'Commits' do
         ],
         ci_yaml_file: gitlab_ci_yaml
       }
-    }
+    end
 
     it "should create a build" do
       post api("/commits"), options.merge(data: data)

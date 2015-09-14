@@ -1,6 +1,6 @@
 module Ci
   class Admin::RunnersController < Ci::Admin::ApplicationController
-    before_filter :runner, except: :index
+    before_action :runner, except: :index
 
     def index
       @runners = Ci::Runner.order('id DESC')

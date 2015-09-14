@@ -20,7 +20,7 @@ describe Ci::API::API do
         commit.create_builds
         build = commit.builds.first
 
-        post api("/builds/register"), token: runner.token, info: {platform: :darwin}
+        post api("/builds/register"), token: runner.token, info: { platform: :darwin }
 
         expect(response.status).to eq(201)
         expect(json_response['sha']).to eq(build.sha)
@@ -55,10 +55,10 @@ describe Ci::API::API do
         commit = FactoryGirl.create(:ci_commit, project: project)
         commit.create_builds
 
-        post api("/builds/register"), token: runner.token, info: {platform: :darwin}
+        post api("/builds/register"), token: runner.token, info: { platform: :darwin }
 
         expect(response.status).to eq(201)
-        expect(json_response["options"]).to eq({"image" => "ruby:2.1", "services" => ["postgres"]})
+        expect(json_response["options"]).to eq({ "image" => "ruby:2.1", "services" => ["postgres"] })
       end
 
       it "returns variables" do
@@ -66,12 +66,12 @@ describe Ci::API::API do
         commit.create_builds
         project.variables << Variable.new(key: "SECRET_KEY", value: "secret_value")
 
-        post api("/builds/register"), token: runner.token, info: {platform: :darwin}
+        post api("/builds/register"), token: runner.token, info: { platform: :darwin }
 
         expect(response.status).to eq(201)
         expect(json_response["variables"]).to eq([
-          {"key" => "DB_NAME", "value" => "postgres", "public" => true},
-          {"key" => "SECRET_KEY", "value" => "secret_value", "public" => false},
+          { "key" => "DB_NAME", "value" => "postgres", "public" => true },
+          { "key" => "SECRET_KEY", "value" => "secret_value", "public" => false },
         ])
       end
 
@@ -83,13 +83,13 @@ describe Ci::API::API do
         commit.create_builds(trigger_request)
         project.variables << Variable.new(key: "SECRET_KEY", value: "secret_value")
 
-        post api("/builds/register"), token: runner.token, info: {platform: :darwin}
+        post api("/builds/register"), token: runner.token, info: { platform: :darwin }
 
         expect(response.status).to eq(201)
         expect(json_response["variables"]).to eq([
-          {"key" => "DB_NAME", "value" => "postgres", "public" => true},
-          {"key" => "SECRET_KEY", "value" => "secret_value", "public" => false},
-          {"key" => "TRIGGER_KEY", "value" => "TRIGGER_VALUE", "public" => false},
+          { "key" => "DB_NAME", "value" => "postgres", "public" => true },
+          { "key" => "SECRET_KEY", "value" => "secret_value", "public" => false },
+          { "key" => "TRIGGER_KEY", "value" => "TRIGGER_VALUE", "public" => false },
         ])
       end
     end

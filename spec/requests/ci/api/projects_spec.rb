@@ -6,16 +6,16 @@ describe Ci::API::API do
   let(:gitlab_url) { GitlabCi.config.gitlab_server.url }
   let(:private_token) { Network.new.authenticate(access_token: "some_token")["private_token"] }
 
-  let(:options) {
+  let(:options) do
     {
       private_token: private_token,
       url: gitlab_url
     }
-  }
+  end
 
-  before {
+  before do
     stub_gitlab_calls
-  }
+  end
 
   context "requests for scoped projects" do
     # NOTE: These ids are tied to the actual projects on demo.gitlab.com
@@ -75,7 +75,7 @@ describe Ci::API::API do
     end
 
     context "Invalid Webhook URL" do
-      let!(:webhook) { {web_hook: "ala_ma_kota" } }
+      let!(:webhook) { { web_hook: "ala_ma_kota" } }
 
       before do
         options.merge!(webhook)
@@ -116,7 +116,7 @@ describe Ci::API::API do
 
   describe "PUT /projects/:id" do
     let!(:project) { FactoryGirl.create(:ci_project) }
-    let!(:project_info) { {name: "An updated name!" } }
+    let!(:project_info) { { name: "An updated name!" } }
 
     before do
       options.merge!(project_info)
@@ -163,14 +163,14 @@ describe Ci::API::API do
   end
 
   describe "POST /projects" do
-    let(:project_info) {
+    let(:project_info) do
       {
         name: "My project",
         gitlab_id: 1,
         path: "testing/testing",
         ssh_url_to_repo: "ssh://example.com/testing/testing.git"
       }
-    }
+    end
 
     let(:invalid_project_info) { {} }
 

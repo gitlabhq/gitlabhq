@@ -211,14 +211,14 @@ describe Ci::Build do
   end
 
   describe :options do
-    let(:options) {
+    let(:options) do
       {
-        :image => "ruby:2.1",
-        :services => [
+        image: "ruby:2.1",
+        services: [
           "postgres"
         ]
       }
-    }
+    end
 
     subject { build.options }
     it { is_expected.to eq(options) }
@@ -308,20 +308,20 @@ describe Ci::Build do
     context 'returns variables' do
       subject { build.variables }
 
-      let(:variables) {
+      let(:variables) do
         [
-          {key: :DB_NAME, value: 'postgres', public: true}
+          { key: :DB_NAME, value: 'postgres', public: true }
         ]
-      }
+      end
 
       it { is_expected.to eq(variables) }
 
       context 'and secure variables' do
-        let(:secure_variables) {
+        let(:secure_variables) do
           [
-            {key: 'SECRET_KEY', value: 'secret_value', public: false}
+            { key: 'SECRET_KEY', value: 'secret_value', public: false }
           ]
-        }
+        end
 
         before do
           build.project.variables << Ci::Variable.new(key: 'SECRET_KEY', value: 'secret_value')
@@ -332,11 +332,11 @@ describe Ci::Build do
         context 'and trigger variables' do
           let(:trigger) { FactoryGirl.create :ci_trigger, project: project }
           let(:trigger_request) { FactoryGirl.create :ci_trigger_request_with_variables, commit: commit, trigger: trigger }
-          let(:trigger_variables) {
+          let(:trigger_variables) do
             [
-              {key: :TRIGGER_KEY, value: 'TRIGGER_VALUE', public: false}
+              { key: :TRIGGER_KEY, value: 'TRIGGER_VALUE', public: false }
             ]
-          }
+          end
 
           before do
             build.trigger_request = trigger_request

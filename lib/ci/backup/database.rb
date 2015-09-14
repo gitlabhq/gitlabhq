@@ -13,13 +13,13 @@ module Ci
 
       def dump
         success = case config["adapter"]
-        when /^mysql/ then
-          $progress.print "Dumping MySQL database #{config['database']} ... "
-          system('mysqldump', *mysql_args, config['database'], out: db_file_name)
-        when "postgresql" then
-          $progress.print "Dumping PostgreSQL database #{config['database']} ... "
-          pg_env
-          system('pg_dump', config['database'], out: db_file_name)
+                  when /^mysql/ then
+                    $progress.print "Dumping MySQL database #{config['database']} ... "
+                    system('mysqldump', *mysql_args, config['database'], out: db_file_name)
+                  when "postgresql" then
+                    $progress.print "Dumping PostgreSQL database #{config['database']} ... "
+                    pg_env
+                    system('pg_dump', config['database'], out: db_file_name)
         end
         report_success(success)
         abort 'Backup failed' unless success
@@ -27,17 +27,17 @@ module Ci
 
       def restore
         success = case config["adapter"]
-        when /^mysql/ then
-          $progress.print "Restoring MySQL database #{config['database']} ... "
-          system('mysql', *mysql_args, config['database'], in: db_file_name)
-        when "postgresql" then
-          $progress.print "Restoring PostgreSQL database #{config['database']} ... "
-          # Drop all tables because PostgreSQL DB dumps do not contain DROP TABLE
-          # statements like MySQL.
-          drop_all_tables
-          drop_all_postgres_sequences
-          pg_env
-          system('psql', config['database'], '-f', db_file_name)
+                  when /^mysql/ then
+                    $progress.print "Restoring MySQL database #{config['database']} ... "
+                    system('mysql', *mysql_args, config['database'], in: db_file_name)
+                  when "postgresql" then
+                    $progress.print "Restoring PostgreSQL database #{config['database']} ... "
+                    # Drop all tables because PostgreSQL DB dumps do not contain DROP TABLE
+                    # statements like MySQL.
+                    drop_all_tables
+                    drop_all_postgres_sequences
+                    pg_env
+                    system('psql', config['database'], '-f', db_file_name)
         end
         report_success(success)
         abort 'Restore failed' unless success

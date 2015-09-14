@@ -8,12 +8,12 @@ describe Ci::ProjectsController do
   describe "POST #build" do
     it 'should respond 200 if params is ok' do
       post :build, id: @project.id,
-        ref: 'master',
-        before: '2aa371379db71ac89ae20843fcff3b3477cf1a1d',
-        after: '1c8a9df454ef68c22c2a33cca8232bb50849e5c5',
-        token: @project.token,
+        ref:          'master',
+        before:       '2aa371379db71ac89ae20843fcff3b3477cf1a1d',
+        after:        '1c8a9df454ef68c22c2a33cca8232bb50849e5c5',
+        token:        @project.token,
         ci_yaml_file: gitlab_ci_yaml,
-        commits: [ { message: "Message" } ]
+        commits:      [ { message: "Message" } ]
 
 
       expect(response).to be_success
@@ -22,10 +22,10 @@ describe Ci::ProjectsController do
 
     it 'should respond 400 if push about removed branch' do
       post :build, id: @project.id,
-        ref: 'master',
-        before: '2aa371379db71ac89ae20843fcff3b3477cf1a1d',
-        after: '0000000000000000000000000000000000000000',
-        token: @project.token,
+        ref:          'master',
+        before:       '2aa371379db71ac89ae20843fcff3b3477cf1a1d',
+        after:        '0000000000000000000000000000000000000000',
+        token:        @project.token,
         ci_yaml_file: gitlab_ci_yaml
 
       expect(response).not_to be_success

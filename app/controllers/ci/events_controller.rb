@@ -2,9 +2,9 @@ module Ci
   class EventsController < Ci::ApplicationController
     EVENTS_PER_PAGE = 50
 
-    before_filter :authenticate_user!
-    before_filter :project
-    before_filter :authorize_manage_project!
+    before_action :authenticate_user!
+    before_action :project
+    before_action :authorize_manage_project!
 
     layout 'ci/project'
 
