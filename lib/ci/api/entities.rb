@@ -11,9 +11,16 @@ module Ci
         expose :builds
       end
 
+      class BuildOptions < Grape::Entity
+        expose :image
+        expose :services
+      end
+
       class Build < Grape::Entity
         expose :id, :commands, :ref, :sha, :project_id, :repo_url,
-          :before_sha, :allow_git_fetch, :project_name, :options
+          :before_sha, :allow_git_fetch, :project_name
+
+        expose :options, using: BuildOptions
 
         expose :timeout do |model|
           model.timeout
