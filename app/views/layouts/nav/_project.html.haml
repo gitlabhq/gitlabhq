@@ -26,14 +26,14 @@
         Activity
   - if project_nav_tab? :files
     = nav_link(controller: %w(tree blob blame edit_tree new_tree)) do
-      = link_to namespace_project_tree_path(@project.namespace, @project, @ref || @repository.root_ref), title: 'Files',  class: 'shortcuts-tree', data: {placement: 'right'} do
+      = link_to project_files_path(@project), title: 'Files',  class: 'shortcuts-tree', data: {placement: 'right'} do
         = icon('files-o fw')
         %span
           Files
 
   - if project_nav_tab? :commits
     = nav_link(controller: %w(commit commits compare repositories tags branches)) do
-      = link_to namespace_project_commits_path(@project.namespace, @project, @ref || @repository.root_ref), title: 'Commits', class: 'shortcuts-commits', data: {placement: 'right'} do
+      = link_to project_commits_path(@project), title: 'Commits', class: 'shortcuts-commits', data: {placement: 'right'} do
         = icon('history fw')
         %span
           Commits
