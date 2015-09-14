@@ -148,15 +148,14 @@ module API
       end
     end
 
-    def attributes_for_keys(keys)
+    def attributes_for_keys(keys, custom_params = nil)
+      params_hash = custom_params || params
       attrs = {}
-
       keys.each do |key|
         if params[key].present? or (params.has_key?(key) and params[key] == false)
           attrs[key] = params[key]
         end
       end
-
       ActionController::Parameters.new(attrs).permit!
     end
 

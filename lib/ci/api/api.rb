@@ -3,6 +3,7 @@ Dir["#{Rails.root}/lib/ci/api/*.rb"].each {|file| require file}
 module Ci
   module API
     class API < Grape::API
+      include APIGuard
       version 'v1', using: :path
 
       rescue_from ActiveRecord::RecordNotFound do
@@ -25,6 +26,7 @@ module Ci
       format :json
 
       helpers Helpers
+      helpers ::API::APIHelpers
 
       mount Builds
       mount Commits
