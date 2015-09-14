@@ -27,6 +27,14 @@ Delete Asana service for a project.
 DELETE /projects/:id/services/asana
 ```
 
+### Get Asana service settings
+
+Get Asana service settings for a project.
+
+```
+GET /projects/:id/services/asana
+```
+
 ## Assembla
 
 Project Management Software (Source Commits Endpoint)
@@ -50,6 +58,14 @@ Delete Assembla service for a project.
 
 ```
 DELETE /projects/:id/services/assembla
+```
+
+### Get Assembla service settings
+
+Get Assembla service settings for a project.
+
+```
+GET /projects/:id/services/assembla
 ```
 
 ## Atlassian Bamboo CI
@@ -81,6 +97,14 @@ Delete Atlassian Bamboo CI service for a project.
 DELETE /projects/:id/services/bamboo
 ```
 
+### Get Atlassian Bamboo CI service settings
+
+Get Atlassian Bamboo CI service settings for a project.
+
+```
+GET /projects/:id/services/bamboo
+```
+
 ## Buildkite
 
 Continuous integration and deployments
@@ -107,6 +131,14 @@ Delete Buildkite service for a project.
 DELETE /projects/:id/services/buildkite
 ```
 
+### Get Buildkite service settings
+
+Get Buildkite service settings for a project.
+
+```
+GET /projects/:id/services/buildkite
+```
+
 ## Campfire
 
 Simple web-based real-time group chat
@@ -131,6 +163,14 @@ Delete Campfire service for a project.
 
 ```
 DELETE /projects/:id/services/campfire
+```
+
+### Get Campfire service settings
+
+Get Campfire service settings for a project.
+
+```
+GET /projects/:id/services/campfire
 ```
 
 ## Custom Issue Tracker
@@ -161,6 +201,14 @@ Delete Custom Issue Tracker service for a project.
 DELETE /projects/:id/services/custom-issue-tracker
 ```
 
+### Get Custom Issue Tracker service settings
+
+Get Custom Issue Tracker service settings for a project.
+
+```
+GET /projects/:id/services/custom-issue-tracker
+```
+
 ## Drone CI
 
 Drone is a Continuous Integration platform built on Docker, written in Go
@@ -185,6 +233,14 @@ Delete Drone CI service for a project.
 
 ```
 DELETE /projects/:id/services/drone-ci
+```
+
+### Get Drone CI service settings
+
+Get Drone CI service settings for a project.
+
+```
+GET /projects/:id/services/drone-ci
 ```
 
 ## Emails on push
@@ -213,6 +269,14 @@ Delete Emails on push service for a project.
 DELETE /projects/:id/services/emails-on-push
 ```
 
+### Get Emails on push service settings
+
+Get Emails on push service settings for a project.
+
+```
+GET /projects/:id/services/emails-on-push
+```
+
 ## External Wiki
 
 Replaces the link to the internal wiki with a link to an external wiki.
@@ -237,6 +301,14 @@ Delete External Wiki service for a project.
 DELETE /projects/:id/services/external-wiki
 ```
 
+### Get External Wiki service settings
+
+Get External Wiki service settings for a project.
+
+```
+GET /projects/:id/services/external-wiki
+```
+
 ## Flowdock
 
 Flowdock is a collaboration web app for technical teams.
@@ -259,6 +331,14 @@ Delete Flowdock service for a project.
 
 ```
 DELETE /projects/:id/services/flowdock
+```
+
+### Get Flowdock service settings
+
+Get Flowdock service settings for a project.
+
+```
+GET /projects/:id/services/flowdock
 ```
 
 ## Gemnasium
@@ -286,6 +366,14 @@ Delete Gemnasium service for a project.
 DELETE /projects/:id/services/gemnasium
 ```
 
+### Get Gemnasium service settings
+
+Get Gemnasium service settings for a project.
+
+```
+GET /projects/:id/services/gemnasium
+```
+
 ## GitLab CI
 
 Continuous integration server from GitLab
@@ -310,6 +398,14 @@ Delete GitLab CI service for a project.
 
 ```
 DELETE /projects/:id/services/gitlab-ci
+```
+
+### Get GitLab CI service settings
+
+Get GitLab CI service settings for a project.
+
+```
+GET /projects/:id/services/gitlab-ci
 ```
 
 ## HipChat
@@ -339,6 +435,14 @@ Delete HipChat service for a project.
 
 ```
 DELETE /projects/:id/services/hipchat
+```
+
+### Get HipChat service settings
+
+Get HipChat service settings for a project.
+
+```
+GET /projects/:id/services/hipchat
 ```
 
 ## Irker (IRC gateway)
@@ -371,6 +475,14 @@ Delete Irker (IRC gateway) service for a project.
 DELETE /projects/:id/services/irker
 ```
 
+### Get Irker (IRC gateway) service settings
+
+Get Irker (IRC gateway) service settings for a project.
+
+```
+GET /projects/:id/services/irker
+```
+
 ## JIRA
 
 Jira issue tracker
@@ -400,6 +512,14 @@ Delete JIRA service for a project.
 DELETE /projects/:id/services/jira
 ```
 
+### Get JIRA service settings
+
+Get JIRA service settings for a project.
+
+```
+GET /projects/:id/services/jira
+```
+
 ## PivotalTracker
 
 Project Management Software (Source Commits Endpoint)
@@ -422,6 +542,14 @@ Delete PivotalTracker service for a project.
 
 ```
 DELETE /projects/:id/services/pivotaltracker
+```
+
+### Get PivotalTracker service settings
+
+Get PivotalTracker service settings for a project.
+
+```
+GET /projects/:id/services/pivotaltracker
 ```
 
 ## Pushover
@@ -452,6 +580,14 @@ Delete Pushover service for a project.
 DELETE /projects/:id/services/pushover
 ```
 
+### Get Pushover service settings
+
+Get Pushover service settings for a project.
+
+```
+GET /projects/:id/services/pushover
+```
+
 ## Redmine
 
 Redmine issue tracker
@@ -479,6 +615,14 @@ Delete Redmine service for a project.
 DELETE /projects/:id/services/redmine
 ```
 
+### Get Redmine service settings
+
+Get Redmine service settings for a project.
+
+```
+GET /projects/:id/services/redmine
+```
+
 ## Slack
 
 A team communication tool for the 21st century
@@ -503,6 +647,14 @@ Delete Slack service for a project.
 
 ```
 DELETE /projects/:id/services/slack
+```
+
+### Get Slack service settings
+
+Get Slack service settings for a project.
+
+```
+GET /projects/:id/services/slack
 ```
 
 ## JetBrains TeamCity CI
@@ -532,5 +684,13 @@ Delete JetBrains TeamCity CI service for a project.
 
 ```
 DELETE /projects/:id/services/teamcity
+```
+
+### Get JetBrains TeamCity CI service settings
+
+Get JetBrains TeamCity CI service settings for a project.
+
+```
+GET /projects/:id/services/teamcity
 ```
 

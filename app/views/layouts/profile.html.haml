@@ -1,5 +1,6 @@
 - page_title    "Profile Settings"
-- header_title  "Profile Settings", profile_path
+- unless @header_title
+  - header_title  "Profile Settings", profile_path
 - sidebar       "profile"
 
 = render template: "layouts/application"

@@ -1,13 +1,13 @@
 - page_title "Password"
-%h3.page-title
-  = page_title
-%p.light
+- header_title page_title, edit_profile_password_path
+
+.gray-content-block.top-block
   - if @user.password_automatically_set?
     Set your password.
   - else
     Change your password or recover your current one.
-%hr
-.update-password
+
+.update-password.prepend-top-default
   = form_for @user, url: profile_password_path, method: :put, html: { class: 'form-horizontal' }  do |f|
     %div
       %p.slead

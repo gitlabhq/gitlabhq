@@ -1,15 +1,13 @@
-- page_title "Public Snippets"
-- if current_user
-  = render 'head'
+- page_title "By #{@user.name}", "Snippets"
 
-.gray-content-block
-  - if current_user
-    .pull-right
-      = link_to new_snippet_path, class: "btn btn-new", title: "New Snippet" do
-        Add new snippet
-
-  .oneline
-    Public snippets created by you and other users are listed here
+%ol.breadcrumb
+  %li
+    = link_to snippets_path do
+      Snippets
+  %li
+    = @user.name
+  .pull-right.hidden-xs
+    = link_to user_path(@user) do
+      #{@user.name} profile page
 
 = render 'snippets'
-

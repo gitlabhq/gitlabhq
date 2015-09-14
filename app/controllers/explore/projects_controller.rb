@@ -1,7 +1,4 @@
 class Explore::ProjectsController < Explore::ApplicationController
-  skip_before_action :authenticate_user!,
-                     :reject_blocked
-
   def index
     @projects = ProjectsFinder.new.execute(current_user)
     @tags = @projects.tags_on(:tags)

@@ -1,6 +1,6 @@
 .diff-file {
-  margin-left: -16px;
-  margin-right: -16px;
+  margin-left: -$gl-padding;
+  margin-right: -$gl-padding;
   border: none;
   border-bottom: 1px solid #E7E9EE;
 
@@ -8,7 +8,7 @@
     position: relative;
     background: $background-color;
     border-bottom: 1px solid $border-color;
-    padding: 10px 15px;
+    padding: 10px 16px;
     color: #555;
     z-index: 10;
 

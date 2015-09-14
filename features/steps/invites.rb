@@ -63,7 +63,7 @@ class Spinach::Features::Invites < Spinach::FeatureSteps
   end
 
   step 'I should be redirected to the dashboard' do
-    expect(current_path).to eq(dashboard_path)
+    expect(current_path).to eq(dashboard_projects_path)
   end
 
   step 'I should see a notice telling me I have declined' do

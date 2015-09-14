@@ -1,0 +1,18 @@
+- page_title    "Snippets"
+- header_title  "Snippets", snippets_path
+
+- if current_user
+  = render 'dashboard/snippets_head'
+- else
+  = render 'explore/head'
+
+.gray-content-block
+  - if current_user
+    .pull-right
+      = link_to new_snippet_path, class: "btn btn-new", title: "New Snippet" do
+        Add new snippet
+
+  .oneline
+    Public snippets created by you and other users are listed here
+
+= render 'snippets/snippets'
