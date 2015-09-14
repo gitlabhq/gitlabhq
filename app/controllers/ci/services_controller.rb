@@ -20,7 +20,7 @@ module Ci
 
     def update
       if @service.update_attributes(service_params)
-        redirect_to edit_ci_project_service_path(@project, @service.to_param), notice: 'Service was successfully updated.'
+        redirect_to edit_ci_project_service_path(@project, @service.to_param)
       else
         render 'edit'
       end
