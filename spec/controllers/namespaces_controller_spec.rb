@@ -84,10 +84,10 @@ describe NamespacesController do
           end
 
           context "when the user doesn't have access to the project" do
-            it "responds with status 404" do
+            it "redirects to the group's page" do
               get :show, id: group.path
 
-              expect(response.status).to eq(404)
+              expect(response).to redirect_to(group_path(group))
             end
           end
         end
