@@ -14,7 +14,7 @@
     = link_to ci_admin_events_path do
       %i.fa.fa-book
       Events
-  = nav_link path: 'runners#index' do
+  = nav_link path: ['runners#index', 'runners#show'] do
     = link_to ci_admin_runners_path do
       %i.fa.fa-cog
       Runners
