@@ -3,9 +3,6 @@
     .pull-left.fetch-status
       - if params[:search].present?
         by keyword: "#{params[:search]}",
-      %br
-
-    .pull-right
       #{@total_count} projects, #{@projects.size} of them added to CI
   %br
 

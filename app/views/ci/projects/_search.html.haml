@@ -1,16 +1,15 @@
 .search
-  = form_tag "#", method: :get, class: 'navbar-form' do |f|
-    .form-group
-      .input-group
-        = search_field_tag "search", params[:search], placeholder: "Search", class: "search-input form-control"
-        .input-group-addon
-          %i.fa.fa-search
+  = form_tag "#", method: :get, class: 'ci-search-form' do |f|
+    .input-group
+      = search_field_tag "search", params[:search], placeholder: "Search", class: "search-input form-control"
+      .input-group-addon
+        %i.fa.fa-search
 
 
 :coffeescript
-  $('.search .navbar-form').submit ->
+  $('.ci-search-form').submit ->
     NProgress.start()
-    query = $('.search .navbar-form .search-input').val()
+    query = $('.ci-search-form .search-input').val()
     $.get '#{gitlab_ci_projects_path}', { search: query }, (data) ->
       $(".projects").html data.html
       NProgress.done()

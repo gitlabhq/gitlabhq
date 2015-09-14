@@ -1,6 +1,7 @@
 - if current_user
-  = render "search"
-  .projects
+  .gray-content-block.top-block
+    = render "search"
+  .projects.prepend-top-default
     %p.fetch-status.light
       %i.fa.fa-refresh.fa-spin
   :coffeescript

@@ -1,7 +1,7 @@
 module Ci
   module CommitsHelper
     def commit_status_alert_class(commit)
-      return unless commit
+      return 'alert-info' unless commit
 
       case commit.status
       when 'success'

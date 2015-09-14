@@ -1,3 +1,2 @@
-.container
-  - if current_user && current_user.is_admin? && Ci::Runner.count.zero?
-    = render 'ci/shared/no_runners'
+- if current_user && current_user.is_admin? && Ci::Runner.count.zero?
+  = render 'ci/shared/no_runners'
