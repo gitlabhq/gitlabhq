@@ -17,27 +17,23 @@ module NotificationsHelper
     case notification_level
       when Notification::N_DISABLED
         content_tag(:li) do
-          icon('microphone-slash') do
-            'Disabled'
-          end
+          icon('microphone-slash')
+          'Disabled'
         end
       when Notification::N_PARTICIPATING
         content_tag(:li) do
-          icon('volume-up') do
-            'Participating'
-          end
+          icon('volume-up')
+          'Participating'
         end
       when Notification::N_WATCH
         content_tag(:li) do
-          icon('globe') do
-            'Watch'
-          end
+          icon('globe')
+          'Watch'
         end
       when Notification::N_MENTION
         content_tag(:li) do
-          icon('at') do
-            'Mention'
-          end
+          icon('at')
+          'Mention'
         end
       else
         # do nothing
