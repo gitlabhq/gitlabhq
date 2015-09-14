@@ -9,7 +9,7 @@ describe "Builds" do
 
   describe "GET /:project/builds/:id/status.json" do
     before do
-      get status_project_build_path(@project, @build), format: :json
+      get status_ci_project_build_path(@project, @build), format: :json
     end
 
     it { expect(response.status).to eq(200) }

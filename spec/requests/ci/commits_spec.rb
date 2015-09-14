@@ -8,7 +8,7 @@ describe "Commits" do
 
   describe "GET /:project/refs/:ref_name/commits/:id/status.json" do
     before do
-      get status_project_ref_commit_path(@project, @commit.ref, @commit.sha), format: :json
+      get status_ci_project_ref_commits_path(@project, @commit.ref, @commit.sha), format: :json
     end
 
     it { expect(response.status).to eq(200) }
