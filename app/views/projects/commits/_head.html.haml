@@ -1,10 +1,10 @@
 %ul.center-top-menu
   = nav_link(controller: [:commit, :commits]) do
-    = link_to namespace_project_commits_path(@project.namespace, @project, @ref || @repository.root_ref) do
+    = link_to namespace_project_commits_path(@project.namespace, @project, current_ref) do
       Commits
       %span.badge= number_with_delimiter(@repository.commit_count)
   = nav_link(controller: :compare) do
-    = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: @ref || @repository.root_ref) do
+    = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: current_ref) do
       Compare
 
   = nav_link(html_options: {class: branches_tab_class}) do

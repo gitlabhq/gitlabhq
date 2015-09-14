@@ -40,14 +40,14 @@
 
   - if project_nav_tab? :network
     = nav_link(controller: %w(network)) do
-      = link_to namespace_project_network_path(@project.namespace, @project, @ref || @repository.root_ref), title: 'Network', class: 'shortcuts-network', data: {placement: 'right'} do
+      = link_to namespace_project_network_path(@project.namespace, @project, current_ref), title: 'Network', class: 'shortcuts-network', data: {placement: 'right'} do
         = icon('code-fork fw')
         %span
           Network
 
   - if project_nav_tab? :graphs
     = nav_link(controller: %w(graphs)) do
-      = link_to namespace_project_graph_path(@project.namespace, @project, @ref || @repository.root_ref), title: 'Graphs',  class: 'shortcuts-graphs', data: {placement: 'right'} do
+      = link_to namespace_project_graph_path(@project.namespace, @project, current_ref), title: 'Graphs',  class: 'shortcuts-graphs', data: {placement: 'right'} do
         = icon('area-chart fw')
         %span
           Graphs

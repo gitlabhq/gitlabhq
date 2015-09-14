@@ -313,9 +313,11 @@ module ProjectsHelper
     end
   end
 
-  def detect_project_title(project)
-    current_ref = @ref || project.repository.root_ref
+  def current_ref
+    @ref || @repository.try(:root_ref)
+  end
 
+  def detect_project_title(project)
     name, url =
       if current_controller? 'wikis'
         ['Wiki', get_project_wiki_path(project)]
