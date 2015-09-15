@@ -16,7 +16,7 @@ describe 'gitlab:app namespace rake task' do
   end
 
   def reenable_backup_sub_tasks
-    %w{db repo uploads}.each do |subtask|
+    %w{db repo uploads builds}.each do |subtask|
       Rake::Task["gitlab:backup:#{subtask}:create"].reenable
     end
   end
@@ -160,7 +160,7 @@ describe 'gitlab:app namespace rake task' do
 
     it "does not contain skipped item" do
       tar_contents, exit_status = Gitlab::Popen.popen(
-        %W{tar -tvf #{@backup_tar} db uploads repositories}
+        %W{tar -tvf #{@backup_tar} db uploads repositories builds}
       )
 
       expect(tar_contents).to match('db/')
