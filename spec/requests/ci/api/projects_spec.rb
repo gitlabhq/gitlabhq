@@ -3,8 +3,9 @@ require 'spec_helper'
 describe Ci::API::API do
   include ApiHelpers
 
-  let(:gitlab_url) { GitlabCi.config.gitlab_server.url }
-  let(:private_token) { Network.new.authenticate(access_token: "some_token")["private_token"] }
+  let(:gitlab_url) { GitlabCi.config.gitlab_ci.url }
+  let(:user) { create(:user) }
+  let(:private_token) { user.private_token }
 
   let(:options) do
     {
@@ -20,11 +21,16 @@ describe Ci::API::API do
   context "requests for scoped projects" do
     # NOTE: These ids are tied to the actual projects on demo.gitlab.com
     describe "GET /projects" do
-      let!(:project1) { FactoryGirl.create(:ci_project, name: "gitlabhq", gitlab_id: 3) }
-      let!(:project2) { FactoryGirl.create(:ci_project, name: "gitlab-ci", gitlab_id: 4) }
+      let!(:project1) { FactoryGirl.create(:ci_project) }
+      let!(:project2) { FactoryGirl.create(:ci_project) }
+
+      before do
+        project1.gl_project.team << [user, :developer]
+        project2.gl_project.team << [user, :developer]
+      end
 
       it "should return all projects on the CI instance" do
-        get api("/projects"), options
+        get ci_api("/projects"), options
         expect(response.status).to eq(200)
         expect(json_response.count).to eq(2)
         expect(json_response.first["id"]).to eq(project1.id)
@@ -33,15 +39,21 @@ describe Ci::API::API do
     end
 
     describe "GET /projects/owned" do
-      # NOTE: This user doesn't own any of these projects on demo.gitlab.com
-      let!(:project1) { FactoryGirl.create(:ci_project, name: "gitlabhq", gitlab_id: 3) }
-      let!(:project2) { FactoryGirl.create(:ci_project, name: "random-project", gitlab_id: 9898) }
+      let!(:gl_project1) {FactoryGirl.create(:empty_project, namespace: user.namespace)}
+      let!(:gl_project2) {FactoryGirl.create(:empty_project, namespace: user.namespace)}
+      let!(:project1) { FactoryGirl.create(:ci_project, gl_project: gl_project1) }
+      let!(:project2) { FactoryGirl.create(:ci_project, gl_project: gl_project2) }
+
+      before do
+        project1.gl_project.team << [user, :developer]
+        project2.gl_project.team << [user, :developer]
+      end
 
       it "should return all projects on the CI instance" do
-        get api("/projects/owned"), options
+        get ci_api("/projects/owned"), options
 
         expect(response.status).to eq(200)
-        expect(json_response.count).to eq(0)
+        expect(json_response.count).to eq(2)
       end
     end
   end
@@ -54,22 +66,23 @@ describe Ci::API::API do
 
       before do
         options.merge!(webhook)
+        project.gl_project.team << [user, :master]
       end
 
       it "should create webhook for specified project" do
-        post api("/projects/#{project.id}/webhooks"), options
+        post ci_api("/projects/#{project.id}/webhooks"), options
         expect(response.status).to eq(201)
         expect(json_response["url"]).to eq(webhook[:web_hook])
       end
 
       it "fails to create webhook for non existsing project" do
-        post api("/projects/non-existant-id/webhooks"), options
+        post ci_api("/projects/non-existant-id/webhooks"), options
         expect(response.status).to eq(404)
       end
 
       it "non-manager is not authorized" do
         allow_any_instance_of(User).to receive(:can_manage_project?).and_return(false)
-        post api("/projects/#{project.id}/webhooks"), options
+        post ci_api("/projects/#{project.id}/webhooks"), options
         expect(response.status).to eq(401)
       end
     end
@@ -82,14 +95,14 @@ describe Ci::API::API do
       end
 
       it "fails to create webhook for not valid url" do
-        post api("/projects/#{project.id}/webhooks"), options
+        post ci_api("/projects/#{project.id}/webhooks"), options
         expect(response.status).to eq(400)
       end
     end
 
     context "Missed web_hook parameter" do
       it "fails to create webhook for not provided url" do
-        post api("/projects/#{project.id}/webhooks"), options
+        post ci_api("/projects/#{project.id}/webhooks"), options
         expect(response.status).to eq(400)
       end
     end
@@ -98,9 +111,13 @@ describe Ci::API::API do
   describe "GET /projects/:id" do
     let!(:project) { FactoryGirl.create(:ci_project) }
 
+    before do
+      project.gl_project.team << [user, :developer]
+    end
+
     context "with an existing project" do
       it "should retrieve the project info" do
-        get api("/projects/#{project.id}"), options
+        get ci_api("/projects/#{project.id}"), options
         expect(response.status).to eq(200)
         expect(json_response['id']).to eq(project.id)
       end
@@ -108,7 +125,7 @@ describe Ci::API::API do
 
     context "with a non-existing project" do
       it "should return 404 error if project not found" do
-        get api("/projects/non_existent_id"), options
+        get ci_api("/projects/non_existent_id"), options
         expect(response.status).to eq(404)
       end
     end
@@ -123,19 +140,19 @@ describe Ci::API::API do
     end
 
     it "should update a specific project's information" do
-      put api("/projects/#{project.id}"), options
+      put ci_api("/projects/#{project.id}"), options
       expect(response.status).to eq(200)
       expect(json_response["name"]).to eq(project_info[:name])
     end
 
     it "fails to update a non-existing project" do
-      put api("/projects/non-existant-id"), options
+      put ci_api("/projects/non-existant-id"), options
       expect(response.status).to eq(404)
     end
 
     it "non-manager is not authorized" do
       allow_any_instance_of(User).to receive(:can_manage_project?).and_return(false)
-      put api("/projects/#{project.id}"), options
+      put ci_api("/projects/#{project.id}"), options
       expect(response.status).to eq(401)
     end
   end
@@ -144,7 +161,7 @@ describe Ci::API::API do
     let!(:project) { FactoryGirl.create(:ci_project) }
 
     it "should delete a specific project" do
-      delete api("/projects/#{project.id}"), options
+      delete ci_api("/projects/#{project.id}"), options
       expect(response.status).to eq(200)
 
       expect { project.reload }.to raise_error
@@ -152,12 +169,12 @@ describe Ci::API::API do
 
     it "non-manager is not authorized" do
       allow_any_instance_of(User).to receive(:can_manage_project?).and_return(false)
-      delete api("/projects/#{project.id}"), options
+      delete ci_api("/projects/#{project.id}"), options
       expect(response.status).to eq(401)
     end
 
     it "is getting not found error" do
-      delete api("/projects/not-existing_id"), options
+      delete ci_api("/projects/not-existing_id"), options
       expect(response.status).to eq(404)
     end
   end
@@ -180,7 +197,7 @@ describe Ci::API::API do
       end
 
       it "should create a project with valid data" do
-        post api("/projects"), options
+        post ci_api("/projects"), options
         expect(response.status).to eq(201)
         expect(json_response['name']).to eq(project_info[:name])
       end
@@ -192,7 +209,7 @@ describe Ci::API::API do
       end
 
       it "should error with invalid data" do
-        post api("/projects"), options
+        post ci_api("/projects"), options
         expect(response.status).to eq(400)
       end
     end
@@ -202,7 +219,7 @@ describe Ci::API::API do
       let(:runner) { FactoryGirl.create(:ci_runner) }
 
       it "should add the project to the runner" do
-        post api("/projects/#{project.id}/runners/#{runner.id}"), options
+        post ci_api("/projects/#{project.id}/runners/#{runner.id}"), options
         expect(response.status).to eq(201)
 
         project.reload
@@ -210,16 +227,16 @@ describe Ci::API::API do
       end
 
       it "should fail if it tries to link a non-existing project or runner" do
-        post api("/projects/#{project.id}/runners/non-existing"), options
+        post ci_api("/projects/#{project.id}/runners/non-existing"), options
         expect(response.status).to eq(404)
 
-        post api("/projects/non-existing/runners/#{runner.id}"), options
+        post ci_api("/projects/non-existing/runners/#{runner.id}"), options
         expect(response.status).to eq(404)
       end
 
       it "non-manager is not authorized" do
         allow_any_instance_of(User).to receive(:can_manage_project?).and_return(false)
-        post api("/projects/#{project.id}/runners/#{runner.id}"), options
+        post ci_api("/projects/#{project.id}/runners/#{runner.id}"), options
         expect(response.status).to eq(401)
       end
     end
@@ -229,12 +246,12 @@ describe Ci::API::API do
       let(:runner) { FactoryGirl.create(:ci_runner) }
 
       before do
-        post api("/projects/#{project.id}/runners/#{runner.id}"), options
+        post ci_api("/projects/#{project.id}/runners/#{runner.id}"), options
       end
 
       it "should remove the project from the runner" do
         expect(project.runners).to be_present
-        delete api("/projects/#{project.id}/runners/#{runner.id}"), options
+        delete ci_api("/projects/#{project.id}/runners/#{runner.id}"), options
         expect(response.status).to eq(200)
 
         project.reload
@@ -243,7 +260,7 @@ describe Ci::API::API do
 
       it "non-manager is not authorized" do
         allow_any_instance_of(User).to receive(:can_manage_project?).and_return(false)
-        post api("/projects/#{project.id}/runners/#{runner.id}"), options
+        post ci_api("/projects/#{project.id}/runners/#{runner.id}"), options
         expect(response.status).to eq(401)
       end
     end

@@ -245,6 +245,44 @@ module API
       error!({ 'message' => message }, status)
     end
 
+    # Projects helpers
+
+    def filter_projects(projects)
+      # If the archived parameter is passed, limit results accordingly
+      if params[:archived].present?
+        projects = projects.where(archived: parse_boolean(params[:archived]))
+      end
+
+      if params[:search].present?
+        projects = projects.search(params[:search])
+      end
+
+      if params[:ci_enabled_first].present?
+        projects.includes(:gitlab_ci_service).
+          reorder("services.active DESC, projects.#{project_order_by} #{project_sort}")
+      else
+        projects.reorder(project_order_by => project_sort)
+      end
+    end
+
+    def project_order_by
+      order_fields = %w(id name path created_at updated_at last_activity_at)
+
+      if order_fields.include?(params['order_by'])
+        params['order_by']
+      else
+        'created_at'
+      end
+    end
+
+    def project_sort
+      if params["sort"] == 'asc'
+        :asc
+      else
+        :desc
+      end
+    end
+
     private
 
     def add_pagination_headers(paginated, per_page)
