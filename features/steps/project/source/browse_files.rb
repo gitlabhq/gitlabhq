@@ -119,12 +119,12 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     expect(page).to have_content "Commit message"
   end
 
-  step 'I can see "upload existing one"' do
-    expect(page).to have_content "upload existing one"
+  step 'I can see "upload an existing one"' do
+    expect(page).to have_content "upload an existing one"
   end
 
-  step 'I click on "upload existing one"' do
-    click_link 'upload existing one'
+  step 'I click on "upload"' do
+    click_link 'upload'
   end
 
   step 'I click on "Upload file"' do
@@ -150,7 +150,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I fill the replace file commit message' do
-    page.within('#modal-replace-blob') do
+    page.within('#modal-upload-blob') do
       fill_in :commit_message, with: 'Replacement file commit message'
     end
   end

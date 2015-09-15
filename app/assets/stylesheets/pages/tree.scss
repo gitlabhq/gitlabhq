@@ -121,10 +121,11 @@
   text-align: center;
   border: 2px;
   border-style: dashed;
+  border-color: $border-color;
   min-height: 200px;
 }
 
 .upload-link {
   font-weight: normal;
-  color: #0000EE;
+  color: $md-link-color;
 }

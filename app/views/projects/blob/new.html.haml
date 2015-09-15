@@ -1,10 +1,10 @@
-%h3.page-title<
-  Create new file or&nbsp;
-  %a.upload-link{href: '#modal-upload-blob', 'data-target' => '#modal-upload-blob', 'data-toggle' => 'modal'}>upload existing one
+.gray-content-block.top-block
+  Create a new file or
+  = link_to 'upload', '#modal-upload-blob',
+    { class: 'upload-link', 'data-target' => '#modal-upload-blob', 'data-toggle' => 'modal'}
+  an existing one
 
-.file-title
-  = render 'projects/blob/upload'
-  %br
+= render 'projects/blob/upload'
 
 .file-editor
   = form_tag(namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post, class: 'form-horizontal form-new-file js-requires-input') do
