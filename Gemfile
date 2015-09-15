@@ -301,8 +301,6 @@ gem 'whenever', '~> 0.8.4', require: false
 # OAuth
 gem 'oauth2', '~> 1.0.0'
 
-gem 'gitlab_ci_meta', '~> 4.0'
-
 # Soft deletion
 gem "paranoia", "~> 2.0"
 
