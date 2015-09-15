@@ -54,6 +54,7 @@ describe 'gitlab:app namespace rake task' do
           and_return({ gitlab_version: gitlab_version })
         expect(Rake::Task["gitlab:backup:db:restore"]).to receive(:invoke)
         expect(Rake::Task["gitlab:backup:repo:restore"]).to receive(:invoke)
+        expect(Rake::Task["gitlab:backup:builds:restore"]).to receive(:invoke)
         expect(Rake::Task["gitlab:shell:setup"]).to receive(:invoke)
         expect { run_rake_task('gitlab:backup:restore') }.not_to raise_error
       end
@@ -117,6 +118,7 @@ describe 'gitlab:app namespace rake task' do
       expect(tar_contents).to match('db/')
       expect(tar_contents).to match('uploads/')
       expect(tar_contents).to match('repositories/')
+      expect(tar_contents).to match('builds/')
       expect(tar_contents).not_to match(/^.{4,9}[rwx].* (db|uploads|repositories)\/$/)
     end
 
@@ -163,6 +165,7 @@ describe 'gitlab:app namespace rake task' do
 
       expect(tar_contents).to match('db/')
       expect(tar_contents).to match('uploads/')
+      expect(tar_contents).to match('builds/')
       expect(tar_contents).not_to match('repositories/')
     end
 
@@ -173,6 +176,7 @@ describe 'gitlab:app namespace rake task' do
 
       expect(Rake::Task["gitlab:backup:db:restore"]).to receive :invoke
       expect(Rake::Task["gitlab:backup:repo:restore"]).not_to receive :invoke
+      expect(Rake::Task["gitlab:backup:builds:restore"]).to receive :invoke
       expect(Rake::Task["gitlab:shell:setup"]).to receive :invoke
       expect { run_rake_task('gitlab:backup:restore') }.not_to raise_error
     end
