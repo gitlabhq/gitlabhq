@@ -11,12 +11,12 @@ describe Ci::ApplicationHelper do
       }
 
       intervals_in_words.each do |interval, expectation|
-        duration_in_words(Time.now + interval, Time.now).should == expectation
+        expect(duration_in_words(Time.now + interval, Time.now)).to eq(expectation)
       end
     end
 
     it "calculates interval from now if there is no finished_at" do
-      duration_in_words(nil, Time.now - 5).should == "5 seconds"
+      expect(duration_in_words(nil, Time.now - 5)).to eq("5 seconds")
     end
   end
 
@@ -30,7 +30,7 @@ describe Ci::ApplicationHelper do
       }
 
       intervals_in_words.each do |interval, expectation|
-        time_interval_in_words(interval).should == expectation
+        expect(time_interval_in_words(interval)).to eq(expectation)
       end
     end
   end
