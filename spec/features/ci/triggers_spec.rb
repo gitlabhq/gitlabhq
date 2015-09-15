@@ -1,10 +1,12 @@
 require 'spec_helper'
 
 describe 'Triggers' do
+  let(:user)    { create(:user) }
+
   before do
-    login_as :user
+    login_as(user)
     @project = FactoryGirl.create :ci_project
-    stub_js_gitlab_calls
+    @project.gl_project.team << [user, :master]
     visit ci_project_triggers_path(@project)
   end
 
