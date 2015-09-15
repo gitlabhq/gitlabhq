@@ -29,6 +29,11 @@ describe Ci::MailService do
 
   describe 'Sends email for' do
     let(:mail)   { Ci::MailService.new }
+    let(:deliveries) { ActionMailer::Base.deliveries}
+
+    before(:each) do
+      deliveries.clear
+    end
 
     describe 'failed build' do
       let(:project) { FactoryGirl.create(:ci_project, email_add_pusher: true) }
@@ -42,13 +47,10 @@ describe Ci::MailService do
       end
 
       it do
-        should_email("git@example.com")
         mail.execute(build)
-      end
-
-      def should_email(email)
-        expect(Notify).to receive(:build_fail_email).with(build.id, email)
-        expect(Notify).not_to receive(:build_success_email).with(build.id, email)
+        expect(deliveries.count).to eq(1)
+        expect(deliveries[0].subject).to include('Build failed for')
+        expect(deliveries[0].to).to eq(["git@example.com"])
       end
     end
 
@@ -64,13 +66,10 @@ describe Ci::MailService do
       end
 
       it do
-        should_email("git@example.com")
         mail.execute(build)
-      end
-
-      def should_email(email)
-        expect(Notify).to receive(:build_success_email).with(build.id, email)
-        expect(Notify).not_to receive(:build_fail_email).with(build.id, email)
+        expect(deliveries.count).to eq(1)
+        expect(deliveries[0].subject).to include('Build success for')
+        expect(deliveries[0].to).to eq(["git@example.com"])
       end
     end
 
@@ -91,14 +90,12 @@ describe Ci::MailService do
       end
 
       it do
-        should_email("git@example.com")
-        should_email("jeroen@example.com")
         mail.execute(build)
-      end
-
-      def should_email(email)
-        expect(Notify).to receive(:build_success_email).with(build.id, email)
-        expect(Notify).not_to receive(:build_fail_email).with(build.id, email)
+        expect(deliveries.count).to eq(2)
+        expect(deliveries[0].subject).to include('Build success for')
+        expect(deliveries[0].to).to eq(["jeroen@example.com"])
+        expect(deliveries[1].subject).to include('Build success for')
+        expect(deliveries[1].to).to eq(["git@example.com"])
       end
     end
 
@@ -119,14 +116,8 @@ describe Ci::MailService do
       end
 
       it do
-        should_email(commit.git_author_email)
-        should_email("jeroen@example.com")
         mail.execute(build) if mail.can_execute?(build)
-      end
-
-      def should_email(email)
-        expect(Notify).not_to receive(:build_success_email).with(build.id, email)
-        expect(Notify).not_to receive(:build_fail_email).with(build.id, email)
+        expect(deliveries.count).to eq(0)
       end
     end
 
@@ -170,14 +161,8 @@ describe Ci::MailService do
 
       it do
         Ci::Build.retry(build)
-        should_email(commit.git_author_email)
-        should_email("jeroen@example.com")
         mail.execute(build) if mail.can_execute?(build)
-      end
-
-      def should_email(email)
-        expect(Notify).not_to receive(:build_success_email).with(build.id, email)
-        expect(Notify).not_to receive(:build_fail_email).with(build.id, email)
+        expect(deliveries.count).to eq(0)
       end
     end
   end
