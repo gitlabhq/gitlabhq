@@ -3,14 +3,14 @@ require 'spec_helper'
 describe Ci::CreateProjectService do
   let(:service) { Ci::CreateProjectService.new }
   let(:current_user) { double.as_null_object }
-  let(:project_dump) { YAML.load File.read(Rails.root.join('spec/support/gitlab_stubs/raw_project.yml')) }
+  let(:project) { FactoryGirl.create :project }
 
   describe :execute do
     context 'valid params' do
-      let(:project) { service.execute(current_user, project_dump, 'http://localhost/projects/:project_id') }
+      subject { service.execute(current_user, project, 'http://localhost/projects/:project_id') }
 
-      it { expect(project).to be_kind_of(Project) }
-      it { expect(project).to be_persisted }
+      it { is_expected.to be_kind_of(Ci::Project) }
+      it { is_expected.to be_persisted }
     end
 
     context 'without project dump' do
@@ -20,18 +20,16 @@ describe Ci::CreateProjectService do
     end
 
     context "forking" do
+      let (:ci_origin_project) {
+        FactoryGirl.create(:ci_project, shared_runners_enabled: true, public: true, allow_git_fetch: true)
+      }
+
+      subject { service.execute(current_user, project, 'http://localhost/projects/:project_id', ci_origin_project) }
+
       it "uses project as a template for settings and jobs" do
-        origin_project = FactoryGirl.create(:ci_project)
-        origin_project.shared_runners_enabled = true
-        origin_project.public = true
-        origin_project.allow_git_fetch = true
-        origin_project.save!
-
-        project = service.execute(current_user, project_dump, 'http://localhost/projects/:project_id', origin_project)
-
-        expect(project.shared_runners_enabled).to be_truthy
-        expect(project.public).to be_truthy
-        expect(project.allow_git_fetch).to be_truthy
+        expect(subject.shared_runners_enabled).to be_truthy
+        expect(subject.public).to be_truthy
+        expect(subject.allow_git_fetch).to be_truthy
       end
     end
   end
