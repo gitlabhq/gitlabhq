@@ -8,7 +8,7 @@ __Authentication is done by GitLab CI project token__
 
 Get list of commits per project
 
-    GET /commits
+    GET /ci/commits
 
 Parameters:
 
@@ -58,7 +58,7 @@ Inform GitLab CI about new commit you want it to build.
 __If commit already exists in GitLab CI it will not be created__
 
 
-    POST /commits
+    POST /ci/commits
 
 Parameters:
 

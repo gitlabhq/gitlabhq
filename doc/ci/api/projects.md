@@ -12,7 +12,7 @@ __Authentication is done by GitLab user token & GitLab url__
 Lists all projects that the authenticated user has access to.
 
 ```
-GET /projects
+GET /ci/projects
 ```
 
 Returns:
@@ -55,7 +55,7 @@ Returns:
 Lists all projects that the authenticated user owns.
 
 ```
-GET /projects/owned
+GET /ci/projects/owned
 ```
 
 Returns:
@@ -84,7 +84,7 @@ Returns:
 Returns information about a single project for which the user is
 authorized.
 
-    GET /projects/:id
+    GET /ci/projects/:id
 
 Parameters:
 
@@ -94,7 +94,7 @@ Parameters:
 
 Creates a Gitlab CI project using Gitlab project details.
 
-    POST /projects
+    POST /ci/projects
 
 Parameters:
 
@@ -109,7 +109,7 @@ Parameters:
 Updates a Gitlab CI project using Gitlab project details that the
 authenticated user has access to.
 
-    PUT /projects/:id
+    PUT /ci/projects/:id
 
 Parameters:
 
@@ -123,7 +123,7 @@ Parameters:
 
 Removes a Gitlab CI project that the authenticated user has access to.
 
-    DELETE /projects/:id
+    DELETE /ci/projects/:id
 
 Parameters:
 
@@ -134,7 +134,7 @@ Parameters:
 Links a runner to a project so that it can make builds (only via
 authorized user).
 
-    POST /projects/:id/runners/:runner_id
+    POST /ci/projects/:id/runners/:runner_id
 
 Parameters:
 
@@ -146,7 +146,7 @@ Parameters:
 Removes a runner from a project so that it can not make builds (only
 via authorized user).
 
-    DELETE /projects/:id/runners/:runner_id
+    DELETE /ci/projects/:id/runners/:runner_id
 
 Parameters:
 

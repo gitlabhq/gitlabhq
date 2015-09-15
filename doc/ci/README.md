@@ -19,9 +19,5 @@
 
 ### Administrator documentation
 
-+ [Install](install/README.md)
-+ [Update](update/README.md)
 + [User permissions](permissions/README.md)
-+ [Backup/Restore](raketasks/backup_restore.md)
-+ [Migrating to packaged CI](migration_to_omnibus/README.md)
 + [API](api/README.md)

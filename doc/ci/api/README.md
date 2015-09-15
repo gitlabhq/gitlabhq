@@ -29,12 +29,12 @@ sending the `private-token` of a valid user and the `url` of an
 authorized Gitlab instance via a query string along with the API
 request:
 
-    GET http://ci.example.com/api/v1/projects?private_token=QVy1PB7sTxfy4pqfZM1U&url=http://demo.gitlab.com/
+    GET http://gitlab.example.com/ci/api/v1/projects?private_token=QVy1PB7sTxfy4pqfZM1U&url=http://demo.gitlab.com/
 
 If preferred, you may instead send the `private-token` as a header in
 your request:
 
-    curl --header "PRIVATE-TOKEN: QVy1PB7sTxfy4pqfZM1U" "http://ci.example.com/api/v1/projects?url=http://demo.gitlab.com/"
+    curl --header "PRIVATE-TOKEN: QVy1PB7sTxfy4pqfZM1U" "http://gitlab.example.com/ci/api/v1/projects?url=http://demo.gitlab.com/"
 
 
 ### Authentication #2: GitLab CI project token

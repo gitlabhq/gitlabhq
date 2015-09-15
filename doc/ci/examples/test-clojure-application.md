@@ -32,4 +32,4 @@ In before script we install JRE and [Leiningen](http://leiningen.org/).
 Sample project uses [migratus](https://github.com/yogthos/migratus) library to manage database migrations. 
 So we added database migration as last step of `before_script` section
 
-You can use public runners available on `ci.gitlab.com` for testing your application with such configuration.
+You can use public runners available on `gitlab.com` for testing your application with such configuration.

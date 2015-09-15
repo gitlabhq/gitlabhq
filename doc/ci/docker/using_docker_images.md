@@ -14,7 +14,7 @@ To use GitLab Runner with Docker you need to register new runner to use `docker`
 
 ```bash
 gitlab-ci-multi-runner register \
-  --url "https://ci.gitlab.com/" \
+  --url "https://gitlab.com/" \
   --registration-token "PROJECT_REGISTRATION_TOKEN" \
   --description "docker-ruby-2.1" \
   --executor "docker" \

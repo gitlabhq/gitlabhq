@@ -9,7 +9,7 @@ __Authentication is done by GitLab user token & GitLab url__
 Used to get information about all runners registered on the Gitlab CI
 instance.
 
-    GET /runners
+    GET /ci/runners
 
 Returns:
 
@@ -33,7 +33,7 @@ __Authentication is done with a Shared runner registration token or a project Sp
 
 Used to make Gitlab CI aware of available runners.
 
-    POST /runners/register
+    POST /ci/runners/register
 
 Parameters:
 
@@ -58,7 +58,7 @@ __Authentication is done by runner token__
 
 Used to removing runners.
 
-    DELETE /runners/delete
+    DELETE /ci/runners/delete
 
 Parameters:
 

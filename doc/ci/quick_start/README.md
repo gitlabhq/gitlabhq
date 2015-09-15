@@ -16,7 +16,7 @@ Push your application to that repository.
 ## 3. Add project to CI
 
 The next part is to login to GitLab CI.
-Point your browser to the URL you have set GitLab CI or use [ci.gitlab.com](http://ci.gitlab.com/) that is linked to [GitLab.com](http://GitLab.com/).
+Point your browser to the URL you have set GitLab or use [gitlab.com/ci](http://gitlab.com/ci/).
 
 On the first screen you will see a list of GitLab's projects that you have access to:
 
@@ -88,7 +88,7 @@ More information about different runner types can be found in [Configuring runne
 To check if you have runners assigned to your project go to **Runners**. You will find there information how to setup project specific runner:
 
 1. Install GitLab Runner software. Checkout the [GitLab Runner](https://about.gitlab.com/gitlab-ci/#gitlab-runner) section to install it.
-1. Specify following URL during runner setup: https://ci.gitlab.com/
+1. Specify following URL during runner setup: https://gitlab.com/ci/
 1. Use the following registration token during setup: TOKEN
 
 If you do it correctly your runner should be shown under **Runners activated for this project**:
@@ -97,7 +97,7 @@ If you do it correctly your runner should be shown under **Runners activated for
 
 ### Shared runners
 
-If you use [ci.gitlab.com](http://ci.gitlab.com/) you can use **Shared runners** provided by GitLab Inc.
+If you use [gitlab.com/ci](http://gitlab.com/ci/) you can use **Shared runners** provided by GitLab Inc.
 These are special virtual machines that are run on GitLab's infrastructure that can build any project.
 To enable **Shared runners** you have to go to **Runners** and click **Enable shared runners** for this project.
 

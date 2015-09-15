@@ -8,7 +8,7 @@ __Authentication is done by runner token__
 
 ### Runs oldest pending build by runner
 
-    POST /builds/register
+    POST /ci/builds/register
 
 Parameters:
 
@@ -32,7 +32,7 @@ Returns:
 
 ### Update details of an existing build
 
-    PUT /builds/:id
+    PUT /ci/builds/:id
 
 Parameters:
 

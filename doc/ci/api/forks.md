@@ -12,7 +12,7 @@ __Authentication is done by GitLab user token & GitLab project token__
 
 
 ```
-POST /forks
+POST /ci/forks
 ```
 
 Parameters:
