@@ -13,14 +13,14 @@ describe Ci::CreateTriggerRequestService do
         @commit = FactoryGirl.create :commit, project: project
       end
 
-      it { subject.should be_kind_of(TriggerRequest) }
-      it { subject.commit.should == @commit }
+      it { expect(subject).to be_kind_of(TriggerRequest) }
+      it { expect(subject.commit).to eq(@commit) }
     end
 
     context 'no commit for ref' do
       subject { service.execute(project, trigger, 'other-branch') }
 
-      it { subject.should be_nil }
+      it { expect(subject).to be_nil }
     end
 
     context 'no builds created' do
@@ -30,7 +30,7 @@ describe Ci::CreateTriggerRequestService do
         FactoryGirl.create :commit_without_jobs, project: project
       end
 
-      it { subject.should be_nil }
+      it { expect(subject).to be_nil }
     end
 
     context 'for multiple commits' do
@@ -43,9 +43,9 @@ describe Ci::CreateTriggerRequestService do
       end
 
       context 'retries latest one' do
-        it { subject.should be_kind_of(TriggerRequest) }
-        it { subject.should be_persisted }
-        it { subject.commit.should == @commit2 }
+        it { expect(subject).to be_kind_of(TriggerRequest) }
+        it { expect(subject).to be_persisted }
+        it { expect(subject.commit).to eq(@commit2) }
       end
     end
   end

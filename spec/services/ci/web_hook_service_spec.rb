@@ -9,13 +9,13 @@ describe Ci::WebHookService do
   describe :execute do
     it "should execute successfully" do
       stub_request(:post, hook.url).to_return(status: 200)
-      WebHookService.new.build_end(build).should be_true
+      expect(WebHookService.new.build_end(build)).to be_truthy
     end
   end
 
   context 'build_data' do
     it "contains all needed fields" do
-      build_data(build).should include(
+      expect(build_data(build)).to include(
         :build_id,
         :project_id,
         :ref,

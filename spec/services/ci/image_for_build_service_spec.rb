@@ -1,46 +1,48 @@
 require 'spec_helper'
 
-describe Ci::ImageForBuildService do
-  let(:service) { ImageForBuildService.new }
-  let(:project) { FactoryGirl.create(:project) }
-  let(:commit) { FactoryGirl.create(:commit, project: project, ref: 'master') }
-  let(:build) { FactoryGirl.create(:build, commit: commit) }
+module Ci
+  describe ImageForBuildService do
+    let(:service) { ImageForBuildService.new }
+    let(:project) { FactoryGirl.create(:ci_project) }
+    let(:commit) { FactoryGirl.create(:ci_commit, project: project, ref: 'master') }
+    let(:build) { FactoryGirl.create(:ci_build, commit: commit) }
 
-  describe :execute do
-    before { build }
+    describe :execute do
+      before { build }
 
-    context 'branch name' do
-      before { build.run! }
-      let(:image) { service.execute(project, ref: 'master') }
+      context 'branch name' do
+        before { build.run! }
+        let(:image) { service.execute(project, ref: 'master') }
 
-      it { image.should be_kind_of(OpenStruct) }
-      it { image.path.to_s.should include('public/build-running.svg') }
-      it { image.name.should == 'build-running.svg' }
-    end
+        it { expect(image).to be_kind_of(OpenStruct) }
+        it { expect(image.path.to_s).to include('public/ci/build-running.svg') }
+        it { expect(image.name).to eq('build-running.svg') }
+      end
 
-    context 'unknown branch name' do
-      let(:image) { service.execute(project, ref: 'feature') }
+      context 'unknown branch name' do
+        let(:image) { service.execute(project, ref: 'feature') }
 
-      it { image.should be_kind_of(OpenStruct) }
-      it { image.path.to_s.should include('public/build-unknown.svg') }
-      it { image.name.should == 'build-unknown.svg' }
-    end
+        it { expect(image).to be_kind_of(OpenStruct) }
+        it { expect(image.path.to_s).to include('public/ci/build-unknown.svg') }
+        it { expect(image.name).to eq('build-unknown.svg') }
+      end
 
-    context 'commit sha' do
-      before { build.run! }
-      let(:image) { service.execute(project, sha: build.sha) }
+      context 'commit sha' do
+        before { build.run! }
+        let(:image) { service.execute(project, sha: build.sha) }
 
-      it { image.should be_kind_of(OpenStruct) }
-      it { image.path.to_s.should include('public/build-running.svg') }
-      it { image.name.should == 'build-running.svg' }
-    end
+        it { expect(image).to be_kind_of(OpenStruct) }
+        it { expect(image.path.to_s).to include('public/ci/build-running.svg') }
+        it { expect(image.name).to eq('build-running.svg') }
+      end
 
-    context 'unknown commit sha' do
-      let(:image) { service.execute(project, sha: '0000000') }
+      context 'unknown commit sha' do
+        let(:image) { service.execute(project, sha: '0000000') }
 
-      it { image.should be_kind_of(OpenStruct) }
-      it { image.path.to_s.should include('public/build-unknown.svg') }
-      it { image.name.should == 'build-unknown.svg' }
+        it { expect(image).to be_kind_of(OpenStruct) }
+        it { expect(image.path.to_s).to include('public/ci/build-unknown.svg') }
+        it { expect(image.name).to eq('build-unknown.svg') }
+      end
     end
   end
 end

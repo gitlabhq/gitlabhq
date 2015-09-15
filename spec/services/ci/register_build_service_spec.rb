@@ -1,88 +1,90 @@
-require 'spec_helper'
+  require 'spec_helper'
 
-describe Ci::RegisterBuildService do
-  let!(:service) { RegisterBuildService.new }
-  let!(:project) { FactoryGirl.create :project }
-  let!(:commit) { FactoryGirl.create :commit, project: project }
-  let!(:pending_build) { FactoryGirl.create :build, project: project, commit: commit }
-  let!(:shared_runner) { FactoryGirl.create(:runner, is_shared: true) }
-  let!(:specific_runner) { FactoryGirl.create(:runner, is_shared: false) }
+module Ci
+  describe RegisterBuildService do
+    let!(:service) { RegisterBuildService.new }
+    let!(:project) { FactoryGirl.create :ci_project }
+    let!(:commit) { FactoryGirl.create :ci_commit, project: project }
+    let!(:pending_build) { FactoryGirl.create :ci_build, project: project, commit: commit }
+    let!(:shared_runner) { FactoryGirl.create(:ci_runner, is_shared: true) }
+    let!(:specific_runner) { FactoryGirl.create(:ci_runner, is_shared: false) }
 
-  before do
-    specific_runner.assign_to(project)
-  end
-
-  describe :execute do
-    context 'runner follow tag list' do
-      it "picks build with the same tag" do
-        pending_build.tag_list = ["linux"]
-        pending_build.save
-        specific_runner.tag_list = ["linux"]
-        service.execute(specific_runner).should == pending_build
-      end
-
-      it "does not pick build with different tag" do
-        pending_build.tag_list = ["linux"]
-        pending_build.save
-        specific_runner.tag_list = ["win32"]
-        service.execute(specific_runner).should be_false
-      end
-
-      it "picks build without tag" do
-        service.execute(specific_runner).should == pending_build
-      end
-
-      it "does not pick build with tag" do
-        pending_build.tag_list = ["linux"]
-        pending_build.save
-        service.execute(specific_runner).should be_false
-      end
-
-      it "pick build without tag" do
-        specific_runner.tag_list = ["win32"]
-        service.execute(specific_runner).should == pending_build
-      end
+    before do
+      specific_runner.assign_to(project)
     end
 
-    context 'allow shared runners' do
-      before do
-        project.shared_runners_enabled = true
-        project.save
+    describe :execute do
+      context 'runner follow tag list' do
+        it "picks build with the same tag" do
+          pending_build.tag_list = ["linux"]
+          pending_build.save
+          specific_runner.tag_list = ["linux"]
+          expect(service.execute(specific_runner)).to eq(pending_build)
+        end
+
+        it "does not pick build with different tag" do
+          pending_build.tag_list = ["linux"]
+          pending_build.save
+          specific_runner.tag_list = ["win32"]
+          expect(service.execute(specific_runner)).to be_falsey
+        end
+
+        it "picks build without tag" do
+          expect(service.execute(specific_runner)).to eq(pending_build)
+        end
+
+        it "does not pick build with tag" do
+          pending_build.tag_list = ["linux"]
+          pending_build.save
+          expect(service.execute(specific_runner)).to be_falsey
+        end
+
+        it "pick build without tag" do
+          specific_runner.tag_list = ["win32"]
+          expect(service.execute(specific_runner)).to eq(pending_build)
+        end
       end
 
-      context 'shared runner' do
-        let(:build) { service.execute(shared_runner) }
+      context 'allow shared runners' do
+        before do
+          project.shared_runners_enabled = true
+          project.save
+        end
 
-        it { build.should be_kind_of(Build) }
-        it { build.should be_valid }
-        it { build.should be_running }
-        it { build.runner.should == shared_runner }
+        context 'shared runner' do
+          let(:build) { service.execute(shared_runner) }
+
+          it { expect(build).to be_kind_of(Build) }
+          it { expect(build).to be_valid }
+          it { expect(build).to be_running }
+          it { expect(build.runner).to eq(shared_runner) }
+        end
+
+        context 'specific runner' do
+          let(:build) { service.execute(specific_runner) }
+
+          it { expect(build).to be_kind_of(Build) }
+          it { expect(build).to be_valid }
+          it { expect(build).to be_running }
+          it { expect(build.runner).to eq(specific_runner) }
+        end
       end
 
-      context 'specific runner' do
-        let(:build) { service.execute(specific_runner) }
+      context 'disallow shared runners' do
+        context 'shared runner' do
+          let(:build) { service.execute(shared_runner) }
 
-        it { build.should be_kind_of(Build) }
-        it { build.should be_valid }
-        it { build.should be_running }
-        it { build.runner.should == specific_runner }
-      end
-    end
+          it { expect(build).to be_nil }
+        end
 
-    context 'disallow shared runners' do
-      context 'shared runner' do
-        let(:build) { service.execute(shared_runner) }
+        context 'specific runner' do
+          let(:build) { service.execute(specific_runner) }
 
-        it { build.should be_nil }
-      end
-
-      context 'specific runner' do
-        let(:build) { service.execute(specific_runner) }
-
-        it { build.should be_kind_of(Build) }
-        it { build.should be_valid }
-        it { build.should be_running }
-        it { build.runner.should == specific_runner }
+          it { expect(build).to be_kind_of(Build) }
+          it { expect(build).to be_valid }
+          it { expect(build).to be_running }
+          it { expect(build.runner).to eq(specific_runner) }
+        end
       end
     end
   end
