@@ -377,4 +377,8 @@ table {
   height: 56px;
   margin-top: -$gl-padding;
   padding-top: $gl-padding;
+
+  &.no-bottom {
+    margin-bottom: 0;
+  }
 }
