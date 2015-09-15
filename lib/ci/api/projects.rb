@@ -17,7 +17,7 @@ module Ci
 
           project = Ci::Project.find(params[:project_id])
 
-          unauthorized! unless can?(current_user, :manage_project, project.gl_project)
+          unauthorized! unless can?(current_user, :admin_project, project.gl_project)
 
           web_hook = project.web_hooks.new({ url: params[:web_hook] })
 
@@ -119,7 +119,7 @@ module Ci
         put ":id" do
           project = Ci::Project.find(params[:id])
 
-          unauthorized! unless can?(current_user, :manage_project, project.gl_project)
+          unauthorized! unless can?(current_user, :admin_project, project.gl_project)
 
           attrs = attributes_for_keys [:name, :gitlab_id, :path, :gitlab_url, :default_ref, :ssh_url_to_repo]
 
@@ -145,7 +145,7 @@ module Ci
         delete ":id" do
           project = Ci::Project.find(params[:id])
 
-          unauthorized! unless can?(current_user, :manage_project, project.gl_project)
+          unauthorized! unless can?(current_user, :admin_project, project.gl_project)
 
           project.destroy
         end
@@ -161,7 +161,7 @@ module Ci
           project = Ci::Project.find(params[:id])
           runner  = Ci::Runner.find(params[:runner_id])
 
-          unauthorized! unless can?(current_user, :manage_project, project.gl_project)
+          unauthorized! unless can?(current_user, :admin_project, project.gl_project)
 
           options = {
             project_id: project.id,
@@ -189,7 +189,7 @@ module Ci
           project = Ci::Project.find(params[:id])
           runner  = Ci::Runner.find(params[:runner_id])
 
-          unauthorized! unless can?(current_user, :manage_project, project.gl_project)
+          unauthorized! unless can?(current_user, :admin_project, project.gl_project)
 
           options = {
             project_id: project.id,

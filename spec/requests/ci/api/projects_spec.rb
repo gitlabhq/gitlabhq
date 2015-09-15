@@ -66,10 +66,10 @@ describe Ci::API::API do
 
       before do
         options.merge!(webhook)
-        project.gl_project.team << [user, :master]
       end
 
       it "should create webhook for specified project" do
+        project.gl_project.team << [user, :master]
         post ci_api("/projects/#{project.id}/webhooks"), options
         expect(response.status).to eq(201)
         expect(json_response["url"]).to eq(webhook[:web_hook])
@@ -81,7 +81,6 @@ describe Ci::API::API do
       end
 
       it "non-manager is not authorized" do
-        allow_any_instance_of(User).to receive(:can_manage_project?).and_return(false)
         post ci_api("/projects/#{project.id}/webhooks"), options
         expect(response.status).to eq(401)
       end
@@ -95,6 +94,7 @@ describe Ci::API::API do
       end
 
       it "fails to create webhook for not valid url" do
+        project.gl_project.team << [user, :master]
         post ci_api("/projects/#{project.id}/webhooks"), options
         expect(response.status).to eq(400)
       end
@@ -102,6 +102,7 @@ describe Ci::API::API do
 
     context "Missed web_hook parameter" do
       it "fails to create webhook for not provided url" do
+        project.gl_project.team << [user, :master]
         post ci_api("/projects/#{project.id}/webhooks"), options
         expect(response.status).to eq(400)
       end
@@ -140,6 +141,7 @@ describe Ci::API::API do
     end
 
     it "should update a specific project's information" do
+      project.gl_project.team << [user, :master]
       put ci_api("/projects/#{project.id}"), options
       expect(response.status).to eq(200)
       expect(json_response["name"]).to eq(project_info[:name])
@@ -151,7 +153,6 @@ describe Ci::API::API do
     end
 
     it "non-manager is not authorized" do
-      allow_any_instance_of(User).to receive(:can_manage_project?).and_return(false)
       put ci_api("/projects/#{project.id}"), options
       expect(response.status).to eq(401)
     end
@@ -161,14 +162,13 @@ describe Ci::API::API do
     let!(:project) { FactoryGirl.create(:ci_project) }
 
     it "should delete a specific project" do
+      project.gl_project.team << [user, :master]
       delete ci_api("/projects/#{project.id}"), options
       expect(response.status).to eq(200)
-
       expect { project.reload }.to raise_error
     end
 
     it "non-manager is not authorized" do
-      allow_any_instance_of(User).to receive(:can_manage_project?).and_return(false)
       delete ci_api("/projects/#{project.id}"), options
       expect(response.status).to eq(401)
     end
@@ -219,6 +219,7 @@ describe Ci::API::API do
       let(:runner) { FactoryGirl.create(:ci_runner) }
 
       it "should add the project to the runner" do
+        project.gl_project.team << [user, :master]
         post ci_api("/projects/#{project.id}/runners/#{runner.id}"), options
         expect(response.status).to eq(201)
 
@@ -245,11 +246,10 @@ describe Ci::API::API do
       let(:project) { FactoryGirl.create(:ci_project) }
       let(:runner) { FactoryGirl.create(:ci_runner) }
 
-      before do
-        post ci_api("/projects/#{project.id}/runners/#{runner.id}"), options
-      end
-
       it "should remove the project from the runner" do
+        project.gl_project.team << [user, :master]
+        post ci_api("/projects/#{project.id}/runners/#{runner.id}"), options
+
         expect(project.runners).to be_present
         delete ci_api("/projects/#{project.id}/runners/#{runner.id}"), options
         expect(response.status).to eq(200)
@@ -259,8 +259,7 @@ describe Ci::API::API do
       end
 
       it "non-manager is not authorized" do
-        allow_any_instance_of(User).to receive(:can_manage_project?).and_return(false)
-        post ci_api("/projects/#{project.id}/runners/#{runner.id}"), options
+        delete ci_api("/projects/#{project.id}/runners/#{runner.id}"), options
         expect(response.status).to eq(401)
       end
     end

@@ -17,7 +17,7 @@ describe Ci::API::API, 'Commits' do
     before { commit }
 
     it "should return commits per project" do
-      get api("/commits"), options
+      get ci_api("/commits"), options
 
       expect(response.status).to eq(200)
       expect(json_response.count).to eq(1)
@@ -49,14 +49,14 @@ describe Ci::API::API, 'Commits' do
     end
 
     it "should create a build" do
-      post api("/commits"), options.merge(data: data)
+      post ci_api("/commits"), options.merge(data: data)
 
       expect(response.status).to eq(201)
       expect(json_response['sha']).to eq("da1560886d4f094c3e6c9ef40349f7d38b5d27d7")
     end
 
     it "should return 400 error if no data passed" do
-      post api("/commits"), options
+      post ci_api("/commits"), options
 
       expect(response.status).to eq(400)
       expect(json_response['message']).to eq("400 (Bad request) \"data\" not given")

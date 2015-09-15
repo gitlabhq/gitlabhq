@@ -4,13 +4,12 @@ describe Ci::API::API do
   include ApiHelpers
 
   let(:project) { FactoryGirl.create(:ci_project) }
-  let(:gitlab_url) { GitlabCi.config.gitlab_server.url }
-  let(:private_token) { Network.new.authenticate(access_token: "some_token")["private_token"] }
+  let(:private_token) { create(:user).private_token }
 
   let(:options) do
     {
       private_token: private_token,
-      url: gitlab_url
+      url: GitlabCi.config.gitlab_ci.url
     }
   end
 
@@ -25,7 +24,7 @@ describe Ci::API::API do
         project_id: project.gitlab_id,
         project_token: project.token,
         data: {
-          id:                  2,
+          id:                  create(:empty_project).id,
           name_with_namespace: "Gitlab.org / Underscore",
           path_with_namespace: "gitlab-org/underscore",
           default_branch:      "master",
@@ -40,7 +39,7 @@ describe Ci::API::API do
       end
 
       it "should create a project with valid data" do
-        post api("/forks"), options
+        post ci_api("/forks"), options
         expect(response.status).to eq(201)
         expect(json_response['name']).to eq("Gitlab.org / Underscore")
       end
@@ -52,7 +51,7 @@ describe Ci::API::API do
       end
 
       it "should error with invalid data" do
-        post api("/forks"), options
+        post ci_api("/forks"), options
         expect(response.status).to eq(400)
       end
     end

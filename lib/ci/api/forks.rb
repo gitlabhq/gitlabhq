@@ -18,11 +18,8 @@ module Ci
           project = Ci::Project.find_by!(gitlab_id: params[:project_id])
           authenticate_project_token!(project)
 
-          user_session = Ci::UserSession.new
-          user = user_session.authenticate(private_token: params[:private_token])
-
           fork = Ci::CreateProjectService.new.execute(
-            user,
+            current_user,
             params[:data],
             Ci::RoutesHelper.ci_project_url(":project_id"),
             project
