@@ -10,10 +10,11 @@
       .modal-body
         = form_tag namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post, class: 'blob-file-upload-form-js form-horizontal' do
           .dropzone
-            .dropzone-previews{class: "blob-upload-dropzone-previews"}
-              %p.dz-message{class: "hint"}<
-                Attach files by dragging & dropping or&nbsp;
-                %a{href: '#', class: "markdown-selector"}>click to upload
+            .dropzone-previews.blob-upload-dropzone-previews
+              %p.dz-message.light
+                Attach files by dragging &amp; dropping or
+                = link_to 'click to upload', '#', class: "markdown-selector"
+
           %br
           .dropzone-alerts{class: "alert alert-danger data", "data-dismiss" => "alert", style: "display:none"}
           = render 'shared/commit_message_container', params: params,

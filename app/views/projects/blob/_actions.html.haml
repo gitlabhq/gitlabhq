@@ -17,6 +17,6 @@
         tree_join(@commit.sha, @path)), class: 'btn btn-sm'
 
 - if allowed_tree_edit?
-  .btn-group{:role => "group"}
-    %button.btn.btn-default{class: 'btn-primary', href: '#modal-replace-blob', 'data-target' => '#modal-replace-blob', 'data-toggle' => 'modal'} Replace
-    %button.btn.btn-default{class: 'btn-remove', href: '#modal-remove-blob', 'data-target' => '#modal-remove-blob', 'data-toggle' => 'modal'} Remove
+  .btn-group{ role: "group" }
+    %button.btn.btn-default{ 'data-target' => '#modal-replace-blob', 'data-toggle' => 'modal' } Replace
+    %button.btn.btn-remove{ 'data-target' => '#modal-remove-blob', 'data-toggle' => 'modal' } Remove
