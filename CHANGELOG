@@ -141,6 +141,7 @@ v 7.13.3
   - Allow users to send abuse reports
   - Remove satellites
   - Link username to profile on Group Members page (Tom Webster)
+  - Sort users autocomplete lists by user (Allister Antosik)
 
 v 7.13.2
   - Fix randomly failed spec
