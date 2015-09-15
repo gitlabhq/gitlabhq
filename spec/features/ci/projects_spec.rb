@@ -1,33 +1,36 @@
 require 'spec_helper'
 
 describe "Projects" do
+  let(:user)    { create(:user) }
+
   before do
-    login_as :user
-    @project = FactoryGirl.create :project, name: "GitLab / gitlab-shell"
+    login_as(user)
+    @project = FactoryGirl.create :ci_project, name: "GitLab / gitlab-shell"
+    @project.gl_project.team << [user, :master]
   end
 
-  describe "GET /projects", js: true do
+  describe "GET /ci/projects", js: true do
     before do
       stub_js_gitlab_calls
-      visit projects_path
+      visit ci_projects_path
     end
 
     it { expect(page).to have_content "GitLab / gitlab-shell" }
     it { expect(page).to have_selector ".search input#search" }
   end
 
-  describe "GET /projects/:id" do
+  describe "GET /ci/projects/:id" do
     before do
-      visit project_path(@project)
+      visit ci_project_path(@project)
     end
 
     it { expect(page).to have_content @project.name }
     it { expect(page).to have_content 'All commits' }
   end
 
-  describe "GET /projects/:id/edit" do
+  describe "GET /ci/projects/:id/edit" do
     before do
-      visit edit_project_path(@project)
+      visit edit_ci_project_path(@project)
     end
 
     it { expect(page).to have_content @project.name }
@@ -43,9 +46,9 @@ describe "Projects" do
     end
   end
 
-  describe "GET /projects/:id/charts" do
+  describe "GET /ci/projects/:id/charts" do
     before do
-      visit project_charts_path(@project)
+      visit ci_project_charts_path(@project)
     end
 
     it { expect(page).to have_content 'Overall' }
