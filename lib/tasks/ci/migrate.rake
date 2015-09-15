@@ -11,6 +11,7 @@ namespace :ci do
     Rake::Task["ci:migrate:db"].invoke
     Rake::Task["ci:migrate:autoincrements"].invoke
     Rake::Task["ci:migrate:tags"].invoke
+    Rake::Task["ci:migrate:services"].invoke
   end
 
   namespace :migrate do
@@ -51,6 +52,12 @@ namespace :ci do
           end
         end
       end
+    end
+
+    desc 'GitLab | Migrate CI services'
+    task services: :environment do
+      c = ActiveRecord::Base.connection
+      c.execute("UPDATE ci_services SET type=CONCAT('Ci::'', type) WHERE type NOT LIKE 'Ci::%'")
     end
   end
 end
