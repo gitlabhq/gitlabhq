@@ -3,14 +3,18 @@ module Backup
     attr_reader :app_builds_dir, :backup_builds_dir, :backup_dir
 
     def initialize
-      @app_builds_dir = File.realpath(Rails.root.join('ci/builds'))
-      @backup_dir = GitlabCi.config.backup.path
-      @backup_builds_dir = File.join(GitlabCi.config.backup.path, 'ci/builds')
+      @app_builds_dir = Settings.gitlab_ci.builds_path
+      @backup_dir = Gitlab.config.backup.path
+      @backup_builds_dir = File.join(Gitlab.config.backup.path, 'builds')
     end
 
     # Copy builds from builds directory to backup/builds
     def dump
-      FileUtils.mkdir_p(backup_builds_dir)
+      FileUtils.rm_rf(backup_builds_dir)
+      # Ensure the parent dir of backup_builds_dir exists
+      FileUtils.mkdir_p(Gitlab.config.backup.path)
+      # Fail if somebody raced to create backup_builds_dir before us
+      FileUtils.mkdir(backup_builds_dir, mode: 0700)
       FileUtils.cp_r(app_builds_dir, backup_dir)
     end
 
