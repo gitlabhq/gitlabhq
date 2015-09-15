@@ -1,7 +1,0 @@
-%ul.center-top-menu
-  = nav_link(page: user_snippets_path(current_user), html_options: {class: 'home'}) do
-    = link_to user_snippets_path(current_user), title: 'Your snippets', data: {placement: 'right'} do
-      Your Snippets
-  = nav_link(page: snippets_path) do
-    = link_to snippets_path, title: 'Explore snippets', data: {placement: 'right'} do
-      Explore Snippets

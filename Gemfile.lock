@@ -274,8 +274,7 @@ GEM
       charlock_holmes (~> 0.6.6)
       escape_utils (~> 0.2.4)
       mime-types (~> 1.19)
-    gitlab_ci_meta (4.0)
-    gitlab_emoji (0.1.0)
+    gitlab_emoji (0.1.1)
       gemojione (~> 2.0)
     gitlab_git (7.2.15)
       activesupport (~> 4.0)
@@ -597,8 +596,8 @@ GEM
       powerpack (~> 0.0.6)
       rainbow (>= 1.99.1, < 3.0)
       ruby-progressbar (~> 1.4)
-    ruby-fogbugz (0.1.1)
-      crack
+    ruby-fogbugz (0.2.0)
+      crack (~> 0.4)
     ruby-progressbar (1.7.5)
     ruby-saml (1.0.0)
       nokogiri (>= 1.5.10)
@@ -888,8 +887,8 @@ DEPENDENCIES
   rerun (~> 0.10.0)
   rqrcode-rails3 (~> 0.1.7)
   rspec-rails (~> 3.3.0)
-  rubocop (~> 0.28.0)
-  ruby-fogbugz
+  rubocop (= 0.28.0)
+  ruby-fogbugz (~> 0.2.0)
   sanitize (~> 2.0)
   sass-rails (~> 4.0.5)
   sdoc (~> 0.3.20)
@@ -930,6 +929,3 @@ DEPENDENCIES
   webmock (~> 1.21.0)
   whenever (~> 0.8.4)
   wikicloth (= 0.8.1)
-
-BUNDLED WITH
-   1.10.6

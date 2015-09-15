@@ -144,7 +144,7 @@ class Project < ActiveRecord::Base
   validates_uniqueness_of :path, scope: :namespace_id
   validates :import_url,
     format: { with: /\A#{URI.regexp(%w(ssh git http https))}\z/, message: 'should be a valid url' },
-    if: :import?
+    if: :external_import?
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :avatar_type,
@@ -275,7 +275,13 @@ class Project < ActiveRecord::Base
   end
 
   def add_import_job
-    RepositoryImportWorker.perform_in(2.seconds, id)
+    if forked?
+      unless RepositoryForkWorker.perform_async(id, forked_from_project.path_with_namespace, self.namespace.path)
+        import_fail
+      end
+    else
+      RepositoryImportWorker.perform_in(2.seconds, id)
+    end
   end
 
   def clear_import_data
@@ -283,6 +289,10 @@ class Project < ActiveRecord::Base
   end
 
   def import?
+    external_import? || forked?
+  end
+
+  def external_import?
     import_url.present?
   end
 
@@ -702,14 +712,8 @@ class Project < ActiveRecord::Base
   end
 
   def create_repository
-    if forked?
-      if gitlab_shell.fork_repository(forked_from_project.path_with_namespace, self.namespace.path)
-        true
-      else
-        errors.add(:base, 'Failed to fork repository via gitlab-shell')
-        false
-      end
-    else
+    # Forked import is handled asynchronously
+    unless forked?
       if gitlab_shell.add_repository(path_with_namespace)
         true
       else

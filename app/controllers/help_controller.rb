@@ -1,4 +1,6 @@
 class HelpController < ApplicationController
+  skip_before_action :authenticate_user!, :reject_blocked
+
   layout 'help'
 
   def index

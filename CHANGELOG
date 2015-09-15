@@ -3,10 +3,12 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.0.0 (unreleased)
   - Bump rouge to 1.10.1 to remove warning noise and fix other syntax highlighting bugs (Stan Hu)
   - Gracefully handle errors in syntax highlighting by leaving the block unformatted (Stan Hu)
+  - Add "replace" and "upload" functionalities to allow user replace existing file and upload new file into current repository
   - Fix URL construction for merge requests, issues, notes, and commits for relative URL config (Stan Hu)
   - Fix emoji URLs in Markdown when relative_url_root is used (Stan Hu)
   - Omit filename in Content-Disposition header in raw file download to avoid RFC 6266 encoding issues (Stan HU)
   - Fix broken Wiki Page History (Stan Hu)
+  - Import forked repositories asynchronously to prevent large repositories from timing out (Stan Hu)
   - Prevent anchors from being hidden by header (Stan Hu)
   - Fix bug where only the first 15 Bitbucket issues would be imported (Stan Hu)
   - Sort issues by creation date in Bitbucket importer (Stan Hu)
@@ -31,7 +33,7 @@ v 8.0.0 (unreleased)
   - Fix 500 error when submit project snippet without body
   - Improve search page usability
   - Bring more UI consistency in way how projects, snippets and groups lists are rendered
-  - Make all profiles public
+  - Make all profiles and group public
   - Fixed login failure when extern_uid changes (Joel Koglin)
   - Don't notify users without access to the project when they are (accidentally) mentioned in a note.
   - Retrieving oauth token with LDAP credentials

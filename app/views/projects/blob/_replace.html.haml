@@ -1,0 +1,28 @@
+#modal-replace-blob.modal
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %a.close{href: "#", "data-dismiss" => "modal"} ×
+        %h3.page-title Replace #{@blob.name}
+        %p.light
+          From branch
+          %strong= @ref
+      .modal-body
+        = form_tag namespace_project_update_blob_path(@project.namespace, @project, @id), method: :put, class: 'blob-file-upload-form-js form-horizontal' do
+          .dropzone
+            .dropzone-previews{class: "blob-upload-dropzone-previews"}
+              %p.dz-message{class: "hint"}<
+                Attach files by dragging & dropping or&nbsp;
+                %a{href: '#', class: "markdown-selector"}>click to upload
+          %br
+          .dropzone-alerts{class: "alert alert-danger data", "data-dismiss" => "alert", style: "display:none"}
+          = render 'shared/commit_message_container', params: params,
+            placeholder: 'Replace this file because...'
+          .form-group
+            .col-sm-offset-2.col-sm-10
+              = button_tag 'Replace file', class: 'btn btn-small btn-primary btn-replace-file', id: 'submit-all'
+              = link_to "Cancel", '#', class: "btn btn-cancel", "data-dismiss" => "modal"
+
+:coffeescript
+  disableButtonIfEmptyField $('.blob-file-upload-form-js').find('#commit_message'), '.btn-replace-file'
+  new BlobFileDropzone($('.blob-file-upload-form-js'), 'put')

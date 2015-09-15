@@ -3,7 +3,7 @@
 [![build status](https://ci.gitlab.com/projects/1/status.png?ref=master)](https://ci.gitlab.com/projects/1?ref=master)
 [![Build Status](https://semaphoreci.com/api/v1/projects/2f1a5809-418b-4cc2-a1f4-819607579fe7/400484/shields_badge.svg)](https://semaphoreci.com/gitlabhq/gitlabhq)
 [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.svg)](https://codeclimate.com/github/gitlabhq/gitlabhq)
-[![Coverage Status](https://coveralls.io/repos/gitlabhq/gitlabhq/badge.png?branch=master)](https://coveralls.io/r/gitlabhq/gitlabhq?branch=master)
+[![Coverage Status](https://coveralls.io/repos/gitlabhq/gitlabhq/badge.svg?branch=master)](https://coveralls.io/r/gitlabhq/gitlabhq?branch=master)
 
 ## Canonical source
 

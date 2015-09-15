@@ -1,9 +1,5 @@
 - page_title    "Explore"
-- if current_user
-  - unless @header_title
-    - header_title "Projects", (current_user ? root_path : explore_root_path)
-- else
+- unless current_user
   - header_title  "Explore GitLab", explore_root_path
-- sidebar       "dashboard"
 
 = render template: "layouts/application"

@@ -1,6 +1,10 @@
-- page_title "Starred Projects"
+- page_title    "Projects"
+- header_title  "Projects", root_path
+
 - if current_user
   = render 'dashboard/projects_head'
+- else
+  = render 'explore/head'
 
 .explore-trending-block
   .gray-content-block
