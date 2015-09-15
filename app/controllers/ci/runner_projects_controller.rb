@@ -9,7 +9,7 @@ module Ci
     def create
       @runner = Ci::Runner.find(params[:runner_project][:runner_id])
 
-      return head(403) unless current_user.authorized_runners.include?(@runner)
+      return head(403) unless current_user.ci_authorized_runners.include?(@runner)
 
       if @runner.assign_to(project, current_user)
         redirect_to ci_project_runners_path(project)

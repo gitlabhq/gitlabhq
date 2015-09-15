@@ -1,21 +1,19 @@
 require 'spec_helper'
 
 describe "Runners" do
+  let(:user)    { create(:user) }
+
   before do
-    login_as :user
+    login_as(user)
   end
 
   describe "specific runners" do
     before do
       @project = FactoryGirl.create :ci_project
-      @project2 = FactoryGirl.create :ci_project
-      stub_js_gitlab_calls
+      @project.gl_project.team << [user, :master]
 
-      # all projects should be authorized for user
-      allow_any_instance_of(Network).to receive(:projects).and_return([
-        OpenStruct.new({ id: @project.gitlab_id }),
-        OpenStruct.new({ id: @project2.gitlab_id })
-      ])
+      @project2 = FactoryGirl.create :ci_project
+      @project2.gl_project.team << [user, :master]
 
       @shared_runner = FactoryGirl.create :ci_shared_runner
       @specific_runner = FactoryGirl.create :ci_specific_runner
@@ -60,14 +58,14 @@ describe "Runners" do
         click_on "Remove runner"
       end
 
-      expect(Runner.exists?(id: @specific_runner)).to be_falsey
+      expect(Ci::Runner.exists?(id: @specific_runner)).to be_falsey
     end
   end
 
   describe "shared runners" do
     before do
       @project = FactoryGirl.create :ci_project
-      stub_js_gitlab_calls
+      @project.gl_project.team << [user, :master]
     end
 
     it "enables shared runners" do
@@ -82,7 +80,7 @@ describe "Runners" do
   describe "show page" do
     before do
       @project = FactoryGirl.create :ci_project
-      stub_js_gitlab_calls
+      @project.gl_project.team << [user, :master]
       @specific_runner = FactoryGirl.create :ci_specific_runner
       @project.runners << @specific_runner
     end
