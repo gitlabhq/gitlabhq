@@ -175,7 +175,7 @@ describe Ci::Build do
       before { build.trace = text }
 
       it { is_expected.to include(text) }
-      it { is_expected.to have_at_least(text.length).items }
+      it { expect(subject.length).to be >= text.length }
     end
   end
 
