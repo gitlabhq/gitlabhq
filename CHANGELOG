@@ -48,6 +48,7 @@ v 8.0.0 (unreleased)
   - Fix highlighting of deleted lines in diffs.
   - Added service API endpoint to retrieve service parameters (Petheő Bence)
   - Add FogBugz project import (Jared Szechy)
+  - Sort users autocomplete lists by user (Allister Antosik)
 
 v 7.14.3
   - No changes
