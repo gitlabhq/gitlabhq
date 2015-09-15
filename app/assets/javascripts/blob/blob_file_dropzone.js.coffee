@@ -20,26 +20,41 @@ class @BlobFileDropzone
       headers:
         "X-CSRF-Token": $("meta[name=\"csrf-token\"]").attr("content")
 
-      success: (header, response) ->
-        window.location.href = response.filePath
-        return
+      init: ->
+        this.on 'addedfile', (file) ->
+          $('.dropzone-alerts').html('').hide()
+          commit_message = form.find('#commit_message')[0]
 
-      error: (temp, errorMessage) ->
+          if /^Upload/.test(commit_message.placeholder)
+            commit_message.placeholder = 'Upload ' + file.name
+
+          return
+
+        this.on 'removedfile', (file) ->
+          commit_message = form.find('#commit_message')[0]
+
+          if /^Upload/.test(commit_message.placeholder)
+            commit_message.placeholder = 'Upload new file'
+
+          return
+
+        this.on 'success', (header, response) ->
+          window.location.href = response.filePath
+          return
+
+        this.on 'maxfilesexceeded', (file) ->
+          @removeFile file
+          return
+
+        this.on 'sending', (file, xhr, formData) ->
+          formData.append('commit_message', form.find('#commit_message').val())
+          return
+
+      # Override behavior of adding error underneath preview
+      error: (file, errorMessage) ->
         stripped = $("<div/>").html(errorMessage).text();
         $('.dropzone-alerts').html('Error uploading file: \"' + stripped + '\"').show()
-        return
-
-      maxfilesexceeded: (file) ->
         @removeFile file
-        return
-
-      removedfile: (file) ->
-        $('.dropzone-previews')[0].removeChild(file.previewTemplate)
-        $('.dropzone-alerts').html('').hide()
-        return true
-
-      sending: (file, xhr, formData) ->
-        formData.append('commit_message', form.find('#commit_message').val())
         return
     )
 
