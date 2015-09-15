@@ -124,19 +124,15 @@ describe Ci::Project do
   end
 
   describe 'Project.parse' do
-    let(:project_dump) { YAML.load File.read(Rails.root.join('spec/support/gitlab_stubs/raw_project.yml')) }
-    let(:parsed_project) { Ci::Project.parse(project_dump) }
+    let(:project) { FactoryGirl.create :project }
 
+    subject { Ci::Project.parse(project) }
 
-    it { expect(parsed_project).to be_valid }
-    it { expect(parsed_project).to be_kind_of(Ci::Project) }
-    it { expect(parsed_project.name).to eq("GitLab / api.gitlab.org") }
-    it { expect(parsed_project.gitlab_id).to eq(189) }
-    it { expect(parsed_project.gitlab_url).to eq("http://demo.gitlab.com/gitlab/api-gitlab-org") }
-
-    it "parses plain hash" do
-      expect(Ci::Project.parse(project_dump).name).to eq("GitLab / api.gitlab.org")
-    end
+    it { is_expected.to be_valid }
+    it { is_expected.to be_kind_of(Ci::Project) }
+    it { expect(subject.name).to eq(project.name_with_namespace) }
+    it { expect(subject.gitlab_id).to eq(4) }
+    it { expect(subject.gitlab_url).to eq("http://localhost/namespace5/gitlabhq") }
   end
 
   describe :repo_url_with_auth do
