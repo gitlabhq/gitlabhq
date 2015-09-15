@@ -33,13 +33,13 @@ Feature: Project Source Browse Files
     And I click on "Commit Changes"
     Then I am redirected to the new file
     And I should see its new content
-    
+
   @javascript
   Scenario: I can upload file and commit
     Given I click on "new file" link in repo
     Then I can see new file page
-    And I can see "upload existing one"
-    And I click on "upload existing one"
+    And I can see "upload an existing one"
+    And I click on "upload"
     And I upload a new text file
     And I fill the upload file commit message
     And I click on "Upload file"

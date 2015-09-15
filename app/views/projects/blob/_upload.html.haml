@@ -3,26 +3,26 @@
     .modal-content
       .modal-header
         %a.close{href: "#", "data-dismiss" => "modal"} ×
-        %h3.page-title Upload
+        %h3.page-title #{@title}
         %p.light
           From branch
           %strong= @ref
       .modal-body
-        = form_tag namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post, class: 'blob-file-upload-form-js form-horizontal' do
+        = form_tag @form_path, method: @method, class: 'blob-file-upload-form-js form-horizontal' do
           .dropzone
             .dropzone-previews.blob-upload-dropzone-previews
               %p.dz-message.light
                 Attach a file by drag &amp; drop or
                 = link_to 'click to upload', '#', class: "markdown-selector"
           %br
-          .dropzone-alerts{class: "alert alert-danger data", "data-dismiss" => "alert", style: "display:none"}
+          .dropzone-alerts{class: "alert alert-danger data", style: "display:none"}
           = render 'shared/commit_message_container', params: params,
-            placeholder: 'Upload new file'
+            placeholder: @placeholder
           .form-group
             .col-sm-offset-2.col-sm-10
-              = button_tag 'Upload file', class: 'btn btn-small btn-primary btn-upload-file', id: 'submit-all'
+              = button_tag @button_title, class: 'btn btn-small btn-primary btn-upload-file', id: 'submit-all'
               = link_to "Cancel", '#', class: "btn btn-cancel", "data-dismiss" => "modal"
 
 :coffeescript
   disableButtonIfEmptyField $('.blob-file-upload-form-js').find('#commit_message'), '.btn-upload-file'
-  new BlobFileDropzone($('.blob-file-upload-form-js'), 'post')
+  new BlobFileDropzone($('.blob-file-upload-form-js'), '#{@method}')
