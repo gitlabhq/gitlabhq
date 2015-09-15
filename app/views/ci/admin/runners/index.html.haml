@@ -25,7 +25,7 @@
 
 .append-bottom-20.clearfix
   .pull-left
-    = form_tag ci_admin_runners_path, class: 'form-inline', method: :get do
+    = form_tag ci_admin_runners_path, id: 'runners-search', class: 'form-inline', method: :get do
       .form-group
         = search_field_tag :search, params[:search], class: 'form-control', placeholder: 'Runner description or token'
       = submit_tag 'Search', class: 'btn'

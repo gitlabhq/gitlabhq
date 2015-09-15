@@ -37,7 +37,7 @@ module Ci
     acts_as_taggable
 
     def self.search(query)
-      where('LOWER(runners.token) LIKE :query OR LOWER(runners.description) like :query',
+      where('LOWER(ci_runners.token) LIKE :query OR LOWER(ci_runners.description) like :query',
             query: "%#{query.try(:downcase)}%")
     end
 

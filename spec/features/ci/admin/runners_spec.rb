@@ -23,8 +23,9 @@ describe "Admin Runners" do
         FactoryGirl.create :ci_runner, description: 'foo'
         FactoryGirl.create :ci_runner, description: 'bar'
 
-        fill_in 'search', with: 'foo'
-        click_button 'Search'
+        search_form = find('#runners-search')
+        search_form.fill_in 'search', with: 'foo'
+        search_form.click_button 'Search'
       end
 
       it { expect(page).to have_content("foo") }
@@ -52,8 +53,9 @@ describe "Admin Runners" do
 
     describe 'search' do
       before do
-        fill_in 'search', with: 'foo'
-        click_button 'Search'
+        search_form = find('#runner-projects-search')
+        search_form.fill_in 'search', with: 'foo'
+        search_form.click_button 'Search'
       end
 
       it { expect(page).to have_content("foo") }
