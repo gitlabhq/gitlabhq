@@ -11,7 +11,7 @@ describe Ci::API::API do
     let(:shared_project) { FactoryGirl.create(:ci_project, name: "SharedProject") }
 
     before do
-      FactoryGirl.create :runner_project, project_id: project.id, runner_id: runner.id
+      FactoryGirl.create :ci_runner_project, project_id: project.id, runner_id: runner.id
     end
 
     describe "POST /builds/register" do
@@ -20,7 +20,7 @@ describe Ci::API::API do
         commit.create_builds
         build = commit.builds.first
 
-        post api("/builds/register"), token: runner.token, info: { platform: :darwin }
+        post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
 
         expect(response.status).to eq(201)
         expect(json_response['sha']).to eq(build.sha)
@@ -28,7 +28,7 @@ describe Ci::API::API do
       end
 
       it "should return 404 error if no pending build found" do
-        post api("/builds/register"), token: runner.token
+        post ci_api("/builds/register"), token: runner.token
 
         expect(response.status).to eq(404)
       end
@@ -37,7 +37,7 @@ describe Ci::API::API do
         commit = FactoryGirl.create(:ci_commit, project: shared_project)
         FactoryGirl.create(:ci_build, commit: commit, status: 'pending' )
 
-        post api("/builds/register"), token: runner.token
+        post ci_api("/builds/register"), token: runner.token
 
         expect(response.status).to eq(404)
       end
@@ -46,7 +46,7 @@ describe Ci::API::API do
         commit = FactoryGirl.create(:ci_commit, project: project)
         FactoryGirl.create(:ci_build, commit: commit, status: 'pending' )
 
-        post api("/builds/register"), token: shared_runner.token
+        post ci_api("/builds/register"), token: shared_runner.token
 
         expect(response.status).to eq(404)
       end
@@ -55,7 +55,7 @@ describe Ci::API::API do
         commit = FactoryGirl.create(:ci_commit, project: project)
         commit.create_builds
 
-        post api("/builds/register"), token: runner.token, info: { platform: :darwin }
+        post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
 
         expect(response.status).to eq(201)
         expect(json_response["options"]).to eq({ "image" => "ruby:2.1", "services" => ["postgres"] })
@@ -64,9 +64,9 @@ describe Ci::API::API do
       it "returns variables" do
         commit = FactoryGirl.create(:ci_commit, project: project)
         commit.create_builds
-        project.variables << Variable.new(key: "SECRET_KEY", value: "secret_value")
+        project.variables << Ci::Variable.new(key: "SECRET_KEY", value: "secret_value")
 
-        post api("/builds/register"), token: runner.token, info: { platform: :darwin }
+        post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
 
         expect(response.status).to eq(201)
         expect(json_response["variables"]).to eq([
@@ -81,9 +81,9 @@ describe Ci::API::API do
 
         trigger_request = FactoryGirl.create(:ci_trigger_request_with_variables, commit: commit, trigger: trigger)
         commit.create_builds(trigger_request)
-        project.variables << Variable.new(key: "SECRET_KEY", value: "secret_value")
+        project.variables << Ci::Variable.new(key: "SECRET_KEY", value: "secret_value")
 
-        post api("/builds/register"), token: runner.token, info: { platform: :darwin }
+        post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
 
         expect(response.status).to eq(201)
         expect(json_response["variables"]).to eq([
@@ -100,14 +100,14 @@ describe Ci::API::API do
 
       it "should update a running build" do
         build.run!
-        put api("/builds/#{build.id}"), token: runner.token
+        put ci_api("/builds/#{build.id}"), token: runner.token
         expect(response.status).to eq(200)
       end
 
       it 'Should not override trace information when no trace is given' do
         build.run!
         build.update!(trace: 'hello_world')
-        put api("/builds/#{build.id}"), token: runner.token
+        put ci_api("/builds/#{build.id}"), token: runner.token
         expect(build.reload.trace).to eq 'hello_world'
       end
     end

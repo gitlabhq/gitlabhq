@@ -8,11 +8,11 @@ describe Ci::API::API do
     let!(:project) { FactoryGirl.create(:ci_project) }
     let!(:project2) { FactoryGirl.create(:ci_project) }
     let!(:trigger) { FactoryGirl.create(:ci_trigger, project: project, token: trigger_token) }
-    let(:options) {
+    let(:options) do
       {
         token: trigger_token
       }
-    }
+    end
 
     context 'Handles errors' do
       it 'should return bad request if token is missing' do

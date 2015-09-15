@@ -13,8 +13,8 @@ describe "Runners" do
 
       # all projects should be authorized for user
       allow_any_instance_of(Network).to receive(:projects).and_return([
-        OpenStruct.new({id: @project.gitlab_id}),
-        OpenStruct.new({id: @project2.gitlab_id})
+        OpenStruct.new({ id: @project.gitlab_id }),
+        OpenStruct.new({ id: @project2.gitlab_id })
       ])
 
       @shared_runner = FactoryGirl.create :shared_runner

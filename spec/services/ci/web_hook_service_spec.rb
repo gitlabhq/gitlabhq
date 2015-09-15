@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe Ci::WebHookService do
-  let (:project) { FactoryGirl.create :project }
-  let (:commit)  { FactoryGirl.create :commit, project: project }
-  let (:build)   { FactoryGirl.create :build, commit: commit }
-  let (:hook)    { FactoryGirl.create :web_hook, project: project }
+  let(:project) { FactoryGirl.create :project }
+  let(:commit)  { FactoryGirl.create :commit, project: project }
+  let(:build)   { FactoryGirl.create :build, commit: commit }
+  let(:hook)    { FactoryGirl.create :web_hook, project: project }
 
   describe :execute do
     it "should execute successfully" do

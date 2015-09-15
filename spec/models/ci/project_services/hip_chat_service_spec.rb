@@ -72,4 +72,3 @@ describe Ci::HipChatService do
     end
   end
 end
-

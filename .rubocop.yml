@@ -998,6 +998,7 @@ AllCops:
     - 'tmp/**/*'
     - 'bin/**/*'
     - 'lib/backup/**/*'
+    - 'lib/ci/backup/**/*'
     - 'lib/tasks/**/*'
     - 'lib/email_validator.rb'
     - 'lib/gitlab/upgrader.rb'

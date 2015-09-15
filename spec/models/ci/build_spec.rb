@@ -56,7 +56,7 @@ describe Ci::Build do
     end
     let(:create_from_build) { Ci::Build.create_from build }
 
-    it ('there should be a pending task') do
+    it 'there should be a pending task' do
       expect(Ci::Build.pending.count(:all)).to eq 0
       create_from_build
       expect(Ci::Build.pending.count(:all)).to be > 0

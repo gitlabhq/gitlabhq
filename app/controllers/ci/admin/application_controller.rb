@@ -1,8 +1,8 @@
 module Ci
   module Admin
     class ApplicationController < Ci::ApplicationController
-      before_filter :authenticate_user!
-      before_filter :authenticate_admin!
+      before_action :authenticate_user!
+      before_action :authenticate_admin!
 
       layout "ci/admin"
     end

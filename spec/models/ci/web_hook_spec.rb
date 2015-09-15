@@ -36,7 +36,7 @@ describe Ci::WebHook do
     before(:each) do
       @web_hook = FactoryGirl.create(:ci_web_hook)
       @project = @web_hook.project
-      @data = { before: 'oldrev', after: 'newrev', ref: 'ref'}
+      @data = { before: 'oldrev', after: 'newrev', ref: 'ref' }
 
       WebMock.stub_request(:post, @web_hook.url)
     end
@@ -56,9 +56,7 @@ describe Ci::WebHook do
     it "catches exceptions" do
       expect(WebHook).to receive(:post).and_raise("Some HTTP Post error")
 
-      expect {
-        @web_hook.execute(@data)
-      }.to raise_error
+      expect{ @web_hook.execute(@data) }.to raise_error
     end
   end
 end

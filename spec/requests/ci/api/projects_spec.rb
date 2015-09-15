@@ -62,7 +62,7 @@ describe Ci::API::API do
     let!(:project) { FactoryGirl.create(:ci_project) }
 
     context "Valid Webhook URL" do
-      let!(:webhook) { {web_hook: "http://example.com/sth/1/ala_ma_kota" } }
+      let!(:webhook) { { web_hook: "http://example.com/sth/1/ala_ma_kota" } }
 
       before do
         options.merge!(webhook)

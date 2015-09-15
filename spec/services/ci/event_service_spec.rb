@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Ci::EventService do
-  let (:project) { FactoryGirl.create :project, name: "GitLab / gitlab-shell" }
-  let (:user)   { double(username: "root", id: 1) }
+  let(:project) { FactoryGirl.create :project, name: "GitLab / gitlab-shell" }
+  let(:user)   { double(username: "root", id: 1) }
 
   before do
     Event.destroy_all

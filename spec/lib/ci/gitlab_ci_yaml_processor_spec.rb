@@ -3,12 +3,12 @@ require 'spec_helper'
 describe Ci::GitlabCiYamlProcessor do
 
   describe "#builds_for_ref" do
-    let (:type) { 'test' }
+    let(:type) { 'test' }
 
     it "returns builds if no branch specified" do
       config = YAML.dump({
         before_script: ["pwd"],
-        rspec: {script: "rspec"}
+        rspec: { script: "rspec" }
       })
 
       config_processor = GitlabCiYamlProcessor.new(config)
@@ -29,7 +29,7 @@ describe Ci::GitlabCiYamlProcessor do
     it "does not return builds if only has another branch" do
       config = YAML.dump({
         before_script: ["pwd"],
-        rspec: {script: "rspec", only: ["deploy"]}
+        rspec: { script: "rspec", only: ["deploy"] }
       })
 
       config_processor = GitlabCiYamlProcessor.new(config)
@@ -40,7 +40,7 @@ describe Ci::GitlabCiYamlProcessor do
     it "does not return builds if only has regexp with another branch" do
       config = YAML.dump({
         before_script: ["pwd"],
-        rspec: {script: "rspec", only: ["/^deploy$/"]}
+        rspec: { script: "rspec", only: ["/^deploy$/"] }
       })
 
       config_processor = GitlabCiYamlProcessor.new(config)
@@ -51,7 +51,7 @@ describe Ci::GitlabCiYamlProcessor do
     it "returns builds if only has specified this branch" do
       config = YAML.dump({
         before_script: ["pwd"],
-        rspec: {script: "rspec", only: ["master"]}
+        rspec: { script: "rspec", only: ["master"] }
       })
 
       config_processor = GitlabCiYamlProcessor.new(config)
@@ -62,7 +62,7 @@ describe Ci::GitlabCiYamlProcessor do
     it "does not build tags" do
       config = YAML.dump({
         before_script: ["pwd"],
-        rspec: {script: "rspec", except: ["tags"]}
+        rspec: { script: "rspec", except: ["tags"] }
       })
 
       config_processor = GitlabCiYamlProcessor.new(config)
@@ -73,7 +73,7 @@ describe Ci::GitlabCiYamlProcessor do
     it "returns builds if only has a list of branches including specified" do
       config = YAML.dump({
                            before_script: ["pwd"],
-                           rspec: {script: "rspec", type: type, only: ["master", "deploy"]}
+                           rspec: { script: "rspec", type: type, only: ["master", "deploy"] }
                          })
 
       config_processor = GitlabCiYamlProcessor.new(config)
@@ -85,10 +85,10 @@ describe Ci::GitlabCiYamlProcessor do
 
       config = YAML.dump({
                            before_script: ["pwd"],
-                           build: {script: "build", type: "build", only: ["master", "deploy"]},
-                           rspec: {script: "rspec", type: type, only: ["master", "deploy"]},
-                           staging: {script: "deploy", type: "deploy", only: ["master", "deploy"]},
-                           production: {script: "deploy", type: "deploy", only: ["master", "deploy"]},
+                           build: { script: "build", type: "build", only: ["master", "deploy"] },
+                           rspec: { script: "rspec", type: type, only: ["master", "deploy"] },
+                           staging: { script: "deploy", type: "deploy", only: ["master", "deploy"] },
+                           production: { script: "deploy", type: "deploy", only: ["master", "deploy"] },
                          })
 
       config_processor = GitlabCiYamlProcessor.new(config)
@@ -105,7 +105,7 @@ describe Ci::GitlabCiYamlProcessor do
                            image: "ruby:2.1",
                            services: ["mysql"],
                            before_script: ["pwd"],
-                           rspec: {script: "rspec"}
+                           rspec: { script: "rspec" }
                          })
 
       config_processor = GitlabCiYamlProcessor.new(config)
@@ -128,10 +128,10 @@ describe Ci::GitlabCiYamlProcessor do
 
     it "returns image and service when overridden for job" do
       config = YAML.dump({
-                           image: "ruby:2.1",
-                           services: ["mysql"],
+                           image:         "ruby:2.1",
+                           services:      ["mysql"],
                            before_script: ["pwd"],
-                           rspec: { image: "ruby:2.5", services: ["postgresql"], script: "rspec" }
+                           rspec:         { image: "ruby:2.5", services: ["postgresql"], script: "rspec" }
                          })
 
       config_processor = GitlabCiYamlProcessor.new(config)
@@ -162,7 +162,7 @@ describe Ci::GitlabCiYamlProcessor do
       config = YAML.dump({
                            variables: variables,
                            before_script: ["pwd"],
-                           rspec: {script: "rspec"}
+                           rspec: { script: "rspec" }
                          })
 
       config_processor = GitlabCiYamlProcessor.new(config)
@@ -197,7 +197,7 @@ describe Ci::GitlabCiYamlProcessor do
     end
 
     it "returns errors if job image parameter is invalid" do
-      config = YAML.dump({rspec: { script: "test", image: ["test"] } })
+      config = YAML.dump({ rspec: { script: "test", image: ["test"] } })
       expect do
         GitlabCiYamlProcessor.new(config)
       end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: image should be a string")
@@ -239,7 +239,7 @@ describe Ci::GitlabCiYamlProcessor do
     end
 
     it "returns errors if there are unknown parameters that are hashes, but doesn't have a script" do
-      config = YAML.dump({ extra: {services: "test" } })
+      config = YAML.dump({ extra: { services: "test" } })
       expect do
         GitlabCiYamlProcessor.new(config)
       end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Unknown parameter: extra")
@@ -267,7 +267,7 @@ describe Ci::GitlabCiYamlProcessor do
     end
 
     it "returns errors if job stage is not a pre-defined stage" do
-      config = YAML.dump({rspec: { script: "test", type: "acceptance", allow_failure: "string" } })
+      config = YAML.dump({ rspec: { script: "test", type: "acceptance", allow_failure: "string" } })
       expect do
         GitlabCiYamlProcessor.new(config)
       end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: stage parameter should be build, test, deploy")
