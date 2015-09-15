@@ -27,8 +27,8 @@ class @Project
 
     $('.update-notification').on 'click', (e) ->
       e.preventDefault()
-      level = $(this).data('notification-level')
+      level = $(@).data 'notification-level'
       $('#notification_level').val(level)
       $('#notification-form').submit()
-      $(this).parents('ul').find('li.active').removeClass('active')
-      $(this).parent().addClass('active')
+      $(@).parents('ul').find('li.active').removeClass 'active'
+      $(@).parent().addClass 'active'

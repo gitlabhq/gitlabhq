@@ -7,6 +7,7 @@
       %a.dropdown-toggle.btn.btn-new{href: '#', "data-toggle" => "dropdown"}
         = icon('bell')
         Notifications
+        = icon('angle-down')
       %ul.dropdown-menu.dropdown-menu-right.project-home-dropdown
         - Notification.notification_levels.each do |level|
           = notification_list_item(level, @membership)
