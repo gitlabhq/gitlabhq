@@ -20,9 +20,9 @@ describe Ci::CreateProjectService do
     end
 
     context "forking" do
-      let (:ci_origin_project) {
+      let(:ci_origin_project) do
         FactoryGirl.create(:ci_project, shared_runners_enabled: true, public: true, allow_git_fetch: true)
-      }
+      end
 
       subject { service.execute(current_user, project, 'http://localhost/projects/:project_id', ci_origin_project) }
 
