@@ -18,7 +18,7 @@ namespace :ci do
       tags.map { |tag| tag['name'] }
     end
 
-    desc 'GITLAB | Migrate CI tags'
+    desc 'GitLab | Migrate CI tags'
     task tags: :environment do
       list_objects('Runner').each do |id|
         runner = Ci::Runner.find_by_id(id)
