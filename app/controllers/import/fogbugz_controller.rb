@@ -2,7 +2,6 @@ class Import::FogbugzController < Import::BaseController
   before_action :verify_fogbugz_import_enabled
   before_action :user_map, only: [:new_user_map, :create_user_map]
 
-  # Doesn't work yet due to bug in ruby-fogbugz, see below
   rescue_from Fogbugz::AuthenticationException, with: :fogbugz_unauthorized
 
   def new
@@ -13,8 +12,8 @@ class Import::FogbugzController < Import::BaseController
     begin
       res = Gitlab::FogbugzImport::Client.new(import_params.symbolize_keys)
     rescue
-      # Needed until https://github.com/firmafon/ruby-fogbugz/pull/9 is merged
-      return redirect_to :back, alert: 'Could not authenticate with FogBugz, check your URL, email, and password'
+      # If the URI is invalid various errors can occur
+      return redirect_to new_import_fogbugz_path, alert: 'Could not connect to FogBugz, check your URL'
     end
     session[:fogbugz_token] = res.get_token
     session[:fogbugz_uri] = params[:uri]
@@ -92,8 +91,7 @@ class Import::FogbugzController < Import::BaseController
   end
 
   def fogbugz_unauthorized(exception)
-    flash[:alert] = exception.message
-    redirect_to new_import_fogbugz_path
+    redirect_to new_import_fogbugz_path, alert: exception.message
   end
 
   def import_params
