@@ -53,7 +53,11 @@ namespace :gitlab do
       IO.popen(%W(find #{repo_root} -mindepth 1 -maxdepth 2 -name *.git)) do |find|
         find.each_line do |path|
           path.chomp!
-          repo_with_namespace = path.sub(repo_root + '/', '').chomp('.git').chomp('.wiki')
+          repo_with_namespace = path.
+            sub(repo_root, '').
+            sub(%r{^/*}, '').
+            chomp('.git').
+            chomp('.wiki')
           next if Project.find_with_namespace(repo_with_namespace)
           new_path = path + move_suffix
           puts path.inspect + ' -> ' + new_path.inspect
