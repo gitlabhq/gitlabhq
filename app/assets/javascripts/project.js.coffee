@@ -24,3 +24,9 @@ class @Project
       $.cookie('hide_no_password_message', 'false', { path: path })
       $(@).parents('.no-password-message').remove()
       e.preventDefault()
+
+    $('.update-notification').on 'click', (e) ->
+      e.preventDefault()
+      level = $(this).data('notification-level')
+      $('#notification_level').val(level)
+      $('#notification-form').submit()

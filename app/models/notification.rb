@@ -12,7 +12,7 @@ class Notification
 
   class << self
     def notification_levels
-      [N_DISABLED, N_PARTICIPATING, N_WATCH, N_MENTION]
+      [N_DISABLED, N_MENTION, N_PARTICIPATING, N_WATCH]
     end
 
     def options_with_labels
