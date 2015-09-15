@@ -30,3 +30,5 @@ class @Project
       level = $(this).data('notification-level')
       $('#notification_level').val(level)
       $('#notification-form').submit()
+      $(this).parents('ul').find('li.active').removeClass('active')
+      $(this).parent().addClass('active')

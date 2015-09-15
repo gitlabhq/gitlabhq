@@ -13,34 +13,43 @@ module NotificationsHelper
     end
   end
 
-  def notification_list_item(notification_level)
+  def notification_list_item(notification_level, user_membership)
     case notification_level
     when Notification::N_DISABLED
-      content_tag(:li) do
+      content_tag(:li, class: active_level_for(user_membership, 'disabled?')) do
         link_to '#', class: 'update-notification', data: { notification_level: Notification::N_DISABLED } do
           icon('microphone-slash fw', text: 'Disabled')
         end
       end
     when Notification::N_PARTICIPATING
-      content_tag(:li) do
+      content_tag(:li, class: active_level_for(user_membership, 'participating?')) do
         link_to '#', class: 'update-notification', data: { notification_level: Notification::N_PARTICIPATING } do
           icon('volume-up fw', text: 'Participating')
         end
       end
     when Notification::N_WATCH
-      content_tag(:li) do
+      content_tag(:li, class: active_level_for(user_membership, 'watch?')) do
         link_to '#', class: 'update-notification', data: { notification_level: Notification::N_WATCH } do
           icon('globe fw', text: 'Watch')
         end
       end
     when Notification::N_MENTION
-      content_tag(:li) do
+      content_tag(:li, class: active_level_for(user_membership, 'mention?')) do
         link_to '#', class: 'update-notification', data: { notification_level: Notification::N_MENTION }  do
           icon('at fw', text: 'Mention')
         end
       end
     else
       # do nothing
+    end
+  end
+
+  def active_level_for(user_membership, level)
+    value = Notification.new(user_membership)
+    if value.global?
+      return 'active' if current_user.notification.send(level)
+    elsif value.send(level)
+      return 'active'
     end
   end
 end
