@@ -37,6 +37,8 @@ FactoryGirl.define do
       }
     end
 
+    commit factory: :ci_commit
+
     factory :ci_not_started_build do
       started_at nil
       finished_at nil
