@@ -253,7 +253,7 @@ GEM
       ruby-progressbar (~> 1.4)
     gemnasium-gitlab-service (0.2.6)
       rugged (~> 0.21)
-    gemojione (2.0.0)
+    gemojione (2.0.1)
       json
     gherkin-ruby (0.3.1)
       racc
@@ -272,7 +272,7 @@ GEM
       charlock_holmes (~> 0.6.6)
       escape_utils (~> 0.2.4)
       mime-types (~> 1.19)
-    gitlab_emoji (0.1.0)
+    gitlab_emoji (0.1.1)
       gemojione (~> 2.0)
     gitlab_git (7.2.15)
       activesupport (~> 4.0)
@@ -889,6 +889,3 @@ DEPENDENCIES
   virtus
   webmock (~> 1.21.0)
   wikicloth (= 0.8.1)
-
-BUNDLED WITH
-   1.10.5
