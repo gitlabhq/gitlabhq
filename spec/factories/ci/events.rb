@@ -17,7 +17,7 @@ FactoryGirl.define do
       "updated project settings#{n}"
     end
 
-    factory :admin_event do
+    factory :ci_admin_event do
       is_admin true
     end
   end

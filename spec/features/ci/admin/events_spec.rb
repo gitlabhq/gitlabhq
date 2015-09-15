@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Admin Events" do
-  let(:event) { FactoryGirl.create :admin_event }
+  let(:event) { FactoryGirl.create :ci_admin_event }
   
   before do
     skip_ci_admin_auth
