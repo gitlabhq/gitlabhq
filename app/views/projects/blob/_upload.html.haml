@@ -12,13 +12,12 @@
           .dropzone
             .dropzone-previews.blob-upload-dropzone-previews
               %p.dz-message.light
-                Attach files by dragging &amp; dropping or
+                Attach a file by drag &amp; drop or
                 = link_to 'click to upload', '#', class: "markdown-selector"
-
           %br
           .dropzone-alerts{class: "alert alert-danger data", "data-dismiss" => "alert", style: "display:none"}
           = render 'shared/commit_message_container', params: params,
-            placeholder: 'Upload this file because...'
+            placeholder: 'Upload new file'
           .form-group
             .col-sm-offset-2.col-sm-10
               = button_tag 'Upload file', class: 'btn btn-small btn-primary btn-upload-file', id: 'submit-all'
