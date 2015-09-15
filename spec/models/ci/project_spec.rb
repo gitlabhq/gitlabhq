@@ -132,7 +132,7 @@ describe Ci::Project do
     it { is_expected.to be_kind_of(Ci::Project) }
     it { expect(subject.name).to eq(project.name_with_namespace) }
     it { expect(subject.gitlab_id).to eq(project.id) }
-    it { expect(subject.gitlab_url).to eq(project.path_with_namespace) }
+    it { expect(subject.gitlab_url).to eq(project.web_url) }
   end
 
   describe :repo_url_with_auth do
