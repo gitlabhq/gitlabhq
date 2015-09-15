@@ -49,24 +49,17 @@ describe Ci::ProjectsController do
   end
 
   describe "POST /projects" do
-    let(:project_dump) { YAML.load File.read(Rails.root.join('spec/support/gitlab_stubs/raw_project.yml')) }
-    let(:gitlab_url) { GitlabCi.config.gitlab_server.url }
-
-    let(:user_data) do
-      data = JSON.parse File.read(Rails.root.join('spec/support/gitlab_stubs/user.json'))
-      data.merge("url" => gitlab_url)
-    end
+    let(:project_dump) { OpenStruct.new({ id: @project.gitlab_id }) }
 
     let(:user) do
       create(:user)
     end
 
-    it "creates project" do
-      allow(controller).to receive(:reset_cache) { true }
-      allow(controller).to receive(:current_user) { user }
-      allow_any_instance_of(Ci::Network).to receive(:enable_ci).and_return(true)
-      allow_any_instance_of(Ci::Network).to receive(:project_hooks).and_return(true)
+    before do
+      sign_in(user)
+    end
 
+    it "creates project" do
       post :create, { project: JSON.dump(project_dump.to_h) }.with_indifferent_access
 
       expect(response.code).to eq('302')
@@ -74,10 +67,6 @@ describe Ci::ProjectsController do
     end
 
     it "shows error" do
-      allow(controller).to receive(:reset_cache) { true }
-      allow(controller).to receive(:current_user) { user }
-      allow_any_instance_of(User).to receive(:can_manage_project?).and_return(false)
-
       post :create, { project: JSON.dump(project_dump.to_h) }.with_indifferent_access
 
       expect(response.code).to eq('302')
@@ -86,22 +75,15 @@ describe Ci::ProjectsController do
   end
 
   describe "GET /gitlab" do
-    let(:gitlab_url) { GitlabCi.config.gitlab_server.url }
-
-    let(:user_data) do
-      data = JSON.parse File.read(Rails.root.join('spec/support/gitlab_stubs/user.json'))
-      data.merge("url" => gitlab_url)
-    end
-
     let(:user) do
       create(:user)
     end
 
-    it "searches projects" do
-      allow(controller).to receive(:reset_cache) { true }
-      allow(controller).to receive(:current_user) { user }
-      allow_any_instance_of(Ci::Network).to receive(:projects).with(hash_including(search: 'str'), :authorized)
+    before do
+      sign_in(user)
+    end
 
+    it "searches projects" do
       xhr :get, :gitlab, { search: "str", format: "js" }.with_indifferent_access
 
       expect(response).to be_success
