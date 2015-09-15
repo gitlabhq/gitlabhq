@@ -1,15 +1,15 @@
 require 'spec_helper'
 
 describe Ci::WebHookService do
-  let(:project) { FactoryGirl.create :project }
-  let(:commit)  { FactoryGirl.create :commit, project: project }
-  let(:build)   { FactoryGirl.create :build, commit: commit }
-  let(:hook)    { FactoryGirl.create :web_hook, project: project }
+  let(:project) { FactoryGirl.create :ci_project }
+  let(:commit)  { FactoryGirl.create :ci_commit, project: project }
+  let(:build)   { FactoryGirl.create :ci_build, commit: commit }
+  let(:hook)    { FactoryGirl.create :ci_web_hook, project: project }
 
   describe :execute do
     it "should execute successfully" do
       stub_request(:post, hook.url).to_return(status: 200)
-      expect(WebHookService.new.build_end(build)).to be_truthy
+      expect(Ci::WebHookService.new.build_end(build)).to be_truthy
     end
   end
 
@@ -31,6 +31,6 @@ describe Ci::WebHookService do
   end
 
   def build_data(build)
-    WebHookService.new.send :build_data, build
+    Ci::WebHookService.new.send :build_data, build
   end
 end

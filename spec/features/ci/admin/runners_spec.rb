@@ -2,16 +2,16 @@ require 'spec_helper'
 
 describe "Admin Runners" do
   before do
-    skip_admin_auth
+    skip_ci_admin_auth
     login_as :user
   end
 
   describe "Runners page" do
     before do
-      runner = FactoryGirl.create(:runner)
-      commit = FactoryGirl.create(:commit)
-      FactoryGirl.create(:build, commit: commit, runner_id: runner.id)
-      visit admin_runners_path
+      runner = FactoryGirl.create(:ci_runner)
+      commit = FactoryGirl.create(:ci_commit)
+      FactoryGirl.create(:ci_build, commit: commit, runner_id: runner.id)
+      visit ci_admin_runners_path
     end
 
     it { page.has_text? "Manage Runners" }
@@ -20,8 +20,8 @@ describe "Admin Runners" do
 
     describe 'search' do
       before do
-        FactoryGirl.create :runner, description: 'foo'
-        FactoryGirl.create :runner, description: 'bar'
+        FactoryGirl.create :ci_runner, description: 'foo'
+        FactoryGirl.create :ci_runner, description: 'bar'
 
         fill_in 'search', with: 'foo'
         click_button 'Search'
@@ -33,12 +33,12 @@ describe "Admin Runners" do
   end
 
   describe "Runner show page" do
-    let(:runner) { FactoryGirl.create :runner }
+    let(:runner) { FactoryGirl.create :ci_runner }
 
     before do
-      FactoryGirl.create(:project, name: "foo")
-      FactoryGirl.create(:project, name: "bar")
-      visit admin_runner_path(runner)
+      FactoryGirl.create(:ci_project, name: "foo")
+      FactoryGirl.create(:ci_project, name: "bar")
+      visit ci_admin_runner_path(runner)
     end
 
     describe 'runner info' do

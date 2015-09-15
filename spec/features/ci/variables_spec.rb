@@ -7,12 +7,12 @@ describe "Variables" do
 
   describe "specific runners" do
     before do
-      @project = FactoryGirl.create :project
+      @project = FactoryGirl.create :ci_project
       stub_js_gitlab_calls
     end
 
     it "creates variable", js: true do
-      visit project_variables_path(@project)
+      visit ci_project_variables_path(@project)
       click_on "Add a variable"
       fill_in "Key", with: "SECRET_KEY"
       fill_in "Value", with: "SECRET_VALUE"

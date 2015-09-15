@@ -11,7 +11,7 @@ module Ci
       lines.push("<a href=\"#{Ci::RoutesHelper.ci_project_url(project)}\">#{project.name}</a> - ")
       
       if commit.matrix?
-        lines.push("<a href=\"#{Ci::RoutesHelper.ci_project_ref_commit_url(project, commit.ref, commit.sha)}\">Commit ##{commit.id}</a></br>")
+        lines.push("<a href=\"#{Ci::RoutesHelper.ci_project_ref_commits_url(project, commit.ref, commit.sha)}\">Commit ##{commit.id}</a></br>")
       else
         first_build = commit.builds_without_retry.first
         lines.push("<a href=\"#{Ci::RoutesHelper.ci_project_build_url(project, first_build)}\">Build '#{first_build.name}' ##{first_build.id}</a></br>")

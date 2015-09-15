@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Ci::SlackMessage do
-  subject { SlackMessage.new(commit) }
+  subject { Ci::SlackMessage.new(commit) }
 
   let(:project) { FactoryGirl.create :ci_project }
 
@@ -43,7 +43,7 @@ describe Ci::SlackMessage do
   end
 
   context "Several builds" do
-    let(:commit) { FactoryGirl.create(:commit_with_two_jobs, project: project) }
+    let(:commit) { FactoryGirl.create(:ci_commit_with_two_jobs, project: project) }
 
     context 'when all matrix builds succeeded' do
       let(:color) { 'good' }

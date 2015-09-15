@@ -169,7 +169,7 @@ describe Ci::MailService do
       end
 
       it do
-        Build.retry(build)
+        Ci::Build.retry(build)
         should_email(commit.git_author_email)
         should_email("jeroen@example.com")
         mail.execute(build) if mail.can_execute?(build)

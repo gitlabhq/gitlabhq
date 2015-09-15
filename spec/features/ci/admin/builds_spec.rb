@@ -1,19 +1,19 @@
 require 'spec_helper'
 
 describe "Admin Builds" do
-  let(:project) { FactoryGirl.create :project }
-  let(:commit) { FactoryGirl.create :commit, project: project }
-  let(:build) { FactoryGirl.create :build, commit: commit }
+  let(:project) { FactoryGirl.create :ci_project }
+  let(:commit) { FactoryGirl.create :ci_commit, project: project }
+  let(:build) { FactoryGirl.create :ci_build, commit: commit }
 
   before do
-    skip_admin_auth
+    skip_ci_admin_auth
     login_as :user
   end
 
   describe "GET /admin/builds" do
     before do
       build
-      visit admin_builds_path
+      visit ci_admin_builds_path
     end
 
     it { expect(page).to have_content "All builds" }
@@ -22,23 +22,23 @@ describe "Admin Builds" do
 
   describe "Tabs" do
     it "shows all builds" do
-      build = FactoryGirl.create :build, commit: commit, status: "pending"
-      build1 = FactoryGirl.create :build, commit: commit, status: "running"
-      build2 = FactoryGirl.create :build, commit: commit, status: "success"
-      build3 = FactoryGirl.create :build, commit: commit, status: "failed"
+      build = FactoryGirl.create :ci_build, commit: commit, status: "pending"
+      build1 = FactoryGirl.create :ci_build, commit: commit, status: "running"
+      build2 = FactoryGirl.create :ci_build, commit: commit, status: "success"
+      build3 = FactoryGirl.create :ci_build, commit: commit, status: "failed"
 
-      visit admin_builds_path
+      visit ci_admin_builds_path
 
       expect(page.all(".build-link").size).to eq(4)
     end
 
     it "shows pending builds" do
-      build = FactoryGirl.create :build, commit: commit, status: "pending"
-      build1 = FactoryGirl.create :build, commit: commit, status: "running"
-      build2 = FactoryGirl.create :build, commit: commit, status: "success"
-      build3 = FactoryGirl.create :build, commit: commit, status: "failed"
+      build = FactoryGirl.create :ci_build, commit: commit, status: "pending"
+      build1 = FactoryGirl.create :ci_build, commit: commit, status: "running"
+      build2 = FactoryGirl.create :ci_build, commit: commit, status: "success"
+      build3 = FactoryGirl.create :ci_build, commit: commit, status: "failed"
 
-      visit admin_builds_path
+      visit ci_admin_builds_path
 
       within ".nav.nav-tabs" do
         click_on "Pending"
@@ -51,12 +51,12 @@ describe "Admin Builds" do
     end
 
     it "shows running builds" do
-      build = FactoryGirl.create :build, commit: commit, status: "pending"
-      build1 = FactoryGirl.create :build, commit: commit, status: "running"
-      build2 = FactoryGirl.create :build, commit: commit, status: "success"
-      build3 = FactoryGirl.create :build, commit: commit, status: "failed"
+      build = FactoryGirl.create :ci_build, commit: commit, status: "pending"
+      build1 = FactoryGirl.create :ci_build, commit: commit, status: "running"
+      build2 = FactoryGirl.create :ci_build, commit: commit, status: "success"
+      build3 = FactoryGirl.create :ci_build, commit: commit, status: "failed"
 
-      visit admin_builds_path
+      visit ci_admin_builds_path
 
       within ".nav.nav-tabs" do
         click_on "Running"

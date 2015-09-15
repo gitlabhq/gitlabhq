@@ -46,10 +46,10 @@ module Ci
     def attachment_message
       out = "<#{Ci::RoutesHelper.ci_project_url(project)}|#{project_name}>: "
       if commit.matrix?
-        out << "Commit <#{Ci::RoutesHelper.ci_project_ref_commit_url(project, commit.ref, commit.sha)}|\##{commit.id}> "
+        out << "Commit <#{Ci::RoutesHelper.ci_project_ref_commits_url(project, commit.ref, commit.sha)}|\##{commit.id}> "
       else
         build = commit.builds_without_retry.first
-        out << "Build <#{Ci::RoutesHelper.ci_project_build_url(project, build)}|\##{build.id}> "
+        out << "Build <#{Ci::RoutesHelper.ci_project_build_path(project, build)}|\##{build.id}> "
       end
       out << "(<#{commit_sha_link}|#{commit.short_sha}>) "
       out << "of <#{commit_ref_link}|#{commit.ref}> "

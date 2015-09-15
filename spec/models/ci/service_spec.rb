@@ -25,7 +25,7 @@ describe Ci::Service do
 
   describe "Test Button" do
     before do
-      @service = Service.new
+      @service = Ci::Service.new
     end
 
     describe "Testable" do

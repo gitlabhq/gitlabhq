@@ -22,7 +22,7 @@ require 'spec_helper'
 describe Ci::Runner do
   describe '#display_name' do
     it 'should return the description if it has a value' do
-      runner = FactoryGirl.build(:runner, description: 'Linux/Ruby-1.9.3-p448')
+      runner = FactoryGirl.build(:ci_runner, description: 'Linux/Ruby-1.9.3-p448')
       expect(runner.display_name).to eq 'Linux/Ruby-1.9.3-p448'
     end
 
@@ -32,7 +32,7 @@ describe Ci::Runner do
     end
 
     it 'should return the token if the description is an empty string' do
-      runner = FactoryGirl.build(:runner, description: '')
+      runner = FactoryGirl.build(:ci_runner, description: '')
       expect(runner.display_name).to eq runner.token
     end
   end

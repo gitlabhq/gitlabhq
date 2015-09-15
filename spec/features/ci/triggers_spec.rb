@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe 'Variables' do
+describe 'Triggers' do
   before do
     login_as :user
-    @project = FactoryGirl.create :project
+    @project = FactoryGirl.create :ci_project
     stub_js_gitlab_calls
-    visit project_triggers_path(@project)
+    visit ci_project_triggers_path(@project)
   end
 
   context 'create a trigger' do

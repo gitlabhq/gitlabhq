@@ -30,7 +30,7 @@ describe Ci::SlackService do
   end
 
   describe "Execute" do
-    let(:slack)   { SlackService.new }
+    let(:slack)   { Ci::SlackService.new }
     let(:project) { FactoryGirl.create :ci_project }
     let(:commit)  { FactoryGirl.create :ci_commit, project: project }
     let(:build)   { FactoryGirl.create :ci_build, commit: commit, status: 'failed' }
@@ -50,7 +50,7 @@ describe Ci::SlackService do
 
     it "should call Slack API" do
       slack.execute(build)
-      SlackNotifierWorker.drain
+      Ci::SlackNotifierWorker.drain
 
       expect(WebMock).to have_requested(:post, webhook_url).once
     end

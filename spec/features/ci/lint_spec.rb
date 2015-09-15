@@ -7,7 +7,7 @@ describe "Lint" do
 
   it "Yaml parsing", js: true do
     content = File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
-    visit lint_path 
+    visit ci_lint_path 
     fill_in "content", with: content
     click_on "Validate"
     within "table" do
@@ -19,7 +19,7 @@ describe "Lint" do
   end
 
   it "Yaml parsing with error", js: true do
-    visit lint_path
+    visit ci_lint_path
     fill_in "content", with: ""
     click_on "Validate"
     expect(page).to have_content("Status: syntax is incorrect")
