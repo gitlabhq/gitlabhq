@@ -158,7 +158,7 @@ gem "slack-notifier", "~> 1.0.0"
 gem 'asana', '~> 0.0.6'
 
 # FogBugz integration
-gem 'ruby-fogbugz', '~> 0.2.0'
+gem 'ruby-fogbugz', '~> 0.2.1'
 
 # d3
 gem 'd3_rails', '~> 3.5.5'
