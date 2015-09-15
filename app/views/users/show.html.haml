@@ -16,8 +16,8 @@
         - if @user == current_user
           .pull-right.hidden-xs
             = link_to profile_path, class: 'btn btn-sm' do
-              %i.fa.fa-pencil-square-o
-              Edit Profile settings
+              = icon('user')
+              Profile settings
         - elsif current_user
           .pull-right
             %span.dropdown
