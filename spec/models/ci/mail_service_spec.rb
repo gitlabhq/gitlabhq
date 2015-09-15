@@ -47,8 +47,8 @@ describe Ci::MailService do
       end
 
       def should_email(email)
-        expect(Notify).to receive(:build_fail_email).with(build.id, email)
-        expect(Notify).not_to receive(:build_success_email).with(build.id, email)
+        expect(Ci::Notify).to receive(:build_fail_email).with(build.id, email)
+        expect(Ci::Notify).not_to receive(:build_success_email).with(build.id, email)
       end
     end
 
@@ -69,8 +69,8 @@ describe Ci::MailService do
       end
 
       def should_email(email)
-        expect(Notify).to receive(:build_success_email).with(build.id, email)
-        expect(Notify).not_to receive(:build_fail_email).with(build.id, email)
+        expect(Ci::Notify).to receive(:build_success_email).with(build.id, email)
+        expect(Ci::Notify).not_to receive(:build_fail_email).with(build.id, email)
       end
     end
 
@@ -97,8 +97,8 @@ describe Ci::MailService do
       end
 
       def should_email(email)
-        expect(Notify).to receive(:build_success_email).with(build.id, email)
-        expect(Notify).not_to receive(:build_fail_email).with(build.id, email)
+        expect(Ci::Notify).to receive(:build_success_email).with(build.id, email)
+        expect(Ci::Notify).not_to receive(:build_fail_email).with(build.id, email)
       end
     end
 
@@ -125,8 +125,8 @@ describe Ci::MailService do
       end
 
       def should_email(email)
-        expect(Notify).not_to receive(:build_success_email).with(build.id, email)
-        expect(Notify).not_to receive(:build_fail_email).with(build.id, email)
+        expect(Ci::Notify).not_to receive(:build_success_email).with(build.id, email)
+        expect(Ci::Notify).not_to receive(:build_fail_email).with(build.id, email)
       end
     end
 
@@ -176,8 +176,8 @@ describe Ci::MailService do
       end
 
       def should_email(email)
-        expect(Notify).not_to receive(:build_success_email).with(build.id, email)
-        expect(Notify).not_to receive(:build_fail_email).with(build.id, email)
+        expect(Ci::Notify).not_to receive(:build_success_email).with(build.id, email)
+        expect(Ci::Notify).not_to receive(:build_fail_email).with(build.id, email)
       end
     end
   end
