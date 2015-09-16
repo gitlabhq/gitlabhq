@@ -47,6 +47,7 @@
 - [Update](update/README.md) Update guides to upgrade your installation.
 - [Welcome message](customization/welcome_message.md) Add a custom welcome message to the sign-in page.
 - [Reply by email](reply_by_email/README.md) Allow users to comment on issues and merge requests by replying to notification emails.
+- [Migrate GitLab CI to CE/EE](migrate_ci_to_ce/README.md) Follow this guide to migrate your existing GitLab CI data to GitLab CE/EE.
 
 ### Administrator documentation
 

@@ -1,0 +1,29 @@
+# GITLAB CI
+server {
+  listen 80 default_server;         # e.g., listen 192.168.1.1:80;
+  server_name YOUR_CI_SERVER_FQDN;  # e.g., server_name source.example.com;
+
+  access_log  /var/log/nginx/gitlab_ci_access.log;
+  error_log   /var/log/nginx/gitlab_ci_error.log;
+
+  # expose API to fix runners
+  location /api {
+    proxy_read_timeout    300;
+    proxy_connect_timeout 300;
+    proxy_redirect        off;
+    proxy_set_header      X-Real-IP $remote_addr;
+
+    # You need to specify your DNS servers that are able to resolve YOUR_GITLAB_SERVER_FQDN
+    resolver 8.8.8.8 8.8.4.4;
+    proxy_pass $scheme://YOUR_GITLAB_SERVER_FQDN/ci$request_uri;
+  }
+
+  # redirect all other CI requests
+  location / {
+    return 301 $scheme://YOUR_GITLAB_SERVER_FQDN/ci$request_uri;
+  }
+
+  # adjust this to match the largest build log your runners might submit,
+  # set to 0 to disable limit
+  client_max_body_size 10m;
+}
