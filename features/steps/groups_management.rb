@@ -34,6 +34,8 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
   end
 
   step 'I reload "Open" project members page' do
+    visit root_path
+    click_link 'Sourcing / Open'
     click_link 'Members'
   end
 
