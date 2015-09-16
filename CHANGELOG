@@ -43,6 +43,7 @@ v 8.0.0 (unreleased)
   - Add support for Crowd
   - Global Labels that are available to all projects
   - Fix highlighting of deleted lines in diffs.
+  - Project notification level can be set on the project page itself
 
 v 7.14.1
   - Improve abuse reports management from admin area

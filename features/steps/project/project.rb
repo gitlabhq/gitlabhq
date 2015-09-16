@@ -130,4 +130,18 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   step 'I should see back to group button' do
     expect(page).to have_content 'Back to Group'
   end
+
+  step 'I click notifications drop down button' do
+    click_link 'Notifications'
+  end
+
+  step 'I choose Mention setting' do
+    click_link 'Mention'
+  end
+
+  step 'I should see Notification saved message' do
+    page.within '.flash-container' do
+      expect(page).to have_content 'Notification settings saved'
+    end
+  end
 end
