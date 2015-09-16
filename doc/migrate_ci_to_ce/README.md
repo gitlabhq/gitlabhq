@@ -11,7 +11,7 @@ Make sure to plan it ahead.
 If you are running older version please follow the upgrade guide first:
 https://gitlab.com/gitlab-org/gitlab-ci/blob/master/doc/update/7.13-to-7.14.md
 
-The migration is done in two parts:
+The migration is divided into a two parts:
 1. **[CI]** You will be making a changes to GitLab CI instance.
 1. **[CE]** You will be making a changes to GitLab CE/EE instance.
 
@@ -22,7 +22,7 @@ The migration is done in two parts:
 ### 2. Backup [CI]
 
 **The migration procedure is database breaking.
-You need to create backup if you still want to access CI data in case of failure.**
+You need to create backup if you still want to access GitLab CI in case of failure.**
 
 ```bash
 cd /home/gitlab_ci/gitlab-ci
@@ -65,7 +65,6 @@ First check used database and credentials on GitLab CI and GitLab CE/EE:
     cat /home/git/gitlab/config/database.yml
 
 Please first check the database engine used for GitLab CI and GitLab CE/EE.
-There's great chance that you will also need to convert MySQL to PostgreSQL:
 
 1. If your GitLab CI uses **mysql2** and GitLab CE/EE uses it too.
 Please follow **Dump MySQL** guide.
@@ -76,7 +75,8 @@ Please follow **Dump PostgreSQL** guide.
 1. If your GitLab CI uses **mysql2** and GitLab CE/EE uses **postgres**.
 Please follow **Dump MySQL and migrate to PostgreSQL** guide.
 
-**Remember credentials stored for GitLab CI. You will need to put the credentials into commands executed below.**
+**Remember credentials stored for accessing GitLab CI.
+You will need to put these credentials into commands executed below.**
 
     $ cat config/database.yml                                                                                                                                                                                                                        [10:06:55]
     #
@@ -128,18 +128,18 @@ Please follow **Dump MySQL and migrate to PostgreSQL** guide.
 ### 5. Make sure that your GitLab CE/EE is 8.0 [CE]
 
 Please verify that you use GitLab CE/EE 8.0.
-If not, please follow update guide: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/7.14-to-8.0.md
+If not, please follow the update guide: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/7.14-to-8.0.md
 
 ### 6. Stop GitLab CE/EE [CE]
 
-Before you can migrate actual data you need to stop GitLab CE/EE first.
+Before you can migrate data you need to stop GitLab CE/EE first.
 
     sudo service gitlab stop
     
 ### 7. Backup GitLab CE/EE [CE]
 
 This migration poses a **significant risk** of breaking your GitLab CE/EE. 
-You should create a backup before doing it.
+**You should create the GitLab CI/EE backup before doing it.**
 
     cd /home/git/gitlab
     sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
@@ -153,8 +153,19 @@ You need to copy the content of `config/secrets.yml` to the same file in GitLab 
     sudo cp /home/gitlab_ci/gitlab-ci/config/secrets.yml /home/git/gitlab/config/secrets.yml
     sudo chown git:git /home/git/gitlab/config/secrets.yml
     sudo chown 0600 /home/git/gitlab/config/secrets.yml
+    
+### 9. New configuration options for `gitlab.yml` [CE]
 
-### 9. Copy build logs [CE]
+There are new configuration options available for [`gitlab.yml`](config/gitlab.yml.example).
+View them with the command below and apply them manually to your current `gitlab.yml`:
+
+```sh
+git diff origin/7-14-stable:config/gitlab.yml.example origin/8-0-stable:config/gitlab.yml.example
+```
+
+The new options include configuration of GitLab CI that are now being part of GitLab CE and EE.
+
+### 10. Copy build logs [CE]
 
 You need to copy the contents of `builds/` to the same directory in GitLab CE/EE.
 
@@ -163,7 +174,7 @@ You need to copy the contents of `builds/` to the same directory in GitLab CE/EE
 
 The build traces are usually quite big so it will take a significant amount of time.
 
-### 10. Import GitLab CI database [CE]
+### 11. Import GitLab CI database [CE]
 
 The one of the last steps is to import existing GitLab CI database.
 
@@ -171,21 +182,23 @@ The one of the last steps is to import existing GitLab CI database.
     sudo chown git:git /home/git/gitlab/gitlab_ci.sql
     sudo -u git -H bundle exec rake ci:migrate CI_DUMP=/home/git/gitlab/gitlab_ci.sql RAILS_ENV=production
 
-This will take a significant amount of time. The GitLab CE/EE task does:
-1. Deletes data from all existing CI tables
+The task does:
+1. Delete data from all existing CI tables
 1. Import database data
-1. Fixes database auto increments
-1. Fixes tags assigned to Builds and Runners
-1. Fixes services used by CI
+1. Fix database auto increments
+1. Fix tags assigned to Builds and Runners
+1. Fix services used by CI
 
-### 11. Start GitLab [CE]
+### 12. Start GitLab [CE]
+
+You can start GitLab CI/EE now and see if everything is working.
 
     sudo service gitlab start
 
-### 12. Update nginx [CI]
+### 13. Update nginx [CI]
     
 Now get back to GitLab CI and update **Nginx** configuration in order to:
-1. Have all existing runners able to communicate with GitLab.
+1. Have all existing runners able to communicate with a migrated GitLab CI.
 1. Have GitLab able send build triggers to CI address specified in Project's settings -> Services -> GitLab CI.
 
 You need to edit `/etc/nginx/sites-available/gitlab_ci` and paste:
@@ -226,6 +239,10 @@ Make sure to fill the blanks to match your setup:
 
 **Make sure to not remove the `/ci$request_uri`. This is required to properly forward the requests.**
 
+You should also make sure that you can do:
+1. `curl https://YOUR_GITLAB_SERVER_FQDN/` from your previous GitLab CI server.
+1. `curl https://YOUR_CI_SERVER_FQDN/` from your GitLab CE/EE server.
+
 ## Check your configuration
 
     sudo nginx -t
@@ -234,7 +251,7 @@ Make sure to fill the blanks to match your setup:
 
     sudo /etc/init.d/nginx restart
 
-### Done!
+### 14. Done!
 
 If everything went OK you should be able to access all your GitLab CI data by pointing your browser to:
 https://gitlab.example.com/ci/.
