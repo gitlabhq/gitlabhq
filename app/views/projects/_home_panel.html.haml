@@ -28,4 +28,8 @@
 
     = render 'projects/buttons/dropdown'
 
+    - if @project.gitlab_ci?
+      = link_to ci_project_path(@project.gitlab_ci_project), class: 'btn btn-default' do
+        CI
+
   = render "shared/clone_panel"
