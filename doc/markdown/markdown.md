@@ -413,7 +413,7 @@ Some text to show that the reference links can follow later.
 
 Relative links do not allow referencing project files in a wiki page or wiki page in a project file. The reason for this is that, in GitLab, wiki is always a separate git repository. For example:
 
-`[I'm a reference-style link][style]`
+`[I'm a reference-style link](style)`
 
 will point the link to `wikis/style` when the link is inside of a wiki markdown file.
 
