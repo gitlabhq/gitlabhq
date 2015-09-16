@@ -1,0 +1,20 @@
+- content_for :header do
+  %h1{style: "background: #38CF5B; color: #FFF; font: normal 20px Helvetica, Arial, sans-serif; margin: 0; padding: 5px 10px; line-height: 32px; font-size: 16px;"}
+    GitLab CI (build successful)
+
+%h3
+  Project:
+  = link_to ci_project_url(@project) do
+    = @project.name
+
+%p
+  Commit link: #{gitlab_commit_link(@project, @build.commit.short_sha)}
+%p
+  Author: #{@build.commit.git_author_name}
+%p
+  Branch: #{@build.commit.ref}
+%p
+  Message: #{@build.commit.git_commit_message}
+
+%p
+  Url: #{link_to @build.short_sha, ci_project_build_url(@project, @build)}

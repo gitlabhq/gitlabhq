@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.0.0 (unreleased)
+  - Fix broken sort in merge request API (Stan Hu)
   - Bump rouge to 1.10.1 to remove warning noise and fix other syntax highlighting bugs (Stan Hu)
   - Gracefully handle errors in syntax highlighting by leaving the block unformatted (Stan Hu)
   - Add "replace" and "upload" functionalities to allow user replace existing file and upload new file into current repository

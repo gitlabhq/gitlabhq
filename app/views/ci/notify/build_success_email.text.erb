@@ -1,0 +1,9 @@
+Build successful for <%= @project.name %>
+
+Status:   <%= @build.status %>
+Commit:   <%= @build.commit.short_sha %>
+Author:   <%= @build.commit.git_author_name %>
+Branch:   <%= @build.commit.ref %>
+Message:  <%= @build.commit.git_commit_message %>
+
+Url:      <%= ci_project_build_url(@build.project, @build) %>

@@ -1,0 +1,28 @@
+%ul.nav.nav-tabs.append-bottom-20
+  %li{class: ("active" if @scope.nil?)}
+    = link_to 'All builds', ci_admin_builds_path
+  
+  %li{class: ("active" if @scope == "pending")}
+    = link_to "Pending", ci_admin_builds_path(scope: :pending)
+
+  %li{class: ("active" if @scope == "running")}
+    = link_to "Running", ci_admin_builds_path(scope: :running)
+
+
+%table.builds
+  %thead
+    %tr
+      %th Build
+      %th Status
+      %th Commit
+      %th Runner
+      %th Project
+      %th Message
+      %th Branch
+      %th Duration
+      %th Finished at
+
+  - @builds.each do |build|
+    = render "ci/admin/builds/build", build: build
+
+= paginate @builds
