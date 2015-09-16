@@ -58,7 +58,7 @@ The instructions make the assumption that you will be using the email address `r
     220 gitlab.example.com ESMTP Postfix (Ubuntu)
     ```
 
-    If you get a `Connection refused` error instead, check if `postfix` is running:
+    If you get a `Connection refused` error instead, verify that `postfix` is running:
 
     ```sh
     sudo postfix status
@@ -114,7 +114,7 @@ The instructions make the assumption that you will be using the email address `r
 
 ## Configure Postfix to use Maildir-style mailboxes
 
-Courier, which we will install later to add IMAP authentication, requiers mailboxes to have the Maildir format, rather than mbox.
+Courier, which we will install later to add IMAP authentication, requires mailboxes to have the Maildir format, rather than mbox.
 
 1. Configure Postfix to use Maildir-style mailboxes:
     
@@ -130,7 +130,7 @@ Courier, which we will install later to add IMAP authentication, requiers mailbo
 
 1. Test the new setup:
     
-    1. Follow steps 1 and 2 of "Test the out-of-the-box setup".
+    1. Follow steps 1 and 2 of _[Test the out-of-the-box setup](#test-the-out-of-the-box-setup)_.
     2. Check if the `replies` user received the email:
     
         ```sh
@@ -287,7 +287,7 @@ Courier, which we will install later to add IMAP authentication, requiers mailbo
         a login replies PASSWORD
         ```
 
-        Replace PASSWORD by the password you set on the `replies` user earlier.
+        Replace PASSWORD with the password you set on the `replies` user earlier.
 
         You should see output like this:
 
@@ -303,7 +303,7 @@ Courier, which we will install later to add IMAP authentication, requiers mailbo
 
 ## Done!
 
-If all the tests went all right, Postfix is all set up and ready to receive email! Continue with the [Reply by email](./README.md) doc to configure GitLab.
+If all the tests were successfull, Postfix is all set up and ready to receive email! Continue with the [Reply by email](./README.md) guide to configure GitLab.
 
 ---------
 
