@@ -1,6 +1,6 @@
 - if @project.generated_yaml_config
   %p.alert.alert-danger
-    CI Jobs are deprecated now, you can #{link_to "download", dumped_yaml_ci_project(@project)}
+    CI Jobs are deprecated now, you can #{link_to "download", dumped_yaml_ci_project_path(@project)}
     or
     %a.preview-yml{:href => "#yaml-content", "data-toggle" => "modal"} preview
     yaml file which is based on your old jobs.
