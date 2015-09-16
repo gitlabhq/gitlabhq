@@ -40,7 +40,7 @@ module Ci
         tags = ActiveRecord::Base.connection.select_all(
           'select ci_tags.name from ci_tags ' +
             'join ci_taggings on ci_tags.id = ci_taggings.tag_id ' +
-            "where taggable_type = #{ActiveRecord::Base::sanitize(type)} and taggable_id = #{ActiveRecord::Base::sanitize(id)} and context = \"tags\""
+            "where taggable_type = #{ActiveRecord::Base::sanitize(type)} and taggable_id = #{ActiveRecord::Base::sanitize(id)} and context = 'tags'"
         )
         tags.map { |tag| tag['name'] }
       end
