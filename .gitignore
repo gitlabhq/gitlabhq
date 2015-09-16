@@ -20,12 +20,13 @@ backups/*
 config/aws.yml
 config/database.yml
 config/gitlab.yml
-config/initializers/omniauth.rb
+config/gitlab_ci.yml
 config/initializers/rack_attack.rb
 config/initializers/smtp_settings.rb
 config/resque.yml
 config/unicorn.rb
 config/mail_room.yml
+config/secrets.yml
 coverage/*
 db/*.sqlite3
 db/*.sqlite3-journal
@@ -41,3 +42,4 @@ rails_best_practices_output.html
 /tags
 tmp/
 vendor/bundle/*
+builds/*

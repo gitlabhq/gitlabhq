@@ -100,7 +100,7 @@ class Notify < BaseMailer
 
   def mail_thread(model, headers = {})
     if @project
-      headers['X-GitLab-Project'] = @project.name 
+      headers['X-GitLab-Project'] = @project.name
       headers['X-GitLab-Project-Id'] = @project.id
       headers['X-GitLab-Project-Path'] = @project.path_with_namespace
     end

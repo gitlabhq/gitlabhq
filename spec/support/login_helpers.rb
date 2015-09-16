@@ -44,4 +44,8 @@ module LoginHelpers
   def logout_direct
     page.driver.submit :delete, '/users/sign_out', {}
   end
+
+  def skip_ci_admin_auth
+    allow_any_instance_of(Ci::Admin::ApplicationController).to receive_messages(authenticate_admin!: true)
+  end
 end

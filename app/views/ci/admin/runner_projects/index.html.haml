@@ -1,0 +1,57 @@
+%p.lead
+  To register new runner visit #{link_to 'this page ', ci_runners_path}
+
+.row
+  .col-md-8
+    %h5 Activated:
+    %table.table
+      %tr
+        %th Runner ID
+        %th Runner Description
+        %th Last build
+        %th Builds Stats
+        %th Registered
+        %th
+
+      - @runner_projects.each do |runner_project|
+        - runner = runner_project.runner
+        - builds = runner.builds.where(project_id: @project.id)
+        %tr
+          %td
+            %span.badge.badge-info= runner.id
+          %td
+            = runner.display_name
+          %td
+            - last_build = builds.last
+            - if last_build
+              = link_to last_build.short_sha, [last_build.project, last_build]
+            - else
+              unknown
+          %td
+            %span.badge.badge-success
+              #{builds.success.count}
+            %span /
+            %span.badge.badge-important
+              #{builds.failed.count}
+          %td
+            #{time_ago_in_words(runner_project.created_at)} ago
+          %td
+            = link_to 'Disable', [:ci, @project, runner_project], data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm right'
+  .col-md-4
+    %h5 Available
+    %table.table
+      %tr
+        %th ID
+        %th Token
+        %th
+
+      - (Ci::Runner.all - @project.runners).each do |runner|
+        %tr
+          %td
+            = runner.id
+          %td
+            = runner.token
+          %td
+            = form_for [:ci, @project, @runner_project] do |f|
+              = f.hidden_field :runner_id, value: runner.id
+              = f.submit 'Add', class: 'btn btn-sm'
