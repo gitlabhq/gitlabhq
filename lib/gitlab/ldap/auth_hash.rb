@@ -6,18 +6,16 @@ module Gitlab
       private
 
       def get_info(key)
-        raw_key = ldap_config.attributes[key]
-        return super unless raw_key
+        attributes = ldap_config.attributes[key]
+        return super unless attributes
 
-        value =
-          case raw_key
-          when String
-            get_raw(raw_key)
-          when Array
-            raw_key.inject(nil) { |value, key| value || get_raw(key).presence }
-          else
-            nil
-          end
+        attributes = Array(attributes)
+
+        value = nil
+        attributes.each do |attribute|
+          value = get_raw(attribute)
+          break if value.present?
+        end
         
         return super unless value
 
