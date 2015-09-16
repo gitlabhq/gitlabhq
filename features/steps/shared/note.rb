@@ -126,7 +126,7 @@ module SharedNote
   step 'I edit the last comment with a +1' do
     page.within(".notes") do
       find(".note").hover
-      find('.js-note-edit').click
+      find('.note-edit').click
     end
 
     page.within(".current-note-edit-form") do
