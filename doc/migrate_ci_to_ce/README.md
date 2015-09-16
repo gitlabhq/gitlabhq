@@ -18,7 +18,7 @@ The migration is divided into a two parts:
 ### 1. Stop CI server [CI]
 
     sudo service gitlab_ci stop
-    
+
 ### 2. Backup [CI]
 
 **The migration procedure is database breaking.
@@ -30,7 +30,13 @@ sudo -u gitlab_ci -H bundle exec backup:create RAILS_ENV=production
 ```
 
 ### 3. Prepare GitLab CI database to migration [CI]
-    
+
+Login as `gitlab_ci` user:
+
+```bash
+sudo su - gitlab_ci
+```
+
 Copy and paste the command in terminal to rename all tables.
 This also breaks your database structure disallowing you to use it anymore.
 
@@ -59,7 +65,7 @@ First check used database and credentials on GitLab CI and GitLab CE/EE:
 1. To check it on GitLab CI:
 
     cat /home/gitlab_ci/gitlab-ci/config/database.yml
-    
+
 1. To check it on GitLab CE/EE:
 
     cat /home/git/gitlab/config/database.yml
@@ -95,36 +101,35 @@ You will need to put these credentials into commands executed below.**
       # socket: /tmp/mysql.sock
 
 #### a. Dump MySQL
- 
-    mysqldump --default-character-set=utf8 --complete-insert --no-create-info \
-      --host=DB_USERNAME --port=DB_PORT --user=DB_HOSTNAME -p 
+
+    mysqldump --verbose --default-character-set=utf8 --complete-insert --no-create-info \
+      --host=DB_USERNAME --port=DB_PORT --user=DB_HOSTNAME -p
       GITLAB_CI_DATABASE \
       ci_application_settings ci_builds ci_commits ci_events ci_jobs ci_projects \
       ci_runner_projects ci_runners ci_services ci_tags ci_taggings ci_trigger_requests \
       ci_triggers ci_variables ci_web_hooks > gitlab_ci.sql
-      
+
 #### b. Dump PostgreSQL
-  
+
     pg_dump -h DB_HOSTNAME -U DB_USERNAME -p DB_PORT --data-only GITLAB_CI_DATABASE -t "ci_*" > gitlab_ci.sql
 
 #### c. Dump MySQL and migrate to PostgreSQL
 
     # Dump existing MySQL database first
-    mysqldump --default-character-set=utf8 --compatible=postgresql --complete-insert \
-      --host=DB_USERNAME --port=DB_PORT --user=DB_HOSTNAME -p 
+    mysqldump --verbose --default-character-set=utf8 --compatible=postgresql --complete-insert \
+      --host=DB_USERNAME --port=DB_PORT --user=DB_HOSTNAME -p \
       GITLAB_CI_DATABASE \
       ci_application_settings ci_builds ci_commits ci_events ci_jobs ci_projects \
       ci_runner_projects ci_runners ci_services ci_tags ci_taggings ci_trigger_requests \
       ci_triggers ci_variables ci_web_hooks > gitlab_ci.sql.tmp
-      
+
     # Convert database to be compatible with PostgreSQL
     git clone https://github.com/gitlabhq/mysql-postgresql-converter.git -b gitlab
     python mysql-postgresql-converter/db_converter.py gitlab_ci.sql.tmp gitlab_ci.sql.tmp2
-    ed -s gitlab_ci.sql.tmp2 < mysql-postgresql-converter/move_drop_indexes.ed
-    
+
     # Filter to only include INSERT statements
-    grep "^\(START\|SET\|INSERT\|COMMIT\)" gitlab_ci.sql.tmp2 > gitlab_ci.sql
-    
+    grep -a "^\(START\|SET\|INSERT\|COMMIT\)" gitlab_ci.sql.tmp2  | gzip -c > gitlab_ci.sql
+
 ### 5. Make sure that your GitLab CE/EE is 8.0 [CE]
 
 Please verify that you use GitLab CE/EE 8.0.
@@ -135,14 +140,14 @@ If not, please follow the update guide: https://gitlab.com/gitlab-org/gitlab-ce/
 Before you can migrate data you need to stop GitLab CE/EE first.
 
     sudo service gitlab stop
-    
+
 ### 7. Backup GitLab CE/EE [CE]
 
-This migration poses a **significant risk** of breaking your GitLab CE/EE. 
+This migration poses a **significant risk** of breaking your GitLab CE/EE.
 **You should create the GitLab CI/EE backup before doing it.**
 
     cd /home/git/gitlab
-    sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
+    sudo -u git -H bundle exec rake gitlab:backup:create SKIP=repositories,uploads RAILS_ENV=production
 
 ### 8. Copy secret tokens [CE]
 
@@ -153,7 +158,7 @@ You need to copy the content of `config/secrets.yml` to the same file in GitLab 
     sudo cp /home/gitlab_ci/gitlab-ci/config/secrets.yml /home/git/gitlab/config/secrets.yml
     sudo chown git:git /home/git/gitlab/config/secrets.yml
     sudo chown 0600 /home/git/gitlab/config/secrets.yml
-    
+
 ### 9. New configuration options for `gitlab.yml` [CE]
 
 There are new configuration options available for [`gitlab.yml`](config/gitlab.yml.example).
@@ -196,38 +201,38 @@ You can start GitLab CI/EE now and see if everything is working.
     sudo service gitlab start
 
 ### 13. Update nginx [CI]
-    
+
 Now get back to GitLab CI and update **Nginx** configuration in order to:
 1. Have all existing runners able to communicate with a migrated GitLab CI.
 1. Have GitLab able send build triggers to CI address specified in Project's settings -> Services -> GitLab CI.
 
 You need to edit `/etc/nginx/sites-available/gitlab_ci` and paste:
-    
+
     # GITLAB CI
     server {
       listen 80 default_server;         # e.g., listen 192.168.1.1:80;
       server_name YOUR_CI_SERVER_FQDN;  # e.g., server_name source.example.com;
-    
+
       access_log  /var/log/nginx/gitlab_ci_access.log;
       error_log   /var/log/nginx/gitlab_ci_error.log;
-    
+
       # expose API to fix runners
       location /api {
         proxy_read_timeout    300;
         proxy_connect_timeout 300;
         proxy_redirect        off;
         proxy_set_header      X-Real-IP $remote_addr;
-    
+
         # You need to specify your DNS servers that are able to resolve YOUR_GITLAB_SERVER_FQDN
         resolver 8.8.8.8 8.8.4.4;
         proxy_pass $scheme://YOUR_GITLAB_SERVER_FQDN/ci$request_uri;
       }
-    
+
       # redirect all other CI requests
       location / {
         return 301 $scheme://YOUR_GITLAB_SERVER_FQDN/ci$request_uri;
       }
-    
+
       # adjust this to match the largest build log your runners might submit,
       # set to 0 to disable limit
       client_max_body_size 10m;
