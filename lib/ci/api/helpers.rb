@@ -1,6 +1,8 @@
 module Ci
   module API
     module Helpers
+      UPDATE_RUNNER_EVERY = 60
+
       def authenticate_runners!
         forbidden! unless params[:token] == GitlabCi::REGISTRATION_TOKEN
       end
