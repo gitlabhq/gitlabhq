@@ -55,7 +55,7 @@ module Ci
         return redirect_to ci_root_path, alert: 'You have to have at least master role to enable CI for this project'
       end
 
-      @project = Ci::CreateProjectService.new.execute(current_user, project_data, ci_project_url(":project_id"))
+      @project = Ci::CreateProjectService.new.execute(current_user, project_data)
 
       if @project.persisted?
         redirect_to ci_project_path(@project, show_guide: true), notice: 'Project was successfully created.'
@@ -84,16 +84,6 @@ module Ci
       Ci::EventService.new.remove_project(current_user, project)
 
       redirect_to ci_projects_url
-    end
-
-    def build
-      @commit = Ci::CreateCommitService.new.execute(@project, params.dup)
-
-      if @commit && @commit.valid?
-        head 201
-      else
-        head 400
-      end
     end
 
     # Project status badge

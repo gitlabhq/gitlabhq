@@ -180,7 +180,6 @@ describe Grack::Auth do
             gitlab_ci_service = project.build_gitlab_ci_service
             gitlab_ci_service.active = true
             gitlab_ci_service.token = token
-            gitlab_ci_service.project_url = "http://google.com"
             gitlab_ci_service.save
 
             env["HTTP_AUTHORIZATION"] = ActionController::HttpAuthentication::Basic.encode_credentials("gitlab-ci-token", token)
