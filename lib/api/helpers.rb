@@ -55,6 +55,32 @@ module API
       end
     end
 
+    def project_service
+      @project_service ||= begin
+        underscored_service = params[:service_slug].underscore
+
+        if Service.available_services_names.include?(underscored_service)
+          user_project.build_missing_services
+
+          service_method = "#{underscored_service}_service"
+          
+          send_service(service_method)
+        end
+      end
+   
+      @project_service || not_found!("Service")
+    end
+
+    def send_service(service_method)
+      user_project.send(service_method)
+    end
+
+    def service_attributes
+      @service_attributes ||= project_service.fields.inject([]) do |arr, hash|
+        arr << hash[:name].to_sym
+      end
+    end
+
     def find_group(id)
       begin
         group = Group.find(id)

@@ -14,6 +14,10 @@ class MergeWorker
     if result[:status] == :success && params[:should_remove_source_branch].present?
       DeleteBranchService.new(merge_request.source_project, current_user).
         execute(merge_request.source_branch)
+
+      merge_request.source_project.repository.expire_branch_names
     end
+
+    result
   end
 end

@@ -8,8 +8,8 @@ module Gitlab
       "\n\n\n**Imported comments:**\n"
     end
 
-    def author_line(author, body)
-      "*Created by: #{author}*\n\n#{body}"
+    def author_line(author)
+      "*Created by: #{author}*\n\n"
     end
   end
 end

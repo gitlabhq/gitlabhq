@@ -55,7 +55,7 @@ module API
           else merge_requests
           end
 
-        merge_requests.reorder(issuable_order_by => issuable_sort)
+        merge_requests = merge_requests.reorder(issuable_order_by => issuable_sort)
         present paginate(merge_requests), with: Entities::MergeRequest
       end
 

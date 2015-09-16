@@ -55,9 +55,7 @@ module Projects
         @project.save
 
         if @project.persisted? && !@project.import?
-          unless @project.create_repository
-            raise 'Failed to create repository'
-          end
+          raise 'Failed to create repository' unless @project.create_repository
         end
       end
 
@@ -86,6 +84,8 @@ module Projects
       @project.create_wiki if @project.wiki_enabled?
 
       @project.build_missing_services
+
+      @project.create_labels
 
       event_service.create_project(@project, current_user)
       system_hook_service.execute_hooks_for(@project, :create)

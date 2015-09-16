@@ -34,7 +34,11 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
   end
 
   step 'I reload "Open" project members page' do
-    click_link 'Members'
+    visit root_path
+    click_link 'Sourcing / Open'
+    page.within('.nav-sidebar') do
+      click_link 'Members'
+    end
   end
 
   step 'I go to group settings page' do

@@ -3,7 +3,6 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   include SharedProject
   include SharedNote
   include SharedPaths
-  include WikiHelper
 
   step 'I click on the Cancel button' do
     page.within(:css, ".form-actions") do
@@ -165,6 +164,10 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
     click_on 'Page History'
   end
 
+  step 'I click on Page History' do
+    click_on 'Page History'
+  end
+
   step 'I should see the page history' do
     expect(page).to have_content('History for')
   end
@@ -172,6 +175,10 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   step 'I search for Wiki content' do
     fill_in "Search in this project", with: "wiki_content"
     click_button "Search"
+  end
+
+  step 'I should see a link with a version ID' do
+    find('a[href*="?version_id"]')
   end
 
   def wiki

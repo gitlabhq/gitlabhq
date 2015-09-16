@@ -1,6 +1,6 @@
 .issues-list {
   .issue {
-    padding: 10px 15px;
+    padding: 10px $gl-padding;
     position: relative;
 
     .issue-title {
@@ -10,8 +10,7 @@
     }
 
     .issue-info {
-      color: #999;
-      font-size: 13px;
+      color: $gl-gray;
     }
 
     .issue-check {
@@ -45,10 +44,6 @@
   form {
     margin: 0;
   }
-}
-
-.participants {
-  margin-bottom: 20px;
 }
 
 .issue-search-form {
@@ -135,11 +130,6 @@ form.edit-issue {
       display: none;
     }
   }
-}
-
-h2.issue-title {
-  margin-top: 0;
-  font-weight: bold;
 }
 
 .issue-form .select2-container {

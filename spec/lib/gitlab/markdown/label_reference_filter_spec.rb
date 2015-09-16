@@ -25,11 +25,6 @@ module Gitlab::Markdown
       expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-label'
     end
 
-    it 'includes an optional custom class' do
-      doc = filter("Label #{reference}", reference_class: 'custom')
-      expect(doc.css('a').first.attr('class')).to include 'custom'
-    end
-
     it 'includes a data-project-id attribute' do
       doc = filter("Label #{reference}")
       link = doc.css('a').first

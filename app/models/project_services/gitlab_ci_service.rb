@@ -21,7 +21,7 @@
 class GitlabCiService < CiService
   API_PREFIX = "api/v1"
 
-  prop_accessor :project_url, :token
+  prop_accessor :project_url, :token, :enable_ssl_verification
   validates :project_url,
     presence: true,
     format: { with: /\A#{URI.regexp(%w(http https))}\z/, message: "should be a valid url" }, if: :activated?
@@ -34,6 +34,7 @@ class GitlabCiService < CiService
   def compose_service_hook
     hook = service_hook || build_service_hook
     hook.url = [project_url, "/build", "?token=#{token}"].join("")
+    hook.enable_ssl_verification = enable_ssl_verification
     hook.save
   end
 
@@ -136,7 +137,8 @@ class GitlabCiService < CiService
   def fields
     [
       { type: 'text', name: 'token', placeholder: 'GitLab CI project specific token' },
-      { type: 'text', name: 'project_url', placeholder: 'http://ci.gitlabhq.com/projects/3' }
+      { type: 'text', name: 'project_url', placeholder: 'http://ci.gitlabhq.com/projects/3' },
+      { type: 'checkbox', name: 'enable_ssl_verification', title: "Enable SSL verification" }
     ]
   end
 

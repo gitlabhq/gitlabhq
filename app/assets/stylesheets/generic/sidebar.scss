@@ -18,14 +18,28 @@
 }
 
 .content-wrapper {
+  min-height: 100vh;
   width: 100%;
   padding: 20px;
-  background: #FFF;
+  background: #f1f4f8;
+
+  .container-fluid {
+    background: #FFF;
+    padding: $gl-padding;
+    border: 1px solid #e7e9ed;
+    min-height: 90vh;
+
+    &.container-blank {
+      background: none;
+      padding: 0;
+      border: none;
+    }
+  }
 }
 
 .nav-sidebar {
-  margin-top: 29 + $header-height;
-  margin-bottom: 50px;
+  margin-top: 14 + $header-height;
+  margin-bottom: 100px;
   transition-duration: .3s;
   list-style: none;
   overflow: hidden;
@@ -43,13 +57,14 @@
     }
 
     a {
-      padding: 8px 15px;
-      font-size: 13px;
-      line-height: 18px;
+      padding: 7px 15px;
+      font-size: $gl-font-size;
+      line-height: 24px;
       color: $gray;
       display: block;
       text-decoration: none;
-      padding-left: 16px;
+      padding-left: 22px;
+      font-weight: normal;
 
       &:hover {
         text-decoration: none;
@@ -60,9 +75,9 @@
       }
 
       i {
-        width: 20px;
+        width: 16px;
         color: $gray-light;
-        margin-right: 23px;
+        margin-right: 13px;
       }
 
       .count {
@@ -108,41 +123,59 @@
 }
 
 @mixin folded-sidebar {
-  padding-left: 50px;
+  padding-left: 60px;
   transition-duration: .3s;
 
   .sidebar-wrapper {
     width: $sidebar_collapsed_width;
 
+    .header-logo {
+      width: $sidebar_collapsed_width;
+
+      a {
+        padding-left: 12px;
+
+        .gitlab-text-container {
+          display: none;
+        }
+      }
+    }
+
     .nav-sidebar {
       width: $sidebar_collapsed_width;
 
       li a {
-        padding-left: 16px;
+        span {
+          display: none;
+        }
       }
     }
 
     .collapse-nav a {
-      left: 0px;
       width: $sidebar_collapsed_width;
     }
 
     .sidebar-user {
+      padding-left: 12px;
       width: $sidebar_collapsed_width;
+
+      .username {
+        display: none;
+      }
     }
   }
 }
 
 .collapse-nav a {
+  width: $sidebar_width;
   position: fixed;
-  top: $header-height;
-  left: 198px;
+  bottom: 0;
+  left: 0;
   font-size: 13px;
   background: transparent;
-  width: 32px;
-  height: 28px;
+  height: 40px;
   text-align: center;
-  line-height: 28px;
+  line-height: 40px;
   transition-duration: .3s;
 }
 
@@ -176,16 +209,18 @@
 }
 
 .sidebar-user {
+  padding: 9px 22px;
   position: fixed;
-  bottom: 0;
+  bottom: 40px;
   width: $sidebar_width;
-  padding: 10px;
   overflow: hidden;
   transition-duration: .3s;
 
   .username {
-    margin-top: 5px;
+    margin-left: 10px;
     width: $sidebar_width - 2 * 10px;
+    font-size: 16px;
+    line-height: 34px;
   }
 }
 
@@ -202,7 +237,7 @@
       float: left;
       height: $header-height;
       width: 100%;
-      padding: ($header-height - 36 ) / 2 8px;
+      padding: 10px 22px;
       overflow: hidden;
 
       img {
@@ -219,8 +254,8 @@
           float: left;
           margin: 0;
           margin-left: 14px;
-          font-size: 18px;
-          line-height: $header-height - 14;
+          font-size: 19px;
+          line-height: 41px;
           font-weight: normal;
         }
       }

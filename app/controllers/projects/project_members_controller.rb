@@ -91,7 +91,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     log_audit_event(@project_member, action: :destroy)
 
     respond_to do |format|
-      format.html { redirect_to dashboard_path }
+      format.html { redirect_to dashboard_projects_path }
       format.js { render nothing: true }
     end
   end

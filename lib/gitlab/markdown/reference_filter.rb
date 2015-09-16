@@ -1,4 +1,5 @@
 require 'active_support/core_ext/string/output_safety'
+require 'gitlab/markdown'
 require 'html/pipeline/filter'
 
 module Gitlab
@@ -9,7 +10,6 @@ module Gitlab
     #
     # Context options:
     #   :project (required) - Current project, ignored if reference is cross-project.
-    #   :reference_class    - Custom CSS class added to reference links.
     #   :only_path          - Generate path-only links.
     #
     # Results:
@@ -70,7 +70,7 @@ module Gitlab
       end
 
       def reference_class(type)
-        "gfm gfm-#{type} #{context[:reference_class]}".strip
+        "gfm gfm-#{type}"
       end
 
       # Iterate through the document's text nodes, yielding the current node's

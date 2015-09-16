@@ -1,22 +1,7 @@
 class DashboardController < Dashboard::ApplicationController
-  before_action :load_projects
   before_action :event_filter, only: :activity
 
   respond_to :html
-
-  def show
-    @projects = @projects.includes(:namespace)
-    @last_push = current_user.recent_push
-
-    respond_to do |format|
-      format.html
-      format.atom do
-        event_filter
-        load_events
-        render layout: false
-      end
-    end
-  end
 
   def merge_requests
     @merge_requests = get_merge_requests_collection
@@ -50,12 +35,15 @@ class DashboardController < Dashboard::ApplicationController
 
   protected
 
-  def load_projects
-    @projects = current_user.authorized_projects.sorted_by_activity.non_archived
-  end
-
   def load_events
-    @events = Event.in_projects(current_user.authorized_projects.pluck(:id))
+    project_ids =
+      if params[:filter] == "starred"
+        current_user.starred_projects
+      else
+        current_user.authorized_projects
+      end.pluck(:id)
+
+    @events = Event.in_projects(project_ids)
     @events = @event_filter.apply_filter(@events).with_associations
     @events = @events.limit(20).offset(params[:offset] || 0)
   end

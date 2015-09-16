@@ -1,0 +1,19 @@
+- projects_limit = 20 unless local_assigns[:projects_limit]
+- avatar = true unless local_assigns[:avatar] == false
+- stars = true unless local_assigns[:stars] == false
+
+%ul.projects-list
+  - projects.each_with_index do |project, i|
+    - css_class = (i >= projects_limit) ? 'hide' : nil
+    = render "shared/projects/project", project: project,
+      avatar: avatar, stars: stars, css_class: css_class
+
+  - if projects.count > projects_limit
+    %li.bottom.center
+      .light
+        #{projects_limit} of #{pluralize(projects.count, 'project')} displayed.
+        = link_to '#', class: 'js-expand' do
+          Show all
+
+:coffeescript
+  new ProjectsList()

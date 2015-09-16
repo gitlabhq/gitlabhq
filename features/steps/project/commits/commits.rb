@@ -52,7 +52,6 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I see compared refs' do
-    expect(page).to have_content "Compare View"
     expect(page).to have_content "Commits (1)"
     expect(page).to have_content "Showing 2 changed files"
   end
@@ -97,5 +96,9 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
 
   step 'I see inline diff button' do
     expect(page).to have_content "Inline"
+  end
+
+  step 'I click side-by-side diff button' do
+    find('#parallel-diff-btn').click
   end
 end

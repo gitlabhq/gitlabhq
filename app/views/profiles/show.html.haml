@@ -1,14 +1,9 @@
-- page_title "Profile"
-%h3.page-title
-  = page_title
-%p.light
+.gray-content-block.top-block
   This information will appear on your profile.
   - if current_user.ldap_user?
     Some options are unavailable for LDAP accounts
-%hr
 
-
-
+.prepend-top-default
 = form_for @user, url: profile_path, method: :put, html: { multipart: true, class: "edit_user form-horizontal" }, authenticity_token: true do |f|
   -if @user.errors.any?
     %div.alert.alert-danger
@@ -99,11 +94,6 @@
             - if @user.avatar?
               %hr
               = link_to 'Remove avatar', profile_avatar_path, data: { confirm: "Avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
-
-      - if @user.public_profile?
-        .alert.alert-info
-          %h4 Public profile
-          %p Your profile is publicly visible because you joined public project(s)
 
 
   .row

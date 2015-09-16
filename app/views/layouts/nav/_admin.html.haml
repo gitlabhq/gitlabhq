@@ -67,6 +67,12 @@
       %span
         Service Templates
 
+  = nav_link(controller: :labels) do
+    = link_to admin_labels_path, title: 'Labels', data: {placement: 'right'} do
+      = icon('tags fw')
+      %span
+        Labels
+
   = nav_link(controller: :abuse_reports) do
     = link_to admin_abuse_reports_path, title: "Abuse reports" do
       = icon('exclamation-circle fw')

@@ -15,7 +15,7 @@
       - else
         = link_to title, '#'
 
-%ul.blob-commit-info.well.hidden-xs
+%ul.blob-commit-info.hidden-xs
   - blob_commit = @repository.last_commit_for_path(@commit.id, blob.path)
   = render blob_commit, project: @project
 

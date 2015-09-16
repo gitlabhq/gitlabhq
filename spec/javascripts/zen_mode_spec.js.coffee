@@ -29,6 +29,11 @@ describe 'ZenMode', ->
       enterZen()
       expect(Mousetrap.pause).toHaveBeenCalled()
 
+    it 'removes textarea styling', ->
+      $('textarea').attr('style', 'height: 400px')
+      enterZen()
+      expect('textarea').not.toHaveAttr('style')
+
   describe 'in use', ->
     beforeEach ->
       enterZen()

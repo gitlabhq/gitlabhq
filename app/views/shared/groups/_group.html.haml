@@ -1,0 +1,22 @@
+- group_member = local_assigns[:group_member]
+%li
+  - if group_member
+    .controls.hidden-xs
+      - if can?(current_user, :admin_group, group)
+        = link_to edit_group_path(group), class: "btn-sm btn btn-grouped" do
+          %i.fa.fa-cogs
+
+      = link_to leave_group_group_members_path(group), data: { confirm: leave_group_message(group.name) }, method: :delete, class: "btn-sm btn btn-grouped", title: 'Leave this group' do
+        %i.fa.fa-sign-out
+
+  = image_tag group_icon(group), class: "avatar s46 hidden-xs"
+  = link_to group, class: 'group-name' do
+    %strong= group.name
+
+  - if group_member
+    as
+    %span #{group_member.human_access}
+
+  %div.light
+    #{pluralize(group.projects.count, "project")}, #{pluralize(group.users.count, "user")}
+

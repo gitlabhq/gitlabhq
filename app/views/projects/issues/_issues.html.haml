@@ -1,9 +1,8 @@
-.panel.panel-default
-  %ul.well-list.issues-list
-    = render @issues
-    - if @issues.blank?
-      %li
-        .nothing-here-block No issues to show
+%ul.content-list.issues-list
+  = render @issues
+  - if @issues.blank?
+    %li
+      .nothing-here-block No issues to show
 
 - if @issues.present?
   .pull-right

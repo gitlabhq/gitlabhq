@@ -1,8 +1,12 @@
-- page_title "Projects"
+- page_title    "Projects"
+- header_title  "Projects", root_path
+
 - if current_user
   = render 'dashboard/projects_head'
-.clearfix
+- else
+  = render 'explore/head'
+
+.gray-content-block.clearfix
   = render 'filter'
-%br
 = render 'projects', projects: @projects
 = paginate @projects, theme: "gitlab"

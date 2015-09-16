@@ -72,3 +72,8 @@ You will be asked for an administrator’s password.
 ```
 sudo
 ```
+
+### Tell where you are
+```
+pwd
+```

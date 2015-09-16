@@ -55,6 +55,13 @@
             %strong Merge Request events
           %p.light
             This url will be triggered when a merge request is created
+  .form-group
+    = f.label :enable_ssl_verification, "SSL verification", class: 'control-label checkbox'
+    .col-sm-10
+      .checkbox
+        = f.label :enable_ssl_verification do
+          = f.check_box :enable_ssl_verification
+          %strong Enable SSL verification
   .form-actions
     = f.submit "Add Web Hook", class: "btn btn-create"
 
@@ -74,3 +81,4 @@
             - %w(push_events tag_push_events issues_events note_events merge_requests_events).each do |trigger|
               - if hook.send(trigger)
                 %span.label.label-gray= trigger.titleize
+            SSL Verification: #{hook.enable_ssl_verification ? "enabled" : "disabled"}

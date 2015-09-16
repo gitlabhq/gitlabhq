@@ -30,4 +30,13 @@ module GroupsHelper
       image_path('no_group_avatar.png')
     end
   end
+
+  def group_title(group, name, url)
+    content_tag :span do
+      link_to(
+        simple_sanitize(group.name), group_path(group)
+      ) + ' &middot; '.html_safe +
+        link_to(simple_sanitize(name), url)
+    end
+  end
 end

@@ -17,8 +17,7 @@ class Projects::RawController < Projects::ApplicationController
       send_data(
         @blob.data,
         type: type,
-        disposition: 'inline',
-        filename: @blob.name
+        disposition: 'inline'
       )
     else
       not_found!
@@ -30,6 +29,8 @@ class Projects::RawController < Projects::ApplicationController
   def get_blob_type
     if @blob.text?
       'text/plain; charset=utf-8'
+    elsif @blob.image?
+      @blob.content_type
     else
       'application/octet-stream'
     end

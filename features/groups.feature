@@ -177,3 +177,14 @@ Feature: Groups
     When I visit group "Owned" projects page
     Then I should see group "Owned" projects list
     And I should see "archived" label
+
+  # Public group
+  @javascript
+  Scenario: Signed out user should see group
+    Given "Mary Jane" is owner of group "Owned"
+    And I am a signed out user
+    And Group "Owned" has a public project "Public-project"
+    When I visit group "Owned" page
+    Then I should see group "Owned"
+    Then I should see project "Public-project"
+   

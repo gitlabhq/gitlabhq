@@ -15,6 +15,7 @@
 #  noteable_id   :integer
 #  system        :boolean          default(FALSE), not null
 #  st_diff       :text
+#  updated_by_id :integer
 #
 
 require_relative '../support/repo_helpers'

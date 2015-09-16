@@ -30,12 +30,7 @@ Gitlab::Application.routes.draw do
   end
 
   # Enable Grack support
-  mount Grack::Bundle.new({
-    git_path:     Gitlab.config.git.bin_path,
-    project_root: Gitlab.config.gitlab_shell.repos_path,
-    upload_pack:  Gitlab.config.gitlab_shell.upload_pack,
-    receive_pack: Gitlab.config.gitlab_shell.receive_pack
-  }), at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post]
+  mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post]
 
   # Help
   get 'help'                  => 'help#index'
@@ -104,6 +99,15 @@ Gitlab::Application.routes.draw do
       get   :new_user_map,    path: :user_map
       post  :create_user_map, path: :user_map
     end
+
+    resource :fogbugz, only: [:create, :new], controller: :fogbugz do
+      get :status
+      post :callback
+      get :jobs
+
+      get   :new_user_map,    path: :user_map
+      post  :create_user_map, path: :user_map
+    end
   end
 
   #
@@ -144,6 +148,7 @@ Gitlab::Application.routes.draw do
     end
 
     resources :groups, only: [:index]
+    resources :snippets, only: [:index]
     root to: 'projects#trending'
   end
 
@@ -225,6 +230,8 @@ Gitlab::Application.routes.draw do
       get :download, on: :member
     end
 
+    resources :labels
+
     root to: 'dashboard#index'
   end
 
@@ -276,24 +283,25 @@ Gitlab::Application.routes.draw do
   #
   # Dashboard Area
   #
-  resource :dashboard, controller: 'dashboard', only: [:show] do
-    member do
-      get :issues
-      get :merge_requests
-      get :activity
-    end
+  resource :dashboard, controller: 'dashboard', only: [] do
+    get :issues
+    get :merge_requests
+    get :activity
 
     scope module: :dashboard do
       resources :milestones, only: [:index, :show]
 
       resources :groups, only: [:index]
+      resources :snippets, only: [:index]
 
-      resources :projects, only: [] do
+      resources :projects, only: [:index] do
         collection do
           get :starred
         end
       end
     end
+
+    root to: "dashboard/projects#index"
   end
 
   #
@@ -334,7 +342,7 @@ Gitlab::Application.routes.draw do
 
   get  'unsubscribes/:email', to: 'unsubscribes#show', as: :unsubscribe
   post 'unsubscribes/:email', to: 'unsubscribes#create'
-  resources :projects, constraints: { id: /[^\/]+/ }, only: [:new, :create]
+  resources :projects, constraints: { id: /[^\/]+/ }, only: [:index, :new, :create]
 
   devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks, registrations: :registrations , passwords: :passwords, sessions: :sessions, confirmations: :confirmations }
 
@@ -342,7 +350,7 @@ Gitlab::Application.routes.draw do
     get '/users/auth/:provider/omniauth_error' => 'omniauth_callbacks#omniauth_error', as: :omniauth_error
   end
 
-  root to: "root#show"
+  root to: "root#index"
 
   #
   # Project Area
@@ -384,6 +392,16 @@ Gitlab::Application.routes.draw do
           delete(
             '/blob/*id',
             to: 'blob#destroy',
+            constraints: { id: /.+/, format: false }
+          )
+          put(
+            '/blob/*id',
+            to: 'blob#update',
+            constraints: { id: /.+/, format: false }
+          )
+          post(
+            '/blob/*id',
+            to: 'blob#create',
             constraints: { id: /.+/, format: false }
           )
         end
@@ -447,16 +465,20 @@ Gitlab::Application.routes.draw do
           end
         end
 
-        resources :wikis, only: [:show, :edit, :destroy, :create], constraints: { id: /[a-zA-Z.0-9_\-\/]+/ } do
-          collection do
-            get :pages
-            put ':id' => 'wikis#update'
-            get :git_access
-          end
+        WIKI_SLUG_ID = { id: /[a-zA-Z.0-9_\-\/]+/ } unless defined? WIKI_SLUG_ID
 
-          member do
-            get 'history'
-          end
+        scope do
+          # Order matters to give priority to these matches
+          get '/wikis/git_access', to: 'wikis#git_access'
+          get '/wikis/pages', to: 'wikis#pages', as: 'wiki_pages'
+          post '/wikis', to: 'wikis#create'
+
+          get '/wikis/*id/history', to: 'wikis#history', as: 'wiki_history', constraints: WIKI_SLUG_ID
+          get '/wikis/*id/edit', to: 'wikis#edit', as: 'wiki_edit', constraints: WIKI_SLUG_ID
+
+          get '/wikis/*id', to: 'wikis#show', as: 'wiki', constraints: WIKI_SLUG_ID
+          delete '/wikis/*id', to: 'wikis#destroy', constraints: WIKI_SLUG_ID
+          put '/wikis/*id', to: 'wikis#update', constraints: WIKI_SLUG_ID
         end
 
         resource :repository, only: [:show, :create] do

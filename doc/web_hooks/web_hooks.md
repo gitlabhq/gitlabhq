@@ -281,6 +281,7 @@ X-Gitlab-Event: Note Hook
       "name": "Gitlab Test",
       "ssh_url": "git@example.com:gitlab-org/gitlab-test.git",
       "http_url": "http://example.com/gitlab-org/gitlab-test.git",
+      "web_url": "http://example.com/gitlab-org/gitlab-test",
       "namespace": "Gitlab Org",
       "visibility_level": 10
     },
@@ -288,6 +289,7 @@ X-Gitlab-Event: Note Hook
       "name": "Gitlab Test",
       "ssh_url": "git@example.com:gitlab-org/gitlab-test.git",
       "http_url": "http://example.com/gitlab-org/gitlab-test.git",
+      "web_url": "http://example.com/gitlab-org/gitlab-test",
       "namespace": "Gitlab Org",
       "visibility_level": 10
     },
@@ -464,6 +466,7 @@ X-Gitlab-Event: Merge Request Hook
       "name": "awesome_project",
       "ssh_url": "ssh://git@example.com/awesome_space/awesome_project.git",
       "http_url": "http://example.com/awesome_space/awesome_project.git",
+      "web_url": "http://example.com/awesome_space/awesome_project",
       "visibility_level": 20,
       "namespace": "awesome_space"
     },
@@ -471,6 +474,7 @@ X-Gitlab-Event: Merge Request Hook
       "name": "awesome_project",
       "ssh_url": "ssh://git@example.com/awesome_space/awesome_project.git",
       "http_url": "http://example.com/awesome_space/awesome_project.git",
+      "web_url": "http://example.com/awesome_space/awesome_project",
       "visibility_level": 20,
       "namespace": "awesome_space"
     },

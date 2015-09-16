@@ -1,118 +1,49 @@
 .timeline {
-  list-style: none;
-  padding: 20px 0 20px;
-  position: relative;
+  @include basic-list;
 
-  &:before {
-    top: 0;
-    bottom: 0;
-    position: absolute;
-    content: " ";
-    width: 3px;
-    background-color: #eeeeee;
-    margin-left: 29px;
-  }
+  margin: 0;
+  padding: 0;
 
   .timeline-entry {
-    position: relative;
-    margin-top: 5px;
-    margin-left: 30px;
-    margin-bottom: 10px;
-    clear: both;
+    padding: $gl-padding;
+    border-color: #f1f2f4;
+    margin-left: -$gl-padding;
+    margin-right: -$gl-padding;
+    color: $gl-gray;
+    border-bottom: 1px solid #f1f2f4;
+    border-right: 1px solid #f1f2f4;
 
-
-    &:target {
-      .timeline-entry-inner .timeline-content {
-        -webkit-animation:target-note 2s linear;
-        background: $hover;
-      }
+    &:last-child {
+      border-bottom: none;
     }
 
-    .timeline-entry-inner {
-      position: relative;
-      margin-left: -20px;
+    .avatar {
+      margin-right: 15px;
+    }
 
-      &:before, &:after {
-        content: " ";
-        display: table;
-      }
-
-      .timeline-icon {
-        margin-top: 2px;
-        background: #fff;
-        color: #737881;
-        float: left;
-        @include border-radius($avatar_radius);
-        @include box-shadow(0 0 0 3px #EEE);
-        overflow: hidden;
-
-        .avatar {
-          margin: 0;
-          padding: 0;
-        }
-      }
-
-      .timeline-content {
-        position: relative;
-        background: $background-color;
-        padding: 10px 15px;
-        margin-left: 60px;
-
-        img {
-          max-width: 100%;
-        }
-
-        &:after {
-          content: '';
-          display: block;
-          position: absolute;
-          width: 0;
-          height: 0;
-          border-style: solid;
-          border-width: 9px 9px 9px 0;
-          border-color: transparent $background-color transparent transparent;
-          left: 0;
-          top: 10px;
-          margin-left: -9px;
-        }
-      }
+    .controls {
+      padding-top: 10px;
+      float: right;
     }
   }
 
-  .system-note .timeline-entry-inner {
-    .timeline-icon {
-      background: none;
-      margin-left: 12px;
-      margin-top: 0;
-      @include box-shadow(none);
-
-      span {
-        margin: 0 2px;
-        font-size: 16px;
-        color: #eeeeee;
-      }
+  .note-text {
+    p:last-child {
+      margin-bottom: 0;
     }
+  }
 
-    .timeline-content {
-      background: none;
-      margin-left: 45px;
-      padding: 0px 15px;
-
-      &:after { border: 0; }
-
-      .note-header {
-        span { font-size: 12px; }
-
-        .avatar {
-          margin-right: 5px;
-        }
-      }
-
-      .note-text {
-        font-size: 12px;
-        margin-left: 20px;
-      }
+  .system-note {
+    .note-text {
+      color: $gl-gray !important;
     }
+  }
+
+  .diff-file {
+    border: 1px solid $border-color;
+    border-bottom: none;
+    margin-left: 0;
+    margin-right: 0;
   }
 }
 
@@ -131,4 +62,9 @@
       }
     }
   }
+}
+
+.discussion .timeline-entry {
+  margin: 0;
+  border-right: none;
 }
