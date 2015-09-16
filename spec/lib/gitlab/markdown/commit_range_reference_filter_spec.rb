@@ -75,11 +75,6 @@ module Gitlab::Markdown
         expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-commit_range'
       end
 
-      it 'includes an optional custom class' do
-        doc = filter("See #{reference}", reference_class: 'custom')
-        expect(doc.css('a').first.attr('class')).to include 'custom'
-      end
-
       it 'includes a data-project-id attribute' do
         doc = filter("See #{reference}")
         link = doc.css('a').first

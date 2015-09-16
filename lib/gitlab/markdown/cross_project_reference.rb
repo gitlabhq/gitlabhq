@@ -1,3 +1,5 @@
+require 'gitlab/markdown'
+
 module Gitlab
   module Markdown
     # Common methods for ReferenceFilters that support an optional cross-project

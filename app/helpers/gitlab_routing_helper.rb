@@ -17,6 +17,14 @@ module GitlabRoutingHelper
     namespace_project_path(project.namespace, project, *args)
   end
 
+  def project_files_path(project, *args)
+    namespace_project_tree_path(project.namespace, project, @ref || project.repository.root_ref)
+  end
+
+  def project_commits_path(project, *args)
+    namespace_project_commits_path(project.namespace, project, @ref || project.repository.root_ref)
+  end
+
   def activity_project_path(project, *args)
     activity_namespace_project_path(project.namespace, project, *args)
   end

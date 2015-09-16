@@ -1,21 +1,19 @@
 - page_title "Milestones"
-%h3.page-title
-  Milestones
-  %span.pull-right #{@dashboard_milestones.count} milestones
+- header_title  "Milestones", dashboard_milestones_path
 
-%p.light
-  List all milestones from all projects you have access to.
-
-%hr
 
 = render 'shared/milestones_filter'
+
+.gray-content-block
+  .oneline
+    List all milestones from all projects you have access to.
+
 .milestones
-  .panel.panel-default
-    %ul.well-list
-      - if @dashboard_milestones.blank?
-        %li
-          .nothing-here-block No milestones to show
-      - else
-        - @dashboard_milestones.each do |milestone|
-          = render 'milestone', milestone: milestone
+  %ul.content-list
+    - if @dashboard_milestones.blank?
+      %li
+        .nothing-here-block No milestones to show
+    - else
+      - @dashboard_milestones.each do |milestone|
+        = render 'milestone', milestone: milestone
   = paginate @dashboard_milestones, theme: "gitlab"

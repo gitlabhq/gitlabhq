@@ -4,7 +4,7 @@ class GroupsController < Groups::ApplicationController
   before_action :group, except: [:new, :create]
 
   # Authorize
-  before_action :authorize_read_group!, except: [:new, :create]
+  before_action :authorize_read_group!, except: [:show, :new, :create]
   before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects]
   before_action :authorize_create_group!, only: [:new, :create]
 
@@ -13,6 +13,10 @@ class GroupsController < Groups::ApplicationController
   before_action :event_filter, only: :show
 
   layout :determine_layout
+
+  def index
+    redirect_to(current_user ? dashboard_groups_path : explore_groups_path)
+  end
 
   def new
     @group = Group.new

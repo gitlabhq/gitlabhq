@@ -25,12 +25,24 @@ class CiService < Service
   def category
     :ci
   end
-
+  
+  def valid_token?(token)
+    self.respond_to?(:token) && self.token.present? && self.token == token
+  end
+  
   def supported_events
     %w(push)
   end
 
-  # Return complete url to build page
+  def merge_request_page(iid, sha, ref)
+    commit_page(sha, ref)
+  end
+
+  def commit_page(sha, ref)
+    build_page(sha, ref)
+  end
+
+  # Return complete url to merge_request page
   #
   # Ex.
   #   http://jenkins.example.com:8888/job/test1/scm/bySHA1/12d65c
@@ -45,10 +57,27 @@ class CiService < Service
   #
   #
   # Ex.
-  #   @service.commit_status('13be4ac')
+  #   @service.merge_request_status(9, '13be4ac', 'dev')
   #   # => 'success'
   #
-  #   @service.commit_status('2abe4ac')
+  #   @service.merge_request_status(10, '2abe4ac', 'dev)
+  #   # => 'running'
+  #
+  #
+  def merge_request_status(iid, sha, ref)
+    commit_status(sha, ref)
+  end
+
+  # Return string with build status or :error symbol
+  #
+  # Allowed states: 'success', 'failed', 'running', 'pending', 'skipped'
+  #
+  #
+  # Ex.
+  #   @service.commit_status('13be4ac', 'master')
+  #   # => 'success'
+  #
+  #   @service.commit_status('2abe4ac', 'dev')
   #   # => 'running'
   #
   #

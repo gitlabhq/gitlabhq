@@ -303,6 +303,11 @@ production: &base
       #             issuer: 'https://gitlab.example.com',
       #             name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
       #           } }
+      # - { name: 'crowd',
+      #     args: {
+      #       crowd_server_url: 'CROWD SERVER URL',
+      #       application_name: 'YOUR_APP_NAME',
+      #       application_password: 'YOUR_APP_PASSWORD' } }
 
 
 

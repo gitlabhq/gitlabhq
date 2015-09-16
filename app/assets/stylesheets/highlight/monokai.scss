@@ -21,6 +21,12 @@ pre.code.monokai,
     background-color: #49483e !important;
   }
 
+  // Search result highlight
+  span.highlight_word {
+    background: #ffe792;
+    color: #000000;
+  }
+
   .hll { background-color: #49483e }
   .c { color: #75715e } /* Comment */
   .err { color: #960050; background-color: #1e0010 } /* Error */

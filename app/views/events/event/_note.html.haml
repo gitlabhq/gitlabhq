@@ -4,7 +4,7 @@
     = event.action_name
     = event_note_title_html(event)
     at
-    
+
   - if event.project
     = link_to_project event.project
   - else
@@ -13,7 +13,6 @@
 .event-body
   .event-note
     .md
-      %i.fa.fa-comment-o.event-note-icon
       = event_note(event.target.note, project: event.project)
     - note = event.target
     - if note.attachment.url

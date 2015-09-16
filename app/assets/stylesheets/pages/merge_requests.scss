@@ -3,10 +3,10 @@
  *
  */
 .mr-state-widget {
-  background: #FAFAFA;
+  background: #f8fafc;
   margin-bottom: 20px;
-  color: #666;
-  border: 1px solid #e5e5e5;
+  color: $gl-gray;
+  border: 1px solid #eef0f2;
   @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.05));
   @include border-radius(3px);
 
@@ -29,6 +29,14 @@
       padding: 5px;
       line-height: 20px;
 
+      &.right {
+        float: right;
+        padding-top: 12px;
+        a {
+          color: $gl-gray;
+        }
+      }
+
       .remove_source_checkbox {
         margin: 0;
       }
@@ -36,7 +44,7 @@
   }
 
   .ci_widget {
-    border-bottom: 1px solid #EEE;
+    border-bottom: 1px solid #eef0f2;
 
     i {
       margin-right: 4px;
@@ -89,20 +97,14 @@
   }
 }
 
-@media(min-width: $screen-sm-max) {
-  .merge-request .merge-request-tabs{
-    li {
-      a {
-        padding: 15px 40px;
-        font-size: 14px;
-      }
-    }
-  }
-}
-
 .merge-request .merge-request-tabs{
-  margin-top: 30px;
-  margin-bottom: 20px;
+  @include nav-menu;
+  margin: -$gl-padding;
+  padding: $gl-padding;
+  text-align: center;
+  border-top: 1px solid #e7e9ed;
+  margin-top: 18px;
+  margin-bottom: 3px;
 }
 
 .mr_source_commit,
@@ -136,8 +138,7 @@
     }
 
     .merge-request-info {
-      color: #999;
-      font-size: 13px;
+      color: $gl-gray;
     }
 
   }

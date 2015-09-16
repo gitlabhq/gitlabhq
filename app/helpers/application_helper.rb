@@ -201,7 +201,7 @@ module ApplicationHelper
       class: "#{html_class} js-timeago",
       datetime: time.to_time.getutc.iso8601,
       title: time.in_time_zone.stamp('Aug 21, 2011 9:23pm'),
-      data: { toggle: 'tooltip', placement: placement }
+      data: { toggle: 'tooltip', placement: placement, container: 'body' }
 
     element += javascript_tag "$('.js-timeago').timeago()" unless skip_js
 

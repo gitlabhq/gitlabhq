@@ -2,7 +2,7 @@
   .side {
     .panel {
       .panel-heading {
-        background: #EEE;
+        background: $background-color;
         border-top-left-radius: 0;
       }
       border-top-left-radius: 0;
@@ -38,11 +38,11 @@
   float: left;
 
   .avatar {
-    @include border-radius(0px);
+    @include border-radius(50%);
   }
 
   .identicon {
-    line-height: 40px;
+    line-height: 46px;
   }
 }
 

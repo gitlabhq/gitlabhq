@@ -31,13 +31,16 @@ describe NotificationService do
 
   describe 'Notes' do
     context 'issue note' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:empty_project, :private) }
       let(:issue) { create(:issue, project: project, assignee: create(:user)) }
       let(:mentioned_issue) { create(:issue, assignee: issue.assignee) }
-      let(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@mention referenced') }
+      let(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@mention referenced, @outsider also') }
 
       before do
         build_team(note.project)
+        project.team << [issue.author, :master]
+        project.team << [issue.assignee, :master]
+        project.team << [note.author, :master]
       end
 
       describe :new_note do
@@ -53,6 +56,7 @@ describe NotificationService do
           should_not_email(@u_participating.id)
           should_not_email(@u_disabled.id)
           should_not_email(@unsubscriber.id)
+          should_not_email(@u_outsider_mentioned)
 
           notification.new_note(note)
         end
@@ -444,12 +448,15 @@ describe NotificationService do
     @u_mentioned = create(:user, username: 'mention', notification_level: Notification::N_MENTION)
     @u_committer = create(:user, username: 'committer')
     @u_not_mentioned = create(:user, username: 'regular', notification_level: Notification::N_PARTICIPATING)
+    @u_outsider_mentioned = create(:user, username: 'outsider')
 
     project.team << [@u_watcher, :master]
     project.team << [@u_participating, :master]
+    project.team << [@u_participant_mentioned, :master]
     project.team << [@u_disabled, :master]
     project.team << [@u_mentioned, :master]
     project.team << [@u_committer, :master]
+    project.team << [@u_not_mentioned, :master]
   end
 
   def add_users_with_subscription(project, issuable)

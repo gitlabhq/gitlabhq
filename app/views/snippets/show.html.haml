@@ -20,10 +20,10 @@
 
   .back-link
     - if @snippet.author == current_user
-      = link_to user_snippets_path(current_user) do
+      = link_to dashboard_snippets_path do
         &larr; your snippets
     - else
-      = link_to snippets_path do
+      = link_to explore_snippets_path do
         &larr; explore snippets
 
 .file-holder

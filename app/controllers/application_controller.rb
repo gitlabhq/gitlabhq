@@ -1,4 +1,5 @@
 require 'gon'
+require 'fogbugz'
 
 class ApplicationController < ActionController::Base
   include Gitlab::CurrentSettings
@@ -20,7 +21,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   helper_method :abilities, :can?, :current_application_settings
-  helper_method :import_sources_enabled?, :github_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :gitorious_import_enabled?, :google_code_import_enabled?, :git_import_enabled?
+  helper_method :import_sources_enabled?, :github_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :gitorious_import_enabled?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -55,7 +56,9 @@ class ApplicationController < ActionController::Base
 
   def authenticate_user!(*args)
     # If user is not signed-in and tries to access root_path - redirect him to landing page
-    if current_application_settings.home_page_url.present?
+    # Don't redirect to the default URL to prevent endless redirections
+    if current_application_settings.home_page_url.present? &&
+        current_application_settings.home_page_url.chomp('/') != Gitlab.config.gitlab['url'].chomp('/')
       if current_user.nil? && root_path == request.path
         redirect_to current_application_settings.home_page_url and return
       end
@@ -190,11 +193,12 @@ class ApplicationController < ActionController::Base
   end
 
   def add_gon_variables
+    gon.api_version            = API::API.version
+    gon.default_avatar_url     = URI::join(Gitlab.config.gitlab.url, ActionController::Base.helpers.image_path('no_avatar.png')).to_s
     gon.default_issues_tracker = Project.new.default_issue_tracker.to_param
-    gon.api_version = API::API.version
-    gon.relative_url_root = Gitlab.config.gitlab.relative_url_root
-    gon.default_avatar_url = URI::join(Gitlab.config.gitlab.url, ActionController::Base.helpers.image_path('no_avatar.png')).to_s
-    gon.max_file_size = current_application_settings.max_attachment_size;
+    gon.max_file_size          = current_application_settings.max_attachment_size
+    gon.relative_url_root      = Gitlab.config.gitlab.relative_url_root
+    gon.user_color_scheme      = Gitlab::ColorSchemes.for_user(current_user).css_class
 
     if current_user
       gon.current_user_id = current_user.id
@@ -338,6 +342,10 @@ class ApplicationController < ActionController::Base
 
   def google_code_import_enabled?
     current_application_settings.import_sources.include?('google_code')
+  end
+
+  def fogbugz_import_enabled?
+    current_application_settings.import_sources.include?('fogbugz')
   end
 
   def git_import_enabled?

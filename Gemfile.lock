@@ -253,7 +253,7 @@ GEM
       ruby-progressbar (~> 1.4)
     gemnasium-gitlab-service (0.2.6)
       rugged (~> 0.21)
-    gemojione (2.0.0)
+    gemojione (2.0.1)
       json
     gherkin-ruby (0.3.1)
       racc
@@ -263,8 +263,6 @@ GEM
       flowdock (~> 0.7)
       gitlab-grit (>= 2.4.1)
       multi_json
-    gitlab-grack (2.0.2)
-      rack (~> 1.5.1)
     gitlab-grit (2.7.2)
       charlock_holmes (~> 0.6)
       diff-lcs (~> 1.1)
@@ -275,9 +273,9 @@ GEM
       charlock_holmes (~> 0.6.6)
       escape_utils (~> 0.2.4)
       mime-types (~> 1.19)
-    gitlab_emoji (0.1.0)
+    gitlab_emoji (0.1.1)
       gemojione (~> 2.0)
-    gitlab_git (7.2.14)
+    gitlab_git (7.2.15)
       activesupport (~> 4.0)
       charlock_holmes (~> 0.6)
       gitlab-linguist (~> 3.0)
@@ -294,7 +292,7 @@ GEM
       github-markup (~> 1.3.1)
       gollum-grit_adapter (~> 0.1, >= 0.1.1)
       nokogiri (~> 1.6.4)
-      rouge (~> 1.9)
+      rouge (~> 1.10.1)
       sanitize (~> 2.1.0)
       stringex (~> 2.5.1)
     gon (5.0.1)
@@ -375,7 +373,7 @@ GEM
       systemu (~> 2.6.2)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
-    mail_room (0.4.0)
+    mail_room (0.4.2)
     method_source (0.8.2)
     mime-types (1.25.1)
     mimemagic (0.3.0)
@@ -439,6 +437,10 @@ GEM
     omniauth-twitter (1.0.1)
       multi_json (~> 1.3)
       omniauth-oauth (~> 1.0)
+    omniauth_crowd (2.2.3)
+      activesupport
+      nokogiri (>= 1.4.4)
+      omniauth (~> 1.0)
     opennebula (4.12.1)
       json
       nokogiri
@@ -465,7 +467,7 @@ GEM
     pyu-ruby-sasl (0.0.3.3)
     quiet_assets (1.0.2)
       railties (>= 3.1, < 5.0)
-    racc (1.4.10)
+    racc (1.4.12)
     rack (1.5.5)
     rack-accept (0.4.5)
       rack (>= 0.4)
@@ -545,7 +547,7 @@ GEM
       netrc (~> 0.7)
     rinku (1.7.3)
     rotp (1.6.1)
-    rouge (1.9.1)
+    rouge (1.10.1)
     rqrcode (0.4.2)
     rqrcode-rails3 (0.1.7)
       rqrcode (>= 0.4.2)
@@ -576,6 +578,8 @@ GEM
       powerpack (~> 0.0.6)
       rainbow (>= 1.99.1, < 3.0)
       ruby-progressbar (~> 1.4)
+    ruby-fogbugz (0.2.1)
+      crack (~> 0.4)
     ruby-progressbar (1.7.1)
     ruby-saml (1.0.0)
       nokogiri (>= 1.5.10)
@@ -610,6 +614,8 @@ GEM
       thor (~> 0.14)
     settingslogic (2.0.9)
     sexp_processor (4.4.5)
+    sham_rack (1.3.6)
+      rack
     shoulda-matchers (2.8.0)
       activesupport (>= 3.0.0)
     sidekiq (3.3.0)
@@ -790,11 +796,10 @@ DEPENDENCIES
   gemnasium-gitlab-service (~> 0.2)
   github-markup
   gitlab-flowdock-git-hook (~> 1.0.1)
-  gitlab-grack (~> 2.0.2)
   gitlab-license (~> 0.0.2)
   gitlab-linguist (~> 3.0.1)
   gitlab_emoji (~> 0.1)
-  gitlab_git (~> 7.2.14)
+  gitlab_git (~> 7.2.15)
   gitlab_meta (= 7.0)
   gitlab_omniauth-ldap (= 1.2.1)
   gollum-lib (~> 4.0.2)
@@ -813,7 +818,7 @@ DEPENDENCIES
   jquery-ui-rails
   kaminari (~> 0.15.1)
   letter_opener
-  mail_room (~> 0.4.0)
+  mail_room (~> 0.4.2)
   minitest (~> 5.3.0)
   mousetrap-rails
   mysql2
@@ -830,6 +835,7 @@ DEPENDENCIES
   omniauth-saml (~> 1.4.0)
   omniauth-shibboleth
   omniauth-twitter
+  omniauth_crowd
   org-ruby (= 0.9.12)
   pg
   poltergeist (~> 1.6.0)
@@ -849,12 +855,14 @@ DEPENDENCIES
   rqrcode-rails3
   rspec-rails (~> 3.3.0)
   rubocop (= 0.28.0)
+  ruby-fogbugz (~> 0.2.1)
   sanitize (~> 2.0)
   sass-rails (~> 4.0.5)
   sdoc
   seed-fu
   select2-rails (~> 3.5.9)
   settingslogic
+  sham_rack
   shoulda-matchers (~> 2.8.0)
   sidekiq (~> 3.3)
   sidetiq (= 0.6.3)
@@ -887,6 +895,3 @@ DEPENDENCIES
   virtus
   webmock (~> 1.21.0)
   wikicloth (= 0.8.1)
-
-BUNDLED WITH
-   1.10.6

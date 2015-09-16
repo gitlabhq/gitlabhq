@@ -64,8 +64,8 @@ describe 'GitLab Markdown', feature: true do
 
       it 'parses fenced code blocks' do
         aggregate_failures do
-          expect(doc).to have_selector('pre.code.highlight.white.c')
-          expect(doc).to have_selector('pre.code.highlight.white.python')
+          expect(doc).to have_selector('pre.code.highlight.js-syntax-highlight.c')
+          expect(doc).to have_selector('pre.code.highlight.js-syntax-highlight.python')
         end
       end
 
@@ -179,7 +179,7 @@ describe 'GitLab Markdown', feature: true do
     before(:all) do
       @feat = MarkdownFeature.new
 
-      # `gfm` helper depends on a `@project` variable
+      # `markdown` helper expects a `@project` variable
       @project = @feat.project
 
       @html = markdown(@feat.raw_markdown)
@@ -223,9 +223,5 @@ describe 'GitLab Markdown', feature: true do
   # `markdown` calls these two methods
   def current_user
     @feat.user
-  end
-
-  def user_color_scheme_class
-    :white
   end
 end

@@ -1,6 +1,6 @@
-%ul.projects-list.bordered-list.my-projects.public-projects
-  - projects.each do |project|
-    %li.project-row
-      = render partial: 'shared/project', locals: { project: project, avatar: true, stars: true }
-- unless projects.present?
-  .nothing-here-block No such projects
+- if projects.any?
+  .public-projects
+    = render 'shared/projects/list', projects: projects
+- else
+  .nothing-here-block
+    No such projects

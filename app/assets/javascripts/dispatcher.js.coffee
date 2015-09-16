@@ -55,7 +55,6 @@ class Dispatcher
         new Activities()
       when 'dashboard:projects:starred'
         new Activities()
-        new ProjectsList()
       when 'projects:commit:show'
         new Commit()
         new Diff()
@@ -70,7 +69,6 @@ class Dispatcher
       when 'groups:show'
         new Activities()
         shortcut_handler = new ShortcutsNavigation()
-        new ProjectsList()
       when 'groups:group_members:index'
         new GroupMembers()
         new UsersSelect()
@@ -100,8 +98,6 @@ class Dispatcher
         new GroupsSelect()
       when 'admin:emails:show'
         new AdminEmailSelect()
-      when 'admin:users:show'
-        new ProjectsList()
 
     switch path.first()
       when 'admin'

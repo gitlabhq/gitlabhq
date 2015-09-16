@@ -23,8 +23,12 @@
   &.s24 { width: 24px; height: 24px; margin-right: 8px; }
   &.s26 { width: 26px; height: 26px; margin-right: 8px; }
   &.s32 { width: 32px; height: 32px; margin-right: 10px; }
+  &.s36 { width: 36px; height: 36px; margin-right: 10px; }
+  &.s46 { width: 46px; height: 46px; margin-right: 15px; }
+  &.s48 { width: 48px; height: 48px; margin-right: 10px; }
   &.s60 { width: 60px; height: 60px; margin-right: 12px; }
   &.s90 { width: 90px; height: 90px; margin-right: 15px; }
+  &.s140 { width: 140px; height: 140px; margin-right: 20px; }
   &.s160 { width: 160px; height: 160px; margin-right: 20px; }
 }
 
@@ -38,5 +42,6 @@
   &.s32 { font-size: 22px; line-height: 32px; }
   &.s60 { font-size: 32px; line-height: 60px; }
   &.s90 { font-size: 36px; line-height: 90px; }
-  &.s160 { font-size: 96px; line-height: 1.33; }
+  &.s140 { font-size: 72px; line-height: 140px; }
+  &.s160 { font-size: 96px; line-height: 160px; }
 }

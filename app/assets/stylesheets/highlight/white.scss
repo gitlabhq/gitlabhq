@@ -5,20 +5,29 @@ pre.code.highlight.white,
   background-color: #fff;
   color: #333;
 
-  pre.highlight,
   .line-numbers,
   .line-numbers a {
+    background-color: $background-color !important;
+    color: $gl-gray !important;
+  }
+
+  pre.highlight {
     background-color: #fff !important;
     color: #333 !important;
   }
 
   pre.code {
-    border-left: 1px solid #bbb;
+    border-left: 1px solid $border-color;
   }
 
   // highlight line via anchor
   pre .hll {
     background-color: #f8eec7 !important;
+  }
+
+  // Search result highlight
+  span.highlight_word {
+    background: #fafe3d;
   }
 
   .hll { background-color: #f8f8f8 }

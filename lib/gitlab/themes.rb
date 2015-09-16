@@ -37,6 +37,11 @@ module Gitlab
       THEMES.detect { |t| t.id == id } || default
     end
 
+    # Returns the number of defined Themes
+    def self.count
+      THEMES.size
+    end
+
     # Get the default Theme
     #
     # Returns a Theme
@@ -49,6 +54,19 @@ module Gitlab
     # Yields the Theme object
     def self.each(&block)
       THEMES.each(&block)
+    end
+
+    # Get the Theme for the specified user, or the default
+    #
+    # user - User record
+    #
+    # Returns a Theme
+    def self.for_user(user)
+      if user
+        by_id(user.theme_id)
+      else
+        default
+      end
     end
 
     private

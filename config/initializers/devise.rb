@@ -238,7 +238,7 @@ Devise.setup do |config|
       provider_arguments.concat provider['args']
     when Hash
       # A Hash from the configuration will be passed as is.
-      provider_arguments << provider['args']
+      provider_arguments << provider['args'].symbolize_keys
     end
 
     config.omniauth provider['name'].to_sym, *provider_arguments

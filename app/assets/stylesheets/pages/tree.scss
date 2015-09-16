@@ -63,48 +63,18 @@
     padding-right: 8px;
 
     .commit-author-name {
-      color: gray;
+      color: $gl-gray;
     }
   }
 
   .tree_commit {
-    color: gray;
+    color: $gl-gray;
 
     .tree-commit-link {
-      color: gray;
+      color: $gl-gray;
 
       &:hover {
         text-decoration: underline;
-      }
-    }
-  }
-
-  .blame {
-    img.avatar {
-      border: 0 none;
-      float: none;
-      margin: 0;
-      padding: 0;
-    }
-    td.blame-commit {
-      background: #f9f9f9;
-      min-width: 350px;
-
-      .commit-author-link {
-        color: #888;
-      }
-    }
-    td.blame-numbers {
-      pre {
-        color: #AAA;
-        white-space: pre;
-      }
-      background: #f1f1f1;
-      border-left: 1px solid #DDD;
-    }
-    td.lines {
-      code {
-        font-family: $monospace_font;
       }
     }
   }
@@ -132,20 +102,30 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 
   .commit {
-    padding: 10px 15px;
+    padding: $gl-padding 0;
 
     .commit-row-title {
-      font-size: 13px;
-
       .commit-row-message {
         font-weight: normal;
-        color: #555;
       }
     }
   }
 }
 
 #modal-remove-blob > .modal-dialog { width: 850px; }
+
+.blob-upload-dropzone-previews {
+  text-align: center;
+  border: 2px;
+  border-style: dashed;
+  border-color: $border-color;
+  min-height: 200px;
+}
+
+.upload-link {
+  font-weight: normal;
+  color: $md-link-color;
+}

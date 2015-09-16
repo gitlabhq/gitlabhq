@@ -8,6 +8,8 @@ class SessionsController < Devise::SessionsController
   def new
     if Gitlab.config.ldap.enabled
       @ldap_servers = Gitlab::LDAP::Config.servers
+    else
+      @ldap_servers = []
     end
 
     super

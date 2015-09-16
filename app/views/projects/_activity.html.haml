@@ -1,5 +1,5 @@
 = render 'projects/last_push'
-.hidden-xs
+.gray-content-block.activity-filter-block
   - if current_user
     %ul.nav.nav-pills.event_filter.pull-right
       %li
@@ -7,7 +7,6 @@
           %i.fa.fa-rss
 
   = render 'shared/event_filter'
-  %hr
 .content_list{:"data-href" => activity_project_path(@project)}
 = spinner
 

@@ -2,31 +2,6 @@
   margin-right: 15px;
 }
 
-.issues-state-filters {
-  li.active a {
-    border-color: #DDD !important;
-
-    &, &:hover, &:active, &.active {
-      background: #f5f5f5 !important;
-      border-bottom: 1px solid #f5f5f5 !important;
-    }
-  }
-}
-
-.issues-details-filters {
-  font-size: 13px;
-  background: #f5f5f5;
-  margin: -10px 0;
-  padding: 10px 15px;
-  margin-top: -15px;
-  border-left: 1px solid #DDD;
-  border-right: 1px solid #DDD;
-
-  .btn {
-    font-size: 13px;
-  }
-}
-
 @media (min-width: 800px)  {
   .issues-filters,
   .issues_bulk_update {

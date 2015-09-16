@@ -14,11 +14,6 @@ Feature: User
     And I should not see project "Internal"
     And I should see project "Community"
 
-  Scenario: I visit user "John Doe" page while not signed in when he is not authorized to a public project
-    Given "John Doe" owns internal project "Internal"
-    When I visit user "John Doe" page
-    Then I should be redirected to sign in page
-
   # Signed in as someone else
 
   Scenario: I visit user "John Doe" page while signed in as someone else when he owns a public project

@@ -1,3 +1,4 @@
+require 'gitlab/markdown'
 require 'html/pipeline/filter'
 require 'html/pipeline/sanitization_filter'
 
@@ -66,12 +67,16 @@ module Gitlab
 
       def clean_spans
         lambda do |env|
-          return unless env[:node_name] == 'span'
-          return unless env[:node].has_attribute?('class')
+          node = env[:node]
 
-          unless has_ancestor?(env[:node], 'pre')
-            env[:node].remove_attribute('class')
+          return unless node.name == 'span'
+          return unless node.has_attribute?('class')
+
+          unless has_ancestor?(node, 'pre')
+            node.remove_attribute('class')
           end
+
+          { node_whitelist: [node] }
         end
       end
     end

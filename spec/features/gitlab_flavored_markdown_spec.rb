@@ -77,7 +77,7 @@ describe "GitLab Flavored Markdown", feature: true do
     it "should render details in issues#show" do
       visit namespace_project_issue_path(project.namespace, project, @issue)
 
-      expect(page).to have_link("@#{fred.username}")
+      expect(page).to have_link(fred.to_reference)
     end
   end
 

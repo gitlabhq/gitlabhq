@@ -4,7 +4,7 @@ describe PostReceive do
   let(:changes) { "123456 789012 refs/heads/tést\n654321 210987 refs/tags/tag" }
   let(:wrongly_encoded_changes) { changes.encode("ISO-8859-1").force_encoding("UTF-8") }
   let(:base64_changes) { Base64.encode64(wrongly_encoded_changes) }
-  
+
   context "as a resque worker" do
     it "reponds to #perform" do
       expect(PostReceive.new).to respond_to(:perform)

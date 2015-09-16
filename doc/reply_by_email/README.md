@@ -2,11 +2,48 @@
 
 GitLab can be set up to allow users to comment on issues and merge requests by replying to notification emails.
 
-In order to do this, you need access to an IMAP-enabled email account, with a provider or server that supports [email sub-addressing](https://en.wikipedia.org/wiki/Email_address#Sub-addressing). Sub-addressing is a feature where any email to `user+some_arbitrary_tag@example.com` will end up in the mailbox for `user@example.com`, and is supported by providers such as Gmail, Yahoo! Mail, Outlook.com and iCloud, as well as the [Postfix](http://www.postfix.org/) mail server which you can run on-premises.
+## Get a mailbox
+
+Reply by email requires an IMAP-enabled email account, with a provider or server that supports [email sub-addressing](https://en.wikipedia.org/wiki/Email_address#Sub-addressing). Sub-addressing is a feature where any email to `user+some_arbitrary_tag@example.com` will end up in the mailbox for `user@example.com`, and is supported by providers such as Gmail, Yahoo! Mail, Outlook.com and iCloud, as well as the Postfix mail server which you can run on-premises.
+
+If you want to use Gmail with Reply by email, make sure you have [IMAP access enabled](https://support.google.com/mail/troubleshooter/1668960?hl=en#ts=1665018) and [allow less secure apps to access the account](https://support.google.com/accounts/answer/6010255).
+
+To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these instructions](./postfix.md).
 
 ## Set it up
 
-In this example, we'll use the Gmail address `gitlab-replies@gmail.com`. If you're actually using Gmail with Reply by email, make sure you have [IMAP access enabled](https://support.google.com/mail/troubleshooter/1668960?hl=en#ts=1665018) and [allow less secure apps to access the account](https://support.google.com/accounts/answer/6010255).
+In this example, we'll use the Gmail address `gitlab-replies@gmail.com`.
+
+### Omnibus package installations
+
+1. Find the `reply_by_email` section in `/etc/gitlab/gitlab.rb`, enable the feature, enter the email address including a placeholder for the `reply_key` and fill in the details for your specific IMAP server and email account:
+
+    ```ruby
+    gitlab_rails['reply_by_email_enabled'] = true
+    gitlab_rails['reply_by_email_address'] = "gitlab-replies+%{reply_key}@gmail.com"
+    gitlab_rails['reply_by_email_host'] = "imap.gmail.com" # IMAP server host
+    gitlab_rails['reply_by_email_port'] = 993 # IMAP server port
+    gitlab_rails['reply_by_email_ssl'] = true # Whether the IMAP server uses SSL
+    gitlab_rails['reply_by_email_email'] = "gitlab-replies@gmail.com"  # Email account username. Usually the full email address.
+    gitlab_rails['reply_by_email_password'] = "password" # Email account password
+    gitlab_rails['reply_by_email_mailbox_name'] = "inbox" # The name of the mailbox where incoming mail will end up. Usually "inbox".
+    ```
+
+    As mentioned, the part after `+` in the address is ignored, and any email sent here will end up in the mailbox for `gitlab-replies@gmail.com`.
+
+1. Reconfigure GitLab for the changes to take effect:
+
+    ```sh
+    sudo gitlab-ctl reconfigure
+    ```
+
+1. Verify that everything is configured correctly:
+
+    ```sh
+    sudo gitlab-rake gitlab:reply_by_email:check
+    ```
+
+1. Reply by email should now be working.
 
 ### Installations from source
 
@@ -21,17 +58,17 @@ In this example, we'll use the Gmail address `gitlab-replies@gmail.com`. If you'
     ```sh
     sudo editor config/gitlab.yml
     ```
-    
+
     ```yaml
     reply_by_email:
       enabled: true
       address: "gitlab-replies+%{reply_key}@gmail.com"
     ```
 
-    As mentioned, the part after `+` is ignored, and this will end up in the mailbox for `gitlab-replies@gmail.com`.
+    As mentioned, the part after `+` in the address is ignored, and any email sent here will end up in the mailbox for `gitlab-replies@gmail.com`.
 
-2. Find `config/mail_room.yml.example` and copy it to `config/mail_room.yml`:
-    
+2. Copy `config/mail_room.yml.example` to `config/mail_room.yml`:
+
     ```sh
     sudo cp config/mail_room.yml.example config/mail_room.yml
     ```
@@ -72,47 +109,33 @@ In this example, we'll use the Gmail address `gitlab-replies@gmail.com`. If you'
           :worker: EmailReceiverWorker
     ```
 
-
-4.  Find `lib/support/init.d/gitlab.default.example` and copy it to `/etc/default/gitlab`:
-    
-    ```sh
-    sudo cp lib/support/init.d/gitlab.default.example /etc/default/gitlab
-    ```
-
-5. Edit `/etc/default/gitlab` to enable `mail_room`:
+5. Edit the init script configuration at `/etc/default/gitlab` to enable `mail_room`:
 
     ```sh
-    sudo editor /etc/default/gitlab
-    ```
-    
-    ```sh
-    mail_room_enabled=true
+    sudo mkdir -p /etc/default
+    echo 'mail_room_enabled=true' | sudo tee -a /etc/default/gitlab
     ```
 
 6. Restart GitLab:
-    
+
     ```sh
     sudo service gitlab restart
     ```
 
-7. Check if everything is configured correctly:
+7. Verify that everything is configured correctly:
 
     ```sh
-    sudo bundle exec rake gitlab:reply_by_email:check RAILS_ENV=production
+    sudo -u git -H bundle exec rake gitlab:reply_by_email:check RAILS_ENV=production
     ```
 
 8. Reply by email should now be working.
-
-### Omnibus package installations
-
-TODO
 
 ### Development
 
 1. Go to the GitLab installation directory.
 
 1. Find the `reply_by_email` section in `config/gitlab.yml`, enable the feature and enter the email address including a placeholder for the `reply_key`:
-    
+
     ```yaml
     reply_by_email:
       enabled: true
@@ -121,8 +144,8 @@ TODO
 
     As mentioned, the part after `+` is ignored, and this will end up in the mailbox for `gitlab-replies@gmail.com`.
 
-2. Find `config/mail_room.yml.example` and copy it to `config/mail_room.yml`:
-    
+2. Copy `config/mail_room.yml.example` to `config/mail_room.yml`:
+
     ```sh
     sudo cp config/mail_room.yml.example config/mail_room.yml
     ```
@@ -166,12 +189,12 @@ TODO
     ```
 
 6. Restart GitLab:
-    
+
     ```sh
     bundle exec foreman start
     ```
 
-7. Check if everything is configured correctly:
+7. Verify that everything is configured correctly:
 
     ```sh
     bundle exec rake gitlab:reply_by_email:check RAILS_ENV=development

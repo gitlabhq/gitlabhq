@@ -1,3 +1,5 @@
+require 'gitlab/markdown'
+
 module Gitlab
   module Markdown
     # HTML filter that replaces external issue tracker references with links.

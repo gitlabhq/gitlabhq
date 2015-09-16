@@ -10,7 +10,7 @@
   }
 
   &.btn-save {
-    @extend .btn-primary;
+    @extend .btn-success;
   }
 
   &.btn-remove {
@@ -69,6 +69,22 @@
     float: left;
     &:last-child {
       margin-right: 0px;
+    }
+  }
+}
+
+.btn-group-next {
+  .btn {
+    padding: 9px 0px;
+    font-size: 15px;
+    color: #7f8fa4;
+    border-color: #e7e9ed;
+    width: 140px;
+
+    &.active {
+      border-color: $gl-info;
+      background: $gl-info;
+      color: #fff;
     }
   }
 }

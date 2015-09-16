@@ -4,7 +4,7 @@ class Spinach::Features::SnippetsUser < Spinach::FeatureSteps
   include SharedSnippet
 
   step 'I visit my snippets page' do
-    visit user_snippets_path(current_user)
+    visit dashboard_snippets_path
   end
 
   step 'I should see "Personal snippet one" in snippets' do

@@ -1,28 +1,34 @@
 %li{class: "milestone milestone-#{milestone.closed? ? 'closed' : 'open'}", id: dom_id(milestone) }
-  .pull-right
-    - if can?(current_user, :admin_milestone, milestone.project) and milestone.active?
-      = link_to edit_namespace_project_milestone_path(milestone.project.namespace, milestone.project, milestone), class: "btn btn-sm edit-milestone-link btn-grouped" do
-        %i.fa.fa-pencil-square-o
-        Edit
-      = link_to 'Close Milestone', namespace_project_milestone_path(@project.namespace, @project, milestone, milestone: {state_event: :close }), method: :put, remote: true, class: "btn btn-sm btn-close"
-      = link_to namespace_project_milestone_path(milestone.project.namespace, milestone.project, milestone), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-sm btn-remove" do
-        %i.fa.fa-trash-o
-        Remove
+  .row
+    .col-sm-6
+      %strong
+        = link_to_gfm truncate(milestone.title, length: 100), namespace_project_milestone_path(milestone.project.namespace, milestone.project, milestone)
 
-  %h4
-    = link_to_gfm truncate(milestone.title, length: 100), namespace_project_milestone_path(milestone.project.namespace, milestone.project, milestone)
-    - if milestone.expired? and not milestone.closed?
-      %span.cred (Expired)
-    %small
-      = milestone.expires_at
+    .col-sm-6
+      .pull-right.light #{milestone.percent_complete}% complete
   .row
     .col-sm-6
       = link_to namespace_project_issues_path(milestone.project.namespace, milestone.project, milestone_title: milestone.title) do
         = pluralize milestone.issues.count, 'Issue'
-      &nbsp;
+      &middot;
       = link_to namespace_project_merge_requests_path(milestone.project.namespace, milestone.project, milestone_title: milestone.title) do
         = pluralize milestone.merge_requests.count, 'Merge Request'
-      &nbsp;
-      %span.light #{milestone.percent_complete}% complete
     .col-sm-6
       = milestone_progress_bar(milestone)
+
+  .row
+    .col-sm-6
+      - if milestone.expired? and not milestone.closed?
+        %span.cred (Expired)
+      - if milestone.expires_at
+        %span
+          = milestone.expires_at
+    .col-sm-6
+      - if can?(current_user, :admin_milestone, milestone.project) and milestone.active?
+        = link_to edit_namespace_project_milestone_path(milestone.project.namespace, milestone.project, milestone), class: "btn btn-xs edit-milestone-link btn-grouped" do
+          %i.fa.fa-pencil-square-o
+          Edit
+        = link_to 'Close Milestone', namespace_project_milestone_path(@project.namespace, @project, milestone, milestone: {state_event: :close }), method: :put, remote: true, class: "btn btn-xs btn-close"
+        = link_to namespace_project_milestone_path(milestone.project.namespace, milestone.project, milestone), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-xs btn-remove" do
+          %i.fa.fa-trash-o
+          Remove
