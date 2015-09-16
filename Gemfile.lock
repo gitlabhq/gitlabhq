@@ -886,7 +886,7 @@ DEPENDENCIES
   rerun (~> 0.10.0)
   rqrcode-rails3 (~> 0.1.7)
   rspec-rails (~> 3.3.0)
-  rubocop (= 0.28.0)
+  rubocop (~> 0.28.0)
   ruby-fogbugz (~> 0.2.1)
   sanitize (~> 2.0)
   sass-rails (~> 4.0.5)
