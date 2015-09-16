@@ -33,7 +33,7 @@ module Ci
 
     belongs_to :gl_project, class_name: '::Project', foreign_key: :gitlab_id
 
-    has_many :commits, ->() { order(:committed_at) }, dependent: :destroy, class_name: 'Ci::Commit'
+    has_many :commits, ->() { order('CASE WHEN ci_commits.committed_at IS NULL THEN 0 ELSE 1 END', :committed_at, :id) }, dependent: :destroy, class_name: 'Ci::Commit'
     has_many :builds, through: :commits, dependent: :destroy, class_name: 'Ci::Build'
     has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
     has_many :runners, through: :runner_projects, class_name: 'Ci::Runner'
