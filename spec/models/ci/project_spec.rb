@@ -62,7 +62,7 @@ describe Ci::Project do
   end
 
   describe 'ordered commits' do
-    let (:project) { FactoryGirl.create :ci_project }
+    let(:project) { FactoryGirl.create :ci_project }
 
     it 'returns ordered list of commits' do
       commit1 = FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, project: project
