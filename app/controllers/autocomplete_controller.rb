@@ -32,6 +32,7 @@ class AutocompleteController < ApplicationController
     @users ||= User.none
     @users = @users.search(params[:search]) if params[:search].present?
     @users = @users.active
+    @users = @users.reorder(:name)
     @users = @users.page(params[:page]).per(PER_PAGE)
 
     unless params[:search].present?
