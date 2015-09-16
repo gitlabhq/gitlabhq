@@ -2,11 +2,6 @@
   %h3.project-title
     Public projects
 
-.bs-callout
-  = link_to new_ci_user_sessions_path(state: generate_oauth_state(request.fullpath)) do
-    %strong Login with GitLab
-  to see your private projects
-
 - if @projects.present?
   .projects
     %table.table
