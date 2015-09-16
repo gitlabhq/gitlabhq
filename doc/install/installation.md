@@ -207,9 +207,9 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-14-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-0-stable gitlab
 
-**Note:** You can change `7-14-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `8-0-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -221,7 +221,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
     # Update GitLab config file, follow the directions at top of file
     sudo -u git -H editor config/gitlab.yml
-        
+
     # Copy the example secrets file
     sudo -u git -H cp config/secrets.yml.example config/secrets.yml
     sudo -u git -H chmod 0600 config/secrets.yml
@@ -238,7 +238,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
     # Make sure GitLab can write to the public/uploads/ directory
     sudo chmod -R u+rwX  public/uploads
-    
+
     # Change the permissions of the directory where CI build traces are stored
     sudo chmod -R u+rwX builds/
 
