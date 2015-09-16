@@ -57,7 +57,7 @@ namespace :ci do
     desc 'GitLab | Migrate CI services'
     task services: :environment do
       c = ActiveRecord::Base.connection
-      c.execute("UPDATE ci_services SET type=CONCAT('Ci::'', type) WHERE type NOT LIKE 'Ci::%'")
+      c.execute("UPDATE ci_services SET type=CONCAT('Ci::', type) WHERE type NOT LIKE 'Ci::%'")
     end
   end
 end
