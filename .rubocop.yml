@@ -1000,6 +1000,7 @@ AllCops:
     - 'lib/backup/**/*'
     - 'lib/ci/backup/**/*'
     - 'lib/tasks/**/*'
+    - 'lib/ci/migrate/**/*'
     - 'lib/email_validator.rb'
     - 'lib/gitlab/upgrader.rb'
     - 'lib/gitlab/seeder.rb'
