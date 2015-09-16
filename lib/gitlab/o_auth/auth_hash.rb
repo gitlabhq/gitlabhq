@@ -16,16 +16,6 @@ module Gitlab
         @provider ||= Gitlab::Utils.force_utf8(auth_hash.provider.to_s)
       end
 
-      def info
-        auth_hash.info
-      end
-
-      def get_info(key)
-        value = info.try(key)
-        Gitlab::Utils.force_utf8(value) if value
-        value
-      end
-
       def name
         @name ||= get_info(:name) || "#{get_info(:first_name)} #{get_info(:last_name)}"
       end
@@ -44,9 +34,19 @@ module Gitlab
 
       private
 
+      def info
+        auth_hash.info
+      end
+
+      def get_info(key)
+        value = info[key]
+        Gitlab::Utils.force_utf8(value) if value
+        value
+      end
+
       def username_and_email
         @username_and_email ||= begin
-          username  = get_info(:nickname) || get_info(:username)
+          username  = get_info(:username) || get_info(:nickname)
           email     = get_info(:email)
 
           username ||= generate_username(email)             if email

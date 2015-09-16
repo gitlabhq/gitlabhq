@@ -56,6 +56,7 @@ v 7.14.3
 
 v 7.14.2
   - Upgrade gitlab_git to 7.2.15 to fix `git blame` errors with ISO-encoded files (Stan Hu)
+  - Allow configuration of LDAP attributes GitLab will use for the new user account.
 
 v 7.14.1
   - Improve abuse reports management from admin area
