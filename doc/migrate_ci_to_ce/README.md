@@ -222,6 +222,18 @@ You need to edit `/etc/nginx/sites-available/gitlab_ci` and paste:
         resolver 8.8.8.8 8.8.4.4;
         proxy_pass $scheme://YOUR_GITLAB_SERVER_FQDN/ci$request_uri;
       }
+      
+      # expose build endpoint to allow trigger builds
+      location ~ ^/projects/\d+/build$ {
+        proxy_read_timeout    300;
+        proxy_connect_timeout 300;
+        proxy_redirect        off;
+        proxy_set_header      X-Real-IP $remote_addr;
+    
+        # You need to specify your DNS servers that are able to resolve YOUR_GITLAB_SERVER_FQDN
+        resolver 8.8.8.8 8.8.4.4;
+        proxy_pass $scheme://YOUR_GITLAB_SERVER_FQDN/ci$request_uri;
+      }
     
       # redirect all other CI requests
       location / {
