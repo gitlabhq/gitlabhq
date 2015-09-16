@@ -2,7 +2,7 @@
 %tr.alert{class: commit_status_alert_class(last_commit) }
   %td
     = link_to [:ci, project] do
-      %strong= project.name
+      = project.name
   %td
     - if last_commit
       #{last_commit.status} (#{commit_link(last_commit)})
