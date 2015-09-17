@@ -286,7 +286,7 @@ gem "newrelic_rpm", '~> 3.9.4.245'
 
 gem 'octokit', '~> 3.7.0'
 
-gem "mail_room", "~> 0.4.2"
+gem "mail_room", "~> 0.5.1"
 
 gem 'email_reply_parser', '~> 0.5.8'
 
