@@ -464,6 +464,15 @@ Gitlab::Application.routes.draw do
         end
 
         scope do
+          post(
+              '/create_dir/*id',
+              to: 'tree#create_dir',
+              constraints: { id: /.+/ },
+              as: 'create_dir'
+          )
+        end
+
+        scope do
           get(
             '/blame/*id',
             to: 'blame#show',

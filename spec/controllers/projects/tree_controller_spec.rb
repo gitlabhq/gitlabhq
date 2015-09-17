@@ -88,4 +88,40 @@ describe Projects::TreeController do
       end
     end
   end
+
+  describe '#create_dir' do
+    render_views
+
+    before do
+      post(:create_dir,
+           namespace_id: project.namespace.to_param,
+           project_id: project.to_param,
+           id: 'master',
+           dir_name: path,
+           new_branch: target_branch,
+           commit_message: 'Test commit message')
+    end
+
+    context 'successful creation' do
+      let(:path) { 'files/new_dir'}
+      let(:target_branch) { 'master-test'}
+
+      it 'redirects to the new directory' do
+        expect(subject).
+            to redirect_to("/#{project.path_with_namespace}/blob/#{target_branch}/#{path}")
+        expect(flash[:notice]).to eq('The directory has been successfully created')
+      end
+    end
+
+    context 'unsuccessful creation' do
+      let(:path) { 'README.md' }
+      let(:target_branch) { 'master'}
+
+      it 'does not allow overwriting of existing files' do
+        expect(subject).
+            to redirect_to("/#{project.path_with_namespace}/blob/master")
+        expect(flash[:alert]).to eq('Directory already exists as a file')
+      end
+    end
+  end
 end
