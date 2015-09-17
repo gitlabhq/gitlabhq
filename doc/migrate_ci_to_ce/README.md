@@ -111,52 +111,52 @@ each installation.
       # socket: /tmp/mysql.sock
     ```
 
-1. Depending on the values for `adapter`, you will have to use different
-   commands to perform the database dump.
+1. Depending on the values for `adapter`, you will have to use one of three
+   different commands to perform the database dump.
 
     **NOTE:** For any of the commands below, you'll need to substitute the
     values `IN_UPPERCASE` with the corresponding values from your **CI
     installation's** `config/database.yml` files above.
 
-      - If both your CI and CE (or EE) installations use **mysql2** as the `adapter`, use
-        `mysqldump`:
+    1. If both your CI and CE (or EE) installations use **mysql2** as the `adapter`, use
+       `mysqldump`:
 
-          ```sh
-          mysqldump --default-character-set=utf8 --complete-insert --no-create-info \
-            --host=DB_USERNAME --port=DB_PORT --user=DB_HOSTNAME -p GITLAB_CI_DATABASE \
-            ci_application_settings ci_builds ci_commits ci_events ci_jobs ci_projects \
-            ci_runner_projects ci_runners ci_services ci_tags ci_taggings ci_trigger_requests \
-            ci_triggers ci_variables ci_web_hooks > gitlab_ci.sql
-          ```
+        ```sh
+        mysqldump --default-character-set=utf8 --complete-insert --no-create-info \
+          --host=DB_USERNAME --port=DB_PORT --user=DB_HOSTNAME -p GITLAB_CI_DATABASE \
+          ci_application_settings ci_builds ci_commits ci_events ci_jobs ci_projects \
+          ci_runner_projects ci_runners ci_services ci_tags ci_taggings ci_trigger_requests \
+          ci_triggers ci_variables ci_web_hooks > gitlab_ci.sql
+        ```
 
-      - If both your CI and CE (or EE) installations use **postgresql** as the
-        `adapter`, use `pg_dump`:
+    1. If both your CI and CE (or EE) installations use **postgresql** as the
+       `adapter`, use `pg_dump`:
 
-          ```sh
-          pg_dump -h DB_HOSTNAME -U DB_USERNAME -p DB_PORT \
-            --data-only GITLAB_CI_DATABASE -t "ci_*" > gitlab_ci.sql
-          ```
+        ```sh
+        pg_dump -h DB_HOSTNAME -U DB_USERNAME -p DB_PORT \
+          --data-only GITLAB_CI_DATABASE -t "ci_*" > gitlab_ci.sql
+        ```
 
-      - If your CI installation uses **mysql2** as the `adapter` and your CE (or
-        EE) installation uses **postgresql**, use `mysqldump` to dump the database
-        and then convert it to PostgreSQL using [mysql-postgresql-converter]:
+    1. If your CI installation uses **mysql2** as the `adapter` and your CE (or
+       EE) installation uses **postgresql**, use `mysqldump` to dump the
+       database and then convert it to PostgreSQL using [mysql-postgresql-converter]:
 
-          ```sh
-          # Dump existing MySQL database first
-          mysqldump --default-character-set=utf8 --compatible=postgresql --complete-insert \
-            --host=DB_USERNAME --port=DB_PORT --user=DB_HOSTNAME -p GITLAB_CI_DATABASE \
-            ci_application_settings ci_builds ci_commits ci_events ci_jobs ci_projects \
-            ci_runner_projects ci_runners ci_services ci_tags ci_taggings ci_trigger_requests \
-            ci_triggers ci_variables ci_web_hooks > gitlab_ci.sql.tmp
+        ```sh
+        # Dump existing MySQL database first
+        mysqldump --default-character-set=utf8 --compatible=postgresql --complete-insert \
+          --host=DB_USERNAME --port=DB_PORT --user=DB_HOSTNAME -p GITLAB_CI_DATABASE \
+          ci_application_settings ci_builds ci_commits ci_events ci_jobs ci_projects \
+          ci_runner_projects ci_runners ci_services ci_tags ci_taggings ci_trigger_requests \
+          ci_triggers ci_variables ci_web_hooks > gitlab_ci.sql.tmp
 
-          # Convert database to be compatible with PostgreSQL
-          git clone https://github.com/gitlabhq/mysql-postgresql-converter.git -b gitlab
-          python mysql-postgresql-converter/db_converter.py gitlab_ci.sql.tmp gitlab_ci.sql.tmp2
-          ed -s gitlab_ci.sql.tmp2 < mysql-postgresql-converter/move_drop_indexes.ed
+        # Convert database to be compatible with PostgreSQL
+        git clone https://github.com/gitlabhq/mysql-postgresql-converter.git -b gitlab
+        python mysql-postgresql-converter/db_converter.py gitlab_ci.sql.tmp gitlab_ci.sql.tmp2
+        ed -s gitlab_ci.sql.tmp2 < mysql-postgresql-converter/move_drop_indexes.ed
 
-          # Filter to only include INSERT statements
-          grep "^\(START\|SET\|INSERT\|COMMIT\)" gitlab_ci.sql.tmp2 > gitlab_ci.sql
-          ```
+        # Filter to only include INSERT statements
+        grep "^\(START\|SET\|INSERT\|COMMIT\)" gitlab_ci.sql.tmp2 > gitlab_ci.sql
+        ```
 
 [mysql-postgresql-converter]: https://github.com/gitlabhq/mysql-postgresql-converter
 
