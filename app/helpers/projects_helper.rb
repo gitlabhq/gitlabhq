@@ -317,41 +317,6 @@ module ProjectsHelper
     @ref || @repository.try(:root_ref)
   end
 
-  def detect_project_title(project)
-    name, url =
-      if current_controller? 'wikis'
-        ['Wiki', get_project_wiki_path(project)]
-      elsif current_controller? 'project_members'
-        ['Members', namespace_project_project_members_path(project.namespace, project)]
-      elsif current_controller? 'labels'
-        ['Labels', namespace_project_labels_path(project.namespace, project)]
-      elsif current_controller? 'members'
-        ['Members', project_files_path(project)]
-      elsif current_controller? 'commits'
-        ['Commits', project_commits_path(project)]
-      elsif current_controller? 'graphs'
-        ['Graphs', namespace_project_graph_path(project.namespace, project, current_ref)]
-      elsif current_controller? 'network'
-        ['Network', namespace_project_network_path(project.namespace, project, current_ref)]
-      elsif current_controller? 'milestones'
-        ['Milestones', namespace_project_milestones_path(project.namespace, project)]
-      elsif current_controller? 'snippets'
-        ['Snippets', namespace_project_snippets_path(project.namespace, project)]
-      elsif current_controller? 'issues'
-        ['Issues', namespace_project_issues_path(project.namespace, project)]
-      elsif current_controller? 'merge_requests'
-        ['Merge Requests', namespace_project_merge_requests_path(project.namespace, project)]
-      elsif current_controller? 'tree', 'blob'
-        ['Files', project_files_path(project)]
-      elsif current_path? 'projects#activity'
-        ['Activity', activity_project_path(project)]
-      else
-        [nil, nil]
-      end
-
-    project_title(project, name, url)
-  end
-
   private
 
   def filename_path(project, filename)
