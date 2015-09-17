@@ -217,7 +217,7 @@ time.
 #### 7. Import GitLab CI database
 
 Now you'll import the GitLab CI database dump that you [created
-earlier](#create-a-database-dump) into the GitLab CE or EE database:
+earlier](#5-create-a-database-dump) into the GitLab CE or EE database:
 
     sudo mv /home/gitlab_ci/gitlab-ci/gitlab_ci.sql /home/git/gitlab/gitlab_ci.sql
     sudo chown git:git /home/git/gitlab/gitlab_ci.sql
