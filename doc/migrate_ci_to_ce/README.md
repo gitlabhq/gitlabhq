@@ -52,7 +52,14 @@ This also breaks your database structure disallowing you to use it anymore.
     ALTER TABLE web_hooks RENAME TO ci_web_hooks;
     EOF
 
-### 4. Dump GitLab CI database [CI]
+### 4. Remove CI cronjob
+
+```
+cd /home/gitlab_ci/gitlab-ci
+sudo -u gitlab_ci -H bundle exec whenever --clear-crontab
+```
+
+### 5. Dump GitLab CI database [CI]
 
 First check used database and credentials on GitLab CI and GitLab CE/EE:
 
@@ -125,18 +132,18 @@ You will need to put these credentials into commands executed below.**
     # Filter to only include INSERT statements
     grep "^\(START\|SET\|INSERT\|COMMIT\)" gitlab_ci.sql.tmp2 > gitlab_ci.sql
     
-### 5. Make sure that your GitLab CE/EE is 8.0 [CE]
+### 6. Make sure that your GitLab CE/EE is 8.0 [CE]
 
 Please verify that you use GitLab CE/EE 8.0.
 If not, please follow the update guide: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/7.14-to-8.0.md
 
-### 6. Stop GitLab CE/EE [CE]
+### 7. Stop GitLab CE/EE [CE]
 
 Before you can migrate data you need to stop GitLab CE/EE first.
 
     sudo service gitlab stop
     
-### 7. Backup GitLab CE/EE [CE]
+### 8. Backup GitLab CE/EE [CE]
 
 This migration poses a **significant risk** of breaking your GitLab CE/EE. 
 **You should create the GitLab CI/EE backup before doing it.**
@@ -144,7 +151,7 @@ This migration poses a **significant risk** of breaking your GitLab CE/EE.
     cd /home/git/gitlab
     sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 
-### 8. Copy secret tokens [CE]
+### 9. Copy secret tokens [CE]
 
 The `secrets.yml` file stores encryption keys for secure variables.
 
@@ -154,7 +161,7 @@ You need to copy the content of `config/secrets.yml` to the same file in GitLab 
     sudo chown git:git /home/git/gitlab/config/secrets.yml
     sudo chown 0600 /home/git/gitlab/config/secrets.yml
     
-### 9. New configuration options for `gitlab.yml` [CE]
+### 10. New configuration options for `gitlab.yml` [CE]
 
 There are new configuration options available for [`gitlab.yml`](config/gitlab.yml.example).
 View them with the command below and apply them manually to your current `gitlab.yml`:
@@ -165,7 +172,7 @@ git diff origin/7-14-stable:config/gitlab.yml.example origin/8-0-stable:config/g
 
 The new options include configuration of GitLab CI that are now being part of GitLab CE and EE.
 
-### 10. Copy build logs [CE]
+### 11. Copy build logs [CE]
 
 You need to copy the contents of `builds/` to the same directory in GitLab CE/EE.
 
@@ -174,7 +181,7 @@ You need to copy the contents of `builds/` to the same directory in GitLab CE/EE
 
 The build traces are usually quite big so it will take a significant amount of time.
 
-### 11. Import GitLab CI database [CE]
+### 12. Import GitLab CI database [CE]
 
 The one of the last steps is to import existing GitLab CI database.
 
@@ -189,13 +196,13 @@ The task does:
 1. Fix tags assigned to Builds and Runners
 1. Fix services used by CI
 
-### 12. Start GitLab [CE]
+### 13. Start GitLab [CE]
 
 You can start GitLab CI/EE now and see if everything is working.
 
     sudo service gitlab start
 
-### 13. Update nginx [CI]
+### 14. Update nginx [CI]
     
 Now get back to GitLab CI and update **Nginx** configuration in order to:
 1. Have all existing runners able to communicate with a migrated GitLab CI.
@@ -263,7 +270,7 @@ You should also make sure that you can do:
 
     sudo /etc/init.d/nginx restart
 
-### 14. Done!
+### 15. Done!
 
 If everything went OK you should be able to access all your GitLab CI data by pointing your browser to:
 https://gitlab.example.com/ci/.
