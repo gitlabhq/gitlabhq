@@ -4,13 +4,13 @@
       = link_to group_path(@project.group), title: 'Back to group', data: {placement: 'right'}, class: 'back-link' do
         = icon('caret-square-o-left fw')
         %span
-          Back to Group
+          Back to group
   - else
     = nav_link do
       = link_to root_path, title: 'Back to dashboard', data: {placement: 'right'}, class: 'back-link' do
         = icon('caret-square-o-left fw')
         %span
-          Back to Dashboard
+          Back to dashboard
 
   %li.separate-item
 
@@ -26,28 +26,28 @@
         Activity
   - if project_nav_tab? :files
     = nav_link(controller: %w(tree blob blame edit_tree new_tree)) do
-      = link_to namespace_project_tree_path(@project.namespace, @project, @ref || @repository.root_ref), title: 'Files',  class: 'shortcuts-tree', data: {placement: 'right'} do
+      = link_to project_files_path(@project), title: 'Files',  class: 'shortcuts-tree', data: {placement: 'right'} do
         = icon('files-o fw')
         %span
           Files
 
   - if project_nav_tab? :commits
     = nav_link(controller: %w(commit commits compare repositories tags branches)) do
-      = link_to namespace_project_commits_path(@project.namespace, @project, @ref || @repository.root_ref), title: 'Commits', class: 'shortcuts-commits', data: {placement: 'right'} do
+      = link_to project_commits_path(@project), title: 'Commits', class: 'shortcuts-commits', data: {placement: 'right'} do
         = icon('history fw')
         %span
           Commits
 
   - if project_nav_tab? :network
     = nav_link(controller: %w(network)) do
-      = link_to namespace_project_network_path(@project.namespace, @project, @ref || @repository.root_ref), title: 'Network', class: 'shortcuts-network', data: {placement: 'right'} do
+      = link_to namespace_project_network_path(@project.namespace, @project, current_ref), title: 'Network', class: 'shortcuts-network', data: {placement: 'right'} do
         = icon('code-fork fw')
         %span
           Network
 
   - if project_nav_tab? :graphs
     = nav_link(controller: %w(graphs)) do
-      = link_to namespace_project_graph_path(@project.namespace, @project, @ref || @repository.root_ref), title: 'Graphs',  class: 'shortcuts-graphs', data: {placement: 'right'} do
+      = link_to namespace_project_graph_path(@project.namespace, @project, current_ref), title: 'Graphs',  class: 'shortcuts-graphs', data: {placement: 'right'} do
         = icon('area-chart fw')
         %span
           Graphs

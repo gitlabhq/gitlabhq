@@ -49,6 +49,16 @@ module API
           end
         end
       end
+
+      # Get <service_slug> service settings for project
+      #
+      # Example Request:
+      #
+      #   GET /project/:id/services/gitlab-ci
+      #
+      get ':id/services/:service_slug' do
+        present project_service
+      end
     end
   end
 end

@@ -43,24 +43,22 @@ module ProjectsHelper
     end
   end
 
-  def project_title(project)
-    if project.group
-      content_tag :span do
-        link_to(
-          simple_sanitize(project.group.name), group_path(project.group)
-        ) + ' / ' +
-          link_to(simple_sanitize(project.name),
-                  project_path(project))
+  def project_title(project, name = nil, url = nil)
+    namespace_link =
+      if project.group
+        link_to(simple_sanitize(project.group.name), group_path(project.group))
+      else
+        owner = project.namespace.owner
+        link_to(simple_sanitize(owner.name), user_path(owner))
       end
-    else
-      owner = project.namespace.owner
-      content_tag :span do
-        link_to(
-          simple_sanitize(owner.name), user_path(owner)
-        ) + ' / ' +
-          link_to(simple_sanitize(project.name),
-                  project_path(project))
-      end
+
+    project_link = link_to(simple_sanitize(project.name), project_path(project))
+
+    full_title = namespace_link + ' / ' + project_link
+    full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url) if name
+
+    content_tag :span do
+      full_title
     end
   end
 
@@ -313,6 +311,45 @@ module ProjectsHelper
     else
       count
     end
+  end
+
+  def current_ref
+    @ref || @repository.try(:root_ref)
+  end
+
+  def detect_project_title(project)
+    name, url =
+      if current_controller? 'wikis'
+        ['Wiki', get_project_wiki_path(project)]
+      elsif current_controller? 'project_members'
+        ['Members', namespace_project_project_members_path(project.namespace, project)]
+      elsif current_controller? 'labels'
+        ['Labels', namespace_project_labels_path(project.namespace, project)]
+      elsif current_controller? 'members'
+        ['Members', project_files_path(project)]
+      elsif current_controller? 'commits'
+        ['Commits', project_commits_path(project)]
+      elsif current_controller? 'graphs'
+        ['Graphs', namespace_project_graph_path(project.namespace, project, current_ref)]
+      elsif current_controller? 'network'
+        ['Network', namespace_project_network_path(project.namespace, project, current_ref)]
+      elsif current_controller? 'milestones'
+        ['Milestones', namespace_project_milestones_path(project.namespace, project)]
+      elsif current_controller? 'snippets'
+        ['Snippets', namespace_project_snippets_path(project.namespace, project)]
+      elsif current_controller? 'issues'
+        ['Issues', namespace_project_issues_path(project.namespace, project)]
+      elsif current_controller? 'merge_requests'
+        ['Merge Requests', namespace_project_merge_requests_path(project.namespace, project)]
+      elsif current_controller? 'tree', 'blob'
+        ['Files', project_files_path(project)]
+      elsif current_path? 'projects#activity'
+        ['Activity', activity_project_path(project)]
+      else
+        [nil, nil]
+      end
+
+    project_title(project, name, url)
   end
 
   private

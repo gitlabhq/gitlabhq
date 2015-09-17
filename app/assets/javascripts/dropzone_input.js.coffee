@@ -167,6 +167,7 @@ class @DropzoneInput
           dataType: "json"
         ).success (data) ->
           preview.html data.body
+          preview.syntaxHighlight()
 
           renderReferencedUsers data.references.users
 

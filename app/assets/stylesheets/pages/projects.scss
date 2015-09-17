@@ -48,7 +48,6 @@
 
     p {
       color: #7f8fa4;
-      display: inline;
     }
   }
 
@@ -204,26 +203,18 @@ ul.nav.nav-projects-tabs {
 }
 
 .fork-namespaces {
-  .thumbnail {
+  .fork-thumbnail {
+    text-align: center;
+    margin-bottom: $gl-padding;
 
-    &.fork-exists-thumbnail {
-      border-color: #EEE;
-
-      .caption {
-        color: #999;
-      }
+    .caption {
+      padding: $gl-padding 0;
+      min-height: 30px;
     }
 
-    &.fork-thumbnail {
-      border-color: #AAA;
-
-      &:hover {
-        background-color: $hover;
-      }
-    }
-
-    a {
-      text-decoration: none;
+    img {
+      @include border-radius(50%);
+      max-width: 100px;
     }
   }
 }

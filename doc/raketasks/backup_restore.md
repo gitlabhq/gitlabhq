@@ -369,4 +369,7 @@ For more information see similar questions on postgresql issue tracker[here](htt
 
 ## Note
 This documentation is for GitLab CE.
-We backup GitLab.com and make sure your data is secure, but you can't use these methods to export / backup your data yourself from GitLab.com.
+We backup GitLab.com and make sure your data is secure, but you can't use these methods
+to export / backup your data yourself from GitLab.com.
+
+Issues are stored in the database. They can't be stored in Git itself.

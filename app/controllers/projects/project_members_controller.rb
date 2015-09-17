@@ -78,7 +78,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     @project.project_members.find_by(user_id: current_user).destroy
 
     respond_to do |format|
-      format.html { redirect_to dashboard_path }
+      format.html { redirect_to dashboard_projects_path }
       format.js { render nothing: true }
     end
   end

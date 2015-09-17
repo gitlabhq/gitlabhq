@@ -14,7 +14,7 @@ class NamespacesController < ApplicationController
 
     if user
       redirect_to user_path(user)
-    elsif group && can?(current_user, :read_group, group)
+    elsif group
       redirect_to group_path(group)
     elsif current_user.nil?
       authenticate_user!
