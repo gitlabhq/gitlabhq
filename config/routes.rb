@@ -9,10 +9,6 @@ Gitlab::Application.routes.draw do
 
     resource :lint, only: [:show, :create]
 
-    resource :help do
-      get :oauth2
-    end
-
     resources :projects do
       collection do
         post :add
