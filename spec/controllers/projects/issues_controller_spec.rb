@@ -17,6 +17,12 @@ describe Projects::IssuesController do
       expect(response.status).to eq(200)
     end
 
+    it "return 301 if request path doesn't match project path" do
+      get :index, namespace_id: project.namespace.path, project_id: project.path.upcase
+
+      expect(response).to redirect_to(namespace_project_issues_path(project.namespace, project))
+    end
+
     it "returns 404 when issues are disabled" do
       project.issues_enabled = false
       project.save
