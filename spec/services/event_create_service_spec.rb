@@ -99,5 +99,15 @@ describe EventCreateService do
         expect { service.close_milestone(milestone, user) }.to change { Event.count }
       end
     end
+
+    describe :destroy_mr do
+      let(:milestone) { create(:milestone) }
+
+      it { expect(service.destroy_milestone(milestone, user)).to be_truthy }
+
+      it "should create new event" do
+        expect { service.destroy_milestone(milestone, user) }.to change { Event.count }
+      end
+    end
   end
 end

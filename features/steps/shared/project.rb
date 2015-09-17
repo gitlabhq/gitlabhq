@@ -51,6 +51,11 @@ module SharedProject
     visit namespace_project_path(project.namespace, project)
   end
 
+  step 'I visit project "Shop" activity page' do
+    project = Project.find_by(name: 'Shop')
+    visit namespace_project_path(project.namespace, project)
+  end
+
   step 'project "Shop" has push event' do
     @project = Project.find_by(name: "Shop")
 

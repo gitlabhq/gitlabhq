@@ -5,13 +5,14 @@
 
   - if event.target
     %strong= link_to "##{event.target_iid}", [event.project.namespace.becomes(Namespace), event.project, event.target]
-    at
+
+  = event_preposition(event)
 
   - if event.project
     = link_to_project event.project
   - else
     = event.project_name
-    
+
 - if event.target.respond_to?(:title)
   .event-body
     .event-note
