@@ -220,6 +220,7 @@ describe Project do
       end
 
       it { expect(Project.find_with_namespace('gitlab/gitlabhq')).to eq(@project) }
+      it { expect(Project.find_with_namespace('GitLab/GitlabHQ')).to eq(@project) }
       it { expect(Project.find_with_namespace('gitlab-ci')).to be_nil }
     end
   end

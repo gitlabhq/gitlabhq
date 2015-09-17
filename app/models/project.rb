@@ -235,10 +235,10 @@ class Project < ActiveRecord::Base
       return nil unless id.include?('/')
 
       id = id.split('/')
-      namespace = Namespace.find_by(path: id.first)
+      namespace = Namespace.by_path(id.first)
       return nil unless namespace
 
-      where(namespace_id: namespace.id).find_by(path: id.second)
+      where(namespace_id: namespace.id).where("LOWER(projects.path) = :path", path: id.second.downcase).first
     end
 
     def visibility_levels
