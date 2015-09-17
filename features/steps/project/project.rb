@@ -132,11 +132,11 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I click notifications drop down button' do
-    click_link 'Notifications'
+    click_link 'notifications-button'
   end
 
   step 'I choose Mention setting' do
-    click_link 'Mention'
+    click_link 'On mention'
   end
 
   step 'I should see Notification saved message' do
