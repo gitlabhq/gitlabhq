@@ -87,7 +87,7 @@ class ProjectsController < ApplicationController
             render 'projects/empty'
           else
             unless current_user.nil?
-              @membership = @project.project_members.where(user_id: current_user.id).first
+              @membership = @project.project_members.find_by_user_id(current_user.id)
             end
             render :show
           end
