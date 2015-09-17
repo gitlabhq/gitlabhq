@@ -2,11 +2,12 @@ require "spec_helper"
 
 describe API::API, api: true  do
   include ApiHelpers
+  let(:base_time) { Time.now }
   let(:user) { create(:user) }
   let!(:project) {create(:project, creator_id: user.id, namespace: user.namespace) }
-  let!(:merge_request) { create(:merge_request, :simple, author: user, assignee: user, source_project: project, target_project: project, title: "Test") }
-  let!(:merge_request_closed) { create(:merge_request, state: "closed", author: user, assignee: user, source_project: project, target_project: project, title: "Closed test") }
-  let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignee: user, source_project: project, target_project: project, title: "Merged test") }
+  let!(:merge_request) { create(:merge_request, :simple, author: user, assignee: user, source_project: project, target_project: project, title: "Test", created_at: base_time) }
+  let!(:merge_request_closed) { create(:merge_request, state: "closed", author: user, assignee: user, source_project: project, target_project: project, title: "Closed test", created_at: base_time + 1.seconds) }
+  let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignee: user, source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds) }
   let!(:note) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
   let!(:note2) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "another comment on a MR") }
 
@@ -74,8 +75,8 @@ describe API::API, api: true  do
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(3)
-          expect(json_response.last['id']).to eq(@mr_earlier.id)
-          expect(json_response.first['id']).to eq(@mr_later.id)
+          response_dates = json_response.map{ |merge_request| merge_request['created_at'] }
+          expect(response_dates).to eq(response_dates.sort)
         end
 
         it "should return an array of merge_requests in descending order" do
@@ -83,8 +84,8 @@ describe API::API, api: true  do
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(3)
-          expect(json_response.first['id']).to eq(@mr_later.id)
-          expect(json_response.last['id']).to eq(@mr_earlier.id)
+          response_dates = json_response.map{ |merge_request| merge_request['created_at'] }
+          expect(response_dates).to eq(response_dates.sort.reverse)
         end
 
         it "should return an array of merge_requests ordered by updated_at" do
@@ -92,17 +93,17 @@ describe API::API, api: true  do
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(3)
-          expect(json_response.last['id']).to eq(@mr_earlier.id)
-          expect(json_response.first['id']).to eq(@mr_later.id)
+          response_dates = json_response.map{ |merge_request| merge_request['updated_at'] }
+          expect(response_dates).to eq(response_dates.sort.reverse)
         end
 
         it "should return an array of merge_requests ordered by created_at" do
-          get api("/projects/#{project.id}/merge_requests?sort=created_at", user)
+          get api("/projects/#{project.id}/merge_requests?order_by=created_at&sort=asc", user)
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(3)
-          expect(json_response.last['id']).to eq(@mr_earlier.id)
-          expect(json_response.first['id']).to eq(@mr_later.id)
+          response_dates = json_response.map{ |merge_request| merge_request['created_at'] }
+          expect(response_dates).to eq(response_dates.sort)
         end
       end
     end

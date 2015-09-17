@@ -1,8 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.0.0 (unreleased)
+  - Fix broken sort in merge request API (Stan Hu)
   - Bump rouge to 1.10.1 to remove warning noise and fix other syntax highlighting bugs (Stan Hu)
   - Gracefully handle errors in syntax highlighting by leaving the block unformatted (Stan Hu)
+  - Add "replace" and "upload" functionalities to allow user replace existing file and upload new file into current repository
   - Fix URL construction for merge requests, issues, notes, and commits for relative URL config (Stan Hu)
   - Fix emoji URLs in Markdown when relative_url_root is used (Stan Hu)
   - Omit filename in Content-Disposition header in raw file download to avoid RFC 6266 encoding issues (Stan HU)
@@ -48,12 +50,14 @@ v 8.0.0 (unreleased)
   - Project notification level can be set on the project page itself
   - Added service API endpoint to retrieve service parameters (Petheő Bence)
   - Add FogBugz project import (Jared Szechy)
+  - Sort users autocomplete lists by user (Allister Antosik)
 
 v 7.14.3
   - No changes
 
 v 7.14.2
   - Upgrade gitlab_git to 7.2.15 to fix `git blame` errors with ISO-encoded files (Stan Hu)
+  - Allow configuration of LDAP attributes GitLab will use for the new user account.
 
 v 7.14.1
   - Improve abuse reports management from admin area

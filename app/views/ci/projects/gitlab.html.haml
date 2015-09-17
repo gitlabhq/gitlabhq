@@ -1,0 +1,27 @@
+- if @offset == 0
+  .gray-content-block.clearfix.light.second-block
+    .pull-left.fetch-status
+      - if params[:search].present?
+        by keyword: "#{params[:search]}",
+      #{@total_count} projects, #{@projects.size} of them added to CI
+
+  .wide-table-holder
+    %table.table.projects-table.content-list
+      %thead
+        %tr
+          %th Project Name
+          %th Last commit
+          %th Access
+          %th Commits
+
+      = render @projects
+
+      = render "gl_projects"
+
+  %p.text-center.hide.loading
+    %i.fa.fa-refresh.fa-spin
+
+- else
+  = render @projects
+
+  = render "gl_projects"

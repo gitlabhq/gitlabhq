@@ -18,7 +18,19 @@ class Settings < Settingslogic
       host.start_with?('www.') ? host[4..-1] : host
     end
 
-    private
+    def build_gitlab_ci_url
+      if gitlab_on_standard_port?
+        custom_port = nil
+      else
+        custom_port = ":#{gitlab.port}"
+      end
+      [ gitlab.protocol,
+        "://",
+        gitlab.host,
+        custom_port,
+        gitlab.relative_url_root
+      ].join('')
+    end
 
     def build_gitlab_shell_ssh_path_prefix
       if gitlab_shell.ssh_port != 22
@@ -97,6 +109,7 @@ if Settings.ldap['enabled'] || Rails.env.test?
     server['block_auto_created_users'] = false if server['block_auto_created_users'].nil?
     server['allow_username_or_email_login'] = false if server['allow_username_or_email_login'].nil?
     server['active_directory'] = true if server['active_directory'].nil?
+    server['attributes'] = {} if server['attributes'].nil?
     server['provider_name'] ||= "ldap#{key}".downcase
     server['provider_class'] = OmniAuth::Utils.camelize(server['provider_name'])
   end
@@ -159,6 +172,16 @@ Settings.gitlab.default_projects_features['visibility_level']    = Settings.send
 Settings.gitlab['repository_downloads_path'] = File.absolute_path(Settings.gitlab['repository_downloads_path'] || 'tmp/repositories', Rails.root)
 Settings.gitlab['restricted_signup_domains'] ||= []
 Settings.gitlab['import_sources'] ||= ['github','bitbucket','gitlab','gitorious','google_code','fogbugz','git']
+
+
+#
+# CI
+#
+Settings['gitlab_ci'] ||= Settingslogic.new({})
+Settings.gitlab_ci['all_broken_builds']   = true if Settings.gitlab_ci['all_broken_builds'].nil?
+Settings.gitlab_ci['add_pusher']          = false if Settings.gitlab_ci['add_pusher'].nil?
+Settings.gitlab_ci['url']                 ||= Settings.send(:build_gitlab_ci_url)
+Settings.gitlab_ci['builds_path']         = File.expand_path(Settings.gitlab_ci['builds_path'] || "builds/", Rails.root)
 
 #
 # Reply by email

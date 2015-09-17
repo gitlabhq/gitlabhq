@@ -1,0 +1,14 @@
+%tr
+  %td
+    .clearfix
+      %span.monospace= trigger.token
+
+  %td
+    - if trigger.last_trigger_request
+      #{time_ago_in_words(trigger.last_trigger_request.created_at)} ago
+    - else
+      Never
+
+  %td
+    .pull-right
+      = link_to 'Revoke', ci_project_trigger_path(@project, trigger), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-danger btn-sm btn-grouped"

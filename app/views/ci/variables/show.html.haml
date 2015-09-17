@@ -1,0 +1,39 @@
+%h3.page-title
+  Secret Variables
+
+%p.light 
+  These variables will be set to environment by the runner and will be hidden in the build log.
+  %br
+  So you can use them for passwords, secret keys or whatever you want.  
+
+%hr
+
+
+= nested_form_for @project, url: url_for(controller: 'ci/variables', action: 'update'), html: { class: 'form-horizontal' }  do |f|
+  - if @project.errors.any?
+    #error_explanation
+      %p.lead= "#{pluralize(@project.errors.count, "error")} prohibited this project from being saved:"
+      .alert.alert-error
+        %ul
+          - @project.errors.full_messages.each do |msg|
+            %li= msg
+
+  = f.fields_for :variables do |variable_form|
+    .form-group
+      = variable_form.label :key, 'Key', class: 'control-label'
+      .col-sm-10
+        = variable_form.text_field :key, class: 'form-control', placeholder: "PROJECT_VARIABLE"
+
+    .form-group
+      = variable_form.label :value, 'Value', class: 'control-label'
+      .col-sm-10
+        = variable_form.text_area :value, class: 'form-control', rows: 2, placeholder: ""
+
+        = variable_form.link_to_remove "Remove this variable", class: 'btn btn-danger pull-right prepend-top-10'
+    %hr
+  %p
+    .clearfix
+      = f.link_to_add "Add a variable", :variables, class: 'btn btn-success pull-right'
+
+  .form-actions
+    = f.submit 'Save changes', class: 'btn btn-save', return_to: request.original_url

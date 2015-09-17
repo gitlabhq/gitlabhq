@@ -4,13 +4,13 @@
 # If you change this file in a Merge Request, please also create a Merge Request on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests
 
 paths_to_be_protected = [
-  "#{Rails.application.config.relative_url_root}/users/password",
-  "#{Rails.application.config.relative_url_root}/users/sign_in",
-  "#{Rails.application.config.relative_url_root}/api/#{API::API.version}/session.json",
-  "#{Rails.application.config.relative_url_root}/api/#{API::API.version}/session",
-  "#{Rails.application.config.relative_url_root}/users",
-  "#{Rails.application.config.relative_url_root}/users/confirmation",
-  "#{Rails.application.config.relative_url_root}/unsubscribes/"
+  "#{Gitlab::Application.config.relative_url_root}/users/password",
+  "#{Gitlab::Application.config.relative_url_root}/users/sign_in",
+  "#{Gitlab::Application.config.relative_url_root}/api/#{API::API.version}/session.json",
+  "#{Gitlab::Application.config.relative_url_root}/api/#{API::API.version}/session",
+  "#{Gitlab::Application.config.relative_url_root}/users",
+  "#{Gitlab::Application.config.relative_url_root}/users/confirmation",
+  "#{Gitlab::Application.config.relative_url_root}/unsubscribes/"
 
 ]
 

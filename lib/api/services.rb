@@ -20,7 +20,7 @@ module API
           end
 
           required_attributes! validators.map(&:attributes).flatten.uniq
-          attrs = attributes_for_keys service_attributes 
+          attrs = attributes_for_keys service_attributes
 
           if project_service.update_attributes(attrs.merge(active: true))
             true
@@ -41,7 +41,7 @@ module API
           attrs = service_attributes.inject({}) do |hash, key|
             hash.merge!(key => nil)
           end
-          
+
           if project_service.update_attributes(attrs.merge(active: false))
             true
           else

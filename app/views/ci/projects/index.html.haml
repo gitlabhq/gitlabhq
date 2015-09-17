@@ -1,0 +1,13 @@
+- if current_user
+  .gray-content-block.top-block
+    = render "search"
+  .projects
+    %p.fetch-status.light
+      %i.fa.fa-refresh.fa-spin
+  :coffeescript
+    $.get '#{gitlab_ci_projects_path}', (data) ->
+      $(".projects").html data.html
+    CiPager.init "#{gitlab_ci_projects_path}", #{Ci::ProjectsController::PROJECTS_BATCH}, false
+
+- else
+  = render 'public'

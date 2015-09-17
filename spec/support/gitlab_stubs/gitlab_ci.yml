@@ -1,0 +1,63 @@
+image: ruby:2.1
+services:
+  - postgres
+
+before_script:
+  - gem install bundler
+  - bundle install 
+  - bundle exec rake db:create
+
+variables:
+  DB_NAME: postgres
+
+types:
+  - test
+  - deploy
+  - notify
+
+rspec:
+  script: "rake spec"
+  tags: 
+    - ruby
+    - postgres
+  only:
+    - branches
+
+spinach:
+  script: "rake spinach"
+  allow_failure: true
+  tags: 
+    - ruby
+    - mysql
+  except:
+    - tags
+
+staging:
+  script: "cap deploy stating"
+  type: deploy
+  tags: 
+    - capistrano
+    - debian
+  except:
+    - stable
+
+production:
+  type: deploy
+  script: 
+    - cap deploy production
+    - cap notify
+  tags: 
+    - capistrano
+    - debian
+  only:
+    - master
+    - /^deploy-.*$/
+
+dockerhub:
+  type: notify
+  script: "curl http://dockerhub/URL"
+  tags:
+    - ruby
+    - postgres
+  only:
+    - branches
