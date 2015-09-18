@@ -46,6 +46,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :gravatar_enabled,
       :twitter_sharing_enabled,
       :sign_in_text,
+      :help_page_text,
       :home_page_url,
       :after_sign_out_path,
       :max_attachment_size,
