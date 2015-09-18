@@ -55,22 +55,19 @@ describe GitlabCiService do
 
   describe 'commits methods' do
     before do
+      @ci_project = create(:ci_project)
       @service = GitlabCiService.new
       allow(@service).to receive_messages(
         service_hook: true,
         project_url: 'http://ci.gitlab.org/projects/2',
-        token: 'verySecret'
+        token: 'verySecret',
+        project: @ci_project.gl_project
       )
     end
 
-    describe :commit_status_path do
-      it { expect(@service.commit_status_path("2ab7834c", 'master')).to eq("http://ci.gitlab.org/projects/2/refs/master/commits/2ab7834c/status.json?token=verySecret")}
-      it { expect(@service.commit_status_path("issue#2", 'master')).to eq("http://ci.gitlab.org/projects/2/refs/master/commits/issue%232/status.json?token=verySecret")}
-    end
-
     describe :build_page do
-      it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://ci.gitlab.org/projects/2/refs/master/commits/2ab7834c")}
-      it { expect(@service.build_page("issue#2", 'master')).to eq("http://ci.gitlab.org/projects/2/refs/master/commits/issue%232")}
+      it { expect(@service.build_page("2ab7834c", 'master')).to eq("/ci/projects/#{@ci_project.id}/refs/master/commits/2ab7834c")}
+      it { expect(@service.build_page("issue#2", 'master')).to eq("/ci/projects/#{@ci_project.id}/refs/master/commits/issue%232")}
     end
 
     describe "execute" do

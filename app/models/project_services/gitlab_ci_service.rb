@@ -58,24 +58,13 @@ class GitlabCiService < CiService
     service_hook.execute(data)
   end
 
-  def commit_status_path(sha, ref)
-    URI::encode(project_url + "/refs/#{ref}/commits/#{sha}/status.json?token=#{token}")
-  end
-
-  def get_ci_build(sha, ref)
-    @ci_builds ||= {}
-    @ci_builds[sha] ||= HTTParty.get(commit_status_path(sha, ref), verify: false)
+  def get_ci_commit(sha, ref)
+    Ci::Project.find(project.gitlab_ci_project).commits.find_by_sha_and_ref!(sha, ref)
   end
 
   def commit_status(sha, ref)
-    response = get_ci_build(sha, ref)
-
-    if response.code == 200 and response["status"]
-      response["status"]
-    else
-      :error
-    end
-  rescue Errno::ECONNREFUSED
+    get_ci_commit(sha, ref).status
+  rescue ActiveRecord::RecordNotFound
     :error
   end
 
@@ -101,25 +90,13 @@ class GitlabCiService < CiService
   end
 
   def commit_coverage(sha, ref)
-    response = get_ci_build(sha, ref)
-
-    if response.code == 200 and response["coverage"]
-      response["coverage"]
-    end
-  rescue Errno::ECONNREFUSED
-    nil
+    get_ci_commit(sha, ref).coverage
+  rescue ActiveRecord::RecordNotFound
+    :error
   end
 
   def build_page(sha, ref)
-    URI::encode(project_url + "/refs/#{ref}/commits/#{sha}")
-  end
-
-  def builds_path
-    project_url + "?ref=" + project.default_branch
-  end
-
-  def status_img_path
-    project_url + "/status.png?ref=" + project.default_branch
+    Ci::RoutesHelper.ci_project_ref_commits_path(project.gitlab_ci_project, ref, sha)
   end
 
   def title
