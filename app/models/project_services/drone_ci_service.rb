@@ -135,20 +135,6 @@ class DroneCiService < CiService
     commit_page(sha, ref)
   end
 
-  def builds_path
-    url = [drone_url, "#{project.namespace.path}/#{project.path}"]
-
-    URI.join(*url).to_s
-  end
-
-  def status_img_path
-    url = [drone_url, 
-           "api/badges/#{project.namespace.path}/#{project.path}/status.svg", 
-           "?branch=#{URI::encode(project.default_branch)}"]
-
-    URI.join(*url).to_s
-  end
-
   def title
     'Drone CI'
   end
