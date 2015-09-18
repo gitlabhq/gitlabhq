@@ -8,7 +8,7 @@
     = render "shared/projects/project", project: project,
       avatar: avatar, stars: stars, css_class: css_class
 
-  - if projects.count > projects_limit
+  - if projects.size > projects_limit
     %li.bottom.center
       .light
         #{projects_limit} of #{pluralize(projects.count, 'project')} displayed.
