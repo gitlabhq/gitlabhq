@@ -5,38 +5,32 @@ module Ci
     before_action :authenticate_user!, except: [:build, :badge, :index, :show]
     before_action :authenticate_public_page!, only: :show
     before_action :project, only: [:build, :integration, :show, :badge, :edit, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
-    before_action :authorize_access_project!, except: [:build, :gitlab, :badge, :index, :show, :new, :create]
+    before_action :authorize_access_project!, except: [:build, :badge, :index, :show, :new, :create]
     before_action :authorize_manage_project!, only: [:edit, :integration, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
     before_action :authenticate_token!, only: [:build]
     before_action :no_cache, only: [:badge]
     protect_from_forgery except: :build
 
-    layout 'ci/project', except: [:index, :gitlab]
+    layout 'ci/project', except: :index
 
     def index
-      @projects = Ci::Project.ordered_by_last_commit_date.public_only.page(params[:page]) unless current_user
-    end
-
-    def gitlab
       @limit, @offset = (params[:limit] || PROJECTS_BATCH).to_i, (params[:offset] || 0).to_i
       @page = @offset == 0 ? 1 : (@offset / @limit + 1)
 
-      @gl_projects = current_user.authorized_projects
-      @gl_projects = @gl_projects.where("name LIKE ?", "%#{params[:search]}%") if params[:search]
-      @gl_projects = @gl_projects.page(@page).per(@limit)
+      if current_user
+        @projects = ProjectListBuilder.new.execute(current_user, params[:search])
 
-      @projects = Ci::Project.where(gitlab_id: @gl_projects.map(&:id)).ordered_by_last_commit_date
-      @total_count = @gl_projects.size
+        @projects = @projects.page(@page).per(@limit)
 
-      @gl_projects = @gl_projects.where.not(id: @projects.map(&:gitlab_id))
+        @total_count = @projects.size
+      end
 
       respond_to do |format|
         format.json do
-          pager_json("ci/projects/gitlab", @total_count)
+          pager_json("ci/projects/index", @total_count)
         end
+        format.html
       end
-    rescue
-      @error = 'Failed to fetch GitLab projects'
     end
 
     def show
