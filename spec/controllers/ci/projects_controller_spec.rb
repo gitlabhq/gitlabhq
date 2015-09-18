@@ -84,7 +84,7 @@ describe Ci::ProjectsController do
     end
 
     it "searches projects" do
-      xhr :get, :gitlab, { search: "str", format: "js" }.with_indifferent_access
+      xhr :get, :index, { search: "str", format: "json" }.with_indifferent_access
 
       expect(response).to be_success
       expect(response.code).to eq('200')
