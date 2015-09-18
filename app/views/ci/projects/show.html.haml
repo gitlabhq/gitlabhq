@@ -17,7 +17,7 @@
       = link_to @ref, ci_project_path(@project, ref: @ref)
 
   %li.pull-right
-    = link_to 'View on GitLab', @project.gitlab_url, no_turbolink.merge( class: 'btn btn-sm' )
+    = link_to 'Go to project', project_path(gl_project), class: 'btn btn-sm'
 
 - if @ref
   %p
