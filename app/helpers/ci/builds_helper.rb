@@ -16,15 +16,15 @@ module Ci
       ci_project_build_url(build.project, build)
     end
 
-    def build_status_alert_class(build)
+    def build_status_css_class(build)
       if build.success?
-        'alert-success'
+        'build-success'
       elsif build.failed?
-        'alert-danger'
+        'build-danger'
       elsif build.canceled?
-        'alert-disabled'
+        'build-disabled'
       else
-        'alert-warning'
+        'build-warning'
       end
     end
 

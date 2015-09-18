@@ -1,17 +1,17 @@
 module Ci
   module CommitsHelper
-    def commit_status_alert_class(commit)
-      return 'alert-info' unless commit
+    def commit_status_css_class(commit)
+      return 'build-info' unless commit
 
       case commit.status
       when 'success'
-        'alert-success'
+        'build-success'
       when 'failed', 'canceled'
-        'alert-danger'
+        'build-danger'
       when 'skipped'
-        'alert-disabled'
+        'build-disabled'
       else
-        'alert-warning'
+        'build-warning'
       end
     end
 

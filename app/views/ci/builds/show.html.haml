@@ -21,7 +21,7 @@
 
 .row
   .col-md-9
-    .build-head.alert{class: build_status_alert_class(@build)}
+    .build-head.alert{class: build_status_css_class(@build)}
       %h4
         - if @build.commit.tag?
           Build for tag
@@ -150,7 +150,7 @@
         %h4.title #{pluralize(@builds.count, "other build")} for #{@build.short_sha}:
         %table.builds
           - @builds.each_with_index do |build, i|
-            %tr.build.alert{class: build_status_alert_class(build)}
+            %tr.build.alert{class: build_status_css_class(build)}
               %td
                 = link_to ci_project_build_url(@project, build) do
                   %span ##{build.id}

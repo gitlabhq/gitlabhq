@@ -1,4 +1,4 @@
-%tr.build.alert{class: commit_status_alert_class(commit)}
+%tr.build{class: commit_status_css_class(commit)}
   %td.status
     = commit.status
     - if commit.running?
