@@ -1,6 +1,7 @@
 %tr.build{class: commit_status_css_class(commit)}
   %td.status
-    = commit.status
+    %span.ci-status<
+      = commit.status
     - if commit.running?
       &middot;
       = commit.stage

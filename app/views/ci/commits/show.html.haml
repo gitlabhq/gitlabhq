@@ -44,8 +44,8 @@
 
 %h3 Status
 
-.build.alert{class: commit_status_css_class(@commit)}
-  .status
+.build{class: commit_status_css_class(@commit)}
+  .ci-status
     = @commit.status.titleize
 
 %h3

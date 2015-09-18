@@ -1,6 +1,7 @@
 %tr.build{class: build_status_css_class(build)}
   %td.status
-    = build.status
+    %span.ci-status<
+      = build.status
 
   %td.build-link
     = link_to ci_project_build_path(build.project, build) do

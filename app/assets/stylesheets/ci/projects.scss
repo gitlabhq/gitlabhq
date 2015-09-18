@@ -13,6 +13,48 @@
 
   .builds,
   .projects-table {
+    .build-danger {
+      .ci-status {
+        color: $gl-danger;
+        border-color: $gl-danger;
+      }
+    }
+
+    .build-success {
+      .ci-status {
+        color: $gl-success;
+        border-color: $gl-success;
+      }
+    }
+
+    .build-info {
+      .ci-status {
+        color: $gl-info;
+        border-color: $gl-info;
+      }
+    }
+
+    .build-disabled {
+      .ci-status {
+        color: $gl-gray;
+        border-color: $gl-gray;
+      }
+    }
+
+    .build-warning {
+      .ci-status {
+        color: $gl-warning;
+        border-color: $gl-warning;
+      }
+    }
+
+    .ci-status {
+      padding: 2px 5px;
+      margin-right: 5px;
+      border: 1px solid #EEE;
+      @include border-radius(4px);
+    }
+
     .light {
       border-color: $border-color;
     }
