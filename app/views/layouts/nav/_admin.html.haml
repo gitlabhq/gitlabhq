@@ -4,7 +4,7 @@
       = icon('dashboard fw')
       %span
         Overview
-  = nav_link(controller: :projects) do
+  = nav_link(controller: [:admin, :projects]) do
     = link_to admin_namespaces_projects_path, title: 'Projects', data: {placement: 'right'} do
       = icon('cube fw')
       %span
@@ -24,6 +24,11 @@
       = icon('key fw')
       %span
         Deploy Keys
+  = nav_link do
+    = link_to ci_admin_projects_path, title: 'Continuous Integration', data: {placement: 'right'} do
+      = icon('building fw')
+      %span
+        Continuous Integration
   = nav_link(controller: :logs) do
     = link_to admin_logs_path, title: 'Logs', data: {placement: 'right'} do
       = icon('file-text fw')

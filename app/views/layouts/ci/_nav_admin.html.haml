@@ -1,9 +1,9 @@
 %ul.nav.nav-sidebar
   = nav_link do
-    = link_to ci_root_path, title: 'Back to dashboard', data: {placement: 'right'}, class: 'back-link' do
+    = link_to admin_root_path, title: 'Back to admin', data: {placement: 'right'}, class: 'back-link' do
       = icon('caret-square-o-left fw')
       %span
-        Back to dashboard
+        Back to admin
 
   %li.separate-item
   = nav_link path: 'projects#index' do
