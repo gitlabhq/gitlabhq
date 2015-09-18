@@ -10,9 +10,7 @@ module Ci
 
     def authenticate_public_page!
       unless project.public
-        unless current_user
-          redirect_to(new_user_sessions_path) and return
-        end
+        authenticate_user!
 
         return access_denied! unless can?(current_user, :read_project, gl_project)
       end
