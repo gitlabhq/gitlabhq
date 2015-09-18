@@ -56,7 +56,7 @@ module Ci
                                  before: '00000000',
                                  after: '31das312',
                                  ci_yaml_file: config,
-                                 commits: [ { message: 'Message'} ]
+                                 commits: [ { message: 'Message' } ]
         )
         expect(result).to be_persisted
         expect(result.builds.any?).to be_falsey
