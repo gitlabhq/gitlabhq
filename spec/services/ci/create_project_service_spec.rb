@@ -7,7 +7,7 @@ describe Ci::CreateProjectService do
 
   describe :execute do
     context 'valid params' do
-      subject { service.execute(current_user, project, 'http://localhost/projects/:project_id') }
+      subject { service.execute(current_user, project) }
 
       it { is_expected.to be_kind_of(Ci::Project) }
       it { is_expected.to be_persisted }
@@ -24,7 +24,7 @@ describe Ci::CreateProjectService do
         FactoryGirl.create(:ci_project, shared_runners_enabled: true, public: true, allow_git_fetch: true)
       end
 
-      subject { service.execute(current_user, project, 'http://localhost/projects/:project_id', ci_origin_project) }
+      subject { service.execute(current_user, project, ci_origin_project) }
 
       it "uses project as a template for settings and jobs" do
         expect(subject.shared_runners_enabled).to be_truthy
