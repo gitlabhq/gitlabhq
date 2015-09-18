@@ -1,10 +1,13 @@
+- page_title "New File", @path.presence, @ref
+= render "header_title"
+
 .gray-content-block.top-block
   Create a new file or
   = link_to 'upload', '#modal-upload-blob',
     { class: 'upload-link', 'data-target' => '#modal-upload-blob', 'data-toggle' => 'modal'}
   an existing one
 
-= render 'projects/blob/upload'
+= render 'projects/blob/upload', title: 'Upload', placeholder: 'Upload new file', button_title: 'Upload file', form_path: namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post
 
 .file-editor
   = form_tag(namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post, class: 'form-horizontal form-new-file js-requires-input') do

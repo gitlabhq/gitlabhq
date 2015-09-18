@@ -18,7 +18,7 @@ module Projects
 
       if new_project.persisted?
         if @project.gitlab_ci?
-          ForkRegistrationWorker.perform_async(@project.id, new_project.id, @current_user.private_token)
+          @project.gitlab_ci_service.fork_registration(new_project, @current_user)
         end
       end
 

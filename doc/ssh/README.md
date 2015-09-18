@@ -72,6 +72,8 @@ access can happen through being a direct member of the project, or through
 a group. See `def accessible_deploy_keys` in `app/models/user.rb` for more
 information.
 
+Deploy keys can be shared between projects, you just need to add them to each project.
+
 ## Applications
 
 ### Eclipse

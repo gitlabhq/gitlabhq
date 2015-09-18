@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.0.0 (unreleased)
+  - Fix HTML link that was improperly escaped in new user e-mail (Stan Hu)
   - Fix broken sort in merge request API (Stan Hu)
   - Bump rouge to 1.10.1 to remove warning noise and fix other syntax highlighting bugs (Stan Hu)
   - Gracefully handle errors in syntax highlighting by leaving the block unformatted (Stan Hu)
@@ -17,6 +18,7 @@ v 8.0.0 (unreleased)
   - Improve dropdown positioning on the project home page (Hannes Rosenögger)
   - Upgrade browser gem to 1.0.0 to avoid warning in IE11 compatibilty mode (Stan Hu)
   - Remove user OAuth tokens from the database and request new tokens each session (Stan Hu)
+  - Restrict users API endpoints to use integer IDs (Stan Hu)
   - Only show recent push event if the branch still exists or a recent merge request has not been created (Stan Hu)
   - Remove satellites
   - Better performance for web editor (switched from satellites to rugged)
@@ -50,6 +52,10 @@ v 8.0.0 (unreleased)
   - Added service API endpoint to retrieve service parameters (Petheő Bence)
   - Add FogBugz project import (Jared Szechy)
   - Sort users autocomplete lists by user (Allister Antosik)
+  - Webhook for issue now contains repository field (Jungkook Park)
+  - Add ability to add custom text to the help page (Jeroen van Baarsen)
+  - Add pg_schema to backup config
+  - Removed API calls from CE to CI
 
 v 7.14.3
   - No changes

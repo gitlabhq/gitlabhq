@@ -1,0 +1,30 @@
+- if current_user
+  - if @offset > 0
+    = render @projects
+  - else
+    .gray-content-block.top-block
+      = render "search"
+    .projects
+      .gray-content-block.clearfix.light.second-block
+        .pull-left.fetch-status
+          - if params[:search].present?
+            by keyword: "#{params[:search]}",
+          #{@total_count} projects
+
+      .wide-table-holder
+        %table.table.projects-table.content-list
+          %thead
+            %tr
+              %th Project Name
+              %th Last commit
+              %th Access
+              %th Commits
+
+          = render @projects
+  %p.text-center.hide.loading
+    %i.fa.fa-refresh.fa-spin
+  :coffeescript
+    CiPager.init "#{ci_projects_path}", #{Ci::ProjectsController::PROJECTS_BATCH}, false
+
+- else
+  = render 'public'

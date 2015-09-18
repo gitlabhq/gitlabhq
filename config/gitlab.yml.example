@@ -110,7 +110,23 @@ production: &base
     # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
 
   #
-  # 2. Auth settings
+  # 2. GitLab CI settings
+  # ==========================
+
+  gitlab_ci:
+    # Default project notifications settings:
+    #
+    # Send emails only on broken builds (default: true)
+    # all_broken_builds: true
+    #
+    # Add pusher to recipients list (default: false)
+    # add_pusher: true
+
+    # The location where build traces are stored (default: builds/). Relative paths are relative to Rails.root
+    # builds_path: builds/
+
+  #
+  # 3. Auth settings
   # ==========================
 
   ## LDAP settings
@@ -276,7 +292,7 @@ production: &base
 
 
   #
-  # 3. Advanced settings
+  # 4. Advanced settings
   # ==========================
 
   # GitLab Satellites
@@ -290,6 +306,7 @@ production: &base
     path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
     # archive_permissions: 0640 # Permissions for the resulting backup.tar file (default: 0600)
     # keep_time: 604800   # default: 0 (forever) (in seconds)
+    # pg_schema: public     # default: nil, it means that all schemas will be backed up
     # upload:
     #   # Fog storage connection settings, see http://fog.io/storage/ .
     #   connection:
@@ -335,7 +352,7 @@ production: &base
     timeout: 10
 
   #
-  # 4. Extra customization
+  # 5. Extra customization
   # ==========================
 
   extra:

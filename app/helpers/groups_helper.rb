@@ -31,12 +31,12 @@ module GroupsHelper
     end
   end
 
-  def group_title(group, name, url)
+  def group_title(group, name = nil, url = nil)
+    full_title = link_to(simple_sanitize(group.name), group_path(group))
+    full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url) if name
+
     content_tag :span do
-      link_to(
-        simple_sanitize(group.name), group_path(group)
-      ) + ' &middot; '.html_safe +
-        link_to(simple_sanitize(name), url)
+      full_title
     end
   end
 end

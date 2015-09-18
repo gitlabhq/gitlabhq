@@ -1,0 +1,70 @@
+.ci-body {
+  pre.trace {
+    background: #111111;
+    color: #fff;
+    font-family: $monospace_font;
+    white-space: pre;
+    white-space: pre-wrap;       /* css-3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    overflow: auto;
+    overflow-y: hidden;
+    font-size: 12px;
+
+    .fa-refresh {
+      font-size: 24px;
+      margin-left: 20px;
+    }
+  }
+
+  .autoscroll-container {
+    position: fixed;
+    bottom: 10px;
+    right: 20px;
+    z-index: 100;
+  }
+
+  .scroll-controls {
+    position: fixed;
+    bottom: 10px;
+    left: 250px;
+    z-index: 100;
+
+    a {
+      display: block;
+      margin-bottom: 5px;
+    }
+  }
+
+  .page-sidebar-collapsed {
+    .scroll-controls {
+      left: 70px;
+    }
+  }
+
+  .build-widget {
+    padding: 10px;
+    background: $background-color;
+    margin-bottom: 20px;
+    border-radius: 4px;
+
+    .title {
+      margin-top: 0;
+      color: #666;
+      line-height: 1.5;
+    }
+    .attr-name {
+      color: #777;
+    }
+  }
+
+  .alert-disabled {
+    background: $background-color;
+
+    a {
+      color: #3084bb !important;
+    }
+  }
+}

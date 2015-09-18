@@ -1,4 +1,6 @@
 - page_title @milestone.title, "Milestones"
+= render "header_title"
+
 %h4.page-title
   .issue-box{ class: issue_box_class(@milestone) }
     - if @milestone.closed?

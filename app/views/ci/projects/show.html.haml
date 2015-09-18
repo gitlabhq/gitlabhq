@@ -1,0 +1,60 @@
+= render 'ci/shared/guide' unless @project.setup_finished?
+
+- if current_user && can?(current_user, :manage_project, gl_project) && !@project.any_runners?
+  .alert.alert-danger
+    Builds for this project wont be served unless you configure runners on
+    = link_to "Runners page", ci_project_runners_path(@project)
+
+%ul.nav.nav-tabs.append-bottom-20
+  %li{class: ref_tab_class}
+    = link_to 'All commits', ci_project_path(@project)
+  - @project.tracked_refs.each do |ref|
+    %li{class: ref_tab_class(ref)}
+      = link_to ref, ci_project_path(@project, ref: ref)
+
+  - if @ref && !@project.tracked_refs.include?(@ref)
+    %li{class: 'active'}
+      = link_to @ref, ci_project_path(@project, ref: @ref)
+
+  %li.pull-right
+    = link_to 'View on GitLab', @project.gitlab_url, no_turbolink.merge( class: 'btn btn-sm' )
+
+- if @ref
+  %p
+    Paste build status image for #{@ref} with next link
+    = link_to '#', class: 'badge-codes-toggle btn btn-default btn-xs' do
+      Status Badge
+    .badge-codes-block.bs-callout.bs-callout-info.hide
+      %p
+        Status badge for
+        %span.label.label-info #{@ref}
+        branch
+      %div
+        %label Markdown:
+        = text_field_tag 'badge_md', markdown_badge_code(@project, @ref), readonly: true, class: 'form-control'
+        %label Html:
+        = text_field_tag 'badge_html', html_badge_code(@project, @ref), readonly: true, class: 'form-control'
+
+
+
+
+%table.table.builds
+  %thead
+    %tr
+      %th Status
+      %th Commit
+      %th Message
+      %th Branch
+      %th Total duration
+      %th Finished at
+      - if @project.coverage_enabled?
+        %th Coverage
+
+  = render @commits
+
+= paginate @commits
+
+- if @commits.empty?
+  .bs-callout
+    %h4 No commits yet
+

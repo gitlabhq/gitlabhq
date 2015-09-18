@@ -49,6 +49,11 @@ class Spinach::Features::ProjectIssuesMilestones < Spinach::FeatureSteps
     create(:closed_issue, project: project, milestone: milestone)
   end
 
+  step 'I should see deleted milestone activity' do
+    expect(page).to have_content('opened milestone in')
+    expect(page).to have_content('destroyed milestone in')
+  end
+
   When 'I click link "All Issues"' do
     click_link 'All Issues'
   end
@@ -57,7 +62,7 @@ class Spinach::Features::ProjectIssuesMilestones < Spinach::FeatureSteps
     expect(page).to have_selector('#tab-issues li.issue-row', count: 4)
   end
 
-  step 'I click link to remove milestone "v2.2"' do
+  step 'I click link to remove milestone' do
     click_link 'Remove'
   end
 

@@ -1,0 +1,25 @@
+%h2 Check your .gitlab-ci.yml
+%hr
+
+= form_tag ci_lint_path, method: :post, remote: true do
+  .control-group
+    = label_tag :content, "Content of .gitlab-ci.yml", class: 'control-label'
+    .controls
+      = text_area_tag :content, nil, class: 'form-control span1', rows: 7, require: true
+
+  .control-group.clearfix
+    .controls.pull-left.prepend-top-10
+      = submit_tag "Validate", class: 'btn btn-success submit-yml'
+
+    
+%p.text-center.loading
+  %i.fa.fa-refresh.fa-spin
+
+.results.prepend-top-20
+
+:coffeescript
+  $(".loading").hide()
+  $('form').bind 'ajax:beforeSend', ->
+    $(".loading").show()
+  $('form').bind 'ajax:complete', ->
+    $(".loading").hide()

@@ -1,0 +1,298 @@
+v7.14.0 (unreleased)
+  - Truncate commit messages after subject line in table
+  - Adjust CI config to support Docker executors
+  - Added Application Settings
+  - Randomize test database for CI tests
+  - Make YAML validation stricter
+  - Use avatars received from GitLab
+  - Refactor GitLab API usage to use either access_token or private_token depending on what was specified during login
+  - Allow to use access_token for API requests
+  - Fix project API listing returning empty list when first projects are not added to CI
+  - Allow to define variables from YAML
+  - Added support for CI skipped status
+  - Fix broken yaml error saving
+  - Add committed_at to commits to properly order last commit (the force push issue)
+  - Rename type(s) to stage(s)
+  - Fix navigation icons
+  - Add missing stage when doing retry
+  - Require variable keys to be not-empty and unique
+  - Fix variable saving issue
+  - Display variable saving errors in variables page not the project's
+  - Added Build Triggers API
+  
+v7.13.1
+  - Fix: user could steal specific runner
+  - Fix: don't send notifications for jobs with allow_failure set
+  - Fix invalid link to doc.gitlab.com
+
+v7.13.0
+  - Fix inline edit runner-description
+  - Allow to specify image and services in yml that can be used with docker
+  - Fix: No runner notification can see managers only
+  - Fix service testing for slack
+  - Ability to cancel all builds in commit at once
+  - Disable colors in rake tasks automatically (if IO is not a TTY)
+  - Implemented "rake env:info". Rake task to receive system information
+  - Fix coverage calculation on commit page
+  - Enhance YAML validation
+  - Redirect back after authorization
+  - Change favicon
+  - Refactoring: Get rid of private_token usage in the frontend.
+  - Allow to specify allow_failure for job
+  - Build traces is stored in the file instead of database
+  - Make the builds path configurable
+  - Disable link to runner if it's not assigned to specific project
+  - Store all secrets in config/secrets.yml
+  - Encrypt variables
+  - Allow to specify flexible list of types in yaml
+
+v7.12.2
+  - Revert: Runner without tag should pick builds without tag only
+
+v7.12.1
+  - Runner without tag should pick builds without tag only
+  - Explicit error in the GitLab when commit not found.
+  - Fix: lint with relative subpath
+  - Update webhook example
+  - Improved Lint stability
+  - Add warning when .gitlab-ci.yml not found
+  - Improved validation for .gitlab-ci.yml
+  - Fix list of branches in only section
+  - Fix "Status Badge" button
+
+v7.12.0
+  - Endless scroll on the dashboard
+  - Add notification if there are no runners
+  - Fix pagination on dashboard
+  - Remove ID column from runners list in the admin area
+  - Increase default timeout for builds to 60 minutes
+  - Using .gitlab-ci.yml file instead of jobs
+  - Link to the runner from the build page for admin user
+  - Ability to set secret variables for runner
+  - Dont retry build when push same commit in same ref twice
+  - Admin area: show amount of runners with last contact less than a minute ago
+  - Fix re-adding project with the same name but different gitlab_id
+  - Implementation of Lint (.gitlab-ci.yml validation tool)
+  - Updated rails to 4.1.11
+  - API fix: project create call
+  - Link to web-editor with .gitlab-ci.yml
+  - Updated examples in the documentation
+
+v7.11.0
+  - Deploy Jobs API calls
+  - Projects search on dashboard page
+  - Improved runners page
+  - Running and Pending tabs on admin builds page
+  - Fix [ci skip] tag, so you can skip CI triggering now
+  - Add HipChat notifications
+  - Clean up project advanced settings.
+  - Add a GitLab project path parameter to the project API
+  - Remove projects IDs from dashboard
+  - UI fix: Remove page headers from the admin area
+  - Improve Email templates
+  - Add backup/restore utility
+  - Coordinator stores information(version, platform, revision, etc.) about runners.
+  - Fixed pagination on dashboard
+  - Public accessible build and commit pages of public projects
+  - Fix vulnerability in the API when MySQL is used
+
+v7.10.1
+  - Fix failing migration when update to 7.10 from 7.8 and older versions
+
+sidekiq_wirker_fix
+	- added sidekiq.yml
+	- integrated in script/background_jobs
+v7.10.0
+  - Projects sorting by last commit date
+  - Add project search at runner page
+  - Fix GitLab and CI projects collision
+  - Events for admin
+  - Events per projects
+  - Search for runners in admin area
+  - UI improvements: created separated admin section, removed useless project show page
+  - Runners sorting in admin area (by id)
+  - Remove protected_attributes gem
+  - Skip commit creation if there is no appropriate job
+
+v7.9.3
+  - Contains no changes
+  - Developers can cancel and retry jobs
+
+v7.9.2
+  - [Security] Already existing projects should not be served by shared runners
+  - Ability to run deploy job without test jobs (every push will trigger deploy job)
+
+v7.9.1
+  - [Security] Adding explicit is_shared parameter to runner
+  - [Security] By default new projects are not served by shared runners
+
+v7.9.0
+  - Reset user session if token is invalid
+  - Runner delete api endpoint
+  - Fix bug about showing edit button on commit page if user does not have permissions
+  - Allow to pass description and tag list during Runner's registration
+  - Added api for project jobs
+  - Implementation of deploy jobs after all parallel jobs(tests).
+  - Add scroll up/down buttons for better mobile experience with large build traces
+  - Add runner last contact (Kamil Trzciński)
+  - Allow to pause runners - when paused runner will not receive any new build (Kamil Trzciński)
+  - Add brakeman (security scanner for Ruby on Rails)
+  - Changed a color of the canceled builds
+  - Fix of show the same commits in different branches
+
+v7.8.2
+  - Fix the broken build failed email
+  - Notify only pusher instead of commiter
+
+v7.8.0
+  - Fix OAuth login with GitLab installed in relative URL
+  - GitLab CI has same version as GitLab since now
+  - Allow to pass description and tag list during Runner's registration (Kamil Trzciński)
+  - Update documentation (API, Install, Update)
+  - Skip refs field supports for wildcard branch name (ex. feature/*)
+  - Migrate E-mail notification to Services menu (Kamil Trzciński)
+  - Added Slack notifications (Kamil Trzciński)
+  - Disable turbolink on links pointing out to GitLab server
+  - Add test coverage parsing example for pytest-cov
+  - Upgrade raindrops gem
+
+v5.4.2
+  - Fix exposure of project token via build data
+
+v5.4.1
+  - Fix 500 if on builds page if build has no job
+  - Truncate project token from build trace
+  - Allow users with access to project see build trace
+
+v5.4.0 (Requires GitLab 7.7)
+  - Fixed 500 error for badge if build is pending
+  - Non-admin users can now register specific runners for their projects
+  - Project specific runners page which users can access
+  - Remove progress output from schedule_builds cron job
+  - Fix schedule_builds rake task
+  - Fix test webhook button
+  - Job can be branch specific or tag specific or both
+  - Shared runners builds projects which are not assigned to specific ones
+  - Job can be runner specific through tags
+  - Runner have tags
+  - Move job settings to separate page
+  - Add authorization level managing projects
+  - OAuth authentication via GitLab.
+
+v5.3
+  - Remove annoying 'Done' message from schedule_builds cron job
+  - Fix a style issue with the navbar
+  - Skip CSRF check on the project's build page
+  - Fix showing wrong build script on admin projects page
+  - Add branch and commit message to build result emails
+
+v5.2
+  - Improve performance by adding new indicies
+  - Separate Commit logic from Build logic in prep for Parallel Builds
+  - Parallel builds
+  - You can have multiple build scripts per project
+
+v5.1
+  - Registration token and runner token are named differently
+  - Redirect to previous page after sign-in
+  - Dont show archived projects
+  - Add support for skip branches from build
+  - Add coverage parsing feature
+  - Update rails to 4.0.10
+  - Look for a REVISION file before running `git log`
+  - All builds page for admin
+
+v5.0.1
+  - Update rails to 4.0.5
+
+v5.0.0
+  - Set build timeout in minutes
+  - Web Hooks for builds
+  - Nprogress bar
+  - Remove extra spaces in build script
+  - Requires runner v5
+    * All script commands executed as one file
+    * Cancel button works correctly now
+    * Runner stability increased
+    * Timeout applies to build now instead of line of script
+
+v4.3.0
+  - Refactor build js
+  - Redirect to build page with sha + bid if build id is not provided
+  - Update rails to 4.0.3
+  - Restyle project settings page
+  - Improve help page
+  - Replaced puma with unicorn
+  - Improved init.d script
+  - Add submodule init to default build script for new projects
+
+v4.2.0
+  - Build duration chart
+  - Bootstrap 3 with responsive UI
+  - Improved init.d script
+  - Refactoring
+  - Changed http codes for POST /projects/:id/build action
+  - Turbolinks
+
+v4.1.0
+  - Rails 4
+  - Click on build branch to see other builds for this branch
+  - Email notifications (Jeroen Knoops)
+
+v4.0.0
+  - Shared runners (no need to add runner to every project)
+  - Admin area (only available for GitLab admins)
+  - Hide all runners management into admin area
+  - Use http cloning for builds instead of deploy keys
+  - Allow choose between git clone and git fetch when get code for build
+  - Make build timeout actually works
+  - Requires GitLab 6.3 or higher
+  - GitLab CI settings go to GitLab project via api on creation
+
+v3.2.0
+  - Limit visibility of projects by gitlab authorized projects
+  - Use one page for both gitlab and gitlab-ci projects
+
+v3.1.0
+  - Login with both username, email or LDAP credentials (if GitLab 6.0+)
+  - Retry build button functionality
+  - UI fixes for resolution 1366px and lower
+  - Fix gravatar ssl warning
+
+v3.0.0
+  - Build running functionality extracted in gitlab-ci-runner
+  - Added API for runners and builds
+  - Redesigned application
+  - Added charts
+  - Use GitLab auth
+  - Add projects via UI with few clicks
+
+v2.2.0
+  - replaced unicorn with puma
+  - replaced grit with rugged
+  - Runner.rb more transactional safe now
+  - updated rails to 3.2.13
+  - updated devise to 2.2
+  - fixed issue when build left in running status if exception triggered
+  - rescue build timeout correctly
+  - badge helper with markdown & html
+  - increased test coverage to 85%
+
+v2.1.0
+  - Removed horizontal scroll for build trace
+  - new status badges
+  - better encode
+  - added several CI_* env variables
+
+v2.0.0
+  - Replace resque with sidekiq
+  - Run only one build at time per project
+  - Added whenever for schedule jobs
+
+v1.2.0
+  - Added Github web hook support
+  - Added build schedule
+
+v1.1.0
+  - Added JSON response for builds status
+  - Compatible with GitLab v4.0.0
