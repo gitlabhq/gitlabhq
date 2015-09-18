@@ -56,6 +56,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :restricted_signup_domains_raw,
       :version_check_enabled,
       :user_oauth_applications,
+      :ci_enabled,
       restricted_visibility_levels: [],
       import_sources: []
     )

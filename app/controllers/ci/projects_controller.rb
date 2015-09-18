@@ -5,13 +5,17 @@ module Ci
     before_action :authenticate_user!, except: [:build, :badge, :index, :show]
     before_action :authenticate_public_page!, only: :show
     before_action :project, only: [:build, :integration, :show, :badge, :edit, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
-    before_action :authorize_access_project!, except: [:build, :badge, :index, :show, :new, :create]
+    before_action :authorize_access_project!, except: [:build, :badge, :index, :show, :new, :create, :disabled]
     before_action :authorize_manage_project!, only: [:edit, :integration, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
     before_action :authenticate_token!, only: [:build]
     before_action :no_cache, only: [:badge]
+    skip_before_action :check_enable_flag!, only: [:disabled]
     protect_from_forgery except: :build
 
-    layout 'ci/project', except: :index
+    layout 'ci/project', except: [:index, :disabled]
+
+    def disabled
+    end
 
     def index
       @limit, @offset = (params[:limit] || PROJECTS_BATCH).to_i, (params[:offset] || 0).to_i

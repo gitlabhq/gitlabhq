@@ -3,6 +3,10 @@ module Ci
     module Helpers
       UPDATE_RUNNER_EVERY = 60
 
+      def check_enable_flag!
+        not_found! unless current_application_settings.ci_enabled
+      end
+
       def authenticate_runners!
         forbidden! unless params[:token] == GitlabCi::REGISTRATION_TOKEN
       end
