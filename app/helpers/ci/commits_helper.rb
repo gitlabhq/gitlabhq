@@ -1,20 +1,5 @@
 module Ci
   module CommitsHelper
-    def commit_status_css_class(commit)
-      return 'build-info' unless commit
-
-      case commit.status
-      when 'success'
-        'build-success'
-      when 'failed', 'canceled'
-        'build-danger'
-      when 'skipped'
-        'build-disabled'
-      else
-        'build-warning'
-      end
-    end
-
     def ci_commit_path(commit)
       ci_project_ref_commits_path(commit.project, commit.ref, commit.sha)
     end

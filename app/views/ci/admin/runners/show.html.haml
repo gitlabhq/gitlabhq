@@ -102,9 +102,9 @@
           %th Finished at
 
       - @builds.each do |build|
-        %tr.build.alert{class: build_status_css_class(build)}
+        %tr.build
           %td.status
-            = build.status
+            = ci_status_with_icon(build.status)
 
           %td.status
             = build.project.name

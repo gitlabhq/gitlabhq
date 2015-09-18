@@ -1,29 +1,34 @@
 .commit-info
-  %pre.commit-message
-    #{@commit.git_commit_message}
+  .append-bottom-20
+    = ci_status_with_icon(@commit.status)
 
-  .row
-    .col-sm-6
-      - if @commit.compare?
-        %p
-          %span.attr-name Compare:
-          #{gitlab_compare_link(@project, @commit.short_before_sha, @commit.short_sha)}
-      - else
-        %p
-          %span.attr-name Commit:
-          #{gitlab_commit_link(@project, @commit.sha)}
+  .gray-content-block.middle-block
+    %pre.commit-message
+      #{@commit.git_commit_message}
 
-      %p
-        %span.attr-name Branch:
-        #{gitlab_ref_link(@project, @commit.ref)}
-    .col-sm-6
-      %p
-        %span.attr-name Author:
-        #{@commit.git_author_name} (#{@commit.git_author_email})
-      - if @commit.created_at
+  .gray-content-block.second-block
+    .row
+      .col-sm-6
+        - if @commit.compare?
+          %p
+            %span.attr-name Compare:
+            #{gitlab_compare_link(@project, @commit.short_before_sha, @commit.short_sha)}
+        - else
+          %p
+            %span.attr-name Commit:
+            #{gitlab_commit_link(@project, @commit.sha)}
+
         %p
-          %span.attr-name Created at:
-          #{@commit.created_at.to_s(:short)}
+          %span.attr-name Branch:
+          #{gitlab_ref_link(@project, @commit.ref)}
+      .col-sm-6
+        %p
+          %span.attr-name Author:
+          #{@commit.git_author_name} (#{@commit.git_author_email})
+        - if @commit.created_at
+          %p
+            %span.attr-name Created at:
+            #{@commit.created_at.to_s(:short)}
 
 - if current_user && can?(current_user, :manage_builds, gl_project)
   .pull-right
@@ -41,12 +46,6 @@
 - unless @commit.push_data[:ci_yaml_file]
   .bs-callout.bs-callout-warning
     \.gitlab-ci.yml not found in this commit
-
-%h3 Status
-
-.build{class: commit_status_css_class(@commit)}
-  .ci-status
-    = @commit.status.titleize
 
 %h3
   Builds

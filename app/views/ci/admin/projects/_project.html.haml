@@ -1,5 +1,5 @@
 - last_commit = project.last_commit
-%tr{class: commit_status_css_class(last_commit) }
+%tr
   %td
     = project.id
   %td
@@ -7,8 +7,9 @@
       %strong= project.name
   %td
     - if last_commit
-      #{last_commit.status} (#{commit_link(last_commit)})
+      = ci_status_with_icon(last_commit.status)
       - if project.last_commit_date
+        &middot;
         = time_ago_in_words project.last_commit_date
         ago
     - else
