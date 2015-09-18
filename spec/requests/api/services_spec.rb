@@ -17,9 +17,9 @@ describe API::API, api: true  do
 
       it "should return if required fields missing" do
         attrs = service_attrs
-        
+
         required_attributes = service_attrs_list.select do |attr|
-          service_klass.validators_on(attr).any? do |v| 
+          service_klass.validators_on(attr).any? do |v|
             v.class == ActiveRecord::Validations::PresenceValidator
           end
         end

@@ -92,21 +92,6 @@ module Ci
         project
       end
 
-      # TODO: remove
-      def from_gitlab(user, scope = :owned, options)
-        opts = user.authenticate_options
-        opts.merge! options
-
-        raise 'Implement me of fix'
-        #projects = Ci::Network.new.projects(opts.compact, scope)
-
-        if projects
-          projects.map { |pr| OpenStruct.new(pr) }
-        else
-          []
-        end
-      end
-
       def already_added?(project)
         where(gitlab_id: project.id).any?
       end

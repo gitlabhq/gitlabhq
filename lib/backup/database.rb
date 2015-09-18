@@ -25,8 +25,12 @@ module Backup
       when "postgresql" then
         $progress.print "Dumping PostgreSQL database #{config['database']} ... "
         pg_env
-        # Pass '--clean' to include 'DROP TABLE' statements in the DB dump.
-        system('pg_dump', '--clean', config['database'], out: db_file_name)
+        pgsql_args = ["--clean"] # Pass '--clean' to include 'DROP TABLE' statements in the DB dump.
+        if Gitlab.config.backup.pg_schema
+          pgsql_args << "-n"
+          pgsql_args << Gitlab.config.backup.pg_schema
+        end
+        system('pg_dump', *pgsql_args, config['database'], out: db_file_name)
       end
       report_success(success)
       abort 'Backup failed' unless success

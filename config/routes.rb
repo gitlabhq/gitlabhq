@@ -12,13 +12,12 @@ Gitlab::Application.routes.draw do
     resources :projects do
       collection do
         post :add
-        get :gitlab
+        get :disabled
       end
 
       member do
         get :status, to: 'projects#badge'
         get :integration
-        post :build
         post :toggle_shared_runners
         get :dumped_yaml
       end

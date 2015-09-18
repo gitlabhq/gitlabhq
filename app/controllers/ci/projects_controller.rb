@@ -5,13 +5,17 @@ module Ci
     before_action :authenticate_user!, except: [:build, :badge, :index, :show]
     before_action :authenticate_public_page!, only: :show
     before_action :project, only: [:build, :integration, :show, :badge, :edit, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
-    before_action :authorize_access_project!, except: [:build, :badge, :index, :show, :new, :create]
+    before_action :authorize_access_project!, except: [:build, :badge, :index, :show, :new, :create, :disabled]
     before_action :authorize_manage_project!, only: [:edit, :integration, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
     before_action :authenticate_token!, only: [:build]
     before_action :no_cache, only: [:badge]
+    skip_before_action :check_enable_flag!, only: [:disabled]
     protect_from_forgery except: :build
 
-    layout 'ci/project', except: :index
+    layout 'ci/project', except: [:index, :disabled]
+
+    def disabled
+    end
 
     def index
       @limit, @offset = (params[:limit] || PROJECTS_BATCH).to_i, (params[:offset] || 0).to_i
@@ -51,7 +55,7 @@ module Ci
         return redirect_to ci_root_path, alert: 'You have to have at least master role to enable CI for this project'
       end
 
-      @project = Ci::CreateProjectService.new.execute(current_user, project_data, ci_project_url(":project_id"))
+      @project = Ci::CreateProjectService.new.execute(current_user, project_data)
 
       if @project.persisted?
         redirect_to ci_project_path(@project, show_guide: true), notice: 'Project was successfully created.'
@@ -80,16 +84,6 @@ module Ci
       Ci::EventService.new.remove_project(current_user, project)
 
       redirect_to ci_projects_url
-    end
-
-    def build
-      @commit = Ci::CreateCommitService.new.execute(@project, params.dup)
-
-      if @commit && @commit.valid?
-        head 201
-      else
-        head 400
-      end
     end
 
     # Project status badge

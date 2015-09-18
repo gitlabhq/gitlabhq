@@ -178,6 +178,7 @@ Settings.gitlab['import_sources'] ||= ['github','bitbucket','gitlab','gitorious'
 # CI
 #
 Settings['gitlab_ci'] ||= Settingslogic.new({})
+Settings.gitlab_ci['enabled']             = true if Settings.gitlab_ci['enabled'].nil?
 Settings.gitlab_ci['all_broken_builds']   = true if Settings.gitlab_ci['all_broken_builds'].nil?
 Settings.gitlab_ci['add_pusher']          = false if Settings.gitlab_ci['add_pusher'].nil?
 Settings.gitlab_ci['url']                 ||= Settings.send(:build_gitlab_ci_url)
@@ -219,6 +220,7 @@ Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.send(:build_gitlab_shell_s
 #
 Settings['backup'] ||= Settingslogic.new({})
 Settings.backup['keep_time']  ||= 0
+Settings.backup['pg_schema']    = nil
 Settings.backup['path']         = File.expand_path(Settings.backup['path'] || "tmp/backups/", Rails.root)
 Settings.backup['archive_permissions']          ||= 0600
 Settings.backup['upload'] ||= Settingslogic.new({ 'remote_directory' => nil, 'connection' => nil })

@@ -54,6 +54,8 @@ v 8.0.0 (unreleased)
   - Sort users autocomplete lists by user (Allister Antosik)
   - Webhook for issue now contains repository field (Jungkook Park)
   - Add ability to add custom text to the help page (Jeroen van Baarsen)
+  - Add pg_schema to backup config
+  - Removed API calls from CE to CI
 
 v 7.14.3
   - No changes

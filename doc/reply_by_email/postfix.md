@@ -303,7 +303,7 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
 
 ## Done!
 
-If all the tests were successfull, Postfix is all set up and ready to receive email! Continue with the [Reply by email](./README.md) guide to configure GitLab.
+If all the tests were successful, Postfix is all set up and ready to receive email! Continue with the [Reply by email](./README.md) guide to configure GitLab.
 
 ---------
 
