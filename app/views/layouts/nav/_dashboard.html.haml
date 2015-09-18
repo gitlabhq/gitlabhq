@@ -31,7 +31,7 @@
         %span
           Merge Requests
           %span.count= current_user.assigned_merge_requests.opened.count
-  = nav_link(path: 'ci/projects#index') do
+  = nav_link(path: ['ci/projects#index', 'ci/projects#disabled']) do
     = link_to ci_projects_path, title: 'Continuous Integration', data: {placement: 'right'} do
       = icon('building fw')
       %span

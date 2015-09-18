@@ -12,7 +12,7 @@ Gitlab::Application.routes.draw do
     resources :projects do
       collection do
         post :add
-        get :gitlab
+        get :disabled
       end
 
       member do
