@@ -210,9 +210,9 @@ class Repository
 
   def license
     cache.fetch(:license) do
-      tree(:head).blobs.find do |file|
-        file.name =~ /\Alicense/i
-      end
+      tree(:head).blobs.find_all do |file|
+        file.name =~ /\A(copying|license)/i
+      end.last # Prefer `LICENSE` as filename over `COPYING`
     end
   end
 
