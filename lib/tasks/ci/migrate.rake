@@ -10,6 +10,10 @@ namespace :ci do
       puts ''
     end
 
+    # disable CI for time of migration
+    enable_ci(false)
+
+    # unpack archives
     migrate = Ci::Migrate::Manager.new
     migrate.unpack
 
@@ -17,6 +21,9 @@ namespace :ci do
     Rake::Task['ci:migrate:builds'].invoke
     Rake::Task['ci:migrate:tags'].invoke
     Rake::Task['ci:migrate:services'].invoke
+
+    # enable CI for time of migration
+    enable_ci(true)
 
     migrate.cleanup
   end
@@ -70,5 +77,11 @@ namespace :ci do
       c.execute("UPDATE ci_services SET type=CONCAT('Ci::', type) WHERE type NOT LIKE 'Ci::%'")
       $progress.puts 'done'.green
     end
+  end
+
+  def enable_ci(enabled)
+    settings = ApplicationSetting.current || ApplicationSetting.create_from_defaults
+    settings.ci_enabled = enabled
+    settings.save!
   end
 end
