@@ -19,7 +19,7 @@ admin = User.create(
 admin.projects_limit = 10000
 admin.admin = true
 admin.save!
-admin.confirm!
+admin.confirm
 
 if admin.valid?
 puts %Q[
