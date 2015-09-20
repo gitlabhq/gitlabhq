@@ -9,14 +9,14 @@ into your GitLab CE or EE installation.
 
 ### Before we begin
 
-**You need to have a working installation of GitLab CI version 7.14 to perform
+**You need to have a working installation of GitLab CI version 8.0 to perform
 this migration. The older versions are not supported and will most likely break
 this migration procedure.**
 
 This migration cannot be performed online and takes a significant amount of
 time. Make sure to plan ahead.
 
-If you are running a version of GitLab CI prior to 7.14 please follow the
+If you are running a version of GitLab CI prior to 8.0 please follow the
 appropriate [update guide](https://gitlab.com/gitlab-org/gitlab-ci/blob/master/doc/update/).
 
 The migration is divided into three parts:
@@ -42,123 +42,29 @@ cd /home/gitlab_ci/gitlab-ci
 sudo -u gitlab_ci -H bundle exec backup:create RAILS_ENV=production
 ```
 
-#### 3. Rename database tables
+If your GitLab CI installation uses **MySQL** and your GitLab CE uses **PostgreSQL**
+you need to convert database data with **MYSQL_TO_POSTGRESQL**.
 
-To prevent naming conflicts with database tables in GitLab CE or EE, we need to
-rename CI's tables to begin with a `ci_` prefix:
+You can check that by looking into GitLab CI and GitLab CE (or EE) database configuration file:
 
-```sh
-cat <<EOF | bundle exec rails dbconsole production
-ALTER TABLE application_settings RENAME TO ci_application_settings;
-ALTER TABLE builds RENAME TO ci_builds;
-ALTER TABLE commits RENAME TO ci_commits;
-ALTER TABLE events RENAME TO ci_events;
-ALTER TABLE jobs RENAME TO ci_jobs;
-ALTER TABLE projects RENAME TO ci_projects;
-ALTER TABLE runner_projects RENAME TO ci_runner_projects;
-ALTER TABLE runners RENAME TO ci_runners;
-ALTER TABLE services RENAME TO ci_services;
-ALTER TABLE tags RENAME TO ci_tags;
-ALTER TABLE taggings RENAME TO ci_taggings;
-ALTER TABLE trigger_requests RENAME TO ci_trigger_requests;
-ALTER TABLE triggers RENAME TO ci_triggers;
-ALTER TABLE variables RENAME TO ci_variables;
-ALTER TABLE web_hooks RENAME TO ci_web_hooks;
-EOF
+    ```sh
+    cat /home/gitlab_ci/gitlab-ci/config/database.yml
+    cat /home/git/gitlab/config/database.yml
+    ```
+
+To create backup with database conversion (MySQL -> PostgreSQL) execute:
+
+```bash
+cd /home/gitlab_ci/gitlab-ci
+sudo -u gitlab_ci -H bundle exec backup:create RAILS_ENV=production MYSQL_TO_POSTGRESQL=1
 ```
 
-#### 4. Remove cronjob
+#### 3. Remove cronjob
 
 ```
 cd /home/gitlab_ci/gitlab-ci
 sudo -u gitlab_ci -H bundle exec whenever --clear-crontab
 ```
-
-#### 5. Create a database dump
-
-In this step, you will need to know information about both your CI and CE (or
-EE) databases, such as the server types, hosts, and ports, and the usernames and
-passwords.
-
-We can obtain the necessary information from the `config/database.yml` files for
-each installation.
-
-1. Get the information for the CI database:
-
-    ```sh
-    cat /home/gitlab_ci/gitlab-ci/config/database.yml
-    ```
-
-1. Then for the CE (or EE) database:
-
-    ```sh
-    cat /home/git/gitlab/config/database.yml
-    ```
-
-1. The output of each command should look something like this:
-
-    ```yml
-    production:
-      adapter: postgresql (or mysql2)
-      encoding: utf8
-      reconnect: false
-      database: GITLAB_CI_DATABASE
-      pool: 5
-      username: DB_USERNAME
-      password: DB_PASSWORD
-      host: DB_HOSTNAME
-      port: DB_PORT
-      # socket: /tmp/mysql.sock
-    ```
-
-1. Depending on the values for `adapter`, you will have to use one of three
-   different commands to perform the database dump.
-
-    **NOTE:** For any of the commands below, you'll need to substitute the
-    values `IN_UPPERCASE` with the corresponding values from your **CI
-    installation's** `config/database.yml` files above.
-
-    1. If both your CI and CE (or EE) installations use **mysql2** as the `adapter`, use
-       `mysqldump`:
-
-        ```sh
-        mysqldump --default-character-set=utf8 --complete-insert --no-create-info \
-          --host=DB_USERNAME --port=DB_PORT --user=DB_HOSTNAME -p GITLAB_CI_DATABASE \
-          ci_application_settings ci_builds ci_commits ci_events ci_jobs ci_projects \
-          ci_runner_projects ci_runners ci_services ci_tags ci_taggings ci_trigger_requests \
-          ci_triggers ci_variables ci_web_hooks > gitlab_ci.sql
-        ```
-
-    1. If both your CI and CE (or EE) installations use **postgresql** as the
-       `adapter`, use `pg_dump`:
-
-        ```sh
-        pg_dump -h DB_HOSTNAME -U DB_USERNAME -p DB_PORT \
-          --data-only GITLAB_CI_DATABASE -t "ci_*" > gitlab_ci.sql
-        ```
-
-    1. If your CI installation uses **mysql2** as the `adapter` and your CE (or
-       EE) installation uses **postgresql**, use `mysqldump` to dump the
-       database and then convert it to PostgreSQL using [mysql-postgresql-converter]:
-
-        ```sh
-        # Dump existing MySQL database first
-        mysqldump --default-character-set=utf8 --compatible=postgresql --complete-insert \
-          --host=DB_USERNAME --port=DB_PORT --user=DB_HOSTNAME -p GITLAB_CI_DATABASE \
-          ci_application_settings ci_builds ci_commits ci_events ci_jobs ci_projects \
-          ci_runner_projects ci_runners ci_services ci_tags ci_taggings ci_trigger_requests \
-          ci_triggers ci_variables ci_web_hooks > gitlab_ci.sql.tmp
-
-        # Convert database to be compatible with PostgreSQL
-        git clone https://github.com/gitlabhq/mysql-postgresql-converter.git -b gitlab
-        python mysql-postgresql-converter/db_converter.py gitlab_ci.sql.tmp gitlab_ci.sql.tmp2
-        ed -s gitlab_ci.sql.tmp2 < mysql-postgresql-converter/move_drop_indexes.ed
-
-        # Filter to only include INSERT statements
-        grep "^\(START\|SET\|INSERT\|COMMIT\)" gitlab_ci.sql.tmp2 > gitlab_ci.sql
-        ```
-
-[mysql-postgresql-converter]: https://github.com/gitlabhq/mysql-postgresql-converter
 
 ### Part II: GitLab CE (or EE)
 
@@ -203,33 +109,19 @@ git diff origin/7-14-stable:config/gitlab.yml.example origin/8-0-stable:config/g
 
 The new options include configuration settings for GitLab CI.
 
-#### 6. Copy build logs
+#### 6. Copy backup from GitLab CI
 
-You need to copy the contents of GitLab CI's `builds/` directory to the
-corresponding directory in GitLab CE or EE:
+    sudo cp -v /home/gitlab_ci/gitlab-ci/tmp/backups/*_gitlab_ci_backup.tar /home/git/gitlab/tmp/backups
+    sudo chown git:git /home/git/gitlab/tmp/backups/*_gitlab_ci_backup.tar
 
-    sudo rsync -av /home/gitlab_ci/gitlab-ci/builds /home/git/gitlab/builds
-    sudo chown -R git:git /home/git/gitlab/builds
-
-The build logs are usually quite big so it may take a significant amount of
-time.
-
-#### 7. Import GitLab CI database
+#### 7. Import GitLab CI backup
 
 Now you'll import the GitLab CI database dump that you [created
 earlier](#5-create-a-database-dump) into the GitLab CE or EE database:
 
-    sudo mv /home/gitlab_ci/gitlab-ci/gitlab_ci.sql /home/git/gitlab/gitlab_ci.sql
-    sudo chown git:git /home/git/gitlab/gitlab_ci.sql
-    sudo -u git -H bundle exec rake ci:migrate CI_DUMP=/home/git/gitlab/gitlab_ci.sql RAILS_ENV=production
-
-This task will:
-
-1. Delete data from all existing CI tables
-1. Import data from database dump
-1. Fix database auto-increments
-1. Fix tags assigned to Builds and Runners
-1. Fix services used by CI
+    sudo -u git -H bundle exec rake ci:migrate RAILS_ENV=production
+    
+This task will take some time.
 
 #### 8. Start GitLab
 
