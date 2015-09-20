@@ -37,7 +37,7 @@ describe Profiles::TwoFactorAuthsController do
 
     context 'with valid pin' do
       before do
-        expect(user).to receive(:valid_otp?).with(pin).and_return(true)
+        expect(user).to receive(:validate_and_consume_otp!).with(pin).and_return(true)
       end
 
       it 'sets two_factor_enabled' do
@@ -63,7 +63,7 @@ describe Profiles::TwoFactorAuthsController do
 
     context 'with invalid pin' do
       before do
-        expect(user).to receive(:valid_otp?).with(pin).and_return(false)
+        expect(user).to receive(:validate_and_consume_otp!).with(pin).and_return(false)
       end
 
       it 'assigns error' do

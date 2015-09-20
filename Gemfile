@@ -38,7 +38,7 @@ gem 'omniauth_crowd'
 gem "rack-oauth2", "~> 1.0.5"
 
 # Two-factor authentication
-gem 'devise-two-factor', '~> 1.0.1'
+gem 'devise-two-factor', '~> 2.0.0'
 gem 'rqrcode-rails3', '~> 0.1.7'
 gem 'attr_encrypted', '~> 1.3.4'
 
