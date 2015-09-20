@@ -15,27 +15,5 @@ module Ci
     def build_url(build)
       ci_project_build_url(build.project, build)
     end
-
-    def build_status_alert_class(build)
-      if build.success?
-        'alert-success'
-      elsif build.failed?
-        'alert-danger'
-      elsif build.canceled?
-        'alert-disabled'
-      else
-        'alert-warning'
-      end
-    end
-
-    def build_icon_css_class(build)
-      if build.success?
-        'fa-circle cgreen'
-      elsif build.failed?
-        'fa-circle cred'
-      else
-        'fa-circle light'
-      end
-    end
   end
 end

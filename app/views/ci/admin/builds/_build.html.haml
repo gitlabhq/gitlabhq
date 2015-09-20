@@ -1,11 +1,11 @@
 - if build.commit && build.project
-  %tr.build.alert{class: build_status_alert_class(build)}
+  %tr.build
     %td.build-link
       = link_to ci_project_build_url(build.project, build) do
         %strong #{build.id}
 
     %td.status
-      = build.status
+      = ci_status_with_icon(build.status)
 
     %td.commit-link
       = commit_link(build.commit)

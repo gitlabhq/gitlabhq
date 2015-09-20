@@ -28,5 +28,27 @@ module Ci
         "#{pluralize(seconds, "second")}"
       end
     end
+
+    def ci_icon_for_status(status)
+      icon_name =
+        case status
+        when 'success'
+          'check-square'
+        when 'failed'
+          'close'
+        when 'running', 'pending'
+          'clock-o'
+        else
+          'circle'
+        end
+
+      icon(icon_name)
+    end
+
+    def ci_status_with_icon(status)
+      content_tag :span, class: "ci-status ci-#{status}" do
+        ci_icon_for_status(status) + '&nbsp;'.html_safe + status
+      end
+    end
   end
 end
