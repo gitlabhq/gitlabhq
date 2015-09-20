@@ -12,10 +12,10 @@ module Ci
               'WHERE (SELECT COUNT(*) FROM tags WHERE tags.name = ci_tags.name)=0'
           )
 
-          puts 'Deleting old records'
+          puts 'Deleting old taggings...'
           connection.execute "DELETE FROM taggings WHERE context = 'tags' AND taggable_type LIKE 'Ci::%'"
 
-          puts 'Inserting tags...'
+          puts 'Inserting taggings...'
           connection.execute(
             'INSERT INTO taggings (taggable_type, taggable_id, tag_id, context) ' +
               "SELECT CONCAT('Ci::', ci_taggings.taggable_type), ci_taggings.taggable_id, tags.id, 'tags' FROM ci_taggings " +
