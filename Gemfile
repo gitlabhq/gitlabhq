@@ -22,7 +22,7 @@ gem "mysql2", '~> 0.3.16', group: :mysql
 gem "pg", '~> 0.18.2', group: :postgres
 
 # Authentication libraries
-gem "devise", '~> 3.2.4'
+gem "devise", '~> 3.5.2'
 gem "devise-async", '~> 0.9.0'
 gem 'omniauth', "~> 1.2.2"
 gem 'omniauth-google-oauth2', '~> 0.2.5'
@@ -38,7 +38,7 @@ gem 'omniauth_crowd'
 gem "rack-oauth2", "~> 1.0.5"
 
 # Two-factor authentication
-gem 'devise-two-factor', '~> 1.0.1'
+gem 'devise-two-factor', '~> 2.0.0'
 gem 'rqrcode-rails3', '~> 0.1.7'
 gem 'attr_encrypted', '~> 1.3.4'
 

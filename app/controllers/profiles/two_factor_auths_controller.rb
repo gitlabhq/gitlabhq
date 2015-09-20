@@ -9,7 +9,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   def create
-    if current_user.valid_otp?(params[:pin_code])
+    if current_user.validate_and_consume_otp!(params[:pin_code])
       current_user.two_factor_enabled = true
       @codes = current_user.generate_otp_backup_codes!
       current_user.save!
