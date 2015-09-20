@@ -85,6 +85,14 @@ module Gitlab::Markdown
           to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
       end
 
+      it 'rebuilds relative URL for a file in the repo up multiple directories' do
+        relative_link = link('../../../api/README.md')
+        doc = filter(relative_link, requested_path: 'doc/foo/bar/baz/README.md')
+
+        expect(doc.at_css('a')['href']).
+          to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
+      end
+
       it 'rebuilds relative URL for a file in the repo with an anchor' do
         doc = filter(link('README.md#section'))
         expect(doc.at_css('a')['href']).

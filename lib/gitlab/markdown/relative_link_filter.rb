@@ -91,8 +91,7 @@ module Gitlab
         parts = request_path.split('/')
         parts.pop if path_type(request_path) != 'tree'
 
-        # Allow for going up one directory
-        if parts.length > 1 && path.start_with?('../')
+        while parts.length > 1 && path.start_with?('../')
           parts.pop
           path.sub!('../', '')
         end
