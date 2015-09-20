@@ -65,20 +65,20 @@ $legend-color:                   $text-color;
 //
 //##
 
-$pagination-color:                     #fff;
-$pagination-bg:                        $brand-success;
+$pagination-color:                     $gl-gray;
+$pagination-bg:                        $background-color;
 $pagination-border:                    transparent;
 
 $pagination-hover-color:               #fff;
-$pagination-hover-bg:                  darken($brand-success, 15%);
+$pagination-hover-bg:                  $brand-info;
 $pagination-hover-border:              transparent;
 
 $pagination-active-color:              #fff;
-$pagination-active-bg:                 darken($brand-success, 15%);
+$pagination-active-bg:                 $brand-info;
 $pagination-active-border:             transparent;
 
-$pagination-disabled-color:            #b4bcc2;
-$pagination-disabled-bg:               lighten($brand-success, 15%);
+$pagination-disabled-color:            #fff;
+$pagination-disabled-bg:               lighten($brand-info, 15%);
 $pagination-disabled-border:           transparent;
 
 
