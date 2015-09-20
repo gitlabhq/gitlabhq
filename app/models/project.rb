@@ -428,7 +428,7 @@ class Project < ActiveRecord::Base
   end
 
   def gitlab_ci?
-    gitlab_ci_service && gitlab_ci_service.active
+    gitlab_ci_service && gitlab_ci_service.active && gitlab_ci_project.present?
   end
 
   def ci_services
