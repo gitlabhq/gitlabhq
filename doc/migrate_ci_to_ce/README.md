@@ -17,7 +17,7 @@ This migration cannot be performed online and takes a significant amount of
 time. Make sure to plan ahead.
 
 If you are running a version of GitLab CI prior to 8.0 please follow the
-appropriate [update guide](https://gitlab.com/gitlab-org/gitlab-ci/blob/master/doc/update/).
+appropriate [update guide](https://gitlab.com/gitlab-org/gitlab-ci/tree/master/doc/update/).
 
 The migration is divided into three parts:
 
@@ -35,29 +35,36 @@ The migration is divided into three parts:
 
 The migration procedure modifies the structure of the CI database. If something
 goes wrong, you will not be able to revert to a previous version without a
-backup:
+backup.
 
-```bash
-cd /home/gitlab_ci/gitlab-ci
-sudo -u gitlab_ci -H bundle exec backup:create RAILS_ENV=production
+If your GitLab CI installation uses **MySQL** and your GitLab CE (or EE)
+installation uses **PostgreSQL** you'll need to convert the CI database by
+setting a `MYSQL_TO_POSTGRESQL` flag.
+
+You can check which database each install is using by viewing their
+database configuration files:
+
+```sh
+cat /home/gitlab_ci/gitlab-ci/config/database.yml
+cat /home/git/gitlab/config/database.yml
 ```
 
-If your GitLab CI installation uses **MySQL** and your GitLab CE uses **PostgreSQL**
-you need to convert database data with **MYSQL_TO_POSTGRESQL**.
+- If both applications use the same database `adapter`, create the backup with
+  this command:
 
-You can check that by looking into GitLab CI and GitLab CE (or EE) database configuration file:
-
-    ```sh
-    cat /home/gitlab_ci/gitlab-ci/config/database.yml
-    cat /home/git/gitlab/config/database.yml
+    ```bash
+    cd /home/gitlab_ci/gitlab-ci
+    sudo -u gitlab_ci -H bundle exec backup:create RAILS_ENV=production
     ```
 
-To create backup with database conversion (MySQL -> PostgreSQL) execute:
+- If CI uses MySQL, and CE (or EE) uses PostgreSQL, create the backup with this
+  command (note the `MYSQL_TO_POSTGRESQL` flag):
 
-```bash
-cd /home/gitlab_ci/gitlab-ci
-sudo -u gitlab_ci -H bundle exec backup:create RAILS_ENV=production MYSQL_TO_POSTGRESQL=1
-```
+
+    ```bash
+    cd /home/gitlab_ci/gitlab-ci
+    sudo -u gitlab_ci -H bundle exec backup:create RAILS_ENV=production MYSQL_TO_POSTGRESQL=1
+    ```
 
 #### 3. Remove cronjob
 
@@ -103,9 +110,7 @@ same file in GitLab CE:
 There are new configuration options available for `gitlab.yml`. View them with
 the command below and apply them manually to your current `gitlab.yml`:
 
-```sh
-git diff origin/7-14-stable:config/gitlab.yml.example origin/8-0-stable:config/gitlab.yml.example
-```
+    git diff origin/7-14-stable:config/gitlab.yml.example origin/8-0-stable:config/gitlab.yml.example
 
 The new options include configuration settings for GitLab CI.
 
@@ -116,16 +121,16 @@ The new options include configuration settings for GitLab CI.
 
 #### 7. Import GitLab CI backup
 
-Now you'll import the GitLab CI database dump that you [created
-earlier](#5-create-a-database-dump) into the GitLab CE or EE database:
+Now you'll import the GitLab CI database dump that you created earlier into the
+GitLab CE or EE database:
 
     sudo -u git -H bundle exec rake ci:migrate RAILS_ENV=production
-    
+
 This task will take some time.
 
 #### 8. Start GitLab
 
-You can start GitLab CI (or EE) now and see if everything is working:
+You can start GitLab CE (or EE) now and see if everything is working:
 
     sudo service gitlab start
 
@@ -191,7 +196,8 @@ Make sure you substitute these placeholder values with your real ones:
 1. `YOUR_GITLAB_SERVER_FQDN`: The current public-facing address of your GitLab
    CE (or EE) install (e.g., `gitlab.com`).
 
-**Make sure not to remove the `/ci$request_uri` part. This is required to properly forward the requests.**
+**Make sure not to remove the `/ci$request_uri` part. This is required to
+properly forward the requests.**
 
 You should also make sure that you can:
 
@@ -209,8 +215,7 @@ You should also make sure that you can:
 #### 4. Done!
 
 If everything went well you should be able to access your migrated CI install by
-visiting `https://gitlab.example.com/ci/`.
-
-If you visit the old GitLab CI address, you should be redirected to the new one.
+visiting `https://gitlab.example.com/ci/`. If you visit the old GitLab CI
+address, you should be redirected to the new one.
 
 **Enjoy!**
