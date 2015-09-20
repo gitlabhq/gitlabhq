@@ -22,7 +22,7 @@ gem "mysql2", '~> 0.3.16', group: :mysql
 gem "pg", '~> 0.18.2', group: :postgres
 
 # Authentication libraries
-gem "devise", '~> 3.2.4'
+gem "devise", '~> 3.5.2'
 gem "devise-async", '~> 0.9.0'
 gem 'omniauth', "~> 1.2.2"
 gem 'omniauth-google-oauth2', '~> 0.2.5'
