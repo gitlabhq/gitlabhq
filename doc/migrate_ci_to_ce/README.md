@@ -31,10 +31,10 @@ The migration is divided into three parts and covers manual and omnibus installa
 
     # Manual installation
     sudo service gitlab_ci stop
-    
+
     # Omnibus installation
     sudo gitlab-ctl stop ci-unicorn ci-sidekiq
-        
+
 #### 2. Create a backup
 
 The migration procedure modifies the structure of the CI database. If something
@@ -59,20 +59,20 @@ database configuration files:
         # Manual installation
         cd /home/gitlab_ci/gitlab-ci
         sudo -u gitlab_ci -H bundle exec backup:create RAILS_ENV=production
-        
+
         # Omnibus installation
         sudo gitlab-ci-rake backup:create
-    
+
 - If CI uses MySQL, and CE (or EE) uses PostgreSQL, create the backup with this
   command (note the `MYSQL_TO_POSTGRESQL` flag):
 
         # Manual installation
         cd /home/gitlab_ci/gitlab-ci
         sudo -u gitlab_ci -H bundle exec backup:create RAILS_ENV=production MYSQL_TO_POSTGRESQL=1
-        
+
         # Omnibus installation
         sudo gitlab-ci-rake backup:create MYSQL_TO_POSTGRESQL=1
-    
+
 #### 3. Remove cronjob (manual installation)
 
     # Manual installation
@@ -101,7 +101,7 @@ Before you can migrate data you need to stop the GitLab service first:
 
     # Manual installation
     sudo service gitlab stop
-    
+
     # Omnibus installation
     sudo gitlab-ctl stop unicorn sidekiq
 
@@ -113,16 +113,16 @@ installation. Create a backup before proceeding:
     # Manual installation
     cd /home/git/gitlab
     sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
-    
+
     # Omnibus installation
     sudo gitlab-rake gitlab:backup:create
-    
+
 It's possible to speedup backup creation. To do that you can skip repositories and uploads.
 
     # Manual installation
     cd /home/git/gitlab
     sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production SKIP=repositories,uploads
-    
+
     # Omnibus installation
     sudo gitlab-rake gitlab:backup:create SKIP=repositories,uploads
 
@@ -158,7 +158,7 @@ The new options include configuration settings for GitLab CI.
     # Manual installation
     sudo cp -v /home/gitlab_ci/gitlab-ci/tmp/backups/*_gitlab_ci_backup.tar /home/git/gitlab/tmp/backups
     sudo chown git:git /home/git/gitlab/tmp/backups/*_gitlab_ci_backup.tar
-    
+
     # Omnibus installation
     sudo cp -v /var/opt/gitlab/ci-backups/*_gitlab_ci_backup.tar /var/opt/gitlab/backups/
     sudo chown git:git /var/opt/gitlab/backups/*_gitlab_ci_backup.tar
@@ -169,7 +169,7 @@ You can try to use ssh-agent from your local machine to have that: login to your
 
     # Manual installation
     scp /home/gitlab_ci/gitlab-ci/tmp/backups/*_gitlab_ci_backup.tar root@gitlab.example.com:/home/git/gitlab/tmp/backup
-    
+
     # Omnibus installation
     scp /var/opt/gitlab/ci-backups/*_gitlab_ci_backup.tar root@gitlab.example.com:/var/opt/gitlab/backups/
 
@@ -180,7 +180,7 @@ GitLab CE or EE database:
 
     # Manual installation
     sudo -u git -H bundle exec rake ci:migrate RAILS_ENV=production
-    
+
     # Omnibus installation
     sudo gitlab-rake ci:migrate
 
@@ -192,7 +192,7 @@ You can start GitLab CE (or EE) now and see if everything is working:
 
     # Manual installation
     sudo service gitlab start
-    
+
     # Omnibus installation
     sudo gitlab-ctl restart unicorn sidekiq
 
