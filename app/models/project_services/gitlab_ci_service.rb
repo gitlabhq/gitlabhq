@@ -46,9 +46,7 @@ class GitlabCiService < CiService
     end
 
     ci_project = Ci::Project.find_by(gitlab_id: project.id)
-    if ci_project
-      Ci::CreateCommitService.new.execute(ci_project, data)
-    end
+    Ci::CreateCommitService.new.execute(ci_project, data)
   end
 
   def get_ci_commit(sha, ref)
@@ -87,9 +85,7 @@ class GitlabCiService < CiService
   end
 
   def build_page(sha, ref)
-    if project.gitlab_ci_project.present?
-      Ci::RoutesHelper.ci_project_ref_commits_path(project.gitlab_ci_project, ref, sha)
-    end
+    Ci::RoutesHelper.ci_project_ref_commits_path(project.gitlab_ci_project, ref, sha)
   end
 
   def title
