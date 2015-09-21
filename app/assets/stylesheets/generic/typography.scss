@@ -89,6 +89,10 @@ a > code {
   }
 }
 
+.md-area {
+  @include md-typography;
+}
+
 .md {
   @include md-typography;
 }
