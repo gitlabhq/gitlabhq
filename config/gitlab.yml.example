@@ -4,7 +4,7 @@
 #
 ###########################  NOTE  #####################################
 # This file should not receive new settings. All configuration options #
-# that do not require application restart are being moved to           #
+# that do not require an application restart are being moved to        #
 # ApplicationSetting model!                                            #
 # If you change this file in a Merge Request, please also create       #
 # a MR on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests  #
