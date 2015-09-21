@@ -30,7 +30,7 @@ The migration is divided into three parts:
 #### 1. Stop GitLab CI
 
     sudo service gitlab_ci stop
-
+        
 #### 2. Create a backup
 
 The migration procedure modifies the structure of the CI database. If something
@@ -44,10 +44,8 @@ setting a `MYSQL_TO_POSTGRESQL` flag.
 You can check which database each install is using by viewing their
 database configuration files:
 
-```sh
-cat /home/gitlab_ci/gitlab-ci/config/database.yml
-cat /home/git/gitlab/config/database.yml
-```
+    cat /home/gitlab_ci/gitlab-ci/config/database.yml
+    cat /home/git/gitlab/config/database.yml
 
 - If both applications use the same database `adapter`, create the backup with
   this command:
@@ -56,22 +54,19 @@ cat /home/git/gitlab/config/database.yml
     cd /home/gitlab_ci/gitlab-ci
     sudo -u gitlab_ci -H bundle exec backup:create RAILS_ENV=production
     ```
-
+    
 - If CI uses MySQL, and CE (or EE) uses PostgreSQL, create the backup with this
   command (note the `MYSQL_TO_POSTGRESQL` flag):
-
 
     ```bash
     cd /home/gitlab_ci/gitlab-ci
     sudo -u gitlab_ci -H bundle exec backup:create RAILS_ENV=production MYSQL_TO_POSTGRESQL=1
     ```
-
+    
 #### 3. Remove cronjob
 
-```
-cd /home/gitlab_ci/gitlab-ci
-sudo -u gitlab_ci -H bundle exec whenever --clear-crontab
-```
+    cd /home/gitlab_ci/gitlab-ci
+    sudo -u gitlab_ci -H bundle exec whenever --clear-crontab
 
 ### Part II: GitLab CE (or EE)
 
@@ -80,21 +75,33 @@ sudo -u gitlab_ci -H bundle exec whenever --clear-crontab
 Your GitLab CE or EE installation **must be version 8.0**. If it's not, follow
 the [update guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/7.14-to-8.0.md).
 
-#### 2. Stop GitLab
+#### 2. Prevent CI usage for time of migration
+
+As Admin go to Admin Area -> Settings -> and uncheck 
+**Disable to prevent CI usage until rake ci:migrate is run (8.0 only)**.
+
+This will prevent from creating the CI projects till you finish migration. 
+
+#### 3. Stop GitLab
 
 Before you can migrate data you need to stop the GitLab service first:
 
     sudo service gitlab stop
 
-#### 3. Create a backup
+#### 4. Create a backup
 
 This migration poses a **significant risk** of breaking your GitLab
 installation. Create a backup before proceeding:
 
     cd /home/git/gitlab
     sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
+    
+It's possible to speedup backup creation. To do that you can skip repositories and uploads.
 
-#### 4. Copy secret tokens from CI
+    cd /home/git/gitlab
+    sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production SKIP=repositories,uploads
+
+#### 5. Copy secret tokens from CI
 
 The `secrets.yml` file stores encryption keys for secure variables.
 
@@ -105,7 +112,7 @@ same file in GitLab CE:
     sudo chown git:git /home/git/gitlab/config/secrets.yml
     sudo chown 0600 /home/git/gitlab/config/secrets.yml
 
-#### 5. New configuration options for `gitlab.yml`
+#### 6. New configuration options for `gitlab.yml`
 
 There are new configuration options available for `gitlab.yml`. View them with
 the command below and apply them manually to your current `gitlab.yml`:
@@ -114,12 +121,18 @@ the command below and apply them manually to your current `gitlab.yml`:
 
 The new options include configuration settings for GitLab CI.
 
-#### 6. Copy backup from GitLab CI
+#### 7. Copy backup from GitLab CI
 
     sudo cp -v /home/gitlab_ci/gitlab-ci/tmp/backups/*_gitlab_ci_backup.tar /home/git/gitlab/tmp/backups
     sudo chown git:git /home/git/gitlab/tmp/backups/*_gitlab_ci_backup.tar
 
-#### 7. Import GitLab CI backup
+If moving across the servers you can use **scp**.
+However, this requires you to provide authorized key or password to login to GitLab CE servers from CI server. 
+You can try to use ssh-agent from your local machine to have that: login to your GitLab CI server using `ssh -A`.
+
+    scp /home/gitlab_ci/gitlab-ci/tmp/backups/*_gitlab_ci_backup.tar root@gitlab.example.com:/home/git/gitlab/tmp/backup
+
+#### 8. Import GitLab CI backup
 
 Now you'll import the GitLab CI database dump that you created earlier into the
 GitLab CE or EE database:
@@ -128,7 +141,7 @@ GitLab CE or EE database:
 
 This task will take some time.
 
-#### 8. Start GitLab
+#### 9. Start GitLab
 
 You can start GitLab CE (or EE) now and see if everything is working:
 
