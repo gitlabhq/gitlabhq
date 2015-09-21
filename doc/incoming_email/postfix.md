@@ -2,7 +2,7 @@
 
 This document will take you through the steps of setting up a basic Postfix mail server with IMAP authentication on Ubuntu, to be used with Reply by email.
 
-The instructions make the assumption that you will be using the email address `replies@gitlab.example.com`, that is, username `replies` on host `gitlab.example.com`. Don't forget to change it to your actual host when executing the example code snippets.
+The instructions make the assumption that you will be using the email address `incoming@gitlab.example.com`, that is, username `incoming` on host `gitlab.example.com`. Don't forget to change it to your actual host when executing the example code snippets.
 
 ## Configure your server firewall
 
@@ -27,16 +27,16 @@ The instructions make the assumption that you will be using the email address `r
 
 ## Create user
 
-1. Create a user for replies.
+1. Create a user for incoming email.
 
     ```sh
-    sudo useradd -m -s /bin/bash replies
+    sudo useradd -m -s /bin/bash incoming
     ```
 
 1. Set a password for this user.
 
     ```sh
-    sudo passwd replies
+    sudo passwd incoming
     ```
 
     Be sure not to forget this, you'll need it later.
@@ -70,12 +70,12 @@ The instructions make the assumption that you will be using the email address `r
     sudo postfix start
     ```
 
-1. Send the new `replies` user a dummy email to test SMTP, by entering the following into the SMTP prompt:
+1. Send the new `incoming` user a dummy email to test SMTP, by entering the following into the SMTP prompt:
     
     ```
     ehlo localhost
     mail from: root@localhost
-    rcpt to: replies@localhost
+    rcpt to: incoming@localhost
     data
     Subject: Re: Some issue
 
@@ -86,17 +86,17 @@ The instructions make the assumption that you will be using the email address `r
 
     (Note: The `.` is a literal period on its own line)
 
-1. Check if the `replies` user received the email:
+1. Check if the `incoming` user received the email:
     
     ```sh
-    su - replies
+    su - incoming
     mail
     ```
 
     You should see output like this:
 
     ```
-    "/var/mail/replies": 1 message 1 unread
+    "/var/mail/incoming": 1 message 1 unread
     >U   1 root@localhost                           59/2842  Re: Some issue
     ```
 
@@ -106,7 +106,7 @@ The instructions make the assumption that you will be using the email address `r
     q
     ```
 
-1. Log out of the `replies` account and go back to being `root`:
+1. Log out of the `incoming` account and go back to being `root`:
 
     ```sh
     logout
@@ -131,18 +131,18 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
 1. Test the new setup:
     
     1. Follow steps 1 and 2 of _[Test the out-of-the-box setup](#test-the-out-of-the-box-setup)_.
-    2. Check if the `replies` user received the email:
+    2. Check if the `incoming` user received the email:
     
         ```sh
-        su - replies
-        MAIL=/home/replies/Maildir
+        su - incoming
+        MAIL=/home/incoming/Maildir
         mail
         ```
 
         You should see output like this:
 
         ```
-        "/home/replies/Maildir": 1 message 1 unread
+        "/home/incoming/Maildir": 1 message 1 unread
         >U   1 root@localhost                           59/2842  Re: Some issue
         ```
 
@@ -152,7 +152,7 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
         q
         ```
 
-1. Log out of the `replies` account and go back to being `root`:
+1. Log out of the `incoming` account and go back to being `root`:
 
     ```sh
     logout
@@ -221,12 +221,12 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
 
         If you get a `Connection refused` error instead, make sure your firewall is setup to allow inbound traffic on port 25.
 
-    1. Send the `replies` user a dummy email to test SMTP, by entering the following into the SMTP prompt:
+    1. Send the `incoming` user a dummy email to test SMTP, by entering the following into the SMTP prompt:
         
         ```
         ehlo gitlab.example.com
         mail from: root@gitlab.example.com
-        rcpt to: replies@gitlab.example.com
+        rcpt to: incoming@gitlab.example.com
         data
         Subject: Re: Some issue
 
@@ -237,18 +237,18 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
 
         (Note: The `.` is a literal period on its own line)
 
-    1. Check if the `replies` user received the email:
+    1. Check if the `incoming` user received the email:
     
         ```sh
-        su - replies
-        MAIL=/home/replies/Maildir
+        su - incoming
+        MAIL=/home/incoming/Maildir
         mail
         ```
 
         You should see output like this:
 
         ```
-        "/home/replies/Maildir": 1 message 1 unread
+        "/home/incoming/Maildir": 1 message 1 unread
         >U   1 root@gitlab.example.com                           59/2842  Re: Some issue
         ```
 
@@ -258,7 +258,7 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
         q
         ```
 
-    1. Log out of the `replies` account and go back to being `root`:
+    1. Log out of the `incoming` account and go back to being `root`:
 
         ```sh
         logout
@@ -281,13 +281,13 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
         - OK [CAPABILITY IMAP4rev1 UIDPLUS CHILDREN NAMESPACE THREAD=ORDEREDSUBJECT THREAD=REFERENCES SORT QUOTA IDLE ACL ACL2=UNION] Courier-IMAP ready. Copyright 1998-2011 Double Precision, Inc.  See COPYING for distribution information.
         ```
 
-    1. Sign in as the `replies` user to test IMAP, by entering the following into the IMAP prompt:
+    1. Sign in as the `incoming` user to test IMAP, by entering the following into the IMAP prompt:
 
         ```
-        a login replies PASSWORD
+        a login incoming PASSWORD
         ```
 
-        Replace PASSWORD with the password you set on the `replies` user earlier.
+        Replace PASSWORD with the password you set on the `incoming` user earlier.
 
         You should see output like this:
 
