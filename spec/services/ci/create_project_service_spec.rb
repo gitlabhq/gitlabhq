@@ -15,7 +15,8 @@ describe Ci::CreateProjectService do
 
     context 'without project dump' do
       it 'should raise exception' do
-        expect { service.execute(current_user, '', '') }.to raise_error
+        expect { service.execute(current_user, '', '') }.
+          to raise_error(NoMethodError)
       end
     end
 
