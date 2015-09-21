@@ -187,8 +187,8 @@ Settings.gitlab_ci['builds_path']         = File.expand_path(Settings.gitlab_ci[
 #
 # Reply by email
 #
-Settings['reply_by_email'] ||= Settingslogic.new({})
-Settings.reply_by_email['enabled'] = false if Settings.reply_by_email['enabled'].nil?
+Settings['incoming_email'] ||= Settingslogic.new({})
+Settings.incoming_email['enabled'] = false if Settings.incoming_email['enabled'].nil?
 
 #
 # Gravatar

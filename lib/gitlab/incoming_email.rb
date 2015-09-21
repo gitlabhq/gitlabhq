@@ -1,5 +1,5 @@
 module Gitlab
-  module ReplyByEmail
+  module IncomingEmail
     class << self
       def enabled?
         config.enabled && address_formatted_correctly?
@@ -7,20 +7,14 @@ module Gitlab
 
       def address_formatted_correctly?
         config.address &&
-          config.address.include?("%{reply_key}")
+          config.address.include?("%{key}")
       end
 
-      def reply_key
-        return nil unless enabled?
-
-        SecureRandom.hex(16)
+      def reply_address(key)
+        config.address.gsub('%{key}', key)
       end
 
-      def reply_address(reply_key)
-        config.address.gsub('%{reply_key}', reply_key)
-      end
-
-      def reply_key_from_address(address)
+      def key_from_address(address)
         regex = address_regex
         return unless regex
 
@@ -33,7 +27,7 @@ module Gitlab
       private
 
       def config
-        Gitlab.config.reply_by_email
+        Gitlab.config.incoming_email
       end
 
       def address_regex
@@ -41,7 +35,7 @@ module Gitlab
         return nil unless wildcard_address
 
         regex = Regexp.escape(wildcard_address)
-        regex = regex.gsub(Regexp.escape('%{reply_key}'), "(.+)")
+        regex = regex.gsub(Regexp.escape('%{key}'), "(.+)")
         Regexp.new(regex).freeze
       end
     end

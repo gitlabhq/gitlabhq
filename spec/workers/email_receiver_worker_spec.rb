@@ -5,7 +5,7 @@ describe EmailReceiverWorker do
 
   context "when reply by email is enabled" do
     before do
-      allow(Gitlab::ReplyByEmail).to receive(:enabled?).and_return(true)
+      allow(Gitlab::IncomingEmail).to receive(:enabled?).and_return(true)
     end
 
     it "calls the email receiver" do
@@ -33,7 +33,7 @@ describe EmailReceiverWorker do
 
   context "when reply by email is disabled" do
     before do
-      allow(Gitlab::ReplyByEmail).to receive(:enabled?).and_return(false)
+      allow(Gitlab::IncomingEmail).to receive(:enabled?).and_return(false)
     end
 
     it "doesn't call the email receiver" do

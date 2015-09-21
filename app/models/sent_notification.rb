@@ -23,6 +23,12 @@ class SentNotification < ActiveRecord::Base
   validates :commit_id, presence: true, if: :for_commit?
 
   class << self
+    def reply_key
+      return nil unless Gitlab::IncomingEmail.enabled?
+
+      SecureRandom.hex(16)
+    end
+
     def for(reply_key)
       find_by(reply_key: reply_key)
     end
