@@ -9,7 +9,7 @@
       %i.fa.fa-list-alt
       %span
         Commits
-        %small.pull-right= @project.commits.count
+        %span.count= @project.commits.count
   = nav_link path: 'charts#show' do
     = link_to ci_project_charts_path(@project) do
       %i.fa.fa-bar-chart
