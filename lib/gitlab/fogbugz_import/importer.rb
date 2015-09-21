@@ -154,7 +154,7 @@ module Gitlab
           while comment = comments.shift
             verb = comment['sVerb']
 
-            next if verb == 'Opened' || verb === 'Closed'
+            next if verb == 'Opened'
 
             content = format_content(comment['s'])
             attachments = format_attachments(comment['rgAttachments'])
