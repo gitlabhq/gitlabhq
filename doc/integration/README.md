@@ -10,7 +10,7 @@ See the documentation below for details on how to configure these services.
 - [SAML](saml.md) Configure GitLab as a SAML 2.0 Service Provider
 - [Slack](slack.md) Integrate with the Slack chat service
 - [OAuth2 provider](oauth_provider.md) OAuth2 application creation
-- [Gmail](gitlab_buttons_in_gmail.md) Adds GitLab actions to messages
+- [Gmail actions buttons](gmail_action_buttons_for_gitlab.md) Adds GitLab actions to messages
 
 GitLab Enterprise Edition contains [advanced JIRA support](http://doc.gitlab.com/ee/integration/jira.html) and [advanced Jenkins support](http://doc.gitlab.com/ee/integration/jenkins.html).
 

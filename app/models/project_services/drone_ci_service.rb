@@ -26,7 +26,7 @@ class DroneCiService < CiService
     format: { with: /\A#{URI.regexp(%w(http https))}\z/, message: "should be a valid url" }, if: :activated?
   validates :token,
     presence: true,
-    format: { with: /\A([A-Za-z0-9]+)\z/ },  if: :activated?
+    if: :activated?
 
   after_save :compose_service_hook, if: :activated?
 

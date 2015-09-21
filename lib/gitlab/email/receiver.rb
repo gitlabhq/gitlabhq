@@ -98,7 +98,8 @@ module Gitlab
           note:           reply,
           noteable_type:  sent_notification.noteable_type,
           noteable_id:    sent_notification.noteable_id,
-          commit_id:      sent_notification.commit_id
+          commit_id:      sent_notification.commit_id,
+          line_code:      sent_notification.line_code
         ).execute
       end
     end

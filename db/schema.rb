@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150918084513) do
+ActiveRecord::Schema.define(version: 20150920161119) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -623,6 +623,7 @@ ActiveRecord::Schema.define(version: 20150918084513) do
     t.integer "recipient_id"
     t.string  "commit_id"
     t.string  "reply_key",     null: false
+    t.string  "line_code"
   end
 
   add_index "sent_notifications", ["reply_key"], name: "index_sent_notifications_on_reply_key", unique: true, using: :btree
@@ -749,6 +750,7 @@ ActiveRecord::Schema.define(version: 20150918084513) do
     t.string   "public_email",               default: "",    null: false
     t.integer  "dashboard",                  default: 0
     t.integer  "project_view",               default: 0
+    t.integer  "consumed_timestep"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

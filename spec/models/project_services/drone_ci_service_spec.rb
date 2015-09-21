@@ -34,8 +34,6 @@ describe DroneCiService do
       it { is_expected.to validate_presence_of(:drone_url) }
       it { is_expected.to allow_value('ewf9843kdnfdfs89234n').for(:token) }
       it { is_expected.to allow_value('http://ci.example.com').for(:drone_url) }
-      it { is_expected.not_to allow_value('token with spaces').for(:token) }
-      it { is_expected.not_to allow_value('token/with%spaces').for(:token) }
       it { is_expected.not_to allow_value('this is not url').for(:drone_url) }
       it { is_expected.not_to allow_value('http//noturl').for(:drone_url) }
       it { is_expected.not_to allow_value('ftp://ci.example.com').for(:drone_url) }
@@ -48,7 +46,6 @@ describe DroneCiService do
       it { is_expected.not_to validate_presence_of(:drone_url) }
       it { is_expected.to allow_value('ewf9843kdnfdfs89234n').for(:token) }
       it { is_expected.to allow_value('http://drone.example.com').for(:drone_url) }
-      it { is_expected.to allow_value('token with spaces').for(:token) }
       it { is_expected.to allow_value('ftp://drone.example.com').for(:drone_url) }
     end
   end
