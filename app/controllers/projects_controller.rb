@@ -86,6 +86,10 @@ class ProjectsController < ApplicationController
           if @project.empty_repo?
             render 'projects/empty'
           else
+            if current_user
+              @membership = @project.project_member_by_id(current_user.id)
+            end
+
             render :show
           end
         else

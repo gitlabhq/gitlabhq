@@ -51,6 +51,7 @@ v 8.0.0 (unreleased)
   - Add support for Crowd
   - Global Labels that are available to all projects
   - Fix highlighting of deleted lines in diffs.
+  - Project notification level can be set on the project page itself
   - Added service API endpoint to retrieve service parameters (Petheő Bence)
   - Add FogBugz project import (Jared Szechy)
   - Sort users autocomplete lists by user (Allister Antosik)

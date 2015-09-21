@@ -74,3 +74,9 @@ Feature: Project
     Given I disable snippets in project
     When I visit project "Shop" page
     Then I should not see "Snippets" button
+
+  @javascript
+  Scenario: I edit Project Notifications
+    Given I click notifications drop down button
+    When I choose Mention setting
+    Then I should see Notification saved message

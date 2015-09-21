@@ -1,0 +1,14 @@
+- return unless @membership
+
+= form_tag profile_notifications_path, method: :put, remote: true, class: 'inline-form', id: 'notification-form' do
+  = hidden_field_tag :notification_type, 'project'
+  = hidden_field_tag :notification_id, @membership.id
+  = hidden_field_tag :notification_level
+  %span.dropdown
+    %a.dropdown-toggle.btn.btn-new#notifications-button{href: '#', "data-toggle" => "dropdown"}
+      = icon('bell')
+      = notification_label(@membership)
+      = icon('angle-down')
+    %ul.dropdown-menu.dropdown-menu-right.project-home-dropdown
+      - Notification.project_notification_levels.each do |level|
+        = notification_list_item(level, @membership)
