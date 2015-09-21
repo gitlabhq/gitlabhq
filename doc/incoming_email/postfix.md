@@ -27,7 +27,7 @@ The instructions make the assumption that you will be using the email address `i
 
 ## Create user
 
-1. Create a user for incoming.
+1. Create a user for incoming email.
 
     ```sh
     sudo useradd -m -s /bin/bash incoming

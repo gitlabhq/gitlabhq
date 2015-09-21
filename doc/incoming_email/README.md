@@ -16,7 +16,7 @@ In this example, we'll use the Gmail address `gitlab-incoming@gmail.com`.
 
 ### Omnibus package installations
 
-1. Find the `incoming_email` section in `/etc/gitlab/gitlab.rb`, enable the feature, enter the email address including a placeholder for the `key` and fill in the details for your specific IMAP server and email account:
+1. Find the `incoming_email` section in `/etc/gitlab/gitlab.rb`, enable the feature, enter the email address including a placeholder for the `key` that references the item being replied to and fill in the details for your specific IMAP server and email account:
 
     ```ruby
     gitlab_rails['incoming_email_enabled'] = true
@@ -53,7 +53,7 @@ In this example, we'll use the Gmail address `gitlab-incoming@gmail.com`.
     cd /home/git/gitlab
     ```
 
-1. Find the `incoming_email` section in `config/gitlab.yml`, enable the feature and enter the email address including a placeholder for the `key`:
+1. Find the `incoming_email` section in `config/gitlab.yml`, enable the feature and enter the email address including a placeholder for the `key` that references the item being replied to:
 
     ```sh
     sudo editor config/gitlab.yml
@@ -134,7 +134,7 @@ In this example, we'll use the Gmail address `gitlab-incoming@gmail.com`.
 
 1. Go to the GitLab installation directory.
 
-1. Find the `incoming_email` section in `config/gitlab.yml`, enable the feature and enter the email address including a placeholder for the `key`:
+1. Find the `incoming_email` section in `config/gitlab.yml`, enable the feature and enter the email address including a placeholder for the `key` that references the item being replied to:
 
     ```yaml
     incoming_email:
