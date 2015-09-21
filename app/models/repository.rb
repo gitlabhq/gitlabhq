@@ -210,9 +210,13 @@ class Repository
 
   def license
     cache.fetch(:license) do
-      tree(:head).blobs.find_all do |file|
-        file.name =~ /\A(copying|license)/i
-      end.last # Prefer `LICENSE` as filename over `COPYING`
+      licenses =  tree(:head).blobs.find_all do |file|
+                    file.name =~ /\A(copying|license)/i
+                  end
+
+      # If `licence`, `copying` and `copying.lesser` are found, return in the
+      # following order: licence, copying, copying.lesser
+      licenses.find { |l| l =~ /\Alicence/i } || licenses.sort.first
     end
   end
 
