@@ -1,6 +1,8 @@
 module Ci
   module Migrate
     class Manager
+      CI_IMPORT_PREFIX = '8.0' # Only allow imports from CI 8.0.x
+
       def cleanup
         $progress.print "Deleting tmp directories ... "
 
@@ -48,7 +50,7 @@ module Ci
         ENV["VERSION"] = "#{settings[:db_version]}" if settings[:db_version].to_i > 0
 
         # restoring mismatching backups can lead to unexpected problems
-        if settings[:gitlab_version] != GitlabCi::VERSION
+        if !settings[:gitlab_version].start_with?(CI_IMPORT_PREFIX)
           puts "GitLab CI version mismatch:".red
           puts "  Your current GitLab CI version (#{GitlabCi::VERSION}) differs from the GitLab CI (#{settings[:gitlab_version]}) version in the backup!".red
           exit 1
