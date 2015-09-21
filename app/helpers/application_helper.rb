@@ -314,4 +314,8 @@ module ApplicationHelper
 
     html.html_safe
   end
+
+  def repositories_size(projects)
+    projects.inject(0){|sum, project| sum + project.repository_size }.round(2)
+  end
 end

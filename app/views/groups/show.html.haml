@@ -15,6 +15,9 @@
     - if @group.description.present?
       .description
         = markdown(@group.description, pipeline: :description)
+    - if !@group.projects.empty?
+      %strong Repositories Size(MB) 
+      = repositories_size(@group.projects)
   %hr
 
   = render 'shared/show_aside'
