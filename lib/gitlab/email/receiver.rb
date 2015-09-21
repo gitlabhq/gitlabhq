@@ -65,7 +65,7 @@ module Gitlab
       def reply_key
         reply_key = nil
         message.to.each do |address|
-          reply_key = Gitlab::ReplyByEmail.reply_key_from_address(address)
+          reply_key = Gitlab::IncomingEmail.key_from_address(address)
           break if reply_key
         end
 

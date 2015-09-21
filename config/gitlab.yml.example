@@ -4,7 +4,7 @@
 #
 ###########################  NOTE  #####################################
 # This file should not receive new settings. All configuration options #
-# that do not require application restart are being moved to           #
+# that do not require an application restart are being moved to        #
 # ApplicationSetting model!                                            #
 # If you change this file in a Merge Request, please also create       #
 # a MR on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests  #
@@ -96,10 +96,10 @@ production: &base
 
   ## Reply by email
   # Allow users to comment on issues and merge requests by replying to notification emails.
-  # For documentation on how to set this up, see http://doc.gitlab.com/ce/reply_by_email/README.html
-  reply_by_email:
+  # For documentation on how to set this up, see http://doc.gitlab.com/ce/incoming_email/README.html
+  incoming_email:
     enabled: false
-    address: "replies+%{reply_key}@gitlab.example.com"
+    address: "incoming+%{key}@gitlab.example.com"
 
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html

@@ -26,10 +26,8 @@
           = icon('download fw')
           Download
 
-    = render 'projects/buttons/dropdown'
+    = render 'projects/buttons/notifications'
 
-    - if @project.gitlab_ci?
-      = link_to ci_project_path(@project.gitlab_ci_project), class: 'btn btn-default' do
-        CI
+    = render 'projects/buttons/dropdown'
 
   = render "shared/clone_panel"

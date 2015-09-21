@@ -10,7 +10,8 @@
         %span CI build #{status}
         for #{@merge_request.last_commit_short_sha}.
         %span.ci-coverage
-        = link_to "View build details", ci_build_details_path(@merge_request), :"data-no-turbolink" => "data-no-turbolink"
+        - if ci_build_details_path(@merge_request)
+          = link_to "View build details", ci_build_details_path(@merge_request), :"data-no-turbolink" => "data-no-turbolink"
 
     .ci_widget
       = icon("spinner spin")
