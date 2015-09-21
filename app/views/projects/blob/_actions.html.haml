@@ -17,6 +17,6 @@
         tree_join(@commit.sha, @path)), class: 'btn btn-sm'
 
 - if allowed_tree_edit?
-  = button_tag class: 'remove-blob btn btn-sm btn-remove',
-      'data-toggle' => 'modal', 'data-target' => '#modal-remove-blob' do
-    Remove
+  .btn-group{ role: "group" }
+    %button.btn.btn-default{ 'data-target' => '#modal-upload-blob', 'data-toggle' => 'modal' } Replace
+    %button.btn.btn-remove{ 'data-target' => '#modal-remove-blob', 'data-toggle' => 'modal' } Remove

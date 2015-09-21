@@ -235,8 +235,6 @@ ul.notes {
     filter: alpha(opacity=0);
 
     &:hover {
-      width: 38px;
-      font-size: 20px;
       background: $gl-info;
       color: #FFF;
       @include show-add-diff-note;

@@ -1,0 +1,29 @@
+- last_commit = project.last_commit
+%tr
+  %td
+    = project.id
+  %td
+    = link_to [:ci, project] do
+      %strong= project.name
+  %td
+    - if last_commit
+      = ci_status_with_icon(last_commit.status)
+      - if project.last_commit_date
+        &middot;
+        = time_ago_in_words project.last_commit_date
+        ago
+    - else
+      No builds yet
+  %td
+    - if project.public
+      %i.fa.fa-globe
+      Public
+    - else
+      %i.fa.fa-lock
+      Private
+  %td
+    = project.commits.count
+  %td
+    = link_to [:ci, :admin, project], method: :delete, class: 'btn btn-danger btn-sm' do
+      %i.fa.fa-remove
+      Remove

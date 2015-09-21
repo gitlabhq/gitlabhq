@@ -56,7 +56,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def confirm
-    if user.confirm!
+    if user.confirm
       redirect_to :back, notice: "Successfully confirmed"
     else
       redirect_to :back, alert: "Error occurred. User was not confirmed"

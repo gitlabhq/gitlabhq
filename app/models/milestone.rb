@@ -61,7 +61,7 @@ class Milestone < ActiveRecord::Base
       false
     end
   end
-  
+
   def open_items_count
     self.issues.opened.count + self.merge_requests.opened.count
   end

@@ -46,13 +46,11 @@ describe NamespacesController do
 
       context "when the project doesn't have public projects" do
         context "when not signed in" do
-          it "redirects to the sign in page" do
+          it "does not redirect to the sign in page" do
             get :show, id: group.path
-
-            expect(response).to redirect_to(new_user_session_path)
+            expect(response).not_to redirect_to(new_user_session_path)
           end
         end
-
         context "when signed in" do
           before do
             sign_in(user)
@@ -86,10 +84,10 @@ describe NamespacesController do
           end
 
           context "when the user doesn't have access to the project" do
-            it "responds with status 404" do
+            it "redirects to the group's page" do
               get :show, id: group.path
 
-              expect(response.status).to eq(404)
+              expect(response).to redirect_to(group_path(group))
             end
           end
         end

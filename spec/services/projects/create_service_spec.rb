@@ -17,6 +17,14 @@ describe Projects::CreateService do
       expect(project.services).not_to be_empty
     end
 
+    it 'creates labels on Project creation if there are templates' do
+      Label.create(title: "bug", template: true)
+      project = create_project(@user, @opts)
+      project.reload
+
+      expect(project.labels).not_to be_empty
+    end
+
     context 'user namespace' do
       before do
         @project = create_project(@user, @opts)
@@ -86,6 +94,17 @@ describe Projects::CreateService do
 
         expect(project.errors.any?).to be(false)
         expect(project.saved?).to be(true)
+      end
+    end
+
+    context 'repository creation' do
+      it 'should synchronously create the repository' do
+        expect_any_instance_of(Project).to receive(:create_repository)
+
+        project = create_project(@user, @opts)
+        expect(project).to be_valid
+        expect(project.owner).to eq(@user)
+        expect(project.namespace).to eq(@user.namespace)
       end
     end
   end

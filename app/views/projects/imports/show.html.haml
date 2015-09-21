@@ -3,8 +3,12 @@
   .center
     %h2
       %i.fa.fa-spinner.fa-spin
-      Import in progress.
-    %p.monospace git clone --bare #{hidden_pass_url(@project.import_url)}
+      - if @project.forked?
+        Forking in progress.
+      - else
+        Import in progress.
+    - unless @project.forked?
+      %p.monospace git clone --bare #{hidden_pass_url(@project.import_url)}
     %p Please wait while we import the repository for you. Refresh at will.
     :javascript
       new ProjectImport();

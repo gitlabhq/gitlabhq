@@ -9,6 +9,10 @@
     width: 100%;
   }
 
+  .ace_gutter-cell {
+    background-color: $background-color;
+  }
+
   .cancel-btn {
     color: #B94A48;
     &:hover {
@@ -32,14 +36,12 @@
 
   .file-title {
     @extend .monospace;
-    font-size: 14px;
-    padding: 5px;
   }
 
   .editor-ref {
     background: $background-color;
     padding: 11px 15px;
-    border-right: 1px solid #CCC;
+    border-right: 1px solid $border-color;
     display: inline-block;
     margin: -5px -5px;
     margin-right: 10px;
@@ -50,5 +52,15 @@
       display: inline-block;
       width: 200px;
     }
+
+    .form-control {
+      margin-top: -3px;
+    }
+  }
+
+  .form-actions {
+    margin: -$gl-padding;
+    margin-top: 0;
+    padding: $gl-padding
   }
 }

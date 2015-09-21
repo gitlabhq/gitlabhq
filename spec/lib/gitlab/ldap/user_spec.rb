@@ -11,7 +11,7 @@ describe Gitlab::LDAP::User do
     }
   end
   let(:auth_hash) do
-    double(uid: 'my-uid', provider: 'ldapmain', info: double(info))
+    OmniAuth::AuthHash.new(uid: 'my-uid', provider: 'ldapmain', info: info)
   end
 
   describe :changed? do

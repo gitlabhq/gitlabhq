@@ -1,5 +1,8 @@
 - page_title "Audit Log"
-%h3.page-title Audit Log
-%p.light History of authentications
+- header_title page_title, audit_log_profile_path
 
+.gray-content-block.top-block
+  History of authentications
+
+.prepend-top-default
 = render 'event_table', events: @events

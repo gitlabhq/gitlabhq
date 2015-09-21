@@ -43,24 +43,22 @@ module ProjectsHelper
     end
   end
 
-  def project_title(project)
-    if project.group
-      content_tag :span do
-        link_to(
-          simple_sanitize(project.group.name), group_path(project.group)
-        ) + ' / ' +
-          link_to(simple_sanitize(project.name),
-                  project_path(project))
+  def project_title(project, name = nil, url = nil)
+    namespace_link =
+      if project.group
+        link_to(simple_sanitize(project.group.name), group_path(project.group))
+      else
+        owner = project.namespace.owner
+        link_to(simple_sanitize(owner.name), user_path(owner))
       end
-    else
-      owner = project.namespace.owner
-      content_tag :span do
-        link_to(
-          simple_sanitize(owner.name), user_path(owner)
-        ) + ' / ' +
-          link_to(simple_sanitize(project.name),
-                  project_path(project))
-      end
+
+    project_link = link_to(simple_sanitize(project.name), project_path(project))
+
+    full_title = namespace_link + ' / ' + project_link
+    full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url) if name
+
+    content_tag :span do
+      full_title
     end
   end
 
@@ -313,6 +311,10 @@ module ProjectsHelper
     else
       count
     end
+  end
+
+  def current_ref
+    @ref || @repository.try(:root_ref)
   end
 
   private

@@ -1,0 +1,38 @@
+- page_title    "Snippets"
+- header_title  "Snippets", dashboard_snippets_path
+
+= render 'dashboard/snippets_head'
+
+.gray-content-block
+  .pull-right
+    = link_to new_snippet_path, class: "btn btn-new", title: "New Snippet" do
+      Add new snippet
+
+  .oneline
+    Share code pastes with others out of git repository
+
+%ul.nav.nav-tabs.prepend-top-20
+  = nav_tab :scope, nil do
+    = link_to dashboard_snippets_path do
+      All
+      %span.badge
+        = current_user.snippets.count
+  = nav_tab :scope, 'are_private' do
+    = link_to dashboard_snippets_path(scope: 'are_private') do
+      Private
+      %span.badge
+        = current_user.snippets.are_private.count
+  = nav_tab :scope, 'are_internal' do
+    = link_to dashboard_snippets_path(scope: 'are_internal') do
+      Internal
+      %span.badge
+        = current_user.snippets.are_internal.count
+  = nav_tab :scope, 'are_public' do
+    = link_to dashboard_snippets_path(scope: 'are_public') do
+      Public
+      %span.badge
+        = current_user.snippets.are_public.count
+
+.my-snippets
+  = render 'snippets/snippets'
+

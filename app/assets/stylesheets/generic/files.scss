@@ -3,7 +3,11 @@
  *
  */
 .file-holder {
-  border: 1px solid $border-color;
+  margin-left: -$gl-padding;
+  margin-right: -$gl-padding;
+  border: none;
+  border-top: 1px solid #E7E9EE;
+  border-bottom: 1px solid #E7E9EE;
   margin-bottom: 1em;
 
   table {
@@ -49,7 +53,7 @@
     }
 
     &.wiki {
-      padding: 25px;
+      padding: $gl-padding;
 
       .highlight {
         margin-bottom: 9px;
@@ -90,7 +94,7 @@
           border-right: none;
         }
         background: #fff;
-        padding: 8px;
+        padding: 10px $gl-padding;
       }
       .lines {
         pre {
@@ -98,6 +102,33 @@
           margin: 0;
           background: none;
           border: none;
+        }
+      }
+      img.avatar {
+        border: 0 none;
+        float: none;
+        margin: 0;
+        padding: 0;
+      }
+      td.blame-commit {
+        background: #f9f9f9;
+        min-width: 350px;
+
+        .commit-author-link {
+          color: #888;
+        }
+      }
+      td.blame-numbers {
+        pre {
+          color: #AAA;
+          white-space: pre;
+        }
+        background: #f1f1f1;
+        border-left: 1px solid #DDD;
+      }
+      td.lines {
+        code {
+          font-family: $monospace_font;
         }
       }
     }

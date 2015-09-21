@@ -24,13 +24,9 @@ class SnippetsController < ApplicationController
         scope: params[:scope] }).
       page(params[:page]).per(PER_PAGE)
 
-      if @user == current_user
-        render 'current_user_index'
-      else
-        render 'user_index'
-      end
+      render 'index'
     else
-      @snippets = SnippetsFinder.new.execute(current_user, filter: :all).page(params[:page]).per(PER_PAGE)
+      redirect_to(current_user ? dashboard_snippets_path : explore_snippets_path)
     end
   end
 

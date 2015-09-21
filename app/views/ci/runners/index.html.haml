@@ -1,0 +1,25 @@
+.light
+  %p
+    A 'runner' is a process which runs a build.
+    You can setup as many runners as you need.
+    %br
+    Runners can be placed on separate users, servers, and even on your local machine.
+
+  %p Each runner can be in one of the following states:
+  %div
+    %ul
+      %li
+        %span.label.label-success active
+        \- runner is active and can process any new build
+      %li
+        %span.label.label-danger paused
+        \- runner is paused and will not receive any new build
+
+%hr
+
+%p.lead To start serving your builds you can either add specific runners to your project or use shared runners
+.row
+  .col-sm-6
+    = render 'specific_runners'
+  .col-sm-6
+    = render 'shared_runners'

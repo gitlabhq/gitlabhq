@@ -1,14 +1,15 @@
 - if event = last_push_event
   - if show_last_push_widget?(event)
-    .hidden-xs.center
-      .slead
-        %span You pushed to
-        = link_to namespace_project_commits_path(event.project.namespace, event.project, event.ref_name) do
-          %strong= event.ref_name
-        branch
-        #{time_ago_with_tooltip(event.created_at)}
 
-      %div
-        = link_to new_mr_path_from_push_event(event), title: "New Merge Request", class: "btn btn-info btn-sm" do
-          Create Merge Request
-      %hr
+    .gray-content-block.top-block.clear-block.hidden-xs
+      .event-last-push
+        .event-last-push-text
+          %span You pushed to
+          = link_to namespace_project_commits_path(event.project.namespace, event.project, event.ref_name) do
+            %strong= event.ref_name
+          branch
+          #{time_ago_with_tooltip(event.created_at)}
+
+        .pull-right
+          = link_to new_mr_path_from_push_event(event), title: "New Merge Request", class: "btn btn-info btn-sm" do
+            Create Merge Request

@@ -3,7 +3,7 @@
     = link_to root_path, title: 'Back to dashboard', data: {placement: 'right'}, class: 'back-link' do
       = icon('caret-square-o-left fw')
       %span
-        Back to Dashboard
+        Back to dashboard
 
   %li.separate-item
 
@@ -11,7 +11,7 @@
     = link_to profile_path, title: 'Profile', data: {placement: 'right'} do
       = icon('user fw')
       %span
-        Profile
+        Profile Settings
   = nav_link(controller: [:accounts, :two_factor_auths]) do
     = link_to profile_account_path, title: 'Account', data: {placement: 'right'} do
       = icon('gear fw')

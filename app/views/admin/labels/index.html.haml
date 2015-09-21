@@ -1,0 +1,16 @@
+- page_title "Labels"
+= link_to new_admin_label_path, class: "pull-right btn btn-new" do
+  New label
+%h3.page-title
+  Labels
+%hr
+
+.labels
+  - if @labels.present?
+    %ul.bordered-list.manage-labels-list
+      = render @labels
+    = paginate @labels, theme: 'gitlab'
+  - else
+    .light-well
+      .nothing-here-block There are no any labels yet
+      

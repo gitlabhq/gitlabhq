@@ -9,7 +9,7 @@
   = f.label :title, class: 'control-label' do
     %strong= 'Title *'
   .col-sm-10
-    = f.text_field :title, maxlength: 255, autofocus: true,
+    = f.text_field :title, maxlength: 255, autofocus: true, autocomplete: 'off',
         class: 'form-control pad js-gfm-input', required: true
 
     - if issuable.is_a?(MergeRequest)

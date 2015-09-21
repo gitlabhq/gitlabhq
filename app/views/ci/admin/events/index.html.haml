@@ -1,0 +1,17 @@
+%table.table
+  %thead
+    %tr
+      %th User ID
+      %th Description
+      %th When
+  - @events.each do |event|
+    %tr
+      %td
+        = event.user_id
+      %td
+        = event.description
+      %td.light
+        = time_ago_in_words event.updated_at
+        ago
+
+= paginate @events

@@ -6,7 +6,7 @@ describe "Dashboard Feed", feature: true  do
 
     context "projects atom feed via private token" do
       it "should render projects atom feed" do
-        visit dashboard_path(:atom, private_token: user.private_token)
+        visit dashboard_projects_path(:atom, private_token: user.private_token)
         expect(body).to have_selector('feed title')
       end
     end
@@ -20,7 +20,7 @@ describe "Dashboard Feed", feature: true  do
         project.team << [user, :master]
         issue_event(issue, user)
         note_event(note, user)
-        visit dashboard_path(:atom, private_token: user.private_token)
+        visit dashboard_projects_path(:atom, private_token: user.private_token)
       end
 
       it "should have issue opened event" do

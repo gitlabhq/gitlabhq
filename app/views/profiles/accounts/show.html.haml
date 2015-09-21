@@ -1,9 +1,7 @@
 - page_title "Account"
-%h3.page-title
-  = page_title
-%p.light
-  Change your username and basic account settings.
-%hr
+- header_title page_title, profile_account_path
+- @blank_container = true
+
 - if current_user.ldap_user?
   .alert.alert-info
     Some options are unavailable for LDAP accounts
@@ -69,7 +67,7 @@
           - button_based_providers.each do |provider|
             .btn-group
               = link_to provider_image_tag(provider), user_omniauth_authorize_path(provider), method: :post, class: "btn btn-lg #{'active' if auth_active?(provider)}", "data-no-turbolink" => "true"
-                  
+
               - if auth_active?(provider)
                 = link_to unlink_profile_account_path(provider: provider), method: :delete, class: 'btn btn-lg' do
                   = icon('close')

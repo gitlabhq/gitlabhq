@@ -1,0 +1,32 @@
+- if build.commit && build.project
+  %tr.build
+    %td.build-link
+      = link_to ci_project_build_url(build.project, build) do
+        %strong #{build.id}
+
+    %td.status
+      = ci_status_with_icon(build.status)
+
+    %td.commit-link
+      = commit_link(build.commit)
+
+    %td.runner
+      - if build.runner
+        = link_to build.runner.id, ci_admin_runner_path(build.runner)
+
+    %td.build-project
+      = truncate build.project.name, length: 30
+
+    %td.build-message
+      %span= truncate(build.commit.git_commit_message, length: 30)
+
+    %td.build-branch
+      %span= truncate(build.ref, length: 25)
+
+    %td.duration
+      - if build.duration
+        #{duration_in_words(build.finished_at, build.started_at)}
+
+    %td.timestamp
+      - if build.finished_at
+        %span #{time_ago_in_words build.finished_at} ago

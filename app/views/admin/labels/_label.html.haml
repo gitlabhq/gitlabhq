@@ -1,0 +1,5 @@
+%li{id: dom_id(label)}
+  = render_colored_label(label)
+  .pull-right
+    = link_to 'Edit', edit_admin_label_path(label), class: 'btn btn-sm'
+    = link_to 'Remove', admin_label_path(label), class: 'btn btn-sm btn-remove remove-row', method: :delete, remote: true, data: {confirm: "Remove this label? Are you sure?"}

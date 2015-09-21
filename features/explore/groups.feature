@@ -3,20 +3,6 @@ Feature: Explore Groups
   Background:
     Given group "TestGroup" has private project "Enterprise"
 
-  Scenario: I should not see group with private projects as visitor
-    When I visit group "TestGroup" page
-    Then I should be redirected to sign in page
-
-  Scenario: I should not see group with private projects group as user
-    When I sign in as a user
-    And I visit group "TestGroup" page
-    Then page status code should be 404
-
-  Scenario: I should not see group with private and internal projects as visitor
-    Given group "TestGroup" has internal project "Internal"
-    When I visit group "TestGroup" page
-    Then I should be redirected to sign in page
-
   Scenario: I should see group with private and internal projects as user
     Given group "TestGroup" has internal project "Internal"
     When I sign in as a user

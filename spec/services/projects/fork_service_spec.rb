@@ -28,8 +28,7 @@ describe Projects::ForkService do
     context 'fork project failure' do
       it "fails due to transaction failure" do
         @to_project = fork_project(@from_project, @to_user, false)
-        expect(@to_project.errors).not_to be_empty
-        expect(@to_project.errors[:base]).to include("Failed to fork repository via gitlab-shell")
+        expect(@to_project.import_failed?)
       end
     end
 
@@ -45,10 +44,11 @@ describe Projects::ForkService do
 
     context 'GitLab CI is enabled' do
       it "calls fork registrator for CI" do
+        create(:ci_project, gl_project: @from_project)
         @from_project.build_missing_services
         @from_project.gitlab_ci_service.update_attributes(active: true)
 
-        expect(ForkRegistrationWorker).to receive(:perform_async)
+        expect_any_instance_of(Ci::CreateProjectService).to receive(:execute)
 
         fork_project(@from_project, @to_user)
       end
@@ -100,7 +100,7 @@ describe Projects::ForkService do
   end
 
   def fork_project(from_project, user, fork_success = true, params = {})
-    allow_any_instance_of(Gitlab::Shell).to receive(:fork_repository).and_return(fork_success)
+    allow(RepositoryForkWorker).to receive(:perform_async).and_return(fork_success)
     Projects::ForkService.new(from_project, user, params).execute
   end
 end

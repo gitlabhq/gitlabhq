@@ -1,0 +1,16 @@
+= content_for :title do
+  %h3.project-title
+    Public projects
+
+- if @projects.present?
+  .projects
+    %table.table
+      %tr
+        %th Name
+        %th Last commit
+        %th Access
+        %th Commits
+      = render @projects
+  = paginate @projects
+- else
+  %h4 No public projects yet

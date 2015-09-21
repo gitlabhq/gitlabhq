@@ -46,6 +46,14 @@ module EventsHelper
     }
   end
 
+  def event_preposition(event)
+    if event.push? || event.commented? || event.target
+      "at"
+    elsif event.milestone?
+      "in"
+    end
+  end
+
   def event_feed_title(event)
     words = []
     words << event.author_name
@@ -62,6 +70,9 @@ module EventsHelper
         words << "##{truncate event.note_target_iid}"
       end
       words << "at"
+    elsif event.milestone?
+      words << "##{event.target_iid}" if event.target_iid
+      words << "in"
     elsif event.target
       words << "##{event.target_iid}:"
       words << event.target.title if event.target.respond_to?(:title)

@@ -1,0 +1,26 @@
+.page-with-sidebar{ class: nav_sidebar_class }
+  = render "layouts/broadcast"
+  .sidebar-wrapper.nicescroll
+    .header-logo
+      = link_to ci_root_path, class: 'home', title: 'Dashboard', id: 'js-shortcuts-home', data: {toggle: 'tooltip', placement: 'bottom'} do
+        = brand_header_logo
+        .gitlab-text-container
+          %h3 GitLab CI
+    - if defined?(sidebar) && sidebar
+      = render "layouts/ci/#{sidebar}"
+    - elsif current_user
+      = render 'layouts/nav/dashboard'
+    .collapse-nav
+      = render partial: 'layouts/collapse_button'
+    - if current_user
+      = link_to current_user, class: 'sidebar-user' do
+        = image_tag avatar_icon(current_user.email, 60), alt: 'User activity', class: 'avatar avatar s36'
+        .username
+          = current_user.username
+  .content-wrapper
+    = render "layouts/flash"
+    = render 'layouts/ci/info'
+    %div{ class: container_class }
+      .content
+        .clearfix
+          = yield

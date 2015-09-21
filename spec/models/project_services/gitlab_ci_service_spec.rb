@@ -26,51 +26,21 @@ describe GitlabCiService do
     it { is_expected.to have_one(:service_hook) }
   end
 
-  describe 'validations' do
-    context 'active' do
-      before { allow(subject).to receive(:activated?).and_return(true) }
-
-      it { is_expected.to validate_presence_of(:token) }
-      it { is_expected.to validate_presence_of(:project_url) }
-      it { is_expected.to allow_value('ewf9843kdnfdfs89234n').for(:token) }
-      it { is_expected.to allow_value('http://ci.example.com/project/1').for(:project_url) }
-      it { is_expected.not_to allow_value('token with spaces').for(:token) }
-      it { is_expected.not_to allow_value('token/with%spaces').for(:token) }
-      it { is_expected.not_to allow_value('this is not url').for(:project_url) }
-      it { is_expected.not_to allow_value('http//noturl').for(:project_url) }
-      it { is_expected.not_to allow_value('ftp://ci.example.com/projects/3').for(:project_url) }
-    end
-
-    context 'inactive' do
-      before { allow(subject).to receive(:activated?).and_return(false) }
-
-      it { is_expected.not_to validate_presence_of(:token) }
-      it { is_expected.not_to validate_presence_of(:project_url) }
-      it { is_expected.to allow_value('ewf9843kdnfdfs89234n').for(:token) }
-      it { is_expected.to allow_value('http://ci.example.com/project/1').for(:project_url) }
-      it { is_expected.to allow_value('token with spaces').for(:token) }
-      it { is_expected.to allow_value('ftp://ci.example.com/projects/3').for(:project_url) }
-    end
-  end
-
   describe 'commits methods' do
     before do
+      @ci_project = create(:ci_project)
       @service = GitlabCiService.new
       allow(@service).to receive_messages(
         service_hook: true,
         project_url: 'http://ci.gitlab.org/projects/2',
-        token: 'verySecret'
+        token: 'verySecret',
+        project: @ci_project.gl_project
       )
     end
 
-    describe :commit_status_path do
-      it { expect(@service.commit_status_path("2ab7834c", 'master')).to eq("http://ci.gitlab.org/projects/2/refs/master/commits/2ab7834c/status.json?token=verySecret")}
-      it { expect(@service.commit_status_path("issue#2", 'master')).to eq("http://ci.gitlab.org/projects/2/refs/master/commits/issue%232/status.json?token=verySecret")}
-    end
-
     describe :build_page do
-      it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://ci.gitlab.org/projects/2/refs/master/commits/2ab7834c")}
-      it { expect(@service.build_page("issue#2", 'master')).to eq("http://ci.gitlab.org/projects/2/refs/master/commits/issue%232")}
+      it { expect(@service.build_page("2ab7834c", 'master')).to eq("/ci/projects/#{@ci_project.id}/refs/master/commits/2ab7834c")}
+      it { expect(@service.build_page("issue#2", 'master')).to eq("/ci/projects/#{@ci_project.id}/refs/master/commits/issue%232")}
     end
 
     describe "execute" do
@@ -80,8 +50,6 @@ describe GitlabCiService do
 
       it "calls ci_yaml_file" do
         service_hook = double
-        expect(service_hook).to receive(:execute)
-        expect(@service).to receive(:service_hook).and_return(service_hook)
         expect(@service).to receive(:ci_yaml_file).with(push_sample_data[:checkout_sha])
 
         @service.execute(push_sample_data)
@@ -91,7 +59,7 @@ describe GitlabCiService do
 
   describe "Fork registration" do
     before do
-      @old_project = create(:empty_project)
+      @old_project = create(:ci_project).gl_project
       @project = create(:empty_project)
       @user = create(:user)
 
@@ -104,9 +72,9 @@ describe GitlabCiService do
       )
     end
 
-    it "performs http reuquest to ci" do
-      stub_request(:post, "http://ci.gitlab.org/api/v1/forks")
-      @service.fork_registration(@project, @user.private_token)
+    it "creates fork on CI" do
+      expect_any_instance_of(Ci::CreateProjectService).to receive(:execute)
+      @service.fork_registration(@project, @user)
     end
   end
 end
