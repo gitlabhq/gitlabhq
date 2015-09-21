@@ -4,14 +4,15 @@ module Ci
   module Migrate
     class Tags
       def restore
-        ActiveRecord::Base.transaction do
-          puts 'Inserting tags...'
-          connection.execute(
-            'INSERT INTO tags (name) ' +
-              'SELECT ci_tags.name FROM ci_tags ' +
-              'WHERE (SELECT COUNT(*) FROM tags WHERE tags.name = ci_tags.name)=0'
-          )
+        puts 'Inserting tags...'
+        connection.select_all('SELECT ci_tags.name FROM ci_tags').each do |tag|
+          begin
+            connection.execute("INSERT INTO tags (name) VALUES(#{ActiveRecord::Base::sanitize(tag['name'])})")
+          rescue ActiveRecord::RecordNotUnique
+          end
+        end
 
+        ActiveRecord::Base.transaction do
           puts 'Deleting old taggings...'
           connection.execute "DELETE FROM taggings WHERE context = 'tags' AND taggable_type LIKE 'Ci::%'"
 
