@@ -19,7 +19,7 @@ time. Make sure to plan ahead.
 If you are running a version of GitLab CI prior to 8.0 please follow the
 appropriate [update guide](https://gitlab.com/gitlab-org/gitlab-ci/tree/master/doc/update/).
 
-The migration is divided into three parts:
+The migration is divided into three parts and covers manual and omnibus installations:
 
 1. [GitLab CI](#part-i-gitlab-ci)
 1. [Gitlab CE (or EE)](#part-ii-gitlab-ce-or-ee)
@@ -29,7 +29,11 @@ The migration is divided into three parts:
 
 #### 1. Stop GitLab CI
 
+    # Manual installation
     sudo service gitlab_ci stop
+    
+    # Omnibus installation
+    sudo gitlab-ctl stop ci-unicorn ci-sidekiq
         
 #### 2. Create a backup
 
@@ -41,6 +45,8 @@ If your GitLab CI installation uses **MySQL** and your GitLab CE (or EE)
 installation uses **PostgreSQL** you'll need to convert the CI database by
 setting a `MYSQL_TO_POSTGRESQL` flag.
 
+If you use Omnibus package you most likely use the **PostgreSQL** on GitLab CE (or EE) and CI. 
+
 You can check which database each install is using by viewing their
 database configuration files:
 
@@ -50,21 +56,26 @@ database configuration files:
 - If both applications use the same database `adapter`, create the backup with
   this command:
 
-    ```bash
-    cd /home/gitlab_ci/gitlab-ci
-    sudo -u gitlab_ci -H bundle exec backup:create RAILS_ENV=production
-    ```
+        # Manual installation
+        cd /home/gitlab_ci/gitlab-ci
+        sudo -u gitlab_ci -H bundle exec backup:create RAILS_ENV=production
+        
+        # Omnibus installation
+        sudo gitlab-ci-rake backup:create
     
 - If CI uses MySQL, and CE (or EE) uses PostgreSQL, create the backup with this
   command (note the `MYSQL_TO_POSTGRESQL` flag):
 
-    ```bash
-    cd /home/gitlab_ci/gitlab-ci
-    sudo -u gitlab_ci -H bundle exec backup:create RAILS_ENV=production MYSQL_TO_POSTGRESQL=1
-    ```
+        # Manual installation
+        cd /home/gitlab_ci/gitlab-ci
+        sudo -u gitlab_ci -H bundle exec backup:create RAILS_ENV=production MYSQL_TO_POSTGRESQL=1
+        
+        # Omnibus installation
+        sudo gitlab-ci-rake backup:create MYSQL_TO_POSTGRESQL=1
     
-#### 3. Remove cronjob
+#### 3. Remove cronjob (manual installation)
 
+    # Manual installation
     cd /home/gitlab_ci/gitlab-ci
     sudo -u gitlab_ci -H bundle exec whenever --clear-crontab
 
@@ -74,6 +85,8 @@ database configuration files:
 
 Your GitLab CE or EE installation **must be version 8.0**. If it's not, follow
 the [update guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/7.14-to-8.0.md).
+
+If you use Omnibus package simply do `apt-get upgrade` to install a new version.
 
 #### 2. Prevent CI usage for time of migration
 
@@ -86,20 +99,32 @@ This will prevent from creating the CI projects till you finish migration.
 
 Before you can migrate data you need to stop the GitLab service first:
 
+    # Manual installation
     sudo service gitlab stop
+    
+    # Omnibus installation
+    sudo gitlab-ctl stop unicorn sidekiq
 
 #### 4. Create a backup
 
 This migration poses a **significant risk** of breaking your GitLab
 installation. Create a backup before proceeding:
 
+    # Manual installation
     cd /home/git/gitlab
     sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
     
+    # Omnibus installation
+    sudo gitlab-rake gitlab:backup:create
+    
 It's possible to speedup backup creation. To do that you can skip repositories and uploads.
 
+    # Manual installation
     cd /home/git/gitlab
     sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production SKIP=repositories,uploads
+    
+    # Omnibus installation
+    sudo gitlab-rake gitlab:backup:create SKIP=repositories,uploads
 
 #### 5. Copy secret tokens from CI
 
@@ -108,11 +133,18 @@ The `secrets.yml` file stores encryption keys for secure variables.
 You need to copy the contents of GitLab CI's `config/secrets.yml` file to the
 same file in GitLab CE:
 
+    # Manual installation
     sudo cp /home/gitlab_ci/gitlab-ci/config/secrets.yml /home/git/gitlab/config/secrets.yml
     sudo chown git:git /home/git/gitlab/config/secrets.yml
     sudo chown 0600 /home/git/gitlab/config/secrets.yml
 
-#### 6. New configuration options for `gitlab.yml`
+If you use Omnibus installation and your CI server is on the same server as GitLab CE (or EE) you don't need to do anything,
+because the secrets are stored in **/etc/gitlab/gitlab-secrets.json**.
+
+If you migrate your Omnibus CI server to other server you need to copy **gitlab_ci**
+section of **/etc/gitlab/gitlab-secrets.json** to the other server.
+
+#### 6. New configuration options for `gitlab.yml` (manual installation only)
 
 There are new configuration options available for `gitlab.yml`. View them with
 the command below and apply them manually to your current `gitlab.yml`:
@@ -123,21 +155,34 @@ The new options include configuration settings for GitLab CI.
 
 #### 7. Copy backup from GitLab CI
 
+    # Manual installation
     sudo cp -v /home/gitlab_ci/gitlab-ci/tmp/backups/*_gitlab_ci_backup.tar /home/git/gitlab/tmp/backups
     sudo chown git:git /home/git/gitlab/tmp/backups/*_gitlab_ci_backup.tar
+    
+    # Omnibus installation
+    sudo cp -v /var/opt/gitlab/ci-backups/*_gitlab_ci_backup.tar /var/opt/gitlab/backups/
+    sudo chown git:git /var/opt/gitlab/backups/*_gitlab_ci_backup.tar
 
 If moving across the servers you can use **scp**.
 However, this requires you to provide authorized key or password to login to GitLab CE servers from CI server. 
 You can try to use ssh-agent from your local machine to have that: login to your GitLab CI server using `ssh -A`.
 
+    # Manual installation
     scp /home/gitlab_ci/gitlab-ci/tmp/backups/*_gitlab_ci_backup.tar root@gitlab.example.com:/home/git/gitlab/tmp/backup
+    
+    # Omnibus installation
+    scp /var/opt/gitlab/ci-backups/*_gitlab_ci_backup.tar root@gitlab.example.com:/var/opt/gitlab/backups/
 
 #### 8. Import GitLab CI backup
 
 Now you'll import the GitLab CI database dump that you created earlier into the
 GitLab CE or EE database:
 
+    # Manual installation
     sudo -u git -H bundle exec rake ci:migrate RAILS_ENV=production
+    
+    # Omnibus installation
+    sudo gitlab-rake ci:migrate
 
 This task will take some time.
 
@@ -145,9 +190,15 @@ This task will take some time.
 
 You can start GitLab CE (or EE) now and see if everything is working:
 
+    # Manual installation
     sudo service gitlab start
+    
+    # Omnibus installation
+    sudo gitlab-ctl restart unicorn sidekiq
 
 ### Part III: Finishing Up
+
+This part is only for **Manual installations**.
 
 #### 1. Update Nginx configuration
 
