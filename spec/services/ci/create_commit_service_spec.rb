@@ -50,6 +50,19 @@ module Ci
         end
       end
 
+      it 'fails commits without .gitlab-ci.yml' do
+        result = service.execute(project,
+                                 ref: 'refs/heads/0_1',
+                                 before: '00000000',
+                                 after: '31das312',
+                                 ci_yaml_file: config,
+                                 commits: [ { message: 'Message' } ]
+        )
+        expect(result).to be_persisted
+        expect(result.builds.any?).to be_falsey
+        expect(result.status).to eq('failed')
+      end
+
       describe :ci_skip? do
         it "skips builds creation if there is [ci skip] tag in commit message" do
           commits = [{ message: "some message[ci skip]" }]

@@ -42,6 +42,7 @@ v 8.0.0 (unreleased)
   - Retrieving oauth token with LDAP credentials
   - Load Application settings from running database unless env var USE_DB=false
   - Added Drone CI integration (Kirill Zaitsev)
+  - Fail builds if no .gitlab-ci.yml is found
   - Refactored service API and added automatically service docs generator (Kirill Zaitsev)
   - Added web_url key project hook_attrs (Kirill Zaitsev)
   - Add ability to get user information by ID of an SSH key via the API
