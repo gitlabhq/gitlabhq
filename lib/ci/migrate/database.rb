@@ -9,32 +9,32 @@ module Ci
         @config = YAML.load_file(File.join(Rails.root, 'config', 'database.yml'))[Rails.env]
       end
 
-      def restore(ci_dump)
-        puts 'Deleting all CI related data ... '
-        truncate_ci_tables
+      def restore
+        decompress_rd, decompress_wr = IO.pipe
+        decompress_pid = spawn(*%W(gzip -cd), out: decompress_wr, in: db_file_name)
+        decompress_wr.close
 
-        puts 'Restoring CI data ... '
-        case config["adapter"]
-          when /^mysql/ then
-            print "Restoring MySQL database #{config['database']} ... "
-            # Workaround warnings from MySQL 5.6 about passwords on cmd line
-            ENV['MYSQL_PWD'] = config["password"].to_s if config["password"]
-            system('mysql', *mysql_args, config['database'], in: ci_dump)
-          when "postgresql" then
-            puts "Restoring PostgreSQL database #{config['database']} ... "
-            pg_env
-            system('psql', config['database'], '-f', ci_dump)
-        end
+        restore_pid = case config["adapter"]
+                        when /^mysql/ then
+                          $progress.print "Restoring MySQL database #{config['database']} ... "
+                          # Workaround warnings from MySQL 5.6 about passwords on cmd line
+                          ENV['MYSQL_PWD'] = config["password"].to_s if config["password"]
+                          spawn('mysql', *mysql_args, config['database'], in: decompress_rd)
+                        when "postgresql" then
+                          $progress.print "Restoring PostgreSQL database #{config['database']} ... "
+                          pg_env
+                          spawn('psql', config['database'], in: decompress_rd)
+                      end
+        decompress_rd.close
+
+        success = [decompress_pid, restore_pid].all? { |pid| Process.waitpid(pid); $?.success? }
+        abort 'Restore failed' unless success
       end
 
       protected
 
-      def truncate_ci_tables
-        c = ActiveRecord::Base.connection
-        c.tables.select { |t| t.start_with?('ci_') }.each do |table|
-          puts "Deleting data from #{table}..."
-          c.execute("DELETE FROM #{table}")
-        end
+      def db_file_name
+        File.join(Gitlab.config.backup.path, 'db', 'database.sql.gz')
       end
 
       def mysql_args
