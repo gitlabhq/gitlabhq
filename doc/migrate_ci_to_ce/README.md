@@ -17,13 +17,16 @@ This migration cannot be performed online and takes a significant amount of
 time. Make sure to plan ahead.
 
 If you are running a version of GitLab CI prior to 8.0 please follow the
-appropriate [update guide](https://gitlab.com/gitlab-org/gitlab-ci/tree/master/doc/update/).
+appropriate [update guide](https://gitlab.com/gitlab-org/gitlab-ci/tree/master/doc/update/)
+before proceeding.
 
-The migration is divided into three parts and covers manual and omnibus installations:
+The migration is divided into four parts and covers both manual and Omnibus
+installations:
 
 1. [GitLab CI](#part-i-gitlab-ci)
 1. [Gitlab CE (or EE)](#part-ii-gitlab-ce-or-ee)
-1. [Finishing Up](#part-iii-finishing-up)
+1. [Nginx configuration](#part-iii-nginx-configuration)
+1. [Finishing Up](#part-iv-finishing-up)
 
 ### Part I: GitLab CI
 
@@ -45,7 +48,8 @@ If your GitLab CI installation uses **MySQL** and your GitLab CE (or EE)
 installation uses **PostgreSQL** you'll need to convert the CI database by
 setting a `MYSQL_TO_POSTGRESQL` flag.
 
-If you use Omnibus package you most likely use the **PostgreSQL** on GitLab CE (or EE) and CI. 
+If you use the Omnibus package you most likely use **PostgreSQL** on both GitLab
+CE (or EE) and CI.
 
 You can check which database each install is using by viewing their
 database configuration files:
@@ -84,16 +88,20 @@ database configuration files:
 #### 1. Ensure GitLab is updated
 
 Your GitLab CE or EE installation **must be version 8.0**. If it's not, follow
-the [update guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/7.14-to-8.0.md).
+the [update guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/7.14-to-8.0.md)
+before proceeding.
 
-If you use Omnibus package simply do `apt-get upgrade` to install a new version.
+If you use the Omnibus packages simply run `apt-get upgrade` to install the
+latest version.
 
-#### 2. Prevent CI usage for time of migration
+#### 2. Prevent CI usage during the migration process
 
-As Admin go to Admin Area -> Settings -> and uncheck 
-**Disable to prevent CI usage until rake ci:migrate is run (8.0 only)**.
+As an administrator, go to **Admin Area** -> **Settings**, and under **Continuous
+Integration** uncheck **Disable to prevent CI usage until rake ci:migrate is run
+(8.0 only)**.
 
-This will prevent from creating the CI projects till you finish migration. 
+This will disable the CI integration and prevent users from creating CI projects
+until the migration process is completed.
 
 #### 3. Stop GitLab
 
@@ -117,7 +125,7 @@ installation. Create a backup before proceeding:
     # Omnibus installation
     sudo gitlab-rake gitlab:backup:create
 
-It's possible to speedup backup creation. To do that you can skip repositories and uploads.
+It's possible to speed up backup creation by skipping repositories and uploads:
 
     # Manual installation
     cd /home/git/gitlab
@@ -130,21 +138,32 @@ It's possible to speedup backup creation. To do that you can skip repositories a
 
 The `secrets.yml` file stores encryption keys for secure variables.
 
-You need to copy the contents of GitLab CI's `config/secrets.yml` file to the
-same file in GitLab CE:
+- **Manual installations** need to copy the contents of GitLab CI's
+  `config/secrets.yml` file to the same file in GitLab CE:
 
+    ```bash
     # Manual installation
     sudo cp /home/gitlab_ci/gitlab-ci/config/secrets.yml /home/git/gitlab/config/secrets.yml
     sudo chown git:git /home/git/gitlab/config/secrets.yml
     sudo chown 0600 /home/git/gitlab/config/secrets.yml
+    ```
 
-If you use Omnibus installation and your CI server is on the same server as GitLab CE (or EE) you don't need to do anything,
-because the secrets are stored in **/etc/gitlab/gitlab-secrets.json**.
+- **Omnibus installations** where GitLab CI and CE (or EE) are on the same
+  server don't need to do anything further, because the secrets are stored in
+  `/etc/gitlab/gitlab-secrets.json`.
 
-If you migrate your Omnibus CI server to other server you need to copy **gitlab_ci**
-section of **/etc/gitlab/gitlab-secrets.json** to the other server.
+- **Omnibus installations** where GitLab CI is on a different server than CE (or
+  EE) will need to:
+    1. On the CI server, copy the `db_key_base` value from
+       `/etc/gitlab/gitlab-secrets.json`
+    1. On the CE (or EE) server, add `gitlab_ci['db_key_base'] =
+       "VALUE_FROM_ABOVE"` to the `/etc/gitlab/gitlab.rb` file and run `sudo
+       gitlab-ctl reconfigure`
 
-#### 6. New configuration options for `gitlab.yml` (manual installation only)
+#### 6. New configuration options for `gitlab.yml`
+
+**Note:** This step is only required for manual installations. Omnibus
+installations can [skip to the next step](#7-copy-backup-from-gitlab-ci).
 
 There are new configuration options available for `gitlab.yml`. View them with
 the command below and apply them manually to your current `gitlab.yml`:
@@ -155,23 +174,29 @@ The new options include configuration settings for GitLab CI.
 
 #### 7. Copy backup from GitLab CI
 
-    # Manual installation
-    sudo cp -v /home/gitlab_ci/gitlab-ci/tmp/backups/*_gitlab_ci_backup.tar /home/git/gitlab/tmp/backups
-    sudo chown git:git /home/git/gitlab/tmp/backups/*_gitlab_ci_backup.tar
+```bash
+# Manual installation
+sudo cp -v /home/gitlab_ci/gitlab-ci/tmp/backups/*_gitlab_ci_backup.tar /home/git/gitlab/tmp/backups
+sudo chown git:git /home/git/gitlab/tmp/backups/*_gitlab_ci_backup.tar
 
-    # Omnibus installation
-    sudo cp -v /var/opt/gitlab/ci-backups/*_gitlab_ci_backup.tar /var/opt/gitlab/backups/
-    sudo chown git:git /var/opt/gitlab/backups/*_gitlab_ci_backup.tar
+# Omnibus installation
+sudo cp -v /var/opt/gitlab/ci-backups/*_gitlab_ci_backup.tar /var/opt/gitlab/backups/
+sudo chown git:git /var/opt/gitlab/backups/*_gitlab_ci_backup.tar
+```
 
-If moving across the servers you can use **scp**.
-However, this requires you to provide authorized key or password to login to GitLab CE servers from CI server. 
-You can try to use ssh-agent from your local machine to have that: login to your GitLab CI server using `ssh -A`.
+If moving across the servers you can use `scp`.
+However, this requires you to provide an authorized key or password to login to
+the GitLab CE (or EE) server from the CI server. You can try to use ssh-agent
+from your local machine to have that: login to your GitLab CI server using `ssh
+-A`.
 
-    # Manual installation
-    scp /home/gitlab_ci/gitlab-ci/tmp/backups/*_gitlab_ci_backup.tar root@gitlab.example.com:/home/git/gitlab/tmp/backup
+```bash
+# Manual installation
+scp /home/gitlab_ci/gitlab-ci/tmp/backups/*_gitlab_ci_backup.tar root@gitlab.example.com:/home/git/gitlab/tmp/backup
 
-    # Omnibus installation
-    scp /var/opt/gitlab/ci-backups/*_gitlab_ci_backup.tar root@gitlab.example.com:/var/opt/gitlab/backups/
+# Omnibus installation
+scp /var/opt/gitlab/ci-backups/*_gitlab_ci_backup.tar root@gitlab.example.com:/var/opt/gitlab/backups/
+```
 
 #### 8. Import GitLab CI backup
 
@@ -196,9 +221,10 @@ You can start GitLab CE (or EE) now and see if everything is working:
     # Omnibus installation
     sudo gitlab-ctl restart unicorn sidekiq
 
-### Part III: Finishing Up
+### Part III: Nginx configuration
 
-This part is only for **Manual installations**.
+This part is only required for **Manual installations**. Omnibus users can [skip
+to the final step](#part-iv-finishing-up).
 
 #### 1. Update Nginx configuration
 
@@ -276,10 +302,17 @@ You should also make sure that you can:
 
     sudo /etc/init.d/nginx restart
 
-#### 4. Done!
+### Part IV: Finishing Up
 
 If everything went well you should be able to access your migrated CI install by
 visiting `https://gitlab.example.com/ci/`. If you visit the old GitLab CI
 address, you should be redirected to the new one.
 
 **Enjoy!**
+
+### Troubleshooting
+
+#### Restore from backup
+
+If something went wrong and you need to restore a backup, consult the [Backup
+restoration](../raketasks/backup_restore.md) guide.
