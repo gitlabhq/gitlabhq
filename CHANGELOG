@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.0.0 (unreleased)
+  - Fix Markdown links not showing up in dashboard activity feed (Stan Hu)
   - Fix HTML link that was improperly escaped in new user e-mail (Stan Hu)
   - Fix broken sort in merge request API (Stan Hu)
   - Bump rouge to 1.10.1 to remove warning noise and fix other syntax highlighting bugs (Stan Hu)
@@ -42,6 +43,7 @@ v 8.0.0 (unreleased)
   - Retrieving oauth token with LDAP credentials
   - Load Application settings from running database unless env var USE_DB=false
   - Added Drone CI integration (Kirill Zaitsev)
+  - Fail builds if no .gitlab-ci.yml is found
   - Refactored service API and added automatically service docs generator (Kirill Zaitsev)
   - Added web_url key project hook_attrs (Kirill Zaitsev)
   - Add ability to get user information by ID of an SSH key via the API

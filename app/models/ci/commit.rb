@@ -236,7 +236,7 @@ module Ci
     end
 
     def config_processor
-      @config_processor ||= Ci::GitlabCiYamlProcessor.new(push_data[:ci_yaml_file] || project.generated_yaml_config)
+      @config_processor ||= Ci::GitlabCiYamlProcessor.new(push_data[:ci_yaml_file])
     rescue Ci::GitlabCiYamlProcessor::ValidationError => e
       save_yaml_error(e.message)
       nil

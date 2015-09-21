@@ -1,40 +1,56 @@
 namespace :ci do
   desc 'GitLab | Import and migrate CI database'
   task migrate: :environment do
+    warn_user_is_not_gitlab
+    configure_cron_mode
+
     unless ENV['force'] == 'yes'
-      puts "This will truncate all CI tables and restore it from provided backup."
-      puts "You will lose any previous CI data stored in the database."
+      puts 'This will remove all CI related data and restore it from the provided backup.'
       ask_to_continue
-      puts ""
+      puts ''
     end
 
-    Rake::Task["ci:migrate:db"].invoke
-    Rake::Task["ci:migrate:autoincrements"].invoke
-    Rake::Task["ci:migrate:tags"].invoke
-    Rake::Task["ci:migrate:services"].invoke
+    # disable CI for time of migration
+    enable_ci(false)
+
+    # unpack archives
+    migrate = Ci::Migrate::Manager.new
+    migrate.unpack
+
+    Rake::Task['ci:migrate:db'].invoke
+    Rake::Task['ci:migrate:builds'].invoke
+    Rake::Task['ci:migrate:tags'].invoke
+    Rake::Task['ci:migrate:services'].invoke
+
+    # enable CI for time of migration
+    enable_ci(true)
+
+    migrate.cleanup
   end
 
   namespace :migrate do
     desc 'GitLab | Import CI database'
     task db: :environment do
-      if ENV["CI_DUMP"].nil?
-        puts "No CI SQL dump specified:"
-        puts "rake gitlab:backup:restore CI_DUMP=ci_dump.sql"
-        exit 1
-      end
+      configure_cron_mode
+      $progress.puts 'Restoring database ... '.blue
+      Ci::Migrate::Database.new.restore
+      $progress.puts 'done'.green
+    end
 
-      ci_dump = ENV["CI_DUMP"]
-      unless File.exists?(ci_dump)
-        puts "The specified sql dump doesn't exist!"
-        exit 1
-      end
-
-      ::Ci::Migrate::Database.new.restore(ci_dump)
+    desc 'GitLab | Import CI builds'
+    task builds: :environment do
+      configure_cron_mode
+      $progress.puts 'Restoring builds ... '.blue
+      Ci::Migrate::Builds.new.restore
+      $progress.puts 'done'.green
     end
 
     desc 'GitLab | Migrate CI tags'
     task tags: :environment do
+      configure_cron_mode
+      $progress.puts 'Migrating tags ... '.blue
       ::Ci::Migrate::Tags.new.restore
+      $progress.puts 'done'.green
     end
 
     desc 'GitLab | Migrate CI auto-increments'
@@ -56,8 +72,16 @@ namespace :ci do
 
     desc 'GitLab | Migrate CI services'
     task services: :environment do
+      $progress.puts 'Migrating services ... '.blue
       c = ActiveRecord::Base.connection
       c.execute("UPDATE ci_services SET type=CONCAT('Ci::', type) WHERE type NOT LIKE 'Ci::%'")
+      $progress.puts 'done'.green
     end
+  end
+
+  def enable_ci(enabled)
+    settings = ApplicationSetting.current || ApplicationSetting.create_from_defaults
+    settings.ci_enabled = enabled
+    settings.save!
   end
 end
