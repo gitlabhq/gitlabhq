@@ -35,6 +35,8 @@ cd /home/gitlab_ci/gitlab-ci
 sudo -u gitlab_ci -H bundle exec rake backup:create RAILS_ENV=production
 ```
 
+Also check on your GitLab server.
+
 ```
 # GitLab server
 # Omnibus
