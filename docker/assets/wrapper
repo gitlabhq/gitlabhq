@@ -16,7 +16,7 @@ if [[ ! -e /etc/gitlab/gitlab.rb ]]; then
 fi
 
 # Remove all services, the reconfigure will create them
-rm /opt/gitlab/service/*
+rm -f /opt/gitlab/service/*
 ln -s /opt/gitlab/sv/sshd /opt/gitlab/service
 
 # Start service manager
