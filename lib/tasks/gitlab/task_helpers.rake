@@ -128,4 +128,8 @@ namespace :gitlab do
       false
     end
   end
+
+  def all_repos
+    Dir.glob(File.join(Gitlab.config.gitlab_shell.repos_path, '**/*\.git'))
+  end
 end
