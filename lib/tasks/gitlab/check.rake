@@ -679,6 +679,11 @@ namespace :gitlab do
     def check_initd_configured_correctly
       print "Init.d configured correctly? ... "
 
+      if omnibus_gitlab?
+        puts 'skipped (omnibus-gitlab has no init script)'.magenta
+        return
+      end
+
       path = "/etc/default/gitlab"
 
       if File.exist?(path) && File.read(path).include?("mail_room_enabled=true")
