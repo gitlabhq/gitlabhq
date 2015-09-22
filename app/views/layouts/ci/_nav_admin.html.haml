@@ -1,0 +1,33 @@
+%ul.nav.nav-sidebar
+  = nav_link do
+    = link_to admin_root_path, title: 'Back to admin', data: {placement: 'right'}, class: 'back-link' do
+      = icon('caret-square-o-left fw')
+      %span
+        Back to admin
+
+  %li.separate-item
+  = nav_link path: 'projects#index' do
+    = link_to ci_admin_projects_path do
+      = icon('list-alt fw')
+      Projects
+  = nav_link path: 'events#index' do
+    = link_to ci_admin_events_path do
+      = icon('book fw')
+      Events
+  = nav_link path: ['runners#index', 'runners#show'] do
+    = link_to ci_admin_runners_path do
+      = icon('cog fw')
+      Runners
+      %small.pull-right
+        = Ci::Runner.count(:all)
+  = nav_link path: 'builds#index' do
+    = link_to ci_admin_builds_path do
+      = icon('link fw')
+      Builds
+      %small.pull-right
+        = Ci::Build.count(:all)
+  = nav_link(controller: :application_settings, html_options: { class: 'separate-item'}) do
+    = link_to ci_admin_application_settings_path do
+      = icon('cogs fw')
+      %span
+        Settings

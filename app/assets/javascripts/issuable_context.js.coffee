@@ -11,12 +11,13 @@ class @IssuableContext
       $(this).submit()
 
     $('.issuable-details').waitForImages ->
+      $('.issuable-affix').on 'affix.bs.affix', ->
+        $(@).width($(@).outerWidth())
+      .on 'affixed-top.bs.affix affixed-bottom.bs.affix', ->
+        $(@).width('')
+
       $('.issuable-affix').affix offset:
         top: ->
           @top = ($('.issuable-affix').offset().top - 70)
         bottom: ->
           @bottom = $('.footer').outerHeight(true)
-      $('.issuable-affix').on 'affix.bs.affix', ->
-        $(@).width($(@).outerWidth())
-      .on 'affixed-top.bs.affix affixed-bottom.bs.affix', ->
-        $(@).width('')

@@ -3,7 +3,7 @@ module API
   class Users < Grape::API
     before { authenticate! }
 
-    resource :users do
+    resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
       # Get a users list
       #
       # Example Request:

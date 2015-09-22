@@ -38,6 +38,17 @@ describe GitlabMarkdownHelper do
         expect(markdown(actual)).to match(expected)
       end
     end
+
+    describe "override default project" do
+      let(:actual) { issue.to_reference }
+      let(:second_project) { create(:project) }
+      let(:second_issue) { create(:issue, project: second_project) }
+
+      it 'should link to the issue' do
+        expected = namespace_project_issue_path(second_project.namespace, second_project, second_issue)
+        expect(markdown(actual, project: second_project)).to match(expected)
+      end
+    end
   end
 
   describe '#link_to_gfm' do

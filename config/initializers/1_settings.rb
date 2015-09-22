@@ -18,7 +18,19 @@ class Settings < Settingslogic
       host.start_with?('www.') ? host[4..-1] : host
     end
 
-    private
+    def build_gitlab_ci_url
+      if gitlab_on_standard_port?
+        custom_port = nil
+      else
+        custom_port = ":#{gitlab.port}"
+      end
+      [ gitlab.protocol,
+        "://",
+        gitlab.host,
+        custom_port,
+        gitlab.relative_url_root
+      ].join('')
+    end
 
     def build_gitlab_shell_ssh_path_prefix
       if gitlab_shell.ssh_port != 22
@@ -100,6 +112,7 @@ if Settings.ldap['enabled'] || Rails.env.test?
     server['block_auto_created_users'] = false if server['block_auto_created_users'].nil?
     server['allow_username_or_email_login'] = false if server['allow_username_or_email_login'].nil?
     server['active_directory'] = true if server['active_directory'].nil?
+    server['attributes'] = {} if server['attributes'].nil?
     server['provider_name'] ||= "ldap#{key}".downcase
     server['sync_time'] = 3600 if server['sync_time'].nil?
     server['provider_class'] = OmniAuth::Utils.camelize(server['provider_name'])
@@ -189,11 +202,22 @@ Settings.gitlab['repository_downloads_path'] = File.absolute_path(Settings.gitla
 Settings.gitlab['restricted_signup_domains'] ||= []
 Settings.gitlab['import_sources'] ||= ['github','bitbucket','gitlab','gitorious','google_code','fogbugz','git']
 
+
+#
+# CI
+#
+Settings['gitlab_ci'] ||= Settingslogic.new({})
+Settings.gitlab_ci['enabled']             = true if Settings.gitlab_ci['enabled'].nil?
+Settings.gitlab_ci['all_broken_builds']   = true if Settings.gitlab_ci['all_broken_builds'].nil?
+Settings.gitlab_ci['add_pusher']          = false if Settings.gitlab_ci['add_pusher'].nil?
+Settings.gitlab_ci['url']                 ||= Settings.send(:build_gitlab_ci_url)
+Settings.gitlab_ci['builds_path']         = File.expand_path(Settings.gitlab_ci['builds_path'] || "builds/", Rails.root)
+
 #
 # Reply by email
 #
-Settings['reply_by_email'] ||= Settingslogic.new({})
-Settings.reply_by_email['enabled'] = false if Settings.reply_by_email['enabled'].nil?
+Settings['incoming_email'] ||= Settingslogic.new({})
+Settings.incoming_email['enabled'] = false if Settings.incoming_email['enabled'].nil?
 
 #
 # Gravatar
@@ -225,6 +249,7 @@ Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.send(:build_gitlab_shell_s
 #
 Settings['backup'] ||= Settingslogic.new({})
 Settings.backup['keep_time']  ||= 0
+Settings.backup['pg_schema']    = nil
 Settings.backup['path']         = File.expand_path(Settings.backup['path'] || "tmp/backups/", Rails.root)
 Settings.backup['archive_permissions']          ||= 0600
 Settings.backup['upload'] ||= Settingslogic.new({ 'remote_directory' => nil, 'connection' => nil })

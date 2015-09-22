@@ -786,4 +786,13 @@ class User < ActiveRecord::Base
   def can_be_removed?
     !solo_owned_groups.present?
   end
+
+  def ci_authorized_projects
+    @ci_authorized_projects ||= Ci::Project.where(gitlab_id: authorized_projects)
+  end
+
+  def ci_authorized_runners
+    Ci::Runner.specific.includes(:runner_projects).
+      where(ci_runner_projects: { project_id: ci_authorized_projects } )
+  end
 end

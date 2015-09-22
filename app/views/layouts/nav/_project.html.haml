@@ -76,6 +76,13 @@
           Merge Requests
           %span.count.merge_counter= @project.merge_requests.opened.count
 
+  - if @project.gitlab_ci?
+    = nav_link(controller: [:ci, :project]) do
+      = link_to ci_project_path(@project.gitlab_ci_project), title: 'Continuous Integration', data: {placement: 'right'} do
+        = icon('building fw')
+        %span
+          Continuous Integration
+
   - if project_nav_tab? :settings
     = nav_link(controller: [:project_members, :teams]) do
       = link_to namespace_project_project_members_path(@project.namespace, @project), title: 'Members', class: 'team-tab tab', data: {placement: 'right'} do

@@ -20,7 +20,7 @@
 
 class JiraService < IssueTrackerService
   include HTTParty
-  include Rails.application.routes.url_helpers
+  include Gitlab::Application.routes.url_helpers
 
   prop_accessor :username, :password, :api_version, :jira_issue_transition_id,
                 :title, :description, :project_url, :issues_url, :new_issue_url

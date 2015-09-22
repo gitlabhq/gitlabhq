@@ -165,6 +165,7 @@ class Ability
         :admin_merge_request,
         :create_merge_request,
         :create_wiki,
+        :manage_builds,
         :push_code
       ]
     end

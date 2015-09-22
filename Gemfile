@@ -1,6 +1,14 @@
 source "https://rubygems.org"
 
-gem 'rails', '4.1.11'
+def darwin_only(require_as)
+  RUBY_PLATFORM.include?('darwin') && require_as
+end
+
+def linux_only(require_as)
+  RUBY_PLATFORM.include?('linux') && require_as
+end
+
+gem 'rails', '4.1.12'
 
 # Specify a sprockets version due to security issue
 # See https://groups.google.com/forum/#!topic/rubyonrails-security/doAVp0YaTqY
@@ -10,30 +18,30 @@ gem 'sprockets', '~> 2.12.3'
 gem "default_value_for", "~> 3.0.0"
 
 # Supported DBs
-gem "mysql2", group: :mysql
-gem "pg", group: :postgres
+gem "mysql2", '~> 0.3.16', group: :mysql
+gem "pg", '~> 0.18.2', group: :postgres
 
 # Authentication libraries
-gem "devise", '3.2.4'
-gem "devise-async", '0.9.0'
+gem "devise", '~> 3.5.2'
+gem "devise-async", '~> 0.9.0'
 gem 'omniauth', "~> 1.2.2"
-gem 'omniauth-google-oauth2'
-gem 'omniauth-twitter'
-gem 'omniauth-github'
-gem 'omniauth-shibboleth'
-gem 'omniauth-kerberos', group: :kerberos
-gem 'omniauth-gitlab'
-gem 'omniauth-bitbucket'
+gem 'omniauth-google-oauth2', '~> 0.2.5'
+gem 'omniauth-twitter', '~> 1.0.1'
+gem 'omniauth-github', '~> 1.1.1'
+gem 'omniauth-shibboleth', '~> 1.1.1'
+gem 'omniauth-kerberos', '~> 0.2.0', group: :kerberos
+gem 'omniauth-gitlab', '~> 1.0.0'
+gem 'omniauth-bitbucket', '~> 0.0.2'
 gem 'omniauth-saml', '~> 1.4.0'
+gem 'doorkeeper', '~> 2.1.3'
 gem 'omniauth_crowd'
-gem 'doorkeeper', '2.1.3'
 gem "rack-oauth2", "~> 1.0.5"
 gem 'gssapi', group: :kerberos
 
 # Two-factor authentication
-gem 'devise-two-factor'
-gem 'rqrcode-rails3'
-gem 'attr_encrypted', '1.3.4'
+gem 'devise-two-factor', '~> 2.0.0'
+gem 'rqrcode-rails3', '~> 0.1.7'
+gem 'attr_encrypted', '~> 1.3.4'
 
 # Browser detection
 gem "browser", '~> 1.0.0'
@@ -45,7 +53,7 @@ gem "gitlab_git", '~> 7.2.15'
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
-gem 'gitlab_omniauth-ldap', '1.2.1', require: "omniauth-ldap"
+gem 'gitlab_omniauth-ldap', '~> 1.2.1', require: "omniauth-ldap"
 gem 'net-ldap'
 
 # Git Wiki
@@ -61,47 +69,47 @@ gem "gitlab-linguist", "~> 3.0.1", require: "linguist"
 # API
 gem "grape", "~> 0.6.1"
 gem "grape-entity", "~> 0.4.2"
-gem 'rack-cors', require: 'rack/cors'
+gem 'rack-cors', '~> 0.2.9', require: 'rack/cors'
 
 # Format dates and times
 # based on human-friendly examples
-gem "stamp"
+gem "stamp", '~> 0.5.0'
 
 # Enumeration fields
-gem 'enumerize'
+gem 'enumerize', '~> 0.7.0'
 
 # Pagination
 gem "kaminari", "~> 0.15.1"
 
 # HAML
-gem "haml-rails"
+gem "haml-rails", '~> 0.5.3'
 
 # Files attachments
-gem "carrierwave"
+gem "carrierwave", '~> 0.9.0'
 
 # Drag and Drop UI
-gem 'dropzonejs-rails'
+gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for aws storage
 gem "fog", "~> 1.25.0"
-gem "unf"
+gem "unf", '~> 0.1.4'
 
 # Authorization
-gem "six"
+gem "six", '~> 0.2.0'
 
 # Seed data
-gem "seed-fu"
+gem "seed-fu", '~> 2.3.5'
 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 1.11.0'
-gem 'task_list',     '1.0.2', require: 'task_list/railtie'
-gem 'github-markup'
+gem 'task_list',     '~> 1.0.2', require: 'task_list/railtie'
+gem 'github-markup', '~> 1.3.1'
 gem 'redcarpet',     '~> 3.3.2'
-gem 'RedCloth'
+gem 'RedCloth',      '~> 4.2.9'
 gem 'rdoc',          '~>3.6'
-gem 'org-ruby',      '= 0.9.12'
+gem 'org-ruby',      '~> 0.9.12'
 gem 'creole',        '~>0.3.6'
-gem 'wikicloth',     '=0.8.1'
+gem 'wikicloth',     '0.8.1'
 gem 'asciidoctor',   '~> 1.5.2'
 
 # Diffs
@@ -109,37 +117,38 @@ gem 'diffy', '~> 3.0.3'
 
 # Application server
 group :unicorn do
-  gem "unicorn", '~> 4.6.3'
-  gem 'unicorn-worker-killer'
+  gem "unicorn", '~> 4.8.2'
+  gem 'unicorn-worker-killer', '~> 0.4.2'
 end
 
 # State machine
-gem "state_machine"
+gem "state_machine", '~> 1.2.0'
 
 # Issue tags
 gem 'acts-as-taggable-on', '~> 3.4'
 
 # Background jobs
-gem 'slim'
-gem 'sinatra', require: nil
-gem 'sidekiq', '~> 3.3'
-gem 'sidetiq', '0.6.3'
+gem 'slim', '~> 2.0.2'
+gem 'sinatra', '~> 1.4.4', require: nil
+gem 'sidekiq', '3.3.0'
+gem 'sidetiq', '~> 0.6.3'
 
 # HTTP requests
-gem "httparty"
+gem "httparty", '~> 0.13.3'
 
 # Colored output to console
-gem "colored"
+gem "colored", '~> 1.2'
+gem "colorize", '~> 0.5.8'
 
 # GitLab settings
-gem 'settingslogic'
+gem 'settingslogic', '~> 2.0.9'
 
 # Misc
-gem "foreman"
-gem 'version_sorter'
+
+gem 'version_sorter', '~> 2.0.0'
 
 # Cache
-gem "redis-rails"
+gem "redis-rails", '~> 4.0.0'
 
 # Campfire integration
 gem 'tinder', '~> 1.9.2'
@@ -178,71 +187,72 @@ gem "sanitize", '~> 2.0'
 gem "rack-attack", '~> 4.3.0'
 
 # Ace editor
-gem 'ace-rails-ap'
+gem 'ace-rails-ap', '~> 2.0.1'
 
 # Keyboard shortcuts
-gem 'mousetrap-rails'
+gem 'mousetrap-rails', '~> 1.4.6'
 
 # Detect and convert string character encoding
-gem 'charlock_holmes'
+gem 'charlock_holmes', '~> 0.6.9.4'
 
 gem "sass-rails", '~> 4.0.5'
-gem "coffee-rails"
-gem "uglifier"
+gem "coffee-rails", '~> 4.1.0'
+gem "uglifier", '~> 2.3.2'
 gem 'turbolinks', '~> 2.5.0'
-gem 'jquery-turbolinks'
+gem 'jquery-turbolinks', '~> 2.0.1'
 
-gem 'addressable'
+gem 'addressable',        '~> 2.3.8'
 gem 'bootstrap-sass',     '~> 3.0'
 gem 'font-awesome-rails', '~> 4.2'
 gem 'gitlab_emoji',       '~> 0.1'
 gem 'gon',                '~> 5.0.0'
 gem 'jquery-atwho-rails', '~> 1.0.0'
-gem 'jquery-rails',       '3.1.3'
-gem 'jquery-scrollto-rails'
-gem 'jquery-ui-rails'
-gem 'nprogress-rails'
+gem 'jquery-rails',       '~> 3.1.3'
+gem 'jquery-scrollto-rails', '~> 1.4.3'
+gem 'jquery-ui-rails',    '~> 4.2.1'
+gem 'nprogress-rails',    '~> 0.1.2.3'
 gem 'raphael-rails',      '~> 2.1.2'
-gem 'request_store'
+gem 'request_store',      '~> 1.2.0'
 gem 'select2-rails',      '~> 3.5.9'
-gem 'virtus'
+gem 'virtus',             '~> 1.0.1'
 
 gem "gitlab-license", "~> 0.0.2"
 
 group :development do
-  gem 'brakeman', require: false
-  gem "annotate", "~> 2.6.0.beta2"
-  gem "letter_opener"
-  gem 'quiet_assets', '~> 1.0.1'
-  gem 'rack-mini-profiler', require: false
+  gem "foreman"
+  gem 'brakeman', '3.0.1', require: false
+
+  gem "annotate", "~> 2.6.0"
+  gem "letter_opener", '~> 1.1.2'
+  gem 'quiet_assets', '~> 1.0.2'
+  gem 'rack-mini-profiler', '~> 0.9.0', require: false
   gem 'rerun', '~> 0.10.0'
 
   # Better errors handler
-  gem 'better_errors'
-  gem 'binding_of_caller'
+  gem 'better_errors', '~> 1.0.1'
+  gem 'binding_of_caller', '~> 0.7.2'
 
   # Docs generator
-  gem "sdoc"
+  gem "sdoc", '~> 0.3.20'
 
   # thin instead webrick
-  gem 'thin'
+  gem 'thin', '~> 1.6.1'
 end
 
 group :development, :test do
-  gem 'awesome_print'
   gem 'byebug', platform: :mri
-  gem 'fuubar', '~> 2.0.0'
   gem 'pry-rails'
 
-  gem 'coveralls',        '~> 0.8.2', require: false
+  gem 'awesome_print', '~> 1.2.0'
+  gem 'fuubar', '~> 2.0.0'
+
   gem 'database_cleaner', '~> 1.4.0'
-  gem 'factory_girl_rails'
+  gem 'factory_girl_rails', '~> 4.3.0'
   gem 'rspec-rails',      '~> 3.3.0'
-  gem 'rubocop',          '0.28.0',   require: false
-  gem 'spinach-rails'
+  gem 'spinach-rails', '~> 0.2.1'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
-  gem 'minitest', '~> 5.3.0'
+  gem 'minitest', '~> 5.7.0'
 
   # Generate Fake data
   gem 'ffaker', '~> 2.0.0'
@@ -252,20 +262,23 @@ group :development, :test do
   gem 'poltergeist',         '~> 1.6.0'
 
   gem 'teaspoon', '~> 1.0.0'
-  gem 'teaspoon-jasmine'
+  gem 'teaspoon-jasmine', '~> 2.2.0'
 
-  gem 'spring', '~> 1.3.1'
-  gem 'spring-commands-rspec',    '~> 1.0.0'
+  gem 'spring', '~> 1.3.6'
+  gem 'spring-commands-rspec',    '~> 1.0.4'
   gem 'spring-commands-spinach',  '~> 1.0.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
+
+  gem 'rubocop',  '~> 0.28.0',  require: false
+  gem 'coveralls',  '~> 0.8.2', require: false
+  gem 'simplecov', '~> 0.10.0', require: false
 end
 
 group :test do
-  gem 'simplecov', require: false
   gem 'shoulda-matchers', '~> 2.8.0', require: false
   gem 'email_spec', '~> 1.6.0'
   gem 'webmock', '~> 1.21.0'
-  gem 'test_after_commit'
+  gem 'test_after_commit', '~> 0.2.2'
   gem 'sham_rack'
 end
 
@@ -273,10 +286,32 @@ group :production do
   gem "gitlab_meta", '7.0'
 end
 
-gem "newrelic_rpm"
+gem "newrelic_rpm", '~> 3.9.4.245'
 
-gem 'octokit', '3.7.0'
+gem 'octokit', '~> 3.7.0'
 
-gem "mail_room", "~> 0.4.2"
+gem "mail_room", "~> 0.5.1"
 
-gem 'email_reply_parser'
+gem 'email_reply_parser', '~> 0.5.8'
+
+## CI
+gem 'activerecord-deprecated_finders', '~> 1.0.3'
+gem 'activerecord-session_store', '~> 0.1.0'
+gem "nested_form", '~> 0.3.2'
+
+# Scheduled
+gem 'whenever', '~> 0.8.4', require: false
+
+# OAuth
+gem 'oauth2', '~> 1.0.0'
+
+# Soft deletion
+gem "paranoia", "~> 2.0"
+
+group :development, :test do
+  gem 'guard-rspec', '~> 4.2.0'
+
+  gem 'rb-fsevent', require: darwin_only('rb-fsevent')
+  gem 'growl',      require: darwin_only('growl')
+  gem 'rb-inotify', require: linux_only('rb-inotify')
+end

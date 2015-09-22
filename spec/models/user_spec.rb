@@ -201,7 +201,7 @@ describe User do
     end
 
     it 'confirms a user' do
-      user.confirm!
+      user.confirm
       expect(user.confirmed?).to be_truthy
     end
   end

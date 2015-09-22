@@ -26,13 +26,11 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
 
   step 'I fill gitlab-ci settings' do
     check 'Active'
-    fill_in 'Project url', with: 'http://ci.gitlab.org/projects/3'
-    fill_in 'Token', with: 'verySecret'
     click_button 'Save'
   end
 
   step 'I should see service settings saved' do
-    expect(find_field('Project url').value).to eq 'http://ci.gitlab.org/projects/3'
+    expect(find_field('Active').value).to eq '1'
   end
 
   step 'I click hipchat service link' do

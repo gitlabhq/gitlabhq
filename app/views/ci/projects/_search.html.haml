@@ -1,0 +1,11 @@
+.search
+  = form_tag "#", method: :get, class: 'ci-search-form' do |f|
+    .input-group
+      = search_field_tag "search", params[:search], placeholder: "Search", class: "search-input form-control"
+      .input-group-addon
+        %i.fa.fa-search
+
+:coffeescript
+  $('.ci-search-form').submit ->
+    CiPager.init "#{ci_projects_path}" + "?search=" + query, #{Ci::ProjectsController::PROJECTS_BATCH}, false
+    false

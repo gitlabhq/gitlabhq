@@ -2,7 +2,7 @@ namespace :gitlab do
   desc "GitLab | Check the configuration of GitLab and its environment"
   task check: %w{gitlab:gitlab_shell:check
                  gitlab:sidekiq:check
-                 gitlab:reply_by_email:check
+                 gitlab:incoming_email:check
                  gitlab:ldap:check
                  gitlab:app:check}
 
@@ -634,13 +634,13 @@ namespace :gitlab do
   end
 
 
-  namespace :reply_by_email do
+  namespace :incoming_email do
     desc "GitLab | Check the configuration of Reply by email"
     task check: :environment  do
       warn_user_is_not_gitlab
       start_checking "Reply by email"
 
-      if Gitlab.config.reply_by_email.enabled
+      if Gitlab.config.incoming_email.enabled
         check_address_formatted_correctly
         check_mail_room_config_exists
         check_imap_authentication
@@ -665,12 +665,12 @@ namespace :gitlab do
     def check_address_formatted_correctly
       print "Address formatted correctly? ... "
 
-      if Gitlab::ReplyByEmail.address_formatted_correctly?
+      if Gitlab::IncomingEmail.address_formatted_correctly?
         puts "yes".green
       else
         puts "no".red
         try_fixing_it(
-          "Make sure that the address in config/gitlab.yml includes the '%{reply_key}' placeholder."
+          "Make sure that the address in config/gitlab.yml includes the '%{key}' placeholder."
         )
         fix_and_rerun
       end
@@ -689,7 +689,7 @@ namespace :gitlab do
           "Enable mail_room in the init.d configuration."
         )
         for_more_information(
-          "doc/reply_by_email/README.md"
+          "doc/incoming_email/README.md"
         )
         fix_and_rerun
       end
@@ -708,7 +708,7 @@ namespace :gitlab do
           "Enable mail_room in your Procfile."
         )
         for_more_information(
-          "doc/reply_by_email/README.md"
+          "doc/incoming_email/README.md"
         )
         fix_and_rerun
       end
@@ -753,7 +753,7 @@ namespace :gitlab do
           "Check that the information in config/mail_room.yml is correct"
         )
         for_more_information(
-          "doc/reply_by_email/README.md"
+          "doc/incoming_email/README.md"
         )
         fix_and_rerun
       end
@@ -789,7 +789,7 @@ namespace :gitlab do
           "Check that the information in config/mail_room.yml is correct"
         )
         for_more_information(
-          "doc/reply_by_email/README.md"
+          "doc/incoming_email/README.md"
         )
         fix_and_rerun
       end

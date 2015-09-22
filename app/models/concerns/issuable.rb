@@ -140,6 +140,12 @@ module Issuable
     {
       object_kind: self.class.name.underscore,
       user: user.hook_attrs,
+      repository: {
+          name: project.name,
+          url: project.url_to_repo,
+          description: project.description,
+          homepage: project.web_url
+      },
       object_attributes: hook_attrs
     }
   end

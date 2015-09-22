@@ -5,6 +5,7 @@ describe Projects::MilestonesController do
   let(:user)    { create(:user) }
   let(:milestone) { create(:milestone, project: project) }
   let(:issue) { create(:issue, project: project, milestone: milestone) }
+  let(:merge_request) { create(:merge_request, source_project: project, target_project: project, milestone: milestone) }
 
   before do
     sign_in(user)
@@ -14,12 +15,21 @@ describe Projects::MilestonesController do
 
   describe "#destroy" do
     it "should remove milestone" do
+      merge_request.reload
       expect(issue.milestone_id).to eq(milestone.id)
+
       delete :destroy, namespace_id: project.namespace.id, project_id: project.id, id: milestone.id, format: :js
       expect(response).to be_success
+
+      expect(Event.first.action).to eq(Event::DESTROYED)
+
       expect { Milestone.find(milestone.id) }.to raise_exception(ActiveRecord::RecordNotFound)
       issue.reload
       expect(issue.milestone_id).to eq(nil)
+
+      merge_request.reload
+      expect(merge_request.milestone_id).to eq(nil)
+
       # Check system note left for milestone removal
       last_note = project.issues.find(issue.id).notes[-1].note
       expect(last_note).to eq('Milestone removed')
