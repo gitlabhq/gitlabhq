@@ -116,7 +116,11 @@ sudo -u gitlab_ci -H bundle exec whenever --clear-crontab
 
 ### Moving data
 
-- (1) Move the database encryption key from your CI server to your GitLab server.
+- (1) Move the database encryption key from your CI server to your GitLab
+  server. The command below will show you what you need to copy-paste to your
+GitLab server. On Omnibus GitLab servers you will have to add a line to
+`/etc/gitlab/gitlab.rb`. On GitLab servers installed from source you will have
+to replace the contents of `/home/git/gitlab/config/secrets.yml`.
 
 ```
 # CI server
