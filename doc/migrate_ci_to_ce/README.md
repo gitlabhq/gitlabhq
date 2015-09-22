@@ -33,7 +33,7 @@ upgrade to 8.0 until you finish the migration procedure.
 Make sure that the backup script on both servers can connect to the database.
 
 ```
-# CI server
+# On your CI server:
 # Omnibus
 sudo gitlab-ci-rake backup:create
 
@@ -45,7 +45,7 @@ sudo -u gitlab_ci -H bundle exec rake backup:create RAILS_ENV=production
 Also check on your GitLab server.
 
 ```
-# GitLab server
+# On your GitLab server:
 # Omnibus
 sudo gitlab-rake gitlab:backup:create SKIP=repositories,uploads
 
@@ -67,7 +67,7 @@ during the 'Moving data' part. **If your CI server uses PostgreSQL and your
 GitLab server uses MySQL you cannot migrate your CI data to GitLab 8.0.**
 
 ```
-# CI server
+# On your CI server:
 # Omnibus
 sudo gitlab-ci-rake env:info
 
@@ -77,7 +77,7 @@ sudo -u gitlab_ci -H bundle exec rake env:info RAILS_ENV=production
 ```
 
 ```
-# GitLab server
+# On your GitLab server:
 # Omnibus
 sudo gitlab-rake gitlab:env:info
 
@@ -127,7 +127,7 @@ Now upgrade GitLab CI to version 8.0. If you are using Omnibus packages,
 Disable GitLab CI after upgrading to 8.0.
 
 ```
-# CI server
+# On your CI server:
 # Omnibus
 sudo gitlab-ctl stop ci-unicorn
 sudo gitlab-ctl stop ci-sidekiq
@@ -149,7 +149,7 @@ GitLab server. On Omnibus GitLab servers you will have to add a line to
 to replace the contents of `/home/git/gitlab/config/secrets.yml`.
 
 ```
-# CI server
+# On your CI server:
 # Omnibus
 sudo gitlab-ci-rake backup:show_secrets
 
@@ -166,7 +166,7 @@ the command finishes it will print the path to your data export archive; you
 will need this file later.
 
 ```
-# CI server
+# On your CI server:
 # Omnibus
 sudo gitlab-ci-rake backup:create
 
@@ -198,7 +198,7 @@ Make the CI data archive discoverable for GitLab. We assume below that you
 store backups in the default path, adjust the command if necessary.
 
 ```
-# GitLab server
+# On your GitLab server:
 # Omnibus
 sudo mv /path/to/12345_gitlab_ci_backup.tar /var/opt/gitlab/backups/
 
@@ -212,7 +212,7 @@ This step will delete any existing CI data on your GitLab server. There should
 be no CI data yet because you turned CI on the GitLab server off earlier.
 
 ```
-# GitLab server
+# On your GitLab server:
 # Omnibus
 sudo gitlab-rake ci:migrate
 
@@ -224,7 +224,7 @@ sudo -u git -H bundle exec rake ci:migrate RAILS_ENV=production
 #### 6. Restart GitLab
 
 ```
-# GitLab server
+# On your GitLab server:
 # Omnibus
 sudo gitlab-ctl hup unicorn
 sudo gitlab-ctl restart sidekiq
