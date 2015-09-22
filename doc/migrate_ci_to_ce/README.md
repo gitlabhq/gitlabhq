@@ -214,6 +214,9 @@ GitLab CE or EE database:
 
 This task will take some time.
 
+This migration task automatically re-enables the CI setting that you
+[disabled earlier](#2-prevent-ci-usage-during-the-migration-process).
+
 #### 9. Start GitLab
 
 You can start GitLab CE (or EE) now and see if everything is working:
