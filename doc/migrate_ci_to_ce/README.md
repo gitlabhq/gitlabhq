@@ -55,14 +55,7 @@ https://about.gitlab.com/getting-help/
 the same database adapter no special care is needed. If your CI server uses
 MySQL and your GitLab server uses PostgreSQL you need to pass a special option
 during the 'Moving data' part. **If your CI server uses PostgreSQL and your
-GitLab server uses MySQL you cannot migrate your CI data to GitLab 8.0.***
-
-- (3) Decide where to store CI build traces on GitLab server. GitLab CI uses
-  files on disk to store CI build traces. The default path for these build
-traces is `/var/opt/gitlab/gitlab-ci/build` (Omnibus) or
-`/home/git/gitlab/builds` (Source). If you are storing your repository data in
-a special location, or if you are using NFS, you should make sure that you
-store build traces on the same storage as your Git repositories.
+GitLab server uses MySQL you cannot migrate your CI data to GitLab 8.0.**
 
 ```
 # CI server
@@ -83,6 +76,13 @@ sudo gitlab-rake gitlab:env:info
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 ```
+
+- (3) Decide where to store CI build traces on GitLab server. GitLab CI uses
+  files on disk to store CI build traces. The default path for these build
+traces is `/var/opt/gitlab/gitlab-ci/build` (Omnibus) or
+`/home/git/gitlab/builds` (Source). If you are storing your repository data in
+a special location, or if you are using NFS, you should make sure that you
+store build traces on the same storage as your Git repositories.
 
 ### Upgrading
 
