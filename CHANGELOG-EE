@@ -1,4 +1,8 @@
-v 8.0.0 (unreleased)
+v 8.0.1
+  - Correct gem dependency versions
+  - Re-add the "Help Text" feature that was inadvertently removed
+
+v 8.0.0
   - Fix navigation issue when viewing Group Settings pages
   - Guests and Reporters can approve merge request as well
   - Add fast-forward merge option in project settings
