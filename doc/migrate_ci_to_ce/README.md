@@ -77,7 +77,10 @@ database configuration files:
         # Omnibus installation
         sudo gitlab-ci-rake backup:create MYSQL_TO_POSTGRESQL=1
 
-#### 3. Remove cronjob (manual installation)
+#### 3. Remove cronjob
+
+**Note:** This step is only required for **manual installations**. Omnibus users
+can [skip to the next step](#part-ii-gitlab-ce-or-ee).
 
     # Manual installation
     cd /home/gitlab_ci/gitlab-ci
@@ -162,8 +165,8 @@ The `secrets.yml` file stores encryption keys for secure variables.
 
 #### 6. New configuration options for `gitlab.yml`
 
-**Note:** This step is only required for manual installations. Omnibus
-installations can [skip to the next step](#7-copy-backup-from-gitlab-ci).
+**Note:** This step is only required for **manual installations**. Omnibus users
+can [skip to the next step](#7-copy-backup-from-gitlab-ci).
 
 There are new configuration options available for `gitlab.yml`. View them with
 the command below and apply them manually to your current `gitlab.yml`:
@@ -223,8 +226,8 @@ You can start GitLab CE (or EE) now and see if everything is working:
 
 ### Part III: Nginx configuration
 
-This part is only required for **Manual installations**. Omnibus users can [skip
-to the final step](#part-iv-finishing-up).
+This section is only required for **manual installations**. Omnibus users can
+[skip to the final step](#part-iv-finishing-up).
 
 #### 1. Update Nginx configuration
 
