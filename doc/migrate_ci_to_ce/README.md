@@ -89,7 +89,7 @@ traces is `/var/opt/gitlab/gitlab-ci/builds` (Omnibus) or
 a special location, or if you are using NFS, you should make sure that you
 store build traces on the same storage as your Git repositories.
 
-### Upgrading
+### I. Upgrading
 
 From this point on, GitLab CI will be unavailable for your end users.
 
@@ -119,7 +119,7 @@ cd /home/gitlab_ci/gitlab-ci
 sudo -u gitlab_ci -H bundle exec whenever --clear-crontab
 ```
 
-### Moving data
+### II. Moving data
 
 - (1) Move the database encryption key from your CI server to your GitLab
   server. The command below will show you what you need to copy-paste to your
@@ -201,7 +201,7 @@ sudo gitlab-ctl restart sidekiq
 sudo service gitlab reload
 ```
 
-### Redirecting traffic
+### III. Redirecting traffic
 
 If you were running GitLab CI with Omnibus packages and you were using the
 internal NGINX configuration your CI service should now be available both at
