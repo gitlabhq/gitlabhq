@@ -14,3 +14,9 @@ web_server['gid'] = 999
 gitlab_ci['uid'] = 995
 gitlab_ci['gid'] = 995
 
+# Get hostname from shell
+host = `hostname`.strip
+external_url "http://#{host}"
+
+# Load /etc/gitlab/gitlab.rb
+from_file("/etc/gitlab/gitlab.rb")

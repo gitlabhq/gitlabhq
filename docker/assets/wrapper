@@ -9,10 +9,21 @@ trap "sigterm_handler; exit" TERM
 
 set -xe
 
+# Copy gitlab.rb for the first time
 if [[ ! -e /etc/gitlab/gitlab.rb ]]; then
-	cp /assets/gitlab.rb /etc/gitlab/gitlab.rb
+	cp /opt/gitlab/etc/gitlab.rb.template /etc/gitlab/gitlab.rb
 	chmod 0600 /etc/gitlab/gitlab.rb
 fi
 
-gitlab-ctl reconfigure # start everything
-gitlab-ctl tail # all logs
+# Remove all services, the reconfigure will create them
+rm /opt/gitlab/service/*
+ln -s /opt/gitlab/sv/sshd /opt/gitlab/service
+
+# Start service manager
+/opt/gitlab/embedded/bin/runsvdir-start &
+
+# Configure gitlab package
+gitlab-ctl reconfigure
+
+# Tail all logs
+gitlab-ctl tail
