@@ -28,7 +28,9 @@ upgrade to 8.0 until you finish the migration procedure.
 
 ### Before upgrading
 
-- (1) Make sure that the backup script on both servers can connect to the database.
+#### 1. Verify that backups work
+
+Make sure that the backup script on both servers can connect to the database.
 
 ```
 # CI server
@@ -55,7 +57,9 @@ sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production SKIP=r
 If this fails you need to fix it before upgrading to 8.0. Also see
 https://about.gitlab.com/getting-help/
 
-- (2) Check what databases you use on your GitLab server and your CI server.
+#### 2. Check source and target database types
+
+Check what databases you use on your GitLab server and your CI server.
   Look for the 'adapter:' line. If your CI server and your GitLab server use
 the same database adapter no special care is needed. If your CI server uses
 MySQL and your GitLab server uses PostgreSQL you need to pass a special option
@@ -82,7 +86,9 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 ```
 
-- (3) Decide where to store CI build traces on GitLab server. GitLab CI uses
+#### 3. Storage planning
+
+Decide where to store CI build traces on GitLab server. GitLab CI uses
   files on disk to store CI build traces. The default path for these build
 traces is `/var/opt/gitlab/gitlab-ci/builds` (Omnibus) or
 `/home/git/gitlab/builds` (Source). If you are storing your repository data in
@@ -93,19 +99,32 @@ store build traces on the same storage as your Git repositories.
 
 From this point on, GitLab CI will be unavailable for your end users.
 
-- (1) First upgrade your GitLab server to version 8.0:
+#### 1. Upgrade GitLab to 8.0
+
+First upgrade your GitLab server to version 8.0:
 https://about.gitlab.com/update/
-- (2) After you update, go to the admin panel and temporarily disable CI.  As
+
+#### 2. Disable CI on the GitLab server during the migration
+
+After you update, go to the admin panel and temporarily disable CI.  As
   an administrator, go to **Admin Area** -> **Settings**, and under
 **Continuous Integration** uncheck **Disable to prevent CI usage until rake
 ci:migrate is run (8.0 only)**.
-- (3) If you want to use custom CI settings (e.g. change where builds are
+
+#### 3. CI settings are now in GitLab
+
+If you want to use custom CI settings (e.g. change where builds are
   stored), please update `/etc/gitlab/gitlab.rb` (Omnibus) or
 `/home/git/gitlab/config/gitlab.yml` (Source).
-- (4) Now upgrade GitLab CI to version 8.0. If you are using Omnibus packages,
+
+#### 4. Upgrade GitLab CI to 8.0
+
+Now upgrade GitLab CI to version 8.0. If you are using Omnibus packages,
   this may have already happened when you upgraded GitLab to 8.0.
 
-- (5) Disable GitLab CI after upgrading to 8.0.
+#### 5. Disable GitLab CI on the CI server
+
+Disable GitLab CI after upgrading to 8.0.
 
 ```
 # CI server
@@ -121,7 +140,9 @@ sudo -u gitlab_ci -H bundle exec whenever --clear-crontab
 
 ### II. Moving data
 
-- (1) Move the database encryption key from your CI server to your GitLab
+#### 1. Database encryption key
+
+Move the database encryption key from your CI server to your GitLab
   server. The command below will show you what you need to copy-paste to your
 GitLab server. On Omnibus GitLab servers you will have to add a line to
 `/etc/gitlab/gitlab.rb`. On GitLab servers installed from source you will have
@@ -137,7 +158,9 @@ cd /home/gitlab_ci/gitlab-ci
 sudo -u gitlab_ci -H bundle exec rake backup:show_secrets RAILS_ENV=production
 ```
 
-- (2) Create your final CI data export. If you are converting from MySQL to
+#### 2. SQL data and build traces
+
+Create your final CI data export. If you are converting from MySQL to
   PostgreSQL, add ` MYSQL_TO_POSTGRESQL=1` to the end of the rake command. When
 the command finishes it will print the path to your data export archive; you
 will need this file later.
@@ -152,11 +175,15 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake backup:create RAILS_ENV=production
 ```
 
-- (3) Copy your CI data archive to your GitLab server. If you were running
-  GitLab and GitLab CI on the same server you can skip this step. There are
-many ways to do this, below we use SSH agent forwarding and 'scp', which will
-be easy and fast for most setups. You can also copy the data archive first from
-the CI server to your laptop and then from your laptop to the GitLab server.
+#### 3. Copy data to the GitLab server
+
+If you were running GitLab and GitLab CI on the same server you can skip this
+step.
+
+Copy your CI data archive to your GitLab server. There are many ways to do
+this, below we use SSH agent forwarding and 'scp', which will be easy and fast
+for most setups. You can also copy the data archive first from the CI server to
+your laptop and then from your laptop to the GitLab server.
 
 ```
 # Start from your laptop
@@ -165,8 +192,10 @@ ssh -A ci_admin@ci_server.example
 scp /path/to/12345_gitlab_ci_backup.tar gitlab_admin@gitlab_server.example:~
 ```
 
-- (4) Make the CI data archive discoverable for GitLab. We assume below that
-  you store backups in the default path, adjust the command if necessary.
+#### 4. Move data to the GitLab backups folder
+
+Make the CI data archive discoverable for GitLab. We assume below that you
+store backups in the default path, adjust the command if necessary.
 
 ```
 # GitLab server
@@ -177,7 +206,10 @@ sudo mv /path/to/12345_gitlab_ci_backup.tar /var/opt/gitlab/backups/
 sudo mv /path/to/12345_gitlab_ci_backup.tar /home/git/gitlab/tmp/backups/
 ```
 
-- (5) Import the CI data into GitLab.
+#### 5. Import the CI data into GitLab.
+
+This step will delete any existing CI data on your GitLab server. There should
+be no CI data yet because you turned CI on the GitLab server off earlier.
 
 ```
 # GitLab server
@@ -189,7 +221,7 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake ci:migrate RAILS_ENV=production
 ```
 
-- (6) Restart GitLab
+#### 6. Restart GitLab
 
 ```
 # GitLab server
