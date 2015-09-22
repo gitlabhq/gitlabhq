@@ -19,6 +19,8 @@
 #
 
 class GitlabCiService < CiService
+  include Gitlab::Application.routes.url_helpers
+
   prop_accessor :token
 
   after_save :compose_service_hook, if: :activated?
