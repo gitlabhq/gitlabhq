@@ -195,7 +195,7 @@ This can happen before tagging because Omnibus uses tags in its own repo and SHA
 ## Update GitLab.com with the stable version
 
 - Deploy the package (should not need downtime because of the small difference with RC1)
-- Deploy the package for ci.gitlab.com
+- Deploy the package for gitlab.com/ci
 
 ## Release CE, EE and CI
 

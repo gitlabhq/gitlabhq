@@ -84,7 +84,8 @@ class ApplicationSetting < ActiveRecord::Base
       default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       restricted_signup_domains: Settings.gitlab['restricted_signup_domains'],
-      import_sources: ['github','bitbucket','gitlab','gitorious','google_code','fogbugz','git']
+      import_sources: ['github','bitbucket','gitlab','gitorious','google_code','fogbugz','git'],
+      ci_enabled: Settings.gitlab_ci['enabled']
     )
   end
 

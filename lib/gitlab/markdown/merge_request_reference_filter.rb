@@ -63,7 +63,7 @@ module Gitlab
       end
 
       def url_for_merge_request(mr, project)
-        h = Rails.application.routes.url_helpers
+        h = Gitlab::Application.routes.url_helpers
         h.namespace_project_merge_request_url(project.namespace, project, mr,
                                             only_path: context[:only_path])
       end

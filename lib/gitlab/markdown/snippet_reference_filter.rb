@@ -63,7 +63,7 @@ module Gitlab
       end
 
       def url_for_snippet(snippet, project)
-        h = Rails.application.routes.url_helpers
+        h = Gitlab::Application.routes.url_helpers
         h.namespace_project_snippet_url(project.namespace, project, snippet,
                                         only_path: context[:only_path])
       end

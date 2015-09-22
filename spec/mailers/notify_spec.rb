@@ -712,7 +712,7 @@ describe Notify do
 
         before do
           user.update_attribute(:email, "user@company.com")
-          user.confirm!
+          user.confirm
         end
 
         it "is sent from the committer email" do
@@ -730,7 +730,7 @@ describe Notify do
 
         before do
           user.update_attribute(:email, "user@something.company.com")
-          user.confirm!
+          user.confirm
         end
 
         it "is sent from the default email" do
@@ -748,7 +748,7 @@ describe Notify do
 
         before do
           user.update_attribute(:email, "user@mpany.com")
-          user.confirm!
+          user.confirm
         end
 
         it "is sent from the default email" do

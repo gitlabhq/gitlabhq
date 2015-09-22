@@ -1,0 +1,37 @@
+- if project.gitlab_ci_project
+  - ci_project = project.gitlab_ci_project
+  - last_commit = ci_project.last_commit
+  %tr
+    %td
+      = link_to [:ci, ci_project] do
+        = ci_project.name
+    %td
+      - if last_commit
+        = ci_status_with_icon(last_commit.status)
+        = commit_link(last_commit)
+        &middot;
+        - if ci_project.last_commit_date
+          = time_ago_in_words ci_project.last_commit_date
+          ago
+      - else
+        No builds yet
+    %td
+      - if ci_project.public
+        %i.fa.fa-globe
+        Public
+      - else
+        %i.fa.fa-lock
+        Private
+    %td
+      = ci_project.commits.count
+- else
+  %tr.light
+    %td
+      = project.name_with_namespace
+    %td
+      %small Not added to CI
+    %td
+    %td
+      = form_tag ci_projects_path do
+        = hidden_field_tag :project, project.to_json(methods: [:name_with_namespace, :path_with_namespace, :ssh_url_to_repo])
+        = submit_tag 'Add project to CI', class: 'btn btn-default btn-sm'

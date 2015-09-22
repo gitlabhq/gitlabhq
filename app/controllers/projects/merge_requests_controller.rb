@@ -7,6 +7,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits]
   before_action :validates_merge_request, only: [:show, :diffs, :commits]
   before_action :define_show_vars, only: [:show, :diffs, :commits]
+  before_action :ensure_ref_fetched, only: [:show, :commits, :diffs]
 
   # Allow read any merge_request
   before_action :authorize_read_merge_request!
@@ -327,5 +328,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       :target_project_id, :target_branch, :milestone_id, :approver_ids,
       :state_event, :description, :task_num, label_ids: []
     )
+  end
+
+  # Make sure merge requests created before 8.0
+  # have head file in refs/merge-requests/
+  def ensure_ref_fetched
+    @merge_request.ensure_ref_fetched
   end
 end

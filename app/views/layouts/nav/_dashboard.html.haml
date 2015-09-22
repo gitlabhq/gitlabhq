@@ -1,5 +1,5 @@
 %ul.nav.nav-sidebar
-  = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'projects#index'], html_options: {class: 'home'}) do
+  = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: {class: 'home'}) do
     = link_to root_path, title: 'Projects', data: {placement: 'right'} do
       = icon('home fw')
       %span
@@ -31,6 +31,11 @@
         %span
           Merge Requests
           %span.count= current_user.assigned_merge_requests.opened.count
+  = nav_link(path: ['ci/projects#index', 'ci/projects#disabled']) do
+    = link_to ci_projects_path, title: 'Continuous Integration', data: {placement: 'right'} do
+      = icon('building fw')
+      %span
+        Continuous Integration
   = nav_link(controller: :snippets) do
     = link_to dashboard_snippets_path, title: 'Your snippets', data: {placement: 'right'} do
       = icon('clipboard fw')
@@ -41,6 +46,8 @@
       = icon('question-circle fw')
       %span
         Help
+
+  %li.separate-item
   = nav_link(controller: :profile) do
     = link_to profile_path, title: 'Profile settings', data: {placement: 'bottom'} do
       = icon('user fw')

@@ -18,12 +18,6 @@ class Projects::BlobController < Projects::ApplicationController
   before_action :after_edit_path, only: [:edit, :update]
 
   def new
-    @title = 'Upload'
-    @placeholder = 'Upload new file'
-    @button_title = 'Upload file'
-    @form_path = namespace_project_create_blob_path(@project.namespace, @project, @id)
-    @method = :post
-
     commit unless @repository.empty?
   end
 
@@ -46,11 +40,6 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def show
-    @title = "Replace #{@blob.name}"
-    @placeholder = @title
-    @button_title = 'Replace file'
-    @form_path = namespace_project_update_blob_path(@project.namespace, @project, @id)
-    @method = :put
   end
 
   def edit

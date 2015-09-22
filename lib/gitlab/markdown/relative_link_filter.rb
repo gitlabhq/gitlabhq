@@ -59,25 +59,43 @@ module Gitlab
       end
 
       def relative_file_path(path)
-        nested_path = build_nested_path(path, context[:requested_path])
+        nested_path = build_relative_path(path, context[:requested_path])
         file_exists?(nested_path) ? nested_path : path
       end
 
-      # Covering a special case, when the link is referencing file in the same
-      # directory.
-      # If we are at doc/api/README.md and the README.md contains relative
-      # links like [Users](users.md), this takes the request
-      # path(doc/api/README.md) and replaces the README.md with users.md so the
-      # path looks like doc/api/users.md.
-      # If we are at doc/api and the README.md shown in below the tree view
-      # this takes the request path(doc/api) and adds users.md so the path
-      # looks like doc/api/users.md
-      def build_nested_path(path, request_path)
+      # Convert a relative path into its correct location based on the currently
+      # requested path
+      #
+      # path         - Relative path String
+      # request_path - Currently-requested path String
+      #
+      # Examples:
+      #
+      #   # File in the same directory as the current path
+      #   build_relative_path("users.md", "doc/api/README.md")
+      #   # => "doc/api/users.md"
+      #
+      #   # File in the same directory, which is also the current path
+      #   build_relative_path("users.md", "doc/api")
+      #   # => "doc/api/users.md"
+      #
+      #   # Going up one level to a different directory
+      #   build_relative_path("../update/7.14-to-8.0.md", "doc/api/README.md")
+      #   # => "doc/update/7.14-to-8.0.md"
+      #
+      # Returns a String
+      def build_relative_path(path, request_path)
         return request_path if path.empty?
         return path unless request_path
 
         parts = request_path.split('/')
         parts.pop if path_type(request_path) != 'tree'
+
+        while parts.length > 1 && path.start_with?('../')
+          parts.pop
+          path.sub!('../', '')
+        end
+
         parts.push(path).join('/')
       end
 

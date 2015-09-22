@@ -46,6 +46,10 @@ class EventCreateService
     create_record_event(milestone, current_user, Event::REOPENED)
   end
 
+  def destroy_milestone(milestone, current_user)
+    create_record_event(milestone, current_user, Event::DESTROYED)
+  end
+
   def leave_note(note, current_user)
     create_record_event(note, current_user, Event::COMMENTED)
   end

@@ -487,8 +487,20 @@ class MergeRequest < ActiveRecord::Base
     target_project.repository.fetch_ref(
       source_project.repository.path_to_repo,
       "refs/heads/#{source_branch}",
-      "refs/merge-requests/#{iid}/head"
+      ref_path
     )
+  end
+
+  def ref_path
+    "refs/merge-requests/#{iid}/head"
+  end
+
+  def ref_is_fetched?
+    File.exists?(File.join(project.repository.path_to_repo, ref_path))
+  end
+
+  def ensure_ref_fetched
+    fetch_ref unless ref_is_fetched?
   end
 
   def in_locked_state

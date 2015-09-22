@@ -46,6 +46,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :gravatar_enabled,
       :twitter_sharing_enabled,
       :sign_in_text,
+      :help_page_text,
       :home_page_url,
       :help_text,
       :after_sign_out_path,
@@ -56,6 +57,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :restricted_signup_domains_raw,
       :version_check_enabled,
       :user_oauth_applications,
+      :ci_enabled,
       restricted_visibility_levels: [],
       import_sources: []
     )

@@ -125,6 +125,7 @@ class Project < ActiveRecord::Base
   has_many :project_group_links, dependent: :destroy
   has_many :invited_groups, through: :project_group_links, source: :group
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
+  has_one :gitlab_ci_project, dependent: :destroy, class_name: "Ci::Project", foreign_key: :gitlab_id
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
@@ -336,7 +337,7 @@ class Project < ActiveRecord::Base
   end
 
   def web_url
-    Rails.application.routes.url_helpers.namespace_project_url(self.namespace, self)
+    Gitlab::Application.routes.url_helpers.namespace_project_url(self.namespace, self)
   end
 
   def web_url_without_protocol
@@ -434,7 +435,7 @@ class Project < ActiveRecord::Base
   end
 
   def gitlab_ci?
-    gitlab_ci_service && gitlab_ci_service.active
+    gitlab_ci_service && gitlab_ci_service.active && gitlab_ci_project.present?
   end
 
   def ci_services
@@ -470,7 +471,7 @@ class Project < ActiveRecord::Base
     if avatar.present?
       [gitlab_config.url, avatar.url].join
     elsif avatar_in_git
-      Rails.application.routes.url_helpers.namespace_project_avatar_url(namespace, self)
+      Gitlab::Application.routes.url_helpers.namespace_project_avatar_url(namespace, self)
     end
   end
 

@@ -207,9 +207,9 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-14-stable-ee gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-0-stable-ee gitlab
 
-**Note:** You can change `7-14-stable-ee` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `8-0-stable-ee` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -221,6 +221,10 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
     # Update GitLab config file, follow the directions at top of file
     sudo -u git -H editor config/gitlab.yml
+
+    # Copy the example secrets file
+    sudo -u git -H cp config/secrets.yml.example config/secrets.yml
+    sudo -u git -H chmod 0600 config/secrets.yml
 
     # Make sure GitLab can write to the log/ and tmp/ directories
     sudo chown -R git log/
@@ -234,6 +238,9 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
     # Make sure GitLab can write to the public/uploads/ directory
     sudo chmod -R u+rwX  public/uploads
+
+    # Change the permissions of the directory where CI build traces are stored
+    sudo chmod -R u+rwX builds/
 
     # Copy the example Unicorn config
     sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
@@ -327,6 +334,17 @@ GitLab Shell is an SSH access and repository management software developed speci
 **Note:** You can set the Administrator/root password by supplying it in environmental variable `GITLAB_ROOT_PASSWORD` as seen below. If you don't set the password (and it is set to the default one) please wait with exposing GitLab to the public internet until the installation is done and you've logged into the server the first time. During the first login you'll be forced to change the default password.
 
     sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=yourpassword
+
+### Secure secrets.yml
+
+The `secrets.yml` file stores encryption keys for sessions and secure variables.
+Backup `secrets.yml` someplace safe, but don't store it in the same place as your database backups.
+Otherwise your secrets are exposed if one of your backups is compromised.
+
+### Install schedules
+
+    # Setup schedules
+    sudo -u gitlab_ci -H bundle exec whenever -w RAILS_ENV=production
 
 ### Install Init Script
 
@@ -491,3 +509,8 @@ You can configure LDAP authentication in `config/gitlab.yml`. Please restart Git
 ### Using Custom Omniauth Providers
 
 See the [omniauth integration document](../integration/omniauth.md)
+
+### Build your projects
+
+GitLab can build your projects. To enable that feature you need GitLab Runners to do that for you.
+Checkout the [Gitlab Runner section](https://about.gitlab.com/gitlab-ci/#gitlab-runner) to install it
