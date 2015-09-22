@@ -79,7 +79,7 @@ sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 
 - (3) Decide where to store CI build traces on GitLab server. GitLab CI uses
   files on disk to store CI build traces. The default path for these build
-traces is `/var/opt/gitlab/gitlab-ci/build` (Omnibus) or
+traces is `/var/opt/gitlab/gitlab-ci/builds` (Omnibus) or
 `/home/git/gitlab/builds` (Source). If you are storing your repository data in
 a special location, or if you are using NFS, you should make sure that you
 store build traces on the same storage as your Git repositories.
