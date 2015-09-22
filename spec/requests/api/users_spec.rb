@@ -7,6 +7,7 @@ describe API::API, api: true  do
   let(:admin) { create(:admin) }
   let(:key)   { create(:key, user: user) }
   let(:email)   { create(:email, user: user) }
+  let(:omniauth_user) { create(:omniauth_user) }
 
   describe "GET /users" do
     context "when unauthenticated" do
@@ -228,6 +229,19 @@ describe API::API, api: true  do
       expect(response.status).to eq(200)
       expect(json_response['username']).to eq(user.username)
       expect(user.reload.username).to eq(user.username)
+    end
+
+    it "should update user's existing identity" do
+      put api("/users/#{omniauth_user.id}", admin), provider: 'ldapmain', extern_uid: '654321'
+      expect(response.status).to eq(200)
+      expect(omniauth_user.reload.identities.first.extern_uid).to eq('654321')
+    end
+
+    it 'should update user with new identity' do
+      put api("/users/#{user.id}", admin), provider: 'github', extern_uid: '67890'
+      expect(response.status).to eq(200)
+      expect(user.reload.identities.first.extern_uid).to eq('67890')
+      expect(user.reload.identities.first.provider).to eq('github')
     end
 
     it "should update admin status" do
