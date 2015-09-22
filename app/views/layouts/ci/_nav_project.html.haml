@@ -10,44 +10,45 @@
       %span
         Commits
         %span.count= @project.commits.count
-  = nav_link path: 'charts#show' do
-    = link_to ci_project_charts_path(@project) do
-      = icon('bar-chart fw')
-      %span
-        Charts
-  = nav_link path: ['runners#index', 'runners#show', 'runners#edit'] do
-    = link_to ci_project_runners_path(@project) do
-      = icon('cog fw')
-      %span
-        Runners
-  = nav_link path: 'variables#show' do
-    = link_to ci_project_variables_path(@project) do
-      = icon('code fw')
-      %span
-        Variables
-  = nav_link path: 'web_hooks#index' do
-    = link_to ci_project_web_hooks_path(@project) do
-      = icon('link fw')
-      %span
-        Web Hooks
-  = nav_link path: 'triggers#index' do
-    = link_to ci_project_triggers_path(@project) do
-      = icon('retweet fw')
-      %span
-        Triggers
-  = nav_link path: ['services#index', 'services#edit'] do
-    = link_to ci_project_services_path(@project) do
-      = icon('share fw')
-      %span
-        Services
-  = nav_link path: 'events#index' do
-    = link_to ci_project_events_path(@project) do
-      = icon('book fw')
-      %span
-        Events
-  %li.separate-item
-  = nav_link path: 'projects#edit' do
-    = link_to edit_ci_project_path(@project) do
-      = icon('cogs fw')
-      %span
-        Settings
+  - if can?(current_user, :admin_project, gl_project)
+    = nav_link path: 'charts#show' do
+      = link_to ci_project_charts_path(@project) do
+        = icon('bar-chart fw')
+        %span
+          Charts
+    = nav_link path: ['runners#index', 'runners#show', 'runners#edit'] do
+      = link_to ci_project_runners_path(@project) do
+        = icon('cog fw')
+        %span
+          Runners
+    = nav_link path: 'variables#show' do
+      = link_to ci_project_variables_path(@project) do
+        = icon('code fw')
+        %span
+          Variables
+    = nav_link path: 'web_hooks#index' do
+      = link_to ci_project_web_hooks_path(@project) do
+        = icon('link fw')
+        %span
+          Web Hooks
+    = nav_link path: 'triggers#index' do
+      = link_to ci_project_triggers_path(@project) do
+        = icon('retweet fw')
+        %span
+          Triggers
+    = nav_link path: ['services#index', 'services#edit'] do
+      = link_to ci_project_services_path(@project) do
+        = icon('share fw')
+        %span
+          Services
+    = nav_link path: 'events#index' do
+      = link_to ci_project_events_path(@project) do
+        = icon('book fw')
+        %span
+          Events
+    %li.separate-item
+    = nav_link path: 'projects#edit' do
+      = link_to edit_ci_project_path(@project) do
+        = icon('cogs fw')
+        %span
+          Settings
