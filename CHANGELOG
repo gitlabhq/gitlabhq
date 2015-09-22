@@ -1,6 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.0.0 (unreleased)
+v 8.0.1
+  - Improve CI migration procedure and documentation
+
+v 8.0.0
   - Fix Markdown links not showing up in dashboard activity feed (Stan Hu)
   - Remove milestones from merge requests when milestones are deleted (Stan Hu)
   - Fix HTML link that was improperly escaped in new user e-mail (Stan Hu)
