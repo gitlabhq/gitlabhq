@@ -4,14 +4,16 @@ require 'spec_helper'
 
 module Gitlab::Markdown
   describe RelativeLinkFilter do
-    def filter(doc)
-      described_class.call(doc, {
+    def filter(doc, contexts = {})
+      contexts.reverse_merge!({
         commit:         project.commit,
         project:        project,
         project_wiki:   project_wiki,
         ref:            ref,
         requested_path: requested_path
       })
+
+      described_class.call(doc, contexts)
     end
 
     def image(path)
@@ -75,6 +77,22 @@ module Gitlab::Markdown
           to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
       end
 
+      it 'rebuilds relative URL for a file in the repo up one directory' do
+        relative_link = link('../api/README.md')
+        doc = filter(relative_link, requested_path: 'doc/update/7.14-to-8.0.md')
+
+        expect(doc.at_css('a')['href']).
+          to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
+      end
+
+      it 'rebuilds relative URL for a file in the repo up multiple directories' do
+        relative_link = link('../../../api/README.md')
+        doc = filter(relative_link, requested_path: 'doc/foo/bar/baz/README.md')
+
+        expect(doc.at_css('a')['href']).
+          to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
+      end
+
       it 'rebuilds relative URL for a file in the repo with an anchor' do
         doc = filter(link('README.md#section'))
         expect(doc.at_css('a')['href']).
@@ -108,8 +126,8 @@ module Gitlab::Markdown
         escaped = Addressable::URI.escape(path)
 
         # Stub these methods so the file doesn't actually need to be in the repo
-        allow_any_instance_of(described_class).to receive(:file_exists?).
-          and_return(true)
+        allow_any_instance_of(described_class).
+          to receive(:file_exists?).and_return(true)
         allow_any_instance_of(described_class).
           to receive(:image?).with(path).and_return(true)
 

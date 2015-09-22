@@ -13,7 +13,7 @@ module Ci
         backup_existing_builds_dir
 
         FileUtils.mkdir_p(app_builds_dir, mode: 0700)
-        unless system('tar', '-C', app_builds_dir, '-zxvf', backup_builds_tarball)
+        unless system('tar', '-C', app_builds_dir, '-zxf', backup_builds_tarball)
           abort 'Restore failed'.red
         end
       end

@@ -165,7 +165,8 @@ describe Ci::API::API do
       project.gl_project.team << [user, :master]
       delete ci_api("/projects/#{project.id}"), options
       expect(response.status).to eq(200)
-      expect { project.reload }.to raise_error
+      expect { project.reload }.
+        to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it "non-manager is not authorized" do

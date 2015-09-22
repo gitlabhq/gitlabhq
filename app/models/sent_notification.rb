@@ -25,6 +25,12 @@ class SentNotification < ActiveRecord::Base
   validates :line_code, format: { with: /\A[a-z0-9]+_\d+_\d+\Z/ }, allow_blank: true
 
   class << self
+    def reply_key
+      return nil unless Gitlab::IncomingEmail.enabled?
+
+      SecureRandom.hex(16)
+    end
+
     def for(reply_key)
       find_by(reply_key: reply_key)
     end
