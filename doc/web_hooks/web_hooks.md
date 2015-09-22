@@ -6,7 +6,12 @@ You can configure web hooks to listen for specific events like pushes, issues or
 
 Web hooks can be used to update an external issue tracker, trigger CI builds, update a backup mirror, or even deploy to your production server.
 
-If you send a web hook to an SSL endpoint [the certificate will not be verified](https://gitlab.com/gitlab-org/gitlab-ce/blob/ccd617e58ea71c42b6b073e692447d0fe3c00be6/app/models/web_hook.rb#L35) since many people use self-signed certificates.
+## SSL Verification
+
+Web hooks do SSL verification by default.
+You can turn this off in the web hook settings in your GitLab projects.
+
+![SSL Verification](ssl.png)
 
 ## Push events
 
@@ -34,7 +39,7 @@ X-Gitlab-Event: Push Hook
     "name": "Diaspora",
     "url": "git@example.com:mike/diasporadiaspora.git",
     "description": "",
-    "homepage": "http://example.com/mike/diaspora", 
+    "homepage": "http://example.com/mike/diaspora",
     "git_http_url":"http://example.com/mike/diaspora.git",
     "git_ssh_url":"git@example.com:mike/diaspora.git",
     "visibility_level":0
@@ -513,8 +518,8 @@ server.mount_proc '/' do |req, res|
   puts req.body
 end
 
-trap 'INT' do 
-  server.shutdown 
+trap 'INT' do
+  server.shutdown
 end
 server.start
 ```
