@@ -1,7 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.0.1
-  - Improve CI migration process and documentation
+  - Improve CI migration procedure and documentation
 
 v 8.0.0
   - Fix Markdown links not showing up in dashboard activity feed (Stan Hu)
