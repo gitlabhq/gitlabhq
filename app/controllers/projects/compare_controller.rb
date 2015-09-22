@@ -16,10 +16,12 @@ class Projects::CompareController < Projects::ApplicationController
     compare_result = CompareService.new.
       execute(@project, head_ref, @project, base_ref)
 
-    @commits = compare_result.commits
-    @diffs = compare_result.diffs
-    @commit = @commits.last
-    @line_notes = []
+    if compare_result
+      @commits = compare_result.commits
+      @diffs = compare_result.diffs
+      @commit = @commits.last
+      @line_notes = []
+    end
   end
 
   def create
