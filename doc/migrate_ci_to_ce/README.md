@@ -179,8 +179,8 @@ will need this file later.
 sudo gitlab-ci-rake backup:create
 
 # Source
-cd /home/git/gitlab
-sudo -u git -H bundle exec rake backup:create RAILS_ENV=production
+cd /home/gitlab_ci/gitlab-ci
+sudo -u gitlab_ci -H bundle exec rake backup:create RAILS_ENV=production
 ```
 
 #### 3. Copy data to the GitLab server
