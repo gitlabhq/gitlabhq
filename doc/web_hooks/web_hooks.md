@@ -8,7 +8,10 @@ Web hooks can be used to update an external issue tracker, trigger CI builds, up
 
 ## SSL Verification
 
-Web hooks do SSL verification by default.
+By default, the SSL certificate of the webhook endpoint is verified based on 
+an internal list of Certificate Authorities, 
+which means the certificate cannot be self-signed.
+
 You can turn this off in the web hook settings in your GitLab projects.
 
 ![SSL Verification](ssl.png)
