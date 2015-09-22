@@ -28,6 +28,14 @@ upgrade to 8.0 until you finish the migration procedure.
 
 ### Before upgrading
 
+If you have GitLab CI installed using omnibus-gitlab packages but *you don't want to migrate your existing data*:
+
+```bash
+mv /var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/gitlab-ci/builds.$(date +%s)
+```
+
+and run `sudo gitlab-ctl reconfigure`.
+
 #### 1. Verify that backups work
 
 Make sure that the backup script on both servers can connect to the database.
