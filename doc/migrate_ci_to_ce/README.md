@@ -5,7 +5,9 @@ Edition (EE), GitLab CI is no longer its own application, but is instead built
 into the CE and EE applications.
 
 This guide will detail the process of migrating your CI installation and data
-into your GitLab CE or EE installation.
+into your GitLab CE or EE installation. **You can only migrate CI data from
+GitLab CI 8.0 to GitLab 8.0; migrating between other versions (e.g.7.14 to 8.1)
+is not possible.**
 
 We recommend that you read through the entire migration process in this
 document before beginning.
