@@ -190,8 +190,8 @@ sudo chown git:git /var/opt/gitlab/backups/*_gitlab_ci_backup.tar
 If moving across the servers you can use `scp`.
 However, this requires you to provide an authorized key or password to login to
 the GitLab CE (or EE) server from the CI server. You can try to use ssh-agent
-from your local machine to have that: login to your GitLab CI server using `ssh
--A`.
+from your local machine to have that: login to your GitLab CI server using
+`ssh -A`.
 
 ```bash
 # Manual installation
