@@ -237,7 +237,7 @@ sudo service gitlab reload
 
 If you were running GitLab CI with Omnibus packages and you were using the
 internal NGINX configuration your CI service should now be available both at
-`ci.example.com` (the old address) and `gitlab.example.com/ci`. You are done!
+`ci.example.com` (the old address) and `gitlab.example.com/ci`. **You are done!**
 
 If you installed GitLab CI from source we now need to configure a redirect in
 NGINX so that existing CI runners can keep using the old CI server address, and
