@@ -21,7 +21,10 @@ The migration consists of three parts: updating GitLab and GitLab CI, moving
 data, and redirecting traffic.
 
 Please note that CI builds triggered on your GitLab server in the time between
-updating to 8.0 and finishing the migration will be lost.
+updating to 8.0 and finishing the migration will be lost. Your GitLab server
+can be online for most of the procedure; the only GitLab downtime (if any) is
+during the upgrade to 8.0. Your CI service will be offline from the moment you
+upgrade to 8.0 until you finish the migration procedure.
 
 ### Before upgrading
 
