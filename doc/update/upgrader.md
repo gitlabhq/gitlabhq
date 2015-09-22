@@ -1,4 +1,4 @@
-# GitLab Upgrader
+# GitLab Upgrader (deprecated)
 
 *DEPRECATED* We recommend to [switch to the Omnibus package and repository server](https://about.gitlab.com/update/) instead of using this script.
 
