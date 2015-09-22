@@ -62,7 +62,7 @@ database configuration files:
 
         # Manual installation
         cd /home/gitlab_ci/gitlab-ci
-        sudo -u gitlab_ci -H bundle exec backup:create RAILS_ENV=production
+        sudo -u gitlab_ci -H bundle exec rake backup:create RAILS_ENV=production
 
         # Omnibus installation
         sudo gitlab-ci-rake backup:create
@@ -72,7 +72,7 @@ database configuration files:
 
         # Manual installation
         cd /home/gitlab_ci/gitlab-ci
-        sudo -u gitlab_ci -H bundle exec backup:create RAILS_ENV=production MYSQL_TO_POSTGRESQL=1
+        sudo -u gitlab_ci -H bundle exec rake backup:create RAILS_ENV=production MYSQL_TO_POSTGRESQL=1
 
         # Omnibus installation
         sudo gitlab-ci-rake backup:create MYSQL_TO_POSTGRESQL=1
@@ -252,18 +252,6 @@ server {
 
   # expose API to fix runners
   location /api {
-    proxy_read_timeout    300;
-    proxy_connect_timeout 300;
-    proxy_redirect        off;
-    proxy_set_header      X-Real-IP $remote_addr;
-
-    # You need to specify your DNS servers that are able to resolve YOUR_GITLAB_SERVER_FQDN
-    resolver 8.8.8.8 8.8.4.4;
-    proxy_pass $scheme://YOUR_GITLAB_SERVER_FQDN/ci$request_uri;
-  }
-
-  # expose build endpoint to allow trigger builds
-  location ~ ^/projects/\d+/build$ {
     proxy_read_timeout    300;
     proxy_connect_timeout 300;
     proxy_redirect        off;
