@@ -121,6 +121,17 @@ module API
             User.where(username: attrs[:username]).
                 where.not(id: user.id).count > 0
 
+        identity_attrs = attributes_for_keys [:provider, :extern_uid]
+        if identity_attrs.any?
+          identity = user.identities.find_by(provider: identity_attrs[:provider])
+          if identity
+            identity.update_attributes(identity_attrs)
+          else
+            identity = user.identities.build(identity_attrs)
+            identity.save
+          end
+        end
+
         if user.update_attributes(attrs)
           present user, with: Entities::UserFull
         else
