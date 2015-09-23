@@ -5,6 +5,7 @@ v 8.0.2 (unreleased)
   - Prevent double-prefixing of help page paths
   - Clarify confirmation text on user deletion
   - Make commit graphs responsive to window width changes (Stan Hu)
+  - Fix top margin for sign-in button on public pages
 
 v 8.0.1
   - Improve CI migration procedure and documentation
