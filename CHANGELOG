@@ -4,6 +4,7 @@ v 8.1.0 (unreleased)
   - Show CI status on all pages where commits list is rendered
   - Automatically enable CI when push .gitlab-ci.yml file to repository
   - Fix cases where Markdown did not render links in activity feed (Stan Hu)
+  - Add first and last to pagination (Zeger-Jan van de Weg)
 
 v 8.0.2 (unreleased)
   - Skip check_initd_configured_correctly on omnibus installs

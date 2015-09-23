@@ -8,10 +8,15 @@
 = paginator.render do
   %div.gl-pagination
     %ul.pagination.clearfix
-      = prev_page_tag unless current_page.first?
+      - unless current_page.first?
+        = first_page_tag unless num_pages < 5 # As kaminari will always show the first 5 pages
+        = prev_page_tag
       - each_page do |page|
         - if page.left_outer? || page.right_outer? || page.inside_window?
           = page_tag page
         - elsif !page.was_truncated?
           = gap_tag
-      = next_page_tag unless current_page.last?
+      - unless current_page.last?
+        = next_page_tag
+        = last_page_tag unless num_pages < 5
+
