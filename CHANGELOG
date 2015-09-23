@@ -82,6 +82,7 @@ v 8.0.2
   - Fix Reply by email for non-UTF-8 messages.
   - Add option to use StartTLS with Reply by email IMAP server.
   - Allow AWS S3 Server-Side Encryption with Amazon S3-Managed Keys for backups (Paul Beattie)
+  - Accept COPYING as licence file (Zeger-Jan van de Weg)
 
 v 8.0.1
   - Remove git refs used internally by GitLab from network graph (Stan Hu)
@@ -90,8 +91,6 @@ v 8.0.1
 v 8.0.0
   - Fix Markdown links not showing up in dashboard activity feed (Stan Hu)
   - Remove milestones from merge requests when milestones are deleted (Stan Hu)
-v 8.0.0 (unreleased)
-  - Accept COPYING as licence file (Zeger-Jan van de Weg)
   - Fix HTML link that was improperly escaped in new user e-mail (Stan Hu)
   - Fix broken sort in merge request API (Stan Hu)
   - Bump rouge to 1.10.1 to remove warning noise and fix other syntax highlighting bugs (Stan Hu)
