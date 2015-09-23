@@ -5,7 +5,10 @@ class HelpController < ApplicationController
 
   def index
     @help_index = File.read(Rails.root.join('doc', 'README.md'))
-    prefix_help_links!(@help_index)
+
+    # Prefix Markdown links with `help/` unless they already have been
+    # See http://rubular.com/r/nwwhzH6Z8X
+    @help_index.gsub!(/(\]\()(?!help\/)([^\)\(]+)(\))/, '\1help/\2\3')
   end
 
   def show
@@ -57,22 +60,6 @@ class HelpController < ApplicationController
     params.require(:file)
 
     params
-  end
-
-  # Prefix links in a Markdown document with `help/` unless they already have
-  # been
-  #
-  # TODO (rspeicher): This should be a pipeline filter that only gets included
-  # for help pages, and it should operate on the Nokogiri doc to be more robust.
-  #
-  # text - Markdown String
-  #
-  # Modifies `text` in-place
-  def prefix_help_links!(text)
-    # Match text inside a Markdown link unless it already starts with `help/`
-    #
-    # See http://rubular.com/r/nwwhzH6Z8X
-    text.gsub!(%r{(\]\()(?!help\/)([^\)\(]+)(\))}x, '\1help/\2\3')
   end
 
   PATH_SEPS = Regexp.union(*[::File::SEPARATOR, ::File::ALT_SEPARATOR].compact)
