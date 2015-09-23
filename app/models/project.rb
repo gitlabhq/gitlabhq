@@ -735,4 +735,8 @@ class Project < ActiveRecord::Base
     errors.add(:base, 'Failed create wiki')
     false
   end
+
+  def ci_commit(sha)
+    gitlab_ci_project.commits.find_by(sha: sha) if gitlab_ci?
+  end
 end
