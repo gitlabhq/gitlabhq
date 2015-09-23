@@ -34,19 +34,8 @@
       .panel-heading
         Quick help
       %ul.well-list
-        %li
-          See our website for
-          = link_to 'getting help', promo_url + '/getting-help/'
-        %li
-          Use the
-          = link_to 'search bar', '#', onclick: 'Shortcuts.focusSearch(event)'
-          on the top of this page
-        %li
-          Use
-          = link_to 'shortcuts', '#', onclick: 'Shortcuts.showHelp(event)'
-        %li
-          Get a support
-          = link_to 'subscription', 'https://about.gitlab.com/pricing/'
-        %li
-          = link_to 'Compare', 'https://about.gitlab.com/features/#compare'
-          GitLab editions
+        %li= link_to 'See our website for getting help', promo_url + '/getting-help/'
+        %li= link_to 'Use the search bar on the top of this page', '#', onclick: 'Shortcuts.focusSearch(event)'
+        %li= link_to 'Use shortcuts', '#', onclick: 'Shortcuts.showHelp(event)'
+        %li= link_to 'Get a support subscription', 'https://about.gitlab.com/pricing/'
+        %li= link_to 'Compare GitLab editions', 'https://about.gitlab.com/features/#compare'
