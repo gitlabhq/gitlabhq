@@ -24,14 +24,3 @@
         Private
     %td
       = ci_project.commits.count
-- else
-  %tr.light
-    %td
-      = project.name_with_namespace
-    %td
-      %small Not added to CI
-    %td
-    %td
-      = form_tag ci_projects_path do
-        = hidden_field_tag :project, project.to_json(methods: [:name_with_namespace, :path_with_namespace, :ssh_url_to_repo])
-        = submit_tag 'Add project to CI', class: 'btn btn-default btn-sm'

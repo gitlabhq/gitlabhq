@@ -1,11 +1,9 @@
 module Ci
   class ProjectsController < Ci::ApplicationController
-    PROJECTS_BATCH = 100
-
     before_action :authenticate_user!, except: [:build, :badge, :index, :show]
     before_action :authenticate_public_page!, only: :show
     before_action :project, only: [:build, :integration, :show, :badge, :edit, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
-    before_action :authorize_access_project!, except: [:build, :badge, :index, :show, :new, :create, :disabled]
+    before_action :authorize_access_project!, except: [:build, :badge, :index, :show, :new, :disabled]
     before_action :authorize_manage_project!, only: [:edit, :integration, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
     before_action :authenticate_token!, only: [:build]
     before_action :no_cache, only: [:badge]
@@ -18,14 +16,9 @@ module Ci
     end
 
     def index
-      @limit, @offset = (params[:limit] || PROJECTS_BATCH).to_i, (params[:offset] || 0).to_i
-      @page = @offset == 0 ? 1 : (@offset / @limit + 1)
-
       if current_user
         @projects = ProjectListBuilder.new.execute(current_user, params[:search])
-
-        @projects = @projects.page(@page).per(@limit)
-
+        @projects = @projects.page(params[:page]).per(40)
         @total_count = @projects.size
       end
 
@@ -46,22 +39,6 @@ module Ci
     end
 
     def integration
-    end
-
-    def create
-      project_data = OpenStruct.new(JSON.parse(params["project"]))
-
-      unless can?(current_user, :admin_project, ::Project.find(project_data.id))
-        return redirect_to ci_root_path, alert: 'You have to have at least master role to enable CI for this project'
-      end
-
-      @project = Ci::CreateProjectService.new.execute(current_user, project_data)
-
-      if @project.persisted?
-        redirect_to ci_project_path(@project, show_guide: true), notice: 'Project was successfully created.'
-      else
-        redirect_to :back, alert: 'Cannot save project'
-      end
     end
 
     def edit
