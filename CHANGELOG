@@ -9,6 +9,7 @@ v 8.0.2 (unreleased)
   - Fix top margin for sign-in button on public pages
   - Fix LDAP attribute mapping
   - Remove git refs used internally by GitLab from network graph (Stan Hu)
+  - Use standard Markdown font in Markdown preview instead of fixed-width font (Stan Hu)
 
 v 8.0.1
   - Improve CI migration procedure and documentation
