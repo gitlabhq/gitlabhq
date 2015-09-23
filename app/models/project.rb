@@ -747,15 +747,6 @@ class Project < ActiveRecord::Base
     service.save
 
     # Create Ci::Project
-    params = OpenStruct.new({
-      id:                  self.id,
-      name_with_namespace: self.name_with_namespace,
-      path_with_namespace: self.path_with_namespace,
-      web_url:             self.web_url,
-      default_branch:      self.default_branch,
-      ssh_url_to_repo:     self.ssh_url_to_repo
-    })
-
-    Ci::CreateProjectService.new.execute(user, params)
+    Ci::CreateProjectService.new.execute(user, self)
   end
 end
