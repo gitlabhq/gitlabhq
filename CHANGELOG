@@ -6,6 +6,7 @@ v 8.0.2 (unreleased)
   - Clarify confirmation text on user deletion
   - Make commit graphs responsive to window width changes (Stan Hu)
   - Fix top margin for sign-in button on public pages
+  - Fix LDAP attribute mapping
 
 v 8.0.1
   - Improve CI migration procedure and documentation
