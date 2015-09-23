@@ -7,6 +7,7 @@ v 8.0.2 (unreleased)
   - Make commit graphs responsive to window width changes (Stan Hu)
   - Fix top margin for sign-in button on public pages
   - Fix LDAP attribute mapping
+  - Remove git refs used internally by GitLab from network graph (Stan Hu)
 
 v 8.0.1
   - Improve CI migration procedure and documentation
