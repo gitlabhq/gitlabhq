@@ -2,12 +2,6 @@
   .gray-content-block.top-block
     = render "search"
   .projects
-    .gray-content-block.clearfix.light.second-block
-      .pull-left.fetch-status
-        - if params[:search].present?
-          by keyword: "#{params[:search]}",
-        #{@total_count} projects
-
     .wide-table-holder
       %table.table.projects-table.content-list
         %thead

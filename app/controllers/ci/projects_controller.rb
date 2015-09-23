@@ -22,15 +22,9 @@ module Ci
         @projects = @projects.where(gitlab_id: current_user.authorized_projects.pluck(:id))
       end
 
+      @projects = @projects.search(params[:search]) if params[:search].present?
       @projects = @projects.includes(:last_commit).order('ci_commits.created_at DESC')
       @projects = @projects.page(params[:page]).per(40)
-
-      respond_to do |format|
-        format.json do
-          pager_json("ci/projects/index", @total_count)
-        end
-        format.html
-      end
     end
 
     def show
