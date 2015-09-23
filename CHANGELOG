@@ -4,6 +4,7 @@ v 8.1.0 (unreleased)
   - Show CI status on all pages where commits list is rendered
   - Automatically enable CI when push .gitlab-ci.yml file to repository
   - Fix cases where Markdown did not render links in activity feed (Stan Hu)
+  - Add first and last to pagination (Zeger-Jan van de Weg)
 
 v 8.0.2 (unreleased)
   - Skip check_initd_configured_correctly on omnibus installs
@@ -19,8 +20,6 @@ v 8.0.1
 v 8.0.0
   - Fix Markdown links not showing up in dashboard activity feed (Stan Hu)
   - Remove milestones from merge requests when milestones are deleted (Stan Hu)
-v 8.0.0 (unreleased)
-  - Add first and last to pagination (Zeger-Jan van de Weg)
   - Fix HTML link that was improperly escaped in new user e-mail (Stan Hu)
   - Fix broken sort in merge request API (Stan Hu)
   - Bump rouge to 1.10.1 to remove warning noise and fix other syntax highlighting bugs (Stan Hu)
