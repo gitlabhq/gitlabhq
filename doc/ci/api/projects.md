@@ -100,8 +100,6 @@ Parameters:
 
   * `name` (required) - The name of the project
   * `gitlab_id` (required) - The ID of the project on the Gitlab instance
-  * `path` (required) - The gitlab project path
-  * `ssh_url_to_repo` (required) - The gitlab SSH url to the repo
   * `default_ref` (optional) - The branch to run on (default to `master`)
 
 ### Update Project
@@ -114,9 +112,6 @@ authenticated user has access to.
 Parameters:
 
   * `name` - The name of the project
-  * `gitlab_id` - The ID of the project on the Gitlab instance
-  * `path` - The gitlab project path
-  * `ssh_url_to_repo` - The gitlab SSH url to the repo
   * `default_ref` - The branch to run on (default to `master`)
 
 ### Remove Project

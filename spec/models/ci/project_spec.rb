@@ -29,7 +29,8 @@ require 'spec_helper'
 
 describe Ci::Project do
   let(:gl_project) { FactoryGirl.create :empty_project }
-  subject { FactoryGirl.create :ci_project, gl_project: gl_project }
+  let(:project) { FactoryGirl.create :ci_project, gl_project: gl_project }
+  subject { project }
 
   it { is_expected.to have_many(:runner_projects) }
   it { is_expected.to have_many(:runners) }
@@ -40,6 +41,7 @@ describe Ci::Project do
   it { is_expected.to have_many(:services) }
 
   it { is_expected.to validate_presence_of :timeout }
+  it { is_expected.to validate_presence_of :gitlab_id }
 
   describe 'before_validation' do
     it 'should set an random token if none provided' do
@@ -51,6 +53,66 @@ describe Ci::Project do
       project = FactoryGirl.create :ci_project
       expect(project.token).to eq("iPWx6WM4lhHNedGfBpPJNP")
     end
+  end
+
+  describe :name_with_namespace do
+    subject { project.name_with_namespace }
+
+    it { is_expected.to eq(project.name) }
+    it { is_expected.to eq(gl_project.name_with_namespace) }
+  end
+
+  describe :path_with_namespace do
+    subject { project.path_with_namespace }
+
+    it { is_expected.to eq(project.path) }
+    it { is_expected.to eq(gl_project.path_with_namespace) }
+  end
+
+  describe :path_with_namespace do
+    subject { project.web_url }
+
+    it { is_expected.to eq(gl_project.web_url) }
+  end
+
+  describe :web_url do
+    subject { project.web_url }
+
+    it { is_expected.to eq(project.gitlab_url) }
+    it { is_expected.to eq(gl_project.web_url) }
+  end
+
+  describe :http_url_to_repo do
+    subject { project.http_url_to_repo }
+
+    it { is_expected.to eq(gl_project.http_url_to_repo) }
+  end
+
+  describe :ssh_url_to_repo do
+    subject { project.ssh_url_to_repo }
+
+    it { is_expected.to eq(gl_project.ssh_url_to_repo) }
+  end
+
+  describe :commits do
+    subject { project.commits }
+
+    before do
+      FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, gl_project: gl_project
+    end
+
+    it { is_expected.to eq(gl_project.ci_commits) }
+  end
+
+  describe :builds do
+    subject { project.builds }
+
+    before do
+      commit = FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, gl_project: gl_project
+      FactoryGirl.create :ci_build, commit: commit
+    end
+
+    it { is_expected.to eq(gl_project.ci_builds) }
   end
 
   describe "ordered_by_last_commit_date" do
@@ -172,13 +234,6 @@ describe Ci::Project do
     it { is_expected.to include(project.token) }
     it { is_expected.to include('gitlab-ci-token') }
     it { is_expected.to include(project.gitlab_url[7..-1]) }
-  end
-
-  describe :search do
-    let!(:project) { FactoryGirl.create(:ci_project, name: "foo") }
-
-    it { expect(Ci::Project.search('fo')).to include(project) }
-    it { expect(Ci::Project.search('bar')).to be_empty }
   end
 
   describe :any_runners do
