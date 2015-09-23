@@ -72,7 +72,7 @@ class GitlabCiService < CiService
     })
 
     ci_project = Ci::Project.find_by!(gitlab_id: project.id)
-    
+
     Ci::CreateProjectService.new.execute(
       current_user,
       params,

@@ -739,4 +739,23 @@ class Project < ActiveRecord::Base
   def ci_commit(sha)
     gitlab_ci_project.commits.find_by(sha: sha) if gitlab_ci?
   end
+
+  def enable_ci(user)
+    # Enable service
+    service = gitlab_ci_service || create_gitlab_ci_service
+    service.active = true
+    service.save
+
+    # Create Ci::Project
+    params = OpenStruct.new({
+      id:                  self.id,
+      name_with_namespace: self.name_with_namespace,
+      path_with_namespace: self.path_with_namespace,
+      web_url:             self.web_url,
+      default_branch:      self.default_branch,
+      ssh_url_to_repo:     self.ssh_url_to_repo
+    })
+
+    Ci::CreateProjectService.new.execute(user, params)
+  end
 end
