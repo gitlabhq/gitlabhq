@@ -10,12 +10,6 @@
       %span
         Commits
         %span.count= @project.commits.count
-  - if can?(current_user, :admin_project, gl_project)
-    = nav_link path: 'charts#show' do
-      = link_to ci_project_charts_path(@project) do
-        = icon('bar-chart fw')
-        %span
-          Charts
     = nav_link path: ['runners#index', 'runners#show', 'runners#edit'] do
       = link_to ci_project_runners_path(@project) do
         = icon('cog fw')

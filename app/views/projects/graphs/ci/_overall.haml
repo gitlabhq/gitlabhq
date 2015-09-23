@@ -1,0 +1,22 @@
+- ci_project = @project.gitlab_ci_project
+%fieldset
+  %legend Overall
+  %p
+    Total:
+    %strong= pluralize ci_project.builds.count(:all), 'build'
+  %p
+    Successful:
+    %strong= pluralize ci_project.builds.success.count(:all), 'build'
+  %p
+    Failed:
+    %strong= pluralize ci_project.builds.failed.count(:all), 'build'
+
+  %p
+    Success ratio:
+    %strong
+      #{success_ratio(ci_project.builds.success, ci_project.builds.failed)}%
+
+  %p
+    Commits covered:
+    %strong
+      = ci_project.commits.count(:all)

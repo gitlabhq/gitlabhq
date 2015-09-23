@@ -511,6 +511,7 @@ Gitlab::Application.routes.draw do
         resources :graphs, only: [:show], constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ } do
           member do
             get :commits
+            get :ci
           end
         end
 

@@ -45,16 +45,4 @@ describe "Projects" do
       expect(find_field('Timeout').value).to eq '70'
     end
   end
-
-  describe "GET /ci/projects/:id/charts" do
-    before do
-      visit ci_project_charts_path(@project)
-    end
-
-    it { expect(page).to have_content 'Overall' }
-    it { expect(page).to have_content 'Builds chart for last week' }
-    it { expect(page).to have_content 'Builds chart for last month' }
-    it { expect(page).to have_content 'Builds chart for last year' }
-    it { expect(page).to have_content 'Commit duration in minutes for last 30 commits' }
-  end
 end

@@ -23,6 +23,16 @@ class Projects::GraphsController < Projects::ApplicationController
     @commits_per_month = @commits_graph.commits_per_month
   end
 
+  def ci
+    ci_project = @project.gitlab_ci_project
+
+    @charts = {}
+    @charts[:week] = Ci::Charts::WeekChart.new(ci_project)
+    @charts[:month] = Ci::Charts::MonthChart.new(ci_project)
+    @charts[:year] = Ci::Charts::YearChart.new(ci_project)
+    @charts[:build_times] = Ci::Charts::BuildTime.new(ci_project)
+  end
+
   private
 
   def fetch_graph
