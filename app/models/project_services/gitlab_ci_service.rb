@@ -21,8 +21,6 @@
 class GitlabCiService < CiService
   include Gitlab::Application.routes.url_helpers
 
-  prop_accessor :token
-
   after_save :compose_service_hook, if: :activated?
 
   def compose_service_hook
@@ -53,6 +51,12 @@ class GitlabCiService < CiService
     end
   end
 
+  def token
+    if project.gitlab_ci_project.present?
+      project.gitlab_ci_project.token
+    end
+  end
+
   def get_ci_commit(sha, ref)
     Ci::Project.find(project.gitlab_ci_project).commits.find_by_sha_and_ref!(sha, ref)
   end
@@ -69,8 +73,7 @@ class GitlabCiService < CiService
       name_with_namespace: new_project.name_with_namespace,
       path_with_namespace: new_project.path_with_namespace,
       web_url:             new_project.web_url,
-      default_branch:      new_project.default_branch,
-      ssh_url_to_repo:     new_project.ssh_url_to_repo
+      default_branch:      new_project.default_branch
     })
 
     ci_project = Ci::Project.find_by!(gitlab_id: project.id)
