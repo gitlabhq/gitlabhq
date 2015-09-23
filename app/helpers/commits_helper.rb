@@ -135,7 +135,7 @@ module CommitsHelper
   #  size:   size of the avatar image in px
   def commit_person_link(commit, options = {})
     user = commit.send(options[:source])
-    
+
     source_name = clean(commit.send "#{options[:source]}_name".to_sym)
     source_email = clean(commit.send "#{options[:source]}_email".to_sym)
 
