@@ -5,6 +5,7 @@ v 8.1.0 (unreleased)
 
 v 8.0.1
   - Improve CI migration procedure and documentation
+  - Make commit graphs responsive to window width changes (Stan Hu)
 
 v 8.0.0
   - Fix Markdown links not showing up in dashboard activity feed (Stan Hu)
