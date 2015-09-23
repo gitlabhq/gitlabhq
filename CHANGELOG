@@ -5,6 +5,7 @@ v 8.1.0 (unreleased)
   - Automatically enable CI when push .gitlab-ci.yml file to repository
 
 v 8.0.1
+  - Fix cases where Markdown did not render links in activity feed (Stan Hu)
   - Improve CI migration procedure and documentation
   - Make commit graphs responsive to window width changes (Stan Hu)
 

@@ -165,7 +165,7 @@ module GitlabMarkdownHelper
   # and return true.  Otherwise return false.
   def truncate_if_block(node, truncated)
     if node.element? && node.description.block? && !truncated
-      node.content = "#{node.content}..." if node.next_sibling
+      node.inner_html = "#{node.inner_html}..." if node.next_sibling
       true
     else
       truncated
