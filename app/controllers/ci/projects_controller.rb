@@ -16,11 +16,14 @@ module Ci
     end
 
     def index
+      @projects = Ci::Project.all
+
       if current_user
-        @projects = ProjectListBuilder.new.execute(current_user, params[:search])
-        @projects = @projects.page(params[:page]).per(40)
-        @total_count = @projects.size
+        @projects = @projects.where(gitlab_id: current_user.authorized_projects.pluck(:id))
       end
+
+      @projects = @projects.includes(:last_commit).order('ci_commits.created_at DESC')
+      @projects = @projects.page(params[:page]).per(40)
 
       respond_to do |format|
         format.json do
