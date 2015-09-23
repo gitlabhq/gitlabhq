@@ -411,4 +411,14 @@ describe Project do
 
     it { expect(project.ci_commit(commit.sha)).to eq(commit) }
   end
+
+  describe :enable_ci do
+    let(:project) { create :project }
+    let(:user) { create :user }
+
+    before { project.enable_ci(user) }
+
+    it { expect(project.gitlab_ci?).to be_truthy }
+    it { expect(project.gitlab_ci_project).to be_a(Ci::Project) }
+  end
 end

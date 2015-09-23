@@ -55,6 +55,12 @@ class GitPushService
 
     @push_data = build_push_data(oldrev, newrev, ref)
 
+    # If CI was disabled but .gitlab-ci.yml file was pushed
+    # we enable CI automatically
+    if !project.gitlab_ci? && gitlab_ci_yaml?(newrev)
+      project.enable_ci(user)
+    end
+
     EventCreateService.new.push(project, user, @push_data)
     project.execute_hooks(@push_data.dup, :push_hooks)
     project.execute_services(@push_data.dup, :push_hooks)
@@ -142,5 +148,11 @@ class GitPushService
 
   def commit_user(commit)
     commit.author || user
+  end
+
+  def gitlab_ci_yaml?(sha)
+    @project.repository.blob_at(sha, '.gitlab-ci.yml')
+  rescue Rugged::ReferenceError
+    nil
   end
 end
