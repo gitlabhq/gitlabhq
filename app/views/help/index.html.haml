@@ -27,11 +27,7 @@
   .col-md-8
     .documentation-index
       = preserve do
-        - readme_text = File.read(Rails.root.join("doc", "README.md"))
-        - text = readme_text.dup
-        - readme_text.scan(/\]\(([^(]+)\)/) { |match| text.gsub!(match.first, "help/#{match.first}") }
-        = markdown text
-
+        = markdown(@help_index)
   .col-md-4
     .panel.panel-default
       .panel-heading
