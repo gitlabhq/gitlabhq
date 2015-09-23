@@ -3,29 +3,18 @@ require 'rails_helper'
 describe 'help/index' do
   describe 'version information' do
     it 'is hidden from guests' do
+      stub_user(nil)
+      stub_version('8.0.2', 'abcdefg')
+      stub_helpers
+
+      render
+
+      expect(rendered).not_to match '8.0.2'
+      expect(rendered).not_to match 'abcdefg'
+    end
+
+    it 'is shown to users' do
       stub_user
-      stub_version('8.0.2', 'abcdefg')
-      stub_helpers
-
-      render
-
-      expect(rendered).not_to match '8.0.2'
-      expect(rendered).not_to match 'abcdefg'
-    end
-
-    it 'is hidden from users' do
-      stub_user(admin?: false)
-      stub_version('8.0.2', 'abcdefg')
-      stub_helpers
-
-      render
-
-      expect(rendered).not_to match '8.0.2'
-      expect(rendered).not_to match 'abcdefg'
-    end
-
-    it 'is shown to admins' do
-      stub_user(admin?: true)
       stub_version('8.0.2', 'abcdefg')
       stub_helpers
 
@@ -36,10 +25,8 @@ describe 'help/index' do
     end
   end
 
-  def stub_user(messages = {})
-    user = messages.empty? ? nil : double(messages)
-
-    allow(view).to receive(:current_user).and_return(user)
+  def stub_user(user = double)
+    allow(view).to receive(:user_signed_in?).and_return(user)
   end
 
   def stub_version(version, revision)

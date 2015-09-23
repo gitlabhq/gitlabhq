@@ -2,7 +2,7 @@
   %h1
     GitLab
     Community Edition
-    - if current_user && current_user.admin?
+    - if user_signed_in?
       %span= Gitlab::VERSION
       %small= Gitlab::REVISION
       = version_status_badge
