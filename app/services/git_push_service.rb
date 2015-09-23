@@ -152,5 +152,7 @@ class GitPushService
 
   def gitlab_ci_yaml?(sha)
     @project.repository.blob_at(sha, '.gitlab-ci.yml')
+  rescue Rugged::ReferenceError
+    nil
   end
 end
