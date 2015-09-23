@@ -2,9 +2,9 @@ module Ci
   class ProjectsController < Ci::ApplicationController
     before_action :authenticate_user!, except: [:build, :badge, :index, :show]
     before_action :authenticate_public_page!, only: :show
-    before_action :project, only: [:build, :integration, :show, :badge, :edit, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
+    before_action :project, only: [:build, :show, :badge, :edit, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
     before_action :authorize_access_project!, except: [:build, :badge, :index, :show, :new, :disabled]
-    before_action :authorize_manage_project!, only: [:edit, :integration, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
+    before_action :authorize_manage_project!, only: [:edit, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
     before_action :authenticate_token!, only: [:build]
     before_action :no_cache, only: [:badge]
     skip_before_action :check_enable_flag!, only: [:disabled]
@@ -33,9 +33,6 @@ module Ci
       @commits = @project.commits.reverse_order
       @commits = @commits.where(ref: @ref) if @ref
       @commits = @commits.page(params[:page]).per(20)
-    end
-
-    def integration
     end
 
     def edit
