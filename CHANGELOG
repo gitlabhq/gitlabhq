@@ -24,6 +24,7 @@ v 8.1.0 (unreleased)
   - Improve error message when merging fails
   - Add support of multibyte characters in LDAP UID (Roman Petrov)
   - Show additions/deletions stats on merge request diff
+  - Remove footer text in emails (Zeger-Jan van de Weg)
 
 v 8.0.3
   - Fix URL shown in Slack notifications
