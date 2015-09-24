@@ -10,7 +10,7 @@ module Ci
 
         gl_project = ::Project.find(@project.gitlab_id)
         gl_project.build_missing_services
-        gl_project.gitlab_ci_service.update_attributes(active: true, token: @project.token)
+        gl_project.gitlab_ci_service.update_attributes(active: true)
       end
 
       if forked_project
