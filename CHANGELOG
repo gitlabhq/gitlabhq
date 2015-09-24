@@ -15,6 +15,7 @@ v 8.0.2 (unreleased)
   - Fix LDAP attribute mapping
 
 v 8.0.1
+  - Remove git refs used internally by GitLab from network graph (Stan Hu)
   - Improve CI migration procedure and documentation
 
 v 8.0.0
