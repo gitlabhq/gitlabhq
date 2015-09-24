@@ -1,7 +1,6 @@
 class Projects::ApplicationController < ApplicationController
   before_action :project
   before_action :repository
-  before_action :ci_enabled, only: :ci
   layout 'project'
 
   def authenticate_user!
