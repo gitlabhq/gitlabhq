@@ -735,4 +735,18 @@ class Project < ActiveRecord::Base
     errors.add(:base, 'Failed create wiki')
     false
   end
+
+  def ci_commit(sha)
+    gitlab_ci_project.commits.find_by(sha: sha) if gitlab_ci?
+  end
+
+  def enable_ci(user)
+    # Enable service
+    service = gitlab_ci_service || create_gitlab_ci_service
+    service.active = true
+    service.save
+
+    # Create Ci::Project
+    Ci::CreateProjectService.new.execute(user, self)
+  end
 end

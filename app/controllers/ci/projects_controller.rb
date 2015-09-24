@@ -1,12 +1,10 @@
 module Ci
   class ProjectsController < Ci::ApplicationController
-    PROJECTS_BATCH = 100
-
     before_action :authenticate_user!, except: [:build, :badge, :index, :show]
     before_action :authenticate_public_page!, only: :show
-    before_action :project, only: [:build, :integration, :show, :badge, :edit, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
-    before_action :authorize_access_project!, except: [:build, :badge, :index, :show, :new, :create, :disabled]
-    before_action :authorize_manage_project!, only: [:edit, :integration, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
+    before_action :project, only: [:build, :show, :badge, :edit, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
+    before_action :authorize_access_project!, except: [:build, :badge, :index, :show, :new, :disabled]
+    before_action :authorize_manage_project!, only: [:edit, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
     before_action :authenticate_token!, only: [:build]
     before_action :no_cache, only: [:badge]
     skip_before_action :check_enable_flag!, only: [:disabled]
@@ -18,23 +16,15 @@ module Ci
     end
 
     def index
-      @limit, @offset = (params[:limit] || PROJECTS_BATCH).to_i, (params[:offset] || 0).to_i
-      @page = @offset == 0 ? 1 : (@offset / @limit + 1)
+      @projects = Ci::Project.all
 
       if current_user
-        @projects = ProjectListBuilder.new.execute(current_user, params[:search])
-
-        @projects = @projects.page(@page).per(@limit)
-
-        @total_count = @projects.size
+        @projects = @projects.where(gitlab_id: current_user.authorized_projects.pluck(:id))
       end
 
-      respond_to do |format|
-        format.json do
-          pager_json("ci/projects/index", @total_count)
-        end
-        format.html
-      end
+      @projects = @projects.search(params[:search]) if params[:search].present?
+      @projects = @projects.includes(:last_commit).order('ci_commits.created_at DESC')
+      @projects = @projects.page(params[:page]).per(40)
     end
 
     def show
@@ -43,25 +33,6 @@ module Ci
       @commits = @project.commits.reverse_order
       @commits = @commits.where(ref: @ref) if @ref
       @commits = @commits.page(params[:page]).per(20)
-    end
-
-    def integration
-    end
-
-    def create
-      project_data = OpenStruct.new(JSON.parse(params["project"]))
-
-      unless can?(current_user, :admin_project, ::Project.find(project_data.id))
-        return redirect_to ci_root_path, alert: 'You have to have at least master role to enable CI for this project'
-      end
-
-      @project = Ci::CreateProjectService.new.execute(current_user, project_data)
-
-      if @project.persisted?
-        redirect_to ci_project_path(@project, show_guide: true), notice: 'Project was successfully created.'
-      else
-        redirect_to :back, alert: 'Cannot save project'
-      end
     end
 
     def edit

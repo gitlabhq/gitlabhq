@@ -401,4 +401,24 @@ describe Project do
       it { should eq "http://localhost#{avatar_path}" }
     end
   end
+
+  describe :ci_commit do
+    let(:project) { create :project }
+    let(:ci_project) { create :ci_project, gl_project: project }
+    let(:commit) { create :ci_commit, project: ci_project }
+
+    before { project.create_gitlab_ci_service(active: true) }
+
+    it { expect(project.ci_commit(commit.sha)).to eq(commit) }
+  end
+
+  describe :enable_ci do
+    let(:project) { create :project }
+    let(:user) { create :user }
+
+    before { project.enable_ci(user) }
+
+    it { expect(project.gitlab_ci?).to be_truthy }
+    it { expect(project.gitlab_ci_project).to be_a(Ci::Project) }
+  end
 end

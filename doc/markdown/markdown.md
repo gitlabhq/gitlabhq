@@ -33,7 +33,6 @@ For GitLab we developed something we call "GitLab Flavored Markdown" (GFM). It e
 
 You can use GFM in
 
-- commit messages
 - comments
 - issues
 - merge requests

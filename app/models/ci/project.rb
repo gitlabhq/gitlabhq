@@ -41,6 +41,7 @@ module Ci
     has_many :events, dependent: :destroy, class_name: 'Ci::Event'
     has_many :variables, dependent: :destroy, class_name: 'Ci::Variable'
     has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger'
+    has_one :last_commit, -> { order 'ci_commits.created_at DESC' }, class_name: 'Ci::Commit'
 
     # Project services
     has_many :services, dependent: :destroy, class_name: 'Ci::Service'

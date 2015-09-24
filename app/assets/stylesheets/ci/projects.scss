@@ -56,38 +56,4 @@
       margin-bottom: 16px;
     }
   }
-
-  .ci-status {
-    padding: 2px 7px;
-    margin-right: 5px;
-    border: 1px solid #EEE;
-    white-space: nowrap;
-    @include border-radius(4px);
-
-    &.ci-failed {
-      color: $gl-danger;
-      border-color: $gl-danger;
-    }
-
-    &.ci-success {
-      color: $gl-success;
-      border-color: $gl-success;
-    }
-
-    &.ci-info {
-      color: $gl-info;
-      border-color: $gl-info;
-    }
-
-    &.ci-disabled {
-      color: $gl-gray;
-      border-color: $gl-gray;
-    }
-
-    &.ci-pending,
-    &.ci-running {
-      color: $gl-warning;
-      border-color: $gl-warning;
-    }
-  }
 }

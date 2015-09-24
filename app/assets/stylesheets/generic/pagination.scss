@@ -9,6 +9,8 @@
     margin: 0;
     display: block;
 
+    li.first,
+    li.last,
     li.next,
     li.prev {
       > a {

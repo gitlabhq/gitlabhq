@@ -93,46 +93,87 @@
   }
 
   h1 {
-    margin-top: 45px;
-    font-size: 2.5em;
+    font-size: 1.3em;
+    font-weight: 600;
+    margin: 24px 0 12px 0;
+    padding: 0 0 10px 0;
+    border-bottom: 1px solid #e7e9ed;
+    color: #313236;
   }
 
   h2 {
-    margin-top: 40px;
-    font-size: 2em;
+    font-size: 1.2em;
+    font-weight: 600;
+    margin: 24px 0 12px 0;
+    color: #313236;
   }
 
   h3 {
-    margin-top: 35px;
-    font-size: 1.5em;
+    margin: 24px 0 12px 0;
+    font-size: 1.25em;
   }
 
   h4 {
-    margin-top: 30px;
-    font-size: 1.2em;
+    margin: 24px 0 12px 0;
+    font-size: 1.1em;
+  }
+  
+  h5 {
+    margin: 24px 0 12px 0;
+    font-size: 1em;
+  }
+  
+  h6 {
+    margin: 24px 0 12px 0;
+    font-size: 0.90em;
   }
 
   blockquote {
-    color: #888;
+    padding: 8px 21px;
+    margin: 12px 0 12px;
+    border-left: 3px solid #e7e9ed;
+  }
+  
+  blockquote p {
+    color: #7f8fa4 !important;
     font-size: 15px;
     line-height: 1.5;
   }
-
+  
+  p {
+    color:#5c5d5e;
+    margin:6px 0 0 0;
+  }
+  
   table {
     @extend .table;
     @extend .table-bordered;
+    margin: 12px 0 12px 0;
+    color: #5c5d5e;
     th {
-      background: #EEE;
-    }
+      background: #f8fafc;
+    } 
+  }
+  
+  pre {
+    margin: 12px 0 12px 0 !important;
+    background-color: #f8fafc !important;
+    font-size: 13px !important;
+    color: #5b6169 !important;
+    line-height: 1.6em !important;
   }
 
   p > code {
-    font-size: inherit;
     font-weight: inherit;
   }
 
+
+  ul {
+    color: #5c5d5e;
+  }
+  
   li {
-    line-height: 1.5;
+    line-height: 1.6em;
   }
 
   a[href*="/uploads/"], a[href*="storage.googleapis.com/google-code-attachments/"] {
@@ -151,6 +192,7 @@
     }
   }
 }
+
 
 @mixin str-truncated($max_width: 82%) {
   display: inline-block;
@@ -183,7 +225,7 @@
     &.active {
       background: #f9f9f9;
       a {
-        font-weight: bold;
+        font-weight: 600;
       }
     }
 
