@@ -6,6 +6,7 @@ v 8.1.0 (unreleased)
   - Move CI charts to project graphs area
   - Fix cases where Markdown did not render links in activity feed (Stan Hu)
   - Add first and last to pagination (Zeger-Jan van de Weg)
+  - Show CI status on commit page
 
 v 8.0.2 (unreleased)
   - Skip check_initd_configured_correctly on omnibus installs

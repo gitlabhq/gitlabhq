@@ -16,6 +16,11 @@ Feature: Project Commits
     Then I see commit info
     And I see side-by-side diff button
 
+  Scenario: I browse commit with ci from list
+    Given commit has ci status
+    And I click on commit link
+    Then I see commit ci info
+
   Scenario: I browse commit with side-by-side diff view
     Given I click on commit link
     And I click side-by-side diff button
