@@ -19,6 +19,8 @@ v 8.0.2 (unreleased)
   - Fix top margin for sign-in button on public pages
   - Fix LDAP attribute mapping
   - Use standard Markdown font in Markdown preview instead of fixed-width font (Stan Hu)
+  - Fix Reply by email for non-UTF-8 messages.
+  - Add option to use StartTLS with Reply by email IMAP server.
 
 v 8.0.1
   - Remove git refs used internally by GitLab from network graph (Stan Hu)
