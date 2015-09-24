@@ -524,7 +524,7 @@ Apart from the always supported markdown style there are other rich text files t
 ### "You appear to have cloned an empty repository."
 
 If you see this message when attempting to clone a repository hosted by GitLab,
-this is likely due to a missing or misconfigured `gitlab-git-http-server`
-instance. Double-check that you've [installed Go](#3-go), [installed
-gitlab-git-http-server](#install-gitlab-git-http-server), and correctly
-[configured Nginx](#site-configuration).
+this is likely due to an outdated Nginx or Apache configuration, or a missing or
+misconfigured `gitlab-git-http-server` instance. Double-check that you've
+[installed Go](#3-go), [installed gitlab-git-http-server](#install-gitlab-git-http-server),
+and correctly [configured Nginx](#site-configuration).
