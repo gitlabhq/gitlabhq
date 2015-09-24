@@ -30,7 +30,6 @@ module Ci
     LAZY_ATTRIBUTES = ['trace']
 
     belongs_to :commit, class_name: 'Ci::Commit'
-    belongs_to :project, class_name: 'Ci::Project'
     belongs_to :runner, class_name: 'Ci::Runner'
     belongs_to :trigger_request, class_name: 'Ci::TriggerRequest'
 
@@ -137,7 +136,7 @@ module Ci
       state :canceled, value: 'canceled'
     end
 
-    delegate :sha, :short_sha, :before_sha, :ref,
+    delegate :sha, :short_sha, :before_sha, :ref, :project,
       to: :commit, prefix: false
 
     def trace_html

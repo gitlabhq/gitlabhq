@@ -18,8 +18,8 @@
 module Ci
   class Commit < ActiveRecord::Base
     extend Ci::Model
-    
-    belongs_to :project, class_name: 'Ci::Project'
+
+    belongs_to :gl_project, class_name: '::Project', foreign_key: :gl_project_id
     has_many :builds, dependent: :destroy, class_name: 'Ci::Build'
     has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest'
 
@@ -30,6 +30,10 @@ module Ci
 
     def self.truncate_sha(sha)
       sha[0...8]
+    end
+
+    def project
+      @project ||= gl_project.gitlab_ci_project
     end
 
     def to_param

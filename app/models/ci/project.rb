@@ -33,7 +33,7 @@ module Ci
 
     belongs_to :gl_project, class_name: '::Project', foreign_key: :gitlab_id
 
-    has_many :commits, ->() { order('CASE WHEN ci_commits.committed_at IS NULL THEN 0 ELSE 1 END', :committed_at, :id) }, dependent: :destroy, class_name: 'Ci::Commit'
+    has_many :commits, through: :gl_project, class_name: 'Ci::Commit', foreign_key: :gl_project_id
     has_many :builds, through: :commits, dependent: :destroy, class_name: 'Ci::Build'
     has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
     has_many :runners, through: :runner_projects, class_name: 'Ci::Runner'
@@ -41,7 +41,7 @@ module Ci
     has_many :events, dependent: :destroy, class_name: 'Ci::Event'
     has_many :variables, dependent: :destroy, class_name: 'Ci::Variable'
     has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger'
-    has_one :last_commit, -> { order 'ci_commits.created_at DESC' }, class_name: 'Ci::Commit'
+    has_one :last_commit, through: :gl_project, class_name: 'Ci::Commit'
 
     # Project services
     has_many :services, dependent: :destroy, class_name: 'Ci::Service'
