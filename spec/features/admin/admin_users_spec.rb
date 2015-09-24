@@ -112,7 +112,7 @@ describe "Admin::Users", feature: true  do
     end
 
     describe 'Login as another user' do
-      it 'should show login button for other users' do
+      it 'should show login button for other users and check that it works' do
         another_user = create(:user)
 
         visit admin_user_path(another_user)
