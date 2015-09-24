@@ -9,6 +9,7 @@ v 8.1.0 (unreleased)
   - Show CI status on commit page
   - Show CI status on Your projects page and Starred projects page
   - Remove "Continuous Integration" page from dashboard
+  - Add notes and SSL verification entries to hook APIs (Ben Boeckel)
 
 v 8.0.2 (unreleased)
   - Skip check_initd_configured_correctly on omnibus installs
