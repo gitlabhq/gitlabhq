@@ -1,6 +1,7 @@
 class Projects::ApplicationController < ApplicationController
   before_action :project
   before_action :repository
+  before_action :ci_enabled, only: :ci
   layout 'project'
 
   def authenticate_user!
@@ -24,5 +25,11 @@ class Projects::ApplicationController < ApplicationController
         notice: "This action is not allowed unless you are on top of a branch"
       )
     end
+  end
+
+  private
+
+  def ci_enabled
+    return render_404 unless @project.gitlab_ci?
   end
 end
