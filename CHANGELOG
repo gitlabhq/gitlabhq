@@ -15,6 +15,7 @@ v 8.0.2 (unreleased)
   - Make commit graphs responsive to window width changes (Stan Hu)
   - Fix top margin for sign-in button on public pages
   - Fix LDAP attribute mapping
+  - Use standard Markdown font in Markdown preview instead of fixed-width font (Stan Hu)
 
 v 8.0.1
   - Remove git refs used internally by GitLab from network graph (Stan Hu)
