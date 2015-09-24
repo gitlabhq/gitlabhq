@@ -297,9 +297,15 @@ pre.light-well {
       color: #4c4e54;
     }
 
-    .pull-right.light {
+    .project-controls {
+      float: right;
+      color: $gl-gray;
       line-height: 45px;
       color: #7f8fa4;
+
+      a:hover {
+        text-decoration: none;
+      }
     }
 
     .project-description {
