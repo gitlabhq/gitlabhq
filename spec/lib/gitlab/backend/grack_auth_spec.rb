@@ -179,7 +179,7 @@ describe Grack::Auth do
           before do
             gitlab_ci_service = project.build_gitlab_ci_service
             gitlab_ci_service.active = true
-            gitlab_ci_service.token = token
+            gitlab_ci_service.stub(:token).and_return(token)
             gitlab_ci_service.save
 
             env["HTTP_AUTHORIZATION"] = ActionController::HttpAuthentication::Basic.encode_credentials("gitlab-ci-token", token)
