@@ -1,9 +1,9 @@
 module Ci
   class ProjectsController < Ci::ApplicationController
-    before_action :authenticate_user!, except: [:build, :badge, :index, :show]
+    before_action :authenticate_user!, except: [:build, :badge, :show]
     before_action :authenticate_public_page!, only: :show
     before_action :project, only: [:build, :show, :badge, :edit, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
-    before_action :authorize_access_project!, except: [:build, :badge, :index, :show, :new, :disabled]
+    before_action :authorize_access_project!, except: [:build, :badge, :show, :new, :disabled]
     before_action :authorize_manage_project!, only: [:edit, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
     before_action :authenticate_token!, only: [:build]
     before_action :no_cache, only: [:badge]
@@ -13,18 +13,6 @@ module Ci
     layout 'ci/project', except: [:index, :disabled]
 
     def disabled
-    end
-
-    def index
-      @projects = Ci::Project.all
-
-      if current_user
-        @projects = @projects.where(gitlab_id: current_user.authorized_projects.pluck(:id))
-      end
-
-      @projects = @projects.search(params[:search]) if params[:search].present?
-      @projects = @projects.includes(:last_commit).order('ci_commits.created_at DESC')
-      @projects = @projects.page(params[:page]).per(40)
     end
 
     def show

@@ -1,8 +1,9 @@
 %ul.nav.nav-sidebar
   = nav_link do
-    = link_to ci_root_path, title: 'Back to CI projects', data: {placement: 'right'}, class: 'back-link' do
+    = link_to project_path(@project.gl_project), title: 'Back to project', data: {placement: 'right'}, class: 'back-link' do
       = icon('caret-square-o-left fw')
-      %span= 'Back to CI projects'
+      %span
+        Back to project
   %li.separate-item
   = nav_link path: ['projects#show', 'commits#show', 'builds#show'] do
     = link_to ci_project_path(@project) do
