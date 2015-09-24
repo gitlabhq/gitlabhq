@@ -515,6 +515,8 @@ Parameters:
   "push_events": "true",
   "issues_events": "true",
   "merge_requests_events": "true",
+  "note_events": "true",
+  "enable_ssl_verification": "true",
   "created_at": "2012-10-12T17:04:47Z"
 }
 ```
