@@ -166,4 +166,20 @@ describe "Admin::Users", feature: true  do
       end
     end
   end
+
+  it 'should be able to log in as another user' do
+    another_user = create(:user)
+
+    visit admin_users_path
+
+    page.within ".user-#{another_user.id}" do
+      click_link 'Log in'
+    end
+
+    expect(page).to have_content("Logged in as #{another_user.username}")
+
+    page.within '.sidebar-user .username' do
+      expect(page).to have_content(another_user.username)
+    end
+  end
 end

@@ -72,7 +72,7 @@
           = link_to 'New User', new_admin_user_path, class: "btn btn-new btn-sm"
       %ul.well-list
         - @users.each do |user|
-          %li
+          %li{ class: "user-#{user.id}" }
             .list-item-name
               - if user.blocked?
                 %i.fa.fa-lock.cred
@@ -90,6 +90,7 @@
               &nbsp;
               = link_to 'Edit', edit_admin_user_path(user), id: "edit_#{dom_id(user)}", class: "btn btn-xs"
               - unless user == current_user
+                = link_to 'Log in', login_as_admin_user_path(user), method: :put, class: "btn btn-xs btn-primary"
                 - if user.blocked?
                   = link_to 'Unblock', unblock_admin_user_path(user), method: :put, class: "btn btn-xs btn-success"
                 - else
