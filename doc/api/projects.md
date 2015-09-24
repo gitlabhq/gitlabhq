@@ -537,6 +537,7 @@ Parameters:
 - `issues_events` - Trigger hook on issues events
 - `merge_requests_events` - Trigger hook on merge_requests events
 - `tag_push_events` - Trigger hook on push_tag events
+- `note_events` - Trigger hook on note events
 
 ### Edit project hook
 
@@ -555,6 +556,7 @@ Parameters:
 - `issues_events` - Trigger hook on issues events
 - `merge_requests_events` - Trigger hook on merge_requests events
 - `tag_push_events` - Trigger hook on push_tag events
+- `note_events` - Trigger hook on note events
 
 ### Delete project hook
 
