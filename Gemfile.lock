@@ -402,6 +402,9 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (2.9.2)
     netrc (0.10.3)
+    newrelic-grape (2.0.0)
+      grape
+      newrelic_rpm
     newrelic_rpm (3.9.4.245)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
@@ -853,6 +856,7 @@ DEPENDENCIES
   mousetrap-rails (~> 1.4.6)
   mysql2 (~> 0.3.16)
   nested_form (~> 0.3.2)
+  newrelic-grape
   newrelic_rpm (~> 3.9.4.245)
   nprogress-rails (~> 0.1.2.3)
   oauth2 (~> 1.0.0)
@@ -930,6 +934,3 @@ DEPENDENCIES
   webmock (~> 1.21.0)
   whenever (~> 0.8.4)
   wikicloth (= 0.8.1)
-
-BUNDLED WITH
-   1.10.6
