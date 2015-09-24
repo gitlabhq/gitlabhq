@@ -39,8 +39,8 @@ describe GitlabCiService do
     end
 
     describe :build_page do
-      it { expect(@service.build_page("2ab7834c", 'master')).to eq("/ci/projects/#{@ci_project.id}/refs/master/commits/2ab7834c")}
-      it { expect(@service.build_page("issue#2", 'master')).to eq("/ci/projects/#{@ci_project.id}/refs/master/commits/issue%232")}
+      it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://localhost/ci/projects/#{@ci_project.id}/refs/master/commits/2ab7834c")}
+      it { expect(@service.build_page("issue#2", 'master')).to eq("http://localhost/ci/projects/#{@ci_project.id}/refs/master/commits/issue%232")}
     end
 
     describe "execute" do
