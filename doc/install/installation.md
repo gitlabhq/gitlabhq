@@ -518,3 +518,13 @@ You also need to change the corresponding options (e.g. `ssh_user`, `ssh_host`, 
 ### Additional Markup Styles
 
 Apart from the always supported markdown style there are other rich text files that GitLab can display. But you might have to install a dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
+
+## Troubleshooting
+
+### "You appear to have cloned an empty repository."
+
+If you see this message when attempting to clone a repository hosted by GitLab,
+this is likely due to an outdated Nginx or Apache configuration, or a missing or
+misconfigured `gitlab-git-http-server` instance. Double-check that you've
+[installed Go](#3-go), [installed gitlab-git-http-server](#install-gitlab-git-http-server),
+and correctly [configured Nginx](#site-configuration).
