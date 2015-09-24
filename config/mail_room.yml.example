@@ -6,6 +6,8 @@
     # :port: 993
     # # Whether the IMAP server uses SSL
     # :ssl: true
+    # # Whether the IMAP server uses StartTLS
+    # :start_tls: false
     # # Email account username. Usually the full email address.
     # :email: "replies@gitlab.example.com"
     # # Email account password
