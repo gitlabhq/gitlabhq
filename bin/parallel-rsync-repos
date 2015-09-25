@@ -1,0 +1,26 @@
+#!/bin/sh
+# this script should run as the 'git' user, not root, because of mkdir
+#
+# Example invocation:
+# find /var/opt/gitlab/git-data/repositories -maxdepth 2 | \
+#   parallel-rsync-repos /var/opt/gitlab/git-data/repositories /mnt/gitlab/repositories
+
+SRC=$1
+DEST=$2
+
+if [ -z "$JOBS" ] ; then
+  JOBS=10
+fi
+
+if [ -z "$SRC" ] || [ -z "$DEST" ] ; then
+  echo "Usage: $0 SRC DEST"
+  exit 1
+fi
+
+if ! cd $SRC ; then
+  echo "cd $SRC failed"
+  exit 1
+fi
+
+sed "s|$SRC|./|" |\
+  parallel -j$JOBS --progress "mkdir -p $DEST/{} && rsync --delete -a {}/. $DEST/{}/"
