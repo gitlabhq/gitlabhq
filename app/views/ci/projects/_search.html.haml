@@ -1,6 +1,0 @@
-.search
-  = form_tag ci_root_path, method: :get, class: 'ci-search-form' do |f|
-    .input-group
-      = search_field_tag "search", params[:search], placeholder: "Search", class: "search-input form-control"
-      .input-group-addon
-        %i.fa.fa-search

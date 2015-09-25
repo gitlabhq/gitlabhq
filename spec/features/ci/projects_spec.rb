@@ -9,16 +9,6 @@ describe "Projects" do
     @project.gl_project.team << [user, :master]
   end
 
-  describe "GET /ci/projects", js: true do
-    before do
-      stub_js_gitlab_calls
-      visit ci_projects_path
-    end
-
-    it { expect(page).to have_content "GitLab / gitlab-shell" }
-    it { expect(page).to have_selector ".search input#search" }
-  end
-
   describe "GET /ci/projects/:id" do
     before do
       visit ci_project_path(@project)

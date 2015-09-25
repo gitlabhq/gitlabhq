@@ -88,6 +88,8 @@ In this example, we'll use the Gmail address `gitlab-incoming@gmail.com`.
         :port: 993
         # Whether the IMAP server uses SSL
         :ssl: true
+        # Whether the IMAP server uses StartTLS
+        :start_tls: false
         # Email account username. Usually the full email address.
         :email: "gitlab-incoming@gmail.com"
         # Email account password
@@ -161,6 +163,8 @@ In this example, we'll use the Gmail address `gitlab-incoming@gmail.com`.
         :port: 993
         # Whether the IMAP server uses SSL
         :ssl: true
+        # Whether the IMAP server uses StartTLS
+        :start_tls: false
         # Email account username. Usually the full email address.
         :email: "gitlab-incoming@gmail.com"
         # Email account password

@@ -9,7 +9,7 @@
         author: {
           name: c.author_name,
           email: c.author_email,
-          icon: avatar_icon(c.author_email, 20)
+          icon: image_path(avatar_icon(c.author_email, 20))
         },
         time: c.time,
         space: c.spaces.first,

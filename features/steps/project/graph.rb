@@ -23,10 +23,6 @@ class Spinach::Features::ProjectGraph < Spinach::FeatureSteps
     visit ci_namespace_project_graph_path(project.namespace, project, 'master')
   end
 
-  step 'project "Shop" has CI enabled' do
-    project.enable_ci(@user)
-  end
-
   step 'page should have CI graphs' do
     expect(page).to have_content 'Overall'
     expect(page).to have_content 'Builds chart for last week'
