@@ -277,13 +277,15 @@ class @Notes
 
   Updates the current note field.
   ###
-  updateNote: (xhr, note, status) =>
-    note_li = $(".note-row-" + note.id)
-    note_li.replaceWith(note.html)
-    note_li.find('.note-edit-form').hide()
-    note_li.find('.note-body > .note-text').show()
-    note_li.find('js-task-list-container').taskList('enable')
-    @enableTaskList()
+  updateNote: (_xhr, note, _status) =>
+    # Convert returned HTML to a jQuery object so we can modify it further
+    $html = $(note.html)
+    $html.syntaxHighlight()
+    $html.find('.js-task-list-container').taskList('enable')
+
+    # Find the note's `li` element by ID and replace it with the updated HTML
+    $note_li = $("#note_#{note.id}")
+    $note_li.replaceWith($html)
 
   ###
   Called in response to clicking the edit note link
