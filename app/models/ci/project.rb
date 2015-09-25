@@ -99,7 +99,7 @@ module Ci
       def unassigned(runner)
         joins("LEFT JOIN #{Ci::RunnerProject.table_name} ON #{Ci::RunnerProject.table_name}.project_id = #{Ci::Project.table_name}.id " \
           "AND #{Ci::RunnerProject.table_name}.runner_id = #{runner.id}").
-        where('#{Ci::RunnerProject.table_name}.project_id' => nil)
+        where("#{Ci::RunnerProject.table_name}.project_id" => nil)
       end
 
       def ordered_by_last_commit_date
