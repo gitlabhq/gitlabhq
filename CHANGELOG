@@ -3,6 +3,19 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.0.3 (unreleased)
 
 v 8.0.2
+v 8.1.0 (unreleased)
+  - Fix bug where projects would appear to be stuck in the forked import state (Stan Hu)
+  - Show CI status on all pages where commits list is rendered
+  - Automatically enable CI when push .gitlab-ci.yml file to repository
+  - Move CI charts to project graphs area
+  - Fix cases where Markdown did not render links in activity feed (Stan Hu)
+  - Add first and last to pagination (Zeger-Jan van de Weg)
+  - Show CI status on commit page
+  - Show CI status on Your projects page and Starred projects page
+  - Remove "Continuous Integration" page from dashboard
+  - Add notes and SSL verification entries to hook APIs (Ben Boeckel)
+
+v 8.0.2 (unreleased)
   - Fix default avatar not rendering in network graph (Stan Hu)
   - Skip check_initd_configured_correctly on omnibus installs
   - Prevent double-prefixing of help page paths
