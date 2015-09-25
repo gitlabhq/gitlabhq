@@ -276,8 +276,10 @@ class Project < ActiveRecord::Base
   end
 
   def add_import_job
+    # Schedule these jobs after 2 seconds to ensure DB changes to import_status
+    # are saved by the time the workers start
     if forked?
-      unless RepositoryForkWorker.perform_async(id, forked_from_project.path_with_namespace, self.namespace.path)
+      unless RepositoryForkWorker.perform_in(2.seconds, id, forked_from_project.path_with_namespace, self.namespace.path)
         import_fail
       end
     else
