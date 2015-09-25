@@ -39,8 +39,7 @@ tar -C /var/opt/gitlab/git-data/repositories -cf - -- . |\
 ```
 
 If you want to compress the data before it goes over the network
-(which will cost you CPU cycles) you can replace `ssh` with `ssh
--C`.
+(which will cost you CPU cycles) you can replace `ssh` with `ssh -C`.
 
 ## The target directory contains an outdated copy of the repositories: use rsync
 
