@@ -1,3 +1,14 @@
+.alert_holder {
+  margin: -16px;
+  
+  .alert-link {
+    font-weight: normal;
+  }
+}
+.no-ssh-key-message {
+  background-color: #f28d35;
+  margin-bottom: 16px;
+}
 .new_project,
 .edit_project {
   fieldset.features {
@@ -20,20 +31,20 @@
   margin: -$gl-padding;
   padding: $gl-padding;
   padding: 44px 0 17px 0;
-
+  
   .project-identicon-holder {
     margin-bottom: 16px;
-
+    
     .avatar, .identicon {
       margin: 0 auto;
       float: none;
     }
-
+    
     .identicon {
       @include border-radius(50%);
     }
   }
-
+  
   .project-home-dropdown {
     margin: 11px 3px 0;
   }
@@ -59,7 +70,7 @@
       background: #FFF;
       font-size: 14px;
       height: 42px;
-      margin-left: -2px;
+      margin-left: -1px;
     }
   }
 
@@ -75,45 +86,15 @@
     top: 17px;
     margin-bottom: 44px;
   }
+  
   .project-repo-buttons {
     margin-top: 12px;
     margin-bottom: 0px;
-
+    
     .btn {
-      @extend .btn-info;
-      @include border-radius(2px);
+      @include bnt-project;
+      @include btn-info;
       
-      background-color: #f0f2f5;
-      border: 1px solid #dce0e5;
-      text-transform: uppercase;
-      color: #313236;
-      font-size: 13px;
-      font-weight: 600;
-      line-height: 18px;
-      padding: 11px 16px;
-      margin-left: 12px;
-
-      &:hover {
-        @include border-radius(2px);
-        color: #313236;
-        border: 1px solid #dce0e5;
-        background-color: #ebeef2;
-      }
-    
-      &:focus {
-        @include border-radius(2px);
-        color: #313236;
-        border: 1px solid #dce0e5;
-        background-color: #ebeef2;
-      }
-    
-      &:active {
-        @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
-        color: #313236 !important;
-        border: 1px solid #c6cacf !important;
-	      background-color: #e4e7ed !important;
-      }
-
       .count {
         display: inline-block;
       }
@@ -123,6 +104,7 @@
 
 .split-one {
   display: inline-table;
+  margin-right: 12px;
   
   a {
     margin: -1px !important;
@@ -138,7 +120,7 @@
     cursor: auto;
     @extend .monospace;
     background: #FAFAFA;
-    width: 100%;
+    width: 101%;
   }
 
   .input-group-addon {
@@ -147,15 +129,12 @@
     &.git-protocols {
       padding: 0;
       border: none;
-
+      
       .input-group-btn:last-child > .btn {
         @include border-radius-right(0);
         
         border-left: 1px solid #c6cacf;
         margin-left: -2px !important;
-      }
-      input-group-btn:first-child > .btn {
-        @include border-radius-left(0);
       }
     }
   }
@@ -163,90 +142,53 @@
 
 .projects-search-form {
   
-  .input-group .btn-success {
-    background-color: #2ebf6b !important;
-    border: 1px solid #28b061 !important;
-    color: #fff !important;
-    
-     &:hover {
-       background-color: #2eb867 !important;
-     }
-     
-     &:focus {
-       background-color: #2eb867 !important;
-     }
-     
-     &:active {
-       @include box-shadow (inset 0 0 4px rgba(0, 0, 0, 0.12));
-        
-       background-color: #28b061 !important;
-       border: 1px solid #26a65c !important;
-       color: #fff !important;
-     } 
-  }
-  
   .input-group .form-control {
-    height: 39px !important;
+    height: 42px;
   }
-    
 }
 
-.input-group-btn > .btn {
-  background-color: #f0f2f5;
-  border: 1px solid #dce0e5;
-  text-transform: uppercase;
-  color: #313236;
-  font-size: 13px;
-  font-weight: 600;
-  
-  &:focus {
-    outline: none;
-    color: #313236;
-    border: 1px solid #dce0e5;
-    background-color: #ebeef2;
+.input-group-btn {
+  .btn {    
+    @include bnt-project;
+    @include btn-middle;
+    
+    &:hover {
+      outline: none;
+    }
+    
+    &:focus {
+      outline: none;
+    }
+    
+    &:active {
+      outline: none;
+    }
   }
   
-  &:hover {
-    outline: none;
-    color: #313236;
-    border: 1px solid #dce0e5;
-    background-color: #ebeef2;
-  }
-  
-  &:active {
+  .active {
     @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
     
-    color: #313236 !important;
     border: 1px solid #c6cacf !important;
     background-color: #e4e7ed !important;
   }
-
-}
-
-.input-group-btn > .btn.active {
-  @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
   
-  border-top-right-radius: 0px;
-  border-bottom-right-radius: 0px;
-  color: #313236 !important;
-  border: 1px solid #c6cacf !important;
-  background-color: #e4e7ed !important;
+  .btn-green {
+    @include btn-green
+  }
+  
 }
 
 .split-repo-buttons {
   display: inline-table;
-  margin-left: 12px;
+  margin: 0 12px 0 12px;
   
-  .btn {
-    margin: 0 !important;
-  }
-  
-  .dropdown {
-    margin: 0 !important;
+  .btn{
+    @include bnt-project;
+    @include btn-info;
   }
   
   .dropdown-toggle  {
-    margin: -5px !important;
+    margin: -5px;
   }  
 }
 
@@ -254,22 +196,25 @@
   margin-left: 5px;
 }
 
-.open > .dropdown-toggle.btn {
+.dropdown-new {
+  margin-left: -5px;
+}
+
+.open > .dropdown-new.btn {
   @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
  
   border: 1px solid #c6cacf !important;
   background-color: #e4e7ed !important;
   text-transform: uppercase;
-  color: #313236;
+  color: #313236 !important;
   font-size: 13px;
   font-weight: 600;
-  color: #313236 !important;
 }
 
 .dropdown-menu {
   @include box-shadow(rgba(76, 86, 103, 0.247059) 0px 0px 1px 0px, rgba(31, 37, 50, 0.317647) 0px 2px 18px 0px);
   @include border-radius (0px);
-   
+  
   border: none;
   padding: 16px 0;
   font-size: 14px;
@@ -298,7 +243,7 @@
 }
 
 .project-home-panel .project-home-dropdown {
-    margin: 13px 0px 0;
+  margin: 13px 0px 0;
 }
 
 .project-visibility-level-holder {
@@ -431,32 +376,12 @@ table.table.protected-branches-list tr.no-border {
   }
 
   .nav > li > a {
-    border: 1px solid transparent;
-    color: #313236;
-    font-size: 13px;
-    font-weight: 600;
-    text-decoration: none;
-    text-transform: uppercase;
-    margin: 0 8px 0 0;
-    padding: 10px 16px 10px 16px;
+    @include btn-info;
+    @include bnt-project;
     
-    &:hover {
-      @include border-radius(2px);
-      border: 1px solid #dce0e5;
-      background-color: #f0f2f5;
-    }
-    
-    &:focus {
-      @include border-radius(2px);
-      border: 1px solid #dce0e5;
-      background-color: #f0f2f5;
-    }
-    
-    &:active {
-       @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
-      border: 1px solid #c6cacf;
-	    background-color: #e4e7ed;
-   }
+    background-color: transparent;
+    border: 1px solid #f7f8fa;
+    margin-left: 12px;
   }
   
   li {
@@ -501,29 +426,27 @@ pre.light-well {
   .light-well {
     @include border-radius (2px);
     
-    color: #5b6169 !important;
-    font-size: 13px !important;
-    line-height: 1.6em !important;
+    color: #5b6169;
+    font-size: 13px; 
+    line-height: 1.6em; 
   }
 }
 
 .prepend-top-20 {
-  margin: 20px 8px 20px 8px;
+  margin-top: 20px;
   
   .btn-remove {
-    @include border-radius (2px);
+    @include btn-middle;
+    @include btn-remove;
     
-    font-size: 13px;
-    font-weight: 600px;
-    text-transform: uppercase;
     float: left !important;
-    margin-bottom: 14px;
   }
 }
 
 /*
  * Projects list rendered on dashboard and user page
  */
+ 
 .projects-list {
   @include basic-list;
 
@@ -581,3 +504,4 @@ pre.light-well {
 .inline-form {
   display: inline-block;
 }
+
