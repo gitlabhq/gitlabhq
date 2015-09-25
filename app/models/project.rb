@@ -39,6 +39,7 @@ class Project < ActiveRecord::Base
   include Gitlab::VisibilityLevel
   include Referable
   include Sortable
+  include AfterCommitQueue
 
   extend Gitlab::ConfigHelper
   extend Enumerize
@@ -191,7 +192,7 @@ class Project < ActiveRecord::Base
     state :finished
     state :failed
 
-    after_transition any => :started, do: :add_import_job
+    after_transition any => :started, do: :schedule_add_import_job
     after_transition any => :finished, do: :clear_import_data
   end
 
@@ -275,15 +276,17 @@ class Project < ActiveRecord::Base
     id && persisted?
   end
 
+  def schedule_add_import_job
+    run_after_commit(:add_import_job)
+  end
+
   def add_import_job
-    # Schedule these jobs after 2 seconds to ensure DB changes to import_status
-    # are saved by the time the workers start
     if forked?
-      unless RepositoryForkWorker.perform_in(2.seconds, id, forked_from_project.path_with_namespace, self.namespace.path)
+      unless RepositoryForkWorker.perform_async(id, forked_from_project.path_with_namespace, self.namespace.path)
         import_fail
       end
     else
-      RepositoryImportWorker.perform_in(2.seconds, id)
+      RepositoryImportWorker.perform_async(id)
     end
   end
 

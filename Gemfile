@@ -121,6 +121,8 @@ end
 
 # State machine
 gem "state_machine", '~> 1.2.0'
+# Run events after state machine commits
+gem 'after_commit_queue'
 
 # Issue tags
 gem 'acts-as-taggable-on', '~> 3.4'
