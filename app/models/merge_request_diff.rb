@@ -123,12 +123,12 @@ class MergeRequestDiff < ActiveRecord::Base
     if new_diffs.any?
       if new_diffs.size > Commit::DIFF_HARD_LIMIT_FILES
         self.state = :overflow_diff_files_limit
-        new_diffs = new_diffs.first[Commit::DIFF_HARD_LIMIT_LINES]
+        new_diffs = new_diffs.first(Commit::DIFF_HARD_LIMIT_LINES)
       end
 
       if new_diffs.sum { |diff| diff.diff.lines.count } > Commit::DIFF_HARD_LIMIT_LINES
         self.state = :overflow_diff_lines_limit
-        new_diffs = new_diffs.first[Commit::DIFF_HARD_LIMIT_LINES]
+        new_diffs = new_diffs.first(Commit::DIFF_HARD_LIMIT_LINES)
       end
     end
 
