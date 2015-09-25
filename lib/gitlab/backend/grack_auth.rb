@@ -97,6 +97,7 @@ module Grack
 
         # Set @user if authentication succeeded
         identity = ::Identity.find_by(provider: 'kerberos', extern_uid: krb_principal)
+        identity ||= ::Identity.find_by(provider: 'kerberos', extern_uid: krb_principal.split("@")[0])
         @user = identity.user if identity
       else
         # Authentication with username and password
