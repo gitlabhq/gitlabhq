@@ -55,7 +55,8 @@ module Ci
 
     def toggle_shared_runners
       project.toggle!(:shared_runners_enabled)
-      redirect_to :back
+
+      redirect_to namespace_project_runners_path(project.gl_project.namespace, project.gl_project)
     end
 
     def dumped_yaml

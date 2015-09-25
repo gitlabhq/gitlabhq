@@ -55,13 +55,6 @@ Gitlab::Application.routes.draw do
 
       resources :triggers, only: [:index, :create, :destroy]
 
-      resources :runners, only: [:index, :edit, :update, :destroy, :show] do
-        member do
-          get :resume
-          get :pause
-        end
-      end
-
       resources :runner_projects, only: [:create, :destroy]
 
       resources :events, only: [:index]
@@ -652,8 +645,14 @@ Gitlab::Application.routes.draw do
             get ":secret/:filename", action: :show, as: :show, constraints: { filename: /[^\/]+/ }
           end
         end
-      end
 
+        resources :runners, only: [:index, :edit, :update, :destroy, :show] do
+          member do
+            get :resume
+            get :pause
+          end
+        end
+      end
     end
   end
 

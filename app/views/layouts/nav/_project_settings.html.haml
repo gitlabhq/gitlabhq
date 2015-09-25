@@ -34,3 +34,9 @@
         %span
           Protected Branches
 
+    - if @project.gitlab_ci?
+      = nav_link(controller: :runners) do
+        = link_to namespace_project_runners_path(@project.namespace, @project), title: 'Runners', data: {placement: 'right'} do
+          = icon('cog fw')
+          %span
+            Runners
