@@ -12,6 +12,7 @@ v 8.1.0 (unreleased)
   - Show CI status on Your projects page and Starred projects page
   - Remove "Continuous Integration" page from dashboard
   - Add notes and SSL verification entries to hook APIs (Ben Boeckel)
+  - Fix grammar in admin area "labels" .nothing-here-block when no labels exist.
 
 v 8.0.3 (unreleased)
 
