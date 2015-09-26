@@ -204,6 +204,10 @@ module API
 
     # error helpers
 
+    def no_content!
+      render_api_error!('', 204)
+    end
+
     def forbidden!(reason = nil)
       message = ['403 Forbidden']
       message << " - #{reason}" if reason

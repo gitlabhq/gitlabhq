@@ -27,28 +27,28 @@ describe Ci::API::API do
         expect(runner.reload.platform).to eq("darwin")
       end
 
-      it "should return 404 error if no pending build found" do
+      it "should return 204 error if no pending build found" do
         post ci_api("/builds/register"), token: runner.token
 
-        expect(response.status).to eq(404)
+        expect(response.status).to eq(204)
       end
 
-      it "should return 404 error if no builds for specific runner" do
+      it "should return 204 error if no builds for specific runner" do
         commit = FactoryGirl.create(:ci_commit, project: shared_project)
         FactoryGirl.create(:ci_build, commit: commit, status: 'pending' )
 
         post ci_api("/builds/register"), token: runner.token
 
-        expect(response.status).to eq(404)
+        expect(response.status).to eq(204)
       end
 
-      it "should return 404 error if no builds for shared runner" do
+      it "should return 204 error if no builds for shared runner" do
         commit = FactoryGirl.create(:ci_commit, project: project)
         FactoryGirl.create(:ci_build, commit: commit, status: 'pending' )
 
         post ci_api("/builds/register"), token: shared_runner.token
 
-        expect(response.status).to eq(404)
+        expect(response.status).to eq(204)
       end
 
       it "returns options" do
