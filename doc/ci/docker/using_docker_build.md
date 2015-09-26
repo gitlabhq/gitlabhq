@@ -108,4 +108,4 @@ In order to do that follow the steps:
     ```
 
 1. However, by enabling `--docker-privileged` you are effectively disables all security mechanisms of containers and exposing your host to privilege escalation which can lead to container breakout.
-For more information you could be interested in checking out [Runtime privilege](https://docs.docker.com/reference/run/#runtime-privilege-linux-capabilities-and-lxc-configuration).
+For more information, check out [Runtime privilege](https://docs.docker.com/reference/run/#runtime-privilege-linux-capabilities-and-lxc-configuration).
