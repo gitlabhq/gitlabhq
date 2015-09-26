@@ -1,6 +1,6 @@
 # Using Docker Build
 
-GitLab CI can allows you to use Docker Engine to build and test docker-based projects.
+GitLab CI allows you to use Docker Engine to build and test docker-based projects.
 
 **This also allows to you to use `docker-compose` and other docker-enabled tools.**
 
@@ -109,4 +109,3 @@ In order to do that follow the steps:
 
 1. However, by enabling `--docker-privileged` you are effectively disables all security mechanisms of containers and exposing your host to privilege escalation which can lead to container breakout.
 For more information you could be interested in checking out [Runtime privilege](https://docs.docker.com/reference/run/#runtime-privilege-linux-capabilities-and-lxc-configuration).
-
