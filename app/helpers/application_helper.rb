@@ -78,8 +78,8 @@ module ApplicationHelper
     end
   end
 
-  def gravatar_icon(user_email = '', size = nil)
-    GravatarService.new.execute(user_email, size) ||
+  def gravatar_icon(user_email = '', size = nil, scale = 2)
+    GravatarService.new.execute(user_email, size, scale) ||
       default_avatar
   end
 
