@@ -68,13 +68,13 @@ module ApplicationHelper
     end
   end
 
-  def avatar_icon(user_email = '', size = nil)
+  def avatar_icon(user_email = '', size = nil, scale = 2)
     user = User.find_by(email: user_email)
 
     if user
       user.avatar_url(size) || default_avatar
     else
-      gravatar_icon(user_email, size)
+      gravatar_icon(user_email, size, scale)
     end
   end
 
