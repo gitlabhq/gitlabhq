@@ -38,7 +38,7 @@ class Spinach::Features::AdminIssuesLabels < Spinach::FeatureSteps
 
   step 'I should see labels help message' do
     page.within '.labels' do
-      expect(page).to have_content 'There are no any labels yet'
+      expect(page).to have_content 'There are no labels yet'
     end
   end
 
