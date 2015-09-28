@@ -1,3 +1,14 @@
+.alert_holder {
+  margin: -16px;
+  
+  .alert-link {
+    font-weight: normal;
+  }
+}
+.no-ssh-key-message {
+  background-color: #f28d35;
+  margin-bottom: 16px;
+}
 .new_project,
 .edit_project {
   fieldset.features {
@@ -19,44 +30,47 @@
   background: #f7f8fa;
   margin: -$gl-padding;
   padding: $gl-padding;
-  padding-top: 40px;
-
+  padding: 44px 0 17px 0;
+  
   .project-identicon-holder {
-    margin-bottom: 15px;
-
+    margin-bottom: 16px;
+    
     .avatar, .identicon {
       margin: 0 auto;
       float: none;
     }
-
+    
     .identicon {
       @include border-radius(50%);
     }
   }
-
+  
   .project-home-dropdown {
     margin: 11px 3px 0;
   }
 
   .project-home-desc {
     h1 {
+      color: #313236;
       margin: 0;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
       font-size: 23px;
       font-weight: normal;
     }
 
     p {
-      color: #7f8fa4;
+      color: #5c5d5e;
     }
   }
 
   .git-clone-holder {
-    max-width: 600px;
-    margin: 20px auto;
+    max-width: 498px;
 
     .form-control {
       background: #FFF;
+      font-size: 14px;
+      height: 42px;
+      margin-left: -1px;
     }
   }
 
@@ -66,27 +80,34 @@
       color: inherit;
     }
   }
-
+  .input-group {
+    display: inline-table;
+    position: relative;
+    top: 17px;
+    margin-bottom: 44px;
+  }
+  
   .project-repo-buttons {
-    margin-top: $gl-padding;
-    margin-bottom: 25px;
-
+    margin-top: 12px;
+    margin-bottom: 0px;
+    
     .btn {
-      @extend .btn-info;
-
-      text-transform: uppercase;
-      font-size: 15px;
-      line-height: 20px;
-      padding: 8px 14px;
-      border-radius: 3px;
-      margin-left: 10px;
-
+      @include bnt-project;
+      @include btn-info;
+      
       .count {
-        padding-left: 7px;
         display: inline-block;
-        margin-left: 7px;
       }
     }
+  }
+}
+
+.split-one {
+  display: inline-table;
+  margin-right: 12px;
+  
+  a {
+    margin: -1px !important;
   }
 }
 
@@ -99,21 +120,130 @@
     cursor: auto;
     @extend .monospace;
     background: #FAFAFA;
-    width: 100%;
+    width: 101%;
   }
 
   .input-group-addon {
-    background: #FAFAFA;
+    background: #f7f8fa;
 
     &.git-protocols {
       padding: 0;
       border: none;
-
+      
       .input-group-btn:last-child > .btn {
         @include border-radius-right(0);
+        
+        border-left: 1px solid #c6cacf;
+        margin-left: -2px !important;
       }
     }
   }
+}
+
+.projects-search-form {
+  
+  .input-group .form-control {
+    height: 42px;
+  }
+}
+
+.input-group-btn {
+  .btn {    
+    @include bnt-project;
+    @include btn-middle;
+    
+    &:hover {
+      outline: none;
+    }
+    
+    &:focus {
+      outline: none;
+    }
+    
+    &:active {
+      outline: none;
+    }
+  }
+  
+  .active {
+    @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
+    
+    border: 1px solid #c6cacf !important;
+    background-color: #e4e7ed !important;
+  }
+  
+  .btn-green {
+    @include btn-green
+  }
+  
+}
+
+.split-repo-buttons {
+  display: inline-table;
+  margin: 0 12px 0 12px;
+  
+  .btn{
+    @include bnt-project;
+    @include btn-info;
+  }
+  
+  .dropdown-toggle  {
+    margin: -5px;
+  }  
+}
+
+#notification-form {
+  margin-left: 5px;
+}
+
+.dropdown-new {
+  margin-left: -5px;
+}
+
+.open > .dropdown-new.btn {
+  @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
+ 
+  border: 1px solid #c6cacf !important;
+  background-color: #e4e7ed !important;
+  text-transform: uppercase;
+  color: #313236 !important;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.dropdown-menu {
+  @include box-shadow(rgba(76, 86, 103, 0.247059) 0px 0px 1px 0px, rgba(31, 37, 50, 0.317647) 0px 2px 18px 0px);
+  @include border-radius (0px);
+  
+  border: none;
+  padding: 16px 0;
+  font-size: 14px;
+  font-weight: 100;
+  
+  li a {
+    color: #5f697a;
+    line-height: 30px;
+    
+    &:hover {
+      background-color: #3084bb !important; 
+    }
+  }
+  
+  .fa-fw {
+    margin-right: 8px;
+  }
+}
+
+.fa-bell {
+  margin-right: 6px;
+}
+
+.fa-angle-down {
+  margin-left: 6px;
+}
+
+.project-home-panel .project-home-dropdown {
+  margin: 13px 0px 0;
 }
 
 .project-visibility-level-holder {
@@ -232,15 +362,28 @@ table.table.protected-branches-list tr.no-border {
 
 .project-stats {
   text-align: center;
-  margin-top: 0;
+  margin-top: 15px;
   margin-bottom: 0;
-  padding-top: 5px;
-  padding-bottom: 0;
+  padding-top: 10px;
+  padding-bottom: 4px;
 
   ul.nav-pills {
     display:inline-block;
   }
+  
+  .nav-pills li {
+    display:inline;
+  }
 
+  .nav > li > a {
+    @include btn-info;
+    @include bnt-project;
+    
+    background-color: transparent;
+    border: 1px solid #f7f8fa;
+    margin-left: 12px;
+  }
+  
   li {
     display:inline;
   }
@@ -251,11 +394,11 @@ table.table.protected-branches-list tr.no-border {
   }
 
   li.missing a {
-    color: #bbb;
-    border: 1px dashed #ccc;
+    color: #5a6069;
+    border: 1px dashed #dce0e5;
 
     &:hover {
-      background-color: #FAFAFA;
+      background-color: #f0f2f5;
     }
   }
 }
@@ -273,9 +416,37 @@ pre.light-well {
   border-bottom: 1px solid #e7e9ed;
 }
 
+.git-empty {
+  margin: 0 7px 0 7px;
+  
+  h5 {
+    color: #5c5d5e;
+  }
+  
+  .light-well {
+    @include border-radius (2px);
+    
+    color: #5b6169;
+    font-size: 13px; 
+    line-height: 1.6em; 
+  }
+}
+
+.prepend-top-20 {
+  margin-top: 20px;
+  
+  .btn-remove {
+    @include btn-middle;
+    @include btn-remove;
+    
+    float: left !important;
+  }
+}
+
 /*
  * Projects list rendered on dashboard and user page
  */
+ 
 .projects-list {
   @include basic-list;
 
@@ -339,3 +510,4 @@ pre.light-well {
 .inline-form {
   display: inline-block;
 }
+

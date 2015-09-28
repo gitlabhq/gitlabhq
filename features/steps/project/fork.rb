@@ -5,8 +5,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
 
   step 'I click link "Fork"' do
     expect(page).to have_content "Shop"
-    expect(page).to have_content "Fork"
-    click_link "Fork"
+    click_link "Fork project"
   end
 
   step 'I am a member of project "Shop"' do
