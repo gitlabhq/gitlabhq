@@ -186,7 +186,7 @@ module Ci
     end
 
     def project_id
-      commit.gl_project.gitlab_id
+      commit.project.id
     end
 
     def project_name

@@ -38,8 +38,8 @@ describe Ci::SlackService do
 
     before do
       allow(slack).to receive_messages(
-        project: project,
-        project_id: project.id,
+        project: commit.project,
+        project_id: commit.project_id,
         webhook: webhook_url,
         notify_only_broken_builds: notify_only_broken_builds
       )

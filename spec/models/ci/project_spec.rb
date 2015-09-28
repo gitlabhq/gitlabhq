@@ -28,9 +28,17 @@
 require 'spec_helper'
 
 describe Ci::Project do
+  let(:gl_project) { FactoryGirl.create :empty_project, gitlab_ci_project: project }
+  let (:gl_project) { }
   subject { FactoryGirl.build :ci_project }
 
-  it { is_expected.to have_many(:commits) }
+  it { is_expected.to have_many(:runner_projects) }
+  it { is_expected.to have_many(:runners) }
+  it { is_expected.to have_many(:web_hooks) }
+  it { is_expected.to have_many(:events) }
+  it { is_expected.to have_many(:variables) }
+  it { is_expected.to have_many(:triggers) }
+  it { is_expected.to have_many(:services) }
 
   it { is_expected.to validate_presence_of :name }
   it { is_expected.to validate_presence_of :timeout }
@@ -50,41 +58,44 @@ describe Ci::Project do
 
   describe "ordered_by_last_commit_date" do
     it "returns ordered projects" do
-      newest_project = FactoryGirl.create :ci_project
-      oldest_project = FactoryGirl.create :ci_project
-      project_without_commits = FactoryGirl.create :ci_project
+      newest_project = FactoryGirl.create :empty_project
+      newest_project.ensure_ci_project
+      oldest_project = FactoryGirl.create :empty_project
+      oldest_project.ensure_ci_project
+      project_without_commits = FactoryGirl.create :empty_project
+      project_without_commits.ensure_ci_project
 
-      FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, project: newest_project
-      FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, project: oldest_project
+      FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, gl_project: newest_project
+      FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, gl_project: oldest_project
 
-      expect(Ci::Project.ordered_by_last_commit_date).to eq([newest_project, oldest_project, project_without_commits])
+      expect(Ci::Project.ordered_by_last_commit_date).to eq([newest_project.gitlab_ci_project, oldest_project.gitlab_ci_project, project_without_commits.gitlab_ci_project])
     end
   end
 
   describe 'ordered commits' do
-    let(:project) { FactoryGirl.create :ci_project }
+    let(:project) { FactoryGirl.create :empty_project }
 
     it 'returns ordered list of commits' do
-      commit1 = FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, project: project
-      commit2 = FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, project: project
-      expect(project.commits).to eq([commit2, commit1])
+      commit1 = FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, gl_project: project
+      commit2 = FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, gl_project: project
+      expect(project.commits).to eq([commit2.project, commit1.project])
     end
 
     it 'returns commits ordered by committed_at and id, with nulls last' do
-      commit1 = FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, project: project
-      commit2 = FactoryGirl.create :ci_commit, committed_at: nil, project: project
-      commit3 = FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, project: project
-      commit4 = FactoryGirl.create :ci_commit, committed_at: nil, project: project
-      expect(project.commits).to eq([commit2, commit4, commit3, commit1])
+      commit1 = FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, gl_project: project
+      commit2 = FactoryGirl.create :ci_commit, committed_at: nil, gl_project: project
+      commit3 = FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, gl_project: project
+      commit4 = FactoryGirl.create :ci_commit, committed_at: nil, gl_project: project
+      expect(project.commits).to eq([commit2.project, commit4.project, commit3.project, commit1.project])
     end
   end
 
   context :valid_project do
-    let(:project) { FactoryGirl.create :ci_project }
-    let(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
-    let(:commit) { FactoryGirl.create(:ci_commit, gl_project: gl_project) }
+    let(:commit) { FactoryGirl.create(:ci_commit) }
 
     context :project_with_commit_and_builds do
+      let(:project) { commit.project }
+
       before do
         FactoryGirl.create(:ci_build, commit: commit)
       end

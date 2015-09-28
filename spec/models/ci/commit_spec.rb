@@ -18,11 +18,13 @@
 require 'spec_helper'
 
 describe Ci::Commit do
-  let(:commit) { FactoryGirl.create :ci_commit }
-  let(:commit_with_project) { FactoryGirl.create :ci_commit }
+  let(:project) { FactoryGirl.create :ci_project }
+  let(:gl_project) { FactoryGirl.create :empty_project, gitlab_ci_project: project }
+  let(:commit) { FactoryGirl.create :ci_commit, gl_project: gl_project }
+  let(:commit_with_project) { FactoryGirl.create :ci_commit, gl_project: gl_project }
   let(:config_processor) { Ci::GitlabCiYamlProcessor.new(gitlab_ci_yaml) }
 
-  it { is_expected.to belong_to(:project) }
+  it { is_expected.to belong_to(:gl_project) }
   it { is_expected.to have_many(:builds) }
   it { is_expected.to validate_presence_of :before_sha }
   it { is_expected.to validate_presence_of :sha }
@@ -87,7 +89,7 @@ describe Ci::Commit do
           email_add_pusher: false,
           email_recipients: 'rec1 rec2'
         gl_project = FactoryGirl.create :empty_project, gitlab_ci_project: project
-        commit = FactoryGirl.create :ci_commit, project: gl_project
+        commit = FactoryGirl.create :ci_commit, gl_project: gl_project
         expect(commit.project_recipients).to eq(['rec1', 'rec2'])
       end
 
@@ -96,7 +98,7 @@ describe Ci::Commit do
           email_add_pusher: true,
           email_recipients: 'rec1 rec1 rec2'
         gl_project = FactoryGirl.create :empty_project, gitlab_ci_project: project
-        commit = FactoryGirl.create :ci_commit, project: gl_project
+        commit = FactoryGirl.create :ci_commit, gl_project: gl_project
         expected = 'rec2'
         allow(commit).to receive(:push_data) { { user_email: expected } }
         expect(commit.project_recipients).to eq(['rec1', 'rec2'])

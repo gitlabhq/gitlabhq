@@ -3,7 +3,9 @@ require 'spec_helper'
 module Ci
   describe RegisterBuildService do
     let!(:service) { RegisterBuildService.new }
-    let!(:commit) { FactoryGirl.create :ci_commit }
+    let!(:project) { FactoryGirl.create :ci_project }
+    let!(:gl_project) { FactoryGirl.create :empty_project, gitlab_ci_project: project }
+    let!(:commit) { FactoryGirl.create :ci_commit, gl_project: gl_project }
     let!(:pending_build) { FactoryGirl.create :ci_build, commit: commit }
     let!(:shared_runner) { FactoryGirl.create(:ci_runner, is_shared: true) }
     let!(:specific_runner) { FactoryGirl.create(:ci_runner, is_shared: false) }

@@ -39,8 +39,8 @@ describe Ci::HipChatService do
 
     before do
       allow(service).to receive_messages(
-        project: project,
-        project_id: project.id,
+        project: commit.project,
+        project_id: commit.project_id,
         notify_only_broken_builds: false,
         hipchat_room: 123,
         hipchat_token: 'a1b2c3d4e5f6'

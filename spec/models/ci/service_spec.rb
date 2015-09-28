@@ -34,7 +34,7 @@ describe Ci::Service do
 
       before do
         allow(@service).to receive_messages(
-          project: project
+          project: commit.project
         )
         build
         @testable = @service.can_test?
