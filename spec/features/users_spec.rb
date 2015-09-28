@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 feature 'Users', feature: true do
+  let(:user)  { create(:user, username: 'user1', name: 'User 1', email: 'user1@gitlab.com') }
+  let(:user2) { create(:user, username: 'user2', name: 'User 2', email: 'user2@gitlab.com') }
+
   scenario 'GET /users/sign_in creates a new user account' do
     visit new_user_session_path
     fill_in 'user_name', with: 'Name Surname'
@@ -11,7 +14,6 @@ feature 'Users', feature: true do
   end
 
   scenario 'Successful user signin invalidates password reset token' do
-    user = create(:user)
     expect(user.reset_password_token).to be_nil
 
     visit new_user_password_path
@@ -28,7 +30,6 @@ feature 'Users', feature: true do
     expect(user.reset_password_token).to be_nil
   end
 
-  let!(:user) { create(:user, username: 'user1', name: 'User 1', email: 'user1@gitlab.com') }
   scenario 'Should show one error if email is already taken' do
     visit new_user_session_path
     fill_in 'user_name', with: 'Another user name'
@@ -46,6 +47,39 @@ feature 'Users', feature: true do
 
   def number_of_errors_on_page(page)
     page.find('#error_explanation').find('ul').all('li').count
+  end
+
+  context 'With a logged-in user' do
+    before do
+      login_as(user)
+    end
+
+    describe 'Abuse report button' do
+      context 'User has never been reported for abuse' do
+        it 'enables the "Report abuse" button / dropdown' do
+          visit user_path(user2)
+
+          expect(page.find('#report_abuse').find('ul.dropdown-menu').all('li').count).to be(1)
+          expect(page.find('#report_abuse').all('.btn-close').count).to be(0)
+        end
+      end
+
+      context 'User has already been reported for abuse' do
+        before do
+          @abuse_report = AbuseReport.new(user: user2, message: 'Foo bar')
+          @abuse_report.reporter = user
+          @abuse_report.save!
+        end
+
+        it 'disables the "Report abuse" button' do
+          visit user_path(user2)
+
+          expect(page.find('#report_abuse').all('ul.dropdown-menu').count).to be(0)
+          expect(page.find('#report_abuse').all('.btn-close').count).to be(1)
+        end
+      end
+    end
+
   end
 
 end

@@ -97,7 +97,9 @@ class User < ActiveRecord::Base
   # Namespace for personal projects
   has_one :namespace, -> { where type: nil }, dependent: :destroy, foreign_key: :owner_id, class_name: "Namespace"
 
+
   # Profile
+  has_one  :abuse_report, dependent: :destroy
   has_many :keys, dependent: :destroy
   has_many :emails, dependent: :destroy
   has_many :identities, dependent: :destroy, autosave: true
