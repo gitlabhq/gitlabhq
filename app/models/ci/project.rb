@@ -48,8 +48,6 @@ module Ci
 
     accepts_nested_attributes_for :variables, allow_destroy: true
 
-    delegate :commits, :builds, to: :gl_project
-
     #
     # Validations
     #
@@ -209,6 +207,14 @@ module Ci
 
     def setup_finished?
       commits.any?
+    end
+
+    def commits
+      gl_project.ci_commits
+    end
+
+    def builds
+      gl_project.ci_builds
     end
   end
 end
