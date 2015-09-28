@@ -6,6 +6,7 @@ describe Ci::API::API do
   describe 'POST /projects/:project_id/refs/:ref/trigger' do
     let!(:trigger_token) { 'secure token' }
     let!(:project) { FactoryGirl.create(:ci_project) }
+    let!(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
     let!(:project2) { FactoryGirl.create(:ci_project) }
     let!(:trigger) { FactoryGirl.create(:ci_trigger, project: project, token: trigger_token) }
     let(:options) do
@@ -33,7 +34,7 @@ describe Ci::API::API do
 
     context 'Have a commit' do
       before do
-        @commit = FactoryGirl.create(:ci_commit, project: project)
+        @commit = FactoryGirl.create(:ci_commit, gl_project: gl_project)
       end
 
       it 'should create builds' do

@@ -81,10 +81,11 @@ describe Ci::Project do
 
   context :valid_project do
     let(:project) { FactoryGirl.create :ci_project }
+    let(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
+    let(:commit) { FactoryGirl.create(:ci_commit, gl_project: gl_project) }
 
     context :project_with_commit_and_builds do
       before do
-        commit = FactoryGirl.create(:ci_commit, project: project)
         FactoryGirl.create(:ci_build, commit: commit)
       end
 

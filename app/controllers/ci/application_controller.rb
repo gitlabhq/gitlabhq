@@ -11,10 +11,10 @@ module Ci
     private
 
     def check_enable_flag!
-      unless current_application_settings.ci_enabled
-        redirect_to(disabled_ci_projects_path)
-        return
-      end
+      # unless current_application_settings.ci_enabled
+      #   redirect_to(disabled_ci_projects_path)
+      #   return
+      # end
     end
 
     def authenticate_public_page!

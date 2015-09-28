@@ -2,7 +2,8 @@ require 'spec_helper'
 
 describe Ci::WebHookService do
   let(:project) { FactoryGirl.create :ci_project }
-  let(:commit)  { FactoryGirl.create :ci_commit, project: project }
+  let(:gl_project) { FactoryGirl.create :empty_project, gitlab_ci_project: project }
+  let(:commit)  { FactoryGirl.create :ci_commit, gl_project: gl_project }
   let(:build)   { FactoryGirl.create :ci_build, commit: commit }
   let(:hook)    { FactoryGirl.create :ci_web_hook, project: project }
 

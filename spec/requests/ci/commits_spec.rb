@@ -2,8 +2,7 @@ require 'spec_helper'
 
 describe "Commits" do
   before do
-    @project = FactoryGirl.create :ci_project
-    @commit = FactoryGirl.create :ci_commit, project: @project
+    @commit = FactoryGirl.create :ci_commit
   end
 
   describe "GET /:project/refs/:ref_name/commits/:id/status.json" do

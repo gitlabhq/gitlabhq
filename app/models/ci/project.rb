@@ -33,15 +33,12 @@ module Ci
 
     belongs_to :gl_project, class_name: '::Project', foreign_key: :gitlab_id
 
-    has_many :commits, through: :gl_project, class_name: 'Ci::Commit', foreign_key: :gl_project_id
-    has_many :builds, through: :commits, dependent: :destroy, class_name: 'Ci::Build'
     has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
     has_many :runners, through: :runner_projects, class_name: 'Ci::Runner'
     has_many :web_hooks, dependent: :destroy, class_name: 'Ci::WebHook'
     has_many :events, dependent: :destroy, class_name: 'Ci::Event'
     has_many :variables, dependent: :destroy, class_name: 'Ci::Variable'
     has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger'
-    has_one :last_commit, through: :gl_project, class_name: 'Ci::Commit'
 
     # Project services
     has_many :services, dependent: :destroy, class_name: 'Ci::Service'
@@ -51,17 +48,19 @@ module Ci
 
     accepts_nested_attributes_for :variables, allow_destroy: true
 
+    delegate :commits, :builds, :last_commit, to: :gl_project
+
     #
     # Validations
     #
     validates_presence_of :name, :timeout, :token, :default_ref,
-      :path, :ssh_url_to_repo, :gitlab_id
+                          :path, :ssh_url_to_repo, :gitlab_id
 
     validates_uniqueness_of :gitlab_id
 
     validates :polling_interval,
-      presence: true,
-      if: ->(project) { project.always_build.present? }
+              presence: true,
+              if: ->(project) { project.always_build.present? }
 
     scope :public_only, ->() { where(public: true) }
 
@@ -79,12 +78,12 @@ module Ci
 
       def parse(project)
         params = {
-          name:                     project.name_with_namespace,
-          gitlab_id:                project.id,
-          path:                     project.path_with_namespace,
-          default_ref:              project.default_branch || 'master',
-          ssh_url_to_repo:          project.ssh_url_to_repo,
-          email_add_pusher:         current_application_settings.add_pusher,
+          name: project.name_with_namespace,
+          gitlab_id: project.id,
+          path: project.path_with_namespace,
+          default_ref: project.default_branch || 'master',
+          ssh_url_to_repo: project.ssh_url_to_repo,
+          email_add_pusher: current_application_settings.add_pusher,
           email_only_broken_builds: current_application_settings.all_broken_builds,
         }
 
@@ -125,10 +124,14 @@ module Ci
 
     def set_default_values
       self.token = SecureRandom.hex(15) if self.token.blank?
+      self.default_ref ||= 'master'
+      self.name ||= gl_project.name_with_namespace
+      self.path ||= gl_project.path_with_namespace
+      self.ssh_url_to_repo ||= gl_project.ssh_url_to_repo
     end
 
     def tracked_refs
-      @tracked_refs ||= default_ref.split(",").map{|ref| ref.strip}
+      @tracked_refs ||= default_ref.split(",").map { |ref| ref.strip }
     end
 
     def valid_token? token

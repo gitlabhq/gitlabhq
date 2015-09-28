@@ -31,8 +31,7 @@ describe Ci::SlackService do
 
   describe "Execute" do
     let(:slack)   { Ci::SlackService.new }
-    let(:project) { FactoryGirl.create :ci_project }
-    let(:commit)  { FactoryGirl.create :ci_commit, project: project }
+    let(:commit)  { FactoryGirl.create :ci_commit }
     let(:build)   { FactoryGirl.create :ci_build, commit: commit, status: 'failed' }
     let(:webhook_url) { 'https://hooks.slack.com/services/SVRWFV0VVAR97N/B02R25XN3/ZBqu7xMupaEEICInN685' }
     let(:notify_only_broken_builds) { false }

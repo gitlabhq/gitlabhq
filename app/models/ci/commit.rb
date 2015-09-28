@@ -32,12 +32,13 @@ module Ci
       sha[0...8]
     end
 
-    def project
-      @project ||= gl_project.gitlab_ci_project
-    end
-
     def to_param
       sha
+    end
+
+    def project
+      @project ||= gl_project.gitlab_ci_project
+      @project ||= gl_project.create_gitlab_ci_project
     end
 
     def last_build
@@ -115,7 +116,6 @@ module Ci
       builds_attrs = config_processor.builds_for_stage_and_ref(stage, ref, tag)
       builds_attrs.map do |build_attrs|
         builds.create!({
-          project: project,
           name: build_attrs[:name],
           commands: build_attrs[:script],
           tag_list: build_attrs[:tags],

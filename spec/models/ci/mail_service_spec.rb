@@ -32,7 +32,8 @@ describe Ci::MailService do
 
     describe 'failed build' do
       let(:project) { FactoryGirl.create(:ci_project, email_add_pusher: true) }
-      let(:commit) { FactoryGirl.create(:ci_commit, project: project) }
+      let(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
+      let(:commit) { FactoryGirl.create(:ci_commit, gl_project: gl_project) }
       let(:build) { FactoryGirl.create(:ci_build, status: :failed, commit: commit) }
 
       before do
@@ -54,7 +55,8 @@ describe Ci::MailService do
 
     describe 'successfull build' do
       let(:project) { FactoryGirl.create(:ci_project, email_add_pusher: true, email_only_broken_builds: false) }
-      let(:commit) { FactoryGirl.create(:ci_commit, project: project) }
+      let(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
+      let(:commit) { FactoryGirl.create(:ci_commit, gl_project: gl_project) }
       let(:build) { FactoryGirl.create(:ci_build, status: :success, commit: commit) }
 
       before do
@@ -81,7 +83,8 @@ describe Ci::MailService do
                            email_only_broken_builds: false,
                            email_recipients: "jeroen@example.com")
       end
-      let(:commit) { FactoryGirl.create(:ci_commit, project: project) }
+      let(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
+      let(:commit) { FactoryGirl.create(:ci_commit, gl_project: gl_project) }
       let(:build) { FactoryGirl.create(:ci_build, status: :success, commit: commit) }
 
       before do
@@ -109,7 +112,8 @@ describe Ci::MailService do
                            email_only_broken_builds: true,
                            email_recipients: "jeroen@example.com")
       end
-      let(:commit) { FactoryGirl.create(:ci_commit, project: project) }
+      let(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
+      let(:commit) { FactoryGirl.create(:ci_commit, gl_project: gl_project) }
       let(:build) { FactoryGirl.create(:ci_build, status: :success, commit: commit) }
 
       before do
@@ -137,7 +141,8 @@ describe Ci::MailService do
                            email_only_broken_builds: false,
                            email_recipients: "jeroen@example.com")
       end
-      let(:commit) { FactoryGirl.create(:ci_commit, project: project) }
+      let(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
+      let(:commit) { FactoryGirl.create(:ci_commit, gl_project: gl_project) }
       let(:build) { FactoryGirl.create(:ci_build, status: :success, commit: commit) }
 
       before do
@@ -159,7 +164,8 @@ describe Ci::MailService do
                            email_only_broken_builds: true,
                            email_recipients: "jeroen@example.com")
       end
-      let(:commit) { FactoryGirl.create(:ci_commit, project: project) }
+      let(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
+      let(:commit) { FactoryGirl.create(:ci_commit, gl_project: gl_project) }
       let(:build) { FactoryGirl.create(:ci_build, status: :failed, commit: commit) }
 
       before do

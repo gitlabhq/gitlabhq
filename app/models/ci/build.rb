@@ -79,7 +79,6 @@ module Ci
         new_build.commands = build.commands
         new_build.tag_list = build.tag_list
         new_build.commit_id = build.commit_id
-        new_build.project_id = build.project_id
         new_build.name = build.name
         new_build.allow_failure = build.allow_failure
         new_build.stage = build.stage
@@ -187,7 +186,7 @@ module Ci
     end
 
     def project_id
-      commit.project_id
+      commit.gl_project.gitlab_id
     end
 
     def project_name
