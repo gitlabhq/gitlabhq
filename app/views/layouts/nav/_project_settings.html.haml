@@ -40,3 +40,8 @@
           = icon('cog fw')
           %span
             Runners
+      = nav_link(controller: :variables) do
+        = link_to namespace_project_variables_path(@project.namespace, @project) do
+          = icon('code fw')
+          %span
+            Variables

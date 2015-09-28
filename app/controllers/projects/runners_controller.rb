@@ -55,10 +55,6 @@ class Projects::RunnersController < Projects::ApplicationController
 
   protected
 
-  def ci_project
-    @ci_project = @project.gitlab_ci_project
-  end
-
   def set_runner
     @runner ||= @ci_project.runners.find(params[:id])
   end
