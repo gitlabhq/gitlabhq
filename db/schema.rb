@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150924131004) do
+ActiveRecord::Schema.define(version: 20150924125436) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,8 +45,8 @@ ActiveRecord::Schema.define(version: 20150924131004) do
     t.string   "after_sign_out_path"
     t.integer  "session_expire_delay",         default: 10080, null: false
     t.text     "import_sources"
-    t.boolean  "ci_enabled",                   default: true,  null: false
     t.text     "help_page_text"
+    t.boolean  "ci_enabled",                   default: true,  null: false
   end
 
   create_table "audit_events", force: true do |t|
@@ -100,7 +100,6 @@ ActiveRecord::Schema.define(version: 20150924131004) do
     t.boolean  "allow_failure",      default: false, null: false
     t.string   "stage"
     t.integer  "trigger_request_id"
-    t.integer  "gl_project_id"
   end
 
   add_index "ci_builds", ["commit_id"], name: "index_ci_builds_on_commit_id", using: :btree
@@ -135,7 +134,6 @@ ActiveRecord::Schema.define(version: 20150924131004) do
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "gl_project_id"
   end
 
   add_index "ci_events", ["created_at"], name: "index_ci_events_on_created_at", using: :btree
@@ -183,11 +181,10 @@ ActiveRecord::Schema.define(version: 20150924131004) do
   end
 
   create_table "ci_runner_projects", force: true do |t|
-    t.integer  "runner_id",     null: false
-    t.integer  "project_id",    null: false
+    t.integer  "runner_id",  null: false
+    t.integer  "project_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "gl_project_id"
   end
 
   add_index "ci_runner_projects", ["project_id"], name: "index_ci_runner_projects_on_project_id", using: :btree
@@ -211,12 +208,11 @@ ActiveRecord::Schema.define(version: 20150924131004) do
   create_table "ci_services", force: true do |t|
     t.string   "type"
     t.string   "title"
-    t.integer  "project_id",                    null: false
+    t.integer  "project_id",                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "active",        default: false, null: false
+    t.boolean  "active",     default: false, null: false
     t.text     "properties"
-    t.integer  "gl_project_id"
   end
 
   add_index "ci_services", ["project_id"], name: "index_ci_services_on_project_id", using: :btree
@@ -261,11 +257,10 @@ ActiveRecord::Schema.define(version: 20150924131004) do
 
   create_table "ci_triggers", force: true do |t|
     t.string   "token"
-    t.integer  "project_id",    null: false
+    t.integer  "project_id", null: false
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "gl_project_id"
   end
 
   add_index "ci_triggers", ["deleted_at"], name: "index_ci_triggers_on_deleted_at", using: :btree
@@ -277,17 +272,15 @@ ActiveRecord::Schema.define(version: 20150924131004) do
     t.text    "encrypted_value"
     t.string  "encrypted_value_salt"
     t.string  "encrypted_value_iv"
-    t.integer "gl_project_id"
   end
 
   add_index "ci_variables", ["project_id"], name: "index_ci_variables_on_project_id", using: :btree
 
   create_table "ci_web_hooks", force: true do |t|
-    t.string   "url",           null: false
-    t.integer  "project_id",    null: false
+    t.string   "url",        null: false
+    t.integer  "project_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "gl_project_id"
   end
 
   create_table "deploy_keys_projects", force: true do |t|
@@ -606,7 +599,6 @@ ActiveRecord::Schema.define(version: 20150924131004) do
     t.string   "import_type"
     t.string   "import_source"
     t.integer  "commit_count",           default: 0
-    t.boolean  "shared_runners_enabled", default: false
   end
 
   add_index "projects", ["created_at", "id"], name: "index_projects_on_created_at_and_id", using: :btree
