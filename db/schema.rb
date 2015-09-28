@@ -13,6 +13,9 @@
 
 ActiveRecord::Schema.define(version: 20150924131004) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "abuse_reports", force: true do |t|
     t.integer  "reporter_id"
     t.integer  "user_id"
@@ -82,19 +85,19 @@ ActiveRecord::Schema.define(version: 20150924131004) do
     t.integer  "project_id"
     t.string   "status"
     t.datetime "finished_at"
-    t.text     "trace",              limit: 2147483647
+    t.text     "trace"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "started_at"
     t.integer  "runner_id"
-    t.float    "coverage",           limit: 24
+    t.float    "coverage"
     t.integer  "commit_id"
     t.text     "commands"
     t.integer  "job_id"
     t.string   "name"
-    t.boolean  "deploy",                                default: false
+    t.boolean  "deploy",             default: false
     t.text     "options"
-    t.boolean  "allow_failure",                         default: false, null: false
+    t.boolean  "allow_failure",      default: false, null: false
     t.string   "stage"
     t.integer  "trigger_request_id"
     t.integer  "gl_project_id"
@@ -110,10 +113,10 @@ ActiveRecord::Schema.define(version: 20150924131004) do
     t.string   "ref"
     t.string   "sha"
     t.string   "before_sha"
-    t.text     "push_data",     limit: 16777215
+    t.text     "push_data"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "tag",                            default: false
+    t.boolean  "tag",           default: false
     t.text     "yaml_errors"
     t.datetime "committed_at"
     t.integer  "gl_project_id"
@@ -430,9 +433,9 @@ ActiveRecord::Schema.define(version: 20150924131004) do
 
   create_table "merge_request_diffs", force: true do |t|
     t.string   "state"
-    t.text     "st_commits",       limit: 2147483647
-    t.text     "st_diffs",         limit: 2147483647
-    t.integer  "merge_request_id",                    null: false
+    t.text     "st_commits"
+    t.text     "st_diffs"
+    t.integer  "merge_request_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -514,8 +517,8 @@ ActiveRecord::Schema.define(version: 20150924131004) do
     t.string   "line_code"
     t.string   "commit_id"
     t.integer  "noteable_id"
-    t.boolean  "system",                           default: false, null: false
-    t.text     "st_diff",       limit: 2147483647
+    t.boolean  "system",        default: false, null: false
+    t.text     "st_diff"
     t.integer  "updated_by_id"
   end
 
@@ -584,26 +587,26 @@ ActiveRecord::Schema.define(version: 20150924131004) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "creator_id"
-    t.boolean  "issues_enabled",                    default: true,     null: false
-    t.boolean  "wall_enabled",                      default: true,     null: false
-    t.boolean  "merge_requests_enabled",            default: true,     null: false
-    t.boolean  "wiki_enabled",                      default: true,     null: false
+    t.boolean  "issues_enabled",         default: true,     null: false
+    t.boolean  "wall_enabled",           default: true,     null: false
+    t.boolean  "merge_requests_enabled", default: true,     null: false
+    t.boolean  "wiki_enabled",           default: true,     null: false
     t.integer  "namespace_id"
-    t.string   "issues_tracker",                    default: "gitlab", null: false
+    t.string   "issues_tracker",         default: "gitlab", null: false
     t.string   "issues_tracker_id"
-    t.boolean  "snippets_enabled",                  default: true,     null: false
+    t.boolean  "snippets_enabled",       default: true,     null: false
     t.datetime "last_activity_at"
     t.string   "import_url"
-    t.integer  "visibility_level",                  default: 0,        null: false
-    t.boolean  "archived",                          default: false,    null: false
+    t.integer  "visibility_level",       default: 0,        null: false
+    t.boolean  "archived",               default: false,    null: false
     t.string   "avatar"
     t.string   "import_status"
-    t.float    "repository_size",        limit: 24, default: 0.0
-    t.integer  "star_count",                        default: 0,        null: false
+    t.float    "repository_size",        default: 0.0
+    t.integer  "star_count",             default: 0,        null: false
     t.string   "import_type"
     t.string   "import_source"
-    t.integer  "commit_count",                      default: 0
-    t.boolean  "shared_runners_enabled",            default: false
+    t.integer  "commit_count",           default: 0
+    t.boolean  "shared_runners_enabled", default: false
   end
 
   add_index "projects", ["created_at", "id"], name: "index_projects_on_created_at_and_id", using: :btree
@@ -655,15 +658,15 @@ ActiveRecord::Schema.define(version: 20150924131004) do
 
   create_table "snippets", force: true do |t|
     t.string   "title"
-    t.text     "content",          limit: 2147483647
-    t.integer  "author_id",                                       null: false
+    t.text     "content"
+    t.integer  "author_id",                    null: false
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "file_name"
     t.datetime "expires_at"
     t.string   "type"
-    t.integer  "visibility_level",                    default: 0, null: false
+    t.integer  "visibility_level", default: 0, null: false
   end
 
   add_index "snippets", ["author_id"], name: "index_snippets_on_author_id", using: :btree
