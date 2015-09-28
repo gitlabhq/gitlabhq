@@ -243,11 +243,6 @@
   }
 }
 
-.pull-right .light .fa-pencil {
-  top: 20px;
-  position: relative;
-}
-
 @mixin input-big {
   height: 36px;
   padding: 5px 10px;
@@ -299,4 +294,9 @@
       color: #78a;
     }
   }
+}
+
+.fa-align {
+  top: 20px;
+  position: relative;
 }
