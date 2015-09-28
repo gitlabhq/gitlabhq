@@ -1,6 +1,9 @@
 FROM ubuntu:14.04
 MAINTAINER Sytse Sijbrandij
 
+# Resolve error : TERM environment variable not set.
+ENV TERM dumb
+
 # Install required packages
 RUN apt-get update -q \
     && DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
