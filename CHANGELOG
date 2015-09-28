@@ -15,6 +15,7 @@ v 8.1.0 (unreleased)
   - Remove "Continuous Integration" page from dashboard
   - Add notes and SSL verification entries to hook APIs (Ben Boeckel)
   - Fix grammar in admin area "labels" .nothing-here-block when no labels exist.
+  - Move CI runners page to project settings area
 
 v 8.0.3 (unreleased)
 

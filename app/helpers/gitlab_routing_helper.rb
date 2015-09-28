@@ -33,6 +33,14 @@ module GitlabRoutingHelper
     edit_namespace_project_path(project.namespace, project, *args)
   end
 
+  def runners_path(project, *args)
+    namespace_project_runners_path(project.namespace, project, *args)
+  end
+
+  def runner_path(runner, *args)
+    namespace_project_runner_path(@project.namespace, @project, runner, *args)
+  end
+
   def issue_path(entity, *args)
     namespace_project_issue_path(entity.project.namespace, entity.project, entity, *args)
   end
