@@ -157,12 +157,6 @@
   
   pre {
     @include border-radius(2px);
-    
-    margin: 12px 0 12px 0 !important;
-    background-color: #f8fafc !important;
-    font-size: 13px !important;
-    color: #5b6169 !important;
-    line-height: 1.6em !important;
   }
 
   p > code {
