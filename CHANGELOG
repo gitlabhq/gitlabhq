@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.1.0 (unreleased)
+  - Add user preference to view activities as default dashboard (Stan Hu)
   - Fix bug where projects would appear to be stuck in the forked import state (Stan Hu)
   - Fix Error 500 in creating merge requests with > 1000 diffs (Stan Hu)
   - Show CI status on all pages where commits list is rendered
