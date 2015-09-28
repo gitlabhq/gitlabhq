@@ -48,7 +48,7 @@ module Ci
 
     accepts_nested_attributes_for :variables, allow_destroy: true
 
-    delegate :commits, :builds, :last_commit, to: :gl_project
+    delegate :commits, :builds, to: :gl_project
 
     #
     # Validations
@@ -103,8 +103,8 @@ module Ci
       end
 
       def ordered_by_last_commit_date
-        last_commit_subquery = "(SELECT project_id, MAX(committed_at) committed_at FROM #{Ci::Commit.table_name} GROUP BY project_id)"
-        joins("LEFT JOIN #{last_commit_subquery} AS last_commit ON #{Ci::Project.table_name}.id = last_commit.project_id").
+        last_commit_subquery = "(SELECT gl_project_id, MAX(committed_at) committed_at FROM #{Ci::Commit.table_name} GROUP BY gl_project_id)"
+        joins("LEFT JOIN #{last_commit_subquery} AS last_commit ON #{Ci::Project.table_name}.gitlab_id = last_commit.gl_project_id").
           order("CASE WHEN last_commit.committed_at IS NULL THEN 1 ELSE 0 END, last_commit.committed_at DESC")
       end
 

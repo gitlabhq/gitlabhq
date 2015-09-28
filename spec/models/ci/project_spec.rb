@@ -28,9 +28,8 @@
 require 'spec_helper'
 
 describe Ci::Project do
-  let(:gl_project) { FactoryGirl.create :empty_project, gitlab_ci_project: project }
-  let (:gl_project) { }
-  subject { FactoryGirl.build :ci_project }
+  let(:gl_project) { FactoryGirl.create :empty_project }
+  subject { FactoryGirl.create :ci_project, gl_project: gl_project }
 
   it { is_expected.to have_many(:runner_projects) }
   it { is_expected.to have_many(:runners) }
@@ -40,9 +39,7 @@ describe Ci::Project do
   it { is_expected.to have_many(:triggers) }
   it { is_expected.to have_many(:services) }
 
-  it { is_expected.to validate_presence_of :name }
   it { is_expected.to validate_presence_of :timeout }
-  it { is_expected.to validate_presence_of :default_ref }
 
   describe 'before_validation' do
     it 'should set an random token if none provided' do
@@ -78,7 +75,7 @@ describe Ci::Project do
     it 'returns ordered list of commits' do
       commit1 = FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, gl_project: project
       commit2 = FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, gl_project: project
-      expect(project.commits).to eq([commit2.project, commit1.project])
+      expect(project.commits).to eq([commit2, commit1])
     end
 
     it 'returns commits ordered by committed_at and id, with nulls last' do
@@ -86,7 +83,7 @@ describe Ci::Project do
       commit2 = FactoryGirl.create :ci_commit, committed_at: nil, gl_project: project
       commit3 = FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, gl_project: project
       commit4 = FactoryGirl.create :ci_commit, committed_at: nil, gl_project: project
-      expect(project.commits).to eq([commit2.project, commit4.project, commit3.project, commit1.project])
+      expect(project.commits).to eq([commit2, commit4, commit3, commit1])
     end
   end
 
