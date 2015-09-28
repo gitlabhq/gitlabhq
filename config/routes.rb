@@ -262,6 +262,7 @@ Gitlab::Application.routes.draw do
         put :unblock
         put :unlock
         put :confirm
+        post :login_as
         patch :disable_two_factor
         delete 'remove/:email_id', action: 'remove_email', as: 'remove_email'
       end
