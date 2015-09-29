@@ -404,10 +404,12 @@ describe Project do
 
   describe :ci_commit do
     let(:project) { create :project }
-    let(:ci_project) { create :ci_project, gl_project: project }
-    let(:commit) { create :ci_commit, project: ci_project }
+    let(:commit) { create :ci_commit, gl_project: project }
 
-    before { project.create_gitlab_ci_service(active: true) }
+    before do
+      project.ensure_gitlab_ci_project
+      project.create_gitlab_ci_service(active: true)
+    end
 
     it { expect(project.ci_commit(commit.sha)).to eq(commit) }
   end
