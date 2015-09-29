@@ -399,7 +399,7 @@ describe Notify do
     describe 'project was moved' do
       let(:project) { create(:project) }
       let(:user) { create(:user) }
-      subject { Notify.project_was_moved_email(project.id, user.id) }
+      subject { Notify.project_was_moved_email(project.id, user.id, "gitlab/gitlab") }
 
       it_behaves_like 'an email sent from GitLab'
 

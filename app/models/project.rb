@@ -481,8 +481,8 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def send_move_instructions
-    NotificationService.new.project_was_moved(self)
+  def send_move_instructions(old_path_with_namespace)
+    NotificationService.new.project_was_moved(self, old_path_with_namespace)
   end
 
   def owner
@@ -624,7 +624,7 @@ class Project < ActiveRecord::Base
       # So we basically we mute exceptions in next actions
       begin
         gitlab_shell.mv_repository("#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
-        send_move_instructions
+        send_move_instructions(old_path_with_namespace)
         reset_events_cache
       rescue
         # Returning false does not rollback after_* transaction but gives
