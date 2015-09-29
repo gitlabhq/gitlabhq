@@ -2,8 +2,6 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.1.0 (unreleased)
   - Add user preference to view activities as default dashboard (Stan Hu)
-  - Fix bug where projects would appear to be stuck in the forked import state (Stan Hu)
-  - Fix Error 500 in creating merge requests with > 1000 diffs (Stan Hu)
   - Add option to admin area to sign in as a specific user (Pavel Forkert)
   - Show CI status on all pages where commits list is rendered
   - Automatically enable CI when push .gitlab-ci.yml file to repository
@@ -17,7 +15,10 @@ v 8.1.0 (unreleased)
   - Fix grammar in admin area "labels" .nothing-here-block when no labels exist.
   - Move CI runners page to project settings area
 
-v 8.0.3 (unreleased)
+v 8.0.3
+  - Fix URL shown in Slack notifications
+  - Fix bug where projects would appear to be stuck in the forked import state (Stan Hu)
+  - Fix Error 500 in creating merge requests with > 1000 diffs (Stan Hu)
 
 v 8.0.2
   - Fix default avatar not rendering in network graph (Stan Hu)
