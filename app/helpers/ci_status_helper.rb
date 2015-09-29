@@ -4,19 +4,7 @@ module CiStatusHelper
   end
 
   def ci_status_icon(ci_commit)
-    icon_name =
-      case ci_commit.status
-      when 'success'
-        'check'
-      when 'failed'
-        'close'
-      when 'running', 'pending'
-        'clock-o'
-      else
-        'circle'
-      end
-
-    icon(icon_name)
+    ci_icon_for_status(ci_commit.status)
   end
 
   def ci_status_color(ci_commit)
@@ -30,5 +18,27 @@ module CiStatusHelper
     else
       'gray'
     end
+  end
+
+  def ci_status_with_icon(status)
+    content_tag :span, class: "ci-status ci-#{status}" do
+      ci_icon_for_status(status) + '&nbsp;'.html_safe + status
+    end
+  end
+
+  def ci_icon_for_status(status)
+    icon_name =
+      case status
+      when 'success'
+        'check'
+      when 'failed'
+        'close'
+      when 'running', 'pending'
+        'clock-o'
+      else
+        'circle'
+      end
+
+    icon(icon_name)
   end
 end

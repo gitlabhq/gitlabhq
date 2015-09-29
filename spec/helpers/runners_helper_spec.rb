@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::RunnersHelper do
+describe RunnersHelper do
   it "returns - not contacted yet" do
     runner = FactoryGirl.build :ci_runner
     expect(runner_status_icon(runner)).to include("not connected yet")
