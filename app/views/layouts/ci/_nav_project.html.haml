@@ -16,11 +16,6 @@
         = icon('link fw')
         %span
           Web Hooks
-    = nav_link path: 'triggers#index' do
-      = link_to ci_project_triggers_path(@project) do
-        = icon('retweet fw')
-        %span
-          Triggers
     = nav_link path: ['services#index', 'services#edit'] do
       = link_to ci_project_services_path(@project) do
         = icon('share fw')

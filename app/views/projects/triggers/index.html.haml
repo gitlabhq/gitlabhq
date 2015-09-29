@@ -12,11 +12,11 @@
       %th Token
       %th Last used
       %th
-    = render @triggers
+    = render partial: 'trigger', collection: @triggers, as: :trigger
 - else
   %h4 No triggers
 
-= form_for [:ci, @project, @trigger], html: { class: 'form-horizontal' } do |f|
+= form_for @trigger, url: url_for(controller: 'projects/triggers', action: 'create'), html: { class: 'form-horizontal' } do |f|
   .clearfix
     = f.submit "Add Trigger", class: 'btn btn-success pull-right'
 
@@ -34,7 +34,7 @@
     :plain
       curl -X POST \
            -F token=TOKEN \
-           #{ci_build_trigger_url(@project.id, 'REF_NAME')}
+           #{ci_build_trigger_url(@ci_project.id, 'REF_NAME')}
   %h3
     Use .gitlab-ci.yml
 
@@ -49,7 +49,7 @@
       trigger:
         type: deploy
         script:
-          - "curl -X POST -F token=TOKEN #{ci_build_trigger_url(@project.id, 'REF_NAME')}"
+          - "curl -X POST -F token=TOKEN #{ci_build_trigger_url(@ci_project.id, 'REF_NAME')}"
   %h3
     Pass build variables
 
@@ -64,4 +64,4 @@
       curl -X POST \
            -F token=TOKEN \
            -F "variables[RUN_NIGHTLY_BUILD]=true" \
-           #{ci_build_trigger_url(@project.id, 'REF_NAME')}
+           #{ci_build_trigger_url(@ci_project.id, 'REF_NAME')}

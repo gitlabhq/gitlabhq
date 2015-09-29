@@ -11,4 +11,4 @@
 
   %td
     .pull-right
-      = link_to 'Revoke', ci_project_trigger_path(@project, trigger), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-danger btn-sm btn-grouped"
+      = link_to 'Revoke', namespace_project_trigger_path(@project.namespace, @project, trigger), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-danger btn-sm btn-grouped"
