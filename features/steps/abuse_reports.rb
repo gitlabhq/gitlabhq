@@ -22,9 +22,8 @@ class Spinach::Features::AbuseReports < Spinach::FeatureSteps
     user_mike
   end
 
-  step 'I should not see the "Remove abuse" dropdown / button' do
-    expect(find(:css, '#report_abuse')).not_to have_selector(:css, 'ul.dropdown-menu')
-    expect(find(:css, '#report_abuse')).to have_selector(:css, '.btn-close')
+  step 'I should see a red "Report abuse" button' do
+    expect(find(:css, '.report_abuse')).to have_selector(:css, 'span.btn-close')
   end
 
   def user_mike

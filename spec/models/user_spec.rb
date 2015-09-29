@@ -73,7 +73,6 @@ describe User do
 
   describe 'associations' do
     it { is_expected.to have_one(:namespace) }
-    it { is_expected.to have_one(:abuse_report) }
     it { is_expected.to have_many(:snippets).class_name('Snippet').dependent(:destroy) }
     it { is_expected.to have_many(:project_members).dependent(:destroy) }
     it { is_expected.to have_many(:groups) }
@@ -86,6 +85,7 @@ describe User do
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
     it { is_expected.to have_many(:assigned_merge_requests).dependent(:destroy) }
     it { is_expected.to have_many(:identities).dependent(:destroy) }
+    it { is_expected.to have_one(:abuse_report) }
   end
 
   describe 'validations' do

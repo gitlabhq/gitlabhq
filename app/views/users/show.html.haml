@@ -19,18 +19,13 @@
               = icon('user')
               Profile settings
         - elsif current_user
-          #report_abuse.pull-right
-            %span.dropdown
-              - if @user.abuse_report
-                %span.light.dropdown-toggle.btn.btn-sm.btn-close{title: abuse_report_button_title(@user)}
-                  = icon('exclamation-circle')
-              - else
-                %a.light.dropdown-toggle.btn.btn-sm{href: '#', "data-toggle" => "dropdown"}
-                  = icon('exclamation-circle')
-                %ul.dropdown-menu.dropdown-menu-right
-                  %li
-                    = link_to new_abuse_report_path(user_id: @user.id), title: abuse_report_button_title(@user) do
-                      Report abuse
+          .report_abuse.pull-right
+            - if @user.abuse_report
+              %span#report_abuse_btn.light.btn.btn-sm.btn-close{title: 'Already reported for abuse', data: {toggle: 'tooltip', placement: 'right', container: 'body'}}
+                = icon('exclamation-circle')
+            - else
+              %a.light.btn.btn-sm{href: new_abuse_report_path(user_id: @user.id), title: 'Report abuse', data: {toggle: 'tooltip', placement: 'right', container: 'body'}}
+                = icon('exclamation-circle')
 
       .username
         @#{@user.username}

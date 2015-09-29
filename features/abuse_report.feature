@@ -14,4 +14,4 @@ Feature: Abuse reports
     And I click "Report abuse" button
     When I fill and submit abuse form
     And I visit "Mike" user page
-    Then I should not see the "Remove abuse" dropdown / button
+    Then I should see a red "Report abuse" button
