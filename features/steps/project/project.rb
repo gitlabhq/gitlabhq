@@ -77,6 +77,14 @@ class Spinach::Features::Project < Spinach::FeatureSteps
     expect(find_field('project_merge_requests_template').value).to eq 'This merge request should contain the following.'
   end
 
+  step 'I fill in issues template' do
+    fill_in 'project_issues_template', with: "This issue should contain the following."
+  end
+
+  step 'I should see project with issues template saved' do
+    expect(find_field('project_issues_template').value).to eq 'This issue should contain the following.'
+  end
+
   step 'I should see project "Shop" README link' do
     page.within '.project-side' do
       expect(page).to have_content "README.md"
