@@ -1,13 +1,14 @@
 require 'spec_helper'
 
 describe 'Triggers' do
-  let(:user)    { create(:user) }
+  let(:user) { create(:user) }
+  before { login_as(user) }
 
   before do
-    login_as(user)
     @project = FactoryGirl.create :ci_project
-    @project.gl_project.team << [user, :master]
-    visit ci_project_triggers_path(@project)
+    @gl_project = @project.gl_project
+    @gl_project.team << [user, :master]
+    visit namespace_project_triggers_path(@gl_project.namespace, @gl_project)
   end
 
   context 'create a trigger' do

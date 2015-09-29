@@ -45,3 +45,8 @@
           = icon('code fw')
           %span
             Variables
+      = nav_link path: 'triggers#index' do
+        = link_to namespace_project_triggers_path(@project.namespace, @project) do
+          = icon('retweet fw')
+          %span
+            Triggers

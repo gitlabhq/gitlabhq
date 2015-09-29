@@ -53,8 +53,6 @@ Gitlab::Application.routes.draw do
         end
       end
 
-      resources :triggers, only: [:index, :create, :destroy]
-
       resources :runner_projects, only: [:create, :destroy]
 
       resources :events, only: [:index]
@@ -591,6 +589,7 @@ Gitlab::Application.routes.draw do
         resources :tags, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
         resources :protected_branches, only: [:index, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
         resource :variables, only: [:show, :update]
+        resources :triggers, only: [:index, :create, :destroy]
 
         resources :hooks, only: [:index, :create, :destroy], constraints: { id: /\d+/ } do
           member do
