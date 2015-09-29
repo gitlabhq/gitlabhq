@@ -95,6 +95,8 @@ For installations from source:
         aws_secret_access_key: 'secret123'
       # The remote 'directory' to store your backups. For S3, this would be the bucket name.
       remote_directory: 'my.s3.bucket'
+      # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups, this is optional
+      # encryption: 'AES256'
 ```
 
 If you are uploading your backups to S3 you will probably want to create a new

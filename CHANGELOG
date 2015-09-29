@@ -33,6 +33,7 @@ v 8.0.2
   - Use standard Markdown font in Markdown preview instead of fixed-width font (Stan Hu)
   - Fix Reply by email for non-UTF-8 messages.
   - Add option to use StartTLS with Reply by email IMAP server.
+  - Allow AWS S3 Server-Side Encryption with Amazon S3-Managed Keys for backups (Paul Beattie)
 
 v 8.0.1
   - Remove git refs used internally by GitLab from network graph (Stan Hu)
