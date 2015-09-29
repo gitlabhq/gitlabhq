@@ -12,9 +12,9 @@ describe MergeRequests::MergeService do
   end
 
   describe :execute do
-    context 'valid params' do
-      let(:service) { MergeRequests::MergeService.new(project, user, {}) }
+    let(:service) { MergeRequests::MergeService.new(project, user, {}) }
 
+    context 'valid params' do
       before do
         allow(service).to receive(:execute_hooks)
 
@@ -33,6 +33,15 @@ describe MergeRequests::MergeService do
       it 'should create system note about merge_request merge' do
         note = merge_request.notes.last
         expect(note.note).to include 'Status changed to merged'
+      end
+    end
+
+    context "something goes wrong" do
+      it "mark merge request as open" do
+        allow(service).to receive(:commit).and_return(false)
+        merge_request.merging
+        service.execute(merge_request, 'Awesome message')
+        expect(merge_request.state).to eq("opened")
       end
     end
   end

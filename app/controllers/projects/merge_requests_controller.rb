@@ -150,6 +150,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     return access_denied! unless @merge_request.can_be_merged_by?(current_user)
 
     if @merge_request.mergeable?
+      @merge_request.merging
       MergeWorker.perform_async(@merge_request.id, current_user.id, params)
       @status = true
     else

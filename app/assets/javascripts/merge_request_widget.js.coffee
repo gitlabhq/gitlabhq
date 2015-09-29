@@ -18,6 +18,8 @@ class @MergeRequestWidget
         switch data.state
           when 'merged'
             location.reload()
+          when 'opened'
+            $('.mr-widget-body').html("<h4>Something went wrong during merging</h4>")
           else
             setTimeout(merge_request_widget.mergeInProgress, 2000)
       dataType: 'json'

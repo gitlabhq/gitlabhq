@@ -1,4 +1,4 @@
-- if @merge_request.open?
+- if @merge_request.open? || @merge_request.in_progress?
   = render 'projects/merge_requests/widget/open'
 - elsif @merge_request.merged?
   = render 'projects/merge_requests/widget/merged'

@@ -65,11 +65,19 @@ class MergeRequest < ActiveRecord::Base
     end
 
     event :lock_mr do
-      transition [:reopened, :opened] => :locked
+      transition [:reopened, :opened, :in_progress] => :locked
     end
 
     event :unlock_mr do
       transition locked: :reopened
+    end
+
+    event :merging do
+      transition [:opened, :reopened] => :in_progress
+    end
+
+    event :merging_fail do
+      transition [:in_progress, :locked] => :opened
     end
 
     after_transition any => :locked do |merge_request, transition|
@@ -86,6 +94,7 @@ class MergeRequest < ActiveRecord::Base
     state :reopened
     state :closed
     state :merged
+    state :in_progress
     state :locked
   end
 
@@ -231,7 +240,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mergeable?
-    open? && !work_in_progress? && can_be_merged?
+    (open? || in_progress?) && !work_in_progress? && can_be_merged?
   end
 
   def gitlab_merge_status

@@ -9,6 +9,8 @@
       = render 'projects/merge_requests/widget/open/missing_branch'
     - elsif @merge_request.unchecked?
       = render 'projects/merge_requests/widget/open/check'
+    - elsif @merge_request.in_progress?
+      = render 'projects/merge_requests/widget/open/in_progress'
     - elsif @merge_request.cannot_be_merged?
       = render 'projects/merge_requests/widget/open/conflicts'
     - elsif @merge_request.work_in_progress?
@@ -17,6 +19,7 @@
       = render 'projects/merge_requests/widget/open/not_allowed'
     - elsif @merge_request.can_be_merged?
       = render 'projects/merge_requests/widget/open/accept'
+
 
   - if @closes_issues.present?
     .mr-widget-footer

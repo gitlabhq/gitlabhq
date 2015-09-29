@@ -21,6 +21,7 @@ module MergeRequests
           after_merge
           success
         else
+          @merge_request.merging_fail
           error('Can not merge changes')
         end
       end
