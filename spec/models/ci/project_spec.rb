@@ -56,16 +56,16 @@ describe Ci::Project do
   describe "ordered_by_last_commit_date" do
     it "returns ordered projects" do
       newest_project = FactoryGirl.create :empty_project
-      newest_project.ensure_ci_project
+      newest_ci_project = newest_project.ensure_gitlab_ci_project
       oldest_project = FactoryGirl.create :empty_project
-      oldest_project.ensure_ci_project
+      oldest_ci_project = oldest_project.ensure_gitlab_ci_project
       project_without_commits = FactoryGirl.create :empty_project
-      project_without_commits.ensure_ci_project
+      ci_project_without_commits = project_without_commits.ensure_gitlab_ci_project
 
       FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, gl_project: newest_project
       FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, gl_project: oldest_project
 
-      expect(Ci::Project.ordered_by_last_commit_date).to eq([newest_project.gitlab_ci_project, oldest_project.gitlab_ci_project, project_without_commits.gitlab_ci_project])
+      expect(Ci::Project.ordered_by_last_commit_date).to eq([newest_ci_project, oldest_ci_project, ci_project_without_commits])
     end
   end
 

@@ -747,10 +747,8 @@ class Project < ActiveRecord::Base
     gitlab_ci_project.commits.find_by(sha: sha) if gitlab_ci?
   end
 
-  def ensure_ci_project
-    unless gitlab_ci_project
-      create_gitlab_ci_project
-    end
+  def ensure_gitlab_ci_project
+    gitlab_ci_project || create_gitlab_ci_project
   end
 
   def enable_ci(user)

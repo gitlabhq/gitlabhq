@@ -37,11 +37,7 @@ module Ci
     end
 
     def project
-      unless @project
-        gl_project.ensure_ci_project
-        @project = gl_project.gitlab_ci_project
-      end
-      @project
+      @project ||= gl_project.ensure_gitlab_ci_project
     end
 
     def project_id

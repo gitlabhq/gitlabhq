@@ -10,8 +10,7 @@ module Ci
     let!(:specific_runner) { FactoryGirl.create(:ci_runner, is_shared: false) }
 
     before do
-      gl_project.ensure_ci_project
-      specific_runner.assign_to(gl_project.gitlab_ci_project)
+      specific_runner.assign_to(gl_project.ensure_gitlab_ci_project)
     end
 
     describe :execute do

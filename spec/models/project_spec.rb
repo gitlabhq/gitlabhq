@@ -407,7 +407,7 @@ describe Project do
     let(:commit) { create :ci_commit, gl_project: project }
 
     before do
-      project.ensure_ci_project
+      project.ensure_gitlab_ci_project
       project.create_gitlab_ci_service(active: true)
     end
 
