@@ -14,6 +14,7 @@
 
 class JenkinsService < CiService
   prop_accessor :project_url
+  prop_accessor :multiproject_enabled
 
   validates :project_url, presence: true, if: :activated?
 
@@ -46,13 +47,23 @@ class JenkinsService < CiService
 
   def fields
     [
-      { type: 'text', name: 'project_url', placeholder: 'Jenkins project URL like http://jenkins.example.com/job/my-project/' }
+      { type: 'text', name: 'project_url', placeholder: 'Jenkins project URL like http://jenkins.example.com/job/my-project/' },
+      { type: 'checkbox', name: 'multiproject_enabled', title: "Multi-project setup enabled?",
+        help: "Multi-project mode is configured in Jenkins Gitlab Hook plugin." }
     ]
   end
 
+  def multiproject_enabled?
+    self.multiproject_enabled == '1'
+  end
+
   def build_page(sha, ref = nil)
-    base_url = ref.nil? || ref == 'master' ? project_url : "#{project_url}_#{ref}"
-    base_url + "/scm/bySHA1/#{sha}"
+    if multiproject_enabled?
+      base_url = ref.nil? || ref == 'master' ? project_url : "#{project_url}_#{ref}"
+      base_url + "/scm/bySHA1/#{sha}"
+    else
+      project_url + "/scm/bySHA1/#{sha}"
+    end
   end
 
   def commit_status(sha, ref = nil)
