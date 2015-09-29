@@ -27,9 +27,9 @@ module Ci
       commits = project.commits
 
       if commits.any? && commits.last.push_data[:ci_yaml_file]
-        "#{@project.gitlab_url}/edit/master/.gitlab-ci.yml"
+        "#{project.gitlab_url}/edit/master/.gitlab-ci.yml"
       else
-        "#{@project.gitlab_url}/new/master"
+        "#{project.gitlab_url}/new/master"
       end
     end
   end

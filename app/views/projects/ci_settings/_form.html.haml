@@ -1,17 +1,20 @@
+%h3.page-title
+  CI settings
+%hr
 .bs-callout.help-callout
   %p
     If you want to test your .gitlab-ci.yml, you can use special tool - #{link_to "Lint", ci_lint_path}
   %p
-    Edit your 
-    #{link_to ".gitlab-ci.yml using web-editor", yaml_web_editor_link(@project)}
+    Edit your
+    #{link_to ".gitlab-ci.yml using web-editor", yaml_web_editor_link(@ci_project)}
 
-= nested_form_for [:ci, @project], html: { class: 'form-horizontal' } do |f|
-  - if @project.errors.any?
+= nested_form_for @ci_project, url: namespace_project_ci_settings_path(@project.namespace, @project), html: { class: 'form-horizontal' } do |f|
+  - if @ci_project.errors.any?
     #error_explanation
-      %p.lead= "#{pluralize(@project.errors.count, "error")} prohibited this project from being saved:"
+      %p.lead= "#{pluralize(@ci_project.errors.count, "error")} prohibited this project from being saved:"
       .alert.alert-error
         %ul
-          - @project.errors.full_messages.each do |msg|
+          - @ci_project.errors.full_messages.each do |msg|
             %li= msg
 
   %fieldset
@@ -93,8 +96,8 @@
       = f.label :token, "CI token", class: 'control-label'
       .col-sm-10
         = f.text_field :token, class: 'form-control', placeholder: 'xEeFCaDAB89'
-    
+
   .form-actions
     = f.submit 'Save changes', class: 'btn btn-save'
-    - unless @project.new_record?
-      = link_to 'Remove Project', ci_project_path(@project), method: :delete, data: { confirm: 'Project will be removed. Are you sure?' }, class: 'btn btn-danger pull-right'
+    - unless @ci_project.new_record?
+      = link_to 'Remove Project', ci_project_path(@ci_project), method: :delete, data: { confirm: 'Project will be removed. Are you sure?' }, class: 'btn btn-danger pull-right'

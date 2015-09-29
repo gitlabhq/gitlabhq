@@ -1,6 +1,6 @@
-- if @project.generated_yaml_config
+- if @ci_project.generated_yaml_config
   %p.alert.alert-danger
-    CI Jobs are deprecated now, you can #{link_to "download", dumped_yaml_ci_project_path(@project)}
+    CI Jobs are deprecated now, you can #{link_to "download", dumped_yaml_ci_project_path(@ci_project)}
     or
     %a.preview-yml{:href => "#yaml-content", "data-toggle" => "modal"} preview
     yaml file which is based on your old jobs.
@@ -8,7 +8,7 @@
 
 = render 'form'
 
-- if @project.generated_yaml_config
+- if @ci_project.generated_yaml_config
   #yaml-content.modal.fade{"aria-hidden" => "true", "aria-labelledby" => ".gitlab-ci.yml", :role => "dialog", :tabindex => "-1"}
     .modal-dialog
       .modal-content
@@ -16,6 +16,6 @@
           %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", :type => "button"} ×
           %h4.modal-title Content of .gitlab-ci.yml
         .modal-body
-          = text_area_tag :yaml, @project.generated_yaml_config, size: "70x25", class: "form-control"
+          = text_area_tag :yaml, @ci_project.generated_yaml_config, size: "70x25", class: "form-control"
         .modal-footer
           %button.btn.btn-default{"data-dismiss" => "modal", :type => "button"} Close

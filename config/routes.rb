@@ -590,6 +590,7 @@ Gitlab::Application.routes.draw do
         resources :protected_branches, only: [:index, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
         resource :variables, only: [:show, :update]
         resources :triggers, only: [:index, :create, :destroy]
+        resource :ci_settings, only: [:edit, :update, :destroy]
 
         resources :hooks, only: [:index, :create, :destroy], constraints: { id: /\d+/ } do
           member do

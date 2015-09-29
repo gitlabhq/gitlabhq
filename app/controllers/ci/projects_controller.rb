@@ -2,9 +2,9 @@ module Ci
   class ProjectsController < Ci::ApplicationController
     before_action :authenticate_user!, except: [:build, :badge, :show]
     before_action :authenticate_public_page!, only: :show
-    before_action :project, only: [:build, :show, :badge, :edit, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
+    before_action :project, only: [:build, :show, :badge, :toggle_shared_runners, :dumped_yaml]
     before_action :authorize_access_project!, except: [:build, :badge, :show, :new, :disabled]
-    before_action :authorize_manage_project!, only: [:edit, :update, :destroy, :toggle_shared_runners, :dumped_yaml]
+    before_action :authorize_manage_project!, only: [:toggle_shared_runners, :dumped_yaml]
     before_action :authenticate_token!, only: [:build]
     before_action :no_cache, only: [:badge]
     skip_before_action :check_enable_flag!, only: [:disabled]
@@ -21,28 +21,6 @@ module Ci
       @commits = @project.commits.reverse_order
       @commits = @commits.where(ref: @ref) if @ref
       @commits = @commits.page(params[:page]).per(20)
-    end
-
-    def edit
-    end
-
-    def update
-      if project.update_attributes(project_params)
-        Ci::EventService.new.change_project_settings(current_user, project)
-
-        redirect_to :back, notice: 'Project was successfully updated.'
-      else
-        render action: "edit"
-      end
-    end
-
-    def destroy
-      project.gl_project.gitlab_ci_service.update_attributes(active: false)
-      project.destroy
-
-      Ci::EventService.new.remove_project(current_user, project)
-
-      redirect_to ci_projects_url
     end
 
     # Project status badge
@@ -73,13 +51,6 @@ module Ci
       response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
       response.headers["Pragma"] = "no-cache"
       response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
-    end
-
-    def project_params
-      params.require(:project).permit(:path, :timeout, :timeout_in_minutes, :default_ref, :always_build,
-        :polling_interval, :public, :ssh_url_to_repo, :allow_git_fetch, :email_recipients,
-        :email_add_pusher, :email_only_broken_builds, :coverage_regex, :shared_runners_enabled, :token,
-        { variables_attributes: [:id, :key, :value, :_destroy] })
     end
   end
 end
