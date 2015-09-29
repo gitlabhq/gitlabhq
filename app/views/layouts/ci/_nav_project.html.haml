@@ -11,11 +11,6 @@
       %span
         Commits
         %span.count= @project.commits.count
-    = nav_link path: 'variables#show' do
-      = link_to ci_project_variables_path(@project) do
-        = icon('code fw')
-        %span
-          Variables
     = nav_link path: 'web_hooks#index' do
       = link_to ci_project_web_hooks_path(@project) do
         = icon('link fw')

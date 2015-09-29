@@ -58,7 +58,6 @@ Gitlab::Application.routes.draw do
       resources :runner_projects, only: [:create, :destroy]
 
       resources :events, only: [:index]
-      resource :variables, only: [:show, :update]
     end
 
     resource :user_sessions do
@@ -591,6 +590,7 @@ Gitlab::Application.routes.draw do
         resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
         resources :tags, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
         resources :protected_branches, only: [:index, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
+        resource :variables, only: [:show, :update]
 
         resources :hooks, only: [:index, :create, :destroy], constraints: { id: /\d+/ } do
           member do
