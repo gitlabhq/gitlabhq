@@ -14,7 +14,7 @@ module Gitlab
           # LDAP distinguished name is case-insensitive
           identity = ::Identity.
             where(provider: provider).
-            where('lower(extern_uid) = ?', uid.downcase).last
+            where('lower(extern_uid) = ?', uid.mb_chars.downcase.to_s).last
           identity && identity.user
         end
       end
