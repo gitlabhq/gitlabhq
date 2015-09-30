@@ -16,6 +16,7 @@ v 8.1.0 (unreleased)
   - Move CI runners page to project settings area
   - Move CI variables page to project settings area
   - Move CI triggers page to project settings area
+  - Move CI project settings page to CE project settings area
 
 v 8.0.3
   - Fix URL shown in Slack notifications
