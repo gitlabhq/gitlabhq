@@ -1,4 +1,6 @@
 - page_title "#{@merge_request.title} (##{@merge_request.iid})", "Merge Requests"
+= render "header_title"
+
 - if params[:view] == 'parallel'
   - fluid_layout true
 

@@ -1,0 +1,8 @@
+.login-block
+  %h2 Login using GitLab account
+  %p.light
+    Make sure you have account on GitLab server
+    = link_to GitlabCi.config.gitlab_server.url, GitlabCi.config.gitlab_server.url, no_turbolink
+  %hr
+  = link_to "Login with GitLab", auth_ci_user_sessions_path(state: params[:state]), no_turbolink.merge( class: 'btn btn-login btn-success' )
+

@@ -10,6 +10,10 @@ class ProjectsController < ApplicationController
 
   layout :determine_layout
 
+  def index
+    redirect_to(current_user ? root_path : explore_root_path)
+  end
+
   def new
     @project = Project.new
   end
@@ -82,6 +86,10 @@ class ProjectsController < ApplicationController
           if @project.empty_repo?
             render 'projects/empty'
           else
+            if current_user
+              @membership = @project.project_member_by_id(current_user.id)
+            end
+
             render :show
           end
         else
@@ -105,7 +113,7 @@ class ProjectsController < ApplicationController
     if request.referer.include?('/admin')
       redirect_to admin_namespaces_projects_path
     else
-      redirect_to dashboard_path
+      redirect_to dashboard_projects_path
     end
   rescue Projects::DestroyService::DestroyError => ex
     redirect_to edit_project_path(@project), alert: ex.message

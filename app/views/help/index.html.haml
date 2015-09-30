@@ -1,14 +1,15 @@
 %div
   %h1
     GitLab
-    %span= Gitlab::VERSION
-    %small= Gitlab::REVISION
-    - if current_application_settings.version_check_enabled
+    Community Edition
+    - if user_signed_in?
+      %span= Gitlab::VERSION
+      %small= Gitlab::REVISION
       = version_status_badge
   %p.slead
     GitLab is open source software to collaborate on code.
     %br
-    Manage git repositories with fine grained access controls that keep your code secure.
+    Manage git repositories with fine-grained access controls that keep your code secure.
     %br
     Perform code reviews and enhance collaboration with merge requests.
     %br
@@ -17,6 +18,9 @@
     Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises.
     %br
     Read more about GitLab at #{link_to promo_host, promo_url, target: '_blank'}.
+    - if current_application_settings.help_page_text.present?
+      %hr
+      = markdown(current_application_settings.help_page_text)
 
 %hr
 
@@ -24,29 +28,14 @@
   .col-md-8
     .documentation-index
       = preserve do
-        - readme_text = File.read(Rails.root.join("doc", "README.md"))
-        - text = readme_text.dup
-        - readme_text.scan(/\]\(([^(]+)\)/) { |match| text.gsub!(match.first, "help/#{match.first}") }
-        = markdown text
-
+        = markdown(@help_index)
   .col-md-4
     .panel.panel-default
       .panel-heading
         Quick help
       %ul.well-list
-        %li
-          See our website for
-          = link_to 'getting help', promo_url + '/getting-help/'
-        %li
-          Use the
-          = link_to 'search bar', '#', onclick: 'Shortcuts.focusSearch(event)'
-          on the top of this page
-        %li
-          Use
-          = link_to 'shortcuts', '#', onclick: 'Shortcuts.showHelp(event)'
-        %li
-          Get a support
-          = link_to 'subscription', 'https://about.gitlab.com/pricing/'
-        %li
-          = link_to 'Compare', 'https://about.gitlab.com/features/#compare'
-          GitLab editions
+        %li= link_to 'See our website for getting help', promo_url + '/getting-help/'
+        %li= link_to 'Use the search bar on the top of this page', '#', onclick: 'Shortcuts.focusSearch(event)'
+        %li= link_to 'Use shortcuts', '#', onclick: 'Shortcuts.showHelp(event)'
+        %li= link_to 'Get a support subscription', 'https://about.gitlab.com/pricing/'
+        %li= link_to 'Compare GitLab editions', 'https://about.gitlab.com/features/#compare'

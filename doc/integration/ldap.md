@@ -78,6 +78,26 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   #
   user_filter: ''
 
+  # LDAP attributes that GitLab will use to create an account for the LDAP user.
+  # The specified attribute can either be the attribute name as a string (e.g. 'mail'),
+  # or an array of attribute names to try in order (e.g. ['mail', 'email']).
+  # Note that the user's LDAP login will always be the attribute specified as `uid` above.
+  attributes:
+    # The username will be used in paths for the user's own projects
+    # (like `gitlab.example.com/username/project`) and when mentioning
+    # them in issues, merge request and comments (like `@username`).
+    # If the attribute specified for `username` contains an email address, 
+    # the GitLab username will be the part of the email address before the '@'.
+    username: ['uid', 'userid', 'sAMAccountName']
+    email:    ['mail', 'email', 'userPrincipalName']
+
+    # If no full name could be found at the attribute specified for `name`,
+    # the full name is determined using the attributes specified for 
+    # `first_name` and `last_name`.
+    name:       'cn'
+    first_name: 'givenName'
+    last_name:  'sn'
+
 # GitLab EE only: add more LDAP servers
 # Choose an ID made of a-z and 0-9 . This ID will be stored in the database
 # so that GitLab can remember which LDAP server a user belongs to.
@@ -153,3 +173,23 @@ Tip: if you want to limit access to the nested members of an Active Directory gr
 ```
 
 Please note that GitLab does not support the custom filter syntax used by omniauth-ldap.
+
+## Limitations
+
+GitLab's LDAP client is based on [omniauth-ldap](https://gitlab.com/gitlab-org/omniauth-ldap)
+which encapsulates Ruby's `Net::LDAP` class. It provides a pure-Ruby implementation
+of the LDAP client protocol. As a result, GitLab is limited by `omniauth-ldap` and may impact your LDAP 
+server settings.
+
+### TLS Client Authentication  
+Not implemented by `Net::LDAP`.  
+So you should disable anonymous LDAP authentication and enable simple or SASL 
+authentication. TLS client authentication setting in your LDAP server cannot be
+mandatory and clients cannot be authenticated with the TLS protocol. 
+
+### TLS Server Authentication  
+Not supported by GitLab's configuration options.  
+When setting `method: ssl`, the underlying authentication method used by 
+`omniauth-ldap` is `simple_tls`.  This method establishes TLS encryption with 
+the LDAP server before any LDAP-protocol data is exchanged but no validation of
+the LDAP server's SSL certificate is performed.

@@ -11,6 +11,10 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
     expect(page).to have_link "Shop"
   end
 
+  step 'I should see "Shop" project CI status' do
+    expect(page).to have_link "Build status: skipped"
+  end
+
   step 'I should see last push widget' do
     expect(page).to have_content "You pushed to fix"
     expect(page).to have_link "Create Merge Request"

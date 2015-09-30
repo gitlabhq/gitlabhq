@@ -17,9 +17,9 @@ describe API::API, api: true  do
 
       it "should return if required fields missing" do
         attrs = service_attrs
-        
+
         required_attributes = service_attrs_list.select do |attr|
-          service_klass.validators_on(attr).any? do |v| 
+          service_klass.validators_on(attr).any? do |v|
             v.class == ActiveRecord::Validations::PresenceValidator
           end
         end
@@ -45,6 +45,16 @@ describe API::API, api: true  do
 
         expect(response.status).to eq(200)
         expect(project.send(service_method).activated?).to be_falsey
+      end
+    end
+
+    describe "GET /projects/:id/services/#{service.dasherize}" do
+      include_context service
+
+      it "should get #{service} settings" do
+        get api("/projects/#{project.id}/services/#{dashed_service}", user)
+
+        expect(response.status).to eq(200)
       end
     end
   end

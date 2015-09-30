@@ -10,3 +10,9 @@
 .milestone-row {
   @include str-truncated(90%);
 }
+
+.dashboard .side .panel .panel-heading .input-group {
+  .form-control {
+    height: 42px;
+  }
+}

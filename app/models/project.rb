@@ -39,9 +39,12 @@ class Project < ActiveRecord::Base
   include Gitlab::VisibilityLevel
   include Referable
   include Sortable
+  include AfterCommitQueue
 
   extend Gitlab::ConfigHelper
   extend Enumerize
+
+  UNKNOWN_IMPORT_URL = 'http://unknown.git'
 
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
@@ -115,8 +118,11 @@ class Project < ActiveRecord::Base
   has_many :deploy_keys, through: :deploy_keys_projects
   has_many :users_star_projects, dependent: :destroy
   has_many :starrers, through: :users_star_projects, source: :user
+  has_many :ci_commits, ->() { order('CASE WHEN ci_commits.committed_at IS NULL THEN 0 ELSE 1 END', :committed_at, :id) }, dependent: :destroy, class_name: 'Ci::Commit', foreign_key: :gl_project_id
+  has_many :ci_builds, through: :ci_commits, source: :builds, dependent: :destroy, class_name: 'Ci::Build'
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
+  has_one :gitlab_ci_project, dependent: :destroy, class_name: "Ci::Project", foreign_key: :gitlab_id
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
@@ -142,7 +148,7 @@ class Project < ActiveRecord::Base
   validates_uniqueness_of :path, scope: :namespace_id
   validates :import_url,
     format: { with: /\A#{URI.regexp(%w(ssh git http https))}\z/, message: 'should be a valid url' },
-    if: :import?
+    if: :external_import?
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :avatar_type,
@@ -188,7 +194,7 @@ class Project < ActiveRecord::Base
     state :finished
     state :failed
 
-    after_transition any => :started, do: :add_import_job
+    after_transition any => :started, do: :schedule_add_import_job
     after_transition any => :finished, do: :clear_import_data
   end
 
@@ -272,8 +278,18 @@ class Project < ActiveRecord::Base
     id && persisted?
   end
 
+  def schedule_add_import_job
+    run_after_commit(:add_import_job)
+  end
+
   def add_import_job
-    RepositoryImportWorker.perform_in(2.seconds, id)
+    if forked?
+      unless RepositoryForkWorker.perform_async(id, forked_from_project.path_with_namespace, self.namespace.path)
+        import_fail
+      end
+    else
+      RepositoryImportWorker.perform_async(id)
+    end
   end
 
   def clear_import_data
@@ -281,6 +297,10 @@ class Project < ActiveRecord::Base
   end
 
   def import?
+    external_import? || forked?
+  end
+
+  def external_import?
     import_url.present?
   end
 
@@ -317,7 +337,7 @@ class Project < ActiveRecord::Base
   end
 
   def web_url
-    Rails.application.routes.url_helpers.namespace_project_url(self.namespace, self)
+    Gitlab::Application.routes.url_helpers.namespace_project_url(self.namespace, self)
   end
 
   def web_url_without_protocol
@@ -401,12 +421,21 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def create_labels
+    Label.templates.each do |label|
+      label = label.dup
+      label.template = nil
+      label.project_id = self.id
+      label.save
+    end
+  end
+
   def find_service(list, name)
     list.find { |service| service.to_param == name }
   end
 
   def gitlab_ci?
-    gitlab_ci_service && gitlab_ci_service.active
+    gitlab_ci_service && gitlab_ci_service.active && gitlab_ci_project.present?
   end
 
   def ci_services
@@ -434,7 +463,7 @@ class Project < ActiveRecord::Base
     if avatar.present?
       [gitlab_config.url, avatar.url].join
     elsif avatar_in_git
-      Rails.application.routes.url_helpers.namespace_project_avatar_url(namespace, self)
+      Gitlab::Application.routes.url_helpers.namespace_project_avatar_url(namespace, self)
     end
   end
 
@@ -691,14 +720,8 @@ class Project < ActiveRecord::Base
   end
 
   def create_repository
-    if forked?
-      if gitlab_shell.fork_repository(forked_from_project.path_with_namespace, self.namespace.path)
-        true
-      else
-        errors.add(:base, 'Failed to fork repository via gitlab-shell')
-        false
-      end
-    else
+    # Forked import is handled asynchronously
+    unless forked?
       if gitlab_shell.add_repository(path_with_namespace)
         true
       else
@@ -718,5 +741,23 @@ class Project < ActiveRecord::Base
   rescue ProjectWiki::CouldNotCreateWikiError => ex
     errors.add(:base, 'Failed create wiki')
     false
+  end
+
+  def ci_commit(sha)
+    gitlab_ci_project.commits.find_by(sha: sha) if gitlab_ci?
+  end
+
+  def ensure_gitlab_ci_project
+    gitlab_ci_project || create_gitlab_ci_project
+  end
+
+  def enable_ci(user)
+    # Enable service
+    service = gitlab_ci_service || create_gitlab_ci_service
+    service.active = true
+    service.save
+
+    # Create Ci::Project
+    Ci::CreateProjectService.new.execute(user, self)
   end
 end

@@ -1,10 +1,11 @@
+- @blank_container = true
+
 .project-edit-container
   .project-edit-errors
   .project-edit-content
-    %div
-      %h3.page-title
+    .panel.panel-default
+      .panel-heading
         Project settings
-      %hr
       .panel-body
         = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit_project form-horizontal fieldset-form" }, authenticity_token: true do |f|
 

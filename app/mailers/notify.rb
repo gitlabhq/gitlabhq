@@ -100,7 +100,7 @@ class Notify < BaseMailer
 
   def mail_thread(model, headers = {})
     if @project
-      headers['X-GitLab-Project'] = @project.name 
+      headers['X-GitLab-Project'] = @project.name
       headers['X-GitLab-Project-Id'] = @project.id
       headers['X-GitLab-Project-Path'] = @project.path_with_namespace
     end
@@ -110,7 +110,7 @@ class Notify < BaseMailer
     if reply_key
       headers['X-GitLab-Reply-Key'] = reply_key
 
-      address = Mail::Address.new(Gitlab::ReplyByEmail.reply_address(reply_key))
+      address = Mail::Address.new(Gitlab::IncomingEmail.reply_address(reply_key))
       address.display_name = @project.name_with_namespace
 
       headers['Reply-To'] = address
@@ -150,6 +150,6 @@ class Notify < BaseMailer
   end
 
   def reply_key
-    @reply_key ||= Gitlab::ReplyByEmail.reply_key
+    @reply_key ||= SentNotification.reply_key
   end
 end

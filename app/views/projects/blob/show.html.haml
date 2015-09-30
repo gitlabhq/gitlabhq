@@ -1,4 +1,5 @@
 - page_title @blob.path, @ref
+= render "header_title"
 
 = render 'projects/last_push'
 
@@ -10,3 +11,8 @@
 
 - if allowed_tree_edit?
   = render 'projects/blob/remove'
+
+  - title = "Replace #{@blob.name}"
+  = render 'projects/blob/upload', title: title, placeholder: title,
+    button_title: 'Replace file', form_path: namespace_project_update_blob_path(@project.namespace, @project, @id),
+    method: :put

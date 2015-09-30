@@ -13,7 +13,9 @@ module ApplicationHelper
   #   current_controller?(:commits)        # => false
   #   current_controller?(:commits, :tree) # => true
   def current_controller?(*args)
-    args.any? { |v| v.to_s.downcase == controller.controller_name }
+    args.any? do |v|
+      v.to_s.downcase == controller.controller_name || v.to_s.downcase == controller.controller_path
+    end
   end
 
   # Check if a particular action is the current one
@@ -82,7 +84,7 @@ module ApplicationHelper
   end
 
   def default_avatar
-    image_path('no_avatar.png')
+    'no_avatar.png'
   end
 
   def last_commit(project)
@@ -201,7 +203,7 @@ module ApplicationHelper
       class: "#{html_class} js-timeago",
       datetime: time.getutc.iso8601,
       title: time.in_time_zone.stamp('Aug 21, 2011 9:23pm'),
-      data: { toggle: 'tooltip', placement: placement }
+      data: { toggle: 'tooltip', placement: placement, container: 'body' }
 
     element += javascript_tag "$('.js-timeago').timeago()" unless skip_js
 

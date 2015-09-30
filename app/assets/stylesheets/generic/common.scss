@@ -302,7 +302,7 @@ table {
 }
 
 .btn-sign-in {
-  margin-top: 15px;
+  margin-top: 8px;
   text-shadow: none;
 }
 
@@ -313,7 +313,7 @@ table {
 }
 
 .wiki .highlight, .note-body .highlight {
-  margin-bottom: 9px;
+  margin: 12px 0 12px 0;
 }
 
 .wiki .code {
@@ -377,4 +377,16 @@ table {
   height: 56px;
   margin-top: -$gl-padding;
   padding-top: $gl-padding;
+
+  &.no-bottom {
+    margin-bottom: 0;
+  }
+}
+
+.dropzone .dz-preview .dz-progress {
+  border-color: $border-color !important;
+}
+
+.dropzone .dz-preview .dz-progress .dz-upload {
+  background: $gl-success !important;
 }

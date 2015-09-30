@@ -51,6 +51,11 @@ module SharedProject
     visit namespace_project_path(project.namespace, project)
   end
 
+  step 'I visit project "Shop" activity page' do
+    project = Project.find_by(name: 'Shop')
+    visit namespace_project_path(project.namespace, project)
+  end
+
   step 'project "Shop" has push event' do
     @project = Project.find_by(name: "Shop")
 
@@ -190,5 +195,15 @@ module SharedProject
     create(:label, project: project, title: 'bug')
     create(:label, project: project, title: 'feature')
     create(:label, project: project, title: 'enhancement')
+  end
+
+  step 'project "Shop" has CI enabled' do
+    project = Project.find_by(name: "Shop")
+    project.enable_ci(@user)
+  end
+
+  step 'project "Shop" has CI build' do
+    project = Project.find_by(name: "Shop")
+    create :ci_commit, gl_project: project, sha: project.commit.sha
   end
 end

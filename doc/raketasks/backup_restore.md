@@ -97,6 +97,8 @@ For installations from source:
         aws_secret_access_key: 'secret123'
       # The remote 'directory' to store your backups. For S3, this would be the bucket name.
       remote_directory: 'my.s3.bucket'
+      # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups, this is optional
+      # encryption: 'AES256'
 ```
 
 If you are uploading your backups to S3 you will probably want to create a new
@@ -372,6 +374,8 @@ For more information see similar questions on postgresql issue tracker[here](htt
 ## Note
 This documentation is for GitLab CE.
 We backup GitLab.com and make sure your data is secure, but you can't use these methods to export / backup your data yourself from GitLab.com.
+
+Issues are stored in the database. They can't be stored in Git itself.
 
 To migrate your repositories from one server to another with an up-to-date version of
 GitLab, you can use the [import rake task](import.md) to do a mass import of the

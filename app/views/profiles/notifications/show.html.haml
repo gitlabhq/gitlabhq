@@ -1,10 +1,10 @@
 - page_title "Notifications"
-%h3.page-title
-  = page_title
-%p.light
-  These are your global notification settings.
-%hr
+- header_title page_title, profile_notifications_path
 
+.gray-content-block.top-block
+  These are your global notification settings.
+
+.prepend-top-default
 = form_for @user, url: profile_notifications_path, method: :put, html: { class: 'update-notifications form-horizontal global-notifications-form' } do |f|
   -if @user.errors.any?
     %div.alert.alert-danger
@@ -33,7 +33,7 @@
         = f.label :notification_level, value: Notification::N_MENTION do
           = f.radio_button :notification_level, Notification::N_MENTION
           .level-title
-            Mention
+            On Mention
           %p You will receive notifications only for comments in which you were @mentioned
 
       .radio

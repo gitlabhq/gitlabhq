@@ -69,14 +69,6 @@ class BuildkiteService < CiService
     "#{project_url}/builds?commit=#{sha}"
   end
 
-  def builds_path
-    "#{project_url}/builds?branch=#{project.default_branch}"
-  end
-
-  def status_img_path
-    "#{buildkite_endpoint('badge')}/#{status_token}.svg"
-  end
-
   def title
     'Buildkite'
   end

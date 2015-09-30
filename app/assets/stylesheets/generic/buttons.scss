@@ -1,3 +1,6 @@
+body {
+    text-rendering: geometricPrecision;
+}
 .btn {
   @extend .btn-default;
 
@@ -10,7 +13,7 @@
   }
 
   &.btn-save {
-    @extend .btn-primary;
+    @extend .btn-success;
   }
 
   &.btn-remove {
@@ -87,4 +90,139 @@
       color: #fff;
     }
   }
+}
+
+@mixin btn-info {
+  @include border-radius(2px);
+  
+  border-width: 1px;
+  border-style: solid;
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  padding: 11px 16px;
+  letter-spacing: .4px;
+  
+  &:hover {
+    border-width: 1px;
+    border-style: solid;
+  }
+  
+  &:focus {
+    border-width: 1px;
+    border-style: solid;
+  }
+  
+  &:active {
+    @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
+    border-width: 1px;
+    border-style: solid;
+  }
+}
+
+@mixin btn-middle {
+  @include border-radius(2px);
+  
+  border-width: 1px;
+  border-style: solid;
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  padding: 11px 24px;
+  letter-spacing: .4px;
+  
+  &:hover {
+    border-width: 1px;
+    border-style: solid;
+  }
+  
+  &:focus {
+    border-width: 1px;
+    border-style: solid;
+  }
+  
+  &:active {
+    @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
+    border-width: 1px;
+    border-style: solid;
+    }
+}
+
+
+@mixin btn-green {
+  background-color: #28b061;
+  border: 1px solid #26a65c;
+  color: #fff;
+    
+     &:hover {
+       background-color: #26ab5d;
+       border: 1px solid #229954;
+       color: #fff;
+     }
+     
+     &:focus {
+       background-color: #26ab5d;
+       border: 1px solid #229954;
+       color: #fff;
+     }
+     
+     &:active {
+       @include box-shadow (inset 0 0 4px rgba(0, 0, 0, 0.12));
+        
+       background-color: #23a158 !important;
+       border: 1px solid #229954 !important;
+       color: #fff !important;
+     } 
+}
+
+/*Butons*/
+
+@mixin bnt-project {
+  background-color: #f0f2f5;
+  border-color: #dce0e5;
+  color: #313236;
+  
+  &:hover {
+    border-color:#dce0e5;
+    background-color: #ebeef2;
+    color: #313236;
+  }
+   
+  &:focus {
+    border-color: #dce0e5;
+    background-color: #ebeef2;
+    color: #313236;
+  }
+  
+  &:active {
+   @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
+   
+      color: #313236 !important;
+      border-color: #c6cacf !important;
+      background-color: #e4e7ed !important;
+  }
+}
+
+@mixin btn-remove {
+  background-color: #f72e60;
+  border-color: #ee295a;
+  
+  &:hover {
+    background-color: #e82757;
+    border-color: #e32555;
+  }
+  
+  &:focus {
+    background-color: #e82757;
+    border-color: #e32555;
+  }
+  
+  &:active {
+    @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
+    background-color: #d42450 !important;
+    border-color: #e12554 !important;
+  }
+  
 }

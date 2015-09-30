@@ -1,0 +1,41 @@
+%fieldset
+  %legend
+    Builds chart for last week
+    (#{date_from_to(Date.today - 7.days, Date.today)})
+
+  %canvas#weekChart.padded{width: 800, height: 200}
+
+%fieldset
+  %legend
+    Builds chart for last month
+    (#{date_from_to(Date.today - 30.days, Date.today)})
+
+  %canvas#monthChart.padded{width: 800, height: 300}
+
+%fieldset
+  %legend Builds chart for last year
+  %canvas#yearChart.padded{width: 800, height: 400}
+
+- [:week, :month, :year].each do |scope|
+  :javascript
+    var data = {
+      labels : #{@charts[scope].labels.to_json},
+      datasets : [
+        {
+          fillColor : "rgba(220,220,220,0.5)",
+          strokeColor : "rgba(220,220,220,1)",
+          pointColor : "rgba(220,220,220,1)",
+          pointStrokeColor : "#EEE",
+          data : #{@charts[scope].total.to_json}
+        },
+        {
+          fillColor : "#4A3",
+          strokeColor : "rgba(151,187,205,1)",
+          pointColor : "rgba(151,187,205,1)",
+          pointStrokeColor : "#fff",
+          data : #{@charts[scope].success.to_json}
+        }
+      ]
+    }
+    var ctx = $("##{scope}Chart").get(0).getContext("2d");
+    new Chart(ctx).Line(data,{"scaleOverlay": true});

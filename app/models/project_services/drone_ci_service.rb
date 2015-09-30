@@ -26,7 +26,7 @@ class DroneCiService < CiService
     format: { with: /\A#{URI.regexp(%w(http https))}\z/, message: "should be a valid url" }, if: :activated?
   validates :token,
     presence: true,
-    format: { with: /\A([A-Za-z0-9]+)\z/ },  if: :activated?
+    if: :activated?
 
   after_save :compose_service_hook, if: :activated?
 
@@ -133,20 +133,6 @@ class DroneCiService < CiService
 
   def build_page(sha, ref)
     commit_page(sha, ref)
-  end
-
-  def builds_path
-    url = [drone_url, "#{project.namespace.path}/#{project.path}"]
-
-    URI.join(*url).to_s
-  end
-
-  def status_img_path
-    url = [drone_url, 
-           "api/badges/#{project.namespace.path}/#{project.path}/status.svg", 
-           "?branch=#{URI::encode(project.default_branch)}"]
-
-    URI.join(*url).to_s
   end
 
   def title

@@ -172,7 +172,7 @@ class User < ActiveRecord::Base
 
   # User's Dashboard preference
   # Note: When adding an option, it MUST go on the end of the array.
-  enum dashboard: [:projects, :stars]
+  enum dashboard: [:projects, :stars, :project_activity, :starred_project_activity]
 
   # User's Project preference
   # Note: When adding an option, it MUST go on the end of the array.
@@ -752,5 +752,14 @@ class User < ActiveRecord::Base
 
   def can_be_removed?
     !solo_owned_groups.present?
+  end
+
+  def ci_authorized_projects
+    @ci_authorized_projects ||= Ci::Project.where(gitlab_id: authorized_projects)
+  end
+
+  def ci_authorized_runners
+    Ci::Runner.specific.includes(:runner_projects).
+      where(ci_runner_projects: { project_id: ci_authorized_projects } )
   end
 end

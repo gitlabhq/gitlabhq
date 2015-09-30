@@ -12,13 +12,17 @@ Feature: Project Issues Milestones
     Given I click link "v2.2"
     Then I should see milestone "v2.2"
 
-  Scenario: I create new milestone
+  @javascript
+  Scenario: I create and delete new milestone
     Given I click link "New Milestone"
     And I submit new milestone "v2.3"
     Then I should see milestone "v2.3"
+    Given I click link to remove milestone
+    When I visit project "Shop" activity page
+    Then I should see deleted milestone activity
 
   Scenario: I delete new milestone
-    Given I click link to remove milestone "v2.2"
+    Given I click link to remove milestone
     And I should see no milestones
 
   @javascript

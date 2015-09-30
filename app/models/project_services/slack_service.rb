@@ -34,6 +34,12 @@ class SlackService < Service
     'slack'
   end
 
+  def help
+    'This service sends notifications to your Slack channel.<br/>
+    To setup this Service you need to create a new <b>"Incoming webhook"</b> in your Slack integration panel,
+    and enter the Webhook URL below.'
+  end
+
   def fields
     [
       { type: 'text', name: 'webhook',

@@ -1,4 +1,5 @@
 - page_title "#{@commit.title} (#{@commit.short_id})", "Commits"
+= render "projects/commits/header_title"
 = render "commit_box"
 = render "projects/diffs/diffs", diffs: @diffs, project: @project
 = render "projects/notes/notes_with_form", view: params[:view]

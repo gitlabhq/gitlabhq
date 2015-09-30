@@ -1,6 +1,6 @@
 module AuthHelper
   PROVIDERS_WITH_ICONS = %w(twitter github gitlab bitbucket google_oauth2).freeze
-  FORM_BASED_PROVIDERS = [/\Aldap/, 'kerberos', 'crowd'].freeze
+  FORM_BASED_PROVIDERS = [/\Aldap/, 'crowd'].freeze
 
   def ldap_enabled?
     Gitlab.config.ldap.enabled
@@ -40,7 +40,7 @@ module AuthHelper
     if provider_has_icon?(provider)
       file_name = "#{provider.to_s.split('_').first}_#{size}.png"
 
-      image_tag(image_path("auth_buttons/#{file_name}"), alt: label, title: "Sign in with #{label}")
+      image_tag("auth_buttons/#{file_name}", alt: label, title: "Sign in with #{label}")
     else
       label
     end

@@ -2,7 +2,12 @@
 
 require 'gitlab/current_settings'
 include Gitlab::CurrentSettings
-Settings.gitlab['session_expire_delay'] = current_application_settings.session_expire_delay
+
+# allow it to fail: it may to do so when create_from_defaults is executed before migrations are actually done
+begin
+  Settings.gitlab['session_expire_delay'] = current_application_settings.session_expire_delay
+rescue
+end
 
 Gitlab::Application.config.session_store(
   :redis_store, # Using the cookie_store would enable session replay attacks.
@@ -11,5 +16,5 @@ Gitlab::Application.config.session_store(
   secure: Gitlab.config.gitlab.https,
   httponly: true,
   expire_after: Settings.gitlab['session_expire_delay'] * 60,
-  path: (Rails.application.config.relative_url_root.nil?) ? '/' : Rails.application.config.relative_url_root
+  path: (Gitlab::Application.config.relative_url_root.nil?) ? '/' : Gitlab::Application.config.relative_url_root
 )

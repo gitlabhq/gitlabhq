@@ -1,6 +1,6 @@
 module Gitlab
   class UrlBuilder
-    include Rails.application.routes.url_helpers
+    include Gitlab::Application.routes.url_helpers
     include GitlabRoutingHelper
 
     def initialize(type)
