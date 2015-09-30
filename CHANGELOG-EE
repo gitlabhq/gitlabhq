@@ -1,3 +1,6 @@
+v 8.1.0
+  - Add documentation for "Share project with group" API call 
+
 v 8.0.1
   - Correct gem dependency versions
   - Re-add the "Help Text" feature that was inadvertently removed
