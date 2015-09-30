@@ -142,6 +142,24 @@ describe API::API, api: true  do
     end
   end
 
+  describe "PUT /groups" do
+    context "when authenticated as user without group permissions" do
+      it "should not create group" do
+        put api("/groups/#{group2.id}", user1), attributes_for(:group)
+        expect(response.status).to eq(403)
+      end
+    end
+
+    context "when authenticated as user with group permissions" do
+      it "should update group" do
+        group2.update(owner: user2)
+        put api("/groups/#{group2.id}", user2), { name: 'Renamed' }
+        expect(response.status).to eq(200)
+        expect(group2.reload.name).to eq('Renamed')
+      end
+    end
+  end
+
   describe "DELETE /groups/:id" do
     context "when authenticated as user" do
       it "should remove group" do
