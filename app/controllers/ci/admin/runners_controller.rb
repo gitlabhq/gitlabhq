@@ -12,7 +12,10 @@ module Ci
     def show
       @builds = @runner.builds.order('id DESC').first(30)
       @projects = Ci::Project.all
-      @projects = @projects.search(params[:search]) if params[:search].present?
+      if params[:search].present?
+        @gl_projects = ::Project.search(params[:search])
+        @projects = @projects.where(gitlab_id: @gl_projects.select(:id))
+      end
       @projects = @projects.where("ci_projects.id NOT IN (?)", @runner.projects.pluck(:id)) if @runner.projects.any?
       @projects = @projects.page(params[:page]).per(30)
     end
