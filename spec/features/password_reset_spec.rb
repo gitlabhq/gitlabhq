@@ -55,6 +55,7 @@ feature 'Password reset', feature: true do
       reset_password
 
       expect(page).to have_content("Your password was changed successfully.")
+      expect(page).not_to have_content("You are now signed in.")
       expect(current_path).to eq new_user_session_path
     end
   end
