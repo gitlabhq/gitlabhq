@@ -19,16 +19,16 @@ describe "Admin Runners" do
 
     describe 'search' do
       before do
-        FactoryGirl.create :ci_runner, description: 'foo'
-        FactoryGirl.create :ci_runner, description: 'bar'
+        FactoryGirl.create :ci_runner, description: 'runner-foo'
+        FactoryGirl.create :ci_runner, description: 'runner-bar'
 
         search_form = find('#runners-search')
-        search_form.fill_in 'search', with: 'foo'
+        search_form.fill_in 'search', with: 'runner-foo'
         search_form.click_button 'Search'
       end
 
-      it { expect(page).to have_content("foo") }
-      it { expect(page).not_to have_content("bar") }
+      it { expect(page).to have_content("runner-foo") }
+      it { expect(page).not_to have_content("runner-bar") }
     end
   end
 
