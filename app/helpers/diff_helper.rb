@@ -167,4 +167,23 @@ module DiffHelper
       content_tag(:span, commit_id, class: 'monospace'),
     ].join(' ').html_safe
   end
+
+  def commit_for_diff(diff)
+    if diff.deleted_file
+      @merge_request ? @merge_request.commits.last : @commit.parent_id
+    else
+      @commit
+    end
+  end
+
+  def diff_file_html_data(project, diff_commit, diff_file)
+    {
+      blob_diff_path: namespace_project_blob_diff_path(project.namespace, project,
+                                                       tree_join(diff_commit.id, diff_file.file_path))
+    }
+  end
+
+  def editable_diff?(diff)
+    !diff.deleted_file && @merge_request && @merge_request.source_project
+  end
 end
