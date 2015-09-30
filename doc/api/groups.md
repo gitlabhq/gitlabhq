@@ -46,6 +46,24 @@ Parameters:
 - `name` (required) - The name of the group
 - `path` (required) - The path of the group
 - `description` (optional) - The group's description
+- `membership_lock` (optional, boolean) - Prevent adding new members to project membership within this group
+- `share_with_group_lock` (optional, boolean) - Prevent sharing a project with another group within this group
+
+## Update group
+
+Updates a project group. Available only for users who can manage this group.
+
+```
+PUT /groups/:id
+```
+
+Parameters:
+
+- `name` (required) - The name of the group
+- `path` (required) - The path of the group
+- `description` (optional) - The group's description
+- `membership_lock` (optional, boolean) - Prevent adding new members to project membership within this group
+- `share_with_group_lock` (optional, boolean) - Prevent sharing a project with another group within this group
 
 ## Transfer project to group
 
