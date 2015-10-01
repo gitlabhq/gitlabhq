@@ -71,4 +71,17 @@ module MergeRequestsHelper
       merge_request.source_branch
     end
   end
+
+  def format_mr_branch_names(merge_request)
+    source_path = merge_request.source_project_path
+    target_path = merge_request.target_project_path
+    source_branch = merge_request.source_branch
+    target_branch = merge_request.target_branch
+
+    if source_path == target_path
+      [source_branch, target_branch]
+    else
+      ["#{source_path}:#{source_branch}", "#{target_path}:#{target_branch}"]
+    end
+  end
 end
