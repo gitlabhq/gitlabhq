@@ -22,7 +22,7 @@ gem "mysql2", '~> 0.3.16', group: :mysql
 gem "pg", '~> 0.18.2', group: :postgres
 
 # Authentication libraries
-gem "devise", '~> 3.2.4'
+gem "devise", '~> 3.5.2'
 gem "devise-async", '~> 0.9.0'
 gem 'omniauth', "~> 1.2.2"
 gem 'omniauth-google-oauth2', '~> 0.2.5'
@@ -38,7 +38,7 @@ gem 'omniauth_crowd'
 gem "rack-oauth2", "~> 1.0.5"
 
 # Two-factor authentication
-gem 'devise-two-factor', '~> 1.0.1'
+gem 'devise-two-factor', '~> 2.0.0'
 gem 'rqrcode-rails3', '~> 0.1.7'
 gem 'attr_encrypted', '~> 1.3.4'
 
@@ -77,7 +77,7 @@ gem "stamp", '~> 0.5.0'
 gem 'enumerize', '~> 0.7.0'
 
 # Pagination
-gem "kaminari", "~> 0.15.1"
+gem "kaminari", "~> 0.16.3"
 
 # HAML
 gem "haml-rails", '~> 0.5.3'
@@ -121,6 +121,8 @@ end
 
 # State machine
 gem "state_machine", '~> 1.2.0'
+# Run events after state machine commits
+gem 'after_commit_queue'
 
 # Issue tags
 gem 'acts-as-taggable-on', '~> 3.4'
@@ -283,10 +285,11 @@ group :production do
 end
 
 gem "newrelic_rpm", '~> 3.9.4.245'
+gem 'newrelic-grape'
 
 gem 'octokit', '~> 3.7.0'
 
-gem "mail_room", "~> 0.5.1"
+gem "mail_room", "~> 0.5.2"
 
 gem 'email_reply_parser', '~> 0.5.8'
 

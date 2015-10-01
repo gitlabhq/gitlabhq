@@ -1,5 +1,7 @@
 module Ci
   class HipChatMessage
+    include Gitlab::Application.routes.url_helpers
+
     attr_reader :build
 
     def initialize(build)
@@ -8,13 +10,13 @@ module Ci
 
     def to_s
       lines = Array.new
-      lines.push("<a href=\"#{Ci::RoutesHelper.ci_project_url(project)}\">#{project.name}</a> - ")
+      lines.push("<a href=\"#{ci_project_url(project)}\">#{project.name}</a> - ")
       
       if commit.matrix?
-        lines.push("<a href=\"#{Ci::RoutesHelper.ci_project_ref_commits_url(project, commit.ref, commit.sha)}\">Commit ##{commit.id}</a></br>")
+        lines.push("<a href=\"#{ci_project_ref_commits_url(project, commit.ref, commit.sha)}\">Commit ##{commit.id}</a></br>")
       else
         first_build = commit.builds_without_retry.first
-        lines.push("<a href=\"#{Ci::RoutesHelper.ci_project_build_url(project, first_build)}\">Build '#{first_build.name}' ##{first_build.id}</a></br>")
+        lines.push("<a href=\"#{ci_project_build_url(project, first_build)}\">Build '#{first_build.name}' ##{first_build.id}</a></br>")
       end
       
       lines.push("#{commit.short_sha} #{commit.git_author_name} - #{commit.git_commit_message}</br>")

@@ -15,7 +15,12 @@
 
 .files
   - diff_files.each_with_index do |diff_file, index|
-    = render 'projects/diffs/file', diff_file: diff_file, i: index, project: project
+    - diff_commit = commit_for_diff(diff_file.diff)
+    - blob = project.repository.blob_for_diff(diff_commit, diff_file.diff)
+    - next unless blob
+
+    = render 'projects/diffs/file', i: index, project: project,
+      diff_file: diff_file, diff_commit: diff_commit, blob: blob
 
 - if @diff_timeout
   .alert.alert-danger

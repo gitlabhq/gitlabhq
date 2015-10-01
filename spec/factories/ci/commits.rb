@@ -51,6 +51,8 @@ FactoryGirl.define do
       }
     end
 
+    gl_project factory: :empty_project
+
     factory :ci_commit_without_jobs do
       after(:create) do |commit, evaluator|
         commit.push_data[:ci_yaml_file] = YAML.dump({})

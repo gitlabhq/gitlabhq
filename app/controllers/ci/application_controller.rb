@@ -38,7 +38,7 @@ module Ci
     end
 
     def authorize_manage_builds!
-      unless can?(current_user, :admin_project, gl_project)
+      unless can?(current_user, :manage_builds, gl_project)
         return page_404
       end
     end

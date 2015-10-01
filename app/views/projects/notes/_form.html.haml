@@ -7,7 +7,7 @@
   = f.hidden_field :noteable_id
   = f.hidden_field :noteable_type
 
-  = render layout: 'projects/md_preview', locals: { preview_class: "note-text", referenced_users: true } do
+  = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true } do
     = render 'projects/zen', f: f, attr: :note, classes: 'note_text js-note-text'
     = render 'projects/notes/hints'
     .error-alert

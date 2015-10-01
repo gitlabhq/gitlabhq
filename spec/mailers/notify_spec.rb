@@ -399,7 +399,7 @@ describe Notify do
     describe 'project was moved' do
       let(:project) { create(:project) }
       let(:user) { create(:user) }
-      subject { Notify.project_was_moved_email(project.id, user.id) }
+      subject { Notify.project_was_moved_email(project.id, user.id, "gitlab/gitlab") }
 
       it_behaves_like 'an email sent from GitLab'
 
@@ -712,7 +712,7 @@ describe Notify do
 
         before do
           user.update_attribute(:email, "user@company.com")
-          user.confirm!
+          user.confirm
         end
 
         it "is sent from the committer email" do
@@ -730,7 +730,7 @@ describe Notify do
 
         before do
           user.update_attribute(:email, "user@something.company.com")
-          user.confirm!
+          user.confirm
         end
 
         it "is sent from the default email" do
@@ -748,7 +748,7 @@ describe Notify do
 
         before do
           user.update_attribute(:email, "user@mpany.com")
-          user.confirm!
+          user.confirm
         end
 
         it "is sent from the default email" do

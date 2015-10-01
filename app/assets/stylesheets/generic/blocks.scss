@@ -20,11 +20,11 @@
 
 .gray-content-block {
   margin: -$gl-padding;
-  background-color: #f8fafc;
+  background-color: $background-color;
   padding: $gl-padding;
   margin-bottom: 0px;
-  border-top: 1px solid #e7e9ed;
-  border-bottom: 1px solid #e7e9ed;
+  border-top: 1px solid $border-color;
+  border-bottom: 1px solid $border-color;
   color: $gl-gray;
 
   &.top-block {
@@ -48,6 +48,7 @@
 
   &.footer-block {
     margin-top: 0;
+    border-bottom: none;
     margin-bottom: -$gl-padding;
   }
 

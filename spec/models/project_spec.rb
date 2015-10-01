@@ -220,6 +220,7 @@ describe Project do
       end
 
       it { expect(Project.find_with_namespace('gitlab/gitlabhq')).to eq(@project) }
+      it { expect(Project.find_with_namespace('GitLab/GitlabHQ')).to eq(@project) }
       it { expect(Project.find_with_namespace('gitlab-ci')).to be_nil }
     end
   end
@@ -400,5 +401,27 @@ describe Project do
 
       it { should eq "http://localhost#{avatar_path}" }
     end
+  end
+
+  describe :ci_commit do
+    let(:project) { create :project }
+    let(:commit) { create :ci_commit, gl_project: project }
+
+    before do
+      project.ensure_gitlab_ci_project
+      project.create_gitlab_ci_service(active: true)
+    end
+
+    it { expect(project.ci_commit(commit.sha)).to eq(commit) }
+  end
+
+  describe :enable_ci do
+    let(:project) { create :project }
+    let(:user) { create :user }
+
+    before { project.enable_ci(user) }
+
+    it { expect(project.gitlab_ci?).to be_truthy }
+    it { expect(project.gitlab_ci_project).to be_a(Ci::Project) }
   end
 end

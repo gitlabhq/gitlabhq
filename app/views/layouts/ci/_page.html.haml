@@ -2,10 +2,11 @@
   = render "layouts/broadcast"
   .sidebar-wrapper.nicescroll
     .header-logo
-      = link_to ci_root_path, class: 'home', title: 'Dashboard', id: 'js-shortcuts-home', data: {toggle: 'tooltip', placement: 'bottom'} do
+      = link_to root_path, class: 'home', title: 'Dashboard', id: 'js-shortcuts-home', data: {toggle: 'tooltip', placement: 'bottom'} do
         = brand_header_logo
         .gitlab-text-container
-          %h3 GitLab CI
+          %h3 GitLab
+
     - if defined?(sidebar) && sidebar
       = render "layouts/ci/#{sidebar}"
     - elsif current_user

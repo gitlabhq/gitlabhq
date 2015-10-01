@@ -24,10 +24,10 @@ describe Gitlab::LDAP::AuthHash do
 
   let(:raw_info) do
     {
-      uid:      '123456',
-      email:    'johnsmith@example.com',
-      cn:       'Smith, J.',
-      fullName: 'John Smith'
+      uid:      ['123456'],
+      email:    ['johnsmith@example.com'],
+      cn:       ['Smith, J.'],
+      fullName: ['John Smith']
     }
   end
 
@@ -45,8 +45,8 @@ describe Gitlab::LDAP::AuthHash do
   context "with overridden attributes" do
     let(:attributes) do
       {
-        username: ['mail', 'email'],
-        name:     'fullName'
+        'username'  => ['mail', 'email'],
+        'name'      => 'fullName'
       }
     end
 

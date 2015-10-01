@@ -1,20 +1,5 @@
 module Ci
   module CommitsHelper
-    def commit_status_alert_class(commit)
-      return 'alert-info' unless commit
-
-      case commit.status
-      when 'success'
-        'alert-success'
-      when 'failed', 'canceled'
-        'alert-danger'
-      when 'skipped'
-        'alert-disabled'
-      else
-        'alert-warning'
-      end
-    end
-
     def ci_commit_path(commit)
       ci_project_ref_commits_path(commit.project, commit.ref, commit.sha)
     end

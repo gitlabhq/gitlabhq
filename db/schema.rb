@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150918084513) do
+ActiveRecord::Schema.define(version: 20150930095736) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -115,9 +115,10 @@ ActiveRecord::Schema.define(version: 20150918084513) do
     t.text     "push_data"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "tag",          default: false
+    t.boolean  "tag",           default: false
     t.text     "yaml_errors"
     t.datetime "committed_at"
+    t.integer  "gl_project_id"
   end
 
   add_index "ci_commits", ["project_id", "committed_at", "id"], name: "index_ci_commits_on_project_id_and_committed_at_and_id", using: :btree
@@ -157,7 +158,7 @@ ActiveRecord::Schema.define(version: 20150918084513) do
   add_index "ci_jobs", ["project_id"], name: "index_ci_jobs_on_project_id", using: :btree
 
   create_table "ci_projects", force: true do |t|
-    t.string   "name",                                     null: false
+    t.string   "name"
     t.integer  "timeout",                  default: 3600,  null: false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -452,6 +453,7 @@ ActiveRecord::Schema.define(version: 20150918084513) do
     t.integer  "position",          default: 0
     t.datetime "locked_at"
     t.integer  "updated_by_id"
+    t.string   "merge_error"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -623,6 +625,7 @@ ActiveRecord::Schema.define(version: 20150918084513) do
     t.integer "recipient_id"
     t.string  "commit_id"
     t.string  "reply_key",     null: false
+    t.string  "line_code"
   end
 
   add_index "sent_notifications", ["reply_key"], name: "index_sent_notifications_on_reply_key", unique: true, using: :btree
@@ -749,6 +752,7 @@ ActiveRecord::Schema.define(version: 20150918084513) do
     t.string   "public_email",               default: "",    null: false
     t.integer  "dashboard",                  default: 0
     t.integer  "project_view",               default: 0
+    t.integer  "consumed_timestep"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

@@ -18,8 +18,8 @@
 module Ci
   class Commit < ActiveRecord::Base
     extend Ci::Model
-    
-    belongs_to :project, class_name: 'Ci::Project'
+
+    belongs_to :gl_project, class_name: '::Project', foreign_key: :gl_project_id
     has_many :builds, dependent: :destroy, class_name: 'Ci::Build'
     has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest'
 
@@ -34,6 +34,14 @@ module Ci
 
     def to_param
       sha
+    end
+
+    def project
+      @project ||= gl_project.ensure_gitlab_ci_project
+    end
+
+    def project_id
+      project.id
     end
 
     def last_build
@@ -111,15 +119,14 @@ module Ci
       builds_attrs = config_processor.builds_for_stage_and_ref(stage, ref, tag)
       builds_attrs.map do |build_attrs|
         builds.create!({
-          project: project,
-          name: build_attrs[:name],
-          commands: build_attrs[:script],
-          tag_list: build_attrs[:tags],
-          options: build_attrs[:options],
-          allow_failure: build_attrs[:allow_failure],
-          stage: build_attrs[:stage],
-          trigger_request: trigger_request,
-        })
+                         name: build_attrs[:name],
+                         commands: build_attrs[:script],
+                         tag_list: build_attrs[:tags],
+                         options: build_attrs[:options],
+                         allow_failure: build_attrs[:allow_failure],
+                         stage: build_attrs[:stage],
+                         trigger_request: trigger_request,
+                       })
       end
     end
 
@@ -236,7 +243,7 @@ module Ci
     end
 
     def config_processor
-      @config_processor ||= Ci::GitlabCiYamlProcessor.new(push_data[:ci_yaml_file] || project.generated_yaml_config)
+      @config_processor ||= Ci::GitlabCiYamlProcessor.new(push_data[:ci_yaml_file])
     rescue Ci::GitlabCiYamlProcessor::ValidationError => e
       save_yaml_error(e.message)
       nil

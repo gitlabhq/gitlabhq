@@ -101,4 +101,13 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   step 'I click side-by-side diff button' do
     find('#parallel-diff-btn').click
   end
+
+  step 'commit has ci status' do
+    @project.enable_ci(@user)
+    create :ci_commit, gl_project: @project, sha: sample_commit.id
+  end
+
+  step 'I see commit ci info' do
+    expect(page).to have_content "build: skipped"
+  end
 end

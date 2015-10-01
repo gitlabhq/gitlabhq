@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Ci::CreateTriggerRequestService do
   let(:service) { Ci::CreateTriggerRequestService.new }
   let(:project) { FactoryGirl.create :ci_project }
+  let(:gl_project) { FactoryGirl.create :empty_project, gitlab_ci_project: project }
   let(:trigger) { FactoryGirl.create :ci_trigger, project: project }
 
   describe :execute do
@@ -10,7 +11,7 @@ describe Ci::CreateTriggerRequestService do
       subject { service.execute(project, trigger, 'master') }
 
       before do
-        @commit = FactoryGirl.create :ci_commit, project: project
+        @commit = FactoryGirl.create :ci_commit, gl_project: gl_project
       end
 
       it { expect(subject).to be_kind_of(Ci::TriggerRequest) }
@@ -27,7 +28,7 @@ describe Ci::CreateTriggerRequestService do
       subject { service.execute(project, trigger, 'master') }
 
       before do
-        FactoryGirl.create :ci_commit_without_jobs, project: project
+        FactoryGirl.create :ci_commit_without_jobs, gl_project: gl_project
       end
 
       it { expect(subject).to be_nil }
@@ -37,9 +38,9 @@ describe Ci::CreateTriggerRequestService do
       subject { service.execute(project, trigger, 'master') }
 
       before do
-        @commit1 = FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, project: project
-        @commit2 = FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, project: project
-        @commit3 = FactoryGirl.create :ci_commit, committed_at: 3.hour.ago, project: project
+        @commit1 = FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, gl_project: gl_project
+        @commit2 = FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, gl_project: gl_project
+        @commit3 = FactoryGirl.create :ci_commit, committed_at: 3.hour.ago, gl_project: gl_project
       end
 
       context 'retries latest one' do
