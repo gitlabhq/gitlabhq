@@ -23,6 +23,7 @@ v 8.1.0 (unreleased)
   - Note the original location of a moved project when notifying users of the move
   - Improve error message when merging fails
   - Add support of multibyte characters in LDAP UID (Roman Petrov)
+  - Show additions/deletions stats on merge request diff
 
 v 8.0.3
   - Fix URL shown in Slack notifications
