@@ -1,8 +1,8 @@
 /** COLORS **/
 .cgray { color: $gl-gray; }
 .clgray { color: #BBB }
-.cred { color: #D12F19 }
-.cgreen { color: #4a2 }
+.cred { color: $gl-text-red; }
+.cgreen { color: $gl-text-green; }
 .cdark { color: #444 }
 
 /** COMMON CLASSES **/
