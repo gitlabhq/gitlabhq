@@ -169,8 +169,7 @@ module Ci
     # using http and basic auth
     def repo_url_with_auth
       auth = "gitlab-ci-token:#{token}@"
-      url = http_url_to_repo + ".git"
-      url.sub(/^https?:\/\//) do |prefix|
+      http_url_to_repo.sub(/^https?:\/\//) do |prefix|
         prefix + auth
       end
     end
