@@ -106,6 +106,7 @@ v 8.0.0
   - Webhook for issue now contains repository field (Jungkook Park)
   - Add ability to add custom text to the help page (Jeroen van Baarsen)
   - Add pg_schema to backup config
+  - Fix references to target project issues in Merge Requests markdown preview and textareas (Francesco Levorato)
   - Redirect from incorrectly cased group or project path to correct one (Francesco Levorato)
   - Removed API calls from CE to CI
 
