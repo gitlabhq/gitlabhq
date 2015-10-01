@@ -5,10 +5,12 @@ describe Ci::API::API do
 
   let(:runner) { FactoryGirl.create(:ci_runner, tag_list: ["mysql", "ruby"]) }
   let(:project) { FactoryGirl.create(:ci_project) }
+  let(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
 
   describe "Builds API for runners" do
     let(:shared_runner) { FactoryGirl.create(:ci_runner, token: "SharedRunner") }
     let(:shared_project) { FactoryGirl.create(:ci_project, name: "SharedProject") }
+    let(:shared_gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: shared_project) }
 
     before do
       FactoryGirl.create :ci_runner_project, project_id: project.id, runner_id: runner.id
@@ -16,7 +18,7 @@ describe Ci::API::API do
 
     describe "POST /builds/register" do
       it "should start a build" do
-        commit = FactoryGirl.create(:ci_commit, project: project)
+        commit = FactoryGirl.create(:ci_commit, gl_project: gl_project)
         commit.create_builds
         build = commit.builds.first
 
@@ -34,7 +36,7 @@ describe Ci::API::API do
       end
 
       it "should return 404 error if no builds for specific runner" do
-        commit = FactoryGirl.create(:ci_commit, project: shared_project)
+        commit = FactoryGirl.create(:ci_commit, gl_project: shared_gl_project)
         FactoryGirl.create(:ci_build, commit: commit, status: 'pending' )
 
         post ci_api("/builds/register"), token: runner.token
@@ -43,7 +45,7 @@ describe Ci::API::API do
       end
 
       it "should return 404 error if no builds for shared runner" do
-        commit = FactoryGirl.create(:ci_commit, project: project)
+        commit = FactoryGirl.create(:ci_commit, gl_project: gl_project)
         FactoryGirl.create(:ci_build, commit: commit, status: 'pending' )
 
         post ci_api("/builds/register"), token: shared_runner.token
@@ -52,7 +54,7 @@ describe Ci::API::API do
       end
 
       it "returns options" do
-        commit = FactoryGirl.create(:ci_commit, project: project)
+        commit = FactoryGirl.create(:ci_commit, gl_project: gl_project)
         commit.create_builds
 
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
@@ -62,7 +64,7 @@ describe Ci::API::API do
       end
 
       it "returns variables" do
-        commit = FactoryGirl.create(:ci_commit, project: project)
+        commit = FactoryGirl.create(:ci_commit, gl_project: gl_project)
         commit.create_builds
         project.variables << Ci::Variable.new(key: "SECRET_KEY", value: "secret_value")
 
@@ -77,7 +79,7 @@ describe Ci::API::API do
 
       it "returns variables for triggers" do
         trigger = FactoryGirl.create(:ci_trigger, project: project)
-        commit = FactoryGirl.create(:ci_commit, project: project)
+        commit = FactoryGirl.create(:ci_commit, gl_project: gl_project)
 
         trigger_request = FactoryGirl.create(:ci_trigger_request_with_variables, commit: commit, trigger: trigger)
         commit.create_builds(trigger_request)
@@ -95,7 +97,7 @@ describe Ci::API::API do
     end
 
     describe "PUT /builds/:id" do
-      let(:commit) { FactoryGirl.create(:ci_commit, project: project)}
+      let(:commit) { FactoryGirl.create(:ci_commit, gl_project: gl_project)}
       let(:build) { FactoryGirl.create(:ci_build, commit: commit, runner_id: runner.id) }
 
       it "should update a running build" do

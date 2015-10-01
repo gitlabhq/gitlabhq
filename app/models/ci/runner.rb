@@ -41,6 +41,10 @@ module Ci
             query: "%#{query.try(:downcase)}%")
     end
 
+    def gl_projects_ids
+      projects.select(:gitlab_id)
+    end
+
     def set_default_values
       self.token = SecureRandom.hex(15) if self.token.blank?
     end

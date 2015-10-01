@@ -65,7 +65,7 @@ module Gitlab
       def reply_key
         reply_key = nil
         message.to.each do |address|
-          reply_key = Gitlab::ReplyByEmail.reply_key_from_address(address)
+          reply_key = Gitlab::IncomingEmail.key_from_address(address)
           break if reply_key
         end
 
@@ -98,7 +98,8 @@ module Gitlab
           note:           reply,
           noteable_type:  sent_notification.noteable_type,
           noteable_id:    sent_notification.noteable_id,
-          commit_id:      sent_notification.commit_id
+          commit_id:      sent_notification.commit_id,
+          line_code:      sent_notification.line_code
         ).execute
       end
     end

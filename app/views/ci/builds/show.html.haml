@@ -1,15 +1,16 @@
 #up-build-trace
 - if @commit.matrix?
-  %ul.nav.nav-tabs.append-bottom-10
+  %ul.center-top-menu
     - @commit.builds_without_retry_sorted.each do |build|
       %li{class: ('active' if build == @build) }
         = link_to ci_project_build_url(@project, build) do
-          %i{class: build_icon_css_class(build)}
+          = ci_icon_for_status(build.status)
           %span
-            Build ##{build.id}
             - if build.name
-              &middot;
               = build.name
+            - else
+              = build.id
+
 
     - unless @commit.builds_without_retry.include?(@build)
       %li.active
@@ -19,34 +20,33 @@
           %i.fa.fa-warning-sign
           This build was retried.
 
-.row
-  .col-md-9
-    .build-head.alert{class: build_status_alert_class(@build)}
-      %h4
-        - if @build.commit.tag?
-          Build for tag
-          %code #{@build.ref}
-        - else
-          Build for commit
-          %code #{@build.short_sha}
-          from
+.gray-content-block
+  .build-head
+    %h4
+      - if @build.commit.tag?
+        Build for tag
+        %code #{@build.ref}
+      - else
+        Build for commit
+        %strong.monospace= commit_link(@build.commit)
+        from
 
-          = link_to ci_project_path(@build.project, ref: @build.ref) do
-            %span.label.label-primary= "#{@build.ref}"
+        = link_to ci_project_path(@build.project, ref: @build.ref) do
+          %strong.monospace= "#{@build.ref}"
 
-        - if @build.duration
-          .pull-right
-            %span
-              %i.fa.fa-time
-              #{duration_in_words(@build.finished_at, @build.started_at)}
-
-      .clearfix
-        = @build.status
+      - if @build.duration
         .pull-right
-          = @build.updated_at.stamp('19:00 Aug 27')
+          %span
+            %i.fa.fa-time
+            #{duration_in_words(@build.finished_at, @build.started_at)}
 
+    .clearfix
+      = ci_status_with_icon(@build.status)
+      .pull-right
+        = @build.updated_at.stamp('19:00 Aug 27')
 
-
+.row.prepend-top-default
+  .col-md-9
     .clearfix
       - if @build.active?
         .autoscroll-container
@@ -150,13 +150,16 @@
         %h4.title #{pluralize(@builds.count, "other build")} for #{@build.short_sha}:
         %table.builds
           - @builds.each_with_index do |build, i|
-            %tr.build.alert{class: build_status_alert_class(build)}
+            %tr.build
+              %td
+                = ci_icon_for_status(build.status)
               %td
                 = link_to ci_project_build_url(@project, build) do
-                  %span ##{build.id}
-              %td
-                - if build.name
-                  = build.name
+                  - if build.name
+                    = build.name
+                  - else
+                    %span ##{build.id}
+
               %td.status= build.status
 
 

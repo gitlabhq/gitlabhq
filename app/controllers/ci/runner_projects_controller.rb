@@ -11,10 +11,12 @@ module Ci
 
       return head(403) unless current_user.ci_authorized_runners.include?(@runner)
 
+      path = runners_path(@project.gl_project)
+
       if @runner.assign_to(project, current_user)
-        redirect_to ci_project_runners_path(project)
+        redirect_to path
       else
-        redirect_to ci_project_runners_path(project), alert: 'Failed adding runner to project'
+        redirect_to path, alert: 'Failed adding runner to project'
       end
     end
 
@@ -22,7 +24,7 @@ module Ci
       runner_project = project.runner_projects.find(params[:id])
       runner_project.destroy
 
-      redirect_to ci_project_runners_path(project)
+      redirect_to runners_path(@project.gl_project)
     end
 
     private

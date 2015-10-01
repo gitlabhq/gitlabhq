@@ -22,6 +22,8 @@ class Projects::CommitController < Projects::ApplicationController
       commit_id: @commit.id
     }
 
+    @ci_commit = project.ci_commit(commit.sha)
+
     respond_to do |format|
       format.html
       format.diff  { render text: @commit.to_diff }

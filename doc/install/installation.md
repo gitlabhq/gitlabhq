@@ -474,9 +474,22 @@ Using a self-signed certificate is discouraged but if you must use it follow the
     ```
 1. In the `config.yml` of gitlab-shell set `self_signed_cert` to `true`.
 
-### Additional Markup Styles
+### Enable Reply by email
 
-Apart from the always supported markdown style there are other rich text files that GitLab can display. But you might have to install a dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
+See the ["Reply by email" documentation](../incoming_email/README.md) for more information on how to set this up.
+
+### LDAP Authentication
+
+You can configure LDAP authentication in `config/gitlab.yml`. Please restart GitLab after editing this file.
+
+### Using Custom Omniauth Providers
+
+See the [omniauth integration document](../integration/omniauth.md)
+
+### Build your projects
+
+GitLab can build your projects. To enable that feature you need GitLab Runners to do that for you.
+Checkout the [Gitlab Runner section](https://about.gitlab.com/gitlab-ci/#gitlab-runner) to install it
 
 ### Custom Redis Connection
 
@@ -502,15 +515,16 @@ If you are running SSH on a non-standard port, you must change the GitLab user's
 
 You also need to change the corresponding options (e.g. `ssh_user`, `ssh_host`, `admin_uri`) in the `config\gitlab.yml` file.
 
-### LDAP Authentication
+### Additional Markup Styles
 
-You can configure LDAP authentication in `config/gitlab.yml`. Please restart GitLab after editing this file.
+Apart from the always supported markdown style there are other rich text files that GitLab can display. But you might have to install a dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
 
-### Using Custom Omniauth Providers
+## Troubleshooting
 
-See the [omniauth integration document](../integration/omniauth.md)
+### "You appear to have cloned an empty repository."
 
-### Build your projects
-
-GitLab can build your projects. To enable that feature you need GitLab Runners to do that for you.
-Checkout the [Gitlab Runner section](https://about.gitlab.com/gitlab-ci/#gitlab-runner) to install it
+If you see this message when attempting to clone a repository hosted by GitLab,
+this is likely due to an outdated Nginx or Apache configuration, or a missing or
+misconfigured `gitlab-git-http-server` instance. Double-check that you've
+[installed Go](#3-go), [installed gitlab-git-http-server](#install-gitlab-git-http-server),
+and correctly [configured Nginx](#site-configuration).

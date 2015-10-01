@@ -1,280 +1,321 @@
-## Migrate GitLab CI to GitLab CE/EE
+## Migrate GitLab CI to GitLab CE or EE
 
-## Notice
+Beginning with version 8.0 of GitLab Community Edition (CE) and Enterprise
+Edition (EE), GitLab CI is no longer its own application, but is instead built
+into the CE and EE applications.
 
-**You need to have working GitLab CI 7.14 to perform migration.
-The older versions are not supported and will most likely break migration procedure.**
+This guide will detail the process of migrating your CI installation and data
+into your GitLab CE or EE installation. **You can only migrate CI data from
+GitLab CI 8.0 to GitLab 8.0; migrating between other versions (e.g.7.14 to 8.1)
+is not possible.**
 
-This migration can't be done online and takes significant amount of time.
-Make sure to plan it ahead.
+We recommend that you read through the entire migration process in this
+document before beginning.
 
-If you are running older version please follow the upgrade guide first:
-https://gitlab.com/gitlab-org/gitlab-ci/blob/master/doc/update/7.13-to-7.14.md
+### Overview
 
-The migration is divided into a two parts:
-1. **[CI]** You will be making a changes to GitLab CI instance.
-1. **[CE]** You will be making a changes to GitLab CE/EE instance.
+In this document we assume you have a GitLab server and a GitLab CI server. It
+does not matter if these are the same machine.
 
-### 1. Stop CI server [CI]
+The migration consists of three parts: updating GitLab and GitLab CI, moving
+data, and redirecting traffic.
 
-    sudo service gitlab_ci stop
-    
-### 2. Backup [CI]
+Please note that CI builds triggered on your GitLab server in the time between
+updating to 8.0 and finishing the migration will be lost. Your GitLab server
+can be online for most of the procedure; the only GitLab downtime (if any) is
+during the upgrade to 8.0. Your CI service will be offline from the moment you
+upgrade to 8.0 until you finish the migration procedure.
 
-**The migration procedure is database breaking.
-You need to create backup if you still want to access GitLab CI in case of failure.**
+### Before upgrading
+
+If you have GitLab CI installed using omnibus-gitlab packages but *you don't want to migrate your existing data*:
 
 ```bash
+mv /var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/gitlab-ci/builds.$(date +%s)
+```
+
+and run `sudo gitlab-ctl reconfigure`.
+
+#### 1. Verify that backups work
+
+Make sure that the backup script on both servers can connect to the database.
+
+```
+# On your CI server:
+# Omnibus
+sudo gitlab-ci-rake backup:create
+
+# Source
 cd /home/gitlab_ci/gitlab-ci
-sudo -u gitlab_ci -H bundle exec backup:create RAILS_ENV=production
+sudo -u gitlab_ci -H bundle exec rake backup:create RAILS_ENV=production
 ```
 
-### 3. Prepare GitLab CI database to migration [CI]
-    
-Copy and paste the command in terminal to rename all tables.
-This also breaks your database structure disallowing you to use it anymore.
-
-    cat <<EOF | bundle exec rails dbconsole production
-    ALTER TABLE application_settings RENAME TO ci_application_settings;
-    ALTER TABLE builds RENAME TO ci_builds;
-    ALTER TABLE commits RENAME TO ci_commits;
-    ALTER TABLE events RENAME TO ci_events;
-    ALTER TABLE jobs RENAME TO ci_jobs;
-    ALTER TABLE projects RENAME TO ci_projects;
-    ALTER TABLE runner_projects RENAME TO ci_runner_projects;
-    ALTER TABLE runners RENAME TO ci_runners;
-    ALTER TABLE services RENAME TO ci_services;
-    ALTER TABLE tags RENAME TO ci_tags;
-    ALTER TABLE taggings RENAME TO ci_taggings;
-    ALTER TABLE trigger_requests RENAME TO ci_trigger_requests;
-    ALTER TABLE triggers RENAME TO ci_triggers;
-    ALTER TABLE variables RENAME TO ci_variables;
-    ALTER TABLE web_hooks RENAME TO ci_web_hooks;
-    EOF
-
-### 4. Remove CI cronjob
+Also check on your GitLab server.
 
 ```
+# On your GitLab server:
+# Omnibus
+sudo gitlab-rake gitlab:backup:create SKIP=repositories,uploads
+
+# Source
+cd /home/git/gitlab
+sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production SKIP=repositories,uploads
+```
+
+If this fails you need to fix it before upgrading to 8.0. Also see
+https://about.gitlab.com/getting-help/
+
+#### 2. Check source and target database types
+
+Check what databases you use on your GitLab server and your CI server.
+  Look for the 'adapter:' line. If your CI server and your GitLab server use
+the same database adapter no special care is needed. If your CI server uses
+MySQL and your GitLab server uses PostgreSQL you need to pass a special option
+during the 'Moving data' part. **If your CI server uses PostgreSQL and your
+GitLab server uses MySQL you cannot migrate your CI data to GitLab 8.0.**
+
+```
+# On your CI server:
+# Omnibus
+sudo gitlab-ci-rake env:info
+
+# Source
 cd /home/gitlab_ci/gitlab-ci
-sudo -u gitlab_ci -H bundle exec whenever --clear-crontab
+sudo -u gitlab_ci -H bundle exec rake env:info RAILS_ENV=production
 ```
 
-### 5. Dump GitLab CI database [CI]
+```
+# On your GitLab server:
+# Omnibus
+sudo gitlab-rake gitlab:env:info
 
-First check used database and credentials on GitLab CI and GitLab CE/EE:
-
-1. To check it on GitLab CI:
-
-    cat /home/gitlab_ci/gitlab-ci/config/database.yml
-    
-1. To check it on GitLab CE/EE:
-
-    cat /home/git/gitlab/config/database.yml
-
-Please first check the database engine used for GitLab CI and GitLab CE/EE.
-
-1. If your GitLab CI uses **mysql2** and GitLab CE/EE uses it too.
-Please follow **Dump MySQL** guide.
-
-1. If your GitLab CI uses **postgres** and GitLab CE/EE uses **postgres**.
-Please follow **Dump PostgreSQL** guide.
-
-1. If your GitLab CI uses **mysql2** and GitLab CE/EE uses **postgres**.
-Please follow **Dump MySQL and migrate to PostgreSQL** guide.
-
-**Remember credentials stored for accessing GitLab CI.
-You will need to put these credentials into commands executed below.**
-
-    $ cat config/database.yml                                                                                                                                                                                                                        [10:06:55]
-    #
-    # PRODUCTION
-    #
-    production:
-      adapter: postgresql or mysql2
-      encoding: utf8
-      reconnect: false
-      database: GITLAB_CI_DATABASE
-      pool: 5
-      username: DB_USERNAME
-      password: DB_PASSWORD
-      host: DB_HOSTNAME
-      port: DB_PORT
-      # socket: /tmp/mysql.sock
-
-#### a. Dump MySQL
- 
-    mysqldump --default-character-set=utf8 --complete-insert --no-create-info \
-      --host=DB_USERNAME --port=DB_PORT --user=DB_HOSTNAME -p 
-      GITLAB_CI_DATABASE \
-      ci_application_settings ci_builds ci_commits ci_events ci_jobs ci_projects \
-      ci_runner_projects ci_runners ci_services ci_tags ci_taggings ci_trigger_requests \
-      ci_triggers ci_variables ci_web_hooks > gitlab_ci.sql
-      
-#### b. Dump PostgreSQL
-  
-    pg_dump -h DB_HOSTNAME -U DB_USERNAME -p DB_PORT --data-only GITLAB_CI_DATABASE -t "ci_*" > gitlab_ci.sql
-
-#### c. Dump MySQL and migrate to PostgreSQL
-
-    # Dump existing MySQL database first
-    mysqldump --default-character-set=utf8 --compatible=postgresql --complete-insert \
-      --host=DB_USERNAME --port=DB_PORT --user=DB_HOSTNAME -p 
-      GITLAB_CI_DATABASE \
-      ci_application_settings ci_builds ci_commits ci_events ci_jobs ci_projects \
-      ci_runner_projects ci_runners ci_services ci_tags ci_taggings ci_trigger_requests \
-      ci_triggers ci_variables ci_web_hooks > gitlab_ci.sql.tmp
-      
-    # Convert database to be compatible with PostgreSQL
-    git clone https://github.com/gitlabhq/mysql-postgresql-converter.git -b gitlab
-    python mysql-postgresql-converter/db_converter.py gitlab_ci.sql.tmp gitlab_ci.sql.tmp2
-    ed -s gitlab_ci.sql.tmp2 < mysql-postgresql-converter/move_drop_indexes.ed
-    
-    # Filter to only include INSERT statements
-    grep "^\(START\|SET\|INSERT\|COMMIT\)" gitlab_ci.sql.tmp2 > gitlab_ci.sql
-    
-### 6. Make sure that your GitLab CE/EE is 8.0 [CE]
-
-Please verify that you use GitLab CE/EE 8.0.
-If not, please follow the update guide: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/7.14-to-8.0.md
-
-### 7. Stop GitLab CE/EE [CE]
-
-Before you can migrate data you need to stop GitLab CE/EE first.
-
-    sudo service gitlab stop
-    
-### 8. Backup GitLab CE/EE [CE]
-
-This migration poses a **significant risk** of breaking your GitLab CE/EE. 
-**You should create the GitLab CI/EE backup before doing it.**
-
-    cd /home/git/gitlab
-    sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
-
-### 9. Copy secret tokens [CE]
-
-The `secrets.yml` file stores encryption keys for secure variables.
-
-You need to copy the content of `config/secrets.yml` to the same file in GitLab CE.
-
-    sudo cp /home/gitlab_ci/gitlab-ci/config/secrets.yml /home/git/gitlab/config/secrets.yml
-    sudo chown git:git /home/git/gitlab/config/secrets.yml
-    sudo chown 0600 /home/git/gitlab/config/secrets.yml
-    
-### 10. New configuration options for `gitlab.yml` [CE]
-
-There are new configuration options available for [`gitlab.yml`](config/gitlab.yml.example).
-View them with the command below and apply them manually to your current `gitlab.yml`:
-
-```sh
-git diff origin/7-14-stable:config/gitlab.yml.example origin/8-0-stable:config/gitlab.yml.example
+# Source
+cd /home/git/gitlab
+sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 ```
 
-The new options include configuration of GitLab CI that are now being part of GitLab CE and EE.
+#### 3. Storage planning
 
-### 11. Copy build logs [CE]
+Decide where to store CI build traces on GitLab server. GitLab CI uses
+  files on disk to store CI build traces. The default path for these build
+traces is `/var/opt/gitlab/gitlab-ci/builds` (Omnibus) or
+`/home/git/gitlab/builds` (Source). If you are storing your repository data in
+a special location, or if you are using NFS, you should make sure that you
+store build traces on the same storage as your Git repositories.
 
-You need to copy the contents of `builds/` to the same directory in GitLab CE/EE.
+### I. Upgrading
 
-    sudo rsync -av /home/gitlab_ci/gitlab-ci/builds /home/git/gitlab/builds
-    sudo chown -R git:git /home/git/gitlab/builds
+From this point on, GitLab CI will be unavailable for your end users.
 
-The build traces are usually quite big so it will take a significant amount of time.
+#### 1. Upgrade GitLab to 8.0
 
-### 12. Import GitLab CI database [CE]
+First upgrade your GitLab server to version 8.0:
+https://about.gitlab.com/update/
 
-The one of the last steps is to import existing GitLab CI database.
+#### 2. Disable CI on the GitLab server during the migration
 
-    sudo mv /home/gitlab_ci/gitlab-ci/gitlab_ci.sql /home/git/gitlab/gitlab_ci.sql
-    sudo chown git:git /home/git/gitlab/gitlab_ci.sql
-    sudo -u git -H bundle exec rake ci:migrate CI_DUMP=/home/git/gitlab/gitlab_ci.sql RAILS_ENV=production
+After you update, go to the admin panel and temporarily disable CI.  As
+  an administrator, go to **Admin Area** -> **Settings**, and under
+**Continuous Integration** uncheck **Disable to prevent CI usage until rake
+ci:migrate is run (8.0 only)**.
 
-The task does:
-1. Delete data from all existing CI tables
-1. Import database data
-1. Fix database auto increments
-1. Fix tags assigned to Builds and Runners
-1. Fix services used by CI
+#### 3. CI settings are now in GitLab
 
-### 13. Start GitLab [CE]
+If you want to use custom CI settings (e.g. change where builds are
+  stored), please update `/etc/gitlab/gitlab.rb` (Omnibus) or
+`/home/git/gitlab/config/gitlab.yml` (Source).
 
-You can start GitLab CI/EE now and see if everything is working.
+#### 4. Upgrade GitLab CI to 8.0
 
-    sudo service gitlab start
+Now upgrade GitLab CI to version 8.0. If you are using Omnibus packages,
+  this may have already happened when you upgraded GitLab to 8.0.
 
-### 14. Update nginx [CI]
-    
-Now get back to GitLab CI and update **Nginx** configuration in order to:
-1. Have all existing runners able to communicate with a migrated GitLab CI.
-1. Have GitLab able send build triggers to CI address specified in Project's settings -> Services -> GitLab CI.
+#### 5. Disable GitLab CI on the CI server
 
-You need to edit `/etc/nginx/sites-available/gitlab_ci` and paste:
-    
-    # GITLAB CI
-    server {
-      listen 80 default_server;         # e.g., listen 192.168.1.1:80;
-      server_name YOUR_CI_SERVER_FQDN;  # e.g., server_name source.example.com;
-    
-      access_log  /var/log/nginx/gitlab_ci_access.log;
-      error_log   /var/log/nginx/gitlab_ci_error.log;
-    
-      # expose API to fix runners
-      location /api {
-        proxy_read_timeout    300;
-        proxy_connect_timeout 300;
-        proxy_redirect        off;
-        proxy_set_header      X-Real-IP $remote_addr;
-    
-        # You need to specify your DNS servers that are able to resolve YOUR_GITLAB_SERVER_FQDN
-        resolver 8.8.8.8 8.8.4.4;
-        proxy_pass $scheme://YOUR_GITLAB_SERVER_FQDN/ci$request_uri;
-      }
-      
-      # expose build endpoint to allow trigger builds
-      location ~ ^/projects/\d+/build$ {
-        proxy_read_timeout    300;
-        proxy_connect_timeout 300;
-        proxy_redirect        off;
-        proxy_set_header      X-Real-IP $remote_addr;
-    
-        # You need to specify your DNS servers that are able to resolve YOUR_GITLAB_SERVER_FQDN
-        resolver 8.8.8.8 8.8.4.4;
-        proxy_pass $scheme://YOUR_GITLAB_SERVER_FQDN/ci$request_uri;
-      }
-    
-      # redirect all other CI requests
-      location / {
-        return 301 $scheme://YOUR_GITLAB_SERVER_FQDN/ci$request_uri;
-      }
-    
-      # adjust this to match the largest build log your runners might submit,
-      # set to 0 to disable limit
-      client_max_body_size 10m;
-    }
+Disable GitLab CI after upgrading to 8.0.
 
-Make sure to fill the blanks to match your setup:
-1. **YOUR_CI_SERVER_FQDN**: The existing public facing address of GitLab CI, eg. ci.gitlab.com.
-1. **YOUR_GITLAB_SERVER_FQDN**: The public facing address of GitLab CE/EE, eg. gitlab.com.
+```
+# On your CI server:
+# Omnibus
+sudo gitlab-ctl stop ci-unicorn
+sudo gitlab-ctl stop ci-sidekiq
 
-**Make sure to not remove the `/ci$request_uri`. This is required to properly forward the requests.**
+# Source
+sudo service gitlab_ci stop
+cd /home/gitlab_ci/gitlab-ci
+sudo -u gitlab_ci -H bundle exec whenever --clear-crontab RAILS_ENV=production
+```
 
-You should also make sure that you can do:
+### II. Moving data
+
+#### 1. Database encryption key
+
+Move the database encryption key from your CI server to your GitLab
+  server. The command below will show you what you need to copy-paste to your
+GitLab server. On Omnibus GitLab servers you will have to add a line to
+`/etc/gitlab/gitlab.rb`. On GitLab servers installed from source you will have
+to replace the contents of `/home/git/gitlab/config/secrets.yml`.
+
+```
+# On your CI server:
+# Omnibus
+sudo gitlab-ci-rake backup:show_secrets
+
+# Source
+cd /home/gitlab_ci/gitlab-ci
+sudo -u gitlab_ci -H bundle exec rake backup:show_secrets RAILS_ENV=production
+```
+
+#### 2. SQL data and build traces
+
+Create your final CI data export. If you are converting from MySQL to
+  PostgreSQL, add ` MYSQL_TO_POSTGRESQL=1` to the end of the rake command. When
+the command finishes it will print the path to your data export archive; you
+will need this file later.
+
+```
+# On your CI server:
+# Omnibus
+sudo gitlab-ci-rake backup:create
+
+# Source
+cd /home/gitlab_ci/gitlab-ci
+sudo -u gitlab_ci -H bundle exec rake backup:create RAILS_ENV=production
+```
+
+#### 3. Copy data to the GitLab server
+
+If you were running GitLab and GitLab CI on the same server you can skip this
+step.
+
+Copy your CI data archive to your GitLab server. There are many ways to do
+this, below we use SSH agent forwarding and 'scp', which will be easy and fast
+for most setups. You can also copy the data archive first from the CI server to
+your laptop and then from your laptop to the GitLab server.
+
+```
+# Start from your laptop
+ssh -A ci_admin@ci_server.example
+# Now on the CI server
+scp /path/to/12345_gitlab_ci_backup.tar gitlab_admin@gitlab_server.example:~
+```
+
+#### 4. Move data to the GitLab backups folder
+
+Make the CI data archive discoverable for GitLab. We assume below that you
+store backups in the default path, adjust the command if necessary.
+
+```
+# On your GitLab server:
+# Omnibus
+sudo mv /path/to/12345_gitlab_ci_backup.tar /var/opt/gitlab/backups/
+
+# Source
+sudo mv /path/to/12345_gitlab_ci_backup.tar /home/git/gitlab/tmp/backups/
+```
+
+#### 5. Import the CI data into GitLab.
+
+This step will delete any existing CI data on your GitLab server. There should
+be no CI data yet because you turned CI on the GitLab server off earlier.
+
+```
+# On your GitLab server:
+# Omnibus
+sudo gitlab-rake ci:migrate
+
+# Source
+cd /home/git/gitlab
+sudo -u git -H bundle exec rake ci:migrate RAILS_ENV=production
+```
+
+#### 6. Restart GitLab
+
+```
+# On your GitLab server:
+# Omnibus
+sudo gitlab-ctl hup unicorn
+sudo gitlab-ctl restart sidekiq
+
+# Source
+sudo service gitlab reload
+```
+
+### III. Redirecting traffic
+
+If you were running GitLab CI with Omnibus packages and you were using the
+internal NGINX configuration your CI service should now be available both at
+`ci.example.com` (the old address) and `gitlab.example.com/ci`. **You are done!**
+
+If you installed GitLab CI from source we now need to configure a redirect in
+NGINX so that existing CI runners can keep using the old CI server address, and
+so that existing links to your CI server keep working.
+
+#### 1. Update Nginx configuration
+
+To ensure that your existing CI runners are able to communicate with the
+migrated installation, and that existing build triggers still work, you'll need
+to update your Nginx configuration to redirect requests for the old locations to
+the new ones.
+
+Edit `/etc/nginx/sites-available/gitlab_ci` and paste:
+
+```nginx
+# GITLAB CI
+server {
+  listen 80 default_server;         # e.g., listen 192.168.1.1:80;
+  server_name YOUR_CI_SERVER_FQDN;  # e.g., server_name source.example.com;
+
+  access_log  /var/log/nginx/gitlab_ci_access.log;
+  error_log   /var/log/nginx/gitlab_ci_error.log;
+
+  # expose API to fix runners
+  location /api {
+    proxy_read_timeout    300;
+    proxy_connect_timeout 300;
+    proxy_redirect        off;
+    proxy_set_header      X-Real-IP $remote_addr;
+
+    # You need to specify your DNS servers that are able to resolve YOUR_GITLAB_SERVER_FQDN
+    resolver 8.8.8.8 8.8.4.4;
+    proxy_pass $scheme://YOUR_GITLAB_SERVER_FQDN/ci$request_uri;
+  }
+
+  # redirect all other CI requests
+  location / {
+    return 301 $scheme://YOUR_GITLAB_SERVER_FQDN/ci$request_uri;
+  }
+
+  # adjust this to match the largest build log your runners might submit,
+  # set to 0 to disable limit
+  client_max_body_size 10m;
+}
+```
+
+Make sure you substitute these placeholder values with your real ones:
+
+1. `YOUR_CI_SERVER_FQDN`: The existing public-facing address of your GitLab CI
+   install (e.g., `ci.gitlab.com`).
+1. `YOUR_GITLAB_SERVER_FQDN`: The current public-facing address of your GitLab
+   CE (or EE) install (e.g., `gitlab.com`).
+
+**Make sure not to remove the `/ci$request_uri` part. This is required to
+properly forward the requests.**
+
+You should also make sure that you can:
+
 1. `curl https://YOUR_GITLAB_SERVER_FQDN/` from your previous GitLab CI server.
-1. `curl https://YOUR_CI_SERVER_FQDN/` from your GitLab CE/EE server.
+1. `curl https://YOUR_CI_SERVER_FQDN/` from your GitLab CE (or EE) server.
 
-## Check your configuration
+#### 2. Check Nginx configuration
 
     sudo nginx -t
 
-## Restart nginx
+#### 3. Restart Nginx
 
     sudo /etc/init.d/nginx restart
 
-### 15. Done!
+#### Restore from backup
 
-If everything went OK you should be able to access all your GitLab CI data by pointing your browser to:
-https://gitlab.example.com/ci/.
-
-The GitLab CI should also work when using the previous address, redirecting you to the GitLab CE/EE.
-
-**Enjoy!**
+If something went wrong and you need to restore a backup, consult the [Backup
+restoration](../raketasks/backup_restore.md) guide.

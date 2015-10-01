@@ -45,7 +45,8 @@ module Backup
       directory = connection.directories.get(remote_directory)
 
       if directory.files.create(key: tar_file, body: File.open(tar_file), public: false,
-          multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size)
+          multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size,
+          encryption: Gitlab.config.backup.upload.encryption)
         $progress.puts "done".green
       else
         puts "uploading backup to #{remote_directory} failed".red
@@ -55,7 +56,7 @@ module Backup
 
     def cleanup
       $progress.print "Deleting tmp directories ... "
-      
+
       backup_contents.each do |dir|
         next unless File.exist?(File.join(Gitlab.config.backup.path, dir))
 
@@ -75,7 +76,7 @@ module Backup
 
       if keep_time > 0
         removed = 0
-        
+
         Dir.chdir(Gitlab.config.backup.path) do
           file_list = Dir.glob('*_gitlab_backup.tar')
           file_list.map! { |f| $1.to_i if f =~ /(\d+)_gitlab_backup.tar/ }

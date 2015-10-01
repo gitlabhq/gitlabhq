@@ -5,11 +5,10 @@ describe "Commits" do
 
   context "Authenticated user" do
     before do
-      @project = FactoryGirl.create :ci_project
-      @commit = FactoryGirl.create :ci_commit, project: @project
+      @commit = FactoryGirl.create :ci_commit
       @build = FactoryGirl.create :ci_build, commit: @commit
       login_as :user
-      @project.gl_project.team << [@user, :master]
+      @commit.project.gl_project.team << [@user, :master]
     end
 
     describe "GET /:project/commits/:sha" do
@@ -51,8 +50,10 @@ describe "Commits" do
 
   context "Public pages" do
     before do
-      @project = FactoryGirl.create :ci_public_project
-      @commit = FactoryGirl.create :ci_commit, project: @project
+      @commit = FactoryGirl.create :ci_commit
+      @commit.project.public = true
+      @commit.project.save
+
       @build = FactoryGirl.create :ci_build, commit: @commit
     end
 

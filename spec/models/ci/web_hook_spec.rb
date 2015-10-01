@@ -56,7 +56,8 @@ describe Ci::WebHook do
     it "catches exceptions" do
       expect(Ci::WebHook).to receive(:post).and_raise("Some HTTP Post error")
 
-      expect{ @web_hook.execute(@data) }.to raise_error
+      expect{ @web_hook.execute(@data) }.
+        to raise_error(RuntimeError, 'Some HTTP Post error')
     end
   end
 end

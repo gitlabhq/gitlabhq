@@ -5,7 +5,7 @@ describe API::API, 'ProjectHooks', api: true  do
   let(:user) { create(:user) }
   let(:user3) { create(:user) }
   let!(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
-  let!(:hook) { create(:project_hook, project: project, url: "http://example.com") }
+  let!(:hook) { create(:project_hook, project: project, url: "http://example.com", push_events: true, merge_requests_events: true, tag_push_events: true, issues_events: true, note_events: true, enable_ssl_verification: true) }
 
   before do
     project.team << [user, :master]
@@ -21,6 +21,12 @@ describe API::API, 'ProjectHooks', api: true  do
         expect(json_response).to be_an Array
         expect(json_response.count).to eq(1)
         expect(json_response.first['url']).to eq("http://example.com")
+        expect(json_response.first['issues_events']).to eq(true)
+        expect(json_response.first['push_events']).to eq(true)
+        expect(json_response.first['merge_requests_events']).to eq(true)
+        expect(json_response.first['tag_push_events']).to eq(true)
+        expect(json_response.first['note_events']).to eq(true)
+        expect(json_response.first['enable_ssl_verification']).to eq(true)
       end
     end
 
@@ -38,6 +44,12 @@ describe API::API, 'ProjectHooks', api: true  do
         get api("/projects/#{project.id}/hooks/#{hook.id}", user)
         expect(response.status).to eq(200)
         expect(json_response['url']).to eq(hook.url)
+        expect(json_response['issues_events']).to eq(hook.issues_events)
+        expect(json_response['push_events']).to eq(hook.push_events)
+        expect(json_response['merge_requests_events']).to eq(hook.merge_requests_events)
+        expect(json_response['tag_push_events']).to eq(hook.tag_push_events)
+        expect(json_response['note_events']).to eq(hook.note_events)
+        expect(json_response['enable_ssl_verification']).to eq(hook.enable_ssl_verification)
       end
 
       it "should return a 404 error if hook id is not available" do
@@ -65,6 +77,13 @@ describe API::API, 'ProjectHooks', api: true  do
         post api("/projects/#{project.id}/hooks", user), url: "http://example.com", issues_events: true
       end.to change {project.hooks.count}.by(1)
       expect(response.status).to eq(201)
+      expect(json_response['url']).to eq('http://example.com')
+      expect(json_response['issues_events']).to eq(true)
+      expect(json_response['push_events']).to eq(true)
+      expect(json_response['merge_requests_events']).to eq(false)
+      expect(json_response['tag_push_events']).to eq(false)
+      expect(json_response['note_events']).to eq(false)
+      expect(json_response['enable_ssl_verification']).to eq(true)
     end
 
     it "should return a 400 error if url not given" do
@@ -84,6 +103,12 @@ describe API::API, 'ProjectHooks', api: true  do
         url: 'http://example.org', push_events: false
       expect(response.status).to eq(200)
       expect(json_response['url']).to eq('http://example.org')
+      expect(json_response['issues_events']).to eq(hook.issues_events)
+      expect(json_response['push_events']).to eq(false)
+      expect(json_response['merge_requests_events']).to eq(hook.merge_requests_events)
+      expect(json_response['tag_push_events']).to eq(hook.tag_push_events)
+      expect(json_response['note_events']).to eq(hook.note_events)
+      expect(json_response['enable_ssl_verification']).to eq(hook.enable_ssl_verification)
     end
 
     it "should return 404 error if hook id not found" do

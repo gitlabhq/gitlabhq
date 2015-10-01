@@ -13,31 +13,6 @@
 
   .builds,
   .projects-table {
-    .alert-success {
-      background-color: #6fc995;
-      border-color: #5bba83;
-    }
-
-    .alert-danger {
-      background-color: #eb897f;
-      border-color: #d4776e;
-    }
-
-    .alert-info {
-      background-color: #3498db;
-      border-color: #2e8ece;
-    }
-
-    .alert-warning {
-      background-color: #EB974E;
-      border-color: #E87E04;
-    }
-
-    .alert-disabled {
-      background: $background-color;
-      border-color: $border-color;
-    }
-
     .light {
       border-color: $border-color;
     }
@@ -47,8 +22,8 @@
     }
 
     td {
+      color: $gl-gray;
       vertical-align: middle !important;
-      border-color: inherit !important;
 
       a {
         font-weight: normal;
@@ -58,23 +33,16 @@
   }
 
   .commit-info {
-    font-size: 14px;
-
     .attr-name {
-      font-weight: 300;
-      color: #666;
       margin-right: 5px;
     }
 
     pre.commit-message {
-      font-size: 14px;
       background: none;
       padding: 0;
       margin: 0;
       border: none;
       margin: 20px 0;
-      border-bottom: 1px solid #EEE;
-      padding-bottom: 20px;
       border-radius: 0;
     }
   }

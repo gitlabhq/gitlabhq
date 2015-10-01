@@ -36,7 +36,6 @@ module Ci
       mount Commits
       mount Runners
       mount Projects
-      mount Forks
       mount Triggers
     end
   end

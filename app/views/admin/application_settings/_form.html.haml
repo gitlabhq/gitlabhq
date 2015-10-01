@@ -131,7 +131,7 @@
         .checkbox
           = f.label :ci_enabled do
             = f.check_box :ci_enabled
-            Enable Continuous Integration
+            Disable to prevent CI usage until rake ci:migrate is run (8.0 only)
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-primary'
