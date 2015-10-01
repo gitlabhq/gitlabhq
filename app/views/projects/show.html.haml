@@ -64,13 +64,8 @@
       Archived project! Repository is read-only
 
 %section
-  - if prefer_readme?
-    .project-show-readme
-      = render 'projects/readme'
-  - else
-    .project-show-activity
-      = render 'projects/activity'
-
+  %div{class: "project-show-#{current_user_default_project_view}"}
+    = render current_user_default_project_view
 
 - if current_user
   - access = user_max_access_in_project(current_user, @project)

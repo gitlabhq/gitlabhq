@@ -21,6 +21,31 @@ describe ProjectsController do
         expect(response.body).to include("content='#{content}'")
       end
     end
+
+    context "rendering default project view" do
+      render_views
+
+      it "shold render the activity view", focus: true do
+        allow(controller).to receive(:current_user).and_return(user)
+        allow(user).to receive(:project_view).and_return('activity')
+        get :show, namespace_id: public_project.namespace.path, id: public_project.path
+        expect(response).to render_template('_activity')
+      end
+
+      it "shold render the readme view", focus: true do
+        allow(controller).to receive(:current_user).and_return(user)
+        allow(user).to receive(:project_view).and_return('readme')
+        get :show, namespace_id: public_project.namespace.path, id: public_project.path
+        expect(response).to render_template('_readme')
+      end
+
+      it "shold render the files view", focus: true do
+        allow(controller).to receive(:current_user).and_return(user)
+        allow(user).to receive(:project_view).and_return('files')
+        get :show, namespace_id: public_project.namespace.path, id: public_project.path
+        expect(response).to render_template('_files')
+      end
+    end
   end
 
   describe "POST #toggle_star" do

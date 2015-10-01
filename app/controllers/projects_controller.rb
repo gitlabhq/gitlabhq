@@ -89,7 +89,10 @@ class ProjectsController < ApplicationController
             if current_user
               @membership = @project.project_member_by_id(current_user.id)
             end
-
+            @ref = "master"
+            @id = "master"
+            @commit = @project.repository.commit(@ref)
+            @tree = @project.repository.tree(@commit.id)
             render :show
           end
         else

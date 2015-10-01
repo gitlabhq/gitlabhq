@@ -27,7 +27,8 @@ module PreferencesHelper
   def project_view_choices
     [
       ['Readme (default)', :readme],
-      ['Activity view', :activity]
+      ['Activity view', :activity],
+      ['Files view', :files]
     ]
   end
 
@@ -42,5 +43,10 @@ module PreferencesHelper
   def prefer_readme?
     !current_user ||
       current_user.project_view == 'readme'
+  end
+
+  def current_user_default_project_view
+    (current_user && current_user.project_view) ||
+      'readme'
   end
 end
