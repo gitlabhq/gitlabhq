@@ -22,10 +22,15 @@ class GitlabCiService < CiService
   include Gitlab::Application.routes.url_helpers
 
   after_save :compose_service_hook, if: :activated?
+  after_save :ensure_gitlab_ci_project, if: :activated?
 
   def compose_service_hook
     hook = service_hook || build_service_hook
     hook.save
+  end
+
+  def ensure_gitlab_ci_project
+    project.ensure_gitlab_ci_project
   end
 
   def supported_events
