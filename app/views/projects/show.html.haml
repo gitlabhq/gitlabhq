@@ -75,7 +75,7 @@
 - if current_user
   - access = user_max_access_in_project(current_user, @project)
   - if access
-    .prepend-top-20
+    .prepend-top-20.project-footer
       .gray-content-block.footer-block.center
         You have #{access} access to this project.
         - if @project.project_member_by_id(current_user)
