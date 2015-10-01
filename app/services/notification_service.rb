@@ -183,12 +183,12 @@ class NotificationService
     mailer.group_access_granted_email(group_member.id)
   end
 
-  def project_was_moved(project)
+  def project_was_moved(project, old_path_with_namespace)
     recipients = project.team.members
     recipients = reject_muted_users(recipients, project)
 
     recipients.each do |recipient|
-      mailer.project_was_moved_email(project.id, recipient.id)
+      mailer.project_was_moved_email(project.id, recipient.id, old_path_with_namespace)
     end
   end
 

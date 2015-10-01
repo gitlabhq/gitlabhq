@@ -427,15 +427,15 @@ describe NotificationService do
         should_email(@u_watcher.id)
         should_email(@u_participating.id)
         should_not_email(@u_disabled.id)
-        notification.project_was_moved(project)
+        notification.project_was_moved(project, "gitlab/gitlab")
       end
 
       def should_email(user_id)
-        expect(Notify).to receive(:project_was_moved_email).with(project.id, user_id)
+        expect(Notify).to receive(:project_was_moved_email).with(project.id, user_id, "gitlab/gitlab")
       end
 
       def should_not_email(user_id)
-        expect(Notify).not_to receive(:project_was_moved_email).with(project.id, user_id)
+        expect(Notify).not_to receive(:project_was_moved_email).with(project.id, user_id, "gitlab/gitlab")
       end
     end
   end
