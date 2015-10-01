@@ -15,6 +15,7 @@
 class JenkinsService < CiService
   prop_accessor :project_url
   prop_accessor :multiproject_enabled
+  prop_accessor :pass_unstable
 
   validates :project_url, presence: true, if: :activated?
 
@@ -49,7 +50,9 @@ class JenkinsService < CiService
     [
       { type: 'text', name: 'project_url', placeholder: 'Jenkins project URL like http://jenkins.example.com/job/my-project/' },
       { type: 'checkbox', name: 'multiproject_enabled', title: "Multi-project setup enabled?",
-        help: "Multi-project mode is configured in Jenkins Gitlab Hook plugin." }
+        help: "Multi-project mode is configured in Jenkins Gitlab Hook plugin." },
+      { type: 'checkbox', name: 'pass_unstable', title: 'Should unstable builds be treated as passing?',
+        help: 'Unstable builds will be treated as passing.'}
     ]
   end
 
@@ -57,12 +60,15 @@ class JenkinsService < CiService
     self.multiproject_enabled == '1'
   end
 
+  def pass_unstable?
+    self.pass_unstable == '1'
+  end
+
   def build_page(sha, ref = nil)
-    if multiproject_enabled?
-      base_url = ref.nil? || ref == 'master' ? project_url : "#{project_url}_#{ref}"
-      base_url + "/scm/bySHA1/#{sha}"
+    if multiproject_enabled? && ref.present?
+      "#{project_url}_#{ref}/scm/bySHA1/#{sha}"
     else
-      project_url + "/scm/bySHA1/#{sha}"
+      "#{project_url}/scm/bySHA1/#{sha}"
     end
   end
 
@@ -83,7 +89,7 @@ class JenkinsService < CiService
     if response.code == 200
       # img.build-caption-status-icon for old jenkins version
       src = Nokogiri.parse(response).css('img.build-caption-status-icon,.build-caption>img').first.attributes['src'].value
-      if src =~ /blue\.png$/
+      if src =~ /blue\.png$/ || (src =~ /yellow\.png/ && pass_unstable?)
         'success'
       elsif src =~ /(red|aborted|yellow)\.png$/
         'failed'

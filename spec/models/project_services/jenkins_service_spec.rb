@@ -41,7 +41,8 @@ eos
         allow(@service).to receive_messages(
           service_hook: true,
           project_url: 'http://jenkins.gitlab.org/projects/2',
-          multiproject_enabled: '1',
+          multiproject_enabled: '0',
+          pass_unstable: '0',
           token: 'verySecret'
         )
       end
@@ -52,6 +53,24 @@ eos
           stub_request(:get, "http://jenkins.gitlab.org/projects/2/scm/bySHA1/2ab7834c").to_return(status: 200, body: status_body_for_icon(icon), headers: {})
           expect(@service.commit_status("2ab7834c", 'master')).to eq(state)
         end
+      end
+    end
+
+    describe 'commit status with passing unstable' do
+      before do
+        @service = JenkinsService.new
+        allow(@service).to receive_messages(
+          service_hook: true,
+          project_url: 'http://jenkins.gitlab.org/projects/2',
+          multiproject_enabled: '0',
+          pass_unstable: '1',
+          token: 'verySecret'
+        )
+      end
+
+      it "should have a status of success when the icon yellow exists." do
+        stub_request(:get, "http://jenkins.gitlab.org/projects/2/scm/bySHA1/2ab7834c").to_return(status: 200, body: status_body_for_icon('yellow.png'), headers: {})
+        expect(@service.commit_status("2ab7834c", 'master')).to eq('success')
       end
     end
 
@@ -67,7 +86,7 @@ eos
       end
 
       describe :build_page do
-        it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://jenkins.gitlab.org/projects/2/scm/bySHA1/2ab7834c") }
+        it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://jenkins.gitlab.org/projects/2_master/scm/bySHA1/2ab7834c") }
       end
 
       describe :build_page_with_branch do
