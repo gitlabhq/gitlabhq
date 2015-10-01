@@ -655,6 +655,12 @@ describe API::API, api: true  do
       expect(response.status).to eq 400
     end
 
+    it "should return a 400 error when sharing is disabled" do
+      project.namespace.update(share_with_group_lock: true)
+      post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: Gitlab::Access::DEVELOPER
+      expect(response.status).to eq 400
+    end
+
     it "should return a 409 error when wrong params passed" do
       post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: 1234
       expect(response.status).to eq 409

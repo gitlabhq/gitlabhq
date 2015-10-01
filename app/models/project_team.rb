@@ -145,7 +145,7 @@ class ProjectTeam
       access << group.group_members.find_by(user_id: user_id).try(:access_field)
     end
 
-    if project.invited_groups.any?
+    if project.invited_groups.any? && project.allowed_to_share_with_group?
       access << max_invited_level(user_id)
     end
 
@@ -175,7 +175,7 @@ class ProjectTeam
     group_members = group ? group.group_members : []
     invited_members = []
 
-    if project.invited_groups.any?
+    if project.invited_groups.any? && project.allowed_to_share_with_group?
       project.project_group_links.each do |group_link|
         invited_group = group_link.group
         im = invited_group.group_members

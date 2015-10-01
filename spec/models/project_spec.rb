@@ -418,4 +418,17 @@ describe Project do
       it { should eq "http://localhost#{avatar_path}" }
     end
   end
+
+  describe :allowed_to_share_with_group? do
+    let(:project) { create(:project) }
+
+    it "returns true" do
+      expect(project.allowed_to_share_with_group?).to be_truthy
+    end
+
+    it "returns false" do
+      project.namespace.update(share_with_group_lock: true)
+      expect(project.allowed_to_share_with_group?).to be_falsey
+    end
+  end
 end
