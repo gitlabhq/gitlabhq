@@ -3,7 +3,7 @@ namespace :gitlab do
 
     desc "GitLab | Git | Repack"
     task repack: :environment do
-      failures = perform_git_cmd('git repack -a --quiet', 'Git repack')
+      failures = perform_git_cmd(%W(git repack -a --quiet), "Repacking repo")
       if failures.empty?
         puts "Done".green
       else
@@ -11,9 +11,9 @@ namespace :gitlab do
       end
     end
 
-    desc "GitLab | Git | Run gits garbage collection on all repo's"
+    desc "GitLab | Git | Run garbage collection on all repos"
     task gc: :environment do
-      failures = perform_git_cmd('git gc --auto --quiet', "Garbage Collection")
+      failures = perform_git_cmd(%W(git gc --auto --quiet), "Garbage Collecting")
       if failures.empty?
         puts "Done".green
       else
@@ -21,9 +21,9 @@ namespace :gitlab do
       end
     end
     
-    desc "GitLab | Git | Git prune all repo's"
+    desc "GitLab | Git | Prune all repos"
     task prune: :environment do
-      failures = perform_git_cmd('git prune', 'Git Prune')
+      failures = perform_git_cmd(%W(git prune), "Git Prune")
       if failures.empty?
         puts "Done".green
       else
@@ -35,9 +35,12 @@ namespace :gitlab do
       puts "Starting #{message} on all repositories"
 
       failures = []
-      all_repos.each do |r|
-        puts "Performing #{message} at #{r}"
-        failures << r unless system(*%w(#{cmd}), chdir: r)
+      all_repos do |repo|
+        if system(*cmd, chdir: repo)
+          puts "Performed #{message} at #{repo}"
+        else
+          failures << repo
+        end
       end
 
       failures
