@@ -21,6 +21,7 @@ v 8.1.0 (unreleased)
   - Fix bug when removed file was not appearing in merge request diff
   - Note the original location of a moved project when notifying users of the move
   - Improve error message when merging fails
+  - Show additions/deletions stats on merge request diff
 
 v 8.0.3
   - Fix URL shown in Slack notifications
