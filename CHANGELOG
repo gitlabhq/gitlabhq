@@ -18,6 +18,7 @@ v 8.1.0 (unreleased)
   - Move CI triggers page to project settings area
   - Move CI project settings page to CE project settings area
   - Fix bug when removed file was not appearing in merge request diff
+  - Improve error message when merging fails
 
 v 8.0.3
   - Fix URL shown in Slack notifications
