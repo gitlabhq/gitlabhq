@@ -216,7 +216,11 @@ class Repository
 
       # If `licence`, `copying` and `copying.lesser` are found, return in the
       # following order: licence, copying, copying.lesser
-      licenses.find { |l| l =~ /\Alicence/i } || licenses.sort.first
+      regex = [/\Alicense(\..*)?\z/i, /\Acopying(\..{0,3})?\z/i, /\Acopying.lesser/i]
+
+      regex.map do |re|
+        licenses.find { |l| l.name =~ re }
+      end.compact.first
     end
   end
 

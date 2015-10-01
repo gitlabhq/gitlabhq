@@ -91,4 +91,15 @@ describe Repository do
       it { expect(subject.data.lines[2]).to eq("  - Feature: Replace teams with group membership\n") }
     end
   end
+
+  describe "#license" do
+    it 'test selection preference' do
+      repository.send(:cache).expire(:license)
+      TestBlob = Struct.new(:name)
+      files = [TestBlob.new('file'), TestBlob.new('license'), TestBlob.new('copying')]
+      expect(repository.tree).to receive(:blobs).and_return(files)
+
+      expect(repository.license.name).to eq('license')
+    end
+  end
 end
