@@ -53,19 +53,9 @@ Gitlab::Application.routes.draw do
         end
       end
 
-      resources :triggers, only: [:index, :create, :destroy]
-
-      resources :runners, only: [:index, :edit, :update, :destroy, :show] do
-        member do
-          get :resume
-          get :pause
-        end
-      end
-
       resources :runner_projects, only: [:create, :destroy]
 
       resources :events, only: [:index]
-      resource :variables, only: [:show, :update]
     end
 
     resource :user_sessions do
@@ -262,6 +252,7 @@ Gitlab::Application.routes.draw do
         put :unblock
         put :unlock
         put :confirm
+        post :login_as
         patch :disable_two_factor
         delete 'remove/:email_id', action: 'remove_email', as: 'remove_email'
       end
@@ -597,6 +588,9 @@ Gitlab::Application.routes.draw do
         resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
         resources :tags, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
         resources :protected_branches, only: [:index, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
+        resource :variables, only: [:show, :update]
+        resources :triggers, only: [:index, :create, :destroy]
+        resource :ci_settings, only: [:edit, :update, :destroy]
 
         resources :hooks, only: [:index, :create, :destroy], constraints: { id: /\d+/ } do
           member do
@@ -652,8 +646,14 @@ Gitlab::Application.routes.draw do
             get ":secret/:filename", action: :show, as: :show, constraints: { filename: /[^\/]+/ }
           end
         end
-      end
 
+        resources :runners, only: [:index, :edit, :update, :destroy, :show] do
+          member do
+            get :resume
+            get :pause
+          end
+        end
+      end
     end
   end
 

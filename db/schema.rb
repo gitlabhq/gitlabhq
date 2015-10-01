@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150920161119) do
+ActiveRecord::Schema.define(version: 20150930095736) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -115,9 +115,10 @@ ActiveRecord::Schema.define(version: 20150920161119) do
     t.text     "push_data"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "tag",          default: false
+    t.boolean  "tag",           default: false
     t.text     "yaml_errors"
     t.datetime "committed_at"
+    t.integer  "gl_project_id"
   end
 
   add_index "ci_commits", ["project_id", "committed_at", "id"], name: "index_ci_commits_on_project_id_and_committed_at_and_id", using: :btree
@@ -157,7 +158,7 @@ ActiveRecord::Schema.define(version: 20150920161119) do
   add_index "ci_jobs", ["project_id"], name: "index_ci_jobs_on_project_id", using: :btree
 
   create_table "ci_projects", force: true do |t|
-    t.string   "name",                                     null: false
+    t.string   "name"
     t.integer  "timeout",                  default: 3600,  null: false
     t.datetime "created_at"
     t.datetime "updated_at"

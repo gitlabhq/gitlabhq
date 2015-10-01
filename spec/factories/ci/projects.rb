@@ -29,21 +29,9 @@
 
 FactoryGirl.define do
   factory :ci_project_without_token, class: Ci::Project do
-    sequence :name do |n|
-      "GitLab / gitlab-shell#{n}"
-    end
-
     default_ref 'master'
 
-    sequence :path do |n|
-      "gitlab/gitlab-shell#{n}"
-    end
-
-    sequence :ssh_url_to_repo do |n|
-      "git@demo.gitlab.com:gitlab/gitlab-shell#{n}.git"
-    end
-
-    gl_project factory: :project
+    gl_project factory: :empty_project
 
     factory :ci_project do
       token 'iPWx6WM4lhHNedGfBpPJNP'

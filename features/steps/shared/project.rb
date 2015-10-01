@@ -204,6 +204,6 @@ module SharedProject
 
   step 'project "Shop" has CI build' do
     project = Project.find_by(name: "Shop")
-    create :ci_commit, project: project.gitlab_ci_project, sha: project.commit.sha
+    create :ci_commit, gl_project: project, sha: project.commit.sha
   end
 end

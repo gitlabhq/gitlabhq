@@ -1,6 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.1.0 (unreleased)
+  - Add user preference to view activities as default dashboard (Stan Hu)
+  - Add option to admin area to sign in as a specific user (Pavel Forkert)
   - Show CI status on all pages where commits list is rendered
   - Automatically enable CI when push .gitlab-ci.yml file to repository
   - Move CI charts to project graphs area
@@ -10,8 +12,19 @@ v 8.1.0 (unreleased)
   - Show CI status on Your projects page and Starred projects page
   - Remove "Continuous Integration" page from dashboard
   - Add notes and SSL verification entries to hook APIs (Ben Boeckel)
+  - Fix grammar in admin area "labels" .nothing-here-block when no labels exist.
+  - Move CI runners page to project settings area
+  - Move CI variables page to project settings area
+  - Move CI triggers page to project settings area
+  - Move CI project settings page to CE project settings area
+  - Fix bug when removed file was not appearing in merge request diff
 
-v 8.0.2 (unreleased)
+v 8.0.3
+  - Fix URL shown in Slack notifications
+  - Fix bug where projects would appear to be stuck in the forked import state (Stan Hu)
+  - Fix Error 500 in creating merge requests with > 1000 diffs (Stan Hu)
+
+v 8.0.2
   - Fix default avatar not rendering in network graph (Stan Hu)
   - Skip check_initd_configured_correctly on omnibus installs
   - Prevent double-prefixing of help page paths
@@ -19,9 +32,11 @@ v 8.0.2 (unreleased)
   - Make commit graphs responsive to window width changes (Stan Hu)
   - Fix top margin for sign-in button on public pages
   - Fix LDAP attribute mapping
+  - Remove git refs used internally by GitLab from network graph (Stan Hu)
   - Use standard Markdown font in Markdown preview instead of fixed-width font (Stan Hu)
   - Fix Reply by email for non-UTF-8 messages.
   - Add option to use StartTLS with Reply by email IMAP server.
+  - Allow AWS S3 Server-Side Encryption with Amazon S3-Managed Keys for backups (Paul Beattie)
 
 v 8.0.1
   - Remove git refs used internally by GitLab from network graph (Stan Hu)

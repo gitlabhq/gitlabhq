@@ -143,7 +143,7 @@ sudo gitlab-ctl stop ci-sidekiq
 # Source
 sudo service gitlab_ci stop
 cd /home/gitlab_ci/gitlab-ci
-sudo -u gitlab_ci -H bundle exec whenever --clear-crontab
+sudo -u gitlab_ci -H bundle exec whenever --clear-crontab RAILS_ENV=production
 ```
 
 ### II. Moving data

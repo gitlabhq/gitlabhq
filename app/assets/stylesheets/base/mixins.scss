@@ -117,12 +117,12 @@
     margin: 24px 0 12px 0;
     font-size: 1.1em;
   }
-  
+
   h5 {
     margin: 24px 0 12px 0;
     font-size: 1em;
   }
-  
+
   h6 {
     margin: 24px 0 12px 0;
     font-size: 0.90em;
@@ -133,18 +133,18 @@
     margin: 12px 0 12px;
     border-left: 3px solid #e7e9ed;
   }
-  
+
   blockquote p {
     color: #7f8fa4 !important;
     font-size: 15px;
     line-height: 1.5;
   }
-  
+
   p {
     color:#5c5d5e;
     margin:6px 0 0 0;
   }
-  
+
   table {
     @extend .table;
     @extend .table-bordered;
@@ -152,15 +152,16 @@
     color: #5c5d5e;
     th {
       background: #f8fafc;
-    } 
+    }
   }
-  
+
   pre {
     margin: 12px 0 12px 0 !important;
     background-color: #f8fafc !important;
     font-size: 13px !important;
     color: #5b6169 !important;
     line-height: 1.6em !important;
+    @include border-radius(2px);
   }
 
   p > code {
@@ -171,7 +172,7 @@
   ul {
     color: #5c5d5e;
   }
-  
+
   li {
     line-height: 1.6em;
   }
@@ -292,4 +293,9 @@
       color: #78a;
     }
   }
+}
+
+.fa-align {
+  top: 20px;
+  position: relative;
 }

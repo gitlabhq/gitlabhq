@@ -1,6 +1,6 @@
 %ul.nav.nav-sidebar
   = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: {class: 'home'}) do
-    = link_to root_path, title: 'Projects', data: {placement: 'right'} do
+    = link_to dashboard_projects_path, title: 'Projects', data: {placement: 'right'} do
       = icon('home fw')
       %span
         Projects

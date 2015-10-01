@@ -19,11 +19,12 @@ require 'spec_helper'
 
 describe Ci::Commit do
   let(:project) { FactoryGirl.create :ci_project }
-  let(:commit) { FactoryGirl.create :ci_commit, project: project }
-  let(:commit_with_project) { FactoryGirl.create :ci_commit, project: project }
+  let(:gl_project) { FactoryGirl.create :empty_project, gitlab_ci_project: project }
+  let(:commit) { FactoryGirl.create :ci_commit, gl_project: gl_project }
+  let(:commit_with_project) { FactoryGirl.create :ci_commit, gl_project: gl_project }
   let(:config_processor) { Ci::GitlabCiYamlProcessor.new(gitlab_ci_yaml) }
 
-  it { is_expected.to belong_to(:project) }
+  it { is_expected.to belong_to(:gl_project) }
   it { is_expected.to have_many(:builds) }
   it { is_expected.to validate_presence_of :before_sha }
   it { is_expected.to validate_presence_of :sha }
@@ -65,7 +66,8 @@ describe Ci::Commit do
         project = FactoryGirl.create :ci_project,
           email_add_pusher: true,
           email_recipients: ''
-        commit =  FactoryGirl.create :ci_commit, project: project
+        gl_project = FactoryGirl.create :empty_project, gitlab_ci_project: project
+        commit =  FactoryGirl.create :ci_commit, gl_project: gl_project
         expected = 'commit_pusher_email'
         allow(commit).to receive(:push_data) { { user_email: expected } }
         expect(commit.project_recipients).to eq([expected])
@@ -75,7 +77,8 @@ describe Ci::Commit do
         project = FactoryGirl.create :ci_project,
           email_add_pusher: true,
           email_recipients: 'rec1 rec2'
-        commit = FactoryGirl.create :ci_commit, project: project
+        gl_project = FactoryGirl.create :empty_project, gitlab_ci_project: project
+        commit = FactoryGirl.create :ci_commit, gl_project: gl_project
         expected = 'commit_pusher_email'
         allow(commit).to receive(:push_data) { { user_email: expected } }
         expect(commit.project_recipients).to eq(['rec1', 'rec2', expected])
@@ -85,7 +88,8 @@ describe Ci::Commit do
         project = FactoryGirl.create :ci_project,
           email_add_pusher: false,
           email_recipients: 'rec1 rec2'
-        commit = FactoryGirl.create :ci_commit, project: project
+        gl_project = FactoryGirl.create :empty_project, gitlab_ci_project: project
+        commit = FactoryGirl.create :ci_commit, gl_project: gl_project
         expect(commit.project_recipients).to eq(['rec1', 'rec2'])
       end
 
@@ -93,7 +97,8 @@ describe Ci::Commit do
         project = FactoryGirl.create :ci_project,
           email_add_pusher: true,
           email_recipients: 'rec1 rec1 rec2'
-        commit = FactoryGirl.create :ci_commit, project: project
+        gl_project = FactoryGirl.create :empty_project, gitlab_ci_project: project
+        commit = FactoryGirl.create :ci_commit, gl_project: gl_project
         expected = 'rec2'
         allow(commit).to receive(:push_data) { { user_email: expected } }
         expect(commit.project_recipients).to eq(['rec1', 'rec2'])
@@ -219,8 +224,7 @@ describe Ci::Commit do
   end
 
   describe "#finished_at" do
-    let(:project) { FactoryGirl.create :ci_project }
-    let(:commit) { FactoryGirl.create :ci_commit, project: project }
+    let(:commit) { FactoryGirl.create :ci_commit }
 
     it "returns finished_at of latest build" do
       build = FactoryGirl.create :ci_build, commit: commit, finished_at: Time.now - 60
@@ -238,7 +242,8 @@ describe Ci::Commit do
 
   describe "coverage" do
     let(:project) { FactoryGirl.create :ci_project, coverage_regex: "/.*/" }
-    let(:commit) { FactoryGirl.create :ci_commit, project: project }
+    let(:gl_project) { FactoryGirl.create :empty_project, gitlab_ci_project: project }
+    let(:commit) { FactoryGirl.create :ci_commit, gl_project: gl_project }
 
     it "calculates average when there are two builds with coverage" do
       FactoryGirl.create :ci_build, name: "rspec", coverage: 30, commit: commit

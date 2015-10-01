@@ -42,6 +42,8 @@ GEM
     acts-as-taggable-on (3.5.0)
       activerecord (>= 3.2, < 5)
     addressable (2.3.8)
+    after_commit_queue (1.1.0)
+      rails (>= 3.0)
     annotate (2.6.10)
       activerecord (>= 3.2, <= 4.3)
       rake (~> 10.4)
@@ -787,6 +789,7 @@ DEPENDENCIES
   activerecord-session_store (~> 0.1.0)
   acts-as-taggable-on (~> 3.4)
   addressable (~> 2.3.8)
+  after_commit_queue
   annotate (~> 2.6.0)
   asana (~> 0.0.6)
   asciidoctor (~> 1.5.2)

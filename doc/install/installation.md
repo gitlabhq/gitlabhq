@@ -115,8 +115,9 @@ Remove the old Ruby 1.8 if present
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl -L --progress http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.6.tar.gz | tar xz
-    cd ruby-2.1.6
+    curl -O --progress https://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.7.tar.gz
+    echo 'e2e195a4a58133e3ad33b955c829bb536fa3c075  ruby-2.1.7.tar.gz' | shasum -c - && tar xzf ruby-2.1.7.tar.gz
+    cd ruby-2.1.7
     ./configure --disable-install-rdoc
     make
     sudo make install
@@ -131,11 +132,11 @@ Since GitLab 8.0, Git HTTP requests are handled by gitlab-git-http-server.
 This is a small daemon written in Go.
 To install gitlab-git-http-server we need a Go compiler.
 
-    curl -O --progress https://storage.googleapis.com/golang/go1.5.linux-amd64.tar.gz
-    echo '5817fa4b2252afdb02e11e8b9dc1d9173ef3bd5a  go1.5.linux-amd64.tar.gz' | shasum -c - && \
-      sudo tar -C /usr/local -xzf go1.5.linux-amd64.tar.gz
+    curl -O --progress https://storage.googleapis.com/golang/go1.5.1.linux-amd64.tar.gz
+    echo '46eecd290d8803887dec718c691cc243f2175fe0  go1.5.1.linux-amd64.tar.gz' | shasum -c - && \
+      sudo tar -C /usr/local -xzf go1.5.1.linux-amd64.tar.gz
     sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
-    rm go1.5.linux-amd64.tar.gz
+    rm go1.5.1.linux-amd64.tar.gz
 
 ## 4. System Users
 

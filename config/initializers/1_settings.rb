@@ -229,6 +229,7 @@ if Settings.backup['upload']['connection']
   Settings.backup['upload']['connection'] = Hash[Settings.backup['upload']['connection'].map { |k, v| [k.to_sym, v] }]
 end
 Settings.backup['upload']['multipart_chunk_size'] ||= 104857600
+Settings.backup['upload']['encryption'] ||= nil
 
 #
 # Git

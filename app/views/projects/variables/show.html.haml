@@ -1,21 +1,21 @@
 %h3.page-title
   Secret Variables
 
-%p.light 
+%p.light
   These variables will be set to environment by the runner and will be hidden in the build log.
   %br
-  So you can use them for passwords, secret keys or whatever you want.  
+  So you can use them for passwords, secret keys or whatever you want.
 
 %hr
 
 
-= nested_form_for @project, url: url_for(controller: 'ci/variables', action: 'update'), html: { class: 'form-horizontal' }  do |f|
+= nested_form_for @ci_project, url: url_for(controller: 'projects/variables', action: 'update'), html: { class: 'form-horizontal' }  do |f|
   - if @project.errors.any?
     #error_explanation
-      %p.lead= "#{pluralize(@project.errors.count, "error")} prohibited this project from being saved:"
+      %p.lead= "#{pluralize(@ci_project.errors.count, "error")} prohibited this project from being saved:"
       .alert.alert-error
         %ul
-          - @project.errors.full_messages.each do |msg|
+          - @ci_project.errors.full_messages.each do |msg|
             %li= msg
 
   = f.fields_for :variables do |variable_form|

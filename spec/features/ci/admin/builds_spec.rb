@@ -1,8 +1,7 @@
 require 'spec_helper'
 
 describe "Admin Builds" do
-  let(:project) { FactoryGirl.create :ci_project }
-  let(:commit) { FactoryGirl.create :ci_commit, project: project }
+  let(:commit) { FactoryGirl.create :ci_commit }
   let(:build) { FactoryGirl.create :ci_build, commit: commit }
 
   before do
