@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.0.4
+  - Fix Message-ID header to be RFC 2111-compliant to prevent e-mails being dropped (Stan Hu)
+
 v 8.0.3
   - Fix URL shown in Slack notifications
   - Fix bug where projects would appear to be stuck in the forked import state (Stan Hu)
