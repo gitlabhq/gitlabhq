@@ -8,10 +8,7 @@
     .btn-group
       = inline_diff_btn
       = parallel_diff_btn
-  - additions = diff_files.sum(&:added_lines)
-  - deletions = diff_files.sum(&:removed_lines)
-  = render 'projects/diffs/stats', diff_files: diff_files,
-    additions: additions, deletions: deletions
+  = render 'projects/diffs/stats', diff_files: diff_files
 
 - if diff_files.count < diffs.size
   = render 'projects/diffs/warning', diffs: diffs, shown_files_count: diff_files.count

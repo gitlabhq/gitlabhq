@@ -4,9 +4,9 @@
     = link_to '#', class: 'js-toggle-button' do
       %strong #{pluralize(diff_files.count, "changed file")}
     with
-    %strong.cgreen #{additions} additions
+    %strong.cgreen #{diff_files.sum(&:added_lines)} additions
     and
-    %strong.cred #{deletions} deletions
+    %strong.cred #{diff_files.sum(&:removed_lines)} deletions
   .file-stats.js-toggle-content.hide
     %ul
       - diff_files.each_with_index do |diff_file, i|
