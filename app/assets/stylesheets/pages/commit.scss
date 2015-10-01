@@ -60,17 +60,17 @@
   }
   .new-file {
     a {
-      color: $gl-success;
+      color: $gl-text-green;
     }
   }
   .renamed-file {
     a {
-      color: $gl-warning;
+      color: $gl-text-orange;
     }
   }
   .deleted-file {
     a {
-      color: $gl-danger;
+      color: $gl-text-red;
     }
   }
   .edit-file{
