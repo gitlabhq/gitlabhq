@@ -177,6 +177,17 @@ describe Ci::Build do
       it { is_expected.to include(text) }
       it { expect(subject.length).to be >= text.length }
     end
+
+    context 'if build.trace hides token' do
+      let(:token) { 'my_secret_token' }
+
+      before do
+        build.project.update_attributes(token: token)
+        build.update_attributes(trace: token)
+      end
+
+      it { is_expected.to_not include(token) }
+    end
   end
 
   describe :timeout do

@@ -145,12 +145,6 @@ module Ci
       html ||= ''
     end
 
-    def trace
-      if project && read_attribute(:trace).present?
-        read_attribute(:trace).gsub(project.token, 'xxxxxx')
-      end
-    end
-
     def started?
       !pending? && !canceled? && started_at
     end
@@ -225,12 +219,21 @@ module Ci
       end
     end
 
-    def trace
+    def raw_trace
       if File.exist?(path_to_trace)
         File.read(path_to_trace)
       else
         # backward compatibility
         read_attribute :trace
+      end
+    end
+
+    def trace
+      trace = raw_trace
+      if project && trace.present?
+        trace.gsub(project.token, 'xxxxxx')
+      else
+        trace
       end
     end
 
