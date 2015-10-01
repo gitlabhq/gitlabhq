@@ -131,6 +131,9 @@ Install the Bundler Gem:
 Since GitLab 8.0, Git HTTP requests are handled by gitlab-git-http-server.
 This is a small daemon written in Go.
 To install gitlab-git-http-server we need a Go compiler.
+The instructions below assume you use 64-bit Linux. You can find
+downloads for other platforms at the [Go download
+page](https://golang.org/dl).
 
     curl -O --progress https://storage.googleapis.com/golang/go1.5.1.linux-amd64.tar.gz
     echo '46eecd290d8803887dec718c691cc243f2175fe0  go1.5.1.linux-amd64.tar.gz' | shasum -c - && \
