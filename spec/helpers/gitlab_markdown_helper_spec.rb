@@ -106,6 +106,12 @@ describe GitlabMarkdownHelper do
       act = link_to_gfm(text, '/foo')
       expect(act).to eq %Q(<a href="/foo">#{issues[0].to_reference}</a>)
     end
+
+    it 'should replace commit message with emoji to link' do
+      actual = link_to_gfm(':book:Book', '/foo')
+      expect(actual).
+        to eq %Q(<img class="emoji" title=":book:" alt=":book:" src="http://localhost/assets/emoji/1F4D6.png" height="20" width="20" align="absmiddle"><a href="/foo">Book</a>)
+    end
   end
 
   describe '#render_wiki_content' do
