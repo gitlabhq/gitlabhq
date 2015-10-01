@@ -15,11 +15,12 @@ class @MergeRequestWidget
       type: 'GET'
       url: $('.merge-request').data('url')
       success: (data) =>
-        switch data.state
-          when 'merged'
-            location.reload()
-          else
-            setTimeout(merge_request_widget.mergeInProgress, 2000)
+        if data.state == "merged"
+          location.reload()
+        else if data.merge_error
+          $('.mr-widget-body').html("<h4>" + data.merge_error + "</h4>")
+        else
+          setTimeout(merge_request_widget.mergeInProgress, 2000)
       dataType: 'json'
 
   getMergeStatus: ->
