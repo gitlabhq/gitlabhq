@@ -70,11 +70,7 @@ class GitlabCiService < CiService
   def fork_registration(new_project, current_user)
     params = OpenStruct.new({
       id:                  new_project.id,
-      name_with_namespace: new_project.name_with_namespace,
-      path_with_namespace: new_project.path_with_namespace,
-      web_url:             new_project.web_url,
-      default_branch:      new_project.default_branch,
-      ssh_url_to_repo:     new_project.ssh_url_to_repo
+      default_branch:      new_project.default_branch
     })
 
     ci_project = Ci::Project.find_by!(gitlab_id: project.id)

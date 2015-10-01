@@ -137,7 +137,9 @@ class Namespace < ActiveRecord::Base
   end
 
   def send_update_instructions
-    projects.each(&:send_move_instructions)
+    projects.each do |project|
+      project.send_move_instructions("#{path_was}/#{project.path}")
+    end
   end
 
   def kind

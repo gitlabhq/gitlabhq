@@ -224,43 +224,43 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
-  step 'I click link "Hide inline discussion" of the second file' do
-    page.within '.files [id^=diff]:nth-child(2)' do
+  step 'I click link "Hide inline discussion" of the third file' do
+    page.within '.files [id^=diff]:nth-child(3)' do
       find('.js-toggle-diff-comments').trigger('click')
     end
   end
 
-  step 'I click link "Show inline discussion" of the second file' do
-    page.within '.files [id^=diff]:nth-child(2)' do
+  step 'I click link "Show inline discussion" of the third file' do
+    page.within '.files [id^=diff]:nth-child(3)' do
       find('.js-toggle-diff-comments').trigger('click')
     end
   end
 
-  step 'I should not see a comment like "Line is wrong" in the second file' do
-    page.within '.files [id^=diff]:nth-child(2)' do
+  step 'I should not see a comment like "Line is wrong" in the third file' do
+    page.within '.files [id^=diff]:nth-child(3)' do
       expect(page).not_to have_visible_content "Line is wrong"
     end
   end
 
-  step 'I should see a comment like "Line is wrong" in the second file' do
-    page.within '.files [id^=diff]:nth-child(2) .note-body > .note-text' do
+  step 'I should see a comment like "Line is wrong" in the third file' do
+    page.within '.files [id^=diff]:nth-child(3) .note-body > .note-text' do
       expect(page).to have_visible_content "Line is wrong"
     end
   end
 
-  step 'I should not see a comment like "Line is wrong here" in the second file' do
-    page.within '.files [id^=diff]:nth-child(2)' do
+  step 'I should not see a comment like "Line is wrong here" in the third file' do
+    page.within '.files [id^=diff]:nth-child(3)' do
       expect(page).not_to have_visible_content "Line is wrong here"
     end
   end
 
-  step 'I should see a comment like "Line is wrong here" in the second file' do
-    page.within '.files [id^=diff]:nth-child(2) .note-body > .note-text' do
+  step 'I should see a comment like "Line is wrong here" in the third file' do
+    page.within '.files [id^=diff]:nth-child(3) .note-body > .note-text' do
       expect(page).to have_visible_content "Line is wrong here"
     end
   end
 
-  step 'I leave a comment like "Line is correct" on line 12 of the first file' do
+  step 'I leave a comment like "Line is correct" on line 12 of the second file' do
     init_diff_note_first_file
 
     page.within(".js-discussion-note-form") do
@@ -268,12 +268,12 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       click_button "Add Comment"
     end
 
-    page.within ".files [id^=diff]:nth-child(1) .note-body > .note-text" do
+    page.within ".files [id^=diff]:nth-child(2) .note-body > .note-text" do
       expect(page).to have_content "Line is correct"
     end
   end
 
-  step 'I leave a comment like "Line is wrong" on line 39 of the second file' do
+  step 'I leave a comment like "Line is wrong" on line 39 of the third file' do
     init_diff_note_second_file
 
     page.within(".js-discussion-note-form") do
@@ -282,8 +282,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
-  step 'I should still see a comment like "Line is correct" in the first file' do
-    page.within '.files [id^=diff]:nth-child(1) .note-body > .note-text' do
+  step 'I should still see a comment like "Line is correct" in the second file' do
+    page.within '.files [id^=diff]:nth-child(2) .note-body > .note-text' do
       expect(page).to have_visible_content "Line is correct"
     end
   end
@@ -303,7 +303,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see comments on the side-by-side diff page' do
-    page.within '.files [id^=diff]:nth-child(1) .parallel .note-body > .note-text' do
+    page.within '.files [id^=diff]:nth-child(2) .parallel .note-body > .note-text' do
       expect(page).to have_visible_content "Line is correct"
     end
   end
