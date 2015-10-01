@@ -21,6 +21,20 @@ describe ProjectsController do
         expect(response.body).to include("content='#{content}'")
       end
     end
+
+    context "when requested with case sensitive namespace and project path" do
+      it "redirects to the normalized path for case mismatch" do
+        get :show, namespace_id: public_project.namespace.path, id: public_project.path.upcase
+
+        expect(response).to redirect_to("/#{public_project.path_with_namespace}")
+      end
+
+      it "loads the page if normalized path matches request path" do
+        get :show, namespace_id: public_project.namespace.path, id: public_project.path
+
+        expect(response.status).to eq(200)
+      end
+    end
   end
 
   describe "POST #toggle_star" do
