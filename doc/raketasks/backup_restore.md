@@ -7,7 +7,9 @@
 A backup creates an archive file that contains the database, all repositories and all attachments.
 This archive will be saved in backup_path (see `config/gitlab.yml`).
 The filename will be `[TIMESTAMP]_gitlab_backup.tar`. This timestamp can be used to restore an specific backup.
-You can only restore a backup to exactly the same version of GitLab that you created it on, for example 7.2.1. The best way to migrate your repositories from one server to another is through backup restore.
+You can only restore a backup to exactly the same version of GitLab that you created it
+on, for example 7.2.1. The best way to migrate your repositories from one server to
+another is through backup restore.
 
 You need to keep a separate copy of `/etc/gitlab/gitlab-secrets.json`
 (for omnibus packages) or `/home/git/gitlab/.secret` (for installations
@@ -371,7 +373,11 @@ For more information see similar questions on postgresql issue tracker[here](htt
 
 ## Note
 This documentation is for GitLab CE.
-We backup GitLab.com and make sure your data is secure, but you can't use these methods
-to export / backup your data yourself from GitLab.com.
+We backup GitLab.com and make sure your data is secure, but you can't use these methods to export / backup your data yourself from GitLab.com.
 
 Issues are stored in the database. They can't be stored in Git itself.
+
+To migrate your repositories from one server to another with an up-to-date version of
+GitLab, you can use the [import rake task](import.md) to do a mass import of the
+repository. Note that if you do an import rake task, rather than a backup restore, you
+will have all your repositories, but not any other data.
