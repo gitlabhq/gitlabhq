@@ -1,15 +1,21 @@
 html {
   overflow-y: scroll;
+  height: 100%;
+  margin: 0;
 
   &.touch .tooltip { display: none !important; }
 
   body {
     padding-top: $header-height;
+    height: 100%;
+    margin: 0;
   }
 }
 
 .container {
   padding-top: 0;
+  height: 100%;
+  width: 100%;
   z-index: 5;
 }
 

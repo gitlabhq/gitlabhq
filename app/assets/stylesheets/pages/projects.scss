@@ -505,3 +505,19 @@ pre.light-well {
   display: inline-block;
 }
 
+.content {
+  height: 100%;
+  width: 100%;
+  
+}
+
+.max-height {
+  height: 100%;
+  display: table;
+  width: 100%;
+}
+
+section {
+  height: 100%;
+  display: table-row;
+}
