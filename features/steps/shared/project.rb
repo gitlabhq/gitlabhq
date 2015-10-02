@@ -199,7 +199,7 @@ module SharedProject
 
   step 'project "Shop" has CI enabled' do
     project = Project.find_by(name: "Shop")
-    project.enable_ci(@user)
+    project.enable_ci
   end
 
   step 'project "Shop" has CI build' do
