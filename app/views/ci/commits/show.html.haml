@@ -17,14 +17,11 @@
           %p
             %span.attr-name Commit:
             #{gitlab_commit_link(@project, @commit.sha)}
-
-        %p
-          %span.attr-name Branch:
-          #{gitlab_ref_link(@project, @commit.ref)}
       .col-sm-6
-        %p
-          %span.attr-name Author:
-          #{@commit.git_author_name} (#{@commit.git_author_email})
+        - if @commit.git_author_name || @commit.git_author_email
+          %p
+            %span.attr-name Author:
+            #{@commit.git_author_name} (#{@commit.git_author_email})
         - if @commit.created_at
           %p
             %span.attr-name Created at:
@@ -33,7 +30,7 @@
 - if current_user && can?(current_user, :manage_builds, gl_project)
   .pull-right
     - if @commit.builds.running_or_pending.any?
-      = link_to "Cancel", cancel_ci_project_ref_commits_path(@project, @commit.ref, @commit.sha), class: 'btn btn-sm btn-danger'
+      = link_to "Cancel", cancel_ci_project_commits_path(@project, @commit), class: 'btn btn-sm btn-danger'
 
 
 - if @commit.yaml_errors.present?
@@ -43,34 +40,17 @@
       - @commit.yaml_errors.split(",").each do |error|
         %li= error
 
-- unless @commit.push_data[:ci_yaml_file]
+- unless @commit.ci_yaml_file
   .bs-callout.bs-callout-warning
     \.gitlab-ci.yml not found in this commit
 
-%h3
-  Builds
-  - if @commit.duration > 0
-    %small.pull-right
-      %i.fa.fa-time
-      #{time_interval_in_words @commit.duration}
-
-%table.table.builds
-  %thead
-    %tr
-      %th Status
-      %th Build ID
-      %th Stage
-      %th Name
-      %th Duration
-      %th Finished at
-      - if @project.coverage_enabled?
-        %th Coverage
-      %th
-  = render @commit.builds_without_retry_sorted, controls: true
-
-- if @commit.retried_builds.any?
+- @commit.refs.each do |ref|
   %h3
-    Retried builds
+    Builds for #{ref}
+    - if @commit.duration_for_ref(ref) > 0
+      %small.pull-right
+        %i.fa.fa-time
+        #{time_interval_in_words @commit.duration_for_ref(ref)}
 
   %table.table.builds
     %thead
@@ -84,4 +64,23 @@
         - if @project.coverage_enabled?
           %th Coverage
         %th
-    = render @commit.retried_builds
+    = render @commit.builds_without_retry.for_ref(ref), controls: true
+
+- if @commit.retried_builds.any?
+  %h3
+    Retried builds
+
+  %table.table.builds
+    %thead
+      %tr
+        %th Status
+        %th Build ID
+        %th Ref
+        %th Stage
+        %th Name
+        %th Duration
+        %th Finished at
+        - if @project.coverage_enabled?
+          %th Coverage
+        %th
+    = render @commit.retried_builds, ref: true

@@ -744,7 +744,11 @@ class Project < ActiveRecord::Base
   end
 
   def ci_commit(sha)
-    gitlab_ci_project.commits.find_by(sha: sha) if gitlab_ci?
+    ci_commits.find_by(sha: sha)
+  end
+
+  def ensure_ci_commit(sha)
+    ci_commit(sha) || ci_commits.create(sha: sha)
   end
 
   def ensure_gitlab_ci_project

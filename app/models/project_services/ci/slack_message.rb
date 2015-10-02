@@ -48,7 +48,7 @@ module Ci
     def attachment_message
       out = "<#{ci_project_url(project)}|#{project_name}>: "
       if commit.matrix?
-        out << "Commit <#{ci_project_ref_commits_url(project, commit.ref, commit.sha)}|\##{commit.id}> "
+        out << "Commit <#{ci_project_commits_url(project, commit.sha)}|\##{commit.id}> "
       else
         build = commit.builds_without_retry.first
         out << "Build <#{ci_project_build_url(project, build)}|\##{build.id}> "

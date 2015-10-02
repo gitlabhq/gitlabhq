@@ -34,10 +34,12 @@ module Ci
     belongs_to :trigger_request, class_name: 'Ci::TriggerRequest'
 
     serialize :options
+    serialize :push_data
 
     validates :commit, presence: true
     validates :status, presence: true
     validates :coverage, numericality: true, allow_blank: true
+    validates_presence_of :ref
 
     scope :running, ->() { where(status: "running") }
     scope :pending, ->() { where(status: "pending") }
@@ -45,6 +47,9 @@ module Ci
     scope :failed, ->() { where(status: "failed")  }
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :running_or_pending, ->() { where(status:[:running, :pending]) }
+    scope :latest, ->() { group(:name).order(stage_idx: :asc, created_at: :desc) }
+    scope :ignore_failures, ->() { where(allow_failure: false) }
+    scope :for_ref, ->(ref) { where(ref: ref) }
 
     acts_as_taggable
 
@@ -82,6 +87,7 @@ module Ci
         new_build.name = build.name
         new_build.allow_failure = build.allow_failure
         new_build.stage = build.stage
+        new_build.stage_idx = build.stage_idx
         new_build.trigger_request = build.trigger_request
         new_build.save
         new_build
@@ -185,6 +191,16 @@ module Ci
 
     def project_name
       project.name
+    end
+
+    def project_recipients
+      recipients = project.email_recipients.split(' ')
+
+      if project.email_add_pusher? && push_data[:user_email].present?
+        recipients << push_data[:user_email]
+      end
+
+      recipients.uniq
     end
 
     def repo_url

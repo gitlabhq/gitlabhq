@@ -1,7 +1,7 @@
 module Ci
   module CommitsHelper
     def ci_commit_path(commit)
-      ci_project_ref_commits_path(commit.project, commit.ref, commit.sha)
+      ci_project_commits_path(commit.project, commit)
     end
 
     def commit_link(commit)

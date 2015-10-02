@@ -63,7 +63,7 @@ class GitlabCiService < CiService
   end
 
   def get_ci_commit(sha, ref)
-    Ci::Project.find(project.gitlab_ci_project).commits.find_by_sha_and_ref!(sha, ref)
+    Ci::Project.find(project.gitlab_ci_project).commits.find_by_sha!(sha)
   end
 
   def commit_status(sha, ref)
@@ -80,7 +80,7 @@ class GitlabCiService < CiService
 
   def build_page(sha, ref)
     if project.gitlab_ci_project.present?
-      ci_project_ref_commits_url(project.gitlab_ci_project, ref, sha)
+      ci_project_commits_url(project.gitlab_ci_project, sha)
     end
   end
 
