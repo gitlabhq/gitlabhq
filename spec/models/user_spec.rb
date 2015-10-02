@@ -228,6 +228,26 @@ describe User do
     end
   end
 
+  describe '#recently_sent_password_reset?' do
+    it 'is false when reset_password_sent_at is nil' do
+      user = build_stubbed(:user, reset_password_sent_at: nil)
+
+      expect(user.recently_sent_password_reset?).to eq false
+    end
+
+    it 'is false when sent more than one minute ago' do
+      user = build_stubbed(:user, reset_password_sent_at: 5.minutes.ago)
+
+      expect(user.recently_sent_password_reset?).to eq false
+    end
+
+    it 'is true when sent less than one minute ago' do
+      user = build_stubbed(:user, reset_password_sent_at: Time.now)
+
+      expect(user.recently_sent_password_reset?).to eq true
+    end
+  end
+
   describe '#disable_two_factor!' do
     it 'clears all 2FA-related fields' do
       user = create(:user, :two_factor)
