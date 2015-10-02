@@ -48,7 +48,7 @@ describe Projects::ForkService do
         @from_project.build_missing_services
         @from_project.gitlab_ci_service.update_attributes(active: true)
 
-        expect_any_instance_of(Ci::CreateProjectService).to receive(:execute)
+        expect_any_instance_of(Project).to receive(:enable_ci)
 
         fork_project(@from_project, @to_user)
       end

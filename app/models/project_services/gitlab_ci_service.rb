@@ -72,21 +72,6 @@ class GitlabCiService < CiService
     :error
   end
 
-  def fork_registration(new_project, current_user)
-    params = OpenStruct.new({
-      id:                  new_project.id,
-      default_branch:      new_project.default_branch
-    })
-
-    ci_project = Ci::Project.find_by!(gitlab_id: project.id)
-
-    Ci::CreateProjectService.new.execute(
-      current_user,
-      params,
-      ci_project
-    )
-  end
-
   def commit_coverage(sha, ref)
     get_ci_commit(sha, ref).coverage
   rescue ActiveRecord::RecordNotFound
