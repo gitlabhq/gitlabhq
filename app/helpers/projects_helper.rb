@@ -296,7 +296,7 @@ module ProjectsHelper
 
   def readme_cache_key
     sha = @project.commit.try(:sha) || 'nil'
-    [@project.id, sha, "readme"].join('-')
+    [@project.path_with_namespace, sha, "readme"].join('-')
   end
 
   def round_commit_count(project)
