@@ -19,6 +19,16 @@ html {
   z-index: 5;
 }
 
+.content {
+  height: 100%;
+  width: 100%;
+}
+
+.content section {
+  height: 100%;
+  display: table-row;
+}
+
 .container .content {
   margin: 0 0;
 }
