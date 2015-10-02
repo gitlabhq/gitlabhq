@@ -26,6 +26,7 @@ v 8.1.0 (unreleased)
   - Show additions/deletions stats on merge request diff
   - Remove footer text in emails (Zeger-Jan van de Weg)
   - Ensure code blocks are properly highlighted after a note is updated
+  - Fix wrong access level badge on MR comments
 
 v 8.0.3
   - Fix URL shown in Slack notifications
