@@ -24,6 +24,13 @@ spec:api:
     - ruby
     - mysql
 
+spec:benchmark:
+  script:
+    - RAILS_ENV=test bundle exec rake spec:benchmark
+  tags:
+    - ruby
+    - mysql
+
 spec:other:
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:other
