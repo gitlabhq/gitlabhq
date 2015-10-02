@@ -135,6 +135,10 @@ class ProjectTeam
     !!find_member(user_id)
   end
 
+  def human_max_access(user_id)
+    Gitlab::Access.options.key max_member_access(user_id)
+  end
+
   def max_member_access(user_id)
     access = []
     access << project.project_members.find_by(user_id: user_id).try(:access_field)

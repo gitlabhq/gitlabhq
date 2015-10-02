@@ -14,10 +14,10 @@
               = icon('trash-o')
 
         - unless note.system
-          - member = note.project.team.find_member(note.author.id)
-          - if member
+          - access = note.project.team.human_max_access(note.author.id)
+          - if access
             %span.note-role.label
-              = member.human_access
+              = access
 
         = link_to_member(note.project, note.author, avatar: false)
 
