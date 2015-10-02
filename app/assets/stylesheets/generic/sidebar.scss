@@ -1,4 +1,7 @@
 .page-with-sidebar {
+  min-height: 100%;
+  height: 100%;
+  
   .sidebar-wrapper {
     position: fixed;
     top: 0;
@@ -38,43 +41,6 @@
       border: none;
     }
   }
-}
-
-
-.content {
-  height: 100%;
-  width: 100%;
-  
-}
-
-.max_height {
-  height: 100%;
-  display: table;
-  width: 100%;
-}
-
-.project-show-readme {
-  height: 100%;
-  display: table-row;
-}
-
-.wiki {
-  min-width: 1167px;
-}
-
-section {
-  height: 100%;
-  display: table-row;
-}
-
-html, body {
-  height: 100%;
-  margin: 0;
-}
-
-.page-with-sidebar{
-  min-height: 100%;
-  height: 100%;
 }
 
 .nav-sidebar {
