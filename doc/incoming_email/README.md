@@ -4,7 +4,7 @@ GitLab can be set up to allow users to comment on issues and merge requests by r
 
 **Warning**: Do not enable Reply by email if you have **multiple GitLab application servers**. 
 Due to an issue with the way incoming emails are read from the mail server, every incoming reply-by-email email will result in as many comments being created as you have application servers.
-A fix is being worked on.
+[A fix is being worked on.](https://github.com/tpitale/mail_room/issues/46)
 
 ## Get a mailbox
 
