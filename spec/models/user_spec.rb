@@ -227,7 +227,7 @@ describe User do
     end
   end
 
-  describe 'recently_sent_password_reset?' do
+  describe '#recently_sent_password_reset?' do
     it 'is false when reset_password_sent_at is nil' do
       user = build_stubbed(:user, reset_password_sent_at: nil)
 
