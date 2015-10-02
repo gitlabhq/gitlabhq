@@ -29,7 +29,7 @@ feature 'Password reset', feature: true do
       visit root_path
       forgot_password(user)
 
-      expect(page).to have_content("Instructions about how to reset your password have already been sent recently. Please wait a few minutes to try again.")
+      expect(page).to have_content(I18n.t('devise.passwords.recently_reset'))
       expect(current_path).to eq new_user_password_path
     end
   end

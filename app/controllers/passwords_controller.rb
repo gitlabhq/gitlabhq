@@ -1,21 +1,7 @@
 class PasswordsController < Devise::PasswordsController
-
-  def create
-    email = resource_params[:email]
-    self.resource = resource_class.find_by_email(email)
-
-    if resource && resource.ldap_user?
-      flash[:alert] = "Cannot reset password for LDAP user."
-      respond_with({}, location: after_sending_reset_password_instructions_path_for(resource_name)) and return
-    end
-
-    unless can_send_reset_email?
-      flash[:alert] = "Instructions about how to reset your password have already been sent recently. Please wait a few minutes to try again."
-      respond_with({}, location: new_password_path(resource_name)) and return
-    end
-
-    super
-  end
+  before_action :resource_from_email, only: [:create]
+  before_action :prevent_ldap_reset,  only: [:create]
+  before_action :throttle_reset,      only: [:create]
 
   def edit
     super
@@ -37,10 +23,24 @@ class PasswordsController < Devise::PasswordsController
     end
   end
 
-  private
+  protected
 
-  def can_send_reset_email?
-    resource && (resource.reset_password_sent_at.blank? ||
-                 resource.reset_password_sent_at < 1.minute.ago)
+  def resource_from_email
+    email = resource_params[:email]
+    self.resource = resource_class.find_by_email(email)
+  end
+
+  def prevent_ldap_reset
+    return unless resource && resource.ldap_user?
+
+    redirect_to after_sending_reset_password_instructions_path_for(resource_name),
+      alert: "Cannot reset password for LDAP user."
+  end
+
+  def throttle_reset
+    return unless resource && resource.recently_sent_password_reset?
+
+    redirect_to new_password_path(resource_name),
+      alert: I18n.t('devise.passwords.recently_reset')
   end
 end
