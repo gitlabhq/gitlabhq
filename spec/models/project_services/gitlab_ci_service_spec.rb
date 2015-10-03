@@ -49,7 +49,6 @@ describe GitlabCiService do
       let(:push_sample_data) { Gitlab::PushDataBuilder.build_sample(project, user) }
 
       it "calls ci_yaml_file" do
-        service_hook = double
         expect(@service).to receive(:ci_yaml_file).with(push_sample_data[:checkout_sha])
 
         @service.execute(push_sample_data)

@@ -140,7 +140,7 @@ describe Project do
 
     describe 'last_activity_date' do
       it 'returns the creation date of the project\'s last event if present' do
-        last_activity_event = create(:event, project: project)
+        create(:event, project: project)
         expect(project.last_activity_at.to_i).to eq(last_event.created_at.to_i)
       end
 
