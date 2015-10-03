@@ -228,13 +228,13 @@ describe Ci::Commit do
 
     it "returns finished_at of latest build" do
       build = FactoryGirl.create :ci_build, commit: commit, finished_at: Time.now - 60
-      build1 = FactoryGirl.create :ci_build, commit: commit, finished_at: Time.now - 120
+      FactoryGirl.create :ci_build, commit: commit, finished_at: Time.now - 120
 
       expect(commit.finished_at.to_i).to eq(build.finished_at.to_i)
     end
 
     it "returns nil if there is no finished build" do
-      build = FactoryGirl.create :ci_not_started_build, commit: commit
+      FactoryGirl.create :ci_not_started_build, commit: commit
 
       expect(commit.finished_at).to be_nil
     end
