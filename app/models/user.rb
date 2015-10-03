@@ -701,13 +701,7 @@ class User < ActiveRecord::Base
   end
 
   def manageable_namespaces
-    @manageable_namespaces ||=
-      begin
-        namespaces = []
-        namespaces << namespace
-        namespaces += owned_groups
-        namespaces += masters_groups
-      end
+    @manageable_namespaces ||= [namespace] + owned_groups + masters_groups
   end
 
   def namespaces

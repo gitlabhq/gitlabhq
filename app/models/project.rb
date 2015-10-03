@@ -413,7 +413,7 @@ class Project < ActiveRecord::Base
 
         if template.nil?
           # If no template, we should create an instance. Ex `create_gitlab_ci_service`
-          service = self.send :"create_#{service_name}_service"
+          self.send :"create_#{service_name}_service"
         else
           Service.create_from_template(self.id, template)
         end
@@ -738,7 +738,7 @@ class Project < ActiveRecord::Base
   def create_wiki
     ProjectWiki.new(self, self.owner).wiki
     true
-  rescue ProjectWiki::CouldNotCreateWikiError => ex
+  rescue ProjectWiki::CouldNotCreateWikiError
     errors.add(:base, 'Failed create wiki')
     false
   end

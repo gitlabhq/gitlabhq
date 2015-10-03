@@ -184,7 +184,7 @@ module Ci
 
         # If service is available but missing in db
         # we should create an instance. Ex `create_gitlab_ci_service`
-        service = self.send :"create_#{service_name}_service" if service.nil?
+        self.send :"create_#{service_name}_service" if service.nil?
       end
     end
 
