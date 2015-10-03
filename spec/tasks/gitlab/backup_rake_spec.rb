@@ -159,7 +159,7 @@ describe 'gitlab:app namespace rake task' do
     end
 
     it "does not contain skipped item" do
-      tar_contents, exit_status = Gitlab::Popen.popen(
+      tar_contents, _exit_status = Gitlab::Popen.popen(
         %W{tar -tvf #{@backup_tar} db uploads repositories builds}
       )
 
