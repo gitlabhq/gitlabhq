@@ -1,4 +1,7 @@
 .page-with-sidebar {
+  min-height: 100%;
+  height: 100%;
+  
   .sidebar-wrapper {
     position: fixed;
     top: 0;
@@ -18,15 +21,19 @@
 }
 
 .content-wrapper {
-  min-height: 100vh;
+  min-height: 900px;
+  display: table;
   width: 100%;
   padding: 20px;
   background: #EAEBEC;
+  height: 100%;
+  width: 100%;
 
   .container-fluid {
     background: #FFF;
     padding: $gl-padding;
-    min-height: 90vh;
+    height: 100%;
+    min-height: 100%;
 
     &.container-blank {
       background: none;
