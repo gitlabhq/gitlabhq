@@ -751,13 +751,9 @@ class Project < ActiveRecord::Base
     gitlab_ci_project || create_gitlab_ci_project
   end
 
-  def enable_ci(user)
-    # Enable service
+  def enable_ci
     service = gitlab_ci_service || create_gitlab_ci_service
     service.active = true
     service.save
-
-    # Create Ci::Project
-    Ci::CreateProjectService.new.execute(user, self)
   end
 end

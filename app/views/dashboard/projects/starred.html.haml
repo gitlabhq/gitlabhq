@@ -3,6 +3,9 @@
 
 = render 'dashboard/projects_head'
 
+- if @last_push
+  = render "events/event_last_push", event: @last_push
+
 - if @projects.any?
   = render 'projects'
 - else

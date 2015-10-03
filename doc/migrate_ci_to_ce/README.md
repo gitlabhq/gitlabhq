@@ -182,6 +182,7 @@ will need this file later.
 ```
 # On your CI server:
 # Omnibus
+sudo chown gitlab-ci:gitlab-ci /var/opt/gitlab/gitlab-ci/builds
 sudo gitlab-ci-rake backup:create
 
 # Source
@@ -228,6 +229,7 @@ be no CI data yet because you turned CI on the GitLab server off earlier.
 ```
 # On your GitLab server:
 # Omnibus
+sudo chown git:git /var/opt/gitlab/gitlab-ci/builds
 sudo gitlab-rake ci:migrate
 
 # Source
@@ -342,7 +344,12 @@ The fix for this is to update to Omnibus 7.14 first and then update it to 8.0.
 #### Permission denied when accessing /var/opt/gitlab/gitlab-ci/builds
 To fix that issue you have to change builds/ folder permission before doing final backup:
 ```
-chown -R gitlab-ci:gitlab-ci /var/opt/gitlab/gitlab-ci/builds
+sudo chown -R gitlab-ci:gitlab-ci /var/opt/gitlab/gitlab-ci/builds
+```
+
+Then before executing `ci:migrate` you need to fix builds folder permission:
+```
+sudo chown git:git /var/opt/gitlab/gitlab-ci/builds
 ```
 
 #### Problems when importing CI database to GitLab

@@ -66,4 +66,16 @@ describe ProjectTeam do
       it { expect(project.team.member?(guest)).to be_truthy }
     end
   end
+
+  describe "#human_max_access" do
+    it "return master role" do
+      user = create :user
+      group = create :group
+      group.add_users([user.id], GroupMember::MASTER)
+      project = create(:project, namespace: group)
+      project.team << [user, :guest]
+
+      expect(project.team.human_max_access(user.id)).to eq("Master")
+    end
+  end
 end

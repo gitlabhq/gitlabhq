@@ -417,9 +417,8 @@ describe Project do
 
   describe :enable_ci do
     let(:project) { create :project }
-    let(:user) { create :user }
 
-    before { project.enable_ci(user) }
+    before { project.enable_ci }
 
     it { expect(project.gitlab_ci?).to be_truthy }
     it { expect(project.gitlab_ci_project).to be_a(Ci::Project) }

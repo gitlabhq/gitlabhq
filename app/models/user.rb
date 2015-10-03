@@ -328,6 +328,10 @@ class User < ActiveRecord::Base
     @reset_token
   end
 
+  def recently_sent_password_reset?
+    reset_password_sent_at.present? && reset_password_sent_at >= 1.minute.ago
+  end
+
   def disable_two_factor!
     update_attributes(
       two_factor_enabled:        false,

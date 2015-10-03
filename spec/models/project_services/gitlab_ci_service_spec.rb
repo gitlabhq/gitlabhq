@@ -55,25 +55,4 @@ describe GitlabCiService do
       end
     end
   end
-
-  describe "Fork registration" do
-    before do
-      @old_project = create(:ci_project).gl_project
-      @project = create(:empty_project)
-      @user = create(:user)
-
-      @service = GitlabCiService.new
-      allow(@service).to receive_messages(
-        service_hook: true,
-        project_url: 'http://ci.gitlab.org/projects/2',
-        token: 'verySecret',
-        project: @old_project
-      )
-    end
-
-    it "creates fork on CI" do
-      expect_any_instance_of(Ci::CreateProjectService).to receive(:execute)
-      @service.fork_registration(@project, @user)
-    end
-  end
 end
