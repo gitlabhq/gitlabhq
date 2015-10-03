@@ -26,7 +26,7 @@
 module Ci
   class Build < ActiveRecord::Base
     extend Ci::Model
-    
+
     LAZY_ATTRIBUTES = ['trace']
 
     belongs_to :commit, class_name: 'Ci::Commit'
@@ -140,7 +140,7 @@ module Ci
 
     def trace_html
       html = Ci::Ansi2html::convert(trace) if trace.present?
-      html ||= ''
+      html || ''
     end
 
     def started?
@@ -211,7 +211,7 @@ module Ci
         if coverage.present?
           coverage.to_f
         end
-      rescue => ex
+      rescue
         # if bad regex or something goes wrong we dont want to interrupt transition
         # so we just silentrly ignore error for now
       end
