@@ -21,10 +21,10 @@ describe "Admin Builds" do
 
   describe "Tabs" do
     it "shows all builds" do
-      build = FactoryGirl.create :ci_build, commit: commit, status: "pending"
-      build1 = FactoryGirl.create :ci_build, commit: commit, status: "running"
-      build2 = FactoryGirl.create :ci_build, commit: commit, status: "success"
-      build3 = FactoryGirl.create :ci_build, commit: commit, status: "failed"
+      FactoryGirl.create :ci_build, commit: commit, status: "pending"
+      FactoryGirl.create :ci_build, commit: commit, status: "running"
+      FactoryGirl.create :ci_build, commit: commit, status: "success"
+      FactoryGirl.create :ci_build, commit: commit, status: "failed"
 
       visit ci_admin_builds_path
 
