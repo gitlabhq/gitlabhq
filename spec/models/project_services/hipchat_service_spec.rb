@@ -87,7 +87,7 @@ describe HipchatService do
       it "should create a push message" do
         message = hipchat.send(:create_push_message, push_sample_data)
 
-        obj_attr = push_sample_data[:object_attributes]
+        push_sample_data[:object_attributes]
         branch = push_sample_data[:ref].gsub('refs/heads/', '')
         expect(message).to include("#{user.name} pushed to branch " \
             "<a href=\"#{project.web_url}/commits/#{branch}\">#{branch}</a> of " \
@@ -107,7 +107,7 @@ describe HipchatService do
       it "should create a tag push message" do
         message = hipchat.send(:create_push_message, push_sample_data)
 
-        obj_attr = push_sample_data[:object_attributes]
+        push_sample_data[:object_attributes]
         expect(message).to eq("#{user.name} pushed new tag " \
             "<a href=\"#{project.web_url}/commits/test\">test</a> to " \
             "<a href=\"#{project.web_url}\">#{project_name}</a>\n")

@@ -39,7 +39,7 @@ class IssuableFinder
     items = by_assignee(items)
     items = by_author(items)
     items = by_label(items)
-    items = sort(items)
+    sort(items)
   end
 
   def group
