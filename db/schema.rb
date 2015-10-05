@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150930095736) do
+ActiveRecord::Schema.define(version: 20151005150751) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -753,6 +753,7 @@ ActiveRecord::Schema.define(version: 20150930095736) do
     t.integer  "dashboard",                  default: 0
     t.integer  "project_view",               default: 0
     t.integer  "consumed_timestep"
+    t.integer  "layout",                     default: 0
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
