@@ -24,9 +24,9 @@ module PageLayoutHelper
     end
   end
 
-  def fluid_layout(enabled = false)
+  def fluid_layout
     if @fluid_layout.nil?
-      @fluid_layout = enabled
+      @fluid_layout = (current_user.layout == "wide") ? true : false
     else
       @fluid_layout
     end
