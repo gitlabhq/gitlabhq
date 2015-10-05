@@ -11,6 +11,10 @@ describe "Commits" do
       @commit.project.gl_project.team << [@user, :master]
     end
 
+    before do
+      stub_ci_commit_to_return_yaml_file
+    end
+
     describe "GET /:project/commits/:sha" do
       before do
         visit ci_commit_path(@commit)
@@ -38,8 +42,7 @@ describe "Commits" do
       end
 
       it "shows warning" do
-        @commit.push_data[:ci_yaml_file] = nil
-        @commit.save
+        stub_ci_commit_yaml_file(nil)
 
         visit ci_commit_path(@commit)
 

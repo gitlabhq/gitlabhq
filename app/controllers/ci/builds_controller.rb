@@ -18,7 +18,7 @@ module Ci
 
         if commit
           # Redirect to commit page
-          redirect_to ci_project_ref_commit_path(@project, @build.commit.ref, @build.commit.sha)
+          redirect_to ci_project_commit_path(@project, @build.commit)
           return
         end
       end

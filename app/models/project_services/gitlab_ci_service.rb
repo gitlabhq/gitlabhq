@@ -40,19 +40,10 @@ class GitlabCiService < CiService
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
 
-    sha = data[:checkout_sha]
-
-    if sha.present?
-      file = ci_yaml_file(sha)
-
-      if file && file.data
-        data.merge!(ci_yaml_file: file.data)
-      end
-    end
-
-    ci_project = Ci::Project.find_by(gitlab_id: project.id)
+    ci_project = project.gitlab_ci_project
     if ci_project
-      Ci::CreateCommitService.new.execute(ci_project, data)
+      current_user = User.find_by(id: data[:user_id])
+      Ci::CreateCommitService.new.execute(ci_project, current_user, data)
     end
   end
 
@@ -63,7 +54,7 @@ class GitlabCiService < CiService
   end
 
   def get_ci_commit(sha, ref)
-    Ci::Project.find(project.gitlab_ci_project).commits.find_by_sha_and_ref!(sha, ref)
+    Ci::Project.find(project.gitlab_ci_project).commits.find_by_sha!(sha)
   end
 
   def commit_status(sha, ref)
@@ -80,7 +71,7 @@ class GitlabCiService < CiService
 
   def build_page(sha, ref)
     if project.gitlab_ci_project.present?
-      ci_project_ref_commits_url(project.gitlab_ci_project, ref, sha)
+      ci_project_commits_url(project.gitlab_ci_project, sha)
     end
   end
 
@@ -98,15 +89,5 @@ class GitlabCiService < CiService
 
   def fields
     []
-  end
-
-  private
-
-  def ci_yaml_file(sha)
-    repository.blob_at(sha, '.gitlab-ci.yml')
-  end
-
-  def repository
-    project.repository
   end
 end

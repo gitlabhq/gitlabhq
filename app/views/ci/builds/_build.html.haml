@@ -6,6 +6,10 @@
     = link_to ci_project_build_path(build.project, build) do
       %strong Build ##{build.id}
 
+  - if defined?(ref)
+    %td
+      = build.ref
+
   %td
     = build.stage
 

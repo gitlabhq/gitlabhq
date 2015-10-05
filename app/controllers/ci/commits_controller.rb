@@ -13,7 +13,7 @@ module Ci
     end
 
     def status
-      commit = Ci::Project.find(params[:project_id]).commits.find_by_sha_and_ref!(params[:id], params[:ref_id])
+      commit = Ci::Project.find(params[:project_id]).commits.find_by_sha!(params[:id])
       render json: commit.to_json(only: [:id, :sha], methods: [:status, :coverage])
     rescue ActiveRecord::RecordNotFound
       render json: { status: "not_found" }
@@ -22,7 +22,7 @@ module Ci
     def cancel
       commit.builds.running_or_pending.each(&:cancel)
 
-      redirect_to ci_project_ref_commits_path(project, commit.ref, commit.sha)
+      redirect_to ci_project_commits_path(project, commit.sha)
     end
 
     private
@@ -32,7 +32,7 @@ module Ci
     end
 
     def commit
-      @commit ||= Ci::Project.find(params[:project_id]).commits.find_by_sha_and_ref!(params[:id], params[:ref_id])
+      @commit ||= Ci::Project.find(params[:project_id]).commits.find_by_sha!(params[:id])
     end
   end
 end

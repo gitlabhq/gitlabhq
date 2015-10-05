@@ -30,12 +30,10 @@ Gitlab::Application.routes.draw do
 
       resource :charts, only: [:show]
 
-      resources :refs, constraints: { ref_id: /.*/ }, only: [] do
-        resources :commits, only: [:show] do
-          member do
-            get :status
-            get :cancel
-          end
+      resources :commits, only: [:show] do
+        member do
+          get :status
+          get :cancel
         end
       end
 

@@ -19,7 +19,8 @@ module Ci
       @ref = params[:ref]
 
       @commits = @project.commits.reverse_order
-      @commits = @commits.where(ref: @ref) if @ref
+      # TODO: this is broken
+      # @commits = @commits.where(ref: @ref) if @ref
       @commits = @commits.page(params[:page]).per(20)
     end
 

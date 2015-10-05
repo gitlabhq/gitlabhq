@@ -43,4 +43,8 @@ RSpec.configure do |config|
   end
 end
 
+FactoryGirl::SyntaxRunner.class_eval do
+  include RSpec::Mocks::ExampleMethods
+end
+
 ActiveRecord::Migration.maintain_test_schema!
