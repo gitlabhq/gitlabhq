@@ -2,8 +2,8 @@
 module PreferencesHelper
   def layout_choices
     [
-        ['Small', :small],
-        ['Wide', :wide]
+        ['Fixed', :fixed],
+        ['Fluid', :fluid]
     ]
   end
 

@@ -173,7 +173,7 @@ class User < ActiveRecord::Base
   after_destroy :post_destroy_hook
 
   # User's Layout preference
-  enum layout: [:small, :wide]
+  enum layout: [:fixed, :fluid]
 
   # User's Dashboard preference
   # Note: When adding an option, it MUST go on the end of the array.
