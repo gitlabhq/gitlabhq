@@ -54,6 +54,8 @@
 #  public_email               :string(255)      default(""), not null
 #  dashboard                  :integer          default(0)
 #  project_view               :integer          default(0)
+#  consumed_timestep          :integer
+#  layout                     :integer          default(0)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -170,6 +172,9 @@ class User < ActiveRecord::Base
   after_initialize :set_projects_limit
   after_create :post_create_hook
   after_destroy :post_destroy_hook
+
+  # User's Layout preference
+  enum layout: [:small, :wide]
 
   # User's Dashboard preference
   # Note: When adding an option, it MUST go on the end of the array.
