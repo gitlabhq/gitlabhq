@@ -75,7 +75,7 @@ Deploy keys can be shared between projects, you just need to add them to each pr
 
 ## Test your key
 
-After you have set up your SSH key, you'll have to make sure that you can connect to GitLab. If you have created a passphrase, you will be asked to enter it after the first step:
+After you have set up your SSH key, you'll have to make sure that you can connect to GitLab. If you have created a passphrase, you will be asked to enter it after the first step.
 
 1. Open a Terminal and run:
 
@@ -97,39 +97,42 @@ After you have set up your SSH key, you'll have to make sure that you can connec
 
 		ssh -Tv git@gitlab.com
 
-## Applications
+## Custom SSH configuration
 
-### Eclipse
+If you happen to have a custom location and filename for your GitLab SSH key pair, you must configure your SSH client to find your GitLab SSH private key for connections to your GitLab server (perhaps gitlab.com). For OpenSSH clients, this is handled in the `~/.ssh/config` file.
 
-How to add your ssh key to Eclipse: http://wiki.eclipse.org/EGit/User_Guide#Eclipse_SSH_Configuration
+Your gitlab.com configuration would look something like this:
 
-## Tip: Non-default OpenSSH key file names or locations
+	#
+	# Main gitlab.com server
+	#
+	Host gitlab.com
+		User git
+		Hostname gitlab.com
+		RSAAuthentication yes
+		IdentityFile ~/my-ssh-key-directory/my-gitlab-private-key-filename
 
-If, for whatever reason, you decide to specify a non-default location and filename for your Gitlab SSH key pair, you must configure your SSH client to find your Gitlab SSH private key for connections to your Gitlab server (perhaps gitlab.com). For OpenSSH clients, this is handled in the `~/.ssh/config` file with a stanza similar to the following:
+Note: You should connect using the `git` username, connections with your GitLab username will be refused and you will get an "access denied" error.
 
-```
-#
-# Main gitlab.com server
-#
-Host gitlab.com
-	User git
-	Hostname gitlab.com
-	RSAAuthentication yes
-	IdentityFile ~/my-ssh-key-directory/my-gitlab-private-key-filename
-```
+And for your self-hosted GitLab server the configuration will look like this:
 
-Another example
-```
-#
-# Our company's internal Gitlab server
-#
-Host my-gitlab.company.com
+	#
+	# Our company's internal GitLab server
+	#
 	Host my-gitlab.company.com
-	RSAAuthentication yes
-	IdentityFile ~/my-ssh-key-directory/company-com-private-key-filename
-```
+		Host my-gitlab.company.com
+		RSAAuthentication yes
+		IdentityFile ~/my-ssh-key-directory/company-com-private-key-filename
+
+You can find more information on custom SSH configuration in the [official documentation](http://linux.die.net/man/5/ssh_config).
 
 Due to the wide variety of SSH clients and their very large number of configuration options, further explanation of these topics is beyond the scope of this document.
 
 Public SSH keys need to be unique, as they will bind to your account. Your SSH key is the only identifier you'll
 have when pushing code via SSH. That's why it needs to uniquely map to a single user.
+
+## Applications
+
+### Eclipse
+
+How to add your ssh key to Eclipse: http://wiki.eclipse.org/EGit/User_Guide#Eclipse_SSH_Configuration
