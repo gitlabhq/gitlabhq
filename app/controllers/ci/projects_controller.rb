@@ -3,17 +3,13 @@ module Ci
     before_action :authenticate_user!, except: [:build, :badge, :show]
     before_action :authenticate_public_page!, only: :show
     before_action :project, only: [:build, :show, :badge, :toggle_shared_runners, :dumped_yaml]
-    before_action :authorize_access_project!, except: [:build, :badge, :show, :new, :disabled]
+    before_action :authorize_access_project!, except: [:build, :badge, :show, :new]
     before_action :authorize_manage_project!, only: [:toggle_shared_runners, :dumped_yaml]
     before_action :authenticate_token!, only: [:build]
     before_action :no_cache, only: [:badge]
-    skip_before_action :check_enable_flag!, only: [:disabled]
     protect_from_forgery except: :build
 
-    layout 'ci/project', except: [:index, :disabled]
-
-    def disabled
-    end
+    layout 'ci/project', except: [:index]
 
     def show
       @ref = params[:ref]
