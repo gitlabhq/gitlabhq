@@ -114,14 +114,11 @@ module Ci
     end
 
     def builds_without_retry
-      @builds_without_retry ||=
-        begin
-          grouped_builds = builds.group_by(&:name)
-          latest_builds = grouped_builds.map do |name, builds|
-            builds.sort_by(&:id).last
-          end
-          latest_builds.sort_by(&:stage_idx)
-        end
+      builds.latest
+    end
+
+    def builds_without_retry_for_ref(ref)
+      builds.for_ref(ref).latest
     end
 
     def retried_builds
@@ -181,7 +178,7 @@ module Ci
     end
 
     def duration_for_ref(ref)
-      builds_without_retry.for_ref(ref).select(&:duration).sum(&:duration).to_i
+      builds_without_retry_for_ref(ref).select(&:duration).sum(&:duration).to_i
     end
 
     def finished_at
@@ -198,7 +195,7 @@ module Ci
     end
 
     def matrix_for_ref?(ref)
-      builds_without_retry.for_ref(ref).pluck(:id).size > 1
+      builds_without_retry_for_ref(ref).pluck(:id).size > 1
     end
 
     def config_processor
