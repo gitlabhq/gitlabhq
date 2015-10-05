@@ -50,6 +50,7 @@ module Ci
     scope :latest, ->() { where(id: unscope(:select).select('max(id)').group(:name)).order(stage_idx: :asc) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
     scope :for_ref, ->(ref) { where(ref: ref) }
+    scope :similar, ->(build) { where(ref: build.ref, tag: build.tag, trigger_request_id: build.trigger_request_id) }
 
     acts_as_taggable
 
@@ -125,8 +126,8 @@ module Ci
           Ci::WebHookService.new.build_end(build)
         end
 
-        if build.commit.success?
-          build.commit.create_next_builds(build.trigger_request)
+        if build.commit.should_create_next_builds?(build)
+          build.commit.create_next_builds(build.ref, build.tag, build.user, build.trigger_request)
         end
 
         project.execute_services(build)

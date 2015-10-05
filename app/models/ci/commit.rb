@@ -224,6 +224,16 @@ module Ci
       update!(committed_at: DateTime.now)
     end
 
+    def should_create_next_builds?(build)
+      # don't create other builds if this one is retried
+      other_builds = builds.similar(build).latest
+      return false unless other_builds.include?(build)
+
+      other_builds.all? do |build|
+        build.success? || build.ignored?
+      end
+    end
+
     private
 
     def save_yaml_error(error)

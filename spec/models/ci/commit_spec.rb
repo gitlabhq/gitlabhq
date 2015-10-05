@@ -215,4 +215,59 @@ describe Ci::Commit do
       expect(commit.coverage).to be_nil
     end
   end
+
+  describe :should_create_next_builds? do
+    before do
+      @build1 = FactoryGirl.create :ci_build, commit: commit, name: 'build1', ref: 'master', tag: false, status: :success
+      @build2 = FactoryGirl.create :ci_build, commit: commit, name: 'build1', ref: 'develop', tag: false, status: :failed
+      @build3 = FactoryGirl.create :ci_build, commit: commit, name: 'build1', ref: 'master', tag: true, status: :failed
+      @build4 = FactoryGirl.create :ci_build, commit: commit, name: 'build4', ref: 'master', tag: false, status: :success
+    end
+
+    context 'for success' do
+      it 'to create if all succeeded' do
+        expect(commit.should_create_next_builds?(@build4)).to be_truthy
+      end
+    end
+
+    context 'for failed' do
+      before do
+        @build4.update_attributes(status: :failed)
+      end
+
+      it 'to not create' do
+        expect(commit.should_create_next_builds?(@build4)).to be_falsey
+      end
+
+      context 'and ignore failures for current' do
+        before do
+          @build4.update_attributes(allow_failure: true)
+        end
+
+        it 'to create' do
+          expect(commit.should_create_next_builds?(@build4)).to be_truthy
+        end
+      end
+    end
+
+    context 'for running' do
+      before do
+        @build4.update_attributes(status: :running)
+      end
+
+      it 'to not create' do
+        expect(commit.should_create_next_builds?(@build4)).to be_falsey
+      end
+    end
+
+    context 'for retried' do
+      before do
+        @build5 = FactoryGirl.create :ci_build, commit: commit, name: 'build4', ref: 'master', tag: false, status: :failed
+      end
+
+      it 'to not create' do
+        expect(commit.should_create_next_builds?(@build4)).to be_falsey
+      end
+    end
+  end
 end
