@@ -1,6 +1,10 @@
 module BenchmarkMatchers
   extend RSpec::Matchers::DSL
 
+  def self.included(into)
+    into.extend(ClassMethods)
+  end
+
   matcher :iterate_per_second do |min_iterations|
     supports_block_expectations
 
@@ -38,5 +42,18 @@ module BenchmarkMatchers
     end
 
     report.entries[0]
+  end
+
+  module ClassMethods
+    # Wraps around rspec's subject method so you can write:
+    #
+    #     benchmark_subject { SomeClass.some_method }
+    #
+    # instead of:
+    #
+    #     subject { -> { SomeClass.some_method } }
+    def benchmark_subject(&block)
+      subject { block }
+    end
   end
 end
