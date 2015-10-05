@@ -32,6 +32,7 @@ v 8.1.0 (unreleased)
   - Fix anchors to comments in diffs
   - Move CI web hooks page to project settings area
   - Fix User Identities API. It now allows you to properly create or update user's identities.
+  - Add user preference to change layout width (Peter Göbel)
 
 v 8.0.3
   - Fix URL shown in Slack notifications
