@@ -4,6 +4,15 @@
 # Example invocation:
 # find /var/opt/gitlab/git-data/repositories -maxdepth 2 | \
 #   parallel-rsync-repos /var/opt/gitlab/git-data/repositories /mnt/gitlab/repositories
+#
+# You can also rsync to a remote destination.
+#
+# parallel-rsync-repos /var/opt/gitlab/git-data/repositories user@host:/mnt/gitlab/repositories
+#
+# If you need to pass extra options to rsync, set the RSYNC variable
+#
+# env RSYNC='rsync --rsh="foo bar"' parallel-rsync-repos /src dest
+#
 
 SRC=$1
 DEST=$2
@@ -17,10 +26,14 @@ if [ -z "$SRC" ] || [ -z "$DEST" ] ; then
   exit 1
 fi
 
+if [ -z "$RSYNC" ] ; then
+  RSYNC=rsync
+fi
+
 if ! cd $SRC ; then
   echo "cd $SRC failed"
   exit 1
 fi
 
 sed "s|$SRC|./|" |\
-  parallel -j$JOBS --progress "mkdir -p $DEST/{} && rsync --delete -a {}/. $DEST/{}/"
+  parallel -j$JOBS --progress "mkdir -p $DEST/{} && $RSYNC --delete -a {}/. $DEST/{}/"
