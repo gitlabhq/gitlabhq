@@ -1,7 +1,7 @@
 #up-build-trace
 - if @commit.matrix_for_ref?(@build.ref)
   %ul.center-top-menu
-    - @commit.builds_without_retry_for_ref(build.ref).each do |build|
+    - @commit.builds_without_retry_for_ref(@build.ref).each do |build|
       %li{class: ('active' if build == @build) }
         = link_to ci_project_build_url(@project, build) do
           = ci_icon_for_status(build.status)
