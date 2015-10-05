@@ -4,6 +4,8 @@ v 8.0.4
   - Fix Message-ID header to be RFC 2111-compliant to prevent e-mails being dropped (Stan Hu)
   - Fix referrals for :back and relative URL installs
   - Fix anchors to comments in diffs
+  - Remove CI token from build traces
+  - Fix "Assign All" button on Runner admin page
 
 v 8.0.3
   - Fix URL shown in Slack notifications
