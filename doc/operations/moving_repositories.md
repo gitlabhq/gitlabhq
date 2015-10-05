@@ -16,7 +16,10 @@ source and the target.**
 ## Target directory is empty: use a tar pipe
 
 If the target directory `/mnt/gitlab/repositories` is empty the
-simplest thing to do is to use a tar pipe.
+simplest thing to do is to use a tar pipe.  This method has low
+overhead and tar is almost always already installed on your system.
+However, it is not possible to resume an interrupted tar pipe:  if
+that happens then all data must be copied again.
 
 ```
 # As the git user
@@ -43,9 +46,11 @@ If you want to compress the data before it goes over the network
 
 ## The target directory contains an outdated copy of the repositories: use rsync
 
-In this scenario it is better to use rsync. This utility is either
-already installed on your system or easily installable via apt, yum
-etc.
+If the target directory already contains a partial / outdated copy
+of the repositories it may be wasteful to copy all the data again
+with tar. In this scenario it is better to use rsync. This utility
+is either already installed on your system or easily installable
+via apt, yum etc.
 
 ```
 # As the 'git' user
