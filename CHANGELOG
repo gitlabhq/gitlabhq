@@ -38,6 +38,7 @@ v 8.0.4
   - Fix anchors to comments in diffs
   - Remove CI token from build traces
   - Fix "Assign All" button on Runner admin page
+  - Fix search in Files
 
 v 8.0.3
   - Fix URL shown in Slack notifications
