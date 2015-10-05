@@ -27,6 +27,7 @@ module Ci
         project_name: project.name,
         gitlab_url: project.gitlab_url,
         ref: build.ref,
+        before_sha: build.before_sha,
         sha: build.sha,
       })
     end
