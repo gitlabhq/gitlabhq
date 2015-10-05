@@ -30,13 +30,13 @@ FactoryGirl.define do
 
     factory :ci_commit_with_one_job do
       after(:build) do |commit|
-        allow(commit).to receive(:ci_yaml_file) { YAML.dump({rspec: {script: "ls"}}) }
+        allow(commit).to receive(:ci_yaml_file) { YAML.dump({ rspec: { script: "ls" } }) }
       end
     end
 
     factory :ci_commit_with_two_jobs do
       after(:build) do |commit|
-        allow(commit).to receive(:ci_yaml_file) { YAML.dump({rspec: {script: "ls"}, spinach: {script: "ls"}}) }
+        allow(commit).to receive(:ci_yaml_file) { YAML.dump({ rspec: { script: "ls" }, spinach: { script: "ls" } }) }
       end
     end
 

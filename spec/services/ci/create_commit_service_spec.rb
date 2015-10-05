@@ -71,7 +71,7 @@ module Ci
       end
 
       describe :ci_skip? do
-        let (:message) { "some message[ci skip]" }
+        let(:message) { "some message[ci skip]" }
 
         before do
           allow_any_instance_of(Ci::Commit).to receive(:git_commit_message) { message }
