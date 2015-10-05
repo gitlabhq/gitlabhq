@@ -209,6 +209,32 @@ body {
   }
 }
 
+@mixin bnt-light {
+  background-color: #fff;
+  border-color: #dce0e5;
+  color: #313236;
+  
+  &:hover {
+    border-color:#dce0e5;
+    background-color: #f0f2f5;
+    color: #313236;
+  }
+   
+  &:focus {
+    border-color: #dce0e5;
+    background-color: #f0f2f5;
+    color: #313236;
+  }
+  
+  &:active {
+   @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
+   
+      color: #313236 !important;
+      border-color: #c6cacf !important;
+      background-color: #e4e7ed !important;
+  }
+}
+
 @mixin btn-remove {
   background-color: #f72e60;
   border-color: #ee295a;
