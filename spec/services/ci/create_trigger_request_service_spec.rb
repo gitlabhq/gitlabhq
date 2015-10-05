@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe Ci::CreateTriggerRequestService do
   let(:service) { Ci::CreateTriggerRequestService.new }
-  let(:project) { FactoryGirl.create :ci_project }
-  let(:gl_project) { FactoryGirl.create :project, gitlab_ci_project: project }
-  let(:trigger) { FactoryGirl.create :ci_trigger, project: project }
+  let(:gl_project) { create(:project) }
+  let(:project) { create(:ci_project, gl_project: gl_project) }
+  let(:trigger) { create(:ci_trigger, project: project) }
 
   before do
     stub_ci_commit_to_return_yaml_file
@@ -15,7 +15,7 @@ describe Ci::CreateTriggerRequestService do
       subject { service.execute(project, trigger, 'master') }
 
       it { expect(subject).to be_kind_of(Ci::TriggerRequest) }
-      it { expect(subject.commit).to be_kind_of(Ci::Commit) }
+      it { expect(subject.builds.first).to be_kind_of(Ci::Build) }
     end
 
     context 'no commit for ref' do

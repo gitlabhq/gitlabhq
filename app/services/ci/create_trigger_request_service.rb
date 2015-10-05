@@ -10,7 +10,8 @@ module Ci
       ci_commit = project.gl_project.ensure_ci_commit(commit.sha)
 
       trigger_request = trigger.trigger_requests.create!(
-        variables: variables
+        variables: variables,
+        commit: ci_commit,
       )
 
       if ci_commit.create_builds(ref, tag, nil, trigger_request)
