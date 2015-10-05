@@ -3,12 +3,6 @@ module Ci
     module Helpers
       UPDATE_RUNNER_EVERY = 60
 
-      def check_enable_flag!
-        unless current_application_settings.ci_enabled
-          render_api_error!('400 (Bad request) CI is disabled', 400)
-        end
-      end
-
       def authenticate_runners!
         forbidden! unless params[:token] == GitlabCi::REGISTRATION_TOKEN
       end

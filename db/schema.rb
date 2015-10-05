@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151005150751) do
+ActiveRecord::Schema.define(version: 20151005162154) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,7 +46,6 @@ ActiveRecord::Schema.define(version: 20151005150751) do
     t.integer  "session_expire_delay",         default: 10080, null: false
     t.text     "import_sources"
     t.text     "help_page_text"
-    t.boolean  "ci_enabled",                   default: true,  null: false
   end
 
   create_table "audit_events", force: true do |t|
