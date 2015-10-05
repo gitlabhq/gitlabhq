@@ -94,7 +94,6 @@ body {
 
 @mixin btn-info {
   @include border-radius(2px);
-  @include transition (all 0.2s ease 0s);
   
   border-width: 1px;
   border-style: solid;
@@ -117,7 +116,6 @@ body {
   
   &:active {
     @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
-    
     border-width: 1px;
     border-style: solid;
   }
@@ -125,7 +123,6 @@ body {
 
 @mixin btn-middle {
   @include border-radius(2px);
-  @include transition (all 0.2s ease 0s);
   
   border-width: 1px;
   border-style: solid;
@@ -148,7 +145,6 @@ body {
   
   &:active {
     @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
-    
     border-width: 1px;
     border-style: solid;
     }
