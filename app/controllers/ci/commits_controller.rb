@@ -13,7 +13,7 @@ module Ci
     end
 
     def status
-      commit = Ci::Project.find(params[:project_id]).commits.find_by_sha!(params[:id], params[:ref_id])
+      commit = Ci::Project.find(params[:project_id]).commits.find_by_sha!(params[:id])
       render json: commit.to_json(only: [:id, :sha], methods: [:status, :coverage])
     rescue ActiveRecord::RecordNotFound
       render json: { status: "not_found" }

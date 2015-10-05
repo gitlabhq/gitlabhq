@@ -38,10 +38,9 @@ describe "Commits" do
       end
 
       it "shows warning" do
-        @commit.push_data[:ci_yaml_file] = nil
-        @commit.save
+        @commit_no_yaml = FactoryGirl.create :ci_empty_commit
 
-        visit ci_commit_path(@commit)
+        visit ci_commit_path(@commit_no_yaml)
 
         expect(page).to have_content ".gitlab-ci.yml not found in this commit"
       end

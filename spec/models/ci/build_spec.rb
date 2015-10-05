@@ -28,7 +28,7 @@ require 'spec_helper'
 describe Ci::Build do
   let(:project) { FactoryGirl.create :ci_project }
   let(:gl_project) { FactoryGirl.create :empty_project, gitlab_ci_project: project }
-  let(:commit) { FactoryGirl.create :ci_commit_yaml_stub, gl_project: gl_project }
+  let(:commit) { FactoryGirl.create :ci_commit, gl_project: gl_project }
   let(:build) { FactoryGirl.create :ci_build, commit: commit }
   subject { build }
 
@@ -352,8 +352,8 @@ describe Ci::Build do
   end
 
   describe :project_recipients do
-    let (:pusher_email) { 'pusher@gitlab.test' }
-    let (:user) { User.new(notification_email: pusher_email) }
+    let(:pusher_email) { 'pusher@gitlab.test' }
+    let(:user) { User.new(notification_email: pusher_email) }
     subject { build.project_recipients }
 
     before do

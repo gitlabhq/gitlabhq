@@ -17,7 +17,7 @@
 
 # Read about factories at https://github.com/thoughtbot/factory_girl
 FactoryGirl.define do
-  factory :ci_commit, class: Ci::Commit do
+  factory :ci_empty_commit, class: Ci::Commit do
     sha '97de212e80737a608d939f648d959671fb0a0142'
 
     gl_project factory: :empty_project
@@ -40,7 +40,7 @@ FactoryGirl.define do
       end
     end
 
-    factory :ci_commit_yaml_stub do
+    factory :ci_commit do
       after(:build) do |commit|
         allow(commit).to receive(:ci_yaml_file) { File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml')) }
       end

@@ -66,15 +66,6 @@ describe Ci::Commit do
   end
 
   describe :short_sha do
-    subject { commit.short_before_sha }
-
-    it 'has 8 items' do
-      expect(subject.size).to eq(8)
-    end
-    it { expect(commit.before_sha).to start_with(subject) }
-  end
-
-  describe :short_sha do
     subject { commit.short_sha }
 
     it 'has 8 items' do
@@ -87,7 +78,7 @@ describe Ci::Commit do
   end
 
   describe :create_builds do
-    let(:commit) { FactoryGirl.create :ci_commit_yaml_stub, gl_project: gl_project }
+    let(:commit) { FactoryGirl.create :ci_commit, gl_project: gl_project }
 
     def create_builds(trigger_request = nil)
       commit.create_builds('master', false, nil, trigger_request)

@@ -7,7 +7,7 @@ describe Ci::SlackMessage do
     let(:commit) { FactoryGirl.create(:ci_commit_with_one_job) }
 
     let(:build) do
-      commit.create_builds
+      commit.create_builds('master', false, nil)
       commit.builds.first
     end
 
@@ -47,7 +47,7 @@ describe Ci::SlackMessage do
       let(:color) { 'good' }
 
       it 'returns a message with success' do
-        commit.create_builds
+        commit.create_builds('master', false, nil)
         commit.builds.update_all(status: "success")
         commit.reload
 
@@ -63,7 +63,7 @@ describe Ci::SlackMessage do
       let(:color) { 'danger' }
 
       it 'returns a message with information about failed build' do
-        commit.create_builds
+        commit.create_builds('master', false, nil)
         first_build = commit.builds.first
         second_build = commit.builds.last
         first_build.update(status: "success")

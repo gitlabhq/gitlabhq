@@ -1,7 +1,6 @@
 module Ci
   class CreateCommitService
-    def execute(project, params, user)
-      before_sha = params[:before]
+    def execute(project, user, params)
       sha = params[:checkout_sha] || params[:after]
       origin_ref = params[:ref]
       

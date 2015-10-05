@@ -20,8 +20,8 @@ module Ci
           except: nil,
           name: :rspec,
           only: nil,
-          script: "pwd\nrspec",
-          tags: [],
+          commands: "pwd\nrspec",
+          tag_list: [],
           options: {},
           allow_failure: false
         })
@@ -117,8 +117,8 @@ module Ci
           stage: "test",
           name: :rspec,
           only: nil,
-          script: "pwd\nrspec",
-          tags: [],
+          commands: "pwd\nrspec",
+          tag_list: [],
           options: {
             image: "ruby:2.1",
             services: ["mysql"]
@@ -143,8 +143,8 @@ module Ci
           stage: "test",
           name: :rspec,
           only: nil,
-          script: "pwd\nrspec",
-          tags: [],
+          commands: "pwd\nrspec",
+          tag_list: [],
           options: {
             image: "ruby:2.5",
             services: ["postgresql"]

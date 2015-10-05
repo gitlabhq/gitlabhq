@@ -7,7 +7,7 @@ describe Ci::HipChatMessage do
     let(:commit) { FactoryGirl.create(:ci_commit_with_one_job) }
 
     let(:build) do
-      commit.create_builds
+      commit.create_builds('master', false, nil)
       commit.builds.first
     end
 
@@ -43,7 +43,7 @@ describe Ci::HipChatMessage do
 
     context 'when all matrix builds succeed' do
       it 'returns a successful message' do
-        commit.create_builds
+        commit.create_builds('master', false, nil)
         commit.builds.update_all(status: "success")
         commit.reload
 
@@ -56,7 +56,7 @@ describe Ci::HipChatMessage do
 
     context 'when at least one matrix build fails' do
       it 'returns a failure message' do
-        commit.create_builds
+        commit.create_builds('master', false, nil)
         first_build = commit.builds.first
         second_build = commit.builds.last
         first_build.update(status: "success")
