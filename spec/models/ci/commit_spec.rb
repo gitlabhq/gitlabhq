@@ -74,6 +74,40 @@ describe Ci::Commit do
     it { expect(commit.sha).to start_with(subject) }
   end
 
+  describe :stage do
+    subject { commit.stage }
+
+    before do
+      @second = FactoryGirl.create :ci_build, commit: commit, name: 'deploy', stage: 'deploy', stage_idx: 1, status: :pending
+      @first = FactoryGirl.create :ci_build, commit: commit, name: 'test', stage: 'test', stage_idx: 0, status: :pending
+    end
+
+    it 'returns first running stage' do
+      is_expected.to eq('test')
+    end
+
+    context 'first build succeeded' do
+      before do
+        @first.update_attributes(status: :success)
+      end
+
+      it 'returns last running stage' do
+        is_expected.to eq('deploy')
+      end
+    end
+
+    context 'all builds succeeded' do
+      before do
+        @first.update_attributes(status: :success)
+        @second.update_attributes(status: :success)
+      end
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
+  end
+
   describe :create_next_builds do
   end
 

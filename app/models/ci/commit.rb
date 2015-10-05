@@ -81,7 +81,8 @@ module Ci
     end
 
     def stage
-      builds_without_retry.group(:stage_idx).select(:stage).last
+      running_or_pending = builds_without_retry.running_or_pending
+      running_or_pending.limit(1).pluck(:stage).first
     end
 
     def create_builds(ref, tag, user, trigger_request = nil)
