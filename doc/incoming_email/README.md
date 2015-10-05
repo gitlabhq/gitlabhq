@@ -2,6 +2,10 @@
 
 GitLab can be set up to allow users to comment on issues and merge requests by replying to notification emails.
 
+**Warning**: Do not enable Reply by email if you have **multiple GitLab application servers**. 
+Due to an issue with the way incoming emails are read from the mail server, every incoming reply-by-email email will result in as many comments being created as you have application servers.
+[A fix is being worked on.](https://github.com/tpitale/mail_room/issues/46)
+
 ## Get a mailbox
 
 Reply by email requires an IMAP-enabled email account, with a provider or server that supports [email sub-addressing](https://en.wikipedia.org/wiki/Email_address#Sub-addressing). Sub-addressing is a feature where any email to `user+some_arbitrary_tag@example.com` will end up in the mailbox for `user@example.com`, and is supported by providers such as Gmail, Yahoo! Mail, Outlook.com and iCloud, as well as the Postfix mail server which you can run on-premises.
