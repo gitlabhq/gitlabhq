@@ -3,7 +3,6 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.1.0 (unreleased)
   - Fix bug where transferring a project would result in stale commit links (Stan Hu)
   - Include full path of source and target branch names in New Merge Request page (Stan Hu)
-  - Fix Message-ID header to be RFC 2111-compliant to prevent e-mails being dropped (Stan Hu)
   - Add user preference to view activities as default dashboard (Stan Hu)
   - Add option to admin area to sign in as a specific user (Pavel Forkert)
   - Show CI status on all pages where commits list is rendered
@@ -29,10 +28,16 @@ v 8.1.0 (unreleased)
   - Ensure code blocks are properly highlighted after a note is updated
   - Fix wrong access level badge on MR comments
   - Hide password in the service settings form
-  - Fix anchors to comments in diffs
   - Move CI web hooks page to project settings area
   - Fix User Identities API. It now allows you to properly create or update user's identities.
   - Add user preference to change layout width (Peter Göbel)
+
+v 8.0.4
+  - Fix Message-ID header to be RFC 2111-compliant to prevent e-mails being dropped (Stan Hu)
+  - Fix referrals for :back and relative URL installs
+  - Fix anchors to comments in diffs
+  - Remove CI token from build traces
+  - Fix "Assign All" button on Runner admin page
 
 v 8.0.3
   - Fix URL shown in Slack notifications
