@@ -52,7 +52,7 @@ class GitlabCiService < CiService
 
     ci_project = Ci::Project.find_by(gitlab_id: project.id)
     if ci_project
-      Ci::CreateCommitService.new.execute(ci_project, data)
+      Ci::CreateCommitService.new.execute(ci_project, data, current_user)
     end
   end
 

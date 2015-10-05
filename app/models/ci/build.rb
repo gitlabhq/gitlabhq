@@ -32,9 +32,9 @@ module Ci
     belongs_to :commit, class_name: 'Ci::Commit'
     belongs_to :runner, class_name: 'Ci::Runner'
     belongs_to :trigger_request, class_name: 'Ci::TriggerRequest'
+    belongs_to :user
 
     serialize :options
-    serialize :push_data
 
     validates :commit, presence: true
     validates :status, presence: true
@@ -196,8 +196,8 @@ module Ci
     def project_recipients
       recipients = project.email_recipients.split(' ')
 
-      if project.email_add_pusher? && push_data[:user_email].present?
-        recipients << push_data[:user_email]
+      if project.email_add_pusher? && user.present? && user.notification_email.present?
+        recipients << user.notification_email
       end
 
       recipients.uniq

@@ -96,10 +96,10 @@ module Ci
       builds_without_retry.group(:stage_idx).select(:stage).last
     end
 
-    def create_builds(ref, tag, push_data, trigger_request = nil)
+    def create_builds(ref, tag, user, trigger_request = nil)
       return if skip_ci? && trigger_request.blank?
       return unless config_processor
-      CreateBuildsService.new.execute(self, config_processor, ref, tag, push_data, trigger_request)
+      CreateBuildsService.new.execute(self, config_processor, ref, tag, user, trigger_request)
     end
 
     def refs

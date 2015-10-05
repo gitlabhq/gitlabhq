@@ -1,6 +1,6 @@
 module Ci
   class CreateBuildsService
-    def execute(commit, ref, tag, push_data, config_processor, trigger_request)
+    def execute(commit, ref, tag, user, config_processor, trigger_request)
       config_processor.stages.any? do |stage|
         builds_attrs = config_processor.builds_for_stage_and_ref(stage, ref, tag)
         builds_attrs.map do |build_attrs|
@@ -17,7 +17,7 @@ module Ci
                              trigger_request: trigger_request,
                              ref: ref,
                              tag: tag,
-                             push_data: push_data,
+                             user: user,
                            })
           end
         end
