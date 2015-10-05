@@ -1,12 +1,12 @@
 %h3.page-title
-  Web hooks
+  CI Web hooks
 
 %p.light
   Web Hooks can be used for binding events when build completed.
 
 %hr.clearfix
 
-= form_for [:ci, @project, @web_hook], html: { class: 'form-horizontal' } do |f|
+= form_for @web_hook, url: namespace_project_ci_web_hooks_path(@project.namespace, @project), html: { class: 'form-horizontal' } do |f|
   -if @web_hook.errors.any?
     .alert.alert-danger
       - @web_hook.errors.full_messages.each do |msg|
@@ -28,9 +28,9 @@
             %span.monospace= hook.url
         %td
           .pull-right
-            - if @project.commits.any?
-              = link_to 'Test Hook', test_ci_project_web_hook_path(@project, hook), class: "btn btn-sm btn-grouped"
-            = link_to 'Remove', ci_project_web_hook_path(@project, hook), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove btn-sm btn-grouped"
+            - if @ci_project.commits.any?
+              = link_to 'Test Hook', test_namespace_project_ci_web_hook_path(@project.namespace, @project, hook), class: "btn btn-sm btn-grouped"
+            = link_to 'Remove', namespace_project_ci_web_hook_path(@project.namespace, @project, hook), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove btn-sm btn-grouped"
 
 %h4 Web Hook data example
 
