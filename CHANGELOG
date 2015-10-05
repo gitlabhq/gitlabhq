@@ -31,6 +31,7 @@ v 8.1.0 (unreleased)
   - Hide password in the service settings form
   - Fix anchors to comments in diffs
   - Move CI web hooks page to project settings area
+  - Fix search in Files
 
 v 8.0.3
   - Fix URL shown in Slack notifications
