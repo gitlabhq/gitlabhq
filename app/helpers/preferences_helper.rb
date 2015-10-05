@@ -8,6 +8,13 @@ module PreferencesHelper
     starred_project_activity: "Starred Projects' Activity"
   }.with_indifferent_access.freeze
 
+  def layout_choices
+    [
+        ['Small', :small],
+        ['Wide', :wide]
+    ]
+  end
+
   # Returns an Array usable by a select field for more user-friendly option text
   def dashboard_choices
     defined = User.dashboards
