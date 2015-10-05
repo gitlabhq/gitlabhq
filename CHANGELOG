@@ -29,6 +29,7 @@ v 8.1.0 (unreleased)
   - Ensure code blocks are properly highlighted after a note is updated
   - Fix wrong access level badge on MR comments
   - Hide password in the service settings form
+  - Fix anchors to comments in diffs
 
 v 8.0.3
   - Fix URL shown in Slack notifications
