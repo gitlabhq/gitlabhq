@@ -30,6 +30,7 @@ spec:benchmark:
   tags:
     - ruby
     - mysql
+  allow_failure: true
 
 spec:other:
   script:
