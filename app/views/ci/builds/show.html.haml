@@ -122,11 +122,6 @@
         Commit
         .pull-right
           %small #{build_commit_link @build}
-
-      - if @build.commit.compare?
-        %p
-          %span.attr-name Compare:
-          #{build_compare_link @build}
       %p
         %span.attr-name Branch:
         #{build_ref_link @build}

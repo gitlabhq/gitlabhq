@@ -21,15 +21,10 @@ describe Ci::Commit do
   let(:project) { FactoryGirl.create :ci_project }
   let(:gl_project) { FactoryGirl.create :empty_project, gitlab_ci_project: project }
   let(:commit) { FactoryGirl.create :ci_commit, gl_project: gl_project }
-  let(:commit_with_project) { FactoryGirl.create :ci_commit, gl_project: gl_project }
-  let(:config_processor) { Ci::GitlabCiYamlProcessor.new(gitlab_ci_yaml) }
 
   it { is_expected.to belong_to(:gl_project) }
   it { is_expected.to have_many(:builds) }
-  it { is_expected.to validate_presence_of :before_sha }
   it { is_expected.to validate_presence_of :sha }
-  it { is_expected.to validate_presence_of :ref }
-  it { is_expected.to validate_presence_of :push_data }
 
   it { is_expected.to respond_to :git_author_name }
   it { is_expected.to respond_to :git_author_email }
@@ -59,53 +54,6 @@ describe Ci::Commit do
     end
   end
 
-  describe :project_recipients do
-
-    context 'always sending notification' do
-      it 'should return commit_pusher_email as only recipient when no additional recipients are given' do
-        project = FactoryGirl.create :ci_project,
-          email_add_pusher: true,
-          email_recipients: ''
-        gl_project = FactoryGirl.create :empty_project, gitlab_ci_project: project
-        commit =  FactoryGirl.create :ci_commit, gl_project: gl_project
-        expected = 'commit_pusher_email'
-        allow(commit).to receive(:push_data) { { user_email: expected } }
-        expect(commit.project_recipients).to eq([expected])
-      end
-
-      it 'should return commit_pusher_email and additional recipients' do
-        project = FactoryGirl.create :ci_project,
-          email_add_pusher: true,
-          email_recipients: 'rec1 rec2'
-        gl_project = FactoryGirl.create :empty_project, gitlab_ci_project: project
-        commit = FactoryGirl.create :ci_commit, gl_project: gl_project
-        expected = 'commit_pusher_email'
-        allow(commit).to receive(:push_data) { { user_email: expected } }
-        expect(commit.project_recipients).to eq(['rec1', 'rec2', expected])
-      end
-
-      it 'should return recipients' do
-        project = FactoryGirl.create :ci_project,
-          email_add_pusher: false,
-          email_recipients: 'rec1 rec2'
-        gl_project = FactoryGirl.create :empty_project, gitlab_ci_project: project
-        commit = FactoryGirl.create :ci_commit, gl_project: gl_project
-        expect(commit.project_recipients).to eq(['rec1', 'rec2'])
-      end
-
-      it 'should return unique recipients only' do
-        project = FactoryGirl.create :ci_project,
-          email_add_pusher: true,
-          email_recipients: 'rec1 rec1 rec2'
-        gl_project = FactoryGirl.create :empty_project, gitlab_ci_project: project
-        commit = FactoryGirl.create :ci_commit, gl_project: gl_project
-        expected = 'rec2'
-        allow(commit).to receive(:push_data) { { user_email: expected } }
-        expect(commit.project_recipients).to eq(['rec1', 'rec2'])
-      end
-    end
-  end
-
   describe :valid_commit_sha do
     context 'commit.sha can not start with 00000000' do
       before do
@@ -114,14 +62,6 @@ describe Ci::Commit do
       end
 
       it('commit errors should not be empty') { expect(commit.errors).not_to be_empty }
-    end
-  end
-
-  describe :compare? do
-    subject { commit_with_project.compare? }
-
-    context 'if commit.before_sha are not nil' do
-      it { is_expected.to be_truthy }
     end
   end
 
@@ -144,36 +84,51 @@ describe Ci::Commit do
   end
 
   describe :create_next_builds do
-    before do
-      allow(commit).to receive(:config_processor).and_return(config_processor)
-    end
-
-    it "creates builds for next type" do
-      expect(commit.create_builds).to be_truthy
-      commit.builds.reload
-      expect(commit.builds.size).to eq(2)
-
-      expect(commit.create_next_builds(nil)).to be_truthy
-      commit.builds.reload
-      expect(commit.builds.size).to eq(4)
-
-      expect(commit.create_next_builds(nil)).to be_truthy
-      commit.builds.reload
-      expect(commit.builds.size).to eq(5)
-
-      expect(commit.create_next_builds(nil)).to be_falsey
-    end
   end
 
   describe :create_builds do
-    before do
-      allow(commit).to receive(:config_processor).and_return(config_processor)
+    let(:commit) { FactoryGirl.create :ci_commit_yaml_stub, gl_project: gl_project }
+
+    def create_builds(trigger_request = nil)
+      commit.create_builds('master', false, nil, trigger_request)
+    end
+
+    def create_next_builds(trigger_request = nil)
+      commit.create_next_builds('master', false, nil, trigger_request)
     end
 
     it 'creates builds' do
-      expect(commit.create_builds).to be_truthy
+      expect(create_builds).to be_truthy
       commit.builds.reload
       expect(commit.builds.size).to eq(2)
+
+      expect(create_next_builds).to be_truthy
+      commit.builds.reload
+      expect(commit.builds.size).to eq(4)
+
+      expect(create_next_builds).to be_truthy
+      commit.builds.reload
+      expect(commit.builds.size).to eq(5)
+
+      expect(create_next_builds).to be_falsey
+    end
+
+    context 'for different ref' do
+      def create_develop_builds
+        commit.create_builds('develop', false, nil, nil)
+      end
+
+      it 'creates builds' do
+        expect(create_builds).to be_truthy
+        commit.builds.reload
+        expect(commit.builds.size).to eq(2)
+
+        expect(create_develop_builds).to be_truthy
+        commit.builds.reload
+        expect(commit.builds.size).to eq(4)
+        expect(commit.refs.size).to eq(2)
+        expect(commit.builds.pluck(:name).uniq.size).to eq(2)
+      end
     end
 
     context 'for build triggers' do
@@ -181,40 +136,39 @@ describe Ci::Commit do
       let(:trigger_request) { FactoryGirl.create :ci_trigger_request, commit: commit, trigger: trigger }
 
       it 'creates builds' do
-        expect(commit.create_builds(trigger_request)).to be_truthy
+        expect(create_builds(trigger_request)).to be_truthy
         commit.builds.reload
         expect(commit.builds.size).to eq(2)
       end
 
       it 'rebuilds commit' do
-        expect(commit.create_builds).to be_truthy
+        expect(create_builds).to be_truthy
         commit.builds.reload
         expect(commit.builds.size).to eq(2)
 
-        expect(commit.create_builds(trigger_request)).to be_truthy
+        expect(create_builds(trigger_request)).to be_truthy
         commit.builds.reload
         expect(commit.builds.size).to eq(4)
       end
 
       it 'creates next builds' do
-        expect(commit.create_builds(trigger_request)).to be_truthy
+        expect(create_builds(trigger_request)).to be_truthy
         commit.builds.reload
         expect(commit.builds.size).to eq(2)
 
-        expect(commit.create_next_builds(trigger_request)).to be_truthy
+        expect(create_next_builds(trigger_request)).to be_truthy
         commit.builds.reload
         expect(commit.builds.size).to eq(4)
       end
 
       context 'for [ci skip]' do
         before do
-          commit.push_data[:commits][0][:message] = 'skip this commit [ci skip]'
-          commit.save
+          allow(commit).to receive(:git_commit_message) { 'message [ci skip]' }
         end
 
         it 'rebuilds commit' do
           expect(commit.status).to eq('skipped')
-          expect(commit.create_builds(trigger_request)).to be_truthy
+          expect(create_builds(trigger_request)).to be_truthy
           commit.builds.reload
           expect(commit.builds.size).to eq(2)
           expect(commit.status).to eq('pending')

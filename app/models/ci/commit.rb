@@ -58,14 +58,6 @@ module Ci
       end
     end
 
-    def new_branch?
-      before_sha == Ci::Git::BLANK_SHA
-    end
-
-    def compare?
-      !new_branch?
-    end
-
     def git_author_name
       commit_data.author_name if commit_data
     end
@@ -76,10 +68,6 @@ module Ci
 
     def git_commit_message
       commit_data.message if commit_data
-    end
-
-    def short_before_sha
-      Ci::Commit.truncate_sha(before_sha)
     end
 
     def short_sha
@@ -99,7 +87,22 @@ module Ci
     def create_builds(ref, tag, user, trigger_request = nil)
       return if skip_ci? && trigger_request.blank?
       return unless config_processor
-      CreateBuildsService.new.execute(self, config_processor, ref, tag, user, trigger_request)
+      config_processor.stages.any? do |stage|
+        CreateBuildsService.new.execute(self, stage, ref, tag, user, trigger_request).present?
+      end
+    end
+
+    def create_next_builds(ref, tag, user, trigger_request)
+      return if skip_ci? && trigger_request.blank?
+      return unless config_processor
+
+      stages = builds.where(ref: ref, tag: tag, trigger_request: trigger_request).group_by(&:stage)
+
+      config_processor.stages.any? do |stage|
+        unless stages.include?(stage)
+          CreateBuildsService.new.execute(self, stage, ref, tag, user, trigger_request).present?
+        end
+      end
     end
 
     def refs
@@ -111,7 +114,14 @@ module Ci
     end
 
     def builds_without_retry
-      builds.latest
+      @builds_without_retry ||=
+        begin
+          grouped_builds = builds.group_by(&:name)
+          latest_builds = grouped_builds.map do |name, builds|
+            builds.sort_by(&:id).last
+          end
+          latest_builds.sort_by(&:stage_idx)
+        end
     end
 
     def retried_builds
@@ -125,32 +135,35 @@ module Ci
         return 'failed'
       elsif builds.none?
         return 'skipped'
-      end
-
-      statuses = builds_without_retry.ignore_failures.pluck(:status)
-      if statuses.all? { |status| status == 'success' }
-        return 'success'
-      elsif statuses.all? { |status| status == 'pending' }
-        return 'pending'
-      elsif statuses.include?('running') || statuses.include?('pending')
-        return 'running'
-      elsif statuses.all? { |status| status == 'canceled' }
-        return 'canceled'
+      elsif success?
+        'success'
+      elsif pending?
+        'pending'
+      elsif running?
+        'running'
+      elsif canceled?
+        'canceled'
       else
-        return 'failed'
+        'failed'
       end
     end
 
     def pending?
-      status == 'pending'
+      builds_without_retry.all? do |build|
+        build.pending?
+      end
     end
 
     def running?
-      status == 'running'
+      builds_without_retry.any? do |build|
+        build.running? || build.pending?
+      end
     end
 
     def success?
-      status == 'success'
+      builds_without_retry.all? do |build|
+        build.success? || build.ignored?
+      end
     end
 
     def failed?
@@ -158,7 +171,9 @@ module Ci
     end
 
     def canceled?
-      status == 'canceled'
+      builds_without_retry.all? do |build|
+        build.canceled?
+      end
     end
 
     def duration

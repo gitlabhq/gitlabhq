@@ -28,11 +28,14 @@ require 'spec_helper'
 describe Ci::Build do
   let(:project) { FactoryGirl.create :ci_project }
   let(:gl_project) { FactoryGirl.create :empty_project, gitlab_ci_project: project }
-  let(:commit) { FactoryGirl.create :ci_commit, gl_project: gl_project }
+  let(:commit) { FactoryGirl.create :ci_commit_yaml_stub, gl_project: gl_project }
   let(:build) { FactoryGirl.create :ci_build, commit: commit }
+  subject { build }
 
   it { is_expected.to belong_to(:commit) }
+  it { is_expected.to belong_to(:user) }
   it { is_expected.to validate_presence_of :status }
+  it { is_expected.to validate_presence_of :ref }
 
   it { is_expected.to respond_to :success? }
   it { is_expected.to respond_to :failed? }
@@ -236,12 +239,6 @@ describe Ci::Build do
     it { is_expected.to eq(options) }
   end
 
-  describe :ref do
-    subject { build.ref }
-
-    it { is_expected.to eq(commit.ref) }
-  end
-
   describe :sha do
     subject { build.sha }
 
@@ -252,12 +249,6 @@ describe Ci::Build do
     subject { build.short_sha }
 
     it { is_expected.to eq(commit.short_sha) }
-  end
-
-  describe :before_sha do
-    subject { build.before_sha }
-
-    it { is_expected.to eq(commit.before_sha) }
   end
 
   describe :allow_git_fetch do
@@ -357,6 +348,40 @@ describe Ci::Build do
           it { is_expected.to eq(variables + secure_variables + trigger_variables) }
         end
       end
+    end
+  end
+
+  describe :project_recipients do
+    let (:pusher_email) { 'pusher@gitlab.test' }
+    let (:user) { User.new(notification_email: pusher_email) }
+    subject { build.project_recipients }
+
+    before do
+      build.update_attributes(user: user)
+    end
+
+    it 'should return pusher_email as only recipient when no additional recipients are given' do
+      project.update_attributes(email_add_pusher: true,
+                                email_recipients: '')
+      is_expected.to eq([pusher_email])
+    end
+
+    it 'should return pusher_email and additional recipients' do
+      project.update_attributes(email_add_pusher: true,
+                                email_recipients: 'rec1 rec2')
+      is_expected.to eq(['rec1', 'rec2', pusher_email])
+    end
+
+    it 'should return recipients' do
+      project.update_attributes(email_add_pusher: false,
+                                email_recipients: 'rec1 rec2')
+      is_expected.to eq(['rec1', 'rec2'])
+    end
+
+    it 'should return unique recipients only' do
+      project.update_attributes(email_add_pusher: true,
+                                email_recipients: "rec1 rec1 #{pusher_email}")
+      is_expected.to eq(['rec1', pusher_email])
     end
   end
 end

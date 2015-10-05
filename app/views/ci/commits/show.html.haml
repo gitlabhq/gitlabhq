@@ -9,14 +9,9 @@
   .gray-content-block.second-block
     .row
       .col-sm-6
-        - if @commit.compare?
-          %p
-            %span.attr-name Compare:
-            #{gitlab_compare_link(@project, @commit.short_before_sha, @commit.short_sha)}
-        - else
-          %p
-            %span.attr-name Commit:
-            #{gitlab_commit_link(@project, @commit.sha)}
+       %p
+          %span.attr-name Commit:
+          #{gitlab_commit_link(@project, @commit.sha)}
       .col-sm-6
         - if @commit.git_author_name || @commit.git_author_email
           %p

@@ -80,6 +80,8 @@ module Ci
 
       def retry(build)
         new_build = Ci::Build.new(status: :pending)
+        new_build.ref = build.ref
+        new_build.tag = build.tag
         new_build.options = build.options
         new_build.commands = build.commands
         new_build.tag_list = build.tag_list
@@ -141,7 +143,7 @@ module Ci
       state :canceled, value: 'canceled'
     end
 
-    delegate :sha, :short_sha, :before_sha, :ref, :project,
+    delegate :sha, :short_sha, :project,
       to: :commit, prefix: false
 
     def trace_html

@@ -28,8 +28,6 @@ module Ci
         gitlab_url: project.gitlab_url,
         ref: build.ref,
         sha: build.sha,
-        before_sha: build.before_sha,
-        push_data: build.commit.push_data
       })
     end
   end
