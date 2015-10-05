@@ -38,7 +38,9 @@ module BenchmarkMatchers
   # Benchmarks the given block and returns a Benchmark::IPS::Report::Entry.
   def benchmark(&block)
     report = Benchmark.ips(quiet: true) do |bench|
-      bench.report(&block)
+      bench.report do
+        instance_eval(&block)
+      end
     end
 
     report.entries[0]
