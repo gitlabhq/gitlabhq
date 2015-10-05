@@ -8,7 +8,6 @@ already has one by running the following command:
 ```bash
 cat ~/.ssh/id_rsa.pub
 ```
-
 If you see a long string starting with `ssh-rsa` or `ssh-dsa`, you can skip the `ssh-keygen` step.
 
 Note: It is a best practice to use a password for an SSH key, but it is not
@@ -74,6 +73,30 @@ information.
 
 Deploy keys can be shared between projects, you just need to add them to each project.
 
+## Test your key
+
+After you have set up your SSH key, you'll have to make sure that you can connect to GitLab. If you have created a passphrase, you will be asked to enter it after the first step:
+
+1. Open a Terminal and run:
+
+		ssh -T git@gitlab.com
+
+2. After you verify the authenticity of the fingerprint in this message:
+
+		The authenticity of host 'gitlab.com (WWW.XXX.YYY.ZZZ)' can't be established.
+		ECDSA key fingerprint is SHA256:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
+		Are you sure you want to continue connecting (yes/no)?
+
+	type `yes` to confirm.
+
+3. If everything went well and your username has been recognized you'll see this welcome message with your full name:
+
+		Welcome to GitLab, John Smith!
+
+	In case you get an "access denied" error, try debugging the connection using this command:
+
+		ssh -Tv git@gitlab.com
+
 ## Applications
 
 ### Eclipse
@@ -89,9 +112,10 @@ If, for whatever reason, you decide to specify a non-default location and filena
 # Main gitlab.com server
 #
 Host gitlab.com
-RSAAuthentication yes
-IdentityFile ~/my-ssh-key-directory/my-gitlab-private-key-filename
-User mygitlabusername
+	User git
+	Hostname gitlab.com
+	RSAAuthentication yes
+	IdentityFile ~/my-ssh-key-directory/my-gitlab-private-key-filename
 ```
 
 Another example
@@ -100,11 +124,10 @@ Another example
 # Our company's internal Gitlab server
 #
 Host my-gitlab.company.com
-RSAAuthentication yes
-IdentityFile ~/my-ssh-key-directory/company-com-private-key-filename
+	Host my-gitlab.company.com
+	RSAAuthentication yes
+	IdentityFile ~/my-ssh-key-directory/company-com-private-key-filename
 ```
-
-Note in the gitlab.com example above a username was specified to override the default chosen by OpenSSH (your local username). This is only required if your local and remote usernames differ.
 
 Due to the wide variety of SSH clients and their very large number of configuration options, further explanation of these topics is beyond the scope of this document.
 
