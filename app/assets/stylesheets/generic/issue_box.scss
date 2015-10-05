@@ -5,7 +5,7 @@
  */
 
 .issue-box {
-  @include border-radius(3px);
+  @include border-radius(2px);
 
   display: inline-block;
   padding: 10px $gl-padding;

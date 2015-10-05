@@ -13,9 +13,17 @@
 .edit_project {
   fieldset.features {
     .control-label {
-      font-weight: bold;
+      font-weight: normal;
     }
   }
+}
+
+.btn, .commits-compare-switch {
+    @include btn-light;
+}
+
+.project-edit-content {
+  padding: 7px;
 }
 
 .project-name-holder {
@@ -92,8 +100,8 @@
     margin-bottom: 0px;
 
     .btn {
-      @include bnt-project;
-      @include btn-info;
+      @include btn-project;
+      @include btn-default;
 
       .count {
         display: inline-block;
@@ -139,7 +147,11 @@
     }
   }
 }
+.btn-green {
+   @include btn-green;
 
+   cursor: pointer;
+}
 .projects-search-form {
 
   .input-group .form-control {
@@ -149,7 +161,7 @@
 
 .input-group-btn {
   .btn {
-    @include bnt-project;
+    @include btn-project;
     @include btn-middle;
 
     &:hover {
@@ -183,8 +195,8 @@
   margin: 0 12px 0 12px;
 
   .btn{
-    @include bnt-project;
-    @include btn-info;
+    @include btn-project;
+    @include btn-default;
   }
 
   .dropdown-toggle  {
@@ -251,18 +263,19 @@
     margin-bottom: 10px;
 
     i {
-      margin: 0 3px;
+      margin: 2px 0;
       font-size: 20px;
     }
 
     .option-title {
-      font-weight: bold;
+      font-weight: normal;
       display: inline-block;
+      color: #313236;
     }
 
     .option-descr {
-      margin-left: 36px;
-      color: $gray;
+      margin-left: 29px;
+      color: #54565b;
     }
   }
 }
@@ -376,8 +389,8 @@ table.table.protected-branches-list tr.no-border {
   }
 
   .nav > li > a {
-    @include btn-info;
-    @include bnt-project;
+    @include btn-default;
+    @include btn-project;
 
     background-color: transparent;
     border: 1px solid #f7f8fa;
