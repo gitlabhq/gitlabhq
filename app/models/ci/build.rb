@@ -146,6 +146,10 @@ module Ci
     delegate :sha, :short_sha, :project,
       to: :commit, prefix: false
 
+    def before_sha
+      Gitlab::Git::BLANK_SHA
+    end
+
     def trace_html
       html = Ci::Ansi2html::convert(trace) if trace.present?
       html || ''

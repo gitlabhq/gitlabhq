@@ -7,6 +7,10 @@ describe Ci::API::API do
   let(:project) { FactoryGirl.create(:ci_project) }
   let(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
 
+  before do
+    stub_ci_commit_to_return_yaml_file
+  end
+
   describe "Builds API for runners" do
     let(:shared_runner) { FactoryGirl.create(:ci_runner, token: "SharedRunner") }
     let(:shared_project) { FactoryGirl.create(:ci_project, name: "SharedProject") }
