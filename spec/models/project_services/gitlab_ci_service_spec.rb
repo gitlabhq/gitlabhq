@@ -39,8 +39,8 @@ describe GitlabCiService do
     end
 
     describe :build_page do
-      it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://localhost/ci/projects/#{@ci_project.id}/refs/master/commits/2ab7834c")}
-      it { expect(@service.build_page("issue#2", 'master')).to eq("http://localhost/ci/projects/#{@ci_project.id}/refs/master/commits/issue%232")}
+      it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://localhost/ci/projects/#{@ci_project.id}/commits/2ab7834c")}
+      it { expect(@service.build_page("issue#2", 'master')).to eq("http://localhost/ci/projects/#{@ci_project.id}/commits/issue%232")}
     end
 
     describe "execute" do
@@ -48,8 +48,8 @@ describe GitlabCiService do
       let(:project) { create(:project, name: 'project') }
       let(:push_sample_data) { Gitlab::PushDataBuilder.build_sample(project, user) }
 
-      it "calls ci_yaml_file" do
-        expect(@service).to receive(:ci_yaml_file).with(push_sample_data[:checkout_sha])
+      it "calls CreateCommitService" do
+        expect_any_instance_of(Ci::CreateCommitService).to receive(:execute).with(@ci_project, user, push_sample_data)
 
         @service.execute(push_sample_data)
       end

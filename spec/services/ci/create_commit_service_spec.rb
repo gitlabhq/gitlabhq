@@ -17,7 +17,6 @@ module Ci
             ref: 'refs/heads/master',
             before: '00000000',
             after: '31das312',
-            ci_yaml_file: gitlab_ci_yaml,
             commits: [ { message: "Message" } ]
           )
         end
@@ -35,7 +34,6 @@ module Ci
             ref: 'refs/tags/0_1',
             before: '00000000',
             after: '31das312',
-            ci_yaml_file: gitlab_ci_yaml,
             commits: [ { message: "Message" } ]
           )
           expect(result).to be_persisted
@@ -49,7 +47,6 @@ module Ci
             ref: 'refs/heads/0_1',
             before: '00000000',
             after: '31das312',
-            ci_yaml_file: config,
             commits: [ { message: "Message" } ]
           )
           expect(result).to be_persisted
@@ -62,7 +59,6 @@ module Ci
                                  ref: 'refs/heads/0_1',
                                  before: '00000000',
                                  after: '31das312',
-                                 ci_yaml_file: nil,
                                  commits: [ { message: 'Message' } ]
         )
         expect(result).to be_persisted
@@ -83,8 +79,7 @@ module Ci
             ref: 'refs/tags/0_1',
             before: '00000000',
             after: '31das312',
-            commits: commits,
-            ci_yaml_file: gitlab_ci_yaml
+            commits: commits
           )
           expect(commit.builds.any?).to be false
           expect(commit.status).to eq("skipped")
@@ -98,8 +93,7 @@ module Ci
             ref: 'refs/tags/0_1',
             before: '00000000',
             after: '31das312',
-            commits: commits,
-            ci_yaml_file: gitlab_ci_yaml
+            commits: commits
           )
 
           expect(commit.builds.first.name).to eq("staging")
@@ -112,8 +106,7 @@ module Ci
                                    ref: 'refs/tags/0_1',
                                    before: '00000000',
                                    after: '31das312',
-                                   commits: commits,
-                                   ci_yaml_file: "invalid: file"
+                                   commits: commits
           )
           expect(commit.builds.any?).to be false
           expect(commit.status).to eq("skipped")
@@ -128,8 +121,7 @@ module Ci
           ref: 'refs/heads/master',
           before: '00000000',
           after: '31das312',
-          commits: commits,
-          ci_yaml_file: gitlab_ci_yaml
+          commits: commits
         )
         expect(commit.builds.count(:all)).to  eq(2)
 
@@ -137,8 +129,7 @@ module Ci
           ref: 'refs/heads/master',
           before: '00000000',
           after: '31das312',
-          commits: commits,
-          ci_yaml_file: gitlab_ci_yaml
+          commits: commits
         )
         expect(commit.builds.count(:all)).to eq(2)
       end
@@ -152,8 +143,7 @@ module Ci
                                  ref: 'refs/tags/0_1',
                                  before: '00000000',
                                  after: '31das312',
-                                 commits: commits,
-                                 ci_yaml_file: "invalid: file"
+                                 commits: commits
         )
 
         expect(commit.status).to eq("failed")
