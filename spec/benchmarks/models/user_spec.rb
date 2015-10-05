@@ -14,25 +14,25 @@ describe User, benchmark: true do
     let(:iterations) { 1000 }
 
     describe 'using a capitalized username' do
-      subject { -> { User.by_login('Alice') } }
+      benchmark_subject { User.by_login('Alice') }
 
       it { is_expected.to iterate_per_second(iterations) }
     end
 
     describe 'using a lowercase username' do
-      subject { -> { User.by_login('alice') } }
+      benchmark_subject { User.by_login('alice') }
 
       it { is_expected.to iterate_per_second(iterations) }
     end
 
     describe 'using a capitalized Email address' do
-      subject { -> { User.by_login('Alice@gitlab.com') } }
+      benchmark_subject { User.by_login('Alice@gitlab.com') }
 
       it { is_expected.to iterate_per_second(iterations) }
     end
 
     describe 'using a lowercase Email address' do
-      subject { -> { User.by_login('alice@gitlab.com') } }
+      benchmark_subject { User.by_login('alice@gitlab.com') }
 
       it { is_expected.to iterate_per_second(iterations) }
     end
