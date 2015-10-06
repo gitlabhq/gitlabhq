@@ -16,8 +16,6 @@ module Backup
       compress_pid = spawn(*%W(gzip -1 -c), in: compress_rd, out: [db_file_name, 'w', 0600])
       compress_rd.close
 
-      FileUtils.mkdir_p(Gitlab.config.backup.path)
-
       dump_pid = case config["adapter"]
       when /^mysql/ then
         $progress.print "Dumping MySQL database #{config['database']} ... "
