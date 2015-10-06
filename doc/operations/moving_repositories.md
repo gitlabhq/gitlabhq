@@ -87,5 +87,58 @@ In addition to rsync we will use [GNU
 Parallel](http://www.gnu.org/software/parallel/). This utility is
 not included in GitLab so you need to install it yourself with apt
 or yum.  Also note that the GitLab scripts we used below were added
-in GitLab 8.???.
+in GitLab 8.1.
 
+** This process does not clean up repositories at the target location that no
+longer exist at the source. ** If you start using your GitLab instance with
+`/mnt/gitlab/repositories`, you need to run `gitlab-rake gitlab:cleanup:repos`
+after switching to the new repository storage directory.
+
+### Parallel rsync for all repositories known to GitLab
+
+This will sync repositories with 10 rsync processes at a time.
+
+```
+# Omnibus
+sudo gitlab-rake gitlab:list_repos |\
+  sudo -u git \
+  /usr/bin/env JOBS=10 \
+  /opt/gitlab/embedded/service/gitlab-rails/bin/parallel-rsync-repoos \
+    /var/opt/gitlab/git-data/repositories \
+    /mnt/gitlab/repositories
+
+# Source
+cd /home/git/gitlab
+sudo -u git -H bundle exec rake gitlab:list_repos |\
+  sudo -u git -H \
+  /usr/bin/env JOBS=10 \
+  bin/parallel-rsync-repos \
+    /home/git/repositories \
+    /mnt/gitlab/repositories
+```
+
+### Parallel rsync only for repositories with recent activity
+
+Suppose you have already done one sync that started after 2015-10-1 12:00 UTC.
+Then you might only want to sync repositories that were changed via GitLab
+_after_ that time. You can use the 'SINCE' variable to tell 'rake
+gitlab:list_repos' to only print repositories with recent activity.
+
+```
+# Omnibus
+sudo gitlab-rake gitlab:list_repos SINCE='2015-10-1 12:00 UTC' |\
+  sudo -u git \
+  /usr/bin/env JOBS=10 \
+  /opt/gitlab/embedded/service/gitlab-rails/bin/parallel-rsync-repoos \
+    /var/opt/gitlab/git-data/repositories \
+    /mnt/gitlab/repositories
+
+# Source
+cd /home/git/gitlab
+sudo -u git -H bundle exec rake gitlab:list_repos SINCE='2015-10-1 12:00 UTC' |\
+  sudo -u git -H \
+  /usr/bin/env JOBS=10 \
+  bin/parallel-rsync-repos \
+    /home/git/repositories \
+    /mnt/gitlab/repositories
+```
