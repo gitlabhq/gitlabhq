@@ -81,3 +81,24 @@ label {
 .wiki-content {
   margin-top: 35px;
 }
+
+.form-group .control-label {
+  font-weight: normal;
+  font-color: #313236 !important;
+}
+
+.form-control {
+  @include border-radius (2px);
+}
+
+.form-control::-webkit-input-placeholder{
+  color:#7f8fa4;
+}
+
+.input-group {
+  @include border-radius (2px);
+  
+  .input-group-addon {
+    background-color: #f7f8fa;
+  }
+}

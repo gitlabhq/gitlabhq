@@ -18,71 +18,9 @@
   }
 }
 
-.form-group .control-label {
-  font-weight: normal;
-  font-color: #313236 !important;
-  }
-
 .btn, .commits-compare-switch {
     @include btn-info;
     @include bnt-light;
-}
-
-.col-sm-10 {
-  
-  .input-group {
-  @include border-radius (2px);
-  }
-  
-  .input-group-addon {
-    background-color: #f7f8fa;
-  }
-}
-
-.form-control {
-  @include border-radius (2px);
-}
-
-.form-control::-webkit-input-placeholder{
-  color:#7f8fa4;
-}
-
-.col-sm-10 .select2-container{
-  @include border-radius (2px);
-}
-
-.select2-container .select2-choice {
-  color: #7f8fa4;
-  border: 1px solid #e7e9ed;
-}
-
-.select2-drop {
-  @include box-shadow(rgba(76, 86, 103, 0.247059) 0px 0px 1px 0px, rgba(31, 37, 50, 0.317647) 0px 2px 18px 0px);
-  @include border-radius (0px);
-  
-  padding: 16px 20px;
-  border: none !important;
-}
-
-.select2-results .select2-result-label {
-  padding: 16px 20px;
-}
-
-.select2-drop{
-  color: #7f8fa4;
-}
-
-.select2-highlighted {
-  background: #3084bb !important;
-}
-
-.select2-results li.select2-result-with-children > .select2-result-label {
-  font-weight: 600;
-  color: #313236;
-}
-
-.select2-container .select2-choice, .select2-container.select2-drop-above .select2-choice {
-   @include border-radius (2px);
 }
 
 .project-edit-content {
@@ -210,7 +148,11 @@
     }
   }
 }
-
+.btn-green {
+   @include btn-green;
+   
+   cursor: pointer;
+}
 .projects-search-form {
   
   .input-group .form-control {
