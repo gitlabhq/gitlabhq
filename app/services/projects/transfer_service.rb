@@ -27,6 +27,7 @@ module Projects
     def transfer(project, new_namespace)
       Project.transaction do
         old_path = project.path_with_namespace
+        old_namespace = project.namespace
         new_path = File.join(new_namespace.try(:path) || '', project.path)
 
         if Project.where(path: project.path, namespace_id: new_namespace.try(:id)).present?
@@ -51,6 +52,9 @@ module Projects
         # clear project cached events
         project.reset_events_cache
 
+        # Move uploads
+        move_uploads_to_new_namespace(old_namespace.path, new_namespace.path)
+
         true
       end
     end
@@ -60,6 +64,15 @@ module Projects
         can?(current_user, :change_namespace, project) &&
         namespace.id != project.namespace_id &&
         current_user.can?(:create_projects, namespace)
+    end
+
+    private
+
+    def move_uploads_to_new_namespace(old_path, new_path)
+      base_dir = File.join(Rails.root, "public", "uploads")
+      from = File.join(base_dir, old_path)
+      to = File.join(base_dir, new_path)
+      FileUtils.mv(from, to)
     end
   end
 end

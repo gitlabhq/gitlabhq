@@ -7,6 +7,8 @@ describe Projects::TransferService do
 
   context 'namespace -> namespace' do
     before do
+      allow_any_instance_of(Projects::TransferService).
+        to receive(:move_uploads_to_new_namespace).and_return(true)
       group.add_owner(user)
       @result = transfer_project(project, user, group)
     end

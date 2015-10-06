@@ -636,6 +636,13 @@ class Project < ActiveRecord::Base
       # db changes in order to prevent out of sync between db and fs
       raise Exception.new('repository cannot be renamed')
     end
+
+    begin
+      move_uploads(namespace, path_was, path)
+    rescue Exception => e
+      Rails.logger.error(e.message)
+      false
+    end
   end
 
   def hook_attrs
@@ -759,5 +766,12 @@ class Project < ActiveRecord::Base
     service = gitlab_ci_service || create_gitlab_ci_service
     service.active = true
     service.save
+  end
+
+  def move_uploads(namespace, old_path, new_path)
+    base_dir = File.join(Rails.root, "public", "uploads", namespace.path)
+    from = File.join(base_dir, old_path)
+    to = File.join(base_dir, new_path)
+    FileUtils.mv(from, to)
   end
 end
