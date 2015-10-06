@@ -1,42 +1,38 @@
 require 'spec_helper'
 
 describe TrendingProjectsFinder do
-  let(:user)  { create(:user) }
-  let(:group) { create(:group) }
-
-  let(:project1) { create(:empty_project, :public, group: group) }
-  let(:project2) { create(:empty_project, :public, group: group) }
-
-  before do
-    2.times do
-      create(:note_on_commit, project: project1)
-    end
-
-    create(:note_on_commit, project: project2)
-  end
+  let(:user) { build(:user) }
 
   describe '#execute' do
     describe 'without an explicit start date' do
-      subject { described_class.new.execute(user).to_a }
+      subject { described_class.new }
 
-      it 'sorts Projects by the amount of notes in descending order' do
-        expect(subject).to eq([project1, project2])
+      it 'returns the trending projects' do
+        relation = double(:ar_relation)
+
+        allow(subject).to receive(:projects_for)
+          .with(user)
+          .and_return(relation)
+
+        allow(relation).to receive(:trending)
+          .with(an_instance_of(ActiveSupport::TimeWithZone))
       end
     end
 
     describe 'with an explicit start date' do
       let(:date) { 2.months.ago }
 
-      subject { described_class.new.execute(user, date).to_a }
+      subject { described_class.new }
 
-      before do
-        2.times do
-          create(:note_on_commit, project: project2, created_at: date)
-        end
-      end
+      it 'returns the trending projects' do
+        relation = double(:ar_relation)
 
-      it 'sorts Projects by the amount of notes in descending order' do
-        expect(subject).to eq([project2, project1])
+        allow(subject).to receive(:projects_for)
+          .with(user)
+          .and_return(relation)
+
+        allow(relation).to receive(:trending)
+          .with(date)
       end
     end
   end
