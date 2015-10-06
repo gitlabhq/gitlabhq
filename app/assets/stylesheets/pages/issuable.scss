@@ -54,21 +54,22 @@
     margin-top: -15px;
     padding: 10px 0;
     margin-bottom: 0;
-    color: $gl-gray;
+    color: #5c5d5e;
     font-size: 16px;
 
     .author {
-      color: $gl-gray;
+      color: #5c5d5e;
     }
 
     .issue-id {
-      font-size: 19px;
-      color: $gl-text-color;
+      color: #5c5d5e;
     }
   }
 
   .issue-title {
     margin: 0;
+    font-size: 23px;
+    color: #313236;
   }
 
   .description {
