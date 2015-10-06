@@ -79,7 +79,7 @@ Sidekiq::Testing.inline! do
       # the `after_commit` queue to ensure the job is run now.
       project.send(:_run_after_commit_queue)
 
-      if project.valid?
+      if project.valid? && project.valid_repo?
         print '.'
       else
         puts project.errors.full_messages
