@@ -14,9 +14,10 @@ module Ci
     def show
       @ref = params[:ref]
 
-      @commits = @project.commits.group(:sha).reverse_order
+      @commits = @project.commits.reverse_order
       if @ref
-        builds = @project.builds.where(ref: @ref).select(:commit_id).distinct
+        # unscope is required, because of default_scope defined in Ci::Build
+        builds = @project.builds.unscope(:select, :order).where(ref: @ref).select(:commit_id).distinct
         @commits = @commits.where(id: builds)
       end
       @commits = @commits.page(params[:page]).per(20)
