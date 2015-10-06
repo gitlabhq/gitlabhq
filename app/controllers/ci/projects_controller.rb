@@ -14,9 +14,11 @@ module Ci
     def show
       @ref = params[:ref]
 
-      @commits = @project.commits.reverse_order
-      # TODO: this is broken
-      # @commits = @commits.where(ref: @ref) if @ref
+      @commits = @project.commits.group(:sha).reverse_order
+      if @ref
+        builds = @project.builds.where(ref: @ref).select(:commit_id).distinct
+        @commits = @commits.where(id: builds)
+      end
       @commits = @commits.page(params[:page]).per(20)
     end
 
