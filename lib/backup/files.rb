@@ -15,6 +15,7 @@ module Backup
     # Copy files from public/files to backup/files
     def dump
       FileUtils.mkdir_p(Gitlab.config.backup.path)
+      FileUtils.rm_f(backup_tarball)
       run_pipeline!([%W(tar -C #{files_parent_dir} -cf - #{name}), %W(gzip -c -1)], out: [backup_tarball, 'w', 0600])
     end
 
