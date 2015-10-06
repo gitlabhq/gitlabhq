@@ -6,10 +6,11 @@ module Backup
 
     def initialize
       @config = YAML.load_file(File.join(Rails.root,'config','database.yml'))[Rails.env]
-      @db_file_name = File.join(Gitlab.config.backup.path, 'database.sql.gz')
+      @db_file_name = File.join(Gitlab.config.backup.path, 'db', 'database.sql.gz')
     end
 
     def dump
+      FileUtils.mkdir_p(File.dirname(db_file_name))
       FileUtils.rm_f(db_file_name)
       compress_rd, compress_wr = IO.pipe
       compress_pid = spawn(*%W(gzip -1 -c), in: compress_rd, out: [db_file_name, 'w', 0600])
