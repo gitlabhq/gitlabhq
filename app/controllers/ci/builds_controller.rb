@@ -17,7 +17,7 @@ module Ci
       if params[:return_to]
         redirect_to URI.parse(params[:return_to]).path
       else
-        redirect_to ci_project_build_path(project, build)
+        redirect_to build_path(build)
       end
     end
 
@@ -28,7 +28,7 @@ module Ci
     def cancel
       @build.cancel
 
-      redirect_to ci_project_build_path(@project, @build)
+      redirect_to build_path(@build)
     end
 
     protected
@@ -43,6 +43,10 @@ module Ci
 
     def commit_by_sha
       @project.commits.find_by(sha: params[:id])
+    end
+
+    def build_path(build)
+      namespace_project_build_path(build.gl_project.namespace, build.gl_project, build)
     end
   end
 end

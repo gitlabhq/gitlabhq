@@ -8,6 +8,6 @@ module BuildsHelper
   end
 
   def build_url(build)
-    ci_project_build_url(build.project, build)
+    namespace_project_build_path(build.gl_project, build.project, build)
   end
 end
