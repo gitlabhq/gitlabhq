@@ -20,7 +20,7 @@
 
 .btn, .commits-compare-switch {
     @include btn-info;
-    @include bnt-light;
+    @include btn-light;
 }
 
 .project-edit-content {
@@ -101,7 +101,7 @@
     margin-bottom: 0px;
     
     .btn {
-      @include bnt-project;
+      @include btn-project;
       @include btn-info;
       
       .count {
@@ -162,7 +162,7 @@
 
 .input-group-btn {
   .btn {    
-    @include bnt-project;
+    @include btn-project;
     @include btn-middle;
     
     &:hover {
@@ -196,7 +196,7 @@
   margin: 0 12px 0 12px;
   
   .btn{
-    @include bnt-project;
+    @include btn-project;
     @include btn-info;
   }
   
@@ -279,14 +279,6 @@
       color: #54565b;
     }
   }
-}
-
-.space-right {
-  margin-right: 10px;
-}
-
-.in-line {
-  display: inline-block;
 }
 
 .save-project-loader {
@@ -399,7 +391,7 @@ table.table.protected-branches-list tr.no-border {
 
   .nav > li > a {
     @include btn-info;
-    @include bnt-project;
+    @include btn-project;
     
     background-color: transparent;
     border: 1px solid #f7f8fa;
