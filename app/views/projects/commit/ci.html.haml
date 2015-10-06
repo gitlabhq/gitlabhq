@@ -1,0 +1,62 @@
+- page_title "#{@commit.title} (#{@commit.short_id})", "Commits"
+= render "projects/commits/header_title"
+= render "commit_box"
+= render "ci_menu"
+
+- if @ci_project && current_user && can?(current_user, :manage_builds, @project)
+  .pull-right
+    - if @ci_commit.builds.running_or_pending.any?
+      = link_to "Cancel", cancel_ci_project_commits_path(@ci_project, @ci_commit), class: 'btn btn-sm btn-danger'
+
+
+- if @ci_commit.yaml_errors.present?
+  .bs-callout.bs-callout-danger
+    %h4 Found errors in your .gitlab-ci.yml:
+    %ul
+      - @ci_commit.yaml_errors.split(",").each do |error|
+        %li= error
+
+- unless @ci_commit.ci_yaml_file
+  .bs-callout.bs-callout-warning
+    \.gitlab-ci.yml not found in this commit
+
+- @ci_commit.refs.each do |ref|
+  .gray-content-block.second-block
+    Builds for #{ref}
+    - if @ci_commit.duration_for_ref(ref) > 0
+      %small.pull-right
+        %i.fa.fa-time
+        #{time_interval_in_words @ci_commit.duration_for_ref(ref)}
+
+  %table.table.builds
+    %thead
+      %tr
+        %th Status
+        %th Build ID
+        %th Stage
+        %th Name
+        %th Duration
+        %th Finished at
+        - if @ci_project && @ci_project.coverage_enabled?
+          %th Coverage
+        %th
+    = render partial: "ci/builds/build", collection: @ci_commit.builds_without_retry.for_ref(ref), controls: true
+
+- if @ci_commit.retried_builds.any?
+  %h3
+    Retried builds
+
+  %table.table.builds
+    %thead
+      %tr
+        %th Status
+        %th Build ID
+        %th Ref
+        %th Stage
+        %th Name
+        %th Duration
+        %th Finished at
+        - if @ci_project && @ci_project.coverage_enabled?
+          %th Coverage
+        %th
+    = render partial: "ci/builds/build", collection: @ci_commit.retried_builds, ref: true

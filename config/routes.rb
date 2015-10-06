@@ -485,7 +485,10 @@ Gitlab::Application.routes.draw do
 
         resource  :avatar, only: [:show, :destroy]
         resources :commit, only: [:show], constraints: { id: /[[:alnum:]]{6,40}/ } do
-          get :branches, on: :member
+          member do
+            get :branches
+            get :ci
+          end
         end
 
         resources :compare, only: [:index, :create]
