@@ -112,14 +112,14 @@ describe 'gitlab:app namespace rake task' do
 
     it 'should set correct permissions on the tar contents' do
       tar_contents, exit_status = Gitlab::Popen.popen(
-        %W{tar -tvf #{@backup_tar} db uploads repositories builds}
+        %W{tar -tvf #{@backup_tar} db uploads.tar.gz repositories builds.tar.gz}
       )
       expect(exit_status).to eq(0)
       expect(tar_contents).to match('db/')
-      expect(tar_contents).to match('uploads/')
+      expect(tar_contents).to match('uploads.tar.gz')
       expect(tar_contents).to match('repositories/')
-      expect(tar_contents).to match('builds/')
-      expect(tar_contents).not_to match(/^.{4,9}[rwx].* (db|uploads|repositories|builds)\/$/)
+      expect(tar_contents).to match('builds.tar.gz')
+      expect(tar_contents).not_to match(/^.{4,9}[rwx].* (database.sql.gz|uploads.tar.gz|repositories|builds.tar.gz)\/$/)
     end
 
     it 'should delete temp directories' do
@@ -160,12 +160,12 @@ describe 'gitlab:app namespace rake task' do
 
     it "does not contain skipped item" do
       tar_contents, _exit_status = Gitlab::Popen.popen(
-        %W{tar -tvf #{@backup_tar} db uploads repositories builds}
+        %W{tar -tvf #{@backup_tar} db uploads.tar.gz repositories builds.tar.gz}
       )
 
       expect(tar_contents).to match('db/')
-      expect(tar_contents).to match('uploads/')
-      expect(tar_contents).to match('builds/')
+      expect(tar_contents).to match('uploads.tar.gz')
+      expect(tar_contents).to match('builds.tar.gz')
       expect(tar_contents).not_to match('repositories/')
     end
 
