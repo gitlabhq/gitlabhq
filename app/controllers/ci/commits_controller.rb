@@ -5,12 +5,6 @@ module Ci
     before_action :project
     before_action :authorize_access_project!, except: [:status, :show, :cancel]
     before_action :authorize_manage_builds!, only: [:cancel]
-    before_action :commit, only: :show
-    layout 'ci/commit'
-
-    def show
-      @builds = @commit.builds
-    end
 
     def status
       commit = Ci::Project.find(params[:project_id]).commits.find_by_sha!(params[:id])

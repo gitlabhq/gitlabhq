@@ -28,16 +28,14 @@ Gitlab::Application.routes.draw do
         end
       end
 
-      resource :charts, only: [:show]
-
-      resources :commits, only: [:show] do
+      resources :commits, only: [] do
         member do
           get :status
           get :cancel
         end
       end
 
-      resources :builds, only: [:show] do
+      resources :builds, only: [] do
         member do
           get :cancel
           get :status
