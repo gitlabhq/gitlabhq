@@ -592,6 +592,8 @@ Gitlab::Application.routes.draw do
           end
         end
 
+        resources :builds, only: [:show]
+
         resources :hooks, only: [:index, :create, :destroy], constraints: { id: /\d+/ } do
           member do
             get :test

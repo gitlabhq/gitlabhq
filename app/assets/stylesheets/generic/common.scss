@@ -381,6 +381,10 @@ table {
   &.no-bottom {
     margin-bottom: 0;
   }
+
+  &.no-top {
+    margin-top: 0;
+  }
 }
 
 .dropzone .dz-preview .dz-progress {

@@ -40,7 +40,7 @@
         - if @ci_project && @ci_project.coverage_enabled?
           %th Coverage
         %th
-    = render partial: "ci/builds/build", collection: @ci_commit.builds_without_retry.for_ref(ref), controls: true
+    = render partial: "projects/builds/build", collection: @ci_commit.builds_without_retry.for_ref(ref), controls: true
 
 - if @ci_commit.retried_builds.any?
   %h3
@@ -59,4 +59,4 @@
         - if @ci_project && @ci_project.coverage_enabled?
           %th Coverage
         %th
-    = render partial: "ci/builds/build", collection: @ci_commit.retried_builds, ref: true
+    = render partial: "projects/builds/build", collection: @ci_commit.retried_builds, ref: true
