@@ -20,13 +20,13 @@
   .bs-callout.bs-callout-warning
     \.gitlab-ci.yml not found in this commit
 
-- @ci_commit.refs.each do |ref|
+- if @ci_commit.refs.blank?
   .gray-content-block.second-block
-    Builds for #{ref}
-    - if @ci_commit.duration_for_ref(ref) > 0
+    Latest builds
+    - if @ci_commit.duration > 0
       %small.pull-right
         %i.fa.fa-time
-        #{time_interval_in_words @ci_commit.duration_for_ref(ref)}
+        #{time_interval_in_words @ci_commit.duration}
 
   %table.table.builds
     %thead
@@ -40,10 +40,32 @@
         - if @ci_project && @ci_project.coverage_enabled?
           %th Coverage
         %th
-    = render partial: "projects/builds/build", collection: @ci_commit.builds_without_retry.for_ref(ref), controls: true
+    = render partial: "projects/commit_statuses/commit_status", collection: @ci_commit.statuses.latest, coverage: @ci_project.try(:coverage_enabled?), controls: true
 
-- if @ci_commit.retried_builds.any?
-  %h3
+- @ci_commit.refs.sort.each do |ref|
+  .gray-content-block.second-block
+    Builds for #{ref}
+    - if @ci_commit.duration(ref) > 0
+      %small.pull-right
+        %i.fa.fa-time
+        #{time_interval_in_words @ci_commit.duration(ref)}
+
+  %table.table.builds
+    %thead
+      %tr
+        %th Status
+        %th Build ID
+        %th Stage
+        %th Name
+        %th Duration
+        %th Finished at
+        - if @ci_project && @ci_project.coverage_enabled?
+          %th Coverage
+        %th
+    = render partial: "projects/commit_statuses/commit_status", collection: @ci_commit.statuses.for_ref(ref).latest, coverage: @ci_project.try(:coverage_enabled?), controls: true
+
+- if @ci_commit.retried.any?
+  .gray-content-block.second-block
     Retried builds
 
   %table.table.builds
@@ -59,4 +81,4 @@
         - if @ci_project && @ci_project.coverage_enabled?
           %th Coverage
         %th
-    = render partial: "projects/builds/build", collection: @ci_commit.retried_builds, ref: true
+    = render partial: "projects/commit_statuses/commit_status", collection: @ci_commit.retried, coverage: @ci_project.try(:coverage_enabled?), ref: true

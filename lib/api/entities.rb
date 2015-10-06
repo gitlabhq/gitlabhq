@@ -65,7 +65,7 @@ module API
       expose :issues_enabled, :merge_requests_enabled, :wiki_enabled, :snippets_enabled, :created_at, :last_activity_at
       expose :creator_id
       expose :namespace
-      expose :forked_from_project, using: Entities::ForkedFromProject, if: lambda{ | project, options | project.forked? }
+      expose :forked_from_project, using: Entities::ForkedFromProject, if: lambda { |project, options| project.forked? }
       expose :avatar_url
       expose :star_count, :forks_count
     end
@@ -149,6 +149,7 @@ module API
 
     class RepoCommitDetail < RepoCommit
       expose :parent_ids, :committed_date, :authored_date
+      expose :status
     end
 
     class ProjectSnippet < Grape::Entity
@@ -226,6 +227,11 @@ module API
       expose(:line_type) { |note| note.diff_line_type }
       expose :author, using: Entities::UserBasic
       expose :created_at
+    end
+
+    class CommitStatus < Grape::Entity
+      expose :id, :sha, :ref, :status, :name, :target_url, :description,
+             :created_at, :started_at, :finished_at
     end
 
     class Event < Grape::Entity
