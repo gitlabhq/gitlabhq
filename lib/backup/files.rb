@@ -2,14 +2,13 @@ require 'open3'
 
 module Backup
   class Files
-    attr_reader :name, :app_files_dir, :backup_tarball, :backup_dir, :files_parent_dir
+    attr_reader :name, :app_files_dir, :backup_tarball, :files_parent_dir
 
     def initialize(app_files_dir)
       @app_files_dir = File.realpath(app_files_dir)
       @name = File.basename(app_files_dir)
       @files_parent_dir = File.realpath(File.join(@app_files_dir, '..'))
-      @backup_dir = Gitlab.config.backup.path
-      @backup_tarball = File.join(@backup_dir, name + '.tar.gz')
+      @backup_tarball = File.join(Gitlab.config.backup.path, name + '.tar.gz')
     end
 
     # Copy files from public/files to backup/files
