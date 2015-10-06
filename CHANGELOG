@@ -31,6 +31,7 @@ v 8.1.0 (unreleased)
   - Move CI web hooks page to project settings area
   - Fix User Identities API. It now allows you to properly create or update user's identities.
   - Add user preference to change layout width (Peter Göbel)
+  - Use commit status in merge request widget as preffered source of CI status
 
 v 8.0.4
   - Fix Message-ID header to be RFC 2111-compliant to prevent e-mails being dropped (Stan Hu)
