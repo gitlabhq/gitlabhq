@@ -55,6 +55,7 @@ describe 'gitlab:app namespace rake task' do
         expect(Rake::Task["gitlab:backup:db:restore"]).to receive(:invoke)
         expect(Rake::Task["gitlab:backup:repo:restore"]).to receive(:invoke)
         expect(Rake::Task["gitlab:backup:builds:restore"]).to receive(:invoke)
+        expect(Rake::Task["gitlab:backup:uploads:restore"]).to receive(:invoke)
         expect(Rake::Task["gitlab:shell:setup"]).to receive(:invoke)
         expect { run_rake_task('gitlab:backup:restore') }.not_to raise_error
       end
