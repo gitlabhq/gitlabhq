@@ -211,7 +211,7 @@ module Ci
     end
 
     def ci_yaml_file
-      gl_project.repository.blob_at(sha, '.gitlab-ci.yml')
+      gl_project.repository.blob_at(sha, '.gitlab-ci.yml').data
     rescue
       nil
     end
