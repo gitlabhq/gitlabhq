@@ -47,7 +47,7 @@ module Ci
     scope :failed, ->() { where(status: "failed")  }
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :running_or_pending, ->() { where(status:[:running, :pending]) }
-    scope :latest, ->() { where(id: unscope(:select).select('max(id)').group(:name)).order(stage_idx: :asc) }
+    scope :latest, ->() { where(id: unscope(:select).select('max(id)').group(:name, :ref)).order(stage_idx: :asc) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
     scope :for_ref, ->(ref) { where(ref: ref) }
     scope :similar, ->(build) { where(ref: build.ref, tag: build.tag, trigger_request_id: build.trigger_request_id) }
