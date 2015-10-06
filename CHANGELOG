@@ -53,6 +53,7 @@ v 8.1.0 (unreleased)
   - Add "New Page" button to Wiki Pages tab (Stan Hu)
   - Only render 404 page from /public
   - Hide passwords from services API (Alex Lossent)
+  - Fix: Images cannot show when projects' path was changed
 
 v 8.0.4
   - Fix Message-ID header to be RFC 2111-compliant to prevent e-mails being dropped (Stan Hu)

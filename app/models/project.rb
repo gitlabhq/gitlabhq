@@ -656,6 +656,8 @@ class Project < ActiveRecord::Base
       # db changes in order to prevent out of sync between db and fs
       raise Exception.new('repository cannot be renamed')
     end
+
+    Gitlab::UploadsTransfer.new.rename_project(path_was, path, namespace.path)
   end
 
   def hook_attrs
