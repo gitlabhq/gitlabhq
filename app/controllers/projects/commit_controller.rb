@@ -38,6 +38,14 @@ class Projects::CommitController < Projects::ApplicationController
     @ci_project = @project.gitlab_ci_project
   end
 
+  def cancel_builds
+    @ci_commit = @project.ci_commit(@commit.sha)
+    @ci_commit.builds.running_or_pending.each(&:cancel)
+
+    redirect_to namespace_project_commit_path(project.namespace, project, commit.sha)
+  end
+
+
   def branches
     @branches = @project.repository.branch_names_contains(commit.id)
     @tags = @project.repository.tag_names_contains(commit.id)
