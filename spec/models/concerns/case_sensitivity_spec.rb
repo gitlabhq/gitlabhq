@@ -1,11 +1,16 @@
 require 'spec_helper'
 
 describe CaseSensitivity do
-  describe '.case_insensitive_where' do
+  describe '.iwhere' do
     let(:connection) { ActiveRecord::Base.connection }
     let(:model)      { Class.new { include CaseSensitivity } }
 
     describe 'using PostgreSQL' do
+      before do
+        allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
+        allow(Gitlab::Database).to receive(:mysql?).and_return(false)
+      end
+
       describe 'with a single column/value pair' do
         it 'returns the criteria for a column and a value' do
           criteria = double(:criteria)
@@ -18,7 +23,7 @@ describe CaseSensitivity do
             with(%q{LOWER("foo") = LOWER(:value)}, value: 'bar').
             and_return(criteria)
 
-          expect(model.case_insensitive_where(foo: 'bar')).to eq(criteria)
+          expect(model.iwhere(foo: 'bar')).to eq(criteria)
         end
 
         it 'returns the criteria for a column with a table, and a value' do
@@ -32,7 +37,7 @@ describe CaseSensitivity do
             with(%q{LOWER("foo"."bar") = LOWER(:value)}, value: 'bar').
             and_return(criteria)
 
-          expect(model.case_insensitive_where('foo.bar': 'bar')).to eq(criteria)
+          expect(model.iwhere(:'foo.bar' => 'bar')).to eq(criteria)
         end
       end
 
@@ -57,7 +62,7 @@ describe CaseSensitivity do
             with(%q{LOWER("bar") = LOWER(:value)}, value: 'baz').
             and_return(final)
 
-          got = model.case_insensitive_where(foo: 'bar', bar: 'baz')
+          got = model.iwhere(foo: 'bar', bar: 'baz')
 
           expect(got).to eq(final)
         end
@@ -82,7 +87,8 @@ describe CaseSensitivity do
             with(%q{LOWER("foo"."baz") = LOWER(:value)}, value: 'baz').
             and_return(final)
 
-          got = model.case_insensitive_where('foo.bar': 'bar', 'foo.baz': 'baz')
+          got = model.iwhere(:'foo.bar' => 'bar',
+                             :'foo.baz' => 'baz')
 
           expect(got).to eq(final)
         end
@@ -90,6 +96,11 @@ describe CaseSensitivity do
     end
 
     describe 'using MySQL' do
+      before do
+        allow(Gitlab::Database).to receive(:postgresql?).and_return(false)
+        allow(Gitlab::Database).to receive(:mysql?).and_return(true)
+      end
+
       describe 'with a single column/value pair' do
         it 'returns the criteria for a column and a value' do
           criteria = double(:criteria)
@@ -99,10 +110,10 @@ describe CaseSensitivity do
             and_return('`foo`')
 
           expect(model).to receive(:where).
-            with(%q{LOWER(`foo`) = LOWER(:value)}, value: 'bar').
+            with(%q{`foo` = :value}, value: 'bar').
             and_return(criteria)
 
-          expect(model.case_insensitive_where(foo: 'bar')).to eq(criteria)
+          expect(model.iwhere(foo: 'bar')).to eq(criteria)
         end
 
         it 'returns the criteria for a column with a table, and a value' do
@@ -113,10 +124,11 @@ describe CaseSensitivity do
             and_return('`foo`.`bar`')
 
           expect(model).to receive(:where).
-            with(%q{LOWER(`foo`.`bar`) = LOWER(:value)}, value: 'bar').
+            with(%q{`foo`.`bar` = :value}, value: 'bar').
             and_return(criteria)
 
-          expect(model.case_insensitive_where('foo.bar': 'bar')).to eq(criteria)
+          expect(model.iwhere(:'foo.bar' => 'bar')).
+            to eq(criteria)
         end
       end
 
@@ -134,14 +146,14 @@ describe CaseSensitivity do
             and_return('`bar`')
 
           expect(model).to receive(:where).
-            with(%q{LOWER(`foo`) = LOWER(:value)}, value: 'bar').
+            with(%q{`foo` = :value}, value: 'bar').
             and_return(initial)
 
           expect(initial).to receive(:where).
-            with(%q{LOWER(`bar`) = LOWER(:value)}, value: 'baz').
+            with(%q{`bar` = :value}, value: 'baz').
             and_return(final)
 
-          got = model.case_insensitive_where(foo: 'bar', bar: 'baz')
+          got = model.iwhere(foo: 'bar', bar: 'baz')
 
           expect(got).to eq(final)
         end
@@ -159,14 +171,15 @@ describe CaseSensitivity do
             and_return('`foo`.`baz`')
 
           expect(model).to receive(:where).
-            with(%q{LOWER(`foo`.`bar`) = LOWER(:value)}, value: 'bar').
+            with(%q{`foo`.`bar` = :value}, value: 'bar').
             and_return(initial)
 
           expect(initial).to receive(:where).
-            with(%q{LOWER(`foo`.`baz`) = LOWER(:value)}, value: 'baz').
+            with(%q{`foo`.`baz` = :value}, value: 'baz').
             and_return(final)
 
-          got = model.case_insensitive_where('foo.bar': 'bar', 'foo.baz': 'baz')
+          got = model.iwhere(:'foo.bar' => 'bar',
+                             :'foo.baz' => 'baz')
 
           expect(got).to eq(final)
         end

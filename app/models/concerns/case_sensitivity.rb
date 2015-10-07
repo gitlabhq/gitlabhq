@@ -6,7 +6,7 @@ module CaseSensitivity
     # Queries the given columns regardless of the casing used.
     #
     # Unlike other ActiveRecord methods this method only operates on a Hash.
-    def case_insensitive_where(params)
+    def iwhere(params)
       criteria   = self
       cast_lower = Gitlab::Database.postgresql?
 
