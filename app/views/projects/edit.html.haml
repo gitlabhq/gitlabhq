@@ -193,13 +193,13 @@
         .panel.panel-default.panel.panel-danger
           .panel-heading Remove project
           .panel-body
-            = form_tag(namespace_project_path(@project.namespace, @project), method: :delete, html: { class: 'form-horizontal'}) do
+            = form_tag(namespace_project_path(@project.namespace, @project), method: :delete, class: 'form-horizontal') do
               %p
                 Removing the project will delete its repository and all related resources including issues, merge requests etc.
                 %br
                 %strong Removed projects cannot be restored!
 
-              = link_to 'Remove project', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }
+              = button_to 'Remove project', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }
       - else
         .nothing-here-block Only project owner can remove a project
 
