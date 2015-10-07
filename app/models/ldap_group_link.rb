@@ -5,6 +5,7 @@ class LdapGroupLink < ActiveRecord::Base
   validates :cn, :group_access, :group_id, presence: true
   validates :cn, uniqueness: { scope: [:group_id, :provider] }
   validates :group_access, inclusion: { in: Gitlab::Access.all_values }
+  validates :provider, presence: true
 
   scope :with_provider, ->(provider) { where(provider: provider) }
 
