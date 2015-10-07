@@ -440,7 +440,7 @@ GEM
     omniauth-google-oauth2 (0.2.6)
       omniauth (> 1.0)
       omniauth-oauth2 (~> 1.1)
-    omniauth-kerberos (0.2.0)
+    omniauth-kerberos (0.3.0)
       omniauth-multipassword
       timfel-krb5-auth (~> 0.8)
     omniauth-multipassword (0.4.2)
@@ -871,7 +871,7 @@ DEPENDENCIES
   omniauth-github (~> 1.1.1)
   omniauth-gitlab (~> 1.0.0)
   omniauth-google-oauth2 (~> 0.2.5)
-  omniauth-kerberos (~> 0.2.0)
+  omniauth-kerberos (~> 0.3.0)
   omniauth-saml (~> 1.4.0)
   omniauth-shibboleth (~> 1.1.1)
   omniauth-twitter (~> 1.2.0)
