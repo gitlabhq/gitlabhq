@@ -56,3 +56,17 @@ bundle exec rake gitlab:import:all_users_to_all_groups RAILS_ENV=production
 ```
 block_auto_created_users: false
 ```
+
+## Disable Two-factor Authentication (2FA) for all users
+
+This task will disable 2FA for all users that have it enabled. This can be
+useful if GitLab's `.secret` file has been lost and users are unable to login,
+for example.
+
+```bash
+# omnibus-gitlab
+sudo gitlab-rake gitlab:two_factor:disable_for_all_users
+
+# installation from source
+bundle exec rake gitlab:two_factor:disable_for_all_users RAILS_ENV=production
+```
