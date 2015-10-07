@@ -29,12 +29,6 @@ input[type='text'].danger {
   border-top: 1px solid $border-color;
 }
 
-@media (min-width: $screen-sm-min) {
-  .form-actions {
-    padding-left: 17%;
-  }
-}
-
 label {
   &.control-label {
     @extend .col-sm-2;
@@ -83,4 +77,18 @@ label {
 
 .wiki-content {
   margin-top: 35px;
+}
+
+.form-group .control-label {
+  font-weight: normal;
+}
+
+.form-control::-webkit-input-placeholder {
+  color: #7f8fa4;
+}
+
+.input-group {
+  .input-group-addon {
+    background-color: #f7f8fa;
+  }
 }
