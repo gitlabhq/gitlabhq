@@ -225,9 +225,11 @@ describe ApplicationHelper do
   end
 
   describe 'time_ago_with_tooltip' do
+    let(:user) { double(:user, time_zone_name: 'UTC') }
     def element(*arguments)
       Time.zone = 'UTC'
       time = Time.zone.parse('2015-07-02 08:00')
+      allow(helper).to receive(:current_user).and_return(user)
       element = helper.time_ago_with_tooltip(time, *arguments)
 
       Nokogiri::HTML::DocumentFragment.parse(element).first_element_child
@@ -270,6 +272,22 @@ describe ApplicationHelper do
 
     it 'allows the script tag to be excluded' do
       expect(element(skip_js: true)).not_to include 'script'
+    end
+
+    context 'when user time_zone is Bucharest' do
+      let(:user) { double(:user, time_zone_name: 'Bucharest') }
+
+      it 'shows Bucharest time' do
+        expect(element.attr('title')).to eq 'Jul 02, 2015 11:00am'
+      end
+    end
+
+    context 'when user time_zone is Tokyo' do
+      let(:user) { double(:user, time_zone_name: 'Tokyo') }
+
+      it 'shows Tokyo time' do
+        expect(element.attr('title')).to eq 'Jul 02, 2015 5:00pm'
+      end
     end
   end
 

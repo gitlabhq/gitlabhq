@@ -34,7 +34,8 @@ class Profiles::PreferencesController < Profiles::ApplicationController
       :layout,
       :dashboard,
       :project_view,
-      :theme_id
+      :theme_id,
+      :time_zone_name
     )
   end
 end
