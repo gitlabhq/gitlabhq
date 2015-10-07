@@ -1,27 +1,10 @@
 module Ci
   class ProjectsController < Ci::ApplicationController
-    before_action :authenticate_user!, except: [:build, :badge, :show]
-    before_action :authenticate_public_page!, only: :show
-    before_action :project, only: [:build, :show, :badge, :toggle_shared_runners, :dumped_yaml]
-    before_action :authorize_access_project!, except: [:build, :badge, :show, :new]
+    before_action :authenticate_user!, except: [:build, :badge]
+    before_action :authorize_access_project!, except: [:badge]
     before_action :authorize_manage_project!, only: [:toggle_shared_runners, :dumped_yaml]
-    before_action :authenticate_token!, only: [:build]
     before_action :no_cache, only: [:badge]
-    protect_from_forgery except: :build
-
-    layout 'ci/project', except: [:index]
-
-    def show
-      @ref = params[:ref]
-
-      @commits = @project.commits.reverse_order
-      if @ref
-        # unscope is required, because of default_scope defined in Ci::Build
-        builds = @project.builds.unscope(:select, :order).where(ref: @ref).select(:commit_id).distinct
-        @commits = @commits.where(id: builds)
-      end
-      @commits = @commits.page(params[:page]).per(20)
-    end
+    protect_from_forgery
 
     # Project status badge
     # Image with build status for sha or ref

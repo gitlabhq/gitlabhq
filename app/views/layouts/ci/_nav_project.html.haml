@@ -5,12 +5,6 @@
       %span
         Back to project
   %li.separate-item
-  = nav_link path: ['projects#show', 'commits#show', 'builds#show'] do
-    = link_to ci_project_path(@project) do
-      = icon('list-alt fw')
-      %span
-        Commits
-        %span.count= @project.commits.count
     = nav_link path: ['services#index', 'services#edit'] do
       = link_to ci_project_services_path(@project) do
         = icon('share fw')
