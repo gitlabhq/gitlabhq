@@ -156,12 +156,15 @@
   }
 }
 
-
 .btn {
   @include btn-default;
   @include btn-white;
 
-  &.btn-success {
+  &.btn-success,
+  &.btn-new,
+  &.btn-create,
+  &.btn-save,
+  &.btn-green {
     @include btn-green;
   }
 
@@ -169,20 +172,10 @@
     @include btn-gray;
   }
 
-  &.btn-new {
-    @extend .btn-success;
-  }
-
-  &.btn-create {
-    @extend .btn-success;
-  }
-
-  &.btn-save {
-    @extend .btn-success;
-  }
-
-  &.btn-remove {
-    @extend .btn-danger;
+  &.btn-danger,
+  &.btn-remove,
+  &.btn-red {
+    @include btn-red;
   }
 
   &.btn-cancel {
@@ -211,14 +204,6 @@
     &:last-child {
       margin-right: 0px;
     }
-  }
-
-  &.btn-save {
-    @extend .btn-primary;
-  }
-
-  &.btn-new, &.btn-create {
-    @extend .btn-success;
   }
 }
 
