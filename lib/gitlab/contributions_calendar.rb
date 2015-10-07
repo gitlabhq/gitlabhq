@@ -12,7 +12,6 @@ module Gitlab
 
       @timestamps = {}
       date_from = 1.year.ago
-      date_to = Date.today
 
       events = Event.reorder(nil).contributions.where(author_id: user.id).
         where("created_at > ?", date_from).where(project_id: projects).

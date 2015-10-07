@@ -4,7 +4,7 @@
 #
 ###########################  NOTE  #####################################
 # This file should not receive new settings. All configuration options #
-# that do not require application restart are being moved to           #
+# that do not require an application restart are being moved to        #
 # ApplicationSetting model!                                            #
 # If you change this file in a Merge Request, please also create       #
 # a MR on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests  #
@@ -96,10 +96,10 @@ production: &base
 
   ## Reply by email
   # Allow users to comment on issues and merge requests by replying to notification emails.
-  # For documentation on how to set this up, see http://doc.gitlab.com/ce/reply_by_email/README.md
-  reply_by_email:
+  # For documentation on how to set this up, see http://doc.gitlab.com/ce/incoming_email/README.html
+  incoming_email:
     enabled: false
-    address: "replies+%{reply_key}@gitlab.example.com"
+    address: "incoming+%{key}@gitlab.example.com"
 
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
@@ -110,7 +110,23 @@ production: &base
     # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
 
   #
-  # 2. Auth settings
+  # 2. GitLab CI settings
+  # ==========================
+
+  gitlab_ci:
+    # Default project notifications settings:
+    #
+    # Send emails only on broken builds (default: true)
+    # all_broken_builds: true
+    #
+    # Add pusher to recipients list (default: false)
+    # add_pusher: true
+
+    # The location where build traces are stored (default: builds/). Relative paths are relative to Rails.root
+    # builds_path: builds/
+
+  #
+  # 3. Auth settings
   # ==========================
 
   ## LDAP settings
@@ -180,6 +196,26 @@ production: &base
         #
         user_filter: ''
 
+        # LDAP attributes that GitLab will use to create an account for the LDAP user.
+        # The specified attribute can either be the attribute name as a string (e.g. 'mail'),
+        # or an array of attribute names to try in order (e.g. ['mail', 'email']).
+        # Note that the user's LDAP login will always be the attribute specified as `uid` above.
+        attributes:
+          # The username will be used in paths for the user's own projects
+          # (like `gitlab.example.com/username/project`) and when mentioning
+          # them in issues, merge request and comments (like `@username`).
+          # If the attribute specified for `username` contains an email address,
+          # the GitLab username will be the part of the email address before the '@'.
+          username: ['uid', 'userid', 'sAMAccountName']
+          email:    ['mail', 'email', 'userPrincipalName']
+
+          # If no full name could be found at the attribute specified for `name`,
+          # the full name is determined using the attributes specified for
+          # `first_name` and `last_name`.
+          name:       'cn'
+          first_name: 'givenName'
+          last_name:  'sn'
+
       # GitLab EE only: add more LDAP servers
       # Choose an ID made of a-z and 0-9 . This ID will be stored in the database
       # so that GitLab can remember which LDAP server a user belongs to.
@@ -216,28 +252,28 @@ production: &base
     # arguments, followed by optional 'args' which can be either a hash or an array.
     # Documentation for this is available at http://doc.gitlab.com/ce/integration/omniauth.html
     providers:
-      # - { name: 'google_oauth2', 
+      # - { name: 'google_oauth2',
       #     label: 'Google',
-      #     app_id: 'YOUR_APP_ID', 
+      #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET',
       #     args: { access_type: 'offline', approval_prompt: '' } }
-      # - { name: 'twitter', 
-      #     app_id: 'YOUR_APP_ID', 
+      # - { name: 'twitter',
+      #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET' }
-      # - { name: 'github', 
+      # - { name: 'github',
       #     label: 'GitHub',
-      #     app_id: 'YOUR_APP_ID', 
+      #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET',
       #     args: { scope: 'user:email' } }
-      # - { name: 'gitlab', 
+      # - { name: 'gitlab',
       #     label: 'GitLab.com',
-      #     app_id: 'YOUR_APP_ID', 
+      #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET',
       #     args: { scope: 'api' } }
-      # - { name: 'bitbucket', 
-      #     app_id: 'YOUR_APP_ID', 
+      # - { name: 'bitbucket',
+      #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET' }
-      # - { name: 'saml', 
+      # - { name: 'saml',
       #     label: 'Our SAML Provider',
       #     args: {
       #             assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
@@ -246,12 +282,17 @@ production: &base
       #             issuer: 'https://gitlab.example.com',
       #             name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
       #           } }
+      # - { name: 'crowd',
+      #     args: {
+      #       crowd_server_url: 'CROWD SERVER URL',
+      #       application_name: 'YOUR_APP_NAME',
+      #       application_password: 'YOUR_APP_PASSWORD' } }
 
 
 
 
   #
-  # 3. Advanced settings
+  # 4. Advanced settings
   # ==========================
 
   # GitLab Satellites
@@ -265,6 +306,7 @@ production: &base
     path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
     # archive_permissions: 0640 # Permissions for the resulting backup.tar file (default: 0600)
     # keep_time: 604800   # default: 0 (forever) (in seconds)
+    # pg_schema: public     # default: nil, it means that all schemas will be backed up
     # upload:
     #   # Fog storage connection settings, see http://fog.io/storage/ .
     #   connection:
@@ -277,6 +319,8 @@ production: &base
     #   # Use multipart uploads when file size reaches 100MB, see
     #   #  http://docs.aws.amazon.com/AmazonS3/latest/dev/uploadobjusingmpu.html
     #   multipart_chunk_size: 104857600
+    #   # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups, this is optional
+    #   # encryption: 'AES256'
 
   ## GitLab Shell settings
   gitlab_shell:
@@ -310,7 +354,7 @@ production: &base
     timeout: 10
 
   #
-  # 4. Extra customization
+  # 5. Extra customization
   # ==========================
 
   extra:
@@ -380,7 +424,6 @@ test:
         user_filter: ''
         group_base: 'ou=groups,dc=example,dc=com'
         admin_group: ''
-        sync_ssh_keys: false
 
 staging:
   <<: *base

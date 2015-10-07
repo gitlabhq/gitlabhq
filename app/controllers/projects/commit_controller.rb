@@ -22,11 +22,20 @@ class Projects::CommitController < Projects::ApplicationController
       commit_id: @commit.id
     }
 
+    @ci_commit = project.ci_commit(commit.sha)
+
     respond_to do |format|
       format.html
       format.diff  { render text: @commit.to_diff }
       format.patch { render text: @commit.to_patch }
     end
+  end
+
+  def ci
+    @ci_commit = @project.ci_commit(@commit.sha)
+    @builds = @ci_commit.builds if @ci_commit
+    @notes_count = @commit.notes.count
+    @ci_project = @project.gitlab_ci_project
   end
 
   def branches

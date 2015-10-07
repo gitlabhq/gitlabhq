@@ -1,0 +1,21 @@
+%fieldset
+  %legend
+    Commit duration in minutes for last 30 commits
+
+  %canvas#build_timesChart.padded{width: 800, height: 300}
+
+:javascript
+  var data = {
+    labels : #{@charts[:build_times].labels.to_json},
+    datasets : [
+      {
+        fillColor : "#4A3",
+        strokeColor : "rgba(151,187,205,1)",
+        pointColor : "rgba(151,187,205,1)",
+        pointStrokeColor : "#fff",
+        data : #{@charts[:build_times].build_times.to_json}
+      }
+    ]
+  }
+  var ctx = $("#build_timesChart").get(0).getContext("2d");
+  new Chart(ctx).Line(data,{"scaleOverlay": true});

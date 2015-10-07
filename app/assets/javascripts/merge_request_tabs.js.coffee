@@ -66,6 +66,11 @@ class @MergeRequestTabs
 
     @setCurrentAction(action)
 
+  scrollToElement: (container) ->
+    if window.location.hash
+      top = $(container + " " + window.location.hash).offset().top
+      $('body').scrollTo(top);
+
   # Activate a tab based on the current action
   activateTab: (action) ->
     action = 'notes' if action == 'show'
@@ -122,6 +127,7 @@ class @MergeRequestTabs
         document.getElementById('commits').innerHTML = data.html
         $('.js-timeago').timeago()
         @commitsLoaded = true
+        @scrollToElement(".commits")
 
   loadDiff: (source) ->
     return if @diffsLoaded
@@ -131,6 +137,7 @@ class @MergeRequestTabs
       success: (data) =>
         document.getElementById('diffs').innerHTML = data.html
         @diffsLoaded = true
+        @scrollToElement(".diffs")
 
   toggleLoading: ->
     $('.mr-loading-status .loading').toggle()

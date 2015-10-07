@@ -1,4 +1,4 @@
-app = Rails.application
+app = Gitlab::Application
 
 if app.config.serve_static_assets
   # The `ActionDispatch::Static` middleware intercepts requests for static files 

@@ -6,7 +6,15 @@ You can configure web hooks to listen for specific events like pushes, issues or
 
 Web hooks can be used to update an external issue tracker, trigger CI builds, update a backup mirror, or even deploy to your production server.
 
-If you send a web hook to an SSL endpoint [the certificate will not be verified](https://gitlab.com/gitlab-org/gitlab-ce/blob/ccd617e58ea71c42b6b073e692447d0fe3c00be6/app/models/web_hook.rb#L35) since many people use self-signed certificates.
+## SSL Verification
+
+By default, the SSL certificate of the webhook endpoint is verified based on 
+an internal list of Certificate Authorities, 
+which means the certificate cannot be self-signed.
+
+You can turn this off in the web hook settings in your GitLab projects.
+
+![SSL Verification](ssl.png)
 
 ## Push events
 
@@ -34,7 +42,7 @@ X-Gitlab-Event: Push Hook
     "name": "Diaspora",
     "url": "git@example.com:mike/diasporadiaspora.git",
     "description": "",
-    "homepage": "http://example.com/mike/diaspora", 
+    "homepage": "http://example.com/mike/diaspora",
     "git_http_url":"http://example.com/mike/diaspora.git",
     "git_ssh_url":"git@example.com:mike/diaspora.git",
     "visibility_level":0
@@ -120,6 +128,12 @@ X-Gitlab-Event: Issue Hook
     "name": "Administrator",
     "username": "root",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+  },
+  "repository": {
+    "name": "Gitlab Test",
+    "url": "http://example.com/gitlabhq/gitlab-test.git",
+    "description": "Aut reprehenderit ut est.",
+    "homepage": "http://example.com/gitlabhq/gitlab-test"
   },
   "object_attributes": {
     "id": 301,
@@ -279,6 +293,7 @@ X-Gitlab-Event: Note Hook
       "name": "Gitlab Test",
       "ssh_url": "git@example.com:gitlab-org/gitlab-test.git",
       "http_url": "http://example.com/gitlab-org/gitlab-test.git",
+      "web_url": "http://example.com/gitlab-org/gitlab-test",
       "namespace": "Gitlab Org",
       "visibility_level": 10
     },
@@ -286,6 +301,7 @@ X-Gitlab-Event: Note Hook
       "name": "Gitlab Test",
       "ssh_url": "git@example.com:gitlab-org/gitlab-test.git",
       "http_url": "http://example.com/gitlab-org/gitlab-test.git",
+      "web_url": "http://example.com/gitlab-org/gitlab-test",
       "namespace": "Gitlab Org",
       "visibility_level": 10
     },
@@ -462,6 +478,7 @@ X-Gitlab-Event: Merge Request Hook
       "name": "awesome_project",
       "ssh_url": "ssh://git@example.com/awesome_space/awesome_project.git",
       "http_url": "http://example.com/awesome_space/awesome_project.git",
+      "web_url": "http://example.com/awesome_space/awesome_project",
       "visibility_level": 20,
       "namespace": "awesome_space"
     },
@@ -469,6 +486,7 @@ X-Gitlab-Event: Merge Request Hook
       "name": "awesome_project",
       "ssh_url": "ssh://git@example.com/awesome_space/awesome_project.git",
       "http_url": "http://example.com/awesome_space/awesome_project.git",
+      "web_url": "http://example.com/awesome_space/awesome_project",
       "visibility_level": 20,
       "namespace": "awesome_space"
     },
@@ -503,8 +521,8 @@ server.mount_proc '/' do |req, res|
   puts req.body
 end
 
-trap 'INT' do 
-  server.shutdown 
+trap 'INT' do
+  server.shutdown
 end
 server.start
 ```

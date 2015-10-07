@@ -1,11 +1,8 @@
 %li.timeline-entry{ id: dom_id(note), class: [dom_class(note), "note-row-#{note.id}", ('system-note' if note.system)], data: { discussion: note.discussion_id } }
   .timeline-entry-inner
     .timeline-icon
-      - if note.system
-        %span= icon('circle')
-      - else
-        = link_to user_path(note.author) do
-          = image_tag avatar_icon(note.author_email), class: 'avatar s40', alt: ''
+      = link_to user_path(note.author) do
+        = image_tag avatar_icon(note.author_email), class: 'avatar s40', alt: ''
     .timeline-content
       .note-header
         - if note_editable?(note)
@@ -17,14 +14,10 @@
               = icon('trash-o')
 
         - unless note.system
-          - member = note.project.team.find_member(note.author.id)
-          - if member
+          - access = note.project.team.human_max_access(note.author.id)
+          - if access
             %span.note-role.label
-              = member.human_access
-
-        - if note.system
-          = link_to user_path(note.author) do
-            = image_tag avatar_icon(note.author_email), class: 'avatar s16', alt: ''
+              = access
 
         = link_to_member(note.project, note.author, avatar: false)
 
@@ -66,7 +59,9 @@
         .note-text
           = preserve do
             = markdown(note.note, {no_header_anchors: true})
-        = render 'projects/notes/edit_form', note: note
+        - unless note.system?
+          -# System notes can't be edited
+          = render 'projects/notes/edit_form', note: note
 
       - if note.attachment.url
         .note-attachment

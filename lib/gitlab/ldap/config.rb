@@ -84,6 +84,10 @@ module Gitlab
         options['block_auto_created_users']
       end
 
+      def attributes
+        options['attributes']
+      end
+
       protected
       def base_config
         Gitlab.config.ldap

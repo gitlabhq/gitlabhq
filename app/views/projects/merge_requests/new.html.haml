@@ -1,4 +1,6 @@
 - page_title "New Merge Request"
+= render "header_title"
+
 - if @merge_request.can_be_created
   = render 'new_submit'
 - else

@@ -1,8 +1,11 @@
 - page_title "All Pages", "Wiki"
+= render "header_title"
+
 = render 'nav'
-%h3.page-title
-  All Pages
-%ul.bordered-list
+.gray-content-block
+  %h3.page-title
+    All Pages
+%ul.content-list
   - @wiki_pages.each do |wiki_page|
     %li
       %h4

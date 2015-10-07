@@ -1,6 +1,6 @@
 module Gitlab
   class UrlBuilder
-    include Rails.application.routes.url_helpers
+    include Gitlab::Application.routes.url_helpers
     include GitlabRoutingHelper
 
     def initialize(type)
@@ -23,12 +23,12 @@ module Gitlab
 
     def build_issue_url(id)
       issue = Issue.find(id)
-      issue_url(issue, host: Gitlab.config.gitlab['url'])
+      issue_url(issue)
     end
 
     def build_merge_request_url(id)
       merge_request = MergeRequest.find(id)
-      merge_request_url(merge_request, host: Gitlab.config.gitlab['url'])
+      merge_request_url(merge_request)
     end
 
     def build_note_url(id)
@@ -37,22 +37,18 @@ module Gitlab
         namespace_project_commit_url(namespace_id: note.project.namespace,
                                      id: note.commit_id,
                                      project_id: note.project,
-                                     host: Gitlab.config.gitlab['url'],
                                      anchor: "note_#{note.id}")
       elsif note.for_issue?
         issue = Issue.find(note.noteable_id)
         issue_url(issue,
-                  host: Gitlab.config.gitlab['url'],
                   anchor: "note_#{note.id}")
       elsif note.for_merge_request?
         merge_request = MergeRequest.find(note.noteable_id)
         merge_request_url(merge_request,
-                          host: Gitlab.config.gitlab['url'],
                           anchor: "note_#{note.id}")
       elsif note.for_project_snippet?
         snippet = Snippet.find(note.noteable_id)
         project_snippet_url(snippet,
-                            host: Gitlab.config.gitlab['url'],
                             anchor: "note_#{note.id}")
       end
     end

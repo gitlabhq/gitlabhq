@@ -2,7 +2,7 @@ namespace :gitlab do
   desc "GitLab | Check the configuration of GitLab and its environment"
   task check: %w{gitlab:gitlab_shell:check
                  gitlab:sidekiq:check
-                 gitlab:reply_by_email:check
+                 gitlab:incoming_email:check
                  gitlab:ldap:check
                  gitlab:app:check}
 
@@ -278,7 +278,7 @@ namespace :gitlab do
         fix_and_rerun
       end
     end
-    
+
     def check_uploads
       print "Uploads directory setup correctly? ... "
 
@@ -331,15 +331,18 @@ namespace :gitlab do
     end
 
     def check_redis_version
-      print "Redis version >= 2.0.0? ... "
+      min_redis_version = "2.4.0"
+      print "Redis version >= #{min_redis_version}? ... "
 
       redis_version = run(%W(redis-cli --version))
-      if redis_version.try(:match, /redis-cli 2.\d.\d/) || redis_version.try(:match, /redis-cli 3.\d.\d/)
+      redis_version = redis_version.try(:match, /redis-cli (.*)/)
+      if redis_version &&
+          (Gem::Version.new(redis_version[1]) > Gem::Version.new(min_redis_version))
         puts "yes".green
       else
         puts "no".red
         try_fixing_it(
-          "Update your redis server to a version >= 2.0.0"
+          "Update your redis server to a version >= #{min_redis_version}"
         )
         for_more_information(
           "gitlab-public-wiki/wiki/Trouble-Shooting-Guide in section sidekiq"
@@ -488,7 +491,7 @@ namespace :gitlab do
         else
           puts "wrong or missing hooks".red
           try_fixing_it(
-            sudo_gitlab("#{gitlab_shell_path}/bin/create-hooks"),
+            sudo_gitlab("#{File.join(gitlab_shell_path, 'bin/create-hooks')}"),
             'Check the hooks_path in config/gitlab.yml',
             'Check your gitlab-shell installation'
           )
@@ -631,13 +634,13 @@ namespace :gitlab do
   end
 
 
-  namespace :reply_by_email do
+  namespace :incoming_email do
     desc "GitLab | Check the configuration of Reply by email"
     task check: :environment  do
       warn_user_is_not_gitlab
       start_checking "Reply by email"
 
-      if Gitlab.config.reply_by_email.enabled
+      if Gitlab.config.incoming_email.enabled
         check_address_formatted_correctly
         check_mail_room_config_exists
         check_imap_authentication
@@ -662,12 +665,12 @@ namespace :gitlab do
     def check_address_formatted_correctly
       print "Address formatted correctly? ... "
 
-      if Gitlab::ReplyByEmail.address_formatted_correctly?
+      if Gitlab::IncomingEmail.address_formatted_correctly?
         puts "yes".green
       else
         puts "no".red
         try_fixing_it(
-          "Make sure that the address in config/gitlab.yml includes the '%{reply_key}' placeholder."
+          "Make sure that the address in config/gitlab.yml includes the '%{key}' placeholder."
         )
         fix_and_rerun
       end
@@ -675,6 +678,11 @@ namespace :gitlab do
 
     def check_initd_configured_correctly
       print "Init.d configured correctly? ... "
+
+      if omnibus_gitlab?
+        puts 'skipped (omnibus-gitlab has no init script)'.magenta
+        return
+      end
 
       path = "/etc/default/gitlab"
 
@@ -686,7 +694,7 @@ namespace :gitlab do
           "Enable mail_room in the init.d configuration."
         )
         for_more_information(
-          "doc/reply_by_email/README.md"
+          "doc/incoming_email/README.md"
         )
         fix_and_rerun
       end
@@ -705,7 +713,7 @@ namespace :gitlab do
           "Enable mail_room in your Procfile."
         )
         for_more_information(
-          "doc/reply_by_email/README.md"
+          "doc/incoming_email/README.md"
         )
         fix_and_rerun
       end
@@ -750,7 +758,7 @@ namespace :gitlab do
           "Check that the information in config/mail_room.yml is correct"
         )
         for_more_information(
-          "doc/reply_by_email/README.md"
+          "doc/incoming_email/README.md"
         )
         fix_and_rerun
       end
@@ -786,7 +794,7 @@ namespace :gitlab do
           "Check that the information in config/mail_room.yml is correct"
         )
         for_more_information(
-          "doc/reply_by_email/README.md"
+          "doc/incoming_email/README.md"
         )
         fix_and_rerun
       end

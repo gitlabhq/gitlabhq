@@ -1,7 +1,7 @@
 - page_title "Branches"
+= render "projects/commits/header_title"
 = render "projects/commits/head"
-%h3.page-title
-  Branches
+.gray-content-block
   .pull-right
     - if can? current_user, :push_code, @project
       = link_to new_namespace_project_branch_path(@project.namespace, @project), class: 'btn btn-create' do
@@ -24,9 +24,10 @@
             = sort_title_recently_updated
           = link_to namespace_project_branches_path(sort: 'last_updated') do
             = sort_title_oldest_updated
-%hr
+  .oneline
+    Protected branches can be managed in project settings
 - unless @branches.empty?
-  %ul.bordered-list.top-list.all-branches
+  %ul.content-list.all-branches
     - @branches.each do |branch|
       = render "projects/branches/branch", branch: branch
   = paginate @branches, theme: 'gitlab'

@@ -1,19 +1,62 @@
 .light-well {
-  background: #f9f9f9;
+  background-color: #f8fafc;
   padding: 15px;
 }
 
 .centered-light-block {
   text-align: center;
-  color: #888;
+  color: $gl-gray;
   margin: 20px;
 }
 
 .nothing-here-block {
   text-align: center;
   padding: 20px;
-  color: #666;
+  color: $gl-gray;
   font-weight: normal;
   font-size: 16px;
   line-height: 36px;
+}
+
+.gray-content-block {
+  margin: -$gl-padding;
+  background-color: $background-color;
+  padding: $gl-padding;
+  margin-bottom: 0px;
+  border-top: 1px solid $border-color;
+  border-bottom: 1px solid $border-color;
+  color: $gl-gray;
+
+  &.top-block {
+    border-top: none;
+  }
+
+  &.middle-block {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  &.clear-block {
+    margin-bottom: $gl-padding - 1px;
+    padding-bottom: $gl-padding;
+  }
+
+  &.second-block {
+    margin-top: -1px;
+    margin-bottom: 0;
+  }
+
+  &.footer-block {
+    margin-top: 0;
+    border-bottom: none;
+    margin-bottom: -$gl-padding;
+  }
+
+  .title {
+    color: $gl-text-color;
+  }
+
+  .oneline {
+    line-height: 42px;
+  }
 }

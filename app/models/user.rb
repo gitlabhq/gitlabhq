@@ -2,62 +2,59 @@
 #
 # Table name: users
 #
-#  id                            :integer          not null, primary key
-#  email                         :string(255)      default(""), not null
-#  encrypted_password            :string(255)      default(""), not null
-#  reset_password_token          :string(255)
-#  reset_password_sent_at        :datetime
-#  remember_created_at           :datetime
-#  sign_in_count                 :integer          default(0)
-#  current_sign_in_at            :datetime
-#  last_sign_in_at               :datetime
-#  current_sign_in_ip            :string(255)
-#  last_sign_in_ip               :string(255)
-#  created_at                    :datetime
-#  updated_at                    :datetime
-#  name                          :string(255)
-#  admin                         :boolean          default(FALSE), not null
-#  projects_limit                :integer          default(10)
-#  skype                         :string(255)      default(""), not null
-#  linkedin                      :string(255)      default(""), not null
-#  twitter                       :string(255)      default(""), not null
-#  authentication_token          :string(255)
-#  theme_id                      :integer          default(1), not null
-#  bio                           :string(255)
-#  failed_attempts               :integer          default(0)
-#  locked_at                     :datetime
-#  username                      :string(255)
-#  can_create_group              :boolean          default(TRUE), not null
-#  can_create_team               :boolean          default(TRUE), not null
-#  state                         :string(255)
-#  color_scheme_id               :integer          default(1), not null
-#  notification_level            :integer          default(1), not null
-#  password_expires_at           :datetime
-#  created_by_id                 :integer
-#  last_credential_check_at      :datetime
-#  avatar                        :string(255)
-#  confirmation_token            :string(255)
-#  confirmed_at                  :datetime
-#  confirmation_sent_at          :datetime
-#  unconfirmed_email             :string(255)
-#  hide_no_ssh_key               :boolean          default(FALSE)
-#  website_url                   :string(255)      default(""), not null
-#  github_access_token           :string(255)
-#  gitlab_access_token           :string(255)
-#  notification_email            :string(255)
-#  hide_no_password              :boolean          default(FALSE)
-#  password_automatically_set    :boolean          default(FALSE)
-#  bitbucket_access_token        :string(255)
-#  bitbucket_access_token_secret :string(255)
-#  location                      :string(255)
-#  encrypted_otp_secret          :string(255)
-#  encrypted_otp_secret_iv       :string(255)
-#  encrypted_otp_secret_salt     :string(255)
-#  otp_required_for_login        :boolean          default(FALSE), not null
-#  otp_backup_codes              :text
-#  public_email                  :string(255)      default(""), not null
-#  dashboard                     :integer          default(0)
-#  project_view                  :integer          default(0)
+#  id                         :integer          not null, primary key
+#  email                      :string(255)      default(""), not null
+#  encrypted_password         :string(255)      default(""), not null
+#  reset_password_token       :string(255)
+#  reset_password_sent_at     :datetime
+#  remember_created_at        :datetime
+#  sign_in_count              :integer          default(0)
+#  current_sign_in_at         :datetime
+#  last_sign_in_at            :datetime
+#  current_sign_in_ip         :string(255)
+#  last_sign_in_ip            :string(255)
+#  created_at                 :datetime
+#  updated_at                 :datetime
+#  name                       :string(255)
+#  admin                      :boolean          default(FALSE), not null
+#  projects_limit             :integer          default(10)
+#  skype                      :string(255)      default(""), not null
+#  linkedin                   :string(255)      default(""), not null
+#  twitter                    :string(255)      default(""), not null
+#  authentication_token       :string(255)
+#  theme_id                   :integer          default(1), not null
+#  bio                        :string(255)
+#  failed_attempts            :integer          default(0)
+#  locked_at                  :datetime
+#  username                   :string(255)
+#  can_create_group           :boolean          default(TRUE), not null
+#  can_create_team            :boolean          default(TRUE), not null
+#  state                      :string(255)
+#  color_scheme_id            :integer          default(1), not null
+#  notification_level         :integer          default(1), not null
+#  password_expires_at        :datetime
+#  created_by_id              :integer
+#  last_credential_check_at   :datetime
+#  avatar                     :string(255)
+#  confirmation_token         :string(255)
+#  confirmed_at               :datetime
+#  confirmation_sent_at       :datetime
+#  unconfirmed_email          :string(255)
+#  hide_no_ssh_key            :boolean          default(FALSE)
+#  website_url                :string(255)      default(""), not null
+#  notification_email         :string(255)
+#  hide_no_password           :boolean          default(FALSE)
+#  password_automatically_set :boolean          default(FALSE)
+#  location                   :string(255)
+#  encrypted_otp_secret       :string(255)
+#  encrypted_otp_secret_iv    :string(255)
+#  encrypted_otp_secret_salt  :string(255)
+#  otp_required_for_login     :boolean          default(FALSE), not null
+#  otp_backup_codes           :text
+#  public_email               :string(255)      default(""), not null
+#  dashboard                  :integer          default(0)
+#  project_view               :integer          default(0)
+#  layout                     :integer          default(0)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -133,6 +130,8 @@ class User < ActiveRecord::Base
   has_many :assigned_issues,          dependent: :destroy, foreign_key: :assignee_id, class_name: "Issue"
   has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
   has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
+  has_one  :abuse_report,             dependent: :destroy
+  has_many :ci_builds,                dependent: :nullify, class_name: 'Ci::Build'
 
 
   #
@@ -174,9 +173,12 @@ class User < ActiveRecord::Base
   after_create :post_create_hook
   after_destroy :post_destroy_hook
 
+  # User's Layout preference
+  enum layout: [:fixed, :fluid]
+
   # User's Dashboard preference
   # Note: When adding an option, it MUST go on the end of the array.
-  enum dashboard: [:projects, :stars]
+  enum dashboard: [:projects, :stars, :project_activity, :starred_project_activity]
 
   # User's Project preference
   # Note: When adding an option, it MUST go on the end of the array.
@@ -329,6 +331,10 @@ class User < ActiveRecord::Base
     self.reset_password_sent_at = Time.now.utc
 
     @reset_token
+  end
+
+  def recently_sent_password_reset?
+    reset_password_sent_at.present? && reset_password_sent_at >= 1.minute.ago
   end
 
   def disable_two_factor!
@@ -704,13 +710,7 @@ class User < ActiveRecord::Base
   end
 
   def manageable_namespaces
-    @manageable_namespaces ||=
-      begin
-        namespaces = []
-        namespaces << namespace
-        namespaces += owned_groups
-        namespaces += masters_groups
-      end
+    @manageable_namespaces ||= [namespace] + owned_groups + masters_groups
   end
 
   def namespaces
@@ -756,5 +756,14 @@ class User < ActiveRecord::Base
 
   def can_be_removed?
     !solo_owned_groups.present?
+  end
+
+  def ci_authorized_projects
+    @ci_authorized_projects ||= Ci::Project.where(gitlab_id: authorized_projects)
+  end
+
+  def ci_authorized_runners
+    Ci::Runner.specific.includes(:runner_projects).
+      where(ci_runner_projects: { project_id: ci_authorized_projects } )
   end
 end

@@ -8,15 +8,21 @@
   .login-body
     - if form_based_providers.any?
       %ul.nav.nav-tabs
+        - if crowd_enabled?
+          %li.active
+            = link_to "Crowd", "#tab-crowd", 'data-toggle' => 'tab'
         - @ldap_servers.each_with_index do |server, i|
-          %li{class: (:active if i.zero?)}
+          %li{class: (:active if i.zero? && !crowd_enabled?)}
             = link_to server['label'], "#tab-#{server['provider_name']}", 'data-toggle' => 'tab'
         - if signin_enabled?
           %li
             = link_to 'Standard', '#tab-signin', 'data-toggle' => 'tab'
       .tab-content
+        - if crowd_enabled?
+          %div.tab-pane.active{id: "tab-crowd"}
+            = render 'devise/sessions/new_crowd'
         - @ldap_servers.each_with_index do |server, i|
-          %div.tab-pane{id: "tab-#{server['provider_name']}", class: (:active if i.zero?)}
+          %div.tab-pane{id: "tab-#{server['provider_name']}", class: (:active if i.zero? && !crowd_enabled?)}
             = render 'devise/sessions/new_ldap', server: server
         - if signin_enabled?
           %div#tab-signin.tab-pane

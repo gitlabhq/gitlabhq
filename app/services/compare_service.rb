@@ -4,7 +4,10 @@ require 'securerandom'
 # and return Gitlab::CompareResult object that responds to commits and diffs
 class CompareService
   def execute(source_project, source_branch, target_project, target_branch)
-    source_sha = source_project.commit(source_branch).sha
+    source_commit = source_project.commit(source_branch)
+    return unless source_commit
+
+    source_sha = source_commit.sha
 
     # If compare with other project we need to fetch ref first
     unless target_project == source_project

@@ -3,9 +3,9 @@
   .select2-choice {
     background: #FFF;
     border-color: #DDD;
-    height: 34px;
-    padding: 6px 14px;
-    font-size: 14px;
+    height: 42px;
+    padding: 8px $gl-padding;
+    font-size: $gl-font-size;
     line-height: 1.42857143;
 
     @include border-radius(4px);
@@ -13,7 +13,7 @@
     .select2-arrow {
       background: #FFF;
       border-left: none;
-      padding-top: 3px;
+      padding-top: 5px;
     }
   }
 }

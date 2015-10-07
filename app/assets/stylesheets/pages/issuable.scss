@@ -25,8 +25,6 @@
 }
 
 .issuable-context-title {
-  font-size: 14px;
-  line-height: 1.4;
   margin-bottom: 5px;
 
   .avatar {
@@ -34,14 +32,50 @@
   }
 
   label {
-    color: #666;
+    color: $gl-gray;
     font-weight: normal;
     margin-right: 4px;
   }
 }
 
-.issuable-affix .context {
-  font-size: 13px;
+.project-issuable-filter {
+  .controls {
+    float: right;
+    margin-top: 7px;
+  }
 
-  .btn { font-size: 13px; }
+  .center-top-menu {
+    text-align: left;
+  }
+}
+
+.issuable-details {
+  .page-title {
+    margin-top: -15px;
+    padding: 10px 0;
+    margin-bottom: 0;
+    color: $gl-gray;
+    font-size: 16px;
+
+    .author {
+      color: $gl-gray;
+    }
+
+    .issue-id {
+      font-size: 19px;
+      color: $gl-text-color;
+    }
+  }
+
+  .issue-title {
+    margin: 0;
+  }
+
+  .description {
+    margin-top: 6px;
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
 }

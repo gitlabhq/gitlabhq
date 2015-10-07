@@ -1,25 +1,28 @@
-- page_title @page.title, "Wiki"
-= render 'nav'
-%h3.page-title
-  = @page.title
-  = render 'main_links'
+- page_title @page.title.capitalize, "Wiki"
+= render "header_title"
 
-.wiki-last-edit-by
-  Last edited by #{@page.commit.author.name} #{time_ago_with_tooltip(@page.commit.authored_date)}
+= render 'nav'
+
+.gray-content-block
+  = render 'main_links'
+  %h3.page-title
+    = @page.title.capitalize
+
+  .wiki-last-edit-by
+    Last edited by #{@page.commit.author.name} #{time_ago_with_tooltip(@page.commit.authored_date)}
 
 - if @page.historical?
   .warning_message
     This is an old version of this page.
-    You can view the #{link_to "most recent version", namespace_project_wiki_path(@project.namespace, @project, @page)} or browse the #{link_to "history", history_namespace_project_wiki_path(@project.namespace, @project, @page)}.
+    You can view the #{link_to "most recent version", namespace_project_wiki_path(@project.namespace, @project, @page)} or browse the #{link_to "history", namespace_project_wiki_history_path(@project.namespace, @project, @page)}.
 
-%hr
 
-.wiki-holder
+.wiki-holder.prepend-top-default
   .wiki
     = preserve do
       = render_wiki_content(@page)
 
-%hr
-.wiki-last-edit-by
-  Last edited by #{@page.commit.author.name} #{time_ago_with_tooltip(@page.commit.authored_date)}
+.gray-content-block.footer-block
+  .wiki-last-edit-by
+    Last edited by #{@page.commit.author.name} #{time_ago_with_tooltip(@page.commit.authored_date)}
 

@@ -1,33 +1,28 @@
 .issues-filters
   .issues-state-filters
-    %ul.nav.nav-tabs
+    %ul.center-top-menu
       %li{class: ("active" if params[:state] == 'opened')}
         = link_to page_filter_path(state: 'opened') do
-          = icon('exclamation-circle')
           #{state_filters_text_for(:opened, @project)}
 
       - if defined?(type) && type == :merge_requests
         %li{class: ("active" if params[:state] == 'merged')}
           = link_to page_filter_path(state: 'merged') do
-            = icon('check-circle')
             #{state_filters_text_for(:merged, @project)}
 
         %li{class: ("active" if params[:state] == 'closed')}
           = link_to page_filter_path(state: 'closed') do
-            = icon('ban')
             #{state_filters_text_for(:closed, @project)}
       - else
         %li{class: ("active" if params[:state] == 'closed')}
           = link_to page_filter_path(state: 'closed') do
-            = icon('check-circle')
             #{state_filters_text_for(:closed, @project)}
 
       %li{class: ("active" if params[:state] == 'all')}
         = link_to page_filter_path(state: 'all') do
-          = icon('compass')
           #{state_filters_text_for(:all, @project)}
 
-  .issues-details-filters
+  .issues-details-filters.gray-content-block
     = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name]), method: :get, class: 'filter-form' do
       - if controller.controller_name == 'issues' && can?(current_user, :admin_issue, @project)
         .check-all-holder

@@ -5,8 +5,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
 
   step 'I click link "Fork"' do
     expect(page).to have_content "Shop"
-    expect(page).to have_content "Fork"
-    click_link "Fork"
+    click_link "Fork project"
   end
 
   step 'I am a member of project "Shop"' do
@@ -15,7 +14,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
   end
 
   step 'I should see the forked project page' do
-    expect(page).to have_content "Project was successfully forked."
+    expect(page).to have_content "Forked from"
   end
 
   step 'I already have a project named "Shop" in my namespace' do

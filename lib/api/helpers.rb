@@ -55,6 +55,32 @@ module API
       end
     end
 
+    def project_service
+      @project_service ||= begin
+        underscored_service = params[:service_slug].underscore
+
+        if Service.available_services_names.include?(underscored_service)
+          user_project.build_missing_services
+
+          service_method = "#{underscored_service}_service"
+
+          send_service(service_method)
+        end
+      end
+
+      @project_service || not_found!("Service")
+    end
+
+    def send_service(service_method)
+      user_project.send(service_method)
+    end
+
+    def service_attributes
+      @service_attributes ||= project_service.fields.inject([]) do |arr, hash|
+        arr << hash[:name].to_sym
+      end
+    end
+
     def find_group(id)
       begin
         group = Group.find(id)
@@ -122,15 +148,13 @@ module API
       end
     end
 
-    def attributes_for_keys(keys)
+    def attributes_for_keys(keys, custom_params = nil)
       attrs = {}
-
       keys.each do |key|
         if params[key].present? or (params.has_key?(key) and params[key] == false)
           attrs[key] = params[key]
         end
       end
-
       ActionController::Parameters.new(attrs).permit!
     end
 
@@ -218,6 +242,44 @@ module API
 
     def render_api_error!(message, status)
       error!({ 'message' => message }, status)
+    end
+
+    # Projects helpers
+
+    def filter_projects(projects)
+      # If the archived parameter is passed, limit results accordingly
+      if params[:archived].present?
+        projects = projects.where(archived: parse_boolean(params[:archived]))
+      end
+
+      if params[:search].present?
+        projects = projects.search(params[:search])
+      end
+
+      if params[:ci_enabled_first].present?
+        projects.includes(:gitlab_ci_service).
+          reorder("services.active DESC, projects.#{project_order_by} #{project_sort}")
+      else
+        projects.reorder(project_order_by => project_sort)
+      end
+    end
+
+    def project_order_by
+      order_fields = %w(id name path created_at updated_at last_activity_at)
+
+      if order_fields.include?(params['order_by'])
+        params['order_by']
+      else
+        'created_at'
+      end
+    end
+
+    def project_sort
+      if params["sort"] == 'asc'
+        :asc
+      else
+        :desc
+      end
     end
 
     private

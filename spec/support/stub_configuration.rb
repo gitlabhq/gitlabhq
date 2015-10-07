@@ -17,8 +17,8 @@ module StubConfiguration
     allow(Gitlab.config.gravatar).to receive_messages(messages)
   end
 
-  def stub_reply_by_email_setting(messages)
-    allow(Gitlab.config.reply_by_email).to receive_messages(messages)
+  def stub_incoming_email_setting(messages)
+    allow(Gitlab.config.incoming_email).to receive_messages(messages)
   end
 
   private

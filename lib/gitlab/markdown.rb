@@ -103,7 +103,7 @@ module Gitlab
 
         # EmojiFilter
         asset_host: Gitlab::Application.config.asset_host,
-        asset_root: Gitlab.config.gitlab.url,
+        asset_root: Gitlab.config.gitlab.base_url,
 
         # ReferenceFilter
         only_path: only_path_pipeline?(options[:pipeline]),

@@ -68,7 +68,7 @@ describe 'Group access', feature: true do
       it { is_expected.to be_allowed_for group_member(:guest) }
       it { is_expected.to be_allowed_for :admin }
       it { is_expected.to be_allowed_for :user }
-      it { is_expected.to be_denied_for :visitor }
+      it { is_expected.to be_allowed_for :visitor }
     end
 
     context 'with no projects' do
@@ -77,8 +77,8 @@ describe 'Group access', feature: true do
       it { is_expected.to be_allowed_for group_member(:reporter) }
       it { is_expected.to be_allowed_for group_member(:guest) }
       it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_denied_for :user }
-      it { is_expected.to be_denied_for :visitor }
+      it { is_expected.to be_allowed_for :user }
+      it { is_expected.to be_allowed_for :visitor }
     end
   end
 

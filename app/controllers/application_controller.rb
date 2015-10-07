@@ -1,4 +1,5 @@
 require 'gon'
+require 'fogbugz'
 
 class ApplicationController < ActionController::Base
   include Gitlab::CurrentSettings
@@ -20,7 +21,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   helper_method :abilities, :can?, :current_application_settings
-  helper_method :import_sources_enabled?, :github_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :gitorious_import_enabled?, :google_code_import_enabled?, :git_import_enabled?
+  helper_method :import_sources_enabled?, :github_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :gitorious_import_enabled?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -116,9 +117,14 @@ class ApplicationController < ActionController::Base
         redirect_to request.original_url.gsub(/\.git\Z/, '') and return
       end
 
-      @project = Project.find_with_namespace("#{namespace}/#{id}")
+      project_path = "#{namespace}/#{id}"
+      @project = Project.find_with_namespace(project_path)
+
 
       if @project and can?(current_user, :read_project, @project)
+        if @project.path_with_namespace != project_path
+          redirect_to request.original_url.gsub(project_path, @project.path_with_namespace) and return
+        end
         @project
       elsif current_user.nil?
         @project = nil
@@ -133,9 +139,6 @@ class ApplicationController < ActionController::Base
 
   def repository
     @repository ||= project.repository
-  rescue Grit::NoSuchPathError => e
-    log_exception(e)
-    nil
   end
 
   def authorize_project!(action)
@@ -335,6 +338,10 @@ class ApplicationController < ActionController::Base
 
   def google_code_import_enabled?
     current_application_settings.import_sources.include?('google_code')
+  end
+
+  def fogbugz_import_enabled?
+    current_application_settings.import_sources.include?('fogbugz')
   end
 
   def git_import_enabled?

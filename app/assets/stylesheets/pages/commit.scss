@@ -26,14 +26,6 @@
   margin-top: 10px;
 }
 
-.commit-stat-summary {
-  color: #666;
-  font-size: 14px;
-  font-weight: normal;
-  padding: 3px 0;
-  margin-bottom: 10px;
-}
-
 .commit-info-row {
   margin-bottom: 10px;
   .avatar {
@@ -47,11 +39,6 @@
 }
 
 .commit-box {
-  margin: 10px 0;
-  border-top: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
-  padding: 20px 0;
-
   .commit-title {
     margin: 0;
   }
@@ -61,35 +48,34 @@
   }
 }
 
-.file-stats a {
-  color: $style_color;
-}
-
 .file-stats {
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 10px 0;
+
+    li {
+      padding: 3px 0px;
+    }
+  }
   .new-file {
     a {
-      color: #090;
-    }
-    i {
-      color: #1BCF00;
+      color: $gl-text-green;
     }
   }
   .renamed-file {
-    i {
-      color: #FE9300;
+    a {
+      color: $gl-text-orange;
     }
   }
   .deleted-file {
     a {
-      color: #B00;
-    }
-    i {
-      color: #EE0000;
+      color: $gl-text-red;
     }
   }
   .edit-file{
-    i{
-      color: #555;
+    a {
+      color: $gl-text-color;
     }
   }
 }
@@ -120,4 +106,17 @@
     position: relative;
     z-index: 2;
   }
+}
+
+.commit-ci-menu {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  margin-top: 5px;
+  height: 56px;
+  margin: -16px;
+  padding: 16px;
+  text-align: center;
+  margin-top: 0px;
+  margin-bottom: 2px;
 }

@@ -18,7 +18,13 @@ module Projects
 
       if new_project.persisted?
         if @project.gitlab_ci?
-          ForkRegistrationWorker.perform_async(@project.id, new_project.id, @current_user.private_token)
+          new_project.enable_ci
+
+          settings = @project.gitlab_ci_project.attributes.select do |attr_name, value|
+            ["public", "shared_runners_enabled", "allow_git_fetch"].include? attr_name
+          end
+
+          new_project.gitlab_ci_project.update(settings)
         end
       end
 

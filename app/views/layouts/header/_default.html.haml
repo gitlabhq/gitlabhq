@@ -1,5 +1,5 @@
 %header.navbar.navbar-fixed-top.navbar-gitlab{ class: nav_header_class }
-  %div{ class: fluid_layout ? "container-fluid" : "container-fluid container-limited" }
+  %div{ class: fluid_layout ? "container-fluid" : "container-fluid" }
     .header-content
       %button.navbar-toggle{type: 'button'}
         %span.sr-only Toggle navigation
@@ -7,8 +7,9 @@
 
       .navbar-collapse.collapse
         %ul.nav.navbar-nav.pull-right
-          %li.hidden-sm.hidden-xs
-            = render 'layouts/search'
+          - unless @disable_search_panel
+            %li.hidden-sm.hidden-xs
+              = render 'layouts/search'
           %li.visible-sm.visible-xs
             = link_to search_path, title: 'Search', data: {toggle: 'tooltip', placement: 'bottom'} do
               = icon('search')
@@ -17,7 +18,7 @@
               = link_to admin_root_path, title: 'Admin area', data: {toggle: 'tooltip', placement: 'bottom'} do
                 = icon('wrench fw')
           - if current_user.can_create_project?
-            %li.hidden-xs
+            %li
               = link_to new_project_path, title: 'New project', data: {toggle: 'tooltip', placement: 'bottom'} do
                 = icon('plus fw')
           %li

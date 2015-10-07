@@ -38,10 +38,17 @@
   - @commit.parents.each do |parent|
     = link_to parent.short_id, namespace_project_commit_path(@project.namespace, @project, parent)
 
+- if @ci_commit
+  .pull-right
+    = link_to ci_status_path(@ci_commit), class: "ci-status ci-#{@ci_commit.status}" do
+      = ci_status_icon(@ci_commit)
+      build:
+      = @ci_commit.status
+
 .commit-info-row.branches
   %i.fa.fa-spinner.fa-spin
 
-.commit-box
+.commit-box.gray-content-block.middle-block
   %h3.commit-title
     = gfm escape_once(@commit.title)
   - if @commit.description.present?

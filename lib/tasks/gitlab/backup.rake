@@ -11,6 +11,7 @@ namespace :gitlab do
       Rake::Task["gitlab:backup:db:create"].invoke
       Rake::Task["gitlab:backup:repo:create"].invoke
       Rake::Task["gitlab:backup:uploads:create"].invoke
+      Rake::Task["gitlab:backup:builds:create"].invoke
 
       backup = Backup::Manager.new
       backup.pack
@@ -30,6 +31,7 @@ namespace :gitlab do
       Rake::Task["gitlab:backup:db:restore"].invoke unless backup.skipped?("db")
       Rake::Task["gitlab:backup:repo:restore"].invoke unless backup.skipped?("repositories")
       Rake::Task["gitlab:backup:uploads:restore"].invoke unless backup.skipped?("uploads")
+      Rake::Task["gitlab:backup:builds:restore"].invoke unless backup.skipped?("builds")
       Rake::Task["gitlab:shell:setup"].invoke
 
       backup.cleanup
@@ -69,6 +71,25 @@ namespace :gitlab do
       task restore: :environment do
         $progress.puts "Restoring database ... ".blue
         Backup::Database.new.restore
+        $progress.puts "done".green
+      end
+    end
+
+    namespace :builds do
+      task create: :environment do
+        $progress.puts "Dumping builds ... ".blue
+
+        if ENV["SKIP"] && ENV["SKIP"].include?("builds")
+          $progress.puts "[SKIPPED]".cyan
+        else
+          Backup::Builds.new.dump
+          $progress.puts "done".green
+        end
+      end
+
+      task restore: :environment do
+        $progress.puts "Restoring builds ... ".blue
+        Backup::Builds.new.restore
         $progress.puts "done".green
       end
     end

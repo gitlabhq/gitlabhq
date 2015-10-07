@@ -2,37 +2,35 @@
   .commit-stat-summary
     Showing
     = link_to '#', class: 'js-toggle-button' do
-      %strong #{pluralize(diffs.count, "changed file")}
-    - if current_controller?(:commit)
-      - unless @commit.has_zero_stats?
-        with
-        %strong.cgreen #{@commit.stats.additions} additions
-        and
-        %strong.cred #{@commit.stats.deletions} deletions
+      %strong #{pluralize(diff_files.count, "changed file")}
+    with
+    %strong.cgreen #{diff_files.sum(&:added_lines)} additions
+    and
+    %strong.cred #{diff_files.sum(&:removed_lines)} deletions
   .file-stats.js-toggle-content.hide
-    %ul.bordered-list
-      - diffs.each_with_index do |diff, i|
+    %ul
+      - diff_files.each_with_index do |diff_file, i|
         %li
-          - if diff.deleted_file
+          - if diff_file.deleted_file
             %span.deleted-file
               %a{href: "#diff-#{i}"}
                 %i.fa.fa-minus
-                = diff.old_path
-          - elsif diff.renamed_file
+                = diff_file.old_path
+          - elsif diff_file.renamed_file
             %span.renamed-file
               %a{href: "#diff-#{i}"}
                 %i.fa.fa-minus
-                = diff.old_path
+                = diff_file.old_path
                 &rarr;
-                = diff.new_path
-          - elsif diff.new_file
+                = diff_file.new_path
+          - elsif diff_file.new_file
             %span.new-file
               %a{href: "#diff-#{i}"}
                 %i.fa.fa-plus
-                = diff.new_path
+                = diff_file.new_path
           - else
             %span.edit-file
               %a{href: "#diff-#{i}"}
                 %i.fa.fa-adjust
-                = diff.new_path
+                = diff_file.new_path
 

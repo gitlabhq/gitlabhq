@@ -932,7 +932,7 @@ Lint/UselessAccessModifier:
 Lint/UselessAssignment:
   Description: 'Checks for useless assignment to a local variable.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#underscore-unused-vars'
-  Enabled: false
+  Enabled: true
 
 Lint/UselessComparison:
   Description: 'Checks for comparison of something with itself.'
@@ -998,7 +998,9 @@ AllCops:
     - 'tmp/**/*'
     - 'bin/**/*'
     - 'lib/backup/**/*'
+    - 'lib/ci/backup/**/*'
     - 'lib/tasks/**/*'
+    - 'lib/ci/migrate/**/*'
     - 'lib/email_validator.rb'
     - 'lib/gitlab/upgrader.rb'
     - 'lib/gitlab/seeder.rb'

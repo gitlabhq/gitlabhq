@@ -1,26 +1,28 @@
 - page_title "Commits", @ref
+= render "header_title"
 = content_for :meta_tags do
   - if current_user
     = auto_discovery_link_tag(:atom, namespace_project_commits_url(@project.namespace, @project, @ref, format: :atom, private_token: current_user.private_token), title: "#{@project.name}:#{@ref} commits")
 
 = render "head"
 
-.tree-ref-holder
-  = render 'shared/ref_switcher', destination: 'commits'
+.gray-content-block
+  .tree-ref-holder
+    = render 'shared/ref_switcher', destination: 'commits'
 
-.commits-feed-holder.hidden-xs.hidden-sm
-  - if create_mr_button?(@repository.root_ref, @ref)
-    = link_to create_mr_path(@repository.root_ref, @ref), class: 'btn btn-success' do
-      = icon('plus')
-      Create Merge Request
+  .commits-feed-holder.hidden-xs.hidden-sm
+    - if create_mr_button?(@repository.root_ref, @ref)
+      = link_to create_mr_path(@repository.root_ref, @ref), class: 'btn btn-success' do
+        = icon('plus')
+        Create Merge Request
 
-  - if current_user && current_user.private_token
-    = link_to namespace_project_commits_path(@project.namespace, @project, @ref, {format: :atom, private_token: current_user.private_token}), title: "Commits Feed", class: 'prepend-left-10 btn' do
-      = icon("rss")
+    - if current_user && current_user.private_token
+      = link_to namespace_project_commits_path(@project.namespace, @project, @ref, {format: :atom, private_token: current_user.private_token}), title: "Commits Feed", class: 'prepend-left-10 btn' do
+        = icon("rss")
 
 
-%ul.breadcrumb.repo-breadcrumb
-  = commits_breadcrumbs
+  %ul.breadcrumb.repo-breadcrumb
+    = commits_breadcrumbs
 
 %div{id: dom_id(@project)}
   #commits-list= render "commits", project: @project

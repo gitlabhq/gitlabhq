@@ -19,6 +19,7 @@ module Gitlab
           'GitLab.com'      => 'gitlab',
           'Gitorious.org'   => 'gitorious',
           'Google Code'     => 'google_code',
+          'FogBugz'         => 'fogbugz',
           'Any repo by URL' => 'git',
         }
       end

@@ -26,51 +26,20 @@ describe GitlabCiService do
     it { is_expected.to have_one(:service_hook) }
   end
 
-  describe 'validations' do
-    context 'active' do
-      before { allow(subject).to receive(:activated?).and_return(true) }
-
-      it { is_expected.to validate_presence_of(:token) }
-      it { is_expected.to validate_presence_of(:project_url) }
-      it { is_expected.to allow_value('ewf9843kdnfdfs89234n').for(:token) }
-      it { is_expected.to allow_value('http://ci.example.com/project/1').for(:project_url) }
-      it { is_expected.not_to allow_value('token with spaces').for(:token) }
-      it { is_expected.not_to allow_value('token/with%spaces').for(:token) }
-      it { is_expected.not_to allow_value('this is not url').for(:project_url) }
-      it { is_expected.not_to allow_value('http//noturl').for(:project_url) }
-      it { is_expected.not_to allow_value('ftp://ci.example.com/projects/3').for(:project_url) }
-    end
-
-    context 'inactive' do
-      before { allow(subject).to receive(:activated?).and_return(false) }
-
-      it { is_expected.not_to validate_presence_of(:token) }
-      it { is_expected.not_to validate_presence_of(:project_url) }
-      it { is_expected.to allow_value('ewf9843kdnfdfs89234n').for(:token) }
-      it { is_expected.to allow_value('http://ci.example.com/project/1').for(:project_url) }
-      it { is_expected.to allow_value('token with spaces').for(:token) }
-      it { is_expected.to allow_value('ftp://ci.example.com/projects/3').for(:project_url) }
-    end
-  end
-
   describe 'commits methods' do
     before do
+      @ci_project = create(:ci_project)
       @service = GitlabCiService.new
       allow(@service).to receive_messages(
         service_hook: true,
         project_url: 'http://ci.gitlab.org/projects/2',
-        token: 'verySecret'
+        token: 'verySecret',
+        project: @ci_project.gl_project
       )
     end
 
-    describe :commit_status_path do
-      it { expect(@service.commit_status_path("2ab7834c", 'master')).to eq("http://ci.gitlab.org/projects/2/refs/master/commits/2ab7834c/status.json?token=verySecret")}
-      it { expect(@service.commit_status_path("issue#2", 'master')).to eq("http://ci.gitlab.org/projects/2/refs/master/commits/issue%232/status.json?token=verySecret")}
-    end
-
     describe :build_page do
-      it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://ci.gitlab.org/projects/2/refs/master/commits/2ab7834c")}
-      it { expect(@service.build_page("issue#2", 'master')).to eq("http://ci.gitlab.org/projects/2/refs/master/commits/issue%232")}
+      it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://localhost/#{@ci_project.gl_project.path_with_namespace}/commit/2ab7834c/ci")}
     end
 
     describe "execute" do
@@ -78,35 +47,11 @@ describe GitlabCiService do
       let(:project) { create(:project, name: 'project') }
       let(:push_sample_data) { Gitlab::PushDataBuilder.build_sample(project, user) }
 
-      it "calls ci_yaml_file" do
-        service_hook = double
-        expect(service_hook).to receive(:execute)
-        expect(@service).to receive(:service_hook).and_return(service_hook)
-        expect(@service).to receive(:ci_yaml_file).with(push_sample_data[:checkout_sha])
+      it "calls CreateCommitService" do
+        expect_any_instance_of(Ci::CreateCommitService).to receive(:execute).with(@ci_project, user, push_sample_data)
 
         @service.execute(push_sample_data)
       end
-    end
-  end
-
-  describe "Fork registration" do
-    before do
-      @old_project = create(:empty_project)
-      @project = create(:empty_project)
-      @user = create(:user)
-
-      @service = GitlabCiService.new
-      allow(@service).to receive_messages(
-        service_hook: true,
-        project_url: 'http://ci.gitlab.org/projects/2',
-        token: 'verySecret',
-        project: @old_project
-      )
-    end
-
-    it "performs http reuquest to ci" do
-      stub_request(:post, "http://ci.gitlab.org/api/v1/forks")
-      @service.fork_registration(@project, @user.private_token)
     end
   end
 end

@@ -1,12 +1,14 @@
 .diff-file {
-  border: 1px solid $border-color;
-  margin-bottom: 1em;
+  margin-left: -$gl-padding;
+  margin-right: -$gl-padding;
+  border: none;
+  border-bottom: 1px solid #E7E9EE;
 
   .diff-header {
     position: relative;
     background: $background-color;
     border-bottom: 1px solid $border-color;
-    padding: 10px 15px;
+    padding: 10px 16px;
     color: #555;
     z-index: 10;
 
@@ -45,7 +47,7 @@
     overflow-y: hidden;
     background: #FFF;
     color: #333;
-    font-size: $code_font_size;
+
     .old {
       span.idiff {
         background-color: #f8cbcb;
@@ -82,7 +84,7 @@
       border: none;
       margin: 0px;
       padding: 0px;
-      td {
+      .line_holder td {
         line-height: $code_line_height;
         font-size: $code_font_size;
       }
@@ -367,3 +369,7 @@
   white-space: pre-wrap;
 }
 
+.inline-parallel-buttons {
+  float: right;
+  margin-top: -5px;
+}

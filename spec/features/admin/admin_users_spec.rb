@@ -111,6 +111,27 @@ describe "Admin::Users", feature: true  do
       expect(page).to have_content(@user.name)
     end
 
+    describe 'Login as another user' do
+      it 'should show login button for other users and check that it works' do
+        another_user = create(:user)
+
+        visit admin_user_path(another_user)
+
+        click_link 'Log in as this user'
+
+        expect(page).to have_content("Logged in as #{another_user.username}")
+
+        page.within '.sidebar-user .username' do
+          expect(page).to have_content(another_user.username)
+        end
+      end
+
+      it 'should not show login button for admin itself' do
+        visit admin_user_path(@user)
+        expect(page).not_to have_content('Log in as this user')
+      end
+    end
+
     describe 'Two-factor Authentication status' do
       it 'shows when enabled' do
         @user.update_attribute(:two_factor_enabled, true)

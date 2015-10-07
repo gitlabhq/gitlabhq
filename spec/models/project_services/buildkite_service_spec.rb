@@ -63,19 +63,5 @@ describe BuildkiteService do
         )
       end
     end
-
-    describe :builds_page do
-      it 'returns the correct path to the builds page' do
-        expect(@service.builds_path).to eq(
-          'https://buildkite.com/account-name/example-project/builds?branch=default-brancho'
-        )
-      end
-    end
-
-    describe :status_img_path do
-      it 'returns the correct path to the status image' do
-        expect(@service.status_img_path).to eq('https://badge.buildkite.com/secret-sauce-status-token.svg')
-      end
-    end
   end
 end

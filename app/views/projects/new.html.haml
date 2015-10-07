@@ -72,6 +72,11 @@
                   %i.fa.fa-google
                   Google Code
 
+              - if fogbugz_import_enabled?
+                = link_to new_import_fogbugz_path, class: 'btn import_fogbugz' do
+                  %i.fa.fa-bug
+                  Fogbugz
+
               - if git_import_enabled?
                 = link_to "#", class: 'btn js-toggle-button import_git' do
                   %i.fa.fa-git

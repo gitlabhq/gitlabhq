@@ -22,6 +22,10 @@ $brand-info:     $gl-info;
 $brand-warning:  $gl-warning;
 $brand-danger:   $gl-danger;
 
+$border-radius-base:        3px !default;
+$border-radius-large:       5px !default;
+$border-radius-small:       2px !default;
+
 
 //== Scaffolding
 //
@@ -42,17 +46,18 @@ $font-size-base:         $gl-font-size;
 //
 //## Define common padding and border radius sizes and more. Values based on 14px text and 1.428 line-height (~20px to start).
 
-$padding-base-vertical:     6px;
-$padding-base-horizontal:   14px;
-
+$padding-base-vertical:     9px;
+$padding-base-horizontal:   $gl-padding;
+$component-active-color:    #fff;
+$component-active-bg:       $brand-info;
 
 //== Forms
 //
 //##
 
 $input-color:                    $text-color;
-$input-border:                   #DDD;
-$input-border-focus:             $brand-info;
+$input-border:                   #e7e9ed;
+$input-border-focus:             #7F8FA4;
 $legend-color:                   $text-color;
 
 
@@ -60,20 +65,20 @@ $legend-color:                   $text-color;
 //
 //##
 
-$pagination-color:                     #fff;
-$pagination-bg:                        $brand-success;
+$pagination-color:                     $gl-gray;
+$pagination-bg:                        $background-color;
 $pagination-border:                    transparent;
 
 $pagination-hover-color:               #fff;
-$pagination-hover-bg:                  darken($brand-success, 15%);
+$pagination-hover-bg:                  $brand-info;
 $pagination-hover-border:              transparent;
 
 $pagination-active-color:              #fff;
-$pagination-active-bg:                 darken($brand-success, 15%);
+$pagination-active-bg:                 $brand-info;
 $pagination-active-border:             transparent;
 
-$pagination-disabled-color:            #b4bcc2;
-$pagination-disabled-bg:               lighten($brand-success, 15%);
+$pagination-disabled-color:            #fff;
+$pagination-disabled-bg:               lighten($brand-info, 15%);
 $pagination-disabled-border:           transparent;
 
 
@@ -109,11 +114,12 @@ $alert-border-radius:            0;
 //
 //##
 
-$panel-border-radius:            0;
-$panel-default-text:          $text-color;
-$panel-default-border:        $border-color;
-$panel-default-heading-bg:    $background-color;
-
+$panel-border-radius:         2px;
+$panel-default-text:       $text-color;
+$panel-default-border:     $border-color;
+$panel-default-heading-bg: $background-color;
+$panel-footer-bg:          $background-color;
+$panel-inner-border:       $border-color;
 
 //== Wells
 //
@@ -131,3 +137,22 @@ $code-bg:                     #f9f2f4;
 
 $kbd-color:                   #fff;
 $kbd-bg:                      #333;
+
+//== Buttons
+//
+//##
+$btn-default-color:              $gl-text-color;
+$btn-default-bg:                 #fff;
+$btn-default-border:             #e7e9ed;
+
+//== Nav
+//
+//##
+$nav-link-padding: 13px $gl-padding;
+
+//== Code
+//
+//##
+$pre-bg:           #f8fafc !default;
+$pre-color:        $gl-gray !default;
+$pre-border-color: #e7e9ed;

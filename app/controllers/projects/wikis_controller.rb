@@ -5,7 +5,6 @@ class Projects::WikisController < Projects::ApplicationController
   before_action :authorize_create_wiki!, only: [:edit, :create, :history]
   before_action :authorize_admin_wiki!, only: :destroy
   before_action :load_project_wiki
-  include WikiHelper
 
   def pages
     @wiki_pages = Kaminari.paginate_array(@project_wiki.pages).page(params[:page]).per(PER_PAGE)
@@ -99,7 +98,7 @@ class Projects::WikisController < Projects::ApplicationController
 
     # Call #wiki to make sure the Wiki Repo is initialized
     @project_wiki.wiki
-  rescue ProjectWiki::CouldNotCreateWikiError => ex
+  rescue ProjectWiki::CouldNotCreateWikiError
     flash[:notice] = "Could not create Wiki Repository at this time. Please try again later."
     redirect_to project_path(@project)
     return false

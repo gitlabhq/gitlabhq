@@ -1,16 +1,17 @@
 - page_title "#{params[:from]}...#{params[:to]}"
+= render "projects/commits/header_title"
 = render "projects/commits/head"
 
-%h3.page-title
-  Compare View
 
-= render "form"
+.gray-content-block
+  = render "form"
 
 - if @commits.present?
-  = render "projects/commits/commit_list"
-  = render "projects/diffs/diffs", diffs: @diffs, project: @project
+  .prepend-top-20
+    = render "projects/commits/commit_list"
+    = render "projects/diffs/diffs", diffs: @diffs, project: @project
 - else
-  .light-well
+  .light-well.prepend-top-20
     .center
       %h4
         There isn't anything to compare.

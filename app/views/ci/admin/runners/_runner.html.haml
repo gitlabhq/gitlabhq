@@ -1,0 +1,48 @@
+%tr{id: dom_id(runner)}
+  %td
+    - if runner.shared?
+      %span.label.label-success shared
+    - else
+      %span.label.label-info specific
+    - unless runner.active?
+      %span.label.label-danger paused
+
+  %td
+    = link_to ci_admin_runner_path(runner) do
+      = runner.short_sha
+  %td
+    .runner-description
+      = runner.description
+      %span (#{link_to 'edit', '#', class: 'edit-runner-link'})
+    .runner-description-form.hide
+      = form_for [:ci, :admin, runner], remote: true, html: { class: 'form-inline' } do |f|
+        .form-group
+          = f.text_field :description, class: 'form-control'
+        = f.submit 'Save', class: 'btn'
+        %span (#{link_to 'cancel', '#', class: 'cancel'})
+  %td
+    - if runner.shared?
+      \-
+    - else
+      = runner.projects.count(:all)
+  %td
+    #{runner.builds.count(:all)}
+  %td
+    - runner.tag_list.each do |tag|
+      %span.label.label-primary
+        = tag
+  %td
+    - if runner.contacted_at
+      #{time_ago_in_words(runner.contacted_at)} ago
+    - else
+      Never
+  %td
+    .pull-right
+      = link_to 'Edit', ci_admin_runner_path(runner), class: 'btn btn-sm'
+      &nbsp;
+      - if runner.active?
+        = link_to 'Pause', [:pause, :ci, :admin, runner], data: { confirm: "Are you sure?" }, method: :get, class: 'btn btn-danger btn-sm'
+      - else
+        = link_to 'Resume', [:resume, :ci, :admin, runner], method: :get, class: 'btn btn-success btn-sm'
+      = link_to 'Remove', [:ci, :admin, runner], data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'
+

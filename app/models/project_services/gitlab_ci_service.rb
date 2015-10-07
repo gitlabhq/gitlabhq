@@ -19,23 +19,18 @@
 #
 
 class GitlabCiService < CiService
-  API_PREFIX = "api/v1"
-
-  prop_accessor :project_url, :token, :enable_ssl_verification
-  validates :project_url,
-    presence: true,
-    format: { with: /\A#{URI.regexp(%w(http https))}\z/, message: "should be a valid url" }, if: :activated?
-  validates :token,
-    presence: true,
-    format: { with: /\A([A-Za-z0-9]+)\z/ },  if: :activated?
+  include Gitlab::Application.routes.url_helpers
 
   after_save :compose_service_hook, if: :activated?
+  after_save :ensure_gitlab_ci_project, if: :activated?
 
   def compose_service_hook
     hook = service_hook || build_service_hook
-    hook.url = [project_url, "/build", "?token=#{token}"].join("")
-    hook.enable_ssl_verification = enable_ssl_verification
     hook.save
+  end
+
+  def ensure_gitlab_ci_project
+    project.ensure_gitlab_ci_project
   end
 
   def supported_events
@@ -45,81 +40,39 @@ class GitlabCiService < CiService
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
 
-    sha = data[:checkout_sha]
-
-    if sha.present?
-      file = ci_yaml_file(sha)
-
-      if file && file.data
-        data.merge!(ci_yaml_file: file.data)
-      end
+    ci_project = project.gitlab_ci_project
+    if ci_project
+      current_user = User.find_by(id: data[:user_id])
+      Ci::CreateCommitService.new.execute(ci_project, current_user, data)
     end
-
-    service_hook.execute(data)
   end
 
-  def commit_status_path(sha, ref)
-    URI::encode(project_url + "/refs/#{ref}/commits/#{sha}/status.json?token=#{token}")
+  def token
+    if project.gitlab_ci_project.present?
+      project.gitlab_ci_project.token
+    end
   end
 
-  def get_ci_build(sha, ref)
-    @ci_builds ||= {}
-    @ci_builds[sha] ||= HTTParty.get(commit_status_path(sha, ref), verify: false)
+  def get_ci_commit(sha, ref)
+    Ci::Project.find(project.gitlab_ci_project).commits.find_by_sha!(sha)
   end
 
   def commit_status(sha, ref)
-    response = get_ci_build(sha, ref)
-
-    if response.code == 200 and response["status"]
-      response["status"]
-    else
-      :error
-    end
-  rescue Errno::ECONNREFUSED
+    get_ci_commit(sha, ref).status
+  rescue ActiveRecord::RecordNotFound
     :error
   end
 
-  def fork_registration(new_project, private_token)
-    params = {
-      id:                  new_project.id,
-      name_with_namespace: new_project.name_with_namespace,
-      path_with_namespace: new_project.path_with_namespace,
-      web_url:             new_project.web_url,
-      default_branch:      new_project.default_branch,
-      ssh_url_to_repo:     new_project.ssh_url_to_repo
-    }
-
-    HTTParty.post(
-      fork_registration_path,
-      body: {
-        project_id: project.id,
-        project_token: token,
-        private_token: private_token,
-        data: params },
-      verify: false
-    )
-  end
-
   def commit_coverage(sha, ref)
-    response = get_ci_build(sha, ref)
-
-    if response.code == 200 and response["coverage"]
-      response["coverage"]
-    end
-  rescue Errno::ECONNREFUSED
-    nil
+    get_ci_commit(sha, ref).coverage
+  rescue ActiveRecord::RecordNotFound
+    :error
   end
 
   def build_page(sha, ref)
-    URI::encode(project_url + "/refs/#{ref}/commits/#{sha}")
-  end
-
-  def builds_path
-    project_url + "?ref=" + project.default_branch
-  end
-
-  def status_img_path
-    project_url + "/status.png?ref=" + project.default_branch
+    if project.gitlab_ci_project.present?
+      ci_namespace_project_commit_url(project.namespace, project, sha)
+    end
   end
 
   def title
@@ -135,24 +88,6 @@ class GitlabCiService < CiService
   end
 
   def fields
-    [
-      { type: 'text', name: 'token', placeholder: 'GitLab CI project specific token' },
-      { type: 'text', name: 'project_url', placeholder: 'http://ci.gitlabhq.com/projects/3' },
-      { type: 'checkbox', name: 'enable_ssl_verification', title: "Enable SSL verification" }
-    ]
-  end
-
-  private
-
-  def ci_yaml_file(sha)
-    repository.blob_at(sha, '.gitlab-ci.yml')
-  end
-
-  def fork_registration_path
-    project_url.sub(/projects\/\d*/, "#{API_PREFIX}/forks")
-  end
-
-  def repository
-    project.repository
+    []
   end
 end

@@ -1,11 +1,11 @@
 - page_title 'Preferences'
-%h3.page-title
-  = page_title
-%p.light
+- header_title page_title, profile_preferences_path
+- @blank_container = true
+
+.alert.alert-help
   These settings allow you to customize the appearance and behavior of the site.
   They are saved with your account and will persist to any device you use to
   access the site.
-%hr
 
 = form_for @user, url: profile_preferences_path, remote: true, method: :put, html: {class: 'js-preferences-form form-horizontal'} do |f|
   .panel.panel-default.application-theme
@@ -32,6 +32,13 @@
     .panel-heading
       Behavior
     .panel-body
+      .form-group
+        = f.label :layout, class: 'control-label' do
+          Layout width
+        .col-sm-10
+          = f.select :layout, layout_choices, {}, class: 'form-control'
+          .help-block
+            Choose between fixed (max. 1200px) and fluid (100%) application layout
       .form-group
         = f.label :dashboard, class: 'control-label' do
           Default Dashboard

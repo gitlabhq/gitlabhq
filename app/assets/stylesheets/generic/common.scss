@@ -1,12 +1,13 @@
 /** COLORS **/
-.cgray { color: gray }
+.cgray { color: $gl-gray; }
 .clgray { color: #BBB }
-.cred { color: #D12F19 }
-.cgreen { color: #4a2 }
+.cred { color: $gl-text-red; }
+.cgreen { color: $gl-text-green; }
 .cdark { color: #444 }
 
 /** COMMON CLASSES **/
 .prepend-top-10 { margin-top:10px }
+.prepend-top-default { margin-top: $gl-padding; }
 .prepend-top-20 { margin-top:20px }
 .prepend-left-10 { margin-left:10px }
 .prepend-left-20 { margin-left:20px }
@@ -20,10 +21,10 @@
 
 .underlined-link { text-decoration: underline; }
 .hint { font-style: italic; color: #999; }
-.light { color: #888 }
+.light { color: $gl-gray; }
 
 .slead {
-  color: #666;
+  color: $gl-gray;
   font-size: 15px;
   margin-bottom: 12px;
   font-weight: normal;
@@ -73,8 +74,6 @@ pre {
 .author_link {
   color: $gl-link-color;
 }
-
-.help li { color:$style_color; }
 
 .back-link {
   font-size: 14px;
@@ -303,7 +302,7 @@ table {
 }
 
 .btn-sign-in {
-  margin-top: 7px;
+  margin-top: 8px;
   text-shadow: none;
 }
 
@@ -314,7 +313,7 @@ table {
 }
 
 .wiki .highlight, .note-body .highlight {
-  margin-bottom: 9px;
+  margin: 12px 0 12px 0;
 }
 
 .wiki .code {
@@ -355,14 +354,14 @@ table {
   }
 
   .description {
-    font-size: 16px;
+    font-size: $gl-font-size;
     color: #666;
     margin-top: 8px;
   }
 }
 
 .profiler-results {
-  top: 50px !important;
+  top: 73px !important;
 
   .profiler-button,
   .profiler-controls {
@@ -371,21 +370,27 @@ table {
 }
 
 .center-top-menu {
-  list-style: none;
+  @include nav-menu;
   text-align: center;
   margin-top: 5px;
-  padding-bottom: 15px;
-  margin-bottom: 15px;
+  margin-bottom: $gl-padding;
+  height: 56px;
+  margin-top: -$gl-padding;
+  padding-top: $gl-padding;
 
-  li {
-    display: inline-block;
-
-    a {
-      padding: 15px;
-    }
-
-    &.active a {
-      color: #666;
-    }
+  &.no-bottom {
+    margin-bottom: 0;
   }
+
+  &.no-top {
+    margin-top: 0;
+  }
+}
+
+.dropzone .dz-preview .dz-progress {
+  border-color: $border-color !important;
+}
+
+.dropzone .dz-preview .dz-progress .dz-upload {
+  background: $gl-success !important;
 }

@@ -8,7 +8,7 @@ module API
       expose :id, :state, :avatar_url
 
       expose :web_url do |user, options|
-        Rails.application.routes.url_helpers.user_url(user)
+        Gitlab::Application.routes.url_helpers.user_url(user)
       end
     end
 
@@ -45,7 +45,7 @@ module API
 
     class ProjectHook < Hook
       expose :project_id, :push_events
-      expose :issues_events, :merge_requests_events, :tag_push_events
+      expose :issues_events, :merge_requests_events, :tag_push_events, :note_events, :enable_ssl_verification
     end
 
     class ForkedFromProject < Grape::Entity
@@ -81,7 +81,7 @@ module API
       expose :avatar_url
 
       expose :web_url do |group, options|
-        Rails.application.routes.url_helpers.group_url(group)
+        Gitlab::Application.routes.url_helpers.group_url(group)
       end
     end
 
@@ -197,6 +197,10 @@ module API
 
     class SSHKey < Grape::Entity
       expose :id, :title, :key, :created_at
+    end
+
+    class SSHKeyWithUser < SSHKey
+      expose :user, using: Entities::UserFull
     end
 
     class Note < Grape::Entity

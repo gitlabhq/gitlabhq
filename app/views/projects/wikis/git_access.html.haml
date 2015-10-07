@@ -1,15 +1,18 @@
 - page_title "Git Access", "Wiki"
+= render "header_title"
+
 = render 'nav'
-.row
-  .col-sm-6
-    %h3.page-title
-      Git access for
-      %strong= @project_wiki.path_with_namespace
+.gray-content-block
+  .row
+    .col-sm-6
+      %h3.page-title
+        Git access for
+        %strong= @project_wiki.path_with_namespace
 
-  .col-sm-6
-    = render "shared/clone_panel", project: @project_wiki
+    .col-sm-6
+      = render "shared/clone_panel", project: @project_wiki
 
-.git-empty
+.git-empty.prepend-top-default
   %fieldset
     %legend Install Gollum:
     %pre.dark
@@ -20,7 +23,7 @@
     %pre.dark
       :preserve
         git clone #{ content_tag(:span, default_url_to_repo(@project_wiki), class: 'clone')}
-        cd #{@project_wiki.path}
+        cd #{h @project_wiki.path}
 
     %legend Start Gollum And Edit Locally:
     %pre.dark

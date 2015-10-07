@@ -1,15 +1,18 @@
 - page_title "#{@issue.title} (##{@issue.iid})", "Issues"
+= render "header_title"
+
 .issue
   .issue-details.issuable-details
-    %h4.page-title
+    .page-title
       .issue-box{ class: issue_box_class(@issue) }
         - if @issue.closed?
           Closed
         - else
           Open
-      Issue ##{@issue.iid}
-      %small.creator
-        &middot; created by #{link_to_member(@project, @issue.author)}
+      %span.issue-id Issue ##{@issue.iid}
+      %span.creator
+        &middot; created by #{link_to_member(@project, @issue.author, size: 24)}
+        &middot;
         = time_ago_with_tooltip(@issue.created_at, placement: 'bottom', html_class: 'issue_created_ago')
         - if @issue.updated_at != @issue.created_at
           %span
@@ -32,18 +35,17 @@
             = icon('pencil-square-o')
             Edit
 
-    %hr
-    %h2.issue-title
-      = gfm escape_once(@issue.title)
-    %div
-      - if @issue.description.present?
-        .description{class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : ''}
-          .wiki
-            = preserve do
-              = markdown(@issue.description)
-          %textarea.hidden.js-task-list-field
-            = @issue.description
+    .gray-content-block.middle-block
+      %h2.issue-title
+        = gfm escape_once(@issue.title)
+      %div
+        - if @issue.description.present?
+          .description{class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : ''}
+            .wiki
+              = preserve do
+                = markdown(@issue.description)
+            %textarea.hidden.js-task-list-field
+              = @issue.description
 
-    %hr
   .issue-discussion
     = render 'projects/issues/discussion'

@@ -27,7 +27,16 @@ module GroupsHelper
     if group && group.avatar.present?
       group.avatar.url
     else
-      image_path('no_group_avatar.png')
+      'no_group_avatar.png'
+    end
+  end
+
+  def group_title(group, name = nil, url = nil)
+    full_title = link_to(simple_sanitize(group.name), group_path(group))
+    full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url) if name
+
+    content_tag :span do
+      full_title
     end
   end
 end

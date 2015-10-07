@@ -12,7 +12,7 @@ class Notification
 
   class << self
     def notification_levels
-      [N_DISABLED, N_PARTICIPATING, N_WATCH, N_MENTION]
+      [N_DISABLED, N_MENTION, N_PARTICIPATING, N_WATCH]
     end
 
     def options_with_labels
@@ -26,7 +26,7 @@ class Notification
     end
 
     def project_notification_levels
-      [N_DISABLED, N_PARTICIPATING, N_WATCH, N_GLOBAL, N_MENTION]
+      [N_DISABLED, N_MENTION, N_PARTICIPATING, N_WATCH, N_GLOBAL]
     end
   end
 
@@ -56,5 +56,22 @@ class Notification
 
   def level
     target.notification_level
+  end
+  
+  def to_s
+    case level
+    when N_DISABLED
+      'Disabled'
+    when N_PARTICIPATING
+      'Participating'
+    when N_WATCH
+      'Watching'
+    when N_MENTION
+      'On mention'
+    when N_GLOBAL
+      'Global'
+    else
+      # do nothing      
+    end
   end
 end

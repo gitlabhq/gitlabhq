@@ -2,6 +2,80 @@ require 'sidekiq/web'
 require 'api/api'
 
 Gitlab::Application.routes.draw do
+  namespace :ci do
+    # CI API
+    Ci::API::API.logger Rails.logger
+    mount Ci::API::API => '/api'
+
+    resource :lint, only: [:show, :create]
+
+    resources :projects do
+      collection do
+        post :add
+        get :disabled
+      end
+
+      member do
+        get :status, to: 'projects#badge'
+        get :integration
+        post :toggle_shared_runners
+        get :dumped_yaml
+      end
+
+      resources :services, only: [:index, :edit, :update] do
+        member do
+          get :test
+        end
+      end
+
+      resources :commits, only: [] do
+        member do
+          get :status
+          get :cancel
+        end
+      end
+
+      resources :builds, only: [] do
+        member do
+          get :cancel
+          get :status
+          post :retry
+        end
+      end
+
+      resources :runner_projects, only: [:create, :destroy]
+
+      resources :events, only: [:index]
+    end
+
+    resource :user_sessions do
+      get :auth
+      get :callback
+    end
+
+    namespace :admin do
+      resources :runners, only: [:index, :show, :update, :destroy] do
+        member do
+          put :assign_all
+          get :resume
+          get :pause
+        end
+      end
+
+      resources :events, only: [:index]
+
+      resources :projects do
+        resources :runner_projects
+      end
+
+      resources :builds, only: :index
+
+      resource :application_settings, only: [:show, :update]
+    end
+
+    root to: 'projects#index'
+  end
+
   use_doorkeeper do
     controllers applications: 'oauth/applications',
                 authorized_applications: 'oauth/authorized_applications',
@@ -30,7 +104,7 @@ Gitlab::Application.routes.draw do
   end
 
   # Enable Grack support
-  mount Grack::Auth.new({}), at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post]
+  mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post]
 
   # Help
   get 'help'                  => 'help#index'
@@ -99,6 +173,15 @@ Gitlab::Application.routes.draw do
       get   :new_user_map,    path: :user_map
       post  :create_user_map, path: :user_map
     end
+
+    resource :fogbugz, only: [:create, :new], controller: :fogbugz do
+      get :status
+      post :callback
+      get :jobs
+
+      get   :new_user_map,    path: :user_map
+      post  :create_user_map, path: :user_map
+    end
   end
 
   #
@@ -134,6 +217,7 @@ Gitlab::Application.routes.draw do
     end
 
     resources :groups, only: [:index]
+    resources :snippets, only: [:index]
     root to: 'projects#trending'
   end
 
@@ -158,6 +242,7 @@ Gitlab::Application.routes.draw do
         put :unblock
         put :unlock
         put :confirm
+        post :login_as
         patch :disable_two_factor
         delete 'remove/:email_id', action: 'remove_email', as: 'remove_email'
       end
@@ -200,6 +285,8 @@ Gitlab::Application.routes.draw do
     resource :application_settings, only: [:show, :update] do
       resources :services
     end
+
+    resources :labels
 
     root to: 'dashboard#index'
   end
@@ -252,24 +339,25 @@ Gitlab::Application.routes.draw do
   #
   # Dashboard Area
   #
-  resource :dashboard, controller: 'dashboard', only: [:show] do
-    member do
-      get :issues
-      get :merge_requests
-      get :activity
-    end
+  resource :dashboard, controller: 'dashboard', only: [] do
+    get :issues
+    get :merge_requests
+    get :activity
 
     scope module: :dashboard do
       resources :milestones, only: [:index, :show]
 
       resources :groups, only: [:index]
+      resources :snippets, only: [:index]
 
-      resources :projects, only: [] do
+      resources :projects, only: [:index] do
         collection do
           get :starred
         end
       end
     end
+
+    root to: "dashboard/projects#index"
   end
 
   #
@@ -293,7 +381,7 @@ Gitlab::Application.routes.draw do
     end
   end
 
-  resources :projects, constraints: { id: /[^\/]+/ }, only: [:new, :create]
+  resources :projects, constraints: { id: /[^\/]+/ }, only: [:index, :new, :create]
 
   devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks, registrations: :registrations , passwords: :passwords, sessions: :sessions, confirmations: :confirmations }
 
@@ -301,7 +389,7 @@ Gitlab::Application.routes.draw do
     get '/users/auth/:provider/omniauth_error' => 'omniauth_callbacks#omniauth_error', as: :omniauth_error
   end
 
-  root to: "root#show"
+  root to: "root#index"
 
   #
   # Project Area
@@ -345,6 +433,16 @@ Gitlab::Application.routes.draw do
             to: 'blob#destroy',
             constraints: { id: /.+/, format: false }
           )
+          put(
+            '/blob/*id',
+            to: 'blob#update',
+            constraints: { id: /.+/, format: false }
+          )
+          post(
+            '/blob/*id',
+            to: 'blob#create',
+            constraints: { id: /.+/, format: false }
+          )
         end
 
         scope do
@@ -385,7 +483,10 @@ Gitlab::Application.routes.draw do
 
         resource  :avatar, only: [:show, :destroy]
         resources :commit, only: [:show], constraints: { id: /[[:alnum:]]{6,40}/ } do
-          get :branches, on: :member
+          member do
+            get :branches
+            get :ci
+          end
         end
 
         resources :compare, only: [:index, :create]
@@ -394,6 +495,7 @@ Gitlab::Application.routes.draw do
         resources :graphs, only: [:show], constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ } do
           member do
             get :commits
+            get :ci
           end
         end
 
@@ -406,16 +508,20 @@ Gitlab::Application.routes.draw do
           end
         end
 
-        resources :wikis, only: [:show, :edit, :destroy, :create], constraints: { id: /[a-zA-Z.0-9_\-\/]+/ } do
-          collection do
-            get :pages
-            put ':id' => 'wikis#update'
-            get :git_access
-          end
+        WIKI_SLUG_ID = { id: /[a-zA-Z.0-9_\-\/]+/ } unless defined? WIKI_SLUG_ID
 
-          member do
-            get 'history'
-          end
+        scope do
+          # Order matters to give priority to these matches
+          get '/wikis/git_access', to: 'wikis#git_access'
+          get '/wikis/pages', to: 'wikis#pages', as: 'wiki_pages'
+          post '/wikis', to: 'wikis#create'
+
+          get '/wikis/*id/history', to: 'wikis#history', as: 'wiki_history', constraints: WIKI_SLUG_ID
+          get '/wikis/*id/edit', to: 'wikis#edit', as: 'wiki_edit', constraints: WIKI_SLUG_ID
+
+          get '/wikis/*id', to: 'wikis#show', as: 'wiki', constraints: WIKI_SLUG_ID
+          delete '/wikis/*id', to: 'wikis#destroy', constraints: WIKI_SLUG_ID
+          put '/wikis/*id', to: 'wikis#update', constraints: WIKI_SLUG_ID
         end
 
         resource :repository, only: [:show, :create] do
@@ -475,6 +581,16 @@ Gitlab::Application.routes.draw do
         resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
         resources :tags, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
         resources :protected_branches, only: [:index, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
+        resource :variables, only: [:show, :update]
+        resources :triggers, only: [:index, :create, :destroy]
+        resource :ci_settings, only: [:edit, :update, :destroy]
+        resources :ci_web_hooks, only: [:index, :create, :destroy] do
+          member do
+            get :test
+          end
+        end
+
+        resources :builds, only: [:show]
 
         resources :hooks, only: [:index, :create, :destroy], constraints: { id: /\d+/ } do
           member do
@@ -530,8 +646,14 @@ Gitlab::Application.routes.draw do
             get ":secret/:filename", action: :show, as: :show, constraints: { filename: /[^\/]+/ }
           end
         end
-      end
 
+        resources :runners, only: [:index, :edit, :update, :destroy, :show] do
+          member do
+            get :resume
+            get :pause
+          end
+        end
+      end
     end
   end
 

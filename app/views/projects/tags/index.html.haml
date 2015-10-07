@@ -1,21 +1,19 @@
 - page_title "Tags"
+= render "projects/commits/header_title"
 = render "projects/commits/head"
 
-%h3.page-title
-  Git Tags
+.gray-content-block
   - if can? current_user, :push_code, @project
     .pull-right
       = link_to new_namespace_project_tag_path(@project.namespace, @project), class: 'btn btn-create new-tag-btn' do
         %i.fa.fa-add-sign
         New tag
-
-%p.light
-  Tags give the ability to mark specific points in history as being important
-%hr
+  .oneline
+    Tags give the ability to mark specific points in history as being important
 
 .tags
   - unless @tags.empty?
-    %ul.bordered-list
+    %ul.content-list
       - @tags.each do |tag|
         = render 'tag', tag: @repository.find_tag(tag)
 

@@ -8,6 +8,8 @@ class SessionsController < Devise::SessionsController
   def new
     if Gitlab.config.ldap.enabled
       @ldap_servers = Gitlab::LDAP::Config.servers
+    else
+      @ldap_servers = []
     end
 
     super
@@ -97,7 +99,7 @@ class SessionsController < Devise::SessionsController
   end
 
   def valid_otp_attempt?(user)
-    user.valid_otp?(user_params[:otp_attempt]) ||
+    user.validate_and_consume_otp!(user_params[:otp_attempt]) ||
     user.invalidate_otp_backup_code!(user_params[:otp_attempt])
   end
 

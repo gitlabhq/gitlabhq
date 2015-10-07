@@ -6,7 +6,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   include Select2Helper
 
   step 'I should see back to dashboard button' do
-    expect(page).to have_content 'Back to Dashboard'
+    expect(page).to have_content 'Back to dashboard'
   end
 
   step 'gitlab user "Mike"' do
@@ -15,6 +15,26 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   step 'I click link "Add members"' do
     find(:css, 'button.btn-new').click
+  end
+
+  step 'I should see group "Owned"' do
+    expect(page).to have_content '@owned'
+  end
+
+  step 'I am a signed out user' do
+    logout
+  end
+
+  step 'Group "Owned" has a public project "Public-project"' do
+    group = Group.find_by(name: "Owned")
+
+    @project = create :empty_project, :public,
+                 group: group,
+                 name: "Public-project"
+  end
+
+  step 'I should see project "Public-project"' do
+    expect(page).to have_content 'Public-project'
   end
 
   step 'I select "Mike" as "Reporter"' do
@@ -262,9 +282,9 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     milestone1_project2 = create :milestone,
                             title: "Version 7.2",
                             project: project2
-    milestone1_project3 = create :milestone,
-                            title: "Version 7.2",
-                            project: @project3
+    create :milestone,
+      title: "Version 7.2",
+      project: @project3
     milestone2_project1 = create :milestone,
                             title: "GL-113",
                             project: @project1
@@ -281,28 +301,28 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
                assignee: current_user,
                author: current_user,
                milestone: milestone2_project1
-    issue2 = create :issue,
-               project: project2,
-               assignee: current_user,
-               author: current_user,
-               milestone: milestone1_project2
-    issue3 = create :issue,
-               project: @project3,
-               assignee: current_user,
-               author: current_user,
-               milestone: milestone1_project1
-    mr1 = create :merge_request,
-            source_project: @project1,
-            target_project: @project1,
-            assignee: current_user,
-            author: current_user,
-            milestone: milestone2_project1
-    mr2 = create :merge_request,
-            source_project: project2,
-            target_project: project2,
-            assignee: current_user,
-            author: current_user,
-            milestone: milestone2_project2
+    create :issue,
+      project: project2,
+      assignee: current_user,
+      author: current_user,
+      milestone: milestone1_project2
+    create :issue,
+      project: @project3,
+      assignee: current_user,
+      author: current_user,
+      milestone: milestone1_project1
+    create :merge_request,
+      source_project: @project1,
+      target_project: @project1,
+      assignee: current_user,
+      author: current_user,
+      milestone: milestone2_project1
+    create :merge_request,
+      source_project: project2,
+      target_project: project2,
+      assignee: current_user,
+      author: current_user,
+      milestone: milestone2_project2
     @mr3 = create :merge_request,
             source_project: @project3,
             target_project: @project3,

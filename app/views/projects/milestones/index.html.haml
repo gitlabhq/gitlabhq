@@ -1,18 +1,22 @@
 - page_title "Milestones"
-.pull-right
-  - if can? current_user, :admin_milestone, @project
-    = link_to new_namespace_project_milestone_path(@project.namespace, @project), class: "pull-right btn btn-new", title: "New Milestone" do
-      %i.fa.fa-plus
-      New Milestone
+= render "header_title"
 = render 'shared/milestones_filter'
 
-.milestones
-  .panel.panel-default
-    %ul.well-list
-      = render @milestones
+.gray-content-block
+  .pull-right
+    - if can? current_user, :admin_milestone, @project
+      = link_to new_namespace_project_milestone_path(@project.namespace, @project), class: "pull-right btn btn-new", title: "New Milestone" do
+        %i.fa.fa-plus
+        New Milestone
+  .oneline
+    Milestone allows you to group issues and set due date for it
 
-      - if @milestones.blank?
-        %li
-          .nothing-here-block No milestones to show
+.milestones
+  %ul.content-list
+    = render @milestones
+
+    - if @milestones.blank?
+      %li
+        .nothing-here-block No milestones to show
 
   = paginate @milestones, theme: "gitlab"

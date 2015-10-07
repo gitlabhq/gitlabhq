@@ -5,7 +5,7 @@ describe Gitlab::OAuth::User do
   let(:gl_user) { oauth_user.gl_user }
   let(:uid) { 'my-uid' }
   let(:provider) { 'my-provider' }
-  let(:auth_hash) { double(uid: uid, provider: provider, info: double(info_hash)) }
+  let(:auth_hash) { OmniAuth::AuthHash.new(uid: uid, provider: provider, info: info_hash) }
   let(:info_hash) do
     {
       nickname: '-john+gitlab-ETC%.git@gmail.com',
@@ -19,10 +19,6 @@ describe Gitlab::OAuth::User do
     let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
 
     it "finds an existing user based on uid and provider (facebook)" do
-      # FIXME (rspeicher): It's unlikely that this test is actually doing anything
-      # `auth` is never used and removing it entirely doesn't break the test, so
-      # what's it doing?
-      auth = double(info: double(name: 'John'), uid: 'my-uid', provider: 'my-provider')
       expect( oauth_user.persisted? ).to be_truthy
     end
 

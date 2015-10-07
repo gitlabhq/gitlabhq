@@ -56,7 +56,7 @@ module Gitlab
       end
 
       def url_for_label(project, label)
-        h = Rails.application.routes.url_helpers
+        h = Gitlab::Application.routes.url_helpers
         h.namespace_project_issues_path(project.namespace, project,
                                         label_name: label.name,
                                         only_path: context[:only_path])

@@ -1,5 +1,5 @@
 - page_title    @group.name
-- header_title  @group.name, group_path(@group)
-- sidebar       "group" unless sidebar
+- header_title  group_title(@group) unless header_title
+- sidebar       "group"             unless sidebar
 
 = render template: "layouts/application"

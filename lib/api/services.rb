@@ -4,74 +4,60 @@ module API
     before { authenticate! }
     before { authorize_admin_project }
 
+
     resource :projects do
-      # Set GitLab CI service for project
-      #
-      # Parameters:
-      #   token (required) - CI project token
-      #   project_url (required) - CI project url
+      # Set <service_slug> service for project
       #
       # Example Request:
+      #
       #   PUT /projects/:id/services/gitlab-ci
-      put ":id/services/gitlab-ci" do
-        required_attributes! [:token, :project_url]
-        attrs = attributes_for_keys [:token, :project_url]
-        user_project.build_missing_services
+      #
+      put ':id/services/:service_slug' do
+        if project_service
+          validators = project_service.class.validators.select do |s|
+            s.class == ActiveRecord::Validations::PresenceValidator &&
+              s.attributes != [:project_id]
+          end
 
-        if user_project.gitlab_ci_service.update_attributes(attrs.merge(active: true))
-          true
-        else
-          not_found!
+          required_attributes! validators.map(&:attributes).flatten.uniq
+          attrs = attributes_for_keys service_attributes
+
+          if project_service.update_attributes(attrs.merge(active: true))
+            true
+          else
+            not_found!
+          end
         end
       end
 
-      # Delete GitLab CI service settings
+      # Delete <service_slug> service for project
       #
       # Example Request:
-      #   DELETE /projects/:id/services/gitlab-ci
-      delete ":id/services/gitlab-ci" do
-        if user_project.gitlab_ci_service
-          user_project.gitlab_ci_service.update_attributes(
-            active: false,
-            token: nil,
-            project_url: nil
-          )
+      #
+      #   DELETE /project/:id/services/gitlab-ci
+      #
+      delete ':id/services/:service_slug' do
+        if project_service
+          attrs = service_attributes.inject({}) do |hash, key|
+            hash.merge!(key => nil)
+          end
+
+          if project_service.update_attributes(attrs.merge(active: false))
+            true
+          else
+            not_found!
+          end
         end
       end
 
-      # Set Hipchat service for project
-      #
-      # Parameters:
-      #   token (required) - Hipchat token
-      #   room (required) - Hipchat room name
+      # Get <service_slug> service settings for project
       #
       # Example Request:
-      #   PUT /projects/:id/services/hipchat
-      put ':id/services/hipchat' do
-        required_attributes! [:token, :room]
-        attrs = attributes_for_keys [:token, :room]
-        user_project.build_missing_services
-
-        if user_project.hipchat_service.update_attributes(
-            attrs.merge(active: true))
-          true
-        else
-          not_found!
-        end
-      end
-
-      # Delete Hipchat service settings
       #
-      # Example Request:
-      #   DELETE /projects/:id/services/hipchat
-      delete ':id/services/hipchat' do
-        if user_project.hipchat_service
-          user_project.hipchat_service.update_attributes(
-            active: false,
-            token: nil,
-            room: nil
-          )
-        end
+      #   GET /project/:id/services/gitlab-ci
+      #
+      get ':id/services/:service_slug' do
+        present project_service
       end
     end
   end
