@@ -60,8 +60,8 @@
           = icon('building fw')
           %span
             CI Settings
-      = nav_link path: ['ci/services#index', 'ci/services#edit'] do
-        = link_to ci_project_services_path(@project.gitlab_ci_project) do
+      = nav_link controller: 'ci_services' do
+        = link_to namespace_project_ci_services_path(@project.namespace, @project) do
           = icon('share fw')
           %span
             CI Services

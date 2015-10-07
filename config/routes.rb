@@ -22,12 +22,6 @@ Gitlab::Application.routes.draw do
         get :dumped_yaml
       end
 
-      resources :services, only: [:index, :edit, :update] do
-        member do
-          get :test
-        end
-      end
-
       resources :runner_projects, only: [:create, :destroy]
 
       resources :events, only: [:index]
@@ -571,6 +565,12 @@ Gitlab::Application.routes.draw do
         resources :triggers, only: [:index, :create, :destroy]
         resource :ci_settings, only: [:edit, :update, :destroy]
         resources :ci_web_hooks, only: [:index, :create, :destroy] do
+          member do
+            get :test
+          end
+        end
+
+        resources :ci_services, constraints: { id: /[^\/]+/ }, only: [:index, :edit, :update] do
           member do
             get :test
           end
