@@ -15,10 +15,17 @@ module Gitlab
     # Results:
     #   :references - A Hash of references that were found and replaced.
     class ReferenceFilter < HTML::Pipeline::Filter
-      def initialize(*args)
-        super
+      def self.user_can_reference?(user, node)
+        if node.has_attribute?('data-project')
+          project = Project.find(node.attr('data-project')) rescue nil
+          Ability.abilities.allowed?(user, :read_project, project)
+        else
+          true
+        end
+      end
 
-        result[:references] = Hash.new { |hash, type| hash[type] = [] }
+      def self.referenced_by(node)
+        nil
       end
 
       # Returns a data attribute String to attach to a reference link
@@ -28,13 +35,14 @@ module Gitlab
       #
       # Examples:
       #
-      #   data_attribute(1)         # => "data-project-id=\"1\""
-      #   data_attribute(2, :user)  # => "data-user-id=\"2\""
-      #   data_attribute(3, :group) # => "data-group-id=\"3\""
+      #   data_attribute(project: 1)  # => "data-reference-filter=\"SomeReferenceFilter\" data-project=\"1\""
+      #   data_attribute(user: 2)     # => "data-reference-filter=\"SomeReferenceFilter\" data-user=\"2\""
+      #   data_attribute(group: 3)    # => "data-reference-filter=\"SomeReferenceFilter\" data-group=\"3\""
       #
       # Returns a String
-      def data_attribute(id, type = :project)
-        %Q(data-#{type}-id="#{id}")
+      def data_attribute(attributes = {})
+        attributes[:reference_filter] = self.class.name
+        attributes.map { |key, value| %Q(data-#{key.to_s.dasherize}="#{value}") }.join(" ")
       end
 
       def escape_once(html)
@@ -57,16 +65,6 @@ module Gitlab
 
       def project
         context[:project]
-      end
-
-      # Add a reference to the pipeline's result Hash
-      #
-      # type   - Singular Symbol reference type (e.g., :issue, :user, etc.)
-      # values - One or more Objects to add
-      def push_result(type, *values)
-        return if values.empty?
-
-        result[:references][type].push(*values)
       end
 
       def reference_class(type)

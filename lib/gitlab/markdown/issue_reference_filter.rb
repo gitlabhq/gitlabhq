@@ -27,6 +27,13 @@ module Gitlab
         end
       end
 
+      def self.referenced_by(node)
+        issue = Issue.find(node.attr("data-issue")) rescue nil
+        return unless issue
+
+        { issue: issue }
+      end
+
       def call
         replace_text_nodes_matching(Issue.reference_pattern) do |content|
           issue_link_filter(content)
@@ -45,13 +52,11 @@ module Gitlab
           project = self.project_from_ref(project_ref)
 
           if project && issue = project.get_issue(id)
-            push_result(:issue, issue)
-
             url = url_for_issue(id, project, only_path: context[:only_path])
 
             title = escape_once("Issue: #{issue.title}")
             klass = reference_class(:issue)
-            data  = data_attribute(project.id)
+            data  = data_attribute(project: project.id, issue: issue.id)
 
             %(<a href="#{url}" #{data}
                  title="#{title}"

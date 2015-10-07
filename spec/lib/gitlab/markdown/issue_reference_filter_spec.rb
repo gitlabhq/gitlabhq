@@ -8,7 +8,7 @@ module Gitlab::Markdown
       IssuesHelper
     end
 
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:empty_project, :public) }
     let(:issue)   { create(:issue, project: project) }
 
     it 'requires project context' do
@@ -68,12 +68,20 @@ module Gitlab::Markdown
         expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue'
       end
 
-      it 'includes a data-project-id attribute' do
+      it 'includes a data-project attribute' do
         doc = filter("Issue #{reference}")
         link = doc.css('a').first
 
-        expect(link).to have_attribute('data-project-id')
-        expect(link.attr('data-project-id')).to eq project.id.to_s
+        expect(link).to have_attribute('data-project')
+        expect(link.attr('data-project')).to eq project.id.to_s
+      end
+
+      it 'includes a data-issue attribute' do
+        doc = filter("See #{reference}")
+        link = doc.css('a').first
+
+        expect(link).to have_attribute('data-issue')
+        expect(link.attr('data-issue')).to eq issue.id.to_s
       end
 
       it 'supports an :only_path context' do
@@ -85,14 +93,14 @@ module Gitlab::Markdown
       end
 
       it 'adds to the results hash' do
-        result = pipeline_result("Fixed #{reference}")
+        result = reference_pipeline_result("Fixed #{reference}")
         expect(result[:references][:issue]).to eq [issue]
       end
     end
 
     context 'cross-project reference' do
       let(:namespace) { create(:namespace, name: 'cross-reference') }
-      let(:project2)  { create(:empty_project, namespace: namespace) }
+      let(:project2)  { create(:empty_project, :public, namespace: namespace) }
       let(:issue)     { create(:issue, project: project2) }
       let(:reference) { issue.to_reference(project) }
 
@@ -123,7 +131,7 @@ module Gitlab::Markdown
       end
 
       it 'adds to the results hash' do
-        result = pipeline_result("Fixed #{reference}")
+        result = reference_pipeline_result("Fixed #{reference}")
         expect(result[:references][:issue]).to eq [issue]
       end
     end

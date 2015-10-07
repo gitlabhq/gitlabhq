@@ -19,7 +19,8 @@ module GitlabMarkdownHelper
                      escape_once(body)
                    end
 
-    gfm_body = Gitlab::Markdown.gfm(escaped_body, project: @project, current_user: current_user)
+    user = current_user if defined?(current_user)
+    gfm_body = Gitlab::Markdown.gfm(escaped_body, project: @project, current_user: user)
 
     fragment = Nokogiri::HTML::DocumentFragment.parse(gfm_body)
     if fragment.children.size == 1 && fragment.children[0].name == 'a'
@@ -55,8 +56,10 @@ module GitlabMarkdownHelper
       ref:          @ref
     )
 
+    user = current_user if defined?(current_user)
+
     html = Gitlab::Markdown.render(text, context)
-    Gitlab::Markdown.post_process(html, pipeline: context[:pipeline], user: current_user)
+    Gitlab::Markdown.post_process(html, pipeline: context[:pipeline], user: user)
   end
 
   # TODO (rspeicher): Remove all usages of this helper and just call `markdown`
@@ -72,8 +75,10 @@ module GitlabMarkdownHelper
       ref:          @ref
     )
 
+    user = current_user if defined?(current_user)
+
     html = Gitlab::Markdown.gfm(text, options)
-    Gitlab::Markdown.post_process(html, pipeline: options[:pipeline], user: current_user)
+    Gitlab::Markdown.post_process(html, pipeline: options[:pipeline], user: user)
   end
 
   def asciidoc(text)

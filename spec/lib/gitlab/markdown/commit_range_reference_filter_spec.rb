@@ -4,7 +4,7 @@ module Gitlab::Markdown
   describe CommitRangeReferenceFilter do
     include FilterSpecHelper
 
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :public) }
     let(:commit1) { project.commit }
     let(:commit2) { project.commit("HEAD~2") }
 
@@ -75,12 +75,20 @@ module Gitlab::Markdown
         expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-commit_range'
       end
 
-      it 'includes a data-project-id attribute' do
+      it 'includes a data-project attribute' do
         doc = filter("See #{reference}")
         link = doc.css('a').first
 
-        expect(link).to have_attribute('data-project-id')
-        expect(link.attr('data-project-id')).to eq project.id.to_s
+        expect(link).to have_attribute('data-project')
+        expect(link.attr('data-project')).to eq project.id.to_s
+      end
+
+      it 'includes a data-commit-range attribute' do
+        doc = filter("See #{reference}")
+        link = doc.css('a').first
+
+        expect(link).to have_attribute('data-commit-range')
+        expect(link.attr('data-commit-range')).to eq range.to_reference
       end
 
       it 'supports an :only_path option' do
@@ -92,14 +100,14 @@ module Gitlab::Markdown
       end
 
       it 'adds to the results hash' do
-        result = pipeline_result("See #{reference}")
+        result = reference_pipeline_result("See #{reference}")
         expect(result[:references][:commit_range]).not_to be_empty
       end
     end
 
     context 'cross-project reference' do
       let(:namespace) { create(:namespace, name: 'cross-reference') }
-      let(:project2)  { create(:project, namespace: namespace) }
+      let(:project2)  { create(:project, :public, namespace: namespace) }
       let(:reference) { range.to_reference(project) }
 
       before do
@@ -129,7 +137,7 @@ module Gitlab::Markdown
       end
 
       it 'adds to the results hash' do
-        result = pipeline_result("See #{reference}")
+        result = reference_pipeline_result("See #{reference}")
         expect(result[:references][:commit_range]).not_to be_empty
       end
     end

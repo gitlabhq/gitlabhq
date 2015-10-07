@@ -16,41 +16,12 @@ module Gitlab::Markdown
       link_to('text', '', class: 'gfm', data: data)
     end
 
-    context 'with data-group-id' do
-      it 'removes unpermitted Group references' do
-        user = create(:user)
-        group = create(:group)
-
-        link = reference_link(group_id: group.id)
-        doc = filter(link, current_user: user)
-
-        expect(doc.css('a').length).to eq 0
-      end
-
-      it 'allows permitted Group references' do
-        user = create(:user)
-        group = create(:group)
-        group.add_developer(user)
-
-        link = reference_link(group_id: group.id)
-        doc = filter(link, current_user: user)
-
-        expect(doc.css('a').length).to eq 1
-      end
-
-      it 'handles invalid Group references' do
-        link = reference_link(group_id: 12345)
-
-        expect { filter(link) }.not_to raise_error
-      end
-    end
-
-    context 'with data-project-id' do
+    context 'with data-project' do
       it 'removes unpermitted Project references' do
         user = create(:user)
         project = create(:empty_project)
 
-        link = reference_link(project_id: project.id)
+        link = reference_link(project: project.id, reference_filter: Gitlab::Markdown::ReferenceFilter.name)
         doc = filter(link, current_user: user)
 
         expect(doc.css('a').length).to eq 0
@@ -61,27 +32,59 @@ module Gitlab::Markdown
         project = create(:empty_project)
         project.team << [user, :master]
 
-        link = reference_link(project_id: project.id)
+        link = reference_link(project: project.id, reference_filter: Gitlab::Markdown::ReferenceFilter.name)
         doc = filter(link, current_user: user)
 
         expect(doc.css('a').length).to eq 1
       end
 
       it 'handles invalid Project references' do
-        link = reference_link(project_id: 12345)
+        link = reference_link(project: 12345, reference_filter: Gitlab::Markdown::ReferenceFilter.name)
 
         expect { filter(link) }.not_to raise_error
       end
     end
 
-    context 'with data-user-id' do
-      it 'allows any User reference' do
-        user = create(:user)
+    context "for user references" do
 
-        link = reference_link(user_id: user.id)
-        doc = filter(link)
+      context 'with data-group' do
+        it 'removes unpermitted Group references' do
+          user = create(:user)
+          group = create(:group)
 
-        expect(doc.css('a').length).to eq 1
+          link = reference_link(group: group.id, reference_filter: Gitlab::Markdown::UserReferenceFilter.name)
+          doc = filter(link, current_user: user)
+
+          expect(doc.css('a').length).to eq 0
+        end
+
+        it 'allows permitted Group references' do
+          user = create(:user)
+          group = create(:group)
+          group.add_developer(user)
+
+          link = reference_link(group: group.id, reference_filter: Gitlab::Markdown::UserReferenceFilter.name)
+          doc = filter(link, current_user: user)
+
+          expect(doc.css('a').length).to eq 1
+        end
+
+        it 'handles invalid Group references' do
+          link = reference_link(group: 12345, reference_filter: Gitlab::Markdown::UserReferenceFilter.name)
+
+          expect { filter(link) }.not_to raise_error
+        end
+      end
+
+      context 'with data-user' do
+        it 'allows any User reference' do
+          user = create(:user)
+
+          link = reference_link(user: user.id, reference_filter: Gitlab::Markdown::UserReferenceFilter.name)
+          doc = filter(link)
+
+          expect(doc.css('a').length).to eq 1
+        end
       end
     end
   end

@@ -50,7 +50,7 @@ module Gitlab
         ignore_blockquotes: true
       }
 
-      pipeline = HTML::Pipeline.new([filter], context)
+      pipeline = HTML::Pipeline.new([filter, Gitlab::Markdown::ReferenceGathererFilter], context)
       result = pipeline.call(@text)
 
       result[:references][filter_type]

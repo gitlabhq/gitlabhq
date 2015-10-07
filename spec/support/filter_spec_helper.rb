@@ -29,9 +29,16 @@ module FilterSpecHelper
   #
   # Returns the Hash
   def pipeline_result(body, contexts = {})
-    contexts.reverse_merge!(project: project)
+    contexts.reverse_merge!(project: project) if defined?(project)
 
     pipeline = HTML::Pipeline.new([described_class], contexts)
+    pipeline.call(body)
+  end
+
+  def reference_pipeline_result(body, contexts = {})
+    contexts.reverse_merge!(project: project) if defined?(project)
+
+    pipeline = HTML::Pipeline.new([described_class, Gitlab::Markdown::ReferenceGathererFilter], contexts)
     pipeline.call(body)
   end
 

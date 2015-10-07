@@ -4,7 +4,7 @@ module Gitlab::Markdown
   describe CommitReferenceFilter do
     include FilterSpecHelper
 
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :public) }
     let(:commit)  { project.commit }
 
     it 'requires project context' do
@@ -71,12 +71,20 @@ module Gitlab::Markdown
         expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-commit'
       end
 
-      it 'includes a data-project-id attribute' do
+      it 'includes a data-project attribute' do
         doc = filter("See #{reference}")
         link = doc.css('a').first
 
-        expect(link).to have_attribute('data-project-id')
-        expect(link.attr('data-project-id')).to eq project.id.to_s
+        expect(link).to have_attribute('data-project')
+        expect(link.attr('data-project')).to eq project.id.to_s
+      end
+
+      it 'includes a data-commit attribute' do
+        doc = filter("See #{reference}")
+        link = doc.css('a').first
+
+        expect(link).to have_attribute('data-commit')
+        expect(link.attr('data-commit')).to eq commit.id
       end
 
       it 'supports an :only_path context' do
@@ -88,14 +96,14 @@ module Gitlab::Markdown
       end
 
       it 'adds to the results hash' do
-        result = pipeline_result("See #{reference}")
+        result = reference_pipeline_result("See #{reference}")
         expect(result[:references][:commit]).not_to be_empty
       end
     end
 
     context 'cross-project reference' do
       let(:namespace) { create(:namespace, name: 'cross-reference') }
-      let(:project2)  { create(:project, namespace: namespace) }
+      let(:project2)  { create(:project, :public, namespace: namespace) }
       let(:commit)    { project2.commit }
       let(:reference) { commit.to_reference(project) }
 
@@ -119,7 +127,7 @@ module Gitlab::Markdown
       end
 
       it 'adds to the results hash' do
-        result = pipeline_result("See #{reference}")
+        result = reference_pipeline_result("See #{reference}")
         expect(result[:references][:commit]).not_to be_empty
       end
     end

@@ -19,47 +19,17 @@ module Gitlab
         doc
       end
 
+      private
+
       def user_can_reference?(node)
-        if node.has_attribute?('data-group-id')
-          user_can_reference_group?(node.attr('data-group-id'))
-        elsif node.has_attribute?('data-project-id')
-          user_can_reference_project?(node.attr('data-project-id'))
-        elsif node.has_attribute?('data-user-id')
-          user_can_reference_user?(node.attr('data-user-id'))
+        if node.has_attribute?('data-reference-filter')
+          reference_type = node.attr('data-reference-filter')
+          reference_filter = reference_type.constantize
+
+          reference_filter.user_can_reference?(current_user, node)
         else
           true
         end
-      end
-
-      def user_can_reference_group?(id)
-        group = Group.find(id)
-
-        group && can?(:read_group, group)
-      rescue ActiveRecord::RecordNotFound
-        false
-      end
-
-      def user_can_reference_project?(id)
-        project = Project.find(id)
-
-        project && can?(:read_project, project)
-      rescue ActiveRecord::RecordNotFound
-        false
-      end
-
-      def user_can_reference_user?(id)
-        # Permit all user reference links
-        true
-      end
-
-      private
-
-      def abilities
-        Ability.abilities
-      end
-
-      def can?(ability, object)
-        abilities.allowed?(current_user, ability, object)
       end
 
       def current_user

@@ -4,7 +4,7 @@ module Gitlab::Markdown
   describe UserReferenceFilter do
     include FilterSpecHelper
 
-    let(:project)   { create(:empty_project) }
+    let(:project)   { create(:empty_project, :public) }
     let(:user)      { create(:user) }
     let(:reference) { user.to_reference }
 
@@ -39,7 +39,7 @@ module Gitlab::Markdown
       end
 
       it 'adds to the results hash' do
-        result = pipeline_result("Hey #{reference}")
+        result = reference_pipeline_result("Hey #{reference}")
         expect(result[:references][:user]).to eq [project.creator]
       end
     end
@@ -64,16 +64,16 @@ module Gitlab::Markdown
         expect(doc.css('a').length).to eq 1
       end
 
-      it 'includes a data-user-id attribute' do
+      it 'includes a data-user attribute' do
         doc = filter("Hey #{reference}")
         link = doc.css('a').first
 
-        expect(link).to have_attribute('data-user-id')
-        expect(link.attr('data-user-id')).to eq user.namespace.owner_id.to_s
+        expect(link).to have_attribute('data-user')
+        expect(link.attr('data-user')).to eq user.namespace.owner_id.to_s
       end
 
       it 'adds to the results hash' do
-        result = pipeline_result("Hey #{reference}")
+        result = reference_pipeline_result("Hey #{reference}")
         expect(result[:references][:user]).to eq [user]
       end
     end
@@ -87,16 +87,16 @@ module Gitlab::Markdown
         expect(doc.css('a').first.attr('href')).to eq urls.group_url(group)
       end
 
-      it 'includes a data-group-id attribute' do
+      it 'includes a data-group attribute' do
         doc = filter("Hey #{reference}")
         link = doc.css('a').first
 
-        expect(link).to have_attribute('data-group-id')
-        expect(link.attr('data-group-id')).to eq group.id.to_s
+        expect(link).to have_attribute('data-group')
+        expect(link.attr('data-group')).to eq group.id.to_s
       end
 
       it 'adds to the results hash' do
-        result = pipeline_result("Hey #{reference}")
+        result = reference_pipeline_result("Hey #{reference}")
         expect(result[:references][:user]).to eq group.users
       end
     end

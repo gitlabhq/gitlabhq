@@ -27,6 +27,13 @@ module Gitlab
         end
       end
 
+      def self.referenced_by(node)
+        snippet = Snippet.find(node.attr("data-snippet")) rescue nil
+        return unless snippet
+
+        { snippet: snippet }
+      end
+
       def call
         replace_text_nodes_matching(Snippet.reference_pattern) do |content|
           snippet_link_filter(content)
@@ -45,11 +52,9 @@ module Gitlab
           project = self.project_from_ref(project_ref)
 
           if project && snippet = project.snippets.find_by(id: id)
-            push_result(:snippet, snippet)
-
             title = escape_once("Snippet: #{snippet.title}")
             klass = reference_class(:snippet)
-            data  = data_attribute(project.id)
+            data  = data_attribute(project: project.id, snippet: snippet.id)
 
             url = url_for_snippet(snippet, project)
 
