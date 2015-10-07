@@ -5,12 +5,6 @@ module Ci
     before_action :project
     before_action :authorize_access_project!, except: [:status, :show, :cancel]
     before_action :authorize_manage_builds!, only: [:cancel]
-    before_action :commit, only: :show
-    layout 'ci/commit'
-
-    def show
-      @builds = @commit.builds
-    end
 
     def status
       commit = Ci::Project.find(params[:project_id]).commits.find_by_sha!(params[:id])
@@ -22,7 +16,7 @@ module Ci
     def cancel
       commit.builds.running_or_pending.each(&:cancel)
 
-      redirect_to ci_project_commits_path(project, commit.sha)
+      redirect_to namespace_project_commit_path(commit.gl_project.namespace, commit.gl_project, commit.sha)
     end
 
     private

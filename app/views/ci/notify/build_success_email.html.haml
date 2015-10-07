@@ -17,4 +17,4 @@
   Message: #{@build.commit.git_commit_message}
 
 %p
-  Url: #{link_to @build.short_sha, ci_project_build_url(@project, @build)}
+  Url: #{link_to @build.short_sha, namespace_project_build_url(@build.gl_project.namespace, @build.gl_project, @build)}

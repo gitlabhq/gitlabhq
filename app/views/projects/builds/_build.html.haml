@@ -1,9 +1,10 @@
+- gl_project = build.project.gl_project
 %tr.build
   %td.status
     = ci_status_with_icon(build.status)
 
   %td.build-link
-    = link_to ci_project_build_path(build.project, build) do
+    = link_to namespace_project_build_path(gl_project.namespace, gl_project, build) do
       %strong Build ##{build.id}
 
   - if defined?(ref)

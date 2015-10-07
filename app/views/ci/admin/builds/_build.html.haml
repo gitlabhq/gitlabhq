@@ -1,14 +1,16 @@
+- gl_project = build.project.gl_project
 - if build.commit && build.project
   %tr.build
     %td.build-link
-      = link_to ci_project_build_url(build.project, build) do
+      = link_to namespace_project_build_path(gl_project.namespace, gl_project, build) do
         %strong #{build.id}
 
     %td.status
       = ci_status_with_icon(build.status)
 
     %td.commit-link
-      = commit_link(build.commit)
+      = link_to ci_status_path(build.commit) do
+        %strong #{build.commit.short_sha}
 
     %td.runner
       - if build.runner

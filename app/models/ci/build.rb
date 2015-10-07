@@ -144,7 +144,7 @@ module Ci
       state :canceled, value: 'canceled'
     end
 
-    delegate :sha, :short_sha, :project,
+    delegate :sha, :short_sha, :project, :gl_project,
       to: :commit, prefix: false
 
     def before_sha

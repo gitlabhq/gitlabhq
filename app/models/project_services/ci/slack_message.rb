@@ -28,7 +28,7 @@ module Ci
         next unless build.failed?
         fields << {
           title: build.name,
-          value: "Build <#{ci_project_build_url(project, build)}|\##{build.id}> failed in #{build.duration.to_i} second(s)."
+          value: "Build <#{namespace_project_build_url(build.gl_project.namespace, build.gl_project, build)}|\##{build.id}> failed in #{build.duration.to_i} second(s)."
         }
       end
 
@@ -45,7 +45,7 @@ module Ci
 
     def attachment_message
       out = "<#{ci_project_url(project)}|#{project_name}>: "
-      out << "Commit <#{ci_project_commits_url(project, commit.sha)}|\##{commit.id}> "
+      out << "Commit <#{ci_namespace_project_commit_url(commit.gl_project.namespace, commit.gl_project, commit.sha)}|\##{commit.id}> "
       out << "(<#{commit_sha_link}|#{commit.short_sha}>) "
       out << "of <#{commit_ref_link}|#{commit.ref}> "
       out << "by #{commit.git_author_name} " if commit.git_author_name
