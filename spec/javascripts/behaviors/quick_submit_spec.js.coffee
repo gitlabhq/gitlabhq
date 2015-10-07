@@ -23,6 +23,11 @@ describe 'Quick Submit behavior', ->
 
     expect(@spies.submit).not.toHaveBeenTriggered()
 
+  it 'does not respond to repeated events', ->
+    $('input').trigger(keydownEvent(repeat: true))
+
+    expect(@spies.submit).not.toHaveBeenTriggered()
+
   it 'disables submit buttons', ->
     $('textarea').trigger(keydownEvent())
 
@@ -62,4 +67,7 @@ describe 'Quick Submit behavior', ->
     else
       defaults = { keyCode: 13, ctrlKey: true }
 
-    $.Event('keydown', $.extend({}, defaults, options))
+    args = $.extend({}, defaults, options)
+    originalEvent = new KeyboardEvent('keydown', args)
+
+    $.Event('keydown', $.extend({}, args, {originalEvent: originalEvent}))
