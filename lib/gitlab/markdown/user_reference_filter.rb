@@ -42,7 +42,7 @@ module Gitlab
         end
       end
 
-      def self.user_can_reference?(user, node)
+      def self.user_can_reference?(user, node, context)
         if node.has_attribute?('data-group')
           group = Group.find(node.attr('data-group')) rescue nil
           Ability.abilities.allowed?(user, :read_group, group)

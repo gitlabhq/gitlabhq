@@ -61,7 +61,6 @@ module Mentionable
 
     ext = Gitlab::ReferenceExtractor.new(p, current_user)
     ext.analyze(text)
-
     (ext.issues + ext.merge_requests + ext.commits).uniq - [local_reference]
   end
 

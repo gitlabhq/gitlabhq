@@ -31,7 +31,7 @@ module Gitlab
         reference_type = node.attr('data-reference-filter')
         reference_filter = reference_type.constantize
 
-        return unless reference_filter.user_can_reference?(current_user, node)
+        return unless reference_filter.user_can_reference?(current_user, node, context)
 
         references = reference_filter.referenced_by(node)
         return unless references

@@ -15,9 +15,12 @@ module Gitlab
     # Results:
     #   :references - A Hash of references that were found and replaced.
     class ReferenceFilter < HTML::Pipeline::Filter
-      def self.user_can_reference?(user, node)
+      def self.user_can_reference?(user, node, context)
         if node.has_attribute?('data-project')
-          project = Project.find(node.attr('data-project')) rescue nil
+          project_id = node.attr('data-project').to_i
+          return true if project_id == context[:project].id
+          
+          project = Project.find(project_id) rescue nil
           Ability.abilities.allowed?(user, :read_project, project)
         else
           true

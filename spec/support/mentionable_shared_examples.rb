@@ -50,6 +50,8 @@ def common_mentionable_setup
     }
     extra_commits.each { |c| commitmap[c.short_id] = c }
 
+    allow(Project).to receive(:find).and_call_original
+    allow(Project).to receive(:find).with(project.id.to_s).and_return(project)
     allow(project.repository).to receive(:commit) { |sha| commitmap[sha] }
 
     set_mentionable_text.call(ref_string)
