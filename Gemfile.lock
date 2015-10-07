@@ -456,9 +456,9 @@ GEM
       ruby-saml (~> 1.0.0)
     omniauth-shibboleth (1.1.2)
       omniauth (>= 1.0.0)
-    omniauth-twitter (1.0.1)
-      multi_json (~> 1.3)
-      omniauth-oauth (~> 1.0)
+    omniauth-twitter (1.2.1)
+      json (~> 1.3)
+      omniauth-oauth (~> 1.1)
     omniauth_crowd (2.2.3)
       activesupport
       nokogiri (>= 1.4.4)
@@ -874,7 +874,7 @@ DEPENDENCIES
   omniauth-kerberos (~> 0.2.0)
   omniauth-saml (~> 1.4.0)
   omniauth-shibboleth (~> 1.1.1)
-  omniauth-twitter (~> 1.0.1)
+  omniauth-twitter (~> 1.2.0)
   omniauth_crowd
   org-ruby (~> 0.9.12)
   paranoia (~> 2.0)

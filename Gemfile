@@ -22,20 +22,20 @@ gem "mysql2", '~> 0.3.16', group: :mysql
 gem "pg", '~> 0.18.2', group: :postgres
 
 # Authentication libraries
-gem "devise", '~> 3.5.2'
-gem "devise-async", '~> 0.9.0'
-gem 'omniauth', "~> 1.2.2"
+gem 'devise',                 '~> 3.5.2'
+gem 'devise-async',           '~> 0.9.0'
+gem 'omniauth',               '~> 1.2.2'
+gem 'omniauth-bitbucket',     '~> 0.0.2'
+gem 'omniauth-github',        '~> 1.1.1'
+gem 'omniauth-gitlab',        '~> 1.0.0'
 gem 'omniauth-google-oauth2', '~> 0.2.5'
-gem 'omniauth-twitter', '~> 1.0.1'
-gem 'omniauth-github', '~> 1.1.1'
-gem 'omniauth-shibboleth', '~> 1.1.1'
-gem 'omniauth-kerberos', '~> 0.2.0', group: :kerberos
-gem 'omniauth-gitlab', '~> 1.0.0'
-gem 'omniauth-bitbucket', '~> 0.0.2'
-gem 'omniauth-saml', '~> 1.4.0'
-gem 'doorkeeper', '~> 2.1.3'
+gem 'omniauth-kerberos',      '~> 0.2.0', group: :kerberos
+gem 'omniauth-saml',          '~> 1.4.0'
+gem 'omniauth-shibboleth',    '~> 1.1.1'
+gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd'
-gem "rack-oauth2", "~> 1.0.5"
+gem 'doorkeeper',             '~> 2.1.3'
+gem 'rack-oauth2',            '~> 1.0.5'
 
 # Two-factor authentication
 gem 'devise-two-factor', '~> 2.0.0'
