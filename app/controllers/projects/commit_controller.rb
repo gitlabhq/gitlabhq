@@ -42,7 +42,7 @@ class Projects::CommitController < Projects::ApplicationController
     @ci_commit = @project.ci_commit(@commit.sha)
     @ci_commit.builds.running_or_pending.each(&:cancel)
 
-    redirect_to namespace_project_commit_path(project.namespace, project, commit.sha)
+    redirect_to ci_namespace_project_commit_path(project.namespace, project, commit.sha)
   end
 
 

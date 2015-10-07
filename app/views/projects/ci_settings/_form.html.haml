@@ -8,7 +8,7 @@
     Edit your
     #{link_to ".gitlab-ci.yml using web-editor", yaml_web_editor_link(@ci_project)}
 
-- if @repository
+- unless @project.empty_repo?
   %p
     Paste build status image for #{@repository.root_ref} with next link
     = link_to '#', class: 'badge-codes-toggle btn btn-default btn-xs' do

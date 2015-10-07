@@ -465,7 +465,7 @@ Gitlab::Application.routes.draw do
           member do
             get :branches
             get :ci
-            post :cancel_builds
+            get :cancel_builds
           end
         end
 

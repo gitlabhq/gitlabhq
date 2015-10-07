@@ -1,5 +1,6 @@
 module Ci
   class ProjectsController < Ci::ApplicationController
+    before_action :project
     before_action :authenticate_user!, except: [:build, :badge]
     before_action :authorize_access_project!, except: [:badge]
     before_action :authorize_manage_project!, only: [:toggle_shared_runners, :dumped_yaml]
