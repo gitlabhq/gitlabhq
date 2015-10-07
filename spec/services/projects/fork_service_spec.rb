@@ -43,14 +43,10 @@ describe Projects::ForkService do
     end
 
     context 'GitLab CI is enabled' do
-      it "calls fork registrator for CI" do
-        create(:ci_project, gl_project: @from_project)
-        @from_project.build_missing_services
-        @from_project.gitlab_ci_service.update_attributes(active: true)
-
-        expect_any_instance_of(Ci::CreateProjectService).to receive(:execute)
-
-        fork_project(@from_project, @to_user)
+      it "fork and enable CI for fork" do
+        @from_project.enable_ci
+        @to_project = fork_project(@from_project, @to_user)
+        expect(@to_project.gitlab_ci?).to be_truthy
       end
     end
   end

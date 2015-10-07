@@ -47,7 +47,7 @@ gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 7.2.15'
+gem "gitlab_git", '~> 7.2.17'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -273,6 +273,8 @@ group :development, :test do
   gem 'rubocop',  '~> 0.28.0',  require: false
   gem 'coveralls',  '~> 0.8.2', require: false
   gem 'simplecov', '~> 0.10.0', require: false
+
+  gem 'benchmark-ips', require: false
 end
 
 group :test do

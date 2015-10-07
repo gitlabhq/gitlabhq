@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150930095736) do
+ActiveRecord::Schema.define(version: 20151005162154) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,7 +46,6 @@ ActiveRecord::Schema.define(version: 20150930095736) do
     t.integer  "session_expire_delay",         default: 10080, null: false
     t.text     "import_sources"
     t.text     "help_page_text"
-    t.boolean  "ci_enabled",                   default: true,  null: false
   end
 
   create_table "audit_events", force: true do |t|
@@ -100,8 +99,13 @@ ActiveRecord::Schema.define(version: 20150930095736) do
     t.boolean  "allow_failure",      default: false, null: false
     t.string   "stage"
     t.integer  "trigger_request_id"
+    t.integer  "stage_idx"
+    t.boolean  "tag"
+    t.string   "ref"
+    t.integer  "user_id"
   end
 
+  add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree
   add_index "ci_builds", ["commit_id"], name: "index_ci_builds_on_commit_id", using: :btree
   add_index "ci_builds", ["project_id", "commit_id"], name: "index_ci_builds_on_project_id_and_commit_id", using: :btree
   add_index "ci_builds", ["project_id"], name: "index_ci_builds_on_project_id", using: :btree
@@ -453,6 +457,7 @@ ActiveRecord::Schema.define(version: 20150930095736) do
     t.integer  "position",          default: 0
     t.datetime "locked_at"
     t.integer  "updated_by_id"
+    t.string   "merge_error"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -752,6 +757,7 @@ ActiveRecord::Schema.define(version: 20150930095736) do
     t.integer  "dashboard",                  default: 0
     t.integer  "project_view",               default: 0
     t.integer  "consumed_timestep"
+    t.integer  "layout",                     default: 0
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

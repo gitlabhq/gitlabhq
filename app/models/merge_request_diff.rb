@@ -144,12 +144,10 @@ class MergeRequestDiff < ActiveRecord::Base
   # Collect array of Git::Diff objects
   # between target and source branches
   def unmerged_diffs
-    diffs = compare_result.diffs
-    diffs ||= []
-    diffs
-  rescue Gitlab::Git::Diff::TimeoutError => ex
+    compare_result.diffs || []
+  rescue Gitlab::Git::Diff::TimeoutError
     self.state = :timeout
-    diffs = []
+    []
   end
 
   def repository

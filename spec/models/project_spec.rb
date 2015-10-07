@@ -140,7 +140,7 @@ describe Project do
 
     describe 'last_activity_date' do
       it 'returns the creation date of the project\'s last event if present' do
-        last_activity_event = create(:event, project: project)
+        create(:event, project: project)
         expect(project.last_activity_at.to_i).to eq(last_event.created_at.to_i)
       end
 
@@ -220,6 +220,7 @@ describe Project do
       end
 
       it { expect(Project.find_with_namespace('gitlab/gitlabhq')).to eq(@project) }
+      it { expect(Project.find_with_namespace('GitLab/GitlabHQ')).to eq(@project) }
       it { expect(Project.find_with_namespace('gitlab-ci')).to be_nil }
     end
   end
@@ -416,9 +417,8 @@ describe Project do
 
   describe :enable_ci do
     let(:project) { create :project }
-    let(:user) { create :user }
 
-    before { project.enable_ci(user) }
+    before { project.enable_ci }
 
     it { expect(project.gitlab_ci?).to be_truthy }
     it { expect(project.gitlab_ci_project).to be_a(Ci::Project) }

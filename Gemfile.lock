@@ -66,6 +66,7 @@ GEM
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
     bcrypt (3.1.10)
+    benchmark-ips (2.3.0)
     better_errors (1.0.1)
       coderay (>= 1.0.0)
       erubis (>= 2.6.6)
@@ -278,7 +279,7 @@ GEM
       mime-types (~> 1.19)
     gitlab_emoji (0.1.1)
       gemojione (~> 2.0)
-    gitlab_git (7.2.15)
+    gitlab_git (7.2.17)
       activesupport (~> 4.0)
       charlock_holmes (~> 0.6)
       gitlab-linguist (~> 3.0)
@@ -795,6 +796,7 @@ DEPENDENCIES
   asciidoctor (~> 1.5.2)
   attr_encrypted (~> 1.3.4)
   awesome_print (~> 1.2.0)
+  benchmark-ips
   better_errors (~> 1.0.1)
   binding_of_caller (~> 0.7.2)
   bootstrap-sass (~> 3.0)
@@ -834,7 +836,7 @@ DEPENDENCIES
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab-linguist (~> 3.0.1)
   gitlab_emoji (~> 0.1)
-  gitlab_git (~> 7.2.15)
+  gitlab_git (~> 7.2.17)
   gitlab_meta (= 7.0)
   gitlab_omniauth-ldap (~> 1.2.1)
   gollum-lib (~> 4.0.2)
@@ -938,3 +940,6 @@ DEPENDENCIES
   webmock (~> 1.21.0)
   whenever (~> 0.8.4)
   wikicloth (= 0.8.1)
+
+BUNDLED WITH
+   1.10.6

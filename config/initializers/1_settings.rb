@@ -178,7 +178,6 @@ Settings.gitlab['import_sources'] ||= ['github','bitbucket','gitlab','gitorious'
 # CI
 #
 Settings['gitlab_ci'] ||= Settingslogic.new({})
-Settings.gitlab_ci['enabled']             = true if Settings.gitlab_ci['enabled'].nil?
 Settings.gitlab_ci['all_broken_builds']   = true if Settings.gitlab_ci['all_broken_builds'].nil?
 Settings.gitlab_ci['add_pusher']          = false if Settings.gitlab_ci['add_pusher'].nil?
 Settings.gitlab_ci['url']                 ||= Settings.send(:build_gitlab_ci_url)

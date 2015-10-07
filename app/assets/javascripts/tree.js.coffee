@@ -16,6 +16,9 @@ class @TreeView
     li = $("tr.tree-item")
     liSelected = null
     $('body').keydown (e) ->
+      if $("input:focus").length > 0 && (e.which == 38 || e.which == 40)
+        return false
+
       if e.which is 40
         if liSelected
           next = liSelected.next()
@@ -38,4 +41,4 @@ class @TreeView
         $(liSelected).focus()
       else if e.which is 13
         path = $('.tree-item.selected .tree-item-file-name a').attr('href')
-        Turbolinks.visit(path)
+        if path then Turbolinks.visit(path)

@@ -29,12 +29,13 @@ describe Ci::MailService do
 
   describe 'Sends email for' do
     let(:mail)   { Ci::MailService.new }
+    let(:user)   { User.new(notification_email: 'git@example.com')}
 
     describe 'failed build' do
       let(:project) { FactoryGirl.create(:ci_project, email_add_pusher: true) }
       let(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
       let(:commit) { FactoryGirl.create(:ci_commit, gl_project: gl_project) }
-      let(:build) { FactoryGirl.create(:ci_build, status: :failed, commit: commit) }
+      let(:build) { FactoryGirl.create(:ci_build, status: :failed, commit: commit, user: user) }
 
       before do
         allow(mail).to receive_messages(
@@ -57,7 +58,7 @@ describe Ci::MailService do
       let(:project) { FactoryGirl.create(:ci_project, email_add_pusher: true, email_only_broken_builds: false) }
       let(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
       let(:commit) { FactoryGirl.create(:ci_commit, gl_project: gl_project) }
-      let(:build) { FactoryGirl.create(:ci_build, status: :success, commit: commit) }
+      let(:build) { FactoryGirl.create(:ci_build, status: :success, commit: commit, user: user) }
 
       before do
         allow(mail).to receive_messages(
@@ -85,7 +86,7 @@ describe Ci::MailService do
       end
       let(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
       let(:commit) { FactoryGirl.create(:ci_commit, gl_project: gl_project) }
-      let(:build) { FactoryGirl.create(:ci_build, status: :success, commit: commit) }
+      let(:build) { FactoryGirl.create(:ci_build, status: :success, commit: commit, user: user) }
 
       before do
         allow(mail).to receive_messages(
@@ -114,7 +115,7 @@ describe Ci::MailService do
       end
       let(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
       let(:commit) { FactoryGirl.create(:ci_commit, gl_project: gl_project) }
-      let(:build) { FactoryGirl.create(:ci_build, status: :success, commit: commit) }
+      let(:build) { FactoryGirl.create(:ci_build, status: :success, commit: commit, user: user) }
 
       before do
         allow(mail).to receive_messages(
@@ -143,7 +144,7 @@ describe Ci::MailService do
       end
       let(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
       let(:commit) { FactoryGirl.create(:ci_commit, gl_project: gl_project) }
-      let(:build) { FactoryGirl.create(:ci_build, status: :success, commit: commit) }
+      let(:build) { FactoryGirl.create(:ci_build, status: :success, commit: commit, user: user) }
 
       before do
         allow(mail).to receive_messages(
@@ -166,7 +167,7 @@ describe Ci::MailService do
       end
       let(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
       let(:commit) { FactoryGirl.create(:ci_commit, gl_project: gl_project) }
-      let(:build) { FactoryGirl.create(:ci_build, status: :failed, commit: commit) }
+      let(:build) { FactoryGirl.create(:ci_build, status: :failed, commit: commit, user: user) }
 
       before do
         allow(mail).to receive_messages(

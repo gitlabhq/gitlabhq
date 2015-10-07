@@ -7,6 +7,10 @@ describe Ci::API::API do
   let(:project) { FactoryGirl.create(:ci_project) }
   let(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
 
+  before do
+    stub_ci_commit_to_return_yaml_file
+  end
+
   describe "Builds API for runners" do
     let(:shared_runner) { FactoryGirl.create(:ci_runner, token: "SharedRunner") }
     let(:shared_project) { FactoryGirl.create(:ci_project, name: "SharedProject") }
@@ -19,7 +23,7 @@ describe Ci::API::API do
     describe "POST /builds/register" do
       it "should start a build" do
         commit = FactoryGirl.create(:ci_commit, gl_project: gl_project)
-        commit.create_builds
+        commit.create_builds('master', false, nil)
         build = commit.builds.first
 
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
@@ -55,7 +59,7 @@ describe Ci::API::API do
 
       it "returns options" do
         commit = FactoryGirl.create(:ci_commit, gl_project: gl_project)
-        commit.create_builds
+        commit.create_builds('master', false, nil)
 
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
 
@@ -65,7 +69,7 @@ describe Ci::API::API do
 
       it "returns variables" do
         commit = FactoryGirl.create(:ci_commit, gl_project: gl_project)
-        commit.create_builds
+        commit.create_builds('master', false, nil)
         project.variables << Ci::Variable.new(key: "SECRET_KEY", value: "secret_value")
 
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
@@ -82,7 +86,7 @@ describe Ci::API::API do
         commit = FactoryGirl.create(:ci_commit, gl_project: gl_project)
 
         trigger_request = FactoryGirl.create(:ci_trigger_request_with_variables, commit: commit, trigger: trigger)
-        commit.create_builds(trigger_request)
+        commit.create_builds('master', false, nil, trigger_request)
         project.variables << Ci::Variable.new(key: "SECRET_KEY", value: "secret_value")
 
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }

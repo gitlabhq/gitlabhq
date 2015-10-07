@@ -238,10 +238,10 @@ class Project < ActiveRecord::Base
       return nil unless id.include?('/')
 
       id = id.split('/')
-      namespace = Namespace.find_by(path: id.first)
+      namespace = Namespace.by_path(id.first)
       return nil unless namespace
 
-      where(namespace_id: namespace.id).find_by(path: id.second)
+      where(namespace_id: namespace.id).where("LOWER(projects.path) = :path", path: id.second.downcase).first
     end
 
     def visibility_levels
@@ -413,7 +413,7 @@ class Project < ActiveRecord::Base
 
         if template.nil?
           # If no template, we should create an instance. Ex `create_gitlab_ci_service`
-          service = self.send :"create_#{service_name}_service"
+          self.send :"create_#{service_name}_service"
         else
           Service.create_from_template(self.id, template)
         end
@@ -481,8 +481,8 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def send_move_instructions
-    NotificationService.new.project_was_moved(self)
+  def send_move_instructions(old_path_with_namespace)
+    NotificationService.new.project_was_moved(self, old_path_with_namespace)
   end
 
   def owner
@@ -624,7 +624,7 @@ class Project < ActiveRecord::Base
       # So we basically we mute exceptions in next actions
       begin
         gitlab_shell.mv_repository("#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
-        send_move_instructions
+        send_move_instructions(old_path_with_namespace)
         reset_events_cache
       rescue
         # Returning false does not rollback after_* transaction but gives
@@ -738,26 +738,26 @@ class Project < ActiveRecord::Base
   def create_wiki
     ProjectWiki.new(self, self.owner).wiki
     true
-  rescue ProjectWiki::CouldNotCreateWikiError => ex
+  rescue ProjectWiki::CouldNotCreateWikiError
     errors.add(:base, 'Failed create wiki')
     false
   end
 
   def ci_commit(sha)
-    gitlab_ci_project.commits.find_by(sha: sha) if gitlab_ci?
+    ci_commits.find_by(sha: sha)
+  end
+
+  def ensure_ci_commit(sha)
+    ci_commit(sha) || ci_commits.create(sha: sha)
   end
 
   def ensure_gitlab_ci_project
     gitlab_ci_project || create_gitlab_ci_project
   end
 
-  def enable_ci(user)
-    # Enable service
+  def enable_ci
     service = gitlab_ci_service || create_gitlab_ci_service
     service.active = true
     service.save
-
-    # Create Ci::Project
-    Ci::CreateProjectService.new.execute(user, self)
   end
 end

@@ -549,7 +549,7 @@ class Repository
 
       # Run GitLab post receive hook
       post_receive_hook = Gitlab::Git::Hook.new('post-receive', path_to_repo)
-      status = post_receive_hook.trigger(gl_id, oldrev, newrev, ref)
+      post_receive_hook.trigger(gl_id, oldrev, newrev, ref)
     else
       # Remove tmp ref and return error to user
       rugged.references.delete(tmp_ref)

@@ -26,18 +26,20 @@
 module Ci
   class Build < ActiveRecord::Base
     extend Ci::Model
-    
+
     LAZY_ATTRIBUTES = ['trace']
 
     belongs_to :commit, class_name: 'Ci::Commit'
     belongs_to :runner, class_name: 'Ci::Runner'
     belongs_to :trigger_request, class_name: 'Ci::TriggerRequest'
+    belongs_to :user
 
     serialize :options
 
     validates :commit, presence: true
     validates :status, presence: true
     validates :coverage, numericality: true, allow_blank: true
+    validates_presence_of :ref
 
     scope :running, ->() { where(status: "running") }
     scope :pending, ->() { where(status: "pending") }
@@ -45,6 +47,10 @@ module Ci
     scope :failed, ->() { where(status: "failed")  }
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :running_or_pending, ->() { where(status:[:running, :pending]) }
+    scope :latest, ->() { where(id: unscope(:select).select('max(id)').group(:name, :ref)).order(stage_idx: :asc) }
+    scope :ignore_failures, ->() { where(allow_failure: false) }
+    scope :for_ref, ->(ref) { where(ref: ref) }
+    scope :similar, ->(build) { where(ref: build.ref, tag: build.tag, trigger_request_id: build.trigger_request_id) }
 
     acts_as_taggable
 
@@ -75,6 +81,8 @@ module Ci
 
       def retry(build)
         new_build = Ci::Build.new(status: :pending)
+        new_build.ref = build.ref
+        new_build.tag = build.tag
         new_build.options = build.options
         new_build.commands = build.commands
         new_build.tag_list = build.tag_list
@@ -82,6 +90,7 @@ module Ci
         new_build.name = build.name
         new_build.allow_failure = build.allow_failure
         new_build.stage = build.stage
+        new_build.stage_idx = build.stage_idx
         new_build.trigger_request = build.trigger_request
         new_build.save
         new_build
@@ -117,8 +126,8 @@ module Ci
           Ci::WebHookService.new.build_end(build)
         end
 
-        if build.commit.success?
-          build.commit.create_next_builds(build.trigger_request)
+        if build.commit.should_create_next_builds?(build)
+          build.commit.create_next_builds(build.ref, build.tag, build.user, build.trigger_request)
         end
 
         project.execute_services(build)
@@ -135,18 +144,16 @@ module Ci
       state :canceled, value: 'canceled'
     end
 
-    delegate :sha, :short_sha, :before_sha, :ref, :project,
+    delegate :sha, :short_sha, :project, :gl_project,
       to: :commit, prefix: false
+
+    def before_sha
+      Gitlab::Git::BLANK_SHA
+    end
 
     def trace_html
       html = Ci::Ansi2html::convert(trace) if trace.present?
-      html ||= ''
-    end
-
-    def trace
-      if project && read_attribute(:trace).present?
-        read_attribute(:trace).gsub(project.token, 'xxxxxx')
-      end
+      html || ''
     end
 
     def started?
@@ -193,6 +200,16 @@ module Ci
       project.name
     end
 
+    def project_recipients
+      recipients = project.email_recipients.split(' ')
+
+      if project.email_add_pusher? && user.present? && user.notification_email.present?
+        recipients << user.notification_email
+      end
+
+      recipients.uniq
+    end
+
     def repo_url
       project.repo_url_with_auth
     end
@@ -217,18 +234,27 @@ module Ci
         if coverage.present?
           coverage.to_f
         end
-      rescue => ex
+      rescue
         # if bad regex or something goes wrong we dont want to interrupt transition
         # so we just silentrly ignore error for now
       end
     end
 
-    def trace
+    def raw_trace
       if File.exist?(path_to_trace)
         File.read(path_to_trace)
       else
         # backward compatibility
         read_attribute :trace
+      end
+    end
+
+    def trace
+      trace = raw_trace
+      if project && trace.present?
+        trace.gsub(project.token, 'xxxxxx')
+      else
+        trace
       end
     end
 

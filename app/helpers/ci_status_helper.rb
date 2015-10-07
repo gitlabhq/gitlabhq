@@ -1,6 +1,7 @@
 module CiStatusHelper
   def ci_status_path(ci_commit)
-    ci_project_ref_commits_path(ci_commit.project, ci_commit.ref, ci_commit)
+    project = ci_commit.gl_project
+    ci_namespace_project_commit_path(project.namespace, project, ci_commit.sha)
   end
 
   def ci_status_icon(ci_commit)

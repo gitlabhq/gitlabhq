@@ -1,6 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.1.0 (unreleased)
+  - Fix bug where transferring a project would result in stale commit links (Stan Hu)
+  - Include full path of source and target branch names in New Merge Request page (Stan Hu)
   - Add user preference to view activities as default dashboard (Stan Hu)
   - Add option to admin area to sign in as a specific user (Pavel Forkert)
   - Show CI status on all pages where commits list is rendered
@@ -18,6 +20,27 @@ v 8.1.0 (unreleased)
   - Move CI triggers page to project settings area
   - Move CI project settings page to CE project settings area
   - Fix bug when removed file was not appearing in merge request diff
+  - Note the original location of a moved project when notifying users of the move
+  - Improve error message when merging fails
+  - Add support of multibyte characters in LDAP UID (Roman Petrov)
+  - Show additions/deletions stats on merge request diff
+  - Remove footer text in emails (Zeger-Jan van de Weg)
+  - Ensure code blocks are properly highlighted after a note is updated
+  - Fix wrong access level badge on MR comments
+  - Hide password in the service settings form
+  - Move CI web hooks page to project settings area
+  - Fix User Identities API. It now allows you to properly create or update user's identities.
+  - Add user preference to change layout width (Peter Göbel)
+  - Use commit status in merge request widget as preffered source of CI status
+  - Integrate CI commit and build pages into project pages
+
+v 8.0.4
+  - Fix Message-ID header to be RFC 2111-compliant to prevent e-mails being dropped (Stan Hu)
+  - Fix referrals for :back and relative URL installs
+  - Fix anchors to comments in diffs
+  - Remove CI token from build traces
+  - Fix "Assign All" button on Runner admin page
+  - Fix search in Files
 
 v 8.0.3
   - Fix URL shown in Slack notifications
@@ -103,6 +126,8 @@ v 8.0.0
   - Webhook for issue now contains repository field (Jungkook Park)
   - Add ability to add custom text to the help page (Jeroen van Baarsen)
   - Add pg_schema to backup config
+  - Fix references to target project issues in Merge Requests markdown preview and textareas (Francesco Levorato)
+  - Redirect from incorrectly cased group or project path to correct one (Francesco Levorato)
   - Removed API calls from CE to CI
 
 v 7.14.3

@@ -28,28 +28,18 @@ Gitlab::Application.routes.draw do
         end
       end
 
-      resource :charts, only: [:show]
-
-      resources :refs, constraints: { ref_id: /.*/ }, only: [] do
-        resources :commits, only: [:show] do
-          member do
-            get :status
-            get :cancel
-          end
+      resources :commits, only: [] do
+        member do
+          get :status
+          get :cancel
         end
       end
 
-      resources :builds, only: [:show] do
+      resources :builds, only: [] do
         member do
           get :cancel
           get :status
           post :retry
-        end
-      end
-
-      resources :web_hooks, only: [:index, :create, :destroy] do
-        member do
-          get :test
         end
       end
 
@@ -493,7 +483,10 @@ Gitlab::Application.routes.draw do
 
         resource  :avatar, only: [:show, :destroy]
         resources :commit, only: [:show], constraints: { id: /[[:alnum:]]{6,40}/ } do
-          get :branches, on: :member
+          member do
+            get :branches
+            get :ci
+          end
         end
 
         resources :compare, only: [:index, :create]
@@ -591,6 +584,13 @@ Gitlab::Application.routes.draw do
         resource :variables, only: [:show, :update]
         resources :triggers, only: [:index, :create, :destroy]
         resource :ci_settings, only: [:edit, :update, :destroy]
+        resources :ci_web_hooks, only: [:index, :create, :destroy] do
+          member do
+            get :test
+          end
+        end
+
+        resources :builds, only: [:show]
 
         resources :hooks, only: [:index, :create, :destroy], constraints: { id: /\d+/ } do
           member do

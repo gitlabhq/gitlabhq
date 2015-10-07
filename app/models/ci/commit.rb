@@ -23,9 +23,7 @@ module Ci
     has_many :builds, dependent: :destroy, class_name: 'Ci::Build'
     has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest'
 
-    serialize :push_data
-
-    validates_presence_of :ref, :sha, :before_sha, :push_data
+    validates_presence_of :sha
     validate :valid_commit_sha
 
     def self.truncate_sha(sha)
@@ -60,28 +58,16 @@ module Ci
       end
     end
 
-    def new_branch?
-      before_sha == Ci::Git::BLANK_SHA
-    end
-
-    def compare?
-      !new_branch?
-    end
-
     def git_author_name
-      commit_data[:author][:name] if commit_data && commit_data[:author]
+      commit_data.author_name if commit_data
     end
 
     def git_author_email
-      commit_data[:author][:email] if commit_data && commit_data[:author]
+      commit_data.author_email if commit_data
     end
 
     def git_commit_message
-      commit_data[:message] if commit_data && commit_data[:message]
-    end
-
-    def short_before_sha
-      Ci::Commit.truncate_sha(before_sha)
+      commit_data.message if commit_data
     end
 
     def short_sha
@@ -89,84 +75,51 @@ module Ci
     end
 
     def commit_data
-      push_data[:commits].find do |commit|
-        commit[:id] == sha
-      end
+      @commit ||= gl_project.commit(sha)
     rescue
       nil
     end
 
-    def project_recipients
-      recipients = project.email_recipients.split(' ')
-
-      if project.email_add_pusher? && push_data[:user_email].present?
-        recipients << push_data[:user_email]
-      end
-
-      recipients.uniq
-    end
-
     def stage
-      return unless config_processor
-      stages = builds_without_retry.select(&:active?).map(&:stage)
-      config_processor.stages.find { |stage| stages.include? stage }
+      running_or_pending = builds_without_retry.running_or_pending
+      running_or_pending.limit(1).pluck(:stage).first
     end
 
-    def create_builds_for_stage(stage, trigger_request)
+    def create_builds(ref, tag, user, trigger_request = nil)
       return if skip_ci? && trigger_request.blank?
       return unless config_processor
-
-      builds_attrs = config_processor.builds_for_stage_and_ref(stage, ref, tag)
-      builds_attrs.map do |build_attrs|
-        builds.create!({
-                         name: build_attrs[:name],
-                         commands: build_attrs[:script],
-                         tag_list: build_attrs[:tags],
-                         options: build_attrs[:options],
-                         allow_failure: build_attrs[:allow_failure],
-                         stage: build_attrs[:stage],
-                         trigger_request: trigger_request,
-                       })
+      config_processor.stages.any? do |stage|
+        CreateBuildsService.new.execute(self, stage, ref, tag, user, trigger_request).present?
       end
     end
 
-    def create_next_builds(trigger_request)
+    def create_next_builds(ref, tag, user, trigger_request)
       return if skip_ci? && trigger_request.blank?
       return unless config_processor
 
-      stages = builds.where(trigger_request: trigger_request).group_by(&:stage)
+      stages = builds.where(ref: ref, tag: tag, trigger_request: trigger_request).group_by(&:stage)
 
       config_processor.stages.any? do |stage|
-        !stages.include?(stage) && create_builds_for_stage(stage, trigger_request).present?
+        unless stages.include?(stage)
+          CreateBuildsService.new.execute(self, stage, ref, tag, user, trigger_request).present?
+        end
       end
     end
 
-    def create_builds(trigger_request = nil)
-      return if skip_ci? && trigger_request.blank?
-      return unless config_processor
+    def refs
+      builds.group(:ref).pluck(:ref)
+    end
 
-      config_processor.stages.any? do |stage|
-        create_builds_for_stage(stage, trigger_request).present?
-      end
+    def last_ref
+      builds.latest.first.try(:ref)
     end
 
     def builds_without_retry
-      @builds_without_retry ||=
-        begin
-          grouped_builds = builds.group_by(&:name)
-          grouped_builds.map do |name, builds|
-            builds.sort_by(&:id).last
-          end
-        end
+      builds.latest
     end
 
-    def builds_without_retry_sorted
-      return builds_without_retry unless config_processor
-
-      stages = config_processor.stages
-      builds_without_retry.sort_by do |build|
-        [stages.index(build.stage) || -1, build.name || ""]
-      end
+    def builds_without_retry_for_ref(ref)
+      builds.for_ref(ref).latest
     end
 
     def retried_builds
@@ -225,6 +178,10 @@ module Ci
       @duration ||= builds_without_retry.select(&:duration).sum(&:duration).to_i
     end
 
+    def duration_for_ref(ref)
+      builds_without_retry_for_ref(ref).select(&:duration).sum(&:duration).to_i
+    end
+
     def finished_at
       @finished_at ||= builds.order('finished_at DESC').first.try(:finished_at)
     end
@@ -238,12 +195,12 @@ module Ci
       end
     end
 
-    def matrix?
-      builds_without_retry.size > 1
+    def matrix_for_ref?(ref)
+      builds_without_retry_for_ref(ref).pluck(:id).size > 1
     end
 
     def config_processor
-      @config_processor ||= Ci::GitlabCiYamlProcessor.new(push_data[:ci_yaml_file])
+      @config_processor ||= Ci::GitlabCiYamlProcessor.new(ci_yaml_file)
     rescue Ci::GitlabCiYamlProcessor::ValidationError => e
       save_yaml_error(e.message)
       nil
@@ -253,14 +210,29 @@ module Ci
       nil
     end
 
+    def ci_yaml_file
+      gl_project.repository.blob_at(sha, '.gitlab-ci.yml').data
+    rescue
+      nil
+    end
+
     def skip_ci?
       return false if builds.any?
-      commits = push_data[:commits]
-      commits.present? && commits.last[:message] =~ /(\[ci skip\])/
+      git_commit_message =~ /(\[ci skip\])/ if git_commit_message
     end
 
     def update_committed!
       update!(committed_at: DateTime.now)
+    end
+
+    def should_create_next_builds?(build)
+      # don't create other builds if this one is retried
+      other_builds = builds.similar(build).latest
+      return false unless other_builds.include?(build)
+
+      other_builds.all? do |build|
+        build.success? || build.ignored?
+      end
     end
 
     private

@@ -38,7 +38,7 @@ module Projects
         project.save!
 
         # Notifications
-        project.send_move_instructions
+        project.send_move_instructions(old_path)
 
         # Move main repository
         unless gitlab_shell.mv_repository(old_path, new_path)

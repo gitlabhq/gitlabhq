@@ -1,14 +1,14 @@
 - if params[:view] == 'parallel'
   - fluid_layout true
 
+- diff_files = safe_diff_files(diffs)
+
 .gray-content-block.second-block
   .inline-parallel-buttons
     .btn-group
       = inline_diff_btn
       = parallel_diff_btn
-  = render 'projects/diffs/stats', diffs: diffs
-
-- diff_files = safe_diff_files(diffs)
+  = render 'projects/diffs/stats', diff_files: diff_files
 
 - if diff_files.count < diffs.size
   = render 'projects/diffs/warning', diffs: diffs, shown_files_count: diff_files.count

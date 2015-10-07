@@ -7,6 +7,14 @@ module Gitlab
         @text, @type, @index = text, type, index
         @old_pos, @new_pos = old_pos, new_pos
       end
+
+      def added?
+        type == 'new'
+      end
+
+      def removed?
+        type == 'old'
+      end
     end
   end
 end

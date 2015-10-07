@@ -8,7 +8,10 @@
 - help = field[:help]
 
 .form-group
-  = form.label name, title, class: "control-label"
+  - if type == "password" && value.present?
+    = form.label name, "Change #{title}", class: "control-label"
+  - else
+    = form.label name, title, class: "control-label"
   .col-sm-10
     - if type == 'text'
       = form.text_field name, class: "form-control", placeholder: placeholder
@@ -19,6 +22,6 @@
     - elsif type == 'select'
       = form.select name, options_for_select(choices, value ? value : default_choice), {}, { class: "form-control" }
     - elsif type == 'password'
-      = form.password_field name, value: value, class: 'form-control'
+      = form.password_field name, autocomplete: "new-password", class: 'form-control'
     - if help
       %span.help-block= help
