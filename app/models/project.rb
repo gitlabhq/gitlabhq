@@ -40,6 +40,7 @@ class Project < ActiveRecord::Base
   include Referable
   include Sortable
   include AfterCommitQueue
+  include CaseSensitivity
 
   extend Gitlab::ConfigHelper
   extend Enumerize
@@ -235,13 +236,18 @@ class Project < ActiveRecord::Base
     end
 
     def find_with_namespace(id)
-      return nil unless id.include?('/')
+      namespace_path, project_path = id.split('/')
 
-      id = id.split('/')
-      namespace = Namespace.by_path(id.first)
-      return nil unless namespace
+      return nil if !namespace_path || !project_path
 
-      where(namespace_id: namespace.id).where("LOWER(projects.path) = :path", path: id.second.downcase).first
+      # Use of unscoped ensures we're not secretly adding any ORDER BYs, which
+      # have a negative impact on performance (and aren't needed for this
+      # query).
+      unscoped.
+        joins(:namespace).
+        case_insensitive_where('namespaces.path' => namespace_path).
+        case_insensitive_where('projects.path' => project_path).
+        take
     end
 
     def visibility_levels

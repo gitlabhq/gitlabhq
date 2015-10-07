@@ -32,7 +32,7 @@ describe CaseSensitivity do
             with(%q{LOWER("foo"."bar") = LOWER(:value)}, value: 'bar').
             and_return(criteria)
 
-          expect(model.case_insensitive_where('foo.bar': 'bar')).to eq(criteria)
+          expect(model.case_insensitive_where(:'foo.bar' => 'bar')).to eq(criteria)
         end
       end
 
@@ -57,7 +57,7 @@ describe CaseSensitivity do
             with(%q{LOWER("bar") = LOWER(:value)}, value: 'baz').
             and_return(final)
 
-          got = model.case_insensitive_where(foo: 'bar', bar: 'baz')
+          got = model.case_insensitive_where(:foo => 'bar', :bar => 'baz')
 
           expect(got).to eq(final)
         end
@@ -82,7 +82,8 @@ describe CaseSensitivity do
             with(%q{LOWER("foo"."baz") = LOWER(:value)}, value: 'baz').
             and_return(final)
 
-          got = model.case_insensitive_where('foo.bar': 'bar', 'foo.baz': 'baz')
+          got = model.case_insensitive_where(:'foo.bar' => 'bar',
+                                             :'foo.baz' => 'baz')
 
           expect(got).to eq(final)
         end
@@ -116,7 +117,8 @@ describe CaseSensitivity do
             with(%q{LOWER(`foo`.`bar`) = LOWER(:value)}, value: 'bar').
             and_return(criteria)
 
-          expect(model.case_insensitive_where('foo.bar': 'bar')).to eq(criteria)
+          expect(model.case_insensitive_where(:'foo.bar' => 'bar')).
+            to eq(criteria)
         end
       end
 
@@ -166,7 +168,8 @@ describe CaseSensitivity do
             with(%q{LOWER(`foo`.`baz`) = LOWER(:value)}, value: 'baz').
             and_return(final)
 
-          got = model.case_insensitive_where('foo.bar': 'bar', 'foo.baz': 'baz')
+          got = model.case_insensitive_where(:'foo.bar' => 'bar',
+                                             :'foo.baz' => 'baz')
 
           expect(got).to eq(final)
         end
