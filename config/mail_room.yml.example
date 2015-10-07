@@ -9,7 +9,7 @@
     # # Whether the IMAP server uses StartTLS
     # :start_tls: false
     # # Email account username. Usually the full email address.
-    # :email: "replies@gitlab.example.com"
+    # :email: "gitlab-incoming@gmail.com"
     # # Email account password
     # :password: "password"
     # # The name of the mailbox where incoming mail will end up. Usually "inbox".
