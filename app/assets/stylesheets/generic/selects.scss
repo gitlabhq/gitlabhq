@@ -26,13 +26,13 @@
 .select2-drop {
   @include box-shadow(rgba(76, 86, 103, 0.247059) 0px 0px 1px 0px, rgba(31, 37, 50, 0.317647) 0px 2px 18px 0px);
   @include border-radius (0px);
-  
-  padding: 16px 20px;
+
+  padding: 16px;
   border: none !important;
 }
 
 .select2-results .select2-result-label {
-  padding: 16px 20px;
+  padding: 16px;
 }
 
 .select2-drop{
@@ -142,5 +142,5 @@
 }
 
 .ajax-users-dropdown {
-  min-width: 225px !important;
+  min-width: 250px !important;
 }

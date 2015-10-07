@@ -1,10 +1,6 @@
-body {
-    text-rendering: geometricPrecision;
-}
-
 @mixin btn-default {
   @include border-radius(2px);
-  
+
   border-width: 1px;
   border-style: solid;
   text-transform: uppercase;
@@ -13,17 +9,17 @@ body {
   line-height: 18px;
   padding: 11px 16px;
   letter-spacing: .4px;
-  
+
   &:hover {
     border-width: 1px;
     border-style: solid;
   }
-  
+
   &:focus {
     border-width: 1px;
     border-style: solid;
   }
-  
+
   &:active {
     @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
     border-width: 1px;
@@ -33,7 +29,7 @@ body {
 
 @mixin btn-middle {
   @include border-radius(2px);
-  
+
   border-width: 1px;
   border-style: solid;
   text-transform: uppercase;
@@ -42,22 +38,22 @@ body {
   line-height: 18px;
   padding: 11px 24px;
   letter-spacing: .4px;
-  
+
   &:hover {
     border-width: 1px;
     border-style: solid;
   }
-  
+
   &:focus {
     border-width: 1px;
     border-style: solid;
   }
-  
+
   &:active {
     @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
     border-width: 1px;
     border-style: solid;
-    }
+  }
 }
 
 
@@ -65,118 +61,113 @@ body {
   background-color: #28b061;
   border: 1px solid #26a65c;
   color: #fff;
-    
-     &:hover {
-       background-color: #26ab5d;
-       border: 1px solid #229954;
-       color: #fff;
-     }
-     
-     &:focus {
-       background-color: #26ab5d;
-       border: 1px solid #229954;
-       color: #fff;
-     }
-     
-     &:active {
-       @include box-shadow (inset 0 0 4px rgba(0, 0, 0, 0.12));
-        
-       background-color: #23a158 !important;
-       border: 1px solid #229954 !important;
-       color: #fff !important;
-     } 
+
+  &:hover {
+    background-color: #26ab5d;
+    border: 1px solid #229954;
+    color: #fff;
+  }
+
+  &:focus {
+    background-color: #26ab5d;
+    border: 1px solid #229954;
+    color: #fff;
+  }
+
+  &:active {
+    @include box-shadow (inset 0 0 4px rgba(0, 0, 0, 0.12));
+
+    background-color: #23a158 !important;
+    border: 1px solid #229954 !important;
+    color: #fff !important;
+  }
 }
 
-/*Butons*/
-
-@mixin btn-project {
+@mixin btn-gray {
   background-color: #f0f2f5;
   border-color: #dce0e5;
   color: #313236;
-  
+
   &:hover {
     border-color:#dce0e5;
     background-color: #ebeef2;
     color: #313236;
   }
-   
+
   &:focus {
     border-color: #dce0e5;
     background-color: #ebeef2;
     color: #313236;
   }
-  
+
   &:active {
-   @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
-   
-   color: #313236 !important;
-   border-color: #c6cacf !important;
-   background-color: #e4e7ed !important;
+    @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
+
+    color: #313236 !important;
+    border-color: #c6cacf !important;
+    background-color: #e4e7ed !important;
   }
 }
 
-@mixin btn-light {
+@mixin btn-white {
   background-color: #fff;
   border-color: #dce0e5;
   color: #313236;
-  
+
   &:hover {
     border-color:#dce0e5;
     background-color: #f0f2f5;
     color: #313236;
   }
-   
+
   &:focus {
     border-color: #dce0e5;
     background-color: #f0f2f5;
     color: #313236;
   }
-  
+
   &:active {
-   @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
-   
-   color: #313236 !important;
-   border-color: #c6cacf !important;
-   background-color: #e4e7ed !important;
+    @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
+
+    color: #313236 !important;
+    border-color: #c6cacf !important;
+    background-color: #e4e7ed !important;
   }
 }
 
-@mixin btn-remove {
+@mixin btn-red {
   background-color: #f72e60;
   border-color: #ee295a;
-  
+
   &:hover {
     background-color: #e82757;
     border-color: #e32555;
   }
-  
+
   &:focus {
     background-color: #e82757;
     border-color: #e32555;
   }
-  
+
   &:active {
     @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
     background-color: #d42450 !important;
     border-color: #e12554 !important;
   }
-  
 }
 
-
-.btn-info {
-  @include btn-default;
-  @include btn-project;
-}
-
-.btn-success {
-  @include btn-default;
-  @include btn-green;
-  
-}
 
 .btn {
   @include btn-default;
+  @include btn-white;
+
+  &.btn-success {
+    @include btn-green;
+  }
+
+  &.btn-gray {
+    @include btn-gray;
+  }
 
   &.btn-new {
     @extend .btn-success;

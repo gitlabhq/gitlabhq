@@ -18,10 +18,6 @@
   }
 }
 
-.btn, .commits-compare-switch {
-    @include btn-light;
-}
-
 .project-edit-content {
   padding: 7px;
 }
@@ -100,8 +96,7 @@
     margin-bottom: 0px;
 
     .btn {
-      @include btn-project;
-      @include btn-default;
+      @include btn-gray;
 
       .count {
         display: inline-block;
@@ -161,7 +156,7 @@
 
 .input-group-btn {
   .btn {
-    @include btn-project;
+    @include btn-gray;
     @include btn-middle;
 
     &:hover {
@@ -195,7 +190,7 @@
   margin: 0 12px 0 12px;
 
   .btn{
-    @include btn-project;
+    @include btn-gray;
     @include btn-default;
   }
 
@@ -390,7 +385,7 @@ table.table.protected-branches-list tr.no-border {
 
   .nav > li > a {
     @include btn-default;
-    @include btn-project;
+    @include btn-gray;
 
     background-color: transparent;
     border: 1px solid #f7f8fa;
@@ -450,7 +445,7 @@ pre.light-well {
 
   .btn-remove {
     @include btn-middle;
-    @include btn-remove;
+    @include btn-red;
 
     float: left !important;
   }
