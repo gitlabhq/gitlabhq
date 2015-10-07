@@ -14,7 +14,7 @@
 #   </form>
 #
 $(document).on 'keydown.quick_submit', '.js-quick-submit', (e) ->
-  return if e.originalEvent.repeat
+  return if (e.originalEvent && e.originalEvent.repeat) || e.repeat
   return unless e.keyCode == 13 # Enter
 
   if navigator.userAgent.match(/Macintosh/)

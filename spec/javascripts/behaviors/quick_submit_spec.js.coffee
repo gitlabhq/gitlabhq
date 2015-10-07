@@ -67,7 +67,4 @@ describe 'Quick Submit behavior', ->
     else
       defaults = { keyCode: 13, ctrlKey: true }
 
-    args = $.extend({}, defaults, options)
-    originalEvent = new KeyboardEvent('keydown', args)
-
-    $.Event('keydown', $.extend({}, args, {originalEvent: originalEvent}))
+    $.Event('keydown', $.extend({}, defaults, options))
