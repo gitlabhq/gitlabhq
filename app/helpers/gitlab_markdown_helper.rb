@@ -45,7 +45,7 @@ module GitlabMarkdownHelper
   end
 
   def markdown(text, context = {})
-    return unless text.present?
+    return "" unless text.present?
 
     context.reverse_merge!(
       path:         @path,
@@ -62,7 +62,7 @@ module GitlabMarkdownHelper
   # TODO (rspeicher): Remove all usages of this helper and just call `markdown`
   # with a custom pipeline depending on the content being rendered
   def gfm(text, options = {})
-    return unless text.present?
+    return "" unless text.present?
 
     options.reverse_merge!(
       path:         @path,
