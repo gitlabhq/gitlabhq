@@ -35,6 +35,7 @@ v 8.1.0 (unreleased)
   - Add user preference to change layout width (Peter Göbel)
   - Use commit status in merge request widget as preffered source of CI status
   - Integrate CI commit and build pages into project pages
+  - Move CI services page to project settings area
 
 v 8.0.4
   - Fix Message-ID header to be RFC 2111-compliant to prevent e-mails being dropped (Stan Hu)

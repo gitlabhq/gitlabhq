@@ -6,7 +6,7 @@
 - if @ci_project && current_user && can?(current_user, :manage_builds, @project)
   .pull-right
     - if @ci_commit.builds.running_or_pending.any?
-      = link_to "Cancel", cancel_ci_project_commits_path(@ci_project, @ci_commit), class: 'btn btn-sm btn-danger'
+      = link_to "Cancel", cancel_builds_namespace_project_commit_path(@project.namespace, @project, @commit.sha), class: 'btn btn-sm btn-danger'
 
 
 - if @ci_commit.yaml_errors.present?

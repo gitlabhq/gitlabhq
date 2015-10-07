@@ -43,8 +43,8 @@
     - if defined?(controls) && current_user && can?(current_user, :manage_builds, gl_project)
       .pull-right
         - if build.active?
-          = link_to cancel_ci_project_build_path(build.project, build, return_to: request.original_url), title: 'Cancel build' do
+          = link_to cancel_namespace_project_build_path(gl_project.namespace, gl_project, build, return_to: request.original_url), title: 'Cancel build' do
             %i.fa.fa-remove.cred
         - elsif build.commands.present?
-          = link_to retry_ci_project_build_path(build.project, build, return_to: request.original_url), method: :post, title: 'Retry build' do
+          = link_to retry_namespace_project_build_path(gl_project.namespace, gl_project, build, return_to: request.original_url), method: :post, title: 'Retry build' do
             %i.fa.fa-repeat
