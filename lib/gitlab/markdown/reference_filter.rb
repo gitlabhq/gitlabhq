@@ -11,15 +11,12 @@ module Gitlab
     # Context options:
     #   :project (required) - Current project, ignored if reference is cross-project.
     #   :only_path          - Generate path-only links.
-    #
-    # Results:
-    #   :references - A Hash of references that were found and replaced.
     class ReferenceFilter < HTML::Pipeline::Filter
       def self.user_can_reference?(user, node, context)
         if node.has_attribute?('data-project')
           project_id = node.attr('data-project').to_i
           return true if project_id == context[:project].id
-          
+
           project = Project.find(project_id) rescue nil
           Ability.abilities.allowed?(user, :read_project, project)
         else
@@ -33,14 +30,16 @@ module Gitlab
 
       # Returns a data attribute String to attach to a reference link
       #
-      # id   - Object ID
-      # type - Object type (default: :project)
+      # attributes - Hash, where the key becomes the data attribute name and the
+      #              value is the data attribute value
       #
       # Examples:
       #
-      #   data_attribute(project: 1)  # => "data-reference-filter=\"SomeReferenceFilter\" data-project=\"1\""
-      #   data_attribute(user: 2)     # => "data-reference-filter=\"SomeReferenceFilter\" data-user=\"2\""
-      #   data_attribute(group: 3)    # => "data-reference-filter=\"SomeReferenceFilter\" data-group=\"3\""
+      #   data_attribute(project: 1, issue: 2)
+      #   # => "data-reference-filter=\"Gitlab::Markdown::SomeReferenceFilter\" data-project=\"1\" data-issue=\"2\""
+      #
+      #   data_attribute(project: 3, merge_request: 4)
+      #   # => "data-reference-filter=\"Gitlab::Markdown::SomeReferenceFilter\" data-project=\"3\" data-merge-request=\"4\""
       #
       # Returns a String
       def data_attribute(attributes = {})
@@ -86,7 +85,7 @@ module Gitlab
       # Yields the current node's String contents. The result of the block will
       # replace the node's existing content and update the current document.
       #
-      # Returns the updated Nokogiri::XML::Document object.
+      # Returns the updated Nokogiri::HTML::DocumentFragment object.
       def replace_text_nodes_matching(pattern)
         return doc if project.nil?
 
