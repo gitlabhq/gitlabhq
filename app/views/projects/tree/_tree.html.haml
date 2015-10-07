@@ -8,11 +8,25 @@
         = link_to truncate(title, length: 40), namespace_project_tree_path(@project.namespace, @project, path)
       - else
         = link_to title, '#'
-  - if current_user && can_push_branch?(@project, @ref)
+  - if allowed_tree_edit?
     %li
-      = link_to namespace_project_new_blob_path(@project.namespace, @project, @id), title: 'New file', id: 'new-file-link' do
-        %small
-          %i.fa.fa-plus
+      %span.dropdown
+        %a.dropdown-toggle.btn.btn-xs.add-to-tree{href: '#', "data-toggle" => "dropdown"}
+          = icon('plus')
+        %ul.dropdown-menu
+          %li
+            = link_to namespace_project_new_blob_path(@project.namespace, @project, @id), title: 'Create file', id: 'new-file-link' do
+              = icon('pencil fw')
+              Create file
+          %li
+            = link_to '#modal-upload-blob', { 'data-target' => '#modal-upload-blob', 'data-toggle' => 'modal'} do
+              = icon('file fw')
+              Upload file
+          %li.divider
+          %li
+            = link_to '#modal-create-new-dir', { 'data-target' => '#modal-create-new-dir', 'data-toggle' => 'modal'} do
+              = icon('folder fw')
+              New directory
 
 %div#tree-content-holder.tree-content-holder.prepend-top-20
   %table#tree-slider{class: "table_#{@hex_path} tree-table" }
@@ -45,6 +59,10 @@
     = render "projects/tree/readme", readme: tree.readme
 
 %div.tree_progress
+
+- if allowed_tree_edit?
+  = render 'projects/blob/upload', title: 'Upload', placeholder: 'Upload new file', button_title: 'Upload file', form_path: namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post
+  = render 'projects/blob/new_dir'
 
 :javascript
   // Load last commit log for each file in tree
