@@ -40,7 +40,7 @@ eos
         @service = JenkinsService.new
         allow(@service).to receive_messages(
           service_hook: true,
-          project_url: 'http://jenkins.gitlab.org/projects/2',
+          project_url: 'http://jenkins.gitlab.org/job/2',
           multiproject_enabled: '0',
           pass_unstable: '0',
           token: 'verySecret'
@@ -50,7 +50,7 @@ eos
       statuses = { 'blue.png' => 'success', 'yellow.png' => 'failed', 'red.png' => 'failed', 'aborted.png' => 'failed', 'blue-anime.gif' => 'running', 'grey.png' => 'pending' }
       statuses.each do |icon, state|
         it "should have a status of #{state} when the icon #{icon} exists." do
-          stub_request(:get, "http://jenkins.gitlab.org/projects/2/scm/bySHA1/2ab7834c").to_return(status: 200, body: status_body_for_icon(icon), headers: {})
+          stub_request(:get, "http://jenkins.gitlab.org/job/2/scm/bySHA1/2ab7834c").to_return(status: 200, body: status_body_for_icon(icon), headers: {})
           expect(@service.commit_status("2ab7834c", 'master')).to eq(state)
         end
       end
@@ -61,7 +61,7 @@ eos
         @service = JenkinsService.new
         allow(@service).to receive_messages(
           service_hook: true,
-          project_url: 'http://jenkins.gitlab.org/projects/2',
+          project_url: 'http://jenkins.gitlab.org/job/2',
           multiproject_enabled: '0',
           pass_unstable: '1',
           token: 'verySecret'
@@ -69,28 +69,30 @@ eos
       end
 
       it "should have a status of success when the icon yellow exists." do
-        stub_request(:get, "http://jenkins.gitlab.org/projects/2/scm/bySHA1/2ab7834c").to_return(status: 200, body: status_body_for_icon('yellow.png'), headers: {})
+        stub_request(:get, "http://jenkins.gitlab.org/job/2/scm/bySHA1/2ab7834c").to_return(status: 200, body: status_body_for_icon('yellow.png'), headers: {})
         expect(@service.commit_status("2ab7834c", 'master')).to eq('success')
       end
     end
 
     describe 'multiproject enabled' do
+      let!(:project) { create(:project) }
       before do
         @service = JenkinsService.new
         allow(@service).to receive_messages(
           service_hook: true,
-          project_url: 'http://jenkins.gitlab.org/projects/2',
+          project_url: 'http://jenkins.gitlab.org/job/2',
           multiproject_enabled: '1',
-          token: 'verySecret'
+          token: 'verySecret',
+          project: project
         )
       end
 
       describe :build_page do
-        it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://jenkins.gitlab.org/projects/2_master/scm/bySHA1/2ab7834c") }
+        it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://jenkins.gitlab.org/job/#{project.name}_master/scm/bySHA1/2ab7834c") }
       end
 
       describe :build_page_with_branch do
-        it { expect(@service.build_page("2ab7834c", 'test_branch')).to eq("http://jenkins.gitlab.org/projects/2_test_branch/scm/bySHA1/2ab7834c") }
+        it { expect(@service.build_page("2ab7834c", 'test_branch')).to eq("http://jenkins.gitlab.org/job/#{project.name}_test_branch/scm/bySHA1/2ab7834c") }
       end
     end
 
@@ -99,18 +101,18 @@ eos
         @service = JenkinsService.new
         allow(@service).to receive_messages(
           service_hook: true,
-          project_url: 'http://jenkins.gitlab.org/projects/2',
+          project_url: 'http://jenkins.gitlab.org/job/2',
           multiproject_enabled: '0',
           token: 'verySecret'
         )
       end
 
       describe :build_page do
-        it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://jenkins.gitlab.org/projects/2/scm/bySHA1/2ab7834c") }
+        it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://jenkins.gitlab.org/job/2/scm/bySHA1/2ab7834c") }
       end
 
       describe :build_page_with_branch do
-        it { expect(@service.build_page("2ab7834c", 'test_branch')).to eq("http://jenkins.gitlab.org/projects/2/scm/bySHA1/2ab7834c") }
+        it { expect(@service.build_page("2ab7834c", 'test_branch')).to eq("http://jenkins.gitlab.org/job/2/scm/bySHA1/2ab7834c") }
       end
     end
   end
