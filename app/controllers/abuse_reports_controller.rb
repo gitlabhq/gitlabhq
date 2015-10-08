@@ -11,6 +11,9 @@ class AbuseReportsController < ApplicationController
     if @abuse_report.save
       message = "Thank you for your report. A GitLab administrator will look into it shortly."
       redirect_to root_path, notice: message
+      if current_application_settings.admin_notification_email.present?
+        AbuseReportMailer.delay.notify(@abuse_report, current_application_settings.admin_notification_email)
+      end
     else
       render :new
     end
