@@ -74,6 +74,25 @@ describe 'Profile > Preferences', feature: true do
     end
   end
 
+  describe 'User changes their default time_zone' do
+    it 'creates a flash message' do
+      select '(GMT+01:00) Berlin', from: 'user_time_zone_name'
+      click_button 'Save'
+
+      expect_preferences_saved_message
+    end
+
+    it 'updates their preference' do
+      select '(GMT+01:00) Berlin', from: 'user_time_zone_name'
+      click_button 'Save'
+
+      allowing_for_delay do
+        visit page.current_path
+        expect(page).to have_select('user_time_zone_name', selected: '(GMT+01:00) Berlin')
+      end
+    end
+  end
+
   def expect_preferences_saved_message
     page.within('.flash-container') do
       expect(page).to have_content('Preferences saved.')

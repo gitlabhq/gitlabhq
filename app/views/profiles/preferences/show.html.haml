@@ -40,6 +40,10 @@
           .help-block
             Choose between fixed (max. 1200px) and fluid (100%) application layout
       .form-group
+        = f.label :time_zone, class: 'control-label'
+        .col-sm-10
+          = f.time_zone_select :time_zone_name, nil, {default: @user.time_zone_name}, class: 'form-control'
+      .form-group
         = f.label :dashboard, class: 'control-label' do
           Default Dashboard
           = link_to('(?)', help_page_path('profile', 'preferences') + '#default-dashboard', target: '_blank')
