@@ -128,7 +128,6 @@ gem 'after_commit_queue'
 gem 'acts-as-taggable-on', '~> 3.4'
 
 # Background jobs
-gem 'slim', '~> 2.0.2'
 gem 'sinatra', '~> 1.4.4', require: nil
 gem 'sidekiq', '3.3.0'
 gem 'sidetiq', '~> 0.6.3'
