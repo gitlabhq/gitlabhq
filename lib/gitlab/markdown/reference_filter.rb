@@ -25,7 +25,7 @@ module Gitlab
       end
 
       def self.referenced_by(node)
-        nil
+        raise NotImplementedError, "#{self} does not implement #{__method__}"
       end
 
       # Returns a data attribute String to attach to a reference link
