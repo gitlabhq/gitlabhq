@@ -47,6 +47,7 @@ v 8.0.4
   - Remove CI token from build traces
   - Fix "Assign All" button on Runner admin page
   - Fix search in Files
+  - Add full project namespace to payload of system webhooks (Ricardo Band)
 
 v 8.0.3
   - Fix URL shown in Slack notifications
