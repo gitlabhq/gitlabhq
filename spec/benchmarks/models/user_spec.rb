@@ -11,7 +11,9 @@ describe User, benchmark: true do
       end
     end
 
-    let(:iterations) { 1000 }
+    # The iteration count is based on the query taking little over 1 ms when
+    # using PostgreSQL.
+    let(:iterations) { 900 }
 
     describe 'using a capitalized username' do
       benchmark_subject { User.by_login('Alice') }
