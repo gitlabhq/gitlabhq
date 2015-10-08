@@ -34,7 +34,7 @@
     = render "projects/merge_requests/widget/show.html.haml"
 
     - if @merge_request.open? && @merge_request.can_be_merged?
-      .light
+      .light.append-bottom-20
         You can also accept this merge request manually using the
         = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
 
