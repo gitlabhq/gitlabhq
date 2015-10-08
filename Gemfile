@@ -80,7 +80,7 @@ gem 'enumerize', '~> 0.7.0'
 gem "kaminari", "~> 0.16.3"
 
 # HAML
-gem "haml-rails", '~> 0.5.3'
+gem "haml-rails", '~> 0.9.0'
 
 # Files attachments
 gem "carrierwave", '~> 0.9.0'
