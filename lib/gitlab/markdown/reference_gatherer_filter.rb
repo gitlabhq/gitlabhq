@@ -3,8 +3,8 @@ require 'html/pipeline/filter'
 
 module Gitlab
   module Markdown
-    # HTML filter that removes references to records that the current user does
-    # not have permission to view.
+    # HTML filter that gathers all referenced records that the current user has
+    # permission to view.
     #
     # Expected to be run in its own post-processing pipeline.
     #
