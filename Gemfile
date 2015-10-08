@@ -300,9 +300,6 @@ gem 'activerecord-deprecated_finders', '~> 1.0.3'
 gem 'activerecord-session_store', '~> 0.1.0'
 gem "nested_form", '~> 0.3.2'
 
-# Scheduled
-gem 'whenever', '~> 0.9.4', require: false
-
 # OAuth
 gem 'oauth2', '~> 1.0.0'
 
