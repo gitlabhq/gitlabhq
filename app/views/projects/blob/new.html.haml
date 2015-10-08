@@ -15,7 +15,7 @@
         = label_tag 'branch', class: 'control-label' do
           Branch
         .col-sm-10
-          = text_field_tag 'new_branch', @ref, class: "form-control"
+          = text_field_tag 'new_branch', @ref, class: "form-control js-quick-submit"
 
     = hidden_field_tag 'content', '', id: 'file-content'
     = render 'projects/commit_button', ref: @ref,
