@@ -50,14 +50,16 @@ header {
 
       .navbar-toggle {
         color: #666;
-        margin: 0;
+        margin: 6px 0;
         border-radius: 0;
         position: absolute;
         right: 2px;
-        top: 15px;
 
         &:hover {
           background-color: #EEE;
+        }
+        &.active {
+          color: #7f8fa4;
         }
       }
     }
@@ -87,6 +89,7 @@ header {
 
     .navbar-collapse {
       float: right;
+      border-top: none;
     }
   }
 
