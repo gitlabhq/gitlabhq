@@ -47,6 +47,7 @@ v 8.1.0 (unreleased)
   - Persist filters when sorting on admin user page (Jerry Lukins)
   - Add spellcheck=false to certain input fields
   - Invalidate stored service password if the endpoint URL is changed
+  - Project names are not fully shown if group name is too big, even on group page view
 
 v 8.0.4
   - Fix Message-ID header to be RFC 2111-compliant to prevent e-mails being dropped (Stan Hu)
