@@ -30,7 +30,8 @@ module MilestonesHelper
 
     grouped_milestones = Milestones::GroupService.new(milestones).execute
     grouped_milestones.unshift(Milestone::None)
+    grouped_milestones.unshift(Milestone::Any)
 
-    options_from_collection_for_select(grouped_milestones, 'title', 'title', params[:milestone_title])
+    options_from_collection_for_select(grouped_milestones, 'name', 'title', params[:milestone_title])
   end
 end

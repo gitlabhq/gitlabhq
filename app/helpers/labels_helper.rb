@@ -95,7 +95,8 @@ module LabelsHelper
   def project_labels_options(project)
     labels = project.labels.to_a
     labels.unshift(Label::None)
-    options_from_collection_for_select(labels, 'name', 'name', params[:label_name])
+    labels.unshift(Label::Any)
+    options_from_collection_for_select(labels, 'name', 'title', params[:label_name])
   end
 
   # Required for Gitlab::Markdown::LabelReferenceFilter

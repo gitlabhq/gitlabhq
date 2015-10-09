@@ -1,5 +1,7 @@
 class GroupMilestone
 
+  alias_attribute :name, :title
+
   def initialize(title, milestones)
     @title = title
     @milestones = milestones

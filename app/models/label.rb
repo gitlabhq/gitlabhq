@@ -14,7 +14,9 @@ class Label < ActiveRecord::Base
   include Referable
   # Represents a "No Label" state used for filtering Issues and Merge
   # Requests that have no label assigned.
-  None = Struct.new(:title, :name).new('No Label', 'No Label')
+  LabelStruct = Struct.new(:title, :name)
+  None = LabelStruct.new('No Label', 'No Label')
+  Any = LabelStruct.new('Any', '')
 
   DEFAULT_COLOR = '#428BCA'
 
