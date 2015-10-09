@@ -41,6 +41,7 @@ v 8.1.0 (unreleased)
   - Move CI services page to project settings area
   - Add "Quick Submit" behavior to input fields throughout the application. Use
     Cmd+Enter on Mac and Ctrl+Enter on Windows/Linux.
+  - Fix position of hamburger in header for smaller screens (Han Loong Liauw)
 
 v 8.0.4
   - Fix Message-ID header to be RFC 2111-compliant to prevent e-mails being dropped (Stan Hu)
