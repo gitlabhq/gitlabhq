@@ -18,5 +18,6 @@
       %code.key-fingerprint= @key.fingerprint
     %pre.well-pre
       = @key.key
-  .pull-right
-    = link_to 'Remove', path_to_key(@key, is_admin), data: {confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove delete-key"
+  .col-md-12
+    .pull-right
+      = link_to 'Remove', path_to_key(@key, is_admin), data: {confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove delete-key"
