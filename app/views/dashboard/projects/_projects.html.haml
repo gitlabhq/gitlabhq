@@ -5,6 +5,6 @@
       - if current_user.can_create_project?
         %span.input-group-btn
           = link_to new_project_path, class: 'btn btn-green' do
-            New project
+            + New Project
 
   = render 'shared/projects/list', projects: @projects, ci: true
