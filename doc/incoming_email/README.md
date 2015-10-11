@@ -118,8 +118,10 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
         :email: "incoming"
         # Email account password
         :password: "[REDACTED]"
+
         # The name of the mailbox where incoming mail will end up. Usually "inbox".
         :name: "inbox"
+
         # Always "sidekiq".
         :delivery_method: sidekiq
         # Always true.
@@ -133,6 +135,14 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
           :queue: incoming_email
           # Always "EmailReceiverWorker"
           :worker: EmailReceiverWorker
+
+        # Always "redis".
+        :arbitration_method: redis
+        :arbitration_options:
+          # The URL to the Redis server. Should match the URL in config/resque.yml.
+          :redis_url: redis://localhost:6379
+          # Always "mail_room:gitlab".
+          :namespace: mail_room:gitlab
     ```
 
     ```yaml
@@ -151,8 +161,10 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
         :email: "gitlab-incoming@gmail.com"
         # Email account password
         :password: "[REDACTED]"
+
         # The name of the mailbox where incoming mail will end up. Usually "inbox".
         :name: "inbox"
+
         # Always "sidekiq".
         :delivery_method: sidekiq
         # Always true.
@@ -166,6 +178,14 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
           :queue: incoming_email
           # Always "EmailReceiverWorker"
           :worker: EmailReceiverWorker
+
+        # Always "redis".
+        :arbitration_method: redis
+        :arbitration_options:
+          # The URL to the Redis server. Should match the URL in config/resque.yml.
+          :redis_url: redis://localhost:6379
+          # Always "mail_room:gitlab".
+          :namespace: mail_room:gitlab
     ```
 
 5. Edit the init script configuration at `/etc/default/gitlab` to enable `mail_room`:
@@ -228,8 +248,10 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
         :email: "gitlab-incoming@gmail.com"
         # Email account password
         :password: "[REDACTED]"
+
         # The name of the mailbox where incoming mail will end up. Usually "inbox".
         :name: "inbox"
+
         # Always "sidekiq".
         :delivery_method: sidekiq
         # Always true.
@@ -243,6 +265,14 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
           :queue: incoming_email
           # Always "EmailReceiverWorker"
           :worker: EmailReceiverWorker
+
+        # Always "redis".
+        :arbitration_method: redis
+        :arbitration_options:
+          # The URL to the Redis server. Should match the URL in config/resque.yml.
+          :redis_url: redis://localhost:6379
+          # Always "mail_room:gitlab".
+          :namespace: mail_room:gitlab
     ```
 
 4. Uncomment the `mail_room` line in your `Procfile`:
