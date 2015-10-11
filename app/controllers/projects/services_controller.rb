@@ -9,7 +9,8 @@ class Projects::ServicesController < Projects::ApplicationController
                     :note_events, :send_from_committer_email, :disable_diffs, :external_wiki_url,
                     :jira_issue_transition_id,
                     :notify, :color,
-                    :server_host, :server_port, :default_irc_uri, :enable_ssl_verification]
+                    :server_host, :server_port, :default_irc_uri, :enable_ssl_verification,
+                    :multiproject_enabled, :pass_unstable]
   # Authorize
   before_action :authorize_admin_project!
   before_action :service, only: [:edit, :update, :test]

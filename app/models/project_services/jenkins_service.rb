@@ -52,7 +52,7 @@ class JenkinsService < CiService
       { type: 'checkbox', name: 'multiproject_enabled', title: "Multi-project setup enabled?",
         help: "Multi-project mode is configured in Jenkins Gitlab Hook plugin." },
       { type: 'checkbox', name: 'pass_unstable', title: 'Should unstable builds be treated as passing?',
-        help: 'Unstable builds will be treated as passing.'}
+        help: 'Unstable builds will be treated as passing.' }
     ]
   end
 
