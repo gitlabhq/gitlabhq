@@ -14,7 +14,7 @@ GET /projects/:id/repository/commits
 | `ref_name` | string | no | The name of a repository branch or tag or if not given the default branch |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "http://localhost:3000/api/v3/projects/5/repository/commits"
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits"
 ```
 
 Example response:
@@ -60,7 +60,7 @@ Parameters:
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "http://localhost:3000/api/v3/projects/5/repository/commits/master
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits/master
 ```
 
 Example response:
@@ -99,7 +99,7 @@ Parameters:
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "http://localhost:3000/api/v3/projects/5/repository/commits/master/diff"
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits/master/diff"
 ```
 
 Example response:
@@ -135,7 +135,7 @@ Parameters:
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "http://localhost:3000/api/v3/projects/5/repository/commits/master/comments"
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits/master/comments"
 ```
 
 Example response:
@@ -178,7 +178,7 @@ In order to post a comment in a particular line of a particular file, you must
 specify `path`, `line` and `line_type` should be `new`.
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "http://localhost:3000/api/v3/projects/5/repository/commits/master/comments?note=New%20comment&path=CHANGELOG&line=664&line_type=new"
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits/master/comments?note=New%20comment&path=CHANGELOG&line=664&line_type=new"
 ```
 
 Example response:
