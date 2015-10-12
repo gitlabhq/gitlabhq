@@ -38,7 +38,7 @@ module Participable
   # Be aware that this method makes a lot of sql queries.
   # Save result into variable if you are going to reuse it inside same request
   def participants(current_user = self.author)
-    participants = self.class.participant_attrs.flat_map do |attr|
+    self.class.participant_attrs.flat_map do |attr|
       meth = method(attr)
 
       value =
