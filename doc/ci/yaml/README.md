@@ -141,6 +141,7 @@ job_name:
 | tags          | optional | Defines a list of tags which are used to select runner |
 | allow_failure | optional | Allow build to fail. Failed build doesn't contribute to commit status |
 | when          | optional | Define when to run build. Can be `on_success`, `on_failure` or `always` |
+| artifacts     | optional | Define list build artifacts |
 
 ### script
 `script` is a shell script which is executed by runner. The shell script is prepended with `before_script`.
@@ -257,6 +258,20 @@ cleanup:
 The above script will:
 1. Execute `cleanup_build` only when the `build` failed,
 2. Always execute `cleanup` as the last step in pipeline.
+
+### artifacts
+`artifacts` is used to specify list of files and directories which should be attached to build after success.
+
+```
+artifacts:
+- binaries/
+- .config
+```
+
+The above definition will archive all files in `binaries/` and `.config`.
+The artifacts will be send after the build success to GitLab and will be accessible in GitLab interface to download.
+
+This feature requires GitLab Runner v 0.7.0.
 
 ## Validate the .gitlab-ci.yml
 Each instance of GitLab CI has an embedded debug tool called Lint.

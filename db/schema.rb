@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151105094515) do
+ActiveRecord::Schema.define(version: 20151109100728) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 20151105094515) do
     t.text     "help_page_text"
     t.string   "admin_notification_email"
     t.boolean  "shared_runners_enabled",       default: true,  null: false
+    t.integer  "max_artifacts_size",           default: 100,   null: false
   end
 
   create_table "audit_events", force: true do |t|
@@ -108,6 +109,7 @@ ActiveRecord::Schema.define(version: 20151105094515) do
     t.string   "type"
     t.string   "target_url"
     t.string   "description"
+    t.text     "artifacts_file"
   end
 
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree

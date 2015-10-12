@@ -186,6 +186,7 @@ Settings.gitlab_ci['all_broken_builds']     = true if Settings.gitlab_ci['all_br
 Settings.gitlab_ci['add_pusher']            = false if Settings.gitlab_ci['add_pusher'].nil?
 Settings.gitlab_ci['url']                   ||= Settings.send(:build_gitlab_ci_url)
 Settings.gitlab_ci['builds_path']           = File.expand_path(Settings.gitlab_ci['builds_path'] || "builds/", Rails.root)
+Settings.gitlab_ci['max_artifacts_size']    ||= 100
 
 #
 # Reply by email

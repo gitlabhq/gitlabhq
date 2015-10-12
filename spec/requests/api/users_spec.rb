@@ -343,8 +343,9 @@ describe API::API, api: true  do
       end.to change{ user.keys.count }.by(1)
     end
 
-    it "should raise error for invalid ID" do
-      expect{post api("/users/ASDF/keys", admin) }.to raise_error(ActionController::RoutingError)
+    it "should return 405 for invalid ID" do
+      post api("/users/ASDF/keys", admin)
+      expect(response.status).to eq(405)
     end
   end
 
@@ -374,9 +375,9 @@ describe API::API, api: true  do
         expect(json_response.first['title']).to eq(key.title)
       end
 
-      it "should return 404 for invalid ID" do
+      it "should return 405 for invalid ID" do
         get api("/users/ASDF/keys", admin)
-        expect(response.status).to eq(404)
+        expect(response.status).to eq(405)
       end
     end
   end
@@ -434,7 +435,8 @@ describe API::API, api: true  do
     end
 
     it "should raise error for invalid ID" do
-      expect{post api("/users/ASDF/emails", admin) }.to raise_error(ActionController::RoutingError)
+      post api("/users/ASDF/emails", admin)
+      expect(response.status).to eq(405)
     end
   end
 
@@ -465,7 +467,8 @@ describe API::API, api: true  do
       end
 
       it "should raise error for invalid ID" do
-        expect{put api("/users/ASDF/emails", admin) }.to raise_error(ActionController::RoutingError)
+        put api("/users/ASDF/emails", admin)
+        expect(response.status).to eq(405)
       end
     end
   end
