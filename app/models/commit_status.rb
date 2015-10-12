@@ -11,14 +11,14 @@ class CommitStatus < ActiveRecord::Base
 
   alias_attribute :author, :user
 
-  scope :running, ->() { where(status: 'running') }
-  scope :pending, ->() { where(status: 'pending') }
-  scope :success, ->() { where(status: 'success') }
-  scope :failed, ->() { where(status: 'failed')  }
-  scope :running_or_pending, ->() { where(status:[:running, :pending]) }
-  scope :latest, ->() { where(id: unscope(:select).select('max(id)').group(:name, :ref)).order(stage_idx: :asc) }
+  scope :running, -> { where(status: 'running') }
+  scope :pending, -> { where(status: 'pending') }
+  scope :success, -> { where(status: 'success') }
+  scope :failed, -> { where(status: 'failed')  }
+  scope :running_or_pending, -> { where(status:[:running, :pending]) }
+  scope :latest, -> { where(id: unscope(:select).select('max(id)').group(:name, :ref)).order(stage_idx: :asc) }
   scope :for_ref, ->(ref) { where(ref: [ref, nil]) }
-  scope :running_or_pending, ->() { where(status: [:running, :pending]) }
+  scope :running_or_pending, -> { where(status: [:running, :pending]) }
 
   state_machine :status, initial: :pending do
     event :run do
@@ -55,6 +55,7 @@ class CommitStatus < ActiveRecord::Base
   delegate :sha, :short_sha, :gl_project,
            to: :commit, prefix: false
 
+  # TODO: this should be removed with all references
   def before_sha
     Gitlab::Git::BLANK_SHA
   end
@@ -77,5 +78,13 @@ class CommitStatus < ActiveRecord::Base
     elsif started_at
       Time.now - started_at
     end
+  end
+
+  def cancel_url
+    nil
+  end
+
+  def retry_url
+    nil
   end
 end

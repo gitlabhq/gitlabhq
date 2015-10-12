@@ -212,13 +212,21 @@ module Ci
       "#{dir_to_trace}/#{id}.log"
     end
 
-    def description
-      name
-    end
-
     def target_url
       Gitlab::Application.routes.url_helpers.
         namespace_project_build_url(gl_project.namespace, gl_project, self)
+    end
+
+    def cancel_url
+      if active?
+        cancel_namespace_project_build_path(gl_project.namespace, gl_project, self, return_to: request.original_url)
+      end
+    end
+
+    def retry_url
+      if commands.present?
+        cancel_namespace_project_build_path(gl_project.namespace, gl_project, self, return_to: request.original_url)
+      end
     end
 
     private

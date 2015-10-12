@@ -203,7 +203,6 @@ Parameters:
 ## Post the status to commit
 
 Adds or updates a status of a commit.
-Optionally you can post comments on a specific line of a commit. Therefor both `path`, `line_new` and `line_old` are required.
 
 ```
 POST /projects/:id/statuses/:sha
