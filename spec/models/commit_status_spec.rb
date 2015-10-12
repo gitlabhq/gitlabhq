@@ -142,7 +142,7 @@ describe CommitStatus do
     end
 
     it 'return statuses with equal and nil ref set' do
-      is_expected.to eq([@commit1, @commit3])
+      is_expected.to eq([@commit1])
     end
   end
 
