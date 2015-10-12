@@ -294,6 +294,10 @@ class MergeRequest < ActiveRecord::Base
     target_project
   end
 
+  def closes_issue?(issue)
+    closes_issues.include?(issue)
+  end
+
   # Return the set of issues that will be closed if this merge request is accepted.
   def closes_issues(current_user = self.author)
     if target_branch == project.default_branch
