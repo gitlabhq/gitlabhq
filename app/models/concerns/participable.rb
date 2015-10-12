@@ -49,13 +49,9 @@ module Participable
         end
 
       participants_for(value, current_user)
-    end.compact.uniq
-
-    participants.select! do |user|
+    end.compact.uniq.select do |user|
       user.can?(:read_project, self.project)
     end
-
-    participants
   end
 
   private
