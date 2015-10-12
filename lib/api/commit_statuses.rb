@@ -56,16 +56,16 @@ module API
         status.update(attrs)
 
         case params[:state].to_s
-          when 'running'
-            status.run
-          when 'success'
-            status.success
-          when 'failed'
-            status.drop
-          when 'canceled'
-            status.cancel
-          else
-            status.status = params[:state].to_s
+        when 'running'
+          status.run
+        when 'success'
+          status.success
+        when 'failed'
+          status.drop
+        when 'canceled'
+          status.cancel
+        else
+          status.status = params[:state].to_s
         end
 
         if status.save

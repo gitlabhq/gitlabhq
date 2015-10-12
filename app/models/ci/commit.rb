@@ -136,7 +136,7 @@ module Ci
 
       latest_statuses = statuses.latest.to_a
       latest_statuses.reject! { |status| status.try(&:allow_failure?) }
-      latest_statuses.select! { |status| status.ref == nil || status.ref == ref } if ref
+      latest_statuses.select! { |status| status.ref.nil? || status.ref == ref } if ref
 
       if latest_statuses.none?
         return 'skipped'

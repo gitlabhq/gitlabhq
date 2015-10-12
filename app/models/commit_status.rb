@@ -5,7 +5,7 @@ class CommitStatus < ActiveRecord::Base
   belongs_to :user
 
   validates :commit, presence: true
-  validates :status, inclusion: {in: %w(pending running failed success canceled)}
+  validates :status, inclusion: { in: %w(pending running failed success canceled) }
 
   validates_presence_of :name
 
