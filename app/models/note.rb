@@ -358,7 +358,7 @@ class Note < ActiveRecord::Base
   end
 
   def set_references
-    create_new_cross_references!(project, author)
+    create_new_cross_references!
   end
 
   def system?

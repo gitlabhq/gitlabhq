@@ -155,7 +155,7 @@ describe GitPushService do
 
     before do
       allow(commit).to receive_messages(
-        safe_message: "this commit \n mentions ##{issue.id}",
+        safe_message: "this commit \n mentions ##{issue.iid}",
         references: [issue],
         author_name: commit_author.name,
         author_email: commit_author.email
