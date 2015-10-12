@@ -200,13 +200,34 @@ describe Ci::Build do
     context 'returns variables' do
       subject { build.variables }
 
-      let(:variables) do
+      let(:predefined_variables) do
+        [
+          { key: :CI_BUILD_NAME, value: 'test', public: true },
+          { key: :CI_BUILD_STAGE, value: 'stage', public: true },
+        ]
+      end
+
+      let(:yaml_variables) do
         [
           { key: :DB_NAME, value: 'postgres', public: true }
         ]
       end
 
-      it { is_expected.to eq(variables) }
+      before { build.update_attributes(stage: 'stage') }
+
+      it { is_expected.to eq(predefined_variables + yaml_variables) }
+
+      context 'for tag' do
+        let(:tag_variable) do
+          [
+            { key: :CI_BUILD_TAG, value: 'master', public: true }
+          ]
+        end
+
+        before { build.update_attributes(tag: true) }
+
+        it { is_expected.to eq(tag_variable + predefined_variables + yaml_variables) }
+      end
 
       context 'and secure variables' do
         let(:secure_variables) do
@@ -219,7 +240,7 @@ describe Ci::Build do
           build.project.variables << Ci::Variable.new(key: 'SECRET_KEY', value: 'secret_value')
         end
 
-        it { is_expected.to eq(variables + secure_variables) }
+        it { is_expected.to eq(predefined_variables + yaml_variables + secure_variables) }
 
         context 'and trigger variables' do
           let(:trigger) { FactoryGirl.create :ci_trigger, project: project }
@@ -229,12 +250,17 @@ describe Ci::Build do
               { key: :TRIGGER_KEY, value: 'TRIGGER_VALUE', public: false }
             ]
           end
+          let(:predefined_trigger_variable) do
+            [
+              { key: :CI_BUILD_TRIGGERED, value: 'true', public: true }
+            ]
+          end
 
           before do
             build.trigger_request = trigger_request
           end
 
-          it { is_expected.to eq(variables + secure_variables + trigger_variables) }
+          it { is_expected.to eq(predefined_variables + predefined_trigger_variable + yaml_variables + secure_variables + trigger_variables) }
         end
       end
     end
