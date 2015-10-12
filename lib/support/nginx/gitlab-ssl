@@ -48,7 +48,7 @@ upstream gitlab-workhorse {
 
 ## Redirects all HTTP traffic to the HTTPS host
 server {
-  ## Either remove "default_server" from the listen line below, 
+  ## Either remove "default_server" from the listen line below,
   ## or delete the /etc/nginx/sites-enabled/default file. This will cause gitlab
   ## to be served if you visit any address that your server responds to, eg.
   ## the ip address of the server (http://x.x.x.x/)
@@ -158,6 +158,13 @@ server {
     proxy_set_header    X-Frame-Options     SAMEORIGIN;
 
     proxy_pass http://gitlab;
+  }
+
+  location ~ ^/[\w\.-]+/[\w\.-]+/gitlab-lfs/objects {
+    client_max_body_size 0;
+    # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
+    error_page 418 = @gitlab-workhorse;
+    return 418;
   }
 
   location ~ ^/[\w\.-]+/[\w\.-]+/(info/refs|git-upload-pack|git-receive-pack)$ {

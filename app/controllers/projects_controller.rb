@@ -72,8 +72,7 @@ class ProjectsController < ApplicationController
   def remove_fork
     return access_denied! unless can?(current_user, :remove_fork_project, @project)
 
-    if @project.forked?
-      @project.forked_project_link.destroy
+    if @project.unlink_fork
       flash[:notice] = 'The fork relationship has been removed.'
     end
   end
@@ -243,7 +242,7 @@ class ProjectsController < ApplicationController
     project.repository_exists? && !project.empty_repo?
   end
 
-  # Override get_id from ExtractsPath, which returns the branch and file path 
+  # Override get_id from ExtractsPath, which returns the branch and file path
   # for the blob/tree, which in this case is just the root of the default branch.
   def get_id
     project.repository.root_ref
