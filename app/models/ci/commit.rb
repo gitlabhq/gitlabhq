@@ -189,7 +189,7 @@ module Ci
     end
 
     def matrix_for_ref?(ref)
-      builds_without_retry_for_ref(ref).size > 1
+      latest_builds_for_ref(ref).size > 1
     end
 
     def config_processor
