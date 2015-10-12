@@ -1,7 +1,7 @@
 .panel.panel-default.projects-list-holder
   .panel-heading.clearfix
     .input-group
-      = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control'
+      = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control', spellcheck: false
       - if can? current_user, :create_projects, @group
         %span.input-group-btn
           = link_to new_project_path(namespace_id: @group.id), class: 'btn btn-green' do
