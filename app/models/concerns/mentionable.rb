@@ -66,8 +66,8 @@ module Mentionable
   end
 
   # Create a cross-reference Note for each GFM reference to another Mentionable found in +mentionable_text+.
-  def create_cross_references!(author = self.author, without = [])
-    refs = referenced_mentionables(author)
+  def create_cross_references!(author = self.author, without = [], text = self.mentionable_text)
+    refs = referenced_mentionables(author, text)
     
     # We're using this method instead of Array diffing because that requires
     # both of the object's `hash` values to be the same, which may not be the

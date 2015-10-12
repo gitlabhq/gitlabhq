@@ -62,7 +62,6 @@ class Note < ActiveRecord::Base
 
   serialize :st_diff
   before_create :set_diff, if: ->(n) { n.line_code.present? }
-  after_update :set_references
 
   class << self
     def discussions_from_notes(notes)
@@ -333,15 +332,13 @@ class Note < ActiveRecord::Base
   end
 
   def noteable_type_name
-    if noteable_type.present?
-      noteable_type.downcase
-    end
+    noteable_type.downcase if noteable_type.present?
   end
 
   # FIXME: Hack for polymorphic associations with STI
   #        For more information visit http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#label-Polymorphic+Associations
-  def noteable_type=(sType)
-    super(sType.to_s.classify.constantize.base_class.to_s)
+  def noteable_type=(noteable_type)
+    super(noteable_type.to_s.classify.constantize.base_class.to_s)
   end
 
   # Reset notes events cache
@@ -355,10 +352,6 @@ class Note < ActiveRecord::Base
   # when the event is updated because the key changes.
   def reset_events_cache
     Event.reset_event_cache_for(self)
-  end
-
-  def set_references
-    create_new_cross_references!
   end
 
   def system?
