@@ -41,7 +41,7 @@ module API
       #   description (optional) - A short description of the status
       #   name or context (optional) - A string label to differentiate this status from the status of other systems. Default: "default"
       # Examples:
-      #   POST /projects/:id/repository/commits/:sha/status
+      #   POST /projects/:id/statuses/:sha
       post ':id/statuses/:sha' do
         required_attributes! [:state]
         attrs = attributes_for_keys [:ref, :target_url, :description, :context, :name]

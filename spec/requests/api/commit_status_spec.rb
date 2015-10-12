@@ -72,8 +72,8 @@ describe API::API, api: true do
     end
   end
 
-  describe 'POST /projects/:id/repository/commits/:sha/status' do
-    let(:post_url) { "/projects/#{project.id}/repository/commits/#{commit.id}/status" }
+  describe 'POST /projects/:id/statuses/:sha' do
+    let(:post_url) { "/projects/#{project.id}/statuses/#{commit.id}" }
 
     context 'reporter user' do
       context 'should create commit status' do
@@ -112,7 +112,7 @@ describe API::API, api: true do
         end
 
         it 'invalid commit' do
-          post api("/projects/#{project.id}/repository/commits/invalid_sha/status", user), state: 'running'
+          post api("/projects/#{project.id}/statuses/invalid_sha", user), state: 'running'
           expect(response.status).to eq(404)
         end
       end
