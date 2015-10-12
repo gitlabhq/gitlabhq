@@ -125,7 +125,7 @@ describe Ci::Commit do
     end
 
     it 'returns all refs' do
-      is_expected.to contain_exactly('master', 'develop')
+      is_expected.to contain_exactly('master', 'develop', nil)
     end
   end
 
@@ -225,9 +225,10 @@ describe Ci::Commit do
         it 'rebuilds commit' do
           expect(commit.status).to eq('skipped')
           expect(create_builds(trigger_request)).to be_truthy
-          commit.builds.reload
-          expect(commit.builds.size).to eq(2)
-          expect(commit.status).to eq('pending')
+
+          # since everything in Ci::Commit is cached we need to fetch a new object
+          new_commit = Ci::Commit.find_by_id(commit.id)
+          expect(new_commit.status).to eq('pending')
         end
       end
     end

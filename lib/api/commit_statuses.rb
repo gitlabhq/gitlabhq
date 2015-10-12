@@ -43,7 +43,7 @@ module API
       # Examples:
       #   POST /projects/:id/statuses/:sha
       post ':id/statuses/:sha' do
-        authorize! :create_commit_statuses, user_project
+        authorize! :create_commit_status, user_project
         required_attributes! [:state]
         attrs = attributes_for_keys [:ref, :target_url, :description, :context, :name]
         commit = @project.commit(params[:sha])

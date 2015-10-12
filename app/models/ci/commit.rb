@@ -82,7 +82,7 @@ module Ci
     end
 
     def stage
-      running_or_pending = statuses.latest.running_or_pending
+      running_or_pending = statuses.latest.running_or_pending.ordered
       running_or_pending.first.try(:stage)
     end
 
@@ -189,7 +189,7 @@ module Ci
     end
 
     def matrix_for_ref?(ref)
-      latest_builds_for_ref(ref).size > 1
+      builds_without_retry_for_ref(ref).size > 1
     end
 
     def config_processor
