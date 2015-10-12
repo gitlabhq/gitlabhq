@@ -7,9 +7,9 @@
     %code #{@build.ref}
 
   #up-build-trace
-  - if @commit.matrix?(@build.ref)
+  - if @commit.matrix_for_ref?(@build.ref)
     %ul.center-top-menu.build-top-menu
-      - @commit.builds_without_retry(@build.ref).each do |build|
+      - @commit.builds_without_retry_for_ref(@build.ref).each do |build|
         %li{class: ('active' if build == @build) }
           = link_to namespace_project_build_path(@project.namespace, @project, build) do
             = ci_icon_for_status(build.status)
@@ -20,7 +20,7 @@
                 = build.id
 
 
-      - unless @commit.builds_without_retry(@build.ref).include?(@build)
+      - unless @commit.builds_without_retry_for_ref(@build.ref).include?(@build)
         %li.active
           %a
             Build ##{@build.id}

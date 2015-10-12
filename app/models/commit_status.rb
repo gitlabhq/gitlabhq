@@ -16,8 +16,9 @@ class CommitStatus < ActiveRecord::Base
   scope :success, -> { where(status: 'success') }
   scope :failed, -> { where(status: 'failed')  }
   scope :running_or_pending, -> { where(status:[:running, :pending]) }
-  scope :latest, -> { where(id: unscope(:select).select('max(id)').group(:name, :ref)).order(stage_idx: :asc) }
-  scope :for_ref, ->(ref) { where(ref: [ref, nil]) }
+  scope :latest, -> { where(id: unscope(:select).select('max(id)').group(:name, :ref)) }
+  scope :ordered, -> { order(:ref, :stage_idx, :name) }
+  scope :for_ref, ->(ref) { where(ref: ref) }
   scope :running_or_pending, -> { where(status: [:running, :pending]) }
 
   state_machine :status, initial: :pending do

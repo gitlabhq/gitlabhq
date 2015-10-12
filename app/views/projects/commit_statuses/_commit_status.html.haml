@@ -9,9 +9,8 @@
     - else
       %strong Build ##{commit_status.id}
 
-  - if defined?(ref) && ref
-    %td
-      = commit_status.ref
+  %td
+    = commit_status.ref
 
   %td
     = commit_status.stage

@@ -106,50 +106,47 @@ module Ci
     end
 
     def refs
-      statuses.pluck(:ref).compact.uniq
+      statuses.order(:ref).pluck(:ref).uniq
     end
 
-    def statuses_for_ref(ref = nil)
-      if ref
-        statuses.for_ref(ref)
-      else
-        statuses
-      end
+    def latest_statuses
+      @latest_statuses ||= statuses.latest.to_a
     end
 
-    def builds_without_retry(ref = nil)
-      if ref
-        builds.for_ref(ref).latest
-      else
-        builds.latest
-      end
+    def builds_without_retry
+      @builds_without_retry ||= builds.latest.to_a
+    end
+
+    def builds_without_retry_for_ref(ref)
+      builds_without_retry.select { |build| build.ref == ref }
     end
 
     def retried
       @retried ||= (statuses.order(id: :desc) - statuses.latest)
     end
 
-    def status(ref = nil)
+    def status
       if yaml_errors.present?
         return 'failed'
       end
 
-      latest_statuses = statuses.latest.to_a
-      latest_statuses.reject! { |status| status.try(&:allow_failure?) }
-      latest_statuses.select! { |status| status.ref.nil? || status.ref == ref } if ref
+      @status ||= begin
+        latest = latest_statuses
+        latest.reject! { |status| status.try(&:allow_failure?) }
 
-      if latest_statuses.none?
-        return 'skipped'
-      elsif latest_statuses.all?(&:success?)
-        'success'
-      elsif latest_statuses.all?(&:pending?)
-        'pending'
-      elsif latest_statuses.any?(&:running?) || latest_statuses.any?(&:pending?)
-        'running'
-      elsif latest_statuses.all?(&:canceled?)
-        'canceled'
-      else
-        'failed'
+        if latest.none?
+          'skipped'
+        elsif latest.all?(&:success?)
+          'success'
+        elsif latest.all?(&:pending?)
+          'pending'
+        elsif latest.any?(&:running?) || latest.any?(&:pending?)
+          'running'
+        elsif latest.all?(&:canceled?)
+          'canceled'
+        else
+          'failed'
+        end
       end
     end
 
@@ -173,8 +170,9 @@ module Ci
       status == 'canceled'
     end
 
-    def duration(ref = nil)
-      statuses_for_ref(ref).latest.select(&:duration).sum(&:duration).to_i
+    def duration
+      duration_array = latest_statuses.map(&:duration).compact
+      duration_array.reduce(:+).to_i
     end
 
     def finished_at
@@ -190,8 +188,8 @@ module Ci
       end
     end
 
-    def matrix?(ref)
-      builds_without_retry(ref).pluck(:id).size > 1
+    def matrix_for_ref?(ref)
+      builds_without_retry_for_ref(ref).size > 1
     end
 
     def config_processor
