@@ -11,33 +11,41 @@
  *= require cal-heatmap
 */
 
-/**
+/*
+ * Welcome to GitLab css!
+ * If you need to add or modify UI component that is commont for many pages
+ * like table or typography then make changes in framework/ directory.
+ * If you need to add uniq style that should affect only one page - use pages/
+ * directory.
+ */
+
+/*
  * GitLab UI framework
  */
 @import "framework";
 
-/**
+/*
  * NProgress load bar css
  */
 @import 'nprogress';
 @import 'nprogress-bootstrap';
 
-/**
+/*
  * Font icons
  */
 @import "font-awesome";
 
-/**
+/*
  * Page specific styles (issues, projects etc):
  */
 @import "pages/**/*";
 
-/**
+/*
  * Code highlight
  */
 @import "highlight/**/*";
 
-/**
+/*
  * Styles for JS behaviors.
  */
 @import "behaviors.scss";
