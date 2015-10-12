@@ -17,11 +17,11 @@ module Ci
 
       tag = origin_ref.start_with?('refs/tags/')
       commit = project.gl_project.ensure_ci_commit(sha)
-      return false if commit.skip_ci?
-
-      commit.update_committed!
-      commit.create_builds(ref, tag, user)
-
+      unless commit.skip_ci?
+        commit.update_committed!
+        commit.create_builds(ref, tag, user)
+      end
+      
       commit
     end
   end
