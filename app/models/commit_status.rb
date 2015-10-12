@@ -9,6 +9,8 @@ class CommitStatus < ActiveRecord::Base
 
   validates_presence_of :name
 
+  alias_attribute :author, :user
+
   scope :running, ->() { where(status: 'running') }
   scope :pending, ->() { where(status: 'pending') }
   scope :success, ->() { where(status: 'success') }

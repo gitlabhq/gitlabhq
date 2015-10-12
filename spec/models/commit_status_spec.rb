@@ -18,6 +18,13 @@ describe CommitStatus do
   it { is_expected.to respond_to :running? }
   it { is_expected.to respond_to :pending? }
 
+  describe :author do
+    subject { commit_status.author }
+    before { commit_status.author = User.new }
+
+    it { is_expected.to eq(commit_status.user) }
+  end
+
   describe :started? do
     subject { commit_status.started? }
 

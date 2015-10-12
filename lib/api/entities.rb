@@ -232,6 +232,7 @@ module API
     class CommitStatus < Grape::Entity
       expose :id, :sha, :ref, :status, :name, :target_url, :description,
              :created_at, :started_at, :finished_at
+      expose :author, using: Entities::UserBasic
     end
 
     class Event < Grape::Entity

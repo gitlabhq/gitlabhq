@@ -52,7 +52,7 @@ module API
 
         name = params[:name] || params[:context]
         status = GenericCommitStatus.running_or_pending.find_by(commit: ci_commit, name: name, ref: params[:ref])
-        status = GenericCommitStatus.new(commit: ci_commit) unless status
+        status = GenericCommitStatus.new(commit: ci_commit, user: current_user) unless status
         status.update(attrs)
 
         case params[:state].to_s
