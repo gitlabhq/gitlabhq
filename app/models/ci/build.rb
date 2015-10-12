@@ -231,6 +231,18 @@ module Ci
       end
     end
 
+    def can_be_served?(runner)
+      (tag_list - runner.tag_list).empty?
+    end
+
+    def any_runners_online?
+      project.any_runners? { |runner| runner.active? && runner.online? && can_be_served?(runner) }
+    end
+
+    def show_warning?
+      pending? && !any_runners_online?
+    end
+
     private
 
     def yaml_variables
