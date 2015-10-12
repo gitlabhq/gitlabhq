@@ -5,7 +5,7 @@
 # - let(:set_mentionable_text) { lambda { |txt| "block that assigns txt to the subject's mentionable_text" } }
 
 def common_mentionable_setup
-  let(:project) { create :project }
+  let(:project) { subject.project }
   let(:author)  { subject.author }
 
   let(:mentioned_issue)  { create(:issue, project: project) }
