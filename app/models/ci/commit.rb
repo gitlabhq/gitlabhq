@@ -48,7 +48,7 @@ module Ci
     end
 
     def retry
-      builds_without_retry.each do |build|
+      latest_builds.each do |build|
         Ci::Build.retry(build)
       end
     end
@@ -113,12 +113,12 @@ module Ci
       @latest_statuses ||= statuses.latest.to_a
     end
 
-    def builds_without_retry
-      @builds_without_retry ||= builds.latest.to_a
+    def latest_builds
+      @latest_builds ||= builds.latest.to_a
     end
 
-    def builds_without_retry_for_ref(ref)
-      builds_without_retry.select { |build| build.ref == ref }
+    def latest_builds_for_ref(ref)
+      latest_builds.select { |build| build.ref == ref }
     end
 
     def retried
@@ -181,7 +181,7 @@ module Ci
 
     def coverage
       if project.coverage_enabled?
-        coverage_array = builds_without_retry.map(&:coverage).compact
+        coverage_array = latest_builds.map(&:coverage).compact
         if coverage_array.size >= 1
           '%.2f' % (coverage_array.reduce(:+) / coverage_array.size)
         end
@@ -189,7 +189,7 @@ module Ci
     end
 
     def matrix_for_ref?(ref)
-      builds_without_retry_for_ref(ref).size > 1
+      latest_builds_for_ref(ref).size > 1
     end
 
     def config_processor

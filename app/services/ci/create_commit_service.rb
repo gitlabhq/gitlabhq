@@ -21,7 +21,7 @@ module Ci
         commit.update_committed!
         commit.create_builds(ref, tag, user)
       end
-      
+
       commit
     end
   end
