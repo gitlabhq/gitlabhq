@@ -22,6 +22,12 @@
   padding: 11px 24px;
 }
 
+@mixin btn-sm {
+  @include btn-default;
+  @include border-radius(2px);
+  padding: 5px 10px;
+}
+
 @mixin btn-color($light, $border-light, $normal, $border-normal, $dark, $border-dark, $color) {
   background-color: $light;
   border-color: $border-light;
@@ -70,6 +76,10 @@
 .btn {
   @include btn-default;
   @include btn-white;
+
+  &.btn-sm {
+    @include btn-sm;
+  }
 
   &.btn-success,
   &.btn-new,
