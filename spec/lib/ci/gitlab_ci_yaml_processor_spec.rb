@@ -333,6 +333,37 @@ module Ci
       end
     end
 
+    describe "Artifacts" do
+      it "returns artifacts when defined" do
+        config = YAML.dump({
+                             image:         "ruby:2.1",
+                             services:      ["mysql"],
+                             before_script: ["pwd"],
+                             rspec:         { artifacts: ["logs/", "binaries/"], script: "rspec" }
+                           })
+
+        config_processor = GitlabCiYamlProcessor.new(config)
+
+        expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
+        expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
+          except: nil,
+          stage: "test",
+          stage_idx: 1,
+          name: :rspec,
+          only: nil,
+          commands: "pwd\nrspec",
+          tag_list: [],
+          options: {
+            image: "ruby:2.1",
+            services: ["mysql"],
+            artifacts: ["logs/", "binaries/"]
+          },
+          when: "on_success",
+          allow_failure: false
+        })
+      end
+    end
+
     describe "Error handling" do
       it "indicates that object is invalid" do
         expect{GitlabCiYamlProcessor.new("invalid_yaml\n!ccdvlf%612334@@@@")}.to raise_error(GitlabCiYamlProcessor::ValidationError)
@@ -490,6 +521,13 @@ module Ci
         expect do
           GitlabCiYamlProcessor.new(config, path)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: when parameter should be on_success, on_failure or always")
+      end
+
+      it "returns errors if job artifacts is not an array of strings" do
+        config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", artifacts: "string" } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts parameter should be an array of strings")
       end
     end
   end

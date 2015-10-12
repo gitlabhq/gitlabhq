@@ -79,6 +79,7 @@ ActiveRecord::Schema.define(version: 20151026182941) do
     t.boolean  "add_pusher"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "max_artifact_size", default: 100, null: false
   end
 
   create_table "ci_builds", force: true do |t|
@@ -107,6 +108,7 @@ ActiveRecord::Schema.define(version: 20151026182941) do
     t.string   "type"
     t.string   "target_url"
     t.string   "description"
+    t.text     "artifact_file"
   end
 
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree

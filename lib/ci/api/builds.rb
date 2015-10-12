@@ -47,6 +47,71 @@ module Ci
             build.drop
           end
         end
+
+        # Upload artifact to build - Runners only
+        #
+        # Parameters:
+        #   id (required) - The ID of a build
+        #   token (required) - The build authorization token
+        # Headers:
+        #   X-File - path to locally stored body
+        #   X-Filename - real filename
+        #   X-Content-Type - real content type
+        # Example Request:
+        #   POST /builds/:id/artifacts
+        post ":id/artifacts" do
+          build = Ci::Build.find_by_id(params[:id])
+          not_found! unless build
+          authenticate_build_token!(build)
+          forbidden!('build is not running') unless build.running?
+
+          file = uploaded_file!
+          file_to_large! unless file.size < max_artifact_size
+
+          if build.update_attributes(artifact_file: file)
+            present build, with: Entities::Build
+          else
+            render_validation_error!(build)
+          end
+        end
+
+        # Download the artifacts file from build - Runners only
+        #
+        # Parameters:
+        #   id (required) - The ID of a build
+        #   token (required) - The build authorization token
+        # Example Request:
+        #   GET /builds/:id/artifact
+        get ":id/artifact" do
+          build = Ci::Build.find_by_id(params[:id])
+          not_found! unless build
+          authenticate_build_token!(build)
+
+          unless build.artifact_file.file_storage?
+            return redirect_to build.artifact_file.url
+          end
+
+          unless build.artifact_file.exists?
+            not_found!
+          end
+
+          # TODO: this is slow, because it doesn't support Rack::Sendfile
+          present_file!(build.artifact_file.path, build.artifact_file.filename)
+        end
+
+        # Remove the artifacts file from build
+        #
+        # Parameters:
+        #   id (required) - The ID of a build
+        #   token (required) - The build authorization token
+        # Example Request:
+        #   DELETE /builds/:id/artifact
+        delete ":id/artifact" do
+          build = Ci::Build.find_by_id(params[:id])
+          not_found! unless build
+          authenticate_build_token!(build)
+          build.remove_artifact_file!
+        end
       end
     end
   end

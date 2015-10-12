@@ -234,6 +234,10 @@ module API
       render_api_error!(message || '409 Conflict', 409)
     end
 
+    def file_to_large!
+      render_api_error!('413 Request Entity Too Large', 413)
+    end
+
     def render_validation_error!(model)
       if model.errors.any?
         render_api_error!(model.errors.messages || '400 Bad Request', 400)
@@ -280,6 +284,16 @@ module API
       else
         :desc
       end
+    end
+
+    # file helpers
+
+    def present_file!(path, filename, content_type = 'application/octet-stream')
+      filename ||= File.basename(path)
+      header['Content-Disposition'] = "attachment; filename=#{filename}"
+      header['Content-Transfer-Encoding'] = 'binary'
+      content_type content_type
+      file FileStreamer.new(path)
     end
 
     private

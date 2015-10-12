@@ -21,6 +21,7 @@ module Ci
       create(
         all_broken_builds: Settings.gitlab_ci['all_broken_builds'],
         add_pusher: Settings.gitlab_ci['add_pusher'],
+        max_artifact_size: Settings.gitlab_ci['max_artifact_size'],
       )
     end
   end

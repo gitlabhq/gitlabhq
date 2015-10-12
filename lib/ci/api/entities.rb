@@ -11,6 +11,10 @@ module Ci
         expose :builds
       end
 
+      class ArtifactFile < Grape::Entity
+        expose :filename, :size
+      end
+
       class Build < Grape::Entity
         expose :id, :commands, :ref, :sha, :status, :project_id, :repo_url,
           :before_sha, :allow_git_fetch, :project_name
@@ -24,6 +28,9 @@ module Ci
         end
 
         expose :variables
+
+        expose :artifact_file, using: ArtifactFile
+        expose :artifacts_upload_url
       end
 
       class Runner < Grape::Entity

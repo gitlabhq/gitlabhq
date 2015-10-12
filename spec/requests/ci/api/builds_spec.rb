@@ -41,7 +41,7 @@ describe Ci::API::API do
 
       it "should return 404 error if no builds for specific runner" do
         commit = FactoryGirl.create(:ci_commit, gl_project: shared_gl_project)
-        FactoryGirl.create(:ci_build, commit: commit, status: 'pending' )
+        FactoryGirl.create(:ci_build, commit: commit, status: 'pending')
 
         post ci_api("/builds/register"), token: runner.token
 
@@ -50,7 +50,7 @@ describe Ci::API::API do
 
       it "should return 404 error if no builds for shared runner" do
         commit = FactoryGirl.create(:ci_commit, gl_project: gl_project)
-        FactoryGirl.create(:ci_build, commit: commit, status: 'pending' )
+        FactoryGirl.create(:ci_build, commit: commit, status: 'pending')
 
         post ci_api("/builds/register"), token: shared_runner.token
 
@@ -78,8 +78,9 @@ describe Ci::API::API do
         expect(json_response["variables"]).to eq([
           { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
           { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
+          { "key" => "CI_BUILD_ARTIFACTS_UPLOAD_URL", "value" => "http://localhost/ci/api/v1/builds/#{json_response['id']}/artifacts?token=#{project.token}", "public" => false },
           { "key" => "DB_NAME", "value" => "postgres", "public" => true },
-          { "key" => "SECRET_KEY", "value" => "secret_value", "public" => false },
+          { "key" => "SECRET_KEY", "value" => "secret_value", "public" => false }
         ])
       end
 
@@ -97,6 +98,7 @@ describe Ci::API::API do
         expect(json_response["variables"]).to eq([
           { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
           { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
+          { "key" => "CI_BUILD_ARTIFACTS_UPLOAD_URL", "value" => "http://localhost/ci/api/v1/builds/#{json_response['id']}/artifacts?token=#{project.token}", "public" => false },
           { "key" => "CI_BUILD_TRIGGERED", "value" => "true", "public" => true },
           { "key" => "DB_NAME", "value" => "postgres", "public" => true },
           { "key" => "SECRET_KEY", "value" => "secret_value", "public" => false },
@@ -120,6 +122,89 @@ describe Ci::API::API do
         build.update!(trace: 'hello_world')
         put ci_api("/builds/#{build.id}"), token: runner.token
         expect(build.reload.trace).to eq 'hello_world'
+      end
+    end
+
+    context "Artifacts" do
+      let(:file_upload) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
+      let(:file_upload2) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/gif') }
+      let(:commit) { FactoryGirl.create(:ci_commit, gl_project: gl_project) }
+      let(:build) { FactoryGirl.create(:ci_build, commit: commit, runner_id: runner.id) }
+      let(:post_url) { ci_api("/builds/#{build.id}/artifacts") }
+      let(:delete_url) { ci_api("/builds/#{build.id}/artifact") }
+      let(:get_url) { ci_api("/builds/#{build.id}/artifact") }
+
+      describe "POST /builds/:id/artifacts" do
+        context "should post artifact to running build" do
+          before do
+            build.run!
+          end
+
+          it "using Unicorn" do
+            post post_url, token: build.project.token, file: file_upload
+            expect(response.status).to eq(201)
+            expect(json_response["artifact_file"]["filename"]).to eq(file_upload.original_filename)
+          end
+
+          it "using Nginx Upload Module" do
+            post post_url, token: build.project.token,
+                           "file.name" => file_upload.original_filename,
+                           "file.path" => file_upload.path,
+                           "file.type" => file_upload.content_type
+            expect(response.status).to eq(201)
+            expect(json_response["artifact_file"]["filename"]).to eq(file_upload.original_filename)
+          end
+
+          it "updates artifact" do
+            post post_url, token: build.project.token, file: file_upload
+            post post_url, token: build.project.token, file: file_upload2
+            expect(response.status).to eq(201)
+            expect(json_response["artifact_file"]["filename"]).to eq(file_upload2.original_filename)
+          end
+        end
+
+        context "should fail to post to large artifact" do
+          before do
+            build.run!
+          end
+
+          it do
+            settings = Ci::ApplicationSetting.create_from_defaults
+            settings.update_attributes(max_artifact_size: 0)
+            post post_url, token: build.project.token, file: file_upload
+            expect(response.status).to eq(413)
+          end
+        end
+      end
+
+      describe "DELETE /builds/:id/artifact" do
+        before do
+          build.run!
+          post post_url, token: build.project.token, file: file_upload
+        end
+
+        it "should delete artifact build" do
+          build.success
+          delete delete_url, token: build.project.token
+          expect(response.status).to eq(200)
+        end
+      end
+
+      describe "GET /builds/:id/artifact" do
+        before do
+          build.run!
+        end
+
+        it "should download artifact" do
+          post post_url, token: build.project.token, file: file_upload
+          get get_url, token: build.project.token
+          expect(response.status).to eq(200)
+        end
+
+        it "should fail to download if no artifact uploaded" do
+          get get_url, token: build.project.token
+          expect(response.status).to eq(404)
+        end
       end
     end
   end

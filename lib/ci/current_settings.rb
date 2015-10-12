@@ -16,6 +16,7 @@ module Ci
       OpenStruct.new(
         all_broken_builds: Ci::Settings.gitlab_ci['all_broken_builds'],
         add_pusher: Ci::Settings.gitlab_ci['add_pusher'],
+        max_artifact_size: Ci::Settings.gitlab_ci['max_artifact_size'],
       )
     end
   end

@@ -25,6 +25,7 @@ module Ci
       params.require(:application_setting).permit(
         :all_broken_builds,
         :add_pusher,
+        :max_artifact_size,
       )
     end
   end

@@ -92,4 +92,8 @@ class CommitStatus < ActiveRecord::Base
   def show_warning?
     false
   end
+
+  def download_url
+    nil
+  end
 end

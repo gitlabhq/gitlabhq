@@ -204,6 +204,7 @@ describe Ci::Build do
         [
           { key: :CI_BUILD_NAME, value: 'test', public: true },
           { key: :CI_BUILD_STAGE, value: 'stage', public: true },
+          { key: :CI_BUILD_ARTIFACTS_UPLOAD_URL, value: build.artifacts_upload_url, public: false },
         ]
       end
 
@@ -399,5 +400,29 @@ describe Ci::Build do
         it { is_expected.to be_falsey }
       end
     end
+  end
+
+  describe :download_url do
+    subject { build.download_url }
+
+    it "should be nil if artifact doesn't exist" do
+      build.update_attributes(artifact_file: nil)
+      is_expected.to be_nil
+    end
+
+    it 'should be nil if artifact exist' do
+      gif = fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif')
+      build.update_attributes(artifact_file: gif)
+      is_expected.to_not be_nil
+    end
+  end
+
+  describe :artifacts_upload_url do
+    subject { build.artifacts_upload_url }
+
+    it { is_expected.to be_a(String) }
+    it { is_expected.to include(project.token) }
+    it { is_expected.to include('ci/api/v1/builds') }
+    it { is_expected.to include('/artifacts') }
   end
 end

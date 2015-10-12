@@ -70,6 +70,35 @@ server {
     try_files $uri $uri/index.html $uri.html @gitlab;
   }
 
+  ## We allow sendfile method only to access artifacts.
+  location /artifacts/ {
+    internal;
+    alias /home/git/gitlab/artifacts/;
+  }
+
+  # Build artifacts should be submitted to this location
+  location ~ /ci/api/v1/builds/[0-9]+/artifacts {
+      # Limit the size of uploads
+      client_max_body_size 100M;
+
+      # Pass altered request body to this location
+      upload_pass   @gitlab;
+
+      # Store files to this directory
+      upload_store /home/git/gitlab/artifacts/tmp-uploads;
+
+      # Allow uploaded files to be read only by user
+      upload_store_access user:rw group:rw;
+
+      # Set specified fields in request body
+      upload_set_form_field $upload_field_name.name "$upload_file_name";
+      upload_set_form_field $upload_field_name.type "$upload_content_type";
+      upload_set_form_field $upload_field_name.path "$upload_tmp_path";
+      upload_pass_form_field "token";
+
+      upload_cleanup 400 403 404 499 500-505;
+  }
+
   ## We route uploads through GitLab to prevent XSS and enforce access control.
   location /uploads/ {
     ## If you use HTTPS make sure you disable gzip compression
@@ -109,6 +138,10 @@ server {
     proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
     proxy_set_header    X-Forwarded-Proto   $scheme;
     proxy_set_header    X-Frame-Options     SAMEORIGIN;
+
+    # Accelerate file downloading with Nginx
+    proxy_set_header    X-Sendfile-Type     "X-Accel-Redirect";
+    proxy_set_header    X-Accel-Mapping     "/home/git/gitlab/artifacts/=/artifacts/";
 
     proxy_pass http://gitlab;
   }

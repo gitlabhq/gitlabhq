@@ -20,5 +20,12 @@
             = f.check_box :add_pusher
             Add pusher to recipients list
 
+  %fieldset
+    %legend Build artifacts
+    .form-group
+      = f.label :max_artifact_size, 'Maximum artifact size (MB)', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :max_artifact_size, class: 'form-control'
+
   .form-actions
     = f.submit 'Save', class: 'btn btn-primary'

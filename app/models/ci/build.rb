@@ -27,6 +27,8 @@ module Ci
   class Build < CommitStatus
     LAZY_ATTRIBUTES = ['trace']
 
+    include Ci::ApiAccess
+
     belongs_to :runner, class_name: 'Ci::Runner'
     belongs_to :trigger_request, class_name: 'Ci::TriggerRequest'
 
@@ -38,6 +40,8 @@ module Ci
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
     scope :similar, ->(build) { where(ref: build.ref, tag: build.tag, trigger_request_id: build.trigger_request_id) }
+
+    mount_uploader :artifact_file, ArtifactUploader
 
     acts_as_taggable
 
@@ -209,6 +213,10 @@ module Ci
       "#{dir_to_trace}/#{id}.log"
     end
 
+    def valid_token? token
+      project.valid_token? token
+    end
+
     def target_url
       Gitlab::Application.routes.url_helpers.
         namespace_project_build_url(gl_project.namespace, gl_project, self)
@@ -238,6 +246,17 @@ module Ci
 
     def show_warning?
       pending? && !any_runners_online?
+    end
+
+    def download_url
+      if artifact_file.exists?
+        Gitlab::Application.routes.url_helpers.
+          download_namespace_project_build_path(gl_project.namespace, gl_project, self)
+      end
+    end
+
+    def artifacts_upload_url
+      build_artifact_upload_url(id, project.token)
     end
 
     private
@@ -273,6 +292,7 @@ module Ci
       variables << { key: :CI_BUILD_TAG, value: ref, public: true } if tag?
       variables << { key: :CI_BUILD_NAME, value: name, public: true }
       variables << { key: :CI_BUILD_STAGE, value: stage, public: true }
+      variables << { key: :CI_BUILD_ARTIFACTS_UPLOAD_URL, value: artifacts_upload_url, public: false }
       variables << { key: :CI_BUILD_TRIGGERED, value: 'true', public: true } if trigger_request
       variables
     end

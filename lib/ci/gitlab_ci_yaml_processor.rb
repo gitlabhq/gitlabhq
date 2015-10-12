@@ -5,7 +5,7 @@ module Ci
     DEFAULT_STAGES = %w(build test deploy)
     DEFAULT_STAGE = 'test'
     ALLOWED_YAML_KEYS = [:before_script, :image, :services, :types, :stages, :variables]
-    ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services, :allow_failure, :type, :stage, :when]
+    ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services, :allow_failure, :type, :stage, :when, :artifacts]
 
     attr_reader :before_script, :image, :services, :variables, :path
 
@@ -77,7 +77,8 @@ module Ci
         when: job[:when] || 'on_success',
         options: {
           image: job[:image] || @image,
-          services: job[:services] || @services
+          services: job[:services] || @services,
+          artifacts: job[:artifacts]
         }.compact
       }
     end
@@ -157,6 +158,10 @@ module Ci
 
       if job[:except] && !validate_array_of_strings(job[:except])
         raise ValidationError, "#{name} job: except parameter should be an array of strings"
+      end
+
+      if job[:artifacts] && !validate_array_of_strings(job[:artifacts])
+        raise ValidationError, "#{name}: artifacts parameter should be an array of strings"
       end
 
       if job[:allow_failure] && !job[:allow_failure].in?([true, false])

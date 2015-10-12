@@ -115,6 +115,20 @@ server {
     try_files $uri $uri/index.html $uri.html @gitlab;
   }
 
+  ## We allow sendfile method only to access artifacts.
+  location /artifacts/ {
+    internal;
+    root /home/git/gitlab/shared/artifacts;
+  }
+
+  # Build artifacts should be submitted to this location
+  location ~ /ci/api/v1/builds/[0-9]+/artifacts {
+      client_max_body_size 0;
+      # 'Error' 418 is a hack to re-use the @gitlab-git-http-server block
+      error_page 418 = @gitlab-git-http-server;
+      return 418;
+  }
+
   ## We route uploads through GitLab to prevent XSS and enforce access control.
   location /uploads/ {
     ## If you use HTTPS make sure you disable gzip compression
@@ -156,6 +170,10 @@ server {
     proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
     proxy_set_header    X-Forwarded-Proto   $scheme;
     proxy_set_header    X-Frame-Options     SAMEORIGIN;
+
+    # Accelerate file downloading with Nginx
+    proxy_set_header    X-Sendfile-Type     "X-Accel-Redirect";
+    proxy_set_header    X-Accel-Mapping     "/home/git/gitlab/artifacts/=/artifacts/";
 
     proxy_pass http://gitlab;
   }

@@ -594,6 +594,7 @@ Gitlab::Application.routes.draw do
           member do
             get :cancel
             get :status
+            get :download
             post :retry
           end
         end

@@ -246,6 +246,11 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Change the permissions of the directory where CI build traces are stored
     sudo chmod -R u+rwX builds/
 
+    # Change the permissions of the directory where CI artifacts are stored
+    sudo chmod -R u+rwX artifacts/
+    sudo chmod -R ug+rwX artifacts/tmp-uploads
+    sudo chown -R git:www-data artifacts/tmp-uploads
+
     # Copy the example Unicorn config
     sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
 
@@ -392,7 +397,7 @@ Check if GitLab and its environment are configured correctly:
 
 ### Installation
 
-    sudo apt-get install -y nginx
+    sudo apt-get install -y nginx-extras
 
 ### Site Configuration
 

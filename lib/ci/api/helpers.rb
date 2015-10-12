@@ -15,6 +15,10 @@ module Ci
         forbidden! unless project.valid_token?(params[:project_token])
       end
 
+      def authenticate_build_token!(build)
+        forbidden! unless build.valid_token?(params[:token])
+      end
+
       def update_runner_last_contact
         # Use a random threshold to prevent beating DB updates
         contacted_at_max_age = UPDATE_RUNNER_EVERY + Random.rand(UPDATE_RUNNER_EVERY)
@@ -31,6 +35,19 @@ module Ci
         return unless params["info"].present?
         info = attributes_for_keys(["name", "version", "revision", "platform", "architecture"], params["info"])
         current_runner.update(info)
+      end
+
+      def uploaded_file!
+        bad_request!('Missing X-File header') unless headers['X-File'].present?
+        NginxUploadedFile.new(
+          headers['X-File'],
+          headers['X-Filename'],
+          headers['X-Content-Type'] || 'application/octet-stream',
+        )
+      end
+
+      def max_artifact_size
+        current_application_settings.max_artifact_size.megabytes.to_i
       end
     end
   end

@@ -26,7 +26,8 @@ module Ci
       format :json
 
       helpers Helpers
-      helpers ::API::Helpers
+      helpers ::API::APIHelpers
+      helpers Ci::CurrentSettings
 
       mount Builds
       mount Commits
