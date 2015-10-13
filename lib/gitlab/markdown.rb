@@ -47,12 +47,17 @@ module Gitlab
     #
     # html     - String to process
     # options  - Hash of options to customize output
-    #            :pipeline - Symbol pipeline type
-    #            :user     - User object
+    #            :pipeline  - Symbol pipeline type
+    #            :project   - Project
+    #            :user      - User object
     #
     # Returns an HTML-safe String
     def self.post_process(html, options)
-      doc = post_processor.to_document(html, current_user: options[:user])
+      context = {
+        project:      options[:project],
+        current_user: options[:user]
+      }
+      doc = post_processor.to_document(html, context)
 
       if options[:pipeline] == :atom
         doc.to_html(save_with: Nokogiri::XML::Node::SaveOptions::AS_XHTML)

@@ -59,7 +59,7 @@ module GitlabMarkdownHelper
     user = current_user if defined?(current_user)
 
     html = Gitlab::Markdown.render(text, context)
-    Gitlab::Markdown.post_process(html, pipeline: context[:pipeline], user: user)
+    Gitlab::Markdown.post_process(html, pipeline: context[:pipeline], project: @project, user: user)
   end
 
   # TODO (rspeicher): Remove all usages of this helper and just call `markdown`
@@ -78,7 +78,7 @@ module GitlabMarkdownHelper
     user = current_user if defined?(current_user)
 
     html = Gitlab::Markdown.gfm(text, options)
-    Gitlab::Markdown.post_process(html, pipeline: options[:pipeline], user: user)
+    Gitlab::Markdown.post_process(html, pipeline: options[:pipeline], project: @project, user: user)
   end
 
   def asciidoc(text)

@@ -15,7 +15,7 @@ module Gitlab
       def self.user_can_reference?(user, node, context)
         if node.has_attribute?('data-project')
           project_id = node.attr('data-project').to_i
-          return true if project_id == context[:project].id
+          return true if project_id == context[:project].try(:id)
 
           project = Project.find(project_id) rescue nil
           Ability.abilities.allowed?(user, :read_project, project)
