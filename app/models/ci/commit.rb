@@ -20,7 +20,8 @@ module Ci
     extend Ci::Model
 
     belongs_to :gl_project, class_name: '::Project', foreign_key: :gl_project_id
-    has_many :builds, dependent: :destroy, class_name: 'Ci::Build'
+    has_many :statuses, dependent: :destroy, class_name: 'CommitStatus'
+    has_many :builds, class_name: 'Ci::Build'
     has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest'
 
     validates_presence_of :sha
@@ -47,7 +48,7 @@ module Ci
     end
 
     def retry
-      builds_without_retry.each do |build|
+      latest_builds.each do |build|
         Ci::Build.retry(build)
       end
     end
@@ -81,12 +82,11 @@ module Ci
     end
 
     def stage
-      running_or_pending = builds_without_retry.running_or_pending
-      running_or_pending.limit(1).pluck(:stage).first
+      running_or_pending = statuses.latest.running_or_pending.ordered
+      running_or_pending.first.try(:stage)
     end
 
     def create_builds(ref, tag, user, trigger_request = nil)
-      return if skip_ci? && trigger_request.blank?
       return unless config_processor
       config_processor.stages.any? do |stage|
         CreateBuildsService.new.execute(self, stage, ref, tag, user, trigger_request).present?
@@ -94,7 +94,6 @@ module Ci
     end
 
     def create_next_builds(ref, tag, user, trigger_request)
-      return if skip_ci? && trigger_request.blank?
       return unless config_processor
 
       stages = builds.where(ref: ref, tag: tag, trigger_request: trigger_request).group_by(&:stage)
@@ -107,61 +106,60 @@ module Ci
     end
 
     def refs
-      builds.group(:ref).pluck(:ref)
+      statuses.order(:ref).pluck(:ref).uniq
     end
 
-    def last_ref
-      builds.latest.first.try(:ref)
+    def latest_statuses
+      @latest_statuses ||= statuses.latest.to_a
     end
 
-    def builds_without_retry
-      builds.latest
+    def latest_builds
+      @latest_builds ||= builds.latest.to_a
     end
 
-    def builds_without_retry_for_ref(ref)
-      builds.for_ref(ref).latest
+    def latest_builds_for_ref(ref)
+      latest_builds.select { |build| build.ref == ref }
     end
 
-    def retried_builds
-      @retried_builds ||= (builds.order(id: :desc) - builds_without_retry)
+    def retried
+      @retried ||= (statuses.order(id: :desc) - statuses.latest)
     end
 
     def status
-      if skip_ci?
-        return 'skipped'
-      elsif yaml_errors.present?
+      if yaml_errors.present?
         return 'failed'
-      elsif builds.none?
-        return 'skipped'
-      elsif success?
-        'success'
-      elsif pending?
-        'pending'
-      elsif running?
-        'running'
-      elsif canceled?
-        'canceled'
-      else
-        'failed'
+      end
+
+      @status ||= begin
+        latest = latest_statuses
+        latest.reject! { |status| status.try(&:allow_failure?) }
+
+        if latest.none?
+          'skipped'
+        elsif latest.all?(&:success?)
+          'success'
+        elsif latest.all?(&:pending?)
+          'pending'
+        elsif latest.any?(&:running?) || latest.any?(&:pending?)
+          'running'
+        elsif latest.all?(&:canceled?)
+          'canceled'
+        else
+          'failed'
+        end
       end
     end
 
     def pending?
-      builds_without_retry.all? do |build|
-        build.pending?
-      end
+      status == 'pending'
     end
 
     def running?
-      builds_without_retry.any? do |build|
-        build.running? || build.pending?
-      end
+      status == 'running'
     end
 
     def success?
-      builds_without_retry.all? do |build|
-        build.success? || build.ignored?
-      end
+      status == 'success'
     end
 
     def failed?
@@ -169,26 +167,21 @@ module Ci
     end
 
     def canceled?
-      builds_without_retry.all? do |build|
-        build.canceled?
-      end
+      status == 'canceled'
     end
 
     def duration
-      @duration ||= builds_without_retry.select(&:duration).sum(&:duration).to_i
-    end
-
-    def duration_for_ref(ref)
-      builds_without_retry_for_ref(ref).select(&:duration).sum(&:duration).to_i
+      duration_array = latest_statuses.map(&:duration).compact
+      duration_array.reduce(:+).to_i
     end
 
     def finished_at
-      @finished_at ||= builds.order('finished_at DESC').first.try(:finished_at)
+      @finished_at ||= statuses.order('finished_at DESC').first.try(:finished_at)
     end
 
     def coverage
       if project.coverage_enabled?
-        coverage_array = builds_without_retry.map(&:coverage).compact
+        coverage_array = latest_builds.map(&:coverage).compact
         if coverage_array.size >= 1
           '%.2f' % (coverage_array.reduce(:+) / coverage_array.size)
         end
@@ -196,7 +189,7 @@ module Ci
     end
 
     def matrix_for_ref?(ref)
-      builds_without_retry_for_ref(ref).pluck(:id).size > 1
+      latest_builds_for_ref(ref).size > 1
     end
 
     def config_processor
@@ -217,7 +210,6 @@ module Ci
     end
 
     def skip_ci?
-      return false if builds.any?
       git_commit_message =~ /(\[ci skip\])/ if git_commit_message
     end
 
