@@ -62,4 +62,44 @@ describe ProjectsController do
       expect(user.starred?(public_project)).to be_falsey
     end
   end
+
+  describe "PUT remove_fork" do
+    context 'when signed in' do
+      before do
+        sign_in(user)
+      end
+
+      context 'with forked project' do
+        let(:project_fork) { create(:project, namespace: user.namespace) }
+
+        it 'should remove fork from project' do
+          create(:forked_project_link, forked_to_project: project_fork)
+          put(:remove_fork,
+              namespace_id: project_fork.namespace.to_param,
+              id: project_fork.to_param, format: :js)
+
+          expect(project_fork.forked?).to be_falsey
+          expect(flash[:notice]).to eq('Fork relationship has been removed.')
+          expect(response).to render_template(:remove_fork)
+        end
+      end
+
+      it 'should do nothing if project was not forked' do
+        unforked_project = create(:project, namespace: user.namespace)
+        put(:remove_fork,
+            namespace_id: unforked_project.namespace.to_param,
+            id: unforked_project.to_param, format: :js)
+
+        expect(flash[:notice]).to be_nil
+        expect(response).to render_template(:remove_fork)
+      end
+    end
+
+    it "does nothing if user is not signed in" do
+      put(:remove_fork,
+          namespace_id: project.namespace.to_param,
+          id: project.to_param, format: :js)
+      expect(response.status).to eq(401)
+    end
+  end
 end

@@ -247,7 +247,7 @@ module API
       #  DELETE /projects/:id/fork
       delete ":id/fork" do
         authenticated_as_admin!
-        unless user_project.forked_project_link.nil?
+        if user_project.forked?
           user_project.forked_project_link.destroy
         end
       end

@@ -70,6 +70,10 @@ module ProjectsHelper
     "You are going to transfer #{project.name_with_namespace} to another owner. Are you ABSOLUTELY sure?"
   end
 
+  def remove_fork_project_message(project)
+    "You are going to remove the fork relationship to the source project from #{@project.forked_from_project.namespace.try(:name)}.  Are you ABSOLUTELY sure?"
+  end
+
   def project_nav_tabs
     @nav_tabs ||= get_project_nav_tabs(@project, current_user)
   end

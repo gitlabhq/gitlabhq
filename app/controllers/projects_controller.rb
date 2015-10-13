@@ -5,7 +5,7 @@ class ProjectsController < ApplicationController
   before_action :repository, except: [:new, :create]
 
   # Authorize
-  before_action :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer, :archive, :unarchive]
+  before_action :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer, :archive, :unarchive, :remove_fork]
   before_action :event_filter, only: [:show, :activity]
 
   layout :determine_layout
@@ -61,6 +61,13 @@ class ProjectsController < ApplicationController
 
     if @project.errors[:new_namespace].present?
       flash[:alert] = @project.errors[:new_namespace].first
+    end
+  end
+
+  def remove_fork
+    if @project.forked?
+      @project.forked_project_link.destroy
+      flash[:notice] = 'Fork relationship has been removed.'
     end
   end
 

@@ -189,6 +189,21 @@
       - else
         .nothing-here-block Only the project owner can transfer a project
 
+      - if @project.forked? && can?(current_user, :remove_fork_project, @project)
+        = form_for([@project.namespace.becomes(Namespace), @project], url: remove_fork_namespace_project_path(@project.namespace, @project), method: :put, remote: true, html: { class: 'transfer-project form-horizontal' }) do |f|
+          .panel.panel-default.panel.panel-danger
+            .panel-heading Remove forked relationship
+            .panel-body
+              %p
+                This will remove the relationship to the source project from
+                = link_to project_path(@project.forked_from_project) do
+                  = @project.forked_from_project.namespace.try(:name)
+                %br
+                %strong Once removed it cannot be reversed through this interface
+              = button_to 'Remove forked relationship', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_message(@project) }
+      - elsif @project.forked?
+        .nothing-here-block Only the project owner can remove the fork relationship
+
       - if can?(current_user, :remove_project, @project)
         .panel.panel-default.panel.panel-danger
           .panel-heading Remove project
@@ -202,6 +217,7 @@
               = button_to 'Remove project', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }
       - else
         .nothing-here-block Only project owner can remove a project
+
 
 .save-project-loader.hide
   .center
