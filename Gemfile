@@ -225,6 +225,7 @@ group :development do
   gem 'rack-mini-profiler', '~> 0.9.0', require: false
   gem 'rerun', '~> 0.10.0'
   gem 'bullet', require: false
+  gem 'active_record_query_trace', require: false
 
   # Better errors handler
   gem 'better_errors', '~> 1.0.1'

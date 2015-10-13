@@ -17,6 +17,7 @@ GEM
       activesupport (= 4.1.12)
       builder (~> 3.1)
       erubis (~> 2.7.0)
+    active_record_query_trace (1.5)
     activemodel (4.1.12)
       activesupport (= 4.1.12)
       builder (~> 3.1)
@@ -788,6 +789,7 @@ PLATFORMS
 DEPENDENCIES
   RedCloth (~> 4.2.9)
   ace-rails-ap (~> 2.0.1)
+  active_record_query_trace
   activerecord-deprecated_finders (~> 1.0.3)
   activerecord-session_store (~> 0.1.0)
   acts-as-taggable-on (~> 3.4)
