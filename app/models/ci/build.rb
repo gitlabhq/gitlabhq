@@ -219,13 +219,15 @@ module Ci
 
     def cancel_url
       if active?
-        cancel_namespace_project_build_path(gl_project.namespace, gl_project, self, return_to: request.original_url)
+        Gitlab::Application.routes.url_helpers.
+          cancel_namespace_project_build_path(gl_project.namespace, gl_project, self, return_to: request.original_url)
       end
     end
 
     def retry_url
       if commands.present?
-        cancel_namespace_project_build_path(gl_project.namespace, gl_project, self, return_to: request.original_url)
+        Gitlab::Application.routes.url_helpers.
+          cancel_namespace_project_build_path(gl_project.namespace, gl_project, self, return_to: request.original_url)
       end
     end
 
