@@ -59,6 +59,7 @@ class Note < ActiveRecord::Base
   scope :fresh, ->{ order(created_at: :asc, id: :asc) }
   scope :inc_author_project, ->{ includes(:project, :author) }
   scope :inc_author, ->{ includes(:author) }
+  scope :inc_associations, ->{ includes(:author, :noteable, :updated_by) }
 
   serialize :st_diff
   before_create :set_diff, if: ->(n) { n.line_code.present? }
