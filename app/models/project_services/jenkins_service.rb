@@ -11,6 +11,7 @@
 #  active      :boolean          default(FALSE), not null
 #  properties  :text
 #
+require 'uri'
 
 class JenkinsService < CiService
   prop_accessor :project_url
@@ -66,10 +67,18 @@ class JenkinsService < CiService
 
   def build_page(sha, ref = nil)
     if multiproject_enabled? && ref.present?
-      "#{project_url}_#{ref}/scm/bySHA1/#{sha}"
+      URI.encode("#{base_project_url}/#{project.name}_#{ref.gsub('/', '_')}/scm/bySHA1/#{sha}").to_s
     else
       "#{project_url}/scm/bySHA1/#{sha}"
     end
+  end
+
+  # When multi-project is enabled we need to have a different URL. Rather than
+  # relying on the user to provide the proper URL depending on multi-project
+  # we just parse the URL and make sure it's how we want it.
+  def base_project_url
+    url = URI.parse(project_url)
+    URI.join(url, '/job').to_s
   end
 
   def commit_status(sha, ref = nil)
