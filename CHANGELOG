@@ -64,6 +64,7 @@ v 8.0.3
   - Fix URL shown in Slack notifications
   - Fix bug where projects would appear to be stuck in the forked import state (Stan Hu)
   - Fix Error 500 in creating merge requests with > 1000 diffs (Stan Hu)
+  - Add work_in_progress key to MR web hooks (Ben Boeckel)
 
 v 8.0.2
   - Fix default avatar not rendering in network graph (Stan Hu)
