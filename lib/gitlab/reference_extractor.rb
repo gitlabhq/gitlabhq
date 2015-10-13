@@ -10,9 +10,10 @@ module Gitlab
       @current_user = current_user
     end
 
-    def analyze(text)
+    def analyze(texts)
       references.clear
-      @text = Gitlab::Markdown.render_without_gfm(text)
+      texts = Array(texts)
+      @texts = texts.map { |text| Gitlab::Markdown.render_without_gfm(text) }
     end
 
     %i(user label issue merge_request snippet commit commit_range).each do |type|
@@ -47,13 +48,25 @@ module Gitlab
         current_user: current_user,
         # We don't actually care about the links generated
         only_path: true,
-        ignore_blockquotes: true
+        ignore_blockquotes: true,
+        load_lazy_references: false
       }
 
       pipeline = HTML::Pipeline.new([filter, Gitlab::Markdown::ReferenceGathererFilter], context)
-      result = pipeline.call(@text)
 
-      result[:references][filter_type]
+      values = []
+      lazy_references = []
+
+      @texts.each do |text|
+        result = pipeline.call(text)
+
+        values.concat(result[:references][filter_type])
+        lazy_references.concat(result[:lazy_references][filter_type])
+      end
+
+      lazy_values = Gitlab::Markdown::ReferenceFilter::LazyReference.load(lazy_references)
+      values.concat(lazy_values)
+      values
     end
   end
 end

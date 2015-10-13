@@ -21,7 +21,7 @@ module Gitlab
           gather_references(node)
         end
 
-        load_lazy_references
+        load_lazy_references unless context[:load_lazy_references] == false
 
         doc
       end
@@ -56,11 +56,8 @@ module Gitlab
       # Will load all references of one type using one query.
       def load_lazy_references
         result[:lazy_references].each do |type, refs|
-          refs.group_by(&:klass).each do |klass, refs|
-            ids = refs.map(&:ids).flatten
-            values = klass.find(ids)
-            result[:references][type].push(*values)
-          end
+          values = ReferenceFilter::LazyReference.load(refs)
+          result[:references][type].concat(values)
         end
       end
 
