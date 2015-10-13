@@ -23,7 +23,7 @@
     margin-right: 0;
   }
 
-  .issues-filters,
+  .issues-details-filters,
   .dash-projects-filters,
   .check-all-holder {
     display: none;
@@ -83,6 +83,7 @@
 
   .center-top-menu {
     height: 45px;
+    margin-bottom: 30px;
 
     li a {
       font-size: 14px;
@@ -90,9 +91,11 @@
     }
   }
 
-  .projects-search-form {
-    margin: 0 -5px !important;
+  .activity-filter-block {
+    display: none;
+  }
 
+  .projects-search-form {
     .btn {
       display: none;
     }
@@ -100,6 +103,11 @@
 }
 
 @media (max-width: $screen-sm-max) {
+  .page-with-sidebar .content-wrapper {
+    padding: 0;
+    padding-top: 1px;
+  }
+
   .issues-filters {
     .milestone-filter, .labels-filter {
       display: none;

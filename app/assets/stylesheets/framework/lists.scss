@@ -117,8 +117,12 @@ ul.content-list {
     }
 
     .controls {
-      padding-top: 5px;
+      padding-top: 4px;
       float: right;
+
+      .btn {
+        padding: 10px 14px;
+      }
     }
   }
 }
