@@ -86,6 +86,10 @@ module Issuable
     assignee_id_changed?
   end
 
+  def open?
+    opened? || reopened?
+  end
+
   #
   # Votes
   #

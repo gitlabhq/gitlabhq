@@ -84,7 +84,7 @@ module IssuesHelper
   end
 
   def merge_requests_sentence(merge_requests)
-    merge_requests.map(&:to_reference).to_sentence
+    merge_requests.map(&:to_reference).to_sentence(last_word_connector: ', or ')
   end
 
   # Required for Gitlab::Markdown::IssueReferenceFilter

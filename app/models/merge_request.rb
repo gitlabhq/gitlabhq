@@ -222,10 +222,6 @@ class MergeRequest < ActiveRecord::Base
     self.target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::CLOSED).last
   end
 
-  def open?
-    opened? || reopened?
-  end
-
   def work_in_progress?
     !!(title =~ /\A\[?WIP\]?:? /i)
   end

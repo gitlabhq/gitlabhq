@@ -116,7 +116,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def closed_by_merge_requests
-    @closed_by_mr = @issue.closed_by_merge_requests(current_user)
+    @closed_by_merge_requests ||= @issue.closed_by_merge_requests(current_user)
   end
 
   protected
