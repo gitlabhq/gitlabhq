@@ -49,6 +49,7 @@ v 8.1.0 (unreleased)
   - Add spellcheck=false to certain input fields
   - Invalidate stored service password if the endpoint URL is changed
   - Project names are not fully shown if group name is too big, even on group page view
+  - Apply new design for Files page
 
 v 8.0.4
   - Fix Message-ID header to be RFC 2111-compliant to prevent e-mails being dropped (Stan Hu)
