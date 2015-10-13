@@ -99,7 +99,7 @@ module API
       #   id (required)            - The ID of a project - this will be the source of the merge request
       #   source_branch (required) - The source branch
       #   target_branch (required) - The target branch
-      #   target_project           - The target project of the merge request defaults to the :id of the project
+      #   target_project_id        - The target project of the merge request defaults to the :id of the project
       #   assignee_id              - Assignee user ID
       #   title (required)         - Title of MR
       #   description              - Description of MR
