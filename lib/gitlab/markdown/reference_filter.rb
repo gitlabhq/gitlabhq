@@ -12,6 +12,8 @@ module Gitlab
     #   :project (required) - Current project, ignored if reference is cross-project.
     #   :only_path          - Generate path-only links.
     class ReferenceFilter < HTML::Pipeline::Filter
+      LazyReference = Struct.new(:klass, :ids)
+
       def self.user_can_reference?(user, node, context)
         if node.has_attribute?('data-project')
           project_id = node.attr('data-project').to_i

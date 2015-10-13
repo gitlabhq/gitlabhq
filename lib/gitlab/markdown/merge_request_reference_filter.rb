@@ -28,10 +28,7 @@ module Gitlab
       end
 
       def self.referenced_by(node)
-        merge_request = MergeRequest.find(node.attr("data-merge-request")) rescue nil
-        return unless merge_request
-
-        { merge_request: merge_request }
+        { merge_request: LazyReference.new(MergeRequest, node.attr("data-merge-request")) }
       end
 
       def call

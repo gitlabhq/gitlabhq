@@ -28,10 +28,7 @@ module Gitlab
       end
 
       def self.referenced_by(node)
-        issue = Issue.find(node.attr("data-issue")) rescue nil
-        return unless issue
-
-        { issue: issue }
+        { issue: LazyReference.new(Issue, node.attr("data-issue")) }
       end
 
       def call

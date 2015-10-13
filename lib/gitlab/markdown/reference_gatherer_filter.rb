@@ -12,13 +12,16 @@ module Gitlab
       def initialize(*)
         super
 
-        result[:references] ||= Hash.new { |hash, type| hash[type] = [] }
+        result[:lazy_references]  ||= Hash.new { |hash, type| hash[type] = [] }
+        result[:references]       ||= Hash.new { |hash, type| hash[type] = [] }
       end
 
       def call
         doc.css('a.gfm').each do |node|
           gather_references(node)
         end
+
+        load_lazy_references
 
         doc
       end
@@ -35,9 +38,29 @@ module Gitlab
 
         references = reference_filter.referenced_by(node)
         return unless references
-        
+
         references.each do |type, values|
-          result[:references][type].push(*values)
+          Array.wrap(values).each do |value|
+            refs = 
+              if value.is_a?(ReferenceFilter::LazyReference)
+                result[:lazy_references]
+              else
+                result[:references]
+              end
+
+            refs[type] << value
+          end
+        end
+      end
+
+      # Will load all references of one type using one query.
+      def load_lazy_references
+        result[:lazy_references].each do |type, refs|
+          refs.group_by(&:klass).each do |klass, refs|
+            ids = refs.map(&:ids).flatten
+            values = klass.find(ids)
+            result[:references][type].push(*values)
+          end
         end
       end
 

@@ -30,10 +30,7 @@ module Gitlab
 
           { user: group.users }
         elsif node.has_attribute?('data-user')
-          user = User.find(node.attr('data-user')) rescue nil
-          return unless user
-
-          { user: user }
+          { user: LazyReference.new(User, node.attr('data-user')) }
         elsif node.has_attribute?('data-project')
           project = Project.find(node.attr('data-project')) rescue nil
           return unless project

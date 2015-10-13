@@ -28,10 +28,7 @@ module Gitlab
       end
 
       def self.referenced_by(node)
-        snippet = Snippet.find(node.attr("data-snippet")) rescue nil
-        return unless snippet
-
-        { snippet: snippet }
+        { snippet: LazyReference.new(Snippet, node.attr("data-snippet")) }
       end
 
       def call

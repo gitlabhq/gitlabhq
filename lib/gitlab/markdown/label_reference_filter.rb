@@ -23,10 +23,7 @@ module Gitlab
       end
 
       def self.referenced_by(node)
-        label = Label.find(node.attr("data-label")) rescue nil
-        return unless label
-
-        { label: label }
+        { label: LazyReference.new(Label, node.attr("data-label")) }
       end
 
       def call
