@@ -32,8 +32,6 @@
 @import "bootstrap/pager";
 @import "bootstrap/labels";
 @import "bootstrap/badges";
-@import "bootstrap/jumbotron";
-@import "bootstrap/thumbnails";
 @import "bootstrap/alerts";
 @import "bootstrap/progress-bars";
 @import "bootstrap/list-group";
@@ -250,24 +248,4 @@
 .text-info,
 .text-info:hover {
   color: $brand-info;
-}
-
-// Tables =====================================================================
-
-table.table {
-  .dropdown-menu a {
-    text-decoration: none;
-  }
-
-  .success,
-  .warning,
-  .danger,
-  .info {
-    color: #fff;
-
-    a:not(.btn) {
-      text-decoration: underline;
-      color: #fff;
-    }
-  }
 }

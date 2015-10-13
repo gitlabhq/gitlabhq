@@ -2,8 +2,9 @@
 @import "framework/variables";
 @import "framework/mixins";
 @import "framework/layout";
-@import 'framework/gl_variables';
-@import 'framework/gl_bootstrap';
+@import 'framework/tw_bootstrap_variables';
+@import 'framework/tw_bootstrap';
+
 @import "framework/avatar.scss";
 @import "framework/blocks.scss";
 @import "framework/buttons.scss";

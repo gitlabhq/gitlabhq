@@ -1,3 +1,144 @@
+@mixin md-typography {
+  color: $md-text-color;
+
+  a {
+    color: $md-link-color;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  *:first-child {
+    margin-top: 0;
+  }
+
+  code {
+    font-family: $monospace_font;
+    white-space: pre;
+    word-wrap: normal;
+    padding: 1px 2px;
+  }
+
+  kbd {
+    display: inline-block;
+    padding: 3px 5px;
+    font-size: 11px;
+    line-height: 10px;
+    color: #555;
+    vertical-align: middle;
+    background-color: #FCFCFC;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #CCC #CCC #BBB;
+    border-image: none;
+    border-radius: 3px;
+    box-shadow: 0px -1px 0px #BBB inset;
+  }
+
+  h1 {
+    font-size: 1.3em;
+    font-weight: 600;
+    margin: 24px 0 12px 0;
+    padding: 0 0 10px 0;
+    border-bottom: 1px solid #e7e9ed;
+    color: #313236;
+  }
+
+  h2 {
+    font-size: 1.2em;
+    font-weight: 600;
+    margin: 24px 0 12px 0;
+    color: #313236;
+  }
+
+  h3 {
+    margin: 24px 0 12px 0;
+    font-size: 1.25em;
+  }
+
+  h4 {
+    margin: 24px 0 12px 0;
+    font-size: 1.1em;
+  }
+
+  h5 {
+    margin: 24px 0 12px 0;
+    font-size: 1em;
+  }
+
+  h6 {
+    margin: 24px 0 12px 0;
+    font-size: 0.90em;
+  }
+
+  blockquote {
+    padding: 8px 21px;
+    margin: 12px 0 12px;
+    border-left: 3px solid #e7e9ed;
+  }
+
+  blockquote p {
+    color: #7f8fa4 !important;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  p {
+    color:#5c5d5e;
+    margin:6px 0 0 0;
+  }
+
+  table {
+    @extend .table;
+    @extend .table-bordered;
+    margin: 12px 0 12px 0;
+    color: #5c5d5e;
+    th {
+      background: #f8fafc;
+    }
+  }
+
+  pre {
+    margin: 12px 0 12px 0 !important;
+    background-color: #f8fafc !important;
+    font-size: 13px !important;
+    color: #5b6169 !important;
+    line-height: 1.6em !important;
+    @include border-radius(2px);
+  }
+
+  p > code {
+    font-weight: inherit;
+  }
+
+
+  ul {
+    color: #5c5d5e;
+  }
+
+  li {
+    line-height: 1.6em;
+  }
+
+  a[href*="/uploads/"], a[href*="storage.googleapis.com/google-code-attachments/"] {
+    &:before {
+      margin-right: 4px;
+
+      font: normal normal normal 14px/1 FontAwesome;
+      font-size: inherit;
+      text-rendering: auto;
+      -webkit-font-smoothing: antialiased;
+      content: "\f0c6";
+    }
+
+    &:hover:before {
+      text-decoration: none;
+    }
+  }
+}
+
+
 /**
  * Headers
  *
@@ -6,7 +147,7 @@ body {
   text-rendering:optimizeLegibility;
   -webkit-text-shadow: rgba(255,255,255,0.01) 0 0 1px;
 }
- 
+
 .page-title {
   margin-top: 0px;
   line-height: 1.3;
