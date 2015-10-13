@@ -72,9 +72,12 @@ describe ProjectsController do
       context 'with forked project' do
         let(:project_fork) { create(:project, namespace: user.namespace) }
 
-        it 'should remove fork from project' do
+        before do
           create(:forked_project_link, forked_to_project: project_fork)
-          put(:remove_fork,
+        end
+
+        it 'should remove fork from project' do
+          delete(:remove_fork,
               namespace_id: project_fork.namespace.to_param,
               id: project_fork.to_param, format: :js)
 
@@ -84,19 +87,22 @@ describe ProjectsController do
         end
       end
 
-      it 'should do nothing if project was not forked' do
-        unforked_project = create(:project, namespace: user.namespace)
-        put(:remove_fork,
-            namespace_id: unforked_project.namespace.to_param,
-            id: unforked_project.to_param, format: :js)
+      context 'when project not forked' do
+        let(:unforked_project) { create(:project, namespace: user.namespace) }
 
-        expect(flash[:notice]).to be_nil
-        expect(response).to render_template(:remove_fork)
+        it 'should do nothing if project was not forked' do
+          delete(:remove_fork,
+              namespace_id: unforked_project.namespace.to_param,
+              id: unforked_project.to_param, format: :js)
+
+          expect(flash[:notice]).to be_nil
+          expect(response).to render_template(:remove_fork)
+        end
       end
     end
 
     it "does nothing if user is not signed in" do
-      put(:remove_fork,
+      delete(:remove_fork,
           namespace_id: project.namespace.to_param,
           id: project.to_param, format: :js)
       expect(response.status).to eq(401)

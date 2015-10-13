@@ -45,13 +45,13 @@ feature 'Project', feature: true do
     end
 
     it 'should remove fork' do
-      expect(page).to have_content 'Remove forked relationship'
+      expect(page).to have_content 'Remove fork relationship'
 
-      remove_with_confirm('Remove forked relationship', project.path)
+      remove_with_confirm('Remove fork relationship', project.path)
 
       expect(page).to have_content 'Fork relationship has been removed.'
       expect(project.forked?).to be_falsey
-      expect(page).not_to have_content 'Remove forked relationship'
+      expect(page).not_to have_content 'Remove fork relationship'
     end
   end
 

@@ -5,7 +5,7 @@ class ProjectsController < ApplicationController
   before_action :repository, except: [:new, :create]
 
   # Authorize
-  before_action :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer, :archive, :unarchive, :remove_fork]
+  before_action :authorize_admin_project!, only: [:edit, :update]
   before_action :event_filter, only: [:show, :activity]
 
   layout :determine_layout
@@ -56,6 +56,8 @@ class ProjectsController < ApplicationController
   end
 
   def transfer
+    return access_denied! unless can?(current_user, :change_namespace, @project)
+
     namespace = Namespace.find_by(id: params[:new_namespace_id])
     ::Projects::TransferService.new(project, current_user).execute(namespace)
 
@@ -65,6 +67,8 @@ class ProjectsController < ApplicationController
   end
 
   def remove_fork
+    return access_denied! unless can?(current_user, :remove_fork_project, @project)
+
     if @project.forked?
       @project.forked_project_link.destroy
       flash[:notice] = 'Fork relationship has been removed.'

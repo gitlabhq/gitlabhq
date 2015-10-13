@@ -46,7 +46,7 @@ v 8.1.0 (unreleased)
   - Fix bug where Emojis in Markdown would truncate remaining text (Sakata Sinji)
   - Persist filters when sorting on admin user page (Jerry Lukins)
   - Adds ability to remove the forked relationship from project settings
-  screen. #2578 (Han Loong Liauw)
+  screen. (Han Loong Liauw)
   - Add spellcheck=false to certain input fields
   - Invalidate stored service password if the endpoint URL is changed
 
