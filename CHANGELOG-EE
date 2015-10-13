@@ -1,6 +1,7 @@
 v 8.2.0
   - Invalidate stored jira password if the endpoint URL is changed
   - Fix: Page is not reloaded periodically to check if rebase is finished
+  - Allow configuring the Jira API path (Alex Lossent)
 
 v 8.1.0 (unreleased)
   - added an issues template (Hannes Rosenögger)

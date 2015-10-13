@@ -22,15 +22,18 @@ class JiraService < IssueTrackerService
   include HTTParty
   include Gitlab::Application.routes.url_helpers
 
-  prop_accessor :username, :password, :api_version, :jira_issue_transition_id,
+  DEFAULT_API_VERSION = 2
+
+  prop_accessor :username, :password, :api_url, :jira_issue_transition_id,
                 :title, :description, :project_url, :issues_url, :new_issue_url
 
-  before_validation :set_api_version, :set_jira_issue_transition_id
+  before_validation :set_api_url, :set_jira_issue_transition_id
 
   before_update :reset_password
 
   def reset_password
-    if project_url_changed? && !password_touched?
+    # don't reset the password if a new one is provided
+    if api_url_changed? && !password_touched?
       self.password = nil
     end
   end
@@ -69,9 +72,9 @@ class JiraService < IssueTrackerService
 
   def fields
     super.push(
+      { type: 'text', name: 'api_url', placeholder: 'https://jira.example.com/rest/api/2' },
       { type: 'text', name: 'username', placeholder: '' },
       { type: 'password', name: 'password', placeholder: '' },
-      { type: 'text', name: 'api_version', placeholder: '2' },
       { type: 'text', name: 'jira_issue_transition_id', placeholder: '2' }
     )
   end
@@ -118,7 +121,7 @@ class JiraService < IssueTrackerService
 
   def test_settings
     result = JiraService.get(
-      jira_project_url,
+      jira_api_test_url,
       headers: {
         'Content-Type' => 'application/json',
         'Authorization' => "Basic #{auth}"
@@ -127,22 +130,31 @@ class JiraService < IssueTrackerService
 
     case result.code
     when 201, 200
-      Rails.logger.info("#{self.class.name} SUCCESS #{result.code}: Sucessfully connected to #{server_url}.")
+      Rails.logger.info("#{self.class.name} SUCCESS #{result.code}: Sucessfully connected to #{api_url}.")
       true
     else
       Rails.logger.info("#{self.class.name} ERROR #{result.code}: #{result.parsed_response}")
       false
     end
   rescue Errno::ECONNREFUSED => e
-    Rails.logger.info "#{self.class.name} ERROR: #{e.message}. Hostname: #{server_url}."
+    Rails.logger.info "#{self.class.name} ERROR: #{e.message}. API URL: #{api_url}."
     false
   end
 
   private
 
+  def build_api_url_from_project_url
+    server = URI(project_url)
+    default_ports = [["http",80],["https",443]].include?([server.scheme,server.port])
+    server_url = "#{server.scheme}://#{server.host}"
+    server_url.concat(":#{server.port}") unless default_ports
+    "#{server_url}/rest/api/#{DEFAULT_API_VERSION}"
+  rescue
+    "" # looks like project URL was not valid
+  end
 
-  def set_api_version
-    self.api_version ||= "2"
+  def set_api_url
+    self.api_url = build_api_url_from_project_url if self.api_url.blank?
   end
 
   def set_jira_issue_transition_id
@@ -241,14 +253,6 @@ class JiraService < IssueTrackerService
     false
   end
 
-  def server_url
-    server = URI(project_url)
-    default_ports = [80, 443].include?(server.port)
-    server_url = "#{server.scheme}://#{server.host}"
-    server_url.concat(":#{server.port}") unless default_ports
-    server_url
-  end
-
   def resource_url(resource)
     "#{Settings.gitlab['url'].chomp("/")}#{resource}"
   end
@@ -268,14 +272,14 @@ class JiraService < IssueTrackerService
   end
 
   def close_issue_url(issue_name)
-    "#{server_url}/rest/api/#{self.api_version}/issue/#{issue_name}/transitions"
+    "#{self.api_url}/issue/#{issue_name}/transitions"
   end
 
   def comment_url(issue_name)
-    "#{server_url}/rest/api/#{self.api_version}/issue/#{issue_name}/comment"
+    "#{self.api_url}/issue/#{issue_name}/comment"
   end
 
-  def jira_project_url
-    "#{server_url}/rest/api/#{self.api_version}/project"
+  def jira_api_test_url
+    "#{self.api_url}/myself"
   end
 end
