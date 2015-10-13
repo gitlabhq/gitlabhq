@@ -12,8 +12,7 @@ module Gitlab
       def initialize(*)
         super
 
-        result[:lazy_references]  ||= Hash.new { |hash, type| hash[type] = [] }
-        result[:references]       ||= Hash.new { |hash, type| hash[type] = [] }
+        result[:references] ||= Hash.new { |hash, type| hash[type] = [] }
       end
 
       def call
@@ -41,23 +40,16 @@ module Gitlab
 
         references.each do |type, values|
           Array.wrap(values).each do |value|
-            refs = 
-              if value.is_a?(ReferenceFilter::LazyReference)
-                result[:lazy_references]
-              else
-                result[:references]
-              end
-
-            refs[type] << value
+            result[:references][type] << value
           end
         end
       end
 
       # Will load all references of one type using one query.
       def load_lazy_references
-        result[:lazy_references].each do |type, refs|
-          values = ReferenceFilter::LazyReference.load(refs)
-          result[:references][type].concat(values)
+        refs = result[:references]
+        refs.each do |type, values|
+          refs[type] = ReferenceFilter::LazyReference.load(values)
         end
       end
 

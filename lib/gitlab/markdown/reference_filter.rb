@@ -14,10 +14,18 @@ module Gitlab
     class ReferenceFilter < HTML::Pipeline::Filter
       LazyReference = Struct.new(:klass, :ids) do
         def self.load(refs)
-          refs.group_by(&:klass).flat_map do |klass, refs|
+          lazy_references, values = refs.partition { |ref| ref.is_a?(self) }
+          
+          lazy_values = lazy_references.group_by(&:klass).flat_map do |klass, refs|
             ids = refs.flat_map(&:ids)
             klass.where(id: ids)
           end
+
+          values + lazy_values
+        end
+
+        def load
+          self.klass.where(id: self.ids)
         end
       end
 

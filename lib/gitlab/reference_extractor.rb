@@ -54,19 +54,13 @@ module Gitlab
 
       pipeline = HTML::Pipeline.new([filter, Gitlab::Markdown::ReferenceGathererFilter], context)
 
-      values = []
-      lazy_references = []
-
-      @texts.each do |text|
+      values = @texts.flat_map do |text|
         result = pipeline.call(text)
 
-        values.concat(result[:references][filter_type])
-        lazy_references.concat(result[:lazy_references][filter_type])
+        result[:references][filter_type]
       end
 
-      lazy_values = Gitlab::Markdown::ReferenceFilter::LazyReference.load(lazy_references)
-      values.concat(lazy_values)
-      values
+      Gitlab::Markdown::ReferenceFilter::LazyReference.load(values)
     end
   end
 end
