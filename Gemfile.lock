@@ -87,6 +87,9 @@ GEM
       terminal-table (~> 1.4)
     browser (1.0.0)
     builder (3.2.2)
+    bullet (4.14.9)
+      activesupport (>= 3.0.0)
+      uniform_notifier (~> 1.9.0)
     byebug (6.0.2)
     cal-heatmap-rails (0.0.1)
     capybara (2.4.4)
@@ -755,6 +758,7 @@ GEM
     unicorn-worker-killer (0.4.3)
       get_process_mem (~> 0)
       unicorn (~> 4)
+    uniform_notifier (1.9.0)
     uuid (2.3.8)
       macaddr (~> 1.0)
     version_sorter (2.0.0)
@@ -800,6 +804,7 @@ DEPENDENCIES
   bootstrap-sass (~> 3.0)
   brakeman (= 3.0.1)
   browser (~> 1.0.0)
+  bullet
   byebug
   cal-heatmap-rails (~> 0.0.1)
   capybara (~> 2.4.0)
