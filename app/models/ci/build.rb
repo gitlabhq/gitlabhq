@@ -261,7 +261,7 @@ module Ci
 
     def predefined_variables
       variables = []
-      variables << { key: :CI_BUILD_TAG, value: ref, public: true } if tag
+      variables << { key: :CI_BUILD_TAG, value: ref, public: true } if tag?
       variables << { key: :CI_BUILD_NAME, value: name, public: true }
       variables << { key: :CI_BUILD_STAGE, value: stage, public: true }
       variables << { key: :CI_BUILD_TRIGGERED, value: 'true', public: true } if trigger_request
