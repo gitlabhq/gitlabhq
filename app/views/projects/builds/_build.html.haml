@@ -10,12 +10,10 @@
       %strong Build ##{build.id}
 
   %td
-    = link_to namespace_project_commit_path(@project.namespace, @project, build.sha) do
-      = build.short_sha
+    = link_to build.short_sha, namespace_project_commit_path(@project.namespace, @project, build.sha)
 
   %td
-    = link_to namespace_project_commits_path(@project.namespace, @project, build.ref) do
-      = build.ref
+    = link_to build.ref, namespace_project_commits_path(@project.namespace, @project, build.ref)
 
   %td
     - if build.runner

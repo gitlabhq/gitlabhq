@@ -1,30 +1,31 @@
 - page_title "Builds"
 - header_title project_title(@project, "Builds", project_builds_path(@project))
 
-%ul.center-top-menu
-  %li{class: ('active' if @scope.nil?)}
-    = link_to project_builds_path(@project) do
-      All builds
-      %span.badge.js-totalbuilds-count= @all_builds.size
-
-  %li{class: ('active' if @scope == 'pending')}
-    = link_to project_builds_path(@project, scope: :pending) do
-      Pending
-      %span.badge.js-pending-count= @all_builds.pending.size
-
-  %li{class: ('active' if @scope == 'running')}
-    = link_to project_builds_path(@project, scope: :running) do
-      Running
-      %span.badge.js-running-count= @all_builds.running.size
-
-.gray-content-block
-  .oneline
-    List of all builds from this project
-
+.project-issuable-filter
+  .controls
     - if @ci_project && current_user && can?(current_user, :manage_builds, @project)
-      .pull-right
+      .pull-left.hidden-xs
         - if @all_builds.running_or_pending.any?
           = link_to 'Cancel all', cancel_all_namespace_project_builds_path(@project.namespace, @project), data: { confirm: 'Are you sure?' }, method: :post, class: 'btn btn-danger'
+
+  %ul.center-top-menu
+    %li{class: ('active' if @scope.nil?)}
+      = link_to project_builds_path(@project) do
+        Running
+        %span.badge.js-running-count= @all_builds.running_or_pending.size
+
+    %li{class: ('active' if @scope == 'finished')}
+      = link_to project_builds_path(@project, scope: :finished) do
+        Finished
+        %span.badge.js-running-count= @all_builds.finished.size
+
+    %li{class: ('active' if @scope == 'all')}
+      = link_to project_builds_path(@project, scope: :all) do
+        All
+        %span.badge.js-totalbuilds-count= @all_builds.size
+
+.gray-content-block
+  List of #{@scope || 'running'} builds from this project
 
 %ul.content-list
   - if @builds.blank?

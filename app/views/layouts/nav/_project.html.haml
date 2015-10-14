@@ -41,9 +41,10 @@
   - if project_nav_tab? :builds
     = nav_link(controller: %w(builds)) do
       = link_to project_builds_path(@project), title: 'Builds', class: 'shortcuts-builds', data: {placement: 'right'} do
-        = icon('link fw')
+        = icon('cubes fw')
         %span
           Builds
+          %span.count.builds_counter= @project.ci_builds.running_or_pending.count(:all)
 
   - if project_nav_tab? :network
     = nav_link(controller: %w(network)) do
