@@ -30,56 +30,37 @@
             .col-sm-10
               - if github_import_enabled?
                 - if github_import_configured?
-                  = link_to status_import_github_path, class: 'btn import_github' do
-                    %i.fa.fa-github
-                    GitHub
+                  = link_to '', status_import_github_path, class: 'fa fa-github btn import_github', title: "GitHub"
                 - else
-                  = link_to '#', class: 'how_to_import_link btn import_github' do
-                    %i.fa.fa-github
-                    GitHub
+                  = link_to '', '#', class: 'fa fa-github how_to_import_link btn import_github', title: "GitHub"
                   = render 'github_import_modal'
 
               - if bitbucket_import_enabled?
                 - if bitbucket_import_configured?
-                  = link_to status_import_bitbucket_path, class: 'btn import_bitbucket', "data-no-turbolink" => "true" do
-                    %i.fa.fa-bitbucket
-                    Bitbucket
+                  = link_to '', status_import_bitbucket_path, class: 'fa fa-bitbucket btn import_bitbucket', "data-no-turbolink" => "true", title: "Bitbucket"
                 - else
-                  = link_to status_import_bitbucket_path, class: 'how_to_import_link btn import_bitbucket', "data-no-turbolink" => "true" do
-                    %i.fa.fa-bitbucket
-                    Bitbucket
+                  = link_to '', status_import_bitbucket_path, class: 'fa fa-bitbucket how_to_import_link btn import_bitbucket', "data-no-turbolink" => "true", title: "Bitbucket"
                   = render 'bitbucket_import_modal'
 
               - if gitlab_import_enabled?
                 - if gitlab_import_configured?
-                  = link_to status_import_gitlab_path, class: 'btn import_gitlab' do
-                    %i.fa.fa-heart
-                    GitLab.com
+                  = link_to '', status_import_gitlab_path, class: 'fa fa-heart btn import_gitlab', title: "GitLab.com"
                 - else
-                  = link_to status_import_gitlab_path, class: 'how_to_import_link btn import_gitlab' do
-                    %i.fa.fa-heart
-                    GitLab.com
+                  = link_to '', status_import_gitlab_path, class: 'fa fa-heart how_to_import_link btn import_gitlab', title: "GitLab.com"
                   = render 'gitlab_import_modal'
 
               - if gitorious_import_enabled?
-                = link_to new_import_gitorious_path, class: 'btn import_gitorious' do
+                = link_to new_import_gitorious_path, class: 'btn import_gitorious', title: "Gitorious.org" do
                   %i.icon-gitorious.icon-gitorious-small
-                  Gitorious.org
 
               - if google_code_import_enabled?
-                = link_to new_import_google_code_path, class: 'btn import_google_code' do
-                  %i.fa.fa-google
-                  Google Code
+                = link_to '', new_import_google_code_path, class: 'fa fa-google btn import_google_code', title: "Google Code"
 
               - if fogbugz_import_enabled?
-                = link_to new_import_fogbugz_path, class: 'btn import_fogbugz' do
-                  %i.fa.fa-bug
-                  Fogbugz
+                = link_to '', new_import_fogbugz_path, class: 'fa fa-bug btn import_fogbugz', title: "Fogbugz"
 
               - if git_import_enabled?
-                = link_to "#", class: 'btn js-toggle-button import_git' do
-                  %i.fa.fa-git
-                  %span Any repo by URL
+                = link_to '', "#", class: 'fa fa-git btn js-toggle-button import_git', title: "Git Any repo by URL"
 
           .js-toggle-content.hide
             .form-group.import-url-data
