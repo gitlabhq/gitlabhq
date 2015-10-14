@@ -6,7 +6,7 @@
   font-size: 13px;
   font-weight: 600;
   line-height: 18px;
-  padding: 11px 16px;
+  padding: 11px $gl-padding;
   letter-spacing: .4px;
 
   &:focus,
@@ -20,12 +20,6 @@
   @include btn-default;
   @include border-radius(2px);
   padding: 11px 24px;
-}
-
-@mixin btn-sm {
-  @include btn-default;
-  @include border-radius(2px);
-  padding: 5px 10px;
 }
 
 @mixin btn-color($light, $border-light, $normal, $border-normal, $dark, $border-dark, $color) {
@@ -78,7 +72,11 @@
   @include btn-white;
 
   &.btn-sm {
-    @include btn-sm;
+    padding: 5px 10px;
+  }
+
+  &.btn-xs {
+    padding: 1px 5px;
   }
 
   &.btn-success,

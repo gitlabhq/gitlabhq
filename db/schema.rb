@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151007120511) do
+ActiveRecord::Schema.define(version: 20151008130321) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -103,9 +103,14 @@ ActiveRecord::Schema.define(version: 20151007120511) do
     t.boolean  "tag"
     t.string   "ref"
     t.integer  "user_id"
+    t.string   "type"
+    t.string   "target_url"
+    t.string   "description"
   end
 
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree
+  add_index "ci_builds", ["commit_id", "type", "name", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_name_and_ref", using: :btree
+  add_index "ci_builds", ["commit_id", "type", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_ref", using: :btree
   add_index "ci_builds", ["commit_id"], name: "index_ci_builds_on_commit_id", using: :btree
   add_index "ci_builds", ["project_id", "commit_id"], name: "index_ci_builds_on_project_id_and_commit_id", using: :btree
   add_index "ci_builds", ["project_id"], name: "index_ci_builds_on_project_id", using: :btree

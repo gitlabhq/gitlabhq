@@ -16,6 +16,7 @@ v 8.1.0 (unreleased)
   - Move CI charts to project graphs area
   - Fix cases where Markdown did not render links in activity feed (Stan Hu)
   - Add first and last to pagination (Zeger-Jan van de Weg)
+  - Added Commit Status API
   - Show CI status on commit page
   - Show CI status on Your projects page and Starred projects page
   - Remove "Continuous Integration" page from dashboard
@@ -46,6 +47,11 @@ v 8.1.0 (unreleased)
   - Fix bug where Emojis in Markdown would truncate remaining text (Sakata Sinji)
   - Persist filters when sorting on admin user page (Jerry Lukins)
   - Added last modified date to snippets#show (Han Loong Liauw)
+  - Add spellcheck=false to certain input fields
+  - Invalidate stored service password if the endpoint URL is changed
+  - Project names are not fully shown if group name is too big, even on group page view
+  - Apply new design for Files page
+  - Add "New Page" button to Wiki Pages tab (Stan Hu)
 
 v 8.0.4
   - Fix Message-ID header to be RFC 2111-compliant to prevent e-mails being dropped (Stan Hu)
@@ -60,6 +66,7 @@ v 8.0.3
   - Fix URL shown in Slack notifications
   - Fix bug where projects would appear to be stuck in the forked import state (Stan Hu)
   - Fix Error 500 in creating merge requests with > 1000 diffs (Stan Hu)
+  - Add work_in_progress key to MR web hooks (Ben Boeckel)
 
 v 8.0.2
   - Fix default avatar not rendering in network graph (Stan Hu)

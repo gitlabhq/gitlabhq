@@ -30,17 +30,9 @@ describe Ci::Build do
   let(:gl_project) { FactoryGirl.create :empty_project, gitlab_ci_project: project }
   let(:commit) { FactoryGirl.create :ci_commit, gl_project: gl_project }
   let(:build) { FactoryGirl.create :ci_build, commit: commit }
-  subject { build }
 
-  it { is_expected.to belong_to(:commit) }
-  it { is_expected.to belong_to(:user) }
-  it { is_expected.to validate_presence_of :status }
   it { is_expected.to validate_presence_of :ref }
 
-  it { is_expected.to respond_to :success? }
-  it { is_expected.to respond_to :failed? }
-  it { is_expected.to respond_to :running? }
-  it { is_expected.to respond_to :pending? }
   it { is_expected.to respond_to :trace_html }
 
   describe :first_pending do
@@ -64,72 +56,6 @@ describe Ci::Build do
       expect(Ci::Build.pending.count(:all)).to eq 0
       create_from_build
       expect(Ci::Build.pending.count(:all)).to be > 0
-    end
-  end
-
-  describe :started? do
-    subject { build.started? }
-
-    context 'without started_at' do
-      before { build.started_at = nil }
-
-      it { is_expected.to be_falsey }
-    end
-
-    %w(running success failed).each do |status|
-      context "if build status is #{status}" do
-        before { build.status = status }
-
-        it { is_expected.to be_truthy }
-      end
-    end
-
-    %w(pending canceled).each do |status|
-      context "if build status is #{status}" do
-        before { build.status = status }
-
-        it { is_expected.to be_falsey }
-      end
-    end
-  end
-
-  describe :active? do
-    subject { build.active? }
-
-    %w(pending running).each do |state|
-      context "if build.status is #{state}" do
-        before { build.status = state }
-
-        it { is_expected.to be_truthy }
-      end
-    end
-
-    %w(success failed canceled).each do |state|
-      context "if build.status is #{state}" do
-        before { build.status = state }
-
-        it { is_expected.to be_falsey }
-      end
-    end
-  end
-
-  describe :complete? do
-    subject { build.complete? }
-
-    %w(success failed canceled).each do |state|
-      context "if build.status is #{state}" do
-        before { build.status = state }
-
-        it { is_expected.to be_truthy }
-      end
-    end
-
-    %w(pending running).each do |state|
-      context "if build.status is #{state}" do
-        before { build.status = state }
-
-        it { is_expected.to be_falsey }
-      end
     end
   end
 
@@ -200,31 +126,6 @@ describe Ci::Build do
     it { is_expected.to eq(commit.project.timeout) }
   end
 
-  describe :duration do
-    subject { build.duration }
-
-    it { is_expected.to eq(120.0) }
-
-    context 'if the building process has not started yet' do
-      before do
-        build.started_at = nil
-        build.finished_at = nil
-      end
-
-      it { is_expected.to be_nil }
-    end
-
-    context 'if the building process has started' do
-      before do
-        build.started_at = Time.now - 1.minute
-        build.finished_at = nil
-      end
-
-      it { is_expected.to be_a(Float) }
-      it { is_expected.to be > 0.0 }
-    end
-  end
-
   describe :options do
     let(:options) do
       {
@@ -237,18 +138,6 @@ describe Ci::Build do
 
     subject { build.options }
     it { is_expected.to eq(options) }
-  end
-
-  describe :sha do
-    subject { build.sha }
-
-    it { is_expected.to eq(commit.sha) }
-  end
-
-  describe :short_sha do
-    subject { build.short_sha }
-
-    it { is_expected.to eq(commit.short_sha) }
   end
 
   describe :allow_git_fetch do

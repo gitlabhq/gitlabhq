@@ -118,6 +118,6 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
 
   step 'I see builds list' do
     expect(page).to have_content "build: pending"
-    expect(page).to have_content "Builds for master"
+    expect(page).to have_content "Latest builds"
   end
 end

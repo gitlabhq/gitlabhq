@@ -2,11 +2,12 @@
 - avatar = true unless local_assigns[:avatar] == false
 - stars = true unless local_assigns[:stars] == false
 - ci = false unless local_assigns[:ci] == true
+- skip_namespace = false unless local_assigns[:skip_namespace] == true
 
 %ul.projects-list
   - projects.each_with_index do |project, i|
     - css_class = (i >= projects_limit) ? 'hide' : nil
-    = render "shared/projects/project", project: project,
+    = render "shared/projects/project", project: project, skip_namespace: skip_namespace,
       avatar: avatar, stars: stars, css_class: css_class, ci: ci
 
   - if projects.size > projects_limit
