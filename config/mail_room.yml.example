@@ -12,8 +12,10 @@
     # :email: "gitlab-incoming@gmail.com"
     # # Email account password
     # :password: "password"
+
     # # The name of the mailbox where incoming mail will end up. Usually "inbox".
     # :name: "inbox"
+
     # # Always "sidekiq".
     # :delivery_method: sidekiq
     # # Always true.
@@ -25,5 +27,13 @@
     #   :namespace: resque:gitlab
     #   # Always "incoming_email".
     #   :queue: incoming_email
-    #   # Always "EmailReceiverWorker"
+    #   # Always "EmailReceiverWorker".
     #   :worker: EmailReceiverWorker
+
+    # # Always "redis".
+    # :arbitration_method: redis
+    # :arbitration_options:
+    #   # The URL to the Redis server. Should match the URL in config/resque.yml.
+    #   :redis_url: redis://localhost:6379
+    #   # Always "mail_room:gitlab".
+    #   :namespace: mail_room:gitlab

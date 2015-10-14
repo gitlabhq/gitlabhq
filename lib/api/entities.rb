@@ -149,6 +149,7 @@ module API
 
     class RepoCommitDetail < RepoCommit
       expose :parent_ids, :committed_date, :authored_date
+      expose :status
     end
 
     class ProjectSnippet < Grape::Entity
@@ -226,6 +227,12 @@ module API
       expose(:line_type) { |note| note.diff_line_type }
       expose :author, using: Entities::UserBasic
       expose :created_at
+    end
+
+    class CommitStatus < Grape::Entity
+      expose :id, :sha, :ref, :status, :name, :target_url, :description,
+             :created_at, :started_at, :finished_at
+      expose :author, using: Entities::UserBasic
     end
 
     class Event < Grape::Entity

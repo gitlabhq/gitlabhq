@@ -165,6 +165,17 @@ describe MergeRequest do
     end
   end
 
+  describe "#hook_attrs" do
+    it "has all the required keys" do
+      attrs = subject.hook_attrs
+      attrs = attrs.to_h
+      expect(attrs).to include(:source)
+      expect(attrs).to include(:target)
+      expect(attrs).to include(:last_commit)
+      expect(attrs).to include(:work_in_progress)
+    end
+  end
+
   it_behaves_like 'an editable mentionable' do
     subject { create(:merge_request) }
 

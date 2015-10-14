@@ -6,7 +6,7 @@
         = brand_header_logo
         .gitlab-text-container
           %h3 GitLab
-          
+
     - if defined?(sidebar) && sidebar
       = render "layouts/nav/#{sidebar}"
     - elsif current_user
@@ -23,6 +23,7 @@
           = current_user.username
   .content-wrapper
     = render "layouts/flash"
+    = yield :flash_message
     %div{ class: container_class }
       .content
         .clearfix

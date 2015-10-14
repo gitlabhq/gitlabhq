@@ -47,6 +47,19 @@ describe API::API, api: true  do
         get api("/projects/#{project.id}/repository/commits/invalid_sha", user)
         expect(response.status).to eq(404)
       end
+
+      it "should return not_found for CI status" do
+        get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
+        expect(response.status).to eq(200)
+        expect(json_response['status']).to eq('not_found')
+      end
+
+      it "should return status for CI" do
+        ci_commit = project.ensure_ci_commit(project.repository.commit.sha)
+        get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
+        expect(response.status).to eq(200)
+        expect(json_response['status']).to eq(ci_commit.status)
+      end
     end
 
     context "unauthorized user" do

@@ -63,6 +63,7 @@
     }
 
     p {
+      padding: 0 $gl-padding;
       color: #5c5d5e;
     }
   }
@@ -510,8 +511,3 @@ pre.light-well {
     margin-top: -1px;
   }
 }
-
-.inline-form {
-  display: inline-block;
-}
-
