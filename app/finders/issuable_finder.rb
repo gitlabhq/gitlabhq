@@ -81,7 +81,14 @@ class IssuableFinder
 
     @milestones =
       if milestones?
-        Milestone.where(title: params[:milestone_title])
+        scope =
+          if project
+            project.milestones
+          else
+            Milestone.all
+          end
+
+        scope.where(title: params[:milestone_title])
       else
         nil
       end
