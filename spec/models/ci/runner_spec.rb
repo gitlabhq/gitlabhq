@@ -32,7 +32,7 @@ describe Ci::Runner do
     end
 
     it 'should return the token if the description is an empty string' do
-      runner = FactoryGirl.build(:ci_runner, description: '')
+      runner = FactoryGirl.build(:ci_runner, description: '', token: 'token')
       expect(runner.display_name).to eq runner.token
     end
   end

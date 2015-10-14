@@ -78,7 +78,7 @@ module Ci
     end
 
     def short_sha
-      token[0...8]
+      token[0...8] if token
     end
   end
 end

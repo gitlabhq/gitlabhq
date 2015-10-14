@@ -12,12 +12,12 @@ class Projects::BuildsController < Projects::ApplicationController
 
     @builds =
       case @scope
-        when 'all'
-          @all_builds
-        when 'finished'
-          @all_builds.finished
-        else
-          @all_builds.running_or_pending
+      when 'all'
+        @all_builds
+      when 'finished'
+        @all_builds.finished
+      else
+        @all_builds.running_or_pending
       end
   end
 
