@@ -35,7 +35,7 @@ module Issues
           create_title_change_note(issue, issue.previous_changes['title'].first)
         end
 
-        issue.create_new_cross_references!(issue.project, current_user)
+        issue.create_new_cross_references!
         execute_hooks(issue, 'update')
       end
 

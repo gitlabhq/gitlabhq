@@ -59,7 +59,7 @@ module MergeRequests
           merge_request.mark_as_unchecked
         end
 
-        merge_request.create_new_cross_references!(merge_request.project, current_user)
+        merge_request.create_new_cross_references!
         execute_hooks(merge_request, 'update')
       end
 

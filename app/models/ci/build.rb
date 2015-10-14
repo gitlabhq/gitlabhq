@@ -119,7 +119,7 @@ module Ci
     end
 
     def variables
-      yaml_variables + project_variables + trigger_variables
+      predefined_variables + yaml_variables + project_variables + trigger_variables
     end
 
     def project
@@ -231,6 +231,18 @@ module Ci
       end
     end
 
+    def can_be_served?(runner)
+      (tag_list - runner.tag_list).empty?
+    end
+
+    def any_runners_online?
+      project.any_runners? { |runner| runner.active? && runner.online? && can_be_served?(runner) }
+    end
+
+    def show_warning?
+      pending? && !any_runners_online?
+    end
+
     private
 
     def yaml_variables
@@ -257,6 +269,15 @@ module Ci
       else
         []
       end
+    end
+
+    def predefined_variables
+      variables = []
+      variables << { key: :CI_BUILD_TAG, value: ref, public: true } if tag?
+      variables << { key: :CI_BUILD_NAME, value: name, public: true }
+      variables << { key: :CI_BUILD_STAGE, value: stage, public: true }
+      variables << { key: :CI_BUILD_TRIGGERED, value: 'true', public: true } if trigger_request
+      variables
     end
   end
 end

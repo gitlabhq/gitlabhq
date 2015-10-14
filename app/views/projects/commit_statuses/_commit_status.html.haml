@@ -9,6 +9,9 @@
     - else
       %strong Build ##{commit_status.id}
 
+    - if commit_status.show_warning?
+      %i.fa.fa-warning.text-warning
+
   %td
     = commit_status.ref
 

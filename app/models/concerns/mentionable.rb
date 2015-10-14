@@ -43,67 +43,57 @@ module Mentionable
     self
   end
 
-  # Determine whether or not a cross-reference Note has already been created between this Mentionable and
-  # the specified target.
-  def has_mentioned?(target)
-    SystemNoteService.cross_reference_exists?(target, local_reference)
-  end
-
-  def mentioned_users(current_user = nil, load_lazy_references: true)
-    # TODO: Douwe: Will be simplified when the "Simplify ..." MR is merged.
+  def all_references(current_user = self.author, text = nil, load_lazy_references: true)
     ext = Gitlab::ReferenceExtractor.new(self.project, current_user, load_lazy_references: load_lazy_references)
-    self.class.mentionable_attrs.each do |attr, options|
-      text = send(attr)
-      cache_key = [self, attr] if options[:cache]
-      ext.analyze(text, cache_key: cache_key, pipeline: options[:pipeline])
-    end
-    ext.users
-  end
-
-  # Extract GFM references to other Mentionables from this Mentionable. Always excludes its #local_reference.
-  def references(p = project, current_user = self.author, text = nil, load_lazy_references: true)
-    return [] if text.blank?
-
-    ext = Gitlab::ReferenceExtractor.new(p, current_user, load_lazy_references: load_lazy_references)
-
+    
     if text
       ext.analyze(text)
     else
       self.class.mentionable_attrs.each do |attr, options|
         text = send(attr)
-        cache_key = [self, attr] if options[:cache]
-        ext.analyze(text, cache_key: cache_key)
+        options[:cache_key] = [self, attr] if options.delete(:cache)
+        ext.analyze(text, options)
       end
     end
 
-    (ext.issues + ext.merge_requests + ext.commits) - [local_reference]
+    ext
   end
 
-  # Create a cross-reference Note for each GFM reference to another Mentionable found in +mentionable_text+.
-  def create_cross_references!(p = project, a = author, without = [])
-    refs = references(p)
+  def mentioned_users(current_user = nil, load_lazy_references: true)
+    all_references(current_user).users
+  end
 
+  # Extract GFM references to other Mentionables from this Mentionable. Always excludes its #local_reference.
+  def referenced_mentionables(current_user = self.author, text = nil)
+    refs = all_references(current_user, text)
+    (refs.issues + refs.merge_requests + refs.commits) - [local_reference]
+  end
+
+  # Create a cross-reference Note for each GFM reference to another Mentionable found in the +mentionable_attrs+.
+  def create_cross_references!(author = self.author, without = [], text = nil)
+    refs = referenced_mentionables(author, text)
+    
     # We're using this method instead of Array diffing because that requires
     # both of the object's `hash` values to be the same, which may not be the
     # case for otherwise identical Commit objects.
-    refs.reject! { |ref| without.include?(ref) }
+    refs.reject! { |ref| without.include?(ref) || cross_reference_exists?(ref) }
 
     refs.each do |ref|
-      SystemNoteService.cross_reference(ref, local_reference, a)
+      SystemNoteService.cross_reference(ref, local_reference, author)
     end
   end
 
   # When a mentionable field is changed, creates cross-reference notes that
   # don't already exist
-  def create_new_cross_references!(p = project, a = author)
+  def create_new_cross_references!(author = self.author)
     changes = detect_mentionable_changes
 
     return if changes.empty?
 
     original_text = changes.collect { |_, vals| vals.first }.join(' ')
 
-    preexisting = references(p, self.author, original_text)
-    create_cross_references!(p, a, preexisting)
+    preexisting = referenced_mentionables(author, original_text)
+    create_cross_references!(author, preexisting)
   end
 
   private
@@ -124,5 +114,11 @@ module Mentionable
 
     # Only include changed fields that are mentionable
     source.select { |key, val| mentionable.include?(key) }
+  end
+  
+  # Determine whether or not a cross-reference Note has already been created between this Mentionable and
+  # the specified target.
+  def cross_reference_exists?(target)
+    SystemNoteService.cross_reference_exists?(target, local_reference)
   end
 end

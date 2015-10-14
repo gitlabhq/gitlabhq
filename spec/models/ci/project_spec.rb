@@ -259,5 +259,18 @@ describe Ci::Project do
       FactoryGirl.create(:ci_shared_runner)
       expect(project.any_runners?).to be_falsey
     end
+
+    it "checks the presence of specific runner" do
+      project = FactoryGirl.create(:ci_project)
+      specific_runner = FactoryGirl.create(:ci_specific_runner)
+      project.runners << specific_runner
+      expect(project.any_runners? { |runner| runner == specific_runner }).to be_truthy
+    end
+
+    it "checks the presence of shared runner" do
+      project = FactoryGirl.create(:ci_project, shared_runners_enabled: true)
+      shared_runner = FactoryGirl.create(:ci_shared_runner)
+      expect(project.any_runners? { |runner| runner == shared_runner }).to be_truthy
+    end
   end
 end

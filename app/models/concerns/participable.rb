@@ -37,7 +37,8 @@ module Participable
 
   # Be aware that this method makes a lot of sql queries.
   # Save result into variable if you are going to reuse it inside same request
-  def participants(current_user = self.author, project = self.project, load_lazy_references: true)
+<<<<<<< HEAD
+  def participants(current_user = self.author, load_lazy_references: true)
     participants = self.class.participant_attrs.flat_map do |attr|
       value =
         if attr.respond_to?(:call)
@@ -46,16 +47,14 @@ module Participable
           send(attr)
         end
 
-      participants_for(value, current_user, project)
+      participants_for(value, current_user)
     end.compact.uniq
 
     if load_lazy_references
       participants = Gitlab::Markdown::ReferenceFilter::LazyReference.load(participants).uniq
 
-      if project
-        participants.select! do |user|
-          user.can?(:read_project, project)
-        end
+      participants.select! do |user|
+        user.can?(:read_project, project)
       end
     end
 
@@ -64,14 +63,14 @@ module Participable
 
   private
 
-  def participants_for(value, current_user = nil, project = nil)
+  def participants_for(value, current_user = nil)
     case value
     when User, Gitlab::Markdown::ReferenceFilter::LazyReference
       [value]
     when Enumerable, ActiveRecord::Relation
-      value.flat_map { |v| participants_for(v, current_user, project) }
+      value.flat_map { |v| participants_for(v, current_user) }
     when Participable
-      value.participants(current_user, project, load_lazy_references: false)
+      value.participants(current_user, load_lazy_references: false)
     end
   end
 end
