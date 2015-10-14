@@ -53,15 +53,36 @@ class IssuableFinder
       end
   end
 
+  def project?
+    params[:project_id].present?
+  end
+
   def project
     return @project if defined?(@project)
 
-    @project =
-      if params[:project_id].present?
-        Project.find(params[:project_id])
-      else
-        nil
-      end
+    if project?
+      @project = Project.find(params[:project_id])
+      
+      unless Ability.abilities.allowed?(current_user, :read_project, @project)
+        @project = nil
+      end 
+    else
+      @project = nil
+    end
+
+    @project
+  end
+
+  def projects
+    return if project?
+
+    return @projects if defined?(@projects)
+
+    if current_user && params[:authorized_only].presence && !current_user_related?
+      current_user.authorized_projects
+    else
+      ProjectsFinder.new.execute(current_user)
+    end
   end
 
   def search
@@ -84,8 +105,10 @@ class IssuableFinder
         scope =
           if project
             project.milestones
+          elsif projects
+            Milestone.where(project_id: projects)
           else
-            Milestone.all
+            Milestone.none
           end
 
         scope.where(title: params[:milestone_title])
@@ -127,19 +150,7 @@ class IssuableFinder
   private
 
   def init_collection
-    table_name = klass.table_name
-
-    if project
-      if Ability.abilities.allowed?(current_user, :read_project, project)
-        project.send(table_name)
-      else
-        []
-      end
-    elsif current_user && params[:authorized_only].presence && !current_user_related?
-      klass.of_projects(current_user.authorized_projects).references(:project)
-    else
-      klass.of_projects(ProjectsFinder.new.execute(current_user)).references(:project)
-    end
+    klass.all
   end
 
   def by_scope(items)
@@ -177,7 +188,14 @@ class IssuableFinder
   end
 
   def by_project(items)
-    items = items.of_projects(project.id) if project
+    items =
+      if project
+        items.of_projects(project)
+      elsif projects
+        items.of_projects(projects).references(:project)
+      else
+        items.none
+      end
 
     items
   end
@@ -223,17 +241,17 @@ class IssuableFinder
   def by_label(items)
     if params[:label_name].present?
       if params[:label_name] == Label::None.title
-        item_ids = LabelLink.where(target_type: klass.name).pluck(:target_id)
-
-        items = items.where('id NOT IN (?)', item_ids)
+        items = items.
+          joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{klass.name}' AND label_links.target_id = #{klass.table_name}.id").
+          where(label_links: { id: nil })
       else
         label_names = params[:label_name].split(",")
 
-        item_ids = LabelLink.joins(:label).
-          where('labels.title in (?)', label_names).
-          where(target_type: klass.name).pluck(:target_id)
+        items = items.joins(:labels).where(labels: { title: label_names })
 
-        items = items.where(id: item_ids)
+        if project
+          items = items.where('labels.project_id = :id', id: project.id)
+        end
       end
     end
 
