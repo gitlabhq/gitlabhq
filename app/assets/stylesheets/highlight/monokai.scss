@@ -1,15 +1,14 @@
 /* https://github.com/richleland/pygments-css/blob/master/monokai.css */
-pre.code.monokai,
 .code.monokai {
 
-  background: #272822;
-  color: #f8f8f2;
+  background-color: #272822 !important;
+  color: #f8f8f2 !important;
 
   pre.highlight,
   .line-numbers,
   .line-numbers a {
-    background:#272822 !important;
-    color:#f8f8f2 !important;
+    background-color :#272822 !important;
+    color: #f8f8f2 !important;
   }
 
   pre.code {
@@ -23,8 +22,8 @@ pre.code.monokai,
 
   // Search result highlight
   span.highlight_word {
-    background: #ffe792;
-    color: #000000;
+    background-color: #ffe792 !important;
+    color: #000000 !important;
   }
 
   .hll { background-color: #49483e }
