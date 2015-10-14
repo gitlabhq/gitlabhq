@@ -22,27 +22,6 @@ Gitlab::Application.routes.draw do
         get :dumped_yaml
       end
 
-      resources :services, only: [:index, :edit, :update] do
-        member do
-          get :test
-        end
-      end
-
-      resources :commits, only: [] do
-        member do
-          get :status
-          get :cancel
-        end
-      end
-
-      resources :builds, only: [] do
-        member do
-          get :cancel
-          get :status
-          post :retry
-        end
-      end
-
       resources :runner_projects, only: [:create, :destroy]
 
       resources :events, only: [:index]
@@ -464,6 +443,15 @@ Gitlab::Application.routes.draw do
         end
 
         scope do
+          post(
+              '/create_dir/*id',
+              to: 'tree#create_dir',
+              constraints: { id: /.+/ },
+              as: 'create_dir'
+          )
+        end
+
+        scope do
           get(
             '/blame/*id',
             to: 'blame#show',
@@ -486,6 +474,7 @@ Gitlab::Application.routes.draw do
           member do
             get :branches
             get :ci
+            get :cancel_builds
           end
         end
 
@@ -590,7 +579,19 @@ Gitlab::Application.routes.draw do
           end
         end
 
-        resources :builds, only: [:show]
+        resources :ci_services, constraints: { id: /[^\/]+/ }, only: [:index, :edit, :update] do
+          member do
+            get :test
+          end
+        end
+
+        resources :builds, only: [:show] do
+          member do
+            get :cancel
+            get :status
+            post :retry
+          end
+        end
 
         resources :hooks, only: [:index, :create, :destroy], constraints: { id: /\d+/ } do
           member do

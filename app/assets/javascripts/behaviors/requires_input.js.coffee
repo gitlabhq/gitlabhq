@@ -34,6 +34,5 @@ $.fn.requiresInput = ->
 
   $form.on 'change input', fieldSelector, requireInput
 
-# Triggered on standard document `ready` and on Turbolinks `page:load` events
-$(document).on 'ready page:load', ->
+$ ->
   $('form.js-requires-input').requiresInput()

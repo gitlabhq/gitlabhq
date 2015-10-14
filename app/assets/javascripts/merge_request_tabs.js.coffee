@@ -69,7 +69,7 @@ class @MergeRequestTabs
   scrollToElement: (container) ->
     if window.location.hash
       top = $(container + " " + window.location.hash).offset().top
-      $('body').scrollTo(top);
+      $('body').scrollTo(top)
 
   # Activate a tab based on the current action
   activateTab: (action) ->
@@ -139,13 +139,16 @@ class @MergeRequestTabs
         @diffsLoaded = true
         @scrollToElement(".diffs")
 
-  toggleLoading: ->
-    $('.mr-loading-status .loading').toggle()
+  # Show or hide the loading spinner
+  #
+  # status - Boolean, true to show, false to hide
+  toggleLoading: (status) ->
+    $('.mr-loading-status .loading').toggle(status)
 
   _get: (options) ->
     defaults = {
-      beforeSend: @toggleLoading
-      complete: @toggleLoading
+      beforeSend: => @toggleLoading(true)
+      complete:   => @toggleLoading(false)
       dataType: 'json'
       type: 'GET'
     }

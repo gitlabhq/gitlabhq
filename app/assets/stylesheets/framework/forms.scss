@@ -1,0 +1,94 @@
+textarea {
+  resize: vertical;
+}
+
+input[type='search'].search-text-input {
+  background-image: image-url("icon-search.png");
+  background-repeat: no-repeat;
+  background-position: 10px;
+  padding-left: 25px;
+}
+
+input[type='text'].danger {
+  background: #F2DEDE!important;
+  border-color: #D66;
+  text-shadow: 0 1px 1px #fff
+}
+
+.datetime-controls {
+  select {
+    width: 100px;
+  }
+}
+
+.form-actions {
+  padding: 17px 20px 18px;
+  margin-top: 18px;
+  margin-bottom: 18px;
+  background-color: $background-color;
+  border-top: 1px solid $border-color;
+}
+
+label {
+  &.control-label {
+    @extend .col-sm-2;
+  }
+
+  &.inline-label {
+    margin: 0;
+  }
+}
+
+.inline-input-group {
+  width: 250px;
+}
+
+.custom-form-control {
+  width: 150px;
+}
+
+@media (min-width: $screen-sm-min) {
+  .custom-form-control {
+    width: 150px;
+  }
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: $screen-md-min) {
+  .custom-form-control {
+    width: 170px;
+  }
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: $screen-lg-min) {
+  .custom-form-control {
+    width: 200px;
+  }
+}
+
+.fieldset-form fieldset {
+  margin-bottom: 20px;
+}
+
+.form-control {
+  @include box-shadow(none);
+}
+
+.wiki-content {
+  margin-top: 35px;
+}
+
+.form-group .control-label {
+  font-weight: normal;
+}
+
+.form-control::-webkit-input-placeholder {
+  color: #7f8fa4;
+}
+
+.input-group {
+  .input-group-addon {
+    background-color: #f7f8fa;
+  }
+}

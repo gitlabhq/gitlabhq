@@ -9,7 +9,7 @@
   #up-build-trace
   - if @commit.matrix_for_ref?(@build.ref)
     %ul.center-top-menu.build-top-menu
-      - @commit.builds_without_retry_for_ref(@build.ref).each do |build|
+      - @commit.latest_builds_for_ref(@build.ref).each do |build|
         %li{class: ('active' if build == @build) }
           = link_to namespace_project_build_path(@project.namespace, @project, build) do
             = ci_icon_for_status(build.status)
@@ -20,7 +20,7 @@
                 = build.id
 
 
-      - unless @commit.builds_without_retry_for_ref(@build.ref).include?(@build)
+      - unless @commit.latest_builds_for_ref(@build.ref).include?(@build)
         %li.active
           %a
             Build ##{@build.id}
@@ -72,9 +72,9 @@
           - if current_user && can?(current_user, :manage_builds, @project)
             .pull-right
               - if @build.active?
-                = link_to "Cancel", cancel_ci_project_build_path(@ci_project, @build), class: 'btn btn-sm btn-danger'
+                = link_to "Cancel", cancel_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-danger'
               - elsif @build.commands.present?
-                = link_to "Retry", retry_ci_project_build_path(@ci_project, @build), class: 'btn btn-sm btn-primary', method: :post
+                = link_to "Retry", retry_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-primary', method: :post
 
         - if @build.duration
           %p

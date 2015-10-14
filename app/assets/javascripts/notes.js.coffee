@@ -63,12 +63,6 @@ class @Notes
     # fetch notes when tab becomes visible
     $(document).on "visibilitychange", @visibilityChange
 
-    # Chrome doesn't fire keypress or keyup for Command+Enter, so we need keydown.
-    $(document).on 'keydown', '.js-note-text', (e) ->
-      return if e.originalEvent.repeat
-      if e.keyCode == 10 || ((e.metaKey || e.ctrlKey) && e.keyCode == 13)
-        $(@).closest('form').submit()
-
   cleanBinding: ->
     $(document).off "ajax:success", ".js-main-target-form"
     $(document).off "ajax:success", ".js-discussion-note-form"
@@ -82,7 +76,6 @@ class @Notes
     $(document).off "click", ".js-discussion-reply-button"
     $(document).off "click", ".js-add-diff-note-button"
     $(document).off "visibilitychange"
-    $(document).off "keydown", ".js-note-text"
     $(document).off "keyup", ".js-note-text"
     $(document).off "click", ".js-note-target-reopen"
     $(document).off "click", ".js-note-target-close"

@@ -3,12 +3,11 @@
  *
  */
 .mr-state-widget {
-  background: #f8fafc;
+  background: #F7F8FA;
   margin-bottom: 20px;
   color: $gl-gray;
-  border: 1px solid #eef0f2;
-  @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.05));
-  @include border-radius(3px);
+  border: 1px solid #dce0e6;
+  @include border-radius(2px);
 
   form {
     margin-bottom: 0;
@@ -77,10 +76,16 @@
     padding: 15px;
   }
 
+  .normal {
+    color: #5c5d5e;
+  }
+
   .mr-widget-body {
     h4 {
-      font-weight: bold;
+      font-weight: 600;
+      font-size: 17px;
       margin: 5px 0;
+      color: #313236;
     }
 
     p:last-child {
@@ -97,14 +102,26 @@
   }
 }
 
-.merge-request .merge-request-tabs{
+.merge-request .merge-request-tabs {
   @include nav-menu;
   margin: -$gl-padding;
   padding: $gl-padding;
   text-align: center;
-  border-top: 1px solid #e7e9ed;
-  margin-top: 18px;
-  margin-bottom: 3px;
+  margin-bottom: 1px;
+}
+
+// Mobile
+@media (max-width: 480px) {
+  .merge-request .merge-request-tabs {
+    margin: 0;
+    padding: 0;
+
+    li {
+      a {
+        padding: 0;
+      }
+    }
+  }
 }
 
 .mr_source_commit,
@@ -120,10 +137,12 @@
 }
 
 .label-branch {
-  color: #222;
+  color: #313236;
   font-family: $monospace_font;
   font-weight: bold;
   overflow: hidden;
+  font-size: 14px;
+  margin: 0 3px;
 }
 
 .mr-list {

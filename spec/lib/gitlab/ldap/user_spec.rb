@@ -13,6 +13,17 @@ describe Gitlab::LDAP::User do
   let(:auth_hash) do
     OmniAuth::AuthHash.new(uid: 'my-uid', provider: 'ldapmain', info: info)
   end
+  let(:ldap_user_upper_case) { Gitlab::LDAP::User.new(auth_hash_upper_case) }
+  let(:info_upper_case) do
+    {
+      name: 'John',
+      email: 'John@Example.com', # Email address has upper case chars
+      nickname: 'john'
+    }
+  end
+  let(:auth_hash_upper_case) do
+    OmniAuth::AuthHash.new(uid: 'my-uid', provider: 'ldapmain', info: info_upper_case)
+  end
 
   describe :changed? do
     it "marks existing ldap user as changed" do
@@ -50,6 +61,16 @@ describe Gitlab::LDAP::User do
     it 'connects to existing ldap user if the extern_uid changes' do
       existing_user = create(:omniauth_user, email: 'john@example.com', extern_uid: 'old-uid', provider: 'ldapmain')
       expect{ ldap_user.save }.not_to change{ User.count }
+
+      existing_user.reload
+      expect(existing_user.ldap_identity.extern_uid).to eql 'my-uid'
+      expect(existing_user.ldap_identity.provider).to eql 'ldapmain'
+      expect(existing_user.id).to eql ldap_user.gl_user.id
+    end
+
+    it 'connects to existing ldap user if the extern_uid changes and email address has upper case characters' do
+      existing_user = create(:omniauth_user, email: 'john@example.com', extern_uid: 'old-uid', provider: 'ldapmain')
+      expect{ ldap_user_upper_case.save }.not_to change{ User.count }
 
       existing_user.reload
       expect(existing_user.ldap_identity.extern_uid).to eql 'my-uid'

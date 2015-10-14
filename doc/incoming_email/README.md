@@ -2,10 +2,6 @@
 
 GitLab can be set up to allow users to comment on issues and merge requests by replying to notification emails.
 
-**Warning**: Do not enable Reply by email if you have **multiple GitLab application servers**. 
-Due to an issue with the way incoming emails are read from the mail server, every incoming reply-by-email email will result in as many comments being created as you have application servers.
-[A fix is being worked on.](https://github.com/tpitale/mail_room/issues/46)
-
 ## Get a mailbox
 
 Reply by email requires an IMAP-enabled email account, with a provider or server that supports [email sub-addressing](https://en.wikipedia.org/wiki/Email_address#Sub-addressing). Sub-addressing is a feature where any email to `user+some_arbitrary_tag@example.com` will end up in the mailbox for `user@example.com`, and is supported by providers such as Gmail, Yahoo! Mail, Outlook.com and iCloud, as well as the Postfix mail server which you can run on-premises.
@@ -16,24 +12,35 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
 
 ## Set it up
 
-In this example, we'll use the Gmail address `gitlab-incoming@gmail.com`.
-
 ### Omnibus package installations
 
 1. Find the `incoming_email` section in `/etc/gitlab/gitlab.rb`, enable the feature, enter the email address including a placeholder for the `key` that references the item being replied to and fill in the details for your specific IMAP server and email account:
 
     ```ruby
+    # Postfix mail server, assumes mailbox incoming@gitlab.example.com
+    gitlab_rails['incoming_email_enabled'] = true
+    gitlab_rails['incoming_email_address'] = "incoming+%{key}@gitlab.example.com"
+    gitlab_rails['incoming_email_host'] = "gitlab.example.com" # IMAP server host
+    gitlab_rails['incoming_email_port'] = 143 # IMAP server port
+    gitlab_rails['incoming_email_ssl'] = false # Whether the IMAP server uses SSL
+    gitlab_rails['incoming_email_email'] = "incoming"  # Email account username. Usually the full email address.
+    gitlab_rails['incoming_email_password'] = "[REDACTED]" # Email account password
+    gitlab_rails['incoming_email_mailbox_name'] = "inbox" # The name of the mailbox where incoming mail will end up. Usually "inbox".
+    ```
+
+    ```ruby
+    # Gmail / Google Apps, assumes mailbox gitlab-incoming@gmail.com
     gitlab_rails['incoming_email_enabled'] = true
     gitlab_rails['incoming_email_address'] = "gitlab-incoming+%{key}@gmail.com"
     gitlab_rails['incoming_email_host'] = "imap.gmail.com" # IMAP server host
     gitlab_rails['incoming_email_port'] = 993 # IMAP server port
     gitlab_rails['incoming_email_ssl'] = true # Whether the IMAP server uses SSL
     gitlab_rails['incoming_email_email'] = "gitlab-incoming@gmail.com"  # Email account username. Usually the full email address.
-    gitlab_rails['incoming_email_password'] = "password" # Email account password
+    gitlab_rails['incoming_email_password'] = "[REDACTED]" # Email account password
     gitlab_rails['incoming_email_mailbox_name'] = "inbox" # The name of the mailbox where incoming mail will end up. Usually "inbox".
     ```
 
-    As mentioned, the part after `+` in the address is ignored, and any email sent here will end up in the mailbox for `gitlab-incoming@gmail.com`.
+    As mentioned, the part after `+` in the address is ignored, and any email sent here will end up in the mailbox for `incoming@gitlab.example.com`/`gitlab-incoming@gmail.com`.
 
 1. Reconfigure GitLab for the changes to take effect:
 
@@ -64,12 +71,20 @@ In this example, we'll use the Gmail address `gitlab-incoming@gmail.com`.
     ```
 
     ```yaml
+    # Postfix mail server, assumes mailbox incoming@gitlab.example.com
+    incoming_email:
+      enabled: true
+      address: "incoming+%{key}@gitlab.example.com"
+    ```
+
+    ```yaml
+    # Gmail / Google Apps, assumes mailbox gitlab-incoming@gmail.com
     incoming_email:
       enabled: true
       address: "gitlab-incoming+%{key}@gmail.com"
     ```
 
-    As mentioned, the part after `+` in the address is ignored, and any email sent here will end up in the mailbox for `gitlab-incoming@gmail.com`.
+    As mentioned, the part after `+` in the address is ignored, and any email sent here will end up in the mailbox for `incoming@gitlab.example.com`/`gitlab-incoming@gmail.com`.
 
 2. Copy `config/mail_room.yml.example` to `config/mail_room.yml`:
 
@@ -84,6 +99,50 @@ In this example, we'll use the Gmail address `gitlab-incoming@gmail.com`.
     ```
 
     ```yaml
+    # Postfix mail server
+    :mailboxes:
+      -
+        # IMAP server host
+        :host: "gitlab.example.com"
+        # IMAP server port
+        :port: 143
+        # Whether the IMAP server uses SSL
+        :ssl: false
+        # Whether the IMAP server uses StartTLS
+        :start_tls: false
+        # Email account username. Usually the full email address.
+        :email: "incoming"
+        # Email account password
+        :password: "[REDACTED]"
+
+        # The name of the mailbox where incoming mail will end up. Usually "inbox".
+        :name: "inbox"
+
+        # Always "sidekiq".
+        :delivery_method: sidekiq
+        # Always true.
+        :delete_after_delivery: true
+        :delivery_options:
+          # The URL to the Redis server used by Sidekiq. Should match the URL in config/resque.yml.
+          :redis_url: redis://localhost:6379
+          # Always "resque:gitlab".
+          :namespace: resque:gitlab
+          # Always "incoming_email".
+          :queue: incoming_email
+          # Always "EmailReceiverWorker"
+          :worker: EmailReceiverWorker
+
+        # Always "redis".
+        :arbitration_method: redis
+        :arbitration_options:
+          # The URL to the Redis server. Should match the URL in config/resque.yml.
+          :redis_url: redis://localhost:6379
+          # Always "mail_room:gitlab".
+          :namespace: mail_room:gitlab
+    ```
+
+    ```yaml
+    # Gmail / Google Apps
     :mailboxes:
       -
         # IMAP server host
@@ -98,8 +157,10 @@ In this example, we'll use the Gmail address `gitlab-incoming@gmail.com`.
         :email: "gitlab-incoming@gmail.com"
         # Email account password
         :password: "[REDACTED]"
+
         # The name of the mailbox where incoming mail will end up. Usually "inbox".
         :name: "inbox"
+
         # Always "sidekiq".
         :delivery_method: sidekiq
         # Always true.
@@ -113,6 +174,14 @@ In this example, we'll use the Gmail address `gitlab-incoming@gmail.com`.
           :queue: incoming_email
           # Always "EmailReceiverWorker"
           :worker: EmailReceiverWorker
+
+        # Always "redis".
+        :arbitration_method: redis
+        :arbitration_options:
+          # The URL to the Redis server. Should match the URL in config/resque.yml.
+          :redis_url: redis://localhost:6379
+          # Always "mail_room:gitlab".
+          :namespace: mail_room:gitlab
     ```
 
 5. Edit the init script configuration at `/etc/default/gitlab` to enable `mail_room`:
@@ -143,6 +212,7 @@ In this example, we'll use the Gmail address `gitlab-incoming@gmail.com`.
 1. Find the `incoming_email` section in `config/gitlab.yml`, enable the feature and enter the email address including a placeholder for the `key` that references the item being replied to:
 
     ```yaml
+    # Gmail / Google Apps, assumes mailbox gitlab-incoming@gmail.com
     incoming_email:
       enabled: true
       address: "gitlab-incoming+%{key}@gmail.com"
@@ -159,6 +229,7 @@ In this example, we'll use the Gmail address `gitlab-incoming@gmail.com`.
 3. Uncomment the configuration options in `config/mail_room.yml` and fill in the details for your specific IMAP server and email account:
 
     ```yaml
+    # Gmail / Google Apps, assumes mailbox gitlab-incoming@gmail.com
     :mailboxes:
       -
         # IMAP server host
@@ -173,8 +244,10 @@ In this example, we'll use the Gmail address `gitlab-incoming@gmail.com`.
         :email: "gitlab-incoming@gmail.com"
         # Email account password
         :password: "[REDACTED]"
+
         # The name of the mailbox where incoming mail will end up. Usually "inbox".
         :name: "inbox"
+
         # Always "sidekiq".
         :delivery_method: sidekiq
         # Always true.
@@ -188,6 +261,14 @@ In this example, we'll use the Gmail address `gitlab-incoming@gmail.com`.
           :queue: incoming_email
           # Always "EmailReceiverWorker"
           :worker: EmailReceiverWorker
+
+        # Always "redis".
+        :arbitration_method: redis
+        :arbitration_options:
+          # The URL to the Redis server. Should match the URL in config/resque.yml.
+          :redis_url: redis://localhost:6379
+          # Always "mail_room:gitlab".
+          :namespace: mail_room:gitlab
     ```
 
 4. Uncomment the `mail_room` line in your `Procfile`:

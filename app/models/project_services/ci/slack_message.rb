@@ -23,7 +23,7 @@ module Ci
     def attachments
       fields = []
 
-      commit.builds_without_retry.each do |build|
+      commit.latest_builds.each do |build|
         next if build.allow_failure?
         next unless build.failed?
         fields << {
