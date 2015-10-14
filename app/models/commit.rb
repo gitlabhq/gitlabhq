@@ -2,13 +2,13 @@ class Commit
   extend ActiveModel::Naming
 
   include ActiveModel::Conversion
-  include Mentionable
   include Participable
+  include Mentionable
   include Referable
   include StaticModel
 
   attr_mentionable :safe_message
-  participant :author, :committer, :notes, :mentioned_users
+  participant :author, :committer, :notes
 
   attr_accessor :project
 

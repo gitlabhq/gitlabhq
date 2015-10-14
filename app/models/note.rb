@@ -22,14 +22,14 @@ require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class Note < ActiveRecord::Base
-  include Mentionable
   include Gitlab::CurrentSettings
   include Participable
+  include Mentionable
 
   default_value_for :system, false
 
   attr_mentionable :note
-  participant :author, :mentioned_users
+  participant :author
 
   belongs_to :project
   belongs_to :noteable, polymorphic: true

@@ -20,6 +20,12 @@ module Mentionable
     end
   end
 
+  included do
+    if self < Participable
+      participant ->(current_user) { mentioned_users(current_user, load_lazy_references: false) }
+    end
+  end
+
   # Returns the text used as the body of a Note when this object is referenced
   #
   # By default this will be the class name and the result of calling

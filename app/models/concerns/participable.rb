@@ -12,7 +12,7 @@
 #
 #       # ...
 #
-#       participant :author, :assignee, :mentioned_users, :notes
+#       participant :author, :assignee, :notes, ->(current_user) { mentioned_users(current_user) }
 #     end
 #
 #     issue = Issue.last
@@ -39,12 +39,11 @@ module Participable
   # Save result into variable if you are going to reuse it inside same request
   def participants(current_user = self.author, project = self.project, load_lazy_references: true)
     participants = self.class.participant_attrs.flat_map do |attr|
-      meth = method(attr)
       value =
-        if attr == :mentioned_users
-          meth.call(current_user, load_lazy_references: false)
+        if attr.respond_to?(:call)
+          instance_exec(current_user, &attr)
         else
-          meth.call
+          send(attr)
         end
 
       participants_for(value, current_user, project)
