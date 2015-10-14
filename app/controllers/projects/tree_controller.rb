@@ -10,7 +10,7 @@ class Projects::TreeController < Projects::ApplicationController
   before_action :authorize_push_code!, only: [:create_dir]
 
   def show
-    return not_found! unless @repository.commit(@ref)
+    return render_404 unless @repository.commit(@ref)
 
     if tree.entries.empty?
       if @repository.blob_at(@commit.id, @path)
@@ -19,7 +19,7 @@ class Projects::TreeController < Projects::ApplicationController
                                       File.join(@ref, @path))
         ) and return
       elsif @path.present?
-        return not_found!
+        return render_404
       end
     end
 
@@ -31,7 +31,7 @@ class Projects::TreeController < Projects::ApplicationController
   end
 
   def create_dir
-    return not_found! unless @commit_params.values.all?
+    return render_404 unless @commit_params.values.all?
 
     begin
       result = Files::CreateDirService.new(@project, current_user, @commit_params).execute

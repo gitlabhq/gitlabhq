@@ -44,7 +44,7 @@ class Import::GitlabController < Import::BaseController
   end
 
   def verify_gitlab_import_enabled
-    not_found! unless gitlab_import_enabled?
+    render_404 unless gitlab_import_enabled?
   end
 
   def gitlab_auth
