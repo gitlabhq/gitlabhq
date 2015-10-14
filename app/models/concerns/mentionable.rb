@@ -41,12 +41,6 @@ module Mentionable
     self
   end
 
-  # Determine whether or not a cross-reference Note has already been created between this Mentionable and
-  # the specified target.
-  def cross_reference_exists?(target)
-    SystemNoteService.cross_reference_exists?(target, local_reference)
-  end
-
   def all_references(current_user = self.author, text = self.mentionable_text)
     ext = Gitlab::ReferenceExtractor.new(self.project, current_user)
     ext.analyze(text)
@@ -110,5 +104,11 @@ module Mentionable
 
     # Only include changed fields that are mentionable
     source.select { |key, val| mentionable.include?(key) }
+  end
+  
+  # Determine whether or not a cross-reference Note has already been created between this Mentionable and
+  # the specified target.
+  def cross_reference_exists?(target)
+    SystemNoteService.cross_reference_exists?(target, local_reference)
   end
 end

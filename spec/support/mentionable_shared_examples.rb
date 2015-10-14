@@ -86,13 +86,6 @@ shared_examples 'a mentionable' do
 
     subject.create_cross_references!
   end
-
-  it 'detects existing cross-references' do
-    SystemNoteService.cross_reference(mentioned_issue, subject.local_reference, author)
-
-    expect(subject.cross_reference_exists?(mentioned_issue)).to be_truthy
-    expect(subject.cross_reference_exists?(mentioned_mr)).to be_falsey
-  end
 end
 
 shared_examples 'an editable mentionable' do
