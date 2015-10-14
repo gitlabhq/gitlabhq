@@ -39,7 +39,10 @@ class Admin::ServicesController < Admin::ApplicationController
   end
 
   def application_services_params
-    params.permit(:id,
+    service_params = params.permit(:id,
       service: Projects::ServicesController::ALLOWED_PARAMS)
+
+    service_params[:service].delete("password") if service_params[:service]["password"].blank?
+    service_params
   end
 end

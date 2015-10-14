@@ -52,5 +52,13 @@ describe BambooService, models: true do
       @bamboo_service.save
       expect(@bamboo_service.password).to eq("password")
     end
+
+    it "does not reset password if new url is set together with password" do
+      @bamboo_service.bamboo_url = 'http://gitlab_edited.com'
+      @bamboo_service.password = '123'
+      @bamboo_service.save
+      expect(@bamboo_service.password).to eq("123")
+      expect(@bamboo_service.bamboo_url).to eq("http://gitlab_edited.com")
+    end
   end
 end

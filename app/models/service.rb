@@ -110,7 +110,12 @@ class Service < ActiveRecord::Base
           properties['#{arg}']
         end
 
+        def #{arg}_was
+          @#{arg}_was
+        end
+
         def #{arg}=(value)
+          @#{arg}_was = self.properties['#{arg}']
           self.properties['#{arg}'] = value
         end
       }
@@ -120,10 +125,8 @@ class Service < ActiveRecord::Base
   # ActiveRecord does not provide a mechanism to track changes in serialized keys.
   # This is why we need to perform extra query to do it mannually.
   def prop_updated?(prop_name)
-    relation_name = self.type.underscore
-    previous_value = project.send(relation_name).send(prop_name)
-    return false if previous_value.nil?
-    previous_value != send(prop_name)
+    return false if send("#{prop_name}_was").nil?
+    send("#{prop_name}_was") != send(prop_name)
   end
 
   def async_execute(data)

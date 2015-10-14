@@ -52,5 +52,13 @@ describe TeamcityService, models: true do
       @teamcity_service.save
       expect(@teamcity_service.password).to eq("password")
     end
+
+    it "does not reset password if new url is set together with password" do
+      @teamcity_service.teamcity_url = 'http://gitlab_edited.com'
+      @teamcity_service.password = '123'
+      @teamcity_service.save
+      expect(@teamcity_service.password).to eq("123")
+      expect(@teamcity_service.teamcity_url).to eq("http://gitlab_edited.com")
+    end
   end
 end
