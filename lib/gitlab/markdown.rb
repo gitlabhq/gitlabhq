@@ -20,14 +20,16 @@ module Gitlab
     #
     # Returns an HTML-safe String
     def self.render(text, context = {})
-      pipeline = context[:pipeline] || :full
+      cache_key = context.delete(:cache_key)
 
-      html_pipeline = html_pipelines[pipeline]
-
-      transformers = get_context_transformers(pipeline)
-      context = transformers.reduce(context) { |context, transformer| transformer.call(context) }
-
-      html_pipeline.to_html(text, context)
+      if cache_key
+        cache_key = full_cache_key(cache_key, context[:pipeline])
+        Rails.cache.fetch(cache_key) do
+          cacheless_render(text, context)
+        end
+      else
+        cacheless_render(text, context)
+      end
     end
 
     # Provide autoload paths for filters to prevent a circular dependency error
@@ -130,9 +132,7 @@ module Gitlab
       ],
       email: [
         :full,
-        { 
-          only_path: false 
-        }
+        { only_path: false }
       ],
       description: [
         :full,
@@ -153,6 +153,17 @@ module Gitlab
         filters = get_filters(pipeline)
         HTML::Pipeline.new(filters)
       end
+    end
+
+    def self.cacheless_render(text, context = {})
+      pipeline = context[:pipeline] || :full
+
+      html_pipeline = html_pipelines[pipeline]
+
+      transformers = get_context_transformers(pipeline)
+      context = transformers.reduce(context) { |context, transformer| transformer.call(context) }
+
+      html_pipeline.to_html(text, context)
     end
 
     def self.get_filters(pipelines)
@@ -181,6 +192,10 @@ module Gitlab
           get_context_transformers(pipeline)
         end
       end.compact
+    end
+
+    def self.full_cache_key(cache_key, pipeline = :full)
+      ["markdown", *cache_key, pipeline]
     end
   end
 end

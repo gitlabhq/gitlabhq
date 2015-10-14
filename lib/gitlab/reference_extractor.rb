@@ -11,10 +11,10 @@ module Gitlab
       @load_lazy_references = load_lazy_references
     end
 
-    def analyze(text)
+    def analyze(text, cache_key: nil)
       references.clear
 
-      @document = Gitlab::Markdown.render(text, project: project)
+      @document = Gitlab::Markdown.render(text, project: project, cache_key: cache_key)
     end
 
     %i(user label issue merge_request snippet commit commit_range).each do |type|
