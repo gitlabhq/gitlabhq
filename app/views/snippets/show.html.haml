@@ -1,30 +1,29 @@
 - page_title @snippet.title, "Snippets"
-%h4.page-title
-  = @snippet.title
 
-  - if @snippet.private?
-    %span.label.label-success
-      %i.fa.fa-lock
-      private
+.snippet
+  .snippet-details
+    .page-title
+      - if @snippet.private?
+        .snippet-box.snippet-box-locked
+          %i.fa.fa-lock
+          Private
+      %span.creator
+        updated by #{link_to_member(@project, @snippet.author, size: 24)}
+        &middot;
+        = time_ago_with_tooltip(@snippet.updated_at, placement: 'bottom', html_class: 'snippet_updated_ago')
 
-  .pull-right
-    = link_to new_snippet_path, class: "btn btn-new btn-sm", title: "New Snippet" do
-      Add new snippet
-
-.append-bottom-10.prepend-top-10.clearfix
-  .pull-right
-    %span.light
-      = link_to user_snippets_path(@snippet.author) do
-        = @snippet.author_name
-      authored #{time_ago_with_tooltip(@snippet.updated_at)}
-
-  .back-link
-    - if @snippet.author == current_user
-      = link_to dashboard_snippets_path do
-        &larr; your snippets
-    - else
-      = link_to explore_snippets_path do
-        &larr; explore snippets
+      .pull-right
+        = link_to new_snippet_path, class: 'btn btn-grouped new-snippet-link', title: "New Snippet" do
+          = icon('plus')
+          Add new snippet
+        = link_to "remove", snippet_path(@snippet), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-grouped btn-remove", title: 'Delete Snippet'
+        - if can?(current_user, :update_personal_snippet, @snippet)
+          = link_to edit_snippet_path(@snippet), class: "btn btn-grouped issuabled-edit" do
+            = icon('pencil-square-o')
+            Edit
+    .gray-content-block.middle-block
+      %h2.snippet-title
+        = gfm escape_once(@snippet.title)
 
 .file-holder
   .file-title
@@ -33,9 +32,5 @@
       = @snippet.file_name
     .file-actions
       .btn-group
-        - if can?(current_user, :update_personal_snippet, @snippet)
-          = link_to "edit", edit_snippet_path(@snippet), class: "btn btn-sm", title: 'Edit Snippet'
         = link_to "raw", raw_snippet_path(@snippet), class: "btn btn-sm", target: "_blank"
-      - if can?(current_user, :admin_personal_snippet, @snippet)
-        = link_to "remove", snippet_path(@snippet), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-sm btn-remove", title: 'Delete Snippet'
   = render 'shared/snippets/blob'
