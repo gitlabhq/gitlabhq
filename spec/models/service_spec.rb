@@ -116,47 +116,14 @@ describe Service do
       )
     end
 
-    it "returns false when the property has not been assigned a new value" do
+    it "returns false" do
       service.username = "key_changed"
       expect(service.prop_updated?(:bamboo_url)).to be_falsy
     end
 
-    it "returns true when the property has been assigned a different value" do
-      service.bamboo_url = "http://example.com"
+    it "returns true" do
+      service.bamboo_url = "http://other.com"
       expect(service.prop_updated?(:bamboo_url)).to be_truthy
-    end
-
-    it "returns true when the property has been re-assigned the same value" do
-      service.bamboo_url = 'http://gitlab.com'
-      expect(service.prop_updated?(:bamboo_url)).to be_truthy
-    end
-  end
-
-  describe "#prop_modified?" do
-    let(:service) do
-      BambooService.create(
-        project: create(:project),
-        properties: {
-          bamboo_url: 'http://gitlab.com',
-          username: 'mic',
-          password: "password"
-        }
-      )
-    end
-
-    it "returns false when the property has not been assigned a new value" do
-      service.username = "key_changed"
-      expect(service.prop_modified?(:bamboo_url)).to be_falsy
-    end
-
-    it "returns true when the property has been assigned a different value" do
-      service.bamboo_url = "http://example.com"
-      expect(service.prop_modified?(:bamboo_url)).to be_truthy
-    end
-
-    it "returns false when the property has been re-assigned the same value" do
-      service.bamboo_url = 'http://gitlab.com'
-      expect(service.prop_modified?(:bamboo_url)).to be_falsy
     end
   end
 end
