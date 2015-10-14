@@ -226,6 +226,7 @@ group :development do
   gem 'rerun', '~> 0.10.0'
   gem 'bullet', require: false
   gem 'active_record_query_trace', require: false
+  gem 'rack-lineprof', platform: :mri
 
   # Better errors handler
   gem 'better_errors', '~> 1.0.1'
