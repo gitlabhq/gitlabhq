@@ -53,8 +53,7 @@ describe "Builds" do
       visit cancel_all_namespace_project_builds_path(@gl_project.namespace, @gl_project)
     end
 
-    it { expect(page).to have_content 'All' }
-    it { expect(page).to have_content 'canceled' }
+    it { expect(page).to have_content 'No builds to show' }
     it { expect(page).to_not have_content 'Cancel all' }
   end
 
