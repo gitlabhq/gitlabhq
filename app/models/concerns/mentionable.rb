@@ -47,19 +47,19 @@ module Mentionable
     SystemNoteService.cross_reference_exists?(target, local_reference)
   end
 
-  def mentioned_users(current_user = nil)
+  def mentioned_users(current_user = nil, load_lazy_references: true)
     return [] if mentionable_text.blank?
 
-    ext = Gitlab::ReferenceExtractor.new(self.project, current_user)
+    ext = Gitlab::ReferenceExtractor.new(self.project, current_user, load_lazy_references: load_lazy_references)
     ext.analyze(mentionable_text)
     ext.users.uniq
   end
 
   # Extract GFM references to other Mentionables from this Mentionable. Always excludes its #local_reference.
-  def references(p = project, current_user = self.author, text = mentionable_text)
+  def references(p = project, current_user = self.author, text = mentionable_text, load_lazy_references: true)
     return [] if text.blank?
 
-    ext = Gitlab::ReferenceExtractor.new(p, current_user)
+    ext = Gitlab::ReferenceExtractor.new(p, current_user, load_lazy_references: load_lazy_references)
     ext.analyze(text)
     (ext.issues + ext.merge_requests + ext.commits).uniq - [local_reference]
   end

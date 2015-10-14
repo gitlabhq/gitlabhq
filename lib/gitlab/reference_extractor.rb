@@ -3,17 +3,17 @@ require 'gitlab/markdown'
 module Gitlab
   # Extract possible GFM references from an arbitrary String for further processing.
   class ReferenceExtractor
-    attr_accessor :project, :current_user
+    attr_accessor :project, :current_user, :load_lazy_references
 
-    def initialize(project, current_user = nil)
+    def initialize(project, current_user = nil, load_lazy_references: true)
       @project = project
       @current_user = current_user
+      @load_lazy_references = load_lazy_references
     end
 
-    def analyze(texts)
+    def analyze(text)
       references.clear
-      texts = Array(texts)
-      @texts = texts.map { |text| Gitlab::Markdown.render_without_gfm(text) }
+      @text = Gitlab::Markdown.render_without_gfm(text)
     end
 
     %i(user label issue merge_request snippet commit commit_range).each do |type|
@@ -29,7 +29,7 @@ module Gitlab
         type = type.to_sym
         return references[type] if references.has_key?(type)
 
-        references[type] = pipeline_result(type).uniq
+        references[type] = pipeline_result(type)
       end
     end
 
@@ -53,14 +53,15 @@ module Gitlab
       }
 
       pipeline = HTML::Pipeline.new([filter, Gitlab::Markdown::ReferenceGathererFilter], context)
+      result = pipeline.call(@text)
 
-      values = @texts.flat_map do |text|
-        result = pipeline.call(text)
+      values = result[:references][filter_type].uniq
 
-        result[:references][filter_type]
+      if @load_lazy_references
+        values = Gitlab::Markdown::ReferenceFilter::LazyReference.load(values).uniq
       end
 
-      Gitlab::Markdown::ReferenceFilter::LazyReference.load(values)
+      values
     end
   end
 end
