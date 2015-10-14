@@ -37,10 +37,14 @@
     padding: 10px 0;
     margin-bottom: 0;
     color: #5c5d5e;
-    font-size: 16px;
+    font-size: 13px;
+    @include clearfix();
 
-    .author {
-      color: #5c5d5e;
+    .creator {
+      color: $gl-gray;
+      a {
+        color: $gl-gray;
+      }
     }
 
     .snippet-id {
@@ -79,9 +83,5 @@
   font-weight: normal;
   margin-right: 10px;
   font-size: $gl-font-size;
-
-  &.snippet-box-locked {
-    background: $gl-gray;
-    color: #FFF;
-  }
+  border: 1px solid;
 }

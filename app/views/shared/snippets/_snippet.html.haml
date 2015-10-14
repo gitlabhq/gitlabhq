@@ -17,4 +17,4 @@
     = link_to user_snippets_path(snippet.author) do
       = image_tag avatar_icon(snippet.author_email), class: "avatar s24", alt: ''
       = snippet.author_name
-    authored #{time_ago_with_tooltip(snippet.updated_at)}
+    authored #{time_ago_with_tooltip(snippet.created_at)}

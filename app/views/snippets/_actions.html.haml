@@ -1,0 +1,8 @@
+= link_to new_snippet_path, class: 'btn btn-grouped new-snippet-link', title: "New Snippet" do
+  = icon('plus')
+  new snippet
+= link_to "remove", snippet_path(@snippet), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-grouped btn-remove", title: 'Delete Snippet'
+- if can?(current_user, :update_personal_snippet, @snippet)
+  = link_to edit_snippet_path(@snippet), class: "btn btn-grouped snippable-edit" do
+    = icon('pencil-square-o')
+    Edit
