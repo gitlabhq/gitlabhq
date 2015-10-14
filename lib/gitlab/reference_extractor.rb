@@ -14,7 +14,8 @@ module Gitlab
     def analyze(text, cache_key: nil)
       references.clear
 
-      @document = Gitlab::Markdown.render(text, project: project, cache_key: cache_key)
+      @pipeline = Gitlab::Markdown.cached?(cache_key, pipeline: :full) ? :full : :plain_markdown
+      @html = Gitlab::Markdown.render(text, project: project, cache_key: cache_key, pipeline: @pipeline)
     end
 
     %i(user label issue merge_request snippet commit commit_range).each do |type|
@@ -45,14 +46,19 @@ module Gitlab
       filter = Gitlab::Markdown.const_get(klass)
 
       context = {
-        project:              project,
-        current_user:         current_user,
+        pipeline: [:reference_extraction],
+
+        project:      project,
+        current_user: current_user,
+
+        # ReferenceGathererFilter
         load_lazy_references: false,
         reference_filter:     filter
       }
 
-      result = self.class.pipeline.call(@document, context)
+      context[:pipeline].unshift(filter) unless @pipeline == :full
 
+      result = Gitlab::Markdown.render_result(@html, context)
       values = result[:references][filter_type].uniq
 
       if @load_lazy_references
@@ -60,10 +66,6 @@ module Gitlab
       end
 
       values
-    end
-
-    def self.pipeline
-      @pipeline ||= HTML::Pipeline.new([Gitlab::Markdown::ReferenceGathererFilter])
     end
   end
 end

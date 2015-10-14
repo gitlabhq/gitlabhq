@@ -65,13 +65,16 @@ module GitlabMarkdownHelper
   end
 
   def asciidoc(text)
-    Gitlab::Asciidoc.render(text, {
-      commit: @commit,
-      project: @project,
-      project_wiki: @project_wiki,
+    Gitlab::Asciidoc.render(text,
+      project:      @project,
+      current_user: (current_user if defined?(current_user)),
+
+      # RelativeLinkFilter
+      project_wiki:   @project_wiki,
       requested_path: @path,
-      ref: @ref
-    })
+      ref:            @ref,
+      commit:         @commit
+    )
   end
 
   # Return the first line of +text+, up to +max_chars+, after parsing the line

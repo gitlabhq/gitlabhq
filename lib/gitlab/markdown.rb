@@ -21,9 +21,9 @@ module Gitlab
     # Returns an HTML-safe String
     def self.render(text, context = {})
       cache_key = context.delete(:cache_key)
+      cache_key = full_cache_key(cache_key, context[:pipeline])
 
       if cache_key
-        cache_key = full_cache_key(cache_key, context[:pipeline])
         Rails.cache.fetch(cache_key) do
           cacheless_render(text, context)
         end
@@ -31,6 +31,47 @@ module Gitlab
         cacheless_render(text, context)
       end
     end
+
+    def self.render_result(text, context = {})
+      pipeline = context[:pipeline] || :full
+
+      html_pipeline = html_pipelines[pipeline]
+
+      transformers = context_transformers[pipeline]
+      context = transformers.reduce(context) { |context, transformer| transformer.call(context) }
+
+      html_pipeline.call(text, context)
+    end
+
+    def self.cached?(cache_key, pipeline: :full)
+      cache_key = full_cache_key(cache_key, pipeline)
+      cache_key ? Rails.cache.exist?(cache_key) : false
+    end
+
+    # Perform post-processing on an HTML String
+    #
+    # This method is used to perform state-dependent changes to a String of
+    # HTML, such as removing references that the current user doesn't have
+    # permission to make (`RedactorFilter`).
+    #
+    # html     - String to process
+    # context  - Hash of options to customize output
+    #            :pipeline  - Symbol pipeline type
+    #            :project   - Project
+    #            :user      - User object
+    #
+    # Returns an HTML-safe String
+    def self.post_process(html, context)
+      html_pipeline = html_pipelines[:post_process]
+
+      if context[:xhtml]
+        html_pipeline.to_document(html, context).to_html(save_with: Nokogiri::XML::Node::SaveOptions::AS_XHTML)
+      else
+        html_pipeline.to_html(html, context)
+      end.html_safe
+    end
+
+    private
 
     # Provide autoload paths for filters to prevent a circular dependency error
     autoload :AutolinkFilter,               'gitlab/markdown/autolink_filter'
@@ -52,35 +93,8 @@ module Gitlab
     autoload :TaskListFilter,               'gitlab/markdown/task_list_filter'
     autoload :UserReferenceFilter,          'gitlab/markdown/user_reference_filter'
 
-    # Perform post-processing on an HTML String
-    #
-    # This method is used to perform state-dependent changes to a String of
-    # HTML, such as removing references that the current user doesn't have
-    # permission to make (`RedactorFilter`).
-    #
-    # html     - String to process
-    # context  - Hash of options to customize output
-    #            :pipeline  - Symbol pipeline type
-    #            :project   - Project
-    #            :user      - User object
-    #
-    # Returns an HTML-safe String
-    def self.post_process(html, context)
-      doc = html_pipelines[:post_process].to_document(html, context)
-
-      if context[:xhtml]
-        doc.to_html(save_with: Nokogiri::XML::Node::SaveOptions::AS_XHTML)
-      else
-        doc.to_html
-      end.html_safe
-    end
-
-    private
-    FILTERS = {
-      plain_markdown: [
-        Gitlab::Markdown::MarkdownFilter
-      ],
-      gfm: [
+    def self.gfm_filters
+      @gfm_filters ||= [
         Gitlab::Markdown::SyntaxHighlightFilter,
         Gitlab::Markdown::SanitizationFilter,
 
@@ -99,71 +113,99 @@ module Gitlab
         Gitlab::Markdown::LabelReferenceFilter,
 
         Gitlab::Markdown::TaskListFilter
-      ],
-
-      full:           [:plain_markdown, :gfm],
-      atom:           :full,
-      email:          :full,
-      description:    :full,
-      single_line:    :gfm,
-
-      post_process: [
-        Gitlab::Markdown::RelativeLinkFilter, 
-        Gitlab::Markdown::RedactorFilter
       ]
-    }
+    end
 
-    CONTEXT_TRANSFORMERS = {
-      gfm: {
-        only_path: true,
+    def self.all_filters
+      @all_filters ||= {
+        plain_markdown: [
+          Gitlab::Markdown::MarkdownFilter
+        ],
+        gfm: gfm_filters,
 
-        # EmojiFilter
-        asset_host: Gitlab::Application.config.asset_host,
-        asset_root: Gitlab.config.gitlab.base_url
-      },
-      full: :gfm,
+        full:           [:plain_markdown, :gfm],
+        atom:           :full,
+        email:          :full,
+        description:    :full,
+        single_line:    :gfm,
 
-      atom: [
-        :full, 
-        { 
-          only_path: false, 
-          xhtml: true 
-        }
-      ],
-      email: [
-        :full,
-        { only_path: false }
-      ],
-      description: [
-        :full,
-        { 
-          # SanitizationFilter
-          inline_sanitization: true
-        }
-      ],
-      single_line: :gfm,
+        asciidoc: [
+          Gitlab::Markdown::RelativeLinkFilter
+        ],
 
-      post_process: {
-        post_process: true
+        post_process: [
+          Gitlab::Markdown::RelativeLinkFilter, 
+          Gitlab::Markdown::RedactorFilter
+        ],
+
+        reference_extraction: [
+          Gitlab::Markdown::ReferenceGathererFilter
+        ]
       }
-    }
+    end
+
+    def self.all_context_transformers
+      @all_context_transformers ||= {
+        gfm: {
+          only_path: true,
+
+          # EmojiFilter
+          asset_host: Gitlab::Application.config.asset_host,
+          asset_root: Gitlab.config.gitlab.base_url
+        },
+        full: :gfm,
+
+        atom: [
+          :full, 
+          { 
+            only_path: false, 
+            xhtml: true 
+          }
+        ],
+        email: [
+          :full,
+          { 
+            only_path: false
+          }
+        ],
+        description: [
+          :full,
+          { 
+            # SanitizationFilter
+            inline_sanitization: true
+          }
+        ],
+        single_line: :gfm,
+
+        post_process: {
+          post_process: true
+        }
+      }
+    end
+
+    def self.html_filters
+      @html_filters ||= Hash.new do |hash, pipeline|
+        filters = get_filters(pipeline)
+        hash[pipeline] = filters if pipeline.is_a?(Symbol)
+        filters
+      end
+    end
 
     def self.html_pipelines
       @html_pipelines ||= Hash.new do |hash, pipeline|
         filters = get_filters(pipeline)
-        HTML::Pipeline.new(filters)
+        html_pipeline = HTML::Pipeline.new(filters)
+        hash[pipeline] = html_pipeline if pipeline.is_a?(Symbol)
+        html_pipeline
       end
     end
 
-    def self.cacheless_render(text, context = {})
-      pipeline = context[:pipeline] || :full
-
-      html_pipeline = html_pipelines[pipeline]
-
-      transformers = get_context_transformers(pipeline)
-      context = transformers.reduce(context) { |context, transformer| transformer.call(context) }
-
-      html_pipeline.to_html(text, context)
+    def self.context_transformers
+      @context_transformers ||= Hash.new do |hash, pipeline|
+        transformers = get_context_transformers(pipeline)
+        hash[pipeline] = transformers if pipeline.is_a?(Symbol)
+        transformers
+      end
     end
 
     def self.get_filters(pipelines)
@@ -172,9 +214,9 @@ module Gitlab
         when Class
           pipeline
         when Symbol
-          get_filters(FILTERS[pipeline])
+          html_filters[all_filters[pipeline]]
         when Array
-          get_filters(pipeline)
+          html_filters[pipeline]
         end
       end.compact
     end
@@ -187,14 +229,26 @@ module Gitlab
         when Proc
           pipeline
         when Symbol
-          get_context_transformers(CONTEXT_TRANSFORMERS[pipeline])
+          context_transformers[all_context_transformers[pipeline]]
         when Array
-          get_context_transformers(pipeline)
+          context_transformers[pipeline]
         end
       end.compact
     end
 
+    def self.cacheless_render(text, context = {})
+      result = render_result(text, context)
+      output = result[:output]
+      if output.respond_to?(:to_html)
+        output.to_html
+      else
+        output.to_s
+      end
+    end
+
     def self.full_cache_key(cache_key, pipeline = :full)
+      return unless cache_key && pipeline.is_a?(Symbol)
+
       ["markdown", *cache_key, pipeline]
     end
   end
