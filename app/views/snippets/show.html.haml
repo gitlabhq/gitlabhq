@@ -7,15 +7,21 @@
         .snippet-box.snippet-box-locked
           %i.fa.fa-lock
           Private
+      %span.snippet-id Snippet ##{@snippet.id}
       %span.creator
-        updated by #{link_to_member(@project, @snippet.author, size: 24)}
+        &middot; created by #{link_to_member(@project, @snippet.author, size: 24)}
         &middot;
-        = time_ago_with_tooltip(@snippet.updated_at, placement: 'bottom', html_class: 'snippet_updated_ago')
+        = time_ago_with_tooltip(@snippet.created_at, placement: 'bottom', html_class: 'snippet_updated_ago')
+        - if @snippet.updated_at != @snippet.created_at
+          %span
+            &middot;
+            = icon('edit', title: 'edited')
+            = time_ago_with_tooltip(@snippet.updated_at, placement: 'bottom', html_class: 'snippet_edited_ago')
 
       .pull-right
         = link_to new_snippet_path, class: 'btn btn-grouped new-snippet-link', title: "New Snippet" do
           = icon('plus')
-          Add new snippet
+          new snippet
         = link_to "remove", snippet_path(@snippet), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-grouped btn-remove", title: 'Delete Snippet'
         - if can?(current_user, :update_personal_snippet, @snippet)
           = link_to edit_snippet_path(@snippet), class: "btn btn-grouped issuabled-edit" do
