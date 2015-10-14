@@ -119,7 +119,7 @@ module Ci
     end
 
     def variables
-      yaml_variables + project_variables + trigger_variables
+      predefined_variables + yaml_variables + project_variables + trigger_variables
     end
 
     def project
@@ -257,6 +257,15 @@ module Ci
       else
         []
       end
+    end
+
+    def predefined_variables
+      variables = []
+      variables << { key: :CI_BUILD_TAG, value: ref, public: true } if tag?
+      variables << { key: :CI_BUILD_NAME, value: name, public: true }
+      variables << { key: :CI_BUILD_STAGE, value: stage, public: true }
+      variables << { key: :CI_BUILD_TRIGGERED, value: 'true', public: true } if trigger_request
+      variables
     end
   end
 end
