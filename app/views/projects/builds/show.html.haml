@@ -25,7 +25,7 @@
           %a
             Build ##{@build.id}
             &middot;
-            %i.fa.fa-warning-sign
+            %i.fa.fa-warning
             This build was retried.
 
   .gray-content-block.second-block
@@ -38,6 +38,27 @@
             #{duration_in_words(@build.finished_at, @build.started_at)}
         .pull-right
           = @build.updated_at.stamp('19:00 Aug 27')
+
+  - if @build.show_warning?
+    - unless @build.any_runners_online?
+      .bs-callout.bs-callout-warning
+        %p
+          - if no_runners_for_project?(@build.project)
+            This build is stuck, because the project doesn't have runners assigned.
+          - elsif @build.tags.any?
+            This build is stuck.
+            %br
+            This build is stuck, because you don't have any active runners online with these tags assigned to the project:
+            - @build.tags.each do |tag|
+              %span.label.label-primary
+                = tag
+          - else
+            This build is stuck, because you don't have any active runners online that can run this build.
+
+          %br
+          Go to
+          = link_to namespace_project_runners_path(@build.gl_project.namespace, @build.gl_project) do
+            Runners page
 
   .row.prepend-top-default
     .col-md-9

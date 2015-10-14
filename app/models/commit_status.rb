@@ -88,4 +88,8 @@ class CommitStatus < ActiveRecord::Base
   def retry_url
     nil
   end
+
+  def show_warning?
+    false
+  end
 end

@@ -28,6 +28,7 @@ v 8.1.0 (unreleased)
   - Move CI triggers page to project settings area
   - Move CI project settings page to CE project settings area
   - Fix bug when removed file was not appearing in merge request diff
+  - Show warning when build cannot be served by any of the available CI runners
   - Note the original location of a moved project when notifying users of the move
   - Improve error message when merging fails
   - Add support of multibyte characters in LDAP UID (Roman Petrov)

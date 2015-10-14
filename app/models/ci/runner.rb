@@ -20,6 +20,8 @@
 module Ci
   class Runner < ActiveRecord::Base
     extend Ci::Model
+
+    LAST_CONTACT_TIME = 5.minutes.ago
     
     has_many :builds, class_name: 'Ci::Build'
     has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
@@ -33,6 +35,7 @@ module Ci
     scope :shared, ->() { where(is_shared: true) }
     scope :active, ->() { where(active: true) }
     scope :paused, ->() { where(active: false) }
+    scope :online, ->() { where('contacted_at > ?', LAST_CONTACT_TIME) }
 
     acts_as_taggable
 
@@ -63,6 +66,20 @@ module Ci
 
     def shared?
       is_shared
+    end
+
+    def online?
+      contacted_at && contacted_at > LAST_CONTACT_TIME
+    end
+
+    def status
+      if contacted_at.nil?
+        :not_connected
+      elsif active?
+        online? ? :online : :offline
+      else
+        :paused
+      end
     end
 
     def belongs_to_one_project?

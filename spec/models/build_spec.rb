@@ -299,4 +299,105 @@ describe Ci::Build do
       is_expected.to eq(['rec1', pusher_email])
     end
   end
+
+  describe :can_be_served? do
+    let(:runner) { FactoryGirl.create :ci_specific_runner }
+
+    before { build.project.runners << runner }
+
+    context 'runner without tags' do
+      it 'can handle builds without tags' do
+        expect(build.can_be_served?(runner)).to be_truthy
+      end
+
+      it 'cannot handle build with tags' do
+        build.tag_list = ['aa']
+        expect(build.can_be_served?(runner)).to be_falsey
+      end
+    end
+
+    context 'runner with tags' do
+      before { runner.tag_list = ['bb', 'cc'] }
+
+      it 'can handle builds without tags' do
+        expect(build.can_be_served?(runner)).to be_truthy
+      end
+
+      it 'can handle build with matching tags' do
+        build.tag_list = ['bb']
+        expect(build.can_be_served?(runner)).to be_truthy
+      end
+
+      it 'cannot handle build with not matching tags' do
+        build.tag_list = ['aa']
+        expect(build.can_be_served?(runner)).to be_falsey
+      end
+    end
+  end
+
+  describe :any_runners_online? do
+    subject { build.any_runners_online? }
+
+    context 'when no runners' do
+      it { is_expected.to be_falsey }
+    end
+
+    context 'if there are runner' do
+      let(:runner) { FactoryGirl.create :ci_specific_runner }
+
+      before do
+        build.project.runners << runner
+        runner.update_attributes(contacted_at: 1.second.ago)
+      end
+
+      it { is_expected.to be_truthy }
+
+      it 'that is inactive' do
+        runner.update_attributes(active: false)
+        is_expected.to be_falsey
+      end
+
+      it 'that is not online' do
+        runner.update_attributes(contacted_at: nil)
+        is_expected.to be_falsey
+      end
+
+      it 'that cannot handle build' do
+        expect_any_instance_of(Ci::Build).to receive(:can_be_served?).and_return(false)
+        is_expected.to be_falsey
+      end
+
+    end
+  end
+
+  describe :show_warning? do
+    subject { build.show_warning? }
+
+    %w(pending).each do |state|
+      context "if commit_status.status is #{state}" do
+        before { build.status = state }
+
+        it { is_expected.to be_truthy }
+
+        context "and there are specific runner" do
+          let(:runner) { FactoryGirl.create :ci_specific_runner, contacted_at: 1.second.ago }
+
+          before do
+            build.project.runners << runner
+            runner.save
+          end
+
+          it { is_expected.to be_falsey }
+        end
+      end
+    end
+
+    %w(success failed canceled running).each do |state|
+      context "if commit_status.status is #{state}" do
+        before { build.status = state }
+
+        it { is_expected.to be_falsey }
+      end
+    end
+  end
 end
