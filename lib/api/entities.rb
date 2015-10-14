@@ -262,6 +262,18 @@ module API
       expose :notification_level
     end
 
+    class ProjectService < Grape::Entity
+      expose :id, :title, :created_at, :updated_at, :active
+      expose :push_events, :issues_events, :merge_requests_events, :tag_push_events, :note_events
+      # Expose serialized properties
+      expose :properties do |service, options|
+        field_names = service.fields.
+          select { |field| options[:include_passwords] || field[:type] != 'password' }.
+          map { |field| field[:name] }
+        service.properties.slice(*field_names)
+      end
+    end
+
     class ProjectWithAccess < Project
       expose :permissions do
         expose :project_access, using: Entities::ProjectAccess do |project, options|
