@@ -47,10 +47,10 @@ describe "Builds" do
     end
   end
 
-  describe "POST /:project/builds/:id/cancel_all" do
+  describe "GET /:project/builds/:id/cancel_all" do
     before do
       @build.run!
-      visit cancel_namespace_project_build_path(@gl_project.namespace, @gl_project, @build)
+      visit cancel_all_namespace_project_builds_path(@gl_project.namespace, @gl_project)
     end
 
     it { expect(page).to have_content 'All' }

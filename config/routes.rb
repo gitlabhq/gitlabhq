@@ -587,7 +587,7 @@ Gitlab::Application.routes.draw do
 
         resources :builds, only: [:index, :show] do
           collection do
-            post :cancel_all
+            get :cancel_all
           end
 
           member do

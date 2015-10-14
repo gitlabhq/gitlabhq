@@ -6,7 +6,7 @@
     - if @ci_project && current_user && can?(current_user, :manage_builds, @project)
       .pull-left.hidden-xs
         - if @all_builds.running_or_pending.any?
-          = link_to 'Cancel all', cancel_all_namespace_project_builds_path(@project.namespace, @project), data: { confirm: 'Are you sure?' }, method: :post, class: 'btn btn-danger'
+          = link_to 'Cancel all', cancel_all_namespace_project_builds_path(@project.namespace, @project), data: { confirm: 'Are you sure?' }, class: 'btn btn-danger'
 
   %ul.center-top-menu
     %li{class: ('active' if @scope.nil?)}
