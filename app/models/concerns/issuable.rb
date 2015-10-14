@@ -46,7 +46,8 @@ module Issuable
              allow_nil: true,
              prefix: true
 
-    attr_mentionable :title, :description
+    attr_mentionable :title 
+    attr_mentionable :description, cache: true
     participant :author, :assignee, :notes
   end
 

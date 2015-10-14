@@ -20,6 +20,8 @@ module Gitlab
     #
     # Returns an HTML-safe String
     def self.render(text, context = {})
+      context[:pipeline] ||= :full
+
       cache_key = context.delete(:cache_key)
       cache_key = full_cache_key(cache_key, context[:pipeline])
 
@@ -33,7 +35,7 @@ module Gitlab
     end
 
     def self.render_result(text, context = {})
-      pipeline = context[:pipeline] || :full
+      pipeline = context[:pipeline] ||= :full
 
       html_pipeline = html_pipelines[pipeline]
 
@@ -129,6 +131,7 @@ module Gitlab
         atom:           :full,
         email:          :full,
         description:    :full,
+        note:           :full,
         single_line:    :gfm,
 
         asciidoc: [
@@ -168,6 +171,13 @@ module Gitlab
           :full,
           { 
             only_path: false
+          }
+        ],
+        note: [
+          :full,
+          {
+            # TableOfContentsFilter
+            no_header_anchors: true
           }
         ],
         description: [

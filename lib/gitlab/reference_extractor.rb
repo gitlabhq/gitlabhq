@@ -9,13 +9,12 @@ module Gitlab
       @project = project
       @current_user = current_user
       @load_lazy_references = load_lazy_references
+
+      @texts = []
     end
 
-    def analyze(text, cache_key: nil)
-      references.clear
-
-      @pipeline = Gitlab::Markdown.cached?(cache_key, pipeline: :full) ? :full : :plain_markdown
-      @html = Gitlab::Markdown.render(text, project: project, cache_key: cache_key, pipeline: @pipeline)
+    def analyze(text, options = {})
+      @texts << Gitlab::Markdown.render(text, options.merge(project: project))
     end
 
     %i(user label issue merge_request snippet commit commit_range).each do |type|
@@ -46,7 +45,7 @@ module Gitlab
       filter = Gitlab::Markdown.const_get(klass)
 
       context = {
-        pipeline: [:reference_extraction],
+        pipeline: :reference_extraction,
 
         project:      project,
         current_user: current_user,
@@ -56,10 +55,11 @@ module Gitlab
         reference_filter:     filter
       }
 
-      context[:pipeline].unshift(filter) unless @pipeline == :full
-
-      result = Gitlab::Markdown.render_result(@html, context)
-      values = result[:references][filter_type].uniq
+      values = @texts.flat_map do |html|
+        text_context = context.dup
+        result = Gitlab::Markdown.render_result(html, text_context)
+        result[:references][filter_type]
+      end.uniq
 
       if @load_lazy_references
         values = Gitlab::Markdown::ReferenceFilter::LazyReference.load(values).uniq

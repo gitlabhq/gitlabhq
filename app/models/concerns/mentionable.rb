@@ -10,8 +10,9 @@ module Mentionable
 
   module ClassMethods
     # Indicate which attributes of the Mentionable to search for GFM references.
-    def attr_mentionable(*attrs)
-      mentionable_attrs.concat(attrs.map(&:to_s))
+    def attr_mentionable(attr, options = {})
+      attr = attr.to_s
+      mentionable_attrs << [attr, options]
     end
 
     # Accessor for attributes marked mentionable.
@@ -37,11 +38,6 @@ module Mentionable
     "#{friendly_name} #{to_reference(from_project)}"
   end
 
-  # Construct a String that contains possible GFM references.
-  def mentionable_text
-    self.class.mentionable_attrs.map { |attr| send(attr) }.compact.join("\n\n")
-  end
-
   # The GFM reference to this Mentionable, which shouldn't be included in its #references.
   def local_reference
     self
@@ -54,20 +50,33 @@ module Mentionable
   end
 
   def mentioned_users(current_user = nil, load_lazy_references: true)
-    return [] if mentionable_text.blank?
-
+    # TODO: Douwe: Will be simplified when the "Simplify ..." MR is merged.
     ext = Gitlab::ReferenceExtractor.new(self.project, current_user, load_lazy_references: load_lazy_references)
-    ext.analyze(mentionable_text)
-    ext.users.uniq
+    self.class.mentionable_attrs.each do |attr, options|
+      text = send(attr)
+      cache_key = [self, attr] if options[:cache]
+      ext.analyze(text, cache_key: cache_key, pipeline: options[:pipeline])
+    end
+    ext.users
   end
 
   # Extract GFM references to other Mentionables from this Mentionable. Always excludes its #local_reference.
-  def references(p = project, current_user = self.author, text = mentionable_text, load_lazy_references: true)
+  def references(p = project, current_user = self.author, text = nil, load_lazy_references: true)
     return [] if text.blank?
 
     ext = Gitlab::ReferenceExtractor.new(p, current_user, load_lazy_references: load_lazy_references)
-    ext.analyze(text)
-    (ext.issues + ext.merge_requests + ext.commits).uniq - [local_reference]
+
+    if text
+      ext.analyze(text)
+    else
+      self.class.mentionable_attrs.each do |attr, options|
+        text = send(attr)
+        cache_key = [self, attr] if options[:cache]
+        ext.analyze(text, cache_key: cache_key)
+      end
+    end
+
+    (ext.issues + ext.merge_requests + ext.commits) - [local_reference]
   end
 
   # Create a cross-reference Note for each GFM reference to another Mentionable found in +mentionable_text+.
@@ -111,7 +120,7 @@ module Mentionable
   def detect_mentionable_changes
     source = (changes.present? ? changes : previous_changes).dup
 
-    mentionable = self.class.mentionable_attrs
+    mentionable = self.class.mentionable_attrs.map { |attr, options| attr }
 
     # Only include changed fields that are mentionable
     source.select { |key, val| mentionable.include?(key) }
