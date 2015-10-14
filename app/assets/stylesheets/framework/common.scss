@@ -398,3 +398,24 @@ table {
 .space-right {
   margin-right: 10px;
 }
+
+.scrollup {
+  width: 45px;
+  height: 45px;
+  position: fixed;
+  bottom: 50px;
+  right: 26px;
+  -webkit-border-radius:50%;
+  -moz-border-radius:50%;
+  border-radius: 50%;
+  display: none;
+  opacity: 0.4;
+}
+
+.scrollup.fa{
+  display: none;
+}
+
+.scrollup:hover {
+  opacity: 1;
+}
