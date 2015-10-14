@@ -11,7 +11,7 @@ module Gitlab
       def whitelist
         # Descriptions are more heavily sanitized, allowing only a few elements.
         # See http://git.io/vkuAN
-        if pipeline == :description
+        if context[:inline_sanitization]
           whitelist = LIMITED
           whitelist[:elements] -= %w(pre code img ol ul li)
         else
@@ -24,10 +24,6 @@ module Gitlab
       end
 
       private
-
-      def pipeline
-        context[:pipeline] || :default
-      end
 
       def customized?(transformers)
         transformers.last.source_location[0] == __FILE__

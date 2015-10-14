@@ -37,7 +37,7 @@
 
     .gray-content-block.middle-block
       %h2.issue-title
-        = gfm escape_once(@issue.title)
+        = markdown escape_once(@issue.title), pipeline: :single_line
       %div
         - if @issue.description.present?
           .description{class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : ''}

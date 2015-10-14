@@ -1,6 +1,6 @@
 .gray-content-block.middle-block
   %h2.issue-title
-    = gfm escape_once(@merge_request.title)
+    = markdown escape_once(@merge_request.title), pipeline: :single_line
 
   %div
     - if @merge_request.description.present?

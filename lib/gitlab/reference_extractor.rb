@@ -13,7 +13,8 @@ module Gitlab
 
     def analyze(text)
       references.clear
-      @text = Gitlab::Markdown.render_without_gfm(text)
+
+      @document = Gitlab::Markdown.render(text, project: project)
     end
 
     %i(user label issue merge_request snippet commit commit_range).each do |type|
@@ -44,20 +45,13 @@ module Gitlab
       filter = Gitlab::Markdown.const_get(klass)
 
       context = {
-        project: project,
-        current_user: current_user,
-        
-        # We don't actually care about the links generated
-        only_path: true,
-        ignore_blockquotes: true,
-
-        # ReferenceGathererFilter
+        project:              project,
+        current_user:         current_user,
         load_lazy_references: false,
         reference_filter:     filter
       }
 
-      pipeline = HTML::Pipeline.new([filter, Gitlab::Markdown::ReferenceGathererFilter], context)
-      result = pipeline.call(@text)
+      result = self.class.pipeline.call(@document, context)
 
       values = result[:references][filter_type].uniq
 
@@ -66,6 +60,10 @@ module Gitlab
       end
 
       values
+    end
+
+    def self.pipeline
+      @pipeline ||= HTML::Pipeline.new([Gitlab::Markdown::ReferenceGathererFilter])
     end
   end
 end
