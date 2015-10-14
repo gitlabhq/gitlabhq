@@ -1,8 +1,8 @@
 %li.timeline-entry{ id: dom_id(note), class: [dom_class(note), "note-row-#{note.id}", ('system-note' if note.system)], data: { discussion: note.discussion_id } }
   .timeline-entry-inner
     .timeline-icon
-      = link_to user_path(note.author) do
-        = image_tag avatar_icon(note.author), class: 'avatar s40', alt: ''
+      %a{href: user_path(note.author)}
+        %img.avatar.s40{src: avatar_icon(note.author), alt: ''}
     .timeline-content
       .note-header
         - if note_editable?(note)
@@ -25,7 +25,7 @@
           = '@' + note.author.username
 
         %span.note-last-update
-          = link_to "##{dom_id(note)}", name: dom_id(note), title: "Link here" do
+          %a{name: dom_id(note), href: "##{dom_id(note)}", title: 'Link here'}
             = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note_created_ago')
           - if note.updated_at != note.created_at
             %span
