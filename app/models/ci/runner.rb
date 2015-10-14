@@ -56,7 +56,7 @@ module Ci
     end
 
     def display_name
-      return token unless !description.blank?
+      return short_sha unless !description.blank?
 
       description
     end
@@ -78,7 +78,7 @@ module Ci
     end
 
     def short_sha
-      token[0...10]
+      token[0...8]
     end
   end
 end

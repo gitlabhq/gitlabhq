@@ -17,4 +17,17 @@ module RunnersHelper
       class: "fa fa-circle runner-status-#{status}",
       title: "Runner is #{status}, last contact was #{time_ago_in_words(runner.contacted_at)} ago"
   end
+
+  def runner_link(runner)
+    display_name = truncate(runner.display_name, length: 20)
+    id = "\##{runner.id}"
+
+    if current_user && current_user.admin
+      link_to ci_admin_runner_path(runner) do
+        display_name + id
+      end
+    else
+      display_name + id
+    end
+  end
 end
