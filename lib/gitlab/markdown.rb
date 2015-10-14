@@ -45,11 +45,6 @@ module Gitlab
       html_pipeline.call(text, context)
     end
 
-    def self.cached?(cache_key, pipeline: :full)
-      cache_key = full_cache_key(cache_key, pipeline)
-      cache_key ? Rails.cache.exist?(cache_key) : false
-    end
-
     # Perform post-processing on an HTML String
     #
     # This method is used to perform state-dependent changes to a String of
