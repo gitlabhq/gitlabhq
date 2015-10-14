@@ -101,9 +101,9 @@
 
   pre {
     margin: 12px 0 12px 0 !important;
-    background-color: #f8fafc !important;
+    background-color: #f8fafc;
     font-size: 13px !important;
-    color: #5b6169 !important;
+    color: #5b6169;
     line-height: 1.6em !important;
     @include border-radius(2px);
   }
