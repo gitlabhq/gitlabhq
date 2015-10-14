@@ -40,16 +40,20 @@ module Gitlab
     #
     # Returns the results Array for the requested filter type
     def pipeline_result(filter_type)
-      klass  = filter_type.to_s.camelize + 'ReferenceFilter'
+      klass  = "#{filter_type.to_s.camelize}ReferenceFilter"
       filter = Gitlab::Markdown.const_get(klass)
 
       context = {
         project: project,
         current_user: current_user,
+        
         # We don't actually care about the links generated
         only_path: true,
         ignore_blockquotes: true,
-        load_lazy_references: false
+
+        # ReferenceGathererFilter
+        load_lazy_references: false,
+        reference_filter:     filter
       }
 
       pipeline = HTML::Pipeline.new([filter, Gitlab::Markdown::ReferenceGathererFilter], context)
