@@ -57,7 +57,7 @@ class Projects::IssuesController < Projects::ApplicationController
   def show
     @participants = @issue.participants(current_user)
     @note = @project.notes.new(noteable: @issue)
-    @notes = @issue.notes.inc_associations.fresh
+    @notes = @issue.notes.with_associations.fresh
     @noteable = @issue
 
     respond_with(@issue)
