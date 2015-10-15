@@ -1,13 +1,5 @@
 source "https://rubygems.org"
 
-def darwin_only(require_as)
-  RUBY_PLATFORM.include?('darwin') && require_as
-end
-
-def linux_only(require_as)
-  RUBY_PLATFORM.include?('linux') && require_as
-end
-
 gem 'rails', '4.1.12'
 
 # Specify a sprockets version due to security issue
@@ -304,11 +296,3 @@ gem 'oauth2', '~> 1.0.0'
 
 # Soft deletion
 gem "paranoia", "~> 2.0"
-
-group :development, :test do
-  gem 'guard-rspec', '~> 4.2.0'
-
-  gem 'rb-fsevent', require: darwin_only('rb-fsevent')
-  gem 'growl',      require: darwin_only('growl')
-  gem 'rb-inotify', require: linux_only('rb-inotify')
-end
