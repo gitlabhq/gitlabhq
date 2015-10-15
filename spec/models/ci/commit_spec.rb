@@ -248,7 +248,7 @@ describe Ci::Commit do
     end
 
     context 'properly creates builds "when" is defined' do
-      let(:yaml) {
+      let(:yaml) do
         {
           stages: ["build", "test", "test_failure", "deploy", "cleanup"],
           build: {
@@ -274,7 +274,7 @@ describe Ci::Commit do
             when: "always",
           }
         }
-      }
+      end
 
       before do
         stub_ci_commit_yaml_file(YAML.dump(yaml))

@@ -24,7 +24,8 @@ module Ci
           commands: "pwd\nrspec",
           tag_list: [],
           options: {},
-          allow_failure: false
+          allow_failure: false,
+          when: "on_success"
         })
       end
 
@@ -330,7 +331,7 @@ module Ci
       end
 
       it "returns errors if job when is not on_success, on_failure or always" do
-        config = YAML.dump({ rspec: { script: "test", when: false } })
+        config = YAML.dump({ rspec: { script: "test", when: 1 } })
         expect do
           GitlabCiYamlProcessor.new(config)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: when parameter should be on_success, on_failure or always")

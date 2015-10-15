@@ -187,7 +187,7 @@ module Ci
       end
 
       if job[:when] && !job[:when].in?(%w(on_success on_failure always))
-        raise ValidationError, "#{name}: when should be on_success, on_failure or always"
+        raise ValidationError, "#{name}: when parameter should be on_success, on_failure or always"
       end
     end
 
