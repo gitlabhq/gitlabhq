@@ -5,6 +5,7 @@ v 8.1.0 (unreleased)
   - Speed up load times of issue detail pages by roughly 1.5x
   - Make diff file view easier to use on mobile screens (Stan Hu)
   - Improved performance of finding users by username or Email address
+  - Fix bug where merge request comments created by API would not trigger notifications (Stan Hu)
   - Add support for creating directories from Files page (Stan Hu)
   - Allow removing of project without confirmation when JavaScript is disabled (Stan Hu)
   - Support filtering by "Any" milestone or issue and fix "No Milestone" and "No Label" filters (Stan Hu)
