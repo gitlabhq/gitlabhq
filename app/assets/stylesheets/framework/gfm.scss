@@ -1,0 +1,26 @@
+/**
+ * Styles that apply to all GFM related forms.
+ */
+.issue-form, .merge-request-form, .wiki-form {
+  .description {
+    height: 16em;
+    border-top-left-radius: 0;
+  }
+}
+
+.wiki-form {
+  .description {
+    height: 26em;
+  }
+}
+
+.milestone-form {
+  .description {
+    height: 14em;
+  }
+}
+
+.gfm-commit, .gfm-commit_range {
+  font-family: $monospace_font;
+  font-size: 90%;
+}

@@ -22,29 +22,6 @@ Gitlab::Application.routes.draw do
         get :dumped_yaml
       end
 
-      resources :services, only: [:index, :edit, :update] do
-        member do
-          get :test
-        end
-      end
-
-      resource :charts, only: [:show]
-
-      resources :commits, only: [:show] do
-        member do
-          get :status
-          get :cancel
-        end
-      end
-
-      resources :builds, only: [:show] do
-        member do
-          get :cancel
-          get :status
-          post :retry
-        end
-      end
-
       resources :runner_projects, only: [:create, :destroy]
 
       resources :events, only: [:index]
@@ -466,6 +443,15 @@ Gitlab::Application.routes.draw do
         end
 
         scope do
+          post(
+              '/create_dir/*id',
+              to: 'tree#create_dir',
+              constraints: { id: /.+/ },
+              as: 'create_dir'
+          )
+        end
+
+        scope do
           get(
             '/blame/*id',
             to: 'blame#show',
@@ -485,7 +471,11 @@ Gitlab::Application.routes.draw do
 
         resource  :avatar, only: [:show, :destroy]
         resources :commit, only: [:show], constraints: { id: /[[:alnum:]]{6,40}/ } do
-          get :branches, on: :member
+          member do
+            get :branches
+            get :ci
+            get :cancel_builds
+          end
         end
 
         resources :compare, only: [:index, :create]
@@ -586,6 +576,20 @@ Gitlab::Application.routes.draw do
         resources :ci_web_hooks, only: [:index, :create, :destroy] do
           member do
             get :test
+          end
+        end
+
+        resources :ci_services, constraints: { id: /[^\/]+/ }, only: [:index, :edit, :update] do
+          member do
+            get :test
+          end
+        end
+
+        resources :builds, only: [:show] do
+          member do
+            get :cancel
+            get :status
+            post :retry
           end
         end
 

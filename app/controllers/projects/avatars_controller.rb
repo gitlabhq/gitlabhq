@@ -12,7 +12,7 @@ class Projects::AvatarsController < Projects::ApplicationController
         filename: @blob.name
       )
     else
-      not_found!
+      render_404
     end
   end
 

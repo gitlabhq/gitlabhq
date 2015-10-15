@@ -20,7 +20,7 @@ class Projects::RawController < Projects::ApplicationController
         disposition: 'inline'
       )
     else
-      not_found!
+      render_404
     end
   end
 

@@ -27,6 +27,7 @@
 
 FactoryGirl.define do
   factory :ci_build, class: Ci::Build do
+    name 'test'
     ref 'master'
     tag false
     started_at 'Di 29. Okt 09:51:28 CET 2013'

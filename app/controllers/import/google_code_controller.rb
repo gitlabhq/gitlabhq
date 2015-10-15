@@ -106,7 +106,7 @@ class Import::GoogleCodeController < Import::BaseController
   end
 
   def verify_google_code_import_enabled
-    not_found! unless google_code_import_enabled?
+    render_404 unless google_code_import_enabled?
   end
 
   def user_map

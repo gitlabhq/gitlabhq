@@ -23,6 +23,8 @@ describe Ci::Commit do
   let(:commit) { FactoryGirl.create :ci_commit, gl_project: gl_project }
 
   it { is_expected.to belong_to(:gl_project) }
+  it { is_expected.to have_many(:statuses) }
+  it { is_expected.to have_many(:trigger_requests) }
   it { is_expected.to have_many(:builds) }
   it { is_expected.to validate_presence_of :sha }
 
@@ -47,10 +49,12 @@ describe Ci::Commit do
       @second = FactoryGirl.create :ci_build, commit: commit
     end
 
-    it "creates new build" do
+    it "creates only a new build" do
       expect(commit.builds.count(:all)).to eq 2
+      expect(commit.statuses.count(:all)).to eq 2
       commit.retry
       expect(commit.builds.count(:all)).to eq 3
+      expect(commit.statuses.count(:all)).to eq 3
     end
   end
 
@@ -78,8 +82,8 @@ describe Ci::Commit do
     subject { commit.stage }
 
     before do
-      @second = FactoryGirl.create :ci_build, commit: commit, name: 'deploy', stage: 'deploy', stage_idx: 1, status: :pending
-      @first = FactoryGirl.create :ci_build, commit: commit, name: 'test', stage: 'test', stage_idx: 0, status: :pending
+      @second = FactoryGirl.create :commit_status, commit: commit, name: 'deploy', stage: 'deploy', stage_idx: 1, status: 'pending'
+      @first = FactoryGirl.create :commit_status, commit: commit, name: 'test', stage: 'test', stage_idx: 0, status: 'pending'
     end
 
     it 'returns first running stage' do
@@ -88,7 +92,7 @@ describe Ci::Commit do
 
     context 'first build succeeded' do
       before do
-        @first.update_attributes(status: :success)
+        @first.success
       end
 
       it 'returns last running stage' do
@@ -98,8 +102,8 @@ describe Ci::Commit do
 
     context 'all builds succeeded' do
       before do
-        @first.update_attributes(status: :success)
-        @second.update_attributes(status: :success)
+        @first.success
+        @second.success
       end
 
       it 'returns nil' do
@@ -109,6 +113,33 @@ describe Ci::Commit do
   end
 
   describe :create_next_builds do
+  end
+
+  describe :refs do
+    subject { commit.refs }
+
+    before do
+      FactoryGirl.create :commit_status, commit: commit, name: 'deploy'
+      FactoryGirl.create :commit_status, commit: commit, name: 'deploy', ref: 'develop'
+      FactoryGirl.create :commit_status, commit: commit, name: 'deploy', ref: 'master'
+    end
+
+    it 'returns all refs' do
+      is_expected.to contain_exactly('master', 'develop', nil)
+    end
+  end
+
+  describe :retried do
+    subject { commit.retried }
+
+    before do
+      @commit1 = FactoryGirl.create :ci_build, commit: commit, name: 'deploy'
+      @commit2 = FactoryGirl.create :ci_build, commit: commit, name: 'deploy'
+    end
+
+    it 'returns old builds' do
+      is_expected.to contain_exactly(@commit1)
+    end
   end
 
   describe :create_builds do
@@ -194,9 +225,10 @@ describe Ci::Commit do
         it 'rebuilds commit' do
           expect(commit.status).to eq('skipped')
           expect(create_builds(trigger_request)).to be_truthy
-          commit.builds.reload
-          expect(commit.builds.size).to eq(2)
-          expect(commit.status).to eq('pending')
+
+          # since everything in Ci::Commit is cached we need to fetch a new object
+          new_commit = Ci::Commit.find_by_id(commit.id)
+          expect(new_commit.status).to eq('pending')
         end
       end
     end
@@ -252,10 +284,10 @@ describe Ci::Commit do
 
   describe :should_create_next_builds? do
     before do
-      @build1 = FactoryGirl.create :ci_build, commit: commit, name: 'build1', ref: 'master', tag: false, status: :success
-      @build2 = FactoryGirl.create :ci_build, commit: commit, name: 'build1', ref: 'develop', tag: false, status: :failed
-      @build3 = FactoryGirl.create :ci_build, commit: commit, name: 'build1', ref: 'master', tag: true, status: :failed
-      @build4 = FactoryGirl.create :ci_build, commit: commit, name: 'build4', ref: 'master', tag: false, status: :success
+      @build1 = FactoryGirl.create :ci_build, commit: commit, name: 'build1', ref: 'master', tag: false, status: 'success'
+      @build2 = FactoryGirl.create :ci_build, commit: commit, name: 'build1', ref: 'develop', tag: false, status: 'failed'
+      @build3 = FactoryGirl.create :ci_build, commit: commit, name: 'build1', ref: 'master', tag: true, status: 'failed'
+      @build4 = FactoryGirl.create :ci_build, commit: commit, name: 'build4', ref: 'master', tag: false, status: 'success'
     end
 
     context 'for success' do
@@ -266,7 +298,7 @@ describe Ci::Commit do
 
     context 'for failed' do
       before do
-        @build4.update_attributes(status: :failed)
+        @build4.update_attributes(status: 'failed')
       end
 
       it 'to not create' do
@@ -286,7 +318,7 @@ describe Ci::Commit do
 
     context 'for running' do
       before do
-        @build4.update_attributes(status: :running)
+        @build4.update_attributes(status: 'running')
       end
 
       it 'to not create' do
@@ -296,7 +328,7 @@ describe Ci::Commit do
 
     context 'for retried' do
       before do
-        @build5 = FactoryGirl.create :ci_build, commit: commit, name: 'build4', ref: 'master', tag: false, status: :failed
+        @build5 = FactoryGirl.create :ci_build, commit: commit, name: 'build4', ref: 'master', tag: false, status: 'failed'
       end
 
       it 'to not create' do

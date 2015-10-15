@@ -314,4 +314,8 @@ module ApplicationHelper
 
     html.html_safe
   end
+
+  def truncate_first_line(message, length = 50)
+    truncate(message.each_line.first.chomp, length: length) if message
+  end
 end

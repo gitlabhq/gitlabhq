@@ -115,12 +115,12 @@ module Ci
       web_url
     end
 
-    def any_runners?
-      if runners.active.any?
+    def any_runners?(&block)
+      if runners.active.any?(&block)
         return true
       end
 
-      shared_runners_enabled && Ci::Runner.shared.active.any?
+      shared_runners_enabled && Ci::Runner.shared.active.any?(&block)
     end
 
     def set_default_values

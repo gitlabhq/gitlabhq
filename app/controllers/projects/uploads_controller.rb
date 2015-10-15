@@ -20,7 +20,7 @@ class Projects::UploadsController < Projects::ApplicationController
   end
 
   def show
-    return not_found! if uploader.nil? || !uploader.file.exists?
+    return render_404 if uploader.nil? || !uploader.file.exists?
 
     disposition = uploader.image? ? 'inline' : 'attachment'
     send_file uploader.file.path, disposition: disposition
