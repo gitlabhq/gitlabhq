@@ -55,7 +55,11 @@ module MergeRequests
     # Refresh merge request diff if we push to source or target branch of merge request
     # Note: we should update merge requests from forks too
     def reload_merge_requests
-      @merge_requests.each do |merge_request|
+      merge_requests = @project.merge_requests.opened.by_branch(@branch_name).to_a
+      merge_requests += @fork_merge_requests.by_branch(@branch_name).to_a
+      merge_requests = filter_merge_requests(merge_requests)
+
+      merge_requests.each do |merge_request|
 
         if merge_request.source_branch == @branch_name || force_push?
           merge_request.reload_code
