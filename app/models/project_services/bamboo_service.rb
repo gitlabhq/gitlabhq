@@ -48,7 +48,7 @@ class BambooService < CiService
   end
 
   def reset_password
-    if prop_updated?(:bamboo_url)
+    if bamboo_url_changed? && !password_touched?
       self.password = nil
     end
   end

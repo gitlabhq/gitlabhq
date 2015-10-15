@@ -10,6 +10,10 @@ class Projects::ServicesController < Projects::ApplicationController
                     :jira_issue_transition_id,
                     :notify, :color,
                     :server_host, :server_port, :default_irc_uri, :enable_ssl_verification]
+
+  # Parameters to ignore if no value is specified
+  FILTER_BLANK_PARAMS = [:password]
+  
   # Authorize
   before_action :authorize_admin_project!
   before_action :service, only: [:edit, :update, :test]
@@ -60,7 +64,9 @@ class Projects::ServicesController < Projects::ApplicationController
 
   def service_params
     service_params = params.require(:service).permit(ALLOWED_PARAMS)
-    service_params.delete("password") if service_params["password"].blank?
+    FILTER_BLANK_PARAMS.each do |param|
+      service_params.delete(param) if service_params[param].blank?
+    end
     service_params
   end
 end
