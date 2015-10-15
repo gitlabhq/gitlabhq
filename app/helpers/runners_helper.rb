@@ -15,7 +15,7 @@ module RunnersHelper
   end
 
   def runner_link(runner)
-    display_name = truncate(runner.display_name, length: 20)
+    display_name = truncate(runner.display_name, length: 15)
     id = "\##{runner.id}"
 
     if current_user && current_user.admin

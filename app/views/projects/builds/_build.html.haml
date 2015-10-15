@@ -9,6 +9,9 @@
     - else
       %strong Build ##{build.id}
 
+    - if build.show_warning?
+      %i.fa.fa-warning.text-warning
+
   %td
     = link_to build.short_sha, namespace_project_commit_path(@project.namespace, @project, build.sha)
 
