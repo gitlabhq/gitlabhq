@@ -8,5 +8,5 @@
       = @snippet.file_name
     .file-actions
       .btn-group
-        = link_to "raw", raw_snippet_path(@snippet), class: "btn btn-sm", target: "_blank"
+        = link_to 'Raw', raw_snippet_path(@snippet), class: "btn btn-sm", target: "_blank"
   = render 'shared/snippets/blob'
