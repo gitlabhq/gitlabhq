@@ -198,7 +198,6 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   step 'I should see jira service settings saved' do
     expect(find_field('Project url').value).to eq 'http://jira.example'
     expect(find_field('Username').value).to eq 'gitlab'
-    expect(find_field('Password').value).to eq 'gitlab'
     expect(find_field('Api version').value).to eq '2'
   end
 
