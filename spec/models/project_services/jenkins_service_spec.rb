@@ -27,7 +27,7 @@ describe JenkinsService do
 
   describe 'commits methods' do
     def status_body_for_icon(state)
-      body =<<eos
+      <<eos
         <h1 class="build-caption page-headline"><img style="width: 48px; height: 48px; " alt="Success" class="icon-#{state} icon-xlg" src="/static/855d7c3c/images/48x48/#{state}" tooltip="Success" title="Success">
                 Build #188
               (Oct 15, 2014 9:45:21 PM)

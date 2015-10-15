@@ -5,7 +5,7 @@ class LdapGroupResetService
     # set Gitlab::Access::Guest to later on upgrade the access of a user
 
     # trigger the lowest access possible for all LDAP connected users
-    a = group.members.with_ldap_dn.map do |member|
+    group.members.with_ldap_dn.map do |member|
       # don't unauthorize the current user
       next if current_user == member.user
       member.update_attribute :access_level, Gitlab::Access::GUEST
