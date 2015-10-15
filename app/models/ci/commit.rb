@@ -24,6 +24,8 @@ module Ci
     has_many :builds, class_name: 'Ci::Build'
     has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest'
 
+    scope :ordered, -> { order('CASE WHEN ci_commits.committed_at IS NULL THEN 0 ELSE 1 END', :committed_at, :id) }
+
     validates_presence_of :sha
     validate :valid_commit_sha
 

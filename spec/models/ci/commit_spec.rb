@@ -32,6 +32,24 @@ describe Ci::Commit do
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :short_sha }
 
+  describe :ordered do
+    let(:project) { FactoryGirl.create :empty_project }
+
+    it 'returns ordered list of commits' do
+      commit1 = FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, gl_project: project
+      commit2 = FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, gl_project: project
+      expect(project.ci_commits.ordered).to eq([commit2, commit1])
+    end
+
+    it 'returns commits ordered by committed_at and id, with nulls last' do
+      commit1 = FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, gl_project: project
+      commit2 = FactoryGirl.create :ci_commit, committed_at: nil, gl_project: project
+      commit3 = FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, gl_project: project
+      commit4 = FactoryGirl.create :ci_commit, committed_at: nil, gl_project: project
+      expect(project.ci_commits.ordered).to eq([commit2, commit4, commit3, commit1])
+    end
+  end
+
   describe :last_build do
     subject { commit.last_build }
     before do

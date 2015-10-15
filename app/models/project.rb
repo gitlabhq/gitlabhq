@@ -119,7 +119,7 @@ class Project < ActiveRecord::Base
   has_many :deploy_keys, through: :deploy_keys_projects
   has_many :users_star_projects, dependent: :destroy
   has_many :starrers, through: :users_star_projects, source: :user
-  has_many :ci_commits, ->() { order('CASE WHEN ci_commits.committed_at IS NULL THEN 0 ELSE 1 END', :committed_at, :id) }, dependent: :destroy, class_name: 'Ci::Commit', foreign_key: :gl_project_id
+  has_many :ci_commits, dependent: :destroy, class_name: 'Ci::Commit', foreign_key: :gl_project_id
   has_many :ci_builds, through: :ci_commits, source: :builds, dependent: :destroy, class_name: 'Ci::Build'
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"

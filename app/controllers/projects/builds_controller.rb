@@ -1,10 +1,31 @@
 class Projects::BuildsController < Projects::ApplicationController
   before_action :ci_project
-  before_action :build
+  before_action :build, except: [:index, :cancel_all]
 
-  before_action :authorize_admin_project!, except: [:show, :status]
+  before_action :authorize_admin_project!, except: [:index, :show, :status]
 
   layout "project"
+
+  def index
+    @scope = params[:scope]
+    @all_builds = project.ci_builds.order('created_at DESC').page(params[:page]).per(30)
+
+    @builds =
+      case @scope
+      when 'all'
+        @all_builds
+      when 'finished'
+        @all_builds.finished
+      else
+        @all_builds.running_or_pending
+      end
+  end
+
+  def cancel_all
+    @project.ci_builds.running_or_pending.each(&:cancel)
+
+    redirect_to namespace_project_builds_path(project.namespace, project)
+  end
 
   def show
     @builds = @ci_project.commits.find_by_sha(@build.sha).builds.order('id DESC')
