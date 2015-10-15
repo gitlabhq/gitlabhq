@@ -166,24 +166,21 @@ describe API::API, api: true  do
       get api("/projects/#{project.id}/repository/archive", user)
       repo_name = project.repository.name.gsub("\.git", "")
       expect(response.status).to eq(200)
-      expect(response.headers['Content-Disposition']).to match(/filename\=\"#{repo_name}\-[^\.]+\.tar.gz\"/)
-      expect(response.content_type).to eq(MIME::Types.type_for('file.tar.gz').first.content_type)
+      expect(json_response['ArchivePath']).to match(/#{repo_name}\-[^\.]+\.tar.gz/)
     end
 
     it "should get the archive.zip" do
       get api("/projects/#{project.id}/repository/archive.zip", user)
       repo_name = project.repository.name.gsub("\.git", "")
       expect(response.status).to eq(200)
-      expect(response.headers['Content-Disposition']).to match(/filename\=\"#{repo_name}\-[^\.]+\.zip\"/)
-      expect(response.content_type).to eq(MIME::Types.type_for('file.zip').first.content_type)
+      expect(json_response['ArchivePath']).to match(/#{repo_name}\-[^\.]+\.zip/)
     end
 
     it "should get the archive.tar.bz2" do
       get api("/projects/#{project.id}/repository/archive.tar.bz2", user)
       repo_name = project.repository.name.gsub("\.git", "")
       expect(response.status).to eq(200)
-      expect(response.headers['Content-Disposition']).to match(/filename\=\"#{repo_name}\-[^\.]+\.tar.bz2\"/)
-      expect(response.content_type).to eq(MIME::Types.type_for('file.tar.bz2').first.content_type)
+      expect(json_response['ArchivePath']).to match(/#{repo_name}\-[^\.]+\.tar.bz2/)
     end
 
     it "should return 404 for invalid sha" do

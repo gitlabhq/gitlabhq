@@ -33,33 +33,5 @@ describe Projects::RepositoriesController do
         expect(response.status).to eq(404)
       end
     end
-
-    context "when the service doesn't return a path" do
-
-      before do
-        allow(service).to receive(:execute).and_return(nil)
-      end
-
-      it "reloads the page" do
-        get :archive, namespace_id: project.namespace.path, project_id: project.path, ref: "master", format: "zip"
-
-        expect(response).to redirect_to(archive_namespace_project_repository_path(project.namespace, project, ref: "master", format: "zip"))
-      end
-    end
-
-    context "when the service returns a path" do
-
-      let(:path) { Rails.root.join("spec/fixtures/dk.png").to_s }
-
-      before do
-        allow(service).to receive(:execute).and_return(path)
-      end
-
-      it "sends the file" do
-        get :archive, namespace_id: project.namespace.path, project_id: project.path, ref: "master", format: "zip"
-
-        expect(response.body).to eq(File.binread(path))
-      end
-    end
   end
 end
