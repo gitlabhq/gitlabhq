@@ -173,9 +173,9 @@ class SystemNoteService
   # noteable    - Noteable object
   # project     - Project owning noteable
   # author      - User performing the change
-  # branch_type - 'source' or 'target'
+  # branch_type - :source or :target
   # branch      - branch name
-  # presence    - 'deleted' or 'created'
+  # presence    - :add or :delete
   #
   # Example Note text:
   #
@@ -183,7 +183,13 @@ class SystemNoteService
   #
   # Returns the created Note object
   def self.change_branch_presence(noteable, project, author, branch_type, branch, presence)
-    body = "#{branch_type} branch `#{branch}` #{presence}".capitalize
+    verb =
+      if presence == :add
+        'restored'
+      else
+        'deleted'
+      end
+    body = "#{branch_type.to_s} branch `#{branch}` #{verb}".capitalize
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 

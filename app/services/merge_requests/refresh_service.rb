@@ -7,11 +7,11 @@ module MergeRequests
       @branch_name = Gitlab::Git.ref_name(ref)
       @fork_merge_requests = @project.fork_merge_requests.opened
       @commits = []
-      @merge_requests = merge_requests_for_branch
+      @source_merge_requests = merge_requests_for_source_branch
 
       # Leave a system note if a branch were deleted/added
       if Gitlab::Git.blank_ref?(oldrev) or Gitlab::Git.blank_ref?(newrev)
-        presence = Gitlab::Git.blank_ref?(oldrev) ? 'added' : 'deleted'
+        presence = Gitlab::Git.blank_ref?(oldrev) ? :add : :delete
         comment_mr_branch_presence_changed(presence)
       else
         @commits = @project.repository.commits_between(oldrev, newrev)
@@ -81,18 +81,16 @@ module MergeRequests
 
     # Add comment about branches being deleted or added to merge requests
     def comment_mr_branch_presence_changed(presence)
-      merge_requests = merge_requests_for_branch
-
-      merge_requests.each do |merge_request|
+      @source_merge_requests.each do |merge_request|
         SystemNoteService.change_branch_presence(
             merge_request, merge_request.project, @current_user,
-            'source', @branch_name, presence)
+            :source, @branch_name, presence)
       end
     end
 
     # Add comment about pushing new commits to merge requests
     def comment_mr_with_commits
-      @merge_requests.each do |merge_request|
+      @source_merge_requests.each do |merge_request|
         mr_commit_ids = Set.new(merge_request.commits.map(&:id))
 
         new_commits, existing_commits = @commits.partition do |commit|
@@ -107,7 +105,7 @@ module MergeRequests
 
     # Call merge request webhook with update branches
     def execute_mr_web_hooks
-      @merge_requests.each do |merge_request|
+      @source_merge_requests.each do |merge_request|
         execute_hooks(merge_request, 'update')
       end
     end
@@ -116,7 +114,7 @@ module MergeRequests
       merge_requests.uniq.select(&:source_project)
     end
 
-    def merge_requests_for_branch
+    def merge_requests_for_source_branch
       merge_requests = @project.origin_merge_requests.opened.where(source_branch: @branch_name).to_a
       merge_requests += @fork_merge_requests.where(source_branch: @branch_name).to_a
       filter_merge_requests(merge_requests)
