@@ -106,6 +106,12 @@ describe GitlabMarkdownHelper do
       act = link_to_gfm(text, '/foo')
       expect(act).to eq %Q(<a href="/foo">#{issues[0].to_reference}</a>)
     end
+
+    it 'should replace commit message with emoji to link' do
+      actual = link_to_gfm(':book:Book', '/foo')
+      expect(actual).
+        to eq %Q(<img class="emoji" title=":book:" alt=":book:" src="http://localhost/assets/emoji/1F4D6.png" height="20" width="20" align="absmiddle"><a href="/foo">Book</a>)
+    end
   end
 
   describe '#render_wiki_content' do
@@ -144,6 +150,26 @@ describe GitlabMarkdownHelper do
     it 'returns a random Markdown tip' do
       stub_const("#{described_class}::MARKDOWN_TIPS", ['Random tip'])
       expect(random_markdown_tip).to eq 'Random tip'
+    end
+  end
+
+  describe '#first_line_in_markdown' do
+    let(:text) { "@#{user.username}, can you look at this?\nHello world\n"}
+
+    it 'truncates Markdown properly' do
+      actual = first_line_in_markdown(text, 100, project: project)
+
+      doc = Nokogiri::HTML.parse(actual)
+
+      # Make sure we didn't create invalid markup
+      expect(doc.errors).to be_empty
+
+      # Leading user link
+      expect(doc.css('a').length).to eq(1)
+      expect(doc.css('a')[0].attr('href')).to eq user_path(user)
+      expect(doc.css('a')[0].text).to eq "@#{user.username}"
+
+      expect(doc.content).to eq "@#{user.username}, can you look at this?..."
     end
   end
 end

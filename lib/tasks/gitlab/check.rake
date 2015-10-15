@@ -642,7 +642,6 @@ namespace :gitlab do
 
       if Gitlab.config.incoming_email.enabled
         check_address_formatted_correctly
-        check_mail_room_config_exists
         check_imap_authentication
 
         if Rails.env.production?
@@ -678,6 +677,11 @@ namespace :gitlab do
 
     def check_initd_configured_correctly
       print "Init.d configured correctly? ... "
+
+      if omnibus_gitlab?
+        puts 'skipped (omnibus-gitlab has no init script)'.magenta
+        return
+      end
 
       path = "/etc/default/gitlab"
 
@@ -739,42 +743,16 @@ namespace :gitlab do
       end
     end
 
-    def check_mail_room_config_exists
-      print "MailRoom config exists? ... "
-
-      mail_room_config_file = Rails.root.join("config", "mail_room.yml")
-
-      if File.exists?(mail_room_config_file)
-        puts "yes".green
-      else
-        puts "no".red
-        try_fixing_it(
-          "Copy config/mail_room.yml.example to config/mail_room.yml",
-          "Check that the information in config/mail_room.yml is correct"
-        )
-        for_more_information(
-          "doc/incoming_email/README.md"
-        )
-        fix_and_rerun
-      end
-    end
-
     def check_imap_authentication
       print "IMAP server credentials are correct? ... "
 
-      mail_room_config_file = Rails.root.join("config", "mail_room.yml")
-
-      unless File.exists?(mail_room_config_file)
-        puts "can't check because of previous errors".magenta
-        return
-      end
-
-      config = YAML.load_file(mail_room_config_file)[:mailboxes].first rescue nil
+      config = Gitlab.config.incoming_email
 
       if config
         begin
-          imap = Net::IMAP.new(config[:host], port: config[:port], ssl: config[:ssl])
-          imap.login(config[:email], config[:password])
+          imap = Net::IMAP.new(config.host, port: config.port, ssl: config.ssl)
+          imap.starttls if config.start_tls
+          imap.login(config.user, config.password)
           connected = true
         rescue
           connected = false
@@ -786,7 +764,7 @@ namespace :gitlab do
       else
         puts "no".red
         try_fixing_it(
-          "Check that the information in config/mail_room.yml is correct"
+          "Check that the information in config/gitlab.yml is correct"
         )
         for_more_information(
           "doc/incoming_email/README.md"

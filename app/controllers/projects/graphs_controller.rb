@@ -5,6 +5,7 @@ class Projects::GraphsController < Projects::ApplicationController
   before_action :require_non_empty_project
   before_action :assign_ref_vars
   before_action :authorize_download_code!
+  before_action :ci_enabled, only: :ci
 
   def show
     respond_to do |format|
@@ -21,6 +22,16 @@ class Projects::GraphsController < Projects::ApplicationController
     @commits_per_week_days = @commits_graph.commits_per_week_days
     @commits_per_time = @commits_graph.commits_per_time
     @commits_per_month = @commits_graph.commits_per_month
+  end
+
+  def ci
+    ci_project = @project.gitlab_ci_project
+
+    @charts = {}
+    @charts[:week] = Ci::Charts::WeekChart.new(ci_project)
+    @charts[:month] = Ci::Charts::MonthChart.new(ci_project)
+    @charts[:year] = Ci::Charts::YearChart.new(ci_project)
+    @charts[:build_times] = Ci::Charts::BuildTime.new(ci_project)
   end
 
   private

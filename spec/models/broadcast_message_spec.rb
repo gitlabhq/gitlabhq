@@ -27,12 +27,12 @@ describe BroadcastMessage do
     end
 
     it "should return nil if time not come" do
-      broadcast_message = create(:broadcast_message, starts_at: Time.now.tomorrow, ends_at: Time.now + 2.days)
+      create(:broadcast_message, starts_at: Time.now.tomorrow, ends_at: Time.now + 2.days)
       expect(BroadcastMessage.current).to be_nil
     end
 
     it "should return nil if time has passed" do
-      broadcast_message = create(:broadcast_message, starts_at: Time.now - 2.days, ends_at: Time.now.yesterday)
+      create(:broadcast_message, starts_at: Time.now - 2.days, ends_at: Time.now.yesterday)
       expect(BroadcastMessage.current).to be_nil
     end
   end

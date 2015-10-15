@@ -25,12 +25,24 @@ module GitlabRoutingHelper
     namespace_project_commits_path(project.namespace, project, @ref || project.repository.root_ref)
   end
 
+  def project_builds_path(project, *args)
+    namespace_project_builds_path(project.namespace, project, *args)
+  end
+
   def activity_project_path(project, *args)
     activity_namespace_project_path(project.namespace, project, *args)
   end
 
   def edit_project_path(project, *args)
     edit_namespace_project_path(project.namespace, project, *args)
+  end
+
+  def runners_path(project, *args)
+    namespace_project_runners_path(project.namespace, project, *args)
+  end
+
+  def runner_path(runner, *args)
+    namespace_project_runner_path(@project.namespace, @project, runner, *args)
   end
 
   def issue_path(entity, *args)

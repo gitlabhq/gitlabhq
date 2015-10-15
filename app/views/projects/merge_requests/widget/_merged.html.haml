@@ -20,7 +20,7 @@
               The changes were merged into
               %span.label-branch= @merge_request.target_branch
             You can remove the source branch now.
-          = link_to namespace_project_branch_path(@merge_request.source_project.namespace, @merge_request.source_project, @source_branch), remote: true, method: :delete, class: "btn btn-primary btn-sm remove_source_branch" do
+          = link_to namespace_project_branch_path(@merge_request.source_project.namespace, @merge_request.source_project, @merge_request.source_branch), remote: true, method: :delete, class: "btn btn-primary btn-sm remove_source_branch" do
             %i.fa.fa-times
             Remove Source Branch
 

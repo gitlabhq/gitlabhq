@@ -1,0 +1,129 @@
+/**
+ * Well styled list
+ *
+ */
+.well-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    padding: 10px 15px;
+    min-height: 20px;
+    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+    &:after {
+      content: " ";
+      display: table;
+      clear: both;
+    }
+
+    &.disabled {
+      color: #888;
+    }
+
+    &.unstyled {
+      &:hover {
+        background: none;
+      }
+    }
+
+    &.warning-row {
+      background-color: #fcf8e3;
+      border-color: #faebcc;
+      color: #8a6d3b;
+    }
+
+    &.smoke { background-color: $background-color; }
+
+    &:hover {
+      background: $hover;
+    }
+
+    &:last-child {
+      border-bottom: none;
+
+      &.bottom {
+        background: $background-color;
+      }
+    }
+
+    .list-item-name {
+      float: left;
+      position: relative;
+      top: 3px;
+    }
+
+    p {
+      padding-top: 1px;
+      margin: 0;
+      color: $gray-dark;
+      img {
+        position: relative;
+        top: 3px;
+      }
+    }
+
+    .well-title {
+      font-size: $list-font-size;
+      line-height: 18px;
+    }
+  }
+}
+
+ol, ul {
+  &.styled {
+    li {
+      padding: 2px;
+    }
+  }
+}
+
+/** light list with border-bottom between li **/
+ul.bordered-list {
+  @include basic-list;
+
+  &.top-list {
+    li:first-child {
+      padding-top: 0;
+
+      h4, h5 {
+        margin-top: 0;
+      }
+    }
+  }
+}
+
+li.task-list-item {
+  list-style-type: none;
+}
+
+ul.content-list {
+  @include basic-list;
+
+  margin: 0;
+  padding: 0;
+
+  > li {
+    padding: $gl-padding;
+    border-color: #f1f2f4;
+    margin-left: -$gl-padding;
+    margin-right: -$gl-padding;
+    color: $gl-gray;
+
+    .avatar {
+      margin-right: 15px;
+    }
+
+    .controls {
+      padding-top: 4px;
+      float: right;
+
+      .btn {
+        padding: 10px 14px;
+      }
+    }
+  }
+}
+

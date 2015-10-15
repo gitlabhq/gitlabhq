@@ -15,6 +15,8 @@
     %li
       = link_to 'Tables', '#tables'
     %li
+      = link_to 'Nav', '#nav'
+    %li
       = link_to 'Buttons', '#buttons'
     %li
       = link_to 'Panels', '#panels'
@@ -30,15 +32,30 @@
   %h2#blocks Blocks
 
   %h3
-    %code .well
+    %code .gray-content-block
 
 
-  .well
-    %h4 Something
+
+  .gray-content-block.middle-block
+    %h4 Normal block inside content
+    = lorem
+
+  .gray-content-block.second-block
+    %h4 Second block
     = lorem
 
 
   %h2#lists Lists
+
+  %h3
+    %code .content-list
+  %ul.content-list
+    %li
+      One item
+    %li
+      One item
+    %li
+      One item
 
   %h3
     %code .well-list
@@ -102,11 +119,40 @@
           %td the Bird
           %td @twitter
 
+  %h2#navs Navigation
+
+  %h3
+    %code .center-top-menu
+  .example
+    %ul.center-top-menu
+      %li.active
+        %a Open
+      %li
+        %a Closed
+
+  %h3
+    %code .btn-group.btn-group-next
+  .example
+    %div.btn-group.btn-group-next
+      %a.btn.active Open
+      %a.btn Closed
+
+
+  %h3
+    %code .nav.nav-tabs
+  .example
+    %ul.nav.nav-tabs
+      %li.active
+        %a Open
+      %li
+        %a Closed
+
 
   %h2#buttons Buttons
 
   .example
     %button.btn.btn-default{:type => "button"} Default
+    %button.btn.btn-gray{:type => "button"} Gray
     %button.btn.btn-primary{:type => "button"} Primary
     %button.btn.btn-success{:type => "button"} Success
     %button.btn.btn-info{:type => "button"} Info

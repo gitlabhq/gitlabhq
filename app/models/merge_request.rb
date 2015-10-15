@@ -229,7 +229,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def work_in_progress?
-    title =~ /\A\[?WIP\]?:? /i
+    !!(title =~ /\A\[?WIP\]?:? /i)
   end
 
   def mergeable?
@@ -277,7 +277,8 @@ class MergeRequest < ActiveRecord::Base
     attrs = {
       source: source_project.hook_attrs,
       target: target_project.hook_attrs,
-      last_commit: nil
+      last_commit: nil,
+      work_in_progress: work_in_progress?
     }
 
     unless last_commit.nil?

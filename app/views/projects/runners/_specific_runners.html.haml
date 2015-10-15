@@ -1,0 +1,29 @@
+%h3 Specific runners
+
+.bs-callout.help-callout
+  %h4 How to setup a new project specific runner
+
+  %ol
+    %li
+      Install GitLab Runner software.
+      Checkout the #{link_to 'GitLab Runner section', 'https://about.gitlab.com/gitlab-ci/#gitlab-runner', target: '_blank'} to install it
+    %li
+      Specify following URL during runner setup:
+      %code #{ci_root_url(only_path: false)}
+    %li
+      Use the following registration token during setup:
+      %code #{@ci_project.token}
+    %li
+      Start runner!
+
+
+- if @runners.any?
+  %h4.underlined-title Runners activated for this project
+  %ul.bordered-list.activated-specific-runners
+    = render partial: 'runner', collection: @runners, as: :runner
+
+- if @specific_runners.any?
+  %h4.underlined-title Available specific runners
+  %ul.bordered-list.available-specific-runners
+    = render partial: 'runner', collection: @specific_runners, as: :runner
+  = paginate @specific_runners

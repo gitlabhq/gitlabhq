@@ -1,0 +1,25 @@
+#modal-create-new-dir.modal
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %a.close{href: "#", "data-dismiss" => "modal"} ×
+        %h3.page-title Create New Directory
+      .modal-body
+        = form_tag namespace_project_create_dir_path(@project.namespace, @project, @id), method: :post, remote: false, id: 'dir-create-form', class: 'form-horizontal' do
+          .form-group
+            = label_tag :dir_name, 'Directory Name', class: 'control-label'
+            .col-sm-10
+              = text_field_tag :dir_name, params[:dir_name], placeholder: "Directory name", required: true, class: 'form-control'
+          = render 'shared/commit_message_container', params: params, placeholder: ''
+          - unless @project.empty_repo?
+            .form-group
+              = label_tag :branch_name, 'Branch', class: 'control-label'
+              .col-sm-10
+                = text_field_tag 'new_branch', @ref, class: "form-control"
+          .form-group
+            .col-sm-offset-2.col-sm-10
+              = submit_tag "Create directory", class: 'btn btn-primary btn-create'
+              = link_to "Cancel", '#', class: "btn btn-cancel", "data-dismiss" => "modal"
+
+:coffeescript
+  disableButtonIfAnyEmptyField($("#dir-create-form"), ".form-control", ".btn-create");

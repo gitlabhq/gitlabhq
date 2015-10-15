@@ -1,9 +1,18 @@
 # Helper methods for per-User preferences
 module PreferencesHelper
+  def layout_choices
+    [
+        ['Fixed', :fixed],
+        ['Fluid', :fluid]
+    ]
+  end
+
   # Maps `dashboard` values to more user-friendly option text
   DASHBOARD_CHOICES = {
     projects: 'Your Projects (default)',
-    stars:    'Starred Projects'
+    stars:    'Starred Projects',
+    project_activity: "Your Projects' Activity",
+    starred_project_activity: "Starred Projects' Activity"
   }.with_indifferent_access.freeze
 
   # Returns an Array usable by a select field for more user-friendly option text

@@ -1,0 +1,67 @@
+%h3.page-title
+  Triggers
+
+%p.light
+  Triggers can be used to force a rebuild of a specific branch or tag with an API call.
+
+%hr.clearfix
+
+-if @triggers.any?
+  %table.table
+    %thead
+      %th Token
+      %th Last used
+      %th
+    = render partial: 'trigger', collection: @triggers, as: :trigger
+- else
+  %h4 No triggers
+
+= form_for @trigger, url: url_for(controller: 'projects/triggers', action: 'create'), html: { class: 'form-horizontal' } do |f|
+  .clearfix
+    = f.submit "Add Trigger", class: 'btn btn-success pull-right'
+
+%hr.clearfix
+
+-if @triggers.any?
+  %h3
+    Use CURL
+
+  %p.light
+    Copy the token above and set your branch or tag name. This is the reference that will be rebuild.
+
+
+  %pre
+    :plain
+      curl -X POST \
+           -F token=TOKEN \
+           #{ci_build_trigger_url(@ci_project.id, 'REF_NAME')}
+  %h3
+    Use .gitlab-ci.yml
+
+  %p.light
+    Copy the snippet to
+    %i .gitlab-ci.yml
+    of dependent project.
+    At the end of your build it will trigger this project to rebuilt.
+
+  %pre
+    :plain
+      trigger:
+        type: deploy
+        script:
+          - "curl -X POST -F token=TOKEN #{ci_build_trigger_url(@ci_project.id, 'REF_NAME')}"
+  %h3
+    Pass build variables
+
+  %p.light
+    Add
+    %strong variables[VARIABLE]=VALUE
+    to API request.
+    The value of variable could then be used to distinguish triggered build from normal one.
+
+  %pre
+    :plain
+      curl -X POST \
+           -F token=TOKEN \
+           -F "variables[RUN_NIGHTLY_BUILD]=true" \
+           #{ci_build_trigger_url(@ci_project.id, 'REF_NAME')}

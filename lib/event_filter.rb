@@ -47,7 +47,7 @@ class EventFilter
 
     actions << Event::COMMENTED if filter.include? 'comments'
 
-    events = events.where(action: actions)
+    events.where(action: actions)
   end
 
   def options(key)

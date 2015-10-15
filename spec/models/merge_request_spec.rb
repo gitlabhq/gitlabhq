@@ -195,8 +195,19 @@ describe MergeRequest do
 
     it "takes approvals_before_merge" do
       merge_request.target_project.update(approvals_before_merge: 2)
-      
+
       expect(merge_request.approvals_required).to eq 2
+    end
+  end
+
+  describe "#hook_attrs" do
+    it "has all the required keys" do
+      attrs = subject.hook_attrs
+      attrs = attrs.to_h
+      expect(attrs).to include(:source)
+      expect(attrs).to include(:target)
+      expect(attrs).to include(:last_commit)
+      expect(attrs).to include(:work_in_progress)
     end
   end
 

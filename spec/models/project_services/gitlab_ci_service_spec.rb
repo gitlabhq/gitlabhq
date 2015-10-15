@@ -39,8 +39,7 @@ describe GitlabCiService do
     end
 
     describe :build_page do
-      it { expect(@service.build_page("2ab7834c", 'master')).to eq("/ci/projects/#{@ci_project.id}/refs/master/commits/2ab7834c")}
-      it { expect(@service.build_page("issue#2", 'master')).to eq("/ci/projects/#{@ci_project.id}/refs/master/commits/issue%232")}
+      it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://localhost/#{@ci_project.gl_project.path_with_namespace}/commit/2ab7834c/ci")}
     end
 
     describe "execute" do
@@ -48,33 +47,11 @@ describe GitlabCiService do
       let(:project) { create(:project, name: 'project') }
       let(:push_sample_data) { Gitlab::PushDataBuilder.build_sample(project, user) }
 
-      it "calls ci_yaml_file" do
-        service_hook = double
-        expect(@service).to receive(:ci_yaml_file).with(push_sample_data[:checkout_sha])
+      it "calls CreateCommitService" do
+        expect_any_instance_of(Ci::CreateCommitService).to receive(:execute).with(@ci_project, user, push_sample_data)
 
         @service.execute(push_sample_data)
       end
-    end
-  end
-
-  describe "Fork registration" do
-    before do
-      @old_project = create(:ci_project).gl_project
-      @project = create(:empty_project)
-      @user = create(:user)
-
-      @service = GitlabCiService.new
-      allow(@service).to receive_messages(
-        service_hook: true,
-        project_url: 'http://ci.gitlab.org/projects/2',
-        token: 'verySecret',
-        project: @old_project
-      )
-    end
-
-    it "creates fork on CI" do
-      expect_any_instance_of(Ci::CreateProjectService).to receive(:execute)
-      @service.fork_registration(@project, @user)
     end
   end
 end

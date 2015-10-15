@@ -184,4 +184,12 @@ class Commit
   def parents
     @parents ||= Commit.decorate(super, project)
   end
+
+  def ci_commit
+    project.ci_commit(sha)
+  end
+
+  def status
+    ci_commit.try(:status) || :not_found
+  end
 end

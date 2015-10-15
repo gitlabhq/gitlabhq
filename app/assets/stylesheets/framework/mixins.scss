@@ -1,0 +1,160 @@
+/**
+ * Generic mixins
+ */
+ @mixin box-shadow($shadow) {
+  -webkit-box-shadow: $shadow;
+  -moz-box-shadow: $shadow;
+  -ms-box-shadow: $shadow;
+  -o-box-shadow: $shadow;
+  box-shadow: $shadow;
+}
+
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+  -moz-border-radius: $radius;
+  -ms-border-radius: $radius;
+  -o-border-radius: $radius;
+  border-radius: $radius;
+}
+
+@mixin border-radius-left($radius) {
+  @include border-radius($radius 0 0 $radius)
+}
+
+@mixin border-radius-right($radius) {
+  @include border-radius(0 0 $radius $radius)
+}
+
+@mixin linear-gradient($from, $to) {
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from($from), to($to));
+  background-image: -webkit-linear-gradient($from, $to);
+  background-image: -moz-linear-gradient($from, $to);
+  background-image: -ms-linear-gradient($from, $to);
+  background-image: -o-linear-gradient($from, $to);
+}
+
+@mixin transition($transition) {
+  -webkit-transition: $transition;
+  -moz-transition: $transition;
+  -ms-transition: $transition;
+  -o-transition: $transition;
+  transition: $transition;
+}
+
+/**
+ * Prefilled mixins
+ * Mixins with fixed values
+ */
+
+@mixin shade {
+  @include box-shadow(0 0 3px #ddd);
+}
+
+@mixin solid-shade {
+  @include box-shadow(0 0 0 3px #f1f1f1);
+}
+
+@mixin str-truncated($max_width: 82%) {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: top;
+  white-space: nowrap;
+  max-width: $max_width;
+}
+
+/*
+ * Base mixin for lists in GitLab
+ */
+@mixin basic-list {
+  margin: 5px 0px;
+  padding: 0px;
+  list-style: none;
+
+  > li {
+    padding: 10px 0;
+    border-bottom: 1px solid #EEE;
+    overflow: hidden;
+    display: block;
+    margin: 0px;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &.active {
+      background: #f9f9f9;
+      a {
+        font-weight: 600;
+      }
+    }
+
+    &.hide {
+      display: none;
+    }
+
+    &.light {
+      a {
+        color: $gl-gray;
+      }
+    }
+  }
+}
+
+@mixin input-big {
+  height: 36px;
+  padding: 5px 10px;
+  font-size: 16px;
+  line-height: 24px;
+  color: #7f8fa4;
+  background-color: #fff;
+  border-color: #e7e9ed;
+}
+
+@mixin btn-big {
+  height: 36px;
+  padding: 5px 10px;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+@mixin nav-menu {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  margin-top: 5px;
+  height: 56px;
+
+  li {
+    display: inline-block;
+
+    a {
+      padding: 14px;
+      font-size: 17px;
+      line-height: 28px;
+      color: #7f8fa4;
+      border-bottom: 2px solid transparent;
+
+      &:hover, &:active, &:focus {
+        text-decoration: none;
+      }
+    }
+
+    &.active a {
+      color: #4c4e54;
+      border-bottom: 2px solid #1cacfc;
+    }
+
+    .badge {
+      font-weight: normal;
+      background-color: #fff;
+      background-color: #eee;
+      color: #78a;
+    }
+  }
+}
+
+.fa-align {
+  top: 20px;
+  position: relative;
+}

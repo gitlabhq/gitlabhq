@@ -1,0 +1,99 @@
+$hover: #FFFAF1;
+$gl-text-color: #54565B;
+$gl-text-green: #4A2;
+$gl-text-red: #D12F19;
+$gl-text-orange: #D90;
+$gl-header-color: #4c4e54;
+$gl-link-color: #333c48;
+$md-text-color: #444;
+$md-link-color: #3084bb;
+$nprogress-color: #c0392b;
+$gl-font-size: 15px;
+$list-font-size: 15px;
+$sidebar_collapsed_width: 62px;
+$sidebar_width: 230px;
+$avatar_radius: 50%;
+$code_font_size: 13px;
+$code_line_height: 1.5;
+$border-color: #dce0e6;
+$table-border-color: #eef0f2;
+$background-color: #F7F8FA;
+$header-height: 58px;
+$fixed-layout-width: 1200px;
+$gl-gray: #7f8fa4;
+$gl-padding: 16px;
+$gl-avatar-size: 46px;
+
+/*
+ * Color schema
+ */
+
+$white-light: #FFFFFF;
+$white-normal: #DCE0E5;
+$white-dark: #E4E7ED;
+
+$gray-light: #F0F2F5;
+$gray-normal: #DCE0E5;
+$gray-dark: #E4E7ED;
+
+$green-light: #31AF64;
+$green-normal: #2FAA60;
+$green-dark: #2CA05B;
+
+$blue-light: #2EA8E5;
+$blue-normal: #2D9FD8;
+$blue-dark: #2897CE;
+
+$orange-light: #FC6443;
+$orange-normal: #E75E40;
+$orange-dark: #CE5237;
+
+$red-light: #F43263;
+$red-normal: #E52C5A;
+$red-dark: #D22852;
+
+$border-white-light: #E3E7EC;
+$border-white-normal: #D6DAE2;
+$border-white-dark: #C6CACF;
+
+$border-gray-light: #DCE0E5;
+$border-gray-normal: #D6DAE2;
+$border-gray-dark: #C6CACF;
+
+$border-green-light: #2FAA60;
+$border-green-normal: #2CA05B;
+$border-green-dark: #279654;
+
+$border-blue-light: #2D9FD8;
+$border-blue-normal: #2897CE;
+$border-blue-dark: #258DC1;
+
+$border-orange-light: #ED5C3D;
+$border-orange-normal: #CE5237;
+$border-orange-dark: #C14E35;
+
+$border-red-light: #E52C5A;
+$border-red-normal: #D22852;
+$border-red-dark: #CA264F;
+
+
+/*
+ * State colors:
+ */
+$gl-primary: $blue-normal;
+$gl-success: $green-normal;
+$gl-info: $blue-normal;
+$gl-warning: $orange-normal;
+$gl-danger: $red-normal;
+
+/*
+ * Commit Diff Colors
+ */
+$added: #63c363;
+$deleted: #f77;
+
+/*
+ * Fonts
+ */
+$monospace_font: 'Menlo', 'Liberation Mono', 'Consolas', 'DejaVu Sans Mono', 'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console', monospace;
+$regular_font: 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif;

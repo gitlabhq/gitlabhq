@@ -6,7 +6,7 @@ module Gitlab
       private
 
       def get_info(key)
-        attributes = ldap_config.attributes[key]
+        attributes = ldap_config.attributes[key.to_s]
         return super unless attributes
 
         attributes = Array(attributes)
@@ -14,6 +14,7 @@ module Gitlab
         value = nil
         attributes.each do |attribute|
           value = get_raw(attribute)
+          value = value.first if value
           break if value.present?
         end
         

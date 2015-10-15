@@ -39,7 +39,7 @@ class IssuableFinder
     items = by_assignee(items)
     items = by_author(items)
     items = by_label(items)
-    items = sort(items)
+    sort(items)
   end
 
   def group
@@ -72,11 +72,15 @@ class IssuableFinder
     params[:milestone_title].present?
   end
 
+  def no_milestones?
+    milestones? && params[:milestone_title] == Milestone::None.title
+  end
+
   def milestones
     return @milestones if defined?(@milestones)
 
     @milestones =
-      if milestones? && params[:milestone_title] != Milestone::None.title
+      if milestones?
         Milestone.where(title: params[:milestone_title])
       else
         nil
@@ -183,7 +187,11 @@ class IssuableFinder
 
   def by_milestone(items)
     if milestones?
-      items = items.where(milestone_id: milestones.try(:pluck, :id))
+      if no_milestones?
+        items = items.where(milestone_id: [-1, nil])
+      else
+        items = items.where(milestone_id: milestones.try(:pluck, :id))
+      end
     end
 
     items
@@ -207,13 +215,19 @@ class IssuableFinder
 
   def by_label(items)
     if params[:label_name].present?
-      label_names = params[:label_name].split(",")
+      if params[:label_name] == Label::None.title
+        item_ids = LabelLink.where(target_type: klass.name).pluck(:target_id)
 
-      item_ids = LabelLink.joins(:label).
-        where('labels.title in (?)', label_names).
-        where(target_type: klass.name).pluck(:target_id)
+        items = items.where('id NOT IN (?)', item_ids)
+      else
+        label_names = params[:label_name].split(",")
 
-      items = items.where(id: item_ids)
+        item_ids = LabelLink.joins(:label).
+          where('labels.title in (?)', label_names).
+          where(target_type: klass.name).pluck(:target_id)
+
+        items = items.where(id: item_ids)
+      end
     end
 
     items

@@ -2,7 +2,7 @@ module Ci
   module API
     module Entities
       class Commit < Grape::Entity
-        expose :id, :ref, :sha, :project_id, :before_sha, :created_at
+        expose :id, :sha, :project_id, :created_at
         expose :status, :finished_at, :duration
         expose :git_commit_message, :git_author_name, :git_author_email
       end
@@ -12,7 +12,7 @@ module Ci
       end
 
       class Build < Grape::Entity
-        expose :id, :commands, :ref, :sha, :project_id, :repo_url,
+        expose :id, :commands, :ref, :sha, :status, :project_id, :repo_url,
           :before_sha, :allow_git_fetch, :project_name
 
         expose :options do |model|

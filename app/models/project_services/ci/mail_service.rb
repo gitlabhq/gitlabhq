@@ -48,7 +48,7 @@ module Ci
       # it doesn't make sense to send emails for retried builds
       commit = build.commit
       return unless commit
-      return unless commit.builds_without_retry.include?(build)
+      return unless commit.latest_builds.include?(build)
 
       case build.status.to_sym
       when :failed
@@ -61,7 +61,7 @@ module Ci
     end
 
     def execute(build)
-      build.commit.project_recipients.each do |recipient|
+      build.project_recipients.each do |recipient|
         case build.status.to_sym
         when :success
           mailer.build_success_email(build.id, recipient)

@@ -33,8 +33,6 @@ module Ci
 
     belongs_to :gl_project, class_name: '::Project', foreign_key: :gitlab_id
 
-    has_many :commits, ->() { order('CASE WHEN ci_commits.committed_at IS NULL THEN 0 ELSE 1 END', :committed_at, :id) }, dependent: :destroy, class_name: 'Ci::Commit'
-    has_many :builds, through: :commits, dependent: :destroy, class_name: 'Ci::Build'
     has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
     has_many :runners, through: :runner_projects, class_name: 'Ci::Runner'
     has_many :web_hooks, dependent: :destroy, class_name: 'Ci::WebHook'
@@ -50,19 +48,18 @@ module Ci
 
     accepts_nested_attributes_for :variables, allow_destroy: true
 
+    delegate :name_with_namespace, :path_with_namespace, :web_url, :http_url_to_repo, :ssh_url_to_repo, to: :gl_project
+
     #
     # Validations
     #
-    validates_presence_of :name, :timeout, :token, :default_ref,
-      :path, :ssh_url_to_repo, :gitlab_id
+    validates_presence_of :timeout, :token, :default_ref, :gitlab_id
 
     validates_uniqueness_of :gitlab_id
 
     validates :polling_interval,
-      presence: true,
-      if: ->(project) { project.always_build.present? }
-
-    scope :public_only, ->() { where(public: true) }
+              presence: true,
+              if: ->(project) { project.always_build.present? }
 
     before_validation :set_default_values
 
@@ -78,11 +75,8 @@ module Ci
 
       def parse(project)
         params = {
-          name:                     project.name_with_namespace,
           gitlab_id:                project.id,
-          path:                     project.path_with_namespace,
           default_ref:              project.default_branch || 'master',
-          ssh_url_to_repo:          project.ssh_url_to_repo,
           email_add_pusher:         current_application_settings.add_pusher,
           email_only_broken_builds: current_application_settings.all_broken_builds,
         }
@@ -99,35 +93,43 @@ module Ci
       def unassigned(runner)
         joins("LEFT JOIN #{Ci::RunnerProject.table_name} ON #{Ci::RunnerProject.table_name}.project_id = #{Ci::Project.table_name}.id " \
           "AND #{Ci::RunnerProject.table_name}.runner_id = #{runner.id}").
-        where('#{Ci::RunnerProject.table_name}.project_id' => nil)
+        where("#{Ci::RunnerProject.table_name}.project_id" => nil)
       end
 
       def ordered_by_last_commit_date
-        last_commit_subquery = "(SELECT project_id, MAX(committed_at) committed_at FROM #{Ci::Commit.table_name} GROUP BY project_id)"
-        joins("LEFT JOIN #{last_commit_subquery} AS last_commit ON #{Ci::Project.table_name}.id = last_commit.project_id").
+        last_commit_subquery = "(SELECT gl_project_id, MAX(committed_at) committed_at FROM #{Ci::Commit.table_name} GROUP BY gl_project_id)"
+        joins("LEFT JOIN #{last_commit_subquery} AS last_commit ON #{Ci::Project.table_name}.gitlab_id = last_commit.gl_project_id").
           order("CASE WHEN last_commit.committed_at IS NULL THEN 1 ELSE 0 END, last_commit.committed_at DESC")
-      end
-
-      def search(query)
-        where("LOWER(#{Ci::Project.table_name}.name) LIKE :query",
-              query: "%#{query.try(:downcase)}%")
       end
     end
 
-    def any_runners?
-      if runners.active.any?
+    def name
+      name_with_namespace
+    end
+
+    def path
+      path_with_namespace
+    end
+
+    def gitlab_url
+      web_url
+    end
+
+    def any_runners?(&block)
+      if runners.active.any?(&block)
         return true
       end
 
-      shared_runners_enabled && Ci::Runner.shared.active.any?
+      shared_runners_enabled && Ci::Runner.shared.active.any?(&block)
     end
 
     def set_default_values
       self.token = SecureRandom.hex(15) if self.token.blank?
+      self.default_ref ||= 'master'
     end
 
     def tracked_refs
-      @tracked_refs ||= default_ref.split(",").map{|ref| ref.strip}
+      @tracked_refs ||= default_ref.split(",").map { |ref| ref.strip }
     end
 
     def valid_token? token
@@ -167,8 +169,7 @@ module Ci
     # using http and basic auth
     def repo_url_with_auth
       auth = "gitlab-ci-token:#{token}@"
-      url = gitlab_url + ".git"
-      url.sub(/^https?:\/\//) do |prefix|
+      http_url_to_repo.sub(/^https?:\/\//) do |prefix|
         prefix + auth
       end
     end
@@ -183,7 +184,7 @@ module Ci
 
         # If service is available but missing in db
         # we should create an instance. Ex `create_gitlab_ci_service`
-        service = self.send :"create_#{service_name}_service" if service.nil?
+        self.send :"create_#{service_name}_service" if service.nil?
       end
     end
 
@@ -199,12 +200,16 @@ module Ci
       end
     end
 
-    def gitlab_url
-      File.join(Gitlab.config.gitlab.url, path)
-    end
-
     def setup_finished?
       commits.any?
+    end
+
+    def commits
+      gl_project.ci_commits.ordered
+    end
+
+    def builds
+      gl_project.ci_builds
     end
   end
 end

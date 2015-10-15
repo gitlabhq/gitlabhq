@@ -1,22 +1,32 @@
 - avatar = true unless local_assigns[:avatar] == false
 - stars = true unless local_assigns[:stars] == false
+- ci = false unless local_assigns[:ci] == true
+- skip_namespace = false unless local_assigns[:skip_namespace] == true
 - css_class = '' unless local_assigns[:css_class]
 - css_class += " no-description" unless project.description.present?
 %li.project-row{ class: css_class }
-  = cache [project.namespace, project, controller.controller_name, controller.action_name, 'v2.1'] do
+  = cache [project.namespace, project, controller.controller_name, controller.action_name, 'v2.2'] do
     = link_to project_path(project), class: dom_class(project) do
       - if avatar
         .dash-project-avatar
           = project_icon(project, alt: '', class: 'avatar project-avatar s46')
       %span.project-full-name
         %span.namespace-name
-          - if project.namespace
+          - if project.namespace && !skip_namespace
             = project.namespace.human_name
             \/
         %span.project-name.filter-title
           = project.name
+
+    .project-controls
+      - if ci && !project.empty_repo? && project.commit
+        - if ci_commit = project.ci_commit(project.commit.sha)
+          = link_to ci_status_path(ci_commit), class: "c#{ci_status_color(ci_commit)}",
+            title: "Build status: #{ci_commit.status}", data: {toggle: 'tooltip', placement: 'left'} do
+            = ci_status_icon(ci_commit)
+          &nbsp;
       - if stars
-        %span.pull-right.light
+        %span
           %i.fa.fa-star
           = project.star_count
     - if project.description.present?

@@ -7,7 +7,7 @@
 
 
   %td.build-link
-    = link_to ci_project_ref_commits_path(commit.project, commit.ref, commit.sha) do
+    = link_to ci_status_path(commit) do
       %strong #{commit.short_sha}
 
   %td.build-message
@@ -16,7 +16,8 @@
   %td.build-branch
     - unless @ref
       %span
-        = link_to truncate(commit.ref, length: 25), ci_project_path(@project, ref: commit.ref)
+        - commit.refs.each do |ref|
+          = link_to truncate(ref, length: 25), ci_project_path(@project, ref: ref)
 
   %td.duration
     - if commit.duration > 0

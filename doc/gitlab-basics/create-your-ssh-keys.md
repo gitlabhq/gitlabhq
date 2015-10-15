@@ -10,11 +10,7 @@ After you confirm, go to GitLab and sign in to your account.
 
 ## Add your SSH Key
 
-At the top right corner, click on "profile settings":
-
-![profile settings](basicsimages/profile_settings.png)
-
-On the left side menu click on "SSH Keys":
+On the left side menu, click on "profile settings" and then click on "SSH Keys":
 
 ![SSH Keys](basicsimages/shh_keys.png)
 

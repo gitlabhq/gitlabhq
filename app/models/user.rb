@@ -54,6 +54,7 @@
 #  public_email               :string(255)      default(""), not null
 #  dashboard                  :integer          default(0)
 #  project_view               :integer          default(0)
+#  layout                     :integer          default(0)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -130,6 +131,8 @@ class User < ActiveRecord::Base
   has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
   has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
   has_many :approvals, dependent: :destroy
+  has_one  :abuse_report,             dependent: :destroy
+  has_many :ci_builds,                dependent: :nullify, class_name: 'Ci::Build'
 
 
   #
@@ -171,9 +174,12 @@ class User < ActiveRecord::Base
   after_create :post_create_hook
   after_destroy :post_destroy_hook
 
+  # User's Layout preference
+  enum layout: [:fixed, :fluid]
+
   # User's Dashboard preference
   # Note: When adding an option, it MUST go on the end of the array.
-  enum dashboard: [:projects, :stars]
+  enum dashboard: [:projects, :stars, :project_activity, :starred_project_activity]
 
   # User's Project preference
   # Note: When adding an option, it MUST go on the end of the array.
@@ -353,6 +359,10 @@ class User < ActiveRecord::Base
     self.reset_password_sent_at = Time.now.utc
 
     @reset_token
+  end
+
+  def recently_sent_password_reset?
+    reset_password_sent_at.present? && reset_password_sent_at >= 1.minute.ago
   end
 
   def disable_two_factor!
@@ -733,13 +743,7 @@ class User < ActiveRecord::Base
   end
 
   def manageable_namespaces
-    @manageable_namespaces ||=
-      begin
-        namespaces = []
-        namespaces << namespace
-        namespaces += owned_groups
-        namespaces += masters_groups
-      end
+    @manageable_namespaces ||= [namespace] + owned_groups + masters_groups
   end
 
   def namespaces

@@ -400,3 +400,23 @@ will be known to GitLab. GitLab only queries LDAP user objects corresponding to
 users who use or have used GitLab. Similarly, GitLab only queries LDAP group
 objects that have been (manually) linked to a GitLab group by a GitLab user or
 administrator.
+
+## Limitations
+
+GitLab's LDAP client is based on [omniauth-ldap](https://gitlab.com/gitlab-org/omniauth-ldap)
+which encapsulates Ruby's `Net::LDAP` class. It provides a pure-Ruby implementation
+of the LDAP client protocol. As a result, GitLab is limited by `omniauth-ldap` and may impact your LDAP 
+server settings.
+
+### TLS Client Authentication  
+Not implemented by `Net::LDAP`.  
+So you should disable anonymous LDAP authentication and enable simple or SASL 
+authentication. TLS client authentication setting in your LDAP server cannot be
+mandatory and clients cannot be authenticated with the TLS protocol. 
+
+### TLS Server Authentication  
+Not supported by GitLab's configuration options.  
+When setting `method: ssl`, the underlying authentication method used by 
+`omniauth-ldap` is `simple_tls`.  This method establishes TLS encryption with 
+the LDAP server before any LDAP-protocol data is exchanged but no validation of
+the LDAP server's SSL certificate is performed.

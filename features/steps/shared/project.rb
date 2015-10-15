@@ -196,4 +196,14 @@ module SharedProject
     create(:label, project: project, title: 'feature')
     create(:label, project: project, title: 'enhancement')
   end
+
+  step 'project "Shop" has CI enabled' do
+    project = Project.find_by(name: "Shop")
+    project.enable_ci
+  end
+
+  step 'project "Shop" has CI build' do
+    project = Project.find_by(name: "Shop")
+    create :ci_commit, gl_project: project, sha: project.commit.sha
+  end
 end

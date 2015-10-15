@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Users', feature: true do
+  let(:user) { create(:user, username: 'user1', name: 'User 1', email: 'user1@gitlab.com') }
+
   scenario 'GET /users/sign_in creates a new user account' do
     visit new_user_session_path
     fill_in 'user_name', with: 'Name Surname'
@@ -11,7 +13,6 @@ feature 'Users', feature: true do
   end
 
   scenario 'Successful user signin invalidates password reset token' do
-    user = create(:user)
     expect(user.reset_password_token).to be_nil
 
     visit new_user_password_path
@@ -28,7 +29,6 @@ feature 'Users', feature: true do
     expect(user.reset_password_token).to be_nil
   end
 
-  let!(:user) { create(:user, username: 'user1', name: 'User 1', email: 'user1@gitlab.com') }
   scenario 'Should show one error if email is already taken' do
     visit new_user_session_path
     fill_in 'user_name', with: 'Another user name'

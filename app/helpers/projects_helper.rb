@@ -29,7 +29,7 @@ module ProjectsHelper
     author_html =  ""
 
     # Build avatar image tag
-    author_html << image_tag(avatar_icon(author.try(:email), opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}", alt:'') if opts[:avatar]
+    author_html << image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}", alt:'') if opts[:avatar]
 
     # Build name span tag
     author_html << content_tag(:span, sanitize(author.name), class: opts[:author_class]) if opts[:name]
@@ -111,6 +111,10 @@ module ProjectsHelper
 
     if project.repo_exists? && can?(current_user, :read_merge_request, project)
       nav_tabs << :merge_requests
+    end
+
+    if can?(current_user, :read_build, project)
+      nav_tabs << :builds
     end
 
     if can?(current_user, :admin_project, project)
@@ -304,7 +308,7 @@ module ProjectsHelper
 
   def readme_cache_key
     sha = @project.commit.try(:sha) || 'nil'
-    [@project.id, sha, "readme"].join('-')
+    [@project.path_with_namespace, sha, "readme"].join('-')
   end
 
   def round_commit_count(project)

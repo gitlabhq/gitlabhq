@@ -6,7 +6,7 @@
         = brand_header_logo
         .gitlab-text-container
           %h3 GitLab
-          
+
     - if defined?(sidebar) && sidebar
       = render "layouts/nav/#{sidebar}"
     - elsif current_user
@@ -18,11 +18,12 @@
       = render partial: 'layouts/collapse_button'
     - if current_user
       = link_to current_user, class: 'sidebar-user' do
-        = image_tag avatar_icon(current_user.email, 60), alt: 'User activity', class: 'avatar avatar s36'
+        = image_tag avatar_icon(current_user, 60), alt: 'User activity', class: 'avatar avatar s36'
         .username
           = current_user.username
   .content-wrapper
     = render "layouts/flash"
+    = yield :flash_message
     %div{ class: container_class }
       .content
         .clearfix

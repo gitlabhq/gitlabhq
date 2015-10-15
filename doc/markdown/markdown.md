@@ -33,7 +33,6 @@ For GitLab we developed something we call "GitLab Flavored Markdown" (GFM). It e
 
 You can use GFM in
 
-- commit messages
 - comments
 - issues
 - merge requests
@@ -275,7 +274,7 @@ The IDs are generated from the content of the header according to the following 
 1. All spaces are converted to hyphens
 1. Two or more hyphens in a row are converted to one
 1. If a header with the same ID has already been generated, a unique
-   incrementing number is appended.
+   incrementing number is appended, starting at 1.
 
 For example:
 
@@ -292,8 +291,8 @@ Would generate the following link IDs:
 1. `this-header-has-spaces-in-it`
 1. `this-header-has-a-in-it`
 1. `this-header-has-unicode-in-it-한글`
+1. `this-header-has-spaces-in-it`
 1. `this-header-has-spaces-in-it-1`
-1. `this-header-has-spaces-in-it-2`
 
 Note that the Emoji processing happens before the header IDs are generated, so the Emoji is converted to an image which then gets removed from the ID.
 

@@ -79,7 +79,11 @@ Thanks for the issue report but we only support issues for the latest stable ver
 
 ### Support requests and configuration questions
 
-Thanks for your interest in GitLab. We don't use the issue tracker for support requests and configuration questions. Please use the \[support forum\]\(https://groups.google.com/forum/#!forum/gitlabhq), \[Stack Overflow\]\(http://stackoverflow.com/questions/tagged/gitlab), the #gitlab IRC channel on Freenode or the http://about.gitlab.com paid services for this purpose. Have a look at the \[contribution guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md) for more information.
+Thanks for your interest in GitLab. We don't use the issue tracker for support
+requests and configuration questions. Please check our
+\[getting help\]\(https://about.gitlab.com/getting-help/) page to see all of the available
+support options. Also, have a look at the \[contribution guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md)
+for more information.
 
 ### Code format
 
