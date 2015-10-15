@@ -166,7 +166,7 @@ class ProjectTeam
       access << max_invited_level(user_id)
     end
 
-    access.max
+    access.compact.max
   end
 
 
