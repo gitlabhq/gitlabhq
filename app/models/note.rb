@@ -62,7 +62,7 @@ class Note < ActiveRecord::Base
 
   scope :with_associations, -> do
     includes(:author, :noteable, :updated_by,
-             project: [:project_members, {group: [:group_members]}])
+             project: [:project_members, { group: [:group_members] }])
   end
 
   serialize :st_diff
