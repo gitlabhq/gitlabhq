@@ -125,7 +125,8 @@ module Ci
             image: "ruby:2.1",
             services: ["mysql"]
           },
-          allow_failure: false
+          allow_failure: false,
+          when: "on_success"
         })
       end
 
@@ -152,7 +153,8 @@ module Ci
             image: "ruby:2.5",
             services: ["postgresql"]
           },
-          allow_failure: false
+          allow_failure: false,
+          when: "on_success"
         })
       end
     end
@@ -171,6 +173,21 @@ module Ci
 
         config_processor = GitlabCiYamlProcessor.new(config)
         expect(config_processor.variables).to eq(variables)
+      end
+    end
+
+    describe "When" do
+      %w(on_success on_failure always).each do |when_state|
+        it "returns #{when_state} when defined" do
+          config = YAML.dump({
+                               rspec: { script: "rspec", when: when_state }
+                             })
+
+          config_processor = GitlabCiYamlProcessor.new(config)
+          builds = config_processor.builds_for_stage_and_ref("test", "master")
+          expect(builds.size).to eq(1)
+          expect(builds.first[:when]).to eq(when_state)
+        end
       end
     end
 
@@ -310,6 +327,13 @@ module Ci
         expect do
           GitlabCiYamlProcessor.new(config)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "variables should be a map of key-valued strings")
+      end
+
+      it "returns errors if job when is not on_success, on_failure or always" do
+        config = YAML.dump({ rspec: { script: "test", when: false } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: when parameter should be on_success, on_failure or always")
       end
     end
   end

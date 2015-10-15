@@ -22,6 +22,7 @@ v 8.1.0 (unreleased)
   - Add first and last to pagination (Zeger-Jan van de Weg)
   - Added Commit Status API
   - Added Builds View
+  - Added when to .gitlab-ci.yml
   - Show CI status on commit page
   - Added CI_BUILD_TAG, _STAGE, _NAME and _TRIGGERED to CI builds
   - Show CI status on Your projects page and Starred projects page

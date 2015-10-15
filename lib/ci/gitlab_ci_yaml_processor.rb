@@ -5,7 +5,7 @@ module Ci
     DEFAULT_STAGES = %w(build test deploy)
     DEFAULT_STAGE = 'test'
     ALLOWED_YAML_KEYS = [:before_script, :image, :services, :types, :stages, :variables]
-    ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services, :allow_failure, :type, :stage]
+    ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services, :allow_failure, :type, :stage, :when]
 
     attr_reader :before_script, :image, :services, :variables
 
@@ -93,6 +93,7 @@ module Ci
         only: job[:only],
         except: job[:except],
         allow_failure: job[:allow_failure] || false,
+        when: job[:when] || 'on_success',
         options: {
           image: job[:image] || @image,
           services: job[:services] || @services
@@ -183,6 +184,10 @@ module Ci
 
       if job[:allow_failure] && !job[:allow_failure].in?([true, false])
         raise ValidationError, "#{name}: allow_failure parameter should be an boolean"
+      end
+
+      if job[:when] && !job[:when].in?(%w(on_success on_failure always))
+        raise ValidationError, "#{name}: when should be on_success, on_failure or always"
       end
     end
 

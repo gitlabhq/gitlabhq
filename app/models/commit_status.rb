@@ -28,7 +28,7 @@ class CommitStatus < ActiveRecord::Base
     end
 
     event :drop do
-      transition running: :failed
+      transition [:pending, :running] => :failed
     end
 
     event :success do
