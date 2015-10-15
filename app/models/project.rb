@@ -777,4 +777,8 @@ class Project < ActiveRecord::Base
       approvers.find_or_create_by(user_id: user_id, target_id: id)
     end
   end
+
+  def allowed_to_share_with_group?
+    !namespace.share_with_group_lock
+  end
 end

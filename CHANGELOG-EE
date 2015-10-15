@@ -1,5 +1,8 @@
 v 8.1.0 (unreleased)
   - added an issues template (Hannes Rosenögger)
+v 8.1.0
+  - Add documentation for "Share project with group" API call 
+  - Abiliy to disable 'Share with Group' feature (via UI and API)
 
 v 8.0.1
   - Correct gem dependency versions

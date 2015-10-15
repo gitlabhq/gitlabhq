@@ -265,6 +265,10 @@ module API
         authorize! :admin_project, user_project
         required_attributes! [:group_id, :group_access]
 
+        unless user_project.allowed_to_share_with_group?
+          return render_api_error!("The project sharing with group is disabled", 400)
+        end
+
         link = user_project.project_group_links.new
         link.group_id = params[:group_id]
         link.group_access = params[:group_access]
