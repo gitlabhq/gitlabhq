@@ -140,7 +140,7 @@ job_name:
 | except        | optional | Defines a list of git refs for which build is not created |
 | tags          | optional | Defines a list of tags which are used to select runner |
 | allow_failure | optional | Allow build to fail. Failed build doesn't contribute to commit status |
-| when          | optional | Define when to run build. Can be on_success, on_failure or always |
+| when          | optional | Define when to run build. Can be `on_success`, `on_failure` or `always` |
 
 ### script
 `script` is a shell script which is executed by runner. The shell script is prepended with `before_script`.
