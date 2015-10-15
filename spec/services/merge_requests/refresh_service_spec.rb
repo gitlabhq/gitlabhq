@@ -106,6 +106,25 @@ describe MergeRequests::RefreshService do
       it { expect(@fork_merge_request.notes).to be_empty }
     end
 
+    context 'push new branch that exists in a merge request' do
+      let(:refresh_service) { service.new(@fork_project, @user) }
+      before do
+        allow(refresh_service).to receive(:execute_hooks)
+        refresh_service.execute(Gitlab::Git::BLANK_SHA, @newrev, 'refs/heads/master')
+        reload_mrs
+      end
+
+      it 'should execute hooks with update action' do
+        expect(refresh_service).to have_received(:execute_hooks).
+                                       with(@fork_merge_request, 'update')
+      end
+
+      it { expect(@merge_request.notes).to be_empty }
+      it { expect(@merge_request).to be_open }
+      it { expect(@fork_merge_request.notes.last.note).to include('Source branch `master` added') }
+      it { expect(@fork_merge_request).to be_open }
+    end
+
     def reload_mrs
       @merge_request.reload
       @fork_merge_request.reload
