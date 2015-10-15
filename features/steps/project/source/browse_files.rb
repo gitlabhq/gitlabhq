@@ -286,6 +286,10 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     select "'test'", from: 'ref'
   end
 
+  step "I switch ref to fix" do
+    select "fix", from: 'ref'
+  end
+
   step "I see the ref 'test' has been selected" do
     expect(page).to have_selector '.select2-chosen', text: "'test'"
   end
@@ -294,7 +298,16 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     visit namespace_project_tree_path(@project.namespace, @project, "'test'")
   end
 
+  step "I visit the fix tree" do
+    visit namespace_project_tree_path(@project.namespace, @project, "fix/.testdir")
+  end
+
   step 'I see the commit data' do
+    expect(page).to have_css('.tree-commit-link', visible: true)
+    expect(page).not_to have_content('Loading commit data...')
+  end
+
+  step 'I see the commit data for a directory with a leading dot' do
     expect(page).to have_css('.tree-commit-link', visible: true)
     expect(page).not_to have_content('Loading commit data...')
   end
