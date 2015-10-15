@@ -691,6 +691,7 @@ ActiveRecord::Schema.define(version: 20151008130321) do
     t.boolean  "reset_approvals_on_push",        default: true
     t.integer  "commit_count",                   default: 0
     t.boolean  "merge_requests_ff_only_enabled", default: false
+    t.text     "issues_template"
   end
 
   add_index "projects", ["created_at", "id"], name: "index_projects_on_created_at_and_id", using: :btree
