@@ -12,6 +12,7 @@ describe "Commits" do
       @ci_project = project.ensure_gitlab_ci_project
       @commit = FactoryGirl.create :ci_commit, gl_project: project, sha: project.commit.sha
       @build = FactoryGirl.create :ci_build, commit: @commit
+      @generic_status = FactoryGirl.create :generic_commit_status, commit: @commit
     end
 
     before do
@@ -28,8 +29,16 @@ describe "Commits" do
       it { expect(page).to have_content @commit.git_author_name }
     end
 
-    describe "Cancel commit" do
+    describe "Cancel all builds" do
       it "cancels commit" do
+        visit ci_status_path(@commit)
+        click_on "Cancel all"
+        expect(page).to have_content "canceled"
+      end
+    end
+
+    describe "Cancel build" do
+      it "cancels build" do
         visit ci_status_path(@commit)
         click_on "Cancel"
         expect(page).to have_content "canceled"

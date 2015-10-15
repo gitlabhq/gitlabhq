@@ -1,0 +1,36 @@
+table {
+  &.table {
+    .dropdown-menu a {
+      text-decoration: none;
+    }
+
+    .success,
+    .warning,
+    .danger,
+    .info {
+      color: #fff;
+
+      a:not(.btn) {
+        text-decoration: underline;
+        color: #fff;
+      }
+    }
+
+    tr {
+      td, th {
+        padding: 8px 10px;
+        line-height: 20px;
+        vertical-align: middle;
+      }
+      th {
+        font-weight: normal;
+        font-size: 15px;
+        border-bottom: 1px solid $border-color !important;
+      }
+      td {
+        border-color: $table-border-color !important;
+        border-bottom: 1px solid;
+      }
+    }
+  }
+}

@@ -50,7 +50,7 @@ feature 'Project', feature: true do
   end
 
   def remove_project
-    click_link "Remove project"
+    click_button "Remove project"
     fill_in 'confirm_name_input', with: project.path
     click_button 'Confirm'
   end

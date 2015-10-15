@@ -40,6 +40,8 @@ module Gitlab
     #
     # Returns the results Array for the requested filter type
     def pipeline_result(filter_type)
+      return [] if @text.blank?
+      
       klass  = "#{filter_type.to_s.camelize}ReferenceFilter"
       filter = Gitlab::Markdown.const_get(klass)
 

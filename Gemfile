@@ -22,20 +22,20 @@ gem "mysql2", '~> 0.3.16', group: :mysql
 gem "pg", '~> 0.18.2', group: :postgres
 
 # Authentication libraries
-gem "devise", '~> 3.5.2'
-gem "devise-async", '~> 0.9.0'
-gem 'omniauth', "~> 1.2.2"
-gem 'omniauth-google-oauth2', '~> 0.2.5'
-gem 'omniauth-twitter', '~> 1.0.1'
-gem 'omniauth-github', '~> 1.1.1'
-gem 'omniauth-shibboleth', '~> 1.1.1'
-gem 'omniauth-kerberos', '~> 0.2.0', group: :kerberos
-gem 'omniauth-gitlab', '~> 1.0.0'
-gem 'omniauth-bitbucket', '~> 0.0.2'
-gem 'omniauth-saml', '~> 1.4.0'
-gem 'doorkeeper', '~> 2.1.3'
+gem 'devise',                 '~> 3.5.2'
+gem 'devise-async',           '~> 0.9.0'
+gem 'doorkeeper',             '~> 2.1.3'
+gem 'omniauth',               '~> 1.2.2'
+gem 'omniauth-bitbucket',     '~> 0.0.2'
+gem 'omniauth-github',        '~> 1.1.1'
+gem 'omniauth-gitlab',        '~> 1.0.0'
+gem 'omniauth-google-oauth2', '~> 0.2.0'
+gem 'omniauth-kerberos',      '~> 0.3.0', group: :kerberos
+gem 'omniauth-saml',          '~> 1.4.0'
+gem 'omniauth-shibboleth',    '~> 1.2.0'
+gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd'
-gem "rack-oauth2", "~> 1.0.5"
+gem 'rack-oauth2',            '~> 1.0.5'
 
 # Two-factor authentication
 gem 'devise-two-factor', '~> 2.0.0'
@@ -47,7 +47,7 @@ gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 7.2.17'
+gem "gitlab_git", '~> 7.2.18'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -65,9 +65,9 @@ gem 'gollum-lib', '~> 4.0.2'
 gem "gitlab-linguist", "~> 3.0.1", require: "linguist"
 
 # API
-gem "grape", "~> 0.6.1"
-gem "grape-entity", "~> 0.4.2"
-gem 'rack-cors', '~> 0.2.9', require: 'rack/cors'
+gem 'grape',        '~> 0.6.1'
+gem 'grape-entity', '~> 0.4.2'
+gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
 # Format dates and times
 # based on human-friendly examples
@@ -80,7 +80,7 @@ gem 'enumerize', '~> 0.7.0'
 gem "kaminari", "~> 0.16.3"
 
 # HAML
-gem "haml-rails", '~> 0.5.3'
+gem "haml-rails", '~> 0.9.0'
 
 # Files attachments
 gem "carrierwave", '~> 0.9.0'
@@ -128,7 +128,6 @@ gem 'after_commit_queue'
 gem 'acts-as-taggable-on', '~> 3.4'
 
 # Background jobs
-gem 'slim', '~> 2.0.2'
 gem 'sinatra', '~> 1.4.4', require: nil
 gem 'sidekiq', '3.3.0'
 gem 'sidetiq', '~> 0.6.3'
@@ -151,7 +150,7 @@ gem 'version_sorter', '~> 2.0.0'
 gem "redis-rails", '~> 4.0.0'
 
 # Campfire integration
-gem 'tinder', '~> 1.9.2'
+gem 'tinder', '~> 1.10.0'
 
 # HipChat integration
 gem 'hipchat', '~> 1.5.0'
@@ -163,7 +162,7 @@ gem "gitlab-flowdock-git-hook", "~> 1.0.1"
 gem "gemnasium-gitlab-service", "~> 0.2"
 
 # Slack integration
-gem "slack-notifier", "~> 1.0.0"
+gem "slack-notifier", "~> 1.2.0"
 
 # Asana integration
 gem 'asana', '~> 0.0.6'
@@ -291,7 +290,7 @@ gem 'newrelic-grape'
 
 gem 'octokit', '~> 3.7.0'
 
-gem "mail_room", "~> 0.5.2"
+gem "mail_room", "~> 0.6.0"
 
 gem 'email_reply_parser', '~> 0.5.8'
 
@@ -299,9 +298,6 @@ gem 'email_reply_parser', '~> 0.5.8'
 gem 'activerecord-deprecated_finders', '~> 1.0.3'
 gem 'activerecord-session_store', '~> 0.1.0'
 gem "nested_form", '~> 0.3.2'
-
-# Scheduled
-gem 'whenever', '~> 0.8.4', require: false
 
 # OAuth
 gem 'oauth2', '~> 1.0.0'

@@ -84,6 +84,7 @@ module Gitlab
     autoload :TableOfContentsFilter,        'gitlab/markdown/table_of_contents_filter'
     autoload :TaskListFilter,               'gitlab/markdown/task_list_filter'
     autoload :UserReferenceFilter,          'gitlab/markdown/user_reference_filter'
+    autoload :UploadLinkFilter,             'gitlab/markdown/upload_link_filter'
 
     # Public: Parse the provided HTML with GitLab-Flavored Markdown
     #
@@ -176,6 +177,7 @@ module Gitlab
         Gitlab::Markdown::SyntaxHighlightFilter,
         Gitlab::Markdown::SanitizationFilter,
 
+        Gitlab::Markdown::UploadLinkFilter,
         Gitlab::Markdown::RelativeLinkFilter,
         Gitlab::Markdown::EmojiFilter,
         Gitlab::Markdown::TableOfContentsFilter,

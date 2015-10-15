@@ -8,12 +8,12 @@
   = f.hidden_field :noteable_type
 
   = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true } do
-    = render 'projects/zen', f: f, attr: :note, classes: 'note_text js-note-text'
+    = render 'projects/zen', f: f, attr: :note, classes: 'note_text js-note-text js-quick-submit'
     = render 'projects/notes/hints'
     .error-alert
 
   .note-form-actions
     .buttons.clearfix
-      = f.submit 'Add Comment', class: "btn comment-btn btn-grouped js-comment-button"
+      = f.submit 'Add Comment', class: "btn btn-green comment-btn btn-grouped js-comment-button"
       = yield(:note_actions)
       %a.btn.grouped.js-close-discussion-note-form Cancel
