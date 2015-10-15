@@ -60,6 +60,11 @@ class Note < ActiveRecord::Base
   scope :inc_author_project, ->{ includes(:project, :author) }
   scope :inc_author, ->{ includes(:author) }
 
+  scope :with_associations, -> do
+    includes(:author, :noteable, :updated_by,
+             project: [:project_members, { group: [:group_members] }])
+  end
+
   serialize :st_diff
   before_create :set_diff, if: ->(n) { n.line_code.present? }
 
