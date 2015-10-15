@@ -125,8 +125,9 @@ class Service < ActiveRecord::Base
   # ActiveRecord does not provide a mechanism to track changes in serialized keys.
   # This is why we need to perform extra query to do it mannually.
   def prop_updated?(prop_name)
-    return false if send("#{prop_name}_was").nil?
-    send("#{prop_name}_was") != send(prop_name)
+    value_was = send("#{prop_name}_was")
+    return false if value_was.nil?
+    value_was != send(prop_name)
   end
 
   def async_execute(data)

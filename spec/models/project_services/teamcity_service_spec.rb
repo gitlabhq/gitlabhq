@@ -41,17 +41,18 @@ describe TeamcityService, models: true do
       )
     end
 
-    it "reset password if url changed" do
+    it "reset password if url is changed" do
       @teamcity_service.teamcity_url = 'http://gitlab1.com'
       @teamcity_service.save
       expect(@teamcity_service.password).to be_nil
     end
 
-    it "does not reset password if username changed" do
+    it "does not reset password if username is changed" do
       @teamcity_service.username = "some_name"
       @teamcity_service.save
       expect(@teamcity_service.password).to eq("password")
     end
+
 
     it "does not reset password if new url is set together with password" do
       @teamcity_service.teamcity_url = 'http://gitlab_edited.com'
@@ -59,6 +60,42 @@ describe TeamcityService, models: true do
       @teamcity_service.save
       expect(@teamcity_service.password).to eq("123")
       expect(@teamcity_service.teamcity_url).to eq("http://gitlab_edited.com")
+    end
+
+    it "does not reset password if new url is set together with password, even if it's the same password" do
+      @teamcity_service.teamcity_url = 'http://gitlab_edited.com'
+      @teamcity_service.password = 'password'
+      @teamcity_service.save
+      expect(@teamcity_service.password).to eq("password")
+      expect(@teamcity_service.teamcity_url).to eq("http://gitlab_edited.com")
+    end
+
+
+    context "when no password was set before" do
+      before do
+        @teamcity_service = TeamcityService.create(
+          project: create(:project),
+          properties: {
+            teamcity_url: 'http://gitlab.com',
+            username: 'mic'
+          }
+        )
+      end
+
+      it "saves password if new url is set together with password" do
+        @teamcity_service.teamcity_url = 'http://gitlab_edited.com'
+        @teamcity_service.password = 'password'
+        @teamcity_service.save
+        expect(@teamcity_service.password).to eq("password")
+        expect(@teamcity_service.teamcity_url).to eq("http://gitlab_edited.com")
+      end
+    end
+
+    it "resets password if url is changed, even if setter called multiple times" do
+      @teamcity_service.teamcity_url = 'http://gitlab1.com'
+      @teamcity_service.teamcity_url = 'http://gitlab1.com'
+      @teamcity_service.save
+      expect(@teamcity_service.password).to be_nil
     end
   end
 end
