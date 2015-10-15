@@ -4,6 +4,7 @@ v 8.2.0 (unreleased)
   - Show last project commit to default branch on project home page
   - Highlight comment based on anchor in URL
   - Adds ability to remove the forked relationship from project settings screen. (Han Loong Liauw)
+  - Improved performance of sorting milestone issues
 
 v 8.1.0 (unreleased)
   - Fix bug preventing mentioned issued from being closed when MR is merged using fast-forward merge.
