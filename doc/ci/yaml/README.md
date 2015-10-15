@@ -200,9 +200,10 @@ The above specification will make sure that `job` is built by a runner that have
 ### when
 `when` is used to implement jobs that are run in case of failure or despite the failure.
 
-The `when` can be set to one of the following values:
-1. `on_success` - execute build only when all builds from prior stages succeeded. This is default.
-1. `on_failure` - execute build only when at least one of the build from prior stages failed.
+`when` can be set to one of the following values:
+
+1. `on_success` - execute build only when all builds from prior stages succeeded. This is the default.
+1. `on_failure` - execute build only when at least one build from prior stages failed.
 1. `always` - execute build despite the status of builds from prior stages.
 
 ```
