@@ -66,7 +66,7 @@
           %span
             CI Services
       = nav_link path: 'events#index' do
-        = link_to ci_project_events_path(@project.ensure_gitlab_ci_project) do
+        = link_to ci_project_events_path(@project.gitlab_ci_project) do
           = icon('book fw')
           %span
             CI Events

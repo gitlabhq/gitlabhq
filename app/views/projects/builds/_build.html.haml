@@ -29,9 +29,9 @@
         - build.tags.each do |tag|
           %span.label.label-primary
             = tag
-      - if build.try(:trigger_request)
+      - if build.trigger_request
         %span.label.label-info triggered
-      - if build.try(:allow_failure)
+      - if build.allow_failure
         %span.label.label-danger allowed to fail
 
   %td.duration
