@@ -274,7 +274,7 @@ describe GitPushService do
 
         allow(closing_commit).to receive_messages({
           issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
-          safe_message: "this is some work.\n\ncloses JIRA-1",
+          safe_message: message,
           author_name: commit_author.name,
           author_email: commit_author.email
         })
@@ -286,33 +286,40 @@ describe GitPushService do
         jira_tracker.destroy!
       end
 
-      it "should initiate one api call to jira server to close the issue" do
-        message = {
-          update: {
-            comment: [{
-              add: {
-                body: "Issue solved with [#{closing_commit.id}|http://localhost/#{project.path_with_namespace}/commit/#{closing_commit.id}]."
-              }
-            }]
-          },
-          transition: {
-            id: '2'
-          }
-        }.to_json
+      context "mentioning an issue" do
+        let(:message) { "this is some work.\n\nrelated to JIRA-1" }
 
-        service.execute(project, user, @oldrev, @newrev, @ref)
-        expect(WebMock).to have_requested(:post, jira_api_transition_url).with(
-          body: message
-        ).once
+        it "should initiate one api call to jira server to mention the issue" do
+          service.execute(project, user, @oldrev, @newrev, @ref)
+
+          expect(WebMock).to have_requested(:post, jira_api_comment_url).with(
+            body: /mentioned this issue in/
+          ).once
+        end
       end
 
-      it "should initiate one api call to jira server to mention the issue" do
-        skip "This spec was broken during the CE-to-EE merge and needs to be fixed. See https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/34"
-        service.execute(project, user, @oldrev, @newrev, @ref)
+      context "closing an issue" do
+        let(:message) { "this is some work.\n\ncloses JIRA-1" }
 
-        expect(WebMock).to have_requested(:post, jira_api_comment_url).with(
-          body: /mentioned this issue in/
-        ).once
+        it "should initiate one api call to jira server to close the issue" do
+          body = {
+            update: {
+              comment: [{
+                add: {
+                  body: "Issue solved with [#{closing_commit.id}|http://localhost/#{project.path_with_namespace}/commit/#{closing_commit.id}]."
+                }
+              }]
+            },
+            transition: {
+              id: '2'
+            }
+          }.to_json
+
+          service.execute(project, user, @oldrev, @newrev, @ref)
+          expect(WebMock).to have_requested(:post, jira_api_transition_url).with(
+            body: body
+          ).once
+        end
       end
     end
   end
