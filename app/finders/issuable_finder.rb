@@ -74,11 +74,11 @@ class IssuableFinder
   end
 
   def projects
-    return if project?
-
     return @projects if defined?(@projects)
 
-    if current_user && params[:authorized_only].presence && !current_user_related?
+    if project?
+      project
+    elsif current_user && params[:authorized_only].presence && !current_user_related?
       current_user.authorized_projects
     else
       ProjectsFinder.new.execute(current_user)
@@ -102,19 +102,20 @@ class IssuableFinder
 
     @milestones =
       if milestones?
-        scope =
-          if project
-            project.milestones
-          elsif projects
-            Milestone.where(project_id: projects)
-          else
-            Milestone.none
-          end
+        scope = Milestone.where(project_id: projects)
 
         scope.where(title: params[:milestone_title])
       else
         nil
       end
+  end
+
+  def labels?
+    params[:label_name].present?
+  end
+
+  def no_labels?
+    labels? && params[:label_name] == Label::None.title
   end
 
   def assignee?
@@ -189,9 +190,7 @@ class IssuableFinder
 
   def by_project(items)
     items =
-      if project
-        items.of_projects(project)
-      elsif projects
+      if projects
         items.of_projects(projects).references(:project)
       else
         items.none
@@ -210,18 +209,6 @@ class IssuableFinder
     items.sort(params[:sort])
   end
 
-  def by_milestone(items)
-    if milestones?
-      if no_milestones?
-        items = items.where(milestone_id: [-1, nil])
-      else
-        items = items.where(milestone_id: milestones.try(:pluck, :id))
-      end
-    end
-
-    items
-  end
-
   def by_assignee(items)
     if assignee?
       items = items.where(assignee_id: assignee.try(:id))
@@ -238,9 +225,25 @@ class IssuableFinder
     items
   end
 
+  def by_milestone(items)
+    if milestones?
+      if no_milestones?
+        items = items.where(milestone_id: [-1, nil])
+      else
+        items = items.joins(:milestone).where(milestones: { title: params[:milestone_title] })
+
+        if projects
+          items = items.where(milestones: { project_id: projects })
+        end
+      end
+    end
+
+    items
+  end
+
   def by_label(items)
-    if params[:label_name].present?
-      if params[:label_name] == Label::None.title
+    if labels?
+      if no_labels?
         items = items.
           joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{klass.name}' AND label_links.target_id = #{klass.table_name}.id").
           where(label_links: { id: nil })
@@ -249,8 +252,8 @@ class IssuableFinder
 
         items = items.joins(:labels).where(labels: { title: label_names })
 
-        if project
-          items = items.where('labels.project_id = :id', id: project.id)
+        if projects
+          items = items.where(labels: { project_id: projects })
         end
       end
     end
