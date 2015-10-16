@@ -112,6 +112,14 @@ describe GitPushService do
     it { expect(@event.project).to eq(project) }
     it { expect(@event.action).to eq(Event::PUSHED) }
     it { expect(@event.data).to eq(service.push_data) }
+
+    context "Updates merge requests" do
+      it "when pushing a new branch for the first time" do
+        expect(project).to receive(:update_merge_requests).
+                               with(@blankrev, 'newrev', 'refs/heads/master', user)
+        service.execute(project, user, @blankrev, 'newrev', 'refs/heads/master')
+      end
+    end
   end
 
   describe "Web Hooks" do

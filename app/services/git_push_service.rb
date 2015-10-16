@@ -49,9 +49,12 @@ class GitPushService
     elsif push_to_existing_branch?(ref, oldrev)
       # Collect data for this git push
       @push_commits = project.repository.commits_between(oldrev, newrev)
-      project.update_merge_requests(oldrev, newrev, ref, @user)
       process_commit_messages(ref)
     end
+
+    # Update merge requests that may be affected by this push. A new branch
+    # could cause the last commit of a merge request to change.
+    project.update_merge_requests(oldrev, newrev, ref, @user)
 
     @push_data = build_push_data(oldrev, newrev, ref)
 
