@@ -179,7 +179,7 @@ class SystemNoteService
   #
   # Example Note text:
   #
-  #   "Target branch `feature` deleted"
+  #   "Restored target branch `feature`"
   #
   # Returns the created Note object
   def self.change_branch_presence(noteable, project, author, branch_type, branch, presence)
@@ -189,7 +189,7 @@ class SystemNoteService
       else
         'deleted'
       end
-    body = "#{branch_type.to_s} branch `#{branch}` #{verb}".capitalize
+    body = "#{verb} #{branch_type.to_s} branch `#{branch}`".capitalize
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 

@@ -121,7 +121,7 @@ describe MergeRequests::RefreshService do
         expect(@merge_request).to be_open
 
         notes = @fork_merge_request.notes.reorder(:created_at).map(&:note)
-        expect(notes[0]).to include('Source branch `master` restored')
+        expect(notes[0]).to include('Restored source branch `master`')
         expect(notes[1]).to include('Added 4 commits')
         expect(@fork_merge_request).to be_open
       end

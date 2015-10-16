@@ -249,7 +249,7 @@ describe SystemNoteService do
 
     context 'when source branch deleted' do
       it 'sets the note text' do
-        expect(subject.note).to eq "Source branch `feature` deleted"
+        expect(subject.note).to eq "Deleted source branch `feature`"
       end
     end
   end
