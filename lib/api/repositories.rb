@@ -133,24 +133,13 @@ module API
         authorize! :download_code, user_project
 
         begin
-          file_path = ArchiveRepositoryService.new(
+          ArchiveRepositoryService.new(
             user_project,
             params[:sha],
             params[:format]
           ).execute
         rescue
           not_found!('File')
-        end
-
-        if file_path && File.exists?(file_path)
-          data = File.open(file_path, 'rb').read
-          basename = File.basename(file_path)
-          header['Content-Disposition'] = "attachment; filename=\"#{basename}\""
-          content_type MIME::Types.type_for(file_path).first.content_type
-          env['api.format'] = :binary
-          present data
-        else
-          redirect request.fullpath
         end
       end
 

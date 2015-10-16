@@ -314,7 +314,8 @@ X-Gitlab-Event: Note Hook
         "name": "John Smith",
         "email": "john@example.com"
       }
-    }
+    },
+    "work_in_progress": false
   }
 }
 ```
@@ -500,6 +501,7 @@ X-Gitlab-Event: Merge Request Hook
         "email": "gitlabdev@dv6700.(none)"
       }
     },
+    "work_in_progress": false,
     "url": "http://example.com/diaspora/merge_requests/1",
     "action": "open"
   }

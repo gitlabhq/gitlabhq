@@ -15,21 +15,27 @@ The API_TOKEN will take the Secure Variable value: `SECURE`.
 
 ### Predefined variables (Environment Variables)
 
-| Variable                | Description |
+| Variable                | Runner | Description |
 |-------------------------|-------------|
-| **CI**                  | Mark that build is executed in CI environment |
-| **GITLAB_CI**           | Mark that build is executed in GitLab CI environment |
-| **CI_SERVER**           | Mark that build is executed in CI environment |
-| **CI_SERVER_NAME**      | CI server that is used to coordinate builds |
-| **CI_SERVER_VERSION**   | Not yet defined |
-| **CI_SERVER_REVISION**  | Not yet defined |
-| **CI_BUILD_REF**        | The commit revision for which project is built |
-| **CI_BUILD_BEFORE_SHA** | The first commit that were included in push request |
-| **CI_BUILD_REF_NAME**   | The branch or tag name for which project is built |
-| **CI_BUILD_ID**         | The unique id of the current build that GitLab CI uses internally |
-| **CI_BUILD_REPO**       | The URL to clone the Git repository |
-| **CI_PROJECT_ID**       | The unique id of the current project that GitLab CI uses internally |
-| **CI_PROJECT_DIR**      | The full path where the repository is cloned and where the build is ran |
+| **CI**                  | 0.4 | Mark that build is executed in CI environment |
+| **GITLAB_CI**           | all | Mark that build is executed in GitLab CI environment |
+| **CI_SERVER**           | all | Mark that build is executed in CI environment |
+| **CI_SERVER_NAME**      | all | CI server that is used to coordinate builds |
+| **CI_SERVER_VERSION**   | all | Not yet defined |
+| **CI_SERVER_REVISION**  | all | Not yet defined |
+| **CI_BUILD_REF**        | all | The commit revision for which project is built |
+| **CI_BUILD_TAG**        | 0.5 | The commit tag name. Present only when building tags. |
+| **CI_BUILD_NAME**       | 0.5 | The name of the build as defined in `.gitlab-ci.yml` |
+| **CI_BUILD_STAGE**      | 0.5 | The name of the stage as defined in `.gitlab-ci.yml` |
+| **CI_BUILD_BEFORE_SHA** | all | The first commit that were included in push request |
+| **CI_BUILD_REF_NAME**   | all | The branch or tag name for which project is built |
+| **CI_BUILD_ID**         | all | The unique id of the current build that GitLab CI uses internally |
+| **CI_BUILD_REPO**       | all | The URL to clone the Git repository |
+| **CI_BUILD_TRIGGERED**  | 0.5 | The flag to indicate that build was triggered |
+| **CI_PROJECT_ID**       | all | The unique id of the current project that GitLab CI uses internally |
+| **CI_PROJECT_DIR**      | all | The full path where the repository is cloned and where the build is ran |
+
+**Some of the variables are only available when using runner with at least defined version.**
 
 Example values:
 
@@ -39,6 +45,10 @@ export CI_BUILD_ID="50"
 export CI_BUILD_REF="1ecfd275763eff1d6b4844ea3168962458c9f27a"
 export CI_BUILD_REF_NAME="master"
 export CI_BUILD_REPO="https://gitlab.com/gitlab-org/gitlab-ce.git"
+export CI_BUILD_TAG="1.0.0"
+export CI_BUILD_NAME="spec:other"
+export CI_BUILD_STAGE="test"
+export CI_BUILD_TRIGGERED="true"
 export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-ce"
 export CI_PROJECT_ID="34"
 export CI_SERVER="yes"

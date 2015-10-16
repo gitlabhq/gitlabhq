@@ -1,24 +1,35 @@
-- gl_project = build.project.gl_project
 %tr.build
   %td.status
     = ci_status_with_icon(build.status)
 
-  %td.build-link
-    = link_to namespace_project_build_path(gl_project.namespace, gl_project, build) do
+  %td.commit_status-link
+    - if build.target_url
+      = link_to build.target_url do
+        %strong Build ##{build.id}
+    - else
       %strong Build ##{build.id}
 
-  - if defined?(ref)
-    %td
-      = build.ref
+    - if build.show_warning?
+      %i.fa.fa-warning.text-warning
 
   %td
-    = build.stage
+    = link_to build.short_sha, namespace_project_commit_path(@project.namespace, @project, build.sha)
+
+  %td
+    = link_to build.ref, namespace_project_commits_path(@project.namespace, @project, build.ref)
+
+  %td
+    - if build.runner
+      = runner_link(build.runner)
+    - else
+      .light none
 
   %td
     = build.name
+
     .pull-right
       - if build.tags.any?
-        - build.tag_list.each do |tag|
+        - build.tags.each do |tag|
           %span.label.label-primary
             = tag
       - if build.trigger_request
@@ -34,17 +45,9 @@
     - if build.finished_at
       %span #{time_ago_in_words build.finished_at} ago
 
-  - if build.project.coverage_enabled?
-    %td.coverage
-      - if build.coverage
-        #{build.coverage}%
-
   %td
-    - if defined?(controls) && current_user && can?(current_user, :manage_builds, gl_project)
-      .pull-right
-        - if build.active?
-          = link_to cancel_ci_project_build_path(build.project, build, return_to: request.original_url), title: 'Cancel build' do
+    .pull-right
+      - if current_user && can?(current_user, :manage_builds, @project)
+        - if build.cancel_url
+          = link_to build.cancel_url, title: 'Cancel' do
             %i.fa.fa-remove.cred
-        - elsif build.commands.present?
-          = link_to retry_ci_project_build_path(build.project, build, return_to: request.original_url), method: :post, title: 'Retry build' do
-            %i.fa.fa-repeat

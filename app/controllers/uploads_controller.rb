@@ -10,7 +10,7 @@ class UploadsController < ApplicationController
     end
 
     unless uploader.file && uploader.file.exists?
-      return not_found!
+      return render_404
     end
 
     disposition = uploader.image? ? 'inline' : 'attachment'
@@ -21,7 +21,7 @@ class UploadsController < ApplicationController
 
   def find_model
     unless upload_model && upload_mount
-      return not_found!
+      return render_404
     end
 
     @model = upload_model.find(params[:id])
@@ -44,7 +44,7 @@ class UploadsController < ApplicationController
     return if authorized
 
     if current_user
-      not_found!
+      render_404
     else
       authenticate_user!
     end

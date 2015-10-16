@@ -29,7 +29,7 @@ module MergeRequests
     private
 
     def commit
-      committer = repository.user_to_comitter(current_user)
+      committer = repository.user_to_committer(current_user)
 
       options = {
         message: commit_message,

@@ -188,6 +188,7 @@ Parameters:
 - `title` (required)             - Title of MR
 - `description` (optional)       - Description of MR
 - `target_project_id` (optional) - The target project (numeric id)
+- `labels` (optional)            - Labels for MR as a comma-separated list
 
 ```json
 {
@@ -239,6 +240,7 @@ Parameters:
 - `title`                       - Title of MR
 - `description`                 - Description of MR
 - `state_event`                 - New state (close|reopen|merge)
+- `labels` (optional)           - Labels for MR as a comma-separated list
 
 ```json
 {

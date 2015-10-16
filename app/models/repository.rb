@@ -373,11 +373,25 @@ class Repository
     @root_ref ||= raw_repository.root_ref
   end
 
-  def commit_file(user, path, content, message, branch)
+  def commit_dir(user, path, message, branch)
     commit_with_hooks(user, branch) do |ref|
-      path[0] = '' if path[0] == '/'
+      committer = user_to_committer(user)
+      options = {}
+      options[:committer] = committer
+      options[:author] = committer
 
-      committer = user_to_comitter(user)
+      options[:commit] = {
+        message: message,
+        branch: ref,
+      }
+
+      raw_repository.mkdir(path, options)
+    end
+  end
+
+  def commit_file(user, path, content, message, branch, update)
+    commit_with_hooks(user, branch) do |ref|
+      committer = user_to_committer(user)
       options = {}
       options[:committer] = committer
       options[:author] = committer
@@ -388,7 +402,8 @@ class Repository
 
       options[:file] = {
         content: content,
-        path: path
+        path: path,
+        update: update
       }
 
       Gitlab::Git::Blob.commit(raw_repository, options)
@@ -397,9 +412,7 @@ class Repository
 
   def remove_file(user, path, message, branch)
     commit_with_hooks(user, branch) do |ref|
-      path[0] = '' if path[0] == '/'
-
-      committer = user_to_comitter(user)
+      committer = user_to_committer(user)
       options = {}
       options[:committer] = committer
       options[:author] = committer
@@ -416,7 +429,7 @@ class Repository
     end
   end
 
-  def user_to_comitter(user)
+  def user_to_committer(user)
     {
       email: user.email,
       name: user.name,

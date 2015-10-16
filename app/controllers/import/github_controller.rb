@@ -47,7 +47,7 @@ class Import::GithubController < Import::BaseController
   end
 
   def verify_github_import_enabled
-    not_found! unless github_import_enabled?
+    render_404 unless github_import_enabled?
   end
 
   def github_auth

@@ -64,7 +64,7 @@ class Group < Namespace
   end
 
   def owners
-    @owners ||= group_members.owners.map(&:user)
+    @owners ||= group_members.owners.includes(:user).map(&:user)
   end
 
   def add_users(user_ids, access_level, current_user = nil)

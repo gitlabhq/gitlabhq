@@ -73,8 +73,13 @@ Sidekiq::Testing.inline! do
       }
 
       project = Projects::CreateService.new(User.first, params).execute
+      # Seed-Fu runs this entire fixture in a transaction, so the `after_commit`
+      # hook won't run until after the fixture is loaded. That is too late
+      # since the Sidekiq::Testing block has already exited. Force clearing
+      # the `after_commit` queue to ensure the job is run now.
+      project.send(:_run_after_commit_queue)
 
-      if project.valid?
+      if project.valid? && project.valid_repo?
         print '.'
       else
         puts project.errors.full_messages

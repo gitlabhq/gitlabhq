@@ -5,7 +5,7 @@
 # - let(:set_mentionable_text) { lambda { |txt| "block that assigns txt to the subject's mentionable_text" } }
 
 def common_mentionable_setup
-  let(:project) { create :project }
+  let(:project) { subject.project }
   let(:author)  { subject.author }
 
   let(:mentioned_issue)  { create(:issue, project: project) }
@@ -65,7 +65,7 @@ shared_examples 'a mentionable' do
 
   it "extracts references from its reference property" do
     # De-duplicate and omit itself
-    refs = subject.references(project)
+    refs = subject.referenced_mentionables
     expect(refs.size).to eq(6)
     expect(refs).to include(mentioned_issue)
     expect(refs).to include(mentioned_mr)
@@ -84,14 +84,7 @@ shared_examples 'a mentionable' do
         with(referenced, subject.local_reference, author)
     end
 
-    subject.create_cross_references!(project, author)
-  end
-
-  it 'detects existing cross-references' do
-    SystemNoteService.cross_reference(mentioned_issue, subject.local_reference, author)
-
-    expect(subject).to have_mentioned(mentioned_issue)
-    expect(subject).not_to have_mentioned(mentioned_mr)
+    subject.create_cross_references!
   end
 end
 
@@ -143,6 +136,6 @@ shared_examples 'an editable mentionable' do
     end
 
     set_mentionable_text.call(new_text)
-    subject.create_new_cross_references!(project, author)
+    subject.create_new_cross_references!(author)
   end
 end

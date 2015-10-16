@@ -7,6 +7,7 @@ class @ShortcutsNavigation extends Shortcuts
     Mousetrap.bind('g e', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-project-activity'))
     Mousetrap.bind('g f', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-tree'))
     Mousetrap.bind('g c', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-commits'))
+    Mousetrap.bind('g b', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-builds'))
     Mousetrap.bind('g n', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-network'))
     Mousetrap.bind('g g', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-graphs'))
     Mousetrap.bind('g i', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-issues'))

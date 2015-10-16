@@ -40,6 +40,7 @@ class Project < ActiveRecord::Base
   include Referable
   include Sortable
   include AfterCommitQueue
+  include CaseSensitivity
 
   extend Gitlab::ConfigHelper
   extend Enumerize
@@ -118,7 +119,7 @@ class Project < ActiveRecord::Base
   has_many :deploy_keys, through: :deploy_keys_projects
   has_many :users_star_projects, dependent: :destroy
   has_many :starrers, through: :users_star_projects, source: :user
-  has_many :ci_commits, ->() { order('CASE WHEN ci_commits.committed_at IS NULL THEN 0 ELSE 1 END', :committed_at, :id) }, dependent: :destroy, class_name: 'Ci::Commit', foreign_key: :gl_project_id
+  has_many :ci_commits, dependent: :destroy, class_name: 'Ci::Commit', foreign_key: :gl_project_id
   has_many :ci_builds, through: :ci_commits, source: :builds, dependent: :destroy, class_name: 'Ci::Build'
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
@@ -235,13 +236,18 @@ class Project < ActiveRecord::Base
     end
 
     def find_with_namespace(id)
-      return nil unless id.include?('/')
+      namespace_path, project_path = id.split('/')
 
-      id = id.split('/')
-      namespace = Namespace.by_path(id.first)
-      return nil unless namespace
+      return nil if !namespace_path || !project_path
 
-      where(namespace_id: namespace.id).where("LOWER(projects.path) = :path", path: id.second.downcase).first
+      # Use of unscoped ensures we're not secretly adding any ORDER BYs, which
+      # have a negative impact on performance (and aren't needed for this
+      # query).
+      unscoped.
+        joins(:namespace).
+        iwhere('namespaces.path' => namespace_path).
+        iwhere('projects.path' => project_path).
+        take
     end
 
     def visibility_levels
@@ -259,6 +265,20 @@ class Project < ActiveRecord::Base
     def reference_pattern
       name_pattern = Gitlab::Regex::NAMESPACE_REGEX_STR
       %r{(?<project>#{name_pattern}/#{name_pattern})}
+    end
+
+    def trending(since = 1.month.ago)
+      # By counting in the JOIN we don't expose the GROUP BY to the outer query.
+      # This means that calls such as "any?" and "count" just return a number of
+      # the total count, instead of the counts grouped per project as a Hash.
+      join_body = "INNER JOIN (
+        SELECT project_id, COUNT(*) AS amount
+        FROM notes
+        WHERE created_at >= #{sanitize(since)}
+        GROUP BY project_id
+      ) join_note_counts ON projects.id = join_note_counts.project_id"
+
+      joins(join_body).reorder('join_note_counts.amount DESC')
     end
   end
 
@@ -636,6 +656,8 @@ class Project < ActiveRecord::Base
       # db changes in order to prevent out of sync between db and fs
       raise Exception.new('repository cannot be renamed')
     end
+
+    Gitlab::UploadsTransfer.new.rename_project(path_was, path, namespace.path)
   end
 
   def hook_attrs

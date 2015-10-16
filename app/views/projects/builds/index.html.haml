@@ -1,0 +1,52 @@
+- page_title "Builds"
+- header_title project_title(@project, "Builds", project_builds_path(@project))
+
+.project-issuable-filter
+  .controls
+    - if @ci_project && current_user && can?(current_user, :manage_builds, @project)
+      .pull-left.hidden-xs
+        - if @all_builds.running_or_pending.any?
+          = link_to 'Cancel all', cancel_all_namespace_project_builds_path(@project.namespace, @project), data: { confirm: 'Are you sure?' }, class: 'btn btn-danger'
+
+  %ul.center-top-menu
+    %li{class: ('active' if @scope.nil?)}
+      = link_to project_builds_path(@project) do
+        Running
+        %span.badge.js-running-count= @all_builds.running_or_pending.count(:id)
+
+    %li{class: ('active' if @scope == 'finished')}
+      = link_to project_builds_path(@project, scope: :finished) do
+        Finished
+        %span.badge.js-running-count= @all_builds.finished.count(:id)
+
+    %li{class: ('active' if @scope == 'all')}
+      = link_to project_builds_path(@project, scope: :all) do
+        All
+        %span.badge.js-totalbuilds-count= @all_builds.count(:id)
+
+.gray-content-block
+  List of #{@scope || 'running'} builds from this project
+
+%ul.content-list
+  - if @builds.blank?
+    %li
+      .nothing-here-block No builds to show
+  - else
+    %table.table.builds
+      %thead
+        %tr
+          %th Status
+          %th Build ID
+          %th Commit
+          %th Ref
+          %th Runner
+          %th Name
+          %th Duration
+          %th Finished at
+          %th
+
+      - @builds.each do |build|
+        = render 'projects/builds/build', build: build
+
+    = paginate @builds
+

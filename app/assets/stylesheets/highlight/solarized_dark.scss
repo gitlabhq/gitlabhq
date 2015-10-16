@@ -1,11 +1,10 @@
 /* https://gist.github.com/qguv/7936275 */
-pre.code.highlight.solarized-dark,
 .code.solarized-dark {
 
-  background-color: #002b36;
-  color: #93a1a1;
+  background-color: #002b36 !important;
+  color: #93a1a1 !important;
 
-  pre.code,
+  pre.highlight,
   .line-numbers,
   .line-numbers a {
     background-color: #002b36 !important;
@@ -23,7 +22,7 @@ pre.code.highlight.solarized-dark,
 
   // Search result highlight
   span.highlight_word {
-    background: #094554;
+    background-color: #094554 !important;
   }
 
   /* Solarized Dark

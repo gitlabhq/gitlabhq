@@ -1,13 +1,6 @@
 class TrendingProjectsFinder
-  def execute(current_user, start_date = nil)
-    start_date ||= Date.today - 1.month
-
-    projects = projects_for(current_user)
-
-    # Determine trending projects based on comments count
-    # for period of time - ex. month
-    projects.joins(:notes).where('notes.created_at > ?', start_date).
-      group("projects.id").reorder("count(notes.id) DESC")
+  def execute(current_user, start_date = 1.month.ago)
+    projects_for(current_user).trending(start_date)
   end
 
   private
