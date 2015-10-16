@@ -242,6 +242,18 @@ describe SystemNoteService do
     end
   end
 
+  describe '.change_branch_presence' do
+    subject { described_class.change_branch_presence(noteable, project, author, :source, 'feature', :delete) }
+
+    it_behaves_like 'a system note'
+
+    context 'when source branch deleted' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "Deleted source branch `feature`"
+      end
+    end
+  end
+
   describe '.cross_reference' do
     subject { described_class.cross_reference(noteable, mentioner, author) }
 
