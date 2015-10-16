@@ -161,28 +161,28 @@ describe Ci::Commit do
   end
 
   describe :create_builds do
-    let(:commit) { FactoryGirl.create :ci_commit, gl_project: gl_project }
+    let!(:commit) { FactoryGirl.create :ci_commit, gl_project: gl_project }
 
     def create_builds(trigger_request = nil)
       commit.create_builds('master', false, nil, trigger_request)
     end
 
-    def create_next_builds(trigger_request = nil)
-      commit.create_next_builds('master', false, nil, trigger_request)
+    def create_next_builds
+      commit.create_next_builds(commit.builds.order(:id).last)
     end
 
     it 'creates builds' do
       expect(create_builds).to be_truthy
-      commit.builds.reload
-      expect(commit.builds.size).to eq(2)
+      commit.builds.update_all(status: "success")
+      expect(commit.builds.count(:all)).to eq(2)
 
       expect(create_next_builds).to be_truthy
-      commit.builds.reload
-      expect(commit.builds.size).to eq(4)
+      commit.builds.update_all(status: "success")
+      expect(commit.builds.count(:all)).to eq(4)
 
       expect(create_next_builds).to be_truthy
-      commit.builds.reload
-      expect(commit.builds.size).to eq(5)
+      commit.builds.update_all(status: "success")
+      expect(commit.builds.count(:all)).to eq(5)
 
       expect(create_next_builds).to be_falsey
     end
@@ -194,12 +194,12 @@ describe Ci::Commit do
 
       it 'creates builds' do
         expect(create_builds).to be_truthy
-        commit.builds.reload
-        expect(commit.builds.size).to eq(2)
+        commit.builds.update_all(status: "success")
+        expect(commit.builds.count(:all)).to eq(2)
 
         expect(create_develop_builds).to be_truthy
-        commit.builds.reload
-        expect(commit.builds.size).to eq(4)
+        commit.builds.update_all(status: "success")
+        expect(commit.builds.count(:all)).to eq(4)
         expect(commit.refs.size).to eq(2)
         expect(commit.builds.pluck(:name).uniq.size).to eq(2)
       end
@@ -211,28 +211,24 @@ describe Ci::Commit do
 
       it 'creates builds' do
         expect(create_builds(trigger_request)).to be_truthy
-        commit.builds.reload
-        expect(commit.builds.size).to eq(2)
+        expect(commit.builds.count(:all)).to eq(2)
       end
 
       it 'rebuilds commit' do
         expect(create_builds).to be_truthy
-        commit.builds.reload
-        expect(commit.builds.size).to eq(2)
+        expect(commit.builds.count(:all)).to eq(2)
 
         expect(create_builds(trigger_request)).to be_truthy
-        commit.builds.reload
-        expect(commit.builds.size).to eq(4)
+        expect(commit.builds.count(:all)).to eq(4)
       end
 
       it 'creates next builds' do
         expect(create_builds(trigger_request)).to be_truthy
-        commit.builds.reload
-        expect(commit.builds.size).to eq(2)
+        expect(commit.builds.count(:all)).to eq(2)
+        commit.builds.update_all(status: "success")
 
-        expect(create_next_builds(trigger_request)).to be_truthy
-        commit.builds.reload
-        expect(commit.builds.size).to eq(4)
+        expect(create_next_builds).to be_truthy
+        expect(commit.builds.count(:all)).to eq(4)
       end
 
       context 'for [ci skip]' do
@@ -242,12 +238,135 @@ describe Ci::Commit do
 
         it 'rebuilds commit' do
           expect(commit.status).to eq('skipped')
-          expect(create_builds(trigger_request)).to be_truthy
+          expect(create_builds).to be_truthy
 
           # since everything in Ci::Commit is cached we need to fetch a new object
           new_commit = Ci::Commit.find_by_id(commit.id)
           expect(new_commit.status).to eq('pending')
         end
+      end
+    end
+
+    context 'properly creates builds when "when" is defined' do
+      let(:yaml) do
+        {
+          stages: ["build", "test", "test_failure", "deploy", "cleanup"],
+          build: {
+            stage: "build",
+            script: "BUILD",
+          },
+          test: {
+            stage: "test",
+            script: "TEST",
+          },
+          test_failure: {
+            stage: "test_failure",
+            script: "ON test failure",
+            when: "on_failure",
+          },
+          deploy: {
+            stage: "deploy",
+            script: "PUBLISH",
+          },
+          cleanup: {
+            stage: "cleanup",
+            script: "TIDY UP",
+            when: "always",
+          }
+        }
+      end
+
+      before do
+        stub_ci_commit_yaml_file(YAML.dump(yaml))
+      end
+
+      it 'properly creates builds' do
+        expect(create_builds).to be_truthy
+        expect(commit.builds.pluck(:name)).to contain_exactly('build')
+        expect(commit.builds.pluck(:status)).to contain_exactly('pending')
+        commit.builds.running_or_pending.each(&:success)
+
+        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test')
+        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'pending')
+        commit.builds.running_or_pending.each(&:success)
+
+        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'success', 'pending')
+        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'deploy')
+        commit.builds.running_or_pending.each(&:success)
+
+        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'deploy', 'cleanup')
+        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'success', 'success', 'pending')
+        commit.builds.running_or_pending.each(&:success)
+
+        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'success', 'success', 'success')
+        expect(commit.status).to eq('success')
+      end
+
+      it 'properly creates builds when test fails' do
+        expect(create_builds).to be_truthy
+        expect(commit.builds.pluck(:name)).to contain_exactly('build')
+        expect(commit.builds.pluck(:status)).to contain_exactly('pending')
+        commit.builds.running_or_pending.each(&:success)
+
+        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test')
+        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'pending')
+        commit.builds.running_or_pending.each(&:drop)
+
+        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'test_failure')
+        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'failed', 'pending')
+        commit.builds.running_or_pending.each(&:success)
+
+        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'test_failure', 'cleanup')
+        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'failed', 'success', 'pending')
+        commit.builds.running_or_pending.each(&:success)
+
+        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'failed', 'success', 'success')
+        expect(commit.status).to eq('failed')
+      end
+
+      it 'properly creates builds when test and test_failure fails' do
+        expect(create_builds).to be_truthy
+        expect(commit.builds.pluck(:name)).to contain_exactly('build')
+        expect(commit.builds.pluck(:status)).to contain_exactly('pending')
+        commit.builds.running_or_pending.each(&:success)
+
+        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test')
+        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'pending')
+        commit.builds.running_or_pending.each(&:drop)
+
+        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'test_failure')
+        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'failed', 'pending')
+        commit.builds.running_or_pending.each(&:drop)
+
+        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'test_failure', 'cleanup')
+        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'failed', 'failed', 'pending')
+        commit.builds.running_or_pending.each(&:success)
+
+        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'test_failure', 'cleanup')
+        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'failed', 'failed', 'success')
+        expect(commit.status).to eq('failed')
+      end
+
+      it 'properly creates builds when deploy fails' do
+        expect(create_builds).to be_truthy
+        expect(commit.builds.pluck(:name)).to contain_exactly('build')
+        expect(commit.builds.pluck(:status)).to contain_exactly('pending')
+        commit.builds.running_or_pending.each(&:success)
+
+        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test')
+        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'pending')
+        commit.builds.running_or_pending.each(&:success)
+
+        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'deploy')
+        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'success', 'pending')
+        commit.builds.running_or_pending.each(&:drop)
+
+        expect(commit.builds.pluck(:name)).to contain_exactly('build', 'test', 'deploy', 'cleanup')
+        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'success', 'failed', 'pending')
+        commit.builds.running_or_pending.each(&:success)
+
+        expect(commit.builds.pluck(:status)).to contain_exactly('success', 'success', 'failed', 'success')
+        expect(commit.status).to eq('failed')
       end
     end
   end
@@ -297,61 +416,6 @@ describe Ci::Commit do
     it "calculates average when there is one build without coverage" do
       FactoryGirl.create :ci_build, commit: commit
       expect(commit.coverage).to be_nil
-    end
-  end
-
-  describe :should_create_next_builds? do
-    before do
-      @build1 = FactoryGirl.create :ci_build, commit: commit, name: 'build1', ref: 'master', tag: false, status: 'success'
-      @build2 = FactoryGirl.create :ci_build, commit: commit, name: 'build1', ref: 'develop', tag: false, status: 'failed'
-      @build3 = FactoryGirl.create :ci_build, commit: commit, name: 'build1', ref: 'master', tag: true, status: 'failed'
-      @build4 = FactoryGirl.create :ci_build, commit: commit, name: 'build4', ref: 'master', tag: false, status: 'success'
-    end
-
-    context 'for success' do
-      it 'to create if all succeeded' do
-        expect(commit.should_create_next_builds?(@build4)).to be_truthy
-      end
-    end
-
-    context 'for failed' do
-      before do
-        @build4.update_attributes(status: 'failed')
-      end
-
-      it 'to not create' do
-        expect(commit.should_create_next_builds?(@build4)).to be_falsey
-      end
-
-      context 'and ignore failures for current' do
-        before do
-          @build4.update_attributes(allow_failure: true)
-        end
-
-        it 'to create' do
-          expect(commit.should_create_next_builds?(@build4)).to be_truthy
-        end
-      end
-    end
-
-    context 'for running' do
-      before do
-        @build4.update_attributes(status: 'running')
-      end
-
-      it 'to not create' do
-        expect(commit.should_create_next_builds?(@build4)).to be_falsey
-      end
-    end
-
-    context 'for retried' do
-      before do
-        @build5 = FactoryGirl.create :ci_build, commit: commit, name: 'build4', ref: 'master', tag: false, status: 'failed'
-      end
-
-      it 'to not create' do
-        expect(commit.should_create_next_builds?(@build4)).to be_falsey
-      end
     end
   end
 end

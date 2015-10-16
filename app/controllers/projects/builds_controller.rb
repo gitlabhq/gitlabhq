@@ -8,8 +8,7 @@ class Projects::BuildsController < Projects::ApplicationController
 
   def index
     @scope = params[:scope]
-    @all_builds = project.ci_builds.order('created_at DESC').page(params[:page]).per(30)
-
+    @all_builds = project.ci_builds
     @builds =
       case @scope
       when 'all'
@@ -19,6 +18,7 @@ class Projects::BuildsController < Projects::ApplicationController
       else
         @all_builds.running_or_pending
       end
+    @builds = @builds.order('created_at DESC').page(params[:page]).per(30)
   end
 
   def cancel_all
