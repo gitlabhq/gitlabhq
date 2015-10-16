@@ -1,11 +1,10 @@
 /* https://github.com/MozMorris/tomorrow-pygments */
-pre.code.highlight.dark,
 .code.dark {
 
-  background-color: #1d1f21;
-  color: #c5c8c6;
+  background-color: #1d1f21 !important;
+  color: #c5c8c6 !important;
 
-  pre.code,
+  pre.highlight,
   .line-numbers,
   .line-numbers a {
     background-color: #1d1f21 !important;
@@ -23,8 +22,8 @@ pre.code.highlight.dark,
 
   // Search result highlight
   span.highlight_word {
-    background: #ffe792;
-    color: #000000;
+    background-color: #ffe792 !important;
+    color: #000000 !important;
   }
 
   .hll { background-color: #373b41 }

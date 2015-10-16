@@ -47,7 +47,7 @@ module Issuable
              prefix: true
 
     attr_mentionable :title, :description
-    participant :author, :assignee, :notes
+    participant :author, :assignee, :notes_with_associations
   end
 
   module ClassMethods
@@ -174,6 +174,10 @@ module Issuable
   #   issuable.to_ability_name # => "merge_request"
   def to_ability_name
     self.class.to_s.underscore
+  end
+
+  def notes_with_associations
+    notes.includes(:author, :project)
   end
 
   private

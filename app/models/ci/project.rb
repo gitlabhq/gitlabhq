@@ -205,7 +205,7 @@ module Ci
     end
 
     def commits
-      gl_project.ci_commits
+      gl_project.ci_commits.ordered
     end
 
     def builds

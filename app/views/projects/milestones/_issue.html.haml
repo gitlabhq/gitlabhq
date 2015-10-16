@@ -1,7 +1,7 @@
 %li{ id: dom_id(issue, 'sortable'), class: 'issue-row', 'data-iid' => issue.iid, 'data-url' => issue_path(issue) }
   .pull-right.assignee-icon
     - if issue.assignee
-      = image_tag avatar_icon(issue.assignee.email, 16), class: "avatar s16", alt: ''
+      = image_tag avatar_icon(issue.assignee, 16), class: "avatar s16", alt: ''
   %span
     = link_to [@project.namespace.becomes(Namespace), @project, issue] do
       %span.cgray ##{issue.iid}

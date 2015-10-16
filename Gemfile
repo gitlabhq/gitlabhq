@@ -1,13 +1,5 @@
 source "https://rubygems.org"
 
-def darwin_only(require_as)
-  RUBY_PLATFORM.include?('darwin') && require_as
-end
-
-def linux_only(require_as)
-  RUBY_PLATFORM.include?('linux') && require_as
-end
-
 gem 'rails', '4.1.12'
 
 # Specify a sprockets version due to security issue
@@ -47,7 +39,7 @@ gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 7.2.18'
+gem "gitlab_git", '~> 7.2.19'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -102,7 +94,7 @@ gem "seed-fu", '~> 2.3.5'
 gem 'html-pipeline', '~> 1.11.0'
 gem 'task_list',     '~> 1.0.2', require: 'task_list/railtie'
 gem 'github-markup', '~> 1.3.1'
-gem 'redcarpet',     '~> 3.3.2'
+gem 'redcarpet',     '~> 3.3.3'
 gem 'RedCloth',      '~> 4.2.9'
 gem 'rdoc',          '~>3.6'
 gem 'org-ruby',      '~> 0.9.12'
@@ -196,7 +188,7 @@ gem 'charlock_holmes', '~> 0.6.9.4'
 
 gem "sass-rails", '~> 4.0.5'
 gem "coffee-rails", '~> 4.1.0'
-gem "uglifier", '~> 2.3.2'
+gem "uglifier", '~> 2.7.2'
 gem 'turbolinks', '~> 2.5.0'
 gem 'jquery-turbolinks', '~> 2.0.1'
 
@@ -224,6 +216,9 @@ group :development do
   gem 'quiet_assets', '~> 1.0.2'
   gem 'rack-mini-profiler', '~> 0.9.0', require: false
   gem 'rerun', '~> 0.10.0'
+  gem 'bullet', require: false
+  gem 'active_record_query_trace', require: false
+  gem 'rack-lineprof', platform: :mri
 
   # Better errors handler
   gem 'better_errors', '~> 1.0.1'
@@ -290,7 +285,7 @@ gem 'newrelic-grape'
 
 gem 'octokit', '~> 3.7.0'
 
-gem "mail_room", "~> 0.6.0"
+gem "mail_room", "~> 0.6.1"
 
 gem 'email_reply_parser', '~> 0.5.8'
 
@@ -304,11 +299,3 @@ gem 'oauth2', '~> 1.0.0'
 
 # Soft deletion
 gem "paranoia", "~> 2.0"
-
-group :development, :test do
-  gem 'guard-rspec', '~> 4.2.0'
-
-  gem 'rb-fsevent', require: darwin_only('rb-fsevent')
-  gem 'growl',      require: darwin_only('growl')
-  gem 'rb-inotify', require: linux_only('rb-inotify')
-end

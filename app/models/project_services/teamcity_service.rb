@@ -45,7 +45,7 @@ class TeamcityService < CiService
   end
 
   def reset_password
-    if prop_updated?(:teamcity_url)
+    if teamcity_url_changed? && !password_touched?
       self.password = nil
     end
   end

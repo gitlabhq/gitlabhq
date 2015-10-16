@@ -41,6 +41,7 @@ class Ability
           :read_project_member,
           :read_merge_request,
           :read_note,
+          :read_build,
           :download_code
         ]
 
@@ -127,6 +128,7 @@ class Ability
         :read_project_member,
         :read_merge_request,
         :read_note,
+        :read_build,
         :create_project,
         :create_issue,
         :create_note
