@@ -247,7 +247,7 @@ describe Ci::Commit do
       end
     end
 
-    context 'properly creates builds "when" is defined' do
+    context 'properly creates builds when "when" is defined' do
       let(:yaml) do
         {
           stages: ["build", "test", "test_failure", "deploy", "cleanup"],
