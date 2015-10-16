@@ -181,6 +181,10 @@ module EventsHelper
     sanitize(text, tags: %w(a img b pre code p span))
   end
 
+  def event_commit_urls(message)
+    URI.extract(message)
+  end
+
   def event_commit_title(message)
     escape_once(truncate(message.split("\n").first, length: 70))
   rescue
