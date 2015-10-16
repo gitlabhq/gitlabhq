@@ -1,5 +1,7 @@
 v 8.1.0 (unreleased)
   - added an issues template (Hannes Rosenögger)
+  - Fix "Rebase onto master"
+
 v 8.1.0
   - Add documentation for "Share project with group" API call 
   - Abiliy to disable 'Share with Group' feature (via UI and API)
