@@ -229,7 +229,7 @@ describe SystemNoteService do
   end
 
   describe '.change_branch' do
-    subject { described_class.change_branch(noteable, project, author, :target, old_branch, new_branch) }
+    subject { described_class.change_branch(noteable, project, author, 'target', old_branch, new_branch) }
     let(:old_branch) { 'old_branch'}
     let(:new_branch) { 'new_branch'}
 
@@ -243,7 +243,7 @@ describe SystemNoteService do
   end
 
   describe '.change_branch_presence' do
-    subject { described_class.change_branch_presence(noteable, project, author, 'source', 'feature', :delete) }
+    subject { described_class.change_branch_presence(noteable, project, author, :source, 'feature', :delete) }
 
     it_behaves_like 'a system note'
 
