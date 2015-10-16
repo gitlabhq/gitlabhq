@@ -94,7 +94,7 @@ module MergeRequests
             # gitlab_git throws a Rugged::OdbError
             # This is fixed in https://gitlab.com/gitlab-org/gitlab_git/merge_requests/52
             @commits = @project.repository.commits_between(common_ref, @newrev) if common_ref
-          rescue => e
+          rescue
           end
 
           # Prevent system notes from seeing a blank SHA
