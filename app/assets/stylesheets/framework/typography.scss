@@ -207,9 +207,7 @@ a > code {
  */
 .wiki {
   @include md-typography;
-
   word-wrap: break-word;
-  padding: 7px;
 
   /* Link to current header. */
   h1, h2, h3, h4, h5, h6 {
