@@ -10,13 +10,12 @@ module MergeRequests
 
       # Leave a system note if a branch were deleted/added
       if Gitlab::Git.blank_ref?(oldrev) || Gitlab::Git.blank_ref?(newrev)
-        presence = Gitlab::Git.blank_ref?(oldrev) ? :add : :delete
-        comment_mr_branch_presence_changed(presence)
+        comment_mr_branch_presence_changed
+        comment_mr_with_commits if @commits.present?
       else
         @commits = @project.repository.commits_between(oldrev, newrev)
-
-        close_merge_requests
         comment_mr_with_commits
+        close_merge_requests
       end
 
       reload_merge_requests
@@ -79,8 +78,29 @@ module MergeRequests
     end
 
     # Add comment about branches being deleted or added to merge requests
-    def comment_mr_branch_presence_changed(presence)
+    def comment_mr_branch_presence_changed
+      presence = Gitlab::Git.blank_ref?(@oldrev) ? :add : :delete
+
       merge_requests_for_source_branch.each do |merge_request|
+        last_commit = merge_request.last_commit
+
+        # Only look at changed commits in restore branch case
+        unless Gitlab::Git.blank_ref?(@newrev)
+          begin
+            # Since any number of commits could have been made to the restored branch,
+            # find the common root to see what has been added.
+            common_ref = @project.repository.merge_base(last_commit.id, @newrev)
+            # If the last_commit no longer exists in this new branch,
+            # gitlab_git throws a Rugged::OdbError
+            # This is fixed in https://gitlab.com/gitlab-org/gitlab_git/merge_requests/52
+            @commits = @project.repository.commits_between(common_ref, @newrev) if common_ref
+          rescue => e
+          end
+
+          # Prevent system notes from seeing a blank SHA
+          @oldrev = nil
+        end
+
         SystemNoteService.change_branch_presence(
             merge_request, merge_request.project, @current_user,
             :source, @branch_name, presence)
