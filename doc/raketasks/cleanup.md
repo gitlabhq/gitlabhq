@@ -12,7 +12,8 @@ sudo gitlab-rake gitlab:cleanup:dirs
 bundle exec rake gitlab:cleanup:dirs RAILS_ENV=production
 ```
 
-Remove repositories (global only for now) from `/home/git/repositories` if they don't exist in GitLab database.
+Rename repositories from `/home/git/repositories` if they don't exist in GitLab database.
+The repositories get a `+orphaned+TIMESTAMP` suffix so that they cannot block new repositories from being created.
 
 ```
 # omnibus-gitlab

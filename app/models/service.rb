@@ -33,6 +33,8 @@ class Service < ActiveRecord::Base
 
   after_initialize :initialize_properties
 
+  after_commit :reset_updated_properties
+
   belongs_to :project
   has_one :service_hook
 
@@ -103,6 +105,7 @@ class Service < ActiveRecord::Base
 
   # Provide convenient accessor methods
   # for each serialized property.
+  # Also keep track of updated properties in a similar way as ActiveModel::Dirty
   def self.prop_accessor(*args)
     args.each do |arg|
       class_eval %{
@@ -111,12 +114,39 @@ class Service < ActiveRecord::Base
         end
 
         def #{arg}=(value)
+          updated_properties['#{arg}'] = #{arg} unless #{arg}_changed?
           self.properties['#{arg}'] = value
+        end
+
+        def #{arg}_changed?
+          #{arg}_touched? && #{arg} != #{arg}_was
+        end
+
+        def #{arg}_touched?
+          updated_properties.include?('#{arg}')
+        end
+
+        def #{arg}_was
+          updated_properties['#{arg}']
         end
       }
     end
   end
 
+  # Returns a hash of the properties that have been assigned a new value since last save,
+  # indicating their original values (attr => original value).
+  # ActiveRecord does not provide a mechanism to track changes in serialized keys, 
+  # so we need a specific implementation for service properties.
+  # This allows to track changes to properties set with the accessor methods,
+  # but not direct manipulation of properties hash.
+  def updated_properties
+    @updated_properties ||= ActiveSupport::HashWithIndifferentAccess.new
+  end
+
+  def reset_updated_properties
+    @updated_properties = nil
+  end
+  
   def async_execute(data)
     return unless supported_events.include?(data[:object_kind])
 

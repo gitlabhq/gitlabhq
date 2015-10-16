@@ -5,7 +5,7 @@
         &nbsp;
         - if can?(current_user, :push_code, @project)
           = link_to namespace_project_edit_blob_path(@project.namespace, @project, tree_join(@repository.root_ref, readme.name)), class: 'light' do
-            %i.fa.fa-pencil
+            %i.fa-align.fa.fa-pencil
     .wiki
       = cache(readme_cache_key) do
         = render_readme(readme)

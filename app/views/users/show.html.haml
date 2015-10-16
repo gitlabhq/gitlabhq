@@ -9,8 +9,8 @@
 .row
   %section.col-md-7
     .header-with-avatar
-      = link_to avatar_icon(@user.email, 400), target: '_blank' do
-        = image_tag avatar_icon(@user.email, 90), class: "avatar avatar-tile s90", alt: ''
+      = link_to avatar_icon(@user, 400), target: '_blank' do
+        = image_tag avatar_icon(@user, 90), class: "avatar avatar-tile s90", alt: ''
       %h3
         = @user.name
         - if @user == current_user
@@ -19,14 +19,13 @@
               = icon('user')
               Profile settings
         - elsif current_user
-          .pull-right
-            %span.dropdown
-              %a.light.dropdown-toggle.btn.btn-sm{href: '#', "data-toggle" => "dropdown"}
+          .report_abuse.pull-right
+            - if @user.abuse_report
+              %span#report_abuse_btn.light.btn.btn-sm.btn-close{title: 'Already reported for abuse', data: {toggle: 'tooltip', placement: 'right', container: 'body'}}
                 = icon('exclamation-circle')
-              %ul.dropdown-menu.dropdown-menu-right
-                %li
-                  = link_to new_abuse_report_path(user_id: @user.id) do
-                    Report abuse
+            - else
+              %a.light.btn.btn-sm{href: new_abuse_report_path(user_id: @user.id), title: 'Report abuse', data: {toggle: 'tooltip', placement: 'right', container: 'body'}}
+                = icon('exclamation-circle')
 
       .username
         @#{@user.username}

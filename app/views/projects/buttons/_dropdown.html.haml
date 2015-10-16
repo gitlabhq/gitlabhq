@@ -1,6 +1,6 @@
 - if current_user
   %span.dropdown
-    %a.dropdown-toggle.btn.btn-new{href: '#', "data-toggle" => "dropdown"}
+    %a.dropdown-new.btn.btn-new{href: '#', "data-toggle" => "dropdown"}
       = icon('plus')
     %ul.dropdown-menu.dropdown-menu-right.project-home-dropdown
       - if can?(current_user, :create_issue, @project)

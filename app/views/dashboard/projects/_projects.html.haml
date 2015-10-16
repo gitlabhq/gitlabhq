@@ -1,10 +1,11 @@
 .projects-list-holder
   .projects-search-form
     .input-group
-      = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control'
+      = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control', spellcheck: false
       - if current_user.can_create_project?
         %span.input-group-btn
-          = link_to new_project_path, class: 'btn btn-success' do
-            New project
+          = link_to new_project_path, class: 'btn btn-green' do
+            %i.fa.fa-plus
+            New Project
 
-  = render 'shared/projects/list', projects: @projects
+  = render 'shared/projects/list', projects: @projects, ci: true

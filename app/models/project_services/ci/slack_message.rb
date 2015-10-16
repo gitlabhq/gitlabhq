@@ -2,6 +2,8 @@ require 'slack-notifier'
 
 module Ci
   class SlackMessage
+    include Gitlab::Application.routes.url_helpers
+
     def initialize(commit)
       @commit = commit
     end
@@ -21,15 +23,13 @@ module Ci
     def attachments
       fields = []
 
-      if commit.matrix?
-        commit.builds_without_retry.each do |build|
-          next if build.allow_failure?
-          next unless build.failed?
-          fields << {
-            title: build.name,
-            value: "Build <#{Ci::RoutesHelper.ci_project_build_url(project, build)}|\##{build.id}> failed in #{build.duration.to_i} second(s)."
-          }
-        end
+      commit.latest_builds.each do |build|
+        next if build.allow_failure?
+        next unless build.failed?
+        fields << {
+          title: build.name,
+          value: "Build <#{namespace_project_build_url(build.gl_project.namespace, build.gl_project, build)}|\##{build.id}> failed in #{build.duration.to_i} second(s)."
+        }
       end
 
       [{
@@ -44,13 +44,8 @@ module Ci
     attr_reader :commit
 
     def attachment_message
-      out = "<#{Ci::RoutesHelper.ci_project_url(project)}|#{project_name}>: "
-      if commit.matrix?
-        out << "Commit <#{Ci::RoutesHelper.ci_project_ref_commits_url(project, commit.ref, commit.sha)}|\##{commit.id}> "
-      else
-        build = commit.builds_without_retry.first
-        out << "Build <#{Ci::RoutesHelper.ci_project_build_path(project, build)}|\##{build.id}> "
-      end
+      out = "<#{ci_project_url(project)}|#{project_name}>: "
+      out << "Commit <#{ci_namespace_project_commit_url(commit.gl_project.namespace, commit.gl_project, commit.sha)}|\##{commit.id}> "
       out << "(<#{commit_sha_link}|#{commit.short_sha}>) "
       out << "of <#{commit_ref_link}|#{commit.ref}> "
       out << "by #{commit.git_author_name} " if commit.git_author_name

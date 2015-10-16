@@ -38,6 +38,14 @@
         %span
           Commits
 
+  - if project_nav_tab? :builds
+    = nav_link(controller: %w(builds)) do
+      = link_to project_builds_path(@project), title: 'Builds', class: 'shortcuts-builds', data: {placement: 'right'} do
+        = icon('cubes fw')
+        %span
+          Builds
+          %span.count.builds_counter= @project.ci_builds.running_or_pending.count(:all)
+
   - if project_nav_tab? :network
     = nav_link(controller: %w(network)) do
       = link_to namespace_project_network_path(@project.namespace, @project, current_ref), title: 'Network', class: 'shortcuts-network', data: {placement: 'right'} do
@@ -75,13 +83,6 @@
         %span
           Merge Requests
           %span.count.merge_counter= @project.merge_requests.opened.count
-
-  - if @project.gitlab_ci?
-    = nav_link(controller: [:ci, :project]) do
-      = link_to ci_project_path(@project.gitlab_ci_project), title: 'Continuous Integration', data: {placement: 'right'} do
-        = icon('building fw')
-        %span
-          Continuous Integration
 
   - if project_nav_tab? :settings
     = nav_link(controller: [:project_members, :teams]) do

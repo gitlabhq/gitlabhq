@@ -1,10 +1,11 @@
 %h3.page-title
   New merge request
 %p.slead
+  - source_title, target_title = format_mr_branch_names(@merge_request)
   From
-  %strong.label-branch #{@merge_request.source_project_namespace}:#{@merge_request.source_branch}
+  %strong.label-branch #{source_title}
   %span into
-  %strong.label-branch #{@merge_request.target_project_namespace}:#{@merge_request.target_branch}
+  %strong.label-branch #{target_title}
 
   %span.pull-right
     = link_to 'Change branches', mr_change_branches_path(@merge_request)

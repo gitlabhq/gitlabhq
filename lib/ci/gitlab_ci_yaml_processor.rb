@@ -85,9 +85,10 @@ module Ci
 
     def build_job(name, job)
       {
+        stage_idx: stages.index(job[:stage]),
         stage: job[:stage],
-        script: "#{@before_script.join("\n")}\n#{normalize_script(job[:script])}",
-        tags: job[:tags] || [],
+        commands: "#{@before_script.join("\n")}\n#{normalize_script(job[:script])}",
+        tag_list: job[:tags] || [],
         name: name,
         only: job[:only],
         except: job[:except],

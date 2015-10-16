@@ -39,6 +39,8 @@ class Project < ActiveRecord::Base
   include Gitlab::VisibilityLevel
   include Referable
   include Sortable
+  include AfterCommitQueue
+  include CaseSensitivity
 
   extend Gitlab::ConfigHelper
   extend Enumerize
@@ -121,6 +123,8 @@ class Project < ActiveRecord::Base
   has_many :users_star_projects, dependent: :destroy
   has_many :starrers, through: :users_star_projects, source: :user
   has_many :approvers, as: :target, dependent: :destroy
+  has_many :ci_commits, dependent: :destroy, class_name: 'Ci::Commit', foreign_key: :gl_project_id
+  has_many :ci_builds, through: :ci_commits, source: :builds, dependent: :destroy, class_name: 'Ci::Build'
 
   has_many :project_group_links, dependent: :destroy
   has_many :invited_groups, through: :project_group_links, source: :group
@@ -198,7 +202,7 @@ class Project < ActiveRecord::Base
     state :finished
     state :failed
 
-    after_transition any => :started, do: :add_import_job
+    after_transition any => :started, do: :schedule_add_import_job
     after_transition any => :finished, do: :clear_import_data
   end
 
@@ -239,13 +243,18 @@ class Project < ActiveRecord::Base
     end
 
     def find_with_namespace(id)
-      return nil unless id.include?('/')
+      namespace_path, project_path = id.split('/')
 
-      id = id.split('/')
-      namespace = Namespace.find_by(path: id.first)
-      return nil unless namespace
+      return nil if !namespace_path || !project_path
 
-      where(namespace_id: namespace.id).find_by(path: id.second)
+      # Use of unscoped ensures we're not secretly adding any ORDER BYs, which
+      # have a negative impact on performance (and aren't needed for this
+      # query).
+      unscoped.
+        joins(:namespace).
+        iwhere('namespaces.path' => namespace_path).
+        iwhere('projects.path' => project_path).
+        take
     end
 
     def visibility_levels
@@ -263,6 +272,20 @@ class Project < ActiveRecord::Base
     def reference_pattern
       name_pattern = Gitlab::Regex::NAMESPACE_REGEX_STR
       %r{(?<project>#{name_pattern}/#{name_pattern})}
+    end
+
+    def trending(since = 1.month.ago)
+      # By counting in the JOIN we don't expose the GROUP BY to the outer query.
+      # This means that calls such as "any?" and "count" just return a number of
+      # the total count, instead of the counts grouped per project as a Hash.
+      join_body = "INNER JOIN (
+        SELECT project_id, COUNT(*) AS amount
+        FROM notes
+        WHERE created_at >= #{sanitize(since)}
+        GROUP BY project_id
+      ) join_note_counts ON projects.id = join_note_counts.project_id"
+
+      joins(join_body).reorder('join_note_counts.amount DESC')
     end
   end
 
@@ -282,13 +305,17 @@ class Project < ActiveRecord::Base
     id && persisted?
   end
 
+  def schedule_add_import_job
+    run_after_commit(:add_import_job)
+  end
+
   def add_import_job
     if forked?
       unless RepositoryForkWorker.perform_async(id, forked_from_project.path_with_namespace, self.namespace.path)
         import_fail
       end
     else
-      RepositoryImportWorker.perform_in(2.seconds, id)
+      RepositoryImportWorker.perform_async(id)
     end
   end
 
@@ -413,7 +440,7 @@ class Project < ActiveRecord::Base
 
         if template.nil?
           # If no template, we should create an instance. Ex `create_gitlab_ci_service`
-          service = self.send :"create_#{service_name}_service"
+          self.send :"create_#{service_name}_service"
         else
           Service.create_from_template(self.id, template)
         end
@@ -489,8 +516,8 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def send_move_instructions
-    NotificationService.new.project_was_moved(self)
+  def send_move_instructions(old_path_with_namespace)
+    NotificationService.new.project_was_moved(self, old_path_with_namespace)
   end
 
   def owner
@@ -637,7 +664,7 @@ class Project < ActiveRecord::Base
       # So we basically we mute exceptions in next actions
       begin
         gitlab_shell.mv_repository("#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
-        send_move_instructions
+        send_move_instructions(old_path_with_namespace)
         reset_events_cache
       rescue
         # Returning false does not rollback after_* transaction but gives
@@ -649,6 +676,8 @@ class Project < ActiveRecord::Base
       # db changes in order to prevent out of sync between db and fs
       raise Exception.new('repository cannot be renamed')
     end
+
+    Gitlab::UploadsTransfer.new.rename_project(path_was, path, namespace.path)
   end
 
   def hook_attrs
@@ -759,7 +788,7 @@ class Project < ActiveRecord::Base
   def create_wiki
     ProjectWiki.new(self, self.owner).wiki
     true
-  rescue ProjectWiki::CouldNotCreateWikiError => ex
+  rescue ProjectWiki::CouldNotCreateWikiError
     errors.add(:base, 'Failed create wiki')
     false
   end
@@ -780,5 +809,23 @@ class Project < ActiveRecord::Base
 
   def allowed_to_share_with_group?
     !namespace.share_with_group_lock
+  end
+
+  def ci_commit(sha)
+    ci_commits.find_by(sha: sha)
+  end
+
+  def ensure_ci_commit(sha)
+    ci_commit(sha) || ci_commits.create(sha: sha)
+  end
+
+  def ensure_gitlab_ci_project
+    gitlab_ci_project || create_gitlab_ci_project
+  end
+
+  def enable_ci
+    service = gitlab_ci_service || create_gitlab_ci_service
+    service.active = true
+    service.save
   end
 end

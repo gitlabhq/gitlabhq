@@ -123,12 +123,12 @@ class MergeRequestDiff < ActiveRecord::Base
     if new_diffs.any?
       if new_diffs.size > Commit::DIFF_HARD_LIMIT_FILES
         self.state = :overflow_diff_files_limit
-        new_diffs = new_diffs.first[Commit::DIFF_HARD_LIMIT_LINES]
+        new_diffs = new_diffs.first(Commit::DIFF_HARD_LIMIT_LINES)
       end
 
       if new_diffs.sum { |diff| diff.diff.lines.count } > Commit::DIFF_HARD_LIMIT_LINES
         self.state = :overflow_diff_lines_limit
-        new_diffs = new_diffs.first[Commit::DIFF_HARD_LIMIT_LINES]
+        new_diffs = new_diffs.first(Commit::DIFF_HARD_LIMIT_LINES)
       end
     end
 
@@ -144,12 +144,10 @@ class MergeRequestDiff < ActiveRecord::Base
   # Collect array of Git::Diff objects
   # between target and source branches
   def unmerged_diffs
-    diffs = compare_result.diffs
-    diffs ||= []
-    diffs
-  rescue Gitlab::Git::Diff::TimeoutError => ex
+    compare_result.diffs || []
+  rescue Gitlab::Git::Diff::TimeoutError
     self.state = :timeout
-    diffs = []
+    []
   end
 
   def repository

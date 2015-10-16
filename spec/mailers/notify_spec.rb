@@ -52,6 +52,7 @@ describe Notify do
     end
 
     it 'has headers that reference an existing thread' do
+      is_expected.to have_header 'Message-ID',  /<(.*)@#{Gitlab.config.gitlab.host}>/
       is_expected.to have_header 'References',  /<#{thread_id_prefix}(.*)@#{Gitlab.config.gitlab.host}>/
       is_expected.to have_header 'In-Reply-To', /<#{thread_id_prefix}(.*)@#{Gitlab.config.gitlab.host}>/
       is_expected.to have_header 'X-GitLab-Project', /#{project.name}/
@@ -399,7 +400,7 @@ describe Notify do
     describe 'project was moved' do
       let(:project) { create(:project) }
       let(:user) { create(:user) }
-      subject { Notify.project_was_moved_email(project.id, user.id) }
+      subject { Notify.project_was_moved_email(project.id, user.id, "gitlab/gitlab") }
 
       it_behaves_like 'an email sent from GitLab'
 

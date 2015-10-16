@@ -1,3 +1,4 @@
+// Common
 .diff-file {
   margin-left: -$gl-padding;
   margin-right: -$gl-padding;
@@ -12,24 +13,17 @@
     color: #555;
     z-index: 10;
 
-    > span {
+    .diff-title {
       font-family: $monospace_font;
       word-break: break-all;
-      margin-right: 200px;
       display: block;
 
       .file-mode {
-        margin-left: 10px;
         color: #777;
       }
     }
 
-    .diff-btn-group {
-      float: right;
-      position: absolute;
-      top: 5px;
-      right: 15px;
-
+    .diff-controls {
       .btn {
         padding: 0px 10px;
         font-size: 13px;
@@ -90,12 +84,12 @@
       }
     }
 
-    tr.line_holder.parallel{
+    tr.line_holder.parallel {
       .old_line, .new_line, .diff_line {
         min-width: 50px;
       }
 
-      td.line_content.parallel{
+      td.line_content.parallel {
         width: 50%;
       }
     }
@@ -105,7 +99,7 @@
       padding: 0px;
       border: none;
       background: $background-color;
-      color: rgba(0,0,0,0.3);
+      color: rgba(0, 0, 0, 0.3);
       padding: 0px 5px;
       border-right: 1px solid $border-color;
       text-align: right;
@@ -117,7 +111,7 @@
         float: left;
         width: 35px;
         font-weight: normal;
-        color: rgba(0,0,0,0.3);
+        color: rgba(0, 0, 0, 0.3);
         &:hover {
           text-decoration: underline;
         }
@@ -168,7 +162,7 @@
     background: #ddd;
     text-align: center;
     padding: 30px;
-    .wrap{
+    .wrap {
       display: inline-block;
     }
 
@@ -176,7 +170,7 @@
       display: inline-block;
       background-color: #fff;
       line-height: 0;
-      img{
+      img {
         border: 1px solid #FFF;
         background: image-url('trans_bg.gif');
         max-width: 100%;
@@ -189,21 +183,21 @@
         border: 1px solid $added;
       }
     }
-    .image-info{
+    .image-info {
       font-size: 12px;
       margin: 5px 0 0 0;
       color: grey;
     }
 
-    .view.swipe{
+    .view.swipe {
       position: relative;
 
-      .swipe-frame{
+      .swipe-frame {
         display: block;
         margin: auto;
         position: relative;
       }
-      .swipe-wrap{
+      .swipe-wrap {
         overflow: hidden;
         border-left: 1px solid #999;
         position: absolute;
@@ -211,33 +205,33 @@
         top: 13px;
         right: 7px;
       }
-      .frame{
+      .frame {
         top: 0;
         right: 0;
         position: absolute;
-        &.deleted{
+        &.deleted {
           margin: 0;
           display: block;
           top: 13px;
           right: 7px;
         }
       }
-      .swipe-bar{
+      .swipe-bar {
         display: block;
         height: 100%;
         width: 15px;
         z-index: 100;
         position: absolute;
         cursor: pointer;
-        &:hover{
-          .top-handle{
+        &:hover {
+          .top-handle {
             background-position: -15px 3px;
           }
-          .bottom-handle{
+          .bottom-handle {
             background-position: -15px -11px;
           }
-        };
-        .top-handle{
+        }
+        .top-handle {
           display: block;
           height: 14px;
           width: 15px;
@@ -245,7 +239,7 @@
           top: 0px;
           background: image-url('swipemode_sprites.gif') 0 3px no-repeat;
         }
-        .bottom-handle{
+        .bottom-handle {
           display: block;
           height: 14px;
           width: 15px;
@@ -254,9 +248,10 @@
           background: image-url('swipemode_sprites.gif') 0 -11px no-repeat;
         }
       }
-    } //.view.swipe
-    .view.onion-skin{
-      .onion-skin-frame{
+    }
+    //.view.swipe
+    .view.onion-skin {
+      .onion-skin-frame {
         display: block;
         margin: auto;
         position: relative;
@@ -267,7 +262,7 @@
         top: 0px;
         left: 0px;
       }
-      .controls{
+      .controls {
         display: block;
         height: 14px;
         width: 300px;
@@ -277,7 +272,7 @@
         left: 50%;
         margin-left: -150px;
 
-        .drag-track{
+        .drag-track {
           display: block;
           position: absolute;
           left: 12px;
@@ -317,39 +312,40 @@
           background: image-url('onion_skin_sprites.gif') -2px -10px no-repeat;
         }
       }
-    } //.view.onion-skin
+    }
+    //.view.onion-skin
   }
-  .view-modes{
+  .view-modes {
     padding: 10px;
     text-align: center;
     background: #EEE;
 
-    ul, li{
+    ul, li {
       list-style: none;
       margin: 0;
       padding: 0;
       display: inline-block;
     }
 
-    li{
+    li {
       color: grey;
       border-left: 1px solid #c1c1c1;
       padding: 0 12px 0 16px;
       cursor: pointer;
-      &:first-child{
+      &:first-child {
         border-left: none;
       }
-      &:hover{
+      &:hover {
         text-decoration: underline;
       }
-      &.active{
-        &:hover{
+      &.active {
+        &:hover {
           text-decoration: none;
         }
         cursor: default;
         color: #333;
       }
-      &.disabled{
+      &.disabled {
         display: none;
       }
     }
@@ -372,4 +368,38 @@
 .inline-parallel-buttons {
   float: right;
   margin-top: -5px;
+}
+
+// Mobile
+@media (max-width: 480px) {
+  .diff-title {
+    margin: 0;
+
+    .file-mode {
+      display: none;
+    }
+  }
+
+  .diff-controls {
+    position: static;
+    text-align: center;
+  }
+}
+
+// Bigger screens
+@media (min-width: 481px) {
+  .diff-title {
+    margin-right: 200px;
+
+    .file-mode {
+      margin-left: 10px;
+    }
+  }
+
+  .diff-controls {
+    float: right;
+    position: absolute;
+    top: 5px;
+    right: 15px;
+  }
 }

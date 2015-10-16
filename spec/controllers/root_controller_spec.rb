@@ -10,7 +10,7 @@ describe RootController do
         allow(subject).to receive(:current_user).and_return(user)
       end
 
-      context 'who has customized their dashboard setting' do
+      context 'who has customized their dashboard setting for starred projects' do
         before do
           user.update_attribute(:dashboard, 'stars')
         end
@@ -18,6 +18,28 @@ describe RootController do
         it 'redirects to their specified dashboard' do
           get :index
           expect(response).to redirect_to starred_dashboard_projects_path
+        end
+      end
+
+      context 'who has customized their dashboard setting for project activities' do
+        before do
+          user.update_attribute(:dashboard, 'project_activity')
+        end
+
+        it 'redirects to the activity list' do
+          get :index
+          expect(response).to redirect_to activity_dashboard_path
+        end
+      end
+
+      context 'who has customized their dashboard setting for starred project activities' do
+        before do
+          user.update_attribute(:dashboard, 'starred_project_activity')
+        end
+
+        it 'redirects to the activity list' do
+          get :index
+          expect(response).to redirect_to activity_dashboard_path(filter: 'starred')
         end
       end
 

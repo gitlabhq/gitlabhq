@@ -35,5 +35,19 @@ describe MergeRequests::MergeService do
         expect(note.note).to include 'Status changed to merged'
       end
     end
+
+    context "error handling" do
+      let(:service) { MergeRequests::MergeService.new(project, user, {}) }
+
+      it 'saves error if there is an exception' do
+        allow(service).to receive(:repository).and_raise("error")
+
+        allow(service).to receive(:execute_hooks)
+
+        service.execute(merge_request, 'Awesome message')
+
+        expect(merge_request.merge_error).to eq("Something went wrong during merge")
+      end
+    end
   end
 end

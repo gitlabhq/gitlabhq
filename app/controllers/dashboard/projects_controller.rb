@@ -20,6 +20,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     @projects = current_user.starred_projects
     @projects = @projects.includes(:namespace, :forked_from_project, :tags)
     @projects = @projects.sort(@sort = params[:sort])
+    @last_push = current_user.recent_push
     @groups = []
 
     respond_to do |format|

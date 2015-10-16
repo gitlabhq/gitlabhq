@@ -2,9 +2,10 @@
   - if current_user
     = auto_discovery_link_tag(:atom, namespace_project_path(@project.namespace, @project, format: :atom, private_token: current_user.private_token), title: "#{@project.name} activity")
 
-- if current_user && can?(current_user, :download_code, @project)
-  = render 'shared/no_ssh'
-  = render 'shared/no_password'
+= content_for :flash_message do
+  - if current_user && can?(current_user, :download_code, @project)
+    = render 'shared/no_ssh'
+    = render 'shared/no_password'
 
 - if prefer_readme?
   = render 'projects/last_push'
@@ -75,7 +76,7 @@
 - if current_user
   - access = user_max_access_in_project(current_user, @project)
   - if access
-    .prepend-top-20
+    .prepend-top-20.project-footer
       .gray-content-block.footer-block.center
         You have #{access} access to this project.
         - if @project.project_member_by_id(current_user)

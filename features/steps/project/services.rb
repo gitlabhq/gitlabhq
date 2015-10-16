@@ -198,7 +198,6 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   step 'I should see jira service settings saved' do
     expect(find_field('Project url').value).to eq 'http://jira.example'
     expect(find_field('Username').value).to eq 'gitlab'
-    expect(find_field('Password').value).to eq 'gitlab'
     expect(find_field('Api version').value).to eq '2'
   end
 
@@ -219,6 +218,10 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
     expect(find_field('Bamboo url').value).to eq 'http://bamboo.example.com'
     expect(find_field('Build key').value).to eq 'KEY'
     expect(find_field('Username').value).to eq 'user'
+  end
+
+  step 'I should see empty field Change Password' do
+    expect(find_field('Change Password').value).to be_nil
   end
 
   step 'I click JetBrains TeamCity CI service link' do

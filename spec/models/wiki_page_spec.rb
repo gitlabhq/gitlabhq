@@ -196,7 +196,7 @@ describe WikiPage do
   end
 
   def commit_details
-    commit = { name: user.name, email: user.email, message: "test commit" }
+    { name: user.name, email: user.email, message: "test commit" }
   end
 
   def create_page(name, content)

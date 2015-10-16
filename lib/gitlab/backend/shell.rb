@@ -4,7 +4,8 @@ module Gitlab
 
     class KeyAdder < Struct.new(:io)
       def add_key(id, key)
-        io.puts("#{id}\t#{key.strip}")
+        key.gsub!(/[[:space:]]+/, ' ').strip!
+        io.puts("#{id}\t#{key}")
       end
     end
 

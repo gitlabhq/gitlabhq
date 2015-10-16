@@ -151,14 +151,14 @@ describe Grack::Auth do
                 end
 
                 it "repeated attempts followed by successful attempt" do
-                  for n in 0..maxretry do
+                  maxretry.times.each do
                     expect(attempt_login(false)).to eq(401)
                   end
 
                   expect(attempt_login(true)).to eq(200)
                   expect(Rack::Attack::Allow2Ban.banned?(ip)).to be_falsey
 
-                  for n in 0..maxretry do
+                  maxretry.times.each do
                     expect(attempt_login(false)).to eq(401)
                   end
                 end
@@ -175,11 +175,14 @@ describe Grack::Auth do
 
         context "when a gitlab ci token is provided" do
           let(:token) { "123" }
+          let(:gitlab_ci_project) { FactoryGirl.create :ci_project, token: token }
 
           before do
+            project.gitlab_ci_project = gitlab_ci_project
+            project.save
+
             gitlab_ci_service = project.build_gitlab_ci_service
             gitlab_ci_service.active = true
-            gitlab_ci_service.token = token
             gitlab_ci_service.save
 
             env["HTTP_AUTHORIZATION"] = ActionController::HttpAuthentication::Basic.encode_credentials("gitlab-ci-token", token)

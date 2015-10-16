@@ -39,8 +39,6 @@ describe ServiceHook do
     end
 
     it "POSTs the data as JSON" do
-      json = @data.to_json
-
       @service_hook.execute(@data)
       expect(WebMock).to have_requested(:post, @service_hook.url).with(
         headers: { 'Content-Type'=>'application/json', 'X-Gitlab-Event'=>'Service Hook' }

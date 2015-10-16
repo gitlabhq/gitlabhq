@@ -7,4 +7,4 @@
     = link_to_gfm issue.title, [project.namespace.becomes(Namespace), project, issue], title: issue.title
   .pull-right.assignee-icon
     - if issue.assignee
-      = image_tag avatar_icon(issue.assignee.email, 16), class: "avatar s16"
+      = image_tag avatar_icon(issue.assignee, 16), class: "avatar s16"

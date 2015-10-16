@@ -1,0 +1,7 @@
+- page_title "Continuous Integration", "Graphs"
+= render "header_title"
+= render 'head'
+#charts.ci-charts
+  = render 'projects/graphs/ci/builds'
+  = render 'projects/graphs/ci/build_times'
+= render 'projects/graphs/ci/overall'

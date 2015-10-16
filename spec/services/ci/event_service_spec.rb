@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Ci::EventService do
-  let(:project) { FactoryGirl.create :ci_project, name: "GitLab / gitlab-shell" }
+  let(:project) { FactoryGirl.create :ci_project }
   let(:user)   { double(username: "root", id: 1) }
 
   before do
@@ -12,7 +12,7 @@ describe Ci::EventService do
     it "creates event" do
       Ci::EventService.new.remove_project(user, project)
 
-      expect(Ci::Event.admin.last.description).to eq("Project \"GitLab / gitlab-shell\" has been removed by root")
+      expect(Ci::Event.admin.last.description).to eq("Project \"#{project.name_with_namespace}\" has been removed by root")
     end
   end
 
@@ -20,7 +20,7 @@ describe Ci::EventService do
     it "creates event" do
       Ci::EventService.new.create_project(user, project)
 
-      expect(Ci::Event.admin.last.description).to eq("Project \"GitLab / gitlab-shell\" has been created by root")
+      expect(Ci::Event.admin.last.description).to eq("Project \"#{project.name_with_namespace}\" has been created by root")
     end
   end
 

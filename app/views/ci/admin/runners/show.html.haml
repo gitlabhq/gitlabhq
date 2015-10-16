@@ -76,7 +76,7 @@
         %td
           = form_tag ci_admin_runner_path(@runner), id: 'runner-projects-search', class: 'form-inline', method: :get do
             .form-group
-              = search_field_tag :search, params[:search], class: 'form-control'
+              = search_field_tag :search, params[:search], class: 'form-control', spellcheck: false
             = submit_tag 'Search', class: 'btn'
 
         %td
@@ -96,6 +96,7 @@
     %table.builds.runner-builds
       %thead
         %tr
+          %th Build ID
           %th Status
           %th Project
           %th Commit
@@ -103,6 +104,11 @@
 
       - @builds.each do |build|
         %tr.build
+          %td.id
+            - gl_project = build.project.gl_project
+            = link_to namespace_project_build_path(gl_project.namespace, gl_project, build) do
+              = build.id
+
           %td.status
             = ci_status_with_icon(build.status)
 
@@ -110,8 +116,8 @@
             = build.project.name
 
           %td.build-link
-            = link_to ci_project_build_path(build.project, build) do
-              %strong #{build.short_sha}
+            = link_to ci_status_path(build.commit) do
+              %strong #{build.commit.short_sha}
 
           %td.timestamp
             - if build.finished_at

@@ -56,7 +56,7 @@
 
 ### Administrator documentation
 
-+ [User permissions](permissions/README.md)
++ [User permissions](permissions/permissions.md)
 + [API](api/README.md)
 
 ## Contributor documentation

@@ -1,50 +1,70 @@
-%ul.breadcrumb.repo-breadcrumb
-  %li
-    = link_to namespace_project_tree_path(@project.namespace, @project, @ref) do
-      = @project.path
-  - tree_breadcrumbs(tree, 6) do |title, path|
+.gray-content-block
+  %ul.breadcrumb.repo-breadcrumb
     %li
-      - if path
-        = link_to truncate(title, length: 40), namespace_project_tree_path(@project.namespace, @project, path)
-      - else
-        = link_to title, '#'
-  - if current_user && can_push_branch?(@project, @ref)
-    %li
-      = link_to namespace_project_new_blob_path(@project.namespace, @project, @id), title: 'New file', id: 'new-file-link' do
-        %small
-          %i.fa.fa-plus
+      = link_to namespace_project_tree_path(@project.namespace, @project, @ref) do
+        = @project.path
+    - tree_breadcrumbs(tree, 6) do |title, path|
+      %li
+        - if path
+          = link_to truncate(title, length: 40), namespace_project_tree_path(@project.namespace, @project, path)
+        - else
+          = link_to title, '#'
+    - if allowed_tree_edit?
+      %li
+        %span.dropdown
+          %a.dropdown-toggle.btn.add-to-tree{href: '#', "data-toggle" => "dropdown"}
+            = icon('plus')
+          %ul.dropdown-menu
+            %li
+              = link_to namespace_project_new_blob_path(@project.namespace, @project, @id), title: 'Create file', id: 'new-file-link' do
+                = icon('pencil fw')
+                Create file
+            %li
+              = link_to '#modal-upload-blob', { 'data-target' => '#modal-upload-blob', 'data-toggle' => 'modal'} do
+                = icon('file fw')
+                Upload file
+            %li.divider
+            %li
+              = link_to '#modal-create-new-dir', { 'data-target' => '#modal-create-new-dir', 'data-toggle' => 'modal'} do
+                = icon('folder fw')
+                New directory
 
-%div#tree-content-holder.tree-content-holder.prepend-top-20
-  %table#tree-slider{class: "table_#{@hex_path} tree-table" }
-    %thead
-      %tr
-        %th Name
-        %th Last Update
-        %th.hidden-xs
-          .pull-left Last Commit
-          .last-commit.hidden-sm.pull-left
-            &nbsp;
-            %i.fa.fa-angle-right
-            &nbsp;
-            %small.light
-              = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit)
-              &ndash;
-              = truncate(@commit.title, length: 50)
-          = link_to 'History', namespace_project_commits_path(@project.namespace, @project, @id), class: 'pull-right'
+%div#tree-content-holder.tree-content-holder
+  .tree-table-holder
+    %table.table#tree-slider{class: "table_#{@hex_path} tree-table table-striped" }
+      %thead
+        %tr
+          %th Name
+          %th Last Update
+          %th.hidden-xs
+            .pull-left Last Commit
+            .last-commit.hidden-sm.pull-left
+              &nbsp;
+              %i.fa.fa-angle-right
+              &nbsp;
+              %small.light
+                = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit)
+                &ndash;
+                = truncate(@commit.title, length: 50)
+            = link_to 'History', namespace_project_commits_path(@project.namespace, @project, @id), class: 'pull-right'
 
-    - if @path.present?
-      %tr.tree-item
-        %td.tree-item-file-name
-          = link_to "..", namespace_project_tree_path(@project.namespace, @project, up_dir_path), class: 'prepend-left-10'
-        %td
-        %td.hidden-xs
+      - if @path.present?
+        %tr.tree-item
+          %td.tree-item-file-name
+            = link_to "..", namespace_project_tree_path(@project.namespace, @project, up_dir_path), class: 'prepend-left-10'
+          %td
+          %td.hidden-xs
 
-    = render_tree(tree)
+      = render_tree(tree)
 
   - if tree.readme
     = render "projects/tree/readme", readme: tree.readme
 
 %div.tree_progress
+
+- if allowed_tree_edit?
+  = render 'projects/blob/upload', title: 'Upload', placeholder: 'Upload new file', button_title: 'Upload file', form_path: namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post
+  = render 'projects/blob/new_dir'
 
 :javascript
   // Load last commit log for each file in tree

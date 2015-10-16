@@ -2,7 +2,7 @@
   = form_for note, url: namespace_project_note_path(@project.namespace, @project, note), method: :put, remote: true, authenticity_token: true do |f|
     = note_target_fields(note)
     = render layout: 'projects/md_preview', locals: { preview_class: 'md-preview' } do
-      = render 'projects/zen', f: f, attr: :note, classes: 'note_text js-note-text js-task-list-field'
+      = render 'projects/zen', f: f, attr: :note, classes: 'note_text js-note-text js-task-list-field js-quick-submit'
       = render 'projects/notes/hints'
 
     .note-form-actions

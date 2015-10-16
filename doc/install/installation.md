@@ -115,8 +115,9 @@ Remove the old Ruby 1.8 if present
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl -L --progress http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.6.tar.gz | tar xz
-    cd ruby-2.1.6
+    curl -O --progress https://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.7.tar.gz
+    echo 'e2e195a4a58133e3ad33b955c829bb536fa3c075  ruby-2.1.7.tar.gz' | shasum -c - && tar xzf ruby-2.1.7.tar.gz
+    cd ruby-2.1.7
     ./configure --disable-install-rdoc
     make
     sudo make install
@@ -130,12 +131,15 @@ Install the Bundler Gem:
 Since GitLab 8.0, Git HTTP requests are handled by gitlab-git-http-server.
 This is a small daemon written in Go.
 To install gitlab-git-http-server we need a Go compiler.
+The instructions below assume you use 64-bit Linux. You can find
+downloads for other platforms at the [Go download
+page](https://golang.org/dl).
 
-    curl -O --progress https://storage.googleapis.com/golang/go1.5.linux-amd64.tar.gz
-    echo '5817fa4b2252afdb02e11e8b9dc1d9173ef3bd5a  go1.5.linux-amd64.tar.gz' | shasum -c - && \
-      sudo tar -C /usr/local -xzf go1.5.linux-amd64.tar.gz
+    curl -O --progress https://storage.googleapis.com/golang/go1.5.1.linux-amd64.tar.gz
+    echo '46eecd290d8803887dec718c691cc243f2175fe0  go1.5.1.linux-amd64.tar.gz' | shasum -c - && \
+      sudo tar -C /usr/local -xzf go1.5.1.linux-amd64.tar.gz
     sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
-    rm go1.5.linux-amd64.tar.gz
+    rm go1.5.1.linux-amd64.tar.gz
 
 ## 4. System Users
 
@@ -474,9 +478,22 @@ Using a self-signed certificate is discouraged but if you must use it follow the
     ```
 1. In the `config.yml` of gitlab-shell set `self_signed_cert` to `true`.
 
-### Additional Markup Styles
+### Enable Reply by email
 
-Apart from the always supported markdown style there are other rich text files that GitLab can display. But you might have to install a dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
+See the ["Reply by email" documentation](../incoming_email/README.md) for more information on how to set this up.
+
+### LDAP Authentication
+
+You can configure LDAP authentication in `config/gitlab.yml`. Please restart GitLab after editing this file.
+
+### Using Custom Omniauth Providers
+
+See the [omniauth integration document](../integration/omniauth.md)
+
+### Build your projects
+
+GitLab can build your projects. To enable that feature you need GitLab Runners to do that for you.
+Checkout the [Gitlab Runner section](https://about.gitlab.com/gitlab-ci/#gitlab-runner) to install it
 
 ### Custom Redis Connection
 
@@ -502,15 +519,16 @@ If you are running SSH on a non-standard port, you must change the GitLab user's
 
 You also need to change the corresponding options (e.g. `ssh_user`, `ssh_host`, `admin_uri`) in the `config\gitlab.yml` file.
 
-### LDAP Authentication
+### Additional Markup Styles
 
-You can configure LDAP authentication in `config/gitlab.yml`. Please restart GitLab after editing this file.
+Apart from the always supported markdown style there are other rich text files that GitLab can display. But you might have to install a dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
 
-### Using Custom Omniauth Providers
+## Troubleshooting
 
-See the [omniauth integration document](../integration/omniauth.md)
+### "You appear to have cloned an empty repository."
 
-### Build your projects
-
-GitLab can build your projects. To enable that feature you need GitLab Runners to do that for you.
-Checkout the [Gitlab Runner section](https://about.gitlab.com/gitlab-ci/#gitlab-runner) to install it
+If you see this message when attempting to clone a repository hosted by GitLab,
+this is likely due to an outdated Nginx or Apache configuration, or a missing or
+misconfigured `gitlab-git-http-server` instance. Double-check that you've
+[installed Go](#3-go), [installed gitlab-git-http-server](#install-gitlab-git-http-server),
+and correctly [configured Nginx](#site-configuration).

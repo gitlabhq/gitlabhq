@@ -17,11 +17,12 @@ module Ci
         expect(config_processor.builds_for_stage_and_ref(type, "master").size).to eq(1)
         expect(config_processor.builds_for_stage_and_ref(type, "master").first).to eq({
           stage: "test",
+          stage_idx: 1,
           except: nil,
           name: :rspec,
           only: nil,
-          script: "pwd\nrspec",
-          tags: [],
+          commands: "pwd\nrspec",
+          tag_list: [],
           options: {},
           allow_failure: false
         })
@@ -115,10 +116,11 @@ module Ci
         expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
           except: nil,
           stage: "test",
+          stage_idx: 1,
           name: :rspec,
           only: nil,
-          script: "pwd\nrspec",
-          tags: [],
+          commands: "pwd\nrspec",
+          tag_list: [],
           options: {
             image: "ruby:2.1",
             services: ["mysql"]
@@ -141,10 +143,11 @@ module Ci
         expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
           except: nil,
           stage: "test",
+          stage_idx: 1,
           name: :rspec,
           only: nil,
-          script: "pwd\nrspec",
-          tags: [],
+          commands: "pwd\nrspec",
+          tag_list: [],
           options: {
             image: "ruby:2.5",
             services: ["postgresql"]

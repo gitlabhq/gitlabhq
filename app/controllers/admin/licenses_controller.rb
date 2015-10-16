@@ -37,7 +37,6 @@ class Admin::LicensesController < Admin::ApplicationController
   def destroy
     license.destroy
 
-    message = "The license was removed. "
     if License.current
       flash[:notice] = "The license was removed. GitLab has fallen back on the previous license."
     else

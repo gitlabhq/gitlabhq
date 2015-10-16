@@ -8,7 +8,7 @@ describe Mentionable do
 
     it 'excludes JIRA references' do
       allow(project).to receive_messages(jira_tracker?: true)
-      expect(references(project, 'JIRA-123')).to be_empty
+      expect(referenced_mentionables(project, 'JIRA-123')).to be_empty
     end
   end
 end
@@ -38,7 +38,7 @@ describe Issue, "Mentionable" do
     it 'correctly removes already-mentioned Commits' do
       expect(SystemNoteService).not_to receive(:cross_reference)
 
-      issue.create_cross_references!(project, author, [commit2])
+      issue.create_cross_references!(author, [commit2])
     end
   end
 

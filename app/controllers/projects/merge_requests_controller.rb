@@ -155,6 +155,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     return render_404 unless @merge_request.approved?
 
     if @merge_request.mergeable?
+      @merge_request.update(merge_error: nil)
       MergeWorker.perform_async(@merge_request.id, current_user.id, params)
       @status = true
     else
@@ -287,7 +288,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def define_show_vars
-    @participants = @merge_request.participants(current_user, @project)
+    @participants = @merge_request.participants(current_user)
 
     # Build a note object for comment form
     @note = @project.notes.new(noteable: @merge_request)
@@ -300,8 +301,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @commits = @merge_request.commits
 
     @merge_request_diff = @merge_request.merge_request_diff
-    @source_branch = @merge_request.source_project.repository.find_branch(@merge_request.source_branch).try(:name)
-
+    
     if @merge_request.locked_long_ago?
       @merge_request.unlock_mr
       @merge_request.close

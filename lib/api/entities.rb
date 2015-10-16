@@ -45,7 +45,7 @@ module API
 
     class ProjectHook < Hook
       expose :project_id, :push_events
-      expose :issues_events, :merge_requests_events, :tag_push_events
+      expose :issues_events, :merge_requests_events, :tag_push_events, :note_events, :enable_ssl_verification
     end
 
     class ProjectGitHook < Grape::Entity
@@ -159,6 +159,7 @@ module API
 
     class RepoCommitDetail < RepoCommit
       expose :parent_ids, :committed_date, :authored_date
+      expose :status
     end
 
     class ProjectSnippet < Grape::Entity
@@ -238,6 +239,12 @@ module API
       expose :created_at
     end
 
+    class CommitStatus < Grape::Entity
+      expose :id, :sha, :ref, :status, :name, :target_url, :description,
+             :created_at, :started_at, :finished_at
+      expose :author, using: Entities::UserBasic
+    end
+
     class Event < Grape::Entity
       expose :title, :project_id, :action_name
       expose :target_id, :target_type, :author_id
@@ -271,6 +278,18 @@ module API
     class GroupAccess < Grape::Entity
       expose :access_level
       expose :notification_level
+    end
+
+    class ProjectService < Grape::Entity
+      expose :id, :title, :created_at, :updated_at, :active
+      expose :push_events, :issues_events, :merge_requests_events, :tag_push_events, :note_events
+      # Expose serialized properties
+      expose :properties do |service, options|
+        field_names = service.fields.
+          select { |field| options[:include_passwords] || field[:type] != 'password' }.
+          map { |field| field[:name] }
+        service.properties.slice(*field_names)
+      end
     end
 
     class ProjectWithAccess < Project

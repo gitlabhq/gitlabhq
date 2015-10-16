@@ -932,7 +932,7 @@ Lint/UselessAccessModifier:
 Lint/UselessAssignment:
   Description: 'Checks for useless assignment to a local variable.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#underscore-unused-vars'
-  Enabled: false
+  Enabled: true
 
 Lint/UselessComparison:
   Description: 'Checks for comparison of something with itself.'

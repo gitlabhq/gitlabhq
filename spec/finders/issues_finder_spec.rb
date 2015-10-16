@@ -6,9 +6,11 @@ describe IssuesFinder do
   let(:project1) { create(:project) }
   let(:project2) { create(:project) }
   let(:milestone) { create(:milestone, project: project1) }
+  let(:label) { create(:label, project: project2) }
   let(:issue1) { create(:issue, author: user, assignee: user, project: project1, milestone: milestone) }
   let(:issue2) { create(:issue, author: user, assignee: user, project: project2) }
   let(:issue3) { create(:issue, author: user2, assignee: user2, project: project2) }
+  let!(:label_link) { create(:label_link, label: label, target: issue2) }
 
   before do
     project1.team << [user, :master]
@@ -46,6 +48,24 @@ describe IssuesFinder do
         params = { scope: "all", milestone_title: milestone.title, state: 'opened' }
         issues = IssuesFinder.new(user, params).execute
         expect(issues).to eq([issue1])
+      end
+
+      it 'should filter by no milestone id' do
+        params = { scope: "all", milestone_title: Milestone::None.title, state: 'opened' }
+        issues = IssuesFinder.new(user, params).execute
+        expect(issues).to match_array([issue2, issue3])
+      end
+
+      it 'should filter by label name' do
+        params = { scope: "all", label_name: label.title, state: 'opened' }
+        issues = IssuesFinder.new(user, params).execute
+        expect(issues).to eq([issue2])
+      end
+
+      it 'should filter by no label name' do
+        params = { scope: "all", label_name: Label::None.title, state: 'opened' }
+        issues = IssuesFinder.new(user, params).execute
+        expect(issues).to match_array([issue1, issue3])
       end
 
       it 'should be empty for unauthorized user' do

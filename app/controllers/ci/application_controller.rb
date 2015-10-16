@@ -1,7 +1,5 @@
 module Ci
   class ApplicationController < ::ApplicationController
-    before_action :check_enable_flag!
-
     def self.railtie_helpers_paths
       "app/helpers/ci"
     end
@@ -9,13 +7,6 @@ module Ci
     helper_method :gl_project
 
     private
-
-    def check_enable_flag!
-      unless current_application_settings.ci_enabled
-        redirect_to(disabled_ci_projects_path)
-        return
-      end
-    end
 
     def authenticate_public_page!
       unless project.public

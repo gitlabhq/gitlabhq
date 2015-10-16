@@ -1,0 +1,34 @@
+%li.runner{id: dom_id(runner)}
+  %h4
+    = runner_status_icon(runner)
+    %span.monospace
+      - if @runners.include?(runner)
+        = link_to runner.short_sha, runner_path(runner)
+        %small
+          =link_to edit_namespace_project_runner_path(@project.namespace, @project, runner) do
+            %i.fa.fa-edit.btn
+      - else
+        = runner.short_sha
+
+    .pull-right
+      - if @runners.include?(runner)
+        - if runner.belongs_to_one_project?
+          = link_to 'Remove runner', runner_path(runner), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'
+        - else
+          - runner_project = @ci_project.runner_projects.find_by(runner_id: runner)
+          = link_to 'Disable for this project', [:ci, @ci_project, runner_project], data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'
+      - elsif runner.specific?
+        = form_for [:ci, @ci_project, @ci_project.runner_projects.new] do |f|
+          = f.hidden_field :runner_id, value: runner.id
+          = f.submit 'Enable for this project', class: 'btn btn-sm'
+  .pull-right
+    %small.light
+      \##{runner.id}
+  - if runner.description.present?
+    %p.runner-description
+      = runner.description
+  - if runner.tag_list.present?
+    %p
+      - runner.tag_list.each do |tag|
+        %span.label.label-primary
+          = tag

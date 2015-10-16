@@ -22,50 +22,9 @@ Gitlab::Application.routes.draw do
         get :dumped_yaml
       end
 
-      resources :services, only: [:index, :edit, :update] do
-        member do
-          get :test
-        end
-      end
-
-      resource :charts, only: [:show]
-
-      resources :refs, constraints: { ref_id: /.*/ }, only: [] do
-        resources :commits, only: [:show] do
-          member do
-            get :status
-            get :cancel
-          end
-        end
-      end
-
-      resources :builds, only: [:show] do
-        member do
-          get :cancel
-          get :status
-          post :retry
-        end
-      end
-
-      resources :web_hooks, only: [:index, :create, :destroy] do
-        member do
-          get :test
-        end
-      end
-
-      resources :triggers, only: [:index, :create, :destroy]
-
-      resources :runners, only: [:index, :edit, :update, :destroy, :show] do
-        member do
-          get :resume
-          get :pause
-        end
-      end
-
       resources :runner_projects, only: [:create, :destroy]
 
       resources :events, only: [:index]
-      resource :variables, only: [:show, :update]
     end
 
     resource :user_sessions do
@@ -267,6 +226,7 @@ Gitlab::Application.routes.draw do
         put :unblock
         put :unlock
         put :confirm
+        post :login_as
         patch :disable_two_factor
         delete 'remove/:email_id', action: 'remove_email', as: 'remove_email'
       end
@@ -519,6 +479,15 @@ Gitlab::Application.routes.draw do
         end
 
         scope do
+          post(
+              '/create_dir/*id',
+              to: 'tree#create_dir',
+              constraints: { id: /.+/ },
+              as: 'create_dir'
+          )
+        end
+
+        scope do
           get(
             '/blame/*id',
             to: 'blame#show',
@@ -538,7 +507,11 @@ Gitlab::Application.routes.draw do
 
         resource  :avatar, only: [:show, :destroy]
         resources :commit, only: [:show], constraints: { id: /[[:alnum:]]{6,40}/ } do
-          get :branches, on: :member
+          member do
+            get :branches
+            get :ci
+            get :cancel_builds
+          end
         end
 
         resources :compare, only: [:index, :create]
@@ -547,6 +520,7 @@ Gitlab::Application.routes.draw do
         resources :graphs, only: [:show], constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ } do
           member do
             get :commits
+            get :ci
           end
         end
 
@@ -605,8 +579,10 @@ Gitlab::Application.routes.draw do
           member do
             # tree viewer logs
             get 'logs_tree', constraints: { id: Gitlab::Regex.git_reference_regex }
+            # Directories with leading dots erroneously get rejected if git
+            # ref regex used in constraints. Regex verification now done in controller.
             get 'logs_tree/*path' => 'refs#logs_tree', as: :logs_file, constraints: {
-              id: Gitlab::Regex.git_reference_regex,
+              id: /.*/,
               path: /.*/
             }
           end
@@ -637,6 +613,33 @@ Gitlab::Application.routes.draw do
         resources :tags, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
         resources :protected_branches, only: [:index, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
         resources :git_hooks, constraints: { id: /\d+/ }
+        resource :variables, only: [:show, :update]
+        resources :triggers, only: [:index, :create, :destroy]
+        resource :ci_settings, only: [:edit, :update, :destroy]
+        resources :ci_web_hooks, only: [:index, :create, :destroy] do
+          member do
+            get :test
+          end
+        end
+
+        resources :ci_services, constraints: { id: /[^\/]+/ }, only: [:index, :edit, :update] do
+          member do
+            get :test
+          end
+        end
+
+        resources :builds, only: [:index, :show] do
+          collection do
+            get :cancel_all
+          end
+
+          member do
+            get :cancel
+            get :status
+            post :retry
+          end
+        end
+
         resources :hooks, only: [:index, :create, :destroy], constraints: { id: /\d+/ } do
           member do
             get :test
@@ -691,6 +694,13 @@ Gitlab::Application.routes.draw do
         resources :uploads, only: [:create] do
           collection do
             get ":secret/:filename", action: :show, as: :show, constraints: { filename: /[^\/]+/ }
+          end
+        end
+
+        resources :runners, only: [:index, :edit, :update, :destroy, :show] do
+          member do
+            get :resume
+            get :pause
           end
         end
 

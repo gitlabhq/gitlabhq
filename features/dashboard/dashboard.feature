@@ -4,12 +4,14 @@ Feature: Dashboard
     Given I sign in as a user
     And I own project "Shop"
     And project "Shop" has push event
+    And project "Shop" has CI enabled
+    And project "Shop" has CI build
     And I visit dashboard page
 
-  @javascript
   Scenario: I should see projects list
     Then I should see "New Project" link
     Then I should see "Shop" project link
+    Then I should see "Shop" project CI status
 
   @javascript
   Scenario: I should see activity list

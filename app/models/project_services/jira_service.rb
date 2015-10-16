@@ -168,9 +168,7 @@ class JiraService < IssueTrackerService
     user_url = data[:user][:url]
     entity_name = data[:entity][:name]
     entity_url = data[:entity][:url]
-    entity_iid = data[:entity][:iid]
     project_name = data[:project][:name]
-    project_url = data[:project][:url]
 
     message = {
       body: "[#{user_name}|#{user_url}] mentioned this issue in [a #{entity_name} of #{project_name}|#{entity_url}]."
