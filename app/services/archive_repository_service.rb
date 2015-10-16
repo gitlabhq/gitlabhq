@@ -7,7 +7,7 @@ class ArchiveRepositoryService
   end
 
   def execute(options = {})
-    project.repository.clean_old_archives
+    RepositoryArchiveCacheWorker.perform_async
 
     metadata = project.repository.archive_metadata(ref, storage_path, format)
     raise "Repository or ref not found" if metadata.empty?
