@@ -6,7 +6,7 @@ module Ci
       @runners = Ci::Runner.order('id DESC')
       @runners = @runners.search(params[:search]) if params[:search].present?
       @runners = @runners.page(params[:page]).per(30)
-      @active_runners_cnt = Ci::Runner.where("contacted_at > ?", 1.minutes.ago).count
+      @active_runners_cnt = Ci::Runner.online.count
     end
 
     def show
@@ -66,7 +66,7 @@ module Ci
     end
 
     def runner_params
-      params.require(:runner).permit(:token, :description, :tag_list, :contacted_at, :active)
+      params.require(:runner).permit(:token, :description, :tag_list, :active)
     end
   end
 end

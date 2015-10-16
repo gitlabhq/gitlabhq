@@ -28,7 +28,7 @@ table {
         border-bottom: 1px solid $border-color !important;
       }
       td {
-        border-color: #F1F1F1 !important;
+        border-color: $table-border-color !important;
         border-bottom: 1px solid;
       }
     }

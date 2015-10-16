@@ -49,7 +49,7 @@ module Ci
 
       commit = build.commit
       return unless commit
-      return unless commit.builds_without_retry.include? build
+      return unless commit.latest_builds.include? build
 
       case commit.status.to_sym
       when :failed

@@ -62,7 +62,7 @@ class Import::BitbucketController < Import::BaseController
   end
 
   def verify_bitbucket_import_enabled
-    not_found! unless bitbucket_import_enabled?
+    render_404 unless bitbucket_import_enabled?
   end
 
   def bitbucket_auth

@@ -87,7 +87,7 @@
       - @group_milestone.participants.each do |user|
         %li
           = link_to user, title: user.name, class: "darken" do
-            = image_tag avatar_icon(user.email, 32), class: "avatar s32"
+            = image_tag avatar_icon(user, 32), class: "avatar s32"
             %strong= truncate(user.name, lenght: 40)
             %br
             %small.cgray= user.username

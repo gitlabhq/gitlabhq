@@ -30,27 +30,65 @@ describe BambooService, models: true do
     let(:user)    { create(:user) }
     let(:project) { create(:project) }
 
-    before do
-      @bamboo_service = BambooService.create(
-        project: create(:project),
-        properties: {
-          bamboo_url: 'http://gitlab.com',
-          username: 'mic',
-          password: "password"
-        }
-      )
-    end
+    context "when a password was previously set" do
+      before do
+        @bamboo_service = BambooService.create(
+          project: create(:project),
+          properties: {
+            bamboo_url: 'http://gitlab.com',
+            username: 'mic',
+            password: "password"
+          }
+        )
+      end
+  
+      it "reset password if url changed" do
+        @bamboo_service.bamboo_url = 'http://gitlab1.com'
+        @bamboo_service.save
+        expect(@bamboo_service.password).to be_nil
+      end
+  
+      it "does not reset password if username changed" do
+        @bamboo_service.username = "some_name"
+        @bamboo_service.save
+        expect(@bamboo_service.password).to eq("password")
+      end
 
-    it "reset password if url changed" do
-      @bamboo_service.bamboo_url = 'http://gitlab1.com'
-      @bamboo_service.save
-      expect(@bamboo_service.password).to be_nil
-    end
+      it "does not reset password if new url is set together with password, even if it's the same password" do
+        @bamboo_service.bamboo_url = 'http://gitlab_edited.com'
+        @bamboo_service.password = 'password'
+        @bamboo_service.save
+        expect(@bamboo_service.password).to eq("password")
+        expect(@bamboo_service.bamboo_url).to eq("http://gitlab_edited.com")
+      end
 
-    it "does not reset password if username changed" do
-      @bamboo_service.username = "some_name"
-      @bamboo_service.save
-      expect(@bamboo_service.password).to eq("password")
+      it "should reset password if url changed, even if setter called multiple times" do
+        @bamboo_service.bamboo_url = 'http://gitlab1.com'
+        @bamboo_service.bamboo_url = 'http://gitlab1.com'
+        @bamboo_service.save
+        expect(@bamboo_service.password).to be_nil
+      end
+    end
+    
+    context "when no password was previously set" do
+      before do
+        @bamboo_service = BambooService.create(
+          project: create(:project),
+          properties: {
+            bamboo_url: 'http://gitlab.com',
+            username: 'mic'
+          }
+        )
+      end
+
+      it "saves password if new url is set together with password" do
+        @bamboo_service.bamboo_url = 'http://gitlab_edited.com'
+        @bamboo_service.password = 'password'
+        @bamboo_service.save
+        expect(@bamboo_service.password).to eq("password")
+        expect(@bamboo_service.bamboo_url).to eq("http://gitlab_edited.com")
+      end
+
     end
   end
 end

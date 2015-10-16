@@ -113,11 +113,11 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I click status link' do
-    click_link "Builds"
+    find('.commit-ci-menu').click_link "Builds"
   end
 
   step 'I see builds list' do
     expect(page).to have_content "build: pending"
-    expect(page).to have_content "Builds for master"
+    expect(page).to have_content "Latest builds"
   end
 end

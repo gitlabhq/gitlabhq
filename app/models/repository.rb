@@ -480,6 +480,10 @@ class Repository
     end
   end
 
+  def merge_base(first_commit_id, second_commit_id)
+    rugged.merge_base(first_commit_id, second_commit_id)
+  end
+
   def search_files(query, ref)
     offset = 2
     args = %W(git grep -i -n --before-context #{offset} --after-context #{offset} #{query} #{ref || root_ref})

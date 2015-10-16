@@ -24,32 +24,19 @@
 #
 
 module Ci
-  class Build < ActiveRecord::Base
-    extend Ci::Model
-
+  class Build < CommitStatus
     LAZY_ATTRIBUTES = ['trace']
 
-    belongs_to :commit, class_name: 'Ci::Commit'
     belongs_to :runner, class_name: 'Ci::Runner'
     belongs_to :trigger_request, class_name: 'Ci::TriggerRequest'
-    belongs_to :user
 
     serialize :options
 
-    validates :commit, presence: true
-    validates :status, presence: true
     validates :coverage, numericality: true, allow_blank: true
     validates_presence_of :ref
 
-    scope :running, ->() { where(status: "running") }
-    scope :pending, ->() { where(status: "pending") }
-    scope :success, ->() { where(status: "success") }
-    scope :failed, ->() { where(status: "failed")  }
     scope :unstarted, ->() { where(runner_id: nil) }
-    scope :running_or_pending, ->() { where(status:[:running, :pending]) }
-    scope :latest, ->() { where(id: unscope(:select).select('max(id)').group(:name, :ref)).order(stage_idx: :asc) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
-    scope :for_ref, ->(ref) { where(ref: ref) }
     scope :similar, ->(build) { where(ref: build.ref, tag: build.tag, trigger_request_id: build.trigger_request_id) }
 
     acts_as_taggable
@@ -74,13 +61,14 @@ module Ci
 
       def create_from(build)
         new_build = build.dup
-        new_build.status = :pending
+        new_build.status = 'pending'
         new_build.runner_id = nil
+        new_build.trigger_request_id = nil
         new_build.save
       end
 
       def retry(build)
-        new_build = Ci::Build.new(status: :pending)
+        new_build = Ci::Build.new(status: 'pending')
         new_build.ref = build.ref
         new_build.tag = build.tag
         new_build.options = build.options
@@ -98,57 +86,24 @@ module Ci
     end
 
     state_machine :status, initial: :pending do
-      event :run do
-        transition pending: :running
-      end
-
-      event :drop do
-        transition running: :failed
-      end
-
-      event :success do
-        transition running: :success
-      end
-
-      event :cancel do
-        transition [:pending, :running] => :canceled
-      end
-
-      after_transition pending: :running do |build, transition|
-        build.update_attributes started_at: Time.now
-      end
-
       after_transition any => [:success, :failed, :canceled] do |build, transition|
-        build.update_attributes finished_at: Time.now
         project = build.project
 
         if project.web_hooks?
           Ci::WebHookService.new.build_end(build)
         end
 
-        if build.commit.should_create_next_builds?(build)
-          build.commit.create_next_builds(build.ref, build.tag, build.user, build.trigger_request)
-        end
-
+        build.commit.create_next_builds(build)
         project.execute_services(build)
 
         if project.coverage_enabled?
           build.update_coverage
         end
       end
-
-      state :pending, value: 'pending'
-      state :running, value: 'running'
-      state :failed, value: 'failed'
-      state :success, value: 'success'
-      state :canceled, value: 'canceled'
     end
 
-    delegate :sha, :short_sha, :project, :gl_project,
-      to: :commit, prefix: false
-
-    def before_sha
-      Gitlab::Git::BLANK_SHA
+    def ignored?
+      failed? && allow_failure?
     end
 
     def trace_html
@@ -156,36 +111,12 @@ module Ci
       html || ''
     end
 
-    def started?
-      !pending? && !canceled? && started_at
-    end
-
-    def active?
-      running? || pending?
-    end
-
-    def complete?
-      canceled? || success? || failed?
-    end
-
-    def ignored?
-      failed? && allow_failure?
-    end
-
     def timeout
       project.timeout
     end
 
     def variables
-      yaml_variables + project_variables + trigger_variables
-    end
-
-    def duration
-      if started_at && finished_at
-        finished_at - started_at
-      elsif started_at
-        Time.now - started_at
-      end
+      predefined_variables + yaml_variables + project_variables + trigger_variables
     end
 
     def project
@@ -278,6 +209,37 @@ module Ci
       "#{dir_to_trace}/#{id}.log"
     end
 
+    def target_url
+      Gitlab::Application.routes.url_helpers.
+        namespace_project_build_url(gl_project.namespace, gl_project, self)
+    end
+
+    def cancel_url
+      if active?
+        Gitlab::Application.routes.url_helpers.
+          cancel_namespace_project_build_path(gl_project.namespace, gl_project, self)
+      end
+    end
+
+    def retry_url
+      if commands.present?
+        Gitlab::Application.routes.url_helpers.
+          retry_namespace_project_build_path(gl_project.namespace, gl_project, self)
+      end
+    end
+
+    def can_be_served?(runner)
+      (tag_list - runner.tag_list).empty?
+    end
+
+    def any_runners_online?
+      project.any_runners? { |runner| runner.active? && runner.online? && can_be_served?(runner) }
+    end
+
+    def show_warning?
+      pending? && !any_runners_online?
+    end
+
     private
 
     def yaml_variables
@@ -304,6 +266,15 @@ module Ci
       else
         []
       end
+    end
+
+    def predefined_variables
+      variables = []
+      variables << { key: :CI_BUILD_TAG, value: ref, public: true } if tag?
+      variables << { key: :CI_BUILD_NAME, value: name, public: true }
+      variables << { key: :CI_BUILD_STAGE, value: stage, public: true }
+      variables << { key: :CI_BUILD_TRIGGERED, value: 'true', public: true } if trigger_request
+      variables
     end
   end
 end

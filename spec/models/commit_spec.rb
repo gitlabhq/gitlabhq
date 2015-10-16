@@ -89,9 +89,9 @@ eos
   end
 
   it_behaves_like 'a mentionable' do
-    subject { commit }
+    subject { create(:project).commit }
 
-    let(:author) { create(:user, email: commit.author_email) }
+    let(:author) { create(:user, email: subject.author_email) }
     let(:backref_text) { "commit #{subject.id}" }
     let(:set_mentionable_text) do
       ->(txt) { allow(subject).to receive(:safe_message).and_return(txt) }
