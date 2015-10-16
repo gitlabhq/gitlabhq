@@ -93,10 +93,7 @@ module Ci
           Ci::WebHookService.new.build_end(build)
         end
 
-        if build.commit.should_create_next_builds?(build)
-          build.commit.create_next_builds(build.ref, build.tag, build.user, build.trigger_request)
-        end
-
+        build.commit.create_next_builds(build)
         project.execute_services(build)
 
         if project.coverage_enabled?
@@ -119,7 +116,7 @@ module Ci
     end
 
     def variables
-      yaml_variables + project_variables + trigger_variables
+      predefined_variables + yaml_variables + project_variables + trigger_variables
     end
 
     def project
@@ -220,15 +217,27 @@ module Ci
     def cancel_url
       if active?
         Gitlab::Application.routes.url_helpers.
-          cancel_namespace_project_build_path(gl_project.namespace, gl_project, self, return_to: request.original_url)
+          cancel_namespace_project_build_path(gl_project.namespace, gl_project, self)
       end
     end
 
     def retry_url
       if commands.present?
         Gitlab::Application.routes.url_helpers.
-          cancel_namespace_project_build_path(gl_project.namespace, gl_project, self, return_to: request.original_url)
+          retry_namespace_project_build_path(gl_project.namespace, gl_project, self)
       end
+    end
+
+    def can_be_served?(runner)
+      (tag_list - runner.tag_list).empty?
+    end
+
+    def any_runners_online?
+      project.any_runners? { |runner| runner.active? && runner.online? && can_be_served?(runner) }
+    end
+
+    def show_warning?
+      pending? && !any_runners_online?
     end
 
     private
@@ -257,6 +266,15 @@ module Ci
       else
         []
       end
+    end
+
+    def predefined_variables
+      variables = []
+      variables << { key: :CI_BUILD_TAG, value: ref, public: true } if tag?
+      variables << { key: :CI_BUILD_NAME, value: name, public: true }
+      variables << { key: :CI_BUILD_STAGE, value: stage, public: true }
+      variables << { key: :CI_BUILD_TRIGGERED, value: 'true', public: true } if trigger_request
+      variables
     end
   end
 end

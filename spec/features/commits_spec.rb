@@ -29,8 +29,16 @@ describe "Commits" do
       it { expect(page).to have_content @commit.git_author_name }
     end
 
-    describe "Cancel commit" do
+    describe "Cancel all builds" do
       it "cancels commit" do
+        visit ci_status_path(@commit)
+        click_on "Cancel all"
+        expect(page).to have_content "canceled"
+      end
+    end
+
+    describe "Cancel build" do
+      it "cancels build" do
         visit ci_status_path(@commit)
         click_on "Cancel"
         expect(page).to have_content "canceled"

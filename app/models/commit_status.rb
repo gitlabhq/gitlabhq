@@ -16,6 +16,7 @@ class CommitStatus < ActiveRecord::Base
   scope :success, -> { where(status: 'success') }
   scope :failed, -> { where(status: 'failed')  }
   scope :running_or_pending, -> { where(status:[:running, :pending]) }
+  scope :finished, -> { where(status:[:success, :failed, :canceled]) }
   scope :latest, -> { where(id: unscope(:select).select('max(id)').group(:name, :ref)) }
   scope :ordered, -> { order(:ref, :stage_idx, :name) }
   scope :for_ref, ->(ref) { where(ref: ref) }
@@ -27,7 +28,7 @@ class CommitStatus < ActiveRecord::Base
     end
 
     event :drop do
-      transition running: :failed
+      transition [:pending, :running] => :failed
     end
 
     event :success do
@@ -87,5 +88,9 @@ class CommitStatus < ActiveRecord::Base
 
   def retry_url
     nil
+  end
+
+  def show_warning?
+    false
   end
 end

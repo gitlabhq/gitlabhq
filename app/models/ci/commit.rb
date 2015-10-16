@@ -24,6 +24,8 @@ module Ci
     has_many :builds, class_name: 'Ci::Build'
     has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest'
 
+    scope :ordered, -> { order('CASE WHEN ci_commits.committed_at IS NULL THEN 0 ELSE 1 END', :committed_at, :id) }
+
     validates_presence_of :sha
     validate :valid_commit_sha
 
@@ -89,19 +91,28 @@ module Ci
     def create_builds(ref, tag, user, trigger_request = nil)
       return unless config_processor
       config_processor.stages.any? do |stage|
-        CreateBuildsService.new.execute(self, stage, ref, tag, user, trigger_request).present?
+        CreateBuildsService.new.execute(self, stage, ref, tag, user, trigger_request, 'success').present?
       end
     end
 
-    def create_next_builds(ref, tag, user, trigger_request)
+    def create_next_builds(build)
       return unless config_processor
 
-      stages = builds.where(ref: ref, tag: tag, trigger_request: trigger_request).group_by(&:stage)
+      # don't create other builds if this one is retried
+      latest_builds = builds.similar(build).latest
+      return unless latest_builds.exists?(build.id)
 
-      config_processor.stages.any? do |stage|
-        unless stages.include?(stage)
-          CreateBuildsService.new.execute(self, stage, ref, tag, user, trigger_request).present?
-        end
+      # get list of stages after this build
+      next_stages = config_processor.stages.drop_while { |stage| stage != build.stage }
+      next_stages.delete(build.stage)
+
+      # get status for all prior builds
+      prior_builds = latest_builds.reject { |other_build| next_stages.include?(other_build.stage) }
+      status = Ci::Status.get_status(prior_builds)
+
+      # create builds for next stages based
+      next_stages.any? do |stage|
+        CreateBuildsService.new.execute(self, stage, build.ref, build.tag, build.user, build.trigger_request, status).present?
       end
     end
 
@@ -130,24 +141,7 @@ module Ci
         return 'failed'
       end
 
-      @status ||= begin
-        latest = latest_statuses
-        latest.reject! { |status| status.try(&:allow_failure?) }
-
-        if latest.none?
-          'skipped'
-        elsif latest.all?(&:success?)
-          'success'
-        elsif latest.all?(&:pending?)
-          'pending'
-        elsif latest.any?(&:running?) || latest.any?(&:pending?)
-          'running'
-        elsif latest.all?(&:canceled?)
-          'canceled'
-        else
-          'failed'
-        end
-      end
+      @status ||= Ci::Status.get_status(latest_statuses)
     end
 
     def pending?
@@ -215,16 +209,6 @@ module Ci
 
     def update_committed!
       update!(committed_at: DateTime.now)
-    end
-
-    def should_create_next_builds?(build)
-      # don't create other builds if this one is retried
-      other_builds = builds.similar(build).latest
-      return false unless other_builds.include?(build)
-
-      other_builds.all? do |build|
-        build.success? || build.ignored?
-      end
     end
 
     private

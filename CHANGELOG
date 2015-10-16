@@ -1,7 +1,16 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.2.0 (unreleased)
+  - Show last project commit to default branch on project home page
+  - Highlight comment based on anchor in URL
+
 v 8.1.0 (unreleased)
+  - Fix error preventing displaying of commit data for a directory with a leading dot (Stan Hu)
+  - Speed up load times of issue detail pages by roughly 1.5x
+  - Add a system note and update relevant merge requests when a branch is deleted or re-added (Stan Hu)
   - Make diff file view easier to use on mobile screens (Stan Hu)
+  - Improved performance of finding users by username or Email address
+  - Fix bug where merge request comments created by API would not trigger notifications (Stan Hu)
   - Add support for creating directories from Files page (Stan Hu)
   - Allow removing of project without confirmation when JavaScript is disabled (Stan Hu)
   - Support filtering by "Any" milestone or issue and fix "No Milestone" and "No Label" filters (Stan Hu)
@@ -17,7 +26,10 @@ v 8.1.0 (unreleased)
   - Fix cases where Markdown did not render links in activity feed (Stan Hu)
   - Add first and last to pagination (Zeger-Jan van de Weg)
   - Added Commit Status API
+  - Added Builds View
+  - Added when to .gitlab-ci.yml
   - Show CI status on commit page
+  - Added CI_BUILD_TAG, _STAGE, _NAME and _TRIGGERED to CI builds
   - Show CI status on Your projects page and Starred projects page
   - Remove "Continuous Integration" page from dashboard
   - Add notes and SSL verification entries to hook APIs (Ben Boeckel)
@@ -27,6 +39,7 @@ v 8.1.0 (unreleased)
   - Move CI triggers page to project settings area
   - Move CI project settings page to CE project settings area
   - Fix bug when removed file was not appearing in merge request diff
+  - Show warning when build cannot be served by any of the available CI runners
   - Note the original location of a moved project when notifying users of the move
   - Improve error message when merging fails
   - Add support of multibyte characters in LDAP UID (Roman Petrov)
@@ -47,11 +60,15 @@ v 8.1.0 (unreleased)
   - Fix bug where Emojis in Markdown would truncate remaining text (Sakata Sinji)
   - Persist filters when sorting on admin user page (Jerry Lukins)
   - Added last modified date to snippets#show (Han Loong Liauw)
+  - Allow dashboard and group issues/MRs to be filtered by label
   - Add spellcheck=false to certain input fields
   - Invalidate stored service password if the endpoint URL is changed
   - Project names are not fully shown if group name is too big, even on group page view
   - Apply new design for Files page
   - Add "New Page" button to Wiki Pages tab (Stan Hu)
+  - Only render 404 page from /public
+  - Hide passwords from services API (Alex Lossent)
+  - Fix: Images cannot show when projects' path was changed
 
 v 8.0.4
   - Fix Message-ID header to be RFC 2111-compliant to prevent e-mails being dropped (Stan Hu)

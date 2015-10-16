@@ -47,7 +47,7 @@ module MergeRequestsHelper
   end
 
   def issues_sentence(issues)
-    issues.map { |i| "##{i.iid}" }.to_sentence
+    issues.map(&:to_reference).to_sentence
   end
 
   def mr_change_branches_path(merge_request)

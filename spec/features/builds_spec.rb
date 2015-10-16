@@ -9,6 +9,54 @@ describe "Builds" do
     @gl_project.team << [@user, :master]
   end
 
+  describe "GET /:project/builds" do
+    context "Running scope" do
+      before do
+        @build.run!
+        visit namespace_project_builds_path(@gl_project.namespace, @gl_project)
+      end
+
+      it { expect(page).to have_content 'Running' }
+      it { expect(page).to have_content 'Cancel all' }
+      it { expect(page).to have_content @build.short_sha }
+      it { expect(page).to have_content @build.ref }
+      it { expect(page).to have_content @build.name }
+    end
+
+    context "Finished scope" do
+      before do
+        @build.run!
+        visit namespace_project_builds_path(@gl_project.namespace, @gl_project, scope: :finished)
+      end
+
+      it { expect(page).to have_content 'No builds to show' }
+      it { expect(page).to have_content 'Cancel all' }
+    end
+
+    context "All builds" do
+      before do
+        @gl_project.ci_builds.running_or_pending.each(&:success)
+        visit namespace_project_builds_path(@gl_project.namespace, @gl_project, scope: :all)
+      end
+
+      it { expect(page).to have_content 'All' }
+      it { expect(page).to have_content @build.short_sha }
+      it { expect(page).to have_content @build.ref }
+      it { expect(page).to have_content @build.name }
+      it { expect(page).to_not have_content 'Cancel all' }
+    end
+  end
+
+  describe "GET /:project/builds/:id/cancel_all" do
+    before do
+      @build.run!
+      visit cancel_all_namespace_project_builds_path(@gl_project.namespace, @gl_project)
+    end
+
+    it { expect(page).to have_content 'No builds to show' }
+    it { expect(page).to_not have_content 'Cancel all' }
+  end
+
   describe "GET /:project/builds/:id" do
     before do
       visit namespace_project_build_path(@gl_project.namespace, @gl_project, @build)

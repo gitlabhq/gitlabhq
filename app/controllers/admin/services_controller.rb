@@ -39,7 +39,13 @@ class Admin::ServicesController < Admin::ApplicationController
   end
 
   def application_services_params
-    params.permit(:id,
+    application_services_params = params.permit(:id,
       service: Projects::ServicesController::ALLOWED_PARAMS)
+    if application_services_params[:service].is_a?(Hash)
+      Projects::ServicesController::FILTER_BLANK_PARAMS.each do |param|
+        application_services_params[:service].delete(param) if application_services_params[:service][param].blank? 
+      end
+    end
+    application_services_params
   end
 end

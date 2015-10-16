@@ -140,6 +140,7 @@ job_name:
 | except        | optional | Defines a list of git refs for which build is not created |
 | tags          | optional | Defines a list of tags which are used to select runner |
 | allow_failure | optional | Allow build to fail. Failed build doesn't contribute to commit status |
+| when          | optional | Define when to run build. Can be `on_success`, `on_failure` or `always` |
 
 ### script
 `script` is a shell script which is executed by runner. The shell script is prepended with `before_script`.
@@ -195,6 +196,55 @@ job:
 ```
 
 The above specification will make sure that `job` is built by a runner that have `ruby` AND `postgres` tags defined.
+
+### when
+`when` is used to implement jobs that are run in case of failure or despite the failure.
+
+`when` can be set to one of the following values:
+
+1. `on_success` - execute build only when all builds from prior stages succeeded. This is the default.
+1. `on_failure` - execute build only when at least one build from prior stages failed.
+1. `always` - execute build despite the status of builds from prior stages.
+
+```
+stages:
+- build
+- cleanup_build
+- test
+- deploy
+- cleanup
+
+build:
+  stage: build
+  script:
+  - make build
+
+cleanup_build:
+  stage: cleanup_build
+  script:
+  - cleanup build when failed
+  when: on_failure
+
+test:
+  stage: test
+  script:
+  - make test
+
+deploy:
+  stage: deploy
+  script:
+  - make deploy
+
+cleanup:
+  stage: cleanup
+  script:
+  - cleanup after builds
+  when: always
+```
+
+The above script will:
+1. Execute `cleanup_build` only when the `build` failed,
+2. Always execute `cleanup` as the last step in pipeline.
 
 ## Validate the .gitlab-ci.yml
 Each instance of GitLab CI has an embedded debug tool called Lint.

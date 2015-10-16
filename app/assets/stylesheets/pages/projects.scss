@@ -511,3 +511,38 @@ pre.light-well {
     margin-top: -1px;
   }
 }
+
+.project-last-commit {
+  margin: 0 7px;
+
+  .ci-status {
+    margin-right: 16px;
+  }
+
+  .commit-row-message {
+    color: $gl-gray;
+  }
+
+  .commit_short_id {
+    margin-right: 5px;
+    color: $gl-link-color;
+    font-weight: 600;
+  }
+
+  .commit-author-link {
+    margin-left: 7px;
+    text-decoration: none;
+    .avatar {
+      float: none;
+      margin-right: 4px;
+    }
+
+    .commit-author-name {
+      font-weight: 600;
+    }
+  }
+}
+
+.project-show-readme .readme-holder {
+  padding: 7px;
+}
