@@ -475,6 +475,7 @@ Gitlab::Application.routes.draw do
             get :branches
             get :ci
             get :cancel_builds
+            post :retry_builds
           end
         end
 

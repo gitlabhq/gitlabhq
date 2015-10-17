@@ -39,6 +39,16 @@ class Projects::CommitController < Projects::ApplicationController
     redirect_to ci_namespace_project_commit_path(project.namespace, project, commit.sha)
   end
 
+  def retry_builds
+    @ci_commit = @project.ci_commit(@commit.sha)
+    @ci_commit.builds.latest.failed.each do |build|
+      if build.retryable?
+        Ci::Build.retry(build)
+      end
+    end
+
+    redirect_to ci_namespace_project_commit_path(project.namespace, project, commit.sha)
+  end
 
   def branches
     @branches = @project.repository.branch_names_contains(commit.id)
