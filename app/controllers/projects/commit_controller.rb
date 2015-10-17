@@ -6,14 +6,13 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :require_non_empty_project
   before_action :authorize_download_code!
   before_action :commit
+  before_action :define_show_vars, only: [:show, :ci]
 
   def show
     return git_not_found! unless @commit
 
     @line_notes = commit.notes.inline
-    @diffs = @commit.diffs
     @note = @project.build_commit_note(commit)
-    @notes_count = commit.notes.count
     @notes = commit.notes.not_inline.fresh
     @noteable = @commit
     @comments_allowed = @reply_allowed = true
@@ -21,8 +20,6 @@ class Projects::CommitController < Projects::ApplicationController
       noteable_type: 'Commit',
       commit_id: @commit.id
     }
-
-    @ci_commit = project.ci_commit(commit.sha)
 
     respond_to do |format|
       format.html
@@ -32,9 +29,6 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def ci
-    @ci_commit = @project.ci_commit(@commit.sha)
-    @builds = @ci_commit.builds if @ci_commit
-    @notes_count = @commit.notes.count
     @ci_project = @project.gitlab_ci_project
   end
 
@@ -54,5 +48,13 @@ class Projects::CommitController < Projects::ApplicationController
 
   def commit
     @commit ||= @project.commit(params[:id])
+  end
+
+  def define_show_vars
+    @diffs = commit.diffs
+    @notes_count = commit.notes.count
+    
+    @ci_commit = project.ci_commit(commit.sha)
+    @builds = ci_commit.builds if ci_commit
   end
 end
