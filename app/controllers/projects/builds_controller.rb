@@ -46,11 +46,7 @@ class Projects::BuildsController < Projects::ApplicationController
 
     build = Ci::Build.retry(@build)
 
-    if params[:return_to]
-      redirect_to URI.parse(params[:return_to]).path
-    else
-      redirect_to build_path(build)
-    end
+    redirect_to build_path(build)
   end
 
   def status
