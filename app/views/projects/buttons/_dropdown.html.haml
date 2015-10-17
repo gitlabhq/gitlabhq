@@ -5,7 +5,7 @@
     %ul.dropdown-menu.dropdown-menu-right.project-home-dropdown
       - if can?(current_user, :create_issue, @project)
         %li
-          = link_to url_for_new_issue do
+          = link_to url_for_new_issue(@project, only_path: true) do
             = icon('exclamation-circle fw')
             New issue
       - if can?(current_user, :create_merge_request, @project)
