@@ -1,3 +1,4 @@
+- page_title "CI Settings"
 - if @ci_project.generated_yaml_config
   %p.alert.alert-danger
     CI Jobs are deprecated now, you can #{link_to "download", dumped_yaml_ci_project_path(@ci_project)}
