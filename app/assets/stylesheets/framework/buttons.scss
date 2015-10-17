@@ -1,0 +1,171 @@
+@mixin btn-default {
+  @include border-radius(2px);
+  border-width: 1px;
+  border-style: solid;
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  padding: 11px $gl-padding;
+  letter-spacing: .4px;
+
+  &:focus,
+  &:active {
+    outline: none;
+    @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
+  }
+}
+
+@mixin btn-middle {
+  @include btn-default;
+  @include border-radius(2px);
+  padding: 11px 24px;
+}
+
+@mixin btn-color($light, $border-light, $normal, $border-normal, $dark, $border-dark, $color) {
+  background-color: $light;
+  border-color: $border-light;
+  color: $color;
+
+  &:hover,
+  &:focus {
+    background-color: $normal;
+    border-color: $border-normal;
+    color: $color;
+  }
+
+  &:active {
+    @include box-shadow (inset 0 0 4px rgba(0, 0, 0, 0.12));
+
+    background-color: $dark;
+    border-color: $border-dark;
+    color: $color;
+  }
+}
+
+@mixin btn-green {
+  @include btn-color($green-light, $border-green-light, $green-normal, $border-green-normal, $green-dark, $border-green-dark, #FFFFFF);
+}
+
+@mixin btn-blue {
+  @include btn-color($blue-light, $border-blue-light, $blue-normal, $border-blue-normal, $blue-dark, $border-blue-dark, #FFFFFF);
+}
+
+@mixin btn-orange {
+  @include btn-color($orange-light, $border-orange-light, $orange-normal, $border-orange-normal, $orange-dark, $border-orange-dark, #FFFFFF);
+}
+
+@mixin btn-red {
+  @include btn-color($red-light, $border-red-light, $red-normal, $border-red-normal, $red-dark, $border-red-dark, #FFFFFF);
+}
+
+@mixin btn-gray {
+  @include btn-color($gray-light, $border-gray-light, $gray-normal, $border-gray-normal, $gray-dark, $border-gray-dark, #313236);
+}
+
+@mixin btn-white {
+  @include btn-color($white-light, $border-white-light, $white-normal, $border-white-normal, $white-dark, $border-white-dark, #313236);
+}
+
+.btn {
+  @include btn-default;
+  @include btn-white;
+
+  &.btn-sm {
+    padding: 5px 10px;
+  }
+
+  &.btn-xs {
+    padding: 1px 5px;
+  }
+
+  &.btn-success,
+  &.btn-new,
+  &.btn-create,
+  &.btn-save,
+  &.btn-green {
+    @include btn-green;
+  }
+
+  &.btn-gray {
+    @include btn-gray;
+  }
+
+  &.btn-primary,
+  &.btn-info {
+    @include btn-blue;
+  }
+
+  &.btn-warning {
+    @include btn-orange;
+  }
+
+  &.btn-danger,
+  &.btn-remove,
+  &.btn-red {
+    @include btn-red;
+  }
+
+  &.btn-cancel {
+    float: right;
+  }
+
+  &.btn-close {
+    color: $gl-danger;
+    border-color: $gl-danger;
+    &:hover {
+      color: #B94A48;
+    }
+  }
+
+  &.btn-reopen {
+    color: $gl-success;
+    border-color: $gl-success;
+    &:hover {
+      color: #468847;
+    }
+  }
+
+  &.btn-grouped {
+    margin-right: 7px;
+    float: left;
+    &:last-child {
+      margin-right: 0px;
+    }
+  }
+}
+
+.btn-block {
+  width: 100%;
+  margin: 0;
+  margin-bottom: 15px;
+  &.btn {
+    padding: 6px 0;
+  }
+}
+
+.btn-group {
+  &.btn-grouped {
+    margin-right: 7px;
+    float: left;
+    &:last-child {
+      margin-right: 0px;
+    }
+  }
+}
+
+.btn-group-next {
+  .btn {
+    padding: 9px 0px;
+    font-size: 15px;
+    color: #7f8fa4;
+    border-color: #e7e9ed;
+    width: 140px;
+
+    &.active {
+      border-color: $gl-info;
+      background: $gl-info;
+      color: #fff;
+    }
+  }
+}

@@ -19,7 +19,7 @@
   - blob_commit = @repository.last_commit_for_path(@commit.id, blob.path)
   = render blob_commit, project: @project
 
-%div#tree-content-holder.tree-content-holder
+%div#blob-content-holder.blob-content-holder
   %article.file-holder
     .file-title
       = blob_icon blob.mode, blob.name

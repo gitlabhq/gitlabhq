@@ -32,6 +32,6 @@ class Spinach::Features::ProjectGraph < Spinach::FeatureSteps
   end
 
   def project
-    project ||= Project.find_by(name: "Shop")
+    @project ||= Project.find_by(name: "Shop")
   end
 end

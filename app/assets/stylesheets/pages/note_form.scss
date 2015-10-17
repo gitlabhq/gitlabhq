@@ -65,19 +65,18 @@
 
 .note-image-attach {
   @extend .col-md-4;
-  @extend .thumbnail;
   margin-left: 45px;
   float: none;
 }
 
 .common-note-form {
   margin: 0;
-  background: #f8fafc;
+  background: #F7F8FA;
   padding: $gl-padding;
   margin-left: -$gl-padding;
   margin-right: -$gl-padding;
-  border-right: 1px solid #f1f2f4;
-  border-top: 1px solid #f1f2f4;
+  border-right: 1px solid #ECEEF1;
+  border-top: 1px solid #ECEEF1;
   margin-bottom: -$gl-padding;
 }
 
@@ -168,7 +167,7 @@
 .comment-hints {
   color: #999;
   background: #FFF;
-  padding: 5px;
+  padding: 7px;
   margin-top: -11px;
   border: 1px solid $border-color;
   font-size: 13px;

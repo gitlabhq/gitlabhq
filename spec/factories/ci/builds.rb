@@ -27,6 +27,9 @@
 
 FactoryGirl.define do
   factory :ci_build, class: Ci::Build do
+    name 'test'
+    ref 'master'
+    tag false
     started_at 'Di 29. Okt 09:51:28 CET 2013'
     finished_at 'Di 29. Okt 09:53:28 CET 2013'
     commands 'ls -a'
@@ -42,6 +45,10 @@ FactoryGirl.define do
     factory :ci_not_started_build do
       started_at nil
       finished_at nil
+    end
+
+    factory :ci_build_tag do
+      tag true
     end
   end
 end

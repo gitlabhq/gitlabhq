@@ -1,5 +1,12 @@
 # Helper methods for per-User preferences
 module PreferencesHelper
+  def layout_choices
+    [
+        ['Fixed', :fixed],
+        ['Fluid', :fluid]
+    ]
+  end
+
   # Maps `dashboard` values to more user-friendly option text
   DASHBOARD_CHOICES = {
     projects: 'Your Projects (default)',

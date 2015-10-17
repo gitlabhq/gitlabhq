@@ -41,6 +41,7 @@ class Ability
           :read_project_member,
           :read_merge_request,
           :read_note,
+          :read_build,
           :download_code
         ]
 
@@ -127,6 +128,7 @@ class Ability
         :read_project_member,
         :read_merge_request,
         :read_note,
+        :read_build,
         :create_project,
         :create_issue,
         :create_note
@@ -135,6 +137,8 @@ class Ability
 
     def project_report_rules
       project_guest_rules + [
+        :create_commit_status,
+        :read_commit_statuses,
         :download_code,
         :fork_project,
         :create_project_snippet,

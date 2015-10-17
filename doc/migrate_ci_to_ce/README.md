@@ -28,13 +28,20 @@ upgrade to 8.0 until you finish the migration procedure.
 
 ### Before upgrading
 
-If you have GitLab CI installed using omnibus-gitlab packages but *you don't want to migrate your existing data*:
+If you have GitLab CI installed using omnibus-gitlab packages but **you don't want to migrate your existing data**:
 
 ```bash
 mv /var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/gitlab-ci/builds.$(date +%s)
 ```
 
-and run `sudo gitlab-ctl reconfigure`.
+run `sudo gitlab-ctl reconfigure` and you can reach CI at `gitlab.example.com/ci`.
+
+If you want to migrate your existing data, continue reading.
+
+#### 0. Updating Omnibus from versions prior to 7.13
+
+If you are updating from older versions you should first update to 7.14 and then to 8.0.
+Otherwise it's pretty likely that you will encounter problems described in the [Troubleshooting](#troubleshooting).
 
 #### 1. Verify that backups work
 
@@ -43,6 +50,7 @@ Make sure that the backup script on both servers can connect to the database.
 ```
 # On your CI server:
 # Omnibus
+sudo chown gitlab-ci:gitlab-ci /var/opt/gitlab/gitlab-ci/builds
 sudo gitlab-ci-rake backup:create
 
 # Source
@@ -143,7 +151,7 @@ sudo gitlab-ctl stop ci-sidekiq
 # Source
 sudo service gitlab_ci stop
 cd /home/gitlab_ci/gitlab-ci
-sudo -u gitlab_ci -H bundle exec whenever --clear-crontab
+sudo -u gitlab_ci -H bundle exec whenever --clear-crontab RAILS_ENV=production
 ```
 
 ### II. Moving data
@@ -176,6 +184,7 @@ will need this file later.
 ```
 # On your CI server:
 # Omnibus
+sudo chown gitlab-ci:gitlab-ci /var/opt/gitlab/gitlab-ci/builds
 sudo gitlab-ci-rake backup:create
 
 # Source
@@ -222,6 +231,7 @@ be no CI data yet because you turned CI on the GitLab server off earlier.
 ```
 # On your GitLab server:
 # Omnibus
+sudo chown git:git /var/opt/gitlab/gitlab-ci/builds
 sudo gitlab-rake ci:migrate
 
 # Source
@@ -319,3 +329,107 @@ You should also make sure that you can:
 
 If something went wrong and you need to restore a backup, consult the [Backup
 restoration](../raketasks/backup_restore.md) guide.
+
+### Troubleshooting
+
+#### show:secrets problem (Omnibus-only)
+If you see errors like this:
+```
+Missing `secret_key_base` or `db_key_base` for 'production' environment. The secrets will be generated and stored in `config/secrets.yml`
+rake aborted!
+Errno::EACCES: Permission denied @ rb_sysopen - config/secrets.yml
+```
+
+This can happen if you are updating from versions prior to 7.13 straight to 8.0.
+The fix for this is to update to Omnibus 7.14 first and then update it to 8.0.
+
+#### Permission denied when accessing /var/opt/gitlab/gitlab-ci/builds
+To fix that issue you have to change builds/ folder permission before doing final backup:
+```
+sudo chown -R gitlab-ci:gitlab-ci /var/opt/gitlab/gitlab-ci/builds
+```
+
+Then before executing `ci:migrate` you need to fix builds folder permission:
+```
+sudo chown git:git /var/opt/gitlab/gitlab-ci/builds
+```
+
+#### Problems when importing CI database to GitLab
+If you were migrating CI database from MySQL to PostgreSQL manually you can see errros during import about missing sequences:
+```
+ALTER SEQUENCE
+ERROR:  relation "ci_builds_id_seq" does not exist
+ERROR:  relation "ci_commits_id_seq" does not exist
+ERROR:  relation "ci_events_id_seq" does not exist
+ERROR:  relation "ci_jobs_id_seq" does not exist
+ERROR:  relation "ci_projects_id_seq" does not exist
+ERROR:  relation "ci_runner_projects_id_seq" does not exist
+ERROR:  relation "ci_runners_id_seq" does not exist
+ERROR:  relation "ci_services_id_seq" does not exist
+ERROR:  relation "ci_taggings_id_seq" does not exist
+ERROR:  relation "ci_tags_id_seq" does not exist
+CREATE TABLE
+```
+
+To fix that you need to apply this SQL statement before doing final backup:
+```
+# Omnibus
+gitlab-ci-rails dbconsole <<EOF
+-- ALTER TABLES - DROP DEFAULTS
+ALTER TABLE ONLY ci_application_settings ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE ONLY ci_builds ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE ONLY ci_commits ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE ONLY ci_events ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE ONLY ci_jobs ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE ONLY ci_projects ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE ONLY ci_runner_projects ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE ONLY ci_runners ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE ONLY ci_services ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE ONLY ci_taggings ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE ONLY ci_tags ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE ONLY ci_trigger_requests ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE ONLY ci_triggers ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE ONLY ci_variables ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE ONLY ci_web_hooks ALTER COLUMN id DROP DEFAULT;
+
+-- ALTER SEQUENCES
+ALTER SEQUENCE ci_application_settings_id_seq OWNED BY ci_application_settings.id;
+ALTER SEQUENCE ci_builds_id_seq OWNED BY ci_builds.id;
+ALTER SEQUENCE ci_commits_id_seq OWNED BY ci_commits.id;
+ALTER SEQUENCE ci_events_id_seq OWNED BY ci_events.id;
+ALTER SEQUENCE ci_jobs_id_seq OWNED BY ci_jobs.id;
+ALTER SEQUENCE ci_projects_id_seq OWNED BY ci_projects.id;
+ALTER SEQUENCE ci_runner_projects_id_seq OWNED BY ci_runner_projects.id;
+ALTER SEQUENCE ci_runners_id_seq OWNED BY ci_runners.id;
+ALTER SEQUENCE ci_services_id_seq OWNED BY ci_services.id;
+ALTER SEQUENCE ci_taggings_id_seq OWNED BY ci_taggings.id;
+ALTER SEQUENCE ci_tags_id_seq OWNED BY ci_tags.id;
+ALTER SEQUENCE ci_trigger_requests_id_seq OWNED BY ci_trigger_requests.id;
+ALTER SEQUENCE ci_triggers_id_seq OWNED BY ci_triggers.id;
+ALTER SEQUENCE ci_variables_id_seq OWNED BY ci_variables.id;
+ALTER SEQUENCE ci_web_hooks_id_seq OWNED BY ci_web_hooks.id;
+
+-- ALTER TABLES - RE-APPLY DEFAULTS
+ALTER TABLE ONLY ci_application_settings ALTER COLUMN id SET DEFAULT nextval('ci_application_settings_id_seq'::regclass);
+ALTER TABLE ONLY ci_builds ALTER COLUMN id SET DEFAULT nextval('ci_builds_id_seq'::regclass);
+ALTER TABLE ONLY ci_commits ALTER COLUMN id SET DEFAULT nextval('ci_commits_id_seq'::regclass);
+ALTER TABLE ONLY ci_events ALTER COLUMN id SET DEFAULT nextval('ci_events_id_seq'::regclass);
+ALTER TABLE ONLY ci_jobs ALTER COLUMN id SET DEFAULT nextval('ci_jobs_id_seq'::regclass);
+ALTER TABLE ONLY ci_projects ALTER COLUMN id SET DEFAULT nextval('ci_projects_id_seq'::regclass);
+ALTER TABLE ONLY ci_runner_projects ALTER COLUMN id SET DEFAULT nextval('ci_runner_projects_id_seq'::regclass);
+ALTER TABLE ONLY ci_runners ALTER COLUMN id SET DEFAULT nextval('ci_runners_id_seq'::regclass);
+ALTER TABLE ONLY ci_services ALTER COLUMN id SET DEFAULT nextval('ci_services_id_seq'::regclass);
+ALTER TABLE ONLY ci_taggings ALTER COLUMN id SET DEFAULT nextval('ci_taggings_id_seq'::regclass);
+ALTER TABLE ONLY ci_tags ALTER COLUMN id SET DEFAULT nextval('ci_tags_id_seq'::regclass);
+ALTER TABLE ONLY ci_trigger_requests ALTER COLUMN id SET DEFAULT nextval('ci_trigger_requests_id_seq'::regclass);
+ALTER TABLE ONLY ci_triggers ALTER COLUMN id SET DEFAULT nextval('ci_triggers_id_seq'::regclass);
+ALTER TABLE ONLY ci_variables ALTER COLUMN id SET DEFAULT nextval('ci_variables_id_seq'::regclass);
+ALTER TABLE ONLY ci_web_hooks ALTER COLUMN id SET DEFAULT nextval('ci_web_hooks_id_seq'::regclass);
+EOF
+
+# Source
+cd /home/gitlab_ci/gitlab-ci
+sudo -u gitlab_ci -H bundle exec rails dbconsole production <<EOF
+... COPY SQL STATEMENTS FROM ABOVE ...
+EOF
+```

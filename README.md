@@ -1,6 +1,6 @@
 # GitLab
 
-[![build status](https://ci.gitlab.com/projects/1/status.png?ref=master)](https://ci.gitlab.com/projects/1?ref=master)
+[![build status](https://ci.gitlab.com/projects/1/status.svg?ref=master)](https://ci.gitlab.com/projects/1?ref=master)
 [![Build Status](https://semaphoreci.com/api/v1/projects/2f1a5809-418b-4cc2-a1f4-819607579fe7/400484/shields_badge.svg)](https://semaphoreci.com/gitlabhq/gitlabhq)
 [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.svg)](https://codeclimate.com/github/gitlabhq/gitlabhq)
 [![Coverage Status](https://coveralls.io/repos/gitlabhq/gitlabhq/badge.svg?branch=master)](https://coveralls.io/r/gitlabhq/gitlabhq?branch=master)
@@ -71,7 +71,7 @@ GitLab is a Ruby on Rails application that runs on the following software:
 - Ubuntu/Debian/CentOS/RHEL
 - Ruby (MRI) 2.1
 - Git 1.7.10+
-- Redis 2.0+
+- Redis 2.4+
 - MySQL or PostgreSQL
 
 For more information please see the [architecture documentation](http://doc.gitlab.com/ce/development/architecture.html).

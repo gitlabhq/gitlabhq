@@ -140,7 +140,7 @@ class Notify < BaseMailer
   #  * have a 'In-Reply-To' or 'References' header that references the original 'Message-ID'
   #
   def mail_answer_thread(model, headers = {})
-    headers['Message-ID'] = SecureRandom.hex
+    headers['Message-ID'] = "<#{SecureRandom.hex}@#{Gitlab.config.gitlab.host}>"
     headers['In-Reply-To'] = message_id(model)
     headers['References'] = message_id(model)
 

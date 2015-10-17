@@ -92,8 +92,19 @@ module LabelsHelper
     end
   end
 
-  def project_labels_options(project)
-    options_from_collection_for_select(project.labels, 'name', 'name', params[:label_name])
+  def projects_labels_options
+    labels =
+      if @project
+        @project.labels
+      else
+        Label.where(project_id: @projects)
+      end
+
+    grouped_labels = Labels::GroupService.new(labels).execute
+    grouped_labels.unshift(Label::None)
+    grouped_labels.unshift(Label::Any)
+
+    options_from_collection_for_select(grouped_labels, 'name', 'title', params[:label_name])
   end
 
   # Required for Gitlab::Markdown::LabelReferenceFilter

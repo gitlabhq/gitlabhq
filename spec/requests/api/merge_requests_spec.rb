@@ -379,9 +379,14 @@ describe API::API, api: true  do
 
   describe "POST /projects/:id/merge_request/:merge_request_id/comments" do
     it "should return comment" do
+      original_count = merge_request.notes.size
+
       post api("/projects/#{project.id}/merge_request/#{merge_request.id}/comments", user), note: "My comment"
       expect(response.status).to eq(201)
       expect(json_response['note']).to eq('My comment')
+      expect(json_response['author']['name']).to eq(user.name)
+      expect(json_response['author']['username']).to eq(user.username)
+      expect(merge_request.notes.size).to eq(original_count + 1)
     end
 
     it "should return 400 if note is missing" do

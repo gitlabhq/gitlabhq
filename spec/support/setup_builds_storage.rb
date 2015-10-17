@@ -10,8 +10,10 @@ RSpec.configure do |config|
   end
 
   config.after(:suite) do
-    Dir.chdir(builds_path) do
-      `ls | grep -v .gitkeep | xargs rm -r`
+    Dir[File.join(builds_path, '*')].each do |path|
+      next if File.basename(path) == '.gitkeep'
+
+      FileUtils.rm_rf(path)
     end
   end
 end

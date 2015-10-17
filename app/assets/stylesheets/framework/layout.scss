@@ -1,0 +1,27 @@
+html {
+  overflow-y: scroll;
+
+  &.touch .tooltip { display: none !important; }
+
+  body {
+    padding-top: $header-height;
+    text-rendering: geometricPrecision;
+  }
+}
+
+.container {
+  padding-top: 0;
+  z-index: 5;
+}
+
+.container .content {
+  margin: 0 0;
+}
+
+.navless-container {
+  margin-top: 30px;
+}
+
+.container-limited {
+  max-width: $fixed-layout-width;
+}

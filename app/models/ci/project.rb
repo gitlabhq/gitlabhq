@@ -48,19 +48,18 @@ module Ci
 
     accepts_nested_attributes_for :variables, allow_destroy: true
 
+    delegate :name_with_namespace, :path_with_namespace, :web_url, :http_url_to_repo, :ssh_url_to_repo, to: :gl_project
+
     #
     # Validations
     #
-    validates_presence_of :name, :timeout, :token, :default_ref,
-                          :path, :ssh_url_to_repo, :gitlab_id
+    validates_presence_of :timeout, :token, :default_ref, :gitlab_id
 
     validates_uniqueness_of :gitlab_id
 
     validates :polling_interval,
               presence: true,
               if: ->(project) { project.always_build.present? }
-
-    scope :public_only, ->() { where(public: true) }
 
     before_validation :set_default_values
 
@@ -76,12 +75,9 @@ module Ci
 
       def parse(project)
         params = {
-          name: project.name_with_namespace,
-          gitlab_id: project.id,
-          path: project.path_with_namespace,
-          default_ref: project.default_branch || 'master',
-          ssh_url_to_repo: project.ssh_url_to_repo,
-          email_add_pusher: current_application_settings.add_pusher,
+          gitlab_id:                project.id,
+          default_ref:              project.default_branch || 'master',
+          email_add_pusher:         current_application_settings.add_pusher,
           email_only_broken_builds: current_application_settings.all_broken_builds,
         }
 
@@ -105,27 +101,31 @@ module Ci
         joins("LEFT JOIN #{last_commit_subquery} AS last_commit ON #{Ci::Project.table_name}.gitlab_id = last_commit.gl_project_id").
           order("CASE WHEN last_commit.committed_at IS NULL THEN 1 ELSE 0 END, last_commit.committed_at DESC")
       end
-
-      def search(query)
-        where("LOWER(#{Ci::Project.table_name}.name) LIKE :query",
-              query: "%#{query.try(:downcase)}%")
-      end
     end
 
-    def any_runners?
-      if runners.active.any?
+    def name
+      name_with_namespace
+    end
+
+    def path
+      path_with_namespace
+    end
+
+    def gitlab_url
+      web_url
+    end
+
+    def any_runners?(&block)
+      if runners.active.any?(&block)
         return true
       end
 
-      shared_runners_enabled && Ci::Runner.shared.active.any?
+      shared_runners_enabled && Ci::Runner.shared.active.any?(&block)
     end
 
     def set_default_values
       self.token = SecureRandom.hex(15) if self.token.blank?
       self.default_ref ||= 'master'
-      self.name ||= gl_project.name_with_namespace
-      self.path ||= gl_project.path_with_namespace
-      self.ssh_url_to_repo ||= gl_project.ssh_url_to_repo
     end
 
     def tracked_refs
@@ -169,8 +169,7 @@ module Ci
     # using http and basic auth
     def repo_url_with_auth
       auth = "gitlab-ci-token:#{token}@"
-      url = gitlab_url + ".git"
-      url.sub(/^https?:\/\//) do |prefix|
+      http_url_to_repo.sub(/^https?:\/\//) do |prefix|
         prefix + auth
       end
     end
@@ -185,7 +184,7 @@ module Ci
 
         # If service is available but missing in db
         # we should create an instance. Ex `create_gitlab_ci_service`
-        service = self.send :"create_#{service_name}_service" if service.nil?
+        self.send :"create_#{service_name}_service" if service.nil?
       end
     end
 
@@ -201,16 +200,12 @@ module Ci
       end
     end
 
-    def gitlab_url
-      File.join(Gitlab.config.gitlab.url, path)
-    end
-
     def setup_finished?
       commits.any?
     end
 
     def commits
-      gl_project.ci_commits
+      gl_project.ci_commits.ordered
     end
 
     def builds

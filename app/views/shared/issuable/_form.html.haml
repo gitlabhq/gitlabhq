@@ -10,7 +10,7 @@
     %strong= 'Title *'
   .col-sm-10
     = f.text_field :title, maxlength: 255, autofocus: true, autocomplete: 'off',
-        class: 'form-control pad js-gfm-input', required: true
+        class: 'form-control pad js-gfm-input js-quick-submit', required: true
 
     - if issuable.is_a?(MergeRequest)
       %p.help-block
@@ -26,7 +26,7 @@
 
     = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true } do
       = render 'projects/zen', f: f, attr: :description,
-                               classes: 'description form-control'
+                               classes: 'description form-control js-quick-submit'
       .col-sm-12.hint
         .pull-left
           Parsed with

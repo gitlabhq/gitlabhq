@@ -23,6 +23,31 @@ module Gitlab
         end
       end
 
+      def self.referenced_by(node)
+        if node.has_attribute?('data-group')
+          group = Group.find(node.attr('data-group')) rescue nil
+          return unless group
+
+          { user: group.users }
+        elsif node.has_attribute?('data-user')
+          { user: LazyReference.new(User, node.attr('data-user')) }
+        elsif node.has_attribute?('data-project')
+          project = Project.find(node.attr('data-project')) rescue nil
+          return unless project
+
+          { user: project.team.members.flatten }
+        end
+      end
+
+      def self.user_can_reference?(user, node, context)
+        if node.has_attribute?('data-group')
+          group = Group.find(node.attr('data-group')) rescue nil
+          Ability.abilities.allowed?(user, :read_group, group)
+        else
+          super
+        end
+      end
+
       def call
         replace_text_nodes_matching(User.reference_pattern) do |content|
           user_link_filter(content)
@@ -61,14 +86,12 @@ module Gitlab
       def link_to_all
         project = context[:project]
 
-        # FIXME (rspeicher): Law of Demeter
-        push_result(:user, *project.team.members.flatten)
-
         url = urls.namespace_project_url(project.namespace, project,
                                          only_path: context[:only_path])
+        data = data_attribute(project: project.id)
 
         text = User.reference_prefix + 'all'
-        %(<a href="#{url}" class="#{link_class}">#{text}</a>)
+        %(<a href="#{url}" #{data} class="#{link_class}">#{text}</a>)
       end
 
       def link_to_namespace(namespace)
@@ -80,29 +103,19 @@ module Gitlab
       end
 
       def link_to_group(group, namespace)
-        return unless user_can_reference_group?(namespace)
-
-        push_result(:user, *namespace.users)
-
         url = urls.group_url(group, only_path: context[:only_path])
-        data = data_attribute(namespace.id, :group)
+        data = data_attribute(group: namespace.id)
 
         text = Group.reference_prefix + group
         %(<a href="#{url}" #{data} class="#{link_class}">#{text}</a>)
       end
 
       def link_to_user(user, namespace)
-        push_result(:user, namespace.owner)
-
         url = urls.user_url(user, only_path: context[:only_path])
-        data = data_attribute(namespace.owner_id, :user)
+        data = data_attribute(user: namespace.owner_id)
 
         text = User.reference_prefix + user
         %(<a href="#{url}" #{data} class="#{link_class}">#{text}</a>)
-      end
-
-      def user_can_reference_group?(group)
-        Ability.abilities.allowed?(context[:current_user], :read_group, group)
       end
     end
   end

@@ -1,3 +1,4 @@
+- project = @target_project || @project
 :javascript
-  GitLab.GfmAutoComplete.dataSource = "#{autocomplete_sources_namespace_project_path(@project.namespace, @project, type: @noteable.class, type_id: params[:id])}"
+  GitLab.GfmAutoComplete.dataSource = "#{autocomplete_sources_namespace_project_path(project.namespace, project, type: @noteable.class, type_id: params[:id])}"
   GitLab.GfmAutoComplete.setup();

@@ -47,6 +47,7 @@ class @BlobFileDropzone
           return
 
         this.on 'sending', (file, xhr, formData) ->
+          formData.append('new_branch', form.find('#new_branch').val())
           formData.append('commit_message', form.find('#commit_message').val())
           return
 

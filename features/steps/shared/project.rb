@@ -199,11 +199,18 @@ module SharedProject
 
   step 'project "Shop" has CI enabled' do
     project = Project.find_by(name: "Shop")
-    project.enable_ci(@user)
+    project.enable_ci
   end
 
   step 'project "Shop" has CI build' do
     project = Project.find_by(name: "Shop")
     create :ci_commit, gl_project: project, sha: project.commit.sha
+  end
+
+  step 'I should see last commit with CI status' do
+    page.within ".project-last-commit" do
+      expect(page).to have_content(project.commit.sha[0..6])
+      expect(page).to have_content("skipped")
+    end
   end
 end

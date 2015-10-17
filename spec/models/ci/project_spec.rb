@@ -29,7 +29,8 @@ require 'spec_helper'
 
 describe Ci::Project do
   let(:gl_project) { FactoryGirl.create :empty_project }
-  subject { FactoryGirl.create :ci_project, gl_project: gl_project }
+  let(:project) { FactoryGirl.create :ci_project, gl_project: gl_project }
+  subject { project }
 
   it { is_expected.to have_many(:runner_projects) }
   it { is_expected.to have_many(:runners) }
@@ -40,6 +41,7 @@ describe Ci::Project do
   it { is_expected.to have_many(:services) }
 
   it { is_expected.to validate_presence_of :timeout }
+  it { is_expected.to validate_presence_of :gitlab_id }
 
   describe 'before_validation' do
     it 'should set an random token if none provided' do
@@ -51,6 +53,66 @@ describe Ci::Project do
       project = FactoryGirl.create :ci_project
       expect(project.token).to eq("iPWx6WM4lhHNedGfBpPJNP")
     end
+  end
+
+  describe :name_with_namespace do
+    subject { project.name_with_namespace }
+
+    it { is_expected.to eq(project.name) }
+    it { is_expected.to eq(gl_project.name_with_namespace) }
+  end
+
+  describe :path_with_namespace do
+    subject { project.path_with_namespace }
+
+    it { is_expected.to eq(project.path) }
+    it { is_expected.to eq(gl_project.path_with_namespace) }
+  end
+
+  describe :path_with_namespace do
+    subject { project.web_url }
+
+    it { is_expected.to eq(gl_project.web_url) }
+  end
+
+  describe :web_url do
+    subject { project.web_url }
+
+    it { is_expected.to eq(project.gitlab_url) }
+    it { is_expected.to eq(gl_project.web_url) }
+  end
+
+  describe :http_url_to_repo do
+    subject { project.http_url_to_repo }
+
+    it { is_expected.to eq(gl_project.http_url_to_repo) }
+  end
+
+  describe :ssh_url_to_repo do
+    subject { project.ssh_url_to_repo }
+
+    it { is_expected.to eq(gl_project.ssh_url_to_repo) }
+  end
+
+  describe :commits do
+    subject { project.commits }
+
+    before do
+      FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, gl_project: gl_project
+    end
+
+    it { is_expected.to eq(gl_project.ci_commits) }
+  end
+
+  describe :builds do
+    subject { project.builds }
+
+    before do
+      commit = FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, gl_project: gl_project
+      FactoryGirl.create :ci_build, commit: commit
+    end
+
+    it { is_expected.to eq(gl_project.ci_builds) }
   end
 
   describe "ordered_by_last_commit_date" do
@@ -66,24 +128,6 @@ describe Ci::Project do
       FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, gl_project: oldest_project
 
       expect(Ci::Project.ordered_by_last_commit_date).to eq([newest_ci_project, oldest_ci_project, ci_project_without_commits])
-    end
-  end
-
-  describe 'ordered commits' do
-    let(:project) { FactoryGirl.create :empty_project }
-
-    it 'returns ordered list of commits' do
-      commit1 = FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, gl_project: project
-      commit2 = FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, gl_project: project
-      expect(project.ci_commits).to eq([commit2, commit1])
-    end
-
-    it 'returns commits ordered by committed_at and id, with nulls last' do
-      commit1 = FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, gl_project: project
-      commit2 = FactoryGirl.create :ci_commit, committed_at: nil, gl_project: project
-      commit3 = FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, gl_project: project
-      commit4 = FactoryGirl.create :ci_commit, committed_at: nil, gl_project: project
-      expect(project.ci_commits).to eq([commit2, commit4, commit3, commit1])
     end
   end
 
@@ -174,13 +218,6 @@ describe Ci::Project do
     it { is_expected.to include(project.gitlab_url[7..-1]) }
   end
 
-  describe :search do
-    let!(:project) { FactoryGirl.create(:ci_project, name: "foo") }
-
-    it { expect(Ci::Project.search('fo')).to include(project) }
-    it { expect(Ci::Project.search('bar')).to be_empty }
-  end
-
   describe :any_runners do
     it "there are no runners available" do
       project = FactoryGirl.create(:ci_project)
@@ -203,6 +240,19 @@ describe Ci::Project do
       project = FactoryGirl.create(:ci_project)
       FactoryGirl.create(:ci_shared_runner)
       expect(project.any_runners?).to be_falsey
+    end
+
+    it "checks the presence of specific runner" do
+      project = FactoryGirl.create(:ci_project)
+      specific_runner = FactoryGirl.create(:ci_specific_runner)
+      project.runners << specific_runner
+      expect(project.any_runners? { |runner| runner == specific_runner }).to be_truthy
+    end
+
+    it "checks the presence of shared runner" do
+      project = FactoryGirl.create(:ci_project, shared_runners_enabled: true)
+      shared_runner = FactoryGirl.create(:ci_shared_runner)
+      expect(project.any_runners? { |runner| runner == shared_runner }).to be_truthy
     end
   end
 end

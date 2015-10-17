@@ -111,8 +111,8 @@ describe Milestone do
 
   describe :is_empty? do
     before do
-      issue = create :closed_issue, milestone: milestone
-      merge_request = create :merge_request, milestone: milestone
+      create :closed_issue, milestone: milestone
+      create :merge_request, milestone: milestone
     end
 
     it 'Should return total count of issues and merge requests assigned to milestone' do
@@ -125,7 +125,7 @@ describe Milestone do
       milestone = create :milestone
       create :closed_issue, milestone: milestone
 
-      issue = create :issue
+      create :issue
     end
 
     it 'should be true if milestone active and all nested issues closed' do

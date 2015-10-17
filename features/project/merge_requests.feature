@@ -115,40 +115,40 @@ Feature: Project Merge Requests
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"
     And I click on the Changes tab
-    And I leave a comment like "Line is wrong" on line 39 of the second file
-    And I click link "Hide inline discussion" of the second file
-    Then I should not see a comment like "Line is wrong here" in the second file
+    And I leave a comment like "Line is wrong" on line 39 of the third file
+    And I click link "Hide inline discussion" of the third file
+    Then I should not see a comment like "Line is wrong here" in the third file
 
   @javascript
   Scenario: I show comments on a merge request diff with comments in a single file
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"
     And I click on the Changes tab
-    And I leave a comment like "Line is wrong" on line 39 of the second file
-    Then I should see a comment like "Line is wrong" in the second file
+    And I leave a comment like "Line is wrong" on line 39 of the third file
+    Then I should see a comment like "Line is wrong" in the third file
 
   @javascript
   Scenario: I hide comments on a merge request diff with comments in multiple files
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"
     And I click on the Changes tab
-    And I leave a comment like "Line is correct" on line 12 of the first file
-    And I leave a comment like "Line is wrong" on line 39 of the second file
-    And I click link "Hide inline discussion" of the second file
-    Then I should not see a comment like "Line is wrong here" in the second file
-    And I should still see a comment like "Line is correct" in the first file
+    And I leave a comment like "Line is correct" on line 12 of the second file
+    And I leave a comment like "Line is wrong" on line 39 of the third file
+    And I click link "Hide inline discussion" of the third file
+    Then I should not see a comment like "Line is wrong here" in the third file
+    And I should still see a comment like "Line is correct" in the second file
 
   @javascript
   Scenario: I show comments on a merge request diff with comments in multiple files
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"
     And I click on the Changes tab
-    And I leave a comment like "Line is correct" on line 12 of the first file
-    And I leave a comment like "Line is wrong" on line 39 of the second file
-    And I click link "Hide inline discussion" of the second file
-    And I click link "Show inline discussion" of the second file
-    Then I should see a comment like "Line is wrong" in the second file
-    And I should still see a comment like "Line is correct" in the first file
+    And I leave a comment like "Line is correct" on line 12 of the second file
+    And I leave a comment like "Line is wrong" on line 39 of the third file
+    And I click link "Hide inline discussion" of the third file
+    And I click link "Show inline discussion" of the third file
+    Then I should see a comment like "Line is wrong" in the third file
+    And I should still see a comment like "Line is correct" in the second file
 
   @javascript
   Scenario: I unfold diff
@@ -163,8 +163,8 @@ Feature: Project Merge Requests
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"
     And I click on the Changes tab
-    And I leave a comment like "Line is correct" on line 12 of the first file
-    And I leave a comment like "Line is wrong" on line 39 of the second file
+    And I leave a comment like "Line is correct" on line 12 of the second file
+    And I leave a comment like "Line is wrong" on line 39 of the third file
     And I click Side-by-side Diff tab
     Then I should see comments on the side-by-side diff page
 

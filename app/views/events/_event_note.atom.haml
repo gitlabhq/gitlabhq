@@ -1,2 +1,2 @@
 %div{xmlns: "http://www.w3.org/1999/xhtml"}
-  = markdown(note.note, xhtml: true, reference_only_path: false, project: note.project)
+  = markdown(note.note, pipeline: :atom, project: note.project)

@@ -1,36 +1,41 @@
 - page_title "Fork project"
-%h3.page-title Fork project
-%p.lead
-  Click to fork the project to a user or group
-%hr
+- if @namespaces.present?
+  %h3.page-title Fork project
+  %p.lead
+    Click to fork the project to a user or group
+  %hr
 
-.fork-namespaces
-  - @namespaces.in_groups_of(6, false) do |group|
-    .row
-      - group.each do |namespace|
-        .col-md-2.col-sm-3
-          - if fork = namespace.find_fork_of(@project)
-            .fork-thumbnail
-              = link_to project_path(fork), title: "Visit project fork", class: 'has_tooltip' do
-                = image_tag namespace_icon(namespace, 100)
-                .caption
-                  %strong
-                    = namespace.human_name
-                  %div.text-primary
-                    Already forked
+  .fork-namespaces
+    - @namespaces.in_groups_of(6, false) do |group|
+      .row
+        - group.each do |namespace|
+          .col-md-2.col-sm-3
+            - if fork = namespace.find_fork_of(@project)
+              .fork-thumbnail
+                = link_to project_path(fork), title: "Visit project fork", class: 'has_tooltip' do
+                  = image_tag namespace_icon(namespace, 100)
+                  .caption
+                    %strong
+                      = namespace.human_name
+                    %div.text-primary
+                      Already forked
 
-          - else
-            .fork-thumbnail
-              = link_to namespace_project_fork_path(@project.namespace, @project, namespace_key: namespace.id), title: "Fork here", method: "POST", class: 'has_tooltip' do
-                = image_tag namespace_icon(namespace, 100)
-                .caption
-                  %strong
-                    = namespace.human_name
+            - else
+              .fork-thumbnail
+                = link_to namespace_project_fork_path(@project.namespace, @project, namespace_key: namespace.id), title: "Fork here", method: "POST", class: 'has_tooltip' do
+                  = image_tag namespace_icon(namespace, 100)
+                  .caption
+                    %strong
+                      = namespace.human_name
 
-  %p.light
-    Fork is a copy of a project repository.
-    %br
-    Forking a repository allows you to do changes without affecting the original project.
+    %p.light
+      Fork is a copy of a project repository.
+      %br
+      Forking a repository allows you to do changes without affecting the original project.
+- else
+  %h3 No available namespaces to fork the project
+  %p.slead
+    You must have permission to create a project in a namespace before forking.
 
 .save-project-loader.hide
   .center

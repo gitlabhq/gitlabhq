@@ -33,6 +33,6 @@ class Projects::ApplicationController < ApplicationController
   end
 
   def ci_project
-    @ci_project ||= @project.gitlab_ci_project
+    @ci_project ||= @project.ensure_gitlab_ci_project
   end
 end

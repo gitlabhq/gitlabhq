@@ -118,6 +118,8 @@ class Namespace < ActiveRecord::Base
     gitlab_shell.add_namespace(path_was)
 
     if gitlab_shell.mv_namespace(path_was, path)
+      Gitlab::UploadsTransfer.new.rename_namespace(path_was, path)
+
       # If repositories moved successfully we need to
       # send update instructions to users.
       # However we cannot allow rollback since we moved namespace dir
@@ -137,7 +139,9 @@ class Namespace < ActiveRecord::Base
   end
 
   def send_update_instructions
-    projects.each(&:send_move_instructions)
+    projects.each do |project|
+      project.send_move_instructions("#{path_was}/#{project.path}")
+    end
   end
 
   def kind

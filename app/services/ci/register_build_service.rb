@@ -17,7 +17,7 @@ module Ci
       builds = builds.order('created_at ASC')
 
       build = builds.find do |build|
-        (build.tag_list - current_runner.tag_list).empty?
+        build.can_be_served?(current_runner)
       end
 
 

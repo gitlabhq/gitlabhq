@@ -22,6 +22,10 @@ class Spinach::Features::AbuseReports < Spinach::FeatureSteps
     user_mike
   end
 
+  step 'I should see a red "Report abuse" button' do
+    expect(find(:css, '.report_abuse')).to have_selector(:css, 'span.btn-close')
+  end
+
   def user_mike
     @user_mike ||= create(:user, name: 'Mike')
   end

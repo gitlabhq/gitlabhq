@@ -150,6 +150,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     return access_denied! unless @merge_request.can_be_merged_by?(current_user)
 
     if @merge_request.mergeable?
+      @merge_request.update(merge_error: nil)
       MergeWorker.perform_async(@merge_request.id, current_user.id, params)
       @status = true
     else
@@ -245,7 +246,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def define_show_vars
-    @participants = @merge_request.participants(current_user, @project)
+    @participants = @merge_request.participants(current_user)
 
     # Build a note object for comment form
     @note = @project.notes.new(noteable: @merge_request)

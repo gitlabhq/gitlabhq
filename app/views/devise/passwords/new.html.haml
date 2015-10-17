@@ -6,7 +6,7 @@
       .devise-errors
         = devise_error_messages!
       .clearfix.append-bottom-20
-        = f.email_field :email, placeholder: "Email",  class: "form-control", required: true, value: params[:user_email]
+        = f.email_field :email, placeholder: "Email",  class: "form-control", required: true, value: params[:user_email], autofocus: true
       .clearfix
         = f.submit "Reset password", class: "btn-primary btn"
 

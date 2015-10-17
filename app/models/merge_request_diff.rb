@@ -144,12 +144,10 @@ class MergeRequestDiff < ActiveRecord::Base
   # Collect array of Git::Diff objects
   # between target and source branches
   def unmerged_diffs
-    diffs = compare_result.diffs
-    diffs ||= []
-    diffs
-  rescue Gitlab::Git::Diff::TimeoutError => ex
+    compare_result.diffs || []
+  rescue Gitlab::Git::Diff::TimeoutError
     self.state = :timeout
-    diffs = []
+    []
   end
 
   def repository
@@ -165,7 +163,8 @@ class MergeRequestDiff < ActiveRecord::Base
         merge_request.fetch_ref
 
         # Get latest sha of branch from source project
-        source_sha = merge_request.source_project.commit(source_branch).sha
+        source_commit = merge_request.source_project.commit(source_branch)
+        source_sha = source_commit.try(:sha)
 
         Gitlab::CompareResult.new(
           Gitlab::Git::Compare.new(
