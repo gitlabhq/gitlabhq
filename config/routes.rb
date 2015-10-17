@@ -473,7 +473,7 @@ Gitlab::Application.routes.draw do
         resources :commit, only: [:show], constraints: { id: /[[:alnum:]]{6,40}/ } do
           member do
             get :branches
-            get :ci
+            get :builds
             post :cancel_builds
             post :retry_builds
           end

@@ -27,10 +27,10 @@
 
     - if @ci_project && current_user && can?(current_user, :manage_builds, @project)
       - if @ci_commit.builds.latest.failed.any?(&:retryable?)
-        = link_to "Retry failed", retry_ci_namespace_project_commit_path(@project.namespace, @project, @commit.sha), class: 'btn btn-xs btn-primary', method: :post
+        = link_to "Retry failed", retry_builds_namespace_project_commit_path(@project.namespace, @project, @commit.sha), class: 'btn btn-xs btn-primary', method: :post
 
       - if @ci_commit.builds.running_or_pending.any?
-        = link_to "Cancel running", cancel_ci_namespace_project_commit_path(@project.namespace, @project, @commit.sha), class: 'btn btn-xs btn-danger', method: :post
+        = link_to "Cancel running", cancel_builds_namespace_project_commit_path(@project.namespace, @project, @commit.sha), class: 'btn btn-xs btn-danger', method: :post
 
 %table.table.builds
   %thead

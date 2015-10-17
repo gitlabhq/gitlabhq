@@ -6,8 +6,8 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :require_non_empty_project
   before_action :authorize_download_code!
   before_action :commit
-  before_action :define_show_vars, only: [:show, :ci]
   before_action :authorize_manage_builds!, only: [:cancel_builds, :retry_builds]
+  before_action :define_show_vars, only: [:show, :builds]
 
   def show
     return git_not_found! unless @commit
@@ -29,7 +29,7 @@ class Projects::CommitController < Projects::ApplicationController
     end
   end
 
-  def ci
+  def builds
     @ci_project = @project.gitlab_ci_project
   end
 
@@ -37,7 +37,7 @@ class Projects::CommitController < Projects::ApplicationController
     @ci_commit = @project.ci_commit(@commit.sha)
     @ci_commit.builds.running_or_pending.each(&:cancel)
 
-    redirect_to ci_namespace_project_commit_path(project.namespace, project, commit.sha)
+    redirect_to builds_namespace_project_commit_path(project.namespace, project, commit.sha)
   end
 
   def retry_builds
@@ -48,7 +48,7 @@ class Projects::CommitController < Projects::ApplicationController
       end
     end
 
-    redirect_to ci_namespace_project_commit_path(project.namespace, project, commit.sha)
+    redirect_to builds_namespace_project_commit_path(project.namespace, project, commit.sha)
   end
 
   def branches
