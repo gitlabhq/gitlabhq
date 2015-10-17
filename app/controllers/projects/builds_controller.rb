@@ -1,8 +1,7 @@
 class Projects::BuildsController < Projects::ApplicationController
   before_action :ci_project
   before_action :build, except: [:index, :cancel_all]
-
-  before_action :authorize_admin_project!, except: [:index, :show, :status]
+  before_action :authorize_manage_builds!, except: [:index, :show, :status]
 
   layout "project"
 
@@ -72,5 +71,11 @@ class Projects::BuildsController < Projects::ApplicationController
 
   def build_path(build)
     namespace_project_build_path(build.gl_project.namespace, build.gl_project, build)
+  end
+
+  def authorize_manage_builds!
+    unless can?(current_user, :manage_builds, project)
+      return page_404
+    end
   end
 end
