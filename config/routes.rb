@@ -627,6 +627,8 @@ Gitlab::Application.routes.draw do
           end
         end
 
+        resources :exceptions
+
         resources :project_members, except: [:new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ } do
           collection do
             delete :leave

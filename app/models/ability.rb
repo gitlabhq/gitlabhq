@@ -34,6 +34,7 @@ class Ability
         rules = [
           :read_project,
           :read_wiki,
+          :read_exception,
           :read_issue,
           :read_label,
           :read_milestone,
@@ -121,6 +122,7 @@ class Ability
       [
         :read_project,
         :read_wiki,
+        :read_exception,
         :read_issue,
         :read_label,
         :read_milestone,
