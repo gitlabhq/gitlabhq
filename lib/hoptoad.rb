@@ -14,10 +14,10 @@ module Hoptoad
   end
 
   private
-    def self.get_version_processor(version)
-      case version
-      when /2\.[01234]/; Hoptoad::V2
-      else;            raise ApiVersionError
-      end
+  def self.get_version_processor(version)
+    case version
+    when /2\.[01234]/; Hoptoad::V2
+    else;            raise ApiVersionError
     end
+  end
 end
