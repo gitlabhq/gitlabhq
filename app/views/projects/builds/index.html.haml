@@ -48,5 +48,5 @@
       - @builds.each do |build|
         = render 'projects/builds/build', build: build
 
-    = paginate @builds
+    = paginate @builds, theme: 'gitlab'
 
