@@ -102,6 +102,13 @@ module Gitlab
         save_options |= Nokogiri::XML::Node::SaveOptions::AS_XHTML
       end
 
+      uri_regex = /^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?\/.*)?$/
+      result[:output].children.select{|klass| klass.name == "a"}.map! do |a_class|
+        unless a_class["href"] =~ uri_regex
+          a_class["href"] = options[:hrefs].select{|url| url.match(a_class["href"])}.first
+        end
+      end
+
       text = result[:output].to_html(save_with: save_options)
 
       text.html_safe
