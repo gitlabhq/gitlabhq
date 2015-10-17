@@ -47,13 +47,7 @@ module PreferencesHelper
     Gitlab::ColorSchemes.for_user(current_user).css_class
   end
 
-  def prefer_readme?
-    !current_user ||
-      current_user.project_view == 'readme'
-  end
-
-  def current_user_default_project_view
-    (current_user && current_user.project_view) ||
-      'readme'
+  def default_project_view
+    current_user ? current_user.project_view : 'readme'
   end
 end
