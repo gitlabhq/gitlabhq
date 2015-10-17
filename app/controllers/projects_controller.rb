@@ -1,8 +1,11 @@
 class ProjectsController < ApplicationController
+  include ExtractsPath
+
   prepend_before_filter :render_go_import, only: [:show]
   skip_before_action :authenticate_user!, only: [:show, :activity]
   before_action :project, except: [:new, :create]
   before_action :repository, except: [:new, :create]
+  before_action :assign_ref_vars, :tree, only: [:show]
 
   # Authorize
   before_action :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer, :archive, :unarchive]
@@ -89,10 +92,7 @@ class ProjectsController < ApplicationController
             if current_user
               @membership = @project.project_member_by_id(current_user.id)
             end
-            @ref = "master"
-            @id = "master"
-            @commit = @project.repository.commit(@ref)
-            @tree = @project.repository.tree(@commit.id)
+
             render :show
           end
         else
@@ -227,5 +227,9 @@ class ProjectsController < ApplicationController
     @id = @id.gsub(/\.git\Z/, "")
 
     render "go_import", layout: false
+  end
+
+  def get_id
+    project.repository.root_ref
   end
 end
