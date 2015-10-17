@@ -5,7 +5,7 @@ class ErrBacktrace < ActiveRecord::Base
   
   belongs_to :error
 
-  scope :in_app, ->{ where(:file => IN_APP_PATH) }
+  scope :in_app, ->{ where(file: IN_APP_PATH) }
 
   def to_s
     "#{file_relative}:#{number}" << (column.present? ? ":#{column}" : "")

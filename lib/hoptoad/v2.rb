@@ -6,20 +6,20 @@ module Hoptoad
           rekey(parsed)))
     end
 
-  private
+    private
     def self.rekey(node)
       case node
       when Hash
         if node.has_key?('var') && node.has_key?('key')
-          {normalize_key(node['key']) => rekey(node['var'])}
+          { normalize_key(node['key']) => rekey(node['var']) }
         elsif node.has_key?('var')
           rekey(node['var'])
         elsif node.has_key?('__content__') && node.has_key?('key')
-          {normalize_key(node['key']) => rekey(node['__content__'])}
+          { normalize_key(node['key']) => rekey(node['__content__']) }
         elsif node.has_key?('__content__')
           rekey(node['__content__'])
         elsif node.has_key?('key')
-          {normalize_key(node['key']) => nil}
+          { normalize_key(node['key']) => nil }
         else
           node.inject({}) {|rekeyed, (key, val)| rekeyed.merge(normalize_key(key) => rekey(val))}
         end
@@ -52,18 +52,18 @@ module Hoptoad
 
     def self.for_errbit_api(notice)
       {
-        :error_class        => notice['error']['class'] || notice['error']['key'],
-        :message            => notice['error']['message'],
-        :backtrace          => notice['error']['backtrace']['line'],
+        error_class:        notice['error']['class'] || notice['error']['key'],
+        message:            notice['error']['message'],
+        backtrace:          notice['error']['backtrace']['line'],
 
-        :request            => notice['request'],
-        :server_environment => notice['server-environment'],
+        request:            notice['request'],
+        server_environment: notice['server-environment'],
 
-        :api_key            => notice['api-key'],
-        :notifier           => notice['notifier'],
+        api_key:            notice['api-key'],
+        notifier:           notice['notifier'],
         # 'current-user' from airbrake, 'user-attributes' from airbrake_user_attributes gem
-        :user_attributes    => notice['current-user'] || notice['user-attributes'] || {},
-        :framework          => notice['framework']
+        user_attributes:    notice['current-user'] || notice['user-attributes'] || {},
+        framework:          notice['framework']
       }
     end
   end

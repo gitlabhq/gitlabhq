@@ -39,7 +39,7 @@ class NoticesController < ApplicationController
   end
 
   def bad_params(exception)
-    render :text => exception.message, :status => :bad_request
+    render text: exception.message, status: :bad_request
   end
 
 end
