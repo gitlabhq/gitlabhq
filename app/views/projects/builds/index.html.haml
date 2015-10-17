@@ -25,7 +25,7 @@
         %span.badge.js-totalbuilds-count= @all_builds.count(:id)
 
 .gray-content-block
-  List of #{@scope || 'running'} builds from this project
+  #{(@scope || 'running').capitalize} builds from this project
 
 %ul.content-list
   - if @builds.blank?
