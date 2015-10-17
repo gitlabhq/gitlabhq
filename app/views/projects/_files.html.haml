@@ -1,11 +1,6 @@
-= render 'projects/last_push'
-
-.tree-ref-holder
-  = render 'shared/ref_switcher', destination: 'tree', path: @path
-
-- if can? current_user, :download_code, @project
-  .tree-download-holder
-    = render 'projects/repositories/download_archive', ref: @ref, btn_class: 'btn-group pull-right hidden-xs hidden-sm', split_button: true
-
 #tree-holder.tree-holder.clearfix
-  = render "projects/tree/tree", tree: @tree
+  .gray-content-block.second-block
+    = render 'projects/tree/tree_header', tree: @tree
+
+  = render 'projects/tree/tree_content', tree: @tree
+
