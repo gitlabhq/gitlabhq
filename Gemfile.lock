@@ -334,6 +334,9 @@ GEM
       httparty
       mimemagic
     hitimes (1.2.3)
+    hoptoad_notifier (2.4.11)
+      activesupport
+      builder
     html-pipeline (1.11.0)
       activesupport (>= 2)
       nokogiri (~> 1.4)
@@ -838,6 +841,7 @@ DEPENDENCIES
   grape-entity (~> 0.4.2)
   haml-rails (~> 0.9.0)
   hipchat (~> 1.5.0)
+  hoptoad_notifier (~> 2.4)
   html-pipeline (~> 1.11.0)
   httparty (~> 0.13.3)
   jquery-atwho-rails (~> 1.0.0)
