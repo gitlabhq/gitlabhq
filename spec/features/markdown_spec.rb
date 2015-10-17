@@ -220,7 +220,7 @@ describe 'GitLab Markdown', feature: true do
     end
   end
 
-  # `markdown` calls these two methods
+  # Fake a `current_user` helper
   def current_user
     @feat.user
   end

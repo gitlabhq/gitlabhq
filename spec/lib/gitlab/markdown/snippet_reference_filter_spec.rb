@@ -4,7 +4,7 @@ module Gitlab::Markdown
   describe SnippetReferenceFilter do
     include FilterSpecHelper
 
-    let(:project)   { create(:empty_project) }
+    let(:project)   { create(:empty_project, :public) }
     let(:snippet)   { create(:project_snippet, project: project) }
     let(:reference) { snippet.to_reference }
 
@@ -55,12 +55,20 @@ module Gitlab::Markdown
         expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-snippet'
       end
 
-      it 'includes a data-project-id attribute' do
+      it 'includes a data-project attribute' do
         doc = filter("Snippet #{reference}")
         link = doc.css('a').first
 
-        expect(link).to have_attribute('data-project-id')
-        expect(link.attr('data-project-id')).to eq project.id.to_s
+        expect(link).to have_attribute('data-project')
+        expect(link.attr('data-project')).to eq project.id.to_s
+      end
+
+      it 'includes a data-snippet attribute' do
+        doc = filter("See #{reference}")
+        link = doc.css('a').first
+
+        expect(link).to have_attribute('data-snippet')
+        expect(link.attr('data-snippet')).to eq snippet.id.to_s
       end
 
       it 'supports an :only_path context' do
@@ -72,52 +80,38 @@ module Gitlab::Markdown
       end
 
       it 'adds to the results hash' do
-        result = pipeline_result("Snippet #{reference}")
+        result = reference_pipeline_result("Snippet #{reference}")
         expect(result[:references][:snippet]).to eq [snippet]
       end
     end
 
     context 'cross-project reference' do
       let(:namespace) { create(:namespace, name: 'cross-reference') }
-      let(:project2)  { create(:empty_project, namespace: namespace) }
+      let(:project2)  { create(:empty_project, :public, namespace: namespace) }
       let(:snippet)   { create(:project_snippet, project: project2) }
       let(:reference) { snippet.to_reference(project) }
 
-      context 'when user can access reference' do
-        before { allow_cross_reference! }
+      it 'links to a valid reference' do
+        doc = filter("See #{reference}")
 
-        it 'links to a valid reference' do
-          doc = filter("See #{reference}")
-
-          expect(doc.css('a').first.attr('href')).
-            to eq urls.namespace_project_snippet_url(project2.namespace, project2, snippet)
-        end
-
-        it 'links with adjacent text' do
-          doc = filter("See (#{reference}.)")
-          expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
-        end
-
-        it 'ignores invalid snippet IDs on the referenced project' do
-          exp = act = "See #{invalidate_reference(reference)}"
-
-          expect(filter(act).to_html).to eq exp
-        end
-
-        it 'adds to the results hash' do
-          result = pipeline_result("Snippet #{reference}")
-          expect(result[:references][:snippet]).to eq [snippet]
-        end
+        expect(doc.css('a').first.attr('href')).
+          to eq urls.namespace_project_snippet_url(project2.namespace, project2, snippet)
       end
 
-      context 'when user cannot access reference' do
-        before { disallow_cross_reference! }
+      it 'links with adjacent text' do
+        doc = filter("See (#{reference}.)")
+        expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
+      end
 
-        it 'ignores valid references' do
-          exp = act = "See #{reference}"
+      it 'ignores invalid snippet IDs on the referenced project' do
+        exp = act = "See #{invalidate_reference(reference)}"
 
-          expect(filter(act).to_html).to eq exp
-        end
+        expect(filter(act).to_html).to eq exp
+      end
+
+      it 'adds to the results hash' do
+        result = reference_pipeline_result("Snippet #{reference}")
+        expect(result[:references][:snippet]).to eq [snippet]
       end
     end
   end

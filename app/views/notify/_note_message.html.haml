@@ -1,2 +1,2 @@
 %div
-  = markdown(@note.note, reference_only_path: false)
+  = markdown(@note.note, pipeline: :email)
