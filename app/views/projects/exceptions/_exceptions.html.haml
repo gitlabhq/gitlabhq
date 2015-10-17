@@ -1,0 +1,12 @@
+%ul.content-list.exceptions-list
+  = render @exceptions
+  - if @exceptions.blank?
+    %li
+      .nothing-here-block No exceptions to show
+
+- if @exceptions.present?
+  .pull-right
+    %span.issue_counter #{@exceptions.total_count}
+    exceptions for this filter
+
+  = paginate @exceptions, theme: "gitlab"

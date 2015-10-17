@@ -1,6 +1,6 @@
 class Err < ActiveRecord::Base
 
-  include Rails.application.routes.url_helpers
+  # include Rails.application.routes.url_helpers
 
   serialize :server_environment
   serialize :request
@@ -10,6 +10,8 @@ class Err < ActiveRecord::Base
   belongs_to :project
   has_many :err_backtraces
 
+  default_value_for :resolved, false
+
   scope :resolved, lambda { where('resolved = ?', true) }
   scope :unresolved, lambda { where('resolved = ?', false) }
 
@@ -18,17 +20,17 @@ class Err < ActiveRecord::Base
   end
 
   def notify!
-    if ENV["SLACK_WEBHOOK_URL"].present?
-      notifier = Slack::Notifier.new ENV["SLACK_WEBHOOK_URL"]
+    # if ENV["SLACK_WEBHOOK_URL"].present?
+    #   notifier = Slack::Notifier.new ENV["SLACK_WEBHOOK_URL"]
 
-      message = "#{self.application.name} - [#{self.message}](#{locate_url(self.id, host: ENV["DOMAIN"])})"
-      msg = Slack::Notifier::LinkFormatter.format(message)
+    #   message = "#{self.application.name} - [#{self.message}](#{locate_url(self.id, host: ENV["DOMAIN"])})"
+    #   msg = Slack::Notifier::LinkFormatter.format(message)
 
-      notifier.ping msg
-    end
+    #   notifier.ping msg
+    # end
 
     # only send an exception email if the last exception isn't the same
-    if self.application.errs.unresolved.where(error_class: self.error_class).count > 1
+    if self.project.exceptions.unresolved.where(error_class: self.error_class).count > 1
       # the error is the same so do nothing
     else
       ExceptionsMailer.err(self.id).deliver_now
