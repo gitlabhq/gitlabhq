@@ -1,0 +1,41 @@
+%h2= notice.message
+%h3 Summary
+- if notice.request['url'].present?
+  %p
+    %strong URL:
+    = link_to(notice.request['url'], notice.request['url'])
+%p
+  %strong Where:
+  = notice.where
+%p
+  %strong Occured:
+  = notice.created_at.to_s(:micro)
+%p
+  %strong Similar:
+  = notice.problem.notices_count - 1
+
+%h3 Params
+%p= pretty_hash(notice.params)
+
+%h3 Session
+%p= pretty_hash(notice.session)
+
+%h3 Backtrace
+%table
+  - for line in notice.backtrace_lines
+    %tr
+      %td
+        = "#{line.number}:"
+        &nbsp;&nbsp;
+      %td
+        = raw "#{h line.file_relative} -> #{content_tag :strong, h(line.method)}"
+
+%h3 Environment
+%table
+  - for key, val in notice.env_vars
+    %tr
+      %td
+        = h key
+      %td
+        = h val
+

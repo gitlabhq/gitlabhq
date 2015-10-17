@@ -300,6 +300,12 @@ class ApplicationController < ActionController::Base
     @issuable_finder.execute
   end
 
+  def get_exceptions_collection
+    set_filters_params
+    @issuable_finder = ExceptionsFinder.new(current_user, @filter_params)
+    @issuable_finder.execute
+  end
+
   def import_sources_enabled?
     !current_application_settings.import_sources.empty?
   end

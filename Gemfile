@@ -186,9 +186,12 @@ gem 'mousetrap-rails', '~> 1.4.6'
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.6.9.4'
 
+# Exceptions
 # Please don't update hoptoad_notifier to airbrake.
 # It's for internal use only, and we monkeypatch certain methods
 gem 'hoptoad_notifier', "~> 2.4"
+gem "htmlentities"
+gem "useragent"
 
 gem "sass-rails", '~> 4.0.5'
 gem "coffee-rails", '~> 4.1.0'

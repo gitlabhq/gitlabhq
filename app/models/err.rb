@@ -1,7 +1,5 @@
 class Err < ActiveRecord::Base
 
-  # include Rails.application.routes.url_helpers
-
   serialize :server_environment
   serialize :request
   serialize :notifier
@@ -14,10 +12,6 @@ class Err < ActiveRecord::Base
 
   scope :resolved, lambda { where('resolved = ?', true) }
   scope :unresolved, lambda { where('resolved = ?', false) }
-
-  def self.monthly_graph(month)
-    where("created_at >= ? AND created_at <= ?", Date.new(Date.today.year, month).beginning_of_month.to_datetime, Date.new(Date.today.year, month).end_of_month.end_of_day.to_datetime).count
-  end
 
   def notify!
     # if ENV["SLACK_WEBHOOK_URL"].present?
