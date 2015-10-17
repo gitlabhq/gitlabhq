@@ -1,3 +1,2 @@
 %div{xmlns: "http://www.w3.org/1999/xhtml"}
-  - if merge_request.description.present?
-    = markdown(merge_request.description, xhtml: true, reference_only_path: false, project: merge_request.project)
+  = markdown(merge_request.description, pipeline: :atom, project: merge_request.project)

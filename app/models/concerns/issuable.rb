@@ -6,8 +6,8 @@
 #
 module Issuable
   extend ActiveSupport::Concern
-  include Mentionable
   include Participable
+  include Mentionable
 
   included do
     belongs_to :author, class_name: "User"
@@ -47,8 +47,7 @@ module Issuable
              prefix: true
 
     attr_mentionable :title, :description
-
-    participant :author, :assignee, :notes_with_associations, :mentioned_users
+    participant :author, :assignee, :notes_with_associations
   end
 
   module ClassMethods
