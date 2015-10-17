@@ -7,6 +7,11 @@ module Ci
     before_action :no_cache, only: [:badge]
     protect_from_forgery
 
+    def show
+      # Temporary compatibility with CI badges pointing to CI project page
+      redirect_to namespace_project_path(project.gl_project.namespace, project.gl_project)
+    end
+
     # Project status badge
     # Image with build status for sha or ref
     def badge
