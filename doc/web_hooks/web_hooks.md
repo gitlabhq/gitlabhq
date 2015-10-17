@@ -8,8 +8,8 @@ Web hooks can be used to update an external issue tracker, trigger CI builds, up
 
 ## SSL Verification
 
-By default, the SSL certificate of the webhook endpoint is verified based on 
-an internal list of Certificate Authorities, 
+By default, the SSL certificate of the webhook endpoint is verified based on
+an internal list of Certificate Authorities,
 which means the certificate cannot be self-signed.
 
 You can turn this off in the web hook settings in your GitLab projects.
@@ -76,7 +76,6 @@ X-Gitlab-Event: Push Hook
     }
   ],
   "total_commits_count": 4
-  
 }
 ```
 
@@ -158,6 +157,11 @@ X-Gitlab-Event: Issue Hook
     "iid": 23,
     "url": "http://example.com/diaspora/issues/23",
     "action": "open"
+  },
+  "assignee": {
+    "name": "User1",
+    "username": "user1",
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
   }
 }
 ```
@@ -322,7 +326,12 @@ X-Gitlab-Event: Note Hook
         "email": "john@example.com"
       }
     },
-    "work_in_progress": false
+    "work_in_progress": false,
+    "assignee": {
+      "name": "User1",
+      "username": "user1",
+      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+    }
   }
 }
 ```
@@ -397,7 +406,7 @@ X-Gitlab-Event: Note Hook
 
 **Request body:**
 
-```
+```json
 {
   "object_kind": "note",
   "user": {
@@ -510,7 +519,12 @@ X-Gitlab-Event: Merge Request Hook
     },
     "work_in_progress": false,
     "url": "http://example.com/diaspora/merge_requests/1",
-    "action": "open"
+    "action": "open",
+    "assignee": {
+      "name": "User1",
+      "username": "user1",
+      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+    }
   }
 }
 ```

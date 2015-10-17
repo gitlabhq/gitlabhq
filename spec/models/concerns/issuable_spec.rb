@@ -79,6 +79,16 @@ describe Issue, "Issuable" do
       expect(hook_data[:repository][:description]).to eq(issue.project.description)
       expect(hook_data[:repository][:homepage]).to eq(issue.project.web_url)
       expect(hook_data[:object_attributes]).to eq(issue.hook_attrs)
+      expect(hook_data).to_not have_key(:assignee)
+    end
+
+    context "issue is assigned" do
+      before { issue.update_attribute(:assignee, user) }
+
+      it "returns correct hook data" do
+        expect(hook_data[:object_attributes]['assignee_id']).to eq(user.id)
+        expect(hook_data[:assignee]).to eq(user.hook_attrs)
+      end
     end
   end
 
