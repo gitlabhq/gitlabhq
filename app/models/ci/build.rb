@@ -109,6 +109,11 @@ module Ci
     def retryable?
       commands.present?
     end
+
+    def retried?
+      !self.commit.latest_builds_for_ref(self.ref).include?(self)
+    end
+
     def trace_html
       html = Ci::Ansi2html::convert(trace) if trace.present?
       html || ''

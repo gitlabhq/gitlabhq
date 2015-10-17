@@ -23,7 +23,7 @@
                 = build.id
 
 
-      - unless @commit.latest_builds_for_ref(@build.ref).include?(@build)
+      - if @build.retried?
         %li.active
           %a
             Build ##{@build.id}
