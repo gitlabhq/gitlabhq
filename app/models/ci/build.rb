@@ -106,6 +106,9 @@ module Ci
       failed? && allow_failure?
     end
 
+    def retryable?
+      commands.present?
+    end
     def trace_html
       html = Ci::Ansi2html::convert(trace) if trace.present?
       html || ''
@@ -222,7 +225,7 @@ module Ci
     end
 
     def retry_url
-      if commands.present?
+      if retryable?
         Gitlab::Application.routes.url_helpers.
           retry_namespace_project_build_path(gl_project.namespace, gl_project, self)
       end

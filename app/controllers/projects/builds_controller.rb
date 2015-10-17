@@ -40,7 +40,7 @@ class Projects::BuildsController < Projects::ApplicationController
   end
 
   def retry
-    if @build.commands.blank?
+    unless @build.retryable?
       return page_404
     end
 
