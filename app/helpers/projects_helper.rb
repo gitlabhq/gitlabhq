@@ -113,7 +113,7 @@ module ProjectsHelper
       nav_tabs << :merge_requests
     end
 
-    if can?(current_user, :read_build, project)
+    if project.gitlab_ci? && can?(current_user, :read_build, project)
       nav_tabs << :builds
     end
 
