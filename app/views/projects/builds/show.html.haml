@@ -40,7 +40,7 @@
             %i.fa.fa-time
             #{duration_in_words(@build.finished_at, @build.started_at)}
         .pull-right
-          = @build.updated_at.stamp('19:00 Aug 27')
+          #{time_ago_with_tooltip(@build.finished_at)}
 
   - if @build.show_warning?
     - unless @build.any_runners_online?
@@ -104,11 +104,11 @@
             #{duration_in_words(@build.finished_at, @build.started_at)}
         %p
           %span.attr-name Created:
-          #{time_ago_in_words(@build.created_at)} ago
+          #{time_ago_with_tooltip(@build.created_at)}
         - if @build.finished_at
           %p
             %span.attr-name Finished:
-            #{time_ago_in_words(@build.finished_at)} ago
+            #{time_ago_with_tooltip(@build.finished_at)}
         %p
           %span.attr-name Runner:
           - if @build.runner && current_user && current_user.admin

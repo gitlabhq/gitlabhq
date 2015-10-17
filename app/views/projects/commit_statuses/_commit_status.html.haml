@@ -36,7 +36,7 @@
 
   %td.timestamp
     - if commit_status.finished_at
-      %span #{time_ago_in_words commit_status.finished_at} ago
+      %span #{time_ago_with_tooltip(commit_status.finished_at)}
 
   - if defined?(coverage) && coverage
     %td.coverage
