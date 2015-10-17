@@ -28,7 +28,7 @@ class Projects::BuildsController < Projects::ApplicationController
 
   def show
     @builds = @ci_project.commits.find_by_sha(@build.sha).builds.order('id DESC')
-    @builds = @builds.where("id not in (?)", @build.id).page(params[:page]).per(20)
+    @builds = @builds.where("id not in (?)", @build.id)
     @commit = @build.commit
 
     respond_to do |format|
