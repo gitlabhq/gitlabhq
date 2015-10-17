@@ -12,14 +12,27 @@
     - if commit_status.show_warning?
       %i.fa.fa-warning.text-warning
 
-  %td
-    = commit_status.ref
+  - if defined?(commit_sha) && commit_sha
+    %td
+      = link_to build.short_sha, namespace_project_commit_path(@project.namespace, @project, build.sha), class: "monospace"
 
   %td
-    = commit_status.stage
+    = link_to commit_status.ref, namespace_project_commits_path(@project.namespace, @project, commit_status.ref)
+
+  - if defined?(runner) && runner
+    %td
+      - if commit_status.try(:runner)
+        = runner_link(commit_status.runner)
+      - else
+        .light none
+
+  - if defined?(stage) && stage
+    %td
+      = commit_status.stage
 
   %td
     = commit_status.name
+
     .pull-right
       - if commit_status.tags.any?
         - commit_status.tags.each do |tag|
