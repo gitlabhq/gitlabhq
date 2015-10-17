@@ -1,18 +1,9 @@
 class Projects::ExceptionsController < Projects::ApplicationController
   before_action :module_enabled
-  before_action :exception, only: [:edit, :update, :show, :toggle_subscription]
+  before_action :exception, only: :show
 
-  # # Allow read any issue
-  # before_action :authorize_read_issue!
-
-  # # Allow write(create) issue
-  # before_action :authorize_create_issue!, only: [:new, :create]
-
-  # # Allow modify issue
-  # before_action :authorize_update_issue!, only: [:edit, :update]
-
-  # # Allow issues bulk update
-  # before_action :authorize_admin_issues!, only: [:bulk_update]
+  # Allow read any exception
+  # before_action :authorize_read_exception!
 
   respond_to :html
 
@@ -30,22 +21,11 @@ class Projects::ExceptionsController < Projects::ApplicationController
     end
   end
 
-  def new
-    params[:issue] ||= ActionController::Parameters.new(
-      assignee_id: ""
-    )
-
-    @issue = @project.issues.new(issue_params)
-    respond_with(@issue)
+  def setup
   end
 
   def show
-    @participants = @issue.participants(current_user)
-    @note = @project.notes.new(noteable: @issue)
-    @notes = @issue.notes.with_associations.fresh
-    @noteable = @issue
-
-    respond_with(@issue)
+    respond_with(@exception)
   end
 
   protected
@@ -56,14 +36,6 @@ class Projects::ExceptionsController < Projects::ApplicationController
                rescue ActiveRecord::RecordNotFound
                  redirect_old
                end
-  end
-
-  def authorize_update_issue!
-    return render_404 unless can?(current_user, :update_issue, @issue)
-  end
-
-  def authorize_admin_issues!
-    return render_404 unless can?(current_user, :admin_issue, @project)
   end
 
   def module_enabled

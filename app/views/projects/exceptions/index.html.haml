@@ -6,6 +6,11 @@
     = auto_discovery_link_tag(:atom, namespace_project_issues_url(@project.namespace, @project, :atom, private_token: current_user.private_token), title: "#{@project.name} issues")
 
 .project-issuable-filter
+  .controls
+    .pull-left
+      - if current_user
+        = link_to "Setup", setup_namespace_project_exceptions_path(@project.namespace, @project), class: "btn btn-new pull-left", title: "Setup", id: "new_issue_link"
+
   = render 'shared/issuable/filter', type: :exceptions
 
 .issues-holder

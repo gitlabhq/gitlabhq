@@ -627,7 +627,11 @@ Gitlab::Application.routes.draw do
           end
         end
 
-        resources :exceptions
+        resources :exceptions, constraints: { id: /\d+/ }, except: [:new, :edit, :create, :update] do
+          collection do
+            get :setup
+          end
+        end
 
         resources :project_members, except: [:new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ } do
           collection do
