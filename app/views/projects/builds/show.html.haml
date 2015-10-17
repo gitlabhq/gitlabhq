@@ -3,7 +3,7 @@
 
 .build-page
   .gray-content-block
-    Build for commit
+    Build ##{@build.id} for commit
     %strong.monospace
       = link_to @build.commit.short_sha, ci_status_path(@build.commit)
     from
@@ -90,7 +90,7 @@
 
       .build-widget
         %h4.title
-          Build
+          Build ##{@build.id}
           - if current_user && can?(current_user, :manage_builds, @project)
             .pull-right
               - if @build.cancel_url
