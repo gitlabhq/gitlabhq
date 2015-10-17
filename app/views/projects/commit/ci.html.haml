@@ -30,7 +30,7 @@
         = link_to "Retry failed", retry_ci_namespace_project_commit_path(@project.namespace, @project, @commit.sha), class: 'btn btn-xs btn-primary', method: :post
 
       - if @ci_commit.builds.running_or_pending.any?
-        = link_to "Cancel all", cancel_builds_namespace_project_commit_path(@project.namespace, @project, @commit.sha), class: 'btn btn-xs btn-danger'
+        = link_to "Cancel running", cancel_ci_namespace_project_commit_path(@project.namespace, @project, @commit.sha), class: 'btn btn-xs btn-danger', method: :post
 
 %table.table.builds
   %thead

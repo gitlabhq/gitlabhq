@@ -93,10 +93,10 @@
           Build
           - if current_user && can?(current_user, :manage_builds, @project)
             .pull-right
-              - if @build.active?
-                = link_to "Cancel", cancel_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-danger'
-              - elsif @build.commands.present?
-                = link_to "Retry", retry_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-primary', method: :post
+              - if @build.cancel_url
+                = link_to "Cancel", @build.cancel_url, class: 'btn btn-sm btn-danger', method: :post
+              - elsif @build.retry_url
+                = link_to "Retry", @build.retry_url, class: 'btn btn-sm btn-primary', method: :post
 
         - if @build.duration
           %p

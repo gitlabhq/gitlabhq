@@ -59,9 +59,10 @@
   %td
     .pull-right
       - if current_user && can?(current_user, :manage_builds, commit_status.gl_project)
-        - if commit_status.cancel_url
-          = link_to commit_status.cancel_url, title: 'Cancel' do
-            %i.fa.fa-remove.cred
+        - if commit_status.active?
+          - if commit_status.cancel_url
+            = link_to commit_status.cancel_url, method: :post, title: 'Cancel' do
+              %i.fa.fa-remove.cred
         - elsif defined?(allow_retry) && allow_retry && commit_status.retry_url
           = link_to commit_status.retry_url, method: :post, title: 'Retry' do
             %i.fa.fa-repeat
