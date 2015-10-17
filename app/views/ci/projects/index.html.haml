@@ -1,0 +1,20 @@
+.wiki
+  %h1
+    GitLab CI is now integrated in GitLab UI
+  %h2 For existing projects
+
+  %p
+    Check the following pages to find the CI status you're looking for:
+
+  %ul
+    %li Projects page - shows CI status for each project.
+    %li Project commits page - show CI status for each commit.
+
+
+
+  %h2 For new projects
+
+  %p
+    If you want to enable CI for a new project it is easy as adding
+    = link_to ".gitlab-ci.yml", "http://doc.gitlab.com/ce/ci/yaml/README.html"
+    file to your repository
