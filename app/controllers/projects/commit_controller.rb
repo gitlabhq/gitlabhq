@@ -7,6 +7,7 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :authorize_download_code!
   before_action :commit
   before_action :define_show_vars, only: [:show, :ci]
+  before_action :authorize_manage_builds!, only: [:cancel_builds, :retry_builds]
 
   def show
     return git_not_found! unless @commit
@@ -56,6 +57,8 @@ class Projects::CommitController < Projects::ApplicationController
     render layout: false
   end
 
+  private
+
   def commit
     @commit ||= @project.commit(params[:id])
   end
@@ -66,5 +69,11 @@ class Projects::CommitController < Projects::ApplicationController
     
     @ci_commit = project.ci_commit(commit.sha)
     @builds = ci_commit.builds if ci_commit
+  end
+
+  def authorize_manage_builds!
+    unless can?(current_user, :manage_builds, project)
+      return page_404
+    end
   end
 end
