@@ -57,8 +57,12 @@ class Project < ActiveRecord::Base
 
   # set last_activity_at to the same as created_at
   after_create :set_last_activity_at
+  after_create :set_exceptions_token
   def set_last_activity_at
     update_column(:last_activity_at, self.created_at)
+  end
+  def set_exceptions_token
+    update_column(:exceptions_token, SecureRandom.uuid)
   end
 
   ActsAsTaggableOn.strict_case_match = true
