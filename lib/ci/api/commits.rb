@@ -51,7 +51,7 @@ module Ci
           required_attributes! [:project_id, :data, :project_token]
           project = Ci::Project.find(params[:project_id])
           authenticate_project_token!(project)
-          commit = Ci::CreateCommitService.new.execute(project, params[:data])
+          commit = Ci::CreateCommitService.new.execute(project, current_user, params[:data])
 
           if commit.persisted?
             present commit, with: Entities::CommitWithBuilds

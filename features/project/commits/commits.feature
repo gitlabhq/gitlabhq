@@ -20,6 +20,8 @@ Feature: Project Commits
     Given commit has ci status
     And I click on commit link
     Then I see commit ci info
+    And I click status link
+    Then I see builds list
 
   Scenario: I browse commit with side-by-side diff view
     Given I click on commit link

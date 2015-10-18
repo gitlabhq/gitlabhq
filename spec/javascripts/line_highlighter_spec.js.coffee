@@ -39,7 +39,7 @@ describe 'LineHighlighter', ->
       expect(spy).toHaveBeenPrevented()
 
     it 'handles garbage input from the hash', ->
-      func = -> new LineHighlighter('#tree-content-holder')
+      func = -> new LineHighlighter('#blob-content-holder')
       expect(func).not.toThrow()
 
   describe '#clickHandler', ->

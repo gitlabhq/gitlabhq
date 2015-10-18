@@ -3,6 +3,8 @@ require "spec_helper"
 describe API::API, api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
+  let(:admin) { create(:admin) }
+  let(:user2) { create(:user) }
   let(:project) {create(:project, creator_id: user.id, namespace: user.namespace) }
 
   Service.available_services_names.each do |service|
@@ -51,11 +53,40 @@ describe API::API, api: true  do
     describe "GET /projects/:id/services/#{service.dasherize}" do
       include_context service
 
-      it "should get #{service} settings" do
+      # inject some properties into the service
+      before do
+        project.build_missing_services
+        service_object = project.send(service_method)
+        service_object.properties = service_attrs
+        service_object.save
+      end
+
+      it 'should return authentication error when unauthenticated' do
+        get api("/projects/#{project.id}/services/#{dashed_service}")
+        expect(response.status).to eq(401)
+      end
+      
+      it "should return all properties of service #{service} when authenticated as admin" do
+        get api("/projects/#{project.id}/services/#{dashed_service}", admin)
+        
+        expect(response.status).to eq(200)
+        expect(json_response['properties'].keys.map(&:to_sym)).to match_array(service_attrs_list.map)
+      end
+
+      it "should return properties of service #{service} other than passwords when authenticated as project owner" do
         get api("/projects/#{project.id}/services/#{dashed_service}", user)
 
         expect(response.status).to eq(200)
+        expect(json_response['properties'].keys.map(&:to_sym)).to match_array(service_attrs_list_without_passwords)
       end
+
+      it "should return error when authenticated but not a project owner" do
+        project.team << [user2, :developer]
+        get api("/projects/#{project.id}/services/#{dashed_service}", user2)
+        
+        expect(response.status).to eq(403)
+      end
+
     end
   end
 end

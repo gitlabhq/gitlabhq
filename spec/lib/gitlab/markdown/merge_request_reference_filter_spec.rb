@@ -4,7 +4,7 @@ module Gitlab::Markdown
   describe MergeRequestReferenceFilter do
     include FilterSpecHelper
 
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :public) }
     let(:merge)   { create(:merge_request, source_project: project) }
 
     it 'requires project context' do
@@ -56,12 +56,20 @@ module Gitlab::Markdown
         expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-merge_request'
       end
 
-      it 'includes a data-project-id attribute' do
+      it 'includes a data-project attribute' do
         doc = filter("Merge #{reference}")
         link = doc.css('a').first
 
-        expect(link).to have_attribute('data-project-id')
-        expect(link.attr('data-project-id')).to eq project.id.to_s
+        expect(link).to have_attribute('data-project')
+        expect(link.attr('data-project')).to eq project.id.to_s
+      end
+
+      it 'includes a data-merge-request attribute' do
+        doc = filter("See #{reference}")
+        link = doc.css('a').first
+
+        expect(link).to have_attribute('data-merge-request')
+        expect(link.attr('data-merge-request')).to eq merge.id.to_s
       end
 
       it 'supports an :only_path context' do
@@ -73,53 +81,39 @@ module Gitlab::Markdown
       end
 
       it 'adds to the results hash' do
-        result = pipeline_result("Merge #{reference}")
+        result = reference_pipeline_result("Merge #{reference}")
         expect(result[:references][:merge_request]).to eq [merge]
       end
     end
 
     context 'cross-project reference' do
       let(:namespace) { create(:namespace, name: 'cross-reference') }
-      let(:project2)  { create(:project, namespace: namespace) }
+      let(:project2)  { create(:project, :public, namespace: namespace) }
       let(:merge)     { create(:merge_request, source_project: project2) }
       let(:reference) { merge.to_reference(project) }
 
-      context 'when user can access reference' do
-        before { allow_cross_reference! }
+      it 'links to a valid reference' do
+        doc = filter("See #{reference}")
 
-        it 'links to a valid reference' do
-          doc = filter("See #{reference}")
-
-          expect(doc.css('a').first.attr('href')).
-            to eq urls.namespace_project_merge_request_url(project2.namespace,
-                                                          project, merge)
-        end
-
-        it 'links with adjacent text' do
-          doc = filter("Merge (#{reference}.)")
-          expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
-        end
-
-        it 'ignores invalid merge IDs on the referenced project' do
-          exp = act = "Merge #{invalidate_reference(reference)}"
-
-          expect(filter(act).to_html).to eq exp
-        end
-
-        it 'adds to the results hash' do
-          result = pipeline_result("Merge #{reference}")
-          expect(result[:references][:merge_request]).to eq [merge]
-        end
+        expect(doc.css('a').first.attr('href')).
+          to eq urls.namespace_project_merge_request_url(project2.namespace,
+                                                        project, merge)
       end
 
-      context 'when user cannot access reference' do
-        before { disallow_cross_reference! }
+      it 'links with adjacent text' do
+        doc = filter("Merge (#{reference}.)")
+        expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
+      end
 
-        it 'ignores valid references' do
-          exp = act = "See #{reference}"
+      it 'ignores invalid merge IDs on the referenced project' do
+        exp = act = "Merge #{invalidate_reference(reference)}"
 
-          expect(filter(act).to_html).to eq exp
-        end
+        expect(filter(act).to_html).to eq exp
+      end
+
+      it 'adds to the results hash' do
+        result = reference_pipeline_result("Merge #{reference}")
+        expect(result[:references][:merge_request]).to eq [merge]
       end
     end
   end

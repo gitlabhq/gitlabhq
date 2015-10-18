@@ -99,6 +99,6 @@ class Import::FogbugzController < Import::BaseController
   end
 
   def verify_fogbugz_import_enabled
-    not_found! unless fogbugz_import_enabled?
+    render_404 unless fogbugz_import_enabled?
   end
 end

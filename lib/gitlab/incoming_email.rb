@@ -24,11 +24,11 @@ module Gitlab
         match[1]
       end
 
-      private
-
       def config
         Gitlab.config.incoming_email
       end
+
+      private
 
       def address_regex
         wildcard_address = config.address

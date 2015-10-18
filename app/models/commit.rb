@@ -2,13 +2,13 @@ class Commit
   extend ActiveModel::Naming
 
   include ActiveModel::Conversion
-  include Mentionable
   include Participable
+  include Mentionable
   include Referable
   include StaticModel
 
   attr_mentionable :safe_message
-  participant :author, :committer, :notes, :mentioned_users
+  participant :author, :committer, :notes
 
   attr_accessor :project
 
@@ -183,5 +183,13 @@ class Commit
 
   def parents
     @parents ||= Commit.decorate(super, project)
+  end
+
+  def ci_commit
+    project.ci_commit(sha)
+  end
+
+  def status
+    ci_commit.try(:status) || :not_found
   end
 end

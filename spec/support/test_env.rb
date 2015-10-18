@@ -9,7 +9,7 @@ module TestEnv
     'flatten-dir'      => 'e56497b',
     'feature'          => '0b4bc9a',
     'feature_conflict' => 'bb5206f',
-    'fix'              => '12d65c8',
+    'fix'              => '48f0be4',
     'improve/awesome'  => '5937ac0',
     'markdown'         => '0ed8c6c',
     'master'           => '5937ac0',

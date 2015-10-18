@@ -28,13 +28,15 @@ upgrade to 8.0 until you finish the migration procedure.
 
 ### Before upgrading
 
-If you have GitLab CI installed using omnibus-gitlab packages but *you don't want to migrate your existing data*:
+If you have GitLab CI installed using omnibus-gitlab packages but **you don't want to migrate your existing data**:
 
 ```bash
 mv /var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/gitlab-ci/builds.$(date +%s)
 ```
 
-and run `sudo gitlab-ctl reconfigure`.
+run `sudo gitlab-ctl reconfigure` and you can reach CI at `gitlab.example.com/ci`.
+
+If you want to migrate your existing data, continue reading.
 
 #### 0. Updating Omnibus from versions prior to 7.13
 

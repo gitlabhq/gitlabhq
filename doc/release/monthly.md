@@ -74,20 +74,19 @@ Xth: (1 working day before the 22nd)
 - [ ] Update GitLab.com with the latest RC (#LINK)
 - [ ] Update ci.gitLab.com with the latest RC (#LINK)
 
-22nd before 12AM CET:
+22nd before 1200 CET:
 
-Release before 12AM CET / 3AM PST, to make sure the majority of our users
+Release before 1200 CET / 2AM PST, to make sure the majority of our users
 get the new version on the 22nd and there is sufficient time in the European
 workday to quickly fix any issues.
 
 - [ ] Merge CE stable into EE stable (#LINK)
 - [ ] Create the 'x.y.0' tag with the [release tools](https://dev.gitlab.org/gitlab/release-tools) (#LINK)
 - [ ] Create the 'x.y.0' version on version.gitlab.com
-- [ ] Try to do before 11AM CET: Create and push omnibus tags for x.y.0 (will auto-release the packages) (#LINK)
-- [ ] Try to do before 12AM CET: Publish the release blog post (#LINK)
+- [ ] Try to do before 1100 CET: Create and push omnibus tags for x.y.0 (will auto-release the packages) (#LINK)
+- [ ] Try to do before 1200 CET: Publish the release blog post (#LINK)
 - [ ] Tweet about the release (blog post) (#LINK)
-- [ ] Schedule a second tweet of the release announcement with the same text at 6PM CET / 9AM PST
-
+- [ ] Schedule a second tweet of the release announcement with the same text at 1800 CET / 8AM PST
 ```
 
 - - -

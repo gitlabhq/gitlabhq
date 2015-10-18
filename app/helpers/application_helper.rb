@@ -68,13 +68,17 @@ module ApplicationHelper
     end
   end
 
-  def avatar_icon(user_email = '', size = nil)
-    user = User.find_by(email: user_email)
+  def avatar_icon(user_or_email = nil, size = nil)
+    if user_or_email.is_a?(User)
+      user = user_or_email
+    else
+      user = User.find_by(email: user_or_email)
+    end
 
     if user
       user.avatar_url(size) || default_avatar
     else
-      gravatar_icon(user_email, size)
+      gravatar_icon(user_or_email, size)
     end
   end
 
@@ -313,5 +317,9 @@ module ApplicationHelper
     end
 
     html.html_safe
+  end
+
+  def truncate_first_line(message, length = 50)
+    truncate(message.each_line.first.chomp, length: length) if message
   end
 end
