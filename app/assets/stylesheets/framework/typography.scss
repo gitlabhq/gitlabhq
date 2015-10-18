@@ -1,5 +1,6 @@
 @mixin md-typography {
   color: $md-text-color;
+  word-wrap: break-word;
 
   a {
     color: $md-link-color;
@@ -73,6 +74,8 @@
   }
 
   blockquote {
+    color: #7f8fa4;
+    font-size: inherit;
     padding: 8px 21px;
     margin: 12px 0 12px;
     border-left: 3px solid #e7e9ed;
@@ -80,7 +83,7 @@
 
   blockquote p {
     color: #7f8fa4 !important;
-    font-size: 15px;
+    font-size: inherit;
     line-height: 1.5;
   }
 
@@ -112,9 +115,9 @@
     font-weight: inherit;
   }
 
-
-  ul {
-    color: #5c5d5e;
+  ul, ol {
+    padding: 0;
+    margin: 6px 0 6px 18px !important;
   }
 
   li {
@@ -134,6 +137,33 @@
 
     &:hover:before {
       text-decoration: none;
+    }
+  }
+
+  /* Link to current header. */
+  h1, h2, h3, h4, h5, h6 {
+    position: relative;
+
+    a.anchor {
+      // Setting `display: none` would prevent the anchor being scrolled to, so
+      // instead we set the height to 0 and it gets updated on hover.
+      height: 0;
+    }
+
+    &:hover > a.anchor {
+      $size: 16px;
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      margin-top: -$size/2;
+      margin-right: 0px;
+      padding-right: 20px;
+      display: inline-block;
+      width: $size;
+      height: $size;
+      background-image: image-url("icon-link.png");
+      background-size: contain;
+      background-repeat: no-repeat;
     }
   }
 }
@@ -202,49 +232,11 @@ a > code {
 }
 
 /**
- * Wiki typography
+ * Apply Markdown typography
  *
  */
 .wiki {
   @include md-typography;
-
-  word-wrap: break-word;
-  padding: 7px;
-
-  /* Link to current header. */
-  h1, h2, h3, h4, h5, h6 {
-    position: relative;
-
-    a.anchor {
-      // Setting `display: none` would prevent the anchor being scrolled to, so
-      // instead we set the height to 0 and it gets updated on hover.
-      height: 0;
-    }
-
-    &:hover > a.anchor {
-      $size: 16px;
-      position: absolute;
-      right: 100%;
-      top: 50%;
-      margin-top: -$size/2;
-      margin-right: 0px;
-      padding-right: 20px;
-      display: inline-block;
-      width: $size;
-      height: $size;
-      background-image: image-url("icon-link.png");
-      background-size: contain;
-      background-repeat: no-repeat;
-    }
-  }
-
-  ul,ol {
-    padding: 0;
-    margin: 6px 0 6px 18px !important;
-  }
-  ol {
-    color: #5c5d5e;
-  }
 }
 
 .md-area {

@@ -13,6 +13,10 @@
     border-bottom: 1px solid #ECEEF1;
     border-right: 1px solid #ECEEF1;
 
+    &:target {
+      background: $hover;
+    }
+
     &:last-child {
       border-bottom: none;
     }

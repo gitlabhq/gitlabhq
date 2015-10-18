@@ -1,6 +1,11 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.2.0 (unreleased)
+  - Show last project commit to default branch on project home page
+  - Highlight comment based on anchor in URL
+
 v 8.1.0 (unreleased)
+  - Fix nonatomic database update potentially causing project star counts to go negative (Stan Hu)
   - Fix error preventing displaying of commit data for a directory with a leading dot (Stan Hu)
   - Speed up load times of issue detail pages by roughly 1.5x
   - Add a system note and update relevant merge requests when a branch is deleted or re-added (Stan Hu)
@@ -55,6 +60,7 @@ v 8.1.0 (unreleased)
   - Fix position of hamburger in header for smaller screens (Han Loong Liauw)
   - Fix bug where Emojis in Markdown would truncate remaining text (Sakata Sinji)
   - Persist filters when sorting on admin user page (Jerry Lukins)
+  - Allow dashboard and group issues/MRs to be filtered by label
   - Add spellcheck=false to certain input fields
   - Invalidate stored service password if the endpoint URL is changed
   - Project names are not fully shown if group name is too big, even on group page view
@@ -64,6 +70,7 @@ v 8.1.0 (unreleased)
   - Hide passwords from services API (Alex Lossent)
   - Fix: Images cannot show when projects' path was changed
   - Optimize query when filtering on issuables (Zeger-Jan van de Weg)
+  - Fix padding of outdated discussion item.
 
 v 8.0.4
   - Fix Message-ID header to be RFC 2111-compliant to prevent e-mails being dropped (Stan Hu)
