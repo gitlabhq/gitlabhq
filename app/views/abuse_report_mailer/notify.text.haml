@@ -1,5 +1,5 @@
-An abuse report was filed on `#{@abuse_report.user.username}` by `#{@abuse_report.reporter.username}`.
+#{@abuse_report.user.name} (@#{@abuse_report.user.username}) was reported for abuse by #{@abuse_report.reporter.name} (@#{@abuse_report.reporter.username}).
 \
-= @abuse_report.message
+> #{@abuse_report.message}
 \
-Abuse report admin screen: #{abuse_reports_url}
+View details: #{admin_abuse_reports_url}
