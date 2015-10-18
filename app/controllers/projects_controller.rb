@@ -5,7 +5,7 @@ class ProjectsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:show, :activity]
   before_action :project, except: [:new, :create]
   before_action :repository, except: [:new, :create]
-  before_action :assign_ref_vars, :tree, only: [:show]
+  before_action :assign_ref_vars, :tree, only: [:show], if: :repo_exists?
 
   # Authorize
   before_action :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer, :archive, :unarchive]
@@ -227,6 +227,10 @@ class ProjectsController < ApplicationController
     @id = @id.gsub(/\.git\Z/, "")
 
     render "go_import", layout: false
+  end
+
+  def repo_exists?
+    project.repository_exists? && !project.empty_repo?
   end
 
   def get_id
