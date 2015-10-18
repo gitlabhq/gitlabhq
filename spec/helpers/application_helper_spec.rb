@@ -95,7 +95,7 @@ describe ApplicationHelper do
     end
 
     it 'should call gravatar_icon when no User exists with the given email' do
-      expect(helper).to receive(:gravatar_icon).with('foo@example.com', 20)
+      expect(helper).to receive(:gravatar_icon).with('foo@example.com', 20, 2)
 
       helper.avatar_icon('foo@example.com', 20)
     end
