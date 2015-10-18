@@ -26,6 +26,18 @@ module Gitlab
         end
       end
 
+      def self.referenced_by(node)
+        project = Project.find(node.attr("data-project")) rescue nil
+        return unless project
+
+        id = node.attr("data-commit")
+        commit = commit_from_ref(project, id)
+
+        return unless commit
+
+        { commit: commit }
+      end
+
       def call
         replace_text_nodes_matching(Commit.reference_pattern) do |content|
           commit_link_filter(content)
@@ -39,17 +51,15 @@ module Gitlab
       # Returns a String with commit references replaced with links. All links
       # have `gfm` and `gfm-commit` class names attached for styling.
       def commit_link_filter(text)
-        self.class.references_in(text) do |match, commit_ref, project_ref|
+        self.class.references_in(text) do |match, id, project_ref|
           project = self.project_from_ref(project_ref)
 
-          if commit = commit_from_ref(project, commit_ref)
-            push_result(:commit, commit)
-
+          if commit = self.class.commit_from_ref(project, id)
             url = url_for_commit(project, commit)
 
             title = escape_once(commit.link_title)
             klass = reference_class(:commit)
-            data  = data_attribute(project.id)
+            data  = data_attribute(project: project.id, commit: id)
 
             project_ref += '@' if project_ref
 
@@ -62,9 +72,9 @@ module Gitlab
         end
       end
 
-      def commit_from_ref(project, commit_ref)
+      def self.commit_from_ref(project, id)
         if project && project.valid_repo?
-          project.commit(commit_ref)
+          project.commit(id)
         end
       end
 

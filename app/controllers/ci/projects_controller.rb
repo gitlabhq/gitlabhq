@@ -1,11 +1,16 @@
 module Ci
   class ProjectsController < Ci::ApplicationController
-    before_action :project
-    before_action :authenticate_user!, except: [:build, :badge]
-    before_action :authorize_access_project!, except: [:badge]
+    before_action :project, except: [:index]
+    before_action :authenticate_user!, except: [:index, :build, :badge]
+    before_action :authorize_access_project!, except: [:index, :badge]
     before_action :authorize_manage_project!, only: [:toggle_shared_runners, :dumped_yaml]
     before_action :no_cache, only: [:badge]
     protect_from_forgery
+
+    def show
+      # Temporary compatibility with CI badges pointing to CI project page
+      redirect_to namespace_project_path(project.gl_project.namespace, project.gl_project)
+    end
 
     # Project status badge
     # Image with build status for sha or ref

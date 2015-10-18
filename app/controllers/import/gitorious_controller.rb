@@ -42,7 +42,7 @@ class Import::GitoriousController < Import::BaseController
   end
 
   def verify_gitorious_import_enabled
-    not_found! unless gitorious_import_enabled?
+    render_404 unless gitorious_import_enabled?
   end
 
 end

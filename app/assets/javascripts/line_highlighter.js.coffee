@@ -6,7 +6,7 @@
 #
 # ### Example Markup
 #
-#   <div id="tree-content-holder">
+#   <div id="blob-content-holder">
 #     <div class="file-content">
 #       <div class="line-numbers">
 #         <a href="#L1" id="L1" data-line-number="1">1</a>
@@ -53,7 +53,7 @@ class @LineHighlighter
         $.scrollTo("#L#{range[0]}", offset: -150)
 
   bindEvents: ->
-    $('#tree-content-holder').on 'mousedown', 'a[data-line-number]', @clickHandler
+    $('#blob-content-holder').on 'mousedown', 'a[data-line-number]', @clickHandler
 
     # While it may seem odd to bind to the mousedown event and then throw away
     # the click event, there is a method to our madness.
@@ -62,7 +62,7 @@ class @LineHighlighter
     # active state even when the event is cancelled, resulting in an ugly border
     # around the link and/or a persisted underline text decoration.
 
-    $('#tree-content-holder').on 'click', 'a[data-line-number]', (event) ->
+    $('#blob-content-holder').on 'click', 'a[data-line-number]', (event) ->
       event.preventDefault()
 
   clickHandler: (event) =>

@@ -60,6 +60,6 @@ class Projects::RunnersController < Projects::ApplicationController
   end
 
   def runner_params
-    params.require(:runner).permit(:description, :tag_list, :contacted_at, :active)
+    params.require(:runner).permit(:description, :tag_list, :active)
   end
 end

@@ -1,0 +1,54 @@
+%tr.commit_status
+  %td.status
+    = ci_status_with_icon(commit_status.status)
+
+  %td.commit_status-link
+    - if commit_status.target_url
+      = link_to commit_status.target_url do
+        %strong Build ##{commit_status.id}
+    - else
+      %strong Build ##{commit_status.id}
+
+    - if commit_status.show_warning?
+      %i.fa.fa-warning.text-warning
+
+  %td
+    = commit_status.ref
+
+  %td
+    = commit_status.stage
+
+  %td
+    = commit_status.name
+    .pull-right
+      - if commit_status.tags.any?
+        - commit_status.tags.each do |tag|
+          %span.label.label-primary
+            = tag
+      - if commit_status.try(:trigger_request)
+        %span.label.label-info triggered
+      - if commit_status.try(:allow_failure)
+        %span.label.label-danger allowed to fail
+
+  %td.duration
+    - if commit_status.duration
+      #{duration_in_words(commit_status.finished_at, commit_status.started_at)}
+
+  %td.timestamp
+    - if commit_status.finished_at
+      %span #{time_ago_in_words commit_status.finished_at} ago
+
+  - if defined?(coverage) && coverage
+    %td.coverage
+      - if commit_status.try(:coverage)
+        #{commit_status.coverage}%
+
+  %td
+    .pull-right
+      - if current_user && can?(current_user, :manage_builds, commit_status.gl_project)
+        - if commit_status.cancel_url
+          = link_to commit_status.cancel_url, title: 'Cancel' do
+            %i.fa.fa-remove.cred
+        - elsif defined?(allow_retry) && allow_retry && commit_status.retry_url
+          = link_to commit_status.retry_url, method: :post, title: 'Retry' do
+            %i.fa.fa-repeat

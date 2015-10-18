@@ -163,7 +163,8 @@ class MergeRequestDiff < ActiveRecord::Base
         merge_request.fetch_ref
 
         # Get latest sha of branch from source project
-        source_sha = merge_request.source_project.commit(source_branch).sha
+        source_commit = merge_request.source_project.commit(source_branch)
+        source_sha = source_commit.try(:sha)
 
         Gitlab::CompareResult.new(
           Gitlab::Git::Compare.new(

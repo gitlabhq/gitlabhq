@@ -41,6 +41,8 @@ class Spinach::Features::AdminProjects < Spinach::FeatureSteps
   end
 
   step 'I transfer project to group \'Web\'' do
+    allow_any_instance_of(Projects::TransferService).
+      to receive(:move_uploads_to_new_namespace).and_return(true)
     find(:xpath, "//input[@id='new_namespace_id']").set group.id
     click_button 'Transfer'
   end

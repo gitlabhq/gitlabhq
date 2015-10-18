@@ -1,7 +1,7 @@
 - return unless [@membership, @group_member].any?
 
 - if @membership
-  = form_tag profile_notifications_path, method: :put, remote: true, class: 'inline-form', id: 'notification-form' do
+  = form_tag profile_notifications_path, method: :put, remote: true, class: 'inline', id: 'notification-form' do
     = hidden_field_tag :notification_type, 'project'
     = hidden_field_tag :notification_id, @membership.id
     = hidden_field_tag :notification_level

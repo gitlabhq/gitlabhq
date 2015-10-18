@@ -1,0 +1,400 @@
+/** COLORS **/
+.cgray { color: $gl-gray; }
+.clgray { color: #BBB }
+.cred { color: $gl-text-red; }
+.cgreen { color: $gl-text-green; }
+.cdark { color: #444 }
+
+/** COMMON CLASSES **/
+.prepend-top-10 { margin-top:10px }
+.prepend-top-default { margin-top: $gl-padding; }
+.prepend-top-20 { margin-top:20px }
+.prepend-left-10 { margin-left:10px }
+.prepend-left-20 { margin-left:20px }
+.append-right-10 { margin-right:10px }
+.append-right-20 { margin-right:20px }
+.append-bottom-10 { margin-bottom:10px }
+.append-bottom-15 { margin-bottom:15px }
+.append-bottom-20 { margin-bottom:20px }
+.inline { display: inline-block }
+.center { text-align: center }
+
+.underlined-link { text-decoration: underline; }
+.hint { font-style: italic; color: #999; }
+.light { color: $gl-gray; }
+
+.slead {
+  color: $gl-gray;
+  font-size: 15px;
+  margin-bottom: 12px;
+  font-weight: normal;
+  line-height: 24px;
+}
+
+.tab-content {
+  overflow: visible;
+}
+
+pre {
+  &.clean {
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &.well-pre {
+    border: 1px solid #EEE;
+    background: #f9f9f9;
+    border-radius: 0;
+    color: #555;
+  }
+}
+
+.dropdown-menu > li > a {
+  text-shadow: none;
+}
+
+.dropdown-menu-align-right {
+  left: auto;
+  right: 0px;
+}
+
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+  background: $gl-primary;
+  color: #FFF
+}
+
+.str-truncated {
+  @include str-truncated;
+}
+
+/** FLASH message **/
+.author_link {
+  color: $gl-link-color;
+}
+
+.back-link {
+  font-size: 14px;
+}
+
+table a code {
+  position: relative;
+  top: -2px;
+  margin-right: 3px;
+}
+
+.loading {
+  margin: 20px auto;
+  height: 40px;
+  color: #555;
+  font-size: 32px;
+  text-align: center;
+}
+
+span.update-author {
+  display: block;
+  color: #999;
+  font-weight: normal;
+  font-style: italic;
+  strong {
+    font-weight: bold;
+    font-style: normal;
+  }
+}
+
+.user-mention {
+  color: #2FA0BB;
+  font-weight: bold;
+}
+
+.field_with_errors {
+  display: inline;
+}
+
+.line_holder {
+  &:hover {
+    td {
+      background: #FFFFCF !important;
+    }
+  }
+}
+
+p.time {
+  color: #999;
+  font-size: 90%;
+  margin: 30px 3px 3px 2px;
+}
+
+.highlight {
+  text-shadow: none;
+}
+
+.thin_area{
+  height: 150px;
+}
+
+// Fixes alignment on notes.
+.new_note {
+  label {
+    text-align: left;
+  }
+}
+
+// Fix issue with notes & lists creating a bunch of bottom borders.
+li.note {
+  img { max-width:100% }
+  .note-title {
+    li {
+      border-bottom:none !important;
+    }
+  }
+}
+
+.markdown {
+  img {
+    max-width: 100%;
+  }
+}
+
+.wiki_content code, .readme code{
+  background-color: inherit;
+}
+
+.project_member_show {
+  td:first-child {
+    color: #aaa;
+  }
+}
+
+.rss-icon {
+  img {
+    width: 24px;
+    vertical-align: top;
+  }
+
+  strong {
+    line-height: 24px;
+  }
+}
+
+.show-suppressed-diff,
+.show-all-commits {
+  cursor: pointer;
+}
+
+.git_error_tips {
+  @extend .col-md-6;
+  text-align: left;
+  margin-top: 40px;
+  pre {
+    background: white;
+    border: none;
+    font-size: 12px;
+  }
+}
+
+.error-message {
+  padding: 10px;
+  background: #C67;
+  margin: 0;
+  color: #FFF;
+
+  a {
+    color: #fff;
+    text-decoration: underline;
+  }
+}
+
+.browser-alert {
+  padding: 10px;
+  text-align: center;
+  background: #C67;
+  color: #fff;
+  font-weight: bold;
+  a {
+    color: #fff;
+    text-decoration: underline;
+  }
+}
+
+.warning_message {
+  border-left: 4px solid #ed9;
+  color: #b90;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #ffffe6;
+  padding-left: 20px;
+
+  &.centered {
+    text-align: center;
+  }
+}
+
+.gitlab-promo {
+  a {
+    color: #aaa;
+    margin-right: 30px;
+  }
+}
+
+.milestone {
+  &.milestone-closed {
+    background: #f9f9f9;
+  }
+  .progress {
+    margin-bottom: 0;
+    margin-top: 4px;
+  }
+}
+
+.control-group {
+  .controls {
+    span {
+      &.descr {
+        position: relative;
+        top: 2px;
+        left: 5px;
+        color: #666;
+      }
+    }
+  }
+}
+
+img.emoji {
+  height: 20px;
+  vertical-align: middle;
+  width: 20px;
+}
+
+.chart {
+  overflow: hidden;
+  height: 220px;
+}
+
+.description-block {
+  @extend .light-well;
+  @extend .light;
+  margin-bottom: 10px;
+}
+
+table {
+  td.permission-x {
+    background: #D9EDF7 !important;
+    text-align: center;
+  }
+}
+
+.dashboard-intro-icon {
+  float: left;
+  text-align: center;
+  font-size: 32px;
+  color: #AAA;
+  width: 60px;
+}
+
+.dashboard-intro-text {
+  display: inline-block;
+  margin-left: -60px;
+  padding-left: 60px;
+  width: 100%;
+}
+
+.btn-sign-in {
+  margin-top: 8px;
+  text-shadow: none;
+}
+
+.side-filters {
+  fieldset {
+    margin-bottom: 15px;
+  }
+}
+
+.wiki .highlight, .note-body .highlight {
+  margin: 12px 0 12px 0;
+}
+
+.wiki .code {
+  overflow-x: auto;
+}
+
+.footer-links {
+  margin-bottom: 20px;
+  a {
+    margin-right: 15px;
+  }
+}
+
+.search_box {
+  @extend .well;
+  text-align: center;
+}
+
+.task-status {
+  margin-left: 10px;
+}
+
+#nprogress .spinner {
+  top: 15px !important;
+  right: 10px !important;
+}
+
+.header-with-avatar {
+  h3 {
+    margin: 0;
+    font-weight: bold;
+  }
+
+  .username {
+    font-size: 18px;
+    color: #666;
+    margin-top: 8px;
+  }
+
+  .description {
+    font-size: $gl-font-size;
+    color: #666;
+    margin-top: 8px;
+  }
+}
+
+.profiler-results {
+  top: 73px !important;
+
+  .profiler-button,
+  .profiler-controls {
+    border-color: #EEE !important;
+  }
+}
+
+.center-top-menu {
+  @include nav-menu;
+  text-align: center;
+  margin-top: 5px;
+  margin-bottom: $gl-padding;
+  height: 56px;
+  margin-top: -$gl-padding;
+  padding-top: $gl-padding;
+
+  &.no-bottom {
+    margin-bottom: 0;
+  }
+
+  &.no-top {
+    margin-top: 0;
+  }
+}
+
+.dropzone .dz-preview .dz-progress {
+  border-color: $border-color !important;
+}
+
+.dropzone .dz-preview .dz-progress .dz-upload {
+  background: $gl-success !important;
+}
+
+.space-right {
+  margin-right: 10px;
+}
