@@ -1,8 +1,12 @@
 class AbuseReportMailer < BaseMailer
+  include Gitlab::CurrentSettings
 
-  def notify(abuse_report, to_email)
-    @abuse_report = abuse_report
+  def notify(abuse_report_id)
+    @abuse_report = AbuseReport.find(abuse_report_id)
 
-    mail(to: to_email, subject: "[Gitlab] Abuse report filed for `#{@abuse_report.user.username}`")
+    mail(
+      to:       current_application_settings.admin_notification_email, 
+      subject:  "#{@abuse_report.user.name} (#{@abuse_report.user.username}) was reported for abuse"
+    )
   end
 end
