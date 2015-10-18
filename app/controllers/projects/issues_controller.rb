@@ -14,6 +14,9 @@ class Projects::IssuesController < Projects::ApplicationController
   # Allow issues bulk update
   before_action :authorize_admin_issues!, only: [:bulk_update]
 
+  # Cross-reference merge requests
+  before_action :closed_by_merge_requests, only: [:show]
+
   respond_to :html
 
   def index
@@ -110,6 +113,10 @@ class Projects::IssuesController < Projects::ApplicationController
     @issue.toggle_subscription(current_user)
 
     render nothing: true
+  end
+
+  def closed_by_merge_requests
+    @closed_by_merge_requests ||= @issue.closed_by_merge_requests(current_user)
   end
 
   protected

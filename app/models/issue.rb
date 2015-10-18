@@ -95,4 +95,14 @@ class Issue < ActiveRecord::Base
   def source_project
     project
   end
+
+  # From all notes on this issue, we'll select the system notes about linked
+  # merge requests. Of those, the MRs closing `self` are returned.
+  def closed_by_merge_requests(current_user = nil)
+    return [] unless open?
+
+    notes.system.flat_map do |note|
+      note.all_references(current_user).merge_requests
+    end.uniq.select { |mr| mr.open? && mr.closes_issue?(self) }
+  end
 end
