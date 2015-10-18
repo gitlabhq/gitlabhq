@@ -32,13 +32,13 @@ describe AbuseReportsController do
       end
 
       it "saves the abuse report" do
-        expect {
+        expect do
           post :create,
             abuse_report: {
               user_id: user.id,
               message: message
             }
-        }.to change { AbuseReport.count }.by(1)
+        end.to change { AbuseReport.count }.by(1)
       end
     end
 
@@ -48,24 +48,23 @@ describe AbuseReportsController do
       end
 
       it "does not send a notification email" do
-        expect {
+        expect do
           post :create,
             abuse_report: {
               user_id: user.id,
               message: message
             }
-          
-        }.not_to change { ActionMailer::Base.deliveries.count }
+        end.not_to change { ActionMailer::Base.deliveries.count }
       end
 
       it "saves the abuse report" do
-        expect {
+        expect do
           post :create,
             abuse_report: {
               user_id: user.id,
               message: message
             }
-        }.to change { AbuseReport.count }.by(1)
+        end.to change { AbuseReport.count }.by(1)
       end
     end
   end
