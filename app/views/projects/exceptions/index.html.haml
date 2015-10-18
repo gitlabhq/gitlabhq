@@ -1,0 +1,36 @@
+- page_title "Exceptions"
+= render "header_title"
+
+= content_for :meta_tags do
+  - if current_user
+    = auto_discovery_link_tag(:atom, namespace_project_issues_url(@project.namespace, @project, :atom, private_token: current_user.private_token), title: "#{@project.name} issues")
+
+.project-issuable-filter
+  .controls
+    .pull-left
+      - if current_user
+        = link_to "Setup", setup_namespace_project_exceptions_path(@project.namespace, @project), class: "btn btn-new pull-left", title: "Setup", id: "new_issue_link"
+
+  /= render 'shared/issuable/filter', type: :exceptions
+
+.issues-holder
+  %ul.content-list.issues-list
+    - @exceptions.each do |exception|
+      %li{ id: dom_id(exception), class: "issue", url: namespace_project_exception_path(@project.namespace, @project, exception) }
+
+        .issue-title
+          %span.issue-title-text
+            = link_to exception.message, namespace_project_exception_path(@project.namespace, @project, exception), class: "row_title"
+        .issue-info
+          = "##{exception.id} created #{time_ago_with_tooltip(exception.created_at, placement: 'bottom')}".html_safe
+
+    - if @exceptions.blank?
+      %li
+        .nothing-here-block No exceptions to show
+
+  - if @exceptions.present?
+    .pull-right
+      %span.issue_counter #{@exceptions.total_count}
+      exceptions for this filter
+
+    = paginate @exceptions, theme: "gitlab"

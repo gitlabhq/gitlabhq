@@ -1,0 +1,38 @@
+- page_title "#{@exception.message} (##{@exception.id})", "Exceptions"
+= render "header_title"
+
+%h4= @exception.try(:message)
+
+%ul.nav.nav-tabs
+  %li.active= link_to "Summary", "#summary", data: {toggle: "tab"}
+  %li= link_to "Backtrace", "#backtrace", data: {toggle: "tab"}
+  %li= link_to "User", "#user_attributes", data: {toggle: "tab"}
+  %li= link_to "Environment", "#environment", data: {toggle: "tab"}
+  %li= link_to "Parameters", "#params", data: {toggle: "tab"}
+  %li= link_to "Session", "#session", data: {toggle: "tab"}
+
+- if @exception
+  .tab-content
+    .tab-pane.active#summary
+      %h3 Summary
+      = render "summary", :err => @exception
+
+    .tab-pane#backtrace
+      %h3 Backtrace
+      = render "backtrace", :lines => @exception.err_backtraces
+
+    .tab-pane#user_attributes
+      %h3 User
+      = render "user_attributes", :user => @exception.user_attributes
+
+    .tab-pane#environment
+      %h3 Environment
+      = render "environment", :err => @exception
+
+    .tab-pane#params
+      %h3 Parameters
+      = render "params", :err => @exception
+
+    .tab-pane#session
+      %h3 Session
+      = render "session", :err => @exception

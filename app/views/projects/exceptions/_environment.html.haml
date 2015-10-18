@@ -1,0 +1,6 @@
+%table.table
+  - html_entities = HTMLEntities.new
+  - err.env_vars.sort_by {|pair| pair[0]}.each do |key, value|
+    %tr
+      %th= h(html_entities.decode(key))
+      %td.main= h(html_entities.decode(value))

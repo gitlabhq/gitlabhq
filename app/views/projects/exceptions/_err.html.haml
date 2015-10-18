@@ -1,0 +1,11 @@
+= content_tag_for(:tr, err) do
+  %td
+    %b= link_to err.message, application_err_path(err.application, err)
+    %p #{err.where} at #{err.url}
+  %td
+    = err.created_at.strftime("%a %e %b %Y - %H:%I")
+    &ndash;
+    - unless err.resolved
+      = link_to "Resolve", resolve_application_err_path(err.application, err), :method => :put
+    - else
+      = link_to "Un-Resolve", unresolve_application_err_path(err.application, err), :method => :put

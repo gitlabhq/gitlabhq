@@ -1,0 +1,5 @@
+%table.table
+  - user.each do |key, value|
+    %tr
+      %th= key
+      %td= value.to_s

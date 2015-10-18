@@ -61,6 +61,9 @@ Gitlab::Application.routes.draw do
                 authorizations: 'oauth/authorizations'
   end
 
+  # Exceptions
+  post "notifier_api/v2/notices", to: "notices#create"
+
   # Autocomplete
   get '/autocomplete/users' => 'autocomplete#users'
   get '/autocomplete/users/:id' => 'autocomplete#user'
@@ -624,6 +627,12 @@ Gitlab::Application.routes.draw do
           end
           collection do
             post  :bulk_update
+          end
+        end
+
+        resources :exceptions, constraints: { id: /\d+/ }, except: [:new, :edit, :create, :update] do
+          collection do
+            get :setup
           end
         end
 

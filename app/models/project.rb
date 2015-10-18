@@ -57,8 +57,12 @@ class Project < ActiveRecord::Base
 
   # set last_activity_at to the same as created_at
   after_create :set_last_activity_at
+  after_create :set_exceptions_token
   def set_last_activity_at
     update_column(:last_activity_at, self.created_at)
+  end
+  def set_exceptions_token
+    update_column(:exceptions_token, SecureRandom.uuid)
   end
 
   ActsAsTaggableOn.strict_case_match = true
@@ -110,6 +114,7 @@ class Project < ActiveRecord::Base
   has_many :events,             dependent: :destroy
   has_many :milestones,         dependent: :destroy
   has_many :notes,              dependent: :destroy
+  has_many :exceptions,         dependent: :destroy, class_name: 'Err'
   has_many :snippets,           dependent: :destroy, class_name: 'ProjectSnippet'
   has_many :hooks,              dependent: :destroy, class_name: 'ProjectHook'
   has_many :protected_branches, dependent: :destroy

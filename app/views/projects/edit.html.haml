@@ -71,6 +71,15 @@
             .form-group
               .col-sm-offset-2.col-sm-10
                 .checkbox
+                  = f.label :exceptions_enabled do
+                    = f.check_box :exceptions_enabled
+                    %strong Exceptions
+                    %br
+                    %span.descr Error logging with the Airbrake client
+
+            .form-group
+              .col-sm-offset-2.col-sm-10
+                .checkbox
                   = f.label :snippets_enabled do
                     = f.check_box :snippets_enabled
                     %strong Snippets

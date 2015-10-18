@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151016195706) do
+ActiveRecord::Schema.define(version: 20151017131404) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -317,6 +317,38 @@ ActiveRecord::Schema.define(version: 20151016195706) do
   add_index "emails", ["email"], name: "index_emails_on_email", unique: true, using: :btree
   add_index "emails", ["user_id"], name: "index_emails_on_user_id", using: :btree
 
+  create_table "err_backtraces", force: true do |t|
+    t.integer  "err_id"
+    t.string   "method"
+    t.string   "file"
+    t.integer  "line"
+    t.integer  "column"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "err_backtraces", ["err_id"], name: "index_err_backtraces_on_err_id", using: :btree
+
+  create_table "errs", force: true do |t|
+    t.integer  "project_id"
+    t.string   "error_class"
+    t.text     "message"
+    t.string   "request_url"
+    t.string   "request_component"
+    t.string   "request_action"
+    t.string   "framework"
+    t.string   "server_project_root"
+    t.text     "server_environment"
+    t.boolean  "resolved"
+    t.text     "request"
+    t.text     "notifier"
+    t.text     "user_attributes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "errs", ["project_id"], name: "index_errs_on_project_id", using: :btree
+
   create_table "events", force: true do |t|
     t.string   "target_type"
     t.integer  "target_id"
@@ -616,6 +648,8 @@ ActiveRecord::Schema.define(version: 20151016195706) do
     t.string   "import_type"
     t.string   "import_source"
     t.integer  "commit_count",           default: 0
+    t.boolean  "exceptions_enabled"
+    t.string   "exceptions_token"
   end
 
   add_index "projects", ["created_at", "id"], name: "index_projects_on_created_at_and_id", using: :btree

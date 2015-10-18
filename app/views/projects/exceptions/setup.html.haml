@@ -1,0 +1,19 @@
+%pre
+  %code
+    - if request.ssl?
+      :preserve
+        Copy and paste the following into 'config/initializers/airbrake.rb'
+        
+        Airbrake.configure do |config|
+          config.host    = "#{request.host}"
+          config.api_key = "#{@project.exceptions_token}"
+          config.secure  = true
+        end
+    - else
+      :preserve
+        Copy and paste the following into 'config/initializers/airbrake.rb'
+        
+        Airbrake.configure do |config|
+          config.host    = "#{request.host}"
+          config.api_key = "#{@project.exceptions_token}"
+        end

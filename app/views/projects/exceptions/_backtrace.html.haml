@@ -1,0 +1,3 @@
+%table.table
+  - grouped_lines(lines).each do |in_app, line_group|
+    = render :partial => "projects/exceptions/backtrace_line", :collection => line_group, :as => :line

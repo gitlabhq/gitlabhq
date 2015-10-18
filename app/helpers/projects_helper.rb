@@ -129,6 +129,10 @@ module ProjectsHelper
       nav_tabs << :wiki
     end
 
+    if project.exceptions_enabled && can?(current_user, :read_exception, project)
+      nav_tabs << :exceptions
+    end
+
     if can?(current_user, :read_project_snippet, project)
       nav_tabs << :snippets
     end

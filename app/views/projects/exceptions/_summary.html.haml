@@ -1,0 +1,35 @@
+%dl.dl-horizontal
+  %tr
+    %dt Error Class
+    %dd= err.error_class
+  - if err.request['url'].present?
+    %tr
+      %dt URL
+      %dd.nowrap= link_to err.request['url'], err.request['url']
+    %tr
+      %dt &nbsp;
+      %dd= err.to_curl
+  %tr
+    %dt Where
+    %dd= err.where
+  %tr
+    %dt Occurred
+    %dd= err.created_at.to_s(:precise)
+  %tr
+    %dt Browser
+    %dd= err.user_agent
+  - if err.server_environment && err.server_environment["hostname"]
+    %tr
+      %dt App Server
+      %dd= err.server_environment && err.server_environment["hostname"]
+  - if err.app_version.present?
+    %tr
+      %dt App Version
+      %dd= err.app_version
+  - if err.framework
+    %tr
+      %dt Framework
+      %dd= err.framework
+  %tr
+    %dt Rel. Directory
+    %dd= err.server_environment && err.server_environment["project-root"]
