@@ -71,7 +71,7 @@ module ProjectsHelper
   end
 
   def remove_fork_project_message(project)
-    "You are going to remove the fork relationship to the source project from #{@project.forked_from_project.namespace.try(:name)}.  Are you ABSOLUTELY sure?"
+    "You are going to remove the fork relationship to source project #{@project.forked_from_project.name_with_namespace}.  Are you ABSOLUTELY sure?"
   end
 
   def project_nav_tabs

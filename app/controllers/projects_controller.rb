@@ -71,7 +71,7 @@ class ProjectsController < ApplicationController
 
     if @project.forked?
       @project.forked_project_link.destroy
-      flash[:notice] = 'Fork relationship has been removed.'
+      flash[:notice] = 'The fork relationship has been removed.'
     end
   end
 
@@ -150,6 +150,7 @@ class ProjectsController < ApplicationController
 
   def archive
     return access_denied! unless can?(current_user, :archive_project, @project)
+
     @project.archive!
 
     respond_to do |format|
@@ -159,6 +160,7 @@ class ProjectsController < ApplicationController
 
   def unarchive
     return access_denied! unless can?(current_user, :archive_project, @project)
+
     @project.unarchive!
 
     respond_to do |format|

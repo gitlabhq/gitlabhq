@@ -63,7 +63,7 @@ describe ProjectsController do
     end
   end
 
-  describe "PUT remove_fork" do
+  describe "DELETE remove_fork" do
     context 'when signed in' do
       before do
         sign_in(user)
@@ -82,7 +82,7 @@ describe ProjectsController do
               id: project_fork.to_param, format: :js)
 
           expect(project_fork.forked?).to be_falsey
-          expect(flash[:notice]).to eq('Fork relationship has been removed.')
+          expect(flash[:notice]).to eq('The fork relationship has been removed.')
           expect(response).to render_template(:remove_fork)
         end
       end
