@@ -1,6 +1,5 @@
-- return unless [@membership, @group_member].any?
-
-- if @membership
+- case @membership
+- when ProjectMember
   = form_tag profile_notifications_path, method: :put, remote: true, class: 'inline', id: 'notification-form' do
     = hidden_field_tag :notification_type, 'project'
     = hidden_field_tag :notification_id, @membership.id
@@ -14,8 +13,8 @@
         - Notification.project_notification_levels.each do |level|
           = notification_list_item(level, @membership)
 
-- elsif @group_member
-  .btn.btn-new.disabled#notifications-button
+- when GroupMember
+  .btn.btn-new.disabled
     = icon('bell')
-    = notification_label(@group_member)
+    = notification_label(@membership)
     = icon('angle-down')
