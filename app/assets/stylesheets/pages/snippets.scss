@@ -31,49 +31,49 @@
   }
 }
 
-.snippet-details {
-  .page-title {
-    margin-top: -15px;
-    padding: 10px 0;
-    margin-bottom: 0;
-    color: #5c5d5e;
-    font-size: 13px;
-    @include clearfix();
+.snippet-holder {
+  .snippet-details {
+    .page-title {
+      margin-top: -15px;
+      padding: 10px 0;
+      margin-bottom: 0;
+      color: #5c5d5e;
+      font-size: 16px;
 
-    .creator {
-      color: $gl-gray;
-      a {
-        color: $gl-gray;
+      .author {
+        color: #5c5d5e;
+      }
+
+      .snippet-id {
+        color: #5c5d5e;
       }
     }
 
-    .snippet-id {
-      color: #5c5d5e;
+    .snippet-title {
+      margin: 0;
+      font-size: 23px;
+      color: #313236;
     }
-    .btn {
-      padding: 10px $gl-padding;
+
+    @media (max-width: $screen-md-max) {
+      .new-snippet-link {
+        display: none;
+      }
+    }
+
+    @media (max-width: $screen-sm-max) {
+      .creator,
+      .page-title .btn-close {
+        display: none;
+      }
     }
   }
 
-  .snippet-title {
-    margin: 0;
-    font-size: 23px;
-    color: #313236;
-  }
-
-  @media (max-width: $screen-md-max) {
-    .new-snippet-link {
-      display: none;
-    }
-  }
-
-  @media (max-width: $screen-sm-max) {
-    .creator,
-    .page-title .btn-close {
-      display: none;
-    }
+  .file-holder {
+    border-top: 0;
   }
 }
+
 
 .snippet-box {
   @include border-radius(2px);

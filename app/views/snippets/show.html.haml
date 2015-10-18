@@ -1,12 +1,14 @@
 - page_title @snippet.title, "Snippets"
-= render 'shared/snippets/header'
 
-.file-holder
-  .file-title
-    %i.fa.fa-file
-    %strong
-      = @snippet.file_name
-    .file-actions
-      .btn-group
-        = link_to 'Raw', raw_snippet_path(@snippet), class: "btn btn-sm", target: "_blank"
-  = render 'shared/snippets/blob'
+.snippet-holder
+  = render 'shared/snippets/header'
+
+  %article.file-holder
+    .file-title
+      = blob_icon 0, @snippet.file_name
+      %strong
+        = @snippet.file_name
+      .file-actions.hidden-xs
+        .btn-group.tree-btn-group
+          = link_to 'Raw', raw_snippet_path(@snippet), class: "btn btn-sm", target: "_blank"
+    = render 'shared/snippets/blob'

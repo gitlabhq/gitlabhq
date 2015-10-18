@@ -59,7 +59,7 @@ v 8.1.0 (unreleased)
   - Fix position of hamburger in header for smaller screens (Han Loong Liauw)
   - Fix bug where Emojis in Markdown would truncate remaining text (Sakata Sinji)
   - Persist filters when sorting on admin user page (Jerry Lukins)
-  - Added last modified date to snippets#show (Han Loong Liauw)
+  - Update style of snippet detail page (Han Loong Liauw)
   - Allow dashboard and group issues/MRs to be filtered by label
   - Add spellcheck=false to certain input fields
   - Invalidate stored service password if the endpoint URL is changed
