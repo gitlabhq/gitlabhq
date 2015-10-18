@@ -9,45 +9,65 @@ describe AbuseReportsController do
     sign_in(reporter)
   end
 
-  describe "with admin notification_email set" do
-    let(:admin_email) { "admin@example.com"}
-    before(:example) { allow(current_application_settings).to receive(:admin_notification_email).and_return(admin_email) }
+  describe "POST create" do
+    context "with admin notification email set" do
+      let(:admin_email) { "admin@example.com"}
 
-    it "sends a notification email" do
-      post(:create,
-        abuse_report: {
-          user_id: user.id,
-          message: message
-        }
-      )
+      before(:each) do
+        stub_application_setting(admin_notification_email: admin_email)
+      end
 
-      expect(response).to have_http_status(:redirect)
-      expect(flash[:notice]).to start_with("Thank you for your report")
-
-      email = ActionMailer::Base.deliveries.last
-
-      expect(email).to          be_present
-      expect(email.subject).to  eq("[Gitlab] Abuse report filed for `#{user.username}`")
-      expect(email.to).to       eq([admin_email])
-      expect(email.body).to     include(message)
-    end
-  end
-
-  describe "without admin notification email set" do
-    before(:example) { allow(current_application_settings).to receive(:admin_notification_email).and_return(nil) }
-
-    it "does not send a notification email" do
-      expect do
-        post(:create,
+      it "sends a notification email" do
+        post :create,
           abuse_report: {
             user_id: user.id,
             message: message
           }
-        )
-      end.to_not change{ActionMailer::Base.deliveries}
 
-      expect(response).to have_http_status(:redirect)
-      expect(flash[:notice]).to start_with("Thank you for your report")
+        email = ActionMailer::Base.deliveries.last
+
+        expect(email.to).to eq([admin_email])
+        expect(email.subject).to include(user.username)
+        expect(email.text_part.body).to include(message)
+      end
+
+      it "saves the abuse report" do
+        expect {
+          post :create,
+            abuse_report: {
+              user_id: user.id,
+              message: message
+            }
+        }.to change { AbuseReport.count }.by(1)
+      end
+    end
+
+    context "without admin notification email set" do
+      before(:each) do
+        stub_application_setting(admin_notification_email: nil)
+      end
+
+      it "does not send a notification email" do
+        expect {
+          post :create,
+            abuse_report: {
+              user_id: user.id,
+              message: message
+            }
+          
+        }.not_to change { ActionMailer::Base.deliveries.count }
+      end
+
+      it "saves the abuse report" do
+        expect {
+          post :create,
+            abuse_report: {
+              user_id: user.id,
+              message: message
+            }
+        }.to change { AbuseReport.count }.by(1)
+      end
     end
   end
+
 end
