@@ -23,9 +23,17 @@
       .col-sm-10
         = text_field_tag 'new_branch', @ref, class: "form-control"
 
+    .form-group.destination
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = label_tag :create_merge_request do
+            = check_box_tag :create_merge_request, 1, false
+            Start a new merge request
+
     = hidden_field_tag 'last_commit', @last_commit
     = hidden_field_tag 'content', '', id: "file-content"
     = hidden_field_tag 'from_merge_request_id', params[:from_merge_request_id]
+    = hidden_field_tag 'original_branch', @ref
     = render 'projects/commit_button', ref: @ref, cancel_path: @after_edit_path
 
 :javascript

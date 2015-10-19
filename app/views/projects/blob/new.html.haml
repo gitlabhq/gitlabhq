@@ -17,7 +17,15 @@
         .col-sm-10
           = text_field_tag 'new_branch', @ref, class: "form-control js-quick-submit"
 
+      .form-group.destination
+        .col-sm-offset-2.col-sm-10
+          .checkbox
+            = label_tag :create_merge_request do
+              = check_box_tag :create_merge_request, 1, false
+              Start a new merge request
+
     = hidden_field_tag 'content', '', id: 'file-content'
+    = hidden_field_tag 'original_branch', @ref
     = render 'projects/commit_button', ref: @ref,
               cancel_path: namespace_project_tree_path(@project.namespace, @project, @id)
 

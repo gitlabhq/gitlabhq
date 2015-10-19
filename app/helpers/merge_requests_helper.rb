@@ -1,32 +1,4 @@
 module MergeRequestsHelper
-  def new_mr_path_from_push_event(event)
-    target_project = event.project.forked_from_project || event.project
-    new_namespace_project_merge_request_path(
-      event.project.namespace,
-      event.project,
-      new_mr_from_push_event(event, target_project)
-    )
-  end
-
-  def new_mr_path_for_fork_from_push_event(event)
-    new_namespace_project_merge_request_path(
-      event.project.namespace,
-      event.project,
-      new_mr_from_push_event(event, event.project.forked_from_project)
-    )
-  end
-
-  def new_mr_from_push_event(event, target_project)
-    {
-      merge_request: {
-        source_project_id: event.project.id,
-        target_project_id: target_project.id,
-        source_branch: event.branch_name,
-        target_branch: target_project.repository.root_ref
-      }
-    }
-  end
-
   def mr_css_classes(mr)
     classes = "merge-request"
     classes << " closed" if mr.closed?

@@ -27,7 +27,14 @@ class Projects::BlobController < Projects::ApplicationController
     if result[:status] == :success
       flash[:notice] = "The changes have been successfully committed"
       respond_to do |format|
-        format.html { redirect_to namespace_project_blob_path(@project.namespace, @project, File.join(@target_branch, @file_path)) }
+        format.html do
+          url = if params[:create_merge_request]
+            new_mr_path_from_push_event(current_user.recent_push(@project.id), @ref)
+          else
+            namespace_project_blob_path(@project.namespace, @project, File.join(@target_branch, @file_path))
+          end
+          redirect_to url
+        end
         format.json { render json: { message: "success", filePath: namespace_project_blob_path(@project.namespace, @project, File.join(@target_branch, @file_path)) } }
       end
     else
@@ -52,7 +59,14 @@ class Projects::BlobController < Projects::ApplicationController
     if result[:status] == :success
       flash[:notice] = "Your changes have been successfully committed"
       respond_to do |format|
-        format.html { redirect_to after_edit_path }
+        format.html do
+          url = if params[:create_merge_request]
+            new_mr_path_from_push_event(current_user.recent_push(@project.id), @ref)
+          else
+            after_edit_path
+          end
+          redirect_to url
+        end
         format.json { render json: { message: "success", filePath: after_edit_path } }
       end
     else
