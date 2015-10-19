@@ -64,6 +64,10 @@
       = icon("exclamation-triangle fw")
       Archived project! Repository is read-only
 
+- if @repository.commit
+  .content-block.second-block.white
+    = render 'projects/last_commit', commit: @repository.commit, project: @project
+
 %section
   - if prefer_readme?
     .project-show-readme

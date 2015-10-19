@@ -15,18 +15,17 @@ class MarkdownFeature
   end
 
   def group
-    unless @group
-      @group = create(:group)
-      @group.add_developer(user)
+    @group ||= create(:group).tap do |group|
+      group.add_developer(user)
     end
-
-    @group
   end
 
   # Direct references ----------------------------------------------------------
 
   def project
-    @project ||= create(:project)
+    @project ||= create(:project).tap do |project|
+      project.team << [user, :master]
+    end
   end
 
   def issue
@@ -46,12 +45,10 @@ class MarkdownFeature
   end
 
   def commit_range
-    unless @commit_range
+    @commit_range ||= begin
       commit2 = project.commit('HEAD~3')
-      @commit_range = CommitRange.new("#{commit.id}...#{commit2.id}", project)
+      CommitRange.new("#{commit.id}...#{commit2.id}", project)
     end
-
-    @commit_range
   end
 
   def simple_label
@@ -65,13 +62,12 @@ class MarkdownFeature
   # Cross-references -----------------------------------------------------------
 
   def xproject
-    unless @xproject
+    @xproject ||= begin
       namespace = create(:namespace, name: 'cross-reference')
-      @xproject = create(:project, namespace: namespace)
-      @xproject.team << [user, :developer]
+      create(:project, namespace: namespace) do |project|
+        project.team << [user, :developer]
+      end
     end
-
-    @xproject
   end
 
   def xissue
@@ -91,12 +87,10 @@ class MarkdownFeature
   end
 
   def xcommit_range
-    unless @xcommit_range
+    @xcommit_range ||= begin
       xcommit2 = xproject.commit('HEAD~2')
-      @xcommit_range = CommitRange.new("#{xcommit.id}...#{xcommit2.id}", xproject)
+      CommitRange.new("#{xcommit.id}...#{xcommit2.id}", xproject)
     end
-
-    @xcommit_range
   end
 
   def raw_markdown

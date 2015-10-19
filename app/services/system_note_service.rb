@@ -168,6 +168,31 @@ class SystemNoteService
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
+  # Called when a branch in Noteable is added or deleted
+  #
+  # noteable    - Noteable object
+  # project     - Project owning noteable
+  # author      - User performing the change
+  # branch_type - :source or :target
+  # branch      - branch name
+  # presence    - :add or :delete
+  #
+  # Example Note text:
+  #
+  #   "Restored target branch `feature`"
+  #
+  # Returns the created Note object
+  def self.change_branch_presence(noteable, project, author, branch_type, branch, presence)
+    verb =
+      if presence == :add
+        'restored'
+      else
+        'deleted'
+      end
+    body = "#{verb} #{branch_type.to_s} branch `#{branch}`".capitalize
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
   # Called when a Mentionable references a Noteable
   #
   # noteable  - Noteable object being referenced

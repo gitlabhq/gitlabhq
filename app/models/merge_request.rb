@@ -222,10 +222,6 @@ class MergeRequest < ActiveRecord::Base
     self.target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::CLOSED).last
   end
 
-  def open?
-    opened? || reopened?
-  end
-
   def work_in_progress?
     !!(title =~ /\A\[?WIP\]?:? /i)
   end
@@ -292,6 +288,10 @@ class MergeRequest < ActiveRecord::Base
 
   def project
     target_project
+  end
+
+  def closes_issue?(issue)
+    closes_issues.include?(issue)
   end
 
   # Return the set of issues that will be closed if this merge request is accepted.

@@ -46,6 +46,7 @@
                 = markdown(@issue.description)
             %textarea.hidden.js-task-list-field
               = @issue.description
-
+  - if @closed_by_merge_requests.present?
+    = render 'projects/issues/closed_by_box'
   .issue-discussion
     = render 'projects/issues/discussion'
