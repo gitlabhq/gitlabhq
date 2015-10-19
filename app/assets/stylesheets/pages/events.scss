@@ -7,7 +7,7 @@
   padding: $gl-padding;
   margin-left: -$gl-padding;
   margin-right: -$gl-padding;
-  border-bottom: 1px solid #f1f2f4;
+  border-bottom: 1px solid $table-border-color;
   color: #7f8fa4;
 
   &.event-inline {

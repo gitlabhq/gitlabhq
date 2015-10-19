@@ -3,25 +3,26 @@
   Application: #{@application.name}
 
 
-%table.table
-  %tr
-    %td
-      Application Id
-    %td
-      %code#application_id= @application.uid
-  %tr
-    %td
-      Secret:
-    %td
-      %code#secret= @application.secret
+.table-holder
+  %table.table
+    %tr
+      %td
+        Application Id
+      %td
+        %code#application_id= @application.uid
+    %tr
+      %td
+        Secret:
+      %td
+        %code#secret= @application.secret
 
-  %tr
-    %td
-      Callback url
-    %td
-      - @application.redirect_uri.split.each do |uri|
-        %div
-          %span.monospace= uri
+    %tr
+      %td
+        Callback url
+      %td
+        - @application.redirect_uri.split.each do |uri|
+          %div
+            %span.monospace= uri
 .form-actions
   = link_to 'Edit', edit_admin_application_path(@application), class: 'btn btn-primary wide pull-left'
   = render 'delete_form', application: @application, submit_btn_css: 'btn btn-danger prepend-left-10'

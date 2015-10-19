@@ -6,7 +6,7 @@
 
   .timeline-entry {
     padding: $gl-padding;
-    border-color: #f1f2f4;
+    border-color: $table-border-color;
     margin-left: -$gl-padding;
     margin-right: -$gl-padding;
     color: $gl-gray;

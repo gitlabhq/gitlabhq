@@ -2,12 +2,13 @@
 = render 'admin/users/head'
 
 - if @identities.present?
-  %table.table
-    %thead
-      %tr
-        %th Provider
-        %th Identifier
-        %th
-    = render @identities
+  .table-holder
+    %table.table
+      %thead
+        %tr
+          %th Provider
+          %th Identifier
+          %th
+      = render @identities
 - else
   %h4 This user has no identities
