@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.2.0 (unreleased)
   - Show last project commit to default branch on project home page
   - Highlight comment based on anchor in URL
+  - Adds ability to remove the forked relationship from project settings screen. (Han Loong Liauw)
 
 v 8.1.0 (unreleased)
   - Fix bug preventing mentioned issued from being closed when MR is merged using fast-forward merge.

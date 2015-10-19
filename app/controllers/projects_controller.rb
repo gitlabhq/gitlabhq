@@ -8,7 +8,7 @@ class ProjectsController < ApplicationController
   before_action :assign_ref_vars, :tree, only: [:show], if: :repo_exists?
 
   # Authorize
-  before_action :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer, :archive, :unarchive]
+  before_action :authorize_admin_project!, only: [:edit, :update]
   before_action :event_filter, only: [:show, :activity]
 
   layout :determine_layout
@@ -59,11 +59,22 @@ class ProjectsController < ApplicationController
   end
 
   def transfer
+    return access_denied! unless can?(current_user, :change_namespace, @project)
+
     namespace = Namespace.find_by(id: params[:new_namespace_id])
     ::Projects::TransferService.new(project, current_user).execute(namespace)
 
     if @project.errors[:new_namespace].present?
       flash[:alert] = @project.errors[:new_namespace].first
+    end
+  end
+
+  def remove_fork
+    return access_denied! unless can?(current_user, :remove_fork_project, @project)
+
+    if @project.forked?
+      @project.forked_project_link.destroy
+      flash[:notice] = 'The fork relationship has been removed.'
     end
   end
 
@@ -142,6 +153,7 @@ class ProjectsController < ApplicationController
 
   def archive
     return access_denied! unless can?(current_user, :archive_project, @project)
+
     @project.archive!
 
     respond_to do |format|
@@ -151,6 +163,7 @@ class ProjectsController < ApplicationController
 
   def unarchive
     return access_denied! unless can?(current_user, :archive_project, @project)
+
     @project.unarchive!
 
     respond_to do |format|
