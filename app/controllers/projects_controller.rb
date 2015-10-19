@@ -246,6 +246,8 @@ class ProjectsController < ApplicationController
     project.repository_exists? && !project.empty_repo?
   end
 
+  # Override get_id from ExtractsPath, which returns the branch and file path 
+  # for the blob/tree, which in this case is just the root of the default branch.
   def get_id
     project.repository.root_ref
   end
