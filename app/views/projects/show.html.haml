@@ -7,8 +7,7 @@
     = render 'shared/no_ssh'
     = render 'shared/no_password'
 
-- if prefer_readme?
-  = render 'projects/last_push'
+= render 'projects/last_push'
 
 = render "home_panel"
 
@@ -28,7 +27,7 @@
       = link_to project_files_path(@project) do
         = repository_size
 
-    - if !prefer_readme? && @repository.readme
+    - if default_project_view != 'readme' && @repository.readme
       %li
         = link_to 'Readme', readme_path(@project)
 
@@ -68,14 +67,8 @@
   .content-block.second-block.white
     = render 'projects/last_commit', commit: @repository.commit, project: @project
 
-%section
-  - if prefer_readme?
-    .project-show-readme
-      = render 'projects/readme'
-  - else
-    .project-show-activity
-      = render 'projects/activity'
-
+%div{class: "project-show-#{default_project_view}"}
+  = render default_project_view
 
 - if current_user
   - access = user_max_access_in_project(current_user, @project)

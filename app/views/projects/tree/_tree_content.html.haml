@@ -29,7 +29,7 @@
                 = icon('folder fw')
                 New directory
 
-%div#tree-content-holder.tree-content-holder
+%div.tree-content-holder
   .table-holder
     %table.table#tree-slider{class: "table_#{@hex_path} tree-table table-striped" }
       %thead
@@ -59,8 +59,6 @@
 
   - if tree.readme
     = render "projects/tree/readme", readme: tree.readme
-
-%div.tree_progress
 
 - if allowed_tree_edit?
   = render 'projects/blob/upload', title: 'Upload', placeholder: 'Upload new file', button_title: 'Upload file', form_path: namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post

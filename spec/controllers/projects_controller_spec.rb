@@ -22,6 +22,34 @@ describe ProjectsController do
       end
     end
 
+    context "rendering default project view" do
+      render_views
+
+      it "renders the activity view" do
+        allow(controller).to receive(:current_user).and_return(user)
+        allow(user).to receive(:project_view).and_return('activity')
+
+        get :show, namespace_id: public_project.namespace.path, id: public_project.path
+        expect(response).to render_template('_activity')
+      end
+
+      it "renders the readme view" do
+        allow(controller).to receive(:current_user).and_return(user)
+        allow(user).to receive(:project_view).and_return('readme')
+
+        get :show, namespace_id: public_project.namespace.path, id: public_project.path
+        expect(response).to render_template('_readme')
+      end
+
+      it "renders the files view" do
+        allow(controller).to receive(:current_user).and_return(user)
+        allow(user).to receive(:project_view).and_return('files')
+
+        get :show, namespace_id: public_project.namespace.path, id: public_project.path
+        expect(response).to render_template('_files')
+      end
+    end
+
     context "when requested with case sensitive namespace and project path" do
       it "redirects to the normalized path for case mismatch" do
         get :show, namespace_id: public_project.namespace.path, id: public_project.path.upcase
@@ -60,6 +88,52 @@ describe ProjectsController do
            namespace_id: project.namespace.to_param,
            id: public_project.to_param)
       expect(user.starred?(public_project)).to be_falsey
+    end
+  end
+
+  describe "DELETE remove_fork" do
+    context 'when signed in' do
+      before do
+        sign_in(user)
+      end
+
+      context 'with forked project' do
+        let(:project_fork) { create(:project, namespace: user.namespace) }
+
+        before do
+          create(:forked_project_link, forked_to_project: project_fork)
+        end
+
+        it 'should remove fork from project' do
+          delete(:remove_fork,
+              namespace_id: project_fork.namespace.to_param,
+              id: project_fork.to_param, format: :js)
+
+          expect(project_fork.forked?).to be_falsey
+          expect(flash[:notice]).to eq('The fork relationship has been removed.')
+          expect(response).to render_template(:remove_fork)
+        end
+      end
+
+      context 'when project not forked' do
+        let(:unforked_project) { create(:project, namespace: user.namespace) }
+
+        it 'should do nothing if project was not forked' do
+          delete(:remove_fork,
+              namespace_id: unforked_project.namespace.to_param,
+              id: unforked_project.to_param, format: :js)
+
+          expect(flash[:notice]).to be_nil
+          expect(response).to render_template(:remove_fork)
+        end
+      end
+    end
+
+    it "does nothing if user is not signed in" do
+      delete(:remove_fork,
+          namespace_id: project.namespace.to_param,
+          id: project.to_param, format: :js)
+      expect(response.status).to eq(401)
     end
   end
 end

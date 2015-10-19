@@ -1,0 +1,32 @@
+.tree-ref-holder
+  = render 'shared/ref_switcher', destination: 'tree', path: @path
+
+%ul.breadcrumb.repo-breadcrumb
+  %li
+    = link_to namespace_project_tree_path(@project.namespace, @project, @ref) do
+      = @project.path
+  - tree_breadcrumbs(tree, 6) do |title, path|
+    %li
+      - if path
+        = link_to truncate(title, length: 40), namespace_project_tree_path(@project.namespace, @project, path)
+      - else
+        = link_to title, '#'
+  - if allowed_tree_edit?
+    %li
+      %span.dropdown
+        %a.dropdown-toggle.btn.add-to-tree{href: '#', "data-toggle" => "dropdown"}
+          = icon('plus')
+        %ul.dropdown-menu
+          %li
+            = link_to namespace_project_new_blob_path(@project.namespace, @project, @id), title: 'Create file', id: 'new-file-link' do
+              = icon('pencil fw')
+              Create file
+          %li
+            = link_to '#modal-upload-blob', { 'data-target' => '#modal-upload-blob', 'data-toggle' => 'modal'} do
+              = icon('file fw')
+              Upload file
+          %li.divider
+          %li
+            = link_to '#modal-create-new-dir', { 'data-target' => '#modal-create-new-dir', 'data-toggle' => 'modal'} do
+              = icon('folder fw')
+              New directory

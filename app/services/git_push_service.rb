@@ -79,7 +79,7 @@ class GitPushService
 
     authors = Hash.new do |hash, commit|
       email = commit.author_email
-      return hash[email] if hash.has_key?(email)
+      next hash[email] if hash.has_key?(email)
 
       hash[email] = commit_user(commit)
     end
