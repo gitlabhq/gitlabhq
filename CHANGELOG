@@ -1,9 +1,5 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.2.0 (unreleased)
-  - Show last project commit to default branch on project home page
-  - Highlight comment based on anchor in URL
-
 v 8.1.0 (unreleased)
   - Send an email to admin email when a user is reported for spam (Jonathan Rochkind)
   - Show notifications button when user is member of group rather than project (Grzegorz Bizon)
