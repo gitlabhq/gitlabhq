@@ -71,6 +71,7 @@ v 8.1.0 (unreleased)
   - Only render 404 page from /public
   - Hide passwords from services API (Alex Lossent)
   - Fix: Images cannot show when projects' path was changed
+  - Optimize query when filtering on issuables (Zeger-Jan van de Weg)
   - Fix padding of outdated discussion item.
 
 v 8.0.4
