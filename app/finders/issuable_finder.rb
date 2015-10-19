@@ -93,7 +93,7 @@ class IssuableFinder
     params[:milestone_title].present?
   end
 
-  def no_milestones?
+  def filter_by_no_milestone?
     milestones? && params[:milestone_title] == Milestone::None.title
   end
 
@@ -114,7 +114,7 @@ class IssuableFinder
     params[:label_name].present?
   end
 
-  def no_labels?
+  def filter_by_no_label?
     labels? && params[:label_name] == Label::None.title
   end
 
@@ -227,7 +227,7 @@ class IssuableFinder
 
   def by_milestone(items)
     if milestones?
-      if no_milestones?
+      if filter_by_no_milestone?
         items = items.where(milestone_id: [-1, nil])
       else
         items = items.joins(:milestone).where(milestones: { title: params[:milestone_title] })
@@ -243,7 +243,7 @@ class IssuableFinder
 
   def by_label(items)
     if labels?
-      if no_labels?
+      if filter_by_no_label?
         items = items.
           joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{klass.name}' AND label_links.target_id = #{klass.table_name}.id").
           where(label_links: { id: nil })
