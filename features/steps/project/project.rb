@@ -86,13 +86,13 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should see project "Forum" README' do
-    page.within('#README') do
+    page.within('.readme-holder') do
       expect(page).to have_content 'Sample repo for testing gitlab features'
     end
   end
 
   step 'I should see project "Shop" README' do
-    page.within('#README') do
+    page.within('.readme-holder') do
       expect(page).to have_content 'testme'
     end
   end

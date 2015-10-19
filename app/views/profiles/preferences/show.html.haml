@@ -38,7 +38,7 @@
         .col-sm-10
           = f.select :layout, layout_choices, {}, class: 'form-control'
           .help-block
-            Choose between fixed (max. 1200px) and fluid (100%) application layout
+            Choose between fixed (max. 1200px) and fluid (100%) application layout.
       .form-group
         = f.label :dashboard, class: 'control-label' do
           Default Dashboard
@@ -52,6 +52,6 @@
         .col-sm-10
           = f.select :project_view, project_view_choices, {}, class: 'form-control'
           .help-block
-            Choose what content you want to see when visit project page
+            Choose what content you want to see on a project's home page.
     .panel-footer
       = f.submit 'Save', class: 'btn btn-save'
