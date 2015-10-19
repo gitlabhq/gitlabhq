@@ -87,7 +87,7 @@ class ProjectsController < ApplicationController
             render 'projects/empty'
           else
             if current_user
-              @membership = @project.project_member_by_id(current_user.id)
+              @membership = @project.team.find_member(current_user.id)
             end
 
             render :show

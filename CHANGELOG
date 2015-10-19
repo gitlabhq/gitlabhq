@@ -6,6 +6,7 @@ v 8.2.0 (unreleased)
 
 v 8.1.0 (unreleased)
   - Send an email to admin email when a user is reported for spam (Jonathan Rochkind)
+  - Show notifications button when user is member of group rather than project (Grzegorz Bizon)
   - Fix bug preventing mentioned issued from being closed when MR is merged using fast-forward merge.
   - Fix nonatomic database update potentially causing project star counts to go negative (Stan Hu)
   - Fix error preventing displaying of commit data for a directory with a leading dot (Stan Hu)
