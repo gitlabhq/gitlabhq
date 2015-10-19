@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+development
+  - Adds ability to create directories using the web editor
+
 v 8.2.0 (unreleased)
   - Improved performance of replacing references in comments
   - Show last project commit to default branch on project home page
