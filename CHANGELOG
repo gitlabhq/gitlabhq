@@ -5,6 +5,7 @@ v 8.2.0 (unreleased)
   - Highlight comment based on anchor in URL
   - Adds ability to remove the forked relationship from project settings screen. (Han Loong Liauw)
   - Improved performance of sorting milestone issues
+  - Allow users to select the Files view as default project view (Cristian Bica)
 
 v 8.1.0 (unreleased)
   - Fix bug preventing mentioned issued from being closed when MR is merged using fast-forward merge.
