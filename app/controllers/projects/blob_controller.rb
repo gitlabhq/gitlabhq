@@ -161,7 +161,7 @@ class Projects::BlobController < Projects::ApplicationController
         if params[:file].present?
           params[:file_name] = params[:file].original_filename
         end
-        File.join(@path, File.basename(params[:file_name]))
+        File.join(@path, params[:file_name])
       else
         @path
       end

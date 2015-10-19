@@ -44,11 +44,11 @@ module Gitlab
 
 
     def file_name_regex
-      @file_name_regex ||= /\A[a-zA-Z0-9_\-\.]*\z/.freeze
+      @file_name_regex ||= /\A[a-zA-Z0-9_\-\.\/]*\z/.freeze
     end
 
     def file_name_regex_message
-      "can contain only letters, digits, '_', '-' and '.'. "
+      "can contain only letters, digits, '_', '-' and '.'. Separate directories with a '/'. "
     end
 
 
