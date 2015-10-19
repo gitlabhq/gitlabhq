@@ -1,7 +1,3 @@
-%h4
-  Contributions calendar
-  .pull-right
-    %small Issues, merge requests and push events
 #cal-heatmap.calendar
   :javascript
     new Calendar(
@@ -10,3 +6,5 @@
       #{@starting_month},
       '#{user_calendar_activities_path}'
     );
+
+.calendar-hint Summary of issues, merge requests and push events
