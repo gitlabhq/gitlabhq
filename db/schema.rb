@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(version: 20151016195706) do
     t.integer  "session_expire_delay",         default: 10080, null: false
     t.text     "import_sources"
     t.text     "help_page_text"
+    t.string   "admin_notification_email"
   end
 
   create_table "audit_events", force: true do |t|
