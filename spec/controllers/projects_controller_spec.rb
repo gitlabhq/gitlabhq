@@ -22,6 +22,34 @@ describe ProjectsController do
       end
     end
 
+    context "rendering default project view" do
+      render_views
+
+      it "renders the activity view" do
+        allow(controller).to receive(:current_user).and_return(user)
+        allow(user).to receive(:project_view).and_return('activity')
+
+        get :show, namespace_id: public_project.namespace.path, id: public_project.path
+        expect(response).to render_template('_activity')
+      end
+
+      it "renders the readme view" do
+        allow(controller).to receive(:current_user).and_return(user)
+        allow(user).to receive(:project_view).and_return('readme')
+
+        get :show, namespace_id: public_project.namespace.path, id: public_project.path
+        expect(response).to render_template('_readme')
+      end
+
+      it "renders the files view" do
+        allow(controller).to receive(:current_user).and_return(user)
+        allow(user).to receive(:project_view).and_return('files')
+
+        get :show, namespace_id: public_project.namespace.path, id: public_project.path
+        expect(response).to render_template('_files')
+      end
+    end
+
     context "when requested with case sensitive namespace and project path" do
       it "redirects to the normalized path for case mismatch" do
         get :show, namespace_id: public_project.namespace.path, id: public_project.path.upcase

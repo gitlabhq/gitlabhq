@@ -1,19 +1,22 @@
-%ul.breadcrumb.repo-breadcrumb
-  %li
-    %i.fa.fa-angle-right
-    = link_to namespace_project_tree_path(@project.namespace, @project, @ref) do
-      = @project.path
-  - tree_breadcrumbs(@tree, 6) do |title, path|
+.gray-content-block.top-block
+  .tree-ref-holder
+    = render 'shared/ref_switcher', destination: 'blob', path: @path
+
+  %ul.breadcrumb.repo-breadcrumb
     %li
-      - if path
-        - if path.end_with?(@path)
-          = link_to namespace_project_blob_path(@project.namespace, @project, path) do
-            %strong
-              = truncate(title, length: 40)
+      = link_to namespace_project_tree_path(@project.namespace, @project, @ref) do
+        = @project.path
+    - tree_breadcrumbs(@tree, 6) do |title, path|
+      %li
+        - if path
+          - if path.end_with?(@path)
+            = link_to namespace_project_blob_path(@project.namespace, @project, path) do
+              %strong
+                = truncate(title, length: 40)
+          - else
+            = link_to truncate(title, length: 40), namespace_project_tree_path(@project.namespace, @project, path)
         - else
-          = link_to truncate(title, length: 40), namespace_project_tree_path(@project.namespace, @project, path)
-      - else
-        = link_to title, '#'
+          = link_to title, '#'
 
 %ul.blob-commit-info.hidden-xs
   - blob_commit = @repository.last_commit_for_path(@commit.id, blob.path)
