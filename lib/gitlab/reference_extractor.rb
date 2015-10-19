@@ -27,7 +27,7 @@ module Gitlab
     def references
       @references ||= Hash.new do |references, type|
         type = type.to_sym
-        return references[type] if references.has_key?(type)
+        next references[type] if references.has_key?(type)
 
         references[type] = pipeline_result(type)
       end
