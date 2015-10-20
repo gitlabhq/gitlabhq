@@ -22,6 +22,10 @@ module Gitlab
         end
       end
 
+      def self.referenced_by(node)
+        { label: LazyReference.new(Label, node.attr("data-label")) }
+      end
+
       def call
         replace_text_nodes_matching(Label.reference_pattern) do |content|
           label_link_filter(content)
@@ -41,11 +45,9 @@ module Gitlab
           params = label_params(id, name)
 
           if label = project.labels.find_by(params)
-            push_result(:label, label)
-
             url = url_for_label(project, label)
             klass = reference_class(:label)
-            data = data_attribute(project.id)
+            data = data_attribute(project: project.id, label: label.id)
 
             %(<a href="#{url}" #{data}
                  class="#{klass}">#{render_colored_label(label)}</a>)

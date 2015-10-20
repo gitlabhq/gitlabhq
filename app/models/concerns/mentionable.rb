@@ -20,6 +20,12 @@ module Mentionable
     end
   end
 
+  included do
+    if self < Participable
+      participant ->(current_user) { mentioned_users(current_user, load_lazy_references: false) }
+    end
+  end
+
   # Returns the text used as the body of a Note when this object is referenced
   #
   # By default this will be the class name and the result of calling
@@ -41,22 +47,22 @@ module Mentionable
     self
   end
 
-  def all_references(current_user = self.author, text = self.mentionable_text)
-    ext = Gitlab::ReferenceExtractor.new(self.project, current_user)
+  def all_references(current_user = self.author, text = self.mentionable_text, load_lazy_references: true)
+    ext = Gitlab::ReferenceExtractor.new(self.project, current_user, load_lazy_references: load_lazy_references)
     ext.analyze(text)
     ext
   end
 
-  def mentioned_users(current_user = nil)
-    all_references(current_user).users.uniq
+  def mentioned_users(current_user = nil, load_lazy_references: true)
+    all_references(current_user, load_lazy_references: load_lazy_references).users
   end
 
   # Extract GFM references to other Mentionables from this Mentionable. Always excludes its #local_reference.
-  def referenced_mentionables(current_user = self.author, text = self.mentionable_text)
+  def referenced_mentionables(current_user = self.author, text = self.mentionable_text, load_lazy_references: true)
     return [] if text.blank?
 
-    refs = all_references(current_user, text)
-    (refs.issues + refs.merge_requests + refs.commits).uniq - [local_reference]
+    refs = all_references(current_user, text, load_lazy_references: load_lazy_references)
+    (refs.issues + refs.merge_requests + refs.commits) - [local_reference]
   end
 
   # Create a cross-reference Note for each GFM reference to another Mentionable found in +mentionable_text+.

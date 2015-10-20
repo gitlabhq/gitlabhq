@@ -183,7 +183,7 @@ class User < ActiveRecord::Base
 
   # User's Project preference
   # Note: When adding an option, it MUST go on the end of the array.
-  enum project_view: [:readme, :activity]
+  enum project_view: [:readme, :activity, :files]
 
   alias_attribute :private_token, :authentication_token
 
@@ -706,12 +706,15 @@ class User < ActiveRecord::Base
   end
 
   def toggle_star(project)
-    user_star_project = users_star_projects.
-      where(project: project, user: self).take
-    if user_star_project
-      user_star_project.destroy
-    else
-      UsersStarProject.create!(project: project, user: self)
+    UsersStarProject.transaction do
+      user_star_project = users_star_projects.
+          where(project: project, user: self).lock(true).first
+
+      if user_star_project
+        user_star_project.destroy
+      else
+        UsersStarProject.create!(project: project, user: self)
+      end
     end
   end
 

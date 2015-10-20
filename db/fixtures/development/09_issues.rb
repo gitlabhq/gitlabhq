@@ -1,6 +1,6 @@
 Gitlab::Seeder.quiet do
   Project.all.each do |project|
-    (1..10).each  do |i|
+    10.times do
       issue_params = {
         title: FFaker::Lorem.sentence(6),
         description: FFaker::Lorem.sentence,

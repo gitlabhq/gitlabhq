@@ -11,30 +11,57 @@ module Gitlab
     # Context options:
     #   :project (required) - Current project, ignored if reference is cross-project.
     #   :only_path          - Generate path-only links.
-    #
-    # Results:
-    #   :references - A Hash of references that were found and replaced.
     class ReferenceFilter < HTML::Pipeline::Filter
-      def initialize(*args)
-        super
+      LazyReference = Struct.new(:klass, :ids) do
+        def self.load(refs)
+          lazy_references, values = refs.partition { |ref| ref.is_a?(self) }
+          
+          lazy_values = lazy_references.group_by(&:klass).flat_map do |klass, refs|
+            ids = refs.flat_map(&:ids)
+            klass.where(id: ids)
+          end
 
-        result[:references] = Hash.new { |hash, type| hash[type] = [] }
+          values + lazy_values
+        end
+
+        def load
+          self.klass.where(id: self.ids)
+        end
+      end
+
+      def self.user_can_reference?(user, node, context)
+        if node.has_attribute?('data-project')
+          project_id = node.attr('data-project').to_i
+          return true if project_id == context[:project].try(:id)
+
+          project = Project.find(project_id) rescue nil
+          Ability.abilities.allowed?(user, :read_project, project)
+        else
+          true
+        end
+      end
+
+      def self.referenced_by(node)
+        raise NotImplementedError, "#{self} does not implement #{__method__}"
       end
 
       # Returns a data attribute String to attach to a reference link
       #
-      # id   - Object ID
-      # type - Object type (default: :project)
+      # attributes - Hash, where the key becomes the data attribute name and the
+      #              value is the data attribute value
       #
       # Examples:
       #
-      #   data_attribute(1)         # => "data-project-id=\"1\""
-      #   data_attribute(2, :user)  # => "data-user-id=\"2\""
-      #   data_attribute(3, :group) # => "data-group-id=\"3\""
+      #   data_attribute(project: 1, issue: 2)
+      #   # => "data-reference-filter=\"Gitlab::Markdown::SomeReferenceFilter\" data-project=\"1\" data-issue=\"2\""
+      #
+      #   data_attribute(project: 3, merge_request: 4)
+      #   # => "data-reference-filter=\"Gitlab::Markdown::SomeReferenceFilter\" data-project=\"3\" data-merge-request=\"4\""
       #
       # Returns a String
-      def data_attribute(id, type = :project)
-        %Q(data-#{type}-id="#{id}")
+      def data_attribute(attributes = {})
+        attributes[:reference_filter] = self.class.name
+        attributes.map { |key, value| %Q(data-#{key.to_s.dasherize}="#{value}") }.join(" ")
       end
 
       def escape_once(html)
@@ -59,16 +86,6 @@ module Gitlab
         context[:project]
       end
 
-      # Add a reference to the pipeline's result Hash
-      #
-      # type   - Singular Symbol reference type (e.g., :issue, :user, etc.)
-      # values - One or more Objects to add
-      def push_result(type, *values)
-        return if values.empty?
-
-        result[:references][type].push(*values)
-      end
-
       def reference_class(type)
         "gfm gfm-#{type}"
       end
@@ -85,7 +102,7 @@ module Gitlab
       # Yields the current node's String contents. The result of the block will
       # replace the node's existing content and update the current document.
       #
-      # Returns the updated Nokogiri::XML::Document object.
+      # Returns the updated Nokogiri::HTML::DocumentFragment object.
       def replace_text_nodes_matching(pattern)
         return doc if project.nil?
 
