@@ -26,6 +26,7 @@ v 8.1.0 (unreleased)
   - Allow removing of project without confirmation when JavaScript is disabled (Stan Hu)
   - Support filtering by "Any" milestone or issue and fix "No Milestone" and "No Label" filters (Stan Hu)
   - Improved performance of the trending projects page
+  - Remove CI migration task
   - Improved performance of finding projects by their namespace
   - Fix bug where transferring a project would result in stale commit links (Stan Hu)
   - Include full path of source and target branch names in New Merge Request page (Stan Hu)
