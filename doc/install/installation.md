@@ -349,7 +349,7 @@ Otherwise your secrets are exposed if one of your backups is compromised.
 ### Install schedules
 
     # Setup schedules
-    sudo -u gitlab_ci -H bundle exec whenever -w RAILS_ENV=production
+    sudo -u git -H bundle exec whenever -w RAILS_ENV=production
 
 ### Install Init Script
 
