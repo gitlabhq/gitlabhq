@@ -118,8 +118,8 @@ class ApplicationController < ActionController::Base
       end
 
       project_path = "#{namespace}/#{id}"
-      @project = Project.find_with_namespace(project_path)
-
+      @project = Project.find_with_namespace(project_path) ||
+        Project.find_with_namespace(project_path, case_sensitive: false)
 
       if @project and can?(current_user, :read_project, @project)
         if @project.path_with_namespace != project_path
