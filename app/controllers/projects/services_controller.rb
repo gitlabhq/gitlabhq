@@ -12,7 +12,7 @@ class Projects::ServicesController < Projects::ApplicationController
 
   # Parameters to ignore if no value is specified
   FILTER_BLANK_PARAMS = [:password]
-  
+
   # Authorize
   before_action :authorize_admin_project!
   before_action :service, only: [:edit, :update, :test]
@@ -52,7 +52,7 @@ class Projects::ServicesController < Projects::ApplicationController
       message = { alert: error_message }
     end
 
-    redirect_to :back, message
+    redirect_back_or_default(options: message)
   end
 
   private
