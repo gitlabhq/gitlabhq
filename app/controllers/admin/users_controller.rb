@@ -33,33 +33,33 @@ class Admin::UsersController < Admin::ApplicationController
 
   def block
     if user.block
-      redirect_to :back, notice: "Successfully blocked"
+      redirect_back_or_admin_user(notice: "Successfully blocked")
     else
-      redirect_to :back, alert: "Error occurred. User was not blocked"
+      redirect_back_or_admin_user(alert: "Error occurred. User was not blocked")
     end
   end
 
   def unblock
     if user.activate
-      redirect_to :back, notice: "Successfully unblocked"
+      redirect_back_or_admin_user(notice: "Successfully unblocked")
     else
-      redirect_to :back, alert: "Error occurred. User was not unblocked"
+      redirect_back_or_admin_user(alert: "Error occurred. User was not unblocked")
     end
   end
 
   def unlock
     if user.unlock_access!
-      redirect_to :back, alert: "Successfully unlocked"
+      redirect_back_or_admin_user(alert: "Successfully unlocked")
     else
-      redirect_to :back, alert: "Error occurred. User was not unlocked"
+      redirect_back_or_admin_user(alert: "Error occurred. User was not unlocked")
     end
   end
 
   def confirm
     if user.confirm
-      redirect_to :back, notice: "Successfully confirmed"
+      redirect_back_or_admin_user(notice: "Successfully confirmed")
     else
-      redirect_to :back, alert: "Error occurred. User was not confirmed"
+      redirect_back_or_admin_user(alert: "Error occurred. User was not confirmed")
     end
   end
 
@@ -138,7 +138,7 @@ class Admin::UsersController < Admin::ApplicationController
     user.update_secondary_emails!
 
     respond_to do |format|
-      format.html { redirect_to :back, notice: "Successfully removed email." }
+      format.html { redirect_back_or_admin_user(notice: "Successfully removed email.") }
       format.js { render nothing: true }
     end
   end
@@ -156,5 +156,13 @@ class Admin::UsersController < Admin::ApplicationController
       :extern_uid, :provider, :password_expires_at, :avatar, :hide_no_ssh_key, :hide_no_password,
       :projects_limit, :can_create_group, :admin, :key_id
     )
+  end
+
+  def redirect_back_or_admin_user(options = {})
+    redirect_back_or_default(default: default_route, options: options)
+  end
+
+  def default_route
+    [:admin, @user]
   end
 end

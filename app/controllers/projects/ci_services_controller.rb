@@ -30,7 +30,7 @@ class Projects::CiServicesController < Projects::ApplicationController
       message = { alert: 'We tried to test the service but error occurred' }
     end
 
-    redirect_to :back, message
+    redirect_back_or_default(options: message)
   end
 
   private
