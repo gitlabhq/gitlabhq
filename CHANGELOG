@@ -7,10 +7,6 @@ v 8.2.0 (unreleased)
   - Improved performance of sorting milestone issues
   - Allow users to select the Files view as default project view (Cristian Bica)
 
-v 8.0.5
-  - Correct lookup-by-email for LDAP logins
-  - Fix loading spinner sometimes not being hidden on Merge Request tab switches
-
 v 8.1.0 (unreleased)
   - Send an email to admin email when a user is reported for spam (Jonathan Rochkind)
   - Show notifications button when user is member of group rather than project (Grzegorz Bizon)
@@ -82,6 +78,10 @@ v 8.1.0 (unreleased)
   - Fix: Images cannot show when projects' path was changed
   - Optimize query when filtering on issuables (Zeger-Jan van de Weg)
   - Fix padding of outdated discussion item.
+
+v 8.0.5
+  - Correct lookup-by-email for LDAP logins
+  - Fix loading spinner sometimes not being hidden on Merge Request tab switches
 
 v 8.0.4
   - Fix Message-ID header to be RFC 2111-compliant to prevent e-mails being dropped (Stan Hu)
