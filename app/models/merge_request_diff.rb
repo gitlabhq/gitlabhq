@@ -55,6 +55,10 @@ class MergeRequestDiff < ActiveRecord::Base
     commits.first
   end
 
+  def first_commit
+    commits.last
+  end
+
   def last_commit_short_sha
     @last_commit_short_sha ||= last_commit.short_id
   end
