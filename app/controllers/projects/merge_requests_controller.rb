@@ -56,6 +56,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def diffs
     @commit = @merge_request.last_commit
+    @first_commit = @merge_request.first_commit
+
     @comments_allowed = @reply_allowed = true
     @comments_target = {
       noteable_type: 'MergeRequest',
@@ -89,7 +91,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @target_project = merge_request.target_project
     @source_project = merge_request.source_project
     @commits = @merge_request.compare_commits
-    @commit = @merge_request.compare_commits.last
+    @commit = @merge_request.last_commit
+    @first_commit = @merge_request.first_commit
     @diffs = @merge_request.compare_diffs
     @note_counts = Note.where(commit_id: @commits.map(&:id)).
       group(:commit_id).count

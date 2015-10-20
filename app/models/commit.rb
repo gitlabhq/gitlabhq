@@ -164,6 +164,14 @@ class Commit
     @committer ||= User.find_by_any_email(committer_email)
   end
 
+  def parents
+    @parents ||= parent_ids.map { |id| project.commit(id) }
+  end
+
+  def parent
+    @parent ||= project.commit(self.parent_id) if self.parent_id
+  end
+
   def notes
     project.notes.for_commit_id(self.id)
   end
@@ -179,10 +187,6 @@ class Commit
   # Truncate sha to 8 characters
   def short_id
     @raw.short_id(7)
-  end
-
-  def parents
-    @parents ||= Commit.decorate(super, project)
   end
 
   def ci_commit

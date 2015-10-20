@@ -312,13 +312,7 @@ class Repository
   end
 
   def blob_for_diff(commit, diff)
-    file = blob_at(commit.id, diff.new_path)
-
-    unless file
-      file = prev_blob_for_diff(commit, diff)
-    end
-
-    file
+    blob_at(commit.id, diff.file_path)
   end
 
   def prev_blob_for_diff(commit, diff)
