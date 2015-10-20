@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.2.0 (unreleased)
+  - Improved performance of replacing references in comments
   - Fix duplicate repositories in GitHub import page (Stan Hu)
   - Redirect to a default path if HTTP_REFERER is not set (Stan Hu)
   - Show last project commit to default branch on project home page
