@@ -44,6 +44,19 @@ class Repository
     raw_repository.empty?
   end
 
+  #
+  # Git repository can contains some hidden refs like:
+  #   /refs/notes/*
+  #   /refs/git-as-svn/*
+  #   /refs/pulls/*
+  # This refs by default not visible in project page and not cloned to client side.
+  #
+  # This method return true if repository contains some content visible in project page.
+  #
+  def has_visible_content?
+    !raw_repository.branches.empty?
+  end
+
   def commit(id = 'HEAD')
     return nil unless raw_repository
     commit = Gitlab::Git::Commit.find(raw_repository, id)

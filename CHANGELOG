@@ -88,6 +88,7 @@ v 8.0.5
   - Correct lookup-by-email for LDAP logins
   - Fix loading spinner sometimes not being hidden on Merge Request tab switches
   - Animate the logo on hover
+  - Show "Empty Repository Page" for repository without branches (#9728)
 
 v 8.0.4
   - Fix Message-ID header to be RFC 2111-compliant to prevent e-mails being dropped (Stan Hu)
