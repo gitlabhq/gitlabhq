@@ -80,6 +80,10 @@ v 8.1.0 (unreleased)
   - Optimize query when filtering on issuables (Zeger-Jan van de Weg)
   - Fix padding of outdated discussion item.
 
+v 8.0.5
+  - Correct lookup-by-email for LDAP logins
+  - Fix loading spinner sometimes not being hidden on Merge Request tab switches
+
 v 8.0.4
   - Fix Message-ID header to be RFC 2111-compliant to prevent e-mails being dropped (Stan Hu)
   - Fix referrals for :back and relative URL installs
