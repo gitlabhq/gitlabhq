@@ -40,7 +40,7 @@ class MergeRequest < ActiveRecord::Base
   after_create :create_merge_request_diff
   after_update :update_merge_request_diff
 
-  delegate :commits, :diffs, :last_commit, :last_commit_short_sha, to: :merge_request_diff, prefix: nil
+  delegate :commits, :diffs, to: :merge_request_diff, prefix: nil
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -155,6 +155,18 @@ class MergeRequest < ActiveRecord::Base
     end
 
     reference
+  end
+
+  def last_commit
+    merge_request_diff ? merge_request_diff.last_commit : compare_commits.last
+  end 
+
+  def first_commit
+    merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
+  end 
+
+  def last_commit_short_sha
+    last_commit.short_id
   end
 
   def validate_branches
