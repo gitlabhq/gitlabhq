@@ -4,5 +4,5 @@
     %span.str-truncated
       = link_to blob_item.name, namespace_project_blob_path(@project.namespace, @project, tree_join(@id || @commit.id, blob_item.name))
   %td.tree_time_ago.cgray
-    = render 'spinner'
+    = render 'projects/tree/spinner'
   %td.hidden-xs.tree_commit

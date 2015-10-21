@@ -1,12 +1,24 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.2.0 (unreleased)
+  - Ensure MySQL CI limits DB migrations occur after the fields have been created (Stan Hu)
+  - Improved performance of replacing references in comments
+  - Fix duplicate repositories in GitHub import page (Stan Hu)
+  - Redirect to a default path if HTTP_REFERER is not set (Stan Hu)
   - Show last project commit to default branch on project home page
   - Highlight comment based on anchor in URL
+  - Adds ability to remove the forked relationship from project settings screen. (Han Loong Liauw)
+  - Improved performance of sorting milestone issues
+  - Allow users to select the Files view as default project view (Cristian Bica)
 
 v 8.1.0 (unreleased)
+  - Send an email to admin email when a user is reported for spam (Jonathan Rochkind)
+  - Show notifications button when user is member of group rather than project (Grzegorz Bizon)
+  - Fix bug preventing mentioned issued from being closed when MR is merged using fast-forward merge.
+  - Fix nonatomic database update potentially causing project star counts to go negative (Stan Hu)
   - Fix error preventing displaying of commit data for a directory with a leading dot (Stan Hu)
   - Speed up load times of issue detail pages by roughly 1.5x
+  - If a merge request is to close an issue, show this on the issue page (Zeger-Jan van de Weg)
   - Add a system note and update relevant merge requests when a branch is deleted or re-added (Stan Hu)
   - Make diff file view easier to use on mobile screens (Stan Hu)
   - Improved performance of finding users by username or Email address
@@ -69,6 +81,13 @@ v 8.1.0 (unreleased)
   - Only render 404 page from /public
   - Hide passwords from services API (Alex Lossent)
   - Fix: Images cannot show when projects' path was changed
+  - Let gitlab-git-http-server generate and serve 'git archive' downloads
+  - Optimize query when filtering on issuables (Zeger-Jan van de Weg)
+  - Fix padding of outdated discussion item.
+
+v 8.0.5
+  - Correct lookup-by-email for LDAP logins
+  - Fix loading spinner sometimes not being hidden on Merge Request tab switches
 
 v 8.0.4
   - Fix Message-ID header to be RFC 2111-compliant to prevent e-mails being dropped (Stan Hu)

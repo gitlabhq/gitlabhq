@@ -19,7 +19,8 @@ module GitlabMarkdownHelper
                      escape_once(body)
                    end
 
-    gfm_body = Gitlab::Markdown.gfm(escaped_body, project: @project, current_user: current_user)
+    user = current_user if defined?(current_user)
+    gfm_body = Gitlab::Markdown.gfm(escaped_body, project: @project, current_user: user)
 
     fragment = Nokogiri::HTML::DocumentFragment.parse(gfm_body)
     if fragment.children.size == 1 && fragment.children[0].name == 'a'
@@ -45,29 +46,39 @@ module GitlabMarkdownHelper
   end
 
   def markdown(text, context = {})
+    return "" unless text.present?
+
     context.reverse_merge!(
-      current_user: current_user,
       path:         @path,
+      pipeline:     :default,
       project:      @project,
       project_wiki: @project_wiki,
       ref:          @ref
     )
 
-    Gitlab::Markdown.render(text, context)
+    user = current_user if defined?(current_user)
+
+    html = Gitlab::Markdown.render(text, context)
+    Gitlab::Markdown.post_process(html, pipeline: context[:pipeline], project: @project, user: user)
   end
 
   # TODO (rspeicher): Remove all usages of this helper and just call `markdown`
   # with a custom pipeline depending on the content being rendered
   def gfm(text, options = {})
+    return "" unless text.present?
+
     options.reverse_merge!(
-      current_user: current_user,
       path:         @path,
+      pipeline:     :default,
       project:      @project,
       project_wiki: @project_wiki,
       ref:          @ref
     )
 
-    Gitlab::Markdown.gfm(text, options)
+    user = current_user if defined?(current_user)
+
+    html = Gitlab::Markdown.gfm(text, options)
+    Gitlab::Markdown.post_process(html, pipeline: options[:pipeline], project: @project, user: user)
   end
 
   def asciidoc(text)
