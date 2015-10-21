@@ -239,7 +239,12 @@
       padding: 10px 22px;
       overflow: hidden;
 
-      #tanuki-logo {
+      img {
+        width: 36px;
+        height: 36px;
+      }
+
+      #tanuki-logo, img {
         float: left;
       }
 
