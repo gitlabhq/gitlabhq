@@ -35,14 +35,8 @@ module Gitlab
     end
 
     def self.render_result(text, context = {})
-      pipeline = context[:pipeline] ||= :full
-
-      html_pipeline = html_pipelines[pipeline]
-
-      transformers = context_transformers[pipeline]
-      context = transformers.reduce(context) { |context, transformer| transformer.call(context) }
-
-      html_pipeline.call(text, context)
+      pipeline_type = context[:pipeline] ||= :full
+      pipeline_by_type(pipeline_type).call(text, context)
     end
 
     # Perform post-processing on an HTML String
@@ -59,16 +53,36 @@ module Gitlab
     #
     # Returns an HTML-safe String
     def self.post_process(html, context)
-      html_pipeline = html_pipelines[:post_process]
+      pipeline = pipeline_by_type(:post_process)
 
       if context[:xhtml]
-        html_pipeline.to_document(html, context).to_html(save_with: Nokogiri::XML::Node::SaveOptions::AS_XHTML)
+        pipeline.to_document(html, context).to_html(save_with: Nokogiri::XML::Node::SaveOptions::AS_XHTML)
       else
-        html_pipeline.to_html(html, context)
+        pipeline.to_html(html, context)
       end.html_safe
     end
 
     private
+
+    def self.cacheless_render(text, context = {})
+      result = render_result(text, context)
+      output = result[:output]
+      if output.respond_to?(:to_html)
+        output.to_html
+      else
+        output.to_s
+      end
+    end
+
+    def self.full_cache_key(cache_key, pipeline = :full)
+      return unless cache_key
+
+      ["markdown", *cache_key, pipeline]
+    end
+
+    def self.pipeline_by_type(pipeline_type)
+      const_get("#{pipeline_type.to_s.camelize}Pipeline")
+    end
 
     # Provide autoload paths for filters to prevent a circular dependency error
     autoload :AutolinkFilter,               'gitlab/markdown/autolink_filter'
@@ -91,172 +105,18 @@ module Gitlab
     autoload :UserReferenceFilter,          'gitlab/markdown/user_reference_filter'
     autoload :UploadLinkFilter,             'gitlab/markdown/upload_link_filter'
 
-    def self.gfm_filters
-      @gfm_filters ||= [
-        Gitlab::Markdown::SyntaxHighlightFilter,
-        Gitlab::Markdown::SanitizationFilter,
-
-        Gitlab::Markdown::UploadLinkFilter,
-        Gitlab::Markdown::EmojiFilter,
-        Gitlab::Markdown::TableOfContentsFilter,
-        Gitlab::Markdown::AutolinkFilter,
-        Gitlab::Markdown::ExternalLinkFilter,
-
-        Gitlab::Markdown::UserReferenceFilter,
-        Gitlab::Markdown::IssueReferenceFilter,
-        Gitlab::Markdown::ExternalIssueReferenceFilter,
-        Gitlab::Markdown::MergeRequestReferenceFilter,
-        Gitlab::Markdown::SnippetReferenceFilter,
-        Gitlab::Markdown::CommitRangeReferenceFilter,
-        Gitlab::Markdown::CommitReferenceFilter,
-        Gitlab::Markdown::LabelReferenceFilter,
-
-        Gitlab::Markdown::TaskListFilter
-      ]
-    end
-
-    def self.all_filters
-      @all_filters ||= {
-        plain_markdown: [
-          Gitlab::Markdown::MarkdownFilter
-        ],
-        gfm: gfm_filters,
-
-        full:           [:plain_markdown, :gfm],
-        atom:           :full,
-        email:          :full,
-        description:    :full,
-        note:           :full,
-        single_line:    :gfm,
-
-        asciidoc: [
-          Gitlab::Markdown::RelativeLinkFilter
-        ],
-
-        post_process: [
-          Gitlab::Markdown::RelativeLinkFilter, 
-          Gitlab::Markdown::RedactorFilter
-        ],
-
-        reference_extraction: [
-          Gitlab::Markdown::ReferenceGathererFilter
-        ]
-      }
-    end
-
-    def self.all_context_transformers
-      @all_context_transformers ||= {
-        gfm: {
-          only_path: true,
-
-          # EmojiFilter
-          asset_host: Gitlab::Application.config.asset_host,
-          asset_root: Gitlab.config.gitlab.base_url
-        },
-        full: :gfm,
-
-        atom: [
-          :full, 
-          { 
-            only_path: false, 
-            xhtml: true 
-          }
-        ],
-        email: [
-          :full,
-          { 
-            only_path: false
-          }
-        ],
-        note: [
-          :full,
-          {
-            # TableOfContentsFilter
-            no_header_anchors: true
-          }
-        ],
-        description: [
-          :full,
-          { 
-            # SanitizationFilter
-            inline_sanitization: true
-          }
-        ],
-        single_line: :gfm,
-
-        post_process: {
-          post_process: true
-        }
-      }
-    end
-
-    def self.html_filters
-      @html_filters ||= Hash.new do |hash, pipeline|
-        filters = get_filters(pipeline)
-        hash[pipeline] = filters if pipeline.is_a?(Symbol)
-        filters
-      end
-    end
-
-    def self.html_pipelines
-      @html_pipelines ||= Hash.new do |hash, pipeline|
-        filters = get_filters(pipeline)
-        html_pipeline = HTML::Pipeline.new(filters)
-        hash[pipeline] = html_pipeline if pipeline.is_a?(Symbol)
-        html_pipeline
-      end
-    end
-
-    def self.context_transformers
-      @context_transformers ||= Hash.new do |hash, pipeline|
-        transformers = get_context_transformers(pipeline)
-        hash[pipeline] = transformers if pipeline.is_a?(Symbol)
-        transformers
-      end
-    end
-
-    def self.get_filters(pipelines)
-      Array.wrap(pipelines).flat_map do |pipeline|
-        case pipeline
-        when Class
-          pipeline
-        when Symbol
-          html_filters[all_filters[pipeline]]
-        when Array
-          html_filters[pipeline]
-        end
-      end.compact
-    end
-
-    def self.get_context_transformers(pipelines)
-      Array.wrap(pipelines).flat_map do |pipeline|
-        case pipeline
-        when Hash
-          ->(context) { context.merge(pipeline) }
-        when Proc
-          pipeline
-        when Symbol
-          context_transformers[all_context_transformers[pipeline]]
-        when Array
-          context_transformers[pipeline]
-        end
-      end.compact
-    end
-
-    def self.cacheless_render(text, context = {})
-      result = render_result(text, context)
-      output = result[:output]
-      if output.respond_to?(:to_html)
-        output.to_html
-      else
-        output.to_s
-      end
-    end
-
-    def self.full_cache_key(cache_key, pipeline = :full)
-      return unless cache_key && pipeline.is_a?(Symbol)
-
-      ["markdown", *cache_key, pipeline]
-    end
+    autoload :AsciidocPipeline,             'gitlab/markdown/asciidoc_pipeline'
+    autoload :AtomPipeline,                 'gitlab/markdown/atom_pipeline'
+    autoload :CombinedPipeline,             'gitlab/markdown/combined_pipeline'
+    autoload :DescriptionPipeline,          'gitlab/markdown/description_pipeline'
+    autoload :EmailPipeline,                'gitlab/markdown/email_pipeline'
+    autoload :FullPipeline,                 'gitlab/markdown/full_pipeline'
+    autoload :GfmPipeline,                  'gitlab/markdown/gfm_pipeline'
+    autoload :NotePipeline,                 'gitlab/markdown/note_pipeline'
+    autoload :Pipeline,                     'gitlab/markdown/pipeline'
+    autoload :PlainMarkdownPipeline,        'gitlab/markdown/plain_markdown_pipeline'
+    autoload :PostProcessPipeline,          'gitlab/markdown/post_process_pipeline'
+    autoload :ReferenceExtractionPipeline,  'gitlab/markdown/reference_extraction_pipeline'
+    autoload :SingleLinePipeline,           'gitlab/markdown/single_line_pipeline'
   end
 end
