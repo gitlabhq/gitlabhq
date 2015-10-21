@@ -73,6 +73,9 @@ describe ProjectsController do
           let!(:other_project) { create(:project, :public, namespace: public_project.namespace, path: public_project.path.upcase) }
 
           it "loads the exactly matched project" do
+            # MySQL queries are case insensitive by default, so this spec would fail.
+            skip if Gitlab::Database.mysql?
+
             get :show, namespace_id: public_project.namespace.path, id: public_project.path.upcase
 
             expect(assigns(:project)).to eq(other_project)
