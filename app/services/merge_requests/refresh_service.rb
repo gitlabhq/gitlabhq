@@ -7,6 +7,8 @@ module MergeRequests
       @branch_name = Gitlab::Git.ref_name(ref)
       @fork_merge_requests = @project.fork_merge_requests.opened
       @commits = []
+      
+      reload_merge_requests
 
       # Leave a system note if a branch were deleted/added
       if Gitlab::Git.blank_ref?(oldrev) || Gitlab::Git.blank_ref?(newrev)
@@ -18,7 +20,6 @@ module MergeRequests
         close_merge_requests
       end
 
-      reload_merge_requests
       execute_mr_web_hooks
 
       true
