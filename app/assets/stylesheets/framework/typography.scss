@@ -238,10 +238,6 @@ a > code {
   @include md-typography;
 }
 
-.md-area {
-  @include md-typography;
-}
-
 .md {
   @include md-typography;
 }
@@ -252,6 +248,7 @@ a > code {
  */
 textarea.js-gfm-input {
   font-family: $monospace_font;
+  color: $gl-text-color;
 }
 
 .md-preview {
