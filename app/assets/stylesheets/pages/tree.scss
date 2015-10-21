@@ -1,17 +1,11 @@
 .tree-holder {
-  .tree-table-holder {
-    margin-left: -$gl-padding;
-    margin-right: -$gl-padding;
-  }
 
   .tree-table {
     margin-bottom: 0;
 
     tr {
       > td, > th {
-        padding: 10px $gl-padding;
         line-height: 32px;
-        border-color: $table-border-color !important;
       }
 
       &:hover {
