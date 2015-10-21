@@ -27,9 +27,7 @@ describe Repository do
   end
 
   describe :commits_with_log_matching do
-    subject { repository.commits_with_log_matching('submodule').
-                map{|k| k.id}
-    }
+    subject { repository.commits_with_log_matching('submodule').map{|k| k.id} }
 
     it { is_expected.to include('5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
     it { is_expected.to include('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
