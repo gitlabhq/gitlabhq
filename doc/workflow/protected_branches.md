@@ -12,7 +12,7 @@ A protected branch does three simple things:
 
 You can make any branch a protected branch. GitLab makes the master branch a protected branch by default.
 
-To protect a branch, user needs to have at least a Master permission level, see [permissions document](doc/permissions/permissions.md).
+To protect a branch, user needs to have at least a Master permission level, see [permissions document](../permissions/permissions.md).
 
 ![protected branches page](protected_branches/protected_branches1.png)
 
