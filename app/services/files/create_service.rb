@@ -9,6 +9,13 @@ module Files
     def validate
       super
 
+      if @file_path =~ Gitlab::Regex.directory_traversal_regex
+        raise_error(
+          'Your changes could not be committed, because the file name ' +
+          Gitlab::Regex.directory_traversal_regex_message
+        )
+      end
+
       unless @file_path =~ Gitlab::Regex.file_name_regex
         raise_error(
           'Your changes could not be committed, because the file name ' +

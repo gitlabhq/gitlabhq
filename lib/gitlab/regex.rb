@@ -51,6 +51,13 @@ module Gitlab
       "can contain only letters, digits, '_', '-' and '.'. Separate directories with a '/'. "
     end
 
+    def directory_traversal_regex
+      @directory_traversal_regex ||= /\.{2}/.freeze
+    end
+
+    def directory_traversal_regex_message
+      "cannot include directory traversal. "
+    end
 
     def archive_formats_regex
       #                           |zip|tar|    tar.gz    |         tar.bz2         |
