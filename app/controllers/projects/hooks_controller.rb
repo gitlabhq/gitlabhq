@@ -37,7 +37,7 @@ class Projects::HooksController < Projects::ApplicationController
       flash[:alert] = 'Hook execution failed. Ensure the project has commits.'
     end
 
-    redirect_to :back
+    redirect_back_or_default(default: { action: 'index' })
   end
 
   def destroy

@@ -19,7 +19,7 @@ class Admin::BroadcastMessagesController < Admin::ApplicationController
     BroadcastMessage.find(params[:id]).destroy
 
     respond_to do |format|
-      format.html { redirect_to :back }
+      format.html { redirect_back_or_default(default: { action: 'index' }) }
       format.js { render nothing: true }
     end
   end

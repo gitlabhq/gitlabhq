@@ -1,5 +1,5 @@
 Gitlab::Seeder.quiet do
-  (2..20).each  do |i|
+  20.times do |i|
     begin
       User.create!(
         username: FFaker::Internet.user_name,
@@ -15,7 +15,7 @@ Gitlab::Seeder.quiet do
     end
   end
 
-  (1..5).each do |i|
+  5.times do |i|
     begin
       User.create!(
         username: "user#{i}",

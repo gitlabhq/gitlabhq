@@ -41,7 +41,7 @@ describe Import::GithubController do
 
     it "assigns variables" do
       @project = create(:project, import_type: 'github', creator_id: user.id)
-      stub_client(repos: [@repo], orgs: [@org], org_repos: [@org_repo])
+      stub_client(repos: [@repo, @org_repo], orgs: [@org], org_repos: [@org_repo])
 
       get :status
 

@@ -170,7 +170,8 @@ module DiffHelper
 
   def commit_for_diff(diff)
     if diff.deleted_file
-      @merge_request ? @merge_request.commits.last : @commit.parents.first
+      first_commit = @first_commit || @commit
+      first_commit.parent
     else
       @commit
     end

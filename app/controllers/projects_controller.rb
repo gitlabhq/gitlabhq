@@ -101,7 +101,7 @@ class ProjectsController < ApplicationController
             render 'projects/empty'
           else
             if current_user
-              @membership = @project.project_member_by_id(current_user.id)
+              @membership = @project.team.find_member(current_user.id)
             end
 
             render :show
@@ -246,6 +246,8 @@ class ProjectsController < ApplicationController
     project.repository_exists? && !project.empty_repo?
   end
 
+  # Override get_id from ExtractsPath, which returns the branch and file path 
+  # for the blob/tree, which in this case is just the root of the default branch.
   def get_id
     project.repository.root_ref
   end
