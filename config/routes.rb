@@ -381,6 +381,7 @@ Gitlab::Application.routes.draw do
         delete :remove_fork
         post :archive
         post :unarchive
+        post :housekeeping
         post :toggle_star
         post :markdown_preview
         get :autocomplete_sources

@@ -142,6 +142,17 @@
         .nothing-here-block Only the project owner can archive a project
 
       .panel.panel-default.panel.panel-warning
+        .panel-heading Housekeeping
+        .errors-holder
+        .panel-body
+          %p
+            Runs a number of housekeeping tasks within the current repository,
+            such as compressing file revisions and removing unreachable objects.
+            %br
+          = link_to 'Housekeeping', housekeeping_namespace_project_path(@project.namespace, @project),
+              method: :post, class: "btn btn-warning"
+
+      .panel.panel-default.panel.panel-warning
         .panel-heading Rename repository
         .errors-holder
         .panel-body

@@ -171,6 +171,14 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def housekeeping
+    ::Projects::HousekeepingService.new(@project).execute
+
+    respond_to do |format|
+      format.html { redirect_to project_path(@project) }
+    end
+  end
+
   def toggle_star
     current_user.toggle_star(@project)
     @project.reload
