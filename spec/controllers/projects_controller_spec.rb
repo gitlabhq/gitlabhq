@@ -68,18 +68,20 @@ describe ProjectsController do
           expect(response).to redirect_to("/#{public_project.path_with_namespace}")
         end
 
-        context "when there is also a match with the same casing" do
 
-          let!(:other_project) { create(:project, :public, namespace: public_project.namespace, path: public_project.path.upcase) }
+        # MySQL queries are case insensitive by default, so this spec would fail.
+        unless Gitlab::Database.mysql?
+          context "when there is also a match with the same casing" do
 
-          it "loads the exactly matched project" do
-            # MySQL queries are case insensitive by default, so this spec would fail.
-            skip if Gitlab::Database.mysql?
+            let!(:other_project) { create(:project, :public, namespace: public_project.namespace, path: public_project.path.upcase) }
 
-            get :show, namespace_id: public_project.namespace.path, id: public_project.path.upcase
+            it "loads the exactly matched project" do
 
-            expect(assigns(:project)).to eq(other_project)
-            expect(response.status).to eq(200)
+              get :show, namespace_id: public_project.namespace.path, id: public_project.path.upcase
+
+              expect(assigns(:project)).to eq(other_project)
+              expect(response.status).to eq(200)
+            end
           end
         end
       end
