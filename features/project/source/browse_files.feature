@@ -205,3 +205,9 @@ Feature: Project Source Browse Files
     And I see the ref 'test' has been selected
     And I visit the 'test' tree
     Then I see the commit data
+
+  @javascript
+  Scenario: I browse code with a leading dot in the directory
+    Given I switch ref to fix
+    And I visit the fix tree
+    Then I see the commit data for a directory with a leading dot

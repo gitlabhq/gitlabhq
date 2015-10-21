@@ -193,7 +193,14 @@ module Grack
     end
 
     def render_grack_auth_ok
-      [200, { "Content-Type" => "application/json" }, [JSON.dump({ 'GL_ID' => Gitlab::ShellEnv.gl_id(@user) })]]
+      [
+        200,
+        { "Content-Type" => "application/json" },
+        [JSON.dump({
+          'GL_ID' => Gitlab::ShellEnv.gl_id(@user),
+          'RepoPath' => project.repository.path_to_repo,
+        })]
+      ]
     end
 
     def render_not_found

@@ -60,12 +60,12 @@ module Mentionable
   end
 
   def mentioned_users(current_user = nil, load_lazy_references: true)
-    all_references(current_user).users
+    all_references(current_user, load_lazy_references: load_lazy_references).users
   end
 
   # Extract GFM references to other Mentionables from this Mentionable. Always excludes its #local_reference.
-  def referenced_mentionables(current_user = self.author, text = nil)
-    refs = all_references(current_user, text)
+  def referenced_mentionables(current_user = self.author, text = nil, load_lazy_references: true)
+    refs = all_references(current_user, text, load_lazy_references: load_lazy_references)
     (refs.issues + refs.merge_requests + refs.commits) - [local_reference]
   end
 

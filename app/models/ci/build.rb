@@ -93,10 +93,7 @@ module Ci
           Ci::WebHookService.new.build_end(build)
         end
 
-        if build.commit.should_create_next_builds?(build)
-          build.commit.create_next_builds(build.ref, build.tag, build.user, build.trigger_request)
-        end
-
+        build.commit.create_next_builds(build)
         project.execute_services(build)
 
         if project.coverage_enabled?

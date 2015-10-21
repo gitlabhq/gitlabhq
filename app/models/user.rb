@@ -68,6 +68,7 @@ class User < ActiveRecord::Base
   include Referable
   include Sortable
   include TokenAuthenticatable
+  include CaseSensitivity
 
   default_value_for :admin, false
   default_value_for :can_create_group, gitlab_config.default_can_create_group
@@ -182,7 +183,7 @@ class User < ActiveRecord::Base
 
   # User's Project preference
   # Note: When adding an option, it MUST go on the end of the array.
-  enum project_view: [:readme, :activity]
+  enum project_view: [:readme, :activity, :files]
 
   alias_attribute :private_token, :authentication_token
 
@@ -273,8 +274,13 @@ class User < ActiveRecord::Base
     end
 
     def by_login(login)
-      where('lower(username) = :value OR lower(email) = :value',
-            value: login.to_s.downcase).first
+      return nil unless login
+
+      if login.include?('@'.freeze)
+        unscoped.iwhere(email: login).take
+      else
+        unscoped.iwhere(username: login).take
+      end
     end
 
     def find_by_username!(username)
@@ -700,12 +706,15 @@ class User < ActiveRecord::Base
   end
 
   def toggle_star(project)
-    user_star_project = users_star_projects.
-      where(project: project, user: self).take
-    if user_star_project
-      user_star_project.destroy
-    else
-      UsersStarProject.create!(project: project, user: self)
+    UsersStarProject.transaction do
+      user_star_project = users_star_projects.
+          where(project: project, user: self).lock(true).first
+
+      if user_star_project
+        user_star_project.destroy
+      else
+        UsersStarProject.create!(project: project, user: self)
+      end
     end
   end
 

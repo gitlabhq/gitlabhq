@@ -242,6 +242,9 @@
       img {
         width: 36px;
         height: 36px;
+      }
+
+      #tanuki-logo, img {
         float: left;
       }
 
@@ -263,5 +266,15 @@
     &:hover {
       background-color: #EEE;
     }
+  }
+}
+
+
+.tanuki-shape {
+  transition: all 0.8s;
+
+  &:hover {
+    fill: rgb(255, 255, 255);
+    transition: all 0.1s;
   }
 }

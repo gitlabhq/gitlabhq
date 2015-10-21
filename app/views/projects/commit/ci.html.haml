@@ -29,27 +29,7 @@
       - if @ci_commit.builds.running_or_pending.any?
         = link_to "Cancel all", cancel_builds_namespace_project_commit_path(@project.namespace, @project, @commit.sha), class: 'btn btn-xs btn-danger'
 
-%table.table.builds
-  %thead
-    %tr
-      %th Status
-      %th Build ID
-      %th Ref
-      %th Stage
-      %th Name
-      %th Duration
-      %th Finished at
-      - if @ci_project && @ci_project.coverage_enabled?
-        %th Coverage
-      %th
-  - @ci_commit.refs.each do |ref|
-    = render partial: "projects/commit_statuses/commit_status", collection: @ci_commit.statuses.for_ref(ref).latest.ordered,
-             locals: { coverage: @ci_project.try(:coverage_enabled?), allow_retry: true }
-
-- if @ci_commit.retried.any?
-  .gray-content-block.second-block
-    Retried builds
-
+.table-holder
   %table.table.builds
     %thead
       %tr
@@ -63,5 +43,27 @@
         - if @ci_project && @ci_project.coverage_enabled?
           %th Coverage
         %th
-    = render partial: "projects/commit_statuses/commit_status", collection: @ci_commit.retried,
-             locals: { coverage: @ci_project.try(:coverage_enabled?) }
+    - @ci_commit.refs.each do |ref|
+      = render partial: "projects/commit_statuses/commit_status", collection: @ci_commit.statuses.for_ref(ref).latest.ordered,
+               locals: { coverage: @ci_project.try(:coverage_enabled?), allow_retry: true }
+
+- if @ci_commit.retried.any?
+  .gray-content-block.second-block
+    Retried builds
+
+  .table-holder
+    %table.table.builds
+      %thead
+        %tr
+          %th Status
+          %th Build ID
+          %th Ref
+          %th Stage
+          %th Name
+          %th Duration
+          %th Finished at
+          - if @ci_project && @ci_project.coverage_enabled?
+            %th Coverage
+          %th
+      = render partial: "projects/commit_statuses/commit_status", collection: @ci_commit.retried,
+               locals: { coverage: @ci_project.try(:coverage_enabled?) }

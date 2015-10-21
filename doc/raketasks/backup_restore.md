@@ -16,7 +16,7 @@ You need to keep a separate copy of `/etc/gitlab/gitlab-secrets.json`
 from source). This file contains the database encryption key used
 for two-factor authentication. If you restore a GitLab backup without
 restoring the database encryption key, users who have two-factor
-authentication enabled will loose access to your GitLab server.
+authentication enabled will lose access to your GitLab server.
 
 If you are interested in GitLab CI backup please follow to the [CI backup documentation](https://gitlab.com/gitlab-org/gitlab-ci/blob/master/doc/raketasks/backup_restore.md)*
 

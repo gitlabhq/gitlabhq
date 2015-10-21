@@ -1,5 +1,5 @@
 class GroupMilestone
-
+  attr_accessor :title, :milestones
   alias_attribute :name, :title
 
   def initialize(title, milestones)
@@ -7,18 +7,10 @@ class GroupMilestone
     @milestones = milestones
   end
 
-  def title
-    @title
-  end
-
   def safe_title
     @title.parameterize
   end
-
-  def milestones
-    @milestones
-  end
-
+  
   def projects
     milestones.map { |milestone| milestone.project }
   end

@@ -15,7 +15,7 @@ module Gitlab
       LazyReference = Struct.new(:klass, :ids) do
         def self.load(refs)
           lazy_references, values = refs.partition { |ref| ref.is_a?(self) }
-          
+
           lazy_values = lazy_references.group_by(&:klass).flat_map do |klass, refs|
             ids = refs.flat_map(&:ids)
             klass.where(id: ids)
@@ -107,10 +107,10 @@ module Gitlab
         return doc if project.nil?
 
         search_text_nodes(doc).each do |node|
-          content = node.to_html
-
-          next unless content.match(pattern)
           next if ignored_ancestry?(node)
+          next unless node.text =~ pattern
+
+          content = node.to_html
 
           html = yield content
 

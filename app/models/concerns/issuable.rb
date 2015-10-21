@@ -48,7 +48,7 @@ module Issuable
 
     attr_mentionable :title 
     attr_mentionable :description, cache: true
-    participant :author, :assignee, :notes
+    participant :author, :assignee, :notes_with_associations
   end
 
   module ClassMethods
@@ -84,6 +84,10 @@ module Issuable
 
   def is_being_reassigned?
     assignee_id_changed?
+  end
+
+  def open?
+    opened? || reopened?
   end
 
   #
@@ -175,6 +179,10 @@ module Issuable
   #   issuable.to_ability_name # => "merge_request"
   def to_ability_name
     self.class.to_s.underscore
+  end
+
+  def notes_with_associations
+    notes.includes(:author, :project)
   end
 
   private

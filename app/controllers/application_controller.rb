@@ -33,6 +33,10 @@ class ApplicationController < ActionController::Base
     render_404
   end
 
+  def redirect_back_or_default(default: root_path, options: {})
+    redirect_to request.referer.present? ? :back : default, options
+  end
+
   protected
 
   # From https://github.com/plataformatec/devise/wiki/How-To:-Simple-Token-Authentication-Example
@@ -150,7 +154,7 @@ class ApplicationController < ActionController::Base
   end
 
   def git_not_found!
-    render "errors/git_not_found", layout: "errors", status: 404
+    render html: "errors/git_not_found", layout: "errors", status: 404
   end
 
   def method_missing(method_sym, *arguments, &block)

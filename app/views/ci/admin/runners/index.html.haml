@@ -35,18 +35,19 @@
 
 %br
 
-%table.table
-  %thead
-    %tr
-      %th Type
-      %th Runner token
-      %th Description
-      %th Projects
-      %th Builds
-      %th Tags
-      %th Last contact
-      %th
+.table-holder
+  %table.table
+    %thead
+      %tr
+        %th Type
+        %th Runner token
+        %th Description
+        %th Projects
+        %th Builds
+        %th Tags
+        %th Last contact
+        %th
 
-  - @runners.each do |runner|
-    = render "ci/admin/runners/runner", runner: runner
+    - @runners.each do |runner|
+      = render "ci/admin/runners/runner", runner: runner
 = paginate @runners
