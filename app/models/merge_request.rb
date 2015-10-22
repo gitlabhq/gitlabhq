@@ -257,7 +257,7 @@ class MergeRequest < ActiveRecord::Base
 
     Note.where(
       "(project_id = :target_project_id AND noteable_type = 'MergeRequest' AND noteable_id = :mr_id) OR" +
-      "(project_id = :source_project_id AND noteable_type = 'Commit' AND commit_id IN (:commit_ids))",
+      "((project_id = :source_project_id OR project_id = :target_project_id) AND noteable_type = 'Commit' AND commit_id IN (:commit_ids))",
       mr_id: id,
       commit_ids: commit_ids,
       target_project_id: target_project_id,
