@@ -567,7 +567,7 @@ class Project < ActiveRecord::Base
   end
 
   def empty_repo?
-    !repository.exists? || repository.empty?
+    !repository.exists? || !repository.has_visible_content?
   end
 
   def repo

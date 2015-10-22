@@ -10,6 +10,7 @@ v 8.2.0 (unreleased)
   - Adds ability to remove the forked relationship from project settings screen. (Han Loong Liauw)
   - Improved performance of sorting milestone issues
   - Allow users to select the Files view as default project view (Cristian Bica)
+  - Show "Empty Repository Page" for repository without branches (Artem V. Navrotskiy)
 
 v 8.1.0 (unreleased)
   - Send an email to admin email when a user is reported for spam (Jonathan Rochkind)
