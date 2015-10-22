@@ -27,6 +27,12 @@ class IssuableBaseService < BaseService
       old_branch, new_branch)
   end
 
+  def create_task_status_note(issuable)
+    issuable.updated_tasks.each do |task|
+      SystemNoteService.change_task_status(issuable, issuable.project, current_user, task)
+    end
+  end
+
   def filter_params(issuable_ability_name = :issue)
     params[:assignee_id]  = "" if params[:assignee_id] == IssuableFinder::NONE
     params[:milestone_id] = "" if params[:milestone_id] == IssuableFinder::NONE
@@ -55,6 +61,7 @@ class IssuableBaseService < BaseService
           old_labels - issuable.labels)
       end
 
+      handle_common_system_notes(issuable)
       handle_changes(issuable)
       issuable.create_new_cross_references!(current_user)
       execute_hooks(issuable, 'update')
@@ -69,6 +76,16 @@ class IssuableBaseService < BaseService
       reopen_service.new(project, current_user, {}).execute(issuable)
     when 'close'
       close_service.new(project, current_user, {}).execute(issuable)
+    end
+  end
+
+  def handle_common_system_notes(issuable)
+    if issuable.previous_changes.include?('title')
+      create_title_change_note(issuable, issuable.previous_changes['title'].first)
+    end
+
+    if issuable.previous_changes.include?('description') && issuable.tasks?
+      create_task_status_note(issuable)
     end
   end
 end
