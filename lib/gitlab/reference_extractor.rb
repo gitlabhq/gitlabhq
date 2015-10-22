@@ -11,6 +11,7 @@ module Gitlab
       @load_lazy_references = load_lazy_references
 
       @texts = []
+      @references = {}
     end
 
     def analyze(text, options = {})
@@ -19,20 +20,11 @@ module Gitlab
 
     %i(user label issue merge_request snippet commit commit_range).each do |type|
       define_method("#{type}s") do
-        references[type]
+        @references[type] ||= pipeline_result(type)
       end
     end
 
     private
-
-    def references
-      @references ||= Hash.new do |references, type|
-        type = type.to_sym
-        next references[type] if references.has_key?(type)
-
-        references[type] = pipeline_result(type)
-      end
-    end
 
     # Instantiate and call HTML::Pipeline with a single reference filter type,
     # returning the result
