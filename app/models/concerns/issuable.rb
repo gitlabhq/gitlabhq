@@ -184,6 +184,11 @@ module Issuable
     notes.includes(:author, :project)
   end
 
+  def updated_tasks
+    Taskable.get_updated_tasks(old_content: previous_changes['description'].first,
+                               new_content: description)
+  end
+
   private
 
   def filter_superceded_votes(votes, notes)
