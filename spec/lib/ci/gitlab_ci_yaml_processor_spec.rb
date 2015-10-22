@@ -218,6 +218,20 @@ module Ci
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "image should be a string")
       end
 
+      it "returns errors if job name is blank" do
+        config = YAML.dump({ '' => { script: "test" } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "job name should be non-empty string")
+      end
+
+      it "returns errors if job name is non-string" do
+        config = YAML.dump({ 10 => { script: "test" } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "job name should be non-empty string")
+      end
+
       it "returns errors if job image parameter is invalid" do
         config = YAML.dump({ rspec: { script: "test", image: ["test"] } })
         expect do
