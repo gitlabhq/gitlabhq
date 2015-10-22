@@ -77,7 +77,7 @@ module Gitlab
     def self.full_cache_key(cache_key, pipeline_name)
       return unless cache_key
       pipeline_name ||= :full
-      ["markdown", *cache_key, pipeline]
+      ["markdown", *cache_key, pipeline_name]
     end
 
     def self.pipeline_by_name(pipeline_name)
