@@ -93,16 +93,16 @@ module Gitlab::Markdown
       end
     end
 
-    context 'when pipeline is :description' do
+    context 'when inline_sanitization is true' do
       it 'uses a stricter whitelist' do
-        doc = filter('<h1>Description</h1>', pipeline: :description)
+        doc = filter('<h1>Description</h1>', inline_sanitization: true)
         expect(doc.to_html.strip).to eq 'Description'
       end
 
       %w(pre code img ol ul li).each do |elem|
         it "removes '#{elem}' elements" do
           act = "<#{elem}>Description</#{elem}>"
-          expect(filter(act, pipeline: :description).to_html.strip).
+          expect(filter(act, inline_sanitization: true).to_html.strip).
             to eq 'Description'
         end
       end
@@ -110,7 +110,7 @@ module Gitlab::Markdown
       %w(b i strong em a ins del sup sub p).each do |elem|
         it "still allows '#{elem}' elements" do
           exp = act = "<#{elem}>Description</#{elem}>"
-          expect(filter(act, pipeline: :description).to_html).to eq exp
+          expect(filter(act, inline_sanitization: true).to_html).to eq exp
         end
       end
     end
