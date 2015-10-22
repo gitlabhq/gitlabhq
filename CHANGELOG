@@ -1,6 +1,6 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.1.0 (unreleased)
+v 8.1.0
   - Ensure MySQL CI limits DB migrations occur after the fields have been created (Stan Hu)
   - Redirect to a default path if HTTP_REFERER is not set (Stan Hu)
   - Send an email to admin email when a user is reported for spam (Jonathan Rochkind)
