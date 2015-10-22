@@ -70,7 +70,7 @@ describe ProjectsController do
 
 
         # MySQL queries are case insensitive by default, so this spec would fail.
-        unless Gitlab::Database.mysql?
+        if Gitlab::Database.postgresql?
           context "when there is also a match with the same casing" do
 
             let!(:other_project) { create(:project, :public, namespace: public_project.namespace, path: public_project.path.upcase) }
