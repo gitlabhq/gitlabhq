@@ -50,7 +50,17 @@
   }
 
   .project-home-dropdown {
-    margin: 11px 3px 0;
+    margin: 13px 0px 0;
+  }
+
+  .notifications-btn {
+    .fa-bell {
+      margin-right: 6px;
+    }
+
+    .fa-angle-down {
+      margin-left: 6px;
+    }
   }
 
   .project-home-desc {
@@ -85,6 +95,7 @@
       color: inherit;
     }
   }
+
   .input-group {
     display: inline-table;
     position: relative;
@@ -233,21 +244,9 @@
     }
   }
 
-  .fa-fw {
+  i {
     margin-right: 8px;
   }
-}
-
-.fa-bell {
-  margin-right: 6px;
-}
-
-.fa-angle-down {
-  margin-left: 6px;
-}
-
-.project-home-panel .project-home-dropdown {
-  margin: 13px 0px 0;
 }
 
 .project-visibility-level-holder {
@@ -548,7 +547,7 @@ pre.light-well {
   margin-right: -$gl-padding;
   padding: $gl-padding;
   border-top: 0;
-  
+
   .edit-project-readme {
     z-index: 100;
     position: relative;
