@@ -544,5 +544,13 @@ pre.light-well {
 }
 
 .project-show-readme .readme-holder {
+  margin-left: -$gl-padding;
+  margin-right: -$gl-padding;
+  padding: $gl-padding;
   border-top: 0;
+  
+  .edit-project-readme {
+    z-index: 100;
+    position: relative;
+  }
 }
