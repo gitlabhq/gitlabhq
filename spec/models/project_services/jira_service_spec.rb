@@ -140,4 +140,69 @@ describe JiraService do
       end
     end
   end
+
+  describe "Execute" do
+    let(:user)    { create(:user) }
+    let(:project) { create(:project) }
+
+    context "when a password was previously set" do
+      before do
+        @service = JiraService.create(
+          project: create(:project),
+          properties: {
+            project_url: 'http://gitlab.com',
+            username: 'mic',
+            password: "password"
+          }
+        )
+      end
+  
+      it "reset password if url changed" do
+        @service.project_url = 'http://gitlab1.com'
+        @service.save
+        expect(@service.password).to be_nil
+      end
+  
+      it "does not reset password if username changed" do
+        @service.username = "some_name"
+        @service.save
+        expect(@service.password).to eq("password")
+      end
+
+      it "does not reset password if new url is set together with password, even if it's the same password" do
+        @service.project_url = 'http://gitlab_edited.com'
+        @service.password = 'password'
+        @service.save
+        expect(@service.password).to eq("password")
+        expect(@service.project_url).to eq("http://gitlab_edited.com")
+      end
+
+      it "should reset password if url changed, even if setter called multiple times" do
+        @service.project_url = 'http://gitlab1.com'
+        @service.project_url = 'http://gitlab1.com'
+        @service.save
+        expect(@service.password).to be_nil
+      end
+    end
+    
+    context "when no password was previously set" do
+      before do
+        @service = JiraService.create(
+          project: create(:project),
+          properties: {
+            project_url: 'http://gitlab.com',
+            username: 'mic'
+          }
+        )
+      end
+
+      it "saves password if new url is set together with password" do
+        @service.project_url = 'http://gitlab_edited.com'
+        @service.password = 'password'
+        @service.save
+        expect(@service.password).to eq("password")
+        expect(@service.project_url).to eq("http://gitlab_edited.com")
+      end
+    end
+  end
 end

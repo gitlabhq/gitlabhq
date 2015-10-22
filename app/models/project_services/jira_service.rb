@@ -27,6 +27,14 @@ class JiraService < IssueTrackerService
 
   before_validation :set_api_version, :set_jira_issue_transition_id
 
+  before_update :reset_password
+
+  def reset_password
+    if project_url_changed? && !password_touched?
+      self.password = nil
+    end
+  end
+
   def help
     line1 = 'Setting `project_url`, `issues_url` and `new_issue_url` will '\
     'allow a user to easily navigate to the Jira issue tracker. See the '\
