@@ -20,8 +20,6 @@ module Gitlab
     #
     # Returns an HTML-safe String
     def self.render(text, context = {})
-      context[:pipeline] ||= :full
-
       cache_key = context.delete(:cache_key)
       cache_key = full_cache_key(cache_key, context[:pipeline])
 
@@ -35,8 +33,7 @@ module Gitlab
     end
 
     def self.render_result(text, context = {})
-      pipeline_type = context[:pipeline] ||= :full
-      pipeline_by_type(pipeline_type).call(text, context)
+      pipeline_by_name(context[:pipeline]).call(text, context)
     end
 
     # Perform post-processing on an HTML String
@@ -53,7 +50,10 @@ module Gitlab
     #
     # Returns an HTML-safe String
     def self.post_process(html, context)
-      pipeline = pipeline_by_type(:post_process)
+      pipeline = pipeline_by_name(context[:pipeline])
+      context = pipeline.transform_context(context)
+
+      pipeline = pipeline_by_name(:post_process)
 
       if context[:xhtml]
         pipeline.to_document(html, context).to_html(save_with: Nokogiri::XML::Node::SaveOptions::AS_XHTML)
@@ -74,14 +74,15 @@ module Gitlab
       end
     end
 
-    def self.full_cache_key(cache_key, pipeline = :full)
+    def self.full_cache_key(cache_key, pipeline_name)
       return unless cache_key
-
+      pipeline_name ||= :full
       ["markdown", *cache_key, pipeline]
     end
 
-    def self.pipeline_by_type(pipeline_type)
-      const_get("#{pipeline_type.to_s.camelize}Pipeline")
+    def self.pipeline_by_name(pipeline_name)
+      pipeline_name ||= :full
+      const_get("#{pipeline_name.to_s.camelize}Pipeline")
     end
 
     # Provide autoload paths for filters to prevent a circular dependency error
