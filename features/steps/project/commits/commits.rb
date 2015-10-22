@@ -103,11 +103,21 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'commit has ci status' do
-    @project.enable_ci(@user)
-    create :ci_commit, project: @project.gitlab_ci_project, sha: sample_commit.id
+    @project.enable_ci
+    ci_commit = create :ci_commit, gl_project: @project, sha: sample_commit.id
+    create :ci_build, commit: ci_commit
   end
 
   step 'I see commit ci info' do
-    expect(page).to have_content "build: skipped"
+    expect(page).to have_content "build: pending"
+  end
+
+  step 'I click status link' do
+    find('.commit-ci-menu').click_link "Builds"
+  end
+
+  step 'I see builds list' do
+    expect(page).to have_content "build: pending"
+    expect(page).to have_content "Latest builds"
   end
 end

@@ -1,5 +1,6 @@
 .commits-compare-switch{
-  @extend .btn;
+  @include btn-default;
+  @include btn-white;
   background: image-url("switch_icon.png") no-repeat center center;
   text-indent: -9999px;
   float: left;

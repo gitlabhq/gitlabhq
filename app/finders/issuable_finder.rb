@@ -39,7 +39,7 @@ class IssuableFinder
     items = by_assignee(items)
     items = by_author(items)
     items = by_label(items)
-    items = sort(items)
+    sort(items)
   end
 
   def group
@@ -53,15 +53,36 @@ class IssuableFinder
       end
   end
 
+  def project?
+    params[:project_id].present?
+  end
+
   def project
     return @project if defined?(@project)
 
-    @project =
-      if params[:project_id].present?
-        Project.find(params[:project_id])
-      else
-        nil
-      end
+    if project?
+      @project = Project.find(params[:project_id])
+      
+      unless Ability.abilities.allowed?(current_user, :read_project, @project)
+        @project = nil
+      end 
+    else
+      @project = nil
+    end
+
+    @project
+  end
+
+  def projects
+    return @projects if defined?(@projects)
+
+    if project?
+      project
+    elsif current_user && params[:authorized_only].presence && !current_user_related?
+      current_user.authorized_projects
+    else
+      ProjectsFinder.new.execute(current_user)
+    end
   end
 
   def search
@@ -72,15 +93,29 @@ class IssuableFinder
     params[:milestone_title].present?
   end
 
+  def filter_by_no_milestone?
+    milestones? && params[:milestone_title] == Milestone::None.title
+  end
+
   def milestones
     return @milestones if defined?(@milestones)
 
     @milestones =
-      if milestones? && params[:milestone_title] != Milestone::None.title
-        Milestone.where(title: params[:milestone_title])
+      if milestones?
+        scope = Milestone.where(project_id: projects)
+
+        scope.where(title: params[:milestone_title])
       else
         nil
       end
+  end
+
+  def labels?
+    params[:label_name].present?
+  end
+
+  def filter_by_no_label?
+    labels? && params[:label_name] == Label::None.title
   end
 
   def assignee?
@@ -116,19 +151,7 @@ class IssuableFinder
   private
 
   def init_collection
-    table_name = klass.table_name
-
-    if project
-      if Ability.abilities.allowed?(current_user, :read_project, project)
-        project.send(table_name)
-      else
-        []
-      end
-    elsif current_user && params[:authorized_only].presence && !current_user_related?
-      klass.of_projects(current_user.authorized_projects).references(:project)
-    else
-      klass.of_projects(ProjectsFinder.new.execute(current_user)).references(:project)
-    end
+    klass.all
   end
 
   def by_scope(items)
@@ -166,7 +189,12 @@ class IssuableFinder
   end
 
   def by_project(items)
-    items = items.of_projects(project.id) if project
+    items =
+      if projects
+        items.of_projects(projects).references(:project)
+      else
+        items.none
+      end
 
     items
   end
@@ -179,14 +207,6 @@ class IssuableFinder
 
   def sort(items)
     items.sort(params[:sort])
-  end
-
-  def by_milestone(items)
-    if milestones?
-      items = items.where(milestone_id: milestones.try(:pluck, :id))
-    end
-
-    items
   end
 
   def by_assignee(items)
@@ -205,15 +225,37 @@ class IssuableFinder
     items
   end
 
+  def by_milestone(items)
+    if milestones?
+      if filter_by_no_milestone?
+        items = items.where(milestone_id: [-1, nil])
+      else
+        items = items.joins(:milestone).where(milestones: { title: params[:milestone_title] })
+
+        if projects
+          items = items.where(milestones: { project_id: projects })
+        end
+      end
+    end
+
+    items
+  end
+
   def by_label(items)
-    if params[:label_name].present?
-      label_names = params[:label_name].split(",")
+    if labels?
+      if filter_by_no_label?
+        items = items.
+          joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{klass.name}' AND label_links.target_id = #{klass.table_name}.id").
+          where(label_links: { id: nil })
+      else
+        label_names = params[:label_name].split(",")
 
-      item_ids = LabelLink.joins(:label).
-        where('labels.title in (?)', label_names).
-        where(target_type: klass.name).pluck(:target_id)
+        items = items.joins(:labels).where(labels: { title: label_names })
 
-      items = items.where(id: item_ids)
+        if projects
+          items = items.where(labels: { project_id: projects })
+        end
+      end
     end
 
     items

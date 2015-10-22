@@ -151,14 +151,14 @@ describe Grack::Auth do
                 end
 
                 it "repeated attempts followed by successful attempt" do
-                  for n in 0..maxretry do
+                  maxretry.times.each do
                     expect(attempt_login(false)).to eq(401)
                   end
 
                   expect(attempt_login(true)).to eq(200)
                   expect(Rack::Attack::Allow2Ban.banned?(ip)).to be_falsey
 
-                  for n in 0..maxretry do
+                  maxretry.times.each do
                     expect(attempt_login(false)).to eq(401)
                   end
                 end

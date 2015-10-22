@@ -33,15 +33,14 @@ describe Ci::HipChatService do
   describe "Execute" do
 
     let(:service) { Ci::HipChatService.new }
-    let(:project) { FactoryGirl.create :ci_project }
-    let(:commit)  { FactoryGirl.create :ci_commit, project: project }
+    let(:commit)  { FactoryGirl.create :ci_commit }
     let(:build)   { FactoryGirl.create :ci_build, commit: commit, status: 'failed' }
     let(:api_url) { 'https://api.hipchat.com/v2/room/123/notification?auth_token=a1b2c3d4e5f6' }
 
     before do
       allow(service).to receive_messages(
-        project: project,
-        project_id: project.id,
+        project: commit.project,
+        project_id: commit.project_id,
         notify_only_broken_builds: false,
         hipchat_room: 123,
         hipchat_token: 'a1b2c3d4e5f6'

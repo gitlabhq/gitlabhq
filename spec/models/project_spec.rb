@@ -140,7 +140,7 @@ describe Project do
 
     describe 'last_activity_date' do
       it 'returns the creation date of the project\'s last event if present' do
-        last_activity_event = create(:event, project: project)
+        create(:event, project: project)
         expect(project.last_activity_at.to_i).to eq(last_event.created_at.to_i)
       end
 
@@ -220,6 +220,7 @@ describe Project do
       end
 
       it { expect(Project.find_with_namespace('gitlab/gitlabhq')).to eq(@project) }
+      it { expect(Project.find_with_namespace('GitLab/GitlabHQ')).to eq(@project) }
       it { expect(Project.find_with_namespace('gitlab-ci')).to be_nil }
     end
   end
@@ -404,21 +405,60 @@ describe Project do
 
   describe :ci_commit do
     let(:project) { create :project }
-    let(:ci_project) { create :ci_project, gl_project: project }
-    let(:commit) { create :ci_commit, project: ci_project }
+    let(:commit) { create :ci_commit, gl_project: project }
 
-    before { project.create_gitlab_ci_service(active: true) }
+    before do
+      project.ensure_gitlab_ci_project
+      project.create_gitlab_ci_service(active: true)
+    end
 
     it { expect(project.ci_commit(commit.sha)).to eq(commit) }
   end
 
   describe :enable_ci do
     let(:project) { create :project }
-    let(:user) { create :user }
 
-    before { project.enable_ci(user) }
+    before { project.enable_ci }
 
     it { expect(project.gitlab_ci?).to be_truthy }
     it { expect(project.gitlab_ci_project).to be_a(Ci::Project) }
+  end
+
+  describe '.trending' do
+    let(:group)    { create(:group) }
+    let(:project1) { create(:empty_project, :public, group: group) }
+    let(:project2) { create(:empty_project, :public, group: group) }
+
+    before do
+      2.times do
+        create(:note_on_commit, project: project1)
+      end
+
+      create(:note_on_commit, project: project2)
+    end
+
+    describe 'without an explicit start date' do
+      subject { described_class.trending.to_a }
+
+      it 'sorts Projects by the amount of notes in descending order' do
+        expect(subject).to eq([project1, project2])
+      end
+    end
+
+    describe 'with an explicit start date' do
+      let(:date) { 2.months.ago }
+
+      subject { described_class.trending(date).to_a }
+
+      before do
+        2.times do
+          create(:note_on_commit, project: project2, created_at: date)
+        end
+      end
+
+      it 'sorts Projects by the amount of notes in descending order' do
+        expect(subject).to eq([project2, project1])
+      end
+    end
   end
 end

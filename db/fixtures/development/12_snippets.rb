@@ -22,7 +22,7 @@ class Member < ActiveRecord::Base
 end
 eos
 
-  (1..50).each  do |i|
+  50.times do |i|
     user = User.all.sample
 
     PersonalSnippet.seed(:id, [{

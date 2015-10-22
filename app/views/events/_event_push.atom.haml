@@ -6,7 +6,7 @@
       %i
         at
         = commit[:timestamp].to_time.to_s(:short)
-    %blockquote= markdown(escape_once(commit[:message]), xhtml: true, reference_only_path: false, project: event.project)
+    %blockquote= markdown(escape_once(commit[:message]), pipeline: :atom, project: event.project)
   - if event.commits_count > 15
     %p
       %i

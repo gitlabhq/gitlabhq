@@ -8,18 +8,18 @@ module Ci
       builds =
         if current_runner.shared?
           # don't run projects which have not enables shared runners
-          builds.includes(:project).where(ci_projects: { shared_runners_enabled: true })
+          builds.joins(commit: { gl_project: :gitlab_ci_project }).where(ci_projects: { shared_runners_enabled: true })
         else
           # do run projects which are only assigned to this runner
-          builds.where(project_id: current_runner.projects)
+          builds.joins(:commit).where(ci_commits: { gl_project_id: current_runner.gl_projects_ids })
         end
 
       builds = builds.order('created_at ASC')
 
       build = builds.find do |build|
-        (build.tag_list - current_runner.tag_list).empty?
+        build.can_be_served?(current_runner)
       end
-        
+
 
       if build
         # In case when 2 runners try to assign the same build, second runner will be declined

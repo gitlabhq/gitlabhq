@@ -3,10 +3,9 @@
 
 .gray-content-block
   - if current_user
-    %ul.nav.nav-pills.event_filter.pull-right
-      %li.pull-right
-        = link_to dashboard_projects_path(:atom, { private_token: current_user.private_token }), class: 'rss-btn' do
-          %i.fa.fa-rss
+    .pull-right
+      = link_to dashboard_projects_path(:atom, { private_token: current_user.private_token }), class: 'btn rss-btn' do
+        %i.fa.fa-rss
   = render 'shared/event_filter'
 
 .content_list

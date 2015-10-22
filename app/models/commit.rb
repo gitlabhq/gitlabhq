@@ -2,13 +2,13 @@ class Commit
   extend ActiveModel::Naming
 
   include ActiveModel::Conversion
-  include Mentionable
   include Participable
+  include Mentionable
   include Referable
   include StaticModel
 
   attr_mentionable :safe_message
-  participant :author, :committer, :notes, :mentioned_users
+  participant :author, :committer, :notes
 
   attr_accessor :project
 
@@ -164,6 +164,14 @@ class Commit
     @committer ||= User.find_by_any_email(committer_email)
   end
 
+  def parents
+    @parents ||= parent_ids.map { |id| project.commit(id) }
+  end
+
+  def parent
+    @parent ||= project.commit(self.parent_id) if self.parent_id
+  end
+
   def notes
     project.notes.for_commit_id(self.id)
   end
@@ -181,7 +189,11 @@ class Commit
     @raw.short_id(7)
   end
 
-  def parents
-    @parents ||= Commit.decorate(super, project)
+  def ci_commit
+    project.ci_commit(sha)
+  end
+
+  def status
+    ci_commit.try(:status) || :not_found
   end
 end

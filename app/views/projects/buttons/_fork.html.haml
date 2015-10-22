@@ -8,6 +8,5 @@
   - else
     = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "Fork project", class: 'btn' do
       = icon('code-fork fw')
-      Fork
       %span.count
         = @project.forks_count

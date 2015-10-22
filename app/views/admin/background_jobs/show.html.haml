@@ -12,24 +12,25 @@
         %i.fa.fa-exclamation-triangle
         There are no running sidekiq processes. Please restart GitLab
     - else
-      %table.table
-        %thead
-          %th USER
-          %th PID
-          %th CPU
-          %th MEM
-          %th STATE
-          %th START
-          %th COMMAND
-        %tbody
-          - @sidekiq_processes.each do |process|
-            - next unless process.match(/(sidekiq \d+\.\d+\.\d+.+$)/)
-            - data = process.strip.split(' ')
-            %tr
-              %td= gitlab_config.user
-              - 5.times do
-                %td= data.shift
-              %td= data.join(' ')
+      .table-holder
+        %table.table
+          %thead
+            %th USER
+            %th PID
+            %th CPU
+            %th MEM
+            %th STATE
+            %th START
+            %th COMMAND
+          %tbody
+            - @sidekiq_processes.each do |process|
+              - next unless process.match(/(sidekiq \d+\.\d+\.\d+.+$)/)
+              - data = process.strip.split(' ')
+              %tr
+                %td= gitlab_config.user
+                - 5.times do
+                  %td= data.shift
+                %td= data.join(' ')
 
       .clearfix
         %p

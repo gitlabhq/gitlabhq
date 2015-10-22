@@ -4,7 +4,8 @@ describe Ci::API::API, 'Commits' do
   include ApiHelpers
 
   let(:project) { FactoryGirl.create(:ci_project) }
-  let(:commit) { FactoryGirl.create(:ci_commit, project: project) }
+  let(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
+  let(:commit) { FactoryGirl.create(:ci_commit, gl_project: gl_project) }
 
   let(:options) do
     {
@@ -43,8 +44,7 @@ describe Ci::API::API, 'Commits' do
               "email" => "jordi@softcatala.org",
             }
           }
-        ],
-        ci_yaml_file: gitlab_ci_yaml
+        ]
       }
     end
 

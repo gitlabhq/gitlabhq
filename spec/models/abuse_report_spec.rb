@@ -16,4 +16,16 @@ RSpec.describe AbuseReport, type: :model do
   subject { create(:abuse_report) }
 
   it { expect(subject).to be_valid }
+
+  describe 'associations' do
+    it { is_expected.to belong_to(:reporter).class_name('User') }
+    it { is_expected.to belong_to(:user) }
+  end
+
+  describe 'validations' do
+    it { is_expected.to validate_presence_of(:reporter) }
+    it { is_expected.to validate_presence_of(:user) }
+    it { is_expected.to validate_presence_of(:message) }
+    it { is_expected.to validate_uniqueness_of(:user_id) }
+  end
 end

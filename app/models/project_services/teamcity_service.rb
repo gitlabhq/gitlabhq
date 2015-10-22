@@ -37,10 +37,17 @@ class TeamcityService < CiService
   attr_accessor :response
 
   after_save :compose_service_hook, if: :activated?
+  before_update :reset_password
 
   def compose_service_hook
     hook = service_hook || build_service_hook
     hook.save
+  end
+
+  def reset_password
+    if teamcity_url_changed? && !password_touched?
+      self.password = nil
+    end
   end
 
   def title

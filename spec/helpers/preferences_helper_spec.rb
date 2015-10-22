@@ -8,14 +8,18 @@ describe PreferencesHelper do
     end
 
     it 'raises an exception when defined choices may be using the wrong key' do
-      expect(User).to receive(:dashboards).and_return(foo: 'foo', bar: 'bar')
+      dashboards = User.dashboards.dup
+      dashboards[:projects_changed] = dashboards.delete :projects
+      expect(User).to receive(:dashboards).and_return(dashboards)
       expect { helper.dashboard_choices }.to raise_error(KeyError)
     end
 
     it 'provides better option descriptions' do
       expect(helper.dashboard_choices).to match_array [
         ['Your Projects (default)', 'projects'],
-        ['Starred Projects',        'stars']
+        ['Starred Projects',        'stars'],
+        ["Your Projects' Activity", 'project_activity'],
+        ["Starred Projects' Activity", 'starred_project_activity']
       ]
     end
   end

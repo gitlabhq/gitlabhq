@@ -223,11 +223,11 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'project \'Shop\' has issue \'Bugfix1\' with description: \'Description for issue1\'' do
-    issue = create(:issue, title: 'Bugfix1', description: 'Description for issue1', project: project)
+    create(:issue, title: 'Bugfix1', description: 'Description for issue1', project: project)
   end
 
   step 'project \'Shop\' has issue \'Feature1\' with description: \'Feature submitted for issue1\'' do
-    issue = create(:issue, title: 'Feature1', description: 'Feature submitted for issue1', project: project)
+    create(:issue, title: 'Feature1', description: 'Feature submitted for issue1', project: project)
   end
 
   step 'I fill in issue search with \'Description for issue1\'' do

@@ -23,9 +23,11 @@ sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 cd /home/git/gitlab
 sudo -u git -H git fetch --all
 sudo -u git -H git checkout -- Gemfile.lock db/schema.rb
-LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
-sudo -u git -H git checkout $LATEST_TAG -b $LATEST_TAG
+sudo -u git -H git checkout LATEST_TAG -b LATEST_TAG
 ```
+Replace `LATEST_TAG` with the latest GitLab tag you want to update to, for example `v8.0.3`.  
+Use `git tag -l 'v*.[0-9]' --sort='v:refname'` to see a list of all tags.  
+Make sure to update patch versions only (check your current version with `cat VERSION`)
 
 ### 3. Update gitlab-shell to the corresponding version
 
@@ -47,9 +49,7 @@ sudo -u git -H bundle install --without development test mysql --deployment
 sudo -u git -H bundle install --without development test postgres --deployment
 
 sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
-sudo -u git -H bundle exec rake assets:clean RAILS_ENV=production
-sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
-sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
+sudo -u git -H bundle exec rake assets:clean assets:precompile cache:clear RAILS_ENV=production
 ```
 
 ### 5. Start application

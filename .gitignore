@@ -25,7 +25,6 @@ config/initializers/rack_attack.rb
 config/initializers/smtp_settings.rb
 config/resque.yml
 config/unicorn.rb
-config/mail_room.yml
 config/secrets.yml
 coverage/*
 db/*.sqlite3

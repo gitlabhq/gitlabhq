@@ -7,6 +7,21 @@ describe Admin::UsersController do
     sign_in(admin)
   end
 
+  describe 'POST login_as' do
+    let(:user) { create(:user) }
+
+    it 'logs admin as another user' do
+      expect(warden.authenticate(scope: :user)).not_to eq(user)
+      post :login_as, id: user.username
+      expect(warden.authenticate(scope: :user)).to eq(user)
+    end
+
+    it 'redirects user to homepage' do
+      post :login_as, id: user.username
+      expect(response).to redirect_to(root_path)
+    end
+  end
+
   describe 'DELETE #user with projects' do
     let(:user) { create(:user) }
     let(:project) { create(:project, namespace: user.namespace) }
@@ -19,6 +34,32 @@ describe Admin::UsersController do
       delete :destroy, id: user.username, format: :json
       expect(response.status).to eq(200)
       expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
+    end
+  end
+
+  describe 'PUT block/:id' do
+    let(:user) { create(:user) }
+
+    it 'blocks user' do
+      put :block, id: user.username
+      user.reload
+      expect(user.blocked?).to be_truthy
+      expect(flash[:notice]).to eq 'Successfully blocked'
+    end
+  end
+
+  describe 'PUT unblock/:id' do
+    let(:user) { create(:user) }
+
+    before do
+      user.block
+    end
+
+    it 'unblocks user' do
+      put :unblock, id: user.username
+      user.reload
+      expect(user.blocked?).to be_falsey
+      expect(flash[:notice]).to eq 'Successfully unblocked'
     end
   end
 

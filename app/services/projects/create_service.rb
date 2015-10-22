@@ -62,7 +62,7 @@ module Projects
       after_create_actions if @project.persisted?
 
       @project
-    rescue => ex
+    rescue
       @project.errors.add(:base, "Can't save project. Please try again later")
       @project
     end

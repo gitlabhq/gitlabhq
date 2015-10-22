@@ -178,7 +178,6 @@ Settings.gitlab['import_sources'] ||= ['github','bitbucket','gitlab','gitorious'
 # CI
 #
 Settings['gitlab_ci'] ||= Settingslogic.new({})
-Settings.gitlab_ci['enabled']             = true if Settings.gitlab_ci['enabled'].nil?
 Settings.gitlab_ci['all_broken_builds']   = true if Settings.gitlab_ci['all_broken_builds'].nil?
 Settings.gitlab_ci['add_pusher']          = false if Settings.gitlab_ci['add_pusher'].nil?
 Settings.gitlab_ci['url']                 ||= Settings.send(:build_gitlab_ci_url)
@@ -188,7 +187,11 @@ Settings.gitlab_ci['builds_path']         = File.expand_path(Settings.gitlab_ci[
 # Reply by email
 #
 Settings['incoming_email'] ||= Settingslogic.new({})
-Settings.incoming_email['enabled'] = false if Settings.incoming_email['enabled'].nil?
+Settings.incoming_email['enabled']    = false if Settings.incoming_email['enabled'].nil?
+Settings.incoming_email['port']       = 143 if Settings.incoming_email['port'].nil?
+Settings.incoming_email['ssl']        = 143 if Settings.incoming_email['ssl'].nil?
+Settings.incoming_email['start_tls']  = 143 if Settings.incoming_email['start_tls'].nil?
+Settings.incoming_email['mailbox']    = "inbox" if Settings.incoming_email['mailbox'].nil?
 
 #
 # Gravatar
@@ -229,6 +232,7 @@ if Settings.backup['upload']['connection']
   Settings.backup['upload']['connection'] = Hash[Settings.backup['upload']['connection'].map { |k, v| [k.to_sym, v] }]
 end
 Settings.backup['upload']['multipart_chunk_size'] ||= 104857600
+Settings.backup['upload']['encryption'] ||= nil
 
 #
 # Git

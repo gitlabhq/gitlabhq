@@ -134,7 +134,7 @@ describe Ci::API::API do
 
   describe "PUT /projects/:id" do
     let!(:project) { FactoryGirl.create(:ci_project) }
-    let!(:project_info) { { name: "An updated name!" } }
+    let!(:project_info) { { default_ref: "develop" } }
 
     before do
       options.merge!(project_info)
@@ -144,7 +144,7 @@ describe Ci::API::API do
       project.gl_project.team << [user, :master]
       put ci_api("/projects/#{project.id}"), options
       expect(response.status).to eq(200)
-      expect(json_response["name"]).to eq(project_info[:name])
+      expect(json_response["default_ref"]).to eq(project_info[:default_ref])
     end
 
     it "fails to update a non-existing project" do
@@ -181,12 +181,10 @@ describe Ci::API::API do
   end
 
   describe "POST /projects" do
+    let(:gl_project) { FactoryGirl.create :empty_project }
     let(:project_info) do
       {
-        name: "My project",
-        gitlab_id: 1,
-        path: "testing/testing",
-        ssh_url_to_repo: "ssh://example.com/testing/testing.git"
+        gitlab_id: gl_project.id
       }
     end
 
@@ -200,7 +198,7 @@ describe Ci::API::API do
       it "should create a project with valid data" do
         post ci_api("/projects"), options
         expect(response.status).to eq(201)
-        expect(json_response['name']).to eq(project_info[:name])
+        expect(json_response['name']).to eq(gl_project.name_with_namespace)
       end
     end
 

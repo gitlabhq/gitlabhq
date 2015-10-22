@@ -98,7 +98,7 @@ class Projects::WikisController < Projects::ApplicationController
 
     # Call #wiki to make sure the Wiki Repo is initialized
     @project_wiki.wiki
-  rescue ProjectWiki::CouldNotCreateWikiError => ex
+  rescue ProjectWiki::CouldNotCreateWikiError
     flash[:notice] = "Could not create Wiki Repository at this time. Please try again later."
     redirect_to project_path(@project)
     return false

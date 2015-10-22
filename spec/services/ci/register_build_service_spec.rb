@@ -3,14 +3,14 @@ require 'spec_helper'
 module Ci
   describe RegisterBuildService do
     let!(:service) { RegisterBuildService.new }
-    let!(:project) { FactoryGirl.create :ci_project }
-    let!(:commit) { FactoryGirl.create :ci_commit, project: project }
-    let!(:pending_build) { FactoryGirl.create :ci_build, project: project, commit: commit }
+    let!(:gl_project) { FactoryGirl.create :empty_project }
+    let!(:commit) { FactoryGirl.create :ci_commit, gl_project: gl_project }
+    let!(:pending_build) { FactoryGirl.create :ci_build, commit: commit }
     let!(:shared_runner) { FactoryGirl.create(:ci_runner, is_shared: true) }
     let!(:specific_runner) { FactoryGirl.create(:ci_runner, is_shared: false) }
 
     before do
-      specific_runner.assign_to(project)
+      specific_runner.assign_to(gl_project.ensure_gitlab_ci_project)
     end
 
     describe :execute do
@@ -47,8 +47,7 @@ module Ci
 
       context 'allow shared runners' do
         before do
-          project.shared_runners_enabled = true
-          project.save
+          gl_project.gitlab_ci_project.update(shared_runners_enabled: true)
         end
 
         context 'shared runner' do

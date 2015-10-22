@@ -1,9 +1,18 @@
 # Helper methods for per-User preferences
 module PreferencesHelper
+  def layout_choices
+    [
+        ['Fixed', :fixed],
+        ['Fluid', :fluid]
+    ]
+  end
+
   # Maps `dashboard` values to more user-friendly option text
   DASHBOARD_CHOICES = {
     projects: 'Your Projects (default)',
-    stars:    'Starred Projects'
+    stars:    'Starred Projects',
+    project_activity: "Your Projects' Activity",
+    starred_project_activity: "Starred Projects' Activity"
   }.with_indifferent_access.freeze
 
   # Returns an Array usable by a select field for more user-friendly option text
@@ -25,7 +34,8 @@ module PreferencesHelper
   def project_view_choices
     [
       ['Readme (default)', :readme],
-      ['Activity view', :activity]
+      ['Activity view', :activity],
+      ['Files view', :files]
     ]
   end
 
@@ -37,8 +47,7 @@ module PreferencesHelper
     Gitlab::ColorSchemes.for_user(current_user).css_class
   end
 
-  def prefer_readme?
-    !current_user ||
-      current_user.project_view == 'readme'
+  def default_project_view
+    current_user ? current_user.project_view : 'readme'
   end
 end

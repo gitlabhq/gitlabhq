@@ -25,7 +25,7 @@ class Projects::NotesController < Projects::ApplicationController
 
     respond_to do |format|
       format.json { render_note_json(@note) }
-      format.html { redirect_to :back }
+      format.html { redirect_back_or_default }
     end
   end
 
@@ -34,7 +34,7 @@ class Projects::NotesController < Projects::ApplicationController
 
     respond_to do |format|
       format.json { render_note_json(@note) }
-      format.html { redirect_to :back }
+      format.html { redirect_back_or_default }
     end
   end
 

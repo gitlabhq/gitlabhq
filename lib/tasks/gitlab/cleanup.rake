@@ -46,42 +46,23 @@ namespace :gitlab do
     desc "GitLab | Cleanup | Clean repositories"
     task repos: :environment  do
       warn_user_is_not_gitlab
-      remove_flag = ENV['REMOVE']
 
-      git_base_path = Gitlab.config.gitlab_shell.repos_path
-      all_dirs = Dir.glob(git_base_path + '/*')
-
-      global_projects = Project.in_namespace(nil).pluck(:path)
-
-      puts git_base_path.yellow
-      puts "Looking for global repos to remove... "
-
-      # skip non git repo
-      all_dirs.select! do |dir|
-        dir =~ /.git$/
-      end
-
-      # skip existing repos
-      all_dirs.reject! do |dir|
-        repo_name = File.basename dir
-        path = repo_name.gsub(/\.git$/, "")
-        global_projects.include?(path)
-      end
-
-      all_dirs.each do |dir_path|
-        if remove_flag
-          if FileUtils.rm_rf dir_path
-            puts "Removed...#{dir_path}".red
-          else
-            puts "Cannot remove #{dir_path}".red
-          end
-        else
-          puts "Can be removed: #{dir_path}".red
+      move_suffix = "+orphaned+#{Time.now.to_i}"
+      repo_root = Gitlab.config.gitlab_shell.repos_path
+      # Look for global repos (legacy, depth 1) and normal repos (depth 2)
+      IO.popen(%W(find #{repo_root} -mindepth 1 -maxdepth 2 -name *.git)) do |find|
+        find.each_line do |path|
+          path.chomp!
+          repo_with_namespace = path.
+            sub(repo_root, '').
+            sub(%r{^/*}, '').
+            chomp('.git').
+            chomp('.wiki')
+          next if Project.find_with_namespace(repo_with_namespace)
+          new_path = path + move_suffix
+          puts path.inspect + ' -> ' + new_path.inspect
+          File.rename(path, new_path)
         end
-      end
-
-      unless remove_flag
-        puts "To cleanup this directories run this command with REMOVE=true".yellow
       end
     end
 

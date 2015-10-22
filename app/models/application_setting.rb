@@ -44,6 +44,10 @@ class ApplicationSetting < ActiveRecord::Base
     allow_blank: true,
     format: { with: /\A#{URI.regexp(%w(http https))}\z/, message: "should be a valid url" }
 
+  validates :admin_notification_email,
+    allow_blank: true,
+    email: true
+
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?
       value.each do |level|
@@ -83,8 +87,7 @@ class ApplicationSetting < ActiveRecord::Base
       default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       restricted_signup_domains: Settings.gitlab['restricted_signup_domains'],
-      import_sources: ['github','bitbucket','gitlab','gitorious','google_code','fogbugz','git'],
-      ci_enabled: Settings.gitlab_ci['enabled']
+      import_sources: ['github','bitbucket','gitlab','gitorious','google_code','fogbugz','git']
     )
   end
 

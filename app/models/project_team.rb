@@ -135,15 +135,32 @@ class ProjectTeam
     !!find_member(user_id)
   end
 
+  def human_max_access(user_id)
+    Gitlab::Access.options.key max_member_access(user_id)
+  end
+
+  # This method assumes project and group members are eager loaded for optimal
+  # performance.
   def max_member_access(user_id)
     access = []
-    access << project.project_members.find_by(user_id: user_id).try(:access_field)
 
-    if group
-      access << group.group_members.find_by(user_id: user_id).try(:access_field)
+    project.project_members.each do |member|
+      if member.user_id == user_id
+        access << member.access_field if member.access_field
+        break
+      end
     end
 
-    access.compact.max
+    if group
+      group.group_members.each do |member|
+        if member.user_id == user_id
+          access << member.access_field if member.access_field
+          break
+        end
+      end
+    end
+
+    access.max
   end
 
   private

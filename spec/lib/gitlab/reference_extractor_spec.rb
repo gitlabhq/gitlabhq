@@ -13,7 +13,7 @@ describe Gitlab::ReferenceExtractor do
     project.team << [@u_bar, :guest]
 
     subject.analyze('@foo, @baduser, @bar, and @offteam')
-    expect(subject.users).to eq([@u_foo, @u_bar, @u_offteam])
+    expect(subject.users).to match_array([@u_foo, @u_bar, @u_offteam])
   end
 
   it 'ignores user mentions inside specific elements' do
@@ -37,7 +37,7 @@ describe Gitlab::ReferenceExtractor do
 
       > @offteam
     })
-    expect(subject.users).to eq([])
+    expect(subject.users).to match_array([])
   end
 
   it 'accesses valid issue objects' do
@@ -45,7 +45,7 @@ describe Gitlab::ReferenceExtractor do
     @i1 = create(:issue, project: project)
 
     subject.analyze("#{@i0.to_reference}, #{@i1.to_reference}, and #{Issue.reference_prefix}999.")
-    expect(subject.issues).to eq([@i0, @i1])
+    expect(subject.issues).to match_array([@i0, @i1])
   end
 
   it 'accesses valid merge requests' do
@@ -53,7 +53,7 @@ describe Gitlab::ReferenceExtractor do
     @m1 = create(:merge_request, source_project: project, target_project: project, source_branch: 'feature_conflict')
 
     subject.analyze("!999, !#{@m1.iid}, and !#{@m0.iid}.")
-    expect(subject.merge_requests).to eq([@m1, @m0])
+    expect(subject.merge_requests).to match_array([@m1, @m0])
   end
 
   it 'accesses valid labels' do
@@ -62,7 +62,7 @@ describe Gitlab::ReferenceExtractor do
     @l2 = create(:label)
 
     subject.analyze("~#{@l0.id}, ~999, ~#{@l2.id}, ~#{@l1.id}")
-    expect(subject.labels).to eq([@l0, @l1])
+    expect(subject.labels).to match_array([@l0, @l1])
   end
 
   it 'accesses valid snippets' do
@@ -71,7 +71,7 @@ describe Gitlab::ReferenceExtractor do
     @s2 = create(:project_snippet)
 
     subject.analyze("$#{@s0.id}, $999, $#{@s2.id}, $#{@s1.id}")
-    expect(subject.snippets).to eq([@s0, @s1])
+    expect(subject.snippets).to match_array([@s0, @s1])
   end
 
   it 'accesses valid commits' do
@@ -109,7 +109,7 @@ describe Gitlab::ReferenceExtractor do
       subject.analyze("this refers issue #{issue.to_reference(project)}")
       extracted = subject.issues
       expect(extracted.size).to eq(1)
-      expect(extracted).to eq([issue])
+      expect(extracted).to match_array([issue])
     end
   end
 end

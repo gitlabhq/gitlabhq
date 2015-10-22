@@ -6,7 +6,7 @@
 
   .search-holder.clearfix
     .input-group
-      = search_field_tag :search, params[:search], placeholder: "Search for projects, issues etc", class: "form-control search-text-input", id: "dashboard_search", autofocus: true
+      = search_field_tag :search, params[:search], placeholder: "Search for projects, issues etc", class: "form-control search-text-input", id: "dashboard_search", autofocus: true, spellcheck: false
       %span.input-group-btn
         = button_tag 'Search', class: "btn btn-primary"
     - unless params[:snippets].eql? 'true'

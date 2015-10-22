@@ -26,7 +26,7 @@ module PageLayoutHelper
 
   def fluid_layout(enabled = false)
     if @fluid_layout.nil?
-      @fluid_layout = enabled
+      @fluid_layout = (current_user && current_user.layout == "fluid") || enabled
     else
       @fluid_layout
     end

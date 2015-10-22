@@ -1,21 +1,26 @@
 - if params[:view] == 'parallel'
   - fluid_layout true
 
+- diff_files = safe_diff_files(diffs)
+
 .gray-content-block.second-block
   .inline-parallel-buttons
     .btn-group
       = inline_diff_btn
       = parallel_diff_btn
-  = render 'projects/diffs/stats', diffs: diffs
-
-- diff_files = safe_diff_files(diffs)
+  = render 'projects/diffs/stats', diff_files: diff_files
 
 - if diff_files.count < diffs.size
   = render 'projects/diffs/warning', diffs: diffs, shown_files_count: diff_files.count
 
 .files
   - diff_files.each_with_index do |diff_file, index|
-    = render 'projects/diffs/file', diff_file: diff_file, i: index, project: project
+    - diff_commit = commit_for_diff(diff_file)
+    - blob = project.repository.blob_for_diff(diff_commit, diff_file)
+    - next unless blob
+
+    = render 'projects/diffs/file', i: index, project: project,
+      diff_file: diff_file, diff_commit: diff_commit, blob: blob
 
 - if @diff_timeout
   .alert.alert-danger

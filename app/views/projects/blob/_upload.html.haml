@@ -4,9 +4,6 @@
       .modal-header
         %a.close{href: "#", "data-dismiss" => "modal"} ×
         %h3.page-title #{title}
-        %p.light
-          From branch
-          %strong= @ref
       .modal-body
         = form_tag form_path, method: method, class: 'blob-file-upload-form-js form-horizontal' do
           .dropzone
@@ -18,6 +15,12 @@
           .dropzone-alerts{class: "alert alert-danger data", style: "display:none"}
           = render 'shared/commit_message_container', params: params,
             placeholder: placeholder
+          - unless @project.empty_repo?
+            .form-group.branch
+              = label_tag 'branch', class: 'control-label' do
+                Branch
+              .col-sm-10
+                = text_field_tag 'new_branch', @ref, class: "form-control"
           .form-group
             .col-sm-offset-2.col-sm-10
               = button_tag button_title, class: 'btn btn-small btn-primary btn-upload-file', id: 'submit-all'

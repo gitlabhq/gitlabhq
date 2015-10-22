@@ -32,7 +32,7 @@ describe Ci::Runner do
     end
 
     it 'should return the token if the description is an empty string' do
-      runner = FactoryGirl.build(:ci_runner, description: '')
+      runner = FactoryGirl.build(:ci_runner, description: '', token: 'token')
       expect(runner.display_name).to eq runner.token
     end
   end
@@ -46,6 +46,71 @@ describe Ci::Runner do
     it { expect(shared_runner).to be_specific }
     it { expect(shared_runner.projects).to eq([project]) }
     it { expect(shared_runner.only_for?(project)).to be_truthy }
+  end
+
+  describe :online do
+    subject { Ci::Runner.online }
+
+    before do
+      @runner1 = FactoryGirl.create(:ci_shared_runner, contacted_at: 1.year.ago)
+      @runner2 = FactoryGirl.create(:ci_shared_runner, contacted_at: 1.second.ago)
+    end
+
+    it { is_expected.to eq([@runner2])}
+  end
+
+  describe :online? do
+    let(:runner) { FactoryGirl.create(:ci_shared_runner) }
+
+    subject { runner.online? }
+
+    context 'never contacted' do
+      before { runner.contacted_at = nil }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'contacted long time ago time' do
+      before { runner.contacted_at = 1.year.ago }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'contacted 1s ago' do
+      before { runner.contacted_at = 1.second.ago }
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
+  describe :status do
+    let(:runner) { FactoryGirl.create(:ci_shared_runner, contacted_at: 1.second.ago) }
+
+    subject { runner.status }
+
+    context 'never connected' do
+      before { runner.contacted_at = nil }
+
+      it { is_expected.to eq(:not_connected) }
+    end
+
+    context 'contacted 1s ago' do
+      before { runner.contacted_at = 1.second.ago }
+
+      it { is_expected.to eq(:online) }
+    end
+
+    context 'contacted long time ago' do
+      before { runner.contacted_at = 1.year.ago }
+
+      it { is_expected.to eq(:offline) }
+    end
+
+    context 'inactive' do
+      before { runner.active = false }
+
+      it { is_expected.to eq(:paused) }
+    end
   end
 
   describe "belongs_to_one_project?" do

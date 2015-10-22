@@ -140,28 +140,28 @@ describe Gitlab::ClosingIssueExtractor do
         message = "Closes #{reference} and fix #{reference2}"
 
         expect(subject.closed_by_message(message)).
-            to eq([issue, other_issue])
+            to match_array([issue, other_issue])
       end
 
       it 'fetches comma-separated issues references in single line message' do
         message = "Closes #{reference}, closes #{reference2}"
 
         expect(subject.closed_by_message(message)).
-            to eq([issue, other_issue])
+            to match_array([issue, other_issue])
       end
 
       it 'fetches comma-separated issues numbers in single line message' do
         message = "Closes #{reference}, #{reference2} and #{reference3}"
 
         expect(subject.closed_by_message(message)).
-            to eq([issue, other_issue, third_issue])
+            to match_array([issue, other_issue, third_issue])
       end
 
       it 'fetches issues in multi-line message' do
         message = "Awesome commit (closes #{reference})\nAlso fixes #{reference2}"
 
         expect(subject.closed_by_message(message)).
-            to eq([issue, other_issue])
+            to match_array([issue, other_issue])
       end
 
       it 'fetches issues in hybrid message' do
@@ -169,7 +169,7 @@ describe Gitlab::ClosingIssueExtractor do
                   "Also fixing issues #{reference2}, #{reference3} and #4"
 
         expect(subject.closed_by_message(message)).
-            to eq([issue, other_issue, third_issue])
+            to match_array([issue, other_issue, third_issue])
       end
     end
   end

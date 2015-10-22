@@ -1,23 +1,20 @@
 /* https://github.com/aahan/pygments-github-style */
-pre.code.highlight.white,
 .code.white {
 
-  background-color: #fff;
-  color: #333;
+  background-color: #f8fafc !important;
+  color: #5b6169 !important;
 
+  pre.highlight,
   .line-numbers,
   .line-numbers a {
     background-color: $background-color !important;
     color: $gl-gray !important;
   }
 
-  pre.highlight {
-    background-color: #fff !important;
-    color: #333 !important;
-  }
-
   pre.code {
     border-left: 1px solid $border-color;
+    background-color: #fff !important;
+    color: #333 !important;
   }
 
   // highlight line via anchor
@@ -27,7 +24,7 @@ pre.code.highlight.white,
 
   // Search result highlight
   span.highlight_word {
-    background: #fafe3d;
+    background-color: #fafe3d !important;
   }
 
   .hll { background-color: #f8f8f8 }

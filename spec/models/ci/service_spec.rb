@@ -29,13 +29,12 @@ describe Ci::Service do
     end
 
     describe "Testable" do
-      let(:project) { FactoryGirl.create :ci_project }
-      let(:commit) { FactoryGirl.create :ci_commit, project: project }
+      let(:commit) { FactoryGirl.create :ci_commit }
       let(:build) { FactoryGirl.create :ci_build, commit: commit }
 
       before do
         allow(@service).to receive_messages(
-          project: project
+          project: commit.project
         )
         build
         @testable = @service.can_test?

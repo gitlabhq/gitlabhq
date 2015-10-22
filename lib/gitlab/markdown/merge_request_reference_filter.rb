@@ -27,6 +27,10 @@ module Gitlab
         end
       end
 
+      def self.referenced_by(node)
+        { merge_request: LazyReference.new(MergeRequest, node.attr("data-merge-request")) }
+      end
+
       def call
         replace_text_nodes_matching(MergeRequest.reference_pattern) do |content|
           merge_request_link_filter(content)
@@ -45,11 +49,9 @@ module Gitlab
           project = self.project_from_ref(project_ref)
 
           if project && merge_request = project.merge_requests.find_by(iid: id)
-            push_result(:merge_request, merge_request)
-
             title = escape_once("Merge Request: #{merge_request.title}")
             klass = reference_class(:merge_request)
-            data  = data_attribute(project.id)
+            data  = data_attribute(project: project.id, merge_request: merge_request.id)
 
             url = url_for_merge_request(merge_request, project)
 

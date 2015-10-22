@@ -22,14 +22,14 @@ require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class Note < ActiveRecord::Base
-  include Mentionable
   include Gitlab::CurrentSettings
   include Participable
+  include Mentionable
 
   default_value_for :system, false
 
   attr_mentionable :note
-  participant :author, :mentioned_users
+  participant :author
 
   belongs_to :project
   belongs_to :noteable, polymorphic: true
@@ -60,9 +60,13 @@ class Note < ActiveRecord::Base
   scope :inc_author_project, ->{ includes(:project, :author) }
   scope :inc_author, ->{ includes(:author) }
 
+  scope :with_associations, -> do
+    includes(:author, :noteable, :updated_by,
+             project: [:project_members, { group: [:group_members] }])
+  end
+
   serialize :st_diff
   before_create :set_diff, if: ->(n) { n.line_code.present? }
-  after_update :set_references
 
   class << self
     def discussions_from_notes(notes)
@@ -333,15 +337,13 @@ class Note < ActiveRecord::Base
   end
 
   def noteable_type_name
-    if noteable_type.present?
-      noteable_type.downcase
-    end
+    noteable_type.downcase if noteable_type.present?
   end
 
   # FIXME: Hack for polymorphic associations with STI
   #        For more information visit http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#label-Polymorphic+Associations
-  def noteable_type=(sType)
-    super(sType.to_s.classify.constantize.base_class.to_s)
+  def noteable_type=(noteable_type)
+    super(noteable_type.to_s.classify.constantize.base_class.to_s)
   end
 
   # Reset notes events cache
@@ -357,15 +359,11 @@ class Note < ActiveRecord::Base
     Event.reset_event_cache_for(self)
   end
 
-  def set_references
-    create_new_cross_references!(project, author)
-  end
-
   def system?
     read_attribute(:system)
   end
 
   def editable?
-    !read_attribute(:system)
+    !system?
   end
 end
