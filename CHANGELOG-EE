@@ -1,3 +1,6 @@
+v 8.2.0
+  - Invalidate stored jira password if the endpoint URL is changed
+
 v 8.1.0 (unreleased)
   - added an issues template (Hannes Rosenögger)
   - Fix "Rebase onto master"
