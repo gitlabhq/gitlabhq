@@ -22,6 +22,7 @@ v 8.1.0 (unreleased)
   - Remove CI migration task
   - Improved performance of finding projects by their namespace
   - Fix bug where transferring a project would result in stale commit links (Stan Hu)
+  - Fix build trace updating
   - Include full path of source and target branch names in New Merge Request page (Stan Hu)
   - Add user preference to view activities as default dashboard (Stan Hu)
   - Add option to admin area to sign in as a specific user (Pavel Forkert)

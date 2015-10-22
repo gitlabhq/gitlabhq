@@ -22,7 +22,7 @@ class CiBuild
       # Only valid for runnig build when output changes during time
       #
       CiBuild.interval = setInterval =>
-        if window.location.href is build_url
+        if window.location.href.split("#").first() is build_url
           $.ajax
             url: build_url
             dataType: "json"
