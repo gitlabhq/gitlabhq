@@ -30,7 +30,7 @@ module Ci
       format :json
 
       helpers Helpers
-      helpers ::API::Helpers
+      helpers ::API::APIHelpers
 
       mount Builds
       mount Commits
