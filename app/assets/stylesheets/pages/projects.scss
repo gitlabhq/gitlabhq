@@ -515,3 +515,10 @@ pre.light-well {
 .project-show-readme .readme-holder {
   padding: 7px;
 }
+
+.edit-project-readme {
+  position: relative;
+  top: 20px;
+  z-index: 100;
+  color: $gl-gray;
+}
