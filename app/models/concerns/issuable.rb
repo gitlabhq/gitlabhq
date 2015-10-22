@@ -46,7 +46,7 @@ module Issuable
              allow_nil: true,
              prefix: true
 
-    attr_mentionable :title 
+    attr_mentionable :title, pipeline: :single_line
     attr_mentionable :description, cache: true
     participant :author, :assignee, :notes_with_associations
   end
