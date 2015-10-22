@@ -2,16 +2,17 @@
 %h3.page-title Abuse Reports
 %hr
 - if @abuse_reports.present?
-  %table.table
-    %thead
-      %tr
-        %th Reported by
-        %th Reported at
-        %th Message
-        %th User
-        %th Primary action
-        %th
-    = render @abuse_reports
+  .table-holder
+    %table.table
+      %thead
+        %tr
+          %th Reported by
+          %th Reported at
+          %th Message
+          %th User
+          %th Primary action
+          %th
+      = render @abuse_reports
   = paginate @abuse_reports
 - else
   %h4 There are no abuse reports

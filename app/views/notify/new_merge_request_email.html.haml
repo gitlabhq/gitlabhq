@@ -6,4 +6,4 @@
     Assignee: #{@merge_request.author_name} &rarr; #{@merge_request.assignee_name}
 
 -if @merge_request.description
-  = markdown(@merge_request.description, reference_only_path: false)
+  = markdown(@merge_request.description, pipeline: :email)

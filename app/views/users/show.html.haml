@@ -6,48 +6,72 @@
 
 = render 'shared/show_aside'
 
-.row
+.cover-block
+  .avatar-holder
+    = link_to avatar_icon(@user, 400), target: '_blank' do
+      = image_tag avatar_icon(@user, 90), class: "avatar s90", alt: ''
+  .cover-title
+    = @user.name
+
+  .cover-desc
+    %span
+      @#{@user.username}.
+    - if @user.bio.present?
+      %span
+        #{@user.bio}.
+    %span
+      Member since #{@user.created_at.stamp("Aug 21, 2011")}
+
+  .cover-desc
+    - unless @user.public_email.blank?
+      = link_to @user.public_email, "mailto:#{@user.public_email}"
+    - unless @user.skype.blank?
+      &middot;
+      = link_to "Skype", "skype:#{@user.skype}"
+    - unless @user.linkedin.blank?
+      &middot;
+      = link_to "LinkedIn", "http://www.linkedin.com/in/#{@user.linkedin}"
+    - unless @user.twitter.blank?
+      &middot;
+      = link_to "Twitter", "http://www.twitter.com/#{@user.twitter}"
+    - unless @user.website_url.blank?
+      &middot;
+      = link_to @user.short_website_url, @user.full_website_url
+    - unless @user.location.blank?
+      &middot;
+      = @user.location
+
+
+  .cover-controls
+    - if @user == current_user
+      = link_to profile_path, class: 'btn btn-gray' do
+        = icon('pencil')
+    - elsif current_user
+      .report-abuse
+        - if @user.abuse_report
+          %button.btn.btn-danger{ title: 'Already reported for abuse',
+            data: { toggle: 'tooltip', placement: 'left', container: 'body' }}
+            = icon('exclamation-circle')
+        - else
+          = link_to new_abuse_report_path(user_id: @user.id), class: 'btn btn-gray',
+            title: 'Report abuse', data: {toggle: 'tooltip', placement: 'left', container: 'body'} do
+            = icon('exclamation-circle')
+
+.gray-content-block.second-block
+  .user-calendar
+    %h4.center.light
+      %i.fa.fa-spinner.fa-spin
+  .user-calendar-activities
+
+
+.row.prepend-top-20
   %section.col-md-7
-    .header-with-avatar
-      = link_to avatar_icon(@user.email, 400), target: '_blank' do
-        = image_tag avatar_icon(@user.email, 90), class: "avatar avatar-tile s90", alt: ''
-      %h3
-        = @user.name
-        - if @user == current_user
-          .pull-right.hidden-xs
-            = link_to profile_path, class: 'btn btn-sm' do
-              = icon('user')
-              Profile settings
-        - elsif current_user
-          .pull-right
-            %span.dropdown
-              %a.light.dropdown-toggle.btn.btn-sm{href: '#', "data-toggle" => "dropdown"}
-                = icon('exclamation-circle')
-              %ul.dropdown-menu.dropdown-menu-right
-                %li
-                  = link_to new_abuse_report_path(user_id: @user.id) do
-                    Report abuse
-
-      .username
-        @#{@user.username}
-      .description
-        - if @user.bio.present?
-          = @user.bio
-
-    .clearfix
-
     - if @groups.any?
       .prepend-top-20
         %h4 Groups
         = render 'groups', groups: @groups
         %hr
 
-    .hidden-xs
-      .user-calendar
-        %h4.center.light
-          %i.fa.fa-spinner.fa-spin
-      .user-calendar-activities
-      %hr
     %h4
       User Activity
 
@@ -60,7 +84,6 @@
     .content_list
     = spinner
   %aside.col-md-5
-    = render 'profile', user: @user
     = render 'projects', projects: @projects, contributed_projects: @contributed_projects
 
 :coffeescript

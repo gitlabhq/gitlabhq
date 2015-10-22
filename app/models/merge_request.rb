@@ -40,7 +40,7 @@ class MergeRequest < ActiveRecord::Base
   after_create :create_merge_request_diff
   after_update :update_merge_request_diff
 
-  delegate :commits, :diffs, :last_commit, :last_commit_short_sha, to: :merge_request_diff, prefix: nil
+  delegate :commits, :diffs, to: :merge_request_diff, prefix: nil
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -157,6 +157,18 @@ class MergeRequest < ActiveRecord::Base
     reference
   end
 
+  def last_commit
+    merge_request_diff ? merge_request_diff.last_commit : compare_commits.last
+  end 
+
+  def first_commit
+    merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
+  end 
+
+  def last_commit_short_sha
+    last_commit.short_id
+  end
+
   def validate_branches
     if target_project == source_project && target_branch == source_branch
       errors.add :branch_conflict, "You can not use same project/branch for source and target"
@@ -222,12 +234,8 @@ class MergeRequest < ActiveRecord::Base
     self.target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::CLOSED).last
   end
 
-  def open?
-    opened? || reopened?
-  end
-
   def work_in_progress?
-    title =~ /\A\[?WIP\]?:? /i
+    !!(title =~ /\A\[?WIP\]?:? /i)
   end
 
   def mergeable?
@@ -275,7 +283,8 @@ class MergeRequest < ActiveRecord::Base
     attrs = {
       source: source_project.hook_attrs,
       target: target_project.hook_attrs,
-      last_commit: nil
+      last_commit: nil,
+      work_in_progress: work_in_progress?
     }
 
     unless last_commit.nil?
@@ -291,6 +300,10 @@ class MergeRequest < ActiveRecord::Base
 
   def project
     target_project
+  end
+
+  def closes_issue?(issue)
+    closes_issues.include?(issue)
   end
 
   # Return the set of issues that will be closed if this merge request is accepted.

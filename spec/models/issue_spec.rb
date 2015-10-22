@@ -68,8 +68,45 @@ describe Issue do
     end
   end
 
+  describe '#closed_by_merge_requests' do
+    let(:project) { create(:project) }
+    let(:issue)   { create(:issue, project: project, state: "opened")}
+    let(:closed_issue) { build(:issue, project: project, state: "closed")}
+
+    let(:mr) do
+      opts = {
+        title: 'Awesome merge_request',
+        description: "Fixes #{issue.to_reference}",
+        source_branch: 'feature',
+        target_branch: 'master'
+      }
+      MergeRequests::CreateService.new(project, project.owner, opts).execute
+    end
+
+    let(:closed_mr) do
+      opts = {
+        title: 'Awesome merge_request 2',
+        description: "Fixes #{issue.to_reference}",
+        source_branch: 'feature',
+        target_branch: 'master',
+        state: 'closed'
+      }
+      MergeRequests::CreateService.new(project, project.owner, opts).execute
+    end
+
+    it 'returns the merge request to close this issue' do
+      allow(mr).to receive(:closes_issue?).with(issue).and_return(true)
+
+      expect(issue.closed_by_merge_requests).to eq([mr])
+    end
+
+    it "returns an empty array when the current issue is closed already" do
+      expect(closed_issue.closed_by_merge_requests).to eq([])
+    end
+  end
+
   it_behaves_like 'an editable mentionable' do
-    subject { create(:issue, project: project) }
+    subject { create(:issue) }
 
     let(:backref_text) { "issue #{subject.to_reference}" }
     let(:set_mentionable_text) { ->(txt){ subject.description = txt } }

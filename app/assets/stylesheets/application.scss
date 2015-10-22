@@ -11,59 +11,41 @@
  *= require cal-heatmap
 */
 
-
-@import "base/fonts";
-@import "base/variables";
-@import "base/mixins";
-@import "base/layout";
-
-
-/**
- * Customized Twitter bootstrap
+/*
+ * Welcome to GitLab css!
+ * If you need to add or modify UI component that is common for many pages
+ * like a table or typography then make changes in the framework/ directory.
+ * If you need to add unique style that should affect only one page - use pages/
+ * directory.
  */
-@import 'base/gl_variables';
-@import 'base/gl_bootstrap';
 
-/**
+/*
+ * GitLab UI framework
+ */
+@import "framework";
+
+/*
  * NProgress load bar css
  */
 @import 'nprogress';
 @import 'nprogress-bootstrap';
 
-/**
+/*
  * Font icons
- *
  */
 @import "font-awesome";
 
-/**
- * UI themes:
- */
-@import "themes/**/*";
-
-/**
- * Generic css (forms, nav etc):
- */
-@import "generic/**/*";
-
-/**
+/*
  * Page specific styles (issues, projects etc):
  */
-
 @import "pages/**/*";
 
-/**
+/*
  * Code highlight
  */
 @import "highlight/**/*";
 
-/**
+/*
  * Styles for JS behaviors.
  */
 @import "behaviors.scss";
-
-/**
- * CI specific styles:
- */
-@import "ci/**/*";
-

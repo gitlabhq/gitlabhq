@@ -47,7 +47,7 @@ module MergeRequestsHelper
   end
 
   def issues_sentence(issues)
-    issues.map { |i| "##{i.iid}" }.to_sentence
+    issues.map(&:to_reference).to_sentence
   end
 
   def mr_change_branches_path(merge_request)
@@ -69,6 +69,19 @@ module MergeRequestsHelper
       namespace + ":#{merge_request.source_branch}"
     else
       merge_request.source_branch
+    end
+  end
+
+  def format_mr_branch_names(merge_request)
+    source_path = merge_request.source_project_path
+    target_path = merge_request.target_project_path
+    source_branch = merge_request.source_branch
+    target_branch = merge_request.target_branch
+
+    if source_path == target_path
+      [source_branch, target_branch]
+    else
+      ["#{source_path}:#{source_branch}", "#{target_path}:#{target_branch}"]
     end
   end
 end

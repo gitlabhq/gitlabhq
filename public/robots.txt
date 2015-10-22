@@ -38,7 +38,8 @@ Disallow: /*/*/edit
 Disallow: /*/*/raw
 Disallow: /*/*/blame
 Disallow: /*/*/commits/*/*
-Disallow: /*/*/commit
+Disallow: /*/*/commit/*.patch
+Disallow: /*/*/commit/*.diff
 Disallow: /*/*/compare
 Disallow: /*/*/branches/new
 Disallow: /*/*/tags/new

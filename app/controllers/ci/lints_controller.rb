@@ -18,7 +18,7 @@ module Ci
     rescue Ci::GitlabCiYamlProcessor::ValidationError => e
       @error = e.message
       @status = false
-    rescue Exception => e
+    rescue Exception
       @error = "Undefined error"
       @status = false
     end

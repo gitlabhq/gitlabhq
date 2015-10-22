@@ -1,34 +1,35 @@
 - unless @branches.empty?
   %br
   %h4 Already Protected:
-  %table.table.protected-branches-list
-    %thead
-      %tr.no-border
-        %th Branch
-        %th Developers can push
-        %th Last commit
-        %th
+  .table-holder
+    %table.table.protected-branches-list
+      %thead
+        %tr.no-border
+          %th Branch
+          %th Developers can push
+          %th Last commit
+          %th
 
-    %tbody
-      - @branches.each do |branch|
-        - @url = namespace_project_protected_branch_path(@project.namespace, @project, branch)
-        %tr
-          %td
-            = link_to namespace_project_commits_path(@project.namespace, @project, branch.name) do
-              %strong= branch.name
-              - if @project.root_ref?(branch.name)
-                %span.label.label-info default
+      %tbody
+        - @branches.each do |branch|
+          - @url = namespace_project_protected_branch_path(@project.namespace, @project, branch)
+          %tr
             %td
-              = check_box_tag "developers_can_push", branch.id, branch.developers_can_push, "data-url" => @url
-            %td
-              - if commit = branch.commit
-                = link_to namespace_project_commit_path(@project.namespace, @project, commit.id), class: 'commit_short_id' do
-                  = commit.short_id
-                &middot;
-                #{time_ago_with_tooltip(commit.committed_date)}
-              - else
-                (branch was removed from repository)
-            %td
-              .pull-right
-                - if can? current_user, :admin_project, @project
-                  = link_to 'Unprotect', [@project.namespace.becomes(Namespace), @project, branch], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: "btn btn-remove btn-sm"
+              = link_to namespace_project_commits_path(@project.namespace, @project, branch.name) do
+                %strong= branch.name
+                - if @project.root_ref?(branch.name)
+                  %span.label.label-info default
+              %td
+                = check_box_tag "developers_can_push", branch.id, branch.developers_can_push, "data-url" => @url
+              %td
+                - if commit = branch.commit
+                  = link_to namespace_project_commit_path(@project.namespace, @project, commit.id), class: 'commit_short_id' do
+                    = commit.short_id
+                  &middot;
+                  #{time_ago_with_tooltip(commit.committed_date)}
+                - else
+                  (branch was removed from repository)
+              %td
+                .pull-right
+                  - if can? current_user, :admin_project, @project
+                    = link_to 'Unprotect', [@project.namespace.becomes(Namespace), @project, branch], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: "btn btn-remove btn-sm"

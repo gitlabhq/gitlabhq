@@ -189,19 +189,35 @@
       - else
         .nothing-here-block Only the project owner can transfer a project
 
+      - if @project.forked?
+        - if can?(current_user, :remove_fork_project, @project)
+          = form_for([@project.namespace.becomes(Namespace), @project], url: remove_fork_namespace_project_path(@project.namespace, @project), method: :delete, remote: true, html: { class: 'transfer-project form-horizontal' }) do |f|
+            .panel.panel-default.panel.panel-danger
+              .panel-heading Remove fork relationship
+              .panel-body
+                %p
+                  This will remove the fork relationship to source project
+                  #{link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)}.
+                  %br
+                  %strong Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source.
+                = button_to 'Remove fork relationship', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_message(@project) }
+        - else
+          .nothing-here-block Only the project owner can remove the fork relationship.
+
       - if can?(current_user, :remove_project, @project)
         .panel.panel-default.panel.panel-danger
           .panel-heading Remove project
           .panel-body
-            = form_tag(namespace_project_path(@project.namespace, @project), method: :delete, html: { class: 'form-horizontal'}) do
+            = form_tag(namespace_project_path(@project.namespace, @project), method: :delete, class: 'form-horizontal') do
               %p
                 Removing the project will delete its repository and all related resources including issues, merge requests etc.
                 %br
                 %strong Removed projects cannot be restored!
 
-              = link_to 'Remove project', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }
+              = button_to 'Remove project', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }
       - else
-        .nothing-here-block Only project owner can remove a project
+        .nothing-here-block Only the project owner can remove a project.
+
 
 .save-project-loader.hide
   .center

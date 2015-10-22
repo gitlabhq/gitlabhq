@@ -29,7 +29,7 @@ module MergeRequests
     private
 
     def commit
-      committer = repository.user_to_comitter(current_user)
+      committer = repository.user_to_committer(current_user)
 
       options = {
         message: commit_message,
@@ -38,6 +38,10 @@ module MergeRequests
       }
 
       repository.merge(current_user, merge_request.source_sha, merge_request.target_branch, options)
+    rescue Exception => e
+      merge_request.update(merge_error: "Something went wrong during merge")
+      Rails.logger.error(e.message)
+      return false
     end
 
     def after_merge

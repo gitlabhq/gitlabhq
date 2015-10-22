@@ -22,6 +22,10 @@ class Spinach::Features::AbuseReports < Spinach::FeatureSteps
     user_mike
   end
 
+  step 'I should see a red "Report abuse" button' do
+    expect(page).to have_button("Already reported for abuse")
+  end
+
   def user_mike
     @user_mike ||= create(:user, name: 'Mike')
   end

@@ -26,7 +26,7 @@ class ProfilesController < Profiles::ApplicationController
     end
 
     respond_to do |format|
-      format.html { redirect_to :back }
+      format.html { redirect_back_or_default(default: { action: 'show' }) }
     end
   end
 

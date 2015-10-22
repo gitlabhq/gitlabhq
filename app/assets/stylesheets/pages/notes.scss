@@ -18,7 +18,7 @@ ul.notes {
     font-size: 14px;
     padding-top: 10px;
     padding-bottom: 10px;
-    background: #f8fafc;
+    background: #FDFDFD;
 
     .timeline-icon {
       .avatar {
@@ -30,7 +30,6 @@ ul.notes {
   .discussion-header,
   .note-header {
     @extend .cgray;
-    padding-bottom: 15px;
 
     a:hover {
       text-decoration: none;
@@ -73,6 +72,10 @@ ul.notes {
       background-color: transparent;
       color: $gl-gray;
     }
+  }
+
+  .discussion-body {
+    padding-top: 15px;
   }
 
   .discussion {

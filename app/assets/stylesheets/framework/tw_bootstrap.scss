@@ -1,0 +1,251 @@
+/*
+ * Twitter bootstrap with GitLab customizations/additions
+ *
+ */
+
+// Core variables and mixins
+@import "bootstrap/variables";
+@import "bootstrap/mixins";
+
+// Reset
+@import "bootstrap/normalize";
+@import "bootstrap/print";
+
+// Core CSS
+@import "bootstrap/scaffolding";
+@import "bootstrap/type";
+@import "bootstrap/code";
+@import "bootstrap/grid";
+@import "bootstrap/tables";
+@import "bootstrap/forms";
+@import "bootstrap/buttons";
+
+// Components
+@import "bootstrap/component-animations";
+@import "bootstrap/dropdowns";
+@import "bootstrap/button-groups";
+@import "bootstrap/input-groups";
+@import "bootstrap/navs";
+@import "bootstrap/navbar";
+@import "bootstrap/breadcrumbs";
+@import "bootstrap/pagination";
+@import "bootstrap/pager";
+@import "bootstrap/labels";
+@import "bootstrap/badges";
+@import "bootstrap/alerts";
+@import "bootstrap/progress-bars";
+@import "bootstrap/list-group";
+@import "bootstrap/wells";
+@import "bootstrap/close";
+@import "bootstrap/panels";
+
+// Components w/ JavaScript
+@import "bootstrap/modals";
+@import "bootstrap/tooltip";
+@import "bootstrap/popovers";
+@import "bootstrap/carousel";
+
+// Utility classes
+.clearfix {
+  @include clearfix();
+}
+.center-block {
+  @include center-block();
+}
+.pull-right {
+  float: right !important;
+}
+.pull-left {
+  float: left !important;
+}
+.hide {
+  display: none;
+}
+.show {
+  display: block !important;
+}
+.invisible {
+  visibility: hidden;
+}
+.text-hide {
+  @include text-hide();
+}
+.hidden {
+  display: none !important;
+  visibility: hidden !important;
+}
+.affix {
+  position: fixed;
+}
+
+@import "bootstrap/responsive-utilities";
+
+// Labels
+.label {
+  padding: 2px 4px;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: normal;
+  display: inline-block;
+
+  &.label-gray {
+    background-color: #f8fafc;
+    color: $gl-gray;
+    text-shadow: none;
+  }
+
+  &.label-inverse {
+    background-color: #333333;
+  }
+}
+
+// Nav tabs
+.nav.nav-tabs {
+  margin-bottom: 15px;
+
+  li {
+    > a {
+      margin-right: 5px;
+      line-height: 20px;
+      border-color: #EEE;
+      color: #888;
+      border-bottom: 1px solid #ddd;
+      .badge {
+        background-color: #eee;
+        color: #888;
+        text-shadow: 0 1px 1px #fff;
+      }
+      i.fa {
+        line-height: 14px;
+      }
+    }
+    &.active {
+      > a {
+        border-color: #CCC;
+        border-bottom: 1px solid #fff;
+        color: #333;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+.nav-tabs > li > a,
+.nav-pills > li > a {
+  color: #666;
+}
+
+.nav-pills > .active > a > span > .badge {
+  background-color: #fff;
+  color: $gl-primary;
+}
+
+
+/**
+ * fix to keep tooltips position in top navigation bar
+ *
+ */
+.navbar .nav > li {
+  position: relative;
+  white-space: nowrap;
+}
+
+/**
+ * Add some extra stuff to panels
+ *
+ */
+
+.container-blank .panel .panel-heading {
+  font-size: 17px;
+  line-height: 38px;
+}
+
+.panel {
+  box-shadow: none;
+
+  .panel-heading {
+    .panel-head-actions {
+      position: relative;
+      top: -5px;
+      float: right;
+    }
+  }
+
+  .panel-body {
+    form {
+      margin: 0;
+    }
+
+    .form-actions {
+      margin: -15px;
+      margin-top: 18px;
+    }
+  }
+
+  .panel-footer {
+    .pagination {
+      margin: 0;
+    }
+
+    .btn {
+      min-width: 124px;
+    }
+  }
+
+  &.panel-small {
+    .panel-heading {
+      padding: 6px 15px;
+      font-size: 13px;
+      font-weight: normal;
+      a {
+        color: #777;
+      }
+    }
+  }
+}
+
+.panel-succes .panel-heading,
+.panel-info .panel-heading,
+.panel-danger .panel-heading,
+.panel-warning .panel-heading,
+.panel-primary .panel-heading,
+.alert {
+  a:not(.btn) {
+    @extend .alert-link;
+    color: #fff;
+    text-decoration: underline;
+  }
+}
+
+.alert-help {
+  background-color: $background-color;
+  border: 1px solid $border-color;
+  color: $gl-gray;
+}
+
+// Typography =================================================================
+
+.text-primary,
+.text-primary:hover {
+  color: $brand-primary;
+}
+
+.text-success,
+.text-success:hover {
+  color: $brand-success;
+}
+
+.text-danger,
+.text-danger:hover {
+  color: $brand-danger;
+}
+
+.text-warning,
+.text-warning:hover {
+  color: $brand-warning;
+}
+
+.text-info,
+.text-info:hover {
+  color: $brand-info;
+}

@@ -1,4 +1,17 @@
-- if @merge_request.has_ci?
+- ci_commit = @merge_request.source_project.ci_commit(@merge_request.source_sha)
+- if ci_commit
+  - status = ci_commit.status
+  .mr-widget-heading
+    .ci_widget{class: "ci-#{status}"}
+      = ci_status_icon(ci_commit)
+      %span CI build #{status}
+      for #{@merge_request.last_commit_short_sha}.
+      %span.ci-coverage
+      = link_to "View build details", ci_status_path(ci_commit)
+
+- elsif @merge_request.has_ci?
+  - # Compatibility with old CI integrations (ex jenkins) when you request status from CI server via AJAX
+  - # Remove in later versions when services like Jenkins will set CI status via Commit status API
   .mr-widget-heading
     - [:success, :skipped, :canceled, :failed, :running, :pending].each do |status|
       .ci_widget{class: "ci-#{status}", style: "display:none"}

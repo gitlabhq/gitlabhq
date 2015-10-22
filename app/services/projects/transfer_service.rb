@@ -27,6 +27,7 @@ module Projects
     def transfer(project, new_namespace)
       Project.transaction do
         old_path = project.path_with_namespace
+        old_namespace = project.namespace
         new_path = File.join(new_namespace.try(:path) || '', project.path)
 
         if Project.where(path: project.path, namespace_id: new_namespace.try(:id)).present?
@@ -38,7 +39,7 @@ module Projects
         project.save!
 
         # Notifications
-        project.send_move_instructions
+        project.send_move_instructions(old_path)
 
         # Move main repository
         unless gitlab_shell.mv_repository(old_path, new_path)
@@ -50,6 +51,9 @@ module Projects
 
         # clear project cached events
         project.reset_events_cache
+
+        # Move uploads
+        Gitlab::UploadsTransfer.new.move_project(project.path, old_namespace.path, new_namespace.path)
 
         true
       end

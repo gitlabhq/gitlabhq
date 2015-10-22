@@ -6,8 +6,8 @@
 #
 module Issuable
   extend ActiveSupport::Concern
-  include Mentionable
   include Participable
+  include Mentionable
 
   included do
     belongs_to :author, class_name: "User"
@@ -47,7 +47,7 @@ module Issuable
              prefix: true
 
     attr_mentionable :title, :description
-    participant :author, :assignee, :notes, :mentioned_users
+    participant :author, :assignee, :notes_with_associations
   end
 
   module ClassMethods
@@ -83,6 +83,10 @@ module Issuable
 
   def is_being_reassigned?
     assignee_id_changed?
+  end
+
+  def open?
+    opened? || reopened?
   end
 
   #
@@ -174,6 +178,10 @@ module Issuable
   #   issuable.to_ability_name # => "merge_request"
   def to_ability_name
     self.class.to_s.underscore
+  end
+
+  def notes_with_associations
+    notes.includes(:author, :project)
   end
 
   private

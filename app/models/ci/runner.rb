@@ -20,6 +20,8 @@
 module Ci
   class Runner < ActiveRecord::Base
     extend Ci::Model
+
+    LAST_CONTACT_TIME = 5.minutes.ago
     
     has_many :builds, class_name: 'Ci::Build'
     has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
@@ -33,12 +35,17 @@ module Ci
     scope :shared, ->() { where(is_shared: true) }
     scope :active, ->() { where(active: true) }
     scope :paused, ->() { where(active: false) }
+    scope :online, ->() { where('contacted_at > ?', LAST_CONTACT_TIME) }
 
     acts_as_taggable
 
     def self.search(query)
       where('LOWER(ci_runners.token) LIKE :query OR LOWER(ci_runners.description) like :query',
             query: "%#{query.try(:downcase)}%")
+    end
+
+    def gl_projects_ids
+      projects.select(:gitlab_id)
     end
 
     def set_default_values
@@ -52,13 +59,27 @@ module Ci
     end
 
     def display_name
-      return token unless !description.blank?
+      return short_sha unless !description.blank?
 
       description
     end
 
     def shared?
       is_shared
+    end
+
+    def online?
+      contacted_at && contacted_at > LAST_CONTACT_TIME
+    end
+
+    def status
+      if contacted_at.nil?
+        :not_connected
+      elsif active?
+        online? ? :online : :offline
+      else
+        :paused
+      end
     end
 
     def belongs_to_one_project?
@@ -74,7 +95,7 @@ module Ci
     end
 
     def short_sha
-      token[0...10]
+      token[0...8] if token
     end
   end
 end

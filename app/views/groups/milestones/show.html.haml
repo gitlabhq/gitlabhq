@@ -21,26 +21,28 @@
     %span All issues for this milestone are closed. You may close the milestone now.
 
 .description
-%table.table
-  %thead
-    %tr
-      %th Project
-      %th Open issues
-      %th State
-      %th Due date
-  - @group_milestone.milestones.each do |milestone|
-    %tr
-      %td
-        = link_to "#{milestone.project.name}", namespace_project_milestone_path(milestone.project.namespace, milestone.project, milestone)
-      %td
-        = milestone.issues.opened.count
-      %td
-        - if milestone.closed?
-          Closed
-        - else
-          Open
-      %td
-        = milestone.expires_at
+
+.table-holder
+  %table.table
+    %thead
+      %tr
+        %th Project
+        %th Open issues
+        %th State
+        %th Due date
+    - @group_milestone.milestones.each do |milestone|
+      %tr
+        %td
+          = link_to "#{milestone.project.name}", namespace_project_milestone_path(milestone.project.namespace, milestone.project, milestone)
+        %td
+          = milestone.issues.opened.count
+        %td
+          - if milestone.closed?
+            Closed
+          - else
+            Open
+        %td
+          = milestone.expires_at
 
 .context
   %p.lead
@@ -87,7 +89,7 @@
       - @group_milestone.participants.each do |user|
         %li
           = link_to user, title: user.name, class: "darken" do
-            = image_tag avatar_icon(user.email, 32), class: "avatar s32"
+            = image_tag avatar_icon(user, 32), class: "avatar s32"
             %strong= truncate(user.name, lenght: 40)
             %br
             %small.cgray= user.username

@@ -1,0 +1,7 @@
+%ul.center-top-menu.commit-ci-menu
+  = nav_link(path: 'commit#show') do
+    = link_to namespace_project_commit_path(@project.namespace, @project, @commit.id) do
+      Changes
+  = nav_link(path: 'commit#ci') do
+    = link_to ci_namespace_project_commit_path(@project.namespace, @project, @commit.id) do
+      Builds

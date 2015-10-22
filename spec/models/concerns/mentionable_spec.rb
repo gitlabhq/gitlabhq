@@ -25,7 +25,7 @@ describe Issue, "Mentionable" do
     it 'correctly removes already-mentioned Commits' do
       expect(SystemNoteService).not_to receive(:cross_reference)
 
-      issue.create_cross_references!(project, author, [commit2])
+      issue.create_cross_references!(author, [commit2])
     end
   end
 

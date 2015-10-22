@@ -1,0 +1,178 @@
+.build-page
+  .gray-content-block
+    Build for commit
+    %strong.monospace
+      = link_to @build.commit.short_sha, ci_status_path(@build.commit)
+    from
+    %code #{@build.ref}
+
+  #up-build-trace
+  - if @commit.matrix_for_ref?(@build.ref)
+    %ul.center-top-menu.build-top-menu
+      - @commit.latest_builds_for_ref(@build.ref).each do |build|
+        %li{class: ('active' if build == @build) }
+          = link_to namespace_project_build_path(@project.namespace, @project, build) do
+            = ci_icon_for_status(build.status)
+            %span
+              - if build.name
+                = build.name
+              - else
+                = build.id
+
+
+      - unless @commit.latest_builds_for_ref(@build.ref).include?(@build)
+        %li.active
+          %a
+            Build ##{@build.id}
+            &middot;
+            %i.fa.fa-warning
+            This build was retried.
+
+  .gray-content-block.second-block
+    .build-head
+      .clearfix
+        = ci_status_with_icon(@build.status)
+        - if @build.duration
+          %span
+            %i.fa.fa-time
+            #{duration_in_words(@build.finished_at, @build.started_at)}
+        .pull-right
+          = @build.updated_at.stamp('19:00 Aug 27')
+
+  - if @build.show_warning?
+    - unless @build.any_runners_online?
+      .bs-callout.bs-callout-warning
+        %p
+          - if no_runners_for_project?(@build.project)
+            This build is stuck, because the project doesn't have any runners online assigned to it.
+          - elsif @build.tags.any?
+            This build is stuck, because you don't have any active runners online with any of these tags assigned to them:
+            - @build.tags.each do |tag|
+              %span.label.label-primary
+                = tag
+          - else
+            This build is stuck, because you don't have any active runners that can run this build.
+
+          %br
+          Go to
+          = link_to namespace_project_runners_path(@build.gl_project.namespace, @build.gl_project) do
+            Runners page
+
+  .row.prepend-top-default
+    .col-md-9
+      .clearfix
+        - if @build.active?
+          .autoscroll-container
+            %button.btn.btn-success.btn-sm#autoscroll-button{:type => "button", :data => {:state => 'disabled'}} enable autoscroll
+          .clearfix
+      .scroll-controls
+        = link_to '#up-build-trace', class: 'btn' do
+          %i.fa.fa-angle-up
+        = link_to '#down-build-trace', class: 'btn' do
+          %i.fa.fa-angle-down
+
+      %pre.trace#build-trace
+        %code.bash
+          = preserve do
+            = raw @build.trace_html
+      %div#down-build-trace
+
+    .col-md-3
+      - if @build.coverage
+        .build-widget
+          %h4.title
+            Test coverage
+          %h1 #{@build.coverage}%
+
+
+      .build-widget
+        %h4.title
+          Build
+          - if current_user && can?(current_user, :manage_builds, @project)
+            .pull-right
+              - if @build.active?
+                = link_to "Cancel", cancel_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-danger'
+              - elsif @build.commands.present?
+                = link_to "Retry", retry_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-primary', method: :post
+
+        - if @build.duration
+          %p
+            %span.attr-name Duration:
+            #{duration_in_words(@build.finished_at, @build.started_at)}
+        %p
+          %span.attr-name Created:
+          #{time_ago_in_words(@build.created_at)} ago
+        - if @build.finished_at
+          %p
+            %span.attr-name Finished:
+            #{time_ago_in_words(@build.finished_at)} ago
+        %p
+          %span.attr-name Runner:
+          - if @build.runner && current_user && current_user.admin
+            \#{link_to "##{@build.runner.id}", ci_admin_runner_path(@build.runner.id)}
+          - elsif @build.runner
+            \##{@build.runner.id}
+
+      - if @build.trigger_request
+        .build-widget
+          %h4.title
+            Trigger
+
+          %p
+            %span.attr-name Token:
+            #{@build.trigger_request.trigger.short_token}
+
+          - if @build.trigger_request.variables
+            %p
+              %span.attr-name Variables:
+
+            %code
+              - @build.trigger_request.variables.each do |key, value|
+                #{key}=#{value}
+
+      .build-widget
+        %h4.title
+          Commit
+          .pull-right
+            %small #{build_commit_link @build}
+        %p
+          %span.attr-name Branch:
+          #{build_ref_link @build}
+        %p
+          %span.attr-name Author:
+          #{@build.commit.git_author_name}
+        %p
+          %span.attr-name Message:
+          #{@build.commit.git_commit_message}
+
+      - if @build.tags.any?
+        .build-widget
+          %h4.title
+            Tags
+          - @build.tag_list.each do |tag|
+            %span.label.label-primary
+              = tag
+
+      - if @builds.present?
+        .build-widget
+          %h4.title #{pluralize(@builds.count, "other build")} for #{@build.short_sha}:
+          %table.table.builds
+            - @builds.each_with_index do |build, i|
+              %tr.build
+                %td
+                  = ci_icon_for_status(build.status)
+                %td
+                  = link_to namespace_project_build_path(@project.namespace, @project, @build) do
+                    - if build.name
+                      = build.name
+                    - else
+                      %span ##{build.id}
+
+                %td.status= build.status
+
+
+          = paginate @builds
+
+
+  :javascript
+    new CiBuild("#{namespace_project_build_url(@project.namespace, @project, @build)}", "#{@build.status}")

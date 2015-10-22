@@ -42,11 +42,10 @@
             class: 'select2 trigger-submit', include_blank: true,
             data: {placeholder: 'Milestone'})
 
-        - if @project
-          .filter-item.inline.labels-filter
-            = select_tag('label_name', project_labels_options(@project),
-              class: 'select2 trigger-submit', include_blank: true,
-              data: {placeholder: 'Label'})
+        .filter-item.inline.labels-filter
+          = select_tag('label_name', projects_labels_options,
+            class: 'select2 trigger-submit', include_blank: true,
+            data: {placeholder: 'Label'})
 
         .pull-right
           = render 'shared/sort_dropdown'

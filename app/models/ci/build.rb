@@ -24,28 +24,20 @@
 #
 
 module Ci
-  class Build < ActiveRecord::Base
-    extend Ci::Model
-    
+  class Build < CommitStatus
     LAZY_ATTRIBUTES = ['trace']
 
-    belongs_to :commit, class_name: 'Ci::Commit'
-    belongs_to :project, class_name: 'Ci::Project'
     belongs_to :runner, class_name: 'Ci::Runner'
     belongs_to :trigger_request, class_name: 'Ci::TriggerRequest'
 
     serialize :options
 
-    validates :commit, presence: true
-    validates :status, presence: true
     validates :coverage, numericality: true, allow_blank: true
+    validates_presence_of :ref
 
-    scope :running, ->() { where(status: "running") }
-    scope :pending, ->() { where(status: "pending") }
-    scope :success, ->() { where(status: "success") }
-    scope :failed, ->() { where(status: "failed")  }
     scope :unstarted, ->() { where(runner_id: nil) }
-    scope :running_or_pending, ->() { where(status:[:running, :pending]) }
+    scope :ignore_failures, ->() { where(allow_failure: false) }
+    scope :similar, ->(build) { where(ref: build.ref, tag: build.tag, trigger_request_id: build.trigger_request_id) }
 
     acts_as_taggable
 
@@ -69,21 +61,24 @@ module Ci
 
       def create_from(build)
         new_build = build.dup
-        new_build.status = :pending
+        new_build.status = 'pending'
         new_build.runner_id = nil
+        new_build.trigger_request_id = nil
         new_build.save
       end
 
       def retry(build)
-        new_build = Ci::Build.new(status: :pending)
+        new_build = Ci::Build.new(status: 'pending')
+        new_build.ref = build.ref
+        new_build.tag = build.tag
         new_build.options = build.options
         new_build.commands = build.commands
         new_build.tag_list = build.tag_list
         new_build.commit_id = build.commit_id
-        new_build.project_id = build.project_id
         new_build.name = build.name
         new_build.allow_failure = build.allow_failure
         new_build.stage = build.stage
+        new_build.stage_idx = build.stage_idx
         new_build.trigger_request = build.trigger_request
         new_build.save
         new_build
@@ -91,80 +86,29 @@ module Ci
     end
 
     state_machine :status, initial: :pending do
-      event :run do
-        transition pending: :running
-      end
-
-      event :drop do
-        transition running: :failed
-      end
-
-      event :success do
-        transition running: :success
-      end
-
-      event :cancel do
-        transition [:pending, :running] => :canceled
-      end
-
-      after_transition pending: :running do |build, transition|
-        build.update_attributes started_at: Time.now
-      end
-
       after_transition any => [:success, :failed, :canceled] do |build, transition|
-        build.update_attributes finished_at: Time.now
         project = build.project
 
         if project.web_hooks?
           Ci::WebHookService.new.build_end(build)
         end
 
-        if build.commit.success?
-          build.commit.create_next_builds(build.trigger_request)
-        end
-
+        build.commit.create_next_builds(build)
         project.execute_services(build)
 
         if project.coverage_enabled?
           build.update_coverage
         end
       end
-
-      state :pending, value: 'pending'
-      state :running, value: 'running'
-      state :failed, value: 'failed'
-      state :success, value: 'success'
-      state :canceled, value: 'canceled'
-    end
-
-    delegate :sha, :short_sha, :before_sha, :ref,
-      to: :commit, prefix: false
-
-    def trace_html
-      html = Ci::Ansi2html::convert(trace) if trace.present?
-      html ||= ''
-    end
-
-    def trace
-      if project && read_attribute(:trace).present?
-        read_attribute(:trace).gsub(project.token, 'xxxxxx')
-      end
-    end
-
-    def started?
-      !pending? && !canceled? && started_at
-    end
-
-    def active?
-      running? || pending?
-    end
-
-    def complete?
-      canceled? || success? || failed?
     end
 
     def ignored?
       failed? && allow_failure?
+    end
+
+    def trace_html
+      html = Ci::Ansi2html::convert(trace) if trace.present?
+      html || ''
     end
 
     def timeout
@@ -172,15 +116,7 @@ module Ci
     end
 
     def variables
-      yaml_variables + project_variables + trigger_variables
-    end
-
-    def duration
-      if started_at && finished_at
-        finished_at - started_at
-      elsif started_at
-        Time.now - started_at
-      end
+      predefined_variables + yaml_variables + project_variables + trigger_variables
     end
 
     def project
@@ -188,11 +124,21 @@ module Ci
     end
 
     def project_id
-      commit.project_id
+      commit.project.id
     end
 
     def project_name
       project.name
+    end
+
+    def project_recipients
+      recipients = project.email_recipients.split(' ')
+
+      if project.email_add_pusher? && user.present? && user.notification_email.present?
+        recipients << user.notification_email
+      end
+
+      recipients.uniq
     end
 
     def repo_url
@@ -219,18 +165,27 @@ module Ci
         if coverage.present?
           coverage.to_f
         end
-      rescue => ex
+      rescue
         # if bad regex or something goes wrong we dont want to interrupt transition
         # so we just silentrly ignore error for now
       end
     end
 
-    def trace
+    def raw_trace
       if File.exist?(path_to_trace)
         File.read(path_to_trace)
       else
         # backward compatibility
         read_attribute :trace
+      end
+    end
+
+    def trace
+      trace = raw_trace
+      if project && trace.present?
+        trace.gsub(project.token, 'xxxxxx')
+      else
+        trace
       end
     end
 
@@ -252,6 +207,37 @@ module Ci
 
     def path_to_trace
       "#{dir_to_trace}/#{id}.log"
+    end
+
+    def target_url
+      Gitlab::Application.routes.url_helpers.
+        namespace_project_build_url(gl_project.namespace, gl_project, self)
+    end
+
+    def cancel_url
+      if active?
+        Gitlab::Application.routes.url_helpers.
+          cancel_namespace_project_build_path(gl_project.namespace, gl_project, self)
+      end
+    end
+
+    def retry_url
+      if commands.present?
+        Gitlab::Application.routes.url_helpers.
+          retry_namespace_project_build_path(gl_project.namespace, gl_project, self)
+      end
+    end
+
+    def can_be_served?(runner)
+      (tag_list - runner.tag_list).empty?
+    end
+
+    def any_runners_online?
+      project.any_runners? { |runner| runner.active? && runner.online? && can_be_served?(runner) }
+    end
+
+    def show_warning?
+      pending? && !any_runners_online?
     end
 
     private
@@ -280,6 +266,15 @@ module Ci
       else
         []
       end
+    end
+
+    def predefined_variables
+      variables = []
+      variables << { key: :CI_BUILD_TAG, value: ref, public: true } if tag?
+      variables << { key: :CI_BUILD_NAME, value: name, public: true }
+      variables << { key: :CI_BUILD_STAGE, value: stage, public: true }
+      variables << { key: :CI_BUILD_TRIGGERED, value: 'true', public: true } if trigger_request
+      variables
     end
   end
 end

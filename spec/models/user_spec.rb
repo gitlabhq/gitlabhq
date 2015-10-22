@@ -85,6 +85,7 @@ describe User do
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
     it { is_expected.to have_many(:assigned_merge_requests).dependent(:destroy) }
     it { is_expected.to have_many(:identities).dependent(:destroy) }
+    it { is_expected.to have_one(:abuse_report) }
   end
 
   describe 'validations' do
@@ -224,6 +225,26 @@ describe User do
     it "should have authentication token" do
       user = create(:user)
       expect(user.authentication_token).not_to be_blank
+    end
+  end
+
+  describe '#recently_sent_password_reset?' do
+    it 'is false when reset_password_sent_at is nil' do
+      user = build_stubbed(:user, reset_password_sent_at: nil)
+
+      expect(user.recently_sent_password_reset?).to eq false
+    end
+
+    it 'is false when sent more than one minute ago' do
+      user = build_stubbed(:user, reset_password_sent_at: 5.minutes.ago)
+
+      expect(user.recently_sent_password_reset?).to eq false
+    end
+
+    it 'is true when sent less than one minute ago' do
+      user = build_stubbed(:user, reset_password_sent_at: Time.now)
+
+      expect(user.recently_sent_password_reset?).to eq true
     end
   end
 

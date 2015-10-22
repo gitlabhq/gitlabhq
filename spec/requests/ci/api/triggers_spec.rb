@@ -5,13 +5,18 @@ describe Ci::API::API do
 
   describe 'POST /projects/:project_id/refs/:ref/trigger' do
     let!(:trigger_token) { 'secure token' }
-    let!(:project) { FactoryGirl.create(:ci_project) }
+    let!(:gl_project) { FactoryGirl.create(:project) }
+    let!(:project) { FactoryGirl.create(:ci_project, gl_project: gl_project) }
     let!(:project2) { FactoryGirl.create(:ci_project) }
     let!(:trigger) { FactoryGirl.create(:ci_trigger, project: project, token: trigger_token) }
     let(:options) do
       {
         token: trigger_token
       }
+    end
+
+    before do
+      stub_ci_commit_to_return_yaml_file
     end
 
     context 'Handles errors' do
@@ -32,15 +37,13 @@ describe Ci::API::API do
     end
 
     context 'Have a commit' do
-      before do
-        @commit = FactoryGirl.create(:ci_commit, project: project)
-      end
+      let(:commit) { project.commits.last }
 
       it 'should create builds' do
         post ci_api("/projects/#{project.id}/refs/master/trigger"), options
         expect(response.status).to eq(201)
-        @commit.builds.reload
-        expect(@commit.builds.size).to eq(2)
+        commit.builds.reload
+        expect(commit.builds.size).to eq(2)
       end
 
       it 'should return bad request with no builds created if there\'s no commit for that ref' do
@@ -69,8 +72,8 @@ describe Ci::API::API do
         it 'create trigger request with variables' do
           post ci_api("/projects/#{project.id}/refs/master/trigger"), options.merge(variables: variables)
           expect(response.status).to eq(201)
-          @commit.builds.reload
-          expect(@commit.builds.first.trigger_request.variables).to eq(variables)
+          commit.builds.reload
+          expect(commit.builds.first.trigger_request.variables).to eq(variables)
         end
       end
     end

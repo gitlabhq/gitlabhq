@@ -47,6 +47,12 @@
           = f.label :version_check_enabled do
             = f.check_box :version_check_enabled
             Version check enabled
+    .form-group
+      = f.label :admin_notification_email, class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :admin_notification_email, class: 'form-control'
+        .help-block
+          Abuse reports will be sent to this address if it is set. Abuse reports are always available in the admin area.
 
   %fieldset
     %legend Account and Limit Settings
@@ -123,15 +129,6 @@
       .col-sm-10
         = f.text_area :help_page_text, class: 'form-control', rows: 4
         .help-block Markdown enabled
-
-  %fieldset
-    %legend Continuous Integration
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          = f.label :ci_enabled do
-            = f.check_box :ci_enabled
-            Disable to prevent CI usage until rake ci:migrate is run (8.0 only)
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-primary'

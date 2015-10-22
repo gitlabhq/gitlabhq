@@ -1,0 +1,146 @@
+/** Select2 selectbox style override **/
+.select2-container, .select2-container.select2-drop-above {
+  .select2-choice {
+    background: #FFF;
+    border-color: #DDD;
+    height: 42px;
+    padding: 8px $gl-padding;
+    font-size: $gl-font-size;
+    line-height: 1.42857143;
+
+    @include border-radius(2px);
+
+    .select2-arrow {
+      background: #FFF;
+      border-left: none;
+      padding-top: 5px;
+    }
+  }
+}
+
+.select2-container .select2-choice, .select2-container.select2-drop-above .select2-choice{
+  color: #7f8fa4;
+  border: 1px solid #e7e9ed;
+}
+
+.select2-drop {
+  @include box-shadow(rgba(76, 86, 103, 0.247059) 0px 0px 1px 0px, rgba(31, 37, 50, 0.317647) 0px 2px 18px 0px);
+  @include border-radius (0px);
+
+  padding: 16px;
+  border: none !important;
+}
+
+.select2-results .select2-result-label {
+  padding: 9px;
+}
+
+.select2-drop{
+  color: #7f8fa4;
+}
+
+.select2-highlighted {
+  background: #3084bb !important;
+}
+
+.select2-results li.select2-result-with-children > .select2-result-label {
+  font-weight: 600;
+  color: #313236;
+}
+
+
+.select2-container-multi .select2-choices {
+  @include border-radius(2px);
+  border-color: #CCC;
+}
+
+.select2-container-multi .select2-choices .select2-search-field input {
+  padding: 8px 14px;
+  font-size: 13px;
+  line-height: 18px;
+  height: auto;
+}
+
+.select2-drop-active {
+  border: 1px solid #BBB !important;
+  margin-top: 4px;
+  font-size: 13px;
+
+  &.select2-drop-above {
+    margin-bottom: 8px;
+  }
+
+  .select2-search input {
+    background: #fafafa;
+    border-color: #DDD;
+  }
+
+  .select2-results {
+    max-height: 350px;
+    .select2-highlighted {
+      background: $gl-primary;
+    }
+  }
+}
+
+.select2-container {
+  width: 100% !important;
+}
+
+/** Branch/tag selector **/
+.project-refs-form .select2-container {
+  width: 160px !important;
+}
+
+.ajax-users-dropdown, .ajax-project-users-dropdown {
+  .select2-search {
+    padding-top: 2px;
+  }
+}
+
+.ajax-users-select {
+  width: 400px;
+
+  &.input-large {
+    width: 210px;
+  }
+
+  &.input-clamp {
+    max-width: 100%;
+  }
+}
+
+.group-result {
+  .group-image {
+    float: left;
+  }
+  .group-name {
+    font-weight: bold;
+  }
+  .group-path {
+    color: #999;
+  }
+}
+
+.user-result {
+  .user-image {
+    float: left;
+  }
+  .user-name {
+  }
+}
+
+.namespace-result {
+  .namespace-kind {
+    color: #AAA;
+    font-weight: normal;
+  }
+  .namespace-path {
+    margin-left: 10px;
+    font-weight: bolder;
+  }
+}
+
+.ajax-users-dropdown {
+  min-width: 250px !important;
+}
