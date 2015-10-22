@@ -26,6 +26,7 @@ v 8.1.0
   - Add a system note and update relevant merge requests when a branch is deleted or re-added (Stan Hu)
   - Make diff file view easier to use on mobile screens (Stan Hu)
   - Improved performance of finding users by username or Email address
+  - Fix 500 when editing CI service
   - Fix bug where merge request comments created by API would not trigger notifications (Stan Hu)
   - Add support for creating directories from Files page (Stan Hu)
   - Allow removing of project without confirmation when JavaScript is disabled (Stan Hu)
