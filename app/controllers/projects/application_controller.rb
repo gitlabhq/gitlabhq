@@ -26,6 +26,13 @@ class Projects::ApplicationController < ApplicationController
     end
   end
 
+  protected
+
+  def apply_diff_view_cookie!
+    view = params[:view] || cookies[:diff_view]
+    cookies.permanent[:diff_view] = params[:view] = view if view
+  end
+
   private
 
   def builds_enabled
