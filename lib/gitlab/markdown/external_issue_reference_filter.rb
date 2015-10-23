@@ -23,6 +23,18 @@ module Gitlab
         end
       end
 
+      def self.referenced_by(node)
+        project = Project.find(node.attr("data-project")) rescue nil
+        return unless project
+
+        id = node.attr("data-external-issue")
+        external_issue = ExternalIssue.new(id, project)
+
+        return unless external_issue
+
+        { external_issue: external_issue }
+      end
+
       def call
         # Early return if the project isn't using an external tracker
         return doc if project.nil? || project.default_issues_tracker?
@@ -43,15 +55,13 @@ module Gitlab
         project = context[:project]
 
         self.class.references_in(text) do |match, id|
-          issue = ExternalIssue.new(id, project)
-
-          push_result(:external_issue, issue)
+          ExternalIssue.new(id, project)
 
           url = url_for_issue(id, project, only_path: context[:only_path])
 
           title = escape_once("Issue in #{project.external_issue_tracker.title}")
           klass = reference_class(:issue)
-          data  = data_attribute(project: project.id)
+          data  = data_attribute(project: project.id, external_issue: id)
 
           %(<a href="#{url}" #{data}
                title="#{title}"

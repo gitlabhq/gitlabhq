@@ -78,7 +78,7 @@ module Gitlab::Markdown
       it 'adds to the results hash' do
         ext = JiraIssue.new(reference, project)
 
-        result = pipeline_result("Issue #{reference}")
+        result = reference_pipeline_result("Issue #{reference}")
         expect(result[:references][:external_issue]).not_to be_empty
         expect(result[:references][:external_issue]).to eq [ext]
       end
