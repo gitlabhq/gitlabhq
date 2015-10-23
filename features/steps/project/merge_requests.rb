@@ -345,11 +345,11 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     create :ci_build, commit: ci_commit
   end
 
-   step 'I should see merge request "Bug NS-05" with CI status' do
-     page.within ".mr-list" do
-       expect(page).to have_link "Build status: pending"
-     end
-   end
+  step 'I should see merge request "Bug NS-05" with CI status' do
+    page.within ".mr-list" do
+      expect(page).to have_link "Build status: pending"
+    end
+  end
 
   def merge_request
     @merge_request ||= MergeRequest.find_by!(title: "Bug NS-05")
