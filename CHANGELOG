@@ -27,6 +27,7 @@ v 8.1.0
   - Speed up load times of issue detail pages by roughly 1.5x
   - Require CI jobs to be named
   - Fix CI rendering regressions
+  - Fix specific runners visibility
   - Allow developer to manage builds
   - If a merge request is to close an issue, show this on the issue page (Zeger-Jan van de Weg)
   - Add a system note and update relevant merge requests when a branch is deleted or re-added (Stan Hu)
