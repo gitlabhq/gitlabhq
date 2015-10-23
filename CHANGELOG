@@ -8,6 +8,7 @@ v 8.2.0 (unreleased)
   - Improved performance of sorting milestone issues
   - Allow users to select the Files view as default project view (Cristian Bica)
   - Show "Empty Repository Page" for repository without branches (Artem V. Navrotskiy)
+  - Fix: Inability to reply to code comments in the MR view, if the MR comes from a fork
 
 v 8.1.0
   - Ensure MySQL CI limits DB migrations occur after the fields have been created (Stan Hu)
