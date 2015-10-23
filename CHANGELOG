@@ -13,6 +13,8 @@ v 8.1.0
   - Fix error preventing displaying of commit data for a directory with a leading dot (Stan Hu)
   - Speed up load times of issue detail pages by roughly 1.5x
   - Require CI jobs to be named
+  - Fix CI rendering regressions
+  - Allow developer to manage builds
   - If a merge request is to close an issue, show this on the issue page (Zeger-Jan van de Weg)
   - Add a system note and update relevant merge requests when a branch is deleted or re-added (Stan Hu)
   - Make diff file view easier to use on mobile screens (Stan Hu)
