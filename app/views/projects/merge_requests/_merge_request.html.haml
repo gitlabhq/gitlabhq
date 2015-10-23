@@ -8,9 +8,7 @@
         = link_to_label(label, project: merge_request.project)
     .pull-right.light
       - if ci_commit
-        = link_to ci_status_path(ci_commit), class: "c#{ci_status_color(ci_commit)}",
-          title: "Build status: #{ci_commit.status}", data: {toggle: 'tooltip', placement: 'left'} do
-          = ci_status_icon(ci_commit)
+        = render_ci_status(ci_commit)
       - if merge_request.merged?
         %span
           %i.fa.fa-check
