@@ -73,9 +73,9 @@ class Repository
       path: path,
       limit: limit,
       offset: offset,
+      follow: path.present?
     }
 
-    options[:follow] = true if path.present?
     commits = Gitlab::Git::Commit.where(options)
     commits = Commit.decorate(commits, @project) if commits.present?
     commits
