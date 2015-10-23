@@ -3,11 +3,12 @@
     .modal-content
       .modal-header
         %a.close{href: "#", "data-dismiss" => "modal"} ×
-        %h3 Check out, review and merge locally
+        %h3 Check out, review, and merge locally
       .modal-body
         %p
-          %strong Step 1. 
+          %strong Step 1.
           Fetch and check out the branch for this merge request
+        = clipboard_button
         %pre.dark
           - if @merge_request.for_fork?
             :preserve
@@ -24,6 +25,7 @@
         %p
           %strong Step 3.
           Merge the branch and fix any conflicts that come up
+        = clipboard_button
         %pre.dark
           - if @merge_request.for_fork?
             :preserve
@@ -36,6 +38,7 @@
         %p
           %strong Step 4.
           Push the result of the merge to GitLab
+        = clipboard_button
         %pre.dark
           :preserve
             git push origin #{h @merge_request.target_branch}
