@@ -99,6 +99,7 @@ module Ci
       def ordered_by_last_commit_date
         last_commit_subquery = "(SELECT gl_project_id, MAX(committed_at) committed_at FROM #{Ci::Commit.table_name} GROUP BY gl_project_id)"
         joins("LEFT JOIN #{last_commit_subquery} AS last_commit ON #{Ci::Project.table_name}.gitlab_id = last_commit.gl_project_id").
+          joins(:gl_project).
           order("CASE WHEN last_commit.committed_at IS NULL THEN 1 ELSE 0 END, last_commit.committed_at DESC")
       end
     end
