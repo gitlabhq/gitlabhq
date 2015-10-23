@@ -16,7 +16,7 @@
             %td #{stage.capitalize} Job - #{build[:name]}
             %td
               %pre
-                = simple_format build[:script]
+                = simple_format build[:commands]
 
               %br
               %b Tag list:
@@ -27,6 +27,11 @@
               %br
               %b Refs except:
               = build[:except] && build[:except].join(", ")
+              %br
+              %b When:
+              = build[:when]
+              - if build[:allow_failure]
+                %b Allowed to fail
 
 -else
   %p
