@@ -68,7 +68,7 @@ module ApplicationHelper
     end
   end
 
-  def avatar_icon(user_email = nil, size = nil, scale = 2)
+  def avatar_icon(user_or_email = nil, size = nil, scale = 2)
     if user_or_email.is_a?(User)
       user = user_or_email
     else
