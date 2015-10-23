@@ -17,6 +17,7 @@ module Ci
         @projects = @projects.where(gitlab_id: @gl_projects.select(:id))
       end
       @projects = @projects.where("ci_projects.id NOT IN (?)", @runner.projects.pluck(:id)) if @runner.projects.any?
+      @projects = @projects.joins(:gl_project)
       @projects = @projects.page(params[:page]).per(30)
     end
 
