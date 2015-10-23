@@ -4,7 +4,8 @@
 class Projects::CommitController < Projects::ApplicationController
   # Authorize
   before_action :require_non_empty_project
-  before_action :authorize_download_code!
+  before_action :authorize_download_code!, except: [:cancel_builds]
+  before_action :authorize_manage_builds!, only: [:cancel_builds]
   before_action :commit
 
   def show
@@ -54,5 +55,13 @@ class Projects::CommitController < Projects::ApplicationController
 
   def commit
     @commit ||= @project.commit(params[:id])
+  end
+
+  private
+
+  def authorize_manage_builds!
+    unless can?(current_user, :manage_builds, project)
+      return page_404
+    end
   end
 end
