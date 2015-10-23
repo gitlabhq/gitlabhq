@@ -54,7 +54,7 @@ class Projects::ServicesController < Projects::ApplicationController
       message = { alert: error_message }
     end
 
-    redirect_to :back, message
+    redirect_back_or_default(options: message)
   end
 
   private

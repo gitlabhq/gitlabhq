@@ -51,7 +51,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
     @project.deploy_keys_projects.find_by(deploy_key_id: params[:id]).destroy
     log_audit_event(@key.title, action: :destroy)
 
-    redirect_to :back
+    redirect_back_or_default(default: { action: 'index' })
   end
 
   protected

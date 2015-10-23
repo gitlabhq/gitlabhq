@@ -246,8 +246,8 @@ module API
       # Example Request:
       #  DELETE /projects/:id/fork
       delete ":id/fork" do
-        authenticated_as_admin!
-        unless user_project.forked_project_link.nil?
+        authorize! :remove_fork_project, user_project
+        if user_project.forked?
           user_project.forked_project_link.destroy
         end
       end

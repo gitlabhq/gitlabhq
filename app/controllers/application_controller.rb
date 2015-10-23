@@ -33,6 +33,10 @@ class ApplicationController < ActionController::Base
     render_404
   end
 
+  def redirect_back_or_default(default: root_path, options: {})
+    redirect_to request.referer.present? ? :back : default, options
+  end
+
   protected
 
   # From https://github.com/plataformatec/devise/wiki/How-To:-Simple-Token-Authentication-Example
@@ -119,7 +123,6 @@ class ApplicationController < ActionController::Base
 
       project_path = "#{namespace}/#{id}"
       @project = Project.find_with_namespace(project_path)
-
 
       if @project and can?(current_user, :read_project, @project)
         if @project.path_with_namespace != project_path

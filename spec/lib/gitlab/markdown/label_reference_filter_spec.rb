@@ -5,7 +5,7 @@ module Gitlab::Markdown
   describe LabelReferenceFilter do
     include FilterSpecHelper
 
-    let(:project)   { create(:empty_project) }
+    let(:project)   { create(:empty_project, :public) }
     let(:label)     { create(:label, project: project) }
     let(:reference) { label.to_reference }
 
@@ -25,12 +25,20 @@ module Gitlab::Markdown
       expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-label'
     end
 
-    it 'includes a data-project-id attribute' do
+    it 'includes a data-project attribute' do
       doc = filter("Label #{reference}")
       link = doc.css('a').first
 
-      expect(link).to have_attribute('data-project-id')
-      expect(link.attr('data-project-id')).to eq project.id.to_s
+      expect(link).to have_attribute('data-project')
+      expect(link.attr('data-project')).to eq project.id.to_s
+    end
+
+    it 'includes a data-label attribute' do
+      doc = filter("See #{reference}")
+      link = doc.css('a').first
+
+      expect(link).to have_attribute('data-label')
+      expect(link.attr('data-label')).to eq label.id.to_s
     end
 
     it 'supports an :only_path context' do
@@ -42,7 +50,7 @@ module Gitlab::Markdown
     end
 
     it 'adds to the results hash' do
-      result = pipeline_result("Label #{reference}")
+      result = reference_pipeline_result("Label #{reference}")
       expect(result[:references][:label]).to eq [label]
     end
 

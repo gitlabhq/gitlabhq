@@ -139,66 +139,74 @@ module Ci
       end
 
       @jobs.each do |name, job|
-        validate_job!("#{name} job", job)
+        validate_job!(name, job)
       end
 
       true
     end
 
     def validate_job!(name, job)
+      if name.blank? || !validate_string(name)
+        raise ValidationError, "job name should be non-empty string"
+      end
+
       job.keys.each do |key|
         unless ALLOWED_JOB_KEYS.include? key
-          raise ValidationError, "#{name}: unknown parameter #{key}"
+          raise ValidationError, "#{name} job: unknown parameter #{key}"
         end
       end
 
-      if !job[:script].is_a?(String) && !validate_array_of_strings(job[:script])
-        raise ValidationError, "#{name}: script should be a string or an array of a strings"
+      if !validate_string(job[:script]) && !validate_array_of_strings(job[:script])
+        raise ValidationError, "#{name} job: script should be a string or an array of a strings"
       end
 
       if job[:stage]
         unless job[:stage].is_a?(String) && job[:stage].in?(stages)
-          raise ValidationError, "#{name}: stage parameter should be #{stages.join(", ")}"
+          raise ValidationError, "#{name} job: stage parameter should be #{stages.join(", ")}"
         end
       end
 
-      if job[:image] && !job[:image].is_a?(String)
-        raise ValidationError, "#{name}: image should be a string"
+      if job[:image] && !validate_string(job[:image])
+        raise ValidationError, "#{name} job: image should be a string"
       end
 
       if job[:services] && !validate_array_of_strings(job[:services])
-        raise ValidationError, "#{name}: services should be an array of strings"
+        raise ValidationError, "#{name} job: services should be an array of strings"
       end
 
       if job[:tags] && !validate_array_of_strings(job[:tags])
-        raise ValidationError, "#{name}: tags parameter should be an array of strings"
+        raise ValidationError, "#{name} job: tags parameter should be an array of strings"
       end
 
       if job[:only] && !validate_array_of_strings(job[:only])
-        raise ValidationError, "#{name}: only parameter should be an array of strings"
+        raise ValidationError, "#{name} job: only parameter should be an array of strings"
       end
 
       if job[:except] && !validate_array_of_strings(job[:except])
-        raise ValidationError, "#{name}: except parameter should be an array of strings"
+        raise ValidationError, "#{name} job: except parameter should be an array of strings"
       end
 
       if job[:allow_failure] && !job[:allow_failure].in?([true, false])
-        raise ValidationError, "#{name}: allow_failure parameter should be an boolean"
+        raise ValidationError, "#{name} job: allow_failure parameter should be an boolean"
       end
 
       if job[:when] && !job[:when].in?(%w(on_success on_failure always))
-        raise ValidationError, "#{name}: when parameter should be on_success, on_failure or always"
+        raise ValidationError, "#{name} job: when parameter should be on_success, on_failure or always"
       end
     end
 
     private
 
     def validate_array_of_strings(values)
-      values.is_a?(Array) && values.all? {|tag| tag.is_a?(String)}
+      values.is_a?(Array) && values.all? { |value| validate_string(value) }
     end
 
     def validate_variables(variables)
-      variables.is_a?(Hash) && variables.all? {|key, value| key.is_a?(Symbol) && value.is_a?(String)}
+      variables.is_a?(Hash) && variables.all? { |key, value| validate_string(key) && validate_string(value) }
+    end
+
+    def validate_string(value)
+      value.is_a?(String) || value.is_a?(Symbol)
     end
   end
 end

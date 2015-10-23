@@ -1,6 +1,6 @@
 Gitlab::Seeder.quiet do
   Project.all.each do |project|
-    (1..5).each  do |i|
+    5.times do |i|
       milestone_params = {
         title: "v#{i}.0",
         description: FFaker::Lorem.sentence,

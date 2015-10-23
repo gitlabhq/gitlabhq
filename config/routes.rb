@@ -414,6 +414,7 @@ Gitlab::Application.routes.draw do
               [:new, :create, :index], path: "/") do
       member do
         put :transfer
+        delete :remove_fork
         post :archive
         post :unarchive
         post :toggle_star

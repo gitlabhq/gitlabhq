@@ -10,6 +10,10 @@
   border-bottom: 1px solid #E7E9EE;
   margin-bottom: 1em;
 
+  &.readme-holder {
+    border-bottom: 0;
+  }
+
   table {
     @extend .table;
   }
@@ -94,7 +98,6 @@
           border-right: none;
         }
         background: #fff;
-        padding: 10px $gl-padding;
       }
       .lines {
         pre {

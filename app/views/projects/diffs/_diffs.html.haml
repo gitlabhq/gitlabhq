@@ -15,8 +15,8 @@
 
 .files
   - diff_files.each_with_index do |diff_file, index|
-    - diff_commit = commit_for_diff(diff_file.diff)
-    - blob = project.repository.blob_for_diff(diff_commit, diff_file.diff)
+    - diff_commit = commit_for_diff(diff_file)
+    - blob = project.repository.blob_for_diff(diff_commit, diff_file)
     - next unless blob
 
     = render 'projects/diffs/file', i: index, project: project,

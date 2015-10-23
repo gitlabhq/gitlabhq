@@ -32,21 +32,22 @@
     %li
       .nothing-here-block No builds to show
   - else
-    %table.table.builds
-      %thead
-        %tr
-          %th Status
-          %th Build ID
-          %th Commit
-          %th Ref
-          %th Runner
-          %th Name
-          %th Duration
-          %th Finished at
-          %th
+    .table-holder
+      %table.table.builds
+        %thead
+          %tr
+            %th Status
+            %th Build ID
+            %th Commit
+            %th Ref
+            %th Runner
+            %th Name
+            %th Duration
+            %th Finished at
+            %th
 
-      - @builds.each do |build|
-        = render 'projects/builds/build', build: build
+        - @builds.each do |build|
+          = render 'projects/builds/build', build: build
 
     = paginate @builds
 
