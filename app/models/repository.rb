@@ -67,13 +67,16 @@ class Repository
   end
 
   def commits(ref, path = nil, limit = nil, offset = nil, skip_merges = false)
-    commits = Gitlab::Git::Commit.where(
+    options = {
       repo: raw_repository,
       ref: ref,
       path: path,
       limit: limit,
       offset: offset,
-    )
+      follow: path.present?
+    }
+
+    commits = Gitlab::Git::Commit.where(options)
     commits = Commit.decorate(commits, @project) if commits.present?
     commits
   end
