@@ -193,12 +193,19 @@ module Grack
     end
 
     def render_grack_auth_ok
+      repo_path =
+        if @request.path_info =~ /^([\w\.\/-]+)\.wiki\.git/
+          ProjectWiki.new(project).repository.path_to_repo
+        else
+          project.repository.path_to_repo
+        end
+
       [
         200,
         { "Content-Type" => "application/json" },
         [JSON.dump({
           'GL_ID' => Gitlab::ShellEnv.gl_id(@user),
-          'RepoPath' => project.repository.path_to_repo,
+          'RepoPath' => repo_path,
         })]
       ]
     end
