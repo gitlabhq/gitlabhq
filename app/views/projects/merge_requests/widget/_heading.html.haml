@@ -1,4 +1,4 @@
-- ci_commit = @merge_request.source_project.ci_commit(@merge_request.source_sha)
+- ci_commit = @merge_request.ci_commit
 - if ci_commit
   - status = ci_commit.status
   .mr-widget-heading

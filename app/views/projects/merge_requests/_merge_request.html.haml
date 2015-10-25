@@ -1,3 +1,4 @@
+- ci_commit = merge_request.ci_commit
 %li{ class: mr_css_classes(merge_request) }
   .merge-request-title
     %span.merge-request-title-text
@@ -6,6 +7,8 @@
       - merge_request.labels.each do |label|
         = link_to_label(label, project: merge_request.project)
     .pull-right.light
+      - if ci_commit
+        = render_ci_status(ci_commit)
       - if merge_request.merged?
         %span
           %i.fa.fa-check
