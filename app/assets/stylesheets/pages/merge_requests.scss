@@ -119,6 +119,15 @@
   .ci-coverage {
     float: right;
   }
+
+  .mr-widget-ci-details {
+    display: none;
+    background: white;
+
+    .ci_widget {
+      padding: 10px 15px;
+    }
+  }
 }
 
 .mr_source_commit,

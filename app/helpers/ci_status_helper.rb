@@ -54,4 +54,8 @@ module CiStatusHelper
     project.runners.blank? &&
       Ci::Runner.shared.blank?
   end
+
+  def ci_widget_summary(commit)
+    "#{commit.statuses_with_matching_status} of #{commit.latest_generic_statuses.length + 1} checks #{commit.human_status}"
+  end
 end

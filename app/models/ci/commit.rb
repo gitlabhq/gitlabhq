@@ -121,8 +121,25 @@ module Ci
       @latest_statuses ||= statuses.latest.to_a
     end
 
+    def latest_generic_statuses
+      @latest_generic_statuses ||= latest_statuses.select { |s| s.is_a?(GenericCommitStatus) }
+    end
+
+    def latest_ci_statuses
+      @latest_ci_statuses ||= latest_statuses.select { |s| s.is_a?(Ci::Build) }
+    end
+
     def latest_builds
       @latest_builds ||= builds.latest.to_a
+    end
+
+    def statuses_with_matching_status
+      matching = if running? || pending?
+                   ['running', 'pending']
+                 else
+                   [status]
+                 end
+      (matching.include?(ci_status) ? 1 : 0) + latest_generic_statuses.count { |s| matching.include?(s.status) }
     end
 
     def latest_builds_for_ref(ref)
@@ -134,11 +151,15 @@ module Ci
     end
 
     def status
-      if yaml_errors.present?
-        return 'failed'
-      end
+      @status ||= status_for(latest_statuses)
+    end
 
-      @status ||= Ci::Status.get_status(latest_statuses)
+    def human_status
+      success? ? 'succeded' : status
+    end
+
+    def ci_status
+      @ci_status ||= status_for(latest_ci_statuses)
     end
 
     def pending?
@@ -224,6 +245,14 @@ module Ci
       return if self.yaml_errors?
       self.yaml_errors = error
       save
+    end
+
+    def status_for(scope)
+      if yaml_errors.present?
+        return 'failed'
+      end
+
+      Ci::Status.get_status(scope)
     end
   end
 end
