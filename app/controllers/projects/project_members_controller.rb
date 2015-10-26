@@ -83,7 +83,8 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
   def leave
     if @project.namespace == current_user.namespace
-      return redirect_to(:back, alert: 'You can not leave your own project. Transfer or delete the project.')
+      message = 'You can not leave your own project. Transfer or delete the project.'
+      return redirect_back_or_default(default: { action: 'index' }, options: { alert: message })
     end
 
     @project_member = @project.project_members.find_by(user_id: current_user)

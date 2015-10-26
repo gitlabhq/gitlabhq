@@ -45,6 +45,10 @@ class ApplicationSetting < ActiveRecord::Base
     allow_blank: true,
     format: { with: /\A#{URI.regexp(%w(http https))}\z/, message: "should be a valid url" }
 
+  validates :admin_notification_email,
+    allow_blank: true,
+    email: true
+
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?
       value.each do |level|

@@ -335,7 +335,7 @@ namespace :gitlab do
       print "Redis version >= #{min_redis_version}? ... "
 
       redis_version = run(%W(redis-cli --version))
-      redis_version = redis_version.try(:match, /redis-cli (.*)/)
+      redis_version = redis_version.try(:match, /redis-cli (\d+\.\d+\.\d+)/)
       if redis_version &&
           (Gem::Version.new(redis_version[1]) > Gem::Version.new(min_redis_version))
         puts "yes".green

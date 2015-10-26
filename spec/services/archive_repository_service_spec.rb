@@ -6,7 +6,7 @@ describe ArchiveRepositoryService do
 
   describe "#execute" do
     it "cleans old archives" do
-      expect(project.repository).to receive(:clean_old_archives)
+      expect(RepositoryArchiveCacheWorker).to receive(:perform_async)
 
       subject.execute(timeout: 0.0)
     end

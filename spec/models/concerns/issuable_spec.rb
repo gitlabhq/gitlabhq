@@ -68,7 +68,6 @@ describe Issue, "Issuable" do
     end
   end
 
-
   describe "#to_hook_data" do
     let(:hook_data) { issue.to_hook_data(user) }
 

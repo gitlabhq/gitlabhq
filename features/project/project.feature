@@ -31,6 +31,12 @@ Feature: Project
     And I visit project "Shop" page
     Then I should see project "Shop" README
 
+  Scenario: I should see last commit with CI
+    Given project "Shop" has CI enabled
+    Given project "Shop" has CI build
+    And I visit project "Shop" page
+    And I should see last commit with CI status
+
   @javascript
   Scenario: I should see project activity
     When I visit project "Shop" activity page
