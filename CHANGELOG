@@ -7,6 +7,7 @@ v 8.1.1
   - Fix 500 when editing CI service
   - Require CI jobs to be named
   - Fix CSS for runner status
+  - Fix CI badge
 
 v 8.1.0
   - Ensure MySQL CI limits DB migrations occur after the fields have been created (Stan Hu)
@@ -19,6 +20,7 @@ v 8.1.0
   - Don't show "Add README" link in an empty repository if user doesn't have access to push (Stan Hu)
   - Fix error preventing displaying of commit data for a directory with a leading dot (Stan Hu)
   - Speed up load times of issue detail pages by roughly 1.5x
+  - Require CI jobs to be named
   - Fix CI rendering regressions
   - Allow developer to manage builds
   - If a merge request is to close an issue, show this on the issue page (Zeger-Jan van de Weg)
