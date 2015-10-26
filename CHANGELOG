@@ -4,11 +4,13 @@ v 8.1.1
   - Fix cloning Wiki repositories via HTTP (Stan Hu)
   - Add migration to remove satellites directory
   - Fix specific runners visibility
+  - Fix 500 when editing CI service
+  - Require CI jobs to be named
+  - Fix CSS for runner status
 
 v 8.1.0
   - Ensure MySQL CI limits DB migrations occur after the fields have been created (Stan Hu)
   - Redirect to a default path if HTTP_REFERER is not set (Stan Hu)
-  - Fix CSS for runner status
   - Send an email to admin email when a user is reported for spam (Jonathan Rochkind)
   - Show notifications button when user is member of group rather than project (Grzegorz Bizon)
   - Fix bug preventing mentioned issued from being closed when MR is merged using fast-forward merge.
@@ -17,14 +19,12 @@ v 8.1.0
   - Don't show "Add README" link in an empty repository if user doesn't have access to push (Stan Hu)
   - Fix error preventing displaying of commit data for a directory with a leading dot (Stan Hu)
   - Speed up load times of issue detail pages by roughly 1.5x
-  - Require CI jobs to be named
   - Fix CI rendering regressions
   - Allow developer to manage builds
   - If a merge request is to close an issue, show this on the issue page (Zeger-Jan van de Weg)
   - Add a system note and update relevant merge requests when a branch is deleted or re-added (Stan Hu)
   - Make diff file view easier to use on mobile screens (Stan Hu)
   - Improved performance of finding users by username or Email address
-  - Fix 500 when editing CI service
   - Fix bug where merge request comments created by API would not trigger notifications (Stan Hu)
   - Add support for creating directories from Files page (Stan Hu)
   - Allow removing of project without confirmation when JavaScript is disabled (Stan Hu)
