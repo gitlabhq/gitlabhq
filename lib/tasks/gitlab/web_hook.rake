@@ -7,15 +7,23 @@ namespace :gitlab do
 
       projects = find_projects(namespace_path)
 
+      with_hook_scope = ProjectHook.where(url: web_hook_url)
+      with_hook_scope = with_hook_scope.where(project: projects) unless projects == Project # there is Rails bug
+      projects_ids_with_hook = with_hook_scope.pluck(:project_id)
+
       puts "Adding web hook '#{web_hook_url}' to:"
       projects.find_each(batch_size: 1000) do |project|
         print "- #{project.name} ... "
-        web_hook = project.hooks.new(url: web_hook_url)
-        if web_hook.save
-          puts "added".green
+        if projects_ids_with_hook.include?(project.id)
+          puts "skipped".yellow
         else
-          print "failed".red
-          puts "  [#{web_hook.errors.full_messages.to_sentence}]"
+          web_hook = project.hooks.new(url: web_hook_url)
+          if web_hook.save
+            puts "added".green
+          else
+            print "failed".red
+            puts "  [#{web_hook.errors.full_messages.to_sentence}]"
+          end
         end
       end
     end
