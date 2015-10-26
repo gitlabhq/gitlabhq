@@ -11,6 +11,7 @@ v 8.2.0 (unreleased)
   - Fix: Inability to reply to code comments in the MR view, if the MR comes from a fork
   - Use git follow flag for commits page when retrieve history for file or directory
   - Show merge request CI status on merge requests index page
+  - Fix: 500 error returned if destroy request without HTTP referer (Kazuki Shimizu)
 
 v 8.1.1
   - Fix cloning Wiki repositories via HTTP (Stan Hu)
