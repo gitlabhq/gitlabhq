@@ -18,7 +18,7 @@ describe API::API, api: true do
       before do
         @status1 = create(:commit_status, commit: ci_commit, status: 'running')
         @status2 = create(:commit_status, commit: ci_commit, name: 'coverage', status: 'pending')
-        @status3 = create(:commit_status, commit: ci_commit, name: 'coverage', ref: 'develop', status: 'running')
+        @status3 = create(:commit_status, commit: ci_commit, name: 'coverage', ref: 'develop', status: 'running', allow_failure: true)
         @status4 = create(:commit_status, commit: ci_commit, name: 'coverage', status: 'success')
         @status5 = create(:commit_status, commit: ci_commit, ref: 'develop', status: 'success')
         @status6 = create(:commit_status, commit: ci_commit, status: 'success')
@@ -30,6 +30,8 @@ describe API::API, api: true do
 
         expect(json_response).to be_an Array
         expect(statuses_id).to contain_exactly(@status3.id, @status4.id, @status5.id, @status6.id)
+        json_response.sort_by!{ |status| status['id'] }
+        expect(json_response.map{ |status| status['allow_failure'] }).to eq([true, false, false, false])
       end
 
       it "should return all commit statuses" do
