@@ -12,14 +12,16 @@ module API
       # Parameters:
       #   id (required) - The ID of a project
       #   ref_name (optional) - The name of a repository branch or tag, if not given the default branch is used
+      #   path(optional) - Full path to file. Ex. lib/class.rb
       # Example Request:
       #   GET /projects/:id/repository/commits
       get ":id/repository/commits" do
         page = (params[:page] || 0).to_i
         per_page = (params[:per_page] || 20).to_i
         ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
+        path = params[:path] || nil
 
-        commits = user_project.repository.commits(ref, nil, per_page, page * per_page)
+        commits = user_project.repository.commits(ref, path, per_page, page * per_page)
         present commits, with: Entities::RepoCommit
       end
 
