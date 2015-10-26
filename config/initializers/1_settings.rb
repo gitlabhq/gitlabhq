@@ -125,6 +125,9 @@ Settings.omniauth['auto_link_ldap_user'] = false if Settings.omniauth['auto_link
 
 Settings.omniauth['providers']  ||= []
 
+Settings['shared'] ||= Settingslogic.new({})
+Settings.shared['path'] = File.expand_path(Settings.shared['path'] || "shared", Rails.root)
+
 Settings['issues_tracker']  ||= {}
 
 #
@@ -169,7 +172,7 @@ Settings.gitlab.default_projects_features['merge_requests'] = true if Settings.g
 Settings.gitlab.default_projects_features['wiki']           = true if Settings.gitlab.default_projects_features['wiki'].nil?
 Settings.gitlab.default_projects_features['snippets']       = false if Settings.gitlab.default_projects_features['snippets'].nil?
 Settings.gitlab.default_projects_features['visibility_level']    = Settings.send(:verify_constant, Gitlab::VisibilityLevel, Settings.gitlab.default_projects_features['visibility_level'], Gitlab::VisibilityLevel::PRIVATE)
-Settings.gitlab['repository_downloads_path'] = File.absolute_path(Settings.gitlab['repository_downloads_path'] || 'tmp/repositories', Rails.root)
+Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path'], 'cache/archive') if Settings.gitlab['repository_downloads_path'].nil?
 Settings.gitlab['restricted_signup_domains'] ||= []
 Settings.gitlab['import_sources'] ||= ['github','bitbucket','gitlab','gitorious','google_code','fogbugz','git']
 
@@ -245,6 +248,7 @@ Settings.git['timeout']   ||= 10
 Settings['satellites'] ||= Settingslogic.new({})
 Settings.satellites['path'] = File.expand_path(Settings.satellites['path'] || "tmp/repo_satellites/", Rails.root)
 Settings.satellites['timeout'] ||= 30
+
 
 #
 # Extra customization
