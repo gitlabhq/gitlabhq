@@ -274,32 +274,30 @@ class ApplicationController < ActionController::Base
     params[:state] = 'opened' if params[:state].blank?
 
     @sort = params[:sort]
-    @filter_params = params.dup
+    filter_params = params.dup
 
     if @project
-      @filter_params[:project_id] = @project.id
+      filter_params[:project_id] = @project.id
     elsif @group
-      @filter_params[:group_id] = @group.id
+      filter_params[:group_id] = @group.id
     else
       # TODO: this filter ignore issues/mr created in public or
       # internal repos where you are not a member. Enable this filter
       # or improve current implementation to filter only issues you
       # created or assigned or mentioned
-      #@filter_params[:authorized_only] = true
+      #filter_params[:authorized_only] = true
     end
 
-    @filter_params
+    filter_params
   end
 
   def get_issues_collection
-    set_filters_params
-    @issuable_finder = IssuesFinder.new(current_user, @filter_params)
+    @issuable_finder = IssuesFinder.new(current_user, set_filters_params)
     @issuable_finder.execute
   end
 
   def get_merge_requests_collection
-    set_filters_params
-    @issuable_finder = MergeRequestsFinder.new(current_user, @filter_params)
+    @issuable_finder = MergeRequestsFinder.new(current_user, set_filters_params)
     @issuable_finder.execute
   end
 
