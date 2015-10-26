@@ -13,13 +13,13 @@
 
 - if @runner.shared?
   .bs-callout.bs-callout-success
-    %h4 This runner will process build from ALL UNASSIGNED projects
+    %h4 This runner will process builds from ALL UNASSIGNED projects
     %p
       If you want runners to build only specific projects, enable them in the table below.
       Keep in mind that this is a one way transition.
 - else
   .bs-callout.bs-callout-info
-    %h4 This runner will process build only from ASSIGNED projects
+    %h4 This runner will process builds only from ASSIGNED projects
     %p You can't make this a shared runner.
 %hr
 = form_for @runner, url: ci_admin_runner_path(@runner), html: { class: 'form-horizontal' } do |f|
