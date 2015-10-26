@@ -16,10 +16,10 @@ module Files
         )
       end
 
-      unless @file_path =~ Gitlab::Regex.file_name_regex
+      unless @file_path =~ Gitlab::Regex.file_path_regex
         raise_error(
           'Your changes could not be committed, because the file name ' +
-          Gitlab::Regex.file_name_regex_message
+          Gitlab::Regex.file_path_regex_message
         )
       end
 

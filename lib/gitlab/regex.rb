@@ -44,12 +44,21 @@ module Gitlab
 
 
     def file_name_regex
-      @file_name_regex ||= /\A[a-zA-Z0-9_\-\.\/]*\z/.freeze
+      @file_name_regex ||= /\A[a-zA-Z0-9_\-\.]*\z/.freeze
     end
 
     def file_name_regex_message
+      "can contain only letters, digits, '_', '-' and '.'. "
+    end
+
+    def file_path_regex
+      @file_name_regex ||= /\A[a-zA-Z0-9_\-\.\/]*\z/.freeze
+    end
+
+    def file_path_regex_message
       "can contain only letters, digits, '_', '-' and '.'. Separate directories with a '/'. "
     end
+
 
     def directory_traversal_regex
       @directory_traversal_regex ||= /\.{2}/.freeze
@@ -58,6 +67,7 @@ module Gitlab
     def directory_traversal_regex_message
       "cannot include directory traversal. "
     end
+
 
     def archive_formats_regex
       #                           |zip|tar|    tar.gz    |         tar.bz2         |
