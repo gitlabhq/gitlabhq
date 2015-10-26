@@ -27,9 +27,5 @@ module Ci
     def human_status
       status
     end
-
-    def last_commit_for_ref(ref)
-      commits.where(ref: ref).last
-    end
   end
 end
