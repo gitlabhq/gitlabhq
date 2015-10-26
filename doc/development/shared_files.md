@@ -7,8 +7,8 @@ shared storage (e.g. NFS). Working towards GitLab 9.0 we are consolidating
 these different directories under the `shared` directory.
 
 This means that if GitLab will start storing puppies in some future version
-then we should put them in `shared/puppies`. Temporary files should be stored
-in `shared/tmp`.
+then we should put them in `shared/puppies`. Temporary puppy files should be
+stored in `shared/tmp`.
 
 In the GitLab application code you can get the full path to the `shared`
 directory with `Gitlab.config.shared.path`.
