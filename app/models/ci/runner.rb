@@ -36,6 +36,7 @@ module Ci
     scope :active, ->() { where(active: true) }
     scope :paused, ->() { where(active: false) }
     scope :online, ->() { where('contacted_at > ?', LAST_CONTACT_TIME) }
+    scope :ordered, ->() { order(id: :desc) }
 
     acts_as_taggable
 

@@ -401,15 +401,17 @@ class User < ActiveRecord::Base
                            end
   end
 
+  def authorized_projects_id
+    @authorized_projects_id ||= begin
+      project_ids = personal_projects.pluck(:id)
+      project_ids.push(*groups_projects.pluck(:id))
+      project_ids.push(*projects.pluck(:id).uniq)
+    end
+  end
 
   # Projects user has access to
   def authorized_projects
-    @authorized_projects ||= begin
-                               project_ids = personal_projects.pluck(:id)
-                               project_ids.push(*groups_projects.pluck(:id))
-                               project_ids.push(*projects.pluck(:id).uniq)
-                               Project.where(id: project_ids)
-                             end
+    @authorized_projects ||= Project.where(id: authorized_projects_id)
   end
 
   def owned_projects
@@ -765,11 +767,14 @@ class User < ActiveRecord::Base
   end
 
   def ci_authorized_projects
-    @ci_authorized_projects ||= Ci::Project.where(gitlab_id: authorized_projects)
+    @ci_authorized_projects ||= Ci::Project.where(gitlab_id: authorized_projects_id)
   end
 
   def ci_authorized_runners
-    Ci::Runner.specific.includes(:runner_projects).
-      where(ci_runner_projects: { project_id: ci_authorized_projects } )
+    @ci_authorized_runners ||= begin
+      runner_ids = Ci::RunnerProject.joins(:project).
+        where(ci_projects: { gitlab_id: authorized_projects_id }).select(:runner_id)
+      Ci::Runner.specific.where(id: runner_ids)
+    end
   end
 end
