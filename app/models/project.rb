@@ -55,6 +55,13 @@ class Project < ActiveRecord::Base
   default_value_for :wall_enabled, false
   default_value_for :snippets_enabled, gitlab_config_features.snippets
 
+  after_create :create_default_web_hooks, if: -> { !!gitlab_config_features.auto_web_hooks }
+  def create_default_web_hooks
+    gitlab_config_features.auto_web_hooks.each do |web_hook_url|
+      hooks.create(url: web_hook_url)
+    end
+  end
+
   # set last_activity_at to the same as created_at
   after_create :set_last_activity_at
   def set_last_activity_at
