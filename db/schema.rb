@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151023144219) do
+ActiveRecord::Schema.define(version: 20151026182941) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -624,6 +624,7 @@ ActiveRecord::Schema.define(version: 20151023144219) do
   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree
   add_index "projects", ["last_activity_at"], name: "index_projects_on_last_activity_at", using: :btree
   add_index "projects", ["namespace_id"], name: "index_projects_on_namespace_id", using: :btree
+  add_index "projects", ["path"], name: "index_projects_on_path", using: :btree
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
 
   create_table "protected_branches", force: true do |t|
