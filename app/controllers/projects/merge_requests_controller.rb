@@ -48,7 +48,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: @merge_request }
+      format.json { render json: @merge_request, methods: :rebase_in_progress? }
       format.diff { render text: @merge_request.to_diff(current_user) }
       format.patch { render text: @merge_request.to_patch(current_user) }
     end
@@ -241,8 +241,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     return render_404 unless @merge_request.approved?
 
     RebaseWorker.perform_async(@merge_request.id, current_user.id)
-
-    redirect_to merge_request_path(@merge_request), notice: 'Rebase started. It will take some time'
   end
 
   protected
