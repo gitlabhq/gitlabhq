@@ -346,11 +346,6 @@ The `secrets.yml` file stores encryption keys for sessions and secure variables.
 Backup `secrets.yml` someplace safe, but don't store it in the same place as your database backups.
 Otherwise your secrets are exposed if one of your backups is compromised.
 
-### Install schedules
-
-    # Setup schedules
-    sudo -u gitlab_ci -H bundle exec whenever -w RAILS_ENV=production
-
 ### Install Init Script
 
 Download the init script (will be `/etc/init.d/gitlab`):

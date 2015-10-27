@@ -44,6 +44,19 @@ class Repository
     raw_repository.empty?
   end
 
+  #
+  # Git repository can contains some hidden refs like:
+  #   /refs/notes/*
+  #   /refs/git-as-svn/*
+  #   /refs/pulls/*
+  # This refs by default not visible in project page and not cloned to client side.
+  #
+  # This method return true if repository contains some content visible in project page.
+  #
+  def has_visible_content?
+    !raw_repository.branches.empty?
+  end
+
   def commit(id = 'HEAD')
     return nil unless raw_repository
     commit = Gitlab::Git::Commit.find(raw_repository, id)
@@ -54,13 +67,16 @@ class Repository
   end
 
   def commits(ref, path = nil, limit = nil, offset = nil, skip_merges = false)
-    commits = Gitlab::Git::Commit.where(
+    options = {
       repo: raw_repository,
       ref: ref,
       path: path,
       limit: limit,
       offset: offset,
-    )
+      follow: path.present?
+    }
+
+    commits = Gitlab::Git::Commit.where(options)
     commits = Commit.decorate(commits, @project) if commits.present?
     commits
   end
@@ -480,7 +496,7 @@ class Repository
 
   def search_files(query, ref)
     offset = 2
-    args = %W(git grep -i -n --before-context #{offset} --after-context #{offset} #{query} #{ref || root_ref})
+    args = %W(git grep -i -n --before-context #{offset} --after-context #{offset} -e #{query} #{ref || root_ref})
     Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
   end
 

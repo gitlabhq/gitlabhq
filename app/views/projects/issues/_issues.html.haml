@@ -5,8 +5,9 @@
       .nothing-here-block No issues to show
 
 - if @issues.present?
-  .pull-right
-    %span.issue_counter #{@issues.total_count}
-    issues for this filter
+  .issuable-filter-count
+    %span.pull-right
+      = @issues.total_count
+      issues for this filter
 
   = paginate @issues, theme: "gitlab"

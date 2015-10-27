@@ -22,7 +22,7 @@ class CiBuild
       # Only valid for runnig build when output changes during time
       #
       CiBuild.interval = setInterval =>
-        if window.location.href is build_url
+        if window.location.href.split("#").first() is build_url
           $.ajax
             url: build_url
             dataType: "json"
@@ -31,7 +31,7 @@ class CiBuild
                 $('#build-trace code').html build.trace_html
                 $('#build-trace code').append '<i class="fa fa-refresh fa-spin"/>'
                 @checkAutoscroll()
-              else
+              else if build.status != build_status
                 Turbolinks.visit build_url
       , 4000
 

@@ -159,11 +159,11 @@ class MergeRequest < ActiveRecord::Base
 
   def last_commit
     merge_request_diff ? merge_request_diff.last_commit : compare_commits.last
-  end 
+  end
 
   def first_commit
     merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
-  end 
+  end
 
   def last_commit_short_sha
     last_commit.short_id
@@ -257,7 +257,7 @@ class MergeRequest < ActiveRecord::Base
 
     Note.where(
       "(project_id = :target_project_id AND noteable_type = 'MergeRequest' AND noteable_id = :mr_id) OR" +
-      "(project_id = :source_project_id AND noteable_type = 'Commit' AND commit_id IN (:commit_ids))",
+      "((project_id = :source_project_id OR project_id = :target_project_id) AND noteable_type = 'Commit' AND commit_id IN (:commit_ids))",
       mr_id: id,
       commit_ids: commit_ids,
       target_project_id: target_project_id,
@@ -468,6 +468,12 @@ class MergeRequest < ActiveRecord::Base
       yield
     ensure
       unlock_mr if locked?
+    end
+  end
+
+  def ci_commit
+    if last_commit
+      source_project.ci_commit(last_commit.id)
     end
   end
 end

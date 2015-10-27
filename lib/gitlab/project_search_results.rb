@@ -9,7 +9,7 @@ module Gitlab
                         else
                           nil
                         end
-      @query = Shellwords.shellescape(query) if query.present?
+      @query = query
     end
 
     def objects(scope, page = nil)

@@ -1,5 +1,5 @@
 module API
-  module APIHelpers
+  module Helpers
     PRIVATE_TOKEN_HEADER = "HTTP_PRIVATE_TOKEN"
     PRIVATE_TOKEN_PARAM = :private_token
     SUDO_HEADER ="HTTP_SUDO"

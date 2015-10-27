@@ -205,6 +205,15 @@
 
 #modal_merge_info .modal-dialog {
   width: 600px;
+
+  .btn-clipboard {
+    @extend .pull-right;
+
+    margin-right: 18px;
+    margin-top: 5px;
+    position: absolute;
+    right: 0;
+  }
 }
 
 .mr-source-target {

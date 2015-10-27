@@ -14,17 +14,17 @@ class Projects::CiServicesController < Projects::ApplicationController
   end
 
   def update
-    if @service.update_attributes(service_params)
-      redirect_to edit_namespace_project_ci_service_path(@project, @project.namespace, @service.to_param)
+    if service.update_attributes(service_params)
+      redirect_to edit_namespace_project_ci_service_path(@project.namespace, @project, service.to_param)
     else
       render 'edit'
     end
   end
 
   def test
-    last_build = @project.builds.last
+    last_build = @project.ci_builds.last
 
-    if @service.execute(last_build)
+    if service.execute(last_build)
       message = { notice: 'We successfully tested the service' }
     else
       message = { alert: 'We tried to test the service but error occurred' }

@@ -243,11 +243,12 @@ class Project < ActiveRecord::Base
       # Use of unscoped ensures we're not secretly adding any ORDER BYs, which
       # have a negative impact on performance (and aren't needed for this
       # query).
-      unscoped.
+      projects = unscoped.
         joins(:namespace).
-        iwhere('namespaces.path' => namespace_path).
-        iwhere('projects.path' => project_path).
-        take
+        iwhere('namespaces.path' => namespace_path)
+
+      projects.where('projects.path' => project_path).take || 
+        projects.iwhere('projects.path' => project_path).take
     end
 
     def visibility_levels
@@ -567,7 +568,7 @@ class Project < ActiveRecord::Base
   end
 
   def empty_repo?
-    !repository.exists? || repository.empty?
+    !repository.exists? || !repository.has_visible_content?
   end
 
   def repo

@@ -124,11 +124,7 @@ class ProjectsController < ApplicationController
     ::Projects::DestroyService.new(@project, current_user, {}).execute
     flash[:alert] = "Project '#{@project.name}' was deleted."
 
-    if request.referer.include?('/admin')
-      redirect_to admin_namespaces_projects_path
-    else
-      redirect_to dashboard_projects_path
-    end
+    redirect_back_or_default(default: dashboard_projects_path, options: {})
   rescue Projects::DestroyService::DestroyError => ex
     redirect_to edit_project_path(@project), alert: ex.message
   end

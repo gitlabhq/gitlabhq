@@ -242,9 +242,11 @@ Settings.git['max_size']  ||= 20971520 # 20.megabytes
 Settings.git['bin_path']  ||= '/usr/bin/git'
 Settings.git['timeout']   ||= 10
 
+# Important: keep the satellites.path setting until GitLab 9.0 at
+# least. This setting is fed to 'rm -rf' in
+# db/migrate/20151023144219_remove_satellites.rb
 Settings['satellites'] ||= Settingslogic.new({})
 Settings.satellites['path'] = File.expand_path(Settings.satellites['path'] || "tmp/repo_satellites/", Rails.root)
-Settings.satellites['timeout'] ||= 30
 
 #
 # Extra customization
