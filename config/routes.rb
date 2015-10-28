@@ -212,6 +212,8 @@ Gitlab::Application.routes.draw do
       resources :keys, only: [:show, :destroy]
       resources :identities, only: [:index, :edit, :update, :destroy]
 
+      delete 'stop_impersonation' => 'impersonation#destroy', on: :collection
+
       member do
         get :projects
         get :keys
@@ -221,7 +223,7 @@ Gitlab::Application.routes.draw do
         put :unblock
         put :unlock
         put :confirm
-        post :login_as
+        post 'impersonate' => 'impersonation#create'
         patch :disable_two_factor
         delete 'remove/:email_id', action: 'remove_email', as: 'remove_email'
       end
