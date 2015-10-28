@@ -91,7 +91,12 @@ class Repository
     # Limited to 1000 commits for now, could be parameterized?
     args = %W(git log --pretty=%H --max-count 1000 --grep=#{query})
 
-    Gitlab::Popen.popen(args, path_to_repo)
+    git_log_results = Gitlab::Popen.popen(args, path_to_repo)
+
+    # 1. Get result, which is 1-element array
+    # 2. Split on lines
+    # 3. Recreate array, but remove trailing newline characters on each element
+    git_log_results.first.lines.map{ |l| l.chomp }
   end
 
   def find_branch(name)
