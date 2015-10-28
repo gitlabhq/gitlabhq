@@ -23,8 +23,6 @@ Gitlab::Application.routes.draw do
       end
 
       resources :runner_projects, only: [:create, :destroy]
-
-      resources :events, only: [:index]
     end
 
     resource :user_sessions do
