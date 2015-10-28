@@ -87,10 +87,11 @@ class Repository
     commits
   end
 
-  def commits_with_log_matching(query)
-    list = Gitlab::Git::Commit.where(repo: raw_repository, limit: 1000)
-    list = Commit.decorate(list, @project) if list.present?
-    list.select! { |c| c.message.match /#{query}/i }
+  def find_commits_with_matching_log(query)
+    # Limited to 1000 commits for now, could be parameterized?
+    args = %W(git log --pretty=%H --max-count 1000 --grep=#{query})
+
+    Gitlab::Popen.popen(args, path_to_repo)
   end
 
   def find_branch(name)

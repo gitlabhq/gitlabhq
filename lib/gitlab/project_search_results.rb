@@ -77,7 +77,7 @@ module Gitlab
     end
 
     def commits
-      project.repository.commits_with_log_matching(query)
+      project.repository.find_commits_with_matching_log(query)
     end
 
     def limit_project_ids
