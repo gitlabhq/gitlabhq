@@ -6,6 +6,19 @@ v 8.1.3
 v 8.1.2
 v 8.1.3
   - Spread out runner contacted_at updates
+v 8.2.0 (unreleased)
+  - Improved performance of replacing references in comments
+  - Show last project commit to default branch on project home page
+  - Highlight comment based on anchor in URL
+  - Adds ability to remove the forked relationship from project settings screen. (Han Loong Liauw)
+  - Improved performance of sorting milestone issues
+  - Allow users to select the Files view as default project view (Cristian Bica)
+  - Show "Empty Repository Page" for repository without branches (Artem V. Navrotskiy)
+  - Fix: Inability to reply to code comments in the MR view, if the MR comes from a fork
+  - Use git follow flag for commits page when retrieve history for file or directory
+  - Show merge request CI status on merge requests index page
+  - Fix: 500 error returned if destroy request without HTTP referer (Kazuki Shimizu)
+  - Use issue editor as cross reference comment author when issue is edited with a new mention.
 
 v 8.1.1
   - Fix cloning Wiki repositories via HTTP (Stan Hu)
