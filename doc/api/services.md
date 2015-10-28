@@ -173,6 +173,45 @@ Get Campfire service settings for a project.
 GET /projects/:id/services/campfire
 ```
 
+## Composer
+
+Simple web-based real-time group chat
+
+### Create/Edit Composer service
+
+Set Composer service for a project.
+
+```
+PUT /projects/:id/services/composer
+```
+
+Parameters:
+
+- `package_mode` (**required**)
+- `package_type` (**required**)
+- `custom_package_type` (optional)
+- `export_branches` (optional)
+- `branch_filters` (optional)
+- `export_tags` (optional)
+- `tag_filters` (optional)
+- `custom_json` (optional)
+
+### Delete Composer service
+
+Delete Composer service for a project.
+
+```
+DELETE /projects/:id/services/composer
+```
+
+### Get Composer service settings
+
+Get Composer service settings for a project.
+
+```
+GET /projects/:id/services/composer
+```
+
 ## Custom Issue Tracker
 
 Custom issue tracker
@@ -355,7 +394,7 @@ PUT /projects/:id/services/gemnasium
 
 Parameters:
 
-- `api_key` (**required**) - Your personal API KEY on gemnasium.com 
+- `api_key` (**required**) - Your personal API KEY on gemnasium.com
 - `token` (**required**) - The project's slug on gemnasium.com
 
 ### Delete Gemnasium service
