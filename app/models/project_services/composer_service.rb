@@ -30,12 +30,16 @@ class ComposerService < Service
     inclusion: { in: ['default', 'attributes', 'advanced'] },
     if: :activated?
 
-  validates :package_type, presence: true, if: :activated?
+  validates :package_type,
+    presence: true,
+    if: :activated?
 
-  validates :custom_package_type, presence: true, if: :validate_custom_package_type?
+  validates :custom_package_type,
+    presence: true,
+    if: :validate_custom_package_type?
 
   validates_each :custom_json,
-    if: :allow_custom_json_validation? do |record, attr, value|
+    if: :validate_custom_json? do |record, attr, value|
       begin
         name_regex = /\A([A-Za-z0-9&_-]+\/[A-Za-z0-9&_-]+)\z/
 
@@ -63,9 +67,9 @@ class ComposerService < Service
       end
     end
 
-  after_save :process_project
+  after_save :process_project, if: :activated?
 
-  def allow_custom_json_validation?
+  def validate_custom_json?
     activated? && package_mode == 'advanced'
   end
 
@@ -352,7 +356,8 @@ Usage of private and internal repositories will still require authentication.</p
     %w(push tag_push)
   end
 
-  def execute(push_data)
+  def execute(data)
+    return unless supported_events.include?(data[:object_kind])
     process_project
   end
 
