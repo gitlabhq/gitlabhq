@@ -144,7 +144,7 @@ curl --header "PRIVATE-TOKEN: QVy1PB7sTxfy4pqfZM1U" --header "SUDO: 23" "http://
 
 When listing resources you can pass the following parameters:
 
-- `page` (default: `1`) - page number
+- `page` (default: `0`) - page number
 - `per_page` (default: `20`, max: `100`) - number of items to list per page
 
 [Link headers](http://www.w3.org/wiki/LinkHeader) are send back with each response. These have `rel` prev/next/first/last and contain the relevant URL. Please use these instead of generating your own URLs.
