@@ -76,8 +76,18 @@ module API
     end
 
     def service_attributes
-      @service_attributes ||= project_service.fields.inject([]) do |arr, hash|
-        arr << hash[:name].to_sym
+      @service_attributes ||= begin
+        attrs = []
+        project_service.fields.each do |field|
+          if field[:type] == 'fieldset'
+            field[:fields].each do |subfield|
+              attrs << subfield[:name].to_sym
+            end
+          else
+            attrs << field[:name].to_sym
+          end
+        end
+        attrs
       end
     end
 
