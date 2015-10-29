@@ -235,15 +235,13 @@ class User < ActiveRecord::Base
 
     # Find a User by their primary email or any associated secondary email
     def find_by_any_email(email)
-      # Arel doesn't allow for chaining operations on union nodes, thus we have
-      # to write this query by hand. See the following issue for more info:
-      # https://github.com/rails/arel/issues/98.
-      sql = '(SELECT * FROM users WHERE email = :email)
-      UNION
-      (SELECT users.*
-      FROM emails
-      INNER JOIN users ON users.id = emails.user_id
-      WHERE emails.email = :email)
+      sql = 'SELECT *
+      FROM users
+      WHERE id IN (
+        SELECT id FROM users WHERE email = :email
+        UNION
+        SELECT emails.user_id FROM emails WHERE email = :email
+      )
       LIMIT 1;'
 
       User.find_by_sql([sql, { email: email }]).first
