@@ -48,7 +48,7 @@ describe User, benchmark: true do
 
       benchmark_subject { User.find_by_any_email(email) }
 
-      it { is_expected.to iterate_per_second(5000) }
+      it { is_expected.to iterate_per_second(1000) }
     end
 
     describe 'using a user with multiple Email addresses' do
@@ -62,7 +62,7 @@ describe User, benchmark: true do
         end
       end
 
-      it { is_expected.to iterate_per_second(5000) }
+      it { is_expected.to iterate_per_second(1000) }
     end
   end
 end
