@@ -1,8 +1,5 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-development
-  - Adds ability to create directories using the web editor
-
 v 8.2.0 (unreleased)
   - Improved performance of replacing references in comments
   - Show last project commit to default branch on project home page
@@ -32,6 +29,9 @@ v 8.1.0
   - Ensure MySQL CI limits DB migrations occur after the fields have been created (Stan Hu)
   - Fix duplicate repositories in GitHub import page (Stan Hu)
   - Redirect to a default path if HTTP_REFERER is not set (Stan Hu)
+  - Adds ability to create directories using the web editor (Ben Ford)
+
+v 8.1.0 (unreleased)
   - Send an email to admin email when a user is reported for spam (Jonathan Rochkind)
   - Show notifications button when user is member of group rather than project (Grzegorz Bizon)
   - Fix bug preventing mentioned issued from being closed when MR is merged using fast-forward merge.
