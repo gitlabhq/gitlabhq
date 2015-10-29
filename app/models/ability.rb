@@ -22,12 +22,17 @@ class Ability
     # List of possible abilities
     # for non-authenticated user
     def not_auth_abilities(user, subject)
+      return not_auth_personal_snippet_abilities(subject) if subject.kind_of?(PersonalSnippet)
+      return not_auth_project_abilities(subject) if subject.kind_of?(Project) || subject.respond_to?(:project)
+      return not_auth_group_abilities(subject) if subject.kind_of?(Group) || subject.respond_to?(:group)
+      []
+    end
+
+    def not_auth_project_abilities(subject)
       project = if subject.kind_of?(Project)
                   subject
-                elsif subject.respond_to?(:project)
-                  subject.project
                 else
-                  nil
+                  subject.project
                 end
 
       if project && project.public?
@@ -47,19 +52,29 @@ class Ability
 
         rules - project_disabled_features_rules(project)
       else
-        group = if subject.kind_of?(Group)
-                  subject
-                elsif subject.respond_to?(:group)
-                  subject.group
-                else
-                  nil
-                end
+        []
+      end
+    end
 
-        if group && group.public_profile?
-          [:read_group]
-        else
-          []
-        end
+    def not_auth_group_abilities(subject)
+      group = if subject.kind_of?(Group)
+                subject
+              else
+                subject.group
+              end
+
+      if group && group.public_profile?
+        [:read_group]
+      else
+        []
+      end
+    end
+
+    def not_auth_personal_snippet_abilities(snippet)
+      if snippet.public?
+        [:read_personal_snippet]
+      else
+        []
       end
     end
 
@@ -278,7 +293,7 @@ class Ability
       end
     end
 
-    [:note, :project_snippet, :personal_snippet].each do |name|
+    [:note, :project_snippet].each do |name|
       define_method "#{name}_abilities" do |user, subject|
         rules = []
 
@@ -296,6 +311,24 @@ class Ability
 
         rules
       end
+    end
+
+    def personal_snippet_abilities(user, snippet)
+      rules = []
+
+      if snippet.author == user
+        rules += [
+          :read_personal_snippet,
+          :update_personal_snippet,
+          :admin_personal_snippet
+        ]
+      end
+
+      if snippet.public? || snippet.internal?
+        rules.push(:read_snippet)
+      end
+
+      rules
     end
 
     def group_member_abilities(user, subject)
