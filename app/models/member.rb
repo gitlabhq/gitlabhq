@@ -81,11 +81,12 @@ class Member < ActiveRecord::Base
         member = members.build
         member.invite_email = user
       end
+      if !current_user || current_user.can?(:update_group_member, member)
+        member.created_by ||= current_user
+        member.access_level = access_level
 
-      member.created_by ||= current_user
-      member.access_level = access_level
-
-      member.save
+        member.save
+      end
     end
   end
 

@@ -60,6 +60,14 @@ Feature: Groups
     Then I should see "Mike" in team list as "Reporter"
 
   @javascript
+  Scenario: Ignore add user to group when is already Owner
+    Given gitlab user "Mike"
+    When I visit group "Owned" members page
+    And I click link "Add members"
+    When I select "Mike" as "Reporter"
+    Then I should see "Mike" in team list as "Owner"
+
+  @javascript
   Scenario: Invite user to group
     When I visit group "Owned" members page
     And I click link "Add members"
