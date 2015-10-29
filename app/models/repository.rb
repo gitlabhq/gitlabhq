@@ -512,7 +512,7 @@ class Repository
   end
 
   def fetch_ref(source_path, source_ref, target_ref)
-    args = %W(git fetch #{source_path} #{source_ref}:#{target_ref})
+    args = %W(git fetch -f #{source_path} #{source_ref}:#{target_ref})
     Gitlab::Popen.popen(args, path_to_repo)
   end
 
