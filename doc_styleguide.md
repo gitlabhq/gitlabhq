@@ -37,7 +37,7 @@ Here is a list of must have items. Further explanation is given below.
     GET /projects/:id/repository/branches
     ```
 
-- Every method must have a curl example.
+- Every method must have a cURL example.
 - Every method must have a response body (in json format).
 
 ### Method description
@@ -75,14 +75,23 @@ Rendered example:
 
 #### Examples
 
-Get the details of a group:
+**Get the details of a group**
 
-```
+```bash
 curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/gitlab-org
 ```
 
-Create a new project under the authenticated user's namespace:
+**Create a new project under the authenticated user's namespace**
 
-```
+```bash
 curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects?name=foo"
+```
+
+**Post data using json content**
+
+**Note:** In this example we create a new group. Watch carefully the single and
+double quotes.
+
+```bash
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -H "Content-Type: application/json" --data '{"path": "my-group", "name": "My group"}' https://gitlab.example.com/api/v3/groups
 ```
