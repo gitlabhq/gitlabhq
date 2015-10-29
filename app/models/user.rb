@@ -238,9 +238,9 @@ class User < ActiveRecord::Base
       # Arel doesn't allow for chaining operations on union nodes, thus we have
       # to write this query by hand. See the following issue for more info:
       # https://github.com/rails/arel/issues/98.
-      sql = '(SELECT * FROM users WHERE email = :email
+      sql = '(SELECT * FROM users WHERE email = :email)
       UNION
-      SELECT users.*
+      (SELECT users.*
       FROM emails
       INNER JOIN users ON users.id = emails.user_id
       WHERE emails.email = :email)
