@@ -8,7 +8,6 @@ already has one by running the following command:
 ```bash
 cat ~/.ssh/id_rsa.pub
 ```
-
 If you see a long string starting with `ssh-rsa` or `ssh-dsa`, you can skip the `ssh-keygen` step.
 
 Note: It is a best practice to use a password for an SSH key, but it is not
@@ -74,39 +73,66 @@ information.
 
 Deploy keys can be shared between projects, you just need to add them to each project.
 
-## Applications
+## Test your key
 
-### Eclipse
+After you have set up your SSH key, you'll have to make sure that you can connect to GitLab. If you have created a passphrase, you will be asked to enter it after the first step.
 
-How to add your ssh key to Eclipse: http://wiki.eclipse.org/EGit/User_Guide#Eclipse_SSH_Configuration
+1. Open a Terminal and run:
 
-## Tip: Non-default OpenSSH key file names or locations
+		ssh -T git@gitlab.com
 
-If, for whatever reason, you decide to specify a non-default location and filename for your Gitlab SSH key pair, you must configure your SSH client to find your Gitlab SSH private key for connections to your Gitlab server (perhaps gitlab.com). For OpenSSH clients, this is handled in the `~/.ssh/config` file with a stanza similar to the following:
+2. After you verify the authenticity of the fingerprint in this message:
 
-```
-#
-# Main gitlab.com server
-#
-Host gitlab.com
-RSAAuthentication yes
-IdentityFile ~/my-ssh-key-directory/my-gitlab-private-key-filename
-User mygitlabusername
-```
+		The authenticity of host 'gitlab.com (WWW.XXX.YYY.ZZZ)' can't be established.
+		ECDSA key fingerprint is SHA256:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
+		Are you sure you want to continue connecting (yes/no)?
 
-Another example
-```
-#
-# Our company's internal Gitlab server
-#
-Host my-gitlab.company.com
-RSAAuthentication yes
-IdentityFile ~/my-ssh-key-directory/company-com-private-key-filename
-```
+	type `yes` to confirm.
 
-Note in the gitlab.com example above a username was specified to override the default chosen by OpenSSH (your local username). This is only required if your local and remote usernames differ.
+3. If everything went well and your username has been recognized you'll see this welcome message with your full name:
+
+		Welcome to GitLab, John Smith!
+
+	In case you get an "access denied" error, try debugging the connection using this command:
+
+		ssh -Tv git@gitlab.com
+
+## Custom SSH configuration
+
+If you happen to have a custom location and filename for your GitLab SSH key pair, you must configure your SSH client to find your GitLab SSH private key for connections to your GitLab server (perhaps gitlab.com). For OpenSSH clients, this is handled in the `~/.ssh/config` file.
+
+Your gitlab.com configuration would look something like this:
+
+	#
+	# Main gitlab.com server
+	#
+	Host gitlab.com
+		User git
+		Hostname gitlab.com
+		RSAAuthentication yes
+		IdentityFile ~/my-ssh-key-directory/my-gitlab-private-key-filename
+
+Note: You should connect using the `git` username, connections with your GitLab username will be refused and you will get an "access denied" error.
+
+And for your self-hosted GitLab server the configuration will look like this:
+
+	#
+	# Our company's internal GitLab server
+	#
+	Host my-gitlab.company.com
+		Host my-gitlab.company.com
+		RSAAuthentication yes
+		IdentityFile ~/my-ssh-key-directory/company-com-private-key-filename
+
+You can find more information on custom SSH configuration in the [official documentation](http://linux.die.net/man/5/ssh_config).
 
 Due to the wide variety of SSH clients and their very large number of configuration options, further explanation of these topics is beyond the scope of this document.
 
 Public SSH keys need to be unique, as they will bind to your account. Your SSH key is the only identifier you'll
 have when pushing code via SSH. That's why it needs to uniquely map to a single user.
+
+## Applications
+
+### Eclipse
+
+How to add your ssh key to Eclipse: http://wiki.eclipse.org/EGit/User_Guide#Eclipse_SSH_Configuration
