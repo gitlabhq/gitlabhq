@@ -235,21 +235,16 @@ class User < ActiveRecord::Base
 
     # Find a User by their primary email or any associated secondary email
     def find_by_any_email(email)
-      user_table = arel_table
-      email_table = Email.arel_table
+      sql = 'SELECT *
+      FROM users
+      WHERE id IN (
+        SELECT id FROM users WHERE email = :email
+        UNION
+        SELECT emails.user_id FROM emails WHERE email = :email
+      )
+      LIMIT 1;'
 
-      # Use ARel to build a query:
-      query = user_table.
-        # SELECT "users".* FROM "users"
-        project(user_table[Arel.star]).
-        # LEFT OUTER JOIN "emails"
-        join(email_table, Arel::Nodes::OuterJoin).
-        # ON "users"."id" = "emails"."user_id"
-        on(user_table[:id].eq(email_table[:user_id])).
-        # WHERE ("user"."email" = '<email>' OR "emails"."email" = '<email>')
-        where(user_table[:email].eq(email).or(email_table[:email].eq(email)))
-
-      find_by_sql(query.to_sql).first
+      User.find_by_sql([sql, { email: email }]).first
     end
 
     def filter(filter_name)
