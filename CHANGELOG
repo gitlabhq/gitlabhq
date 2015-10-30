@@ -16,6 +16,16 @@ v 8.2.0 (unreleased)
   - Remove deprecated CI events from project settings page
   - Use issue editor as cross reference comment author when issue is edited with a new mention.
 
+v 8.1.2
+  - Fix cloning Wiki repositories via HTTP (Stan Hu)
+  - Add migration to remove satellites directory
+  - Fix specific runners visibility
+  - Fix 500 when editing CI service
+  - Require CI jobs to be named
+  - Fix CSS for runner status
+  - Fix CI badge
+  - Add missing project path database index
+
 v 8.1.1
   - Fix cloning Wiki repositories via HTTP (Stan Hu)
   - Add migration to remove satellites directory
