@@ -73,7 +73,7 @@ class Member < ActiveRecord::Base
 
     def add_user(members, user_id, access_level, current_user = nil)
       user = user_for_id(user_id)
-      
+
       # `user` can be either a User object or an email to be invited
       if user.is_a?(User)
         member = members.find_or_initialize_by(user_id: user.id)
@@ -81,12 +81,21 @@ class Member < ActiveRecord::Base
         member = members.build
         member.invite_email = user
       end
-      if !current_user || current_user.can?(:update_group_member, member)
+
+      project = members.first.respond_to?(:project)? members.first.project : nil
+      if can_update_member?(current_user, member, project)
         member.created_by ||= current_user
         member.access_level = access_level
 
         member.save
       end
+    end
+
+    private
+
+    def can_update_member?(current_user, member, project)
+      !current_user || current_user.can?(:update_group_member, member) ||
+        (project && current_user.can?(:admin_project_member, project))
     end
   end
 
