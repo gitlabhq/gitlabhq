@@ -27,14 +27,7 @@ v 8.1.2
   - Add missing project path database index
 
 v 8.1.1
-  - Fix cloning Wiki repositories via HTTP (Stan Hu)
-  - Add migration to remove satellites directory
-  - Fix specific runners visibility
-  - Fix 500 when editing CI service
-  - Require CI jobs to be named
-  - Fix CSS for runner status
-  - Fix CI badge
-  - Allow developer to manage builds
+  - Removed, see 8.1.2
 
 v 8.1.0
   - Ensure MySQL CI limits DB migrations occur after the fields have been created (Stan Hu)
