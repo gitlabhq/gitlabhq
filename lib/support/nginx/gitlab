@@ -38,8 +38,8 @@ upstream gitlab {
   server unix:/home/git/gitlab/tmp/sockets/gitlab.socket fail_timeout=0;
 }
 
-upstream gitlab-git-http-server {
-  server unix:/home/git/gitlab/tmp/sockets/gitlab-git-http-server.socket fail_timeout=0;
+upstream gitlab-workhorse {
+  server unix:/home/git/gitlab/tmp/sockets/gitlab-workhorse.socket fail_timeout=0;
 }
 
 ## Normal HTTP host
@@ -114,24 +114,24 @@ server {
   }
 
   location ~ ^/[\w\.-]+/[\w\.-]+/(info/refs|git-upload-pack|git-receive-pack)$ {
-    # 'Error' 418 is a hack to re-use the @gitlab-git-http-server block
-    error_page 418 = @gitlab-git-http-server;
+    # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
+    error_page 418 = @gitlab-workhorse;
     return 418;
   }
 
   location ~ ^/[\w\.-]+/[\w\.-]+/repository/archive {
-    # 'Error' 418 is a hack to re-use the @gitlab-git-http-server block
-    error_page 418 = @gitlab-git-http-server;
+    # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
+    error_page 418 = @gitlab-workhorse;
     return 418;
   }
 
   location ~ ^/api/v3/projects/.*/repository/archive {
-    # 'Error' 418 is a hack to re-use the @gitlab-git-http-server block
-    error_page 418 = @gitlab-git-http-server;
+    # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
+    error_page 418 = @gitlab-workhorse;
     return 418;
   }
 
-  location @gitlab-git-http-server {
+  location @gitlab-workhorse {
     ## If you use HTTPS make sure you disable gzip compression
     ## to be safe against BREACH attack.
     # gzip off;
@@ -147,7 +147,7 @@ server {
 
     # The following settings only work with NGINX 1.7.11 or newer
     #
-    # # Pass chunked request bodies to gitlab-git-http-server as-is
+    # # Pass chunked request bodies to gitlab-workhorse as-is
     # proxy_request_buffering off;
     # proxy_http_version 1.1;
 
@@ -156,7 +156,7 @@ server {
     proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
     proxy_set_header    X-Forwarded-Proto   $scheme;
 
-    proxy_pass http://gitlab-git-http-server;
+    proxy_pass http://gitlab-workhorse;
   }
 
   ## Enable gzip compression as per rails guide:
