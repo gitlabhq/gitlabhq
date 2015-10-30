@@ -135,6 +135,8 @@ class MergeRequest < ActiveRecord::Base
   scope :closed, -> { with_state(:closed) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
 
+  participant :approvers_left
+
   def self.reference_prefix
     '!'
   end

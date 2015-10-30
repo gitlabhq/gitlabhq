@@ -64,8 +64,15 @@ FactoryGirl.define do
       target_branch "master"
     end
 
+    trait :with_approver do
+      after :create do |merge_request|
+        create :approver, target: merge_request
+      end
+    end
+
     factory :closed_merge_request, traits: [:closed]
     factory :reopened_merge_request, traits: [:reopened]
     factory :merge_request_with_diffs, traits: [:with_diffs]
+    factory :merge_request_with_approver, traits: [:with_approver]
   end
 end
