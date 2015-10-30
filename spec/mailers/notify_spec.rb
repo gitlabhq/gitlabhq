@@ -276,6 +276,7 @@ describe Notify do
         let(:merge_author) { create(:user) }
         let(:merge_request) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project) }
         let(:merge_request_with_description) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project, description: FFaker::Lorem.sentence) }
+        let(:merge_request_with_approver) { create(:merge_request_with_approver, author: current_user, assignee: assignee, source_project: project, target_project: project) }
 
         describe 'that are new' do
           subject { Notify.new_merge_request_email(merge_request.assignee_id, merge_request.id) }
@@ -304,8 +305,26 @@ describe Notify do
           end
         end
 
+        describe "that are new with approver" do
+          subject do
+            Notify.new_merge_request_email(
+              merge_request_with_approver.assignee_id,
+              merge_request_with_approver.id
+            )
+          end
+
+          it "contains the approvers list" do
+            is_expected.to have_body_text /#{merge_request_with_approver.approvers.first.user.name}/
+          end
+        end
+
         describe 'that are new with a description' do
-          subject { Notify.new_merge_request_email(merge_request_with_description.assignee_id, merge_request_with_description.id) }
+          subject do
+            Notify.new_merge_request_email(
+              merge_request_with_description.assignee_id,
+              merge_request_with_description.id
+            )
+          end
 
           it 'contains the description' do
             is_expected.to have_body_text /#{merge_request_with_description.description}/
