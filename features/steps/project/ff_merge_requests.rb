@@ -73,11 +73,12 @@ class Spinach::Features::ProjectFfMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I press rebase button' do
+    allow(RebaseWorker).to receive(:perform_async){ true }
     click_button "Rebase"
   end
 
   step "I should see rebase in progress message" do
-    expect(page).to have_content("Rebase started. It will take some time")
+    expect(page).to have_content("Rebase in progress")
   end
 
   def merge_request

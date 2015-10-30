@@ -11,6 +11,7 @@ Feature: Project Ff Merge Requests
     When I visit merge request page "Bug NS-05"
     Then I should see ff-only merge button
 
+  @javascript
   Scenario: I do rebase before ff-only merge
     Given rebase before merge enabled
     When I visit merge request page "Bug NS-05"
