@@ -1,8 +1,9 @@
 # Groups
 
-Every API call to groups must be authenticated. If a user is not a member of a
-group or the group contains at least one private project, all API calls return
-a 403 status code.
+Every API call to groups must be authenticated.
+
+If a user is not a member of a group and the group contains at least one private
+project, all API calls return a 403 status code.
 
 ## Namespaces in groups
 
@@ -61,6 +62,10 @@ GET /groups/:id
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer | yes | The ID or path of a group |
+
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/3
+```
 
 Example response:
 
@@ -343,7 +348,7 @@ PUT /groups/:id/members/:user_id
 | `access_level` | integer | yes | The group access level a user will have |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/groups/3/members/7?access_level=20"
+curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/groups/3/members/7?access_level=20"
 ```
 
 Example response:
