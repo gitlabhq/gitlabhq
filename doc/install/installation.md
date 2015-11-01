@@ -489,7 +489,7 @@ See the [omniauth integration document](../integration/omniauth.md)
 ### Build your projects
 
 GitLab can build your projects. To enable that feature you need GitLab Runners to do that for you.
-Checkout the [Gitlab Runner section](https://about.gitlab.com/gitlab-ci/#gitlab-runner) to install it
+Checkout the [GitLab Runner section](https://about.gitlab.com/gitlab-ci/#gitlab-runner) to install it
 
 ### Custom Redis Connection
 

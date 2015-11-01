@@ -78,7 +78,7 @@ threshold is a random value between 200 and 250 MB.  The master process (PID
 ```
 
 One other thing that stands out in the log snippet above, taken from
-Gitlab.com, is that 'worker 4' was serving requests for only 23 seconds. This
+GitLab.com, is that 'worker 4' was serving requests for only 23 seconds. This
 is a normal value for our current GitLab.com setup and traffic.
 
 The high frequency of Unicorn memory restarts on some GitLab sites can be a
