@@ -78,7 +78,7 @@ module ApplicationHelper
     if user
       user.avatar_url(size) || default_avatar
     else
-      gravatar_icon(user_or_email, size, scales)
+      gravatar_icon(user_or_email, size, scale)
     end
   end
 
