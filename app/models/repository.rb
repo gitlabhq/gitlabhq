@@ -87,12 +87,12 @@ class Repository
     commits
   end
 
-  def find_commits_with_matching_log(query)
+  def find_commits_by_message(query)
     # Limited to 1000 commits for now, could be parameterized?
     args = %W(git log --pretty=%H --max-count 1000 --grep=#{query})
 
-    git_log_results = Gitlab::Popen.popen(args, path_to_repo).first.lines.map{ |l| l.chomp }
-    commits = git_log_results.map{ |c| commit(c) }
+    git_log_results = Gitlab::Popen.popen(args, path_to_repo).first.lines.map(&:chomp)
+    commits = git_log_results.map { |c| commit(c) }
     commits
   end
 
