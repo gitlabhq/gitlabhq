@@ -329,6 +329,10 @@ GitLab Shell is an SSH access and repository management software developed speci
     sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features
+    
+    # Go to Gitlab installation folder
+
+    cd /home/git/gilab
 
     sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
 
