@@ -2,7 +2,7 @@ class SnippetsController < ApplicationController
   before_action :snippet, only: [:show, :edit, :destroy, :update, :raw]
 
   # Allow read snippet
-  before_action :authorize_show_snippet!, only: [:show]
+  before_action :authorize_read_snippet!, only: [:show]
 
   # Allow modify snippet
   before_action :authorize_update_snippet!, only: [:edit, :update]
@@ -86,7 +86,7 @@ class SnippetsController < ApplicationController
                  end
   end
 
-  def authorize_show_snippet!
+  def authorize_read_snippet!
     authenticate_user! unless can?(current_user, :read_personal_snippet, @snippet)
   end
 
