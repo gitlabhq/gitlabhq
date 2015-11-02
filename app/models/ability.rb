@@ -325,7 +325,7 @@ class Ability
       end
 
       if snippet.public? || snippet.internal?
-        rules.push(:read_snippet)
+        rules.push(:read_personal_snippet)
       end
 
       rules
