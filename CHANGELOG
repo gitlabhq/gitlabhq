@@ -16,6 +16,7 @@ v 8.2.0 (unreleased)
   - Fix: 500 error returned if destroy request without HTTP referer (Kazuki Shimizu)
   - Remove deprecated CI events from project settings page
   - Use issue editor as cross reference comment author when issue is edited with a new mention.
+  - [API] Add ability to fetch the commit ID of the last commit that actually touched a file
 
 v 8.1.1
   - Fix cloning Wiki repositories via HTTP (Stan Hu)
