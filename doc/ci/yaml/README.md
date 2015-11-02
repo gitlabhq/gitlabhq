@@ -192,7 +192,7 @@ job:
   except:
     - master@gitlab-org/gitlab-ce
 ```
-The above will run `job` for all branches, except master on `gitlab-org/gitlab-ce` repository only.
+The above will run `job` for all branches on `gitlab-org/gitlab-ce`, except master .
 
 ### tags
 `tags` is used to select specific runners from the list of all runners that are allowed to run this project.
