@@ -16,7 +16,9 @@ module Ci
       end
 
       def update_runner_last_contact
-        if current_runner.contacted_at.nil? || Time.now - current_runner.contacted_at >= UPDATE_RUNNER_EVERY
+        # Use a random threshold to prevent beating DB updates
+        contacted_at_max_age = UPDATE_RUNNER_EVERY + Random.rand(UPDATE_RUNNER_EVERY)
+        if current_runner.contacted_at.nil? || Time.now - current_runner.contacted_at >= contacted_at_max_age
           current_runner.update_attributes(contacted_at: Time.now)
         end
       end
