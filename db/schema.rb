@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151026182941) do
+ActiveRecord::Schema.define(version: 20151028152939) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -418,6 +418,7 @@ ActiveRecord::Schema.define(version: 20151026182941) do
   end
 
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
+  add_index "labels", ["title"], name: "index_labels_on_title", using: :btree
 
   create_table "members", force: true do |t|
     t.integer  "access_level",       null: false
@@ -453,9 +454,9 @@ ActiveRecord::Schema.define(version: 20151026182941) do
   add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", unique: true, using: :btree
 
   create_table "merge_requests", force: true do |t|
-    t.string   "target_branch",                 null: false
-    t.string   "source_branch",                 null: false
-    t.integer  "source_project_id",             null: false
+    t.string   "target_branch",                             null: false
+    t.string   "source_branch",                             null: false
+    t.integer  "source_project_id",                         null: false
     t.integer  "author_id"
     t.integer  "assignee_id"
     t.string   "title"
@@ -464,13 +465,16 @@ ActiveRecord::Schema.define(version: 20151026182941) do
     t.integer  "milestone_id"
     t.string   "state"
     t.string   "merge_status"
-    t.integer  "target_project_id",             null: false
+    t.integer  "target_project_id",                         null: false
     t.integer  "iid"
     t.text     "description"
-    t.integer  "position",          default: 0
+    t.integer  "position",                  default: 0
     t.datetime "locked_at"
     t.integer  "updated_by_id"
     t.string   "merge_error"
+    t.text     "merge_params"
+    t.boolean  "merge_when_build_succeeds", default: false, null: false
+    t.integer  "merge_user_id"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -499,6 +503,7 @@ ActiveRecord::Schema.define(version: 20151026182941) do
   add_index "milestones", ["due_date"], name: "index_milestones_on_due_date", using: :btree
   add_index "milestones", ["project_id", "iid"], name: "index_milestones_on_project_id_and_iid", unique: true, using: :btree
   add_index "milestones", ["project_id"], name: "index_milestones_on_project_id", using: :btree
+  add_index "milestones", ["title"], name: "index_milestones_on_title", using: :btree
 
   create_table "namespaces", force: true do |t|
     t.string   "name",                     null: false

@@ -34,8 +34,11 @@ class MergeRequest < ActiveRecord::Base
 
   belongs_to :target_project, foreign_key: :target_project_id, class_name: "Project"
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
+  belongs_to :merge_user, class_name: "User"
 
   has_one :merge_request_diff, dependent: :destroy
+
+  serialize :merge_params, Hash
 
   after_create :create_merge_request_diff
   after_update :update_merge_request_diff
@@ -383,6 +386,16 @@ class MergeRequest < ActiveRecord::Base
     message << "\n\n"
     message << "See merge request !#{iid}"
     message
+  end
+
+  def reset_merge_when_build_succeeds
+    return unless merge_when_build_succeeds?
+    
+    self.merge_when_build_succeeds = false
+    self.merge_user = nil
+    self.merge_params = nil
+
+    self.save
   end
 
   # Return array of possible target branches
