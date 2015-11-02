@@ -150,7 +150,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def cancel_merge_when_build_succeeds
-    return access_denied! unless @merge_request.can_be_merged_by?(current_user)
+    unless @merge_request.can_be_merged_by?(current_user) || @merge_request.author == current_user
+      return access_denied!
+    end
 
     if @merge_request.merge_when_build_succeeds?
       @merge_request.reset_merge_when_build_succeeds
