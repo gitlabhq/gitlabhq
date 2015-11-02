@@ -37,10 +37,9 @@ web_server_pid_path="$pid_path/unicorn.pid"
 sidekiq_pid_path="$pid_path/sidekiq.pid"
 mail_room_enabled=false
 mail_room_pid_path="$pid_path/mail_room.pid"
-gitlab_git_http_server_pid_path="$pid_path/gitlab-git-http-server.pid"
-gitlab_git_http_server_options="-listenUmask 0 -listenNetwork unix -listenAddr $socket_path/gitlab-git-http-server.socket -authBackend http://127.0.0.1:8080"
-gitlab_git_http_server_repo_root='/home/git/repositories'
-gitlab_git_http_server_log="$app_root/log/gitlab-git-http-server.log"
+gitlab_workhorse_pid_path="$pid_path/gitlab-workhorse.pid"
+gitlab_workhorse_options="-listenUmask 0 -listenNetwork unix -listenAddr $socket_path/gitlab-workhorse.socket -authBackend http://127.0.0.1:8080"
+gitlab_workhorse_log="$app_root/log/gitlab-workhorse.log"
 shell_path="/bin/bash"
 
 # Read configuration variable file if it is present
@@ -76,8 +75,8 @@ check_pids(){
   else
     spid=0
   fi
-  if [ -f "$gitlab_git_http_server_pid_path" ]; then
-    hpid=$(cat "$gitlab_git_http_server_pid_path")
+  if [ -f "$gitlab_workhorse_pid_path" ]; then
+    hpid=$(cat "$gitlab_workhorse_pid_path")
   else
     hpid=0
   fi
@@ -94,7 +93,7 @@ check_pids(){
 wait_for_pids(){
   # We are sleeping a bit here mostly because sidekiq is slow at writing it's pid
   i=0;
-  while [ ! -f $web_server_pid_path ] || [ ! -f $sidekiq_pid_path ] || [ ! -f $gitlab_git_http_server_pid_path ] || { [ "$mail_room_enabled" = true ] && [ ! -f $mail_room_pid_path ]; }; do
+  while [ ! -f $web_server_pid_path ] || [ ! -f $sidekiq_pid_path ] || [ ! -f $gitlab_workhorse_pid_path ] || { [ "$mail_room_enabled" = true ] && [ ! -f $mail_room_pid_path ]; }; do
     sleep 0.1;
     i=$((i+1))
     if [ $((i%10)) = 0 ]; then
@@ -131,9 +130,9 @@ check_status(){
   fi
   if [ $hpid -ne 0 ]; then
     kill -0 "$hpid" 2>/dev/null
-    gitlab_git_http_server_status="$?"
+    gitlab_workhorse_status="$?"
   else
-    gitlab_git_http_server_status="-1"
+    gitlab_workhorse_status="-1"
   fi
   if [ "$mail_room_enabled" = true ]; then
     if [ $mpid -ne 0 ]; then
@@ -143,7 +142,7 @@ check_status(){
       mail_room_status="-1"
     fi
   fi
-  if [ $web_status = 0 ] && [ $sidekiq_status = 0 ] && [ $gitlab_git_http_server_status = 0 ] && { [ "$mail_room_enabled" != true ] || [ $mail_room_status = 0 ]; }; then
+  if [ $web_status = 0 ] && [ $sidekiq_status = 0 ] && [ $gitlab_workhorse_status = 0 ] && { [ "$mail_room_enabled" != true ] || [ $mail_room_status = 0 ]; }; then
     gitlab_status=0
   else
     # http://refspecs.linuxbase.org/LSB_4.1.0/LSB-Core-generic/LSB-Core-generic/iniscrptact.html
@@ -171,9 +170,9 @@ check_stale_pids(){
       exit 1
     fi
   fi
-  if [ "$hpid" != "0" ] && [ "$gitlab_git_http_server_status" != "0" ]; then
-    echo "Removing stale gitlab-git-http-server pid. This is most likely caused by gitlab-git-http-server crashing the last time it ran."
-    if ! rm "$gitlab_git_http_server_pid_path"; then
+  if [ "$hpid" != "0" ] && [ "$gitlab_workhorse_status" != "0" ]; then
+    echo "Removing stale gitlab-workhorse pid. This is most likely caused by gitlab-workhorse crashing the last time it ran."
+    if ! rm "$gitlab_workhorse_pid_path"; then
       echo "Unable to remove stale pid, exiting"
       exit 1
     fi
@@ -190,7 +189,7 @@ check_stale_pids(){
 ## If no parts of the service is running, bail out.
 exit_if_not_running(){
   check_stale_pids
-  if [ "$web_status" != "0" ] && [ "$sidekiq_status" != "0" ] && [ "$gitlab_git_http_server_status" != "0" ] && { [ "$mail_room_enabled" != true ] || [ "$mail_room_status" != "0" ]; }; then
+  if [ "$web_status" != "0" ] && [ "$sidekiq_status" != "0" ] && [ "$gitlab_workhorse_status" != "0" ] && { [ "$mail_room_enabled" != true ] || [ "$mail_room_status" != "0" ]; }; then
     echo "GitLab is not running."
     exit
   fi
@@ -206,8 +205,8 @@ start_gitlab() {
   if [ "$sidekiq_status" != "0" ]; then
     echo "Starting GitLab Sidekiq"
   fi
-  if [ "$gitlab_git_http_server_status" != "0" ]; then
-    echo "Starting gitlab-git-http-server"
+  if [ "$gitlab_workhorse_status" != "0" ]; then
+    echo "Starting gitlab-workhorse"
   fi
   if [ "$mail_room_enabled" = true ] && [ "$mail_room_status" != "0" ]; then
     echo "Starting GitLab MailRoom"
@@ -230,15 +229,14 @@ start_gitlab() {
     RAILS_ENV=$RAILS_ENV bin/background_jobs start &
   fi
 
-  if [ "$gitlab_git_http_server_status" = "0" ]; then
-    echo "The gitlab-git-http-server is already running with pid $spid, not restarting"
+  if [ "$gitlab_workhorse_status" = "0" ]; then
+    echo "The gitlab-workhorse is already running with pid $spid, not restarting"
   else
-    # No need to remove a socket, gitlab-git-http-server does this itself
-    $app_root/bin/daemon_with_pidfile $gitlab_git_http_server_pid_path  \
-      $app_root/../gitlab-git-http-server/gitlab-git-http-server \
-        $gitlab_git_http_server_options \
-        $gitlab_git_http_server_repo_root \
-      >> $gitlab_git_http_server_log 2>&1 &
+    # No need to remove a socket, gitlab-workhorse does this itself
+    $app_root/bin/daemon_with_pidfile $gitlab_workhorse_pid_path  \
+      $app_root/../gitlab-workhorse/gitlab-workhorse \
+        $gitlab_workhorse_options \
+      >> $gitlab_workhorse_log 2>&1 &
   fi
 
   if [ "$mail_room_enabled" = true ]; then
@@ -268,9 +266,9 @@ stop_gitlab() {
     echo "Shutting down GitLab Sidekiq"
     RAILS_ENV=$RAILS_ENV bin/background_jobs stop
   fi
-  if [ "$gitlab_git_http_server_status" = "0" ]; then
-    echo "Shutting down gitlab-git-http-server"
-    kill -- $(cat $gitlab_git_http_server_pid_path)
+  if [ "$gitlab_workhorse_status" = "0" ]; then
+    echo "Shutting down gitlab-workhorse"
+    kill -- $(cat $gitlab_workhorse_pid_path)
   fi
   if [ "$mail_room_enabled" = true ] && [ "$mail_room_status" = "0" ]; then
     echo "Shutting down GitLab MailRoom"
@@ -278,11 +276,11 @@ stop_gitlab() {
   fi
 
   # If something needs to be stopped, lets wait for it to stop. Never use SIGKILL in a script.
-  while [ "$web_status" = "0" ] || [ "$sidekiq_status" = "0" ] || [ "$gitlab_git_http_server_status" = "0" ] || { [ "$mail_room_enabled" = true ] && [ "$mail_room_status" = "0" ]; }; do
+  while [ "$web_status" = "0" ] || [ "$sidekiq_status" = "0" ] || [ "$gitlab_workhorse_status" = "0" ] || { [ "$mail_room_enabled" = true ] && [ "$mail_room_status" = "0" ]; }; do
     sleep 1
     check_status
     printf "."
-    if [ "$web_status" != "0" ] && [ "$sidekiq_status" != "0" ] && [ "$gitlab_git_http_server_status" != "0" ] && { [ "$mail_room_enabled" != true ] || [ "$mail_room_status" != "0" ]; }; then
+    if [ "$web_status" != "0" ] && [ "$sidekiq_status" != "0" ] && [ "$gitlab_workhorse_status" != "0" ] && { [ "$mail_room_enabled" != true ] || [ "$mail_room_status" != "0" ]; }; then
       printf "\n"
       break
     fi
@@ -292,7 +290,7 @@ stop_gitlab() {
   # Cleaning up unused pids
   rm "$web_server_pid_path" 2>/dev/null
   # rm "$sidekiq_pid_path" 2>/dev/null # Sidekiq seems to be cleaning up it's own pid.
-  rm -f "$gitlab_git_http_server_pid_path"
+  rm -f "$gitlab_workhorse_pid_path"
   if [ "$mail_room_enabled" = true ]; then
     rm "$mail_room_pid_path" 2>/dev/null
   fi
@@ -303,7 +301,7 @@ stop_gitlab() {
 ## Prints the status of GitLab and it's components.
 print_status() {
   check_status
-  if [ "$web_status" != "0" ] && [ "$sidekiq_status" != "0" ] && [ "$gitlab_git_http_server_status" != "0" ] && { [ "$mail_room_enabled" != true ] || [ "$mail_room_status" != "0" ]; }; then
+  if [ "$web_status" != "0" ] && [ "$sidekiq_status" != "0" ] && [ "$gitlab_workhorse_status" != "0" ] && { [ "$mail_room_enabled" != true ] || [ "$mail_room_status" != "0" ]; }; then
     echo "GitLab is not running."
     return
   fi
@@ -317,10 +315,10 @@ print_status() {
   else
       printf "The GitLab Sidekiq job dispatcher is \033[31mnot running\033[0m.\n"
   fi
-  if [ "$gitlab_git_http_server_status" = "0" ]; then
-      echo "The gitlab-git-http-server with pid $hpid is running."
+  if [ "$gitlab_workhorse_status" = "0" ]; then
+      echo "The gitlab-workhorse with pid $hpid is running."
   else
-      printf "The gitlab-git-http-server is \033[31mnot running\033[0m.\n"
+      printf "The gitlab-workhorse is \033[31mnot running\033[0m.\n"
   fi
   if [ "$mail_room_enabled" = true ]; then
     if [ "$mail_room_status" = "0" ]; then
@@ -360,7 +358,7 @@ reload_gitlab(){
 ## Restarts Sidekiq and Unicorn.
 restart_gitlab(){
   check_status
-  if [ "$web_status" = "0" ] || [ "$sidekiq_status" = "0" ] || [ "$gitlab_git_http_server" = "0" ] || { [ "$mail_room_enabled" = true ] && [ "$mail_room_status" = "0" ]; }; then
+  if [ "$web_status" = "0" ] || [ "$sidekiq_status" = "0" ] || [ "$gitlab_workhorse" = "0" ] || { [ "$mail_room_enabled" = true ] && [ "$mail_room_status" = "0" ]; }; then
     stop_gitlab
   fi
   start_gitlab

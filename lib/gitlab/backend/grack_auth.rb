@@ -34,7 +34,7 @@ module Grack
       auth!
 
       if project && authorized_request?
-        # Tell gitlab-git-http-server the request is OK, and what the GL_ID is
+        # Tell gitlab-workhorse the request is OK, and what the GL_ID is
         render_grack_auth_ok
       elsif @user.nil? && !@ci
         unauthorized
