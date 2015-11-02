@@ -43,7 +43,8 @@ module API
       #   "content": "IyA9PSBTY2hlbWEgSW5mb3...",
       #   "ref": "master",
       #   "blob_id": "79f7bbd25901e8334750839545a9bd021f0e4c83",
-      #   "commit_id": "d5a3ff139356ce33e37e73add446f16869741b50"
+      #   "commit_id": "d5a3ff139356ce33e37e73add446f16869741b50",
+      #   "last_commit_id": "570e7b2abdd848b95f2f578043fc23bd6f6fd24d",
       # }
       #
       get ":id/repository/files" do
@@ -71,6 +72,7 @@ module API
             ref: ref,
             blob_id: blob.id,
             commit_id: commit.id,
+            last_commit_id: user_project.repository.last_commit_for_path(commit.sha, file_path).id
           }
         else
           not_found! 'File'
