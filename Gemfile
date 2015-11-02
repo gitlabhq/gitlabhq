@@ -63,7 +63,7 @@ gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
 # Format dates and times
 # based on human-friendly examples
-gem "stamp", '~> 0.5.0'
+gem "stamp", '~> 0.6.0'
 
 # Enumeration fields
 gem 'enumerize', '~> 0.7.0'
