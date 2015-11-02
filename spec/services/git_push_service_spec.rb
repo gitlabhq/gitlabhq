@@ -278,7 +278,7 @@ describe GitPushService do
         WebMock.stub_request(:post, jira_api_transition_url)
         WebMock.stub_request(:post, jira_api_comment_url)
         WebMock.stub_request(:get, jira_api_comment_url).to_return(body: jira_issue_comments)
-        WebMock.stub_request(:get, jira_api_project_url)
+        WebMock.stub_request(:get, jira_api_test_url)
 
         allow(closing_commit).to receive_messages({
           issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),

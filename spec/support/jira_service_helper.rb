@@ -5,7 +5,8 @@ module JiraServiceHelper
       "title"=>"JIRA tracker",
       "project_url"=>"http://jira.example/issues/?jql=project=A",
       "issues_url"=>"http://jira.example/browse/JIRA-1",
-      "new_issue_url"=>"http://jira.example/secure/CreateIssue.jspa"
+      "new_issue_url"=>"http://jira.example/secure/CreateIssue.jspa",
+      "api_url"=>"http://jira.example/rest/api/2"
     }
 
     jira_tracker.update_attributes(properties: properties, active: true)
@@ -60,7 +61,7 @@ module JiraServiceHelper
     'http://jira.example/rest/api/2/issue/JIRA-1/transitions'
   end
 
-  def jira_api_project_url
-    'http://jira.example/rest/api/2/project'
+  def jira_api_test_url
+    'http://jira.example/rest/api/2/myself'
   end
 end

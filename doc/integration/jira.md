@@ -74,9 +74,9 @@ Fill in the required details on the page:
 * `project url` The URL to the JIRA project which is being linked to this GitLab project.
 * `issues url` The URL to the JIRA project issues overview for the project that is linked to this GitLab project.
 * `new issue url` This is the URL to create a new issue in JIRA for the project linked to this GitLab project.
+* `api url` The base URL of the JIRA API. It may be omitted, in which case GitLab will automatically use API version `2` based on the `project url`, i.e. `https://jira.example.com/rest/api/2`.
 * `username` The username of the user created in [configuring JIRA step](#configuring-jira).
 * `password` The password of the user created in [configuring JIRA step](#configuring-jira).
-* `api version` The version of the JIRA API. By default, version `2` is used.
 * `Jira issue transition` This is the id of a transition that moves issues to a closed state. You can find this number under [JIRA workflow administration, see screenshot](jira_workflow_screenshot.png).  By default, this id is `2`. (In the example image, this is `2` as well)
 
 After saving the configuration, your GitLab project will be able to interact with the linked JIRA project.

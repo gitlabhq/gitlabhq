@@ -40,9 +40,9 @@ describe JiraService do
         service_hook: true,
         project_url: 'http://jira.example.com',
         username: 'gitlab_jira_username',
-        password: 'gitlab_jira_password',
-        api_version: '2'
+        password: 'gitlab_jira_password'
       )
+      @jira_service.save # will build API URL, as api_url was not specified above
       @sample_data = Gitlab::PushDataBuilder.build_sample(project, user)
       # https://github.com/bblimke/webmock#request-with-basic-authentication
       @api_url = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123/transitions'
@@ -65,6 +65,72 @@ describe JiraService do
       ).once
     end
   end
+
+  describe "Stored password invalidation" do
+    let(:project) { create(:project) }
+
+    context "when a password was previously set" do
+      before do
+        @jira_service = JiraService.create(
+          project: create(:project),
+          properties: {
+            api_url: 'http://jira.example.com/rest/api/2',
+            username: 'mic',
+            password: "password"
+          }
+        )
+      end
+  
+      it "reset password if url changed" do
+        @jira_service.api_url = 'http://jira_edited.example.com/rest/api/2'
+        @jira_service.save
+        expect(@jira_service.password).to be_nil
+      end
+  
+      it "does not reset password if username changed" do
+        @jira_service.username = "some_name"
+        @jira_service.save
+        expect(@jira_service.password).to eq("password")
+      end
+
+      it "does not reset password if new url is set together with password, even if it's the same password" do
+        @jira_service.api_url = 'http://jira_edited.example.com/rest/api/2'
+        @jira_service.password = 'password'
+        @jira_service.save
+        expect(@jira_service.password).to eq("password")
+        expect(@jira_service.api_url).to eq("http://jira_edited.example.com/rest/api/2")
+      end
+
+      it "should reset password if url changed, even if setter called multiple times" do
+        @jira_service.api_url = 'http://jira1.example.com/rest/api/2'
+        @jira_service.api_url = 'http://jira1.example.com/rest/api/2'
+        @jira_service.save
+        expect(@jira_service.password).to be_nil
+      end
+    end
+    
+    context "when no password was previously set" do
+      before do
+        @jira_service = JiraService.create(
+          project: create(:project),
+          properties: {
+            api_url: 'http://jira.example.com/rest/api/2',
+            username: 'mic'
+          }
+        )
+      end
+
+      it "saves password if new url is set together with password" do
+        @jira_service.api_url = 'http://jira_edited.example.com/rest/api/2'
+        @jira_service.password = 'password'
+        @jira_service.save
+        expect(@jira_service.password).to eq("password")
+        expect(@jira_service.api_url).to eq("http://jira_edited.example.com/rest/api/2")
+      end
+
+    end
+  end
+
 
   describe "Validations" do
     context "active" do
@@ -137,71 +203,6 @@ describe JiraService do
         expect(@service.properties[:project_url]).to eq('http://jira.sample/projects/project_a')
         expect(@service.properties[:issues_url]).to eq("http://jira.sample/issues/:id")
         expect(@service.properties[:new_issue_url]).to eq("http://jira.sample/projects/project_a/issues/new")
-      end
-    end
-  end
-
-  describe "Execute" do
-    let(:user)    { create(:user) }
-    let(:project) { create(:project) }
-
-    context "when a password was previously set" do
-      before do
-        @service = JiraService.create(
-          project: create(:project),
-          properties: {
-            project_url: 'http://gitlab.com',
-            username: 'mic',
-            password: "password"
-          }
-        )
-      end
-  
-      it "reset password if url changed" do
-        @service.project_url = 'http://gitlab1.com'
-        @service.save
-        expect(@service.password).to be_nil
-      end
-  
-      it "does not reset password if username changed" do
-        @service.username = "some_name"
-        @service.save
-        expect(@service.password).to eq("password")
-      end
-
-      it "does not reset password if new url is set together with password, even if it's the same password" do
-        @service.project_url = 'http://gitlab_edited.com'
-        @service.password = 'password'
-        @service.save
-        expect(@service.password).to eq("password")
-        expect(@service.project_url).to eq("http://gitlab_edited.com")
-      end
-
-      it "should reset password if url changed, even if setter called multiple times" do
-        @service.project_url = 'http://gitlab1.com'
-        @service.project_url = 'http://gitlab1.com'
-        @service.save
-        expect(@service.password).to be_nil
-      end
-    end
-    
-    context "when no password was previously set" do
-      before do
-        @service = JiraService.create(
-          project: create(:project),
-          properties: {
-            project_url: 'http://gitlab.com',
-            username: 'mic'
-          }
-        )
-      end
-
-      it "saves password if new url is set together with password" do
-        @service.project_url = 'http://gitlab_edited.com'
-        @service.password = 'password'
-        @service.save
-        expect(@service.password).to eq("password")
-        expect(@service.project_url).to eq("http://gitlab_edited.com")
       end
     end
   end
