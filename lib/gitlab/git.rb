@@ -1,7 +1,6 @@
 module Gitlab
   module Git
-    # '0' * 40 -- this was easyer to freeze
-    BLANK_SHA = "0000000000000000000000000000000000000000".freeze
+    BLANK_SHA = ('0' * 40).freeze
     TAG_REF_PREFIX = "refs/tags/".freeze
     BRANCH_REF_PREFIX = "refs/heads/".freeze
 
