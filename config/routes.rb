@@ -23,8 +23,6 @@ Gitlab::Application.routes.draw do
       end
 
       resources :runner_projects, only: [:create, :destroy]
-
-      resources :events, only: [:index]
     end
 
     resource :user_sessions do
@@ -378,6 +376,7 @@ Gitlab::Application.routes.draw do
               [:new, :create, :index], path: "/") do
       member do
         put :transfer
+        delete :remove_fork
         post :archive
         post :unarchive
         post :toggle_star
@@ -543,8 +542,10 @@ Gitlab::Application.routes.draw do
           member do
             # tree viewer logs
             get 'logs_tree', constraints: { id: Gitlab::Regex.git_reference_regex }
+            # Directories with leading dots erroneously get rejected if git
+            # ref regex used in constraints. Regex verification now done in controller.
             get 'logs_tree/*path' => 'refs#logs_tree', as: :logs_file, constraints: {
-              id: Gitlab::Regex.git_reference_regex,
+              id: /.*/,
               path: /.*/
             }
           end
@@ -585,7 +586,11 @@ Gitlab::Application.routes.draw do
           end
         end
 
-        resources :builds, only: [:show] do
+        resources :builds, only: [:index, :show] do
+          collection do
+            get :cancel_all
+          end
+
           member do
             get :cancel
             get :status

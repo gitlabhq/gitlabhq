@@ -70,4 +70,18 @@ describe ProjectsHelper do
       expect(helper.send(:readme_cache_key)).to eq("#{project.path_with_namespace}-nil-readme")
     end
   end
+
+  describe 'link_to_member' do
+    let(:group)   { create(:group) }
+    let(:project) { create(:empty_project, group: group) }
+    let(:user)    { create(:user) }
+
+    describe 'using the default options' do
+      it 'returns an HTML link to the user' do
+        link = helper.link_to_member(project, user)
+
+        expect(link).to match(%r{/u/#{user.username}})
+      end
+    end
+  end
 end

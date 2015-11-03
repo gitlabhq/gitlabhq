@@ -113,14 +113,14 @@ class Projects::BlobController < Projects::ApplicationController
         end
       end
 
-      return not_found!
+      return render_404
     end
   end
 
   def commit
     @commit = @repository.commit(@ref)
 
-    return not_found! unless @commit
+    return render_404 unless @commit
   end
 
   def assign_blob_vars
@@ -128,7 +128,7 @@ class Projects::BlobController < Projects::ApplicationController
     @ref, @path = extract_ref(@id)
 
   rescue InvalidPathError
-    not_found!
+    render_404
   end
 
   def after_edit_path
@@ -161,7 +161,7 @@ class Projects::BlobController < Projects::ApplicationController
         if params[:file].present?
           params[:file_name] = params[:file].original_filename
         end
-        File.join(@path, File.basename(params[:file_name]))
+        File.join(@path, params[:file_name])
       else
         @path
       end

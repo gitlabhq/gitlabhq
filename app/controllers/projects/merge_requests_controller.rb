@@ -56,6 +56,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def diffs
     @commit = @merge_request.last_commit
+    @first_commit = @merge_request.first_commit
+
     @comments_allowed = @reply_allowed = true
     @comments_target = {
       noteable_type: 'MergeRequest',
@@ -89,7 +91,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @target_project = merge_request.target_project
     @source_project = merge_request.source_project
     @commits = @merge_request.compare_commits
-    @commit = @merge_request.compare_commits.last
+    @commit = @merge_request.last_commit
+    @first_commit = @merge_request.first_commit
     @diffs = @merge_request.compare_diffs
     @note_counts = Note.where(commit_id: @commits.map(&:id)).
       group(:commit_id).count
@@ -246,7 +249,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def define_show_vars
-    @participants = @merge_request.participants(current_user, @project)
+    @participants = @merge_request.participants(current_user)
 
     # Build a note object for comment form
     @note = @project.notes.new(noteable: @merge_request)
@@ -259,7 +262,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @commits = @merge_request.commits
 
     @merge_request_diff = @merge_request.merge_request_diff
-    
+
     if @merge_request.locked_long_ago?
       @merge_request.unlock_mr
       @merge_request.close

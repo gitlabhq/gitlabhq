@@ -99,7 +99,29 @@ production: &base
   # For documentation on how to set this up, see http://doc.gitlab.com/ce/incoming_email/README.html
   incoming_email:
     enabled: false
-    address: "incoming+%{key}@gitlab.example.com"
+
+    # The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
+    # The `%{key}` placeholder is added after the user part, after a `+` character, before the `@`.
+    address: "gitlab-incoming+%{key}@gmail.com"
+
+    # Email account username
+    # With third party providers, this is usually the full email address.
+    # With self-hosted email servers, this is usually the user part of the email address.
+    user: "gitlab-incoming@gmail.com"
+    # Email account password
+    password: "[REDACTED]"
+
+    # IMAP server host
+    host: "imap.gmail.com"
+    # IMAP server port
+    port: 993
+    # Whether the IMAP server uses SSL
+    ssl: true
+    # Whether the IMAP server uses StartTLS
+    start_tls: false
+
+    # The mailbox where incoming mail will end up. Usually "inbox".
+    mailbox: "inbox"
 
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
@@ -288,6 +310,10 @@ production: &base
       #       application_name: 'YOUR_APP_NAME',
       #       application_password: 'YOUR_APP_PASSWORD' } }
 
+  # Shared file storage settings
+  shared:
+    # path: /mnt/gitlab # Default: shared
+
 
 
 
@@ -296,10 +322,12 @@ production: &base
   # ==========================
 
   # GitLab Satellites
+  #
+  # Note for maintainers: keep the satellites.path setting until GitLab 9.0 at
+  # least. This setting is fed to 'rm -rf' in
+  # db/migrate/20151023144219_remove_satellites.rb
   satellites:
-    # Relative paths are relative to Rails.root (default: tmp/repo_satellites/)
     path: /home/git/gitlab-satellites/
-    timeout: 30
 
   ## Backup settings
   backup:

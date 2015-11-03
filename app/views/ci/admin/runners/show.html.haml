@@ -13,13 +13,13 @@
 
 - if @runner.shared?
   .bs-callout.bs-callout-success
-    %h4 This runner will process build from ALL UNASSIGNED projects
+    %h4 This runner will process builds from ALL UNASSIGNED projects
     %p
       If you want runners to build only specific projects, enable them in the table below.
       Keep in mind that this is a one way transition.
 - else
   .bs-callout.bs-callout-info
-    %h4 This runner will process build only from ASSIGNED projects
+    %h4 This runner will process builds only from ASSIGNED projects
     %p You can't make this a shared runner.
 %hr
 = form_for @runner, url: ci_admin_runner_path(@runner), html: { class: 'form-horizontal' } do |f|
@@ -53,13 +53,14 @@
             %th
         - @runner.runner_projects.each do |runner_project|
           - project = runner_project.project
-          %tr.alert-info
-            %td
-              %strong
-                = project.name
-            %td
-              .pull-right
-                = link_to 'Disable', [:ci, :admin, project, runner_project], method: :delete, class: 'btn btn-danger btn-xs'
+          - if project.gl_project
+            %tr.alert-info
+              %td
+                %strong
+                  = project.name
+              %td
+                .pull-right
+                  = link_to 'Disable', [:ci, :admin, project, runner_project], method: :delete, class: 'btn btn-danger btn-xs'
 
     %table.table
       %thead
@@ -103,21 +104,26 @@
           %th Finished at
 
       - @builds.each do |build|
+        - gl_project = build.gl_project
         %tr.build
           %td.id
-            - gl_project = build.project.gl_project
-            = link_to namespace_project_build_path(gl_project.namespace, gl_project, build) do
+            - if gl_project
+              = link_to namespace_project_build_path(gl_project.namespace, gl_project, build) do
+                = build.id
+            - else
               = build.id
 
           %td.status
             = ci_status_with_icon(build.status)
 
           %td.status
-            = build.project.name
+            - if gl_project
+              = gl_project.name_with_namespace
 
           %td.build-link
-            = link_to ci_status_path(build.commit) do
-              %strong #{build.commit.short_sha}
+            - if gl_project
+              = link_to ci_status_path(build.commit) do
+                %strong #{build.commit.short_sha}
 
           %td.timestamp
             - if build.finished_at

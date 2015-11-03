@@ -33,6 +33,8 @@
 }
 
 li.commit {
+  list-style: none;
+
   .commit-row-title {
     font-size: $list-font-size;
     line-height: 20px;

@@ -11,10 +11,6 @@ class Import::GithubController < Import::BaseController
 
   def status
     @repos = client.repos
-    client.orgs.each do |org|
-      @repos += client.org_repos(org.login)
-    end
-
     @already_added_projects = current_user.created_projects.where(import_type: "github")
     already_added_projects_names = @already_added_projects.pluck(:import_source)
 
@@ -47,7 +43,7 @@ class Import::GithubController < Import::BaseController
   end
 
   def verify_github_import_enabled
-    not_found! unless github_import_enabled?
+    render_404 unless github_import_enabled?
   end
 
   def github_auth

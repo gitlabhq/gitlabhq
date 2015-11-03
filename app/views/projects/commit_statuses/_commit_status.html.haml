@@ -9,6 +9,9 @@
     - else
       %strong Build ##{commit_status.id}
 
+    - if commit_status.show_warning?
+      %i.fa.fa-warning.text-warning
+
   %td
     = commit_status.ref
 
@@ -41,11 +44,11 @@
         #{commit_status.coverage}%
 
   %td
-    - if defined?(controls) && controls && current_user && can?(current_user, :manage_builds, gl_project)
-      .pull-right
+    .pull-right
+      - if current_user && can?(current_user, :manage_builds, commit_status.gl_project)
         - if commit_status.cancel_url
           = link_to commit_status.cancel_url, title: 'Cancel' do
             %i.fa.fa-remove.cred
-        - elsif commit_status.retry_url
+        - elsif defined?(allow_retry) && allow_retry && commit_status.retry_url
           = link_to commit_status.retry_url, method: :post, title: 'Retry' do
             %i.fa.fa-repeat

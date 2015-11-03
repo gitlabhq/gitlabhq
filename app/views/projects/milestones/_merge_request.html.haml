@@ -5,4 +5,4 @@
     = link_to_gfm merge_request.title, [@project.namespace.becomes(Namespace), @project, merge_request], title: merge_request.title
   .pull-right.assignee-icon
     - if merge_request.assignee
-      = image_tag avatar_icon(merge_request.assignee.email, 16), class: "avatar s16", alt: ''
+      = image_tag avatar_icon(merge_request.assignee, 16), class: "avatar s16", alt: ''

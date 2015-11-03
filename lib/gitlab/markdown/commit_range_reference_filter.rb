@@ -26,6 +26,18 @@ module Gitlab
         end
       end
 
+      def self.referenced_by(node)
+        project = Project.find(node.attr("data-project")) rescue nil
+        return unless project
+
+        id = node.attr("data-commit-range")
+        range = CommitRange.new(id, project)
+
+        return unless range.valid_commits?
+
+        { commit_range: range }
+      end
+
       def initialize(*args)
         super
 
@@ -53,13 +65,11 @@ module Gitlab
           range = CommitRange.new(id, project)
 
           if range.valid_commits?
-            push_result(:commit_range, range)
-
             url = url_for_commit_range(project, range)
 
             title = range.reference_title
             klass = reference_class(:commit_range)
-            data  = data_attribute(project.id)
+            data  = data_attribute(project: project.id, commit_range: id)
 
             project_ref += '@' if project_ref
 

@@ -1,15 +1,16 @@
-%table.table
-  %thead
-    %tr
-      %th ID
-      %th Name
-      %th Last build
-      %th Access
-      %th Builds
-      %th
+.table-holder
+  %table.table
+    %thead
+      %tr
+        %th ID
+        %th Name
+        %th Last build
+        %th Access
+        %th Builds
+        %th
 
-  - @projects.each do |project|
-    = render "ci/admin/projects/project", project: project
+    - @projects.each do |project|
+      = render "ci/admin/projects/project", project: project
 
 = paginate @projects
 

@@ -1,25 +1,11 @@
 .tree-holder {
-  .tree-table-holder {
-    margin-left: -$gl-padding;
-    margin-right: -$gl-padding;
-  }
-
-  .tree_progress {
-    display: none;
-    margin: 20px;
-    &.loading {
-      display: block;
-    }
-  }
 
   .tree-table {
     margin-bottom: 0;
 
     tr {
       > td, > th {
-        padding: 10px $gl-padding;
-        line-height: 32px;
-        border-color: $table-border-color !important;
+        line-height: 28px;
       }
 
       &:hover {

@@ -11,12 +11,15 @@ describe GitlabMarkdownHelper do
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:snippet)       { create(:project_snippet, project: project) }
 
-  # Helper expects a current_user method.
-  let(:current_user) { user }
-
   before do
+    # Ensure the generated reference links aren't redacted
+    project.team << [user, :master]
+
     # Helper expects a @project instance variable
-    @project = project
+    helper.instance_variable_set(:@project, project)
+
+    # Stub the `current_user` helper
+    allow(helper).to receive(:current_user).and_return(user)
   end
 
   describe "#markdown" do
@@ -25,23 +28,23 @@ describe GitlabMarkdownHelper do
 
       it "should link to the merge request" do
         expected = namespace_project_merge_request_path(project.namespace, project, merge_request)
-        expect(markdown(actual)).to match(expected)
+        expect(helper.markdown(actual)).to match(expected)
       end
 
       it "should link to the commit" do
         expected = namespace_project_commit_path(project.namespace, project, commit)
-        expect(markdown(actual)).to match(expected)
+        expect(helper.markdown(actual)).to match(expected)
       end
 
       it "should link to the issue" do
         expected = namespace_project_issue_path(project.namespace, project, issue)
-        expect(markdown(actual)).to match(expected)
+        expect(helper.markdown(actual)).to match(expected)
       end
     end
 
     describe "override default project" do
       let(:actual) { issue.to_reference }
-      let(:second_project) { create(:project) }
+      let(:second_project) { create(:project, :public) }
       let(:second_issue) { create(:issue, project: second_project) }
 
       it 'should link to the issue' do
@@ -56,7 +59,7 @@ describe GitlabMarkdownHelper do
     let(:issues)      { create_list(:issue, 2, project: project) }
 
     it 'should handle references nested in links with all the text' do
-      actual = link_to_gfm("This should finally fix #{issues[0].to_reference} and #{issues[1].to_reference} for real", commit_path)
+      actual = helper.link_to_gfm("This should finally fix #{issues[0].to_reference} and #{issues[1].to_reference} for real", commit_path)
       doc = Nokogiri::HTML.parse(actual)
 
       # Make sure we didn't create invalid markup
@@ -86,7 +89,7 @@ describe GitlabMarkdownHelper do
     end
 
     it 'should forward HTML options' do
-      actual = link_to_gfm("Fixed in #{commit.id}", commit_path, class: 'foo')
+      actual = helper.link_to_gfm("Fixed in #{commit.id}", commit_path, class: 'foo')
       doc = Nokogiri::HTML.parse(actual)
 
       expect(doc.css('a')).to satisfy do |v|
@@ -97,13 +100,13 @@ describe GitlabMarkdownHelper do
 
     it "escapes HTML passed in as the body" do
       actual = "This is a <h1>test</h1> - see #{issues[0].to_reference}"
-      expect(link_to_gfm(actual, commit_path)).
+      expect(helper.link_to_gfm(actual, commit_path)).
         to match('&lt;h1&gt;test&lt;/h1&gt;')
     end
 
     it 'ignores reference links when they are the entire body' do
       text = issues[0].to_reference
-      act = link_to_gfm(text, '/foo')
+      act = helper.link_to_gfm(text, '/foo')
       expect(act).to eq %Q(<a href="/foo">#{issues[0].to_reference}</a>)
     end
 

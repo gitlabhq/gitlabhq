@@ -25,7 +25,7 @@ GitLab CI API has 4 authentication methods:
 
 Authentication is done by
 sending the `private-token` of a valid user and the `url` of an
-authorized Gitlab instance via a query string along with the API
+authorized GitLab instance via a query string along with the API
 request:
 
     GET http://gitlab.example.com/ci/api/v1/projects?private_token=QVy1PB7sTxfy4pqfZM1U&url=http://demo.gitlab.com/

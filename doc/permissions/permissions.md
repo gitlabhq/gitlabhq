@@ -15,8 +15,8 @@ documentation](doc/workflow/add-user/add-user.md).
 |---------------------------------------|---------|------------|-------------|----------|--------|
 | Create new issue                      | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Leave comments                        | ✓       | ✓          | ✓           | ✓        | ✓      |
-| Pull project code                     |         | ✓          | ✓           | ✓        | ✓      |
-| Download project                      |         | ✓          | ✓           | ✓        | ✓      |
+| Pull project code                     | ✓        | ✓          | ✓           | ✓        | ✓      |
+| Download project                      | ✓        | ✓          | ✓           | ✓        | ✓      |
 | Create code snippets                  |         | ✓          | ✓           | ✓        | ✓      |
 | Manage issue tracker                  |         | ✓          | ✓           | ✓        | ✓      |
 | Manage labels                         |         | ✓          | ✓           | ✓        | ✓      |

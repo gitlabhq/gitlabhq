@@ -50,7 +50,17 @@
   }
 
   .project-home-dropdown {
-    margin: 11px 3px 0;
+    margin: 13px 0px 0;
+  }
+
+  .notifications-btn {
+    .fa-bell {
+      margin-right: 6px;
+    }
+
+    .fa-angle-down {
+      margin-left: 6px;
+    }
   }
 
   .project-home-desc {
@@ -85,6 +95,7 @@
       color: inherit;
     }
   }
+
   .input-group {
     display: inline-table;
     position: relative;
@@ -233,21 +244,9 @@
     }
   }
 
-  .fa-fw {
+  i {
     margin-right: 8px;
   }
-}
-
-.fa-bell {
-  margin-right: 6px;
-}
-
-.fa-angle-down {
-  margin-left: 6px;
-}
-
-.project-home-panel .project-home-dropdown {
-  margin: 13px 0px 0;
 }
 
 .project-visibility-level-holder {
@@ -457,7 +456,7 @@ pre.light-well {
 
   .project-row {
     padding: $gl-padding;
-    border-color: #f1f2f4;
+    border-color: $table-border-color;
     margin-left: -$gl-padding;
     margin-right: -$gl-padding;
 
@@ -509,6 +508,49 @@ pre.light-well {
 .project-show-activity {
   .activity-filter-block {
     margin-top: -1px;
+  }
+}
+
+.project-last-commit {
+  margin: 0 7px;
+
+  .ci-status {
+    margin-right: 16px;
+  }
+
+  .commit-row-message {
+    color: $gl-gray;
+  }
+
+  .commit_short_id {
+    margin-right: 5px;
+    color: $gl-link-color;
+    font-weight: 600;
+  }
+
+  .commit-author-link {
+    margin-left: 7px;
+    text-decoration: none;
+    .avatar {
+      float: none;
+      margin-right: 4px;
+    }
+
+    .commit-author-name {
+      font-weight: 600;
+    }
+  }
+}
+
+.project-show-readme .readme-holder {
+  margin-left: -$gl-padding;
+  margin-right: -$gl-padding;
+  padding: ($gl-padding + 7px);
+  border-top: 0;
+
+  .edit-project-readme {
+    z-index: 100;
+    position: relative;
   }
 }
 

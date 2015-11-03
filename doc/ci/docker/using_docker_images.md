@@ -90,7 +90,7 @@ you need to set MYSQL_ALLOW_EMPTY_PASSWORD.
     - mysql
     
     variables:
-      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     ```
 
 For other possible configuration variables check the 

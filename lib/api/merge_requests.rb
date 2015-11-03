@@ -249,8 +249,16 @@ module API
         required_attributes! [:note]
 
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
-        note = merge_request.notes.new(note: params[:note], project_id: user_project.id)
-        note.author = current_user
+
+        authorize! :create_note, merge_request
+
+        opts = {
+          note: params[:note],
+          noteable_type: 'MergeRequest',
+          noteable_id: merge_request.id
+        }
+
+        note = ::Notes::CreateService.new(user_project, current_user, opts).execute
 
         if note.save
           present note, with: Entities::MRNote

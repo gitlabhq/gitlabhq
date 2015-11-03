@@ -41,6 +41,7 @@ class Ability
           :read_project_member,
           :read_merge_request,
           :read_note,
+          :read_build,
           :download_code
         ]
 
@@ -127,6 +128,7 @@ class Ability
         :read_project_member,
         :read_merge_request,
         :read_note,
+        :read_build,
         :create_project,
         :create_issue,
         :create_note
@@ -187,7 +189,8 @@ class Ability
         :change_visibility_level,
         :rename_project,
         :remove_project,
-        :archive_project
+        :archive_project,
+        :remove_fork_project
       ]
     end
 
