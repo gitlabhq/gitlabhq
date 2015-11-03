@@ -123,18 +123,16 @@ module Ci
 
           config = YAML.dump({
                                before_script: ["pwd"],
-                               build: { script: "build", type: "build", only: ["master", "deploy"] },
-                               rspec: { script: "rspec", type: type, only: ["master", "deploy"] },
+                               rspec: { script: "rspec", type: "test", only: ["master", "deploy"] },
                                staging: { script: "deploy", type: "deploy", only: ["master", "deploy"] },
-                               production: { script: "deploy", type: "deploy", only: ["master", "deploy"] },
                                production: { script: "deploy", type: "deploy", only: ["master@path", "deploy"] },
                              })
 
-          config_processor = GitlabCiYamlProcessor.new(config, path)
+          config_processor = GitlabCiYamlProcessor.new(config, 'fork')
 
-          expect(config_processor.builds_for_stage_and_ref("production", "deploy").size).to eq(0)
-          expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(1)
           expect(config_processor.builds_for_stage_and_ref("deploy", "deploy").size).to eq(2)
+          expect(config_processor.builds_for_stage_and_ref("test", "deploy").size).to eq(1)
+          expect(config_processor.builds_for_stage_and_ref("deploy", "master").size).to eq(1)
         end
       end
 
@@ -230,18 +228,16 @@ module Ci
         it "returns build except specified type" do
           config = YAML.dump({
                                before_script: ["pwd"],
-                               build: { script: "build", type: "build", except: ["master", "deploy"] },
-                               rspec: { script: "rspec", type: type, except: ["master", "deploy", "test@fork"] },
-                               staging: { script: "deploy", type: "deploy", except: ["master", "deploy"] },
-                               production: { script: "deploy", type: "deploy", except: ["master", "deploy"] },
-                               production: { script: "deploy", type: "deploy", except: ["master@path", "deploy"] },
+                               rspec: { script: "rspec", type: "test", except: ["master", "deploy", "test@fork"] },
+                               staging: { script: "deploy", type: "deploy", except: ["master"] },
+                               production: { script: "deploy", type: "deploy", except: ["master@fork"] },
                              })
 
-          config_processor = GitlabCiYamlProcessor.new(config, path)
+          config_processor = GitlabCiYamlProcessor.new(config, 'fork')
 
-          expect(config_processor.builds_for_stage_and_ref("production", "deploy").size).to eq(0)
-          expect(config_processor.builds_for_stage_and_ref(type, "test").size).to eq(1)
-          expect(config_processor.builds_for_stage_and_ref("deploy", "master").size).to eq(2)
+          expect(config_processor.builds_for_stage_and_ref("deploy", "deploy").size).to eq(2)
+          expect(config_processor.builds_for_stage_and_ref("test", "test").size).to eq(0)
+          expect(config_processor.builds_for_stage_and_ref("deploy", "master").size).to eq(0)
         end
       end
 
