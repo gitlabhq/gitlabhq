@@ -39,10 +39,7 @@ class BaseService
   def deny_visibility_level(model, denied_visibility_level = nil)
     denied_visibility_level ||= model.visibility_level
 
-    level_name = 'Unknown'
-    Gitlab::VisibilityLevel.options.each do |name, level|
-      level_name = name if level == denied_visibility_level
-    end
+    level_name = Gitlab::VisibilityLevel.level_name(denied_visibility_level)
 
     model.errors.add(
       :visibility_level,
