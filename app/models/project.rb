@@ -783,4 +783,9 @@ class Project < ActiveRecord::Base
     service.active = true
     service.save
   end
+
+  def visibility_level_allowed?(level)
+    return true unless forked?
+    Gitlab::VisibilityLevel.allowed_fork_levels(forked_from_project.visibility_level).include?(level)
+  end
 end
