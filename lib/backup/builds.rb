@@ -1,3 +1,5 @@
+require 'backup/files'
+
 module Backup
   class Builds < Files
     def initialize
