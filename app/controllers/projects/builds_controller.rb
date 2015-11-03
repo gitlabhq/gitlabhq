@@ -30,7 +30,7 @@ class Projects::BuildsController < Projects::ApplicationController
 
   def show
     @builds = @ci_project.commits.find_by_sha(@build.sha).builds.order('id DESC')
-    @builds = @builds.where("id not in (?)", @build.id).page(params[:page]).per(20)
+    @builds = @builds.where("id not in (?)", @build.id)
     @commit = @build.commit
 
     respond_to do |format|
@@ -42,17 +42,13 @@ class Projects::BuildsController < Projects::ApplicationController
   end
 
   def retry
-    if @build.commands.blank?
+    unless @build.retryable?
       return page_404
     end
 
     build = Ci::Build.retry(@build)
 
-    if params[:return_to]
-      redirect_to URI.parse(params[:return_to]).path
-    else
-      redirect_to build_path(build)
-    end
+    redirect_to build_path(build)
   end
 
   def status
