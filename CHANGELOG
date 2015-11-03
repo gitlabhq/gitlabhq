@@ -19,6 +19,7 @@ v 8.2.0 (unreleased)
   - [API] Add ability to fetch the commit ID of the last commit that actually touched a file
   - Add "New file" link to dropdown on project page
   - Include commit logs in project search
+  - Rename "Back to" links to "Go to" because its not always a case it point to place user come from
 
 v 8.1.1
   - Fix cloning Wiki repositories via HTTP (Stan Hu)
