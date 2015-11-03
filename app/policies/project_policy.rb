@@ -136,6 +136,7 @@ class ProjectPolicy < BasePolicy
     can! :remove_fork_project
     can! :destroy_merge_request
     can! :destroy_issue
+    can! :remove_pages
   end
 
   def team_member_owner_access!

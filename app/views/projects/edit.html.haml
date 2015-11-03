@@ -133,6 +133,41 @@
               %hr
               = link_to 'Remove avatar', namespace_project_avatar_path(@project.namespace, @project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
         = f.submit 'Save changes', class: "btn btn-save"
+
+    - if Settings.pages.enabled
+      .pages-settings
+        .panel.panel-default
+          .panel-heading Pages
+          .errors-holder
+          .panel-body
+            - if @project.pages_url
+              %strong
+                Congratulations. Your pages are served at:
+                %p= link_to @project.pages_url, @project.pages_url
+            - else
+              %p
+                To publish pages create .gitlab-ci.yml with
+                %strong pages job
+                and send public/ folder to GitLab.
+              %p
+                Use existing tools:
+                %ul
+                  %li
+                    %pre
+                      :plain
+                        pages:
+                          image: jekyll
+                          script: jekyll build
+                          artifacts:
+                            paths:
+                            - public
+
+            - if @project.pages_url && can?(current_user, :remove_pages, @project)
+              .form-actions
+                = link_to 'Remove pages', remove_pages_namespace_project_path(@project.namespace, @project),
+                    data: { confirm: "Are you sure that you want to remove pages for this project?" },
+                    method: :post, class: "btn btn-warning"
+
   .row.prepend-top-default
   %hr
   .row.prepend-top-default

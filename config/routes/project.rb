@@ -329,6 +329,7 @@ constraints(ProjectUrlConstrainer.new) do
         post :archive
         post :unarchive
         post :housekeeping
+        post :remove_pages
         post :toggle_star
         post :preview_markdown
         post :export

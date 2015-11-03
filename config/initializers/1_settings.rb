@@ -254,6 +254,12 @@ Settings.registry['issuer']        ||= nil
 Settings.registry['host_port']     ||= [Settings.registry['host'], Settings.registry['port']].compact.join(':')
 Settings.registry['path']            = File.expand_path(Settings.registry['path'] || File.join(Settings.shared['path'], 'registry'), Rails.root)
 
+# Pages
+Settings['pages'] ||= Settingslogic.new({})
+Settings.pages['enabled']         = false if Settings.pages['enabled'].nil?
+Settings.pages['path']            = File.expand_path('shared/pages/', Rails.root)
+Settings.pages['domain']          ||= "example.com"
+
 #
 # Git LFS
 #

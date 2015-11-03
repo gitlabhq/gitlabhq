@@ -53,6 +53,8 @@ class Project < ActiveRecord::Base
     update_column(:last_activity_at, self.created_at)
   end
 
+  after_destroy :remove_pages
+
   # update visibility_level of forks
   after_update :update_forks_visibility_level
   def update_forks_visibility_level
@@ -1158,6 +1160,29 @@ class Project < ActiveRecord::Base
 
   def runners_token
     ensure_runners_token!
+  end
+
+  def pages_url
+    if Dir.exist?(public_pages_path)
+      host = "#{namespace.path}.#{Settings.pages.domain}"
+
+      # If the project path is the same as host, leave the short version
+      return "http://#{host}" if host == path
+
+      "http://#{host}/#{path}"
+    end
+  end
+
+  def pages_path
+    File.join(Settings.pages.path, path_with_namespace)
+  end
+
+  def public_pages_path
+    File.join(pages_path, 'public')
+  end
+
+  def remove_pages
+    FileUtils.rm_r(pages_path, force: true)
   end
 
   def wiki
