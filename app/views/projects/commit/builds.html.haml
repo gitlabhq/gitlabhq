@@ -69,4 +69,4 @@
             %th Coverage
           %th
       = render partial: "projects/commit_statuses/commit_status", collection: @ci_commit.retried,
-               locals: { coverage: @ci_project.try(:coverage_enabled?) }
+               locals: { coverage: @ci_project.try(:coverage_enabled?), stage: true }
