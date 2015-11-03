@@ -25,6 +25,7 @@ v 8.2.0 (unreleased)
 
 v 8.1.3
   - Spread out runner contacted_at updates
+  - New design for user profile page
 
 v 8.1.1
   - Fix cloning Wiki repositories via HTTP (Stan Hu)
