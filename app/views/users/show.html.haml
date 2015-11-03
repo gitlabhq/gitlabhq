@@ -24,22 +24,27 @@
 
   .cover-desc
     - unless @user.public_email.blank?
-      = link_to @user.public_email, "mailto:#{@user.public_email}"
+      .profile-link-holder
+        = link_to @user.public_email, "mailto:#{@user.public_email}"
     - unless @user.skype.blank?
-      &middot;
-      = link_to "Skype", "skype:#{@user.skype}"
+      .profile-link-holder
+        = link_to "skype:#{@user.skype}", title: "Skype" do
+          = icon('skype')
     - unless @user.linkedin.blank?
-      &middot;
-      = link_to "LinkedIn", "http://www.linkedin.com/in/#{@user.linkedin}"
+      .profile-link-holder
+        = link_to "http://www.linkedin.com/in/#{@user.linkedin}", title: "LinkedIn" do
+          = icon('linkedin-square')
     - unless @user.twitter.blank?
-      &middot;
-      = link_to "Twitter", "http://www.twitter.com/#{@user.twitter}"
+      .profile-link-holder
+        = link_to "http://www.twitter.com/#{@user.twitter}", title: "Twitter" do
+          = icon('twitter-square')
     - unless @user.website_url.blank?
-      &middot;
-      = link_to @user.short_website_url, @user.full_website_url
+      .profile-link-holder
+        = link_to @user.short_website_url, @user.full_website_url
     - unless @user.location.blank?
-      &middot;
-      = @user.location
+      .profile-link-holder
+        = icon('map-marker')
+        = @user.location
 
 
   .cover-controls
