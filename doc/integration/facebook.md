@@ -19,7 +19,7 @@ something else descriptive.
 
 1. Enter the address of your GitLab installation at the bottom of the package
 
-  ![Facebook Website URL](facebook_website_url.png)
+    ![Facebook Website URL](facebook_website_url.png)
 
 1. Choose "Next"
 
@@ -28,6 +28,7 @@ something else descriptive.
 1. Choose "Settings" in the menu on the left
 
 1. Fill in a contact email for your app
+
     ![Facebook App Settings](facebook_app_settings.png)
 
 1. Choose "Save Changes"
@@ -51,15 +52,15 @@ something else descriptive.
     For omnibus package:
 
     ```sh
-      sudo editor /etc/gitlab/gitlab.rb
+    sudo editor /etc/gitlab/gitlab.rb
     ```
 
     For installations from source:
 
     ```sh
-      cd /home/git/gitlab
+    cd /home/git/gitlab
 
-      sudo -u git -H editor config/gitlab.yml
+    sudo -u git -H editor config/gitlab.yml
     ```
 
 1.  See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration) for initial settings.
@@ -69,20 +70,20 @@ something else descriptive.
     For omnibus package:
 
     ```ruby
-      gitlab_rails['omniauth_providers'] = [
-        {
-          "name" => "facebook",
-          "app_id" => "YOUR_APP_ID",
-          "app_secret" => "YOUR_APP_SECRET"
-        }
-      ]
+    gitlab_rails['omniauth_providers'] = [
+      {
+        "name" => "facebook",
+        "app_id" => "YOUR_APP_ID",
+        "app_secret" => "YOUR_APP_SECRET"
+      }
+    ]
     ```
 
     For installations from source:
 
     ```
-      - { name: 'facebook', app_id: 'YOUR_APP_ID',
-        app_secret: 'YOUR_APP_SECRET' }
+    - { name: 'facebook', app_id: 'YOUR_APP_ID',
+      app_secret: 'YOUR_APP_SECRET' }
     ```
 
 1.  Change 'YOUR_APP_ID' to the API key from Facebook page in step 10.
