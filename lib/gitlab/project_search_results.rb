@@ -77,7 +77,11 @@ module Gitlab
     end
 
     def commits
-      project.repository.find_commits_by_message(query)
+      if project.empty_repo? || query.blank?
+        []
+      else
+        project.repository.find_commits_by_message(query).compact
+      end
     end
 
     def limit_project_ids
