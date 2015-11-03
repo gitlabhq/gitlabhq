@@ -35,7 +35,7 @@ module Backup
           if wiki.repository.empty?
             $progress.puts " [SKIPPED]".cyan
           else
-            cmd = %W(git --git-dir=#{path_to_repo(wiki)} bundle create #{path_to_bundle(wiki)} --all)
+            cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path_to_repo(wiki)} bundle create #{path_to_bundle(wiki)} --all)
             output, status = Gitlab::Popen.popen(cmd)
             if status.zero?
               $progress.puts " [DONE]".green
@@ -67,7 +67,7 @@ module Backup
           FileUtils.mkdir_p(path_to_repo(project))
           cmd = %W(tar -xf #{path_to_bundle(project)} -C #{path_to_repo(project)})
         else
-          cmd = %W(git init --bare #{path_to_repo(project)})
+          cmd = %W(#{Gitlab.config.git.bin_path} init --bare #{path_to_repo(project)})
         end
 
         if system(*cmd, silent)
@@ -87,7 +87,7 @@ module Backup
           # that was initialized with ProjectWiki.new() and then
           # try to restore with 'git clone --bare'.
           FileUtils.rm_rf(path_to_repo(wiki))
-          cmd = %W(git clone --bare #{path_to_bundle(wiki)} #{path_to_repo(wiki)})
+          cmd = %W(#{Gitlab.config.git.bin_path} clone --bare #{path_to_bundle(wiki)} #{path_to_repo(wiki)})
 
           if system(*cmd, silent)
             $progress.puts " [DONE]".green

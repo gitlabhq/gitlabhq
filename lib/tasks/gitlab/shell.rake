@@ -17,7 +17,7 @@ namespace :gitlab do
 
       # Clone if needed
       unless File.directory?(target_dir)
-        system(*%W(git clone -- #{args.repo} #{target_dir}))
+        system(*%W(#{Gitlab.config.git.bin_path} clone -- #{args.repo} #{target_dir}))
       end
 
       # Make sure we're on the right tag
@@ -27,7 +27,7 @@ namespace :gitlab do
         reseted = reset_to_commit(args)
 
         unless reseted
-          system(*%W(git fetch origin))
+          system(*%W(#{Gitlab.config.git.bin_path} fetch origin))
           reset_to_commit(args)
         end
 
@@ -128,14 +128,14 @@ namespace :gitlab do
   end
 
   def reset_to_commit(args)
-    tag, status = Gitlab::Popen.popen(%W(git describe -- #{args.tag}))
+    tag, status = Gitlab::Popen.popen(%W(#{Gitlab.config.git.bin_path} describe -- #{args.tag}))
 
     unless status.zero?
-      tag, status = Gitlab::Popen.popen(%W(git describe -- origin/#{args.tag}))
+      tag, status = Gitlab::Popen.popen(%W(#{Gitlab.config.git.bin_path} describe -- origin/#{args.tag}))
     end
 
     tag = tag.strip
-    system(*%W(git reset --hard #{tag}))
+    system(*%W(#{Gitlab.config.git.bin_path} reset --hard #{tag}))
   end
 end
 
