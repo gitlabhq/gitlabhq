@@ -82,8 +82,7 @@ class Member < ActiveRecord::Base
         member.invite_email = user
       end
 
-      project = members.first.respond_to?(:project)? members.first.project : nil
-      if can_update_member?(current_user, member, project)
+      if can_update_member?(current_user, member)
         member.created_by ||= current_user
         member.access_level = access_level
 
@@ -93,9 +92,10 @@ class Member < ActiveRecord::Base
 
     private
 
-    def can_update_member?(current_user, member, project)
+    def can_update_member?(current_user, member)
       !current_user || current_user.can?(:update_group_member, member) ||
-        (project && current_user.can?(:admin_project_member, project))
+        (member.respond_to?(:project) &&
+          current_user.can?(:update_project_member, member))
     end
   end
 

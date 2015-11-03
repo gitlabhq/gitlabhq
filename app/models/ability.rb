@@ -15,6 +15,7 @@ class Ability
       when "Group" then group_abilities(user, subject)
       when "Namespace" then namespace_abilities(user, subject)
       when "GroupMember" then group_member_abilities(user, subject)
+      when "ProjectMember" then project_member_abilities(user, subject)
       else []
       end.concat(global_abilities(user))
     end
@@ -313,6 +314,23 @@ class Ability
         rules << :destroy_group_member
       end
 
+      rules
+    end
+
+    def project_member_abilities(user, subject)
+      rules = []
+      target_user = subject.user
+      project = subject.project
+      can_manage = project_abilities(user, project).include?(:admin_project_member)
+
+      if can_manage && (user != target_user)
+        rules << :update_project_member
+        rules << :destroy_project_member
+      end
+
+      if !project.last_owner?(user) && (can_manage || (user == target_user))
+        rules << :destroy_project_member
+      end
       rules
     end
 
