@@ -2,45 +2,55 @@
 
 ## Get SSH key with user by ID of an SSH key
 
-Get SSH key with user by ID of an SSH key. Note only administrators can lookup SSH key with user by ID of an SSH key.
+Get the public SSH key with its user information by providing the ID of an SSH
+key.
+
+**Note**: This API call can be made only by administrators.
 
 ```
 GET /keys/:id
 ```
 
-Parameters:
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of an SSH key |
 
-- `id` (required) - The ID of an SSH key
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/keys/1
+```
+
+Example response:
 
 ```json
 {
-  "id": 1,
-  "title": "Sample key 25",
-  "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt1256k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
-  "created_at": "2015-09-03T07:24:44.627Z",
-  "user": {
-    "name": "John Smith",
-    "username": "john_smith",
-    "id": 25,
-    "state": "active",
-    "avatar_url": "http://www.gravatar.com/avatar/cfa35b8cd2ec278026357769582fa563?s=40\u0026d=identicon",
-    "web_url": "http://localhost:3000/u/john_smith",
-    "created_at": "2015-09-03T07:24:01.670Z",
-    "is_admin": false,
-    "bio": null,
-    "skype": "",
-    "linkedin": "",
-    "twitter": "",
-    "website_url": "",
-    "email": "john@example.com",
-    "theme_id": 2,
-    "color_scheme_id": 1,
-    "projects_limit": 10,
-    "current_sign_in_at": null,
-    "identities": [],
-    "can_create_group": true,
-    "can_create_project": true,
-    "two_factor_enabled": false
-  }
+   "created_at" : "2015-09-15T18:29:11.737Z",
+   "id" : 1,
+   "title" : "Sample key 25",
+   "user" : {
+      "username" : "user5",
+      "web_url" : "https://gitlab.example.com/u/user5",
+      "current_sign_in_at" : null,
+      "projects_limit" : 10,
+      "email" : "user5@example.com",
+      "name" : "User 5",
+      "identities" : [],
+      "theme_id" : 2,
+      "created_at" : "2015-09-15T18:28:19.510Z",
+      "can_create_project" : true,
+      "avatar_url" : null,
+      "can_create_group" : true,
+      "id" : 25,
+      "linkedin" : "",
+      "skype" : "",
+      "is_admin" : false,
+      "bio" : null,
+      "state" : "active",
+      "website_url" : "",
+      "color_scheme_id" : 1,
+      "twitter" : "",
+      "two_factor_enabled" : false
+   },
+   "key" : "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt1256k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK
+2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0="
 }
 ```
