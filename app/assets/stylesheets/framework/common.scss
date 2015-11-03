@@ -387,6 +387,16 @@ table {
   }
 }
 
+.center-middle-menu {
+  @include nav-menu;
+  text-align: center;
+  margin: -$gl-padding;
+  height: auto;
+  margin-top: 0;
+  margin-bottom: 0;
+  border-bottom: 1px solid $border-color;
+}
+
 .dropzone .dz-preview .dz-progress {
   border-color: $border-color !important;
 }
