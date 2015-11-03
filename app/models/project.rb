@@ -786,6 +786,6 @@ class Project < ActiveRecord::Base
 
   def visibility_level_allowed?(level)
     return true unless forked?
-    Gitlab::VisibilityLevel.allowed_fork_levels(forked_from_project.visibility_level).include?(level)
+    Gitlab::VisibilityLevel.allowed_fork_levels(forked_from_project.visibility_level).include?(level.to_i)
   end
 end

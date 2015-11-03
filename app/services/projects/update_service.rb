@@ -11,6 +11,15 @@ module Projects
         end
       end
 
+      unless project.visibility_level_allowed?(new_visibility)
+        level_name = Gitlab::VisibilityLevel.level_name(new_visibility)
+        project.errors.add(
+          :visibility_level,
+          "#{level_name} could not be set as visibility level of this project - parent project settings are more restrictive"
+        )
+        return false
+      end
+
       new_branch = params[:default_branch]
 
       if project.repository.exists? && new_branch && new_branch != project.default_branch
