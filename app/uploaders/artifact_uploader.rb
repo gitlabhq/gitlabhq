@@ -21,7 +21,7 @@ class ArtifactUploader < CarrierWave::Uploader::Base
   end
 
   def artifacts_path
-    File.join(build.created_at.utc.strftime('%Y_%m'), build.project.id.to_s, build.id.to_s)
+    File.join(build.created_at.utc.strftime('%Y_%m'), build.project_id.to_s, build.id.to_s)
   end
 
   def store_dir

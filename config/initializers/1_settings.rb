@@ -261,6 +261,12 @@ Settings.artifacts['enabled']      = true if Settings.artifacts['enabled'].nil?
 Settings.artifacts['path']         = File.expand_path(Settings.artifacts['path'] || File.join(Settings.shared['path'], "artifacts"), Rails.root)
 Settings.artifacts['max_size']    ||= 100 # in megabytes
 
+# Pages
+Settings['pages'] ||= Settingslogic.new({})
+Settings.pages['enabled']         = false if Settings.pages['enabled'].nil?
+Settings.pages['path']            = File.expand_path('shared/pages/', Rails.root)
+Settings.pages['domain']          ||= "example.com"
+
 #
 # Git LFS
 #

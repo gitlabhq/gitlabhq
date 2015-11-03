@@ -66,6 +66,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :user_oauth_applications,
       :shared_runners_enabled,
       :max_artifacts_size,
+      :max_pages_size,
       restricted_visibility_levels: [],
       import_sources: []
     )

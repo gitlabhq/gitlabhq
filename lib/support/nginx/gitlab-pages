@@ -1,0 +1,27 @@
+## Pages serving host
+server {
+  listen 0.0.0.0:80;
+  listen [::]:80 ipv6only=on;
+
+  ## Replace this with something like pages.gitlab.com
+  server_name ~^(?<group>.*)\.YOUR_GITLAB_PAGES\.DOMAIN$;
+  root /home/git/gitlab/shared/pages/${group};
+
+  ## Individual nginx logs for GitLab pages
+  access_log  /var/log/nginx/gitlab_pages_access.log;
+  error_log   /var/log/nginx/gitlab_pages_error.log;
+
+  # 1. Try to get /project/ to => shared/pages/${group}/public/ or index.html
+  # 2. Try to get / to => shared/pages/${group}/${host}/public/ or index.html
+  location ~ ^/([^/]*)(/.*)?$ {
+    try_files "/$1/public$2"
+              "/$1/public$2/index.html"
+              "/${host}/public/${uri}"
+              "/${host}/public/${uri}/index.html"
+              =404;
+  }
+
+  # Define custom error pages
+  error_page 403 /403.html;
+  error_page 404 /404.html;
+}

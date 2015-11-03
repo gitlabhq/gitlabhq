@@ -64,6 +64,8 @@ class Project < ActiveRecord::Base
     update_column(:last_activity_at, self.created_at)
   end
 
+  after_destroy :remove_pages
+
   ActsAsTaggableOn.strict_case_match = true
   acts_as_taggable_on :tags
 
@@ -979,5 +981,28 @@ class Project < ActiveRecord::Base
 
   def open_issues_count
     issues.opened.count
+  end
+
+  def pages_url
+    if Dir.exist?(public_pages_path)
+      host = "#{namespace.path}.#{Settings.pages.domain}"
+
+      # If the project path is the same as host, leave the short version
+      return "http://#{host}" if host == path
+
+      "http://#{host}/#{path}"
+    end
+  end
+
+  def pages_path
+    File.join(Settings.pages.path, path_with_namespace)
+  end
+
+  def public_pages_path
+    File.join(pages_path, 'public')
+  end
+
+  def remove_pages
+    FileUtils.rm_r(pages_path, force: true)
   end
 end

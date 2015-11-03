@@ -20,6 +20,7 @@ v 8.3.0 (unreleased)
   - Trim leading and trailing whitespace of milestone and issueable titles (Jose Corcuera)
   - Recognize issue/MR/snippet/commit links as references
   - Add ignore whitespace change option to commit view
+  - Add GitLab Pages
   - Fire update hook from GitLab
   - Style warning about mentioning many people in a comment
   - Fix: sort milestones by due date once again (Greg Smethells)
