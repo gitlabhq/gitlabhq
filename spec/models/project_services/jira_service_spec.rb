@@ -31,6 +31,7 @@ describe JiraService do
   describe "Execute" do
     let(:user)    { create(:user) }
     let(:project) { create(:project) }
+    let(:merge_request) { create(:merge_request) }
 
     before do
       @jira_service = JiraService.new
@@ -46,20 +47,22 @@ describe JiraService do
       @sample_data = Gitlab::PushDataBuilder.build_sample(project, user)
       # https://github.com/bblimke/webmock#request-with-basic-authentication
       @api_url = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123/transitions'
+      @comment_url = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123/comment'
 
       WebMock.stub_request(:post, @api_url)
+      WebMock.stub_request(:post, @comment_url)
     end
 
     it "should call JIRA API" do
-      @jira_service.execute(sample_commit, JiraIssue.new("JIRA-123", project))
-      expect(WebMock).to have_requested(:post, @api_url).with(
+      @jira_service.execute(merge_request, JiraIssue.new("JIRA-123", project))
+      expect(WebMock).to have_requested(:post, @comment_url).with(
         body: /Issue solved with/
       ).once
     end
 
     it "calls the api with jira_issue_transition_id" do
       @jira_service.jira_issue_transition_id = 'this-is-a-custom-id'
-      @jira_service.execute(sample_commit, JiraIssue.new("JIRA-123", project))
+      @jira_service.execute(merge_request, JiraIssue.new("JIRA-123", project))
       expect(WebMock).to have_requested(:post, @api_url).with(
         body: /this-is-a-custom-id/
       ).once

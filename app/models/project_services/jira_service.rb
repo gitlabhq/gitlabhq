@@ -130,7 +130,7 @@ class JiraService < IssueTrackerService
 
     case result.code
     when 201, 200
-      Rails.logger.info("#{self.class.name} SUCCESS #{result.code}: Sucessfully connected to #{api_url}.")
+      Rails.logger.info("#{self.class.name} SUCCESS #{result.code}: Successfully connected to #{api_url}.")
       true
     else
       Rails.logger.info("#{self.class.name} ERROR #{result.code}: #{result.parsed_response}")
@@ -161,25 +161,36 @@ class JiraService < IssueTrackerService
     self.jira_issue_transition_id ||= "2"
   end
 
-  def close_issue(commit, issue)
-    url = close_issue_url(issue.iid)
+  def close_issue(entity, issue)
+    commit_id = if entity.is_a?(Commit)
+                  entity.id
+                elsif entity.is_a?(MergeRequest)
+                  entity.last_commit.id
+                end
+    commit_url = build_entity_url(:commit, commit_id)
 
-    commit_url = build_entity_url(:commit, commit.id)
+    # Depending on the JIRA project's workflow, a comment during transition
+    # may or may not be allowed. Split the operation in to two calls so the
+    # comment always works.
+    transition_issue(issue)
+    add_issue_solved_comment(issue, commit_id, commit_url)
+  end
 
+  def transition_issue(issue)
     message = {
-      update: {
-        comment: [{
-          add: {
-            body: "Issue solved with [#{commit.id}|#{commit_url}]."
-          }
-        }]
-      },
       transition: {
         id: jira_issue_transition_id
       }
-    }.to_json
+    }
+    send_message(close_issue_url(issue.iid), message.to_json)
+  end
 
-    send_message(url, message)
+  def add_issue_solved_comment(issue, commit_id, commit_url)
+    comment = {
+      body: "Issue solved with [#{commit_id}|#{commit_url}]."
+    }
+
+    send_message(comment_url(issue.iid), comment.to_json)
   end
 
   def add_comment(data, issue_name)
@@ -216,8 +227,8 @@ class JiraService < IssueTrackerService
     )
 
     message = case result.code
-              when 201, 200
-                "#{self.class.name} SUCCESS #{result.code}: Sucessfully posted to #{url}."
+              when 201, 200, 204
+                "#{self.class.name} SUCCESS #{result.code}: Successfully posted to #{url}."
               when 401
                 "#{self.class.name} ERROR 401: Unauthorized. Check the #{self.username} credentials and JIRA access permissions and try again."
               else
