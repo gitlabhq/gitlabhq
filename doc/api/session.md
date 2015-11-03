@@ -7,19 +7,17 @@ private token.
 POST /session
 ```
 
-| Parameters | Required | Comments |
-| ---------- | -------- | -------- |
-| `login`    | yes      | The login of user|
-| `email`    | yes if login is not provided | The email of the user |
-| `password` | yes      | The password of the user |
-
-cURL example:
+| Attribute  | Type    | Required | Description |
+| ---------- | ------- | -------- | -------- |
+| `login`    | string  | yes      | The username of the user|
+| `email`    | string  | yes if login is not provided | The email of the user |
+| `password` | string  | yes     | The password of the user |
 
 ```bash
-curl --data "login=john_smith&password=strongpassw0rd" https://gitlab.com/api/v3/session
+curl -X POST "https://gitlab.example.com/api/v3/session?login=john_smith&password=strongpassw0rd"
 ```
 
-Output:
+Example response:
 
 ```json
 {
@@ -44,6 +42,6 @@ Output:
   "can_create_group": true,
   "can_create_project": true,
   "two_factor_enabled": false,
-  "private_token": "gDGnJwv56z2Xfj2B83Es"
+  "private_token": "9koXpg98eAheJpvBs5tK"
 }
 ```
