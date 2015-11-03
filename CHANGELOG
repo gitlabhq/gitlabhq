@@ -17,6 +17,7 @@ v 8.2.0 (unreleased)
   - Remove deprecated CI events from project settings page
   - Use issue editor as cross reference comment author when issue is edited with a new mention.
   - [API] Add ability to fetch the commit ID of the last commit that actually touched a file
+  - Add "New file" link to dropdown on project page
 
 v 8.1.1
   - Fix cloning Wiki repositories via HTTP (Stan Hu)
