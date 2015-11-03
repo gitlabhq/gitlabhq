@@ -20,6 +20,7 @@ module Ci
       @config = @config.deep_symbolize_keys
 
       initial_parsing
+      inject_pages
 
       validate!
     end
@@ -36,6 +37,20 @@ module Ci
 
     def stages
       @stages || DEFAULT_STAGES
+    end
+
+    def inject_pages
+      return unless stages.include?('deploy')
+      return if @jobs.include?('pages')
+
+      @jobs['pages'] = {
+        stage: 'deploy',
+        image: 'jekyll/jekyll:builder',
+        script: 'jekyll build --destination public',
+        artifacts: [
+          'public/',
+        ]
+      }
     end
 
     private

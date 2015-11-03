@@ -186,6 +186,7 @@ Settings.gitlab_ci['add_pusher']          = false if Settings.gitlab_ci['add_pus
 Settings.gitlab_ci['url']                 ||= Settings.send(:build_gitlab_ci_url)
 Settings.gitlab_ci['builds_path']         = File.expand_path(Settings.gitlab_ci['builds_path'] || "builds/", Rails.root)
 Settings.gitlab_ci['artifacts_path']      = File.expand_path('shared/artifacts/', Rails.root)
+Settings.gitlab_ci['pages_path']          = File.expand_path('shared/pages/', Rails.root)
 Settings.gitlab_ci['max_artifact_size']   ||= 100
 
 

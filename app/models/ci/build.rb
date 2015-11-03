@@ -104,6 +104,12 @@ module Ci
           build.update_coverage
         end
       end
+
+      after_transition any => :success do |build, transition|
+        if build.name == 'pages' && build.artifact_file?
+          PagesUpdaterWorker.perform_async(build.id)
+        end
+      end
     end
 
     def ignored?
