@@ -3,21 +3,17 @@ module Projects
     def execute
       # check that user is allowed to set specified visibility_level
       new_visibility = params[:visibility_level]
-      if new_visibility && new_visibility.to_i != project.visibility_level
-        unless can?(current_user, :change_visibility_level, project) &&
-          Gitlab::VisibilityLevel.allowed_for?(current_user, new_visibility)
-          deny_visibility_level(project, new_visibility)
-          return project
+      if new_visibility
+        if new_visibility.to_i != project.visibility_level
+          unless can?(current_user, :change_visibility_level, project) &&
+            Gitlab::VisibilityLevel.allowed_for?(current_user, new_visibility)
+            deny_visibility_level(project, new_visibility)
+            return project
+          end
         end
-      end
 
-      unless project.visibility_level_allowed?(new_visibility)
-        level_name = Gitlab::VisibilityLevel.level_name(new_visibility)
-        project.errors.add(
-          :visibility_level,
-          "#{level_name} could not be set as visibility level of this project - parent project settings are more restrictive"
-        )
-        return false
+        return false unless visibility_level_allowed?(new_visibility)
+        update_forks_visibility_level(new_visibility)
       end
 
       new_branch = params[:default_branch]
@@ -29,6 +25,32 @@ module Projects
       if project.update_attributes(params.except(:default_branch))
         if project.previous_changes.include?('path')
           project.rename_repo
+        end
+      end
+    end
+
+    private
+
+    def visibility_level_allowed?(level)
+      return true if project.visibility_level_allowed?(level)
+
+      level_name = Gitlab::VisibilityLevel.level_name(level)
+      project.errors.add(
+        :visibility_level,
+        "#{level_name} could not be set as visibility level of this project - parent project settings are more restrictive"
+      )
+
+      false
+    end
+
+    def update_forks_visibility_level(new_level)
+      project.forks.each do |forked_link|
+        forked_project = forked_link.forked_to_project
+        fork_level = forked_project.visibility_level
+
+        if fork_level > new_level.to_i
+          forked_project.visibility_level = new_level.to_i
+          forked_project.save!
         end
       end
     end
