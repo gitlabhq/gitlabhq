@@ -55,7 +55,7 @@ module Gitlab
       def level_name(level)
         level_name = 'Unknown'
         options.each do |name, lvl|
-          level_name = name if lvl == level
+          level_name = name if lvl == level.to_i
         end
 
         level_name
