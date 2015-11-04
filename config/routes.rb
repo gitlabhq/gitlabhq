@@ -2,6 +2,19 @@ require 'sidekiq/web'
 require 'api/api'
 
 Gitlab::Application.routes.draw do
+  if Gitlab::Sherlock.enabled?
+    namespace :sherlock do
+      resources :transactions, only: [:index, :show] do
+        resources :queries, only: [:show]
+        resources :file_samples, only: [:show]
+
+        collection do
+          delete :destroy_all
+        end
+      end
+    end
+  end
+
   namespace :ci do
     # CI API
     Ci::API::API.logger Rails.logger
