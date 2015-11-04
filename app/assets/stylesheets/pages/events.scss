@@ -11,9 +11,12 @@
   color: #7f8fa4;
 
   &.event-inline {
+    padding-left: $gl-padding + $gl-avatar-size;
+
     .avatar {
       position: relative;
       top: -2px;
+      margin-left: -$gl-avatar-size;
     }
 
     .event-title {
@@ -155,6 +158,10 @@
 
 @media (max-width: $screen-xs-max) {
   .event-item {
+    &.event-inline {
+      padding-left: $gl-padding;
+    }
+
     .event-title {
       white-space: normal;
       overflow: visible;
