@@ -19,6 +19,7 @@ gem 'devise-async',           '~> 0.9.0'
 gem 'doorkeeper',             '~> 2.1.3'
 gem 'omniauth',               '~> 1.2.2'
 gem 'omniauth-bitbucket',     '~> 0.0.2'
+gem 'omniauth-facebook',      '~> 3.0.0'
 gem 'omniauth-github',        '~> 1.1.1'
 gem 'omniauth-gitlab',        '~> 1.0.0'
 gem 'omniauth-google-oauth2', '~> 0.2.0'
@@ -63,7 +64,7 @@ gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
 # Format dates and times
 # based on human-friendly examples
-gem "stamp", '~> 0.5.0'
+gem "stamp", '~> 0.6.0'
 
 # Enumeration fields
 gem 'enumerize', '~> 0.7.0'

@@ -824,7 +824,7 @@ namespace :gitlab do
         repo_dirs = Dir.glob(File.join(namespace_dir, '*'))
         repo_dirs.each do |dir|
           puts "\nChecking repo at #{dir}"
-          system(*%w(git fsck), chdir: dir)
+          system(*%W(#{Gitlab.config.git.bin_path} fsck), chdir: dir)
         end
       end
     end

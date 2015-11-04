@@ -21,6 +21,12 @@ v 8.2.0 (unreleased)
   - Add "New file" link to dropdown on project page
   - Include commit logs in project search
   - Add "added", "modified" and "removed" properties to commit object in webhook
+  - Rename "Back to" links to "Go to" because its not always a case it point to place user come from
+
+v 8.1.3
+  - Spread out runner contacted_at updates
+  - New design for user profile page
+  - Add Facebook authentication
 
 v 8.1.1
   - Fix cloning Wiki repositories via HTTP (Stan Hu)
