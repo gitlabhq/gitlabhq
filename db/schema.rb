@@ -667,6 +667,7 @@ ActiveRecord::Schema.define(version: 20151026182941) do
 
   add_index "services", ["created_at", "id"], name: "index_services_on_created_at_and_id", using: :btree
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
+  add_index "services", ["template"], name: "index_services_on_template", using: :btree
 
   create_table "snippets", force: true do |t|
     t.string   "title"
