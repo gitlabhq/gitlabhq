@@ -73,7 +73,7 @@
   .user-calendar-activities
 
 
-%ul.nav.center-middle-menu
+%ul.center-middle-menu
   %li.active
     = link_to "#activity", 'data-toggle' => 'tab' do
       Activity
@@ -106,14 +106,14 @@
       .contributed-projects
         = render 'shared/projects/list',
           projects: @contributed_projects.sort_by(&:star_count).reverse,
-          projects_limit: 5, stars: true, avatar: false
+          projects_limit: 5, stars: true, avatar: true
 
   - if @projects.present?
     .tab-pane#personal
       .personal-projects
         = render 'shared/projects/list',
           projects: @projects.sort_by(&:star_count).reverse,
-          projects_limit: 10, stars: true, avatar: false
+          projects_limit: 10, stars: true, avatar: true
 
 :coffeescript
   $(".user-calendar").load("#{user_calendar_path}")
