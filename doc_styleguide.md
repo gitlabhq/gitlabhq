@@ -95,3 +95,13 @@ double quotes.
 ```bash
 curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -H "Content-Type: application/json" --data '{"path": "my-group", "name": "My group"}' https://gitlab.example.com/api/v3/groups
 ```
+
+**Post data using curl's --data**
+
+Instead of using `-X POST` and appending the parameters to the URI, you can use
+curl's `--data` option. The example below will create a new project `foo` under
+the authenticated user's namespace.
+
+```bash
+curl --data "name=foo" -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects"
+```
