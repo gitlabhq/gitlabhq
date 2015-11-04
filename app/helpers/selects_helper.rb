@@ -49,7 +49,7 @@ module SelectsHelper
     css_class << (opts[:class] || '')
     value = opts[:selected] || ''
 
-    hidden_field_tag(id, value, class: css_class, data: { skip_group: opts[:skip_group] })
+    hidden_field_tag(id, value, class: css_class, data: { skip_group: opts[:skip_group], url: autocomplete_groups_path })
   end
 
   def admin_email_select_tag(id, opts = {})

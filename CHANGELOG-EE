@@ -4,6 +4,7 @@ v 8.2.0
   - When someone as marked as a required approver for a merge request, an email should be sent
   - Allow configuring the Jira API path (Alex Lossent)
   - Fix "Rebase onto master"
+  - Allow groups to appear in the `Share with group` share if the group owner allows it
 
 v 8.1.0 (unreleased)
   - added an issues template (Hannes Rosenögger)
