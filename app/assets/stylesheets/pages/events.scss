@@ -4,7 +4,7 @@
  */
 .event-item {
   font-size: $gl-font-size;
-  padding: $gl-padding $gl-padding $gl-padding ($gl-padding + $gl-avatar-size);
+  padding: $gl-padding $gl-padding $gl-padding ($gl-padding + $gl-avatar-size + 15px);
   margin-left: -$gl-padding;
   margin-right: -$gl-padding;
   border-bottom: 1px solid $table-border-color;
@@ -27,8 +27,7 @@
   }
 
   .avatar {
-    margin-left: -$gl-avatar-size;
-    margin-right: 15px;
+    margin-left: -($gl-avatar-size + 15px);
   }
 
   .event-title {
