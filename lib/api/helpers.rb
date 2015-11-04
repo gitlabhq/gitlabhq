@@ -293,7 +293,15 @@ module API
       header['Content-Disposition'] = "attachment; filename=#{filename}"
       header['Content-Transfer-Encoding'] = 'binary'
       content_type content_type
-      file FileStreamer.new(path)
+
+      # Support download acceleration
+      case headers['X-Sendfile-Type']
+      when 'X-Sendfile'
+        header['X-Sendfile'] = path
+        body
+      else
+        file FileStreamer.new(path)
+      end
     end
 
     private

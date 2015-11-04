@@ -95,7 +95,6 @@ module Ci
             not_found!
           end
 
-          # TODO: this is slow, because it doesn't support Rack::Sendfile
           present_file!(build.artifact_file.path, build.artifact_file.filename)
         end
 
