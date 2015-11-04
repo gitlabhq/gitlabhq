@@ -4,6 +4,8 @@ v 8.1.3
   - Force update refs/merge-requests/X/head upon a push to the source branch of a merge request (Stan Hu)
   - Spread out runner contacted_at updates
   - Use issue editor as cross reference comment author when issue is edited with a new mention
+  - New design for user profile page
+  - Add Facebook authentication
 
 v 8.1.2
   - Fix cloning Wiki repositories via HTTP (Stan Hu)
