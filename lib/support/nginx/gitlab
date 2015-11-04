@@ -206,3 +206,24 @@ server {
 
   error_page 502 /502.html;
 }
+
+## Pages serving host
+server {
+  listen 0.0.0.0:80;
+  listen [::]:80 ipv6only=on;
+  server_name ~^(?<subdomain>.*)\.example\.gitlab\.com$;
+  root /home/git/gitlab/shared/pages/${subdomain};
+
+  ## Individual nginx logs for this GitLab vhost
+  access_log  /var/log/nginx/gitlab_pages_access.log;
+  error_log   /var/log/nginx/gitlab_pages_error.log;
+
+  location / {
+    ## Serve static files from defined root folder.
+    ## @gitlab is a named location for the upstream fallback, see below.
+    try_files $uri $uri/index.html $uri.html;
+  }
+
+  error_page 404 /404.html;
+  error_page 502 /502.html;
+}
