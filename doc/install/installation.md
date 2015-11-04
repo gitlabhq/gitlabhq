@@ -253,8 +253,8 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     nproc
 
     # Enable cluster mode if you expect to have a high load instance
-    # Ex. change amount of workers to 3 for 2GB RAM server
     # Set the number of workers to at least the number of cores
+    # Ex. change amount of workers to 3 for 2GB RAM server
     sudo -u git -H editor config/unicorn.rb
 
     # Copy the example Rack attack config
