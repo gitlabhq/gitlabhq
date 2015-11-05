@@ -32,7 +32,7 @@ describe "Commits" do
     describe "Cancel all builds" do
       it "cancels commit" do
         visit ci_status_path(@commit)
-        click_on "Cancel all"
+        click_on "Cancel running"
         expect(page).to have_content "canceled"
       end
     end

@@ -332,7 +332,7 @@ GitLab Shell is an SSH access and repository management software developed speci
     
     # Go to Gitlab installation folder
 
-    cd /home/git/gilab
+    cd /home/git/gitlab
 
     sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
 
