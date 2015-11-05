@@ -569,7 +569,7 @@ Gitlab::Application.routes.draw do
         end
 
         resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
-        resources :tags, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
+        resources :tags, constraints: { id: Gitlab::Regex.git_reference_regex }
         resources :protected_branches, only: [:index, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
         resource :variables, only: [:show, :update]
         resources :triggers, only: [:index, :create, :destroy]
