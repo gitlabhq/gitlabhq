@@ -15,6 +15,12 @@
 require 'spec_helper'
 
 describe Ci::MailService do
+  let(:deliveries) { Ci::Notify.deliveries }
+
+  before do
+    deliveries.clear
+  end
+
   describe "Associations" do
     it { is_expected.to belong_to :project }
   end
@@ -44,13 +50,13 @@ describe Ci::MailService do
       end
 
       it do
-        should_email("git@example.com")
         mail.execute(build)
+        should_email("git@example.com")
       end
 
       def should_email(email)
-        expect(Ci::Notify).to receive(:build_fail_email).with(build.id, email)
-        expect(Ci::Notify).not_to receive(:build_success_email).with(build.id, email)
+        expect(sent?(build, 'failed', email)).to be_truthy
+        expect(sent?(build, 'success', email)).to be_falsey
       end
     end
 
@@ -67,13 +73,13 @@ describe Ci::MailService do
       end
 
       it do
-        should_email("git@example.com")
         mail.execute(build)
+        should_email("git@example.com")
       end
 
       def should_email(email)
-        expect(Ci::Notify).to receive(:build_success_email).with(build.id, email)
-        expect(Ci::Notify).not_to receive(:build_fail_email).with(build.id, email)
+        expect(sent?(build, 'success', email)).to be_truthy
+        expect(sent?(build, 'failed', email)).to be_falsey
       end
     end
 
@@ -95,14 +101,14 @@ describe Ci::MailService do
       end
 
       it do
+        mail.execute(build)
         should_email("git@example.com")
         should_email("jeroen@example.com")
-        mail.execute(build)
       end
 
       def should_email(email)
-        expect(Ci::Notify).to receive(:build_success_email).with(build.id, email)
-        expect(Ci::Notify).not_to receive(:build_fail_email).with(build.id, email)
+        expect(sent?(build, 'success', email)).to be_truthy
+        expect(sent?(build, 'failed', email)).to be_falsey
       end
     end
 
@@ -124,14 +130,14 @@ describe Ci::MailService do
       end
 
       it do
+        mail.execute(build) if mail.can_execute?(build)
         should_email(commit.git_author_email)
         should_email("jeroen@example.com")
-        mail.execute(build) if mail.can_execute?(build)
       end
 
       def should_email(email)
-        expect(Ci::Notify).not_to receive(:build_success_email).with(build.id, email)
-        expect(Ci::Notify).not_to receive(:build_fail_email).with(build.id, email)
+        expect(sent?(build, 'success', email)).to be_falsey
+        expect(sent?(build, 'failed', email)).to be_falsey
       end
     end
 
@@ -177,15 +183,22 @@ describe Ci::MailService do
 
       it do
         Ci::Build.retry(build)
+        mail.execute(build) if mail.can_execute?(build)
         should_email(commit.git_author_email)
         should_email("jeroen@example.com")
-        mail.execute(build) if mail.can_execute?(build)
       end
 
       def should_email(email)
-        expect(Ci::Notify).not_to receive(:build_success_email).with(build.id, email)
-        expect(Ci::Notify).not_to receive(:build_fail_email).with(build.id, email)
+        expect(sent?(build, 'success', email)).to be_falsey
+        expect(sent?(build, 'failed', email)).to be_falsey
       end
+    end
+  end
+
+  def sent?(build, status, email)
+    deliveries.any? do |delivery|
+      delivery.subject.include?("Build #{status} for #{build.gl_project.name_with_namespace}") &&
+        delivery.to.include?(email)
     end
   end
 end

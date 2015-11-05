@@ -2,6 +2,11 @@ require 'spec_helper'
 
 describe NotificationService do
   let(:notification) { NotificationService.new }
+  let(:deliveries) { Notify.deliveries }
+
+  before(:each) do
+    deliveries.clear
+  end
 
   describe 'Keys' do
     describe :new_key do
@@ -10,8 +15,8 @@ describe NotificationService do
       it { expect(notification.new_key(key)).to be_truthy }
 
       it 'should sent email to key owner' do
-        expect(Notify).to receive(:new_ssh_key_email).with(key.id)
         notification.new_key(key)
+        expect(sent?('SSH key was added to your account', key.user_id)).to be_truthy
       end
     end
   end
@@ -23,8 +28,8 @@ describe NotificationService do
       it { expect(notification.new_email(email)).to be_truthy }
 
       it 'should send email to email owner' do
-        expect(Notify).to receive(:new_email_email).with(email.id)
         notification.new_email(email)
+        expect(sent?('Email was added to your account', email.user_id)).to be_truthy
       end
     end
   end
@@ -47,6 +52,8 @@ describe NotificationService do
         it do
           add_users_with_subscription(note.project, issue)
 
+          notification.new_note(note)
+
           should_email(@u_watcher.id)
           should_email(note.noteable.author_id)
           should_email(note.noteable.assignee_id)
@@ -57,15 +64,13 @@ describe NotificationService do
           should_not_email(@u_disabled.id)
           should_not_email(@unsubscriber.id)
           should_not_email(@u_outsider_mentioned)
-
-          notification.new_note(note)
         end
 
         it 'filters out "mentioned in" notes' do
           mentioned_note = SystemNoteService.cross_reference(mentioned_issue, issue, issue.author)
 
-          expect(Notify).not_to receive(:note_issue_email)
           notification.new_note(mentioned_note)
+          expect(deliveries.length).to eq(0)
         end
       end
 
@@ -85,6 +90,8 @@ describe NotificationService do
         end
 
         it do
+          notification.new_note(note)
+
           should_email(note.noteable.author_id)
           should_email(note.noteable.assignee_id)
           should_email(@u_mentioned.id)
@@ -92,16 +99,15 @@ describe NotificationService do
           should_not_email(note.author_id)
           should_not_email(@u_participating.id)
           should_not_email(@u_disabled.id)
-          notification.new_note(note)
         end
       end
 
       def should_email(user_id)
-        expect(Notify).to receive(:note_issue_email).with(user_id, note.id)
+        expect(sent?(note.noteable.title, user_id)).to be_truthy
       end
 
       def should_not_email(user_id)
-        expect(Notify).not_to receive(:note_issue_email).with(user_id, note.id)
+        expect(sent?(note.noteable.title, user_id)).to be_falsey
       end
     end
 
@@ -117,6 +123,8 @@ describe NotificationService do
 
       describe :new_note do
         it do
+          notification.new_note(note)
+
           # Notify all team members
           note.project.team.members.each do |member|
             # User with disabled notification should not be notified
@@ -130,23 +138,22 @@ describe NotificationService do
           should_not_email(@u_mentioned.id)
           should_not_email(@u_disabled.id)
           should_not_email(@u_not_mentioned.id)
-          notification.new_note(note)
         end
 
         it 'filters out "mentioned in" notes' do
           mentioned_note = SystemNoteService.cross_reference(mentioned_issue, issue, issue.author)
 
-          expect(Notify).not_to receive(:note_issue_email)
           notification.new_note(mentioned_note)
+          expect(deliveries.length).to eq(0)
         end
       end
 
       def should_email(user_id)
-        expect(Notify).to receive(:note_issue_email).with(user_id, note.id)
+        expect(sent?(note.noteable.title, user_id)).to be_truthy
       end
 
       def should_not_email(user_id)
-        expect(Notify).not_to receive(:note_issue_email).with(user_id, note.id)
+        expect(sent?(note.noteable.title, user_id)).to be_falsey
       end
     end
 
@@ -161,38 +168,41 @@ describe NotificationService do
 
       describe :new_note do
         it do
+          notification.new_note(note)
+
           should_email(@u_committer.id, note)
           should_email(@u_watcher.id, note)
           should_not_email(@u_mentioned.id, note)
           should_not_email(note.author_id, note)
           should_not_email(@u_participating.id, note)
           should_not_email(@u_disabled.id, note)
-          notification.new_note(note)
         end
 
         it do
           note.update_attribute(:note, '@mention referenced')
+          notification.new_note(note)
+
           should_email(@u_committer.id, note)
           should_email(@u_watcher.id, note)
           should_email(@u_mentioned.id, note)
           should_not_email(note.author_id, note)
           should_not_email(@u_participating.id, note)
           should_not_email(@u_disabled.id, note)
-          notification.new_note(note)
         end
 
         it do
           @u_committer.update_attributes(notification_level: Notification::N_MENTION)
-          should_not_email(@u_committer.id, note)
           notification.new_note(note)
+
+          should_not_email(@u_committer.id, note)
         end
 
         def should_email(user_id, n)
-          expect(Notify).to receive(:note_commit_email).with(user_id, n.id)
+          expect(sent?(n.noteable.title, user_id)).to be_truthy
         end
 
         def should_not_email(user_id, n)
-          expect(Notify).not_to receive(:note_commit_email).with(user_id, n.id)
+          expect(sent?(n.noteable.title, user_id)).to be_falsey
         end
       end
     end
@@ -209,32 +219,36 @@ describe NotificationService do
 
     describe :new_issue do
       it do
+        notification.new_issue(issue, @u_disabled)
+
         should_email(issue.assignee_id)
         should_email(@u_watcher.id)
         should_email(@u_participant_mentioned.id)
         should_not_email(@u_mentioned.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
-        notification.new_issue(issue, @u_disabled)
       end
 
       it do
         issue.assignee.update_attributes(notification_level: Notification::N_MENTION)
-        should_not_email(issue.assignee_id)
         notification.new_issue(issue, @u_disabled)
+
+        should_not_email(issue.assignee_id)
       end
 
       def should_email(user_id)
-        expect(Notify).to receive(:new_issue_email).with(user_id, issue.id)
+        expect(sent?(issue.title, user_id)).to be_truthy
       end
 
       def should_not_email(user_id)
-        expect(Notify).not_to receive(:new_issue_email).with(user_id, issue.id)
+        expect(sent?(issue.title, user_id)).to be_falsey
       end
     end
 
     describe :reassigned_issue do
       it 'should email new assignee' do
+        notification.reassigned_issue(issue, @u_disabled)
+
         should_email(issue.assignee_id)
         should_email(@u_watcher.id)
         should_email(@u_participant_mentioned.id)
@@ -242,21 +256,21 @@ describe NotificationService do
         should_not_email(@unsubscriber.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
-
-        notification.reassigned_issue(issue, @u_disabled)
       end
 
       def should_email(user_id)
-        expect(Notify).to receive(:reassigned_issue_email).with(user_id, issue.id, nil, @u_disabled.id)
+        expect(sent?(issue.title, user_id)).to be_truthy
       end
 
       def should_not_email(user_id)
-        expect(Notify).not_to receive(:reassigned_issue_email).with(user_id, issue.id, issue.assignee_id, @u_disabled.id)
+        expect(sent?(issue.title, user_id)).to be_falsey
       end
     end
 
     describe :close_issue do
       it 'should sent email to issue assignee and issue author' do
+        notification.close_issue(issue, @u_disabled)
+
         should_email(issue.assignee_id)
         should_email(issue.author_id)
         should_email(@u_watcher.id)
@@ -265,21 +279,21 @@ describe NotificationService do
         should_not_email(@unsubscriber.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
-
-        notification.close_issue(issue, @u_disabled)
       end
 
       def should_email(user_id)
-        expect(Notify).to receive(:closed_issue_email).with(user_id, issue.id, @u_disabled.id)
+        expect(sent?(issue.title, user_id)).to be_truthy
       end
 
       def should_not_email(user_id)
-        expect(Notify).not_to receive(:closed_issue_email).with(user_id, issue.id, @u_disabled.id)
+        expect(sent?(issue.title, user_id)).to be_falsey
       end
     end
 
     describe :reopen_issue do
       it 'should send email to issue assignee and issue author' do
+        notification.reopen_issue(issue, @u_disabled)
+
         should_email(issue.assignee_id)
         should_email(issue.author_id)
         should_email(@u_watcher.id)
@@ -288,16 +302,14 @@ describe NotificationService do
         should_not_email(@unsubscriber.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
-
-        notification.reopen_issue(issue, @u_disabled)
       end
 
       def should_email(user_id)
-        expect(Notify).to receive(:issue_status_changed_email).with(user_id, issue.id, 'reopened', @u_disabled.id)
+        expect(sent?(issue.title, user_id)).to be_truthy
       end
 
       def should_not_email(user_id)
-        expect(Notify).not_to receive(:issue_status_changed_email).with(user_id, issue.id, 'reopened', @u_disabled.id)
+        expect(sent?(issue.title, user_id)).to be_falsey
       end
     end
   end
@@ -313,25 +325,28 @@ describe NotificationService do
 
     describe :new_merge_request do
       it do
+        notification.new_merge_request(merge_request, @u_disabled)
+
         should_email(merge_request.assignee_id)
         should_email(@u_watcher.id)
         should_email(@u_participant_mentioned.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
-        notification.new_merge_request(merge_request, @u_disabled)
       end
 
       def should_email(user_id)
-        expect(Notify).to receive(:new_merge_request_email).with(user_id, merge_request.id)
+        expect(sent?(merge_request.title, user_id)).to be_truthy
       end
 
       def should_not_email(user_id)
-        expect(Notify).not_to receive(:new_merge_request_email).with(user_id, merge_request.id)
+        expect(sent?(merge_request.title, user_id)).to be_falsey
       end
     end
 
     describe :reassigned_merge_request do
       it do
+        notification.reassigned_merge_request(merge_request, merge_request.author)
+
         should_email(merge_request.assignee_id)
         should_email(@u_watcher.id)
         should_email(@u_participant_mentioned.id)
@@ -339,20 +354,20 @@ describe NotificationService do
         should_not_email(@unsubscriber.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
-        notification.reassigned_merge_request(merge_request, merge_request.author)
       end
 
       def should_email(user_id)
-        expect(Notify).to receive(:reassigned_merge_request_email).with(user_id, merge_request.id, nil, merge_request.author_id)
+        expect(sent?(merge_request.title, user_id)).to be_truthy
       end
 
       def should_not_email(user_id)
-        expect(Notify).not_to receive(:reassigned_merge_request_email).with(user_id, merge_request.id, merge_request.assignee_id, merge_request.author_id)
+        expect(sent?(merge_request.title, user_id)).to be_falsey
       end
     end
 
     describe :closed_merge_request do
       it do
+        notification.close_mr(merge_request, @u_disabled)
         should_email(merge_request.assignee_id)
         should_email(@u_watcher.id)
         should_email(@u_participant_mentioned.id)
@@ -360,20 +375,20 @@ describe NotificationService do
         should_not_email(@unsubscriber.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
-        notification.close_mr(merge_request, @u_disabled)
       end
 
       def should_email(user_id)
-        expect(Notify).to receive(:closed_merge_request_email).with(user_id, merge_request.id, @u_disabled.id)
+        expect(sent?(merge_request.title, user_id)).to be_truthy
       end
 
       def should_not_email(user_id)
-        expect(Notify).not_to receive(:closed_merge_request_email).with(user_id, merge_request.id, @u_disabled.id)
+        expect(sent?(merge_request.title, user_id)).to be_falsey
       end
     end
 
     describe :merged_merge_request do
       it do
+        notification.merge_mr(merge_request, @u_disabled)
         should_email(merge_request.assignee_id)
         should_email(@u_watcher.id)
         should_email(@u_participant_mentioned.id)
@@ -381,20 +396,20 @@ describe NotificationService do
         should_not_email(@unsubscriber.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
-        notification.merge_mr(merge_request, @u_disabled)
       end
 
       def should_email(user_id)
-        expect(Notify).to receive(:merged_merge_request_email).with(user_id, merge_request.id, @u_disabled.id)
+        expect(sent?(merge_request.title, user_id)).to be_truthy
       end
 
       def should_not_email(user_id)
-        expect(Notify).not_to receive(:merged_merge_request_email).with(user_id, merge_request.id, @u_disabled.id)
+        expect(sent?(merge_request.title, user_id)).to be_falsey
       end
     end
 
     describe :reopen_merge_request do
       it do
+        notification.reopen_mr(merge_request, @u_disabled)
         should_email(merge_request.assignee_id)
         should_email(@u_watcher.id)
         should_email(@u_participant_mentioned.id)
@@ -402,15 +417,14 @@ describe NotificationService do
         should_not_email(@unsubscriber.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
-        notification.reopen_mr(merge_request, @u_disabled)
       end
 
       def should_email(user_id)
-        expect(Notify).to receive(:merge_request_status_email).with(user_id, merge_request.id, 'reopened', @u_disabled.id)
+        expect(sent?(merge_request.title, user_id)).to be_truthy
       end
 
       def should_not_email(user_id)
-        expect(Notify).not_to receive(:merge_request_status_email).with(user_id, merge_request.id, 'reopened', @u_disabled.id)
+        expect(sent?(merge_request.title, user_id)).to be_falsey
       end
     end
   end
@@ -424,18 +438,18 @@ describe NotificationService do
 
     describe :project_was_moved do
       it do
+        notification.project_was_moved(project, "gitlab/gitlab")
         should_email(@u_watcher.id)
         should_email(@u_participating.id)
         should_not_email(@u_disabled.id)
-        notification.project_was_moved(project, "gitlab/gitlab")
       end
 
       def should_email(user_id)
-        expect(Notify).to receive(:project_was_moved_email).with(project.id, user_id, "gitlab/gitlab")
+        expect(sent?('Project was moved', user_id)).to be_truthy
       end
 
       def should_not_email(user_id)
-        expect(Notify).not_to receive(:project_was_moved_email).with(project.id, user_id, "gitlab/gitlab")
+        expect(sent?('Project was moved', user_id)).to be_falsey
       end
     end
   end
@@ -468,5 +482,14 @@ describe NotificationService do
 
     issuable.subscriptions.create(user: @subscriber, subscribed: true)
     issuable.subscriptions.create(user: @unsubscriber, subscribed: false)
+  end
+
+  def sent?(subject, recipient_id)
+    recipient = User.find(recipient_id)
+
+    deliveries.any? do |delivery|
+      delivery.subject.include?(subject) &&
+        delivery.to.include?(recipient.notification_email)
+    end
   end
 end

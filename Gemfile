@@ -122,7 +122,7 @@ gem 'acts-as-taggable-on', '~> 3.4'
 
 # Background jobs
 gem 'sinatra', '~> 1.4.4', require: nil
-gem 'sidekiq', '3.3.0'
+gem 'sidekiq', '~> 3.5.0'
 gem 'sidetiq', '~> 0.6.3'
 
 # HTTP requests
@@ -216,7 +216,7 @@ group :development do
   gem "letter_opener", '~> 1.1.2'
   gem 'quiet_assets', '~> 1.0.2'
   gem 'rack-mini-profiler', '~> 0.9.0', require: false
-  gem 'rerun', '~> 0.10.0'
+  gem 'rerun', '~> 0.11.0'
   gem 'bullet', require: false
   gem 'active_record_query_trace', require: false
   gem 'rack-lineprof', platform: :mri
