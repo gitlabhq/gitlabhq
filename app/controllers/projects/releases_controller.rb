@@ -7,6 +7,7 @@ class Projects::ReleasesController < Projects::ApplicationController
   before_action :release
 
   def show
+    @commit = @repository.commit(@tag.target)
   end
 
   def edit
