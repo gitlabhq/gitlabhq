@@ -10,14 +10,6 @@ class Projects::TagsController < Projects::ApplicationController
     @tags = Kaminari.paginate_array(sorted).page(params[:page]).per(PER_PAGE)
   end
 
-  def edit
-    # TODO: implement
-  end
-
-  def update
-    # TODO: implement
-  end
-
   def create
     result = CreateTagService.new(@project, current_user).
       execute(params[:tag_name], params[:ref], params[:message])

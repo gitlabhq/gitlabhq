@@ -9,7 +9,7 @@
       &nbsp;
       = strip_gpg_signature(tag.message)
     .controls
-      = link_to edit_namespace_project_tag_path(@project.namespace, @project, tag.name), class: 'btn-grouped btn' do
+      = link_to edit_namespace_project_tag_release_path(@project.namespace, @project, tag.name), class: 'btn-grouped btn' do
         = icon("pencil")
       - if can? current_user, :download_code, @project
         = render 'projects/repositories/download_archive', ref: tag.name, btn_class: 'btn-grouped btn-group-xs'
