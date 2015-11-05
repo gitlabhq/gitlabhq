@@ -24,6 +24,8 @@
 - [Using Docker Images](ci/docker/using_docker_images.md)
 - [Using Docker Build](ci/docker/using_docker_build.md)
 - [Using Variables](ci/variables/README.md)
+- [User permissions](ci/permissions/README.md)
+- [API](ci/api/README.md)
 
 ### CI Examples
 
