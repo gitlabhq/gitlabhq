@@ -128,7 +128,7 @@ class Group < Namespace
   end
 
   def public_profile?
-    projects.public_only.any?
+    self.public || projects.public_only.any?
   end
 
   # NOTE: Backwards compatibility with old ldap situation

@@ -697,24 +697,24 @@ describe User do
       @user1 = create :user, created_at: Date.today - 1, last_sign_in_at: Date.today - 1, name: 'Omega'
     end
 
-    it "sorts users as recently_signed_in" do
+    it "sorts users by the recent sign-in time" do
       expect(User.sort('recent_sign_in').first).to eq(@user)
     end
 
-    it "sorts users as late_signed_in" do
+    it "sorts users by the oldest sign-in time" do
       expect(User.sort('oldest_sign_in').first).to eq(@user1)
     end
 
-    it "sorts users as recently_created" do
+    it "sorts users in descending order by their creation time" do
       expect(User.sort('created_desc').first).to eq(@user)
     end
 
-    it "sorts users as late_created" do
+    it "sorts users in ascending order by their creation time" do
       expect(User.sort('created_asc').first).to eq(@user1)
     end
 
-    it "sorts users by name when nil is passed" do
-      expect(User.sort(nil).first).to eq(@user)
+    it "sorts users by id in descending order when nil is passed" do
+      expect(User.sort(nil).first).to eq(@user1)
     end
   end
 

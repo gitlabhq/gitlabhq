@@ -73,8 +73,9 @@ Now we can choose one or more of the Supported Providers below to continue confi
 - [Bitbucket](bitbucket.md)
 - [GitLab.com](gitlab.md)
 - [Google](google.md)
-- [Shibboleth](shibboleth.md)
+- [Facebook](facebook.md)
 - [Twitter](twitter.md)
+- [Shibboleth](shibboleth.md)
 - [SAML](saml.md)
 - [Crowd](crowd.md)
 

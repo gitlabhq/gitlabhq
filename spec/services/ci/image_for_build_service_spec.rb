@@ -4,8 +4,9 @@ module Ci
   describe ImageForBuildService do
     let(:service) { ImageForBuildService.new }
     let(:project) { FactoryGirl.create(:ci_project) }
-    let(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
-    let(:commit) { FactoryGirl.create(:ci_commit, gl_project: gl_project, ref: 'master') }
+    let(:gl_project) { FactoryGirl.create(:project, gitlab_ci_project: project) }
+    let(:commit_sha) { gl_project.commit('master').sha }
+    let(:commit) { gl_project.ensure_ci_commit(commit_sha) }
     let(:build) { FactoryGirl.create(:ci_build, commit: commit) }
 
     describe :execute do

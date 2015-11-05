@@ -9,7 +9,7 @@ describe Gitlab::ProjectSearchResults do
 
     it { expect(results.project).to eq(project) }
     it { expect(results.repository_ref).to be_nil }
-    it { expect(results.query).to eq('hello\\ world') }
+    it { expect(results.query).to eq('hello world') }
   end
 
   describe 'initialize with ref' do
@@ -18,6 +18,6 @@ describe Gitlab::ProjectSearchResults do
 
     it { expect(results.project).to eq(project) }
     it { expect(results.repository_ref).to eq(ref) }
-    it { expect(results.query).to eq('hello\\ world') }
+    it { expect(results.query).to eq('hello world') }
   end
 end

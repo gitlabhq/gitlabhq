@@ -396,6 +396,36 @@ table {
   }
 }
 
+.center-middle-menu {
+  @include nav-menu;
+  padding: 0;
+  text-align: center;
+  margin: -$gl-padding;
+  margin-top: 0;
+  margin-bottom: 0;
+  height: 58px;
+  border-bottom: 1px solid $border-color;
+
+  li {
+    &:after {
+      content: "|";
+      color: $border-gray-light;
+    }
+
+    &:last-child {
+      &:after {
+        content: none;
+      }
+    }
+
+    > a {
+      display: inline-block;
+      text-transform: uppercase;
+      font-size: 13px;
+    }
+  }
+}
+
 .dropzone .dz-preview .dz-progress {
   border-color: $border-color !important;
 }

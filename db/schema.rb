@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151020173906) do
+ActiveRecord::Schema.define(version: 20151103001141) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -578,6 +578,7 @@ ActiveRecord::Schema.define(version: 20151020173906) do
     t.string   "avatar"
     t.boolean  "membership_lock",       default: false
     t.boolean  "share_with_group_lock", default: false
+    t.boolean  "public",                default: false
   end
 
   add_index "namespaces", ["created_at", "id"], name: "index_namespaces_on_created_at_and_id", using: :btree
@@ -707,6 +708,7 @@ ActiveRecord::Schema.define(version: 20151020173906) do
   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree
   add_index "projects", ["last_activity_at"], name: "index_projects_on_last_activity_at", using: :btree
   add_index "projects", ["namespace_id"], name: "index_projects_on_namespace_id", using: :btree
+  add_index "projects", ["path"], name: "index_projects_on_path", using: :btree
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
 
   create_table "protected_branches", force: true do |t|
@@ -749,6 +751,7 @@ ActiveRecord::Schema.define(version: 20151020173906) do
 
   add_index "services", ["created_at", "id"], name: "index_services_on_created_at_and_id", using: :btree
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
+  add_index "services", ["template"], name: "index_services_on_template", using: :btree
 
   create_table "snippets", force: true do |t|
     t.string   "title"

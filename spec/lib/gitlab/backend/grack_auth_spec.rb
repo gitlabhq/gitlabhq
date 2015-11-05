@@ -50,6 +50,22 @@ describe Grack::Auth do
       end
     end
 
+    context "when the Wiki for a project exists" do
+      before do
+        @wiki = ProjectWiki.new(project)
+        env["PATH_INFO"] = "#{@wiki.repository.path_with_namespace}.git/info/refs"
+        project.update_attribute(:visibility_level, Project::PUBLIC)
+      end
+
+      it "responds with the right project" do
+        response = auth.call(env)
+        json_body = ActiveSupport::JSON.decode(response[2][0])
+
+        expect(response.first).to eq(200)
+        expect(json_body['RepoPath']).to include(@wiki.repository.path_with_namespace)
+      end
+    end
+
     context "when the project exists" do
       before do
         env["PATH_INFO"] = project.path_with_namespace + ".git"
