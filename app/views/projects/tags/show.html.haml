@@ -16,14 +16,17 @@
       .pull-right
         = link_to namespace_project_tag_path(@project.namespace, @project, @tag.name), class: 'btn btn-remove remove-row grouped', method: :delete, data: { confirm: 'Removed tag cannot be restored. Are you sure?'} do
           %i.fa.fa-trash-o
-  - if @tag.message.present?
-    .title
-      %strong= @tag.name
-    = strip_gpg_signature(@tag.message)
+  .title
+    %strong= @tag.name
+    - if @tag.message.present?
+      %span.light
+        &nbsp;
+        = strip_gpg_signature(@tag.message)
+  - if @commit
+    = render 'projects/branches/commit', commit: @commit, project: @project
   - else
-    .oneline
-      .title
-        %strong= @tag.name
+    Cant find HEAD commit for this tag
+
 
 .append-bottom-default.prepend-top-default
   - if @release.description.present?
@@ -33,10 +36,3 @@
           = markdown @release.description
   - else
     This tag has no release notes yet. Press edit button to add one
-
-.gray-content-block.second-block
-  - if @commit
-    = render 'projects/commits/commit', commit: @commit, project: @project
-  - else
-    Cant find HEAD commit for this tag
-
