@@ -16,8 +16,8 @@ In brief, the steps needed to have a working CI can be summed up to:
 1. Configure a Runner
 
 From there on, on every push to your git repository the build will be
-automagically started by the Runner and will appear under the project's
-`/builds` page.
+automagically started by the runner and will appear under the project's `/builds`
+page.
 
 Now, let's break it down to pieces and work on solving the GitLab CI puzzle.
 
