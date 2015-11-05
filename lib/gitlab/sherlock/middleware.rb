@@ -10,6 +10,7 @@ module Gitlab
         @app = app
       end
 
+      # env - A Hash containing Rack environment details.
       def call(env)
         if instrument?(env)
           call_with_instrumentation(env)
@@ -19,7 +20,7 @@ module Gitlab
       end
 
       def call_with_instrumentation(env)
-        trans = Transaction.new(env['REQUEST_METHOD'], env['REQUEST_URI'])
+        trans = transaction_from_env(env)
         retval = trans.run { @app.call(env) }
 
         Sherlock.collection.add(trans)
@@ -30,6 +31,10 @@ module Gitlab
       def instrument?(env)
         !!(env['HTTP_ACCEPT'] =~ CONTENT_TYPES &&
            env['REQUEST_URI'] !~ IGNORE_PATHS)
+      end
+
+      def transaction_from_env(env)
+        Transaction.new(env['REQUEST_METHOD'], env['REQUEST_URI'])
       end
     end
   end

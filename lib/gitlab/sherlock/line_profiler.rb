@@ -1,12 +1,36 @@
 module Gitlab
   module Sherlock
+    # Class for profiling code on a per line basis.
+    #
+    # The LineProfiler class can be used to profile code on per line basis
+    # without littering your code with Ruby implementation specific profiling
+    # methods.
+    #
+    # This profiler only includes samples taking longer than a given threshold
+    # and those that occur in the actual application (e.g. files from Gems are
+    # ignored).
     class LineProfiler
       # The minimum amount of time that has to be spent in a file for it to be
       # included in a list of samples.
       MINIMUM_DURATION = 10.0
 
+      # Profiles the given block.
+      #
+      # Example:
+      #
+      #     profiler = LineProfiler.new
+      #
+      #     retval, samples = profiler.profile do
+      #       "cats are amazing"
+      #     end
+      #
+      #     retval  # => "cats are amazing"
+      #     samples # => [#<Gitlab::Sherlock::FileSample ...>, ...]
+      #
+      # Returns an Array containing the block's return value and an Array of
+      # FileSample objects.
       def profile(&block)
-        if RUBY_ENGINE == 'ruby'
+        if mri?
           profile_mri(&block)
         else
           raise NotImplementedError,
@@ -14,6 +38,7 @@ module Gitlab
         end
       end
 
+      # Profiles the given block using rblineprof (MRI only).
       def profile_mri
         retval  = nil
         samples = lineprof(/^#{Rails.root.to_s}/) { retval = yield }
@@ -24,6 +49,11 @@ module Gitlab
       end
 
       # Returns an Array of file samples based on the output of rblineprof.
+      #
+      # lineprof_stats - A Hash containing rblineprof statistics on a per file
+      #                  basis.
+      #
+      # Returns an Array of FileSample objects.
       def aggregate_rblineprof(lineprof_stats)
         samples = []
 
@@ -52,8 +82,14 @@ module Gitlab
         samples
       end
 
+      private
+
       def microsec_to_millisec(microsec)
         microsec / 1000.0
+      end
+
+      def mri?
+        RUBY_ENGINE == 'ruby'
       end
     end
   end
