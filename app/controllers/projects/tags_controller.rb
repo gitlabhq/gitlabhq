@@ -23,6 +23,13 @@ class Projects::TagsController < Projects::ApplicationController
 
     if result[:status] == :success
       @tag = result[:tag]
+
+      if params[:release_description]
+        release = @project.releases.find_or_initialize_by(tag: @tag.name)
+        release.update_attributes(description: params[:release_description])
+        release.save
+      end
+
       redirect_to namespace_project_tags_path(@project.namespace, @project)
     else
       @error = result[:message]
