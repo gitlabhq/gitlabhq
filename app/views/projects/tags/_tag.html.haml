@@ -1,13 +1,17 @@
 - commit = @repository.commit(tag.target)
+- release = @releases.find { |release| release.tag == tag.name }
 %li
   %div
-    = link_to namespace_project_commits_path(@project.namespace, @project, tag.name), class: "" do
+    = link_to namespace_project_tag_path(@project.namespace, @project, tag.name) do
       %strong
         %i.fa.fa-tag
         = tag.name
     - if tag.message.present?
       &nbsp;
       = strip_gpg_signature(tag.message)
+    - if release
+      %span.label.label-success release
+
     .controls
       = link_to edit_namespace_project_tag_release_path(@project.namespace, @project, tag.name), class: 'btn-grouped btn' do
         = icon("pencil")
@@ -22,3 +26,8 @@
   - else
     %p
       Cant find HEAD commit for this tag
+  - if release && release.description.present?
+    .description.prepend-top-default
+      .wiki
+        = preserve do
+          = markdown release.description

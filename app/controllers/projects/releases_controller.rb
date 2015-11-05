@@ -6,10 +6,6 @@ class Projects::ReleasesController < Projects::ApplicationController
   before_action :tag
   before_action :release
 
-  def show
-    @commit = @repository.commit(@tag.target)
-  end
-
   def edit
   end
 
@@ -18,7 +14,7 @@ class Projects::ReleasesController < Projects::ApplicationController
     release.update_attributes(description: description)
     release.save
 
-    redirect_to namespace_project_tag_release_path(@project.namespace, @project, @tag.name)
+    redirect_to namespace_project_tag_path(@project.namespace, @project, @tag.name)
   end
 
   private

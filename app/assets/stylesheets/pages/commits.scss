@@ -115,3 +115,10 @@ li.commit {
     }
   }
 }
+
+.branch-commit {
+  color: $gl-gray;
+  .commit-id, .commit-row-message {
+    color: $gl-gray;
+  }
+}

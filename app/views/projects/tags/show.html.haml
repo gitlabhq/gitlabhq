@@ -1,4 +1,4 @@
-- page_title @release.tag, "Releases"
+- page_title @tag.name, "Tags"
 = render "projects/commits/header_title"
 = render "projects/commits/head"
 
@@ -6,7 +6,14 @@
   .pull-right
     = link_to edit_namespace_project_tag_release_path(@project.namespace, @project, @tag.name), class: 'btn-grouped btn' do
       = icon("pencil")
-  .oneline Release notes for #{@tag.name}
+  - if @tag.message.present?
+    .title
+      %strong= @tag.name
+    = strip_gpg_signature(@tag.message)
+  - else
+    .oneline
+      .title
+        %strong= @tag.name
 
 .append-bottom-default.prepend-top-default
   - if @release.description.present?
@@ -24,12 +31,14 @@
     Commits
   - if can? current_user, :download_code, @project
     = render 'projects/repositories/download_archive', ref: @tag.name, btn_class: 'btn-grouped'
-  -#- if can?(current_user, :admin_project, @project)
-    = link_to namespace_project_tag_path(@project.namespace, @project, @tag.name), class: 'btn btn-remove remove-row grouped', method: :delete, data: { confirm: 'Removed tag cannot be restored. Are you sure?'}, remote: true do
-      %i.fa.fa-trash-o
+  - if can?(current_user, :admin_project, @project)
+    .pull-right
+      = link_to namespace_project_tag_path(@project.namespace, @project, @tag.name), class: 'btn btn-remove remove-row grouped', method: :delete, data: { confirm: 'Removed tag cannot be restored. Are you sure?'}, remote: true do
+        %i.fa.fa-trash-o
 
 .gray-content-block.second-block
   - if @commit
     = render 'projects/commits/commit', commit: @commit, project: @project
   - else
     Cant find HEAD commit for this tag
+

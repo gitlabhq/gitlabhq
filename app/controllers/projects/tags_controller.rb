@@ -8,6 +8,13 @@ class Projects::TagsController < Projects::ApplicationController
   def index
     sorted = VersionSorter.rsort(@repository.tag_names)
     @tags = Kaminari.paginate_array(sorted).page(params[:page]).per(PER_PAGE)
+    @releases = project.releases.where(tag: @tags)
+  end
+
+  def show
+    @tag = @repository.find_tag(params[:id])
+    @release = @project.releases.find_or_initialize_by(tag: @tag.name)
+    @commit = @repository.commit(@tag.target)
   end
 
   def create
