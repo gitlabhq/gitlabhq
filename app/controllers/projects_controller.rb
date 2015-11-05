@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
   include ExtractsPath
 
-  prepend_before_filter :render_go_import, only: [:show]
+  prepend_before_action :render_go_import, only: [:show]
   skip_before_action :authenticate_user!, only: [:show, :activity]
   before_action :project, except: [:new, :create]
   before_action :repository, except: [:new, :create]
@@ -124,11 +124,7 @@ class ProjectsController < ApplicationController
     ::Projects::DestroyService.new(@project, current_user, {}).execute
     flash[:alert] = "Project '#{@project.name}' was deleted."
 
-    if request.referer.include?('/admin')
-      redirect_to admin_namespaces_projects_path
-    else
-      redirect_to dashboard_projects_path
-    end
+    redirect_back_or_default(default: dashboard_projects_path, options: {})
   rescue Projects::DestroyService::DestroyError => ex
     redirect_to edit_project_path(@project), alert: ex.message
   end

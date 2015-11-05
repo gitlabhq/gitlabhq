@@ -42,6 +42,11 @@ describe SearchHelper do
         expect(search_autocomplete_opts(project.name).size).to eq(1)
       end
 
+      it "includes the public group" do
+        group = create(:group, public: true)
+        expect(search_autocomplete_opts(group.name).size).to eq(1)
+      end
+
       context "with a current project" do
         before { @project = create(:project) }
 

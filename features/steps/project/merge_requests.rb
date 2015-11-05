@@ -460,6 +460,19 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     login_with user
   end
 
+  step '"Bug NS-05" has CI status' do
+    project = merge_request.source_project
+    project.enable_ci
+    ci_commit = create :ci_commit, gl_project: project, sha: merge_request.last_commit.id
+    create :ci_build, commit: ci_commit
+  end
+
+  step 'I should see merge request "Bug NS-05" with CI status' do
+    page.within ".mr-list" do
+      expect(page).to have_link "Build status: pending"
+    end
+  end
+
   def merge_request
     @merge_request ||= MergeRequest.find_by!(title: "Bug NS-05")
   end

@@ -155,7 +155,7 @@
 
       - if @builds.present?
         .build-widget
-          %h4.title #{pluralize(@builds.count, "other build")} for #{@build.short_sha}:
+          %h4.title #{pluralize(@builds.count(:id), "other build")} for #{@build.short_sha}:
           %table.table.builds
             - @builds.each_with_index do |build, i|
               %tr.build

@@ -11,7 +11,7 @@ class Spinach::Features::GroupActiveTab < Spinach::FeatureSteps
 
   step 'the active main tab should be Settings' do
     page.within '.nav-sidebar' do
-      expect(page).to have_content('Back to group')
+      expect(page).to have_content('Go to group')
     end
   end
 

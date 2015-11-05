@@ -83,6 +83,7 @@ If you can, please submit a merge request with the fix or improvements including
 1. Be prepared to answer questions and incorporate feedback even if requests for this arrive weeks or months after your MR submission
 1. If your MR touches code that executes shell commands, make sure it adheres to the [shell command guidelines](    doc/development/shell_commands.md).
 1. Also have a look at the [shell command guidelines](doc/development/shell_commands.md) if your code reads or opens files, or handles paths to files on disk.
+1. If your code creates new files on disk please read the [shared files guidelines](doc/development/shared_files.md).
 
 The **official merge window** is in the beginning of the month from the 1st to the 7th day of the month. The best time to submit a MR and get feedback fast.
 Before this time the GitLab B.V. team is still dealing with work that is created by the monthly release such as regressions requiring patch releases.

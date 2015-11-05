@@ -11,10 +11,10 @@ class @EditBlob
     if ace_mode
       editor.getSession().setMode "ace/mode/" + ace_mode
 
-    $(".js-commit-button").click ->
-      $("#file-content").val editor.getValue()
-      $(".file-editor form").submit()
-      return false
+    # Before a form submission, move the content from the Ace editor into the
+    # submitted textarea
+    $('form').submit ->
+      $("#file-content").val(editor.getValue())
 
     editModePanes = $(".js-edit-mode-pane")
     editModeLinks = $(".js-edit-mode a")

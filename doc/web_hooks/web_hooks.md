@@ -73,7 +73,10 @@ X-Gitlab-Event: Push Hook
       }
     }
   ],
-  "total_commits_count": 4
+  "total_commits_count": 4,
+  "added": ["CHANGELOG"],
+  "modified": ["app/controller/application.rb"],
+  "removed": []
 }
 ```
 
