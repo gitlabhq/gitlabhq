@@ -4,12 +4,12 @@ class GroupsController < Groups::ApplicationController
   before_action :group, except: [:new, :create]
 
   # Authorize
-  before_action :authorize_read_group!, except: [:show, :new, :create]
+  before_action :authorize_read_group!, except: [:show, :new, :create, :autocomplete]
   before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects]
   before_action :authorize_create_group!, only: [:new, :create]
 
   # Load group projects
-  before_action :load_projects, except: [:new, :create, :projects, :edit, :update]
+  before_action :load_projects, except: [:new, :create, :projects, :edit, :update, :autocomplete]
   before_action :event_filter, only: :show
 
   layout :determine_layout
@@ -133,7 +133,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(:name, :description, :path, :avatar)
+    params.require(:group).permit(:name, :description, :path, :avatar, :public)
   end
 
   def load_events
