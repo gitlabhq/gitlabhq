@@ -30,7 +30,7 @@ class Projects::TagsController < Projects::ApplicationController
         release.save
       end
 
-      redirect_to namespace_project_tags_path(@project.namespace, @project)
+      redirect_to namespace_project_tag_path(@project.namespace, @project, @tag.name)
     else
       @error = result[:message]
       render action: 'new'
