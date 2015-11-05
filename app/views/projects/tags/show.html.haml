@@ -6,6 +6,16 @@
   .pull-right
     = link_to edit_namespace_project_tag_release_path(@project.namespace, @project, @tag.name), class: 'btn-grouped btn' do
       = icon("pencil")
+    = link_to namespace_project_tree_path(@project.namespace, @project, @tag.name), class: 'btn btn-grouped' do
+      = icon('files-o')
+    = link_to namespace_project_commits_path(@project.namespace, @project, @tag.name), class: 'btn btn-grouped' do
+      = icon('history')
+    - if can? current_user, :download_code, @project
+      = render 'projects/tags/download', ref: @tag.name, project: @project
+    - if can?(current_user, :admin_project, @project)
+      .pull-right
+        = link_to namespace_project_tag_path(@project.namespace, @project, @tag.name), class: 'btn btn-remove remove-row grouped', method: :delete, data: { confirm: 'Removed tag cannot be restored. Are you sure?'} do
+          %i.fa.fa-trash-o
   - if @tag.message.present?
     .title
       %strong= @tag.name
@@ -23,18 +33,6 @@
           = markdown @release.description
   - else
     This tag has no release notes yet. Press edit button to add one
-
-.gray-content-block.middle-block.clearfix
-  = link_to namespace_project_tree_path(@project.namespace, @project, @tag.name), class: 'btn btn-grouped' do
-    Browse code
-  = link_to namespace_project_commits_path(@project.namespace, @project, @tag.name), class: 'btn btn-grouped' do
-    Commits
-  - if can? current_user, :download_code, @project
-    = render 'projects/repositories/download_archive', ref: @tag.name, btn_class: 'btn-grouped'
-  - if can?(current_user, :admin_project, @project)
-    .pull-right
-      = link_to namespace_project_tag_path(@project.namespace, @project, @tag.name), class: 'btn btn-remove remove-row grouped', method: :delete, data: { confirm: 'Removed tag cannot be restored. Are you sure?'}, remote: true do
-        %i.fa.fa-trash-o
 
 .gray-content-block.second-block
   - if @commit

@@ -39,13 +39,9 @@ class Projects::TagsController < Projects::ApplicationController
 
   def destroy
     DeleteTagService.new(project, current_user).execute(params[:id])
+    release = project.releases.find_by(tag: params[:id])
+    release.destroy if release
 
-    respond_to do |format|
-      format.html do
-        redirect_to namespace_project_tags_path(@project.namespace,
-                                                @project)
-      end
-      format.js
-    end
+    redirect_to namespace_project_tags_path(@project.namespace, @project)
   end
 end

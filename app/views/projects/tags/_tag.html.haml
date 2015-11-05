@@ -4,22 +4,20 @@
   %div
     = link_to namespace_project_tag_path(@project.namespace, @project, tag.name) do
       %strong
-        %i.fa.fa-tag
+        = icon('tag')
         = tag.name
     - if tag.message.present?
       &nbsp;
       = strip_gpg_signature(tag.message)
     - if release
+      &nbsp;
       %span.label.label-success release
 
     .controls
       = link_to edit_namespace_project_tag_release_path(@project.namespace, @project, tag.name), class: 'btn-grouped btn' do
         = icon("pencil")
       - if can? current_user, :download_code, @project
-        = render 'projects/repositories/download_archive', ref: tag.name, btn_class: 'btn-grouped btn-group-xs'
-      - if can?(current_user, :admin_project, @project)
-        = link_to namespace_project_tag_path(@project.namespace, @project, tag.name), class: 'btn btn-xs btn-remove remove-row grouped', method: :delete, data: { confirm: 'Removed tag cannot be restored. Are you sure?'}, remote: true do
-          %i.fa.fa-trash-o
+        = render 'projects/tags/download', ref: tag.name, project: @project
 
   - if commit
     = render 'projects/branches/commit', commit: commit, project: @project
