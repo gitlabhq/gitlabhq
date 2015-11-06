@@ -3,7 +3,9 @@
 
 .gray-content-block
   .oneline
-    Release notes for #{@tag.name}
+    .title
+      Release notes for tag
+      %strong #{@tag.name}
 
 .prepend-top-default
   = form_for(@release, method: :put, url: namespace_project_tag_release_path(@project.namespace, @project, @tag.name), html: { class: 'form-horizontal gfm-form release-form' }) do |f|
