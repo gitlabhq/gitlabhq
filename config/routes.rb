@@ -472,8 +472,9 @@ Gitlab::Application.routes.draw do
         resources :commit, only: [:show], constraints: { id: /[[:alnum:]]{6,40}/ } do
           member do
             get :branches
-            get :ci
-            get :cancel_builds
+            get :builds
+            post :cancel_builds
+            post :retry_builds
           end
         end
 
@@ -588,12 +589,12 @@ Gitlab::Application.routes.draw do
 
         resources :builds, only: [:index, :show] do
           collection do
-            get :cancel_all
+            post :cancel_all
           end
 
           member do
-            get :cancel
             get :status
+            post :cancel
             post :retry
           end
         end

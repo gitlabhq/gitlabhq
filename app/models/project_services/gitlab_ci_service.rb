@@ -71,7 +71,7 @@ class GitlabCiService < CiService
 
   def build_page(sha, ref)
     if project.gitlab_ci_project.present?
-      ci_namespace_project_commit_url(project.namespace, project, sha)
+      builds_namespace_project_commit_url(project.namespace, project, sha)
     end
   end
 

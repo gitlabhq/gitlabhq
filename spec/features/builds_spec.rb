@@ -47,10 +47,11 @@ describe "Builds" do
     end
   end
 
-  describe "GET /:project/builds/:id/cancel_all" do
+  describe "POST /:project/builds/:id/cancel_all" do
     before do
       @build.run!
-      visit cancel_all_namespace_project_builds_path(@gl_project.namespace, @gl_project)
+      visit namespace_project_builds_path(@gl_project.namespace, @gl_project)
+      click_link "Cancel all"
     end
 
     it { expect(page).to have_content 'No builds to show' }
@@ -67,10 +68,11 @@ describe "Builds" do
     it { expect(page).to have_content @commit.git_author_name }
   end
 
-  describe "GET /:project/builds/:id/cancel" do
+  describe "POST /:project/builds/:id/cancel" do
     before do
       @build.run!
-      visit cancel_namespace_project_build_path(@gl_project.namespace, @gl_project, @build)
+      visit namespace_project_build_path(@gl_project.namespace, @gl_project, @build)
+      click_link "Cancel"
     end
 
     it { expect(page).to have_content 'canceled' }
@@ -79,7 +81,9 @@ describe "Builds" do
 
   describe "POST /:project/builds/:id/retry" do
     before do
-      visit cancel_namespace_project_build_path(@gl_project.namespace, @gl_project, @build)
+      @build.run!
+      visit namespace_project_build_path(@gl_project.namespace, @gl_project, @build)
+      click_link "Cancel"
       click_link 'Retry'
     end
 
