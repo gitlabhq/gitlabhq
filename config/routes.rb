@@ -366,6 +366,10 @@ Gitlab::Application.routes.draw do
       get :projects
     end
 
+    collection do
+      get :autocomplete
+    end
+
     scope module: :groups do
       resource :ldap, only: [] do
         member do
