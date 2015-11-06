@@ -29,13 +29,6 @@ Feature: Project Commits Tags
 
   @javascript
   Scenario: I delete a tag
+    Given I visit tag 'v1.1.0' page
     Given I delete tag 'v1.1.0'
     Then I should not see tag 'v1.1.0'
-
-  @javascript
-  Scenario: I delete all tags and see info message
-    Given I delete all tags
-    Then I should see tags info message
-
-  # @wip
-  # Scenario: I can download project by tag

@@ -52,31 +52,18 @@ class Spinach::Features::ProjectCommitsTags < Spinach::FeatureSteps
     expect(page).to have_content 'Tag already exists'
   end
 
+  step "I visit tag 'v1.1.0' page" do
+    click_link 'v1.1.0'
+  end
+
   step "I delete tag 'v1.1.0'" do
-    page.within '.tags' do
-      first('.btn-remove').click
-      sleep 0.05
-    end
+    first('.btn-remove').click
+    sleep 0.05
   end
 
   step "I should not see tag 'v1.1.0'" do
     page.within '.tags' do
       expect(page.all(visible: true)).not_to have_content 'v1.1.0'
-    end
-  end
-
-  step 'I delete all tags' do
-    page.within '.tags' do
-      page.all('.btn-remove').each do |remove|
-        remove.click
-        sleep 0.05
-      end
-    end
-  end
-
-  step 'I should see tags info message' do
-    page.within '.tags' do
-      expect(page).to have_content 'Repository has no tags yet.'
     end
   end
 end
