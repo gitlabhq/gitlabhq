@@ -13,7 +13,7 @@ module JiraServiceHelper
   end
 
   def jira_status_message
-    "JiraService SUCCESS 200: Sucessfully posted to #{jira_api_comment_url}."
+    "JiraService SUCCESS 200: Successfully posted to #{jira_api_comment_url}."
   end
 
   def jira_issue_comments

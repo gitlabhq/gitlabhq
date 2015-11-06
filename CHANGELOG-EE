@@ -4,6 +4,7 @@ v 8.2.0
   - When someone as marked as a required approver for a merge request, an email should be sent
   - Allow configuring the Jira API path (Alex Lossent)
   - Fix "Rebase onto master"
+  - Ensure a comment is properly recorded in JIRA when a merge request is accepted
 
 v 8.1.0 (unreleased)
   - added an issues template (Hannes Rosenögger)

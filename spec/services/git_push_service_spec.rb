@@ -310,14 +310,7 @@ describe GitPushService do
         let(:message) { "this is some work.\n\ncloses JIRA-1" }
 
         it "should initiate one api call to jira server to close the issue" do
-          body = {
-            update: {
-              comment: [{
-                add: {
-                  body: "Issue solved with [#{closing_commit.id}|http://localhost/#{project.path_with_namespace}/commit/#{closing_commit.id}]."
-                }
-              }]
-            },
+          transition_body = {
             transition: {
               id: '2'
             }
@@ -325,7 +318,18 @@ describe GitPushService do
 
           service.execute(project, user, @oldrev, @newrev, @ref)
           expect(WebMock).to have_requested(:post, jira_api_transition_url).with(
-            body: body
+            body: transition_body
+          ).once
+        end
+
+        it "should initiate one api call to jira server to comment on the issue" do
+          comment_body = {
+            body: "Issue solved with [#{closing_commit.id}|http://localhost/#{project.path_with_namespace}/commit/#{closing_commit.id}]."
+          }.to_json
+
+          service.execute(project, user, @oldrev, @newrev, @ref)
+          expect(WebMock).to have_requested(:post, jira_api_comment_url).with(
+            body: comment_body
           ).once
         end
       end
