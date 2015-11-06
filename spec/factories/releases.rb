@@ -2,8 +2,8 @@
 
 FactoryGirl.define do
   factory :release do
-    tag "MyString"
-    description "MyText"
-    project_id 1
+    tag "v1.1.0"
+    description "Awesome release"
+    project
   end
 end

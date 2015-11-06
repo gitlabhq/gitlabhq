@@ -18,6 +18,18 @@ class Spinach::Features::ProjectCommitsTags < Spinach::FeatureSteps
     click_button 'Create tag'
   end
 
+  step 'I submit new tag form with release notes' do
+    fill_in 'tag_name', with: 'v7.0'
+    fill_in 'ref', with: 'master'
+    fill_in 'release_description', with: 'Awesome release notes'
+    click_button 'Create tag'
+  end
+
+  step 'I fill release notes and submit form' do
+    fill_in 'release_description', with: 'Awesome release notes'
+    click_button 'Save changes'
+  end
+
   step 'I submit new tag form with invalid name' do
     fill_in 'tag_name', with: 'v 1.0'
     fill_in 'ref', with: 'master'
@@ -66,5 +78,13 @@ class Spinach::Features::ProjectCommitsTags < Spinach::FeatureSteps
     page.within '.tags' do
       expect(page).not_to have_link 'v1.1.0'
     end
+  end
+
+  step 'I click edit tag link' do
+    click_link 'Edit release notes'
+  end
+
+  step 'I should see tag release notes' do
+    expect(page).to have_content 'Awesome release notes'
   end
 end
