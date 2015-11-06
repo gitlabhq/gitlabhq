@@ -9,9 +9,6 @@
     - if tag.message.present?
       &nbsp;
       = strip_gpg_signature(tag.message)
-    - if release
-      &nbsp;
-      %span.label.label-success release
 
     .controls
       = link_to edit_namespace_project_tag_release_path(@project.namespace, @project, tag.name), class: 'btn-grouped btn' do
