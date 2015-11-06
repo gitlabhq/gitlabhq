@@ -27,7 +27,6 @@ Feature: Project Commits Tags
     And I submit new tag form with tag that already exists
     Then I should see new an error that tag already exists
 
-  @javascript
   Scenario: I delete a tag
     Given I visit tag 'v1.1.0' page
     Given I delete tag 'v1.1.0'
