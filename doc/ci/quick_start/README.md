@@ -21,6 +21,13 @@ page.
 
 Now, let's break it down to pieces and work on solving the GitLab CI puzzle.
 
+## 1. Enable GitLab CI
+
+After creating a new project, the first thing to do is enable the **GitLab CI**
+service in your project's settings if it isn't already enabled.
+
+Read [how to enable the GitLab CI service](enable_ci.md).
+
 ## 1. Creating a `.gitlab-ci.yml` file
 
  **GitLab CI** service is enabled automatically on the first push of a
