@@ -41,7 +41,7 @@
               = icon('compress')
 
         = render 'projects/notes/hints'
-        .help-block (Optional) You can add release notes to your tag. It will be stored in GitLab database and displayed on tags page
+        .help-block (Optional) You can add release notes to your tag. It will be stored in the GitLab database and shown on the tags page
   .form-actions
     = button_tag 'Create tag', class: 'btn btn-create', tabindex: 3
     = link_to 'Cancel', namespace_project_tags_path(@project.namespace, @project), class: 'btn btn-cancel'
