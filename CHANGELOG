@@ -29,7 +29,7 @@ v 8.1.3
   - New design for user profile page
   - Add Facebook authentication
 
-v 8.1.1
+v 8.1.2
   - Fix cloning Wiki repositories via HTTP (Stan Hu)
   - Add migration to remove satellites directory
   - Fix specific runners visibility
@@ -37,7 +37,10 @@ v 8.1.1
   - Require CI jobs to be named
   - Fix CSS for runner status
   - Fix CI badge
-  - Allow developer to manage builds
+  - Add missing project path database index
+
+v 8.1.1
+  - Removed, see 8.1.2
 
 v 8.1.0
   - Ensure MySQL CI limits DB migrations occur after the fields have been created (Stan Hu)
