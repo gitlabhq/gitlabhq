@@ -1,6 +1,9 @@
 - page_title "Continuous Integration", "Graphs"
 = render "header_title"
 = render 'head'
+.gray-content-block
+  %ul.breadcrumb.repo-breadcrumb
+    = commits_breadcrumbs
 #charts.ci-charts
   = render 'projects/graphs/ci/builds'
   = render 'projects/graphs/ci/build_times'

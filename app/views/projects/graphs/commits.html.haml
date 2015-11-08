@@ -1,8 +1,12 @@
 - page_title "Commits", "Graphs"
 = render "header_title"
-.tree-ref-holder
-  = render 'shared/ref_switcher', destination: 'graphs_commits'
-= render 'head'
+= reder 'head'
+
+.gray-content-block
+  .tree-ref-holder
+    = render 'shared/ref_switcher', destination: 'graphs_commits'
+  %ul.breadcrumb.repo-breadcrumb
+    = commits_breadcrumbs
 
 %p.lead
   Commit statistics for
