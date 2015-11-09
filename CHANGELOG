@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.2.0 (unreleased)
+  - Added a GitLab specific profiling tool called "Sherlock" (see GitLab CE merge request #1749)
   - Fix bug where manually merged branches in a MR would end up with an empty diff (Stan Hu)
   - Force update refs/merge-requests/X/head upon a push to the source branch of a merge request (Stan Hu)
   - Improved performance of finding users by one of their Email addresses
@@ -26,6 +27,7 @@ v 8.2.0 (unreleased)
   - Rename "Back to" links to "Go to" because its not always a case it point to place user come from
   - Allow groups to appear in the search results if the group owner allows it
   - New design for project graphs page
+  - Fix incoming email config defaults
 
 v 8.1.3
   - Spread out runner contacted_at updates
