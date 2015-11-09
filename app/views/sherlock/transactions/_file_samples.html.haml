@@ -7,6 +7,7 @@
       %thead
         %tr
           %th= t('sherlock.time_inclusive')
+          %th= t('sherlock.count')
           %th= t('sherlock.path')
           %th
       %tbody
@@ -15,6 +16,7 @@
             %td
               = sample.duration.round(2)
               = t('sherlock.milliseconds')
+            %td= @transaction.view_counts.fetch(sample.file, 1)
             %td= sample.relative_path
             %td
               = link_to(t('sherlock.view'),

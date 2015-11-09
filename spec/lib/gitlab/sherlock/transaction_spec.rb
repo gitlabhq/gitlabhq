@@ -53,6 +53,16 @@ describe Gitlab::Sherlock::Transaction do
     end
   end
 
+  describe '#view_counts' do
+    it 'returns a Hash' do
+      expect(transaction.view_counts).to be_an_instance_of(Hash)
+    end
+
+    it 'sets the default value of a key to 0' do
+      expect(transaction.view_counts['cats.rb']).to be_zero
+    end
+  end
+
   describe '#run' do
     it 'runs the transaction' do
       allow(transaction).to receive(:profile_lines).and_yield
@@ -160,6 +170,53 @@ describe Gitlab::Sherlock::Transaction do
 
         expect(retval).to eq('cats are amazing')
       end
+    end
+  end
+
+  describe '#subscribe_to_active_record' do
+    let(:subscription) { transaction.subscribe_to_active_record }
+    let(:time) { Time.now }
+    let(:query_data) { { sql: 'SELECT 1', binds: [] } }
+
+    after do
+      ActiveSupport::Notifications.unsubscribe(subscription)
+    end
+
+    it 'tracks executed queries' do
+      expect(transaction).to receive(:track_query).
+        with('SELECT 1', [], time, time)
+
+      subscription.publish('test', time, time, nil, query_data)
+    end
+
+    it 'only tracks queries triggered from the transaction thread' do
+      expect(transaction).to_not receive(:track_query)
+
+      Thread.new { subscription.publish('test', time, time, nil, query_data) }.
+        join
+    end
+  end
+
+  describe '#subscribe_to_action_view' do
+    let(:subscription) { transaction.subscribe_to_action_view }
+    let(:time) { Time.now }
+    let(:view_data) { { identifier: 'foo.rb' } }
+
+    after do
+      ActiveSupport::Notifications.unsubscribe(subscription)
+    end
+
+    it 'tracks rendered views' do
+      expect(transaction).to receive(:track_view).with('foo.rb')
+
+      subscription.publish('test', time, time, nil, view_data)
+    end
+
+    it 'only tracks views rendered from the transaction thread' do
+      expect(transaction).to_not receive(:track_view)
+
+      Thread.new { subscription.publish('test', time, time, nil, view_data) }.
+        join
     end
   end
 end

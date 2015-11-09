@@ -34,3 +34,4 @@ en:
     query_plan: Query Plan
     events: Events
     percent: '%'
+    count: Count

@@ -2,7 +2,7 @@ module Gitlab
   module Sherlock
     class Transaction
       attr_reader :id, :type, :path, :queries, :file_samples, :started_at,
-        :finished_at
+        :finished_at, :view_counts
 
       # type - The type of transaction (e.g. "GET", "POST", etc)
       # path - The path of the transaction (e.g. the HTTP request path)
@@ -15,19 +15,18 @@ module Gitlab
         @started_at = nil
         @finished_at = nil
         @thread = Thread.current
+        @view_counts = Hash.new(0)
       end
 
       # Runs the transaction and returns the block's return value.
       def run
         @started_at = Time.now
 
-        subscriber = subscribe_to_active_record
-
-        retval = profile_lines { yield }
+        retval = with_subscriptions do
+          profile_lines { yield }
+        end
 
         @finished_at = Time.now
-
-        ActiveSupport::Notifications.unsubscribe(subscriber)
 
         retval
       end
@@ -81,21 +80,51 @@ module Gitlab
         retval
       end
 
+      def subscribe_to_active_record
+        ActiveSupport::Notifications.subscribe('sql.active_record') do |_, start, finish, _, data|
+          next unless same_thread?
+
+          track_query(data[:sql].strip, data[:binds], start, finish)
+        end
+      end
+
+      def subscribe_to_action_view
+        regex = /render_(template|partial)\.action_view/
+
+        ActiveSupport::Notifications.subscribe(regex) do |_, start, finish, _, data|
+          next unless same_thread?
+
+          track_view(data[:identifier])
+        end
+      end
+
       private
 
       def track_query(query, bindings, start, finish)
         @queries << Query.new_with_bindings(query, bindings, start, finish)
       end
 
-      def subscribe_to_active_record
-        ActiveSupport::Notifications.subscribe('sql.active_record') do |_, start, finish, _, data|
-          # In case somebody uses a multi-threaded server locally (e.g. Puma) we
-          # _only_ want to track queries that originate from the transaction
-          # thread.
-          next unless Thread.current == @thread
+      def track_view(path)
+        @view_counts[path] += 1
+      end
 
-          track_query(data[:sql].strip, data[:binds], start, finish)
-        end
+      def with_subscriptions
+        ar_subscriber = subscribe_to_active_record
+        av_subscriber = subscribe_to_action_view
+
+        retval = yield
+
+        ActiveSupport::Notifications.unsubscribe(ar_subscriber)
+        ActiveSupport::Notifications.unsubscribe(av_subscriber)
+
+        retval
+      end
+
+      # In case somebody uses a multi-threaded server locally (e.g. Puma) we
+      # _only_ want to track notifications that originate from the transaction
+      # thread.
+      def same_thread?
+        Thread.current == @thread
       end
     end
   end
