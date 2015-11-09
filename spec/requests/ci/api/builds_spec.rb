@@ -132,7 +132,7 @@ describe Ci::API::API do
       let(:post_url) { ci_api("/builds/#{build.id}/artifacts") }
       let(:delete_url) { ci_api("/builds/#{build.id}/artifacts") }
       let(:get_url) { ci_api("/builds/#{build.id}/artifacts") }
-      let(:headers) { { "Gitlab-Git-Http-Server" => "1.0" } }
+      let(:headers) { { "GitLab-Workhorse" => "1.0" } }
       let(:headers_with_token) { headers.merge(Ci::API::Helpers::BUILD_TOKEN_HEADER => build.project.token) }
 
       describe "POST /builds/:id/artifacts/authorize" do

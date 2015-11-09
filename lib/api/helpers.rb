@@ -134,7 +134,7 @@ module API
     end
 
     def require_gitlab_workhorse!
-      unless headers['Gitlab-Git-Http-Server'].present? || headers['GitLab-Git-HTTP-Server'].present?
+      unless env['HTTP_GITLAB_WORKHORSE'].present?
         forbidden!('Request should be executed via GitLab Workhorse')
       end
     end

@@ -9,11 +9,11 @@ class ArtifactUploader < CarrierWave::Uploader::Base
   end
 
   def self.artifacts_upload_path
-    File.expand_path('shared/tmp/artifacts-uploads/', Rails.root)
+    File.expand_path('shared/artifacts/tmp/uploads/', Rails.root)
   end
 
   def self.artifacts_cache_path
-    File.expand_path('shared/tmp/artifacts-cache/', Rails.root)
+    File.expand_path('shared/artifacts/tmp/cache/', Rails.root)
   end
 
   def initialize(build, field)
