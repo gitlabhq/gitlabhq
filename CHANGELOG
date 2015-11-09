@@ -14,6 +14,7 @@ v 8.2.0 (unreleased)
   - Use git follow flag for commits page when retrieve history for file or directory
   - Show merge request CI status on merge requests index page
   - Extend yml syntax for only and except to support specifying repository path
+  - Enable shared runners to all new projects
   - Fix: 500 error returned if destroy request without HTTP referer (Kazuki Shimizu)
   - Remove deprecated CI events from project settings page
   - Use issue editor as cross reference comment author when issue is edited with a new mention.
