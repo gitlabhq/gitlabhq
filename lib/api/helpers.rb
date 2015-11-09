@@ -294,19 +294,23 @@ module API
 
     # file helpers
 
-    def uploaded_file!(uploads_path)
-      required_attributes! [:file]
+    def uploaded_file!(field, uploads_path)
+      if params[field]
+        bad_request!("#{field} is not a file") unless params[field].respond_to?(:filename)
+        return params[field]
+      end
 
       # sanitize file paths
-      # this requires for all paths to exist
+      # this requires all paths to exist
+      required_attributes! %W(#{field}.path)
       uploads_path = File.realpath(uploads_path)
-      file_path = File.realpath(params[:file])
+      file_path = File.realpath(params["#{field}.path"])
       bad_request!('Bad file path') unless file_path.start_with?(uploads_path)
 
       UploadedFile.new(
         file_path,
-        params[:filename],
-        params[:filetype] || 'application/octet-stream',
+        params["#{field}.name"],
+        params["#{field}.type"] || 'application/octet-stream',
       )
     end
 

@@ -194,8 +194,14 @@ describe Ci::API::API do
               build.run!
             end
 
-            it do
-              upload_artifacts(file_upload, headers_with_token)
+            it "uses regual file post" do
+              upload_artifacts(file_upload, headers_with_token, false)
+              expect(response.status).to eq(201)
+              expect(json_response["artifacts_file"]["filename"]).to eq(file_upload.original_filename)
+            end
+
+            it "uses accelerated file post" do
+              upload_artifacts(file_upload, headers_with_token, true)
               expect(response.status).to eq(201)
               expect(json_response["artifacts_file"]["filename"]).to eq(file_upload.original_filename)
             end
@@ -263,12 +269,15 @@ describe Ci::API::API do
           end
         end
 
-        def upload_artifacts(file, headers = {})
-          params = {
-            file: file.path,
-            filename: file.original_filename,
-          }
-          post post_url, params, headers
+        def upload_artifacts(file, headers = {}, accelerated = true)
+          if accelerated
+            post post_url, {
+              'file.path' => file.path,
+              'file.name' => file.original_filename
+            }, headers
+          else
+            post post_url, { file: file }, headers
+          end
         end
       end
 
