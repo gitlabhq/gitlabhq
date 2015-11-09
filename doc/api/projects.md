@@ -60,6 +60,7 @@ Parameters:
     "path_with_namespace": "diaspora/diaspora-client",
     "issues_enabled": true,
     "merge_requests_enabled": true,
+    "builds_enabled": true,
     "wiki_enabled": true,
     "snippets_enabled": false,
     "created_at": "2013-09-30T13: 46: 02Z",
@@ -101,6 +102,7 @@ Parameters:
     "path_with_namespace": "brightbox/puppet",
     "issues_enabled": true,
     "merge_requests_enabled": true,
+    "builds_enabled": true,
     "wiki_enabled": true,
     "snippets_enabled": false,
     "created_at": "2013-09-30T13:46:02Z",
@@ -191,6 +193,7 @@ Parameters:
   "path_with_namespace": "diaspora/diaspora-project-site",
   "issues_enabled": true,
   "merge_requests_enabled": true,
+  "builds_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
   "created_at": "2013-09-30T13: 46: 02Z",
@@ -312,6 +315,7 @@ Parameters:
 - `description` (optional) - short project description
 - `issues_enabled` (optional)
 - `merge_requests_enabled` (optional)
+- `builds_enabled` (optional)
 - `wiki_enabled` (optional)
 - `snippets_enabled` (optional)
 - `public` (optional) - if `true` same as setting visibility_level = 20
@@ -334,6 +338,7 @@ Parameters:
 - `default_branch` (optional) - 'master' by default
 - `issues_enabled` (optional)
 - `merge_requests_enabled` (optional)
+- `builds_enabled` (optional)
 - `wiki_enabled` (optional)
 - `snippets_enabled` (optional)
 - `public` (optional) - if `true` same as setting visibility_level = 20
@@ -357,6 +362,7 @@ Parameters:
 - `default_branch` (optional)
 - `issues_enabled` (optional)
 - `merge_requests_enabled` (optional)
+- `builds_enabled` (optional)
 - `wiki_enabled` (optional)
 - `snippets_enabled` (optional)
 - `public` (optional) - if `true` same as setting visibility_level = 20

@@ -84,6 +84,7 @@ production: &base
       merge_requests: true
       wiki: true
       snippets: false
+      builds: true
 
     ## Webhook settings
     # Number of seconds to wait for HTTP response after sending webhook HTTP POST request (default: 10)

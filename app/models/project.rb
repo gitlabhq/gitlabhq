@@ -52,6 +52,7 @@ class Project < ActiveRecord::Base
   default_value_for :visibility_level, gitlab_config_features.visibility_level
   default_value_for :issues_enabled, gitlab_config_features.issues
   default_value_for :merge_requests_enabled, gitlab_config_features.merge_requests
+  default_value_for :builds_enabled, gitlab_config_features.builds
   default_value_for :wiki_enabled, gitlab_config_features.wiki
   default_value_for :wall_enabled, false
   default_value_for :snippets_enabled, gitlab_config_features.snippets
@@ -457,10 +458,6 @@ class Project < ActiveRecord::Base
     list.find { |service| service.to_param == name }
   end
 
-  def gitlab_ci?
-    gitlab_ci_service && gitlab_ci_service.active && gitlab_ci_project.present?
-  end
-
   def ci_services
     services.select { |service| service.category == :ci }
   end
@@ -782,9 +779,23 @@ class Project < ActiveRecord::Base
     )
   end
 
-  def enable_ci
+  # TODO: this should be migrated to Project table,
+  # the same as issues_enabled
+  def builds_enabled
+    gitlab_ci_service && gitlab_ci_service.active
+  end
+
+  def builds_enabled?
+    builds_enabled
+  end
+
+  def builds_enabled=(value)
     service = gitlab_ci_service || create_gitlab_ci_service
-    service.active = true
+    service.active = value
     service.save
+  end
+
+  def enable_ci
+    self.builds_enabled = true
   end
 end
