@@ -40,6 +40,8 @@ module Gitlab
 
       # Profiles the given block using rblineprof (MRI only).
       def profile_mri
+        require 'rblineprof'
+
         retval  = nil
         samples = lineprof(/^#{Rails.root.to_s}/) { retval = yield }
 

@@ -1,5 +1,4 @@
 require 'securerandom'
-require 'rblineprof' if RUBY_ENGINE == 'ruby'
 
 module Gitlab
   module Sherlock
