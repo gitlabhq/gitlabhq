@@ -362,7 +362,8 @@ class NotificationService
 
   def reassign_resource_email(target, project, current_user, method)
     assignee_id_was = previous_record(target, "assignee_id")
-    recipients = build_recipients(target, project, current_user)
+    previous_assignee = User.find(assignee_id_was)
+    recipients = build_recipients(target, project, current_user, [previous_assignee])
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id, assignee_id_was, current_user.id)
@@ -377,8 +378,9 @@ class NotificationService
     end
   end
 
-  def build_recipients(target, project, current_user)
+  def build_recipients(target, project, current_user, previous_records = nil )
     recipients = target.participants(current_user)
+    recipients.concat(previous_records).compact.uniq if previous_records
 
     recipients = add_project_watchers(recipients, project)
     recipients = reject_mention_users(recipients, project)
