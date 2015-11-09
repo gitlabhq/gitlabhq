@@ -2,8 +2,6 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.2.0 (unreleased)
   - Added a GitLab specific profiling tool called "Sherlock" (see GitLab CE merge request #1749)
-  - Fix bug where manually merged branches in a MR would end up with an empty diff (Stan Hu)
-  - Force update refs/merge-requests/X/head upon a push to the source branch of a merge request (Stan Hu)
   - Improved performance of finding users by one of their Email addresses
   - Improved performance of replacing references in comments
   - Show last project commit to default branch on project home page
@@ -19,7 +17,6 @@ v 8.2.0 (unreleased)
   - Enable shared runners to all new projects
   - Fix: 500 error returned if destroy request without HTTP referer (Kazuki Shimizu)
   - Remove deprecated CI events from project settings page
-  - Use issue editor as cross reference comment author when issue is edited with a new mention.
   - [API] Add ability to fetch the commit ID of the last commit that actually touched a file
   - Add "New file" link to dropdown on project page
   - Include commit logs in project search
@@ -29,9 +26,14 @@ v 8.2.0 (unreleased)
   - New design for project graphs page
   - Fix incoming email config defaults
 
+v 8.1.4
+  - Fix bug where manually merged branches in a MR would end up with an empty diff (Stan Hu)
+  - Prevent redirect loop when home_page_url is set to the root URL
+
 v 8.1.3
+  - Force update refs/merge-requests/X/head upon a push to the source branch of a merge request (Stan Hu)
   - Spread out runner contacted_at updates
-  - New design for user profile page
+  - Use issue editor as cross reference comment author when issue is edited with a new mention
   - Add Facebook authentication
 
 v 8.1.1
