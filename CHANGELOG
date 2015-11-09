@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.2.0 (unreleased)
   - Added a GitLab specific profiling tool called "Sherlock" (see GitLab CE merge request #1749)
+  - Upgrade gitlab_git to 7.2.20 and rugged to 0.23.3 (Stan Hu)
   - Fix bug where manually merged branches in a MR would end up with an empty diff (Stan Hu)
   - Force update refs/merge-requests/X/head upon a push to the source branch of a merge request (Stan Hu)
   - Improved performance of finding users by one of their Email addresses
