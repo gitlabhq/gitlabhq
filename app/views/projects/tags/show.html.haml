@@ -4,8 +4,9 @@
 
 .gray-content-block
   .pull-right
-    = link_to edit_namespace_project_tag_release_path(@project.namespace, @project, @tag.name), class: 'btn-grouped btn', title: 'Edit release notes' do
-      = icon("pencil")
+    - if can?(current_user, :push_code, @project)
+      = link_to edit_namespace_project_tag_release_path(@project.namespace, @project, @tag.name), class: 'btn-grouped btn', title: 'Edit release notes' do
+        = icon("pencil")
     = link_to namespace_project_tree_path(@project.namespace, @project, @tag.name), class: 'btn btn-grouped', title: 'Browse source code' do
       = icon('files-o')
     = link_to namespace_project_commits_path(@project.namespace, @project, @tag.name), class: 'btn btn-grouped', title: 'Browse commits' do
@@ -35,4 +36,4 @@
         = preserve do
           = markdown @release.description
   - else
-    This tag has no release notes yet. Press edit button to add one
+    This tag has no release notes.
