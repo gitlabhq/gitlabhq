@@ -100,7 +100,7 @@ FROM users;
         ['  -> Index Only Scan using index_cats_are_amazing']
       ]
 
-      result = double(:result, :values => lines)
+      result = double(:result, values: lines)
 
       allow(query).to receive(:raw_explain).and_return(result)
 
