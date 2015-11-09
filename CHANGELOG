@@ -24,6 +24,7 @@ v 8.2.0 (unreleased)
   - Add "added", "modified" and "removed" properties to commit object in webhook
   - Rename "Back to" links to "Go to" because its not always a case it point to place user come from
   - Allow groups to appear in the search results if the group owner allows it
+  - Fix incoming email config defaults
 
 v 8.1.3
   - Spread out runner contacted_at updates
