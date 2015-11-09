@@ -33,6 +33,8 @@ FactoryGirl.define do
 
     gl_project factory: :empty_project
 
+    shared_runners_enabled false
+
     factory :ci_project do
       token 'iPWx6WM4lhHNedGfBpPJNP'
     end

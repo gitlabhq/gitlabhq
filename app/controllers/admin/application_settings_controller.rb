@@ -57,6 +57,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :version_check_enabled,
       :admin_notification_email,
       :user_oauth_applications,
+      :shared_runners_enabled,
       restricted_visibility_levels: [],
       import_sources: []
     )

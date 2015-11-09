@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.2.0 (unreleased)
+  - Fix bug where manually merged branches in a MR would end up with an empty diff (Stan Hu)
   - Force update refs/merge-requests/X/head upon a push to the source branch of a merge request (Stan Hu)
   - Improved performance of finding users by one of their Email addresses
   - Improved performance of replacing references in comments
@@ -14,6 +15,7 @@ v 8.2.0 (unreleased)
   - Use git follow flag for commits page when retrieve history for file or directory
   - Show merge request CI status on merge requests index page
   - Extend yml syntax for only and except to support specifying repository path
+  - Enable shared runners to all new projects
   - Fix: 500 error returned if destroy request without HTTP referer (Kazuki Shimizu)
   - Remove deprecated CI events from project settings page
   - Use issue editor as cross reference comment author when issue is edited with a new mention.
