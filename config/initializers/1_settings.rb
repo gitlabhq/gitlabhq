@@ -189,8 +189,8 @@ Settings.gitlab_ci['builds_path']         = File.expand_path(Settings.gitlab_ci[
 Settings['incoming_email'] ||= Settingslogic.new({})
 Settings.incoming_email['enabled']    = false if Settings.incoming_email['enabled'].nil?
 Settings.incoming_email['port']       = 143 if Settings.incoming_email['port'].nil?
-Settings.incoming_email['ssl']        = 143 if Settings.incoming_email['ssl'].nil?
-Settings.incoming_email['start_tls']  = 143 if Settings.incoming_email['start_tls'].nil?
+Settings.incoming_email['ssl']        = false if Settings.incoming_email['ssl'].nil?
+Settings.incoming_email['start_tls']  = false if Settings.incoming_email['start_tls'].nil?
 Settings.incoming_email['mailbox']    = "inbox" if Settings.incoming_email['mailbox'].nil?
 
 #
