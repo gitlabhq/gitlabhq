@@ -40,7 +40,7 @@ gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 7.2.19'
+gem "gitlab_git", '~> 7.2.20'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -51,11 +51,7 @@ gem 'gitlab_omniauth-ldap', '~> 1.2.1', require: "omniauth-ldap"
 gem 'gollum-lib', '~> 4.0.2'
 
 # Language detection
-# GitLab fork of linguist does not require pygments/python dependency.
-# New version of original gem also dropped pygments support but it has strict
-# dependency to unstable rugged version. We have internal issue for replacing
-# fork with original gem when we meet on same rugged version - https://dev.gitlab.org/gitlab/gitlabhq/issues/2052.
-gem "gitlab-linguist", "~> 3.0.1", require: "linguist"
+gem "github-linguist", "~> 4.7.0", require: "linguist"
 
 # API
 gem 'grape',        '~> 0.6.1'
@@ -185,7 +181,7 @@ gem 'ace-rails-ap', '~> 2.0.1'
 gem 'mousetrap-rails', '~> 1.4.6'
 
 # Detect and convert string character encoding
-gem 'charlock_holmes', '~> 0.6.9.4'
+gem 'charlock_holmes', '~> 0.7.3'
 
 gem "sass-rails", '~> 4.0.5'
 gem "coffee-rails", '~> 4.1.0'
