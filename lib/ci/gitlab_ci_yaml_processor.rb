@@ -160,11 +160,17 @@ module Ci
         raise ValidationError, "#{name} job: except parameter should be an array of strings"
       end
 
-      if job[:artifacts] && !validate_array_of_strings(job[:artifacts])
-        raise ValidationError, "#{name}: artifacts parameter should be an array of strings"
+      if job[:artifacts]
+        if job[:artifacts][:untracked] && !validate_boolean(job[:artifacts][:untracked])
+          raise ValidationError, "#{name} job: artifacts:untracked parameter should be an boolean"
+        end
+
+        if job[:artifacts][:paths] && !validate_array_of_strings(job[:artifacts][:paths])
+          raise ValidationError, "#{name} job: artifacts:paths parameter should be an array of strings"
+        end
       end
 
-      if job[:allow_failure] && !job[:allow_failure].in?([true, false])
+      if job[:allow_failure] && !validate_boolean(job[:allow_failure])
         raise ValidationError, "#{name} job: allow_failure parameter should be an boolean"
       end
 
@@ -185,6 +191,10 @@ module Ci
 
     def validate_string(value)
       value.is_a?(String) || value.is_a?(Symbol)
+    end
+
+    def validate_boolean(value)
+      value.in?([true, false])
     end
 
     def process?(only_params, except_params, ref, tag)

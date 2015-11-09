@@ -339,7 +339,10 @@ module Ci
                              image:         "ruby:2.1",
                              services:      ["mysql"],
                              before_script: ["pwd"],
-                             rspec:         { artifacts: ["logs/", "binaries/"], script: "rspec" }
+                             rspec:         {
+                               artifacts: { paths: ["logs/", "binaries/"], untracked: true },
+                               script: "rspec"
+                             }
                            })
 
         config_processor = GitlabCiYamlProcessor.new(config)
@@ -356,7 +359,10 @@ module Ci
           options: {
             image: "ruby:2.1",
             services: ["mysql"],
-            artifacts: ["logs/", "binaries/"]
+            artifacts: {
+              paths: ["logs/", "binaries/"],
+              untracked: true
+            }
           },
           when: "on_success",
           allow_failure: false
@@ -523,11 +529,18 @@ module Ci
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: when parameter should be on_success, on_failure or always")
       end
 
-      it "returns errors if job artifacts is not an array of strings" do
-        config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", artifacts: "string" } })
+      it "returns errors if job artifacts:untracked is not an array of strings" do
+        config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", artifacts: { untracked: "string" } } })
         expect do
           GitlabCiYamlProcessor.new(config)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts parameter should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts:untracked parameter should be an boolean")
+      end
+
+      it "returns errors if job artifacts:paths is not an array of strings" do
+        config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", artifacts: { paths: "string" } } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts:paths parameter should be an array of strings")
       end
     end
   end
