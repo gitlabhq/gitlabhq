@@ -11,8 +11,10 @@ class DeleteTagService < BaseService
     end
 
     if repository.rm_tag(tag_name)
+      release = project.releases.find_by(tag: tag_name)
+      release.destroy if release
+
       push_data = build_push_data(tag)
-      
       EventCreateService.new.push(project, current_user, push_data)
       project.execute_hooks(push_data.dup, :tag_push_hooks)
       project.execute_services(push_data.dup, :tag_push_hooks)

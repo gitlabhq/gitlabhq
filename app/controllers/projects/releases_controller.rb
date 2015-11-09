@@ -10,9 +10,7 @@ class Projects::ReleasesController < Projects::ApplicationController
   end
 
   def update
-    description = params[:release][:description]
-    release.update_attributes(description: description)
-    release.save
+    release.update_attributes(release_params)
 
     redirect_to namespace_project_tag_path(@project.namespace, @project, @tag.name)
   end
@@ -25,5 +23,9 @@ class Projects::ReleasesController < Projects::ApplicationController
 
   def release
     @release ||= @project.releases.find_or_initialize_by(tag: @tag.name)
+  end
+
+  def release_params
+    params.require(:release).permit(:description)
   end
 end
