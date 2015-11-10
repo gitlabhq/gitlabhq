@@ -1,24 +1,26 @@
-%h3 Shared runners
+%h3 Shared Runners
 
 .bs-callout.bs-callout-warning.shared-runners-description
   - if shared_runners_text.present?
     = markdown(shared_runners_text, pipeline: 'plain_markdown')
   - else
-    Shared runners execute code of different projects on the same Runner unless you configure GitLab Runner Autoscale with MaxBuilds 1 (which it is on GitLab.com).
+    GitLab Shared Runners execute code of different projects on the same Runner
+    unless you configure GitLab Runner Autoscale with MaxBuilds 1 (which it is
+    on GitLab.com).
   %hr
   - if @project.shared_runners_enabled?
     = link_to toggle_shared_runners_namespace_project_runners_path(@project.namespace, @project), class: 'btn btn-warning', method: :post do
-      Disable shared runners
+      Disable shared Runners
   - else
     = link_to toggle_shared_runners_namespace_project_runners_path(@project.namespace, @project), class: 'btn btn-success', method: :post do
-      Enable shared runners
+      Enable shared Runners
   &nbsp; for this project
 
 - if @shared_runners_count.zero?
-  This GitLab server does not provide any shared runners yet.
-  Please use specific runners or ask the administrator to create one.
+  This GitLab server does not provide any shared Runners yet.
+  Please use the specific Runners or ask your administrator to create one.
 - else
-  %h4.underlined-title Available shared runners - #{@shared_runners_count}
+  %h4.underlined-title Available shared Runners : #{@shared_runners_count}
   %ul.bordered-list.available-shared-runners
     = render partial: 'runner', collection: @shared_runners, as: :runner
   - if @shared_runners_count > 10
