@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151026182941) do
+ActiveRecord::Schema.define(version: 20151103133339) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 20151026182941) do
     t.text     "import_sources"
     t.text     "help_page_text"
     t.string   "admin_notification_email"
+    t.boolean  "shared_runners_enabled",       default: true,  null: false
   end
 
   create_table "audit_events", force: true do |t|
@@ -501,14 +502,15 @@ ActiveRecord::Schema.define(version: 20151026182941) do
   add_index "milestones", ["project_id"], name: "index_milestones_on_project_id", using: :btree
 
   create_table "namespaces", force: true do |t|
-    t.string   "name",                     null: false
-    t.string   "path",                     null: false
+    t.string   "name",                        null: false
+    t.string   "path",                        null: false
     t.integer  "owner_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "type"
-    t.string   "description", default: "", null: false
+    t.string   "description", default: "",    null: false
     t.string   "avatar"
+    t.boolean  "public",      default: false
   end
 
   add_index "namespaces", ["created_at", "id"], name: "index_namespaces_on_created_at_and_id", using: :btree
@@ -667,6 +669,7 @@ ActiveRecord::Schema.define(version: 20151026182941) do
 
   add_index "services", ["created_at", "id"], name: "index_services_on_created_at_and_id", using: :btree
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
+  add_index "services", ["template"], name: "index_services_on_template", using: :btree
 
   create_table "snippets", force: true do |t|
     t.string   "title"

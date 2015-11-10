@@ -2,6 +2,19 @@ require 'sidekiq/web'
 require 'api/api'
 
 Gitlab::Application.routes.draw do
+  if Gitlab::Sherlock.enabled?
+    namespace :sherlock do
+      resources :transactions, only: [:index, :show] do
+        resources :queries, only: [:show]
+        resources :file_samples, only: [:show]
+
+        collection do
+          delete :destroy_all
+        end
+      end
+    end
+  end
+
   namespace :ci do
     # CI API
     Ci::API::API.logger Rails.logger
@@ -472,8 +485,9 @@ Gitlab::Application.routes.draw do
         resources :commit, only: [:show], constraints: { id: /[[:alnum:]]{6,40}/ } do
           member do
             get :branches
-            get :ci
-            get :cancel_builds
+            get :builds
+            post :cancel_builds
+            post :retry_builds
           end
         end
 
@@ -588,12 +602,12 @@ Gitlab::Application.routes.draw do
 
         resources :builds, only: [:index, :show] do
           collection do
-            get :cancel_all
+            post :cancel_all
           end
 
           member do
-            get :cancel
             get :status
+            post :cancel
             post :retry
           end
         end

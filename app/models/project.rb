@@ -37,6 +37,7 @@ class Project < ActiveRecord::Base
   include Gitlab::ConfigHelper
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
+  include Gitlab::CurrentSettings
   include Referable
   include Sortable
   include AfterCommitQueue
@@ -775,7 +776,9 @@ class Project < ActiveRecord::Base
   end
 
   def ensure_gitlab_ci_project
-    gitlab_ci_project || create_gitlab_ci_project
+    gitlab_ci_project || create_gitlab_ci_project(
+      shared_runners_enabled: current_application_settings.shared_runners_enabled
+    )
   end
 
   def enable_ci
