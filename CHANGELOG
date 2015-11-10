@@ -27,6 +27,7 @@ v 8.2.0 (unreleased)
   - Rename "Back to" links to "Go to" because its not always a case it point to place user come from
   - Allow groups to appear in the search results if the group owner allows it
   - New design for project graphs page
+  - Remove deprecated dumped yaml file generated from previous job definitions
   - Fix incoming email config defaults
 
 v 8.1.4

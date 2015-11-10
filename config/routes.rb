@@ -32,7 +32,6 @@ Gitlab::Application.routes.draw do
         get :status, to: 'projects#badge'
         get :integration
         post :toggle_shared_runners
-        get :dumped_yaml
       end
 
       resources :runner_projects, only: [:create, :destroy]
