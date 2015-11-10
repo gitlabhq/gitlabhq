@@ -16,6 +16,7 @@ v 8.2.0 (unreleased)
   - Fix: Inability to reply to code comments in the MR view, if the MR comes from a fork
   - Use git follow flag for commits page when retrieve history for file or directory
   - Show merge request CI status on merge requests index page
+  - Send build name and stage in CI notification e-mail
   - Extend yml syntax for only and except to support specifying repository path
   - Enable shared runners to all new projects
   - Fix: 500 error returned if destroy request without HTTP referer (Kazuki Shimizu)
