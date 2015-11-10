@@ -144,13 +144,13 @@ describe Ci::API::API do
           it "using token as parameter" do
             post authorize_url, { token: build.project.token }, headers
             expect(response.status).to eq(200)
-            expect(json_response["temp_path"]).to_not be_nil
+            expect(json_response["TempPath"]).to_not be_nil
           end
 
           it "using token as header" do
             post authorize_url, {}, headers_with_token
             expect(response.status).to eq(200)
-            expect(json_response["temp_path"]).to_not be_nil
+            expect(json_response["TempPath"]).to_not be_nil
           end
         end
 
