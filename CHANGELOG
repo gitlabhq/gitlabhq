@@ -28,6 +28,7 @@ v 8.2.0 (unreleased)
   - Allow groups to appear in the search results if the group owner allows it
   - New design for project graphs page
   - Fix incoming email config defaults
+  - Improve Continuous Integration graphs page
 
 v 8.1.4
   - Fix bug where manually merged branches in a MR would end up with an empty diff (Stan Hu)
