@@ -18,6 +18,18 @@ class Spinach::Features::ProjectCommitsTags < Spinach::FeatureSteps
     click_button 'Create tag'
   end
 
+  step 'I submit new tag form with release notes' do
+    fill_in 'tag_name', with: 'v7.0'
+    fill_in 'ref', with: 'master'
+    fill_in 'release_description', with: 'Awesome release notes'
+    click_button 'Create tag'
+  end
+
+  step 'I fill release notes and submit form' do
+    fill_in 'release_description', with: 'Awesome release notes'
+    click_button 'Save changes'
+  end
+
   step 'I submit new tag form with invalid name' do
     fill_in 'tag_name', with: 'v 1.0'
     fill_in 'ref', with: 'master'
@@ -52,31 +64,27 @@ class Spinach::Features::ProjectCommitsTags < Spinach::FeatureSteps
     expect(page).to have_content 'Tag already exists'
   end
 
+  step "I visit tag 'v1.1.0' page" do
+    click_link 'v1.1.0'
+  end
+
   step "I delete tag 'v1.1.0'" do
-    page.within '.tags' do
+    page.within('.content') do
       first('.btn-remove').click
-      sleep 0.05
     end
   end
 
   step "I should not see tag 'v1.1.0'" do
     page.within '.tags' do
-      expect(page.all(visible: true)).not_to have_content 'v1.1.0'
+      expect(page).not_to have_link 'v1.1.0'
     end
   end
 
-  step 'I delete all tags' do
-    page.within '.tags' do
-      page.all('.btn-remove').each do |remove|
-        remove.click
-        sleep 0.05
-      end
-    end
+  step 'I click edit tag link' do
+    click_link 'Edit release notes'
   end
 
-  step 'I should see tags info message' do
-    page.within '.tags' do
-      expect(page).to have_content 'Repository has no tags yet.'
-    end
+  step 'I should see tag release notes' do
+    expect(page).to have_content 'Awesome release notes'
   end
 end

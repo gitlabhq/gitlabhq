@@ -122,6 +122,7 @@ class Project < ActiveRecord::Base
   has_many :starrers, through: :users_star_projects, source: :user
   has_many :ci_commits, dependent: :destroy, class_name: 'Ci::Commit', foreign_key: :gl_project_id
   has_many :ci_builds, through: :ci_commits, source: :builds, dependent: :destroy, class_name: 'Ci::Build'
+  has_many :releases, dependent: :destroy
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
   has_one :gitlab_ci_project, dependent: :destroy, class_name: "Ci::Project", foreign_key: :gitlab_id
@@ -248,7 +249,7 @@ class Project < ActiveRecord::Base
         joins(:namespace).
         iwhere('namespaces.path' => namespace_path)
 
-      projects.where('projects.path' => project_path).take || 
+      projects.where('projects.path' => project_path).take ||
         projects.iwhere('projects.path' => project_path).take
     end
 

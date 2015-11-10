@@ -9,9 +9,9 @@
 .bs-callout {
   margin: 20px 0;
   padding: 20px;
-  border-left: 3px solid #eee;
-  color: #666;
-  background: #f9f9f9;
+  border-left: 3px solid $border-color;
+  color: $text-color;
+  background: $background-color;
 }
 .bs-callout h4 {
   margin-top: 0;

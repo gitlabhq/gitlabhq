@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151103133339) do
+ActiveRecord::Schema.define(version: 20151105094515) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -638,6 +638,17 @@ ActiveRecord::Schema.define(version: 20151103133339) do
   end
 
   add_index "protected_branches", ["project_id"], name: "index_protected_branches_on_project_id", using: :btree
+
+  create_table "releases", force: true do |t|
+    t.string   "tag"
+    t.text     "description"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "releases", ["project_id", "tag"], name: "index_releases_on_project_id_and_tag", using: :btree
+  add_index "releases", ["project_id"], name: "index_releases_on_project_id", using: :btree
 
   create_table "sent_notifications", force: true do |t|
     t.integer "project_id"
