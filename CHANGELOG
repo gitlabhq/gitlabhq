@@ -18,6 +18,7 @@ v 8.2.0 (unreleased)
   - Show merge request CI status on merge requests index page
   - Extend yml syntax for only and except to support specifying repository path
   - Enable shared runners to all new projects
+  - Allow to define cache in `.gitlab-ci.yml`
   - Fix: 500 error returned if destroy request without HTTP referer (Kazuki Shimizu)
   - Remove deprecated CI events from project settings page
   - [API] Add ability to fetch the commit ID of the last commit that actually touched a file
