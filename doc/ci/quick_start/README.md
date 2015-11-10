@@ -120,8 +120,6 @@ Notice that there are two jobs pending which are named after what we wrote in
 `.gitlab-ci.yml`. The red triangle indicates that there is no Runner configured
 yet for these builds.
 
-The next step is to configure a Runner so that it picks the pending jobs.
-
 ## 2. Configuring a Runner
 
 In GitLab, Runners run the builds that you define in `.gitlab-ci.yml`.
