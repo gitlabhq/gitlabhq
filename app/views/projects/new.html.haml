@@ -124,9 +124,11 @@
       Creating project &amp; repository.
     %p Please wait a moment, this page will automatically refresh when ready.
 
-:coffeescript
-  $('.how_to_import_link').bind 'click', (e) ->
-    e.preventDefault()
-    import_modal = $(this).next(".modal").show()
-  $('.modal-header .close').bind 'click', ->
-    $(".modal").hide()
+:javascript
+  $('.how_to_import_link').bind('click', function (e) {
+    e.preventDefault();
+    var import_modal = $(this).next(".modal").show();
+  });
+  $('.modal-header .close').bind('click', function() {
+    $(".modal").hide();
+  });
