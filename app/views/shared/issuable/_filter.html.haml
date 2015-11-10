@@ -60,9 +60,9 @@
           = hidden_field_tag :state_event, params[:state_event]
           = button_tag "Update issues", class: "btn update_selected_issues btn-save"
 
-:coffeescript
-  new UsersSelect()
-
-  $('form.filter-form').on 'submit', (event) ->
-    event.preventDefault()
-    Turbolinks.visit @.action + '&' + $(@).serialize()
+:javascript
+  new UsersSelect();
+  $('form.filter-form').on('submit', function (event) {
+    event.preventDefault();
+    Turbolinks.visit(this.action + '&' + $(this).serialize());
+  });

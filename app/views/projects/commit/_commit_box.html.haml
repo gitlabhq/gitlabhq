@@ -55,5 +55,5 @@
     %pre.commit-description
       = preserve(gfm(escape_once(@commit.description)))
 
-:coffeescript
-  $(".commit-info-row.branches").load("#{branches_namespace_project_commit_path(@project.namespace, @project, @commit.id)}")
+:javascript
+  $(".commit-info-row.branches").load("#{branches_namespace_project_commit_path(@project.namespace, @project, @commit.id)}");

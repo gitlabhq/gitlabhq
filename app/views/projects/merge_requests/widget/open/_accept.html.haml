@@ -20,8 +20,9 @@
           text: @merge_request.merge_commit_message,
           rows: 14, hint: true
 
-  :coffeescript
-    $('.accept-mr-form').on 'ajax:before', ->
-      btn = $('.accept_merge_request')
-      btn.disable()
-      btn.html("<i class='fa fa-spinner fa-spin'></i> Merge in progress")
+  :javascript
+    $('.accept-mr-form').on('ajax:before', function() {
+      var btn = $('.accept_merge_request');
+      btn.disable();
+      btn.html("<i class='fa fa-spinner fa-spin'></i> Merge in progress");
+    });
