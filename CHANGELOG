@@ -5,6 +5,7 @@ v 8.1.4
   - Prevent redirect loop when home_page_url is set to the root URL
   - Fix incoming email config defaults
   - Make color of "Accept Merge Request" button consistent with current build status
+  - Remove CSS property preventing hard tabs from rendering in Chromium 45 (Stan Hu)
 
 v 8.1.3
   - Force update refs/merge-requests/X/head upon a push to the source branch of a merge request (Stan Hu)
