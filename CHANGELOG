@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.2.0 (unreleased)
   - Remove CSS property preventing hard tabs from rendering in Chromium 45 (Stan Hu)
+  - Fix avatars not showing in Atom feeds and project issues when Gravatar disabled (Stan Hu)
   - Added a GitLab specific profiling tool called "Sherlock" (see GitLab CE merge request #1749)
   - Upgrade gitlab_git to 7.2.20 and rugged to 0.23.3 (Stan Hu)
   - Improved performance of finding users by one of their Email addresses
