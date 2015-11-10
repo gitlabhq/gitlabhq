@@ -28,6 +28,7 @@ v 8.2.0 (unreleased)
   - Allow groups to appear in the search results if the group owner allows it
   - New design for project graphs page
   - Fix incoming email config defaults
+  - MR target branch is now visible on a list view when it is different from project's default one
 
 v 8.1.4
   - Fix bug where manually merged branches in a MR would end up with an empty diff (Stan Hu)
