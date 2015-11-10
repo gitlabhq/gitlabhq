@@ -19,20 +19,6 @@
   .accept-merge-holder {
     .accept-action {
       display: inline-block;
-
-      .accept_merge_request {
-        &.ci-pending,
-        &.ci-running {
-          @include btn-orange;
-        }
-
-        &.ci-skipped,
-        &.ci-failed,
-        &.ci-canceled,
-        &.ci-error {
-          @include btn-red;
-        }
-      }
     }
 
     .accept-control {
