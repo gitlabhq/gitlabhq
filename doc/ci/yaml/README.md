@@ -286,7 +286,7 @@ artifacts:
 
 The artifacts will be send after the build success to GitLab and will be accessible in GitLab interface to download.
 
-This feature requires GitLab Runner v 0.7.0.
+This feature requires GitLab Runner v0.7.0 or higher.
 
 ## Validate the .gitlab-ci.yml
 Each instance of GitLab CI has an embedded debug tool called Lint.

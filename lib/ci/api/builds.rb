@@ -69,7 +69,7 @@ module Ci
           end
 
           status 200
-          { temp_path: ArtifactUploader.artifacts_upload_path }
+          { TempPath: ArtifactUploader.artifacts_upload_path }
         end
 
         # Upload artifacts to build - Runners only
