@@ -58,8 +58,6 @@ v 8.1.0
   - Redirect to a default path if HTTP_REFERER is not set (Stan Hu)
   - Adds ability to create directories using the web editor (Ben Ford)
   - Cleanup stuck CI builds
-
-v 8.1.0 (unreleased)
   - Send an email to admin email when a user is reported for spam (Jonathan Rochkind)
   - Show notifications button when user is member of group rather than project (Grzegorz Bizon)
   - Fix bug preventing mentioned issued from being closed when MR is merged using fast-forward merge.
