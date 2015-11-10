@@ -16,19 +16,17 @@ In brief, the steps needed to have a working CI can be summed up to:
 1. Configure a Runner
 
 From there on, on every push to your git repository the build will be
-automagically started by the runner and will appear under the project's `/builds`
-page.
+automagically started by the runner and will appear under the project's
+`/builds` page.
 
 Now, let's break it down to pieces and work on solving the GitLab CI puzzle.
 
-## 1. Enable GitLab CI
-
-After creating a new project, the first thing to do is enable the **GitLab CI**
-service in your project's settings if it isn't already enabled.
-
-Read [how to enable the GitLab CI service](enable_ci.md).
-
 ## 1. Creating a `.gitlab-ci.yml` file
+
+ **GitLab CI** service is enabled automatically on the first push of a
+ `.gitlab-ci.yml` file in your repository and this is the recommended way.
+
+For other methods read [how to enable the GitLab CI service](../enable_ci.md).
 
  **GitLab CI** service is enabled automatically on the first push of a
  `.gitlab-ci.yml` file in your repository and this is the recommended way.
