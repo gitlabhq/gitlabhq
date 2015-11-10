@@ -17,13 +17,13 @@
 
 .prepend-top-default
   %p.light
-    Builds chart for last month
+    Builds for last month
     (#{date_from_to(Date.today - 30.days, Date.today)})
   %canvas#monthChart{height: 200}
 
 .prepend-top-default
   %p.light
-    Builds chart for last year
+    Builds for last year
   %canvas#yearChart.padded{height: 250}
 
 - [:week, :month, :year].each do |scope|
