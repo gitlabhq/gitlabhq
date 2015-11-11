@@ -216,6 +216,7 @@ class ProjectsController < ApplicationController
       :issues_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id, :default_branch,
       :wiki_enabled, :issues_template, :merge_requests_template, :visibility_level, :merge_requests_rebase_enabled,
       :import_url, :last_activity_at, :namespace_id, :avatar,
+      :mirror,
       :approvals_before_merge, :approver_ids, :reset_approvals_on_push, :merge_requests_ff_only_enabled
     )
   end
@@ -245,7 +246,7 @@ class ProjectsController < ApplicationController
     project.repository_exists? && !project.empty_repo?
   end
 
-  # Override get_id from ExtractsPath, which returns the branch and file path 
+  # Override get_id from ExtractsPath, which returns the branch and file path
   # for the blob/tree, which in this case is just the root of the default branch.
   def get_id
     project.repository.root_ref
