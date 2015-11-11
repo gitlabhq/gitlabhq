@@ -1,7 +1,8 @@
 - commit = @repository.commit(branch.target)
 - bar_graph_width_factor = @max_commits > 0 ? 100.0/@max_commits : 0
-- number_commits_behind = @repository.diverging_commit_counts(branch)[:behind]
-- number_commits_ahead = @repository.diverging_commit_counts(branch)[:ahead]
+- diverging_commit_counts = @repository.diverging_commit_counts(branch) 
+- number_commits_behind = diverging_commit_counts[:behind]
+- number_commits_ahead = diverging_commit_counts[:ahead]
 %li(class="js-branch-#{branch.name}")
   %div
     = link_to namespace_project_tree_path(@project.namespace, @project, branch.name) do
@@ -33,13 +34,13 @@
           = icon("trash-o")
 
     - if branch.name != @repository.root_ref
-      .divergence-graph{ :title => "#{number_commits_ahead} commits ahead, #{number_commits_behind} commits behind #{@repository.root_ref}" }
+      .divergence-graph{ title: "#{number_commits_ahead} commits ahead, #{number_commits_behind} commits behind #{@repository.root_ref}" }
         .graph-side
-          .bar.bar-behind{ :style => "width: #{number_commits_behind * bar_graph_width_factor}%" }
+          .bar.bar-behind{ style: "width: #{number_commits_behind * bar_graph_width_factor}%" }
           %span.count.count-behind= number_commits_behind
         .graph-separator
         .graph-side
-          .bar.bar-ahead{ :style => "width: #{number_commits_ahead * bar_graph_width_factor}%" }
+          .bar.bar-ahead{ style: "width: #{number_commits_ahead * bar_graph_width_factor}%" }
           %span.count.count-ahead= number_commits_ahead
 
 
