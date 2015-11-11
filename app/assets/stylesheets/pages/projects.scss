@@ -106,13 +106,13 @@
   .project-repo-buttons {
     margin-top: 12px;
     margin-bottom: 0px;
+  }
 
-    .btn {
-      @include btn-gray;
+  .btn {
+    @include btn-gray;
 
-      .count {
-        display: inline-block;
-      }
+    .count {
+      display: inline-block;
     }
   }
 }
