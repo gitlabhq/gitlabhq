@@ -10,7 +10,7 @@ module HasOwners
   end
 
   def members
-    raise NotImplementedError, "Expected my_members to be defined in #{self.class.name}"
+    raise NotImplementedError, "Expected members to be defined in #{self.class.name}"
   end
 
   def add_owner(user, current_user = nil)
