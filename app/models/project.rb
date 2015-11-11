@@ -348,6 +348,14 @@ class Project < ActiveRecord::Base
     import_status == 'finished'
   end
 
+  def safe_import_url
+    result = URI.parse(self.import_url)
+    result.password = '*****' unless result.password.nil?
+    result.to_s
+  rescue
+    original_url
+  end
+
   def check_limit
     unless creator.can_create_project? or namespace.kind == 'group'
       errors[:limit_reached] << ("Your project limit is #{creator.projects_limit} projects! Please contact your administrator to increase it")
