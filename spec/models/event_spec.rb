@@ -64,4 +64,25 @@ describe Event do
     it { expect(@event.branch_name).to eq("master") }
     it { expect(@event.author).to eq(@user) }
   end
+
+  describe '.latest_update_time' do
+    describe 'when events are present' do
+      let(:time) { Time.utc(2015, 1, 1) }
+
+      before do
+        create(:closed_issue_event, updated_at: time)
+        create(:closed_issue_event, updated_at: time + 5)
+      end
+
+      it 'returns the latest update time' do
+        expect(Event.latest_update_time).to eq(time + 5)
+      end
+    end
+
+    describe 'when no events exist' do
+      it 'returns nil' do
+        expect(Event.latest_update_time).to be_nil
+      end
+    end
+  end
 end
