@@ -190,8 +190,10 @@ class IssuableFinder
 
   def by_project(items)
     items =
-      if projects
-        items.of_projects(projects).references(:project)
+      if project?
+        items.of_projects(projects).references_project
+      elsif projects
+        items.merge(projects.reorder(nil)).join_project
       else
         items.none
       end
@@ -206,7 +208,9 @@ class IssuableFinder
   end
 
   def sort(items)
-    items.sort(params[:sort])
+    # Ensure we always have an explicit sort order (instead of inheriting
+    # multiple orders when combining ActiveRecord::Relation objects).
+    params[:sort] ? items.sort(params[:sort]) : items.reorder(id: :desc)
   end
 
   def by_assignee(items)

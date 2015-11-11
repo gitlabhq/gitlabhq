@@ -35,6 +35,9 @@ module Issuable
     scope :order_milestone_due_desc, -> { joins(:milestone).reorder('milestones.due_date DESC, milestones.id DESC') }
     scope :order_milestone_due_asc, -> { joins(:milestone).reorder('milestones.due_date ASC, milestones.id ASC') }
 
+    scope :join_project, -> { joins(:project) }
+    scope :references_project, -> { references(:project) }
+
     delegate :name,
              :email,
              to: :author,
