@@ -22,7 +22,7 @@ class Group < Namespace
   include HasOwners
 
   has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
-  alias_method :my_members, :group_members
+  alias_method :members, :group_members
   has_many :users, through: :group_members
 
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
@@ -89,10 +89,6 @@ class Group < Namespace
 
   def add_master(user, current_user = nil)
     add_user(user, Gitlab::Access::MASTER, current_user)
-  end
-
-  def members
-    group_members
   end
 
   def avatar_type

@@ -6,17 +6,17 @@ class Ability
       return [] if user.blocked?
 
       case subject.class.name
-      when "Project" then project_abilities(user, subject)
-      when "Issue" then issue_abilities(user, subject)
-      when "Note" then note_abilities(user, subject)
-      when "ProjectSnippet" then project_snippet_abilities(user, subject)
-      when "PersonalSnippet" then personal_snippet_abilities(user, subject)
-      when "MergeRequest" then merge_request_abilities(user, subject)
-      when "Group" then group_abilities(user, subject)
-      when "Namespace" then namespace_abilities(user, subject)
-      when "GroupMember" then group_member_abilities(user, subject)
-      when "ProjectMember" then project_member_abilities(user, subject)
-      else []
+        when "Project" then project_abilities(user, subject)
+        when "Issue" then issue_abilities(user, subject)
+        when "Note" then note_abilities(user, subject)
+        when "ProjectSnippet" then project_snippet_abilities(user, subject)
+        when "PersonalSnippet" then personal_snippet_abilities(user, subject)
+        when "MergeRequest" then merge_request_abilities(user, subject)
+        when "Group" then group_abilities(user, subject)
+        when "Namespace" then namespace_abilities(user, subject)
+        when "GroupMember" then group_member_abilities(user, subject)
+        when "ProjectMember" then project_member_abilities(user, subject)
+        else []
       end.concat(global_abilities(user))
     end
 
@@ -232,17 +232,17 @@ class Ability
       # Only group masters and group owners can create new projects in group
       if group.has_master?(user) || group.has_owner?(user) || user.admin?
         rules.push(*[
-          :create_projects,
-        ])
+                     :create_projects,
+                   ])
       end
 
       # Only group owner and administrators can admin group
       if group.has_owner?(user) || user.admin?
         rules.push(*[
-          :admin_group,
-          :admin_namespace,
-          :admin_group_member
-        ])
+                     :admin_group,
+                     :admin_namespace,
+                     :admin_group_member
+                   ])
       end
 
       rules.flatten
@@ -254,9 +254,9 @@ class Ability
       # Only namespace owner and administrators can admin it
       if namespace.owner == user || user.admin?
         rules.push(*[
-          :create_projects,
-          :admin_namespace
-        ])
+                     :create_projects,
+                     :admin_namespace
+                   ])
       end
 
       rules.flatten
@@ -323,12 +323,12 @@ class Ability
       project = subject.project
       can_manage = project_abilities(user, project).include?(:admin_project_member)
 
-      if can_manage && (user != target_user)
+      if can_manage && user != target_user && target_user != project.owner
         rules << :update_project_member
         rules << :destroy_project_member
       end
 
-      if !project.last_owner?(user) && (can_manage || (user == target_user))
+      if user == target_user && target_user != project.owner
         rules << :destroy_project_member
       end
       rules
@@ -336,10 +336,10 @@ class Ability
 
     def abilities
       @abilities ||= begin
-                       abilities = Six.new
-                       abilities << self
-                       abilities
-                     end
+        abilities = Six.new
+        abilities << self
+        abilities
+      end
     end
 
     private

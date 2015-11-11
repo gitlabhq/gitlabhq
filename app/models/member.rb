@@ -30,13 +30,13 @@ class Member < ActiveRecord::Base
 
   validates :user, presence: true, unless: :invite?
   validates :source, presence: true
-  validates :user_id, uniqueness: { scope: [:source_type, :source_id], 
+  validates :user_id, uniqueness: { scope: [:source_type, :source_id],
                                     message: "already exists in source",
                                     allow_nil: true }
   validates :access_level, inclusion: { in: Gitlab::Access.all_values }, presence: true
-  validates :invite_email,  presence: { if: :invite? }, 
-                            email: { strict_mode: true, allow_nil: true }, 
-                            uniqueness: { scope: [:source_type, :source_id], allow_nil: true }
+  validates :invite_email,  presence: { if: :invite? },
+            email: { strict_mode: true, allow_nil: true },
+            uniqueness: { scope: [:source_type, :source_id], allow_nil: true }
 
   scope :invite, -> { where(user_id: nil) }
   scope :non_invite, -> { where("user_id IS NOT NULL") }
@@ -94,8 +94,7 @@ class Member < ActiveRecord::Base
 
     def can_update_member?(current_user, member)
       !current_user || current_user.can?(:update_group_member, member) ||
-        (member.respond_to?(:project) &&
-          current_user.can?(:update_project_member, member))
+        current_user.can?(:update_project_member, member)
     end
   end
 
@@ -105,7 +104,7 @@ class Member < ActiveRecord::Base
 
   def accept_invite!(new_user)
     return false unless invite?
-    
+
     self.invite_token = nil
     self.invite_accepted_at = Time.now.utc
 

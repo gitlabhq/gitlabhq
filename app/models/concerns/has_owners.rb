@@ -6,10 +6,10 @@ module HasOwners
   extend ActiveSupport::Concern
 
   def owners
-    @owners ||= my_members.owners.includes(:user).map(&:user)
+    @owners ||= members.owners.includes(:user).map(&:user)
   end
 
-  def my_members
+  def members
     raise NotImplementedError, "Expected my_members to be defined in #{self.class.name}"
   end
 
