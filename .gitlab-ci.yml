@@ -81,3 +81,11 @@ flog:
     - ruby
     - mysql
   allow_failure: true
+
+flay:
+  script:
+    - bundle exec rake flay
+  tags:
+    - ruby
+    - mysql
+  allow_failure: true
